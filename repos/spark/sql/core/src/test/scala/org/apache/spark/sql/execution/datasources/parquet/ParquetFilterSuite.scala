@@ -550,17 +550,13 @@ class ParquetFilterSuite
 
         // sanity test: make sure optional metadata field is not wrongly set.
         val pathSeven = s"${dir.getCanonicalPath}/table7"
-        (1 to 3)
-          .map(i => (i, i.toString))
-          .toDF("a", "b")
-          .write
-          .parquet(pathSeven)
+        (
+          1 to 3
+        ).map(i => (i, i.toString)).toDF("a", "b").write.parquet(pathSeven)
         val pathEight = s"${dir.getCanonicalPath}/table8"
-        (4 to 6)
-          .map(i => (i, i.toString))
-          .toDF("a", "b")
-          .write
-          .parquet(pathEight)
+        (
+          4 to 6
+        ).map(i => (i, i.toString)).toDF("a", "b").write.parquet(pathEight)
 
         val df2 = sqlContext.read
           .parquet(pathSeven, pathEight)
@@ -609,11 +605,9 @@ class ParquetFilterSuite
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}/table1"
-        (1 to 5)
-          .map(i => (i, (i % 2).toString))
-          .toDF("a", "b")
-          .write
-          .parquet(path)
+        (
+          1 to 5
+        ).map(i => (i, (i % 2).toString)).toDF("a", "b").write.parquet(path)
 
         checkAnswer(
           sqlContext.read.parquet(path).where("not (a = 2) or not(b in ('1'))"),
@@ -631,8 +625,7 @@ class ParquetFilterSuite
       Seq(
         StructField("a", IntegerType, nullable = false),
         StructField("b", StringType, nullable = true),
-        StructField("c", DoubleType, nullable = true)
-      ))
+        StructField("c", DoubleType, nullable = true)))
 
     assertResult(
       Some(
@@ -668,11 +661,9 @@ class ParquetFilterSuite
       withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
         withTempPath { dir =>
           val path = s"${dir.getCanonicalPath}/table1"
-          (1 to 5)
-            .map(i => (i.toFloat, i % 3))
-            .toDF("a", "b")
-            .write
-            .parquet(path)
+          (
+            1 to 5
+          ).map(i => (i.toFloat, i % 3)).toDF("a", "b").write.parquet(path)
 
           // When a filter is pushed to Parquet, Parquet can apply it to every row.
           // So, we can check the number of rows returned from the Parquet

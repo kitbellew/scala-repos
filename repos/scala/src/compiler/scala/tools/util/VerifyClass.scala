@@ -26,10 +26,12 @@ object VerifyClass {
     } toMap
 
   def checkClassesInDir(name: String, cl: ClassLoader) =
-    (for {
-      file <- Path(name).walk
-      if file.name endsWith ".class"
-    } yield checkClass(name, cl)) toMap
+    (
+      for {
+        file <- Path(name).walk
+        if file.name endsWith ".class"
+      } yield checkClass(name, cl)
+    ) toMap
 
   def checkClasses(name: String, cl: ClassLoader) =
     if (name endsWith ".jar")
@@ -43,9 +45,11 @@ object VerifyClass {
     println("As urls: " + urls.mkString(","))
     val cl = URLClassLoader.newInstance(urls, null)
     val results = args.flatMap(n => checkClasses(n, cl)).toMap
-    (for {
-      (name, result) <- results
-    } yield (name, result.getOrElse(null))).asJava
+    (
+      for {
+        (name, result) <- results
+      } yield (name, result.getOrElse(null))
+    ).asJava
   }
 
   def main(args: Array[String]): Unit = {

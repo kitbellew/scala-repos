@@ -99,8 +99,7 @@ class AppsResource @Inject() (
             app,
             maybeCounts = Some(TaskCounts.zero),
             maybeTasks = Some(Seq.empty),
-            maybeDeployments = Some(Seq(Identifiable(plan.id)))
-          )
+            maybeDeployments = Some(Seq(Identifiable(plan.id))))
 
           maybePostEvent(req, appWithDeployments.app)
           Response
@@ -124,8 +123,7 @@ class AppsResource @Inject() (
           AppInfo.Embed.Counts,
           AppInfo.Embed.Tasks,
           AppInfo.Embed.LastTaskFailure,
-          AppInfo.Embed.Deployments
-        )
+          AppInfo.Embed.Deployments)
 
       def transitiveApps(groupId: PathId): Response = {
         result(groupManager.group(groupId)) match {
@@ -268,9 +266,11 @@ class AppsResource @Inject() (
 
       val newVersion = clock.now()
       val restartDeployment = result(
-        groupManager
-          .updateApp(id.toRootPath, markForRestartingOrThrow, newVersion, force)
-      )
+        groupManager.updateApp(
+          id.toRootPath,
+          markForRestartingOrThrow,
+          newVersion,
+          force))
 
       deploymentResult(restartDeployment)
     }

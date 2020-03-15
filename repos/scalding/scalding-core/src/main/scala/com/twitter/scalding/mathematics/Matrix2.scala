@@ -418,14 +418,15 @@ case class Product[R, C, C2, V](
     val localRing = ring
 
     val joined =
-      (if (leftMatrix) {
-         val ord: Ordering[R] = left.rowOrd
-         left.toTypedPipe.groupBy(x => x._1)(ord)
-       } else {
-         val ord: Ordering[C] = right.rowOrd
-         right.toTypedPipe.groupBy(x => x._1)(ord)
-       })
-        .mapValues {
+      (
+        if (leftMatrix) {
+          val ord: Ordering[R] = left.rowOrd
+          left.toTypedPipe.groupBy(x => x._1)(ord)
+        } else {
+          val ord: Ordering[C] = right.rowOrd
+          right.toTypedPipe.groupBy(x => x._1)(ord)
+        }
+      ).mapValues {
           _._3
         }
         .sum(localRing)
@@ -671,13 +672,14 @@ case class HadamardProduct[R, C, V](
         (v._1, v._2, ring.times(v._3, v._3)))
     } else {
       // tracking values which were reduced (multiplied by non-zero) or non-reduced (multiplied by zero) with a boolean
-      (left.optimizedSelf.toTypedPipe.map {
-        case (r, c, v) => (r, c, (v, false))
-      } ++
-        right.optimizedSelf.toTypedPipe.map {
+      (
+        left.optimizedSelf.toTypedPipe.map {
           case (r, c, v) => (r, c, (v, false))
-        })
-        .groupBy(x => (x._1, x._2))
+        } ++
+          right.optimizedSelf.toTypedPipe.map {
+            case (r, c, v) => (r, c, (v, false))
+          }
+      ).groupBy(x => (x._1, x._2))
         .mapValues {
           _._3
         }
@@ -860,12 +862,13 @@ object Matrix2 {
         subchainCosts.put((i, j), Long.MaxValue)
         for (k <- i to (j - 1)) {
           // the original did not multiply by (k - i) and (j - k - 1) respectively (this achieves spread out trees)
-          val cost = (k - i) * computeCosts(
-            p,
-            i,
-            k) + (j - k - 1) * computeCosts(p, k + 1, j) +
-            (p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint)).total
-              .getOrElse(BigInt(0L))
+          val cost =
+            (k - i) * computeCosts(p, i, k) + (j - k - 1) * computeCosts(
+              p,
+              k + 1,
+              j) +
+              (p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint)).total
+                .getOrElse(BigInt(0L))
           if (cost < subchainCosts((i, j))) {
             subchainCosts.put((i, j), cost)
             splitMarkers.put((i, j), k)

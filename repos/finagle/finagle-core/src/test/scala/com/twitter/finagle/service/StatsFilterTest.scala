@@ -18,9 +18,8 @@ class StatsFilterTest extends FunSuite {
   val BasicExceptions =
     new CategorizingExceptionStatsHandler(_ => None, _ => None, rollup = false)
 
-  def getService(
-      exceptionStatsHandler: ExceptionStatsHandler = BasicExceptions
-  ): (Promise[String], InMemoryStatsReceiver, Service[String, String]) = {
+  def getService(exceptionStatsHandler: ExceptionStatsHandler = BasicExceptions)
+      : (Promise[String], InMemoryStatsReceiver, Service[String, String]) = {
     val receiver = new InMemoryStatsReceiver()
     val statsFilter =
       new StatsFilter[String, String](receiver, exceptionStatsHandler)

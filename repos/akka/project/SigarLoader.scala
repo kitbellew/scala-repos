@@ -42,8 +42,7 @@ object SigarLoader {
       val artifactList = report.matching(
         moduleFilter(
           organization = sigarLoader.organization,
-          name = sigarLoader.name)
-      )
+          name = sigarLoader.name))
       require(
         artifactList.size == 1,
         "Expecting single artifact, while found: " + artifactList)
@@ -63,12 +62,9 @@ object SigarLoader {
     ) ++ (
       // Invoke Sigar agent at JVM init time, to extract and load native Sigar library.
       if (sigarTestEnabled)
-        Seq(
-          javaOptions in Test += sigarOptions.value
-        )
+        Seq(javaOptions in Test += sigarOptions.value)
       else
-        Seq()
-    )
+        Seq())
   }
 
 }

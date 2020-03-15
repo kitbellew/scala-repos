@@ -100,8 +100,7 @@ object Box extends BoxTrait with Tryo {
           failureErrorMessage,
           Empty,
           Full(failureChain),
-          theListOfBoxes
-        )
+          theListOfBoxes)
       } else {
         Full(theListOfBoxes.flatten)
       }
@@ -289,9 +288,10 @@ sealed trait BoxTrait {
     * res1: net.liftweb.common.Box[Int] = Full(5)
     * }}}
     */
-  def asA[B](in: T forSome {
-    type T
-  })(implicit m: Manifest[B]): Box[B] = {
+  def asA[B](
+      in: T forSome {
+        type T
+      })(implicit m: Manifest[B]): Box[B] = {
     (Box !! in).asA[B]
   }
 }
@@ -1089,10 +1089,12 @@ final class ParamFailure[T](
     }
 
   override def hashCode(): Int =
-    super.hashCode() + (param match {
-      case null => 0
-      case x    => x.hashCode()
-    })
+    super.hashCode() + (
+      param match {
+        case null => 0
+        case x    => x.hashCode()
+      }
+    )
 
   override def ~>[T](errorCode: => T): ParamFailure[T] =
     ParamFailure(msg, exception, Full(this), errorCode)

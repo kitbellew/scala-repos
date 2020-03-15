@@ -177,23 +177,23 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
       rest: Source[T, _]*)(
       strategy: Int ⇒ Graph[UniformFanInShape[T, U], NotUsed])
       : Source[U, NotUsed] =
-    Source.fromGraph(GraphDSL.create() { implicit b ⇒
-      import GraphDSL.Implicits._
-      val c = b.add(strategy(rest.size + 2))
-      first ~> c.in(0)
-      second ~> c.in(1)
+    Source.fromGraph(
+      GraphDSL.create() { implicit b ⇒
+        import GraphDSL.Implicits._
+        val c = b.add(strategy(rest.size + 2))
+        first ~> c.in(0)
+        second ~> c.in(1)
 
-      @tailrec def combineRest(
-          idx: Int,
-          i: Iterator[Source[T, _]]): SourceShape[U] =
-        if (i.hasNext) {
-          i.next() ~> c.in(idx)
-          combineRest(idx + 1, i)
-        } else
-          SourceShape(c.out)
+        @tailrec def combineRest(idx: Int, i: Iterator[Source[T, _]])
+            : SourceShape[U] =
+          if (i.hasNext) {
+            i.next() ~> c.in(idx)
+            combineRest(idx + 1, i)
+          } else
+            SourceShape(c.out)
 
-      combineRest(2, rest.iterator)
-    })
+        combineRest(2, rest.iterator)
+      })
 }
 
 object Source {
@@ -228,10 +228,11 @@ object Source {
     * from the downstream transformation steps.
     */
   def fromIterator[T](f: () ⇒ Iterator[T]): Source[T, NotUsed] =
-    apply(new immutable.Iterable[T] {
-      override def iterator: Iterator[T] = f()
-      override def toString: String = "() => Iterator"
-    })
+    apply(
+      new immutable.Iterable[T] {
+        override def iterator: Iterator[T] = f()
+        override def toString: String = "() => Iterator"
+      })
 
   /**
     * A graph with the shape of a source logically is a source, this method makes
@@ -454,23 +455,23 @@ object Source {
       rest: Source[T, _]*)(
       strategy: Int ⇒ Graph[UniformFanInShape[T, U], NotUsed])
       : Source[U, NotUsed] =
-    Source.fromGraph(GraphDSL.create() { implicit b ⇒
-      import GraphDSL.Implicits._
-      val c = b.add(strategy(rest.size + 2))
-      first ~> c.in(0)
-      second ~> c.in(1)
+    Source.fromGraph(
+      GraphDSL.create() { implicit b ⇒
+        import GraphDSL.Implicits._
+        val c = b.add(strategy(rest.size + 2))
+        first ~> c.in(0)
+        second ~> c.in(1)
 
-      @tailrec def combineRest(
-          idx: Int,
-          i: Iterator[Source[T, _]]): SourceShape[U] =
-        if (i.hasNext) {
-          i.next() ~> c.in(idx)
-          combineRest(idx + 1, i)
-        } else
-          SourceShape(c.out)
+        @tailrec def combineRest(idx: Int, i: Iterator[Source[T, _]])
+            : SourceShape[U] =
+          if (i.hasNext) {
+            i.next() ~> c.in(idx)
+            combineRest(idx + 1, i)
+          } else
+            SourceShape(c.out)
 
-      combineRest(2, rest.iterator)
-    })
+        combineRest(2, rest.iterator)
+      })
 
   /**
     * Creates a `Source` that is materialized as an [[akka.stream.SourceQueue]].

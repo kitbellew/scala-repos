@@ -40,25 +40,27 @@ trait LabelsControllerBase extends ControllerBase {
       "labelColor" -> trim(label("Color", text(required, color)))
     )(LabelForm.apply)
 
-  get("/:owner/:repository/issues/labels")(referrersOnly { repository =>
-    html.list(
-      getLabels(repository.owner, repository.name),
-      countIssueGroupByLabels(
-        repository.owner,
-        repository.name,
-        IssuesService.IssueSearchCondition(),
-        Map.empty),
-      repository,
-      hasWritePermission(
-        repository.owner,
-        repository.name,
-        context.loginAccount)
-    )
-  })
+  get("/:owner/:repository/issues/labels")(
+    referrersOnly { repository =>
+      html.list(
+        getLabels(repository.owner, repository.name),
+        countIssueGroupByLabels(
+          repository.owner,
+          repository.name,
+          IssuesService.IssueSearchCondition(),
+          Map.empty),
+        repository,
+        hasWritePermission(
+          repository.owner,
+          repository.name,
+          context.loginAccount)
+      )
+    })
 
-  ajaxGet("/:owner/:repository/issues/labels/new")(collaboratorsOnly {
-    repository => html.edit(None, repository)
-  })
+  ajaxGet("/:owner/:repository/issues/labels/new")(
+    collaboratorsOnly { repository =>
+      html.edit(None, repository)
+    })
 
   ajaxPost("/:owner/:repository/issues/labels/new", labelForm)(
     collaboratorsOnly { (form, repository) =>
@@ -83,12 +85,12 @@ trait LabelsControllerBase extends ControllerBase {
       )
     })
 
-  ajaxGet("/:owner/:repository/issues/labels/:labelId/edit")(collaboratorsOnly {
-    repository =>
+  ajaxGet("/:owner/:repository/issues/labels/:labelId/edit")(
+    collaboratorsOnly { repository =>
       getLabel(repository.owner, repository.name, params("labelId").toInt).map {
         label => html.edit(Some(label), repository)
       } getOrElse NotFound()
-  })
+    })
 
   ajaxPost("/:owner/:repository/issues/labels/:labelId/edit", labelForm)(
     collaboratorsOnly { (form, repository) =>

@@ -361,10 +361,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
     *  @param  result   The transformed node
     */
   override def signalDone(context: Context, old: Tree, result: Tree) {
-    val canObserveTree = (
-      interruptsEnabled
-        && analyzer.lockedCount == 0
-        && !context.bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
+    val canObserveTree = (interruptsEnabled
+      && analyzer.lockedCount == 0
+      && !context.bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
     )
     if (canObserveTree) {
       if (context.unit.exists &&
@@ -879,10 +878,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
         tree match {
           case Import(expr, _) =>
             debugLog(
-              "import found" + expr.tpe + (if (expr.tpe == null)
-                                             ""
-                                           else
-                                             " " + expr.tpe.members))
+              "import found" + expr.tpe + (
+                if (expr.tpe == null)
+                  ""
+                else
+                  " " + expr.tpe.members
+              ))
           case _ =>
         }
         if (stabilizedType(tree) ne null) {
@@ -967,12 +968,14 @@ with ContextTrees with RichCompilationUnits with Picklers {
       sym.isType || {
         try {
           val tp1 = pre.memberType(alt) onTypeError NoType
-          val tp2 = adaptToNewRunMap(
-            sym.tpe) substSym (originalTypeParams, sym.owner.typeParams)
+          val tp2 = adaptToNewRunMap(sym.tpe) substSym (
+            originalTypeParams, sym.owner.typeParams
+          )
           matchesType(tp1, tp2, alwaysMatchSimple = false) || {
             debugLog(s"findMirrorSymbol matchesType($tp1, $tp2) failed")
-            val tp3 = adaptToNewRunMap(
-              sym.tpe) substSym (originalTypeParams, alt.owner.typeParams)
+            val tp3 = adaptToNewRunMap(sym.tpe) substSym (
+              originalTypeParams, alt.owner.typeParams
+            )
             matchesType(tp1, tp3, alwaysMatchSimple = false) || {
               debugLog(
                 s"findMirrorSymbol fallback matchesType($tp1, $tp3) failed")
@@ -1321,8 +1324,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
     /** Cursor Offset - positionDelta == position of the start of the name */
     def positionDelta: Int
-    def matchingResults(nameMatcher: (Name) => Name => Boolean = entered =>
-      candidate => candidate.startsWith(entered)): List[M] = {
+    def matchingResults(
+        nameMatcher: (Name) => Name => Boolean = entered =>
+          candidate => candidate.startsWith(entered)): List[M] = {
       val enteredName =
         if (name == nme.ERROR)
           nme.EMPTY
@@ -1339,8 +1343,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
           symbol.name.isEmpty || !isIdentifierStart(
             member.sym.name.charAt(0)
           ) // e.g. <byname>
-        !isJunk && member.accessible && !symbol.isConstructor && (name.isEmpty || matcher(
-          member.sym.name) && (symbol.name.isTermName == name.isTermName || name.isTypeName && isStable))
+        !isJunk && member.accessible && !symbol.isConstructor && (
+          name.isEmpty || matcher(member.sym.name) && (
+            symbol.name.isTermName == name.isTermName || name.isTypeName && isStable
+          )
+        )
       }
     }
   }
@@ -1397,10 +1404,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
                     lenientMatch(
                       entered.stripPrefix(init),
                       tail,
-                      matchCount + (if (init.isEmpty)
-                                      0
-                                    else
-                                      1))))
+                      matchCount + (
+                        if (init.isEmpty)
+                          0
+                        else
+                          1
+                      ))))
           }
         }
         val containsAllEnteredChars = {

@@ -155,8 +155,7 @@ private[tracker] class TaskOpProcessorImpl(
 
       log.warn(
         s"${op.taskId} of app [${op.taskId.appId}]: try to recover from failed ${op.action.toString}",
-        cause
-      )
+        cause)
 
       repo
         .task(op.taskId.idString)
@@ -173,8 +172,7 @@ private[tracker] class TaskOpProcessorImpl(
           case NonFatal(loadingFailure) =>
             log.warn(
               s"${op.taskId} of app [${op.taskId.appId}]: task reloading failed as well",
-              loadingFailure
-            )
+              loadingFailure)
             throw cause
         }
   }

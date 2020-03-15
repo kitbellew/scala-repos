@@ -47,8 +47,7 @@ object ButtonBarDemo extends JFXApp {
               new Button("One"),
               new Button("Two"),
               new Button("Three"))
-          }
-        )
+          })
         spacing = 10
         padding = Insets(10)
       }

@@ -79,12 +79,10 @@ trait BytecodeWriters {
   }
 
   class DirectToJarfileWriter(jfile: JFile) extends BytecodeWriter {
-    val jarMainAttrs = (
-      if (settings.mainClass.isDefault)
-        Nil
-      else
-        List(Name.MAIN_CLASS -> settings.mainClass.value)
-    )
+    val jarMainAttrs = (if (settings.mainClass.isDefault)
+                          Nil
+                        else
+                          List(Name.MAIN_CLASS -> settings.mainClass.value))
     val writer = new Jar(jfile).jarWriter(jarMainAttrs: _*)
 
     def writeClass(

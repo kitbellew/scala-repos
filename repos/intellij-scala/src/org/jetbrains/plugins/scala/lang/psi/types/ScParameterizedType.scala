@@ -269,10 +269,13 @@ class ScParameterizedType private (
           return (false, uSubst)
         val subst =
           new ScSubstitutor(
-            Map(tpt.args.zip(args).map {
-              case (tpt: ScTypeParameterType, tp: ScType) =>
-                ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
-            }: _*),
+            Map(
+              tpt.args.zip(args).map {
+                case (tpt: ScTypeParameterType, tp: ScType) =>
+                  (
+                    (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
+                    tp)
+              }: _*),
             Map.empty,
             None)
         var t: (Boolean, ScUndefinedSubstitutor) = Conformance.conformsInner(
@@ -453,8 +456,11 @@ case class ScTypeParameterType(
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = (((param.hashCode() * 31 + upper.hashCode) * 31 + lower
-        .hashCode()) * 31 + args.hashCode()) * 31 + name.hashCode
+      hash = (
+        (
+          (param.hashCode() * 31 + upper.hashCode) * 31 + lower.hashCode()
+        ) * 31 + args.hashCode()
+      ) * 31 + name.hashCode
     }
     hash
   }

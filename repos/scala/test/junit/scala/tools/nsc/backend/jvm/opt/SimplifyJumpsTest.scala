@@ -38,14 +38,12 @@ class SimplifyJumpsTest {
       Label(1),
       Label(2),
       Label(3),
-      Op(ATHROW)
-    )
+      Op(ATHROW))
     val method =
       genMethod()(
         Op(ACONST_NULL) ::
           Jump(GOTO, Label(2)) :: // replaced by ATHROW
-          rest: _*
-      )
+          rest: _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(
       instructionsFromMethod(method),
@@ -89,10 +87,7 @@ class SimplifyJumpsTest {
 
   @Test
   def simplifyBranchOverGoto(): Unit = {
-    val begin = List(
-      VarOp(ILOAD, 1),
-      Jump(IFGE, Label(2))
-    )
+    val begin = List(VarOp(ILOAD, 1), Jump(IFGE, Label(2)))
     val rest = List(
       Jump(GOTO, Label(3)),
       Label(11), // other labels here are allowed
@@ -101,8 +96,7 @@ class SimplifyJumpsTest {
       Op(RETURN),
       Label(3),
       VarOp(ILOAD, 1),
-      Op(IRETURN)
-    )
+      Op(IRETURN))
     val method = genMethod()(begin ::: rest: _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(
@@ -142,8 +136,7 @@ class SimplifyJumpsTest {
         Label(2),
         Op(RETURN),
         Label(3),
-        Op(RETURN)
-      )
+        Op(RETURN))
 
     // ensures that the goto is safely removed. ASM supports removing while iterating, but not the
     // next element of the current. Here, the current is the IFGE, the next is the GOTO.
@@ -161,8 +154,7 @@ class SimplifyJumpsTest {
       Label(1),
       Label(2),
       VarOp(ILOAD, 1),
-      Op(IRETURN)
-    )
+      Op(IRETURN))
     val method = genMethod()(ops: _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(instructionsFromMethod(method), ops.tail)
@@ -242,8 +234,7 @@ class SimplifyJumpsTest {
     def ops(br: List[Instruction]) =
       List(VarOp(ILOAD, 1), VarOp(ILOAD, 2)) ::: br ::: List(
         Label(1),
-        Jump(GOTO, Label(1))
-      )
+        Jump(GOTO, Label(1)))
     val method = genMethod()(ops(List(Jump(IF_ICMPGE, Label(1)))): _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(instructionsFromMethod(method), ops(List(Op(POP), Op(POP))))

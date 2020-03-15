@@ -270,11 +270,9 @@ object Tensor {
       }
     }
 
-  implicit def canSliceTensor2[K1, K2, V: Semiring: ClassTag]: CanSlice2[
-    Tensor[(K1, K2), V],
-    Seq[K1],
-    Seq[K2],
-    SliceMatrix[K1, K2, V]] = {
+  implicit def canSliceTensor2[K1, K2, V: Semiring: ClassTag]: CanSlice2[Tensor[
+    (K1, K2),
+    V], Seq[K1], Seq[K2], SliceMatrix[K1, K2, V]] = {
     new CanSlice2[
       Tensor[(K1, K2), V],
       Seq[K1],

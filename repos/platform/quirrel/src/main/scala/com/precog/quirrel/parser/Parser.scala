@@ -69,9 +69,10 @@ trait Parser extends RegexParsers with Filters with AST {
     }
     val length = sorted.head.tail.length
 
-    val failures = Set(sorted takeWhile {
-      _.tail.length == length
-    }: _*)
+    val failures = Set(
+      sorted takeWhile {
+        _.tail.length == length
+      }: _*)
     throw ParseException(failures)
   }
 
@@ -237,72 +238,60 @@ trait Parser extends RegexParsers with Filters with AST {
       }
   ) filter (precedence & arrayDefDeref & relateRelate)
 
-  private lazy val importSpec: Parser[ImportSpec] = (
-    namespace ~ "::" ~ "*" ^^ { (p, _, _) =>
-      WildcardImport(p)
-    }
-      | namespace ^^ SpecificImport
-  )
+  private lazy val importSpec: Parser[ImportSpec] = (namespace ~ "::" ~ "*" ^^ {
+    (p, _, _) => WildcardImport(p)
+  }
+    | namespace ^^ SpecificImport)
 
-  private lazy val namespacedId: Parser[Identifier] = (
-    namespace ~ "::" ~ id ^^ { (ns, _, id) =>
+  private lazy val namespacedId: Parser[Identifier] =
+    (namespace ~ "::" ~ id ^^ { (ns, _, id) =>
       Identifier(ns, id)
     }
       | id ^^ { str =>
         Identifier(Vector(), str)
-      }
-  )
+      })
 
-  private lazy val namespace: Parser[Vector[String]] = (
-    namespace ~ "::" ~ id ^^ { (ns, _, id) =>
+  private lazy val namespace: Parser[Vector[String]] =
+    (namespace ~ "::" ~ id ^^ { (ns, _, id) =>
       ns :+ id
     }
       | id ^^ {
         Vector(_)
-      }
-  )
+      })
 
-  private lazy val formals: Parser[Vector[String]] = (
-    formals ~ "," ~ id ^^ { (fs, _, f) =>
-      fs :+ f
-    }
-      | id ^^ {
-        Vector(_)
-      }
-  )
+  private lazy val formals: Parser[Vector[String]] = (formals ~ "," ~ id ^^ {
+    (fs, _, f) => fs :+ f
+  }
+    | id ^^ {
+      Vector(_)
+    })
 
-  private lazy val relations: Parser[Vector[Expr]] = (
-    relations ~ "~" ~ expr ^^ { (es, _, e) =>
+  private lazy val relations: Parser[Vector[Expr]] =
+    (relations ~ "~" ~ expr ^^ { (es, _, e) =>
       es :+ e
     }
       | expr ~ "~" ~ expr ^^ { (e1, _, e2) =>
         Vector(e1, e2)
-      }
-  )
+      })
 
-  private lazy val actuals: Parser[Vector[Expr]] = (
-    actuals ~ "," ~ expr ^^ { (es, _, e) =>
-      es :+ e
-    }
-      | expr ^^ {
-        Vector(_)
-      }
-  )
+  private lazy val actuals: Parser[Vector[Expr]] = (actuals ~ "," ~ expr ^^ {
+    (es, _, e) => es :+ e
+  }
+    | expr ^^ {
+      Vector(_)
+    })
 
-  private lazy val nullableActuals = (
-    actuals
-      | "" ^^^ Vector[Expr]()
-  )
+  private lazy val nullableActuals = (actuals
+    | "" ^^^ Vector[Expr]())
 
-  private lazy val properties: Parser[Vector[(String, Expr)]] = (
-    properties ~ "," ~ property ^^ { (ps, _, p) =>
+  private lazy val properties: Parser[Vector[(String, Expr)]] =
+    (properties ~ "," ~ property ^^ { (ps, _, p) =>
       ps :+ p
     }
       | property ^^ {
         Vector(_)
       }
-      | "" ^^^ Vector()
-  )
+      | "" ^^^ Vector())
 
   private lazy val property = propertyName ~ ":" ~ expr ^^ { (n, _, e) =>
     (n, e)
@@ -313,10 +302,9 @@ trait Parser extends RegexParsers with Filters with AST {
 
   private lazy val ticId = """'[a-zA-Z_0-9]['a-zA-Z_0-9]*""".r
 
-  private lazy val propertyName = (
-    """[a-zA-Z_][a-zA-Z_0-9]*""".r
-      | """`([^`\\]|\\.)+`""".r ^^ canonicalizePropertyName
-      | """"([^"\\]|\\.)+"""".r ^^ canonicalizeStr //"
+  private lazy val propertyName = ("""[a-zA-Z_][a-zA-Z_0-9]*""".r
+    | """`([^`\\]|\\.)+`""".r ^^ canonicalizePropertyName
+    | """"([^"\\]|\\.)+"""".r ^^ canonicalizeStr //"
   )
 
   private val basePathLiteralRegex = """(/[a-zA-Z0-9\-\._~:/?#@!$&'*+=]+)+"""
@@ -337,10 +325,8 @@ trait Parser extends RegexParsers with Filters with AST {
     """[0-9]+(\.[0-9]+)?([eE][0-9]+)?""".r
   private lazy val numLiteral = numLiteralRegex
 
-  private lazy val boolLiteral: Parser[Boolean] = (
-    "true" ^^^ true
-      | "false" ^^^ false
-  )
+  private lazy val boolLiteral: Parser[Boolean] = ("true" ^^^ true
+    | "false" ^^^ false)
 
   private lazy val undefinedLiteral = """undefined\b""".r
 
@@ -509,9 +495,10 @@ trait Parser extends RegexParsers with Filters with AST {
       }
 
       val expectedCountPS = expectedPowerSet map { set =>
-        Map(set map { str =>
-          str -> 1
-        } toSeq: _*)
+        Map(
+          set map { str =>
+            str -> 1
+          } toSeq: _*)
       }
 
       val expectedCounts =
@@ -529,9 +516,11 @@ trait Parser extends RegexParsers with Filters with AST {
       val expectation = pairs.headOption flatMap {
         case (_, headCount) => {
           val (possibilities, _) =
-            (pairs takeWhile {
-              case (_, c) => headCount == c
-            }).unzip
+            (
+              pairs takeWhile {
+                case (_, c) => headCount == c
+              }
+            ).unzip
 
           if (possibilities.isEmpty)
             None
@@ -547,24 +536,22 @@ trait Parser extends RegexParsers with Filters with AST {
 
     // %%
 
-    private lazy val op = (
-      "where"
-        | "with"
-        | "union"
-        | "intersect"
-        | "difference"
-        | "+"
-        | "-"
-        | "*"
-        | "/"
-        | "<"
-        | "<="
-        | ">"
-        | ">="
-        | "="
-        | "!="
-        | "&"
-        | "|"
-    )
+    private lazy val op = ("where"
+      | "with"
+      | "union"
+      | "intersect"
+      | "difference"
+      | "+"
+      | "-"
+      | "*"
+      | "/"
+      | "<"
+      | "<="
+      | ">"
+      | ">="
+      | "="
+      | "!="
+      | "&"
+      | "|")
   }
 }

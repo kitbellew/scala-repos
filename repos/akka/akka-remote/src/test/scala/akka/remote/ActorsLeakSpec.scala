@@ -45,8 +45,10 @@ object ActorsLeakSpec {
                     toDie,
                     reason) ⇒
                 Nil
-              case x @ (ChildrenContainer.TerminatedChildrenContainer |
-                  ChildrenContainer.EmptyChildrenContainer) ⇒
+              case x @ (
+                    ChildrenContainer.TerminatedChildrenContainer |
+                    ChildrenContainer.EmptyChildrenContainer
+                  ) ⇒
                 Nil
               case n: ChildrenContainer.NormalChildrenContainer ⇒
                 cell.childrenRefs.children.toList

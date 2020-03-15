@@ -370,34 +370,35 @@ object Printers {
           print('(')
           print(lhs)
           print(' ')
-          print((op: @switch) match {
-            case === => "==="
-            case !== => "!=="
+          print(
+            (op: @switch) match {
+              case === => "==="
+              case !== => "!=="
 
-            case + => "+"
-            case - => "-"
-            case * => "*"
-            case / => "/"
-            case % => "%"
+              case + => "+"
+              case - => "-"
+              case * => "*"
+              case / => "/"
+              case % => "%"
 
-            case |   => "|"
-            case &   => "&"
-            case ^   => "^"
-            case <<  => "<<"
-            case >>  => ">>"
-            case >>> => ">>>"
+              case |   => "|"
+              case &   => "&"
+              case ^   => "^"
+              case <<  => "<<"
+              case >>  => ">>"
+              case >>> => ">>>"
 
-            case <  => "<"
-            case <= => "<="
-            case >  => ">"
-            case >= => ">="
+              case <  => "<"
+              case <= => "<="
+              case >  => ">"
+              case >= => ">="
 
-            case && => "&&"
-            case || => "||"
+              case && => "&&"
+              case || => "||"
 
-            case `in`         => "in"
-            case `instanceof` => "instanceof"
-          })
+              case `in`         => "in"
+              case `instanceof` => "instanceof"
+            })
           print(' ')
           print(rhs)
           print(')')

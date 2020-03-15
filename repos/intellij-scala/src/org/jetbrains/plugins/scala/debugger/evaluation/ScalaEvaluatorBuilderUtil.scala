@@ -1312,8 +1312,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
                 Some(
                   m.copy(
                     _methodName = m.methodName + "_$eq",
-                    argumentEvaluators = Seq(rightEvaluator)
-                  )
+                    argumentEvaluators = Seq(rightEvaluator))
                 ) //todo: signature?
               case ScalaDuplexEvaluator(first, second) =>
                 createAssignEvaluator(first) orElse createAssignEvaluator(
@@ -1775,10 +1774,12 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     val operation = infix.operation
     def isUpdate(ref: ScReferenceExpression): Boolean = {
       ref.refName.endsWith("=") &&
-      (ref.resolve() match {
-        case n: PsiNamedElement if n.name + "=" == ref.refName => true
-        case _                                                 => false
-      })
+      (
+        ref.resolve() match {
+          case n: PsiNamedElement if n.name + "=" == ref.refName => true
+          case _                                                 => false
+        }
+      )
     }
 
     if (isUpdate(operation)) {
@@ -2209,8 +2210,9 @@ object ScalaEvaluatorBuilderUtil {
     elem match {
       case (e: ScExpression) childOf (f: ScForStatement) =>
         f.enumerators.fold(1)(e => e.generators.length)
-      case (e @ (_: ScEnumerator | _: ScGenerator |
-          _: ScGuard)) childOf (enums: ScEnumerators) =>
+      case (
+            e @ (_: ScEnumerator | _: ScGenerator | _: ScGuard)
+          ) childOf (enums: ScEnumerators) =>
         enums.children.takeWhile(_ != e).count(_.isInstanceOf[ScGenerator])
       case _ => 1
     }

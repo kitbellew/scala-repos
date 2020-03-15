@@ -34,9 +34,8 @@ private[stream] class ConnectionSourceStage(
     val halfClose: Boolean,
     val idleTimeout: Duration,
     val bindShutdownTimeout: FiniteDuration)
-    extends GraphStageWithMaterializedValue[
-      SourceShape[StreamTcp.IncomingConnection],
-      Future[StreamTcp.ServerBinding]] {
+    extends GraphStageWithMaterializedValue[SourceShape[
+      StreamTcp.IncomingConnection], Future[StreamTcp.ServerBinding]] {
   import ConnectionSourceStage._
 
   val out: Outlet[StreamTcp.IncomingConnection] = Outlet(
@@ -77,10 +76,11 @@ private[stream] class ConnectionSourceStage(
               if (isAvailable(out))
                 listener ! ResumeAccepting(1)
               val target = self
-              bindingPromise.success(ServerBinding(localAddress)(() ⇒ {
-                target ! Unbind;
-                unbindPromise.future
-              }))
+              bindingPromise.success(
+                ServerBinding(localAddress)(() ⇒ {
+                  target ! Unbind;
+                  unbindPromise.future
+                }))
             case f: CommandFailed ⇒
               val ex = BindFailedException
               bindingPromise.failure(ex)

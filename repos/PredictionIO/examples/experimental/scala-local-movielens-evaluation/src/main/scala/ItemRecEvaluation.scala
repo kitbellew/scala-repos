@@ -64,8 +64,7 @@ object ItemRecEvaluation1 {
           actionsMap = Map("rate" -> None),
           goodThreshold = 3),
         measureType = MeasureType.PrecisionAtK,
-        measureK = 10
-      )
+        measureK = 10)
 
     Workflow.runEngine(
       params = WorkflowParams(batch = "MLC: ItemRec Evaluation1", verbose = 0),

@@ -16,12 +16,14 @@ object Foo {
     type X = a.type
   }
   def foo5(x: Quux with Product) = (x eq "abc") && ("abc" eq x)
-  def foo6(x: Quux with Product {
-    def f: Int
-  }) = (x eq "abc") && ("abc" eq x)
-  def foo7(x: Quux with Product {
-    def eq(other: String): Boolean
-  }) = (x eq "abc") && ("abc" eq x)
+  def foo6(
+      x: Quux with Product {
+        def f: Int
+      }) = (x eq "abc") && ("abc" eq x)
+  def foo7(
+      x: Quux with Product {
+        def eq(other: String): Boolean
+      }) = (x eq "abc") && ("abc" eq x)
 
   def ok1[A <: QuuxRef](a: A) = {
     type X = a.type
@@ -36,24 +38,29 @@ object Foo {
     type X = a.type
   }
   def ok5(x: QuuxRef with Product) = (x eq "abc") && ("abc" eq x)
-  def ok6(x: QuuxRef with Product {
-    def f: Int
-  }) = (x eq "abc") && ("abc" eq x)
-  def ok7(x: QuuxRef {
-    def eq(other: String): Boolean
-  }) = (x eq "abc") && ("abc" eq x)
+  def ok6(
+      x: QuuxRef with Product {
+        def f: Int
+      }) = (x eq "abc") && ("abc" eq x)
+  def ok7(
+      x: QuuxRef {
+        def eq(other: String): Boolean
+      }) = (x eq "abc") && ("abc" eq x)
 
   def bad1(x: Bippy, y: Bippy) = x eq y
 }
 
 object Bar {
-  def f(x: Quux {
-    def g(x: Int): Int
-  }): Int = x g 5
-  f(new Quux {
-    def g(x: String) = x
-  })
-  f(new Quux {
-    def g(x: Int) = x
-  })
+  def f(
+      x: Quux {
+        def g(x: Int): Int
+      }): Int = x g 5
+  f(
+    new Quux {
+      def g(x: String) = x
+    })
+  f(
+    new Quux {
+      def g(x: Int) = x
+    })
 }

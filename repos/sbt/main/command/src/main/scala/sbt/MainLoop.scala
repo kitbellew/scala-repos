@@ -19,9 +19,10 @@ object MainLoop {
     // the jline terminal in finally blocks, but hitting ctrl+c prevents finally blocks from being executed, in that
     // case the only way to restore the terminal is in a shutdown hook.
     val shutdownHook =
-      new Thread(new Runnable {
-        def run(): Unit = TerminalFactory.get().restore()
-      })
+      new Thread(
+        new Runnable {
+          def run(): Unit = TerminalFactory.get().restore()
+        })
 
     try {
       Runtime.getRuntime.addShutdownHook(shutdownHook)

@@ -102,12 +102,13 @@ class WebJarServletTest
 
   lazy val servlet = {
     val servlet = new WebJarServlet
-    servlet.init(new ServletConfig {
-      override def getInitParameterNames: util.Enumeration[String] = ???
-      override def getServletName: String = "ui"
-      override def getInitParameter(name: String): String = null
-      override def getServletContext: ServletContext = context
-    })
+    servlet.init(
+      new ServletConfig {
+        override def getInitParameterNames: util.Enumeration[String] = ???
+        override def getServletName: String = "ui"
+        override def getInitParameter(name: String): String = null
+        override def getServletContext: ServletContext = context
+      })
     servlet
   }
 }

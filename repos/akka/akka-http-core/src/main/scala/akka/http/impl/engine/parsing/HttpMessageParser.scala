@@ -76,15 +76,17 @@ private[http] abstract class HttpMessageParser[
   }
   final def parseBytes(input: ByteString): Output = {
     @tailrec def run(next: ByteString ⇒ StateResult): StateResult =
-      (try next(input)
-      catch {
-        case e: ParsingException ⇒ failMessageStart(e.status, e.info)
-        case NotEnoughDataException ⇒
-          // we are missing a try/catch{continue} wrapper somewhere
-          throw new IllegalStateException(
-            "unexpected NotEnoughDataException",
-            NotEnoughDataException)
-      }) match {
+      (
+        try next(input)
+        catch {
+          case e: ParsingException ⇒ failMessageStart(e.status, e.info)
+          case NotEnoughDataException ⇒
+            // we are missing a try/catch{continue} wrapper somewhere
+            throw new IllegalStateException(
+              "unexpected NotEnoughDataException",
+              NotEnoughDataException)
+        }
+      ) match {
         case Trampoline(x) ⇒ run(x)
         case x ⇒ x
       }

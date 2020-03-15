@@ -31,15 +31,18 @@ class YieldFilter extends ElementFilter {
       if (parent.isInstanceOf[ScExpression] && parent.getParent
             .isInstanceOf[ScForStatement]) {
         var i = context.getTextRange.getStartOffset - 1
-        while (i > 0 && (context.getContainingFile.getText.charAt(i) == ' ' ||
-               context.getContainingFile.getText.charAt(i) == '\n'))
+        while (i > 0 && (
+                 context.getContainingFile.getText.charAt(i) == ' ' ||
+                 context.getContainingFile.getText.charAt(i) == '\n'
+               ))
           i = i - 1
         if (leafText(i, context) == "yield")
           return false
         i = context.getTextRange.getEndOffset
-        while (i < context.getContainingFile.getText.length - 1 && (context.getContainingFile.getText
-                 .charAt(i) == ' ' ||
-               context.getContainingFile.getText.charAt(i) == '\n'))
+        while (i < context.getContainingFile.getText.length - 1 && (
+                 context.getContainingFile.getText.charAt(i) == ' ' ||
+                 context.getContainingFile.getText.charAt(i) == '\n'
+               ))
           i = i + 1
         if (leafText(i, context) == "yield")
           return false

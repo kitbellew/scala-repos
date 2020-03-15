@@ -403,8 +403,9 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     "user_link" :: List(
       cssClass,
       withPowerTip option "ulpt",
-      withOnline option isOnline(userId).fold("online is-green", "offline")
-    ).flatten
+      withOnline option isOnline(userId).fold(
+        "online is-green",
+        "offline")).flatten
   }.mkString("class=\"", " ", "\"")
 
   def userGameFilterTitle(info: UserInfo, filter: GameFilter)(
@@ -413,20 +414,24 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
 
   def userGameFilterTitleNoTag(info: UserInfo, filter: GameFilter)(
       implicit ctx: UserContext) =
-    Html((filter match {
-      case GameFilter.All => info.user.count.game + " " + trans.gamesPlayed()
-      case GameFilter.Me =>
-        ctx.me ?? (me => trans.nbGamesWithYou.str(info.nbWithMe))
-      case GameFilter.Rated    => info.nbRated + " " + trans.rated()
-      case GameFilter.Win      => trans.nbWins(info.user.count.win)
-      case GameFilter.Loss     => trans.nbLosses(info.user.count.loss)
-      case GameFilter.Draw     => trans.nbDraws(info.user.count.draw)
-      case GameFilter.Playing  => info.nbPlaying + " playing"
-      case GameFilter.Bookmark => trans.nbBookmarks(info.nbBookmark)
-      case GameFilter.Imported => trans.nbImportedGames(info.nbImported)
-      case GameFilter.Search =>
-        Html(trans.advancedSearch.str().replaceFirst(" ", "\n"))
-    }).toString)
+    Html(
+      (
+        filter match {
+          case GameFilter.All =>
+            info.user.count.game + " " + trans.gamesPlayed()
+          case GameFilter.Me =>
+            ctx.me ?? (me => trans.nbGamesWithYou.str(info.nbWithMe))
+          case GameFilter.Rated    => info.nbRated + " " + trans.rated()
+          case GameFilter.Win      => trans.nbWins(info.user.count.win)
+          case GameFilter.Loss     => trans.nbLosses(info.user.count.loss)
+          case GameFilter.Draw     => trans.nbDraws(info.user.count.draw)
+          case GameFilter.Playing  => info.nbPlaying + " playing"
+          case GameFilter.Bookmark => trans.nbBookmarks(info.nbBookmark)
+          case GameFilter.Imported => trans.nbImportedGames(info.nbImported)
+          case GameFilter.Search =>
+            Html(trans.advancedSearch.str().replaceFirst(" ", "\n"))
+        }
+      ).toString)
 
   def describeUser(user: User) = {
     val name = user.titleUsername

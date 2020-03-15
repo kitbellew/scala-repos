@@ -21,9 +21,11 @@ class RollupStatsReceiver(val self: StatsReceiver)
         Seq(s)
 
       case Seq(hd, tl @ _*) =>
-        Seq(Seq(hd)) ++ (tails(tl) map { t =>
-          Seq(hd) ++ t
-        })
+        Seq(Seq(hd)) ++ (
+          tails(tl) map { t =>
+            Seq(hd) ++ t
+          }
+        )
     }
   }
 
@@ -32,16 +34,14 @@ class RollupStatsReceiver(val self: StatsReceiver)
   def counter(names: String*): Counter =
     new Counter {
       private[this] val allCounters = BroadcastCounter(
-        tails(names) map (self.counter(_: _*))
-      )
+        tails(names) map (self.counter(_: _*)))
       def incr(delta: Int) = allCounters.incr(delta)
     }
 
   def stat(names: String*): Stat =
     new Stat {
       private[this] val allStats = BroadcastStat(
-        tails(names) map (self.stat(_: _*))
-      )
+        tails(names) map (self.stat(_: _*)))
       def add(value: Float) = allStats.add(value)
     }
 

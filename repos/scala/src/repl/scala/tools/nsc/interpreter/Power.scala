@@ -193,12 +193,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
     /** Standard noise reduction filter. */
     def excludeMember(s: Symbol) =
-      (
-        isSpecialized(s)
-          || isImplClass(s)
-          || s.isAnonOrRefinementClass
-          || s.isAnonymousFunction
-      )
+      (isSpecialized(s)
+        || isImplClass(s)
+        || s.isAnonOrRefinementClass
+        || s.isAnonymousFunction)
     def symbol = compilerSymbolFromTag(tag)
     def tpe = compilerTypeFromTag(tag)
     def members = membersUnabridged filterNot excludeMember
@@ -260,7 +258,9 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
       pretty prettify f(value) foreach (StringPrettifier show _)
 
     def freq[U](p: T => U) =
-      (value.toSeq groupBy p mapValues (_.size)).toList sortBy (-_._2) map (_.swap)
+      (value.toSeq groupBy p mapValues (_.size)).toList sortBy (-_._2) map (
+        _.swap
+      )
 
     def >>(implicit ord: Ordering[T]): Unit = pp(_.sorted)
     def >!(): Unit = pp(_.distinct)
@@ -277,14 +277,12 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   class RichReplString(s: String) {
     // make an url out of the string
     def u: URL =
-      (
-        if (s contains ":")
-          new URL(s)
-        else if (new JFile(s) exists)
-          new JFile(s).toURI.toURL
-        else
-          new URL("http://" + s)
-      )
+      (if (s contains ":")
+         new URL(s)
+       else if (new JFile(s) exists)
+         new JFile(s).toURI.toURL
+       else
+         new URL("http://" + s))
   }
   class RichInputStream(in: InputStream)(implicit codec: Codec) {
     def bytes(): Array[Byte] = io.Streamable.bytes(in)
@@ -344,10 +342,12 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     def ?[T: ru.TypeTag: ClassTag] = InternalInfo[T]
     def sanitize(s: String): String = sanitize(s.getBytes())
     def sanitize(s: Array[Byte]): String =
-      (s map {
-        case x if x.toChar.isControl => '?'
-        case x                       => x.toChar
-      }).mkString
+      (
+        s map {
+          case x if x.toChar.isControl => '?'
+          case x                       => x.toChar
+        }
+      ).mkString
 
     def strings(s: Seq[Byte]): List[String] = {
       if (s.length == 0)

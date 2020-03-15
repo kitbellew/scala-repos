@@ -63,9 +63,10 @@ class SparkHadoopUtil extends Logging {
     logDebug("running as user: " + user)
     val ugi = UserGroupInformation.createRemoteUser(user)
     transferCredentials(UserGroupInformation.getCurrentUser(), ugi)
-    ugi.doAs(new PrivilegedExceptionAction[Unit] {
-      def run: Unit = func()
-    })
+    ugi.doAs(
+      new PrivilegedExceptionAction[Unit] {
+        def run: Unit = func()
+      })
   }
 
   def transferCredentials(

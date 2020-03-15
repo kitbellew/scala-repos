@@ -281,7 +281,9 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
 
   /** Equality within `maxDelta` */
   def moreOrLessEquals(other: This, maxDelta: Duration): Boolean =
-    (other ne Undefined) && ((this == other) || (this diff other).abs <= maxDelta)
+    (other ne Undefined) && (
+      (this == other) || (this diff other).abs <= maxDelta
+    )
 }
 
 /**

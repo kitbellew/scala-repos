@@ -40,9 +40,10 @@ object Routing {
     * Creates a LoadBalancer from the thunk-supplied InfiniteIterator.
     */
   def loadBalancerActor(actors: => InfiniteIterator[ActorRef]): ActorRef =
-    actorOf(new Actor with LoadBalancer {
-      val seq = actors
-    }).start()
+    actorOf(
+      new Actor with LoadBalancer {
+        val seq = actors
+      }).start()
 
   /**
     * Creates a Dispatcher given a routing and a message-transforming function.
@@ -50,18 +51,20 @@ object Routing {
   def dispatcherActor(
       routing: PF[Any, ActorRef],
       msgTransformer: (Any) => Any): ActorRef =
-    actorOf(new Actor with Dispatcher {
-      override def transform(msg: Any) = msgTransformer(msg)
-      def routes = routing
-    }).start()
+    actorOf(
+      new Actor with Dispatcher {
+        override def transform(msg: Any) = msgTransformer(msg)
+        def routes = routing
+      }).start()
 
   /**
     * Creates a Dispatcher given a routing.
     */
   def dispatcherActor(routing: PF[Any, ActorRef]): ActorRef =
-    actorOf(new Actor with Dispatcher {
-      def routes = routing
-    }).start()
+    actorOf(
+      new Actor with Dispatcher {
+        def routes = routing
+      }).start()
 
   /**
     * Creates an actor that pipes all incoming messages to

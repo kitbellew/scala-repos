@@ -127,8 +127,8 @@ object Http
       override def make(
           streaming: param.Streaming,
           stats: Stats,
-          next: ServiceFactory[Request, Response]
-      ): ServiceFactory[Request, Response] = {
+          next: ServiceFactory[Request, Response])
+          : ServiceFactory[Request, Response] = {
         if (!streaming.enabled)
           new PayloadSizeFilter[Request, Response](
             stats.statsReceiver,
@@ -174,8 +174,7 @@ object Http
 
     protected def copy1(
         stack: Stack[ServiceFactory[Request, Response]] = this.stack,
-        params: Stack.Params = this.params
-    ): Client = copy(stack, params)
+        params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected def newDispatcher(
         transport: Transport[Any, Any]): Service[Request, Response] = {
@@ -183,8 +182,7 @@ object Http
         new HttpClientDispatcher(
           transport,
           params[Stats].statsReceiver
-            .scope(GenSerialClientDispatcher.StatsScope)
-        )
+            .scope(GenSerialClientDispatcher.StatsScope))
 
       new ClientContextFilter[Request, Response].andThen(dispatcher)
     }
@@ -306,8 +304,7 @@ object Http
 
     protected def copy1(
         stack: Stack[ServiceFactory[Request, Response]] = this.stack,
-        params: Stack.Params = this.params
-    ): Server = copy(stack, params)
+        params: Stack.Params = this.params): Server = copy(stack, params)
 
     def withTls(cfg: Netty3ListenerTLSConfig): Server =
       configured(Transport.TLSServerEngine(Some(cfg.newEngine)))

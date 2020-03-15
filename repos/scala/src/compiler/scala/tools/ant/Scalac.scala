@@ -415,10 +415,12 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     logPhase = input.split(",").toList.flatMap { s: String =>
       val st = s.trim()
       if (CompilerPhase.isPermissible(st))
-        (if (input != "")
-           List(st)
-         else
-           Nil)
+        (
+          if (input != "")
+            List(st)
+          else
+            Nil
+        )
       else {
         buildError("Phase " + st + " in log does not exist.")
       }
@@ -638,11 +640,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
       if (scalacDebugging && !list.isEmpty)
         log(
-          "Compiling source file%s: %s to %s".format(
-            plural(list),
-            list.mkString(", "),
-            getDestination.toString
-          ))
+          "Compiling source file%s: %s to %s"
+            .format(plural(list), list.mkString(", "), getDestination.toString))
       else if (!list.isEmpty) {
         val str =
           if (javaFiles.isEmpty)

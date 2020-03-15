@@ -410,12 +410,14 @@ private[engine] final class HttpHeaderParser private (
         val (lines, mainIx) = recurse(subNodeIx)
         val prefixedLines = lines.zipWithIndex map {
           case (line, ix) ⇒
-            (if (ix < mainIx)
-               p1
-             else if (ix > mainIx)
-               p3
-             else
-               p2) :: line
+            (
+              if (ix < mainIx)
+                p1
+              else if (ix > mainIx)
+                p3
+              else
+                p2
+            ) :: line
         }
         prefixedLines -> mainIx
       }
@@ -515,10 +517,12 @@ private[engine] final class HttpHeaderParser private (
     */
   def formatRawTrie: String = {
     def char(c: Char) =
-      (c >> 8).toString + (if ((c & 0xFF) > 0)
-                             "/" + (c & 0xFF).toChar
-                           else
-                             "/Ω")
+      (c >> 8).toString + (
+        if ((c & 0xFF) > 0)
+          "/" + (c & 0xFF).toChar
+        else
+          "/Ω"
+      )
     s"nodes: ${nodes take nodeCount map char mkString ", "}\n" +
       s"branchData: ${branchData take branchDataCount grouped 3 map {
         case Array(a, b, c) ⇒ s"$a/$b/$c"
@@ -724,10 +728,12 @@ private[http] object HttpHeaderParser {
       start: Int,
       limit: Int)(sb: JStringBuilder = null, ix: Int = start): (String, Int) = {
     def appended(c: Char) =
-      (if (sb != null)
-         sb
-       else
-         new JStringBuilder(asciiString(input, start, ix))).append(c)
+      (
+        if (sb != null)
+          sb
+        else
+          new JStringBuilder(asciiString(input, start, ix))
+      ).append(c)
     def appended2(c: Int) =
       if ((c >> 16) != 0)
         appended(c.toChar).append((c >> 16).toChar)

@@ -93,8 +93,7 @@ class RemoteServerConnector(
                       "scala",
                       "Cannot run worksheet",
                       s"<html><body>${message.replace("\n", "<br>")}</body></html>",
-                      NotificationType.ERROR
-                    )
+                      NotificationType.ERROR)
                   }
               }
 
@@ -185,10 +184,12 @@ object RemoteServerConnector {
           val lines1 = lines(linesLength - 1)
 
           buffer append lines(linesLength - 2)
-            .substring(differ) append "\n" append (if (lines1.length > differ)
-                                                     lines1.substring(differ)
-                                                   else
-                                                     lines1) append "\n"
+            .substring(differ) append "\n" append (
+            if (lines1.length > differ)
+              lines1.substring(differ)
+            else
+              lines1
+          ) append "\n"
           buffer.toString()
         }
 
@@ -213,8 +214,7 @@ object RemoteServerConnector {
           worksheet,
           line1 getOrElse -1,
           column1 getOrElse -1,
-          null)
-      )
+          null))
     }
 
     override def compilationEnd() {

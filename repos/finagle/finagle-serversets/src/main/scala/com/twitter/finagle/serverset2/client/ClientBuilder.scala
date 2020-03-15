@@ -38,12 +38,13 @@ private[client] case class ClientConfig(
     )
 
   override def toString = {
-    "ClientConfig(%s)".format(toMap flatMap {
-      case (k, Some(v)) =>
-        Some("%s=%s".format(k, v))
-      case _ =>
-        None
-    } mkString (", "))
+    "ClientConfig(%s)".format(
+      toMap flatMap {
+        case (k, Some(v)) =>
+          Some("%s=%s".format(k, v))
+        case _ =>
+          None
+      } mkString (", "))
   }
 }
 
@@ -146,9 +147,10 @@ private[client] class ClientBuilder(config: ClientConfig) {
     * @return configured ClientBuilder
     */
   def hosts(zkHosts: Seq[InetSocketAddress]): ClientBuilder =
-    hosts(zkHosts.map { h =>
-      "%s:%d,".format(h.getHostName, h.getPort)
-    }.mkString)
+    hosts(
+      zkHosts.map { h =>
+        "%s:%d,".format(h.getHostName, h.getPort)
+      }.mkString)
 
   /**
     * Configure builder with a session timeout.

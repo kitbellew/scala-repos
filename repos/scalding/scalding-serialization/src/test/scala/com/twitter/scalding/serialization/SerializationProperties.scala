@@ -88,10 +88,12 @@ object SerializationProperties extends Properties("SerializationProperties") {
     forAll(Gen.listOf(g)) { list =>
       // make sure the list is even in size:
       val pairList =
-        (if (list.size % 2 == 1)
-           list.tail
-         else
-           list).grouped(2)
+        (
+          if (list.size % 2 == 1)
+            list.tail
+          else
+            list
+        ).grouped(2)
       val baos1 = new ByteArrayOutputStream
       val baos2 = new ByteArrayOutputStream
       pairList.foreach {
@@ -118,10 +120,12 @@ object SerializationProperties extends Properties("SerializationProperties") {
     forAll(Gen.listOf(g)) { list =>
       // make sure the list is even in size:
       val pairList =
-        (if (list.size % 2 == 1)
-           list.tail
-         else
-           list).grouped(2)
+        (
+          if (list.size % 2 == 1)
+            list.tail
+          else
+            list
+        ).grouped(2)
       val baos1 = new ByteArrayOutputStream
       val baos2 = new ByteArrayOutputStream
       pairList.foreach {

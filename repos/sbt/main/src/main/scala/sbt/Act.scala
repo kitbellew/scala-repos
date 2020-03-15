@@ -188,8 +188,10 @@ object Act {
   def config(confs: Set[String]): Parser[ParsedAxis[String]] = {
     val sep = ':' !!! "Expected ':' (if selecting a configuration)"
     token(
-      (GlobalString ^^^ ParsedGlobal | value(
-        examples(ID, confs, "configuration"))) <~ sep) ?? Omitted
+      (
+        GlobalString ^^^ ParsedGlobal | value(
+          examples(ID, confs, "configuration"))
+      ) <~ sep) ?? Omitted
   }
 
   def configs(
@@ -271,8 +273,9 @@ object Act {
       examples(ID, suggested, "key"),
       valid.keySet,
       "key") map valid
-    (token(value(keyP) | GlobalString ^^^ ParsedGlobal) <~ token(
-      "::".id)) ?? Omitted
+    (
+      token(value(keyP) | GlobalString ^^^ ParsedGlobal) <~ token("::".id)
+    ) ?? Omitted
   }
   def resolveTask(task: ParsedAxis[AttributeKey[_]]): Option[AttributeKey[_]] =
     task match {
@@ -407,9 +410,10 @@ object Act {
 
   private[this] def actionParser: Parser[ActAction] =
     token(
-      ((ShowCommand ^^^ ShowAction) |
-        (MultiTaskCommand ^^^ MultiAction)) <~ Space
-    ) ?? SingleAction
+      (
+        (ShowCommand ^^^ ShowAction) |
+          (MultiTaskCommand ^^^ MultiAction)
+      ) <~ Space) ?? SingleAction
 
   @deprecated("No longer used.", "0.13.2")
   def showParser = token((ShowCommand ~ Space) ^^^ true) ?? false
@@ -428,9 +432,10 @@ object Act {
       structure.index.keyMap,
       structure.data)
 
-  type KeysParser = Parser[Seq[ScopedKey[T]] forSome {
-    type T
-  }]
+  type KeysParser = Parser[
+    Seq[ScopedKey[T]] forSome {
+      type T
+    }]
   def aggregatedKeyParser(state: State): KeysParser =
     aggregatedKeyParser(Project extract state)
   def aggregatedKeyParser(extracted: Extracted): KeysParser =

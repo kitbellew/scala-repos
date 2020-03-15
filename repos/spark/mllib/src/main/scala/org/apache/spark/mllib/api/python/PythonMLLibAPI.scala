@@ -1125,8 +1125,9 @@ private[python] class PythonMLLibAPI extends Serializable {
     * Java stub for the constructor of Python mllib RankingMetrics
     */
   def newRankingMetrics(predictionAndLabels: DataFrame): RankingMetrics[Any] = {
-    new RankingMetrics(predictionAndLabels.rdd.map(r =>
-      (r.getSeq(0).toArray[Any], r.getSeq(1).toArray[Any])))
+    new RankingMetrics(
+      predictionAndLabels.rdd.map(r =>
+        (r.getSeq(0).toArray[Any], r.getSeq(1).toArray[Any])))
   }
 
   /**

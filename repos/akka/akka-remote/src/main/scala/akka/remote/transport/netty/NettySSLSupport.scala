@@ -162,17 +162,19 @@ private[akka] object NettySSLSupport {
             e)
       }
 
-    ((
-      settings.SSLTrustStore,
-      settings.SSLTrustStorePassword,
-      settings.SSLProtocol) match {
-      case (Some(trustStore), Some(password), Some(protocol)) ⇒
-        constructClientContext(settings, log, trustStore, password, protocol)
-      case (trustStore, password, protocol) ⇒
-        throw new GeneralSecurityException(
-          "One or several SSL trust store settings are missing: [trust-store: %s] [trust-store-password: %s] [protocol: %s]"
-            .format(trustStore, password, protocol))
-    }) match {
+    (
+      (
+        settings.SSLTrustStore,
+        settings.SSLTrustStorePassword,
+        settings.SSLProtocol) match {
+        case (Some(trustStore), Some(password), Some(protocol)) ⇒
+          constructClientContext(settings, log, trustStore, password, protocol)
+        case (trustStore, password, protocol) ⇒
+          throw new GeneralSecurityException(
+            "One or several SSL trust store settings are missing: [trust-store: %s] [trust-store-password: %s] [protocol: %s]"
+              .format(trustStore, password, protocol))
+      }
+    ) match {
       case Some(context) ⇒
         log.debug("Using client SSL context to create SSLEngine ...")
         new SslHandler({
@@ -255,27 +257,29 @@ private[akka] object NettySSLSupport {
             e)
       }
 
-    ((
-      settings.SSLKeyStore,
-      settings.SSLKeyStorePassword,
-      settings.SSLKeyPassword,
-      settings.SSLProtocol) match {
-      case (
-            Some(keyStore),
-            Some(storePassword),
-            Some(keyPassword),
-            Some(protocol)) ⇒
-        constructServerContext(
-          settings,
-          log,
-          keyStore,
-          storePassword,
-          keyPassword,
-          protocol)
-      case (keyStore, storePassword, keyPassword, protocol) ⇒
-        throw new GeneralSecurityException(
-          s"SSL key store settings went missing. [key-store: $keyStore] [key-store-password: $storePassword] [key-password: $keyPassword] [protocol: $protocol]")
-    }) match {
+    (
+      (
+        settings.SSLKeyStore,
+        settings.SSLKeyStorePassword,
+        settings.SSLKeyPassword,
+        settings.SSLProtocol) match {
+        case (
+              Some(keyStore),
+              Some(storePassword),
+              Some(keyPassword),
+              Some(protocol)) ⇒
+          constructServerContext(
+            settings,
+            log,
+            keyStore,
+            storePassword,
+            keyPassword,
+            protocol)
+        case (keyStore, storePassword, keyPassword, protocol) ⇒
+          throw new GeneralSecurityException(
+            s"SSL key store settings went missing. [key-store: $keyStore] [key-store-password: $storePassword] [key-password: $keyPassword] [protocol: $protocol]")
+      }
+    ) match {
       case Some(context) ⇒
         log.debug("Using server SSL context to create SSLEngine ...")
         val sslEngine = context.createSSLEngine

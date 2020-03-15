@@ -51,17 +51,21 @@ object ContravariantCoyonedaUsage extends App {
   // and the other two we’ll be using for this example.
 
   def parseCommaNum(s: String): Long \/ String =
-    ("""-?[0-9,]+""".r findFirstIn s
-      flatMap (_.filter(_ != ',').parseLong.toOption)) <\/ s
+    (
+      """-?[0-9,]+""".r findFirstIn s
+        flatMap (_.filter(_ != ',').parseLong.toOption)
+    ) <\/ s
 
   def caseInsensitively(s: String): String = s.toUpperCase.toLowerCase
 
   def parseDate(s: String): (Int, Option[(Int, Int)]) \/ String =
-    (for {
-      grps <- """([0-9]+)-([0-9]+)-([0-9]+)""".r findFirstMatchIn s
-      List(y, m, d) <- grps.subgroups.traverse(_.parseInt.toOption)
-    } yield (y, Some((m, d))))
-      .orElse(for {
+    (
+      for {
+        grps <- """([0-9]+)-([0-9]+)-([0-9]+)""".r findFirstMatchIn s
+        List(y, m, d) <- grps.subgroups.traverse(_.parseInt.toOption)
+      } yield (y, Some((m, d)))
+    ).orElse(
+      for {
         n <- """[0-9]+""".r findFirstIn s
         yi <- n.parseInt.toOption
       } yield (yi, None)) <\/ s
@@ -215,8 +219,10 @@ object ContravariantCoyonedaUsage extends App {
   val bySchwartzianListSortsTP: List[List[Vector[String]]] =
     for {
       (ccord, i) <- decomposedSortKeys
-    } yield (schwartzian[Vector[String], ccord.I](unstructuredData)(v =>
-      ccord.k(v(i)))(ccord.fi))
+    } yield (
+      schwartzian[Vector[String], ccord.I](unstructuredData)(v =>
+        ccord.k(v(i)))(ccord.fi)
+    )
 
   // `I' is the “pivot”, how the function `k' result type and `fi'
   // order type relate to each other.  As seen above, this existential

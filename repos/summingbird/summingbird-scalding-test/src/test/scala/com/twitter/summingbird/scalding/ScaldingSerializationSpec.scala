@@ -91,14 +91,17 @@ class ScaldingSerializationSpecs extends WordSpec {
         Timestamp(inWithTime.size.toLong))
       val scald = Scalding("scalaCheckJob")
 
-      assert((try {
-        scald.toFlow(Config.default, intr, mode, scald.plan(summer));
-        true
-      } catch {
-        case t: Throwable =>
-          println(toTry(t));
-          false
-      }) == true)
+      assert(
+        (
+          try {
+            scald.toFlow(Config.default, intr, mode, scald.plan(summer));
+            true
+          } catch {
+            case t: Throwable =>
+              println(toTry(t));
+              false
+          }
+        ) == true)
     }
   }
 }

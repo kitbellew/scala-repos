@@ -209,8 +209,8 @@ class ExecutorClassLoaderSuite
     val env = mock[SparkEnv]
     val rpcEnv = mock[RpcEnv]
     when(env.rpcEnv).thenReturn(rpcEnv)
-    when(rpcEnv.openChannel(anyString()))
-      .thenAnswer(new Answer[ReadableByteChannel]() {
+    when(rpcEnv.openChannel(anyString())).thenAnswer(
+      new Answer[ReadableByteChannel]() {
         override def answer(
             invocation: InvocationOnMock): ReadableByteChannel = {
           val uri = new URI(invocation.getArguments()(0).asInstanceOf[String])

@@ -82,9 +82,11 @@ abstract class CoderSpec
 
     if (corruptInputCheck) {
       "throw an error on corrupt input" in {
-        (the[RuntimeException] thrownBy {
-          ourDecode(corruptContent)
-        }).getCause should be(a[DataFormatException])
+        (
+          the[RuntimeException] thrownBy {
+            ourDecode(corruptContent)
+          }
+        ).getCause should be(a[DataFormatException])
       }
     }
 

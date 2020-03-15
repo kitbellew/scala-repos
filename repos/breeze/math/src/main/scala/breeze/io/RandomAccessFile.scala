@@ -806,8 +806,7 @@ class RandomAccessFile(file: File, arg0: String = "r")(
           ba(c8 + 4),
           ba(c8 + 5),
           ba(c8 + 6),
-          ba(c8 + 7))
-      )
+          ba(c8 + 7)))
       c += 1
     }
     //for(c <- 0 until n) tr(c) = bytesToInt16(ba(c), ba(c + 1))
@@ -829,8 +828,7 @@ class RandomAccessFile(file: File, arg0: String = "r")(
     while (c < n) {
       val c4 = c * 4
       tr(c) = java.lang.Float.intBitsToFloat(
-        converter.bytesToInt32(ba(c4), ba(c4 + 1), ba(c4 + 2), ba(c4 + 3))
-      )
+        converter.bytesToInt32(ba(c4), ba(c4 + 1), ba(c4 + 2), ba(c4 + 3)))
       c += 1
     }
     //for(c <- 0 until n) tr(c) = bytesToInt16(ba(c), ba(c + 1))
@@ -1084,7 +1082,9 @@ object ByteConverterBigEndian extends ByteConverter {
   }
 
   def bytesToUInt32(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Long = {
-    (b0.toLong & 0xFFL) << 24 | (b1.toLong & 0xFFL) << 16 | (b2.toLong & 0xFFL) << 8 | (b3.toLong & 0xFFL)
+    (b0.toLong & 0xFFL) << 24 | (b1.toLong & 0xFFL) << 16 | (
+      b2.toLong & 0xFFL
+    ) << 8 | (b3.toLong & 0xFFL)
   }
 
 //  def bytesToUInt64(b0: Byte, b1: Byte, b2: Byte, b3: Byte, b4: Byte, b5: Byte, b6: Byte, b7: Byte): ULong = {
@@ -1105,8 +1105,12 @@ object ByteConverterBigEndian extends ByteConverter {
       b5: Byte,
       b6: Byte,
       b7: Byte): Long = {
-    b0.toLong << 56 | (b1.toLong & 0xFFL) << 48 | (b2.toLong & 0xFFL) << 40 | (b3.toLong & 0xFFL) << 32 |
-      (b4.toLong & 0xFFL) << 24 | (b5.toLong & 0xFFL) << 16 | (b6.toLong & 0xFFL) << 8 | (b7.toLong & 0xFFL)
+    b0.toLong << 56 | (
+      b1.toLong & 0xFFL
+    ) << 48 | (b2.toLong & 0xFFL) << 40 | (b3.toLong & 0xFFL) << 32 |
+      (b4.toLong & 0xFFL) << 24 | (b5.toLong & 0xFFL) << 16 | (
+      b6.toLong & 0xFFL
+    ) << 8 | (b7.toLong & 0xFFL)
   }
 
   def bytesToUInt64Shifted(
@@ -1118,8 +1122,12 @@ object ByteConverterBigEndian extends ByteConverter {
       b5: Byte,
       b6: Byte,
       b7: Byte): Long = {
-    (b0 ^ 0x80).toLong << 56 | (b1.toLong & 0xFFL) << 48 | (b2.toLong & 0xFFL) << 40 | (b3.toLong & 0xFFL) << 32 |
-      (b4.toLong & 0xFFL) << 24 | (b5.toLong & 0xFFL) << 16 | (b6.toLong & 0xFFL) << 8 | (b7.toLong & 0xFFL)
+    (b0 ^ 0x80).toLong << 56 | (
+      b1.toLong & 0xFFL
+    ) << 48 | (b2.toLong & 0xFFL) << 40 | (b3.toLong & 0xFFL) << 32 |
+      (b4.toLong & 0xFFL) << 24 | (b5.toLong & 0xFFL) << 16 | (
+      b6.toLong & 0xFFL
+    ) << 8 | (b7.toLong & 0xFFL)
   }
   ///// XXXToByte /////
   def int16ToBytes(value: Short): Array[Byte] = {

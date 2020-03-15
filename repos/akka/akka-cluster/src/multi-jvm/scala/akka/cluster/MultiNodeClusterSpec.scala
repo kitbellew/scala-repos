@@ -307,8 +307,9 @@ trait MultiNodeClusterSpec
         isLeader == isNode(expectedLeader),
         "expectedLeader [%s], got leader [%s], members [%s]"
           .format(expectedLeader, leader, clusterView.members))
-      clusterView.status should (be(MemberStatus.Up) or be(
-        MemberStatus.Leaving))
+      clusterView.status should (
+        be(MemberStatus.Up) or be(MemberStatus.Leaving)
+      )
     }
 
   /**
@@ -321,8 +322,9 @@ trait MultiNodeClusterSpec
       timeout: FiniteDuration = 25.seconds): Unit = {
     within(timeout) {
       if (!canNotBePartOfMemberRing.isEmpty) // don't run this on an empty set
-        awaitAssert(canNotBePartOfMemberRing foreach (a ⇒
-          clusterView.members.map(_.address) should not contain (a)))
+        awaitAssert(
+          canNotBePartOfMemberRing foreach (a ⇒
+            clusterView.members.map(_.address) should not contain (a)))
       awaitAssert(clusterView.members.size should ===(numberOfMembers))
       awaitAssert(
         clusterView.members.map(_.status) should ===(Set(MemberStatus.Up)))

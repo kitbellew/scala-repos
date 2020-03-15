@@ -53,102 +53,155 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   }
 
   implicit def ArbVector[A: Arbitrary]: Arbitrary[Vector[A]] =
-    Arbitrary(for {
-      x <- arbitrary[A]
-      y <- arbitrary[A]
-      z <- arbitrary[A]
-    } yield Vector(x, y, z))
+    Arbitrary(
+      for {
+        x <- arbitrary[A]
+        y <- arbitrary[A]
+        z <- arbitrary[A]
+      } yield Vector(x, y, z))
 
   import spire.laws.arb.rational
 
-  test("Eq syntax")(check(forAll { (a: Int, b: Int) =>
-    testEqSyntax(a, b)
-  }))
-  test("Partial order syntax")(check(forAll { (a: Int, b: Int) =>
-    testPartialOrderSyntax(a, b)
-  }))
-  test("Order syntax")(check(forAll { (a: Int, b: Int) =>
-    testOrderSyntax(a, b)
-  }))
-  test("Signed syntax")(check(forAll { (a: Int) =>
-    testSignedSyntax(a)
-  }))
-  test("IsReal syntax")(check(forAll { (a: Double) =>
-    testIsRealSyntax(a)
-  }))
-  test("Semigroup syntax")(check(forAll { (a: String, b: String) =>
-    testSemigroupSyntax(a, b)
-  }))
-  test("Monoid syntax")(check(forAll { (a: String, b: String) =>
-    testMonoidSyntax(a, b)
-  }))
-  test("Group syntax")(check(forAll { (a: Int, b: Int) =>
-    testMonoidSyntax(a, b)(Group.additive[Int])
-  }))
-  test("AdditiveSemigroup syntax")(check(forAll { (a: Int, b: Int) =>
-    testAdditiveSemigroupSyntax(a, b)
-  }))
-  test("AdditiveMonoid syntax")(check(forAll { (a: Int, b: Int) =>
-    testAdditiveMonoidSyntax(a, b)
-  }))
-  test("AdditiveGroup syntax")(check(forAll { (a: Int, b: Int) =>
-    testAdditiveGroupSyntax(a, b)
-  }))
-  test("MultiplicativeSemigroup syntax")(check(forAll { (a: Int, b: Int) =>
-    testMultiplicativeSemigroupSyntax(a, b)
-  }))
-  test("MultiplicativeMonoid syntax")(check(forAll { (a: Int, b: Int) =>
-    testMultiplicativeMonoidSyntax(a, b)
-  }))
-  test("MultiplicativeGroup syntax")(check(forAll {
-    (a: Double, b: NonZero[Double]) => testMultiplicativeGroupSyntax(a, b.x)
-  }))
-  test("Semiring syntax")(check(forAll { (a: Int, b: Int) =>
-    testSemiringSyntax(a, b)
-  }))
-  test("Rig syntax")(check(forAll { (a: Int, b: Int) =>
-    testRigSyntax(a, b)
-  }))
-  test("Rng syntax")(check(forAll { (a: Int, b: Int) =>
-    testRngSyntax(a, b)
-  }))
-  test("Ring syntax")(check(forAll { (a: Int, b: Int) =>
-    testRingSyntax(a, b)
-  }))
-  test("EuclideanRing syntax")(check(forAll { (a: Int, b: NonZero[Int]) =>
-    testEuclideanRingSyntax(a, b.x)
-  }))
-  test("Field syntax")(check(forAll { (a: Double, b: NonZero[Double]) =>
-    testFieldSyntax(a, b.x)(
-      implicitly,
-      spire.optional.totalfloat.TotalDoubleOrder)
-  }))
-  test("NRoot syntax")(check(forAll { (a: Positive[Double]) =>
-    testNRootSyntax(a.x)
-  }))
-  test("Module syntax")(check(forAll {
-    (v: Vector[Int], w: Vector[Int], a: Int) => testModuleSyntax(v, w, a)
-  }))
-  test("VectorSpace syntax")(check(forAll {
-    (v: Vector[Double], w: Vector[Double], a: NonZero[Double]) =>
-      testVectorSpaceSyntax(v, w, a.x)
-  }))
-  test("NormedVectorSpace syntax")(check(forAll {
-    (v: Vector[Double], w: Vector[Double], a: NonZero[Double]) =>
-      testNormedVectorSpaceSyntax(v, w, a.x)
-  }))
-  test("InnerProductSpace syntax")(check(forAll {
-    (v: Vector[Rational], w: Vector[Rational], a: NonZero[Rational]) =>
-      testInnerProductSpaceSyntax(v, w, a.x)
-  }))
-  test("CoordinateSpace syntax")(check(forAll {
-    (v: Vector[Rational], w: Vector[Rational], a: NonZero[Rational]) =>
-      testCoordinateSpaceSyntax(v, w, a.x)(
-        CoordinateSpace.seq[Rational, Vector](3))
-  }))
-  test("Bool syntax")(check(forAll { (a: Int, b: Int) =>
-    testBoolSyntax(a, b)
-  }))
+  test("Eq syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testEqSyntax(a, b)
+      }))
+  test("Partial order syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testPartialOrderSyntax(a, b)
+      }))
+  test("Order syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testOrderSyntax(a, b)
+      }))
+  test("Signed syntax")(
+    check(
+      forAll { (a: Int) =>
+        testSignedSyntax(a)
+      }))
+  test("IsReal syntax")(
+    check(
+      forAll { (a: Double) =>
+        testIsRealSyntax(a)
+      }))
+  test("Semigroup syntax")(
+    check(
+      forAll { (a: String, b: String) =>
+        testSemigroupSyntax(a, b)
+      }))
+  test("Monoid syntax")(
+    check(
+      forAll { (a: String, b: String) =>
+        testMonoidSyntax(a, b)
+      }))
+  test("Group syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testMonoidSyntax(a, b)(Group.additive[Int])
+      }))
+  test("AdditiveSemigroup syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testAdditiveSemigroupSyntax(a, b)
+      }))
+  test("AdditiveMonoid syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testAdditiveMonoidSyntax(a, b)
+      }))
+  test("AdditiveGroup syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testAdditiveGroupSyntax(a, b)
+      }))
+  test("MultiplicativeSemigroup syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testMultiplicativeSemigroupSyntax(a, b)
+      }))
+  test("MultiplicativeMonoid syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testMultiplicativeMonoidSyntax(a, b)
+      }))
+  test("MultiplicativeGroup syntax")(
+    check(
+      forAll { (a: Double, b: NonZero[Double]) =>
+        testMultiplicativeGroupSyntax(a, b.x)
+      }))
+  test("Semiring syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testSemiringSyntax(a, b)
+      }))
+  test("Rig syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testRigSyntax(a, b)
+      }))
+  test("Rng syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testRngSyntax(a, b)
+      }))
+  test("Ring syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testRingSyntax(a, b)
+      }))
+  test("EuclideanRing syntax")(
+    check(
+      forAll { (a: Int, b: NonZero[Int]) =>
+        testEuclideanRingSyntax(a, b.x)
+      }))
+  test("Field syntax")(
+    check(
+      forAll { (a: Double, b: NonZero[Double]) =>
+        testFieldSyntax(a, b.x)(
+          implicitly,
+          spire.optional.totalfloat.TotalDoubleOrder)
+      }))
+  test("NRoot syntax")(
+    check(
+      forAll { (a: Positive[Double]) =>
+        testNRootSyntax(a.x)
+      }))
+  test("Module syntax")(
+    check(
+      forAll { (v: Vector[Int], w: Vector[Int], a: Int) =>
+        testModuleSyntax(v, w, a)
+      }))
+  test("VectorSpace syntax")(
+    check(
+      forAll { (v: Vector[Double], w: Vector[Double], a: NonZero[Double]) =>
+        testVectorSpaceSyntax(v, w, a.x)
+      }))
+  test("NormedVectorSpace syntax")(
+    check(
+      forAll { (v: Vector[Double], w: Vector[Double], a: NonZero[Double]) =>
+        testNormedVectorSpaceSyntax(v, w, a.x)
+      }))
+  test("InnerProductSpace syntax")(
+    check(
+      forAll {
+        (v: Vector[Rational], w: Vector[Rational], a: NonZero[Rational]) =>
+          testInnerProductSpaceSyntax(v, w, a.x)
+      }))
+  test("CoordinateSpace syntax")(
+    check(
+      forAll {
+        (v: Vector[Rational], w: Vector[Rational], a: NonZero[Rational]) =>
+          testCoordinateSpaceSyntax(v, w, a.x)(
+            CoordinateSpace.seq[Rational, Vector](3))
+      }))
+  test("Bool syntax")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testBoolSyntax(a, b)
+      }))
 }
 
 trait BaseSyntaxTest {

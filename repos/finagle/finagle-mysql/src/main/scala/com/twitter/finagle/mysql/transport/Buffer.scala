@@ -341,8 +341,7 @@ trait BufferWriter extends Buffer {
     */
   def writeNullTerminatedString(
       s: String,
-      charset: JCharset = Charset.defaultCharset
-  ): BufferWriter = {
+      charset: JCharset = Charset.defaultCharset): BufferWriter = {
     writeBytes(s.getBytes(charset))
     writeByte('\u0000')
     this
@@ -356,8 +355,8 @@ trait BufferWriter extends Buffer {
     */
   def writeLengthCodedString(
       s: String,
-      charset: JCharset = Charset.defaultCharset
-  ): BufferWriter = writeLengthCodedBytes(s.getBytes(charset))
+      charset: JCharset = Charset.defaultCharset): BufferWriter =
+    writeLengthCodedBytes(s.getBytes(charset))
 
   /**
     * Writes a length coded set of bytes according to the MySQL

@@ -303,11 +303,9 @@ class UDFSuite extends QueryTest with SharedSQLContext {
           """.stripMargin).toDF(),
       arrayData.toDF()
     )
-    checkAnswer(
-      sql("""
+    checkAnswer(sql("""
            | SELECT mapDataFunc(data) AS t FROM mapData
-          """.stripMargin).toDF(),
-      mapData.toDF())
+          """.stripMargin).toDF(), mapData.toDF())
     checkAnswer(
       sql("""
            | SELECT tmp.t.* FROM

@@ -132,24 +132,26 @@ class RuntimeRefRenderer extends NodeRendererImpl {
       labelListener: DescriptorLabelListener): String = {
     BatchEvaluator
       .getBatchEvaluator(evaluationContext.getDebugProcess)
-      .invoke(new ToStringCommand(evaluationContext, value) {
-        def evaluationResult(message: String) {
-          valueDescriptor.setValueLabel(StringUtil.notNullize(message))
-          labelListener.labelChanged()
-        }
+      .invoke(
+        new ToStringCommand(evaluationContext, value) {
+          def evaluationResult(message: String) {
+            valueDescriptor.setValueLabel(StringUtil.notNullize(message))
+            labelListener.labelChanged()
+          }
 
-        def evaluationError(message: String) {
-          val msg: String =
-            if (value != null)
-              message + " " + DebuggerBundle.message(
-                "evaluation.error.cannot.evaluate.tostring",
-                value.`type`.name)
-            else
-              message
-          valueDescriptor.setValueLabelFailed(new EvaluateException(msg, null))
-          labelListener.labelChanged()
-        }
-      })
+          def evaluationError(message: String) {
+            val msg: String =
+              if (value != null)
+                message + " " + DebuggerBundle.message(
+                  "evaluation.error.cannot.evaluate.tostring",
+                  value.`type`.name)
+              else
+                message
+            valueDescriptor.setValueLabelFailed(
+              new EvaluateException(msg, null))
+            labelListener.labelChanged()
+          }
+        })
     XDebuggerUIConstants.COLLECTING_DATA_MESSAGE
   }
 

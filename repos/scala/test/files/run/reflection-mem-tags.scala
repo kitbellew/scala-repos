@@ -17,9 +17,10 @@ object Test extends MemoryTest {
         def x = 2;
         def y: A = new A
       }
-      weakTypeOf[A {
-        def z: Int
-      }]
+      weakTypeOf[
+        A {
+          def z: Int
+        }]
     }
     foo
   }

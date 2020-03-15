@@ -197,9 +197,10 @@ sealed abstract class FreeTInstances5 extends FreeTInstances6 {
       override def M = implicitly
       override def ask = FreeT.liftM(M1.ask)
       override def local[A](f: E => E)(fa: FreeT[S, M, A]) =
-        fa.hoist(new (M ~> M) {
-          def apply[A](a: M[A]) = M1.local(f)(a)
-        })
+        fa.hoist(
+          new (M ~> M) {
+            def apply[A](a: M[A]) = M1.local(f)(a)
+          })
     }
 }
 
@@ -245,9 +246,8 @@ sealed abstract class FreeTInstances2 extends FreeTInstances3 {
       def apply[G[_]: Monad] = Monad[FreeT[S, G, ?]]
     }
 
-  implicit def freeTFoldable[
-      S[_]: Foldable: Functor,
-      M[_]: Foldable: Applicative: BindRec]: Foldable[FreeT[S, M, ?]] =
+  implicit def freeTFoldable[S[_]: Foldable: Functor, M[
+      _]: Foldable: Applicative: BindRec]: Foldable[FreeT[S, M, ?]] =
     new FreeTFoldable[S, M] {
       override def S = implicitly
       override def F = implicitly
@@ -258,9 +258,8 @@ sealed abstract class FreeTInstances2 extends FreeTInstances3 {
 }
 
 sealed abstract class FreeTInstances1 extends FreeTInstances2 {
-  implicit def freeTTraverse[
-      S[_]: Traverse,
-      M[_]: Traverse: Applicative: BindRec]: Traverse[FreeT[S, M, ?]] =
+  implicit def freeTTraverse[S[_]: Traverse, M[
+      _]: Traverse: Applicative: BindRec]: Traverse[FreeT[S, M, ?]] =
     new FreeTTraverse[S, M] {
       override def F = implicitly
       override def M = implicitly
@@ -361,6 +360,5 @@ private trait FreeTTraverse[S[_], M[_]]
           G.map(F.traverseImpl(a)(traverseImpl(_)(f)))(FreeT.roll(_)(M))
         case -\/(a) =>
           G.map(f(a))(FreeT.point[S, M, B])
-      }
-    )(FreeT.liftM(_)(M).flatMap(identity))
+      })(FreeT.liftM(_)(M).flatMap(identity))
 }

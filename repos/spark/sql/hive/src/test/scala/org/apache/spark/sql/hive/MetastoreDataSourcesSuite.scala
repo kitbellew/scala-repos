@@ -105,9 +105,11 @@ class MetastoreDataSourcesSuite
          """.stripMargin)
 
       val innerStruct = StructType(
-        Seq(StructField(
-          "=",
-          ArrayType(StructType(StructField("Dd2", BooleanType, true) :: Nil)))))
+        Seq(
+          StructField(
+            "=",
+            ArrayType(
+              StructType(StructField("Dd2", BooleanType, true) :: Nil)))))
 
       val expectedSchema = StructType(
         Seq(
@@ -169,11 +171,9 @@ class MetastoreDataSourcesSuite
   test("check change without refresh") {
     withTempPath { tempDir =>
       withTable("jsonTable") {
-        (("a", "b") :: Nil)
-          .toDF()
-          .toJSON
-          .rdd
-          .saveAsTextFile(tempDir.getCanonicalPath)
+        (
+          ("a", "b") :: Nil
+        ).toDF().toJSON.rdd.saveAsTextFile(tempDir.getCanonicalPath)
 
         sql(s"""CREATE TABLE jsonTable
              |USING org.apache.spark.sql.json
@@ -185,11 +185,9 @@ class MetastoreDataSourcesSuite
         checkAnswer(sql("SELECT * FROM jsonTable"), Row("a", "b"))
 
         Utils.deleteRecursively(tempDir)
-        (("a1", "b1", "c1") :: Nil)
-          .toDF()
-          .toJSON
-          .rdd
-          .saveAsTextFile(tempDir.getCanonicalPath)
+        (
+          ("a1", "b1", "c1") :: Nil
+        ).toDF().toJSON.rdd.saveAsTextFile(tempDir.getCanonicalPath)
 
         // Schema is cached so the new column does not show. The updated values in existing columns
         // will show.
@@ -205,11 +203,9 @@ class MetastoreDataSourcesSuite
 
   test("drop, change, recreate") {
     withTempPath { tempDir =>
-      (("a", "b") :: Nil)
-        .toDF()
-        .toJSON
-        .rdd
-        .saveAsTextFile(tempDir.getCanonicalPath)
+      (
+        ("a", "b") :: Nil
+      ).toDF().toJSON.rdd.saveAsTextFile(tempDir.getCanonicalPath)
 
       withTable("jsonTable") {
         sql(s"""CREATE TABLE jsonTable
@@ -222,11 +218,9 @@ class MetastoreDataSourcesSuite
         checkAnswer(sql("SELECT * FROM jsonTable"), Row("a", "b"))
 
         Utils.deleteRecursively(tempDir)
-        (("a", "b", "c") :: Nil)
-          .toDF()
-          .toJSON
-          .rdd
-          .saveAsTextFile(tempDir.getCanonicalPath)
+        (
+          ("a", "b", "c") :: Nil
+        ).toDF().toJSON.rdd.saveAsTextFile(tempDir.getCanonicalPath)
 
         sql("DROP TABLE jsonTable")
 
@@ -470,8 +464,9 @@ class MetastoreDataSourcesSuite
           // Drop table will also delete the data.
           sql("DROP TABLE savedJsonTable")
           intercept[AnalysisException] {
-            read.json(sessionState.catalog.hiveDefaultTableFilePath(
-              TableIdentifier("savedJsonTable")))
+            read.json(
+              sessionState.catalog.hiveDefaultTableFilePath(
+                TableIdentifier("savedJsonTable")))
           }
         }
 
@@ -497,9 +492,11 @@ class MetastoreDataSourcesSuite
   test("create external table") {
     withTempPath { tempPath =>
       withTable("savedJsonTable", "createdJsonTable") {
-        val df = read.json(sparkContext.parallelize((1 to 10).map { i =>
-          s"""{ "a": $i, "b": "str$i" }"""
-        }))
+        val df = read.json(
+          sparkContext.parallelize(
+            (1 to 10).map { i =>
+              s"""{ "a": $i, "b": "str$i" }"""
+            }))
 
         withSQLConf(
           SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
@@ -783,12 +780,12 @@ class MetastoreDataSourcesSuite
         metastoreTable.properties("spark.sql.sources.schema.numPartCols").toInt
       assert(numPartCols == 2)
 
-      val actualPartitionColumns = StructType((0 until numPartCols).map {
-        index =>
+      val actualPartitionColumns = StructType(
+        (0 until numPartCols).map { index =>
           df.schema(
             metastoreTable.properties(
               s"spark.sql.sources.schema.partCol.$index"))
-      })
+        })
       // Make sure partition columns are correctly stored in metastore.
       assert(
         expectedPartitionColumns.sameType(actualPartitionColumns),
@@ -836,12 +833,12 @@ class MetastoreDataSourcesSuite
         metastoreTable.properties("spark.sql.sources.schema.numSortCols").toInt
       assert(numSortCols == 1)
 
-      val actualBucketByColumns = StructType((0 until numBucketCols).map {
-        index =>
+      val actualBucketByColumns = StructType(
+        (0 until numBucketCols).map { index =>
           df.schema(
             metastoreTable.properties(
               s"spark.sql.sources.schema.bucketCol.$index"))
-      })
+        })
       // Make sure bucketBy columns are correctly stored in metastore.
       assert(
         expectedBucketByColumns.sameType(actualBucketByColumns),
@@ -849,10 +846,12 @@ class MetastoreDataSourcesSuite
           s"partition columns defined by the saveAsTable operation $expectedBucketByColumns."
       )
 
-      val actualSortByColumns = StructType((0 until numSortCols).map { index =>
-        df.schema(
-          metastoreTable.properties(s"spark.sql.sources.schema.sortCol.$index"))
-      })
+      val actualSortByColumns = StructType(
+        (0 until numSortCols).map { index =>
+          df.schema(
+            metastoreTable.properties(
+              s"spark.sql.sources.schema.sortCol.$index"))
+        })
       // Make sure sortBy columns are correctly stored in metastore.
       assert(
         expectedSortByColumns.sameType(actualSortByColumns),

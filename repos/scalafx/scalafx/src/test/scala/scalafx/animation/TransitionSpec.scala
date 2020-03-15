@@ -46,9 +46,10 @@ class TransitionSpec
       classOf[Transition]) {
 
   override protected def getScalaClassInstance =
-    new Transition(new jfxa.Transition() {
-      def interpolate(p1: Double) {}
-    }) {}
+    new Transition(
+      new jfxa.Transition() {
+        def interpolate(p1: Double) {}
+      }) {}
 
   override def getJavaClassInstance =
     new jfxa.Transition() {

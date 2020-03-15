@@ -11,8 +11,7 @@ trait BifoldableLaws[F[_, _]] {
     val expected =
       F.bifoldLeft(fab, C.empty)(
         (c: C, a: A) => C.combine(c, f(a)),
-        (c: C, b: B) => C.combine(c, g(b))
-      )
+        (c: C, b: B) => C.combine(c, g(b)))
     expected <-> F.bifoldMap(fab)(f, g)
   }
 
@@ -23,8 +22,7 @@ trait BifoldableLaws[F[_, _]] {
     val expected =
       F.bifoldRight(fab, Later(C.empty))(
         (a: A, ec: Eval[C]) => ec.map(c => C.combine(f(a), c)),
-        (b: B, ec: Eval[C]) => ec.map(c => C.combine(g(b), c))
-      )
+        (b: B, ec: Eval[C]) => ec.map(c => C.combine(g(b), c)))
     expected.value <-> F.bifoldMap(fab)(f, g)
   }
 }

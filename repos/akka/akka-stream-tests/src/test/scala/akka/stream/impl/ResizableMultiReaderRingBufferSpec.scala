@@ -236,8 +236,9 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
 
   class SimpleCursors(cursorCount: Int) extends Cursors {
     val cursors: List[Cursor] =
-      List.fill(cursorCount)(new Cursor {
-        var cursor: Int = _
-      })
+      List.fill(cursorCount)(
+        new Cursor {
+          var cursor: Int = _
+        })
   }
 }

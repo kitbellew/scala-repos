@@ -55,6 +55,5 @@ object ApiBranchProtection {
         },
         {
           case x: EnforcementLevel => JString(x.name)
-        }
-      ))
+        }))
 }

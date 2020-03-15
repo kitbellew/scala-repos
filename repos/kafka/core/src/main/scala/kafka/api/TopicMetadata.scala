@@ -182,10 +182,12 @@ case class PartitionMetadata(
     val partitionMetadataString = new StringBuilder
     partitionMetadataString.append("\tpartition " + partitionId)
     partitionMetadataString.append(
-      "\tleader: " + (if (leader.isDefined)
-                        leader.get.toString
-                      else
-                        "none"))
+      "\tleader: " + (
+        if (leader.isDefined)
+          leader.get.toString
+        else
+          "none"
+      ))
     partitionMetadataString.append("\treplicas: " + replicas.mkString(","))
     partitionMetadataString.append("\tisr: " + isr.mkString(","))
     partitionMetadataString.append(

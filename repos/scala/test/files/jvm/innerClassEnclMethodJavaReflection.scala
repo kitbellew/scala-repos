@@ -41,10 +41,12 @@ object Test extends App {
           .map(ch =>
             (
               ch,
-              (if (s.isEmpty)
-                 ""
-               else
-                 s + "/") + ch.name))
+              (
+                if (s.isEmpty)
+                  ""
+                else
+                  s + "/"
+              ) + ch.name))
           .flatMap((flatten _).tupled)
       else
         Iterator((f, s))

@@ -555,8 +555,9 @@ class SparkContext(config: SparkConf)
     _executorMemory = _conf
       .getOption("spark.executor.memory")
       .orElse(Option(System.getenv("SPARK_EXECUTOR_MEMORY")))
-      .orElse(Option(System.getenv("SPARK_MEM"))
-        .map(warnSparkMem))
+      .orElse(
+        Option(System.getenv("SPARK_MEM"))
+          .map(warnSparkMem))
       .map(Utils.memoryStringToMb)
       .getOrElse(1024)
 
@@ -831,7 +832,9 @@ class SparkContext(config: SparkConf)
       val numElements: BigInt = {
         val safeStart = BigInt(start)
         val safeEnd = BigInt(end)
-        if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (step > 0)) {
+        if ((safeEnd - safeStart) % step == 0 || (
+              safeEnd > safeStart
+            ) != (step > 0)) {
           (safeEnd - safeStart) / step
         } else {
           // the remainder has the same sign with range, could add 1 more
@@ -1446,9 +1449,8 @@ class SparkContext(config: SparkConf)
     * Growable and TraversableOnce are the standard APIs that guarantee += and ++=, implemented by
     * standard mutable collections. So you can use this with mutable Map, Set, etc.
     */
-  def accumulableCollection[
-      R <% Growable[T] with TraversableOnce[T] with Serializable: ClassTag,
-      T](initialValue: R): Accumulable[R, T] = {
+  def accumulableCollection[R <% Growable[T] with TraversableOnce[
+    T] with Serializable: ClassTag, T](initialValue: R): Accumulable[R, T] = {
     val param = new GrowableAccumulableParam[R, T]
     val acc = new Accumulable(initialValue, param)
     cleaner.foreach(_.registerAccumulatorForCleanup(acc))
@@ -1571,8 +1573,8 @@ class SparkContext(config: SparkConf)
   private[spark] override def requestTotalExecutors(
       numExecutors: Int,
       localityAwareTasks: Int,
-      hostToLocalTaskCount: scala.collection.immutable.Map[String, Int]
-  ): Boolean = {
+      hostToLocalTaskCount: scala.collection.immutable.Map[String, Int])
+      : Boolean = {
     schedulerBackend match {
       case b: CoarseGrainedSchedulerBackend =>
         b.requestTotalExecutors(
@@ -1952,8 +1954,7 @@ class SparkContext(config: SparkConf)
     CallSite(
       Option(getLocalProperty(CallSite.SHORT_FORM))
         .getOrElse(callSite.shortForm),
-      Option(getLocalProperty(CallSite.LONG_FORM)).getOrElse(callSite.longForm)
-    )
+      Option(getLocalProperty(CallSite.LONG_FORM)).getOrElse(callSite.longForm))
   }
 
   /**
@@ -2077,7 +2078,9 @@ class SparkContext(config: SparkConf)
       timeout,
       localProperties.get)
     logInfo(
-      "Job finished: " + callSite.shortForm + ", took " + (System.nanoTime - start) / 1e9 + " s")
+      "Job finished: " + callSite.shortForm + ", took " + (
+        System.nanoTime - start
+      ) / 1e9 + " s")
     result
   }
 

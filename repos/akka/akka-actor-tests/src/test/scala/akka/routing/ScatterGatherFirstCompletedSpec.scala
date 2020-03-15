@@ -26,21 +26,22 @@ object ScatterGatherFirstCompletedSpec {
   def newActor(id: Int, shudownLatch: Option[TestLatch] = None)(
       implicit system: ActorSystem) =
     system.actorOf(
-      Props(new Actor {
-        def receive = {
-          case Stop(None) ⇒ context.stop(self)
-          case Stop(Some(_id)) if (_id == id) ⇒ context.stop(self)
-          case _id: Int if (_id == id) ⇒
-          case x ⇒ {
-            Thread sleep 100 * id
-            sender() ! id
+      Props(
+        new Actor {
+          def receive = {
+            case Stop(None) ⇒ context.stop(self)
+            case Stop(Some(_id)) if (_id == id) ⇒ context.stop(self)
+            case _id: Int if (_id == id) ⇒
+            case x ⇒ {
+              Thread sleep 100 * id
+              sender() ! id
+            }
           }
-        }
 
-        override def postStop = {
-          shudownLatch foreach (_.countDown())
-        }
-      }),
+          override def postStop = {
+            shudownLatch foreach (_.countDown())
+          }
+        }),
       "Actor:" + id
     )
 }
@@ -58,20 +59,24 @@ class ScatterGatherFirstCompletedSpec
       val doneLatch = new TestLatch(2)
 
       val counter1 = new AtomicInteger
-      val actor1 = system.actorOf(Props(new Actor {
-        def receive = {
-          case "end" ⇒ doneLatch.countDown()
-          case msg: Int ⇒ counter1.addAndGet(msg)
-        }
-      }))
+      val actor1 = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case "end" ⇒ doneLatch.countDown()
+              case msg: Int ⇒ counter1.addAndGet(msg)
+            }
+          }))
 
       val counter2 = new AtomicInteger
-      val actor2 = system.actorOf(Props(new Actor {
-        def receive = {
-          case "end" ⇒ doneLatch.countDown()
-          case msg: Int ⇒ counter2.addAndGet(msg)
-        }
-      }))
+      val actor2 = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case "end" ⇒ doneLatch.countDown()
+              case msg: Int ⇒ counter2.addAndGet(msg)
+            }
+          }))
 
       val paths = List(actor1, actor2).map(_.path.toString)
       val routedActor = system.actorOf(

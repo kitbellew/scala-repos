@@ -10,15 +10,12 @@ import org.ensime.api._
 import org.ensime.core._
 import scala.concurrent.Future
 
-class WebServerImpl(
-    project: ActorRef,
-    broadcaster: ActorRef
-)(implicit
+class WebServerImpl(project: ActorRef, broadcaster: ActorRef)(implicit
     val config: EnsimeConfig,
     val system: ActorSystem,
     val mat: Materializer,
-    val timeout: Timeout
-) extends WebServer
+    val timeout: Timeout)
+    extends WebServer
     with DocJarReading {
   import system.dispatcher
 

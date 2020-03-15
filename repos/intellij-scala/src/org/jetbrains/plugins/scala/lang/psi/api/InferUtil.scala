@@ -368,8 +368,9 @@ object InferUtil {
                 isRepeated = false,
                 isByName = false)),
             Seq(
-              new Expression(undefineSubstitutor(typeParams).subst(
-                innerInternal.inferValueType))),
+              new Expression(
+                undefineSubstitutor(typeParams).subst(
+                  innerInternal.inferValueType))),
             typeParams,
             shouldUndefineParameters = false,
             safeCheck = check,
@@ -398,8 +399,9 @@ object InferUtil {
                   isRepeated = false,
                   isByName = false)),
               Seq(
-                new Expression(undefineSubstitutor(typeParams).subst(
-                  internal.inferValueType))),
+                new Expression(
+                  undefineSubstitutor(typeParams).subst(
+                    internal.inferValueType))),
               typeParams,
               shouldUndefineParameters = false,
               safeCheck = check,
@@ -426,11 +428,10 @@ object InferUtil {
               && !mt.returnType.conforms(expectedType) =>
           mt.returnType match {
             case methodType: ScMethodType =>
-              return mt.copy(
-                returnType = applyImplicitViewToResult(
-                  methodType,
-                  Some(expectedRet),
-                  fromSAM))(mt.project, mt.scope)
+              return mt.copy(returnType = applyImplicitViewToResult(
+                methodType,
+                Some(expectedRet),
+                fromSAM))(mt.project, mt.scope)
             case _ =>
           }
           val dummyExpr = ScalaPsiElementFactory
@@ -599,10 +600,9 @@ object InferUtil {
                     typez.recursiveUpdate {
                       case tpt: ScTypeParameterType =>
                         typeParams.find(tp =>
-                          (
-                            tp.name,
-                            ScalaPsiUtil.getPsiElementId(
-                              tp.ptp)) == (tpt.name, tpt.getId)) match {
+                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+                            tpt.name, tpt.getId
+                          )) match {
                           case None => (true, tpt)
                           case _ =>
                             hasRecursiveTypeParameters = true
@@ -679,10 +679,9 @@ object InferUtil {
                       typez.recursiveUpdate {
                         case tpt: ScTypeParameterType =>
                           typeParams.find(tp =>
-                            (
-                              tp.name,
-                              ScalaPsiUtil.getPsiElementId(
-                                tp.ptp)) == (tpt.name, tpt.getId)) match {
+                            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+                              tpt.name, tpt.getId
+                            )) match {
                             case None => (true, tpt)
                             case _ =>
                               hasRecursiveTypeParameters = true
@@ -783,9 +782,10 @@ object InferUtil {
                             case typeParam: ScTypeParam =>
                               if (!checkTypeParam(
                                     typeParam,
-                                    sub.subst(new ScTypeParameterType(
-                                      tp.ptp,
-                                      ScSubstitutor.empty))))
+                                    sub.subst(
+                                      new ScTypeParameterType(
+                                        tp.ptp,
+                                        ScSubstitutor.empty))))
                                 throw new SafeCheckException
                             case _ =>
                           }

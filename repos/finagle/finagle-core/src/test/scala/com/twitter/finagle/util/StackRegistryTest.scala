@@ -66,8 +66,7 @@ class StackRegistryTest extends FunSuite {
       val expected = {
         Set(
           Entry(Seq("test", "qux", "foo", "bar", "name", "p1"), "999"),
-          Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1")
-        )
+          Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1"))
       }
       assert(GlobalRegistry.get.toSet == expected)
     }
@@ -88,8 +87,7 @@ class StackRegistryTest extends FunSuite {
       val expected = {
         Set(
           Entry(Seq("test", "qux", "foo", "bar", "name", "p1"), "999"),
-          Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1")
-        )
+          Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1"))
       }
       assert(GlobalRegistry.get.toSet == expected)
 
@@ -114,8 +112,7 @@ class StackRegistryTest extends FunSuite {
       val expected = {
         Set(
           Entry(Seq("test", "foo", "bar", "name", "p1"), "999"),
-          Entry(Seq("test", "foo", "bar", "head", "p2"), "1")
-        )
+          Entry(Seq("test", "foo", "bar", "head", "p2"), "1"))
       }
       assert(GlobalRegistry.get.size == reg.size)
 

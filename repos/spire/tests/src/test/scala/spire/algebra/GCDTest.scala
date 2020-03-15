@@ -18,16 +18,18 @@ import org.scalacheck.Prop._
 
 class GCDTest extends FunSuite with Checkers {
   implicit def ArbBigDecimal: Arbitrary[BigDecimal] =
-    Arbitrary(for {
-      value <- arbitrary[Long]
-      scale <- arbitrary[Short]
-    } yield BigDecimal(value, scale.toInt))
+    Arbitrary(
+      for {
+        value <- arbitrary[Long]
+        scale <- arbitrary[Short]
+      } yield BigDecimal(value, scale.toInt))
 
   implicit def ArbRational: Arbitrary[Rational] =
-    Arbitrary(for {
-      n <- arbitrary[Long]
-      d <- arbitrary[Long] if d != 0
-    } yield Rational(n, d))
+    Arbitrary(
+      for {
+        n <- arbitrary[Long]
+        d <- arbitrary[Long] if d != 0
+      } yield Rational(n, d))
 
   def testGcd[A: EuclideanRing: IsReal: NumberTag](x: A, y: A): Boolean = {
     (x == Ring[A].zero || y == Ring[A].zero) || {
@@ -52,21 +54,31 @@ class GCDTest extends FunSuite with Checkers {
     assert(spire.math.gcd(x / d, y / d) === 1f)
   }
 
-  test("Int GCD")(check(forAll { (a: Int, b: Int) =>
-    testGcd(a, b)
-  }))
-  test("Long GCD")(check(forAll { (a: Long, b: Long) =>
-    testGcd(a, b)
-  }))
-  test("Float GCD")(check(forAll { (a: Float, b: Float) =>
-    testGcd(a, b)
-  }))
-  test("Double GCD")(check(forAll { (a: Double, b: Double) =>
-    testGcd(a, b)
-  }))
+  test("Int GCD")(
+    check(
+      forAll { (a: Int, b: Int) =>
+        testGcd(a, b)
+      }))
+  test("Long GCD")(
+    check(
+      forAll { (a: Long, b: Long) =>
+        testGcd(a, b)
+      }))
+  test("Float GCD")(
+    check(
+      forAll { (a: Float, b: Float) =>
+        testGcd(a, b)
+      }))
+  test("Double GCD")(
+    check(
+      forAll { (a: Double, b: Double) =>
+        testGcd(a, b)
+      }))
   // Disabled. Getting unexplainable OOM errors, even with isWhole commented out.
   // test("BigDecimal GCD")(check(forAll { (a: BigDecimal, b: BigDecimal) => testGcd(a, b) }))
-  test("Rational GCD")(check(forAll { (a: Rational, b: Rational) =>
-    testGcd(a, b)
-  }))
+  test("Rational GCD")(
+    check(
+      forAll { (a: Rational, b: Rational) =>
+        testGcd(a, b)
+      }))
 }

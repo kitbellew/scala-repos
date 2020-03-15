@@ -42,17 +42,19 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
 
   def flatMap[B](f: A => UnwriterT[F, U, B])(
       implicit F: Bind[F]): UnwriterT[F, U, B] =
-    unwriterT(F.bind(run) { wa =>
-      val z = f(wa._2).run
-      F.map(z)(wb => (wa._1, wb._2))
-    })
+    unwriterT(
+      F.bind(run) { wa =>
+        val z = f(wa._2).run
+        F.map(z)(wb => (wa._1, wb._2))
+      })
 
   def traverse[G[_], B](f: A => G[B])(implicit
       G: Applicative[G],
       F: Traverse[F]): G[UnwriterT[F, U, B]] = {
-    G.map(F.traverse(run) {
-      case (w, a) => G.map(f(a))(b => (w, b))
-    })(UnwriterT(_))
+    G.map(
+      F.traverse(run) {
+        case (w, a) => G.map(f(a))(b => (w, b))
+      })(UnwriterT(_))
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
@@ -61,9 +63,10 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
     }
 
   def bimap[C, D](f: U => C, g: A => D)(implicit F: Functor[F]) =
-    unwriterT[F, C, D](F.map(run)({
-      case (a, b) => (f(a), g(b))
-    }))
+    unwriterT[F, C, D](
+      F.map(run)({
+        case (a, b) => (f(a), g(b))
+      }))
 
   def leftMap[C](f: U => C)(implicit F: Functor[F]): UnwriterT[F, C, A] =
     bimap(f, identity)
@@ -71,16 +74,18 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
   def bitraverse[G[_], C, D](f: U => G[C], g: A => G[D])(implicit
       G: Applicative[G],
       F: Traverse[F]) =
-    G.map(F.traverse[G, (U, A), (C, D)](run) {
-      case (a, b) => G.tuple2(f(a), g(b))
-    })(unwriterT(_))
+    G.map(
+      F.traverse[G, (U, A), (C, D)](run) {
+        case (a, b) => G.tuple2(f(a), g(b))
+      })(unwriterT(_))
 
   def wpoint[G[_]](implicit
       F: Functor[F],
       P: Applicative[G]): UnwriterT[F, G[U], A] =
-    unwriterT(F.map(self.run) {
-      case (u, a) => (P.point(u), a)
-    })
+    unwriterT(
+      F.map(self.run) {
+        case (u, a) => (P.point(u), a)
+      })
 
   def colocal[X](f: U => X)(implicit F: Functor[F]): UnwriterT[F, X, A] =
     mapUnwritten(f)

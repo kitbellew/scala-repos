@@ -42,13 +42,17 @@ trait MemoryQueryingProfile extends BasicProfile {
 
   /** The profile-specific representation of types */
   def typeInfoFor(t: Type): ScalaType[Any] =
-    ((t.structural match {
-      case t: ScalaType[_] => t
-      case t: TypedType[_] => t.scalaType
-      case o: OptionType =>
-        typeInfoFor(o.elementType).asInstanceOf[ScalaBaseType[_]].optionType
-      case t => throw new SlickException("No ScalaType found for type " + t)
-    }): ScalaType[_]).asInstanceOf[ScalaType[Any]]
+    (
+      (
+        t.structural match {
+          case t: ScalaType[_] => t
+          case t: TypedType[_] => t.scalaType
+          case o: OptionType =>
+            typeInfoFor(o.elementType).asInstanceOf[ScalaBaseType[_]].optionType
+          case t => throw new SlickException("No ScalaType found for type " + t)
+        }
+      ): ScalaType[_]
+    ).asInstanceOf[ScalaType[Any]]
 
   class MemoryCodeGen
       extends CodeGen
@@ -99,8 +103,10 @@ trait MemoryQueryingProfile extends BasicProfile {
 
     def trType(t: Type): Type =
       t.structural match {
-        case t @ (_: StructType | _: ProductType | _: CollectionType |
-            _: MappedScalaType | OptionType.NonPrimitive(_)) =>
+        case t @ (
+              _: StructType | _: ProductType | _: CollectionType |
+              _: MappedScalaType | OptionType.NonPrimitive(_)
+            ) =>
           t.mapChildren(trType)
         case t => typeInfoFor(t)
       }
@@ -112,8 +118,9 @@ trait MemoryQueryingProfile extends BasicProfile {
         case Library.SilentCast(
               sel @ Select(_, ElementSymbol(idx)) :@ OptionType(tpe2)) :@ tpe
             if !tpe.isInstanceOf[OptionType] =>
-          val base = createColumnConverter(sel, idx, None).asInstanceOf[
-            ResultConverter[MemoryResultConverterDomain, Option[Any]]]
+          val base = createColumnConverter(sel, idx, None)
+            .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Option[
+              Any]]]
           createGetOrElseResultConverter(
             base,
             () =>

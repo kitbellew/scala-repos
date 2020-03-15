@@ -44,8 +44,7 @@ case class MongoScheduleStorageSettings(
     tasks: String = "tasks",
     deletedTasks: String = "tasks_deleted",
     reports: String = "reports",
-    timeout: Long = 10000
-)
+    timeout: Long = 10000)
 
 object MongoScheduleStorageSettings {
   val defaults = MongoScheduleStorageSettings()
@@ -97,9 +96,11 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
     }
 
   private def insertTask(task: ScheduledTask \/ JObject, collection: String) =
-    database(insert(task.valueOr { st =>
-      st.serialize.asInstanceOf[JObject]
-    }).into(collection))
+    database(
+      insert(
+        task.valueOr { st =>
+          st.serialize.asInstanceOf[JObject]
+        }).into(collection))
 
   def deleteTask(id: UUID) =
     EitherT {

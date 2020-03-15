@@ -314,8 +314,9 @@ private[stream] object Fusing {
         case _ ⇒ m.attributes.contains(AsyncBoundary)
       }
     if (Debug)
-      log(s"entering ${m.getClass} (hash=${struct.hash(
-        m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
+      log(
+        s"entering ${m.getClass} (hash=${struct.hash(
+          m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
     val localGroup =
       if (async)
         struct.newGroup(indent)
@@ -772,8 +773,9 @@ private[stream] object Fusing {
         else
           _oldShape
       if (Debug)
-        println("  " * indent + s"adding copy ${hash(copy)} ${printShape(
-          copy.shape)} of ${printShape(oldShape)}")
+        println(
+          "  " * indent + s"adding copy ${hash(copy)} ${printShape(
+            copy.shape)} of ${printShape(oldShape)}")
       group.add(copy)
       modules.add(copy)
       copy.shape.outlets.foreach(o ⇒ outGroup.put(o, group))

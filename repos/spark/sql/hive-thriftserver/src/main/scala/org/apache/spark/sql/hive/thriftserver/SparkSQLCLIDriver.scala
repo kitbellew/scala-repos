@@ -63,19 +63,20 @@ private[hive] object SparkSQLCLIDriver extends Logging {
     * a command is being processed by the current thread.
     */
   def installSignalHandler() {
-    HiveInterruptUtils.add(new HiveInterruptCallback {
-      override def interrupt() {
-        // Handle remote execution mode
-        if (SparkSQLEnv.sparkContext != null) {
-          SparkSQLEnv.sparkContext.cancelAllJobs()
-        } else {
-          if (transport != null) {
-            // Force closing of TCP connection upon session termination
-            transport.getSocket.close()
+    HiveInterruptUtils.add(
+      new HiveInterruptCallback {
+        override def interrupt() {
+          // Handle remote execution mode
+          if (SparkSQLEnv.sparkContext != null) {
+            SparkSQLEnv.sparkContext.cancelAllJobs()
+          } else {
+            if (transport != null) {
+              // Force closing of TCP connection upon session termination
+              transport.getSocket.close()
+            }
           }
         }
-      }
-    })
+      })
   }
 
   def main(args: Array[String]) {

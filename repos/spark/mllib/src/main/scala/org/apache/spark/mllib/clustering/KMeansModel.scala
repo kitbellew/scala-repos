@@ -131,8 +131,11 @@ object KMeansModel extends Loader[KMeansModel] {
     def save(sc: SparkContext, model: KMeansModel, path: String): Unit = {
       val sqlContext = SQLContext.getOrCreate(sc)
       import sqlContext.implicits._
-      val metadata = compact(render(
-        ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~ ("k" -> model.k)))
+      val metadata = compact(
+        render(
+          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~ (
+            "k" -> model.k
+          )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
       val dataRDD = sc
         .parallelize(model.clusterCenters.zipWithIndex)

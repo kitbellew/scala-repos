@@ -6,32 +6,21 @@ import cats.implicits._
 trait FoldableLaws[F[_]] {
   implicit def F: Foldable[F]
 
-  def leftFoldConsistentWithFoldMap[A, B](
-      fa: F[A],
-      f: A => B
-  )(implicit
-      M: Monoid[B]
-  ): IsEq[B] = {
+  def leftFoldConsistentWithFoldMap[A, B](fa: F[A], f: A => B)(
+      implicit M: Monoid[B]): IsEq[B] = {
     fa.foldMap(f) <-> fa.foldLeft(M.empty) { (b, a) =>
       b |+| f(a)
     }
   }
 
-  def rightFoldConsistentWithFoldMap[A, B](
-      fa: F[A],
-      f: A => B
-  )(implicit
-      M: Monoid[B]
-  ): IsEq[B] = {
+  def rightFoldConsistentWithFoldMap[A, B](fa: F[A], f: A => B)(
+      implicit M: Monoid[B]): IsEq[B] = {
     fa.foldMap(f) <-> fa
       .foldRight(Later(M.empty))((a, lb) => lb.map(f(a) |+| _))
       .value
   }
 
-  def existsConsistentWithFind[A](
-      fa: F[A],
-      p: A => Boolean
-  ): Boolean = {
+  def existsConsistentWithFind[A](fa: F[A], p: A => Boolean): Boolean = {
     F.exists(fa)(p) == F.find(fa)(p).isDefined
   }
 
@@ -41,10 +30,12 @@ trait FoldableLaws[F[_]] {
       i = i + 1
       true
     }
-    i == (if (F.isEmpty(fa))
-            0
-          else
-            1)
+    i == (
+      if (F.isEmpty(fa))
+        0
+      else
+        1
+    )
   }
 
   def forallLazy[A](fa: F[A]): Boolean = {
@@ -53,16 +44,15 @@ trait FoldableLaws[F[_]] {
       i = i + 1
       false
     }
-    i == (if (F.isEmpty(fa))
-            0
-          else
-            1)
+    i == (
+      if (F.isEmpty(fa))
+        0
+      else
+        1
+    )
   }
 
-  def forallConsistentWithExists[A](
-      fa: F[A],
-      p: A => Boolean
-  ): Boolean = {
+  def forallConsistentWithExists[A](fa: F[A], p: A => Boolean): Boolean = {
     if (F.forall(fa)(p)) {
       val negationExists = F.exists(fa)(a => !(p(a)))
 
@@ -79,10 +69,7 @@ trait FoldableLaws[F[_]] {
   /**
     * If `F[A]` is empty, forall must return true.
     */
-  def forallEmpty[A](
-      fa: F[A],
-      p: A => Boolean
-  ): Boolean = {
+  def forallEmpty[A](fa: F[A], p: A => Boolean): Boolean = {
     !F.isEmpty(fa) || F.forall(fa)(p)
   }
 }

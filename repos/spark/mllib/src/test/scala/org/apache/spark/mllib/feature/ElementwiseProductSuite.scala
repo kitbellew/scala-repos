@@ -26,9 +26,7 @@ class ElementwiseProductSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test(
     "elementwise (hadamard) product should properly apply vector to dense data set") {
-    val denseData = Array(
-      Vectors.dense(1.0, 4.0, 1.9, -9.0)
-    )
+    val denseData = Array(Vectors.dense(1.0, 4.0, 1.9, -9.0))
     val scalingVec = Vectors.dense(2.0, 0.5, 0.0, 0.25)
     val transformer = new ElementwiseProduct(scalingVec)
     val transformedData = transformer.transform(sc.makeRDD(denseData))
@@ -42,9 +40,7 @@ class ElementwiseProductSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test(
     "elementwise (hadamard) product should properly apply vector to sparse data set") {
-    val sparseData = Array(
-      Vectors.sparse(3, Seq((1, -1.0), (2, -3.0)))
-    )
+    val sparseData = Array(Vectors.sparse(3, Seq((1, -1.0), (2, -3.0))))
     val dataRDD = sc.parallelize(sparseData, 3)
     val scalingVec = Vectors.dense(1.0, 0.0, 0.5)
     val transformer = new ElementwiseProduct(scalingVec)
@@ -60,8 +56,9 @@ class ElementwiseProductSuite extends SparkFunSuite with MLlibTestSparkContext {
       "The vector type should be preserved after hadamard product"
     )
 
-    assert((data2, data2RDD.collect()).zipped.forall((v1, v2) =>
-      v1 ~== v2 absTol 1e-5))
+    assert(
+      (data2, data2RDD.collect()).zipped.forall((v1, v2) =>
+        v1 ~== v2 absTol 1e-5))
     assert(data2(0) ~== Vectors.sparse(3, Seq((1, 0.0), (2, -1.5))) absTol 1e-5)
   }
 }

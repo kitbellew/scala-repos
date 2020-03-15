@@ -81,95 +81,98 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
       case _ => assert(false)
     }
 
-  test("NameTree.bind: union")(new Ctx {
-    val res = namer.bind(NameTree.read("/test/0 & /test/1"))
+  test("NameTree.bind: union")(
+    new Ctx {
+      val res = namer.bind(NameTree.read("/test/0 & /test/1"))
 
-    // Pending & Pending
-    assert(res.run.sample() == Activity.Pending)
+      // Pending & Pending
+      assert(res.run.sample() == Activity.Pending)
 
-    // Bind /test/0 to another NameTree
-    namer("/test/0").notify(Return(NameTree.read("/test/2")))
-    assert(res.run.sample() == Activity.Pending)
+      // Bind /test/0 to another NameTree
+      namer("/test/0").notify(Return(NameTree.read("/test/2")))
+      assert(res.run.sample() == Activity.Pending)
 
-    // Ok(Bound) & Pending
-    namer("/test/1").notify(Return(NameTree.read("/$/inet/0/1")))
-    assertEval(res, boundWithWeight(1.0, Address(1)))
+      // Ok(Bound) & Pending
+      namer("/test/1").notify(Return(NameTree.read("/$/inet/0/1")))
+      assertEval(res, boundWithWeight(1.0, Address(1)))
 
-    // Failed(exc) & Pending
-    namer("/test/1").notify(Throw(exc))
-    intercept[TestException] {
-      res.sample()
-    }
+      // Failed(exc) & Pending
+      namer("/test/1").notify(Throw(exc))
+      intercept[TestException] {
+        res.sample()
+      }
 
-    // Ok(Bound) & Ok(Bound)
-    namer("/test/1").notify(Return(NameTree.read("/$/inet/0/1")))
-    namer("/test/2").notify(Return(NameTree.read("/$/inet/0/2")))
-    assertEval(
-      res,
-      boundWithWeight(1.0, Address(1)),
-      boundWithWeight(1.0, Address(2)))
+      // Ok(Bound) & Ok(Bound)
+      namer("/test/1").notify(Return(NameTree.read("/$/inet/0/1")))
+      namer("/test/2").notify(Return(NameTree.read("/$/inet/0/2")))
+      assertEval(
+        res,
+        boundWithWeight(1.0, Address(1)),
+        boundWithWeight(1.0, Address(2)))
 
-    // Ok(Bound) & Ok(Neg)
-    namer("/test/2").notify(Return(NameTree.Neg))
-    assertEval(res, boundWithWeight(1.0, Address(1)))
+      // Ok(Bound) & Ok(Neg)
+      namer("/test/2").notify(Return(NameTree.Neg))
+      assertEval(res, boundWithWeight(1.0, Address(1)))
 
-    // Ok(Bound) & Failed(exc)
-    namer("/test/2").notify(Throw(exc))
-    assertEval(res, boundWithWeight(1.0, Address(1)))
+      // Ok(Bound) & Failed(exc)
+      namer("/test/2").notify(Throw(exc))
+      assertEval(res, boundWithWeight(1.0, Address(1)))
 
-    // Failed(exc) & Failed(exc)
-    namer("/test/1").notify(Throw(exc))
-    intercept[TestException] {
-      res.sample()
-    }
+      // Failed(exc) & Failed(exc)
+      namer("/test/1").notify(Throw(exc))
+      intercept[TestException] {
+        res.sample()
+      }
 
-    // Ok(Neg) & Ok(Neg)
-    namer("/test/1").notify(Return(NameTree.Neg))
-    namer("/test/2").notify(Return(NameTree.Neg))
-    assert(res.sample().eval == None)
+      // Ok(Neg) & Ok(Neg)
+      namer("/test/1").notify(Return(NameTree.Neg))
+      namer("/test/2").notify(Return(NameTree.Neg))
+      assert(res.sample().eval == None)
 
-    // Ok(Empty) & Ok(Neg)
-    namer("/test/1").notify(Return(NameTree.Empty))
-    assert(res.sample().eval == Some(Set.empty))
-  })
+      // Ok(Empty) & Ok(Neg)
+      namer("/test/1").notify(Return(NameTree.Empty))
+      assert(res.sample().eval == Some(Set.empty))
+    })
 
-  test("NameTree.bind: failover")(new Ctx {
-    val res = namer.bind(NameTree.read("/test/0 | /test/1 & /test/2"))
-    assert(res.run.sample() == Activity.Pending)
+  test("NameTree.bind: failover")(
+    new Ctx {
+      val res = namer.bind(NameTree.read("/test/0 | /test/1 & /test/2"))
+      assert(res.run.sample() == Activity.Pending)
 
-    namer("/test/0").notify(Return(NameTree.Empty))
-    namer("/test/1").notify(Return(NameTree.Neg))
-    namer("/test/2").notify(Return(NameTree.Neg))
+      namer("/test/0").notify(Return(NameTree.Empty))
+      namer("/test/1").notify(Return(NameTree.Neg))
+      namer("/test/2").notify(Return(NameTree.Neg))
 
-    assert(res.sample().eval == Some(Set.empty))
+      assert(res.sample().eval == Some(Set.empty))
 
-    namer("/test/0").notify(Return(NameTree.read("/$/inet/0/1")))
-    assertEval(res, Name.bound(Address(1)))
+      namer("/test/0").notify(Return(NameTree.read("/$/inet/0/1")))
+      assertEval(res, Name.bound(Address(1)))
 
-    namer("/test/0").notify(Return(NameTree.Neg))
-    assert(res.sample().eval == None)
+      namer("/test/0").notify(Return(NameTree.Neg))
+      assert(res.sample().eval == None)
 
-    namer("/test/2").notify(Return(NameTree.read("/$/inet/0/2")))
-    assertEval(res, boundWithWeight(1.0, Address(2)))
+      namer("/test/2").notify(Return(NameTree.read("/$/inet/0/2")))
+      assertEval(res, boundWithWeight(1.0, Address(2)))
 
-    namer("/test/0").notify(Return(NameTree.read("/$/inet/0/3")))
-    assertEval(res, Name.bound(Address(3)))
-  })
+      namer("/test/0").notify(Return(NameTree.read("/$/inet/0/3")))
+      assertEval(res, Name.bound(Address(3)))
+    })
 
-  test("NameTree.bind: Alt with Fail/Empty")(new Ctx {
-    assert(
-      namer
-        .bind(NameTree.read("(! | /test/1 | /test/2)"))
-        .sample() == NameTree.Fail)
-    assert(
-      namer
-        .bind(NameTree.read("(~ | /$/fail | /test/1)"))
-        .sample() == NameTree.Fail)
-    assert(
-      namer
-        .bind(NameTree.read("(/$/nil | /$/fail | /test/1)"))
-        .sample() == NameTree.Empty)
-  })
+  test("NameTree.bind: Alt with Fail/Empty")(
+    new Ctx {
+      assert(
+        namer
+          .bind(NameTree.read("(! | /test/1 | /test/2)"))
+          .sample() == NameTree.Fail)
+      assert(
+        namer
+          .bind(NameTree.read("(~ | /$/fail | /test/1)"))
+          .sample() == NameTree.Fail)
+      assert(
+        namer
+          .bind(NameTree.read("(/$/nil | /$/fail | /test/1)"))
+          .sample() == NameTree.Empty)
+    })
 
   def assertLookup(path: String, addrs: Address*) {
     Namer.global.lookup(Path.read(path)).sample() match {
@@ -296,19 +299,21 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
   }
 
   test("Namer.resolve") {
-    assert(Namer.resolve("invalid").sample() match {
-      case Addr.Failed(_: IllegalArgumentException) => true
-      case _                                        => false
-    })
+    assert(
+      Namer.resolve("invalid").sample() match {
+        case Addr.Failed(_: IllegalArgumentException) => true
+        case _                                        => false
+      })
   }
 }
 
 class TestNamer extends Namer {
   def lookup(path: Path): Activity[NameTree[Name]] =
-    Activity.value(path match {
-      case Path.Utf8("foo") => NameTree.Leaf(Name.Path(Path.Utf8("bar")))
-      case _                => NameTree.Neg
-    })
+    Activity.value(
+      path match {
+        case Path.Utf8("foo") => NameTree.Leaf(Name.Path(Path.Utf8("bar")))
+        case _                => NameTree.Neg
+      })
 }
 
 class PathServiceNamer extends ServiceNamer[Path, Path] {

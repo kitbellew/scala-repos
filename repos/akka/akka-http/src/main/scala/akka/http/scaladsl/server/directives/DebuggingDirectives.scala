@@ -84,10 +84,11 @@ object LoggingMagnet {
       val (marker, level) = markerAndLevel
       request ⇒
         response ⇒
-          Some(LogEntry(
-            "Response for\n  Request : " + request + "\n  Response: " + response,
-            marker,
-            level))
+          Some(
+            LogEntry(
+              "Response for\n  Request : " + request + "\n  Response: " + response,
+              marker,
+              level))
     }
 
   implicit def forRequestResponseFromFullShow(

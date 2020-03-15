@@ -195,8 +195,10 @@ case class Literal protected (value: Any, dataType: DataType)
     other match {
       case o: Literal =>
         dataType.equals(o.dataType) &&
-          (value == null && null == o.value || value != null && value.equals(
-            o.value))
+          (
+            value == null && null == o.value || value != null && value.equals(
+              o.value)
+          )
       case _ => false
     }
 

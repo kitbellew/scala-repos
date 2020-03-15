@@ -144,8 +144,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                       .createTypeParameterFromText(
                                         tpAdditional.get,
                                         source.getManager),
-                                    ScSubstitutor.empty
-                                  )
+                                    ScSubstitutor.empty)
                                 )
                                 Some(subst)
                               case _ => None
@@ -164,10 +163,12 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                             p.parameters
                               .map(paramText)
                               .mkString(
-                                "(" + (if (p.isImplicit)
-                                         "implicit "
-                                       else
-                                         ""),
+                                "(" + (
+                                  if (p.isImplicit)
+                                    "implicit "
+                                  else
+                                    ""
+                                ),
                                 ", ",
                                 ")")
                           }
@@ -228,12 +229,13 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                           }
                           //in most cases we have to resolve exactly the same reference
                           //but with .AllOps it will go into companion object
-                          (for {
-                            ScParameterizedTypeElement(pte, _) <- Option(te)
-                            ScSimpleTypeElement(Some(ref)) <- Option(pte)
-                          } yield Seq(
-                            s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]"))
-                            .getOrElse(fromType)
+                          (
+                            for {
+                              ScParameterizedTypeElement(pte, _) <- Option(te)
+                              ScSimpleTypeElement(Some(ref)) <- Option(pte)
+                            } yield Seq(
+                              s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]")
+                          ).getOrElse(fromType)
                         case _ => Seq.empty
                       }
                   })

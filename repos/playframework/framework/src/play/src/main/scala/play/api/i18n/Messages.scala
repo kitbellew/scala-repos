@@ -191,9 +191,10 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
 
   def preferred(candidates: Seq[Lang]): Lang =
     candidates
-      .collectFirst(Function.unlift { lang =>
-        availables.find(_.satisfies(lang))
-      })
+      .collectFirst(
+        Function.unlift { lang =>
+          availables.find(_.satisfies(lang))
+        })
       .getOrElse(availables.headOption.getOrElse(Lang.defaultLang))
 }
 
@@ -343,11 +344,12 @@ object Messages {
       "Message pattern expected"
     )
 
-    val message =
-      ignoreWhiteSpace ~ messageKey ~ (ignoreWhiteSpace ~ "=" ~ ignoreWhiteSpace) ~ messagePattern ^^ {
-        case (_ ~ k ~ _ ~ v) =>
-          Messages.Message(k, v.trim, messageSource, messageSourceName)
-      }
+    val message = ignoreWhiteSpace ~ messageKey ~ (
+      ignoreWhiteSpace ~ "=" ~ ignoreWhiteSpace
+    ) ~ messagePattern ^^ {
+      case (_ ~ k ~ _ ~ v) =>
+        Messages.Message(k, v.trim, messageSource, messageSourceName)
+    }
 
     val sentence = (comment | positioned(message)) <~ newLine
 
@@ -368,8 +370,7 @@ object Messages {
               def position = in.pos.column - 1
               def input = messageSource.read
               def sourceName = messageSourceName
-            }
-          )
+            })
       }
     }
 
@@ -649,10 +650,7 @@ class DefaultMessagesApi @Inject() (
 
 class I18nModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = {
-    Seq(
-      bind[Langs].to[DefaultLangs],
-      bind[MessagesApi].to[DefaultMessagesApi]
-    )
+    Seq(bind[Langs].to[DefaultLangs], bind[MessagesApi].to[DefaultMessagesApi])
   }
 }
 

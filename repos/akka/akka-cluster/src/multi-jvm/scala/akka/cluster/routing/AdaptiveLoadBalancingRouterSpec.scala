@@ -62,10 +62,7 @@ object AdaptiveLoadBalancingRouterMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
       akka.failure-detector.acceptable-heartbeat-pause = 10s
       akka.cluster.metrics.collect-interval = 1s
       akka.cluster.metrics.gossip-interval = 1s
@@ -86,8 +83,7 @@ object AdaptiveLoadBalancingRouterMultiJvmSpec extends MultiNodeConfig {
           }
         }
       }
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }
 
@@ -118,9 +114,11 @@ abstract class AdaptiveLoadBalancingRouterSpec
 
   def receiveReplies(expectedReplies: Int): Map[Address, Int] = {
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
-    (receiveWhile(5 seconds, messages = expectedReplies) {
-      case Reply(address) ⇒ address
-    }).foldLeft(zero) {
+    (
+      receiveWhile(5 seconds, messages = expectedReplies) {
+        case Reply(address) ⇒ address
+      }
+    ).foldLeft(zero) {
       case (replyMap, address) ⇒ replyMap + (address -> (replyMap(address) + 1))
     }
   }

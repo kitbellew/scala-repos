@@ -71,10 +71,7 @@ class EntityMap[A](
     extends EntityIdIxMap(idToIx) {
 
   def this(idToData: Map[String, A]) =
-    this(
-      idToData,
-      BiMap.stringLong(idToData.keySet)
-    )
+    this(idToData, BiMap.stringLong(idToData.keySet))
 
   def data(id: String): A = idToData(id)
 

@@ -432,10 +432,9 @@ class LowLevelOutgoingConnectionSpec
 
         implicit class XResponse(response: HttpResponse) {
           def expectStrictEntityWithLength(bytes: Int) =
-            response shouldEqual HttpResponse(
-              entity = Strict(
-                ContentTypes.`application/octet-stream`,
-                ByteString(entityBase take bytes)))
+            response shouldEqual HttpResponse(entity = Strict(
+              ContentTypes.`application/octet-stream`,
+              ByteString(entityBase take bytes)))
 
           def expectEntity[T <: HttpEntity: ClassTag](bytes: Int) =
             inside(response) {
@@ -456,7 +455,9 @@ class LowLevelOutgoingConnectionSpec
                   entity.dataBytes
                     .runFold(ByteString.empty)(_ ++ _)
                     .awaitResult(100.millis)
-                (the[Exception] thrownBy gatherBytes).getCause shouldEqual EntityStreamSizeException(
+                (
+                  the[Exception] thrownBy gatherBytes
+                ).getCause shouldEqual EntityStreamSizeException(
                   limit,
                   actualSize)
             }
@@ -511,8 +512,8 @@ class LowLevelOutgoingConnectionSpec
         new LengthVerificationTest(maxContentLength = 10) {
           sendStandardRequest()
           sendCloseDelimitedResponseWithLength(11)
-          expectResponse().expectSizeErrorInEntityOfType[CloseDelimited](limit =
-            10)
+          expectResponse()
+            .expectSizeErrorInEntityOfType[CloseDelimited](limit = 10)
         }
       }
 

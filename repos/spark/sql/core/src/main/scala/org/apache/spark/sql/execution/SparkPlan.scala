@@ -163,9 +163,10 @@ abstract class SparkPlan
     * The list of subqueries are added to [[subqueryResults]].
     */
   protected def prepareSubqueries(): Unit = {
-    val allSubqueries = expressions.flatMap(_.collect {
-      case e: ScalarSubquery => e
-    })
+    val allSubqueries = expressions.flatMap(
+      _.collect {
+        case e: ScalarSubquery => e
+      })
     allSubqueries.asInstanceOf[Seq[ScalarSubquery]].foreach { e =>
       val futureResult =
         Future {

@@ -478,11 +478,12 @@ class UISeleniumSuite
 
       val newTab =
         new WebUITab(sparkUI, "foo") {
-          attachPage(new WebUIPage("") {
-            def render(request: HttpServletRequest): Seq[Node] = {
-              <b>"html magic"</b>
-            }
-          })
+          attachPage(
+            new WebUIPage("") {
+              def render(request: HttpServletRequest): Seq[Node] = {
+                <b>"html magic"</b>
+              }
+            })
         }
       sparkUI.attachTab(newTab)
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
@@ -490,8 +491,9 @@ class UISeleniumSuite
         find(cssSelector("""ul li a[href*="jobs"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="stages"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="storage"]""")) should not be (None)
-        find(
-          cssSelector("""ul li a[href*="environment"]""")) should not be (None)
+        find(cssSelector("""ul li a[href*="environment"]""")) should not be (
+          None
+        )
         find(cssSelector("""ul li a[href*="foo"]""")) should not be (None)
       }
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
@@ -505,8 +507,9 @@ class UISeleniumSuite
         find(cssSelector("""ul li a[href*="jobs"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="stages"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="storage"]""")) should not be (None)
-        find(
-          cssSelector("""ul li a[href*="environment"]""")) should not be (None)
+        find(cssSelector("""ul li a[href*="environment"]""")) should not be (
+          None
+        )
         find(cssSelector("""ul li a[href*="foo"]""")) should be(None)
       }
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
@@ -572,10 +575,7 @@ class UISeleniumSuite
         sc.parallelize(idx to (idx + 3)).collect()
       }
 
-      val expJobInfo = Seq(
-        ("9", "collect"),
-        ("8", "count")
-      )
+      val expJobInfo = Seq(("9", "collect"), ("8", "count"))
 
       eventually(timeout(1 second), interval(50 milliseconds)) {
         goToUi(sc, "/jobs")
@@ -625,8 +625,7 @@ class UISeleniumSuite
       val expStageInfo = Seq(
         ("19", "collect"),
         ("18", "count"),
-        ("17", "groupBy")
-      )
+        ("17", "groupBy"))
 
       eventually(timeout(1 second), interval(50 milliseconds)) {
         goToUi(sc, "/stages")
@@ -720,17 +719,21 @@ class UISeleniumSuite
               "/stages/stage/?id=0&attempt=0&expandDagViz=true")
           .mkString
       assert(
-        stage0.contains("digraph G {\n  subgraph clusterstage_0 {\n    " +
-          "label=&quot;Stage 0&quot;;\n    subgraph "))
+        stage0.contains(
+          "digraph G {\n  subgraph clusterstage_0 {\n    " +
+            "label=&quot;Stage 0&quot;;\n    subgraph "))
       assert(
-        stage0.contains("{\n      label=&quot;parallelize&quot;;\n      " +
-          "0 [label=&quot;ParallelCollectionRDD [0]"))
+        stage0.contains(
+          "{\n      label=&quot;parallelize&quot;;\n      " +
+            "0 [label=&quot;ParallelCollectionRDD [0]"))
       assert(
-        stage0.contains("{\n      label=&quot;map&quot;;\n      " +
-          "1 [label=&quot;MapPartitionsRDD [1]"))
+        stage0.contains(
+          "{\n      label=&quot;map&quot;;\n      " +
+            "1 [label=&quot;MapPartitionsRDD [1]"))
       assert(
-        stage0.contains("{\n      label=&quot;groupBy&quot;;\n      " +
-          "2 [label=&quot;MapPartitionsRDD [2]"))
+        stage0.contains(
+          "{\n      label=&quot;groupBy&quot;;\n      " +
+            "2 [label=&quot;MapPartitionsRDD [2]"))
 
       val stage1 =
         Source
@@ -739,17 +742,21 @@ class UISeleniumSuite
               "/stages/stage/?id=1&attempt=0&expandDagViz=true")
           .mkString
       assert(
-        stage1.contains("digraph G {\n  subgraph clusterstage_1 {\n    " +
-          "label=&quot;Stage 1&quot;;\n    subgraph "))
+        stage1.contains(
+          "digraph G {\n  subgraph clusterstage_1 {\n    " +
+            "label=&quot;Stage 1&quot;;\n    subgraph "))
       assert(
-        stage1.contains("{\n      label=&quot;groupBy&quot;;\n      " +
-          "3 [label=&quot;ShuffledRDD [3]"))
+        stage1.contains(
+          "{\n      label=&quot;groupBy&quot;;\n      " +
+            "3 [label=&quot;ShuffledRDD [3]"))
       assert(
-        stage1.contains("{\n      label=&quot;map&quot;;\n      " +
-          "4 [label=&quot;MapPartitionsRDD [4]"))
+        stage1.contains(
+          "{\n      label=&quot;map&quot;;\n      " +
+            "4 [label=&quot;MapPartitionsRDD [4]"))
       assert(
-        stage1.contains("{\n      label=&quot;groupBy&quot;;\n      " +
-          "5 [label=&quot;MapPartitionsRDD [5]"))
+        stage1.contains(
+          "{\n      label=&quot;groupBy&quot;;\n      " +
+            "5 [label=&quot;MapPartitionsRDD [5]"))
 
       val stage2 =
         Source
@@ -758,11 +765,13 @@ class UISeleniumSuite
               "/stages/stage/?id=2&attempt=0&expandDagViz=true")
           .mkString
       assert(
-        stage2.contains("digraph G {\n  subgraph clusterstage_2 {\n    " +
-          "label=&quot;Stage 2&quot;;\n    subgraph "))
+        stage2.contains(
+          "digraph G {\n  subgraph clusterstage_2 {\n    " +
+            "label=&quot;Stage 2&quot;;\n    subgraph "))
       assert(
-        stage2.contains("{\n      label=&quot;groupBy&quot;;\n      " +
-          "6 [label=&quot;ShuffledRDD [6]"))
+        stage2.contains(
+          "{\n      label=&quot;groupBy&quot;;\n      " +
+            "6 [label=&quot;ShuffledRDD [6]"))
     }
   }
 

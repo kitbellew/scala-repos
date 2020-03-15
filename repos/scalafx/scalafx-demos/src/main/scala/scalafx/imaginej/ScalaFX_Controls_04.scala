@@ -98,8 +98,7 @@ object ScalaFX_Controls_04 extends JFXApp {
       children = List(
         minorToggleButton,
         majorToggleButton,
-        criticalToggleButton
-      )
+        criticalToggleButton)
     }
 
   val rectangle =
@@ -116,11 +115,7 @@ object ScalaFX_Controls_04 extends JFXApp {
   val vBox =
     new VBox {
       padding = Insets(20, 10, 10, 20)
-      children = List(
-        priorityLabel,
-        hBox,
-        rectangle
-      )
+      children = List(priorityLabel, hBox, rectangle)
     }
 
   theToggleGroup.selectedToggle onChange { (_, _, newToggle) =>

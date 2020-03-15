@@ -117,8 +117,7 @@ object Promise {
           case e: NonLocalReturnControl[_] =>
             Future.exception(new FutureNonLocalReturnControl(e))
           case NonFatal(e) => Future.exception(e)
-        }
-      )
+        })
     }
 
     def apply(result: Try[A]) {
@@ -365,90 +364,90 @@ class Promise[A]
     unsafe.compareAndSwapObject(this, stateOff, oldState, newState)
 
   private[this] def runq(first: K[A], rest: List[K[A]], result: Try[A]) =
-    Scheduler.submit(new Runnable {
-      def run(): Unit = {
-        // It's always safe to run `first` ahead of everything else
-        // since the only way to get a chainer is to register a
-        // callback (which would always have depth 0).
-        if (first ne null)
-          first(result)
-        var k: K[A] = null
-        var moreDepth = false
+    Scheduler.submit(
+      new Runnable {
+        def run(): Unit = {
+          // It's always safe to run `first` ahead of everything else
+          // since the only way to get a chainer is to register a
+          // callback (which would always have depth 0).
+          if (first ne null)
+            first(result)
+          var k: K[A] = null
+          var moreDepth = false
 
-        // Depth 0, about 77% only at this depth
-        var ks = rest
-        while (ks ne Nil) {
-          k = ks.head
-          if (k.depth == 0)
-            k(result)
-          else
-            moreDepth = true
-          ks = ks.tail
-        }
-
-        // depth >= 1, about 23%
-        if (!moreDepth)
-          return
-
-        var maxDepth = 1
-        ks = rest
-        while (ks ne Nil) {
-          k = ks.head
-          if (k.depth == 1)
-            k(result)
-          else if (k.depth > maxDepth)
-            maxDepth = k.depth
-          ks = ks.tail
-        }
-        // Depth > 1, about 7%
-        if (maxDepth > 1)
-          runDepth2Plus(rest, result, maxDepth)
-      }
-
-      private[this] def runDepth2Plus(
-          rest: List[K[A]],
-          result: Try[A],
-          maxDepth: Int
-      ): Unit = {
-        // empirically via JMH `FutureBenchmark.runqSize` the performance
-        // is better once the the list gets larger. that cutoff point
-        // was 14 in tests. however, it should be noted that this number
-        // was picked for how it performs for that single distribution.
-        // should it turn out that many users have a large `rest` with
-        // shallow distributions, this number should likely be higher.
-        // that said, this number is empirically large and should be a
-        // rare run code path.
-        if (rest.size > 13) {
-          var rem = mutable.ArrayBuffer[K[A]]()
+          // Depth 0, about 77% only at this depth
           var ks = rest
           while (ks ne Nil) {
-            val k = ks.head
-            if (k.depth > 1)
-              rem += k
+            k = ks.head
+            if (k.depth == 0)
+              k(result)
+            else
+              moreDepth = true
             ks = ks.tail
           }
 
-          val sorted = rem.sortBy(K.depthOfK)
-          var i = 0
-          while (i < sorted.size) {
-            sorted(i).apply(result)
-            i += 1
+          // depth >= 1, about 23%
+          if (!moreDepth)
+            return
+
+          var maxDepth = 1
+          ks = rest
+          while (ks ne Nil) {
+            k = ks.head
+            if (k.depth == 1)
+              k(result)
+            else if (k.depth > maxDepth)
+              maxDepth = k.depth
+            ks = ks.tail
           }
-        } else {
-          var depth = 2
-          while (depth <= maxDepth) {
+          // Depth > 1, about 7%
+          if (maxDepth > 1)
+            runDepth2Plus(rest, result, maxDepth)
+        }
+
+        private[this] def runDepth2Plus(
+            rest: List[K[A]],
+            result: Try[A],
+            maxDepth: Int): Unit = {
+          // empirically via JMH `FutureBenchmark.runqSize` the performance
+          // is better once the the list gets larger. that cutoff point
+          // was 14 in tests. however, it should be noted that this number
+          // was picked for how it performs for that single distribution.
+          // should it turn out that many users have a large `rest` with
+          // shallow distributions, this number should likely be higher.
+          // that said, this number is empirically large and should be a
+          // rare run code path.
+          if (rest.size > 13) {
+            var rem = mutable.ArrayBuffer[K[A]]()
             var ks = rest
             while (ks ne Nil) {
               val k = ks.head
-              if (k.depth == depth)
-                k(result)
+              if (k.depth > 1)
+                rem += k
               ks = ks.tail
             }
-            depth += 1
+
+            val sorted = rem.sortBy(K.depthOfK)
+            var i = 0
+            while (i < sorted.size) {
+              sorted(i).apply(result)
+              i += 1
+            }
+          } else {
+            var depth = 2
+            while (depth <= maxDepth) {
+              var ks = rest
+              while (ks ne Nil) {
+                val k = ks.head
+                if (k.depth == depth)
+                  k(result)
+                ks = ks.tail
+              }
+              depth += 1
+            }
           }
         }
-      }
-    })
+      })
 
   /**
     * (Re)sets the interrupt handler. There is only
@@ -796,11 +795,12 @@ class Promise[A]
   protected[util] final def continue(k: K[A]): Unit = {
     state match {
       case Done(v) =>
-        Scheduler.submit(new Runnable {
-          def run() {
-            k(v)
-          }
-        })
+        Scheduler.submit(
+          new Runnable {
+            def run() {
+              k(v)
+            }
+          })
       case s @ Waiting(first, rest) if first == null =>
         if (!cas(s, Waiting(k, rest)))
           continue(k)

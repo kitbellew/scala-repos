@@ -10,10 +10,8 @@ object Test extends App {
 
   def forceCode(prefix: String, tp: Type): String = {
     def isLazyAccessorOrObject(sym: Symbol) =
-      (
-        (sym.isMethod && sym.asMethod.isLazy)
-          || sym.isModule
-      )
+      ((sym.isMethod && sym.asMethod.isLazy)
+        || sym.isModule)
     val forceables = tp.members.sorted.filter(isLazyAccessorOrObject)
     forceables
       .map { sym =>

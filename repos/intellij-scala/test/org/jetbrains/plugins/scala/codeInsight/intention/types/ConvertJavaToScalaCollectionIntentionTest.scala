@@ -21,8 +21,7 @@ class ConvertJavaToScalaCollectionIntentionTest extends ScalaIntentionTestBase {
         |  val list: java.lang.Iterable = new java.util.ArrayList[String]()
         |  val scalaList = lis<caret>t
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsAvailable_Collection() {
@@ -32,8 +31,7 @@ class ConvertJavaToScalaCollectionIntentionTest extends ScalaIntentionTestBase {
         |  val list: java.util.Collection[String] = new java.util.ArrayList[String]()
         |  val scalaList = lis<caret>t
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsAvailable_Iterator() {
@@ -42,8 +40,7 @@ class ConvertJavaToScalaCollectionIntentionTest extends ScalaIntentionTestBase {
         |class UsesJavaCollections {
         |  val iter = new java.util.ArrayList[String]().itera<caret>tor
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsNotAvailable() {

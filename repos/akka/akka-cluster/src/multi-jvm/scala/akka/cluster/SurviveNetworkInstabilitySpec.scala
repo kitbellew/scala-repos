@@ -33,14 +33,10 @@ object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
   val seventh = role("seventh")
   val eighth = role("eighth")
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(
-        ConfigFactory.parseString("""
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
       akka.remote.system-message-buffer-size=100
       akka.remote.netty.tcp.connection-timeout = 10s
-      """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+      """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   testTransport(on = true)
 
@@ -333,8 +329,8 @@ abstract class SurviveNetworkInstabilitySpec
       runOn(others: _*) {
         // second should be removed because of quarantine
         awaitAssert(
-          clusterView.members.map(_.address) should not contain (address(
-            second)))
+          clusterView.members
+            .map(_.address) should not contain (address(second)))
       }
 
       enterBarrier("after-6")
@@ -379,9 +375,10 @@ abstract class SurviveNetworkInstabilitySpec
         // side2 removed
         val expected = (side1AfterJoin map address).toSet
         awaitAssert(clusterView.members.map(_.address) should ===(expected))
-        awaitAssert(clusterView.members.collectFirst {
-          case m if m.address == address(eighth) ⇒ m.status
-        } should ===(Some(MemberStatus.Up)))
+        awaitAssert(
+          clusterView.members.collectFirst {
+            case m if m.address == address(eighth) ⇒ m.status
+          } should ===(Some(MemberStatus.Up)))
       }
 
       enterBarrier("side2-removed")

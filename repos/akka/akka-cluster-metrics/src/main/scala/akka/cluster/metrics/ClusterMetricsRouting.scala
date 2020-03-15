@@ -449,9 +449,11 @@ object MetricsSelector {
           .recover({
             case exception ⇒
               throw new IllegalArgumentException(
-                (s"Cannot instantiate metrics-selector [$fqn], " +
-                  "make sure it extends [akka.cluster.routing.MetricsSelector] and " +
-                  "has constructor with [com.typesafe.config.Config] parameter"),
+                (
+                  s"Cannot instantiate metrics-selector [$fqn], " +
+                    "make sure it extends [akka.cluster.routing.MetricsSelector] and " +
+                    "has constructor with [com.typesafe.config.Config] parameter"
+                ),
                 exception)
           })
           .get

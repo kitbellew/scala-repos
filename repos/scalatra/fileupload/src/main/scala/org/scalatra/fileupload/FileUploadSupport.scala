@@ -70,10 +70,13 @@ trait FileUploadSupport extends ServletBase {
   private def isMultipartContent(req: HttpServletRequest) = {
     val isPostOrPut = Set("POST", "PUT").contains(req.getMethod)
 
-    isPostOrPut && (req.contentType match {
-      case Some(contentType) => contentType.startsWith(FileUploadBase.MULTIPART)
-      case _                 => false
-    })
+    isPostOrPut && (
+      req.contentType match {
+        case Some(contentType) =>
+          contentType.startsWith(FileUploadBase.MULTIPART)
+        case _ => false
+      }
+    )
   }
 
   private def extractMultipartParams(req: HttpServletRequest): BodyParams =
@@ -148,9 +151,11 @@ trait FileUploadSupport extends ServletBase {
             _.toArray
           } getOrElse null
         override def getParameterMap =
-          new JHashMap[String, Array[String]] ++ (formMap transform { (k, v) =>
-            v.toArray
-          })
+          new JHashMap[String, Array[String]] ++ (
+            formMap transform { (k, v) =>
+              v.toArray
+            }
+          )
       }
     wrapped
   }
@@ -188,9 +193,11 @@ trait FileUploadSupport extends ServletBase {
         }
       override def size = fileMultiParams.size
       override def iterator =
-        (fileMultiParams map {
-          case (k, v) => (k, v.head)
-        }).iterator
+        (
+          fileMultiParams map {
+            case (k, v) => (k, v.head)
+          }
+        ).iterator
       override def -(key: String) = Map() ++ this - key
       override def +[B1 >: FileItem](kv: (String, B1)) = Map() ++ this + kv
     }

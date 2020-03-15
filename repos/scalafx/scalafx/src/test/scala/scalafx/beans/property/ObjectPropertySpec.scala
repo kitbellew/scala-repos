@@ -260,12 +260,13 @@ class ObjectPropertySpec
     val originalValue: T = property.value
     var oldVal: T = null.asInstanceOf[T]
     var newVal: T = null.asInstanceOf[T]
-    property.delegate.addListener(new jfxbv.ChangeListener[T] {
-      def changed(obs: jfxbv.ObservableValue[_ <: T], oldV: T, newV: T) {
-        oldVal = oldV
-        newVal = newV
-      }
-    })
+    property.delegate.addListener(
+      new jfxbv.ChangeListener[T] {
+        def changed(obs: jfxbv.ObservableValue[_ <: T], oldV: T, newV: T) {
+          oldVal = oldV
+          newVal = newV
+        }
+      })
 
     ObjectProperty.fillProperty(property, newValue)
 

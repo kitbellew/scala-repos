@@ -20,19 +20,20 @@ object StreamsStressTest extends App {
   val db = Database.forURL(url, driver = driver, keepAliveConnection = true)
   try {
     val threads = 1.to(numThreads).toVector.map { i =>
-      new Thread(new Runnable {
-        def run(): Unit = {
-          try {
-            for (j <- 1 to repeats) {
-              run1
-              if (j % 100 == 0)
-                println(s"Thread $i: Stream $j successful")
+      new Thread(
+        new Runnable {
+          def run(): Unit = {
+            try {
+              for (j <- 1 to repeats) {
+                run1
+                if (j % 100 == 0)
+                  println(s"Thread $i: Stream $j successful")
+              }
+            } catch {
+              case t: Throwable => env.flop(t, t.toString)
             }
-          } catch {
-            case t: Throwable => env.flop(t, t.toString)
           }
-        }
-      })
+        })
     }
     threads.foreach(_.start())
     threads.foreach(_.join())
@@ -54,9 +55,9 @@ object StreamsStressTest extends App {
       def * = id
     }
     val data = TableQuery[Data]
-    val a = data.schema.create >> (data ++= Range.apply(
-      0,
-      elements.toInt)) >> data.sortBy(_.id).map(_.id).result
+    val a = data.schema.create >> (
+      data ++= Range.apply(0, elements.toInt)
+    ) >> data.sortBy(_.id).map(_.id).result
     db.stream(a.withPinnedSession)
   }
 }

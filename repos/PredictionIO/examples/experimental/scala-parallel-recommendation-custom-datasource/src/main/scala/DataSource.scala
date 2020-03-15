@@ -27,23 +27,18 @@ class DataSource(val dsp: DataSourceParams)
   override def readTraining(sc: SparkContext): TrainingData = {
     // CHANGED
     val data = sc.textFile(dsp.filepath)
-    val ratings: RDD[Rating] = data.map(_.split("::") match {
-      case Array(user, item, rate) =>
-        Rating(user, item, rate.toDouble)
-    })
+    val ratings: RDD[Rating] = data.map(
+      _.split("::") match {
+        case Array(user, item, rate) =>
+          Rating(user, item, rate.toDouble)
+      })
     new TrainingData(ratings)
   }
 }
 
-case class Rating(
-    user: String,
-    item: String,
-    rating: Double
-)
+case class Rating(user: String, item: String, rating: Double)
 
-class TrainingData(
-    val ratings: RDD[Rating]
-) extends Serializable {
+class TrainingData(val ratings: RDD[Rating]) extends Serializable {
   override def toString = {
     s"ratings: [${ratings.count()}] (${ratings.take(2).toList}...)"
   }

@@ -137,9 +137,10 @@ class JobTest(cons: (Args) => Job) {
      */
     sinkSet += s
     callbacks += (() =>
-      op(buffer.map { tup =>
-        conv(new TupleEntry(tup))
-      }))
+      op(
+        buffer.map { tup =>
+          conv(new TupleEntry(tup))
+        }))
     this
   }
 

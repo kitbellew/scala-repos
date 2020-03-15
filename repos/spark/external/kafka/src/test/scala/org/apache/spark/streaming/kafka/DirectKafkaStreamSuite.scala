@@ -94,8 +94,7 @@ class DirectKafkaStreamSuite
     val totalSent = data.values.sum * topics.size
     val kafkaParams = Map(
       "metadata.broker.list" -> kafkaTestUtils.brokerAddress,
-      "auto.offset.reset" -> "smallest"
-    )
+      "auto.offset.reset" -> "smallest")
 
     ssc = new StreamingContext(sparkConf, Milliseconds(200))
     val stream =
@@ -160,8 +159,7 @@ class DirectKafkaStreamSuite
     kafkaTestUtils.createTopic(topic)
     val kafkaParams = Map(
       "metadata.broker.list" -> kafkaTestUtils.brokerAddress,
-      "auto.offset.reset" -> "largest"
-    )
+      "auto.offset.reset" -> "largest")
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
       kc.getLatestLeaderOffsets(Set(topicPartition))
@@ -191,8 +189,7 @@ class DirectKafkaStreamSuite
       stream
         .asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
         .fromOffsets(topicPartition) >= offsetBeforeStart,
-      "Start offset not from latest"
-    )
+      "Start offset not from latest")
 
     val collectedData = new ConcurrentLinkedQueue[String]()
     stream
@@ -218,8 +215,7 @@ class DirectKafkaStreamSuite
     kafkaTestUtils.createTopic(topic)
     val kafkaParams = Map(
       "metadata.broker.list" -> kafkaTestUtils.brokerAddress,
-      "auto.offset.reset" -> "largest"
-    )
+      "auto.offset.reset" -> "largest")
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
       kc.getLatestLeaderOffsets(Set(topicPartition))
@@ -254,8 +250,7 @@ class DirectKafkaStreamSuite
       stream
         .asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
         .fromOffsets(topicPartition) >= offsetBeforeStart,
-      "Start offset not from latest"
-    )
+      "Start offset not from latest")
 
     val collectedData = new ConcurrentLinkedQueue[String]()
     stream.foreachRDD { rdd =>
@@ -278,8 +273,7 @@ class DirectKafkaStreamSuite
 
     val kafkaParams = Map(
       "metadata.broker.list" -> kafkaTestUtils.brokerAddress,
-      "auto.offset.reset" -> "smallest"
-    )
+      "auto.offset.reset" -> "smallest")
 
     // Send data to Kafka and wait for it to be received
     def sendDataAndWaitForReceive(data: Seq[Int]) {
@@ -292,9 +286,10 @@ class DirectKafkaStreamSuite
           _ -> 1
         }.toMap)
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
-        assert(strings.forall {
-          DirectKafkaStreamSuite.collectedData.contains
-        })
+        assert(
+          strings.forall {
+            DirectKafkaStreamSuite.collectedData.contains
+          })
       }
     }
 
@@ -347,8 +342,7 @@ class DirectKafkaStreamSuite
       offsetRangesBeforeStop.head._2.forall {
         _.fromOffset === 0
       },
-      "starting offset not zero"
-    )
+      "starting offset not zero")
     ssc.stop()
     logInfo("====== RESTARTING ========")
 
@@ -369,8 +363,7 @@ class DirectKafkaStreamSuite
       recoveredOffsetRanges.forall { or =>
         earlierOffsetRangesAsSets.contains((or._1, or._2.toSet))
       },
-      "Recovered ranges are not the same as the ones generated"
-    )
+      "Recovered ranges are not the same as the ones generated")
     // Restart context, give more data and verify the total at the end
     // If the total is write that means each records has been received only once
     ssc.start()
@@ -390,8 +383,7 @@ class DirectKafkaStreamSuite
     val totalSent = data.values.sum
     val kafkaParams = Map(
       "metadata.broker.list" -> kafkaTestUtils.brokerAddress,
-      "auto.offset.reset" -> "smallest"
-    )
+      "auto.offset.reset" -> "smallest")
 
     import DirectKafkaStreamSuite._
     ssc = new StreamingContext(sparkConf, Milliseconds(200))
@@ -477,8 +469,7 @@ class DirectKafkaStreamSuite
     kafkaTestUtils.createTopic(topic, 2)
     val kafkaParams = Map(
       "metadata.broker.list" -> kafkaTestUtils.brokerAddress,
-      "auto.offset.reset" -> "smallest"
-    )
+      "auto.offset.reset" -> "smallest")
 
     val batchIntervalMilliseconds = 100
     val estimator = new ConstantEstimator(100)

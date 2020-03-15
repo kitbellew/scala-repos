@@ -101,8 +101,7 @@ class VM(
       case VmStart(_) =>
         List(
           new MonitorOutput(process.getErrorStream, broadcaster),
-          new MonitorOutput(process.getInputStream, broadcaster)
-        )
+          new MonitorOutput(process.getInputStream, broadcaster))
     }
   private val savedObjects =
     new mutable.HashMap[DebugObjectId, ObjectReference]()
@@ -147,11 +146,7 @@ class VM(
 
   def newStepRequest(thread: ThreadReference, stride: Int, depth: Int): Unit = {
     erm.deleteEventRequests(erm.stepRequests)
-    val request = erm.createStepRequest(
-      thread,
-      stride,
-      depth
-    )
+    val request = erm.createStepRequest(thread, stride, depth)
     request.addCountFilter(1)
     request.enable()
     vm.resume()
@@ -294,8 +289,7 @@ class VM(
 
   private def makeFields(
       tpeIn: ReferenceType,
-      obj: ObjectReference
-  ): List[DebugClassField] = {
+      obj: ObjectReference): List[DebugClassField] = {
     tpeIn match {
       case tpeIn: ClassType =>
         var fields = List[DebugClassField]()
@@ -307,12 +301,7 @@ class VM(
             .map { f =>
               i += 1
               val value = obj.getValue(f)
-              DebugClassField(
-                i,
-                f.name(),
-                f.typeName(),
-                valueSummary(value)
-              )
+              DebugClassField(i, f.name(), f.typeName(), valueSummary(value))
             }
             .toList ++ fields
           tpe = tpe.superclass
@@ -345,8 +334,7 @@ class VM(
       valueSummary(value),
       makeFields(value.referenceType(), value),
       value.referenceType().name(),
-      DebugObjectId(value.uniqueID())
-    )
+      DebugObjectId(value.uniqueID()))
   }
 
   private def makeDebugStr(value: StringReference): DebugStringInstance = {
@@ -354,8 +342,7 @@ class VM(
       valueSummary(value),
       makeFields(value.referenceType(), value),
       value.referenceType().name(),
-      DebugObjectId(value.uniqueID())
-    )
+      DebugObjectId(value.uniqueID()))
   }
 
   private def makeDebugArr(value: ArrayReference): DebugArrayInstance = {
@@ -363,15 +350,11 @@ class VM(
       value.length,
       value.referenceType().name,
       value.referenceType().asInstanceOf[ArrayType].componentTypeName(),
-      DebugObjectId(value.uniqueID)
-    )
+      DebugObjectId(value.uniqueID))
   }
 
   private def makeDebugPrim(value: PrimitiveValue): DebugPrimitiveValue =
-    DebugPrimitiveValue(
-      valueSummary(value),
-      value.`type`().name()
-    )
+    DebugPrimitiveValue(valueSummary(value), value.`type`().name())
 
   private def makeDebugNull(): DebugNullValue = DebugNullValue("Null")
 
@@ -406,8 +389,7 @@ class VM(
         .orElse(
           fieldByName(objRef, name).flatMap { f =>
             Some(DebugObjectField(DebugObjectId(objRef.uniqueID), f.name))
-          }
-        )
+          })
     }
   }
 
@@ -585,9 +567,7 @@ class VM(
       .getOrElse(
         LineSourcePosition(
           File(frame.location.sourcePath()).canon,
-          frame.location.lineNumber
-        )
-      )
+          frame.location.lineNumber))
     val thisObjId = ignoreErr(remember(frame.thisObject()).uniqueID, -1L)
     DebugStackFrame(
       index,

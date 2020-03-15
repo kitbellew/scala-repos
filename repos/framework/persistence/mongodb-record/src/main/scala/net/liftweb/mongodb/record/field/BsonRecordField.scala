@@ -31,9 +31,8 @@ import com.mongodb._
 import scala.xml._
 
 /** Field that contains an entire record represented as an inline object value. Inspired by JSONSubRecordField */
-class BsonRecordField[
-    OwnerType <: BsonRecord[OwnerType],
-    SubRecordType <: BsonRecord[SubRecordType]](
+class BsonRecordField[OwnerType <: BsonRecord[
+  OwnerType], SubRecordType <: BsonRecord[SubRecordType]](
     rec: OwnerType,
     valueMeta: BsonMetaRecord[SubRecordType])(
     implicit subRecordType: Manifest[SubRecordType])
@@ -87,9 +86,8 @@ class BsonRecordField[
 /*
  * List of BsonRecords
  */
-class BsonRecordListField[
-    OwnerType <: BsonRecord[OwnerType],
-    SubRecordType <: BsonRecord[SubRecordType]](
+class BsonRecordListField[OwnerType <: BsonRecord[
+  OwnerType], SubRecordType <: BsonRecord[SubRecordType]](
     rec: OwnerType,
     valueMeta: BsonMetaRecord[SubRecordType])(
     implicit mf: Manifest[SubRecordType])
@@ -109,9 +107,11 @@ class BsonRecordListField[
   }
 
   override def setFromDBObject(dbo: DBObject): Box[List[SubRecordType]] =
-    setBox(Full(dbo.keySet.toList.map(k => {
-      valueMeta.fromDBObject(dbo.get(k.toString).asInstanceOf[DBObject])
-    })))
+    setBox(
+      Full(
+        dbo.keySet.toList.map(k => {
+          valueMeta.fromDBObject(dbo.get(k.toString).asInstanceOf[DBObject])
+        })))
 
   override def asJValue: JValue = JArray(value.map(_.asJValue))
 
@@ -119,9 +119,11 @@ class BsonRecordListField[
     jvalue match {
       case JNothing | JNull if optional_? => setBox(Empty)
       case JArray(arr) =>
-        setBox(Full(arr.map(jv => {
-          valueMeta.fromJValue(jv) openOr valueMeta.createRecord
-        })))
+        setBox(
+          Full(
+            arr.map(jv => {
+              valueMeta.fromJValue(jv) openOr valueMeta.createRecord
+            })))
       case other => setBox(FieldHelpers.expectedA("JArray", other))
     }
 }

@@ -37,27 +37,30 @@ class FlowSlidingSpec extends AkkaSpec with GeneratorDrivenPropertyChecks {
       }
 
     "behave just like collections sliding with step < window" in assertAllStagesStopped {
-      check(for {
-        len ← Gen.choose(0, 31)
-        win ← Gen.choose(1, 61)
-        step ← Gen.choose(1, win - 1)
-      } yield (len, win, step))
+      check(
+        for {
+          len ← Gen.choose(0, 31)
+          win ← Gen.choose(1, 61)
+          step ← Gen.choose(1, win - 1)
+        } yield (len, win, step))
     }
 
     "behave just like collections sliding with step == window" in assertAllStagesStopped {
-      check(for {
-        len ← Gen.choose(0, 31)
-        win ← Gen.choose(1, 61)
-        step ← Gen.const(win)
-      } yield (len, win, step))
+      check(
+        for {
+          len ← Gen.choose(0, 31)
+          win ← Gen.choose(1, 61)
+          step ← Gen.const(win)
+        } yield (len, win, step))
     }
 
     "behave just like collections sliding with step > window" in assertAllStagesStopped {
-      check(for {
-        len ← Gen.choose(0, 31)
-        win ← Gen.choose(1, 61)
-        step ← Gen.choose(win + 1, 127)
-      } yield (len, win, step))
+      check(
+        for {
+          len ← Gen.choose(0, 31)
+          win ← Gen.choose(1, 61)
+          step ← Gen.choose(win + 1, 127)
+        } yield (len, win, step))
     }
 
     "work with empty sources" in assertAllStagesStopped {

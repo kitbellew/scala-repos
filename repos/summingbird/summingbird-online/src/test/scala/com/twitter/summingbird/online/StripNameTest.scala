@@ -63,9 +63,10 @@ class StripNameTest extends FunSuite {
     }
 
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect {
-      case NamedProducer(_, _) => 1
-    }.sum == 0)
+    assert(
+      strippedDeps.nodes.collect {
+        case NamedProducer(_, _) => 1
+      }.sum == 0)
   }
   test("merge name test") {
     /*
@@ -136,9 +137,10 @@ class StripNameTest extends FunSuite {
     }
 
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect {
-      case NamedProducer(_, _) => 1
-    }.sum == 0)
+    assert(
+      strippedDeps.nodes.collect {
+        case NamedProducer(_, _) => 1
+      }.sum == 0)
   }
 
   test("Fan-out name test") {
@@ -222,8 +224,9 @@ class StripNameTest extends FunSuite {
       case p @ Summer(_, str, _) if str eq store1 => p
     }
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect {
-      case NamedProducer(_, _) => 1
-    }.sum == 0)
+    assert(
+      strippedDeps.nodes.collect {
+        case NamedProducer(_, _) => 1
+      }.sum == 0)
   }
 }

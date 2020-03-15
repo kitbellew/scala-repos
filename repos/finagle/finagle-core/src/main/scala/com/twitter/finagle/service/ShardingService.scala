@@ -25,8 +25,8 @@ import com.twitter.finagle.{
   */
 class ShardingService[Req, Rep](
     distributor: Distributor[Service[Req, Rep]],
-    hash: Req => Option[Long]
-) extends Service[Req, Rep] {
+    hash: Req => Option[Long])
+    extends Service[Req, Rep] {
 
   def apply(request: Req): Future[Rep] = {
     hash(request) map { hash =>
@@ -53,19 +53,20 @@ private[service] object ShardingService {
 case class KetamaShardingServiceBuilder[Req, Rep](
     _nodes: Option[Seq[KetamaNode[Service[Req, Rep]]]] = None,
     _hash: Option[Req => Option[Long]] = None,
-    _numReps: Int = 160
-) {
+    _numReps: Int = 160) {
 
   def nodesAndWeights(nodes: Seq[(String, Int, Service[Req, Rep])]) = {
-    copy(_nodes = Some(nodes map Function.tupled {
-      KetamaNode(_, _, _)
-    }))
+    copy(_nodes = Some(
+      nodes map Function.tupled {
+        KetamaNode(_, _, _)
+      }))
   }
 
   def nodes(services: Seq[(String, Service[Req, Rep])]) = {
-    nodesAndWeights(services map Function.tupled {
-      (_, 1, _)
-    })
+    nodesAndWeights(
+      services map Function.tupled {
+        (_, 1, _)
+      })
   }
 
   def numReps(numReps: Int) = {

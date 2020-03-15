@@ -47,8 +47,9 @@ class MultipartSpec
   "Multipart.FormData" should {
     "support `toStrict` on the streamed model" in {
       val streamed = Multipart.FormData(
-        Source(Multipart.FormData.BodyPart("foo", defaultEntity("FOO")) ::
-          Multipart.FormData.BodyPart("bar", defaultEntity("BAR")) :: Nil))
+        Source(
+          Multipart.FormData.BodyPart("foo", defaultEntity("FOO")) ::
+            Multipart.FormData.BodyPart("bar", defaultEntity("BAR")) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
       strict shouldEqual Multipart.FormData(

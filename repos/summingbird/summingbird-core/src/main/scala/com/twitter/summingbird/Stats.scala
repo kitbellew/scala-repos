@@ -87,13 +87,16 @@ object SummingbirdRuntimeStats {
     // Find the PlatformMetricProvider (PMP) that matches the jobID
     // return the incrementor for the Counter specified by group/name
     // We return the first PMP that matches the jobID, in reality there should be only one
-    (for {
-      provRef <- platformStatProviders.toSeq
-      prov <- provRef.get
-      incr <- prov.counterIncrementor(jobID, group, name)
-    } yield incr).toList.headOption
-      .getOrElse(sys.error(
-        "Could not find the platform stat provider for jobID " + jobID))
+    (
+      for {
+        provRef <- platformStatProviders.toSeq
+        prov <- provRef.get
+        incr <- prov.counterIncrementor(jobID, group, name)
+      } yield incr
+    ).toList.headOption
+      .getOrElse(
+        sys.error(
+          "Could not find the platform stat provider for jobID " + jobID))
   }
 }
 

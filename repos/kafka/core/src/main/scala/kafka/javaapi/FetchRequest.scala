@@ -39,8 +39,7 @@ class FetchRequest(
       replicaId = Request.OrdinaryConsumerId,
       maxWait = maxWait,
       minBytes = minBytes,
-      requestInfo = scalaMap
-    )
+      requestInfo = scalaMap)
   }
 
   override def toString = underlying.toString

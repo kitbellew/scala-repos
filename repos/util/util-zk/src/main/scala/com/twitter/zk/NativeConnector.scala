@@ -164,8 +164,9 @@ object NativeConnector {
             zookeeper foreach { zk =>
               connectPromise.updateIfEmpty(Return(zk))
               authenticate foreach { auth =>
-                log.info("Authenticating to zk as %s".format(
-                  new String(auth.data, "UTF-8")))
+                log.info(
+                  "Authenticating to zk as %s".format(
+                    new String(auth.data, "UTF-8")))
                 zk.addAuthInfo(auth.mode, auth.data)
               }
             }

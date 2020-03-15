@@ -23,19 +23,20 @@ object StablePriorityDispatcherSpec {
     """
 
   class Unbounded(settings: ActorSystem.Settings, config: Config)
-      extends UnboundedStablePriorityMailbox(PriorityGenerator({
-        case i: Int if i <= 100 ⇒ i // Small integers have high priority
-        case i: Int ⇒ 101 // Don't care for other integers
-        case 'Result ⇒ Int.MaxValue
-      }: Any ⇒ Int))
+      extends UnboundedStablePriorityMailbox(
+        PriorityGenerator({
+            case i: Int if i <= 100 ⇒ i // Small integers have high priority
+            case i: Int ⇒ 101 // Don't care for other integers
+            case 'Result ⇒ Int.MaxValue
+          }: Any ⇒ Int))
 
   class Bounded(settings: ActorSystem.Settings, config: Config)
       extends BoundedStablePriorityMailbox(
         PriorityGenerator({
-          case i: Int if i <= 100 ⇒ i // Small integers have high priority
-          case i: Int ⇒ 101 // Don't care for other integers
-          case 'Result ⇒ Int.MaxValue
-        }: Any ⇒ Int),
+            case i: Int if i <= 100 ⇒ i // Small integers have high priority
+            case i: Int ⇒ 101 // Don't care for other integers
+            case 'Result ⇒ Int.MaxValue
+          }: Any ⇒ Int),
         1000,
         10 seconds)
 
@@ -67,26 +68,30 @@ class StablePriorityDispatcherSpec
       // with RepointableActorRef, since messages might be queued in
       // UnstartedCell and then sent to the StablePriorityQueue and consumed immediately
       // without the ordering taking place.
-      val actor = system.actorOf(Props(new Actor {
-        context.actorOf(Props(new Actor {
+      val actor = system.actorOf(
+        Props(
+          new Actor {
+            context.actorOf(
+              Props(
+                new Actor {
 
-          val acc = scala.collection.mutable.ListBuffer[Int]()
+                  val acc = scala.collection.mutable.ListBuffer[Int]()
 
-          shuffled foreach { m ⇒
-            self ! m
-          }
+                  shuffled foreach { m ⇒
+                    self ! m
+                  }
 
-          self.tell('Result, testActor)
+                  self.tell('Result, testActor)
 
-          def receive = {
-            case i: Int ⇒ acc += i
-            case 'Result ⇒ sender() ! acc.toList
-          }
-        }).withDispatcher(dispatcherKey))
+                  def receive = {
+                    case i: Int ⇒ acc += i
+                    case 'Result ⇒ sender() ! acc.toList
+                  }
+                }).withDispatcher(dispatcherKey))
 
-        def receive = Actor.emptyBehavior
+            def receive = Actor.emptyBehavior
 
-      }))
+          }))
 
       // Low messages should come out first, and in priority order.  High messages follow - they are equal priority and
       // should come out in the same order in which they were sent.

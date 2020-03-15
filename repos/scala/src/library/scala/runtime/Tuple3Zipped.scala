@@ -136,21 +136,14 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
 
 object Tuple3Zipped {
   final class Ops[T1, T2, T3](val x: (T1, T2, T3)) extends AnyVal {
-    def invert[
-        El1,
-        CC1[X] <: TraversableOnce[X],
-        El2,
-        CC2[X] <: TraversableOnce[X],
-        El3,
-        CC3[X] <: TraversableOnce[X],
-        That](implicit
+    def invert[El1, CC1[X] <: TraversableOnce[X], El2, CC2[
+        X] <: TraversableOnce[X], El3, CC3[X] <: TraversableOnce[X], That](
+        implicit
         w1: T1 <:< CC1[El1],
         w2: T2 <:< CC2[El2],
         w3: T3 <:< CC3[El3],
-        bf: scala.collection.generic.CanBuildFrom[
-          CC1[_],
-          (El1, El2, El3),
-          That]): That = {
+        bf: scala.collection.generic.CanBuildFrom[CC1[
+          _], (El1, El2, El3), That]): That = {
       val buf = bf(x._1)
       val it1 = x._1.toIterator
       val it2 = x._2.toIterator

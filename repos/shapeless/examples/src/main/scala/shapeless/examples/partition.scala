@@ -76,11 +76,13 @@ object ADTPartitionExample extends App {
         type Out = FieldType[K, List[H]] :: OutT
 
         def apply(c: List[FieldType[K, H] :+: T]): Out =
-          field[K](c.collect {
-            case Inl(h) => h: H
-          }) :: cp(c.collect {
-            case Inr(t) => t
-          })
+          field[K](
+            c.collect {
+              case Inl(h) => h: H
+            }) :: cp(
+            c.collect {
+              case Inr(t) => t
+            })
       }
   }
 
@@ -90,8 +92,7 @@ object ADTPartitionExample extends App {
   def partitionTuple[A, C <: Coproduct, Out <: HList](as: List[A])(implicit
       gen: LabelledGeneric.Aux[A, C],
       partitioner: Partitioner.Aux[C, Out],
-      tupler: Tupler[Out]
-  ) = tupler(partitioner(as.map(gen.to)))
+      tupler: Tupler[Out]) = tupler(partitioner(as.map(gen.to)))
 
   /**
     * Partition a list into a record of lists for each constructor.
@@ -108,8 +109,7 @@ object ADTPartitionExample extends App {
     Pear(2, "red"),
     Pear(3, "green"),
     Apple(4, 6),
-    Pear(5, "purple")
-  )
+    Pear(5, "purple"))
 
   // The expected partition.
   val expectedApples: List[Apple] = List(Apple(1, 10), Apple(4, 6))

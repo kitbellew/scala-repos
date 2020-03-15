@@ -97,8 +97,8 @@ class LoadBalancerFactoryTest
   test("throws NoBrokersAvailableException with negative addresses") {
     val next: Stack[ServiceFactory[String, String]] = Stack.Leaf(
       Stack.Role("mock"),
-      ServiceFactory.const[String, String](Service.mk[String, String](req =>
-        Future.value(s"$req"))))
+      ServiceFactory.const[String, String](
+        Service.mk[String, String](req => Future.value(s"$req"))))
 
     val stack =
       new LoadBalancerFactory.StackModule[String, String] {

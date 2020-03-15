@@ -90,8 +90,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
           }
         }
       },
-      ExactSize(values.length)
-    )
+      ExactSize(values.length))
   }
 
   def fromJson(
@@ -105,8 +104,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
       "coerceToDouble" -> cf.util.CoerceToDouble,
       "true" -> CF1("testing::true") { _ =>
         Some(Column.const(true))
-      }
-    )
+      })
 
     lib(name)
   }
@@ -115,8 +113,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
     val lib = Map[String, CF2](
       "add" -> cf.math.Add,
       "mod" -> cf.math.Mod,
-      "eq" -> cf.std.Eq
-    )
+      "eq" -> cf.std.Eq)
     lib(name)
   }
 
@@ -125,10 +122,8 @@ trait ColumnarTableModuleTestSupport[M[+_]]
       "sum" -> new CScanner {
         type A = BigDecimal
         val init = BigDecimal(0)
-        def scan(
-            a: BigDecimal,
-            cols: Map[ColumnRef, Column],
-            range: Range): (A, Map[ColumnRef, Column]) = {
+        def scan(a: BigDecimal, cols: Map[ColumnRef, Column], range: Range)
+            : (A, Map[ColumnRef, Column]) = {
           val identityPath = cols collect {
             case c @ (ColumnRef(CPath.Identity, _), _) => c
           }
@@ -174,8 +169,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
             a2,
             Map(ColumnRef(CPath.Identity, CNum) -> ArrayNumColumn(mask, arr)))
         }
-      }
-    )
+      })
 
     lib(name)
   }

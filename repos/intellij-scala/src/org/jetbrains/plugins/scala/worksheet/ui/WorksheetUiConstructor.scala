@@ -110,18 +110,19 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
           modulesBox setSelectedModule foundModule
     }
 
-    modulesBox.addActionListener(new ActionListener {
-      override def actionPerformed(e: ActionEvent) {
-        val m = modulesBox.getSelectedModule
+    modulesBox.addActionListener(
+      new ActionListener {
+        override def actionPerformed(e: ActionEvent) {
+          val m = modulesBox.getSelectedModule
 
-        if (m == null)
-          return
+          if (m == null)
+            return
 
-        WorksheetCompiler.setModuleForCpName(
-          PsiManager getInstance project findFile file,
-          m.getName)
-      }
-    })
+          WorksheetCompiler.setModuleForCpName(
+            PsiManager getInstance project findFile file,
+            m.getName)
+        }
+      })
 
     WorksheetUiConstructor.fixUnboundMaxSize(modulesBox, isSquare = false)
 

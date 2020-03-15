@@ -50,11 +50,12 @@ object Step {
   // put all that shit somewhere else
   private implicit val crazyhousePocketWriter: OWrites[Crazyhouse.Pocket] =
     OWrites { v =>
-      JsObject(Crazyhouse.storableRoles.flatMap { role =>
-        Some(v.roles.count(role ==)).filter(0 <).map { count =>
-          role.name -> JsNumber(count)
-        }
-      })
+      JsObject(
+        Crazyhouse.storableRoles.flatMap { role =>
+          Some(v.roles.count(role ==)).filter(0 <).map { count =>
+            role.name -> JsNumber(count)
+          }
+        })
     }
   private implicit val crazyhouseDataWriter
       : OWrites[chess.variant.Crazyhouse.Data] = OWrites { v =>

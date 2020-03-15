@@ -180,10 +180,12 @@ object FileSource {
         // HiddenFileFilter should better be called non-hidden but it borrows its name from the
         // private field name in hadoop FileInputFormat
         //
-        dir -> (dir,
-        OrVal(
-          SuccessFileFilter.accept(fileStatus.getPath) && fileStatus.isFile),
-        OrVal(HiddenFileFilter.accept(fileStatus.getPath)))
+        dir -> (
+          dir,
+          OrVal(
+            SuccessFileFilter.accept(fileStatus.getPath) && fileStatus.isFile),
+          OrVal(HiddenFileFilter.accept(fileStatus.getPath))
+        )
       }
 
     // OR by key

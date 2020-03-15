@@ -21,8 +21,7 @@ import scala.collection.JavaConversions._
 
 @State(
   name = "HighlightingAdvisor",
-  storages = Array(new Storage("highlighting.xml"))
-)
+  storages = Array(new Storage("highlighting.xml")))
 class HighlightingAdvisor(project: Project)
     extends ProjectComponent
     with PersistentStateComponent[HighlightingSettings] {
@@ -172,16 +171,17 @@ class HighlightingAdvisor(project: Project)
 
   private def reparseActiveFile() {
     val context = DataManager.getInstance.getDataContextFromFocus
-    context.doWhenDone(new Consumer[DataContext] {
-      override def consume(dataContext: DataContext): Unit = {
-        CommonDataKeys.EDITOR_EVEN_IF_INACTIVE.getData(dataContext) match {
-          case editor: EditorEx =>
-            FileContentUtil
-              .reparseFiles(project, Seq(editor.getVirtualFile), true)
-          case _ => // do nothing
+    context.doWhenDone(
+      new Consumer[DataContext] {
+        override def consume(dataContext: DataContext): Unit = {
+          CommonDataKeys.EDITOR_EVEN_IF_INACTIVE.getData(dataContext) match {
+            case editor: EditorEx =>
+              FileContentUtil
+                .reparseFiles(project, Seq(editor.getVirtualFile), true)
+            case _ => // do nothing
+          }
         }
-      }
-    })
+      })
   }
 
   private def statusBar: Option[StatusBar] =

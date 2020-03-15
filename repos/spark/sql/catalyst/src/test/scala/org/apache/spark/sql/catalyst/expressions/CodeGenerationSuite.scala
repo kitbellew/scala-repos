@@ -98,8 +98,7 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
             new StructType(
               Array(
                 StructField("aa", StringType, true),
-                StructField("bb", IntegerType, true)
-              )),
+                StructField("bb", IntegerType, true))),
             true),
           StructField(
             "d",
@@ -110,10 +109,8 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
                   new StructType(
                     Array(
                       StructField("b", StringType, true),
-                      StructField("", IntegerType, true)
-                    )),
-                  true)
-              )),
+                      StructField("", IntegerType, true))),
+                  true))),
             true)
         ))
     val row = Row("a", 1, Row("b", 2), Row(Row("c", 3)))

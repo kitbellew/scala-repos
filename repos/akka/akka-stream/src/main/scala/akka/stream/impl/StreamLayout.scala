@@ -1146,12 +1146,14 @@ private[stream] abstract class MaterializerSession(
     }
 
     if (MaterializerSession.Debug) {
-      println(f"resolving module [${System.identityHashCode(
-        module)}%08x] computation ${module.materializedValueComputation}")
+      println(
+        f"resolving module [${System.identityHashCode(
+          module)}%08x] computation ${module.materializedValueComputation}")
       println(s"  matValSrc = $matValSrc")
-      println(s"  matVals =\n    ${materializedValues.asScala
-        .map(p ⇒ "%08x".format(System.identityHashCode(p._1)) -> p._2)
-        .mkString("\n    ")}")
+      println(
+        s"  matVals =\n    ${materializedValues.asScala
+          .map(p ⇒ "%08x".format(System.identityHashCode(p._1)) -> p._2)
+          .mkString("\n    ")}")
     }
 
     val ret = resolveMaterialized(

@@ -31,8 +31,7 @@ object VersionUtil {
   )
 
   lazy val generateBuildCharacterFileSettings = Seq[Setting[_]](
-    generateBuildCharacterPropertiesFile := generateBuildCharacterPropertiesFileImpl.value
-  )
+    generateBuildCharacterPropertiesFile := generateBuildCharacterPropertiesFileImpl.value)
 
   case class Versions(
       canonicalVersion: String,
@@ -56,8 +55,7 @@ object VersionUtil {
       Map(
         "version.number" -> canonicalVersion,
         "maven.version.number" -> mavenVersion,
-        "osgi.version.number" -> osgiVersion
-      )
+        "osgi.version.number" -> osgiVersion)
   }
 
   /** Compute the canonical, Maven and OSGi version number from `baseVersion` and `baseVersionSuffix`.
@@ -129,8 +127,12 @@ object VersionUtil {
   private lazy val generateVersionPropertiesFileImpl
       : Def.Initialize[Task[File]] = Def.task {
     writeProps(
-      versionProperties.value.toMap + ("copyright.string" -> copyrightString.value),
-      (resourceManaged in Compile).value / s"${thisProject.value.id}.properties")
+      versionProperties.value.toMap + (
+        "copyright.string" -> copyrightString.value
+      ),
+      (
+        resourceManaged in Compile
+      ).value / s"${thisProject.value.id}.properties")
   }
 
   private lazy val generateBuildCharacterPropertiesFileImpl

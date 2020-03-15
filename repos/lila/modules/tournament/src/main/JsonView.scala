@@ -183,8 +183,7 @@ final class JsonView(
         .map(_.toMap)
     } yield Json.obj(
       "page" -> page,
-      "players" -> rankedPlayers.map(playerJson(sheets, tour))
-    )
+      "players" -> rankedPlayers.map(playerJson(sheets, tour)))
 
   private val firstPageCache = lila.memo.AsyncCache[String, JsObject](
     (id: String) =>
@@ -225,10 +224,12 @@ final class JsonView(
     Json.obj(
       "id" -> game.id,
       "fen" -> (chess.format.Forsyth exportBoard game.toChess.board),
-      "color" -> (game.variant match {
-        case chess.variant.RacingKings => chess.White
-        case _                         => game.firstColor
-      }).name,
+      "color" -> (
+        game.variant match {
+          case chess.variant.RacingKings => chess.White
+          case _                         => game.firstColor
+        }
+      ).name,
       "lastMove" -> ~game.castleLastMoveTime.lastMoveString,
       "white" -> playerJson(featured.white, game player chess.White),
       "black" -> playerJson(featured.black, game player chess.Black)
@@ -249,8 +250,7 @@ final class JsonView(
       .obj(
         "name" -> light.map(_.name),
         "title" -> light.flatMap(_.title),
-        "rating" -> rating
-      )
+        "rating" -> rating)
       .noNull
   }
 
@@ -323,14 +323,16 @@ final class JsonView(
     Json.obj(
       "id" -> p.gameId,
       "u" -> Json.arr(pairingUserJson(p.user1), pairingUserJson(p.user2)),
-      "s" -> (if (p.finished)
-                p.winner match {
-                  case Some(w) if w == p.user1 => 2
-                  case Some(w)                 => 3
-                  case _                       => 1
-                }
-              else
-                0)
+      "s" -> (
+        if (p.finished)
+          p.winner match {
+            case Some(w) if w == p.user1 => 2
+            case Some(w)                 => 3
+            case _                       => 1
+          }
+        else
+          0
+      )
     )
 }
 
@@ -347,11 +349,6 @@ object JsonView {
 
   private[tournament] implicit def spotlightWrites: OWrites[Spotlight] =
     OWrites { s =>
-      Json
-        .obj(
-          "iconImg" -> s.iconImg,
-          "iconFont" -> s.iconFont
-        )
-        .noNull
+      Json.obj("iconImg" -> s.iconImg, "iconFont" -> s.iconFont).noNull
     }
 }

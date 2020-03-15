@@ -597,14 +597,18 @@ trait TestKitBase {
       unexpectedMessage: String): Unit = {
     assert(
       missing.isEmpty && unexpected.isEmpty,
-      (if (missing.isEmpty)
-         ""
-       else
-         missing.mkString(missingMessage + " [", ", ", "] ")) +
-        (if (unexpected.isEmpty)
-           ""
-         else
-           unexpected.mkString(unexpectedMessage + " [", ", ", "]"))
+      (
+        if (missing.isEmpty)
+          ""
+        else
+          missing.mkString(missingMessage + " [", ", ", "] ")
+      ) +
+        (
+          if (unexpected.isEmpty)
+            ""
+          else
+            unexpected.mkString(unexpectedMessage + " [", ", ", "]")
+        )
     )
   }
 

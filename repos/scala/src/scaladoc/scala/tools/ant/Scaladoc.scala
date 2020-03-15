@@ -623,12 +623,13 @@ class Scaladoc extends ScalaMatchingTask {
           if (list.length > 0)
             log(
               "Documenting " + list.length + " source file" +
-                (if (list.length > 1)
-                   "s"
-                 else
-                   "") +
-                (" to " + getDestination.toString)
-            )
+                (
+                  if (list.length > 1)
+                    "s"
+                  else
+                    ""
+                ) +
+                (" to " + getDestination.toString))
           else
             log("No files selected for documentation", Project.MSG_VERBOSE)
 
@@ -720,19 +721,23 @@ class Scaladoc extends ScalaMatchingTask {
         safeBuildError(
           "Document failed with " +
             reporter.ERROR.count + " error" +
-            (if (reporter.ERROR.count > 1)
-               "s"
-             else
-               "") +
+            (
+              if (reporter.ERROR.count > 1)
+                "s"
+              else
+                ""
+            ) +
             "; see the documenter error output for details.")
       else if (reporter.WARNING.count > 0)
         log(
           "Document succeeded with " +
             reporter.WARNING.count + " warning" +
-            (if (reporter.WARNING.count > 1)
-               "s"
-             else
-               "") +
+            (
+              if (reporter.WARNING.count > 1)
+                "s"
+              else
+                ""
+            ) +
             "; see the documenter output for details.")
       reporter.printSummary()
     } catch {

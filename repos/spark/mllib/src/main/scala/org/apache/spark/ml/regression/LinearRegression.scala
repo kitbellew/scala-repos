@@ -189,9 +189,10 @@ class LinearRegression @Since("1.3.0") (
       else
         col($(weightCol))
 
-    if (($(solver) == "auto" && $(elasticNetParam) == 0.0 &&
-        numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES) || $(
-          solver) == "normal") {
+    if ((
+          $(solver) == "auto" && $(elasticNetParam) == 0.0 &&
+          numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES
+        ) || $(solver) == "normal") {
       require(
         $(elasticNetParam) == 0.0,
         "Only L2 regularization can be used when normal " +

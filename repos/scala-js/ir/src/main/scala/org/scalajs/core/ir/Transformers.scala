@@ -187,9 +187,10 @@ object Transformers {
           JSArrayConstr(items map transformExpr)
 
         case JSObjectConstr(fields) =>
-          JSObjectConstr(fields map {
-            case (name, value) => (name, transformExpr(value))
-          })
+          JSObjectConstr(
+            fields map {
+              case (name, value) => (name, transformExpr(value))
+            })
 
         // Atomic expressions
 

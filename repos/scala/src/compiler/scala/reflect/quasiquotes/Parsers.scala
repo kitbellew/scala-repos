@@ -166,34 +166,46 @@ trait Parsers { self: Quasiquotes =>
         }
 
       override def isAnnotation: Boolean =
-        super.isAnnotation || (isHole && lookingAhead {
-          isAnnotation
-        })
+        super.isAnnotation || (
+          isHole && lookingAhead {
+            isAnnotation
+          }
+        )
 
       override def isModifier: Boolean =
-        super.isModifier || (isHole && lookingAhead {
-          isModifier
-        })
+        super.isModifier || (
+          isHole && lookingAhead {
+            isModifier
+          }
+        )
 
       override def isLocalModifier: Boolean =
-        super.isLocalModifier || (isHole && lookingAhead {
-          isLocalModifier
-        })
+        super.isLocalModifier || (
+          isHole && lookingAhead {
+            isLocalModifier
+          }
+        )
 
       override def isTemplateIntro: Boolean =
-        super.isTemplateIntro || (isHole && lookingAhead {
-          isTemplateIntro
-        })
+        super.isTemplateIntro || (
+          isHole && lookingAhead {
+            isTemplateIntro
+          }
+        )
 
       override def isDefIntro: Boolean =
-        super.isDefIntro || (isHole && lookingAhead {
-          isDefIntro
-        })
+        super.isDefIntro || (
+          isHole && lookingAhead {
+            isDefIntro
+          }
+        )
 
       override def isDclIntro: Boolean =
-        super.isDclIntro || (isHole && lookingAhead {
-          isDclIntro
-        })
+        super.isDclIntro || (
+          isHole && lookingAhead {
+            isDclIntro
+          }
+        )
 
       override def isStatSep(token: Int) =
         token == EOF || super.isStatSep(token)
@@ -237,10 +249,12 @@ trait Parsers { self: Quasiquotes =>
         }
 
       override def isTypedParam(tree: Tree) =
-        super.isTypedParam(tree) || (tree match {
-          case Ident(name) if isHole(name) => true
-          case _                           => false
-        })
+        super.isTypedParam(tree) || (
+          tree match {
+            case Ident(name) if isHole(name) => true
+            case _                           => false
+          }
+        )
 
       override def topStat =
         super.topStat.orElse {

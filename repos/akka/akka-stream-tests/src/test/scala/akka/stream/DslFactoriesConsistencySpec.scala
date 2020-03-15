@@ -204,8 +204,10 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
 
     ignores.foldLeft(false) {
       case (acc, i) ⇒
-        acc || (i.cls(m.declaringClass) && i.name(m.name) && i.parameters(
-          m.parameterTypes.length) && i.paramTypes(m.parameterTypes))
+        acc || (
+          i.cls(m.declaringClass) && i.name(m.name) && i.parameters(
+            m.parameterTypes.length) && i.paramTypes(m.parameterTypes)
+        )
     }
   }
 
@@ -342,8 +344,9 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     (sSource.isAssignableFrom(s) && jSource.isAssignableFrom(j)) ||
       (sSink.isAssignableFrom(s) && jSink.isAssignableFrom(j)) ||
       (sFlow.isAssignableFrom(s) && jFlow.isAssignableFrom(j)) ||
-      (sRunnableGraph.isAssignableFrom(s) && jRunnableGraph.isAssignableFrom(
-        j)) ||
+      (
+        sRunnableGraph.isAssignableFrom(s) && jRunnableGraph.isAssignableFrom(j)
+      ) ||
       (graph.isAssignableFrom(s) && graph.isAssignableFrom(j))
 
   def typeMatch(

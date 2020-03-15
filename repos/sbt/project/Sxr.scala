@@ -12,8 +12,7 @@ object Sxr {
 
   def baseSettings =
     Seq(
-      libraryDependencies += "org.scala-sbt.sxr" % "sxr_2.10" % "0.3.0" % sxrConf.name
-    )
+      libraryDependencies += "org.scala-sbt.sxr" % "sxr_2.10" % "0.3.0" % sxrConf.name)
   def inSxrSettings =
     Seq(
       managedClasspath := update.value

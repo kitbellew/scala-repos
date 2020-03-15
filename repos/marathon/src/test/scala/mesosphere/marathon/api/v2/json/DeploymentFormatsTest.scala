@@ -100,8 +100,7 @@ class DeploymentFormatsTest extends MarathonSpec {
       genGroup(),
       genGroup(Set(genGroup(), genGroup())),
       Seq(genStep),
-      Timestamp.now()
-    )
+      Timestamp.now())
     val json = Json.toJson(plan)
     val fieldMap = json.as[JsObject].fields.toMap
     fieldMap.keySet should be(
@@ -135,8 +134,7 @@ class DeploymentFormatsTest extends MarathonSpec {
       ScaleApplication(genApp, genInt),
       StopApplication(genApp),
       RestartApplication(genApp),
-      ResolveArtifacts(genApp, Map.empty)
-    ))
+      ResolveArtifacts(genApp, Map.empty)))
 
   def genGroup(children: Set[Group] = Set.empty) =
     Group(genId, Set(genApp, genApp), children, Set(genId), genTimestamp)
@@ -148,7 +146,6 @@ class DeploymentFormatsTest extends MarathonSpec {
       Some(children),
       Some(Set(genId)),
       Some(23),
-      Some(genTimestamp)
-    )
+      Some(genTimestamp))
 
 }

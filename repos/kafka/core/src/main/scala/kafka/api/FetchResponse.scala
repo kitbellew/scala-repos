@@ -152,8 +152,9 @@ class TopicDataSend(val dest: String, val topicData: TopicData) extends Send {
   private val sends =
     new MultiSend(
       dest,
-      JavaConversions.seqAsJavaList(topicData.partitionData.toList.map(d =>
-        new PartitionDataSend(d._1, d._2))))
+      JavaConversions.seqAsJavaList(
+        topicData.partitionData.toList.map(d =>
+          new PartitionDataSend(d._1, d._2))))
 
   override def writeTo(channel: GatheringByteChannel): Long = {
     if (completed)

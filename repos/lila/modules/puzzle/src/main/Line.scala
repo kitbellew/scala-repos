@@ -54,9 +54,10 @@ object Line {
           }
       }
 
-    loop(lines collect {
-      case Node(move, _) => List(move)
-    })
+    loop(
+      lines collect {
+        case Node(move, _) => List(move)
+      })
   }
 
   def toString(lines: Lines, level: Int = 0): String = {
@@ -69,9 +70,10 @@ object Line {
   }
 
   def toJson(lines: Lines): JsObject =
-    JsObject(lines map {
-      case Win(move)        => move -> JsString("win")
-      case Retry(move)      => move -> JsString("retry")
-      case Node(move, more) => move -> toJson(more)
-    })
+    JsObject(
+      lines map {
+        case Win(move)        => move -> JsString("win")
+        case Retry(move)      => move -> JsString("retry")
+        case Node(move, more) => move -> toJson(more)
+      })
 }

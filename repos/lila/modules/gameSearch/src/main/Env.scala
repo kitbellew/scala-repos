@@ -29,14 +29,15 @@ final class Env(
     new UserGameSearch(forms = forms, paginator = paginator)
 
   system.actorOf(
-    Props(new Actor {
-      import lila.game.actorApi.{InsertGame, FinishGame}
-      context.system.lilaBus.subscribe(self, 'finishGame)
-      def receive = {
-        case FinishGame(game, _, _) => self ! InsertGame(game)
-        case InsertGame(game)       => api store game
-      }
-    }),
+    Props(
+      new Actor {
+        import lila.game.actorApi.{InsertGame, FinishGame}
+        context.system.lilaBus.subscribe(self, 'finishGame)
+        def receive = {
+          case FinishGame(game, _, _) => self ! InsertGame(game)
+          case InsertGame(game)       => api store game
+        }
+      }),
     name = ActorName
   )
 

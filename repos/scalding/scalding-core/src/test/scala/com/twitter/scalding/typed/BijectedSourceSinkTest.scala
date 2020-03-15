@@ -72,15 +72,17 @@ class MutatedSourceTest extends WordSpec with Matchers {
 
 class ContraMappedAndThenSourceJob(args: Args) extends Job(args) {
   TypedPipe
-    .from(TypedTsv[Long]("input0").andThen { x =>
-      (LongIntPacker.l(x), LongIntPacker.r(x))
-    })
+    .from(
+      TypedTsv[Long]("input0").andThen { x =>
+        (LongIntPacker.l(x), LongIntPacker.r(x))
+      })
     .map {
       case (l, r) => (l * 2, r * 2)
     }
-    .write(TypedTsv[Long]("output").contraMap {
-      case (l, r) => LongIntPacker.lr(l, r)
-    })
+    .write(
+      TypedTsv[Long]("output").contraMap {
+        case (l, r) => LongIntPacker.lr(l, r)
+      })
 }
 
 class ContraMappedAndThenSourceTest extends WordSpec with Matchers {

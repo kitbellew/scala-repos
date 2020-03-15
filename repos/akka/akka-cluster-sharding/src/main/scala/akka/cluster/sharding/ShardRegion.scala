@@ -655,10 +655,11 @@ class ShardRegion(
   def replyToRegionStateQuery(ref: ActorRef): Unit = {
     askAllShards[Shard.CurrentShardState](Shard.GetCurrentShardState)
       .map { shardStates ⇒
-        CurrentShardRegionState(shardStates.map {
-          case (shardId, state) ⇒
-            ShardRegion.ShardState(shardId, state.entityIds)
-        }.toSet)
+        CurrentShardRegionState(
+          shardStates.map {
+            case (shardId, state) ⇒
+              ShardRegion.ShardState(shardId, state.entityIds)
+          }.toSet)
       }
       .recover {
         case x: AskTimeoutException ⇒ CurrentShardRegionState(Set.empty)
@@ -669,9 +670,10 @@ class ShardRegion(
   def replyToRegionStatsQuery(ref: ActorRef): Unit = {
     askAllShards[Shard.ShardStats](Shard.GetShardStats)
       .map { shardStats ⇒
-        ShardRegionStats(shardStats.map {
-          case (shardId, stats) ⇒ (shardId, stats.entityCount)
-        }.toMap)
+        ShardRegionStats(
+          shardStats.map {
+            case (shardId, stats) ⇒ (shardId, stats.entityCount)
+          }.toMap)
       }
       .recover {
         case x: AskTimeoutException ⇒ ShardRegionStats(Map.empty)
@@ -681,9 +683,10 @@ class ShardRegion(
 
   def askAllShards[T: ClassTag](msg: Any): Future[Seq[(ShardId, T)]] = {
     implicit val timeout: Timeout = 3.seconds
-    Future.sequence(shards.toSeq.map {
-      case (shardId, ref) ⇒ (ref ? msg).mapTo[T].map(t ⇒ (shardId, t))
-    })
+    Future.sequence(
+      shards.toSeq.map {
+        case (shardId, ref) ⇒ (ref ? msg).mapTo[T].map(t ⇒ (shardId, t))
+      })
   }
 
   private def tryCompleteGracefulShutdown() =
@@ -833,34 +836,35 @@ class ShardRegion(
     else {
       shards
         .get(id)
-        .orElse(entityProps match {
-          case Some(props) if !shardsByRef.values.exists(_ == id) ⇒
-            log.debug("Starting shard [{}] in region", id)
+        .orElse(
+          entityProps match {
+            case Some(props) if !shardsByRef.values.exists(_ == id) ⇒
+              log.debug("Starting shard [{}] in region", id)
 
-            val name = URLEncoder.encode(id, "utf-8")
-            val shard = context.watch(
-              context.actorOf(
-                Shard
-                  .props(
-                    typeName,
-                    id,
-                    props,
-                    settings,
-                    extractEntityId,
-                    extractShardId,
-                    handOffStopMessage)
-                  .withDispatcher(context.props.dispatcher),
-                name))
-            shardsByRef = shardsByRef.updated(shard, id)
-            shards = shards.updated(id, shard)
-            startingShards += id
-            None
-          case Some(props) ⇒
-            None
-          case None ⇒
-            throw new IllegalStateException(
-              "Shard must not be allocated to a proxy only ShardRegion")
-        })
+              val name = URLEncoder.encode(id, "utf-8")
+              val shard = context.watch(
+                context.actorOf(
+                  Shard
+                    .props(
+                      typeName,
+                      id,
+                      props,
+                      settings,
+                      extractEntityId,
+                      extractShardId,
+                      handOffStopMessage)
+                    .withDispatcher(context.props.dispatcher),
+                  name))
+              shardsByRef = shardsByRef.updated(shard, id)
+              shards = shards.updated(id, shard)
+              startingShards += id
+              None
+            case Some(props) ⇒
+              None
+            case None ⇒
+              throw new IllegalStateException(
+                "Shard must not be allocated to a proxy only ShardRegion")
+          })
     }
   }
 

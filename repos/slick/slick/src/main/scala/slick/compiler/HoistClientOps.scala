@@ -13,53 +13,54 @@ class HoistClientOps extends Phase {
   val name = "hoistClientOps"
 
   def apply(state: CompilerState) =
-    state.map(ClientSideOp.mapResultSetMapping(_) { rsm =>
-      val from1 = shuffle(rsm.from)
-      from1 match {
-        case Bind(s2, from2, Pure(StructNode(defs2), ts2)) =>
-          // Extract client-side operations into ResultSetMapping
-          val hoisted = defs2.map {
-            case (ts, n) => (ts, n, unwrap(n, true))
-          }
-          logger.debug(
-            "Hoisting operations from defs: " + hoisted.iterator
-              .filter(t => t._2 ne t._3._1)
-              .map(_._1)
-              .mkString(", "))
-          val newDefsM =
-            hoisted.iterator.map {
-              case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
-            }.toMap
-          logger.debug("New defs: " + newDefsM)
-          val oldDefsM =
-            hoisted.iterator.map {
-              case (ts, n, (n2, wrap)) =>
-                (ts, wrap(Select(Ref(rsm.generator), newDefsM(n2))))
-            }.toMap
-          val bind2 = rewriteDBSide(
-            Bind(
-              s2,
-              from2,
-              Pure(
-                StructNode(ConstArray.from(newDefsM.map(_.swap))),
-                new AnonTypeSymbol)).infer())
-          val rsm2 = rsm
-            .copy(
-              from = bind2,
-              map = rsm.map.replace {
-                case Select(Ref(s), f) if s == rsm.generator => oldDefsM(f)
-              })
-            .infer()
-          logger.debug("New ResultSetMapping:", Ellipsis(rsm2, List(0, 0)))
-          rsm2
-        case _ =>
-          val from2 = rewriteDBSide(from1)
-          if (from2 eq rsm.from)
-            rsm
-          else
-            rsm.copy(from = from2).infer()
-      }
-    })
+    state.map(
+      ClientSideOp.mapResultSetMapping(_) { rsm =>
+        val from1 = shuffle(rsm.from)
+        from1 match {
+          case Bind(s2, from2, Pure(StructNode(defs2), ts2)) =>
+            // Extract client-side operations into ResultSetMapping
+            val hoisted = defs2.map {
+              case (ts, n) => (ts, n, unwrap(n, true))
+            }
+            logger.debug(
+              "Hoisting operations from defs: " + hoisted.iterator
+                .filter(t => t._2 ne t._3._1)
+                .map(_._1)
+                .mkString(", "))
+            val newDefsM =
+              hoisted.iterator.map {
+                case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
+              }.toMap
+            logger.debug("New defs: " + newDefsM)
+            val oldDefsM =
+              hoisted.iterator.map {
+                case (ts, n, (n2, wrap)) =>
+                  (ts, wrap(Select(Ref(rsm.generator), newDefsM(n2))))
+              }.toMap
+            val bind2 = rewriteDBSide(
+              Bind(
+                s2,
+                from2,
+                Pure(
+                  StructNode(ConstArray.from(newDefsM.map(_.swap))),
+                  new AnonTypeSymbol)).infer())
+            val rsm2 = rsm
+              .copy(
+                from = bind2,
+                map = rsm.map.replace {
+                  case Select(Ref(s), f) if s == rsm.generator => oldDefsM(f)
+                })
+              .infer()
+            logger.debug("New ResultSetMapping:", Ellipsis(rsm2, List(0, 0)))
+            rsm2
+          case _ =>
+            val from2 = rewriteDBSide(from1)
+            if (from2 eq rsm.from)
+              rsm
+            else
+              rsm.copy(from = from2).infer()
+        }
+      })
 
   /** Pull Bind nodes up to the top level through Filter and CollectionCast. */
   def shuffle(n: Node): Node =
@@ -163,7 +164,9 @@ class HoistClientOps extends Phase {
                     val (wrap, f2) = rrepl(f)
                     wrap(Select(Ref(s), f2))
                   case Ref(s)
-                      if (s == sl1 && (bl2 ne bl)) || (s == sr1 && (br2 ne br)) =>
+                      if (
+                        s == sl1 && (bl2 ne bl)
+                      ) || (s == sr1 && (br2 ne br)) =>
                     Ref(s)
                 }
               )

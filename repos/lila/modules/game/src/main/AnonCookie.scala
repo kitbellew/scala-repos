@@ -11,6 +11,5 @@ object AnonCookie {
     !game.player(color).userId.isDefined option Json.obj(
       "name" -> name,
       "maxAge" -> maxAge,
-      "value" -> game.player(color).id
-    )
+      "value" -> game.player(color).id)
 }

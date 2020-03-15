@@ -47,8 +47,7 @@ object CachedTestDefns {
 
     implicit def eqGeneric[T, R](implicit
         gen: Generic.Aux[T, R],
-        eqRepr: Lazy[Eq[R]]
-    ): Eq[T] =
+        eqRepr: Lazy[Eq[R]]): Eq[T] =
       new Eq[T] {
         def eqv(x: T, y: T): Boolean = eqRepr.value.eqv(gen.to(x), gen.to(y))
       }
@@ -62,8 +61,7 @@ object CachedTestDefns {
     // Induction step for products
     implicit def eqHCons[H, T <: HList](implicit
         eqH: Lazy[Eq[H]],
-        eqT: Lazy[Eq[T]]
-    ): Eq[H :: T] =
+        eqT: Lazy[Eq[T]]): Eq[H :: T] =
       new Eq[H :: T] {
         def eqv(x: H :: T, y: H :: T): Boolean =
           eqH.value.eqv(x.head, y.head) && eqT.value.eqv(x.tail, y.tail)
@@ -112,27 +110,20 @@ class CachedTest {
 
   @Test
   def testDivergent {
-    illTyped(
-      "cachedImplicit[math.Ordering[Ordered[Int]]]"
-    )
+    illTyped("cachedImplicit[math.Ordering[Ordered[Int]]]")
   }
 
   @Test
   def testNotFound1 {
     trait T[X]
-    illTyped(
-      "cachedImplicit[T[String]]"
-    )
+    illTyped("cachedImplicit[T[String]]")
   }
 
   @Test
   def testNotFound2 {
     @scala.annotation.implicitNotFound("No U[${X}]")
     trait U[X]
-    illTyped(
-      "cachedImplicit[U[String]]",
-      "No U\\[String]"
-    )
+    illTyped("cachedImplicit[U[String]]", "No U\\[String]")
   }
 
   case class Quux(i: Int, s: String)

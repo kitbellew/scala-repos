@@ -607,15 +607,19 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       val routees =
         registry(selfAddress).content.get(path) match {
           case Some(valueHolder) if localAffinity ⇒
-            (for {
-              routee ← valueHolder.routee
-            } yield routee).toVector
+            (
+              for {
+                routee ← valueHolder.routee
+              } yield routee
+            ).toVector
           case _ ⇒
-            (for {
-              (_, bucket) ← registry
-              valueHolder ← bucket.content.get(path)
-              routee ← valueHolder.routee
-            } yield routee).toVector
+            (
+              for {
+                (_, bucket) ← registry
+                valueHolder ← bucket.content.get(path)
+                routee ← valueHolder.routee
+              } yield routee
+            ).toVector
         }
 
       if (routees.nonEmpty)
@@ -707,9 +711,11 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
           if (nodes(b.owner)) {
             val myBucket = registry(b.owner)
             if (b.version > myBucket.version) {
-              registry += (b.owner -> myBucket.copy(
-                version = b.version,
-                content = myBucket.content ++ b.content))
+              registry += (
+                b.owner -> myBucket.copy(
+                  version = b.version,
+                  content = myBucket.content ++ b.content)
+              )
             }
           }
         }
@@ -767,7 +773,9 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def publish(path: String, msg: Any, allButSelf: Boolean = false): Unit = {
     for {
       (address, bucket) ← registry
-      if !(allButSelf && address == selfAddress) // if we should skip sender() node and current address == self address => skip
+      if !(
+        allButSelf && address == selfAddress
+      ) // if we should skip sender() node and current address == self address => skip
       valueHolder ← bucket.content.get(path)
       ref ← valueHolder.ref
     } ref forward msg
@@ -777,12 +785,14 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     val prefix = path + '/'
     val lastKey = path + '0' // '0' is the next char of '/'
     val groups =
-      (for {
-        (_, bucket) ← registry.toSeq
-        key ← bucket.content.range(prefix, lastKey).keys
-        valueHolder ← bucket.content.get(key)
-        ref ← valueHolder.routee
-      } yield (key, ref)).groupBy(_._1).values
+      (
+        for {
+          (_, bucket) ← registry.toSeq
+          key ← bucket.content.range(prefix, lastKey).keys
+          valueHolder ← bucket.content.get(key)
+          ref ← valueHolder.routee
+        } yield (key, ref)
+      ).groupBy(_._1).values
 
     val wrappedMsg = SendToOneSubscriber(msg)
     groups foreach { group ⇒
@@ -795,20 +805,24 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def put(key: String, valueOption: Option[ActorRef]): Unit = {
     val bucket = registry(selfAddress)
     val v = nextVersion()
-    registry += (selfAddress -> bucket.copy(
-      version = v,
-      content = bucket.content + (key -> ValueHolder(v, valueOption))))
+    registry += (
+      selfAddress -> bucket.copy(
+        version = v,
+        content = bucket.content + (key -> ValueHolder(v, valueOption)))
+    )
   }
 
   def getCurrentTopics(): Set[String] = {
     val topicPrefix = self.path.toStringWithoutAddress
-    (for {
-      (_, bucket) ← registry
-      (key, value) ← bucket.content
-      if key.startsWith(topicPrefix)
-      topic = key.substring(topicPrefix.length + 1)
-      if !topic.contains('/') // exclude group topics
-    } yield URLDecoder.decode(topic, "utf-8")).toSet
+    (
+      for {
+        (_, bucket) ← registry
+        (key, value) ← bucket.content
+        if key.startsWith(topicPrefix)
+        topic = key.substring(topicPrefix.length + 1)
+        if !topic.contains('/') // exclude group topics
+      } yield URLDecoder.decode(topic, "utf-8")
+    ).toSet
   }
 
   def registerTopic(ref: ActorRef): Unit = {

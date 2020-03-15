@@ -117,10 +117,12 @@ class ScalaFileImpl(
       val pName = inner + typeDefinitions
         .find(_.isPackageObject)
         .map(
-          (if (inner.length > 0)
-             "."
-           else
-             "") + _.name)
+          (
+            if (inner.length > 0)
+              "."
+            else
+              ""
+          ) + _.name)
         .getOrElse("")
       val sourceFile = sourceName
       val relPath =
@@ -247,12 +249,16 @@ class ScalaFileImpl(
   def isWorksheetFile: Boolean = {
     val vFile = getVirtualFile
 
-    vFile != null && (vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
-    ScratchFileService
-      .getInstance()
-      .getRootType(vFile)
-      .isInstanceOf[ScratchRootType] &&
-    ScalaProjectSettings.getInstance(getProject).isTreatScratchFilesAsWorksheet)
+    vFile != null && (
+      vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
+      ScratchFileService
+        .getInstance()
+        .getRootType(vFile)
+        .isInstanceOf[ScratchRootType] &&
+      ScalaProjectSettings
+        .getInstance(getProject)
+        .isTreatScratchFilesAsWorksheet
+    )
   }
 
   def setPackageName(name: String) {
@@ -600,8 +606,10 @@ object ScalaFileImpl {
           return false
         val index =
           ProjectRootManager.getInstance(place.getProject).getFileIndex
-        !(index.isInSourceContent(file) || index.isInLibraryClasses(
-          file) || index.isInLibrarySource(file))
+        !(
+          index.isInSourceContent(file) || index.isInLibraryClasses(
+            file) || index.isInLibrarySource(file)
+        )
       case _ => false
     }
   }

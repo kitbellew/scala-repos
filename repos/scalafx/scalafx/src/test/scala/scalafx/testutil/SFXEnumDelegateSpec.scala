@@ -65,9 +65,8 @@ import scalafx.delegate.{SFXEnumDelegate, SFXEnumDelegateCompanion}
   * @param sfx2jfx Implicit conversion from ScalaFX to JavaFX, it should not be assigned,
   *                it has to be resolved automatically by the compiler.
   */
-abstract class SFXEnumDelegateSpec[
-    E <: java.lang.Enum[E],
-    S <: SFXEnumDelegate[E]] protected (
+abstract class SFXEnumDelegateSpec[E <: java.lang.Enum[E], S <: SFXEnumDelegate[
+  E]] protected (
     javaClass: Class[E],
     scalaClass: Class[S],
     companion: SFXEnumDelegateCompanion[E, S])(implicit

@@ -157,8 +157,9 @@ class Producer[K, V](
           producerSendThread.shutdown
         eventHandler.close
         info(
-          "Producer shutdown completed in " + (System
-            .nanoTime() - startTime) / 1000000 + " ms")
+          "Producer shutdown completed in " + (
+            System.nanoTime() - startTime
+          ) / 1000000 + " ms")
       }
     }
   }

@@ -100,9 +100,9 @@ object BuildSummer {
       if (!useAsyncCache.get) {
         new SummerBuilder {
           def getSummer[K, V: Semigroup]
-              : com.twitter.algebird.util.summer.AsyncSummer[
-                (K, V),
-                Map[K, V]] = {
+              : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[
+                K,
+                V]] = {
             new SyncSummingQueue[K, V](
               BufferSize(cacheSize.lowerBound),
               FlushFrequency(flushFrequency.get),
@@ -128,9 +128,9 @@ object BuildSummer {
 
         new SummerBuilder {
           def getSummer[K, V: Semigroup]
-              : com.twitter.algebird.util.summer.AsyncSummer[
-                (K, V),
-                Map[K, V]] = {
+              : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[
+                K,
+                V]] = {
             val executor = Executors.newFixedThreadPool(asyncPoolSize.get)
             val futurePool = FuturePool(executor)
             val summer =

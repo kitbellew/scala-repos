@@ -116,8 +116,7 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
 
           Seq(
             newIterator(fidx, funtil, ftotal, fes),
-            newIterator(sidx, suntil, stotal, ses)
-          )
+            newIterator(sidx, suntil, stotal, ses))
         } else {
           // otherwise, this is the last entry in the table - all what remains is the chain
           // so split the rest of the chain

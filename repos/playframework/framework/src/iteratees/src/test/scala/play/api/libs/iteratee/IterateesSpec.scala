@@ -178,8 +178,9 @@ object IterateesSpec
 
     "flatMap result with flatMapM" in {
       mustExecute(1) { flatMapEC =>
-        mustTranslate3To(6)(_.flatMapM((x: Int) =>
-          Future.successful(Done[Int, Int](x * 2)))(flatMapEC))
+        mustTranslate3To(6)(
+          _.flatMapM((x: Int) => Future.successful(Done[Int, Int](x * 2)))(
+            flatMapEC))
       }
     }
 
@@ -197,10 +198,8 @@ object IterateesSpec
               Done[List[Int], Int](4, Input.El(List(3, 4))))(
               implicitly[
                 List[Int] => scala.collection.TraversableLike[Int, List[Int]]],
-              implicitly[scala.collection.generic.CanBuildFrom[
-                List[Int],
-                Int,
-                List[Int]]],
+              implicitly[scala.collection.generic.CanBuildFrom[List[
+                Int], Int, List[Int]]],
               flatMapEC
             )
             .unflatten) must equalTo(Step.Done(4, Input.El(List(1, 2, 3, 4))))
@@ -234,9 +233,10 @@ object IterateesSpec
       mustExecute(1) { flatMapEC =>
         await(
           Iteratee
-            .flatten(Cont[Int, Int](_ => Done(3))
-              .flatMap((x: Int) => Done[Int, Int](x * 2))(flatMapEC)
-              .feed(Input.El(11)))
+            .flatten(
+              Cont[Int, Int](_ => Done(3))
+                .flatMap((x: Int) => Done[Int, Int](x * 2))(flatMapEC)
+                .feed(Input.El(11)))
             .unflatten) must equalTo(Step.Done(6, Input.Empty))
       }
     }
@@ -263,10 +263,10 @@ object IterateesSpec
       import ExecutionContext.Implicits.global
       val unitDone: Iteratee[Unit, Unit] = Done(())
       val flatMapped: Iteratee[Unit, Unit] =
-        (0 until overflowDepth).foldLeft[Iteratee[Unit, Unit]](Cont(_ =>
-          unitDone)) {
-          case (it, _) => it.flatMap(_ => unitDone)
-        }
+        (0 until overflowDepth)
+          .foldLeft[Iteratee[Unit, Unit]](Cont(_ => unitDone)) {
+            case (it, _) => it.flatMap(_ => unitDone)
+          }
       await(await(flatMapped.feed(Input.EOF)).unflatten) must equalTo(
         Step.Done((), Input.Empty))
     }
@@ -342,8 +342,9 @@ object IterateesSpec
 
     "fold input" in {
       mustExecute(4) { foldEC =>
-        await(Enumerator(1, 2, 3, 4) |>>> Iteratee.foldM[Int, Int](0)((x, y) =>
-          Future.successful(x + y))(foldEC)) must equalTo(10)
+        await(
+          Enumerator(1, 2, 3, 4) |>>> Iteratee.foldM[Int, Int](0)((x, y) =>
+            Future.successful(x + y))(foldEC)) must equalTo(10)
       }
     }
 
@@ -486,15 +487,10 @@ object IterateesSpec
             delayed(
               cont(input2 =>
                 delayed(
-                  cont(input3 =>
-                    delayed(
-                      done(input1 + input2 + input3)
-                    ))
-                ))
-            ))
-        ).recover {
-          case t: Throwable => unexpected
-        }
+                  cont(input3 => delayed(done(input1 + input2 + input3))))))))
+          .recover {
+            case t: Throwable => unexpected
+          }
         val actual = await(Enumerator(expected, expected, expected) |>>> it)
         actual must equalTo(expected * 3)
       }
@@ -507,15 +503,10 @@ object IterateesSpec
             delayed(
               cont(input2 =>
                 delayed(
-                  cont(input3 =>
-                    delayed(
-                      error(input1 + input2 + input3)
-                    ))
-                ))
-            ))
-        ).recover {
-          case t: Throwable => expected
-        }
+                  cont(input3 => delayed(error(input1 + input2 + input3))))))))
+          .recover {
+            case t: Throwable => expected
+          }
         val actual = await(
           Enumerator(unexpected, unexpected, unexpected) |>>> it)
         actual must equalTo(expected)

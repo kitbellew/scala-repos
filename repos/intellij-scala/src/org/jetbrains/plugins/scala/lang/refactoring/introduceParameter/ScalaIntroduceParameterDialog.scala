@@ -145,16 +145,17 @@ class ScalaIntroduceParameterDialog(
   private def createParamNamePanel(): JComponent = {
     paramNameField = new EditorTextField(introduceData.paramName)
     paramNameField.setPreferredWidth(150)
-    paramNameField.addDocumentListener(new DocumentAdapter {
-      override def documentChanged(e: DocumentEvent): Unit = {
-        val newText: String = paramNameField.getText
-        introducedParamTableItem.foreach(_.parameter.setName(newText))
-        myParametersTableModel.fireTableDataChanged()
-        parametersTable.updateUI()
-        updateSignatureAlarmFired()
-        getRefactorAction.setEnabled(!newText.isEmpty)
-      }
-    })
+    paramNameField.addDocumentListener(
+      new DocumentAdapter {
+        override def documentChanged(e: DocumentEvent): Unit = {
+          val newText: String = paramNameField.getText
+          introducedParamTableItem.foreach(_.parameter.setName(newText))
+          myParametersTableModel.fireTableDataChanged()
+          parametersTable.updateUI()
+          updateSignatureAlarmFired()
+          getRefactorAction.setEnabled(!newText.isEmpty)
+        }
+      })
     val paramNameLabel = new JLabel("Name:")
     paramNameLabel.setDisplayedMnemonic('N')
     paramNameLabel.setLabelFor(paramNameField)
@@ -175,18 +176,19 @@ class ScalaIntroduceParameterDialog(
       JListCompatibility.addItem(typeCombobox, typeName)
     }
     typeLabel.setDisplayedMnemonic('T')
-    typeCombobox.addItemListener(new ItemListener {
-      override def itemStateChanged(e: ItemEvent): Unit = {
-        val scType = typeMap.get(typeCombobox.getSelectedItem)
-        introducedParamTableItem.foreach { item =>
-          item.parameter.scType = scType
-          item.typeText = scType.presentableText
+    typeCombobox.addItemListener(
+      new ItemListener {
+        override def itemStateChanged(e: ItemEvent): Unit = {
+          val scType = typeMap.get(typeCombobox.getSelectedItem)
+          introducedParamTableItem.foreach { item =>
+            item.parameter.scType = scType
+            item.typeText = scType.presentableText
+          }
+          myParametersTableModel.fireTableDataChanged()
+          parametersTable.updateUI()
+          updateSignatureAlarmFired()
         }
-        myParametersTableModel.fireTableDataChanged()
-        parametersTable.updateUI()
-        updateSignatureAlarmFired()
-      }
-    })
+      })
     val paramTypePanel = new JPanel(new BorderLayout(0, 2))
     paramTypePanel.add(typeLabel, BorderLayout.NORTH)
     IJSwingUtilities.adjustComponentsOnMac(typeLabel, typeCombobox)
@@ -206,12 +208,13 @@ class ScalaIntroduceParameterDialog(
     panel.add(label, BorderLayout.NORTH)
     defaultForIntroducedTextField.setOneLineMode(false)
     defaultForIntroducedTextField.setEnabled(true)
-    defaultForIntroducedTextField.addDocumentListener(new DocumentAdapter {
-      override def documentChanged(e: DocumentEvent): Unit = {
-        introducedParamTableItem.foreach(_.parameter.defaultValue =
-          defaultForIntroducedTextField.getText.trim)
-      }
-    })
+    defaultForIntroducedTextField.addDocumentListener(
+      new DocumentAdapter {
+        override def documentChanged(e: DocumentEvent): Unit = {
+          introducedParamTableItem.foreach(_.parameter.defaultValue =
+            defaultForIntroducedTextField.getText.trim)
+        }
+      })
     IJSwingUtilities.adjustComponentsOnMac(label, defaultForIntroducedTextField)
     panel.add(defaultForIntroducedTextField, BorderLayout.CENTER)
     val optionsPanel = new JPanel(new BorderLayout())

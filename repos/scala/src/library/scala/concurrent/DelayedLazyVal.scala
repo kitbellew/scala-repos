@@ -43,10 +43,11 @@ class DelayedLazyVal[T](f: () => T, body: => Unit)(
     else
       f()
 
-  exec.execute(new Runnable {
-    def run = {
-      body;
-      _isDone = true
-    }
-  })
+  exec.execute(
+    new Runnable {
+      def run = {
+        body;
+        _isDone = true
+      }
+    })
 }

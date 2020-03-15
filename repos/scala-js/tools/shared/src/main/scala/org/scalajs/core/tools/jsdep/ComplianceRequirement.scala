@@ -23,9 +23,8 @@ object ComplianceRequirement {
       throw new BadComplianceException(unmet.toList)
   }
 
-  def mergeFromManifests(
-      manifests: Traversable[JSDependencyManifest]
-  ): Traversable[ComplianceRequirement] = {
+  def mergeFromManifests(manifests: Traversable[JSDependencyManifest])
+      : Traversable[ComplianceRequirement] = {
 
     val flatTups =
       for {

@@ -27,10 +27,7 @@ class DataSource(val dsp: DataSourceParams)
 
     // create a RDD of (entityID, User)
     val usersRDD: RDD[(String, User)] = eventsDb
-      .aggregateProperties(
-        appId = dsp.appId,
-        entityType = "user"
-      )(sc)
+      .aggregateProperties(appId = dsp.appId, entityType = "user")(sc)
       .map {
         case (entityId, properties) =>
           val user =
@@ -81,10 +78,7 @@ class DataSource(val dsp: DataSourceParams)
       }
       .cache()
 
-    new TrainingData(
-      users = usersRDD,
-      followEvents = followEventsRDD
-    )
+    new TrainingData(users = usersRDD, followEvents = followEventsRDD)
   }
 }
 
@@ -94,8 +88,8 @@ case class FollowEvent(user: String, followedUser: String, t: Long)
 
 class TrainingData(
     val users: RDD[(String, User)],
-    val followEvents: RDD[FollowEvent]
-) extends Serializable {
+    val followEvents: RDD[FollowEvent])
+    extends Serializable {
   override def toString = {
     s"users: [${users.count()} (${users.take(2).toList}...)]" +
       s"followEvents: [${followEvents.count()}] (${followEvents.take(2).toList}...)"

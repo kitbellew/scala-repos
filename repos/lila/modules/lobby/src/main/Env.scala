@@ -58,8 +58,7 @@ final class Env(
         playban = playban,
         onStart = onStart,
         broomPeriod = BroomPeriod,
-        resyncIdsPeriod = ResyncIdsPeriod
-      )),
+        resyncIdsPeriod = ResyncIdsPeriod)),
     name = ActorName
   )
 
@@ -74,13 +73,15 @@ final class Env(
 
   private val abortListener = new AbortListener(seekApi = seekApi)
 
-  system.actorOf(Props(new Actor {
-    system.lilaBus.subscribe(self, 'abortGame)
-    def receive = {
-      case lila.game.actorApi.AbortedBy(pov) if pov.game.isCorrespondence =>
-        abortListener recreateSeek pov
-    }
-  }))
+  system.actorOf(
+    Props(
+      new Actor {
+        system.lilaBus.subscribe(self, 'abortGame)
+        def receive = {
+          case lila.game.actorApi.AbortedBy(pov) if pov.game.isCorrespondence =>
+            abortListener recreateSeek pov
+        }
+      }))
 }
 
 object Env {

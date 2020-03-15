@@ -27,12 +27,13 @@ class OutputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
       val datas = List(ByteString("a"), ByteString("c"), ByteString("c"))
 
       val completion = Source(datas)
-        .runWith(StreamConverters.fromOutputStream(() ⇒
-          new OutputStream {
-            override def write(i: Int): Unit = ()
-            override def write(bytes: Array[Byte]): Unit =
-              p.ref ! ByteString(bytes).utf8String
-          }))
+        .runWith(
+          StreamConverters.fromOutputStream(() ⇒
+            new OutputStream {
+              override def write(i: Int): Unit = ()
+              override def write(bytes: Array[Byte]): Unit =
+                p.ref ! ByteString(bytes).utf8String
+            }))
 
       p.expectMsg(datas(0).utf8String)
       p.expectMsg(datas(1).utf8String)
@@ -44,11 +45,12 @@ class OutputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
       val p = TestProbe()
       Source
         .failed(new TE("Boom!"))
-        .runWith(StreamConverters.fromOutputStream(() ⇒
-          new OutputStream {
-            override def write(i: Int): Unit = ()
-            override def close() = p.ref ! "closed"
-          }))
+        .runWith(
+          StreamConverters.fromOutputStream(() ⇒
+            new OutputStream {
+              override def write(i: Int): Unit = ()
+              override def close() = p.ref ! "closed"
+            }))
 
       p.expectMsg("closed")
     }
@@ -56,13 +58,14 @@ class OutputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
     "close underlying stream when completion received" in assertAllStagesStopped {
       val p = TestProbe()
       Source.empty
-        .runWith(StreamConverters.fromOutputStream(() ⇒
-          new OutputStream {
-            override def write(i: Int): Unit = ()
-            override def write(bytes: Array[Byte]): Unit =
-              p.ref ! ByteString(bytes).utf8String
-            override def close() = p.ref ! "closed"
-          }))
+        .runWith(
+          StreamConverters.fromOutputStream(() ⇒
+            new OutputStream {
+              override def write(i: Int): Unit = ()
+              override def write(bytes: Array[Byte]): Unit =
+                p.ref ! ByteString(bytes).utf8String
+              override def close() = p.ref ! "closed"
+            }))
 
       p.expectMsg("closed")
     }

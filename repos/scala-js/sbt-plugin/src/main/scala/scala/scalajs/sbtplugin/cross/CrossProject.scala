@@ -208,8 +208,7 @@ import java.io.File
 final class CrossProject private (
     crossType: CrossType,
     val jvm: Project,
-    val js: Project
-) {
+    val js: Project) {
 
   import CrossProject._
 

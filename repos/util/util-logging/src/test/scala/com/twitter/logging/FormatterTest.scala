@@ -28,28 +28,15 @@ import com.twitter.conversions.string._
 class FormatterTest extends WordSpec {
   val basicFormatter = new Formatter
 
-  val utcFormatter =
-    new Formatter(
-      timezone = Some("UTC")
-    )
+  val utcFormatter = new Formatter(timezone = Some("UTC"))
 
   val fullPackageFormatter =
-    new Formatter(
-      timezone = Some("UTC"),
-      useFullPackageNames = true
-    )
+    new Formatter(timezone = Some("UTC"), useFullPackageNames = true)
 
   val prefixFormatter =
-    new Formatter(
-      timezone = Some("UTC"),
-      prefix = "%2$s <HH:mm> %1$.4s "
-    )
+    new Formatter(timezone = Some("UTC"), prefix = "%2$s <HH:mm> %1$.4s ")
 
-  val truncateFormatter =
-    new Formatter(
-      timezone = Some("UTC"),
-      truncateAt = 30
-    )
+  val truncateFormatter = new Formatter(timezone = Some("UTC"), truncateAt = 30)
 
   val record1 = new javalog.LogRecord(Level.ERROR, "boo.")
   record1.setLoggerName("com.example.jobs.BadJob")
@@ -140,8 +127,9 @@ class FormatterTest extends WordSpec {
     }
 
     "truncate line" in {
-      assert(truncateFormatter.format(record3) ==
-        "CRI [20080329-05:53:16.722] whiskey: Something terrible happened th...\n")
+      assert(
+        truncateFormatter.format(record3) ==
+          "CRI [20080329-05:53:16.722] whiskey: Something terrible happened th...\n")
     }
 
     "write stack traces" should {

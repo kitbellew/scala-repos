@@ -150,10 +150,12 @@ object SessionSettings {
 
   /** Adds `s` to a strings when needed.    Maybe one day we'll care about non-english languages. */
   def pluralize(size: Int, of: String) =
-    size.toString + (if (size == 1)
-                       of
-                     else
-                       (of + "s"))
+    size.toString + (
+      if (size == 1)
+        of
+      else
+        (of + "s")
+    )
 
   /** Checks to see if any session settings are being discarded and issues a warning. */
   def checkSession(newSession: SessionSettings, oldState: State): Unit = {
@@ -251,10 +253,12 @@ object SessionSettings {
 
     val path = writeTo.getAbsolutePath
     val (inFile, other, _) =
-      ((
-        List[Setting[_]](),
-        List[Setting[_]](),
-        Set.empty[ScopedKey[_]]) /: original.reverse) {
+      (
+        (
+          List[Setting[_]](),
+          List[Setting[_]](),
+          Set.empty[ScopedKey[_]]) /: original.reverse
+      ) {
         case ((in, oth, keys), s) =>
           s.pos match {
             case RangePosition(`path`, _) if !keys.contains(s.key) =>
@@ -381,11 +385,13 @@ save, save-all
   /** Parser for the session command. */
   lazy val parser =
     token(Space) ~>
-      (token("list-all" ^^^ new Print(true)) | token(
-        "list" ^^^ new Print(false)) | token("clear" ^^^ new Clear(false)) |
-        token("save-all" ^^^ new Save(true)) | token(
-        "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
-        remove)
+      (
+        token("list-all" ^^^ new Print(true)) | token(
+          "list" ^^^ new Print(false)) | token("clear" ^^^ new Clear(false)) |
+          token("save-all" ^^^ new Save(true)) | token(
+          "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
+          remove
+      )
 
   lazy val remove = token("remove") ~> token(Space) ~> natSelect.map(ranges =>
     new Remove(ranges))

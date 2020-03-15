@@ -180,8 +180,12 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
           case Success(msg) ⇒
             exchange.setResponse(CamelMessage.canonicalize(msg))
           case Failure(e: TimeoutException) ⇒
-            exchange.setFailure(FailureResult(new TimeoutException(
-              "Failed to get response from the actor [%s] within timeout [%s]. Check replyTimeout and blocking settings [%s]" format (endpoint.path, endpoint.replyTimeout, endpoint))))
+            exchange.setFailure(
+              FailureResult(
+                new TimeoutException(
+                  "Failed to get response from the actor [%s] within timeout [%s]. Check replyTimeout and blocking settings [%s]" format (
+                    endpoint.path, endpoint.replyTimeout, endpoint
+                  ))))
           case Failure(throwable) ⇒
             exchange.setFailure(FailureResult(throwable))
         }
@@ -189,11 +193,19 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
           case Success(Ack) ⇒ () /* no response message to set */
           case Success(failure: FailureResult) ⇒ exchange.setFailure(failure)
           case Success(msg) ⇒
-            exchange.setFailure(FailureResult(new IllegalArgumentException(
-              "Expected Ack or Failure message, but got: [%s] from actor [%s]" format (msg, endpoint.path))))
+            exchange.setFailure(
+              FailureResult(
+                new IllegalArgumentException(
+                  "Expected Ack or Failure message, but got: [%s] from actor [%s]" format (
+                    msg, endpoint.path
+                  ))))
           case Failure(e: TimeoutException) ⇒
-            exchange.setFailure(FailureResult(new TimeoutException(
-              "Failed to get Ack or Failure response from the actor [%s] within timeout [%s]. Check replyTimeout and blocking settings [%s]" format (endpoint.path, endpoint.replyTimeout, endpoint))))
+            exchange.setFailure(
+              FailureResult(
+                new TimeoutException(
+                  "Failed to get Ack or Failure response from the actor [%s] within timeout [%s]. Check replyTimeout and blocking settings [%s]" format (
+                    endpoint.path, endpoint.replyTimeout, endpoint
+                  ))))
           case Failure(throwable) ⇒
             exchange.setFailure(FailureResult(throwable))
         }
@@ -207,9 +219,10 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
         }
       implicit val ec =
         camel.system.dispatcher // FIXME which ExecutionContext should be used here?
-      async.onComplete(action andThen { _ ⇒
-        callback.done(false)
-      })
+      async.onComplete(
+        action andThen { _ ⇒
+          callback.done(false)
+        })
       false
     }
 
@@ -226,9 +239,9 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     }
 
   private[this] def actorFor(path: ActorEndpointPath): ActorRef =
-    path.findActorIn(
-      camel.system) getOrElse (throw new ActorNotRegisteredException(
-      path.actorPath))
+    path.findActorIn(camel.system) getOrElse (
+      throw new ActorNotRegisteredException(path.actorPath)
+    )
 
   private[this] def messageFor(exchange: CamelExchangeAdapter) =
     exchange.toRequestMessage(
@@ -243,16 +256,17 @@ private[camel] object DurationTypeConverter extends TypeConverterSupport {
 
   @throws(classOf[TypeConversionException])
   def convertTo[T](valueType: Class[T], exchange: Exchange, value: AnyRef): T =
-    valueType.cast(try {
-      val d = Duration(value.toString)
-      if (valueType.isInstance(d))
-        d
-      else
-        null
-    } catch {
-      case NonFatal(throwable) ⇒
-        throw new TypeConversionException(value, valueType, throwable)
-    })
+    valueType.cast(
+      try {
+        val d = Duration(value.toString)
+        if (valueType.isInstance(d))
+          d
+        else
+          null
+      } catch {
+        case NonFatal(throwable) ⇒
+          throw new TypeConversionException(value, valueType, throwable)
+      })
 }
 
 /**

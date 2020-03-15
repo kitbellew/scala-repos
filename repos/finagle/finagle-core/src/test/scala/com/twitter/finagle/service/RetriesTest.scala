@@ -35,9 +35,7 @@ class RetriesTest extends FunSuite {
     ServiceFactory.const(
       Service.mk[Exception, Int] { req =>
         Future.exception(req)
-      }
-    )
-  )
+      }))
 
   private val minBudget = 3
 
@@ -201,8 +199,7 @@ class RetriesTest extends FunSuite {
   private def endToEndToEndSvc(
       stats: InMemoryStatsReceiver,
       backReqs: AtomicInteger,
-      mkBudget: () => RetryBudget
-  ): Service[Exception, Int] = {
+      mkBudget: () => RetryBudget): Service[Exception, Int] = {
     val midParams = Stack.Params.empty +
       param.Stats(stats.scope("mid")) +
       Retries.Budget(mkBudget()) +
@@ -217,8 +214,7 @@ class RetriesTest extends FunSuite {
       Service.mk[Exception, Int] { req =>
         backReqs.incrementAndGet()
         Future.exception(req)
-      }
-    )
+      })
 
     // wire em together.
     val midToBack: Stack[ServiceFactory[Exception, Int]] = Stack.Leaf(

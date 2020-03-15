@@ -92,22 +92,27 @@ trait ItemsList[T <: Mapper[T]] {
         unsorted
       case Some(field) =>
         unsorted.sortWith { (a, b) =>
-          ((
-            field.actualField(a).get: Any,
-            field.actualField(b).get: Any) match {
-            case (aval: String, bval: String) =>
-              aval.toLowerCase < bval.toLowerCase
-            case (aval: Ordered[_], bval: Ordered[_]) =>
-              aval.asInstanceOf[Ordered[Any]] < bval.asInstanceOf[Ordered[Any]]
-            case (
-                  aval: java.lang.Comparable[_],
-                  bval: java.lang.Comparable[_]) =>
-              (aval.asInstanceOf[java.lang.Comparable[Any]] compareTo bval
-                .asInstanceOf[java.lang.Comparable[Any]]) < 0
-            case (null, _)    => sortNullFirst
-            case (_, null)    => !sortNullFirst
-            case (aval, bval) => aval.toString < bval.toString
-          }) match {
+          (
+            (
+              field.actualField(a).get: Any,
+              field.actualField(b).get: Any) match {
+              case (aval: String, bval: String) =>
+                aval.toLowerCase < bval.toLowerCase
+              case (aval: Ordered[_], bval: Ordered[_]) =>
+                aval.asInstanceOf[Ordered[Any]] < bval
+                  .asInstanceOf[Ordered[Any]]
+              case (
+                    aval: java.lang.Comparable[_],
+                    bval: java.lang.Comparable[_]) =>
+                (
+                  aval.asInstanceOf[java.lang.Comparable[Any]] compareTo bval
+                    .asInstanceOf[java.lang.Comparable[Any]]
+                ) < 0
+              case (null, _)    => sortNullFirst
+              case (_, null)    => !sortNullFirst
+              case (aval, bval) => aval.toString < bval.toString
+            }
+          ) match {
             case cmp =>
               if (ascending)
                 cmp
@@ -356,8 +361,7 @@ trait ItemsListEditor[T <: Mapper[T]] {
           { f: MappedField[_, T] =>
             ".name" #> SHtml.link(S.uri, sortFn(f), Text(capify(f.displayName)))
           },
-          fieldFilter
-        )
+          fieldFilter)
       } &
         ".table" #> {
           ".title *" #> title &

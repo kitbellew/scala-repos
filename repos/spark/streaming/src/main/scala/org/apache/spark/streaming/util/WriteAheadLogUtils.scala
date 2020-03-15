@@ -110,8 +110,7 @@ private[streaming] object WriteAheadLogUtils extends Logging {
   def createLogForDriver(
       sparkConf: SparkConf,
       fileWalLogDirectory: String,
-      fileWalHadoopConf: Configuration
-  ): WriteAheadLog = {
+      fileWalHadoopConf: Configuration): WriteAheadLog = {
     createLog(true, sparkConf, fileWalLogDirectory, fileWalHadoopConf)
   }
 
@@ -122,8 +121,7 @@ private[streaming] object WriteAheadLogUtils extends Logging {
   def createLogForReceiver(
       sparkConf: SparkConf,
       fileWalLogDirectory: String,
-      fileWalHadoopConf: Configuration
-  ): WriteAheadLog = {
+      fileWalHadoopConf: Configuration): WriteAheadLog = {
     createLog(false, sparkConf, fileWalLogDirectory, fileWalHadoopConf)
   }
 
@@ -138,8 +136,7 @@ private[streaming] object WriteAheadLogUtils extends Logging {
       isDriver: Boolean,
       sparkConf: SparkConf,
       fileWalLogDirectory: String,
-      fileWalHadoopConf: Configuration
-  ): WriteAheadLog = {
+      fileWalHadoopConf: Configuration): WriteAheadLog = {
 
     val classNameOption =
       if (isDriver) {

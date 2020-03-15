@@ -1215,8 +1215,9 @@ private[stream] final class Delay[T](
                   buffer.clear()
                   grabAndPull(true)
                 case Fail ⇒
-                  failStage(new BufferOverflowException(
-                    s"Buffer overflow for delay combinator (max capacity was: $size)!"))
+                  failStage(
+                    new BufferOverflowException(
+                      s"Buffer overflow for delay combinator (max capacity was: $size)!"))
                 case Backpressure ⇒
                   throw new IllegalStateException(
                     "Delay buffer must never overflow in Backpressure mode")
@@ -1409,17 +1410,18 @@ private[stream] final class RecoverWith[T, M](
 
       def switchTo(source: Graph[SourceShape[T], M]): Unit = {
         val sinkIn = new SubSinkInlet[T]("RecoverWithSink")
-        sinkIn.setHandler(new InHandler {
-          override def onPush(): Unit =
-            if (isAvailable(out)) {
-              push(out, sinkIn.grab())
-              sinkIn.pull()
-            }
-          override def onUpstreamFinish(): Unit =
-            if (!sinkIn.isAvailable)
-              completeStage()
-          override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
-        })
+        sinkIn.setHandler(
+          new InHandler {
+            override def onPush(): Unit =
+              if (isAvailable(out)) {
+                push(out, sinkIn.grab())
+                sinkIn.pull()
+              }
+            override def onUpstreamFinish(): Unit =
+              if (!sinkIn.isAvailable)
+                completeStage()
+            override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
+          })
 
         def pushOut(): Unit = {
           push(out, sinkIn.grab())

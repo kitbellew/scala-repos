@@ -37,17 +37,19 @@ object ControlsTest extends JFXApp {
 
   val indicatorPane =
     new VBox {
-      children = List(new Label {
-        text = "LEFT"
+      children = List(
+        new Label {
+          text = "LEFT"
 
-      })
+        })
     }
 
   val controlsPane =
     new VBox {
-      children = List(new Label {
-        text = "RIGHT"
-      })
+      children = List(
+        new Label {
+          text = "RIGHT"
+        })
     }
 
   val centerPane =
@@ -56,9 +58,10 @@ object ControlsTest extends JFXApp {
         text = "Label"
       }
       center = new StackPane {
-        children = List(new Button {
-          text = "Button"
-        })
+        children = List(
+          new Button {
+            text = "Button"
+          })
       }
     }
 

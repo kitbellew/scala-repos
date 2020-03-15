@@ -488,19 +488,20 @@ trait ActionBuilder[+R[_]] extends ActionFunction[Request, R] {
     */
   final def async[A](bodyParser: BodyParser[A])(
       block: R[A] => Future[Result]): Action[A] =
-    composeAction(new Action[A] {
-      def parser = composeParser(bodyParser)
-      def apply(request: Request[A]) =
-        try {
-          invokeBlock(request, block)
-        } catch {
-          // NotImplementedError is not caught by NonFatal, wrap it
-          case e: NotImplementedError => throw new RuntimeException(e)
-          // LinkageError is similarly harmless in Play Framework, since automatic reloading could easily trigger it
-          case e: LinkageError => throw new RuntimeException(e)
-        }
-      override def executionContext = ActionBuilder.this.executionContext
-    })
+    composeAction(
+      new Action[A] {
+        def parser = composeParser(bodyParser)
+        def apply(request: Request[A]) =
+          try {
+            invokeBlock(request, block)
+          } catch {
+            // NotImplementedError is not caught by NonFatal, wrap it
+            case e: NotImplementedError => throw new RuntimeException(e)
+            // LinkageError is similarly harmless in Play Framework, since automatic reloading could easily trigger it
+            case e: LinkageError => throw new RuntimeException(e)
+          }
+        override def executionContext = ActionBuilder.this.executionContext
+      })
 
   /**
     * Compose the parser.  This allows the action builder to potentially intercept requests before they are parsed.

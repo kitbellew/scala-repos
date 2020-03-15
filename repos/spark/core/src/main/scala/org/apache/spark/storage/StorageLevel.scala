@@ -141,22 +141,30 @@ class StorageLevel private (
 
   def description: String = {
     var result = ""
-    result += (if (useDisk)
-                 "Disk "
-               else
-                 "")
-    result += (if (useMemory)
-                 "Memory "
-               else
-                 "")
-    result += (if (useOffHeap)
-                 "ExternalBlockStore "
-               else
-                 "")
-    result += (if (deserialized)
-                 "Deserialized "
-               else
-                 "Serialized ")
+    result += (
+      if (useDisk)
+        "Disk "
+      else
+        ""
+    )
+    result += (
+      if (useMemory)
+        "Memory "
+      else
+        ""
+    )
+    result += (
+      if (useOffHeap)
+        "ExternalBlockStore "
+      else
+        ""
+    )
+    result += (
+      if (deserialized)
+        "Deserialized "
+      else
+        "Serialized "
+    )
     result += s"${replication}x Replicated"
     result
   }

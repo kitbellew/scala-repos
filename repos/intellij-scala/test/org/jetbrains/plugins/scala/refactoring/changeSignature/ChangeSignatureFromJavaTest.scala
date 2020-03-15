@@ -46,24 +46,21 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
   def testInstanceMethod() = {
     val newParams = Seq(
       new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true"),
-      new ParameterInfoImpl(0, "ii", PsiType.INT)
-    )
+      new ParameterInfoImpl(0, "ii", PsiType.INT))
     doTest(null, "bar", null, Seq(newParams))
   }
 
   def testOverriders() = {
     val newParams = Seq(
       new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true"),
-      new ParameterInfoImpl(0, "ii", PsiType.INT)
-    )
+      new ParameterInfoImpl(0, "ii", PsiType.INT))
     doTest(null, "bar", "boolean", Seq(newParams))
   }
 
   def testOverriderInAnonClass() = {
     val newParams = Seq(
       new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true"),
-      new ParameterInfoImpl(0, "ii", PsiType.INT)
-    )
+      new ParameterInfoImpl(0, "ii", PsiType.INT))
     doTest(null, "bar", "boolean", Seq(newParams))
   }
 
@@ -92,8 +89,7 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
     val params = Seq(
       new ParameterInfoImpl(0, "i", PsiType.INT),
       new ParameterInfoImpl(1, "j", PsiType.INT),
-      new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true")
-    )
+      new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true"))
     doTest(null, "foo", null, Seq(params))
   }
 
@@ -124,8 +120,7 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
   def testVarargsRemove(): Unit = {
     val params = Seq(
       new ParameterInfoImpl(0, "i", PsiType.INT),
-      new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true")
-    )
+      new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true"))
     doTest(null, "foo", null, Seq(params))
   }
 
@@ -133,8 +128,7 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
     val params = Seq(
       new ParameterInfoImpl(0, "i", PsiType.INT),
       new ParameterInfoImpl(2, "b", PsiType.BOOLEAN),
-      new ParameterInfoImpl(1, "js", new PsiEllipsisType(PsiType.INT))
-    )
+      new ParameterInfoImpl(1, "js", new PsiEllipsisType(PsiType.INT)))
     doTest(null, "foo", null, Seq(params))
   }
 

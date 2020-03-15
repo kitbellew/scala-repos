@@ -35,8 +35,7 @@ object StatsFilter {
       param.ExceptionStatsHandler,
       param.ResponseClassifier,
       Param,
-      ServiceFactory[Req, Rep]
-    ] {
+      ServiceFactory[Req, Rep]] {
       val role = StatsFilter.role
       val description = "Report request statistics"
       def make(
@@ -44,8 +43,7 @@ object StatsFilter {
           _exceptions: param.ExceptionStatsHandler,
           _classifier: param.ResponseClassifier,
           _param: Param,
-          next: ServiceFactory[Req, Rep]
-      ): ServiceFactory[Req, Rep] = {
+          next: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] = {
         val param.Stats(statsReceiver) = _stats
         val param.ExceptionStatsHandler(handler) = _exceptions
         val classifier = _classifier.responseClassifier
@@ -68,8 +66,7 @@ object StatsFilter {
 
   def typeAgnostic(
       statsReceiver: StatsReceiver,
-      exceptionStatsHandler: ExceptionStatsHandler
-  ): TypeAgnostic =
+      exceptionStatsHandler: ExceptionStatsHandler): TypeAgnostic =
     new TypeAgnostic {
       override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
         new StatsFilter[Req, Rep](statsReceiver, exceptionStatsHandler)
@@ -108,8 +105,7 @@ class StatsFilter[Req, Rep](
   def this(
       statsReceiver: StatsReceiver,
       exceptionStatsHandler: ExceptionStatsHandler,
-      timeUnit: TimeUnit
-  ) =
+      timeUnit: TimeUnit) =
     this(
       statsReceiver,
       ResponseClassifier.Default,
@@ -174,8 +170,7 @@ class StatsFilter[Req, Rep](
         dispatchCount.incr()
         responseClassifier.applyOrElse(
           ReqRep(request, response),
-          ResponseClassifier.Default
-        ) match {
+          ResponseClassifier.Default) match {
           case ResponseClass.Failed(_) =>
             latencyStat.add(elapsed().inUnit(timeUnit))
             response match {

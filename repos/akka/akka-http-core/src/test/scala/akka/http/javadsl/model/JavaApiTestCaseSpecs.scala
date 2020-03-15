@@ -48,8 +48,9 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
     }
     "addAuthentication" in {
       JavaApiTestCases.addAuthentication(model.HttpRequest()) must be(
-        model.HttpRequest(headers = immutable.Seq(model.headers.Authorization(
-          BasicHttpCredentials("username", "password")))))
+        model.HttpRequest(headers = immutable.Seq(
+          model.headers.Authorization(
+            BasicHttpCredentials("username", "password")))))
     }
     "removeCookies" in {
       val testRequest = model

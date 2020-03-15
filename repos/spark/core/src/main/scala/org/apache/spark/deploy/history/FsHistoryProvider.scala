@@ -172,30 +172,32 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     // for the FS to leave safe mode before enabling polling. This allows the main history server
     // UI to be shown (so that the user can see the HDFS status).
     val initThread =
-      new Thread(new Runnable() {
-        override def run(): Unit = {
-          try {
-            while (isFsInSafeMode()) {
-              logInfo("HDFS is still in safe mode. Waiting...")
-              val deadline = clock.getTimeMillis() +
-                TimeUnit.SECONDS.toMillis(SAFEMODE_CHECK_INTERVAL_S)
-              clock.waitTillTime(deadline)
+      new Thread(
+        new Runnable() {
+          override def run(): Unit = {
+            try {
+              while (isFsInSafeMode()) {
+                logInfo("HDFS is still in safe mode. Waiting...")
+                val deadline = clock.getTimeMillis() +
+                  TimeUnit.SECONDS.toMillis(SAFEMODE_CHECK_INTERVAL_S)
+                clock.waitTillTime(deadline)
+              }
+              startPolling()
+            } catch {
+              case _: InterruptedException =>
             }
-            startPolling()
-          } catch {
-            case _: InterruptedException =>
           }
-        }
-      })
+        })
     initThread.setDaemon(true)
     initThread.setName(s"${getClass().getSimpleName()}-init")
     initThread.setUncaughtExceptionHandler(
-      errorHandler.getOrElse(new Thread.UncaughtExceptionHandler() {
-        override def uncaughtException(t: Thread, e: Throwable): Unit = {
-          logError("Error initializing FsHistoryProvider.", e)
-          System.exit(1)
-        }
-      }))
+      errorHandler.getOrElse(
+        new Thread.UncaughtExceptionHandler() {
+          override def uncaughtException(t: Thread, e: Throwable): Unit = {
+            logError("Error initializing FsHistoryProvider.", e)
+            System.exit(1)
+          }
+        }))
     initThread.start()
     initThread
   }
@@ -347,9 +349,10 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
       logInfos
         .grouped(20)
         .map { batch =>
-          replayExecutor.submit(new Runnable {
-            override def run(): Unit = mergeApplicationListing(batch)
-          })
+          replayExecutor.submit(
+            new Runnable {
+              override def run(): Unit = mergeApplicationListing(batch)
+            })
         }
         .foreach { task =>
           try {
@@ -550,8 +553,10 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
         if (toClean.isEmpty) {
           appsToRetain += (app.id -> app)
         } else if (toRetain.nonEmpty) {
-          appsToRetain += (app.id ->
-            new FsApplicationHistoryInfo(app.id, app.name, toRetain.toList))
+          appsToRetain += (
+            app.id ->
+              new FsApplicationHistoryInfo(app.id, app.name, toRetain.toList)
+          )
         }
       }
 
@@ -649,8 +654,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
             eventLog.getModificationTime(),
             appListener.sparkUser.getOrElse(NOT_STARTED),
             appCompleted,
-            eventLog.getLen()
-          )
+            eventLog.getLen())
         fileToAppInfo(logPath) = attemptInfo
         Some(attemptInfo)
       } else {

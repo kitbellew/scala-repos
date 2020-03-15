@@ -38,8 +38,7 @@ private final class Cleaner(
       .find(
         BSONDocument(
           "acquired.date" -> BSONDocument(
-            "$lt" -> durationAgo(analysisTimeoutBase))
-        ))
+            "$lt" -> durationAgo(analysisTimeoutBase))))
       .sort(BSONDocument("acquired.date" -> 1))
       .cursor[Work.Analysis]()
       .collect[List](100)

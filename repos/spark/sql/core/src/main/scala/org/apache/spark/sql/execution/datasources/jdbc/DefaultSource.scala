@@ -46,7 +46,9 @@ class DefaultSource extends RelationProvider with DataSourceRegister {
     val numPartitions = parameters.getOrElse("numPartitions", null)
 
     if (partitionColumn != null
-        && (lowerBound == null || upperBound == null || numPartitions == null)) {
+        && (
+          lowerBound == null || upperBound == null || numPartitions == null
+        )) {
       sys.error("Partitioning incompletely specified")
     }
 

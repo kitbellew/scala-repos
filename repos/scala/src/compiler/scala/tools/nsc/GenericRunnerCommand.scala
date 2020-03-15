@@ -60,8 +60,9 @@ class GenericRunnerCommand(
     targetAndArguments match {
       case Nil => AsRepl
       case hd :: _ =>
-        waysToRun find (_.name == settings.howtorun.value) getOrElse guessHowToRun(
-          hd)
+        waysToRun find (
+          _.name == settings.howtorun.value
+        ) getOrElse guessHowToRun(hd)
     }
 
   def shortUsageMsg =

@@ -26,8 +26,7 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
           True
         else
           False
-      }
-    )
+      })
 
     class T(tag: Tag) extends Table[(Int, Bool, Option[Bool])](tag, "t2") {
       def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -134,8 +133,7 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
           True
         else
           False
-      }
-    )
+      })
 
     class T(tag: Tag) extends Table[(Int, Bool, Option[Bool])](tag, "t3") {
       def id = column[Int]("id", O.PrimaryKey, O.AutoInc)

@@ -596,7 +596,9 @@ trait AST extends Phases {
         }
 
         case (Cond(_, pred1, left1, right1), Cond(_, pred2, left2, right2)) =>
-          (pred1 equalsIgnoreLoc pred2) && (left1 equalsIgnoreLoc left2) && (right1 equalsIgnoreLoc right2)
+          (pred1 equalsIgnoreLoc pred2) && (left1 equalsIgnoreLoc left2) && (
+            right1 equalsIgnoreLoc right2
+          )
 
         case (Where(_, left1, right1), Where(_, left2, right2)) =>
           (left1 equalsIgnoreLoc left2) && (right1 equalsIgnoreLoc right2)
@@ -668,9 +670,11 @@ trait AST extends Phases {
           id.hashCode + params.hashCode + left.hashCodeIgnoreLoc + right.hashCodeIgnoreLoc
 
         case Solve(_, constraints, child) =>
-          (constraints map {
-            _.hashCodeIgnoreLoc
-          } sum) + child.hashCodeIgnoreLoc
+          (
+            constraints map {
+              _.hashCodeIgnoreLoc
+            } sum
+          ) + child.hashCodeIgnoreLoc
 
         case Import(_, spec, child) =>
           spec.hashCode + child.hashCodeIgnoreLoc
@@ -719,9 +723,11 @@ trait AST extends Phases {
           left.hashCodeIgnoreLoc + right.hashCodeIgnoreLoc
 
         case d @ Dispatch(_, name, actuals) =>
-          name.hashCode + d.binding.hashCode + (actuals map {
-            _.hashCodeIgnoreLoc
-          } sum)
+          name.hashCode + d.binding.hashCode + (
+            actuals map {
+              _.hashCodeIgnoreLoc
+            } sum
+          )
 
         case Cond(_, pred, left, right) =>
           "if".hashCode + pred.hashCodeIgnoreLoc + "then".hashCode + left.hashCodeIgnoreLoc + "else".hashCode + right.hashCodeIgnoreLoc
@@ -929,13 +935,15 @@ trait AST extends Phases {
       val sym = 'solve
 
       def form =
-        'solve ~ (constraints.init map {
-          _ ~ 'comma
-        } reduceOption {
-          _ ~ _
-        } map {
-          _ ~ constraints.last ~ child
-        } getOrElse (constraints.last ~ child))
+        'solve ~ (
+          constraints.init map {
+            _ ~ 'comma
+          } reduceOption {
+            _ ~ _
+          } map {
+            _ ~ constraints.last ~ child
+          } getOrElse (constraints.last ~ child)
+        )
 
       def children = child +: constraints toList
 

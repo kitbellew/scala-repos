@@ -78,7 +78,9 @@ class FixedPointCheck
               case Success(fz) =>
                 BigInt(fz.long) shouldBe (az * s.denom).toBigInt
               case _ =>
-                (az * s.denom < Long.MinValue || Long.MaxValue < az * s.denom) shouldBe true
+                (
+                  az * s.denom < Long.MinValue || Long.MaxValue < az * s.denom
+                ) shouldBe true
             }
         }
       }
@@ -106,7 +108,9 @@ class FixedPointCheck
           case Some(fz) =>
             BigInt(fz.long) shouldBe (az * denom).toBigInt
           case None =>
-            (az * denom < Long.MinValue || Long.MaxValue < az * denom) shouldBe true
+            (
+              az * denom < Long.MinValue || Long.MaxValue < az * denom
+            ) shouldBe true
         }
       }
     }
@@ -159,7 +163,9 @@ class FixedPointCheck
           case Some(fz) =>
             BigInt(fz.long) shouldBe (az * denom).toBigInt
           case None =>
-            (az * denom < Long.MinValue || Long.MaxValue < az * denom) shouldBe true
+            (
+              az * denom < Long.MinValue || Long.MaxValue < az * denom
+            ) shouldBe true
         }
       }
     }
@@ -193,7 +199,9 @@ class FixedPointCheck
         case Some(fz) =>
           BigInt(fz.long) shouldBe (az * denom).toBigInt
         case None =>
-          (az * denom < Long.MinValue || Long.MaxValue < az * denom) shouldBe true
+          (
+            az * denom < Long.MinValue || Long.MaxValue < az * denom
+          ) shouldBe true
       }
     }
   }

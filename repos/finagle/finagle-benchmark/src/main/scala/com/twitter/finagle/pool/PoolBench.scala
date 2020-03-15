@@ -8,9 +8,10 @@ import com.twitter.util.{Await, Future, Duration}
 import org.openjdk.jmh.annotations._
 
 object PoolBench {
-  val underlying = ServiceFactory.const(new Service[Int, Int] {
-    def apply(i: Int) = Future.value(0)
-  })
+  val underlying = ServiceFactory.const(
+    new Service[Int, Int] {
+      def apply(i: Int) = Future.value(0)
+    })
 }
 
 @Threads(Threads.MAX)
@@ -41,11 +42,9 @@ class PoolBench extends StdBenchAnnotations {
         new BufferingPool(underlying, poolSize),
         poolSize,
         Duration.Top,
-        DefaultTimer.twitter
-      ),
+        DefaultTimer.twitter),
       lowWatermark = 1,
-      highWatermark = poolSize
-    )
+      highWatermark = poolSize)
 
     for (i <- 0 until (poolSize * loadedRatio).toInt) {
       watermark()

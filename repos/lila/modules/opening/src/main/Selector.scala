@@ -19,19 +19,21 @@ private[opening] final class Selector(
   val anonSkipMax = 1500
 
   def apply(me: Option[User]): Fu[Opening] =
-    (me match {
-      case None =>
-        openingColl
-          .find(BSONDocument())
-          .options(QueryOpts(skipN = Random nextInt anonSkipMax))
-          .one[Opening] flatten "Can't find a opening for anon player!"
-      case Some(user) =>
-        api.attempt.playedIds(user, modulo) flatMap { ids =>
-          tryRange(user, toleranceStep, ids)
-        } recoverWith {
-          case e: Exception => apply(none)
-        }
-    }).mon(_.opening.selector.time) >>- lila.mon.opening.selector.count()
+    (
+      me match {
+        case None =>
+          openingColl
+            .find(BSONDocument())
+            .options(QueryOpts(skipN = Random nextInt anonSkipMax))
+            .one[Opening] flatten "Can't find a opening for anon player!"
+        case Some(user) =>
+          api.attempt.playedIds(user, modulo) flatMap { ids =>
+            tryRange(user, toleranceStep, ids)
+          } recoverWith {
+            case e: Exception => apply(none)
+          }
+      }
+    ).mon(_.opening.selector.time) >>- lila.mon.opening.selector.count()
 
   private def tryRange(
       user: User,
@@ -43,8 +45,7 @@ private[opening] final class Selector(
           Opening.BSONFields.id -> BSONDocument("$nin" -> ids),
           Opening.BSONFields.rating -> BSONDocument(
             "$gt" -> BSONInteger(user.perfs.opening.intRating - tolerance),
-            "$lt" -> BSONInteger(user.perfs.opening.intRating + tolerance)
-          )
+            "$lt" -> BSONInteger(user.perfs.opening.intRating + tolerance))
         ))
       .one[Opening] flatMap {
       case Some(opening) => fuccess(opening)

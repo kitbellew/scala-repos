@@ -47,13 +47,14 @@ class TestConductorSpec
     "enter a barrier" taggedAs LongRunningTest in {
       runOn(master) {
         system.actorOf(
-          Props(new Actor {
-            def receive = {
-              case x ⇒
-                testActor ! x;
-                sender() ! x
-            }
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              def receive = {
+                case x ⇒
+                  testActor ! x;
+                  sender() ! x
+              }
+            }).withDeploy(Deploy.local),
           "echo")
       }
 

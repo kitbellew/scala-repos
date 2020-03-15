@@ -186,8 +186,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
           val prior: List[Message] = messages.get(channel).getOrElse(Nil)
           val message = Message(jobId, prior.size, channel, value)
 
-          cache += (jobId -> js.copy(messages =
-            (messages + (channel -> (message :: prior)))))
+          cache += (
+            jobId -> js.copy(messages =
+              (messages + (channel -> (message :: prior))))
+          )
           message
 
         case None =>
@@ -222,8 +224,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       JField("message", JString(msg)) ::
         JField("progress", JNum(progress)) ::
         JField("unit", JString(unit)) ::
-        (extra map (JField("info", _) :: Nil) getOrElse Nil)
-    )
+        (extra map (JField("info", _) :: Nil) getOrElse Nil))
 
     cache
       .get(jobId)

@@ -325,8 +325,7 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
         "{'c': 'drop4'}\n{'c': 'keep5'}\n{'c': 'keep6'}",
         src,
         tmp),
-      CheckAnswer("keep2", "keep3", "keep5", "keep6")
-    )
+      CheckAnswer("keep2", "keep3", "keep5", "keep6"))
 
     Utils.deleteRecursively(src)
     Utils.deleteRecursively(tmp)

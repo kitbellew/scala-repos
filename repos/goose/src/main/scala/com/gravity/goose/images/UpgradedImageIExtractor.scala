@@ -249,7 +249,11 @@ class UpgradedImageIExtractor(
           fileExtension = locallyStoredImage.fileExtension
           if (fileExtension != ".gif" && fileExtension != "NA")
           imageSrc = locallyStoredImage.imgSrc
-          if ((depthLevel >= 1 && locallyStoredImage.width > 300) || depthLevel < 1)
+          if (
+            (
+              depthLevel >= 1 && locallyStoredImage.width > 300
+            ) || depthLevel < 1
+          )
           if (!isBannerDimensions(width, height))
         } {
           val sequenceScore: Float = 1.0f / cnt
@@ -392,7 +396,9 @@ class UpgradedImageIExtractor(
           case Some(locallyStoredImage) => {
 
             val bytes = locallyStoredImage.bytes
-            if ((bytes == 0 || bytes > minBytesForImages) && bytes < MAX_BYTES_SIZE) {
+            if ((
+                  bytes == 0 || bytes > minBytesForImages
+                ) && bytes < MAX_BYTES_SIZE) {
               trace(
                 "findImagesThatPassByteSizeTest: Found potential image - size: " + bytes + " src: " + image
                   .attr("src"))
@@ -619,11 +625,13 @@ object UpgradedImageIExtractor {
         getClass.getResourceAsStream(
           "/com/gravity/goose/images/known-image-css.txt"))
       .getLines()
-    (for (line <- lines)
-      yield {
-        val Array(domain, css) = delimRegex.split(line)
-        domain -> css
-      }).toMap
+    (
+      for (line <- lines)
+        yield {
+          val Array(domain, css) = delimRegex.split(line)
+          domain -> css
+        }
+    ).toMap
   }
 
   val KNOWN_IMG_DOM_NAMES = ListBuffer(

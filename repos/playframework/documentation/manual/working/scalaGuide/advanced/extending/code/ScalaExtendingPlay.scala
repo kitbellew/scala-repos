@@ -46,10 +46,7 @@ object ScalaExtendingPlay extends Specification {
   // #builtin-module-definition
   class MyI18nModule extends play.api.inject.Module {
     def bindings(environment: Environment, configuration: Configuration) = {
-      Seq(
-        bind[Langs].to[DefaultLangs],
-        bind[MessagesApi].to[MyMessagesApi]
-      )
+      Seq(bind[Langs].to[DefaultLangs], bind[MessagesApi].to[MyMessagesApi])
     }
   }
   // #builtin-module-definition

@@ -26,8 +26,7 @@ package javaguide.testhelpers {
     private lazy val components =
       new DefaultJavaHandlerComponents(
         play.api.Play.current.injector,
-        new DefaultActionCreator
-      )
+        new DefaultActionCreator)
 
     private lazy val action =
       new JavaAction(components) {
@@ -35,8 +34,7 @@ package javaguide.testhelpers {
 
         def parser = {
           play.HandlerInvokerFactoryAccessor.javaBodyParserToScala(
-            components.getBodyParser(annotations.parser)
-          )
+            components.getBodyParser(annotations.parser))
         }
 
         def invocation = self.invocation
@@ -66,15 +64,16 @@ package javaguide.testhelpers {
         requestBuilder: play.mvc.Http.RequestBuilder)(
         implicit mat: Materializer): Result = {
       Helpers
-        .await(requestBuilder.body() match {
-          case null =>
-            action.apply(requestBuilder.build()._underlyingRequest)
-          case other =>
-            Helpers.call(
-              action,
-              requestBuilder.build()._underlyingRequest,
-              other.asBytes())
-        })
+        .await(
+          requestBuilder.body() match {
+            case null =>
+              action.apply(requestBuilder.build()._underlyingRequest)
+            case other =>
+              Helpers.call(
+                action,
+                requestBuilder.build()._underlyingRequest,
+                other.asBytes())
+          })
         .asJava
     }
 
@@ -111,8 +110,7 @@ package javaguide.testhelpers {
       val maybeMethod = obj.getClass.getDeclaredMethods.find(!_.isSynthetic)
       val theMethod = maybeMethod.getOrElse(
         throw new RuntimeException(
-          "MockJavaAction must declare at least one non synthetic method")
-      )
+          "MockJavaAction must declare at least one non synthetic method"))
       theMethod.setAccessible(true)
       theMethod
     }

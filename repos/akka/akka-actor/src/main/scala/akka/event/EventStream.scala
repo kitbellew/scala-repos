@@ -120,10 +120,11 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
                 value,
                 Right(unsubscriber))) {
             if (debug)
-              publish(Logging.Debug(
-                simpleName(this),
-                this.getClass,
-                "initialized unsubscriber to: " + unsubscriber + ", registering " + subscribers.size + " initial subscribers with it"))
+              publish(
+                Logging.Debug(
+                  simpleName(this),
+                  this.getClass,
+                  "initialized unsubscriber to: " + unsubscriber + ", registering " + subscribers.size + " initial subscribers with it"))
             subscribers foreach registerWithUnsubscriber
             true
           } else {

@@ -139,8 +139,9 @@ trait Metalevels {
                 "trimmed %s inlineable free defs from its symbol table: %s"
                   .format(
                     inlinees.length,
-                    inlinees map (inlinee =>
-                      symtab.symName(inlinee)) mkString (", ")))
+                    inlinees map (inlinee => symtab.symName(inlinee)) mkString (
+                      ", "
+                    )))
             withinSplice {
               super.transform(
                 TreeSplice(

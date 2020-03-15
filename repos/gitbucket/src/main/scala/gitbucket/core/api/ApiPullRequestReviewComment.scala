@@ -64,6 +64,5 @@ object ApiPullRequestReviewComment {
       user = commentedUser,
       body = comment.content,
       created_at = comment.registeredDate,
-      updated_at = comment.updatedDate
-    )(repositoryName, issueId)
+      updated_at = comment.updatedDate)(repositoryName, issueId)
 }

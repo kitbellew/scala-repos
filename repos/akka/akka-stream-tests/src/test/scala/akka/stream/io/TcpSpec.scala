@@ -417,17 +417,20 @@ class TcpSpec
             serverAddress.getHostName,
             serverAddress.getPort,
             halfClose = false)
-          .toMat(Sink.foreach { conn ⇒
-            conn.flow.join(writeButIgnoreRead).run()
-          })(Keep.left)
+          .toMat(
+            Sink.foreach { conn ⇒
+              conn.flow.join(writeButIgnoreRead).run()
+            })(Keep.left)
           .run(),
         3.seconds
       )
 
       val (promise, result) = Source
         .maybe[ByteString]
-        .via(Tcp()
-          .outgoingConnection(serverAddress.getHostName, serverAddress.getPort))
+        .via(
+          Tcp().outgoingConnection(
+            serverAddress.getHostName,
+            serverAddress.getPort))
         .toMat(Sink.fold(ByteString.empty)(_ ++ _))(Keep.both)
         .run()
 
@@ -446,9 +449,10 @@ class TcpSpec
             serverAddress.getHostName,
             serverAddress.getPort,
             halfClose = false)
-          .toMat(Sink.foreach { conn ⇒
-            conn.flow.join(Flow[ByteString]).run()
-          })(Keep.left)
+          .toMat(
+            Sink.foreach { conn ⇒
+              conn.flow.join(Flow[ByteString]).run()
+            })(Keep.left)
           .run(),
         3.seconds
       )

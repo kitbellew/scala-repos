@@ -222,10 +222,11 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
 
         val execution =
           for {
-            basePath <- EitherT(M point {
-              task.source.prefix \/> invalidState(
-                "Path %s cannot be relativized.".format(task.source.path))
-            })
+            basePath <- EitherT(
+              M point {
+                task.source.prefix \/> invalidState(
+                  "Path %s cannot be relativized.".format(task.source.path))
+              })
             cachingResult <- platform.vfs.executeAndCache(
               platform,
               basePath,

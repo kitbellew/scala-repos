@@ -57,10 +57,12 @@ abstract class NodeDowningAndBeingRemovedSpec
         runOn(first) {
           // verify that the nodes are no longer part of the 'members' set
           awaitAssert {
-            clusterView.members.map(_.address) should not contain (address(
-              second))
-            clusterView.members.map(_.address) should not contain (address(
-              third))
+            clusterView.members.map(_.address) should not contain (
+              address(second)
+            )
+            clusterView.members.map(_.address) should not contain (
+              address(third)
+            )
           }
         }
       }

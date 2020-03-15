@@ -87,8 +87,10 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
   // TODO this should be removed and be replaced with `watching.contains(subject)`
   //   when all actor references have uid, i.e. actorFor is removed
   private def watchingContains(subject: ActorRef): Boolean =
-    watching.contains(subject) || (subject.path.uid != ActorCell.undefinedUid &&
-      watching.contains(new UndefinedUidActorRef(subject)))
+    watching.contains(subject) || (
+      subject.path.uid != ActorCell.undefinedUid &&
+        watching.contains(new UndefinedUidActorRef(subject))
+    )
 
   // TODO this should be removed and be replaced with `set - subject`
   //   when all actor references have uid, i.e. actorFor is removed

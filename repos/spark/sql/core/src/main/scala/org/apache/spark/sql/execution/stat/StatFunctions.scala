@@ -183,7 +183,9 @@ private[sql] object StatFunctions extends Logging {
         // If it is the first one to insert, of if it is the last one
         currentCount += 1
         val delta =
-          if (newSamples.isEmpty || (sampleIdx == sampled.size && opsIdx == sorted.length - 1)) {
+          if (newSamples.isEmpty || (
+                sampleIdx == sampled.size && opsIdx == sorted.length - 1
+              )) {
             0
           } else {
             math.floor(2 * relativeError * currentCount).toInt

@@ -164,8 +164,10 @@ private[http] trait LiftMerge {
 
               case element: Elem
                   if mergeHeadAndTail &&
-                    (element.label == "head" ||
-                      element.label.startsWith("head_")) &&
+                    (
+                      element.label == "head" ||
+                        element.label.startsWith("head_")
+                    ) &&
                     htmlDescendant &&
                     bodyDescendant =>
                 startingState.copy(headInBodyChild = true)
@@ -205,8 +207,7 @@ private[http] trait LiftMerge {
 
                 normalized.copy(
                   normalizedElement.copy(child = normalizedChildren.nodes),
-                  js = normalized.js & normalizedChildren.js
-                )
+                  js = normalized.js & normalizedChildren.js)
 
               case other =>
                 other
@@ -306,8 +307,11 @@ private[http] trait LiftMerge {
           ("data-lift-gc" -> RenderVersion.get) ::
             (
               if (autoIncludeComet) {
-                ("data-lift-session-id" -> (S.session.map(
-                  _.uniqueId) openOr "xx")) ::
+                (
+                  "data-lift-session-id" -> (
+                    S.session.map(_.uniqueId) openOr "xx"
+                  )
+                ) ::
                   S.requestCometVersions.is.toList.map {
                     case CometVersionPair(guid, version) =>
                       (s"data-lift-comet-$guid" -> version.toString)

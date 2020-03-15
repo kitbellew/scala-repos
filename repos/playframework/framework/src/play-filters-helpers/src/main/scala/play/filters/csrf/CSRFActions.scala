@@ -133,17 +133,19 @@ class CSRFAction(
       action: EssentialAction,
       tokenFromHeader: String,
       tokenName: String) = {
-    (for {
-      mt <- request.mediaType
-      maybeBoundary <- mt.parameters.find(_._1.equalsIgnoreCase("boundary"))
-      boundary <- maybeBoundary._2
-    } yield {
-      checkBody(extractTokenFromMultipartFormDataBody(ByteString(boundary)))(
-        request,
-        action,
-        tokenFromHeader,
-        tokenName)
-    }).getOrElse(
+    (
+      for {
+        mt <- request.mediaType
+        maybeBoundary <- mt.parameters.find(_._1.equalsIgnoreCase("boundary"))
+        boundary <- maybeBoundary._2
+      } yield {
+        checkBody(extractTokenFromMultipartFormDataBody(ByteString(boundary)))(
+          request,
+          action,
+          tokenFromHeader,
+          tokenName)
+      }
+    ).getOrElse(
       checkFailed(request, "No boundary found in multipart/form-data request"))
   }
 
@@ -179,8 +181,8 @@ class CSRFAction(
         .prefixAndTail(0)
         .map(_._2)
         .concatSubstreams
-        .toMat(Sink.head[Source[ByteString, _]])(Keep.right)
-    ).mapFuture { validatedBodySource =>
+        .toMat(Sink.head[Source[ByteString, _]])(Keep.right))
+      .mapFuture { validatedBodySource =>
         action(request).run(validatedBodySource)
       }
       .recoverWith {
@@ -214,9 +216,13 @@ class CSRFAction(
       if (index == -1) {
         None
       } else {
-        Some(URLDecoder.decode(
-          body.drop(index + andTokenEquals.size).takeWhile(_ != '&').utf8String,
-          "utf-8"))
+        Some(
+          URLDecoder.decode(
+            body
+              .drop(index + andTokenEquals.size)
+              .takeWhile(_ != '&')
+              .utf8String,
+            "utf-8"))
       }
     }
   }
@@ -261,8 +267,11 @@ class CSRFAction(
               extractHeaders(nextCrlf + 2)
             case Array(key, value) =>
               val (endIndex, headers) = extractHeaders(nextCrlf + 2)
-              endIndex -> ((key.trim().toLowerCase(Locale.ENGLISH) -> value
-                .trim()) :: headers)
+              endIndex -> (
+                (
+                  key.trim().toLowerCase(Locale.ENGLISH) -> value.trim()
+                ) :: headers
+              )
           }
         }
       }
@@ -476,8 +485,7 @@ object CSRFAction {
       token: Token): RequestHeader = {
     request.copy(tags = request.tags ++ Map(
       Token.NameRequestTag -> token.name,
-      Token.RequestTag -> token.value
-    ))
+      Token.RequestTag -> token.value))
   }
 
   private[csrf] def tagRequest[A](
@@ -569,8 +577,7 @@ object CSRFAction {
             }
             .getOrElse {
               result.withSession(result.session(request) - config.tokenName)
-            }
-        )(_ => result)
+            })(_ => result)
     }
   }
 }

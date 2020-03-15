@@ -126,8 +126,10 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       // try to move all partitions in NewPartition or OfflinePartition state to OnlinePartition state except partitions
       // that belong to topics to be deleted
       for ((topicAndPartition, partitionState) <- partitionState
-           if (!controller.deleteTopicManager.isTopicQueuedUpForDeletion(
-             topicAndPartition.topic))) {
+           if (
+             !controller.deleteTopicManager.isTopicQueuedUpForDeletion(
+               topicAndPartition.topic)
+           )) {
         if (partitionState.equals(OfflinePartition) || partitionState.equals(
               NewPartition))
           handleStateChange(
@@ -214,13 +216,14 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     val topicAndPartition = TopicAndPartition(topic, partition)
     if (!hasStarted.get)
       throw new StateChangeFailedException(
-        ("Controller %d epoch %d initiated state change for partition %s to %s failed because " +
-          "the partition state machine has not started")
-          .format(
-            controllerId,
-            controller.epoch,
-            topicAndPartition,
-            targetState))
+        (
+          "Controller %d epoch %d initiated state change for partition %s to %s failed because " +
+            "the partition state machine has not started"
+        ).format(
+          controllerId,
+          controller.epoch,
+          topicAndPartition,
+          targetState))
     val currState = partitionState.getOrElseUpdate(
       topicAndPartition,
       NonExistentPartition)
@@ -381,12 +384,13 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     liveAssignedReplicas.size match {
       case 0 =>
         val failMsg =
-          ("encountered error during state change of partition %s from New to Online, assigned replicas are [%s], " +
-            "live brokers are [%s]. No assigned replica is alive.")
-            .format(
-              topicAndPartition,
-              replicaAssignment.mkString(","),
-              controllerContext.liveBrokerIds)
+          (
+            "encountered error during state change of partition %s from New to Online, assigned replicas are [%s], " +
+              "live brokers are [%s]. No assigned replica is alive."
+          ).format(
+            topicAndPartition,
+            replicaAssignment.mkString(","),
+            controllerContext.liveBrokerIds)
         stateChangeLogger.error(
           "Controller %d epoch %d "
             .format(controllerId, controller.epoch) + failMsg)
@@ -435,12 +439,13 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                   topicAndPartition.partition)
                 .get
             val failMsg =
-              ("encountered error while changing partition %s's state from New to Online since LeaderAndIsr path already " +
-                "exists with value %s and controller epoch %d")
-                .format(
-                  topicAndPartition,
-                  leaderIsrAndEpoch.leaderAndIsr.toString(),
-                  leaderIsrAndEpoch.controllerEpoch)
+              (
+                "encountered error while changing partition %s's state from New to Online since LeaderAndIsr path already " +
+                  "exists with value %s and controller epoch %d"
+              ).format(
+                topicAndPartition,
+                leaderIsrAndEpoch.leaderAndIsr.toString(),
+                leaderIsrAndEpoch.controllerEpoch)
             stateChangeLogger.error(
               "Controller %d epoch %d "
                 .format(controllerId, controller.epoch) + failMsg)
@@ -477,10 +482,11 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         val controllerEpoch = currentLeaderIsrAndEpoch.controllerEpoch
         if (controllerEpoch > controller.epoch) {
           val failMsg =
-            ("aborted leader election for partition [%s,%d] since the LeaderAndIsr path was " +
-              "already written by another controller. This probably means that the current controller %d went through " +
-              "a soft failure and another controller was elected with epoch %d.")
-              .format(topic, partition, controllerId, controllerEpoch)
+            (
+              "aborted leader election for partition [%s,%d] since the LeaderAndIsr path was " +
+                "already written by another controller. This probably means that the current controller %d went through " +
+                "a soft failure and another controller was elected with epoch %d."
+            ).format(topic, partition, controllerId, controllerEpoch)
           stateChangeLogger.error(
             "Controller %d epoch %d "
               .format(controllerId, controller.epoch) + failMsg)

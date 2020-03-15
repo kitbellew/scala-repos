@@ -38,10 +38,12 @@ object StructureViewUtil {
         res.append(param.name + ": ")
         val typez = subst.subst(param.getType(TypingContext.empty).getOrNothing)
         res.append(
-          ScType.presentableText(typez) + (if (param.isRepeatedParameter)
-                                             "*"
-                                           else
-                                             ""))
+          ScType.presentableText(typez) + (
+            if (param.isRepeatedParameter)
+              "*"
+            else
+              ""
+          ))
         res.append(", ")
       }
     }

@@ -22,8 +22,7 @@ class GuavaCacheTest extends AbstractFutureCacheTest {
       .build(
         new CacheLoader[String, Future[Int]] {
           override def load(k: String): Future[Int] = new Promise[Int]
-        }
-      )
+        })
 
   test("GuavaCache#fromLoadingCache is interrupt safe") {
     val fCache = GuavaCache.fromLoadingCache(mkCache())

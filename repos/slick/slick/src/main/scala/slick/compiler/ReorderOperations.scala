@@ -143,9 +143,10 @@ class ReorderOperations extends Phase {
       base: TermSymbol,
       defs: ConstArray[(TermSymbol, Node)],
       tpe: Type) = {
-    val usedFields = defs.flatMap(_._2.collect[TermSymbol] {
-      case Select(Ref(s), f) if s == base => f
-    })
+    val usedFields = defs.flatMap(
+      _._2.collect[TermSymbol] {
+        case Select(Ref(s), f) if s == base => f
+      })
     val StructType(tDefs) = tpe.structural
     (tDefs.map(_._1).toSet -- usedFields.toSeq).isEmpty
   }

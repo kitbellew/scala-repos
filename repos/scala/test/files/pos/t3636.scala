@@ -20,9 +20,10 @@ trait TxnLocal[@specialized T] {
 object TxnLocal {
   def apply[@specialized T]: TxnLocal[T] = new Impl(new CTxnLocal[T])
   def apply[@specialized T](initValue: => T): TxnLocal[T] =
-    new Impl(new CTxnLocal[T] {
-      override def initialValue(tx: Txn): T = initValue
-    })
+    new Impl(
+      new CTxnLocal[T] {
+        override def initialValue(tx: Txn): T = initValue
+      })
 
   private class Impl[T](c: CTxnLocal[T]) extends TxnLocal[T] {
     def apply()(implicit tx: ProcTxn): T = c.get(tx.ccstm)

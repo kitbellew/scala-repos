@@ -319,7 +319,9 @@ trait ApplicationAnnotator {
       case (exp: ScReferenceExpression) childOf (infix: ScInfixExpr)
           if infix.operation == exp =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
-      case (exp: ScReferenceExpression) childOf ((_: ScGenericCall) childOf (_: ScMethodCall)) =>
+      case (
+            exp: ScReferenceExpression
+          ) childOf ((_: ScGenericCall) childOf (_: ScMethodCall)) =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
       case (exp: ScReferenceExpression) childOf (_: ScGenericCall) =>
         annotation.registerFix(new CreateParameterlessMethodQuickFix(exp))
@@ -328,11 +330,12 @@ trait ApplicationAnnotator {
         annotation.registerFix(new CreateValueQuickFix(exp))
         annotation.registerFix(new CreateVariableQuickFix(exp))
         annotation.registerFix(new CreateObjectQuickFix(exp))
-      case (stRef: ScStableCodeReferenceElement) childOf (st: ScSimpleTypeElement)
-          if st.singleton =>
-      case (stRef: ScStableCodeReferenceElement) childOf(Both(
-            p: ScPattern,
-            (_: ScConstructorPattern | _: ScInfixPattern))) =>
+      case (
+            stRef: ScStableCodeReferenceElement
+          ) childOf (st: ScSimpleTypeElement) if st.singleton =>
+      case (stRef: ScStableCodeReferenceElement) childOf(
+            Both(p: ScPattern, (_: ScConstructorPattern | _: ScInfixPattern))
+          ) =>
         annotation.registerFix(new CreateCaseClassQuickFix(stRef))
         annotation.registerFix(new CreateExtractorObjectQuickFix(stRef, p))
       case stRef: ScStableCodeReferenceElement =>
@@ -369,10 +372,12 @@ trait ApplicationAnnotator {
     def formatParams(parameters: Seq[ScParameter], types: Seq[ScType]) = {
       val parts = parameters.zip(types).map {
         case (p, t) =>
-          t.presentableText + (if (p.isRepeatedParameter)
-                                 "*"
-                               else
-                                 "")
+          t.presentableText + (
+            if (p.isRepeatedParameter)
+              "*"
+            else
+              ""
+          )
       }
       parenthesise(parts)
     }
@@ -385,10 +390,12 @@ trait ApplicationAnnotator {
     val types = ScalaPsiUtil.mapToLazyTypesSeq(parameters)
     val parts = parameters.zip(types).map {
       case (p, t) =>
-        t().presentableText + (if (p.isVarArgs)
-                                 "*"
-                               else
-                                 "")
+        t().presentableText + (
+          if (p.isVarArgs)
+            "*"
+          else
+            ""
+        )
     }
     parenthesise(parts)
   }
@@ -396,10 +403,12 @@ trait ApplicationAnnotator {
   private def formatSyntheticParams(parameters: Seq[Parameter]) = {
     val parts = parameters.map {
       case p =>
-        p.paramType.presentableText + (if (p.isRepeated)
-                                         "*"
-                                       else
-                                         "")
+        p.paramType.presentableText + (
+          if (p.isRepeated)
+            "*"
+          else
+            ""
+        )
     }
     parenthesise(parts)
   }

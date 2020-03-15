@@ -158,14 +158,16 @@ abstract class EventFilter(occurrences: Int) {
       else
         "null"
     (source.isDefined && source.get == src || source.isEmpty) &&
-    (message match {
-      case Left(s) ⇒
-        if (complete)
-          msgstr == s
-        else
-          msgstr.startsWith(s)
-      case Right(p) ⇒ p.findFirstIn(msgstr).isDefined
-    })
+    (
+      message match {
+        case Left(s) ⇒
+          if (complete)
+            msgstr == s
+          else
+            msgstr.startsWith(s)
+        case Right(p) ⇒ p.findFirstIn(msgstr).isDefined
+      }
+    )
   }
 }
 
@@ -362,7 +364,9 @@ final case class ErrorFilter(
   def matches(event: LogEvent) = {
     event match {
       case Error(cause, src, _, msg) if throwable isInstance cause ⇒
-        (msg == null && cause.getMessage == null && cause.getStackTrace.length == 0) ||
+        (
+          msg == null && cause.getMessage == null && cause.getStackTrace.length == 0
+        ) ||
           doMatch(src, msg) || doMatch(src, cause.getMessage)
       case _ ⇒ false
     }

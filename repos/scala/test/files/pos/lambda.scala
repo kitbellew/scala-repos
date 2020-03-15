@@ -9,7 +9,8 @@ object test {
   }
 
   def main =
-    apply[Int, Int](twice[Int] { x: Int =>
-      x
-    })(1);
+    apply[Int, Int](
+      twice[Int] { x: Int =>
+        x
+      })(1);
 }

@@ -272,12 +272,14 @@ object CPath {
           else
             parse0(
               tail,
-              (head match {
-                case "[*]"               => CPathArray
-                case IndexPattern(index) => CPathIndex(index.toInt)
+              (
+                head match {
+                  case "[*]"               => CPathArray
+                  case IndexPattern(index) => CPathIndex(index.toInt)
 
-                case name => CPathField(name)
-              }) :: acc)
+                  case name => CPathField(name)
+                }
+              ) :: acc)
       }
 
     val properPath =
@@ -314,9 +316,10 @@ object CPath {
         }
 
         def recurse[A](paths: Seq[PathWithLeaf[A]]) =
-          inner(paths map {
-            case PathWithLeaf(path, v) => PathWithLeaf(path.tail, v)
-          })
+          inner(
+            paths map {
+              case PathWithLeaf(path, v) => PathWithLeaf(path.tail, v)
+            })
 
         val result = grouped.toSeq.sortBy(_._1) map {
           case (node, paths) =>

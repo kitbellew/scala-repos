@@ -165,16 +165,18 @@ class MesosSchedulerBackendSuite
     val (executorInfo, _) = mesosSchedulerBackend.createExecutorInfo(
       resources,
       "test-id")
-    assert(executorInfo.getCommand.getValue ===
-      s" /mesos-home/bin/spark-class ${classOf[MesosExecutorBackend].getName}")
+    assert(
+      executorInfo.getCommand.getValue ===
+        s" /mesos-home/bin/spark-class ${classOf[MesosExecutorBackend].getName}")
 
     // uri exists.
     conf.set("spark.executor.uri", "hdfs:///test-app-1.0.0.tgz")
     val (executorInfo1, _) = mesosSchedulerBackend.createExecutorInfo(
       resources,
       "test-id")
-    assert(executorInfo1.getCommand.getValue ===
-      s"cd test-app-1*;  ./bin/spark-class ${classOf[MesosExecutorBackend].getName}")
+    assert(
+      executorInfo1.getCommand.getValue ===
+        s"cd test-app-1*;  ./bin/spark-class ${classOf[MesosExecutorBackend].getName}")
   }
 
   test("spark docker properties correctly populate the DockerInfo message") {
@@ -283,14 +285,12 @@ class MesosSchedulerBackendSuite
       new WorkerOffer(
         mesosOffers.get(0).getSlaveId.getValue,
         mesosOffers.get(0).getHostname,
-        (minCpu - backend.mesosExecutorCores).toInt
-      ))
+        (minCpu - backend.mesosExecutorCores).toInt))
     expectedWorkerOffers.append(
       new WorkerOffer(
         mesosOffers.get(2).getSlaveId.getValue,
         mesosOffers.get(2).getHostname,
-        (minCpu - backend.mesosExecutorCores).toInt
-      ))
+        (minCpu - backend.mesosExecutorCores).toInt))
     val taskDesc =
       new TaskDescription(
         1L,
@@ -308,9 +308,7 @@ class MesosSchedulerBackendSuite
       driver.launchTasks(
         Matchers.eq(Collections.singleton(mesosOffers.get(0).getId)),
         capture.capture(),
-        any(classOf[Filters])
-      )
-    ).thenReturn(Status.valueOf(1))
+        any(classOf[Filters]))).thenReturn(Status.valueOf(1))
     when(driver.declineOffer(mesosOffers.get(1).getId))
       .thenReturn(Status.valueOf(1))
     when(driver.declineOffer(mesosOffers.get(2).getId))
@@ -321,8 +319,7 @@ class MesosSchedulerBackendSuite
     verify(driver, times(1)).launchTasks(
       Matchers.eq(Collections.singleton(mesosOffers.get(0).getId)),
       capture.capture(),
-      any(classOf[Filters])
-    )
+      any(classOf[Filters]))
     verify(driver, times(1)).declineOffer(mesosOffers.get(1).getId)
     verify(driver, times(1)).declineOffer(mesosOffers.get(2).getId)
     assert(capture.getValue.size() === 1)
@@ -429,17 +426,14 @@ class MesosSchedulerBackendSuite
       driver.launchTasks(
         Matchers.eq(Collections.singleton(mesosOffers.get(0).getId)),
         capture.capture(),
-        any(classOf[Filters])
-      )
-    ).thenReturn(Status.valueOf(1))
+        any(classOf[Filters]))).thenReturn(Status.valueOf(1))
 
     backend.resourceOffers(driver, mesosOffers)
 
     verify(driver, times(1)).launchTasks(
       Matchers.eq(Collections.singleton(mesosOffers.get(0).getId)),
       capture.capture(),
-      any(classOf[Filters])
-    )
+      any(classOf[Filters]))
 
     assert(capture.getValue.size() === 1)
     val taskInfo = capture.getValue.iterator().next()
@@ -450,13 +444,15 @@ class MesosSchedulerBackendSuite
     assert(cpusDev.getScalar.getValue.equals(1.0))
     assert(cpusDev.getRole.equals("dev"))
     val executorResources = taskInfo.getExecutor.getResourcesList.asScala
-    assert(executorResources.exists { r =>
-      r.getName.equals("mem") && r.getScalar.getValue.equals(484.0) && r.getRole
-        .equals("prod")
-    })
-    assert(executorResources.exists { r =>
-      r.getName.equals("cpus") && r.getScalar.getValue.equals(1.0) && r.getRole
-        .equals("prod")
-    })
+    assert(
+      executorResources.exists { r =>
+        r.getName.equals("mem") && r.getScalar.getValue
+          .equals(484.0) && r.getRole.equals("prod")
+      })
+    assert(
+      executorResources.exists { r =>
+        r.getName.equals("cpus") && r.getScalar.getValue
+          .equals(1.0) && r.getRole.equals("prod")
+      })
   }
 }

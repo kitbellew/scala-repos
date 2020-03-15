@@ -948,9 +948,10 @@ class Dataset[T] private[sql] (
     */
   @scala.annotation.varargs
   def selectExpr(exprs: String*): DataFrame = {
-    select(exprs.map { expr =>
-      Column(sqlContext.sessionState.sqlParser.parseExpression(expr))
-    }: _*)
+    select(
+      exprs.map { expr =>
+        Column(sqlContext.sessionState.sqlParser.parseExpression(expr))
+      }: _*)
   }
 
   /**
@@ -1890,10 +1891,12 @@ class Dataset[T] private[sql] (
       )
 
       val outputCols =
-        (if (cols.isEmpty)
-           numericColumns.map(usePrettyExpression(_).sql)
-         else
-           cols).toList
+        (
+          if (cols.isEmpty)
+            numericColumns.map(usePrettyExpression(_).sql)
+          else
+            cols
+        ).toList
 
       val ret: Seq[Row] =
         if (outputCols.nonEmpty) {

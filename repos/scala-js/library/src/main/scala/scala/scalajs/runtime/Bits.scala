@@ -133,8 +133,10 @@ object Bits {
   def doubleToLongBits(value: Double): Long = {
     if (areTypedArraysSupported) {
       float64Array(0) = value
-      ((int32Array(highOffset).toLong << 32) |
-        (int32Array(lowOffset).toLong & 0xFFFFFFFFL))
+      (
+        (int32Array(highOffset).toLong << 32) |
+          (int32Array(lowOffset).toLong & 0xFFFFFFFFL)
+      )
     } else {
       doubleToLongBitsPolyfill(value)
     }
@@ -165,10 +167,12 @@ object Bits {
     val ebits = 8
     val fbits = 23
     val (s, e, f) = encodeIEEE754(ebits, fbits, value)
-    (if (s)
-       0x80000000
-     else
-       0) | (e << fbits) | rawToInt(f)
+    (
+      if (s)
+        0x80000000
+      else
+        0
+    ) | (e << fbits) | rawToInt(f)
   }
 
   private def longBitsToDoublePolyfill(bits: Long): Double = {
@@ -191,10 +195,12 @@ object Bits {
     val hifbits = fbits - 32
     val (s, e, f) = encodeIEEE754(ebits, fbits, value)
     val hif = rawToInt(f / 0x100000000L.toDouble)
-    val hi = (if (s)
-                0x80000000
-              else
-                0) | (e << hifbits) | hif
+    val hi = (
+      if (s)
+        0x80000000
+      else
+        0
+    ) | (e << hifbits) | hif
     val lo = rawToInt(f)
     (hi.toLong << 32) | (lo.toLong & 0xFFFFFFFFL)
   }

@@ -304,23 +304,25 @@ trait WebHookPullRequestService extends WebHookService {
       repositoryName: String,
       branch: String)(implicit s: Session)
       : Map[(Issue, Account, PullRequest, Account, Account), List[WebHook]] =
-    (for {
-      is <- Issues if is.closed === false.bind
-      pr <- PullRequests
-      if pr.byPrimaryKey(is.userName, is.repositoryName, is.issueId)
-      if pr.requestUserName === userName.bind
-      if pr.requestRepositoryName === repositoryName.bind
-      if pr.requestBranch === branch.bind
-      bu <- Accounts if bu.userName === pr.userName
-      ru <- Accounts if ru.userName === pr.requestUserName
-      iu <- Accounts if iu.userName === is.openedUserName
-      wh <- WebHooks if wh.byRepository(is.userName, is.repositoryName)
-      wht <- WebHookEvents if wht.event === WebHook.PullRequest
-        .asInstanceOf[WebHook.Event]
-        .bind && wht.byWebHook(wh)
-    } yield {
-      ((is, iu, pr, bu, ru), wh)
-    }).list.groupBy(_._1).mapValues(_.map(_._2))
+    (
+      for {
+        is <- Issues if is.closed === false.bind
+        pr <- PullRequests
+        if pr.byPrimaryKey(is.userName, is.repositoryName, is.issueId)
+        if pr.requestUserName === userName.bind
+        if pr.requestRepositoryName === repositoryName.bind
+        if pr.requestBranch === branch.bind
+        bu <- Accounts if bu.userName === pr.userName
+        ru <- Accounts if ru.userName === pr.requestUserName
+        iu <- Accounts if iu.userName === is.openedUserName
+        wh <- WebHooks if wh.byRepository(is.userName, is.repositoryName)
+        wht <- WebHookEvents if wht.event === WebHook.PullRequest
+          .asInstanceOf[WebHook.Event]
+          .bind && wht.byWebHook(wh)
+      } yield {
+        ((is, iu, pr, bu, ru), wh)
+      }
+    ).list.groupBy(_._1).mapValues(_.map(_._2))
 
   def callPullRequestWebHookByRequestBranch(
       action: String,
@@ -467,8 +469,8 @@ object WebHookService {
       before: String,
       after: String,
       commits: List[ApiCommit],
-      repository: ApiRepository
-  ) extends FieldSerializable
+      repository: ApiRepository)
+      extends FieldSerializable
       with WebHookPayload {
     val compare =
       commits.size match {
@@ -525,8 +527,8 @@ object WebHookService {
       number: Int,
       repository: ApiRepository,
       pull_request: ApiPullRequest,
-      sender: ApiUser
-  ) extends WebHookPayload
+      sender: ApiUser)
+      extends WebHookPayload
 
   object WebHookPullRequestPayload {
     def apply(
@@ -553,8 +555,7 @@ object WebHookService {
         number = issue.issueId,
         repository = pr.base.repo,
         pull_request = pr,
-        sender = senderPayload
-      )
+        sender = senderPayload)
     }
   }
 
@@ -564,8 +565,8 @@ object WebHookService {
       repository: ApiRepository,
       issue: ApiIssue,
       comment: ApiComment,
-      sender: ApiUser
-  ) extends WebHookPayload
+      sender: ApiUser)
+      extends WebHookPayload
 
   object WebHookIssueCommentPayload {
     def apply(
@@ -596,8 +597,8 @@ object WebHookService {
       comment: ApiPullRequestReviewComment,
       pull_request: ApiPullRequest,
       repository: ApiRepository,
-      sender: ApiUser
-  ) extends WebHookPayload
+      sender: ApiUser)
+      extends WebHookPayload
 
   object WebHookPullRequestReviewCommentPayload {
     def apply(
@@ -610,8 +611,7 @@ object WebHookService {
         headOwner: Account,
         baseRepository: RepositoryInfo,
         baseOwner: Account,
-        sender: Account
-    ): WebHookPullRequestReviewCommentPayload = {
+        sender: Account): WebHookPullRequestReviewCommentPayload = {
       val headRepoPayload = ApiRepository(headRepository, headOwner)
       val baseRepoPayload = ApiRepository(baseRepository, baseOwner)
       val senderPayload = ApiUser(sender)

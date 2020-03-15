@@ -176,9 +176,8 @@ trait Config extends Serializable {
    * Left((classOf[serialization.KryoHadoop], myInstance))
    */
   def setSerialization(
-      kryo: Either[
-        (Class[_ <: KryoInstantiator], KryoInstantiator),
-        Class[_ <: KryoInstantiator]],
+      kryo: Either[(Class[_ <: KryoInstantiator], KryoInstantiator), Class[
+        _ <: KryoInstantiator]],
       userHadoop: Seq[Class[_ <: HSerialization[_]]] = Nil): Config = {
 
     // Hadoop and Cascading should come first
@@ -237,8 +236,10 @@ trait Config extends Serializable {
 
   def getScaldingVersion: Option[String] = get(Config.ScaldingVersion)
   def setScaldingVersion: Config =
-    (this
-      .+(Config.ScaldingVersion -> scaldingVersion))
+    (
+      this
+        .+(Config.ScaldingVersion -> scaldingVersion)
+      )
       .+(
         // This is setting a property for cascading/driven
         (AppProps.APP_FRAMEWORKS -> ("scalding:" + scaldingVersion.toString)))
@@ -485,10 +486,12 @@ object Config {
     * Merge Config.default with Hadoop config from the mode (if in Hadoop mode)
     */
   def defaultFrom(mode: Mode): Config =
-    default ++ (mode match {
-      case m: HadoopMode => Config.fromHadoop(m.jobConf) - IoSerializationsKey
-      case _             => empty
-    })
+    default ++ (
+      mode match {
+        case m: HadoopMode => Config.fromHadoop(m.jobConf) - IoSerializationsKey
+        case _             => empty
+      }
+    )
 
   def apply(m: Map[String, String]): Config =
     new Config {
@@ -508,21 +511,23 @@ object Config {
     val (nonStrings, strings) = stringsFrom(maybeConf)
     val initConf = from(strings)
 
-    (nonStrings
-      .get(AppProps.APP_JAR_CLASS) match {
-      case Some(clazz) =>
-        // Again, the _ causes problem with Try
-        try {
-          val cls = classOf[Class[_]].cast(clazz)
-          Success(
-            (
-              nonStrings - AppProps.APP_JAR_CLASS,
-              initConf.setCascadingAppJar(cls)))
-        } catch {
-          case err: Throwable => Failure(err)
-        }
-      case None => Success((nonStrings, initConf))
-    }).flatMap {
+    (
+      nonStrings
+        .get(AppProps.APP_JAR_CLASS) match {
+        case Some(clazz) =>
+          // Again, the _ causes problem with Try
+          try {
+            val cls = classOf[Class[_]].cast(clazz)
+            Success(
+              (
+                nonStrings - AppProps.APP_JAR_CLASS,
+                initConf.setCascadingAppJar(cls)))
+          } catch {
+            case err: Throwable => Failure(err)
+          }
+        case None => Success((nonStrings, initConf))
+      }
+    ).flatMap {
       case (unhandled, withJar) =>
         if (unhandled.isEmpty)
           Success(withJar)
@@ -576,9 +581,10 @@ object Config {
    */
   def fromHadoop(conf: Configuration): Config =
     // use `conf.get` to force JobConf to evaluate expressions
-    Config(conf.asScala.map { e =>
-      e.getKey -> conf.get(e.getKey)
-    }.toMap)
+    Config(
+      conf.asScala.map { e =>
+        e.getKey -> conf.get(e.getKey)
+      }.toMap)
 
   /*
    * For everything BUT SERIALIZATION, this prefers values in conf,
@@ -586,11 +592,12 @@ object Config {
    * (or some other system that handles general instances at runtime).
    */
   def hadoopWithDefaults(conf: Configuration): Config =
-    (empty
-      .setListSpillThreshold(100 * 1000)
-      .setMapSpillThreshold(100 * 1000)
-      .setMapSideAggregationThreshold(100 * 1000) ++ fromHadoop(conf))
-      .setSerialization(Right(classOf[serialization.KryoHadoop]))
+    (
+      empty
+        .setListSpillThreshold(100 * 1000)
+        .setMapSpillThreshold(100 * 1000)
+        .setMapSideAggregationThreshold(100 * 1000) ++ fromHadoop(conf)
+    ).setSerialization(Right(classOf[serialization.KryoHadoop]))
       .setScaldingVersion
   /*
    * This can help with versioning Class files into configurations if they are

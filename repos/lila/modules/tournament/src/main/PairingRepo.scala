@@ -43,8 +43,7 @@ object PairingRepo {
       .find(
         selectTour(tourId) ++ BSONDocument(
           "u" -> BSONDocument("$in" -> userIds)),
-        BSONDocument("_id" -> false, "u" -> true)
-      )
+        BSONDocument("_id" -> false, "u" -> true))
       .sort(recentSort)
       .cursor[BSONDocument]()
       .enumerate(nb) |>>>
@@ -61,8 +60,7 @@ object PairingRepo {
     coll
       .find(
         selectTourUser(tourId, userId),
-        BSONDocument("_id" -> false, "u" -> true)
-      )
+        BSONDocument("_id" -> false, "u" -> true))
       .cursor[BSONDocument]()
       .collect[List]()
       .map {
@@ -76,10 +74,7 @@ object PairingRepo {
       userId: String,
       nb: Int): Fu[List[String]] =
     coll
-      .find(
-        selectTourUser(tourId, userId),
-        BSONDocument("_id" -> true)
-      )
+      .find(selectTourUser(tourId, userId), BSONDocument("_id" -> true))
       .sort(recentSort)
       .cursor[BSONDocument]()
       .collect[List](nb)
@@ -92,9 +87,7 @@ object PairingRepo {
       userId: String,
       nb: Int): Fu[Option[Pairing]] =
     (nb > 0) ?? coll
-      .find(
-        selectTourUser(tourId, userId)
-      )
+      .find(selectTourUser(tourId, userId))
       .sort(chronoSort)
       .skip(nb - 1)
       .one[Pairing]
@@ -114,8 +107,7 @@ object PairingRepo {
         List(
           Project(BSONDocument("u" -> true, "_id" -> false)),
           Unwind("u"),
-          GroupField("u")("nb" -> SumValue(1))
-        ))
+          GroupField("u")("nb" -> SumValue(1))))
       .map {
         _.documents.flatMap { doc =>
           doc.getAs[String]("_id") flatMap { uid =>
@@ -143,9 +135,7 @@ object PairingRepo {
       tourId: String,
       userId: String): Fu[Pairings] =
     coll
-      .find(
-        selectTourUser(tourId, userId) ++ selectFinished
-      )
+      .find(selectTourUser(tourId, userId) ++ selectFinished)
       .sort(chronoSort)
       .cursor[Pairing]()
       .collect[List]()
@@ -167,11 +157,13 @@ object PairingRepo {
       .void
 
   def setBerserk(pairing: Pairing, userId: String, value: Int) =
-    (userId match {
-      case uid if pairing.user1 == uid => "b1".some
-      case uid if pairing.user2 == uid => "b2".some
-      case _                           => none
-    }) ?? { field =>
+    (
+      userId match {
+        case uid if pairing.user1 == uid => "b1".some
+        case uid if pairing.user2 == uid => "b2".some
+        case _                           => none
+      }
+    ) ?? { field =>
       coll
         .update(
           selectId(pairing.id),

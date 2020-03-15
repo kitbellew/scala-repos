@@ -34,24 +34,26 @@ object HttpExecutionContextSpec
           ExecutionContext.global)
 
       val hecFromThread = new LinkedBlockingQueue[ExecutionContext]()
-      hec.execute(new Runnable {
-        def run() = {
-          hecFromThread.offer(
-            HttpExecutionContext.fromThread(ExecutionContext.global))
-        }
-      })
+      hec.execute(
+        new Runnable {
+          def run() = {
+            hecFromThread.offer(
+              HttpExecutionContext.fromThread(ExecutionContext.global))
+          }
+        })
 
       val actualClassLoader = new LinkedBlockingQueue[ClassLoader]()
       val actualHttpContext = new LinkedBlockingQueue[Http.Context]()
       hecFromThread
         .poll(5, SECONDS)
-        .execute(new Runnable {
-          def run() = {
-            actualClassLoader.offer(
-              Thread.currentThread().getContextClassLoader())
-            actualHttpContext.offer(Http.Context.current.get())
-          }
-        })
+        .execute(
+          new Runnable {
+            def run() = {
+              actualClassLoader.offer(
+                Thread.currentThread().getContextClassLoader())
+              actualHttpContext.offer(Http.Context.current.get())
+            }
+          })
       actualClassLoader.poll(5, SECONDS) must equalTo(classLoader)
       actualHttpContext.poll(5, SECONDS) must equalTo(httpContext)
     }

@@ -125,8 +125,7 @@ private[timer] class TimingWheel(
           wheelSize = wheelSize,
           startMs = currentTime,
           taskCounter = taskCounter,
-          queue
-        )
+          queue)
       }
     }
   }

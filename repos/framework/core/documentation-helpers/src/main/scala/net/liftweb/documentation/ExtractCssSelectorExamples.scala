@@ -27,11 +27,14 @@ object ExtractCssSelectorExamples extends App {
     val docsFile = new File(s"$basePath")
 
     for {
-      docsDir <- ((Full(docsFile)
-        .filter(
-          _.exists) ?~ s"'$docsFile' should be a directory, but does not exist.")
-        .filter(
-          _.isDirectory) ?~ s"'$docsFile' should be a directory, not a file.")
+      docsDir <- (
+        (
+          Full(docsFile)
+            .filter(
+              _.exists) ?~ s"'$docsFile' should be a directory, but does not exist."
+        ).filter(
+          _.isDirectory) ?~ s"'$docsFile' should be a directory, not a file."
+      )
     } yield {
       for {
         file <- docsDir.listFiles.toList
@@ -146,8 +149,7 @@ object ExtractCssSelectorExamples extends App {
 
   if (args.length < 2) {
     Console.err.println(
-      "Expected two arguments: the base directory of generated HTML and the base directory of the Lift project."
-    )
+      "Expected two arguments: the base directory of generated HTML and the base directory of the Lift project.")
   } else {
     val examples =
       for {

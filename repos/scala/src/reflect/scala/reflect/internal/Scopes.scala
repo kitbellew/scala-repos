@@ -357,11 +357,9 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
       *  rule out most failures.
       */
     def isSameScope(other: Scope) =
-      (
-        (size == other.size) // optimization - size is cached
-          && (this isSubScope other)
-          && (other isSubScope this)
-      )
+      ((size == other.size) // optimization - size is cached
+        && (this isSubScope other)
+        && (other isSubScope this))
 
     def isSubScope(other: Scope) = {
       def scopeContainsSym(sym: Symbol): Boolean = {
@@ -411,19 +409,15 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     override def foreach[U](p: Symbol => U): Unit = toList foreach p
 
     override def filterNot(p: Symbol => Boolean): Scope =
-      (
-        if (toList exists p)
-          newScopeWith(toList filterNot p: _*)
-        else
-          this
-      )
+      (if (toList exists p)
+         newScopeWith(toList filterNot p: _*)
+       else
+         this)
     override def filter(p: Symbol => Boolean): Scope =
-      (
-        if (toList forall p)
-          this
-        else
-          newScopeWith(toList filter p: _*)
-      )
+      (if (toList forall p)
+         this
+       else
+         newScopeWith(toList filter p: _*))
     @deprecated("Use `toList.reverse` instead", "2.10.0") // Used in SBT 0.12.4
     def reverse: List[Symbol] = toList.reverse
 

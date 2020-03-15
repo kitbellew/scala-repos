@@ -161,11 +161,13 @@ class DenseVectorTest extends FunSuite with Checkers {
     assert(
       DenseVector.range(0, 10) == DenseVector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     assert(
-      norm(DenseVector.rangeD(0, 1, 0.1) - DenseVector(0.0, 0.1, 0.2, 0.3, 0.4,
-        0.5, 0.6, 0.7, 0.8, 0.9)) < 1e-10)
+      norm(
+        DenseVector.rangeD(0, 1, 0.1) - DenseVector(
+          0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)) < 1e-10)
     assert(
-      norm(DenseVector.rangeF(0f, 1f, 0.1f) - DenseVector(0.0f, 0.1f, 0.2f,
-        0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f)) < 1e-6)
+      norm(
+        DenseVector.rangeF(0f, 1f, 0.1f) - DenseVector(
+          0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f)) < 1e-6)
   }
 
   test("Slice") {
@@ -181,12 +183,13 @@ class DenseVectorTest extends FunSuite with Checkers {
     assert(x === DenseVector(1, 2, 2, 1, 0))
 
     assert(x(0 until 5) === x)
-    assert(try {
-      x(0 to 5);
-      false
-    } catch {
-      case _: Throwable => true
-    })
+    assert(
+      try {
+        x(0 to 5);
+        false
+      } catch {
+        case _: Throwable => true
+      })
   }
 
   test("Slice and Transpose") {
@@ -590,9 +593,10 @@ class DenseVectorOps_DoubleTest
   }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map {
-      _ % 1e10
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Double].map {
+        _ % 1e10
+      })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -625,9 +629,10 @@ class DenseVectorOps_IntTest
   }
 
   def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map {
-      _ % 1000
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Int].map {
+        _ % 1000
+      })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -701,7 +706,8 @@ class DenseVectorOps_FloatTest
   }
 
   def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map {
-      _ % 1000
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Float].map {
+        _ % 1000
+      })
 }

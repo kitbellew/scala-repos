@@ -22,9 +22,7 @@ import scala.concurrent.duration.FiniteDuration
   */
 class BoneCPModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = {
-    Seq(
-      bind[ConnectionPool].to[BoneConnectionPool]
-    )
+    Seq(bind[ConnectionPool].to[BoneConnectionPool])
   }
 }
 
@@ -80,39 +78,40 @@ class BoneConnectionPool @Inject() (environment: Environment)
     datasource.setClassLoader(environment.classLoader)
 
     // Re-apply per connection config @ checkout
-    datasource.setConnectionHook(new AbstractConnectionHook {
+    datasource.setConnectionHook(
+      new AbstractConnectionHook {
 
-      override def onCheckIn(connection: ConnectionHandle) {
-        if (logger.isTraceEnabled) {
-          logger.trace(
-            s"Check in connection $connection [${datasource.getTotalLeased} leased]")
+        override def onCheckIn(connection: ConnectionHandle) {
+          if (logger.isTraceEnabled) {
+            logger.trace(
+              s"Check in connection $connection [${datasource.getTotalLeased} leased]")
+          }
         }
-      }
 
-      override def onCheckOut(connection: ConnectionHandle) {
-        connection.setAutoCommit(autocommit)
-        isolation.foreach(connection.setTransactionIsolation)
-        connection.setReadOnly(readOnly)
-        catalog.foreach(connection.setCatalog)
-        if (logger.isTraceEnabled) {
-          logger.trace(
-            s"Check out connection $connection [${datasource.getTotalLeased} leased]")
+        override def onCheckOut(connection: ConnectionHandle) {
+          connection.setAutoCommit(autocommit)
+          isolation.foreach(connection.setTransactionIsolation)
+          connection.setReadOnly(readOnly)
+          catalog.foreach(connection.setCatalog)
+          if (logger.isTraceEnabled) {
+            logger.trace(
+              s"Check out connection $connection [${datasource.getTotalLeased} leased]")
+          }
         }
-      }
 
-      override def onQueryExecuteTimeLimitExceeded(
-          handle: ConnectionHandle,
-          statement: Statement,
-          sql: String,
-          logParams: java.util.Map[AnyRef, AnyRef],
-          timeElapsedInNs: Long) {
-        val timeMs = timeElapsedInNs / 1000
-        val query = PoolUtil.fillLogParams(sql, logParams)
-        logger.warn(
-          s"Query execute time limit exceeded (${timeMs}ms) - query: $query")
-      }
+        override def onQueryExecuteTimeLimitExceeded(
+            handle: ConnectionHandle,
+            statement: Statement,
+            sql: String,
+            logParams: java.util.Map[AnyRef, AnyRef],
+            timeElapsedInNs: Long) {
+          val timeMs = timeElapsedInNs / 1000
+          val query = PoolUtil.fillLogParams(sql, logParams)
+          logger.warn(
+            s"Query execute time limit exceeded (${timeMs}ms) - query: $query")
+        }
 
-    })
+      })
 
     dbConfig.url.foreach(datasource.setJdbcUrl)
     dbConfig.username.foreach(datasource.setUsername)
@@ -163,8 +162,10 @@ class BoneConnectionPool @Inject() (environment: Environment)
         .toSeconds)
     datasource.setDisableJMX(
       config.getDeprecated[Boolean]("bonecp.disableJMX", "disableJMX"))
-    datasource.setStatisticsEnabled(config
-      .getDeprecated[Boolean]("bonecp.statisticsEnabled", "statisticsEnabled"))
+    datasource.setStatisticsEnabled(
+      config.getDeprecated[Boolean](
+        "bonecp.statisticsEnabled",
+        "statisticsEnabled"))
     datasource.setIdleConnectionTestPeriodInSeconds(
       config
         .getDeprecated[FiniteDuration](

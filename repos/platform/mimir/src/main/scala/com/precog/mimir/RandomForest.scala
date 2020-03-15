@@ -205,8 +205,10 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
           while (j < order.length - 1) {
             leftRegion += dependent(order(j))
             rightRegion -= dependent(order(j))
-            val error = (leftRegion.error * (j + 1) +
-              rightRegion.error * (order.length - j - 1)) / order.length
+            val error = (
+              leftRegion.error * (j + 1) +
+                rightRegion.error * (order.length - j - 1)
+            ) / order.length
             if (error < minError) {
               minError = error
               minVar = axis
@@ -244,8 +246,10 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
           // We split the region directly between the left's furthest right point
           // and the right's furthest left point.
 
-          val boundary = (independent(featureOrder(minIdx))(minVar) +
-            independent(featureOrder(minIdx + 1))(minVar)) / 2
+          val boundary = (
+            independent(featureOrder(minIdx))(minVar) +
+              independent(featureOrder(minIdx + 1))(minVar)
+          ) / 2
           Split(minVar, boundary, growTree(leftOrders), growTree(rightOrders))
         }
       }
@@ -516,10 +520,12 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         var correct = 0d
         var i = 0
         while (i < actual.length) {
-          correct += (if (actual(i) == predicted(i))
-                        1d
-                      else
-                        0d)
+          correct += (
+            if (actual(i) == predicted(i))
+              1d
+            else
+              0d
+          )
           i += 1
         }
         correct / actual.length
@@ -637,9 +643,11 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             _.toList
           }
 
-        schemas flatMap (_ traverse { tpe =>
-          makeForest(table, tpe) map (tpe -> _)
-        })
+        schemas flatMap (
+          _ traverse { tpe =>
+            makeForest(table, tpe) map (tpe -> _)
+          }
+        )
       }
 
       def makeForest(
@@ -747,54 +755,57 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             lazy val objectTable: Table = table.transform(spec)
 
             def predict(stream: StreamT[M, Slice]): StreamT[M, Slice] = {
-              StreamT(stream.uncons map {
-                case Some((head, tail)) => {
-                  val valueColumns =
-                    models.foldLeft(Map.empty[ColumnRef, Column]) {
-                      case (acc, (modelId, (_, forest))) =>
-                        val modelSlice = head
-                          .deref(paths.Value)
-                          .deref(CPathField(modelId))
-                          .mapColumns(cf.util.CoerceToDouble)
-                          .toArray[Double]
-                        val vecsOpt =
-                          sliceToArray[Array[Double]](modelSlice, null) {
-                            case (c: HomogeneousArrayColumn[_]) => {
-                              (row: Int) => c(row).asInstanceOf[Array[Double]]
+              StreamT(
+                stream.uncons map {
+                  case Some((head, tail)) => {
+                    val valueColumns =
+                      models.foldLeft(Map.empty[ColumnRef, Column]) {
+                        case (acc, (modelId, (_, forest))) =>
+                          val modelSlice = head
+                            .deref(paths.Value)
+                            .deref(CPathField(modelId))
+                            .mapColumns(cf.util.CoerceToDouble)
+                            .toArray[Double]
+                          val vecsOpt =
+                            sliceToArray[Array[Double]](modelSlice, null) {
+                              case (c: HomogeneousArrayColumn[_]) => {
+                                (row: Int) =>
+                                  c(row).asInstanceOf[Array[Double]]
+                              }
+                            }
+
+                          val defined: BitSet = BitSetUtil.create()
+                          val values: Array[A] = new Array[A](head.size)
+
+                          vecsOpt map { vectors =>
+                            var i = 0
+                            while (i < vectors.length) {
+                              val v = vectors(i)
+                              if (v != null) {
+                                defined.set(i)
+                                values(i) = forest.predict(v)
+                              }
+                              i += 1
                             }
                           }
 
-                        val defined: BitSet = BitSetUtil.create()
-                        val values: Array[A] = new Array[A](head.size)
-
-                        vecsOpt map { vectors =>
-                          var i = 0
-                          while (i < vectors.length) {
-                            val v = vectors(i)
-                            if (v != null) {
-                              defined.set(i)
-                              values(i) = forest.predict(v)
-                            }
-                            i += 1
+                          val cols = makeColumns(defined, values)
+                          acc ++ cols map {
+                            case (ColumnRef(cpath, ctype), col) =>
+                              ColumnRef(
+                                CPath(paths.Value, CPathField(modelId)) \ cpath,
+                                ctype) -> col
                           }
-                        }
+                      }
+                    val keyColumns =
+                      head.deref(paths.Key).wrap(paths.Key).columns
+                    val columns = keyColumns ++ valueColumns
+                    StreamT.Yield(Slice(columns, head.size), predict(tail))
+                  }
 
-                        val cols = makeColumns(defined, values)
-                        acc ++ cols map {
-                          case (ColumnRef(cpath, ctype), col) =>
-                            ColumnRef(
-                              CPath(paths.Value, CPathField(modelId)) \ cpath,
-                              ctype) -> col
-                        }
-                    }
-                  val keyColumns = head.deref(paths.Key).wrap(paths.Key).columns
-                  val columns = keyColumns ++ valueColumns
-                  StreamT.Yield(Slice(columns, head.size), predict(tail))
-                }
-
-                case None =>
-                  StreamT.Done
-              })
+                  case None =>
+                    StreamT.Done
+                })
             }
 
             val predictions =

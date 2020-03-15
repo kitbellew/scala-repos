@@ -878,8 +878,14 @@ class ExecutorAllocationManagerSuite
     sc.listenerBus.postToAll(SparkListenerStageSubmitted(stageInfo2))
 
     assert(localityAwareTasks(manager) === 5)
-    assert(hostToLocalTaskCount(manager) ===
-      Map("host1" -> 2, "host2" -> 4, "host3" -> 4, "host4" -> 3, "host5" -> 2))
+    assert(
+      hostToLocalTaskCount(manager) ===
+        Map(
+          "host1" -> 2,
+          "host2" -> 4,
+          "host3" -> 4,
+          "host4" -> 3,
+          "host5" -> 2))
 
     sc.listenerBus.postToAll(SparkListenerStageCompleted(stageInfo1))
     assert(localityAwareTasks(manager) === 2)
@@ -1053,8 +1059,8 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
   private def createStageInfo(
       stageId: Int,
       numTasks: Int,
-      taskLocalityPreferences: Seq[Seq[TaskLocation]] = Seq.empty
-  ): StageInfo = {
+      taskLocalityPreferences: Seq[Seq[TaskLocation]] = Seq.empty)
+      : StageInfo = {
     new StageInfo(
       stageId,
       0,

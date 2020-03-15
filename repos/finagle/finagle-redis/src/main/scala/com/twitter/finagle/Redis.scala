@@ -57,8 +57,7 @@ object Redis extends Client[Command, Reply] {
 
     protected def copy1(
         stack: Stack[ServiceFactory[Command, Reply]] = this.stack,
-        params: Stack.Params = this.params
-    ): Client = copy(stack, params)
+        params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected type In = Command
     protected type Out = Reply
@@ -71,8 +70,7 @@ object Redis extends Client[Command, Reply] {
       new PipeliningDispatcher(
         transport,
         params[finagle.param.Stats].statsReceiver
-          .scope(GenSerialClientDispatcher.StatsScope)
-      )
+          .scope(GenSerialClientDispatcher.StatsScope))
 
     // Java-friendly forwarders
     // See https://issues.scala-lang.org/browse/SI-8905

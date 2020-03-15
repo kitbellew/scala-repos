@@ -403,8 +403,7 @@ class JavaSparkContext(val sc: SparkContext)
       inputFormatClass: Class[F],
       keyClass: Class[K],
       valueClass: Class[V],
-      minPartitions: Int
-  ): JavaPairRDD[K, V] = {
+      minPartitions: Int): JavaPairRDD[K, V] = {
     implicit val ctagK: ClassTag[K] = ClassTag(keyClass)
     implicit val ctagV: ClassTag[V] = ClassTag(valueClass)
     val rdd = sc.hadoopRDD(
@@ -437,8 +436,7 @@ class JavaSparkContext(val sc: SparkContext)
       conf: JobConf,
       inputFormatClass: Class[F],
       keyClass: Class[K],
-      valueClass: Class[V]
-  ): JavaPairRDD[K, V] = {
+      valueClass: Class[V]): JavaPairRDD[K, V] = {
     implicit val ctagK: ClassTag[K] = ClassTag(keyClass)
     implicit val ctagV: ClassTag[V] = ClassTag(valueClass)
     val rdd = sc.hadoopRDD(conf, inputFormatClass, keyClass, valueClass)
@@ -457,8 +455,7 @@ class JavaSparkContext(val sc: SparkContext)
       inputFormatClass: Class[F],
       keyClass: Class[K],
       valueClass: Class[V],
-      minPartitions: Int
-  ): JavaPairRDD[K, V] = {
+      minPartitions: Int): JavaPairRDD[K, V] = {
     implicit val ctagK: ClassTag[K] = ClassTag(keyClass)
     implicit val ctagV: ClassTag[V] = ClassTag(valueClass)
     val rdd = sc.hadoopFile(
@@ -481,8 +478,7 @@ class JavaSparkContext(val sc: SparkContext)
       path: String,
       inputFormatClass: Class[F],
       keyClass: Class[K],
-      valueClass: Class[V]
-  ): JavaPairRDD[K, V] = {
+      valueClass: Class[V]): JavaPairRDD[K, V] = {
     implicit val ctagK: ClassTag[K] = ClassTag(keyClass)
     implicit val ctagV: ClassTag[V] = ClassTag(valueClass)
     val rdd = sc.hadoopFile(path, inputFormatClass, keyClass, valueClass)

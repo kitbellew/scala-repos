@@ -14,15 +14,17 @@ import org.jetbrains.jps.incremental.scala.Client
   */
 object ScalaUtil {
   def writeAction[T](project: Project)(callback: => T): T = {
-    ApplicationManager.getApplication.runWriteAction(new Computable[T] {
-      def compute(): T = callback
-    })
+    ApplicationManager.getApplication.runWriteAction(
+      new Computable[T] {
+        def compute(): T = callback
+      })
   }
 
   def readAction[T](project: Project)(callback: => T): T = {
-    ApplicationManager.getApplication.runReadAction(new Computable[T] {
-      def compute(): T = callback
-    })
+    ApplicationManager.getApplication.runReadAction(
+      new Computable[T] {
+        def compute(): T = callback
+      })
   }
 
   def runnersPath(): String = {

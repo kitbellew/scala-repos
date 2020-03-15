@@ -78,8 +78,8 @@ import org.apache.spark.util.random.{
   */
 abstract class RDD[T: ClassTag](
     @transient private var _sc: SparkContext,
-    @transient private var deps: Seq[Dependency[_]]
-) extends Serializable
+    @transient private var deps: Seq[Dependency[_]])
+    extends Serializable
     with Logging {
 
   if (classOf[RDD[_]].isAssignableFrom(elementClassTag.runtimeClass)) {
@@ -1990,10 +1990,12 @@ abstract class RDD[T: ClassTag](
       val leftOffset = (partitionStr.length - 1) / 2
       val thisPrefix = prefix.replaceAll("\\|\\s+$", "")
       val nextPrefix = (thisPrefix
-        + (if (isLastChild)
-             "  "
-           else
-             "| ")
+        + (
+          if (isLastChild)
+            "  "
+          else
+            "| "
+        )
         + (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset)))
 
       debugSelf(rdd).zipWithIndex.map {

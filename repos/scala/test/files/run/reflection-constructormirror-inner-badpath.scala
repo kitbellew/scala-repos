@@ -2,10 +2,7 @@ import scala.reflect.runtime.universe._
 import scala.reflect.ClassTag
 
 class Foo {
-  case class R(
-      sales: Int,
-      name: String
-  )
+  case class R(sales: Int, name: String)
 
   def foo = {
     val expectedType = implicitly[TypeTag[R]]

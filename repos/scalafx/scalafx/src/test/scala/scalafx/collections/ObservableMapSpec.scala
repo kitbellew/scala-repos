@@ -281,7 +281,9 @@ class ObservableMapSpec[K, V]
     expectedEntries += ((9, "nine", 9.toString))
     map ++= List((10, "ten"), (11, "eleven"))
     expectedEntries += ((10, "ten", 10.toString), (11, "eleven", 11.toString))
-    map put (12, 12.toString) // repeating a value. It will not be change the map
+    map put (
+      12, 12.toString
+    ) // repeating a value. It will not be change the map
     map put (12, "twelve")
     expectedEntries += ((12, "twelve", 12.toString))
     map getOrElseUpdate (13, "thirteen") // Map will not be updated

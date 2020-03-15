@@ -81,8 +81,8 @@ object SyslogHandler {
       server: String = "localhost",
       port: Int = SyslogHandler.DEFAULT_PORT,
       formatter: Formatter = new Formatter(),
-      level: Option[Level] = None
-  ) = () => new SyslogHandler(server, port, formatter, level)
+      level: Option[Level] = None) =
+    () => new SyslogHandler(server, port, formatter, level)
 }
 
 class SyslogHandler(
@@ -191,11 +191,12 @@ object SyslogFuture {
     }
 
   def apply(action: => Unit) =
-    executor.submit(new Runnable {
-      def run() {
-        action
-      }
-    })
+    executor.submit(
+      new Runnable {
+        def run() {
+          action
+        }
+      })
 
   def sync() {
     val f = executor.submit(noop)

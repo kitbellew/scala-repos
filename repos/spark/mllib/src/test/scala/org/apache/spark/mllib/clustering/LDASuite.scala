@@ -292,10 +292,10 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     // [[https://github.com/Blei-Lab/onlineldavb]]
     val topic1: Vector = Vectors.fromBreeze(op.getLambda(0, ::).t)
     val topic2: Vector = Vectors.fromBreeze(op.getLambda(1, ::).t)
-    val expectedTopic1 = Vectors.dense(1.1101, 1.2076, 1.3050, 0.8899, 0.7924,
-      0.6950)
-    val expectedTopic2 = Vectors.dense(0.8899, 0.7924, 0.6950, 1.1101, 1.2076,
-      1.3050)
+    val expectedTopic1 = Vectors.dense(
+      1.1101, 1.2076, 1.3050, 0.8899, 0.7924, 0.6950)
+    val expectedTopic2 = Vectors.dense(
+      0.8899, 0.7924, 0.6950, 1.1101, 1.2076, 1.3050)
     assert(topic1 ~== expectedTopic1 absTol 0.01)
     assert(topic2 ~== expectedTopic2 absTol 0.01)
   }
@@ -498,9 +498,10 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           '0.167*0 + 0.167*1 + 0.167*2 + 0.167*4 + 0.167*3 + 0.167*5']
      */
     topics.foreach { topic =>
-      assert(topic.forall {
-        case (_, p) => p ~= 0.167 absTol 0.05
-      })
+      assert(
+        topic.forall {
+          case (_, p) => p ~= 0.167 absTol 0.05
+        })
     }
   }
 
@@ -746,9 +747,10 @@ private[clustering] object LDASuite {
       new DenseMatrix(
         numRows = vocabSize,
         numCols = k,
-        values = Array(1.86738052, 1.94056535, 1.89981687, 0.0833265,
-          0.07405918, 0.07940597, 0.15081551, 0.08637973, 0.12428538, 1.9474897,
-          1.94615165, 1.95204124))
+        values = Array(
+          1.86738052, 1.94056535, 1.89981687, 0.0833265, 0.07405918, 0.07940597,
+          0.15081551, 0.08637973, 0.12428538, 1.9474897, 1.94615165,
+          1.95204124))
     val ldaModel: LocalLDAModel =
       new LocalLDAModel(
         topics,

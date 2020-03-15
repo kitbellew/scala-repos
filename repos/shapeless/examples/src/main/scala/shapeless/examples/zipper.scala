@@ -49,8 +49,7 @@ object ZipperExamples extends App {
     Employee("Menelaus", 3000) ::
       Employee("Achilles", 2000) ::
       Employee("Odysseus", 2000) ::
-      HNil
-  )
+      HNil)
 
   type D = Dept[Employee :: Employee :: Employee :: HNil]
 

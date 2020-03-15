@@ -112,10 +112,11 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
   def dbFieldClass = classOf[Date]
 
   def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case v    => JsonAST.JInt(v.getTime)
-    })
+    Full(
+      get match {
+        case null => JsonAST.JNull
+        case v    => JsonAST.JInt(v.getTime)
+      })
 
   def toLong: Long =
     get match {
@@ -153,18 +154,20 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
     S.fmapFunc({ s: List[String] =>
       this.setFromAny(s)
     }) { funcName =>
-      Full(appendFieldId(<input type={
-        formInputType
-      }
+      Full(
+        appendFieldId(
+          <input type={
+            formInputType
+          }
                      name={
-        funcName
-      }
+            funcName
+          }
                      value={
-        get match {
-          case null => ""
-          case s    => format(s)
-        }
-      }/>))
+            get match {
+              case null => ""
+              case s    => format(s)
+            }
+          }/>))
     }
 
   override def setFromAny(f: Any): Date =

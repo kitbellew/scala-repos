@@ -470,8 +470,7 @@ class KMeans private (
                 r += 1
               }
               s0
-            }
-          )
+            })
 
       bcNewCenters.unpersist(blocking = false)
       preCosts.unpersist(blocking = false)

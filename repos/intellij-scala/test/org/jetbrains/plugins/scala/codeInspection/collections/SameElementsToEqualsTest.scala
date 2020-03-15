@@ -16,8 +16,7 @@ class SameElementsToEqualsTest extends OperationsOnCollectionInspectionTest {
     doTest(
       s"Vector(1) ${START}sameElements$END Seq(1)",
       "Vector(1) sameElements Seq(1)",
-      "Vector(1) == Seq(1)"
-    )
+      "Vector(1) == Seq(1)")
   }
 
   def testSets(): Unit = {
@@ -63,16 +62,14 @@ class CorrespondsToEqualsTest extends OperationsOnCollectionInspectionTest {
     doTest(
       s"Vector(1).${START}corresponds$END(Seq(1))((x, y) => x == y)",
       "Vector(1).corresponds(Seq(1))((x, y) => x == y)",
-      "Vector(1) == Seq(1)"
-    )
+      "Vector(1) == Seq(1)")
   }
 
   def test2(): Unit = {
     doTest(
       s"Vector(1).${START}corresponds$END(Seq(1))(_ == _)",
       "Vector(1).corresponds(Seq(1))(_ == _)",
-      "Vector(1) == Seq(1)"
-    )
+      "Vector(1) == Seq(1)")
   }
 
   def test3(): Unit = {

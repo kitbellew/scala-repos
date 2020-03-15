@@ -97,8 +97,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
           { () =>
             when(nfo.generation()).thenReturn(x)
           },
-          20.milliseconds
-        )
+          20.milliseconds)
       }
 
       localThread(conductor) {
@@ -189,12 +188,7 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
 
     Time.withCurrentTimeFrozen { ctl =>
       localThread(conductor) {
-        coord.sleepUntilFinishedDraining(
-          space,
-          maxWait,
-          () => npending,
-          log
-        )
+        coord.sleepUntilFinishedDraining(space, maxWait, () => npending, log)
       }
 
       localThread(conductor) {

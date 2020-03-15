@@ -7,10 +7,7 @@ import com.twitter.finagle.{Service, SimpleFilter}
   * Includes: rpc service name, method name, client sent and client received.
   */
 trait ClientRequestTracingFilter[Req, Res] extends SimpleFilter[Req, Res] {
-  def apply(
-      request: Req,
-      service: Service[Req, Res]
-  ) = {
+  def apply(request: Req, service: Service[Req, Res]) = {
     if (Trace.isActivelyTracing) {
       Trace.recordServiceName(serviceName)
       Trace.recordRpc(methodName(request))

@@ -113,8 +113,9 @@ trait MultipartUnmarshallers {
             entity.contentType.mediaType)) {
         entity.contentType.mediaType.params.get("boundary") match {
           case None ⇒
-            FastFuture.failed(new RuntimeException(
-              "Content-Type with a multipart media type must have a 'boundary' parameter"))
+            FastFuture.failed(
+              new RuntimeException(
+                "Content-Type with a multipart media type must have a 'boundary' parameter"))
           case Some(boundary) ⇒
             import BodyPartParser._
             val effectiveParserSettings = Option(parserSettings).getOrElse(

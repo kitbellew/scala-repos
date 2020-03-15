@@ -126,8 +126,10 @@ private object PoolSlot {
       .actorPublisher[HttpRequest](
         Props(new FlowInportActor(self)).withDeploy(Deploy.local))
       .via(connectionFlow)
-      .toMat(Sink.actorSubscriber[HttpResponse](
-        Props(new FlowOutportActor(self)).withDeploy(Deploy.local)))(Keep.both)
+      .toMat(
+        Sink.actorSubscriber[HttpResponse](
+          Props(new FlowOutportActor(self)).withDeploy(Deploy.local)))(
+        Keep.both)
       .named("SlotProcessorInternalConnectionFlow")
 
     override def requestStrategy = ZeroRequestStrategy
@@ -239,22 +241,25 @@ private object PoolSlot {
 
       val results: List[ProcessorOut] = {
         if (inflightRequests.isEmpty && firstContext.isDefined) {
-          (error match {
-            case Some(err) ⇒
-              ResponseDelivery(
-                ResponseContext(
-                  firstContext.get,
-                  Failure(
-                    new UnexpectedDisconnectException(
-                      "Unexpected (early) disconnect",
-                      err))))
-            case _ ⇒
-              ResponseDelivery(
-                ResponseContext(
-                  firstContext.get,
-                  Failure(new UnexpectedDisconnectException(
-                    "Unexpected (early) disconnect"))))
-          }) :: Nil
+          (
+            error match {
+              case Some(err) ⇒
+                ResponseDelivery(
+                  ResponseContext(
+                    firstContext.get,
+                    Failure(
+                      new UnexpectedDisconnectException(
+                        "Unexpected (early) disconnect",
+                        err))))
+              case _ ⇒
+                ResponseDelivery(
+                  ResponseContext(
+                    firstContext.get,
+                    Failure(
+                      new UnexpectedDisconnectException(
+                        "Unexpected (early) disconnect"))))
+            }
+          ) :: Nil
         } else {
           inflightRequests.map { rc ⇒
             if (rc.retriesLeft == 0) {

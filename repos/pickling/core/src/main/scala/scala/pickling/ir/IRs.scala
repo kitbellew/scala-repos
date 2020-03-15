@@ -148,21 +148,23 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         List()
       }
 
-    (tpe.declarations.collect {
-      case sym: MethodSymbol
-          if !sym.isParamAccessor && sym.isSetter && sym.accessed != NoSymbol =>
-        val rawSymTpe =
-          sym.getter.typeSignatureIn(rawTpeOfOwner) match {
-            case NullaryMethodType(ntpe) => ntpe;
-            case ntpe                    => ntpe
-          }
-        val symTpe = existentialAbstraction(quantified, rawSymTpe)
-        FieldIR(
-          sym.getter.name.toString,
-          symTpe,
-          None,
-          Some(sym.getter.asMethod))
-    }).toList ++ javaFieldIRs
+    (
+      tpe.declarations.collect {
+        case sym: MethodSymbol
+            if !sym.isParamAccessor && sym.isSetter && sym.accessed != NoSymbol =>
+          val rawSymTpe =
+            sym.getter.typeSignatureIn(rawTpeOfOwner) match {
+              case NullaryMethodType(ntpe) => ntpe;
+              case ntpe                    => ntpe
+            }
+          val symTpe = existentialAbstraction(quantified, rawSymTpe)
+          FieldIR(
+            sym.getter.name.toString,
+            symTpe,
+            None,
+            Some(sym.getter.asMethod))
+      }
+    ).toList ++ javaFieldIRs
   }
 
   def newClassIR(tpe: Type): ClassIR = {
@@ -199,27 +201,31 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     val canCallCtor =
       primaryCtor != NoSymbol &&
         primaryCtorParamsOpt.nonEmpty &&
-        (primaryCtorParamsOpt.get.forall { preSym =>
-          // println(s"!!! tpe ${tpe.toString}, ctor param $preSym:")
-          val notTransient = !transientAccessors.exists(_.name == preSym.name)
-          // println(s"$notTransient")
-          if (notTransient) {
-            val symOpt = //tpe.declaration(preSym.name)
-              filteredAccessors.find(_.name == preSym.name)
-            symOpt match {
-              case None => false
-              case Some(sym) =>
-                val isVal = sym.asTerm.isVal
-                val getterExists = sym.asTerm.getter != NoSymbol
-                // println(s"$isVal (public: ${sym.asTerm.isPublic}, isParamAcc: ${sym.asTerm.isParamAccessor}), $getterExists (${sym.asTerm.getter}, public: ${sym.asTerm.getter.isPublic})")
-                (isVal && sym.asTerm.isPublic) || (getterExists && sym.asTerm.getter.isPublic)
-            }
-          } else
-            false
+        (
+          primaryCtorParamsOpt.get.forall { preSym =>
+            // println(s"!!! tpe ${tpe.toString}, ctor param $preSym:")
+            val notTransient = !transientAccessors.exists(_.name == preSym.name)
+            // println(s"$notTransient")
+            if (notTransient) {
+              val symOpt = //tpe.declaration(preSym.name)
+                filteredAccessors.find(_.name == preSym.name)
+              symOpt match {
+                case None => false
+                case Some(sym) =>
+                  val isVal = sym.asTerm.isVal
+                  val getterExists = sym.asTerm.getter != NoSymbol
+                  // println(s"$isVal (public: ${sym.asTerm.isPublic}, isParamAcc: ${sym.asTerm.isParamAccessor}), $getterExists (${sym.asTerm.getter}, public: ${sym.asTerm.getter.isPublic})")
+                  (isVal && sym.asTerm.isPublic) || (
+                    getterExists && sym.asTerm.getter.isPublic
+                  )
+              }
+            } else
+              false
 
-          // println(s"$notTransient, $isMethod, $getterExists, $getterIsMetod")
-          // notTransient && isMethod && getterExists && getterIsMetod
-        })
+            // println(s"$notTransient, $isMethod, $getterExists, $getterIsMetod")
+            // notTransient && isMethod && getterExists && getterIsMetod
+          }
+        )
 
     val (quantified, rawTpe) =
       tpe match {
@@ -369,7 +375,9 @@ class IRs[U <: Universe with Singleton](val uni: U) {
 
   def notMarkedTransient(sym: TermSymbol): Boolean = {
     val tr = scala.util.Try {
-      (sym.accessed == NoSymbol) || // if there is no backing field, then it cannot be marked transient
+      (
+        sym.accessed == NoSymbol
+      ) || // if there is no backing field, then it cannot be marked transient
       !sym.accessed.annotations.exists(_.tpe =:= typeOf[scala.transient])
     }
     tr.isFailure || tr.get

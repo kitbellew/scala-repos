@@ -34,17 +34,19 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
         "name" -> c.variant.name),
       "initialFen" -> c.initialFen,
       "rated" -> c.mode.rated,
-      "timeControl" -> (c.timeControl match {
-        case c @ TimeControl.Clock(l, i) =>
-          Json.obj(
-            "type" -> "clock",
-            "limit" -> l,
-            "increment" -> i,
-            "show" -> c.show)
-        case TimeControl.Correspondence(d) =>
-          Json.obj("type" -> "correspondence", "daysPerTurn" -> d)
-        case TimeControl.Unlimited => Json.obj("type" -> "unlimited")
-      }),
+      "timeControl" -> (
+        c.timeControl match {
+          case c @ TimeControl.Clock(l, i) =>
+            Json.obj(
+              "type" -> "clock",
+              "limit" -> l,
+              "increment" -> i,
+              "show" -> c.show)
+          case TimeControl.Correspondence(d) =>
+            Json.obj("type" -> "correspondence", "daysPerTurn" -> d)
+          case TimeControl.Unlimited => Json.obj("type" -> "unlimited")
+        }
+      ),
       "color" -> c.colorChoice.toString.toLowerCase,
       "perf" -> Json
         .obj("icon" -> iconChar(c).toString, "name" -> c.perfType.name)
@@ -64,8 +66,7 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
         "name" -> light.fold(r.id)(_.name),
         "title" -> light.map(_.title),
         "rating" -> r.rating.int,
-        "provisional" -> r.rating.provisional
-      )
+        "provisional" -> r.rating.provisional)
       .noNull
   }
 }

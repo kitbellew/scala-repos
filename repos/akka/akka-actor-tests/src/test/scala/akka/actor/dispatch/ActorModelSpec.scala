@@ -459,15 +459,17 @@ abstract class ActorModelSpec(config: String)
     }
 
     def spawn(f: ⇒ Unit) {
-      (new Thread {
-        override def run(): Unit =
-          try f
-          catch {
-            case e: Throwable ⇒
-              system.eventStream.publish(
-                Error(e, "spawn", this.getClass, "error in spawned thread"))
-          }
-      }).start()
+      (
+        new Thread {
+          override def run(): Unit =
+            try f
+            catch {
+              case e: Throwable ⇒
+                system.eventStream.publish(
+                  Error(e, "spawn", this.getClass, "error in spawned thread"))
+            }
+        }
+      ).start()
     }
 
     "not process messages for a suspended actor" in {
@@ -514,24 +516,28 @@ abstract class ActorModelSpec(config: String)
         val stopLatch = new CountDownLatch(num)
         val keepAliveLatch = new CountDownLatch(1)
         val waitTime = (20 seconds).dilated.toMillis
-        val boss = system.actorOf(Props(new Actor {
-          def receive = {
-            case "run" ⇒
-              for (_ ← 1 to num)(context.watch(
-                context.actorOf(props))) ! cachedMessage
-            case Terminated(child) ⇒ stopLatch.countDown()
-          }
-        }).withDispatcher("boss"))
+        val boss = system.actorOf(
+          Props(
+            new Actor {
+              def receive = {
+                case "run" ⇒
+                  for (_ ← 1 to num)(
+                    context.watch(context.actorOf(props))
+                  ) ! cachedMessage
+                case Terminated(child) ⇒ stopLatch.countDown()
+              }
+            }).withDispatcher("boss"))
         try {
           // this future is meant to keep the dispatcher alive until the end of the test run even if
           // the boss doesn't create children fast enough to keep the dispatcher from becoming empty
           // and it needs to be on a separate thread to not deadlock the calling thread dispatcher
-          new Thread(new Runnable {
-            def run() =
-              Future {
-                keepAliveLatch.await(waitTime, TimeUnit.MILLISECONDS)
-              }(dispatcher)
-          }).start()
+          new Thread(
+            new Runnable {
+              def run() =
+                Future {
+                  keepAliveLatch.await(waitTime, TimeUnit.MILLISECONDS)
+                }(dispatcher)
+            }).start()
           boss ! "run"
           try {
             assertCountDown(
@@ -564,8 +570,9 @@ abstract class ActorModelSpec(config: String)
 
                   System.err.println(
                     "Mailbox: " + mq.numberOfMessages + " " + mq.hasMessages)
-                  Iterator.continually(
-                    mq.dequeue) takeWhile (_ ne null) foreach System.err.println
+                  Iterator.continually(mq.dequeue) takeWhile (
+                    _ ne null
+                  ) foreach System.err.println
                 case _ ⇒
               }
 
@@ -693,11 +700,13 @@ object DispatcherModelSpec {
       }
     """ +
       // use unique dispatcher id for each test, since MessageDispatcherInterceptor holds state
-      (for (n ← 1 to 30)
-        yield """
+      (
+        for (n ← 1 to 30)
+          yield """
         test-dispatcher-%s {
           type = "akka.actor.dispatch.DispatcherModelSpec$MessageDispatcherInterceptorConfigurator"
-        }""".format(n)).mkString
+        }""".format(n)
+      ).mkString
   }
 
   class MessageDispatcherInterceptorConfigurator(
@@ -787,12 +796,14 @@ object BalancingDispatcherModelSpec {
       }
     """ +
       // use unique dispatcher id for each test, since MessageDispatcherInterceptor holds state
-      (for (n ← 1 to 30)
-        yield """
+      (
+        for (n ← 1 to 30)
+          yield """
         test-balancing-dispatcher-%s {
           type = "akka.actor.dispatch.BalancingDispatcherModelSpec$BalancingMessageDispatcherInterceptorConfigurator"
           throughput=1
-        }""".format(n)).mkString
+        }""".format(n)
+      ).mkString
   }
 
   class BalancingMessageDispatcherInterceptorConfigurator(

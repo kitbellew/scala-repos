@@ -19,10 +19,10 @@ import scala.language.higherKinds
   *  @author Aleksandar Prokopec
   *  @since 2.8
   */
-abstract class ParSetFactory[
-    CC[X] <: ParSet[X] with ParSetLike[X, CC[X], _] with GenericParTemplate[
-      X,
-      CC]]
+abstract class ParSetFactory[CC[X] <: ParSet[X] with ParSetLike[
+  X,
+  CC[X],
+  _] with GenericParTemplate[X, CC]]
     extends GenSetFactory[CC]
     with GenericParCompanion[CC] {
   def newBuilder[A]: Combiner[A, CC[A]] = newCombiner[A]

@@ -41,12 +41,13 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
 
         trustManager
           .checkClientTrusted(chain, authType)
-          .must(throwA[CompositeCertificateException].like {
-            case e: CompositeCertificateException =>
-              val sourceExceptions = e.getSourceExceptions
-              sourceExceptions(0).getMessage must be_==("fake1")
-              sourceExceptions(1).getMessage must be_==("fake2")
-          })
+          .must(
+            throwA[CompositeCertificateException].like {
+              case e: CompositeCertificateException =>
+                val sourceExceptions = e.getSourceExceptions
+                sourceExceptions(0).getMessage must be_==("fake1")
+                sourceExceptions(1).getMessage must be_==("fake2")
+            })
       }
 
       "returns true" in {
@@ -165,12 +166,13 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
 
         trustManager
           .checkServerTrusted(chain, authType)
-          .must(throwA[CompositeCertificateException].like {
-            case e: CompositeCertificateException =>
-              val sourceExceptions = e.getSourceExceptions
-              sourceExceptions(0).getMessage must be_==("fake1")
-              sourceExceptions(1).getMessage must be_==("fake2")
-          })
+          .must(
+            throwA[CompositeCertificateException].like {
+              case e: CompositeCertificateException =>
+                val sourceExceptions = e.getSourceExceptions
+                sourceExceptions(0).getMessage must be_==("fake1")
+                sourceExceptions(1).getMessage must be_==("fake2")
+            })
       }
     }
   }

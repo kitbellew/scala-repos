@@ -92,9 +92,8 @@ object coproduct {
           }
       }
 
-    implicit def coproductAtN[H, T <: Coproduct, N <: Nat](implicit
-        att: At[T, N]
-    ): Aux[H :+: T, Succ[N], att.A] =
+    implicit def coproductAtN[H, T <: Coproduct, N <: Nat](
+        implicit att: At[T, N]): Aux[H :+: T, Succ[N], att.A] =
       new At[H :+: T, Succ[N]] {
         type A = att.A
 
@@ -139,9 +138,8 @@ object coproduct {
         H,
         T <: Coproduct,
         TPrefix <: Coproduct,
-        TSuffix <: Coproduct](implicit
-        partition: Aux[T, H, TPrefix, TSuffix]
-    ): Aux[H :+: T, H, H :+: TPrefix, TSuffix] =
+        TSuffix <: Coproduct](implicit partition: Aux[T, H, TPrefix, TSuffix])
+        : Aux[H :+: T, H, H :+: TPrefix, TSuffix] =
       new Partition[H :+: T, H] {
         type Prefix = H :+: TPrefix
         type Suffix = TSuffix
@@ -164,8 +162,7 @@ object coproduct {
         TSuffix <: Coproduct,
         U](implicit
         partition: Aux[T, U, TPrefix, TSuffix],
-        e: U =:!= H
-    ): Aux[H :+: T, U, TPrefix, H :+: TSuffix] =
+        e: U =:!= H): Aux[H :+: T, U, TPrefix, H :+: TSuffix] =
       new Partition[H :+: T, U] {
         type Prefix = TPrefix
         type Suffix = H :+: TSuffix
@@ -202,8 +199,7 @@ object coproduct {
         U,
         CPrefix <: Coproduct,
         CSuffix <: Coproduct](implicit
-        partition: Partition.Aux[C, U, CPrefix, CSuffix]
-    ): Aux[C, U, CPrefix] =
+        partition: Partition.Aux[C, U, CPrefix, CSuffix]): Aux[C, U, CPrefix] =
       new Filter[C, U] {
         type A = CPrefix
 
@@ -230,8 +226,7 @@ object coproduct {
         U,
         CPrefix <: Coproduct,
         CSuffix <: Coproduct](implicit
-        partition: Partition.Aux[C, U, CPrefix, CSuffix]
-    ): Aux[C, U, CSuffix] =
+        partition: Partition.Aux[C, U, CPrefix, CSuffix]): Aux[C, U, CSuffix] =
       new FilterNot[C, U] {
         type A = CSuffix
 
@@ -261,8 +256,7 @@ object coproduct {
     // - the two don't collide for coproducts with repeated types
     // - the first element of type I in C is removed
     implicit def removeTail[H, T <: Coproduct, U](implicit
-        tailRemove: Remove[T, U]
-    ): Aux[H :+: T, U, H :+: tailRemove.Rest] =
+        tailRemove: Remove[T, U]): Aux[H :+: T, U, H :+: tailRemove.Rest] =
       new Remove[H :+: T, U] {
         type Rest = H :+: tailRemove.Rest
 
@@ -347,9 +341,9 @@ object coproduct {
         implicit removeLast: RemoveLast[C, I]): Aux[C, I, removeLast.Rest] =
       removeLast
 
-    implicit def removeLastTail[H, T <: Coproduct, I](implicit
-        tailRemoveLast: RemoveLast[T, I]
-    ): Aux[H :+: T, I, H :+: tailRemoveLast.Rest] =
+    implicit def removeLastTail[H, T <: Coproduct, I](
+        implicit tailRemoveLast: RemoveLast[T, I])
+        : Aux[H :+: T, I, H :+: tailRemoveLast.Rest] =
       fromRemove(Remove.removeTail(toRemove(tailRemoveLast)))
   }
 
@@ -381,8 +375,7 @@ object coproduct {
         OutT <: Coproduct](implicit
         fh: Case1.Aux[F, H, OutH],
         ft: FlatMap.Aux[T, F, OutT],
-        extendBy: ExtendBy[OutH, OutT]
-    ): Aux[H :+: T, F, extendBy.Out] =
+        extendBy: ExtendBy[OutH, OutT]): Aux[H :+: T, F, extendBy.Out] =
       new FlatMap[H :+: T, F] {
         type Out = extendBy.Out
 
@@ -594,8 +587,8 @@ object coproduct {
         C2T <: Coproduct,
         OutC <: Coproduct](implicit
         zot: ZipOne.Aux[C1T, C2T, OutC],
-        extend: ExtendRightBy[(C1H, C2H) :+: CNil, OutC]
-    ): Aux[C1H :+: C1T, C2H :+: C2T, extend.Out] =
+        extend: ExtendRightBy[(C1H, C2H) :+: CNil, OutC])
+        : Aux[C1H :+: C1T, C2H :+: C2T, extend.Out] =
       new ZipOne[C1H :+: C1T, C2H :+: C2T] {
         type Out = extend.Out
 
@@ -662,8 +655,7 @@ object coproduct {
           N <: Nat,
           OutC <: Coproduct](implicit
           impl: Impl[CT, Succ[N]],
-          w: Witness.Aux[N]
-      ): Aux[CH :+: CT, N, (CH, N) :+: impl.Out] =
+          w: Witness.Aux[N]): Aux[CH :+: CT, N, (CH, N) :+: impl.Out] =
         new Impl[CH :+: CT, N] {
           type Out = (CH, N) :+: impl.Out
 
@@ -776,8 +768,8 @@ object coproduct {
     implicit def extendBy[L <: Coproduct, R <: Coproduct, Out0 <: Coproduct](
         implicit
         extendLeftBy: ExtendLeftBy.Aux[L, R, Out0],
-        extendRightBy: ExtendRightBy.Aux[L, R, Out0]
-    ): ExtendBy.Aux[L, R, Out0] =
+        extendRightBy: ExtendRightBy.Aux[L, R, Out0])
+        : ExtendBy.Aux[L, R, Out0] =
       new ExtendBy[L, R] {
         type Out = Out0
 
@@ -807,8 +799,7 @@ object coproduct {
         R <: Coproduct,
         RevL <: Coproduct](implicit
         reverseL: Reverse.Aux[L, RevL],
-        impl: Impl[RevL, R]
-    ): Aux[L, R, impl.Out] =
+        impl: Impl[RevL, R]): Aux[L, R, impl.Out] =
       new ExtendLeftBy[L, R] {
         type Out = impl.Out
 
@@ -835,8 +826,8 @@ object coproduct {
         }
 
       implicit def extendLeftByCoproductImpl[H, T <: Coproduct, R <: Coproduct](
-          implicit extendLeftBy: Impl[T, H :+: R]
-      ): Aux[H :+: T, R, extendLeftBy.Out] =
+          implicit
+          extendLeftBy: Impl[T, H :+: R]): Aux[H :+: T, R, extendLeftBy.Out] =
         new Impl[H :+: T, R] {
           type Out = extendLeftBy.Out
 
@@ -874,8 +865,8 @@ object coproduct {
         LH <: Coproduct,
         T <: Coproduct](implicit
         extendRight: ExtendRight.Aux[L, H, LH],
-        extendRightBy: ExtendRightBy[LH, T]
-    ): Aux[L, H :+: T, extendRightBy.Out] =
+        extendRightBy: ExtendRightBy[LH, T])
+        : Aux[L, H :+: T, extendRightBy.Out] =
       new ExtendRightBy[L, H :+: T] {
         type Out = extendRightBy.Out
 
@@ -919,8 +910,7 @@ object coproduct {
         NModSize <: Succ[_]](implicit
         length: Length.Aux[C, Size],
         mod: nat.Mod.Aux[N, Size, NModSize],
-        impl: Impl[C, NModSize]
-    ): Aux[C, N, impl.Out] =
+        impl: Impl[C, NModSize]): Aux[C, N, impl.Out] =
       new RotateLeft[C, N] {
         type Out = impl.Out
         def apply(c: C): Out = impl(c)
@@ -973,13 +963,11 @@ object coproduct {
         Size <: Nat,
         NModSize <: Nat,
         Before <: Coproduct,
-        After <: Coproduct
-    ](implicit
+        After <: Coproduct](implicit
         length: Length.Aux[C, Size],
         mod: nat.Mod.Aux[N, Size, NModSize],
         split: Split.Aux[C, NModSize, Before, After],
-        prepend: Prepend[After, Before]
-    ): RotateLeft.Aux[C, N, prepend.Out] =
+        prepend: Prepend[After, Before]): RotateLeft.Aux[C, N, prepend.Out] =
       new RotateLeft[C, N] {
         type Out = prepend.Out
 
@@ -1027,13 +1015,12 @@ object coproduct {
         N <: Nat,
         Size <: Nat,
         NModSize <: Succ[_],
-        Size_Diff_NModSize <: Nat
-    ](implicit
+        Size_Diff_NModSize <: Nat](implicit
         length: Length.Aux[C, Size],
         mod: nat.Mod.Aux[N, Size, NModSize],
         diff: nat.Diff.Aux[Size, NModSize, Size_Diff_NModSize],
-        rotateLeft: RotateLeft.Impl[C, Size_Diff_NModSize]
-    ): Aux[C, N, rotateLeft.Out] =
+        rotateLeft: RotateLeft.Impl[C, Size_Diff_NModSize])
+        : Aux[C, N, rotateLeft.Out] =
       new RotateRight[C, N] {
         type Out = rotateLeft.Out
         def apply(c: C): Out = rotateLeft(c)
@@ -1051,13 +1038,12 @@ object coproduct {
         N <: Nat,
         Size <: Nat,
         NModSize <: Nat,
-        Size_Diff_NModSize <: Nat
-    ](implicit
+        Size_Diff_NModSize <: Nat](implicit
         length: Length.Aux[C, Size],
         mod: nat.Mod.Aux[N, Size, NModSize],
         diff: nat.Diff.Aux[Size, NModSize, Size_Diff_NModSize],
-        rotateLeft: RotateLeft[C, Size_Diff_NModSize]
-    ): RotateRight.Aux[C, N, rotateLeft.Out] =
+        rotateLeft: RotateLeft[C, Size_Diff_NModSize])
+        : RotateRight.Aux[C, N, rotateLeft.Out] =
       new RotateRight[C, N] {
         type Out = rotateLeft.Out
 
@@ -1286,11 +1272,12 @@ object coproduct {
           : Reverse0[Acc, InH :+: InT, Out] =
         new Reverse0[Acc, InH :+: InT, Out] {
           def apply(e: Either[Acc, InH :+: InT]) =
-            rt(e match {
-              case Left(acc)     => Left(Inr(acc))
-              case Right(Inl(h)) => Left(Inl(h))
-              case Right(Inr(t)) => Right(t)
-            })
+            rt(
+              e match {
+                case Left(acc)     => Left(Inr(acc))
+                case Right(Inl(h)) => Left(Inl(h))
+                case Right(Inr(t)) => Right(t)
+              })
         }
     }
 
@@ -1305,8 +1292,7 @@ object coproduct {
         RotateL_HReverseT <: Coproduct](implicit
         reverse: Aux[T, ReverseT],
         rotateLeft: RotateLeft.Aux[H :+: ReverseT, Nat._1, RotateL_HReverseT],
-        inject: Inject[RotateL_HReverseT, H]
-    ): Aux[H :+: T, RotateL_HReverseT] =
+        inject: Inject[RotateL_HReverseT, H]): Aux[H :+: T, RotateL_HReverseT] =
       new Reverse[H :+: T] {
         type Out = RotateL_HReverseT
         def apply(c: H :+: T): Out =
@@ -1433,8 +1419,7 @@ object coproduct {
         H,
         T <: Coproduct](implicit
         reverse: Reverse.Aux[C, ReverseC],
-        isCCons: IsCCons.Aux[ReverseC, H, T]
-    ): Aux[C, T, H] =
+        isCCons: IsCCons.Aux[ReverseC, H, T]): Aux[C, T, H] =
       new InitLast[C] {
         type I = T
         type L = H
@@ -1533,8 +1518,7 @@ object coproduct {
         T <: Coproduct,
         TRest <: Coproduct](implicit
         tailBasis: Basis.Aux[Super, T, TRest],
-        remove: RemoveLast[TRest, H]
-    ): Aux[Super, H :+: T, remove.Rest] =
+        remove: RemoveLast[TRest, H]): Aux[Super, H :+: T, remove.Rest] =
       new Basis[Super, H :+: T] {
         type Rest = remove.Rest
 

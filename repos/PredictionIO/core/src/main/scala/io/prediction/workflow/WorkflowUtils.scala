@@ -65,17 +65,13 @@ object WorkflowUtils extends Logging {
     val engineModule = runtimeMirror.staticModule(engine)
     val engineObject = runtimeMirror.reflectModule(engineModule)
     try {
-      (
-        EngineLanguage.Scala,
-        engineObject.instance.asInstanceOf[EngineFactory]
-      )
+      (EngineLanguage.Scala, engineObject.instance.asInstanceOf[EngineFactory])
     } catch {
       case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
         try {
           (
             EngineLanguage.Java,
-            Class.forName(engine).newInstance.asInstanceOf[EngineFactory]
-          )
+            Class.forName(engine).newInstance.asInstanceOf[EngineFactory])
         }
     }
   }
@@ -89,15 +85,13 @@ object WorkflowUtils extends Logging {
     try {
       (
         EngineLanguage.Scala,
-        epgObject.instance.asInstanceOf[EngineParamsGenerator]
-      )
+        epgObject.instance.asInstanceOf[EngineParamsGenerator])
     } catch {
       case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
         try {
           (
             EngineLanguage.Java,
-            Class.forName(epg).newInstance.asInstanceOf[EngineParamsGenerator]
-          )
+            Class.forName(epg).newInstance.asInstanceOf[EngineParamsGenerator])
         }
     }
   }
@@ -109,17 +103,13 @@ object WorkflowUtils extends Logging {
     val evaluationModule = runtimeMirror.staticModule(evaluation)
     val evaluationObject = runtimeMirror.reflectModule(evaluationModule)
     try {
-      (
-        EngineLanguage.Scala,
-        evaluationObject.instance.asInstanceOf[Evaluation]
-      )
+      (EngineLanguage.Scala, evaluationObject.instance.asInstanceOf[Evaluation])
     } catch {
       case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
         try {
           (
             EngineLanguage.Java,
-            Class.forName(evaluation).newInstance.asInstanceOf[Evaluation]
-          )
+            Class.forName(evaluation).newInstance.asInstanceOf[Evaluation])
         }
     }
   }
@@ -193,8 +183,9 @@ object WorkflowUtils extends Logging {
         .map { p =>
           try {
             if (!classMap.contains(np.name)) {
-              error(s"Unable to find $field class with name '${np.name}'" +
-                " defined in Engine.")
+              error(
+                s"Unable to find $field class with name '${np.name}'" +
+                  " defined in Engine.")
               sys.exit(1)
             }
             WorkflowUtils.extractParams(
@@ -334,10 +325,7 @@ object WorkflowUtils extends Logging {
       info(s"No 'params' is found. Default EmptyParams will be used.")
     }
 
-    NameParams(
-      name = nameOpt.getOrElse(""),
-      params = paramsOpt
-    )
+    NameParams(name = nameOpt.getOrElse(""), params = paramsOpt)
   }
 
   def extractSparkConf(root: JValue): List[(String, String)] = {

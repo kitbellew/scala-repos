@@ -229,16 +229,18 @@ abstract class MappedProductShape[
 }
 
 /** Base class for ProductNodeShapes with a type mapping to a type that extends scala.Product */
-abstract class MappedScalaProductShape[Level <: ShapeLevel, C <: Product,
-M <: C, U <: C, P <: C](implicit val classTag: ClassTag[U])
+abstract class MappedScalaProductShape[
+    Level <: ShapeLevel, C <: Product, M <: C, U <: C, P <: C](
+    implicit val classTag: ClassTag[U])
     extends MappedProductShape[Level, C, M, U, P] {
   override def getIterator(value: C) = value.productIterator
   def getElement(value: C, idx: Int) = value.productElement(idx)
 }
 
 /** Shape for Scala tuples of all arities */
-final class TupleShape[Level <: ShapeLevel, M <: Product, U <: Product,
-P <: Product](val shapes: Shape[_, _, _, _]*)
+final class TupleShape[
+    Level <: ShapeLevel, M <: Product, U <: Product, P <: Product](
+    val shapes: Shape[_, _, _, _]*)
     extends ProductNodeShape[Level, Product, M, U, P] {
   override def getIterator(value: Product) = value.productIterator
   def getElement(value: Product, idx: Int) = value.productElement(idx)
@@ -318,15 +320,8 @@ class CaseClassShape[
 class ProductClassShape[E <: Product, C <: Product](
     val shapes: Seq[Shape[_, _, _, _]],
     mapLifted: Seq[Any] => C,
-    mapPlain: Seq[Any] => E
-)(implicit classTag: ClassTag[E])
-    extends MappedScalaProductShape[
-      FlatShapeLevel,
-      Product,
-      C,
-      E,
-      C
-    ] {
+    mapPlain: Seq[Any] => E)(implicit classTag: ClassTag[E])
+    extends MappedScalaProductShape[FlatShapeLevel, Product, C, E, C] {
   override def toMapped(v: Any) =
     mapPlain(v.asInstanceOf[Product].productIterator.toSeq)
   def buildValue(elems: IndexedSeq[Any]) = mapLifted(elems)
@@ -391,9 +386,10 @@ object ShapedValue {
   @inline implicit def shapedValueShape[T, U, Level <: ShapeLevel] =
     RepShape[Level, ShapedValue[T, U], U]
 
-  def mapToImpl[R <: Product with Serializable, U](c: Context {
-    type PrefixType = ShapedValue[_, U]
-  })(rCT: c.Expr[ClassTag[R]])(implicit
+  def mapToImpl[R <: Product with Serializable, U](
+      c: Context {
+        type PrefixType = ShapedValue[_, U]
+      })(rCT: c.Expr[ClassTag[R]])(implicit
       rTag: c.WeakTypeTag[R],
       uTag: c.WeakTypeTag[U]): c.Tree = {
     import c.universe._

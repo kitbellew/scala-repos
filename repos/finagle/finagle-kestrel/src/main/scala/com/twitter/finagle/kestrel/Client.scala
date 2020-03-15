@@ -31,8 +31,7 @@ object OutOfRetriesException extends Exception
 case class ReadMessage(
     bytes: Buf,
     ack: Offer[Unit],
-    abort: Offer[Unit] = Offer.const(Unit)
-)
+    abort: Offer[Unit] = Offer.const(Unit))
 
 /**
   * An ongoing transactional read (from {{read}}).
@@ -128,8 +127,7 @@ object ReadHandle {
   def apply(
       _messages: Offer[ReadMessage],
       _error: Offer[Throwable],
-      closeOf: Offer[Unit]
-  ): ReadHandle =
+      closeOf: Offer[Unit]): ReadHandle =
     new ReadHandle {
       val messages = _messages
       val error = _error
@@ -142,8 +140,7 @@ object ReadHandle {
   def fromOffers(
       messages: Offer[ReadMessage],
       error: Offer[Throwable],
-      closeOf: Offer[Unit]
-  ): ReadHandle = ReadHandle(messages, error, closeOf)
+      closeOf: Offer[Unit]): ReadHandle = ReadHandle(messages, error, closeOf)
 
   /**
     * Provide a merged ReadHandle, combining the messages & errors of
@@ -152,12 +149,14 @@ object ReadHandle {
     */
   def merged(handles: Seq[ReadHandle]): ReadHandle =
     new ReadHandle {
-      val messages = Offer.choose(handles.map {
-        _.messages
-      }.toSeq: _*)
-      val error = Offer.choose(handles.map {
-        _.error
-      }.toSeq: _*)
+      val messages = Offer.choose(
+        handles.map {
+          _.messages
+        }.toSeq: _*)
+      val error = Offer.choose(
+        handles.map {
+          _.error
+        }.toSeq: _*)
       def close() =
         handles.foreach {
           _.close()
@@ -274,8 +273,7 @@ trait Client {
   def readReliably(
       queueName: String,
       timer: Timer,
-      retryBackoffs: => Stream[Duration]
-  ): ReadHandle = {
+      retryBackoffs: => Stream[Duration]): ReadHandle = {
     val error = new Broker[Throwable]
     val messages = new Broker[ReadMessage]
     val close = new Broker[Unit]
@@ -354,8 +352,9 @@ abstract protected[kestrel] class CommandExecutorFactory[U] extends Closable {
   * @tparam ItemId the type used by {{CommandExecutor}} to identify returned
   *                items
   */
-abstract protected[kestrel] class ClientBase[CommandExecutor <: Closable, Reply,
-ItemId](underlying: CommandExecutorFactory[CommandExecutor])
+abstract protected[kestrel] class ClientBase[
+    CommandExecutor <: Closable, Reply, ItemId](
+    underlying: CommandExecutorFactory[CommandExecutor])
     extends Client {
 
   /**
@@ -451,8 +450,7 @@ ItemId](underlying: CommandExecutorFactory[CommandExecutor])
   private[this] def write(
       queueName: String,
       offer: Offer[Buf],
-      closed: Promise[Throwable]
-  ) {
+      closed: Promise[Throwable]) {
     offer.sync().foreach { item =>
       set(queueName, item).unit respond {
         case Return(_) => write(queueName, offer)

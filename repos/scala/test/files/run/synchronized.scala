@@ -802,10 +802,12 @@ object O2 extends T
 object Test extends App {
   def check(name: String, result: Boolean) {
     println(
-      "%-10s %s" format (name + ":", if (result)
-        "OK"
-      else
-        "FAILED"))
+      "%-10s %s" format (
+        name + ":", if (result)
+          "OK"
+        else
+          "FAILED"
+      ))
   }
 
   val c1 = new C1

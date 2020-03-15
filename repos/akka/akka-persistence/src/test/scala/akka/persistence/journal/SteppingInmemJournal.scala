@@ -30,9 +30,10 @@ object SteppingInmemJournal {
   }
 
   def config(instanceId: String): Config =
-    ConfigFactory.parseString(s"""
+    ConfigFactory.parseString(
+      s"""
         |akka.persistence.journal.stepping-inmem.class=${classOf[
-                                   SteppingInmemJournal].getName}
+           SteppingInmemJournal].getName}
         |akka.persistence.journal.plugin = "akka.persistence.journal.stepping-inmem"
         |akka.persistence.journal.stepping-inmem.instance-id = "$instanceId"
       """.stripMargin)
@@ -100,10 +101,11 @@ final class SteppingInmemJournal extends InmemJournal {
       val promise = Promise[Try[Unit]]()
       val future = promise.future
       doOrEnqueue { () ⇒
-        promise.completeWith(super.asyncWriteMessages(Seq(message)).map {
-          case Nil ⇒ AsyncWriteJournal.successUnit
-          case head :: _ ⇒ head
-        })
+        promise.completeWith(
+          super.asyncWriteMessages(Seq(message)).map {
+            case Nil ⇒ AsyncWriteJournal.successUnit
+            case head :: _ ⇒ head
+          })
         future.map(_ ⇒ ())
       }
       future

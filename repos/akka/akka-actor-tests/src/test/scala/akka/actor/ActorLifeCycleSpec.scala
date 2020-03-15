@@ -56,14 +56,15 @@ class ActorLifeCycleSpec
             classOf[Supervisor],
             OneForOneStrategy(maxNrOfRetries = 3)(List(classOf[Exception]))))
         val gen = new AtomicInteger(0)
-        val restarterProps = Props(new LifeCycleTestActor(testActor, id, gen) {
-          override def preRestart(reason: Throwable, message: Option[Any]) {
-            report("preRestart")
-          }
-          override def postRestart(reason: Throwable) {
-            report("postRestart")
-          }
-        }).withDeploy(Deploy.local)
+        val restarterProps = Props(
+          new LifeCycleTestActor(testActor, id, gen) {
+            override def preRestart(reason: Throwable, message: Option[Any]) {
+              report("preRestart")
+            }
+            override def postRestart(reason: Throwable) {
+              report("postRestart")
+            }
+          }).withDeploy(Deploy.local)
         val restarter = Await.result(
           (supervisor ? restarterProps).mapTo[ActorRef],
           timeout.duration)
@@ -152,12 +153,14 @@ class ActorLifeCycleSpec
     }
 
     "log failues in postStop" in {
-      val a = system.actorOf(Props(new Actor {
-        def receive = Actor.emptyBehavior
-        override def postStop {
-          throw new Exception("hurrah")
-        }
-      }))
+      val a = system.actorOf(
+        Props(
+          new Actor {
+            def receive = Actor.emptyBehavior
+            override def postStop {
+              throw new Exception("hurrah")
+            }
+          }))
       EventFilter[Exception]("hurrah", occurrences = 1) intercept {
         a ! PoisonPill
       }
@@ -165,15 +168,17 @@ class ActorLifeCycleSpec
 
     "clear the behavior stack upon restart" in {
       final case class Become(recv: ActorContext ⇒ Receive)
-      val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case Become(beh) ⇒ {
-            context.become(beh(context), discardOld = false);
-            sender() ! "ok"
-          }
-          case x ⇒ sender() ! 42
-        }
-      }))
+      val a = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case Become(beh) ⇒ {
+                context.become(beh(context), discardOld = false);
+                sender() ! "ok"
+              }
+              case x ⇒ sender() ! 42
+            }
+          }))
       a ! "hello"
       expectMsg(42)
       a ! Become(ctx ⇒ {

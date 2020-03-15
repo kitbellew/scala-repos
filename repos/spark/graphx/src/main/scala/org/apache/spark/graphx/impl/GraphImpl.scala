@@ -49,9 +49,10 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
   /** Return a RDD that brings edges together with their source and destination vertices. */
   @transient override lazy val triplets: RDD[EdgeTriplet[VD, ED]] = {
     replicatedVertexView.upgrade(vertices, true, true)
-    replicatedVertexView.edges.partitionsRDD.mapPartitions(_.flatMap {
-      case (pid, part) => part.tripletIterator()
-    })
+    replicatedVertexView.edges.partitionsRDD.mapPartitions(
+      _.flatMap {
+        case (pid, part) => part.tripletIterator()
+      })
   }
 
   override def persist(newLevel: StorageLevel): Graph[VD, ED] = {
@@ -242,62 +243,63 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
 
     // Map and combine.
     val preAgg = view.edges.partitionsRDD
-      .mapPartitions(_.flatMap {
-        case (pid, edgePartition) =>
-          // Choose scan method
-          val activeFraction = edgePartition.numActives.getOrElse(
-            0) / edgePartition.indexSize.toFloat
-          activeDirectionOpt match {
-            case Some(EdgeDirection.Both) =>
-              if (activeFraction < 0.8) {
-                edgePartition.aggregateMessagesIndexScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.Both)
-              } else {
+      .mapPartitions(
+        _.flatMap {
+          case (pid, edgePartition) =>
+            // Choose scan method
+            val activeFraction = edgePartition.numActives.getOrElse(
+              0) / edgePartition.indexSize.toFloat
+            activeDirectionOpt match {
+              case Some(EdgeDirection.Both) =>
+                if (activeFraction < 0.8) {
+                  edgePartition.aggregateMessagesIndexScan(
+                    sendMsg,
+                    mergeMsg,
+                    tripletFields,
+                    EdgeActiveness.Both)
+                } else {
+                  edgePartition.aggregateMessagesEdgeScan(
+                    sendMsg,
+                    mergeMsg,
+                    tripletFields,
+                    EdgeActiveness.Both)
+                }
+              case Some(EdgeDirection.Either) =>
+                // TODO: Because we only have a clustered index on the source vertex ID, we can't filter
+                // the index here. Instead we have to scan all edges and then do the filter.
                 edgePartition.aggregateMessagesEdgeScan(
                   sendMsg,
                   mergeMsg,
                   tripletFields,
-                  EdgeActiveness.Both)
-              }
-            case Some(EdgeDirection.Either) =>
-              // TODO: Because we only have a clustered index on the source vertex ID, we can't filter
-              // the index here. Instead we have to scan all edges and then do the filter.
-              edgePartition.aggregateMessagesEdgeScan(
-                sendMsg,
-                mergeMsg,
-                tripletFields,
-                EdgeActiveness.Either)
-            case Some(EdgeDirection.Out) =>
-              if (activeFraction < 0.8) {
-                edgePartition.aggregateMessagesIndexScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.SrcOnly)
-              } else {
+                  EdgeActiveness.Either)
+              case Some(EdgeDirection.Out) =>
+                if (activeFraction < 0.8) {
+                  edgePartition.aggregateMessagesIndexScan(
+                    sendMsg,
+                    mergeMsg,
+                    tripletFields,
+                    EdgeActiveness.SrcOnly)
+                } else {
+                  edgePartition.aggregateMessagesEdgeScan(
+                    sendMsg,
+                    mergeMsg,
+                    tripletFields,
+                    EdgeActiveness.SrcOnly)
+                }
+              case Some(EdgeDirection.In) =>
                 edgePartition.aggregateMessagesEdgeScan(
                   sendMsg,
                   mergeMsg,
                   tripletFields,
-                  EdgeActiveness.SrcOnly)
-              }
-            case Some(EdgeDirection.In) =>
-              edgePartition.aggregateMessagesEdgeScan(
-                sendMsg,
-                mergeMsg,
-                tripletFields,
-                EdgeActiveness.DstOnly)
-            case _ => // None
-              edgePartition.aggregateMessagesEdgeScan(
-                sendMsg,
-                mergeMsg,
-                tripletFields,
-                EdgeActiveness.Neither)
-          }
-      })
+                  EdgeActiveness.DstOnly)
+              case _ => // None
+                edgePartition.aggregateMessagesEdgeScan(
+                  sendMsg,
+                  mergeMsg,
+                  tripletFields,
+                  EdgeActiveness.Neither)
+            }
+        })
       .setName("GraphImpl.aggregateMessages - preAgg")
 
     // do the final reduction reusing the index map

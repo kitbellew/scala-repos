@@ -152,9 +152,10 @@ object LinearDataGenerator {
 
     if (sparsity == 0.0) {
       (0 until nPoints).map { _ =>
-        val features = Vectors.dense(weights.indices.map {
-          rndElement(_)
-        }.toArray)
+        val features = Vectors.dense(
+          weights.indices.map {
+            rndElement(_)
+          }.toArray)
         val label = BLAS.dot(Vectors.dense(weights), features) +
           intercept + eps * rnd.nextGaussian()
         // Return LabeledPoints with DenseVector
@@ -223,8 +224,9 @@ object LinearDataGenerator {
   def main(args: Array[String]) {
     if (args.length < 2) {
       // scalastyle:off println
-      println("Usage: LinearDataGenerator " +
-        "<master> <output_dir> [num_examples] [num_features] [num_partitions]")
+      println(
+        "Usage: LinearDataGenerator " +
+          "<master> <output_dir> [num_examples] [num_features] [num_partitions]")
       // scalastyle:on println
       System.exit(1)
     }

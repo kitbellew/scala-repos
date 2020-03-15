@@ -90,12 +90,14 @@ object ActorDSL extends dsl.Inbox with dsl.Creators {
         extends NoSerializationVerificationNeeded
     private val boss = system
       .systemActorOf(
-        Props(new Actor {
-          def receive = {
-            case MkChild(props, name) ⇒ sender() ! context.actorOf(props, name)
-            case any ⇒ sender() ! any
-          }
-        }),
+        Props(
+          new Actor {
+            def receive = {
+              case MkChild(props, name) ⇒
+                sender() ! context.actorOf(props, name)
+              case any ⇒ sender() ! any
+            }
+          }),
         "dsl")
       .asInstanceOf[RepointableActorRef]
 

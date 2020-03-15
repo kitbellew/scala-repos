@@ -176,9 +176,7 @@ trait TypeInferencerSpecs[M[+_]]
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
-      val expected = Map(
-        "/file" -> Map(JPath("column") -> cLiterals)
-      )
+      val expected = Map("/file" -> Map(JPath("column") -> cLiterals))
 
       result must_== expected
     }
@@ -199,8 +197,7 @@ trait TypeInferencerSpecs[M[+_]]
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum))
-      )
+        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -220,8 +217,7 @@ trait TypeInferencerSpecs[M[+_]]
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum))
-      )
+        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -241,8 +237,7 @@ trait TypeInferencerSpecs[M[+_]]
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum))
-      )
+        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -262,8 +257,7 @@ trait TypeInferencerSpecs[M[+_]]
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum))
-      )
+        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -290,8 +284,7 @@ trait TypeInferencerSpecs[M[+_]]
 
       val expected = Map(
         "/file0" -> Map(JPath("column0") -> Set(CLong, CDouble, CNum)),
-        "/file1" -> Map(JPath("column1") -> Set(CLong, CDouble, CNum))
-      )
+        "/file1" -> Map(JPath("column1") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -311,9 +304,7 @@ trait TypeInferencerSpecs[M[+_]]
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
-      val expected = Map(
-        "/file" -> Map(JPath(0) -> Set(CLong, CDouble, CNum))
-      )
+      val expected = Map("/file" -> Map(JPath(0) -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -341,8 +332,7 @@ trait TypeInferencerSpecs[M[+_]]
 
       val expected = Map(
         "/file0" -> Map(JPath("column0") -> Set[CType]()),
-        "/file1" -> Map(JPath("column1") -> Set(CLong, CDouble, CNum))
-      )
+        "/file1" -> Map(JPath("column1") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -370,8 +360,7 @@ trait TypeInferencerSpecs[M[+_]]
 
       val expected = Map(
         "/file0" -> Map(JPath("column0") -> Set(CString)),
-        "/file1" -> Map(JPath("column1") -> cLiterals)
-      )
+        "/file1" -> Map(JPath("column1") -> cLiterals))
 
       result must_== expected
     }
@@ -400,9 +389,7 @@ trait TypeInferencerSpecs[M[+_]]
       val expected = Map(
         "/file0" -> Map(
           JPath("column0") -> Set(CLong, CDouble, CNum),
-          JPath("column1") -> Set(CLong, CDouble, CNum)
-        )
-      )
+          JPath("column1") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -429,8 +416,7 @@ trait TypeInferencerSpecs[M[+_]]
 
       val expected = Map(
         "/file0" -> Map(JPath("column0") -> cLiterals),
-        "/file1" -> Map(JPath("column1") -> Set(CBoolean))
-      )
+        "/file1" -> Map(JPath("column1") -> Set(CBoolean)))
 
       result must_== expected
     }
@@ -449,14 +435,12 @@ trait TypeInferencerSpecs[M[+_]]
               Const(CString("column"))(line))(line),
             "foo",
             "bar",
-            23
-          ))(line)
+            23))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum))
-      )
+        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -473,14 +457,12 @@ trait TypeInferencerSpecs[M[+_]]
               Cross(None),
               AbsoluteLoad(Const(CString("/file"))(line))(line),
               Const(CString("column"))(line))(line),
-            23
-          ))(line)
+            23))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum))
-      )
+        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -501,8 +483,7 @@ trait TypeInferencerSpecs[M[+_]]
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum))
-      )
+        "/file" -> Map(JPath("column") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }
@@ -549,9 +530,7 @@ trait TypeInferencerSpecs[M[+_]]
         "/file" -> Map(
           JPath("column0") -> cLiterals,
           JPath("column0.column1") -> Set(CLong, CDouble, CNum),
-          JPath("column2") -> Set(CLong, CDouble, CNum)
-        )
-      )
+          JPath("column2") -> Set(CLong, CDouble, CNum)))
 
       result mustEqual expected
     }
@@ -600,11 +579,7 @@ trait TypeInferencerSpecs[M[+_]]
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
-      val expected = Map(
-        "/clicks" -> Map(
-          JPath("user") -> cLiterals
-        )
-      )
+      val expected = Map("/clicks" -> Map(JPath("user") -> cLiterals))
 
       result must_== expected
     }
@@ -667,11 +642,7 @@ trait TypeInferencerSpecs[M[+_]]
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/clicks" -> Map(
-          JPath("user") -> cLiterals,
-          JPath("age") -> cLiterals
-        )
-      )
+        "/clicks" -> Map(JPath("user") -> cLiterals, JPath("age") -> cLiterals))
 
       result must_== expected
     }
@@ -699,8 +670,8 @@ trait TypeInferencerSpecs[M[+_]]
 
       val expected = Map(
         "/clicks" -> Map(JPath("time") -> Set(CLong, CDouble, CNum)),
-        "/hom/heightWeight" -> Map(JPath("height") -> Set(CLong, CDouble, CNum))
-      )
+        "/hom/heightWeight" -> Map(
+          JPath("height") -> Set(CLong, CDouble, CNum)))
 
       result must_== expected
     }

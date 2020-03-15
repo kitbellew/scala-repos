@@ -24,16 +24,15 @@ private[api] final class UserApi(
       teamId: String,
       nb: Option[Int],
       engine: Option[Boolean]): Fu[JsObject] =
-    lila.team.MemberRepo userIdsByTeam teamId map (_ take makeNb(
-      nb)) flatMap UserRepo.enabledByIds map { users =>
+    lila.team.MemberRepo userIdsByTeam teamId map (
+      _ take makeNb(nb)
+    ) flatMap UserRepo.enabledByIds map { users =>
       Json.obj(
         "list" -> JsArray(
           users map { u =>
             jsonView(u) ++
               Json.obj("url" -> makeUrl(s"@/${u.username}"))
-          }
-        )
-      )
+          }))
     }
 
   def one(username: String)(implicit ctx: Context): Fu[Option[JsObject]] =
@@ -41,9 +40,11 @@ private[api] final class UserApi(
       case None => fuccess(none)
       case Some(u) =>
         GameRepo mostUrgentGame u zip
-          (ctx.me.filter(u !=) ?? { me =>
-            crosstableApi.nbGames(me.id, u.id)
-          }) zip
+          (
+            ctx.me.filter(u !=) ?? { me =>
+              crosstableApi.nbGames(me.id, u.id)
+            }
+          ) zip
           relationApi.countFollowing(u.id) zip
           relationApi.countFollowers(u.id) zip
           ctx.isAuth.?? {
@@ -87,8 +88,7 @@ private[api] final class UserApi(
                   "followable" -> followable,
                   "following" -> relation.contains(true),
                   "blocking" -> relation.contains(false),
-                  "followsYou" -> isFollowed
-                ))
+                  "followsYou" -> isFollowed))
             }.noNull
         } map (_.some)
     }

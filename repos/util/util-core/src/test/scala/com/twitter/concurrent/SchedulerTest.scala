@@ -10,9 +10,10 @@ import com.twitter.util.Promise
 abstract class LocalSchedulerTest(lifo: Boolean) extends FunSuite {
   private val scheduler = new LocalScheduler(lifo)
   def submit(f: => Unit) =
-    scheduler.submit(new Runnable {
-      def run() = f
-    })
+    scheduler.submit(
+      new Runnable {
+        def run() = f
+      })
 
   val N = 100
 
@@ -71,11 +72,12 @@ class ThreadPoolSchedulerTest
   test("works") {
     val p = new Promise[Unit]
     val scheduler = new ThreadPoolScheduler("test")
-    scheduler.submit(new Runnable {
-      def run() {
-        p.setDone()
-      }
-    })
+    scheduler.submit(
+      new Runnable {
+        def run() {
+          p.setDone()
+        }
+      })
 
     eventually {
       p.isDone

@@ -37,11 +37,12 @@ class RichRequestTest extends FunSuite with Matchers {
 
   def createStubRequestWithLocales(): HttpServletRequest = {
     val request = mock(classOf[HttpServletRequest])
-    when(request.getLocales).thenReturn(new java.util.Enumeration[Locale] {
-      private[this] val iter = Seq("en", "ja").iterator
-      override def hasMoreElements: Boolean = iter.hasNext
-      override def nextElement(): Locale = new Locale(iter.next)
-    })
+    when(request.getLocales).thenReturn(
+      new java.util.Enumeration[Locale] {
+        private[this] val iter = Seq("en", "ja").iterator
+        override def hasMoreElements: Boolean = iter.hasNext
+        override def nextElement(): Locale = new Locale(iter.next)
+      })
     request
   }
 }

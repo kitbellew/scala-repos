@@ -93,11 +93,12 @@ object Test extends App {
     type Y
   } = x
 
-  def foo(x: Counter[T] {
-    def name: String
-  } forSome {
-    type T
-  }) =
+  def foo(
+      x: Counter[T] {
+        def name: String
+      } forSome {
+        type T
+      }) =
     x match {
       case ctr: Counter[t] =>
         val c = ctr.newCounter
@@ -105,11 +106,12 @@ object Test extends App {
       case _ =>
     }
 
-  def fooW(x: Counter[T] {
-    def name: String
-  } forSome {
-    type T
-  }) =
+  def fooW(
+      x: Counter[T] {
+        def name: String
+      } forSome {
+        type T
+      }) =
     x match {
       case ctr: Counter[t] =>
         val c = ctr.newCounter
@@ -160,9 +162,12 @@ trait SubFooBar[B <: Option[_]] extends FooBar[B]
 
 object Test1 {
 
-  var pc: List[Product with (Counter[T] forSome {
-    type T
-  })] = List()
+  var pc: List[
+    Product with (
+      Counter[T] forSome {
+        type T
+      }
+    )] = List()
   def f() = pc
   pc = f()
 }

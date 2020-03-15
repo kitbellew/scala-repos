@@ -340,8 +340,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           // We have argc - 1, since a repeated parameter list may also be empty
           // (unlike a normal parameter)
           varArgMeths.map(_.params.size - 1) ++
-            normalMeths.map(_.params.size)
-        ).max
+            normalMeths.map(_.params.size)).max
 
       // Calculates possible arg counts for normal method
       def argCounts(ex: Exported) =
@@ -540,8 +539,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
               val optCond =
                 typeTest match {
                   case HijackedTypeTest(boxedClassName, _) =>
-                    Some(js
-                      .IsInstanceOf(paramRef, jstpe.ClassType(boxedClassName)))
+                    Some(
+                      js.IsInstanceOf(
+                        paramRef,
+                        jstpe.ClassType(boxedClassName)))
 
                   case InstanceOfTypeTest(tpe) =>
                     Some(genIsInstanceOf(paramRef, tpe))
@@ -688,10 +689,12 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         }
 
       val normalArgc = sym.tpe.params.size -
-        (if (repeatedTpe.isDefined)
-           1
-         else
-           0)
+        (
+          if (repeatedTpe.isDefined)
+            1
+          else
+            0
+        )
 
       // optional repeated parameter list
       val jsVarArgPrep = repeatedTpe map { tpe =>

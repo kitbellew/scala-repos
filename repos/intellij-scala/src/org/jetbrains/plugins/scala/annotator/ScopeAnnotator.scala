@@ -139,10 +139,12 @@ trait ScopeAnnotator {
   private def format(parameters: Seq[ScParameter], types: Seq[ScType]) = {
     val parts = parameters.zip(types).map {
       case (p, t) =>
-        eraseType(t.canonicalText) + (if (p.isRepeatedParameter)
-                                        "*"
-                                      else
-                                        "")
+        eraseType(t.canonicalText) + (
+          if (p.isRepeatedParameter)
+            "*"
+          else
+            ""
+        )
     }
     "(%s)".format(parts.mkString(", "))
   }

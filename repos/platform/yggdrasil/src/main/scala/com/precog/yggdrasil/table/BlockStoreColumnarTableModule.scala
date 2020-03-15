@@ -217,8 +217,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
       @inline @tailrec def dequeueEqual(
           queue: mutable.PriorityQueue[Cell],
           cellMatrix: CellMatrix,
-          cells: List[Cell]
-      ): List[Cell] =
+          cells: List[Cell]): List[Cell] =
         if (queue.isEmpty) {
           cells
         } else if (cells.isEmpty || cellMatrix.compare(
@@ -233,8 +232,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
       @inline @tailrec def consumeToBoundary(
           queue: mutable.PriorityQueue[Cell],
           cellMatrix: CellMatrix,
-          idx: Int
-      ): (Int, List[Cell]) = {
+          idx: Int): (Int, List[Cell]) = {
         val cellBlock = dequeueEqual(queue, cellMatrix, Nil)
 
         if (cellBlock.isEmpty) {
@@ -282,8 +280,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
             new Slice {
               val size = finishedSize
               val columns: Map[ColumnRef, Column] = {
-                (completeSlices.flatMap(_.columns) ++ prefixes.flatMap(
-                  _.columns)).groupBy(_._1).map {
+                (
+                  completeSlices.flatMap(_.columns) ++ prefixes.flatMap(
+                    _.columns)
+                ).groupBy(_._1).map {
                   case (ref, columns) => {
                     val cp: Pair[ColumnRef, Column] =
                       if (columns.size == 1) {
@@ -305,9 +305,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
           val successorStatesM = expired
             .map(_.succ)
             .sequence
-            .map(_.toStream.collect({
-              case Some(cs) => cs
-            }))
+            .map(
+              _.toStream.collect({
+                case Some(cs) => cs
+              }))
 
           successorStatesM map { successorStates =>
             Some((emission, successorStates ++ suffixes))
@@ -526,8 +527,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
             lstate: A,
             rstate: B,
             leftWriteState: JDBMState,
-            rightWriteState: JDBMState
-        ): M[(JDBMState, JDBMState)] = {
+            rightWriteState: JDBMState): M[(JDBMState, JDBMState)] = {
 
           @tailrec def buildFilters(
               comparator: RowComparator,
@@ -758,14 +758,16 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       // be emitted if we're not in a right span) so we're entirely done.
                       val remission = req.nonEmpty.option(
                         rhead.mapColumns(cf.util.filter(0, rhead.size, req)))
-                      (remission map { e =>
-                        writeAlignedSlices(
-                          rkey,
-                          e,
-                          rbs,
-                          "alignRight",
-                          SortAscending)
-                      } getOrElse rbs.point[M]) map {
+                      (
+                        remission map { e =>
+                          writeAlignedSlices(
+                            rkey,
+                            e,
+                            rbs,
+                            "alignRight",
+                            SortAscending)
+                        } getOrElse rbs.point[M]
+                      ) map {
                         (lbs, _)
                       }
                   }
@@ -824,14 +826,16 @@ trait BlockStoreColumnarTableModule[M[+_]]
                           val lemission = leq.nonEmpty.option(
                             lhead.mapColumns(
                               cf.util.filter(0, lhead.size, leq)))
-                          (lemission map { e =>
-                            writeAlignedSlices(
-                              lkey,
-                              e,
-                              lbs,
-                              "alignLeft",
-                              SortAscending)
-                          } getOrElse lbs.point[M]) map {
+                          (
+                            lemission map { e =>
+                              writeAlignedSlices(
+                                lkey,
+                                e,
+                                lbs,
+                                "alignLeft",
+                                SortAscending)
+                            } getOrElse lbs.point[M]
+                          ) map {
                             (_, rbs)
                           }
 
@@ -1030,8 +1034,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                     loadTable(
                       sortMergeEngine,
                       closedRightState.indices,
-                      SortAscending)
-                  )
+                      SortAscending))
                 }
 
               case None =>
@@ -1065,11 +1068,12 @@ trait BlockStoreColumnarTableModule[M[+_]]
       */
     protected def reduceSlices(slices: StreamT[M, Slice]): StreamT[M, Slice] = {
       def rec(ss: List[Slice], slices: StreamT[M, Slice]): StreamT[M, Slice] = {
-        StreamT[M, Slice](slices.uncons map {
-          case Some((head, tail)) => StreamT.Skip(rec(head :: ss, tail))
-          case None if ss.isEmpty => StreamT.Done
-          case None               => StreamT.Yield(Slice.concat(ss.reverse), StreamT.empty)
-        })
+        StreamT[M, Slice](
+          slices.uncons map {
+            case Some((head, tail)) => StreamT.Skip(rec(head :: ss, tail))
+            case None if ss.isEmpty => StreamT.Done
+            case None               => StreamT.Yield(Slice.concat(ss.reverse), StreamT.empty)
+          })
       }
 
       rec(Nil, slices)
@@ -1420,9 +1424,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       path
                   }
               }
-            }
-        )
-      )
+            }))
 
       Table(StreamT(M.point(head)), ExactSize(totalCount))
         .transform(TransSpec1.DerefArray1)
@@ -1452,45 +1454,46 @@ trait BlockStoreColumnarTableModule[M[+_]]
             joinTrans: SliceTransform2[_],
             hashed: HashedSlice): StreamT[M, Slice] = {
 
-          StreamT(stream.uncons flatMap {
-            case Some((head, tail)) =>
-              keyTrans.advance(head) flatMap {
-                case (keyTrans0, headKey) =>
-                  val headBuf = new ArrayIntList(head.size)
-                  val indexBuf = new ArrayIntList(index.size)
+          StreamT(
+            stream.uncons flatMap {
+              case Some((head, tail)) =>
+                keyTrans.advance(head) flatMap {
+                  case (keyTrans0, headKey) =>
+                    val headBuf = new ArrayIntList(head.size)
+                    val indexBuf = new ArrayIntList(index.size)
 
-                  val rowMap = hashed.mapRowsFrom(headKey)
+                    val rowMap = hashed.mapRowsFrom(headKey)
 
-                  @tailrec def loop(row: Int): Unit =
-                    if (row < head.size) {
-                      rowMap(row) { indexRow =>
-                        headBuf.add(row)
-                        indexBuf.add(indexRow)
+                    @tailrec def loop(row: Int): Unit =
+                      if (row < head.size) {
+                        rowMap(row) { indexRow =>
+                          headBuf.add(row)
+                          indexBuf.add(indexRow)
+                        }
+                        loop(row + 1)
                       }
-                      loop(row + 1)
+
+                    loop(0)
+
+                    val (index0, head0) =
+                      (index.remap(indexBuf), head.remap(headBuf))
+                    val advancedM =
+                      if (flip) {
+                        joinTrans.advance(head0, index0)
+                      } else {
+                        joinTrans.advance(index0, head0)
+                      }
+                    advancedM map {
+                      case (joinTrans0, slice) =>
+                        StreamT.Yield(
+                          slice,
+                          joinWithHash(tail, keyTrans0, joinTrans0, hashed))
                     }
+                }
 
-                  loop(0)
-
-                  val (index0, head0) =
-                    (index.remap(indexBuf), head.remap(headBuf))
-                  val advancedM =
-                    if (flip) {
-                      joinTrans.advance(head0, index0)
-                    } else {
-                      joinTrans.advance(index0, head0)
-                    }
-                  advancedM map {
-                    case (joinTrans0, slice) =>
-                      StreamT.Yield(
-                        slice,
-                        joinWithHash(tail, keyTrans0, joinTrans0, hashed))
-                  }
-              }
-
-            case None =>
-              M.point(StreamT.Done)
-          })
+              case None =>
+                M.point(StreamT.Done)
+            })
         }
 
         composeSliceTransform(indexKeySpec).advance(index) map {
@@ -1509,39 +1512,34 @@ trait BlockStoreColumnarTableModule[M[+_]]
       val right1 = right0.compact(rightKeySpec)
 
       if (yggConfig.hashJoins) {
-        (left1
-          .toInternalTable()
-          .toEither |@| right1.toInternalTable().toEither).tupled flatMap {
+        (
+          left1.toInternalTable().toEither |@| right1.toInternalTable().toEither
+        ).tupled flatMap {
           case (Right(left), Right(right)) =>
             orderHint match {
               case Some(JoinOrder.LeftOrder) =>
-                hashJoin(
-                  right.slice,
-                  left,
-                  flip = true) map (JoinOrder.LeftOrder -> _)
+                hashJoin(right.slice, left, flip = true) map (
+                  JoinOrder.LeftOrder -> _
+                )
               case Some(JoinOrder.RightOrder) =>
-                hashJoin(
-                  left.slice,
-                  right,
-                  flip = false) map (JoinOrder.RightOrder -> _)
+                hashJoin(left.slice, right, flip = false) map (
+                  JoinOrder.RightOrder -> _
+                )
               case _ =>
-                hashJoin(
-                  right.slice,
-                  left,
-                  flip = true) map (JoinOrder.LeftOrder -> _)
+                hashJoin(right.slice, left, flip = true) map (
+                  JoinOrder.LeftOrder -> _
+                )
             }
 
           case (Right(left), Left(right)) =>
-            hashJoin(
-              left.slice,
-              right,
-              flip = false) map (JoinOrder.RightOrder -> _)
+            hashJoin(left.slice, right, flip = false) map (
+              JoinOrder.RightOrder -> _
+            )
 
           case (Left(left), Right(right)) =>
-            hashJoin(
-              right.slice,
-              left,
-              flip = true) map (JoinOrder.LeftOrder -> _)
+            hashJoin(right.slice, left, flip = true) map (
+              JoinOrder.LeftOrder -> _
+            )
 
           case (leftE, rightE) =>
             val idT = Predef.identity[Table](_)
@@ -1593,9 +1591,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
     def toInternalTable(
         limit: Int): EitherT[M, ExternalTable, InternalTable] = {
-      EitherT(slices.toStream map { slices1 =>
-        \/-(new InternalTable(Slice.concat(slices1.toList).takeRange(0, 1)))
-      })
+      EitherT(
+        slices.toStream map { slices1 =>
+          \/-(new InternalTable(Slice.concat(slices1.toList).takeRange(0, 1)))
+        })
     }
 
     def toRValue: M[RValue] = {
@@ -1755,10 +1754,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
         case (streamIds, indices) =>
           val streams = indices.groupBy(_._1.streamId)
           streamIds.toStream map { streamId =>
-            streams get streamId map (loadTable(
-              sortMergeEngine,
-              _,
-              sortOrder)) getOrElse Table.empty
+            streams get streamId map (
+              loadTable(sortMergeEngine, _, sortOrder)
+            ) getOrElse Table.empty
           }
       }
     }
@@ -1787,8 +1785,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
             },
             deepMap(valueSpec) {
               case Leaf(_) => TransSpec1.DerefArray0
-            }
-          )
+            })
         } else {
           (Leaf(Source), groupKeys, valueSpec)
         }

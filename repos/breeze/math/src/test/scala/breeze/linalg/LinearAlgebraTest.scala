@@ -517,8 +517,11 @@ class LinearAlgebraTest
     val Eig(w, wi, v) = eig(DenseMatrix((1.0, -1.0), (1.0, 1.0)))
     assert(w === DenseVector(1.0, 1.0))
     assert(wi === DenseVector(1.0, -1.0))
-    assert(max(abs(
-      v - diag(DenseVector(0.7071067811865475, -0.7071067811865475)))) < 1e-7)
+    assert(
+      max(
+        abs(
+          v - diag(
+            DenseVector(0.7071067811865475, -0.7071067811865475)))) < 1e-7)
     // TODO, we seem to throw out VI... these seems bad...
   }
 
@@ -756,8 +759,7 @@ class LinearAlgebraTest
       (5.0, 0.0, 0.9),
       (3.0, 5.0, 0.5),
       (7.5, 1.0, 6.0),
-      (0.0, 7.0, 0.0)
-    )
+      (0.0, 7.0, 0.0))
 
     for (m <- List(a, a.t)) {
       val SVD(u, s, v) = svd.reduced(m)
@@ -777,8 +779,7 @@ class LinearAlgebraTest
         (5.0, 0.0, 0.9),
         (3.0, 5.0, 0.5),
         (7.5, 1.0, 6.0),
-        (0.0, 7.0, 0.0)
-      ).t
+        (0.0, 7.0, 0.0)).t
 
     val SVD(u, sr, vt) = svdr(m, m.rows min m.cols)
 
@@ -793,8 +794,7 @@ class LinearAlgebraTest
       (5.0, 0.0, 0.9),
       (3.0, 5.0, 0.5),
       (7.5, 1.0, 6.0),
-      (0.0, 7.0, 0.0)
-    )
+      (0.0, 7.0, 0.0))
 
     val SVD(u, sr, vt) = svdr(m, m.rows min m.cols)
 

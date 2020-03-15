@@ -50,16 +50,17 @@ trait Typers {
         _.typed(universe.duplicateAndKeepPositions(tree), mode, pt),
         reportAmbiguousErrors = false)
     withWrapping(tree)(wrappedTree =>
-      withContext(typecheckInternal(wrappedTree) match {
-        case universe.analyzer.SilentResultValue(result) =>
-          macroLogVerbose(result)
-          result
-        case error @ universe.analyzer.SilentTypeError(_) =>
-          macroLogVerbose(error.err.errMsg)
-          if (!silent)
-            throw new TypecheckException(error.err.errPos, error.err.errMsg)
-          universe.EmptyTree
-      }))
+      withContext(
+        typecheckInternal(wrappedTree) match {
+          case universe.analyzer.SilentResultValue(result) =>
+            macroLogVerbose(result)
+            result
+          case error @ universe.analyzer.SilentTypeError(_) =>
+            macroLogVerbose(error.err.errMsg)
+            if (!silent)
+              throw new TypecheckException(error.err.errPos, error.err.errMsg)
+            universe.EmptyTree
+        }))
   }
 
   def inferImplicitValue(

@@ -83,10 +83,12 @@ private[sql] class SessionState(ctx: SQLContext) {
         python.ExtractPythonUDFs ::
           PreInsertCastAndRename ::
           DataSourceAnalysis ::
-          (if (conf.runSQLOnFile)
-             new ResolveDataSource(ctx) :: Nil
-           else
-             Nil)
+          (
+            if (conf.runSQLOnFile)
+              new ResolveDataSource(ctx) :: Nil
+            else
+              Nil
+          )
 
       override val extendedCheckRules = Seq(datasources.PreWriteCheck(catalog))
     }

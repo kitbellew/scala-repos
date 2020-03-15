@@ -220,9 +220,10 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
       .map(fn)
       .groupBy(t => (t._1, t._2))
       .mapValueStream(s =>
-        Iterator(s.map {
-          case (_, _, c, v) => (c, v)
-        }.toMap))
+        Iterator(
+          s.map {
+            case (_, _, c, v) => (c, v)
+          }.toMap))
       .toTypedPipe
       .map {
         case ((g, r), m) => (r, g, m)
@@ -527,13 +528,15 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL0Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (matD
-      .mapValues { x =>
-        1.0
-      }
-      .sumColVectors
-      .diag
-      .inverse) * matD
+    (
+      matD
+        .mapValues { x =>
+          1.0
+        }
+        .sumColVectors
+        .diag
+        .inverse
+    ) * matD
   }
 
   def rowL0Normalize(
@@ -541,13 +544,15 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL1Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (matD
-      .mapValues { x =>
-        x.abs
-      }
-      .sumColVectors
-      .diag
-      .inverse) * matD
+    (
+      matD
+        .mapValues { x =>
+          x.abs
+        }
+        .sumColVectors
+        .diag
+        .inverse
+    ) * matD
   }
 
   // Row L1 normalization, only makes sense for Doubles
@@ -557,17 +562,19 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL2Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (matD
-      .mapValues { x =>
-        x * x
-      }
-      .sumColVectors
-      .diag
-      .mapValues { x =>
-        scala.math.sqrt(x)
-      }
-      .diagonal
-      .inverse) * matD
+    (
+      matD
+        .mapValues { x =>
+          x * x
+        }
+        .sumColVectors
+        .diag
+        .mapValues { x =>
+          scala.math.sqrt(x)
+        }
+        .diagonal
+        .inverse
+    ) * matD
   }
   // Row L2 normalization (can only be called for Double)
   // After this operation, the sum(|x|^2) along each row will be 1.

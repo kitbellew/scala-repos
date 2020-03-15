@@ -189,8 +189,7 @@ object EverythingAux {
       unpack: Unpack2[E, EverythingAux, F, K],
       f: Case1.Aux[F, T, R],
       data: Lazy[Data[E, T, R]],
-      k: Case2.Aux[K, R, R, R]
-  ): Case1.Aux[E, T, R] =
+      k: Case2.Aux[K, R, R, R]): Case1.Aux[E, T, R] =
     Case1[E, T, R](t => data.value.gmapQ(t).foldLeft(f(t))(k))
 }
 
@@ -200,6 +199,6 @@ object EverywhereAux {
   implicit def default[E, F <: Poly, T, U, V](implicit
       unpack: Unpack1[E, EverywhereAux, F],
       data: Lazy[DataT.Aux[E, T, U]],
-      f: Case1.Aux[F, U, V] = Case1[F, U, U](identity)
-  ): Case1.Aux[E, T, V] = Case1[E, T, V](t => f(data.value.gmapT(t)))
+      f: Case1.Aux[F, U, V] = Case1[F, U, U](identity)): Case1.Aux[E, T, V] =
+    Case1[E, T, V](t => f(data.value.gmapT(t)))
 }

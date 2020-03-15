@@ -54,9 +54,7 @@ class MarathonHealthCheckManagerTest
     system = ActorSystem(
       "test-system",
       ConfigFactory.parseString(
-        """akka.loggers = ["akka.testkit.TestEventListener"]"""
-      )
-    )
+        """akka.loggers = ["akka.testkit.TestEventListener"]"""))
     leadershipModule = AlwaysElectedLeadershipModule(shutdownHooks)
 
     val config = new ScallopConf(Seq("--master", "foo")) with MarathonConf
@@ -86,8 +84,7 @@ class MarathonHealthCheckManagerTest
       eventStream,
       taskTracker,
       appRepository,
-      config
-    )
+      config)
   }
 
   def makeRunningTask(appId: PathId, version: Timestamp) = {
@@ -292,8 +289,7 @@ class MarathonHealthCheckManagerTest
           AppDefinition(
             id = appId,
             versionInfo = AppDefinition.VersionInfo.forNewConfig(version),
-            healthChecks = healthChecks
-          ))
+            healthChecks = healthChecks))
         .futureValue
       taskCreationHandler.created(task).futureValue
       taskUpdater.statusUpdate(appId, taskStatus(task.marathonTask)).futureValue

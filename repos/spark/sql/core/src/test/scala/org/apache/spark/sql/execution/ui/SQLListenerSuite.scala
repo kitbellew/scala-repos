@@ -35,10 +35,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
   import testImplicits._
 
   private def createTestDataFrame: DataFrame = {
-    Seq(
-      (1, 1),
-      (2, 2)
-    ).toDF().filter("_1 > 1")
+    Seq((1, 1), (2, 2)).toDF().filter("_1 > 1")
   }
 
   private def createProperties(executionId: Long): Properties = {
@@ -56,8 +53,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       numTasks = 0,
       rddInfos = Nil,
       parentIds = Nil,
-      details = ""
-    )
+      details = "")
 
   private def createTaskInfo(taskId: Int, attemptNumber: Int): TaskInfo =
     new TaskInfo(
@@ -69,22 +65,22 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       executorId = "",
       host = "",
       taskLocality = null,
-      speculative = false
-    )
+      speculative = false)
 
   private def createTaskMetrics(
       accumulatorUpdates: Map[Long, Long]): TaskMetrics = {
     val metrics = mock(classOf[TaskMetrics])
-    when(metrics.accumulatorUpdates()).thenReturn(accumulatorUpdates.map {
-      case (id, update) =>
-        new AccumulableInfo(
-          id,
-          Some(""),
-          Some(new LongSQLMetricValue(update)),
-          value = None,
-          internal = true,
-          countFailedValues = true)
-    }.toSeq)
+    when(metrics.accumulatorUpdates()).thenReturn(
+      accumulatorUpdates.map {
+        case (id, update) =>
+          new AccumulableInfo(
+            id,
+            Some(""),
+            Some(new LongSQLMetricValue(update)),
+            value = None,
+            internal = true,
+            countFailedValues = true)
+      }.toSeq)
     metrics
   }
 
@@ -124,10 +120,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       SparkListenerJobStart(
         jobId = 0,
         time = System.currentTimeMillis(),
-        stageInfos = Seq(
-          createStageInfo(0, 0),
-          createStageInfo(1, 0)
-        ),
+        stageInfos = Seq(createStageInfo(0, 0), createStageInfo(1, 0)),
         createProperties(executionId)))
     listener.onStageSubmitted(
       SparkListenerStageSubmitted(createStageInfo(0, 0)))
@@ -285,8 +278,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       SparkListenerJobEnd(
         jobId = 0,
         time = System.currentTimeMillis(),
-        JobSucceeded
-      ))
+        JobSucceeded))
     listener.onOtherEvent(
       SparkListenerSQLExecutionEnd(executionId, System.currentTimeMillis()))
 
@@ -323,8 +315,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       SparkListenerJobEnd(
         jobId = 0,
         time = System.currentTimeMillis(),
-        JobSucceeded
-      ))
+        JobSucceeded))
 
     val executionUIData = listener.executionIdToData(0)
     assert(executionUIData.runningJobs.isEmpty)
@@ -354,8 +345,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       SparkListenerJobEnd(
         jobId = 0,
         time = System.currentTimeMillis(),
-        JobSucceeded
-      ))
+        JobSucceeded))
 
     listener.onJobStart(
       SparkListenerJobStart(
@@ -369,8 +359,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       SparkListenerJobEnd(
         jobId = 1,
         time = System.currentTimeMillis(),
-        JobSucceeded
-      ))
+        JobSucceeded))
 
     val executionUIData = listener.executionIdToData(0)
     assert(executionUIData.runningJobs.isEmpty)
@@ -402,8 +391,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       SparkListenerJobEnd(
         jobId = 0,
         time = System.currentTimeMillis(),
-        JobFailed(new RuntimeException("Oops"))
-      ))
+        JobFailed(new RuntimeException("Oops"))))
 
     val executionUIData = listener.executionIdToData(0)
     assert(executionUIData.runningJobs.isEmpty)
@@ -504,10 +492,7 @@ class SQLListenerMemoryLeakSuite extends SparkFunSuite {
         // Run 100 successful executions and 100 failed executions.
         // Each execution only has one job and one stage.
         for (i <- 0 until 100) {
-          val df = Seq(
-            (1, 1),
-            (2, 2)
-          ).toDF()
+          val df = Seq((1, 1), (2, 2)).toDF()
           df.collect()
           try {
             df.foreach(_ => throw new RuntimeException("Oops"))

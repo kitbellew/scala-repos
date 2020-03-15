@@ -41,14 +41,11 @@ trait JavaConversionHelpers {
     List(
       m.getName,
       m.getReturnType.getName,
-      "[" + m.getParameterTypes.map(_.getName).toList.mkString(",") + "]"
-    ).mkString(":")
+      "[" + m.getParameterTypes.map(_.getName).toList.mkString(",") + "]")
+      .mkString(":")
 
   def propDescSignature(pdesc: PropertyDescriptor): String =
-    List(
-      pdesc.getName,
-      pdesc.getPropertyType
-    ).mkString(":")
+    List(pdesc.getName, pdesc.getPropertyType).mkString(":")
 
   def simpleClassName(s: String): String = s.split(Array('.', '#')).last
   def simpleClassName(c: Class[_]): String = simpleClassName(c.getName)
@@ -75,8 +72,7 @@ trait JavaConversionHelpers {
           case p: ParameterizedType =>
             ScalaType(
               step(p.getRawType, nextLevel).name,
-              p.getActualTypeArguments.map(step(_, nextLevel)).toList
-            )
+              p.getActualTypeArguments.map(step(_, nextLevel)).toList)
           case t: TypeVariable[_] =>
             ScalaType(
               t.getName,
@@ -93,17 +89,17 @@ trait JavaConversionHelpers {
             if (c.isArray) {
               ScalaType("Array", List(step(c.getComponentType, nextLevel)))
             } else if (c.isPrimitive) {
-              ScalaType(c.getName match {
-                case "void" => "Unit"
-                case n      => n.capitalize
-              })
+              ScalaType(
+                c.getName match {
+                  case "void" => "Unit"
+                  case n      => n.capitalize
+                })
             } else if (c == classOf[java.lang.Object]) {
               ScalaType("Any")
             } else {
               ScalaType(
                 name = c.getName.replace("$", innerClassDelim(c)),
-                params = c.getTypeParameters.map(step(_, nextLevel)).toList
-              )
+                params = c.getTypeParameters.map(step(_, nextLevel)).toList)
             }
           }
           case _ =>

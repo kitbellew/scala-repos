@@ -81,9 +81,10 @@ private[akka] trait Dispatch { this: ActorCell ⇒
               else
                 mbox.messageQueue.getClass.getName
             Create(
-              Some(ActorInitializationException(
-                self,
-                s"Actor [$self] requires mailbox type [$req] got [$gotType]")))
+              Some(
+                ActorInitializationException(
+                  self,
+                  s"Actor [$self] requires mailbox type [$req] got [$gotType]")))
           }
         case _ ⇒ Create(None)
       }
@@ -168,10 +169,12 @@ private[akka] trait Dispatch { this: ActorCell ⇒
     try {
       if (system.settings.SerializeAllMessages) {
         val unwrapped =
-          (msg.message match {
-            case DeadLetter(wrapped, _, _) ⇒ wrapped
-            case other ⇒ other
-          }).asInstanceOf[AnyRef]
+          (
+            msg.message match {
+              case DeadLetter(wrapped, _, _) ⇒ wrapped
+              case other ⇒ other
+            }
+          ).asInstanceOf[AnyRef]
         if (!unwrapped.isInstanceOf[NoSerializationVerificationNeeded]) {
           val s = SerializationExtension(system)
           val serializer = s.findSerializerFor(unwrapped)

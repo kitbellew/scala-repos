@@ -186,8 +186,7 @@ object BuildDef extends Build {
 
         Seq(
           new Group("others", others, InProcess),
-          new Group("webapptests", webapptests, InProcess)
-        )
+          new Group("webapptests", webapptests, InProcess))
       }
     )
     .enablePlugins(SbtWeb)

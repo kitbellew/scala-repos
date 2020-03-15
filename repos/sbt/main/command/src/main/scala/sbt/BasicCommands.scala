@@ -67,10 +67,12 @@ object BasicCommands {
   def helpParser(s: State) = {
     val h = (Help.empty /: s.definedCommands) { (a, b) =>
       a ++
-        (try b.help(s)
-        catch {
-          case NonFatal(ex) => Help.empty
-        })
+        (
+          try b.help(s)
+          catch {
+            case NonFatal(ex) => Help.empty
+          }
+        )
     }
     val helpCommands = h.detail.keySet
     val spacedArg = singleArgument(helpCommands).?
@@ -117,9 +119,11 @@ object BasicCommands {
 
   def multiParser(s: State): Parser[Seq[String]] = {
     val nonSemi = token(charClass(_ != ';').+, hide = const(true))
-    (token(';' ~> OptSpace) flatMap { _ =>
-      matched((s.combinedParser & nonSemi) | nonSemi) <~ token(OptSpace)
-    } map (_.trim)).+
+    (
+      token(';' ~> OptSpace) flatMap { _ =>
+        matched((s.combinedParser & nonSemi) | nonSemi) <~ token(OptSpace)
+      } map (_.trim)
+    ).+
   }
 
   def multiApplied(s: State) = Command.applyEffect(multiParser(s))(_ ::: s)
@@ -199,11 +203,12 @@ object BasicCommands {
       case (state, (cp, args)) =>
         val parentLoader = getClass.getClassLoader
         state.log.info(
-          "Applying State transformations " + args
-            .mkString(", ") + (if (cp.isEmpty)
-                                 ""
-                               else
-                                 " from " + cp.mkString(File.pathSeparator)))
+          "Applying State transformations " + args.mkString(", ") + (
+            if (cp.isEmpty)
+              ""
+            else
+              " from " + cp.mkString(File.pathSeparator)
+          ))
         val loader =
           if (cp.isEmpty)
             parentLoader
@@ -214,9 +219,9 @@ object BasicCommands {
         (state /: loaded)((s, obj) => obj(s))
     }
   def callParser: Parser[(Seq[String], Seq[String])] =
-    token(Space) ~> ((classpathOptionParser ?? Nil) ~ rep1sep(
-      className,
-      token(Space)))
+    token(Space) ~> (
+      (classpathOptionParser ?? Nil) ~ rep1sep(className, token(Space))
+    )
   private[this] def className: Parser[String] = {
     val base =
       StringBasic & not('-' ~> any.*, "Class name cannot start with '-'.")
@@ -242,10 +247,12 @@ object BasicCommands {
         s,
         Watched.Configuration,
         "Continuous execution not configured.") { w =>
-        val repeat = ContinuousExecutePrefix + (if (arg.startsWith(" "))
-                                                  arg
-                                                else
-                                                  " " + arg)
+        val repeat = ContinuousExecutePrefix + (
+          if (arg.startsWith(" "))
+            arg
+          else
+            " " + arg
+        )
         Watched.executeContinuously(w, s, arg, repeat)
       }
     }

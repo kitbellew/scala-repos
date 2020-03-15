@@ -85,8 +85,9 @@ trait Controller
     play.api.Play.privateMaybeApplication
       .map(app =>
         play.api.i18n.Messages.messagesApiCache(app).preferred(request).lang)
-      .getOrElse(request.acceptLanguages.headOption
-        .getOrElse(play.api.i18n.Lang.defaultLang))
+      .getOrElse(
+        request.acceptLanguages.headOption
+          .getOrElse(play.api.i18n.Lang.defaultLang))
   }
 
 }

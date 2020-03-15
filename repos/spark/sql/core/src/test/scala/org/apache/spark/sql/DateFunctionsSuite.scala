@@ -540,8 +540,8 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
   test("from_utc_timestamp") {
     val df = Seq(
       (Timestamp.valueOf("2015-07-24 00:00:00"), "2015-07-24 00:00:00"),
-      (Timestamp.valueOf("2015-07-25 00:00:00"), "2015-07-25 00:00:00")
-    ).toDF("a", "b")
+      (Timestamp.valueOf("2015-07-25 00:00:00"), "2015-07-25 00:00:00"))
+      .toDF("a", "b")
     checkAnswer(
       df.select(from_utc_timestamp(col("a"), "PST")),
       Seq(
@@ -557,8 +557,8 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
   test("to_utc_timestamp") {
     val df = Seq(
       (Timestamp.valueOf("2015-07-24 00:00:00"), "2015-07-24 00:00:00"),
-      (Timestamp.valueOf("2015-07-25 00:00:00"), "2015-07-25 00:00:00")
-    ).toDF("a", "b")
+      (Timestamp.valueOf("2015-07-25 00:00:00"), "2015-07-25 00:00:00"))
+      .toDF("a", "b")
     checkAnswer(
       df.select(to_utc_timestamp(col("a"), "PST")),
       Seq(

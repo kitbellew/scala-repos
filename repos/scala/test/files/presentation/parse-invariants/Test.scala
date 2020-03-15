@@ -101,11 +101,14 @@ object Test extends InteractiveTest {
     */
   private def noSymbolsOrTypes(tree: compiler.Tree): Boolean = {
     tree.forAll { t =>
-      (t.symbol == null ||
-      t.symbol == compiler.NoSymbol ||
-      t.symbol == compiler.definitions.ScalaPackage // ignore the symbol for the scala package for now
-      ) && (t.tpe == null ||
-      t.tpe == compiler.NoType)
+      (
+        t.symbol == null ||
+        t.symbol == compiler.NoSymbol ||
+        t.symbol == compiler.definitions.ScalaPackage // ignore the symbol for the scala package for now
+      ) && (
+        t.tpe == null ||
+        t.tpe == compiler.NoType
+      )
     }
   }
 

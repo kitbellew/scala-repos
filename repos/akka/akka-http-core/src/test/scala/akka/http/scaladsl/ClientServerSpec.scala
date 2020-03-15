@@ -252,8 +252,9 @@ class ClientServerSpec
               Await.result(clientsResponseFuture, 2.second)
             }
 
-            (System
-              .nanoTime() - serverReceivedRequestAtNanos).millis should be >= serverTimeout
+            (
+              System.nanoTime() - serverReceivedRequestAtNanos
+            ).millis should be >= serverTimeout
           } finally Await.result(b1.unbind(), 1.second)
         }
       }

@@ -1,7 +1,6 @@
 class FirstElementTest extends FirstElement {
-  implicit def findingNatureOfGenTraversable[
-      E,
-      TRAV[e] <: scala.collection.GenTraversable[e]]
+  implicit def findingNatureOfGenTraversable[E, TRAV[
+      e] <: scala.collection.GenTraversable[e]]
       : FirstElementCollector[E, TRAV[E]] =
     new FirstElementCollector[E, TRAV[E]] {
       def firstElement(seq: TRAV[E]) = seq.head

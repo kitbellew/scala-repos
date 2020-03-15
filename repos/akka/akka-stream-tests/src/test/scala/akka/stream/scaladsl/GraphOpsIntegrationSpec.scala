@@ -67,16 +67,17 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
 
     "support broadcast - merge layouts" in {
       val resultFuture = RunnableGraph
-        .fromGraph(GraphDSL.create(Sink.head[Seq[Int]]) { implicit b ⇒ (sink) ⇒
-          val bcast = b.add(Broadcast[Int](2))
-          val merge = b.add(Merge[Int](2))
+        .fromGraph(
+          GraphDSL.create(Sink.head[Seq[Int]]) { implicit b ⇒ (sink) ⇒
+            val bcast = b.add(Broadcast[Int](2))
+            val merge = b.add(Merge[Int](2))
 
-          Source(List(1, 2, 3)) ~> bcast.in
-          bcast.out(0) ~> merge.in(0)
-          bcast.out(1).map(_ + 3) ~> merge.in(1)
-          merge.out.grouped(10) ~> sink.in
-          ClosedShape
-        })
+            Source(List(1, 2, 3)) ~> bcast.in
+            bcast.out(0) ~> merge.in(0)
+            bcast.out(1).map(_ + 3) ~> merge.in(1)
+            merge.out.grouped(10) ~> sink.in
+            ClosedShape
+          })
         .run()
 
       Await.result(resultFuture, 3.seconds).sorted should be(
@@ -86,18 +87,19 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
     "support balance - merge (parallelization) layouts" in {
       val elements = 0 to 10
       val out = RunnableGraph
-        .fromGraph(GraphDSL.create(Sink.head[Seq[Int]]) { implicit b ⇒ (sink) ⇒
-          val balance = b.add(Balance[Int](5))
-          val merge = b.add(Merge[Int](5))
+        .fromGraph(
+          GraphDSL.create(Sink.head[Seq[Int]]) { implicit b ⇒ (sink) ⇒
+            val balance = b.add(Balance[Int](5))
+            val merge = b.add(Merge[Int](5))
 
-          Source(elements) ~> balance.in
+            Source(elements) ~> balance.in
 
-          for (i ← 0 until 5)
-            balance.out(i) ~> merge.in(i)
+            for (i ← 0 until 5)
+              balance.out(i) ~> merge.in(i)
 
-          merge.out.grouped(elements.size * 2) ~> sink.in
-          ClosedShape
-        })
+            merge.out.grouped(elements.size * 2) ~> sink.in
+            ClosedShape
+          })
         .run()
 
       Await.result(out, 3.seconds).sorted should be(elements)
@@ -108,44 +110,45 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
       val seqSink = Sink.head[Seq[Int]]
 
       val (resultFuture2, resultFuture9, resultFuture10) = RunnableGraph
-        .fromGraph(GraphDSL.create(seqSink, seqSink, seqSink)(Tuple3.apply) {
-          implicit b ⇒ (sink2, sink9, sink10) ⇒
-            val b3 = b.add(Broadcast[Int](2))
-            val b7 = b.add(Broadcast[Int](2))
-            val b11 = b.add(Broadcast[Int](3))
-            val m8 = b.add(Merge[Int](2))
-            val m9 = b.add(Merge[Int](2))
-            val m10 = b.add(Merge[Int](2))
-            val m11 = b.add(Merge[Int](2))
-            val in3 = Source(List(3))
-            val in5 = Source(List(5))
-            val in7 = Source(List(7))
+        .fromGraph(
+          GraphDSL.create(seqSink, seqSink, seqSink)(Tuple3.apply) {
+            implicit b ⇒ (sink2, sink9, sink10) ⇒
+              val b3 = b.add(Broadcast[Int](2))
+              val b7 = b.add(Broadcast[Int](2))
+              val b11 = b.add(Broadcast[Int](3))
+              val m8 = b.add(Merge[Int](2))
+              val m9 = b.add(Merge[Int](2))
+              val m10 = b.add(Merge[Int](2))
+              val m11 = b.add(Merge[Int](2))
+              val in3 = Source(List(3))
+              val in5 = Source(List(5))
+              val in7 = Source(List(7))
 
-            // First layer
-            in7 ~> b7.in
-            b7.out(0) ~> m11.in(0)
-            b7.out(1) ~> m8.in(0)
+              // First layer
+              in7 ~> b7.in
+              b7.out(0) ~> m11.in(0)
+              b7.out(1) ~> m8.in(0)
 
-            in5 ~> m11.in(1)
+              in5 ~> m11.in(1)
 
-            in3 ~> b3.in
-            b3.out(0) ~> m8.in(1)
-            b3.out(1) ~> m10.in(0)
+              in3 ~> b3.in
+              b3.out(0) ~> m8.in(1)
+              b3.out(1) ~> m10.in(0)
 
-            // Second layer
-            m11.out ~> b11.in
-            b11.out(0).grouped(1000) ~> sink2.in // Vertex 2 is omitted since it has only one in and out
-            b11.out(1) ~> m9.in(0)
-            b11.out(2) ~> m10.in(1)
+              // Second layer
+              m11.out ~> b11.in
+              b11.out(0).grouped(1000) ~> sink2.in // Vertex 2 is omitted since it has only one in and out
+              b11.out(1) ~> m9.in(0)
+              b11.out(2) ~> m10.in(1)
 
-            m8.out ~> m9.in(1)
+              m8.out ~> m9.in(1)
 
-            // Third layer
-            m9.out.grouped(1000) ~> sink9.in
-            m10.out.grouped(1000) ~> sink10.in
+              // Third layer
+              m9.out.grouped(1000) ~> sink9.in
+              m10.out.grouped(1000) ~> sink10.in
 
-            ClosedShape
-        })
+              ClosedShape
+          })
         .run()
 
       Await.result(resultFuture2, 3.seconds).sorted should be(List(5, 7))
@@ -157,16 +160,17 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
     "allow adding of flows to sources and sinks to flows" in {
 
       val resultFuture = RunnableGraph
-        .fromGraph(GraphDSL.create(Sink.head[Seq[Int]]) { implicit b ⇒ (sink) ⇒
-          val bcast = b.add(Broadcast[Int](2))
-          val merge = b.add(Merge[Int](2))
+        .fromGraph(
+          GraphDSL.create(Sink.head[Seq[Int]]) { implicit b ⇒ (sink) ⇒
+            val bcast = b.add(Broadcast[Int](2))
+            val merge = b.add(Merge[Int](2))
 
-          Source(List(1, 2, 3)).map(_ * 2) ~> bcast.in
-          bcast.out(0) ~> merge.in(0)
-          bcast.out(1).map(_ + 3) ~> merge.in(1)
-          merge.out.grouped(10) ~> sink.in
-          ClosedShape
-        })
+            Source(List(1, 2, 3)).map(_ * 2) ~> bcast.in
+            bcast.out(0) ~> merge.in(0)
+            bcast.out(1).map(_ + 3) ~> merge.in(1)
+            merge.out.grouped(10) ~> sink.in
+            ClosedShape
+          })
         .run()
 
       Await.result(resultFuture, 3.seconds) should contain theSameElementsAs (
@@ -178,10 +182,11 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
       val s = TestSubscriber.manualProbe[Int]
       val flow = Flow[Int].map(_ * 2)
       RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit builder ⇒
-          Source.fromPublisher(p) ~> flow ~> Sink.fromSubscriber(s)
-          ClosedShape
-        })
+        .fromGraph(
+          GraphDSL.create() { implicit builder ⇒
+            Source.fromPublisher(p) ~> flow ~> Sink.fromSubscriber(s)
+            ClosedShape
+          })
         .run()
       val sub = s.expectSubscription()
       sub.request(10)

@@ -56,10 +56,12 @@ object MonoidTest extends SpecLite {
       Vector(Cord("elements")),
       Vector(Cord("beneath")),
       Vector())
-    ((Foldable[List] compose Foldable[Vector])
-      .intercalate(xs, Cord("!!"))
-      .toString
-      must_=== (Cord("this!!has!!elements!!beneath").toString))
+    (
+      (Foldable[List] compose Foldable[Vector])
+        .intercalate(xs, Cord("!!"))
+        .toString
+        must_=== (Cord("this!!has!!elements!!beneath").toString)
+    )
   }
 
   "invariant functor" in {

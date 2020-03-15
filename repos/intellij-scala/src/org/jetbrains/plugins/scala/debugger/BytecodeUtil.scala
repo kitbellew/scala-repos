@@ -37,8 +37,7 @@ private[debugger] object BytecodeUtil {
     astore -> aload,
     dstore -> dload,
     fstore -> fload,
-    lstore -> lload
-  )
+    lstore -> lload)
 
   val twoBytesLoadCodes = twoBytesCodes.values.toSet
   val twoBytesStoreCodes = twoBytesCodes.keySet

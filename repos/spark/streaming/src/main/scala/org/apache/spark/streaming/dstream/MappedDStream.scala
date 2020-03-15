@@ -24,8 +24,8 @@ import org.apache.spark.streaming.{Duration, Time}
 
 private[streaming] class MappedDStream[T: ClassTag, U: ClassTag](
     parent: DStream[T],
-    mapFunc: T => U
-) extends DStream[U](parent.ssc) {
+    mapFunc: T => U)
+    extends DStream[U](parent.ssc) {
 
   override def dependencies: List[DStream[_]] = List(parent)
 

@@ -43,9 +43,7 @@ object EnsimeConfigProtocol {
       javaHome.tree.filter(_.getName == "rt.jar").toList
 
   def validated(c: EnsimeConfig): EnsimeConfig =
-    c.copy(
-      subprojects = c.subprojects.map(validated)
-    )
+    c.copy(subprojects = c.subprojects.map(validated))
 
   /*
    We use the canonical form of files/directories to keep OS X happy
@@ -67,7 +65,6 @@ object EnsimeConfigProtocol {
         targets = m.targetDirs,
         testTarget = None,
         testTargets = m.testTargetDirs,
-        sourceRoots = m.sourceRoots
-      ))
+        sourceRoots = m.sourceRoots))
   }
 }

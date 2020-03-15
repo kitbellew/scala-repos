@@ -175,15 +175,17 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
     }
 
     "not serialize ActorCell" in {
-      val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case o: ObjectOutputStream ⇒
-            try o.writeObject(this)
-            catch {
-              case _: NotSerializableException ⇒ testActor ! "pass"
+      val a = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case o: ObjectOutputStream ⇒
+                try o.writeObject(this)
+                catch {
+                  case _: NotSerializableException ⇒ testActor ! "pass"
+                }
             }
-        }
-      }))
+          }))
       a ! new ObjectOutputStream(new ByteArrayOutputStream())
       expectMsg("pass")
       system.stop(a)
@@ -244,8 +246,9 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
       EventFilter.warning(
         start = "Multiple serializers found",
         occurrences = 1) intercept {
-        ser.serializerFor(classOf[Both]).getClass should (be(
-          classOf[TestSerializer]) or be(classOf[JavaSerializer]))
+        ser.serializerFor(classOf[Both]).getClass should (
+          be(classOf[TestSerializer]) or be(classOf[JavaSerializer])
+        )
       }
     }
 
@@ -255,8 +258,9 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
       EventFilter.warning(
         start = "Multiple serializers found",
         occurrences = 1) intercept {
-        ser.serializerFor(classOf[C]).getClass should (be(
-          classOf[TestSerializer]) or be(classOf[JavaSerializer]))
+        ser.serializerFor(classOf[C]).getClass should (
+          be(classOf[TestSerializer]) or be(classOf[JavaSerializer])
+        )
       }
     }
 

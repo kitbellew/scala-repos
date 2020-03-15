@@ -173,19 +173,22 @@ class GenericTests {
   @Test
   def testTuples {
     val gen1 = Generic[Tuple1[Int]]
-    typed[Generic[Tuple1[Int]] {
-      type Repr = Int :: HNil
-    }](gen1)
+    typed[
+      Generic[Tuple1[Int]] {
+        type Repr = Int :: HNil
+      }](gen1)
 
     val gen2 = Generic[(Int, String)]
-    typed[Generic[(Int, String)] {
-      type Repr = Int :: String :: HNil
-    }](gen2)
+    typed[
+      Generic[(Int, String)] {
+        type Repr = Int :: String :: HNil
+      }](gen2)
 
     val gen3 = Generic[(Int, String, Boolean)]
-    typed[Generic[(Int, String, Boolean)] {
-      type Repr = Int :: String :: Boolean :: HNil
-    }](gen3)
+    typed[
+      Generic[(Int, String, Boolean)] {
+        type Repr = Int :: String :: Boolean :: HNil
+      }](gen3)
   }
 
   @Test
@@ -1162,17 +1165,9 @@ object Thrift {
     class Immutable(
         val a: Double,
         val b: String,
-        val _passthroughFields: scala.collection.immutable.Map[Short, Byte]
-    ) extends TProduct {
-      def this(
-          a: Double,
-          b: String
-      ) =
-        this(
-          a,
-          b,
-          Map.empty
-        )
+        val _passthroughFields: scala.collection.immutable.Map[Short, Byte])
+        extends TProduct {
+      def this(a: Double, b: String) = this(a, b, Map.empty)
     }
   }
 

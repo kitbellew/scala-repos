@@ -66,10 +66,12 @@ case class AnswerWithQuestion(answer: Answer, question: Question)
 case class Vote(up: Set[String], down: Set[String], score: Int) {
 
   def add(user: String, v: Boolean) =
-    (if (v)
-       addUp _
-     else
-       addDown _)(user)
+    (
+      if (v)
+        addUp _
+      else
+        addDown _
+    )(user)
   def addUp(user: String) =
     copy(up = up + user, down = down - user).computeScore
   def addDown(user: String) =

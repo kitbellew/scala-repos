@@ -148,9 +148,12 @@ class Signature(
 
     ScalaPsiUtil.convertMemberName(name) == ScalaPsiUtil.convertMemberName(
       other.name) &&
-    ((typeParams.length == other.typeParams.length && paramTypesEquiv(other)) ||
-    (paramLength == other.paramLength && javaErasedEquiv(other))) && fieldCheck(
-      other)
+    (
+      (
+        typeParams.length == other.typeParams.length && paramTypesEquiv(other)
+      ) ||
+      (paramLength == other.paramLength && javaErasedEquiv(other))
+    ) && fieldCheck(other)
 
   }
 
@@ -188,7 +191,9 @@ class Signature(
     import org.jetbrains.plugins.scala.lang.psi.types.Signature._
 
     var undefSubst = uSubst
-    if (paramLength != other.paramLength && !(paramLength.sum == 0 && other.paramLength.sum == 0))
+    if (paramLength != other.paramLength && !(
+          paramLength.sum == 0 && other.paramLength.sum == 0
+        ))
       return (false, undefSubst)
     if (hasRepeatedParam != other.hasRepeatedParam)
       return (false, undefSubst)
@@ -276,10 +281,10 @@ object Signature {
     while (iterator1.hasNext && iterator2.hasNext) {
       val (tp1, tp2) = (iterator1.next(), iterator2.next())
 
-      res = res bindT ((
-        tp2.name,
-        ScalaPsiUtil.getPsiElementId(tp2.ptp)), ScTypeParameterType
-        .toTypeParameterType(tp1))
+      res = res bindT (
+        (tp2.name, ScalaPsiUtil.getPsiElementId(tp2.ptp)), ScTypeParameterType
+          .toTypeParameterType(tp1)
+      )
     }
     res
   }
@@ -295,10 +300,12 @@ object PhysicalSignature {
             ScalaPsiUtil.mapToLazyTypesSeq(clause.effectiveParameters))
           .toList
       case _ =>
-        List(ScalaPsiUtil.mapToLazyTypesSeq(method.getParameterList match {
-          case p: ScParameters => p.params
-          case p               => p.getParameters.toSeq
-        }))
+        List(
+          ScalaPsiUtil.mapToLazyTypesSeq(
+            method.getParameterList match {
+              case p: ScParameters => p.params
+              case p               => p.getParameters.toSeq
+            }))
     }
 
   def paramLength(method: PsiMethod): List[Int] =

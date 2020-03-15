@@ -75,16 +75,18 @@ object InterpolatedStringParser extends StringParser {
             Text(e.getText.drop(1))
         }
 
-        (parts match {
-          case (Text(s) :: t) =>
-            val edgeLength =
-              if (literal.isMultiLineString)
-                3
-              else
-                1
-            Text(s.drop(edgeLength)) :: t
-          case it => it
-        }) flatMap {
+        (
+          parts match {
+            case (Text(s) :: t) =>
+              val edgeLength =
+                if (literal.isMultiLineString)
+                  3
+                else
+                  1
+              Text(s.drop(edgeLength)) :: t
+            case it => it
+          }
+        ) flatMap {
           case t: Text => t.withEscapedPercent(element.getManager)
           case part    => List(part)
         } filter {

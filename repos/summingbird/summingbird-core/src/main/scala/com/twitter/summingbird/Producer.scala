@@ -297,9 +297,10 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
 
   /** Builds a new KeyedProvider by applying a partial function to keys of elements of this one on which the function is defined.*/
   def collectKeys[K2](pf: PartialFunction[K, K2]): KeyedProducer[P, K2, V] =
-    IdentityKeyedProducer(collect {
-      case (k, v) if pf.isDefinedAt(k) => (pf(k), v)
-    })
+    IdentityKeyedProducer(
+      collect {
+        case (k, v) if pf.isDefinedAt(k) => (pf(k), v)
+      })
 
   /** Builds a new KeyedProvider by applying a partial function to values of elements of this one on which the function is defined.*/
   def collectValues[V2](pf: PartialFunction[V, V2]): KeyedProducer[P, K, V2] =
@@ -317,9 +318,10 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
     * the partition.
     */
   def filterKeys(pred: K => Boolean): KeyedProducer[P, K, V] =
-    IdentityKeyedProducer(filter {
-      case (k, _) => pred(k)
-    })
+    IdentityKeyedProducer(
+      filter {
+        case (k, _) => pred(k)
+      })
 
   /**
     * Prefer this to filter or flatMap/flatMapValues if you are filtering.

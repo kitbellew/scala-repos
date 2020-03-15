@@ -15,12 +15,13 @@ abstract class DatabasePublisher[T] extends Publisher[T] { self =>
   def mapResult[U](f: T => U): DatabasePublisher[U] =
     new DatabasePublisher[U] {
       def subscribe(s: Subscriber[_ >: U]) =
-        self.subscribe(new Subscriber[T] {
-          def onSubscribe(sn: Subscription): Unit = s.onSubscribe(sn)
-          def onComplete(): Unit = s.onComplete()
-          def onError(t: Throwable): Unit = s.onError(t)
-          def onNext(t: T): Unit = s.onNext(f(t))
-        })
+        self.subscribe(
+          new Subscriber[T] {
+            def onSubscribe(sn: Subscription): Unit = s.onSubscribe(sn)
+            def onComplete(): Unit = s.onComplete()
+            def onError(t: Throwable): Unit = s.onError(t)
+            def onNext(t: T): Unit = s.onNext(f(t))
+          })
     }
 
   /** Consume the stream, processing each element sequentially on the specified ExecutionContext.
@@ -30,38 +31,39 @@ abstract class DatabasePublisher[T] extends Publisher[T] { self =>
     val p = Promise[Unit]()
     @volatile var lastMsg: Future[Any] = null
     @volatile var subscr: Subscription = null
-    subscribe(new Subscriber[T] {
-      def onSubscribe(s: Subscription): Unit = {
-        subscr = s
-        s.request(1L)
-      }
-      def onComplete(): Unit = {
-        val l = lastMsg
-        if (l ne null)
-          l.onComplete {
-            case Success(_) => p.trySuccess(())
-            case Failure(t) => p.tryFailure(t)
-          }(DBIO.sameThreadExecutionContext)
-        else
-          p.trySuccess(())
-      }
-      def onError(t: Throwable): Unit = {
-        val l = lastMsg
-        if (l ne null)
-          l.onComplete(_ => p.tryFailure(t))(DBIO.sameThreadExecutionContext)
-        else
-          p.tryFailure(t)
-      }
-      def onNext(t: T): Unit = {
-        lastMsg = Future(f(t))
-        lastMsg.onComplete {
-          case Success(v) => subscr.request(1L)
-          case Failure(t) =>
-            subscr.cancel()
+    subscribe(
+      new Subscriber[T] {
+        def onSubscribe(s: Subscription): Unit = {
+          subscr = s
+          s.request(1L)
+        }
+        def onComplete(): Unit = {
+          val l = lastMsg
+          if (l ne null)
+            l.onComplete {
+              case Success(_) => p.trySuccess(())
+              case Failure(t) => p.tryFailure(t)
+            }(DBIO.sameThreadExecutionContext)
+          else
+            p.trySuccess(())
+        }
+        def onError(t: Throwable): Unit = {
+          val l = lastMsg
+          if (l ne null)
+            l.onComplete(_ => p.tryFailure(t))(DBIO.sameThreadExecutionContext)
+          else
             p.tryFailure(t)
         }
-      }
-    })
+        def onNext(t: T): Unit = {
+          lastMsg = Future(f(t))
+          lastMsg.onComplete {
+            case Success(v) => subscr.request(1L)
+            case Failure(t) =>
+              subscr.cancel()
+              p.tryFailure(t)
+          }
+        }
+      })
     p.future
   }
 }

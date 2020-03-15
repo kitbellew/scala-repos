@@ -62,8 +62,8 @@ class TaskStartActorTest
 
   for ((counts, description) <- Seq(
          None -> "with no item in queue",
-         Some(LaunchQueueTestHelper.zeroCounts) -> "with zero count queue item"
-       )) {
+         Some(
+           LaunchQueueTestHelper.zeroCounts) -> "with zero count queue item")) {
     test(s"Start success $description") {
       val promise = Promise[Unit]()
       val app = AppDefinition("/myApp".toPath, instances = 5)
@@ -131,8 +131,7 @@ class TaskStartActorTest
           system.eventStream,
           app,
           app.instances,
-          promise
-        ))
+          promise))
 
       watch(ref)
 
@@ -231,8 +230,7 @@ class TaskStartActorTest
     val app = AppDefinition(
       "/myApp".toPath,
       instances = 5,
-      healthChecks = Set(HealthCheck())
-    )
+      healthChecks = Set(HealthCheck()))
     when(launchQueue.get(app.id)).thenReturn(None)
 
     val ref = TestActorRef(
@@ -269,8 +267,7 @@ class TaskStartActorTest
     val app = AppDefinition(
       "/myApp".toPath,
       instances = 0,
-      healthChecks = Set(HealthCheck())
-    )
+      healthChecks = Set(HealthCheck()))
     when(launchQueue.get(app.id)).thenReturn(None)
 
     val ref = TestActorRef(
@@ -434,8 +431,10 @@ class TaskStartActorTest
     Mockito.reset(launchQueue)
 
     // launch 4 of the tasks
-    when(launchQueue.get(app.id)).thenReturn(Some(
-      LaunchQueueTestHelper.zeroCounts.copy(tasksLeftToLaunch = app.instances)))
+    when(launchQueue.get(app.id)).thenReturn(
+      Some(
+        LaunchQueueTestHelper.zeroCounts
+          .copy(tasksLeftToLaunch = app.instances)))
     when(taskTracker.countLaunchedAppTasksSync(app.id)).thenReturn(4)
     List(0, 1, 2, 3) foreach { i =>
       system.eventStream.publish(

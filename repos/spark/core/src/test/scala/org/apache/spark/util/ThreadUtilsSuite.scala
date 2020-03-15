@@ -33,11 +33,12 @@ class ThreadUtilsSuite extends SparkFunSuite {
     val executor = ThreadUtils.newDaemonSingleThreadExecutor(
       "this-is-a-thread-name")
     @volatile var threadName = ""
-    executor.submit(new Runnable {
-      override def run(): Unit = {
-        threadName = Thread.currentThread().getName()
-      }
-    })
+    executor.submit(
+      new Runnable {
+        override def run(): Unit = {
+          threadName = Thread.currentThread().getName()
+        }
+      })
     executor.shutdown()
     executor.awaitTermination(10, TimeUnit.SECONDS)
     assert(threadName === "this-is-a-thread-name")
@@ -75,12 +76,13 @@ class ThreadUtilsSuite extends SparkFunSuite {
       keepAliveSeconds = 2)
     try {
       for (_ <- 1 to maxThreadNumber) {
-        cachedThreadPool.execute(new Runnable {
-          override def run(): Unit = {
-            startThreadsLatch.countDown()
-            latch.await(10, TimeUnit.SECONDS)
-          }
-        })
+        cachedThreadPool.execute(
+          new Runnable {
+            override def run(): Unit = {
+              startThreadsLatch.countDown()
+              latch.await(10, TimeUnit.SECONDS)
+            }
+          })
       }
       startThreadsLatch.await(10, TimeUnit.SECONDS)
       assert(cachedThreadPool.getActiveCount === maxThreadNumber)
@@ -88,11 +90,12 @@ class ThreadUtilsSuite extends SparkFunSuite {
 
       // Submit a new task and it should be put into the queue since the thread number reaches the
       // limitation
-      cachedThreadPool.execute(new Runnable {
-        override def run(): Unit = {
-          latch.await(10, TimeUnit.SECONDS)
-        }
-      })
+      cachedThreadPool.execute(
+        new Runnable {
+          override def run(): Unit = {
+            latch.await(10, TimeUnit.SECONDS)
+          }
+        })
 
       assert(cachedThreadPool.getActiveCount === maxThreadNumber)
       assert(cachedThreadPool.getQueue.size === 1)
@@ -120,17 +123,18 @@ class ThreadUtilsSuite extends SparkFunSuite {
 
   test("runInNewThread") {
     import ThreadUtils._
-    assert(runInNewThread("thread-name") {
-      Thread.currentThread().getName
-    } === "thread-name")
-    assert(runInNewThread("thread-name") {
-      Thread.currentThread().isDaemon
-    } === true)
+    assert(
+      runInNewThread("thread-name") {
+        Thread.currentThread().getName
+      } === "thread-name")
+    assert(
+      runInNewThread("thread-name") {
+        Thread.currentThread().isDaemon
+      } === true)
     assert(
       runInNewThread("thread-name", isDaemon = false) {
         Thread.currentThread().isDaemon
-      } === false
-    )
+      } === false)
     val uniqueExceptionMessage = "test" + Random.nextInt()
     val exception = intercept[IllegalArgumentException] {
       runInNewThread("thread-name") {

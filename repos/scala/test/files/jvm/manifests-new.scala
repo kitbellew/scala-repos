@@ -52,13 +52,15 @@ object Test1 extends TestUtil {
   print(new Foo(List(new Foo(2))))
   println()
 
-  print(new Bar[String] {
-    def f = "abc"
-  });
-  {
-    print(new Bar[String] {
+  print(
+    new Bar[String] {
       def f = "abc"
-    })
+    });
+  {
+    print(
+      new Bar[String] {
+        def f = "abc"
+      })
   }
   println()
 }

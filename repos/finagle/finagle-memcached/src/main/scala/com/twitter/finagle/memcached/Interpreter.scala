@@ -103,8 +103,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
                 Value(key, entry.value)
               }
             }
-          }
-        )
+          })
       case Gets(keys) =>
         getByKeys(keys)
       case Delete(key) =>
@@ -166,8 +165,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
               Value(key, value, Some(generateCasUnique(value)))
             }
         }
-      }
-    )
+      })
   }
 
 }

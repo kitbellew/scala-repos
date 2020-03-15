@@ -145,12 +145,13 @@ trait TableLibModule[M[+_]] extends TableModule[M] with TransSpecModule {
     abstract class Op2(namespace: Vector[String], name: String)
         extends Morphism2(namespace, name)
         with Op2Like {
-      val alignment = MorphismAlignment.Match(M.point {
-        new Morph1Apply {
-          def apply(input: Table, ctx: MorphContext) =
-            sys.error("morphism application of an op2 is wrong")
-        }
-      })
+      val alignment = MorphismAlignment.Match(
+        M.point {
+          new Morph1Apply {
+            def apply(input: Table, ctx: MorphContext) =
+              sys.error("morphism application of an op2 is wrong")
+          }
+        })
 
       def spec[A <: SourceType](ctx: MorphContext)(
           left: TransSpec[A],

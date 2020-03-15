@@ -368,7 +368,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
             case tuple @ (arg1: TreeNode[_], arg2: TreeNode[_]) =>
               val newChild1 = nextOperation(arg1.asInstanceOf[BaseType], rule)
               val newChild2 = nextOperation(arg2.asInstanceOf[BaseType], rule)
-              if (!(newChild1 fastEquals arg1) || !(newChild2 fastEquals arg2)) {
+              if (!(
+                    newChild1 fastEquals arg1
+                  ) || !(newChild2 fastEquals arg2)) {
                 changed = true
                 (newChild1, newChild2)
               } else {
@@ -419,9 +421,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
         }
       } catch {
         case e: java.lang.IllegalArgumentException =>
-          throw new TreeNodeException(
-            this,
-            s"""
+          throw new TreeNodeException(this, s"""
              |Failed to copy node.
              |Is otherCopyArgs specified correctly for $nodeName.
              |Exception message: ${e.getMessage}
@@ -655,8 +655,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           name -> JArray(
             value
               .map(v => JInt(children.indexOf(v.asInstanceOf[TreeNode[_]])))
-              .toList
-          )
+              .toList)
         case (name, value) => name -> parseToJson(value)
       }
       .toList
@@ -678,7 +677,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case dt: DataType => dt.jsonValue
       case m: Metadata  => m.jsonValue
       case s: StorageLevel =>
-        ("useDisk" -> s.useDisk) ~ ("useMemory" -> s.useMemory) ~ ("useOffHeap" -> s.useOffHeap) ~
+        ("useDisk" -> s.useDisk) ~ ("useMemory" -> s.useMemory) ~ (
+          "useOffHeap" -> s.useOffHeap
+        ) ~
           ("deserialized" -> s.deserialized) ~ ("replication" -> s.replication)
       case n: TreeNode[_] => n.jsonValue
       case o: Option[_]   => o.map(parseToJson)
@@ -765,14 +766,12 @@ object TreeNode {
             maybeCtor.get.newInstance(parameters: _*).asInstanceOf[TreeNode[_]]
           } catch {
             case e: java.lang.IllegalArgumentException =>
-              throw new RuntimeException(
-                s"""
+              throw new RuntimeException(s"""
                   |Failed to construct tree node: ${cls.getName}
                   |ctor: ${maybeCtor.get}
                   |types: ${parameters.map(_.getClass).mkString(", ")}
                   |args: ${parameters.mkString(", ")}
-                """.stripMargin,
-                e)
+                """.stripMargin, e)
           }
         }
       }

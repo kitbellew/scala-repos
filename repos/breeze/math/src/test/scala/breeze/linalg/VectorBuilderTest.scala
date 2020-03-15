@@ -50,28 +50,30 @@ class VectorBuilderTest extends FunSuite with Checkers {
   }
 
   test("Dot product is consistent") {
-    check(Prop.forAll {
-      (pair: (VectorBuilder[Double], VectorBuilder[Double])) =>
+    check(
+      Prop.forAll { (pair: (VectorBuilder[Double], VectorBuilder[Double])) =>
         val (vb1, vb2) = pair
         val (hv1, hv2) = (vb1.toHashVector, vb2.toHashVector)
         closeTo(vb1 dot hv2, hv1 dot vb2) && closeTo(vb1 dot hv2, hv1 dot hv2)
-    })
+      })
 
   }
 
   test("+ for VB's and V's is consistent") {
-    check(Prop.forAll {
-      (pair: (VectorBuilder[Double], VectorBuilder[Double])) =>
+    check(
+      Prop.forAll { (pair: (VectorBuilder[Double], VectorBuilder[Double])) =>
         val (vb1, vb2) = pair
         val (hv1, hv2) = (vb1.toHashVector, vb2.toHashVector)
         val sum1 = (vb1 + vb2).toHashVector
         val sum2 = (hv1 + hv2)
         hv1 += vb2
         hv2 += vb1
-        (norm(hv1 - hv2) < 1e-4
-        && norm(hv1 - sum1) < 1e-4
-        && norm(hv1 - sum2) < 1e-4)
-    })
+        (
+          norm(hv1 - hv2) < 1e-4
+          && norm(hv1 - sum1) < 1e-4
+          && norm(hv1 - sum2) < 1e-4
+        )
+      })
 
   }
 
@@ -119,7 +121,8 @@ class VectorBuilderOpsTest
   }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map {
-      _ % 1e3
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Double].map {
+        _ % 1e3
+      })
 }

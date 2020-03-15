@@ -119,8 +119,10 @@ class OpenHashMap[Key, Value](initialSize: Int)
     var index = hash & mask
     var perturb = index
     while (table(index) != null &&
-           !(table(index).hash == hash &&
-             table(index).key == key)) {
+           !(
+             table(index).hash == hash &&
+               table(index).key == key
+           )) {
       j = 5 * j + 1 + perturb
       perturb >>= 5
       index = j & mask
@@ -223,8 +225,9 @@ class OpenHashMap[Key, Value](initialSize: Int)
       private[this] def advance() {
         if (initialModCount != modCount)
           sys.error("Concurrent modification")
-        while ((index <= mask) && (table(index) == null || table(
-                 index).value == None))
+        while ((
+                 index <= mask
+               ) && (table(index) == null || table(index).value == None))
           index += 1
       }
 

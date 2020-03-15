@@ -156,8 +156,7 @@ class SparkSubmitSuite
       "spark.submit.deployMode=client",
       "--class",
       "org.SomeClass",
-      "thejar.jar"
-    )
+      "thejar.jar")
     val appArgs = new SparkSubmitArguments(clArgs)
     val (_, _, sysProps, _) = prepareSubmitEnvironment(appArgs)
 
@@ -174,8 +173,7 @@ class SparkSubmitSuite
       "spark.submit.deployMode=client",
       "-class",
       "org.SomeClass",
-      "thejar.jar"
-    )
+      "thejar.jar")
     val appArgs1 = new SparkSubmitArguments(clArgs1)
     val (_, _, sysProps1, _) = prepareSubmitEnvironment(appArgs1)
 
@@ -188,8 +186,7 @@ class SparkSubmitSuite
       "yarn",
       "--class",
       "org.SomeClass",
-      "thejar.jar"
-    )
+      "thejar.jar")
     val appArgs2 = new SparkSubmitArguments(clArgs2)
     appArgs2.deployMode should be(null)
 
@@ -241,9 +238,13 @@ class SparkSubmitSuite
     childArgsStr should include("--arg arg1 --arg arg2")
     childArgsStr should include("--queue thequeue")
     childArgsStr should include regex ("--jar .*thejar.jar")
-    childArgsStr should include regex ("--addJars .*one.jar,.*two.jar,.*three.jar")
+    childArgsStr should include regex (
+      "--addJars .*one.jar,.*two.jar,.*three.jar"
+    )
     childArgsStr should include regex ("--files .*file1.txt,.*file2.txt")
-    childArgsStr should include regex ("--archives .*archive1.txt,.*archive2.txt")
+    childArgsStr should include regex (
+      "--archives .*archive1.txt,.*archive2.txt"
+    )
     mainClass should be("org.apache.spark.deploy.yarn.Client")
     classpath should have length (0)
     sysProps("spark.app.name") should be("beauty")
@@ -299,12 +300,15 @@ class SparkSubmitSuite
     sysProps("spark.executor.cores") should be("5")
     sysProps("spark.yarn.queue") should be("thequeue")
     sysProps("spark.executor.instances") should be("6")
-    sysProps(
-      "spark.yarn.dist.files") should include regex (".*file1.txt,.*file2.txt")
-    sysProps(
-      "spark.yarn.dist.archives") should include regex (".*archive1.txt,.*archive2.txt")
-    sysProps(
-      "spark.jars") should include regex (".*one.jar,.*two.jar,.*three.jar,.*thejar.jar")
+    sysProps("spark.yarn.dist.files") should include regex (
+      ".*file1.txt,.*file2.txt"
+    )
+    sysProps("spark.yarn.dist.archives") should include regex (
+      ".*archive1.txt,.*archive2.txt"
+    )
+    sysProps("spark.jars") should include regex (
+      ".*one.jar,.*two.jar,.*three.jar,.*thejar.jar"
+    )
     sysProps("SPARK_SUBMIT") should be("true")
     sysProps("spark.ui.enabled") should be("false")
   }
@@ -595,8 +599,7 @@ class SparkSubmitSuite
       files,
       "--archives",
       archives,
-      "thejar.jar"
-    )
+      "thejar.jar")
     val appArgs2 = new SparkSubmitArguments(clArgs2)
     val sysProps2 = SparkSubmit.prepareSubmitEnvironment(appArgs2)._3
     appArgs2.files should be(Utils.resolveURIs(files))
@@ -605,13 +608,7 @@ class SparkSubmitSuite
     sysProps2("spark.yarn.dist.archives") should be(Utils.resolveURIs(archives))
 
     // Test python files
-    val clArgs3 = Seq(
-      "--master",
-      "local",
-      "--py-files",
-      pyFiles,
-      "mister.py"
-    )
+    val clArgs3 = Seq("--master", "local", "--py-files", pyFiles, "mister.py")
     val appArgs3 = new SparkSubmitArguments(clArgs3)
     val sysProps3 = SparkSubmit.prepareSubmitEnvironment(appArgs3)._3
     appArgs3.pyFiles should be(Utils.resolveURIs(pyFiles))
@@ -640,8 +637,7 @@ class SparkSubmitSuite
       "org.SomeClass",
       "--properties-file",
       f1.getPath,
-      "thejar.jar"
-    )
+      "thejar.jar")
     val appArgs = new SparkSubmitArguments(clArgs)
     val sysProps = SparkSubmit.prepareSubmitEnvironment(appArgs)._3
     sysProps("spark.jars") should be(Utils.resolveURIs(jars + ",thejar.jar"))
@@ -660,8 +656,7 @@ class SparkSubmitSuite
       "org.SomeClass",
       "--properties-file",
       f2.getPath,
-      "thejar.jar"
-    )
+      "thejar.jar")
     val appArgs2 = new SparkSubmitArguments(clArgs2)
     val sysProps2 = SparkSubmit.prepareSubmitEnvironment(appArgs2)._3
     sysProps2("spark.yarn.dist.files") should be(Utils.resolveURIs(files))
@@ -677,8 +672,7 @@ class SparkSubmitSuite
       "local",
       "--properties-file",
       f3.getPath,
-      "mister.py"
-    )
+      "mister.py")
     val appArgs3 = new SparkSubmitArguments(clArgs3)
     val sysProps3 = SparkSubmit.prepareSubmitEnvironment(appArgs3)._3
     sysProps3("spark.submit.pyFiles") should be(

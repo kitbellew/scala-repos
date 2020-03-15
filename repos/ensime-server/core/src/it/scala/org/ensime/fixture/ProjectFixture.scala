@@ -13,8 +13,7 @@ import scala.concurrent.duration._
 object ProjectFixture extends Matchers {
   private[fixture] def startup(implicit
       testkit: TestKitFix,
-      config: EnsimeConfig
-  ): (TestActorRef[Project], TestProbe) = {
+      config: EnsimeConfig): (TestActorRef[Project], TestProbe) = {
     import testkit._
 
     val probe = TestProbe()
@@ -51,12 +50,9 @@ trait ProjectFixture {
   /**
     * the project actor and a probe that receives async messages.
     */
-  def withProject(
-      testCode: (TestActorRef[Project], TestProbe) => Any
-  )(implicit
+  def withProject(testCode: (TestActorRef[Project], TestProbe) => Any)(implicit
       testkit: TestKitFix,
-      config: EnsimeConfig
-  ): Any
+      config: EnsimeConfig): Any
 }
 
 trait IsolatedProjectFixture extends ProjectFixture {

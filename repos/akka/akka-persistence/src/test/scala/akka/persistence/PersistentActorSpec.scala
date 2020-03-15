@@ -250,8 +250,9 @@ object PersistentActorSpec {
 
         1 to 3 foreach { i ⇒
           persistAsync(Evt(s"$data-${incCounter()}")) { evt ⇒
-            sender() ! ("a" + evt.data.toString
-              .drop(1)) // c-1 => a-1, as in "ack"
+            sender() ! (
+              "a" + evt.data.toString.drop(1)
+            ) // c-1 => a-1, as in "ack"
           }
         }
     }

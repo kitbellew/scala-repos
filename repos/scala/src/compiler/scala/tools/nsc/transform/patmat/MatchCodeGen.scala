@@ -165,9 +165,9 @@ trait MatchCodeGen extends Interface {
       def matcher(scrut: Tree, scrutSym: Symbol, restpe: Type)(
           cases: List[Casegen => Tree],
           matchFailGen: Option[Tree => Tree]): Tree =
-        _match(vpmName.runOrElse) APPLY (scrut) APPLY (fun(
-          scrutSym,
-          cases map (f => f(this)) reduceLeft typedOrElse))
+        _match(vpmName.runOrElse) APPLY (scrut) APPLY (
+          fun(scrutSym, cases map (f => f(this)) reduceLeft typedOrElse)
+        )
 
       // __match.one(`res`)
       def one(res: Tree): Tree = (_match(vpmName.one))(res)
@@ -267,8 +267,7 @@ trait MatchCodeGen extends Interface {
         // val (prologue, cases) = stats span (s => !s.isInstanceOf[LabelDef])
         Block(
           scrutDef ++ caseDefs ++ catchAllDef,
-          LabelDef(matchEnd, List(matchRes), REF(matchRes))
-        )
+          LabelDef(matchEnd, List(matchRes), REF(matchRes)))
       }
 
       class OptimizedCasegen(matchEnd: Symbol, nextCase: Symbol)
@@ -283,7 +282,9 @@ trait MatchCodeGen extends Interface {
         // res: T
         // returns MatchMonad[T]
         def one(res: Tree): Tree =
-          matchEnd APPLY (res) // a jump to a case label is special-cased in typedApply
+          matchEnd APPLY (
+            res
+          ) // a jump to a case label is special-cased in typedApply
         protected def zero: Tree = nextCase APPLY ()
 
         // prev: MatchMonad[T]
@@ -297,8 +298,7 @@ trait MatchCodeGen extends Interface {
             // must be isEmpty and get as we don't control the target of the call (prev is an extractor call)
             ifThenElseZero(
               NOT(prevSym DOT vpmName.isEmpty),
-              Substitution(b, prevSym DOT vpmName.get)(next)
-            )
+              Substitution(b, prevSym DOT vpmName.get)(next))
           )
         }
 
@@ -317,8 +317,7 @@ trait MatchCodeGen extends Interface {
             if (next.exists(_.symbol eq nextBinder))
               BLOCK(ValDef(nextBinder, res), next)
             else
-              next
-          )
+              next)
           ifThenElseZero(cond, rest)
         }
 
@@ -336,11 +335,7 @@ trait MatchCodeGen extends Interface {
             next: Tree): Tree =
           ifThenElseZero(
             cond,
-            BLOCK(
-              condSym === mkTRUE,
-              nextBinder === res,
-              next
-            ))
+            BLOCK(condSym === mkTRUE, nextBinder === res, next))
       }
 
     }

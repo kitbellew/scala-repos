@@ -154,8 +154,9 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
   private def delegateText(delegate: ClassMember): String = {
     val delegateText =
       delegate match {
-        case field @ (_: ScValueMember | _: ScVariableMember |
-            _: JavaFieldMember) =>
+        case field @ (
+              _: ScValueMember | _: ScVariableMember | _: JavaFieldMember
+            ) =>
           field.asInstanceOf[ScalaNamedMember].name
         case methMember: ScMethodMember =>
           methMember.sign.method match {

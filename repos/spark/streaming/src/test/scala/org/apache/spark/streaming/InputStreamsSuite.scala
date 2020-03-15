@@ -230,7 +230,9 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       // Let the data from the receiver be received
       val clock = ssc.scheduler.clock.asInstanceOf[ManualClock]
       val startTime = System.currentTimeMillis()
-      while ((!MultiThreadTestReceiver.haveAllThreadsFinished || output.sum < numTotalRecords) &&
+      while ((
+               !MultiThreadTestReceiver.haveAllThreadsFinished || output.sum < numTotalRecords
+             ) &&
              System.currentTimeMillis() - startTime < 5000) {
         Thread.sleep(100)
         clock.advance(batchDuration.milliseconds)

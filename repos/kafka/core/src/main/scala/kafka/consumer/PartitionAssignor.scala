@@ -180,11 +180,12 @@ class RangeAssignor() extends PartitionAssignor with Logging {
         val startPart =
           nPartsPerConsumer * myConsumerPosition + myConsumerPosition.min(
             nConsumersWithExtraPart)
-        val nParts =
-          nPartsPerConsumer + (if (myConsumerPosition + 1 > nConsumersWithExtraPart)
-                                 0
-                               else
-                                 1)
+        val nParts = nPartsPerConsumer + (
+          if (myConsumerPosition + 1 > nConsumersWithExtraPart)
+            0
+          else
+            1
+        )
 
         /**
           *   Range-partition the sorted partitions to consumers for better locality.
@@ -201,9 +202,9 @@ class RangeAssignor() extends PartitionAssignor with Logging {
             // record the partition ownership decision
             val assignmentForConsumer = partitionAssignment.getAndMaybePut(
               consumerThreadId.consumer)
-            assignmentForConsumer += (TopicAndPartition(
-              topic,
-              partition) -> consumerThreadId)
+            assignmentForConsumer += (
+              TopicAndPartition(topic, partition) -> consumerThreadId
+            )
           }
         }
       }

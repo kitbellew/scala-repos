@@ -357,11 +357,7 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val nodesForGroup = Map((0, Array(topNode)))
     val treeToNodeToIndexInfo = Map(
-      (
-        0,
-        Map(
-          (topNode.id, new RandomForest.NodeIndexInfo(0, None))
-        )))
+      (0, Map((topNode.id, new RandomForest.NodeIndexInfo(0, None)))))
     val nodeQueue = new mutable.Queue[(Int, Node)]()
     DecisionTree.findBestSplits(
       baggedInput,
@@ -416,11 +412,7 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val nodesForGroup = Map((0, Array(topNode)))
     val treeToNodeToIndexInfo = Map(
-      (
-        0,
-        Map(
-          (topNode.id, new RandomForest.NodeIndexInfo(0, None))
-        )))
+      (0, Map((topNode.id, new RandomForest.NodeIndexInfo(0, None)))))
     val nodeQueue = new mutable.Queue[(Int, Node)]()
     DecisionTree.findBestSplits(
       baggedInput,
@@ -871,9 +863,9 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
   test(
     "Multiclass classification stump with unordered categorical features," +
       " with just enough bins") {
-    val maxBins = 2 * (math
-      .pow(2, 3 - 1)
-      .toInt - 1) // just enough bins to allow unordered features
+    val maxBins = 2 * (
+      math.pow(2, 3 - 1).toInt - 1
+    ) // just enough bins to allow unordered features
     val arr = DecisionTreeSuite.generateCategoricalDataPointsForMulticlass()
     val rdd = sc.parallelize(arr)
     val strategy =

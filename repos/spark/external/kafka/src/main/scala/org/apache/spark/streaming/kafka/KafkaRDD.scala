@@ -43,18 +43,14 @@ import org.apache.spark.util.NextIterator
   * @param offsetRanges offset ranges that define the Kafka data belonging to this RDD
   * @param messageHandler function for translating each message into the desired type
   */
-private[kafka] class KafkaRDD[
-    K: ClassTag,
-    V: ClassTag,
-    U <: Decoder[_]: ClassTag,
-    T <: Decoder[_]: ClassTag,
-    R: ClassTag] private[spark] (
+private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
+  _]: ClassTag, T <: Decoder[_]: ClassTag, R: ClassTag] private[spark] (
     sc: SparkContext,
     kafkaParams: Map[String, String],
     val offsetRanges: Array[OffsetRange],
     leaders: Map[TopicAndPartition, (String, Int)],
-    messageHandler: MessageAndMetadata[K, V] => R
-) extends RDD[R](sc, Nil)
+    messageHandler: MessageAndMetadata[K, V] => R)
+    extends RDD[R](sc, Nil)
     with Logging
     with HasOffsetRanges {
   override def getPartitions: Array[Partition] = {
@@ -76,8 +72,7 @@ private[kafka] class KafkaRDD[
 
   override def countApprox(
       timeout: Long,
-      confidence: Double = 0.95
-  ): PartialResult[BoundedDouble] = {
+      confidence: Double = 0.95): PartialResult[BoundedDouble] = {
     val c = count
     new PartialResult(new BoundedDouble(c, 1.0, c, c), true)
   }
@@ -187,8 +182,7 @@ private[kafka] class KafkaRDD[
               throw new SparkException(
                 s"Couldn't connect to leader for topic ${part.topic} ${part.partition}: " +
                   errs.mkString("\n")),
-            consumer => consumer
-          )
+            consumer => consumer)
       } else {
         kc.connect(part.host, part.port)
       }
@@ -278,18 +272,14 @@ private[kafka] object KafkaRDD {
     *  ending point of the batch
     * @param messageHandler function for translating each message into the desired type
     */
-  def apply[
-      K: ClassTag,
-      V: ClassTag,
-      U <: Decoder[_]: ClassTag,
-      T <: Decoder[_]: ClassTag,
-      R: ClassTag](
+  def apply[K: ClassTag, V: ClassTag, U <: Decoder[_]: ClassTag, T <: Decoder[
+    _]: ClassTag, R: ClassTag](
       sc: SparkContext,
       kafkaParams: Map[String, String],
       fromOffsets: Map[TopicAndPartition, Long],
       untilOffsets: Map[TopicAndPartition, LeaderOffset],
-      messageHandler: MessageAndMetadata[K, V] => R
-  ): KafkaRDD[K, V, U, T, R] = {
+      messageHandler: MessageAndMetadata[K, V] => R)
+      : KafkaRDD[K, V, U, T, R] = {
     val leaders =
       untilOffsets.map {
         case (tp, lo) =>

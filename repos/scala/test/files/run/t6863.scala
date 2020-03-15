@@ -4,34 +4,34 @@ object Test {
     // internally lazy vals become vars which are initialized with "_", so they need to be tested just like vars do
     lazy val x = "42"
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def ident() = {
     val y = "42"
     var x = y
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def apply() = {
     def y(x: Int) = x.toString
     var x = y(42)
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def literal() = {
     var x = "42"
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def `new`() = {
     var x = new String("42")
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def select() = {
     object Foo {
@@ -39,8 +39,8 @@ object Test {
     }
     var x = Foo.bar
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def `throw`() = {
     var x =
@@ -49,23 +49,23 @@ object Test {
       else
         throw new Exception("42")
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def assign() = {
     var y = 1
     var x = y = 42
     assert({ () =>
-      x
-    }.apply == ())
+        x
+      }.apply == ())
   }
   def valDef() = {
     var x = {
       val y = 42
     }
     assert({ () =>
-      x
-    }.apply == ())
+        x
+      }.apply == ())
   }
   def `return`(): String = {
     var x =
@@ -74,8 +74,8 @@ object Test {
       else
         ()
     assert({ () =>
-      x
-    }.apply == ())
+        x
+      }.apply == ())
     "42"
   }
   def tryFinally() = {
@@ -84,8 +84,8 @@ object Test {
         "42"
       } finally ()
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def tryCatch() = {
     var x =
@@ -95,16 +95,16 @@ object Test {
         case _: Throwable => "43"
       }
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def `if`() = {
     var x =
       if (true)
         ()
     assert({ () =>
-      x
-    }.apply == ())
+        x
+      }.apply == ())
   }
   def ifElse() = {
     var x =
@@ -113,8 +113,8 @@ object Test {
       else
         "43"
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def matchCase() = {
     var x =
@@ -123,8 +123,8 @@ object Test {
         case _   => "43"
       }
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def block() = {
     var x = {
@@ -132,8 +132,8 @@ object Test {
       "42"
     }
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def labelDef() = {
     var x =
@@ -143,8 +143,8 @@ object Test {
           finally ()
       }
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def nested() = {
     var x = {
@@ -158,8 +158,8 @@ object Test {
         "44"
     }
     assert({ () =>
-      x
-    }.apply == "42")
+        x
+      }.apply == "42")
   }
   def main(args: Array[String]) {
     lazyVal()

@@ -20,6 +20,5 @@ object PlayLogback extends AutoPlugin {
       libraryDependencies ++= {
         Seq(
           "com.typesafe.play" %% "play-logback" % play.core.PlayVersion.current)
-      }
-    )
+      })
 }

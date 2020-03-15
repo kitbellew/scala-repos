@@ -198,23 +198,16 @@ object SexpExamples extends App {
 
   // example instances and expected forms
   val foo = Foo(13)
-  val fooSexp = SexpCons(
-    SexpAtom("Foo"),
-    SexpProp("i", SexpAtom("13"))
-  )
+  val fooSexp = SexpCons(SexpAtom("Foo"), SexpProp("i", SexpAtom("13")))
   val bar = Bar("blah")
-  val barSexp = SexpCons(
-    SexpAtom("Bar"),
-    SexpProp("s", SexpAtom("blah"))
-  )
+  val barSexp = SexpCons(SexpAtom("Bar"), SexpProp("s", SexpAtom("blah")))
   val baz = Baz(13, "blah")
   val bazSexp = SexpCons(
     SexpAtom("Baz"),
     SexpCons(
       // order is important --- how can we address this?
       SexpProp("i", SexpAtom("13")),
-      SexpProp("s", SexpAtom("blah"))
-    ))
+      SexpProp("s", SexpAtom("blah"))))
   val wibble = Wibble(Foo(13))
   val wibbleSexp = SexpCons(
     SexpAtom("Wibble"),
@@ -326,8 +319,7 @@ object SexpConvert {
   implicit def deriveHCons[K <: Symbol, V, T <: HList](implicit
       key: Witness.Aux[K],
       scv: Lazy[SexpConvert[V]],
-      sct: Lazy[SexpConvert[T]]
-  ): SexpConvert[FieldType[K, V] :: T] =
+      sct: Lazy[SexpConvert[T]]): SexpConvert[FieldType[K, V] :: T] =
     new SexpConvert[FieldType[K, V] :: T] {
       def deser(s: Sexp): Option[FieldType[K, V] :: T] =
         s match {
@@ -360,8 +352,7 @@ object SexpConvert {
   implicit def deriveCCons[K <: Symbol, V, T <: Coproduct](implicit
       key: Witness.Aux[K],
       scv: Lazy[SexpConvert[V]],
-      sct: Lazy[SexpConvert[T]]
-  ): SexpConvert[FieldType[K, V] :+: T] =
+      sct: Lazy[SexpConvert[T]]): SexpConvert[FieldType[K, V] :+: T] =
     new SexpConvert[FieldType[K, V] :+: T] {
       def deser(s: Sexp): Option[FieldType[K, V] :+: T] =
         s match {

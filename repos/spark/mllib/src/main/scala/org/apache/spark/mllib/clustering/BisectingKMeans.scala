@@ -180,7 +180,9 @@ class BisectingKMeans private (
       // Divisible clusters are sufficiently large and have non-trivial cost.
       var divisibleClusters = activeClusters.filter {
         case (_, summary) =>
-          (summary.size >= minSize) && (summary.cost > MLUtils.EPSILON * summary.size)
+          (summary.size >= minSize) && (
+            summary.cost > MLUtils.EPSILON * summary.size
+          )
       }
       // If we don't need all divisible clusters, take the larger ones.
       if (divisibleClusters.size > numLeafClustersNeeded) {
@@ -291,8 +293,7 @@ private object BisectingKMeans extends Serializable {
     assignments
       .aggregateByKey(new ClusterSummaryAggregator(d))(
         seqOp = (agg, v) => agg.add(v),
-        combOp = (agg1, agg2) => agg1.merge(agg2)
-      )
+        combOp = (agg1, agg2) => agg1.merge(agg2))
       .mapValues(_.summary)
       .collect()
       .toMap
@@ -407,9 +408,10 @@ private object BisectingKMeans extends Serializable {
         internalIndex -= 1
         val leftIndex = leftChildIndex(rawIndex)
         val rightIndex = rightChildIndex(rawIndex)
-        val height = math.sqrt(Seq(leftIndex, rightIndex).map { childIndex =>
-          KMeans.fastSquaredDistance(center, clusters(childIndex).center)
-        }.max)
+        val height = math.sqrt(
+          Seq(leftIndex, rightIndex).map { childIndex =>
+            KMeans.fastSquaredDistance(center, clusters(childIndex).center)
+          }.max)
         val left = buildSubTree(leftIndex)
         val right = buildSubTree(rightIndex)
         new ClusteringTreeNode(

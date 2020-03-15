@@ -107,8 +107,9 @@ private[akka] class ClusterReadView(cluster: Cluster) extends Closeable {
     import cluster.selfUniqueAddress
     state.members
       .find(_.uniqueAddress == selfUniqueAddress)
-      .getOrElse(Member(selfUniqueAddress, cluster.selfRoles).copy(status =
-        MemberStatus.Removed))
+      .getOrElse(
+        Member(selfUniqueAddress, cluster.selfRoles)
+          .copy(status = MemberStatus.Removed))
   }
 
   /**

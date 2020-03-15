@@ -45,10 +45,12 @@ case class HistoricalData(
     val adjReturnStr = adjReturn.mkString("[", ", ", "]")
     val activeStr = active.mkString("[", ", ", "]")
 
-    (s"HistoricalData($ticker, ${timeIndex.head}, ${timeIndex.last}, \n" +
-      s"  adjClose=$adjCloseStr\n" +
-      s"  adjReturn=$adjReturnStr\n" +
-      s"  active=$activeStr)")
+    (
+      s"HistoricalData($ticker, ${timeIndex.head}, ${timeIndex.last}, \n" +
+        s"  adjClose=$adjCloseStr\n" +
+        s"  adjReturn=$adjReturnStr\n" +
+        s"  active=$activeStr)"
+    )
   }
 }
 
@@ -355,8 +357,8 @@ object YahooDataSource {
       val appId: Int, // Ignore appId in DataSourceParams
       val entityType: String,
       val startTime: Option[DateTime] = None,
-      val untilTime: Option[DateTime] = None
-  ) extends BaseParams
+      val untilTime: Option[DateTime] = None)
+      extends BaseParams
 
   case class Daily(
       val close: Double,
@@ -373,8 +375,8 @@ object YahooDataSource {
     */
   case class Intermediate(
       val ticker: String = "",
-      val dailyMap: Map[DateTime, Daily] = Map[DateTime, Daily]()
-  ) extends Serializable {
+      val dailyMap: Map[DateTime, Daily] = Map[DateTime, Daily]())
+      extends Serializable {
     override def toString(): String =
       s"YDS.Intermediate($ticker, size=${dailyMap.size})"
   }
@@ -467,8 +469,7 @@ object YahooDataSourceRun {
       algorithmClassMapOpt = Some(
         Map(
           //"" -> classOf[MomentumStrategy]
-          "" -> classOf[RegressionStrategy]
-        )),
+          "" -> classOf[RegressionStrategy])),
       //algorithmParamsList = Seq(("", momentumParams)),
       algorithmParamsList = Seq(
         (

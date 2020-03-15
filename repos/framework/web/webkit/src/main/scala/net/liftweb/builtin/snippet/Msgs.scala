@@ -83,9 +83,10 @@ object Msgs extends DispatchSnippet {
 
         // Extract any provided classes for the messages
         val cssClasses =
-          ((styles \\ noticeType.styleTag) ++
-            (styles \\ noticeType.titleTag \\ "@class")).toList
-            .map(_.text.trim) match {
+          (
+            (styles \\ noticeType.styleTag) ++
+              (styles \\ noticeType.titleTag \\ "@class")
+          ).toList.map(_.text.trim) match {
             case Nil     => Empty
             case classes => Full(classes.mkString(" "))
           }
@@ -97,9 +98,11 @@ object Msgs extends DispatchSnippet {
 
     // Delegate the actual rendering to a shared method so that we don't
     // duplicate code for the AJAX pipeline
-    (<div>{
-      renderNotices()
-    }</div> % ("id" -> LiftRules.noticesContainerId)) ++
+    (
+      <div>{
+        renderNotices()
+      }</div> % ("id" -> LiftRules.noticesContainerId)
+    ) ++
       noticesFadeOut(NoticeType.Notice) ++
       noticesFadeOut(NoticeType.Warning) ++
       noticesFadeOut(NoticeType.Error) ++
@@ -135,9 +138,11 @@ object Msgs extends DispatchSnippet {
 
           // Compute the resulting div
           f(messages).toList.map(e =>
-            (<li>{
-              e
-            }</li>)) match {
+            (
+              <li>{
+                e
+              }</li>
+            )) match {
             case Nil => Nil
             case msgList => {
               val ret =

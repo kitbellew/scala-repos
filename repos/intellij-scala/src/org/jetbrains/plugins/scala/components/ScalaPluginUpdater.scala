@@ -59,13 +59,11 @@ object ScalaPluginUpdater {
     FOURTEEN_ONE_OLD -> Map(
       Release -> "DUMMY",
       EAP -> "http://www.jetbrains.com/idea/plugins/scala-eap-14.1.xml",
-      Nightly -> ""
-    ),
+      Nightly -> ""),
     FOURTEEN_ONE -> Map(
       Release -> "DUMMY",
       EAP -> baseUrl.format("eap"),
-      Nightly -> baseUrl.format("nightly")
-    )
+      Nightly -> baseUrl.format("nightly"))
   )
 
   val currentVersion = FOURTEEN_ONE
@@ -210,7 +208,9 @@ object ScalaPluginUpdater {
         try {
           val resp = XML.load(u)
           val text =
-            ((resp \\ "idea-plugin").head \ "idea-version" \ "@since-build").text
+            (
+              (resp \\ "idea-plugin").head \ "idea-version" \ "@since-build"
+            ).text
           val remoteBuildNumber = BuildNumber.fromString(text)
           if (localBuildNumber.compareTo(remoteBuildNumber) < 0)
             suggestIdeaUpdate(branch.toString, text)
@@ -233,21 +233,22 @@ object ScalaPluginUpdater {
       val a = ApplicationInfoEx.getInstanceEx.getUpdateUrls.getCheckingUrl
       val info = HttpRequests
         .request(a)
-        .connect(new HttpRequests.RequestProcessor[Option[UpdatesInfo]] {
-          def process(request: HttpRequests.Request) = {
-            try {
-              Some(
-                new UpdatesInfo(
-                  JDOMUtil
-                    .loadDocument(request.getInputStream)
-                    .detachRootElement))
-            } catch {
-              case e: JDOMException =>
-                LOG.info(e);
-                None
+        .connect(
+          new HttpRequests.RequestProcessor[Option[UpdatesInfo]] {
+            def process(request: HttpRequests.Request) = {
+              try {
+                Some(
+                  new UpdatesInfo(
+                    JDOMUtil
+                      .loadDocument(request.getInputStream)
+                      .detachRootElement))
+              } catch {
+                case e: JDOMException =>
+                  LOG.info(e);
+                  None
+              }
             }
-          }
-        })
+          })
       if (info.isDefined) {
         val strategy =
           new UpdateStrategy(
@@ -314,33 +315,35 @@ object ScalaPluginUpdater {
       .removeDocumentListener(updateListener)
     if (lastUpdateTime == 0L || System
           .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
-      ApplicationManager.getApplication.executeOnPooledThread(new Runnable {
-        override def run() = {
-          val buildNumber = ApplicationInfo.getInstance().getBuild.asString()
-          val pluginVersion = pluginDescriptor.getVersion
-          val os = URLEncoder.encode(
-            SystemInfo.OS_NAME + " " + SystemInfo.OS_VERSION,
-            CharsetToolkit.UTF8)
-          val uid = UpdateChecker.getInstallationUID(
-            PropertiesComponent.getInstance())
-          val url =
-            s"https://plugins.jetbrains.com/plugins/list?pluginId=$scalaPluginId&build=$buildNumber&pluginVersion=$pluginVersion&os=$os&uuid=$uid"
-          PropertiesComponent
-            .getInstance()
-            .setValue(key, System.currentTimeMillis().toString)
-          doneUpdating = true
-          try {
-            HttpRequests
-              .request(url)
-              .connect(new HttpRequests.RequestProcessor[Unit] {
-                override def process(request: Request) =
-                  JDOMUtil.load(request.getReader())
-              })
-          } catch {
-            case e: Throwable => LOG.warn(e)
+      ApplicationManager.getApplication.executeOnPooledThread(
+        new Runnable {
+          override def run() = {
+            val buildNumber = ApplicationInfo.getInstance().getBuild.asString()
+            val pluginVersion = pluginDescriptor.getVersion
+            val os = URLEncoder.encode(
+              SystemInfo.OS_NAME + " " + SystemInfo.OS_VERSION,
+              CharsetToolkit.UTF8)
+            val uid = UpdateChecker.getInstallationUID(
+              PropertiesComponent.getInstance())
+            val url =
+              s"https://plugins.jetbrains.com/plugins/list?pluginId=$scalaPluginId&build=$buildNumber&pluginVersion=$pluginVersion&os=$os&uuid=$uid"
+            PropertiesComponent
+              .getInstance()
+              .setValue(key, System.currentTimeMillis().toString)
+            doneUpdating = true
+            try {
+              HttpRequests
+                .request(url)
+                .connect(
+                  new HttpRequests.RequestProcessor[Unit] {
+                    override def process(request: Request) =
+                      JDOMUtil.load(request.getReader())
+                  })
+            } catch {
+              case e: Throwable => LOG.warn(e)
+            }
           }
-        }
-      })
+        })
     }
   }
 

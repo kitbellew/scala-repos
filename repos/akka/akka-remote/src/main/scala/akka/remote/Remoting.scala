@@ -834,16 +834,19 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         }
       }
 
-      (for {
-        // The construction of the future for shutdownStatus has to happen after the flushStatus future has been finished
-        // so that endpoints are shut down before transports.
-        flushStatus ← shutdownAll(endpoints.allEndpoints)(
-          gracefulStop(_, settings.FlushWait, EndpointWriter.FlushAndStop))
-        shutdownStatus ← shutdownAll(transportMapping.values)(_.shutdown())
-      } yield flushStatus && shutdownStatus) pipeTo sender()
+      (
+        for {
+          // The construction of the future for shutdownStatus has to happen after the flushStatus future has been finished
+          // so that endpoints are shut down before transports.
+          flushStatus ← shutdownAll(endpoints.allEndpoints)(
+            gracefulStop(_, settings.FlushWait, EndpointWriter.FlushAndStop))
+          shutdownStatus ← shutdownAll(transportMapping.values)(_.shutdown())
+        } yield flushStatus && shutdownStatus
+      ) pipeTo sender()
 
-      pendingReadHandoffs.valuesIterator foreach (_.disassociate(
-        AssociationHandle.Shutdown))
+      pendingReadHandoffs.valuesIterator foreach (
+        _.disassociate(AssociationHandle.Shutdown)
+      )
 
       // Ignore all other writes
       normalShutdown = true
@@ -885,9 +888,9 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                   // to get an unstash event
                   if (!writerIsIdle) {
                     ep ! ReliableDeliverySupervisor.IsIdle
-                    stashedInbound += ep -> (stashedInbound.getOrElse(
-                      ep,
-                      Vector.empty) :+ ia)
+                    stashedInbound += ep -> (
+                      stashedInbound.getOrElse(ep, Vector.empty) :+ ia
+                    )
                   } else
                     createAndRegisterEndpoint(
                       handle,
@@ -1011,11 +1014,13 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         }
 
     // Collect all transports, listen addresses and listener promises in one future
-    Future.sequence(transports.map { transport ⇒
-      transport.listen map {
-        case (address, listenerPromise) ⇒ (transport, address, listenerPromise)
-      }
-    })
+    Future.sequence(
+      transports.map { transport ⇒
+        transport.listen map {
+          case (address, listenerPromise) ⇒
+            (transport, address, listenerPromise)
+        }
+      })
   }
 
   private def acceptPendingReader(takingOverFrom: ActorRef): Unit = {
@@ -1108,8 +1113,9 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   override def postStop(): Unit = {
     pruneTimerCancellable.cancel()
-    pendingReadHandoffs.valuesIterator foreach (_.disassociate(
-      AssociationHandle.Shutdown))
+    pendingReadHandoffs.valuesIterator foreach (
+      _.disassociate(AssociationHandle.Shutdown)
+    )
 
     if (!normalShutdown) {
       // Remaining running endpoints are children, so they will clean up themselves.

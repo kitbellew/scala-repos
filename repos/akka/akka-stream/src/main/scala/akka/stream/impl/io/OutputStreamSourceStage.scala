@@ -35,9 +35,8 @@ private[stream] object OutputStreamSourceStage {
 
 final private[stream] class OutputStreamSourceStage(
     writeTimeout: FiniteDuration)
-    extends GraphStageWithMaterializedValue[
-      SourceShape[ByteString],
-      OutputStream] {
+    extends GraphStageWithMaterializedValue[SourceShape[
+      ByteString], OutputStream] {
   val out = Outlet[ByteString]("OutputStreamSource.out")
   override def initialAttributes = DefaultAttributes.outputStreamSource
   override val shape: SourceShape[ByteString] = SourceShape.of(out)

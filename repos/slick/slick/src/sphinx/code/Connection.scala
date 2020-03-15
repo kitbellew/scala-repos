@@ -112,10 +112,15 @@ object Connection extends App {
     {
       //#transaction
       val a =
-        (for {
-          ns <- coffees.filter(_.name.startsWith("ESPRESSO")).map(_.name).result
-          _ <- DBIO.seq(ns.map(n => coffees.filter(_.name === n).delete): _*)
-        } yield ()).transactionally
+        (
+          for {
+            ns <- coffees
+              .filter(_.name.startsWith("ESPRESSO"))
+              .map(_.name)
+              .result
+            _ <- DBIO.seq(ns.map(n => coffees.filter(_.name === n).delete): _*)
+          } yield ()
+        ).transactionally
 
       val f: Future[Unit] = db.run(a)
       //#transaction
@@ -126,10 +131,11 @@ object Connection extends App {
       val countAction = coffees.length.result
 
       val rollbackAction =
-        (coffees ++= Seq(
-          ("Cold_Drip", new SerialBlob(Array[Byte](101))),
-          ("Dutch_Coffee", new SerialBlob(Array[Byte](49)))
-        )).flatMap { _ =>
+        (
+          coffees ++= Seq(
+            ("Cold_Drip", new SerialBlob(Array[Byte](101))),
+            ("Dutch_Coffee", new SerialBlob(Array[Byte](49))))
+        ).flatMap { _ =>
           DBIO.failed(new Exception("Roll it back"))
         }.transactionally
 

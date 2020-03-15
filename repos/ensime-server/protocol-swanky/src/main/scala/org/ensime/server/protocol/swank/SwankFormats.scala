@@ -48,10 +48,8 @@ object SwankProtocolCommon {
     */
   abstract class TraitFormatAlt[T] extends SexpFormat[T] {
     val key = SexpSymbol(":type")
-    protected def wrap[E](t: E)(implicit
-        th: TypeHint[E],
-        sf: SexpFormat[E]
-    ): Sexp =
+    protected def wrap[E](
+        t: E)(implicit th: TypeHint[E], sf: SexpFormat[E]): Sexp =
       t.toSexp match {
         case SexpNil => SexpData(key -> th.hint)
         case SexpData(data) if !data.contains(key) =>
@@ -424,8 +422,7 @@ object SwankProtocolResponse {
             // the odd one out...
             SendBackgroundMessageHint.hint,
             SexpNumber(sbm.code),
-            sbm.detail.toSexp
-          )
+            sbm.detail.toSexp)
         case de: DebugEvent => wrap(de)
       }
     def read(hint: SexpSymbol, value: Sexp): EnsimeEvent =
@@ -458,8 +455,7 @@ object SwankProtocolResponse {
           CompletionSignature(
             a.convertTo[List[List[(String, String)]]],
             b.convertTo[String],
-            c.convertTo[Boolean]
-          )
+            c.convertTo[Boolean])
         case _ => deserializationError(sexp)
       }
   }
@@ -555,17 +551,13 @@ object SwankProtocolResponse {
       extends SexpFormat[SymbolSearchResults] {
     def write(o: SymbolSearchResults): Sexp = o.syms.toSexp
     def read(sexp: Sexp): SymbolSearchResults =
-      SymbolSearchResults(
-        sexp.convertTo[List[SymbolSearchResult]]
-      )
+      SymbolSearchResults(sexp.convertTo[List[SymbolSearchResult]])
   }
   implicit object ImportSuggestionsFormat
       extends SexpFormat[ImportSuggestions] {
     def write(o: ImportSuggestions): Sexp = o.symLists.toSexp
     def read(sexp: Sexp): ImportSuggestions =
-      ImportSuggestions(
-        sexp.convertTo[List[List[SymbolSearchResult]]]
-      )
+      ImportSuggestions(sexp.convertTo[List[List[SymbolSearchResult]]])
   }
 
   // must be after SourceSymbol
@@ -575,8 +567,7 @@ object SwankProtocolResponse {
       SexpList(
         SexpSymbol(sourceSymbolToSymbol(o.symType)),
         o.start.toSexp,
-        o.end.toSexp
-      )
+        o.end.toSexp)
     def read(sexp: Sexp): SymbolDesignation = ???
   }
   implicit val SymbolDesignationsFormat = SexpFormat[SymbolDesignations]
@@ -659,8 +650,7 @@ object SwankProtocolResponse {
         case value: StructureView       => value.toSexp
         case error: EnsimeServerError =>
           throw new IllegalArgumentException(
-            s"for legacy reasons, RpcError should be marshalled as an EnsimeServerMessage: $error"
-          )
+            s"for legacy reasons, RpcError should be marshalled as an EnsimeServerMessage: $error")
       }
   }
 
@@ -683,14 +673,12 @@ object SwankProtocolResponse {
           SexpList(
             SexpSymbol(":return"),
             SexpList(SexpSymbol(":abort"), SexpNumber(666), SexpString(detail)),
-            SexpNumber(callId)
-          )
+            SexpNumber(callId))
         case RpcResponseEnvelope(Some(callId), payload) =>
           SexpList(
             SexpSymbol(":return"),
             SexpList(SexpSymbol(":ok"), payload.toSexp),
-            SexpNumber(callId)
-          )
+            SexpNumber(callId))
       }
   }
 
@@ -821,8 +809,7 @@ object SwankProtocolRequest {
       T <: RpcRequest,
       R <: shapeless.HList](implicit
       g: shapeless.Generic.Aux[T, R],
-      r: HListFormat[R]
-  ): SexpFormat[T] =
+      r: HListFormat[R]): SexpFormat[T] =
     new SexpFormat[T] {
       def write(x: T): Sexp = SexpList(r.write(g.to(x)))
 
@@ -884,8 +871,7 @@ object SwankProtocolRequest {
                   (Loc.End, SexpNumber(end)),
                   (Loc.File, SexpString(f)),
                   (Loc.NewName, SexpString(newName)),
-                  (Loc.Start, SexpNumber(start))
-                ) =>
+                  (Loc.Start, SexpNumber(start))) =>
               RenameRefactorDesc(
                 newName,
                 File(f).canon,
@@ -896,8 +882,7 @@ object SwankProtocolRequest {
                   (Loc.End, SexpNumber(end)),
                   (Loc.File, SexpString(f)),
                   (Loc.MethodName, SexpString(methodName)),
-                  (Loc.Start, SexpNumber(start))
-                ) =>
+                  (Loc.Start, SexpNumber(start))) =>
               ExtractMethodRefactorDesc(
                 methodName,
                 File(f).canon,
@@ -908,8 +893,7 @@ object SwankProtocolRequest {
                   (Loc.End, SexpNumber(end)),
                   (Loc.File, SexpString(f)),
                   (Loc.Name, SexpString(name)),
-                  (Loc.Start, SexpNumber(start))
-                ) =>
+                  (Loc.Start, SexpNumber(start))) =>
               ExtractLocalRefactorDesc(
                 name,
                 File(f).canon,
@@ -919,30 +903,25 @@ object SwankProtocolRequest {
             case List(
                   (Loc.End, SexpNumber(end)),
                   (Loc.File, SexpString(f)),
-                  (Loc.Start, SexpNumber(start))
-                ) =>
+                  (Loc.Start, SexpNumber(start))) =>
               InlineLocalRefactorDesc(
                 File(f).canon,
                 start.intValue,
                 end.intValue)
 
-            case List(
-                  (Loc.File, SexpString(f))
-                ) =>
+            case List((Loc.File, SexpString(f))) =>
               OrganiseImportsRefactorDesc(File(f).canon)
 
             case List(
                   (Loc.End, SexpNumber(_)),
                   (Loc.File, SexpString(f)),
                   (Loc.QualifiedName, SexpString(qualifiedName)),
-                  (Loc.Start, SexpNumber(_))
-                ) =>
+                  (Loc.Start, SexpNumber(_))) =>
               AddImportRefactorDesc(qualifiedName, File(f).canon)
 
             case List(
                   (Loc.File, SexpString(f)),
-                  (Loc.QualifiedName, SexpString(qualifiedName))
-                ) =>
+                  (Loc.QualifiedName, SexpString(qualifiedName))) =>
               AddImportRefactorDesc(qualifiedName, File(f).canon)
 
             case _ => deserializationError(sexp)

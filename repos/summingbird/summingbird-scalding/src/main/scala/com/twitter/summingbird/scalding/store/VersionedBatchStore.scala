@@ -80,8 +80,9 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
           }
           .getOrElse {
             Left(
-              List("No last batch available < %s for VersionedBatchStore(%s)"
-                .format(exclusiveUB, rootPath)))
+              List(
+                "No last batch available < %s for VersionedBatchStore(%s)"
+                  .format(exclusiveUB, rootPath)))
           }
       case _ =>
         Left(

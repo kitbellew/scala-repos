@@ -403,23 +403,24 @@ class MarathonSchedulerService @Inject() (
   private def offerLeadership(): Unit =
     synchronized {
       log.info(s"Will offer leadership after $offerLeadershipBackOff backoff")
-      after(offerLeadershipBackOff, system.scheduler)(Future {
-        candidate.synchronized {
-          candidate match {
-            case Some(c) =>
-              // In this case we care using ZooKeeper for leadership candidacy.
-              // Thus, offer our leadership.
-              log.info("Using HA and therefore offering leadership")
-              c.offerLeadership(this)
-            case _ =>
-              // In this case we aren't using ZooKeeper for leadership election.
-              // Thus, we simply elect ourselves as leader.
-              log.info(
-                "Not using HA and therefore electing as leader by default")
-              electLeadership(None)
+      after(offerLeadershipBackOff, system.scheduler)(
+        Future {
+          candidate.synchronized {
+            candidate match {
+              case Some(c) =>
+                // In this case we care using ZooKeeper for leadership candidacy.
+                // Thus, offer our leadership.
+                log.info("Using HA and therefore offering leadership")
+                c.offerLeadership(this)
+              case _ =>
+                // In this case we aren't using ZooKeeper for leadership election.
+                // Thus, we simply elect ourselves as leader.
+                log.info(
+                  "Not using HA and therefore electing as leader by default")
+                electLeadership(None)
+            }
           }
-        }
-      })
+        })
     }
 
   private def schedulePeriodicOperations(): Unit =

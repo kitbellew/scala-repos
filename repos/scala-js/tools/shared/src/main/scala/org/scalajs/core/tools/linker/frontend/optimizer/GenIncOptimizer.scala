@@ -573,8 +573,10 @@ abstract class GenIncOptimizer private[optimizer] (
     def updateHasElidableModuleAccessor(): Unit = {
       hasElidableModuleAccessor =
         isAdHocElidableModuleAccessor(encodedName) ||
-          (isModuleClass && lookupMethod("init___").exists(
-            isElidableModuleConstructor))
+          (
+            isModuleClass && lookupMethod("init___").exists(
+              isElidableModuleConstructor)
+          )
     }
 
     /** UPDATE PASS ONLY. */
@@ -587,13 +589,15 @@ abstract class GenIncOptimizer private[optimizer] (
       } else {
         val allFields = reverseParentChain.flatMap(_.fields)
         val (fieldValues, fieldTypes) =
-          (for {
-            f @ FieldDef(Ident(name, originalName), tpe, mutable) <- allFields
-          } yield {
-            (
-              zeroOf(tpe)(f.pos),
-              RecordType.Field(name, originalName, tpe, mutable))
-          }).unzip
+          (
+            for {
+              f @ FieldDef(Ident(name, originalName), tpe, mutable) <- allFields
+            } yield {
+              (
+                zeroOf(tpe)(f.pos),
+                RecordType.Field(name, originalName, tpe, mutable))
+            }
+          ).unzip
         tryNewInlineable = Some(
           RecordValue(RecordType(fieldTypes), fieldValues)(Position.NoPosition))
       }

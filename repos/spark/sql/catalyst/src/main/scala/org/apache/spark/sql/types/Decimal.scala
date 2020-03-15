@@ -225,10 +225,12 @@ final class Decimal extends Ordered[Decimal] with Serializable {
         val droppedDigits = longVal % POW_10(diff)
         longVal /= POW_10(diff)
         if (math.abs(droppedDigits) * 2 >= POW_10(diff)) {
-          longVal += (if (longVal < 0)
-                        -1L
-                      else
-                        1L)
+          longVal += (
+            if (longVal < 0)
+              -1L
+            else
+              1L
+          )
         }
       } else if (scale > _scale) {
         // We might be able to multiply longVal by a power of 10 and not overflow, but if not,

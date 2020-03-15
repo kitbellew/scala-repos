@@ -25,8 +25,8 @@ trait PrepJSExports { this: PrepJSInterop =>
       jsName: String,
       pos: Position,
       isNamed: Boolean,
-      ignoreInvalid: Boolean
-  ) extends jsInterop.ExportInfo
+      ignoreInvalid: Boolean)
+      extends jsInterop.ExportInfo
 
   /** Generate the exporter for the given DefDef
     *
@@ -135,24 +135,30 @@ trait PrepJSExports { this: PrepJSInterop =>
       if (!hasLegalExportVisibility(sym)) {
         err(
           "You may only export public and protected " +
-            (if (isMod)
-               "objects"
-             else
-               "classes"))
+            (
+              if (isMod)
+                "objects"
+              else
+                "classes"
+            ))
       } else if (sym.isLocalToBlock) {
         err(
           "You may not export a local " +
-            (if (isMod)
-               "object"
-             else
-               "class"))
+            (
+              if (isMod)
+                "object"
+              else
+                "class"
+            ))
       } else if (!sym.owner.hasPackageFlag) {
         err(
           "You may not export a nested " +
-            (if (isMod)
-               "object"
-             else
-               s"class. $createFactoryInOuterClassHint"))
+            (
+              if (isMod)
+                "object"
+              else
+                s"class. $createFactoryInOuterClassHint"
+            ))
       } else if (sym.isAbstractClass) {
         err("You may not export an abstract class")
       } else if (!isMod && !hasAnyNonPrivateCtor) {
@@ -167,10 +173,12 @@ trait PrepJSExports { this: PrepJSInterop =>
           reporter.error(
             exp.pos,
             "You may not use @JSNamedExport on " +
-              (if (isMod)
-                 "an object"
-               else
-                 "a Scala.js-defined JS class"))
+              (
+                if (isMod)
+                  "an object"
+                else
+                  "a Scala.js-defined JS class"
+              ))
         }
 
         jsInterop.registerForExport(sym, normal)
@@ -294,10 +302,12 @@ trait PrepJSExports { this: PrepJSInterop =>
       def isIllegalApplyExport = {
         isMember && !hasExplicitName &&
         sym.name == nme.apply &&
-        !(isExportAll && directAnnots.exists(annot =>
-          annot.symbol == JSExportAnnotation &&
-            annot.args.nonEmpty &&
-            annot.stringArg(0) == Some("apply")))
+        !(
+          isExportAll && directAnnots.exists(annot =>
+            annot.symbol == JSExportAnnotation &&
+              annot.args.nonEmpty &&
+              annot.stringArg(0) == Some("apply"))
+        )
       }
 
       // Don't allow apply without explicit name

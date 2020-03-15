@@ -378,27 +378,28 @@ private[spark] object JettyUtils extends Logging {
       scheme: String): ContextHandler = {
     val redirectHandler: ContextHandler = new ContextHandler
     redirectHandler.setContextPath("/")
-    redirectHandler.setHandler(new AbstractHandler {
-      override def handle(
-          target: String,
-          baseRequest: Request,
-          request: HttpServletRequest,
-          response: HttpServletResponse): Unit = {
-        if (baseRequest.isSecure) {
-          return
+    redirectHandler.setHandler(
+      new AbstractHandler {
+        override def handle(
+            target: String,
+            baseRequest: Request,
+            request: HttpServletRequest,
+            response: HttpServletResponse): Unit = {
+          if (baseRequest.isSecure) {
+            return
+          }
+          val httpsURI = createRedirectURI(
+            scheme,
+            baseRequest.getServerName,
+            securePort,
+            baseRequest.getRequestURI,
+            baseRequest.getQueryString)
+          response.setContentLength(0)
+          response.encodeRedirectURL(httpsURI)
+          response.sendRedirect(httpsURI)
+          baseRequest.setHandled(true)
         }
-        val httpsURI = createRedirectURI(
-          scheme,
-          baseRequest.getServerName,
-          securePort,
-          baseRequest.getRequestURI,
-          baseRequest.getQueryString)
-        response.setContentLength(0)
-        response.encodeRedirectURL(httpsURI)
-        response.sendRedirect(httpsURI)
-        baseRequest.setHandled(true)
-      }
-    })
+      })
     redirectHandler
   }
 

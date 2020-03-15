@@ -32,12 +32,14 @@ final class Env(config: Config, system: ActorSystem) {
   }
 
   if (IndexFlow)
-    system.actorOf(Props(new Actor {
-      context.system.lilaBus.subscribe(self, 'finishGame)
-      def receive = {
-        case lila.game.actorApi.FinishGame(game, _, _) => indexer(game)
-      }
-    }))
+    system.actorOf(
+      Props(
+        new Actor {
+          context.system.lilaBus.subscribe(self, 'finishGame)
+          def receive = {
+            case lila.game.actorApi.FinishGame(game, _, _) => indexer(game)
+          }
+        }))
 }
 
 object Env {

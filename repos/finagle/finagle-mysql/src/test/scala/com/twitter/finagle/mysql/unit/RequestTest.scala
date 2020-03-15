@@ -27,8 +27,9 @@ class SimpleCommandRequestTest extends FunSuite {
 class HandshakeResponseTest extends FunSuite {
   val username = Some("username")
   val password = Some("password")
-  val salt = Array[Byte](70, 38, 43, 66, 74, 48, 79, 126, 76, 66, 70, 118, 67,
-    40, 63, 68, 120, 80, 103, 54)
+  val salt = Array[Byte](
+    70, 38, 43, 66, 74, 48, 79, 126, 76, 66, 70, 118, 67, 40, 63, 68, 120, 80,
+    103, 54)
   val req = HandshakeResponse(
     username,
     password,
@@ -37,8 +38,7 @@ class HandshakeResponseTest extends FunSuite {
     salt,
     Capability(0xf7ff),
     Charset.Utf8_general_ci,
-    16777216
-  )
+    16777216)
   val br = BufferReader(req.toPacket.body)
 
   test("encode capabilities") {
@@ -180,10 +180,12 @@ class ExecuteRequestTest extends FunSuite {
 
     test("Boolean") {
       assert(
-        br.readByte() == (if (boolVal)
-                            1
-                          else
-                            0))
+        br.readByte() == (
+          if (boolVal)
+            1
+          else
+            0
+        ))
     }
 
     test("Byte") {

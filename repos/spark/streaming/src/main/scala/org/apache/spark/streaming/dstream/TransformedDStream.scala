@@ -25,8 +25,8 @@ import org.apache.spark.streaming.{Duration, Time}
 
 private[streaming] class TransformedDStream[U: ClassTag](
     parents: Seq[DStream[_]],
-    transformFunc: (Seq[RDD[_]], Time) => RDD[U]
-) extends DStream[U](parents.head.ssc) {
+    transformFunc: (Seq[RDD[_]], Time) => RDD[U])
+    extends DStream[U](parents.head.ssc) {
 
   require(parents.length > 0, "List of DStreams to transform is empty")
   require(

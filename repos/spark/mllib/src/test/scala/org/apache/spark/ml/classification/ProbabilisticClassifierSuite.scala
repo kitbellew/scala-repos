@@ -71,7 +71,6 @@ object ProbabilisticClassifierSuite {
   val allParamSettings: Map[String, Any] =
     ClassifierSuite.allParamSettings ++ Map(
       "probabilityCol" -> "myProbability",
-      "thresholds" -> Array(0.4, 0.6)
-    )
+      "thresholds" -> Array(0.4, 0.6))
 
 }

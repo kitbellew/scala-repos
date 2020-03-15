@@ -130,8 +130,9 @@ object ScalaBreakpointMethodFilter {
       .flatMap(tb => tb.members ++ tb.exprs)
     membersAndExprs
       .collect {
-        case x @ (_: ScPatternDefinition | _: ScVariableDefinition |
-            _: ScExpression) =>
+        case x @ (
+              _: ScPatternDefinition | _: ScVariableDefinition | _: ScExpression
+            ) =>
           x.asInstanceOf[ScBlockStatement]
       }
       .sortBy(_.getTextOffset)

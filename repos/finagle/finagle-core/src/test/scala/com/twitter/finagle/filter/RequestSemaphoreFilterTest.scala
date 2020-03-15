@@ -12,14 +12,13 @@ import org.scalatest.junit.JUnitRunner
 class RequestSemaphoreFilterTest extends FunSuite {
 
   test("default config drops the queue tail") {
-    val neverFactory = ServiceFactory.const(new Service[Int, Int] {
-      def apply(req: Int) = Future.never
-    })
+    val neverFactory = ServiceFactory.const(
+      new Service[Int, Int] {
+        def apply(req: Int) = Future.never
+      })
 
     val stk: StackBuilder[ServiceFactory[Int, Int]] =
-      new StackBuilder(
-        Stack.Leaf(Stack.Role("never"), neverFactory)
-      )
+      new StackBuilder(Stack.Leaf(Stack.Role("never"), neverFactory))
 
     stk.push(RequestSemaphoreFilter.module[Int, Int])
 

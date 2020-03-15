@@ -21,8 +21,7 @@ private[round] final class Cli(
         $query(
           play.api.libs.json.Json.obj(
             Game.BSONFields.status -> chess.Status.Started.id,
-            Game.BSONFields.clock -> $exists(true)
-          ))) { game =>
+            Game.BSONFields.clock -> $exists(true)))) { game =>
         roundMap ! lila.hub.actorApi.map
           .Tell(game.id, actorApi.round.AbortForMaintenance)
       } inject "done"

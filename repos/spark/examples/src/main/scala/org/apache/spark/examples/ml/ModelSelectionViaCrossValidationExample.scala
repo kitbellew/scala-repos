@@ -99,8 +99,7 @@ object ModelSelectionViaCrossValidationExample {
           (4L, "spark i j k"),
           (5L, "l m n"),
           (6L, "mapreduce spark"),
-          (7L, "apache hadoop")
-        ))
+          (7L, "apache hadoop")))
       .toDF("id", "text")
 
     // Make predictions on test documents. cvModel uses the best model found (lrModel).

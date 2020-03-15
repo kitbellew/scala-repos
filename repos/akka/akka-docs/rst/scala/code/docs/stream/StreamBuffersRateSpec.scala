@@ -50,24 +50,25 @@ class StreamBuffersRateSpec extends AkkaSpec {
     import scala.concurrent.duration._
     case class Tick()
 
-    RunnableGraph.fromGraph(GraphDSL.create() { implicit b =>
-      import GraphDSL.Implicits._
+    RunnableGraph.fromGraph(
+      GraphDSL.create() { implicit b =>
+        import GraphDSL.Implicits._
 
-      val zipper = b.add(ZipWith[Tick, Int, Int]((tick, count) => count))
+        val zipper = b.add(ZipWith[Tick, Int, Int]((tick, count) => count))
 
-      Source.tick(
-        initialDelay = 3.second,
-        interval = 3.second,
-        Tick()) ~> zipper.in0
+        Source.tick(
+          initialDelay = 3.second,
+          interval = 3.second,
+          Tick()) ~> zipper.in0
 
-      Source
-        .tick(initialDelay = 1.second, interval = 1.second, "message!")
-        .conflateWithSeed(seed = (_) => 1)((count, _) =>
-          count + 1) ~> zipper.in1
+        Source
+          .tick(initialDelay = 1.second, interval = 1.second, "message!")
+          .conflateWithSeed(seed = (_) => 1)((count, _) =>
+            count + 1) ~> zipper.in1
 
-      zipper.out ~> Sink.foreach(println)
-      ClosedShape
-    })
+        zipper.out ~> Sink.foreach(println)
+        ClosedShape
+      })
     //#buffering-abstraction-leak
   }
 

@@ -27,21 +27,23 @@ private[phantomjs] final class JettyWebsocketManager(
   private[this] val server = new Server()
 
   server.addConnector(connector)
-  server.setHandler(new WebSocketHandler {
-    // Support Hixie 76 for Phantom.js
-    getWebSocketFactory().setMinVersion(-1)
+  server.setHandler(
+    new WebSocketHandler {
+      // Support Hixie 76 for Phantom.js
+      getWebSocketFactory().setMinVersion(-1)
 
-    override def doWebSocketConnect(
-        request: HttpServletRequest,
-        protocol: String): WebSocket = new ComWebSocketListener
-  })
+      override def doWebSocketConnect(
+          request: HttpServletRequest,
+          protocol: String): WebSocket = new ComWebSocketListener
+    })
 
-  server.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener {
-    override def lifeCycleStarted(event: LifeCycle): Unit = {
-      if (event.isRunning())
-        wsListener.onRunning()
-    }
-  })
+  server.addLifeCycleListener(
+    new AbstractLifeCycle.AbstractLifeCycleListener {
+      override def lifeCycleStarted(event: LifeCycle): Unit = {
+        if (event.isRunning())
+          wsListener.onRunning()
+      }
+    })
 
   private class ComWebSocketListener extends WebSocket.OnTextMessage {
     override def onOpen(connection: WebSocket.Connection): Unit = {

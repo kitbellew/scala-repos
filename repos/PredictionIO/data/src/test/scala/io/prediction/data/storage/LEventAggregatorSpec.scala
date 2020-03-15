@@ -30,10 +30,7 @@ class LEventAggregatorSpec extends Specification with TestEvents {
       val result: Map[String, DataMap] = LEventAggregator.aggregateProperties(
         events.toIterator)
 
-      val expected = Map(
-        "u1" -> DataMap(u1),
-        "u2" -> DataMap(u2)
-      )
+      val expected = Map("u1" -> DataMap(u1), "u2" -> DataMap(u2))
 
       result must beEqualTo(expected)
     }
@@ -45,8 +42,7 @@ class LEventAggregatorSpec extends Specification with TestEvents {
 
       val expected = Map(
         "u1" -> PropertyMap(u1, u1BaseTime, u1LastTime),
-        "u2" -> PropertyMap(u2, u2BaseTime, u2LastTime)
-      )
+        "u2" -> PropertyMap(u2, u2BaseTime, u2LastTime))
 
       result must beEqualTo(expected)
     }
@@ -55,9 +51,7 @@ class LEventAggregatorSpec extends Specification with TestEvents {
       val events = Vector(u1e5, u2e2, u1e3, u1ed, u1e1, u2e3, u2e1, u1e4, u1e2)
 
       val result = LEventAggregator.aggregateProperties(events.toIterator)
-      val expected = Map(
-        "u2" -> PropertyMap(u2, u2BaseTime, u2LastTime)
-      )
+      val expected = Map("u2" -> PropertyMap(u2, u2BaseTime, u2LastTime))
 
       result must beEqualTo(expected)
     }

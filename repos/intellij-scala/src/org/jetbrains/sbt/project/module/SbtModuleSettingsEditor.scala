@@ -45,13 +45,14 @@ class SbtModuleSettingsEditor(state: ModuleConfigurationState)
       SbtBundle("sbt.settings.noImplicitImportsFound"))
     JListCompatibility.setModel(myForm.sbtImportsList, modelWrapper.getModelRaw)
 
-    myForm.updateButton.addActionListener(new ActionListener {
-      override def actionPerformed(e: ActionEvent): Unit = {
-        val resolversToUpdate: Seq[SbtResolver] =
-          myForm.resolversTable.getSelectedRows map (resolvers(_))
-        SbtResolverIndexesManager().update(resolversToUpdate)
-      }
-    })
+    myForm.updateButton.addActionListener(
+      new ActionListener {
+        override def actionPerformed(e: ActionEvent): Unit = {
+          val resolversToUpdate: Seq[SbtResolver] =
+            myForm.resolversTable.getSelectedRows map (resolvers(_))
+          SbtResolverIndexesManager().update(resolversToUpdate)
+        }
+      })
 
     myForm.mainPanel
   }
@@ -82,8 +83,7 @@ private class ResolversModel(val resolvers: Seq[SbtResolver])
   private val columns = Seq(
     SbtBundle("sbt.settings.resolvers.name"),
     SbtBundle("sbt.settings.resolvers.url"),
-    SbtBundle("sbt.settings.resolvers.updated")
-  )
+    SbtBundle("sbt.settings.resolvers.updated"))
 
   def getColumnCount = columns.size
 

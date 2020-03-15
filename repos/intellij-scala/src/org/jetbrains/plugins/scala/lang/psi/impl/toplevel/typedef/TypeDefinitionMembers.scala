@@ -289,11 +289,12 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for ((sign, _) <- cp.signatureMap) {
-        if (sign.paramLength.sum == 0 && (ScalaPsiUtil.nameContext(
-              sign.namedElement) match {
-              case m: PsiMember => nonBridge(place, m)
-              case _            => false
-            })) {
+        if (sign.paramLength.sum == 0 && (
+              ScalaPsiUtil.nameContext(sign.namedElement) match {
+                case m: PsiMember => nonBridge(place, m)
+                case _            => false
+              }
+            )) {
           map addToMap (sign, new Node(sign, sign.substitutor))
         }
       }
@@ -896,14 +897,16 @@ object TypeDefinitionMembers {
         ))
       return false
 
-    if (!(types.AnyRef
-          .asClass(clazz.getProject)
-          .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
+    if (!(
+          types.AnyRef
             .asClass(clazz.getProject)
             .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
+            .processDeclarations(processor, state, lastParent, place) &&
+            types.Any
+              .asClass(clazz.getProject)
+              .getOrElse(return true)
+              .processDeclarations(processor, state, lastParent, place)
+        ))
       return false
 
     if (shouldProcessMethods(processor) && !processEnum(
@@ -932,14 +935,16 @@ object TypeDefinitionMembers {
         ))
       return false
 
-    if (!(types.AnyRef
-          .asClass(td.getProject)
-          .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
+    if (!(
+          types.AnyRef
             .asClass(td.getProject)
             .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
+            .processDeclarations(processor, state, lastParent, place) &&
+            types.Any
+              .asClass(td.getProject)
+              .getOrElse(return true)
+              .processDeclarations(processor, state, lastParent, place)
+        ))
       return false
     true
   }
@@ -972,14 +977,16 @@ object TypeDefinitionMembers {
         place.getProject
       else
         return true
-    if (!(types.AnyRef
-          .asClass(project)
-          .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
+    if (!(
+          types.AnyRef
             .asClass(project)
             .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
+            .processDeclarations(processor, state, lastParent, place) &&
+            types.Any
+              .asClass(project)
+              .getOrElse(return true)
+              .processDeclarations(processor, state, lastParent, place)
+        ))
       return false
 
     true
@@ -1066,8 +1073,9 @@ object TypeDefinitionMembers {
           elem match {
             case p: ScClassParameter
                 if processValsForScala && !p.isVar && !p.isVal &&
-                  (checkName(p.name) || checkNameGetSetIs(
-                    p.name)) && isScalaProcessor =>
+                  (
+                    checkName(p.name) || checkNameGetSetIs(p.name)
+                  ) && isScalaProcessor =>
               val clazz = PsiTreeUtil.getContextOfType(
                 p,
                 true,

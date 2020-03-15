@@ -64,8 +64,9 @@ private[plugin] class PluginManagerImpl(
           .find(_.getClass.getName == definition.implementation)
           .map(plugin =>
             PluginReference(configure(plugin, definition), definition))
-          .getOrElse(throw new WrongConfigurationException(
-            s"Plugin not found: $definition"))
+          .getOrElse(
+            throw new WrongConfigurationException(
+              s"Plugin not found: $definition"))
       }
     log.info(s"Found ${plugins.size} plugins.")
     PluginHolder(ct, plugins)

@@ -235,8 +235,7 @@ trait IndicesModule[M[+_]]
       private[table] val vals: mutable.Map[Int, mutable.Set[RValue]],
       private[table] val dict: mutable.Map[(Int, RValue), ArrayIntList],
       private[table] val keyset: mutable.Set[Seq[RValue]],
-      private[table] val valueSlice: Slice
-  ) { self =>
+      private[table] val valueSlice: Slice) { self =>
 
     // TODO: We're currently maintaining a *lot* of indices. Once we
     // find the patterns of use, it'd be nice to reduce the amount of
@@ -344,8 +343,7 @@ trait IndicesModule[M[+_]]
         new Slice {
           def size = 0
           def columns = Map.empty[ColumnRef, Column]
-        }
-      )
+        })
 
     /**
       * Creates a SliceIndex instance given an underlying table, a

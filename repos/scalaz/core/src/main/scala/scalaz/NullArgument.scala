@@ -87,10 +87,11 @@ object NullArgument extends NullArgumentInstances {
   def zero[A, B](implicit M: Monoid[B]): A ?=> B = always(M.zero)
 
   def pair[A, B](f: A => B, b: => B): A ?=> B =
-    NullArgument((_: Option[A]) match {
-      case None    => b
-      case Some(a) => f(a)
-    })
+    NullArgument(
+      (_: Option[A]) match {
+        case None    => b
+        case Some(a) => f(a)
+      })
 
   def cokleisli[A, B](c: Cokleisli[Option, A, B]): A ?=> B = NullArgument(c.run)
 }

@@ -12,9 +12,10 @@ trait Evals {
   private lazy val evalToolBox = evalMirror.mkToolBox()
   private lazy val evalImporter = ru.internal
     .createImporter(universe)
-    .asInstanceOf[ru.Importer {
-      val from: universe.type
-    }]
+    .asInstanceOf[
+      ru.Importer {
+        val from: universe.type
+      }]
 
   def eval[T](expr: Expr[T]): T = {
     expr.tree match {

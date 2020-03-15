@@ -20,9 +20,10 @@ object FreeTListOption {
 
       def bind[A, B](fa: FreeTListOption[A])(
           f: A => FreeTListOption[B]): FreeTListOption[B] =
-        FreeTListOption(Monad[FreeT[List, Option, ?]].bind(fa.f) { a =>
-          f(a).f
-        })
+        FreeTListOption(
+          Monad[FreeT[List, Option, ?]].bind(fa.f) { a =>
+            f(a).f
+          })
 
       def tailrecM[A, B](f: A => FreeTListOption[A \/ B])(
           a: A): FreeTListOption[B] =
@@ -53,8 +54,7 @@ object FreeTListOption {
         .freeTGen[List, Option, A](
           Gen
             .choose(0, 2)
-            .flatMap(Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f)))
-        )
+            .flatMap(Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f))))
         .map(FreeTListOption.apply))
 
   implicit def freeTListOptionEq[A](
@@ -137,9 +137,8 @@ object FreeTTest extends SpecLite {
 
   object instances {
     def bind[S[_]: Functor, F[_]: Applicative] = Bind[FreeT[S, F, ?]]
-    def foldable[
-        S[_]: Foldable: Functor,
-        F[_]: Foldable: Applicative: BindRec] = Foldable[FreeT[S, F, ?]]
+    def foldable[S[_]: Foldable: Functor, F[
+        _]: Foldable: Applicative: BindRec] = Foldable[FreeT[S, F, ?]]
     def traverse[S[_]: Traverse, F[_]: Traverse: Applicative: BindRec] =
       Traverse[FreeT[S, F, ?]]
     def monad[S[_]: Functor, F[_]: Applicative] = Monad[FreeT[S, F, ?]]

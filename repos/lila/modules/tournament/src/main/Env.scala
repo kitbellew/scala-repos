@@ -97,40 +97,35 @@ final class Env(
       leaderboardColl = leaderboardColl)
 
   private val socketHub = system.actorOf(
-    Props(new lila.socket.SocketHubActor.Default[Socket] {
-      def mkActor(tournamentId: String) =
-        new Socket(
-          tournamentId = tournamentId,
-          history = new History(ttl = HistoryMessageTtl),
-          jsonView = jsonView,
-          uidTimeout = UidTimeout,
-          socketTimeout = SocketTimeout,
-          lightUser = lightUser)
-    }),
+    Props(
+      new lila.socket.SocketHubActor.Default[Socket] {
+        def mkActor(tournamentId: String) =
+          new Socket(
+            tournamentId = tournamentId,
+            history = new History(ttl = HistoryMessageTtl),
+            jsonView = jsonView,
+            uidTimeout = UidTimeout,
+            socketTimeout = SocketTimeout,
+            lightUser = lightUser)
+      }),
     name = SocketName
   )
 
-  private val sequencerMap = system.actorOf(Props(ActorMap { id =>
-    new Sequencer(
-      receiveTimeout = SequencerTimeout.some,
-      executionTimeout = 5.seconds.some,
-      logger = logger)
-  }))
+  private val sequencerMap = system.actorOf(
+    Props(
+      ActorMap { id =>
+        new Sequencer(
+          receiveTimeout = SequencerTimeout.some,
+          executionTimeout = 5.seconds.some,
+          logger = logger)
+      }))
 
   system.actorOf(Props(new ApiActor(api = api)), name = ApiActorName)
 
-  system.actorOf(
-    Props(
-      new CreatedOrganizer(
-        api = api,
-        isOnline = isOnline
-      )))
+  system.actorOf(Props(new CreatedOrganizer(api = api, isOnline = isOnline)))
 
   private val reminder = system.actorOf(
-    Props(
-      new Reminder(
-        renderer = hub.actor.renderer
-      )))
+    Props(new Reminder(renderer = hub.actor.renderer)))
 
   system.actorOf(
     Props(
@@ -138,8 +133,7 @@ final class Env(
         api = api,
         reminder = reminder,
         isOnline = isOnline,
-        socketHub = socketHub
-      )))
+        socketHub = socketHub)))
 
   system.actorOf(Props(new Scheduler(api)))
 

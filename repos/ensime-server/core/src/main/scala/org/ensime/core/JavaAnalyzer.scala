@@ -15,8 +15,8 @@ class JavaAnalyzer(
     indexer: ActorRef,
     search: SearchService,
     implicit val config: EnsimeConfig,
-    implicit val vfs: EnsimeVFS
-) extends Actor
+    implicit val vfs: EnsimeVFS)
+    extends Actor
     with Stash
     with ActorLogging {
 
@@ -40,8 +40,7 @@ class JavaAnalyzer(
       },
       indexer,
       search,
-      vfs
-    )
+      vfs)
 
     // JavaAnalyzer is always 'ready', but legacy clients expect to see
     // AnalyzerReady
@@ -94,12 +93,9 @@ class JavaAnalyzer(
 
 }
 object JavaAnalyzer {
-  def apply(
-      broadcaster: ActorRef,
-      indexer: ActorRef,
-      search: SearchService
-  )(implicit
+  def apply(broadcaster: ActorRef, indexer: ActorRef, search: SearchService)(
+      implicit
       config: EnsimeConfig,
-      vfs: EnsimeVFS
-  ) = Props(new JavaAnalyzer(broadcaster, indexer, search, config, vfs))
+      vfs: EnsimeVFS) =
+    Props(new JavaAnalyzer(broadcaster, indexer, search, config, vfs))
 }

@@ -45,15 +45,13 @@ trait IndexControllerBase extends ControllerBase {
   val signinForm =
     mapping(
       "userName" -> trim(label("Username", text(required))),
-      "password" -> trim(label("Password", text(required)))
-    )(SignInForm.apply)
+      "password" -> trim(label("Password", text(required))))(SignInForm.apply)
 
   val searchForm =
     mapping(
       "query" -> trim(text(required)),
       "owner" -> trim(text(required)),
-      "repository" -> trim(text(required))
-    )(SearchForm.apply)
+      "repository" -> trim(text(required)))(SearchForm.apply)
 
   case class SearchForm(query: String, owner: String, repository: String)
 
@@ -142,23 +140,24 @@ trait IndexControllerBase extends ControllerBase {
   /**
     * JSON API for collaborator completion.
     */
-  get("/_user/proposals")(usersOnly {
-    contentType = formats("json")
-    org.json4s.jackson.Serialization.write(
-      Map(
-        "options" -> getAllUsers(false)
-          .filter(!_.isGroupAccount)
-          .map(_.userName)
-          .toArray)
-    )
-  })
+  get("/_user/proposals")(
+    usersOnly {
+      contentType = formats("json")
+      org.json4s.jackson.Serialization.write(
+        Map(
+          "options" -> getAllUsers(false)
+            .filter(!_.isGroupAccount)
+            .map(_.userName)
+            .toArray))
+    })
 
   /**
     * JSON API for checking user existence.
     */
-  post("/_user/existence")(usersOnly {
-    getAccountByUserName(params("userName")).isDefined
-  })
+  post("/_user/existence")(
+    usersOnly {
+      getAccountByUserName(params("userName")).isDefined
+    })
 
   // TODO Move to RepositoryViwerController?
   post("/search", searchForm) { form =>
@@ -167,37 +166,38 @@ trait IndexControllerBase extends ControllerBase {
   }
 
   // TODO Move to RepositoryViwerController?
-  get("/:owner/:repository/search")(referrersOnly { repository =>
-    defining(params("q").trim, params.getOrElse("type", "code")) {
-      case (query, target) =>
-        val page =
-          try {
-            val i = params.getOrElse("page", "1").toInt
-            if (i <= 0)
-              1
-            else
-              i
-          } catch {
-            case e: NumberFormatException => 1
+  get("/:owner/:repository/search")(
+    referrersOnly { repository =>
+      defining(params("q").trim, params.getOrElse("type", "code")) {
+        case (query, target) =>
+          val page =
+            try {
+              val i = params.getOrElse("page", "1").toInt
+              if (i <= 0)
+                1
+              else
+                i
+            } catch {
+              case e: NumberFormatException => 1
+            }
+
+          target.toLowerCase match {
+            case "issue" =>
+              gitbucket.core.search.html.issues(
+                searchIssues(repository.owner, repository.name, query),
+                countFiles(repository.owner, repository.name, query),
+                query,
+                page,
+                repository)
+
+            case _ =>
+              gitbucket.core.search.html.code(
+                searchFiles(repository.owner, repository.name, query),
+                countIssues(repository.owner, repository.name, query),
+                query,
+                page,
+                repository)
           }
-
-        target.toLowerCase match {
-          case "issue" =>
-            gitbucket.core.search.html.issues(
-              searchIssues(repository.owner, repository.name, query),
-              countFiles(repository.owner, repository.name, query),
-              query,
-              page,
-              repository)
-
-          case _ =>
-            gitbucket.core.search.html.code(
-              searchFiles(repository.owner, repository.name, query),
-              countIssues(repository.owner, repository.name, query),
-              query,
-              page,
-              repository)
-        }
-    }
-  })
+      }
+    })
 }

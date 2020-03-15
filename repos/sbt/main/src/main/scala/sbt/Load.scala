@@ -168,8 +168,8 @@ object Load {
         const(Nil)
       else
         buildGlobalSettings(globalBase, files, config)
-    config.copy(injectSettings = config.injectSettings.copy(projectLoaded =
-      compiled))
+    config.copy(injectSettings = config.injectSettings
+      .copy(projectLoaded = compiled))
   }
   def buildGlobalSettings(
       base: File,
@@ -377,8 +377,10 @@ object Load {
       loaded: sbt.LoadedBuild,
       rootProject: URI => String,
       injectSettings: InjectSettings): Seq[Setting[_]] = {
-    ((loadedBuild in GlobalScope :== loaded) +:
-      transformProjectOnly(loaded.root, rootProject, injectSettings.global)) ++
+    (
+      (loadedBuild in GlobalScope :== loaded) +:
+        transformProjectOnly(loaded.root, rootProject, injectSettings.global)
+    ) ++
       inScope(GlobalScope)(
         pluginGlobalSettings(loaded) ++ loaded.autos.globalSettings) ++
       loaded.units.toSeq.flatMap {
@@ -394,8 +396,9 @@ object Load {
               val defineConfig: Seq[Setting[_]] =
                 for (c <- project.configurations)
                   yield ((configuration in (ref, ConfigKey(c.name))) :== c)
-              val builtin: Seq[Setting[_]] =
-                (thisProject :== project) +: (thisProjectRef :== ref) +: defineConfig
+              val builtin: Seq[Setting[_]] = (thisProject :== project) +: (
+                thisProjectRef :== ref
+              ) +: defineConfig
               val settings =
                 builtin ++ project.settings ++ injectSettings.project
               // map This to thisScope, Select(p) to mapRef(uri, rootProject, p)
@@ -407,7 +410,9 @@ object Load {
             buildScope,
             uri,
             rootProject,
-            pluginNotThis ++ pluginBuildSettings ++ (buildBase +: build.buildSettings))
+            pluginNotThis ++ pluginBuildSettings ++ (
+              buildBase +: build.buildSettings
+            ))
           buildSettings ++ projectSettings
       }
   }
@@ -1257,7 +1262,9 @@ object Load {
             Some(update.value),
             opts)
         },
-        onLoadMessage := ("Loading project definition from " + baseDirectory.value)
+        onLoadMessage := (
+          "Loading project definition from " + baseDirectory.value
+        )
       ))
   private[this] def removeEntries(
       cp: Seq[Attributed[File]],
@@ -1272,14 +1279,14 @@ object Load {
       config: sbt.LoadBuildConfiguration): sbt.LoadBuildConfiguration =
     config.copy(injectSettings = config.injectSettings.copy(
       global = autoPluginSettings ++ config.injectSettings.global,
-      project = config.pluginManagement.inject ++ config.injectSettings.project
-    ))
+      project =
+        config.pluginManagement.inject ++ config.injectSettings.project))
   def activateGlobalPlugin(
       config: sbt.LoadBuildConfiguration): sbt.LoadBuildConfiguration =
     config.globalPlugin match {
       case Some(gp) =>
-        config.copy(injectSettings = config.injectSettings.copy(project =
-          gp.inject))
+        config.copy(injectSettings = config.injectSettings
+          .copy(project = gp.inject))
       case None => config
     }
   def plugins(

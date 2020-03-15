@@ -17,15 +17,16 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   */
 class ScalaJVMNameMapper extends NameMapper {
   def getQualifiedName(@NotNull clazz: PsiClass): String = {
-    ApplicationManager.getApplication.runReadAction(new Computable[String] {
-      def compute: String = {
-        clazz match {
-          case obj: ScObject                  => obj.qualifiedName + "$"
-          case tr: ScTrait                    => tr.qualifiedName
-          case templDef: ScTemplateDefinition => templDef.qualifiedName
-          case psiClass                       => null
+    ApplicationManager.getApplication.runReadAction(
+      new Computable[String] {
+        def compute: String = {
+          clazz match {
+            case obj: ScObject                  => obj.qualifiedName + "$"
+            case tr: ScTrait                    => tr.qualifiedName
+            case templDef: ScTemplateDefinition => templDef.qualifiedName
+            case psiClass                       => null
+          }
         }
-      }
-    })
+      })
   }
 }

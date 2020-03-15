@@ -67,9 +67,8 @@ trait AssignClusterModule[M[+_]]
             val rowIdentities = Model.createRowIdentities(schema)
 
             val rowModels: Int => Set[Model] = {
-              val modelTuples: Map[
-                ModelId,
-                Set[(ModelId, ClusterId, CPath, DoubleColumn)]] = {
+              val modelTuples: Map[ModelId, Set[
+                (ModelId, ClusterId, CPath, DoubleColumn)]] = {
                 schema.columnRefs.flatMap {
                   case ref @ ColumnRef(
                         CPath(
@@ -358,9 +357,10 @@ trait AssignClusterModule[M[+_]]
             }
             val tables: M[Seq[Table]] = (tables0.toList).sequence
 
-            tables.map(_.reduceOption {
-              _ concat _
-            } getOrElse Table.empty)
+            tables.map(
+              _.reduceOption {
+                _ concat _
+              } getOrElse Table.empty)
           }
         }
     }

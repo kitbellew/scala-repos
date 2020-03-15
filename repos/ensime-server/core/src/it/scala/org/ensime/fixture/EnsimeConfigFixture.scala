@@ -43,8 +43,7 @@ object EnsimeConfigFixture {
   if (!dotEnsime.exists) {
     System.err.println(
       "The .ensime file must exist to run the integration tests." +
-        " Type 'sbt gen-ensime' to create it"
-    )
+        " Type 'sbt gen-ensime' to create it")
     System.err.flush()
     sys.exit(1)
   }
@@ -58,36 +57,28 @@ object EnsimeConfigFixture {
   lazy val EmptyTestProject: EnsimeConfig = EnsimeTestProject.copy(
     subprojects = EnsimeTestProject.subprojects.filter(
       _.name == "testingEmpty"),
-    javaLibs = Nil
-  )
-  lazy val SimpleTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(
-      _.name == "testingSimple")
-  )
+    javaLibs = Nil)
+  lazy val SimpleTestProject: EnsimeConfig = EnsimeTestProject
+    .copy(subprojects = EnsimeTestProject.subprojects.filter(
+      _.name == "testingSimple"))
   lazy val SimpleJarTestProject: EnsimeConfig = EnsimeTestProject.copy(
     subprojects = EnsimeTestProject.subprojects.filter(
       _.name == "testingSimpleJar"),
-    javaLibs = Nil
-  )
+    javaLibs = Nil)
   lazy val ImplicitsTestProject: EnsimeConfig = EnsimeTestProject.copy(
     subprojects = EnsimeTestProject.subprojects.filter(
       _.name == "testingImplicits"),
-    javaLibs = Nil
-  )
+    javaLibs = Nil)
   lazy val TimingTestProject: EnsimeConfig = EnsimeTestProject.copy(
     subprojects = EnsimeTestProject.subprojects.filter(
       _.name == "testingTiming"),
-    javaLibs = Nil
-  )
-  lazy val DebugTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(_.name == "testingDebug")
-  )
-  lazy val DocsTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(_.name == "testingDocs")
-  )
-  lazy val JavaTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects = EnsimeTestProject.subprojects.filter(_.name == "testingJava")
-  )
+    javaLibs = Nil)
+  lazy val DebugTestProject: EnsimeConfig = EnsimeTestProject.copy(subprojects =
+    EnsimeTestProject.subprojects.filter(_.name == "testingDebug"))
+  lazy val DocsTestProject: EnsimeConfig = EnsimeTestProject.copy(subprojects =
+    EnsimeTestProject.subprojects.filter(_.name == "testingDocs"))
+  lazy val JavaTestProject: EnsimeConfig = EnsimeTestProject.copy(subprojects =
+    EnsimeTestProject.subprojects.filter(_.name == "testingJava"))
 
   // generates an empty single module project in a temporary directory
   // and returns the config, containing many of the same settings
@@ -96,14 +87,11 @@ object EnsimeConfigFixture {
   def cloneForTesting(
       source: EnsimeConfig,
       target: File,
-      copyTargets: Boolean
-  ): EnsimeConfig = {
+      copyTargets: Boolean): EnsimeConfig = {
 
     def rename(from: File): File = {
-      val toPath = from.getAbsolutePath.replace(
-        source.root.getAbsolutePath,
-        target.getAbsolutePath
-      )
+      val toPath = from.getAbsolutePath
+        .replace(source.root.getAbsolutePath, target.getAbsolutePath)
       require(
         toPath != from.getAbsolutePath,
         s"${source.root.getAbsolutePath} ${target.getAbsolutePath} in ${from.getAbsolutePath}")
@@ -142,8 +130,7 @@ object EnsimeConfigFixture {
       source.copy(
         rootDir = rename(source.rootDir),
         cacheDir = cacheDir,
-        subprojects = source.subprojects.map(cloneModule)
-      ))
+        subprojects = source.subprojects.map(cloneModule)))
 
     // HACK: we must force OS line endings on sources or the tests
     // (which have fixed points within the file) will fail on Windows

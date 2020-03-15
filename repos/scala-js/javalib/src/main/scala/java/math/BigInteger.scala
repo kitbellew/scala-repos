@@ -241,7 +241,9 @@ class BigInteger extends Number with Comparable[BigInteger] {
   def this(s: String, radix: Int) = {
     this()
     checkNotNull(s)
-    if ((radix < java.lang.Character.MIN_RADIX) || (radix > java.lang.Character.MAX_RADIX))
+    if ((
+          radix < java.lang.Character.MIN_RADIX
+        ) || (radix > java.lang.Character.MAX_RADIX))
       throw new NumberFormatException("Radix out of range")
     if (s.isEmpty)
       throw new NumberFormatException("Zero length BigInteger")
@@ -909,10 +911,12 @@ class BigInteger extends Number with Comparable[BigInteger] {
   private def putBytesNegativeToIntegers(byteValues: Array[Byte]): Unit = {
     var bytesLen = byteValues.length
     val highBytes = bytesLen & 3
-    numberLength = (bytesLen >> 2) + (if (highBytes == 0)
-                                        0
-                                      else
-                                        1)
+    numberLength = (bytesLen >> 2) + (
+      if (highBytes == 0)
+        0
+      else
+        1
+    )
     digits = new Array[Int](numberLength)
     var i = 0
     // Setting the sign
@@ -970,10 +974,12 @@ class BigInteger extends Number with Comparable[BigInteger] {
   private def putBytesPositiveToIntegers(byteValues: Array[Byte]): Unit = {
     var bytesLen = byteValues.length
     val highBytes = bytesLen & 3
-    numberLength = (bytesLen >> 2) + (if (highBytes == 0)
-                                        0
-                                      else
-                                        1)
+    numberLength = (bytesLen >> 2) + (
+      if (highBytes == 0)
+        0
+      else
+        1
+    )
     digits = new Array[Int](numberLength)
 
     // Put bytes to the int array starting from the end of the byte array
@@ -1032,10 +1038,12 @@ class BigInteger extends Number with Comparable[BigInteger] {
     val _digits = new Array[Int](bigRadixDigitsLength)
     val bigRadix = Conversion.BigRadices(radix - 2)
     var digitIndex = 0
-    var substrEnd = startChar + (if (topChars == 0)
-                                   charsPerInt
-                                 else
-                                   topChars)
+    var substrEnd = startChar + (
+      if (topChars == 0)
+        charsPerInt
+      else
+        topChars
+    )
     var newDigit: Int = 0
     var substrStart = startChar
     while (substrStart < endChar) {

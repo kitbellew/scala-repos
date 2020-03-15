@@ -62,9 +62,9 @@ trait Enumeratee2TFunctions {
                     for {
                       _ <- head[J, IterateeM]
                       a <- iterateeT[J, IterateeM, StepM[A]](
-                        advance(left, rbuf, scont(contf)) >>== (step(
-                          _,
-                          rbuf).value))
+                        advance(left, rbuf, scont(contf)) >>== (
+                          step(_, rbuf).value
+                        ))
                     } yield a
 
                   case (Some(left), Some(right)) =>
@@ -111,9 +111,10 @@ trait Enumeratee2TFunctions {
           step.fold(
             cont = contf =>
               scont { in: Input[Either3[J, (J, K), K]] =>
-                val nextInput = in.flatMap(_.middleOr(emptyInput[(J, K)]) {
-                  elInput(_)
-                })
+                val nextInput = in.flatMap(
+                  _.middleOr(emptyInput[(J, K)]) {
+                    elInput(_)
+                  })
 
                 contf(nextInput) >>== (s => cstep(s).pointI)
               },

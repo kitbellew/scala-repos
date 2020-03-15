@@ -60,8 +60,7 @@ class RadialGradientSpec
       radius = 0,
       proportional = true,
       cycleMethod = CycleMethod.NoCycle,
-      stops = Nil
-    )
+      stops = Nil)
     assert(radialGradient === expected)
   }
 
@@ -75,11 +74,7 @@ class RadialGradientSpec
         0,
         true,
         jfxsp.CycleMethod.NO_CYCLE,
-        List(
-          new jfxsp.Stop(0, Color.White),
-          new jfxsp.Stop(0, Color.Black)
-        )
-      )
+        List(new jfxsp.Stop(0, Color.White), new jfxsp.Stop(0, Color.Black)))
     val radialGradient = RadialGradient(
       focusAngle = 0,
       focusDistance = 0,
@@ -89,8 +84,7 @@ class RadialGradientSpec
       proportional = true,
       cycleMethod = CycleMethod.NoCycle,
       Stop(0, Color.White),
-      Stop(0, Color.Black)
-    )
+      Stop(0, Color.Black))
     assert(radialGradient === expected)
   }
 }

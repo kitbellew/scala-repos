@@ -196,13 +196,11 @@ object JsonLoader extends App with AkkaDefaults {
     new blueeyes.bkka.FutureMonad(defaultFutureDispatch)
 
   def usage() {
-    println(
-      """
+    println("""
 Usage:
 
   command {host} {API key} {json data file}
-"""
-    )
+""")
   }
 
   val client = new HttpClientXLightWeb

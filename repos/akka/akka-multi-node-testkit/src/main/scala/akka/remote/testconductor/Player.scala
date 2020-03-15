@@ -80,7 +80,9 @@ trait Player { this: TestConductorExt ⇒
               waiting = sender();
               fsm ! SubscribeTransitionCallBack(self)
             case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
-                if (f == Connecting && t == AwaitDone) ⇒ // step 1, not there yet // // SI-5900 workaround
+                if (
+                  f == Connecting && t == AwaitDone
+                ) ⇒ // step 1, not there yet // // SI-5900 workaround
             case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
                 if (f == AwaitDone && t == Connected) ⇒ // SI-5900 workaround
               waiting ! Done;
@@ -261,8 +263,9 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
             case Some((barrier, requester)) ⇒
               val response =
                 if (b != barrier)
-                  Status.Failure(new RuntimeException(
-                    "wrong barrier " + b + " received while waiting for " + barrier))
+                  Status.Failure(
+                    new RuntimeException(
+                      "wrong barrier " + b + " received while waiting for " + barrier))
                 else if (!success)
                   Status.Failure(new RuntimeException("barrier failed: " + b))
                 else
@@ -410,9 +413,11 @@ private[akka] class PlayerHandler(
     val channel = event.getChannel
     log.debug("disconnected from {}", getAddrString(channel))
     fsm ! PoisonPill
-    executor.execute(new Runnable {
-      def run = RemoteConnection.shutdown(channel)
-    }) // Must be shutdown outside of the Netty IO pool
+    executor.execute(
+      new Runnable {
+        def run = RemoteConnection.shutdown(channel)
+      }
+    ) // Must be shutdown outside of the Netty IO pool
   }
 
   override def messageReceived(

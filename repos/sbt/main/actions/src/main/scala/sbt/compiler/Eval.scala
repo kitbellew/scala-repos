@@ -316,9 +316,12 @@ final class Eval(
         List(Nil),
         TypeTree(),
         Block(
-          List(Apply(
-            Select(Super(This(emptyTypeName), emptyTypeName), nme.CONSTRUCTOR),
-            Nil)),
+          List(
+            Apply(
+              Select(
+                Super(This(emptyTypeName), emptyTypeName),
+                nme.CONSTRUCTOR),
+              Nil)),
           Literal(Constant(())))
       )
 
@@ -417,16 +420,14 @@ final class Eval(
         "  Ensure that there are no blank lines within a definition.",
       missingBlank = "  Ensure that definitions are separated by blank lines.",
       extraSemi =
-        "  A trailing semicolon is not permitted for standalone definitions."
-    )
+        "  A trailing semicolon is not permitted for standalone definitions.")
   private[this] def settingErrorStrings =
     new ParseErrorStrings(
       base = "Error parsing expression.",
       extraBlank = "  Ensure that there are no blank lines within a setting.",
       missingBlank = "  Ensure that settings are separated by blank lines.",
       extraSemi =
-        "  Note that settings are expressions and do not end with semicolons.  (Semicolons are fine within {} blocks, however.)"
-    )
+        "  Note that settings are expressions and do not end with semicolons.  (Semicolons are fine within {} blocks, however.)")
 
   /**
     * Parses the provided compilation `unit` according to `f` and then performs checks on the final parser state
@@ -616,10 +617,12 @@ private[sbt] object Eval {
     else
       seqBytes(fs)(fileModifiedBytes)
   def fileModifiedBytes(f: File): Array[Byte] =
-    (if (f.isDirectory)
-       filesModifiedBytes(f listFiles classDirFilter)
-     else
-       bytes(f.lastModified)) ++
+    (
+      if (f.isDirectory)
+        filesModifiedBytes(f listFiles classDirFilter)
+      else
+        bytes(f.lastModified)
+    ) ++
       bytes(f.getAbsolutePath)
   def fileExistsBytes(f: File): Array[Byte] =
     bytes(f.exists) ++

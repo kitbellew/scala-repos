@@ -231,8 +231,9 @@ private[streaming] class ReceiverSchedulingPolicy {
         scheduledLocations
           .filter(_.isInstanceOf[ExecutorCacheTaskLocation])
           .map { location =>
-            location.asInstanceOf[
-              ExecutorCacheTaskLocation] -> (1.0 / scheduledLocations.size)
+            location.asInstanceOf[ExecutorCacheTaskLocation] -> (
+              1.0 / scheduledLocations.size
+            )
           }
       case ReceiverState.ACTIVE =>
         Seq(receiverTrackingInfo.runningExecutor.get -> 1.0)

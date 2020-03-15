@@ -306,14 +306,16 @@ object Tests {
     val tasks = runnables.map {
       case (name, test) => toTask(loader, name, test, tags)
     }
-    tasks.join.map(_.foldLeft(Map.empty[String, SuiteResult]) {
-      case (sum, e) =>
-        val merged = sum.toSeq ++ e.toSeq
-        val grouped = merged.groupBy(_._1)
-        grouped.mapValues(_.map(_._2).foldLeft(SuiteResult.Empty) {
-          case (resultSum, result) => resultSum + result
-        })
-    })
+    tasks.join.map(
+      _.foldLeft(Map.empty[String, SuiteResult]) {
+        case (sum, e) =>
+          val merged = sum.toSeq ++ e.toSeq
+          val grouped = merged.groupBy(_._1)
+          grouped.mapValues(
+            _.map(_._2).foldLeft(SuiteResult.Empty) {
+              case (resultSum, result) => resultSum + result
+            })
+      })
   }
 
   def toTask(

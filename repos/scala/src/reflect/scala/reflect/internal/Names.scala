@@ -46,10 +46,12 @@ trait Names extends api.Names {
     */
   private def hashValue(cs: Array[Char], offset: Int, len: Int): Int =
     if (len > 0)
-      (len * (41 * 41 * 41) +
-        cs(offset) * (41 * 41) +
-        cs(offset + len - 1) * 41 +
-        cs(offset + (len >> 1)))
+      (
+        len * (41 * 41 * 41) +
+          cs(offset) * (41 * 41) +
+          cs(offset + len - 1) * 41 +
+          cs(offset + (len >> 1))
+      )
     else
       0
 
@@ -112,11 +114,9 @@ trait Names extends api.Names {
       val len = math.max(len0, 0)
       val h = hashValue(cs, offset, len) & HASH_MASK
       var n = termHashtable(h)
-      while ((n ne null) && (n.length != len || !equals(
-               n.start,
-               cs,
-               offset,
-               len)))
+      while ((
+               n ne null
+             ) && (n.length != len || !equals(n.start, cs, offset, len)))
         n = n.next
 
       if (n ne null)
@@ -202,11 +202,13 @@ trait Names extends api.Names {
     val hash = hashValue(cs, 0, cs.length) & HASH_MASK
     var typeName = typeHashtable(hash)
 
-    while ((typeName ne null) && (typeName.length != cs.length || !equals(
-             typeName.start,
-             cs,
-             0,
-             cs.length))) {
+    while ((typeName ne null) && (
+             typeName.length != cs.length || !equals(
+               typeName.start,
+               cs,
+               0,
+               cs.length)
+           )) {
       typeName = typeName.next
     }
     assert(typeName != null, s"TypeName ${new String(cs)} not yet created.")

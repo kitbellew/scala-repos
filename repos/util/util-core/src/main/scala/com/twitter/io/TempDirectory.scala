@@ -17,11 +17,12 @@ object TempDirectory {
     if (deleteAtExit)
       Runtime
         .getRuntime()
-        .addShutdownHook(new Thread {
-          override def run() {
-            Files.delete(path.toFile)
-          }
-        })
+        .addShutdownHook(
+          new Thread {
+            override def run() {
+              Files.delete(path.toFile)
+            }
+          })
 
     path.toFile
   }

@@ -149,7 +149,9 @@ class ScalaCaseClassParametersNameContributer
             .getContextOfType(position, classOf[ScPatternArgumentList]))
           .map(_.patterns)
 
-        if (patterns.isEmpty || (patterns.isDefined && patterns.get.length > classParams.length))
+        if (patterns.isEmpty || (
+              patterns.isDefined && patterns.get.length > classParams.length
+            ))
           return ParameterWithPosition(
             None,
             -1

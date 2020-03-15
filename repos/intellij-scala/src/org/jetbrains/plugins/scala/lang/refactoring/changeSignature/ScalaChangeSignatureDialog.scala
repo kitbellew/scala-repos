@@ -424,14 +424,15 @@ class ScalaChangeSignatureDialog(
           finishAndRestoreEditing(editedColumn)
         }
       }
-    addClauseButton.addCustomUpdater(new AnActionButtonUpdater {
-      override def isEnabled(e: AnActionEvent): Boolean = {
-        val selected = parametersTable.getSelectedRow
-        selected > 0 && !myParametersTableModel
-          .getItem(selected)
-          .startsNewClause
-      }
-    })
+    addClauseButton.addCustomUpdater(
+      new AnActionButtonUpdater {
+        override def isEnabled(e: AnActionEvent): Boolean = {
+          val selected = parametersTable.getSelectedRow
+          selected > 0 && !myParametersTableModel
+            .getItem(selected)
+            .startsNewClause
+        }
+      })
     addClauseButton.setShortcut(CustomShortcutSet.fromString("alt EQUALS"))
     addClauseButton
   }
@@ -452,12 +453,15 @@ class ScalaChangeSignatureDialog(
           finishAndRestoreEditing(editedColumn)
         }
       }
-    removeClauseButton.addCustomUpdater(new AnActionButtonUpdater {
-      override def isEnabled(e: AnActionEvent): Boolean = {
-        val selected = parametersTable.getSelectedRow
-        selected > 0 && myParametersTableModel.getItem(selected).startsNewClause
-      }
-    })
+    removeClauseButton.addCustomUpdater(
+      new AnActionButtonUpdater {
+        override def isEnabled(e: AnActionEvent): Boolean = {
+          val selected = parametersTable.getSelectedRow
+          selected > 0 && myParametersTableModel
+            .getItem(selected)
+            .startsNewClause
+        }
+      })
     removeClauseButton.setShortcut(CustomShortcutSet.fromString("alt MINUS"))
     removeClauseButton
   }

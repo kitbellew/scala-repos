@@ -47,10 +47,7 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
   val fourth = role("fourth")
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
       akka.actor.deployment {
         /router1 {
           router = round-robin-pool
@@ -84,8 +81,7 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
           }
         }
       }
-      """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+      """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   nodeConfig(first, second)(
     ConfigFactory.parseString("""akka.cluster.roles =["a", "c"]"""))
@@ -133,9 +129,11 @@ abstract class ClusterRoundRobinSpec
       routeeType: RouteeType,
       expectedReplies: Int): Map[Address, Int] = {
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
-    (receiveWhile(5 seconds, messages = expectedReplies) {
-      case Reply(`routeeType`, ref) ⇒ fullAddress(ref)
-    }).foldLeft(zero) {
+    (
+      receiveWhile(5 seconds, messages = expectedReplies) {
+        case Reply(`routeeType`, ref) ⇒ fullAddress(ref)
+      }
+    ).foldLeft(zero) {
       case (replyMap, address) ⇒ replyMap + (address -> (replyMap(address) + 1))
     }
   }
@@ -346,9 +344,11 @@ abstract class ClusterRoundRobinSpec
 
       def routees = currentRoutees(router4)
       def routeeAddresses =
-        (routees map {
-          case ActorSelectionRoutee(sel) ⇒ fullAddress(sel.anchor)
-        }).toSet
+        (
+          routees map {
+            case ActorSelectionRoutee(sel) ⇒ fullAddress(sel.anchor)
+          }
+        ).toSet
 
       runOn(first) {
         // 4 nodes, 2 routees on each node
@@ -374,9 +374,11 @@ abstract class ClusterRoundRobinSpec
       runOn(first) {
         def routees = currentRoutees(router2)
         def routeeAddresses =
-          (routees map {
-            case ActorRefRoutee(ref) ⇒ fullAddress(ref)
-          }).toSet
+          (
+            routees map {
+              case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+            }
+          ).toSet
 
         routees foreach {
           case ActorRefRoutee(ref) ⇒ watch(ref)

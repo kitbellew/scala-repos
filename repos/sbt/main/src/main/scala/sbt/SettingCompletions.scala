@@ -406,8 +406,9 @@ private[sbt] object SettingCompletions {
       case (k, v) => prominent(k, v)
     }
 
-    val showAll =
-      (level >= 3) || (level == 2 && prominentOnly.size <= detailLimit) || prominentOnly.isEmpty
+    val showAll = (level >= 3) || (
+      level == 2 && prominentOnly.size <= detailLimit
+    ) || prominentOnly.isEmpty
     val showKeys =
       if (showAll)
         applicable
@@ -541,6 +542,5 @@ private[sbt] object SettingCompletions {
     classOf[Int],
     classOf[Double],
     classOf[Long],
-    classOf[String]
-  )
+    classOf[String])
 }

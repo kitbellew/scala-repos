@@ -59,10 +59,11 @@ object Thenable {
           (): Unit | Thenable[Unit]
         },
         defined { (e: scala.Any) =>
-          p2.failure(e match {
-            case th: Throwable => th
-            case _             => JavaScriptException(e)
-          })
+          p2.failure(
+            e match {
+              case th: Throwable => th
+              case _             => JavaScriptException(e)
+            })
           (): Unit | Thenable[Unit]
         }
       )

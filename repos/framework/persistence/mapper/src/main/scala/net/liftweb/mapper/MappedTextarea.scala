@@ -33,20 +33,22 @@ abstract class MappedTextarea[T <: Mapper[T]](owner: T, maxLen: Int)
     S.fmapFunc({ s: List[String] =>
       this.setFromAny(s)
     }) { funcName =>
-      Full(appendFieldId(<textarea name={
-        funcName
-      }
+      Full(
+        appendFieldId(
+          <textarea name={
+            funcName
+          }
 	               rows={
-        textareaRows.toString
-      }
+            textareaRows.toString
+          }
 	               cols={
-        textareaCols.toString
-      }>{
-        get match {
-          case null => ""
-          case s    => s
-        }
-      }</textarea>))
+            textareaCols.toString
+          }>{
+            get match {
+              case null => ""
+              case s    => s
+            }
+          }</textarea>))
     }
   }
 

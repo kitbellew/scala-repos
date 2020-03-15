@@ -78,8 +78,10 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
         ExpressionEncoder[ComplexNonEncodable2]).getMessage
     assert(
       errorMsg2.contains(s"""root class: "${clsName[ComplexNonEncodable2]}""""))
-    assert(errorMsg2.contains(
-      s"""field (class: "${clsName[ComplexNonEncodable1]}", name: "name2")"""))
+    assert(
+      errorMsg2.contains(
+        s"""field (class: "${clsName[
+          ComplexNonEncodable1]}", name: "name2")"""))
     assert(
       errorMsg1.contains(
         s"""field (class: "${clsName[NonEncodable]}", name: "name1")"""))

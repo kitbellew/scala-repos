@@ -220,14 +220,18 @@ abstract class BTypes {
       * anonymous classes whose outerClass is classNode.name.
       */
     def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean = {
-      (innerClassNode.outerName != null && innerClassNode.outerName == classNode.name) ||
-      (innerClassNode.outerName == null && {
-        val classNodeForInnerClass =
-          byteCodeRepository
-            .classNode(innerClassNode.name)
-            .get // TODO: don't get here, but set the info to Left at the end
-        classNodeForInnerClass.outerClass == classNode.name
-      })
+      (
+        innerClassNode.outerName != null && innerClassNode.outerName == classNode.name
+      ) ||
+      (
+        innerClassNode.outerName == null && {
+          val classNodeForInnerClass =
+            byteCodeRepository
+              .classNode(innerClassNode.name)
+              .get // TODO: don't get here, but set the info to Left at the end
+          classNodeForInnerClass.outerClass == classNode.name
+        }
+      )
     }
 
     val nestedClasses: List[ClassBType] =
@@ -402,67 +406,68 @@ abstract class BTypes {
      * Java bytecode type hierarchy.
      */
     final def conformsTo(other: BType): Either[NoClassBTypeInfo, Boolean] =
-      tryEither(Right({
-        assert(isRef || isPrimitive, s"conformsTo cannot handle $this")
-        assert(
-          other.isRef || other.isPrimitive,
-          s"conformsTo cannot handle $other")
+      tryEither(
+        Right({
+          assert(isRef || isPrimitive, s"conformsTo cannot handle $this")
+          assert(
+            other.isRef || other.isPrimitive,
+            s"conformsTo cannot handle $other")
 
-        this match {
-          case ArrayBType(component) =>
-            if (other == ObjectRef || other == jlCloneableRef || other == jiSerializableRef)
-              true
-            else
-              other match {
-                case ArrayBType(otherComponent) =>
-                  component.conformsTo(otherComponent).orThrow
-                case _ => false
-              }
-
-          case classType: ClassBType =>
-            if (isBoxed) {
-              if (other.isBoxed)
-                this == other
-              else if (other == ObjectRef)
+          this match {
+            case ArrayBType(component) =>
+              if (other == ObjectRef || other == jlCloneableRef || other == jiSerializableRef)
                 true
               else
                 other match {
-                  case otherClassType: ClassBType =>
-                    classType
-                      .isSubtypeOf(otherClassType)
-                      .orThrow // e.g., java/lang/Double conforms to java/lang/Number
+                  case ArrayBType(otherComponent) =>
+                    component.conformsTo(otherComponent).orThrow
                   case _ => false
                 }
-            } else if (isNullType) {
-              if (other.isNothingType)
-                false
-              else if (other.isPrimitive)
-                false
-              else
-                true // Null conforms to all classes (except Nothing) and arrays.
-            } else if (isNothingType) {
-              true
-            } else
-              other match {
-                case otherClassType: ClassBType =>
-                  classType.isSubtypeOf(otherClassType).orThrow
-                // case ArrayBType(_) => this.isNullType   // documentation only, because `if (isNullType)` above covers this case
-                case _ =>
-                  // isNothingType ||                      // documentation only, because `if (isNothingType)` above covers this case
-                  false
-              }
 
-          case UNIT =>
-            other == UNIT
-          case BOOL | BYTE | SHORT | CHAR =>
-            this == other || other == INT || other == LONG // TODO Actually, BOOL does NOT conform to LONG. Even with adapt().
-          case _ =>
-            assert(
-              isPrimitive && other.isPrimitive,
-              s"Expected primitive types $this - $other")
-            this == other
-        }
-      }))
+            case classType: ClassBType =>
+              if (isBoxed) {
+                if (other.isBoxed)
+                  this == other
+                else if (other == ObjectRef)
+                  true
+                else
+                  other match {
+                    case otherClassType: ClassBType =>
+                      classType
+                        .isSubtypeOf(otherClassType)
+                        .orThrow // e.g., java/lang/Double conforms to java/lang/Number
+                    case _ => false
+                  }
+              } else if (isNullType) {
+                if (other.isNothingType)
+                  false
+                else if (other.isPrimitive)
+                  false
+                else
+                  true // Null conforms to all classes (except Nothing) and arrays.
+              } else if (isNothingType) {
+                true
+              } else
+                other match {
+                  case otherClassType: ClassBType =>
+                    classType.isSubtypeOf(otherClassType).orThrow
+                  // case ArrayBType(_) => this.isNullType   // documentation only, because `if (isNullType)` above covers this case
+                  case _ =>
+                    // isNothingType ||                      // documentation only, because `if (isNothingType)` above covers this case
+                    false
+                }
+
+            case UNIT =>
+              other == UNIT
+            case BOOL | BYTE | SHORT | CHAR =>
+              this == other || other == INT || other == LONG // TODO Actually, BOOL does NOT conform to LONG. Even with adapt().
+            case _ =>
+              assert(
+                isPrimitive && other.isPrimitive,
+                s"Expected primitive types $this - $other")
+              this == other
+          }
+        }))
 
     /**
       * Compute the upper bound of two types.
@@ -986,8 +991,9 @@ abstract class BTypes {
 
       assert(
         if (info.get.superClass.isEmpty) {
-          isJLO(this) || (isCompilingPrimitive && ClassBType.hasNoSuper(
-            internalName))
+          isJLO(this) || (
+            isCompilingPrimitive && ClassBType.hasNoSuper(internalName)
+          )
         } else if (isInterface.get)
           isJLO(info.get.superClass.get)
         else
@@ -996,8 +1002,7 @@ abstract class BTypes {
       )
       assert(
         info.get.interfaces.forall(c => ifInit(c)(_.isInterface.get)),
-        s"Invalid interfaces in $this: ${info.get.interfaces}"
-      )
+        s"Invalid interfaces in $this: ${info.get.interfaces}")
 
       assert(
         info.get.nestedClasses.forall(c => ifInit(c)(_.isNestedClass.get)),
@@ -1193,13 +1198,9 @@ abstract class BTypes {
       "scala/Int",
       "scala/Float",
       "scala/Long",
-      "scala/Double"
-    )
+      "scala/Double")
 
-    private val isInternalPhantomType = Set(
-      "scala/Null",
-      "scala/Nothing"
-    )
+    private val isInternalPhantomType = Set("scala/Null", "scala/Nothing")
   }
 
   /**

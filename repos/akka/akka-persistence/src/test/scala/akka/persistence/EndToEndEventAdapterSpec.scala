@@ -261,8 +261,9 @@ abstract class EndToEndEventAdapterSpec(
       val journalPath = s"akka.persistence.journal.$journalName"
       val missingAdapterConfig = adaptersConfig
         .withoutPath(s"$journalPath.event-adapters.a")
-        .withoutPath(s"""$journalPath.event-adapter-bindings."${classOf[
-          EndToEndEventAdapterSpec].getCanonicalName}$$A"""")
+        .withoutPath(
+          s"""$journalPath.event-adapter-bindings."${classOf[
+            EndToEndEventAdapterSpec].getCanonicalName}$$A"""")
 
       withActorSystem(
         "MissingAdapterSystem",

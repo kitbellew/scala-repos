@@ -43,11 +43,13 @@ object RecordSpec extends Specification {
   "Record field introspection" should {
     val rec = FieldTypeTestRecord.createRecord
     val allExpectedFieldNames: List[String] =
-      (for {
-        typeName <- "Binary Boolean Country DateTime Decimal Double Email Enum Int Locale Long PostalCode String Textarea TimeZone JodaTime"
-          .split(" ")
-        flavor <- "mandatory legacyOptional optional".split(" ")
-      } yield flavor + typeName + "Field").toList
+      (
+        for {
+          typeName <- "Binary Boolean Country DateTime Decimal Double Email Enum Int Locale Long PostalCode String Textarea TimeZone JodaTime"
+            .split(" ")
+          flavor <- "mandatory legacyOptional optional".split(" ")
+        } yield flavor + typeName + "Field"
+      ).toList
 
     "introspect only the expected fields" in {
       rec.fields().map(_.name).sortWith(_ < _) must_== allExpectedFieldNames

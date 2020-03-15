@@ -213,5 +213,4 @@ case class BenchmarkParameters(
     runMillisGoal: Long,
     restBetweenTests: Option[Long] = None,
     gcBetweenTests: Boolean = false,
-    calcOverhead: Boolean = true
-)
+    calcOverhead: Boolean = true)

@@ -60,8 +60,7 @@ private[annotator] object ModifierChecker {
         if (withPrivate)
           ("private", "override")
         else
-          ("", "")
-      )
+          ("", ""))
       for ((bad1, bad2) <- illegalCombinations
            if (bad1 == text && owner.hasModifierPropertyScala(bad2)) ||
              (bad2 == text && owner.hasModifierPropertyScala(bad1))) {
@@ -299,8 +298,10 @@ private[annotator] object ModifierChecker {
                                 errorResult()
                               else if (parameters.head.isRepeatedParameter)
                                 errorResult()
-                              else if (clauses.length > 2 || (clauses.length == 2 && !clauses(
-                                         1).isImplicit))
+                              else if (clauses.length > 2 || (
+                                         clauses.length == 2 && !clauses(
+                                           1).isImplicit
+                                       ))
                                 errorResult()
                             }
                           case _ => errorResult()

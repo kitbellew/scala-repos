@@ -52,8 +52,7 @@ object MediaEventTester extends JFXApp {
     "Planes" -> (3000 ms),
     "Parachute" -> (8000 ms),
     "Car" -> (13000 ms),
-    "..." -> (15000 ms)
-  )
+    "..." -> (15000 ms))
 
   val mediaPlayer = new MediaPlayer(media)
   mediaPlayer.onMarker = (event: MediaMarkerEvent) =>

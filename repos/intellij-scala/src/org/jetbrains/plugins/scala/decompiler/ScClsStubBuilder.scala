@@ -138,10 +138,12 @@ class ScClsStubBuilder extends ClsStubBuilder {
       from: Int,
       directory: Directory): Boolean = {
     val index: Int = name.indexOf('$', from)
-    index != -1 && (containsPart(directory, name, index) || isInner(
-      name,
-      index + 1,
-      directory))
+    index != -1 && (
+      containsPart(directory, name, index) || isInner(
+        name,
+        index + 1,
+        directory)
+    )
   }
 
   private def containsPart(

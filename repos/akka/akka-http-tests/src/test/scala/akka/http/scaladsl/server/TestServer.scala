@@ -48,9 +48,10 @@ object TestServer extends App {
         } ~
           path("secure") {
             authenticateBasicPF("My very secure site", auth) { user ⇒
-              complete(<html><body>Hello <b>{
-                user
-              }</b>. Access has been granted!</body></html>)
+              complete(
+                <html><body>Hello <b>{
+                  user
+                }</b>. Access has been granted!</body></html>)
             }
           } ~
           path("ping") {

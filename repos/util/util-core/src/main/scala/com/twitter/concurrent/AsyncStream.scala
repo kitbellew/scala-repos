@@ -226,19 +226,21 @@ sealed abstract class AsyncStream[+A] {
     this match {
       case Empty => empty
       case FromFuture(fa) =>
-        Embed(fa.map { a =>
-          if (p(a))
-            this
-          else
-            empty
-        })
+        Embed(
+          fa.map { a =>
+            if (p(a))
+              this
+            else
+              empty
+          })
       case Cons(fa, more) =>
-        Embed(fa.map { a =>
-          if (p(a))
-            Cons(fa, () => more().takeWhile(p))
-          else
-            more().takeWhile(p)
-        })
+        Embed(
+          fa.map { a =>
+            if (p(a))
+              Cons(fa, () => more().takeWhile(p))
+            else
+              more().takeWhile(p)
+          })
       case Embed(fas) => Embed(fas.map(_.takeWhile(p)))
     }
 
@@ -255,19 +257,21 @@ sealed abstract class AsyncStream[+A] {
     this match {
       case Empty => empty
       case FromFuture(fa) =>
-        Embed(fa.map { a =>
-          if (p(a))
-            empty
-          else
-            this
-        })
+        Embed(
+          fa.map { a =>
+            if (p(a))
+              empty
+            else
+              this
+          })
       case Cons(fa, more) =>
-        Embed(fa.map { a =>
-          if (p(a))
-            more().dropWhile(p)
-          else
-            Cons(fa, () => more().dropWhile(p))
-        })
+        Embed(
+          fa.map { a =>
+            if (p(a))
+              more().dropWhile(p)
+            else
+              Cons(fa, () => more().dropWhile(p))
+          })
       case Embed(fas) => Embed(fas.map(_.dropWhile(p)))
     }
 
@@ -333,19 +337,21 @@ sealed abstract class AsyncStream[+A] {
     this match {
       case Empty => empty
       case FromFuture(fa) =>
-        Embed(fa.map { a =>
-          if (p(a))
-            this
-          else
-            empty
-        })
+        Embed(
+          fa.map { a =>
+            if (p(a))
+              this
+            else
+              empty
+          })
       case Cons(fa, more) =>
-        Embed(fa.map { a =>
-          if (p(a))
-            Cons(fa, () => more().filter(p))
-          else
-            more().filter(p)
-        })
+        Embed(
+          fa.map { a =>
+            if (p(a))
+              Cons(fa, () => more().filter(p))
+            else
+              more().filter(p)
+          })
       case Embed(fas) => Embed(fas.map(_.filter(p)))
     }
 
@@ -620,11 +626,12 @@ sealed abstract class AsyncStream[+A] {
     */
   def grouped(groupSize: Int): AsyncStream[Seq[A]] =
     if (groupSize > 1) {
-      Embed(buffer(groupSize).map {
-        case (items, _) if items.isEmpty => empty
-        case (items, remaining) =>
-          Cons(Future.value(items), () => remaining().grouped(groupSize))
-      })
+      Embed(
+        buffer(groupSize).map {
+          case (items, _) if items.isEmpty => empty
+          case (items, remaining) =>
+            Cons(Future.value(items), () => remaining().grouped(groupSize))
+        })
     } else if (groupSize == 1) {
       map(Seq(_))
     } else {

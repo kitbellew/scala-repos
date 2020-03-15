@@ -16,7 +16,8 @@ class ScalaToStringMemberSelectionPanel(
     abstractColumnHeader: String)
     extends ScalaMemberSelectionPanel(title, memberInfo, abstractColumnHeader) {
   val checkBox =
-    new JCheckBox(ScalaBundle.message(
-      "org.jetbrains.plugins.scala.codeInsight.generation.ui.toString.withFieldNames"))
+    new JCheckBox(
+      ScalaBundle.message(
+        "org.jetbrains.plugins.scala.codeInsight.generation.ui.toString.withFieldNames"))
   add(checkBox, BorderLayout.SOUTH)
 }

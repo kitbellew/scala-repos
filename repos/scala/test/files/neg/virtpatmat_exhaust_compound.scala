@@ -24,16 +24,18 @@ object Test {
       case null => // O1..O3 should *not* be possible here
     }
 
-  def t2(a: Product with Base {
-    def foo: Int
-  }) =
+  def t2(
+      a: Product with Base {
+        def foo: Int
+      }) =
     a match {
       case null => // O2 in the domain
     }
 
-  def t3(a: Product with Base {
-    def bar: Int
-  }) =
+  def t3(
+      a: Product with Base {
+        def bar: Int
+      }) =
     a match {
       case null => // nothing in the domain
     }

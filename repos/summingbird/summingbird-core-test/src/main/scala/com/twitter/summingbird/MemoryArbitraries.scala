@@ -43,6 +43,5 @@ object MemoryArbitraries {
         val m = new HashMap[K, V]() with MemoryService[K, V]
         k.zip(v).foreach(p => m.put(p._1, p._2))
         m
-      }
-    )
+      })
 }

@@ -178,8 +178,10 @@ trait PrecedenceHelper[T] {
       return false
     else if (currentPrecedence == topPrecedence) {
       if (isCheckForEqualPrecedence && qualifiedName != null &&
-          (levelQualifiedNamesSet.contains(qualifiedName) ||
-          qualifiedNamesSet.contains(qualifiedName))) {
+          (
+            levelQualifiedNamesSet.contains(qualifiedName) ||
+            qualifiedNamesSet.contains(qualifiedName)
+          )) {
         return false
       } else if (qualifiedName != null && qualifiedNamesSet.contains(
                    qualifiedName))

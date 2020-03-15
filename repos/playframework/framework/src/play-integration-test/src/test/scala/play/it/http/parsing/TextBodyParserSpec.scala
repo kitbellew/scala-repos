@@ -23,8 +23,7 @@ object TextBodyParserSpec extends PlaySpecification {
         bodyParser(
           FakeRequest().withHeaders(
             contentType.map(CONTENT_TYPE -> _).toSeq: _*))
-          .run(Source.single(ByteString(text, encoding)))
-      )
+          .run(Source.single(ByteString(text, encoding))))
     }
 
     "parse text bodies" in new WithApplication() {

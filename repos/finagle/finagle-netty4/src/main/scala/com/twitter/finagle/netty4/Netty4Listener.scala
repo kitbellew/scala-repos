@@ -54,8 +54,8 @@ private[netty4] object PipelineInit {
 private[finagle] case class Netty4Listener[In, Out](
     params: Stack.Params,
     transportFactory: SocketChannel => Transport[In, Out] =
-      new ChannelTransport[In, Out](_)
-) extends Listener[In, Out] {
+      new ChannelTransport[In, Out](_))
+    extends Listener[In, Out] {
 
   private[this] val PipelineInit(pipelineInit) = params[PipelineInit]
 
@@ -82,17 +82,12 @@ private[finagle] case class Netty4Listener[In, Out](
       serveTransport: Transport[In, Out] => Unit): ListeningServer =
     new ListeningServer with CloseAwaitably {
 
-      val newBridge = () =>
-        new ServerBridge(
-          transportFactory,
-          serveTransport
-        )
+      val newBridge = () => new ServerBridge(transportFactory, serveTransport)
 
       val bossLoop: EventLoopGroup =
         new NioEventLoopGroup(
           1 /*nThreads*/,
-          new NamedPoolThreadFactory("finagle/netty4/boss", makeDaemons = true)
-        )
+          new NamedPoolThreadFactory("finagle/netty4/boss", makeDaemons = true))
 
       val bootstrap = new ServerBootstrap()
       bootstrap.channel(classOf[NioServerSocketChannel])
@@ -150,9 +145,10 @@ private[finagle] case class Netty4Listener[In, Out](
               0 /* quietPeriod */,
               deadline.inMillis /* timeout */,
               TimeUnit.MILLISECONDS)
-            .addListener(new GenericFutureListener[Nothing] {
-              def operationComplete(future: Nothing): Unit = p.setDone()
-            })
+            .addListener(
+              new GenericFutureListener[Nothing] {
+                def operationComplete(future: Nothing): Unit = p.setDone()
+              })
           p
         }
 

@@ -125,8 +125,7 @@ class WorksheetFoldGroup(
                       trueStart.toInt,
                       spaces.toInt,
                       WorksheetFoldGroup.this,
-                      lsLength.toInt
-                    )
+                      lsLength.toInt)
 
                   region.setExpanded(expanded.length == 4)
 
@@ -153,10 +152,12 @@ class WorksheetFoldGroup(
         (offset2Line(reg.trueStart) - reg.lsLength, offset2Line(reg.trueStart)),
         (offset2Line(reg.trueStart) + stored, reg.spaces))
 
-    ((
-      mutable.ArrayBuffer[((Int, Int), (Int, Int))](),
-      null: FoldRegionInfo,
-      0) /: regions) {
+    (
+      (
+        mutable.ArrayBuffer[((Int, Int), (Int, Int))](),
+        null: FoldRegionInfo,
+        0) /: regions
+    ) {
       case ((res, _, ff), reg) if reg.expanded && reg.region == target =>
         (res, reg, ff)
       case ((res, _, ff), reg) if !reg.expanded && reg.region == target =>

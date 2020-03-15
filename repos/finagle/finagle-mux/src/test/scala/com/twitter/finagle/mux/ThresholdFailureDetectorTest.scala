@@ -43,8 +43,7 @@ class ThresholdFailureDetectorTest
         closeTimeout = closeTimeout,
         nanoTime = nanoTime,
         statsReceiver = sr,
-        timer = timer
-      )
+        timer = timer)
   }
 
   testt("pings every minPeriod") { tc =>
@@ -192,8 +191,7 @@ class ThresholdFailureDetectorTest
         closeTimeout = Duration.Top,
         nanoTime = nanoTime,
         timer = timer,
-        statsReceiver = sr
-      )
+        statsReceiver = sr)
 
     for (i <- 1 until failAfter) {
       assert(n.get == i)

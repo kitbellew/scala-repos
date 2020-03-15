@@ -85,23 +85,30 @@ class OfflinePartitionLeaderSelector(
                         topicAndPartition.topic))
                     .uncleanLeaderElectionEnable) {
                 throw new NoReplicaOnlineException(
-                  ("No broker in ISR for partition " +
-                    "%s is alive. Live brokers are: [%s],".format(
-                      topicAndPartition,
-                      controllerContext.liveBrokerIds)) +
+                  (
+                    "No broker in ISR for partition " +
+                      "%s is alive. Live brokers are: [%s],".format(
+                        topicAndPartition,
+                        controllerContext.liveBrokerIds)
+                  ) +
                     " ISR brokers are: [%s]".format(
                       currentLeaderAndIsr.isr.mkString(",")))
               }
 
-              debug("No broker in ISR is alive for %s. Pick the leader from the alive assigned replicas: %s"
-                .format(topicAndPartition, liveAssignedReplicas.mkString(",")))
+              debug(
+                "No broker in ISR is alive for %s. Pick the leader from the alive assigned replicas: %s"
+                  .format(
+                    topicAndPartition,
+                    liveAssignedReplicas.mkString(",")))
               liveAssignedReplicas.isEmpty match {
                 case true =>
                   throw new NoReplicaOnlineException(
-                    ("No replica for partition " +
-                      "%s is alive. Live brokers are: [%s],".format(
-                        topicAndPartition,
-                        controllerContext.liveBrokerIds)) +
+                    (
+                      "No replica for partition " +
+                        "%s is alive. Live brokers are: [%s],".format(
+                          topicAndPartition,
+                          controllerContext.liveBrokerIds)
+                    ) +
                       " Assigned replicas are: [%s]".format(assignedReplicas))
                 case false =>
                   ControllerStats.uncleanLeaderElectionRate.mark()
@@ -292,8 +299,10 @@ class ControlledShutdownLeaderSelector(controllerContext: ControllerContext)
           liveAssignedReplicas)
       case None =>
         throw new StateChangeFailedException(
-          ("No other replicas in ISR %s for %s besides" +
-            " shutting down brokers %s").format(
+          (
+            "No other replicas in ISR %s for %s besides" +
+              " shutting down brokers %s"
+          ).format(
             currentLeaderAndIsr.isr.mkString(","),
             topicAndPartition,
             controllerContext.shuttingDownBrokerIds.mkString(",")))

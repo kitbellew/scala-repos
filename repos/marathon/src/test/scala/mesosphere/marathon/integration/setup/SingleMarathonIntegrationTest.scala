@@ -200,9 +200,7 @@ trait SingleMarathonIntegrationTest
     val file = File.createTempFile("appProxy", ".sh")
     file.deleteOnExit()
 
-    FileUtils.write(
-      file,
-      s"""#!/bin/sh
+    FileUtils.write(file, s"""#!/bin/sh
           |set -x
           |exec $appProxyMainInvocationImpl $$*""".stripMargin)
     file.setExecutable(true)
@@ -234,8 +232,7 @@ trait SingleMarathonIntegrationTest
             new mesosphere.marathon.state.Container.Docker(
               image = s"""marathon-buildbase:${sys.env
                 .getOrElse("BUILD_ID", "test")}""",
-              network = Some(Protos.ContainerInfo.DockerInfo.Network.HOST)
-            )),
+              network = Some(Protos.ContainerInfo.DockerInfo.Network.HOST))),
           volumes = collection.immutable.Seq(
             new DockerVolume(
               hostPath = env.getOrElse("IVY2_DIR", "/root/.ivy2"),
@@ -257,9 +254,7 @@ trait SingleMarathonIntegrationTest
               hostPath = s"""$targetDirs/project""",
               containerPath = "/marathon/project/target",
               mode = Protos.Volume.Mode.RO)
-          )
-        )
-      ),
+          ))),
       instances = instances,
       cpus = 0.5,
       mem = 128.0,
@@ -318,14 +313,15 @@ trait SingleMarathonIntegrationTest
       .tasks(appId)
       .value
       .flatMap(_.ports)
-      .flatMap(_.map { port =>
-        val check = new IntegrationHealthCheck(appId, versionId, port, state)
-        ExternalMarathonIntegrationTest.healthChecks
-          .filter(c => c.appId == appId && c.versionId == versionId)
-          .foreach(ExternalMarathonIntegrationTest.healthChecks -= _)
-        ExternalMarathonIntegrationTest.healthChecks += check
-        check
-      })
+      .flatMap(
+        _.map { port =>
+          val check = new IntegrationHealthCheck(appId, versionId, port, state)
+          ExternalMarathonIntegrationTest.healthChecks
+            .filter(c => c.appId == appId && c.versionId == versionId)
+            .foreach(ExternalMarathonIntegrationTest.healthChecks -= _)
+          ExternalMarathonIntegrationTest.healthChecks += check
+          check
+        })
   }
 
   def cleanUp(
@@ -374,8 +370,7 @@ trait SingleMarathonIntegrationTest
           "Waiting for blank slate Mesos...\n \"used_resources\": "
             + Json.prettyPrint(
               Json.toJson(agent.usedResources)) + "\n \"reserved_resources\": "
-            + Json.prettyPrint(Json.toJson(agent.reservedResourcesByRole))
-        )
+            + Json.prettyPrint(Json.toJson(agent.reservedResourcesByRole)))
       }
       empty
     }

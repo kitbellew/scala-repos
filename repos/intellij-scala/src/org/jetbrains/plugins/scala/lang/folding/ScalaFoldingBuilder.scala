@@ -102,12 +102,13 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       }
       val treeParent: ASTNode = node.getTreeParent
       if (!ScalaCodeFoldingSettings.getInstance().isFoldingForAllBlocks &&
-          treeParent != null && (treeParent.getPsi
-            .isInstanceOf[ScArgumentExprList] ||
-          treeParent.getPsi.isInstanceOf[ScPatternDefinition] ||
-          treeParent.getPsi.isInstanceOf[ScVariableDefinition] ||
-          treeParent.getPsi.isInstanceOf[ScForStatement] ||
-          treeParent.getPsi.isInstanceOf[ScIfStmt])) {
+          treeParent != null && (
+            treeParent.getPsi.isInstanceOf[ScArgumentExprList] ||
+            treeParent.getPsi.isInstanceOf[ScPatternDefinition] ||
+            treeParent.getPsi.isInstanceOf[ScVariableDefinition] ||
+            treeParent.getPsi.isInstanceOf[ScForStatement] ||
+            treeParent.getPsi.isInstanceOf[ScIfStmt]
+          )) {
         psi match {
           case _: ScBlockExpr =>
             descriptors += new FoldingDescriptor(node, nodeTextRange)
@@ -276,10 +277,12 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
           return "(...)"
       }
     }
-    if (node.getTreeParent != null && (ScalaElementTypes.ARG_EXPRS == node.getTreeParent.getElementType
-        || ScalaElementTypes.INFIX_EXPR == node.getTreeParent.getElementType
-        || ScalaElementTypes.PATTERN_DEFINITION == node.getTreeParent.getElementType
-        || ScalaElementTypes.VARIABLE_DEFINITION == node.getTreeParent.getElementType)) {
+    if (node.getTreeParent != null && (
+          ScalaElementTypes.ARG_EXPRS == node.getTreeParent.getElementType
+          || ScalaElementTypes.INFIX_EXPR == node.getTreeParent.getElementType
+          || ScalaElementTypes.PATTERN_DEFINITION == node.getTreeParent.getElementType
+          || ScalaElementTypes.VARIABLE_DEFINITION == node.getTreeParent.getElementType
+        )) {
       node.getPsi match {
         case _: ScBlockExpr => return "{...}"
         case _              => return null
@@ -400,8 +403,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
               ScalaCodeFoldingSettings
                 .getInstance()
                 .isCollapseMethodCallBodies &&
-              isMultilineFuncBody(node.getTreeParent.getPsi
-                .asInstanceOf[ScFunctionDefinition])._1 =>
+              isMultilineFuncBody(
+                node.getTreeParent.getPsi
+                  .asInstanceOf[ScFunctionDefinition])._1 =>
           true
         case _
             if node.getPsi.isInstanceOf[ScTypeProjection] &&
@@ -474,8 +478,10 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       return false
     var next = node.getTreeNext
     var flag = false
-    while (next != null && (next.getPsi.isInstanceOf[
-             LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT)) {
+    while (next != null && (
+             next.getPsi.isInstanceOf[
+               LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT
+           )) {
       if (next.getElementType == ScalaElementTypes.IMPORT_STMT)
         flag = true
       next = next.getTreeNext
@@ -494,8 +500,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         val isCorrectRange = range.getStartOffset + 1 < range.getEndOffset
         return (isCorrectRange, range, "{...}")
       case _ =>
-        val isMultilineBody = (body.getText.indexOf(
-          "\n") != -1) && (range.getStartOffset + 1 < range.getEndOffset)
+        val isMultilineBody = (body.getText.indexOf("\n") != -1) && (
+          range.getStartOffset + 1 < range.getEndOffset
+        )
         val textRange =
           if (isMultilineBody)
             range
@@ -519,8 +526,10 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
   private def getImportEnd(node: ASTNode): Int = {
     var next = node
     var last = next.getTextRange.getEndOffset
-    while (next != null && (next.getPsi.isInstanceOf[
-             LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT)) {
+    while (next != null && (
+             next.getPsi.isInstanceOf[
+               LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT
+           )) {
       if (next.getElementType == ScalaElementTypes.IMPORT_STMT || next.getElementType == ScalaTokenTypes.tSEMICOLON)
         last = next.getTextRange.getEndOffset
       next = next.getTreeNext
@@ -556,8 +565,10 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         }
       }
       current = current.getNextSibling
-      if (current != null && (isCustomRegionStart(
-            current.getText) || isCustomRegionEnd(current.getText))) {
+      if (current != null && (
+            isCustomRegionStart(current.getText) || isCustomRegionEnd(
+              current.getText)
+          )) {
         flag = false
       }
     }
@@ -588,9 +599,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         val elementType: IElementType = node.getElementType
         if (elementType == ScalaTokenTypes.tLINE_COMMENT && isCustomRegionEnd(
               node.getText) && !isWorksheetResults(node)) {
-          if ((isTagRegion && isTagRegionEnd(
-                node.getText)) || (!isTagRegion && isSimpleRegionEnd(
-                node.getText))) {
+          if ((
+                isTagRegion && isTagRegionEnd(node.getText)
+              ) || (!isTagRegion && isSimpleRegionEnd(node.getText))) {
             if (!processedRegions.contains(current) && stack.isEmpty) {
               end = current
               processedRegions.add(current)
@@ -642,9 +653,10 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
   }
 
   private def isWorksheetResults(node: ASTNode): Boolean = {
-    node.getPsi.isInstanceOf[PsiComment] && (node.getText.startsWith(
-      WorksheetFoldingBuilder.FIRST_LINE_PREFIX) ||
-    node.getText.startsWith(WorksheetFoldingBuilder.LINE_PREFIX))
+    node.getPsi.isInstanceOf[PsiComment] && (
+      node.getText.startsWith(WorksheetFoldingBuilder.FIRST_LINE_PREFIX) ||
+      node.getText.startsWith(WorksheetFoldingBuilder.LINE_PREFIX)
+    )
   }
 
   override def isDumbAware: Boolean = true

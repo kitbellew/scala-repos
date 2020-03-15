@@ -89,8 +89,10 @@ object AnnotatorHighlighter {
       holder: AnnotationHolder) {
 
     def annotateCollectionByType(resolvedType: ScType) {
-      if (ScalaNamesUtil.isOperatorName(resolvedType.presentableText
-            .substring(0, resolvedType.presentableText.prefixLength(_ != '.'))))
+      if (ScalaNamesUtil.isOperatorName(
+            resolvedType.presentableText.substring(
+              0,
+              resolvedType.presentableText.prefixLength(_ != '.'))))
         return
 
       val scalaProjectSettings: ScalaProjectSettings = ScalaProjectSettings
@@ -297,8 +299,10 @@ object AnnotatorHighlighter {
         annotation.setTextAttributes(DefaultHighlighter.ANONYMOUS_PARAMETER)
       case x: ScParameter =>
         annotation.setTextAttributes(DefaultHighlighter.PARAMETER)
-      case x @ (_: ScFunctionDefinition | _: ScFunctionDeclaration |
-          _: ScMacroDefinition) =>
+      case x @ (
+            _: ScFunctionDefinition | _: ScFunctionDeclaration |
+            _: ScMacroDefinition
+          ) =>
         if (SCALA_FACTORY_METHODS_NAMES.contains(
               x.asInstanceOf[PsiMethod].getName) || x
               .asInstanceOf[PsiMethod]

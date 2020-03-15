@@ -44,15 +44,17 @@ final case class FutureInvocation[T](
     cleanup: () => Unit)
     extends Runnable {
   def run = {
-    future complete (try {
-      Right(function())
-    } catch {
-      case e =>
-        EventHandler.error(e, this, e.getMessage)
-        Left(e)
-    } finally {
-      cleanup()
-    })
+    future complete (
+      try {
+        Right(function())
+      } catch {
+        case e =>
+          EventHandler.error(e, this, e.getMessage)
+          Left(e)
+      } finally {
+        cleanup()
+      }
+    )
   }
 }
 
@@ -299,15 +301,16 @@ abstract class MessageDispatcherConfigurator {
           _.setExecutorBounds(bounds)),
         conf_?(config getBool "allow-core-timeout")(allow =>
           _.setAllowCoreThreadTimeout(allow)),
-        conf_?(config getString "rejection-policy" map {
-          case "abort"          => new AbortPolicy()
-          case "caller-runs"    => new CallerRunsPolicy()
-          case "discard-oldest" => new DiscardOldestPolicy()
-          case "discard"        => new DiscardPolicy()
-          case x =>
-            throw new IllegalArgumentException(
-              "[%s] is not a valid rejectionPolicy!" format x)
-        })(policy => _.setRejectionPolicy(policy))
+        conf_?(
+          config getString "rejection-policy" map {
+            case "abort"          => new AbortPolicy()
+            case "caller-runs"    => new CallerRunsPolicy()
+            case "discard-oldest" => new DiscardOldestPolicy()
+            case "discard"        => new DiscardPolicy()
+            case x =>
+              throw new IllegalArgumentException(
+                "[%s] is not a valid rejectionPolicy!" format x)
+          })(policy => _.setRejectionPolicy(policy))
       )
   }
 }

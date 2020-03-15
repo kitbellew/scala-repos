@@ -16,11 +16,12 @@ class FlagsTest {
   def sym = NoSymbol.newTermSymbol(nme.EMPTY)
 
   def withFlagMask[A](mask: Long)(body: => A): A =
-    enteringPhase(new Phase(NoPhase) {
-      override def flagMask = mask
-      def name = ""
-      def run() = ()
-    })(body)
+    enteringPhase(
+      new Phase(NoPhase) {
+        override def flagMask = mask
+        def name = ""
+        def run() = ()
+      })(body)
 
   def testTimedFlag(flag: Long, test: Symbol => Boolean, enabling: Boolean) = {
     assertEquals(withFlagMask(InitialFlags)(test(sym.setFlag(flag))), !enabling)

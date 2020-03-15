@@ -46,8 +46,10 @@ object VectorTest extends SpecLite {
   }
 
   "spanM" ! forAll { (xs: Vector[Int]) =>
-    (xs.spanM[Id](evenp)
-      must_=== (xs.takeWhile(evenp) -> xs.dropWhile(evenp)))
+    (
+      xs.spanM[Id](evenp)
+        must_=== (xs.takeWhile(evenp) -> xs.dropWhile(evenp))
+    )
   }
 
   "takeWhileM" ! forAll { (xs: Vector[Int]) =>
@@ -55,18 +57,24 @@ object VectorTest extends SpecLite {
   }
 
   "groupWhen" ! forAll { (xs: Vector[Int]) =>
-    (xs.groupWhen(_ < _)
-      must_=== (list
-        .groupWhen(xs.toList)(_ < _)
-        .map(_.toVector)
-        .toVector))
+    (
+      xs.groupWhen(_ < _)
+        must_=== (
+          list
+            .groupWhen(xs.toList)(_ < _)
+            .map(_.toVector)
+            .toVector
+        )
+    )
   }
 
   "partitionM" ! forAll { (xs: Vector[Int]) =>
     val (evens, odds) = xs.partitionM[Id](evenp)
     (evens.toSet & odds.toSet) must_=== (Set[Int]())
-    (evens.filter(evenp) ++
-      odds.filter(i => !evenp(i))).toSet must_=== (xs.toSet)
+    (
+      evens.filter(evenp) ++
+        odds.filter(i => !evenp(i))
+    ).toSet must_=== (xs.toSet)
   }
 
   "findM" ! forAll { (xs: Vector[Int]) =>
@@ -104,10 +112,12 @@ object VectorTest extends SpecLite {
   }
 
   "index" ! forAll { (xs: Vector[Int], n: Int) =>
-    (xs index n) must_=== (if (n >= 0 && xs.size > n)
-                             Some(xs(n))
-                           else
-                             None)
+    (xs index n) must_=== (
+      if (n >= 0 && xs.size > n)
+        Some(xs(n))
+      else
+        None
+    )
   }
 
   "groupWhen is groupWhenM[Id]" ! forAll { xs: Vector[Int] =>

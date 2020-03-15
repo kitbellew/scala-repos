@@ -45,20 +45,19 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     *     methods in the impl class (because they can have arbitrary initializers)
     */
   private def isImplementedStatically(sym: Symbol) =
-    (
-      sym.isMethod
-        && (!sym.hasFlag(
-          DEFERRED | SUPERACCESSOR) || (sym hasFlag lateDEFERRED))
-        && sym.owner.isTrait
-        && sym.isMethod
-        && (!sym.isModule || sym.hasFlag(PRIVATE | LIFTED))
-        && (!(sym hasFlag (ACCESSOR | SUPERACCESSOR)) || sym.isLazy)
-        && !sym.isPrivate
-        && !sym.hasAllFlags(LIFTED | MODULE | METHOD)
-        && !sym.isConstructor
-        && (!sym.hasFlag(notPRIVATE | LIFTED) || sym.hasFlag(
-          ACCESSOR | SUPERACCESSOR | MODULE))
-    )
+    (sym.isMethod
+      && (!sym.hasFlag(DEFERRED | SUPERACCESSOR) || (sym hasFlag lateDEFERRED))
+      && sym.owner.isTrait
+      && sym.isMethod
+      && (!sym.isModule || sym.hasFlag(PRIVATE | LIFTED))
+      && (!(sym hasFlag (ACCESSOR | SUPERACCESSOR)) || sym.isLazy)
+      && !sym.isPrivate
+      && !sym.hasAllFlags(LIFTED | MODULE | METHOD)
+      && !sym.isConstructor
+      && (
+        !sym.hasFlag(notPRIVATE | LIFTED) || sym.hasFlag(
+          ACCESSOR | SUPERACCESSOR | MODULE)
+      ))
 
   private def isFieldWithBitmap(field: Symbol) = {
     field.info // ensure that nested objects are transformed
@@ -76,17 +75,15 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     *  Note: The `checkinit` option does not check if transient fields are initialized.
     */
   private def needsInitFlag(sym: Symbol) =
-    (
-      settings.checkInit
-        && sym.isGetter
-        && !sym.isInitializedToDefault
-        && !isConstantType(sym.info.finalResultType) // SI-4742
-        && !sym.hasFlag(PARAMACCESSOR | SPECIALIZED | LAZY)
-        && !sym.accessed.hasFlag(PRESUPER)
-        && !sym.isOuterAccessor
-        && !(sym.owner isSubClass DelayedInitClass)
-        && !(sym.accessed hasAnnotation TransientAttr)
-    )
+    (settings.checkInit
+      && sym.isGetter
+      && !sym.isInitializedToDefault
+      && !isConstantType(sym.info.finalResultType) // SI-4742
+      && !sym.hasFlag(PARAMACCESSOR | SPECIALIZED | LAZY)
+      && !sym.accessed.hasFlag(PRESUPER)
+      && !sym.isOuterAccessor
+      && !(sym.owner isSubClass DelayedInitClass)
+      && !(sym.accessed hasAnnotation TransientAttr))
 
   /** Returns the symbol that is accessed by a super-accessor in a mixin composition.
     *
@@ -122,7 +119,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 // --------- type transformation -----------------------------------------------
 
   def isConcreteAccessor(member: Symbol) =
-    member.hasAccessorFlag && (!member.isDeferred || (member hasFlag lateDEFERRED))
+    member.hasAccessorFlag && (
+      !member.isDeferred || (member hasFlag lateDEFERRED)
+    )
 
   /** Is member overridden (either directly or via a bridge) in base class sequence `bcs`? */
   def isOverriddenAccessor(member: Symbol, bcs: List[Symbol]): Boolean =
@@ -136,10 +135,14 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               !sym.hasFlag(MIXEDIN) &&
               matchesType(sym.tpe, member.tpe, alwaysMatchSimple = true))
       }
-      (bcs.head != member.owner
-      && (hasOverridingAccessor(bcs.head) || isOverriddenAccessor(
-        member,
-        bcs.tail)))
+      (
+        bcs.head != member.owner
+        && (
+          hasOverridingAccessor(bcs.head) || isOverriddenAccessor(
+            member,
+            bcs.tail)
+        )
+      )
     }
 
   /** Add given member to given class, and mark member as mixed-in.
@@ -201,11 +204,12 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
        *  always accessors and deferred. */
       def newGetter(field: Symbol): Symbol = {
         // println("creating new getter for "+ field +" : "+ field.info +" at "+ field.locationString+(field hasFlag MUTABLE))
-        val newFlags =
-          field.flags & ~PrivateLocal | ACCESSOR | lateDEFERRED | (if (field.isMutable)
-                                                                     0
-                                                                   else
-                                                                     STABLE)
+        val newFlags = field.flags & ~PrivateLocal | ACCESSOR | lateDEFERRED | (
+          if (field.isMutable)
+            0
+          else
+            STABLE
+        )
         // TODO preserve pre-erasure info?
         clazz.newMethod(
           field.getterName,
@@ -270,11 +274,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     def cloneAndAddMixinMember(
         mixinClass: Symbol,
         mixinMember: Symbol): Symbol =
-      (
-        cloneAndAddMember(mixinClass, mixinMember, clazz)
-          setPos clazz.pos
-          resetFlag DEFERRED | lateDEFERRED
-      )
+      (cloneAndAddMember(mixinClass, mixinMember, clazz)
+        setPos clazz.pos
+        resetFlag DEFERRED | lateDEFERRED)
 
     /* Mix in members of implementation class mixinClass into class clazz */
     def mixinTraitForwarders(mixinClass: Symbol) {
@@ -337,14 +339,14 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                   }
                   sym updateInfo mixinMember.tpe.resultType // info at current phase
 
-                  val newFlags = (
-                    (PrivateLocal)
-                      | (mixinMember getFlag MUTABLE | LAZY)
-                      | (if (mixinMember.hasStableFlag)
-                           0
-                         else
-                           MUTABLE)
-                  )
+                  val newFlags = ((PrivateLocal)
+                    | (mixinMember getFlag MUTABLE | LAZY)
+                    | (
+                      if (mixinMember.hasStableFlag)
+                        0
+                      else
+                        MUTABLE
+                    ))
 
                   addMember(
                     clazz,
@@ -416,7 +418,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               val sym = tree.symbol
               if ((sym.hasAccessorFlag || (sym.isTerm && !sym.isMethod))
                   && sym.isPrivate
-                  && !(currentOwner.isGetter && currentOwner.accessed == sym) // getter
+                  && !(
+                    currentOwner.isGetter && currentOwner.accessed == sym
+                  ) // getter
                   && !definitions.isPrimitiveValueClass(
                     sym.tpe.resultType.typeSymbol)
                   && sym.owner == templ.symbol.owner
@@ -517,15 +521,13 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
       */
     def bitmapCategory(field: Symbol): Name = {
       import nme._
-      val isNormal = (
-        if (isFieldWithBitmap(field))
-          true
-        // bitmaps for checkinit fields are not inherited
-        else if (needsInitFlag(field) && !field.isDeferred)
-          false
-        else
-          return NO_NAME
-      )
+      val isNormal = (if (isFieldWithBitmap(field))
+                        true
+                      // bitmaps for checkinit fields are not inherited
+                      else if (needsInitFlag(field) && !field.isDeferred)
+                        false
+                      else
+                        return NO_NAME)
       if (field.accessed hasAnnotation TransientAttr) {
         if (isNormal)
           BITMAP_TRANSIENT
@@ -599,9 +601,13 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           tree match {
             case DefDef(_, _, _, _, _, _) =>
               val sym = tree.symbol
-              !(sym.isDeferred &&
-                (newSyms exists (nsym =>
-                  nsym.name == sym.name && (nsym.tpe matches sym.tpe))))
+              !(
+                sym.isDeferred &&
+                  (
+                    newSyms exists (nsym =>
+                      nsym.name == sym.name && (nsym.tpe matches sym.tpe))
+                  )
+              )
             case _ =>
               true
           }
@@ -922,17 +928,18 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           } else if (needsInitFlag(sym) && !isEmpty && !clazz.hasFlag(TRAIT)) {
             assert(fieldOffset contains sym, sym)
             deriveDefDef(stat)(rhs =>
-              (mkCheckedAccessor(
-                clazz,
-                _: Tree,
-                fieldOffset(sym),
-                stat.pos,
-                sym))(
+              (
+                mkCheckedAccessor(
+                  clazz,
+                  _: Tree,
+                  fieldOffset(sym),
+                  stat.pos,
+                  sym)
+              )(
                 if (sym.tpe.resultType.typeSymbol == UnitClass)
                   UNIT
                 else
-                  rhs
-              ))
+                  rhs))
           } else if (sym.isConstructor) {
             deriveDefDef(stat)(addInitBits(clazz, _))
           } else if (settings.checkInit && !clazz.isTrait && sym.isSetter) {

@@ -82,8 +82,7 @@ class DelayedFactoryTest extends FunSuite {
     for ((name, helpFn) <- helpers) {
       test(
         "%s: buffered factories' proxy services should buffer until the factory is ready"
-          .format(name)
-      ) {
+          .format(name)) {
         val ctx = helpFn()
         import ctx._
 
@@ -98,10 +97,10 @@ class DelayedFactoryTest extends FunSuite {
       }
 
       test(
-        ("%s: an incomplete buffered factory should satisfy closures with exceptions if they're " +
-          "interrupted")
-          .format(name)
-      ) {
+        (
+          "%s: an incomplete buffered factory should satisfy closures with exceptions if they're " +
+            "interrupted"
+        ).format(name)) {
         val ctx = helpFn()
         import ctx._
 
@@ -119,8 +118,7 @@ class DelayedFactoryTest extends FunSuite {
 
       test(
         "%s: an incomplete buffered factory should detach closures if they're interrupted"
-          .format(name)
-      ) {
+          .format(name)) {
         val ctx = helpFn()
         import ctx._
 
@@ -139,8 +137,7 @@ class DelayedFactoryTest extends FunSuite {
 
       test(
         "%s: an incomplete buffered factory should be OK with exceptions if they're interrupted"
-          .format(name)
-      ) {
+          .format(name)) {
         val ctx = helpFn()
         import ctx._
 
@@ -156,8 +153,7 @@ class DelayedFactoryTest extends FunSuite {
 
       test(
         "%s: a buffered factory that's completed with an exception should finish with an exception"
-          .format(name)
-      ) {
+          .format(name)) {
         val ctx = helpFn()
         import ctx._
 
@@ -174,8 +170,7 @@ class DelayedFactoryTest extends FunSuite {
 
       test(
         "%s: a factory that's completed with an exception should finish with an exception"
-          .format(name)
-      ) {
+          .format(name)) {
         val ctx = helpFn()
         import ctx._
 
@@ -196,8 +191,7 @@ class DelayedFactoryTest extends FunSuite {
     for ((name, helpFn) <- helpers) {
       test(
         "%s: a closed buffered factory should close the underlying factory once it's ready"
-          .format(name)
-      ) {
+          .format(name)) {
         val ctx = helpFn()
         import ctx._
 
@@ -211,8 +205,7 @@ class DelayedFactoryTest extends FunSuite {
 
       test(
         "%s: an unclosed buffered factory should get ready then get closed properly"
-          .format(name)
-      ) {
+          .format(name)) {
         val ctx = helpFn()
         import ctx._
 
@@ -257,12 +250,10 @@ class DelayedFactoryTest extends FunSuite {
   testDelayedHelpers(
     Map(
       "Normal" -> (() => new BareDelayedHelper {}),
-      "Swapping" -> (() => new SwapOnBareHelper {})
-    ))
+      "Swapping" -> (() => new SwapOnBareHelper {})))
   testClosingDelayedHelpers(
     Map(
       "Normal" -> (() => new DefaultClosingHelper {}),
-      "Swapping" -> (() => new SwapOnCloseHelper {})
-    ))
+      "Swapping" -> (() => new SwapOnCloseHelper {})))
 
 }

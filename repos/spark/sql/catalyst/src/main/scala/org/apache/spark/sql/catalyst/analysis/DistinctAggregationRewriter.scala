@@ -144,9 +144,10 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
         If(EqualTo(gid, id), e, nullify(e))
       def patchAggregateFunctionChildren(af: AggregateFunction)(
           attrs: Expression => Expression): AggregateFunction = {
-        af.withNewChildren(af.children.map {
-            case afc => attrs(afc)
-          })
+        af.withNewChildren(
+            af.children.map {
+              case afc => attrs(afc)
+            })
           .asInstanceOf[AggregateFunction]
       }
 
@@ -259,8 +260,10 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
       // Construct the second aggregate
       val transformations: Map[Expression, Expression] =
-        (distinctAggOperatorMap.flatMap(_._2) ++
-          regularAggOperatorMap.map(e => (e._1, e._3))).toMap
+        (
+          distinctAggOperatorMap.flatMap(_._2) ++
+            regularAggOperatorMap.map(e => (e._1, e._3))
+        ).toMap
 
       val patchedAggExpressions = a.aggregateExpressions.map { e =>
         e.transformDown {

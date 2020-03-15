@@ -120,13 +120,15 @@ class FSMActorSpec
       // lock that locked after being open for 1 sec
       val lock = system.actorOf(Props(new Lock("33221", 1 second, latches)))
 
-      val transitionTester = system.actorOf(Props(new Actor {
-        def receive = {
-          case Transition(_, _, _) ⇒ transitionCallBackLatch.open
-          case CurrentState(_, s: LockState) if s eq Locked ⇒
-            initialStateLatch.open // SI-5900 workaround
-        }
-      }))
+      val transitionTester = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case Transition(_, _, _) ⇒ transitionCallBackLatch.open
+              case CurrentState(_, s: LockState) if s eq Locked ⇒
+                initialStateLatch.open // SI-5900 workaround
+            }
+          }))
 
       lock ! SubscribeTransitionCallBack(transitionTester)
       Await.ready(initialStateLatch, timeout.duration)
@@ -150,13 +152,15 @@ class FSMActorSpec
       }
 
       val answerLatch = TestLatch()
-      val tester = system.actorOf(Props(new Actor {
-        def receive = {
-          case Hello ⇒ lock ! "hello"
-          case "world" ⇒ answerLatch.open
-          case Bye ⇒ lock ! "bye"
-        }
-      }))
+      val tester = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case Hello ⇒ lock ! "hello"
+              case "world" ⇒ answerLatch.open
+              case Bye ⇒ lock ! "bye"
+            }
+          }))
       tester ! Hello
       Await.ready(answerLatch, timeout.duration)
 
@@ -165,12 +169,13 @@ class FSMActorSpec
     }
 
     "log termination" in {
-      val fsm = TestActorRef(new Actor with FSM[Int, Null] {
-        startWith(1, null)
-        when(1) {
-          case Event("go", _) ⇒ goto(2)
-        }
-      })
+      val fsm = TestActorRef(
+        new Actor with FSM[Int, Null] {
+          startWith(1, null)
+          when(1) {
+            case Event("go", _) ⇒ goto(2)
+          }
+        })
       val name = fsm.path.toString
       EventFilter.error(
         "Next state 2 does not exist",
@@ -211,15 +216,17 @@ class FSMActorSpec
 
     "run onTermination with updated state upon stop(reason, stateData)" in {
       val expected = "pigdog"
-      val actor = system.actorOf(Props(new Actor with FSM[Int, String] {
-        startWith(1, null)
-        when(1) {
-          case Event(2, null) ⇒ stop(FSM.Normal, expected)
-        }
-        onTermination {
-          case StopEvent(FSM.Normal, 1, `expected`) ⇒ testActor ! "green"
-        }
-      }))
+      val actor = system.actorOf(
+        Props(
+          new Actor with FSM[Int, String] {
+            startWith(1, null)
+            when(1) {
+              case Event(2, null) ⇒ stop(FSM.Normal, expected)
+            }
+            onTermination {
+              case StopEvent(FSM.Normal, 1, `expected`) ⇒ testActor ! "green"
+            }
+          }))
       actor ! 2
       expectMsg("green")
     }
@@ -228,26 +235,27 @@ class FSMActorSpec
       val timerNames = List("timer-1", "timer-2", "timer-3")
 
       // Lazy so fsmref can refer to checkTimersActive
-      lazy val fsmref = TestFSMRef(new Actor with FSM[String, Null] {
-        startWith("not-started", null)
-        when("not-started") {
-          case Event("start", _) ⇒ goto("started") replying "starting"
-        }
-        when("started", stateTimeout = 10 seconds) {
-          case Event("stop", _) ⇒ stop()
-        }
-        onTransition {
-          case "not-started" -> "started" ⇒
-            for (timerName ← timerNames)
-              setTimer(timerName, (), 10 seconds, false)
-        }
-        onTermination {
-          case _ ⇒ {
-            checkTimersActive(false)
-            testActor ! "stopped"
+      lazy val fsmref = TestFSMRef(
+        new Actor with FSM[String, Null] {
+          startWith("not-started", null)
+          when("not-started") {
+            case Event("start", _) ⇒ goto("started") replying "starting"
           }
-        }
-      })
+          when("started", stateTimeout = 10 seconds) {
+            case Event("stop", _) ⇒ stop()
+          }
+          onTransition {
+            case "not-started" -> "started" ⇒
+              for (timerName ← timerNames)
+                setTimer(timerName, (), 10 seconds, false)
+          }
+          onTermination {
+            case _ ⇒ {
+              checkTimersActive(false)
+              testActor ! "stopped"
+            }
+          }
+        })
 
       def checkTimersActive(active: Boolean) {
         for (timer ← timerNames)
@@ -278,22 +286,23 @@ class FSMActorSpec
       try {
         new TestKit(fsmEventSystem) {
           EventFilter.debug(occurrences = 5) intercept {
-            val fsm = TestActorRef(new Actor with LoggingFSM[Int, Null] {
-              startWith(1, null)
-              when(1) {
-                case Event("go", _) ⇒
-                  setTimer("t", FSM.Shutdown, 1.5 seconds, false)
-                  goto(2)
-              }
-              when(2) {
-                case Event("stop", _) ⇒
-                  cancelTimer("t")
-                  stop
-              }
-              onTermination {
-                case StopEvent(r, _, _) ⇒ testActor ! r
-              }
-            })
+            val fsm = TestActorRef(
+              new Actor with LoggingFSM[Int, Null] {
+                startWith(1, null)
+                when(1) {
+                  case Event("go", _) ⇒
+                    setTimer("t", FSM.Shutdown, 1.5 seconds, false)
+                    goto(2)
+                }
+                when(2) {
+                  case Event("stop", _) ⇒
+                    cancelTimer("t")
+                    stop
+                }
+                onTermination {
+                  case StopEvent(r, _, _) ⇒ testActor ! r
+                }
+              })
             val name = fsm.path.toString
             val fsmClass = fsm.underlyingActor.getClass
             system.eventStream.subscribe(testActor, classOf[Logging.Debug])
@@ -332,14 +341,15 @@ class FSMActorSpec
     }
 
     "fill rolling event log and hand it out" in {
-      val fsmref = TestActorRef(new Actor with LoggingFSM[Int, Int] {
-        override def logDepth = 3
-        startWith(1, 0)
-        when(1) {
-          case Event("count", c) ⇒ stay using (c + 1)
-          case Event("log", _) ⇒ stay replying getLog
-        }
-      })
+      val fsmref = TestActorRef(
+        new Actor with LoggingFSM[Int, Int] {
+          override def logDepth = 3
+          startWith(1, 0)
+          when(1) {
+            case Event("count", c) ⇒ stay using (c + 1)
+            case Event("log", _) ⇒ stay replying getLog
+          }
+        })
       fsmref ! "log"
       val fsm = fsmref.underlyingActor
       import FSM.LogEntry
@@ -364,17 +374,20 @@ class FSMActorSpec
 
     "allow transforming of state results" in {
       import akka.actor.FSM._
-      val fsmref = system.actorOf(Props(new Actor with FSM[Int, Int] {
-        startWith(0, 0)
-        when(0)(transform {
-          case Event("go", _) ⇒ stay
-        } using {
-          case x ⇒ goto(1)
-        })
-        when(1) {
-          case _ ⇒ stay
-        }
-      }))
+      val fsmref = system.actorOf(
+        Props(
+          new Actor with FSM[Int, Int] {
+            startWith(0, 0)
+            when(0)(
+              transform {
+                case Event("go", _) ⇒ stay
+              } using {
+                case x ⇒ goto(1)
+              })
+            when(1) {
+              case _ ⇒ stay
+            }
+          }))
       fsmref ! SubscribeTransitionCallBack(testActor)
       fsmref ! "go"
       expectMsg(CurrentState(fsmref, 0))
@@ -387,22 +400,24 @@ class FSMActorSpec
 
       val OverrideTimeoutToInf = "override-timeout-to-inf"
 
-      val fsm = sys.actorOf(Props(new Actor with FSM[String, String] {
+      val fsm = sys.actorOf(
+        Props(
+          new Actor with FSM[String, String] {
 
-        startWith("init", "")
+            startWith("init", "")
 
-        when("init", stateTimeout = 1.second) {
-          case Event(StateTimeout, _) ⇒
-            p.ref ! StateTimeout
-            stay()
+            when("init", stateTimeout = 1.second) {
+              case Event(StateTimeout, _) ⇒
+                p.ref ! StateTimeout
+                stay()
 
-          case Event(OverrideTimeoutToInf, _) ⇒
-            p.ref ! OverrideTimeoutToInf
-            stay() forMax Duration.Inf
-        }
+              case Event(OverrideTimeoutToInf, _) ⇒
+                p.ref ! OverrideTimeoutToInf
+                stay() forMax Duration.Inf
+            }
 
-        initialize()
-      }))
+            initialize()
+          }))
 
       try {
         p.expectMsg(FSM.StateTimeout)

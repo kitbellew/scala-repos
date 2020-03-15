@@ -73,15 +73,16 @@ object LAScheduler extends LAScheduler with Loggable {
           })
 
       def execute(f: () => Unit): Unit =
-        es.execute(new Runnable {
-          def run() {
-            try {
-              f()
-            } catch {
-              case e: Exception => logger.error("Lift Actor Scheduler", e)
+        es.execute(
+          new Runnable {
+            def run() {
+              try {
+                f()
+              } catch {
+                case e: Exception => logger.error("Lift Actor Scheduler", e)
+              }
             }
-          }
-        })
+          })
 
       def shutdown(): Unit = {
         es.shutdown()
@@ -579,19 +580,21 @@ object LiftActorJ {
     val methods = getBaseClasses(clz).flatMap(
       _.getDeclaredMethods.toList.filter(receiver))
 
-    val clzMap: Map[Class[_], Method] = Map(methods.map { m =>
-      m.setAccessible(true) // access private and protected methods
-      m.getParameterTypes().apply(0) -> m
-    }: _*)
+    val clzMap: Map[Class[_], Method] = Map(
+      methods.map { m =>
+        m.setAccessible(true) // access private and protected methods
+        m.getParameterTypes().apply(0) -> m
+      }: _*)
 
     new DispatchVendor(clzMap)
   }
 }
 
 private final class DispatchVendor(map: Map[Class[_], Method]) {
-  private val baseMap: Map[Class[_], Option[Method]] = Map(map.map {
-    case (k, v) => (k, Some(v))
-  }.toList: _*)
+  private val baseMap: Map[Class[_], Option[Method]] = Map(
+    map.map {
+      case (k, v) => (k, Some(v))
+    }.toList: _*)
 
   def vend(actor: LiftActorJ): PartialFunction[Any, Unit] =
     new PartialFunction[Any, Unit] {

@@ -195,8 +195,9 @@ trait TypeHints {
 
     def classFor(hint: String): Option[Class[_]] = {
       def hasClass(h: TypeHints) =
-        scala.util.control.Exception.allCatch opt (h.classFor(
-          hint)) map (_.isDefined) getOrElse (false)
+        scala.util.control.Exception.allCatch opt (h.classFor(hint)) map (
+          _.isDefined
+        ) getOrElse (false)
 
       components find (hasClass) flatMap (_.classFor(hint))
     }

@@ -2,12 +2,9 @@ trait SCL10006 {
 
   import cats._
 
-  val x: /*start*/ Unapply.Aux2Right[
-    Applicative,
-    Either[String, Int],
-    Either,
+  val x: /*start*/ Unapply.Aux2Right[Applicative, Either[
     String,
-    Int]#M[List[
+    Int], Either, String, Int]#M[List[
     Unapply.Aux2Right[Applicative, Either[String, Int], Either, String, Int]#A
   ]] /*end*/
 }

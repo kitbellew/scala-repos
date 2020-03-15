@@ -774,8 +774,9 @@ object DecisionTree extends Serializable with Logging {
           logDebug("best split = " + split)
 
           // Extract info for this node.  Create children if not leaf.
-          val isLeaf = (stats.gain <= 0) || (Node.indexToLevel(
-            nodeIndex) == metadata.maxDepth)
+          val isLeaf = (stats.gain <= 0) || (
+            Node.indexToLevel(nodeIndex) == metadata.maxDepth
+          )
           assert(node.id == nodeIndex)
           node.predict = predict
           node.isLeaf = isLeaf
@@ -972,8 +973,9 @@ object DecisionTree extends Serializable with Logging {
                   nodeFeatureOffset,
                   numSplits)
                 rightChildStats.subtract(leftChildStats)
-                predictWithImpurity = Some(predictWithImpurity.getOrElse(
-                  calculatePredictImpurity(leftChildStats, rightChildStats)))
+                predictWithImpurity = Some(
+                  predictWithImpurity.getOrElse(
+                    calculatePredictImpurity(leftChildStats, rightChildStats)))
                 val gainStats = calculateGainForSplit(
                   leftChildStats,
                   rightChildStats,
@@ -996,8 +998,9 @@ object DecisionTree extends Serializable with Logging {
               val rightChildStats = binAggregates
                 .getParentImpurityCalculator()
                 .subtract(leftChildStats)
-              predictWithImpurity = Some(predictWithImpurity.getOrElse(
-                calculatePredictImpurity(leftChildStats, rightChildStats)))
+              predictWithImpurity = Some(
+                predictWithImpurity.getOrElse(
+                  calculatePredictImpurity(leftChildStats, rightChildStats)))
               val gainStats = calculateGainForSplit(
                 leftChildStats,
                 rightChildStats,
@@ -1085,8 +1088,9 @@ object DecisionTree extends Serializable with Logging {
                 nodeFeatureOffset,
                 lastCategory)
               rightChildStats.subtract(leftChildStats)
-              predictWithImpurity = Some(predictWithImpurity.getOrElse(
-                calculatePredictImpurity(leftChildStats, rightChildStats)))
+              predictWithImpurity = Some(
+                predictWithImpurity.getOrElse(
+                  calculatePredictImpurity(leftChildStats, rightChildStats)))
               val gainStats = calculateGainForSplit(
                 leftChildStats,
                 rightChildStats,

@@ -36,10 +36,11 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
 
   def parents: Iterator[HoconPsiElement] =
     Iterator
-      .iterate(this)(_.parent match {
-        case Some(he: HoconPsiElement) => he
-        case _                         => null
-      })
+      .iterate(this)(
+        _.parent match {
+          case Some(he: HoconPsiElement) => he
+          case _                         => null
+        })
       .takeWhile(_ != null)
 
   def elementType = getNode.getElementType
@@ -177,8 +178,7 @@ sealed trait HKeyedField
               obj =>
                 obj.prefixingField
                   .map(_.fieldsInAllPathsBackward)
-                  .getOrElse(Stream.empty)
-            ))
+                  .getOrElse(Stream.empty)))
           .get
     )
 
@@ -334,16 +334,12 @@ final class HKey(ast: ASTNode) extends HoconPsiElement(ast) with HInnerElement {
     }
 
   def allKeysFromToplevel: Option[List[HKey]] =
-    forParent(
-      path => path.allKeys,
-      keyedEntry => keyedEntry.keysInAllPaths
-    )
+    forParent(path => path.allKeys, keyedEntry => keyedEntry.keysInAllPaths)
 
   def enclosingEntries: HObjectEntries =
     forParent(
       path => getContainingFile.toplevelEntries,
-      keyedField => keyedField.enclosingEntries
-    )
+      keyedField => keyedField.enclosingEntries)
 
   def stringValue =
     allChildren.collect {
@@ -424,8 +420,7 @@ sealed trait HValue extends HoconPsiElement with HInnerElement {
         else
           Some(vf),
       arr => None,
-      concat => concat.prefixingField
-    )
+      concat => concat.prefixingField)
 }
 
 final class HObject(ast: ASTNode)
@@ -496,17 +491,21 @@ sealed trait HString
       case HoconTokenType.QuotedString =>
         getText.substring(
           1,
-          getText.length - (if (isClosed)
-                              1
-                            else
-                              0))
+          getText.length - (
+            if (isClosed)
+              1
+            else
+              0
+          ))
       case HoconTokenType.MultilineString =>
         getText.substring(
           3,
-          getText.length - (if (isClosed)
-                              3
-                            else
-                              0))
+          getText.length - (
+            if (isClosed)
+              3
+            else
+              0
+          ))
       case HoconElementType.UnquotedString =>
         getText
     }

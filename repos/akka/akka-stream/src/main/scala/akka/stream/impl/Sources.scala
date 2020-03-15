@@ -29,9 +29,8 @@ private[stream] object QueueSource {
 final private[stream] class QueueSource[T](
     maxBuffer: Int,
     overflowStrategy: OverflowStrategy)
-    extends GraphStageWithMaterializedValue[
-      SourceShape[T],
-      SourceQueueWithComplete[T]] {
+    extends GraphStageWithMaterializedValue[SourceShape[
+      T], SourceQueueWithComplete[T]] {
   import QueueSource._
 
   val out = Outlet[T]("queueSource.out")
@@ -94,8 +93,9 @@ final private[stream] class QueueSource[T](
               case Backpressure ⇒
                 pendingOffer match {
                   case Some(_) ⇒
-                    offer.promise.failure(new IllegalStateException(
-                      "You have to wait for previous offer to be resolved to send another request"))
+                    offer.promise.failure(
+                      new IllegalStateException(
+                        "You have to wait for previous offer to be resolved to send another request"))
                   case None ⇒
                     pendingOffer = Some(offer)
                 }
@@ -130,8 +130,9 @@ final private[stream] class QueueSource[T](
                   completion.failure(bufferOverflowException)
                   failStage(bufferOverflowException)
                 case Backpressure ⇒
-                  promise.failure(new IllegalStateException(
-                    "You have to wait for previous offer to be resolved to send another request"))
+                  promise.failure(
+                    new IllegalStateException(
+                      "You have to wait for previous offer to be resolved to send another request"))
               }
 
           case Completion ⇒

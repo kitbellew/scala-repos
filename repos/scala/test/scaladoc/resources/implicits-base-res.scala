@@ -39,9 +39,10 @@ object A {
   implicit def enrichA0[V](a: A[V]) = new EnrichedA(a)
   implicit def enrichA1[ZBUR: Numeric](a: A[ZBUR]) = new NumericA[ZBUR](a)
   implicit def enrichA2(a: A[Int]) = new IntA(a)
-  implicit def enrichA3(a: A[T] forSome {
-    type T <: Double
-  }) = new GtColonDoubleA(a)
+  implicit def enrichA3(
+      a: A[T] forSome {
+        type T <: Double
+      }) = new GtColonDoubleA(a)
   implicit def enrichA4[S](
       a: A[Foo[Bar[S]]])(implicit foo: Foo[S], bar: Bar[S]): EnrichedA[S] =
     sys.error("not implemented")
@@ -131,9 +132,10 @@ class IntA(a: A[Int]) {
 /** GtColonDoubleA class <br/>
   *  - tests the interaction between implicit conversion and existential types
   *  - A and B should be implicitly converted to this */
-class GtColonDoubleA(a: A[T] forSome {
-  type T <: Double
-}) {
+class GtColonDoubleA(
+    a: A[T] forSome {
+      type T <: Double
+    }) {
 
   /** The convToGtColonDoubleA: Double documentation... */
   def convToGtColonDoubleA(x: Double): Double = 0

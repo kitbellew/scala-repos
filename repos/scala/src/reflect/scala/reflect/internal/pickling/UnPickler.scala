@@ -136,8 +136,10 @@ abstract class UnPickler {
     /** Does entry represent an (internal) symbol */
     protected def isSymbolEntry(i: Int): Boolean = {
       val tag = bytes(index(i)).toInt
-      (firstSymTag <= tag && tag <= lastSymTag &&
-      (tag != CLASSsym || !isRefinementSymbolEntry(i)))
+      (
+        firstSymTag <= tag && tag <= lastSymTag &&
+        (tag != CLASSsym || !isRefinementSymbolEntry(i))
+      )
     }
 
     /** Does entry represent an (internal or external) symbol */
@@ -274,11 +276,13 @@ abstract class UnPickler {
             else
               None
 
-          (module map {
-            case (group, art) =>
-              s"""\n(NOTE: It looks like the $art module is missing; try adding a dependency on "$group" : "$art".
+          (
+            module map {
+              case (group, art) =>
+                s"""\n(NOTE: It looks like the $art module is missing; try adding a dependency on "$group" : "$art".
                |       See http://docs.scala-lang.org/overviews/ for more information.)""".stripMargin
-          } getOrElse "")
+            } getOrElse ""
+          )
         }
 
         def localDummy = {
@@ -377,42 +381,39 @@ abstract class UnPickler {
         sym
       }
 
-      finishSym(tag match {
-        case TYPEsym | ALIASsym =>
-          owner.newNonClassSymbol(name.toTypeName, NoPosition, pflags)
-        case CLASSsym =>
-          val sym = (
-            if (isClassRoot) {
-              if (isModuleFlag)
-                moduleRoot.moduleClass setFlag pflags
-              else
-                classRoot setFlag pflags
+      finishSym(
+        tag match {
+          case TYPEsym | ALIASsym =>
+            owner.newNonClassSymbol(name.toTypeName, NoPosition, pflags)
+          case CLASSsym =>
+            val sym = (if (isClassRoot) {
+                         if (isModuleFlag)
+                           moduleRoot.moduleClass setFlag pflags
+                         else
+                           classRoot setFlag pflags
+                       } else
+                         owner
+                           .newClassSymbol(name.toTypeName, NoPosition, pflags))
+            if (!atEnd)
+              sym.typeOfThis = newLazyTypeRef(readNat())
+
+            sym
+          case MODULEsym =>
+            val clazz =
+              at(inforef, () => readType()).typeSymbol // after NMT_TRANSITION, we can leave off the () => ... ()
+            if (isModuleRoot)
+              moduleRoot setFlag pflags
+            else
+              owner.newLinkedModule(clazz, pflags)
+          case VALsym =>
+            if (isModuleRoot) {
+              abort(s"VALsym at module root: owner = $owner, name = $name")
             } else
-              owner.newClassSymbol(name.toTypeName, NoPosition, pflags)
-          )
-          if (!atEnd)
-            sym.typeOfThis = newLazyTypeRef(readNat())
+              owner.newTermSymbol(name.toTermName, NoPosition, pflags)
 
-          sym
-        case MODULEsym =>
-          val clazz =
-            at(
-              inforef,
-              () =>
-                readType()).typeSymbol // after NMT_TRANSITION, we can leave off the () => ... ()
-          if (isModuleRoot)
-            moduleRoot setFlag pflags
-          else
-            owner.newLinkedModule(clazz, pflags)
-        case VALsym =>
-          if (isModuleRoot) {
-            abort(s"VALsym at module root: owner = $owner, name = $name")
-          } else
-            owner.newTermSymbol(name.toTermName, NoPosition, pflags)
-
-        case _ =>
-          errorBadSignature("bad symbol tag: " + tag)
-      })
+          case _ =>
+            errorBadSignature("bad symbol tag: " + tag)
+        })
     }
 
     protected def readType(forceProperType: Boolean = false): Type = {
@@ -428,12 +429,10 @@ abstract class UnPickler {
       // Only happen for trees, "case Apply" in readTree() takes care of selecting the correct
       // alternative after parsing the arguments.
       def MethodTypeRef(restpe: Type, params: List[Symbol]): Type =
-        (
-          if (restpe == NoType || (params contains NoSymbol))
-            NoType
-          else
-            MethodType(params, restpe)
-        )
+        (if (restpe == NoType || (params contains NoSymbol))
+           NoType
+         else
+           MethodType(params, restpe))
       def PolyOrNullaryType(restpe: Type, tparams: List[Symbol]): Type =
         tparams match {
           case Nil => NullaryMethodType(restpe)
@@ -875,8 +874,11 @@ abstract class UnPickler {
           var alias = at(j, readSymbol)
           if (alias.isOverloaded)
             alias =
-              slowButSafeEnteringPhase(picklerPhase)((alias suchThat (alt =>
-                sym.tpe =:= sym.owner.thisType.memberType(alt))))
+              slowButSafeEnteringPhase(picklerPhase)(
+                (
+                  alias suchThat (alt =>
+                    sym.tpe =:= sym.owner.thisType.memberType(alt))
+                ))
 
           sym.asInstanceOf[TermSymbol].setAlias(alias)
         } catch {

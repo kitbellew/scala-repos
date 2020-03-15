@@ -9,8 +9,7 @@ trait MarkovChainFixture {
         MatrixEntry(0, 0, 3),
         MatrixEntry(0, 1, 7),
         MatrixEntry(1, 0, 10),
-        MatrixEntry(1, 1, 10)
-      )
+        MatrixEntry(1, 1, 10))
     }
   }
 

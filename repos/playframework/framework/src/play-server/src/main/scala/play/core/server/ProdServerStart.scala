@@ -129,8 +129,7 @@ object ProdServerStart {
       address = address,
       mode = Mode.Prod,
       properties = process.properties,
-      configuration = configuration
-    )
+      configuration = configuration)
   }
 
   /**
@@ -152,8 +151,9 @@ object ProdServerStart {
           s"This application is already running (Or delete ${pidFile.getPath} file).")
       }
 
-      val pid = process.pid getOrElse (throw ServerStartException(
-        "Couldn't determine current process's pid"))
+      val pid = process.pid getOrElse (
+        throw ServerStartException("Couldn't determine current process's pid")
+      )
       val out = new FileOutputStream(pidFile)
       try out.write(pid.getBytes)
       finally out.close()

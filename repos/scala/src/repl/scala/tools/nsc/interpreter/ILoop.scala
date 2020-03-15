@@ -298,8 +298,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       "phase",
       "<phase>",
       "set the implicit phase for power commands",
-      phaseCommand)
-  )
+      phaseCommand))
 
   private def importsCommand(line: String): Result = {
     val tokens = words(line)
@@ -331,18 +330,13 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
             ""
           else
             found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(
-          typeMsg,
-          termMsg,
-          implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
+        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (
+          _ == ""
+        ) mkString ("(", ", ", ")")
 
         intp.reporter.printMessage(
-          "%2d) %-30s %s%s".format(
-            idx + 1,
-            handler.importString,
-            statsMsg,
-            foundMsg
-          ))
+          "%2d) %-30s %s%s"
+            .format(idx + 1, handler.importString, statsMsg, foundMsg))
     }
   }
 
@@ -480,12 +474,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   private val crashRecovery: PartialFunction[Throwable, Boolean] = {
     case ex: Throwable =>
-      val (err, explain) = (
-        if (intp.isInitializeComplete)
-          (intp.global.throwableAsString(ex), "")
-        else
-          (ex.getMessage, "The compiler did not initialize.\n")
-      )
+      val (err, explain) = (if (intp.isInitializeComplete)
+                              (intp.global.throwableAsString(ex), "")
+                            else
+                              (
+                                ex.getMessage,
+                                "The compiler did not initialize.\n"))
       echo(err)
 
       ex match {
@@ -782,14 +776,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   def saveCommand(filename: String): Result =
-    (
-      if (filename.isEmpty)
-        echo("File name is required.")
-      else if (replayCommandStack.isEmpty)
-        echo("No replay commands in session")
-      else
-        File(filename).printlnAll(replayCommands: _*)
-    )
+    (if (filename.isEmpty)
+       echo("File name is required.")
+     else if (replayCommandStack.isEmpty)
+       echo("No replay commands in session")
+     else
+       File(filename).printlnAll(replayCommands: _*))
 
   @deprecated(
     "Use reset, replay or require to update class path",
@@ -894,10 +886,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   def verbosity() = {
     intp.printResults = !intp.printResults
-    replinfo(s"Result printing is ${if (intp.printResults)
-      "on"
-    else
-      "off"}.")
+    replinfo(
+      s"Result printing is ${if (intp.printResults)
+        "on"
+      else
+        "off"}.")
   }
 
   /** Run one command submitted by the user.  Two values are returned:
@@ -1146,9 +1139,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           mkReader(instantiater(cls))
         })
 
-      val reader = (readers collect {
-        case Success(reader) => reader
-      } headOption) getOrElse SimpleReader()
+      val reader = (
+        readers collect {
+          case Success(reader) => reader
+        } headOption
+      ) getOrElse SimpleReader()
 
       if (settings.debug) {
         val readerDiags = (readerClasses, readers).zipped map {
@@ -1170,9 +1165,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     intp.quietBind(
       NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
     // Auto-run code via some setting.
-    (replProps.replAutorunCode.option
-      flatMap (f => io.File(f).safeSlurp())
-      foreach (intp quietRun _))
+    (
+      replProps.replAutorunCode.option
+        flatMap (f => io.File(f).safeSlurp())
+        foreach (intp quietRun _)
+    )
     // classloader and power mode setup
     intp.setContextClassLoader()
     if (isReplPower) {
@@ -1234,8 +1231,9 @@ object ILoop {
             // skip margin prefix for continuation lines, unless preserving session text for test
             // should test for repl.paste.ContinueString or replProps.continueText.contains(ch)
             override def write(str: String) =
-              if (!inSession && (str forall (ch =>
-                    ch.isWhitespace || ch == '|')))
+              if (!inSession && (
+                    str forall (ch => ch.isWhitespace || ch == '|')
+                  ))
                 ()
               else
                 super.write(str)

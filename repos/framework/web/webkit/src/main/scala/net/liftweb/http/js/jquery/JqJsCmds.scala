@@ -565,7 +565,9 @@ object JqJsCmds {
       extends JsCmd
       with HasTime {
     def toJsCmd =
-      "try{jQuery(" + ("#" + uid).encJs + ").show(" + timeStr + ");} catch (e) {}"
+      "try{jQuery(" + (
+        "#" + uid
+      ).encJs + ").show(" + timeStr + ");} catch (e) {}"
   }
 
   /**
@@ -596,7 +598,9 @@ object JqJsCmds {
       extends JsCmd
       with HasTime {
     def toJsCmd =
-      "try{jQuery(" + ("#" + uid).encJs + ").hide(" + timeStr + ");} catch (e) {}"
+      "try{jQuery(" + (
+        "#" + uid
+      ).encJs + ").hide(" + timeStr + ");} catch (e) {}"
   }
 
   /**
@@ -609,9 +613,11 @@ object JqJsCmds {
       fadeTime: TimeSpan)
       extends JsCmd {
     def toJsCmd =
-      (Show(where) & JqSetHtml(where, msg) & After(
-        duration,
-        Hide(where, fadeTime))).toJsCmd
+      (
+        Show(where) & JqSetHtml(where, msg) & After(
+          duration,
+          Hide(where, fadeTime))
+      ).toJsCmd
   }
 
   /**
@@ -633,10 +639,13 @@ object JqJsCmds {
   case class FadeOut(id: String, duration: TimeSpan, fadeTime: TimeSpan)
       extends JsCmd {
     def toJsCmd =
-      (After(
-        duration,
-        JqJE.JqId(id) ~> (new JsRaw("fadeOut(" + fadeTime.millis + ")")
-          with JsMember))).toJsCmd
+      (
+        After(
+          duration,
+          JqJE.JqId(id) ~> (
+            new JsRaw("fadeOut(" + fadeTime.millis + ")") with JsMember
+          ))
+      ).toJsCmd
   }
 
   /**
@@ -659,10 +668,13 @@ object JqJsCmds {
   case class FadeIn(id: String, duration: TimeSpan, fadeTime: TimeSpan)
       extends JsCmd {
     def toJsCmd =
-      (After(
-        duration,
-        JqJE.JqId(id) ~> (new JsRaw("fadeIn(" + fadeTime.millis + ")")
-          with JsMember))).toJsCmd
+      (
+        After(
+          duration,
+          JqJE.JqId(id) ~> (
+            new JsRaw("fadeIn(" + fadeTime.millis + ")") with JsMember
+          ))
+      ).toJsCmd
   }
 
   /**

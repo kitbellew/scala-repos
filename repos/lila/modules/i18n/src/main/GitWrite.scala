@@ -33,36 +33,40 @@ private[i18n] final class GitWrite(
     }
   }
 
-  private lazy val gitActor = system.actorOf(Props(new Actor {
+  private lazy val gitActor = system.actorOf(
+    Props(
+      new Actor {
 
-    def receive = {
+        def receive = {
 
-      case branch: String => {
-        logger.info("Checkout " + branch)
-        git checkout branch
-        sender ! (())
-      }
+          case branch: String => {
+            logger.info("Checkout " + branch)
+            git checkout branch
+            sender ! (())
+          }
 
-      case translation: Translation => {
-        val branch = "t/" + translation.id
-        val code = translation.code
-        val name = (LangList name code) err "Lang does not exist: " + code
-        val commitMsg = commitMessage(translation, name)
-        sender ! (git branchExists branch flatMap {
-          _.fold(
-            fuccess(logger.warn("! Branch already exists: " + branch)),
-            git.checkout(branch, true) >>
-              writeMessages(translation) >>-
-              logger.info("Add " + relFileOf(translation)) >>
-              (git add relFileOf(translation)) >>-
-              logger.info("- " + commitMsg) >>
-              (git commit commitMsg).void
-          )
-        }).await
-      }
+          case translation: Translation => {
+            val branch = "t/" + translation.id
+            val code = translation.code
+            val name = (LangList name code) err "Lang does not exist: " + code
+            val commitMsg = commitMessage(translation, name)
+            sender ! (
+              git branchExists branch flatMap {
+                _.fold(
+                  fuccess(logger.warn("! Branch already exists: " + branch)),
+                  git.checkout(branch, true) >>
+                    writeMessages(translation) >>-
+                    logger.info("Add " + relFileOf(translation)) >>
+                    (git add relFileOf(translation)) >>-
+                    logger.info("- " + commitMsg) >>
+                    (git commit commitMsg).void
+                )
+              }
+            ).await
+          }
 
-    }
-  }))
+        }
+      }))
 
   private def writeMessages(translation: Translation) = {
     logger.info("Write messages to " + absFileOf(translation))

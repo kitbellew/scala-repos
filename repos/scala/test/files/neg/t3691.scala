@@ -16,9 +16,11 @@ object Test {
     } // not ok
 
   val x =
-    (new {
-      type A = String
-    }): {
+    (
+      new {
+        type A = String
+      }
+    ): {
       type A[X]
     } // not ok
 //a: AnyRef{type A[X]}

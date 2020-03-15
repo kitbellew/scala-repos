@@ -14,9 +14,8 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
   */
 @RunWith(classOf[JUnitRunner])
 class SkinBaseSpec
-    extends SimpleSFXDelegateSpec[
-      jfxsc.SkinBase[jfxsc.Button],
-      SkinBase[jfxsc.Button]](
+    extends SimpleSFXDelegateSpec[jfxsc.SkinBase[jfxsc.Button], SkinBase[
+      jfxsc.Button]](
       classOf[jfxsc.SkinBase[jfxsc.Button]],
       classOf[SkinBase[jfxsc.Button]])
     with RunOnApplicationThread {

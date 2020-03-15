@@ -116,22 +116,25 @@ object test1 {
     println("30. " + r.e(r.x)) // static error
   }*/
 
-  def mb(r: Object {
-    def e[T](x: T): T
-  }) {
+  def mb(
+      r: Object {
+        def e[T](x: T): T
+      }) {
     println("31. " + r.e[Int](4)) // while this is ok
   }
 
-  def m1(r: Object {
-    def z(x: Tata): Unit
-  }) {
+  def m1(
+      r: Object {
+        def z(x: Tata): Unit
+      }) {
     println("32. " + r.z(new Titi)) // while this is ok
   }
 
-  def m2[T](r: Object {
-    def e(x: Tata): T;
-    val x: Tata
-  }) {
+  def m2[T](
+      r: Object {
+        def e(x: Tata): T;
+        val x: Tata
+      }) {
     println("33. " + r.e(r.x)) // and this too
   }
 
@@ -146,9 +149,10 @@ object test1 {
   Rec.g(11)
 
   this.l(Rec)
-  this.mb(new Object {
-    def e[T](x: T): T = x
-  })
+  this.mb(
+    new Object {
+      def e[T](x: T): T = x
+    })
   this.m1(Rec)
   this.m2[Tata](Rec)
   this.m3[Tata](new Rec3[Tata], t1)
@@ -180,9 +184,10 @@ object test2 {
         println("3")
       }
     }
-  def run(x: {
-    def f()
-  }) {
+  def run(
+      x: {
+        def f()
+      }) {
     x.f()
   }
   run(x3)
@@ -216,9 +221,10 @@ object test3 {
     def f = throw Exc()
   }
 
-  def m(r: {
-    def f: Nothing
-  }) =
+  def m(
+      r: {
+        def f: Nothing
+      }) =
     try {
       r.f
     } catch {
@@ -237,9 +243,10 @@ object test4 {
   val aar = Array(new A, new A, new A)
   val nar = Array(1, 2)
 
-  def f(p: {
-    def size: Int
-  }) = println(p.size)
+  def f(
+      p: {
+        def size: Int
+      }) = println(p.size)
   //def g[T <: {def size: Int}](p: T) = println(p.size) // open issue
   //def h[T <% {def size: Int}](p: T) = println(p.size) // open issue
 

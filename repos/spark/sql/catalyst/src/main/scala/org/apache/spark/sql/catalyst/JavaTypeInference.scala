@@ -345,8 +345,7 @@ object JavaTypeInference {
           expressions.If(
             IsNull(getPath),
             expressions.Literal.create(null, ObjectType(other)),
-            result
-          )
+            result)
         } else {
           result
         }
@@ -446,17 +445,18 @@ object JavaTypeInference {
         case other =>
           val properties = getJavaBeanProperties(other)
           if (properties.length > 0) {
-            CreateNamedStruct(properties.flatMap { p =>
-              val fieldName = p.getName
-              val fieldType = typeToken.method(p.getReadMethod).getReturnType
-              val fieldValue = Invoke(
-                inputObject,
-                p.getReadMethod.getName,
-                inferExternalType(fieldType.getRawType))
-              expressions.Literal(fieldName) :: extractorFor(
-                fieldValue,
-                fieldType) :: Nil
-            })
+            CreateNamedStruct(
+              properties.flatMap { p =>
+                val fieldName = p.getName
+                val fieldType = typeToken.method(p.getReadMethod).getReturnType
+                val fieldValue = Invoke(
+                  inputObject,
+                  p.getReadMethod.getName,
+                  inferExternalType(fieldType.getRawType))
+                expressions.Literal(fieldName) :: extractorFor(
+                  fieldValue,
+                  fieldType) :: Nil
+              })
           } else {
             throw new UnsupportedOperationException(
               s"Cannot infer type for class ${other.getName} because it is not bean-compliant")

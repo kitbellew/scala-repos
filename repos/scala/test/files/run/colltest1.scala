@@ -34,9 +34,11 @@ object Test extends App {
     assert(o.size == e.size)
     val gs = ten groupBy (x => x / 4)
     val vs1 =
-      (for (k <- gs.keysIterator;
-            v <- gs(k).toIterable.iterator)
-        yield v).toList.sorted
+      (
+        for (k <- gs.keysIterator;
+             v <- gs(k).toIterable.iterator)
+          yield v
+      ).toList.sorted
     val vs2 = gs.values.toList.flatten.sorted
 //    val vs2 = gs.values.toList flatMap (xs => xs)
     assert(ten.head == 1)
@@ -85,24 +87,28 @@ object Test extends App {
     val ten = empty ++ (1 to 10)
     println(ten)
     val tenPlus = ten map (_ + 1)
-    assert((ten zip tenPlus) forall {
-      case (x, y) => x + 1 == y
-    })
+    assert(
+      (ten zip tenPlus) forall {
+        case (x, y) => x + 1 == y
+      })
     val dble = ten flatMap (x => List(x, x))
     assert(dble.distinct == ten)
     assert(ten.length == 10)
     assert(ten(0) == 1 && ten(9) == 10)
     assert(
-      (ten lengthCompare 10) == 0 && (ten lengthCompare 1) > 0 && (ten lengthCompare 11) < 0)
+      (ten lengthCompare 10) == 0 && (ten lengthCompare 1) > 0 && (
+        ten lengthCompare 11
+      ) < 0)
     assert((ten isDefinedAt 0) && (ten isDefinedAt 9))
     assert(!(ten isDefinedAt -1));
     assert(!(ten isDefinedAt 10))
     val tenten = ten zip ten
     assert((tenten map (_._1)) == ten)
     assert((tenten map (_._2)) == ten)
-    assert(ten.zipWithIndex forall {
-      case (x, y) => x == y + 1
-    })
+    assert(
+      ten.zipWithIndex forall {
+        case (x, y) => x == y + 1
+      })
     assert(ten.segmentLength(_ <= 8, 4) == 4, ten.segmentLength(_ <= 8, 4))
     assert(ten.prefixLength(_ <= 8) == 8)
     assert(ten.indexWhere(_ >= 8, 4) == 7, ten.indexWhere(_ >= 8, 4))
@@ -136,8 +142,8 @@ object Test extends App {
     assert(ten contains 10)
     assert(!(ten contains 0))
     assert(
-      (empty ++ (1 to 7) union empty ++ (3 to 10)) == List(1, 2, 3, 4, 5, 6, 7,
-        3, 4, 5, 6, 7, 8, 9, 10))
+      (empty ++ (1 to 7) union empty ++ (3 to 10)) == List(
+        1, 2, 3, 4, 5, 6, 7, 3, 4, 5, 6, 7, 8, 9, 10))
     assert((ten diff ten).isEmpty)
     assert((ten diff List()) == ten)
     assert((ten diff (ten filter (_ % 2 == 0))) == (ten filterNot (_ % 2 == 0)))

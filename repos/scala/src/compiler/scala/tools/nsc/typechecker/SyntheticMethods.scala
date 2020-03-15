@@ -80,8 +80,9 @@ trait SyntheticMethods extends ast.TreeDSL {
       clazz0: Symbol,
       context: Context): Template = {
     val syntheticsOk = (phase.id <= currentRun.typerPhase.id) && {
-      symbolsToSynthesize(
-        clazz0) filter (_ matchingSymbol clazz0.info isSynthetic) match {
+      symbolsToSynthesize(clazz0) filter (
+        _ matchingSymbol clazz0.info isSynthetic
+      ) match {
         case Nil => true
         case syms =>
           log(
@@ -99,8 +100,7 @@ trait SyntheticMethods extends ast.TreeDSL {
           if (reporter.hasErrors)
             context makeSilent false
           else
-            context)
-      )
+            context))
     import synthesizer._
 
     if (clazz0 == AnyValClass || isPrimitiveValueClass(clazz0))
@@ -135,8 +135,9 @@ trait SyntheticMethods extends ast.TreeDSL {
     def hasOverridingImplementation(meth: Symbol) = {
       val sym = clazz.info nonPrivateMember meth.name
       sym.alternatives exists { m0 =>
-        (m0 ne meth) && !m0.isDeferred && !m0.isSynthetic && (m0.owner != AnyValClass) && (typeInClazz(
-          m0) matches typeInClazz(meth))
+        (m0 ne meth) && !m0.isDeferred && !m0.isSynthetic && (
+          m0.owner != AnyValClass
+        ) && (typeInClazz(m0) matches typeInClazz(meth))
       }
     }
     def productIteratorMethod = {
@@ -183,9 +184,7 @@ trait SyntheticMethods extends ast.TreeDSL {
             Typed(Ident(nme.WILDCARD), TypeTree(clazz.tpe)),
             EmptyTree,
             TRUE),
-          CaseDef(Ident(nme.WILDCARD), EmptyTree, FALSE)
-        )
-      )
+          CaseDef(Ident(nme.WILDCARD), EmptyTree, FALSE)))
     }
 
     /* (that.asInstanceOf[this.C])
@@ -220,8 +219,7 @@ trait SyntheticMethods extends ast.TreeDSL {
 
       thatTest(eqmeth) AND Block(
         ValDef(otherSym, thatCast(eqmeth)),
-        AND(tests: _*)
-      )
+        AND(tests: _*))
     }
 
     /* The equality method for case classes.
@@ -318,8 +316,7 @@ trait SyntheticMethods extends ast.TreeDSL {
             Ident(accumulator),
             callStaticsMethod("mix")(
               Ident(accumulator),
-              hashcodeImplementation(acc))
-          ))
+              hashcodeImplementation(acc))))
         val finish =
           callStaticsMethod("finalizeHash")(
             Ident(accumulator),
@@ -338,20 +335,17 @@ trait SyntheticMethods extends ast.TreeDSL {
     def valueClassMethods =
       List(
         Any_hashCode -> (() => hashCodeDerivedValueClassMethod),
-        Any_equals -> (() => equalsDerivedValueClassMethod)
-      )
+        Any_equals -> (() => equalsDerivedValueClassMethod))
 
     def caseClassMethods =
       productMethods ++ /*productNMethods ++*/ Seq(
         Object_hashCode -> (() => chooseHashcode),
         Object_toString -> (() => forwardToRuntime(Object_toString)),
-        Object_equals -> (() => equalsCaseClassMethod)
-      )
+        Object_equals -> (() => equalsCaseClassMethod))
 
     def valueCaseClassMethods =
       productMethods ++ /*productNMethods ++*/ valueClassMethods ++ Seq(
-        Any_toString -> (() => forwardToRuntime(Object_toString))
-      )
+        Any_toString -> (() => forwardToRuntime(Object_toString)))
 
     def caseObjectMethods =
       productMethods ++ Seq(
@@ -370,27 +364,23 @@ trait SyntheticMethods extends ast.TreeDSL {
      * for all case objects.)
      */
     def needsReadResolve =
-      (
-        clazz.isModuleClass
-          && clazz.isSerializable
-          && !hasConcreteImpl(nme.readResolve)
-          && clazz.isStatic
-      )
+      (clazz.isModuleClass
+        && clazz.isSerializable
+        && !hasConcreteImpl(nme.readResolve)
+        && clazz.isStatic)
 
     def synthesize(): List[Tree] = {
-      val methods = (
-        if (clazz.isCase)
-          if (clazz.isDerivedValueClass)
-            valueCaseClassMethods
-          else if (clazz.isModuleClass)
-            caseObjectMethods
-          else
-            caseClassMethods
-        else if (clazz.isDerivedValueClass)
-          valueClassMethods
-        else
-          Nil
-      )
+      val methods = (if (clazz.isCase)
+                       if (clazz.isDerivedValueClass)
+                         valueCaseClassMethods
+                       else if (clazz.isModuleClass)
+                         caseObjectMethods
+                       else
+                         caseClassMethods
+                     else if (clazz.isDerivedValueClass)
+                       valueClassMethods
+                     else
+                       Nil)
 
       /* Always generate overrides for equals and hashCode in value classes,
        * so they can appear in universal traits without breaking value semantics.
@@ -398,15 +388,18 @@ trait SyntheticMethods extends ast.TreeDSL {
       def impls = {
         def shouldGenerate(m: Symbol) = {
           !hasOverridingImplementation(m) || {
-            clazz.isDerivedValueClass && (m == Any_hashCode || m == Any_equals) && {
+            clazz.isDerivedValueClass && (
+              m == Any_hashCode || m == Any_equals
+            ) && {
               // Without a means to suppress this warning, I've thought better of it.
               if (settings.warnValueOverrides) {
                 (clazz.info nonPrivateMember m.name) filter (m =>
-                  (m.owner != AnyClass) && (m.owner != clazz) && !m.isDeferred) andAlso {
-                  m =>
-                    typer.context.warning(
-                      clazz.pos,
-                      s"Implementation of ${m.name} inherited from ${m.owner} overridden in $clazz to enforce value class semantics")
+                  (
+                    m.owner != AnyClass
+                  ) && (m.owner != clazz) && !m.isDeferred) andAlso { m =>
+                  typer.context.warning(
+                    clazz.pos,
+                    s"Implementation of ${m.name} inherited from ${m.owner} overridden in $clazz to enforce value class semantics")
                 }
               }
               true
@@ -422,10 +415,11 @@ trait SyntheticMethods extends ast.TreeDSL {
           // This method should be generated as private, but apparently if it is, then
           // it is name mangled afterward.  (Wonder why that is.) So it's only protected.
           // For sure special methods like "readResolve" should not be mangled.
-          List(createMethod(nme.readResolve, Nil, ObjectTpe)(m => {
-            m setFlag PRIVATE;
-            REF(clazz.sourceModule)
-          }))
+          List(
+            createMethod(nme.readResolve, Nil, ObjectTpe)(m => {
+              m setFlag PRIVATE;
+              REF(clazz.sourceModule)
+            }))
         } else
           Nil
       }

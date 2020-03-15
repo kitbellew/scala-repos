@@ -105,10 +105,12 @@ object ScalaCompletionUtil {
     }
     val iter = paramNamesWithTypes.map {
       case (s, tp) =>
-        s + ": " + (if (canonical) {
-                      ScType.canonicalText(tp)
-                    } else
-                      ScType.presentableText(tp))
+        s + ": " + (
+          if (canonical) {
+            ScType.canonicalText(tp)
+          } else
+            ScType.presentableText(tp)
+        )
     }
     val paramsString =
       if (paramNamesWithTypes.size != 1 || !braceArgs)
@@ -178,12 +180,18 @@ object ScalaCompletionUtil {
   }
 
   def awful(parent: PsiElement, leaf: PsiElement): Boolean = {
-    (leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-    leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
-    (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
-    (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-    !parent.getPrevSibling.getPrevSibling.getLastChild
-      .isInstanceOf[PsiErrorElement]))
+    (
+      leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
+      leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF
+    ) &&
+    (
+      parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
+      (
+        parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
+        !parent.getPrevSibling.getPrevSibling.getLastChild
+          .isInstanceOf[PsiErrorElement]
+      )
+    )
   }
 
   val DUMMY_IDENTIFIER = "IntellijIdeaRulezzz"

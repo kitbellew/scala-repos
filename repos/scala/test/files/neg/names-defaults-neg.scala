@@ -73,9 +73,11 @@ object Test extends App {
   // return types of default getters
 
   // definition compiles, but default cannot  be used, it doesn't conform
-  def test4[T[P]](x: T[T[List[T[X forSome {
-    type X
-  }]]]] = List(1, 2)) = x
+  def test4[T[P]](
+      x: T[T[List[T[
+        X forSome {
+          type X
+        }]]]] = List(1, 2)) = x
   test4()
 
   // doesn't compile

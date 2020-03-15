@@ -73,22 +73,23 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
     import PathMetadata._
     vfs.findDirectChildren(apiKey, path) map { paths =>
       JArray(
-        (paths map { p =>
-          val fields: Map[String, JValue] =
-            p.pathType match {
-              case DataDir(contentType) =>
-                Map(
-                  "contentType" -> JString(contentType.value),
-                  "type" -> JArray(JString("file"), JString("directory")))
-              case DataOnly(contentType) =>
-                Map(
-                  "contentType" -> JString(contentType.value),
-                  "type" -> JArray(JString("file")))
-              case PathOnly => Map("type" -> JArray(JString("directory")))
-            }
-          JObject(fields + ("name" -> JString(p.path.path.substring(1))))
-        }).toSeq: _*
-      )
+        (
+          paths map { p =>
+            val fields: Map[String, JValue] =
+              p.pathType match {
+                case DataDir(contentType) =>
+                  Map(
+                    "contentType" -> JString(contentType.value),
+                    "type" -> JArray(JString("file"), JString("directory")))
+                case DataOnly(contentType) =>
+                  Map(
+                    "contentType" -> JString(contentType.value),
+                    "type" -> JArray(JString("file")))
+                case PathOnly => Map("type" -> JArray(JString("directory")))
+              }
+            JObject(fields + ("name" -> JString(p.path.path.substring(1))))
+          }
+        ).toSeq: _*)
     }
   }
 
@@ -194,8 +195,9 @@ class BrowseServiceHandler[A](
               HttpResponse[JValue](
                 InternalServerError,
                 content = Some(
-                  JObject("errors" -> JArray(
-                    "sorry, we're looking into it!".serialize))))
+                  JObject(
+                    "errors" -> JArray(
+                      "sorry, we're looking into it!".serialize))))
             },
             {
               case ResourceError.NotFound(message) =>
@@ -212,10 +214,12 @@ class BrowseServiceHandler[A](
               case PermissionsError(message) =>
                 HttpResponse[JValue](
                   Forbidden,
-                  content = Some(JObject("errors" -> JArray(
-                    "API key %s does not have the ability to browse path %s: %s"
-                      .format(apiKey, path.path, message)
-                      .serialize)))
+                  content = Some(
+                    JObject(
+                      "errors" -> JArray(
+                        "API key %s does not have the ability to browse path %s: %s"
+                          .format(apiKey, path.path, message)
+                          .serialize)))
                 )
 
               case unexpected =>

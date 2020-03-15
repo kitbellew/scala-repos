@@ -130,8 +130,7 @@ abstract class TailCalls extends Transform {
           "Creating new `this` during tailcalls\n  method: %s\n  current class: %s"
             .format(
               method.ownerChain.mkString(" -> "),
-              currentClass.ownerChain.mkString(" -> ")
-            )
+              currentClass.ownerChain.mkString(" -> "))
         logResult(msg)(
           method
             .newValue(nme.THIS, pos, SYNTHETIC) setInfo currentClass.typeOfThis)
@@ -186,10 +185,12 @@ abstract class TailCalls extends Transform {
       private def isRecursiveCall(t: Tree) = {
         val receiver = t.symbol
 
-        ((receiver != null)
-        && receiver.isMethod
-        && (method.name == receiver.name)
-        && (method.enclClass isSubClass receiver.enclClass))
+        (
+          (receiver != null)
+          && receiver.isMethod
+          && (method.name == receiver.name)
+          && (method.enclClass isSubClass receiver.enclClass)
+        )
       }
       def containsRecursiveCall(t: Tree) = t exists isRecursiveCall
     }
@@ -350,8 +351,7 @@ abstract class TailCalls extends Transform {
                   LabelDef(
                     newCtx.label,
                     newThis :: vpSyms,
-                    mkAttributedCastHack(newRHS, newCtx.label.tpe.resultType))
-                ))
+                    mkAttributedCastHack(newRHS, newCtx.label.tpe.resultType))))
             } else {
               if (newCtx.isMandatory && (newCtx containsRecursiveCall newRHS))
                 tailrecFailure(newCtx)
@@ -368,7 +368,9 @@ abstract class TailCalls extends Transform {
           val transformedPrologue = noTailTransforms(prologue)
           val transformedCases = transformTrees(cases)
           val transformedStats =
-            if ((prologue eq transformedPrologue) && (cases eq transformedCases))
+            if ((
+                  prologue eq transformedPrologue
+                ) && (cases eq transformedCases))
               stats // allow reuse of `tree` if the subtransform was an identity
             else
               transformedPrologue ++ transformedCases

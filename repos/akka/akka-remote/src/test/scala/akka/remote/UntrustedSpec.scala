@@ -125,14 +125,15 @@ akka.loglevel = DEBUG
       // but instead install our own listener
       system.eventStream.subscribe(
         system.actorOf(
-          Props(new Actor {
-            import Logging._
-            def receive = {
-              case d @ Debug(_, _, msg: String) if msg contains "dropping" ⇒
-                logProbe.ref ! d
-              case _ ⇒
-            }
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              import Logging._
+              def receive = {
+                case d @ Debug(_, _, msg: String) if msg contains "dropping" ⇒
+                  logProbe.ref ! d
+                case _ ⇒
+              }
+            }).withDeploy(Deploy.local),
           "debugSniffer"
         ),
         classOf[Logging.Debug]
@@ -153,12 +154,14 @@ akka.loglevel = DEBUG
     }
 
     "discard watch messages" in {
-      client.actorOf(Props(new Actor {
-        context.watch(target2)
-        def receive = {
-          case x ⇒ testActor forward x
-        }
-      }).withDeploy(Deploy.local))
+      client.actorOf(
+        Props(
+          new Actor {
+            context.watch(target2)
+            def receive = {
+              case x ⇒ testActor forward x
+            }
+          }).withDeploy(Deploy.local))
       receptionist ! StopChild("child2")
       expectMsg("child2 stopped")
       // no Terminated msg, since watch was discarded

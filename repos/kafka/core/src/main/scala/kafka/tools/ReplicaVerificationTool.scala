@@ -217,12 +217,13 @@ object ReplicaVerificationTool extends Logging {
             doVerification = (brokerId == verificationBrokerId))
       }
 
-    Runtime.getRuntime.addShutdownHook(new Thread() {
-      override def run() {
-        info("Stopping all fetchers")
-        fetcherThreads.foreach(_.shutdown())
-      }
-    })
+    Runtime.getRuntime.addShutdownHook(
+      new Thread() {
+        override def run() {
+          info("Stopping all fetchers")
+          fetcherThreads.foreach(_.shutdown())
+        }
+      })
     fetcherThreads.foreach(_.start())
     println(
       ReplicaVerificationTool
@@ -381,17 +382,19 @@ private class ReplicaBuffer(
                         messageAndOffset.message.checksum))
                   case Some(messageInfoFromFirstReplica) =>
                     if (messageInfoFromFirstReplica.offset != messageAndOffset.offset) {
-                      println(ReplicaVerificationTool.getCurrentTimeString + ": partition " + topicAndPartition
-                        + ": replica " + messageInfoFromFirstReplica.replicaId + "'s offset "
-                        + messageInfoFromFirstReplica.offset + " doesn't match replica "
-                        + replicaId + "'s offset " + messageAndOffset.offset)
+                      println(
+                        ReplicaVerificationTool.getCurrentTimeString + ": partition " + topicAndPartition
+                          + ": replica " + messageInfoFromFirstReplica.replicaId + "'s offset "
+                          + messageInfoFromFirstReplica.offset + " doesn't match replica "
+                          + replicaId + "'s offset " + messageAndOffset.offset)
                       System.exit(1)
                     }
                     if (messageInfoFromFirstReplica.checksum != messageAndOffset.message.checksum)
-                      println(ReplicaVerificationTool.getCurrentTimeString + ": partition "
-                        + topicAndPartition + " has unmatched checksum at offset " + messageAndOffset.offset + "; replica "
-                        + messageInfoFromFirstReplica.replicaId + "'s checksum " + messageInfoFromFirstReplica.checksum
-                        + "; replica " + replicaId + "'s checksum " + messageAndOffset.message.checksum)
+                      println(
+                        ReplicaVerificationTool.getCurrentTimeString + ": partition "
+                          + topicAndPartition + " has unmatched checksum at offset " + messageAndOffset.offset + "; replica "
+                          + messageInfoFromFirstReplica.replicaId + "'s checksum " + messageInfoFromFirstReplica.checksum
+                          + "; replica " + replicaId + "'s checksum " + messageAndOffset.message.checksum)
                 }
               }
             } else
@@ -425,10 +428,11 @@ private class ReplicaBuffer(
     }
     val currentTimeMs = SystemTime.milliseconds
     if (currentTimeMs - lastReportTime > reportInterval) {
-      println(ReplicaVerificationTool.dateFormat.format(
-        new Date(currentTimeMs)) + ": max lag is "
-        + maxLag + " for partition " + maxLagTopicAndPartition + " at offset " + offsetWithMaxLag
-        + " among " + messageSetCache.size + " partitions")
+      println(
+        ReplicaVerificationTool.dateFormat.format(
+          new Date(currentTimeMs)) + ": max lag is "
+          + maxLag + " for partition " + maxLagTopicAndPartition + " at offset " + offsetWithMaxLag
+          + " among " + messageSetCache.size + " partitions")
       lastReportTime = currentTimeMs
     }
   }

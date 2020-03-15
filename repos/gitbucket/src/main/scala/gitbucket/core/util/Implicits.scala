@@ -72,14 +72,16 @@ object Implicits {
   implicit class RichRequest(request: HttpServletRequest) {
 
     def paths: Array[String] =
-      (request.getRequestURI.substring(
-        request.getContextPath.length + 1) match {
-        case path if path.startsWith("api/v3/repos/") =>
-          path.substring(13 /* "/api/v3/repos".length */ )
-        case path if path.startsWith("api/v3/orgs/") =>
-          path.substring(12 /* "/api/v3/orgs".length */ )
-        case path => path
-      }).split("/")
+      (
+        request.getRequestURI.substring(
+          request.getContextPath.length + 1) match {
+          case path if path.startsWith("api/v3/repos/") =>
+            path.substring(13 /* "/api/v3/repos".length */ )
+          case path if path.startsWith("api/v3/orgs/") =>
+            path.substring(12 /* "/api/v3/orgs".length */ )
+          case path => path
+        }
+      ).split("/")
 
     def hasQueryString: Boolean = request.getQueryString != null
 
@@ -90,8 +92,9 @@ object Implicits {
 
     def baseUrl: String = {
       val url = request.getRequestURL.toString
-      val len =
-        url.length - (request.getRequestURI.length - request.getContextPath.length)
+      val len = url.length - (
+        request.getRequestURI.length - request.getContextPath.length
+      )
       url.substring(0, len).stripSuffix("/")
     }
   }

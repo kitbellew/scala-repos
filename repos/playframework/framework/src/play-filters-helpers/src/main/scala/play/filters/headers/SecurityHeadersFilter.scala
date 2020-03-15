@@ -169,8 +169,7 @@ class SecurityHeadersModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[SecurityHeadersConfig].toProvider[SecurityHeadersConfigProvider],
-      bind[SecurityHeadersFilter].toSelf
-    )
+      bind[SecurityHeadersFilter].toSelf)
 }
 
 /**

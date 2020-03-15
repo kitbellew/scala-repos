@@ -477,7 +477,9 @@ trait KMediansCoreSetClustering {
 
         require(
           j < sideLengths.length,
-          "Point (%d) found outside of grid (%d). What to do..." format (j, sideLengths.length))
+          "Point (%d) found outside of grid (%d). What to do..." format (
+            j, sideLengths.length
+          ))
 
         val sideLength = sideLengths(j)
         val scaledPoint = {
@@ -622,42 +624,44 @@ trait ClusteringLibModule[M[+_]]
             val columns = schema.columns(
               JObjectFixedT(Map("value" -> JNumberT)))
             val cols: List[Int] =
-              (columns flatMap {
-                case lc: LongColumn =>
-                  range collect {
-                    case i if lc.isDefinedAt(i) && lc(i) > 0 => lc(i).toInt
-                  }
+              (
+                columns flatMap {
+                  case lc: LongColumn =>
+                    range collect {
+                      case i if lc.isDefinedAt(i) && lc(i) > 0 => lc(i).toInt
+                    }
 
-                case dc: DoubleColumn =>
-                  range flatMap { i =>
-                    if (dc.isDefinedAt(i)) {
-                      val n = dc(i)
-                      if (n.isValidInt && n > 0) {
-                        Some(n.toInt)
+                  case dc: DoubleColumn =>
+                    range flatMap { i =>
+                      if (dc.isDefinedAt(i)) {
+                        val n = dc(i)
+                        if (n.isValidInt && n > 0) {
+                          Some(n.toInt)
+                        } else {
+                          None
+                        }
                       } else {
                         None
                       }
-                    } else {
-                      None
                     }
-                  }
 
-                case nc: NumColumn =>
-                  range flatMap { i =>
-                    if (nc.isDefinedAt(i)) {
-                      val n = nc(i)
-                      if (n.isValidInt && n > 0) {
-                        Some(n.toInt)
+                  case nc: NumColumn =>
+                    range flatMap { i =>
+                      if (nc.isDefinedAt(i)) {
+                        val n = nc(i)
+                        if (n.isValidInt && n > 0) {
+                          Some(n.toInt)
+                        } else {
+                          None
+                        }
                       } else {
                         None
                       }
-                    } else {
-                      None
                     }
-                  }
 
-                case _ => List.empty[Int]
-              }).toList
+                  case _ => List.empty[Int]
+                }
+              ).toList
             cols
           }
         }
@@ -756,9 +760,13 @@ trait ClusteringLibModule[M[+_]]
 
               val tables: StreamT[M, (Table, JType)] = StreamT.wrapEffect {
                 specs map { ts =>
-                  StreamT.fromStream(M.point((ts map {
-                    case (spec, jtype) => (table.transform(spec), jtype)
-                  }).toStream))
+                  StreamT.fromStream(
+                    M.point(
+                      (
+                        ts map {
+                          case (spec, jtype) => (table.transform(spec), jtype)
+                        }
+                      ).toStream))
                 }
               }
 
@@ -773,11 +781,12 @@ trait ClusteringLibModule[M[+_]]
                     .normalize
                     .reduce(reducerFeatures(k))
 
-                  StreamT(coreSetTree map { tree =>
-                    StreamT.Yield(
-                      extract(tree, k, jtype, defaultNumber.getAndIncrement),
-                      StreamT.empty[M, Table])
-                  })
+                  StreamT(
+                    coreSetTree map { tree =>
+                      StreamT.Yield(
+                        extract(tree, k, jtype, defaultNumber.getAndIncrement),
+                        StreamT.empty[M, Table])
+                    })
               }
 
               features
@@ -793,16 +802,17 @@ trait ClusteringLibModule[M[+_]]
             def merge(
                 table: Option[Table],
                 tables: StreamT[M, Table]): OptionT[M, Table] = {
-              OptionT(tables.uncons flatMap {
-                case Some((head, tail)) =>
-                  table map { tbl =>
-                    merge(Some(tbl.cross(head)(modelConcat)), tail).run
-                  } getOrElse {
-                    merge(Some(head), tail).run
-                  }
-                case None =>
-                  M.point(table)
-              })
+              OptionT(
+                tables.uncons flatMap {
+                  case Some((head, tail)) =>
+                    table map { tbl =>
+                      merge(Some(tbl.cross(head)(modelConcat)), tail).run
+                    } getOrElse {
+                      merge(Some(head), tail).run
+                    }
+                  case None =>
+                    M.point(table)
+                })
             }
 
             merge(None, tables) getOrElse Table.empty

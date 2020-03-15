@@ -39,10 +39,7 @@ case object Glicko {
   val provisionalDeviation = 110
 
   def range(rating: Double, deviation: Double) =
-    (
-      rating - (deviation * 2),
-      rating + (deviation * 2)
-    )
+    (rating - (deviation * 2), rating + (deviation * 2))
 
   implicit val glickoBSONHandler =
     new BSON[Glicko] {

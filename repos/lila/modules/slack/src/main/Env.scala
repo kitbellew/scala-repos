@@ -26,17 +26,19 @@ final class Env(
   private lazy val client =
     new SlackClient(url = IncomingUrl, defaultChannel = IncomingDefaultChannel)
 
-  system.actorOf(Props(new Actor {
-    override def preStart() {
-      system.lilaBus.subscribe(self, 'donation, 'deploy, 'slack)
-    }
-    def receive = {
-      case d: DonationEvent            => api donation d
-      case Deploy(RemindDeployPre, _)  => api.deployPre
-      case Deploy(RemindDeployPost, _) => api.deployPost
-      case e: Event                    => api publishEvent e
-    }
-  }))
+  system.actorOf(
+    Props(
+      new Actor {
+        override def preStart() {
+          system.lilaBus.subscribe(self, 'donation, 'deploy, 'slack)
+        }
+        def receive = {
+          case d: DonationEvent            => api donation d
+          case Deploy(RemindDeployPre, _)  => api.deployPre
+          case Deploy(RemindDeployPost, _) => api.deployPost
+          case e: Event                    => api publishEvent e
+        }
+      }))
 }
 
 object Env {

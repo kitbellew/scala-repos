@@ -32,10 +32,7 @@ class FixedLengthDecoderTest
   }
 
   test("framing") {
-    forAll(
-      Gen.alphaStr,
-      Gen.posNum[Int]
-    ) { (s: String, frameSize: Int) =>
+    forAll(Gen.alphaStr, Gen.posNum[Int]) { (s: String, frameSize: Int) =>
       val decode = stringDecoder(frameSize)
       val buf = Buf.Utf8(s)
       val frames: Seq[String] = decode(buf).toList

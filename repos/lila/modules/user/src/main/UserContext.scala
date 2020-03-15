@@ -37,8 +37,7 @@ sealed abstract class BaseUserContext(
     "%s %s %s".format(
       me.fold("Anonymous")(_.username),
       req.remoteAddress,
-      req.headers.get("User-Agent") | "?"
-    )
+      req.headers.get("User-Agent") | "?")
 }
 
 final class BodyUserContext[A](val body: Request[A], m: Option[User])

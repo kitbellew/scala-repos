@@ -54,9 +54,9 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
     // All types which could conform to these types will override <:<.
     def cannotMatch = {
       import Manifest._
-      that.isInstanceOf[
-        AnyValManifest[
-          _]] || (that eq AnyVal) || (that eq Nothing) || (that eq Null)
+      that.isInstanceOf[AnyValManifest[_]] || (that eq AnyVal) || (
+        that eq Nothing
+      ) || (that eq Null)
     }
 
     // This is wrong, and I don't know how it can be made right
@@ -138,8 +138,9 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
   def newArray5(len: Int): Array[Array[Array[Array[Array[T]]]]] =
     java.lang.reflect.Array
       .newInstance(
-        arrayClass[Array[Array[Array[T]]]](arrayClass[Array[Array[T]]](
-          arrayClass[Array[T]](arrayClass[T](runtimeClass)))),
+        arrayClass[Array[Array[Array[T]]]](
+          arrayClass[Array[Array[T]]](
+            arrayClass[Array[T]](arrayClass[T](runtimeClass)))),
         len)
       .asInstanceOf[Array[Array[Array[Array[Array[T]]]]]]
 
@@ -288,13 +289,17 @@ private class ClassTypeManifest[T](
     override val typeArguments: List[OptManifest[_]])
     extends ClassManifest[T] {
   override def toString =
-    (if (prefix.isEmpty)
-       ""
-     else
-       prefix.get.toString + "#") +
-      (if (runtimeClass.isArray)
-         "Array"
-       else
-         runtimeClass.getName) +
+    (
+      if (prefix.isEmpty)
+        ""
+      else
+        prefix.get.toString + "#"
+    ) +
+      (
+        if (runtimeClass.isArray)
+          "Array"
+        else
+          runtimeClass.getName
+      ) +
       argString
 }

@@ -40,8 +40,7 @@ class SemiJoinSuite extends SparkPlanTest with SharedSQLContext {
         Row(3, 3.0),
         Row(null, null),
         Row(null, 5.0),
-        Row(6, null)
-      )),
+        Row(6, null))),
     new StructType().add("a", IntegerType).add("b", DoubleType)
   )
 
@@ -54,8 +53,7 @@ class SemiJoinSuite extends SparkPlanTest with SharedSQLContext {
         Row(4, 1.0),
         Row(null, null),
         Row(null, 5.0),
-        Row(6, null)
-      )),
+        Row(6, null))),
     new StructType().add("c", IntegerType).add("d", DoubleType)
   )
 
@@ -172,9 +170,5 @@ class SemiJoinSuite extends SparkPlanTest with SharedSQLContext {
     left,
     right,
     condition,
-    Seq(
-      (2, 1.0),
-      (2, 1.0)
-    )
-  )
+    Seq((2, 1.0), (2, 1.0)))
 }

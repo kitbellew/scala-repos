@@ -39,8 +39,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
       val warnings = inline(request)
       for (warning <- warnings) {
-        if ((callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed) || warning
-              .emitWarning(compilerSettings)) {
+        if ((
+              callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed
+            ) || warning.emitWarning(compilerSettings)) {
           val annotWarn =
             if (callee.annotatedInline)
               " is annotated @inline but"
@@ -570,10 +571,12 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     callsiteMethod.maxLocals += returnType.getSize + callee.maxLocals
     val maxStackOfInlinedCode = {
       // One slot per value is correct for long / double, see comment in the `analysis` package object.
-      val numStoredArgs = calleeParamTypes.length + (if (isStaticMethod(callee))
-                                                       0
-                                                     else
-                                                       1)
+      val numStoredArgs = calleeParamTypes.length + (
+        if (isStaticMethod(callee))
+          0
+        else
+          1
+      )
       callee.maxStack + callsiteStackHeight - numStoredArgs
     }
     val stackHeightAtNullCheck = {
@@ -731,15 +734,16 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // that would be inefficient: we'd need to pop all parameters, save the values, and push the
     // parameters back for the (inlined) invocation. Similarly for the result after the call.
     def stackHasNonParameters: Boolean = {
-      val expectedArgs = asm.Type
-        .getArgumentTypes(callsiteInstruction.desc)
-        .length + (callsiteInstruction.getOpcode match {
-        case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE => 1
-        case INVOKESTATIC                                    => 0
-        case INVOKEDYNAMIC =>
-          assertionError(
-            s"Unexpected opcode, cannot inline ${textify(callsiteInstruction)}")
-      })
+      val expectedArgs =
+        asm.Type.getArgumentTypes(callsiteInstruction.desc).length + (
+          callsiteInstruction.getOpcode match {
+            case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE => 1
+            case INVOKESTATIC                                    => 0
+            case INVOKEDYNAMIC =>
+              assertionError(
+                s"Unexpected opcode, cannot inline ${textify(callsiteInstruction)}")
+          }
+        )
       callsiteStackHeight > expectedArgs
     }
 

@@ -119,13 +119,14 @@ object ConsoleConsumer extends Logging {
   }
 
   def addShutdownHook(consumer: BaseConsumer, conf: ConsumerConfig) {
-    Runtime.getRuntime.addShutdownHook(new Thread() {
-      override def run() {
-        consumer.stop()
+    Runtime.getRuntime.addShutdownHook(
+      new Thread() {
+        override def run() {
+          consumer.stop()
 
-        shutdownLatch.await()
-      }
-    })
+          shutdownLatch.await()
+        }
+      })
   }
 
   def process(

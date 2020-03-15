@@ -71,9 +71,9 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
         "gzip;q=0.6, identity;q=0.5" !! gzipped |
         "*;q=0.7, gzip;q=0.6, identity;q=0.4" !! gzipped |
         "" !! plain |> { (codings, expectedEncoding) =>
-        header(
-          CONTENT_ENCODING,
-          requestAccepting(codings)) must be equalTo (expectedEncoding)
+        header(CONTENT_ENCODING, requestAccepting(codings)) must be equalTo (
+          expectedEncoding
+        )
       }
     }
 
@@ -149,8 +149,9 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
         header(VARY, result) must beSome.which(header =>
           header
             .split(",")
-            .filter(_.toLowerCase(java.util.Locale.ENGLISH) == ACCEPT_ENCODING
-              .toLowerCase(java.util.Locale.ENGLISH))
+            .filter(
+              _.toLowerCase(java.util.Locale.ENGLISH) == ACCEPT_ENCODING
+                .toLowerCase(java.util.Locale.ENGLISH))
             .size == 1)
     }
   }
@@ -165,14 +166,13 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       new GuiceApplicationBuilder()
         .configure(
           "play.filters.gzip.chunkedThreshold" -> chunkedThreshold,
-          "play.filters.gzip.bufferSize" -> 512
-        )
+          "play.filters.gzip.bufferSize" -> 512)
         .overrides(
-          bind[Router].to(Router.from {
-            case _ => Action(result)
-          }),
-          bind[HttpFilters].to[Filters]
-        )
+          bind[Router].to(
+            Router.from {
+              case _ => Action(result)
+            }),
+          bind[HttpFilters].to[Filters])
         .build
     running(application)(block(application.materializer))
   }

@@ -105,13 +105,12 @@ class AddScheduledQueryServiceHandler(
     M: Monad[Future],
     executor: ExecutionContext,
     addTimeout: Timeout)
-    extends CustomHttpService[
-      Future[JValue],
-      APIKey => Future[HttpResponse[JValue]]]
+    extends CustomHttpService[Future[JValue], APIKey => Future[
+      HttpResponse[JValue]]]
     with Logging {
-  val service: HttpRequest[Future[JValue]] => Validation[
-    NotServed,
-    APIKey => Future[HttpResponse[JValue]]] =
+  val service
+      : HttpRequest[Future[JValue]] => Validation[NotServed, APIKey => Future[
+        HttpResponse[JValue]]] =
     (request: HttpRequest[Future[JValue]]) =>
       Success({ apiKey: APIKey =>
         val permissionsFinder =
@@ -136,8 +135,10 @@ class AddScheduledQueryServiceHandler(
 
                 authorities <- EitherT {
                   M point {
-                    (Authorities.ifPresent(sreq.owners) \/> badRequest(
-                      "You must provide an owner account for the task results!"))
+                    (
+                      Authorities.ifPresent(sreq.owners) \/> badRequest(
+                        "You must provide an owner account for the task results!")
+                    )
                   }
                 }
 
@@ -158,8 +159,9 @@ class AddScheduledQueryServiceHandler(
                     clock.instant))
 
                 readError = (!okToRead).option(
-                  nels("The API Key does not have permission to execute %s"
-                    .format(sreq.source.path)))
+                  nels(
+                    "The API Key does not have permission to execute %s".format(
+                      sreq.source.path)))
                 writeError = (!okToWrite).option(
                   nels(
                     "The API Key does not have permission to write to %s as %s"
@@ -271,11 +273,12 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
 
             val body: JValue = JObject(
               "task" -> task.serialize,
-              "nextRun" -> (nextTime.map(_.serialize) getOrElse {
-                JString("never")
-              }),
-              "history" -> reports.toList.serialize
-            )
+              "nextRun" -> (
+                nextTime.map(_.serialize) getOrElse {
+                  JString("never")
+                }
+              ),
+              "history" -> reports.toList.serialize)
 
             ok(Some(body))
 

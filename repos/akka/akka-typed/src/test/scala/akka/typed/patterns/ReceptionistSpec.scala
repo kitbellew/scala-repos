@@ -109,31 +109,32 @@ class ReceptionistSpec extends TypedSpec {
     }
 
     def `must work with ask`(): Unit =
-      sync(runTest("Receptionist") {
-        StepWise[Registered[ServiceA]] {
-          (ctx, startWith) ⇒
-            val self = ctx.self
-            import system.executionContext
-            startWith
-              .withKeepTraces(true) {
-                val r = ctx.spawnAnonymous(Props(behavior))
-                val s = ctx.spawnAnonymous(propsA)
-                val f = r ? Register(ServiceKeyA, s)
-                r ! Register(ServiceKeyA, s)(self)
-                (f, s)
-              }
-              .expectMessage(1.second) {
-                case (msg, (f, s)) ⇒
-                  msg should be(Registered(ServiceKeyA, s))
-                  f foreach (self ! _)
-                  s
-              }
-              .expectMessage(1.second) {
-                case (msg, s) ⇒
-                  msg should be(Registered(ServiceKeyA, s))
-              }
-        }
-      })
+      sync(
+        runTest("Receptionist") {
+          StepWise[Registered[ServiceA]] {
+            (ctx, startWith) ⇒
+              val self = ctx.self
+              import system.executionContext
+              startWith
+                .withKeepTraces(true) {
+                  val r = ctx.spawnAnonymous(Props(behavior))
+                  val s = ctx.spawnAnonymous(propsA)
+                  val f = r ? Register(ServiceKeyA, s)
+                  r ! Register(ServiceKeyA, s)(self)
+                  (f, s)
+                }
+                .expectMessage(1.second) {
+                  case (msg, (f, s)) ⇒
+                    msg should be(Registered(ServiceKeyA, s))
+                    f foreach (self ! _)
+                    s
+                }
+                .expectMessage(1.second) {
+                  case (msg, s) ⇒
+                    msg should be(Registered(ServiceKeyA, s))
+                }
+          }
+        })
 
   }
 

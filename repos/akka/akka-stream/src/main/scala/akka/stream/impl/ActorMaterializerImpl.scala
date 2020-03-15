@@ -266,10 +266,11 @@ private[akka] case class ActorMaterializerImpl(
   }
 
   override lazy val executionContext: ExecutionContextExecutor = dispatchers
-    .lookup(settings.dispatcher match {
-      case Deploy.NoDispatcherGiven ⇒ Dispatchers.DefaultDispatcherId
-      case other ⇒ other
-    })
+    .lookup(
+      settings.dispatcher match {
+        case Deploy.NoDispatcherGiven ⇒ Dispatchers.DefaultDispatcherId
+        case other ⇒ other
+      })
 
   override def actorOf(
       context: MaterializationContext,
@@ -303,9 +304,11 @@ private[akka] case class ActorMaterializerImpl(
         else {
           implicit val timeout = ref.system.settings.CreationTimeout
           val f =
-            (supervisor ? StreamSupervisor.Materialize(
-              props.withDispatcher(dispatcher),
-              name)).mapTo[ActorRef]
+            (
+              supervisor ? StreamSupervisor.Materialize(
+                props.withDispatcher(dispatcher),
+                name)
+            ).mapTo[ActorRef]
           Await.result(f, timeout.duration)
         }
       case unknown ⇒

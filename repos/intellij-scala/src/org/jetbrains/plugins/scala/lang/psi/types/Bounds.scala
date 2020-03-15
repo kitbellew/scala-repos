@@ -346,10 +346,12 @@ object Bounds {
               case None    => JavaArrayType(v)
             }
           case (JavaArrayType(arg), ScParameterizedType(des, args))
-              if args.length == 1 && (ScType.extractClass(des) match {
-                case Some(q) => q.qualifiedName == "scala.Array"
-                case _       => false
-              }) =>
+              if args.length == 1 && (
+                ScType.extractClass(des) match {
+                  case Some(q) => q.qualifiedName == "scala.Array"
+                  case _       => false
+                }
+              ) =>
             val (v, ex) = calcForTypeParamWithoutVariance(
               arg,
               args(0),
@@ -361,10 +363,12 @@ object Bounds {
               case None => ScParameterizedType(des, Seq(v))
             }
           case (ScParameterizedType(des, args), JavaArrayType(arg))
-              if args.length == 1 && (ScType.extractClass(des) match {
-                case Some(q) => q.qualifiedName == "scala.Array"
-                case _       => false
-              }) =>
+              if args.length == 1 && (
+                ScType.extractClass(des) match {
+                  case Some(q) => q.qualifiedName == "scala.Array"
+                  case _       => false
+                }
+              ) =>
             val (v, ex) = calcForTypeParamWithoutVariance(
               arg,
               args(0),
@@ -552,24 +556,26 @@ object Bounds {
         for (i <- 0 until baseClass.getTypeParameters.length) {
           val substed1 = tp1.typeArgs.apply(i)
           val substed2 = tp2.typeArgs.apply(i)
-          resTypeArgs += (baseClass.getTypeParameters.apply(i) match {
-            case scp: ScTypeParam if scp.isCovariant =>
-              if (depth > 0)
-                lub(substed1, substed2, depth - 1, checkWeak)
-              else
-                types.Any
-            case scp: ScTypeParam if scp.isContravariant =>
-              glb(substed1, substed2, checkWeak)
-            case _ =>
-              val (v, ex) = calcForTypeParamWithoutVariance(
-                substed1,
-                substed2,
-                depth,
-                checkWeak,
-                count = wildcards.length + 1)
-              wildcards ++= ex
-              v
-          })
+          resTypeArgs += (
+            baseClass.getTypeParameters.apply(i) match {
+              case scp: ScTypeParam if scp.isCovariant =>
+                if (depth > 0)
+                  lub(substed1, substed2, depth - 1, checkWeak)
+                else
+                  types.Any
+              case scp: ScTypeParam if scp.isContravariant =>
+                glb(substed1, substed2, checkWeak)
+              case _ =>
+                val (v, ex) = calcForTypeParamWithoutVariance(
+                  substed1,
+                  substed2,
+                  depth,
+                  checkWeak,
+                  count = wildcards.length + 1)
+                wildcards ++= ex
+                v
+            }
+          )
         }
         if (wildcards.isEmpty)
           ScParameterizedType(baseClassDesignator, resTypeArgs.toSeq)
@@ -589,9 +595,11 @@ object Bounds {
       alias match {
         case aliasDef: ScTypeAliasDefinition
             if s.aliasesMap.get(aliasDef.name) == None =>
-          run = run bindA (aliasDef.name, { () =>
-            aliasDef.aliasedType(TypingContext.empty).getOrAny
-          })
+          run = run bindA (
+            aliasDef.name, { () =>
+              aliasDef.aliasedType(TypingContext.empty).getOrAny
+            }
+          )
         case _ =>
       }
     }

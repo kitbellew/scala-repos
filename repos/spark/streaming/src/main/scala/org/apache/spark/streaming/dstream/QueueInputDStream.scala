@@ -29,8 +29,8 @@ private[streaming] class QueueInputDStream[T: ClassTag](
     ssc: StreamingContext,
     val queue: Queue[RDD[T]],
     oneAtATime: Boolean,
-    defaultRDD: RDD[T]
-) extends InputDStream[T](ssc) {
+    defaultRDD: RDD[T])
+    extends InputDStream[T](ssc) {
 
   override def start() {}
 

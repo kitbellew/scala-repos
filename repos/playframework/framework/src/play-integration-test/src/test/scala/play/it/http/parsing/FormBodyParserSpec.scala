@@ -25,8 +25,7 @@ class FormBodyParserSpec extends PlaySpecification {
         bodyParser(
           FakeRequest().withHeaders(
             writeable.contentType.map(CONTENT_TYPE -> _).toSeq: _*))
-          .run(Source.single(writeable.transform(body)))
-      )
+          .run(Source.single(writeable.transform(body))))
     }
 
     case class User(name: String, age: Int)

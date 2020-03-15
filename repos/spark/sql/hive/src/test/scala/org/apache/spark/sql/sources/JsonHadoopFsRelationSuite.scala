@@ -48,8 +48,9 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
            p2 <- Seq("foo", "bar")) {
         val partitionDir = new Path(qualifiedBasePath, s"p1=$p1/p2=$p2")
         sparkContext
-          .parallelize(for (i <- 1 to 3)
-            yield s"""{"a":$i,"b":"val_$i"}""")
+          .parallelize(
+            for (i <- 1 to 3)
+              yield s"""{"a":$i,"b":"val_$i"}""")
           .saveAsTextFile(partitionDir.toString)
       }
 
@@ -90,8 +91,7 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
           .format(dataSourceName)
           .schema(schema)
           .load(file.getCanonicalPath),
-        df
-      )
+        df)
     }
   }
 
@@ -119,8 +119,7 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
           .format(dataSourceName)
           .schema(schema)
           .load(file.getCanonicalPath),
-        df
-      )
+        df)
     }
   }
 }

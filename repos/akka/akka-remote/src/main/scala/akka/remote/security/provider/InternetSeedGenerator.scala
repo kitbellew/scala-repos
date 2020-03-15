@@ -66,6 +66,7 @@ final class InternetSeedGenerator extends SeedGenerator {
           case _: SeedException ⇒ None
         })
       .headOption
-      .getOrElse(throw new IllegalStateException(
-        "All available seed generation strategies failed."))
+      .getOrElse(
+        throw new IllegalStateException(
+          "All available seed generation strategies failed."))
 }

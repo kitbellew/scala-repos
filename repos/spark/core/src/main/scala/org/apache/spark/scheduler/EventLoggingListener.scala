@@ -129,7 +129,9 @@ private[spark] class EventLoggingListener(
     /* The Hadoop LocalFileSystem (r1.0.4) has known issues with syncing (HADOOP-7844).
      * Therefore, for local files, use FileOutputStream instead. */
     val dstream =
-      if ((isDefaultLocal && uri.getScheme == null) || uri.getScheme == "file") {
+      if ((
+            isDefaultLocal && uri.getScheme == null
+          ) || uri.getScheme == "file") {
         new FileOutputStream(uri.getPath)
       } else {
         hadoopDataStream = Some(fileSystem.create(path))

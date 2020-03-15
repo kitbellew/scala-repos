@@ -77,12 +77,15 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     "api-docs.json"
   ) // merge (("basePath" -> ("http://localhost:" + port)):JValue)
 
-  val petOperationsJValue = readJson(
-    "pet.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
-  val storeOperationsJValue = readJson(
-    "store.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
-  val userOperationsJValue = readJson(
-    "user.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
+  val petOperationsJValue = readJson("pet.json") merge (
+    ("basePath" -> ("http://localhost:" + port)): JValue
+  )
+  val storeOperationsJValue = readJson("store.json") merge (
+    ("basePath" -> ("http://localhost:" + port)): JValue
+  )
+  val userOperationsJValue = readJson("user.json") merge (
+    ("basePath" -> ("http://localhost:" + port)): JValue
+  )
 
   private def readJson(file: String) = {
     val f =
@@ -102,7 +105,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       bd must beSome[JValue] and {
         val j = bd.get
         (j \ "apiVersion" must_== listResourceJValue \ "apiVersion") and
-          (j \ "swaggerVersion" must_== listResourceJValue \ "swaggerVersion") and
+          (
+            j \ "swaggerVersion" must_== listResourceJValue \ "swaggerVersion"
+          ) and
           verifyInfo(j \ "info") and
           verifyApis(j \ "apis") and
           verifyAuthorizations(j \ "authorizations")
@@ -159,13 +164,27 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     val auth = listResourceJValue \ "authorizations"
     j \ "oauth2" \ "type" must_== auth \ "oauth2" \ "type" and
       (j \ "oauth2" \ "scopes" must_== auth \ "oauth2" \ "scopes") and
-      (j \ "oauth2" \ "grantTypes" \ "implicit" \ "loginEndpoint" must_== auth \ "oauth2" \ "grantTypes" \ "implicit" \ "loginEndpoint") and
-      (j \ "oauth2" \ "grantTypes" \ "implicit" \ "tokenName" must_== auth \ "oauth2" \ "grantTypes" \ "implicit" \ "tokenName") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "url" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "url") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientIdName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientIdName") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientSecretName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientSecretName") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "url" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "url") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "tokenName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "tokenName") and
+      (
+        j \ "oauth2" \ "grantTypes" \ "implicit" \ "loginEndpoint" must_== auth \ "oauth2" \ "grantTypes" \ "implicit" \ "loginEndpoint"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "implicit" \ "tokenName" must_== auth \ "oauth2" \ "grantTypes" \ "implicit" \ "tokenName"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "url" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "url"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientIdName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientIdName"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientSecretName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientSecretName"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "url" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "url"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "tokenName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "tokenName"
+      ) and
       (j \ "apiKey" \ "type" must_== auth \ "apiKey" \ "type") and
       (j \ "apiKey" \ "passAs" must_== auth \ "apiKey" \ "passAs")
   }
@@ -351,8 +370,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
               "name",
               "required",
               "paramAccess")
-            mm setMessage (mm.message + " in parameter " + (v \ "name")
-              .extractOrElse("N/A"))
+            mm setMessage (
+              mm.message + " in parameter " + (v \ "name").extractOrElse("N/A")
+            )
           }
 
           if (r.nonEmpty)
@@ -361,9 +381,11 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
             1.must_==(1)
         case _ =>
           val m = act \ fn must_== exp \ fn
-          m setMessage (JsonMethods.compact(
-            JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
-            .compact(JsonMethods.render(exp \ fn)) + " for field " + fn)
+          m setMessage (
+            JsonMethods.compact(
+              JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
+              .compact(JsonMethods.render(exp \ fn)) + " for field " + fn
+          )
       }
     }
 
@@ -417,9 +439,11 @@ class SwaggerTestServlet(protected val swagger: Swagger)
     (apiOperation[Pet]("getPetById")
       summary "Find pet by ID"
       notes "Returns a pet based on ID"
-      responseMessages (StringResponseMessage(
-        400,
-        "Invalid ID supplied"), StringResponseMessage(404, "Pet not found"))
+      responseMessages (
+        StringResponseMessage(
+          400,
+          "Invalid ID supplied"), StringResponseMessage(404, "Pet not found")
+    )
       parameter pathParam[String]("petId")
         .description("ID of pet that needs to be fetched")
       produces ("application/json", "application/xml")
@@ -469,10 +493,12 @@ class SwaggerTestServlet(protected val swagger: Swagger)
       notes "Multiple status values can be provided with comma separated strings"
       produces ("application/json", "application/xml")
       responseMessage StringResponseMessage(400, "Invalid status value")
-      parameter (queryParam[String]("status").required.multiValued
-        description "Status values that need to be considered for filter"
-        defaultValue "available"
-        allowableValues ("available", "pending", "sold")))
+      parameter (
+        queryParam[String]("status").required.multiValued
+          description "Status values that need to be considered for filter"
+          defaultValue "available"
+          allowableValues ("available", "pending", "sold")
+      ))
 
   get("/findByStatus", operation(findByStatus)) {
     data.findPetsByStatus(params("status"))

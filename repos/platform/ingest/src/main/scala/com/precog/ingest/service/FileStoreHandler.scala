@@ -63,9 +63,8 @@ class FileStoreHandler(
     ingestTimeout: Timeout)(implicit
     val M: Monad[Future],
     executor: ExecutionContext)
-    extends CustomHttpService[
-      ByteChunk,
-      (APIKey, Path) => Future[HttpResponse[JValue]]]
+    extends CustomHttpService[ByteChunk, (APIKey, Path) => Future[
+      HttpResponse[JValue]]]
     with IngestSupport
     with Logging {
 
@@ -131,19 +130,21 @@ class FileStoreHandler(
         validateFileName(request.headers.get("X-File-Name"), _: WriteMode)
       }
 
-      (pathf0.toValidationNel |@| contentType0.toValidationNel |@| storeMode0.toValidationNel) {
-        (pathf, contentType, storeMode) => (apiKey: APIKey, path: Path) =>
-          {
-            val timestamp = clock.now()
-            val fullPath = pathf(path)
+      (
+        pathf0.toValidationNel |@| contentType0.toValidationNel |@| storeMode0.toValidationNel
+      ) { (pathf, contentType, storeMode) => (apiKey: APIKey, path: Path) =>
+        {
+          val timestamp = clock.now()
+          val fullPath = pathf(path)
 
-            findRequestWriteAuthorities(
-              request,
-              apiKey,
-              fullPath,
-              Some(timestamp.toInstant)) { authorities =>
-              request.content map { content =>
-                (for {
+          findRequestWriteAuthorities(
+            request,
+            apiKey,
+            fullPath,
+            Some(timestamp.toInstant)) { authorities =>
+            request.content map { content =>
+              (
+                for {
                   jobId <- jobManager
                     .createJob(
                       apiKey,
@@ -166,8 +167,9 @@ class FileStoreHandler(
                         logger.error(
                           "Rejecting excessive file upload of size %d".format(
                             b.length))
-                        -\/(badRequest(
-                          "File uploads are currently limited to 600KB"))
+                        -\/(
+                          badRequest(
+                            "File uploads are currently limited to 600KB"))
 
                       case b =>
                         \/-(b)
@@ -191,15 +193,16 @@ class FileStoreHandler(
                   HttpResponse[JValue](
                     Accepted,
                     headers = HttpHeaders(List(locationHeader)))
-                }).fold(e => e, x => x)
-              } getOrElse {
-                Promise successful HttpResponse[JValue](
-                  HttpStatus(
-                    BadRequest,
-                    "Attempt to create a file without body content."))
-              }
+                }
+              ).fold(e => e, x => x)
+            } getOrElse {
+              Promise successful HttpResponse[JValue](
+                HttpStatus(
+                  BadRequest,
+                  "Attempt to create a file without body content."))
             }
           }
+        }
       } leftMap { errors =>
         DispatchError(BadRequest, errors.list.mkString("; "))
       }

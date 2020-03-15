@@ -61,19 +61,15 @@ class DocServerStart {
                       fileName = _ => "report.html"))
                 }
               } else
-                None
-            )
-            .orElse(
-              Some(Results.Redirect("/@documentation"))
-            )
+                None)
+            .orElse(Some(Results.Redirect("/@documentation")))
       }
 
     val config = ServerConfig(
       rootDir = projectPath,
       port = Some(port),
       mode = Mode.Test,
-      properties = System.getProperties
-    )
+      properties = System.getProperties)
     val serverProvider: ServerProvider = ServerProvider.fromConfiguration(
       getClass.getClassLoader,
       config.configuration)
@@ -82,8 +78,7 @@ class DocServerStart {
       applicationProvider,
       application.actorSystem,
       application.materializer,
-      stopHook = () => Future.successful(())
-    )
+      stopHook = () => Future.successful(()))
     serverProvider.createServer(context)
 
   }

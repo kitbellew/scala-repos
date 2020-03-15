@@ -34,8 +34,8 @@ class DriverDataSource(
     /** The JDBC driver to use. If this is set, `driverClassName` will be ignored. */
     @volatile var driverObject: Driver = null,
     /** The ClassLoader that is used to load `driverClassName` */
-    @volatile var classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader
-) extends DataSource
+    @volatile var classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
+    extends DataSource
     with Closeable
     with Logging {
 

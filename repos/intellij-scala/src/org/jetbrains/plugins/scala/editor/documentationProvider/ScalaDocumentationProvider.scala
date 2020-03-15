@@ -166,11 +166,12 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
         buffer.append(parseAnnotations(clazz, ScType.urlText))
         val start = buffer.length
         buffer.append(parseModifiers(clazz))
-        buffer.append(clazz match {
-          case _: ScClass  => "class "
-          case _: ScObject => "object "
-          case _: ScTrait  => "trait "
-        })
+        buffer.append(
+          clazz match {
+            case _: ScClass  => "class "
+            case _: ScObject => "object "
+            case _: ScTrait  => "trait "
+          })
         buffer.append("<b>" + escapeHtml(clazz.name) + "</b>")
         buffer.append(parseTypeParameters(clazz))
         val end = buffer.length
@@ -219,19 +220,24 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
           case m: ScModifierListOwner => buffer.append(parseModifiers(m))
           case _                      =>
         }
-        buffer.append(decl match {
-          case _: ScValue    => "val "
-          case _: ScVariable => "var "
-          case _             => ""
-        })
-        buffer.append("<b>" + (element match {
-          case named: ScNamedElement => escapeHtml(named.name)
-          case _                     => "unknown"
-        }) + "</b>")
-        buffer.append(element match {
-          case typed: ScTypedDefinition => parseType(typed, ScType.urlText)
-          case _                        => ": Nothing"
-        })
+        buffer.append(
+          decl match {
+            case _: ScValue    => "val "
+            case _: ScVariable => "var "
+            case _             => ""
+          })
+        buffer.append(
+          "<b>" + (
+            element match {
+              case named: ScNamedElement => escapeHtml(named.name)
+              case _                     => "unknown"
+            }
+          ) + "</b>")
+        buffer.append(
+          element match {
+            case typed: ScTypedDefinition => parseType(typed, ScType.urlText)
+            case _                        => ": Nothing"
+          })
         buffer.append("</PRE>")
         decl match {
           case doc: ScDocCommentOwner => buffer.append(parseDocComment(doc))
@@ -247,11 +253,12 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
           case cl: ScClassParameter => buffer.append(parseModifiers(cl))
           case _                    =>
         }
-        buffer.append(param match {
-          case c: ScClassParameter if c.isVal => "val "
-          case c: ScClassParameter if c.isVar => "var "
-          case _                              => ""
-        })
+        buffer.append(
+          param match {
+            case c: ScClassParameter if c.isVal => "val "
+            case c: ScClassParameter if c.isVar => "var "
+            case _                              => ""
+          })
         buffer.append("<b>" + escapeHtml(param.name) + "</b>")
         buffer.append(parseType(param, ScType.urlText))
 
@@ -611,8 +618,9 @@ object ScalaDocumentationProvider {
             .append(" ")
             .append(parameterName.substring(1, parameterName.length - 1))
             .append(" ")
-            .append(descriptionText
-              .substring(0, descriptionText.lastIndexOf("\n") + 1))
+            .append(
+              descriptionText
+                .substring(0, descriptionText.lastIndexOf("\n") + 1))
         } else {
           buffer
             .append(leadingAsterisks)
@@ -733,11 +741,12 @@ object ScalaDocumentationProvider {
       case cl: ScClassParameter => buffer.append(parseModifiers(cl))
       case _                    =>
     }
-    buffer.append(param match {
-      case c: ScClassParameter if c.isVal => "val "
-      case c: ScClassParameter if c.isVar => "var "
-      case _                              => ""
-    })
+    buffer.append(
+      param match {
+        case c: ScClassParameter if c.isVal => "val "
+        case c: ScClassParameter if c.isVar => "var "
+        case _                              => ""
+      })
     buffer.append(
       if (escape)
         escapeHtml(param.name)
@@ -749,10 +758,12 @@ object ScalaDocumentationProvider {
       parseType(
         param,
         t => {
-          (if (param.isCallByNameParameter)
-             s"$arrow "
-           else
-             "") + typeToString(t)
+          (
+            if (param.isCallByNameParameter)
+              s"$arrow "
+            else
+              ""
+          ) + typeToString(t)
         }))
     if (param.isRepeatedParameter)
       buffer.append("*")
@@ -808,38 +819,43 @@ object ScalaDocumentationProvider {
   private def parseModifiers(elem: ScModifierListOwner): String = {
     val buffer: StringBuilder = new StringBuilder("")
     def accessQualifier(x: ScAccessModifier): String =
-      (x.getReference match {
-        case null => ""
-        case ref =>
-          ref.resolve match {
-            case clazz: PsiClass =>
-              "[<a href=\"psi_element://" +
-                escapeHtml(clazz.qualifiedName) + "\"><code>" +
-                (x.idText match {
-                  case Some(text) => text
+      (
+        x.getReference match {
+          case null => ""
+          case ref =>
+            ref.resolve match {
+              case clazz: PsiClass =>
+                "[<a href=\"psi_element://" +
+                  escapeHtml(clazz.qualifiedName) + "\"><code>" +
+                  (
+                    x.idText match {
+                      case Some(text) => text
+                      case None       => ""
+                    }
+                  ) + "</code></a>]"
+              case pack: PsiPackage =>
+                "[" + escapeHtml(pack.getQualifiedName) + "]"
+              case _ =>
+                x.idText match {
+                  case Some(text) => "[" + text + "]"
                   case None       => ""
-                }) + "</code></a>]"
-            case pack: PsiPackage =>
-              "[" + escapeHtml(pack.getQualifiedName) + "]"
-            case _ =>
-              x.idText match {
-                case Some(text) => "[" + text + "]"
-                case None       => ""
-              }
-          }
-      }) + " "
-
-    buffer.append(elem.getModifierList.accessModifier match {
-      case Some(x: ScAccessModifier) =>
-        x.access match {
-          case ScAccessModifier.Type.PRIVATE => "private" + accessQualifier(x)
-          case ScAccessModifier.Type.PROTECTED =>
-            "protected" + accessQualifier(x)
-          case ScAccessModifier.Type.THIS_PRIVATE   => "private[this] "
-          case ScAccessModifier.Type.THIS_PROTECTED => "protected[this] "
+                }
+            }
         }
-      case None => ""
-    })
+      ) + " "
+
+    buffer.append(
+      elem.getModifierList.accessModifier match {
+        case Some(x: ScAccessModifier) =>
+          x.access match {
+            case ScAccessModifier.Type.PRIVATE => "private" + accessQualifier(x)
+            case ScAccessModifier.Type.PROTECTED =>
+              "protected" + accessQualifier(x)
+            case ScAccessModifier.Type.THIS_PRIVATE   => "private[this] "
+            case ScAccessModifier.Type.THIS_PROTECTED => "protected[this] "
+          }
+        case None => ""
+      })
     val modifiers = Array(
       "abstract",
       "final",
@@ -949,13 +965,15 @@ object ScalaDocumentationProvider {
                 "</p>")
             case _ => ("", "")
           }
-        s1 + (elem match {
-          case _: ScFunction | _: ScTypeAlias | _: PsiMethod |
-              _: ScTypeDefinition | _: ScPatternDefinition =>
-            val i = javadoc.indexOf("</PRE>")
-            javadoc.substring(i + 6, javadoc.length - 14)
-          case _ => javadoc.substring(110, javadoc.length - 14)
-        }) + s2
+        s1 + (
+          elem match {
+            case _: ScFunction | _: ScTypeAlias | _: PsiMethod |
+                _: ScTypeDefinition | _: ScPatternDefinition =>
+              val i = javadoc.indexOf("</PRE>")
+              javadoc.substring(i + 6, javadoc.length - 14)
+            case _ => javadoc.substring(110, javadoc.length - 14)
+          }
+        ) + s2
       case _ =>
         elem match {
           case fun: ScFunction =>
@@ -1121,7 +1139,9 @@ object ScalaDocumentationProvider {
             }
           case _
               if replaceWikiScheme.contains(element.getText) &&
-                (element.getParent.getFirstChild == element || element.getParent.getLastChild == element) =>
+                (
+                  element.getParent.getFirstChild == element || element.getParent.getLastChild == element
+                ) =>
             val prefix =
               if (element.getParent.getFirstChild == element)
                 "<"
@@ -1225,10 +1245,11 @@ object ScalaDocumentationProvider {
   private def appendTypeParams(
       owner: ScTypeParametersOwner,
       buffer: StringBuilder) {
-    buffer.append(owner.typeParametersClause match {
-      case Some(x) => x.getText
-      case None    => ""
-    })
+    buffer.append(
+      owner.typeParametersClause match {
+        case Some(x) => x.getText
+        case None    => ""
+      })
   }
 
   def generateClassInfo(
@@ -1247,11 +1268,12 @@ object ScalaDocumentationProvider {
       buffer.append("\n")
     buffer.append(
       ScalaPsiUtil.getModifiersPresentableText(clazz.getModifierList))
-    buffer.append(clazz match {
-      case _: ScObject => "object "
-      case _: ScClass  => "class "
-      case _: ScTrait  => "trait "
-    })
+    buffer.append(
+      clazz match {
+        case _: ScObject => "object "
+        case _: ScClass  => "class "
+        case _: ScTrait  => "trait "
+      })
     buffer.append(clazz.name)
     appendTypeParams(clazz, buffer)
     clazz match {
@@ -1368,10 +1390,11 @@ object ScalaDocumentationProvider {
     alias match {
       case d: ScTypeAliasDefinition =>
         buffer.append(" = ")
-        val ttype = subst.subst(d.aliasedType(TypingContext.empty) match {
-          case Success(t, _) => t
-          case Failure(_, _) => Any
-        })
+        val ttype = subst.subst(
+          d.aliasedType(TypingContext.empty) match {
+            case Success(t, _) => t
+            case Failure(_, _) => Any
+          })
         buffer.append(ScType.presentableText(ttype))
       case _ =>
     }
@@ -1385,29 +1408,35 @@ object ScalaDocumentationProvider {
       s"${parameter.name}: ${ScType.presentableText(
         subst.subst(parameter.getType(TypingContext.empty).getOrAny))}"
 
-    (parameter match {
-      case clParameter: ScClassParameter =>
-        val clazz = PsiTreeUtil.getParentOfType(
-          clParameter,
-          classOf[ScTypeDefinition])
+    (
+      parameter match {
+        case clParameter: ScClassParameter =>
+          val clazz = PsiTreeUtil.getParentOfType(
+            clParameter,
+            classOf[ScTypeDefinition])
 
-        if (clazz == null)
-          defaultText
+          if (clazz == null)
+            defaultText
+          else
+            clazz.name + " " + clazz.getPresentation.getLocationString + "\n" +
+              (
+                if (clParameter.isVal)
+                  "val "
+                else if (clParameter.isVar)
+                  "var "
+                else
+                  ""
+              ) + clParameter.name +
+              ": " + ScType.presentableText(
+              subst.subst(clParameter.getType(TypingContext.empty).getOrAny))
+        case _ => defaultText
+      }
+    ) +
+      (
+        if (parameter.isRepeatedParameter)
+          "*"
         else
-          clazz.name + " " + clazz.getPresentation.getLocationString + "\n" +
-            (if (clParameter.isVal)
-               "val "
-             else if (clParameter.isVar)
-               "var "
-             else
-               "") + clParameter.name +
-            ": " + ScType.presentableText(
-            subst.subst(clParameter.getType(TypingContext.empty).getOrAny))
-      case _ => defaultText
-    }) +
-      (if (parameter.isRepeatedParameter)
-         "*"
-       else
-         "")
+          ""
+      )
   }
 }

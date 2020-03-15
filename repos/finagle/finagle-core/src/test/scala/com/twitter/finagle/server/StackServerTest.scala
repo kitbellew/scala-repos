@@ -15,9 +15,10 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class StackServerTest extends FunSuite {
   test("Deadline isn't changed until after it's recorded") {
-    val echo = ServiceFactory.const(Service.mk[Unit, Deadline] { unit =>
-      Future.value(Contexts.broadcast(Deadline))
-    })
+    val echo = ServiceFactory.const(
+      Service.mk[Unit, Deadline] { unit =>
+        Future.value(Contexts.broadcast(Deadline))
+      })
     val stack =
       StackServer.newStack[Unit, Deadline] ++ Stack.Leaf(Endpoint, echo)
     val statsReceiver = new InMemoryStatsReceiver

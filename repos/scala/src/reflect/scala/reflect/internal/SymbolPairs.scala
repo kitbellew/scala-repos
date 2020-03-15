@@ -88,12 +88,10 @@ abstract class SymbolPairs {
       tsym.classBound.asSeenFrom(rootType, tsym.owner)
 
     private def memberDefString(sym: Symbol, where: Boolean) = {
-      val def_s = (
-        if (sym.isConstructor)
-          s"$sym: ${self memberType sym}"
-        else
-          sym defStringSeenAs (self memberType sym)
-      )
+      val def_s = (if (sym.isConstructor)
+                     s"$sym: ${self memberType sym}"
+                   else
+                     sym defStringSeenAs (self memberType sym))
       def_s + whereString(sym)
     }
 

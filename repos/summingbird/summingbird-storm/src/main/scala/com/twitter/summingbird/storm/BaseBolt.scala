@@ -60,12 +60,8 @@ case class BaseBolt[I, O](
     outputFields: Fields,
     ackOnEntry: AckOnEntry,
     maxExecutePerSec: MaxExecutePerSecond,
-    executor: OperationContainer[
-      I,
-      O,
-      InputState[Tuple],
-      JList[AnyRef],
-      TopologyContext])
+    executor: OperationContainer[I, O, InputState[Tuple], JList[
+      AnyRef], TopologyContext])
     extends IRichBolt {
 
   @transient protected lazy val logger: Logger = LoggerFactory.getLogger(

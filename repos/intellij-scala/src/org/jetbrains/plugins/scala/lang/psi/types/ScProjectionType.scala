@@ -154,11 +154,12 @@ class ScProjectionType private (
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash =
-        projected.hashCode() + element.hashCode() * 31 + (if (superReference)
-                                                            239
-                                                          else
-                                                            0)
+      hash = projected.hashCode() + element.hashCode() * 31 + (
+        if (superReference)
+          239
+        else
+          0
+      )
     }
     hash
   }

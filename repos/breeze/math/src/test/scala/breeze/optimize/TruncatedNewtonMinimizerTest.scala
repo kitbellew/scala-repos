@@ -31,12 +31,8 @@ class TruncatedNewtonMinimizerTest extends OptimizeTestBase {
       val reg = _reg.abs % 10
       val targetValue = 3 / (reg / 2 + 1)
       val lbfgs =
-        new TruncatedNewtonMinimizer[
-          DenseVector[Double],
-          EmpiricalHessian[DenseVector[Double]]](
-          100,
-          tolerance = 1e-8,
-          l2Regularization = reg)
+        new TruncatedNewtonMinimizer[DenseVector[Double], EmpiricalHessian[
+          DenseVector[Double]]](100, tolerance = 1e-8, l2Regularization = reg)
       val f =
         new DiffFunction[DenseVector[Double]] {
           def calculate(x: DenseVector[Double]) = {
@@ -60,9 +56,8 @@ class TruncatedNewtonMinimizerTest extends OptimizeTestBase {
 
   test("optimize a simple multivariate gaussian with counters") {
     val lbfgs =
-      new TruncatedNewtonMinimizer[
-        Counter[String, Double],
-        EmpiricalHessian[Counter[String, Double]]](100)
+      new TruncatedNewtonMinimizer[Counter[String, Double], EmpiricalHessian[
+        Counter[String, Double]]](100)
 
     def optimizeThis(init: Counter[String, Double]) = {
       val f =

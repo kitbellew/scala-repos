@@ -485,8 +485,12 @@ private[deploy] class Master(
           cores,
           memory,
           workerWebUiUrl) => {
-      logInfo("Registering worker %s:%d with %d cores, %s RAM"
-        .format(workerHost, workerPort, cores, Utils.megabytesToString(memory)))
+      logInfo(
+        "Registering worker %s:%d with %d cores, %s RAM".format(
+          workerHost,
+          workerPort,
+          cores,
+          Utils.megabytesToString(memory)))
       if (state == RecoveryState.STANDBY) {
         context.reply(MasterInStandby)
       } else if (idToWorker.contains(id)) {
@@ -922,7 +926,9 @@ private[deploy] class Master(
     // remove them.
     workers
       .filter { w =>
-        (w.host == worker.host && w.port == worker.port) && (w.state == WorkerState.DEAD)
+        (
+          w.host == worker.host && w.port == worker.port
+        ) && (w.state == WorkerState.DEAD)
       }
       .foreach { w =>
         workers -= w
@@ -1173,8 +1179,9 @@ private[deploy] class Master(
           compressionCodecName = app.desc.eventLogCodec)
         val fs = Utils.getHadoopFileSystem(eventLogDir, hadoopConf)
         val inProgressExists = fs.exists(
-          new Path(eventLogFilePrefix +
-            EventLoggingListener.IN_PROGRESS))
+          new Path(
+            eventLogFilePrefix +
+              EventLoggingListener.IN_PROGRESS))
 
         val eventLogFile =
           if (inProgressExists) {
@@ -1267,7 +1274,9 @@ private[deploy] class Master(
             .format(worker.id, WORKER_TIMEOUT_MS / 1000))
         removeWorker(worker)
       } else {
-        if (worker.lastHeartbeat < currentTime - ((REAPER_ITERATIONS + 1) * WORKER_TIMEOUT_MS)) {
+        if (worker.lastHeartbeat < currentTime - (
+              (REAPER_ITERATIONS + 1) * WORKER_TIMEOUT_MS
+            )) {
           workers -= worker // we've seen this DEAD worker in the UI, etc. for long enough; cull it
         }
       }

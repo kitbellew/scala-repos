@@ -112,8 +112,8 @@ sealed abstract class Future[+A] {
       case BindAsync(onFinish, g) if !cancel.get =>
         onFinish(x =>
           if (!cancel.get)
-            Trampoline.delay(
-              g(x)) map (_ unsafePerformListenInterruptibly (cb, cancel))
+            Trampoline
+              .delay(g(x)) map (_ unsafePerformListenInterruptibly (cb, cancel))
           else
             Trampoline.done(()))
       case _ if cancel.get => ()
@@ -283,8 +283,9 @@ sealed abstract class Future[+A] {
             if (done.compareAndSet(false, true)) {
               cancel.set(true)
               cb(
-                -\/(new TimeoutException(
-                  s"Timed out after $timeoutInMillis milliseconds")))
+                -\/(
+                  new TimeoutException(
+                    s"Timed out after $timeoutInMillis milliseconds")))
             }
           }
         },

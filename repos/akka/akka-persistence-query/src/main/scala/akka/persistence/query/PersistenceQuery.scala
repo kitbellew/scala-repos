@@ -114,9 +114,10 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
       }
       .recoverWith {
         case ex: Exception ⇒
-          Failure.apply(new IllegalArgumentException(
-            s"Unable to create read journal plugin instance for path [$configPath], class [$pluginClassName]!",
-            ex))
+          Failure.apply(
+            new IllegalArgumentException(
+              s"Unable to create read journal plugin instance for path [$configPath], class [$pluginClassName]!",
+              ex))
       }
       .get
   }

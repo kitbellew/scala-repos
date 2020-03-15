@@ -75,8 +75,7 @@ object EventService {
       fileCreateHandler: FileStoreHandler,
       archiveHandler: ArchiveServiceHandler[ByteChunk],
       shardClient: HttpClient[ByteChunk],
-      stop: Stoppable
-  )
+      stop: Stoppable)
 
   case class ServiceConfig(
       serviceLocation: ServiceLocation,
@@ -85,14 +84,15 @@ object EventService {
       ingestBatchSize: Int,
       ingestMaxFields: Int,
       ingestTmpDir: File,
-      deleteTimeout: Timeout
-  )
+      deleteTimeout: Timeout)
 
   object ServiceConfig {
     def fromConfiguration(config: Configuration) = {
-      (ServiceLocation.fromConfig(
-        config.detach("eventService")) |@| ServiceLocation.fromConfig(
-        config.detach("bifrost"))) { (serviceLoc, shardLoc) =>
+      (
+        ServiceLocation.fromConfig(
+          config.detach("eventService")) |@| ServiceLocation.fromConfig(
+          config.detach("bifrost"))
+      ) { (serviceLoc, shardLoc) =>
         ServiceConfig(
           serviceLocation = serviceLoc,
           shardLocation = shardLoc,
@@ -201,15 +201,14 @@ trait EventService
             } ->
               request { (state: State) =>
                 import CORSHeaderHandler.allowOrigin
-                implicit val FR = M.compose[({
-                  type l[a] = Function2[APIKey, Path, a]
-                })#l]
+                implicit val FR = M.compose[
+                  ({
+                    type l[a] = Function2[APIKey, Path, a]
+                  })#l]
 
                 allowOrigin("*", executionContext) {
-                  encode[
-                    ByteChunk,
-                    Future[HttpResponse[JValue]],
-                    Future[HttpResponse[ByteChunk]]] {
+                  encode[ByteChunk, Future[HttpResponse[JValue]], Future[
+                    HttpResponse[ByteChunk]]] {
                     produce(application / json) {
                       //jsonp {
                       fsService(state) ~

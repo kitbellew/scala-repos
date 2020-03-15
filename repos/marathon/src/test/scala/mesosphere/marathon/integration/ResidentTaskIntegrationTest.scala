@@ -161,8 +161,7 @@ class ResidentTaskIntegrationTest
         // FIXME: we need to retry starting tasks since there is a race-condition in Mesos,
         // probably related to our recycling of the task ID (but unconfirmed)
         backoffDuration = 300.milliseconds
-      )
-    )
+      ))
 
     When("we restart the app")
     val newVersion = f.restartSuccessfully(app)
@@ -186,8 +185,7 @@ class ResidentTaskIntegrationTest
         // FIXME: we need to retry starting tasks since there is a race-condition in Mesos,
         // probably related to our recycling of the task ID (but unconfirmed)
         backoffDuration = 300.milliseconds
-      )
-    )
+      ))
 
     When("we change the config")
     val newVersion =
@@ -270,8 +268,7 @@ class ResidentTaskIntegrationTest
       val persistentVolume: Volume = PersistentVolume(
         containerPath = containerPath,
         persistent = PersistentVolumeInfo(size = persistentVolumeSize),
-        mode = Mesos.Volume.Mode.RW
-      )
+        mode = Mesos.Volume.Mode.RW)
 
       val app = AppDefinition(
         appId,
@@ -279,13 +276,11 @@ class ResidentTaskIntegrationTest
         residency = Some(
           Residency(
             Residency.defaultRelaunchEscalationTimeoutSeconds,
-            Residency.defaultTaskLostBehaviour
-          )),
+            Residency.defaultTaskLostBehaviour)),
         container = Some(
           Container(
             `type` = Mesos.ContainerInfo.Type.MESOS,
-            volumes = Seq(persistentVolume)
-          )),
+            volumes = Seq(persistentVolume))),
         cmd = Some(cmd),
         executor = "",
         // cpus, mem and disk are really small because otherwise we'll soon run out of reservable resources

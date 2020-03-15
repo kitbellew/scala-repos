@@ -107,12 +107,13 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
         case ref =>
           val p = ref.get()
 
-          ApplicationManager.getApplication.invokeLater(new Runnable {
-            override def run() {
-              if (p != null)
-                myFileEditorManager.removeTopComponent(editor, p)
-            }
-          })
+          ApplicationManager.getApplication.invokeLater(
+            new Runnable {
+              override def run() {
+                if (p != null)
+                  myFileEditorManager.removeTopComponent(editor, p)
+              }
+            })
       }
 
       val panel = new WorksheetFileHook.MyPanel(file)

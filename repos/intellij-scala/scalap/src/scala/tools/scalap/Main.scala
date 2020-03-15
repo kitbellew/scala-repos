@@ -136,9 +136,11 @@ object Main {
           elements
             .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE)
             .get
-        val bytes = ((bytesElem.elementValue match {
-          case ConstValueIndex(index) => constantWrapped(index)
-        }).asInstanceOf[StringBytesPair].bytes)
+        val bytes = ((
+          bytesElem.elementValue match {
+            case ConstValueIndex(index) => constantWrapped(index)
+          }
+        ).asInstanceOf[StringBytesPair].bytes)
         val length = ByteCodecs.decode(bytes)
         val scalaSig = ScalaSigAttributeParsers.parse(
           ByteCode(bytes.take(length)))
@@ -336,9 +338,9 @@ object Main {
       printPrivates = arguments contains "-private"
       // construct a custom class path
       def cparg =
-        List(
-          "-classpath",
-          "-cp") map (arguments getArgument _) reduceLeft (_ orElse _)
+        List("-classpath", "-cp") map (arguments getArgument _) reduceLeft (
+          _ orElse _
+        )
       val path = cparg map (fromPathString(_)) getOrElse EmptyClasspath
       // print the classpath if output is verbose
       if (verbose) {

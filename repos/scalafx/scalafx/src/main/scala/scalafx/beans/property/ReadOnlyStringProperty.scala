@@ -47,11 +47,12 @@ class ReadOnlyStringProperty(
     with ReadOnlyProperty[String, String]
     with SFXDelegate[jfxbp.ReadOnlyStringProperty] {
   def this(bean: Object, name: String, value: String) =
-    this(new jfxbp.ReadOnlyStringPropertyBase() {
-      def getBean = bean
-      def getName = name
-      override def get = value
-    })
+    this(
+      new jfxbp.ReadOnlyStringPropertyBase() {
+        def getBean = bean
+        def getName = name
+        override def get = value
+      })
 
   def value = delegate.get
 }

@@ -79,8 +79,11 @@ object PowerIterationClusteringModel
       val sqlContext = SQLContext.getOrCreate(sc)
       import sqlContext.implicits._
 
-      val metadata = compact(render(
-        ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~ ("k" -> model.k)))
+      val metadata = compact(
+        render(
+          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~ (
+            "k" -> model.k
+          )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       val dataRDD = model.assignments.toDF()

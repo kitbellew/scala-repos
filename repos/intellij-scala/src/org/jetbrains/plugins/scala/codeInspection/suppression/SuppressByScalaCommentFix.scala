@@ -20,8 +20,9 @@ class SuppressByScalaCommentFix(key: HighlightDisplayKey)
     @tailrec
     def inner(elem: PsiElement): ScBlockStatement = {
       elem match {
-        case (bs: ScBlockStatement) childOf (_: ScBlock | _: ScExtendsBlock |
-            _: ScEarlyDefinitions) =>
+        case (bs: ScBlockStatement) childOf (
+              _: ScBlock | _: ScExtendsBlock | _: ScEarlyDefinitions
+            ) =>
           bs
         case null => null
         case _ =>

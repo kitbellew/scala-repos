@@ -135,8 +135,9 @@ object Test extends InteractiveTest {
     val meanXs = mean(xs)
     val meanYs = mean(ys)
 
-    val beta = (mean((xs, ys).zipped.map(_ * _)) - meanXs * meanYs) / (mean(
-      xs.map(x => x * x)) - meanXs * meanXs)
+    val beta = (mean((xs, ys).zipped.map(_ * _)) - meanXs * meanYs) / (
+      mean(xs.map(x => x * x)) - meanXs * meanXs
+    )
     val alfa = meanYs - beta * meanXs
 
     (alfa, beta)

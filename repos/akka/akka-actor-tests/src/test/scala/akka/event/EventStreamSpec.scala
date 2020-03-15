@@ -306,11 +306,12 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
         val tm = new A
 
         val target = sys.actorOf(
-          Props(new Actor {
-            def receive = {
-              case in ⇒ a1.ref forward in
-            }
-          }),
+          Props(
+            new Actor {
+              def receive = {
+                case in ⇒ a1.ref forward in
+              }
+            }),
           "to-be-killed")
 
         es.subscribe(a2.ref, classOf[Any])
@@ -340,11 +341,12 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
         val a1, a2 = TestProbe()
 
         val target = system.actorOf(
-          Props(new Actor {
-            def receive = {
-              case in ⇒ a1.ref forward in
-            }
-          }),
+          Props(
+            new Actor {
+              def receive = {
+                case in ⇒ a1.ref forward in
+              }
+            }),
           "to-be-killed")
 
         watch(target)

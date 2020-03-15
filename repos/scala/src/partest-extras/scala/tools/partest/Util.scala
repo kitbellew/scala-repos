@@ -34,26 +34,28 @@ object Util {
 
     c.Expr(
       Block(
-        List(Apply(
-          Select(Ident(PredefModule), TermName("println")),
-          List(Apply(
-            Select(
-              Apply(
-                Select(Ident(ScalaPackage), TermName("StringContext")),
-                List(
-                  Literal(Constant("trace> ")),
-                  Literal(Constant("\\nres: ")),
-                  Literal(Constant(" = ")),
-                  Literal(Constant("\\n")))
-              ),
-              TermName("s")
-            ),
+        List(
+          Apply(
+            Select(Ident(PredefModule), TermName("println")),
             List(
-              Literal(Constant(show(a.tree))),
-              Literal(Constant(show(a.actualType))),
-              a.tree)
-          ))
-        )),
+              Apply(
+                Select(
+                  Apply(
+                    Select(Ident(ScalaPackage), TermName("StringContext")),
+                    List(
+                      Literal(Constant("trace> ")),
+                      Literal(Constant("\\nres: ")),
+                      Literal(Constant(" = ")),
+                      Literal(Constant("\\n")))
+                  ),
+                  TermName("s")
+                ),
+                List(
+                  Literal(Constant(show(a.tree))),
+                  Literal(Constant(show(a.actualType))),
+                  a.tree)
+              ))
+          )),
         a.tree
       ))
   }

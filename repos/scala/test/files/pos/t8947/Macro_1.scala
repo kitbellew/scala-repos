@@ -20,9 +20,10 @@ object X {
     // which leads to an ambiguous error.
     //
     // Any macro call that expands to EmptyTree could have triggered this problem.
-    c.universe.reify(new {
-      def something(data: Any) = ???
-    })
+    c.universe.reify(
+      new {
+        def something(data: Any) = ???
+      })
   }
 
   // Workarounds:

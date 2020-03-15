@@ -46,11 +46,12 @@ class ReadOnlyLongProperty(override val delegate: jfxbp.ReadOnlyLongProperty)
     with ReadOnlyProperty[Long, Number]
     with SFXDelegate[jfxbp.ReadOnlyLongProperty] {
   def this(bean: Object, name: String, value: Long) =
-    this(new jfxbp.ReadOnlyLongPropertyBase() {
-      def getBean = bean
-      def getName = name
-      def get = value
-    })
+    this(
+      new jfxbp.ReadOnlyLongPropertyBase() {
+        def getBean = bean
+        def getName = name
+        def get = value
+      })
 
   override def value = delegate.get
 }

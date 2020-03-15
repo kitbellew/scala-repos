@@ -27,8 +27,8 @@ final class BasicLinkerBackend(
     semantics: Semantics,
     outputMode: OutputMode,
     withSourceMap: Boolean,
-    config: LinkerBackend.Config
-) extends LinkerBackend(
+    config: LinkerBackend.Config)
+    extends LinkerBackend(
       semantics,
       outputMode.esLevel,
       withSourceMap,

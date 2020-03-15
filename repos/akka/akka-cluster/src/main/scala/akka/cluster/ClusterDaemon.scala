@@ -697,8 +697,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
         // update gossip overview
         val newOverview = localOverview copy (seen = newSeen)
-        val newGossip = localGossip copy (members = newMembers, overview =
-          newOverview) // update gossip
+        val newGossip = localGossip copy (
+          members = newMembers, overview = newOverview
+        ) // update gossip
         updateLatestGossip(newGossip)
 
         publish(latestGossip)
@@ -936,9 +937,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         peer foreach gossipTo
       } else {
         // Fall back to localGossip; important to not accidentally use `map` of the SortedSet, since the original order is not preserved)
-        val peer = selectRandomNode(localGossip.members.toIndexedSeq.collect {
-          case m if validNodeForGossip(m.uniqueAddress) ⇒ m.uniqueAddress
-        })
+        val peer = selectRandomNode(
+          localGossip.members.toIndexedSeq.collect {
+            case m if validNodeForGossip(m.uniqueAddress) ⇒ m.uniqueAddress
+          })
         peer foreach { node ⇒
           if (localGossip.seenByNode(node))
             gossipStatusTo(node)
@@ -1081,10 +1083,12 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
             // It is alright to use same upNumber as already used by a removed member, since the upNumber
             // is only used for comparing age of current cluster members (Member.isOlderThan)
             val youngest = localGossip.youngestMember
-            upNumber = 1 + (if (youngest.upNumber == Int.MaxValue)
-                              0
-                            else
-                              youngest.upNumber)
+            upNumber = 1 + (
+              if (youngest.upNumber == Int.MaxValue)
+                0
+              else
+                youngest.upNumber
+            )
           } else {
             upNumber += 1
           }
@@ -1117,8 +1121,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         removed.foldLeft(localGossip.version) { (v, node) ⇒
           v.prune(VectorClock.Node(vclockName(node)))
         }
-      val newGossip = localGossip copy (members = newMembers, overview =
-        newOverview, version = newVersion)
+      val newGossip = localGossip copy (
+        members = newMembers, overview = newOverview, version = newVersion
+      )
 
       updateLatestGossip(newGossip)
 

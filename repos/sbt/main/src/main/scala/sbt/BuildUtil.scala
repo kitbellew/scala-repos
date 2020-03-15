@@ -117,9 +117,10 @@ object BuildUtil {
 
   /** Wildcard import `._` for all values. */
   def importAll(values: Seq[String]): Seq[String] =
-    importNames(values map {
-      _ + "._"
-    })
+    importNames(
+      values map {
+        _ + "._"
+      })
   def importAllRoot(values: Seq[String]): Seq[String] =
     importAll(values map rootedName)
   def rootedName(s: String): String =

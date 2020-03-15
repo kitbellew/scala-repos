@@ -26,9 +26,10 @@ object ServerResultUtilsSpec extends Specification with IterateeSpecification {
     def secure = false
     override def clientCertificateChain = None
     val headers =
-      new Headers(cookie.map {
-        case (name, value) => "Cookie" -> s"$name=$value"
-      }.toSeq)
+      new Headers(
+        cookie.map {
+          case (name, value) => "Cookie" -> s"$name=$value"
+        }.toSeq)
   }
 
   "ServerResultUtils.cleanFlashCookie" should {

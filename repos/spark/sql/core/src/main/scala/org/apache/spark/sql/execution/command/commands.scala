@@ -127,9 +127,10 @@ case class SetCommand(kv: Option[(String, Option[String])])
       case Some((SQLConf.Deprecated.USE_SQL_AGGREGATE2, Some(value))) =>
         val runFunc =
           (sqlContext: SQLContext) => {
-            logWarning(s"Property ${SQLConf.Deprecated.USE_SQL_AGGREGATE2} is deprecated and " +
-              s"will be ignored. ${SQLConf.Deprecated.USE_SQL_AGGREGATE2} will " +
-              s"continue to be true.")
+            logWarning(
+              s"Property ${SQLConf.Deprecated.USE_SQL_AGGREGATE2} is deprecated and " +
+                s"will be ignored. ${SQLConf.Deprecated.USE_SQL_AGGREGATE2} will " +
+                s"continue to be true.")
             Seq(Row(SQLConf.Deprecated.USE_SQL_AGGREGATE2, "true"))
           }
         (keyValueOutput, runFunc)

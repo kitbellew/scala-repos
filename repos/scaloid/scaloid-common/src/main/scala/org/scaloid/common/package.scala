@@ -71,11 +71,12 @@ package object common
     if (uiThread == Thread.currentThread) {
       f
     } else {
-      handler.post(new Runnable() {
-        def run() {
-          f
-        }
-      })
+      handler.post(
+        new Runnable() {
+          def run() {
+            f
+          }
+        })
     }
   }
 
@@ -84,11 +85,12 @@ package object common
       Future.fromTry(Try(f))
     } else {
       val p = Promise[T]()
-      handler.post(new Runnable() {
-        def run() {
-          p.complete(Try(f))
-        }
-      })
+      handler.post(
+        new Runnable() {
+          def run() {
+            p.complete(Try(f))
+          }
+        })
       p.future
     }
   }

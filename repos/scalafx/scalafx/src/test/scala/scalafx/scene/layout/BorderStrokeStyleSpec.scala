@@ -56,7 +56,6 @@ class BorderStrokeStyleSpec
       StrokeLineCap.BUTT,
       1,
       1,
-      new java.util.ArrayList[java.lang.Double]()
-    )
+      new java.util.ArrayList[java.lang.Double]())
 
 }

@@ -21,11 +21,8 @@ import scala.collection.mutable.HashSet
 import util.FatLazy
 import common._
 
-class HasManyThrough[
-    From <: KeyedMapper[ThroughType, From],
-    To <: Mapper[To],
-    Through <: Mapper[Through],
-    ThroughType <: Any](
+class HasManyThrough[From <: KeyedMapper[ThroughType, From], To <: Mapper[
+  To], Through <: Mapper[Through], ThroughType <: Any](
     owner: From,
     otherSingleton: MetaMapper[To],
     through: MetaMapper[Through],

@@ -38,11 +38,11 @@ trait IterateeSpecification {
   def mustPropagateFailure[E](e: Enumerator[E]) = {
     Try(
       Await.result(
-        e(Cont {
-          case _ => throw new RuntimeException()
-        }),
-        Duration.Inf
-      )) must beAFailedTry
+        e(
+          Cont {
+            case _ => throw new RuntimeException()
+          }),
+        Duration.Inf)) must beAFailedTry
   }
 
   /**

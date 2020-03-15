@@ -12,22 +12,24 @@ class BufReaderTest extends FunSuite with Checkers {
   import Prop.{forAll, throws}
 
   test("BufReader") {
-    check(forAll { (bytes: String) =>
-      val buf = Buf.Utf8(bytes)
-      val r = BufReader(buf)
-      Await.result(Reader.readAll(r)) == buf
-    })
+    check(
+      forAll { (bytes: String) =>
+        val buf = Buf.Utf8(bytes)
+        val r = BufReader(buf)
+        Await.result(Reader.readAll(r)) == buf
+      })
   }
 
   test("BufReader - discard") {
-    check(forAll { (bytes: String, n: Int) =>
-      val r = BufReader(Buf.Utf8(bytes))
-      r.discard()
-      n < 0 ||
-      bytes.length == 0 ||
-      throws(classOf[Reader.ReaderDiscarded])({
-        Await.result(r.read(n))
+    check(
+      forAll { (bytes: String, n: Int) =>
+        val r = BufReader(Buf.Utf8(bytes))
+        r.discard()
+        n < 0 ||
+        bytes.length == 0 ||
+        throws(classOf[Reader.ReaderDiscarded])({
+          Await.result(r.read(n))
+        })
       })
-    })
   }
 }

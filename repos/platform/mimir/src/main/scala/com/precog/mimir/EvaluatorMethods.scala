@@ -61,14 +61,16 @@ trait EvaluatorMethodsModule[M[+_]]
       } getOrElse {
         rvalue match {
           case RArray(elements) =>
-            InnerArrayConcat(elements map { element =>
-              trans.WrapArray(transRValue(element, target))
-            }: _*)
+            InnerArrayConcat(
+              elements map { element =>
+                trans.WrapArray(transRValue(element, target))
+              }: _*)
           case RObject(fields) =>
-            InnerObjectConcat(fields.toSeq map {
-              case (key, value) =>
-                trans.WrapObject(transRValue(value, target), key)
-            }: _*)
+            InnerObjectConcat(
+              fields.toSeq map {
+                case (key, value) =>
+                  trans.WrapObject(transRValue(value, target), key)
+              }: _*)
           case _ =>
             sys.error("Can't handle RValue")
         }

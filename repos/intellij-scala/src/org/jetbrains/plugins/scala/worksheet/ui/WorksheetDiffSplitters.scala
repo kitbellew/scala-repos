@@ -89,19 +89,20 @@ object WorksheetDiffSplitters {
     setSecondComponent(editor2.getComponent)
     setHonorComponentsMinimumSize(false)
 
-    getDivider.addMouseListener(new MouseAdapter {
-      override def mouseReleased(mouseEvent: MouseEvent) {
-        val f = getProportion
+    getDivider.addMouseListener(
+      new MouseAdapter {
+        override def mouseReleased(mouseEvent: MouseEvent) {
+          val f = getProportion
 
-        Option(
-          PsiDocumentManager.getInstance(
-            editor1.getProject) getCachedPsiFile editor1.getDocument) foreach {
-          case file: ScalaFile =>
-            WorksheetEditorPrinter.saveOnlyRatio(file, f)
-          case _ =>
+          Option(
+            PsiDocumentManager.getInstance(
+              editor1.getProject) getCachedPsiFile editor1.getDocument) foreach {
+            case file: ScalaFile =>
+              WorksheetEditorPrinter.saveOnlyRatio(file, f)
+            case _ =>
+          }
         }
-      }
-    })
+      })
 
     private val visibleAreaListener =
       new VisibleAreaListener {
@@ -161,8 +162,7 @@ object WorksheetDiffSplitters {
                   COLOR1
                 else
                   COLOR2,
-                false
-              )
+                false)
           }
 
           DividerPolygon.paintPolygons(

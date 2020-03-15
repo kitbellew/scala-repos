@@ -28,11 +28,14 @@ object Other {
 object Test {
   trait A
   trait B
-  def x(a: (A {
-    val y: Int
-  }) with B {
-    val y: Int
-  }) = a.y
+  def x(
+      a: (
+        A {
+          val y: Int
+        }
+      ) with B {
+        val y: Int
+      }) = a.y
 
   class C extends A with B {
     val y = 456
@@ -43,9 +46,11 @@ object Test {
   }
 
   def main(args: Array[String]): Unit = {
-    println(x(new A with B {
-      val y = 123
-    }))
+    println(
+      x(
+        new A with B {
+          val y = 123
+        }))
     println(x(new C))
 
     {

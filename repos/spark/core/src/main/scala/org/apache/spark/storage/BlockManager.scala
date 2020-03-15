@@ -1281,8 +1281,9 @@ private[spark] class BlockManager(
       s"Replicating $blockId of ${data.size} bytes to " +
         s"${peersReplicatedTo.size} peer(s) took $timeTakeMs ms")
     if (peersReplicatedTo.size < numPeersToReplicateTo) {
-      logWarning(s"Block $blockId replicated to only " +
-        s"${peersReplicatedTo.size} peer(s) instead of $numPeersToReplicateTo peers")
+      logWarning(
+        s"Block $blockId replicated to only " +
+          s"${peersReplicatedTo.size} peer(s) instead of $numPeersToReplicateTo peers")
     }
   }
 

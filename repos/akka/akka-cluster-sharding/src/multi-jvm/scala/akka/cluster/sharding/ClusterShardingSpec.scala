@@ -264,13 +264,14 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
           rebalanceThreshold = 2,
           maxSimultaneousRebalance = 1)
       val cfg = ConfigFactory
-        .parseString(s"""
+        .parseString(
+          s"""
       handoff-timeout = 10s
       shard-start-timeout = 10s
       rebalance-interval = ${if (rebalanceEnabled)
-          "2s"
-        else
-          "3600s"}
+            "2s"
+          else
+            "3600s"}
       """)
         .withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
       val settings = ClusterShardingSettings(cfg).withRememberEntities(
@@ -635,7 +636,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
             for (n ← 1 to 10) {
               rebalancingRegion.tell(Get(n), probe.ref)
               probe.expectMsgType[Int]
-              if (probe.lastSender.path == rebalancingRegion.path / (n % 12).toString / n.toString)
+              if (probe.lastSender.path == rebalancingRegion.path / (
+                    n % 12
+                  ).toString / n.toString)
                 count += 1
             }
             count should be >= (2)
@@ -899,9 +902,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         awaitAssert(
           {
             counter1.tell(Identify(1), probe.ref)
-            probe
-              .expectMsgType[ActorIdentity](1 second)
-              .ref should not be (None)
+            probe.expectMsgType[ActorIdentity](1 second).ref should not be (
+              None
+            )
           },
           5.seconds,
           500.millis)
@@ -944,9 +947,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         awaitAssert(
           {
             counter1.tell(Identify(1), probe.ref)
-            probe
-              .expectMsgType[ActorIdentity](1 second)
-              .ref should not be (None)
+            probe.expectMsgType[ActorIdentity](1 second).ref should not be (
+              None
+            )
           },
           5.seconds,
           500 millis)

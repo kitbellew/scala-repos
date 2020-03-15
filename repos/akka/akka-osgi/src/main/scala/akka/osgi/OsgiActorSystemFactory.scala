@@ -46,8 +46,9 @@ class OsgiActorSystemFactory(
     config.withFallback(
       ConfigFactory
         .load(classloader)
-        .withFallback(ConfigFactory.defaultReference(
-          OsgiActorSystemFactory.akkaActorClassLoader)))
+        .withFallback(
+          ConfigFactory.defaultReference(
+            OsgiActorSystemFactory.akkaActorClassLoader)))
   }
 
   /**

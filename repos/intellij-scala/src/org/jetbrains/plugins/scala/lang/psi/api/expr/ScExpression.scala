@@ -139,8 +139,7 @@ trait ScExpression
                       .getCachedClass(
                         "scala.Function1",
                         getResolveScope,
-                        ScalaPsiManager.ClassCategory.TYPE
-                      ) match {
+                        ScalaPsiManager.ClassCategory.TYPE) match {
                       case function1: ScTrait =>
                         ScParameterizedType(
                           ScType.designator(function1),
@@ -666,7 +665,9 @@ trait ScExpression
           } else
             None
         case inf: ScInfixExpr
-            if (inf.isLeftAssoc && this == inf.rOp) || (!inf.isLeftAssoc && this == inf.lOp) =>
+            if (
+              inf.isLeftAssoc && this == inf.rOp
+            ) || (!inf.isLeftAssoc && this == inf.lOp) =>
           val resolve = inf.operation.multiResolve(false)
           if (resolve.length == 1) {
             resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction

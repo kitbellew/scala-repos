@@ -27,16 +27,13 @@ trait MonadErrorTests[F[_], E]
       EqFXorEA: Eq[F[E Xor A]],
       EqXorTFEA: Eq[XorT[F, E, A]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]
-  ): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet = {
     new RuleSet {
       def name: String = "monadError"
       def bases: Seq[(String, RuleSet)] = Nil
       def parents: Seq[RuleSet] = Seq(applicativeError[A, B, C], monad[A, B, C])
       def props: Seq[(String, Prop)] =
-        Seq(
-          "monadError left zero" -> forAll(laws.monadErrorLeftZero[A, B] _)
-        )
+        Seq("monadError left zero" -> forAll(laws.monadErrorLeftZero[A, B] _))
     }
   }
 }

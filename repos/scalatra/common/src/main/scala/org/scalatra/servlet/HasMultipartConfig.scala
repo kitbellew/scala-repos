@@ -18,10 +18,12 @@ trait HasMultipartConfig extends Initializable {
     // hack to support the tests without changes
     providedConfig orElse {
       try {
-        (Option(servletContext)
-          flatMap (sc => Option(sc.getAttribute(MultipartConfigKey)))
-          filterNot (_ == null)
-          map (_.asInstanceOf[MultipartConfig]))
+        (
+          Option(servletContext)
+            flatMap (sc => Option(sc.getAttribute(MultipartConfigKey)))
+            filterNot (_ == null)
+            map (_.asInstanceOf[MultipartConfig])
+        )
       } catch {
         case _: NullPointerException => Some(DefaultMultipartConfig)
       }

@@ -39,8 +39,9 @@ class ApproximateGradientFunction[K, T](f: T => Double, epsilon: Double = 1e-5)(
       grad(k) = (f(xx) - fx) / epsilon
       xx(k) -= epsilon
       println(
-        "diff : " + epsilon + " val: " + (grad(k) - trueGrad(
-          k)) + " dp: " + trueGrad(k) + " empirical: " + grad(k))
+        "diff : " + epsilon + " val: " + (
+          grad(k) - trueGrad(k)
+        ) + " dp: " + trueGrad(k) + " empirical: " + grad(k))
     }
     (fx, grad)
 

@@ -203,7 +203,9 @@ sealed abstract class VersionVector
           nt1: (UniqueAddress, Long),
           nt2: (UniqueAddress, Long),
           currentOrder: Ordering): Ordering =
-        if ((requestedOrder ne FullOrder) && (currentOrder ne Same) && (currentOrder ne requestedOrder))
+        if ((requestedOrder ne FullOrder) && (currentOrder ne Same) && (
+              currentOrder ne requestedOrder
+            ))
           currentOrder
         else if ((nt1 eq cmpEndMarker) && (nt2 eq cmpEndMarker))
           currentOrder
@@ -378,10 +380,12 @@ final case class OneVersionVector private[akka] (
   override def prune(
       removedNode: UniqueAddress,
       collapseInto: UniqueAddress): VersionVector =
-    (if (node == removedNode)
-       VersionVector.empty
-     else
-       this) + collapseInto
+    (
+      if (node == removedNode)
+        VersionVector.empty
+      else
+        this
+    ) + collapseInto
 
   override def pruningCleanup(removedNode: UniqueAddress): VersionVector =
     if (node == removedNode)

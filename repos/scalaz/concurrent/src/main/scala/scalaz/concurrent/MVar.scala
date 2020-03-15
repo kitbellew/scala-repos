@@ -52,8 +52,7 @@ private[this] class MVarImpl[A](
       for {
         a <- value.getAndSet(None)
         _ <- writeLatch.release()
-      } yield a
-    )
+      } yield a)
 
   def put(a: => A) = write(a, value.get)
 

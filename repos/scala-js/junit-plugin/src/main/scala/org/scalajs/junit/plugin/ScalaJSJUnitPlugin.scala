@@ -242,8 +242,7 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         }
         val bootParents = List(
           TypeTree(definitions.ObjectTpe),
-          TypeTree(jUnitTestMetadataType)
-        )
+          TypeTree(jUnitTestMetadataType))
         val bootImpl = treeCopy.Template(
           clazz.impl,
           bootParents,
@@ -263,8 +262,7 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         val newClazzInfo = {
           val newParentsInfo = List(
             definitions.ObjectTpe,
-            jUnitTestMetadataType
-          )
+            jUnitTestMetadataType)
           val decls = bootSym.info.decls
           decls.enter(getJUnitMetadataDef.symbol)
           decls.enter(newInstanceDef.symbol)

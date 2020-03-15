@@ -113,11 +113,9 @@ trait WebSocketSpec
     withServer(app => webSocket(app)(consumed)) { app =>
       import app.materializer
       val result = runWebSocket { (flow) =>
-        sendFrames(
-          TextMessage("a"),
-          TextMessage("b"),
-          CloseMessage(1000)
-        ).via(flow).runWith(Sink.cancelled)
+        sendFrames(TextMessage("a"), TextMessage("b"), CloseMessage(1000))
+          .via(flow)
+          .runWith(Sink.cancelled)
         consumed.future
       }
       result must_== Seq("a", "b")
@@ -135,8 +133,7 @@ trait WebSocketSpec
         exactly(
           textFrame(be_==("a")),
           textFrame(be_==("b")),
-          closeFrame()
-        ).inOrder)
+          closeFrame()).inOrder)
     }
   }
 
@@ -161,10 +158,7 @@ trait WebSocketSpec
           .via(flow)
           .runWith(consumeFrames)
       }
-      frames must contain(
-        exactly(
-          closeFrame()
-        ))
+      frames must contain(exactly(closeFrame()))
     }
   }
 
@@ -274,13 +268,9 @@ trait WebSocketSpec
               SimpleMessage(TextMessage("first frame"), false),
               ContinuationMessage(
                 ByteString(new String(Array.range(1, 65530).map(_ => 'a'))),
-                true)
-            ).via(flow).runWith(consumeFrames)
+                true)).via(flow).runWith(consumeFrames)
           }
-          frames must contain(
-            exactly(
-              closeFrame(1009)
-            ))
+          frames must contain(exactly(closeFrame(1009)))
         }
       }
 
@@ -291,15 +281,11 @@ trait WebSocketSpec
           }) { app =>
           import app.materializer
           val frames = runWebSocket { flow =>
-            sendFrames(
-              BinaryMessage(ByteString("first")),
-              TextMessage("foo")
-            ).via(flow).runWith(consumeFrames)
+            sendFrames(BinaryMessage(ByteString("first")), TextMessage("foo"))
+              .via(flow)
+              .runWith(consumeFrames)
           }
-          frames must contain(
-            exactly(
-              closeFrame(1003)
-            ))
+          frames must contain(exactly(closeFrame(1003)))
         }
       }
 
@@ -310,16 +296,11 @@ trait WebSocketSpec
           }) { app =>
           import app.materializer
           val frames = runWebSocket { flow =>
-            sendFrames(
-              PingMessage(ByteString("hello")),
-              CloseMessage(1000)
-            ).via(flow).runWith(consumeFrames)
+            sendFrames(PingMessage(ByteString("hello")), CloseMessage(1000))
+              .via(flow)
+              .runWith(consumeFrames)
           }
-          frames must contain(
-            exactly(
-              pongFrame(be_==("hello")),
-              closeFrame()
-            ))
+          frames must contain(exactly(pongFrame(be_==("hello")), closeFrame()))
         }
       }
 
@@ -330,15 +311,11 @@ trait WebSocketSpec
           }) { app =>
           import app.materializer
           val frames = runWebSocket { flow =>
-            sendFrames(
-              PongMessage(ByteString("hello")),
-              CloseMessage(1000)
-            ).via(flow).runWith(consumeFrames)
+            sendFrames(PongMessage(ByteString("hello")), CloseMessage(1000))
+              .via(flow)
+              .runWith(consumeFrames)
           }
-          frames must contain(
-            exactly(
-              closeFrame()
-            ))
+          frames must contain(exactly(closeFrame()))
         }
       }
 
@@ -399,16 +376,17 @@ trait WebSocketSpec
         implicit app => consumed =>
           import app.materializer
           WebSocket.acceptWithActor[String, String] { req => out =>
-            Props(new Actor() {
-              var messages = List.empty[String]
-              def receive = {
-                case msg: String =>
-                  messages = msg :: messages
-              }
-              override def postStop() = {
-                consumed.success(messages.reverse)
-              }
-            })
+            Props(
+              new Actor() {
+                var messages = List.empty[String]
+                def receive = {
+                  case msg: String =>
+                    messages = msg :: messages
+                }
+                override def postStop() = {
+                  consumed.success(messages.reverse)
+                }
+              })
           }
       }
 
@@ -416,13 +394,14 @@ trait WebSocketSpec
         implicit app => messages =>
           import app.materializer
           WebSocket.acceptWithActor[String, String] { req => out =>
-            Props(new Actor() {
-              messages.foreach { msg =>
-                out ! msg
-              }
-              out ! Status.Success(())
-              def receive = PartialFunction.empty
-            })
+            Props(
+              new Actor() {
+                messages.foreach { msg =>
+                  out ! msg
+                }
+                out ! Status.Success(())
+                def receive = PartialFunction.empty
+              })
           }
       }
 
@@ -430,22 +409,24 @@ trait WebSocketSpec
         implicit app =>
           import app.materializer
           WebSocket.acceptWithActor[String, String] { req => out =>
-            Props(new Actor() {
-              out ! Status.Success(())
-              def receive = PartialFunction.empty
-            })
+            Props(
+              new Actor() {
+                out ! Status.Success(())
+                def receive = PartialFunction.empty
+              })
           }
       }
 
       "clean up when closed" in cleanUpWhenClosed { implicit app => cleanedUp =>
         import app.materializer
         WebSocket.acceptWithActor[String, String] { req => out =>
-          Props(new Actor() {
-            def receive = PartialFunction.empty
-            override def postStop() = {
-              cleanedUp.success(true)
-            }
-          })
+          Props(
+            new Actor() {
+              def receive = PartialFunction.empty
+              override def postStop() = {
+                cleanedUp.success(true)
+              }
+            })
         }
       }
 
@@ -478,8 +459,7 @@ trait WebSocketSpec
             Nil,
             "GET",
             "",
-            "/stream")
-        )
+            "/stream"))
         invoker.call(javaHandler)
       }
 
@@ -528,8 +508,7 @@ trait WebSocketSpec
             Nil,
             "GET",
             "",
-            "/stream")
-        )
+            "/stream"))
         invoker.call(javaHandler)
       }
 
@@ -537,12 +516,14 @@ trait WebSocketSpec
         new LegacyWebSocket[String] {
           @volatile var messages = List.empty[String]
           def onReady(in: In[String], out: Out[String]) = {
-            in.onMessage(new Consumer[String] {
-              def accept(msg: String) = messages = msg :: messages
-            })
-            in.onClose(new Runnable {
-              def run() = consumed.success(messages.reverse)
-            })
+            in.onMessage(
+              new Consumer[String] {
+                def accept(msg: String) = messages = msg :: messages
+              })
+            in.onClose(
+              new Runnable {
+                def run() = consumed.success(messages.reverse)
+              })
           }
         }
       }
@@ -561,9 +542,10 @@ trait WebSocketSpec
       "clean up when closed" in cleanUpWhenClosed { _ => cleanedUp =>
         new LegacyWebSocket[String] {
           def onReady(in: In[String], out: Out[String]) = {
-            in.onClose(new Runnable {
-              def run() = cleanedUp.success(true)
-            })
+            in.onClose(
+              new Runnable {
+                def run() = cleanedUp.success(true)
+              })
           }
         }
       }
@@ -575,19 +557,21 @@ trait WebSocketSpec
 
       "allow handling a websocket with an actor" in allowSendingMessages {
         _ => messages =>
-          JWebSocket.withActor[String](new Function[ActorRef, Props]() {
-            def apply(out: ActorRef) = {
-              Props(new Actor() {
-                messages.foreach { msg =>
-                  out ! msg
-                }
-                out ! Status.Success(())
-                def receive = {
-                  case msg: Message => ()
-                }
-              })
-            }
-          })
+          JWebSocket.withActor[String](
+            new Function[ActorRef, Props]() {
+              def apply(out: ActorRef) = {
+                Props(
+                  new Actor() {
+                    messages.foreach { msg =>
+                      out ! msg
+                    }
+                    out ! Status.Success(())
+                    def receive = {
+                      case msg: Message => ()
+                    }
+                  })
+              }
+            })
       }
     }
 

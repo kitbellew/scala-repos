@@ -1,10 +1,7 @@
 import scala.reflect.runtime.universe._
 import scala.reflect.ClassTag
 
-case class R(
-    sales: Int,
-    name: String
-)
+case class R(sales: Int, name: String)
 
 class Foo {
   import Test._

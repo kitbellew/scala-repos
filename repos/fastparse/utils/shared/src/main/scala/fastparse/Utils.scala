@@ -65,8 +65,7 @@ object Utils {
   object CharBitSet {
     val hexChars = Seq(
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
-      'f'
-    )
+      'f')
     def hex2Int(hex: String): Int = {
       var res = 0
       for (i <- 0 until hex.length) {
@@ -184,8 +183,7 @@ object Utils {
               if (next.word)
                 offset
               else
-                currentRes
-            )
+                currentRes)
         }
       }
       rec(0, this, -1)

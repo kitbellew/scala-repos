@@ -55,9 +55,10 @@ class ScalaDocCompletionContributor extends ScalaCompletionContributor {
             }
 
           for (tag <- allowedTags) {
-            result.addElement(new LookupElement {
-              def getLookupString: String = tag.substring(1)
-            })
+            result.addElement(
+              new LookupElement {
+                def getLookupString: String = tag.substring(1)
+              })
           }
         }
         result.stopHere()

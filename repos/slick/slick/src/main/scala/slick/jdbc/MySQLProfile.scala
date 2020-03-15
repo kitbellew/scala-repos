@@ -153,8 +153,9 @@ trait MySQLProfile extends JdbcProfile { profile =>
               case Some(s) => s
               case None =>
                 if (sym
-                      .flatMap(_.findColumnOption[
-                        RelationalProfile.ColumnOption.Default[_]])
+                      .flatMap(
+                        _.findColumnOption[
+                          RelationalProfile.ColumnOption.Default[_]])
                       .isDefined ||
                     sym
                       .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
@@ -302,29 +303,35 @@ trait MySQLProfile extends JdbcProfile { profile =>
       val t = sqlType + " not null"
       val increment = seq._increment.getOrElse(one)
       val desc = increment < zero
-      val minValue =
-        seq._minValue getOrElse (if (desc)
-                                   fromInt(java.lang.Integer.MIN_VALUE)
-                                 else
-                                   one)
-      val maxValue = seq._maxValue getOrElse (if (desc)
-                                                fromInt(-1)
-                                              else
-                                                fromInt(
-                                                  java.lang.Integer.MAX_VALUE))
+      val minValue = seq._minValue getOrElse (
+        if (desc)
+          fromInt(java.lang.Integer.MIN_VALUE)
+        else
+          one
+      )
+      val maxValue = seq._maxValue getOrElse (
+        if (desc)
+          fromInt(-1)
+        else
+          fromInt(java.lang.Integer.MAX_VALUE)
+      )
       val start = seq._start.getOrElse(
         if (desc)
           maxValue
         else
           minValue)
       val beforeStart = start - increment
-      if (!seq._cycle && (seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc))
+      if (!seq._cycle && (
+            seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc
+          ))
         throw new SlickException(
           "Sequences with limited size and without CYCLE are not supported by MySQLProfile's sequence emulation")
       val incExpr =
         if (seq._cycle) {
           if (desc)
-            "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
+            "if(id-" + (
+              -increment
+            ) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
           else
             "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
         } else {

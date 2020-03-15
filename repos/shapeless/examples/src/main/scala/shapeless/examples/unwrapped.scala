@@ -55,15 +55,10 @@ object UnwrappedExamples {
       new Encode[HNil] {
         def fields(hnil: HNil) = Map.empty
       }
-    implicit def encodeHCons[
-        K <: Symbol,
-        V,
-        Rest <: HList
-    ](implicit
+    implicit def encodeHCons[K <: Symbol, V, Rest <: HList](implicit
         key: Witness.Aux[K],
         encodeV: Lazy[EncodeValue[V]],
-        encodeRest: Strict[Encode[Rest]]
-    ) =
+        encodeRest: Strict[Encode[Rest]]) =
       new Encode[FieldType[K, V] :: Rest] {
         def fields(hl: FieldType[K, V] :: Rest) =
           encodeRest.value.fields(hl.tail) +
@@ -72,8 +67,7 @@ object UnwrappedExamples {
     // the magic one!
     implicit def encodeGeneric[T, Repr](implicit
         gen: LabelledGeneric.Aux[T, Repr],
-        encodeRepr: Lazy[Encode[Repr]]
-    ) =
+        encodeRepr: Lazy[Encode[Repr]]) =
       new Encode[T] {
         def fields(t: T) = encodeRepr.value.fields(gen.to(t))
       }
@@ -123,27 +117,22 @@ object UnwrappedExamples {
       new Encode2[HNil] {
         def fields(hnil: HNil) = Map.empty
       }
-    implicit def encodeHCons[
-        K <: Symbol,
-        V,
-        U,
-        Rest <: HList
-    ](implicit
+    implicit def encodeHCons[K <: Symbol, V, U, Rest <: HList](implicit
         key: Witness.Aux[K],
         uw: Strict[Unwrapped.Aux[V, U]],
         encodeV: Lazy[EncodeValue[U]],
-        encodeRest: Strict[Encode2[Rest]]
-    ) =
+        encodeRest: Strict[Encode2[Rest]]) =
       new Encode2[FieldType[K, V] :: Rest] {
         def fields(hl: FieldType[K, V] :: Rest) =
           encodeRest.value.fields(hl.tail) +
-            (key.value.name -> encodeV.value.toJsonFragment(
-              uw.value.unwrap(hl.head)))
+            (
+              key.value.name -> encodeV.value.toJsonFragment(
+                uw.value.unwrap(hl.head))
+            )
       }
     implicit def encodeGeneric[T, Repr](implicit
         gen: LabelledGeneric.Aux[T, Repr],
-        encodeRepr: Lazy[Encode2[Repr]]
-    ) =
+        encodeRepr: Lazy[Encode2[Repr]]) =
       new Encode2[T] {
         def fields(t: T) = encodeRepr.value.fields(gen.to(t))
       }

@@ -111,8 +111,7 @@ class ReplicaFetcherThread(
           brokerConfig.interBrokerSecurityProtocol,
           Mode.CLIENT,
           LoginType.SERVER,
-          brokerConfig.values)
-      )
+          brokerConfig.values))
     new NetworkClient(
       selector,
       new ManualMetadataUpdater(),
@@ -122,8 +121,7 @@ class ReplicaFetcherThread(
       Selectable.USE_DEFAULT_BUFFER_SIZE,
       brokerConfig.replicaSocketReceiveBufferBytes,
       brokerConfig.requestTimeoutMs,
-      time
-    )
+      time)
   }
 
   override def shutdown(): Unit = {
@@ -357,8 +355,9 @@ class ReplicaFetcherThread(
     val topicPartition =
       new TopicPartition(topicAndPartition.topic, topicAndPartition.partition)
     val partitions = Map(
-      topicPartition -> new ListOffsetRequest.PartitionData(earliestOrLatest, 1)
-    )
+      topicPartition -> new ListOffsetRequest.PartitionData(
+        earliestOrLatest,
+        1))
     val request = new ListOffsetRequest(consumerId, partitions.asJava)
     val clientResponse = sendRequest(ApiKeys.LIST_OFFSETS, None, request)
     val response = new ListOffsetResponse(clientResponse.responseBody)

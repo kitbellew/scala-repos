@@ -29,23 +29,24 @@ object HttpStreamingClient {
     request.headerMap.add("Host", host)
     println(request)
 
-    Await.result(client(request).flatMap {
-      case response if response.status != Status.Ok =>
-        println(response)
-        client.close()
+    Await.result(
+      client(request).flatMap {
+        case response if response.status != Status.Ok =>
+          println(response)
+          client.close()
 
-      case response =>
-        var messageCount = 0 // Wait for 1000 messages then shut down.
-        fromReader(response.reader).foreach {
-          case Buf.Utf8(buf) if messageCount < 1000 =>
-            messageCount += 1
-            println(buf)
-            println("--")
+        case response =>
+          var messageCount = 0 // Wait for 1000 messages then shut down.
+          fromReader(response.reader).foreach {
+            case Buf.Utf8(buf) if messageCount < 1000 =>
+              messageCount += 1
+              println(buf)
+              println("--")
 
-          case _ =>
-            client.close()
-        }
-    })
+            case _ =>
+              client.close()
+          }
+      })
   }
 
   def fromReader(reader: Reader): AsyncStream[Buf] =

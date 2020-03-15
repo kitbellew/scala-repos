@@ -22,11 +22,7 @@ trait Spec {
 }
 
 object Spec {
-  class Info(
-      val runner: String,
-      val usage: String,
-      val mainClass: String
-  )
+  class Info(val runner: String, val usage: String, val mainClass: String)
   object Info {
     def apply(runner: String, help: String, mainClass: String): Info =
       new Info(runner, help, mainClass)

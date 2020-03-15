@@ -29,8 +29,8 @@ case class ShutdownRequest(reason: String, isError: Boolean = false)
 class ServerActor(
     config: EnsimeConfig,
     protocol: Protocol,
-    interface: String = "127.0.0.1"
-) extends Actor
+    interface: String = "127.0.0.1")
+    extends Actor
     with ActorLogging {
 
   override val supervisorStrategy =
@@ -62,9 +62,7 @@ class ServerActor(
           project,
           broadcaster,
           shutdownOnLastDisconnect,
-          preferredTcpPort
-        )
-      ),
+          preferredTcpPort)),
       "tcp-server")
 
     // this is a bit ugly in a couple of ways
@@ -135,8 +133,7 @@ object Server {
   def main(args: Array[String]): Unit = {
     val ensimeFileStr = propOrNone("ensime.config").getOrElse(
       throw new RuntimeException(
-        "ensime.config (the location of the .ensime file) must be set")
-    )
+        "ensime.config (the location of the .ensime file) must be set"))
 
     val ensimeFile = new File(ensimeFileStr)
     if (!ensimeFile.exists() || !ensimeFile.isFile)
@@ -166,29 +163,30 @@ object Server {
 
   def shutdown(system: ActorSystem, request: ShutdownRequest): Unit = {
     val t =
-      new Thread(new Runnable {
-        def run(): Unit = {
-          if (request.isError)
-            log.error(
-              s"Shutdown requested due to internal error: ${request.reason}")
-          else
-            log.info(s"Shutdown requested: ${request.reason}")
-
-          log.info("Shutting down the ActorSystem")
-          Try(system.shutdown())
-
-          log.info("Awaiting actor system termination")
-          Try(system.awaitTermination())
-
-          log.info("Shutdown complete")
-          if (!propIsSet("ensime.server.test")) {
+      new Thread(
+        new Runnable {
+          def run(): Unit = {
             if (request.isError)
-              System.exit(1)
+              log.error(
+                s"Shutdown requested due to internal error: ${request.reason}")
             else
-              System.exit(0)
+              log.info(s"Shutdown requested: ${request.reason}")
+
+            log.info("Shutting down the ActorSystem")
+            Try(system.shutdown())
+
+            log.info("Awaiting actor system termination")
+            Try(system.awaitTermination())
+
+            log.info("Shutdown complete")
+            if (!propIsSet("ensime.server.test")) {
+              if (request.isError)
+                System.exit(1)
+              else
+                System.exit(0)
+            }
           }
-        }
-      })
+        })
     t.start()
   }
 }

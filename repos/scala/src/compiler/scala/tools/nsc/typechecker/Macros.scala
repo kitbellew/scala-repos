@@ -630,7 +630,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
   def pushMacroContext(c: MacroContext) = _openMacros ::= c
   def popMacroContext() = _openMacros = _openMacros.tail
   def enclosingMacroPosition =
-    openMacros map (_.macroApplication.pos) find (_ ne NoPosition) getOrElse NoPosition
+    openMacros map (_.macroApplication.pos) find (
+      _ ne NoPosition
+    ) getOrElse NoPosition
 
   /** Performs macro expansion:
     *
@@ -714,7 +716,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       try {
         withInfoLevel(
           nodePrinters.InfoLevel.Quiet) { // verbose printing might cause recursive macro expansions
-          if (expandee.symbol.isErroneous || (expandee exists (_.isErroneous))) {
+          if (expandee.symbol.isErroneous || (
+                expandee exists (_.isErroneous)
+              )) {
             val reason =
               if (expandee.symbol.isErroneous)
                 "not found or incompatible macro implementation"
@@ -1120,21 +1124,22 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
   def macroExpandAll(typer: Typer, expandee: Tree): Tree =
     new Transformer {
       override def transform(tree: Tree) =
-        super.transform(tree match {
-          // todo. expansion should work from the inside out
-          case tree
-              if (delayed contains tree) && calculateUndetparams(
-                tree).isEmpty && !tree.isErroneous =>
-            val context =
-              tree.attachments.get[MacroRuntimeAttachment].get.typerContext
-            delayed -= tree
-            context.implicitsEnabled = typer.context.implicitsEnabled
-            context.enrichmentEnabled = typer.context.enrichmentEnabled
-            context.macrosEnabled = typer.context.macrosEnabled
-            macroExpand(newTyper(context), tree, EXPRmode, WildcardType)
-          case _ =>
-            tree
-        })
+        super.transform(
+          tree match {
+            // todo. expansion should work from the inside out
+            case tree
+                if (delayed contains tree) && calculateUndetparams(
+                  tree).isEmpty && !tree.isErroneous =>
+              val context =
+                tree.attachments.get[MacroRuntimeAttachment].get.typerContext
+              delayed -= tree
+              context.implicitsEnabled = typer.context.implicitsEnabled
+              context.enrichmentEnabled = typer.context.enrichmentEnabled
+              context.macrosEnabled = typer.context.macrosEnabled
+              macroExpand(newTyper(context), tree, EXPRmode, WildcardType)
+            case _ =>
+              tree
+          })
     }.transform(expandee)
 }
 

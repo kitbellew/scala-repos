@@ -63,20 +63,19 @@ class ScalaJsonSpec extends Specification {
           "name" -> JsString("Watership Down"),
           "location" -> JsObject(
             Seq("lat" -> JsNumber(51.235685), "long" -> JsNumber(-1.309197))),
-          "residents" -> JsArray(Seq(
-            JsObject(
-              Seq(
-                "name" -> JsString("Fiver"),
-                "age" -> JsNumber(4),
-                "role" -> JsNull
-              )),
-            JsObject(
-              Seq(
-                "name" -> JsString("Bigwig"),
-                "age" -> JsNumber(6),
-                "role" -> JsString("Owsla")
-              ))
-          ))
+          "residents" -> JsArray(
+            Seq(
+              JsObject(
+                Seq(
+                  "name" -> JsString("Fiver"),
+                  "age" -> JsNumber(4),
+                  "role" -> JsNull)),
+              JsObject(
+                Seq(
+                  "name" -> JsString("Bigwig"),
+                  "age" -> JsNumber(6),
+                  "role" -> JsString("Owsla")))
+            ))
         ))
       //#convert-from-classes
       (json \ "name").get must_== JsString("Watership Down")
@@ -90,17 +89,8 @@ class ScalaJsonSpec extends Specification {
         "name" -> "Watership Down",
         "location" -> Json.obj("lat" -> 51.235685, "long" -> -1.309197),
         "residents" -> Json.arr(
-          Json.obj(
-            "name" -> "Fiver",
-            "age" -> 4,
-            "role" -> JsNull
-          ),
-          Json.obj(
-            "name" -> "Bigwig",
-            "age" -> 6,
-            "role" -> "Owsla"
-          )
-        )
+          Json.obj("name" -> "Fiver", "age" -> 4, "role" -> JsNull),
+          Json.obj("name" -> "Bigwig", "age" -> 6, "role" -> "Owsla"))
       )
       //#convert-from-factory
       (json \ "name").get must_== JsString("Watership Down")
@@ -138,10 +128,7 @@ class ScalaJsonSpec extends Specification {
       implicit val locationWrites =
         new Writes[Location] {
           def writes(location: Location) =
-            Json.obj(
-              "lat" -> location.lat,
-              "long" -> location.long
-            )
+            Json.obj("lat" -> location.lat, "long" -> location.long)
         }
 
       implicit val residentWrites =
@@ -150,8 +137,7 @@ class ScalaJsonSpec extends Specification {
             Json.obj(
               "name" -> resident.name,
               "age" -> resident.age,
-              "role" -> resident.role
-            )
+              "role" -> resident.role)
         }
 
       implicit val placeWrites =
@@ -166,11 +152,7 @@ class ScalaJsonSpec extends Specification {
       val place = Place(
         "Watership Down",
         Location(51.235685, -1.309197),
-        Seq(
-          Resident("Fiver", 4, None),
-          Resident("Bigwig", 6, Some("Owsla"))
-        )
-      )
+        Seq(Resident("Fiver", 4, None), Resident("Bigwig", 6, Some("Owsla"))))
 
       val json = Json.toJson(place)
       //#convert-from-model
@@ -210,11 +192,7 @@ class ScalaJsonSpec extends Specification {
       val place = Place(
         "Watership Down",
         Location(51.235685, -1.309197),
-        Seq(
-          Resident("Fiver", 4, None),
-          Resident("Bigwig", 6, Some("Owsla"))
-        )
-      )
+        Seq(Resident("Fiver", 4, None), Resident("Bigwig", 6, Some("Owsla"))))
 
       val json = Json.toJson(place)
       //#convert-from-model
@@ -335,8 +313,7 @@ class ScalaJsonSpec extends Specification {
         },
         valid = { name =>
           Some(name)
-        }
-      )
+        })
       //#convert-to-type-validate
       nameResult must beLike {
         case x: JsSuccess[String] => x.get === "Watership Down"

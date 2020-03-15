@@ -53,9 +53,9 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
     * optimizer: finding callsites to re-write requires running a producers-consumers analysis on
     * the method. Here the closure instantiations are already grouped by method.
     */
-  val closureInstantiations: mutable.Map[
-    MethodNode,
-    Map[InvokeDynamicInsnNode, ClosureInstantiation]] = recordPerRunCache(
+  val closureInstantiations: mutable.Map[MethodNode, Map[
+    InvokeDynamicInsnNode,
+    ClosureInstantiation]] = recordPerRunCache(
     concurrent.TrieMap.empty withDefaultValue Map.empty)
 
   def removeCallsite(
@@ -93,8 +93,9 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
   def addClosureInstantiation(closureInit: ClosureInstantiation) = {
     val methodClosureInits = closureInstantiations(closureInit.ownerMethod)
-    closureInstantiations(closureInit.ownerMethod) =
-      methodClosureInits + (closureInit.lambdaMetaFactoryCall.indy -> closureInit)
+    closureInstantiations(closureInit.ownerMethod) = methodClosureInits + (
+      closureInit.lambdaMetaFactoryCall.indy -> closureInit
+    )
   }
 
   def addClass(classNode: ClassNode): Unit = {
@@ -247,12 +248,12 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
     if (callee.isLeft)
       IntMap.empty
     else {
-      lazy val numArgs = Type
-        .getArgumentTypes(callsiteInsn.desc)
-        .length + (if (callsiteInsn.getOpcode == Opcodes.INVOKESTATIC)
-                     0
-                   else
-                     1)
+      lazy val numArgs = Type.getArgumentTypes(callsiteInsn.desc).length + (
+        if (callsiteInsn.getOpcode == Opcodes.INVOKESTATIC)
+          0
+        else
+          1
+      )
       argInfosForSams(callee.get.samParamTypes, callsiteInsn, numArgs, prodCons)
     }
   }
@@ -648,24 +649,27 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
               val instantiatedMethodArgTypes =
                 instantiatedMethodType.getArgumentTypes
               val expectedImplMethodType = {
-                val paramTypes = (if (isStatic)
-                                    indyParamTypes
-                                  else
-                                    indyParamTypes.tail) ++ instantiatedMethodArgTypes
+                val paramTypes = (
+                  if (isStatic)
+                    indyParamTypes
+                  else
+                    indyParamTypes.tail
+                ) ++ instantiatedMethodArgTypes
                 Type.getMethodType(
                   instantiatedMethodType.getReturnType,
                   paramTypes: _*)
               }
 
-              val isIndyLambda = (
-                Type.getType(
-                  implMethod.getDesc) == expectedImplMethodType // (1)
-                  && (isStatic || implMethod.getOwner == indyParamTypes(
-                    0).getInternalName) // (2)
-                  && samMethodType.getArgumentTypes.corresponds(
-                    instantiatedMethodArgTypes)((samArgType, instArgType) =>
-                    samArgType == instArgType || isReference(
-                      samArgType) && isReference(instArgType)) // (3)
+              val isIndyLambda = (Type.getType(
+                implMethod.getDesc) == expectedImplMethodType // (1)
+                && (
+                  isStatic || implMethod.getOwner == indyParamTypes(
+                    0).getInternalName
+                ) // (2)
+                && samMethodType.getArgumentTypes.corresponds(
+                  instantiatedMethodArgTypes)((samArgType, instArgType) =>
+                  samArgType == instArgType || isReference(
+                    samArgType) && isReference(instArgType)) // (3)
               )
 
               if (isIndyLambda)

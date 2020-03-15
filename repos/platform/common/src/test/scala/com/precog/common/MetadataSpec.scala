@@ -100,9 +100,10 @@ class MetadataSpec
       in: Map[MetadataType, Metadata] =>
         in.map(_._2).toList.serialize.validated[List[Metadata]] must beLike {
           case Success(out) =>
-            in must_== Map[MetadataType, Metadata](out.map { m =>
-              (m.metadataType, m)
-            }: _*)
+            in must_== Map[MetadataType, Metadata](
+              out.map { m =>
+                (m.metadataType, m)
+              }: _*)
         }
     }
 
@@ -159,9 +160,10 @@ trait MetadataGenerators extends util.ArbitraryJValue {
     }
 
   def genMetadata: Gen[Metadata] =
-    frequency(metadataGenerators.map {
-      (1, _)
-    }: _*)
+    frequency(
+      metadataGenerators.map {
+        (1, _)
+      }: _*)
 
   def genBooleanMetadata: Gen[BooleanValueStats] =
     for (count <- choose(0, 1000);

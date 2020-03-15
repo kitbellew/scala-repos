@@ -153,8 +153,7 @@ final class JSONIngestProcessing(
                   _.fold(
                     storeFailure =>
                       IngestReport(0, (0, storeFailure.message) :: Nil),
-                    _ => IngestReport(completedRecords.size, Nil)
-                  )
+                    _ => IngestReport(completedRecords.size, Nil))
                 }
               } else {
                 IngestReport(0, errors).point[Future]
@@ -268,8 +267,7 @@ final class JSONIngestProcessing(
                   storeFailure =>
                     sys.error(
                       "Do something useful with %s" format storeFailure.message),
-                  _ => continue(state.update(updatedParser, ingestSize, Nil))
-                )
+                  _ => continue(state.update(updatedParser, ingestSize, Nil)))
               }
             } else {
               storage.store(

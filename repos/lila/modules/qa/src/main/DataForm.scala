@@ -34,32 +34,23 @@ private[qa] final class DataForm(
       "body" -> nonEmptyText(minLength = 30)
         .verifying(languageMessage, validateLanguage _),
       "gameId" -> text,
-      "move" -> text
-    )(AnswerData.apply)(AnswerData.unapply)
+      "move" -> text)(AnswerData.apply)(AnswerData.unapply)
       .verifying(captchaFailMessage, validateCaptcha _))
 
   lazy val editAnswer = Form(
     single(
       "body" -> nonEmptyText(minLength = 30)
-        .verifying(languageMessage, validateLanguage _)
-    ))
+        .verifying(languageMessage, validateLanguage _)))
 
-  lazy val moveAnswer = Form(
-    single(
-      "to" -> nonEmptyText
-    ))
+  lazy val moveAnswer = Form(single("to" -> nonEmptyText))
 
   lazy val comment = Form(
     mapping(
       "body" -> nonEmptyText(minLength = 20)
-        .verifying(languageMessage, validateLanguage _)
-    )(CommentData.apply)(CommentData.unapply)
-  )
+        .verifying(languageMessage, validateLanguage _))(CommentData.apply)(
+      CommentData.unapply))
 
-  val vote = Form(
-    single(
-      "vote" -> number
-    ))
+  val vote = Form(single("vote" -> number))
 
   private val languageMessage =
     "I didn't understand that. Is it written in English?"

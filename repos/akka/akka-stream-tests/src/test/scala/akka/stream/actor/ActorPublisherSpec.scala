@@ -377,22 +377,23 @@ class ActorPublisherSpec
         receiverProps(probe2.ref))
 
       val senderRef2 = RunnableGraph
-        .fromGraph(GraphDSL.create(Source.actorPublisher[Int](senderProps)) {
-          implicit b ⇒ source2 ⇒
-            import GraphDSL.Implicits._
+        .fromGraph(
+          GraphDSL.create(Source.actorPublisher[Int](senderProps)) {
+            implicit b ⇒ source2 ⇒
+              import GraphDSL.Implicits._
 
-            val merge = b.add(Merge[Int](2))
-            val bcast = b.add(Broadcast[String](2))
+              val merge = b.add(Merge[Int](2))
+              val bcast = b.add(Broadcast[String](2))
 
-            source1 ~> merge.in(0)
-            source2.out ~> merge.in(1)
+              source1 ~> merge.in(0)
+              source2.out ~> merge.in(1)
 
-            merge.out.map(_.toString) ~> bcast.in
+              merge.out.map(_.toString) ~> bcast.in
 
-            bcast.out(0).map(_ + "mark") ~> sink1
-            bcast.out(1) ~> sink2
-            ClosedShape
-        })
+              bcast.out(0).map(_ + "mark") ~> sink1
+              bcast.out(1) ~> sink2
+              ClosedShape
+          })
         .run()
 
       (0 to 10).foreach {
@@ -475,8 +476,9 @@ class ActorPublisherSpec
       implicit val materializer = ActorMaterializer()
       val s = TestSubscriber.manualProbe[String]()
       val ref = Source
-        .actorPublisher(testPublisherProps(testActor, useTestDispatcher = false)
-          .withDispatcher("my-dispatcher1"))
+        .actorPublisher(
+          testPublisherProps(testActor, useTestDispatcher = false)
+            .withDispatcher("my-dispatcher1"))
         .withAttributes(ActorAttributes.dispatcher("my-dispatcher2"))
         .to(Sink.fromSubscriber(s))
         .run()

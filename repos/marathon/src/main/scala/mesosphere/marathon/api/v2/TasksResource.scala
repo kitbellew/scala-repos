@@ -97,14 +97,10 @@ class TasksResource @Inject() (
             appId,
             task,
             health.getOrElse(task.taskId, Nil),
-            appToPorts.getOrElse(appId, Nil)
-          )
+            appToPorts.getOrElse(appId, Nil))
         }
 
-      ok(
-        jsonObjString(
-          "tasks" -> enrichedTasks
-        ))
+      ok(jsonObjString("tasks" -> enrichedTasks))
     }
 
   @GET
@@ -117,8 +113,7 @@ class TasksResource @Inject() (
           taskTracker,
           result(groupManager.rootGroup()).transitiveApps.toSeq.filter(app =>
             isAuthorized(ViewApp, app)),
-          "\t"
-        ))
+          "\t"))
     }
 
   @POST
@@ -157,11 +152,15 @@ class TasksResource @Inject() (
         affectedApps.foreach(checkAuthorization(UpdateApp, _))
 
         val killed =
-          result(Future.sequence(toKill.map {
-            case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
-          })).flatten
-        ok(jsonObjString("tasks" -> killed.map(task =>
-          EnrichedTask(task.taskId.appId, task, Seq.empty))))
+          result(
+            Future.sequence(
+              toKill.map {
+                case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
+              })).flatten
+        ok(
+          jsonObjString(
+            "tasks" -> killed.map(task =>
+              EnrichedTask(task.taskId.appId, task, Seq.empty))))
       }
 
       val tasksByAppId = tasksToAppId

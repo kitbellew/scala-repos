@@ -38,10 +38,11 @@ final class JsonView(isOnline: String => Boolean) {
       .noNull
 
   def perfs(u: User, onlyPerf: Option[PerfType] = None) =
-    JsObject(u.perfs.perfsMap collect {
-      case (key, perf) if onlyPerf.fold(true)(_.key == key) =>
-        key -> perfWrites.writes(perf)
-    })
+    JsObject(
+      u.perfs.perfsMap collect {
+        case (key, perf) if onlyPerf.fold(true)(_.key == key) =>
+          key -> perfWrites.writes(perf)
+      })
 
   def lightPerfIsOnline(lp: LightPerf) = {
     val json = lightPerfWrites.writes(lp)
@@ -65,8 +66,8 @@ object JsonView {
         "username" -> l.user.name,
         "title" -> l.user.title,
         "perfs" -> Json.obj(
-          l.perfKey -> Json.obj("rating" -> l.rating, "progress" -> l.progress))
-      )
+          l.perfKey -> Json
+            .obj("rating" -> l.rating, "progress" -> l.progress)))
       .noNull
   }
 }

@@ -13,8 +13,7 @@ case class SwimmingRecord(
     time: Float,
     name: String,
     nationality: String,
-    date: Date
-)
+    date: Date)
 
 object SwimmingRecord {
   val createTableSQL = """CREATE TABLE IF NOT EXISTS `finagle-mysql-example` (

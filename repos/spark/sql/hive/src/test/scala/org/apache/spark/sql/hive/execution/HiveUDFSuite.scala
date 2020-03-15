@@ -68,8 +68,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
     "SPARK-4785 When called with arguments referring column fields, PMOD throws NPE") {
     checkAnswer(
       sql("SELECT PMOD(CAST(key as INT), 10) FROM src LIMIT 1"),
-      Row(8)
-    )
+      Row(8))
   }
 
   test("hive struct udf") {
@@ -281,8 +280,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFListString") {
     val testData = hiveContext.sparkContext
-      .parallelize(ListStringCaseClass(Seq("a", "b", "c")) ::
-        ListStringCaseClass(Seq("d", "e")) :: Nil)
+      .parallelize(
+        ListStringCaseClass(Seq("a", "b", "c")) ::
+          ListStringCaseClass(Seq("d", "e")) :: Nil)
       .toDF()
     testData.registerTempTable("listStringTable")
 

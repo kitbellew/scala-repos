@@ -216,8 +216,10 @@ trait MVCHelper extends LiftRules.DispatchPF {
         Full(
           InMemoryResponse(
             msg.getBytes("UTF-8"),
-            ("Content-Type" ->
-              "text/plain; charset=utf-8") ::
+            (
+              "Content-Type" ->
+                "text/plain; charset=utf-8"
+            ) ::
               Nil,
             Nil,
             code))

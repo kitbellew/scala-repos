@@ -970,14 +970,12 @@ class LinearRegressionSuite
           case (true, LabeledPoint(label, features)) =>
             Iterator(
               Instance(label, weight = 1.2, features),
-              Instance(label, weight = 0.8, features)
-            )
+              Instance(label, weight = 0.8, features))
           case (false, LabeledPoint(label, features)) =>
             Iterator(
               Instance(label, weight = 0.3, features),
               Instance(label, weight = 0.1, features),
-              Instance(label, weight = 0.6, features)
-            )
+              Instance(label, weight = 0.6, features))
         }
 
         val noiseData = LinearDataGenerator.generateLinearInput(

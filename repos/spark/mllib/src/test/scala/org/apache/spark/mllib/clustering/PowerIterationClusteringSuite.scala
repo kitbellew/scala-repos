@@ -203,8 +203,9 @@ object PowerIterationClusteringSuite extends SparkFunSuite {
       sc: SparkContext,
       k: Int,
       nPoints: Int): PowerIterationClusteringModel = {
-    val assignments = sc.parallelize((0 until nPoints).map(p =>
-      PowerIterationClustering.Assignment(p, Random.nextInt(k))))
+    val assignments = sc.parallelize(
+      (0 until nPoints).map(p =>
+        PowerIterationClustering.Assignment(p, Random.nextInt(k))))
     new PowerIterationClusteringModel(k, assignments)
   }
 

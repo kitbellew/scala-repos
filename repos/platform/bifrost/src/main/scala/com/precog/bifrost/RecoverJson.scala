@@ -63,23 +63,9 @@ object RecoverJson {
       offset: Int,
       stack: Stack[Balanced]) {
     def increment(balanced: Balanced) =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack push balanced
-      )
-    def decrement =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack pop
-      )
-    def skip =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack
-      )
+      BalancedStackState(bufferIndex, offset + 1, stack push balanced)
+    def decrement = BalancedStackState(bufferIndex, offset + 1, stack pop)
+    def skip = BalancedStackState(bufferIndex, offset + 1, stack)
   }
 
   private def balancedStack(buffers: Vector[CharBuffer]) = {
@@ -92,8 +78,7 @@ object RecoverJson {
           BalancedStackState(
             accum.bufferIndex + 1,
             accum.offset % buffers(accum.bufferIndex).limit,
-            accum.stack
-          ))
+            accum.stack))
       else {
         val buffer = buffers(accum.bufferIndex)
         var char = buffer.get(accum.offset)
@@ -130,11 +115,7 @@ object RecoverJson {
               findEndString(buffers, next.bufferIndex, next.offset + 1) map {
                 case (bufferIndex, offset) =>
                   // Jump over the string
-                  BalancedStackState(
-                    bufferIndex,
-                    offset + 1,
-                    next.stack
-                  )
+                  BalancedStackState(bufferIndex, offset + 1, next.stack)
               } getOrElse {
                 // String didn't end
                 val lastBuffer = buffers(buffers.length - 1)
@@ -146,8 +127,7 @@ object RecoverJson {
                   if (lastCharacter == '\\')
                     quoted push EscapeChar
                   else
-                    quoted
-                )
+                    quoted)
               })
 
           case _ => buildState(accum.skip)
@@ -179,10 +159,12 @@ object RecoverJson {
     val lastChar = buffers.last.get(buffers.last.length - 1)
     val needsComma = lastChar != ',' || stringStack.size > 1
     val closerBuffer = CharBuffer.allocate(
-      stringStack.map(_.length).sum + 4 + (if (needsComma)
-                                             1
-                                           else
-                                             0))
+      stringStack.map(_.length).sum + 4 + (
+        if (needsComma)
+          1
+        else
+          0
+      ))
 
     @tailrec def addToCloserBuffer(s: Stack[String]) {
       if (s.length == 1) {

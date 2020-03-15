@@ -55,14 +55,15 @@ trait FutureTimeoutSupport {
       using.scheduleOnce(duration) {
         try {
           val future = value
-          future.whenComplete(new BiConsumer[T, Throwable] {
-            override def accept(t: T, ex: Throwable): Unit = {
-              if (t != null)
-                p.complete(t)
-              if (ex != null)
-                p.completeExceptionally(ex)
-            }
-          })
+          future.whenComplete(
+            new BiConsumer[T, Throwable] {
+              override def accept(t: T, ex: Throwable): Unit = {
+                if (t != null)
+                  p.complete(t)
+                if (ex != null)
+                  p.completeExceptionally(ex)
+              }
+            })
         } catch {
           case NonFatal(ex) ⇒ p.completeExceptionally(ex)
         }

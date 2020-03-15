@@ -214,6 +214,5 @@ class DefaultIngestProcessingSelectors(
       authorities: Authorities): List[IngestProcessingSelector] =
     List(
       new MimeIngestProcessingSelector(apiKey, path, authorities),
-      new JSONIngestProcessingSelector(apiKey, path, authorities)
-    )
+      new JSONIngestProcessingSelector(apiKey, path, authorities))
 }

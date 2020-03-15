@@ -288,8 +288,7 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
     right.filter("false"),
     LeftOuter,
     condition,
-    Seq.empty
-  )
+    Seq.empty)
 
   testOuterJoin(
     "right outer join with both inputs empty",
@@ -297,8 +296,7 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
     right.filter("false"),
     RightOuter,
     condition,
-    Seq.empty
-  )
+    Seq.empty)
 
   testOuterJoin(
     "full outer join with both inputs empty",
@@ -306,6 +304,5 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
     right.filter("false"),
     FullOuter,
     condition,
-    Seq.empty
-  )
+    Seq.empty)
 }

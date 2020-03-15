@@ -175,10 +175,12 @@ class StandardScalerModel @Since("1.3.0") (
           val size = values.length
           var i = 0
           while (i < size) {
-            values(i) *= (if (std(i) != 0.0)
-                            1.0 / std(i)
-                          else
-                            0.0)
+            values(i) *= (
+              if (std(i) != 0.0)
+                1.0 / std(i)
+              else
+                0.0
+            )
             i += 1
           }
           Vectors.dense(values)
@@ -189,10 +191,12 @@ class StandardScalerModel @Since("1.3.0") (
           val nnz = values.length
           var i = 0
           while (i < nnz) {
-            values(i) *= (if (std(indices(i)) != 0.0)
-                            1.0 / std(indices(i))
-                          else
-                            0.0)
+            values(i) *= (
+              if (std(indices(i)) != 0.0)
+                1.0 / std(indices(i))
+              else
+                0.0
+            )
             i += 1
           }
           Vectors.sparse(size, indices, values)

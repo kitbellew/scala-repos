@@ -3,9 +3,10 @@ import scala.language.experimental.macros
 
 // whitebox use case #1: return type refinement
 
-class ReturnTypeRefinementBundle(val c: Context {
-  type PrefixType = Nothing
-}) {
+class ReturnTypeRefinementBundle(
+    val c: Context {
+      type PrefixType = Nothing
+    }) {
   import c.universe._
   def impl = {
     q"""
@@ -28,9 +29,10 @@ trait FundepMaterialization[T, U] {
   // def from(u : U) : T
 }
 
-class FundepMaterializationBundle(val c: Context {
-  type PrefixType = Nothing
-}) {
+class FundepMaterializationBundle(
+    val c: Context {
+      type PrefixType = Nothing
+    }) {
   import c.universe._
   import definitions._
   import Flag._
@@ -134,9 +136,10 @@ object DynamicMaterialization extends LowPriority {
     macro DynamicMaterializationBundle.impl[T]
 }
 
-class DynamicMaterializationBundle(val c: Context {
-  type PrefixType = Nothing
-}) {
+class DynamicMaterializationBundle(
+    val c: Context {
+      type PrefixType = Nothing
+    }) {
   import c.universe._
   def impl[T: c.WeakTypeTag] = {
     val tpe = weakTypeOf[T]
@@ -152,9 +155,10 @@ object ExtractorMacro {
   def unapply(x: Int): Any = macro ExtractorBundle.unapplyImpl
 }
 
-class ExtractorBundle(val c: Context {
-  type PrefixType = Nothing
-}) {
+class ExtractorBundle(
+    val c: Context {
+      type PrefixType = Nothing
+    }) {
   import c.universe._
   def unapplyImpl(x: Tree) = {
     q"""

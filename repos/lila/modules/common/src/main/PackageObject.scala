@@ -26,11 +26,13 @@ trait PackageObject extends Steroids with WithFuture {
 
   // from scalaz. We don't want to import all OptionTFunctions, because of the clash with `some`
   def optionT[M[_]] =
-    new (({
-      type λ[α] = M[Option[α]]
-    })#λ ~> ({
-      type λ[α] = OptionT[M, α]
-    })#λ) {
+    new (
+      ({
+        type λ[α] = M[Option[α]]
+      })#λ ~> ({
+        type λ[α] = OptionT[M, α]
+      })#λ
+    ) {
       def apply[A](a: M[Option[A]]) = new OptionT[M, A](a)
     }
 
@@ -190,9 +192,11 @@ trait WithPlay { self: PackageObject =>
     def addEffect(effect: A => Unit) = fua ~ (_ foreach effect)
 
     def addFailureEffect(effect: Exception => Unit) =
-      fua ~ (_ onFailure {
-        case e: Exception => effect(e)
-      })
+      fua ~ (
+        _ onFailure {
+          case e: Exception => effect(e)
+        }
+      )
 
     def addEffects(fail: Exception => Unit, succ: A => Unit): Fu[A] =
       fua andThen {
@@ -215,16 +219,14 @@ trait WithPlay { self: PackageObject =>
       fua ~ {
         _.effectFold(
           e => println("[failure] " + e),
-          a => println("[success] " + a)
-        )
+          a => println("[success] " + a))
       }
 
     def thenPp(msg: String): Fu[A] =
       fua ~ {
         _.effectFold(
           e => println(s"[$msg] [failure] $e"),
-          a => println(s"[$msg] [success] $a")
-        )
+          a => println(s"[$msg] [success] $a"))
       }
 
     def awaitSeconds(seconds: Int): A = {

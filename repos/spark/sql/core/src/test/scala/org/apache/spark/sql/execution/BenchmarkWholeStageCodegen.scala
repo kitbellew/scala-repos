@@ -200,8 +200,9 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
         .range(N)
         .join(
           dim3,
-          (col("id") bitwiseAND M) === col("k1") && (col(
-            "id") bitwiseAND M) === col("k2"))
+          (
+            col("id") bitwiseAND M
+          ) === col("k1") && (col("id") bitwiseAND M) === col("k2"))
         .count()
     }
 

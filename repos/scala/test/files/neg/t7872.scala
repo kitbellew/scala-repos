@@ -7,7 +7,8 @@ object varianceExploit {
     type l[-a] = Cov[a]
   }
   def foo[M[_]] = ()
-  foo[({
-    type l[+a] = Inv[a]
-  })#l]
+  foo[
+    ({
+      type l[+a] = Inv[a]
+    })#l]
 }

@@ -459,8 +459,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
                   .map(_.aggregateFunction)
                   .exists(!_.supportsPartial)) {
               if (functionsWithDistinct.nonEmpty) {
-                sys.error("Distinct columns cannot exist in Aggregate operator containing " +
-                  "aggregate functions which don't support partial aggregation.")
+                sys.error(
+                  "Distinct columns cannot exist in Aggregate operator containing " +
+                    "aggregate functions which don't support partial aggregation.")
               } else {
                 aggregate.Utils.planAggregateWithoutPartial(
                   namedGroupingExpressions.map(_._2),

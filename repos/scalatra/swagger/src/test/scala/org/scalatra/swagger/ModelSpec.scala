@@ -80,8 +80,8 @@ class ModelSpec extends Specification {
     }
     "conver an option list to a required false list of things" in {
       swaggerProperty[WithOptionList]("flags").required must beFalse
-      swaggerProperty[WithOptionList]("flags").`type` must_== DataType[
-        List[String]]
+      swaggerProperty[WithOptionList]("flags").`type` must_== DataType[List[
+        String]]
     }
 
   }

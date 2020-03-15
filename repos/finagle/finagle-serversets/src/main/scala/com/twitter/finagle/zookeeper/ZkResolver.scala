@@ -32,12 +32,13 @@ private[finagle] class ZkGroup(serverSet: ServerSet, path: String)
   protected[finagle] val set = Var(Set[ServiceInstance]())
 
   override def run() {
-    serverSet.watch(new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
-      def onChange(newSet: ImmutableSet[ServiceInstance]) =
-        synchronized {
-          set() = newSet.asScala.toSet
-        }
-    })
+    serverSet.watch(
+      new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
+        def onChange(newSet: ImmutableSet[ServiceInstance]) =
+          synchronized {
+            set() = newSet.asScala.toSet
+          }
+      })
   }
 }
 
@@ -52,11 +53,12 @@ private class ZkOffer(serverSet: ServerSet, path: String)
 
   override def run() {
     try {
-      serverSet.watch(new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
-        def onChange(newSet: ImmutableSet[ServiceInstance]) {
-          inbound !! newSet.asScala.toSet
-        }
-      })
+      serverSet.watch(
+        new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
+          def onChange(newSet: ImmutableSet[ServiceInstance]) {
+            inbound !! newSet.asScala.toSet
+          }
+        })
     } catch {
       case exc: MonitorException =>
         // There are certain path permission checks in the serverset library

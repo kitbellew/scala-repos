@@ -33,11 +33,12 @@ private object RenderSupport {
   def CancelSecond[T, Mat](
       first: Source[T, Mat],
       second: Source[T, Any]): Source[T, Mat] = {
-    Source.fromGraph(GraphDSL.create(first) { implicit b ⇒ frst ⇒
-      import GraphDSL.Implicits._
-      second ~> Sink.cancelled
-      SourceShape(frst.out)
-    })
+    Source.fromGraph(
+      GraphDSL.create(first) { implicit b ⇒ frst ⇒
+        import GraphDSL.Implicits._
+        second ~> Sink.cancelled
+        SourceShape(frst.out)
+      })
   }
 
   def renderEntityContentType(r: Rendering, entity: HttpEntity) =
@@ -119,10 +120,12 @@ private object RenderSupport {
     import chunk._
     val renderedSize = // buffer space required for rendering (without trailer)
       CharUtils.numberOfHexDigits(data.length) +
-        (if (extension.isEmpty)
-           0
-         else
-           extension.length + 1) +
+        (
+          if (extension.isEmpty)
+            0
+          else
+            extension.length + 1
+        ) +
         data.length +
         2 + 2
     val r = new ByteStringRendering(renderedSize)

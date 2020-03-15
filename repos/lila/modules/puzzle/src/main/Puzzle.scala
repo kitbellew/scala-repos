@@ -96,11 +96,12 @@ object Puzzle {
           case _       => sys error s"Invalid move notation: $move"
         }
       def write(lines: Lines): BSONDocument =
-        BSONDocument(lines map {
-          case Win(move)         => writeMove(move) -> BSONBoolean(true)
-          case Retry(move)       => writeMove(move) -> BSONBoolean(false)
-          case Node(move, lines) => writeMove(move) -> write(lines)
-        })
+        BSONDocument(
+          lines map {
+            case Win(move)         => writeMove(move) -> BSONBoolean(true)
+            case Retry(move)       => writeMove(move) -> BSONBoolean(false)
+            case Node(move, lines) => writeMove(move) -> write(lines)
+          })
     }
 
   object BSONFields {

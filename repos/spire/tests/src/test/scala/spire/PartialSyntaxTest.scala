@@ -27,15 +27,21 @@ class PartialSyntaxTest
   implicit val SeqIntEq: Eq[Seq[Int]] = spire.optional.genericEq
     .generic[Seq[Int]]
 
-  test("Semigroupoid syntax")(check(forAll { (a: Seq[Int], b: Seq[Int]) =>
-    testSemigroupoidSyntax(a, b)
-  }))
-  test("Groupoid syntax")(check(forAll { (a: Seq[Int], b: Seq[Int]) =>
-    testGroupoidSyntax(a, b)
-  }))
-  test("Partial action syntax")(check(forAll { (seq: Seq[Int], perm: Perm) =>
-    testPartialActionSyntax(seq, perm.map)
-  }))
+  test("Semigroupoid syntax")(
+    check(
+      forAll { (a: Seq[Int], b: Seq[Int]) =>
+        testSemigroupoidSyntax(a, b)
+      }))
+  test("Groupoid syntax")(
+    check(
+      forAll { (a: Seq[Int], b: Seq[Int]) =>
+        testGroupoidSyntax(a, b)
+      }))
+  test("Partial action syntax")(
+    check(
+      forAll { (seq: Seq[Int], perm: Perm) =>
+        testPartialActionSyntax(seq, perm.map)
+      }))
 
   def testSemigroupoidSyntax[A: Semigroupoid: Eq](a: A, b: A) = {
     import spire.syntax.semigroupoid._
@@ -56,13 +62,21 @@ class PartialSyntaxTest
 
   def testPartialActionSyntax(seq: Seq[Int], perm: Map[Int, Int]) = {
     import spire.syntax.partialAction._
-    ((perm ?|+|> seq) === PartialAction[Seq[Int], Map[Int, Int]]
-      .partialActl(perm, seq)) &&
-    ((seq <|+|? perm) === PartialAction[Seq[Int], Map[Int, Int]]
-      .partialActr(seq, perm)) &&
-    ((perm ??|+|> seq) === PartialAction[Seq[Int], Map[Int, Int]]
-      .actlIsDefined(perm, seq)) &&
-    ((seq <|+|?? perm) === PartialAction[Seq[Int], Map[Int, Int]]
-      .actrIsDefined(seq, perm))
+    (
+      (perm ?|+|> seq) === PartialAction[Seq[Int], Map[Int, Int]]
+        .partialActl(perm, seq)
+    ) &&
+    (
+      (seq <|+|? perm) === PartialAction[Seq[Int], Map[Int, Int]]
+        .partialActr(seq, perm)
+    ) &&
+    (
+      (perm ??|+|> seq) === PartialAction[Seq[Int], Map[Int, Int]]
+        .actlIsDefined(perm, seq)
+    ) &&
+    (
+      (seq <|+|?? perm) === PartialAction[Seq[Int], Map[Int, Int]]
+        .actrIsDefined(seq, perm)
+    )
   }
 }

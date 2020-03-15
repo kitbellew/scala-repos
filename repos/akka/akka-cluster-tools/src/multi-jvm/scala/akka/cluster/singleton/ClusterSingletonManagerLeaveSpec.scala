@@ -114,8 +114,9 @@ class ClusterSingletonManagerLeaveSpec
       join(second, first)
       join(third, first)
       within(10.seconds) {
-        awaitAssert(cluster.state.members.count(m ⇒
-          m.status == MemberStatus.Up) should be(3))
+        awaitAssert(
+          cluster.state.members.count(m ⇒
+            m.status == MemberStatus.Up) should be(3))
       }
       enterBarrier("all-up")
 
@@ -134,9 +135,9 @@ class ClusterSingletonManagerLeaveSpec
         p.within(10.seconds) {
           p.awaitAssert {
             echoProxy.tell("hello2", p.ref)
-            p.expectMsgType[ActorRef](1.seconds)
-              .path
-              .address should not be (firstAddress)
+            p.expectMsgType[ActorRef](1.seconds).path.address should not be (
+              firstAddress
+            )
 
           }
         }

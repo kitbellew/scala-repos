@@ -6,8 +6,8 @@ import com.twitter.util.{Closable, Duration, Future, Time, Timer}
 class StateTracker(
     statsReceiver: StatsReceiver,
     samplePeriod: Duration,
-    timer: Timer
-) extends Closable {
+    timer: Timer)
+    extends Closable {
 
   private[this] var currState: Option[SessionState] = None
   private[this] var lastSample: Time = Time.now

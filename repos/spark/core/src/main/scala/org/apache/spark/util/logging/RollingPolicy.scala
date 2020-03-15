@@ -109,8 +109,9 @@ private[spark] class SizeBasedRollingPolicy(
 
   import SizeBasedRollingPolicy._
   if (checkSizeConstraint && rolloverSizeBytes < MINIMUM_SIZE_BYTES) {
-    logWarning(s"Rolling size [$rolloverSizeBytes bytes] is too small. " +
-      s"Setting the size to the acceptable minimum of $MINIMUM_SIZE_BYTES bytes.")
+    logWarning(
+      s"Rolling size [$rolloverSizeBytes bytes] is too small. " +
+        s"Setting the size to the acceptable minimum of $MINIMUM_SIZE_BYTES bytes.")
     rolloverSizeBytes = MINIMUM_SIZE_BYTES
   }
 

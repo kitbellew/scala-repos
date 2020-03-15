@@ -301,8 +301,9 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
               cm.SubjectReachability
                 .newBuilder()
                 .setAddressIndex(mapUniqueAddress(r.subject))
-                .setStatus(cm.ReachabilityStatus.valueOf(
-                  reachabilityStatusToInt(r.status)))
+                .setStatus(
+                  cm.ReachabilityStatus.valueOf(
+                    reachabilityStatusToInt(r.status)))
                 .setVersion(r.version))
           cm.ObserverReachability
             .newBuilder()
@@ -389,10 +390,9 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
         : Reachability = {
       val recordBuilder = new immutable.VectorBuilder[Reachability.Record]
       val versionsBuilder =
-        new scala.collection.mutable.MapBuilder[
+        new scala.collection.mutable.MapBuilder[UniqueAddress, Long, Map[
           UniqueAddress,
-          Long,
-          Map[UniqueAddress, Long]](Map.empty)
+          Long]](Map.empty)
       for (o ← observerReachability) {
         val observer = addressMapping(o.getAddressIndex)
         versionsBuilder += ((observer, o.getVersion))
@@ -436,9 +436,11 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       version: cm.VectorClock,
       hashMapping: immutable.Seq[String]) = {
     import scala.collection.breakOut
-    VectorClock(version.getVersionsList.asScala.map(v ⇒
-      (VectorClock.Node.fromHash(hashMapping(v.getHashIndex)), v.getTimestamp))(
-      breakOut))
+    VectorClock(
+      version.getVersionsList.asScala.map(v ⇒
+        (
+          VectorClock.Node.fromHash(hashMapping(v.getHashIndex)),
+          v.getTimestamp))(breakOut))
   }
 
   private def gossipEnvelopeFromProto(
@@ -534,11 +536,13 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     cm.MetricsGossipEnvelope
       .newBuilder()
       .setFrom(addressToProto(envelope.from))
-      .setGossip(cm.MetricsGossip
-        .newBuilder()
-        .addAllAllAddresses(allAddresses.map(addressToProto(_).build()).asJava)
-        .addAllAllMetricNames(allMetricNames.asJava)
-        .addAllNodeMetrics(nodeMetrics.asJava))
+      .setGossip(
+        cm.MetricsGossip
+          .newBuilder()
+          .addAllAllAddresses(
+            allAddresses.map(addressToProto(_).build()).asJava)
+          .addAllAllMetricNames(allMetricNames.asJava)
+          .addAllNodeMetrics(nodeMetrics.asJava))
       .setReply(envelope.reply)
       .build
   }

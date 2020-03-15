@@ -84,45 +84,49 @@ private[concurrent] object ExecutionContextImpl {
     // As per ThreadFactory contract newThread should return `null` if cannot create new thread.
     def newThread(runnable: Runnable): Thread =
       if (reserveThread())
-        wire(new Thread(new Runnable {
-          // We have to decrement the current thread count when the thread exits
-          override def run() =
-            try runnable.run()
-            finally deregisterThread()
-        }))
+        wire(
+          new Thread(
+            new Runnable {
+              // We have to decrement the current thread count when the thread exits
+              override def run() =
+                try runnable.run()
+                finally deregisterThread()
+            }))
       else
         null
 
     def newThread(fjp: ForkJoinPool): ForkJoinWorkerThread =
       if (reserveThread()) {
-        wire(new ForkJoinWorkerThread(fjp) with BlockContext {
-          // We have to decrement the current thread count when the thread exits
-          final override def onTermination(exception: Throwable): Unit =
-            deregisterThread()
-          final override def blockOn[T](thunk: => T)(
-              implicit permission: CanAwait): T = {
-            var result: T = null.asInstanceOf[T]
-            ForkJoinPool.managedBlock(new ForkJoinPool.ManagedBlocker {
-              @volatile var isdone = false
-              override def block(): Boolean = {
-                result =
-                  try {
-                    // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
-                    BlockContext.withBlockContext(
-                      BlockContext.defaultBlockContext) {
-                      thunk
-                    }
-                  } finally {
-                    isdone = true
-                  }
+        wire(
+          new ForkJoinWorkerThread(fjp) with BlockContext {
+            // We have to decrement the current thread count when the thread exits
+            final override def onTermination(exception: Throwable): Unit =
+              deregisterThread()
+            final override def blockOn[T](thunk: => T)(
+                implicit permission: CanAwait): T = {
+              var result: T = null.asInstanceOf[T]
+              ForkJoinPool.managedBlock(
+                new ForkJoinPool.ManagedBlocker {
+                  @volatile var isdone = false
+                  override def block(): Boolean = {
+                    result =
+                      try {
+                        // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
+                        BlockContext.withBlockContext(
+                          BlockContext.defaultBlockContext) {
+                          thunk
+                        }
+                      } finally {
+                        isdone = true
+                      }
 
-                true
-              }
-              override def isReleasable = isdone
-            })
-            result
-          }
-        })
+                    true
+                  }
+                  override def isReleasable = isdone
+                })
+              result
+            }
+          })
       } else
         null
   }
@@ -130,14 +134,16 @@ private[concurrent] object ExecutionContextImpl {
   def createDefaultExecutorService(
       reporter: Throwable => Unit): ExecutorService = {
     def getInt(name: String, default: String) =
-      (try System.getProperty(name, default)
-      catch {
-        case e: SecurityException => default
-      }) match {
+      (
+        try System.getProperty(name, default)
+        catch {
+          case e: SecurityException => default
+        }
+      ) match {
         case s if s.charAt(0) == 'x' =>
-          (Runtime.getRuntime.availableProcessors * s
-            .substring(1)
-            .toDouble).ceil.toInt
+          (
+            Runtime.getRuntime.availableProcessors * s.substring(1).toDouble
+          ).ceil.toInt
         case other => other.toInt
       }
 

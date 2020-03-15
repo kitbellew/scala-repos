@@ -87,9 +87,10 @@ object GradientTester extends SerializableLogging {
           ok += 1
           logger.debug(s"OK: ${toString(k)} $relDif")
         } else {
-          logger.warn(toString(
-            k) + " relDif: %.3e [eps : %e, calculated: %4.3e empirical: %4.3e]"
-            .format(relDif, epsilon, trueGrad(k), grad))
+          logger.warn(
+            toString(
+              k) + " relDif: %.3e [eps : %e, calculated: %4.3e empirical: %4.3e]"
+              .format(relDif, epsilon, trueGrad(k), grad))
         }
         differences(k) = relDif
         tried += 1

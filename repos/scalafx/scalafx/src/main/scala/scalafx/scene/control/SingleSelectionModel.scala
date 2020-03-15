@@ -57,10 +57,11 @@ object SingleSelectionModel {
     *                  selection model.
     */
   def apply[T](modelItem: Int => T, itemCount: => Int) =
-    new SingleSelectionModel[T](new jfxsc.SingleSelectionModel[T] {
-      protected def getModelItem(index: Int): T = modelItem(index)
-      protected def getItemCount = itemCount
-    }) {}
+    new SingleSelectionModel[T](
+      new jfxsc.SingleSelectionModel[T] {
+        protected def getModelItem(index: Int): T = modelItem(index)
+        protected def getItemCount = itemCount
+      }) {}
 
 }
 

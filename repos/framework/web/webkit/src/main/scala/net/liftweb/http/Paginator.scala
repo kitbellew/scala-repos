@@ -57,10 +57,12 @@ trait Paginator[T] extends Loggable {
     */
   def numPages =
     (count / itemsPerPage).toInt +
-      (if (count % itemsPerPage > 0)
-         1
-       else
-         0)
+      (
+        if (count % itemsPerPage > 0)
+          1
+        else
+          0
+      )
 
   /**
     * Calculates the current page number, based on the value of 'first.'
@@ -285,8 +287,7 @@ trait PaginatorSnippet[T] extends Paginator[T] {
       ".zoomed-pages *" #> pagesXml(zoomedPages) _ &
       ".next *" #> pageXml(
         max(0, min(first + itemsPerPage, itemsPerPage * (numPages - 1))),
-        nextXml
-      ) &
+        nextXml) &
       ".last *" #> pageXml(itemsPerPage * (numPages - 1), lastXml) &
       ".records *" #> currentXml &
       ".records-start *" #> recordsFrom &
@@ -344,8 +345,7 @@ trait SortedPaginatorSnippet[T, C]
       case (col, ascending) =>
         (
           S.param("sort").map(toInt) openOr col,
-          S.param("asc").map(toBoolean) openOr ascending
-        )
+          S.param("asc").map(toBoolean) openOr ascending)
     }
 
   /**

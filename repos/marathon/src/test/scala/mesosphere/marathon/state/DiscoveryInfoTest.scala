@@ -14,21 +14,14 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   class Fixture {
     lazy val emptyDiscoveryInfo = DiscoveryInfo()
 
-    lazy val discoveryInfoWithPort = DiscoveryInfo(
-      ports = Seq(Port(name = "http", number = 80, protocol = "tcp"))
-    )
-    lazy val discoveryInfoWithTwoPorts = DiscoveryInfo(
-      ports = Seq(
-        Port(name = "dns", number = 53, protocol = "udp"),
-        Port(name = "http", number = 80, protocol = "tcp")
-      )
-    )
-    lazy val discoveryInfoWithTwoPorts2 = DiscoveryInfo(
-      ports = Seq(
-        Port(name = "dnsudp", number = 53, protocol = "udp"),
-        Port(name = "dnstcp", number = 53, protocol = "tcp")
-      )
-    )
+    lazy val discoveryInfoWithPort = DiscoveryInfo(ports = Seq(
+      Port(name = "http", number = 80, protocol = "tcp")))
+    lazy val discoveryInfoWithTwoPorts = DiscoveryInfo(ports = Seq(
+      Port(name = "dns", number = 53, protocol = "udp"),
+      Port(name = "http", number = 80, protocol = "tcp")))
+    lazy val discoveryInfoWithTwoPorts2 = DiscoveryInfo(ports = Seq(
+      Port(name = "dnsudp", number = 53, protocol = "udp"),
+      Port(name = "dnstcp", number = 53, protocol = "tcp")))
   }
 
   def fixture(): Fixture = new Fixture

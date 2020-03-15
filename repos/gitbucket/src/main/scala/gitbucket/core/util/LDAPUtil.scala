@@ -129,10 +129,12 @@ object LDAPUtil {
   }
 
   private def getUserNameFromMailAddress(userName: String): String = {
-    (userName.indexOf('@') match {
-      case i if i >= 0 => userName.substring(0, i)
-      case i           => userName
-    }).replaceAll("[^a-zA-Z0-9\\-_.]", "").replaceAll("^[_\\-]", "")
+    (
+      userName.indexOf('@') match {
+        case i if i >= 0 => userName.substring(0, i)
+        case i           => userName
+      }
+    ).replaceAll("[^a-zA-Z0-9\\-_.]", "").replaceAll("^[_\\-]", "")
   }
 
   private def bind[A](
@@ -208,12 +210,14 @@ object LDAPUtil {
       if (results.hasMore) {
         getEntries(
           results,
-          entries :+ (try {
-            Option(results.next)
-          } catch {
-            case ex: LDAPReferralException =>
-              None // NOTE(tanacasino): Referral follow is off. so ignores it.(for AD)
-          })
+          entries :+ (
+            try {
+              Option(results.next)
+            } catch {
+              case ex: LDAPReferralException =>
+                None // NOTE(tanacasino): Referral follow is off. so ignores it.(for AD)
+            }
+          )
         )
       } else {
         entries.flatten

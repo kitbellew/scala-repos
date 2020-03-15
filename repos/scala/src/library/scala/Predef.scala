@@ -371,19 +371,21 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
     new runtime.Tuple3Zipped.Ops(x)
 
   implicit def genericArrayOps[T](xs: Array[T]): ArrayOps[T] =
-    (xs match {
-      case x: Array[AnyRef]  => refArrayOps[AnyRef](x)
-      case x: Array[Boolean] => booleanArrayOps(x)
-      case x: Array[Byte]    => byteArrayOps(x)
-      case x: Array[Char]    => charArrayOps(x)
-      case x: Array[Double]  => doubleArrayOps(x)
-      case x: Array[Float]   => floatArrayOps(x)
-      case x: Array[Int]     => intArrayOps(x)
-      case x: Array[Long]    => longArrayOps(x)
-      case x: Array[Short]   => shortArrayOps(x)
-      case x: Array[Unit]    => unitArrayOps(x)
-      case null              => null
-    }).asInstanceOf[ArrayOps[T]]
+    (
+      xs match {
+        case x: Array[AnyRef]  => refArrayOps[AnyRef](x)
+        case x: Array[Boolean] => booleanArrayOps(x)
+        case x: Array[Byte]    => byteArrayOps(x)
+        case x: Array[Char]    => charArrayOps(x)
+        case x: Array[Double]  => doubleArrayOps(x)
+        case x: Array[Float]   => floatArrayOps(x)
+        case x: Array[Int]     => intArrayOps(x)
+        case x: Array[Long]    => longArrayOps(x)
+        case x: Array[Short]   => shortArrayOps(x)
+        case x: Array[Unit]    => unitArrayOps(x)
+        case null              => null
+      }
+    ).asInstanceOf[ArrayOps[T]]
 
   // TODO: when we remove, these should we drop the underscores from the new generation below? (For source compatibility in case someone was shadowing these.)
   @deprecated(

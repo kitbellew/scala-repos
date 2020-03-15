@@ -147,9 +147,10 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     * Useful after sortedTake, for instance
     */
   def flattenValues[U](implicit ev: T <:< TraversableOnce[U]): This[K, U] =
-    mapValueStream(_.flatMap { us =>
-      us.asInstanceOf[TraversableOnce[U]]
-    })
+    mapValueStream(
+      _.flatMap { us =>
+        us.asInstanceOf[TraversableOnce[U]]
+      })
 
   /**
     * This is just short hand for mapValueStream(identity), it makes sure the

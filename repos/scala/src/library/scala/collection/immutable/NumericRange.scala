@@ -106,24 +106,20 @@ abstract class NumericRange[T](
   private def newEmptyRange(value: T) = NumericRange(value, value, step)
 
   final override def take(n: Int): NumericRange[T] =
-    (
-      if (n <= 0 || length == 0)
-        newEmptyRange(start)
-      else if (n >= length)
-        this
-      else
-        new NumericRange.Inclusive(start, locationAfterN(n - 1), step)
-    )
+    (if (n <= 0 || length == 0)
+       newEmptyRange(start)
+     else if (n >= length)
+       this
+     else
+       new NumericRange.Inclusive(start, locationAfterN(n - 1), step))
 
   final override def drop(n: Int): NumericRange[T] =
-    (
-      if (n <= 0 || length == 0)
-        this
-      else if (n >= length)
-        newEmptyRange(end)
-      else
-        copy(locationAfterN(n), end, step)
-    )
+    (if (n <= 0 || length == 0)
+       this
+     else if (n >= length)
+       newEmptyRange(end)
+     else
+       copy(locationAfterN(n), end, step))
 
   def apply(idx: Int): T = {
     if (idx < 0 || idx >= length)
@@ -249,9 +245,13 @@ abstract class NumericRange[T](
         val two = num fromInt 2
         val nre = num fromInt numRangeElements
         if (a > 1e38 || b > 1e38)
-          nre * ((head / two) + (last / two)) // Compute in parts to avoid Infinity if possible
+          nre * (
+            (head / two) + (last / two)
+          ) // Compute in parts to avoid Infinity if possible
         else
-          (nre / two) * (head + last) // Don't need to worry about infinity; this will be more accurate and avoid underflow
+          (nre / two) * (
+            head + last
+          ) // Don't need to worry about infinity; this will be more accurate and avoid underflow
       } else if ((num eq scala.math.Numeric.BigIntIsIntegral) ||
                  (num eq scala.math.Numeric.BigDecimalIsFractional)) {
         // No overflow, so we can use arithmetic series formula directly
@@ -284,7 +284,9 @@ abstract class NumericRange[T](
       case x: NumericRange[_] =>
         (x canEqual this) && (length == x.length) && (
           (length == 0) || // all empty sequences are equal
-            (start == x.start && last == x.last) // same length and same endpoints implies equality
+            (
+              start == x.start && last == x.last
+            ) // same length and same endpoints implies equality
         )
       case _ =>
         super.equals(other)

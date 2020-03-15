@@ -59,8 +59,7 @@ object SplitMenuButtonDemo extends JFXApp {
                   }
                 }
               },
-              new MenuItem("MenuItem B")
-            )
+              new MenuItem("MenuItem B"))
           },
           // Use varargs constructor
           new SplitMenuButton(
@@ -69,8 +68,7 @@ object SplitMenuButtonDemo extends JFXApp {
                 println(ae.eventType + " occurred on Menu Item C")
             },
             new MenuItem("MenuItem D"),
-            new MenuItem("MenuItem E")
-          )
+            new MenuItem("MenuItem E"))
         )
       }
     }

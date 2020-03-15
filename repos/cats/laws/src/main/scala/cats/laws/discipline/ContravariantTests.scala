@@ -12,8 +12,7 @@ trait ContravariantTests[F[_]] extends InvariantTests[F] {
   def contravariant[A: Arbitrary, B: Arbitrary, C: Arbitrary](implicit
       ArbFA: Arbitrary[F[A]],
       EqFA: Eq[F[A]],
-      EqFC: Eq[F[C]]
-  ): RuleSet = {
+      EqFC: Eq[F[C]]): RuleSet = {
     new DefaultRuleSet(
       name = "contravariant",
       parent = Some(invariant[A, B, C]),

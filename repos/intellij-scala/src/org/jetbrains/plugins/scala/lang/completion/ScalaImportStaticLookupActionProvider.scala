@@ -35,12 +35,13 @@ class ScalaImportStaticLookupActionProvider extends LookupActionProvider {
             checkIcon
           else
             new EmptyIcon(checkIcon.getIconWidth, checkIcon.getIconHeight)
-        consumer.consume(new LookupElementAction(icon, "Import method") {
-          def performLookupAction: LookupElementAction.Result = {
-            elem.usedImportStaticQuickfix = true
-            new LookupElementAction.Result.ChooseItem(elem)
-          }
-        })
+        consumer.consume(
+          new LookupElementAction(icon, "Import method") {
+            def performLookupAction: LookupElementAction.Result = {
+              elem.usedImportStaticQuickfix = true
+              new LookupElementAction.Result.ChooseItem(elem)
+            }
+          })
       case _ =>
     }
   }

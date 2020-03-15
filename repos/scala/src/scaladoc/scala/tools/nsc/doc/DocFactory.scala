@@ -69,20 +69,18 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       }
     }
 
-    val modelFactory = (
-      new {
-        override val global: compiler.type = compiler
-      } with model.ModelFactory(compiler, settings)
-        with model.ModelFactoryImplicitSupport
-      with model.ModelFactoryTypeSupport with model.diagram.DiagramFactory
-      with model.CommentFactory with model.TreeFactory with model.MemberLookup {
-        override def templateShouldDocument(
-            sym: compiler.Symbol,
-            inTpl: DocTemplateImpl) =
-          extraTemplatesToDocument(sym) || super
-            .templateShouldDocument(sym, inTpl)
-      }
-    )
+    val modelFactory = (new {
+      override val global: compiler.type = compiler
+    } with model.ModelFactory(compiler, settings)
+      with model.ModelFactoryImplicitSupport with model.ModelFactoryTypeSupport
+    with model.diagram.DiagramFactory with model.CommentFactory
+    with model.TreeFactory with model.MemberLookup {
+      override def templateShouldDocument(
+          sym: compiler.Symbol,
+          inTpl: DocTemplateImpl) =
+        extraTemplatesToDocument(sym) || super
+          .templateShouldDocument(sym, inTpl)
+    })
 
     modelFactory.makeModel match {
       case Some(madeModel) =>
@@ -105,9 +103,11 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
         null,
         "No documentation generated with unsuccessful compiler run",
         force = false)
-    case e @ (_: ClassNotFoundException | _: IllegalAccessException |
-        _: InstantiationException | _: SecurityException |
-        _: ClassCastException) =>
+    case e @ (
+          _: ClassNotFoundException | _: IllegalAccessException |
+          _: InstantiationException | _: SecurityException |
+          _: ClassCastException
+        ) =>
       reporter.error(
         null,
         s"Cannot load the doclet class ${settings.docgenerator.value} (specified with ${settings.docgenerator.name}): $e. Leaving the default settings will generate the html version of scaladoc."

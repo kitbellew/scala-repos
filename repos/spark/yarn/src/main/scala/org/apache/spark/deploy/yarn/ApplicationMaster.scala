@@ -534,9 +534,10 @@ private[spark] class ApplicationMaster(
       val sparkContext = sparkContextRef.get()
       if (sparkContext == null) {
         logError(
-          ("SparkContext did not initialize after waiting for %d ms. Please check earlier"
-            + " log output for errors. Failing the application.").format(
-            totalWaitTime))
+          (
+            "SparkContext did not initialize after waiting for %d ms. Please check earlier"
+              + " log output for errors. Failing the application."
+          ).format(totalWaitTime))
       }
       sparkContext
     }

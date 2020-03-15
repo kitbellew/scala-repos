@@ -117,8 +117,7 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
 
   def channelLifeCycleTest(
       counterName: String,
-      f: (ChannelDuplexHandler, ChannelHandlerContext) => Unit
-  ) =
+      f: (ChannelDuplexHandler, ChannelHandlerContext) => Unit) =
     test(s"ChannelStatsHandler counts $counterName") {
       val tc = new TestContext {}
       import tc._
@@ -130,18 +129,13 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
 
   channelLifeCycleTest(
     "closes",
-    (handler, ctx) => handler.close(ctx, mock[ChannelPromise])
-  )
+    (handler, ctx) => handler.close(ctx, mock[ChannelPromise]))
 
   channelLifeCycleTest(
     "closechans",
-    (handler, ctx) => handler.channelInactive(ctx)
-  )
+    (handler, ctx) => handler.channelInactive(ctx))
 
-  channelLifeCycleTest(
-    "connects",
-    (handler, ctx) => handler.channelActive(ctx)
-  )
+  channelLifeCycleTest("connects", (handler, ctx) => handler.channelActive(ctx))
 
   test("ChannelStatsHandler records connection duration") {
     Time.withCurrentTimeFrozen { control =>

@@ -710,8 +710,10 @@ private[yarn] class YarnAllocator(
     */
   private def splitPendingAllocationsByLocality(
       hostToLocalTaskCount: Map[String, Int],
-      pendingAllocations: Seq[ContainerRequest]
-  ): (Seq[ContainerRequest], Seq[ContainerRequest], Seq[ContainerRequest]) = {
+      pendingAllocations: Seq[ContainerRequest]): (
+      Seq[ContainerRequest],
+      Seq[ContainerRequest],
+      Seq[ContainerRequest]) = {
     val localityMatched = ArrayBuffer[ContainerRequest]()
     val localityUnMatched = ArrayBuffer[ContainerRequest]()
     val localityFree = ArrayBuffer[ContainerRequest]()
@@ -751,7 +753,9 @@ private object YarnAllocator {
         " " + matcher.group() + "."
       else
         ""
-    ("Container killed by YARN for exceeding memory limits." + diag
-      + " Consider boosting spark.yarn.executor.memoryOverhead.")
+    (
+      "Container killed by YARN for exceeding memory limits." + diag
+        + " Consider boosting spark.yarn.executor.memoryOverhead."
+    )
   }
 }

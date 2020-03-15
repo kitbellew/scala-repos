@@ -179,8 +179,7 @@ package object linalg {
     DenseVector(
       ring.-(ring.*(a(1), b(2)), ring.*(a(2), b(1))),
       ring.-(ring.*(a(2), b(0)), ring.*(a(0), b(2))),
-      ring.-(ring.*(a(0), b(1)), ring.*(a(1), b(0)))
-    )
+      ring.-(ring.*(a(0), b(1)), ring.*(a(1), b(0))))
   }
 
   /**
@@ -279,8 +278,7 @@ package object linalg {
     */
   def princomp(
       x: DenseMatrix[Double],
-      covmatOpt: Option[DenseMatrix[Double]] = None
-  ): PCA = {
+      covmatOpt: Option[DenseMatrix[Double]] = None): PCA = {
     covmatOpt match {
       case Some(covmat) => new PCA(x, covmat)
       case None         => new PCA(x, cov(x))
@@ -299,8 +297,7 @@ package object linalg {
   def scale(
       x: DenseMatrix[Double],
       center: Boolean = true,
-      scale: Boolean = false
-  ): DenseMatrix[Double] = {
+      scale: Boolean = false): DenseMatrix[Double] = {
     import breeze.stats.{mean, stddev}
     if (center) {
       val xc = x(*, ::) - mean(x, Axis._0).t

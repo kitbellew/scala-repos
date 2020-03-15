@@ -69,23 +69,26 @@ class ProducerFeatureTest
       val latch = TestLatch()
       var deadActor: Option[ActorRef] = None
       val supervisor = system.actorOf(
-        Props(new Actor {
-          def receive = {
-            case p: Props ⇒ {
-              val producer = context.actorOf(p)
-              context.watch(producer)
-              sender() ! producer
+        Props(
+          new Actor {
+            def receive = {
+              case p: Props ⇒ {
+                val producer = context.actorOf(p)
+                context.watch(producer)
+                sender() ! producer
+              }
+              case Terminated(actorRef) ⇒ {
+                deadActor = Some(actorRef)
+                latch.countDown()
+              }
             }
-            case Terminated(actorRef) ⇒ {
-              deadActor = Some(actorRef)
-              latch.countDown()
-            }
-          }
-          override val supervisorStrategy =
-            OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
-              case _: AkkaCamelException ⇒ Stop
-            }
-        }),
+            override val supervisorStrategy =
+              OneForOneStrategy(
+                maxNrOfRetries = 10,
+                withinTimeRange = 1 minute) {
+                case _: AkkaCamelException ⇒ Stop
+              }
+          }),
         name = "02-prod-anonymous-supervisor"
       )
 
@@ -436,9 +439,11 @@ object ProducerFeatureTest {
             context.sender() ! akka.actor.Status.Failure(
               new AkkaCamelException(new Exception("failure"), msg.headers))
           case _ ⇒
-            context.sender() ! (msg.mapBody { body: String ⇒
-              "received %s" format body
-            })
+            context.sender() ! (
+              msg.mapBody { body: String ⇒
+                "received %s" format body
+              }
+            )
         }
     }
   }
@@ -471,14 +476,15 @@ object ProducerFeatureTest {
       // for two-way messaging tests (async)
       from("direct:producer-test-3").to(responder)
       // for two-way messaging tests (sync)
-      from("direct:producer-test-2").process(new Processor() {
-        def process(exchange: Exchange) = {
-          exchange.getIn.getBody match {
-            case "fail" ⇒ throw new Exception("failure")
-            case body ⇒ exchange.getOut.setBody("received %s" format body)
+      from("direct:producer-test-2").process(
+        new Processor() {
+          def process(exchange: Exchange) = {
+            exchange.getIn.getBody match {
+              case "fail" ⇒ throw new Exception("failure")
+              case body ⇒ exchange.getOut.setBody("received %s" format body)
+            }
           }
-        }
-      })
+        })
     }
   }
 

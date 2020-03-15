@@ -69,8 +69,11 @@ object MakePomTest extends Build {
           } distinct;
 
         lazy val explain =
-          (("Written:" +: writtenRepositories) ++ ("Declared:" +: mavenStyleRepositories))
-            .mkString("\n\t")
+          (
+            ("Written:" +: writtenRepositories) ++ (
+              "Declared:" +: mavenStyleRepositories
+            )
+          ).mkString("\n\t")
 
         if (writtenRepositories != mavenStyleRepositories)
           sys.error(

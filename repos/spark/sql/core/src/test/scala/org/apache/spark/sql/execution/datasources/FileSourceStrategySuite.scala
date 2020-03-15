@@ -48,18 +48,17 @@ class FileSourceStrategySuite
   import testImplicits._
 
   test("unpartitioned table, single partition") {
-    val table = createTable(
-      files = Seq(
-        "file1" -> 1,
-        "file2" -> 1,
-        "file3" -> 1,
-        "file4" -> 1,
-        "file5" -> 1,
-        "file6" -> 1,
-        "file7" -> 1,
-        "file8" -> 1,
-        "file9" -> 1,
-        "file10" -> 1))
+    val table = createTable(files = Seq(
+      "file1" -> 1,
+      "file2" -> 1,
+      "file3" -> 1,
+      "file4" -> 1,
+      "file5" -> 1,
+      "file6" -> 1,
+      "file7" -> 1,
+      "file8" -> 1,
+      "file9" -> 1,
+      "file10" -> 1))
 
     checkScan(table.select('c1)) { partitions =>
       // 10 one byte files should fit in a single partition with 10 files.
@@ -75,8 +74,10 @@ class FileSourceStrategySuite
   }
 
   test("unpartitioned table, multiple partitions") {
-    val table = createTable(
-      files = Seq("file1" -> 5, "file2" -> 5, "file3" -> 5))
+    val table = createTable(files = Seq(
+      "file1" -> 5,
+      "file2" -> 5,
+      "file3" -> 5))
 
     withSQLConf(SQLConf.FILES_MAX_PARTITION_BYTES.key -> "10") {
       checkScan(table.select('c1)) { partitions =>
@@ -223,9 +224,10 @@ class FileSourceStrategySuite
 
   /** Returns a set with all the filters present in the physical plan. */
   def getPhysicalFilters(df: DataFrame): ExpressionSet = {
-    ExpressionSet(df.queryExecution.executedPlan.collect {
-      case execution.Filter(f, _) => splitConjunctivePredicates(f)
-    }.flatten)
+    ExpressionSet(
+      df.queryExecution.executedPlan.collect {
+        case execution.Filter(f, _) => splitConjunctivePredicates(f)
+      }.flatten)
   }
 
   /** Plans the query and calls the provided validation function with the planned partitioning. */

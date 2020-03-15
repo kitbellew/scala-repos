@@ -551,7 +551,9 @@ private[akka] class Controller(
             if (nodes contains node)
               sender() ! ToClient(AddressReply(node, nodes(node).addr))
             else
-              addrInterest += node -> ((addrInterest get node getOrElse Set()) + sender())
+              addrInterest += node -> (
+                (addrInterest get node getOrElse Set()) + sender()
+              )
           case _: Done ⇒ //FIXME what should happen?
         }
       case op: CommandOp ⇒
@@ -614,11 +616,12 @@ private[akka] object BarrierCoordinator {
       with NoStackTrace
       with Printer
   final case class WrongBarrier(barrier: String, client: ActorRef, data: Data)
-      extends RuntimeException(data.clients
-        .find(_.fsm == client)
-        .map(_.name.toString)
-        .getOrElse(client.toString) +
-        " tried to enter '" + barrier + "' while we were waiting for '" + data.barrier + "'")
+      extends RuntimeException(
+        data.clients
+          .find(_.fsm == client)
+          .map(_.name.toString)
+          .getOrElse(client.toString) +
+          " tried to enter '" + barrier + "' while we were waiting for '" + data.barrier + "'")
       with NoStackTrace
       with Printer
   final case class BarrierEmpty(data: Data, msg: String)

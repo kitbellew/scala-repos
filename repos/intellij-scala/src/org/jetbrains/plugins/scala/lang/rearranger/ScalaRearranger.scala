@@ -164,16 +164,18 @@ class ScalaRearranger
       token: ArrangementSettingsToken,
       current: ArrangementMatchCondition) =
     (scalaTypesValues.contains(token) || supportedOrders.contains(token)) ||
-      (if (current != null) {
-         val tokenType = ArrangementUtil.parseType(current)
-         if (tokenType != null) {
-           tokensForType(tokenType).contains(token)
-         } else {
-           commonModifiers.contains(token)
-         }
-       } else {
-         commonModifiers.contains(token)
-       })
+      (
+        if (current != null) {
+          val tokenType = ArrangementUtil.parseType(current)
+          if (tokenType != null) {
+            tokensForType(tokenType).contains(token)
+          } else {
+            commonModifiers.contains(token)
+          }
+        } else {
+          commonModifiers.contains(token)
+        }
+      )
 
   override def buildMatcher(condition: ArrangementMatchCondition) =
     throw new IllegalArgumentException(
@@ -249,9 +251,9 @@ object ScalaRearranger {
       ArrangementSectionRule.create(
         new StdArrangementMatchRule(
           new StdArrangementEntryMatcher(
-            new ArrangementAtomMatchCondition(conditions(0), conditions(0)))
-        )
-      ) :: matchRules
+            new ArrangementAtomMatchCondition(
+              conditions(0),
+              conditions(0))))) :: matchRules
     } else {
       val composite = new ArrangementCompositeMatchCondition
       for (condition <- conditions) {

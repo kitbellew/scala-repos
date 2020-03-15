@@ -130,8 +130,7 @@ sealed trait Spool[+A] {
         Future.join(tail, that.tail).map {
           case (thisTail, thatTail) =>
             thisTail.zip(thatTail)
-        }
-      )
+        })
 
   /**
     * The standard Scala collect, in order to implement map & filter.

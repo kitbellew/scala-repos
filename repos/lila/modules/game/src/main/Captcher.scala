@@ -60,9 +60,10 @@ private final class Captcher extends Actor {
       challenges.list.find(_.gameId == id)
 
     private def createFromDb: Fu[Option[Captcha]] =
-      optionT(findCheckmateInDb(10) flatMap {
-        _.fold(findCheckmateInDb(1))(g => fuccess(g.some))
-      }) flatMap fromGame
+      optionT(
+        findCheckmateInDb(10) flatMap {
+          _.fold(findCheckmateInDb(1))(g => fuccess(g.some))
+        }) flatMap fromGame
 
     private def findCheckmateInDb(distribution: Int): Fu[Option[Game]] =
       GameRepo findRandomStandardCheckmate distribution
@@ -78,20 +79,21 @@ private final class Captcher extends Actor {
     private def makeCaptcha(
         game: Game,
         moves: List[String]): OptionT[Fu, Captcha] =
-      optionT(Future {
-        for {
-          rewinded ← rewind(game, moves)
-          solutions ← solve(rewinded)
-          moves = rewinded.situation.destinations map {
-            case (from, dests) => from.key -> dests.mkString
-          }
-        } yield Captcha(
-          game.id,
-          fen(rewinded),
-          rewinded.player.white,
-          solutions,
-          moves = moves)
-      })
+      optionT(
+        Future {
+          for {
+            rewinded ← rewind(game, moves)
+            solutions ← solve(rewinded)
+            moves = rewinded.situation.destinations map {
+              case (from, dests) => from.key -> dests.mkString
+            }
+          } yield Captcha(
+            game.id,
+            fen(rewinded),
+            rewinded.player.white,
+            solutions,
+            moves = moves)
+        })
 
     private def solve(game: ChessGame): Option[Captcha.Solutions] =
       game.situation.moves.toList flatMap {
@@ -104,10 +106,8 @@ private final class Captcher extends Actor {
       } toNel
 
     private def rewind(game: Game, moves: List[String]): Option[ChessGame] =
-      pgn.Reader.movesWithSans(
-        moves,
-        safeInit,
-        tags = Nil) map (_.state) toOption
+      pgn.Reader
+        .movesWithSans(moves, safeInit, tags = Nil) map (_.state) toOption
 
     private def safeInit[A](list: List[A]): List[A] =
       list match {

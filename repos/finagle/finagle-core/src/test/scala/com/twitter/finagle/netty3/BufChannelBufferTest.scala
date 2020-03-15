@@ -1390,11 +1390,15 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
     assert(
       bcb.compareTo(
         ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value, 0, 31)) > 0)
-    assert(bcb.compareTo(
-      ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value, 0, 31)) > 0)
-    assert(bcb
-      .slice(0, 31)
-      .compareTo(ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) < 0)
+    assert(
+      bcb.compareTo(
+        ChannelBuffers
+          .wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value, 0, 31)) > 0)
+    assert(
+      bcb
+        .slice(0, 31)
+        .compareTo(
+          ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) < 0)
     assert(
       bcb
         .slice(0, 31)

@@ -14,18 +14,19 @@ import akka.testkit._
 object TailChoppingSpec {
   def newActor(id: Int, sleepTime: Duration)(implicit system: ActorSystem) =
     system.actorOf(
-      Props(new Actor {
-        var times: Int = _
+      Props(
+        new Actor {
+          var times: Int = _
 
-        def receive = {
-          case "stop" ⇒ context.stop(self)
-          case "times" ⇒ sender() ! times
-          case x ⇒
-            times += 1
-            Thread sleep sleepTime.toMillis
-            sender ! "ack"
-        }
-      }),
+          def receive = {
+            case "stop" ⇒ context.stop(self)
+            case "times" ⇒ sender() ! times
+            case x ⇒
+              times += 1
+              Thread sleep sleepTime.toMillis
+              sender ! "ack"
+          }
+        }),
       "Actor:" + id
     )
 }
@@ -55,20 +56,24 @@ class TailChoppingSpec
       val doneLatch = new TestLatch(2)
 
       val counter1 = new AtomicInteger
-      val actor1 = system.actorOf(Props(new Actor {
-        def receive = {
-          case "end" ⇒ doneLatch.countDown()
-          case msg: Int ⇒ counter1.addAndGet(msg)
-        }
-      }))
+      val actor1 = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case "end" ⇒ doneLatch.countDown()
+              case msg: Int ⇒ counter1.addAndGet(msg)
+            }
+          }))
 
       val counter2 = new AtomicInteger
-      val actor2 = system.actorOf(Props(new Actor {
-        def receive = {
-          case "end" ⇒ doneLatch.countDown()
-          case msg: Int ⇒ counter2.addAndGet(msg)
-        }
-      }))
+      val actor2 = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case "end" ⇒ doneLatch.countDown()
+              case msg: Int ⇒ counter2.addAndGet(msg)
+            }
+          }))
 
       val paths = List(actor1, actor2).map(_.path.toString)
       val routedActor = system.actorOf(

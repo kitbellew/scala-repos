@@ -207,11 +207,12 @@ private[ui] abstract class ExecutionTable(
 
   private def detailCell(physicalPlan: String): Seq[Node] = {
     val isMultiline = physicalPlan.indexOf('\n') >= 0
-    val summary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      physicalPlan.substring(0, physicalPlan.indexOf('\n'))
-    } else {
-      physicalPlan
-    })
+    val summary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline) {
+        physicalPlan.substring(0, physicalPlan.indexOf('\n'))
+      } else {
+        physicalPlan
+      })
     val details =
       if (isMultiline) {
         // scalastyle:off

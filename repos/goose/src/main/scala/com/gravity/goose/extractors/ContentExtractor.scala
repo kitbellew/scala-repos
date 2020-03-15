@@ -487,8 +487,10 @@ trait ContentExtractor {
         val attrs: Attributes = el.attributes()
         for (a <- attrs) {
           try {
-            if ((a.getValue.contains(youtubeStr) || a.getValue.contains(
-                  vimdeoStr)) && (a.getKey == "src")) {
+            if ((
+                  a.getValue.contains(youtubeStr) || a.getValue.contains(
+                    vimdeoStr)
+                ) && (a.getKey == "src")) {
               trace(logPrefix + "This page has a video!: " + a.getValue)
               goodMovies += el
             }
@@ -593,19 +595,28 @@ trait ContentExtractor {
         None
       } else {
 
-        Some((for {
-          firstParagraph <- potentialParagraphs
-          if (firstParagraph.text.length() > 0)
-          wordStats: WordStats = StopWords.getStopWordCount(firstParagraph.text)
-          paragraphScore: Int = wordStats.getStopWordCount
-          siblingBaseLineScore: Double = .30
-          if ((baselineScoreForSiblingParagraphs * siblingBaseLineScore).toDouble < paragraphScore)
-        } yield {
+        Some(
+          (
+            for {
+              firstParagraph <- potentialParagraphs
+              if (firstParagraph.text.length() > 0)
+              wordStats: WordStats = StopWords.getStopWordCount(
+                firstParagraph.text)
+              paragraphScore: Int = wordStats.getStopWordCount
+              siblingBaseLineScore: Double = .30
+              if (
+                (
+                  baselineScoreForSiblingParagraphs * siblingBaseLineScore
+                ).toDouble < paragraphScore
+              )
+            } yield {
 
-          trace(logPrefix + "This node looks like a good sibling, adding it")
-          "<p>" + firstParagraph.text + "<p>"
+              trace(
+                logPrefix + "This node looks like a good sibling, adding it")
+              "<p>" + firstParagraph.text + "<p>"
 
-        }).mkString)
+            }
+          ).mkString)
       }
 
     }

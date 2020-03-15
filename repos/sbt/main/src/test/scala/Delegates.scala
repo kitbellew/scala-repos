@@ -73,22 +73,26 @@ object Delegates extends Properties("delegates") {
       }
     }
   def allDelegates(keys: Keys)(f: (Scope, Seq[Scope]) => Prop): Prop =
-    all(keys.scopes map { scope =>
-      val delegates = keys.env.delegates(scope)
-      ("Scope: " + Scope.display(scope, "_")) |:
-        ("Delegates:\n\t" + delegates
-          .map(scope => Scope.display(scope, "_"))
-          .mkString("\n\t")) |:
-        f(scope, delegates)
-    }: _*)
+    all(
+      keys.scopes map { scope =>
+        val delegates = keys.env.delegates(scope)
+        ("Scope: " + Scope.display(scope, "_")) |:
+          (
+            "Delegates:\n\t" + delegates
+              .map(scope => Scope.display(scope, "_"))
+              .mkString("\n\t")
+          ) |:
+          f(scope, delegates)
+      }: _*)
   def alwaysGlobal(
       s: Scope,
       ds: Seq[Scope],
       axis: Scope => ScopeAxis[_]): Prop =
     (axis(s) != Global) ||
-      all(ds map { d =>
-        (axis(d) == Global): Prop
-      }: _*)
+      all(
+        ds map { d =>
+          (axis(d) == Global): Prop
+        }: _*)
   def globalCombinations(
       s: Scope,
       ds: Seq[Scope],

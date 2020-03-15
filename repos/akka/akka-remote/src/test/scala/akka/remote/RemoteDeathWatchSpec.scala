@@ -62,12 +62,14 @@ akka {
     // simulate de-serialized ActorRef
     val ref = rarp.resolveActorRef(
       s"akka.tcp://OtherSystem@localhost:$port/user/foo/bar#1752527294")
-    system.actorOf(Props(new Actor {
-      context.watch(ref)
-      def receive = {
-        case Terminated(r) ⇒ testActor ! r
-      }
-    }).withDeploy(Deploy.local))
+    system.actorOf(
+      Props(
+        new Actor {
+          context.watch(ref)
+          def receive = {
+            case Terminated(r) ⇒ testActor ! r
+          }
+        }).withDeploy(Deploy.local))
 
     expectMsg(20.seconds, ref)
     // we don't expect real quarantine when the UID is unknown, i.e. QuarantinedEvent is not published
@@ -86,12 +88,13 @@ akka {
         "unknownhost",
         2552)) / "user" / "subject"
     system.actorOf(
-      Props(new Actor {
-        context.watch(context.actorFor(path))
-        def receive = {
-          case t: Terminated ⇒ testActor ! t.actor.path
-        }
-      }).withDeploy(Deploy.local),
+      Props(
+        new Actor {
+          context.watch(context.actorFor(path))
+          def receive = {
+            case t: Terminated ⇒ testActor ! t.actor.path
+          }
+        }).withDeploy(Deploy.local),
       name = "observer2")
 
     expectMsg(60.seconds, path)

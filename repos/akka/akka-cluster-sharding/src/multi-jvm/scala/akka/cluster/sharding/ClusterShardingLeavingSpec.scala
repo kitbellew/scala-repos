@@ -149,9 +149,10 @@ abstract class ClusterShardingLeavingSpec(
       cluster join node(to).address
       startSharding()
       within(15.seconds) {
-        awaitAssert(cluster.state.members.exists { m ⇒
-          m.uniqueAddress == cluster.selfUniqueAddress && m.status == MemberStatus.Up
-        } should be(true))
+        awaitAssert(
+          cluster.state.members.exists { m ⇒
+            m.uniqueAddress == cluster.selfUniqueAddress && m.status == MemberStatus.Up
+          } should be(true))
       }
     }
     enterBarrier(from.name + "-joined")
@@ -200,12 +201,14 @@ abstract class ClusterShardingLeavingSpec(
           Props[ShardLocations],
           "shardLocations")
         val locations =
-          (for (n ← 1 to 10)
-            yield {
-              val id = n.toString
-              region ! Ping(id)
-              id -> expectMsgType[ActorRef]
-            }).toMap
+          (
+            for (n ← 1 to 10)
+              yield {
+                val id = n.toString
+                region ! Ping(id)
+                id -> expectMsgType[ActorRef]
+              }
+          ).toMap
         shardLocations ! Locations(locations)
       }
       enterBarrier("after-3")

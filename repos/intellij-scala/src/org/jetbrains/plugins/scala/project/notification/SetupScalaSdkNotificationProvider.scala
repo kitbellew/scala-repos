@@ -50,8 +50,9 @@ class SetupScalaSdkNotificationProvider(
         Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
       .filter(module =>
         ModuleUtil.getModuleType(module) == JavaModuleType.getModuleType)
-      .filter(!_.getName
-        .endsWith("-build")) // gen-idea doesn't use the SBT module type
+      .filter(
+        !_.getName.endsWith("-build")
+      ) // gen-idea doesn't use the SBT module type
       .map(module => module.hasScala)
 
     if (hasSdk.contains(false))

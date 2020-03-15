@@ -36,11 +36,7 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
     val handlers = List(
       ExceptionHandler(Label(1), Label(2), Label(2), Some(exceptionDescriptor)))
     val asmMethod =
-      genMethod(handlers = handlers)(
-        Label(1),
-        Label(2),
-        Op(RETURN)
-      )
+      genMethod(handlers = handlers)(Label(1), Label(2), Op(RETURN))
     assertTrue(convertMethod(asmMethod).handlers.length == 1)
     LocalOptImpls.removeEmptyExceptionHandlers(asmMethod)
     assertTrue(convertMethod(asmMethod).handlers.isEmpty)
@@ -60,8 +56,7 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
         Op(ACONST_NULL),
         Op(ATHROW),
         Label(4), // return
-        Op(RETURN)
-      )
+        Op(RETURN))
     assertTrue(convertMethod(asmMethod).handlers.length == 1)
     LocalOptImpls.removeEmptyExceptionHandlers(asmMethod)
     assertTrue(convertMethod(asmMethod).handlers.isEmpty)

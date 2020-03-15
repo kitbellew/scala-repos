@@ -18,8 +18,10 @@ class AbstractOrMissingHandler[T](onError: String => Unit, value: T)
     }
   def apply(t: Throwable) =
     t match {
-      case x @ (_: AbstractMethodError | _: NoSuchMethodError |
-          _: NoClassDefFoundError) =>
+      case x @ (
+            _: AbstractMethodError | _: NoSuchMethodError |
+            _: NoClassDefFoundError
+          ) =>
         onError("""
         |Failed to initialize compiler: %s.
         |This is most often remedied by a full clean and recompile.

@@ -118,8 +118,7 @@ package record {
 
     implicit def hconsSelectAll[L <: HList, KH, KT <: HList](implicit
         sh: Selector[L, KH],
-        st: SelectAll[L, KT]
-    ): Aux[L, KH :: KT, sh.Out :: st.Out] =
+        st: SelectAll[L, KT]): Aux[L, KH :: KT, sh.Out :: st.Out] =
       new SelectAll[L, KH :: KT] {
         type Out = sh.Out :: st.Out
         def apply(l: L): Out = sh(l) :: st(l)
@@ -217,8 +216,8 @@ package record {
     implicit def hlistMerger2[K, V, T <: HList, M <: HList, MT <: HList](
         implicit
         rm: Remover.Aux[M, K, (V, MT)],
-        mt: Merger[T, MT]
-    ): Aux[FieldType[K, V] :: T, M, FieldType[K, V] :: mt.Out] =
+        mt: Merger[T, MT])
+        : Aux[FieldType[K, V] :: T, M, FieldType[K, V] :: mt.Out] =
       new Merger[FieldType[K, V] :: T, M] {
         type Out = FieldType[K, V] :: mt.Out
         def apply(l: FieldType[K, V] :: T, m: M): Out = {
@@ -400,8 +399,8 @@ package record {
         RemovedT <: HList,
         RemainderT <: HList](implicit
         rt: RemoveAll.Aux[L, T, (RemovedT, RemainderT)],
-        rh: Remove.Aux[RemainderT, H, (RemovedH, RemainderH)]
-    ): Aux[L, H :: T, (RemovedH :: RemovedT, RemainderH)] =
+        rh: Remove.Aux[RemainderT, H, (RemovedH, RemainderH)])
+        : Aux[L, H :: T, (RemovedH :: RemovedT, RemainderH)] =
       new RemoveAll[L, H :: T] {
         type Out = (RemovedH :: RemovedT, RemainderH)
 
@@ -575,8 +574,8 @@ package record {
 
     implicit def hconsFields[K, V, T <: HList](implicit
         key: Witness.Aux[K],
-        tailFields: Fields[T]
-    ): Aux[FieldType[K, V] :: T, (K, V) :: tailFields.Out] =
+        tailFields: Fields[T])
+        : Aux[FieldType[K, V] :: T, (K, V) :: tailFields.Out] =
       new Fields[FieldType[K, V] :: T] {
         type Out = (K, V) :: tailFields.Out
         def apply(l: FieldType[K, V] :: T) =
@@ -616,9 +615,8 @@ package record {
     implicit def hnilToMapAnyNothing[L <: HNil]: Aux[L, Any, Nothing] =
       hnilToMap[Any, Nothing, L]
 
-    implicit def hsingleToMap[K, V](implicit
-        wk: Witness.Aux[K]
-    ): Aux[FieldType[K, V] :: HNil, K, V] =
+    implicit def hsingleToMap[K, V](
+        implicit wk: Witness.Aux[K]): Aux[FieldType[K, V] :: HNil, K, V] =
       new ToMap[FieldType[K, V] :: HNil] {
         type Key = K
         type Value = V
@@ -629,8 +627,7 @@ package record {
         tailToMap: ToMap.Aux[TH :: TT, TK, TV],
         keyLub: Lub[HK, TK, K],
         valueLub: Lub[HV, TV, V],
-        wk: Witness.Aux[HK]
-    ): Aux[FieldType[HK, HV] :: TH :: TT, K, V] =
+        wk: Witness.Aux[HK]): Aux[FieldType[HK, HV] :: TH :: TT, K, V] =
       new ToMap[FieldType[HK, HV] :: TH :: TT] {
         type Key = K
         type Value = V
@@ -669,11 +666,9 @@ package record {
 
     implicit def hconsMapValues[HF, K, V, T <: HList](implicit
         hc: Case1[HF, V],
-        mapValuesTail: MapValues[HF, T]
-    ): Aux[
-      HF,
-      FieldType[K, V] :: T,
-      FieldType[K, hc.Result] :: mapValuesTail.Out] =
+        mapValuesTail: MapValues[HF, T]): Aux[HF, FieldType[
+      K,
+      V] :: T, FieldType[K, hc.Result] :: mapValuesTail.Out] =
       new MapValues[HF, FieldType[K, V] :: T] {
         type Out = FieldType[K, hc.Result] :: mapValuesTail.Out
         def apply(l: FieldType[K, V] :: T) =

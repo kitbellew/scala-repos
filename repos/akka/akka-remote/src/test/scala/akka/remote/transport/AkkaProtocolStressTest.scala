@@ -11,8 +11,8 @@ import akka.remote.transport.FailureInjectorTransportAdapter.{One, Drop}
 import scala.concurrent.Await
 
 object AkkaProtocolStressTest {
-  val configA: Config =
-    ConfigFactory parseString ("""
+  val configA: Config = ConfigFactory parseString (
+    """
     akka {
       #loglevel = DEBUG
       actor.serialize-messages = off
@@ -36,7 +36,8 @@ object AkkaProtocolStressTest {
       }
 
     }
-                                                   """)
+                                                   """
+  )
 
   object ResendFinal
 
@@ -98,11 +99,12 @@ class AkkaProtocolStressTest
 
   val systemB = ActorSystem("systemB", system.settings.config)
   val remote = systemB.actorOf(
-    Props(new Actor {
-      def receive = {
-        case seq: Int ⇒ sender() ! seq
-      }
-    }),
+    Props(
+      new Actor {
+        def receive = {
+          case seq: Int ⇒ sender() ! seq
+        }
+      }),
     "echo")
 
   val addressB =

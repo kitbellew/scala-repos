@@ -1389,9 +1389,10 @@ class Class54_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1431,9 +1432,10 @@ object Object55_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1473,9 +1475,10 @@ trait Trait56_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1515,9 +1518,10 @@ class Class58_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1557,9 +1561,10 @@ object Object59_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1599,9 +1604,10 @@ trait Trait60_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1641,9 +1647,10 @@ class Class62_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1683,9 +1690,10 @@ object Object63_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1725,9 +1733,10 @@ trait Trait64_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1767,9 +1776,10 @@ class Class66_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1807,9 +1817,10 @@ object Object67_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1847,9 +1858,10 @@ trait Trait68_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1887,9 +1899,10 @@ class Class70_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1927,9 +1940,10 @@ object Object71_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -1967,9 +1981,10 @@ trait Trait72_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -2007,9 +2022,10 @@ class Class74_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -2047,9 +2063,10 @@ object Object75_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -2087,9 +2104,10 @@ trait Trait76_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -2128,9 +2146,10 @@ class Class78_1 {
       def multiThreadedAccess() {
         val threads =
           for (i <- 1 to 5)
-            yield new Thread(new Runnable {
-              def run = Obj
-            })
+            yield new Thread(
+              new Runnable {
+                def run = Obj
+              })
 
         threads foreach (_.start())
         threads foreach (_.join())
@@ -2170,9 +2189,10 @@ object Object79_1 {
       def multiThreadedAccess() {
         val threads =
           for (i <- 1 to 5)
-            yield new Thread(new Runnable {
-              def run = Obj
-            })
+            yield new Thread(
+              new Runnable {
+                def run = Obj
+              })
 
         threads foreach (_.start())
         threads foreach (_.join())
@@ -2212,9 +2232,10 @@ trait Trait80_1 {
       def multiThreadedAccess() {
         val threads =
           for (i <- 1 to 5)
-            yield new Thread(new Runnable {
-              def run = Obj
-            })
+            yield new Thread(
+              new Runnable {
+                def run = Obj
+              })
 
         threads foreach (_.start())
         threads foreach (_.join())
@@ -2254,9 +2275,10 @@ class Class82_1 {
       def multiThreadedAccess() {
         val threads =
           for (i <- 1 to 5)
-            yield new Thread(new Runnable {
-              def run = Obj
-            })
+            yield new Thread(
+              new Runnable {
+                def run = Obj
+              })
 
         threads foreach (_.start())
         threads foreach (_.join())
@@ -2296,9 +2318,10 @@ object Object83_1 {
       def multiThreadedAccess() {
         val threads =
           for (i <- 1 to 5)
-            yield new Thread(new Runnable {
-              def run = Obj
-            })
+            yield new Thread(
+              new Runnable {
+                def run = Obj
+              })
 
         threads foreach (_.start())
         threads foreach (_.join())
@@ -2338,9 +2361,10 @@ trait Trait84_1 {
       def multiThreadedAccess() {
         val threads =
           for (i <- 1 to 5)
-            yield new Thread(new Runnable {
-              def run = Obj
-            })
+            yield new Thread(
+              new Runnable {
+                def run = Obj
+              })
 
         threads foreach (_.start())
         threads foreach (_.join())
@@ -2379,9 +2403,10 @@ class Class90_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())
@@ -2419,9 +2444,10 @@ trait Trait92_1 {
     def multiThreadedAccess() {
       val threads =
         for (i <- 1 to 5)
-          yield new Thread(new Runnable {
-            def run = Obj
-          })
+          yield new Thread(
+            new Runnable {
+              def run = Obj
+            })
 
       threads foreach (_.start())
       threads foreach (_.join())

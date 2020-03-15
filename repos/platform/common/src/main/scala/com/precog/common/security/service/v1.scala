@@ -64,9 +64,9 @@ object v1 {
       GrantDetails.apply _,
       GrantDetails.unapply _)
 
-    val schema =
-      "grantId" :: "name" :: "description" :: "permissions" :: ("createdAt" ||| new Instant(
-        0L)) :: "expirationDate" :: HNil
+    val schema = "grantId" :: "name" :: "description" :: "permissions" :: (
+      "createdAt" ||| new Instant(0L)
+    ) :: "expirationDate" :: HNil
 
     implicit val (decomposerV1, extractorV1) = IsoSerialization
       .serialization[GrantDetails](schema)
@@ -110,8 +110,9 @@ object v1 {
       NewGrantRequest.apply _,
       NewGrantRequest.unapply _)
 
-    val schemaV1 = "name" :: "description" :: ("parentIds" ||| Set
-      .empty[GrantId]) :: "permissions" :: "expirationDate" :: HNil
+    val schemaV1 = "name" :: "description" :: (
+      "parentIds" ||| Set.empty[GrantId]
+    ) :: "permissions" :: "expirationDate" :: HNil
 
     implicit val decomposerV1 = IsoSerialization.decomposer[NewGrantRequest](
       schemaV1)

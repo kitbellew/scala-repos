@@ -28,8 +28,7 @@ class DefaultPromiseTest {
   /** The state of a set of set of linked promises. */
   case class Chain(
       promises: Set[PromiseId],
-      state: Either[Set[HandlerId], Try[Result]]
-  )
+      state: Either[Set[HandlerId], Try[Result]])
 
   /** A helper class that provides methods for creating, linking, completing and
     *  adding handlers to promises. With each operation it verifies that handlers
@@ -350,17 +349,18 @@ class DefaultPromiseTest {
       val doneLatch = new CountDownLatch(flatMapCount + 1)
       def execute(f: => Unit) {
         val ec = ExecutionContext.global
-        ec.execute(new Runnable {
-          def run() {
-            try {
-              startLatch.await()
-              f
-              doneLatch.countDown()
-            } catch {
-              case NonFatal(e) => ec.reportFailure(e)
+        ec.execute(
+          new Runnable {
+            def run() {
+              try {
+                startLatch.await()
+                f
+                doneLatch.countDown()
+              } catch {
+                case NonFatal(e) => ec.reportFailure(e)
+              }
             }
-          }
-        })
+          })
       }
       @tailrec
       def flatMapTimes(count: Int, p1: DefaultPromise[Int]) {

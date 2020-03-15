@@ -40,8 +40,7 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
       "/srv#/prod/local/role => /$/fail;" +
         "/srv => /srv#/staging;" +
         "/srv/local => /srv/other;" +
-        "/srv => /srv#/devel"
-    )
+        "/srv => /srv#/devel")
     assert(HttpDtab.read(m).get() == expected)
   }
 
@@ -57,8 +56,7 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
         "/srv#/prod/local/role => /$/fail;" +
         "/srv => /srv#/staging;" +
         "/srv/local => /srv/other;" +
-        "/srv => /srv#/devel"
-    )
+        "/srv => /srv#/devel")
     assert(HttpDtab.read(m).get() == expected)
   }
 

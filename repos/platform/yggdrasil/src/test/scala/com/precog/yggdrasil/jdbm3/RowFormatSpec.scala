@@ -50,11 +50,12 @@ class RowFormatSpec
   def genColumnRefs: Gen[List[ColumnRef]] =
     Gen.listOf(Gen.alphaStr filter (_.size > 0)) flatMap { paths =>
       Gen
-        .sequence[List, List[ColumnRef]](paths.distinct.map { name =>
-          Gen.listOf(genCType) map {
-            _.distinct map (ColumnRef(CPath(name), _))
-          }
-        })
+        .sequence[List, List[ColumnRef]](
+          paths.distinct.map { name =>
+            Gen.listOf(genCType) map {
+              _.distinct map (ColumnRef(CPath(name), _))
+            }
+          })
         .map(_.flatten)
     }
 
@@ -75,16 +76,20 @@ class RowFormatSpec
   }
 
   def genCValuesForColumnRefs(refs: List[ColumnRef]): Gen[List[CValue]] =
-    Gen.sequence[List, List[CValue]](groupConsecutive(refs)(_.selector) map {
-      case refs =>
-        Gen.choose(0, refs.size - 1) flatMap { i =>
-          Gen.sequence[List, CValue](refs.zipWithIndex map {
-            case (ColumnRef(_, cType), `i`) =>
-              Gen.frequency(5 -> genCValue(cType), 1 -> Gen.value(CUndefined))
-            case (_, _) => Gen.value(CUndefined)
-          })
-        }
-    }) map (_.flatten)
+    Gen.sequence[List, List[CValue]](
+      groupConsecutive(refs)(_.selector) map {
+        case refs =>
+          Gen.choose(0, refs.size - 1) flatMap { i =>
+            Gen.sequence[List, CValue](
+              refs.zipWithIndex map {
+                case (ColumnRef(_, cType), `i`) =>
+                  Gen.frequency(
+                    5 -> genCValue(cType),
+                    1 -> Gen.value(CUndefined))
+                case (_, _) => Gen.value(CUndefined)
+              })
+          }
+      }) map (_.flatten)
 
   def arrayColumnsFor(size: Int, refs: List[ColumnRef]): List[ArrayColumn[_]] =
     refs map JDBMSlice.columnFor(CPath.Identity, size) map (_._2)
@@ -92,22 +97,24 @@ class RowFormatSpec
   def verify(rows: List[List[CValue]], cols: List[Column]) = {
     rows.zipWithIndex foreach {
       case (values, row) =>
-        (values zip cols) foreach (_ must beLike {
-          case (CUndefined, col) if !col.isDefinedAt(row) => ok
-          case (_, col) if !col.isDefinedAt(row)          => ko
-          case (CString(s), col: StrColumn)               => col(row) must_== s
-          case (CBoolean(x), col: BoolColumn)             => col(row) must_== x
-          case (CLong(x), col: LongColumn)                => col(row) must_== x
-          case (CDouble(x), col: DoubleColumn)            => col(row) must_== x
-          case (CNum(x), col: NumColumn)                  => col(row) must_== x
-          case (CDate(x), col: DateColumn)                => col(row) must_== x
-          case (CNull, col: NullColumn)                   => ok
-          case (CEmptyObject, col: EmptyObjectColumn)     => ok
-          case (CEmptyArray, col: EmptyArrayColumn)       => ok
-          case (CArray(xs, cType), col: HomogeneousArrayColumn[_])
-              if cType == col.tpe =>
-            col(row) must_== xs
-        })
+        (values zip cols) foreach (
+          _ must beLike {
+            case (CUndefined, col) if !col.isDefinedAt(row) => ok
+            case (_, col) if !col.isDefinedAt(row)          => ko
+            case (CString(s), col: StrColumn)               => col(row) must_== s
+            case (CBoolean(x), col: BoolColumn)             => col(row) must_== x
+            case (CLong(x), col: LongColumn)                => col(row) must_== x
+            case (CDouble(x), col: DoubleColumn)            => col(row) must_== x
+            case (CNum(x), col: NumColumn)                  => col(row) must_== x
+            case (CDate(x), col: DateColumn)                => col(row) must_== x
+            case (CNull, col: NullColumn)                   => ok
+            case (CEmptyObject, col: EmptyObjectColumn)     => ok
+            case (CEmptyArray, col: EmptyArrayColumn)       => ok
+            case (CArray(xs, cType), col: HomogeneousArrayColumn[_])
+                if cType == col.tpe =>
+              col(row) must_== xs
+          }
+        )
     }
   }
 
@@ -175,14 +182,16 @@ class RowFormatSpec
           val valueEncoded = vals map (valueRowFormat.encode(_))
           val sortEncoded = vals map (sortingKeyRowFormat.encode(_))
 
-          val sortedA = valueEncoded.sorted(new Ordering[Array[Byte]] {
-            def compare(a: Array[Byte], b: Array[Byte]) =
-              valueRowFormat.compare(a, b)
-          }) map (valueRowFormat.decode(_))
-          val sortedB = sortEncoded.sorted(new Ordering[Array[Byte]] {
-            def compare(a: Array[Byte], b: Array[Byte]) =
-              sortingKeyRowFormat.compare(a, b)
-          }) map (sortingKeyRowFormat.decode(_))
+          val sortedA = valueEncoded.sorted(
+            new Ordering[Array[Byte]] {
+              def compare(a: Array[Byte], b: Array[Byte]) =
+                valueRowFormat.compare(a, b)
+            }) map (valueRowFormat.decode(_))
+          val sortedB = sortEncoded.sorted(
+            new Ordering[Array[Byte]] {
+              def compare(a: Array[Byte], b: Array[Byte]) =
+                sortingKeyRowFormat.compare(a, b)
+            }) map (sortingKeyRowFormat.decode(_))
 
           sortedA must_== sortedB
         }

@@ -24,8 +24,10 @@ class Test {
     implicit class XOps(x: X) {
       def m(p: Any) {}
     }
-    new X().m(x[A]({
-      new isString(true)
-    })) // !!! allowed
+    new X().m(
+      x[A]({
+        new isString(true)
+      })
+    ) // !!! allowed
   }
 }

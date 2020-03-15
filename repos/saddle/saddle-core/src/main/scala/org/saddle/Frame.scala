@@ -810,9 +810,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def map[SX: ST: ORD, DX: ST: ORD, U: ST](
       f: ((RX, CX, T)) => (SX, DX, U)): Frame[SX, DX, U] = {
-    Series(toSeq.map(f).map {
-      case (sx, dx, u) => ((sx, dx) -> u)
-    }: _*).pivot
+    Series(
+      toSeq.map(f).map {
+        case (sx, dx, u) => ((sx, dx) -> u)
+      }: _*).pivot
   }
 
   /**
@@ -821,9 +822,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def flatMap[SX: ST: ORD, DX: ST: ORD, U: ST](
       f: ((RX, CX, T)) => Traversable[(SX, DX, U)]): Frame[SX, DX, U] = {
-    Series(toSeq.flatMap(f).map {
-      case (sx, dx, u) => ((sx, dx) -> u)
-    }: _*).pivot
+    Series(
+      toSeq.flatMap(f).map {
+        case (sx, dx, u) => ((sx, dx) -> u)
+      }: _*).pivot
   }
 
   /**
@@ -1796,7 +1798,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   override def equals(other: Any): Boolean =
     other match {
       case f: Frame[_, _, _] =>
-        (this eq f) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
+        (
+          this eq f
+        ) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
       case _ => false
     }
 }

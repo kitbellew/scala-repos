@@ -315,8 +315,7 @@ class GroupMetadataManager(
               topicAndPartition.partition),
             bytes = GroupMetadataManager.offsetCommitValue(offsetAndMetadata),
             timestamp = timestamp,
-            magicValue = magicValue
-          )
+            magicValue = magicValue)
       }.toSeq
 
     val offsetTopicPartition =
@@ -506,14 +505,12 @@ class GroupMetadataManager(
                         msgAndOffset.message.payload)
                       putOffset(
                         key,
-                        value.copy(
-                          expireTimestamp = {
-                            if (value.expireTimestamp == org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_TIMESTAMP)
-                              value.commitTimestamp + config.offsetsRetentionMs
-                            else
-                              value.expireTimestamp
-                          }
-                        )
+                        value.copy(expireTimestamp = {
+                          if (value.expireTimestamp == org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_TIMESTAMP)
+                            value.commitTimestamp + config.offsetsRetentionMs
+                          else
+                            value.expireTimestamp
+                        })
                       )
                       trace("Loaded offset %s for %s.".format(value, key))
                     }
@@ -542,8 +539,9 @@ class GroupMetadataManager(
               loadedGroups.values.foreach { group =>
                 val currentGroup = addGroup(group)
                 if (group != currentGroup)
-                  debug(s"Attempt to load group ${group.groupId} from log with generation ${group.generationId} failed " +
-                    s"because there is already a cached group with generation ${currentGroup.generationId}")
+                  debug(
+                    s"Attempt to load group ${group.groupId} from log with generation ${group.generationId} failed " +
+                      s"because there is already a cached group with generation ${currentGroup.generationId}")
                 else
                   onGroupLoaded(group)
               }

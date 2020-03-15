@@ -41,9 +41,11 @@ class ScalaStructureViewModel(
     extends TextEditorBasedStructureViewModel(myRootElement)
     with StructureViewModel.ElementInfoProvider {
   def isAlwaysLeaf(element: StructureViewTreeElement): Boolean =
-    !(isAlwaysShowsPlus(element) ||
-      element.isInstanceOf[TestStructureViewElement] || element
-      .isInstanceOf[ScalaValueStructureViewElement])
+    !(
+      isAlwaysShowsPlus(element) ||
+        element.isInstanceOf[TestStructureViewElement] || element
+        .isInstanceOf[ScalaValueStructureViewElement]
+    )
 
   def isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean = {
     element match {

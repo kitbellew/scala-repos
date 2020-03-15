@@ -306,20 +306,21 @@ object Pickler {
         }
       }
       def unpickle(rd: Lexer): Unpickled[Iterator[T]] =
-        UnpickleSuccess(new Iterator[T] {
-          var first = true
-          def hasNext = {
-            val t = rd.token
-            t != EOF && t != RParen && t != RBrace && t != RBracket
-          }
-          def next(): T = {
-            if (first)
-              first = false
-            else
-              rd.accept(',')
-            p.unpickle(rd).requireSuccess.result
-          }
-        })
+        UnpickleSuccess(
+          new Iterator[T] {
+            var first = true
+            def hasNext = {
+              val t = rd.token
+              t != EOF && t != RParen && t != RBrace && t != RBracket
+            }
+            def next(): T = {
+              if (first)
+                first = false
+              else
+                rd.accept(',')
+              p.unpickle(rd).requireSuccess.result
+            }
+          })
     }
 
   /** A pickler that handles values that can be represented as a single token.

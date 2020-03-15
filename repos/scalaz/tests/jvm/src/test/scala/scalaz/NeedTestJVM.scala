@@ -14,8 +14,7 @@ object NeedTestJVM extends SpecLite {
               flag = true
             }
             override def apply = ""
-          }
-        )
+          })
         .asInstanceOf[Need[String]]
 
       flag must_== false

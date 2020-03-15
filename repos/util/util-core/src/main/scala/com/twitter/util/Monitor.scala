@@ -6,10 +6,8 @@ import java.util.logging.{Level, Logger}
   * Wraps an exception that happens when handling another exception in
   * a monitor.
   */
-case class MonitorException(
-    handlingExc: Throwable,
-    monitorExc: Throwable
-) extends Exception(monitorExc) {
+case class MonitorException(handlingExc: Throwable, monitorExc: Throwable)
+    extends Exception(monitorExc) {
   override def getMessage =
     "threw exception \"" + monitorExc + "\" while handling " +
       "another exception \"" + handlingExc + "\""

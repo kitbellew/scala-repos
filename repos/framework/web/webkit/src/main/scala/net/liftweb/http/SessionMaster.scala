@@ -120,8 +120,9 @@ object SessionMaster extends LiftActor with Loggable {
 
   def getSession(id: String, otherId: Box[String]): Box[LiftSession] =
     lockAndBump {
-      val dead = killedSessions.containsKey(id) || (otherId.map(
-        killedSessions.containsKey(_)) openOr false)
+      val dead = killedSessions.containsKey(id) || (
+        otherId.map(killedSessions.containsKey(_)) openOr false
+      )
 
       if (dead)(Failure("Dead session", Empty, Empty))
       else {
@@ -144,8 +145,9 @@ object SessionMaster extends LiftActor with Loggable {
       httpSession: => HTTPSession,
       otherId: Box[String]): Box[LiftSession] =
     lockAndBump {
-      otherId.flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions.get(
-        httpSession.sessionId))
+      otherId.flatMap(a => Box !! nsessions.get(a)) or (
+        Box !! nsessions.get(httpSession.sessionId)
+      )
     }
 
   /**
@@ -273,9 +275,10 @@ object SessionMaster extends LiftActor with Loggable {
         .map(_._1)
       removeKeys.foreach(s => killedSessions.remove(s))
 
-      val ses = Map(lockRead {
-        nsessions
-      }.toList: _*)
+      val ses = Map(
+        lockRead {
+          nsessions
+        }.toList: _*)
 
       for {
         f <- sessionCheckFuncs

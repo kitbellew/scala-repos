@@ -41,9 +41,8 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
   */
 @RunWith(classOf[JUnitRunner])
 class ChoiceBoxTreeCellSpec[T]
-    extends SimpleSFXDelegateSpec[
-      jfxscc.ChoiceBoxTreeCell[T],
-      ChoiceBoxTreeCell[T]](
+    extends SimpleSFXDelegateSpec[jfxscc.ChoiceBoxTreeCell[
+      T], ChoiceBoxTreeCell[T]](
       classOf[jfxscc.ChoiceBoxTreeCell[T]],
       classOf[ChoiceBoxTreeCell[T]])
     with RunOnApplicationThread

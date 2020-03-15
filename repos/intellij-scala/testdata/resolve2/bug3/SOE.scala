@@ -18,9 +18,10 @@ abstract class PsiStackOverflowError {
     }
 }
 object TreeItem {
-  type Min = TreeItem[T forSome {
-    type T <: TreeItem[T]
-  }]
+  type Min = TreeItem[
+    T forSome {
+      type T <: TreeItem[T]
+    }]
 }
 trait TreeItem[+T <: TreeItem[T]] {
   def children: Iterable[T]

@@ -58,10 +58,12 @@ case class ClassName(pack: PackageName, name: String)
       ClassName.cleanupPackage(pack.fqnString + "." + name)
 
   def internalString =
-    "L" + (if (pack.path.isEmpty)
-             name
-           else
-             pack.path.mkString("/") + "/" + name) + ";"
+    "L" + (
+      if (pack.path.isEmpty)
+        name
+      else
+        pack.path.mkString("/") + "/" + name
+    ) + ";"
 }
 
 object ClassName {
@@ -106,10 +108,8 @@ object ClassName {
   }
 }
 
-case class MemberName(
-    owner: ClassName,
-    name: String
-) extends FullyQualifiedName {
+case class MemberName(owner: ClassName, name: String)
+    extends FullyQualifiedName {
   def contains(o: FullyQualifiedName) = this == o
   def fqnString = ClassName.cleanupPackage(owner.fqnString + "." + name)
 }
@@ -141,18 +141,11 @@ case class RawClassfile(
     deprecated: Boolean,
     fields: Queue[RawField],
     methods: Queue[RawMethod],
-    source: RawSource
-)
+    source: RawSource)
 
-case class RawSource(
-    filename: Option[String],
-    line: Option[Int]
-)
+case class RawSource(filename: Option[String], line: Option[Int])
 
-case class RawType(
-    fqn: String,
-    access: Access
-) {
+case class RawType(fqn: String, access: Access) {
   def fqnString = ClassName.cleanupPackage(fqn)
 }
 
@@ -160,13 +153,11 @@ case class RawField(
     name: MemberName,
     clazz: ClassName,
     generics: Option[String],
-    access: Access
-)
+    access: Access)
 
 case class RawMethod(
     name: MemberName,
     access: Access,
     descriptor: Descriptor,
     generics: Option[String],
-    line: Option[Int]
-)
+    line: Option[Int])

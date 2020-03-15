@@ -401,8 +401,7 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
       tableSize,
       threshold,
       seedvalue,
-      sizemap
-    )
+      sizemap)
 
   protected def initWithContents(c: FlatHashTable.Contents[A]) = {
     if (c != null) {
@@ -457,8 +456,7 @@ private[collection] object FlatHashTable {
       val tableSize: Int,
       val threshold: Int,
       val seedvalue: Int,
-      val sizemap: Array[Int]
-  )
+      val sizemap: Array[Int])
 
   trait HashUtils[A] {
     protected final def sizeMapBucketBitSize = 5
@@ -494,10 +492,12 @@ private[collection] object FlatHashTable {
       * Does the inverse translation of elemToEntry
       */
     protected final def entryToElem(entry: AnyRef): A =
-      (if (entry.isInstanceOf[NullSentinel.type])
-         null
-       else
-         entry).asInstanceOf[A]
+      (
+        if (entry.isInstanceOf[NullSentinel.type])
+          null
+        else
+          entry
+      ).asInstanceOf[A]
   }
 
 }

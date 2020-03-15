@@ -481,8 +481,9 @@ class GroupCoordinator(
     var delayedOffsetStore: Option[DelayedStore] = None
 
     if (!isActive.get) {
-      responseCallback(offsetMetadata.mapValues(_ =>
-        Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code))
+      responseCallback(
+        offsetMetadata.mapValues(_ =>
+          Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code))
     } else if (!isCoordinatorForGroup(groupId)) {
       responseCallback(
         offsetMetadata.mapValues(_ => Errors.NOT_COORDINATOR_FOR_GROUP.code))

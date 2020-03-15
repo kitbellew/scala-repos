@@ -43,25 +43,28 @@ object ActorFlow {
 
     Flow.fromSinkAndSource(
       Sink.actorRef(
-        factory.actorOf(Props(new Actor {
-          val flowActor = context.watch(
-            context.actorOf(props(outActor), "flowActor"))
+        factory.actorOf(
+          Props(
+            new Actor {
+              val flowActor = context.watch(
+                context.actorOf(props(outActor), "flowActor"))
 
-          def receive = {
-            case Status.Success(_) | Status.Failure(_) => flowActor ! PoisonPill
-            case Terminated =>
-              println("Child terminated, stopping")
-              context.stop(self)
-            case other => flowActor ! other
-          }
+              def receive = {
+                case Status.Success(_) | Status.Failure(_) =>
+                  flowActor ! PoisonPill
+                case Terminated =>
+                  println("Child terminated, stopping")
+                  context.stop(self)
+                case other => flowActor ! other
+              }
 
-          override def supervisorStrategy =
-            OneForOneStrategy() {
-              case _ =>
-                println("Stopping actor due to exception")
-                SupervisorStrategy.Stop
-            }
-        })),
+              override def supervisorStrategy =
+                OneForOneStrategy() {
+                  case _ =>
+                    println("Stopping actor due to exception")
+                    SupervisorStrategy.Stop
+                }
+            })),
         Status.Success(())
       ),
       Source.fromPublisher(publisher)

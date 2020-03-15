@@ -49,8 +49,10 @@ abstract class ScValueElementType[Value <: ScValue](debugName: String)
     new ScValueStubImpl[ParentPsi](
       parentStub,
       this,
-      (for (elem <- psi.declaredElements)
-        yield elem.name).toArray,
+      (
+        for (elem <- psi.declaredElements)
+          yield elem.name
+      ).toArray,
       isDecl,
       typeText,
       bodyText,

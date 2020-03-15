@@ -10,9 +10,10 @@ class RefinementAndExistentials {
     }
   }
   def f(x: Foo) = 51
-  def g(x: T forSome {
-    type T <: String
-  }) = x
+  def g(
+      x: T forSome {
+        type T <: String
+      }) = x
   def h(x: Float): {
     def quux(x: Int, y: Int): Int
   } =

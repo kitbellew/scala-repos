@@ -136,10 +136,7 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     // make sure consumer offsets are committed before the next getRdd call
     kc.setConsumerOffsets(kafkaParams("group.id"), rangesMap)
-      .fold(
-        err => throw new Exception(err.mkString("\n")),
-        _ => ()
-      )
+      .fold(err => throw new Exception(err.mkString("\n")), _ => ())
 
     // this is the "0 messages" case
     val rdd2 = getRdd(kc, Set(topic))
@@ -173,8 +170,7 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
         .orElse(
           kc.getEarliestLeaderOffsets(topicPartitions).right.toOption.map {
             offs => offs.map(kv => kv._1 -> kv._2.offset)
-          }
-        )
+          })
     }
     kc.getPartitions(topics).right.toOption.flatMap { topicPartitions =>
       consumerOffsets(topicPartitions).flatMap { from =>

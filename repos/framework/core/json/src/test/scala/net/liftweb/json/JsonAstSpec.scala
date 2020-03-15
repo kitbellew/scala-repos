@@ -93,18 +93,22 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
   "Remove all" in {
     val removeAllProp =
       (x: JValue) =>
-        (x remove { _ =>
-          true
-        }) == JNothing
+        (
+          x remove { _ =>
+            true
+          }
+        ) == JNothing
     forAll(removeAllProp)
   }
 
   "Remove nothing" in {
     val removeNothingProp =
       (x: JValue) =>
-        (x remove { _ =>
-          false
-        }) == x
+        (
+          x remove { _ =>
+            false
+          }
+        ) == x
     forAll(removeNothingProp)
   }
 
@@ -169,8 +173,7 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
   "allow escaping arbitrary characters when serializing" in {
     JsonAST.render(
       JString("aaabbb"),
-      JsonAST.RenderSettings(0, Set('c'))
-    ) must not be matching("a".r)
+      JsonAST.RenderSettings(0, Set('c'))) must not be matching("a".r)
   }
 
   "escape bad JSON characters by default" in {
@@ -178,8 +181,7 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
 
     val rendered = JsonAST.render(
       JString(allCharacters),
-      JsonAST.RenderSettings.compact
-    )
+      JsonAST.RenderSettings.compact)
 
     "[\u0000-\u0019]".r.pattern
       .matcher(rendered)
@@ -191,8 +193,7 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
 
     val rendered = JsonAST.render(
       JString(allCharacters),
-      JsonAST.RenderSettings.compactJs
-    )
+      JsonAST.RenderSettings.compactJs)
 
     "[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]".r.pattern
       .matcher(rendered)
@@ -214,17 +215,14 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
           JObject(
             JField("alpha", JString("bacon")) ::
               JField("charlie", JString("i'm a masseuse")) ::
-              Nil
-          )) ::
-        Nil
-    )
+              Nil)) ::
+        Nil)
 
     subject \\ "alpha" must_==
       JObject(
         JField("alpha", JString("apple")) ::
           JField("alpha", JString("bacon")) ::
-          Nil
-      )
+          Nil)
     subject \\ "charlie" must_== JObject(
       List(JField("charlie", JString("i'm a masseuse"))))
   }

@@ -29,8 +29,7 @@ object TeamRepo {
     $count.exists(
       Json.obj(
         "createdAt" -> $gt($date(DateTime.now minus duration)),
-        "createdBy" -> userId
-      ))
+        "createdBy" -> userId))
 
   def ownerOf(teamId: String): Fu[Option[String]] =
     $primitive.one($select(teamId), "createdBy")(_.asOpt[String])

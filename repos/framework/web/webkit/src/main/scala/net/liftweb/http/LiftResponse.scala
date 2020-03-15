@@ -450,9 +450,9 @@ final case class InMemoryResponse(
   def size = data.length
 
   override def toString =
-    "InMemoryResponse(" + (new String(
-      data,
-      "UTF-8")) + ", " + headers + ", " + cookies + ", " + code + ")"
+    "InMemoryResponse(" + (
+      new String(data, "UTF-8")
+    ) + ", " + headers + ", " + cookies + ", " + code + ")"
 }
 
 final case class StreamingResponse(
@@ -1001,7 +1001,9 @@ case class OpenSearchResponse(
   def code = 200
 
   val headers: List[(String, String)] = S.getResponseHeaders(
-    ("Content-Type" -> "application/opensearchdescription+xml; charset=utf-8") ::
+    (
+      "Content-Type" -> "application/opensearchdescription+xml; charset=utf-8"
+    ) ::
       addlHeaders)
 
   def cookies: List[HTTPCookie] = Nil

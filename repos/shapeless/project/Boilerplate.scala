@@ -128,8 +128,9 @@ object Boilerplate {
       val instances = rawContents flatMap {
         _ filter (_ startsWith "-") map (_.tail)
       }
-      val postBody =
-        rawContents.head dropWhile (_ startsWith "|") dropWhile (_ startsWith "-") map (_.tail)
+      val postBody = rawContents.head dropWhile (_ startsWith "|") dropWhile (
+        _ startsWith "-"
+      ) map (_.tail)
       (headerLines ++ preBody ++ instances ++ postBody) mkString "\n"
     }
   }

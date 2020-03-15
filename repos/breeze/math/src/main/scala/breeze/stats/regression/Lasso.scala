@@ -117,18 +117,10 @@ object lasso extends UFunc {
    * by Yingying Li Stanley Osher
    * Download at: ftp://ftp.math.ucla.edu/pub/camreport/cam09-17.pdf
    */
-  implicit val matrixVectorWithWorkArray: Impl4[
-    DenseMatrix[Double],
-    DenseVector[Double],
-    Double,
-    Array[Double],
-    LassoResult] =
-    new Impl4[
-      DenseMatrix[Double],
-      DenseVector[Double],
-      Double,
-      Array[Double],
-      LassoResult] {
+  implicit val matrixVectorWithWorkArray: Impl4[DenseMatrix[
+    Double], DenseVector[Double], Double, Array[Double], LassoResult] =
+    new Impl4[DenseMatrix[Double], DenseVector[Double], Double, Array[
+      Double], LassoResult] {
       def apply(
           data: DenseMatrix[Double],
           outputs: DenseVector[Double],
@@ -137,18 +129,10 @@ object lasso extends UFunc {
         LassoCalculator(data, outputs, lambda, workArray).result
     }
 
-  implicit val matrixVectorSpecifiedWork: Impl4[
-    DenseMatrix[Double],
-    DenseVector[Double],
-    Double,
-    Int,
-    LassoResult] =
-    new Impl4[
-      DenseMatrix[Double],
-      DenseVector[Double],
-      Double,
-      Int,
-      LassoResult] {
+  implicit val matrixVectorSpecifiedWork: Impl4[DenseMatrix[
+    Double], DenseVector[Double], Double, Int, LassoResult] =
+    new Impl4[DenseMatrix[Double], DenseVector[
+      Double], Double, Int, LassoResult] {
       def apply(
           data: DenseMatrix[Double],
           outputs: DenseVector[Double],

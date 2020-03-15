@@ -28,9 +28,8 @@ object Runner {
 
   def main(args: Array[String]) {
     val engine = VanillaEngine()
-    val engineParams = EngineParams(
-      algorithmParamsList = Seq(("algo", AlgorithmParams(2)))
-    )
+    val engineParams = EngineParams(algorithmParamsList = Seq(
+      ("algo", AlgorithmParams(2))))
 
     logger.error("Runner. before evaluation!!!")
     val evaluator = new VanillaEvaluator()

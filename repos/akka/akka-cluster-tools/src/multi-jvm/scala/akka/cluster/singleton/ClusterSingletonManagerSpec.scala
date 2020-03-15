@@ -302,8 +302,9 @@ class ClusterSingletonManagerSpec
     runOn(oldest) {
       expectMsg(5.seconds, msg)
     }
-    runOn(roles.filterNot(r ⇒
-      r == oldest || r == controller || r == observer): _*) {
+    runOn(
+      roles.filterNot(r ⇒
+        r == oldest || r == controller || r == observer): _*) {
       expectNoMsg(1 second)
     }
     enterBarrier("after-" + msg + "-verified")

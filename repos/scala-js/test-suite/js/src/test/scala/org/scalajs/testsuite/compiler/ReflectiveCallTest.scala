@@ -30,9 +30,10 @@ class ReflectiveCallTest {
       def generate(): B = new B
     }
 
-    def f(x: {
-      def generate(): A
-    }): A = x.generate
+    def f(
+        x: {
+          def generate(): A
+        }): A = x.generate
 
     assertEquals(2, f(Generator).x)
   }
@@ -58,93 +59,106 @@ class ReflectiveCallTest {
       def e(x: Tata): Tata = new Tata("iei")
     }
 
-    def m[T](r: Object {
-      def e(x: Tata): T
-    }): T = r.e(new Tata("foo"))
+    def m[T](
+        r: Object {
+          def e(x: Tata): T
+        }): T = r.e(new Tata("foo"))
 
     assertEquals("Tata(iei)", m[Tata](Rec).toString)
   }
 
   @Test def should_work_with_unary_methods_on_primitive_types(): Unit = {
     // scalastyle:off disallow.space.before.token
-    def fInt(x: Any {
-      def unary_- : Int
-    }): Int = -x
+    def fInt(
+        x: Any {
+          def unary_- : Int
+        }): Int = -x
     assertEquals(-1, fInt(1.toByte))
     assertEquals(-1, fInt(1.toShort))
     assertEquals(-1, fInt(1.toChar))
     assertEquals(-1, fInt(1))
 
-    def fLong(x: Any {
-      def unary_- : Long
-    }): Long = -x
+    def fLong(
+        x: Any {
+          def unary_- : Long
+        }): Long = -x
     assertEquals(-1L, fLong(1L))
 
-    def fFloat(x: Any {
-      def unary_- : Float
-    }): Float = -x
+    def fFloat(
+        x: Any {
+          def unary_- : Float
+        }): Float = -x
     assertEquals(-1.5f, fFloat(1.5f))
 
-    def fDouble(x: Any {
-      def unary_- : Double
-    }): Double = -x
+    def fDouble(
+        x: Any {
+          def unary_- : Double
+        }): Double = -x
     assertEquals(-1.5, fDouble(1.5))
 
-    def fBoolean(x: Any {
-      def unary_! : Boolean
-    }): Boolean = !x
+    def fBoolean(
+        x: Any {
+          def unary_! : Boolean
+        }): Boolean = !x
     assertTrue(fBoolean(false))
     assertFalse(fBoolean(true))
     // scalastyle:on disallow.space.before.token
   }
 
   @Test def should_work_with_binary_operators_on_primitive_types(): Unit = {
-    def fLong(x: Any {
-      def +(x: Long): Long
-    }): Long = x + 5L
+    def fLong(
+        x: Any {
+          def +(x: Long): Long
+        }): Long = x + 5L
     assertEquals(10L, fLong(5.toByte))
     assertEquals(15L, fLong(10.toShort))
     assertEquals(15L, fLong(10.toChar))
     assertEquals(4L, fLong(-1))
     assertEquals(22L, fLong(17L))
 
-    def fInt(x: Any {
-      def /(x: Int): Int
-    }): Int = x / 7
+    def fInt(
+        x: Any {
+          def /(x: Int): Int
+        }): Int = x / 7
     assertEquals(9, fInt(65.toByte))
     assertEquals(2, fInt(15.toShort))
     assertEquals(3, fInt(25.toChar))
     assertEquals(-5, fInt(-40))
 
-    def fShort(x: Any {
-      def +(x: Short): Int
-    }): Int = x + 6.toShort
+    def fShort(
+        x: Any {
+          def +(x: Short): Int
+        }): Int = x + 6.toShort
     assertEquals(71, fShort(65.toByte))
     assertEquals(21, fShort(15.toShort))
     assertEquals(31, fShort(25.toChar))
     assertEquals(-34, fShort(-40))
 
-    def fFloat(x: Any {
-      def %(x: Float): Float
-    }): Float = x % 3.4f
+    def fFloat(
+        x: Any {
+          def %(x: Float): Float
+        }): Float = x % 3.4f
     assertEquals(2.1f, fFloat(5.5f))
 
-    def fDouble(x: Any {
-      def /(x: Double): Double
-    }): Double = x / 1.4
+    def fDouble(
+        x: Any {
+          def /(x: Double): Double
+        }): Double = x / 1.4
     assertEquals(-1.0714285714285714, fDouble(-1.5))
 
-    def fBoolean(x: Any {
-      def &&(x: Boolean): Boolean
-    }): Boolean = x && true // scalastyle:ignore
+    def fBoolean(
+        x: Any {
+          def &&(x: Boolean): Boolean
+        }): Boolean = x && true // scalastyle:ignore
     assertFalse(fBoolean(false))
     assertTrue(fBoolean(true))
   }
 
   @Test def should_work_with_equality_operators_on_primitive_types(): Unit = {
-    def fNum(obj: Any {
-      def ==(x: Int): Boolean
-    }): Boolean = obj == 5
+    def fNum(
+        obj: Any {
+          def ==(x: Int): Boolean
+        }): Boolean = obj == 5
     assertTrue(fNum(5.toByte))
     assertFalse(fNum(6.toByte))
     assertTrue(fNum(5.toShort))
@@ -159,15 +173,17 @@ class ReflectiveCallTest {
     assertFalse(fNum(5.6f))
     assertTrue(fNum(5.0))
     assertFalse(fNum(7.9))
-    def fBool(obj: Any {
-      def ==(x: Boolean): Boolean
-    }): Boolean = obj == false // scalastyle:ignore
+    def fBool(
+        obj: Any {
+          def ==(x: Boolean): Boolean
+        }): Boolean = obj == false // scalastyle:ignore
     assertFalse(fBool(true))
     assertTrue(fBool(false))
 
-    def fNumN(obj: Any {
-      def !=(x: Int): Boolean
-    }): Boolean = obj != 5
+    def fNumN(
+        obj: Any {
+          def !=(x: Int): Boolean
+        }): Boolean = obj != 5
     assertFalse(fNumN(5.toByte))
     assertTrue(fNumN(6.toByte))
     assertFalse(fNumN(5.toShort))
@@ -182,9 +198,10 @@ class ReflectiveCallTest {
     assertTrue(fNumN(5.6f))
     assertFalse(fNumN(5.0))
     assertTrue(fNumN(7.9))
-    def fBoolN(obj: Any {
-      def !=(x: Boolean): Boolean
-    }): Boolean = obj != false // scalastyle:ignore
+    def fBoolN(
+        obj: Any {
+          def !=(x: Boolean): Boolean
+        }): Boolean = obj != false // scalastyle:ignore
     assertTrue(fBoolN(true))
     assertFalse(fBoolN(false))
 
@@ -251,14 +268,16 @@ class ReflectiveCallTest {
   }
 
   @Test def should_work_with_Strings(): Unit = {
-    def get(obj: {
-      def codePointAt(str: Int): Int
-    }): Int = obj.codePointAt(1)
+    def get(
+        obj: {
+          def codePointAt(str: Int): Int
+        }): Int = obj.codePointAt(1)
     assertEquals('i'.toInt, get("Hi"))
 
-    def sub(x: {
-      def substring(x: Int): AnyRef
-    }): AnyRef = x.substring(5)
+    def sub(
+        x: {
+          def substring(x: Int): AnyRef
+        }): AnyRef = x.substring(5)
     assertEquals("sdfasdf", sub("asdfasdfasdf"))
 
     type LEN_A = {
@@ -280,9 +299,10 @@ class ReflectiveCallTest {
       def foo: Int = 1
     }
 
-    def call(x: {
-      def foo: Int
-    }): Int = x.foo
+    def call(
+        x: {
+          def foo: Int
+        }): Int = x.foo
 
     assertEquals(1, call(new C))
   }
@@ -416,12 +436,13 @@ class ReflectiveCallTest {
      * methods in structural types.
      */
 
-    def test(foo: {
-      def makeInt: Int
-      def testInt(x: Int): Unit
-      def makeRef: Option[String]
-      def testRef(x: Option[String]): Unit
-    }): Unit = {
+    def test(
+        foo: {
+          def makeInt: Int
+          def testInt(x: Int): Unit
+          def makeRef: Option[String]
+          def testRef(x: Option[String]): Unit
+        }): Unit = {
       foo.testInt(foo.makeInt)
       foo.testRef(foo.makeRef)
     }

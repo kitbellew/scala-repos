@@ -11,8 +11,7 @@ object Formatting {
     import scalariform.formatter.preferences._
     Seq(
       sr.preferences := sr.preferences.value
-        .setPreference(AlignSingleLineCaseStatements, true)
-    )
+        .setPreference(AlignSingleLineCaseStatements, true))
   }
   lazy val sbtFilesSettings: Seq[Setting[_]] =
     Seq() ++ scalariformSettings ++ prefs ++

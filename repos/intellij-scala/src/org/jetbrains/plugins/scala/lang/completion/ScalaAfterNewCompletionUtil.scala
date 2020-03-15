@@ -153,13 +153,15 @@ object ScalaAfterNewCompletionUtil {
         case _                                           =>
       }
       var tailText: String = ""
-      val itemText: String = psiClass.name + (tp match {
-        case ScParameterizedType(_, tps) =>
-          tps
-            .map(tp => ScType.presentableText(subst.subst(tp)))
-            .mkString("[", ", ", "]")
-        case _ => ""
-      })
+      val itemText: String = psiClass.name + (
+        tp match {
+          case ScParameterizedType(_, tps) =>
+            tps
+              .map(tp => ScType.presentableText(subst.subst(tp)))
+              .mkString("[", ", ", "]")
+          case _ => ""
+        }
+      )
       psiClass match {
         case clazz: PsiClass =>
           if (psiClass.isInterface || psiClass.isInstanceOf[ScTrait] ||
@@ -251,9 +253,10 @@ object ScalaAfterNewCompletionUtil {
           case _ =>
         }
         //todo: filter inner classes smarter (how? don't forget deep inner classes)
-        if (clazz.containingClass != null && (!clazz.containingClass
-              .isInstanceOf[ScObject] ||
-            clazz.hasModifierPropertyScala("static")))
+        if (clazz.containingClass != null && (
+              !clazz.containingClass.isInstanceOf[ScObject] ||
+              clazz.hasModifierPropertyScala("static")
+            ))
           return null
         if (!ResolveUtils.isAccessible(clazz, place, forCompletion = true))
           return null
@@ -292,54 +295,55 @@ object ScalaAfterNewCompletionUtil {
             clazz.getUseScope
         ClassInheritorsSearch
           .search(clazz, searchScope, true)
-          .forEach(new Processor[PsiClass] {
-            def process(clazz: PsiClass): Boolean = {
-              if (clazz.name == null || clazz.name == "")
-                return true
-              val undefines: Seq[ScUndefinedType] = clazz.getTypeParameters.map(
-                ptp =>
-                  new ScUndefinedType(
-                    new ScTypeParameterType(ptp, ScSubstitutor.empty)))
-              val predefinedType =
-                if (clazz.getTypeParameters.nonEmpty) {
-                  ScParameterizedType(ScDesignatorType(clazz), undefines)
-                } else
-                  ScDesignatorType(clazz)
-              val noUndefType =
-                if (clazz.getTypeParameters.nonEmpty) {
-                  ScParameterizedType(
-                    ScDesignatorType(clazz),
-                    clazz.getTypeParameters.map(ptp =>
+          .forEach(
+            new Processor[PsiClass] {
+              def process(clazz: PsiClass): Boolean = {
+                if (clazz.name == null || clazz.name == "")
+                  return true
+                val undefines: Seq[ScUndefinedType] = clazz.getTypeParameters
+                  .map(ptp =>
+                    new ScUndefinedType(
                       new ScTypeParameterType(ptp, ScSubstitutor.empty)))
-                } else
-                  ScDesignatorType(clazz)
-              if (!predefinedType.conforms(typez))
-                return true
-              val undef = Conformance.undefinedSubst(typez, predefinedType)
-              undef.getSubstitutor match {
-                case Some(undefSubst) =>
-                  val lookupElement = convertTypeToLookupElement(
-                    undefSubst.subst(noUndefType),
-                    place,
-                    addedClasses,
-                    renderer,
-                    insertHandler,
-                    renamesMap)
-                  if (lookupElement != null) {
-                    for (undefine <- undefines) {
-                      undefSubst.subst(undefine) match {
-                        case ScUndefinedType(_) =>
-                          lookupElement.typeParametersProblem = true
-                        case _ =>
+                val predefinedType =
+                  if (clazz.getTypeParameters.nonEmpty) {
+                    ScParameterizedType(ScDesignatorType(clazz), undefines)
+                  } else
+                    ScDesignatorType(clazz)
+                val noUndefType =
+                  if (clazz.getTypeParameters.nonEmpty) {
+                    ScParameterizedType(
+                      ScDesignatorType(clazz),
+                      clazz.getTypeParameters.map(ptp =>
+                        new ScTypeParameterType(ptp, ScSubstitutor.empty)))
+                  } else
+                    ScDesignatorType(clazz)
+                if (!predefinedType.conforms(typez))
+                  return true
+                val undef = Conformance.undefinedSubst(typez, predefinedType)
+                undef.getSubstitutor match {
+                  case Some(undefSubst) =>
+                    val lookupElement = convertTypeToLookupElement(
+                      undefSubst.subst(noUndefType),
+                      place,
+                      addedClasses,
+                      renderer,
+                      insertHandler,
+                      renamesMap)
+                    if (lookupElement != null) {
+                      for (undefine <- undefines) {
+                        undefSubst.subst(undefine) match {
+                          case ScUndefinedType(_) =>
+                            lookupElement.typeParametersProblem = true
+                          case _ =>
+                        }
                       }
+                      result.addElement(lookupElement)
                     }
-                    result.addElement(lookupElement)
-                  }
-                case _ =>
+                  case _ =>
+                }
+                true
               }
-              true
-            }
-          })
+            })
       case _ =>
     }
   }

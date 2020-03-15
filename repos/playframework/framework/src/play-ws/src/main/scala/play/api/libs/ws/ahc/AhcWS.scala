@@ -179,10 +179,11 @@ case class AhcWSRequest(
   def withMethod(method: String): WSRequest = copy(method = method)
 
   def execute(): Future[WSResponse] = {
-    val executor = filterWSRequestExecutor(new WSRequestExecutor {
-      override def execute(request: WSRequest): Future[WSResponse] =
-        request.asInstanceOf[AhcWSRequest].execute(buildRequest())
-    })
+    val executor = filterWSRequestExecutor(
+      new WSRequestExecutor {
+        override def execute(request: WSRequest): Future[WSResponse] =
+          request.asInstanceOf[AhcWSRequest].execute(buildRequest())
+      })
     executor.execute(this)
   }
 

@@ -282,9 +282,9 @@ class StateMapSuite extends SparkFunSuite {
           // This is similar to finding the nth bit value of a binary number
           // E.g.  nth bit from the right of any binary number B is [ B / (2 ^ (n - 1)) ] % 2
           val opCode =
-            (keyId / math
-              .pow(numTypeMapOps, numTotalOps - opId - 1)
-              .toInt) % numTypeMapOps
+            (
+              keyId / math.pow(numTypeMapOps, numTotalOps - opId - 1).toInt
+            ) % numTypeMapOps
           opCode match {
             case 0 =>
               val value = Random.nextInt()
@@ -389,9 +389,10 @@ class StateMapSuite extends SparkFunSuite {
 
       // Assert that get on every key returns the right value
       for (keyId <- refMapToTestWith.keys) {
-        assert(mapToTest.get(keyId) === refMapToTestWith.get(keyId).map {
-          _._1
-        })
+        assert(
+          mapToTest.get(keyId) === refMapToTestWith.get(keyId).map {
+            _._1
+          })
       }
 
       // Assert that every time threshold returns the correct data

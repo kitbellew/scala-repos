@@ -35,9 +35,7 @@ final class RankingApi(
   def save(userId: User.ID, perfType: PerfType, perf: Perf): Funit =
     (perf.nb >= 2) ?? coll
       .update(
-        BSONDocument(
-          "_id" -> s"$userId:${perfType.id}"
-        ),
+        BSONDocument("_id" -> s"$userId:${perfType.id}"),
         BSONDocument(
           "user" -> userId,
           "perf" -> perfType.id,
@@ -55,14 +53,14 @@ final class RankingApi(
         coll
           .remove(
             BSONDocument(
-              "_id" -> BSONDocument("$in" -> PerfType.leaderboardable
-                .filter { pt =>
-                  user.perfs(pt).nonEmpty
-                }
-                .map { pt =>
-                  s"${user.id}:${pt.id}"
-                })
-            ))
+              "_id" -> BSONDocument(
+                "$in" -> PerfType.leaderboardable
+                  .filter { pt =>
+                    user.perfs(pt).nonEmpty
+                  }
+                  .map { pt =>
+                    s"${user.id}:${pt.id}"
+                  })))
           .void
       }
     }
@@ -106,8 +104,7 @@ final class RankingApi(
       val enumerator = coll
         .find(
           BSONDocument("perf" -> perfId, "stable" -> true),
-          BSONDocument("user" -> true, "_id" -> false)
-        )
+          BSONDocument("user" -> true, "_id" -> false))
         .sort(BSONDocument("rating" -> -1))
         .cursor[BSONDocument]()
         .enumerate()
@@ -149,10 +146,8 @@ final class RankingApi(
                   "r" -> BSONDocument(
                     "$subtract" -> BSONArray(
                       "$rating",
-                      BSONDocument("$mod" -> BSONArray("$rating", Stat.group))
-                    )
-                  )
-                )),
+                      BSONDocument(
+                        "$mod" -> BSONArray("$rating", Stat.group)))))),
               GroupField("r")("nb" -> SumValue(1))
             )
           )

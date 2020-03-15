@@ -102,8 +102,7 @@ object OrmToSlick extends App {
 
       val c = byIds(
         session.createCriteria(classOf[Person]),
-        Array(2, 99, 17, 234)
-      )
+        Array(2, 99, 17, 234))
       //#criteriaQueryComposition
     };
     {
@@ -114,8 +113,7 @@ object OrmToSlick extends App {
         .add(
           Restrictions.disjunction
             .add(age lt 5)
-            .add(age gt 65)
-        )
+            .add(age gt 65))
       //#criteriaComposition
     };
     {
@@ -126,9 +124,7 @@ object OrmToSlick extends App {
     {
       //#slickQueryWithTypes
       val q = (people: Query[People, Person, Seq]).filter((p: People) =>
-        (
-          ((p.age: Rep[Int]) < 5 || p.age > 65): Rep[Boolean]
-        ))
+        (((p.age: Rep[Int]) < 5 || p.age > 65): Rep[Boolean]))
       //#slickQueryWithTypes
     };
     {
@@ -139,8 +135,10 @@ object OrmToSlick extends App {
     };
     {
       //#slickOrderBy
-      (for (p <- people if p.age < 5 || p.age > 65)
-        yield p).sortBy(_.name)
+      (
+        for (p <- people if p.age < 5 || p.age > 65)
+          yield p
+      ).sortBy(_.name)
       //#slickOrderBy
     };
     {

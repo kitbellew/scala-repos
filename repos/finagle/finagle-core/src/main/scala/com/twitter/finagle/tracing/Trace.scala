@@ -51,8 +51,7 @@ object Trace {
 
   private[finagle] val idCtx =
     new Contexts.broadcast.Key[TraceId](
-      "com.twitter.finagle.tracing.TraceContext"
-    ) {
+      "com.twitter.finagle.tracing.TraceContext") {
       private val local =
         new ThreadLocal[Array[Byte]] {
           override def initialValue() = new Array[Byte](32)
@@ -279,12 +278,14 @@ object Trace {
     * trace is sampled
     */
   def isActivelyTracing: Boolean =
-    tracingEnabled && (id match {
-      case TraceId(_, _, _, Some(false), flags) if !flags.isDebug => false
-      case TraceId(_, _, _, _, Flags(Flags.Debug))                => true
-      case _ =>
-        tracers.nonEmpty && (tracers.size > 1 || tracers.head != NullTracer)
-    })
+    tracingEnabled && (
+      id match {
+        case TraceId(_, _, _, Some(false), flags) if !flags.isDebug => false
+        case TraceId(_, _, _, _, Flags(Flags.Debug))                => true
+        case _ =>
+          tracers.nonEmpty && (tracers.size > 1 || tracers.head != NullTracer)
+      }
+    )
 
   /**
     * Record a raw record without checking if it's sampled/enabled/etc.

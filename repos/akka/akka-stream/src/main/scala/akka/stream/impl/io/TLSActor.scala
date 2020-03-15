@@ -278,8 +278,9 @@ private[akka] class TLSActor(
   val outbound =
     (userHasData || engineNeedsWrap) && outputBunch.demandAvailableFor(
       TransportOut)
-  val inbound = (transportInChoppingBlock && outputBunch.demandAvailableFor(
-    UserOut)) || userOutCancelled
+  val inbound = (
+    transportInChoppingBlock && outputBunch.demandAvailableFor(UserOut)
+  ) || userOutCancelled
 
   // half-closed
   val outboundHalfClosed =

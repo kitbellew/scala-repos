@@ -175,11 +175,12 @@ abstract class TreeBrowsers {
 
       frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 
-      frame.addWindowListener(new WindowAdapter() {
+      frame.addWindowListener(
+        new WindowAdapter() {
 
-        /** Release the lock, so compilation may resume after the window is closed. */
-        override def windowClosed(e: WindowEvent): Unit = lock.release()
-      })
+          /** Release the lock, so compilation may resume after the window is closed. */
+          override def windowClosed(e: WindowEvent): Unit = lock.release()
+        })
 
       jTree = new JTree(treeModel) {
 
@@ -258,8 +259,7 @@ abstract class TreeBrowsers {
               closeWindow()
               global.currentRun.cancel()
             }
-          }
-        )
+          })
       jmFile add jmiCancel
 
       val jmiExit =
@@ -269,8 +269,7 @@ abstract class TreeBrowsers {
               Action.ACCELERATOR_KEY,
               KeyStroke.getKeyStroke(KeyEvent.VK_Q, menuKey, false))
             override def actionPerformed(e: ActionEvent) = closeWindow()
-          }
-        )
+          })
       jmFile add jmiExit
       add(jmFile)
 
@@ -284,8 +283,7 @@ abstract class TreeBrowsers {
             override def actionPerformed(e: ActionEvent) {
               expandAll(jTree)
             }
-          }
-        )
+          })
       jmView add jmiExpand
       val jmiCollapse =
         new JMenuItem(
@@ -296,8 +294,7 @@ abstract class TreeBrowsers {
             override def actionPerformed(e: ActionEvent) {
               collapseAll(jTree)
             }
-          }
-        )
+          })
       jmView add jmiCollapse
       add(jmView)
     }
@@ -566,12 +563,16 @@ abstract class TreeBrowsers {
         var str = s.flagString
         if (s.isStaticMember)
           str = str + " isStatic "
-        (str + " annotations: " + s.annotations.mkString("", " ", "")
-          + (if (s.isTypeSkolem)
-               "\ndeSkolemized annotations: " + s.deSkolemize.annotations
-                 .mkString("", " ", "")
-             else
-               ""))
+        (
+          str + " annotations: " + s.annotations.mkString("", " ", "")
+            + (
+              if (s.isTypeSkolem)
+                "\ndeSkolemized annotations: " + s.deSkolemize.annotations
+                  .mkString("", " ", "")
+              else
+                ""
+            )
+        )
       } else
         ""
     }
@@ -618,8 +619,7 @@ abstract class TreeBrowsers {
             Document.nest(
               4,
               "SingleType(" :/:
-                toDocument(pre) :: ", " :/: sym.name.toString :: ")")
-          )
+                toDocument(pre) :: ", " :/: sym.name.toString :: ")"))
 
         case ConstantType(value) =>
           "ConstantType(" + value + ")"
@@ -631,8 +631,7 @@ abstract class TreeBrowsers {
               "TypeRef(" :/:
                 toDocument(pre) :: ", " :/:
                 sym.name.toString + sym.idString :: ", " :/:
-                "[ " :: toDocument(args) :: "]" :: ")")
-          )
+                "[ " :: toDocument(args) :: "]" :: ")"))
 
         case TypeBounds(lo, hi) =>
           Document.group(
@@ -640,16 +639,14 @@ abstract class TreeBrowsers {
               4,
               "TypeBounds(" :/:
                 toDocument(lo) :: ", " :/:
-                toDocument(hi) :: ")")
-          )
+                toDocument(hi) :: ")"))
 
         case RefinedType(parents, defs) =>
           Document.group(
             Document.nest(
               4,
               "RefinedType(" :/:
-                toDocument(parents) :: ")")
-          )
+                toDocument(parents) :: ")"))
 
         case ClassInfoType(parents, defs, clazz) =>
           Document.group(
@@ -657,8 +654,7 @@ abstract class TreeBrowsers {
               4,
               "ClassInfoType(" :/:
                 toDocument(parents) :: ", " :/:
-                clazz.name.toString + clazz.idString :: ")")
-          )
+                clazz.name.toString + clazz.idString :: ")"))
 
         case MethodType(params, result) =>
           Document.group(
@@ -669,16 +665,14 @@ abstract class TreeBrowsers {
                   "(" :/:
                     symsToDocument(params) :/:
                     "), ") :/:
-                toDocument(result) :: ")")
-          )
+                toDocument(result) :: ")"))
 
         case NullaryMethodType(result) =>
           Document.group(
             Document.nest(
               4,
               "NullaryMethodType(" :/:
-                toDocument(result) :: ")")
-          )
+                toDocument(result) :: ")"))
 
         case PolyType(tparams, result) =>
           Document.group(
@@ -689,8 +683,7 @@ abstract class TreeBrowsers {
                   "(" :/:
                     symsToDocument(tparams) :/:
                     "), ") :/:
-                toDocument(result) :: ")")
-          )
+                toDocument(result) :: ")"))
 
         case AnnotatedType(annots, tp) =>
           Document.group(
@@ -698,8 +691,7 @@ abstract class TreeBrowsers {
               4,
               "AnnotatedType(" :/:
                 annots.mkString("[", ",", "]") :/:
-                "," :/: toDocument(tp) :: ")")
-          )
+                "," :/: toDocument(tp) :: ")"))
 
         case ExistentialType(tparams, result) =>
           Document.group(

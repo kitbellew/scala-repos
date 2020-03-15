@@ -241,15 +241,16 @@ class ScalaFindUsagesHandler(
           val res = new mutable.HashSet[PsiClass]()
           ClassInheritorsSearch
             .search(clazz, true)
-            .forEach(new Processor[PsiClass] {
-              def process(t: PsiClass): Boolean = {
-                t match {
-                  case p: PsiClassWrapper =>
-                  case _                  => res += t
+            .forEach(
+              new Processor[PsiClass] {
+                def process(t: PsiClass): Boolean = {
+                  t match {
+                    case p: PsiClassWrapper =>
+                    case _                  => res += t
+                  }
+                  true
                 }
-                true
-              }
-            })
+              })
           res.foreach { c =>
             val processed = inReadAction(processor.process(new UsageInfo(c)))
             if (!processed)

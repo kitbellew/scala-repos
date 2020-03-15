@@ -37,8 +37,7 @@ class C {
         ???;
         10
       } else
-        20
-    )
+        20)
   }
 
   def f6(x: Boolean) = {
@@ -47,8 +46,7 @@ class C {
         throw new Error("");
         10
       } else
-        20
-    )
+        20)
   }
 
   def f7(x: Boolean) = {
@@ -56,8 +54,7 @@ class C {
       if (x)
         throw new Error("")
       else
-        20
-    )
+        20)
   }
 
   def f8(x: Boolean) = {
@@ -65,8 +62,7 @@ class C {
       if (x)
         throw new Error("")
       else
-        20
-    )
+        20)
   }
 }
 

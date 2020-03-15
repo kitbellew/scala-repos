@@ -53,21 +53,22 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
         BSONDocument(
           "$or" -> BSONArray(
             BSONDocument("challenger.id" -> userId),
-            BSONDocument("destUser.id" -> userId)
-          )))
+            BSONDocument("destUser.id" -> userId))))
       .void
 
   def like(c: Challenge) =
-    ~(for {
-      challengerId <- c.challengerUserId
-      destUserId <- c.destUserId
-      if c.active
-    } yield coll
-      .find(
-        selectCreated ++ BSONDocument(
-          "challenger.id" -> challengerId,
-          "destUser.id" -> destUserId))
-      .one[Challenge])
+    ~(
+      for {
+        challengerId <- c.challengerUserId
+        destUserId <- c.destUserId
+        if c.active
+      } yield coll
+        .find(
+          selectCreated ++ BSONDocument(
+            "challenger.id" -> challengerId,
+            "destUser.id" -> destUserId))
+        .one[Challenge]
+    )
 
   private[challenge] def countCreatedByDestId(userId: String): Fu[Int] =
     coll.count(Some(selectCreated ++ BSONDocument("destUser.id" -> userId)))
@@ -78,16 +79,16 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
     coll
       .find(
         selectCreated ++ selectClock ++ BSONDocument(
-          "seenAt" -> BSONDocument("$lt" -> date)
-        ))
+          "seenAt" -> BSONDocument("$lt" -> date)))
       .cursor[Challenge]()
       .collect[List](max)
 
   private[challenge] def expiredIds(max: Int): Fu[List[Challenge.ID]] =
     coll.distinct(
       "_id",
-      BSONDocument("expiresAt" -> BSONDocument("$lt" -> DateTime.now)).some
-    ) map lila.db.BSON.asStrings
+      BSONDocument(
+        "expiresAt" -> BSONDocument(
+          "$lt" -> DateTime.now)).some) map lila.db.BSON.asStrings
 
   def setSeenAgain(id: Challenge.ID) =
     coll
@@ -97,16 +98,14 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
           "$set" -> BSONDocument(
             "status" -> Status.Created.id,
             "seenAt" -> DateTime.now,
-            "expiresAt" -> inTwoWeeks))
-      )
+            "expiresAt" -> inTwoWeeks)))
       .void
 
   def setSeen(id: Challenge.ID) =
     coll
       .update(
         selectId(id),
-        BSONDocument("$set" -> BSONDocument("seenAt" -> DateTime.now))
-      )
+        BSONDocument("$set" -> BSONDocument("seenAt" -> DateTime.now)))
       .void
 
   def offline(challenge: Challenge) =
@@ -120,10 +119,7 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
 
   def statusById(id: Challenge.ID) =
     coll
-      .find(
-        selectId(id),
-        BSONDocument("status" -> true, "_id" -> false)
-      )
+      .find(selectId(id), BSONDocument("status" -> true, "_id" -> false))
       .one[BSONDocument]
       .map {
         _.flatMap(_.getAs[Status]("status"))
@@ -141,8 +137,7 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
             "status" -> status.id,
             "expiresAt" -> expiresAt.fold(inTwoWeeks) {
               _(DateTime.now)
-            }
-          ))
+            }))
       )
       .void
 

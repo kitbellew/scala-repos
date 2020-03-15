@@ -98,13 +98,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   val sshKeyForm =
     mapping(
       "title" -> trim(label("Title", text(required, maxlength(100)))),
-      "publicKey" -> trim(label("Key", text(required, validPublicKey)))
-    )(SshKeyForm.apply)
+      "publicKey" -> trim(label("Key", text(required, validPublicKey))))(
+      SshKeyForm.apply)
 
   val personalTokenForm =
-    mapping(
-      "note" -> trim(label("Token", text(required, maxlength(100))))
-    )(PersonalTokenForm.apply)
+    mapping("note" -> trim(label("Token", text(required, maxlength(100)))))(
+      PersonalTokenForm.apply)
 
   case class NewGroupForm(
       groupName: String,
@@ -165,16 +164,16 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   val forkRepositoryForm =
     mapping(
       "owner" -> trim(label("Repository owner", text(required))),
-      "name" -> trim(label("Repository name", text(required)))
-    )(ForkRepositoryForm.apply)
+      "name" -> trim(label("Repository name", text(required))))(
+      ForkRepositoryForm.apply)
 
   case class AccountForm(accountName: String)
 
   val accountForm =
     mapping(
       "account" -> trim(
-        label("Group/User name", text(required, validAccountName)))
-    )(AccountForm.apply)
+        label("Group/User name", text(required, validAccountName))))(
+      AccountForm.apply)
 
   /**
     * Displays user information.
@@ -244,36 +243,39 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     }
   }
 
-  get("/:userName/_edit")(oneselfOnly {
-    val userName = params("userName")
-    getAccountByUserName(userName).map { x =>
-      html.edit(x, flash.get("info"))
-    } getOrElse NotFound
-  })
+  get("/:userName/_edit")(
+    oneselfOnly {
+      val userName = params("userName")
+      getAccountByUserName(userName).map { x =>
+        html.edit(x, flash.get("info"))
+      } getOrElse NotFound
+    })
 
-  post("/:userName/_edit", editForm)(oneselfOnly { form =>
-    val userName = params("userName")
-    getAccountByUserName(userName).map {
-      account =>
-        updateAccount(
-          account.copy(
-            password = form.password.map(sha1).getOrElse(account.password),
-            fullName = form.fullName,
-            mailAddress = form.mailAddress,
-            url = form.url))
+  post("/:userName/_edit", editForm)(
+    oneselfOnly { form =>
+      val userName = params("userName")
+      getAccountByUserName(userName).map {
+        account =>
+          updateAccount(
+            account.copy(
+              password = form.password.map(sha1).getOrElse(account.password),
+              fullName = form.fullName,
+              mailAddress = form.mailAddress,
+              url = form.url))
 
-        updateImage(userName, form.fileId, form.clearImage)
-        flash += "info" -> "Account information has been updated."
-        redirect(s"/${userName}/_edit")
+          updateImage(userName, form.fileId, form.clearImage)
+          flash += "info" -> "Account information has been updated."
+          redirect(s"/${userName}/_edit")
 
-    } getOrElse NotFound
-  })
+      } getOrElse NotFound
+    })
 
-  get("/:userName/_delete")(oneselfOnly {
-    val userName = params("userName")
+  get("/:userName/_delete")(
+    oneselfOnly {
+      val userName = params("userName")
 
-    getAccountByUserName(userName, true).foreach {
-      account =>
+      getAccountByUserName(userName, true).foreach {
+        account =>
 //      // Remove repositories
 //      getRepositoryNamesOfUser(userName).foreach { repositoryName =>
 //        deleteRepository(userName, repositoryName)
@@ -284,69 +286,75 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 //      // Remove from GROUP_MEMBER, COLLABORATOR and REPOSITORY
 //      removeUserRelatedData(userName)
 
-        removeUserRelatedData(userName)
-        updateAccount(account.copy(isRemoved = true))
-    }
+          removeUserRelatedData(userName)
+          updateAccount(account.copy(isRemoved = true))
+      }
 
-    session.invalidate
-    redirect("/")
-  })
+      session.invalidate
+      redirect("/")
+    })
 
-  get("/:userName/_ssh")(oneselfOnly {
-    val userName = params("userName")
-    getAccountByUserName(userName).map { x =>
-      html.ssh(x, getPublicKeys(x.userName))
-    } getOrElse NotFound
-  })
+  get("/:userName/_ssh")(
+    oneselfOnly {
+      val userName = params("userName")
+      getAccountByUserName(userName).map { x =>
+        html.ssh(x, getPublicKeys(x.userName))
+      } getOrElse NotFound
+    })
 
-  post("/:userName/_ssh", sshKeyForm)(oneselfOnly { form =>
-    val userName = params("userName")
-    addPublicKey(userName, form.title, form.publicKey)
-    redirect(s"/${userName}/_ssh")
-  })
+  post("/:userName/_ssh", sshKeyForm)(
+    oneselfOnly { form =>
+      val userName = params("userName")
+      addPublicKey(userName, form.title, form.publicKey)
+      redirect(s"/${userName}/_ssh")
+    })
 
-  get("/:userName/_ssh/delete/:id")(oneselfOnly {
-    val userName = params("userName")
-    val sshKeyId = params("id").toInt
-    deletePublicKey(userName, sshKeyId)
-    redirect(s"/${userName}/_ssh")
-  })
+  get("/:userName/_ssh/delete/:id")(
+    oneselfOnly {
+      val userName = params("userName")
+      val sshKeyId = params("id").toInt
+      deletePublicKey(userName, sshKeyId)
+      redirect(s"/${userName}/_ssh")
+    })
 
-  get("/:userName/_application")(oneselfOnly {
-    val userName = params("userName")
-    getAccountByUserName(userName).map {
-      x =>
-        var tokens = getAccessTokens(x.userName)
-        val generatedToken =
-          flash.get("generatedToken") match {
-            case Some((tokenId: Int, token: String)) => {
-              val gt = tokens.find(_.accessTokenId == tokenId)
-              gt.map { t =>
-                tokens = tokens.filterNot(_ == t)
-                (t, token)
+  get("/:userName/_application")(
+    oneselfOnly {
+      val userName = params("userName")
+      getAccountByUserName(userName).map {
+        x =>
+          var tokens = getAccessTokens(x.userName)
+          val generatedToken =
+            flash.get("generatedToken") match {
+              case Some((tokenId: Int, token: String)) => {
+                val gt = tokens.find(_.accessTokenId == tokenId)
+                gt.map { t =>
+                  tokens = tokens.filterNot(_ == t)
+                  (t, token)
+                }
               }
+              case _ => None
             }
-            case _ => None
-          }
-        html.application(x, tokens, generatedToken)
-    } getOrElse NotFound
-  })
+          html.application(x, tokens, generatedToken)
+      } getOrElse NotFound
+    })
 
-  post("/:userName/_personalToken", personalTokenForm)(oneselfOnly { form =>
-    val userName = params("userName")
-    getAccountByUserName(userName).map { x =>
-      val (tokenId, token) = generateAccessToken(userName, form.note)
-      flash += "generatedToken" -> (tokenId, token)
-    }
-    redirect(s"/${userName}/_application")
-  })
+  post("/:userName/_personalToken", personalTokenForm)(
+    oneselfOnly { form =>
+      val userName = params("userName")
+      getAccountByUserName(userName).map { x =>
+        val (tokenId, token) = generateAccessToken(userName, form.note)
+        flash += "generatedToken" -> (tokenId, token)
+      }
+      redirect(s"/${userName}/_application")
+    })
 
-  get("/:userName/_personalToken/delete/:id")(oneselfOnly {
-    val userName = params("userName")
-    val tokenId = params("id").toInt
-    deleteAccessToken(userName, tokenId)
-    redirect(s"/${userName}/_application")
-  })
+  get("/:userName/_personalToken/delete/:id")(
+    oneselfOnly {
+      val userName = params("userName")
+      val tokenId = params("id").toInt
+      deleteAccessToken(userName, tokenId)
+      redirect(s"/${userName}/_application")
+    })
 
   get("/register") {
     if (context.settings.allowAccountRegistration) {
@@ -374,150 +382,159 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       NotFound
   }
 
-  get("/groups/new")(usersOnly {
-    html.group(
-      None,
-      List(GroupMember("", context.loginAccount.get.userName, true)))
-  })
-
-  post("/groups/new", newGroupForm)(usersOnly { form =>
-    createGroup(form.groupName, form.url)
-    updateGroupMembers(
-      form.groupName,
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
-        }
-        .toList)
-    updateImage(form.groupName, form.fileId, false)
-    redirect(s"/${form.groupName}")
-  })
-
-  get("/:groupName/_editgroup")(managersOnly {
-    defining(params("groupName")) { groupName =>
+  get("/groups/new")(
+    usersOnly {
       html.group(
-        getAccountByUserName(groupName, true),
-        getGroupMembers(groupName))
-    }
-  })
+        None,
+        List(GroupMember("", context.loginAccount.get.userName, true)))
+    })
 
-  get("/:groupName/_deletegroup")(managersOnly {
-    defining(params("groupName")) {
-      groupName =>
-        // Remove from GROUP_MEMBER
-        updateGroupMembers(groupName, Nil)
-        // Remove repositories
-        getRepositoryNamesOfUser(groupName).foreach {
-          repositoryName =>
-            deleteRepository(groupName, repositoryName)
-            FileUtils.deleteDirectory(
-              getRepositoryDir(groupName, repositoryName))
-            FileUtils.deleteDirectory(
-              getWikiRepositoryDir(groupName, repositoryName))
-            FileUtils.deleteDirectory(
-              getTemporaryDir(groupName, repositoryName))
-        }
-    }
-    redirect("/")
-  })
-
-  post("/:groupName/_editgroup", editGroupForm)(managersOnly { form =>
-    defining(
-      params("groupName"),
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
-        }
-        .toList) {
-      case (groupName, members) =>
-        getAccountByUserName(groupName, true).map {
-          account =>
-            updateGroup(groupName, form.url, false)
-
-            // Update GROUP_MEMBER
-            updateGroupMembers(form.groupName, members)
-            // Update COLLABORATOR for group repositories
-            getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
-              removeCollaborators(form.groupName, repositoryName)
-              members.foreach {
-                case (userName, isManager) =>
-                  addCollaborator(form.groupName, repositoryName, userName)
-              }
+  post("/groups/new", newGroupForm)(
+    usersOnly { form =>
+      createGroup(form.groupName, form.url)
+      updateGroupMembers(
+        form.groupName,
+        form.members
+          .split(",")
+          .map {
+            _.split(":") match {
+              case Array(userName, isManager) => (userName, isManager.toBoolean)
             }
+          }
+          .toList)
+      updateImage(form.groupName, form.fileId, false)
+      redirect(s"/${form.groupName}")
+    })
 
-            updateImage(form.groupName, form.fileId, form.clearImage)
-            redirect(s"/${form.groupName}")
+  get("/:groupName/_editgroup")(
+    managersOnly {
+      defining(params("groupName")) { groupName =>
+        html.group(
+          getAccountByUserName(groupName, true),
+          getGroupMembers(groupName))
+      }
+    })
 
-        } getOrElse NotFound
-    }
-  })
+  get("/:groupName/_deletegroup")(
+    managersOnly {
+      defining(params("groupName")) {
+        groupName =>
+          // Remove from GROUP_MEMBER
+          updateGroupMembers(groupName, Nil)
+          // Remove repositories
+          getRepositoryNamesOfUser(groupName).foreach {
+            repositoryName =>
+              deleteRepository(groupName, repositoryName)
+              FileUtils.deleteDirectory(
+                getRepositoryDir(groupName, repositoryName))
+              FileUtils.deleteDirectory(
+                getWikiRepositoryDir(groupName, repositoryName))
+              FileUtils.deleteDirectory(
+                getTemporaryDir(groupName, repositoryName))
+          }
+      }
+      redirect("/")
+    })
+
+  post("/:groupName/_editgroup", editGroupForm)(
+    managersOnly { form =>
+      defining(
+        params("groupName"),
+        form.members
+          .split(",")
+          .map {
+            _.split(":") match {
+              case Array(userName, isManager) => (userName, isManager.toBoolean)
+            }
+          }
+          .toList) {
+        case (groupName, members) =>
+          getAccountByUserName(groupName, true).map {
+            account =>
+              updateGroup(groupName, form.url, false)
+
+              // Update GROUP_MEMBER
+              updateGroupMembers(form.groupName, members)
+              // Update COLLABORATOR for group repositories
+              getRepositoryNamesOfUser(form.groupName).foreach {
+                repositoryName =>
+                  removeCollaborators(form.groupName, repositoryName)
+                  members.foreach {
+                    case (userName, isManager) =>
+                      addCollaborator(form.groupName, repositoryName, userName)
+                  }
+              }
+
+              updateImage(form.groupName, form.fileId, form.clearImage)
+              redirect(s"/${form.groupName}")
+
+          } getOrElse NotFound
+      }
+    })
 
   /**
     * Show the new repository form.
     */
-  get("/new")(usersOnly {
-    html.newrepo(
-      getGroupsByUserName(context.loginAccount.get.userName),
-      context.settings.isCreateRepoOptionPublic)
-  })
+  get("/new")(
+    usersOnly {
+      html.newrepo(
+        getGroupsByUserName(context.loginAccount.get.userName),
+        context.settings.isCreateRepoOptionPublic)
+    })
 
   /**
     * Create new repository.
     */
-  post("/new", newRepositoryForm)(usersOnly { form =>
-    LockUtil.lock(s"${form.owner}/${form.name}") {
-      if (getRepository(form.owner, form.name).isEmpty) {
-        createRepository(
-          context.loginAccount.get,
-          form.owner,
-          form.name,
-          form.description,
-          form.isPrivate,
-          form.createReadme)
-      }
-
-      // redirect to the repository
-      redirect(s"/${form.owner}/${form.name}")
-    }
-  })
-
-  get("/:owner/:repository/fork")(readableUsersOnly { repository =>
-    val loginAccount = context.loginAccount.get
-    val loginUserName = loginAccount.userName
-    val groups = getGroupsByUserName(loginUserName)
-    groups match {
-      case _: List[String] =>
-        val managerPermissions = groups.map { group =>
-          val members = getGroupMembers(group)
-          context.loginAccount.exists(x =>
-            members.exists { member =>
-              member.userName == x.userName && member.isManager
-            })
+  post("/new", newRepositoryForm)(
+    usersOnly { form =>
+      LockUtil.lock(s"${form.owner}/${form.name}") {
+        if (getRepository(form.owner, form.name).isEmpty) {
+          createRepository(
+            context.loginAccount.get,
+            form.owner,
+            form.name,
+            form.description,
+            form.isPrivate,
+            form.createReadme)
         }
-        helper.html.forkrepository(
-          repository,
-          (groups zip managerPermissions).toMap
-        )
-      case _ => redirect(s"/${loginUserName}")
-    }
-  })
 
-  post("/:owner/:repository/fork", accountForm)(readableUsersOnly {
-    (form, repository) =>
+        // redirect to the repository
+        redirect(s"/${form.owner}/${form.name}")
+      }
+    })
+
+  get("/:owner/:repository/fork")(
+    readableUsersOnly { repository =>
+      val loginAccount = context.loginAccount.get
+      val loginUserName = loginAccount.userName
+      val groups = getGroupsByUserName(loginUserName)
+      groups match {
+        case _: List[String] =>
+          val managerPermissions = groups.map { group =>
+            val members = getGroupMembers(group)
+            context.loginAccount.exists(x =>
+              members.exists { member =>
+                member.userName == x.userName && member.isManager
+              })
+          }
+          helper.html
+            .forkrepository(repository, (groups zip managerPermissions).toMap)
+        case _ => redirect(s"/${loginUserName}")
+      }
+    })
+
+  post("/:owner/:repository/fork", accountForm)(
+    readableUsersOnly { (form, repository) =>
       val loginAccount = context.loginAccount.get
       val loginUserName = loginAccount.userName
       val accountName = form.accountName
 
       LockUtil.lock(s"${accountName}/${repository.name}") {
         if (getRepository(accountName, repository.name).isDefined ||
-            (accountName != loginUserName && !getGroupsByUserName(loginUserName)
-              .contains(accountName))) {
+            (
+              accountName != loginUserName && !getGroupsByUserName(
+                loginUserName).contains(accountName)
+            )) {
           // redirect to the repository if repository already exists
           redirect(s"/${accountName}/${repository.name}")
         } else {
@@ -569,7 +586,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           redirect(s"/${accountName}/${repository.name}")
         }
       }
-  })
+    })
 
   private def existsAccount: Constraint =
     new Constraint() {

@@ -177,14 +177,15 @@ class ScalaPluginVersionVerifierApplicationComponent
       }
       ScalaPluginUpdater.askUpdatePluginBranch()
     }
-    SwingUtilities.invokeLater(new Runnable {
-      def run() {
-        ScalaPluginUpdater.upgradeRepo()
-        checkVersion()
-        ScalaPluginUpdater.postCheckIdeaCompatibility()
-        ScalaPluginUpdater.setupReporter()
-      }
-    })
+    SwingUtilities.invokeLater(
+      new Runnable {
+        def run() {
+          ScalaPluginUpdater.upgradeRepo()
+          checkVersion()
+          ScalaPluginUpdater.postCheckIdeaCompatibility()
+          ScalaPluginUpdater.setupReporter()
+        }
+      })
   }
 
   def disposeComponent() {}

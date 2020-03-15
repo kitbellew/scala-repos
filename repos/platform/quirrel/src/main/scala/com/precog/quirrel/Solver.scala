@@ -252,10 +252,12 @@ trait Solver extends parser.AST with typer.Binder {
         results.foldLeft(const[Option[Expr], Expr](None) _) {
           case (acc, (f, trace)) =>
             e =>
-              acc(e) orElse (f(e) map { e2 =>
-                printTrace(trace);
-                e2
-              })
+              acc(e) orElse (
+                f(e) map { e2 =>
+                  printTrace(trace);
+                  e2
+                }
+              )
         }
       } else if (inLeft && !inRight) {
         inner(left) compose flip(invertLeft)(right)
@@ -293,9 +295,11 @@ trait Solver extends parser.AST with typer.Binder {
         if (results2.isEmpty)
           search(
             newWorkLists,
-            seen ++ (filteredWork map {
-              _.head
-            }),
+            seen ++ (
+              filteredWork map {
+                _.head
+              }
+            ),
             results ++ results2)
         else
           results2
@@ -422,9 +426,10 @@ trait Solver extends parser.AST with typer.Binder {
   private def printTrace(trace: List[Expr]) {
     if (enableTrace) {
       println("*** Solution Point!")
-      println(trace.reverse map { e =>
-        printSExp(e)
-      } mkString "\n\n")
+      println(
+        trace.reverse map { e =>
+          printSExp(e)
+        } mkString "\n\n")
     }
   }
 

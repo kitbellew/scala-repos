@@ -33,8 +33,9 @@ object HelpersSpec extends Specification {
       body must contain(idAttr)
 
       // Make sure it doesn't have it twice, issue #478
-      body.substring(
-        body.indexOf(idAttr) + idAttr.length) must not contain (idAttr)
+      body.substring(body.indexOf(idAttr) + idAttr.length) must not contain (
+        idAttr
+      )
     }
 
     "default to a type of text" in {
@@ -93,8 +94,9 @@ object HelpersSpec extends Specification {
       body must contain(idAttr)
 
       // Make sure it doesn't have it twice, issue #478
-      body.substring(
-        body.indexOf(idAttr) + idAttr.length) must not contain (idAttr)
+      body.substring(body.indexOf(idAttr) + idAttr.length) must not contain (
+        idAttr
+      )
     }
 
     "allow setting custom data attributes" in {
@@ -113,8 +115,9 @@ object HelpersSpec extends Specification {
 
       // Make sure it doesn't have it twice, issue #478
       body.substring(
-        body.indexOf(
-          dataTestAttr) + dataTestAttr.length) must not contain (dataTestAttr)
+        body.indexOf(dataTestAttr) + dataTestAttr.length) must not contain (
+        dataTestAttr
+      )
     }
 
     "Work as a simple select" in {
@@ -176,11 +179,7 @@ object HelpersSpec extends Specification {
     val complexForm = Form(
       single(
         "foo" ->
-          Forms.seq(
-            tuple(
-              "a" -> Forms.text,
-              "b" -> Forms.text
-            ))))
+          Forms.seq(tuple("a" -> Forms.text, "b" -> Forms.text))))
     def renderComplex(form: Form[_], min: Int = 1) =
       repeat
         .apply(form("foo"), min) { f =>
@@ -225,16 +224,16 @@ object HelpersSpec extends Specification {
     }
 
     "render the right number of fields if there's multiple sub fields at a given index when filled" in {
-      renderComplex(
-        complexForm.fill(Seq("somea" -> "someb"))
-      ) must exactly("foo[0].a=somea,foo[0].b=someb")
+      renderComplex(complexForm.fill(Seq("somea" -> "someb"))) must exactly(
+        "foo[0].a=somea,foo[0].b=someb")
     }
 
     "render fill the right number of fields out if there's multiple sub fields at a given index when bound" in {
       renderComplex(
         // Don't bind, we don't want it to use the successfully bound value
-        form.copy(data = Map("foo[0].a" -> "somea", "foo[0].b" -> "someb"))
-      ) must exactly("foo[0].a=somea,foo[0].b=someb")
+        form.copy(data = Map(
+          "foo[0].a" -> "somea",
+          "foo[0].b" -> "someb"))) must exactly("foo[0].a=somea,foo[0].b=someb")
     }
 
     "work with i18n" in {

@@ -361,16 +361,17 @@ class ImplicitParametersTreeStructure(
       val list = new util.ArrayList[AbstractTreeNode[_]]()
       if (value.name == InferUtil.notFoundParameterName) {
         def addErrorLeaf(errorText: String): Boolean = {
-          list.add(new AbstractTreeNode[String](project, errorText) {
-            override def getChildren: util.Collection[AbstractTreeNode[_]] =
-              new util.ArrayList[AbstractTreeNode[_]]()
+          list.add(
+            new AbstractTreeNode[String](project, errorText) {
+              override def getChildren: util.Collection[AbstractTreeNode[_]] =
+                new util.ArrayList[AbstractTreeNode[_]]()
 
-            override def update(data: PresentationData): Unit = {
-              data.setPresentableText(errorText)
-              data.setAttributesKey(
-                CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
-            }
-          })
+              override def update(data: PresentationData): Unit = {
+                data.setPresentableText(errorText)
+                data.setAttributesKey(
+                  CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
+              }
+            })
         }
         value.implicitSearchState match {
           case Some(state) =>

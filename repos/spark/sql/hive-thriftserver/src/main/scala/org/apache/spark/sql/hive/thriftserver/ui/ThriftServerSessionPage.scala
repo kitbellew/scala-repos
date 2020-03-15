@@ -186,11 +186,12 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
 
   private def errorMessageCell(errorMessage: String): Seq[Node] = {
     val isMultiline = errorMessage.indexOf('\n') >= 0
-    val errorSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      errorMessage.substring(0, errorMessage.indexOf('\n'))
-    } else {
-      errorMessage
-    })
+    val errorSummary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline) {
+        errorMessage.substring(0, errorMessage.indexOf('\n'))
+      } else {
+        errorMessage
+      })
     val details =
       if (isMultiline) {
         // scalastyle:off

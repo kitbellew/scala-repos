@@ -196,8 +196,9 @@ final class MongoJobManager(
     // TODO: Get Job object, find current status ID, then use that as since.
     // It'll include at least the last status, but rarely much more.
 
-    listMessages(jobId, channels.Status, None) map (_.lastOption flatMap (Status
-      .fromMessage(_)))
+    listMessages(jobId, channels.Status, None) map (
+      _.lastOption flatMap (Status.fromMessage(_))
+    )
   }
 
   private def nextMessageId(jobId: JobId): Future[Long] = {
@@ -217,9 +218,11 @@ final class MongoJobManager(
   def listChannels(jobId: JobId): Future[Seq[String]] = {
     database {
       distinct("channel").from(settings.messages).where("jobId" === jobId)
-    } map (_.collect {
-      case JString(channel) => channel
-    }.toList)
+    } map (
+      _.collect {
+        case JString(channel) => channel
+      }.toList
+    )
   }
 
   def addMessage(

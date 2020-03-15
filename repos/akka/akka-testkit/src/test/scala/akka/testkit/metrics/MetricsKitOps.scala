@@ -99,9 +99,10 @@ private[akka] trait MetricsKitOps extends MetricKeyDSL {
 
   /** Enable File Descriptor measurements */
   def measureFileDescriptors(key: MetricKey) =
-    registry.registerAll(new FileDescriptorMetricSet() with MetricsPrefix {
-      val prefix = key / "file-descriptors"
-    })
+    registry.registerAll(
+      new FileDescriptorMetricSet() with MetricsPrefix {
+        val prefix = key / "file-descriptors"
+      })
 
 }
 
@@ -111,8 +112,10 @@ private[metrics] trait MetricsPrefix extends MetricSet {
   abstract override def getMetrics: util.Map[String, Metric] = {
     // does not have to be fast, is only called once during registering registry
     import collection.JavaConverters._
-    (super.getMetrics.asScala.map {
-      case (k, v) ⇒ (prefix / k).toString -> v
-    }).asJava
+    (
+      super.getMetrics.asScala.map {
+        case (k, v) ⇒ (prefix / k).toString -> v
+      }
+    ).asJava
   }
 }

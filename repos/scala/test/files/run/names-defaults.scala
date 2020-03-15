@@ -179,10 +179,13 @@ object Test extends App {
   println(mn.foo()())
   println(mn.bar(10))
   // anonymous class
-  println((new M {
-    def foo[T >: String](x: Int, y: T)(z: String = "2") = z;
-    def bar(x: Int, y: Double) = x
-  }).foo()())
+  println(
+    (
+      new M {
+        def foo[T >: String](x: Int, y: T)(z: String = "2") = z;
+        def bar(x: Int, y: Double) = x
+      }
+    ).foo()())
 
   // copy method for case classes
   val fact = Factory(y = "blabla")()
@@ -270,9 +273,11 @@ object Test extends App {
   println(test10())
 
   // some complicated type which mentions T
-  def test11[T[P]](x: T[T[List[T[X forSome {
-    type X
-  }]]]] = List(1, 2)) = x
+  def test11[T[P]](
+      x: T[T[List[T[
+        X forSome {
+          type X
+        }]]]] = List(1, 2)) = x
   // (cannot call f using the default, List(1,2) doesn't match the param type)
 
   def multinest = {

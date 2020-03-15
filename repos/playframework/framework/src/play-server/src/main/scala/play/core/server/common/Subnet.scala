@@ -26,11 +26,13 @@ private[common] case class Subnet(ip: InetAddress, cidr: Option[Int] = None) {
       .take(mask / 8)
       .toList
       .equals(otherIp.getAddress.take(mask / 8).toList) &&
-    (for {
-      a <- ip.getAddress.drop(mask / 8).headOption
-      b <- otherIp.getAddress.drop(mask / 8).headOption
-      c <- remainderOfMask
-    } yield (a & c) == (b & c)).getOrElse(true)
+    (
+      for {
+        a <- ip.getAddress.drop(mask / 8).headOption
+        b <- otherIp.getAddress.drop(mask / 8).headOption
+        c <- remainderOfMask
+      } yield (a & c) == (b & c)
+    ).getOrElse(true)
   }
 }
 

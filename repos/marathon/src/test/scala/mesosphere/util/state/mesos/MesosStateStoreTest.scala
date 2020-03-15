@@ -25,8 +25,7 @@ class MesosStateStoreTest
         config.zkHostAndPort,
         duration.toMillis,
         TimeUnit.MILLISECONDS,
-        config.zkPath
-      )
+        config.zkPath)
     new MesosStateStore(state, duration)
   }
 

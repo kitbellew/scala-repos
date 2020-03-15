@@ -63,8 +63,9 @@ class ActorProducerTest
         }
 
         "not expect response and not block" taggedAs TimingTest in {
-          time(
-            producer.processExchangeAdapter(exchange)) should be < (200 millis)
+          time(producer.processExchangeAdapter(exchange)) should be < (
+            200 millis
+          )
         }
       }
 
@@ -224,14 +225,15 @@ class ActorProducerTest
             producer.processExchangeAdapter(exchange, asyncCallback)
             asyncCallback.awaitCalled(100 millis)
             verify(exchange).setFailure(
-              MMatchers.argThat(new ArgumentMatcher[FailureResult] {
-                def matches(failure: AnyRef) = {
-                  failure.asInstanceOf[FailureResult].cause should be(
-                    anInstanceOf[TimeoutException])
-                  true
-                }
+              MMatchers.argThat(
+                new ArgumentMatcher[FailureResult] {
+                  def matches(failure: AnyRef) = {
+                    failure.asInstanceOf[FailureResult].cause should be(
+                      anInstanceOf[TimeoutException])
+                    true
+                  }
 
-              }))
+                }))
           }
         }
 
@@ -376,10 +378,9 @@ private[camel] trait ActorProducerFixture
     when(sys.dynamicAccess) thenReturn system
       .asInstanceOf[ExtendedActorSystem]
       .dynamicAccess
-    when(sys.settings) thenReturn (new Settings(
-      this.getClass.getClassLoader,
-      config,
-      "mocksystem"))
+    when(sys.settings) thenReturn (
+      new Settings(this.getClass.getClassLoader, config, "mocksystem")
+    )
     when(sys.name) thenReturn ("mocksystem")
 
     def camelWithMocks =
@@ -388,8 +389,7 @@ private[camel] trait ActorProducerFixture
         override lazy val template = mock[ProducerTemplate]
         override lazy val context = mock[DefaultCamelContext]
         override val settings =
-          new CamelSettings(
-            ConfigFactory.parseString("""
+          new CamelSettings(ConfigFactory.parseString("""
           akka {
             camel {
               jmx = off
@@ -401,8 +401,7 @@ private[camel] trait ActorProducerFixture
               }
             }
           }
-        """).withFallback(config),
-            sys.dynamicAccess)
+        """).withFallback(config), sys.dynamicAccess)
       }
     camel = camelWithMocks
 
@@ -487,11 +486,12 @@ private[camel] trait ActorProducerFixture
 
   def echoActor =
     system.actorOf(
-      Props(new Actor {
-        def receive = {
-          case msg ⇒ sender() ! "received " + msg
-        }
-      }),
+      Props(
+        new Actor {
+          def receive = {
+            case msg ⇒ sender() ! "received " + msg
+          }
+        }),
       name = "echoActor")
 
 }

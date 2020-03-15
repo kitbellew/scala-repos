@@ -50,7 +50,8 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
           .findAll()
         val pathWithWildcard = ScalaNamesUtil
           .qualifiedName(named)
-          .getOrElse(return
+          .getOrElse(
+            return
           ) + "._"
         importHolder.addImportForPath(pathWithWildcard)
         sorted(usages, isQualifier = true).foreach {

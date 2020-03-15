@@ -375,9 +375,13 @@ class KafkaApis(
 
         val responseHeader = new ResponseHeader(header.correlationId)
         val responseBody = new OffsetCommitResponse(combinedCommitStatus.asJava)
-        requestChannel.sendResponse(new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, responseHeader, responseBody)))
+        requestChannel.sendResponse(
+          new RequestChannel.Response(
+            request,
+            new ResponseSend(
+              request.connectionId,
+              responseHeader,
+              responseBody)))
       }
 
       if (authorizedRequestInfo.isEmpty)
@@ -440,8 +444,7 @@ class KafkaApis(
                 defaultExpireTimestamp
               else
                 offsetRetention + partitionData.timestamp
-            }
-          )
+            })
         }
 
         // call coordinator to handle commit offset
@@ -521,8 +524,7 @@ class KafkaApis(
             info(
               s"Closing connection due to error during produce request with correlation id ${request.header.correlationId} " +
                 s"from client id ${request.header.clientId} with ack=0\n" +
-                s"Topic and partition to exceptions: $exceptionsSummary"
-            )
+                s"Topic and partition to exceptions: $exceptionsSummary")
             requestChannel.closeConnection(request.processor, request)
           } else {
             requestChannel.noOperation(request.processor, request)
@@ -671,8 +673,9 @@ class KafkaApis(
       }
 
       def fetchResponseCallback(delayTimeMs: Int) {
-        trace(s"Sending fetch response to client ${fetchRequest.clientId} of " +
-          s"${convertedPartitionData.values.map(_.messages.sizeInBytes).sum} bytes")
+        trace(
+          s"Sending fetch response to client ${fetchRequest.clientId} of " +
+            s"${convertedPartitionData.values.map(_.messages.sizeInBytes).sum} bytes")
         val response = FetchResponse(
           fetchRequest.correlationId,
           mergedPartitionData,
@@ -853,8 +856,9 @@ class KafkaApis(
         startIndex = 0
       case _ =>
         var isFound = false
-        debug("Offset time array = " + offsetTimeArray.foreach(o =>
-          "%d, %d".format(o._1, o._2)))
+        debug(
+          "Offset time array = " + offsetTimeArray.foreach(o =>
+            "%d, %d".format(o._1, o._2)))
         startIndex = offsetTimeArray.length - 1
         while (startIndex >= 0 && !isFound) {
           if (offsetTimeArray(startIndex)._2 <= timestamp)
@@ -1025,8 +1029,7 @@ class KafkaApis(
     val responseBody =
       new MetadataResponse(
         brokers.map(_.getNode(request.securityProtocol)).asJava,
-        (topicMetadata ++ unauthorizedTopicMetadata).asJava
-      )
+        (topicMetadata ++ unauthorizedTopicMetadata).asJava)
     requestChannel.sendResponse(
       new RequestChannel.Response(
         request,
@@ -1396,9 +1399,13 @@ class KafkaApis(
           new Resource(Group, heartbeatRequest.groupId))) {
       val heartbeatResponse =
         new HeartbeatResponse(Errors.GROUP_AUTHORIZATION_FAILED.code)
-      requestChannel.sendResponse(new Response(
-        request,
-        new ResponseSend(request.connectionId, respHeader, heartbeatResponse)))
+      requestChannel.sendResponse(
+        new Response(
+          request,
+          new ResponseSend(
+            request.connectionId,
+            respHeader,
+            heartbeatResponse)))
     } else {
       // let the coordinator to handle heartbeat
       coordinator.handleHeartbeat(
@@ -1468,9 +1475,13 @@ class KafkaApis(
           new Resource(Group, leaveGroupRequest.groupId))) {
       val leaveGroupResponse =
         new LeaveGroupResponse(Errors.GROUP_AUTHORIZATION_FAILED.code)
-      requestChannel.sendResponse(new Response(
-        request,
-        new ResponseSend(request.connectionId, respHeader, leaveGroupResponse)))
+      requestChannel.sendResponse(
+        new Response(
+          request,
+          new ResponseSend(
+            request.connectionId,
+            respHeader,
+            leaveGroupResponse)))
     } else {
       // let the coordinator to handle leave-group
       coordinator.handleLeaveGroup(

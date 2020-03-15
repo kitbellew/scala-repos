@@ -41,9 +41,7 @@ sealed private[exception] case class ServiceException private[ServiceException] 
         "name" -> name,
         "exceptionContents" -> ExceptionContents(e).jsonValue,
         "timestamp" -> timestamp.inMillis,
-        "traceId" -> traceId
-      )
-    )
+        "traceId" -> traceId))
 
   /**
     * Include a client address
@@ -87,6 +85,5 @@ sealed private[exception] case class ExceptionContents(e: Throwable) {
   val jsonValue = Map(
     "exceptionClass" -> e.getClass.getName,
     "message" -> e.getMessage,
-    "stackTrace" -> generateStackTrace(e.getStackTrace)
-  )
+    "stackTrace" -> generateStackTrace(e.getStackTrace))
 }

@@ -21,8 +21,7 @@ import scala.collection.concurrent
 private[serverset2] class ZkSession(
     retryStream: RetryStream,
     watchedZk: Watched[ZooKeeperReader],
-    statsReceiver: StatsReceiver
-)(implicit timer: Timer) {
+    statsReceiver: StatsReceiver)(implicit timer: Timer) {
   import ZkSession.logger
 
   /** The dynamic `WatchState` of this `ZkSession` instance. */
@@ -108,88 +107,89 @@ private[serverset2] class ZkSession(
     */
   private[serverset2] def watchedOperation[T](
       go: => Future[Watched[T]]): Activity[T] =
-    Activity(Var.async[Activity.State[T]](Activity.Pending) { u =>
-      @volatile var closed = false
+    Activity(
+      Var.async[Activity.State[T]](Activity.Pending) { u =>
+        @volatile var closed = false
 
-      def loop(): Future[Unit] = {
-        if (!closed)
-          safeRetry(go) respond {
-            case Throw(e @ KeeperException.SessionExpired(_)) =>
-              // don't retry. The session has expired while trying to set the watch.
-              // In case our activity is still active, notify the listener
-              u() = Activity.Failed(e)
+        def loop(): Future[Unit] = {
+          if (!closed)
+            safeRetry(go) respond {
+              case Throw(e @ KeeperException.SessionExpired(_)) =>
+                // don't retry. The session has expired while trying to set the watch.
+                // In case our activity is still active, notify the listener
+                u() = Activity.Failed(e)
 
-            case Throw(exc) =>
-              logger.error(
-                s"Operation failed with $exc. Session $sessionIdAsHex")
-              u() = Activity.Failed(exc)
-              retryWithDelay {
-                loop()
-              }
-
-            case Return(Watched(value, state)) =>
-              val ok = Activity.Ok(value)
-              retryStream.reset()
-              u() = ok
-
-              state.changes.respond {
-                case WatchState.Pending =>
-                // Ignore updates WatchState is Pending.
-
-                case WatchState.Determined(_) =>
-                  // Note: since the watch transitioned to determined, we know
-                  // that this observation will produce no more values, so there's
-                  // no need to apply concurrency control to the subsequent
-                  // branches.
+              case Throw(exc) =>
+                logger.error(
+                  s"Operation failed with $exc. Session $sessionIdAsHex")
+                u() = Activity.Failed(exc)
+                retryWithDelay {
                   loop()
+                }
 
-                case WatchState.SessionState(sessionState)
-                    if sessionState == SessionState.ConnectedReadOnly |
-                      sessionState == SessionState.SaslAuthenticated |
-                      sessionState == SessionState.SyncConnected =>
-                  u() = ok
-                  logger.info(
-                    s"Reacquiring watch on $sessionState. Session: $sessionIdAsHex")
-                  // We may have lost or never set our watch correctly. Retry to ensure we stay connected
-                  retryWithDelay {
+              case Return(Watched(value, state)) =>
+                val ok = Activity.Ok(value)
+                retryStream.reset()
+                u() = ok
+
+                state.changes.respond {
+                  case WatchState.Pending =>
+                  // Ignore updates WatchState is Pending.
+
+                  case WatchState.Determined(_) =>
+                    // Note: since the watch transitioned to determined, we know
+                    // that this observation will produce no more values, so there's
+                    // no need to apply concurrency control to the subsequent
+                    // branches.
                     loop()
-                  }
 
-                case WatchState.SessionState(SessionState.Expired) =>
-                  u() = Activity.Failed(new Exception("session expired"))
-                // Do NOT retry here as the session has expired. We expect the watcher of this
-                // ZkSession to retry at this point (See [[ZkSession.retrying]]).
+                  case WatchState.SessionState(sessionState)
+                      if sessionState == SessionState.ConnectedReadOnly |
+                        sessionState == SessionState.SaslAuthenticated |
+                        sessionState == SessionState.SyncConnected =>
+                    u() = ok
+                    logger.info(
+                      s"Reacquiring watch on $sessionState. Session: $sessionIdAsHex")
+                    // We may have lost or never set our watch correctly. Retry to ensure we stay connected
+                    retryWithDelay {
+                      loop()
+                    }
 
-                // Disconnected, NoSyncConnected
-                case WatchState.SessionState(sessionState)
-                    if sessionState == SessionState.Disconnected |
-                      sessionState == SessionState.NoSyncConnected =>
-                  logger.warning(
-                    s"Intermediate Failure session state: $sessionState. " +
-                      s"Session: $sessionIdAsHex. Data is now unavailable.")
-                  u() = Activity.Failed(new Exception("" + sessionState))
-                // Do NOT keep retrying, wait to be reconnected automatically by the underlying session
+                  case WatchState.SessionState(SessionState.Expired) =>
+                    u() = Activity.Failed(new Exception("session expired"))
+                  // Do NOT retry here as the session has expired. We expect the watcher of this
+                  // ZkSession to retry at this point (See [[ZkSession.retrying]]).
 
-                case WatchState.SessionState(sessionState) =>
-                  logger.error(
-                    s"Unexpected session state $sessionState. Session: $sessionIdAsHex")
-                  u() = Activity.Failed(new Exception("" + sessionState))
-                  // We don't know what happened. Retry.
-                  retryWithDelay {
-                    loop()
-                  }
-              }
-          }
-        Future.Done
-      }
+                  // Disconnected, NoSyncConnected
+                  case WatchState.SessionState(sessionState)
+                      if sessionState == SessionState.Disconnected |
+                        sessionState == SessionState.NoSyncConnected =>
+                    logger.warning(
+                      s"Intermediate Failure session state: $sessionState. " +
+                        s"Session: $sessionIdAsHex. Data is now unavailable.")
+                    u() = Activity.Failed(new Exception("" + sessionState))
+                  // Do NOT keep retrying, wait to be reconnected automatically by the underlying session
 
-      loop()
+                  case WatchState.SessionState(sessionState) =>
+                    logger.error(
+                      s"Unexpected session state $sessionState. Session: $sessionIdAsHex")
+                    u() = Activity.Failed(new Exception("" + sessionState))
+                    // We don't know what happened. Retry.
+                    retryWithDelay {
+                      loop()
+                    }
+                }
+            }
+          Future.Done
+        }
 
-      Closable.make { deadline =>
-        closed = true
-        Future.Done
-      }
-    })
+        loop()
+
+        Closable.make { deadline =>
+          closed = true
+          Future.Done
+        }
+      })
 
   private val existsWatchOp = Memoize { path: String =>
     watchedOperation {
@@ -313,8 +313,7 @@ private[serverset2] object ZkSession {
       retryStream: RetryStream,
       hosts: String,
       sessionTimeout: Duration = DefaultSessionTimeout,
-      statsReceiver: StatsReceiver
-  )(implicit timer: Timer): ZkSession =
+      statsReceiver: StatsReceiver)(implicit timer: Timer): ZkSession =
     new ZkSession(
       retryStream,
       ClientBuilder()
@@ -333,10 +332,8 @@ private[serverset2] object ZkSession {
     * reconnects upon session expiry. Reconnect attempts cease when any
     * observation of the returned `Var[ZkSession]` is closed.
     */
-  def retrying(
-      backoff: RetryStream,
-      newZkSession: () => ZkSession
-  )(implicit timer: Timer): Var[ZkSession] = {
+  def retrying(backoff: RetryStream, newZkSession: () => ZkSession)(
+      implicit timer: Timer): Var[ZkSession] = {
     val v = Var(ZkSession.nil)
 
     @volatile var closing = false

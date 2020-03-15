@@ -178,8 +178,7 @@ object PlayDocsPlugin extends AutoPlugin {
       scalaTwirlSourceManaged := target.value / "twirl" / "scala",
       managedSourceDirectories in Test ++= Seq(
         javaTwirlSourceManaged.value,
-        scalaTwirlSourceManaged.value
-      ),
+        scalaTwirlSourceManaged.value),
       // Need to ensure that templates in the Java docs get Java imports, and in the Scala docs get Scala imports
       sourceGenerators in Test <+= (
         javaManualSourceDirectories,
@@ -206,8 +205,10 @@ object PlayDocsPlugin extends AutoPlugin {
         val scalaRoutes = (scalaManualSourceDirectories.value * "*.routes").get
         val commonRoutes =
           (commonManualSourceDirectories.value * "*.routes").get
-        (javaRoutes.map(_ -> Seq("play.libs.F")) ++ scalaRoutes.map(
-          _ -> Nil) ++ commonRoutes.map(_ -> Nil)).map {
+        (
+          javaRoutes.map(_ -> Seq("play.libs.F")) ++ scalaRoutes.map(
+            _ -> Nil) ++ commonRoutes.map(_ -> Nil)
+        ).map {
           case (file, imports) =>
             RoutesCompilerTask(file, imports, true, true, true)
         }

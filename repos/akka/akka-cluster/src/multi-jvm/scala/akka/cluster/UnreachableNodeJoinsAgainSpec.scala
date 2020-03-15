@@ -32,8 +32,9 @@ object UnreachableNodeJoinsAgainMultiNodeConfig extends MultiNodeConfig {
       .parseString("""
       akka.remote.log-remote-lifecycle-events = off
     """)
-      .withFallback(debugConfig(on = false)
-        .withFallback(MultiNodeClusterSpec.clusterConfig)))
+      .withFallback(
+        debugConfig(on = false)
+          .withFallback(MultiNodeClusterSpec.clusterConfig)))
 
   testTransport(on = true)
 

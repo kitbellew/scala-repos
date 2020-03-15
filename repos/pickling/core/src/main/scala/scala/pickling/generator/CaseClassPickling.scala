@@ -16,14 +16,12 @@ class CaseClassPickling(
 
   // TODO - This helper method should be available elsewhere.
   def allVars(cls: IrClass): Seq[IrMethod] = {
-    (cls.methods.filter(_.isParamAccessor) ++
-      IrSymbol
-        .allDeclaredMethodIncludingSubclasses(cls)
-        .filter(x => x.isVar || x.isVal))
-      .groupBy(_.methodName)
-      .map(_._2.head)
-      .toList
-      .filterNot(_.isMarkedTransient)
+    (
+      cls.methods.filter(_.isParamAccessor) ++
+        IrSymbol
+          .allDeclaredMethodIncludingSubclasses(cls)
+          .filter(x => x.isVar || x.isVal)
+    ).groupBy(_.methodName).map(_._2.head).toList.filterNot(_.isMarkedTransient)
   }
   private def checkConstructorImpl(
       tpe: IrClass,
@@ -51,22 +49,27 @@ class CaseClassPickling(
               m <- vars.find(_.methodName == name)
             } yield FieldInfo(name, m)
           if (fields.length == c.parameterNames.flatten.length) {
-            val pickle = PickleBehavior(Seq(PickleEntry(fields.map { field =>
-              GetField(field.name, field.sym)
-            }.toSeq ++ standAloneVars.map { field =>
-              GetField(field.methodName, field)
-            })))
-            val unpickle = UnpickleBehavior(Seq(
-              CallConstructor(fields.map(_.name), c)) ++
-              standAloneVars.map { field =>
-                field.setter match {
-                  case Some(mth) => SetField(field.methodName, mth)
-                  case _ =>
-                    sys.error(
-                      s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
-                }
-              })
-            if (!allowReflection && (pickle.requiresReflection || unpickle.requiresReflection)) {
+            val pickle = PickleBehavior(
+              Seq(
+                PickleEntry(
+                  fields.map { field =>
+                    GetField(field.name, field.sym)
+                  }.toSeq ++ standAloneVars.map { field =>
+                    GetField(field.methodName, field)
+                  })))
+            val unpickle = UnpickleBehavior(
+              Seq(CallConstructor(fields.map(_.name), c)) ++
+                standAloneVars.map { field =>
+                  field.setter match {
+                    case Some(mth) => SetField(field.methodName, mth)
+                    case _ =>
+                      sys.error(
+                        s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
+                  }
+                })
+            if (!allowReflection && (
+                  pickle.requiresReflection || unpickle.requiresReflection
+                )) {
               def reflectionErrorMessage(ast: IrAst): List[String] =
                 ast match {
                   case x: SetField if x.requiresReflection =>
@@ -113,42 +116,47 @@ class CaseClassPickling(
       tpe: IrClass,
       logger: AlgorithmLogger): AlgorithmResult = {
     // THis should be accurate, because all case calsses have companions
-    (for {
-      companion <- tpe.companion
-      factoryMethod <- tpe.methods
-        .filter(_.methodName == "apply")
-        .sortBy(_.parameterNames.flatten.size)
-        .headOption
-    } yield {
-      val vars = allVars(tpe)
-      val names = factoryMethod.parameterNames.flatten.toSet
-      val hasStandaloneVar = vars.exists { m =>
-        m.isVar && !(names contains m.methodName)
+    (
+      for {
+        companion <- tpe.companion
+        factoryMethod <- tpe.methods
+          .filter(_.methodName == "apply")
+          .sortBy(_.parameterNames.flatten.size)
+          .headOption
+      } yield {
+        val vars = allVars(tpe)
+        val names = factoryMethod.parameterNames.flatten.toSet
+        val hasStandaloneVar = vars.exists { m =>
+          m.isVar && !(names contains m.methodName)
+        }
+        // TODO - We should have this be configured to be a failure or silenced.  Also, we should copy the var options from above.
+        if (hasStandaloneVar) {
+          logger.warn(
+            s"Warning: ${tpe.className} has a member var not represented in the constructor.  Pickling is not guaranteed to handle this correctly.")
+        }
+        val fieldNameList = factoryMethod.parameterNames.flatten.toSeq
+        val fields =
+          for {
+            name <- fieldNameList
+            m <- vars.find(_.methodName == name)
+          } yield FieldInfo(name, m)
+        if (fields.length == factoryMethod.parameterNames.flatten.length) {
+          val pickle = PickleBehavior(
+            Seq(
+              PickleEntry(
+                fields.map { field =>
+                  GetField(field.name, field.sym)
+                }.toSeq)))
+          val unpickle = UnpickleBehavior(
+            Seq(CallModuleFactory(fieldNameList, companion, factoryMethod)))
+          PickleUnpickleImplementation(pickle, unpickle)
+        }
+        // TODO - what do we do if it doesn't line up?  This is probably some insidious bug.
+        else
+          logger.abort(
+            s"Encountered a case class (${tpe.className}) where we could not find all the constructor parameters.")
       }
-      // TODO - We should have this be configured to be a failure or silenced.  Also, we should copy the var options from above.
-      if (hasStandaloneVar) {
-        logger.warn(
-          s"Warning: ${tpe.className} has a member var not represented in the constructor.  Pickling is not guaranteed to handle this correctly.")
-      }
-      val fieldNameList = factoryMethod.parameterNames.flatten.toSeq
-      val fields =
-        for {
-          name <- fieldNameList
-          m <- vars.find(_.methodName == name)
-        } yield FieldInfo(name, m)
-      if (fields.length == factoryMethod.parameterNames.flatten.length) {
-        val pickle = PickleBehavior(Seq(PickleEntry(fields.map { field =>
-          GetField(field.name, field.sym)
-        }.toSeq)))
-        val unpickle = UnpickleBehavior(
-          Seq(CallModuleFactory(fieldNameList, companion, factoryMethod)))
-        PickleUnpickleImplementation(pickle, unpickle)
-      }
-      // TODO - what do we do if it doesn't line up?  This is probably some insidious bug.
-      else
-        logger.abort(
-          s"Encountered a case class (${tpe.className}) where we could not find all the constructor parameters.")
-    }) match {
+    ) match {
       case Some(success) => AlgorithmSucccess(success)
       case None =>
         AlgorithmFailure("Could not find a valid case-class factory method.")
@@ -189,9 +197,7 @@ class CaseClassPickling(
                           Nil,
                           tpe,
                           Some(x),
-                          allowReflection
-                        )
-                      )
+                          allowReflection))
                     ) // TODO - This should be `allow runtime pickler lookup`.
                   case x => x
                 }
@@ -220,9 +226,7 @@ class CaseClassPickling(
                           Nil,
                           tpe,
                           Some(x),
-                          allowReflection
-                        )
-                      )
+                          allowReflection))
                     ) // TODO - This should be `allow runtime pickler lookup`.
                   case x => x
                 }

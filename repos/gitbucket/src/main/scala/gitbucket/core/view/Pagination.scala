@@ -33,14 +33,18 @@ case class Pagination(page: Int, count: Int, limit: Int, width: Int) {
     if (i == 1 || i == max) {
       true
     } else {
-      val leftRange = page - width / 2 + (if (omitLeft)
-                                            2
-                                          else
-                                            0)
-      val rightRange = page + width / 2 - (if (omitRight)
-                                             2
-                                           else
-                                             0)
+      val leftRange = page - width / 2 + (
+        if (omitLeft)
+          2
+        else
+          0
+      )
+      val rightRange = page + width / 2 - (
+        if (omitRight)
+          2
+        else
+          0
+      )
 
       val fixedRange =
         if (leftRange < 1) {

@@ -15,11 +15,7 @@ class RequestBuilderTest extends FunSuite {
     new URL("http://joe%40host.com:blow@www.google.com:77/xxx?foo=bar#xxx")
 
   val BODY0 = Buf.Utf8("blah")
-  val FORM0 = Seq(
-    "k1" -> "v1",
-    "k2" -> "v2",
-    "k3" -> "v3"
-  )
+  val FORM0 = Seq("k1" -> "v1", "k2" -> "v2", "k3" -> "v3")
 
   val MULTIPART0 = """--Boundary
 Content-Disposition: form-data; name="k1"

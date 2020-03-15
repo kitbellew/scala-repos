@@ -142,42 +142,54 @@ class CheckedTest
       y + x
     } should equal(Some(Int.MaxValue.toLong + 2))
 
-    an[ArithmeticException] should be thrownBy (checked {
-      val x = Long.MaxValue
-      val y = 2
-      x * y
-    })
+    an[ArithmeticException] should be thrownBy (
+      checked {
+        val x = Long.MaxValue
+        val y = 2
+        x * y
+      }
+    )
 
-    an[ArithmeticException] should be thrownBy (checked {
-      val x = Long.MaxValue
-      val y = 2
-      y * x
-    })
+    an[ArithmeticException] should be thrownBy (
+      checked {
+        val x = Long.MaxValue
+        val y = 2
+        y * x
+      }
+    )
   }
 
   test("Byte and Short upgrade to Int when mixed") {
-    an[ArithmeticException] should be thrownBy (checked {
-      val x = Int.MaxValue
-      val y = (2: Byte)
-      x * y
-    })
+    an[ArithmeticException] should be thrownBy (
+      checked {
+        val x = Int.MaxValue
+        val y = (2: Byte)
+        x * y
+      }
+    )
 
-    an[ArithmeticException] should be thrownBy (checked {
-      val x = Int.MaxValue
-      val y = (2: Byte)
-      y * x
-    })
+    an[ArithmeticException] should be thrownBy (
+      checked {
+        val x = Int.MaxValue
+        val y = (2: Byte)
+        y * x
+      }
+    )
 
-    an[ArithmeticException] should be thrownBy (checked {
-      val x = Int.MaxValue
-      val y = (2: Short)
-      x * y
-    })
+    an[ArithmeticException] should be thrownBy (
+      checked {
+        val x = Int.MaxValue
+        val y = (2: Short)
+        x * y
+      }
+    )
 
-    an[ArithmeticException] should be thrownBy (checked {
-      val x = Int.MaxValue
-      val y = (2: Short)
-      y * x
-    })
+    an[ArithmeticException] should be thrownBy (
+      checked {
+        val x = Int.MaxValue
+        val y = (2: Short)
+        y * x
+      }
+    )
   }
 }

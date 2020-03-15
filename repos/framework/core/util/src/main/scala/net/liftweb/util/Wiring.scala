@@ -49,10 +49,11 @@ trait Dependent {
     */
   def youDontDependOnMe(who: Cell[_]): Unit =
     synchronized {
-      val tList = _iDependOn.filter(_.get match {
-        case null => false
-        case x    => x ne who
-      })
+      val tList = _iDependOn.filter(
+        _.get match {
+          case null => false
+          case x    => x ne who
+        })
 
       _iDependOn = tList
     }
@@ -63,10 +64,11 @@ trait Dependent {
   protected def whoDoIDependOn: Seq[Cell[_]] =
     synchronized {
       _iDependOn
-        .flatMap(_.get match {
-          case null => Nil
-          case x    => List(x)
-        })
+        .flatMap(
+          _.get match {
+            case null => Nil
+            case x    => List(x)
+          })
         .asInstanceOf[List[Cell[_]]]
     }
 
@@ -117,10 +119,11 @@ trait Cell[T] extends Dependent {
     */
   def addDependent[T <: Dependent](dep: T): T = {
     synchronized {
-      val tList = _dependentCells.filter(_.get match {
-        case null => false
-        case x    => x ne dep
-      })
+      val tList = _dependentCells.filter(
+        _.get match {
+          case null => false
+          case x    => x ne dep
+        })
 
       _dependentCells = new WeakReference(dep: Dependent) :: tList
     }
@@ -135,10 +138,11 @@ trait Cell[T] extends Dependent {
     */
   def removeDependent[T <: Dependent](dep: T): T = {
     synchronized {
-      _dependentCells = _dependentCells.filter(_.get match {
-        case null => false
-        case x    => x ne dep
-      })
+      _dependentCells = _dependentCells.filter(
+        _.get match {
+          case null => false
+          case x    => x ne dep
+        })
     }
 
     dep.youDontDependOnMe(this)
@@ -161,10 +165,11 @@ trait Cell[T] extends Dependent {
     */
   def dependents: Seq[Dependent] =
     synchronized {
-      _dependentCells.flatMap(_.get match {
-        case null => Nil
-        case x    => List(x)
-      })
+      _dependentCells.flatMap(
+        _.get match {
+          case null => Nil
+          case x    => List(x)
+        })
     }
 
 }

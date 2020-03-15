@@ -89,7 +89,9 @@ private[mllib] abstract class PeriodicCheckpointer[T](
     updateCount += 1
 
     // Handle checkpointing (after persisting)
-    if ((updateCount % checkpointInterval) == 0 && sc.getCheckpointDir.nonEmpty) {
+    if ((
+          updateCount % checkpointInterval
+        ) == 0 && sc.getCheckpointDir.nonEmpty) {
       // Add new checkpoint before removing old checkpoints.
       checkpoint(newData)
       checkpointQueue.enqueue(newData)

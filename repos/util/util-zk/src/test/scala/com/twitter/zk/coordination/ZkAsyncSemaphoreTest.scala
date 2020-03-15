@@ -39,11 +39,12 @@ class ZkAsyncSemaphoreTest
           .withRetryPolicy(RetryPolicy.Basic(3))
           .withAcl(OPEN_ACL_UNSAFE.asScala)
 
-        Await.result(Future {
-          f(zk)
-        } ensure {
-          zk.release
-        })
+        Await.result(
+          Future {
+            f(zk)
+          } ensure {
+            zk.release
+          })
       }
 
       def acquire(sem: ZkAsyncSemaphore) = {

@@ -364,8 +364,7 @@ object ThreadPoolTasks {
           t
         }
       },
-      new ThreadPoolExecutor.CallerRunsPolicy
-    )
+      new ThreadPoolExecutor.CallerRunsPolicy)
 }
 
 object FutureThreadPoolTasks {

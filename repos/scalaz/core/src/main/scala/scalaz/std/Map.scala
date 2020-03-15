@@ -112,18 +112,20 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
         }
       def traverseImpl[G[_], A, B](m: XMap[K, A])(f: A => G[B])(
           implicit G: Applicative[G]): G[XMap[K, B]] =
-        G.map(list.listInstance.traverseImpl(m.toList)({
-          case (k, v) => G.map(f(v))(k -> _)
-        }))(xs => fromSeq(xs: _*))
+        G.map(
+          list.listInstance.traverseImpl(m.toList)({
+            case (k, v) => G.map(f(v))(k -> _)
+          }))(xs => fromSeq(xs: _*))
       import \&/._
       override def alignWith[A, B, C](f: A \&/ B => C) = {
         case (a, b) if b.isEmpty => map(a)(v => f(This(v)))
         case (a, b) if a.isEmpty => map(b)(v => f(That(v)))
         case (a, b) =>
-          map(unionWith(map(a)(This(_): A \&/ B), map(b)(That(_): A \&/ B)) {
-            case (This(aa), That(bb)) => Both(aa, bb)
-            case _                    => sys.error("Map alignWith")
-          })(f)
+          map(
+            unionWith(map(a)(This(_): A \&/ B), map(b)(That(_): A \&/ B)) {
+              case (This(aa), That(bb)) => Both(aa, bb)
+              case _                    => sys.error("Map alignWith")
+            })(f)
       }
       override def align[A, B](a: XMap[K, A], b: XMap[K, B]) =
         (a, b) match {

@@ -289,9 +289,9 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
 
   test("kryo with collect for specialized tuples") {
     assert(
-      sc.parallelize(Array((1, 11), (2, 22), (3, 33)))
-        .collect()
-        .head === (1, 11))
+      sc.parallelize(Array((1, 11), (2, 22), (3, 33))).collect().head === (
+        1, 11
+      ))
   }
 
   test("kryo with SerializableHyperLogLog") {
@@ -351,10 +351,11 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     serInstance.deserialize[ClassLoaderTestingObject](bytes)
 
     // Set a special, broken ClassLoader and make sure we get an exception on deserialization
-    ser.setDefaultClassLoader(new ClassLoader() {
-      override def loadClass(name: String): Class[_] =
-        throw new UnsupportedOperationException
-    })
+    ser.setDefaultClassLoader(
+      new ClassLoader() {
+        override def loadClass(name: String): Class[_] =
+          throw new UnsupportedOperationException
+      })
     intercept[UnsupportedOperationException] {
       ser.newInstance().deserialize[ClassLoaderTestingObject](bytes)
     }

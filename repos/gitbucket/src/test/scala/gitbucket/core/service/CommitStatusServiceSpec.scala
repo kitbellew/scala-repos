@@ -64,14 +64,15 @@ class CommitStatusServiceSpec
         getCommitStatus(
           fixture1.userName,
           fixture1.repositoryName,
-          id2) == Some(fixture1.copy(
-          commitStatusId = id,
-          creator = "tester2",
-          state = CommitState.SUCCESS,
-          targetUrl = Some("http://example.com/target2"),
-          description = Some("description2"),
-          updatedDate = time2
-        )))
+          id2) == Some(
+          fixture1.copy(
+            commitStatusId = id,
+            creator = "tester2",
+            state = CommitState.SUCCESS,
+            targetUrl = Some("http://example.com/target2"),
+            description = Some("description2"),
+            updatedDate = time2
+          )))
     }
   }
 

@@ -153,16 +153,14 @@ object Challenge {
       variant = variant,
       initialFen = (variant == FromPosition).fold(
         initialFen,
-        Some(variant.initialFen).ifFalse(variant.standardInitialPosition)
-      ),
+        Some(variant.initialFen).ifFalse(variant.standardInitialPosition)),
       timeControl = timeControl,
       mode = mode,
       colorChoice = colorChoice,
       finalColor = finalColor,
       challenger = challenger.fold[EitherChallenger](
         sid => Left(Anonymous(sid)),
-        u => Right(toRegistered(variant, timeControl)(u))
-      ),
+        u => Right(toRegistered(variant, timeControl)(u))),
       destUser = destUser map toRegistered(variant, timeControl),
       rematchOf = rematchOf,
       createdAt = DateTime.now,

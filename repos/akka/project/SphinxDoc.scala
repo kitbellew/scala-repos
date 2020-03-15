@@ -84,18 +84,24 @@ object SphinxDoc {
         Map(
           "version" -> v,
           "scalaVersion" -> s,
-          "crossString" -> (s match {
-            case BinVer(_) => ""
-            case _         => "cross CrossVersion.full"
-          }),
-          "jarName" -> (s match {
-            case BinVer(bv) => "akka-actor_" + bv + "-" + v + ".jar"
-            case _          => "akka-actor_" + s + "-" + v + ".jar"
-          }),
-          "binVersion" -> (s match {
-            case BinVer(bv) => bv
-            case _          => s
-          }),
+          "crossString" -> (
+            s match {
+              case BinVer(_) => ""
+              case _         => "cross CrossVersion.full"
+            }
+          ),
+          "jarName" -> (
+            s match {
+              case BinVer(bv) => "akka-actor_" + bv + "-" + v + ".jar"
+              case _          => "akka-actor_" + s + "-" + v + ".jar"
+            }
+          ),
+          "binVersion" -> (
+            s match {
+              case BinVer(bv) => bv
+              case _          => s
+            }
+          ),
           "sigarVersion" -> Dependencies.Compile.sigar.revision,
           "sigarLoaderVersion" -> Dependencies.Compile.Provided.sigarLoader.revision,
           "github" -> GitHub.url(v)
@@ -119,7 +125,5 @@ object SphinxDoc {
       sphinxInputs <<= (sphinxInputs, preprocess) map {
         (inputs, preprocessed) => inputs.copy(src = preprocessed)
       }
-    )) ++ Seq(
-    cleanFiles <+= target in preprocess in Sphinx
-  )
+    )) ++ Seq(cleanFiles <+= target in preprocess in Sphinx)
 }

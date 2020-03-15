@@ -73,8 +73,7 @@ object JsonTests extends TestSuite {
   val obj = P("{" ~/ pair.rep(sep = ",".~/) ~ space ~ "}").map(Js.Obj(_: _*))
 
   val jsonExpr: P[Js.Val] = P(
-    space ~ (obj | array | string | `true` | `false` | `null` | number) ~ space
-  )
+    space ~ (obj | array | string | `true` | `false` | `null` | number) ~ space)
 
   val tests = TestSuite {
     'pass {
@@ -95,8 +94,7 @@ object JsonTests extends TestSuite {
       }
       'jsonExpr - {
         val Parsed.Success(value, _) = jsonExpr.parse(
-          """{"omg": "123", "wtf": 12.4123}"""
-        )
+          """{"omg": "123", "wtf": 12.4123}""")
         assert(
           value == Js.Obj("omg" -> Js.Str("123"), "wtf" -> Js.Num(12.4123)))
       }

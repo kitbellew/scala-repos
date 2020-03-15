@@ -277,11 +277,13 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
   }
 
   override def equals(p1: Any): Boolean =
-    (this eq p1.asInstanceOf[AnyRef]) || (p1 match {
-      case vb: VectorBuilder[_] =>
-        this.length == vb.length && vb.toHashVector == this.toHashVector
-      case _ => false
-    })
+    (this eq p1.asInstanceOf[AnyRef]) || (
+      p1 match {
+        case vb: VectorBuilder[_] =>
+          this.length == vb.length && vb.toHashVector == this.toHashVector
+        case _ => false
+      }
+    )
 
   /**
     * Sets the underlying sparse array to use this data
@@ -375,26 +377,19 @@ object VectorBuilder extends VectorBuilderOps {
     }
   }
 
-  implicit def canCopyBuilder[@spec(
-    Double,
-    Int,
-    Float,
-    Long) V: ClassTag: Semiring: Zero]: CanCopyBuilder[V] = {
+  implicit def canCopyBuilder[
+      @spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
+      : CanCopyBuilder[V] = {
     new CanCopyBuilder[V]
   }
-  implicit def canZerosBuilder[@spec(
-    Double,
-    Int,
-    Float,
-    Long) V: ClassTag: Semiring: Zero]: CanZerosBuilder[V] = {
+  implicit def canZerosBuilder[
+      @spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
+      : CanZerosBuilder[V] = {
     new CanZerosBuilder[V]
   }
 
-  implicit def canZeroBuilder[@spec(
-    Double,
-    Int,
-    Float,
-    Long) V: Semiring: Zero: ClassTag]
+  implicit def canZeroBuilder[
+      @spec(Double, Int, Float, Long) V: Semiring: Zero: ClassTag]
       : CanCreateZeros[VectorBuilder[V], Int] = {
     new CanCreateZeros[VectorBuilder[V], Int] {
       def apply(d: Int): VectorBuilder[V] = zeros(d)

@@ -27,10 +27,9 @@ class DefaultCamelTest
   when(sys.dynamicAccess) thenReturn system
     .asInstanceOf[ExtendedActorSystem]
     .dynamicAccess
-  when(sys.settings) thenReturn (new Settings(
-    this.getClass.getClassLoader,
-    config,
-    "mocksystem"))
+  when(sys.settings) thenReturn (
+    new Settings(this.getClass.getClassLoader, config, "mocksystem")
+  )
   when(sys.name) thenReturn ("mocksystem")
 
   def camelWithMocks =

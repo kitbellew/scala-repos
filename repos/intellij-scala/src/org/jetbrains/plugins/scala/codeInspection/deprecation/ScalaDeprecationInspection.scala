@@ -37,7 +37,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
         name: String) {
       val refElement =
         result
-          .getOrElse(return
+          .getOrElse(
+            return
           )
           .element
       refElement match {

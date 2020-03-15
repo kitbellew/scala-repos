@@ -198,8 +198,10 @@ object Analysis {
         case MissingJavaLangObjectClass(_) =>
           "Fatal error: java.lang.Object is missing"
         case CycleInInheritanceChain(cycle, _) =>
-          ("Fatal error: cycle in inheritance chain involving " +
-            cycle.map(_.displayName).mkString(", "))
+          (
+            "Fatal error: cycle in inheritance chain involving " +
+              cycle.map(_.displayName).mkString(", ")
+          )
         case MissingClass(info, _) =>
           s"Referring to non-existent class ${info.displayName}"
         case NotAModule(info, _) =>

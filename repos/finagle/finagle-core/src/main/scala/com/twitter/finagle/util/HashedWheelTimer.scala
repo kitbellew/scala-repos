@@ -22,12 +22,8 @@ private class HashedWheelTimer(underlying: netty.Timer) extends Timer {
     toTimerTask(timeout)
   }
 
-  protected def schedulePeriodically(
-      when: Time,
-      period: Duration
-  )(
-      f: => Unit
-  ): TimerTask =
+  protected def schedulePeriodically(when: Time, period: Duration)(
+      f: => Unit): TimerTask =
     new TimerTask {
       var isCancelled = false
       var ref: TimerTask =

@@ -24,8 +24,7 @@ object StabilizingGroup {
       pulse: Offer[State.Health],
       grace: Duration,
       statsReceiver: StatsReceiver = NullStatsReceiver,
-      timer: Timer = DefaultTimer.twitter
-  ): Group[T] = {
+      timer: Timer = DefaultTimer.twitter): Group[T] = {
     new StabilizingGroup(underlying, pulse, grace, statsReceiver, timer)
   }
 
@@ -47,8 +46,8 @@ object StabilizingGroup {
       pulse: Offer[State.Health],
       grace: Duration,
       statsReceiver: StatsReceiver,
-      implicit val timer: Timer
-  ) extends Group[T] {
+      implicit val timer: Timer)
+      extends Group[T] {
     import State._
 
     private[this] val newSet = new Broker[Set[T]]()
@@ -128,10 +127,11 @@ object StabilizingGroup {
 
     loop(Queue.empty, Healthy)
 
-    underlying.set.changes.register(Witness({ set =>
-      // We can synchronize here because we know loop
-      // is eager, and doesn't itself synchronize.
-      newSet !! set
-    }))
+    underlying.set.changes.register(
+      Witness({ set =>
+        // We can synchronize here because we know loop
+        // is eager, and doesn't itself synchronize.
+        newSet !! set
+      }))
   }
 }

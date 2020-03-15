@@ -29,12 +29,10 @@ trait StructuredTypeStrings extends DestructureTypes {
       rdelim: String,
       labels: Boolean) {
     def join(elems: String*): String =
-      (
-        if (elems.isEmpty)
-          ""
-        else
-          elems.mkString(ldelim, mdelim, rdelim)
-      )
+      (if (elems.isEmpty)
+         ""
+       else
+         elems.mkString(ldelim, mdelim, rdelim))
   }
   val NoGrouping = Grouping("", "", "", labels = false)
   val ListGrouping = Grouping("(", ", ", ")", labels = false)
@@ -193,21 +191,23 @@ trait TypeStrings {
     "boolean",
     "void")
   private val primitiveMap =
-    (primitives.toList map { x =>
-      val key =
-        x match {
-          case "int"  => "Integer"
-          case "char" => "Character"
-          case s      => s.capitalize
-        }
-      val value =
-        x match {
-          case "void" => "Unit"
-          case s      => s.capitalize
-        }
+    (
+      primitives.toList map { x =>
+        val key =
+          x match {
+            case "int"  => "Integer"
+            case "char" => "Character"
+            case s      => s.capitalize
+          }
+        val value =
+          x match {
+            case "void" => "Unit"
+            case s      => s.capitalize
+          }
 
-      ("java.lang." + key) -> ("scala." + value)
-    }).toMap
+        ("java.lang." + key) -> ("scala." + value)
+      }
+    ).toMap
 
   def isAnonClass(cl: Class[_]) = {
     val xs = cl.getName.reverse takeWhile (_ != '$')
@@ -235,8 +235,7 @@ trait TypeStrings {
       if (enclClass == null || isAnonClass(clazz) || !enclMatch)
         name
       else
-        enclClass.getName + "." + (name stripPrefix enclPre)
-    )
+        enclClass.getName + "." + (name stripPrefix enclPre))
   }
   def anyClass(x: Any): JClass =
     if (x == null)

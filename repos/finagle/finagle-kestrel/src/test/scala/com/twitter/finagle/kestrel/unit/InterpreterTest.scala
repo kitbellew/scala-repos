@@ -18,9 +18,10 @@ class InterpreterTest extends FunSuite {
   trait InterpreterHelper {
     val queues = CacheBuilder
       .newBuilder()
-      .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
-        def load(k: Buf) = new LinkedBlockingDeque[Buf]
-      })
+      .build(
+        new CacheLoader[Buf, BlockingDeque[Buf]] {
+          def load(k: Buf) = new LinkedBlockingDeque[Buf]
+        })
     val interpreter = new Interpreter(queues)
   }
 

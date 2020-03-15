@@ -10,7 +10,6 @@ object RandomEngineFactory extends IEngineFactory {
       Map("RandomAlgorithm" -> classOf[RandomAlgorithm]),
       classOf[LFirstServing[
         FriendRecommendationQuery,
-        FriendRecommendationPrediction]]
-    )
+        FriendRecommendationPrediction]])
   }
 }

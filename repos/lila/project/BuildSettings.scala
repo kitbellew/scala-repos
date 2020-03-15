@@ -37,9 +37,7 @@ object BuildSettings {
       dependencies = deps,
       settings = Seq(
         version := "2.0",
-        libraryDependencies := defaultDeps
-      ) ++ buildSettings ++ srcMain
-    )
+        libraryDependencies := defaultDeps) ++ buildSettings ++ srcMain)
 
   val compilerOptions = Seq(
     "-deprecation",
@@ -52,8 +50,7 @@ object BuildSettings {
 
   val srcMain = Seq(
     scalaSource in Compile <<= (sourceDirectory in Compile)(identity),
-    scalaSource in Test <<= (sourceDirectory in Test)(identity)
-  )
+    scalaSource in Test <<= (sourceDirectory in Test)(identity))
 
   def projectToRef(p: Project): ProjectReference = LocalProject(p.id)
 }

@@ -23,7 +23,8 @@ class DateTimeSpec extends WordSpec with Matchers {
     "properly print a known date" in {
       DateTime(
         specificClicks).toRfc1123DateTimeString shouldEqual "Tue, 12 Jul 2011 14:08:12 GMT"
-      DateTime(2011, 7, 12, 14, 8,
+      DateTime(
+        2011, 7, 12, 14, 8,
         12).toRfc1123DateTimeString shouldEqual "Tue, 12 Jul 2011 14:08:12 GMT"
     }
     "behave exactly as a corresponding formatting via SimpleDateFormat" in {

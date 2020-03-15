@@ -10,10 +10,7 @@ object SizedSink {
   // use the next largest power of two for performance reasons.
   // eg: http://psy-lob-saw.blogspot.com/2014/11/the-mythical-modulo-mask.html
   private def nextPowOf2(n: Int): Int =
-    math.min(
-      1 << 30,
-      math.max(1, Integer.highestOneBit(n - 1) * 2)
-    )
+    math.min(1 << 30, math.max(1, Integer.highestOneBit(n - 1) * 2))
 
   /**
     * An in-memory circular buffer of events. When `capacity` is reached,
@@ -26,8 +23,7 @@ object SizedSink {
     */
   private[twitter] def apply(
       approxSize: Int,
-      milliTime: () => Long = () => System.currentTimeMillis()
-  ): Sink = {
+      milliTime: () => Long = () => System.currentTimeMillis()): Sink = {
     require(approxSize > 0, s"approxSize must be positive: $approxSize")
     new SizedSink(nextPowOf2(approxSize), milliTime)
   }
@@ -97,8 +93,7 @@ class SizedSink private[events] (capacity: Int, milliTime: () => Long)
         objectVal = Event.NoObject,
         doubleVal = Event.NoDouble,
         traceIdVal = Event.NoTraceId,
-        spanIdVal = Event.NoSpanId
-      )
+        spanIdVal = Event.NoSpanId)
     }
 
   override def event(
@@ -107,8 +102,7 @@ class SizedSink private[events] (capacity: Int, milliTime: () => Long)
       objectVal: Object = Event.NoObject,
       doubleVal: Double = Event.NoDouble,
       traceIdVal: Long = Event.NoTraceId,
-      spanIdVal: Long = Event.NoSpanId
-  ): Unit = {
+      spanIdVal: Long = Event.NoSpanId): Unit = {
     require(etype != null)
 
     // reserve our position where the write will go.

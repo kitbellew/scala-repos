@@ -63,8 +63,7 @@ class StandardCompileClient extends HasCompileSocket with CompileOutputCommon {
           if (shutdown)
             "[No compilation server running.]"
           else
-            "Compilation failed."
-        )
+            "Compilation failed.")
         shutdown
     }
   }

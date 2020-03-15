@@ -35,10 +35,9 @@ import org.bson.types.ObjectId
  * toForm produces a multi-select form element. You just need to supply the
  * options by overriding the options method.
  */
-abstract class MongoRefListField[
-    OwnerType <: BsonRecord[OwnerType],
-    RefType <: MongoRecord[RefType],
-    MyType](rec: OwnerType)(implicit mf: Manifest[MyType])
+abstract class MongoRefListField[OwnerType <: BsonRecord[
+  OwnerType], RefType <: MongoRecord[RefType], MyType](rec: OwnerType)(
+    implicit mf: Manifest[MyType])
     extends MongoListField[OwnerType, MyType](rec) {
 
   /** The MongoMetaRecord of the referenced object **/
@@ -82,37 +81,32 @@ abstract class MongoRefListField[
     }
 }
 
-class ObjectIdRefListField[
-    OwnerType <: BsonRecord[OwnerType],
-    RefType <: MongoRecord[RefType]](
+class ObjectIdRefListField[OwnerType <: BsonRecord[
+  OwnerType], RefType <: MongoRecord[RefType]](
     rec: OwnerType,
-    val refMeta: MongoMetaRecord[RefType]
-) extends MongoRefListField[OwnerType, RefType, ObjectId](rec) {}
+    val refMeta: MongoMetaRecord[RefType])
+    extends MongoRefListField[OwnerType, RefType, ObjectId](rec) {}
 
-class UUIDRefListField[
-    OwnerType <: BsonRecord[OwnerType],
-    RefType <: MongoRecord[RefType]](
+class UUIDRefListField[OwnerType <: BsonRecord[
+  OwnerType], RefType <: MongoRecord[RefType]](
     rec: OwnerType,
-    val refMeta: MongoMetaRecord[RefType]
-) extends MongoRefListField[OwnerType, RefType, UUID](rec) {}
+    val refMeta: MongoMetaRecord[RefType])
+    extends MongoRefListField[OwnerType, RefType, UUID](rec) {}
 
-class StringRefListField[
-    OwnerType <: BsonRecord[OwnerType],
-    RefType <: MongoRecord[RefType]](
+class StringRefListField[OwnerType <: BsonRecord[
+  OwnerType], RefType <: MongoRecord[RefType]](
     rec: OwnerType,
-    val refMeta: MongoMetaRecord[RefType]
-) extends MongoRefListField[OwnerType, RefType, String](rec) {}
+    val refMeta: MongoMetaRecord[RefType])
+    extends MongoRefListField[OwnerType, RefType, String](rec) {}
 
-class IntRefListField[
-    OwnerType <: BsonRecord[OwnerType],
-    RefType <: MongoRecord[RefType]](
+class IntRefListField[OwnerType <: BsonRecord[
+  OwnerType], RefType <: MongoRecord[RefType]](
     rec: OwnerType,
-    val refMeta: MongoMetaRecord[RefType]
-) extends MongoRefListField[OwnerType, RefType, Int](rec) {}
+    val refMeta: MongoMetaRecord[RefType])
+    extends MongoRefListField[OwnerType, RefType, Int](rec) {}
 
-class LongRefListField[
-    OwnerType <: BsonRecord[OwnerType],
-    RefType <: MongoRecord[RefType]](
+class LongRefListField[OwnerType <: BsonRecord[
+  OwnerType], RefType <: MongoRecord[RefType]](
     rec: OwnerType,
-    val refMeta: MongoMetaRecord[RefType]
-) extends MongoRefListField[OwnerType, RefType, Long](rec) {}
+    val refMeta: MongoMetaRecord[RefType])
+    extends MongoRefListField[OwnerType, RefType, Long](rec) {}

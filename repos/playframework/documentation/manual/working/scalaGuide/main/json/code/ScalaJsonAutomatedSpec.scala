@@ -16,12 +16,10 @@ class ScalaJsonAutomatedSpec extends Specification {
   case class Resident(name: String, age: Int, role: Option[String])
   //#model
 
-  val sampleJson = Json.parse(
-    """{
+  val sampleJson = Json.parse("""{
       "name" : "Fiver",
       "age" : 4
-    }"""
-  )
+    }""")
   val sampleData = Resident("Fiver", 4, None)
 
   "Scala JSON automated" should {

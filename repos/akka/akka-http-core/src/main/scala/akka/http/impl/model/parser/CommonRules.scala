@@ -84,8 +84,10 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   def `nested-comment` = {
     var saved: String = null
     rule {
-      &('(') ~ run(saved = sb.toString) ~ (comment ~ prependSB(
-        saved + " (") ~ appendSB(')') | setSB(saved) ~ test(false))
+      &('(') ~ run(saved = sb.toString) ~ (
+        comment ~ prependSB(saved + " (") ~ appendSB(')') | setSB(saved) ~ test(
+          false)
+      )
     }
   }
 
@@ -108,7 +110,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `IMF-fixdate` =
     rule { // mixture of the spec-ed `IMF-fixdate` and `rfc850-date`
-      (`day-name-l` | `day-name`) ~ ", " ~ (date1 | date2) ~ ' ' ~ `time-of-day` ~ ' ' ~ ("GMT" | "UTC") ~> {
+      (`day-name-l` | `day-name`) ~ ", " ~ (
+        date1 | date2
+      ) ~ ' ' ~ `time-of-day` ~ ' ' ~ ("GMT" | "UTC") ~> {
         (wkday, day, month, year, hour, min, sec) ⇒
           createDateTime(year, month, day, hour, min, sec, wkday)
       }
@@ -293,9 +297,11 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `challenge-or-credentials`: Rule2[String, Seq[(String, String)]] =
     rule {
-      `auth-scheme` ~ (oneOrMore(`auth-param` ~> (_ -> _)).separatedBy(listSep)
-        | `token68` ~> (x ⇒ ("" -> x) :: Nil)
-        | push(Nil))
+      `auth-scheme` ~ (
+        oneOrMore(`auth-param` ~> (_ -> _)).separatedBy(listSep)
+          | `token68` ~> (x ⇒ ("" -> x) :: Nil)
+          | push(Nil)
+      )
     }
 
   // ******************************************************************************************
@@ -360,8 +366,10 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
     rule {
       (`cookie-pair` ~ &(`cookie-separator`) ~> (Some(_: HttpCookiePair))) |
         // fallback that parses and discards everything until the next semicolon
-        (zeroOrMore(!`cookie-separator` ~ ANY) ~ &(`cookie-separator`) ~ push(
-          None))
+        (
+          zeroOrMore(!`cookie-separator` ~ ANY) ~ &(`cookie-separator`) ~ push(
+            None)
+        )
     }
 
   def `cookie-pair`: Rule1[HttpCookiePair] =
@@ -383,8 +391,10 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // ******************************************************************************************
   def `cookie-value-rfc-6265` =
     rule {
-      ('"' ~ capture(zeroOrMore(`cookie-octet-rfc-6265`)) ~ '"' | capture(
-        zeroOrMore(`cookie-octet-rfc-6265`))) ~ OWS
+      (
+        '"' ~ capture(zeroOrMore(`cookie-octet-rfc-6265`)) ~ '"' | capture(
+          zeroOrMore(`cookie-octet-rfc-6265`))
+      ) ~ OWS
     }
 
   def `cookie-value-raw` =
@@ -457,12 +467,14 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // http://www.rfc-editor.org/errata_search.php?rfc=6265
   def `extension-av` =
     rule {
-      !(ignoreCase("expires=")
-        | ignoreCase("max-age=")
-        | ignoreCase("domain=")
-        | ignoreCase("path=")
-        | ignoreCase("secure")
-        | ignoreCase("httponly")) ~
+      !(
+        ignoreCase("expires=")
+          | ignoreCase("max-age=")
+          | ignoreCase("domain=")
+          | ignoreCase("path=")
+          | ignoreCase("secure")
+          | ignoreCase("httponly")
+      ) ~
         capture(zeroOrMore(`av-octet`)) ~ OWS ~> { (c: HttpCookie, s: String) ⇒
         c.copy(extension = Some(s))
       }
@@ -498,8 +510,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `byte-range-resp` =
     rule {
-      `byte-range` ~ ws('/') ~ (`complete-length` ~> (Some(_)) | ws('*') ~ push(
-        None)) ~> (ContentRange(_, _, _))
+      `byte-range` ~ ws('/') ~ (
+        `complete-length` ~> (Some(_)) | ws('*') ~ push(None)
+      ) ~> (ContentRange(_, _, _))
     }
 
   def `byte-range-set` =
@@ -510,9 +523,10 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `byte-range-spec` =
     rule {
-      `first-byte-pos` ~ ws('-') ~ (`last-byte-pos` ~> (ByteRange(
-        _: Long,
-        _)) | run(ByteRange.fromOffset(_)))
+      `first-byte-pos` ~ ws('-') ~ (
+        `last-byte-pos` ~> (ByteRange(_: Long, _)) | run(
+          ByteRange.fromOffset(_))
+      )
     }
 
   def `byte-ranges-specifier` =
@@ -624,9 +638,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `transfer-extension` =
     rule {
-      token ~ zeroOrMore(
-        ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (TransferEncodings
-        .Extension(_, _))
+      token ~ zeroOrMore(ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (
+        TransferEncodings.Extension(_, _)
+      )
     }
 
   def `transfer-parameter` =
@@ -683,8 +697,10 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   // parses a potentially long series of digits and extracts its Long value capping at 999,999,999,999,999,999 in case of overflows
   def longNumberCapped =
     rule(
-      (capture((1 to 18).times(DIGIT)) ~ !DIGIT ~> (_.toLong)
-        | oneOrMore(DIGIT) ~ push(999999999999999999L)) ~ OWS)
+      (
+        capture((1 to 18).times(DIGIT)) ~ !DIGIT ~> (_.toLong)
+          | oneOrMore(DIGIT) ~ push(999999999999999999L)
+      ) ~ OWS)
 
   private def digitInt(c: Char): Int = c - '0'
 

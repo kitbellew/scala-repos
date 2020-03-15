@@ -11,9 +11,8 @@ import org.ensime.api._
 class DocResolver(
     prefix: String,
     forceJavaVersion: Option[String] // for testing
-)(implicit
-    config: EnsimeConfig
-) extends Actor
+)(implicit config: EnsimeConfig)
+    extends Actor
     with ActorLogging
     with DocUsecaseHandling {
 
@@ -207,10 +206,7 @@ class DocResolver(
 
 }
 object DocResolver {
-  def apply(
-      prefix: String = "docs",
-      java: Option[String] = None
-  )(implicit
-      config: EnsimeConfig
-  ): Props = Props(classOf[DocResolver], prefix, java, config)
+  def apply(prefix: String = "docs", java: Option[String] = None)(
+      implicit config: EnsimeConfig): Props =
+    Props(classOf[DocResolver], prefix, java, config)
 }

@@ -133,13 +133,17 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
              element.getNode.getElementType != ScalaTokenTypes.tSEMICOLON &&
              !ScalaTokenTypes.COMMENTS_TOKEN_SET.contains(
                element.getNode.getElementType) ||
-             (element.getParent.getTextRange.getStartOffset == startOffset &&
-             (element.getParent.isInstanceOf[ScExpression] ||
-             element.getParent.isInstanceOf[ScValue] ||
-             element.getParent.isInstanceOf[ScVariable] ||
-             element.getParent.isInstanceOf[ScFunction] ||
-             element.getParent.isInstanceOf[ScTypeAlias]) &&
-             element.getParent.getTextRange.getEndOffset <= endOffset)) {
+             (
+               element.getParent.getTextRange.getStartOffset == startOffset &&
+               (
+                 element.getParent.isInstanceOf[ScExpression] ||
+                 element.getParent.isInstanceOf[ScValue] ||
+                 element.getParent.isInstanceOf[ScVariable] ||
+                 element.getParent.isInstanceOf[ScFunction] ||
+                 element.getParent.isInstanceOf[ScTypeAlias]
+               ) &&
+               element.getParent.getTextRange.getEndOffset <= endOffset
+             )) {
         element = element.getParent
         if (element == null || element.getTextRange == null || element.getTextRange.getStartOffset != startOffset)
           return null

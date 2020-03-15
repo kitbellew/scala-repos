@@ -32,8 +32,8 @@ class StreamPartialFlowGraphDocSpec extends AkkaSpec {
 
     val resultSink = Sink.head[Int]
 
-    val g = RunnableGraph.fromGraph(GraphDSL.create(resultSink) {
-      implicit b => sink =>
+    val g = RunnableGraph.fromGraph(
+      GraphDSL.create(resultSink) { implicit b => sink =>
         import GraphDSL.Implicits._
 
         // importing the partial graph will return its shape (inlets & outlets)
@@ -44,7 +44,7 @@ class StreamPartialFlowGraphDocSpec extends AkkaSpec {
         Source.single(3) ~> pm3.in(2)
         pm3.out ~> sink.in
         ClosedShape
-    })
+      })
 
     val max: Future[Int] = g.run()
     Await.result(max, 300.millis) should equal(3)
@@ -53,20 +53,21 @@ class StreamPartialFlowGraphDocSpec extends AkkaSpec {
 
   "build source from partial flow graph" in {
     //#source-from-partial-flow-graph
-    val pairs = Source.fromGraph(GraphDSL.create() { implicit b =>
-      import GraphDSL.Implicits._
+    val pairs = Source.fromGraph(
+      GraphDSL.create() { implicit b =>
+        import GraphDSL.Implicits._
 
-      // prepare graph elements
-      val zip = b.add(Zip[Int, Int]())
-      def ints = Source.fromIterator(() => Iterator.from(1))
+        // prepare graph elements
+        val zip = b.add(Zip[Int, Int]())
+        def ints = Source.fromIterator(() => Iterator.from(1))
 
-      // connect the graph
-      ints.filter(_ % 2 != 0) ~> zip.in0
-      ints.filter(_ % 2 == 0) ~> zip.in1
+        // connect the graph
+        ints.filter(_ % 2 != 0) ~> zip.in0
+        ints.filter(_ % 2 == 0) ~> zip.in1
 
-      // expose port
-      SourceShape(zip.out)
-    })
+        // expose port
+        SourceShape(zip.out)
+      })
 
     val firstPair: Future[(Int, Int)] = pairs.runWith(Sink.head)
     //#source-from-partial-flow-graph
@@ -75,20 +76,21 @@ class StreamPartialFlowGraphDocSpec extends AkkaSpec {
 
   "build flow from partial flow graph" in {
     //#flow-from-partial-flow-graph
-    val pairUpWithToString = Flow.fromGraph(GraphDSL.create() { implicit b =>
-      import GraphDSL.Implicits._
+    val pairUpWithToString = Flow.fromGraph(
+      GraphDSL.create() { implicit b =>
+        import GraphDSL.Implicits._
 
-      // prepare graph elements
-      val broadcast = b.add(Broadcast[Int](2))
-      val zip = b.add(Zip[Int, String]())
+        // prepare graph elements
+        val broadcast = b.add(Broadcast[Int](2))
+        val zip = b.add(Zip[Int, String]())
 
-      // connect the graph
-      broadcast.out(0).map(identity) ~> zip.in0
-      broadcast.out(1).map(_.toString) ~> zip.in1
+        // connect the graph
+        broadcast.out(0).map(identity) ~> zip.in0
+        broadcast.out(1).map(_.toString) ~> zip.in1
 
-      // expose ports
-      FlowShape(broadcast.in, zip.out)
-    })
+        // expose ports
+        FlowShape(broadcast.in, zip.out)
+      })
 
     //#flow-from-partial-flow-graph
 

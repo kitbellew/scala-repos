@@ -51,8 +51,9 @@ object ParserUtil {
           else
             f1.getPath
         }
-        val childFilter = GlobFilter(
-          preFile.name + "*") && ((IsDirectoryFilter && dirFilter) || fileFilter)
+        val childFilter = GlobFilter(preFile.name + "*") && (
+          (IsDirectoryFilter && dirFilter) || fileFilter
+        )
         val children = parent.*(childFilter).get
         children.map(pathOf).toList
       } else

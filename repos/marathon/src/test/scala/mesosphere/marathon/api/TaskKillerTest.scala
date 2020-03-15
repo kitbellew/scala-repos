@@ -154,8 +154,8 @@ class TaskKillerTest
         groupUpdateCaptor.capture(),
         any[Timestamp],
         forceCaptor.capture(),
-        any[Map[PathId, Iterable[Task]]]
-      )).thenReturn(Future.failed(AppLockedException()))
+        any[Map[PathId, Iterable[Task]]]))
+      .thenReturn(Future.failed(AppLockedException()))
 
     val result = taskKiller.killAndScale(
       appId,

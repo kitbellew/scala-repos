@@ -207,8 +207,10 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
   }
 
   protected def isPsiElementAccepted(element: PsiElement): Boolean = {
-    !(element.isInstanceOf[PsiJavaFile] && element
-      .isInstanceOf[PsiCompiledElement])
+    !(
+      element.isInstanceOf[PsiJavaFile] && element
+        .isInstanceOf[PsiCompiledElement]
+    )
   }
 
   protected def createFileReference(

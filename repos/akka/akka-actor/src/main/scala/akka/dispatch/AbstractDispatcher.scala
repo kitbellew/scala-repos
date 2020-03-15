@@ -410,13 +410,14 @@ abstract class MessageDispatcherConfigurator(
             .recover({
               case exception ⇒
                 throw new IllegalArgumentException(
-                  ("""Cannot instantiate ExecutorServiceConfigurator ("executor = [%s]"), defined in [%s],
-                make sure it has an accessible constructor with a [%s,%s] signature""")
-                    .format(
-                      fqcn,
-                      config.getString("id"),
-                      classOf[Config],
-                      classOf[DispatcherPrerequisites]),
+                  (
+                    """Cannot instantiate ExecutorServiceConfigurator ("executor = [%s]"), defined in [%s],
+                make sure it has an accessible constructor with a [%s,%s] signature"""
+                  ).format(
+                    fqcn,
+                    config.getString("id"),
+                    classOf[Config],
+                    classOf[DispatcherPrerequisites]),
                   exception)
             })
             .get
@@ -448,21 +449,22 @@ class ThreadPoolExecutorConfigurator(
     val builder = ThreadPoolConfigBuilder(ThreadPoolConfig())
       .setKeepAliveTime(config.getMillisDuration("keep-alive-time"))
       .setAllowCoreThreadTimeout(config getBoolean "allow-core-timeout")
-      .configure(Some(config getInt "task-queue-size") flatMap {
-        case size if size > 0 ⇒
-          Some(config getString "task-queue-type") map {
-            case "array" ⇒
-              ThreadPoolConfig
-                .arrayBlockingQueue(size, false) //TODO config fairness?
-            case "" | "linked" ⇒ ThreadPoolConfig.linkedBlockingQueue(size)
-            case x ⇒
-              throw new IllegalArgumentException(
-                "[%s] is not a valid task-queue-type [array|linked]!" format x)
-          } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒
-            q.setQueueFactory(qf)
-          }
-        case _ ⇒ None
-      })
+      .configure(
+        Some(config getInt "task-queue-size") flatMap {
+          case size if size > 0 ⇒
+            Some(config getString "task-queue-type") map {
+              case "array" ⇒
+                ThreadPoolConfig
+                  .arrayBlockingQueue(size, false) //TODO config fairness?
+              case "" | "linked" ⇒ ThreadPoolConfig.linkedBlockingQueue(size)
+              case x ⇒
+                throw new IllegalArgumentException(
+                  "[%s] is not a valid task-queue-type [array|linked]!" format x)
+            } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒
+              q.setQueueFactory(qf)
+            }
+          case _ ⇒ None
+        })
 
     if (config.getString("fixed-pool-size") == "off")
       builder
@@ -513,10 +515,12 @@ object ForkJoinExecutorConfigurator {
     override def execute(r: Runnable): Unit =
       if (r ne null)
         super.execute(
-          (if (r.isInstanceOf[ForkJoinTask[_]])
-             r
-           else
-             new AkkaForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
+          (
+            if (r.isInstanceOf[ForkJoinTask[_]])
+              r
+            else
+              new AkkaForkJoinTask(r)
+          ).asInstanceOf[ForkJoinTask[Any]])
       else
         throw new NullPointerException("Runnable was null")
 

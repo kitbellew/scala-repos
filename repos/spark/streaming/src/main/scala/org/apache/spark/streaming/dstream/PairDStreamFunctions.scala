@@ -185,8 +185,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
   def groupByKeyAndWindow(
       windowDuration: Duration,
       slideDuration: Duration,
-      numPartitions: Int
-  ): DStream[(K, Iterable[V])] =
+      numPartitions: Int): DStream[(K, Iterable[V])] =
     ssc.withScope {
       groupByKeyAndWindow(
         windowDuration,
@@ -208,8 +207,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
   def groupByKeyAndWindow(
       windowDuration: Duration,
       slideDuration: Duration,
-      partitioner: Partitioner
-  ): DStream[(K, Iterable[V])] =
+      partitioner: Partitioner): DStream[(K, Iterable[V])] =
     ssc.withScope {
       val createCombiner = (v: Iterable[V]) => new ArrayBuffer[V] ++= v
       val mergeValue = (buf: ArrayBuffer[V], v: Iterable[V]) => buf ++= v
@@ -237,8 +235,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def reduceByKeyAndWindow(
       reduceFunc: (V, V) => V,
-      windowDuration: Duration
-  ): DStream[(K, V)] =
+      windowDuration: Duration): DStream[(K, V)] =
     ssc.withScope {
       reduceByKeyAndWindow(
         reduceFunc,
@@ -261,8 +258,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
   def reduceByKeyAndWindow(
       reduceFunc: (V, V) => V,
       windowDuration: Duration,
-      slideDuration: Duration
-  ): DStream[(K, V)] =
+      slideDuration: Duration): DStream[(K, V)] =
     ssc.withScope {
       reduceByKeyAndWindow(
         reduceFunc,
@@ -287,8 +283,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       reduceFunc: (V, V) => V,
       windowDuration: Duration,
       slideDuration: Duration,
-      numPartitions: Int
-  ): DStream[(K, V)] =
+      numPartitions: Int): DStream[(K, V)] =
     ssc.withScope {
       reduceByKeyAndWindow(
         reduceFunc,
@@ -313,8 +308,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       reduceFunc: (V, V) => V,
       windowDuration: Duration,
       slideDuration: Duration,
-      partitioner: Partitioner
-  ): DStream[(K, V)] =
+      partitioner: Partitioner): DStream[(K, V)] =
     ssc.withScope {
       self
         .reduceByKey(reduceFunc, partitioner)
@@ -348,8 +342,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       windowDuration: Duration,
       slideDuration: Duration = self.slideDuration,
       numPartitions: Int = ssc.sc.defaultParallelism,
-      filterFunc: ((K, V)) => Boolean = null
-  ): DStream[(K, V)] =
+      filterFunc: ((K, V)) => Boolean = null): DStream[(K, V)] =
     ssc.withScope {
       reduceByKeyAndWindow(
         reduceFunc,
@@ -357,8 +350,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
         windowDuration,
         slideDuration,
         defaultPartitioner(numPartitions),
-        filterFunc
-      )
+        filterFunc)
     }
 
   /**
@@ -386,8 +378,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       windowDuration: Duration,
       slideDuration: Duration,
       partitioner: Partitioner,
-      filterFunc: ((K, V)) => Boolean
-  ): DStream[(K, V)] =
+      filterFunc: ((K, V)) => Boolean): DStream[(K, V)] =
     ssc.withScope {
 
       val cleanedReduceFunc = ssc.sc.clean(reduceFunc)
@@ -404,8 +395,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
         cleanedFilterFunc,
         windowDuration,
         slideDuration,
-        partitioner
-      )
+        partitioner)
     }
 
   /**
@@ -435,12 +425,11 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   @Experimental
   def mapWithState[StateType: ClassTag, MappedType: ClassTag](
-      spec: StateSpec[K, V, StateType, MappedType]
-  ): MapWithStateDStream[K, V, StateType, MappedType] = {
+      spec: StateSpec[K, V, StateType, MappedType])
+      : MapWithStateDStream[K, V, StateType, MappedType] = {
     new MapWithStateDStreamImpl[K, V, StateType, MappedType](
       self,
-      spec.asInstanceOf[StateSpecImpl[K, V, StateType, MappedType]]
-    )
+      spec.asInstanceOf[StateSpecImpl[K, V, StateType, MappedType]])
   }
 
   /**
@@ -452,8 +441,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     * @tparam S State type
     */
   def updateStateByKey[S: ClassTag](
-      updateFunc: (Seq[V], Option[S]) => Option[S]
-  ): DStream[(K, S)] =
+      updateFunc: (Seq[V], Option[S]) => Option[S]): DStream[(K, S)] =
     ssc.withScope {
       updateStateByKey(updateFunc, defaultPartitioner())
     }
@@ -469,8 +457,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def updateStateByKey[S: ClassTag](
       updateFunc: (Seq[V], Option[S]) => Option[S],
-      numPartitions: Int
-  ): DStream[(K, S)] =
+      numPartitions: Int): DStream[(K, S)] =
     ssc.withScope {
       updateStateByKey(updateFunc, defaultPartitioner(numPartitions))
     }
@@ -487,8 +474,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def updateStateByKey[S: ClassTag](
       updateFunc: (Seq[V], Option[S]) => Option[S],
-      partitioner: Partitioner
-  ): DStream[(K, S)] =
+      partitioner: Partitioner): DStream[(K, S)] =
     ssc.withScope {
       val cleanedUpdateF = sparkContext.clean(updateFunc)
       val newUpdateFunc =
@@ -514,8 +500,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
   def updateStateByKey[S: ClassTag](
       updateFunc: (Iterator[(K, Seq[V], Option[S])]) => Iterator[(K, S)],
       partitioner: Partitioner,
-      rememberPartitioner: Boolean
-  ): DStream[(K, S)] =
+      rememberPartitioner: Boolean): DStream[(K, S)] =
     ssc.withScope {
       new StateDStream(
         self,
@@ -539,8 +524,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
   def updateStateByKey[S: ClassTag](
       updateFunc: (Seq[V], Option[S]) => Option[S],
       partitioner: Partitioner,
-      initialRDD: RDD[(K, S)]
-  ): DStream[(K, S)] =
+      initialRDD: RDD[(K, S)]): DStream[(K, S)] =
     ssc.withScope {
       val cleanedUpdateF = sparkContext.clean(updateFunc)
       val newUpdateFunc =
@@ -568,8 +552,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       updateFunc: (Iterator[(K, Seq[V], Option[S])]) => Iterator[(K, S)],
       partitioner: Partitioner,
       rememberPartitioner: Boolean,
-      initialRDD: RDD[(K, S)]
-  ): DStream[(K, S)] =
+      initialRDD: RDD[(K, S)]): DStream[(K, S)] =
     ssc.withScope {
       new StateDStream(
         self,
@@ -593,8 +576,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     * 'this' DStream without changing the key.
     */
   def flatMapValues[U: ClassTag](
-      flatMapValuesFunc: V => TraversableOnce[U]
-  ): DStream[(K, U)] =
+      flatMapValuesFunc: V => TraversableOnce[U]): DStream[(K, U)] =
     ssc.withScope {
       new FlatMapValuedDStream[K, V, U](
         self,
@@ -629,14 +611,12 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def cogroup[W: ClassTag](
       other: DStream[(K, W)],
-      partitioner: Partitioner
-  ): DStream[(K, (Iterable[V], Iterable[W]))] =
+      partitioner: Partitioner): DStream[(K, (Iterable[V], Iterable[W]))] =
     ssc.withScope {
       self.transformWith(
         other,
         (rdd1: RDD[(K, V)], rdd2: RDD[(K, W)]) =>
-          rdd1.cogroup(rdd2, partitioner)
-      )
+          rdd1.cogroup(rdd2, partitioner))
     }
 
   /**
@@ -665,13 +645,11 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def join[W: ClassTag](
       other: DStream[(K, W)],
-      partitioner: Partitioner
-  ): DStream[(K, (V, W))] =
+      partitioner: Partitioner): DStream[(K, (V, W))] =
     ssc.withScope {
       self.transformWith(
         other,
-        (rdd1: RDD[(K, V)], rdd2: RDD[(K, W)]) => rdd1.join(rdd2, partitioner)
-      )
+        (rdd1: RDD[(K, V)], rdd2: RDD[(K, W)]) => rdd1.join(rdd2, partitioner))
     }
 
   /**
@@ -692,8 +670,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def leftOuterJoin[W: ClassTag](
       other: DStream[(K, W)],
-      numPartitions: Int
-  ): DStream[(K, (V, Option[W]))] =
+      numPartitions: Int): DStream[(K, (V, Option[W]))] =
     ssc.withScope {
       leftOuterJoin[W](other, defaultPartitioner(numPartitions))
     }
@@ -705,14 +682,12 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def leftOuterJoin[W: ClassTag](
       other: DStream[(K, W)],
-      partitioner: Partitioner
-  ): DStream[(K, (V, Option[W]))] =
+      partitioner: Partitioner): DStream[(K, (V, Option[W]))] =
     ssc.withScope {
       self.transformWith(
         other,
         (rdd1: RDD[(K, V)], rdd2: RDD[(K, W)]) =>
-          rdd1.leftOuterJoin(rdd2, partitioner)
-      )
+          rdd1.leftOuterJoin(rdd2, partitioner))
     }
 
   /**
@@ -733,8 +708,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def rightOuterJoin[W: ClassTag](
       other: DStream[(K, W)],
-      numPartitions: Int
-  ): DStream[(K, (Option[V], W))] =
+      numPartitions: Int): DStream[(K, (Option[V], W))] =
     ssc.withScope {
       rightOuterJoin[W](other, defaultPartitioner(numPartitions))
     }
@@ -746,14 +720,12 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def rightOuterJoin[W: ClassTag](
       other: DStream[(K, W)],
-      partitioner: Partitioner
-  ): DStream[(K, (Option[V], W))] =
+      partitioner: Partitioner): DStream[(K, (Option[V], W))] =
     ssc.withScope {
       self.transformWith(
         other,
         (rdd1: RDD[(K, V)], rdd2: RDD[(K, W)]) =>
-          rdd1.rightOuterJoin(rdd2, partitioner)
-      )
+          rdd1.rightOuterJoin(rdd2, partitioner))
     }
 
   /**
@@ -774,8 +746,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def fullOuterJoin[W: ClassTag](
       other: DStream[(K, W)],
-      numPartitions: Int
-  ): DStream[(K, (Option[V], Option[W]))] =
+      numPartitions: Int): DStream[(K, (Option[V], Option[W]))] =
     ssc.withScope {
       fullOuterJoin[W](other, defaultPartitioner(numPartitions))
     }
@@ -787,14 +758,12 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def fullOuterJoin[W: ClassTag](
       other: DStream[(K, W)],
-      partitioner: Partitioner
-  ): DStream[(K, (Option[V], Option[W]))] =
+      partitioner: Partitioner): DStream[(K, (Option[V], Option[W]))] =
     ssc.withScope {
       self.transformWith(
         other,
         (rdd1: RDD[(K, V)], rdd2: RDD[(K, W)]) =>
-          rdd1.fullOuterJoin(rdd2, partitioner)
-      )
+          rdd1.fullOuterJoin(rdd2, partitioner))
     }
 
   /**
@@ -803,8 +772,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def saveAsHadoopFiles[F <: OutputFormat[K, V]](
       prefix: String,
-      suffix: String
-  )(implicit fm: ClassTag[F]): Unit =
+      suffix: String)(implicit fm: ClassTag[F]): Unit =
     ssc.withScope {
       saveAsHadoopFiles(
         prefix,
@@ -824,8 +792,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       keyClass: Class[_],
       valueClass: Class[_],
       outputFormatClass: Class[_ <: OutputFormat[_, _]],
-      conf: JobConf = new JobConf(ssc.sparkContext.hadoopConfiguration)
-  ): Unit =
+      conf: JobConf = new JobConf(ssc.sparkContext.hadoopConfiguration)): Unit =
     ssc.withScope {
       // Wrap conf in SerializableWritable so that ForeachDStream can be serialized for checkpoints
       val serializableConf = new SerializableJobConf(conf)
@@ -847,8 +814,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def saveAsNewAPIHadoopFiles[F <: NewOutputFormat[K, V]](
       prefix: String,
-      suffix: String
-  )(implicit fm: ClassTag[F]): Unit =
+      suffix: String)(implicit fm: ClassTag[F]): Unit =
     ssc.withScope {
       saveAsNewAPIHadoopFiles(
         prefix,
@@ -868,8 +834,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       keyClass: Class[_],
       valueClass: Class[_],
       outputFormatClass: Class[_ <: NewOutputFormat[_, _]],
-      conf: Configuration = ssc.sparkContext.hadoopConfiguration
-  ): Unit =
+      conf: Configuration = ssc.sparkContext.hadoopConfiguration): Unit =
     ssc.withScope {
       // Wrap conf in SerializableWritable so that ForeachDStream can be serialized for checkpoints
       val serializableConf = new SerializableConfiguration(conf)

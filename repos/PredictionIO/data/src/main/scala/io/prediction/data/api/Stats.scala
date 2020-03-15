@@ -37,8 +37,7 @@ case class StatsSnapshot(
     val startTime: DateTime,
     val endTime: Option[DateTime],
     val basic: Seq[KV[EntityTypesEvent, Long]],
-    val statusCode: Seq[KV[StatusCode, Long]]
-)
+    val statusCode: Seq[KV[StatusCode, Long]])
 
 class Stats(val startTime: DateTime) {
   private[this] var _endTime: Option[DateTime] = None
@@ -73,7 +72,6 @@ class Stats(val startTime: DateTime) {
       startTime,
       _endTime,
       extractByAppId(appId, eteCount),
-      extractByAppId(appId, statusCodeCount)
-    )
+      extractByAppId(appId, statusCodeCount))
   }
 }

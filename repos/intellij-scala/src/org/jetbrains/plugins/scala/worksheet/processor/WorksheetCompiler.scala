@@ -106,20 +106,16 @@ class WorksheetCompiler {
                 if (module == null)
                   onError("Can't find Scala module to run")
                 else
-                  new RemoteServerConnector(
-                    module,
-                    tempFile,
-                    outputDir,
-                    name
-                  ).compileAndRun(
-                    new Runnable {
-                      override def run() {
-                        if (runType == OutOfProcessServer)
-                          callback(name, outputDir.getAbsolutePath)
-                      }
-                    },
-                    worksheetVirtual,
-                    consumer)
+                  new RemoteServerConnector(module, tempFile, outputDir, name)
+                    .compileAndRun(
+                      new Runnable {
+                        override def run() {
+                          if (runType == OutOfProcessServer)
+                            callback(name, outputDir.getAbsolutePath)
+                        }
+                      },
+                      worksheetVirtual,
+                      consumer)
               } catch {
                 case ex: IllegalArgumentException => onError(ex.getMessage)
               }
@@ -136,29 +132,30 @@ class WorksheetCompiler {
 
         val treeError = new CompilerErrorTreeView(project, null)
 
-        ApplicationManager.getApplication.invokeLater(new Runnable {
-          override def run() {
-            val file = errorMessage.getContainingFile.getVirtualFile
-            if (file == null || !file.isValid)
-              return
+        ApplicationManager.getApplication.invokeLater(
+          new Runnable {
+            override def run() {
+              val file = errorMessage.getContainingFile.getVirtualFile
+              if (file == null || !file.isValid)
+                return
 
-            treeError.addMessage(
-              MessageCategory.ERROR,
-              Array(errorMessage.getErrorDescription),
-              file,
-              pos.line,
-              pos.column,
-              null)
+              treeError.addMessage(
+                MessageCategory.ERROR,
+                Array(errorMessage.getErrorDescription),
+                file,
+                pos.line,
+                pos.column,
+                null)
 
-            val errorContent = ContentFactory.SERVICE.getInstance
-              .createContent(treeError.getComponent, ERROR_CONTENT_NAME, true)
-            contentManager addContent errorContent
-            contentManager setSelectedContent errorContent
+              val errorContent = ContentFactory.SERVICE.getInstance
+                .createContent(treeError.getComponent, ERROR_CONTENT_NAME, true)
+              contentManager addContent errorContent
+              contentManager setSelectedContent errorContent
 
-            openMessageView(project, errorContent, treeError)
-            editor.getCaretModel moveToLogicalPosition pos
-          }
-        })
+              openMessageView(project, errorContent, treeError)
+              editor.getCaretModel moveToLogicalPosition pos
+            }
+          })
 
       case _ =>
     }

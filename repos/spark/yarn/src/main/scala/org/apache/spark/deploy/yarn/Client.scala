@@ -554,8 +554,7 @@ private[spark] class Client(
       */
     List(
       (APP_JAR_NAME, args.userJar, APP_JAR),
-      ("log4j.properties", oldLog4jConf.orNull, null)
-    ).foreach {
+      ("log4j.properties", oldLog4jConf.orNull, null)).foreach {
       case (destName, path, confKey) =>
         if (path != null && !path.trim().isEmpty()) {
           val (isLocal, localizedPath) = distribute(
@@ -581,8 +580,7 @@ private[spark] class Client(
     List(
       (args.addJars, LocalResourceType.FILE, true),
       (args.files, LocalResourceType.FILE, false),
-      (args.archives, LocalResourceType.ARCHIVE, false)
-    ).foreach {
+      (args.archives, LocalResourceType.ARCHIVE, false)).foreach {
       case (flist, resType, addToClasspath) =>
         if (flist != null && !flist.isEmpty()) {
           flist.split(',').foreach { file =>
@@ -902,8 +900,7 @@ private[spark] class Client(
     val tmpDir =
       new Path(
         YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
-        YarnConfiguration.DEFAULT_CONTAINER_TEMP_DIR
-      )
+        YarnConfiguration.DEFAULT_CONTAINER_TEMP_DIR)
     javaOpts += "-Djava.io.tmpdir=" + tmpDir
 
     // TODO: Remove once cpuset version is pushed out.
@@ -975,7 +972,9 @@ private[spark] class Client(
     }
 
     // For log4j configuration to reference
-    javaOpts += ("-Dspark.yarn.app.container.log.dir=" + ApplicationConstants.LOG_DIR_EXPANSION_VAR)
+    javaOpts += (
+      "-Dspark.yarn.app.container.log.dir=" + ApplicationConstants.LOG_DIR_EXPANSION_VAR
+    )
     YarnCommandBuilderUtils.addPermGenSizeOpt(javaOpts)
 
     val userClass =
@@ -1036,8 +1035,7 @@ private[spark] class Client(
     val commands = prefixEnv ++ Seq(
       YarnSparkHadoopUtil.expandEnvironment(
         Environment.JAVA_HOME) + "/bin/java",
-      "-server"
-    ) ++
+      "-server") ++
       javaOpts ++ amArgs ++
       Seq(
         "1>",

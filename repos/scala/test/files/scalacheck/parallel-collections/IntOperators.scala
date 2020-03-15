@@ -18,8 +18,7 @@ trait IntOperators extends Operators[Int] {
       _ == 99,
       x => x > 50 && x < 150,
       x => x > 350 && x < 550,
-      x => (x > 1000 && x < 1500) || (x > 400 && x < 500)
-    )
+      x => (x > 1000 && x < 1500) || (x > 400 && x < 500))
   def forallPredicates =
     List(_ >= 0, _ < 0, _ % 2 == 0, _ != 55, _ != 505, _ != 5005)
   def existsPredicates =
@@ -56,8 +55,7 @@ trait IntOperators extends Operators[Int] {
         else if (n < 0)
           List(1, 2, 3)
         else
-          List()
-    )
+          List())
   def filterPredicates =
     List(
       _ % 2 == 0,
@@ -77,8 +75,7 @@ trait IntOperators extends Operators[Int] {
       _ < -5e5,
       x => true,
       x => false,
-      x => x % 53 == 0 && x % 17 == 0
-    )
+      x => x % 53 == 0 && x % 17 == 0)
   def filterNotPredicates = filterPredicates
   def partitionPredicates = filterPredicates
   def takeWhilePredicates =
@@ -110,28 +107,17 @@ trait IntOperators extends Operators[Int] {
       (0, _ + _),
       (1, _ * _),
       (Int.MinValue, math.max(_, _)),
-      (Int.MaxValue, math.min(_, _))
-    )
+      (Int.MaxValue, math.min(_, _)))
   def addAllTraversables =
     List(
       List[Int](),
       List(1),
       List(1, 2),
       List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-      Array.fill(1000)(1).toSeq
-    )
+      Array.fill(1000)(1).toSeq)
   def newArray(sz: Int) = new Array[Int](sz)
   def groupByFunctions =
-    List(
-      _ % 2,
-      _ % 3,
-      _ % 5,
-      _ % 10,
-      _ % 154,
-      _ % 3217,
-      _ * 2,
-      _ + 1
-    )
+    List(_ % 2, _ % 3, _ % 5, _ % 10, _ % 154, _ % 3217, _ * 2, _ + 1)
 }
 
 trait IntSeqOperators extends IntOperators with SeqOperators[Int] {
@@ -148,8 +134,7 @@ trait IntSeqOperators extends IntOperators with SeqOperators[Int] {
       _ < -50,
       _ > 500,
       n => -90 < n && n < -10,
-      n => 500 < n && n < 1500
-    )
+      n => 500 < n && n < 1500)
   def indexWherePredicates =
     List(
       _ % 2 == 0,
@@ -167,8 +152,7 @@ trait IntSeqOperators extends IntOperators with SeqOperators[Int] {
       _ < -100,
       _ < -1000,
       n => n > 50 && n < 100,
-      n => n * n > 1000000 && n % 111 == 0
-    )
+      n => n * n > 1000000 && n % 111 == 0)
   def lastIndexWherePredicates =
     List(
       _ % 2 == 0,
@@ -188,8 +172,7 @@ trait IntSeqOperators extends IntOperators with SeqOperators[Int] {
       _ == 0,
       n => n > -40 && n < 40,
       n => n > -80 && n < -10,
-      n => n > 110 && n < 150
-    )
+      n => n > 110 && n < 150)
   def reverseMapFunctions = List(-_, n => n * n, _ + 1)
   def sameElementsSeqs =
     List(
@@ -197,8 +180,7 @@ trait IntSeqOperators extends IntOperators with SeqOperators[Int] {
       List(1),
       List(1, 2, 3, 4, 5, 6, 7, 8, 9),
       Array.fill(150)(1).toSeq,
-      Array.fill(1000)(1).toSeq
-    )
+      Array.fill(1000)(1).toSeq)
   def startEndSeqs =
     List(
       Nil,
@@ -207,6 +189,5 @@ trait IntSeqOperators extends IntOperators with SeqOperators[Int] {
       List(0, 1, 2, 3, 4, 5),
       List(4, 5, 6, 7, 8, 9, 10),
       List(4, 5, 6, 7, 8, 9, 0),
-      List(-4, -3, -2, -1)
-    )
+      List(-4, -3, -2, -1))
 }

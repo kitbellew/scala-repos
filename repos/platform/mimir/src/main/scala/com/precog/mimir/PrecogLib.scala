@@ -76,9 +76,8 @@ trait PrecogLibModule[M[+_]]
       class EnrichmentMapper(ctx: MorphContext) extends CMapperM[M] {
         import Extractor.Error
 
-        private type Result[+A] = Validation[
-          NonEmptyList[HttpClientError \/ Error],
-          A]
+        private type Result[+A] = Validation[NonEmptyList[
+          HttpClientError \/ Error], A]
         private val httpError: HttpClientError => HttpClientError \/ Error =
           -\/(_)
         private val jsonError: Error => HttpClientError \/ Error = \/-(_)
@@ -219,13 +218,15 @@ trait PrecogLibModule[M[+_]]
               M point resultSlice
 
             case Failure(errors) =>
-              val messages = errors.toList map (_.fold(
-                { httpError =>
-                  "Error making HTTP request: " + httpError.userMessage
-                },
-                { jsonError =>
-                  "Error parsing JSON: " + jsonError.message
-                }))
+              val messages = errors.toList map (
+                _.fold(
+                  { httpError =>
+                    "Error making HTTP request: " + httpError.userMessage
+                  },
+                  { jsonError =>
+                    "Error parsing JSON: " + jsonError.message
+                  })
+              )
               val units: M[List[Unit]] = messages traverse (ctx.logger.error(_))
               units flatMap { _ =>
                 ctx.logger.die() map { _ =>

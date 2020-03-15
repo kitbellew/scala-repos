@@ -110,9 +110,10 @@ class BasicRouteSpecs extends RoutingSpec {
   }
   "Route disjunction" should {
     "work in the happy case" in {
-      val route = Route.seal((path("abc") | path("def")) {
-        completeOk
-      })
+      val route = Route.seal(
+        (path("abc") | path("def")) {
+          completeOk
+        })
 
       Get("/abc") ~> route ~> check {
         status shouldEqual StatusCodes.OK

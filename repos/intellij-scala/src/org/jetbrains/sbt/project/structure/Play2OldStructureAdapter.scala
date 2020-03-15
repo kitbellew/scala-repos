@@ -22,9 +22,10 @@ object Play2OldStructureAdapter {
     }
     val oldData = projectKeyValueTriples
       .groupBy(_._2)
-      .mapValues(_.map({
-        case (id, _, v) => (id, v)
-      }))
+      .mapValues(
+        _.map({
+          case (id, _, v) => (id, v)
+        }))
 
     new Play2ProjectData(
       SbtProjectSystem.Id,

@@ -92,8 +92,9 @@ private[http] object WebSocket {
             if (code.exists(Protocol.CloseCodes.isError))
               ctx.fail(new PeerClosedConnectionException(code.get, reason))
             else if (inMessage)
-              ctx.fail(new ProtocolException(
-                s"Truncated message, peer closed connection in the middle of message."))
+              ctx.fail(
+                new ProtocolException(
+                  s"Truncated message, peer closed connection in the middle of message."))
             else
               ctx.finish()
           case ActivelyCloseWithCode(code, reason) ⇒
@@ -121,26 +122,28 @@ private[http] object WebSocket {
         // filtered out by collect in `prepareMessages` below
         case (Nil, _) ⇒ Nil
         case (first +: Nil, remaining) ⇒
-          (first match {
-            case TextMessagePart(text, true) ⇒
-              SubSource.kill(remaining)
-              TextMessage.Strict(text)
-            case first @ TextMessagePart(text, false) ⇒
-              TextMessage(
-                (Source.single(first) ++ remaining)
-                  .collect {
-                    case t: TextMessagePart if t.data.nonEmpty ⇒ t.data
-                  })
-            case BinaryMessagePart(data, true) ⇒
-              SubSource.kill(remaining)
-              BinaryMessage.Strict(data)
-            case first @ BinaryMessagePart(data, false) ⇒
-              BinaryMessage(
-                (Source.single(first) ++ remaining)
-                  .collect {
-                    case t: BinaryMessagePart if t.data.nonEmpty ⇒ t.data
-                  })
-          }) :: Nil
+          (
+            first match {
+              case TextMessagePart(text, true) ⇒
+                SubSource.kill(remaining)
+                TextMessage.Strict(text)
+              case first @ TextMessagePart(text, false) ⇒
+                TextMessage(
+                  (Source.single(first) ++ remaining)
+                    .collect {
+                      case t: TextMessagePart if t.data.nonEmpty ⇒ t.data
+                    })
+              case BinaryMessagePart(data, true) ⇒
+                SubSource.kill(remaining)
+                BinaryMessage.Strict(data)
+              case first @ BinaryMessagePart(data, false) ⇒
+                BinaryMessage(
+                  (Source.single(first) ++ remaining)
+                    .collect {
+                      case t: BinaryMessagePart if t.data.nonEmpty ⇒ t.data
+                    })
+            }
+          ) :: Nil
       }
 
     def prepareMessages: Flow[MessagePart, Message, NotUsed] =

@@ -108,8 +108,7 @@ object ProdServerStartSpec extends Specification {
             args = Seq(tempDir.getAbsolutePath),
             propertyMap = Map(
               "play.server.provider" -> classOf[FakeServerProvider].getName),
-            pid = Some("999")
-          )
+            pid = Some("999"))
         val pidFile = new File(tempDir, "RUNNING_PID")
         pidFile.exists must beFalse
         val server = ProdServerStart.start(process)
@@ -137,8 +136,7 @@ object ProdServerStartSpec extends Specification {
             "play.server.https.port" -> "443",
             "play.server.http.address" -> "localhost"
           ),
-          pid = Some("123")
-        )
+          pid = Some("123"))
       val pidFile = new File(tempDir, "RUNNING_PID")
       pidFile.exists must beFalse
       val server = ProdServerStart.start(process)
@@ -167,8 +165,7 @@ object ProdServerStartSpec extends Specification {
             "play.server.https.port" -> "disabled",
             "play.server.http.address" -> "localhost"
           ),
-          pid = Some("123")
-        )
+          pid = Some("123"))
       val pidFile = new File(tempDir, "RUNNING_PID")
       pidFile.exists must beFalse
       val server = ProdServerStart.start(process)

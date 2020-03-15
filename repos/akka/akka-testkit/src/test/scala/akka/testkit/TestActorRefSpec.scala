@@ -127,16 +127,20 @@ class TestActorRefSpec
     "support nested Actor creation" when {
 
       "used with TestActorRef" in {
-        val a = TestActorRef(Props(new Actor {
-          val nested = TestActorRef(Props(new Actor {
-            def receive = {
-              case _ ⇒
-            }
-          }))
-          def receive = {
-            case _ ⇒ sender() ! nested
-          }
-        }))
+        val a = TestActorRef(
+          Props(
+            new Actor {
+              val nested = TestActorRef(
+                Props(
+                  new Actor {
+                    def receive = {
+                      case _ ⇒
+                    }
+                  }))
+              def receive = {
+                case _ ⇒ sender() ! nested
+              }
+            }))
         a should not be (null)
         val nested = Await.result((a ? "any").mapTo[ActorRef], timeout.duration)
         nested should not be (null)
@@ -144,16 +148,20 @@ class TestActorRefSpec
       }
 
       "used with ActorRef" in {
-        val a = TestActorRef(Props(new Actor {
-          val nested = context.actorOf(Props(new Actor {
-            def receive = {
-              case _ ⇒
-            }
-          }))
-          def receive = {
-            case _ ⇒ sender() ! nested
-          }
-        }))
+        val a = TestActorRef(
+          Props(
+            new Actor {
+              val nested = context.actorOf(
+                Props(
+                  new Actor {
+                    def receive = {
+                      case _ ⇒
+                    }
+                  }))
+              def receive = {
+                case _ ⇒ sender() ! nested
+              }
+            }))
         a should not be (null)
         val nested = Await.result((a ? "any").mapTo[ActorRef], timeout.duration)
         nested should not be (null)
@@ -190,13 +198,15 @@ class TestActorRefSpec
     "stop when sent a poison pill" in {
       EventFilter[ActorKilledException]() intercept {
         val a = TestActorRef(Props[WorkerActor])
-        val forwarder = system.actorOf(Props(new Actor {
-          context.watch(a)
-          def receive = {
-            case t: Terminated ⇒ testActor forward WrappedTerminated(t)
-            case x ⇒ testActor forward x
-          }
-        }))
+        val forwarder = system.actorOf(
+          Props(
+            new Actor {
+              context.watch(a)
+              def receive = {
+                case t: Terminated ⇒ testActor forward WrappedTerminated(t)
+                case x ⇒ testActor forward x
+              }
+            }))
         a.!(PoisonPill)(testActor)
         expectMsgPF(5 seconds) {
           case WrappedTerminated(Terminated(`a`)) ⇒ true
@@ -210,31 +220,38 @@ class TestActorRefSpec
       EventFilter[ActorKilledException]() intercept {
         counter = 2
 
-        val boss = TestActorRef(Props(new TActor {
-          val ref = TestActorRef(
-            Props(new TActor {
+        val boss = TestActorRef(
+          Props(
+            new TActor {
+              val ref = TestActorRef(
+                Props(
+                  new TActor {
+                    def receiveT = {
+                      case _ ⇒
+                    }
+                    override def preRestart(
+                        reason: Throwable,
+                        msg: Option[Any]) {
+                      counter -= 1
+                    }
+                    override def postRestart(reason: Throwable) {
+                      counter -= 1
+                    }
+                  }),
+                self,
+                "child"
+              )
+
+              override def supervisorStrategy =
+                OneForOneStrategy(
+                  maxNrOfRetries = 5,
+                  withinTimeRange = 1 second)(
+                  List(classOf[ActorKilledException]))
+
               def receiveT = {
-                case _ ⇒
+                case "sendKill" ⇒ ref ! Kill
               }
-              override def preRestart(reason: Throwable, msg: Option[Any]) {
-                counter -= 1
-              }
-              override def postRestart(reason: Throwable) {
-                counter -= 1
-              }
-            }),
-            self,
-            "child"
-          )
-
-          override def supervisorStrategy =
-            OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 1 second)(
-              List(classOf[ActorKilledException]))
-
-          def receiveT = {
-            case "sendKill" ⇒ ref ! Kill
-          }
-        }))
+            }))
 
         boss ! "sendKill"
 

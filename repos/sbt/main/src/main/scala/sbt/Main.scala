@@ -309,10 +309,12 @@ object BuiltinCommands {
       keepKeys: AttributeKey[_] => Boolean): Parser[String] =
     singleArgument(allTaskAndSettingKeys(s).filter(keepKeys).map(_.label).toSet)
   def verbosityParser: Parser[Int] =
-    success(1) | ((Space ~ "-") ~> (
-      'v'.id.+.map(_.size + 1) |
-        ("V" ^^^ Int.MaxValue)
-    ))
+    success(1) | (
+      (Space ~ "-") ~> (
+        'v'.id.+.map(_.size + 1) |
+          ("V" ^^^ Int.MaxValue)
+      )
+    )
   def taskDetail(keys: Seq[AttributeKey[_]]): Seq[(String, String)] =
     sortByLabel(withDescription(keys)) flatMap taskStrings
 
@@ -439,8 +441,7 @@ object BuiltinCommands {
             "<set>",
             ims,
             arg,
-            LineRange(0, 0)
-          )(cl)
+            LineRange(0, 0))(cl)
         val setResult =
           if (all)
             SettingCompletions.setAll(extracted, settings)
@@ -709,9 +710,10 @@ object BuiltinCommands {
   @tailrec
   private[this] def doLoadFailed(s: State, loadArg: String): State = {
     val result =
-      (SimpleReader.readLine(
-        "Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? ") getOrElse Quit)
-        .toLowerCase(Locale.ENGLISH)
+      (
+        SimpleReader.readLine(
+          "Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? ") getOrElse Quit
+      ).toLowerCase(Locale.ENGLISH)
     def matches(s: String) = !result.isEmpty && (s startsWith result)
 
     if (result.isEmpty || matches("retry"))
@@ -721,10 +723,12 @@ object BuiltinCommands {
     else if (matches("ignore")) {
       val hadPrevious = Project.isProjectLoaded(s)
       s.log.warn(
-        "Ignoring load failure: " + (if (hadPrevious)
-                                       "using previously loaded project."
-                                     else
-                                       "no project loaded."))
+        "Ignoring load failure: " + (
+          if (hadPrevious)
+            "using previously loaded project."
+          else
+            "no project loaded."
+        ))
       s
     } else if (matches("last"))
       LastCommand :: loadProjectCommand(LoadFailed, loadArg) :: s

@@ -31,8 +31,9 @@ trait Proxy extends Any {
       case null => false
       case _ =>
         val x = that.asInstanceOf[AnyRef]
-        (x eq this.asInstanceOf[AnyRef]) || (x eq self
-          .asInstanceOf[AnyRef]) || (x equals self)
+        (x eq this.asInstanceOf[AnyRef]) || (
+          x eq self.asInstanceOf[AnyRef]
+        ) || (x equals self)
     }
   override def toString = "" + self
 }

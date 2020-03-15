@@ -66,18 +66,14 @@ sed diam nonumy eirmod tempor invidunt ut</p>
 
   it should "parse multiple paragraphs" in {
     apply("test1\n\ntest2\n") should equal("<p>test1</p>\n<p>test2</p>\n")
-    apply(
-      """test
+    apply("""test
 
 test
 
-test"""
-    ) should equal(
-      """<p>test</p>
+test""") should equal("""<p>test</p>
 <p>test</p>
 <p>test</p>
-"""
-    )
+""")
   }
 
   it should "parse block quotes" in {
@@ -86,48 +82,37 @@ test"""
   }
 
   it should "parse ordered and unordered lists" in {
-    apply("* foo\n* bar\n* baz\n") should equal(
-      """<ul>
+    apply("* foo\n* bar\n* baz\n") should equal("""<ul>
 <li>foo</li>
 <li>bar</li>
 <li>baz</li>
 </ul>
-"""
-    )
-    apply("+ foo\n+ bar\n+ baz\n") should equal(
-      """<ul>
+""")
+    apply("+ foo\n+ bar\n+ baz\n") should equal("""<ul>
 <li>foo</li>
 <li>bar</li>
 <li>baz</li>
 </ul>
-"""
-    )
-    apply("- foo\n- bar\n- baz\n") should equal(
-      """<ul>
+""")
+    apply("- foo\n- bar\n- baz\n") should equal("""<ul>
 <li>foo</li>
 <li>bar</li>
 <li>baz</li>
 </ul>
-"""
-    )
-    apply("- foo\n+ bar\n* baz\n") should equal(
-      """<ul>
+""")
+    apply("- foo\n+ bar\n* baz\n") should equal("""<ul>
 <li>foo</li>
 <li>bar</li>
 <li>baz</li>
 </ul>
-"""
-    )
-    apply("1. foo\n22. bar\n10. baz\n") should equal(
-      """<ol>
+""")
+    apply("1. foo\n22. bar\n10. baz\n") should equal("""<ol>
 <li>foo</li>
 <li>bar</li>
 <li>baz</li>
 </ol>
-"""
-    )
-    apply("* foo\n\n* bar\n\n* baz\n\n") should equal(
-      """<ul>
+""")
+    apply("* foo\n\n* bar\n\n* baz\n\n") should equal("""<ul>
 <li><p>foo</p>
 </li>
 <li><p>bar</p>
@@ -135,26 +120,22 @@ test"""
 <li><p>baz</p>
 </li>
 </ul>
-"""
-    )
-    apply("* foo\n\n* bar\n* baz\n") should equal(
-      """<ul>
+""")
+    apply("* foo\n\n* bar\n* baz\n") should equal("""<ul>
 <li><p>foo</p>
 </li>
 <li><p>bar</p>
 </li>
 <li>baz</li>
 </ul>
-"""
-    )
+""")
     apply("""* foo
 
 * bar
 * baz
 
 * bam
-""") should equal(
-      """<ul>
+""") should equal("""<ul>
 <li><p>foo</p>
 </li>
 <li><p>bar</p>
@@ -163,16 +144,14 @@ test"""
 <li><p>bam</p>
 </li>
 </ul>
-"""
-    )
+""")
     apply("""* foo
         		
 + bar
 - baz
 
 * bam
-""") should equal(
-      """<ul>
+""") should equal("""<ul>
 <li><p>foo</p>
 </li>
 <li><p>bar</p>
@@ -181,34 +160,29 @@ test"""
 <li><p>bam</p>
 </li>
 </ul>
-"""
-    )
+""")
   }
 
   it should "stop a list after an empty line" in {
     apply("""1. a
 2. b
 
-paragraph""") should equal(
-      """<ol>
+paragraph""") should equal("""<ol>
 <li>a</li>
 <li>b</li>
 </ol>
 <p>paragraph</p>
-"""
-    )
+""")
 
   }
 
   it should "recursively evaluate quotes" in {
-    apply("> foo\n> > bar\n> \n> baz\n") should equal(
-      """<blockquote><p>foo</p>
+    apply("> foo\n> > bar\n> \n> baz\n") should equal("""<blockquote><p>foo</p>
 <blockquote><p>bar</p>
 </blockquote>
 <p>baz</p>
 </blockquote>
-"""
-    )
+""")
   }
 
   it should "handle corner cases for bold and italic in paragraphs" in {
@@ -265,8 +239,7 @@ else in the doc, define the link:</p>
   }
 
   it should "parse fenced code blocks" in {
-    apply(
-      """```  foobar
+    apply("""```  foobar
 System.out.println("Hello World!");
     
 <some> verbatim xml </some>
@@ -280,9 +253,7 @@ System.out.println("Hello World!");
 -----------
 but this is:
 ```         
-"""
-    ) should equal(
-      """<pre><code>System.out.println(&quot;Hello World!&quot;);
+""") should equal("""<pre><code>System.out.println(&quot;Hello World!&quot;);
     
 &lt;some&gt; verbatim xml &lt;/some&gt;
     
@@ -295,61 +266,48 @@ but this is:
 -----------
 but this is:
 </code></pre>
-"""
-    )
+""")
 
-    apply(
-      """```
+    apply("""```
 System.out.println("Hello World!");
 ```
 And now to something completely different.
     old style code
-"""
-    ) should equal(
-      """<pre><code>System.out.println(&quot;Hello World!&quot;);
+""") should equal("""<pre><code>System.out.println(&quot;Hello World!&quot;);
 </code></pre>
 <p>And now to something completely different.</p>
 <pre><code>old style code
 </code></pre>
-"""
-    )
+""")
 
-    apply(
-      """```
+    apply("""```
 System.out.println("Hello World!");
 No need to end blocks
 
 And now to something completely different.
     old style code
-"""
-    ) should equal(
-      """<pre><code>System.out.println(&quot;Hello World!&quot;);
+""") should equal("""<pre><code>System.out.println(&quot;Hello World!&quot;);
 No need to end blocks
 
 And now to something completely different.
     old style code
 </code></pre>
-"""
-    )
+""")
 
-    apply(
-      """Some text first
+    apply("""Some text first
 ```
 System.out.println("Hello World!");
 No need to end blocks
 
 And now to something completely different.
     old style code
-"""
-    ) should equal(
-      """<p>Some text first</p>
+""") should equal("""<p>Some text first</p>
 <pre><code>System.out.println(&quot;Hello World!&quot;);
 No need to end blocks
 
 And now to something completely different.
     old style code
 </code></pre>
-"""
-    )
+""")
   }
 }

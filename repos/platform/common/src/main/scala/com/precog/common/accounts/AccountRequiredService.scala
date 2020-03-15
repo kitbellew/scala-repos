@@ -40,11 +40,8 @@ class AccountRequiredService[A, B](
     implicit
     err: (HttpFailure, String) => B,
     executor: ExecutionContext)
-    extends DelegatingService[
-      A,
-      (APIKey, Path) => Future[B],
-      A,
-      (APIKey, Path, AccountId) => Future[B]]
+    extends DelegatingService[A, (APIKey, Path) => Future[
+      B], A, (APIKey, Path, AccountId) => Future[B]]
     with Logging {
   val service =
     (request: HttpRequest[A]) => {
@@ -77,6 +74,5 @@ class AccountRequiredService[A, B](
   val metadata = AboutMetadata(
     ParameterMetadata('ownerAccountId, None),
     DescriptionMetadata(
-      "An explicit or implicit Precog account Id is required for the use of this service.")
-  )
+      "An explicit or implicit Precog account Id is required for the use of this service."))
 }

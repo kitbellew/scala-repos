@@ -138,8 +138,7 @@ trait TraceSymbolActivity {
               .map({
                 case (k, v) => v + "/" + k
               })
-              .mkString(", ") + ", ..."
-          )
+              .mkString(", ") + ", ...")
         }
       )
     }

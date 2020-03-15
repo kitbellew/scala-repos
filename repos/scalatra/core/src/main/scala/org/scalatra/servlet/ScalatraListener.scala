@@ -48,10 +48,14 @@ class ScalatraListener extends ServletContextListener {
     val cycleClassName =
       Option(servletContext.getInitParameter(LifeCycleKey))
         .flatMap(_.blankOption) getOrElse DefaultLifeCycle
-    logger info ("The cycle class name from the config: " + (if (cycleClassName == null)
-                                                               "null"
-                                                             else
-                                                               cycleClassName))
+    logger info (
+      "The cycle class name from the config: " + (
+        if (cycleClassName == null)
+          "null"
+        else
+          cycleClassName
+      )
+    )
 
     val lifeCycleClass: Class[_] =
       try {

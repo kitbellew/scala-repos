@@ -109,12 +109,14 @@ class ValidatedTests extends CatsSuite {
   }
 
   test("catchNonFatal catches non-fatal exceptions") {
-    assert(Validated.catchNonFatal {
-      "foo".toInt
-    }.isInvalid)
-    assert(Validated.catchNonFatal {
-      throw new Throwable("blargh")
-    }.isInvalid)
+    assert(
+      Validated.catchNonFatal {
+        "foo".toInt
+      }.isInvalid)
+    assert(
+      Validated.catchNonFatal {
+        throw new Throwable("blargh")
+      }.isInvalid)
   }
 
   test("fromTry is invalid for failed try") {

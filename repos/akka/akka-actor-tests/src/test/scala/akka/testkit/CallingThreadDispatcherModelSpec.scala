@@ -21,11 +21,13 @@ object CallingThreadDispatcherModelSpec {
       }
     """ +
       // use unique dispatcher id for each test, since MessageDispatcherInterceptor holds state
-      (for (n ← 1 to 30)
-        yield """
+      (
+        for (n ← 1 to 30)
+          yield """
         test-calling-thread-%s {
           type = "akka.testkit.CallingThreadDispatcherModelSpec$CallingThreadDispatcherInterceptorConfigurator"
-        }""".format(n)).mkString
+        }""".format(n)
+      ).mkString
   }
 
   class CallingThreadDispatcherInterceptorConfigurator(

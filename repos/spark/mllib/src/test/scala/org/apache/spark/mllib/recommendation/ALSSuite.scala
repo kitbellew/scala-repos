@@ -83,10 +83,12 @@ object ALSSuite {
             users,
             products,
             Array.fill(users * products)(
-              (if (negativeWeights)
-                 -2
-               else
-                 0) + rand.nextInt(10).toDouble))
+              (
+                if (negativeWeights)
+                  -2
+                else
+                  0
+              ) + rand.nextInt(10).toDouble))
         val prefs =
           new BDM(
             users,
@@ -197,10 +199,11 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("negative ids") {
     val data = ALSSuite.generateRatings(50, 50, 2, 0.7, false, false)
-    val ratings = sc.parallelize(data._1.map {
-      case Rating(u, p, r) =>
-        Rating(u - 25, p - 25, r)
-    })
+    val ratings = sc.parallelize(
+      data._1.map {
+        case Rating(u, p, r) =>
+          Rating(u - 25, p - 25, r)
+      })
     val correct = data._2
     val model = ALS.train(ratings, 5, 15)
 
@@ -305,16 +308,17 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
         val correct = trueRatings(u, p)
         if (math.abs(prediction - correct) > matchThreshold) {
           fail(
-            ("Model failed to predict (%d, %d): %f vs %f\ncorr: %s\npred: %s\nU: %s\n P: %s")
-              .format(
-                u,
-                p,
-                correct,
-                prediction,
-                trueRatings,
-                predictedRatings,
-                predictedU,
-                predictedP))
+            (
+              "Model failed to predict (%d, %d): %f vs %f\ncorr: %s\npred: %s\nU: %s\n P: %s"
+            ).format(
+              u,
+              p,
+              correct,
+              prediction,
+              trueRatings,
+              predictedRatings,
+              predictedU,
+              predictedP))
         }
       }
     } else {

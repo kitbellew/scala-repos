@@ -238,20 +238,21 @@ private[deploy] class Worker(
 
   private def tryRegisterAllMasters(): Array[JFuture[_]] = {
     masterRpcAddresses.map { masterAddress =>
-      registerMasterThreadPool.submit(new Runnable {
-        override def run(): Unit = {
-          try {
-            logInfo("Connecting to master " + masterAddress + "...")
-            val masterEndpoint = rpcEnv
-              .setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
-            registerWithMaster(masterEndpoint)
-          } catch {
-            case ie: InterruptedException => // Cancelled
-            case NonFatal(e) =>
-              logWarning(s"Failed to connect to master $masterAddress", e)
+      registerMasterThreadPool.submit(
+        new Runnable {
+          override def run(): Unit = {
+            try {
+              logInfo("Connecting to master " + masterAddress + "...")
+              val masterEndpoint = rpcEnv
+                .setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
+              registerWithMaster(masterEndpoint)
+            } catch {
+              case ie: InterruptedException => // Cancelled
+              case NonFatal(e) =>
+                logWarning(s"Failed to connect to master $masterAddress", e)
+            }
           }
-        }
-      })
+        })
     }
   }
 
@@ -299,22 +300,23 @@ private[deploy] class Worker(
             }
             val masterAddress = masterRef.address
             registerMasterFutures = Array(
-              registerMasterThreadPool.submit(new Runnable {
-                override def run(): Unit = {
-                  try {
-                    logInfo("Connecting to master " + masterAddress + "...")
-                    val masterEndpoint = rpcEnv
-                      .setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
-                    registerWithMaster(masterEndpoint)
-                  } catch {
-                    case ie: InterruptedException => // Cancelled
-                    case NonFatal(e) =>
-                      logWarning(
-                        s"Failed to connect to master $masterAddress",
-                        e)
+              registerMasterThreadPool.submit(
+                new Runnable {
+                  override def run(): Unit = {
+                    try {
+                      logInfo("Connecting to master " + masterAddress + "...")
+                      val masterEndpoint = rpcEnv
+                        .setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
+                      registerWithMaster(masterEndpoint)
+                    } catch {
+                      case ie: InterruptedException => // Cancelled
+                      case NonFatal(e) =>
+                        logWarning(
+                          s"Failed to connect to master $masterAddress",
+                          e)
+                    }
                   }
-                }
-              }))
+                }))
           case None =>
             if (registerMasterFutures != null) {
               registerMasterFutures.foreach(_.cancel(true))

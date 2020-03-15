@@ -1071,8 +1071,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       /** Return types by label. */
       val returnTypes: Map[Option[String], Type],
       /** Whether we're in a constructor of the class */
-      val inConstructor: Boolean
-  ) {
+      val inConstructor: Boolean) {
     def withThis(thisTpe: Type): Env =
       new Env(thisTpe, this.locals, this.returnTypes, this.inConstructor)
 
@@ -1123,10 +1122,12 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         thisType,
         paramLocalDefs.toMap,
         Map(
-          None -> (if (resultType == NoType)
-                     AnyType
-                   else
-                     resultType)),
+          None -> (
+            if (resultType == NoType)
+              AnyType
+            else
+              resultType
+          )),
         isConstructor)
     }
   }

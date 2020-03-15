@@ -7,8 +7,7 @@ object Test {
       new java.lang.Double(x.toDouble),
       new java.lang.Float(x.toFloat),
       new java.lang.Long(x.toLong),
-      new java.lang.Integer(x)
-    )
+      new java.lang.Integer(x))
     val extras =
       List(
         if (x >= Short.MinValue && x <= Short.MaxValue)

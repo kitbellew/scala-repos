@@ -178,10 +178,13 @@ case class ScExistentialType(
       case ScParameterizedType(a: ScAbstractType, args) if !falseUndef =>
         val subst =
           new ScSubstitutor(
-            Map(a.tpt.args.zip(args).map {
-              case (tpt: ScTypeParameterType, tp: ScType) =>
-                ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
-            }: _*),
+            Map(
+              a.tpt.args.zip(args).map {
+                case (tpt: ScTypeParameterType, tp: ScType) =>
+                  (
+                    (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
+                    tp)
+              }: _*),
             Map.empty,
             None)
         val upper: ScType =
@@ -269,8 +272,8 @@ case class ScExistentialType(
           comps.foreach(checkRecursive(_, newSet))
           signatureMap.foreach {
             case (s, rt) =>
-              s.substitutedTypes.foreach(_.foreach(f =>
-                checkRecursive(f(), newSet)))
+              s.substitutedTypes.foreach(
+                _.foreach(f => checkRecursive(f(), newSet)))
               s.typeParams.foreach {
                 case tParam: TypeParameter =>
                   tParam.update {
@@ -281,11 +284,12 @@ case class ScExistentialType(
               }
               checkRecursive(rt, newSet)
           }
-          typeMap.foreach(_._2.updateTypes {
-            case tp: ScType =>
-              checkRecursive(tp, newSet);
-              tp
-          })
+          typeMap.foreach(
+            _._2.updateTypes {
+              case tp: ScType =>
+                checkRecursive(tp, newSet);
+                tp
+            })
         case ScDesignatorType(elem) =>
           elem match {
             case ta: ScTypeAlias if ta.isExistentialTypeAlias =>
@@ -515,8 +519,7 @@ case class ScExistentialType(
       case ScUndefinedType(tpt) =>
         ScUndefinedType(
           updateRecursive(tpt, rejected, variance)
-            .asInstanceOf[ScTypeParameterType]
-        )
+            .asInstanceOf[ScTypeParameterType])
       case m @ ScMethodType(returnType, params, isImplicit) =>
         ScMethodType(
           updateRecursive(returnType, rejected, variance),
@@ -646,14 +649,16 @@ case class ScExistentialType(
 
     val quantDepth = quantified.typeDepth
     if (wildcards.nonEmpty) {
-      (wildcards.map { wildcard =>
-        val boundsDepth = wildcard.lowerBound.typeDepth.max(
-          wildcard.upperBound.typeDepth)
-        if (wildcard.args.nonEmpty) {
-          (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
-        } else
-          boundsDepth
-      }.max + 1).max(quantDepth)
+      (
+        wildcards.map { wildcard =>
+          val boundsDepth = wildcard.lowerBound.typeDepth.max(
+            wildcard.upperBound.typeDepth)
+          if (wildcard.args.nonEmpty) {
+            (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
+          } else
+            boundsDepth
+        }.max + 1
+      ).max(quantDepth)
     } else
       quantDepth
   }

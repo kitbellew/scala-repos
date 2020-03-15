@@ -45,20 +45,17 @@ class SideEffectsInMonadicTransformationTest
   }
 
   def testIteratorNext(): Unit = {
-    check(
-      s"""
+    check(s"""
         |val it = Iterator(1, 2)
         |Seq(1, 2) map {x =>
         |  if (it.hasNext) x + ${START}it.next$END
         |  else x
         |}
-      """.stripMargin
-    )
+      """.stripMargin)
   }
 
   def testCollectionMethods(): Unit = {
-    check(
-      s"""
+    check(s"""
          |import scala.collection.mutable.ArrayBuffer
          |
          |val buf = ArrayBuffer(1, 2)
@@ -66,11 +63,9 @@ class SideEffectsInMonadicTransformationTest
          |  ${START}buf += x$END
          |  x
          |}
-      """.stripMargin
-    )
+      """.stripMargin)
 
-    check(
-      s"""
+    check(s"""
          |import scala.collection.mutable.ArrayBuffer
          |
          |val buf = ArrayBuffer(1, 2)
@@ -78,11 +73,9 @@ class SideEffectsInMonadicTransformationTest
          |  ${START}buf.+=:(x)$END
          |  x
          |}
-      """.stripMargin
-    )
+      """.stripMargin)
 
-    check(
-      s"""
+    check(s"""
          |import scala.collection.mutable.ArrayBuffer
          |
          |val buf = ArrayBuffer(1, 2)
@@ -90,11 +83,9 @@ class SideEffectsInMonadicTransformationTest
          |  ${START}buf.append(x)$END
          |  x
          |}
-      """.stripMargin
-    )
+      """.stripMargin)
 
-    check(
-      s"""
+    check(s"""
          |import scala.collection.mutable.ArrayBuffer
          |
          |val buf = ArrayBuffer(1, 2)
@@ -102,11 +93,9 @@ class SideEffectsInMonadicTransformationTest
          |  ${START}buf.clear$END
          |  x
          |}
-      """.stripMargin
-    )
+      """.stripMargin)
 
-    check(
-      s"""
+    check(s"""
          |import scala.collection.mutable.Stack
          |
          |val st = Stack(1, 2)
@@ -114,8 +103,7 @@ class SideEffectsInMonadicTransformationTest
          |  ${START}st.push(x)$END
          |  x
          |}
-      """.stripMargin
-    )
+      """.stripMargin)
 
   }
 
@@ -131,8 +119,7 @@ class SideEffectsInMonadicTransformationTest
        |}
       """.stripMargin)
 
-    checkTextHasNoErrors(
-      s"""
+    checkTextHasNoErrors(s"""
          |import scala.collection.mutable.ArrayBuffer
          |Seq(1, 2).zipWithIndex.map{
          |  case (x, i) =>
@@ -141,8 +128,7 @@ class SideEffectsInMonadicTransformationTest
          |    x
          |  case _ => 1
          |}
-      """.stripMargin
-    )
+      """.stripMargin)
   }
 
   def testUnitTypeMethod(): Unit = {
@@ -169,40 +155,33 @@ class SideEffectsInMonadicTransformationTest
   }
 
   def testScalaSetter(): Unit = {
-    check(
-      s"""
+    check(s"""
         |class A {
         |  var z = 1
         |}
         |val a = new A()
         |Seq(1).map(x => ${START}a.z_=(x)$END)
-      """.stripMargin
-    )
-    check(
-      s"""
+      """.stripMargin)
+    check(s"""
        |class A {
        |  var z = 1
        |}
        |val a = new A()
        |Seq(1).map(x => ${START}a.z = x$END)
-      """.stripMargin
-    )
+      """.stripMargin)
   }
 
   def testJavaSetter(): Unit = {
-    check(
-      s"""
+    check(s"""
        |class A {
        |  @BeanProperty
        |  var z = 1
        |}
        |val a = new A()
        |Seq(1).map(x => ${START}a.setZ(x)$END)
-      """.stripMargin
-    )
+      """.stripMargin)
 
-    checkTextHasNoErrors(
-      s"""
+    checkTextHasNoErrors(s"""
          |class A {
          |  var z = 1
          |
@@ -215,8 +194,7 @@ class SideEffectsInMonadicTransformationTest
          |  val a = new A()
          |  a.setZ(x)
          |}
-      """.stripMargin
-    )
+      """.stripMargin)
   }
 
   def testExpressionsInOtherClasses(): Unit = {

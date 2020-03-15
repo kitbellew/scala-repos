@@ -162,7 +162,9 @@ object AdminUtils extends Logging {
       else
         rand.nextInt(brokerArray.length)
     for (_ <- 0 until nPartitions) {
-      if (currentPartitionId > 0 && (currentPartitionId % brokerArray.length == 0))
+      if (currentPartitionId > 0 && (
+            currentPartitionId % brokerArray.length == 0
+          ))
         nextReplicaShift += 1
       val firstReplicaIndex =
         (currentPartitionId + startIndex) % brokerArray.length
@@ -207,7 +209,9 @@ object AdminUtils extends Logging {
       else
         rand.nextInt(arrangedBrokerList.size)
     for (_ <- 0 until nPartitions) {
-      if (currentPartitionId > 0 && (currentPartitionId % arrangedBrokerList.size == 0))
+      if (currentPartitionId > 0 && (
+            currentPartitionId % arrangedBrokerList.size == 0
+          ))
         nextReplicaShift += 1
       val firstReplicaIndex =
         (currentPartitionId + startIndex) % arrangedBrokerList.size
@@ -230,10 +234,14 @@ object AdminUtils extends Logging {
           // 1. there is already a broker in the same rack that has assigned a replica AND there is one or more racks
           //    that do not have any replica, or
           // 2. the broker has already assigned a replica AND there is one or more brokers that do not have replica assigned
-          if ((!racksWithReplicas.contains(
-                rack) || racksWithReplicas.size == numRacks)
-              && (!brokersWithReplicas.contains(
-                broker) || brokersWithReplicas.size == numBrokers)) {
+          if ((
+                !racksWithReplicas.contains(
+                  rack) || racksWithReplicas.size == numRacks
+              )
+              && (
+                !brokersWithReplicas.contains(
+                  broker) || brokersWithReplicas.size == numBrokers
+              )) {
             replicaBuffer += broker
             racksWithReplicas += rack
             brokersWithReplicas += broker

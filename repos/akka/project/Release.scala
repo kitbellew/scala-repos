@@ -14,13 +14,11 @@ import sbtunidoc.Plugin.UnidocKeys._
 object Release {
   val releaseDirectory = SettingKey[File]("release-directory")
 
-  lazy val settings: Seq[Setting[_]] = commandSettings ++ Seq(
-    releaseDirectory <<= crossTarget / "release"
-  )
+  lazy val settings: Seq[Setting[_]] =
+    commandSettings ++ Seq(releaseDirectory <<= crossTarget / "release")
 
   lazy val commandSettings = Seq(
-    commands ++= Seq(buildReleaseCommand, uploadReleaseCommand)
-  )
+    commands ++= Seq(buildReleaseCommand, uploadReleaseCommand))
 
   def buildReleaseCommand =
     Command.command("buildRelease") { state =>

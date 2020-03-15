@@ -33,16 +33,18 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
       val classes = ScalaShortNamesCacheManager
         .getInstance(project)
         .getClassesByFQName(nameWithoutDollar, scope)
-      (if (classes.isEmpty) {
-         val converted = ScalaPsiUtil.convertMemberName(nameWithoutDollar)
-         if (nameWithoutDollar != converted)
-           ScalaShortNamesCacheManager
-             .getInstance(project)
-             .getClassesByFQName(converted, scope)
-         else
-           classes
-       } else
-         classes).foreach(fun)
+      (
+        if (classes.isEmpty) {
+          val converted = ScalaPsiUtil.convertMemberName(nameWithoutDollar)
+          if (nameWithoutDollar != converted)
+            ScalaShortNamesCacheManager
+              .getInstance(project)
+              .getClassesByFQName(converted, scope)
+          else
+            classes
+        } else
+          classes
+      ).foreach(fun)
     }
 
     iterateClasses("") {

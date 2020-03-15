@@ -30,8 +30,7 @@ trait EnumerateeTFunctions {
           in(
             el = e => k(elInput(f(e))) >>== doneOr(loop),
             empty = cont(step(k)),
-            eof = done(scont(k), in)
-          )
+            eof = done(scont(k), in))
         }
 
         doneOr(loop)
@@ -51,8 +50,7 @@ trait EnumerateeTFunctions {
                   .fold(
                     el = en => en.apply(step) >>== loop,
                     empty = contf(emptyInput) >>== loop,
-                    eof = done(step, emptyInput)
-                  )
+                    eof = done(step, emptyInput))
               },
             done = (a, _) => done(sdone(a, emptyInput), emptyInput)
           )
@@ -76,8 +74,7 @@ trait EnumerateeTFunctions {
               else
                 cont(step(k)),
             empty = cont(step(k)),
-            eof = done(scont(k), in)
-          )
+            eof = done(scont(k), in))
         }
 
         doneOr(loop)
@@ -97,8 +94,7 @@ trait EnumerateeTFunctions {
               else
                 cont(step(k)),
             empty = cont(step(k)),
-            eof = done(scont(k), in)
-          )
+            eof = done(scont(k), in))
         }
 
         doneOr(loop)
@@ -141,8 +137,7 @@ trait EnumerateeTFunctions {
               .fold(
                 el = e => k(elInput(e)) >>== doneOr(loop(i + 1)),
                 empty = cont(step(k, i)),
-                eof = done(scont(k), in)
-              )
+                eof = done(scont(k), in))
         }
 
         doneOr(loop(0))
@@ -163,8 +158,9 @@ trait EnumerateeTFunctions {
       G: Monad[G]): EnumerateeT[E, F[E], G] =
     new EnumerateeT[E, F[E], G] {
       def apply[A] = {
-        (takeWhile[E, F](p).up[G] flatMap (xs =>
-          drop[E, G](1).map(_ => xs))).sequenceI.apply[A]
+        (
+          takeWhile[E, F](p).up[G] flatMap (xs => drop[E, G](1).map(_ => xs))
+        ).sequenceI.apply[A]
       }
     }
 

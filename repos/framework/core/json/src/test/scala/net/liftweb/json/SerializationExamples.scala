@@ -320,8 +320,7 @@ object CustomSerializerExamples extends Specification {
               JObject(
                 JField("start", JInt(BigInt(x.startTime))) ::
                   JField("end", JInt(BigInt(x.endTime))) :: Nil)
-          }
-        ))
+          }))
 
   class PatternSerializer
       extends CustomSerializer[Pattern](format =>
@@ -333,8 +332,7 @@ object CustomSerializerExamples extends Specification {
           {
             case x: Pattern =>
               JObject(JField("$pattern", JString(x.pattern)) :: Nil)
-          }
-        ))
+          }))
 
   class DateSerializer
       extends CustomSerializer[Date](format =>
@@ -350,8 +348,7 @@ object CustomSerializerExamples extends Specification {
             case x: Date =>
               JObject(
                 JField("$dt", JString(format.dateFormat.format(x))) :: Nil)
-          }
-        ))
+          }))
 
   class IndexedSeqSerializer extends Serializer[IndexedSeq[_]] {
     def deserialize(implicit formats: Formats) = {

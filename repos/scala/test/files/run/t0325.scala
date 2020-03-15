@@ -46,8 +46,7 @@ object Test {
       '\\' -> "\\x",
       '[' -> "[x",
       '^' -> "^x",
-      '-' -> "x-z"
-    )
+      '-' -> "x-z")
     for ((c, str) <- badCases)
       test(
         ("a" + c + "b").split(str.toArray),

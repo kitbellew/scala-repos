@@ -23,8 +23,8 @@ case class ALSAlgorithmParams(
 class ALSModel(
     val productFeatures: Map[Int, Array[Double]],
     val itemStringIntMap: BiMap[String, Int],
-    val items: Map[Int, Item]
-) extends Serializable {
+    val items: Map[Int, Item])
+    extends Serializable {
 
   @transient lazy val itemIntStringMap = itemStringIntMap.inverse
 
@@ -86,12 +86,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         val iindex = itemStringIntMap.getOrElse(r.item, -1)
 
         if (uindex == -1)
-          logger.info(s"Couldn't convert nonexistent user ID ${r.user}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent user ID ${r.user}"
+              + " to Int index.")
 
         if (iindex == -1)
-          logger.info(s"Couldn't convert nonexistent item ID ${r.item}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent item ID ${r.item}"
+              + " to Int index.")
 
         ((uindex, iindex), 1)
       }
@@ -128,8 +130,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     new ALSModel(
       productFeatures = m.productFeatures.collectAsMap.toMap,
       itemStringIntMap = itemStringIntMap,
-      items = items
-    )
+      items = items)
   }
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
@@ -193,8 +194,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         new ItemScore(
           item = model.itemIntStringMap(i),
           score = s,
-          year = model.items(i).year
-        )
+          year = model.items(i).year)
     }
 
     new PredictedResult(itemScores)
@@ -246,8 +246,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       queryList: Set[Int],
       whiteList: Option[Set[Int]],
       blackList: Option[Set[Int]],
-      recommendFromYear: Option[Int]
-  ): Boolean = {
+      recommendFromYear: Option[Int]): Boolean = {
     whiteList.map(_.contains(i)).getOrElse(true) &&
     blackList.map(!_.contains(i)).getOrElse(true) &&
     // discard items in query as well

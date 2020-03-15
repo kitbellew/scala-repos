@@ -97,9 +97,7 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       }
     }
     "allow accessing the token from the http context" in withServer(
-      Seq(
-        "play.http.filters" -> "play.filters.csrf.CsrfFilters"
-      )) {
+      Seq("play.http.filters" -> "play.filters.csrf.CsrfFilters")) {
       case _ => javaAction[MyAction]("getToken", myAction.getToken())
     } {
       lazy val token = crypto.generateSignedToken

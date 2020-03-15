@@ -143,8 +143,9 @@ private[cluster] final case class Gossip(
     * Merges the seen table of two Gossip instances.
     */
   def mergeSeen(that: Gossip): Gossip =
-    this copy (overview =
-      overview copy (seen = overview.seen union that.overview.seen))
+    this copy (
+      overview = overview copy (seen = overview.seen union that.overview.seen)
+    )
 
   /**
     * Merges two Gossip instances including membership tables, and the VectorClock histories.

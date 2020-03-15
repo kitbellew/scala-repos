@@ -109,10 +109,12 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
         def findPsiElement(
             line: Int,
             column: Option[Int]): Option[PsiElement] = {
-          (for {
-            element <- scalaFile.depthFirst
-            if element != scalaFile && atPosition(element, line, column)
-          } yield element).toList.headOption
+          (
+            for {
+              element <- scalaFile.depthFirst
+              if element != scalaFile && atPosition(element, line, column)
+            } yield element
+          ).toList.headOption
         }
 
         def levelToProblemType(level: Level): ProblemHighlightType =

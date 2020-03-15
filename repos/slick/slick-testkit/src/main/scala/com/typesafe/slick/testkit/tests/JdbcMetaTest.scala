@@ -80,8 +80,9 @@ class JdbcMetaTest extends AsyncTest[JdbcTestDB] {
           .named("Client Info Properties from DatabaseMetaData"),
         MTable
           .getTables(None, None, None, None)
-          .map(_.should(ts =>
-            Set("orders_xx", "users_xx") subsetOf ts.map(_.name.name).toSet))
+          .map(
+            _.should(ts =>
+              Set("orders_xx", "users_xx") subsetOf ts.map(_.name.name).toSet))
           .named("Tables before deleting")
 
         /* ,

@@ -178,7 +178,8 @@ object PlayForkProcess {
   }
 
   def newThread(f: => Unit): Thread =
-    new Thread(new Runnable {
-      def run(): Unit = f
-    })
+    new Thread(
+      new Runnable {
+        def run(): Unit = f
+      })
 }

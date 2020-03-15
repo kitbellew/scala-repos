@@ -68,15 +68,19 @@ class LoggingReceive(source: Option[AnyRef], r: Receive, label: Option[String])(
         Debug(
           str,
           clazz,
-          "received " + (if (handled)
-                           "handled"
-                         else
-                           "unhandled") + " message " + o
+          "received " + (
+            if (handled)
+              "handled"
+            else
+              "unhandled"
+          ) + " message " + o
             + " from " + context.sender()
-            + (label match {
-              case Some(l) ⇒ " in state " + l
-              case _ ⇒ ""
-            })))
+            + (
+              label match {
+                case Some(l) ⇒ " in state " + l
+                case _ ⇒ ""
+              }
+            )))
     }
     handled
   }

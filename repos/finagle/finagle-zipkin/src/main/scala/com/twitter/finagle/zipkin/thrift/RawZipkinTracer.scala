@@ -27,8 +27,7 @@ import scala.language.reflectiveCalls
 object RawZipkinTracer {
   private[this] def newClient(
       scribeHost: String,
-      scribePort: Int
-  ): Scribe.FutureIface = {
+      scribePort: Int): Scribe.FutureIface = {
     val transport = ClientBuilder()
       .name("zipkin-tracer")
       .hosts(new InetSocketAddress(scribeHost, scribePort))
@@ -61,8 +60,7 @@ object RawZipkinTracer {
       scribeHost: String = "localhost",
       scribePort: Int = 1463,
       statsReceiver: StatsReceiver = NullStatsReceiver,
-      timer: Timer = DefaultTimer.twitter
-  ): RawZipkinTracer =
+      timer: Timer = DefaultTimer.twitter): RawZipkinTracer =
     synchronized {
       map.getOrElseUpdate(
         scribeHost + ":" + scribePort,
@@ -79,19 +77,20 @@ object RawZipkinTracer {
   // down. We give it 100ms.
   Runtime
     .getRuntime()
-    .addShutdownHook(new Thread {
-      setName("RawZipkinTracer-ShutdownHook")
-      override def run() {
-        val tracers = RawZipkinTracer.synchronized(map.values.toSeq)
-        val joined = Future.join(tracers map (_.flush()))
-        try {
-          Await.result(joined, 100.milliseconds)
-        } catch {
-          case _: TimeoutException =>
-            System.err.println("Failed to flush all traces before quitting")
+    .addShutdownHook(
+      new Thread {
+        setName("RawZipkinTracer-ShutdownHook")
+        override def run() {
+          val tracers = RawZipkinTracer.synchronized(map.values.toSeq)
+          val joined = Future.join(tracers map (_.flush()))
+          try {
+            Await.result(joined, 100.milliseconds)
+          } catch {
+            case _: TimeoutException =>
+              System.err.println("Failed to flush all traces before quitting")
+          }
         }
-      }
-    })
+      })
 }
 
 /**
@@ -110,8 +109,8 @@ private[thrift] class RawZipkinTracer(
     timer: Timer = DefaultTimer.twitter,
     poolSize: Int = 10,
     initialBufferSize: StorageUnit = 512.bytes,
-    maxBufferSize: StorageUnit = 1.megabyte
-) extends Tracer {
+    maxBufferSize: StorageUnit = 1.megabyte)
+    extends Tracer {
   private[this] val TraceCategory = "zipkin" // scribe category
 
   private[this] val ErrorAnnotation = "%s: %s" // annotation: errorMessage
@@ -281,10 +280,12 @@ private[thrift] class RawZipkinTracer(
         binaryAnnotation(
           record,
           key,
-          (if (value)
-             TrueBB
-           else
-             FalseBB).duplicate(),
+          (
+            if (value)
+              TrueBB
+            else
+              FalseBB
+          ).duplicate(),
           thrift.AnnotationType.BOOL)
       case tracing.Annotation
             .BinaryAnnotation(key: String, value: Array[Byte]) =>
@@ -364,8 +365,7 @@ private[thrift] class RawZipkinTracer(
       record: Record,
       key: String,
       value: ByteBuffer,
-      annotationType: thrift.AnnotationType
-  ) {
+      annotationType: thrift.AnnotationType) {
     spanMap.update(record.traceId) { span =>
       span.addBinaryAnnotation(
         BinaryAnnotation(key, value, annotationType, span.endpoint))

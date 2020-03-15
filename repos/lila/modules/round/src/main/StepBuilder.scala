@@ -66,13 +66,12 @@ object StepBuilder {
     steps.zipWithIndex map {
       case (step, index) =>
         analysis.infos.lift(index - 1).fold(step) { info =>
-          step.copy(
-            eval = Step
-              .Eval(
-                cp = info.score.map(_.ceiled.centipawns),
-                mate = info.mate,
-                best = info.best)
-              .some)
+          step.copy(eval = Step
+            .Eval(
+              cp = info.score.map(_.ceiled.centipawns),
+              mate = info.mate,
+              best = info.best)
+            .some)
         }
     }
 
@@ -85,25 +84,27 @@ object StepBuilder {
     analysis.advices.foldLeft(steps) {
       case (steps, ad) =>
         val index = ad.ply - analysis.startPly
-        (for {
-          before <- steps lift (index - 1)
-          after <- steps lift index
-        } yield steps.updated(
-          index,
-          after.copy(
-            nag = ad.nag.symbol.some,
-            comments = ad.makeComment(false, true) :: after.comments,
-            variations =
-              if (ad.info.variation.isEmpty)
-                after.variations
-              else
-                makeVariation(
-                  gameId,
-                  before,
-                  ad.info,
-                  variant).toList :: after.variations
+        (
+          for {
+            before <- steps lift (index - 1)
+            after <- steps lift index
+          } yield steps.updated(
+            index,
+            after.copy(
+              nag = ad.nag.symbol.some,
+              comments = ad.makeComment(false, true) :: after.comments,
+              variations =
+                if (ad.info.variation.isEmpty)
+                  after.variations
+                else
+                  makeVariation(
+                    gameId,
+                    before,
+                    ad.info,
+                    variant).toList :: after.variations
+            )
           )
-        )) | steps
+        ) | steps
     }
 
   private def makeVariation(

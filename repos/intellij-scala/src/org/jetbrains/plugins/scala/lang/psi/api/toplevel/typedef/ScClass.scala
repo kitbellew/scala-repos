@@ -79,25 +79,33 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
                   "scala.Boolean"
                 else {
                   val strings = params.map(p =>
-                    (if (p.isRepeatedParameter)
-                       "scala.Seq["
-                     else
-                       "") +
+                    (
+                      if (p.isRepeatedParameter)
+                        "scala.Seq["
+                      else
+                        ""
+                    ) +
                       p.typeElement.fold("scala.Any")(_.getText) +
-                      (if (p.isRepeatedParameter)
-                         "]"
-                       else
-                         ""))
+                      (
+                        if (p.isRepeatedParameter)
+                          "]"
+                        else
+                          ""
+                      ))
                   strings.mkString(
-                    "scala.Option[" + (if (strings.length > 1)
-                                         "("
-                                       else
-                                         ""),
+                    "scala.Option[" + (
+                      if (strings.length > 1)
+                        "("
+                      else
+                        ""
+                    ),
                     ", ",
-                    (if (strings.length > 1)
-                       ")"
-                     else
-                       "") + "]")
+                    (
+                      if (strings.length > 1)
+                        ")"
+                      else
+                        ""
+                    ) + "]")
                 }
               }
             case None => "scala.Boolean"
@@ -105,11 +113,13 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
         val unapplyName =
           constructor match {
             case Some(x: ScPrimaryConstructor) =>
-              (for {
-                c1 <- x.parameterList.clauses.headOption
-                plast <- c1.parameters.lastOption
-                if plast.isRepeatedParameter
-              } yield "unapplySeq").getOrElse("unapply")
+              (
+                for {
+                  c1 <- x.parameterList.clauses.headOption
+                  plast <- c1.parameters.lastOption
+                  if plast.isRepeatedParameter
+                } yield "unapplySeq"
+              ).getOrElse("unapply")
             case None => "unapply"
           }
         Option(
@@ -123,22 +133,26 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
         val paramString =
           constructor match {
             case Some(x: ScPrimaryConstructor) =>
-              (if (x.parameterList.clauses.length == 1 &&
-                   x.parameterList.clauses.head.isImplicit)
-                 "()"
-               else
-                 "") + x.parameterList.clauses
+              (
+                if (x.parameterList.clauses.length == 1 &&
+                    x.parameterList.clauses.head.isImplicit)
+                  "()"
+                else
+                  ""
+              ) + x.parameterList.clauses
                 .map(c =>
                   c.parameters
                     .map(p =>
                       p.name + " : " +
                         p.typeElement.fold("Any")(_.getText) +
-                        (if (p.isDefaultParam)
-                           " = " + p.getDefaultExpression.fold("{}")(_.getText)
-                         else if (p.isRepeatedParameter)
-                           "*"
-                         else
-                           ""))
+                        (
+                          if (p.isDefaultParam)
+                            " = " + p.getDefaultExpression.fold("{}")(_.getText)
+                          else if (p.isRepeatedParameter)
+                            "*"
+                          else
+                            ""
+                        ))
                     .mkString(
                       if (c.isImplicit)
                         "(implicit "

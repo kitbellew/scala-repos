@@ -40,14 +40,16 @@ trait CrossSpec[M[+_]]
     def removeUndefined(jv: JValue): JValue =
       jv match {
         case JObject(jfields) =>
-          JObject(jfields collect {
-            case JField(s, v) if v != JUndefined =>
-              JField(s, removeUndefined(v))
-          })
+          JObject(
+            jfields collect {
+              case JField(s, v) if v != JUndefined =>
+                JField(s, removeUndefined(v))
+            })
         case JArray(jvs) =>
-          JArray(jvs map { jv =>
-            removeUndefined(jv)
-          })
+          JArray(
+            jvs map { jv =>
+              removeUndefined(jv)
+            })
         case v => v
       }
 
@@ -66,8 +68,7 @@ trait CrossSpec[M[+_]]
       ltable.cross(rtable)(
         InnerObjectConcat(
           WrapObject(Leaf(SourceLeft), "left"),
-          WrapObject(Leaf(SourceRight), "right"))
-      )
+          WrapObject(Leaf(SourceRight), "right")))
 
     val jsonResult: M[Stream[JValue]] = toJson(result)
     jsonResult.copoint must_== expected

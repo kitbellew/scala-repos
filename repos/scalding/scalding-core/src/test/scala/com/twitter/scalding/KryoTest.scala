@@ -138,9 +138,10 @@ class KryoTest extends WordSpec with Matchers {
         AveragedValue(100, 32.0),
         // Serialize an instance of the HLL monoid
         hllmon.apply(42),
-        Monoid.sum(List(1, 2, 3, 4).map {
-          hllmon(_)
-        }),
+        Monoid.sum(
+          List(1, 2, 3, 4).map {
+            hllmon(_)
+          }),
         'hai
       ).asInstanceOf[List[AnyRef]]
       serializationRT(test) shouldBe test

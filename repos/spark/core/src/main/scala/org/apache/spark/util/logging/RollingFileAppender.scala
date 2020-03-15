@@ -39,8 +39,8 @@ private[spark] class RollingFileAppender(
     activeFile: File,
     val rollingPolicy: RollingPolicy,
     conf: SparkConf,
-    bufferSize: Int = RollingFileAppender.DEFAULT_BUFFER_SIZE
-) extends FileAppender(inputStream, activeFile, bufferSize) {
+    bufferSize: Int = RollingFileAppender.DEFAULT_BUFFER_SIZE)
+    extends FileAppender(inputStream, activeFile, bufferSize) {
 
   import RollingFileAppender._
 
@@ -117,11 +117,12 @@ private[spark] class RollingFileAppender(
     try {
       val rolledoverFiles =
         activeFile.getParentFile
-          .listFiles(new FileFilter {
-            def accept(f: File): Boolean = {
-              f.getName.startsWith(activeFile.getName) && f != activeFile
-            }
-          })
+          .listFiles(
+            new FileFilter {
+              def accept(f: File): Boolean = {
+                f.getName.startsWith(activeFile.getName) && f != activeFile
+              }
+            })
           .sorted
       val filesToBeDeleted = rolledoverFiles.take(
         math.max(0, rolledoverFiles.length - maxRetainedFiles))

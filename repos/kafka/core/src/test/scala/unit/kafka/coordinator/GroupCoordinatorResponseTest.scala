@@ -82,9 +82,9 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
 
     // make two partitions of the group topic to make sure some partitions are not owned by the coordinator
     val ret = mutable.Map[String, Map[Int, Seq[Int]]]()
-    ret += (TopicConstants.GROUP_METADATA_TOPIC_NAME -> Map(
-      0 -> Seq(1),
-      1 -> Seq(1)))
+    ret += (
+      TopicConstants.GROUP_METADATA_TOPIC_NAME -> Map(0 -> Seq(1), 1 -> Seq(1))
+    )
 
     replicaManager = EasyMock.createNiceMock(classOf[ReplicaManager])
 
@@ -1169,15 +1169,19 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
           EasyMock.anyObject().asInstanceOf[Map[TopicPartition, MessageSet]],
           EasyMock.capture(capturedArgument)
         ))
-      .andAnswer(new IAnswer[Unit] {
-        override def answer =
-          capturedArgument.getValue.apply(
-            Map(new TopicPartition(
-              TopicConstants.GROUP_METADATA_TOPIC_NAME,
-              groupPartitionId) ->
-              new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
-          )
-      })
+      .andAnswer(
+        new IAnswer[Unit] {
+          override def answer =
+            capturedArgument.getValue.apply(
+              Map(
+                new TopicPartition(
+                  TopicConstants.GROUP_METADATA_TOPIC_NAME,
+                  groupPartitionId) ->
+                  new PartitionResponse(
+                    Errors.NONE.code,
+                    0L,
+                    Record.NO_TIMESTAMP)))
+        })
     EasyMock
       .expect(replicaManager.getMessageFormatVersion(EasyMock.anyObject()))
       .andReturn(Some(Message.MagicValue_V1))
@@ -1294,15 +1298,19 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
           EasyMock.anyObject().asInstanceOf[Map[TopicPartition, MessageSet]],
           EasyMock.capture(capturedArgument)
         ))
-      .andAnswer(new IAnswer[Unit] {
-        override def answer =
-          capturedArgument.getValue.apply(
-            Map(new TopicPartition(
-              TopicConstants.GROUP_METADATA_TOPIC_NAME,
-              groupPartitionId) ->
-              new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
-          )
-      })
+      .andAnswer(
+        new IAnswer[Unit] {
+          override def answer =
+            capturedArgument.getValue.apply(
+              Map(
+                new TopicPartition(
+                  TopicConstants.GROUP_METADATA_TOPIC_NAME,
+                  groupPartitionId) ->
+                  new PartitionResponse(
+                    Errors.NONE.code,
+                    0L,
+                    Record.NO_TIMESTAMP)))
+        })
     EasyMock
       .expect(replicaManager.getMessageFormatVersion(EasyMock.anyObject()))
       .andReturn(Some(Message.MagicValue_V1))

@@ -57,8 +57,7 @@ object LiftJavaScriptSpec extends Specification {
             |"logError": function(msg) {},
             |"ajaxOnFailure": function() {alert("The server cannot be contacted at this time");},
             |"ajaxOnStart": function() {},
-            |"ajaxOnEnd": function() {}}"""
-        )
+            |"ajaxOnEnd": function() {}}""")
       }
     }
     "create internationalized default settings" in withPolishLocale {
@@ -66,8 +65,7 @@ object LiftJavaScriptSpec extends Specification {
         val settings = LiftJavaScript.settings
         val internationalizedMessage =
           "Nie mo\\u017cna skontaktowa\\u0107 si\\u0119 z serwerem"
-        settings.toJsCmd must_== formatjs(
-          s"""{"liftPath": "/lift",
+        settings.toJsCmd must_== formatjs(s"""{"liftPath": "/lift",
               |"ajaxRetryCount": 3,
               |"ajaxPostTimeout": 5000,
               |"gcPollingInterval": 75000,
@@ -78,8 +76,7 @@ object LiftJavaScriptSpec extends Specification {
               |"logError": function(msg) {},
               |"ajaxOnFailure": function() {alert("$internationalizedMessage");},
               |"ajaxOnStart": function() {},
-              |"ajaxOnEnd": function() {}}"""
-        )
+              |"ajaxOnEnd": function() {}}""")
       }
     }
     "create custom static settings" in withEnglishLocale {
@@ -98,8 +95,7 @@ object LiftJavaScriptSpec extends Specification {
             |"logError": function(msg) {},
             |"ajaxOnFailure": function() {alert("The server cannot be contacted at this time");},
             |"ajaxOnStart": function() {},
-            |"ajaxOnEnd": function() {}}"""
-        )
+            |"ajaxOnEnd": function() {}}""")
       }
     }
     "create custom dynamic settings" in withEnglishLocale {
@@ -118,8 +114,7 @@ object LiftJavaScriptSpec extends Specification {
             |"logError": function(msg) {},
             |"ajaxOnFailure": function() {alert("The server cannot be contacted at this time");},
             |"ajaxOnStart": function() {},
-            |"ajaxOnEnd": function() {}}"""
-        )
+            |"ajaxOnEnd": function() {}}""")
       }
     }
     "create custom function settings" in withEnglishLocale {
@@ -138,8 +133,7 @@ object LiftJavaScriptSpec extends Specification {
             |"logError": function(msg) {lift.logError(msg);},
             |"ajaxOnFailure": function() {alert("The server cannot be contacted at this time");},
             |"ajaxOnStart": function() {},
-            |"ajaxOnEnd": function() {}}"""
-        )
+            |"ajaxOnEnd": function() {}}""")
       }
     }
     "create init command" in withEnglishLocale {
@@ -149,10 +143,11 @@ object LiftJavaScriptSpec extends Specification {
           .map(_.apply(session))
           .map(LiftJavaScript.initCmd(_).toJsCmd)
         init must_== Full(
-          formatjs(List(
-            "var lift_settings = {};",
-            "window.lift.extend(lift_settings,window.liftJQuery);",
-            """window.lift.extend(lift_settings,{"liftPath": "/lift",
+          formatjs(
+            List(
+              "var lift_settings = {};",
+              "window.lift.extend(lift_settings,window.liftJQuery);",
+              """window.lift.extend(lift_settings,{"liftPath": "/lift",
             |"ajaxRetryCount": 4,
             |"ajaxPostTimeout": 5000,
             |"gcPollingInterval": 75000,
@@ -164,8 +159,8 @@ object LiftJavaScriptSpec extends Specification {
             |"ajaxOnFailure": function() {alert("The server cannot be contacted at this time");},
             |"ajaxOnStart": function() {},
             |"ajaxOnEnd": function() {}});""",
-            "window.lift.init(lift_settings);"
-          )))
+              "window.lift.init(lift_settings);"
+            )))
       }
     }
     "create init command with VanillaJS" in withEnglishLocale {
@@ -176,10 +171,11 @@ object LiftJavaScriptSpec extends Specification {
           .map(_.apply(session))
           .map(LiftJavaScript.initCmd(_).toJsCmd)
         init must_== Full(
-          formatjs(List(
-            "var lift_settings = {};",
-            "window.lift.extend(lift_settings,window.liftVanilla);",
-            """window.lift.extend(lift_settings,{"liftPath": "/lift",
+          formatjs(
+            List(
+              "var lift_settings = {};",
+              "window.lift.extend(lift_settings,window.liftVanilla);",
+              """window.lift.extend(lift_settings,{"liftPath": "/lift",
             |"ajaxRetryCount": 4,
             |"ajaxPostTimeout": 5000,
             |"gcPollingInterval": 75000,
@@ -191,8 +187,8 @@ object LiftJavaScriptSpec extends Specification {
             |"ajaxOnFailure": function() {alert("The server cannot be contacted at this time");},
             |"ajaxOnStart": function() {},
             |"ajaxOnEnd": function() {}});""",
-            "window.lift.init(lift_settings);"
-          )))
+              "window.lift.init(lift_settings);"
+            )))
       }
     }
     "create init command with custom setting" in withEnglishLocale {

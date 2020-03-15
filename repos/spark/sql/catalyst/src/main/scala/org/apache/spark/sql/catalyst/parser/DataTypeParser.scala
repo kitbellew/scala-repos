@@ -37,8 +37,7 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
       s"identifier matching regex ${regex}",
       {
         case Identifier(str) if regex.unapplySeq(str).isDefined => str
-      }
-    )
+      })
 
   protected lazy val primitiveType: Parser[DataType] =
     "(?i)string".r ^^^ StringType |
@@ -85,9 +84,11 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
     }
 
   protected lazy val structType: Parser[DataType] =
-    ("(?i)struct".r ~> "<" ~> repsep(structField, ",") <~ ">" ^^ {
-      case fields => new StructType(fields.toArray)
-    }) |
+    (
+      "(?i)struct".r ~> "<" ~> repsep(structField, ",") <~ ">" ^^ {
+        case fields => new StructType(fields.toArray)
+      }
+    ) |
       ("(?i)struct".r ~ "<>" ^^^ StructType(Nil))
 
   protected lazy val dataType: Parser[DataType] =

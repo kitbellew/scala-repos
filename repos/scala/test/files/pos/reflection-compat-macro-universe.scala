@@ -76,12 +76,14 @@ object Test extends App {
   locally(ConstantType(const): ConstantType)
   locally(sym.asFreeTerm: FreeTermSymbol)
   locally(sym.asFreeType: FreeTypeSymbol)
-  locally(sym.attachments: Attachments {
-    type Pos = Position
-  })
-  locally(tree.attachments: Attachments {
-    type Pos = Position
-  })
+  locally(
+    sym.attachments: Attachments {
+      type Pos = Position
+    })
+  locally(
+    tree.attachments: Attachments {
+      type Pos = Position
+    })
   locally(captureVariable(sym): Unit)
   locally(capturedVariableType(sym): Type)
   locally(sym.deSkolemize: Symbol)
@@ -97,9 +99,9 @@ object Test extends App {
   locally(sym.isLocal: Boolean)
   locally(sym.isOverride: Boolean)
   locally(tsym.isSkolem: Boolean)
-  locally(manifestToTypeTag(
-    mirror,
-    manifest): scala.reflect.api.Universe#TypeTag[Int])
+  locally(
+    manifestToTypeTag(mirror, manifest): scala.reflect.api.Universe#TypeTag[
+      Int])
   locally(treeBuild.mkAttributedIdent(sym): RefTree)
   locally(treeBuild.mkAttributedQualifier(tpe): Tree)
   locally(treeBuild.mkAttributedQualifier(tpe, sym): Tree)
@@ -107,9 +109,10 @@ object Test extends App {
   locally(treeBuild.mkAttributedRef(sym): RefTree)
   locally(treeBuild.mkAttributedSelect(tree, sym): RefTree)
   locally(treeBuild.mkAttributedThis(sym): This)
-  locally(mkImporter(scala.reflect.runtime.universe): Importer {
-    val from: scala.reflect.runtime.universe.type
-  })
+  locally(
+    mkImporter(scala.reflect.runtime.universe): Importer {
+      val from: scala.reflect.runtime.universe.type
+    })
   locally(treeBuild.mkMethodCall(sym, trees): Tree)
   locally(treeBuild.mkMethodCall(sym, tpes, trees): Tree)
   locally(treeBuild.mkMethodCall(sym, name, trees): Tree)

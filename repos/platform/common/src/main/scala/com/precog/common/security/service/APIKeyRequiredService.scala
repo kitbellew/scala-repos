@@ -83,11 +83,8 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
 class APIKeyValidService[A, B](
     val delegate: HttpService[A, APIKey => Future[B]],
     error: String => Future[B])
-    extends DelegatingService[
-      A,
-      Validation[String, APIKey] => Future[B],
-      A,
-      APIKey => Future[B]] {
+    extends DelegatingService[A, Validation[String, APIKey] => Future[
+      B], A, APIKey => Future[B]] {
   val service = { (request: HttpRequest[A]) =>
     delegate.service(request) map {
       (f: APIKey => Future[B]) =>
@@ -100,8 +97,7 @@ class APIKeyValidService[A, B](
   val metadata = AboutMetadata(
     ParameterMetadata('apiKey, None),
     DescriptionMetadata(
-      "A valid Precog API key is required for the use of this service.")
-  )
+      "A valid Precog API key is required for the use of this service."))
 }
 
 class APIKeyRequiredService[A, B](
@@ -124,10 +120,11 @@ class APIKeyRequiredService[A, B](
           (f: Validation[String, APIKey] => Future[B]) =>
             keyFinder(apiKey) flatMap { maybeApiKey =>
               logger.info("Found API key: " + maybeApiKey)
-              f(maybeApiKey.toSuccess[String] {
-                logger.warn("Could not locate API key " + apiKey)
-                "The specified API key does not exist: " + apiKey
-              })
+              f(
+                maybeApiKey.toSuccess[String] {
+                  logger.warn("Could not locate API key " + apiKey)
+                  "The specified API key does not exist: " + apiKey
+                })
             }
         }
       }
@@ -136,6 +133,5 @@ class APIKeyRequiredService[A, B](
   val metadata = AboutMetadata(
     ParameterMetadata('apiKey, None),
     DescriptionMetadata(
-      "A Precog API key is required for the use of this service.")
-  )
+      "A Precog API key is required for the use of this service."))
 }

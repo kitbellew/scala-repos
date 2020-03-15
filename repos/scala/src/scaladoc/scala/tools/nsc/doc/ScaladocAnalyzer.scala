@@ -31,10 +31,8 @@ trait ScaladocAnalyzer extends Analyzer {
 
     override protected def macroImplementationNotFoundMessage(
         name: Name): String =
-      (
-        super.macroImplementationNotFoundMessage(name)
-          + "\nWhen generating scaladocs for multiple projects at once, consider using -Ymacro-no-expand to disable macro expansions altogether."
-      )
+      (super.macroImplementationNotFoundMessage(name)
+        + "\nWhen generating scaladocs for multiple projects at once, consider using -Ymacro-no-expand to disable macro expansions altogether.")
 
     override def typedDocDef(docDef: DocDef, mode: Mode, pt: Type): Tree = {
       val sym = docDef.symbol
@@ -78,27 +76,25 @@ trait ScaladocAnalyzer extends Analyzer {
       val enclClass = context.enclClass.owner
 
       def defineAlias(name: Name) =
-        (
-          if (context.scope.lookup(name) == NoSymbol) {
-            lookupVariable(name.toString.substring(1), enclClass) foreach {
-              repl =>
-                silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
-                  tpt =>
-                    val alias = enclClass.newAliasType(
-                      name.toTypeName,
-                      useCase.pos)
-                    val tparams = cloneSymbolsAtOwner(
-                      tpt.tpe.typeSymbol.typeParams,
-                      alias)
-                    val newInfo = genPolyType(
-                      tparams,
-                      appliedType(tpt.tpe, tparams map (_.tpe)))
-                    alias setInfo newInfo
-                    context.scope.enter(alias)
-                }
-            }
-          }
-        )
+        (if (context.scope.lookup(name) == NoSymbol) {
+           lookupVariable(name.toString.substring(1), enclClass) foreach {
+             repl =>
+               silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
+                 tpt =>
+                   val alias = enclClass.newAliasType(
+                     name.toTypeName,
+                     useCase.pos)
+                   val tparams = cloneSymbolsAtOwner(
+                     tpt.tpe.typeSymbol.typeParams,
+                     alias)
+                   val newInfo = genPolyType(
+                     tparams,
+                     appliedType(tpt.tpe, tparams map (_.tpe)))
+                   alias setInfo newInfo
+                   context.scope.enter(alias)
+               }
+           }
+         })
 
       for (tree <- trees;
            t <- tree)
@@ -269,9 +265,9 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
           docBuffer = null
           inDocComment = false
         }
-      super.skipComment() && ((docBuffer eq null) || foundStarComment(
-        offset,
-        charOffset - 2))
+      super.skipComment() && (
+        (docBuffer eq null) || foundStarComment(offset, charOffset - 2)
+      )
     }
   }
   class ScaladocUnitParser(unit: CompilationUnit, patches: List[BracePatch])

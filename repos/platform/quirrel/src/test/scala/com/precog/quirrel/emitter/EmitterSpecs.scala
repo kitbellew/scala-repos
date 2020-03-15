@@ -260,9 +260,7 @@ object EmitterSpecs
     }
 
     "emit negation of literal numeric load with value provenance" in {
-      testEmit("neg 5")(
-        Vector(PushNum("5"), Map1(Neg))
-      )
+      testEmit("neg 5")(Vector(PushNum("5"), Map1(Neg)))
     }
 
     "emit negation of sum of two literal numeric loads with value provenance" in {
@@ -306,12 +304,7 @@ object EmitterSpecs
         | not(not(true))
         """.stripMargin
 
-      testEmit(input)(
-        Vector(
-          PushTrue,
-          Map1(Comp),
-          Map1(Comp)
-        ))
+      testEmit(input)(Vector(PushTrue, Map1(Comp), Map1(Comp)))
     }
 
     "emit a match after a cross in a join-object" in {
@@ -781,9 +774,7 @@ object EmitterSpecs
     }
 
     "emit load of literal load" in {
-      testEmit("""load("foo")""")(
-        Vector(PushString("foo"), AbsoluteLoad)
-      )
+      testEmit("""load("foo")""")(Vector(PushString("foo"), AbsoluteLoad))
     }
 
     "emit filter cross for where loads from value provenance" in {
@@ -913,19 +904,20 @@ object EmitterSpecs
 
     "emit binary non-reduction" in {
       forall(lib2) { f =>
-        testEmit("""%s((//foo).time, (//foo).timeZone)""".format(f.fqn))(Vector(
-          PushString("/foo"),
-          Morph1(BuiltInMorphism1(expandGlob)),
-          AbsoluteLoad,
-          PushString("time"),
-          Map2Cross(DerefObject),
-          PushString("/foo"),
-          Morph1(BuiltInMorphism1(expandGlob)),
-          AbsoluteLoad,
-          PushString("timeZone"),
-          Map2Cross(DerefObject),
-          Map2Match(BuiltInFunction2Op(f))
-        ))
+        testEmit("""%s((//foo).time, (//foo).timeZone)""".format(f.fqn))(
+          Vector(
+            PushString("/foo"),
+            Morph1(BuiltInMorphism1(expandGlob)),
+            AbsoluteLoad,
+            PushString("time"),
+            Map2Cross(DerefObject),
+            PushString("/foo"),
+            Morph1(BuiltInMorphism1(expandGlob)),
+            AbsoluteLoad,
+            PushString("timeZone"),
+            Map2Cross(DerefObject),
+            Map2Match(BuiltInFunction2Op(f))
+          ))
       }
     }
 

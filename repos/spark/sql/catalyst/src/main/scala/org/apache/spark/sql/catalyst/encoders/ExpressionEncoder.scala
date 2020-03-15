@@ -107,16 +107,17 @@ object ExpressionEncoder {
   def tuple(encoders: Seq[ExpressionEncoder[_]]): ExpressionEncoder[_] = {
     encoders.foreach(_.assertUnresolved())
 
-    val schema = StructType(encoders.zipWithIndex.map {
-      case (e, i) =>
-        val (dataType, nullable) =
-          if (e.flat) {
-            e.schema.head.dataType -> e.schema.head.nullable
-          } else {
-            e.schema -> true
-          }
-        StructField(s"_${i + 1}", dataType, nullable)
-    })
+    val schema = StructType(
+      encoders.zipWithIndex.map {
+        case (e, i) =>
+          val (dataType, nullable) =
+            if (e.flat) {
+              e.schema.head.dataType -> e.schema.head.nullable
+            } else {
+              e.schema -> true
+            }
+          StructField(s"_${i + 1}", dataType, nullable)
+      })
 
     val cls = Utils.getContextOrSparkClassLoader.loadClass(
       s"scala.Tuple${encoders.size}")
@@ -287,11 +288,12 @@ case class ExpressionEncoder[T](
     * has not been done already in places where we plan to do later composition of encoders.
     */
   def assertUnresolved(): Unit = {
-    (fromRowExpression +: toRowExpressions).foreach(_.foreach {
-      case a: AttributeReference if a.name != "loopVar" =>
-        sys.error(s"Unresolved encoder expected, but $a was found.")
-      case _ =>
-    })
+    (fromRowExpression +: toRowExpressions).foreach(
+      _.foreach {
+        case a: AttributeReference if a.name != "loopVar" =>
+          sys.error(s"Unresolved encoder expected, but $a was found.")
+        case _ =>
+      })
   }
 
   /**
@@ -387,11 +389,12 @@ case class ExpressionEncoder[T](
     })
   }
 
-  protected val attrs = toRowExpressions.flatMap(_.collect {
-    case _: UnresolvedAttribute => ""
-    case a: Attribute           => s"#${a.exprId}"
-    case b: BoundReference      => s"[${b.ordinal}]"
-  })
+  protected val attrs = toRowExpressions.flatMap(
+    _.collect {
+      case _: UnresolvedAttribute => ""
+      case a: Attribute           => s"#${a.exprId}"
+      case b: BoundReference      => s"[${b.ordinal}]"
+    })
 
   protected val schemaString = schema
     .zip(attrs)

@@ -19,14 +19,13 @@ case class HookConfig(
     extends HumanConfig {
 
   def fixColor =
-    copy(
-      color =
-        if (mode == Mode.Rated &&
-            lila.game.Game.variantsWhereWhiteIsBetter(variant) &&
-            color != Color.Random)
-          Color.Random
-        else
-          color)
+    copy(color =
+      if (mode == Mode.Rated &&
+          lila.game.Game.variantsWhereWhiteIsBetter(variant) &&
+          color != Color.Random)
+        Color.Random
+      else
+        color)
 
   // allowAnons -> membersOnly
   def >> =
@@ -70,16 +69,17 @@ case class HookConfig(
             ratingRange = ratingRange
           ))
       case _ =>
-        Right(user map { u =>
-          Seek.make(
-            variant = variant,
-            daysPerTurn = makeDaysPerTurn,
-            mode = mode,
-            color = color.name,
-            user = u,
-            blocking = blocking,
-            ratingRange = ratingRange)
-        })
+        Right(
+          user map { u =>
+            Seek.make(
+              variant = variant,
+              daysPerTurn = makeDaysPerTurn,
+              mode = mode,
+              color = color.name,
+              user = u,
+              blocking = blocking,
+              ratingRange = ratingRange)
+          })
     }
 
   def noRatedUnlimited = mode.casual || hasClock || makeDaysPerTurn.isDefined

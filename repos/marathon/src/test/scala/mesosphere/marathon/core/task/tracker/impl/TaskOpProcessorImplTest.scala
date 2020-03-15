@@ -41,8 +41,7 @@ class TaskOpProcessorImplTest
         deadline,
         testActor,
         Task.Id("task1"),
-        TaskOpProcessor.Action.Noop)
-    )
+        TaskOpProcessor.Action.Noop))
 
     Then("it replies with unit immediately")
     result.futureValue should be(())
@@ -65,8 +64,7 @@ class TaskOpProcessorImplTest
         deadline,
         testActor,
         Task.Id("task1"),
-        TaskOpProcessor.Action.Fail(cause))
-    )
+        TaskOpProcessor.Action.Fail(cause)))
 
     Then("it replies with unit immediately")
     result.futureValue should be(())
@@ -93,8 +91,7 @@ class TaskOpProcessorImplTest
         deadline,
         testActor,
         taskState.taskId,
-        TaskOpProcessor.Action.Update(taskState))
-    )
+        TaskOpProcessor.Action.Update(taskState)))
 
     Then("it replies with unit immediately")
     result.futureValue should be(()) // first wait for the call to complete
@@ -135,8 +132,7 @@ class TaskOpProcessorImplTest
               deadline,
               testActor,
               taskState.taskId,
-              TaskOpProcessor.Action.Update(taskState))
-          )
+              TaskOpProcessor.Action.Update(taskState)))
           .futureValue
       ) // we need to complete the future here to get all the logs
     }
@@ -187,8 +183,7 @@ class TaskOpProcessorImplTest
               deadline,
               testActor,
               taskState.taskId,
-              TaskOpProcessor.Action.Update(taskState))
-          )
+              TaskOpProcessor.Action.Update(taskState)))
           .futureValue
       ) // we need to complete the future here to get all the logs
     }
@@ -211,8 +206,7 @@ class TaskOpProcessorImplTest
     f.taskTrackerProbe.expectMsg(
       TaskTrackerActor.TaskRemoved(
         taskState.taskId,
-        TaskTrackerActor.Ack(testActor, Status.Failure(storeFail)))
-    )
+        TaskTrackerActor.Ack(testActor, Status.Failure(storeFail))))
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -242,8 +236,7 @@ class TaskOpProcessorImplTest
               deadline,
               testActor,
               taskState.taskId,
-              TaskOpProcessor.Action.Update(taskState))
-          )
+              TaskOpProcessor.Action.Update(taskState)))
           .futureValue
       ) // we need to complete the future here to get all the logs
     }
@@ -281,8 +274,7 @@ class TaskOpProcessorImplTest
         deadline,
         testActor,
         Task.Id(taskId),
-        TaskOpProcessor.Action.Expunge)
-    )
+        TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
     result.futureValue should be(
@@ -315,8 +307,7 @@ class TaskOpProcessorImplTest
     When("the processor processes an update")
     val result = f.processor.process(
       TaskOpProcessor
-        .Operation(deadline, testActor, taskId, TaskOpProcessor.Action.Expunge)
-    )
+        .Operation(deadline, testActor, taskId, TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
     result.futureValue should be(
@@ -357,8 +348,7 @@ class TaskOpProcessorImplTest
         deadline,
         testActor,
         taskState.taskId,
-        TaskOpProcessor.Action.Expunge)
-    )
+        TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
     result.futureValue should be(
@@ -376,8 +366,7 @@ class TaskOpProcessorImplTest
     f.taskTrackerProbe.expectMsg(
       TaskTrackerActor.TaskUpdated(
         taskState,
-        TaskTrackerActor.Ack(testActor, Status.Failure(expungeFails)))
-    )
+        TaskTrackerActor.Ack(testActor, Status.Failure(expungeFails))))
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -399,8 +388,7 @@ class TaskOpProcessorImplTest
         deadline,
         testActor,
         Task.Id(taskId),
-        TaskOpProcessor.Action.UpdateStatus(update))
-    )
+        TaskOpProcessor.Action.UpdateStatus(update)))
 
     Then("it replies with unit immediately")
     result.futureValue should be(
@@ -441,8 +429,7 @@ class TaskOpProcessorImplTest
         deadline,
         testActor,
         Task.Id(taskId),
-        TaskOpProcessor.Action.Update(unlaunched))
-    )
+        TaskOpProcessor.Action.Update(unlaunched)))
 
     Then("it replies with unit immediately")
     result.futureValue should be(())

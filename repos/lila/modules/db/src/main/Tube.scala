@@ -71,16 +71,10 @@ case class JsTube[Doc](
     }
 
   def toMongo(doc: Doc): JsResult[JsObject] =
-    flag(_.NoId)(
-      write(doc),
-      write(doc) flatMap JsTube.toMongoId
-    )
+    flag(_.NoId)(write(doc), write(doc) flatMap JsTube.toMongoId)
 
   def fromMongo(js: JsObject): JsResult[Doc] =
-    flag(_.NoId)(
-      read(js),
-      JsTube.depath(JsTube fromMongoId js) flatMap read
-    )
+    flag(_.NoId)(read(js), JsTube.depath(JsTube fromMongoId js) flatMap read)
 
   def inColl(c: Coll): JsTubeInColl[Doc] =
     new JsTube[Doc](reader, writer, flags) with InColl[Doc] {
@@ -118,37 +112,41 @@ object JsTube {
     // Explodes on failure
     implicit final class LilaTubePimpedWrites[A](writes: Writes[A]) {
       def andThen(transformer: Reads[JsObject]): Writes[A] =
-        writes.transform(Writes[JsValue] { origin =>
-          origin transform transformer match {
-            case err: JsError =>
-              throw LilaException(
-                "[tube] Cannot transform %s\n%s".format(origin, err))
-            case JsSuccess(js, _) => js
-          }
-        })
+        writes.transform(
+          Writes[JsValue] { origin =>
+            origin transform transformer match {
+              case err: JsError =>
+                throw LilaException(
+                  "[tube] Cannot transform %s\n%s".format(origin, err))
+              case JsSuccess(js, _) => js
+            }
+          })
     }
 
     def rename(from: Symbol, to: Symbol) =
-      __.json update (
-        (__ \ to).json copyFrom (__ \ from).json.pick
-      ) andThen (__ \ from).json.prune
+      __.json update ((__ \ to).json copyFrom (__ \ from).json.pick) andThen (
+        __ \ from
+      ).json.prune
 
     def readDate(field: Symbol) =
-      (__ \ field).json.update(of[JsObject] map { o =>
-        (o \ "$date").toOption err s"Can't read date of $o"
-      })
+      (__ \ field).json.update(
+        of[JsObject] map { o =>
+          (o \ "$date").toOption err s"Can't read date of $o"
+        })
 
     def readDateOpt(field: Symbol) = readDate(field) orElse json.reader
 
     def writeDate(field: Symbol) =
-      (__ \ field).json.update(of[JsNumber] map { millis =>
-        Json.obj("$date" -> millis)
-      })
+      (__ \ field).json.update(
+        of[JsNumber] map { millis =>
+          Json.obj("$date" -> millis)
+        })
 
     def writeDateOpt(field: Symbol) =
-      (__ \ field).json.update(of[JsNumber] map { millis =>
-        Json.obj("$date" -> millis)
-      }) orElse json.reader
+      (__ \ field).json.update(
+        of[JsNumber] map { millis =>
+          Json.obj("$date" -> millis)
+        }) orElse json.reader
 
     def merge(obj: JsObject) = __.read[JsObject] map (obj ++)
   }

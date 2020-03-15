@@ -101,55 +101,57 @@ object System {
     if (src == null || dest == null) {
       throw new NullPointerException()
     } else
-      (src match {
-        case src: Array[AnyRef] =>
-          dest match {
-            case dest: Array[AnyRef] => copyRef(src, dest)
-            case _                   => mismatch()
-          }
-        case src: Array[Boolean] =>
-          dest match {
-            case dest: Array[Boolean] => copyPrim(src, dest)
-            case _                    => mismatch()
-          }
-        case src: Array[Char] =>
-          dest match {
-            case dest: Array[Char] => copyPrim(src, dest)
-            case _                 => mismatch()
-          }
-        case src: Array[Byte] =>
-          dest match {
-            case dest: Array[Byte] => copyPrim(src, dest)
-            case _                 => mismatch()
-          }
-        case src: Array[Short] =>
-          dest match {
-            case dest: Array[Short] => copyPrim(src, dest)
-            case _                  => mismatch()
-          }
-        case src: Array[Int] =>
-          dest match {
-            case dest: Array[Int] => copyPrim(src, dest)
-            case _                => mismatch()
-          }
-        case src: Array[Long] =>
-          dest match {
-            case dest: Array[Long] => copyPrim(src, dest)
-            case _                 => mismatch()
-          }
-        case src: Array[Float] =>
-          dest match {
-            case dest: Array[Float] => copyPrim(src, dest)
-            case _                  => mismatch()
-          }
-        case src: Array[Double] =>
-          dest match {
-            case dest: Array[Double] => copyPrim(src, dest)
-            case _                   => mismatch()
-          }
-        case _ =>
-          mismatch()
-      })
+      (
+        src match {
+          case src: Array[AnyRef] =>
+            dest match {
+              case dest: Array[AnyRef] => copyRef(src, dest)
+              case _                   => mismatch()
+            }
+          case src: Array[Boolean] =>
+            dest match {
+              case dest: Array[Boolean] => copyPrim(src, dest)
+              case _                    => mismatch()
+            }
+          case src: Array[Char] =>
+            dest match {
+              case dest: Array[Char] => copyPrim(src, dest)
+              case _                 => mismatch()
+            }
+          case src: Array[Byte] =>
+            dest match {
+              case dest: Array[Byte] => copyPrim(src, dest)
+              case _                 => mismatch()
+            }
+          case src: Array[Short] =>
+            dest match {
+              case dest: Array[Short] => copyPrim(src, dest)
+              case _                  => mismatch()
+            }
+          case src: Array[Int] =>
+            dest match {
+              case dest: Array[Int] => copyPrim(src, dest)
+              case _                => mismatch()
+            }
+          case src: Array[Long] =>
+            dest match {
+              case dest: Array[Long] => copyPrim(src, dest)
+              case _                 => mismatch()
+            }
+          case src: Array[Float] =>
+            dest match {
+              case dest: Array[Float] => copyPrim(src, dest)
+              case _                  => mismatch()
+            }
+          case src: Array[Double] =>
+            dest match {
+              case dest: Array[Double] => copyPrim(src, dest)
+              case _                   => mismatch()
+            }
+          case _ =>
+            mismatch()
+        }
+      )
   }
 
   def identityHashCode(x: Object): scala.Int = {

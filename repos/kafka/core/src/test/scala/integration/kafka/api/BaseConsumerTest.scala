@@ -176,8 +176,9 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     val pos2 = this.consumers(0).position(tp2)
     this
       .consumers(0)
-      .commitSync(Map[TopicPartition, OffsetAndMetadata](
-        (tp, new OffsetAndMetadata(3L))).asJava)
+      .commitSync(
+        Map[TopicPartition, OffsetAndMetadata](
+          (tp, new OffsetAndMetadata(3L))).asJava)
     assertEquals(3, this.consumers(0).committed(tp).offset)
     assertNull(this.consumers(0).committed(tp2))
 
@@ -186,8 +187,9 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     assertEquals(pos2, this.consumers(0).position(tp2))
     this
       .consumers(0)
-      .commitSync(Map[TopicPartition, OffsetAndMetadata](
-        (tp2, new OffsetAndMetadata(5L))).asJava)
+      .commitSync(
+        Map[TopicPartition, OffsetAndMetadata](
+          (tp2, new OffsetAndMetadata(5L))).asJava)
     assertEquals(3, this.consumers(0).committed(tp).offset)
     assertEquals(5, this.consumers(0).committed(tp2).offset)
 

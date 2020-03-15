@@ -42,8 +42,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         clientNegotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     val server = Handshake.server(
       trans = serverTransport,
@@ -52,8 +51,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         serverNegotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     // ensure negotiation is complete
     Await.result(client.write(Message.Tping(1)), 5.seconds)
@@ -82,8 +80,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       headers = Seq.empty,
       negotiate = (_, trans) => {
         trans.map(enc, dec)
-      }
-    )
+      })
 
     assert(client.localAddress == local)
     assert(client.remoteAddress == remote)
@@ -95,8 +92,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       headers = identity,
       negotiate = (_, trans) => {
         trans.map(enc, dec)
-      }
-    )
+      })
 
     assert(server.localAddress == local)
     assert(server.remoteAddress == remote)
@@ -112,8 +108,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         throw clientExc
         trans.map(enc, dec)
-      }
-    )
+      })
 
     val serverExc = new Exception("boom!")
     val server = Handshake.server(
@@ -123,24 +118,27 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         throw serverExc
         trans.map(enc, dec)
-      }
-    )
+      })
 
-    assert(intercept[Exception] {
-      Await.result(client.read(), 5.seconds)
-    } == clientExc)
+    assert(
+      intercept[Exception] {
+        Await.result(client.read(), 5.seconds)
+      } == clientExc)
 
-    assert(intercept[Exception] {
-      Await.result(client.write(Message.Tping(1)), 5.seconds)
-    } == clientExc)
+    assert(
+      intercept[Exception] {
+        Await.result(client.write(Message.Tping(1)), 5.seconds)
+      } == clientExc)
 
-    assert(intercept[Exception] {
-      Await.result(server.read(), 5.seconds)
-    } == serverExc)
+    assert(
+      intercept[Exception] {
+        Await.result(server.read(), 5.seconds)
+      } == serverExc)
 
-    assert(intercept[Exception] {
-      Await.result(server.write(Message.Rping(1)), 5.seconds)
-    } == serverExc)
+    assert(
+      intercept[Exception] {
+        Await.result(server.write(Message.Rping(1)), 5.seconds)
+      } == serverExc)
   }
 
   test("pre handshake") {
@@ -152,8 +150,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         negotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     val f = client.write(Message.Tping(2))
 
@@ -177,8 +174,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         negotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     val f = client.write(Message.Tping(2))
 
@@ -211,8 +207,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         negotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     val f = client.write(Message.Tping(2))
 
@@ -241,8 +236,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         negotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     clientToServer.offer(enc(Message.Tinit(1, version, Seq.empty)))
 
@@ -266,8 +260,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         clientNegotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     val server = Handshake.server(
       trans = serverTransport,
@@ -276,8 +269,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         serverNegotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     val f0 = intercept[Failure] {
       Await.result(client.write(Message.Tping(1)), 5.seconds)
@@ -310,8 +302,7 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
       negotiate = (_, trans) => {
         negotiated = true
         trans.map(enc, dec)
-      }
-    )
+      })
 
     clientToServer.offer(enc(Message.Tping(1)))
     assert(serverToClient.drain() == Return(Queue.empty))

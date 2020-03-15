@@ -274,11 +274,13 @@ object ValidatePullRequest extends AutoPlugin {
 
         buildMode.log(name.value, log)
 
-        val validationTasks = buildMode.task.toSeq ++ (buildMode match {
-          case BuildSkip =>
-            Seq.empty // do not run the additional task if project is skipped during pr validation
-          case _ => (additionalTasks in ValidatePR).value
-        })
+        val validationTasks = buildMode.task.toSeq ++ (
+          buildMode match {
+            case BuildSkip =>
+              Seq.empty // do not run the additional task if project is skipped during pr validation
+            case _ => (additionalTasks in ValidatePR).value
+          }
+        )
 
         // Create a task for every validation task key and
         // then zip all of the tasks together discarding outputs.
@@ -320,8 +322,7 @@ object MultiNodeWithPrValidation extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = ValidatePullRequest && MultiNode
   override lazy val projectSettings = Seq(
-    additionalTasks in ValidatePR += MultiNode.multiTest
-  )
+    additionalTasks in ValidatePR += MultiNode.multiTest)
 }
 
 /**
@@ -334,8 +335,7 @@ object MimaWithPrValidation extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = ValidatePullRequest && MimaPlugin
   override lazy val projectSettings = Seq(
-    additionalTasks in ValidatePR += reportBinaryIssues
-  )
+    additionalTasks in ValidatePR += reportBinaryIssues)
 }
 
 object UnidocWithPrValidation extends AutoPlugin {
@@ -343,6 +343,5 @@ object UnidocWithPrValidation extends AutoPlugin {
 
   override def trigger = noTrigger
   override lazy val projectSettings = Seq(
-    additionalTasks in ValidatePR += unidoc in Compile
-  )
+    additionalTasks in ValidatePR += unidoc in Compile)
 }

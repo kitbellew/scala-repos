@@ -399,9 +399,11 @@ object JsonAST {
       def rec(v: JValue): JValue =
         v match {
           case JObject(l) =>
-            f(JObject(l.map { field =>
-              field.copy(value = rec(field.value))
-            }))
+            f(
+              JObject(
+                l.map { field =>
+                  field.copy(value = rec(field.value))
+                }))
           case JArray(l) => f(JArray(l.map(rec)))
           case x         => f(x)
         }
@@ -427,9 +429,10 @@ object JsonAST {
       def rec(v: JValue): JValue =
         v match {
           case JObject(l) =>
-            JObject(l.map { field =>
-              f(field.copy(value = rec(field.value)))
-            })
+            JObject(
+              l.map { field =>
+                f(field.copy(value = rec(field.value)))
+              })
           case JArray(l) => JArray(l.map(rec))
           case x         => x
         }
@@ -533,8 +536,7 @@ object JsonAST {
                         else
                           rep(xs, value))
                     case field => field
-                  }
-                )
+                  })
               case other => other
             }
 
@@ -967,8 +969,7 @@ object JsonAST {
   case class RenderSettings(
       indent: Int,
       escapeChars: Set[Char] = Set(),
-      spaceAfterFieldName: Boolean = false
-  ) {
+      spaceAfterFieldName: Boolean = false) {
     val lineBreaks_? = indent > 0
   }
 
@@ -1175,15 +1176,17 @@ trait Implicits {
 object JsonDSL extends JsonDSL
 trait JsonDSL extends Implicits {
   implicit def seq2jvalue[A <% JValue](s: Traversable[A]) =
-    JArray(s.toList.map { a =>
-      val v: JValue = a;
-      v
-    })
+    JArray(
+      s.toList.map { a =>
+        val v: JValue = a;
+        v
+      })
 
   implicit def map2jvalue[A <% JValue](m: Map[String, A]) =
-    JObject(m.toList.map {
-      case (k, v) => JField(k, v)
-    })
+    JObject(
+      m.toList.map {
+        case (k, v) => JField(k, v)
+      })
 
   implicit def option2jvalue[A <% JValue](opt: Option[A]): JValue =
     opt match {

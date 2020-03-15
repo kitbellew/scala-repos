@@ -352,9 +352,10 @@ object PlayDocsValidation {
 
     val markdownFiles = (base / "manual" ** "*.md").get.pair(relativeTo(base))
 
-    CodeSamplesReport(markdownFiles.map {
-      case (file, name) => extractCodeSamples("/" + name, IO.read(file))
-    })
+    CodeSamplesReport(
+      markdownFiles.map {
+        case (file, name) => extractCodeSamples("/" + name, IO.read(file))
+      })
   }
 
   val translationCodeSamplesReportTask = Def.task {
@@ -703,10 +704,11 @@ object PlayDocsValidation {
       log.error(errorMessage + " at " + file.getAbsolutePath + ":" + lineNo)
       line.foreach { l =>
         log.error(l)
-        log.error(l.take(colNo - 1).map {
-          case '\t' => '\t';
-          case _    => ' '
-        } + "^")
+        log.error(
+          l.take(colNo - 1).map {
+            case '\t' => '\t';
+            case _    => ' '
+          } + "^")
       }
     }
 }

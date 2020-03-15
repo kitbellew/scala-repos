@@ -226,11 +226,15 @@ trait SliceTransforms[M[+_]]
                     case _                                         => true
                   }
 
-                  val groupedNonNum = (leftNonNum mapValues {
-                    _ :: Nil
-                  }) cogroup (rightNonNum mapValues {
-                    _ :: Nil
-                  })
+                  val groupedNonNum = (
+                    leftNonNum mapValues {
+                      _ :: Nil
+                    }
+                  ) cogroup (
+                    rightNonNum mapValues {
+                      _ :: Nil
+                    }
+                  )
 
                   val simplifiedGroupNonNum = groupedNonNum map {
                     case (_, Left3(column))  => Left(column)
@@ -304,11 +308,13 @@ trait SliceTransforms[M[+_]]
 
                       case Right((left, right)) =>
                         val tests: Array[BoolColumn] =
-                          (for (l <- left;
-                                r <- right)
-                            yield {
-                              new FuzzyEqColumn(l, r)
-                            }).toArray
+                          (
+                            for (l <- left;
+                                 r <- right)
+                              yield {
+                                new FuzzyEqColumn(l, r)
+                              }
+                          ).toArray
                         new OrLotsColumn(tests)
                     })(collection.breakOut)
 
@@ -387,11 +393,12 @@ trait SliceTransforms[M[+_]]
                     }
 
                   Map(
-                    ColumnRef(CPath.Identity, CBoolean) -> (if (invert)
-                                                              complement(
-                                                                aggregate)
-                                                            else
-                                                              aggregate))
+                    ColumnRef(CPath.Identity, CBoolean) -> (
+                      if (invert)
+                        complement(aggregate)
+                      else
+                        aggregate
+                    ))
                 }
               }
             }
@@ -798,11 +805,15 @@ trait SliceTransforms[M[+_]]
                           .asBitSet(true, size)
                         rightMask.flip(0, size)
 
-                        val grouped = (leftS.columns mapValues {
-                          _ :: Nil
-                        }) cogroup (rightS.columns mapValues {
-                          _ :: Nil
-                        })
+                        val grouped = (
+                          leftS.columns mapValues {
+                            _ :: Nil
+                          }
+                        ) cogroup (
+                          rightS.columns mapValues {
+                            _ :: Nil
+                          }
+                        )
 
                         val joined: Map[ColumnRef, Column] =
                           grouped.map({
@@ -1628,15 +1639,19 @@ trait ArrayConcatHelpers extends ConcatHelpers {
         -1
       else
         leftIndices.map(_._1).max
-    val newCols = (leftIndices map {
-      case (_, _, ref, col) => ref -> col
-    }) ++
-      (rightIndices map {
-        case (i, xs, ref, col) =>
-          ColumnRef(
-            CPath(CPathIndex(i + maxId + 1) :: xs.toList),
-            ref.ctype) -> col
-      })
+    val newCols = (
+      leftIndices map {
+        case (_, _, ref, col) => ref -> col
+      }
+    ) ++
+      (
+        rightIndices map {
+          case (i, xs, ref, col) =>
+            ColumnRef(
+              CPath(CPathIndex(i + maxId + 1) :: xs.toList),
+              ref.ctype) -> col
+        }
+      )
 
     newCols.toMap
   }
@@ -1692,9 +1707,10 @@ trait ObjectConcatHelpers extends ConcatHelpers {
         }
     }
 
-    val innerPaths = Set(leftInner.keys map {
-      _.selector
-    } toSeq: _*)
+    val innerPaths = Set(
+      leftInner.keys map {
+        _.selector
+      } toSeq: _*)
 
     val mergedPairs: Set[(ColumnRef, Column)] = innerPaths flatMap { path =>
       val rightSelection = rightInner filter {

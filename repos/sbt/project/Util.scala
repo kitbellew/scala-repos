@@ -12,11 +12,12 @@ object Util {
 
   def crossBuild: Seq[Setting[_]] =
     Seq(
-      crossPaths := (scalaBinaryVersion.value match {
-        case "2.11" => true
-        case _      => false
-      })
-    )
+      crossPaths := (
+        scalaBinaryVersion.value match {
+          case "2.11" => true
+          case _      => false
+        }
+      ))
 
   lazy val javaOnlySettings = Seq[Setting[_]](
     /*crossPaths := false, */ compileOrder := CompileOrder.JavaThenScala,
@@ -110,10 +111,7 @@ object Util {
   def srcID = "compiler-interface-src"
 
   def publishPomSettings: Seq[Setting[_]] =
-    Seq(
-      publishArtifact in makePom := false,
-      pomPostProcess := cleanPom _
-    )
+    Seq(publishArtifact in makePom := false, pomPostProcess := cleanPom _)
 
   def cleanPom(pomNode: scala.xml.Node) = {
     import scala.xml._
@@ -144,7 +142,9 @@ object Util {
     }
 
   def excludePomArtifact(artifactId: String) =
-    (artifactId == "compiler-interface") || (artifactId startsWith "precompiled")
+    (artifactId == "compiler-interface") || (
+      artifactId startsWith "precompiled"
+    )
 
   val testExclusive = tags in test += ((ExclusiveTest, 1))
 

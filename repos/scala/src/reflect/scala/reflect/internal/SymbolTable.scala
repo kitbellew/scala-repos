@@ -57,8 +57,9 @@ abstract class SymbolTable
   def log(msg: => AnyRef): Unit
 
   protected def elapsedMessage(msg: String, start: Long) =
-    msg + " in " + (TimeUnit.NANOSECONDS.toMillis(
-      System.nanoTime()) - start) + "ms"
+    msg + " in " + (
+      TimeUnit.NANOSECONDS.toMillis(System.nanoTime()) - start
+    ) + "ms"
 
   def informProgress(msg: String) =
     if (settings.verbose)
@@ -152,12 +153,10 @@ abstract class SymbolTable
 
   private object SimpleNameOrdering extends Ordering[Names#Name] {
     def compare(n1: Names#Name, n2: Names#Name) =
-      (
-        if (n1 eq n2)
-          0
-        else
-          n1.toString compareTo n2.toString
-      )
+      (if (n1 eq n2)
+         0
+       else
+         n1.toString compareTo n2.toString)
   }
 
   /** Dump each symbol to stdout after shutdown.
@@ -311,10 +310,8 @@ abstract class SymbolTable
 
   final def isValidForBaseClasses(period: Period): Boolean = {
     def noChangeInBaseClasses(it: InfoTransformer, limit: Phase#Id): Boolean =
-      (
-        it.pid >= limit ||
-          !it.changesBaseClasses && noChangeInBaseClasses(it.next, limit)
-      )
+      (it.pid >= limit ||
+        !it.changesBaseClasses && noChangeInBaseClasses(it.next, limit))
     period != 0 && runId(period) == currentRunId && {
       val pid = phaseId(period)
       if (phase.id > pid)
@@ -360,7 +357,9 @@ abstract class SymbolTable
         val elemtp =
           formals.last.typeArgs.head match {
             case RefinedType(List(t1, t2), _)
-                if (t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass) =>
+                if (
+                  t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass
+                ) =>
               t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
             case t =>
               t
@@ -427,9 +426,10 @@ abstract class SymbolTable
       val NoCached: T = null.asInstanceOf[T]
       var cached: T = NoCached
       var cachedRunId = NoRunId
-      recordCache(new Clearable {
-        def clear(): Unit = cached = NoCached
-      })
+      recordCache(
+        new Clearable {
+          def clear(): Unit = cached = NoCached
+        })
       () => {
         if (currentRunId != cachedRunId || cached == NoCached) {
           cached = f

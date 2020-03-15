@@ -206,8 +206,7 @@ class TasksResourceTest
       groupManager,
       healthCheckManager,
       auth.auth,
-      auth.auth
-    )
+      auth.auth)
 
     Given("the app exists")
     groupManager.app(appId) returns Future.successful(
@@ -274,8 +273,7 @@ class TasksResourceTest
       groupManager,
       healthCheckManager,
       auth.auth,
-      auth.auth
-    )
+      auth.auth)
   }
 
 }

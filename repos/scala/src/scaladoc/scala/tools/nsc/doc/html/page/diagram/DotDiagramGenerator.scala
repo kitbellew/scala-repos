@@ -142,8 +142,9 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         nodes = List()
         edges =
           (thisNode -> superClasses) :: subClasses.map(_ -> List(thisNode))
-        node2Index =
-          (thisNode :: subClasses ::: superClasses ::: incomingImplicits ::: outgoingImplicits).zipWithIndex.toMap
+        node2Index = (
+          thisNode :: subClasses ::: superClasses ::: incomingImplicits ::: outgoingImplicits
+        ).zipWithIndex.toMap
         isInheritanceDiagram = true
         incomingImplicitNodes = incomingImplicits
       case _ =>
@@ -170,13 +171,15 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
             "subgraph clusterIncoming {\n" +
               "style=\"invis\"\n" +
               incomingImplicits.reverse.map(n => node2Dot(n)).mkString +
-              (if (incomingImplicits.size > 1)
-                 incomingImplicits
-                   .map(n => "node" + node2Index(n))
-                   .mkString(" -> ") +
-                   " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
-               else
-                 "") +
+              (
+                if (incomingImplicits.size > 1)
+                  incomingImplicits
+                    .map(n => "node" + node2Index(n))
+                    .mkString(" -> ") +
+                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
+                else
+                  ""
+              ) +
               "}"
         }
         // dot cluster containing outgoing implicit nodes, if any
@@ -187,13 +190,15 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
             "subgraph clusterOutgoing {\n" +
               "style=\"invis\"\n" +
               outgoingImplicits.reverse.map(n => node2Dot(n)).mkString +
-              (if (outgoingImplicits.size > 1)
-                 outgoingImplicits
-                   .map(n => "node" + node2Index(n))
-                   .mkString(" -> ") +
-                   " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
-               else
-                 "") +
+              (
+                if (outgoingImplicits.size > 1)
+                  outgoingImplicits
+                    .map(n => "node" + node2Index(n))
+                    .mkString(" -> ") +
+                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
+                else
+                  ""
+              ) +
               "}"
         }
 
@@ -211,25 +216,29 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           thisCluster + "\n" +
           incomingCluster + "\n" +
           // incoming implicit edge
-          (if (!incomingImplicits.isEmpty) {
-             val n = incomingImplicits.last
-             "node" + node2Index(n) + " -> node" + node2Index(thisNode) +
-               " [id=\"" + cssClass(n, thisNode) + "|" + node2Index(
-               n) + "_" + node2Index(
-               thisNode) + "\", tooltip=\"" + incomingTooltip + "\"" +
-               ", constraint=\"false\", minlen=\"2\", ltail=\"clusterIncoming\", lhead=\"clusterThis\", label=\"implicitly\"];\n"
-           } else
-             "") +
+          (
+            if (!incomingImplicits.isEmpty) {
+              val n = incomingImplicits.last
+              "node" + node2Index(n) + " -> node" + node2Index(thisNode) +
+                " [id=\"" + cssClass(n, thisNode) + "|" + node2Index(
+                n) + "_" + node2Index(
+                thisNode) + "\", tooltip=\"" + incomingTooltip + "\"" +
+                ", constraint=\"false\", minlen=\"2\", ltail=\"clusterIncoming\", lhead=\"clusterThis\", label=\"implicitly\"];\n"
+            } else
+              ""
+          ) +
           // outgoing implicit edge
-          (if (!outgoingImplicits.isEmpty) {
-             val n = outgoingImplicits.head
-             "node" + node2Index(thisNode) + " -> node" + node2Index(n) +
-               " [id=\"" + cssClass(thisNode, n) + "|" + node2Index(
-               thisNode) + "_" + node2Index(
-               n) + "\", tooltip=\"" + outgoingTooltip + "\"" +
-               ", constraint=\"false\", minlen=\"2\", ltail=\"clusterThis\", lhead=\"clusterOutgoing\", label=\"implicitly\"];\n"
-           } else
-             "") +
+          (
+            if (!outgoingImplicits.isEmpty) {
+              val n = outgoingImplicits.head
+              "node" + node2Index(thisNode) + " -> node" + node2Index(n) +
+                " [id=\"" + cssClass(thisNode, n) + "|" + node2Index(
+                thisNode) + "_" + node2Index(
+                n) + "\", tooltip=\"" + outgoingTooltip + "\"" +
+                ", constraint=\"false\", minlen=\"2\", ltail=\"clusterThis\", lhead=\"clusterOutgoing\", label=\"implicitly\"];\n"
+            } else
+              ""
+          ) +
           "}"
       }
     }
@@ -256,10 +265,12 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
               "node" + node2Index(to) + " -> node" + node2Index(from) +
                 " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
-                "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
-                                              " are subtypes of "
-                                            else
-                                              " is a subtype of ") +
+                "tooltip=\"" + from.name + (
+                if (from.name.endsWith(MultiSuffix))
+                  " are subtypes of "
+                else
+                  " is a subtype of "
+              ) +
                 to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
             })
             .mkString
@@ -582,8 +593,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
   private val graphAttributes: Map[String, String] = Map(
     "compound" -> "true",
-    "rankdir" -> "TB"
-  )
+    "rankdir" -> "TB")
 
   private val nodeAttributes = Map(
     "shape" -> "rect",
@@ -601,51 +611,43 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     "arrowsize" -> "0.7",
     "fontcolor" -> "#aaaaaa",
     "fontsize" -> "9.00",
-    "fontname" -> "Source Code Pro"
-  )
+    "fontname" -> "Source Code Pro")
 
   private val defaultStyle = Map(
     "color" -> "#ababab",
     "fillcolor" -> "#e1e1e1",
     "fontcolor" -> "#7d7d7d",
-    "margin" -> "0.1,0.04"
-  )
+    "margin" -> "0.1,0.04")
 
   private val implicitStyle = Map(
     "color" -> "#ababab",
     "fillcolor" -> "#e1e1e1",
-    "fontcolor" -> "#7d7d7d"
-  )
+    "fontcolor" -> "#7d7d7d")
 
   private val outsideStyle = Map(
     "color" -> "#ababab",
     "fillcolor" -> "#e1e1e1",
-    "fontcolor" -> "#7d7d7d"
-  )
+    "fontcolor" -> "#7d7d7d")
 
   private val traitStyle = Map(
     "color" -> "#2E6D82",
     "fillcolor" -> "#2E6D82",
-    "fontcolor" -> "#ffffff"
-  )
+    "fontcolor" -> "#ffffff")
 
   private val classStyle = Map(
     "color" -> "#418565",
     "fillcolor" -> "#418565",
-    "fontcolor" -> "#ffffff"
-  )
+    "fontcolor" -> "#ffffff")
 
   private val objectStyle = Map(
     "color" -> "#103A51",
     "fillcolor" -> "#103A51",
-    "fontcolor" -> "#ffffff"
-  )
+    "fontcolor" -> "#ffffff")
 
   private val typeStyle = Map(
     "color" -> "#2E6D82",
     "fillcolor" -> "#2E6D82",
-    "fontcolor" -> "#ffffff"
-  )
+    "fontcolor" -> "#ffffff")
 
   private def flatten(attributes: Map[String, String]) =
     attributes

@@ -40,9 +40,13 @@ class A {
           } if b =>
         x.size // this could/should do a static conformance test and not warn
       /* nowarn */
-      case x: ((AnyRef {
-            def size: Int
-          }) @unchecked) if b =>
+      case x: (
+            (
+              AnyRef {
+                def size: Int
+              }
+            ) @unchecked
+          ) if b =>
         x.size
     }
 }

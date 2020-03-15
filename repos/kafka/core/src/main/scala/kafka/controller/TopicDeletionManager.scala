@@ -282,8 +282,9 @@ class TopicDeletionManager(
     * @return Whether or not deletion can be retried for the topic
     */
   private def isTopicEligibleForDeletion(topic: String): Boolean = {
-    topicsToBeDeleted.contains(topic) && (!isTopicDeletionInProgress(
-      topic) && !isTopicIneligibleForDeletion(topic))
+    topicsToBeDeleted.contains(topic) && (
+      !isTopicDeletionInProgress(topic) && !isTopicIneligibleForDeletion(topic)
+    )
   }
 
   /**
@@ -451,8 +452,9 @@ class TopicDeletionManager(
       if (replicasInError.size != responseMap.size) {
         // some replicas could have been successfully deleted
         val deletedReplicas = responseMap.keySet -- partitionsInError
-        completeReplicaDeletion(deletedReplicas.map(p =>
-          PartitionAndReplica(p.topic, p.partition, replicaId)))
+        completeReplicaDeletion(
+          deletedReplicas.map(p =>
+            PartitionAndReplica(p.topic, p.partition, replicaId)))
       }
     }
   }

@@ -135,15 +135,12 @@ class UTF8StringPropertyCheckSuite
         s
     }
 
-    forAll(
-      whitespaceString,
-      randomString,
-      whitespaceString
-    ) { (start: String, middle: String, end: String) =>
-      val s = start + middle + end
-      assert(toUTF8(s).trim() === toUTF8(s.trim()))
-      assert(toUTF8(s).trimLeft() === toUTF8(lTrim(s)))
-      assert(toUTF8(s).trimRight() === toUTF8(rTrim(s)))
+    forAll(whitespaceString, randomString, whitespaceString) {
+      (start: String, middle: String, end: String) =>
+        val s = start + middle + end
+        assert(toUTF8(s).trim() === toUTF8(s.trim()))
+        assert(toUTF8(s).trimLeft() === toUTF8(lTrim(s)))
+        assert(toUTF8(s).trimRight() === toUTF8(rTrim(s)))
     }
   }
 
@@ -208,17 +205,14 @@ class UTF8StringPropertyCheckSuite
       }
     }
 
-    forAll(
-      randomString,
-      randomString,
-      randomInt
-    ) { (s: String, pad: String, length: Int) =>
-      assert(
-        toUTF8(s).lpad(length, toUTF8(pad)) ===
-          toUTF8(padding(s, pad, length, true)))
-      assert(
-        toUTF8(s).rpad(length, toUTF8(pad)) ===
-          toUTF8(padding(s, pad, length, false)))
+    forAll(randomString, randomString, randomInt) {
+      (s: String, pad: String, length: Int) =>
+        assert(
+          toUTF8(s).lpad(length, toUTF8(pad)) ===
+            toUTF8(padding(s, pad, length, true)))
+        assert(
+          toUTF8(s).rpad(length, toUTF8(pad)) ===
+            toUTF8(padding(s, pad, length, false)))
     }
   }
 

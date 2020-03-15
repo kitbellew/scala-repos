@@ -121,10 +121,12 @@ object ListTest extends SpecLite {
     def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] =
       as.takeWhileM[State[Int, ?]](a =>
           State { i =>
-            val j = i + (if (f(a))
-                           0
-                         else
-                           1)
+            val j = i + (
+              if (f(a))
+                0
+              else
+                1
+            )
             val done = j >= n
             (j, !done)
           })
@@ -136,21 +138,27 @@ object ListTest extends SpecLite {
 
   "foldl is foldLeft" ! forAll { (rnge: List[List[Int]]) =>
     val F = Foldable[List]
-    (rnge.foldLeft(List[Int]())(_ ++ _)
-      must_=== (F.foldLeft(rnge, List[Int]())(_ ++ _)))
+    (
+      rnge.foldLeft(List[Int]())(_ ++ _)
+        must_=== (F.foldLeft(rnge, List[Int]())(_ ++ _))
+    )
   }
 
   "foldr is foldRight" ! forAll { (rnge: List[List[Int]]) =>
     val F = Foldable[List]
-    (rnge.foldRight(List[Int]())(_ ++ _)
-      must_=== (F.foldRight(rnge, List[Int]())(_ ++ _)))
+    (
+      rnge.foldRight(List[Int]())(_ ++ _)
+        must_=== (F.foldRight(rnge, List[Int]())(_ ++ _))
+    )
   }
 
   "index" ! forAll { (xs: List[Int], n: Int) =>
-    (xs index n) must_=== (if (n >= 0 && xs.size > n)
-                             Some(xs(n))
-                           else
-                             None)
+    (xs index n) must_=== (
+      if (n >= 0 && xs.size > n)
+        Some(xs(n))
+      else
+        None
+    )
   }
 
   "groupWhen is groupWhenM[Id]" ! forAll { xs: List[Int] =>
@@ -160,9 +168,9 @@ object ListTest extends SpecLite {
 
   "mapAccumLeft" ! forAll { (xs: List[Int]) =>
     val f = (_: Int) + 1
-    xs.mapAccumLeft(
-      List[Int](),
-      (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs, xs.map(f))
+    xs.mapAccumLeft(List[Int](), (c: List[Int], a) => (c :+ a, f(a))) must_=== (
+      xs, xs.map(f)
+    )
   }
 
   "mapAccumRight" ! forAll { (xs: List[Int]) =>

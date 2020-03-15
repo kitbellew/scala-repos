@@ -207,9 +207,10 @@ class ScSuperReferenceImpl(node: ASTNode)
       case Some(q) =>
         q.resolve() match {
           case clazz: PsiClass =>
-            Some(clazz.getSuperTypes.map { t =>
-              ScType.create(t, getProject, getResolveScope)
-            })
+            Some(
+              clazz.getSuperTypes.map { t =>
+                ScType.create(t, getProject, getResolveScope)
+              })
           case _ => None
         }
       case None => {

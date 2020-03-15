@@ -41,10 +41,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     "be successfully read from number" in {
       reads(JsNumber(BigDecimal valueOf 123L))
         .aka("read date") must_== JsSuccess(
-        LocalDateTime.ofInstant(
-          Instant.ofEpochMilli(123L),
-          ZoneOffset.UTC
-        ))
+        LocalDateTime.ofInstant(Instant.ofEpochMilli(123L), ZoneOffset.UTC))
     }
 
     "not be read from invalid string" in {
@@ -66,16 +63,16 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       }
 
       "from '2011-12-03T10:15:30+01:00' (with TZ offset)" in {
-        reads(
-          JsString(
-            "2011-12-03T10:15:30+01:00")) aka "read date" must_== (JsSuccess(
-          dateTime("2011-12-03T10:15:30+01:00")))
+        reads(JsString("2011-12-03T10:15:30+01:00")) aka "read date" must_== (
+          JsSuccess(dateTime("2011-12-03T10:15:30+01:00"))
+        )
       }
 
       "from '2011-12-03T10:15:30+01:00[Europe/Paris]' (with time zone)" in {
         reads(JsString("2011-12-03T10:15:30+01:00[Europe/Paris]"))
-          .aka("read date") must_== (JsSuccess(
-          dateTime("2011-12-03T10:15:30+01:00[Europe/Paris]")))
+          .aka("read date") must_== (
+          JsSuccess(dateTime("2011-12-03T10:15:30+01:00[Europe/Paris]"))
+        )
       }
     }
 
@@ -138,13 +135,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     lazy val correctedReads = Reads.offsetDateTimeReads(
       DateTimeFormatter.ISO_OFFSET_DATE_TIME,
-      _.drop(1)
-    )
+      _.drop(1))
 
     val CustomReads2 = Reads.offsetDateTimeReads(
       DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss ZZZ"),
-      _.drop(2)
-    )
+      _.drop(2))
 
     "not be read" >> {
       "from an invalid string" in {
@@ -161,9 +156,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
       "from a number" in {
         reads(JsNumber(123L)) aka "read date" must beLike {
-          case JsError((
-                _,
-                ValidationError("error.expected.date" :: Nil) :: Nil) :: Nil) =>
+          case JsError(
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date" :: Nil) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -240,16 +237,12 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     val CustomReads2 = Reads.zonedDateTimeReads(
       DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ssVV"),
-      _.drop(2)
-    )
+      _.drop(2))
 
     "be successfully read from number" in {
       reads(JsNumber(BigDecimal valueOf 123L))
         .aka("read date") must_== JsSuccess(
-        ZonedDateTime.ofInstant(
-          Instant.ofEpochMilli(123L),
-          ZoneOffset.UTC
-        ))
+        ZonedDateTime.ofInstant(Instant.ofEpochMilli(123L), ZoneOffset.UTC))
     }
 
     "not be read from invalid string" in {
@@ -266,16 +259,16 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     "be successfully read with default implicit" >> {
       "from '2011-12-03T10:15:30+01:00' (with TZ offset)" in {
-        reads(
-          JsString(
-            "2011-12-03T10:15:30+01:00")) aka "read date" must_== (JsSuccess(
-          dateTime("2011-12-03T10:15:30+01:00")))
+        reads(JsString("2011-12-03T10:15:30+01:00")) aka "read date" must_== (
+          JsSuccess(dateTime("2011-12-03T10:15:30+01:00"))
+        )
       }
 
       "from '2011-12-03T10:15:30+01:00[Europe/Paris]' (with time zone)" in {
         reads(JsString("2011-12-03T10:15:30+01:00[Europe/Paris]"))
-          .aka("read date") must_== (JsSuccess(
-          dateTime("2011-12-03T10:15:30+01:00[Europe/Paris]")))
+          .aka("read date") must_== (
+          JsSuccess(dateTime("2011-12-03T10:15:30+01:00[Europe/Paris]"))
+        )
       }
     }
 
@@ -427,15 +420,13 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     lazy val correctedReads = Reads.instantReads(
       DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC),
-      _.drop(1)
-    )
+      _.drop(1))
 
     val CustomReads2 = Reads.instantReads(
       DateTimeFormatter
         .ofPattern("dd/MM/yyyy, HH:mm:ss")
         .withZone(ZoneOffset.UTC),
-      _.drop(2)
-    )
+      _.drop(2))
 
     "be successfully read from number" in {
       reads(JsNumber(BigDecimal valueOf 123L))
@@ -467,8 +458,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
       "from '2015-05-01T13:00:00+02:00' (with TZ offset and zeros)" in {
         reads(JsString("2015-05-01T13:00:00+02:00")) must_== JsSuccess(
-          Instant.parse("2015-05-01T11:00:00Z")
-        )
+          Instant.parse("2015-05-01T11:00:00Z"))
       }
 
       "from '2011-12-03T10:15:30+01:00' (with TZ offset)" in {
@@ -562,8 +552,9 @@ object ReadsSpec extends org.specs2.mutable.Specification {
         aJson
           .validate(flatMappedReads)
           .aka("read a")
-          .must_==(JsError(
-            List((aPath, List(ValidationError("error.expected.jsnumber"))))))
+          .must_==(
+            JsError(
+              List((aPath, List(ValidationError("error.expected.jsnumber"))))))
       }
     }
   }

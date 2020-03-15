@@ -27,8 +27,7 @@ case class OptimizeImportSettings(
       s.SPACES_IN_IMPORTS,
       s.getClassCountToUseImportOnDemand,
       s.getImportLayout,
-      s.isAlwaysUsedImport
-    )
+      s.isAlwaysUsedImport)
   }
 }
 

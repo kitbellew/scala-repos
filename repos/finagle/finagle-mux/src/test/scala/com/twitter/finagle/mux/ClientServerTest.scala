@@ -236,8 +236,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
       new Answer[Future[Response]]() {
         def answer(invocation: InvocationOnMock) =
           Future.value(Response(Buf.Utf8(Trace.id.toString)))
-      }
-    )
+      })
 
     val id = Trace.nextId
     val resp =
@@ -260,8 +259,7 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
           buf.writeLong(Trace.id.flags.toLong)
           Future.value(Response(ChannelBufferBuf.Owned(buf)))
         }
-      }
-    )
+      })
 
     val flags = Flags().setDebug
     val id = Trace.nextId.copy(flags = flags)
@@ -343,8 +341,7 @@ class ClientServerTestDispatch extends ClientServerTest(true) {
               Contexts.broadcast
                 .get(testContext)
                 .getOrElse(Buf.Empty)))
-      }
-    )
+      })
 
     // No context set
     assert(Await.result(client(Request(Path.empty, Buf.Empty))).body.isEmpty)

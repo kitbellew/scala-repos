@@ -93,10 +93,12 @@ class ScObjectImpl protected (
   }
 
   override def toString: String =
-    (if (isPackageObject)
-       "ScPackageObject: "
-     else
-       "ScObject: ") + name
+    (
+      if (isPackageObject)
+        "ScPackageObject: "
+      else
+        "ScObject: "
+    ) + name
 
   override def getIconInner =
     if (isPackageObject)
@@ -255,8 +257,7 @@ class ScObjectImpl protected (
             .getElementFactory
             .createFieldFromText(
               "public final static " + getQualifiedName + " MODULE$",
-              this
-            ),
+              this),
           this)
       field.setNavigationElement(this)
       Some(field)

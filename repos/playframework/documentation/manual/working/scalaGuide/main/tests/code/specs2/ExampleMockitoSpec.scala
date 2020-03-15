@@ -47,8 +47,10 @@ class MyService {
 
     val today = Calendar.getInstance()
 
-    (retrievalDate.get(Calendar.YEAR) == today.get(Calendar.YEAR)
-    && retrievalDate.get(Calendar.DAY_OF_YEAR) == today.get(
-      Calendar.DAY_OF_YEAR))
+    (
+      retrievalDate.get(Calendar.YEAR) == today.get(Calendar.YEAR)
+      && retrievalDate.get(Calendar.DAY_OF_YEAR) == today.get(
+        Calendar.DAY_OF_YEAR)
+    )
   }
 }

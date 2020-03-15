@@ -299,8 +299,9 @@ object ScalaCollectionRenderer {
           val errorChildren: util.ArrayList[DebuggerTreeNode] =
             new util.ArrayList[DebuggerTreeNode]
           errorChildren.add(
-            nodeManager.createMessageNode(DebuggerBundle.message(
-              "error.unable.to.evaluate.expression") + " " + e.getMessage))
+            nodeManager.createMessageNode(
+              DebuggerBundle.message(
+                "error.unable.to.evaluate.expression") + " " + e.getMessage))
           builder.setChildren(errorChildren)
       }
     }

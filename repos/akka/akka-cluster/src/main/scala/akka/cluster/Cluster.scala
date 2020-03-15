@@ -367,9 +367,10 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * a certain size.
     */
   def registerOnMemberUp[T](code: ⇒ T): Unit =
-    registerOnMemberUp(new Runnable {
-      def run() = code
-    })
+    registerOnMemberUp(
+      new Runnable {
+        def run() = code
+      })
 
   /**
     * Java API: The supplied callback will be run, once, when current cluster member is `Up`.
@@ -386,9 +387,10 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * Typically used together `cluster.leave(cluster.selfAddress)` and then `system.terminate()`.
     */
   def registerOnMemberRemoved[T](code: ⇒ T): Unit =
-    registerOnMemberRemoved(new Runnable {
-      override def run(): Unit = code
-    })
+    registerOnMemberRemoved(
+      new Runnable {
+        override def run(): Unit = code
+      })
 
   /**
     * Java API: The supplied thunk will be run, once, when current cluster member is `Removed`.

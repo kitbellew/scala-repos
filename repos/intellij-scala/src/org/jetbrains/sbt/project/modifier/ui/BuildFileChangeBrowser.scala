@@ -67,8 +67,7 @@ class BuildFileChangeBrowser(
             }
             .getOrElse(myChange)
         }
-      }
-    )
+      })
 
     setChangesToDisplay(updatedChanges)
   }

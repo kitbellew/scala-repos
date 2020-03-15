@@ -138,9 +138,10 @@ object Security {
       userinfo: RequestHeader => Option[U],
       onUnauthorized: RequestHeader => Result = _ =>
         Unauthorized(views.html.defaultpages.unauthorized()))
-      extends ActionBuilder[({
-        type R[A] = AuthenticatedRequest[A, U]
-      })#R] {
+      extends ActionBuilder[
+        ({
+          type R[A] = AuthenticatedRequest[A, U]
+        })#R] {
 
     def invokeBlock[A](
         request: Request[A],

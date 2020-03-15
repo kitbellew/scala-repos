@@ -663,8 +663,9 @@ class DistributedLDAModel private[clustering] (
           for ((termId, n_wk) <- termVertices) {
             var topic = 0
             while (topic < numTopics) {
-              queues(topic) += (n_wk(topic) / N_k(topic) -> index2term(
-                termId.toInt))
+              queues(topic) += (
+                n_wk(topic) / N_k(topic) -> index2term(termId.toInt)
+              )
               topic += 1
             }
           }

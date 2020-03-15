@@ -6,12 +6,14 @@ object SCL6825B {
   class B {
     val size: Int = 144
   }
-  implicit def z[T <: AnyRef {
-    val size: Int
-  }](t: T): A = new A
-  implicit def g[T <: AnyRef {
-    def size: Int
-  }](t: T): A = new A
+  implicit def z[
+      T <: AnyRef {
+        val size: Int
+      }](t: T): A = new A
+  implicit def g[
+      T <: AnyRef {
+        def size: Int
+      }](t: T): A = new A
 
   val b = new B
 

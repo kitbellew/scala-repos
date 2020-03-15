@@ -15,11 +15,7 @@ object NightlyPlugin extends AutoPlugin {
     def testDependencies =
       libraryDependencies <++= includeTestDependencies { incl =>
         if (incl)
-          Seq(
-            scalaCheck % Test,
-            specs2 % Test,
-            junit % Test
-          )
+          Seq(scalaCheck % Test, specs2 % Test, junit % Test)
         else
           Seq()
       }
@@ -33,8 +29,7 @@ object NightlyPlugin extends AutoPlugin {
       includeTestDependencies := {
         val v = scalaVersion.value
         v.startsWith("2.10.") || v.startsWith("2.11.")
-      }
-    )
+      })
 
   override def projectSettings: Seq[Setting[_]] =
     Seq(

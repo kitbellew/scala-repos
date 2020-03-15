@@ -69,8 +69,11 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       if (n < 0)
         0x7
       else
-        (((1 << (32 - java.lang.Integer
-          .numberOfLeadingZeros(n - 1))) - 1) & 0x3FFFFFFF) | 0x7
+        (
+          (
+            (1 << (32 - java.lang.Integer.numberOfLeadingZeros(n - 1))) - 1
+          ) & 0x3FFFFFFF
+        ) | 0x7
     _hashes = new Array[Int](mask + 1)
     _keys = new Array[AnyRef](mask + 1)
     _values = new Array[AnyRef](mask + 1)
@@ -82,8 +85,7 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       vc: Int,
       hz: Array[Int],
       kz: Array[AnyRef],
-      vz: Array[AnyRef]
-  ) {
+      vz: Array[AnyRef]) {
     mask = m;
     _size = sz;
     _vacant = vc;
@@ -215,10 +217,12 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     */
   def getOrNull(key: K): V = {
     val i = seekEntry(hashOf(key), key)
-    (if (i < 0)
-       null
-     else
-       _values(i)).asInstanceOf[V]
+    (
+      if (i < 0)
+        null
+      else
+        _values(i)
+    ).asInstanceOf[V]
   }
 
   /** Retrieves the value associated with a key.

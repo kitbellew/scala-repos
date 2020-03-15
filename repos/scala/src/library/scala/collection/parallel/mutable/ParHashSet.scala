@@ -115,11 +115,8 @@ object ParHashSet extends ParSetFactory[ParHashSet] {
 
 private[mutable] abstract class ParHashSetCombiner[T](
     private val tableLoadFactor: Int)
-    extends scala.collection.parallel.BucketCombiner[
-      T,
-      ParHashSet[T],
-      AnyRef,
-      ParHashSetCombiner[T]](ParHashSetCombiner.numblocks)
+    extends scala.collection.parallel.BucketCombiner[T, ParHashSet[
+      T], AnyRef, ParHashSetCombiner[T]](ParHashSetCombiner.numblocks)
     with scala.collection.mutable.FlatHashTable.HashUtils[T] {
 //self: EnvironmentPassingCombiner[T, ParHashSet[T]] =>
   private val nonmasklen = ParHashSetCombiner.nonmasklength

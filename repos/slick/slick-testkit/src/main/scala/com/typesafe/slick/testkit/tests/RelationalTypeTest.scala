@@ -24,8 +24,7 @@ class RelationalTypeTest extends AsyncTest[RelationalTestDB] {
         tbl.schema.create,
         tbl ++= data,
         q.result.map(_ shouldBe data),
-        tbl.schema.drop
-      )
+        tbl.schema.drop)
     }
 
     seq(

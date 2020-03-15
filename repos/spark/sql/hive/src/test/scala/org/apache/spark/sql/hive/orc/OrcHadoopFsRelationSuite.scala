@@ -53,8 +53,9 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
            p2 <- Seq("foo", "bar")) {
         val partitionDir = new Path(qualifiedBasePath, s"p1=$p1/p2=$p2")
         sparkContext
-          .parallelize(for (i <- 1 to 3)
-            yield (i, s"val_$i", p1))
+          .parallelize(
+            for (i <- 1 to 3)
+              yield (i, s"val_$i", p1))
           .toDF("a", "b", "p1")
           .write
           .orc(partitionDir.toString)
@@ -65,9 +66,10 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
 
       checkQueries(
         hiveContext.read
-          .options(Map(
-            "path" -> file.getCanonicalPath,
-            "dataSchema" -> dataSchemaWithPartition.json))
+          .options(
+            Map(
+              "path" -> file.getCanonicalPath,
+              "dataSchema" -> dataSchemaWithPartition.json))
           .format(dataSourceName)
           .load())
     }

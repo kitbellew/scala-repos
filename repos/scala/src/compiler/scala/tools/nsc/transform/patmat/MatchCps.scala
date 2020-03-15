@@ -31,12 +31,12 @@ trait MatchCps {
     // a cps-type-state-annotated type makes no sense as an expected type (matchX.tpe is used as pt in translateMatch)
     // (only test availability of MarkerCPSAdaptPlus assuming they are either all available or none of them are)
     def removeCPSFromPt(pt: Type): Type =
-      (
-        if (MarkerCPSAdaptPlus.exists && (stripTriggerCPSAnns exists pt.hasAnnotation))
-          pt filterAnnotations (ann => !(strippedCPSAnns exists ann.matches))
-        else
-          pt
-      )
+      (if (MarkerCPSAdaptPlus.exists && (
+             stripTriggerCPSAnns exists pt.hasAnnotation
+           ))
+         pt filterAnnotations (ann => !(strippedCPSAnns exists ann.matches))
+       else
+         pt)
   }
   def removeCPSFromPt(pt: Type): Type = CpsSymbols removeCPSFromPt pt
 }

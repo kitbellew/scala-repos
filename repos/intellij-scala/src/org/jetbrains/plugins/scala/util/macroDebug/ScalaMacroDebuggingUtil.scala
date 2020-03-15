@@ -83,11 +83,13 @@ object ScalaMacroDebuggingUtil {
       val linesRed = StringBuilder.newBuilder
 
       while (line != null && dataStream.available() > 0) {
-        linesRed ++= (line map (c =>
-          if (c == 0)
-            ' '
-          else
-            c)) ++= "\n"
+        linesRed ++= (
+          line map (c =>
+            if (c == 0)
+              ' '
+            else
+              c)
+        ) ++= "\n"
         line = dataStream readUTF ()
       }
 
@@ -130,9 +132,9 @@ object ScalaMacroDebuggingUtil {
   }
 
   def readPreimageName(file: PsiFile): Option[String] =
-    Option(
-      SOURCE_FILE_NAME readAttributeBytes file.getVirtualFile) map (new String(
-      _))
+    Option(SOURCE_FILE_NAME readAttributeBytes file.getVirtualFile) map (
+      new String(_)
+    )
 
   def getPreimageFile(file: PsiFile) = PREIMAGE_CACHE get file
 

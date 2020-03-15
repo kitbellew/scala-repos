@@ -81,9 +81,10 @@ case class PathPattern(parts: Seq[PathPart]) {
   def apply(path: String): Option[Map[String, Either[Throwable, String]]] = {
     val matcher = regex.matcher(path)
     if (matcher.matches) {
-      Some(groups.map {
-        case (name, g) => name -> g(matcher)
-      }.toMap)
+      Some(
+        groups.map {
+          case (name, g) => name -> g(matcher)
+        }.toMap)
     } else {
       None
     }

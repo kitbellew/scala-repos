@@ -73,8 +73,7 @@ object Cross {
             val settings = Seq(
               scalaVersion in GlobalScope :== version,
               scalaHome in GlobalScope :== Some(home),
-              scalaInstance in GlobalScope :== instance
-            )
+              scalaInstance in GlobalScope :== instance)
             (
               settings,
               excludeKeys(
@@ -85,8 +84,7 @@ object Cross {
             state.log.info("Setting version to " + arg)
             val settings = Seq(
               scalaVersion in GlobalScope :== arg,
-              scalaHome in GlobalScope :== None
-            )
+              scalaHome in GlobalScope :== None)
             (settings, excludeKeys(Set(scalaVersion.key, scalaHome.key)))
           }
 
@@ -112,8 +110,9 @@ object Cross {
 
   // Creates a delegate for a scoped key that pulls the setting from the global scope.
   private[this] def delegateToGlobal[T](key: ScopedKey[T]): Setting[_] =
-    SettingKey[T](key.key) in key.scope := (SettingKey[T](
-      key.key) in GlobalScope).value
+    SettingKey[T](key.key) in key.scope := (
+      SettingKey[T](key.key) in GlobalScope
+    ).value
 
   @deprecated("No longer used.", "0.13.0")
   def crossExclude(s: Setting[_]): Boolean =
@@ -138,7 +137,9 @@ object Cross {
       import x._
       val versions = crossVersions(state)
       val current =
-        scalaVersion in currentRef get structure.data map (SwitchCommand + " " + _) toList;
+        scalaVersion in currentRef get structure.data map (
+          SwitchCommand + " " + _
+        ) toList;
       if (versions.isEmpty)
         command :: state
       else {

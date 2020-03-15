@@ -38,9 +38,7 @@ class DeploymentPlanTest
       apps = Set(c, d),
       groups = Set(
         Group("/test/database".toPath, Set(a)),
-        Group("/test/service".toPath, Set(b))
-      )
-    )
+        Group("/test/service".toPath, Set(b))))
 
     When("the group's apps are grouped by the longest outbound path")
     val partitionedApps = DeploymentPlan.appsGroupedByLongestPath(group)
@@ -71,10 +69,7 @@ class DeploymentPlanTest
     val d = AppDefinition(dId)
     val e = AppDefinition(eId)
 
-    val group = Group(
-      id = "/".toPath,
-      apps = Set(a, b, c, d, e)
-    )
+    val group = Group(id = "/".toPath, apps = Set(a, b, c, d, e))
 
     When("the group's apps are grouped by the longest outbound path")
     val partitionedApps = DeploymentPlan.appsGroupedByLongestPath(group)
@@ -147,8 +142,7 @@ class DeploymentPlanTest
       app.copy(cmd = Some("sleep 30")),
       app2.copy(instances = 10),
       AppDefinition("/app4".toPath, Some("cmd4")),
-      unchanged
-    )
+      unchanged)
 
     val from = Group("/group".toPath, apps)
     val to = Group("/group".toPath, update)
@@ -196,23 +190,19 @@ class DeploymentPlanTest
           dependencies = Set(mongoId),
           instances = 10,
           upgradeStrategy = strategy,
-          versionInfo = versionInfo
-        )
+          versionInfo = versionInfo)
 
     val from = Group(
       id = "/test".toPath,
       groups = Set(
         Group("/test/database".toPath, Set(mongo._1)),
-        Group("/test/service".toPath, Set(service._1))
-      )
-    )
+        Group("/test/service".toPath, Set(service._1))))
 
     val to = Group(
       "/test".toPath,
       groups = Set(
         Group("/test/database".toPath, Set(mongo._2)),
-        Group("/test/service".toPath, Set(service._2))
-      ))
+        Group("/test/service".toPath, Set(service._2))))
 
     When("the deployment plan is computed")
     val plan = DeploymentPlan(from, to)
@@ -237,11 +227,7 @@ class DeploymentPlanTest
         AppDefinition(s"/test/$i".toPath, Some("cmd"), instances = instances)
       }.toSet
 
-    val targetGroup = Group(
-      id = "/test".toPath,
-      apps = apps,
-      groups = Set()
-    )
+    val targetGroup = Group(id = "/test".toPath, apps = apps, groups = Set())
 
     When("the deployment plan is computed")
     val plan = DeploymentPlan(emptyGroup, targetGroup)
@@ -296,15 +282,13 @@ class DeploymentPlanTest
       "/test".toPath,
       groups = Set(
         Group("/test/database".toPath, Set(mongo._1)),
-        Group("/test/service".toPath, Set(service._1))
-      ))
+        Group("/test/service".toPath, Set(service._1))))
 
     val to: Group = Group(
       "/test".toPath,
       groups = Set(
         Group("/test/database".toPath, Set(mongo._2)),
-        Group("/test/service".toPath, Set(service._2))
-      ))
+        Group("/test/service".toPath, Set(service._2))))
 
     When("the deployment plan is computed")
     val plan = DeploymentPlan(from, to)
@@ -421,9 +405,7 @@ class DeploymentPlanTest
       upgradeStrategy = strategy) -> None
     val from: Group = Group(
       "/test".toPath,
-      groups = Set(
-        Group("/test/independent".toPath, Set(app._1))
-      ))
+      groups = Set(Group("/test/independent".toPath, Set(app._1))))
     val to: Group = Group("/test".toPath)
 
     When("the deployment plan is computed")
@@ -458,8 +440,7 @@ class DeploymentPlanTest
       id = "/test".toPath,
       cmd = Some("sleep 5"),
       instances = 1,
-      versionInfo = VersionInfo.forNewConfig(Timestamp(10))
-    )
+      versionInfo = VersionInfo.forNewConfig(Timestamp(10)))
     val appNew = app.copy(instances = 1) // no change
 
     val from = Group("/".toPath, apps = Set(app))
@@ -472,8 +453,7 @@ class DeploymentPlanTest
     val app = AppDefinition(
       id = "/test".toPath,
       cmd = Some("sleep 5"),
-      versionInfo = VersionInfo.forNewConfig(Timestamp(10))
-    )
+      versionInfo = VersionInfo.forNewConfig(Timestamp(10)))
     val appNew = app.markedForRestarting
 
     val from = Group("/".toPath, apps = Set(app))
@@ -495,19 +475,13 @@ class DeploymentPlanTest
     val originalGroup = Group(
       id = "/test".toPath,
       apps = Set(oldApp),
-      groups = Set(
-        Group("/test/some".toPath, Set(oldApp))
-      )
-    )
+      groups = Set(Group("/test/some".toPath, Set(oldApp))))
 
     val newApp = oldApp.copy(instances = 5)
     val targetGroup = Group(
       id = "/test".toPath,
       apps = Set(newApp),
-      groups = Set(
-        Group("/test/some".toPath, Set(newApp))
-      )
-    )
+      groups = Set(Group("/test/some".toPath, Set(newApp))))
 
     val taskToKill = MarathonTestHelper.stagedTaskForApp(aId)
     val plan = DeploymentPlan(
@@ -552,8 +526,8 @@ class DeploymentPlanTest
     val f = new Fixture()
 
     When("We update the upgrade strategy to the default strategy")
-    val app2 = f.validResident.copy(upgradeStrategy =
-      AppDefinition.DefaultUpgradeStrategy)
+    val app2 = f.validResident
+      .copy(upgradeStrategy = AppDefinition.DefaultUpgradeStrategy)
     val group2 = f.group.copy(apps = Set(app2))
     val plan2 = DeploymentPlan(f.group, group2)
 

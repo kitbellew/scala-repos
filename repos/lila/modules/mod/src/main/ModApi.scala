@@ -74,8 +74,9 @@ final class ModApi(
         UserRepo.updateTroll(user) >>-
           logApi.troll(mod, user.id, user.troll)
       } >>-
-        (reporter ! lila.hub.actorApi.report
-          .MarkTroll(user.id, mod)) inject user.troll
+        (
+          reporter ! lila.hub.actorApi.report.MarkTroll(user.id, mod)
+        ) inject user.troll
     }
 
   def ban(mod: String, username: String): Funit =
@@ -86,8 +87,7 @@ final class ModApi(
           user.ipBan.fold(
             firewall unblockIps spy.ipStrings,
             (spy.ipStrings map firewall.blockIp).sequenceFu >>
-              (SecurityStore disconnect user.id)
-          ) void
+              (SecurityStore disconnect user.id)) void
       }
     }
 

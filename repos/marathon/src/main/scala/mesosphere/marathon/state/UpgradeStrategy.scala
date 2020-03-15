@@ -21,8 +21,7 @@ object UpgradeStrategy {
   def fromProto(upgradeStrategy: UpgradeStrategyDefinition): UpgradeStrategy =
     UpgradeStrategy(
       upgradeStrategy.getMinimumHealthCapacity,
-      upgradeStrategy.getMaximumOverCapacity
-    )
+      upgradeStrategy.getMaximumOverCapacity)
 
   implicit val updateStrategyValidator = validator[UpgradeStrategy] {
     strategy =>

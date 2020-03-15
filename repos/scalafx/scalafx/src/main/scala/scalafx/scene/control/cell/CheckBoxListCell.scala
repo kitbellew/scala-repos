@@ -78,9 +78,8 @@ object CheckBoxListCell {
       "Use forListView[T](T => ObservableValue[Boolean, java.lang.Boolean])",
     since = "1.0")
   def forListView[T](
-      getSelectedProperty: jfxu.Callback[
-        T,
-        jfxbv.ObservableValue[java.lang.Boolean]]) =
+      getSelectedProperty: jfxu.Callback[T, jfxbv.ObservableValue[
+        java.lang.Boolean]]) =
     jfxscc.CheckBoxListCell.forListView(getSelectedProperty)
 
   /**
@@ -106,9 +105,8 @@ object CheckBoxListCell {
       "Use forListView[T](T => ObservableValue[Boolean, java.lang.Boolean])",
     since = "1.0")
   def forListView[T](
-      getSelectedProperty: jfxu.Callback[
-        T,
-        jfxbv.ObservableValue[java.lang.Boolean]],
+      getSelectedProperty: jfxu.Callback[T, jfxbv.ObservableValue[
+        java.lang.Boolean]],
       converter: jfxu.StringConverter[T]) =
     jfxscc.CheckBoxListCell.forListView(getSelectedProperty, converter)
 }

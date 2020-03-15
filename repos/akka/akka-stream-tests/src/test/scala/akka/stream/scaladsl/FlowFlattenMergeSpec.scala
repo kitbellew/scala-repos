@@ -106,10 +106,11 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       val p1, p2 = TestPublisher.probe[Int]()
       val ex = new Exception("buh")
       val p = Promise[Source[Int, NotUsed]]
-      (Source(
-        List(Source.fromPublisher(p1), Source.fromPublisher(p2))) ++ Source
-        .fromFuture(p.future))
-        .flatMapMerge(5, identity)
+      (
+        Source(
+          List(Source.fromPublisher(p1), Source.fromPublisher(p2))) ++ Source
+          .fromFuture(p.future)
+      ).flatMapMerge(5, identity)
         .runWith(Sink.head)
       p1.expectRequest()
       p2.expectRequest()

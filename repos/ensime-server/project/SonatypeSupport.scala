@@ -10,11 +10,7 @@ object SonatypeSupport {
   val Apache2 =
     ("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 
-  def sonatype(
-      ghUser: String,
-      ghRepo: String,
-      license: (String, URL)
-  ) =
+  def sonatype(ghUser: String, ghRepo: String, license: (String, URL)) =
     Seq(
       publishMavenStyle := true,
       publishArtifact in Test := false,

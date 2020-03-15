@@ -113,19 +113,21 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
     val semaphore: Semaphore = new Semaphore
     semaphore.down()
     val callback = new ErrorReportingCallback(semaphore)
-    UIUtil.invokeAndWaitIfNeeded(new Runnable {
-      def run() {
-        try {
-          CompilerTestUtil.saveApplicationSettings()
-          val ioFile: File = VfsUtilCore.virtualToIoFile(myModule.getModuleFile)
-          saveProject()
-          assert(ioFile.exists, "File does not exist: " + ioFile.getPath)
-          CompilerManager.getInstance(getProject).rebuild(callback)
-        } catch {
-          case e: Exception => throw new RuntimeException(e)
+    UIUtil.invokeAndWaitIfNeeded(
+      new Runnable {
+        def run() {
+          try {
+            CompilerTestUtil.saveApplicationSettings()
+            val ioFile: File = VfsUtilCore.virtualToIoFile(
+              myModule.getModuleFile)
+            saveProject()
+            assert(ioFile.exists, "File does not exist: " + ioFile.getPath)
+            CompilerManager.getInstance(getProject).rebuild(callback)
+          } catch {
+            case e: Exception => throw new RuntimeException(e)
+          }
         }
-      }
-    })
+      })
     val maxCompileTime = 6000
     var i = 0
     while (!semaphore.waitFor(100) && i < maxCompileTime) {

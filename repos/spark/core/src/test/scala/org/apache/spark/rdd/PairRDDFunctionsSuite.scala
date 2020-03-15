@@ -302,8 +302,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         (1, (1, 'x')),
         (1, (2, 'x')),
         (2, (1, 'y')),
-        (2, (1, 'z'))
-      ))
+        (2, (1, 'z'))))
   }
 
   test("join all-to-all") {
@@ -318,8 +317,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         (1, (2, 'x')),
         (1, (2, 'y')),
         (1, (3, 'x')),
-        (1, (3, 'y'))
-      ))
+        (1, (3, 'y'))))
   }
 
   test("leftOuterJoin") {
@@ -333,8 +331,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         (1, (2, Some('x'))),
         (2, (1, Some('y'))),
         (2, (1, Some('z'))),
-        (3, (1, None))
-      ))
+        (3, (1, None))))
   }
 
   // See SPARK-9326
@@ -371,8 +368,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         (1, (Some(2), 'x')),
         (2, (Some(1), 'y')),
         (2, (Some(1), 'z')),
-        (4, (None, 'w'))
-      ))
+        (4, (None, 'w'))))
   }
 
   test("fullOuterJoin") {
@@ -387,8 +383,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         (2, (Some(1), Some('y'))),
         (2, (Some(1), Some('z'))),
         (3, (Some(1), None)),
-        (4, (None, Some('w')))
-      ))
+        (4, (None, Some('w')))))
   }
 
   test("join with no matches") {
@@ -408,8 +403,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         (1, (1, 'x')),
         (1, (2, 'x')),
         (2, (1, 'y')),
-        (2, (1, 'z'))
-      ))
+        (2, (1, 'z'))))
   }
 
   test("groupWith") {
@@ -424,8 +418,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         (1, (List(1, 2), List('x'))),
         (2, (List(1), List('y', 'z'))),
         (3, (List(1), List())),
-        (4, (List(), List('w')))
-      ))
+        (4, (List(), List('w')))))
   }
 
   test("groupWith3") {
@@ -443,8 +436,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         (1, (List(1, 2), List('x'), List('a'))),
         (2, (List(1), List('y', 'z'), List())),
         (3, (List(1), List(), List('b'))),
-        (4, (List(), List('w'), List('c', 'd')))
-      ))
+        (4, (List(), List('w'), List('c', 'd')))))
   }
 
   test("groupWith4") {

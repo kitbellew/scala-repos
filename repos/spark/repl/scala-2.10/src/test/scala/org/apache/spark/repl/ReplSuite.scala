@@ -265,9 +265,7 @@ class ReplSuite extends SparkFunSuite {
   }
 
   test("SPARK-2452 compound statements.") {
-    val output = runInterpreter(
-      "local",
-      """
+    val output = runInterpreter("local", """
         |val x = 4 ; def f() = x
         |f()
       """.stripMargin)

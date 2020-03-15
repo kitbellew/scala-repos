@@ -195,8 +195,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         def unique(
             possibilities: immutable.Seq[(Class[_], Serializer)]): Boolean =
           possibilities.size == 1 ||
-            (possibilities forall (_._1 isAssignableFrom possibilities(
-              0)._1)) ||
+            (
+              possibilities forall (_._1 isAssignableFrom possibilities(0)._1)
+            ) ||
             (possibilities forall (_._2 == possibilities(0)._2))
 
         val ser =
@@ -277,13 +278,15 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     */
   private def sort(
       in: Iterable[ClassSerializer]): immutable.Seq[ClassSerializer] =
-    ((new ArrayBuffer[ClassSerializer](in.size) /: in) { (buf, ca) ⇒
-      buf.indexWhere(_._1 isAssignableFrom ca._1) match {
-        case -1 ⇒ buf append ca
-        case x ⇒ buf insert (x, ca)
+    (
+      (new ArrayBuffer[ClassSerializer](in.size) /: in) { (buf, ca) ⇒
+        buf.indexWhere(_._1 isAssignableFrom ca._1) match {
+          case -1 ⇒ buf append ca
+          case x ⇒ buf insert (x, ca)
+        }
+        buf
       }
-      buf
-    }).to[immutable.Seq]
+    ).to[immutable.Seq]
 
   /**
     * serializerMap is a Map whose keys is the class that is serializable and values is the serializer

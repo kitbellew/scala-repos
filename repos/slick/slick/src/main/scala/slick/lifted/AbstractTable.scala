@@ -154,8 +154,10 @@ abstract class AbstractTable[T](
       unique)
 
   def indexes: Iterable[Index] =
-    (for {
-      m <- getClass().getMethods.view
-      if m.getReturnType == classOf[Index] && m.getParameterTypes.length == 0
-    } yield m.invoke(this).asInstanceOf[Index]).sortBy(_.name)
+    (
+      for {
+        m <- getClass().getMethods.view
+        if m.getReturnType == classOf[Index] && m.getParameterTypes.length == 0
+      } yield m.invoke(this).asInstanceOf[Index]
+    ).sortBy(_.name)
 }

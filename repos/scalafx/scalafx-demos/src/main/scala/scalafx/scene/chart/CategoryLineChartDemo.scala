@@ -51,10 +51,10 @@ object CategoryLineChartDemo extends JFXApp {
         legendSide = Side.Right
         data = XYChart.Series[String, Number](
           "Series 1",
-          ObservableBuffer(dataPairs.map {
-            case (x, y) => XYChart.Data[String, Number](x, y)
-          })
-        )
+          ObservableBuffer(
+            dataPairs.map {
+              case (x, y) => XYChart.Data[String, Number](x, y)
+            }))
       }
     }
   }

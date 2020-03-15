@@ -14,15 +14,21 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
       an[IllegalArgumentException] should be thrownBy {
         Given {
           List(
-            (List(
-              ("col1_1", "col2_1"),
-              ("col1_2", "col2_2")) withSchema ('col1, 'col2)),
-            (List(
-              ("col1_1", "col2_1"),
-              ("col1_2", "col2_2")) withSchema ('col1, 'col3)),
-            (List(
-              ("col1_1", "col2_1"),
-              ("col1_2", "col2_2")) withSchema ('col1, 'col4))
+            (
+              List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+                'col1, 'col2
+              )
+            ),
+            (
+              List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+                'col1, 'col3
+              )
+            ),
+            (
+              List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+                'col1, 'col4
+              )
+            )
           )
         } When { (pipe1: RichPipe, pipe2: RichPipe) =>
           {
@@ -44,12 +50,16 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
     "work properly with a multi rich-pipe function with same cardinality" in {
       Given {
         List(
-          (List(
-            ("col1_1", "col2_1"),
-            ("col1_2", "col2_2")) withSchema ('col1, 'col2)),
-          (List(
-            ("col1_1", "col2_1"),
-            ("col1_2", "col2_2")) withSchema ('col1, 'col3)))
+          (
+            List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+              'col1, 'col2
+            )
+          ),
+          (
+            List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+              'col1, 'col3
+            )
+          ))
       } When { (pipe1: RichPipe, pipe2: RichPipe) =>
         {
           pipe1
@@ -70,12 +80,16 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
     "work properly with a multi pipe function with same cardinality" in {
       Given {
         List(
-          (List(
-            ("col1_1", "col2_1"),
-            ("col1_2", "col2_2")) withSchema ('col1, 'col2)),
-          (List(
-            ("col1_1", "col2_1"),
-            ("col1_2", "col2_2")) withSchema ('col1, 'col3)))
+          (
+            List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+              'col1, 'col2
+            )
+          ),
+          (
+            List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+              'col1, 'col3
+            )
+          ))
       } When { (pipe1: Pipe, pipe2: Pipe) =>
         {
           pipe1
@@ -96,12 +110,16 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
     "work properly with a function accepting a list of rich pipes" in {
       Given {
         List(
-          (List(
-            ("col1_1", "col2_1"),
-            ("col1_2", "col2_2")) withSchema ('col1, 'col2)),
-          (List(
-            ("col1_1", "col2_1"),
-            ("col1_2", "col2_2")) withSchema ('col1, 'col3)))
+          (
+            List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+              'col1, 'col2
+            )
+          ),
+          (
+            List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+              'col1, 'col3
+            )
+          ))
       } When { (pipes: List[RichPipe]) =>
         {
           pipes(0)
@@ -122,12 +140,16 @@ class SourceListSpecTest extends WordSpec with Matchers with BddDsl {
     "work properly with a function accepting a list of pipes" in {
       Given {
         List(
-          (List(
-            ("col1_1", "col2_1"),
-            ("col1_2", "col2_2")) withSchema ('col1, 'col2)),
-          (List(
-            ("col1_1", "col2_1"),
-            ("col1_2", "col2_2")) withSchema ('col1, 'col3)))
+          (
+            List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+              'col1, 'col2
+            )
+          ),
+          (
+            List(("col1_1", "col2_1"), ("col1_2", "col2_2")) withSchema (
+              'col1, 'col3
+            )
+          ))
       } When { (pipes: List[Pipe]) =>
         {
           pipes(0)

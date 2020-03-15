@@ -30,9 +30,7 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
   override val db =
     new DatabaseOnDocker {
       override val imageName = "postgres:9.4.5"
-      override val env = Map(
-        "POSTGRES_PASSWORD" -> "rootpass"
-      )
+      override val env = Map("POSTGRES_PASSWORD" -> "rootpass")
       override val jdbcPort = 5432
       override def getJdbcUrl(ip: String, port: Int): String =
         s"jdbc:postgresql://$ip:$port/postgres?user=postgres&password=rootpass"
@@ -116,9 +114,10 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
         .dataType ==
         ArrayType(DecimalType(2, 2), true))
     // Test write null values.
-    df.select(df.queryExecution.analyzed.output.map { a =>
-        Column(Literal.create(null, a.dataType)).as(a.name)
-      }: _*)
+    df.select(
+        df.queryExecution.analyzed.output.map { a =>
+          Column(Literal.create(null, a.dataType)).as(a.name)
+        }: _*)
       .write
       .jdbc(jdbcUrl, "public.barcopy2", new Properties)
   }

@@ -102,8 +102,7 @@ class FileUploadSupportMaxSizeTestServlet
   configureMultipartHandling(
     MultipartConfig(
       maxFileSize = Some(1024),
-      fileSizeThreshold = Some(1024 * 1024 * 1024)
-    ))
+      fileSizeThreshold = Some(1024 * 1024 * 1024)))
 
   error {
     case e: SizeConstraintExceededException => {
@@ -134,8 +133,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
 
     val headers = Map(
       "X-Header" -> "I'm a header",
-      "X-Header2" -> "I'm another header"
-    )
+      "X-Header2" -> "I'm another header")
 
     post("/upload?qsparam1=three&qsparam2=four", params, files, headers) {
       f
@@ -206,12 +204,14 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       postExample {
         (header("File-text-Name") must_== "lorem_ipsum.txt") and
           (header("File-text-Size") must_== "651") and
-          (header(
-            "File-text-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0") and
+          (
+            header("File-text-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0"
+          ) and
           (header("File-binary-Name") must_== "smiley.png") and
           (header("File-binary-Size") must_== "3432") and
-          (header(
-            "File-binary-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856")
+          (
+            header("File-binary-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856"
+          )
       }
     }
 
@@ -219,12 +219,14 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       postMultiExample {
         (header("File-files[]0-Name") must_== "lorem_ipsum.txt") and
           (header("File-files[]0-Size") must_== "651") and
-          (header(
-            "File-files[]0-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0") and
+          (
+            header("File-files[]0-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0"
+          ) and
           (header("File-files[]1-Name") must_== "smiley.png") and
           (header("File-files[]1-Size") must_== "3432") and
-          (header(
-            "File-files[]1-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856")
+          (
+            header("File-files[]1-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856"
+          )
       }
     }
 
@@ -245,8 +247,9 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       postPass {
         (header("File-text-Name") must_== "lorem_ipsum.txt") and
           (header("File-text-Size") must_== "651") and
-          (header(
-            "File-text-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0")
+          (
+            header("File-text-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0"
+          )
       }
     }
 
@@ -260,14 +263,14 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
     "use default charset (UTF-8) for decoding form params if not excplicitly set to something else" in {
       val boundary = "XyXyXy"
       val reqBody =
-        ("--{boundary}\r\n" +
-          "Content-Disposition: form-data; name=\"utf8-string\"\r\n" +
-          "Content-Type: text/plain\r\n" +
-          "\r\n" +
-          "föo\r\n" +
-          "--{boundary}--\r\n")
-          .replace("{boundary}", boundary)
-          .getBytes("UTF-8")
+        (
+          "--{boundary}\r\n" +
+            "Content-Disposition: form-data; name=\"utf8-string\"\r\n" +
+            "Content-Type: text/plain\r\n" +
+            "\r\n" +
+            "föo\r\n" +
+            "--{boundary}--\r\n"
+        ).replace("{boundary}", boundary).getBytes("UTF-8")
 
       post("/params", headers = multipartHeaders, body = reqBody) {
         header("utf8-string") must_== "föo"
@@ -276,12 +279,14 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
 
     "use the charset specified in Content-Type header of a part for decoding form params" in {
       val reqBody =
-        ("--XyXyXy\r\n" +
-          "Content-Disposition: form-data; name=\"latin1-string\"\r\n" +
-          "Content-Type: text/plain; charset=ISO-8859-1\r\n" +
-          "\r\n" +
-          "äöööölfldflfldfdföödfödfödfåååååå\r\n" +
-          "--XyXyXy--").getBytes("ISO-8859-1")
+        (
+          "--XyXyXy\r\n" +
+            "Content-Disposition: form-data; name=\"latin1-string\"\r\n" +
+            "Content-Type: text/plain; charset=ISO-8859-1\r\n" +
+            "\r\n" +
+            "äöööölfldflfldfdföödfödfödfåååååå\r\n" +
+            "--XyXyXy--"
+        ).getBytes("ISO-8859-1")
 
       post("/params", headers = multipartHeaders, body = reqBody) {
         header("latin1-string") must_== "äöööölfldflfldfdföödfödfödfåååååå"

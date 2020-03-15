@@ -135,8 +135,9 @@ trait BaseBlockStoreTestModule[M[+_]]
                     case (ref @ ColumnRef(jpath, ctype), _) =>
                       jpath.nodes.head == CPathField("key") || reqCols.exists {
                         ref =>
-                          (CPathField(
-                            "value") \ ref.selector) == jpath && ref.ctype == ctype
+                          (
+                            CPathField("value") \ ref.selector
+                          ) == jpath && ref.ctype == ctype
                       }
                   }
                 }
@@ -169,19 +170,20 @@ trait BaseBlockStoreTestModule[M[+_]]
     }
 
   def sortTransspec(sortKeys: CPath*): TransSpec1 =
-    InnerObjectConcat(sortKeys.zipWithIndex.map {
-      case (sortKey, idx) =>
-        WrapObject(
-          sortKey.nodes.foldLeft[TransSpec1](
-            DerefObjectStatic(Leaf(Source), CPathField("value"))) {
-            case (innerSpec, field: CPathField) =>
-              DerefObjectStatic(innerSpec, field)
-            case (innerSpec, index: CPathIndex) =>
-              DerefArrayStatic(innerSpec, index)
-          },
-          "%09d".format(idx)
-        )
-    }: _*)
+    InnerObjectConcat(
+      sortKeys.zipWithIndex.map {
+        case (sortKey, idx) =>
+          WrapObject(
+            sortKey.nodes.foldLeft[TransSpec1](
+              DerefObjectStatic(Leaf(Source), CPathField("value"))) {
+              case (innerSpec, field: CPathField) =>
+                DerefObjectStatic(innerSpec, field)
+              case (innerSpec, index: CPathIndex) =>
+                DerefArrayStatic(innerSpec, index)
+            },
+            "%09d".format(idx)
+          )
+      }: _*)
 }
 
 object BlockStoreTestModule {

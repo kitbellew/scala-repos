@@ -137,8 +137,13 @@ private[spark] class ShuffleMapStage(
       }
     }
     if (becameUnavailable) {
-      logInfo("%s is now unavailable on executor %s (%d/%d, %s)"
-        .format(this, execId, _numAvailableOutputs, numPartitions, isAvailable))
+      logInfo(
+        "%s is now unavailable on executor %s (%d/%d, %s)".format(
+          this,
+          execId,
+          _numAvailableOutputs,
+          numPartitions,
+          isAvailable))
     }
   }
 }

@@ -120,9 +120,10 @@ object SbtWatcherMain {
         }
       case STOP => currentExec.foreach(a => a._1.endSbtExec())
       case IS_RUNNING =>
-        write2source(currentExec.map { a =>
-          toMessage(a._1.isRunning)
-        } getOrElse FALSE)
+        write2source(
+          currentExec.map { a =>
+            toMessage(a._1.isRunning)
+          } getOrElse FALSE)
       case _ =>
     }
   }

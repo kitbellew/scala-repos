@@ -188,8 +188,7 @@ object StringContext {
             "at terminal"
           else
             s"'\\${str(index + 1)}' not one of $ok at"
-        } index $index in "$str". Use \\\\ for literal \\."""
-      )
+        } index $index in "$str". Use \\\\ for literal \\.""")
 
   /** Expands standard Scala escape sequences in a string.
     *  Escape sequences are:

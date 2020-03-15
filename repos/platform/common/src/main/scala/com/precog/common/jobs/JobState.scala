@@ -85,10 +85,11 @@ trait JobStateSerialization {
         jfield("state", state) ::
           jfield("timestamp", timestamp) ::
           jfield("previous", decompose(previous)) ::
-          (reason map {
-            jfield("reason", _) :: Nil
-          } getOrElse Nil)
-      )
+          (
+            reason map {
+              jfield("reason", _) :: Nil
+            } getOrElse Nil
+        ))
     }
 
     override def decompose(job: JobState): JValue =
@@ -115,8 +116,10 @@ trait JobStateSerialization {
 
   implicit object JobStateExtractor extends Extractor[JobState] {
     def extractBase(obj: JValue): Validation[Error, (DateTime, JobState)] = {
-      ((obj \ "timestamp").validated[DateTime] |@| (obj \ "previous")
-        .validated[JobState]).tupled
+      (
+        (obj \ "timestamp").validated[DateTime] |@| (obj \ "previous")
+          .validated[JobState]
+      ).tupled
     }
 
     override def validated(obj: JValue) = {

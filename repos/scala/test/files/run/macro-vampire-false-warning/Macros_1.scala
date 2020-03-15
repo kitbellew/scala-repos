@@ -86,21 +86,22 @@ object Macros {
             Template(
               List(Ident(TypeName("Workaround"))),
               noSelfType,
-              List(DefDef(
-                NoMods,
-                termNames.CONSTRUCTOR,
-                Nil,
-                List(Nil),
-                TypeTree(),
-                Block(
-                  List(
-                    Apply(
-                      Select(
-                        Super(This(typeNames.EMPTY), typeNames.EMPTY),
-                        termNames.CONSTRUCTOR),
-                      List())),
-                  Literal(Constant(())))
-              ))
+              List(
+                DefDef(
+                  NoMods,
+                  termNames.CONSTRUCTOR,
+                  Nil,
+                  List(Nil),
+                  TypeTree(),
+                  Block(
+                    List(
+                      Apply(
+                        Select(
+                          Super(This(typeNames.EMPTY), typeNames.EMPTY),
+                          termNames.CONSTRUCTOR),
+                        List())),
+                    Literal(Constant(())))
+                ))
             )
           )
         ),

@@ -45,8 +45,7 @@ object LayoutDemo extends JFXApp {
           content = new Label {
             text = "Hello"
           }
-        }
-      )
+        })
     }
 
   val hbox1 =

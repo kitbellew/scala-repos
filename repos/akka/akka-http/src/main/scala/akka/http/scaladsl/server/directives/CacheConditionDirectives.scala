@@ -87,8 +87,10 @@ trait CacheConditionDirectives {
       import request._
       mapInnerRoute { route ⇒
         def innerRouteWithRangeHeaderFilteredOut: Route =
-          (mapRequest(_.mapHeaders(_.filterNot(_.isInstanceOf[Range]))) &
-            addResponseHeaders)(route)
+          (
+            mapRequest(_.mapHeaders(_.filterNot(_.isInstanceOf[Range]))) &
+              addResponseHeaders
+          )(route)
 
         def isGetOrHead = method == HEAD || method == GET
         def unmodified(ifModifiedSince: DateTime) =

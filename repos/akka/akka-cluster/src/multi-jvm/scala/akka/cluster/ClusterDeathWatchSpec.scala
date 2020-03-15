@@ -75,20 +75,21 @@ abstract class ClusterDeathWatchSpec
         val path3 = RootActorPath(third) / "user" / "subject"
         val watchEstablished = TestLatch(2)
         system.actorOf(
-          Props(new Actor {
-            context.actorSelection(path2) ! Identify(path2)
-            context.actorSelection(path3) ! Identify(path3)
+          Props(
+            new Actor {
+              context.actorSelection(path2) ! Identify(path2)
+              context.actorSelection(path3) ! Identify(path3)
 
-            def receive = {
-              case ActorIdentity(`path2`, Some(ref)) ⇒
-                context.watch(ref)
-                watchEstablished.countDown
-              case ActorIdentity(`path3`, Some(ref)) ⇒
-                context.watch(ref)
-                watchEstablished.countDown
-              case Terminated(actor) ⇒ testActor ! actor.path
-            }
-          }).withDeploy(Deploy.local),
+              def receive = {
+                case ActorIdentity(`path2`, Some(ref)) ⇒
+                  context.watch(ref)
+                  watchEstablished.countDown
+                case ActorIdentity(`path3`, Some(ref)) ⇒
+                  context.watch(ref)
+                  watchEstablished.countDown
+                case Terminated(actor) ⇒ testActor ! actor.path
+              }
+            }).withDeploy(Deploy.local),
           name = "observer1"
         )
 
@@ -105,11 +106,11 @@ abstract class ClusterDeathWatchSpec
         cluster.down(third)
         // removed
         awaitAssert(
-          clusterView.members.map(_.address) should not contain (address(
-            third)))
+          clusterView.members
+            .map(_.address) should not contain (address(third)))
         awaitAssert(
-          clusterView.unreachableMembers.map(
-            _.address) should not contain (address(third)))
+          clusterView.unreachableMembers
+            .map(_.address) should not contain (address(third)))
         expectMsg(path3)
         enterBarrier("third-terminated")
 
@@ -117,9 +118,10 @@ abstract class ClusterDeathWatchSpec
 
       runOn(second, third, fourth) {
         system.actorOf(
-          Props(new Actor {
-            def receive = Actor.emptyBehavior
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              def receive = Actor.emptyBehavior
+            }).withDeploy(Deploy.local),
           name = "subject")
         enterBarrier("subjected-started")
         enterBarrier("watch-established")
@@ -131,11 +133,11 @@ abstract class ClusterDeathWatchSpec
           cluster.down(second)
           // removed
           awaitAssert(
-            clusterView.members.map(_.address) should not contain (address(
-              second)))
+            clusterView.members
+              .map(_.address) should not contain (address(second)))
           awaitAssert(
-            clusterView.unreachableMembers.map(
-              _.address) should not contain (address(second)))
+            clusterView.unreachableMembers
+              .map(_.address) should not contain (address(second)))
         }
         enterBarrier("second-terminated")
         enterBarrier("third-terminated")
@@ -157,12 +159,13 @@ abstract class ClusterDeathWatchSpec
       runOn(first) {
         val path = RootActorPath(second) / "user" / "non-existing"
         system.actorOf(
-          Props(new Actor {
-            context.watch(context.actorFor(path))
-            def receive = {
-              case t: Terminated ⇒ testActor ! t.actor.path
-            }
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              context.watch(context.actorFor(path))
+              def receive = {
+                case t: Terminated ⇒ testActor ! t.actor.path
+              }
+            }).withDeploy(Deploy.local),
           name = "observer3")
 
         expectMsg(path)
@@ -175,9 +178,10 @@ abstract class ClusterDeathWatchSpec
       20 seconds) {
       runOn(fifth) {
         system.actorOf(
-          Props(new Actor {
-            def receive = Actor.emptyBehavior
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              def receive = Actor.emptyBehavior
+            }).withDeploy(Deploy.local),
           name = "subject5")
       }
       enterBarrier("subjected-started")
@@ -222,11 +226,11 @@ abstract class ClusterDeathWatchSpec
         cluster.down(fifth)
         // removed
         awaitAssert(
-          clusterView.unreachableMembers.map(
-            _.address) should not contain (address(fifth)))
+          clusterView.unreachableMembers
+            .map(_.address) should not contain (address(fifth)))
         awaitAssert(
-          clusterView.members.map(_.address) should not contain (address(
-            fifth)))
+          clusterView.members
+            .map(_.address) should not contain (address(fifth)))
       }
 
       enterBarrier("fifth-terminated")
@@ -261,11 +265,11 @@ abstract class ClusterDeathWatchSpec
         cluster.down(first)
         // removed
         awaitAssert(
-          clusterView.unreachableMembers.map(
-            _.address) should not contain (address(first)))
+          clusterView.unreachableMembers
+            .map(_.address) should not contain (address(first)))
         awaitAssert(
-          clusterView.members.map(_.address) should not contain (address(
-            first)))
+          clusterView.members
+            .map(_.address) should not contain (address(first)))
 
         expectTerminated(hello)
 

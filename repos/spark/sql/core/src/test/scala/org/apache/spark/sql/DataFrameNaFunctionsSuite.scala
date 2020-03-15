@@ -31,8 +31,7 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
       ("David", 60, null),
       ("Nina", 25, Double.NaN),
       ("Amy", null, null),
-      (null, null, null)
-    ).toDF("name", "age", "height")
+      (null, null, null)).toDF("name", "age", "height")
   }
 
   test("drop") {
@@ -145,24 +144,12 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
         java.lang.Boolean)]((null, null, null, null, null))
       .toDF("a", "b", "c", "d", "e")
     checkAnswer(
-      df.na.fill(
-        Map(
-          "a" -> "test",
-          "c" -> 1,
-          "d" -> 2.2,
-          "e" -> false
-        )),
+      df.na.fill(Map("a" -> "test", "c" -> 1, "d" -> 2.2, "e" -> false)),
       Row("test", null, 1, 2.2, false))
 
     // Test Java version
     checkAnswer(
-      df.na.fill(
-        Map(
-          "a" -> "test",
-          "c" -> 1,
-          "d" -> 2.2,
-          "e" -> false
-        ).asJava),
+      df.na.fill(Map("a" -> "test", "c" -> 1, "d" -> 2.2, "e" -> false).asJava),
       Row("test", null, 1, 2.2, false))
   }
 

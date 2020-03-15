@@ -56,8 +56,7 @@ object DottySdkDescriptor extends SdkDescriptorCompanion {
     Artifact.ScalaLibrary,
     Artifact.ScalaReflect,
     DottyArtifact.Main,
-    DottyArtifact.Interfaces
-  )
+    DottyArtifact.Interfaces)
 
   override protected def createSdkDescriptor(
       version: Option[Version],

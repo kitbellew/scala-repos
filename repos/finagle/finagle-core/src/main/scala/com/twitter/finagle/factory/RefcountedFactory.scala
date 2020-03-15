@@ -17,8 +17,8 @@ import com.twitter.finagle.service.RefcountedService
   * until all outstanding requests have been completed.
   */
 private[finagle] class RefcountedFactory[Req, Rep](
-    self: ServiceFactory[Req, Rep]
-) extends ServiceFactoryProxy(self) {
+    self: ServiceFactory[Req, Rep])
+    extends ServiceFactoryProxy(self) {
   override def apply(conn: ClientConnection) =
     super.apply(conn) map {
       new RefcountedService(_)

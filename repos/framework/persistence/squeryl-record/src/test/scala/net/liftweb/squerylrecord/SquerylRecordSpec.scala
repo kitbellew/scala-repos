@@ -105,9 +105,10 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(c.id === e.companyId.get)
               select ((c.id, e.id))).toList
         companiesWithEmployees must haveSize(td.allEmployees.size)
-        companiesWithEmployees must containAllOf(td.allEmployees map { e =>
-          (e.companyId.get, e.id)
-        })
+        companiesWithEmployees must containAllOf(
+          td.allEmployees map { e =>
+            (e.companyId.get, e.id)
+          })
       }
     }
 
@@ -343,8 +344,10 @@ class SquerylRecordSpec extends Specification with AroundExample {
         // Enum fields:
         val empRoleQuery =
           from(employees)(e =>
-            where(e.role in
-              from(employees)(e2 => where(e2.id === td.e2.id) select (e2.role)))
+            where(
+              e.role in
+                from(employees)(e2 =>
+                  where(e2.id === td.e2.id) select (e2.role)))
               select (e.role.get))
         val empRole = empRoleQuery.single
         empRole must_== td.e2.role.get
@@ -391,15 +394,16 @@ class SquerylRecordSpec extends Specification with AroundExample {
       }
       //Retrieve and modify in another transaction
       val innerUpdate =
-        new Thread(new Runnable {
-          override def run() {
-            transaction {
-              val company2 = companies.lookup(company.id).get
-              company2.created(Calendar.getInstance())
-              companies.update(company2)
+        new Thread(
+          new Runnable {
+            override def run() {
+              transaction {
+                val company2 = companies.lookup(company.id).get
+                company2.created(Calendar.getInstance())
+                companies.update(company2)
+              }
             }
-          }
-        })
+          })
       innerUpdate.start
       innerUpdate.join
       //Then in a third transaction, try to update the original object

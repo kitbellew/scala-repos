@@ -18,8 +18,8 @@ case class DataSourceParams(
     srcAppId: Int,
     dstAppId: Int,
     startTime: Option[DateTime],
-    untilTime: Option[DateTime]
-) extends Params
+    untilTime: Option[DateTime])
+    extends Params
 
 class DataSource(val dsp: DataSourceParams)
     extends PDataSource[
@@ -39,8 +39,7 @@ class DataSource(val dsp: DataSourceParams)
       eventsDb.find(
         appId = dsp.srcAppId,
         startTime = dsp.startTime,
-        untilTime = dsp.untilTime
-      )(sc)
+        untilTime = dsp.untilTime)(sc)
 
     val dstEvents: Array[Event] = eventsDb
       .find(appId = dsp.dstAppId)(sc)
@@ -59,8 +58,6 @@ class DataSource(val dsp: DataSourceParams)
   }
 }
 
-class TrainingData(
-    )
-    extends Serializable {
+class TrainingData() extends Serializable {
   override def toString = ""
 }

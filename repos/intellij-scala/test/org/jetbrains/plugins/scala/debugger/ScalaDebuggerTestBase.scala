@@ -50,15 +50,16 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
         FileUtil.delete(testDataProjectPath)
     }
 
-    UsefulTestCase.edt(new Runnable {
+    UsefulTestCase.edt(
+      new Runnable {
 
-      def run() {
-        ScalaDebuggerTestBase.super.setUp()
-        checkOrAddAllSourceFiles()
-        addScalaSdk()
-        addOtherLibraries()
-      }
-    })
+        def run() {
+          ScalaDebuggerTestBase.super.setUp()
+          checkOrAddAllSourceFiles()
+          addScalaSdk()
+          addOtherLibraries()
+        }
+      })
   }
 
   /**
@@ -209,9 +210,9 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
           if (f.isDirectory)
             computeForDir(f)
           else {
-            result += (testDataBasePath.toURI
-              .relativize(f.toURI)
-              .toString -> md5(f))
+            result += (
+              testDataBasePath.toURI.relativize(f.toURI).toString -> md5(f)
+            )
           }
         }
     }

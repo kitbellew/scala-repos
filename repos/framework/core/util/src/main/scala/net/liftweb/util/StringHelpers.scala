@@ -144,13 +144,17 @@ trait StringHelpers {
     */
   def capify(in: String): String = {
     val tmp =
-      ((in match {
-        case null => ""
-        case s    => s
-      }).trim match {
-        case "" => "n/a"
-        case s  => s
-      }).toLowerCase
+      (
+        (
+          in match {
+            case null => ""
+            case s    => s
+          }
+        ).trim match {
+          case "" => "n/a"
+          case s  => s
+        }
+      ).toLowerCase
     val sb = new GoodSB
     capify(tmp, 0, 250, false, false, sb)
     sb.toString
@@ -217,10 +221,11 @@ trait StringHelpers {
             lastRand
           }
 
-        sb.append((randNum & 0x1f) match {
-          case n if n < 26 => ('A' + n).toChar
-          case n           => ('0' + (n - 26)).toChar
-        })
+        sb.append(
+          (randNum & 0x1f) match {
+            case n if n < 26 => ('A' + n).toChar
+            case n           => ('0' + (n - 26)).toChar
+          })
         addChar(pos + 1, randNum >> 5, sb)
       }
     }
@@ -248,11 +253,13 @@ trait StringHelpers {
       in: String,
       first: String,
       second: String): (String, String) = {
-    (in match {
-      case null                      => List("")
-      case s if s.indexOf(".") != -1 => s.roboSplit("\\.")
-      case s                         => s.roboSplit(":")
-    }) match {
+    (
+      in match {
+        case null                      => List("")
+        case s if s.indexOf(".") != -1 => s.roboSplit("\\.")
+        case s                         => s.roboSplit(":")
+      }
+    ) match {
       case f :: s :: _ => (f, s)
       case f :: Nil    => (f, second)
       case _           => (first, second)

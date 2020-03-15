@@ -68,28 +68,30 @@ object WebAPIKeyFinder {
       implicit val M = ResponseMonad(new FutureMonad(executor))
       success(new StaticAPIKeyFinder[Response](apiKey))
     } getOrElse {
-      (config
-        .get[String]("rootKey")
-        .toSuccess("Configuration property \"rootKey\" is required")
-        .toValidationNel |@|
-        serviceConfig
-          .get[String]("protocol")
-          .toSuccess(
-            NEL("Configuration property \"service.protocol\" is required")) |@|
-        serviceConfig
-          .get[String]("host")
-          .toSuccess(
-            NEL("Configuration property \"service.host\" is required")) |@|
-        serviceConfig
-          .get[Int]("port")
-          .toSuccess(
-            NEL("Configuration property \"service.port\" is required")) |@|
-        serviceConfig
-          .get[String]("path")
-          .toSuccess(
-            NEL("Configuration property \"service.path\" is required"))) {
-        (rootKey, protocol, host, port, path) =>
-          new RealWebAPIKeyFinder(protocol, host, port, path, rootKey)
+      (
+        config
+          .get[String]("rootKey")
+          .toSuccess("Configuration property \"rootKey\" is required")
+          .toValidationNel |@|
+          serviceConfig
+            .get[String]("protocol")
+            .toSuccess(
+              NEL(
+                "Configuration property \"service.protocol\" is required")) |@|
+          serviceConfig
+            .get[String]("host")
+            .toSuccess(
+              NEL("Configuration property \"service.host\" is required")) |@|
+          serviceConfig
+            .get[Int]("port")
+            .toSuccess(
+              NEL("Configuration property \"service.port\" is required")) |@|
+          serviceConfig
+            .get[String]("path")
+            .toSuccess(
+              NEL("Configuration property \"service.path\" is required"))
+      ) { (rootKey, protocol, host, port, path) =>
+        new RealWebAPIKeyFinder(protocol, host, port, path, rootKey)
       }
     }
   }
@@ -122,38 +124,44 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
       rootKey: Option[APIKey]): Response[Option[v1.APIKeyDetails]] = {
     withJsonClient { client0 =>
       val client = rootKey.map(client0.query("authkey", _)).getOrElse(client0)
-      eitherT(client.get[JValue]("apikeys/" + apiKey) map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
-          (((_: Extractor.Error).message) <-: jvalue
-            .validated[v1.APIKeyDetails] :-> { details =>
-            Some(details)
-          }).disjunction
+      eitherT(
+        client.get[JValue]("apikeys/" + apiKey) map {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
+            (
+              ((_: Extractor.Error).message) <-: jvalue
+                .validated[v1.APIKeyDetails] :-> { details =>
+                Some(details)
+              }
+            ).disjunction
 
-        case res @ HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
-          logger.warn("apiKey " + apiKey + " not found:\n" + res)
-          right(None)
+          case res @ HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
+            logger.warn("apiKey " + apiKey + " not found:\n" + res)
+            right(None)
 
-        case res =>
-          logger.error(
-            "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
-          left(
-            "Unexpected response from security service; unable to proceed." + res)
-      })
+          case res =>
+            logger.error(
+              "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
+            left(
+              "Unexpected response from security service; unable to proceed." + res)
+        })
     }
   }
 
   def findAllAPIKeys(fromRoot: APIKey): Response[Set[v1.APIKeyDetails]] = {
     withJsonClient { client =>
-      eitherT(client.query("apiKey", fromRoot).get[JValue]("apikeys/") map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
-          (((_: Extractor.Error).message) <-: jvalue
-            .validated[Set[v1.APIKeyDetails]]).disjunction
-        case res =>
-          logger.error(
-            "Unexpected response from auth service for apiKey " + fromRoot + ":\n" + res)
-          left(
-            "Unexpected response from security service; unable to proceed." + res)
-      })
+      eitherT(
+        client.query("apiKey", fromRoot).get[JValue]("apikeys/") map {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
+            (
+              ((_: Extractor.Error).message) <-: jvalue
+                .validated[Set[v1.APIKeyDetails]]
+            ).disjunction
+          case res =>
+            logger.error(
+              "Unexpected response from auth service for apiKey " + fromRoot + ":\n" + res)
+            left(
+              "Unexpected response from security service; unable to proceed." + res)
+        })
     }
   }
 
@@ -166,18 +174,21 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
     withJsonClient { client0 =>
       val client =
         at map (fmt.print(_)) map (client0.query("at", _)) getOrElse client0
-      eitherT(client
-        .query("apiKey", apiKey)
-        .get[JValue]("permissions/fs" + path.urlEncode.path) map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
-          (((_: Extractor.Error).message) <-: jvalue
-            .validated[Set[Permission]]).disjunction
-        case res =>
-          logger.error(
-            "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
-          left(
-            "Unexpected response from security service; unable to proceed." + res)
-      })
+      eitherT(
+        client
+          .query("apiKey", apiKey)
+          .get[JValue]("permissions/fs" + path.urlEncode.path) map {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
+            (
+              ((_: Extractor.Error).message) <-: jvalue
+                .validated[Set[Permission]]
+            ).disjunction
+          case res =>
+            logger.error(
+              "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
+            left(
+              "Unexpected response from security service; unable to proceed." + res)
+        })
     }
   }
 
@@ -216,8 +227,10 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
           .query("apiKey", rootAPIKey)
           .post[JValue]("apikeys/")(keyRequest.serialize) map {
           case HttpResponse(HttpStatus(OK, _), _, Some(wrappedKey), _) =>
-            (((_: Extractor.Error).message) <-: wrappedKey
-              .validated[v1.APIKeyDetails]).disjunction
+            (
+              ((_: Extractor.Error).message) <-: wrappedKey
+                .validated[v1.APIKeyDetails]
+            ).disjunction
 
           case res =>
             logger.error(

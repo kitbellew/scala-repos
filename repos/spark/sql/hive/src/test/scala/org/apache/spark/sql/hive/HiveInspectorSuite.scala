@@ -106,9 +106,10 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
         MapType(IntegerType, IntegerType)) ::
       Literal.create(
         Row(1, 2.0d, 3.0f),
-        StructType(StructField("c1", IntegerType) ::
-          StructField("c2", DoubleType) ::
-          StructField("c3", FloatType) :: Nil)) ::
+        StructType(
+          StructField("c1", IntegerType) ::
+            StructField("c2", DoubleType) ::
+            StructField("c3", FloatType) :: Nil)) ::
       Nil
 
   val row = data.map(_.eval(null))
@@ -152,8 +153,8 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
       case StructType(fields) =>
         ObjectInspectorFactory.getStandardStructObjectInspector(
           java.util.Arrays.asList(fields.map(f => f.name): _*),
-          java.util.Arrays.asList(fields.map(f =>
-            toWritableInspector(f.dataType)): _*))
+          java.util.Arrays
+            .asList(fields.map(f => toWritableInspector(f.dataType)): _*))
     }
 
   def checkDataType(dt1: Seq[DataType], dt2: Seq[DataType]): Unit = {
@@ -267,9 +268,10 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
   }
 
   test("wrap / unwrap Struct Type") {
-    val dt = StructType(dataTypes.zipWithIndex.map {
-      case (t, idx) => StructField(s"c_$idx", t)
-    })
+    val dt = StructType(
+      dataTypes.zipWithIndex.map {
+        case (t, idx) => StructField(s"c_$idx", t)
+      })
     val inspector = toInspector(dt)
     checkValues(
       row,

@@ -36,8 +36,7 @@ object ForeignKey {
       originalSourceColumns: P,
       originalTargetColumns: TT => P,
       onUpdate: model.ForeignKeyAction,
-      onDelete: model.ForeignKeyAction
-  ): ForeignKey =
+      onDelete: model.ForeignKeyAction): ForeignKey =
     new ForeignKey(
       name,
       sourceTable,
@@ -51,8 +50,7 @@ object ForeignKey {
       linearizeFieldRefs(
         pShape.toNode(originalTargetColumns(originalTargetTable))),
       targetTableShaped.value.tableNode,
-      pShape
-    )
+      pShape)
 
   def linearizeFieldRefs(n: Node): IndexedSeq[Node] = {
     val sels = new ArrayBuffer[Node]
@@ -75,8 +73,8 @@ class ForeignKeyQuery[E <: AbstractTable[_], U](
     val fks: IndexedSeq[ForeignKey],
     targetBaseQuery: Query[E, U, Seq],
     generator: AnonSymbol,
-    aliasedValue: E
-) extends WrappingQuery[E, U, Seq](nodeDelegate, base)
+    aliasedValue: E)
+    extends WrappingQuery[E, U, Seq](nodeDelegate, base)
     with Constraint {
 
   /** Combine the constraints of this `ForeignKeyQuery` with another one with the

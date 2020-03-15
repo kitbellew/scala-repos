@@ -377,8 +377,7 @@ abstract class PrepJSInterop
               atPos(tree.pos) {
                 Apply(
                   Select(super.transform(trg), newTermName("applyDynamic")),
-                  List(Literal(Constant("x")))
-                )
+                  List(Literal(Constant("x"))))
               }
             typer.typed(newTree, Mode.FUNmode, tree.tpe)
 
@@ -389,8 +388,7 @@ abstract class PrepJSInterop
               atPos(tree.pos) {
                 Apply(
                   Select(super.transform(trg), newTermName("selectDynamic")),
-                  List(Literal(Constant("x")))
-                )
+                  List(Literal(Constant("x"))))
               }
             typer.typed(newTree, Mode.FUNmode, tree.tpe)
 
@@ -496,7 +494,9 @@ abstract class PrepJSInterop
         /* We have to allow scala.Dynamic to be able to define js.Dynamic
          * and similar constructs. This causes the unsoundness filed as #1385.
          */
-        !(t <:< JSAnyClass.tpe || t =:= AnyRefClass.tpe || t =:= DynamicClass.tpe)
+        !(
+          t <:< JSAnyClass.tpe || t =:= AnyRefClass.tpe || t =:= DynamicClass.tpe
+        )
       }
 
       def isNativeJSTraitType(tpe: Type): Boolean = {
@@ -1134,8 +1134,10 @@ abstract class PrepJSInterop
     val sym = ddef.symbol
     val needsFix = {
       sym.isPrivate &&
-      (wasPublicBeforeTyper(sym) ||
-      (sym.isAccessor && wasPublicBeforeTyper(sym.accessed)))
+      (
+        wasPublicBeforeTyper(sym) ||
+        (sym.isAccessor && wasPublicBeforeTyper(sym.accessed))
+      )
     }
     if (needsFix) {
       sym.resetFlag(Flag.PRIVATE)

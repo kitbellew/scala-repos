@@ -87,8 +87,7 @@ class CoreModuleImpl @Inject() (
       random,
       metrics,
       marathonConf,
-      leadershipModule
-    )
+      leadershipModule)
 
   private[this] lazy val offerMatcherReconcilerModule =
     new OfferMatcherReconciliationModule(
@@ -98,8 +97,7 @@ class CoreModuleImpl @Inject() (
       taskTrackerModule.taskTracker,
       groupRepository,
       offerMatcherManagerModule.subOfferMatcherManager,
-      leadershipModule
-    )
+      leadershipModule)
 
   override lazy val launcherModule =
     new LauncherModule(
@@ -113,9 +111,7 @@ class CoreModuleImpl @Inject() (
       // internal core dependencies
       StopOnFirstMatchingOfferMatcher(
         offerMatcherReconcilerModule.offerMatcherReconciler,
-        offerMatcherManagerModule.globalOfferMatcher
-      )
-    )
+        offerMatcherManagerModule.globalOfferMatcher))
 
   override lazy val appOfferMatcherModule =
     new LaunchQueueModule(
@@ -128,8 +124,7 @@ class CoreModuleImpl @Inject() (
       // external guice dependencies
       appRepository,
       taskTrackerModule.taskTracker,
-      taskOpFactory
-    )
+      taskOpFactory)
 
   // PLUGINS
 

@@ -275,7 +275,9 @@ trait RowFormatSupport { self: StdCodecs =>
 
       case (cType, col) =>
         sys.error(
-          "Cannot create column encoder, columns of wrong type (expected %s, found %s)." format (cType, col.tpe))
+          "Cannot create column encoder, columns of wrong type (expected %s, found %s)." format (
+            cType, col.tpe
+          ))
     }
 
   protected trait ColumnValueDecoder {
@@ -487,20 +489,24 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
 
     def encodedSize(xs: List[CValue]) =
       xs.foldLeft(rawBitSetCodec.encodedSize(undefineds(xs))) { (acc, x) =>
-        acc + (x match {
-          case x: CWrappedValue[_] =>
-            codecForCValueType(x.cType).encodedSize(x.value)
-          case _ => 0
-        })
+        acc + (
+          x match {
+            case x: CWrappedValue[_] =>
+              codecForCValueType(x.cType).encodedSize(x.value)
+            case _ => 0
+          }
+        )
       }
 
     override def maxSize(xs: List[CValue]) =
       xs.foldLeft(rawBitSetCodec.maxSize(undefineds(xs))) { (acc, x) =>
-        acc + (x match {
-          case x: CWrappedValue[_] =>
-            codecForCValueType(x.cType).maxSize(x.value)
-          case _ => 0
-        })
+        acc + (
+          x match {
+            case x: CWrappedValue[_] =>
+              codecForCValueType(x.cType).maxSize(x.value)
+            case _ => 0
+          }
+        )
       }
 
     def writeUnsafe(xs: List[CValue], sink: ByteBuffer) {
@@ -516,18 +522,20 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     private def writeCValues(xs: List[CValue], sink: ByteBuffer): Option[S] =
       xs match {
         case x :: xs =>
-          (x match {
-            case CBoolean(x) => wrappedWriteInit[Boolean](x, sink)
-            case CString(x)  => wrappedWriteInit[String](x, sink)
-            case CDate(x)    => wrappedWriteInit[DateTime](x, sink)
-            case CPeriod(x)  => wrappedWriteInit[Period](x, sink)
-            case CLong(x)    => wrappedWriteInit[Long](x, sink)
-            case CDouble(x)  => wrappedWriteInit[Double](x, sink)
-            case CNum(x)     => wrappedWriteInit[BigDecimal](x, sink)
-            case CArray(x, cType) =>
-              wrappedWriteInit(x, sink)(codecForCValueType(cType))
-            case _: CNullType => None
-          }) match {
+          (
+            x match {
+              case CBoolean(x) => wrappedWriteInit[Boolean](x, sink)
+              case CString(x)  => wrappedWriteInit[String](x, sink)
+              case CDate(x)    => wrappedWriteInit[DateTime](x, sink)
+              case CPeriod(x)  => wrappedWriteInit[Period](x, sink)
+              case CLong(x)    => wrappedWriteInit[Long](x, sink)
+              case CDouble(x)  => wrappedWriteInit[Double](x, sink)
+              case CNum(x)     => wrappedWriteInit[BigDecimal](x, sink)
+              case CArray(x, cType) =>
+                wrappedWriteInit(x, sink)(codecForCValueType(cType))
+              case _: CNullType => None
+            }
+          ) match {
             case None    => writeCValues(xs, sink)
             case Some(s) => Some((Right(s), xs))
           }
@@ -640,8 +648,9 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                 row: Int,
                 buffer: ByteBuffer,
                 pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-              (writers zip selCols) find (_._2.isDefinedAt(row)) map (_._1
-                .encode(row, buffer, pool)) getOrElse {
+              (writers zip selCols) find (
+                _._2.isDefinedAt(row)
+              ) map (_._1.encode(row, buffer, pool)) getOrElse {
                 val flag = SortingRowFormat.flagForCType(CUndefined)
                 if (buffer.remaining() > 0) {
                   buffer.put(flag)
@@ -668,10 +677,12 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       zipWithSelectors(cols) map {
         case (_, colsWithTypes) =>
           val decoders: Map[Byte, ColumnValueDecoder] =
-            (for ((col, cType) <- colsWithTypes)
-              yield {
-                (flagForCType(cType), getColumnDecoder(cType, col))
-              })(collection.breakOut)
+            (
+              for ((col, cType) <- colsWithTypes)
+                yield {
+                  (flagForCType(cType), getColumnDecoder(cType, col))
+                }
+            )(collection.breakOut)
 
           decoders
       }
@@ -722,11 +733,12 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
           } yield ()
       }.sequence
 
-    pool.run(for {
-      _ <- writes
-      bytes <- flipBytes
-      _ <- release
-    } yield bytes)
+    pool.run(
+      for {
+        _ <- writes
+        bytes <- flipBytes
+        _ <- release
+      } yield bytes)
   }
 
   def decode(bytes: Array[Byte], offset: Int = 0): List[CValue] = {

@@ -354,9 +354,10 @@ object ByteString {
         throw new IndexOutOfBoundsException(idx.toString)
 
     override def iterator: ByteIterator.MultiByteArrayIterator =
-      ByteIterator.MultiByteArrayIterator(bytestrings.toStream map {
-        _.iterator
-      })
+      ByteIterator.MultiByteArrayIterator(
+        bytestrings.toStream map {
+          _.iterator
+        })
 
     def ++(that: ByteString): ByteString = {
       if (that.isEmpty)

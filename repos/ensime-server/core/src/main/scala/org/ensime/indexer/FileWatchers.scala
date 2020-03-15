@@ -35,10 +35,8 @@ trait Watcher {
   */
 class ClassfileWatcher(
     config: EnsimeConfig,
-    listeners: Seq[FileChangeListener]
-)(implicit
-    vfs: EnsimeVFS
-) extends Actor
+    listeners: Seq[FileChangeListener])(implicit vfs: EnsimeVFS)
+    extends Actor
     with SLF4JLogging {
 
   private val impls =
@@ -64,12 +62,9 @@ class ClassfileWatcher(
 
 }
 
-class SourceWatcher(
-    config: EnsimeConfig,
-    listeners: Seq[FileChangeListener]
-)(implicit
-    vfs: EnsimeVFS
-) extends Watcher
+class SourceWatcher(config: EnsimeConfig, listeners: Seq[FileChangeListener])(
+    implicit vfs: EnsimeVFS)
+    extends Watcher
     with SLF4JLogging {
   private val impls =
     if (config.disableSourceMonitoring)
@@ -92,45 +87,45 @@ private class ApachePollingFileWatcher(
     watched: File,
     selector: ExtSelector,
     recursive: Boolean,
-    listeners: Seq[FileChangeListener]
-)(implicit
-    vfs: EnsimeVFS
-) extends Watcher
+    listeners: Seq[FileChangeListener])(implicit vfs: EnsimeVFS)
+    extends Watcher
     with SLF4JLogging {
   private val base = vfs.vfile(watched).getName.getURI
 
   @volatile private var fm: DefaultFileMonitor = create()
   private def create(): DefaultFileMonitor =
-    new DefaultFileMonitor(new FileListener {
-      def watched(event: FileChangeEvent) = selector.includeFile(event.getFile)
+    new DefaultFileMonitor(
+      new FileListener {
+        def watched(event: FileChangeEvent) =
+          selector.includeFile(event.getFile)
 
-      def fileChanged(event: FileChangeEvent): Unit = {
-        if (watched(event)) {
-          if (log.isDebugEnabled())
-            log.debug(s"${event.getFile} was changed")
-          listeners foreach (_.fileChanged(event.getFile))
+        def fileChanged(event: FileChangeEvent): Unit = {
+          if (watched(event)) {
+            if (log.isDebugEnabled())
+              log.debug(s"${event.getFile} was changed")
+            listeners foreach (_.fileChanged(event.getFile))
+          }
         }
-      }
-      def fileCreated(event: FileChangeEvent): Unit =
-        if (watched(event)) {
-          if (log.isDebugEnabled())
-            log.debug(s"${event.getFile} was created")
-          listeners foreach (_.fileAdded(event.getFile))
-        }
-      def fileDeleted(event: FileChangeEvent): Unit =
-        if (base == event.getFile.getName.getURI) {
-          log.info(s"$base (a watched base) was deleted")
-          listeners foreach (_.baseRemoved(event.getFile))
-          // this is a best efforts thing, subject to race conditions
-          fm.stop() // the delete stack is a liability
-          fm = create()
-          init(restarted = true)
-        } else if (watched(event)) {
-          if (log.isDebugEnabled())
-            log.debug(s"${event.getFile} was deleted")
-          listeners foreach (_.fileRemoved(event.getFile))
-        }
-    })
+        def fileCreated(event: FileChangeEvent): Unit =
+          if (watched(event)) {
+            if (log.isDebugEnabled())
+              log.debug(s"${event.getFile} was created")
+            listeners foreach (_.fileAdded(event.getFile))
+          }
+        def fileDeleted(event: FileChangeEvent): Unit =
+          if (base == event.getFile.getName.getURI) {
+            log.info(s"$base (a watched base) was deleted")
+            listeners foreach (_.baseRemoved(event.getFile))
+            // this is a best efforts thing, subject to race conditions
+            fm.stop() // the delete stack is a liability
+            fm = create()
+            init(restarted = true)
+          } else if (watched(event)) {
+            if (log.isDebugEnabled())
+              log.debug(s"${event.getFile} was deleted")
+            listeners foreach (_.fileRemoved(event.getFile))
+          }
+      })
 
   private def init(restarted: Boolean): Unit = {
     fm.setRecursive(recursive)

@@ -140,20 +140,21 @@ class GoToImplicitConversionAction
           .setMovable(false)
           .setResizable(false)
           .setRequestFocus(true)
-          .setItemChoosenCallback(new Runnable {
-            def run() {
-              val entity = list.getSelectedValue.asInstanceOf[Parameters]
-              entity.getNewExpression match {
-                case f: ScFunction =>
-                  f.getSyntheticNavigationElement match {
-                    case Some(n: NavigatablePsiElement) => n.navigate(true)
-                    case _                              => f.navigate(true)
-                  }
-                case n: NavigatablePsiElement => n.navigate(true)
-                case _                        => //do nothing
+          .setItemChoosenCallback(
+            new Runnable {
+              def run() {
+                val entity = list.getSelectedValue.asInstanceOf[Parameters]
+                entity.getNewExpression match {
+                  case f: ScFunction =>
+                    f.getSyntheticNavigationElement match {
+                      case Some(n: NavigatablePsiElement) => n.navigate(true)
+                      case _                              => f.navigate(true)
+                    }
+                  case n: NavigatablePsiElement => n.navigate(true)
+                  case _                        => //do nothing
+                }
               }
-            }
-          })
+            })
           .createPopup
       popup.showInBestPositionFor(editor)
 
@@ -212,18 +213,19 @@ class GoToImplicitConversionAction
                   .getImplicitConversions(fromUnder = false)
                   ._2
                   .isDefined ||
-                  (ScUnderScoreSectionUtil.isUnderscoreFunction(expr) &&
-                    expr
-                      .getImplicitConversions(fromUnder = true)
+                  (
+                    ScUnderScoreSectionUtil.isUnderscoreFunction(expr) &&
+                      expr.getImplicitConversions(fromUnder = true)._2.isDefined
+                  ) || (
+                  expr.getAdditionalExpression.isDefined &&
+                    expr.getAdditionalExpression.get._1
+                      .getImplicitConversions(
+                        fromUnder = false,
+                        expectedOption = Some(
+                          expr.getAdditionalExpression.get._2))
                       ._2
-                      .isDefined) || (expr.getAdditionalExpression.isDefined &&
-                  expr.getAdditionalExpression.get._1
-                    .getImplicitConversions(
-                      fromUnder = false,
-                      expectedOption = Some(
-                        expr.getAdditionalExpression.get._2))
-                    ._2
-                    .isDefined) =>
+                      .isDefined
+                ) =>
               res += expr
             case _ =>
           }
@@ -317,37 +319,38 @@ class GoToImplicitConversionAction
           CodeInsightBundle.message("lightbulb.tooltip", toolTipText))
       }
 
-      addMouseListener(new MouseAdapter {
-        override def mouseEntered(e: MouseEvent) {
-          setBorder(ACTIVE_BORDER)
-        }
-
-        override def mouseExited(e: MouseEvent) {
-          setBorder(INACTIVE_BORDER)
-        }
-
-        override def mousePressed(e: MouseEvent) {
-          if (!e.isPopupTrigger && e.getButton == MouseEvent.BUTTON1) {
-            val tuple = GoToImplicitConversionAction.getList.getSelectedValue
-              .asInstanceOf[Parameters]
-            val function: ScFunction =
-              tuple.getNewExpression match {
-                case fun: ScFunction => fun
-                case _               => null
-              }
-            if (function == null)
-              return
-
-            IntentionUtils.showMakeExplicitPopup(
-              project,
-              expr,
-              function,
-              editor,
-              secondPart,
-              getCurrentItemBounds _)
+      addMouseListener(
+        new MouseAdapter {
+          override def mouseEntered(e: MouseEvent) {
+            setBorder(ACTIVE_BORDER)
           }
-        }
-      })
+
+          override def mouseExited(e: MouseEvent) {
+            setBorder(INACTIVE_BORDER)
+          }
+
+          override def mousePressed(e: MouseEvent) {
+            if (!e.isPopupTrigger && e.getButton == MouseEvent.BUTTON1) {
+              val tuple = GoToImplicitConversionAction.getList.getSelectedValue
+                .asInstanceOf[Parameters]
+              val function: ScFunction =
+                tuple.getNewExpression match {
+                  case fun: ScFunction => fun
+                  case _               => null
+                }
+              if (function == null)
+                return
+
+              IntentionUtils.showMakeExplicitPopup(
+                project,
+                expr,
+                function,
+                editor,
+                secondPart,
+                getCurrentItemBounds _)
+            }
+          }
+        })
     }
 
     def setBulbLayout() {

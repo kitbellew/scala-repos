@@ -132,16 +132,20 @@ class ScAnnotationImpl private (
         elem.getParent match {
           case arg: ScArgumentExprList =>
             var prev = elem.getPrevSibling
-            while (prev != null && (ScalaPsiUtil.isLineTerminator(prev) || prev
-                     .isInstanceOf[PsiWhiteSpace]))
+            while (prev != null && (
+                     ScalaPsiUtil.isLineTerminator(prev) || prev
+                       .isInstanceOf[PsiWhiteSpace]
+                   ))
               prev = prev.getPrevSibling
             if (prev != null && prev.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
               elem.delete()
               prev.delete()
             } else {
               var next = elem.getNextSibling
-              while (next != null && (ScalaPsiUtil.isLineTerminator(
-                       next) || next.isInstanceOf[PsiWhiteSpace]))
+              while (next != null && (
+                       ScalaPsiUtil.isLineTerminator(next) || next
+                         .isInstanceOf[PsiWhiteSpace]
+                     ))
                 next = next.getNextSibling
               if (next != null && next.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
                 elem.delete()
@@ -175,8 +179,10 @@ class ScAnnotationImpl private (
               params(0).getManager))
         }
         var allowNoName: Boolean = params.length == 0 &&
-          (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(
-            attributeName) || null == attributeName)
+          (
+            PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(
+              attributeName) || null == attributeName
+          )
         var namePrefix: String = null
         if (allowNoName) {
           namePrefix = ""

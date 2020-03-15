@@ -207,7 +207,9 @@ object DumpLogSegments {
         var misMatchesSeq = misMatchesForIndexFilesMap.getOrElse(
           file.getAbsolutePath,
           List[(Long, Long)]())
-        misMatchesSeq ::= (entry.offset + index.baseOffset, messageAndOffset.offset)
+        misMatchesSeq ::= (
+          entry.offset + index.baseOffset, messageAndOffset.offset
+        )
         misMatchesForIndexFilesMap.put(file.getAbsolutePath, misMatchesSeq)
       }
       // since it is a sparse file, in the event of a crash there may be many zero entries, stop if we see one
@@ -324,9 +326,9 @@ object DumpLogSegments {
   private def dumpLog(
       file: File,
       printContents: Boolean,
-      nonConsecutivePairsForLogFilesMap: mutable.HashMap[
-        String,
-        List[(Long, Long)]],
+      nonConsecutivePairsForLogFilesMap: mutable.HashMap[String, List[(
+          Long,
+          Long)]],
       isDeepIteration: Boolean,
       maxMessageSize: Int,
       parser: MessageParser[_, _]) {

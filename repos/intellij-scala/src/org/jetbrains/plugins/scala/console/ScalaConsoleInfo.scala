@@ -14,9 +14,10 @@ import com.intellij.util.containers.WeakHashMap
 object ScalaConsoleInfo {
   private val NULL = (null, null, null)
   private val allConsoles =
-    new WeakHashMap[
-      Project,
-      List[(ScalaLanguageConsole, ConsoleHistoryController, ProcessHandler)]]()
+    new WeakHashMap[Project, List[(
+        ScalaLanguageConsole,
+        ConsoleHistoryController,
+        ProcessHandler)]]()
 
   def getConsole(file: PsiFile): ScalaLanguageConsole = get(file)._1
   def getConsole(project: Project): ScalaLanguageConsole = get(project)._1

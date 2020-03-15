@@ -28,13 +28,11 @@ import scala.collection.generic.Shrinkable
   *  @author Aleksandar Prokopec
   *  @since 2.9
   */
-trait ParMapLike[
-    K,
-    V,
-    +Repr <: ParMapLike[K, V, Repr, Sequential] with ParMap[K, V],
-    +Sequential <: scala.collection.mutable.Map[
-      K,
-      V] with scala.collection.mutable.MapLike[K, V, Sequential]]
+trait ParMapLike[K, V, +Repr <: ParMapLike[K, V, Repr, Sequential] with ParMap[
+  K,
+  V], +Sequential <: scala.collection.mutable.Map[
+  K,
+  V] with scala.collection.mutable.MapLike[K, V, Sequential]]
     extends scala.collection.GenMapLike[K, V, Repr]
     with scala.collection.parallel.ParMapLike[K, V, Repr, Sequential]
     with Growable[(K, V)]

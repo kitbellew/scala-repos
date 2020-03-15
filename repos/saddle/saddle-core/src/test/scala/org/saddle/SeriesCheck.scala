@@ -225,9 +225,11 @@ class SeriesCheck extends Specification with ScalaCheck {
       forAll { (s: Series[Int, Double]) =>
         val idx = Gen.choose(0, s.length - 1)
         forAll(idx) { i =>
-          (s.filterAt(_ != i).length == 0 || s
-            .filterAt(_ != i)
-            .length == s.length - 1) must beTrue
+          (
+            s.filterAt(_ != i).length == 0 || s
+              .filterAt(_ != i)
+              .length == s.length - 1
+          ) must beTrue
         }
       }
     }

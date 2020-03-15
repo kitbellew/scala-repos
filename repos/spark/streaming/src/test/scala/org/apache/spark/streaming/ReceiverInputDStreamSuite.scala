@@ -66,8 +66,9 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
       val blockIds = blockInfos.map(_.blockId)
 
       // Verify that there are some blocks that are present, and some that are not
-      require(blockIds.forall(blockId =>
-        SparkEnv.get.blockManager.master.contains(blockId)))
+      require(
+        blockIds.forall(blockId =>
+          SparkEnv.get.blockManager.master.contains(blockId)))
 
       val rdd = receiverStream.createBlockRDD(Time(0), blockInfos)
       assert(rdd.isInstanceOf[BlockRDD[_]])
@@ -87,17 +88,20 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
       val blockIds = blockInfos.map(_.blockId)
 
       // Verify that there are some blocks that are present, and some that are not
-      require(blockIds.exists(blockId =>
-        SparkEnv.get.blockManager.master.contains(blockId)))
-      require(blockIds.exists(blockId =>
-        !SparkEnv.get.blockManager.master.contains(blockId)))
+      require(
+        blockIds.exists(blockId =>
+          SparkEnv.get.blockManager.master.contains(blockId)))
+      require(
+        blockIds.exists(blockId =>
+          !SparkEnv.get.blockManager.master.contains(blockId)))
 
       val rdd = receiverStream.createBlockRDD(Time(0), blockInfos)
       assert(rdd.isInstanceOf[BlockRDD[_]])
       val blockRDD = rdd.asInstanceOf[BlockRDD[_]]
-      assert(blockRDD.blockIds.toSeq === presentBlockInfos.map {
-        _.blockId
-      })
+      assert(
+        blockRDD.blockIds.toSeq === presentBlockInfos.map {
+          _.blockId
+        })
   }
 
   testWithWAL(
@@ -120,9 +124,10 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
       assert(rdd.isInstanceOf[WriteAheadLogBackedBlockRDD[_]])
       val blockRDD = rdd.asInstanceOf[WriteAheadLogBackedBlockRDD[_]]
       assert(blockRDD.blockIds.toSeq === blockIds)
-      assert(blockRDD.walRecordHandles.toSeq === blockInfos.map {
-        _.walRecordHandleOption.get
-      })
+      assert(
+        blockRDD.walRecordHandles.toSeq === blockInfos.map {
+          _.walRecordHandleOption.get
+        })
   }
 
   testWithWAL(

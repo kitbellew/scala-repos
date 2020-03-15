@@ -97,10 +97,12 @@ class FileMessageSet private[kafka] (
         initFileSize,
         preallocate),
       start = 0,
-      end = (if (!fileAlreadyExists && preallocate)
-               0
-             else
-               Int.MaxValue),
+      end = (
+        if (!fileAlreadyExists && preallocate)
+          0
+        else
+          Int.MaxValue
+      ),
       isSlice = false)
 
   /**
@@ -189,10 +191,12 @@ class FileMessageSet private[kafka] (
     val position = start + writePosition
     val count = math.min(size, sizeInBytes)
     val bytesTransferred =
-      (destChannel match {
-        case tl: TransportLayer => tl.transferFrom(channel, position, count)
-        case dc                 => channel.transferTo(position, count, dc)
-      }).toInt
+      (
+        destChannel match {
+          case tl: TransportLayer => tl.transferFrom(channel, position, count)
+          case dc                 => channel.transferTo(position, count, dc)
+        }
+      ).toInt
     trace(
       "FileMessageSet " + file.getAbsolutePath + " : bytes transferred : " + bytesTransferred
         + " bytes requested for transfer : " + math.min(size, sizeInBytes))

@@ -102,9 +102,10 @@ trait StatefulComet extends CometActor {
           if (ns ne state) {
             val diff = ns - state
             state = ns
-            partialUpdate(setupLocalState {
-              diff.map(_.toJs).foldLeft(Noop)(_ & _)
-            })
+            partialUpdate(
+              setupLocalState {
+                diff.map(_.toJs).foldLeft(Noop)(_ & _)
+              })
           }
         }
     }
@@ -1370,10 +1371,11 @@ trait BaseCometActor
   implicit def pairToPair(in: (String, Any)): (String, NodeSeq) =
     (
       in._1,
-      Text(in._2 match {
-        case null => "null"
-        case s    => s.toString
-      }))
+      Text(
+        in._2 match {
+          case null => "null"
+          case s    => s.toString
+        }))
 
   implicit def nodeSeqToFull(in: NodeSeq): Box[NodeSeq] = Full(in)
 
@@ -1533,8 +1535,9 @@ private[http] class XmlOrJsCmd(
         case (Full(xml), Full(js), true) =>
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
-            (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(
-              Text("")))) & JsCmds.JsTry(js, false)
+            (
+              spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text(""))
+            )) & JsCmds.JsTry(js, false)
         case (Full(xml), _, true) =>
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
@@ -1550,17 +1553,16 @@ private[http] class XmlOrJsCmd(
               commands.toJsCmd +
               "}catch(e){" +
               catchHandler.toJsCmd +
-              "}"
-          )
+              "}")
       }
 
     var ret: JsCmd = JsCmds.JsTry(JsCmds.Run("destroy_" + id + "();"), false) &
       fullUpdateJs &
       JsCmds.JsTry(
         JsCmds.Run(
-          "destroy_" + id + " = function() {" + (destroy
-            .openOr(JsCmds.Noop)
-            .toJsCmd) + "};"),
+          "destroy_" + id + " = function() {" + (
+            destroy.openOr(JsCmds.Noop).toJsCmd
+          ) + "};"),
         false)
 
     S.appendNotices(notices)
@@ -1574,9 +1576,9 @@ private[http] class XmlOrJsCmd(
   def outSpan: NodeSeq =
     Script(
       Run(
-        "var destroy_" + id + " = function() {" + (destroy
-          .openOr(JsCmds.Noop)
-          .toJsCmd) + "}")) ++
+        "var destroy_" + id + " = function() {" + (
+          destroy.openOr(JsCmds.Noop).toJsCmd
+        ) + "}")) ++
       fixedXhtml.openOr(Text(""))
 }
 

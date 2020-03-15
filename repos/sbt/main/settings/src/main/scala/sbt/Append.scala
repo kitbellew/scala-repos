@@ -28,9 +28,11 @@ object Append {
   implicit def appendSeqImplicit[T, V <% T]: Sequence[Seq[T], Seq[V], V] =
     new Sequence[Seq[T], Seq[V], V] {
       def appendValues(a: Seq[T], b: Seq[V]): Seq[T] =
-        a ++ (b map { x =>
-          (x: T)
-        })
+        a ++ (
+          b map { x =>
+            (x: T)
+          }
+        )
       def appendValue(a: Seq[T], b: V): Seq[T] = a :+ (b: T)
     }
   implicit def appendList[T, V <: T]: Sequence[List[T], List[V], V] =
@@ -41,9 +43,11 @@ object Append {
   implicit def appendListImplicit[T, V <% T]: Sequence[List[T], List[V], V] =
     new Sequence[List[T], List[V], V] {
       def appendValues(a: List[T], b: List[V]): List[T] =
-        a ::: (b map { x =>
-          (x: T)
-        })
+        a ::: (
+          b map { x =>
+            (x: T)
+          }
+        )
       def appendValue(a: List[T], b: V): List[T] = a :+ (b: T)
     }
   implicit def appendString: Value[String, String] =

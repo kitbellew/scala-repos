@@ -114,8 +114,7 @@ private[hive] case class ScriptTransformation(
           proc,
           stderrBuffer,
           TaskContext.get(),
-          localHiveConf
-        )
+          localHiveConf)
 
       // This nullability is a performance optimization in order to avoid an Option.foreach() call
       // inside of a loop
@@ -255,8 +254,8 @@ private class ScriptTransformationWriterThread(
     proc: Process,
     stderrBuffer: CircularBuffer,
     taskContext: TaskContext,
-    conf: Configuration
-) extends Thread("Thread-ScriptTransformation-Feed")
+    conf: Configuration)
+    extends Thread("Thread-ScriptTransformation-Feed")
     with Logging {
 
   setDaemon(true)
@@ -354,8 +353,7 @@ private[hive] case class HiveScriptIOSchema(
 
   private val defaultFormat = Map(
     ("TOK_TABLEROWFORMATFIELD", "\t"),
-    ("TOK_TABLEROWFORMATLINES", "\n")
-  )
+    ("TOK_TABLEROWFORMATLINES", "\n"))
 
   val inputRowFormatMap = inputRowFormat.toMap.withDefault((k) =>
     defaultFormat(k))

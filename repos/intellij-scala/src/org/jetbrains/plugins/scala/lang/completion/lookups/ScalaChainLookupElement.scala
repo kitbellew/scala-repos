@@ -49,11 +49,12 @@ class ScalaChainLookupElement(
   override def handleInsert(context: InsertionContext) {
     val editor = context.getEditor
     val caretModel = editor.getCaretModel
-    val offsetForPrefix =
-      caretModel.getOffset + (if (element.someSmartCompletion)
-                                5
-                              else
-                                0) - element.getLookupString.length - 1
+    val offsetForPrefix = caretModel.getOffset + (
+      if (element.someSmartCompletion)
+        5
+      else
+        0
+    ) - element.getLookupString.length - 1
     element.handleInsert(context)
     val document = context.getDocument
     val status = ScalaInsertHandler.getItemParametersAndAccessorStatus(prefix)

@@ -46,8 +46,7 @@ class ObservableIntegerArraySpec
       jfxc.ObservableIntegerArray,
       ObservableIntegerArray](
       classOf[jfxc.ObservableIntegerArray],
-      classOf[ObservableIntegerArray]
-    ) {
+      classOf[ObservableIntegerArray]) {
 
   /**
     * Test trait for instance testing.

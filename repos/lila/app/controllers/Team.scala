@@ -65,8 +65,7 @@ object Team extends LilaController {
           },
           Env.teamSearch(text, page) map {
             html.team.search(text, _)
-          }
-        )
+          })
       }
     }
 
@@ -97,8 +96,7 @@ object Team extends LilaController {
               err => BadRequest(html.team.edit(team, err)).fuccess,
               data =>
                 api.update(team, data, me) inject Redirect(
-                  routes.Team.show(team.id))
-            )
+                  routes.Team.show(team.id)))
         }
       }
     }
@@ -178,8 +176,7 @@ object Team extends LilaController {
         OptionResult(api.requestable(id, me)) { team =>
           team.open.fold(
             Ok(html.team.join(team)),
-            Redirect(routes.Team.requestForm(team.id))
-          )
+            Redirect(routes.Team.requestForm(team.id)))
         }
       }
     }
@@ -228,10 +225,11 @@ object Team extends LilaController {
 
   def requestProcess(requestId: String) =
     AuthBody { implicit ctx => me =>
-      OptionFuRedirectUrl(for {
-        requestOption ← api request requestId
-        teamOption ← requestOption.??(req => TeamRepo.owned(req.team, me.id))
-      } yield (teamOption |@| requestOption).tupled) {
+      OptionFuRedirectUrl(
+        for {
+          requestOption ← api request requestId
+          teamOption ← requestOption.??(req => TeamRepo.owned(req.team, me.id))
+        } yield (teamOption |@| requestOption).tupled) {
         case (team, request) => {
           implicit val req = ctx.body
           forms.processRequest.bindFromRequest.fold(
@@ -242,8 +240,7 @@ object Team extends LilaController {
                   team,
                   request,
                   (decision === "accept")) inject url
-            }
-          )
+            })
         }
       }
     }
@@ -258,9 +255,10 @@ object Team extends LilaController {
   private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(
       implicit ctx: Context): Fu[Result] =
     api.hasCreatedRecently(me) flatMap { did =>
-      (did && !Granter.superAdmin(me)) fold (Forbidden(
-        views.html.team.createLimit()).fuccess,
-      a)
+      (did && !Granter.superAdmin(me)) fold (
+        Forbidden(views.html.team.createLimit()).fuccess,
+        a
+      )
     }
 
   private def Owner(team: TeamModel)(a: => Fu[Result])(

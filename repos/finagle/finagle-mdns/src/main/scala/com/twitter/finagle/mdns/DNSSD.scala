@@ -95,8 +95,7 @@ private class DNSSD {
       regType: String,
       domain: String,
       host: String,
-      port: Int
-  ): Future[Announcement] = {
+      port: Int): Future[Announcement] = {
     val reply = new Promise[Announcement]
 
     val proxy =

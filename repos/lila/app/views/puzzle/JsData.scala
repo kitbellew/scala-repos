@@ -11,19 +11,20 @@ import lila.puzzle._
 object JsData extends lila.Steroids {
 
   def history(infos: UserInfos) =
-    Json.obj("attempts" -> infos.history.map { a =>
-      Json.obj(
-        "puzzleId" -> a.puzzleId,
-        "date" -> a.date,
-        "win" -> a.win,
-        "time" -> a.time,
-        "puzzleRating" -> a.puzzleRating,
-        "puzzleRatingDiff" -> a.puzzleRatingDiff,
-        "userRating" -> a.userRating,
-        "userRatingDiff" -> a.userRatingDiff,
-        "vote" -> a.vote
-      )
-    })
+    Json.obj(
+      "attempts" -> infos.history.map { a =>
+        Json.obj(
+          "puzzleId" -> a.puzzleId,
+          "date" -> a.date,
+          "win" -> a.win,
+          "time" -> a.time,
+          "puzzleRating" -> a.puzzleRating,
+          "puzzleRatingDiff" -> a.puzzleRatingDiff,
+          "userRating" -> a.userRating,
+          "userRatingDiff" -> a.userRatingDiff,
+          "vote" -> a.vote
+        )
+      })
 
   def apply(
       puzzle: Puzzle,
@@ -48,51 +49,38 @@ object JsData extends lila.Steroids {
         "vote" -> puzzle.vote.sum,
         "url" -> s"$netBaseUrl${routes.Puzzle.show(puzzle.id)}"
       ),
-      "pref" -> Json.obj(
-        "coords" -> ctx.pref.coords
-      ),
+      "pref" -> Json.obj("coords" -> ctx.pref.coords),
       "chessground" -> Json.obj(
-        "highlight" -> Json.obj(
-          "lastMove" -> ctx.pref.highlight,
-          "check" -> ctx.pref.highlight
-        ),
-        "movable" -> Json.obj(
-          "showDests" -> ctx.pref.destination
-        ),
-        "draggable" -> Json.obj(
-          "showGhost" -> ctx.pref.highlight
-        ),
-        "premovable" -> Json.obj(
-          "showDests" -> ctx.pref.destination
-        )
+        "highlight" -> Json
+          .obj("lastMove" -> ctx.pref.highlight, "check" -> ctx.pref.highlight),
+        "movable" -> Json.obj("showDests" -> ctx.pref.destination),
+        "draggable" -> Json.obj("showGhost" -> ctx.pref.highlight),
+        "premovable" -> Json.obj("showDests" -> ctx.pref.destination)
       ),
       "animation" -> Json.obj(
-        "duration" -> ctx.pref.animationFactor * animationDuration.toMillis
-      ),
+        "duration" -> ctx.pref.animationFactor * animationDuration.toMillis),
       "mode" -> mode,
       "attempt" -> attempt.map { a =>
         Json.obj(
           "userRatingDiff" -> a.userRatingDiff,
           "seconds" -> a.seconds,
           "win" -> a.win,
-          "vote" -> a.vote
-        )
+          "vote" -> a.vote)
       },
       "win" -> win,
       "voted" -> voted,
       "user" -> userInfos.map { i =>
         Json.obj(
           "rating" -> i.user.perfs.puzzle.intRating,
-          "history" -> i.history.nonEmpty.option(Json.toJson(i.chart))
-        )
+          "history" -> i.history.nonEmpty.option(Json.toJson(i.chart)))
       },
       "difficulty" -> ctx.isAuth.option {
         Json.obj(
-          "choices" -> JsArray(translatedDifficultyChoices.map {
-            case (k, v) => Json.arr(k, v)
-          }),
-          "current" -> ctx.pref.puzzleDifficulty
-        )
+          "choices" -> JsArray(
+            translatedDifficultyChoices.map {
+              case (k, v) => Json.arr(k, v)
+            }),
+          "current" -> ctx.pref.puzzleDifficulty)
       }
     )
 }

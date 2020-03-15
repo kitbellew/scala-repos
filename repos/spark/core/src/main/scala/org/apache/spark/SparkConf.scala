@@ -668,9 +668,10 @@ private[spark] object SparkConf extends Logging {
       DeprecatedConfig("spark.rpc", "2.0", "Not used any more.")
     )
 
-    Map(configs.map { cfg =>
-      (cfg.key -> cfg)
-    }: _*)
+    Map(
+      configs.map { cfg =>
+        (cfg.key -> cfg)
+      }: _*)
   }
 
   /**
@@ -755,8 +756,10 @@ private[spark] object SparkConf extends Logging {
     * the scheduler, while the rest of the spark configs can be inherited from the driver later.
     */
   def isExecutorStartupConf(name: String): Boolean = {
-    (name.startsWith(
-      "spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF) ||
+    (
+      name.startsWith(
+        "spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF
+    ) ||
     name.startsWith("spark.ssl") ||
     name.startsWith("spark.rpc") ||
     isSparkPortConf(name)

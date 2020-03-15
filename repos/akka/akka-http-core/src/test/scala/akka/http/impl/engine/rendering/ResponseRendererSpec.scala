@@ -704,8 +704,9 @@ class ResponseRendererSpec
       equal(expected.stripMarginWithNewline("\r\n") -> close)
         .matcher[(String, Boolean)] compose { ctx ⇒
         val (wasCompletedFuture, resultFuture) =
-          (Source.single(ctx) ++ Source
-            .maybe[ResponseRenderingContext]) // never send upstream completion
+          (
+            Source.single(ctx) ++ Source.maybe[ResponseRenderingContext]
+          ) // never send upstream completion
             .via(renderer.named("renderer"))
             .map {
               case ResponseRenderingOutput.HttpData(bytes) ⇒ bytes
@@ -734,8 +735,8 @@ class ResponseRendererSpec
       }
 
     override def currentTimeMillis() =
-      DateTime(2011, 8, 25, 9, 10,
-        29).clicks // provide a stable date for testing
+      DateTime(
+        2011, 8, 25, 9, 10, 29).clicks // provide a stable date for testing
   }
 
   def source[T](elems: T*) = Source(elems.toList)

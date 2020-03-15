@@ -41,8 +41,10 @@ class RDDInfo(
 
   override def toString: String = {
     import Utils.bytesToString
-    ("RDD \"%s\" (%d) StorageLevel: %s; CachedPartitions: %d; TotalPartitions: %d; " +
-      "MemorySize: %s; DiskSize: %s").format(
+    (
+      "RDD \"%s\" (%d) StorageLevel: %s; CachedPartitions: %d; TotalPartitions: %d; " +
+        "MemorySize: %s; DiskSize: %s"
+    ).format(
       name,
       id,
       storageLevel.toString,

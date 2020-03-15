@@ -40,8 +40,7 @@ class NotifyLaunchQueueStepImplTest
       .processUpdate(
         updateTimestamp,
         task = MarathonTestHelper.mininimalTask(appId),
-        status = status
-      )
+        status = status)
       .futureValue
 
     Then("the update is passed to the LaunchQueue")

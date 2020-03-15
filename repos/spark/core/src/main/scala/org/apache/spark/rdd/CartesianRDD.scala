@@ -29,8 +29,8 @@ private[spark] class CartesianPartition(
     @transient private val rdd1: RDD[_],
     @transient private val rdd2: RDD[_],
     s1Index: Int,
-    s2Index: Int
-) extends Partition {
+    s2Index: Int)
+    extends Partition {
   var s1 = rdd1.partitions(s1Index)
   var s2 = rdd2.partitions(s2Index)
   override val index: Int = idx
@@ -68,8 +68,10 @@ private[spark] class CartesianRDD[T: ClassTag, U: ClassTag](
 
   override def getPreferredLocations(split: Partition): Seq[String] = {
     val currSplit = split.asInstanceOf[CartesianPartition]
-    (rdd1.preferredLocations(currSplit.s1) ++ rdd2.preferredLocations(
-      currSplit.s2)).distinct
+    (
+      rdd1.preferredLocations(currSplit.s1) ++ rdd2.preferredLocations(
+        currSplit.s2)
+    ).distinct
   }
 
   override def compute(

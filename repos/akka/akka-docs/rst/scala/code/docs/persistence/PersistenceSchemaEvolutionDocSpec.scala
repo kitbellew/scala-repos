@@ -159,12 +159,15 @@ class RenamePlainJson {
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case json: JsObject =>
-          EventSeq(marshaller.fromJson(manifest match {
-            case V1 => rename(json, "code", "seatNr")
-            case V2 => json // pass-through
-            case unknown =>
-              throw new IllegalArgumentException(s"Unknown manifest: $unknown")
-          }))
+          EventSeq(
+            marshaller.fromJson(
+              manifest match {
+                case V1 => rename(json, "code", "seatNr")
+                case V2 => json // pass-through
+                case unknown =>
+                  throw new IllegalArgumentException(
+                    s"Unknown manifest: $unknown")
+              }))
         case _ =>
           val c = event.getClass
           throw new IllegalArgumentException(

@@ -32,12 +32,14 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
   }
 
   test("error messages") {
-    assert(intercept[IllegalArgumentException] {
-      NameTreeParsers.parsePath("/foo^bar")
-    }.getMessage contains "'/foo[^]bar'")
-    assert(intercept[IllegalArgumentException] {
-      NameTreeParsers.parsePath("/foo/bar/")
-    }.getMessage contains "'/foo/bar/[]'")
+    assert(
+      intercept[IllegalArgumentException] {
+        NameTreeParsers.parsePath("/foo^bar")
+      }.getMessage contains "'/foo[^]bar'")
+    assert(
+      intercept[IllegalArgumentException] {
+        NameTreeParsers.parsePath("/foo/bar/")
+      }.getMessage contains "'/foo/bar/[]'")
   }
 
   test("parseNameTree") {

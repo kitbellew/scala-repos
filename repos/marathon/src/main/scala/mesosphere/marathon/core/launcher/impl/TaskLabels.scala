@@ -34,6 +34,5 @@ object TaskLabels {
     ResourceLabels(
       Map(
         FRAMEWORK_ID_LABEL -> frameworkId.id,
-        TASK_ID_LABEL -> taskId.idString
-      ))
+        TASK_ID_LABEL -> taskId.idString))
 }

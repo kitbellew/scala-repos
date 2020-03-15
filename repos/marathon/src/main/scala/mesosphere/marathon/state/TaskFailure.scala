@@ -49,8 +49,7 @@ object TaskFailure {
     TaskFailure(
       PathId.empty,
       mesos.TaskID.newBuilder().setValue("").build,
-      mesos.TaskState.TASK_STAGING
-    )
+      mesos.TaskState.TASK_STAGING)
   }
 
   def apply(proto: Protos.TaskFailure): TaskFailure =
@@ -85,8 +84,7 @@ object TaskFailure {
         _,
         version,
         _,
-        ts
-      ) = statusUpdate
+        ts) = statusUpdate
 
       val state = taskState(taskStateStr)
 
@@ -100,8 +98,7 @@ object TaskFailure {
             host,
             Timestamp(version),
             Timestamp(ts),
-            Option(slaveIDToProto(SlaveID(slaveId)))
-          ))
+            Option(slaveIDToProto(SlaveID(slaveId)))))
       else
         None
     }

@@ -215,21 +215,13 @@ object Event {
       Json.obj(
         "king" -> Json.arr(king._1.key, king._2.key),
         "rook" -> Json.arr(rook._1.key, rook._2.key),
-        "color" -> color
-      )
+        "color" -> color)
   }
 
   case class RedirectOwner(color: Color, id: String, cookie: Option[JsObject])
       extends Event {
     def typ = "redirect"
-    def data =
-      Json
-        .obj(
-          "id" -> id,
-          "url" -> s"/$id",
-          "cookie" -> cookie
-        )
-        .noNull
+    def data = Json.obj("id" -> id, "url" -> s"/$id", "cookie" -> cookie).noNull
     override def only = Some(color)
     override def owner = true
   }
@@ -237,10 +229,7 @@ object Event {
   case class Promotion(role: PromotableRole, pos: Pos) extends Event {
     def typ = "promotion"
     def data =
-      Json.obj(
-        "key" -> pos.key,
-        "pieceClass" -> role.toString.toLowerCase
-      )
+      Json.obj("key" -> pos.key, "pieceClass" -> role.toString.toLowerCase)
   }
 
   case class PlayerMessage(line: PlayerLine) extends Event {
@@ -305,11 +294,7 @@ object Event {
 
   case class CheckCount(white: Int, black: Int) extends Event {
     def typ = "checkCount"
-    def data =
-      Json.obj(
-        "white" -> white,
-        "black" -> black
-      )
+    def data = Json.obj("white" -> white, "black" -> black)
   }
 
   case class State(
@@ -329,8 +314,7 @@ object Event {
           "status" -> status,
           "winner" -> winner,
           "wDraw" -> whiteOffersDraw.option(true),
-          "bDraw" -> blackOffersDraw.option(true)
-        )
+          "bDraw" -> blackOffersDraw.option(true))
         .noNull
   }
 
@@ -338,10 +322,7 @@ object Event {
     def typ = "takebackOffers"
     def data =
       Json
-        .obj(
-          "white" -> white.option(true),
-          "black" -> black.option(true)
-        )
+        .obj("white" -> white.option(true), "black" -> black.option(true))
         .noNull
     override def owner = true
   }

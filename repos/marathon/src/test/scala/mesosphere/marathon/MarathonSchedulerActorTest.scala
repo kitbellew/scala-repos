@@ -72,8 +72,7 @@ class MarathonSchedulerActorTest
     when(repo.allPathIds()).thenReturn(Future.successful(Seq(app.id)))
     when(taskTracker.tasksByApp()(any[ExecutionContext])).thenReturn(
       Future.successful(
-        TaskTracker.TasksByApp.of(TaskTracker.AppTasks("nope".toPath, tasks)))
-    )
+        TaskTracker.TasksByApp.of(TaskTracker.AppTasks("nope".toPath, tasks))))
     when(repo.currentVersion(app.id)).thenReturn(Future.successful(Some(app)))
 
     val schedulerActor = createActor()
@@ -168,11 +167,10 @@ class MarathonSchedulerActorTest
       host = "",
       ipAddresses = Nil,
       ports = Nil,
-      version = app.version.toString
-    )
+      version = app.version.toString)
 
-    when(driver.killTask(taskA.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(taskA.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(statusUpdateEvent)
           Status.DRIVER_RUNNING
@@ -232,8 +230,8 @@ class MarathonSchedulerActorTest
       timestamp = app.version.toString
     )
 
-    when(driver.killTask(taskA.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(taskA.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(statusUpdateEvent)
           Status.DRIVER_RUNNING
@@ -260,14 +258,12 @@ class MarathonSchedulerActorTest
       cmd = Some("cmd"),
       instances = 2,
       upgradeStrategy = UpgradeStrategy(0.5),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0)))
     val origGroup = Group(PathId("/foo/bar"), Set(app))
 
     val appNew = app.copy(
       cmd = Some("cmd new"),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000)))
 
     val targetGroup = Group(PathId("/foo/bar"), Set(appNew))
 
@@ -303,8 +299,7 @@ class MarathonSchedulerActorTest
       cmd = Some("cmd"),
       instances = 2,
       upgradeStrategy = UpgradeStrategy(0.5),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0)))
     val taskA = MarathonTestHelper.runningTaskForApp(app.id)
     val origGroup = Group(PathId("/foo/bar"), Set(app))
     val targetGroup = Group(PathId("/foo/bar"), Set())
@@ -320,8 +315,8 @@ class MarathonSchedulerActorTest
     when(taskTracker.appTasks(eq(app.id))(any[ExecutionContext]))
       .thenReturn(Future.successful(Iterable(taskA)))
 
-    when(driver.killTask(taskA.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(taskA.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -333,9 +328,7 @@ class MarathonSchedulerActorTest
               host = "",
               ipAddresses = Nil,
               ports = Nil,
-              version = app.version.toString
-            )
-          )
+              version = app.version.toString))
           Status.DRIVER_RUNNING
         }
       })
@@ -364,8 +357,7 @@ class MarathonSchedulerActorTest
       cmd = Some("cmd"),
       instances = 2,
       upgradeStrategy = UpgradeStrategy(0.5),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0)))
     val group = Group(PathId("/foo/bar"), Set(app))
 
     val plan = DeploymentPlan(Group.empty, group)
@@ -401,8 +393,7 @@ class MarathonSchedulerActorTest
       cmd = Some("cmd"),
       instances = 2,
       upgradeStrategy = UpgradeStrategy(0.5),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0)))
     val group = Group(PathId("/foo/bar"), Set(app))
 
     val plan = DeploymentPlan(Group.empty, group)
@@ -426,8 +417,7 @@ class MarathonSchedulerActorTest
         queue,
         holder,
         leaderInfo,
-        system.eventStream
-      ))
+        system.eventStream))
 
     try {
       schedulerActor ! LocalLeadershipEvent.ElectedAsLeader
@@ -505,8 +495,7 @@ class MarathonSchedulerActorTest
         leaderInfo,
         system.eventStream,
         cancellationTimeout = 0.seconds
-      )
-    )
+      ))
     try {
       schedulerActor ! LocalLeadershipEvent.ElectedAsLeader
       schedulerActor ! Deploy(plan)
@@ -613,8 +602,7 @@ class MarathonSchedulerActorTest
           schedulerActions,
           storage,
           hcManager,
-          system.eventStream
-        ))
+          system.eventStream))
     historyActorProps = Props(
       new HistoryActor(system.eventStream, taskFailureEventRepository))
     schedulerActions = ref =>
@@ -628,8 +616,8 @@ class MarathonSchedulerActorTest
         ref,
         mock[MarathonConf])(system.dispatcher)
 
-    when(deploymentRepo.store(any))
-      .thenAnswer(new Answer[Future[DeploymentPlan]] {
+    when(deploymentRepo.store(any)).thenAnswer(
+      new Answer[Future[DeploymentPlan]] {
         override def answer(p1: InvocationOnMock): Future[DeploymentPlan] = {
           Future.successful(p1.getArguments()(0).asInstanceOf[DeploymentPlan])
         }
@@ -656,9 +644,7 @@ class MarathonSchedulerActorTest
         queue,
         holder,
         leaderInfo,
-        system.eventStream
-      )
-    )
+        system.eventStream))
   }
 
   def stopActor(ref: ActorRef): Unit = {

@@ -211,9 +211,10 @@ object BidiFlow {
       flow1: Graph[FlowShape[I1, O1], M1],
       flow2: Graph[FlowShape[I2, O2], M2])(
       combine: (M1, M2) ⇒ M): BidiFlow[I1, O1, I2, O2, M] =
-    fromGraph(GraphDSL.create(flow1, flow2)(combine) { implicit b ⇒ (f1, f2) ⇒
-      BidiShape(f1.in, f1.out, f2.in, f2.out)
-    })
+    fromGraph(
+      GraphDSL.create(flow1, flow2)(combine) { implicit b ⇒ (f1, f2) ⇒
+        BidiShape(f1.in, f1.out, f2.in, f2.out)
+      })
 
   /**
     * Wraps two Flows to create a ''BidiFlow''. The materialized value of the resulting BidiFlow is Unit.

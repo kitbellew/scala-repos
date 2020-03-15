@@ -567,9 +567,8 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
   }
 
   override def newService(dest: Name, label: String): Service[Req, Rep] = {
-    val client = copy1(
-      params = params + FactoryToService.Enabled(true)
-    ).newClient(dest, label)
+    val client = copy1(params = params + FactoryToService.Enabled(true))
+      .newClient(dest, label)
     new FactoryToService[Req, Rep](client)
   }
 }

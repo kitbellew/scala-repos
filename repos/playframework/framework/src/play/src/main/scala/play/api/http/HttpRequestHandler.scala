@@ -141,8 +141,11 @@ class DefaultHttpRequestHandler(
     // * path.startsWith(context) && path.charAt(context.length) == '/')
     //   - Path starts with context followed by a '/' character.
     context.isEmpty ||
-    (path.startsWith(context) && (path.length == context.length || path.charAt(
-      context.length) == '/'))
+    (
+      path.startsWith(context) && (
+        path.length == context.length || path.charAt(context.length) == '/'
+      )
+    )
   }
 
   def handlerForRequest(request: RequestHeader) = {

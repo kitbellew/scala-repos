@@ -320,9 +320,10 @@ private[cors] trait AbstractCORSPolicy {
 
   private def handleInvalidCORSRequest(
       request: RequestHeader): Future[Result] = {
-    logger.trace(s"""Invalid CORS request;Origin=${request.headers.get(
-      HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers
-      .get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
+    logger.trace(
+      s"""Invalid CORS request;Origin=${request.headers.get(
+        HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers
+        .get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
     Future.successful(Results.Forbidden)
   }
 
@@ -344,13 +345,14 @@ private[cors] trait AbstractCORSPolicy {
     val hostUri = new URI(origin.toLowerCase(Locale.ENGLISH))
     val originUri =
       new URI(
-        (if (request.secure)
-           "https://"
-         else
-           "http://") + request.host.toLowerCase(Locale.ENGLISH))
-    (
-      hostUri.getScheme,
-      hostUri.getHost,
-      hostUri.getPort) == (originUri.getScheme, originUri.getHost, originUri.getPort)
+        (
+          if (request.secure)
+            "https://"
+          else
+            "http://"
+        ) + request.host.toLowerCase(Locale.ENGLISH))
+    (hostUri.getScheme, hostUri.getHost, hostUri.getPort) == (
+      originUri.getScheme, originUri.getHost, originUri.getPort
+    )
   }
 }

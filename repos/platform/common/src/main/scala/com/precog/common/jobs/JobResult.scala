@@ -37,7 +37,9 @@ case class JobResult(mimeTypes: List[MimeType], content: Array[Byte]) {
     that match {
       case JobResult(thoseMimeTypes, thatContent) =>
         val len = content.length
-        (mimeTypes.toSet == thoseMimeTypes.toSet) && (len == thatContent.length) && {
+        (
+          mimeTypes.toSet == thoseMimeTypes.toSet
+        ) && (len == thatContent.length) && {
           var i = 0
           var result = true
           while (result && i < len) {
@@ -66,9 +68,10 @@ trait JobResultSerialization {
           JField("content", JString(Base64.encodeBase64String(result.content))),
           JField(
             "mimeTypes",
-            JArray(result.mimeTypes map { mimeType =>
-              JString(mimeType.value)
-            }))
+            JArray(
+              result.mimeTypes map { mimeType =>
+                JString(mimeType.value)
+              }))
         ))
   }
 

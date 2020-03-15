@@ -91,8 +91,7 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
           SubqueryHolder(new SQLBuilder(e.query, sqlContext).toSQL)
         case e: NonSQLExpression =>
           throw new UnsupportedOperationException(
-            s"Expression $e doesn't have a SQL representation"
-          )
+            s"Expression $e doesn't have a SQL representation")
         case e => e
       }
 
@@ -203,15 +202,13 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
             "ORDER BY"
           else
             "SORT BY",
-          p.order.map(_.sql).mkString(", ")
-        )
+          p.order.map(_.sql).mkString(", "))
 
       case p: RepartitionByExpression =>
         build(
           toSQL(p.child),
           "DISTRIBUTE BY",
-          p.partitionExpressions.map(_.sql).mkString(", ")
-        )
+          p.partitionExpressions.map(_.sql).mkString(", "))
 
       case p: ScriptTransformation =>
         scriptTransformationToSQL(p)
@@ -243,8 +240,7 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         ""
       else
         "FROM",
-      toSQL(plan.child)
-    )
+      toSQL(plan.child))
   }
 
   private def scriptTransformationToSQL(plan: ScriptTransformation): String = {
@@ -331,8 +327,7 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       g.generator.sql,
       newSubqueryName(),
       "AS",
-      columnAliases
-    )
+      columnAliases)
   }
 
   private def sameOutput(
@@ -430,8 +425,7 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       toSQL(project.child),
       "GROUP BY",
       groupingSQL,
-      groupingSetSQL
-    )
+      groupingSetSQL)
   }
 
   private def windowToSQL(w: Window): String = {
@@ -442,8 +436,7 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         ""
       else
         "FROM",
-      toSQL(w.child)
-    )
+      toSQL(w.child))
   }
 
   private def normalizedName(n: NamedExpression): String =

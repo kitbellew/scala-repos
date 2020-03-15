@@ -129,8 +129,9 @@ object JavaLangObject {
                 Apply(
                   LoadModule(ClassType("jl_Integer$")),
                   Ident("toHexString__I__T"),
-                  List(Apply(This()(ThisType), Ident("hashCode__I"), Nil)(
-                    IntType)))(ClassType(StringClass))
+                  List(
+                    Apply(This()(ThisType), Ident("hashCode__I"), Nil)(
+                      IntType)))(ClassType(StringClass))
               )
             }
           )(OptimizerHints.empty, None),

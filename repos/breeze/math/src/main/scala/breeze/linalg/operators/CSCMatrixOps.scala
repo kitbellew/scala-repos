@@ -44,14 +44,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   implicit def canMulSVt_CSC_eq_SVt[T](implicit
       op: OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]],
       zero: Zero[T],
-      ct: ClassTag[T]): OpMulMatrix.Impl2[
-    Transpose[SparseVector[T]],
-    CSCMatrix[T],
-    Transpose[SparseVector[T]]] =
-    new OpMulMatrix.Impl2[
-      Transpose[SparseVector[T]],
-      CSCMatrix[T],
-      Transpose[SparseVector[T]]] {
+      ct: ClassTag[T]): OpMulMatrix.Impl2[Transpose[SparseVector[T]], CSCMatrix[
+    T], Transpose[SparseVector[T]]] =
+    new OpMulMatrix.Impl2[Transpose[SparseVector[T]], CSCMatrix[T], Transpose[
+      SparseVector[T]]] {
       def apply(
           v: Transpose[SparseVector[T]],
           v2: CSCMatrix[T]): Transpose[SparseVector[T]] = {
@@ -696,16 +692,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   @expand
   @expand.valify
   implicit def canMulM_DV[@expand.args(Int, Float, Double, Long) T]
-      : BinaryRegistry[
-        CSCMatrix[T],
-        DenseVector[T],
-        OpMulMatrix.type,
-        DenseVector[T]] =
-    new BinaryRegistry[
-      CSCMatrix[T],
-      DenseVector[T],
-      OpMulMatrix.type,
-      DenseVector[T]] {
+      : BinaryRegistry[CSCMatrix[T], DenseVector[
+        T], OpMulMatrix.type, DenseVector[T]] =
+    new BinaryRegistry[CSCMatrix[T], DenseVector[
+      T], OpMulMatrix.type, DenseVector[T]] {
       override def bindingMissing(a: CSCMatrix[T], b: DenseVector[T]) = {
         require(a.cols == b.length, "Dimension Mismatch!")
 
@@ -732,16 +722,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   @expand
   @expand.valify
   implicit def canMulM_SV[@expand.args(Int, Float, Double, Long) T]
-      : BinaryRegistry[
-        CSCMatrix[T],
-        SparseVector[T],
-        OpMulMatrix.type,
-        SparseVector[T]] =
-    new BinaryRegistry[
-      CSCMatrix[T],
-      SparseVector[T],
-      OpMulMatrix.type,
-      SparseVector[T]] {
+      : BinaryRegistry[CSCMatrix[T], SparseVector[
+        T], OpMulMatrix.type, SparseVector[T]] =
+    new BinaryRegistry[CSCMatrix[T], SparseVector[
+      T], OpMulMatrix.type, SparseVector[T]] {
       override def bindingMissing(a: CSCMatrix[T], b: SparseVector[T]) = {
         require(a.cols == b.length, "Dimension Mismatch!")
         val res = new VectorBuilder[T](a.rows, b.iterableSize min a.rows)
@@ -780,14 +764,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   @expand
   @expand.valify
   implicit def canMulM_DM[@expand.args(Int, Float, Double, Long) T]
-      : breeze.linalg.operators.OpMulMatrix.Impl2[
-        CSCMatrix[T],
-        DenseMatrix[T],
-        DenseMatrix[T]] =
-    new breeze.linalg.operators.OpMulMatrix.Impl2[
-      CSCMatrix[T],
-      DenseMatrix[T],
-      DenseMatrix[T]] {
+      : breeze.linalg.operators.OpMulMatrix.Impl2[CSCMatrix[T], DenseMatrix[
+        T], DenseMatrix[T]] =
+    new breeze.linalg.operators.OpMulMatrix.Impl2[CSCMatrix[T], DenseMatrix[
+      T], DenseMatrix[T]] {
       def apply(a: CSCMatrix[T], b: DenseMatrix[T]) = {
 
         if (a.cols != b.rows)
@@ -819,14 +799,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   @expand
   @expand.valify
   implicit def canMulDM_M[@expand.args(Int, Float, Double, Long) T]
-      : breeze.linalg.operators.OpMulMatrix.Impl2[
-        DenseMatrix[T],
-        CSCMatrix[T],
-        DenseMatrix[T]] =
-    new breeze.linalg.operators.OpMulMatrix.Impl2[
-      DenseMatrix[T],
-      CSCMatrix[T],
-      DenseMatrix[T]] {
+      : breeze.linalg.operators.OpMulMatrix.Impl2[DenseMatrix[T], CSCMatrix[
+        T], DenseMatrix[T]] =
+    new breeze.linalg.operators.OpMulMatrix.Impl2[DenseMatrix[T], CSCMatrix[
+      T], DenseMatrix[T]] {
       def apply(a: DenseMatrix[T], b: CSCMatrix[T]) = {
         if (a.cols != b.rows)
           throw new RuntimeException("Dimension Mismatch!")
@@ -861,14 +837,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   @expand
   @expand.valify
   implicit def canMulM_M[@expand.args(Int, Float, Double, Long) T]
-      : breeze.linalg.operators.OpMulMatrix.Impl2[
-        CSCMatrix[T],
-        CSCMatrix[T],
-        CSCMatrix[T]] =
-    new breeze.linalg.operators.OpMulMatrix.Impl2[
-      CSCMatrix[T],
-      CSCMatrix[T],
-      CSCMatrix[T]] {
+      : breeze.linalg.operators.OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[
+        T], CSCMatrix[T]] =
+    new breeze.linalg.operators.OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[
+      T], CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: CSCMatrix[T]) = {
 
         require(a.cols == b.rows, "Dimension Mismatch")
@@ -1079,16 +1051,11 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
       }
     }
 
-  implicit def canMulM_SV_Semiring[T: Semiring: Zero: ClassTag]: BinaryRegistry[
-    CSCMatrix[T],
-    SparseVector[T],
-    OpMulMatrix.type,
-    SparseVector[T]] =
-    new BinaryRegistry[
-      CSCMatrix[T],
-      SparseVector[T],
-      OpMulMatrix.type,
-      SparseVector[T]] {
+  implicit def canMulM_SV_Semiring[T: Semiring: Zero: ClassTag]
+      : BinaryRegistry[CSCMatrix[T], SparseVector[
+        T], OpMulMatrix.type, SparseVector[T]] =
+    new BinaryRegistry[CSCMatrix[T], SparseVector[
+      T], OpMulMatrix.type, SparseVector[T]] {
       override def bindingMissing(a: CSCMatrix[T], b: SparseVector[T]) = {
         val ring = implicitly[Semiring[T]]
         require(a.cols == b.length, "Dimension Mismatch!")

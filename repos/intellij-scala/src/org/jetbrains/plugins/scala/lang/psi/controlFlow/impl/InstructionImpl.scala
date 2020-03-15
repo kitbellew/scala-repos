@@ -45,10 +45,12 @@ sealed class InstructionImpl(
   }
 
   protected def getPresentation =
-    "element: " + (element match {
-      case Some(x) => x
-      case z       => z
-    })
+    "element: " + (
+      element match {
+        case Some(x) => x
+        case z       => z
+      }
+    )
 }
 
 case class DefinitionInstruction(
@@ -72,8 +74,10 @@ case class ReadWriteVariableInstruction(
   private val myName = ref.getText
   def getName = myName
   override protected def getPresentation =
-    (if (write)
-       "WRITE "
-     else
-       "READ ") + getName
+    (
+      if (write)
+        "WRITE "
+      else
+        "READ "
+    ) + getName
 }

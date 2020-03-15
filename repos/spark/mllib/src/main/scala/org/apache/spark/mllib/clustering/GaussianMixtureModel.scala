@@ -156,8 +156,11 @@ object GaussianMixtureModel extends Loader[GaussianMixtureModel] {
       import sqlContext.implicits._
 
       // Create JSON metadata.
-      val metadata = compact(render(
-        ("class" -> classNameV1_0) ~ ("version" -> formatVersionV1_0) ~ ("k" -> weights.length)))
+      val metadata = compact(
+        render(
+          ("class" -> classNameV1_0) ~ ("version" -> formatVersionV1_0) ~ (
+            "k" -> weights.length
+          )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.

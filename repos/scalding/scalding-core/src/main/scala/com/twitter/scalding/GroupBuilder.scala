@@ -224,9 +224,10 @@ class GroupBuilder(val groupFields: Fields)
       middleSetter.arity > 0,
       "The middle arity must have definite size, try wrapping in scala.Tuple1 if you need a hack")
     // Create the required number of middlefields based on the arity of middleSetter
-    val middleFields = strFields(ScalaRange(0, middleSetter.arity).map { i =>
-      getNextMiddlefield
-    })
+    val middleFields = strFields(
+      ScalaRange(0, middleSetter.arity).map { i =>
+        getNextMiddlefield
+      })
     val mrmBy =
       new MRMBy[T, X, U](
         fromFields,
@@ -425,9 +426,10 @@ class GroupBuilder(val groupFields: Fields)
     * beginning of block with access to expensive nonserializable state. The state object should
     * contain a function release() for resource management purpose.
     */
-  def using[C <: {
-    def release()
-  }](bf: => C) =
+  def using[
+      C <: {
+        def release()
+      }](bf: => C) =
     new {
 
       /**

@@ -29,7 +29,8 @@ object BinaryFormat {
     private type MT = Int // tenths of seconds
     private val size = 16
     private val encodeList: List[(MT, Int)] =
-      List(1, 5, 10, 15, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300, 400,
+      List(
+        1, 5, 10, 15, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300, 400,
         600).zipWithIndex
     private val encodeMap: Map[MT, Int] = encodeList.toMap
     private val decodeList: List[(Int, MT)] = encodeList.map(x => x._2 -> x._1)
@@ -50,10 +51,12 @@ object BinaryFormat {
       ByteArray {
         def enc(mt: MT) =
           encodeMap get mt orElse findClose(mt, encodeList) getOrElse (size - 1)
-        (mts grouped 2 map {
-          case Vector(a, b) => (enc(a) << 4) + enc(b)
-          case Vector(a)    => enc(a) << 4
-        }).map(_.toByte).toArray
+        (
+          mts grouped 2 map {
+            case Vector(a, b) => (enc(a) << 4) + enc(b)
+            case Vector(a)    => enc(a) << 4
+          }
+        ).map(_.toByte).toArray
       }
 
     def read(ba: ByteArray): Vector[MT] = {
@@ -177,8 +180,7 @@ object BinaryFormat {
 
       val ints = Array(
         (castleInt << 4) + (lastMoveInt >> 8),
-        (lastMoveInt & 255)
-      ) ++ writeInt24(time) ++ clmt.check.map(posInt)
+        (lastMoveInt & 255)) ++ writeInt24(time) ++ clmt.check.map(posInt)
 
       ByteArray(ints.map(_.toByte))
     }
@@ -233,9 +235,10 @@ object BinaryFormat {
         (pieces get pos).fold(0) { piece =>
           piece.color.fold(0, 8) + roleToInt(piece.role)
         }
-      ByteArray(groupedPos map {
-        case (p1, p2) => ((posInt(p1) << 4) + posInt(p2)).toByte
-      })
+      ByteArray(
+        groupedPos map {
+          case (p1, p2) => ((posInt(p1) << 4) + posInt(p2)).toByte
+        })
     }
 
     def read(ba: ByteArray, variant: Variant): PieceMap = {
@@ -248,9 +251,11 @@ object BinaryFormat {
           Piece(Color((int & 8) == 0), role)
         }
       val pieceInts = ba.value flatMap splitInts
-      (Pos.all zip pieceInts flatMap {
-        case (pos, int) => intPiece(int) map (pos -> _)
-      }).toMap
+      (
+        Pos.all zip pieceInts flatMap {
+          case (pos, int) => intPiece(int) map (pos -> _)
+        }
+      ).toMap
     }
 
     // cache standard start position

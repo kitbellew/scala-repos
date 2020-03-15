@@ -350,11 +350,12 @@ private[ui] class FailedStageTable(
     val failureReason = s.failureReason.getOrElse("")
     val isMultiline = failureReason.indexOf('\n') >= 0
     // Display the first line by default
-    val failureReasonSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      failureReason.substring(0, failureReason.indexOf('\n'))
-    } else {
-      failureReason
-    })
+    val failureReasonSummary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline) {
+        failureReason.substring(0, failureReason.indexOf('\n'))
+      } else {
+        failureReason
+      })
     val details =
       if (isMultiline) {
         // scalastyle:off

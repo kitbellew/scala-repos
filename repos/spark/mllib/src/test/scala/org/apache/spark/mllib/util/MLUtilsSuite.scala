@@ -177,8 +177,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val examples = sc.parallelize(
       Seq(
         LabeledPoint(1.1, Vectors.sparse(3, Seq((0, 1.23), (2, 4.56)))),
-        LabeledPoint(0.0, Vectors.dense(1.01, 2.02, 3.03))
-      ),
+        LabeledPoint(0.0, Vectors.dense(1.01, 2.02, 3.03))),
       2)
     val tempDir = Utils.createTempDir()
     val outputDir = new File(tempDir, "output")
@@ -258,8 +257,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
       Seq(
         Vectors.dense(1.0, 2.0),
         Vectors.sparse(2, Array(1), Array(-1.0)),
-        Vectors.dense(0.0, 1.0)
-      ),
+        Vectors.dense(0.0, 1.0)),
       2)
     val tempDir = Utils.createTempDir()
     val outputDir = new File(tempDir, "vectors")
@@ -275,8 +273,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
       Seq(
         LabeledPoint(1.0, Vectors.dense(1.0, 2.0)),
         LabeledPoint(0.0, Vectors.sparse(2, Array(1), Array(-1.0))),
-        LabeledPoint(1.0, Vectors.dense(0.0, 1.0))
-      ),
+        LabeledPoint(1.0, Vectors.dense(0.0, 1.0))),
       2)
     val tempDir = Utils.createTempDir()
     val outputDir = new File(tempDir, "points")

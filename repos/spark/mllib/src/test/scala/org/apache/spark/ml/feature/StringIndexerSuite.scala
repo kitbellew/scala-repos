@@ -202,13 +202,7 @@ class StringIndexerSuite
   test("IndexToString.transform") {
     val labels = Array("a", "b", "c")
     val df0 = sqlContext
-      .createDataFrame(
-        Seq(
-          (0, "a"),
-          (1, "b"),
-          (2, "c"),
-          (0, "a")
-        ))
+      .createDataFrame(Seq((0, "a"), (1, "b"), (2, "c"), (0, "a")))
       .toDF("index", "expected")
 
     val idxToStr0 = new IndexToString()

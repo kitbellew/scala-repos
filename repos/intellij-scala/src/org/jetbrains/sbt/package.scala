@@ -216,8 +216,9 @@ package object sbt {
     }
 
   def inWriteAction[T](body: => T): T = {
-    ApplicationManager.getApplication.runWriteAction(new Computable[T] {
-      def compute: T = body
-    })
+    ApplicationManager.getApplication.runWriteAction(
+      new Computable[T] {
+        def compute: T = body
+      })
   }
 }

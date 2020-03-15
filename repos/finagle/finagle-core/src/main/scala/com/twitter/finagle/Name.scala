@@ -56,8 +56,8 @@ object Name {
   class Bound private (
       val addr: Var[Addr],
       val id: Any,
-      val path: com.twitter.finagle.Path
-  ) extends Name
+      val path: com.twitter.finagle.Path)
+      extends Name
       with Proxy {
     def self = id
 
@@ -140,8 +140,9 @@ object Name {
                   case (Addr.Bound(set, metadata), ia: InetSocketAddress) =>
                     Addr.Bound(set + Address(ia), metadata)
                   case (Addr.Bound(_, _), sa) =>
-                    Addr.Failed(new IllegalArgumentException(
-                      s"Unsupported SocketAddress of type '${sa.getClass.getName}': $sa"))
+                    Addr.Failed(
+                      new IllegalArgumentException(
+                        s"Unsupported SocketAddress of type '${sa.getClass.getName}': $sa"))
                   case (addr, _) => addr
                 }
             }

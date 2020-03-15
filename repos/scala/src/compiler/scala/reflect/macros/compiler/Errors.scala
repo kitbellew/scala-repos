@@ -117,10 +117,12 @@ trait Errors extends Traces {
         else
           tpe
       var pssPart =
-        (pss map (ps =>
-          ps map (p =>
-            p.defStringSeenAs(
-              preprocess(p.info))) mkString ("(", ", ", ")"))).mkString
+        (
+          pss map (ps =>
+            ps map (p => p.defStringSeenAs(preprocess(p.info))) mkString (
+              "(", ", ", ")"
+            ))
+        ).mkString
       if (abbreviate)
         pssPart = abbreviateCoreAliases(pssPart)
       var retPart = preprocess(restpe).toString

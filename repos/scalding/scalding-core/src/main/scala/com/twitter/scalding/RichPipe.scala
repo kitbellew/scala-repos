@@ -126,9 +126,10 @@ class RichPipe(val pipe: Pipe)
     * Beginning of block with access to expensive nonserializable state. The state object should
     * contain a function release() for resource management purpose.
     */
-  def using[C <: {
-    def release()
-  }](bf: => C) =
+  def using[
+      C <: {
+        def release()
+      }](bf: => C) =
     new {
 
       /**
@@ -746,14 +747,15 @@ class RichPipe(val pipe: Pipe)
     val total = groupAll {
       _.sum[Double](f -> '__total_for_normalize__)
     }
-    (if (useTiny) {
-       crossWithTiny(total)
-     } else {
-       crossWithSmaller(total)
-     })
-      .map(Fields.merge(f, '__total_for_normalize__) -> f) {
-        args: (Double, Double) => args._1 / args._2
+    (
+      if (useTiny) {
+        crossWithTiny(total)
+      } else {
+        crossWithSmaller(total)
       }
+    ).map(Fields.merge(f, '__total_for_normalize__) -> f) {
+      args: (Double, Double) => args._1 / args._2
+    }
   }
 
   /**

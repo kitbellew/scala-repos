@@ -32,9 +32,10 @@ object FreeList extends FreeListInstances {
         FreeList(Monad[Free[List, ?]].point(a))
 
       def bind[A, B](fa: FreeList[A])(f: A => FreeList[B]): FreeList[B] =
-        FreeList(Monad[Free[List, ?]].bind(fa.f) { a =>
-          f(a).f
-        })
+        FreeList(
+          Monad[Free[List, ?]].bind(fa.f) { a =>
+            f(a).f
+          })
 
       def tailrecM[A, B](f: A => FreeList[A \/ B])(a: A): FreeList[B] =
         FreeList(BindRec[Free[List, ?]].tailrecM((x: A) => f(x).f)(a))
@@ -47,8 +48,7 @@ object FreeList extends FreeListInstances {
         .freeGen[List, A](
           Gen
             .choose(0, 2)
-            .flatMap(Gen.listOfN(_, freeListArb[A].arbitrary.map(_.f)))
-        )
+            .flatMap(Gen.listOfN(_, freeListArb[A].arbitrary.map(_.f))))
         .map(FreeList.apply))
 
   implicit def freeListEq[A](implicit A: Equal[A]): Equal[FreeList[A]] =
@@ -81,14 +81,16 @@ object FreeOption {
         FreeOption(Functor[Free[Option, ?]].map(fa.f)(f))
 
       def tailrecM[A, B](f: A => FreeOption[A \/ B])(a: A): FreeOption[B] =
-        FreeOption(BindRec[Free[Option, ?]].tailrecM[A, B] { a =>
-          f(a).f
-        }(a))
+        FreeOption(
+          BindRec[Free[Option, ?]].tailrecM[A, B] { a =>
+            f(a).f
+          }(a))
 
       def bind[A, B](fa: FreeOption[A])(f: A => FreeOption[B]): FreeOption[B] =
-        FreeOption(Bind[Free[Option, ?]].bind(fa.f) { a =>
-          f(a).f
-        })
+        FreeOption(
+          Bind[Free[Option, ?]].bind(fa.f) { a =>
+            f(a).f
+          })
     }
 
   implicit def freeOptionArb[A](
@@ -98,10 +100,10 @@ object FreeOption {
         .freeGen[Option, A](
           Gen
             .choose(0, 1)
-            .flatMap(Gen
-              .listOfN(_, freeOptionArb[A].arbitrary.map(_.f))
-              .map(_.headOption))
-        )
+            .flatMap(
+              Gen
+                .listOfN(_, freeOptionArb[A].arbitrary.map(_.f))
+                .map(_.headOption)))
         .map(FreeOption.apply))
 
   implicit def freeOptionEq[A](implicit A: Equal[A]): Equal[FreeOption[A]] =
@@ -116,8 +118,7 @@ object FreeTest extends SpecLite {
       implicit A: Arbitrary[A]): Gen[Free[F, A]] =
     Gen.frequency(
       (1, Functor[Arbitrary].map(A)(Free.pure[F, A](_)).arbitrary),
-      (1, Functor[Arbitrary].map(Arbitrary(g))(Free[F, A](_)).arbitrary)
-    )
+      (1, Functor[Arbitrary].map(Arbitrary(g))(Free[F, A](_)).arbitrary))
 
   "Option" should {
     checkAll(bindRec.laws[FreeOption])

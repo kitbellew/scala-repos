@@ -75,11 +75,13 @@ class RouteRegistry {
   private def matchingMethodsExcept(requestPath: String)(
       p: HttpMethod => Boolean) = {
     var methods =
-      (_methodRoutes filter { kv =>
-        val method = kv._1
-        val routes = kv._2
-        !p(method) && (routes exists (_.apply(requestPath).isDefined))
-      }).keys.toSet
+      (
+        _methodRoutes filter { kv =>
+          val method = kv._1
+          val routes = kv._2
+          !p(method) && (routes exists (_.apply(requestPath).isDefined))
+        }
+      ).keys.toSet
     if (methods.contains(Get))
       methods += Head
     methods
@@ -139,10 +141,12 @@ class RouteRegistry {
     * List of entry points, made of all route matchers
     */
   def entryPoints: Seq[String] =
-    (for {
-      (method, routes) <- _methodRoutes
-      route <- routes
-    } yield method + " " + route).toSeq sortWith (_ < _)
+    (
+      for {
+        (method, routes) <- _methodRoutes
+        route <- routes
+      } yield method + " " + route
+    ).toSeq sortWith (_ < _)
 
   def methodRoutes: Map[HttpMethod, Seq[Route]] = _methodRoutes.clone().toMap
 

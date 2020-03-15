@@ -4,10 +4,7 @@ import sbt.testing._
 
 import org.scalajs.testinterface.TestUtils
 
-final class DummyTask(
-    val taskDef: TaskDef,
-    runner: BaseRunner
-) extends Task {
+final class DummyTask(val taskDef: TaskDef, runner: BaseRunner) extends Task {
 
   def tags: Array[String] = Array()
 

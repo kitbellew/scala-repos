@@ -22,8 +22,7 @@ object ExampleTests extends TestSuite {
         assert(
           failure.lastParser == ("a": P0),
           failure.index == 0,
-          failure.extra.traced.trace == """parseA:1:1 / "a":1:1 ..."b""""
-        )
+          failure.extra.traced.trace == """parseA:1:1 / "a":1:1 ..."b"""")
       }
 
       'sequence {
@@ -159,8 +158,7 @@ object ExampleTests extends TestSuite {
 
         val failure = xml.parse("<abcde></edcba>").asInstanceOf[Parsed.Failure]
         assert(
-          failure.extra.traced.trace == """xml:1:1 / rightTag:1:8 / "abcde":1:10 ..."edcba>""""
-        )
+          failure.extra.traced.trace == """xml:1:1 / rightTag:1:8 / "abcde":1:10 ..."edcba>"""")
       }
       'filter {
         val digits = P(CharIn('0' to '9').rep(1).!).map(_.toInt)
@@ -182,7 +180,8 @@ object ExampleTests extends TestSuite {
         val numberPlate = P(
           twice(digit) ~ "-" ~ twice(letter) ~ "-" ~ twice(digit))
 
-        assert(errorMessage(numberPlate, "11-A1-22") == """
+        assert(
+          errorMessage(numberPlate, "11-A1-22") == """
           |found "1-22", expected CharIn("ABCDEFGHIJKLMNOPQRSTUVWXYZ") at index 4
           |11-A1-22
           |    ^""".stripMargin.trim)
@@ -190,7 +189,8 @@ object ExampleTests extends TestSuite {
         // Suppress implementation details from the error message
         val opaqueNumberPlate = numberPlate.opaque("<number-plate>")
 
-        assert(errorMessage(opaqueNumberPlate, "11-A1-22") == """
+        assert(
+          errorMessage(opaqueNumberPlate, "11-A1-22") == """
           |found "11-A1-22", expected <number-plate> at index 0
           |11-A1-22
           |^""".stripMargin.trim)
@@ -238,8 +238,7 @@ object ExampleTests extends TestSuite {
         assert(
           failure.index == 0,
           failure.extra.traced.trace ==
-            """nocut:1:1 / ("val " ~ alpha.rep(1) | "def " ~ alpha.rep(1)):1:1 ..."val 1234""""
-        )
+            """nocut:1:1 / ("val " ~ alpha.rep(1) | "def " ~ alpha.rep(1)):1:1 ..."val 1234"""")
       }
       'withcut {
         val alpha = P(CharIn('a' to 'z'))
@@ -251,8 +250,7 @@ object ExampleTests extends TestSuite {
         assert(
           failure.index == 4,
           failure.extra.traced.trace ==
-            """nocut:1:1 / alpha:1:5 / CharIn("abcdefghijklmnopqrstuvwxyz"):1:5 ..."1234""""
-        )
+            """nocut:1:1 / alpha:1:5 / CharIn("abcdefghijklmnopqrstuvwxyz"):1:5 ..."1234"""")
       }
       'repnocut {
         val alpha = P(CharIn('a' to 'z'))
@@ -264,8 +262,7 @@ object ExampleTests extends TestSuite {
         val failure = stmts.parse("val abcd; val ").asInstanceOf[Parsed.Failure]
         assert(
           failure.index == 10,
-          failure.extra.traced.trace == """stmts:1:1 / (End | " "):1:11 ..."val """"
-        )
+          failure.extra.traced.trace == """stmts:1:1 / (End | " "):1:11 ..."val """")
       }
       'repcut {
         val alpha = P(CharIn('a' to 'z'))
@@ -280,8 +277,7 @@ object ExampleTests extends TestSuite {
         assert(
           failure.index == 14,
           failure.extra.traced.trace ==
-            """stmts:1:1 / stmt:1:11 / alpha:1:14 / CharIn("abcdefghijklmnopqrstuvwxyz"):1:14 ..."""""
-        )
+            """stmts:1:1 / stmt:1:11 / alpha:1:14 / CharIn("abcdefghijklmnopqrstuvwxyz"):1:14 ...""""")
       }
       'delimiternocut {
         val digits = P(CharIn('0' to '9').rep(1))
@@ -292,8 +288,7 @@ object ExampleTests extends TestSuite {
         val failure = tuple.parse("(1,)").asInstanceOf[Parsed.Failure]
         assert(
           failure.index == 2,
-          failure.extra.traced.trace == """tuple:1:1 / (")" | CharIn("0123456789")):1:3 ...",)""""
-        )
+          failure.extra.traced.trace == """tuple:1:1 / (")" | CharIn("0123456789")):1:3 ...",)"""")
       }
       'delimitercut {
         val digits = P(CharIn('0' to '9').rep(1))
@@ -304,8 +299,7 @@ object ExampleTests extends TestSuite {
         val failure = tuple.parse("(1,)").asInstanceOf[Parsed.Failure]
         assert(
           failure.index == 3,
-          failure.extra.traced.trace == """tuple:1:1 / digits:1:4 / CharIn("0123456789"):1:4 ...")""""
-        )
+          failure.extra.traced.trace == """tuple:1:1 / digits:1:4 / CharIn("0123456789"):1:4 ...")"""")
       }
       'endcut {
         val digits = P(CharIn('0' to '9').rep(1))
@@ -317,8 +311,7 @@ object ExampleTests extends TestSuite {
         val trace = failure.extra.traced.trace
         assert(
           failure.index == 3,
-          trace == """tuple:1:1 / digits:1:4 / CharIn("0123456789"):1:4 ...")""""
-        )
+          trace == """tuple:1:1 / digits:1:4 / CharIn("0123456789"):1:4 ...")"""")
       }
       'composecut {
         val digit = P(CharIn('0' to '9'))
@@ -357,8 +350,7 @@ object ExampleTests extends TestSuite {
 
         check(
           Foo.expr.parse("(1+(2+3x))+4"),
-          """Failure(("(" ~ expr ~ ")" | num):1:1 ..."(1+(2+3x))")"""
-        )
+          """Failure(("(" ~ expr ~ ")" | num):1:1 ..."(1+(2+3x))")""")
 
       }
       'cuts {
@@ -371,10 +363,7 @@ object ExampleTests extends TestSuite {
             case (l, r) => l + r
           }
         }
-        check(
-          Foo.expr.parse("(1+(2+3x))+4"),
-          """Failure(")":1:8 ..."x))+4")"""
-        )
+        check(Foo.expr.parse("(1+(2+3x))+4"), """Failure(")":1:8 ..."x))+4")""")
       }
       'log {
         val captured = collection.mutable.Buffer.empty[String]

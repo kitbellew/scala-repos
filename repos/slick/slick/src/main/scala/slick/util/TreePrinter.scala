@@ -42,22 +42,29 @@ case class TreePrinter(
           di.name
       out.print(
         prefix1 +
-          cCyan + (if (name.nonEmpty)
-                     name + ": "
-                   else
-                     "") +
-          (if (marked)
-             cNormal + bYellow + cBlack
-           else
-             cYellow) + (if (multiLine)
-                           multi1
-                         else
-                           "") + markedDiName +
-          cNormal + (if (di.name.nonEmpty && di.mainInfo.nonEmpty)
-                       " "
-                     else
-                       "")
-      )
+          cCyan + (
+          if (name.nonEmpty)
+            name + ": "
+          else
+            ""
+        ) +
+          (
+            if (marked)
+              cNormal + bYellow + cBlack
+            else
+              cYellow
+          ) + (
+          if (multiLine)
+            multi1
+          else
+            ""
+        ) + markedDiName +
+          cNormal + (
+          if (di.name.nonEmpty && di.mainInfo.nonEmpty)
+            " "
+          else
+            ""
+        ))
       if (multiLine) {
         val lines = di.mainInfo.replace("\r", "").split('\n')
         out.println(
@@ -67,20 +74,24 @@ case class TreePrinter(
             cBlue + di.attrInfo + cNormal)
         val p = prefix2 + Iterator
           .fill(
-            name.length + (if (name.length == 0)
-                             0
-                           else
-                             2))(' ')
+            name.length + (
+              if (name.length == 0)
+                0
+              else
+                2
+            ))(' ')
           .mkString + cYellow + multi2 + cNormal
         lines.foreach { l =>
           out.println(p + l)
         }
       } else {
         out.println(
-          di.mainInfo + (if (di.attrInfo.isEmpty)
-                           ""
-                         else
-                           " " + cBlue + di.attrInfo + cNormal))
+          di.mainInfo + (
+            if (di.attrInfo.isEmpty)
+              ""
+            else
+              " " + cBlue + di.attrInfo + cNormal
+          ))
       }
       val children = di.children.toIndexedSeq
       children.zipWithIndex.foreach {

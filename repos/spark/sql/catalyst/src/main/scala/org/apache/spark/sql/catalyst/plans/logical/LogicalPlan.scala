@@ -304,10 +304,11 @@ abstract class UnaryNode extends LogicalPlan {
     projectList.flatMap {
       case a @ Alias(e, _) =>
         child.constraints
-          .map(_ transform {
-            case expr: Expression if expr.semanticEquals(e) =>
-              a.toAttribute
-          })
+          .map(
+            _ transform {
+              case expr: Expression if expr.semanticEquals(e) =>
+                a.toAttribute
+            })
           .union(Set(EqualNullSafe(e, a.toAttribute)))
       case _ =>
         Set.empty[Expression]

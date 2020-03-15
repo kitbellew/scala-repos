@@ -239,8 +239,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
           columns,
           primaryKey.toSeq,
           foreignKeys,
-          indices
-        )
+          indices)
       }
 
       /** Code for enabled definitions in this table class grouped into logical groups. */
@@ -466,10 +465,12 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       val dbName = model.name.getOrElse(table.model.name.table + "_INDEX_" + id)
       def rawName = disambiguateTerm("index" + id)
       def doc: String =
-        (if (model.unique)
-           "Uniqueness "
-         else
-           "") +
+        (
+          if (model.unique)
+            "Uniqueness "
+          else
+            ""
+        ) +
           "Index over " + columns
           .map(_.name)
           .mkString("(", ",", ")") + s" (database name ${dbName})"
@@ -509,14 +510,18 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     trait TermDef extends Def {
       override def docWithCode: Code = {
         val newdoc = doc +
-          (if (scalaKeywords.contains(rawName))
-             s"\nNOTE: The name was escaped because it collided with a Scala keyword."
-           else
-             "") +
-          (if (slickTableTermMembersNoArgs.contains(rawName))
-             s"\nNOTE: The name was disambiguated because it collided with Slick's method Table#$rawName."
-           else
-             "")
+          (
+            if (scalaKeywords.contains(rawName))
+              s"\nNOTE: The name was escaped because it collided with a Scala keyword."
+            else
+              ""
+          ) +
+          (
+            if (slickTableTermMembersNoArgs.contains(rawName))
+              s"\nNOTE: The name was disambiguated because it collided with Slick's method Table#$rawName."
+            else
+              ""
+          )
         codegen.docWithCode(newdoc, code)
       }
 
@@ -557,10 +562,12 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
     val lines = code.split("\n")
     lines.tail.foldLeft(lines.head) { (out, line) =>
       out + '\n' +
-        (if (line.isEmpty)
-           line
-         else
-           "  " + line)
+        (
+          if (line.isEmpty)
+            line
+          else
+            "  " + line
+        )
     }
   }
 

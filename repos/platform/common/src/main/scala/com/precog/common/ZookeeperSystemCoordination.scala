@@ -217,8 +217,7 @@ class ZookeeperSystemCoordination(
           new DataUpdater[Array[Byte]] {
             def update(cur: Array[Byte]): Array[Byte] =
               toNodeData(initialState.serialize)
-          }
-        )
+          })
 
         logger.debug("%s: NEW".format(initialState))
         Success(initialState)
@@ -256,8 +255,7 @@ class ZookeeperSystemCoordination(
       relayAgentPath(agent),
       new DataUpdater[Array[Byte]] {
         def update(cur: Array[Byte]): Array[Byte] = toNodeData(state.serialize)
-      }
-    )
+      })
 
     logger.debug("%s: SAVE".format(state))
     Success(state)
@@ -287,8 +285,7 @@ class ZookeeperSystemCoordination(
               Failure(Invalid("No checkpoint information found in Zookeeper!"))
             }
           }
-        }
-      )
+        })
     } else {
       logger.debug("Checkpoints disabled, skipping load")
       None
@@ -310,8 +307,7 @@ class ZookeeperSystemCoordination(
         new DataUpdater[Array[Byte]] {
           def update(cur: Array[Byte]): Array[Byte] =
             toNodeData(checkpoint.serialize)
-        }
-      )
+        })
 
       logger.debug("%s: SAVE".format(checkpoint))
     } else {

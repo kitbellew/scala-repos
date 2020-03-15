@@ -950,13 +950,14 @@ class SQLContext private[sql] (
   // Register a successfully instantiated context to the singleton. This should be at the end of
   // the class definition so that the singleton is updated only if there is no exception in the
   // construction of the instance.
-  sparkContext.addSparkListener(new SparkListener {
-    override def onApplicationEnd(
-        applicationEnd: SparkListenerApplicationEnd): Unit = {
-      SQLContext.clearInstantiatedContext()
-      SQLContext.clearSqlListener()
-    }
-  })
+  sparkContext.addSparkListener(
+    new SparkListener {
+      override def onApplicationEnd(
+          applicationEnd: SparkListenerApplicationEnd): Unit = {
+        SQLContext.clearInstantiatedContext()
+        SQLContext.clearSqlListener()
+      }
+    })
 
   SQLContext.setInstantiatedContext(self)
 }
@@ -1079,8 +1080,7 @@ object SQLContext {
           .map {
             case (e, convert) => convert(e.invoke(element))
           }
-          .toArray[Any]
-      ): InternalRow
+          .toArray[Any]): InternalRow
     }
   }
 

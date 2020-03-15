@@ -76,8 +76,7 @@ private class BalancerTest
 
     protected def newNode(
         factory: ServiceFactory[Unit, Unit],
-        statsReceiver: StatsReceiver
-    ): Node = new Node(factory)
+        statsReceiver: StatsReceiver): Node = new Node(factory)
 
     protected def failingNode(cause: Throwable): Node = ???
 

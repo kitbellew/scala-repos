@@ -21,8 +21,9 @@ object ConsoleProject {
       options: Seq[String] = Nil)(implicit log: Logger): Unit = {
     val extracted = Project extract state
     val cpImports = new Imports(extracted, state)
-    val bindings =
-      ("currentState" -> state) :: ("extracted" -> extracted) :: ("cpHelpers" -> cpImports) :: Nil
+    val bindings = ("currentState" -> state) :: ("extracted" -> extracted) :: (
+      "cpHelpers" -> cpImports
+    ) :: Nil
     val unit = extracted.currentUnit
     val localOnly = false
     val lock = None
@@ -55,8 +56,7 @@ object ConsoleProject {
       unit.classpath,
       options,
       initCommands,
-      cleanupCommands
-    )(Some(unit.loader), bindings)
+      cleanupCommands)(Some(unit.loader), bindings)
   }
 
   /** Conveniences for consoleProject that shouldn't normally be used for builds. */

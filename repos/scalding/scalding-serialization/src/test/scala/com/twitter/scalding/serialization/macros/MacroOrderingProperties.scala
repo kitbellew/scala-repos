@@ -645,9 +645,10 @@ class MacroOrderingProperties
     val c = List(
       Map(9223372036854775807L -> Set[Int]()),
       Map(-1L -> Set[Int](-2043106012)))
-    checkManyExplicit(c.map { i =>
-      (i, i)
-    })
+    checkManyExplicit(
+      c.map { i =>
+        (i, i)
+      })
     checkMany[Map[Long, Set[Int]]]
     checkCollisions[Map[Long, Set[Int]]]
   }
@@ -704,14 +705,16 @@ class MacroOrderingProperties
       "좃ఱ䨻綛糔唄࿁劸酊᫵橻쩳괊筆ݓ淤숪輡斋靑耜঄骐冠㝑⧠떅漫곡祈䵾ᳺ줵됵↲搸虂㔢Ꝅ芆٠풐쮋炞哙⨗쾄톄멛癔짍避쇜畾㣕剼⫁়╢ꅢ澛氌ᄚ㍠ꃫᛔ匙㜗詇閦單錖⒅瘧崥",
       "獌癚畇"
     )
-    checkManyExplicit(c.map { i =>
-      (i, i)
-    })
+    checkManyExplicit(
+      c.map { i =>
+        (i, i)
+      })
 
     val c2 = List("聸", "")
-    checkManyExplicit(c2.map { i =>
-      (i, i)
-    })
+    checkManyExplicit(
+      c2.map { i =>
+        (i, i)
+      })
   }
 
   test("Test out Option[Int]") {
@@ -790,9 +793,10 @@ class MacroOrderingProperties
 
   test("test specific tuple 3") {
     val c = List(("", None, ""), ("a", Some(1), "b"))
-    checkManyExplicit(c.map { i =>
-      (i, i)
-    })
+    checkManyExplicit(
+      c.map { i =>
+        (i, i)
+      })
   }
 
   test("Test out TestCC") {

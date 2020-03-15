@@ -77,15 +77,16 @@ trait ArbitraryJValue {
 
   // BigDecimal *isn't* arbitrary precision!  AWESOME!!!
   implicit def arbBigDecimal: Arbitrary[BigDecimal] =
-    Arbitrary(for {
-      mantissa <- arbitrary[Long]
-      exponent <- arbitrary[Int]
+    Arbitrary(
+      for {
+        mantissa <- arbitrary[Long]
+        exponent <- arbitrary[Int]
 
-      adjusted = if (exponent.toLong + mantissa.toString.length >= Int.MaxValue.toLong)
-        exponent - mantissa.toString.length
-      else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
-        exponent + mantissa.toString.length
-      else
-        exponent
-    } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
+        adjusted = if (exponent.toLong + mantissa.toString.length >= Int.MaxValue.toLong)
+          exponent - mantissa.toString.length
+        else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
+          exponent + mantissa.toString.length
+        else
+          exponent
+      } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
 }

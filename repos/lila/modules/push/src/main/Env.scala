@@ -43,19 +43,21 @@ final class Env(
   private lazy val pushApi =
     new PushApi(googlePush, applePush, getLightUser, roundSocketHub)
 
-  system.actorOf(Props(new Actor {
-    override def preStart() {
-      system.lilaBus.subscribe(self, 'finishGame, 'moveEvent, 'challenge)
-    }
-    import akka.pattern.pipe
-    def receive = {
-      case lila.game.actorApi.FinishGame(game, _, _) => pushApi finish game
-      case move: lila.hub.actorApi.round.MoveEvent   => pushApi move move
-      case lila.challenge.Event.Create(c)            => pushApi challengeCreate c
-      case lila.challenge.Event.Accept(c, joinerId) =>
-        pushApi.challengeAccept(c, joinerId)
-    }
-  }))
+  system.actorOf(
+    Props(
+      new Actor {
+        override def preStart() {
+          system.lilaBus.subscribe(self, 'finishGame, 'moveEvent, 'challenge)
+        }
+        import akka.pattern.pipe
+        def receive = {
+          case lila.game.actorApi.FinishGame(game, _, _) => pushApi finish game
+          case move: lila.hub.actorApi.round.MoveEvent   => pushApi move move
+          case lila.challenge.Event.Create(c)            => pushApi challengeCreate c
+          case lila.challenge.Event.Accept(c, joinerId) =>
+            pushApi.challengeAccept(c, joinerId)
+        }
+      }))
 }
 
 object Env {

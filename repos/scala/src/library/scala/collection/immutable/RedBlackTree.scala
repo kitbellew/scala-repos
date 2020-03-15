@@ -882,8 +882,7 @@ private[collection] object RedBlackTree {
               if (ordering.lteq(key, tree.key))
                 goLeft(tree)
               else
-                goRight(tree)
-            )
+                goRight(tree))
         find(root)
       }
 

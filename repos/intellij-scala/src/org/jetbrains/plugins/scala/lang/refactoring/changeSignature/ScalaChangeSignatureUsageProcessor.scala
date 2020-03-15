@@ -288,8 +288,9 @@ class ScalaChangeSignatureUsageProcessor
       val refElem = ref.getElement
       refElem match {
         case isAnonFunUsage(anonFunUsageInfo) => results += anonFunUsageInfo
-        case (scRef: ScReferenceElement) childOf (_: ScImportSelector |
-            _: ScImportExpr) =>
+        case (
+              scRef: ScReferenceElement
+            ) childOf (_: ScImportSelector | _: ScImportExpr) =>
           results += ImportUsageInfo(scRef)
         case (refExpr: ScReferenceExpression) childOf (mc: ScMethodCall) =>
           results += MethodCallUsageInfo(refExpr, fullCall(mc))

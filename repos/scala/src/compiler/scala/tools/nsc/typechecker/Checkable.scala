@@ -109,17 +109,15 @@ trait Checkable {
   }
 
   private def isUnwarnableTypeArgSymbol(sym: Symbol) =
-    (
-      sym.isTypeParameter // dummy
-        || (sym.name.toTermName == nme.WILDCARD) // _
-        || nme.isVariableName(sym.name) // type variable
+    (sym.isTypeParameter // dummy
+      || (sym.name.toTermName == nme.WILDCARD) // _
+      || nme.isVariableName(sym.name) // type variable
     )
   private def isUnwarnableTypeArg(arg: Type) =
-    (
-      uncheckedOk(arg) // @unchecked T
-        || isUnwarnableTypeArgSymbol(
-          arg.typeSymbolDirect
-        ) // has to be direct: see pos/t1439
+    (uncheckedOk(arg) // @unchecked T
+      || isUnwarnableTypeArgSymbol(
+        arg.typeSymbolDirect
+      ) // has to be direct: see pos/t1439
     )
   private def uncheckedOk(tp: Type) = tp hasAnnotation UncheckedClass
 
@@ -182,23 +180,21 @@ trait Checkable {
       |[P4] $P4%-6s None of the above  // !(P1 || P2 || P3)
     """.stripMargin.trim
 
-    val result = (
-      if (X.isErroneous || P.isErroneous)
-        CheckabilityError
-      else if (P1)
-        StaticallyTrue
-      else if (P2)
-        StaticallyFalse
-      else if (P3)
-        RuntimeCheckable
-      else if (uncheckableType == NoType) {
-        // Avoid warning (except ourselves) if we can't pinpoint the uncheckable type
-        debuglog(
-          "Checkability checker says 'Uncheckable', but uncheckable type cannot be found:\n" + summaryString)
-        CheckabilityError
-      } else
-        Uncheckable
-    )
+    val result = (if (X.isErroneous || P.isErroneous)
+                    CheckabilityError
+                  else if (P1)
+                    StaticallyTrue
+                  else if (P2)
+                    StaticallyFalse
+                  else if (P3)
+                    RuntimeCheckable
+                  else if (uncheckableType == NoType) {
+                    // Avoid warning (except ourselves) if we can't pinpoint the uncheckable type
+                    debuglog(
+                      "Checkability checker says 'Uncheckable', but uncheckable type cannot be found:\n" + summaryString)
+                    CheckabilityError
+                  } else
+                    Uncheckable)
     lazy val uncheckableType =
       if (Psym.isAbstractType)
         P
@@ -238,20 +234,16 @@ trait Checkable {
 
     /** Are these symbols classes with no subclass relationship? */
     def areUnrelatedClasses(sym1: Symbol, sym2: Symbol) =
-      (
-        sym1.isClass
-          && sym2.isClass
-          && !(sym1 isSubClass sym2)
-          && !(sym2 isSubClass sym1)
-      )
+      (sym1.isClass
+        && sym2.isClass
+        && !(sym1 isSubClass sym2)
+        && !(sym2 isSubClass sym1))
 
     /** Are all children of these symbols pairwise irreconcilable? */
     def allChildrenAreIrreconcilable(sym1: Symbol, sym2: Symbol) =
-      (
-        sym1.sealedChildren.toList forall (c1 =>
-          sym2.sealedChildren.toList forall (c2 =>
-            areIrreconcilableAsParents(c1, c2)))
-      )
+      (sym1.sealedChildren.toList forall (c1 =>
+        sym2.sealedChildren.toList forall (c2 =>
+          areIrreconcilableAsParents(c1, c2))))
 
     /** Is it impossible for the given symbols to be parents in the same class?
       *  This means given A and B, can there be an instance of A with B? This is the
@@ -284,8 +276,7 @@ trait Checkable {
           settings.future && isTupleSymbol(
             sym
           ) // SI-7294 step into the future and treat TupleN as final.
-        )
-      )
+        ))
 
     def isNeverSubClass(sym1: Symbol, sym2: Symbol) =
       areIrreconcilableAsParents(sym1, sym2)
@@ -296,25 +287,22 @@ trait Checkable {
         tparams: List[Symbol]): Boolean =
       /*logResult(s"isNeverSubArgs($tps1, $tps2, $tparams)")*/ {
         def isNeverSubArg(t1: Type, t2: Type, variance: Variance) =
-          (
-            if (variance.isInvariant)
-              isNeverSameType(t1, t2)
-            else if (variance.isCovariant)
-              isNeverSubType(t2, t1)
-            else if (variance.isContravariant)
-              isNeverSubType(t1, t2)
-            else
-              false
-          )
+          (if (variance.isInvariant)
+             isNeverSameType(t1, t2)
+           else if (variance.isCovariant)
+             isNeverSubType(t2, t1)
+           else if (variance.isContravariant)
+             isNeverSubType(t1, t2)
+           else
+             false)
         exists3(tps1, tps2, tparams map (_.variance))(isNeverSubArg)
       }
     private def isNeverSameType(tp1: Type, tp2: Type): Boolean =
       (tp1, tp2) match {
         case (TypeRef(_, sym1, args1), TypeRef(_, sym2, args2)) =>
-          isNeverSubClass(sym1, sym2) || ((sym1 == sym2) && isNeverSubArgs(
-            args1,
-            args2,
-            sym1.typeParams))
+          isNeverSubClass(sym1, sym2) || (
+            (sym1 == sym2) && isNeverSubArgs(args1, args2, sym1.typeParams)
+          )
         case _ =>
           false
       }
@@ -340,14 +328,14 @@ trait Checkable {
     def isUncheckable(P0: Type) = !isCheckable(P0)
 
     def isCheckable(P0: Type): Boolean =
-      (
-        uncheckedOk(P0) || (P0.widen match {
+      (uncheckedOk(P0) || (
+        P0.widen match {
           case TypeRef(_, NothingClass | NullClass | AnyValClass, _) => false
           case RefinedType(_, decls) if !decls.isEmpty               => false
           case RefinedType(parents, _)                               => parents forall isCheckable
           case p                                                     => new CheckabilityChecker(AnyTpe, p) isCheckable
-        })
-      )
+        }
+      ))
 
     /** TODO: much better error positions.
       *  Kind of stuck right now because they just pass us the one tree.
@@ -407,12 +395,10 @@ trait Checkable {
               tree.pos,
               s"fruitless type test: a value of type $X cannot also be a $PString$addendum")
           } else if (checker.isUncheckable) {
-            val msg = (
-              if (checker.uncheckableType =:= P)
-                s"abstract type $where$PString"
-              else
-                s"${checker.uncheckableMessage} in type $where$PString"
-            )
+            val msg = (if (checker.uncheckableType =:= P)
+                         s"abstract type $where$PString"
+                       else
+                         s"${checker.uncheckableMessage} in type $where$PString")
             reporter.warning(
               tree.pos,
               s"$msg is unchecked since it is eliminated by erasure")

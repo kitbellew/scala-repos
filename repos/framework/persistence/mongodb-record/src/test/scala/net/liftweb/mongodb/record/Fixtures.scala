@@ -242,8 +242,8 @@ object BinaryFieldTestRecord
 case class TypeTestJsonObject(
     intField: Int,
     stringField: String,
-    mapField: Map[String, String]
-) extends JsonObject[TypeTestJsonObject] {
+    mapField: Map[String, String])
+    extends JsonObject[TypeTestJsonObject] {
   // TODO: Add more types
   def meta = TypeTestJsonObject
 }

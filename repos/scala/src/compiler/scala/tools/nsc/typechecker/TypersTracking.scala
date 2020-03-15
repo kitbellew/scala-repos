@@ -22,17 +22,15 @@ trait TypersTracking {
 
   def fullSiteString(context: Context): String = {
     def owner_long_s =
-      (
-        if (settings.debug.value) {
-          def flags_s =
-            context.owner.debugFlagString match {
-              case "" => ""
-              case s  => " with flags " + inLightMagenta(s)
-            }
-          s", a ${context.owner.shortSymbolClass}$flags_s"
-        } else
-          ""
-      )
+      (if (settings.debug.value) {
+         def flags_s =
+           context.owner.debugFlagString match {
+             case "" => ""
+             case s  => " with flags " + inLightMagenta(s)
+           }
+         s", a ${context.owner.shortSymbolClass}$flags_s"
+       } else
+         "")
     def marker =
       if (context.bufferErrors)
         "silent"
@@ -44,15 +42,13 @@ trait TypersTracking {
         case ps  => ps.mkString(" solving: ", ",", "")
       }
     def implicits_s =
-      (
-        if (context.enrichmentEnabled)
-          if (context.implicitsEnabled)
-            ""
-          else
-            inLightRed("enrichment only")
-        else
-          inLightRed("implicits disabled")
-      )
+      (if (context.enrichmentEnabled)
+         if (context.implicitsEnabled)
+           ""
+         else
+           inLightRed("enrichment only")
+       else
+         inLightRed("implicits disabled"))
 
     s"($marker$undet_s: ${context.siteString}$owner_long_s) $implicits_s"
   }
@@ -132,11 +128,9 @@ trait TypersTracking {
         else
           s": pt=$pt"
       def all_s =
-        List(
-          tree_s,
-          pt_s,
-          mode,
-          fullSiteString(context)) filterNot (_ == "") mkString " "
+        List(tree_s, pt_s, mode, fullSiteString(context)) filterNot (
+          _ == ""
+        ) mkString " "
 
       atLowerIndent(show(indented("""|-- """ + all_s)))
     }
@@ -178,15 +172,13 @@ trait TypersTracking {
       nextTypedInternal(tree, showPush(tree, mode, pt, context))(body)
 
     def nextTypedInternal(tree: Tree, pushFn: => Unit)(body: => Tree): Tree =
-      (
-        if (noPrintTyping(tree))
-          body
-        else
-          runWith(tree) {
-            pushFn;
-            showPop(body)
-          }
-      )
+      (if (noPrintTyping(tree))
+         body
+       else
+         runWith(tree) {
+           pushFn;
+           showPop(body)
+         })
 
     @inline final def printTyping(tree: Tree, s: => String) = {
       if (printTypings && !noPrintTyping(tree))

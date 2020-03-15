@@ -64,8 +64,8 @@ import org.apache.spark.util.{CallSite, ShutdownHookManager, ThreadUtils, Utils}
 class StreamingContext private[streaming] (
     _sc: SparkContext,
     _cp: Checkpoint,
-    _batchDur: Duration
-) extends Logging {
+    _batchDur: Duration)
+    extends Logging {
 
   /**
     * Create a StreamingContext using an existing SparkContext.
@@ -323,8 +323,8 @@ class StreamingContext private[streaming] (
   def socketTextStream(
       hostname: String,
       port: Int,
-      storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2
-  ): ReceiverInputDStream[String] =
+      storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2)
+      : ReceiverInputDStream[String] =
     withNamedScope("socket text stream") {
       socketStream[String](
         hostname,
@@ -347,8 +347,7 @@ class StreamingContext private[streaming] (
       hostname: String,
       port: Int,
       converter: (InputStream) => Iterator[T],
-      storageLevel: StorageLevel
-  ): ReceiverInputDStream[T] = {
+      storageLevel: StorageLevel): ReceiverInputDStream[T] = {
     new SocketInputDStream[T](this, hostname, port, converter, storageLevel)
   }
 
@@ -366,8 +365,8 @@ class StreamingContext private[streaming] (
   def rawSocketStream[T: ClassTag](
       hostname: String,
       port: Int,
-      storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2
-  ): ReceiverInputDStream[T] =
+      storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2)
+      : ReceiverInputDStream[T] =
     withNamedScope("raw socket stream") {
       new RawInputDStream[T](this, hostname, port, storageLevel)
     }
@@ -382,11 +381,8 @@ class StreamingContext private[streaming] (
     * @tparam V Value type for reading HDFS file
     * @tparam F Input format for reading HDFS file
     */
-  def fileStream[
-      K: ClassTag,
-      V: ClassTag,
-      F <: NewInputFormat[K, V]: ClassTag
-  ](directory: String): InputDStream[(K, V)] = {
+  def fileStream[K: ClassTag, V: ClassTag, F <: NewInputFormat[K, V]: ClassTag](
+      directory: String): InputDStream[(K, V)] = {
     new FileInputDStream[K, V, F](this, directory)
   }
 
@@ -402,11 +398,7 @@ class StreamingContext private[streaming] (
     * @tparam V Value type for reading HDFS file
     * @tparam F Input format for reading HDFS file
     */
-  def fileStream[
-      K: ClassTag,
-      V: ClassTag,
-      F <: NewInputFormat[K, V]: ClassTag
-  ](
+  def fileStream[K: ClassTag, V: ClassTag, F <: NewInputFormat[K, V]: ClassTag](
       directory: String,
       filter: Path => Boolean,
       newFilesOnly: Boolean): InputDStream[(K, V)] = {
@@ -426,11 +418,7 @@ class StreamingContext private[streaming] (
     * @tparam V Value type for reading HDFS file
     * @tparam F Input format for reading HDFS file
     */
-  def fileStream[
-      K: ClassTag,
-      V: ClassTag,
-      F <: NewInputFormat[K, V]: ClassTag
-  ](
+  def fileStream[K: ClassTag, V: ClassTag, F <: NewInputFormat[K, V]: ClassTag](
       directory: String,
       filter: Path => Boolean,
       newFilesOnly: Boolean,
@@ -511,8 +499,7 @@ class StreamingContext private[streaming] (
     */
   def queueStream[T: ClassTag](
       queue: Queue[RDD[T]],
-      oneAtATime: Boolean = true
-  ): InputDStream[T] = {
+      oneAtATime: Boolean = true): InputDStream[T] = {
     queueStream(queue, oneAtATime, sc.makeRDD(Seq[T](), 1))
   }
 
@@ -532,8 +519,7 @@ class StreamingContext private[streaming] (
   def queueStream[T: ClassTag](
       queue: Queue[RDD[T]],
       oneAtATime: Boolean,
-      defaultRDD: RDD[T]
-  ): InputDStream[T] = {
+      defaultRDD: RDD[T]): InputDStream[T] = {
     new QueueInputDStream(this, queue, oneAtATime, defaultRDD)
   }
 
@@ -551,8 +537,7 @@ class StreamingContext private[streaming] (
     */
   def transform[T: ClassTag](
       dstreams: Seq[DStream[_]],
-      transformFunc: (Seq[RDD[_]], Time) => RDD[T]
-  ): DStream[T] =
+      transformFunc: (Seq[RDD[_]], Time) => RDD[T]): DStream[T] =
     withScope {
       new TransformedDStream[T](dstreams, sparkContext.clean(transformFunc))
     }
@@ -584,16 +569,18 @@ class StreamingContext private[streaming] (
           throw new NotSerializableException(
             "DStream checkpointing has been enabled but the DStreams with their functions " +
               "are not serializable\n" +
-              SerializationDebugger.improveException(checkpoint, e).getMessage()
-          )
+              SerializationDebugger
+                .improveException(checkpoint, e)
+                .getMessage())
       }
     }
 
     if (Utils.isDynamicAllocationEnabled(sc.conf)) {
-      logWarning("Dynamic Allocation is enabled for this application. " +
-        "Enabling Dynamic allocation for Spark Streaming applications can cause data loss if " +
-        "Write Ahead Log is not enabled for non-replayable sources like Flume. " +
-        "See the programming guide for details on how to enable the Write Ahead Log")
+      logWarning(
+        "Dynamic Allocation is enabled for this application. " +
+          "Enabling Dynamic allocation for Spark Streaming applications can cause data loss if " +
+          "Write Ahead Log is not enabled for non-replayable sources like Flume. " +
+          "See the programming guide for details on how to enable the Write Ahead Log")
     }
   }
 
@@ -699,8 +686,7 @@ class StreamingContext private[streaming] (
   def stop(
       stopSparkContext: Boolean = conf.getBoolean(
         "spark.streaming.stopSparkContextByDefault",
-        true)
-  ): Unit =
+        true)): Unit =
     synchronized {
       stop(stopSparkContext, false)
     }
@@ -862,8 +848,7 @@ object StreamingContext extends Logging {
       checkpointPath: String,
       creatingFunc: () => StreamingContext,
       hadoopConf: Configuration = SparkHadoopUtil.get.conf,
-      createOnError: Boolean = false
-  ): StreamingContext = {
+      createOnError: Boolean = false): StreamingContext = {
     ACTIVATION_LOCK.synchronized {
       getActive().getOrElse {
         getOrCreate(checkpointPath, creatingFunc, hadoopConf, createOnError)
@@ -889,8 +874,7 @@ object StreamingContext extends Logging {
       checkpointPath: String,
       creatingFunc: () => StreamingContext,
       hadoopConf: Configuration = SparkHadoopUtil.get.conf,
-      createOnError: Boolean = false
-  ): StreamingContext = {
+      createOnError: Boolean = false): StreamingContext = {
     val checkpointOption = CheckpointReader.read(
       checkpointPath,
       new SparkConf(),
@@ -917,8 +901,7 @@ object StreamingContext extends Logging {
       appName: String,
       sparkHome: String,
       jars: Seq[String],
-      environment: Map[String, String]
-  ): SparkContext = {
+      environment: Map[String, String]): SparkContext = {
     val conf = SparkContext.updatedConf(
       new SparkConf(),
       master,

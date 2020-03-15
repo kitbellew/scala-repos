@@ -48,56 +48,62 @@ trait JavaResultsHandlingSpec
       }
     }
 
-    "treat headers case insensitively" in makeRequest(new MockController {
-      def action = {
-        response.setHeader("Server", "foo")
-        response.setHeader("server", "bar")
-        Results
-          .ok("Hello world")
-          .withHeader("Other", "foo")
-          .withHeader("other", "bar")
-      }
-    }) { response =>
+    "treat headers case insensitively" in makeRequest(
+      new MockController {
+        def action = {
+          response.setHeader("Server", "foo")
+          response.setHeader("server", "bar")
+          Results
+            .ok("Hello world")
+            .withHeader("Other", "foo")
+            .withHeader("other", "bar")
+        }
+      }) { response =>
       response.header("Server") must beSome("bar")
       response.header("Other") must beSome("bar")
       response.body must_== "Hello world"
     }
 
-    "send strict results" in makeRequest(new MockController {
-      def action = Results.ok("Hello world")
-    }) { response =>
+    "send strict results" in makeRequest(
+      new MockController {
+        def action = Results.ok("Hello world")
+      }) { response =>
       response.header(CONTENT_LENGTH) must beSome("11")
       response.body must_== "Hello world"
     }
 
-    "chunk results that are streamed" in makeRequest(new MockController {
-      def action = {
-        Results.ok(new Results.StringChunks() {
-          def onReady(out: Chunks.Out[String]) {
-            out.write("a")
-            out.write("b")
-            out.write("c")
-            out.close()
-          }
-        })
-      }
-    }) { response =>
+    "chunk results that are streamed" in makeRequest(
+      new MockController {
+        def action = {
+          Results.ok(
+            new Results.StringChunks() {
+              def onReady(out: Chunks.Out[String]) {
+                out.write("a")
+                out.write("b")
+                out.write("c")
+                out.close()
+              }
+            })
+        }
+      }) { response =>
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone
       response.body must_== "abc"
     }
 
-    "chunk legacy event source results" in makeRequest(new MockController {
-      def action = {
-        Results.ok(new LegacyEventSource() {
-          def onConnected(): Unit = {
-            send(LegacyEventSource.Event.event("a"))
-            send(LegacyEventSource.Event.event("b"))
-            close()
-          }
-        })
-      }
-    }) { response =>
+    "chunk legacy event source results" in makeRequest(
+      new MockController {
+        def action = {
+          Results.ok(
+            new LegacyEventSource() {
+              def onConnected(): Unit = {
+                send(LegacyEventSource.Event.event("a"))
+                send(LegacyEventSource.Event.event("b"))
+                close()
+              }
+            })
+        }
+      }) { response =>
       response.header(CONTENT_TYPE) must beSome.like {
         case value =>
           value.toLowerCase(
@@ -108,51 +114,54 @@ trait JavaResultsHandlingSpec
       response.body must_== "data: a\n\ndata: b\n\n"
     }
 
-    "chunk comet results from string" in makeRequest(new MockController {
-      def action = {
-        import scala.collection.JavaConverters._
-        val dataSource = akka.stream.javadsl.Source
-          .from(List("a", "b", "c").asJava)
-        val cometSource = dataSource.via(Comet.string("callback"))
-        Results.ok().chunked(cometSource)
-      }
-    }) { response =>
+    "chunk comet results from string" in makeRequest(
+      new MockController {
+        def action = {
+          import scala.collection.JavaConverters._
+          val dataSource = akka.stream.javadsl.Source
+            .from(List("a", "b", "c").asJava)
+          val cometSource = dataSource.via(Comet.string("callback"))
+          Results.ok().chunked(cometSource)
+        }
+      }) { response =>
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone
       response.body must contain(
         "<html><body><script type=\"text/javascript\">callback('a');</script><script type=\"text/javascript\">callback('b');</script><script type=\"text/javascript\">callback('c');</script>")
     }
 
-    "chunk comet results from json" in makeRequest(new MockController {
-      def action = {
-        val objectNode = Json.newObject
-        objectNode.put("foo", "bar")
-        val dataSource: Source[JsonNode, NotUsed] = akka.stream.javadsl.Source
-          .from(Arrays.asList(objectNode))
-        val cometSource = dataSource.via(Comet.json("callback"))
-        Results.ok().chunked(cometSource)
-      }
-    }) { response =>
+    "chunk comet results from json" in makeRequest(
+      new MockController {
+        def action = {
+          val objectNode = Json.newObject
+          objectNode.put("foo", "bar")
+          val dataSource: Source[JsonNode, NotUsed] = akka.stream.javadsl.Source
+            .from(Arrays.asList(objectNode))
+          val cometSource = dataSource.via(Comet.json("callback"))
+          Results.ok().chunked(cometSource)
+        }
+      }) { response =>
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone
       response.body must contain(
         "<html><body><script type=\"text/javascript\">callback({\"foo\":\"bar\"});</script>")
     }
 
-    "chunk event source results" in makeRequest(new MockController {
-      def action = {
-        import scala.collection.JavaConverters._
-        val dataSource = akka.stream.javadsl.Source
-          .from(List("a", "b").asJava)
-          .map {
-            new akka.japi.function.Function[String, EventSource.Event] {
-              def apply(t: String) = EventSource.Event.event(t)
+    "chunk event source results" in makeRequest(
+      new MockController {
+        def action = {
+          import scala.collection.JavaConverters._
+          val dataSource = akka.stream.javadsl.Source
+            .from(List("a", "b").asJava)
+            .map {
+              new akka.japi.function.Function[String, EventSource.Event] {
+                def apply(t: String) = EventSource.Event.event(t)
+              }
             }
-          }
-        val eventSource = dataSource.via(EventSource.flow())
-        Results.ok().chunked(eventSource).as("text/event-stream")
-      }
-    }) { response =>
+          val eventSource = dataSource.via(EventSource.flow())
+          Results.ok().chunked(eventSource).as("text/event-stream")
+        }
+      }) { response =>
       response.header(CONTENT_TYPE) must beSome.like {
         case value =>
           value.toLowerCase(

@@ -238,12 +238,10 @@ abstract class QueryTest extends PlanTest {
         logicalPlan.toJSON
       } catch {
         case NonFatal(e) =>
-          fail(
-            s"""
+          fail(s"""
              |Failed to parse logical plan to JSON:
              |${logicalPlan.treeString}
-           """.stripMargin,
-            e)
+           """.stripMargin, e)
       }
 
     // scala function is not serializable to JSON, use null to replace them so that we can compare
@@ -311,10 +309,11 @@ abstract class QueryTest extends PlanTest {
     assert(inMemoryRelations.isEmpty)
 
     if (normalized1 != normalized2) {
-      fail(s"""
+      fail(
+        s"""
            |== FAIL: the logical plan parsed from json does not match the original one ===
            |${sideBySide(logicalPlan.treeString, normalized2.treeString)
-                .mkString("\n")}
+             .mkString("\n")}
           """.stripMargin)
     }
   }
@@ -390,14 +389,15 @@ object QueryTest {
 
   // We need to call prepareRow recursively to handle schemas with struct types.
   def prepareRow(row: Row): Row = {
-    Row.fromSeq(row.toSeq.map {
-      case null                    => null
-      case d: java.math.BigDecimal => BigDecimal(d)
-      // Convert array to Seq for easy equality check.
-      case b: Array[_] => b.toSeq
-      case r: Row      => prepareRow(r)
-      case o           => o
-    })
+    Row.fromSeq(
+      row.toSeq.map {
+        case null                    => null
+        case d: java.math.BigDecimal => BigDecimal(d)
+        // Convert array to Seq for easy equality check.
+        case b: Array[_] => b.toSeq
+        case r: Row      => prepareRow(r)
+        case o           => o
+      })
   }
 
   def sameRows(

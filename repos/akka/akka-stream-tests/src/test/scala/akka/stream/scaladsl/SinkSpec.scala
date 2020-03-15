@@ -21,12 +21,13 @@ class SinkSpec extends AkkaSpec {
 
     "be composable without importing modules" in {
       val probes = Array.fill(3)(TestSubscriber.manualProbe[Int])
-      val sink = Sink.fromGraph(GraphDSL.create() { implicit b ⇒
-        val bcast = b.add(Broadcast[Int](3))
-        for (i ← 0 to 2)
-          bcast.out(i).filter(_ == i) ~> Sink.fromSubscriber(probes(i))
-        SinkShape(bcast.in)
-      })
+      val sink = Sink.fromGraph(
+        GraphDSL.create() { implicit b ⇒
+          val bcast = b.add(Broadcast[Int](3))
+          for (i ← 0 to 2)
+            bcast.out(i).filter(_ == i) ~> Sink.fromSubscriber(probes(i))
+          SinkShape(bcast.in)
+        })
       Source(List(0, 1, 2)).runWith(sink)
 
       val subscriptions = probes.map(_.expectSubscription())

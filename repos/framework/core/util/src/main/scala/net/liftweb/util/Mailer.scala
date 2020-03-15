@@ -201,14 +201,16 @@ trait Mailer extends SimpleInjector {
 
   protected def performTransportSend(msg: MimeMessage) = {
     import Props.RunModes._
-    (Props.mode match {
-      case Development => devModeSend.vend
-      case Test        => testModeSend.vend
-      case Staging     => stagingModeSend.vend
-      case Production  => productionModeSend.vend
-      case Pilot       => pilotModeSend.vend
-      case Profile     => profileModeSend.vend
-    }).apply(msg)
+    (
+      Props.mode match {
+        case Development => devModeSend.vend
+        case Test        => testModeSend.vend
+        case Staging     => stagingModeSend.vend
+        case Production  => productionModeSend.vend
+        case Pilot       => pilotModeSend.vend
+        case Profile     => profileModeSend.vend
+      }
+    ).apply(msg)
   }
 
   /**
@@ -284,10 +286,11 @@ trait Mailer extends SimpleInjector {
       })
     message.setSentDate(new java.util.Date())
     // message.setReplyTo(filter[MailTypes, ReplyTo](info, {case x @ ReplyTo(_) => Some(x); case _ => None}))
-    message.setReplyTo(info.flatMap {
-      case x: ReplyTo => Some[ReplyTo](x)
-      case _          => None
-    })
+    message.setReplyTo(
+      info.flatMap {
+        case x: ReplyTo => Some[ReplyTo](x)
+        case _          => None
+      })
     message.setSubject(subj)
     info.foreach {
       case MessageHeader(name, value) => message.addHeader(name, value)
@@ -404,13 +407,14 @@ trait Mailer extends SimpleInjector {
       else
         Part.INLINE)
     part.setDataHandler(
-      new javax.activation.DataHandler(new javax.activation.DataSource {
-        def getContentType = holder.mimeType
-        def getInputStream = new java.io.ByteArrayInputStream(holder.bytes)
-        def getName = holder.name
-        def getOutputStream =
-          throw new java.io.IOException("Unable to write to item")
-      }))
+      new javax.activation.DataHandler(
+        new javax.activation.DataSource {
+          def getContentType = holder.mimeType
+          def getInputStream = new java.io.ByteArrayInputStream(holder.bytes)
+          def getName = holder.name
+          def getOutputStream =
+            throw new java.io.IOException("Unable to write to item")
+        }))
 
     part
   }

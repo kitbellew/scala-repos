@@ -27,8 +27,7 @@ class ThriftForwardingWarmUpFilterTest extends FunSuite with MockitoSugar {
           forwardService,
           isBypassClient = {
             _.name.startsWith(bypassedClientPrefix)
-          }
-        )
+          })
       val req = new Array[Byte](1)
       val rep = new Array[Byte](2)
 

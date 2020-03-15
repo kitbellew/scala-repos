@@ -51,14 +51,12 @@ object BarChartWithTableViewDemo extends JFXApp {
   val data1 = ObservableBuffer[Position](
     new Position("A", 26),
     new Position("B", 35),
-    new Position("C", 18)
-  )
+    new Position("C", 18))
 
   val data2 = ObservableBuffer[Position](
     new Position("P", 61),
     new Position("Q", 56),
-    new Position("R", 78)
-  )
+    new Position("R", 78))
 
   stage = new PrimaryStage {
     title = "BarChart with TableView"
@@ -72,8 +70,7 @@ object BarChartWithTableViewDemo extends JFXApp {
         center = new HBox {
           children = Seq(
             createBarChart("Speculations", data1),
-            createBarChart("Predictions", data2)
-          )
+            createBarChart("Predictions", data2))
         }
       }
     }

@@ -70,8 +70,7 @@ class SearchServiceSpec
         "String",
         "string",
         "j.l.str",
-        "j l str"
-      )
+        "j l str")
   }
 
   it should "return results from dependencies" in withSearchService {
@@ -81,21 +80,14 @@ class SearchServiceSpec
         "FunSuite",
         "funsuite",
         "funsu",
-        "o s Fun"
-      )
+        "o s Fun")
   }
 
   it should "return results from the project" in withSearchService {
     implicit service =>
-      searchesClasses(
-        "org.example.Bloo",
-        "o e bloo"
-      )
+      searchesClasses("org.example.Bloo", "o e bloo")
 
-      searchesClasses(
-        "org.example.Blue$",
-        "o e blue"
-      )
+      searchesClasses("org.example.Blue$", "o e blue")
 
       searchesClasses(
         "org.example.CaseClassWithCamelCaseName",
@@ -109,15 +101,9 @@ class SearchServiceSpec
 
   it should "return results from package objects" in withSearchService {
     implicit service =>
-      searchClasses(
-        "org.example.Blip$",
-        "Blip"
-      )
+      searchClasses("org.example.Blip$", "Blip")
 
-      searchClasses(
-        "org.example.Blop",
-        "Blop"
-      )
+      searchClasses("org.example.Blop", "Blop")
   }
 
   "class and method searching" should "return results from classes" in {
@@ -127,33 +113,24 @@ class SearchServiceSpec
         "String",
         "string",
         "j.l.str",
-        "j l str"
-      )
+        "j l str")
     }
   }
 
   it should "return results from static fields" in withSearchService {
     implicit service =>
-      searchesEmpty(
-        "CASE_INSENSITIVE",
-        "case_insensitive",
-        "case_"
-      )
+      searchesEmpty("CASE_INSENSITIVE", "case_insensitive", "case_")
   }
 
   it should "not return results from instance fields" in withSearchService {
-    implicit service =>
-      searchesEmpty(
-        "java.awt.Point.x"
-      )
+    implicit service => searchesEmpty("java.awt.Point.x")
   }
 
   it should "return results from static methods" in withSearchService {
     implicit service =>
       searchesClassesAndMethods(
         "java.lang.Runtime.addShutdownHook",
-        "addShutdownHook"
-      )
+        "addShutdownHook")
   }
 
   it should "return results from instance methods" in withSearchService {
@@ -161,8 +138,7 @@ class SearchServiceSpec
       searchesClassesAndMethods(
         "java.lang.Runtime.availableProcessors",
         "availableProcessors",
-        "availableP"
-      )
+        "availableP")
   }
 
   it should "not prioritise noisy inner classes" in withSearchService {

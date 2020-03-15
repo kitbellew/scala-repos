@@ -122,9 +122,10 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
         .sink(VersionedKeyValSource[Int, Int]("output")) {
           outputBuffer: Buffer[(Int, Int)] =>
             val (keys, vals) = outputBuffer.unzip
-            assert(keys.map {
-              _ * 2
-            } === vals)
+            assert(
+              keys.map {
+                _ * 2
+              } === vals)
         }
         .run
         .finish

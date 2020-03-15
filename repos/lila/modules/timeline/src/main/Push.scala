@@ -34,9 +34,11 @@ private[timeline] final class Push(
       } foreach { users =>
         if (users.nonEmpty)
           makeEntry(users, data) >>-
-            (users foreach { u =>
-              lobbySocket ! ReloadTimeline(u)
-            })
+            (
+              users foreach { u =>
+                lobbySocket ! ReloadTimeline(u)
+              }
+            )
         lila.mon.timeline.notification(users.size)
       }
   }
@@ -61,9 +63,7 @@ private[timeline] final class Push(
   private def makeEntry(users: List[String], data: Atom): Fu[Entry] =
     Entry
       .make(users, data)
-      .fold(
-        fufail[Entry]("[timeline] invalid entry data " + data)
-      ) { entry =>
+      .fold(fufail[Entry]("[timeline] invalid entry data " + data)) { entry =>
         entryRepo.findRecent(entry.typ, DateTime.now minusMinutes 50) flatMap {
           entries =>
             entries.exists(_ similarTo entry) fold (

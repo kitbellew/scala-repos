@@ -25,11 +25,12 @@ class CreateAggregates extends Phase {
                 from,
                 Apply(
                   f,
-                  ConstArray(f match {
-                    case Library.CountAll => LiteralNode(1)
-                    case _ =>
-                      Select(Ref(s) :@ elType, els.head._1) :@ els.head._2
-                  }))(n.nodeType)).infer()
+                  ConstArray(
+                    f match {
+                      case Library.CountAll => LiteralNode(1)
+                      case _ =>
+                        Select(Ref(s) :@ elType, els.head._1) :@ els.head._2
+                    }))(n.nodeType)).infer()
               logger.debug("Converted aggregation function application", a)
               inlineMap(a)
 
@@ -41,11 +42,13 @@ class CreateAggregates extends Phase {
               else {
                 logger.debug("Lifting aggregates into join in:", n)
                 logger.debug("New mapping with temporary refs:", sel2)
-                val sources = (from1 match {
-                  case Pure(StructNode(ConstArray()), _) =>
-                    Vector.empty[(TermSymbol, Node)]
-                  case _ => Vector(s1 -> from1)
-                }) ++ temp.map {
+                val sources = (
+                  from1 match {
+                    case Pure(StructNode(ConstArray()), _) =>
+                      Vector.empty[(TermSymbol, Node)]
+                    case _ => Vector(s1 -> from1)
+                  }
+                ) ++ temp.map {
                   case (s, n) => (s, Pure(n))
                 }
                 val from2 = sources.init
@@ -70,10 +73,12 @@ class CreateAggregates extends Phase {
                       sources.zipWithIndex.map {
                         case ((s, _), i) =>
                           val l = List.iterate(s1, i + 1)(_ => ElementSymbol(2))
-                          s -> (if (i == len - 1)
-                                  l
-                                else
-                                  l :+ ElementSymbol(1))
+                          s -> (
+                            if (i == len - 1)
+                              l
+                            else
+                              l :+ ElementSymbol(1)
+                          )
                       }.toMap
                   }
                 logger.debug("Replacement paths: " + repl)

@@ -30,8 +30,9 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     * The default implementation calls `chooseAny` with a
     * two-element list and uses the `Functor` for `F` to fix up types.
     */
-  def choose[A, B](a: F[A], b: F[B]): F[(A, F[B]) \/
-    (F[A], B)] =
+  def choose[A, B](a: F[A], b: F[B]): F[
+    (A, F[B]) \/
+      (F[A], B)] =
     map(chooseAny(List[F[A \/ B]](map(a)(\/.left), map(b)(\/.right))).get) {
       (x: (A \/ B, Seq[F[A \/ B]])) =>
         x match {
@@ -179,21 +180,26 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     * matches the order of the input sequence. Also see `gatherUnordered`.
     */
   def gather[A](fs: Seq[F[A]]): F[List[A]] =
-    map(gatherUnordered(fs.zipWithIndex.map {
-      case (f, i) => strengthR(f, i)
-    }))(ais => ais.sortBy(_._2).map(_._1))
+    map(
+      gatherUnordered(
+        fs.zipWithIndex.map {
+          case (f, i) => strengthR(f, i)
+        }))(ais => ais.sortBy(_._2).map(_._1))
 
   def gather1[A](fs: NonEmptyList[F[A]]): F[NonEmptyList[A]] =
-    map(gatherUnordered1(fs.zipWithIndex.map {
-      case (f, i) => strengthR(f, i)
-    }))(ais => ais.sortBy(_._2).map(_._1))
+    map(
+      gatherUnordered1(
+        fs.zipWithIndex.map {
+          case (f, i) => strengthR(f, i)
+        }))(ais => ais.sortBy(_._2).map(_._1))
 
   /**
     * Nondeterministically sequence `fs`, collecting the results using a `Monoid`.
     */
   def aggregate[A: Monoid](fs: Seq[F[A]]): F[A] =
-    map(gather(fs))(_.foldLeft(implicitly[Monoid[A]].zero)((a, b) =>
-      implicitly[Monoid[A]].append(a, b)))
+    map(gather(fs))(
+      _.foldLeft(implicitly[Monoid[A]].zero)((a, b) =>
+        implicitly[Monoid[A]].append(a, b)))
 
   def aggregate1[A: Semigroup](fs: NonEmptyList[F[A]]): F[A] =
     map(gather1(fs))(Foldable1[NonEmptyList].suml1(_))
@@ -203,8 +209,9 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     * a commutative `Monoid`.
     */
   def aggregateCommutative[A: Monoid](fs: Seq[F[A]]): F[A] =
-    map(gatherUnordered(fs))(_.foldLeft(implicitly[Monoid[A]].zero)((a, b) =>
-      implicitly[Monoid[A]].append(a, b)))
+    map(gatherUnordered(fs))(
+      _.foldLeft(implicitly[Monoid[A]].zero)((a, b) =>
+        implicitly[Monoid[A]].append(a, b)))
 
   def aggregateCommutative1[A: Semigroup](fs: NonEmptyList[F[A]]): F[A] =
     map(gatherUnordered1(fs))(Foldable1[NonEmptyList].suml1(_))

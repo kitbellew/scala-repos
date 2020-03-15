@@ -221,9 +221,10 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
       case None => noneTpe -> q"_root_.scala.None"
     }
 
-    val outTpe = mkHListTpe(wrapTpeTrees.map {
-      case (aTpe, _) => aTpe
-    })
+    val outTpe = mkHListTpe(
+      wrapTpeTrees.map {
+        case (aTpe, _) => aTpe
+      })
     val outTree =
       wrapTpeTrees.foldRight(q"_root_.shapeless.HNil": Tree) {
         case ((_, bound), acc) => pq"_root_.shapeless.::($bound, $acc)"

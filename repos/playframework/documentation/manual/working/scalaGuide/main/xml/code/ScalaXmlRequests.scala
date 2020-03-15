@@ -68,9 +68,10 @@ package scalaguide.xml.scalaxmlrequests {
             (request.body \\ "name" headOption)
               .map(_.text)
               .map { name =>
-                Ok(<message status="OK">Hello {
-                  name
-                }</message>)
+                Ok(
+                  <message status="OK">Hello {
+                    name
+                  }</message>)
               }
               .getOrElse {
                 BadRequest(

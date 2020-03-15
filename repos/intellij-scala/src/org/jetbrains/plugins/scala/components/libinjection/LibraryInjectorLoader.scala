@@ -369,8 +369,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       loadedInjectors
         .getOrElseUpdate(
           getClass.getClassLoader.loadClass(injector.iface),
-          mutable.HashSet(injector.impl)
-        ) += injector.impl
+          mutable.HashSet(injector.impl)) += injector.impl
     }
   }
 
@@ -464,8 +463,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
                       new File(manifest.jarPath),
                       injectorDescriptor),
                     getInjectorCacheDir(manifest)(injectorDescriptor),
-                    module
-                  )
+                    module)
                   numSuccessful += 1
                   loadInjector(manifest, injectorDescriptor)
                   jarCache.cache.put(manifest.jarPath, manifest)
@@ -478,8 +476,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
             }
             val msg =
               if (numFailed == 0)
-                s"Compiled $numSuccessful injector(s) in ${(System
-                  .currentTimeMillis() - startTime) / 1000} seconds"
+                s"Compiled $numSuccessful injector(s) in ${(System.currentTimeMillis() - startTime) / 1000} seconds"
               else
                 s"Failed to compile $numFailed injectors out of ${numSuccessful + numFailed}, see Event Log for details"
             val notificationDisplayType =

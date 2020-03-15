@@ -39,16 +39,14 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
           service
       }
 
-      val server: Server[Try[Int], Try[Int]] = DefaultServer[
-        Try[Int],
-        Try[Int],
-        Try[Int],
-        Try[Int]](name, listener, serviceTransport)
+      val server: Server[Try[Int], Try[Int]] = DefaultServer[Try[Int], Try[
+        Int], Try[Int], Try[Int]](name, listener, serviceTransport)
 
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-      val factory = ServiceFactory.const(Service.mk[Try[Int], Try[Int]] { num =>
-        Future.exception(new SourcedException {})
-      })
+      val factory = ServiceFactory.const(
+        Service.mk[Try[Int], Try[Int]] { num =>
+          Future.exception(new SourcedException {})
+        })
 
       val listeningServer: ListeningServer = server.serve(socket, factory)
 
@@ -72,11 +70,8 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
           Transport[Try[Int], Try[Int]],
           Service[Try[Int], Try[Int]]) => Closable = (_, _) => mockConnHandle
 
-      val server: Server[Try[Int], Try[Int]] = DefaultServer[
-        Try[Int],
-        Try[Int],
-        Try[Int],
-        Try[Int]](name, listener, serviceTransport)
+      val server: Server[Try[Int], Try[Int]] = DefaultServer[Try[Int], Try[
+        Int], Try[Int], Try[Int]](name, listener, serviceTransport)
 
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
       val factory = mock[ServiceFactory[Try[Int], Try[Int]]]
@@ -109,11 +104,8 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
           Service[Try[Int], Try[Int]]) => Closable =
         new SerialServerDispatcher(_, _)
 
-      val server: Server[Try[Int], Try[Int]] = DefaultServer[
-        Try[Int],
-        Try[Int],
-        Try[Int],
-        Try[Int]](name, listener, serviceTransport)
+      val server: Server[Try[Int], Try[Int]] = DefaultServer[Try[Int], Try[
+        Int], Try[Int], Try[Int]](name, listener, serviceTransport)
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
 
       val p = Promise[Try[Int]]

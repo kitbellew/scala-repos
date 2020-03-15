@@ -349,8 +349,7 @@ object EvaluateTask {
     Seq(
       (state in GlobalScope) ::= dummyState,
       (streamsManager in GlobalScope) ::= dummyStreamsManager,
-      (executionRoots in GlobalScope) ::= dummyRoots
-    )
+      (executionRoots in GlobalScope) ::= dummyRoots)
 
   def evalPluginDef(
       log: Logger)(pluginDef: BuildStructure, state: State): PluginData = {
@@ -617,8 +616,7 @@ object EvaluateTask {
         case results.TPair(Task(info, _), Value(v)) =>
           info.post(v) get transformState
         case _ => Nil
-      }
-    )
+      })
 
   def transformInc[T](result: Result[T]): Result[T] =
     // taskToKey needs to be before liftAnonymous.  liftA only lifts non-keyed (anonymous) Incompletes.
@@ -640,18 +638,21 @@ object EvaluateTask {
   def convertCyclic(c: AnyCyclic): String =
     (c.caller, c.target) match {
       case (caller: Task[_], target: Task[_]) =>
-        c.toString + (if (caller eq target)
-                        "(task: " + name(caller) + ")"
-                      else
-                        "(caller: " + name(caller) + ", target: " + name(
-                          target) + ")")
+        c.toString + (
+          if (caller eq target)
+            "(task: " + name(caller) + ")"
+          else
+            "(caller: " + name(caller) + ", target: " + name(target) + ")"
+        )
       case _ => c.toString
     }
 
   def liftAnonymous: Incomplete => Incomplete = {
     case i @ Incomplete(node, tpe, None, causes, None) =>
       causes.find(inc =>
-        inc.node.isEmpty && (inc.message.isDefined || inc.directCause.isDefined)) match {
+        inc.node.isEmpty && (
+          inc.message.isDefined || inc.directCause.isDefined
+        )) match {
         case Some(lift) =>
           i.copy(directCause = lift.directCause, message = lift.message)
         case None => i
@@ -678,11 +679,12 @@ object EvaluateTask {
   val injectStreams: ScopedKey[_] => Seq[Setting[_]] =
     scoped =>
       if (scoped.key == streams.key)
-        Seq(streams in scoped.scope <<= streamsManager map { mgr =>
-          val stream = mgr(scoped)
-          stream.open()
-          stream
-        })
+        Seq(
+          streams in scoped.scope <<= streamsManager map { mgr =>
+            val stream = mgr(scoped)
+            stream.open()
+            stream
+          })
       else
         Nil
 }

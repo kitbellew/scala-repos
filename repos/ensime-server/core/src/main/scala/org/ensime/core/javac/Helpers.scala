@@ -41,8 +41,7 @@ object JavaFqn {
         None
       else
         Some(tpe),
-      fieldOrMethod
-    )
+      fieldOrMethod)
   }
 }
 

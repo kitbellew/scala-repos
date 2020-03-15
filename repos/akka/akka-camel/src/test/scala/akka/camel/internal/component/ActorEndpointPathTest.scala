@@ -22,11 +22,12 @@ class ActorEndpointPathTest
     val path =
       system
         .actorOf(
-          Props(new Actor {
-            def receive = {
-              case _ ⇒
-            }
-          }),
+          Props(
+            new Actor {
+              def receive = {
+                case _ ⇒
+              }
+            }),
           "knownactor")
         .path
     find(path.toString) should be('defined)

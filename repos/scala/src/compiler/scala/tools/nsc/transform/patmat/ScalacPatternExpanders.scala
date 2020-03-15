@@ -39,9 +39,11 @@ trait ScalacPatternExpanders {
     def elementTypeOf(tpe: Type) = {
       val seq = repeatedToSeq(tpe)
 
-      (typeOfMemberNamedHead(seq)
-        orElse typeOfMemberNamedApply(seq)
-        orElse definitions.elementType(ArrayClass, seq))
+      (
+        typeOfMemberNamedHead(seq)
+          orElse typeOfMemberNamedApply(seq)
+          orElse definitions.elementType(ArrayClass, seq)
+      )
     }
     def newExtractor(
         whole: Type,
@@ -95,10 +97,12 @@ trait ScalacPatternExpanders {
       else {
         val getResult = typeOfMemberNamedGet(result)
         def noGetError() = {
-          val name = "unapply" + (if (isSeq)
-                                    "Seq"
-                                  else
-                                    "")
+          val name = "unapply" + (
+            if (isSeq)
+              "Seq"
+            else
+              ""
+          )
           context.error(
             context.tree.pos,
             s"The result type of an $name method must contain a member `get` to be used as an extractor pattern, no such member exists in ${result}"
@@ -136,10 +140,12 @@ trait ScalacPatternExpanders {
         else
           s" offering $offering"
       def arityExpected =
-        (if (extractor.hasSeq)
-           "at least "
-         else
-           "") + productArity
+        (
+          if (extractor.hasSeq)
+            "at least "
+          else
+            ""
+        ) + productArity
 
       def err(msg: String) = context.error(tree.pos, msg)
       def warn(msg: String) = context.warning(tree.pos, msg)

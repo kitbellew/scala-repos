@@ -172,11 +172,12 @@ object Codec {
   def writeToArray[A](a: A)(implicit codec: Codec[A]): Array[Byte] = {
     import ByteBufferPool._
 
-    byteBufferPool.run(for {
-      _ <- codec.write(a)
-      bytes <- flipBytes
-      _ <- release
-    } yield bytes)
+    byteBufferPool.run(
+      for {
+        _ <- codec.write(a)
+        bytes <- flipBytes
+        _ <- release
+      } yield bytes)
   }
 
   private final val FALSE_VALUE = 0.toByte
@@ -238,15 +239,17 @@ object Codec {
 
     def writeInit(c: C, buf: ByteBuffer): Option[S] = {
       val (a, b) = from(c)
-      (codecA.writeInit(a, buf) map (s => Left((s, b)))) orElse (codecB
-        .writeInit(b, buf) map (Right(_)))
+      (codecA.writeInit(a, buf) map (s => Left((s, b)))) orElse (
+        codecB.writeInit(b, buf) map (Right(_))
+      )
     }
 
     def writeMore(more: S, buf: ByteBuffer) =
       more match {
         case Left((s, b)) =>
-          (codecA.writeMore(s, buf) map (s => Left((s, b)))) orElse (codecB
-            .writeInit(b, buf) map (Right(_)))
+          (codecA.writeMore(s, buf) map (s => Left((s, b)))) orElse (
+            codecB.writeInit(b, buf) map (Right(_))
+          )
         case Right(s) => codecB.writeMore(s, buf) map (Right(_))
       }
 
@@ -309,7 +312,9 @@ object Codec {
         case FALSE_VALUE => false
         case invalid =>
           sys.error(
-            "Error reading boolean: expecting %d or %d, found %d" format (TRUE_VALUE, FALSE_VALUE, invalid))
+            "Error reading boolean: expecting %d or %d, found %d" format (
+              TRUE_VALUE, FALSE_VALUE, invalid
+            ))
       }
   }
 
@@ -734,10 +739,12 @@ object Codec {
 
   def wrappedWriteInit[AA](a: AA, sink: ByteBuffer)(
       implicit _codec: Codec[AA]): Option[StatefulCodec#State] =
-    (new StatefulCodec {
-      type A = AA
-      val codec = _codec
-    }).init(a, sink)
+    (
+      new StatefulCodec {
+        type A = AA
+        val codec = _codec
+      }
+    ).init(a, sink)
 
   implicit val BitSetCodec = ArrayCodec[Long](LongCodec)(implicitly)
     .as[BitSet](_.getBits, BitSetUtil.fromArray)

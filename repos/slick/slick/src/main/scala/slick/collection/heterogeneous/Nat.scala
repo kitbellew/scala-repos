@@ -120,10 +120,12 @@ abstract class Nat {
 
 object Nat {
   def _unsafe[T <: Nat](value: Int) =
-    (if (value < cached.length)
-       cached(value)
-     else
-       new Succ(value)).asInstanceOf[T]
+    (
+      if (value < cached.length)
+        cached(value)
+      else
+        new Succ(value)
+    ).asInstanceOf[T]
 
   /** The cached Nat type for 0. */
   type _0 = Zero.type

@@ -221,11 +221,8 @@ class GroupsResource @Inject() (
 
           ok(
             Json
-              .obj(
-                "steps" -> DeploymentPlan(originalGroup, updatedGroup).steps
-              )
-              .toString()
-          )
+              .obj("steps" -> DeploymentPlan(originalGroup, updatedGroup).steps)
+              .toString())
         } else {
           val (deployment, _) = updateOrCreate(
             id.toRootPath,
@@ -248,12 +245,8 @@ class GroupsResource @Inject() (
       }
 
       val deployment = result(
-        groupManager.update(
-          PathId.empty,
-          clearRootGroup,
-          Timestamp.now(),
-          force
-        ))
+        groupManager
+          .update(PathId.empty, clearRootGroup, Timestamp.now(), force))
       deploymentResult(deployment)
     }
 
@@ -299,8 +292,7 @@ class GroupsResource @Inject() (
           .map(_.update(group.id, Predef.identity, newVersion))
         versionedGroup.getOrElse(
           throw new IllegalArgumentException(
-            s"Group $group.id not available in version $targetVersion")
-        )
+            s"Group $group.id not available in version $targetVersion"))
       }
 
     def scaleChange =

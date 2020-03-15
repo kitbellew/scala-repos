@@ -50,10 +50,11 @@ class ClientRegistryTest
     ClientRegistry.clear()
   }
 
-  test("ClientRegistry.expAllRegisteredClientsResolved zero clients")(new Ctx {
-    val allResolved0 = ClientRegistry.expAllRegisteredClientsResolved()
-    assert(allResolved0.poll == Some(Return(Set())))
-  })
+  test("ClientRegistry.expAllRegisteredClientsResolved zero clients")(
+    new Ctx {
+      val allResolved0 = ClientRegistry.expAllRegisteredClientsResolved()
+      assert(allResolved0.poll == Some(Return(Set())))
+    })
 
   test("ClientRegistry.expAllRegisteredClientsResolved handles Addr.Bound")(
     new Ctx {
@@ -132,34 +133,34 @@ class ClientRegistryTest
       }
     })
 
-  test("ClientRegistry registers clients in registry")(new Ctx {
-    val path = Path.read("/$/com.twitter.finagle.client.crtnamer/foo")
-    val simple = new SimpleRegistry
-    GlobalRegistry.withRegistry(simple) {
-      val c = stackClient.newClient(Name.Path(path), "foo")
-      val prefix = Seq(
-        "client",
-        "fancy",
-        "foo",
-        "/$/com.twitter.finagle.client.crtnamer/foo",
-        "Pool")
-      val filtered = GlobalRegistry.get.toSet.filter { e =>
-        e.key.startsWith(prefix)
-      }
-      val expected = Seq(
-        "high" -> "2147483647",
-        "low" -> "0",
-        "idleTime" -> "Duration.Top",
-        "maxWaiters" -> "2147483647"
-      ).map {
-        case (key, value) => Entry(prefix :+ key, value)
-      }
+  test("ClientRegistry registers clients in registry")(
+    new Ctx {
+      val path = Path.read("/$/com.twitter.finagle.client.crtnamer/foo")
+      val simple = new SimpleRegistry
+      GlobalRegistry.withRegistry(simple) {
+        val c = stackClient.newClient(Name.Path(path), "foo")
+        val prefix = Seq(
+          "client",
+          "fancy",
+          "foo",
+          "/$/com.twitter.finagle.client.crtnamer/foo",
+          "Pool")
+        val filtered = GlobalRegistry.get.toSet.filter { e =>
+          e.key.startsWith(prefix)
+        }
+        val expected = Seq(
+          "high" -> "2147483647",
+          "low" -> "0",
+          "idleTime" -> "Duration.Top",
+          "maxWaiters" -> "2147483647").map {
+          case (key, value) => Entry(prefix :+ key, value)
+        }
 
-      expected.foreach { entry =>
-        assert(filtered.contains(entry))
+        expected.foreach { entry =>
+          assert(filtered.contains(entry))
+        }
       }
-    }
-  })
+    })
 
   // copied from StackRegistryTest
   val headRole = Stack.Role("head")
@@ -214,8 +215,7 @@ class ClientRegistryTest
       val expected = {
         Set(
           Entry(Seq("client", "fancy", "foo", "/$/fail", "name", "p1"), "999"),
-          Entry(Seq("client", "fancy", "foo", "/$/fail", "head", "p2"), "1")
-        )
+          Entry(Seq("client", "fancy", "foo", "/$/fail", "head", "p2"), "1"))
       }
       assert(GlobalRegistry.get.toSet == expected)
       Await.result(factory.close())

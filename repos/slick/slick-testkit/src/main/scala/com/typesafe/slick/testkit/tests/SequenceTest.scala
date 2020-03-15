@@ -40,10 +40,12 @@ class SequenceTest extends AsyncTest[JdbcTestDB] {
 
       def values(s: Sequence[Int], count: Int = 5, create: Boolean = true) = {
         val q = Query(s.next)
-        (if (create)
-           s.schema.create
-         else
-           DBIO.successful(())) >>
+        (
+          if (create)
+            s.schema.create
+          else
+            DBIO.successful(())
+        ) >>
           DBIO.sequence((1 to count).toList map (_ => q.result.map(_.head)))
       }
 
@@ -54,13 +56,11 @@ class SequenceTest extends AsyncTest[JdbcTestDB] {
         ifCap(scap.sequenceMin, scap.sequenceMax, scap.sequenceCycle)(
           seq(
             values(s4).map(_ shouldBe List(3, 4, 5, 2, 3)),
-            values(s5).map(_ shouldBe List(3, 2, 5, 4, 3))
-          )),
+            values(s5).map(_ shouldBe List(3, 2, 5, 4, 3)))),
         ifCap(scap.sequenceMin, scap.sequenceMax, scap.sequenceLimited)(
           seq(
             values(s6, 3).map(_ shouldBe List(3, 4, 5)),
-            values(s6, 1, false).failed
-          ))
+            values(s6, 1, false).failed))
       ).withPinnedSession
     }
 }

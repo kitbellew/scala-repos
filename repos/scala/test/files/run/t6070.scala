@@ -25,10 +25,11 @@ object Test extends App {
     x match {
       case Mean(b) =>
         // BUG: b is assumed to be a stable identifier, but it can actually be mutated
-        println(b.size({
-          mutate();
-          b.x
-        }))
+        println(
+          b.size({
+            mutate();
+            b.x
+          }))
     }
 
   def mutate() {

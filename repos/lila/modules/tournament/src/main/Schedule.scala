@@ -103,37 +103,38 @@ object Schedule {
   private[tournament] def durationFor(sched: Schedule): Option[Int] = {
     import Freq._, Speed._
     import chess.variant._
-    Some((sched.freq, sched.speed, sched.variant) match {
+    Some(
+      (sched.freq, sched.speed, sched.variant) match {
 
-      case (Hourly, HyperBullet | Bullet, _) => 26
-      case (Hourly, SuperBlitz, _)           => 56
-      case (Hourly, Blitz, _)                => 56
-      case (Hourly, Classical, _)            => 116
+        case (Hourly, HyperBullet | Bullet, _) => 26
+        case (Hourly, SuperBlitz, _)           => 56
+        case (Hourly, Blitz, _)                => 56
+        case (Hourly, Classical, _)            => 116
 
-      case (Daily | Eastern, HyperBullet | Bullet, _) => 60
-      case (Daily | Eastern, SuperBlitz, _)           => 90
-      case (Daily | Eastern, Blitz, Standard)         => 120
-      case (Daily | Eastern, Classical, _)            => 150
+        case (Daily | Eastern, HyperBullet | Bullet, _) => 60
+        case (Daily | Eastern, SuperBlitz, _)           => 90
+        case (Daily | Eastern, Blitz, Standard)         => 120
+        case (Daily | Eastern, Classical, _)            => 150
 
-      case (Daily | Eastern, Blitz, Crazyhouse) => 120
-      case (Daily | Eastern, Blitz, _)          => 60 // variant daily is shorter
+        case (Daily | Eastern, Blitz, Crazyhouse) => 120
+        case (Daily | Eastern, Blitz, _)          => 60 // variant daily is shorter
 
-      case (Weekly, HyperBullet | Bullet, _) => 60 * 2
-      case (Weekly, SuperBlitz, _)           => 60 * 2 + 30
-      case (Weekly, Blitz, _)                => 60 * 3
-      case (Weekly, Classical, _)            => 60 * 4
+        case (Weekly, HyperBullet | Bullet, _) => 60 * 2
+        case (Weekly, SuperBlitz, _)           => 60 * 2 + 30
+        case (Weekly, Blitz, _)                => 60 * 3
+        case (Weekly, Classical, _)            => 60 * 4
 
-      case (Monthly, HyperBullet | Bullet, _) => 60 * 3
-      case (Monthly, SuperBlitz, _)           => 60 * 3 + 30
-      case (Monthly, Blitz, _)                => 60 * 4
-      case (Monthly, Classical, _)            => 60 * 5
+        case (Monthly, HyperBullet | Bullet, _) => 60 * 3
+        case (Monthly, SuperBlitz, _)           => 60 * 3 + 30
+        case (Monthly, Blitz, _)                => 60 * 4
+        case (Monthly, Classical, _)            => 60 * 5
 
-      case (Marathon, _, _)             => 60 * 24 // lol
-      case (ExperimentalMarathon, _, _) => 60 * 4
+        case (Marathon, _, _)             => 60 * 24 // lol
+        case (ExperimentalMarathon, _, _) => 60 * 4
 
-      case (Unique, _, _) => 0
+        case (Unique, _, _) => 0
 
-    }) filter (0 !=)
+      }) filter (0 !=)
   }
 
   private val blitzIncHours = Set(1, 7, 13, 19)

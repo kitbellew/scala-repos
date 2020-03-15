@@ -108,8 +108,7 @@ private[finagle] object Handshake {
       trans: Transport[ChannelBuffer, ChannelBuffer],
       version: Short,
       headers: Headers,
-      negotiate: Negotiator
-  ): Transport[Message, Message] = {
+      negotiate: Negotiator): Transport[Message, Message] = {
     // Since the handshake happens at the start of a session, we can safely
     // enc/dec messages without having to worry about any special session
     // features.
@@ -171,8 +170,7 @@ private[finagle] object Handshake {
       trans: Transport[ChannelBuffer, ChannelBuffer],
       version: Short,
       headers: Headers => Headers,
-      negotiate: Negotiator
-  ): Transport[Message, Message] = {
+      negotiate: Negotiator): Transport[Message, Message] = {
     // Since the handshake happens at the start of a session, we can safely enc/dec
     // messages without having to worry about any special features (e.g. fragments).
     val msgTrans = trans.map(Message.encode, Message.decode)
@@ -208,15 +206,16 @@ private[finagle] object Handshake {
         // a message from the transport. Replace the message and return the
         // original transport.
         case Return(msg) =>
-          Future.value(new TransportProxy(msgTrans) {
-            private[this] val first = new AtomicBoolean(true)
-            def read(): Future[Message] =
-              if (first.compareAndSet(true, false))
-                Future.value(msg)
-              else
-                msgTrans.read()
-            def write(req: Message): Future[Unit] = msgTrans.write(req)
-          })
+          Future.value(
+            new TransportProxy(msgTrans) {
+              private[this] val first = new AtomicBoolean(true)
+              def read(): Future[Message] =
+                if (first.compareAndSet(true, false))
+                  Future.value(msg)
+                else
+                  msgTrans.read()
+              def write(req: Message): Future[Unit] = msgTrans.write(req)
+            })
 
         case Throw(_) => Future.value(msgTrans)
       }

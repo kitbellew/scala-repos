@@ -146,10 +146,11 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
   protected def i_was_! = orgData.get
 
   def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case str  => JsonAST.JString(str)
-    })
+    Full(
+      get match {
+        case null => JsonAST.JNull
+        case str  => JsonAST.JString(str)
+      })
 
   /**
     * Called after the field is saved to the database
@@ -162,20 +163,22 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
     fmapFunc({ s: List[String] =>
       this.setFromAny(s)
     }) { name =>
-      Full(appendFieldId(<input type={
-        formInputType
-      } maxlength={
-        maxLen.toString
-      }
+      Full(
+        appendFieldId(
+          <input type={
+            formInputType
+          } maxlength={
+            maxLen.toString
+          }
                        name={
-        name
-      }
+            name
+          }
                        value={
-        get match {
-          case null => ""
-          case s    => s.toString
-        }
-      }/>))
+            get match {
+              case null => ""
+              case s    => s.toString
+            }
+          }/>))
     }
 
   protected def i_obscure_!(in: String): String = {

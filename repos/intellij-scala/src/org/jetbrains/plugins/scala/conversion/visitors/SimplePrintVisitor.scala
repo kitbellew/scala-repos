@@ -221,12 +221,13 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
     }
 
     visit(modifiers)
-    printer.append(classType match {
-      case ClassType.CLASS     => "class "
-      case ClassType.OBJECT    => "object "
-      case ClassType.INTERFACE => "trait "
-      case _                   => ""
-    })
+    printer.append(
+      classType match {
+        case ClassType.CLASS     => "class "
+        case ClassType.OBJECT    => "object "
+        case ClassType.INTERFACE => "trait "
+        case _                   => ""
+      })
 
     printer.append(escapeKeyword(name))
     if (typeParams.isDefined)
@@ -495,10 +496,11 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
     if (initalaizer.isDefined) {
       visit(initalaizer.get)
     } else {
-      printer.append(ftype match {
-        case tc: TypeConstruction => tc.getDefaultTypeValue
-        case _                    => "null"
-      })
+      printer.append(
+        ftype match {
+          case tc: TypeConstruction => tc.getDefaultTypeValue
+          case _                    => "null"
+        })
     }
   }
 
@@ -604,15 +606,16 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
   }
 
   def visitSimpleModifier(mtype: ModifierType) = {
-    printer.append(mtype match {
-      case ModifierType.ABSTRACT  => "abstract"
-      case ModifierType.PUBLIC    => "public"
-      case ModifierType.PROTECTED => "protected"
-      case ModifierType.PRIVATE   => "private"
-      case ModifierType.OVERRIDE  => "override"
-      case ModifierType.FINAL     => "final"
-      case _                      => ""
-    })
+    printer.append(
+      mtype match {
+        case ModifierType.ABSTRACT  => "abstract"
+        case ModifierType.PUBLIC    => "public"
+        case ModifierType.PROTECTED => "protected"
+        case ModifierType.PRIVATE   => "private"
+        case ModifierType.OVERRIDE  => "override"
+        case ModifierType.FINAL     => "final"
+        case _                      => ""
+      })
   }
 
   def visitModifierWithExpr(mtype: ModifierType, value: IntermediateNode) = {

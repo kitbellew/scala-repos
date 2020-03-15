@@ -160,12 +160,14 @@ object RuntimeStats extends java.io.Serializable {
   }
 
   def getFlowProcessForUniqueId(uniqueId: UniqueID): FlowProcess[_] = {
-    (for {
-      weakFlowProcess <- flowMappingStore.get(uniqueId.get)
-      flowProcess <- weakFlowProcess.get
-    } yield {
-      flowProcess
-    }).getOrElse {
+    (
+      for {
+        weakFlowProcess <- flowMappingStore.get(uniqueId.get)
+        flowProcess <- weakFlowProcess.get
+      } yield {
+        flowProcess
+      }
+    ).getOrElse {
       sys.error(
         "Error in job deployment, the FlowProcess for unique id %s isn't available"
           .format(uniqueId))

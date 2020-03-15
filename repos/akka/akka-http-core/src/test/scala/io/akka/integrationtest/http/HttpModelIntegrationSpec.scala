@@ -156,9 +156,8 @@ class HttpModelIntegrationSpec
 
       // Finally we can create our HttpResponse.
 
-      HttpResponse(
-        entity = HttpEntity
-          .Default(contentType.get, contentLength.get, publisherBody))
+      HttpResponse(entity = HttpEntity
+        .Default(contentType.get, contentLength.get, publisherBody))
     }
 
     "be able to wrap HttpHeaders with custom typed headers" in {

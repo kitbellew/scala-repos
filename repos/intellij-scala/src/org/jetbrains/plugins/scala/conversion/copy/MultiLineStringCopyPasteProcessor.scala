@@ -59,12 +59,14 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
         document.getLineStartOffset(document.getLineNumber(offset)),
         offset)
 
-    (if (document.getText(textRange).trim.length == 0 && (text
-           .trim()
-           .length == 0 || text.trim.charAt(0) != marginChar))
-       marginChar
-     else
-       "") + text.replace("\n", "\n " + marginChar)
+    (
+      if (document.getText(textRange).trim.length == 0 && (
+            text.trim().length == 0 || text.trim.charAt(0) != marginChar
+          ))
+        marginChar
+      else
+        ""
+    ) + text.replace("\n", "\n " + marginChar)
   }
 
   private def getMarginChar(element: PsiElement): Char =

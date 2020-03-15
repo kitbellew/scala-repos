@@ -35,16 +35,18 @@ object ConcurrentTaskTest extends SpecLite {
 
       val sync = new SyncVar[Boolean]
 
-      (for {
-        _ <- now(enqueue(1))
-        _ <- delay(enqueue(2))
-        _ <- fork(now(enqueue(3)))(es)
-        _ <- delay(enqueue(4))
-        _ <- fork(now(enqueue(5)))(es)
-        _ <- now(enqueue(6))
-        _ <- fork(delay(enqueue(7)))(es)
+      (
+        for {
+          _ <- now(enqueue(1))
+          _ <- delay(enqueue(2))
+          _ <- fork(now(enqueue(3)))(es)
+          _ <- delay(enqueue(4))
+          _ <- fork(now(enqueue(5)))(es)
+          _ <- now(enqueue(6))
+          _ <- fork(delay(enqueue(7)))(es)
 
-      } yield ()).unsafePerformAsync(_ => {
+        } yield ()
+      ).unsafePerformAsync(_ => {
         enqueue(8)
         sync.put(true)
       })

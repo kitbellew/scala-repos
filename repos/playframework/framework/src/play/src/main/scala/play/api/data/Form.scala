@@ -94,20 +94,23 @@ case class Form[T](
     */
   def bindFromRequest()(implicit request: play.api.mvc.Request[_]): Form[T] = {
     bindFromRequest {
-      (request.body match {
-        case body: play.api.mvc.AnyContent if body.asFormUrlEncoded.isDefined =>
-          body.asFormUrlEncoded.get
-        case body: play.api.mvc.AnyContent
-            if body.asMultipartFormData.isDefined =>
-          body.asMultipartFormData.get.asFormUrlEncoded
-        case body: play.api.mvc.AnyContent if body.asJson.isDefined =>
-          FormUtils.fromJson(js = body.asJson.get).mapValues(Seq(_))
-        case body: Map[_, _]                         => body.asInstanceOf[Map[String, Seq[String]]]
-        case body: play.api.mvc.MultipartFormData[_] => body.asFormUrlEncoded
-        case body: play.api.libs.json.JsValue =>
-          FormUtils.fromJson(js = body).mapValues(Seq(_))
-        case _ => Map.empty[String, Seq[String]]
-      }) ++ request.queryString
+      (
+        request.body match {
+          case body: play.api.mvc.AnyContent
+              if body.asFormUrlEncoded.isDefined =>
+            body.asFormUrlEncoded.get
+          case body: play.api.mvc.AnyContent
+              if body.asMultipartFormData.isDefined =>
+            body.asMultipartFormData.get.asFormUrlEncoded
+          case body: play.api.mvc.AnyContent if body.asJson.isDefined =>
+            FormUtils.fromJson(js = body.asJson.get).mapValues(Seq(_))
+          case body: Map[_, _]                         => body.asInstanceOf[Map[String, Seq[String]]]
+          case body: play.api.mvc.MultipartFormData[_] => body.asFormUrlEncoded
+          case body: play.api.libs.json.JsValue =>
+            FormUtils.fromJson(js = body).mapValues(Seq(_))
+          case _ => Map.empty[String, Seq[String]]
+        }
+      ) ++ request.queryString
     }
   }
 
@@ -263,8 +266,7 @@ case class Form[T](
       errors.groupBy(_.key).mapValues { errors =>
         errors.map(e =>
           messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
-      }
-    )
+      })
 
   }
 
@@ -355,10 +357,12 @@ case class Field(
       Option(name)
         .filterNot(_.isEmpty)
         .map(
-          _ + (if (key(0) == '[')
-                 ""
-               else
-                 "."))
+          _ + (
+            if (key(0) == '[')
+              ""
+            else
+              "."
+          ))
         .getOrElse("") + key)
   }
 
@@ -607,12 +611,13 @@ trait Mapping[T] {
     * @return the new mapping
     */
   def verifying(error: => String, constraint: (T => Boolean)): Mapping[T] = {
-    verifying(Constraint { t: T =>
-      if (constraint(t))
-        Valid
-      else
-        Invalid(Seq(ValidationError(error)))
-    })
+    verifying(
+      Constraint { t: T =>
+        if (constraint(t))
+          Valid
+        else
+          Invalid(Seq(ValidationError(error)))
+      })
   }
 
   /**
@@ -813,9 +818,10 @@ case class RepeatedMapping[T](
       Right(allErrorsOrItems.map(_.right.get).toList).right
         .flatMap(applyConstraints)
     } else {
-      Left(allErrorsOrItems.collect {
-        case Left(errors) => errors
-      }.flatten)
+      Left(
+        allErrorsOrItems.collect {
+          case Left(errors) => errors
+        }.flatten)
     }
   }
 

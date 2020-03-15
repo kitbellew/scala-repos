@@ -149,9 +149,10 @@ object Concurrent {
           .sequence(ready)
           .map[Iteratee[E, Unit]] { commitReady =>
             val downToZero = atomic { implicit txn =>
-              iteratees.transform(commitReady.collect {
-                case Some(s) => s
-              } ++ _)
+              iteratees.transform(
+                commitReady.collect {
+                  case Some(s) => s
+                } ++ _)
               (interested.length > 0 && iteratees().length <= 0)
             }
 
@@ -296,14 +297,12 @@ object Concurrent {
                   it.unflatten.map(Left(_))(dec) :: timeoutFuture(
                     Right(()),
                     timeout,
-                    unit) :: Nil
-                )(dec)
+                    unit) :: Nil)(dec)
                 .map {
                   case Left(Step.Cont(k)) => Cont(step(k(other)))
                   case Left(done)         => Done(done.it, other)
                   case Right(_)           => Error("iteratee is taking too long", other)
-                }(dec)
-            )
+                }(dec))
         }
         Cont(step(inner))
       }
@@ -375,29 +374,30 @@ object Concurrent {
             Iteratee.flatten(last.future)
 
           case other =>
-            Iteratee.flatten(Future(length(other))(pec).map { chunkLength =>
-              val s = state.single.getAndTransform {
-                case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
-                  Queueing(q.enqueue(other), l + chunkLength)
+            Iteratee.flatten(
+              Future(length(other))(pec).map { chunkLength =>
+                val s = state.single.getAndTransform {
+                  case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
+                    Queueing(q.enqueue(other), l + chunkLength)
 
-                case Queueing(q, l) => Queueing(Queue(Input.EOF), l)
+                  case Queueing(q, l) => Queueing(Queue(Input.EOF), l)
 
-                case Waiting(p) => Queueing(Queue(), 0)
+                  case Waiting(p) => Queueing(Queue(), 0)
 
-                case d @ DoneIt(it) => d
+                  case d @ DoneIt(it) => d
 
-              }
-              s match {
-                case Waiting(p) =>
-                  p.success(other)
-                  Cont(step)
-                case DoneIt(it) => it
-                case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
-                  Cont(step)
-                case Queueing(_, _) => Error("buffer overflow", other)
+                }
+                s match {
+                  case Waiting(p) =>
+                    p.success(other)
+                    Cont(step)
+                  case DoneIt(it) => it
+                  case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
+                    Cont(step)
+                  case Queueing(_, _) => Error("buffer overflow", other)
 
-              }
-            }(dec))
+                }
+              }(dec))
         }
 
         def moreInput[A](k: K[E, A]): Iteratee[E, Iteratee[E, A]] = {
@@ -416,16 +416,21 @@ object Concurrent {
               case _ => throw new Exception("can't get here")
             }
           }
-          Iteratee.flatten(in.map { in =>
-            (new CheckDone[E, E] {
-              def continue[A](cont: K[E, A]) = moreInput(cont)
-            } &> k(in))
-          }(dec))
+          Iteratee.flatten(
+            in.map { in =>
+              (
+                new CheckDone[E, E] {
+                  def continue[A](cont: K[E, A]) = moreInput(cont)
+                } &> k(in)
+              )
+            }(dec))
 
         }
-        (new CheckDone[E, E] {
-          def continue[A](cont: K[E, A]) = moreInput(cont)
-        } &> it).unflatten.onComplete {
+        (
+          new CheckDone[E, E] {
+            def continue[A](cont: K[E, A]) = moreInput(cont)
+          } &> it
+        ).unflatten.onComplete {
           case Success(it) =>
             state.single() = DoneIt(it.it)
             last.success(it.it)
@@ -485,16 +490,16 @@ object Concurrent {
                           Left(i)
                         })(dec),
                       timeoutFuture(Right(()), duration, unit)
-                    )
-                  )(dec)
+                    ))(dec)
 
-                Iteratee.flatten(readyOrNot.map {
-                  case Left(ready) =>
-                    Iteratee.flatten(ready.feed(in))
-                  case Right(_) =>
-                    busy.single() = true
-                    Cont(step(inner))
-                }(dec))
+                Iteratee.flatten(
+                  readyOrNot.map {
+                    case Left(ready) =>
+                      Iteratee.flatten(ready.feed(in))
+                    case Right(_) =>
+                      busy.single() = true
+                      Cont(step(inner))
+                  }(dec))
               } else
                 Cont(step(inner))
           }
@@ -581,8 +586,8 @@ object Concurrent {
 
             def push(item: Input[E]) =
               schedule {
-                val eventuallyNext = Promise[
-                  Option[Input[E] => Iteratee[E, A]]]()
+                val eventuallyNext = Promise[Option[
+                  Input[E] => Iteratee[E, A]]]()
                 iteratee.single
                   .swap(eventuallyNext.future)
                   .onComplete {
@@ -733,24 +738,25 @@ object Concurrent {
             s.flatMap(_ => p)(dec)
           }
 
-      Iteratee.flatten(ready.flatMap { _ =>
-        val downToZero = atomic { implicit txn =>
-          val ready = commitReady().toMap
-          iteratees.transform(commitReady().map(_._2) ++ _)
-          (interested.length > 0 && iteratees().length <= 0)
+      Iteratee.flatten(
+        ready.flatMap { _ =>
+          val downToZero = atomic { implicit txn =>
+            val ready = commitReady().toMap
+            iteratees.transform(commitReady().map(_._2) ++ _)
+            (interested.length > 0 && iteratees().length <= 0)
 
-        }
-        def result(): Iteratee[E, Unit] =
-          if (in == Input.EOF || closeFlag)
-            Done((), Input.Empty)
+          }
+          def result(): Iteratee[E, Unit] =
+            if (in == Input.EOF || closeFlag)
+              Done((), Input.Empty)
+            else
+              Cont(step)
+          if (downToZero)
+            Future(interestIsDownToZero())(pec).map(_ => result())(dec)
           else
-            Cont(step)
-        if (downToZero)
-          Future(interestIsDownToZero())(pec).map(_ => result())(dec)
-        else
-          Future.successful(result())
+            Future.successful(result())
 
-      }(dec))
+        }(dec))
     }
 
     new Hub[E] {
@@ -913,28 +919,30 @@ object Concurrent {
           }(dec)
         }
 
-        Future(patcher(new PatchPanel[E] {
-          val ref: Ref[Ref[Iteratee[E, Option[A]]]] = Ref(
-            Ref(it.map(Some(_))(dec)))
+        Future(
+          patcher(
+            new PatchPanel[E] {
+              val ref: Ref[Ref[Iteratee[E, Option[A]]]] = Ref(
+                Ref(it.map(Some(_))(dec)))
 
-          def closed() = isClosed
+              def closed() = isClosed
 
-          def patchIn(e: Enumerator[E]): Boolean = {
-            !(closed() || {
-              val newRef = atomic { implicit txn =>
-                val enRef = ref()
-                val it = enRef.swap(Done(None, Input.Empty))
-                val newRef = Ref(it)
-                ref() = newRef
-                newRef
+              def patchIn(e: Enumerator[E]): Boolean = {
+                !(
+                  closed() || {
+                    val newRef = atomic { implicit txn =>
+                      val enRef = ref()
+                      val it = enRef.swap(Done(None, Input.Empty))
+                      val newRef = Ref(it)
+                      ref() = newRef
+                      newRef
+                    }
+                    e |>> refIteratee(newRef) //TODO maybe do something if the enumerator is done, maybe not
+                    false
+                  }
+                )
               }
-              e |>> refIteratee(
-                newRef
-              ) //TODO maybe do something if the enumerator is done, maybe not
-              false
-            })
-          }
-        }))(pec).flatMap(_ => result.future)(dec)
+            }))(pec).flatMap(_ => result.future)(dec)
 
       }
     }
@@ -997,11 +1005,13 @@ object Concurrent {
       iteratee: Iteratee[E, A]): Future[(A, Enumerator[E])] = {
     val result = Promise[(A, Enumerator[E])]()
 
-    (enumerator |>>> iteratee.flatMap { a =>
-      val (consumeRemaining, remaining) = Concurrent.joined[E]
-      result.success((a, remaining))
-      consumeRemaining
-    }(dec)).onFailure {
+    (
+      enumerator |>>> iteratee.flatMap { a =>
+        val (consumeRemaining, remaining) = Concurrent.joined[E]
+        result.success((a, remaining))
+        consumeRemaining
+      }(dec)
+    ).onFailure {
       case e => result.tryFailure(e)
     }(dec)
 

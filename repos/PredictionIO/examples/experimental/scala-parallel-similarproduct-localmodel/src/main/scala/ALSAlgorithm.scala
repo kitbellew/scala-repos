@@ -92,12 +92,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         val iindex = itemStringIntMap.getOrElse(r.item, -1)
 
         if (uindex == -1)
-          logger.info(s"Couldn't convert nonexistent user ID ${r.user}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent user ID ${r.user}"
+              + " to Int index.")
 
         if (iindex == -1)
-          logger.info(s"Couldn't convert nonexistent item ID ${r.item}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent item ID ${r.item}"
+              + " to Int index.")
 
         ((uindex, iindex), 1)
       }
@@ -185,18 +187,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           categories = query.categories,
           queryList = queryList,
           whiteList = whiteList,
-          blackList = blackList
-        )
+          blackList = blackList)
     }
 
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 
     val itemScores = topScores.map {
       case (i, s) =>
-        new ItemScore(
-          item = model.itemIntStringMap(i),
-          score = s
-        )
+        new ItemScore(item = model.itemIntStringMap(i), score = s)
     }
 
     new PredictedResult(itemScores)
@@ -247,8 +245,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       categories: Option[Set[String]],
       queryList: Set[Int],
       whiteList: Option[Set[Int]],
-      blackList: Option[Set[Int]]
-  ): Boolean = {
+      blackList: Option[Set[Int]]): Boolean = {
     whiteList.map(_.contains(i)).getOrElse(true) &&
     blackList.map(!_.contains(i)).getOrElse(true) &&
     // discard items in query as well

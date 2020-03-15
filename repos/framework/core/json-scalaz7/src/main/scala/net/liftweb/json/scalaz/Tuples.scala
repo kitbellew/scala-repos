@@ -59,8 +59,10 @@ trait Tuples { this: Types =>
       def read(json: JValue) =
         json match {
           case JArray(a :: b :: c :: d :: _) =>
-            (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[
-              D](d)) { (a, b, c, d) =>
+            (
+              fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[
+                D](d)
+            ) { (a, b, c, d) =>
               (a, b, c, d)
             }
           case x =>
@@ -79,8 +81,10 @@ trait Tuples { this: Types =>
       def read(json: JValue) =
         json match {
           case JArray(a :: b :: c :: d :: e :: _) =>
-            (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[
-              D](d) |@| fromJSON[E](e)) { (a, b, c, d, e) =>
+            (
+              fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[
+                D](d) |@| fromJSON[E](e)
+            ) { (a, b, c, d, e) =>
               (a, b, c, d, e)
             }
           case x =>
@@ -99,9 +103,11 @@ trait Tuples { this: Types =>
       def read(json: JValue) =
         json match {
           case JArray(a :: b :: c :: d :: e :: f :: _) =>
-            (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[
-              D](d) |@| fromJSON[E](e) |@| fromJSON[F](f)) {
-              (a, b, c, d, e, f) => (a, b, c, d, e, f)
+            (
+              fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[
+                D](d) |@| fromJSON[E](e) |@| fromJSON[F](f)
+            ) { (a, b, c, d, e, f) =>
+              (a, b, c, d, e, f)
             }
           case x =>
             failure(UnexpectedJSONError(x, classOf[JArray])).toValidationNel

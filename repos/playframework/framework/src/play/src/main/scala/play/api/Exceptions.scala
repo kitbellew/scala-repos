@@ -16,5 +16,4 @@ case class UnexpectedException(
           .map(t => "%s: %s".format(t.getClass.getSimpleName, t.getMessage))
           .getOrElse("")
       },
-      unexpected.orNull
-    )
+      unexpected.orNull)

@@ -17,10 +17,11 @@ object JSTreeExtractors {
 
     object BlockOrAlone {
       def unapply(tree: Tree): Some[(List[Tree], Tree)] =
-        Some(tree match {
-          case Block(trees) => (trees.init, trees.last)
-          case _            => (Nil, tree)
-        })
+        Some(
+          tree match {
+            case Block(trees) => (trees.init, trees.last)
+            case _            => (Nil, tree)
+          })
     }
 
     /**
@@ -40,8 +41,7 @@ object JSTreeExtractors {
       private[jse] final def genNamedLitExtract(
           exprs: List[Tree],
           acc: List[(StringLiteral, Tree)],
-          failIfNonLit: Boolean
-      ): Option[List[(StringLiteral, Tree)]] =
+          failIfNonLit: Boolean): Option[List[(StringLiteral, Tree)]] =
         exprs match {
           case Tuple2(name: StringLiteral, value) :: xs =>
             genNamedLitExtract(xs, (name, value) :: acc, failIfNonLit)

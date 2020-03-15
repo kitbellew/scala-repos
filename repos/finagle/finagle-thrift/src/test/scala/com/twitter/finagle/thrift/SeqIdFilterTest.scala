@@ -91,10 +91,11 @@ class SeqIdFilterTest
             mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
             false))
         p.setValue(mkmsg(new TMessage("proc", TMessageType.REPLY, 1111)))
-        assert(f.poll match {
-          case Some(Throw(SeqMismatchException(1111, expected))) => true
-          case _                                                 => false
-        })
+        assert(
+          f.poll match {
+            case Some(Throw(SeqMismatchException(1111, expected))) => true
+            case _                                                 => false
+          })
       }
     }
 

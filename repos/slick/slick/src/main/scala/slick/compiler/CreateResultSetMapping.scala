@@ -27,24 +27,26 @@ class CreateResultSetMapping extends Phase {
                   "No StructType found at top level: " + t)
             }
           val gen = new AnonSymbol
-          (tpe match {
-            case CollectionType(cons, el) =>
-              ResultSetMapping(
-                gen,
-                collectionCast(ch, cons).infer(),
-                createResult(
-                  Ref(gen) :@ ch.nodeType.asCollectionType.elementType,
-                  el,
-                  syms))
-            case t =>
-              ResultSetMapping(
-                gen,
-                ch,
-                createResult(
-                  Ref(gen) :@ ch.nodeType.asCollectionType.elementType,
-                  t,
-                  syms))
-          })
+          (
+            tpe match {
+              case CollectionType(cons, el) =>
+                ResultSetMapping(
+                  gen,
+                  collectionCast(ch, cons).infer(),
+                  createResult(
+                    Ref(gen) :@ ch.nodeType.asCollectionType.elementType,
+                    el,
+                    syms))
+              case t =>
+                ResultSetMapping(
+                  gen,
+                  ch,
+                  createResult(
+                    Ref(gen) :@ ch.nodeType.asCollectionType.elementType,
+                    t,
+                    syms))
+            }
+          )
         }
         .infer()
     }
@@ -65,9 +67,10 @@ class CreateResultSetMapping extends Phase {
         case ProductType(ch) =>
           ProductNode(ch.map(f))
         case StructType(ch) =>
-          ProductNode(ch.map {
-            case (_, t) => f(t)
-          })
+          ProductNode(
+            ch.map {
+              case (_, t) => f(t)
+            })
         case t: MappedScalaType =>
           TypeMapping(f(t.baseType), t.mapper, t.classTag)
         case o @ OptionType(Type.Structural(el))
@@ -100,8 +103,8 @@ class RemoveMappedTypes extends Phase {
 
   def apply(state: CompilerState) =
     if (state.get(Phase.assignUniqueSymbols).map(_.typeMapping).getOrElse(true))
-      state.withNode(
-        removeTypeMapping(state.tree)) + (this -> state.tree.nodeType)
+      state
+        .withNode(removeTypeMapping(state.tree)) + (this -> state.tree.nodeType)
     else
       state + (this -> state.tree.nodeType)
 

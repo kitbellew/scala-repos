@@ -288,10 +288,11 @@ class CircuitBreakerSpec extends AkkaSpec with BeforeAndAfter {
     "increment failure count on callTimeout" in {
       val breaker = CircuitBreakerSpec.shortCallTimeoutCb()
 
-      val fut = breaker().withCircuitBreaker(Future {
-        Thread.sleep(150.millis.dilated.toMillis);
-        throwException
-      })
+      val fut = breaker().withCircuitBreaker(
+        Future {
+          Thread.sleep(150.millis.dilated.toMillis);
+          throwException
+        })
       checkLatch(breaker.openLatch)
       breaker().currentFailureCount should ===(1)
       // Since the timeout should have happend before the inner code finishes

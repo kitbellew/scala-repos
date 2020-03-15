@@ -97,8 +97,7 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
       expectedOutput: Seq[Seq[V]],
       numBatchesBeforeRestart: Int,
       batchDuration: Duration = Milliseconds(500),
-      stopSparkContextAfterTest: Boolean = true
-  ) {
+      stopSparkContextAfterTest: Boolean = true) {
     require(
       numBatchesBeforeRestart < expectedOutput.size,
       "Number of batches before context restart less than number of expected output " +
@@ -142,8 +141,7 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
     logInfo(
       "\n-------------------------------------------\n" +
         "        Restarting stream computation          " +
-        "\n-------------------------------------------\n"
-    )
+        "\n-------------------------------------------\n")
 
     val restartedSsc = new StreamingContext(checkpointDir)
     val afterRestartOutput = generateOutput[V](
@@ -177,8 +175,7 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
       ssc: StreamingContext,
       targetBatchTime: Time,
       checkpointDir: String,
-      stopSparkContext: Boolean
-  ): Seq[Seq[V]] = {
+      stopSparkContext: Boolean): Seq[Seq[V]] = {
     try {
       val batchDuration = ssc.graph.batchDuration
       val batchCounter = new BatchCounter(ssc)
@@ -489,8 +486,7 @@ class CheckpointSuite
         Seq(),
         Seq(("a", 2), ("b", 1)),
         Seq(("", 2)),
-        Seq()
-      ),
+        Seq()),
       3
     )
   }
@@ -812,7 +808,9 @@ class CheckpointSuite
         // with the batch time, we need to add the offset "batchDuration.milliseconds / 2".
         ssc.conf.set(
           "spark.streaming.manualClock.jump",
-          (batchDuration.milliseconds / 2 + batchDuration.milliseconds * 3).toString)
+          (
+            batchDuration.milliseconds / 2 + batchDuration.milliseconds * 3
+          ).toString)
         val oldClockTime = clock.getTimeMillis() // 15000ms
         clock = ssc.scheduler.clock.asInstanceOf[ManualClock]
         val batchCounter = new BatchCounter(ssc)
@@ -907,8 +905,7 @@ class CheckpointSuite
     // create a class which is invisible to app class loader
     val jar = TestUtils.createJarWithClasses(
       classNames = Seq("testClz"),
-      toStringValue = "testStringValue"
-    )
+      toStringValue = "testStringValue")
 
     // invisible to current class loader
     val appClassLoader = getClass.getClassLoader

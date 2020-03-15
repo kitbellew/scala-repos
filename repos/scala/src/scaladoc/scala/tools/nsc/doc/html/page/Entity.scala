@@ -31,18 +31,26 @@ trait EntityPage extends HtmlPage {
 
   def title = {
     val s = universe.settings
-    (if (!s.doctitle.isDefault)
-       s.doctitle.value + " "
-     else
-       "") +
-      (if (!s.docversion.isDefault)
-         s.docversion.value
-       else
-         "") +
-      (if ((!s.doctitle.isDefault || !s.docversion.isDefault) && tpl.qualifiedName != "_root_")
-         " - " + tpl.qualifiedName
-       else
-         "")
+    (
+      if (!s.doctitle.isDefault)
+        s.doctitle.value + " "
+      else
+        ""
+    ) +
+      (
+        if (!s.docversion.isDefault)
+          s.docversion.value
+        else
+          ""
+      ) +
+      (
+        if ((
+              !s.doctitle.isDefault || !s.docversion.isDefault
+            ) && tpl.qualifiedName != "_root_")
+          " - " + tpl.qualifiedName
+        else
+          ""
+      )
   }
 
   def headers =
@@ -228,10 +236,12 @@ trait EntityPage extends HtmlPage {
         .map(
           entityToUl(
             _,
-            (if (tpl.isPackage)
-               0
-             else
-               -1) + rootToParentLis.length))
+            (
+              if (tpl.isPackage)
+                0
+              else
+                -1
+            ) + rootToParentLis.length))
       val currSubLis = tpl.templates
         .filter(_.isPackage)
         .sortBy(_.name)
@@ -340,10 +350,12 @@ trait EntityPage extends HtmlPage {
     }
 
     <body class={
-      tpl.kind + (if (tpl.isType)
-                    " type"
-                  else
-                    " value")
+      tpl.kind + (
+        if (tpl.isType)
+          " type"
+        else
+          " value"
+      )
     }>
       <div id="definition">
         {
@@ -414,10 +426,9 @@ trait EntityPage extends HtmlPage {
             <span class="filtertype">Ordering</span>
             <ol>
               {
-          if (!universe.settings.docGroups.value || (tpl.members
-                .map(_.group)
-                .distinct
-                .length == 1))
+          if (!universe.settings.docGroups.value || (
+                tpl.members.map(_.group).distinct.length == 1
+              ))
             NodeSeq.Empty
           else
             <li class="group out"><span>Grouped</span></li>
@@ -579,33 +590,37 @@ trait EntityPage extends HtmlPage {
         <div id="inheritedMembers">
         {
       // linearization
-      NodeSeq fromSeq (for ((
-                              superTpl,
-                              superType) <- (tpl.linearizationTemplates zip tpl.linearizationTypes))
-        yield <div class="parent" name={
-          superTpl.qualifiedName
-        }>
+      NodeSeq fromSeq (
+        for ((superTpl, superType) <- (
+               tpl.linearizationTemplates zip tpl.linearizationTypes
+             ))
+          yield <div class="parent" name={
+            superTpl.qualifiedName
+          }>
               <h3>Inherited from {
-          typeToHtmlWithStupidTypes(tpl, superTpl, superType)
-        }</h3>
-            </div>)
+            typeToHtmlWithStupidTypes(tpl, superTpl, superType)
+          }</h3>
+            </div>
+      )
     }
         {
       // implicitly inherited
-      NodeSeq fromSeq (for (conversion <- (tpl.conversions))
-        yield <div class="conversion" name={
-          conversion.conversionQualifiedName
-        }>
+      NodeSeq fromSeq (
+        for (conversion <- (tpl.conversions))
+          yield <div class="conversion" name={
+            conversion.conversionQualifiedName
+          }>
               <h3>Inherited by implicit conversion {
-          conversion.conversionShortName
-        } from
+            conversion.conversionShortName
+          } from
                 {
-          typeToHtml(tpl.resultType, hasLinks = true)
-        } to {
-          typeToHtml(conversion.targetType, hasLinks = true)
-        }
+            typeToHtml(tpl.resultType, hasLinks = true)
+          } to {
+            typeToHtml(conversion.targetType, hasLinks = true)
+          }
               </h3>
-            </div>)
+            </div>
+      )
     }
         </div>
 
@@ -617,23 +632,25 @@ trait EntityPage extends HtmlPage {
         .sorted
         .map(_._2)
       // linearization
-      NodeSeq fromSeq (for (group <- orderedGroups)
-        yield <div class="group" name={
-          group
-        }>
+      NodeSeq fromSeq (
+        for (group <- orderedGroups)
+          yield <div class="group" name={
+            group
+          }>
               <h3>{
-          tpl.groupName(group)
-        }</h3>
+            tpl.groupName(group)
+          }</h3>
               {
-          tpl.groupDescription(group) match {
-            case Some(body) =>
-              <div class="comment cmt">{
-                bodyToHtml(body)
-              }</div>
-            case _ => NodeSeq.Empty
+            tpl.groupDescription(group) match {
+              case Some(body) =>
+                <div class="comment cmt">{
+                  bodyToHtml(body)
+                }</div>
+              case _ => NodeSeq.Empty
+            }
           }
-        }
-            </div>)
+            </div>
+      )
     }
         </div>
 
@@ -656,8 +673,7 @@ trait EntityPage extends HtmlPage {
       mbr: MemberEntity,
       inTpl: DocTemplateEntity,
       isParent: Boolean = false,
-      indentation: Int = 0
-  ): NodeSeq = {
+      indentation: Int = 0): NodeSeq = {
     // Sometimes it's same, do we need signatureCompat still?
     val sig =
       if (mbr.signature == mbr.signatureCompat) {
@@ -682,10 +698,12 @@ trait EntityPage extends HtmlPage {
         "pub"
     }
       class={
-      s"indented$indentation " + (if (mbr eq inTpl)
-                                    "current"
-                                  else
-                                    "")
+      s"indented$indentation " + (
+        if (mbr eq inTpl)
+          "current"
+        else
+          ""
+      )
     }
       data-isabs={
       mbr.isAbstract.toString
@@ -851,13 +869,15 @@ trait EntityPage extends HtmlPage {
           NodeSeq.Empty
         else {
           <dl class="paramcmts block">{
-            paramCommentToHtml(cmtedPrs, comment) ++ (comment.result match {
-              case None => NodeSeq.Empty
-              case Some(cmt) =>
-                <dt>returns</dt><dd class="cmt">{
-                  bodyToHtml(cmt)
-                }</dd>
-            })
+            paramCommentToHtml(cmtedPrs, comment) ++ (
+              comment.result match {
+                case None => NodeSeq.Empty
+                case Some(cmt) =>
+                  <dt>returns</dt><dd class="cmt">{
+                    bodyToHtml(cmt)
+                  }</dd>
+              }
+            )
           }</dl>
         }
       }
@@ -901,9 +921,9 @@ trait EntityPage extends HtmlPage {
                     var index = 0
                     constraints map { constraint =>
                       scala.xml.Text({
-                        index += 1;
-                        index
-                      } + ". ") ++ constraintToHtml(constraint) ++ <br/>
+                          index += 1;
+                          index
+                        } + ". ") ++ constraintToHtml(constraint) ++ <br/>
                     }
                   }
               }
@@ -931,7 +951,9 @@ trait EntityPage extends HtmlPage {
                 val params =
                   mbr match {
                     case d: Def =>
-                      d.valueParams map (_ map (_ name) mkString ("(", ", ", ")")) mkString
+                      d.valueParams map (
+                        _ map (_ name) mkString ("(", ", ", ")")
+                      ) mkString
                     case _ => "" // no parameters
                   }
                 <br/> ++ scala.xml.Text(
@@ -1059,7 +1081,9 @@ trait EntityPage extends HtmlPage {
     val sourceLink: NodeSeq =
       mbr match {
         case dtpl: DocTemplateEntity
-            if (isSelf && dtpl.sourceUrl.isDefined && dtpl.inSource.isDefined && !isReduced) =>
+            if (
+              isSelf && dtpl.sourceUrl.isDefined && dtpl.inSource.isDefined && !isReduced
+            ) =>
           val (absFile, _) = dtpl.inSource.get
           <dt>Source</dt>
         <dd>{
@@ -1719,8 +1743,7 @@ object EntityPage {
       uni: doc.Universe,
       gen: DiagramGenerator,
       docTpl: DocTemplateEntity,
-      rep: ScalaDocReporter
-  ): EntityPage =
+      rep: ScalaDocReporter): EntityPage =
     new EntityPage {
       def universe = uni
       def generator = gen

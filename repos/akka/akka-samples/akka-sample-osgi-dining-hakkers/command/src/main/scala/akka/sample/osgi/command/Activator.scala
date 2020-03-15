@@ -30,9 +30,10 @@ class Activator extends BundleActivator {
     logServiceTracker.open()
     val service = Option(
       logServiceTracker.getService.asInstanceOf[DiningHakkersService])
-    service.foreach(startHakker(
-      _,
-      context.getBundle.getSymbolicName + ":" + context.getBundle.getBundleId))
+    service.foreach(
+      startHakker(
+        _,
+        context.getBundle.getSymbolicName + ":" + context.getBundle.getBundleId))
   }
 
   def startHakker(service: DiningHakkersService, name: String) {

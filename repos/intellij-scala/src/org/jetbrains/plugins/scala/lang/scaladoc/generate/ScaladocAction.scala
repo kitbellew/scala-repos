@@ -83,8 +83,8 @@ class ScaladocAction
       project: Project,
       dialog: BaseAnalysisActionDialog): JComponent = {
     configurationDialog = new ScaladocConsoleRunConfigurationForm(project)
-    configurationDialog.getOutputDirChooser.getDocument
-      .addDocumentListener(new DocumentAdapter() {
+    configurationDialog.getOutputDirChooser.getDocument.addDocumentListener(
+      new DocumentAdapter() {
         def textChanged(e: DocumentEvent) {
           updateAvailability(dialog)
         }

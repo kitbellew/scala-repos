@@ -92,14 +92,16 @@ object IListTest extends SpecLite {
 
   "mapAccumLeft" ! forAll { xs: IList[Int] =>
     val f = (_: Int) + 1
-    xs.mapAccumLeft(IList[Int]())((c, a) => (c :+ a, f(a))) must_=== (xs, xs
-      .map(f))
+    xs.mapAccumLeft(IList[Int]())((c, a) => (c :+ a, f(a))) must_=== (
+      xs, xs.map(f)
+    )
   }
 
   "mapAccumRight" ! forAll { xs: IList[Int] =>
     val f = (_: Int) + 1
-    xs.mapAccumRight(IList[Int]())((c, a) =>
-      (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
+    xs.mapAccumRight(IList[Int]())((c, a) => (c :+ a, f(a))) must_=== (
+      xs.reverse, xs.map(f)
+    )
   }
 
   // And some other tests that List doesn't have
@@ -247,10 +249,12 @@ object IListTest extends SpecLite {
   }
 
   "initOption" ! forAll { ns: IList[Int] =>
-    ns.initOption.map(_.toList) must_=== (try Some(ns.toList.init)
-    catch {
-      case e: Exception => None
-    })
+    ns.initOption.map(_.toList) must_=== (
+      try Some(ns.toList.init)
+      catch {
+        case e: Exception => None
+      }
+    )
   }
 
   "inits" ! forAll { ns: IList[Int] =>
@@ -329,17 +333,21 @@ object IListTest extends SpecLite {
   }
 
   "reduceLeftOption" ! forAll { (ns: IList[Int], f: (Int, Int) => Int) =>
-    ns.reduceLeftOption(f) must_=== (try Some(ns.toList.reduceLeft(f))
-    catch {
-      case e: Exception => None
-    })
+    ns.reduceLeftOption(f) must_=== (
+      try Some(ns.toList.reduceLeft(f))
+      catch {
+        case e: Exception => None
+      }
+    )
   }
 
   "reduceRightOption" ! forAll { (ns: IList[Int], f: (Int, Int) => Int) =>
-    ns.reduceRightOption(f) must_=== (try Some(ns.toList.reduceRight(f))
-    catch {
-      case e: Exception => None
-    })
+    ns.reduceRightOption(f) must_=== (
+      try Some(ns.toList.reduceRight(f))
+      catch {
+        case e: Exception => None
+      }
+    )
   }
 
   "reverse" ! forAll { ns: IList[Int] =>
@@ -397,10 +405,12 @@ object IListTest extends SpecLite {
   }
 
   "tailOption" ! forAll { ns: IList[Int] =>
-    ns.tailOption.map(_.toList) must_=== (try Some(ns.toList.tail)
-    catch {
-      case e: Exception => None
-    })
+    ns.tailOption.map(_.toList) must_=== (
+      try Some(ns.toList.tail)
+      catch {
+        case e: Exception => None
+      }
+    )
   }
 
   "take" ! forAll { (ns: IList[Int], n: Byte) =>

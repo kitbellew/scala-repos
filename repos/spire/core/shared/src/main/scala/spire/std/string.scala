@@ -30,10 +30,12 @@ object LevenshteinDistance extends MetricSpace[String, Int] with Serializable {
       row1(0) = i + 1
       val c = a.charAt(i)
       cfor(1)(_ < row1.length, _ + 1) { j =>
-        val d = row0(j - 1) + (if (c == b.charAt(j - 1))
-                                 0
-                               else
-                                 1)
+        val d = row0(j - 1) + (
+          if (c == b.charAt(j - 1))
+            0
+          else
+            1
+        )
         val h = row1(j - 1) + 1
         val v = row0(j) + 1
 

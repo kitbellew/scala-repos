@@ -40,8 +40,8 @@ import org.apache.spark.streaming.rdd.{MapWithStateRDD, MapWithStateRDDRecord}
   * @tparam MappedType Class of the mapped data
   */
 @Experimental
-sealed abstract class MapWithStateDStream[KeyType, ValueType, StateType,
-MappedType: ClassTag](ssc: StreamingContext)
+sealed abstract class MapWithStateDStream[
+    KeyType, ValueType, StateType, MappedType: ClassTag](ssc: StreamingContext)
     extends DStream[MappedType](ssc) {
 
   /** Return a pair DStream where each RDD is the snapshot of the state of all the keys. */
@@ -175,8 +175,7 @@ private[streaming] class InternalMapWithStateDStream[
               .getInitialStateRDD()
               .getOrElse(new EmptyRDD[(K, S)](ssc.sparkContext)),
             partitioner,
-            validTime
-          )
+            validTime)
       }
 
     // Compute the new state RDD with previous state RDD and partitioned data RDD

@@ -55,8 +55,7 @@ private[finagle] trait StringClient {
       with StringRichClient {
     protected def copy1(
         stack: Stack[ServiceFactory[String, String]] = this.stack,
-        params: Stack.Params = this.params
-    ): Client = copy(stack, params)
+        params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected type In = String
     protected type Out = String
@@ -65,8 +64,8 @@ private[finagle] trait StringClient {
       Netty3Transporter(StringClientPipeline, params)
 
     protected def newDispatcher(
-        transport: Transport[In, Out]
-    ): Service[String, String] = new SerialClientDispatcher(transport)
+        transport: Transport[In, Out]): Service[String, String] =
+      new SerialClientDispatcher(transport)
   }
 
   val stringClient = Client()

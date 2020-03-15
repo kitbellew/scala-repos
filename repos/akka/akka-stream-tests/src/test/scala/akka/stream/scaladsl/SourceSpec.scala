@@ -160,17 +160,18 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       val out = TestSubscriber.manualProbe[Int]
 
       val s = Source
-        .fromGraph(GraphDSL.create(source, source, source, source, source)(
-          Seq(_, _, _, _, _)) { implicit b ⇒ (i0, i1, i2, i3, i4) ⇒
-          import GraphDSL.Implicits._
-          val m = b.add(Merge[Int](5))
-          i0.out ~> m.in(0)
-          i1.out ~> m.in(1)
-          i2.out ~> m.in(2)
-          i3.out ~> m.in(3)
-          i4.out ~> m.in(4)
-          SourceShape(m.out)
-        })
+        .fromGraph(
+          GraphDSL.create(source, source, source, source, source)(
+            Seq(_, _, _, _, _)) { implicit b ⇒ (i0, i1, i2, i3, i4) ⇒
+            import GraphDSL.Implicits._
+            val m = b.add(Merge[Int](5))
+            i0.out ~> m.in(0)
+            i1.out ~> m.in(1)
+            i2.out ~> m.in(2)
+            i3.out ~> m.in(3)
+            i4.out ~> m.in(4)
+            SourceShape(m.out)
+          })
         .to(Sink.fromSubscriber(out))
         .run()
 
@@ -254,10 +255,10 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
   }
 
   "Unfold Source" must {
-    val expected = List(9227465, 5702887, 3524578, 2178309, 1346269, 832040,
-      514229, 317811, 196418, 121393, 75025, 46368, 28657, 17711, 10946, 6765,
-      4181, 2584, 1597, 987, 610, 377, 233, 144, 89, 55, 34, 21, 13, 8, 5, 3, 2,
-      1, 1, 0)
+    val expected = List(
+      9227465, 5702887, 3524578, 2178309, 1346269, 832040, 514229, 317811,
+      196418, 121393, 75025, 46368, 28657, 17711, 10946, 6765, 4181, 2584, 1597,
+      987, 610, 377, 233, 144, 89, 55, 34, 21, 13, 8, 5, 3, 2, 1, 1, 0)
 
     "generate a finite fibonacci sequence" in {
       Source

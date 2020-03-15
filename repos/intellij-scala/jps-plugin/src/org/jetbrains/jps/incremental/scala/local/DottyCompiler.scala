@@ -64,9 +64,10 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
   }
 
   private val emptyPrintStream =
-    new PrintStream(new OutputStream {
-      override def write(b: Int): Unit = {}
-    })
+    new PrintStream(
+      new OutputStream {
+        override def write(b: Int): Unit = {}
+      })
 
   //options for these settings should be in the separate entry in the array of compiler arguments
   val argsToSplit = Set(

@@ -31,11 +31,13 @@ class ExpandSums extends Phase {
     def tr(
         tree: Node,
         oldDiscCandidates: Set[(TypeSymbol, List[TermSymbol])]): Node = {
-      val discCandidates = oldDiscCandidates ++ (tree match {
-        case Filter(_, _, p)     => collectDiscriminatorCandidates(p)
-        case Bind(_, j: Join, _) => collectDiscriminatorCandidates(j.on)
-        case _                   => Set.empty
-      })
+      val discCandidates = oldDiscCandidates ++ (
+        tree match {
+          case Filter(_, _, p)     => collectDiscriminatorCandidates(p)
+          case Bind(_, j: Join, _) => collectDiscriminatorCandidates(j.on)
+          case _                   => Set.empty
+        }
+      )
       val tree2 = tree.mapChildren(tr(_, discCandidates), keepType = true)
       val tree3 =
         tree2 match {
@@ -166,13 +168,15 @@ class ExpandSums extends Phase {
     logger.debug("translateJoin", bind)
     val Bind(
       bsym,
-      (join @ Join(
-        lsym,
-        rsym,
-        left :@ CollectionType(_, leftElemType),
-        right :@ CollectionType(_, rightElemType),
-        jt,
-        on)) :@ CollectionType(cons, elemType),
+      (
+        join @ Join(
+          lsym,
+          rsym,
+          left :@ CollectionType(_, leftElemType),
+          right :@ CollectionType(_, rightElemType),
+          jt,
+          on)
+      ) :@ CollectionType(cons, elemType),
       pure) = bind
     val lComplex = !leftElemType.structural.isInstanceOf[AtomicType]
     val rComplex = !rightElemType.structural.isInstanceOf[AtomicType]
@@ -210,17 +214,21 @@ class ExpandSums extends Phase {
           case _             => Vector.empty
         }
       val local = find(t, Nil).sortBy { ss =>
-        (if (global contains ss)
-           3
-         else
-           1) * (ss.head match {
-          case f: FieldSymbol =>
-            if (f.options contains ColumnOption.PrimaryKey)
-              -2
-            else
-              -1
-          case _ => 0
-        })
+        (
+          if (global contains ss)
+            3
+          else
+            1
+        ) * (
+          ss.head match {
+            case f: FieldSymbol =>
+              if (f.options contains ColumnOption.PrimaryKey)
+                -2
+              else
+                -1
+            case _ => 0
+          }
+        )
       }
       logger.debug(
         "Local candidates: " + local.map(Path.toString).mkString(", "))
@@ -351,17 +359,20 @@ class ExpandSums extends Phase {
 
   /** Create a Node representing a structure of null values of the given Type */
   def buildMultiColumnNone(tpe: Type): Node =
-    (tpe.structural match {
-      case ProductType(ch) => ProductNode(ch.map(buildMultiColumnNone))
-      case StructType(ch) =>
-        StructNode(ch.map {
-          case (sym, t) => (sym, buildMultiColumnNone(t))
-        })
-      case OptionType(ch) => LiteralNode(tpe, None)
-      case t =>
-        throw new SlickException(
-          "Unexpected non-Option type in multi-column None")
-    }) :@ tpe
+    (
+      tpe.structural match {
+        case ProductType(ch) => ProductNode(ch.map(buildMultiColumnNone))
+        case StructType(ch) =>
+          StructNode(
+            ch.map {
+              case (sym, t) => (sym, buildMultiColumnNone(t))
+            })
+        case OptionType(ch) => LiteralNode(tpe, None)
+        case t =>
+          throw new SlickException(
+            "Unexpected non-Option type in multi-column None")
+      }
+    ) :@ tpe
 
   /** Perform the sum expansion on a Type */
   def trType(tpe: Type): Type = {
@@ -465,8 +476,9 @@ class ExpandSums extends Phase {
           v
         case Library.SilentCast(Library.SilentCast(ch)) :@ tpe =>
           tr(Library.SilentCast.typed(tpe, ch).infer())
-        case Library.SilentCast(LiteralNode(None)) :@ (tpe @ OptionType
-              .Primitive(_)) =>
+        case Library.SilentCast(LiteralNode(None)) :@ (
+              tpe @ OptionType.Primitive(_)
+            ) =>
           LiteralNode(tpe, None).infer()
 
         // Expand multi-column IfThenElse
@@ -492,11 +504,14 @@ class ExpandSums extends Phase {
           c
 
         // Fix Untyped nulls in else clauses
-        case cond @ IfThenElse(clauses) if (clauses.last match {
-              case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
-                true;
-              case _ => false
-            }) =>
+        case cond @ IfThenElse(clauses)
+            if (
+              clauses.last match {
+                case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
+                  true;
+                case _ => false
+              }
+            ) =>
           cond.copy(clauses.init :+ LiteralNode(cond.nodeType, None))
 
         // Resolve Selects into ProductNodes and StructNodes

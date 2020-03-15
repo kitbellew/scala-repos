@@ -185,12 +185,11 @@ case class Game(
     val (history, situation) = (game.board.history, game.situation)
 
     def copyPlayer(player: Player) =
-      player.copy(
-        blurs = math.min(
-          playerMoves(player.color),
-          player.blurs + (blur && moveOrDrop
-            .fold(_.color, _.color) == player.color).fold(1, 0))
-      )
+      player.copy(blurs = math.min(
+        playerMoves(player.color),
+        player.blurs + (
+          blur && moveOrDrop.fold(_.color, _.color) == player.color
+        ).fold(1, 0)))
 
     val updated = copy(
       whitePlayer = copyPlayer(whitePlayer),
@@ -213,8 +212,7 @@ case class Game(
           moveTimes :+ {
             (nowTenths - lmt - (lag.??(_.toMillis) / 100)).toInt max 0
           }
-        }
-      ),
+        }),
       status = situation.status | status,
       clock = game.clock
     )
@@ -234,14 +232,12 @@ case class Game(
 
     val events = moveOrDrop.fold(
       Event.Move(_, situation, state, clockEvent, updated.crazyData),
-      Event.Drop(_, situation, state, clockEvent, updated.crazyData)
-    ) :: {
+      Event.Drop(_, situation, state, clockEvent, updated.crazyData)) :: {
       // abstraction leak, I know.
       (updated.variant.threeCheck && situation.check) ?? List(
         Event.CheckCount(
           white = updated.checkCount.white,
-          black = updated.checkCount.black
-        ))
+          black = updated.checkCount.black))
     }.toList
 
     Progress(this, updated, events)
@@ -263,8 +259,7 @@ case class Game(
       copy(
         status = Status.Started,
         mode = Mode(mode.rated && userIds.distinct.size == 2),
-        updatedAt = DateTime.now.some
-      ))
+        updatedAt = DateTime.now.some))
 
   def correspondenceClock: Option[CorrespondenceClock] =
     daysPerTurn map { days =>
@@ -313,10 +308,7 @@ case class Game(
   def nonAi = !hasAi
 
   def mapPlayers(f: Player => Player) =
-    copy(
-      whitePlayer = f(whitePlayer),
-      blackPlayer = f(blackPlayer)
-    )
+    copy(whitePlayer = f(whitePlayer), blackPlayer = f(blackPlayer))
 
   def playerCanOfferDraw(color: Color) =
     started && playable &&
@@ -381,8 +373,7 @@ case class Game(
         status = status,
         whitePlayer = whitePlayer finish (winner == Some(White)),
         blackPlayer = blackPlayer finish (winner == Some(Black)),
-        clock = clock map (_.stop)
-      ),
+        clock = clock map (_.stop)),
       List(Event.End(winner)) ::: clock.??(c => List(Event.Clock(c)))
     )
 
@@ -485,10 +476,7 @@ case class Game(
   def playerHasMoved(color: Color) = playerMoves(color) > 0
 
   def playerBlurPercent(color: Color): Int =
-    (playedTurns > 5).fold(
-      (player(color).blurs * 100) / playerMoves(color),
-      0
-    )
+    (playedTurns > 5).fold((player(color).blurs * 100) / playerMoves(color), 0)
 
   def isBeingPlayed = !isPgnImport && !finishedOrAborted
 
@@ -498,9 +486,11 @@ case class Game(
   def unplayed = !bothPlayersHaveMoved && (createdAt isBefore Game.unplayedDate)
 
   def abandoned =
-    (status <= Status.Started) && ((updatedAt | createdAt) isBefore hasAi.fold(
-      Game.aiAbandonedDate,
-      Game.abandonedDate))
+    (status <= Status.Started) && (
+      (updatedAt | createdAt) isBefore hasAi.fold(
+        Game.aiAbandonedDate,
+        Game.abandonedDate)
+    )
 
   def forecastable = started && playable && isCorrespondence && !hasAi
 
@@ -607,8 +597,8 @@ object Game {
       turns = game.turns,
       startedAtTurn = game.startedAtTurn,
       clock = game.clock,
-      castleLastMoveTime = CastleLastMoveTime.init.copy(castles =
-        game.board.history.castles),
+      castleLastMoveTime = CastleLastMoveTime.init
+        .copy(castles = game.board.history.castles),
       daysPerTurn = daysPerTurn,
       mode = mode,
       variant = variant,

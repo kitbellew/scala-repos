@@ -421,15 +421,17 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
     }
 
     // Metastore schema contains additional non-nullable fields.
-    assert(intercept[Throwable] {
-      ParquetRelation.mergeMetastoreParquetSchema(
-        StructType(
-          Seq(
-            StructField("uppercase", DoubleType, nullable = false),
-            StructField("lowerCase", BinaryType, nullable = false))),
-        StructType(Seq(StructField("UPPERCase", IntegerType, nullable = true)))
-      )
-    }.getMessage.contains("detected conflicting schemas"))
+    assert(
+      intercept[Throwable] {
+        ParquetRelation.mergeMetastoreParquetSchema(
+          StructType(
+            Seq(
+              StructField("uppercase", DoubleType, nullable = false),
+              StructField("lowerCase", BinaryType, nullable = false))),
+          StructType(
+            Seq(StructField("UPPERCase", IntegerType, nullable = true)))
+        )
+      }.getMessage.contains("detected conflicting schemas"))
 
     // Conflicting non-nullable field names
     intercept[Throwable] {
@@ -443,11 +445,12 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
     // Standard case: Metastore schema contains additional nullable fields not present
     // in the Parquet file schema.
     assertResult(
-      StructType(Seq(
-        StructField("firstField", StringType, nullable = true),
-        StructField("secondField", StringType, nullable = true),
-        StructField("thirdfield", StringType, nullable = true)
-      ))) {
+      StructType(
+        Seq(
+          StructField("firstField", StringType, nullable = true),
+          StructField("secondField", StringType, nullable = true),
+          StructField("thirdfield", StringType, nullable = true)
+        ))) {
       ParquetRelation.mergeMetastoreParquetSchema(
         StructType(
           Seq(
@@ -464,20 +467,21 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
     // Merge should fail if the Metastore contains any additional fields that are not
     // nullable.
-    assert(intercept[Throwable] {
-      ParquetRelation.mergeMetastoreParquetSchema(
-        StructType(
-          Seq(
-            StructField("firstfield", StringType, nullable = true),
-            StructField("secondfield", StringType, nullable = true),
-            StructField("thirdfield", StringType, nullable = false)
-          )),
-        StructType(
-          Seq(
-            StructField("firstField", StringType, nullable = true),
-            StructField("secondField", StringType, nullable = true)))
-      )
-    }.getMessage.contains("detected conflicting schemas"))
+    assert(
+      intercept[Throwable] {
+        ParquetRelation.mergeMetastoreParquetSchema(
+          StructType(
+            Seq(
+              StructField("firstfield", StringType, nullable = true),
+              StructField("secondfield", StringType, nullable = true),
+              StructField("thirdfield", StringType, nullable = false)
+            )),
+          StructType(
+            Seq(
+              StructField("firstField", StringType, nullable = true),
+              StructField("secondField", StringType, nullable = true)))
+        )
+      }.getMessage.contains("detected conflicting schemas"))
   }
 
   test("schema merging failure error message") {
@@ -629,15 +633,17 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type - 4",
     StructType(
-      Seq(StructField(
-        "f1",
-        ArrayType(
-          StructType(Seq(
-            StructField("str", StringType, nullable = false),
-            StructField("num", IntegerType, nullable = false))),
-          containsNull = false),
-        nullable = true
-      ))),
+      Seq(
+        StructField(
+          "f1",
+          ArrayType(
+            StructType(
+              Seq(
+                StructField("str", StringType, nullable = false),
+                StructField("num", IntegerType, nullable = false))),
+            containsNull = false),
+          nullable = true
+        ))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group element {
@@ -1182,13 +1188,11 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         actual.checkContains(expected)
       } catch {
         case cause: Throwable =>
-          fail(
-            s"""Expected clipped schema:
+          fail(s"""Expected clipped schema:
              |$expected
              |Actual clipped schema:
              |$actual
-           """.stripMargin,
-            cause)
+           """.stripMargin, cause)
       }
     }
   }

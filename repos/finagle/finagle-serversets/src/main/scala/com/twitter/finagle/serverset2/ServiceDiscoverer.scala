@@ -71,8 +71,7 @@ private[serverset2] class ServiceDiscoverer(
     varZkSession: Var[ZkSession],
     val statsReceiver: StatsReceiver,
     healthStabilizationEpoch: Epoch,
-    timer: Timer
-) {
+    timer: Timer) {
   import ServiceDiscoverer._
 
   private[this] val zkEntriesReadStat = statsReceiver
@@ -131,8 +130,7 @@ private[serverset2] class ServiceDiscoverer(
       path: String,
       cache: ZkNodeDataCache[Entity],
       readStat: Stat,
-      glob: String
-  ): Activity[Seq[Entity]] = {
+      glob: String): Activity[Seq[Entity]] = {
     actZkSession.flatMap {
       case zkSession =>
         cache.setSession(zkSession)
@@ -152,57 +150,58 @@ private[serverset2] class ServiceDiscoverer(
       parentPath: String,
       paths: Seq[String],
       cache: ZkNodeDataCache[Entity],
-      readStat: Stat
-  ): Activity[Seq[Entity]] =
-    Activity(Var.async[Activity.State[Seq[Entity]]](Activity.Pending) { u =>
-      @volatile var closed = false
+      readStat: Stat): Activity[Seq[Entity]] =
+    Activity(
+      Var.async[Activity.State[Seq[Entity]]](Activity.Pending) { u =>
+        @volatile var closed = false
 
-      def loop(): Future[Unit] = {
-        if (!closed) {
-          @volatile var seenFailures = false
-          Stat.timeFuture(readStat) {
-            Future
-              .collectToTry(paths.map { path =>
-                // note if any failed
-                cache.get(path).onFailure { _ =>
-                  seenFailures = true
+        def loop(): Future[Unit] = {
+          if (!closed) {
+            @volatile var seenFailures = false
+            Stat.timeFuture(readStat) {
+              Future
+                .collectToTry(
+                  paths.map { path =>
+                    // note if any failed
+                    cache.get(path).onFailure { _ =>
+                      seenFailures = true
+                    }
+                  })
+                // We end up with a Seq[Seq[Entity]] here, b/c cache.get() returns a Seq[Entity]
+                // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
+                .map(tries =>
+                  tries.collect {
+                    case Return(e) => e
+                  }.flatten)
+                .map { seq =>
+                  // if we have *any* results or no-failure, we consider it a success
+                  if (seenFailures && seq.isEmpty)
+                    u() = Activity.Failed(EntryLookupFailureException)
+                  else
+                    u() = Activity.Ok(seq)
                 }
-              })
-              // We end up with a Seq[Seq[Entity]] here, b/c cache.get() returns a Seq[Entity]
-              // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
-              .map(tries =>
-                tries.collect {
-                  case Return(e) => e
-                }.flatten)
-              .map { seq =>
-                // if we have *any* results or no-failure, we consider it a success
-                if (seenFailures && seq.isEmpty)
-                  u() = Activity.Failed(EntryLookupFailureException)
-                else
-                  u() = Activity.Ok(seq)
-              }
-              .ensure {
-                if (seenFailures) {
-                  log.warning(
-                    s"Failed to read all data for $parentPath. Retrying in $retryJitter")
-                  timer.doLater(retryJitter) {
-                    loop()
+                .ensure {
+                  if (seenFailures) {
+                    log.warning(
+                      s"Failed to read all data for $parentPath. Retrying in $retryJitter")
+                    timer.doLater(retryJitter) {
+                      loop()
+                    }
                   }
                 }
-              }
+            }
           }
+
+          Future.Done
         }
 
-        Future.Done
-      }
+        loop()
 
-      loop()
-
-      Closable.make { _ =>
-        closed = true
-        Future.Done
-      }
-    })
+        Closable.make { _ =>
+          closed = true
+          Future.Done
+        }
+      })
 
   // protected for testing
   protected[this] val entriesOf: String => Activity[Seq[Entry]] = Memoize {

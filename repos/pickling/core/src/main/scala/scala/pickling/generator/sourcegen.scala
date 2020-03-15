@@ -105,13 +105,15 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
       val tpe = x.parent.tpe[c.universe.type](c.universe)
       val clazzName = newTermName("clazz")
       val compileTimeDispatch: List[CaseDef] =
-        (x.subClasses map { subtpe =>
-          val tpe = subtpe.tpe[c.universe.type](c.universe)
-          CaseDef(
-            Bind(clazzName, Ident(nme.WILDCARD)),
-            q"clazz == classOf[$tpe]",
-            createPickler(tpe, q"builder"))
-        })(collection.breakOut)
+        (
+          x.subClasses map { subtpe =>
+            val tpe = subtpe.tpe[c.universe.type](c.universe)
+            CaseDef(
+              Bind(clazzName, Ident(nme.WILDCARD)),
+              q"clazz == classOf[$tpe]",
+              createPickler(tpe, q"builder"))
+          }
+        )(collection.breakOut)
 
       val failDispatch = {
         val dispatcheeNames = x.subClasses.map(_.className).mkString(", ")

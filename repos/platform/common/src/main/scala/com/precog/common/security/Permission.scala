@@ -170,14 +170,16 @@ object Permission {
         permission: WrittenByPermission,
         candidate: WrittenByPermission): Boolean = {
       permission.path.isEqualOrParentOf(candidate.path) &&
-      (permission.writtenBy match {
-        case WrittenByAny => true
-        case WrittenByAccount(accountId) =>
-          candidate.writtenBy match {
-            case WrittenByAny          => false
-            case WrittenByAccount(cid) => cid == accountId
-          }
-      })
+      (
+        permission.writtenBy match {
+          case WrittenByAny => true
+          case WrittenByAccount(accountId) =>
+            candidate.writtenBy match {
+              case WrittenByAny          => false
+              case WrittenByAccount(cid) => cid == accountId
+            }
+        }
+      )
     }
   }
 
@@ -204,8 +206,7 @@ object Permission {
         JObject(
           "accessType" -> accessType(p).serialize,
           "path" -> p.path.serialize,
-          "ownerAccountIds" -> ownerAccountIds(p).serialize
-        )
+          "ownerAccountIds" -> ownerAccountIds(p).serialize)
       }
     }
 
@@ -216,17 +217,19 @@ object Permission {
           pathV: Validation[Error, Path])(
           f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
         (obj \? "ownerAccountIds") map { ids =>
-          Apply[({
-            type l[a] = Validation[Error, a]
-          })#l].zip.zip(pathV, ids.validated[Set[AccountId]]) flatMap {
+          Apply[
+            ({
+              type l[a] = Validation[Error, a]
+            })#l].zip.zip(pathV, ids.validated[Set[AccountId]]) flatMap {
             case (path, accountIds) =>
               if (accountIds.isEmpty)
                 success(f(path, WrittenByAny))
               else if (accountIds.size == 1)
                 success(f(path, WrittenByAccount(accountIds.head)))
               else
-                failure(Invalid(
-                  "Cannot extract read permission for more than one account ID."))
+                failure(
+                  Invalid(
+                    "Cannot extract read permission for more than one account ID."))
           }
         } getOrElse {
           pathV map {

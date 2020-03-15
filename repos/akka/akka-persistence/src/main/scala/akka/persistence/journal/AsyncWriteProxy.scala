@@ -102,11 +102,13 @@ private[persistence] trait AsyncWriteProxy
       fromSequenceNr: Long): Future[Long] =
     store match {
       case Some(s) ⇒
-        (s ? ReplayMessages(
-          persistenceId,
-          fromSequenceNr = 0L,
-          toSequenceNr = 0L,
-          max = 0L)).map {
+        (
+          s ? ReplayMessages(
+            persistenceId,
+            fromSequenceNr = 0L,
+            toSequenceNr = 0L,
+            max = 0L)
+        ).map {
           case ReplaySuccess(highest) ⇒ highest
         }
       case None ⇒ storeNotInitialized
@@ -171,8 +173,9 @@ private class ReplayMediator(
       replayCompletionPromise.failure(cause)
       context.stop(self)
     case ReceiveTimeout ⇒
-      replayCompletionPromise.failure(new AsyncReplayTimeoutException(
-        s"replay timed out after ${replayTimeout.toSeconds} seconds inactivity"))
+      replayCompletionPromise.failure(
+        new AsyncReplayTimeoutException(
+          s"replay timed out after ${replayTimeout.toSeconds} seconds inactivity"))
       context.stop(self)
   }
 }

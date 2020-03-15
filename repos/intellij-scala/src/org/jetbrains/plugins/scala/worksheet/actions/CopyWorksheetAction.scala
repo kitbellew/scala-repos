@@ -57,10 +57,12 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
     val rightDocument = viewer.getDocument
 
     def append2Result(textLeft: String, textRight: String, sym: String) {
-      result append (if (textLeft.length < CopyWorksheetAction.COPY_BORDER)
-                       textLeft
-                     else
-                       textLeft.substring(0, CopyWorksheetAction.COPY_BORDER))
+      result append (
+        if (textLeft.length < CopyWorksheetAction.COPY_BORDER)
+          textLeft
+        else
+          textLeft.substring(0, CopyWorksheetAction.COPY_BORDER)
+      )
       for (_ <- 1 to (CopyWorksheetAction.COPY_BORDER - textLeft.length))
         result append sym
       result append "//"

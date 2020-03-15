@@ -25,5 +25,4 @@ case class SourceLocation(
     /** The line number */
     val line: Int,
     /** The character offset */
-    val charOffset: Int
-)
+    val charOffset: Int)

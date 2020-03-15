@@ -62,8 +62,7 @@ object ToHeadUsages extends Specification {
         "/htmlFragmentWithHead",
         html =>
           html.getElementByXPath("/html/head/script[@id='fromFrag']") must not(
-            beNull when jetty.running)
-      )
+            beNull when jetty.running))
     }
 
     "merge <head> from html fragment does not include head element in body" in {
@@ -72,8 +71,7 @@ object ToHeadUsages extends Specification {
         html =>
           html
             .getElementsByXPath("/html/body/script[@id='fromFrag']")
-            .size must (be_==(0) when jetty.running)
-      )
+            .size must (be_==(0) when jetty.running))
     }
 
     "merge <head> from snippet" in {
@@ -82,8 +80,7 @@ object ToHeadUsages extends Specification {
         html =>
           html.getElementByXPath(
             "/html/head/script[@src='snippet.js']") must not(
-            beNull when jetty.running)
-      )
+            beNull when jetty.running))
     }
 
     "not merge for bodyless html" in {
@@ -92,8 +89,7 @@ object ToHeadUsages extends Specification {
         html => {
           html.getElementById("fruit") must not(beNull when jetty.running)
           html.getElementById("bat") must not(beNull when jetty.running)
-        }
-      )
+        })
     }
 
     "not merge for headless bodyless html" in {
@@ -101,8 +97,7 @@ object ToHeadUsages extends Specification {
         "/h1",
         html => {
           html.getElementById("h1") must not(beNull when jetty.running)
-        }
-      )
+        })
     }
 
     /*
@@ -122,8 +117,7 @@ object ToHeadUsages extends Specification {
         "/non_html",
         html => {
           html.getElementById("frog") must not(beNull when jetty.running)
-        }
-      )
+        })
     }
 
   }
@@ -163,8 +157,7 @@ object ToHeadUsages extends Specification {
         "/deferred",
         html => {
           html.getElementById("second") must not(beNull when jetty.running)
-        }
-      )
+        })
     }
 
     "not deferred not in actor" in {
@@ -174,8 +167,7 @@ object ToHeadUsages extends Specification {
           html.getElementByXPath(
             "/html/body/span[@id='whack1']/span[@id='actor_false']") must not(
             beNull when jetty.running)
-        }
-      )
+        })
     }
 
     "deferred in actor" in {
@@ -185,14 +177,11 @@ object ToHeadUsages extends Specification {
           html.getElementByXPath(
             "/html/body/span[@id='whack2']/span[@id='actor_true']") must not(
             beNull when jetty.running)
-        }
-      )
+        })
     }
 
     "Exclude from context rewriting" in {
-      val first = http.Req.fixHtml(
-        "/wombat",
-        <span>
+      val first = http.Req.fixHtml("/wombat", <span>
           <a href="/foo" id="foo">foo</a>
           <a href="/bar" id="bar">bar</a>
         </span>)
@@ -201,26 +190,24 @@ object ToHeadUsages extends Specification {
 
       val second =
         LiftRules.excludePathFromContextPathRewriting.doWith(excludeBar _) {
-          Req.fixHtml(
-            "/wombat",
-            <span>
+          Req.fixHtml("/wombat", <span>
             <a href="/foo" id="foo">foo</a>
             <a href="/bar" id="bar">bar</a>
           </span>)
         }
 
-      ((first \\ "a").filter(e =>
-        (e \ "@id").text == "foo") \ "@href").text must be_==("/wombat/foo")
-        .when(jetty.running)
-      ((first \\ "a").filter(e =>
-        (e \ "@id").text == "bar") \ "@href").text must be_==("/wombat/bar")
-        .when(jetty.running)
-      ((second \\ "a").filter(e =>
-        (e \ "@id").text == "foo") \ "@href").text must be_==("/wombat/foo")
-        .when(jetty.running)
-      ((second \\ "a").filter(e =>
-        (e \ "@id").text == "bar") \ "@href").text must be_==("/bar").when(
-        jetty.running)
+      (
+        (first \\ "a").filter(e => (e \ "@id").text == "foo") \ "@href"
+      ).text must be_==("/wombat/foo").when(jetty.running)
+      (
+        (first \\ "a").filter(e => (e \ "@id").text == "bar") \ "@href"
+      ).text must be_==("/wombat/bar").when(jetty.running)
+      (
+        (second \\ "a").filter(e => (e \ "@id").text == "foo") \ "@href"
+      ).text must be_==("/wombat/foo").when(jetty.running)
+      (
+        (second \\ "a").filter(e => (e \ "@id").text == "bar") \ "@href"
+      ).text must be_==("/bar").when(jetty.running)
     }
   }
 

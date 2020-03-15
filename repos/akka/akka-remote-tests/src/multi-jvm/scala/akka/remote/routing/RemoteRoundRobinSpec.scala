@@ -105,11 +105,13 @@ class RemoteRoundRobinSpec
         }
 
         val replies: Map[Address, Int] =
-          (receiveWhile(
-            5 seconds,
-            messages = connectionCount * iterationCount) {
-            case ref: ActorRef ⇒ ref.path.address
-          }).foldLeft(
+          (
+            receiveWhile(
+              5 seconds,
+              messages = connectionCount * iterationCount) {
+              case ref: ActorRef ⇒ ref.path.address
+            }
+          ).foldLeft(
             Map(
               node(first).address -> 0,
               node(second).address -> 0,
@@ -157,17 +159,19 @@ class RemoteRoundRobinSpec
         expectMsgType[Routees].routees.size should ===(2)
 
         val repliesFrom: Set[ActorRef] =
-          (for (n ← 3 to 9)
-            yield {
-              // each message trigger a resize, incrementing number of routees with 1
-              actor ! "hit"
-              Await
-                .result(actor ? GetRoutees, timeout.duration)
-                .asInstanceOf[Routees]
-                .routees
-                .size should ===(n)
-              expectMsgType[ActorRef]
-            }).toSet
+          (
+            for (n ← 3 to 9)
+              yield {
+                // each message trigger a resize, incrementing number of routees with 1
+                actor ! "hit"
+                Await
+                  .result(actor ? GetRoutees, timeout.duration)
+                  .asInstanceOf[Routees]
+                  .routees
+                  .size should ===(n)
+                expectMsgType[ActorRef]
+              }
+          ).toSet
 
         enterBarrier("broadcast-end")
         actor ! Broadcast(PoisonPill)
@@ -209,11 +213,13 @@ class RemoteRoundRobinSpec
         }
 
         val replies: Map[Address, Int] =
-          (receiveWhile(
-            5 seconds,
-            messages = connectionCount * iterationCount) {
-            case ref: ActorRef ⇒ ref.path.address
-          }).foldLeft(
+          (
+            receiveWhile(
+              5 seconds,
+              messages = connectionCount * iterationCount) {
+              case ref: ActorRef ⇒ ref.path.address
+            }
+          ).foldLeft(
             Map(
               node(first).address -> 0,
               node(second).address -> 0,

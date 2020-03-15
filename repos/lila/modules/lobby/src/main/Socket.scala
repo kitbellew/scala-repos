@@ -103,8 +103,7 @@ private[lobby] final class Socket(
         .obj(
           "id" -> (game fullIdOf color),
           "url" -> playerUrl(game fullIdOf color),
-          "cookie" -> AnonCookie.json(game, color)
-        )
+          "cookie" -> AnonCookie.json(game, color))
         .noNull) _
 
   protected def shouldSkipMessageFor(message: Message, member: Member) =

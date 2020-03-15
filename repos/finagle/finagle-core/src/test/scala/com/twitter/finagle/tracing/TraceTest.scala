@@ -24,10 +24,11 @@ class TraceTest
   }
 
   test("have a default id without parents, etc.") {
-    assert(Trace.id match {
-      case TraceId(None, None, _, None, Flags(0)) => true
-      case _                                      => false
-    })
+    assert(
+      Trace.id match {
+        case TraceId(None, None, _, None, Flags(0)) => true
+        case _                                      => false
+      })
   }
 
   test("Trace.letTracer") {
@@ -60,10 +61,11 @@ class TraceTest
     val defaultId = Trace.id
     Trace.letId(Trace.nextId) {
       assert(Trace.id != defaultId)
-      assert(Trace.id match {
-        case TraceId(None, None, _, None, Flags(0)) => true
-        case _                                      => false
-      })
+      assert(
+        Trace.id match {
+          case TraceId(None, None, _, None, Flags(0)) => true
+          case _                                      => false
+        })
     }
   }
 
@@ -71,12 +73,13 @@ class TraceTest
     Trace.letId(Trace.nextId) {
       val topId = Trace.id
       Trace.letId(Trace.nextId) {
-        assert(Trace.id match {
-          case TraceId(Some(traceId), Some(parentId), _, None, Flags(0))
-              if traceId == topId.traceId && parentId == topId.spanId =>
-            true
-          case _ => false
-        })
+        assert(
+          Trace.id match {
+            case TraceId(Some(traceId), Some(parentId), _, None, Flags(0))
+                if traceId == topId.traceId && parentId == topId.spanId =>
+              true
+            case _ => false
+          })
       }
     }
   }
@@ -238,10 +241,11 @@ class TraceTest
 
       Trace.letTracerAndNextId(tracer) {
         val currentId = Trace.id
-        assert(currentId match {
-          case TraceId(None, None, _, None, Flags(0)) => true
-          case _                                      => false
-        })
+        assert(
+          currentId match {
+            case TraceId(None, None, _, None, Flags(0)) => true
+            case _                                      => false
+          })
         assert(Trace.isTerminal == false)
         assert(Trace.tracers == List(tracer))
         Trace.record("Hello world")
@@ -266,18 +270,21 @@ class TraceTest
       Trace.letId(parentId) {
         Trace.letTracerAndNextId(tracer) {
           val currentId = Trace.id
-          assert(currentId match {
-            case TraceId(
-                  Some(_traceId),
-                  Some(_parentId),
-                  _,
-                  Some(_sampled),
-                  Flags(0))
-                if (_traceId == parentId.traceId) && (_parentId == parentId.spanId) &&
-                  (_sampled == parentId.sampled.get) =>
-              true
-            case _ => false
-          })
+          assert(
+            currentId match {
+              case TraceId(
+                    Some(_traceId),
+                    Some(_parentId),
+                    _,
+                    Some(_sampled),
+                    Flags(0))
+                  if (
+                    _traceId == parentId.traceId
+                  ) && (_parentId == parentId.spanId) &&
+                    (_sampled == parentId.sampled.get) =>
+                true
+              case _ => false
+            })
           assert(Trace.isTerminal == false)
           assert(Trace.tracers == List(tracer))
           verify(tracer, never()).sampleTrace(currentId)
@@ -295,10 +302,11 @@ class TraceTest
 
       Trace.letTracerAndNextId(tracer, true) {
         val currentId = Trace.id
-        assert(currentId match {
-          case TraceId(None, None, _, None, Flags(0)) => true
-          case _                                      => false
-        })
+        assert(
+          currentId match {
+            case TraceId(None, None, _, None, Flags(0)) => true
+            case _                                      => false
+          })
         assert(Trace.isTerminal == true)
         assert(Trace.tracers == List(tracer))
         verify(tracer, times(1)).sampleTrace(currentId)

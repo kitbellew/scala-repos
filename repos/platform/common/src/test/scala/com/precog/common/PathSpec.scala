@@ -38,8 +38,7 @@ class PathSpec extends Specification with ScalaCheck {
         sample ::
           Path("/my/fancy") ::
           Path("/my") ::
-          Path("/") :: Nil
-      )
+          Path("/") :: Nil)
     }
 
     "Roll up a limited distance" in {
@@ -47,8 +46,7 @@ class PathSpec extends Specification with ScalaCheck {
       sample.rollups(2) must haveTheSameElementsAs(
         sample ::
           Path("/my/fancy") ::
-          Path("/my") :: Nil
-      )
+          Path("/my") :: Nil)
     }
 
     "drop a matching prefix using '-'" in {

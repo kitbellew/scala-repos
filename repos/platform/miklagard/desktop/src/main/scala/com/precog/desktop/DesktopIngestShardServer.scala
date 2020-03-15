@@ -72,63 +72,68 @@ object DesktopIngestShardServer
         // Add a window with a menu for shutdown
         val notifyArea = new JTextArea(25, 80)
 
-        EventQueue.invokeLater(new Runnable {
-          def run() {
-            val precogMenu = new JMenu("Precog for Desktop")
-            val quitItem = new JMenuItem("Quit", KeyEvent.VK_Q)
-            quitItem.addActionListener(new ActionListener {
-              def actionPerformed(ev: ActionEvent) = {
-                System.exit(0)
-              }
-            })
-
-            precogMenu.add(quitItem)
-
-            val labcoatMenu = new JMenu("Labcoat")
-            val launchItem = new JMenuItem("Launch", KeyEvent.VK_L)
-            launchItem.addActionListener(new ActionListener {
-              def actionPerformed(ev: ActionEvent) = {
-                LaunchLabcoat.launchBrowser(config)
-              }
-            })
-
-            labcoatMenu.add(launchItem)
-
-            val menubar = new JMenuBar
-            menubar.add(precogMenu)
-            menubar.add(labcoatMenu)
-
-            val appFrame = new JFrame("Precog for Desktop")
-            appFrame.setJMenuBar(menubar)
-
-            appFrame.addWindowListener(new WindowAdapter {
-              override def windowClosed(ev: WindowEvent) = {
-                System.exit(0)
-              }
-            })
-
-            notifyArea.setEditable(false)
-            appFrame.add(notifyArea)
-
-            appFrame.pack()
-
-            val iconUrl = ClassLoader.getSystemClassLoader.getResource(
-              "LargeIcon.png")
-            logger.debug("Loaded icon: " + iconUrl)
-            appFrame.setIconImage(Toolkit.getDefaultToolkit.getImage(iconUrl))
-
-            appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-
-            appFrame.setVisible(true)
-          }
-        })
-
-        Some({ (msg: String) =>
-          EventQueue.invokeLater(new Runnable {
+        EventQueue.invokeLater(
+          new Runnable {
             def run() {
-              notifyArea.append(msg + "\n")
+              val precogMenu = new JMenu("Precog for Desktop")
+              val quitItem = new JMenuItem("Quit", KeyEvent.VK_Q)
+              quitItem.addActionListener(
+                new ActionListener {
+                  def actionPerformed(ev: ActionEvent) = {
+                    System.exit(0)
+                  }
+                })
+
+              precogMenu.add(quitItem)
+
+              val labcoatMenu = new JMenu("Labcoat")
+              val launchItem = new JMenuItem("Launch", KeyEvent.VK_L)
+              launchItem.addActionListener(
+                new ActionListener {
+                  def actionPerformed(ev: ActionEvent) = {
+                    LaunchLabcoat.launchBrowser(config)
+                  }
+                })
+
+              labcoatMenu.add(launchItem)
+
+              val menubar = new JMenuBar
+              menubar.add(precogMenu)
+              menubar.add(labcoatMenu)
+
+              val appFrame = new JFrame("Precog for Desktop")
+              appFrame.setJMenuBar(menubar)
+
+              appFrame.addWindowListener(
+                new WindowAdapter {
+                  override def windowClosed(ev: WindowEvent) = {
+                    System.exit(0)
+                  }
+                })
+
+              notifyArea.setEditable(false)
+              appFrame.add(notifyArea)
+
+              appFrame.pack()
+
+              val iconUrl = ClassLoader.getSystemClassLoader.getResource(
+                "LargeIcon.png")
+              logger.debug("Loaded icon: " + iconUrl)
+              appFrame.setIconImage(Toolkit.getDefaultToolkit.getImage(iconUrl))
+
+              appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+
+              appFrame.setVisible(true)
             }
           })
+
+        Some({ (msg: String) =>
+          EventQueue.invokeLater(
+            new Runnable {
+              def run() {
+                notifyArea.append(msg + "\n")
+              }
+            })
         })
       } else {
         logger.info("Skipping gui window")
@@ -152,17 +157,18 @@ object DesktopIngestShardServer
       throw new Exception("Time out waiting on kafka port to open")
     }
 
-    Runtime.getRuntime.addShutdownHook(new Thread {
-      override def run() = {
-        logger.info("Shutting down embedded kafka instances")
-        kafka.shutdown
-        kafka.awaitShutdown
+    Runtime.getRuntime.addShutdownHook(
+      new Thread {
+        override def run() = {
+          logger.info("Shutting down embedded kafka instances")
+          kafka.shutdown
+          kafka.awaitShutdown
 
-        logger.info("Kafka shutdown complete, stopping ZK")
-        zookeeper.stop
-        logger.info("ZK shutdown complete")
-      }
-    })
+          logger.info("Kafka shutdown complete, stopping ZK")
+          zookeeper.stop
+          logger.info("ZK shutdown complete")
+        }
+      })
 
     guiNotifier.foreach(_("Internal services started, bringing up Precog"))
 
@@ -247,11 +253,13 @@ object DesktopIngestShardServer
 
     val central = new KafkaServerStartable(new KafkaConfig(centralProps))
 
-    (new Thread {
-      override def run() = {
-        central.startup
+    (
+      new Thread {
+        override def run() = {
+          central.startup
+        }
       }
-    }).start()
+    ).start()
 
     central
   }
@@ -267,11 +275,13 @@ object DesktopIngestShardServer
 
     val server = new EmbeddedZK
 
-    (new Thread {
-      override def run() = {
-        server.runFromConfig(serverConfig)
+    (
+      new Thread {
+        override def run() = {
+          server.runFromConfig(serverConfig)
+        }
       }
-    }).start()
+    ).start()
 
     server
   }

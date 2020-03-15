@@ -58,7 +58,9 @@ object Osgi {
         "Bundle-Name" -> (description.value + " Sources"),
         "Bundle-SymbolicName" -> (bundleSymbolicName.value + ".source"),
         "Bundle-Version" -> versionProperties.value.osgiVersion,
-        "Eclipse-SourceBundle" -> (bundleSymbolicName.value + ";version=\"" + versionProperties.value.osgiVersion + "\";roots:=\".\"")
+        "Eclipse-SourceBundle" -> (
+          bundleSymbolicName.value + ";version=\"" + versionProperties.value.osgiVersion + "\";roots:=\".\""
+        )
       )
     )
 

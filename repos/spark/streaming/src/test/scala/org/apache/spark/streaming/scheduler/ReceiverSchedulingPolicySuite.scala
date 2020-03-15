@@ -120,13 +120,13 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     val expectedScheduledLocations = Set(
       ExecutorCacheTaskLocation("host2", "2"),
       ExecutorCacheTaskLocation("host4", "4"),
-      ExecutorCacheTaskLocation("host5", "5")
-    )
+      ExecutorCacheTaskLocation("host5", "5"))
     assert(scheduledLocations.toSet === expectedScheduledLocations)
   }
 
-  test("scheduleReceivers: " +
-    "schedule receivers evenly when there are more receivers than executors") {
+  test(
+    "scheduleReceivers: " +
+      "schedule receivers evenly when there are more receivers than executors") {
     val receivers = (0 until 6).map(new RateTestReceiver(_))
     val executors = (0 until 3).map(executorId =>
       ExecutorCacheTaskLocation("localhost", executorId.toString))
@@ -145,8 +145,9 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     assert(numReceiversOnExecutor === executors.map(_ -> 2).toMap)
   }
 
-  test("scheduleReceivers: " +
-    "schedule receivers evenly when there are more executors than receivers") {
+  test(
+    "scheduleReceivers: " +
+      "schedule receivers evenly when there are more executors than receivers") {
     val receivers = (0 until 3).map(new RateTestReceiver(_))
     val executors = (0 until 6).map(executorId =>
       ExecutorCacheTaskLocation("localhost", executorId.toString))

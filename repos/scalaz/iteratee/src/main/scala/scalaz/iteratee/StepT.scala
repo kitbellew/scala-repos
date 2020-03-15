@@ -16,62 +16,41 @@ import Iteratee._
 sealed abstract class StepT[E, F[_], A] {
   def fold[Z](
       cont: (Input[E] => IterateeT[E, F, A]) => Z,
-      done: (=> A, => Input[E]) => Z
-  ): Z
+      done: (=> A, => Input[E]) => Z): Z
 
   /** An alias for `fold` */
   def apply[Z](
       cont: (Input[E] => IterateeT[E, F, A]) => Z,
-      done: (=> A, => Input[E]) => Z
-  ): Z = fold(cont, done)
+      done: (=> A, => Input[E]) => Z): Z = fold(cont, done)
 
   def cont: Option[Input[E] => IterateeT[E, F, A]] =
-    fold(
-      Some(_),
-      (_, _) => None
-    )
+    fold(Some(_), (_, _) => None)
 
   def contOr(
       k: => Input[E] => IterateeT[E, F, A]): Input[E] => IterateeT[E, F, A] =
     cont getOrElse k
 
   def mapContOr[Z](k: (Input[E] => IterateeT[E, F, A]) => Z, z: => Z): Z =
-    fold(
-      k(_),
-      (_, _) => z
-    )
+    fold(k(_), (_, _) => z)
 
   def mapCont(k: (Input[E] => IterateeT[E, F, A]) => IterateeT[E, F, A])(
       implicit F: Applicative[F]): IterateeT[E, F, A] =
     mapContOr[IterateeT[E, F, A]](k, pointI)
 
   def doneValue: LazyOption[A] =
-    fold(
-      _ => LazyOption.lazyNone,
-      (a, _) => LazyOption.lazySome(a)
-    )
+    fold(_ => LazyOption.lazyNone, (a, _) => LazyOption.lazySome(a))
 
   def doneValueOr(a: => A): A = doneValue getOrElse a
 
-  def mapDoneValueOr[Z](k: (=> A) => Z, z: => Z) =
-    fold(
-      _ => z,
-      (a, _) => k(a)
-    )
+  def mapDoneValueOr[Z](k: (=> A) => Z, z: => Z) = fold(_ => z, (a, _) => k(a))
 
   def doneInput: LazyOption[Input[E]] =
-    fold(
-      _ => LazyOption.lazyNone,
-      (_, i) => LazyOption.lazySome(i)
-    )
+    fold(_ => LazyOption.lazyNone, (_, i) => LazyOption.lazySome(i))
 
   def doneInputOr(a: => Input[E]): Input[E] = doneInput getOrElse a
 
   def mapDoneInputOr[Z](k: (=> Input[E]) => Z, z: => Z) =
-    fold(
-      _ => z,
-      (_, i) => k(i)
-    )
+    fold(_ => z, (_, i) => k(i))
 
   def >-[Z](cont: => Z, done: => Z): Z = fold(_ => cont, (_, _) => done)
 
@@ -89,8 +68,7 @@ object StepT extends StepTFunctions with EnumeratorTInstances {
       new StepT[E, F, A] {
         def fold[Z](
             cont: (Input[E] => IterateeT[E, F, A]) => Z,
-            done: (=> A, => Input[E]) => Z
-        ) = cont(c)
+            done: (=> A, => Input[E]) => Z) = cont(c)
       }
 
     def unapply[E, F[_], A](
@@ -103,8 +81,7 @@ object StepT extends StepTFunctions with EnumeratorTInstances {
       new StepT[E, F, A] {
         def fold[Z](
             cont: (Input[E] => IterateeT[E, F, A]) => Z,
-            done: (=> A, => Input[E]) => Z
-        ) = done(d, r)
+            done: (=> A, => Input[E]) => Z) = done(d, r)
       }
 
     def unapply[E, F[_], A](s: StepT[E, F, A]): Option[(A, Input[E])] =

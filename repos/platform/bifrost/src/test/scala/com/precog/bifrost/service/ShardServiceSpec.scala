@@ -124,8 +124,7 @@ trait TestShardService
   val testPermissions = Set[Permission](
     ReadPermission(Path.Root, WrittenByAccount("test")),
     WritePermission(testPath, WriteAsAny),
-    DeletePermission(testPath, WrittenByAny)
-  )
+    DeletePermission(testPath, WrittenByAny))
 
   val expiredPath = Path("expired")
 
@@ -646,18 +645,21 @@ trait TestPlatform extends ManagedPlatform { self =>
 
   def asyncExecutorFor(
       apiKey: APIKey): EitherT[Future, String, QueryExecutor[Future, JobId]] = {
-    EitherT.right(Future(new AsyncQueryExecutor {
-      val executionContext = self.executionContext
-    }))
+    EitherT.right(
+      Future(
+        new AsyncQueryExecutor {
+          val executionContext = self.executionContext
+        }))
   }
 
-  def syncExecutorFor(apiKey: APIKey): EitherT[
+  def syncExecutorFor(apiKey: APIKey): EitherT[Future, String, QueryExecutor[
     Future,
-    String,
-    QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]] = {
-    EitherT.right(Future(new SyncQueryExecutor {
-      val executionContext = self.executionContext
-    }))
+    (Option[JobId], StreamT[Future, Slice])]] = {
+    EitherT.right(
+      Future(
+        new SyncQueryExecutor {
+          val executionContext = self.executionContext
+        }))
   }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)

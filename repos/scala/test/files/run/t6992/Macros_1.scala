@@ -64,8 +64,7 @@ object Macros {
                 Nil,
                 Nil,
                 TypeTree(),
-                c.literal(42).tree
-              )
+                c.literal(42).tree)
             )
           )
         ),
@@ -104,8 +103,7 @@ object Macros {
                 Nil,
                 Nil,
                 TypeTree(),
-                c.literal(42).tree
-              )
+                c.literal(42).tree)
             )
           )
         ),

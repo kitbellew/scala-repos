@@ -37,21 +37,22 @@ final class Env(
       googleApiKey = GoogleApiKey)
 
   lazy val streamerList =
-    new StreamerList(new {
-      import reactivemongo.bson._
-      private val coll = db("flag")
-      def get =
-        coll.find(BSONDocument("_id" -> "streamer")).one[BSONDocument].map {
-          ~_.flatMap(_.getAs[String]("text"))
-        }
-      def set(text: String) =
-        coll
-          .update(
-            BSONDocument("_id" -> "streamer"),
-            BSONDocument("text" -> text),
-            upsert = true)
-          .void
-    })
+    new StreamerList(
+      new {
+        import reactivemongo.bson._
+        private val coll = db("flag")
+        def get =
+          coll.find(BSONDocument("_id" -> "streamer")).one[BSONDocument].map {
+            ~_.flatMap(_.getAs[String]("text"))
+          }
+        def set(text: String) =
+          coll
+            .update(
+              BSONDocument("_id" -> "streamer"),
+              BSONDocument("text" -> text),
+              upsert = true)
+            .void
+      })
 
   object isStreamer {
     private val cache = lila.memo.MixedCache.single[Set[String]](

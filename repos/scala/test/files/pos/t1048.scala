@@ -5,9 +5,10 @@ trait T[U] {
 }
 
 object T {
-  def unapply[U](t: T[U]): Option[T[V] forSome {
-    type V <: U
-  }] = Some(t.x)
+  def unapply[U](t: T[U]): Option[
+    T[V] forSome {
+      type V <: U
+    }] = Some(t.x)
 }
 
 object Test {

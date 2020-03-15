@@ -147,17 +147,21 @@ class ScDocTagValueImpl(node: ASTNode)
       parent = parent.getParent
     }
 
-    if (parent == null || (parentTagType != PARAM_TAG && parentTagType != TYPE_PARAM_TAG))
+    if (parent == null || (
+          parentTagType != PARAM_TAG && parentTagType != TYPE_PARAM_TAG
+        ))
       return Array.empty[ScNamedElement]
 
     def filterParamsByName(
         tagName: String,
         params: Seq[ScNamedElement]): Array[ScNamedElement] = {
       val paramsSet =
-        (for (tag <- parent.asInstanceOf[ScDocComment].findTagsByName(tagName)
-              if tag.getValueElement != null &&
-                tag != getParent)
-          yield tag.getValueElement.getText).toSet
+        (
+          for (tag <- parent.asInstanceOf[ScDocComment].findTagsByName(tagName)
+               if tag.getValueElement != null &&
+                 tag != getParent)
+            yield tag.getValueElement.getText
+        ).toSet
 
       val result = ArrayBuilder.make[ScNamedElement]()
       params

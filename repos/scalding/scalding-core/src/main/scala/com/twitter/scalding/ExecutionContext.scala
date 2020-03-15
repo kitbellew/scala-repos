@@ -174,10 +174,11 @@ object ExecutionContext {
 
   private[scalding] def getDesc[T](
       baseFlowStep: BaseFlowStep[T]): Seq[String] = {
-    baseFlowStep.getGraph.vertexSet.asScala.toSeq.flatMap(_ match {
-      case pipe: Pipe => RichPipe.getPipeDescriptions(pipe)
-      case _          => List() // no descriptions
-    })
+    baseFlowStep.getGraph.vertexSet.asScala.toSeq.flatMap(
+      _ match {
+        case pipe: Pipe => RichPipe.getPipeDescriptions(pipe)
+        case _          => List() // no descriptions
+      })
   }
   /*
    * implicit val ec = ExecutionContext.newContext(config)

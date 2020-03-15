@@ -143,9 +143,10 @@ final class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       idleTimeout: Duration = Duration.Inf)(
       implicit m: Materializer): Future[ServerBinding] = {
     bind(interface, port, backlog, options, halfClose, idleTimeout)
-      .to(Sink.foreach { conn: IncomingConnection ⇒
-        conn.flow.join(handler).run()
-      })
+      .to(
+        Sink.foreach { conn: IncomingConnection ⇒
+          conn.flow.join(handler).run()
+        })
       .run()
   }
 

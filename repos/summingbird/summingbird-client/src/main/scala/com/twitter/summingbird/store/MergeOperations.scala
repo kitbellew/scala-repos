@@ -82,9 +82,10 @@ object MergeOperations {
     m.map {
       case (k, futureOptV) =>
         k -> futureOptV.map { optV =>
-          Seq(optV.map {
-            case (batchID, v) => (batchID.prev, v)
-          })
+          Seq(
+            optV.map {
+              case (batchID, v) => (batchID.prev, v)
+            })
         }
     }
 
@@ -99,10 +100,7 @@ object MergeOperations {
       batchesToKeep: Int): Iterable[BatchID] = {
     val initBatch =
       Semigroup
-        .plus(
-          Some(nowBatch - (batchesToKeep - 1)),
-          offlineReturn
-        )
+        .plus(Some(nowBatch - (batchesToKeep - 1)), offlineReturn)
         .get // This will never throw, as this option can never be None
     // (because we included an explicit "Some" inside)
     BatchID.range(initBatch, nowBatch)
@@ -118,7 +116,6 @@ object MergeOperations {
           lookup(k).map {
             k -> expand(_, nowBatch, batchesToKeep)
           }
-        }
-      )
+        })
     } yield pivot.invert(collected.toMap).toSet
 }

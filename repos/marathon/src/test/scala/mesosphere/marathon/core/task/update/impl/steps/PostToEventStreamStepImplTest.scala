@@ -33,8 +33,7 @@ class PostToEventStreamStepImplTest
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,
-          status = status
-        )
+          status = status)
         .futureValue
     }
 
@@ -53,13 +52,12 @@ class PostToEventStreamStepImplTest
           ports = portsList,
           version = version.toString,
           timestamp = updateTimestamp.toString
-        )
-      ))
+        )))
     And("only sending event info gets logged")
     logs should have size 1
-    logs.map(_.toString) should be(Seq(
-      s"[INFO] Sending event notification for $taskId of app [$appId]: ${status.getState}"
-    ))
+    logs.map(_.toString) should be(
+      Seq(
+        s"[INFO] Sending event notification for $taskId of app [$appId]: ${status.getState}"))
   }
 
   test("ignore running notification of already running task") {
@@ -76,8 +74,7 @@ class PostToEventStreamStepImplTest
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,
-          status = status
-        )
+          status = status)
         .futureValue
     }
 
@@ -116,8 +113,7 @@ class PostToEventStreamStepImplTest
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,
-          status = status
-        )
+          status = status)
         .futureValue
     }
 
@@ -136,13 +132,12 @@ class PostToEventStreamStepImplTest
           ports = portsList,
           version = version.toString,
           timestamp = updateTimestamp.toString
-        )
-      ))
+        )))
     And("only sending event info gets logged")
     logs should have size 1
-    logs.map(_.toString) should be(Seq(
-      s"[INFO] Sending event notification for $taskId of app [$appId]: ${status.getState}"
-    ))
+    logs.map(_.toString) should be(
+      Seq(
+        s"[INFO] Sending event notification for $taskId of app [$appId]: ${status.getState}"))
   }
 
   private[this] val slaveId = SlaveID.newBuilder().setValue("slave1")

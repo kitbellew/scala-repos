@@ -268,13 +268,10 @@ sealed abstract class TreeLocInstances {
         B.append(
           B.append(
             Foldable[Tree].foldMap(fa.tree)(f),
-            ForestT.foldMap(fa.lefts)(f)
-          ),
+            ForestT.foldMap(fa.lefts)(f)),
           B.append(
             ForestT.foldMap(fa.rights)(f),
-            ParentsT.foldMap(fa.parents)(f)
-          )
-        )
+            ParentsT.foldMap(fa.parents)(f)))
 
       override def foldLeft[A, B](fa: TreeLoc[A], z: B)(f: (B, A) => B) =
         ParentsT.foldLeft(
@@ -314,8 +311,7 @@ sealed abstract class TreeLocInstances {
                           tree = tree,
                           lefts = lefts.head #:: lefts.tail,
                           rights = rights.head #:: rights.tail,
-                          parents = parents.head #:: parents.tail
-                        ))
+                          parents = parents.head #:: parents.tail))
                   case Empty =>
                     G.apply3(fa.tree.traverse1(f), lefts1, rights1)(
                       (tree, lefts, rights) =>
@@ -323,8 +319,7 @@ sealed abstract class TreeLocInstances {
                           tree = tree,
                           lefts = lefts.head #:: lefts.tail,
                           rights = rights.head #:: rights.tail,
-                          parents = Empty
-                        ))
+                          parents = Empty))
                 }
               case Empty =>
                 fa.parents match {
@@ -338,16 +333,14 @@ sealed abstract class TreeLocInstances {
                           tree = tree,
                           lefts = lefts.head #:: lefts.tail,
                           rights = Empty,
-                          parents = parents.head #:: parents.tail
-                        ))
+                          parents = parents.head #:: parents.tail))
                   case Empty =>
                     G.apply2(fa.tree.traverse1(f), lefts1)((tree, lefts) =>
                       TreeLoc(
                         tree = tree,
                         lefts = lefts.head #:: lefts.tail,
                         rights = Empty,
-                        parents = Empty
-                      ))
+                        parents = Empty))
                 }
             }
           case Empty =>
@@ -365,16 +358,14 @@ sealed abstract class TreeLocInstances {
                           tree = tree,
                           lefts = Empty,
                           rights = rights.head #:: rights.tail,
-                          parents = parents.head #:: parents.tail
-                        ))
+                          parents = parents.head #:: parents.tail))
                   case Empty =>
                     G.apply2(fa.tree.traverse1(f), rights1)((tree, rights) =>
                       TreeLoc(
                         tree = tree,
                         lefts = Empty,
                         rights = rights.head #:: rights.tail,
-                        parents = Empty
-                      ))
+                        parents = Empty))
                 }
               case Empty =>
                 fa.parents match {
@@ -386,8 +377,7 @@ sealed abstract class TreeLocInstances {
                         tree = tree,
                         lefts = Empty,
                         rights = Empty,
-                        parents = parents.head #:: parents.tail
-                      ))
+                        parents = parents.head #:: parents.tail))
                   case Empty =>
                     G.map(fa.tree.traverse1(f))(t =>
                       TreeLoc(t, Empty, Empty, Empty))
@@ -400,8 +390,8 @@ sealed abstract class TreeLocInstances {
         ParentsT.foldMapRight1Opt(fa.parents)(z)(f) match {
           case Some(p) =>
             fa.tree.foldRight(
-              ForestT.foldRight(fa.lefts, ForestT.foldRight(fa.rights, p)(f))(f)
-            )(f)
+              ForestT.foldRight(fa.lefts, ForestT.foldRight(fa.rights, p)(f))(
+                f))(f)
           case None =>
             ForestT.foldMapRight1Opt(fa.rights)(z)(f) match {
               case Some(r) =>
@@ -420,8 +410,8 @@ sealed abstract class TreeLocInstances {
         .compose[Tree]
 
       private[this] val ForestT1
-          : Traverse1[Lambda[a => OneAnd[Stream, Tree[a]]]] = Traverse1[
-        Lambda[a => OneAnd[Stream, a]]].compose[Tree]
+          : Traverse1[Lambda[a => OneAnd[Stream, Tree[a]]]] = Traverse1[Lambda[
+        a => OneAnd[Stream, a]]].compose[Tree]
 
       private[this] implicit val ParentT: Traverse1[Parent] =
         new Traverse1[Parent] {

@@ -17,10 +17,12 @@ object Lub {
       else
         (null: L[B, B]))
 
-  (if (true)
-     (null: L[A, A])
-   else
-     (null: L[B, B])).bar(b = 0, a = 0)
+  (
+    if (true)
+      (null: L[A, A])
+    else
+      (null: L[B, B])
+  ).bar(b = 0, a = 0)
 }
 
 /*

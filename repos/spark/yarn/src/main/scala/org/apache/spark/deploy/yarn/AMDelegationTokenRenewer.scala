@@ -185,17 +185,19 @@ private[yarn] class AMDelegationTokenRenewer(
     val tempCreds = keytabLoggedInUGI.getCredentials
     val credentialsPath = new Path(credentialsFile)
     val dst = credentialsPath.getParent
-    keytabLoggedInUGI.doAs(new PrivilegedExceptionAction[Void] {
-      // Get a copy of the credentials
-      override def run(): Void = {
-        val nns = YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) + dst
-        hadoopUtil.obtainTokensForNamenodes(nns, freshHadoopConf, tempCreds)
-        hadoopUtil
-          .obtainTokenForHiveMetastore(sparkConf, freshHadoopConf, tempCreds)
-        hadoopUtil.obtainTokenForHBase(sparkConf, freshHadoopConf, tempCreds)
-        null
-      }
-    })
+    keytabLoggedInUGI.doAs(
+      new PrivilegedExceptionAction[Void] {
+        // Get a copy of the credentials
+        override def run(): Void = {
+          val nns =
+            YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) + dst
+          hadoopUtil.obtainTokensForNamenodes(nns, freshHadoopConf, tempCreds)
+          hadoopUtil
+            .obtainTokenForHiveMetastore(sparkConf, freshHadoopConf, tempCreds)
+          hadoopUtil.obtainTokenForHBase(sparkConf, freshHadoopConf, tempCreds)
+          null
+        }
+      })
     // Add the temp credentials back to the original ones.
     UserGroupInformation.getCurrentUser.addCredentials(tempCreds)
     val remoteFs = FileSystem.get(freshHadoopConf)

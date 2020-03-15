@@ -522,13 +522,14 @@ object Menu extends MenuSingleton {
     /**
       * Rewrite the request and emit the type-safe parameter
       */
-    override lazy val rewrite: LocRewrite = Full(NamedPF(locPath.toString) {
-      case RewriteRequest(ParsePath(ExtractSan(path, param), _, _, _), _, _)
-          if param.isDefined || params.contains(
-            Loc.MatchWithoutCurrentValue) => {
-        RewriteResponse(path, true) -> param
-      }
-    })
+    override lazy val rewrite: LocRewrite = Full(
+      NamedPF(locPath.toString) {
+        case RewriteRequest(ParsePath(ExtractSan(path, param), _, _, _), _, _)
+            if param.isDefined || params.contains(
+              Loc.MatchWithoutCurrentValue) => {
+          RewriteResponse(path, true) -> param
+        }
+      })
 
     def headMatch: Boolean
 
@@ -785,10 +786,12 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
       first(kids)(_.findLoc(req))
 
   def locForGroup(group: String): Seq[Loc[_]] =
-    (if (loc.inGroup_?(group))
-       List[Loc[_]](loc)
-     else
-       Nil) ++
+    (
+      if (loc.inGroup_?(group))
+        List[Loc[_]](loc)
+      else
+        Nil
+    ) ++
       kids.flatMap(_.locForGroup(group))
 
   override def buildUpperLines(

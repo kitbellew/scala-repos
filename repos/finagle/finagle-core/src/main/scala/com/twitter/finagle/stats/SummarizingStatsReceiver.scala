@@ -17,9 +17,10 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
   // Just keep all the samples.
   private[this] val stats = CacheBuilder
     .newBuilder()
-    .build(new CacheLoader[Seq[String], ArrayBuffer[Float]] {
-      def load(k: Seq[String]) = new ArrayBuffer[Float]
-    })
+    .build(
+      new CacheLoader[Seq[String], ArrayBuffer[Float]] {
+        def load(k: Seq[String]) = new ArrayBuffer[Float]
+      })
 
   // synchronized on `this`
   private[this] var _gauges = Map[Seq[String], () => Float]()
@@ -77,43 +78,49 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
       }
 
       val counterLines =
-        (counterValues map {
-          case (k, v) => (variableName(k), v.toString)
-        }).toSeq
+        (
+          counterValues map {
+            case (k, v) => (variableName(k), v.toString)
+          }
+        ).toSeq
       val statLines =
-        (statValues map {
-          case (k, xs) =>
-            val n = xs.length
-            def idx(ptile: Double) = math.floor(ptile * n).toInt
-            (
-              variableName(k),
-              "n=%d min=%.1f med=%.1f p90=%.1f p95=%.1f p99=%.1f p999=%.1f p9999=%.1f max=%.1f"
-                .format(
-                  n,
-                  xs(0),
-                  xs(n / 2),
-                  xs(idx(.9d)),
-                  xs(idx(.95d)),
-                  xs(idx(.99d)),
-                  xs(idx(.999d)),
-                  xs(idx(.9999d)),
-                  xs(n - 1)))
-        }).toSeq
+        (
+          statValues map {
+            case (k, xs) =>
+              val n = xs.length
+              def idx(ptile: Double) = math.floor(ptile * n).toInt
+              (
+                variableName(k),
+                "n=%d min=%.1f med=%.1f p90=%.1f p95=%.1f p99=%.1f p999=%.1f p9999=%.1f max=%.1f"
+                  .format(
+                    n,
+                    xs(0),
+                    xs(n / 2),
+                    xs(idx(.9d)),
+                    xs(idx(.95d)),
+                    xs(idx(.99d)),
+                    xs(idx(.999d)),
+                    xs(idx(.9999d)),
+                    xs(n - 1)))
+          }
+        ).toSeq
 
       lazy val tailValues =
-        (statValues map {
-          case (k, xs) =>
-            val n = xs.length
-            def slice(ptile: Double) = {
-              val end = math.floor(ptile * n).toInt
-              val start = math.ceil(end - ((1.0 - ptile) * n)).toInt
-              for (i <- start to end)
-                yield xs(i)
-            }
-            (
-              variableName(k),
-              "p999=%s, p9999=%s".format(slice(.999d), slice(.9999d)))
-        }).toSeq
+        (
+          statValues map {
+            case (k, xs) =>
+              val n = xs.length
+              def slice(ptile: Double) = {
+                val end = math.floor(ptile * n).toInt
+                val start = math.ceil(end - ((1.0 - ptile) * n)).toInt
+                for (i <- start to end)
+                  yield xs(i)
+              }
+              (
+                variableName(k),
+                "p999=%s, p9999=%s".format(slice(.999d), slice(.9999d)))
+          }
+        ).toSeq
 
       val sortedCounters = counterLines.sortBy {
         case (k, _) => k
@@ -139,10 +146,12 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
       "# counters\n" + fmtCounters.mkString("\n") +
         "\n# gauges\n" + fmtGauges.sorted.mkString("\n") +
         "\n# stats\n" + fmtStats.mkString("\n") +
-        (if (includeTails)
-           "\n# stats-tails\n" + (fmtTails mkString "\n")
-         else
-           "")
+        (
+          if (includeTails)
+            "\n# stats-tails\n" + (fmtTails mkString "\n")
+          else
+            ""
+        )
     }
 
   def print() = println(summary(false))

@@ -20,9 +20,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   */
 class ScValueStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScValue](parent, elemType)
     with ScValueStub {
   private var names: Array[StringRef] = _
@@ -39,9 +38,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       names: Array[String],
       isDeclaration: Boolean,
       typeText: String,
@@ -64,9 +62,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       names: Array[StringRef],
       isDeclaration: Boolean,
       typeText: StringRef,
@@ -100,7 +97,9 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
       return None
     if (myPatterns != null) {
       val patterns = myPatterns.get
-      if (patterns != null && (patterns.isEmpty || (patterns.get.getContext eq getPsi)))
+      if (patterns != null && (
+            patterns.isEmpty || (patterns.get.getContext eq getPsi)
+          ))
         return patterns
     }
     val res: Option[ScPatternList] =
@@ -136,7 +135,9 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
   def getTypeElement: Option[ScTypeElement] = {
     if (myTypeElement != null) {
       val typeElement = myTypeElement.get
-      if (typeElement != null && (typeElement.isEmpty || (typeElement.get.getContext eq getPsi)))
+      if (typeElement != null && (
+            typeElement.isEmpty || (typeElement.get.getContext eq getPsi)
+          ))
         return typeElement
     }
     val res: Option[ScTypeElement] =

@@ -150,9 +150,10 @@ sealed trait SValue {
   lazy val toJValue: JValue =
     this match {
       case SObject(obj) =>
-        JObject(obj.map({
-          case (k, v) => JField(k, v.toJValue)
-        })(collection.breakOut))
+        JObject(
+          obj.map({
+            case (k, v) => JField(k, v.toJValue)
+          })(collection.breakOut))
       case SArray(arr) => JArray(arr.map(_.toJValue)(collection.breakOut): _*)
       case SString(s)  => JString(s)
       case STrue       => JBool(true)
@@ -165,9 +166,10 @@ sealed trait SValue {
   lazy val toRValue: RValue =
     this match {
       case SObject(obj) =>
-        RObject(obj.map({
-          case (k, v) => (k, v.toRValue)
-        }))
+        RObject(
+          obj.map({
+            case (k, v) => (k, v.toRValue)
+          }))
       case SArray(arr) => RArray(arr.map(_.toRValue)(collection.breakOut): _*)
       case SString(s)  => CString(s)
       case STrue       => CBoolean(true)
@@ -246,8 +248,7 @@ trait SValueInstances {
           str = stringOrder,
           bool = boolOrder,
           num = numOrder,
-          nul = EQ
-        )
+          nul = EQ)
     }
 
   implicit def equal: Equal[SValue] =
@@ -281,8 +282,7 @@ trait SValueInstances {
           str = stringEqual,
           bool = boolEqual,
           num = numEqual,
-          nul = true
-        )
+          nul = true)
     }
 
   implicit def scalaOrder: scala.math.Ordering[SValue] = order.toScalaOrdering
@@ -317,9 +317,10 @@ object SValue extends SValueInstances {
   def fromJValue(jv: JValue): SValue =
     jv match {
       case JObject(fields) =>
-        SObject(fields.map {
-          case JField(name, v) => (name, fromJValue(v))
-        }(collection.breakOut))
+        SObject(
+          fields.map {
+            case JField(name, v) => (name, fromJValue(v))
+          }(collection.breakOut))
       case JArray(elements) =>
         SArray((elements map fromJValue)(collection.breakOut))
       case JString(s) => SString(s)

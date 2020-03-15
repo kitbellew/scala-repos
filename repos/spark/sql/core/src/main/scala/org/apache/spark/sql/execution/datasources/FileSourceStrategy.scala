@@ -83,9 +83,9 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
           files.bucketSpec
             .map(_.bucketColumnNames)
             .getOrElse(Nil)
-            .map(l
-              .resolveQuoted(_, files.sqlContext.conf.resolver)
-              .getOrElse(sys.error(""))))
+            .map(
+              l.resolveQuoted(_, files.sqlContext.conf.resolver)
+                .getOrElse(sys.error(""))))
 
         // Partition keys are not available in the statistics of the files.
         val dataFilters = filters.filter(

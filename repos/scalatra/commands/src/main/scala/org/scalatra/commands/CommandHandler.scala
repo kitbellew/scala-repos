@@ -30,8 +30,7 @@ trait CommandHandler {
         },
         { _ =>
           "successfully"
-        }
-      )
+        })
       commandLogger.debug(
         "Command [%s] executed %s." format (cmd.getClass.getName, resultLog))
       res
@@ -40,7 +39,9 @@ trait CommandHandler {
         case Failure(e) ⇒ e
       }
       commandLogger.debug(
-        "Command [%s] executed with %d failures.\n%s" format (cmd.getClass.getName, f.size, f.toList))
+        "Command [%s] executed with %d failures.\n%s" format (
+          cmd.getClass.getName, f.size, f.toList
+        ))
       NonEmptyList(f.head, f.tail: _*).failure
     }
   }

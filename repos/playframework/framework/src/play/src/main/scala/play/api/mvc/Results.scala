@@ -289,7 +289,9 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     */
   private def shouldWarnIfNotRedirect(flash: Flash): Boolean = {
     play.api.Play.privateMaybeApplication.exists(app =>
-      (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (header.status < 300 || header.status > 399))
+      (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (
+        header.status < 300 || header.status > 399
+      ))
   }
 
   /**
@@ -413,10 +415,7 @@ trait Results {
       * @param content The content to send.
       */
     def apply[C](content: C)(implicit writeable: Writeable[C]): Result = {
-      Result(
-        header,
-        writeable.toEntity(content)
-      )
+      Result(header, writeable.toEntity(content))
     }
 
     private def streamFile(
@@ -435,15 +434,13 @@ trait Results {
                 else
                   "attachment"
               dispositionType + "; filename=\"" + name + "\""
-            }
-          )),
+            })),
         HttpEntity.Streamed(
           file,
           Some(length),
           play.api.libs.MimeTypes
             .forFileName(name)
-            .orElse(Some(play.api.http.ContentTypes.BINARY))
-        )
+            .orElse(Some(play.api.http.ContentTypes.BINARY)))
       )
     }
 
@@ -523,8 +520,7 @@ trait Results {
         header = header,
         body = HttpEntity.Chunked(
           content.map(c => HttpChunk.Chunk(writeable.transform(c))),
-          writeable.contentType)
-      )
+          writeable.contentType))
     }
 
     /**
@@ -567,10 +563,7 @@ trait Results {
       * Send an HTTP entity with this status.
       */
     def sendEntity(entity: HttpEntity): Result = {
-      Result(
-        header = header,
-        body = entity
-      )
+      Result(header = header, body = entity)
     }
   }
 
@@ -755,10 +748,12 @@ trait Results {
     val fullUrl = url + Option(queryString)
       .filterNot(_.isEmpty)
       .map { params =>
-        (if (url.contains("?"))
-           "&"
-         else
-           "?") + params.toSeq
+        (
+          if (url.contains("?"))
+            "&"
+          else
+            "?"
+        ) + params.toSeq
           .flatMap { pair =>
             pair._2.map(value =>
               (pair._1 + "=" + URLEncoder.encode(value, "utf-8")))

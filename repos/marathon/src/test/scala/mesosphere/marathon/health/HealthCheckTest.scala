@@ -19,8 +19,7 @@ class HealthCheckTest extends MarathonSpec {
       portIndex = Some(0),
       gracePeriod = 10.seconds,
       interval = 60.seconds,
-      maxConsecutiveFailures = 0
-    )
+      maxConsecutiveFailures = 0)
 
     val proto = healthCheck.toProto
 
@@ -40,8 +39,7 @@ class HealthCheckTest extends MarathonSpec {
       gracePeriod = 10.seconds,
       interval = 60.seconds,
       maxConsecutiveFailures = 0,
-      port = Some(12345)
-    )
+      port = Some(12345))
 
     val proto = healthCheck.toProto
 
@@ -60,8 +58,7 @@ class HealthCheckTest extends MarathonSpec {
       portIndex = Some(1),
       gracePeriod = 7.seconds,
       interval = 35.seconds,
-      maxConsecutiveFailures = 10
-    )
+      maxConsecutiveFailures = 10)
 
     val proto = healthCheck.toProto
 
@@ -175,8 +172,7 @@ class HealthCheckTest extends MarathonSpec {
       gracePeriod = 7.seconds,
       interval = 35.seconds,
       timeout = 10.seconds,
-      maxConsecutiveFailures = 10
-    )
+      maxConsecutiveFailures = 10)
 
     assert(mergeResult == expectedResult)
   }
@@ -237,8 +233,7 @@ class HealthCheckTest extends MarathonSpec {
       """
     val expected = HealthCheck(
       protocol = Protocol.COMMAND,
-      command = Some(Command("echo healthy"))
-    )
+      command = Some(Command("echo healthy")))
     val readResult = fromJson(json)
     assert(readResult == expected)
   }
@@ -259,8 +254,7 @@ class HealthCheckTest extends MarathonSpec {
     val expected = HealthCheck(
       protocol = Protocol.COMMAND,
       command = Some(Command("echo healthy")),
-      portIndex = Some(0)
-    )
+      portIndex = Some(0))
     val readResult = fromJson(json)
     assert(readResult == expected)
   }
@@ -294,40 +288,27 @@ class HealthCheckTest extends MarathonSpec {
     shouldBeInvalid(
       HealthCheck(
         protocol = Protocol.HTTP,
-        command = Some(Command("echo healthy"))
-      ))
+        command = Some(Command("echo healthy"))))
   }
 
   test("path is not accepted for a TCP HealthCheck") {
-    shouldBeInvalid(
-      HealthCheck(
-        protocol = Protocol.TCP,
-        path = Some("/")
-      ))
+    shouldBeInvalid(HealthCheck(protocol = Protocol.TCP, path = Some("/")))
   }
 
   test("command is not accepted for a TCP HealthCheck") {
     shouldBeInvalid(
       HealthCheck(
         protocol = Protocol.TCP,
-        command = Some(Command("echo healthy"))
-      ))
+        command = Some(Command("echo healthy"))))
   }
 
   test("port is not accepted for a COMMAND HealthCheck") {
-    shouldBeInvalid(
-      HealthCheck(
-        protocol = Protocol.COMMAND,
-        port = Some(1)
-      ))
+    shouldBeInvalid(HealthCheck(protocol = Protocol.COMMAND, port = Some(1)))
   }
 
   test("portIndex is not accepted for a COMMAND HealthCheck") {
     shouldBeInvalid(
-      HealthCheck(
-        protocol = Protocol.COMMAND,
-        portIndex = Some(0)
-      ))
+      HealthCheck(protocol = Protocol.COMMAND, portIndex = Some(0)))
   }
 
   test(
@@ -336,50 +317,29 @@ class HealthCheckTest extends MarathonSpec {
       HealthCheck(
         protocol = Protocol.HTTP,
         port = Some(1),
-        portIndex = Some(0)
-      ))
+        portIndex = Some(0)))
   }
 
   test(
     "both port and portIndex are not accepted at the same time for a TCP HealthCheck") {
     shouldBeInvalid(
-      HealthCheck(
-        protocol = Protocol.TCP,
-        port = Some(1),
-        portIndex = Some(0)
-      ))
+      HealthCheck(protocol = Protocol.TCP, port = Some(1), portIndex = Some(0)))
   }
 
   test("port is accepted for a HTTP HealthCheck") {
-    shouldBeValid(
-      HealthCheck(
-        protocol = Protocol.HTTP,
-        port = Some(1)
-      ))
+    shouldBeValid(HealthCheck(protocol = Protocol.HTTP, port = Some(1)))
   }
 
   test("port is accepted for a TCP HealthCheck") {
-    shouldBeValid(
-      HealthCheck(
-        protocol = Protocol.TCP,
-        port = Some(1)
-      ))
+    shouldBeValid(HealthCheck(protocol = Protocol.TCP, port = Some(1)))
   }
 
   test("portIndex is accepted for a HTTP HealthCheck") {
-    shouldBeValid(
-      HealthCheck(
-        protocol = Protocol.HTTP,
-        portIndex = Some(0)
-      ))
+    shouldBeValid(HealthCheck(protocol = Protocol.HTTP, portIndex = Some(0)))
   }
 
   test("portIndex is accepted for a TCP HealthCheck") {
-    shouldBeValid(
-      HealthCheck(
-        protocol = Protocol.TCP,
-        portIndex = Some(0)
-      ))
+    shouldBeValid(HealthCheck(protocol = Protocol.TCP, portIndex = Some(0)))
   }
 
   test("getPort") {

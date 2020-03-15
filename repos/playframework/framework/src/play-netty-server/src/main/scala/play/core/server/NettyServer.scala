@@ -312,10 +312,7 @@ class NettyServerProvider extends ServerProvider {
       context.config,
       context.appProvider,
       context.stopHook,
-      context.actorSystem
-    )(
-      context.materializer
-    )
+      context.actorSystem)(context.materializer)
 }
 
 /**

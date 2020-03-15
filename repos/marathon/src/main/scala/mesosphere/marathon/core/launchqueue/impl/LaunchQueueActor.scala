@@ -77,8 +77,7 @@ private[impl] class LaunchQueueActor(
         receiveTaskUpdateToSuspendedActor,
         receiveMessagesToSuspendedActor,
         receiveTaskUpdate,
-        receiveHandleNormalCommands
-      ).reduce(_.orElse[Any, Unit](_))
+        receiveHandleNormalCommands).reduce(_.orElse[Any, Unit](_))
     }
 
   /**

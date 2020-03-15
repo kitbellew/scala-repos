@@ -58,17 +58,16 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
   implicit val arbitraryPipeFactory: Arbitrary[PipeFactory[Nothing]] = {
     Arbitrary {
       Gen.const {
-        StateWithError[
-          (Interval[Timestamp], Mode),
-          List[FailureReason],
-          FlowToPipe[Nothing]] { (timeMode: (Interval[Timestamp], Mode)) =>
-          {
-            val (time: Interval[Timestamp], mode: Mode) = timeMode
-            val a: FlowToPipe[Nothing] = Reader { (fdM: (FlowDef, Mode)) =>
-              TypedPipe.empty
+        StateWithError[(Interval[Timestamp], Mode), List[
+          FailureReason], FlowToPipe[Nothing]] {
+          (timeMode: (Interval[Timestamp], Mode)) =>
+            {
+              val (time: Interval[Timestamp], mode: Mode) = timeMode
+              val a: FlowToPipe[Nothing] = Reader { (fdM: (FlowDef, Mode)) =>
+                TypedPipe.empty
+              }
+              Right((timeMode, a))
             }
-            Right((timeMode, a))
-          }
         }
       }
     }

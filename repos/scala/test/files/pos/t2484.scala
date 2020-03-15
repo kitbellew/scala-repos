@@ -7,12 +7,13 @@ class Admin extends javax.swing.JApplet {
       jScrollPane.synchronized {
         def someFunction() = {}
         //scala.concurrent.ops.spawn {someFunction ()}
-        jScrollPane.addComponentListener(new java.awt.event.ComponentAdapter {
-          override def componentShown(e: java.awt.event.ComponentEvent) = {
-            someFunction();
-            jScrollPane.removeComponentListener(this)
-          }
-        })
+        jScrollPane.addComponentListener(
+          new java.awt.event.ComponentAdapter {
+            override def componentShown(e: java.awt.event.ComponentEvent) = {
+              someFunction();
+              jScrollPane.removeComponentListener(this)
+            }
+          })
       }
     }
   }

@@ -337,10 +337,11 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
               getAllChildStats))
           throw f.cause
       case Some(stats) ⇒
-        publish(Debug(
-          self.path.toString,
-          clazz(actor),
-          "dropping Failed(" + f.cause + ") from old child " + f.child + " (uid=" + stats.uid + " != " + f.uid + ")"))
+        publish(
+          Debug(
+            self.path.toString,
+            clazz(actor),
+            "dropping Failed(" + f.cause + ") from old child " + f.child + " (uid=" + stats.uid + " != " + f.uid + ")"))
       case None ⇒
         publish(
           Debug(

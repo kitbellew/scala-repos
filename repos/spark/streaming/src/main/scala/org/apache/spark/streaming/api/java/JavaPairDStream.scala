@@ -284,8 +284,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   def groupByKeyAndWindow(
       windowDuration: Duration,
       slideDuration: Duration,
-      partitioner: Partitioner
-  ): JavaPairDStream[K, JIterable[V]] = {
+      partitioner: Partitioner): JavaPairDStream[K, JIterable[V]] = {
     dstream
       .groupByKeyAndWindow(windowDuration, slideDuration, partitioner)
       .mapValues(_.asJava)
@@ -320,8 +319,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   def reduceByKeyAndWindow(
       reduceFunc: JFunction2[V, V, V],
       windowDuration: Duration,
-      slideDuration: Duration
-  ): JavaPairDStream[K, V] = {
+      slideDuration: Duration): JavaPairDStream[K, V] = {
     dstream.reduceByKeyAndWindow(reduceFunc, windowDuration, slideDuration)
   }
 
@@ -341,8 +339,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       reduceFunc: JFunction2[V, V, V],
       windowDuration: Duration,
       slideDuration: Duration,
-      numPartitions: Int
-  ): JavaPairDStream[K, V] = {
+      numPartitions: Int): JavaPairDStream[K, V] = {
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       windowDuration,
@@ -366,8 +363,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       reduceFunc: JFunction2[V, V, V],
       windowDuration: Duration,
       slideDuration: Duration,
-      partitioner: Partitioner
-  ): JavaPairDStream[K, V] = {
+      partitioner: Partitioner): JavaPairDStream[K, V] = {
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       windowDuration,
@@ -395,8 +391,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       reduceFunc: JFunction2[V, V, V],
       invReduceFunc: JFunction2[V, V, V],
       windowDuration: Duration,
-      slideDuration: Duration
-  ): JavaPairDStream[K, V] = {
+      slideDuration: Duration): JavaPairDStream[K, V] = {
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       invReduceFunc,
@@ -430,16 +425,15 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       windowDuration: Duration,
       slideDuration: Duration,
       numPartitions: Int,
-      filterFunc: JFunction[(K, V), java.lang.Boolean]
-  ): JavaPairDStream[K, V] = {
+      filterFunc: JFunction[(K, V), java.lang.Boolean])
+      : JavaPairDStream[K, V] = {
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       invReduceFunc,
       windowDuration,
       slideDuration,
       numPartitions,
-      (p: (K, V)) => filterFunc(p).booleanValue()
-    )
+      (p: (K, V)) => filterFunc(p).booleanValue())
   }
 
   /**
@@ -468,16 +462,15 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       windowDuration: Duration,
       slideDuration: Duration,
       partitioner: Partitioner,
-      filterFunc: JFunction[(K, V), java.lang.Boolean]
-  ): JavaPairDStream[K, V] = {
+      filterFunc: JFunction[(K, V), java.lang.Boolean])
+      : JavaPairDStream[K, V] = {
     dstream.reduceByKeyAndWindow(
       reduceFunc,
       invReduceFunc,
       windowDuration,
       slideDuration,
       partitioner,
-      (p: (K, V)) => filterFunc(p).booleanValue()
-    )
+      (p: (K, V)) => filterFunc(p).booleanValue())
   }
 
   /**
@@ -578,8 +571,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def updateStateByKey[S](
       updateFunc: JFunction2[JList[V], Optional[S], Optional[S]],
-      partitioner: Partitioner
-  ): JavaPairDStream[K, S] = {
+      partitioner: Partitioner): JavaPairDStream[K, S] = {
     implicit val cm: ClassTag[S] = fakeClassTag
     dstream.updateStateByKey(
       convertUpdateStateFunction(updateFunc),
@@ -600,8 +592,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   def updateStateByKey[S](
       updateFunc: JFunction2[JList[V], Optional[S], Optional[S]],
       partitioner: Partitioner,
-      initialRDD: JavaPairRDD[K, S]
-  ): JavaPairDStream[K, S] = {
+      initialRDD: JavaPairRDD[K, S]): JavaPairDStream[K, S] = {
     implicit val cm: ClassTag[S] = fakeClassTag
     dstream.updateStateByKey(
       convertUpdateStateFunction(updateFunc),
@@ -648,8 +639,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def cogroup[W](
       other: JavaPairDStream[K, W],
-      numPartitions: Int
-  ): JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
+      numPartitions: Int): JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     dstream
       .cogroup(other.dstream, numPartitions)
@@ -660,10 +650,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     * Return a new DStream by applying 'cogroup' between RDDs of `this` DStream and `other` DStream.
     * Hash partitioning is used to generate the RDDs with `numPartitions` partitions.
     */
-  def cogroup[W](
-      other: JavaPairDStream[K, W],
-      partitioner: Partitioner
-  ): JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
+  def cogroup[W](other: JavaPairDStream[K, W], partitioner: Partitioner)
+      : JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     dstream
       .cogroup(other.dstream, partitioner)
@@ -696,8 +684,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def join[W](
       other: JavaPairDStream[K, W],
-      partitioner: Partitioner
-  ): JavaPairDStream[K, (V, W)] = {
+      partitioner: Partitioner): JavaPairDStream[K, (V, W)] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     dstream.join(other.dstream, partitioner)
   }
@@ -723,8 +710,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def leftOuterJoin[W](
       other: JavaPairDStream[K, W],
-      numPartitions: Int
-  ): JavaPairDStream[K, (V, Optional[W])] = {
+      numPartitions: Int): JavaPairDStream[K, (V, Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.leftOuterJoin(other.dstream, numPartitions)
     joinResult.mapValues {
@@ -739,8 +725,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def leftOuterJoin[W](
       other: JavaPairDStream[K, W],
-      partitioner: Partitioner
-  ): JavaPairDStream[K, (V, Optional[W])] = {
+      partitioner: Partitioner): JavaPairDStream[K, (V, Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.leftOuterJoin(other.dstream, partitioner)
     joinResult.mapValues {
@@ -769,8 +754,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def rightOuterJoin[W](
       other: JavaPairDStream[K, W],
-      numPartitions: Int
-  ): JavaPairDStream[K, (Optional[V], W)] = {
+      numPartitions: Int): JavaPairDStream[K, (Optional[V], W)] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.rightOuterJoin(other.dstream, numPartitions)
     joinResult.mapValues {
@@ -785,8 +769,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def rightOuterJoin[W](
       other: JavaPairDStream[K, W],
-      partitioner: Partitioner
-  ): JavaPairDStream[K, (Optional[V], W)] = {
+      partitioner: Partitioner): JavaPairDStream[K, (Optional[V], W)] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.rightOuterJoin(other.dstream, partitioner)
     joinResult.mapValues {
@@ -816,8 +799,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     */
   def fullOuterJoin[W](
       other: JavaPairDStream[K, W],
-      numPartitions: Int
-  ): JavaPairDStream[K, (Optional[V], Optional[W])] = {
+      numPartitions: Int): JavaPairDStream[K, (Optional[V], Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.fullOuterJoin(other.dstream, numPartitions)
     joinResult.mapValues {
@@ -831,10 +813,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     * `other` DStream. The supplied org.apache.spark.Partitioner is used to control
     * the partitioning of each RDD.
     */
-  def fullOuterJoin[W](
-      other: JavaPairDStream[K, W],
-      partitioner: Partitioner
-  ): JavaPairDStream[K, (Optional[V], Optional[W])] = {
+  def fullOuterJoin[W](other: JavaPairDStream[K, W], partitioner: Partitioner)
+      : JavaPairDStream[K, (Optional[V], Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.fullOuterJoin(other.dstream, partitioner)
     joinResult.mapValues {

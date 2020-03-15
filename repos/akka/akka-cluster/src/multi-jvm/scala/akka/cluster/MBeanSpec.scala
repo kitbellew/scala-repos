@@ -20,13 +20,10 @@ object MBeanMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
   val fourth = role("fourth")
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("""
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
     akka.cluster.jmx.enabled = on
     akka.cluster.roles = [testNode]
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }
 
@@ -259,9 +256,10 @@ abstract class MBeanSpec
       runOn(third) {
         awaitCond(cluster.isTerminated)
         // mbean should be unregistered, i.e. throw InstanceNotFoundException
-        awaitAssert(intercept[InstanceNotFoundException] {
-          mbeanServer.getMBeanInfo(mbeanName)
-        })
+        awaitAssert(
+          intercept[InstanceNotFoundException] {
+            mbeanServer.getMBeanInfo(mbeanName)
+          })
       }
 
       enterBarrier("after-7")

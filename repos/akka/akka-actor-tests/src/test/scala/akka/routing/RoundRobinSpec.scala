@@ -31,15 +31,16 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       val stopLatch = new TestLatch(5)
 
       val actor = system.actorOf(
-        RoundRobinPool(5).props(routeeProps = Props(new Actor {
-          def receive = {
-            case "hello" ⇒ helloLatch.countDown()
-          }
+        RoundRobinPool(5).props(routeeProps = Props(
+          new Actor {
+            def receive = {
+              case "hello" ⇒ helloLatch.countDown()
+            }
 
-          override def postStop() {
-            stopLatch.countDown()
-          }
-        })),
+            override def postStop() {
+              stopLatch.countDown()
+            }
+          })),
         "round-robin-shutdown"
       )
 
@@ -63,13 +64,14 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       var replies = Map.empty[Int, Int].withDefaultValue(0)
 
       val actor = system.actorOf(
-        RoundRobinPool(connectionCount).props(routeeProps = Props(new Actor {
-          lazy val id = counter.getAndIncrement()
-          def receive = {
-            case "hit" ⇒ sender() ! id
-            case "end" ⇒ doneLatch.countDown()
-          }
-        })),
+        RoundRobinPool(connectionCount).props(routeeProps = Props(
+          new Actor {
+            lazy val id = counter.getAndIncrement()
+            def receive = {
+              case "hit" ⇒ sender() ! id
+              case "end" ⇒ doneLatch.countDown()
+            }
+          })),
         "round-robin"
       )
 
@@ -94,15 +96,16 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       val stopLatch = new TestLatch(5)
 
       val actor = system.actorOf(
-        RoundRobinPool(5).props(routeeProps = Props(new Actor {
-          def receive = {
-            case "hello" ⇒ helloLatch.countDown()
-          }
+        RoundRobinPool(5).props(routeeProps = Props(
+          new Actor {
+            def receive = {
+              case "hello" ⇒ helloLatch.countDown()
+            }
 
-          override def postStop() {
-            stopLatch.countDown()
-          }
-        })),
+            override def postStop() {
+              stopLatch.countDown()
+            }
+          })),
         "round-robin-broadcast"
       )
 
@@ -115,9 +118,10 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
     "be controlled with management messages" in {
       val actor = system.actorOf(
-        RoundRobinPool(3).props(routeeProps = Props(new Actor {
-          def receive = Actor.emptyBehavior
-        })),
+        RoundRobinPool(3).props(routeeProps = Props(
+          new Actor {
+            def receive = Actor.emptyBehavior
+          })),
         "round-robin-managed")
 
       routeeSize(actor) should ===(3)
@@ -145,12 +149,13 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val paths = (1 to connectionCount) map { n ⇒
         val ref = system.actorOf(
-          Props(new Actor {
-            def receive = {
-              case "hit" ⇒ sender() ! self.path.name
-              case "end" ⇒ doneLatch.countDown()
-            }
-          }),
+          Props(
+            new Actor {
+              def receive = {
+                case "hit" ⇒ sender() ! self.path.name
+                case "end" ⇒ doneLatch.countDown()
+              }
+            }),
           name = "target-" + n)
         ref.path.toStringWithoutAddress
       }
@@ -181,30 +186,33 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       var replies = Map.empty[String, Int].withDefaultValue(0)
 
-      val actor = system.actorOf(Props(new Actor {
-        var n = 0
-        var router = Router(RoundRobinRoutingLogic())
+      val actor = system.actorOf(
+        Props(
+          new Actor {
+            var n = 0
+            var router = Router(RoundRobinRoutingLogic())
 
-        def receive = {
-          case p: Props ⇒
-            n += 1
-            val c = context.actorOf(p, name = "child-" + n)
-            context.watch(c)
-            router = router.addRoutee(c)
-          case Terminated(c) ⇒
-            router = router.removeRoutee(c)
-            if (router.routees.isEmpty)
-              context.stop(self)
-          case other ⇒ router.route(other, sender())
-        }
-      }))
+            def receive = {
+              case p: Props ⇒
+                n += 1
+                val c = context.actorOf(p, name = "child-" + n)
+                context.watch(c)
+                router = router.addRoutee(c)
+              case Terminated(c) ⇒
+                router = router.removeRoutee(c)
+                if (router.routees.isEmpty)
+                  context.stop(self)
+              case other ⇒ router.route(other, sender())
+            }
+          }))
 
-      val childProps = Props(new Actor {
-        def receive = {
-          case "hit" ⇒ sender() ! self.path.name
-          case "end" ⇒ context.stop(self)
-        }
-      })
+      val childProps = Props(
+        new Actor {
+          def receive = {
+            case "hit" ⇒ sender() ! self.path.name
+            case "end" ⇒ context.stop(self)
+          }
+        })
 
       (1 to connectionCount) foreach { _ ⇒
         actor ! childProps

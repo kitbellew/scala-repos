@@ -43,9 +43,10 @@ private final class Monitor(
     }
 
     monitor.totalSecond(sumOf(result.analysis)(_.time) / 1000)
-    monitor.totalMeganode(sumOf(result.analysis) { eval =>
-      eval.nodes ifFalse eval.mateFound
-    } / 1000000)
+    monitor.totalMeganode(
+      sumOf(result.analysis) { eval =>
+        eval.nodes ifFalse eval.mateFound
+      } / 1000000)
     monitor.totalPosition(result.analysis.size)
 
     val metaMovesSample = sample(

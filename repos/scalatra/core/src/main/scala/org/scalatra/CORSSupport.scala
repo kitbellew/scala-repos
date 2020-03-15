@@ -176,15 +176,19 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
 
   private[this] def originMatches: Boolean = // 6.2.2
     corsConfig.allowedOrigins.contains(AnyOrigin) ||
-      (corsConfig.allowedOrigins contains request.headers
-        .get(OriginHeader)
-        .getOrElse(""))
+      (
+        corsConfig.allowedOrigins contains request.headers
+          .get(OriginHeader)
+          .getOrElse("")
+      )
 
   private[this] def isEnabled: Boolean =
-    !("Upgrade".equalsIgnoreCase(
-      request.headers.get("Connection").getOrElse("")) &&
-      "WebSocket".equalsIgnoreCase(
-        request.headers.get("Upgrade").getOrElse(""))) &&
+    !(
+      "Upgrade".equalsIgnoreCase(
+        request.headers.get("Connection").getOrElse("")) &&
+        "WebSocket".equalsIgnoreCase(
+          request.headers.get("Upgrade").getOrElse(""))
+    ) &&
       !requestPath.contains(
         "eb_ping"
       ) // don't do anything for the ping endpoint
@@ -214,12 +218,16 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
 
   private[this] def isSimpleHeader(header: String): Boolean = {
     val ho = header.blankOption
-    ho.isDefined && (ho forall { h ⇒
-      val hu = h.toUpperCase(ENGLISH)
-      SimpleHeaders.contains(hu) || (hu == "CONTENT-TYPE" &&
-      SimpleContentTypes.exists(
-        (request.contentType.getOrElse("")).toUpperCase(ENGLISH).startsWith))
-    })
+    ho.isDefined && (
+      ho forall { h ⇒
+        val hu = h.toUpperCase(ENGLISH)
+        SimpleHeaders.contains(hu) || (
+          hu == "CONTENT-TYPE" &&
+          SimpleContentTypes.exists(
+            (request.contentType.getOrElse("")).toUpperCase(ENGLISH).startsWith)
+        )
+      }
+    )
   }
 
   private[this] def allOriginsMatch: Boolean = { // 6.1.2

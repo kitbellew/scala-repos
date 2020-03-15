@@ -16,18 +16,21 @@ object Test extends AnyRef with App {
   def try2 = {
     Console.print("1 + 1 = ");
     Console.println(
-      (try {
-        x
-      } catch {
-        case _: Error => 1;
-      })
+      (
+        try {
+          x
+        } catch {
+          case _: Error => 1;
+        }
+      )
         +
-          (try {
-            x
-          } catch {
-            case _: Error => 1;
-          })
-    );
+          (
+            try {
+              x
+            } catch {
+              case _: Error => 1;
+            }
+          ));
   }
 
   var n = 0;

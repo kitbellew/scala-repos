@@ -7,9 +7,11 @@ object Test {
     catch {
       case _: MatchError =>
     }
-    try ((v: @unchecked) match {
-      case Some(1) =>
-    })
+    try (
+      (v: @unchecked) match {
+        case Some(1) =>
+      }
+    )
     catch {
       case _: MatchError =>
     }

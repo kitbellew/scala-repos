@@ -10,8 +10,7 @@ import spire.syntax.signed._
 
 case class BigDecimalRootRefinement(
     context: BigDecimalRootRefinement.ApproximationContext,
-    approximation: BigDecimalRootRefinement.Approximation
-) {
+    approximation: BigDecimalRootRefinement.Approximation) {
   import BigDecimalRootRefinement._
 
   def approximateValue: JBigDecimal = {
@@ -192,8 +191,7 @@ object BigDecimalRootRefinement {
       lowerBound: Rational,
       upperBound: Rational,
       lb: JBigDecimal,
-      ub: JBigDecimal
-  ): Approximation = {
+      ub: JBigDecimal): Approximation = {
     import context._
 
     // We avoid rational arithmetic by using the fact:
@@ -213,9 +211,10 @@ object BigDecimalRootRefinement {
               MathContext.UNLIMITED)
             Term(coeff * a, k)
         }
-        .compose(Polynomial.linear[BigDecimal](
-          BigDecimal(h.denominator.toBigInteger, MathContext.UNLIMITED),
-          BigDecimal(h.numerator.toBigInteger, MathContext.UNLIMITED)))
+        .compose(
+          Polynomial.linear[BigDecimal](
+            BigDecimal(h.denominator.toBigInteger, MathContext.UNLIMITED),
+            BigDecimal(h.numerator.toBigInteger, MathContext.UNLIMITED)))
         .removeZeroRoots
     }
 
@@ -303,8 +302,7 @@ object BigDecimalRootRefinement {
       lowerBoundValue: JBigDecimal,
       upperBound: JBigDecimal,
       upperBoundValue: JBigDecimal,
-      n0: Int = 0
-  ): Approximation = {
+      n0: Int = 0): Approximation = {
     import context._
 
     @tailrec
@@ -313,8 +311,7 @@ object BigDecimalRootRefinement {
         ly: JBigDecimal,
         rx: JBigDecimal,
         ry: JBigDecimal,
-        n: Int
-    ): Approximation = {
+        n: Int): Approximation = {
       val dx = rx.subtract(lx)
       val scale = max(getEps(lx), getEps(rx))
       val eps = JBigDecimal.valueOf(1, scale)
@@ -360,8 +357,7 @@ object BigDecimalRootRefinement {
         x1: JBigDecimal,
         y1: JBigDecimal,
         x2: JBigDecimal,
-        y2: JBigDecimal
-    ): Approximation = {
+        y2: JBigDecimal): Approximation = {
       if (y0.signum == 0)
         ExactRoot(x0)
       else if (y1.signum == 0)
@@ -378,8 +374,7 @@ object BigDecimalRootRefinement {
         x0: JBigDecimal,
         y0: JBigDecimal,
         x5: JBigDecimal,
-        y5: JBigDecimal
-    ): Approximation = {
+        y5: JBigDecimal): Approximation = {
       val dy = y0.subtract(y5)
       val k = y0.divide(dy, 1, RoundingMode.HALF_UP).unscaledValue.intValue
       val eps = x5.subtract(x0).divide(new JBigDecimal(5))

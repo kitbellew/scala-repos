@@ -222,19 +222,15 @@ trait BasePrintTests {
       "val x = true.&&(true.&&(false).`unary_!`)",
       checkTypedTree = false)
 
-  @Test def testNewExpr1 =
-    assertResultCode(code = sm"""
+  @Test def testNewExpr1 = assertResultCode(code = sm"""
     |class foo
     |new foo()
-    |""")(
-      parsedCode = sm"""
+    |""")(parsedCode = sm"""
     |class foo;
-    |new foo()""",
-      typedCode = sm"""
+    |new foo()""", typedCode = sm"""
     |class foo;
     |new PrintersContext.this.foo()
-    |""",
-      wrap = true)
+    |""", wrap = true)
 
   @Test def testNewExpr2 =
     assertResultCode(code = sm"""
@@ -606,14 +602,11 @@ trait ClassPrintTests {
     |  ()
     |}""")
 
-  @Test def testImplicitClass =
-    assertPrintedCode(
-      sm"""
+  @Test def testImplicitClass = assertPrintedCode(sm"""
     |{
     |  implicit class X(protected[this] var x: scala.Int);
     |  ()
-    |}""",
-      checkTypedTree = true)
+    |}""", checkTypedTree = true)
 
   @Test def testAbstractClass =
     assertPrintedCode("abstract class X(protected[this] var x: scala.Int)")
@@ -947,13 +940,10 @@ trait TraitPrintTests {
   @Test def testTraitWithInh =
     assertPrintedCode("trait X extends scala.Cloneable with scala.Serializable")
 
-  @Test def testTraitWithEarly1 =
-    assertPrintedCode(
-      sm"""
+  @Test def testTraitWithEarly1 = assertPrintedCode(sm"""
     |trait X extends {
     |  val x: Int = 1
-    |} with AnyRef""",
-      checkTypedTree = false)
+    |} with AnyRef""", checkTypedTree = false)
 
   @Test def testTraitWithEarly2 = assertPrintedCode(sm"""
     |trait X extends {
@@ -1192,15 +1182,15 @@ trait ValAndDefPrintTests {
       wrap = true)
 
   @Test def testAnnotated3 =
-    assertResultCode(
-      code = "def foo = (42: @foo1[A1, B1]): @foo2[A1, B1](4)(2)")(
+    assertResultCode(code =
+      "def foo = (42: @foo1[A1, B1]): @foo2[A1, B1](4)(2)")(
       parsedCode = "def foo = (42: @foo1[A1, B1]): @foo2[A1, B1](4)(2)",
       typedCode = "def foo = ((42: @foo1[A1, B1]): @foo2[A1, B1](4)(2))",
       wrap = true)
 
   @Test def testAnnotated4 =
-    assertResultCode(
-      code = "def foo = 42: @foo3[A1, B1](4)(2.0F, new foo1[A1, B1]())")(
+    assertResultCode(code =
+      "def foo = 42: @foo3[A1, B1](4)(2.0F, new foo1[A1, B1]())")(
       parsedCode = "def foo = 42: @foo3[A1, B1](4)(2.0F, new foo1[A1, B1]())",
       typedCode = "def foo = (42: @foo3[A1, B1](4)(2.0F, new foo1[A1, B1]()))",
       wrap = true
@@ -1229,44 +1219,32 @@ trait ValAndDefPrintTests {
 }
 
 trait PackagePrintTests {
-  @Test def testPackage1 =
-    assertPrintedCode(
-      sm"""
+  @Test def testPackage1 = assertPrintedCode(sm"""
     |package foo.bar {
     |  
-    |}""",
-      checkTypedTree = false)
+    |}""", checkTypedTree = false)
 
-  @Test def testPackage2 =
-    assertPrintedCode(
-      sm"""
+  @Test def testPackage2 = assertPrintedCode(sm"""
     |package foo {
     |  class C
     |
     |  object D
-    |}""",
-      checkTypedTree = false)
+    |}""", checkTypedTree = false)
 
   //package object foo extends a with b
-  @Test def testPackage3 =
-    assertPrintedCode(
-      sm"""
+  @Test def testPackage3 = assertPrintedCode(sm"""
     |package foo {
     |  object `package` extends a with b
-    |}""",
-      checkTypedTree = false)
+    |}""", checkTypedTree = false)
 
   //package object foo { def foo; val x = 1 }
-  @Test def testPackage4 =
-    assertPrintedCode(
-      sm"""
+  @Test def testPackage4 = assertPrintedCode(sm"""
     |package foo {
     |  object `package` {
     |    def foo: scala.Unit = ();
     |    val x = 1
     |  }
-    |}""",
-      checkTypedTree = false)
+    |}""", checkTypedTree = false)
 
   //package object foo extends { val x = 1; type I = Int } with Any
   @Test def testPackage5 =
@@ -1348,8 +1326,9 @@ trait QuasiTreesPrintTests {
     |}""")
 
   @Test def testQuasiCaseClassWithTypes1 =
-    assertTreeCode(q"""case class X(x: ${typeOf[Int]}, s: ${typeOf[
-      String]}){ def y = "test" }""")(sm"""
+    assertTreeCode(
+      q"""case class X(x: ${typeOf[Int]}, s: ${typeOf[
+        String]}){ def y = "test" }""")(sm"""
     |case class X(x: Int, s: String) {
     |  def y = "test"
     |}""")

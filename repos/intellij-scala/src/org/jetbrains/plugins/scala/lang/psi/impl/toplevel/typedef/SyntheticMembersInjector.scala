@@ -132,11 +132,13 @@ object SyntheticMembersInjector {
       template <- injector.injectInners(source)
     } try {
       val context =
-        (source match {
-          case o: ScObject if o.isSyntheticObject =>
-            ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
-          case _ => source
-        }).extendsBlock
+        (
+          source match {
+            case o: ScObject if o.isSyntheticObject =>
+              ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
+            case _ => source
+          }
+        ).extendsBlock
       val td = ScalaPsiElementFactory.createTypeDefinitionWithContext(
         template,
         context,

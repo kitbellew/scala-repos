@@ -86,9 +86,10 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
                 val httpRequest = new HTTPRequestServlet(httpReq, this)
                 val httpResponse = new HTTPResponseServlet(httpRes)
 
-                handleLoanWrappers(service(httpRequest, httpResponse) {
-                  chain.doFilter(req, res)
-                })
+                handleLoanWrappers(
+                  service(httpRequest, httpResponse) {
+                    chain.doFilter(req, res)
+                  })
               case _ => chain.doFilter(req, res)
             }
           )

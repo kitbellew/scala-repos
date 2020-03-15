@@ -47,8 +47,12 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
     if (ifStmt.condition.orNull == null)
       return false
 
-    if (!(thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch.getTextRange.getStartOffset) &&
-        !(ifStmt.getTextRange.getStartOffset <= offset && offset <= ifStmt.condition.get.getTextRange.getStartOffset))
+    if (!(
+          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch.getTextRange.getStartOffset
+        ) &&
+        !(
+          ifStmt.getTextRange.getStartOffset <= offset && offset <= ifStmt.condition.get.getTextRange.getStartOffset
+        ))
       return false
 
     val innerThenBranch = elseBranch.asInstanceOf[ScIfStmt].thenBranch.orNull

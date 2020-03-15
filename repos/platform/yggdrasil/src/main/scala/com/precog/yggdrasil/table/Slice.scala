@@ -340,8 +340,7 @@ trait Slice { source =>
                 })
             case CUndefined =>
               sys.error("Cannot define a constant undefined value")
-          }
-        )
+          })
       }
     }
 
@@ -433,10 +432,9 @@ trait Slice { source =>
 
         (jType, cType, cPath) match {
           case (JUnionT(aJType, bJType), _, _) =>
-            flattenDeleteTree(
-              aJType,
-              cType,
-              cPath) andThen (_ flatMap flattenDeleteTree(bJType, cType, cPath))
+            flattenDeleteTree(aJType, cType, cPath) andThen (
+              _ flatMap flattenDeleteTree(bJType, cType, cPath)
+            )
           case (JTextT, CString, CPath.Identity) =>
             delete
           case (JBooleanT, CBoolean, CPath.Identity) =>
@@ -449,33 +447,31 @@ trait Slice { source =>
                 JObjectFixedT(fields),
                 _,
                 CPath(CPathField(name), cPath @ _*)) =>
-            fields get name map (flattenDeleteTree(
-              _,
-              cType,
-              CPath(cPath: _*))) getOrElse (retain)
+            fields get name map (
+              flattenDeleteTree(_, cType, CPath(cPath: _*))
+            ) getOrElse (retain)
           case (JArrayUnfixedT, _, CPath(CPathArray | CPathIndex(_), _*)) =>
             delete
           case (JArrayFixedT(elems), cType, CPath(CPathIndex(i), cPath @ _*)) =>
-            elems get i map (flattenDeleteTree(
-              _,
-              cType,
-              CPath(cPath: _*))) getOrElse (retain)
+            elems get i map (
+              flattenDeleteTree(_, cType, CPath(cPath: _*))
+            ) getOrElse (retain)
           case (
                 JArrayFixedT(elems),
                 CArrayType(cElemType),
                 CPath(CPathArray, cPath @ _*)) =>
-            val mappers = elems mapValues (flattenDeleteTree(
-              _,
-              cElemType,
-              CPath(cPath: _*)))
+            val mappers = elems mapValues (
+              flattenDeleteTree(_, cElemType, CPath(cPath: _*))
+            )
             xs =>
-              Some(xs.zipWithIndex map {
-                case (x, j) =>
-                  mappers get j match {
-                    case Some(f) => f(x)
-                    case None    => x
-                  }
-              })
+              Some(
+                xs.zipWithIndex map {
+                  case (x, j) =>
+                    mappers get j match {
+                      case Some(f) => f(x)
+                      case None    => x
+                    }
+                })
           case (
                 JArrayHomogeneousT(jType),
                 CArrayType(cType),
@@ -487,29 +483,30 @@ trait Slice { source =>
       }
 
       val size = source.size
-      val columns = fixArrays(source.columns flatMap {
-        case (ColumnRef(cpath, ctype), _)
-            if Schema.includes(jtype, cpath, ctype) =>
-          None
+      val columns = fixArrays(
+        source.columns flatMap {
+          case (ColumnRef(cpath, ctype), _)
+              if Schema.includes(jtype, cpath, ctype) =>
+            None
 
-        case (
-              ref @ ColumnRef(cpath, ctype: CArrayType[a]),
-              col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
-          val trans = flattenDeleteTree(jtype, ctype, cpath)
-          Some(
-            (
-              ref,
-              new HomogeneousArrayColumn[a] {
-                val tpe = ctype
-                def isDefinedAt(row: Int) = col.isDefinedAt(row)
-                def apply(row: Int): Array[a] =
-                  trans(col(row).asInstanceOf[Array[a]]) getOrElse sys.error(
-                    "Oh dear, this cannot be happening to me.")
-              }))
+          case (
+                ref @ ColumnRef(cpath, ctype: CArrayType[a]),
+                col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
+            val trans = flattenDeleteTree(jtype, ctype, cpath)
+            Some(
+              (
+                ref,
+                new HomogeneousArrayColumn[a] {
+                  val tpe = ctype
+                  def isDefinedAt(row: Int) = col.isDefinedAt(row)
+                  def apply(row: Int): Array[a] =
+                    trans(col(row).asInstanceOf[Array[a]]) getOrElse sys.error(
+                      "Oh dear, this cannot be happening to me.")
+                }))
 
-        case (ref, col) =>
-          Some((ref, col))
-      })
+          case (ref, col) =>
+            Some((ref, col))
+        })
     }
 
   def deleteFields(prefixes: scala.collection.Set[CPathField]) =
@@ -617,10 +614,11 @@ trait Slice { source =>
 
   def nest(selectorPrefix: CPath) =
     new Slice {
-      val arraylessPrefix = CPath(selectorPrefix.nodes map {
-        case CPathArray => CPathIndex(0)
-        case n          => n
-      }: _*)
+      val arraylessPrefix = CPath(
+        selectorPrefix.nodes map {
+          case CPathArray => CPathIndex(0)
+          case n          => n
+        }: _*)
 
       val size = source.size
       val columns = source.columns map {
@@ -1081,9 +1079,13 @@ trait Slice { source =>
       val columns: Map[ColumnRef, Column] =
         other.columns.foldLeft(source.columns) {
           case (acc, (ref, col)) =>
-            acc + (ref -> (acc get ref flatMap { c =>
-              cf.util.UnionRight(c, col)
-            } getOrElse col))
+            acc + (
+              ref -> (
+                acc get ref flatMap { c =>
+                  cf.util.UnionRight(c, col)
+                } getOrElse col
+              )
+            )
         }
     }
   }
@@ -1470,7 +1472,9 @@ trait Slice { source =>
               case '\t' => pushStr("\\t")
 
               case c => {
-                if ((c >= '\u0000' && c < '\u001f') || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+                if ((c >= '\u0000' && c < '\u001f') || (
+                      c >= '\u0080' && c < '\u00a0'
+                    ) || (c >= '\u2000' && c < '\u2100')) {
                   pushStr("\\u")
                   pushStr("%04x".format(Character.codePointAt(str, idx)))
                 } else {
@@ -1903,13 +1907,17 @@ trait Slice { source =>
   }
 
   def toString(row: Int): Option[String] = {
-    (columns.toList.sortBy(_._1) map {
-      case (ref, col) =>
-        ref.toString + ": " + (if (col.isDefinedAt(row))
-                                 col.strValue(row)
-                               else
-                                 "(undefined)")
-    }) match {
+    (
+      columns.toList.sortBy(_._1) map {
+        case (ref, col) =>
+          ref.toString + ": " + (
+            if (col.isDefinedAt(row))
+              col.strValue(row)
+            else
+              "(undefined)"
+          )
+      }
+    ) match {
       case Nil => None
       case l   => Some(l.mkString("[", ", ", "]"))
     }

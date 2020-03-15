@@ -163,8 +163,10 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
     else {
       o match {
         case m: Map[_, _] =>
-          (self.size == m.size &&
-            entrySet.forall(item => m.get(item.getKey) === item.getValue))
+          (
+            self.size == m.size &&
+              entrySet.forall(item => m.get(item.getKey) === item.getValue)
+          )
         case _ => false
       }
     }

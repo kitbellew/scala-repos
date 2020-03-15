@@ -83,19 +83,20 @@ final class FlattenMerge[T, M](breadth: Int)
 
       def addSource(source: Graph[SourceShape[T], M]): Unit = {
         val sinkIn = new SubSinkInlet[T]("FlattenMergeSink")
-        sinkIn.setHandler(new InHandler {
-          override def onPush(): Unit = {
-            if (isAvailable(out)) {
-              push(out, sinkIn.grab())
-              sinkIn.pull()
-            } else {
-              q.enqueue(sinkIn)
+        sinkIn.setHandler(
+          new InHandler {
+            override def onPush(): Unit = {
+              if (isAvailable(out)) {
+                push(out, sinkIn.grab())
+                sinkIn.pull()
+              } else {
+                q.enqueue(sinkIn)
+              }
             }
-          }
-          override def onUpstreamFinish(): Unit =
-            if (!sinkIn.isAvailable)
-              removeSource(sinkIn)
-        })
+            override def onUpstreamFinish(): Unit =
+              if (!sinkIn.isAvailable)
+                removeSource(sinkIn)
+          })
         sinkIn.pull()
         sources += sinkIn
         Source
@@ -177,9 +178,10 @@ final class PrefixAndTail[T](n: Int)
           setKeepGoing(false)
           cancelTimer(SubscriptionTimer)
           pull(in)
-          tailSource.setHandler(new OutHandler {
-            override def onPull(): Unit = pull(in)
-          })
+          tailSource.setHandler(
+            new OutHandler {
+              override def onPull(): Unit = pull(in)
+            })
         }
       }
 

@@ -106,8 +106,7 @@ object ScalaOptionParser {
         }
         ++ scaladocStringSettingNames.map(StringSetting)
         ++ scaladocPathSettingNames.map(PathSetting)
-        ++ scaladocMultiStringSettingNames.map(MultiStringSetting)
-    )
+        ++ scaladocMultiStringSettingNames.map(MultiStringSetting))
     val ScalaDocOpt = ScalacOpt | ScalaDocExtraSettings
 
     val P =
@@ -125,8 +124,11 @@ object ScalaOptionParser {
                   Space).map(_.mkString(" ")))))
           val options = rep1sep(ScalaOpt, Space).map(_.mkString(" "))
           Opt(
-            Space ~> (options | concat(concat(
-              options ~ Space.string) ~ runnableAndArgs) | runnableAndArgs))
+            Space ~> (
+              options | concat(
+                concat(
+                  options ~ Space.string) ~ runnableAndArgs) | runnableAndArgs
+            ))
         case "scaladoc" =>
           Opt(Space ~> Opt(repsep(ScalaDocOpt, Space).map(_.mkString(" "))))
         case "scalac" =>

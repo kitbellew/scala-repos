@@ -294,9 +294,11 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
     def inner(q: String): Boolean = {
       val actual = doEval(q)
 
-      expect.length == actual.length && (expect zip actual forall {
-        case (a, b) => a == b
-      })
+      expect.length == actual.length && (
+        expect zip actual forall {
+          case (a, b) => a == b
+        }
+      )
     }
 
     def message(q: String): String = {

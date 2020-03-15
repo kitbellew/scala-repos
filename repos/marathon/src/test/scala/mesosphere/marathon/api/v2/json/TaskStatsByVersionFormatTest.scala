@@ -21,22 +21,16 @@ class TaskStatsByVersionFormatTest
     maybeStartedAfterLastScaling = None,
     maybeWithLatestConfig = None,
     maybeWithOutdatedConfig = None,
-    maybeTotalSummary = None
-  )
+    maybeTotalSummary = None)
 
   private[this] val fullTaskStats = TaskStats(
     counts = TaskCounts(
       tasksStaged = 1,
       tasksRunning = 2,
       tasksHealthy = 3,
-      tasksUnhealthy = 4
-    ),
+      tasksUnhealthy = 4),
     maybeLifeTime = Some(
-      TaskLifeTime(
-        averageSeconds = 20.0,
-        medianSeconds = 10.0
-      )
-    )
+      TaskLifeTime(averageSeconds = 20.0, medianSeconds = 10.0))
   )
 
   test("empty stats get rendered correctly") {
@@ -59,14 +53,9 @@ class TaskStatsByVersionFormatTest
               "staged" -> 1,
               "running" -> 2,
               "healthy" -> 3,
-              "unhealthy" -> 4
-            ),
-            "lifeTime" -> Json.obj(
-              "averageSeconds" -> 20.0,
-              "medianSeconds" -> 10.0
-            )
-          )
-        ))
+              "unhealthy" -> 4),
+            "lifeTime" -> Json
+              .obj("averageSeconds" -> 20.0, "medianSeconds" -> 10.0))))
   }
 
   test(
@@ -83,10 +72,7 @@ class TaskStatsByVersionFormatTest
               "staged" -> 1,
               "running" -> 2,
               "healthy" -> 3,
-              "unhealthy" -> 4
-            )
-          )
-        ))
+              "unhealthy" -> 4))))
   }
 
   test("full task stats by version get rendered correctly") {

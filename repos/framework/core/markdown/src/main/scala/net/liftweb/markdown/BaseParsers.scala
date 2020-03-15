@@ -310,12 +310,16 @@ trait BaseParsers extends RegexParsers {
     * That way you can omit xml escaping when writing inline XML in markdown.
     */
   def xmlAttrVal: Parser[String] =
-    ('"' ~> ((not('"') ~> aChar) *) <~ '"' ^^ {
-      '"' + _.mkString + '"'
-    }) |
-      ('\'' ~> ((not('\'') ~> aChar) *) <~ '\'' ^^ {
-        '\'' + _.mkString + '\''
-      })
+    (
+      '"' ~> ((not('"') ~> aChar) *) <~ '"' ^^ {
+        '"' + _.mkString + '"'
+      }
+    ) |
+      (
+        '\'' ~> ((not('\'') ~> aChar) *) <~ '\'' ^^ {
+          '\'' + _.mkString + '\''
+        }
+      )
 
   /** Parses an XML Attribute with simplified value handling like xmlAttrVal.
     */

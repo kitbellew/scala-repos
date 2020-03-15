@@ -12,11 +12,12 @@ class ScalaProjectCache(project: Project, events: ScalaProjectEvents)
     extends AbstractProjectComponent(project) {
   private val cache = new ConcurrentHashMap[AnyRef, AnyRef]()
 
-  events.addScalaProjectListener(new ScalaProjectListener {
-    def onScalaProjectChanged() {
-      cache.clear()
-    }
-  })
+  events.addScalaProjectListener(
+    new ScalaProjectListener {
+      def onScalaProjectChanged() {
+        cache.clear()
+      }
+    })
 
   override def projectClosed(): Unit = {
     cache.clear()

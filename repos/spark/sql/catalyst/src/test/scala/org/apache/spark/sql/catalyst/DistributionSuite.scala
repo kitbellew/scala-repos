@@ -29,14 +29,15 @@ class DistributionSuite extends SparkFunSuite {
       requiredDistribution: Distribution,
       satisfied: Boolean) {
     if (inputPartitioning.satisfies(requiredDistribution) != satisfied) {
-      fail(s"""
+      fail(
+        s"""
         |== Input Partitioning ==
         |$inputPartitioning
         |== Required Distribution ==
         |$requiredDistribution
         |== Does input partitioning satisfy required distribution? ==
         |Expected $satisfied got ${inputPartitioning.satisfies(
-                requiredDistribution)}
+             requiredDistribution)}
         """.stripMargin)
     }
   }

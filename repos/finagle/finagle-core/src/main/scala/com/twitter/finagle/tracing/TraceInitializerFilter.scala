@@ -86,8 +86,8 @@ sealed class AnnotatingTracingFilter[Req, Rep](
     after: Annotation,
     afterFailure: String => Annotation,
     finagleVersion: () => String = () => Init.finagleVersion,
-    traceMetaData: Boolean = true
-) extends SimpleFilter[Req, Rep] {
+    traceMetaData: Boolean = true)
+    extends SimpleFilter[Req, Rep] {
   def this(
       label: String,
       before: Annotation,
@@ -122,8 +122,10 @@ sealed class AnnotatingTracingFilter[Req, Rep](
         resp match {
           case Return(_) =>
           case Throw(error) =>
-            Trace.record(afterFailure(
-              "%s: %s".format(error.getClass().getName(), error.getMessage())))
+            Trace.record(
+              afterFailure(
+                "%s: %s"
+                  .format(error.getClass().getName(), error.getMessage())))
         }
         Trace.record(after)
       }
@@ -147,8 +149,8 @@ object ServerTracingFilter {
 
   case class TracingFilter[Req, Rep](
       label: String,
-      finagleVersion: () => String = () => Init.finagleVersion
-  ) extends AnnotatingTracingFilter[Req, Rep](
+      finagleVersion: () => String = () => Init.finagleVersion)
+      extends AnnotatingTracingFilter[Req, Rep](
         label,
         "srv",
         Annotation.ServerRecv(),
@@ -175,8 +177,8 @@ object ClientTracingFilter {
 
   case class TracingFilter[Req, Rep](
       label: String,
-      finagleVersion: () => String = () => Init.finagleVersion
-  ) extends AnnotatingTracingFilter[Req, Rep](
+      finagleVersion: () => String = () => Init.finagleVersion)
+      extends AnnotatingTracingFilter[Req, Rep](
         label,
         "clnt",
         Annotation.ClientSend(),
@@ -203,8 +205,8 @@ private[finagle] object WireTracingFilter {
 
   case class TracingFilter[Req, Rep](
       label: String,
-      finagleVersion: () => String = () => Init.finagleVersion
-  ) extends AnnotatingTracingFilter[Req, Rep](
+      finagleVersion: () => String = () => Init.finagleVersion)
+      extends AnnotatingTracingFilter[Req, Rep](
         label,
         "clnt",
         Annotation.WireSend,

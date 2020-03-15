@@ -234,9 +234,7 @@ case class BroadcastNestedLoopJoin(
     }
 
     val matchedBroadcastRows =
-      matchedBuildRows.fold(
-        new BitSet(relation.value.length)
-      )(_ | _)
+      matchedBuildRows.fold(new BitSet(relation.value.length))(_ | _)
 
     if (joinType == LeftSemi) {
       assert(buildSide == BuildLeft)
@@ -295,8 +293,7 @@ case class BroadcastNestedLoopJoin(
 
     sparkContext.union(
       matchedStreamRows,
-      sparkContext.makeRDD(notMatchedBroadcastRows)
-    )
+      sparkContext.makeRDD(notMatchedBroadcastRows))
   }
 
   protected override def doExecute(): RDD[InternalRow] = {

@@ -49,12 +49,13 @@ object PythonRunner {
     // Java system properties and such
     val gatewayServer = new py4j.GatewayServer(null, 0)
     val thread =
-      new Thread(new Runnable() {
-        override def run(): Unit =
-          Utils.logUncaughtExceptions {
-            gatewayServer.start()
-          }
-      })
+      new Thread(
+        new Runnable() {
+          override def run(): Unit =
+            Utils.logUncaughtExceptions {
+              gatewayServer.start()
+            }
+        })
     thread.setName("py4j-gateway-init")
     thread.setDaemon(true)
     thread.start()

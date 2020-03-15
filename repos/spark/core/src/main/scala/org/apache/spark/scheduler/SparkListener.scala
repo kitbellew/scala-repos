@@ -369,9 +369,10 @@ private[spark] object StatsReportListener extends Logging {
       taskInfoMetrics: Seq[(TaskInfo, TaskMetrics)],
       getMetric: (TaskInfo, TaskMetrics) => Option[Double])
       : Option[Distribution] = {
-    Distribution(taskInfoMetrics.flatMap {
-      case (info, metric) => getMetric(info, metric)
-    })
+    Distribution(
+      taskInfoMetrics.flatMap {
+        case (info, metric) => getMetric(info, metric)
+      })
   }
 
   // Is there some way to setup the types that I can get rid of this completely?

@@ -28,8 +28,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       Gen.oneOf(
         ^(arbitrary[A], arbitrary[B])(\&/.Both(_, _)),
         arbitrary[A].map(\&/.This(_)),
-        arbitrary[B].map(\&/.That(_))
-      ))
+        arbitrary[B].map(\&/.That(_))))
 
   implicit def EphemeralStreamArbitrary[A: Arbitrary] =
     Functor[Arbitrary].map(arb[Stream[A]])(EphemeralStream.fromStream[A](_))
@@ -124,11 +123,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     oneOf(LT, EQ, GT))
 
   private[this] def withSize[A](size: Int)(f: Int => Gen[A]): Gen[Stream[A]] = {
-    Applicative[Gen]
-      .sequence(
-        Stream.fill(size)(Gen.choose(1, size))
-      )
-      .flatMap { s =>
+    Applicative[Gen].sequence(Stream.fill(size)(Gen.choose(1, size))).flatMap {
+      s =>
         val ns =
           Traverse[Stream]
             .traverseS(s) { n =>
@@ -147,7 +143,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
             .flatten
 
         Applicative[Gen].sequence(ns.map(f))
-      }
+    }
   }
 
   private[scalaz] def treeGenSized[A: NotNothing](size: Int)(
@@ -165,8 +161,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
           case (a1, a2, a3) =>
             Gen.oneOf(
               Tree.Node(a1, Stream(Tree.Leaf(a2), Tree.Leaf(a3))),
-              Tree.Node(a1, Stream(Tree.Node(a2, Stream(Tree.Leaf(a3)))))
-            )
+              Tree.Node(a1, Stream(Tree.Node(a2, Stream(Tree.Leaf(a3))))))
         }
       case _ =>
         withSize(size - 1)(treeGenSized[A]).flatMap { as =>
@@ -184,11 +179,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
 
     val parent: Int => Gen[TreeLoc.Parent[A]] = { n =>
       Gen.choose(0, n - 1).flatMap { x1 =>
-        Apply[Gen].tuple3(
-          forest(x1),
-          A.arbitrary,
-          forest(n - x1 - 1)
-        )
+        Apply[Gen].tuple3(forest(x1), A.arbitrary, forest(n - x1 - 1))
       }
     }
 
@@ -201,8 +192,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
         treeGenSized[A](aa),
         forest(a - aa),
         forest(ba),
-        withSize(b - ba)(parent)
-      )(TreeLoc.apply[A])
+        withSize(b - ba)(parent))(TreeLoc.apply[A])
     } yield t
   }
 
@@ -305,8 +295,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Arbitrary(
       oneOf(
         ^(arbitrary[A], arbitrary[A])(node2[V, A](_, _)),
-        ^^(arbitrary[A], arbitrary[A], arbitrary[A])(node3[V, A](_, _, _))
-      ))
+        ^^(arbitrary[A], arbitrary[A], arbitrary[A])(node3[V, A](_, _, _))))
 
   implicit def FingerTreeArbitrary[V, A](implicit
       a: Arbitrary[A],
@@ -467,14 +456,14 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   implicit def dievArbitrary[A](implicit
       A: Arbitrary[List[A]],
       E: Enum[A]): Arbitrary[Diev[A]] =
-    Functor[Arbitrary].map(A)(_.grouped(2).foldLeft(Diev.empty[A]) {
-      (working, possiblePair) =>
+    Functor[Arbitrary].map(A)(
+      _.grouped(2).foldLeft(Diev.empty[A]) { (working, possiblePair) =>
         possiblePair match {
           case first :: second :: Nil => working + ((first, second))
           case value :: Nil           => working
           case _                      => sys.error("Unexpected amount of items in paired list.")
         }
-    })
+      })
 
   implicit def iterateeInputArbitrary[A: Arbitrary]
       : Arbitrary[scalaz.iteratee.Input[A]] = {
@@ -483,8 +472,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       Gen.oneOf(
         Gen.const(emptyInput[A]),
         Gen.const(eofInput[A]),
-        arbitrary[A].map(e => elInput(e))
-      ))
+        arbitrary[A].map(e => elInput(e))))
   }
 
 }

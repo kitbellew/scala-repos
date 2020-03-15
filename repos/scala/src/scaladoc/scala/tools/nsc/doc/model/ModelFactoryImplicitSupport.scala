@@ -95,7 +95,9 @@ trait ModelFactoryImplicitSupport {
       inTpl: DocTemplateImpl): List[ImplicitConversionImpl] =
     // Nothing and Null are somewhat special -- they can be transformed by any implicit conversion available in scope.
     // But we don't want that, so we'll simply refuse to find implicit conversions on for Nothing and Null
-    if (!(sym.isClass || sym.isTrait || sym == AnyRefClass) || sym == NothingClass || sym == NullClass)
+    if (!(
+          sym.isClass || sym.isTrait || sym == AnyRefClass
+        ) || sym == NothingClass || sym == NullClass)
       Nil
     else {
       val context: global.analyzer.Context = global.analyzer.rootContext(
@@ -316,27 +318,30 @@ trait ModelFactoryImplicitSupport {
                 if (typeParamNames contains targ.name) =>
               hardcoded.knownTypeClasses.get(qualifiedName) match {
                 case Some(explanation) =>
-                  List(new KnownTypeClassConstraint {
-                    val typeParamName = targ.nameString
-                    lazy val typeExplanation = explanation
-                    lazy val typeClassEntity = makeTemplate(sym)
-                    lazy val implicitType: TypeEntity = makeType(
-                      implType,
-                      inTpl)
-                  })
+                  List(
+                    new KnownTypeClassConstraint {
+                      val typeParamName = targ.nameString
+                      lazy val typeExplanation = explanation
+                      lazy val typeClassEntity = makeTemplate(sym)
+                      lazy val implicitType: TypeEntity = makeType(
+                        implType,
+                        inTpl)
+                    })
                 case None =>
-                  List(new TypeClassConstraint {
-                    val typeParamName = targ.nameString
-                    lazy val typeClassEntity = makeTemplate(sym)
-                    lazy val implicitType: TypeEntity = makeType(
-                      implType,
-                      inTpl)
-                  })
+                  List(
+                    new TypeClassConstraint {
+                      val typeParamName = targ.nameString
+                      lazy val typeClassEntity = makeTemplate(sym)
+                      lazy val implicitType: TypeEntity = makeType(
+                        implType,
+                        inTpl)
+                    })
               }
             case _ =>
-              List(new ImplicitInScopeConstraint {
-                lazy val implicitType: TypeEntity = makeType(implType, inTpl)
-              })
+              List(
+                new ImplicitInScopeConstraint {
+                  lazy val implicitType: TypeEntity = makeType(implType, inTpl)
+                })
           }
       }
     })
@@ -368,26 +373,30 @@ trait ModelFactoryImplicitSupport {
               case (Nil, Nil) =>
                 Nil
               case (List(lo), List(up)) if (lo == up) =>
-                List(new EqualTypeParamConstraint {
-                  val typeParamName = tparam.nameString
-                  lazy val rhs = makeType(lo, inTpl)
-                })
+                List(
+                  new EqualTypeParamConstraint {
+                    val typeParamName = tparam.nameString
+                    lazy val rhs = makeType(lo, inTpl)
+                  })
               case (List(lo), List(up)) =>
-                List(new BoundedTypeParamConstraint {
-                  val typeParamName = tparam.nameString
-                  lazy val lowerBound = makeType(lo, inTpl)
-                  lazy val upperBound = makeType(up, inTpl)
-                })
+                List(
+                  new BoundedTypeParamConstraint {
+                    val typeParamName = tparam.nameString
+                    lazy val lowerBound = makeType(lo, inTpl)
+                    lazy val upperBound = makeType(up, inTpl)
+                  })
               case (List(lo), Nil) =>
-                List(new LowerBoundedTypeParamConstraint {
-                  val typeParamName = tparam.nameString
-                  lazy val lowerBound = makeType(lo, inTpl)
-                })
+                List(
+                  new LowerBoundedTypeParamConstraint {
+                    val typeParamName = tparam.nameString
+                    lazy val lowerBound = makeType(lo, inTpl)
+                  })
               case (Nil, List(up)) =>
-                List(new UpperBoundedTypeParamConstraint {
-                  val typeParamName = tparam.nameString
-                  lazy val upperBound = makeType(up, inTpl)
-                })
+                List(
+                  new UpperBoundedTypeParamConstraint {
+                    val typeParamName = tparam.nameString
+                    lazy val upperBound = makeType(up, inTpl)
+                  })
               case other =>
                 // this is likely an error on the lub/glb side
                 error(
@@ -651,8 +660,9 @@ trait ModelFactoryImplicitSupport {
     // - common methods (in Any, AnyRef, Object) as they are automatically removed
     // - private and protected members (not accessible following an implicit conversion)
     // - members starting with _ (usually reserved for internal stuff)
-    localShouldDocument(
-      aSym) && (!aSym.isConstructor) && (aSym.owner != AnyValClass) &&
+    localShouldDocument(aSym) && (!aSym.isConstructor) && (
+      aSym.owner != AnyValClass
+    ) &&
     (aSym.owner != AnyClass) && (aSym.owner != ObjectClass) &&
     (!aSym.isProtected) && (!aSym.isPrivate) && (!aSym.name.startsWith("_")) &&
     (aSym.isMethod || aSym.isGetter || aSym.isSetter) &&

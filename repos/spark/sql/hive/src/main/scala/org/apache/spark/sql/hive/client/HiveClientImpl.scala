@@ -739,12 +739,13 @@ private[hive] class HiveClientImpl(
 
   private def toHiveTable(table: CatalogTable): HiveTable = {
     val hiveTable = new HiveTable(table.database, table.name.table)
-    hiveTable.setTableType(table.tableType match {
-      case CatalogTableType.EXTERNAL_TABLE => HiveTableType.EXTERNAL_TABLE
-      case CatalogTableType.MANAGED_TABLE  => HiveTableType.MANAGED_TABLE
-      case CatalogTableType.INDEX_TABLE    => HiveTableType.INDEX_TABLE
-      case CatalogTableType.VIRTUAL_VIEW   => HiveTableType.VIRTUAL_VIEW
-    })
+    hiveTable.setTableType(
+      table.tableType match {
+        case CatalogTableType.EXTERNAL_TABLE => HiveTableType.EXTERNAL_TABLE
+        case CatalogTableType.MANAGED_TABLE  => HiveTableType.MANAGED_TABLE
+        case CatalogTableType.INDEX_TABLE    => HiveTableType.INDEX_TABLE
+        case CatalogTableType.VIRTUAL_VIEW   => HiveTableType.VIRTUAL_VIEW
+      })
     hiveTable.setFields(table.schema.map(toHiveColumn).asJava)
     hiveTable.setPartCols(table.partitionColumns.map(toHiveColumn).asJava)
     // TODO: set sort columns here too

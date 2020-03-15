@@ -87,11 +87,13 @@ abstract class BaseReplicaFetchTest extends ZooKeeperTestHarness {
         val expectedOffset =
           brokers.head.getLogManager().getLog(topicAndPart).get.logEndOffset
         result = result && expectedOffset > 0 && brokers.forall { item =>
-          (expectedOffset == item
-            .getLogManager()
-            .getLog(topicAndPart)
-            .get
-            .logEndOffset)
+          (
+            expectedOffset == item
+              .getLogManager()
+              .getLog(topicAndPart)
+              .get
+              .logEndOffset
+          )
         }
       }
       result

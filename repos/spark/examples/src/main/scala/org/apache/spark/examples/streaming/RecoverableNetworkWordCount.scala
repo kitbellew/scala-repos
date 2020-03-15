@@ -161,8 +161,7 @@ object RecoverableNetworkWordCount {
           |
           |In local mode, <master> should be 'local[n]' with n > 1
           |Both <checkpoint-directory> and <output-file> must be absolute paths
-        """.stripMargin
-      )
+        """.stripMargin)
       System.exit(1)
     }
     val Array(ip, IntParam(port), checkpointDirectory, outputPath) = args

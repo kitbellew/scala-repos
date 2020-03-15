@@ -217,10 +217,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       } { ws =>
         // #scalaws-post-json
         import play.api.libs.json._
-        val data = Json.obj(
-          "key1" -> "value1",
-          "key2" -> "value2"
-        )
+        val data = Json.obj("key1" -> "value1", "key2" -> "value2")
         val futureResponse: Future[WSResponse] = ws.url(url).post(data)
         // #scalaws-post-json
 
@@ -312,9 +309,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
         val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
           // Count the number of bytes returned
-          res.body.runWith(Sink.fold[Long, ByteString](0L) { (total, bytes) =>
-            total + bytes.length
-          })
+          res.body.runWith(
+            Sink.fold[Long, ByteString](0L) { (total, bytes) =>
+              total + bytes.length
+            })
         }
         //#stream-count-bytes
         await(bytesReturned) must_== 10000L
@@ -382,8 +380,11 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
                   // If there's a content length, send that, otherwise return the body chunked
                   response.headers.get("Content-Length") match {
                     case Some(Seq(length)) =>
-                      Ok.sendEntity(HttpEntity
-                        .Streamed(body, Some(length.toLong), Some(contentType)))
+                      Ok.sendEntity(
+                        HttpEntity.Streamed(
+                          body,
+                          Some(length.toLong),
+                          Some(contentType)))
                     case _ =>
                       Ok.chunked(body).as(contentType)
                   }
@@ -396,8 +397,9 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         val file = File.createTempFile("stream-to-file-", ".txt")
         await(
           downloadFile(FakeRequest())
-            .flatMap(_.body.dataStream.runFold(0L)((t, b) => t + b.length))
-        ) must_== 10000L
+            .flatMap(
+              _.body.dataStream.runFold(0L)((t, b) =>
+                t + b.length))) must_== 10000L
         file.delete()
       }
 
@@ -413,9 +415,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         //#stream-put
 
         val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
-          res.body.runWith(Sink.fold[Long, ByteString](0L) { (total, bytes) =>
-            total + bytes.length
-          })
+          res.body.runWith(
+            Sink.fold[Long, ByteString](0L) { (total, bytes) =>
+              total + bytes.length
+            })
         }
         //#stream-count-bytes
         await(bytesReturned) must_== 10000L

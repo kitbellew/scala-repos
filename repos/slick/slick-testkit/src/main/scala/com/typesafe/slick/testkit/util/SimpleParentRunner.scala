@@ -94,9 +94,10 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
 
   final def sort(sorter: Sorter) {
     children.foreach(sorter.apply _)
-    children = children.sorted(new Ordering[T] {
-      def compare(o1: T, o2: T): Int =
-        sorter.compare(describeChild(o1), describeChild(o2))
-    })
+    children = children.sorted(
+      new Ordering[T] {
+        def compare(o1: T, o2: T): Int =
+          sorter.compare(describeChild(o1), describeChild(o2))
+      })
   }
 }

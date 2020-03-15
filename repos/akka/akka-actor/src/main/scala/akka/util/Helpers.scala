@@ -29,9 +29,9 @@ object Helpers {
      * that the ordering is actually consistent and you cannot have a
      * sequence which cyclically is monotone without end.
      */
-    val diff =
-      ((System.identityHashCode(a) & 0xFFFFFFFFL) - (System.identityHashCode(
-        b) & 0xFFFFFFFFL))
+    val diff = ((System.identityHashCode(a) & 0xFFFFFFFFL) - (
+      System.identityHashCode(b) & 0xFFFFFFFFL
+    ))
     if (diff > 0)
       1
     else if (diff < 0)

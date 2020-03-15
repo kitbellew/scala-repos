@@ -222,9 +222,10 @@ object TypedActorSpec {
           latch.countDown())
 
     override def onReceive(msg: Any, sender: ActorRef): Unit = {
-      ensureContextAvailable(msg match {
-        case "pigdog" ⇒ sender ! "dogpig"
-      })
+      ensureContextAvailable(
+        msg match {
+          case "pigdog" ⇒ sender ! "dogpig"
+        })
     }
   }
 
@@ -288,9 +289,11 @@ class TypedActorSpec
 
     "throw an IllegalStateExcpetion when TypedActor.self is called in the wrong scope" in {
       filterEvents(EventFilter[IllegalStateException]("Calling")) {
-        (intercept[IllegalStateException] {
-          TypedActor.self[Foo]
-        }).getMessage should ===(
+        (
+          intercept[IllegalStateException] {
+            TypedActor.self[Foo]
+          }
+        ).getMessage should ===(
           "Calling TypedActor.self outside of a TypedActor implementation method!")
       }
     }
@@ -393,20 +396,24 @@ class TypedActorSpec
 
     "be able to handle exceptions when calling methods" in {
       filterEvents(EventFilter[IllegalStateException]("expected")) {
-        val boss = system.actorOf(Props(new Actor {
-          override val supervisorStrategy =
-            OneForOneStrategy() {
-              case e: IllegalStateException if e.getMessage == "expected" ⇒
-                SupervisorStrategy.Resume
-            }
-          def receive = {
-            case p: TypedProps[_] ⇒
-              context.sender() ! TypedActor(context).typedActorOf(p)
-          }
-        }))
+        val boss = system.actorOf(
+          Props(
+            new Actor {
+              override val supervisorStrategy =
+                OneForOneStrategy() {
+                  case e: IllegalStateException if e.getMessage == "expected" ⇒
+                    SupervisorStrategy.Resume
+                }
+              def receive = {
+                case p: TypedProps[_] ⇒
+                  context.sender() ! TypedActor(context).typedActorOf(p)
+              }
+            }))
         val t = Await.result(
-          (boss ? TypedProps[Bar](classOf[Foo], classOf[Bar]).withTimeout(
-            2 seconds)).mapTo[Foo],
+          (
+            boss ? TypedProps[Bar](classOf[Foo], classOf[Bar]).withTimeout(
+              2 seconds)
+          ).mapTo[Foo],
           timeout.duration)
 
         t.incr()
@@ -418,14 +425,18 @@ class TypedActorSpec
         }.getMessage should ===("expected")
         t.read() should ===(1) //Make sure state is not reset after failure
 
-        (intercept[IllegalStateException] {
-          t.failingJOptionPigdog
-        }).getMessage should ===("expected")
+        (
+          intercept[IllegalStateException] {
+            t.failingJOptionPigdog
+          }
+        ).getMessage should ===("expected")
         t.read() should ===(1) //Make sure state is not reset after failure
 
-        (intercept[IllegalStateException] {
-          t.failingOptionPigdog
-        }).getMessage should ===("expected")
+        (
+          intercept[IllegalStateException] {
+            t.failingOptionPigdog
+          }
+        ).getMessage should ===("expected")
 
         t.read() should ===(1) //Make sure state is not reset after failure
 

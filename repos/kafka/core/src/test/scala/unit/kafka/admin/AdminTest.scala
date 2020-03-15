@@ -129,8 +129,7 @@ class AdminTest extends ZooKeeperTestHarness with Logging with RackAwareTest {
       8 -> 3,
       9 -> 4,
       10 -> 1,
-      11 -> 1
-    )
+      11 -> 1)
     val topic = "test"
     TestUtils.createBrokersInZk(zkUtils, List(0, 1, 2, 3, 4))
     // create the topic

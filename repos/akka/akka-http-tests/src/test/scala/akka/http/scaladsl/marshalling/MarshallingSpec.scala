@@ -105,9 +105,10 @@ class MarshallingSpec
         marshal(
           Multipart.General(
             `multipart/related`,
-            Multipart.General.BodyPart.Strict(HttpEntity(
-              `text/plain` withCharset `US-ASCII`,
-              "first part, with a trailing linebreak\r\n")),
+            Multipart.General.BodyPart.Strict(
+              HttpEntity(
+                `text/plain` withCharset `US-ASCII`,
+                "first part, with a trailing linebreak\r\n")),
             Multipart.General.BodyPart.Strict(
               HttpEntity(`application/octet-stream`, ByteString("filecontent")),
               RawHeader("Content-Transfer-Encoding", "binary") :: Nil)
@@ -156,19 +157,21 @@ class MarshallingSpec
 
       "two fields having a custom `Content-Disposition`" in {
         marshal(
-          Multipart.FormData(Source(List(
-            Multipart.FormData.BodyPart(
-              "attachment[0]",
-              HttpEntity(
-                `text/csv` withCharset `UTF-8`,
-                "name,age\r\n\"John Doe\",20\r\n"),
-              Map("filename" -> "attachment.csv")),
-            Multipart.FormData.BodyPart(
-              "attachment[1]",
-              HttpEntity("naice!".getBytes),
-              Map("filename" -> "attachment2.csv"),
-              List(RawHeader("Content-Transfer-Encoding", "binary")))
-          )))) shouldEqual
+          Multipart.FormData(
+            Source(
+              List(
+                Multipart.FormData.BodyPart(
+                  "attachment[0]",
+                  HttpEntity(
+                    `text/csv` withCharset `UTF-8`,
+                    "name,age\r\n\"John Doe\",20\r\n"),
+                  Map("filename" -> "attachment.csv")),
+                Multipart.FormData.BodyPart(
+                  "attachment[1]",
+                  HttpEntity("naice!".getBytes),
+                  Map("filename" -> "attachment2.csv"),
+                  List(RawHeader("Content-Transfer-Encoding", "binary")))
+              )))) shouldEqual
           HttpEntity(
             contentType =
               `multipart/form-data` withBoundary randomBoundary withCharset `UTF-8`,

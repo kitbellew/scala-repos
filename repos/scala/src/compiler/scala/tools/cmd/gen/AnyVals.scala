@@ -203,15 +203,13 @@ import scala.language.implicitConversions"""
         "%s\n  def unary_%s : %s".format(x.doc, x.op, this opType I))
     def mkStringOps = List("def +(x: String): String")
     def mkShiftOps =
-      (
-        for (op <- shiftOps;
-             arg <- List(I, L))
-          yield "%s\n  def %s(x: %s): %s".format(
-            op.doc,
-            op.op,
-            arg,
-            this opType I)
-      )
+      (for (op <- shiftOps;
+            arg <- List(I, L))
+        yield "%s\n  def %s(x: %s): %s".format(
+          op.doc,
+          op.op,
+          arg,
+          this opType I))
 
     def clumps: List[List[String]] = {
       val xs1 =
@@ -223,8 +221,7 @@ import scala.language.implicitConversions"""
       val xs2 = List(
         mkBinOpsGroup(comparisonOps, numeric, _ => Z),
         mkBinOpsGroup(bitwiseOps, cardinal, this opType _),
-        mkBinOpsGroup(otherOps, numeric, this opType _)
-      )
+        mkBinOpsGroup(otherOps, numeric, this opType _))
       xs1 ++ xs2
     }
     def classLines =
@@ -244,7 +241,9 @@ import scala.language.implicitConversions"""
         else
           floatingCompanion
       interpolate(
-        comp + allCompanions + "\n" + nonUnitCompanions).trim.lines.toList ++ (implicitCoercions map interpolate)
+        comp + allCompanions + "\n" + nonUnitCompanions).trim.lines.toList ++ (
+        implicitCoercions map interpolate
+      )
     }
 
     /** Makes a set of binary operations based on the given set of ops, args, and resultFn.
@@ -275,10 +274,7 @@ import scala.language.implicitConversions"""
       val javaEquiv: String) {
     def classLines: List[String]
     def objectLines: List[String]
-    def commonClassLines =
-      List(
-        "override def getClass(): Class[@name@] = null"
-      )
+    def commonClassLines = List("override def getClass(): Class[@name@] = null")
 
     def lcname = name.toLowerCase
     def boxedSimpleName =
@@ -330,8 +326,7 @@ import scala.language.implicitConversions"""
         "@javaequiv@" -> javaEquiv,
         "@boxed@" -> boxedName,
         "@lcname@" -> lcname,
-        "@zero@" -> zeroRep
-      ) ++ boxUnboxImpls
+        "@zero@" -> zeroRep) ++ boxUnboxImpls
 
     def interpolate(s: String): String =
       interpolations.foldLeft(s) {
@@ -354,8 +349,7 @@ import scala.language.implicitConversions"""
         classDoc,
         mkClass,
         objectDoc,
-        mkObject
-      ) mkString ""
+        mkObject) mkString ""
 
     def assemble(decl: String, lines: List[String]): String = {
       val body =
@@ -570,10 +564,7 @@ override def getClass(): Class[Boolean] = null
  *  method which is declared `void`.
  */
 """
-    def classLines =
-      List(
-        """override def getClass(): Class[Unit] = null"""
-      )
+    def classLines = List("""override def getClass(): Class[Unit] = null""")
     def objectLines = interpolate(allCompanions).lines.toList
 
     override def boxUnboxImpls =
@@ -582,8 +573,7 @@ override def getClass(): Class[Boolean] = null
         "@boxImpl@" -> "scala.runtime.BoxedUnit.UNIT",
         "@unboxRunTimeDoc@" -> "",
         "@unboxImpl@" -> "()",
-        "@unboxDoc@" -> "the Unit value ()"
-      )
+        "@unboxDoc@" -> "the Unit value ()")
   }
 
   def isSubrangeType = Set(B, S, C)

@@ -36,10 +36,11 @@ private[finagle] class WriteCompletionTimeoutHandler(
       }
 
     // cancel task on write completion irrespective of outcome
-    promise.addListener(new GenericFutureListener[ChannelPromise] {
-      def operationComplete(future: ChannelPromise): Unit =
-        task.raise(TimeoutCancelled)
-    })
+    promise.addListener(
+      new GenericFutureListener[ChannelPromise] {
+        def operationComplete(future: ChannelPromise): Unit =
+          task.raise(TimeoutCancelled)
+      })
 
     super.write(ctx, msg, promise)
   }

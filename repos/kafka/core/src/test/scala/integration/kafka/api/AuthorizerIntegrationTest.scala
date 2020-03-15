@@ -58,8 +58,13 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
   val GroupReadAcl = Map(
     groupResource -> Set(
       new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
-  val ClusterAcl = Map(Resource.ClusterResource -> Set(
-    new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, ClusterAction)))
+  val ClusterAcl = Map(
+    Resource.ClusterResource -> Set(
+      new Acl(
+        KafkaPrincipal.ANONYMOUS,
+        Allow,
+        Acl.WildCardHost,
+        ClusterAction)))
   val TopicReadAcl = Map(
     topicResource -> Set(
       new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))

@@ -192,8 +192,10 @@ trait Bindings {
 
     // explicit conversion needed due to T(Any) typed method
     def choose[T](chooseExpression: ObservableValue[T, T]) =
-      new ObjectConditionBuilder[T](whenBuilder.`then`(
-        ObservableValue.sfxObservableValue2jfxObjectValue[T](chooseExpression)))
+      new ObjectConditionBuilder[T](
+        whenBuilder.`then`(
+          ObservableValue.sfxObservableValue2jfxObjectValue[T](
+            chooseExpression)))
     def choose[T](chooseExpression: jfxbv.ObservableObjectValue[T]) =
       new ObjectConditionBuilder[T](whenBuilder.`then`(chooseExpression))
     def choose[T](chooseExpression: T) =

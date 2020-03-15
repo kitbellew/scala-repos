@@ -45,35 +45,37 @@ class CodecSpec extends Specification with ScalaCheck {
     Arbitrary(Gen.listOf(Gen.choose(0, 500)) map BitSetUtil.create)
 
   implicit def arbSparseBitSet: Arbitrary[(Codec[BitSet], BitSet)] = {
-    Arbitrary(Gen.chooseNum(0, 500) flatMap { size =>
-      val codec = Codec.SparseBitSetCodec(size)
-      if (size > 0) {
-        Gen.listOf(Gen.choose(0, size - 1)) map { bits =>
-          //(codec, BitSet(bits: _*))
-          (codec, BitSetUtil.create(bits))
+    Arbitrary(
+      Gen.chooseNum(0, 500) flatMap { size =>
+        val codec = Codec.SparseBitSetCodec(size)
+        if (size > 0) {
+          Gen.listOf(Gen.choose(0, size - 1)) map { bits =>
+            //(codec, BitSet(bits: _*))
+            (codec, BitSetUtil.create(bits))
+          }
+        } else {
+          Gen.value((codec, new BitSet()))
         }
-      } else {
-        Gen.value((codec, new BitSet()))
-      }
-    })
+      })
   }
 
   implicit def arbSparseRawBitSet: Arbitrary[(Codec[RawBitSet], RawBitSet)] = {
-    Arbitrary(Gen.chooseNum(0, 500) flatMap { size =>
-      val codec = Codec.SparseRawBitSetCodec(size)
-      if (size > 0) {
-        Gen.listOf(Gen.choose(0, size - 1)) map { bits =>
-          //(codec, BitSet(bits: _*))
-          val bs = RawBitSet.create(size)
-          bits foreach {
-            RawBitSet.set(bs, _)
+    Arbitrary(
+      Gen.chooseNum(0, 500) flatMap { size =>
+        val codec = Codec.SparseRawBitSetCodec(size)
+        if (size > 0) {
+          Gen.listOf(Gen.choose(0, size - 1)) map { bits =>
+            //(codec, BitSet(bits: _*))
+            val bs = RawBitSet.create(size)
+            bits foreach {
+              RawBitSet.set(bs, _)
+            }
+            (codec, bs)
           }
-          (codec, bs)
+        } else {
+          Gen.value((codec, RawBitSet.create(0)))
         }
-      } else {
-        Gen.value((codec, RawBitSet.create(0)))
-      }
-    })
+      })
   }
 
   implicit def arbIndexedSeq[A](
@@ -81,12 +83,13 @@ class CodecSpec extends Specification with ScalaCheck {
     Arbitrary(Gen.listOf(a.arbitrary) map (Vector(_: _*)))
 
   implicit def arbArray[A: Manifest: Gen]: Arbitrary[Array[A]] =
-    Arbitrary(for {
-      values <- Gen.listOf(implicitly[Gen[A]])
-    } yield {
-      val array: Array[A] = values.toArray
-      array
-    })
+    Arbitrary(
+      for {
+        values <- Gen.listOf(implicitly[Gen[A]])
+      } yield {
+        val array: Array[A] = values.toArray
+        array
+      })
 
   val pool = new ByteBufferPool()
   val smallPool = new ByteBufferPool(capacity = 10)
@@ -99,11 +102,12 @@ class CodecSpec extends Specification with ScalaCheck {
   }
 
   def surviveHardRoundTrip[A](a: A)(implicit codec: Codec[A]) = {
-    val bytes = smallPool.run(for {
-      _ <- codec.write(a)
-      bytes <- flipBytes
-      _ <- release
-    } yield bytes)
+    val bytes = smallPool.run(
+      for {
+        _ <- codec.write(a)
+        bytes <- flipBytes
+        _ <- release
+      } yield bytes)
     bytes.length must_== codec.encodedSize(a)
     codec.read(ByteBuffer.wrap(bytes)) must_== a
   }

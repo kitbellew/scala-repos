@@ -130,21 +130,22 @@ private class ForkJoinScheduler(
           splitCount.addAndGet(n)
 
         var res: T = null.asInstanceOf[T]
-        ForkJoinPool.managedBlock(new ForkJoinPool.ManagedBlocker {
-          @volatile private[this] var ok = false
-          override def block() = {
-            numBlocks.incr()
-            activeBlocks.incrementAndGet()
-            res =
-              try f
-              finally {
-                ok = true
-                activeBlocks.decrementAndGet()
-              }
-            true
-          }
-          override def isReleasable = ok
-        })
+        ForkJoinPool.managedBlock(
+          new ForkJoinPool.ManagedBlocker {
+            @volatile private[this] var ok = false
+            override def block() = {
+              numBlocks.incr()
+              activeBlocks.incrementAndGet()
+              res =
+                try f
+                finally {
+                  ok = true
+                  activeBlocks.decrementAndGet()
+                }
+              true
+            }
+            override def isReleasable = ok
+          })
         res
 
       case _ =>

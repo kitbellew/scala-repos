@@ -52,8 +52,8 @@ class Analyzer(
     indexer: ActorRef,
     search: SearchService,
     implicit val config: EnsimeConfig,
-    implicit val vfs: EnsimeVFS
-) extends Actor
+    implicit val vfs: EnsimeVFS)
+    extends Actor
     with Stash
     with ActorLogging
     with RefactoringHandler {
@@ -86,17 +86,18 @@ class Analyzer(
     settings.processArguments(config.compilerArgs, processAll = false)
     presCompLog.debug("Presentation Compiler settings:\n" + settings)
 
-    reporter = new PresentationReporter(new ReportHandler {
-      override def messageUser(str: String): Unit = {
-        broadcaster ! SendBackgroundMessageEvent(str, 101)
-      }
-      override def clearAllScalaNotes(): Unit = {
-        broadcaster ! ClearAllScalaNotesEvent
-      }
-      override def reportScalaNotes(notes: List[Note]): Unit = {
-        broadcaster ! NewScalaNotesEvent(isFull = false, notes)
-      }
-    })
+    reporter = new PresentationReporter(
+      new ReportHandler {
+        override def messageUser(str: String): Unit = {
+          broadcaster ! SendBackgroundMessageEvent(str, 101)
+        }
+        override def clearAllScalaNotes(): Unit = {
+          broadcaster ! ClearAllScalaNotesEvent
+        }
+        override def reportScalaNotes(notes: List[Note]): Unit = {
+          broadcaster ! NewScalaNotesEvent(isFull = false, notes)
+        }
+      })
     reporter.disable() // until we start up
 
     scalaCompiler = makeScalaCompiler()
@@ -116,8 +117,7 @@ class Analyzer(
       reporter,
       self,
       indexer,
-      search
-    )
+      search)
 
   protected def restartCompiler(keepLoaded: Boolean): Unit = {
     log.warning("Restarting the Presentation Compiler")
@@ -355,12 +355,9 @@ class Analyzer(
 }
 
 object Analyzer {
-  def apply(
-      broadcaster: ActorRef,
-      indexer: ActorRef,
-      search: SearchService
-  )(implicit
+  def apply(broadcaster: ActorRef, indexer: ActorRef, search: SearchService)(
+      implicit
       config: EnsimeConfig,
-      vfs: EnsimeVFS
-  ) = Props(new Analyzer(broadcaster, indexer, search, config, vfs))
+      vfs: EnsimeVFS) =
+    Props(new Analyzer(broadcaster, indexer, search, config, vfs))
 }

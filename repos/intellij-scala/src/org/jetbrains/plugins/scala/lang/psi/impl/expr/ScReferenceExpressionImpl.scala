@@ -252,10 +252,12 @@ class ScReferenceExpressionImpl(node: ASTNode)
   }
 
   def shapeType = {
-    convertBindToType(shapeResolve match {
-      case Array(bind: ScalaResolveResult) if bind.isApplicable() => Some(bind)
-      case _                                                      => None
-    })
+    convertBindToType(
+      shapeResolve match {
+        case Array(bind: ScalaResolveResult) if bind.isApplicable() =>
+          Some(bind)
+        case _ => None
+      })
   }
 
   def shapeMultiType: Array[TypeResult[ScType]] = {
@@ -280,10 +282,12 @@ class ScReferenceExpressionImpl(node: ASTNode)
       // and the type T of the entity referred to by p does not conforms to pt,
       expectedTypeEx() match {
         case Some((tp, typeElementOpt)) =>
-          (tp match {
-            case ScAbstractType(_, lower, _) => lower
-            case _                           => tp
-          }).isAliasType match {
+          (
+            tp match {
+              case ScAbstractType(_, lower, _) => lower
+              case _                           => tp
+            }
+          ).isAliasType match {
             case Some(AliasType(_, lower, _))
                 if lower.isDefined && lower.get.isStable =>
               return true
@@ -414,10 +418,11 @@ class ScReferenceExpressionImpl(node: ASTNode)
               ScType.designator(param)
             case _ =>
               val result = param.getRealParameterType(TypingContext.empty)
-              s.subst(result match {
-                case Success(tp, _) => tp
-                case _              => return result
-              })
+              s.subst(
+                result match {
+                  case Success(tp, _) => tp
+                  case _              => return result
+                })
           }
         case Some(ScalaResolveResult(value: ScSyntheticValue, _)) => value.tp
         case Some(ScalaResolveResult(fun: ScFunction, s))
@@ -444,10 +449,11 @@ class ScReferenceExpressionImpl(node: ASTNode)
               getResolveScope,
               ScalaPsiManager.ClassCategory.TYPE)
           val result = param.getType(TypingContext.empty)
-          val computeType = s.subst(result match {
-            case Success(tp, _) => tp
-            case _              => return result
-          })
+          val computeType = s.subst(
+            result match {
+              case Success(tp, _) => tp
+              case _              => return result
+            })
           if (seqClass != null) {
             ScParameterizedType(ScType.designator(seqClass), Seq(computeType))
           } else
@@ -605,9 +611,10 @@ class ScReferenceExpressionImpl(node: ASTNode)
                 inner match {
                   case ScTypePolymorphicType(internal, typeParams2) =>
                     return Success(
-                      ScalaPsiUtil.removeBadBounds(ScTypePolymorphicType(
-                        internal,
-                        typeParams ++ typeParams2 ++ unresolvedTypeParameters)),
+                      ScalaPsiUtil.removeBadBounds(
+                        ScTypePolymorphicType(
+                          internal,
+                          typeParams ++ typeParams2 ++ unresolvedTypeParameters)),
                       Some(this))
                   case _ =>
                     return Success(

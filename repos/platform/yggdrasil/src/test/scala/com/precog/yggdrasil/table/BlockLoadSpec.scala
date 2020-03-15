@@ -60,9 +60,10 @@ trait BlockLoadSpec[M[+_]]
 
     val M = self.M
     val Some((idCount, schema)) = sampleData.schema
-    val actualSchema = inferSchema(sampleData.data map {
-      _ \ "value"
-    })
+    val actualSchema = inferSchema(
+      sampleData.data map {
+        _ \ "value"
+      })
 
     val projections =
       List(actualSchema).map { subschema =>
@@ -154,8 +155,7 @@ trait BlockLoadSpec[M[+_]]
           List(
             JPath(".u") -> CBoolean,
             JPath(".md") -> CString,
-            JPath(".l") -> CEmptyArray))
-      )
+            JPath(".l") -> CEmptyArray)))
     )
 
     testLoadDense(sampleData)
@@ -179,8 +179,7 @@ trait BlockLoadSpec[M[+_]]
           List(
             JPath(".fa") -> CNull,
             JPath(".hW") -> CLong,
-            JPath(".rzp") -> CEmptyObject))
-      )
+            JPath(".rzp") -> CEmptyObject)))
     )
 
     testLoadDense(sampleData)
@@ -223,8 +222,7 @@ trait BlockLoadSpec[M[+_]]
             JPath(".ljz[1][0]") -> CString,
             JPath(".ljz[2]") -> CBoolean,
             JPath(".jmy") -> CDouble
-          ))
-      )
+          )))
     )
 
     testLoadDense(sampleData)
@@ -258,8 +256,7 @@ trait BlockLoadSpec[M[+_]]
             JPath(".dV.l") -> CBoolean,
             JPath(".dV.vq") -> CEmptyObject,
             JPath(".oy.nm") -> CBoolean,
-            JPath(".uR") -> CDouble))
-      )
+            JPath(".uR") -> CDouble)))
     )
 
     testLoadDense(sampleData)
@@ -267,8 +264,9 @@ trait BlockLoadSpec[M[+_]]
 
   def testLoadSample5 = {
     val sampleData = SampleData(
-      (JParser.parseUnsafe(
-        """[
+      (
+        JParser.parseUnsafe(
+          """[
         {
           "value":{
             "cfnYTg92dg":"gu",
@@ -357,7 +355,8 @@ trait BlockLoadSpec[M[+_]]
           },
           "key":[9]
         }
-      ]""") --> classOf[JArray]).elements.toStream,
+      ]""") --> classOf[JArray]
+      ).elements.toStream,
       Some(
         (
           1,

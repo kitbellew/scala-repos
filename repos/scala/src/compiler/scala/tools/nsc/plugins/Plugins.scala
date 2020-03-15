@@ -39,13 +39,15 @@ trait Plugins { global: Global =>
     val maybes = Plugin.loadAllFrom(paths, dirs, settings.disable.value)
     val (goods, errors) = maybes partition (_.isSuccess)
     // Explicit parameterization of recover to avoid -Xlint warning about inferred Any
-    errors foreach (_.recover[Any] {
-      // legacy behavior ignores altogether, so at least warn devs
-      case e: MissingPluginException =>
-        if (global.isDeveloper)
-          warning(e.getMessage)
-      case e: Exception => inform(e.getMessage)
-    })
+    errors foreach (
+      _.recover[Any] {
+        // legacy behavior ignores altogether, so at least warn devs
+        case e: MissingPluginException =>
+          if (global.isDeveloper)
+            warning(e.getMessage)
+        case e: Exception => inform(e.getMessage)
+      }
+    )
     val classes = goods map (_.get) // flatten
 
     // Each plugin must only be instantiated once. A common pattern
@@ -90,7 +92,9 @@ trait Plugins { global: Global =>
         fail("[disabling plugin: %s]")
       else if (!commonPhases.isEmpty)
         fail(
-          "[skipping plugin %s because it repeats phase names: " + (commonPhases mkString ", ") + "]")
+          "[skipping plugin %s because it repeats phase names: " + (
+            commonPhases mkString ", "
+          ) + "]")
       else {
         note("[loaded plugin %s]")
         withPlug
@@ -135,9 +139,11 @@ trait Plugins { global: Global =>
 
   /** Summary of the options for all loaded plugins */
   def pluginOptionsHelp: String =
-    (for (plug <- roughPluginsList;
-          help <- plug.optionsHelp)
-      yield {
-        "\nOptions for plugin '%s':\n%s\n".format(plug.name, help)
-      }).mkString
+    (
+      for (plug <- roughPluginsList;
+           help <- plug.optionsHelp)
+        yield {
+          "\nOptions for plugin '%s':\n%s\n".format(plug.name, help)
+        }
+    ).mkString
 }

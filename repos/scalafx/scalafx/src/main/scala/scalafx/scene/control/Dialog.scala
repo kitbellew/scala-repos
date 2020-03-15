@@ -107,9 +107,10 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     * @return An `Option` that contains the `result`.
     * @see $URL0#showAndWait showAndWait $ORIGINALDOC
     */
-  def showAndWait[F](j2s: F = { x: R =>
-    x
-  })(implicit convert: DConvert[R, F]): Option[convert.S] = {
+  def showAndWait[F](
+      j2s: F = { x: R =>
+        x
+      })(implicit convert: DConvert[R, F]): Option[convert.S] = {
     val v = delegate.showAndWait()
     if (v.isPresent)
       Some(convert(v.get, j2s))
@@ -253,9 +254,10 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     ObjectProperty((bt: ButtonType) =>
       delegate.resultConverterProperty.getValue.call(bt))
   def resultConverter_=(f: ButtonType => R): Unit = {
-    delegate.setResultConverter(new jfxu.Callback[jfxsc.ButtonType, R] {
-      override def call(param: jfxsc.ButtonType): R = f(param)
-    })
+    delegate.setResultConverter(
+      new jfxu.Callback[jfxsc.ButtonType, R] {
+        override def call(param: jfxsc.ButtonType): R = f(param)
+      })
   }
 
   /**

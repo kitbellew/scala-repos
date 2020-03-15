@@ -18,9 +18,9 @@ object ComparingDiffCollectionKinds extends SimplificationType {
 
   override def getSimplifications(expr: ScExpression): Seq[Simplification] =
     expr match {
-      case (left @ collectionOfKind(
-            leftKind)) `(!)==` (right @ collectionOfKind(rightKind))
-          if leftKind != rightKind =>
+      case (left @ collectionOfKind(leftKind)) `(!)==` (
+            right @ collectionOfKind(rightKind)
+          ) if leftKind != rightKind =>
         def convertSimplification(leftSide: Boolean): Seq[Simplification] = {
           val (otherKind, exprToConvert, side) =
             if (leftSide)

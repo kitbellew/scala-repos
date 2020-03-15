@@ -59,25 +59,26 @@ class NewScalaTypeDefinitionAction
     }
 
     builder.setTitle("Create New Scala Class")
-    builder.setValidator(new InputValidatorEx {
-      def getErrorText(inputString: String): String = {
-        if (inputString.length > 0 && !PsiNameHelper
-              .getInstance(project)
-              .isQualifiedName(inputString)) {
-          return "This is not a valid Scala qualified name"
+    builder.setValidator(
+      new InputValidatorEx {
+        def getErrorText(inputString: String): String = {
+          if (inputString.length > 0 && !PsiNameHelper
+                .getInstance(project)
+                .isQualifiedName(inputString)) {
+            return "This is not a valid Scala qualified name"
+          }
+          null
         }
-        null
-      }
 
-      def checkInput(inputString: String): Boolean = {
-        true
-      }
+        def checkInput(inputString: String): Boolean = {
+          true
+        }
 
-      def canClose(inputString: String): Boolean = {
-        !StringUtil.isEmptyOrSpaces(inputString) && getErrorText(
-          inputString) == null
-      }
-    })
+        def canClose(inputString: String): Boolean = {
+          !StringUtil.isEmptyOrSpaces(inputString) && getErrorText(
+            inputString) == null
+        }
+      })
   }
 
   private def isScalaTemplate(template: FileTemplate): Boolean = {

@@ -89,10 +89,11 @@ object MakeJar {
       case Some(src) => {
         if (parent == src) {
           result.foldLeft(None: Option[File]) { (cum, part) =>
-            Some(cum match {
-              case Some(p) => new File(p, part)
-              case None    => new File(part)
-            })
+            Some(
+              cum match {
+                case Some(p) => new File(p, part)
+                case None    => new File(part)
+              })
           }
         } else {
           getRelativeFileBetween(

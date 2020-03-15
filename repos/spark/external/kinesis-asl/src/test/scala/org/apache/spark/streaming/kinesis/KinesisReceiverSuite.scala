@@ -99,9 +99,8 @@ class KinesisReceiverSuite
 
   test("shouldn't update checkpointer when exception occurs during store") {
     when(receiverMock.isStopped()).thenReturn(false)
-    when(
-      receiverMock.addRecords(anyString, anyListOf(classOf[Record]))
-    ).thenThrow(new RuntimeException())
+    when(receiverMock.addRecords(anyString, anyListOf(classOf[Record])))
+      .thenThrow(new RuntimeException())
 
     intercept[RuntimeException] {
       val recordProcessor = new KinesisRecordProcessor(receiverMock, workerId)

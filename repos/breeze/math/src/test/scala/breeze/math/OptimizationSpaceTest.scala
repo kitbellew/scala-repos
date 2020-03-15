@@ -19,148 +19,165 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
   implicit def genTripleM: Arbitrary[(M, M, M)]
 
   test("Addition is Associative - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      closeM((a + b) + c, a + (b + c), TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        closeM((a + b) + c, a + (b + c), TOL)
+      })
 
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      val ab = a + b
-      val bc = b + c
-      ab += c
-      bc += a
-      closeM(ab, bc, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        val ab = a + b
+        val bc = b + c
+        ab += c
+        bc += a
+        closeM(ab, bc, TOL)
+      })
   }
 
   test("Addition Commutes - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      closeM(a + b, b + a, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        closeM(a + b, b + a, TOL)
+      })
 
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      val ab = copyM(a)
-      ab += b
-      val ba = copyM(b)
-      ba += a
-      closeM(ab, ba, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        val ab = copyM(a)
+        ab += b
+        val ba = copyM(b)
+        ba += a
+        closeM(ab, ba, TOL)
+      })
   }
 
   test("Zero is Zero - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      val z = zeroLikeM(a)
-      closeM(a :+ z, a, TOL)
-    })
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      val ab = copyM(a)
-      val z = zeroLikeM(a)
-      ab :+= z
-      closeM(a, ab, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        val z = zeroLikeM(a)
+        closeM(a :+ z, a, TOL)
+      })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        val ab = copyM(a)
+        val z = zeroLikeM(a)
+        ab :+= z
+        closeM(a, ab, TOL)
+      })
   }
 
   test("a - a == 0 - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      val z = zeroLikeM(a)
-      val ama: M = a - a
-      closeM(ama, z, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        val z = zeroLikeM(a)
+        val ama: M = a - a
+        closeM(ama, z, TOL)
+      })
 
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      val z = zeroLikeM(a)
-      a -= a
-      closeM(a, z, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        val z = zeroLikeM(a)
+        a -= a
+        closeM(a, z, TOL)
+      })
 
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      val z = zeroLikeM(a)
-      a :-= a
-      closeM(a, z, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        val z = zeroLikeM(a)
+        a :-= a
+        closeM(a, z, TOL)
+      })
 
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      val z = zeroLikeM(a)
-      val ab = a :- b
-      a -= b
-      closeM(a, ab, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        val z = zeroLikeM(a)
+        val ab = a :- b
+        a -= b
+        closeM(a, ab, TOL)
+      })
   }
 
   test("Scalar mult distributes over vector addition - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M), s: S) =>
-      val (a, b, _) = trip
-      closeM((a + b) :* s, (b :* s) + (a :* s), TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S) =>
+        val (a, b, _) = trip
+        closeM((a + b) :* s, (b :* s) + (a :* s), TOL)
+      })
 
     //    check(Prop.forAll{ (trip: (M, M, M), s: S) =>
     //      val (a, b, _) = trip
     //      s == 0 || close( (a + b)/ s, (b / s +a / s), TOL)
     //    })
 
-    check(Prop.forAll { (trip: (M, M, M), s: S) =>
-      val (a, b, _) = trip
-      val ab = copyM(a)
-      ab += b
-      ab *= s
-      val ba = copyM(a) :* s
-      ba += (b :* s)
-      closeM(ab, ba, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S) =>
+        val (a, b, _) = trip
+        val ab = copyM(a)
+        ab += b
+        ab *= s
+        val ba = copyM(a) :* s
+        ba += (b :* s)
+        closeM(ab, ba, TOL)
+      })
   }
 
   test("daxpy is consistent - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M), s: S) =>
-      val (a, b, _) = trip
-      val ac = copyM(a)
-      val prod = a + (b :* s)
-      breeze.linalg.axpy(s, b, ac)
-      closeM(prod, ac, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S) =>
+        val (a, b, _) = trip
+        val ac = copyM(a)
+        val prod = a + (b :* s)
+        breeze.linalg.axpy(s, b, ac)
+        closeM(prod, ac, TOL)
+      })
   }
 
   test("Scalar mult distributes over field addition - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
-      val (a, _, _) = trip
-      closeM((a) :* scalars.+(s, t), (a :* s) + (a :* t), 1e-4)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
+        val (a, _, _) = trip
+        closeM((a) :* scalars.+(s, t), (a :* s) + (a :* t), 1e-4)
+      })
 
-    check(Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
-      val (a, _, _) = trip
-      val ab = copyM(a)
-      ab *= s
-      ab += (a :* t)
-      val ba = copyM(a)
-      ba *= scalars.+(s, t)
-      closeM(ab, ba, 1e-4)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
+        val (a, _, _) = trip
+        val ab = copyM(a)
+        ab *= s
+        ab += (a :* t)
+        val ba = copyM(a)
+        ba *= scalars.+(s, t)
+        closeM(ab, ba, 1e-4)
+      })
   }
 
   test(
     "Compatibility of scalar multiplication with field multiplication - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
-      val (a, _, _) = trip
-      closeM((a) :* scalars.*(s, t), a :* s :* t, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
+        val (a, _, _) = trip
+        closeM((a) :* scalars.*(s, t), a :* s :* t, TOL)
+      })
 
-    check(Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
-      val (a, _, _) = trip
-      val ab = copyM(a)
-      ab *= s
-      ab *= t
-      val ba = copyM(a)
-      ba *= scalars.*(s, t)
-      closeM(ab, ba, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
+        val (a, _, _) = trip
+        val ab = copyM(a)
+        ab *= s
+        ab *= t
+        val ba = copyM(a)
+        ba *= scalars.*(s, t)
+        closeM(ab, ba, TOL)
+      })
 
     //     check(Prop.forAll{ (trip: (M, M, M), s: S, t: S) =>
     //       val (a, _, _) = trip
@@ -177,128 +194,136 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
 
   // op set
   test("op set works - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      val ab = copyM(a)
-      ab := b
-      a + b == (a + ab)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        val ab = copyM(a)
+        ab := b
+        a + b == (a + ab)
+      })
   }
 
   test("1 is 1 - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      closeM(a :* scalars.one, a, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        closeM(a :* scalars.one, a, TOL)
+      })
 
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      val ab = copyM(a)
-      ab *= scalars.one
-      closeM(a, ab, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        val ab = copyM(a)
+        ab *= scalars.one
+        closeM(a, ab, TOL)
+      })
   }
 
   // norm
   val TOLM = 1e-3
   test("norm positive homogeneity - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M), s: S) =>
-      val (a, b, c) = trip
-      norm(a * s) - norm(s) * norm(a) <= TOL * norm(a * s)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S) =>
+        val (a, b, c) = trip
+        norm(a * s) - norm(s) * norm(a) <= TOL * norm(a * s)
+      })
   }
 
   test("norm triangle inequality - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      ((1.0 - TOL) * norm(a + b) <= norm(b) + norm(a))
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        ((1.0 - TOL) * norm(a + b) <= norm(b) + norm(a))
+      })
   }
 
   test("norm(v) == 0 iff v == 0 - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      val z = zeroLikeM(a)
-      norm(z) == 0.0 && ((z == a) || norm(a) != 0.0)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        val z = zeroLikeM(a)
+        norm(z) == 0.0 && ((z == a) || norm(a) != 0.0)
+      })
   }
 
   // dot product distributes
   test("dot product distributes - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      val res = scalars
-        .close(scalars.+(a dot b, a dot c), (a dot (b + c)), 1e-3)
-      if (!res)
-        println(scalars.+(a dot b, a dot c) + " " + (a dot (b + c)))
-      res
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        val res = scalars
+          .close(scalars.+(a dot b, a dot c), (a dot (b + c)), 1e-3)
+        if (!res)
+          println(scalars.+(a dot b, a dot c) + " " + (a dot (b + c)))
+        res
+      })
 
-    check(Prop.forAll { (trip: (M, M, M), s: S) =>
-      val (a, b, c) = trip
-      scalars.close(scalars.*(a dot b, s), (a dot (b :* s)))
-      scalars.close(scalars.*(s, a dot b), ((a :* s) dot (b)))
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M), s: S) =>
+        val (a, b, c) = trip
+        scalars.close(scalars.*(a dot b, s), (a dot (b :* s)))
+        scalars.close(scalars.*(s, a dot b), ((a :* s) dot (b)))
+      })
   }
 
   // zip map values
   test("zip map of + is the same as + - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, _) = trip
-      zipMapValuesM.map(
-        a,
-        b, {
-          scalars.+(_: S, _: S)
-        }) == (a + b)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, _) = trip
+        zipMapValuesM.map(
+          a,
+          b, {
+            scalars.+(_: S, _: S)
+          }) == (a + b)
+      })
 
   }
 
   test(
     "Elementwise mult of vectors distributes over vector addition - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      val ab = copyM(a)
-      ab += b
-      ab :*= c
-      val ba = copyM(a) :* c
-      ba :+= (b :* c)
-      closeM(ab, ba, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        val ab = copyM(a)
+        ab += b
+        ab :*= c
+        val ba = copyM(a) :* c
+        ba :+= (b :* c)
+        closeM(ab, ba, TOL)
+      })
   }
 
   test("Vector element-wise mult distributes over vector addition - Matrix") {
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      closeM((a + b) :* c, (b :* c) + (a :* c), TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        closeM((a + b) :* c, (b :* c) + (a :* c), TOL)
+      })
 
     //    check(Prop.forAll{ (trip: (M, M, M), s: S) =>
     //      val (a, b, _) = trip
     //      s == 0 || close( (a + b)/ s, (b / s +a / s), TOL)
     //    })
 
-    check(Prop.forAll { (trip: (M, M, M)) =>
-      val (a, b, c) = trip
-      val ab = copyM(a)
-      ab += b
-      ab :*= c
-      val ba = copyM(a) :* c
-      ba += (b :* c)
-      closeM(ab, ba, TOL)
-    })
+    check(
+      Prop.forAll { (trip: (M, M, M)) =>
+        val (a, b, c) = trip
+        val ab = copyM(a)
+        ab += b
+        ab :*= c
+        val ba = copyM(a) :* c
+        ba += (b :* c)
+        closeM(ab, ba, TOL)
+      })
   }
 }
 
 class DenseOptimizationSpaceTest_Double
-    extends OptimizationSpaceTest[
-      DenseMatrix[Double],
-      DenseVector[Double],
-      Double] {
-  override implicit val space: MutableOptimizationSpace[
-    DenseMatrix[Double],
-    DenseVector[Double],
-    Double] =
+    extends OptimizationSpaceTest[DenseMatrix[Double], DenseVector[
+      Double], Double] {
+  override implicit val space: MutableOptimizationSpace[DenseMatrix[
+    Double], DenseVector[Double], Double] =
     MutableOptimizationSpace.DenseDoubleOptimizationSpace.denseDoubleOptSpace
 
   val N = 30
@@ -347,20 +372,17 @@ class DenseOptimizationSpaceTest_Double
   }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map {
-      _ % 1e10
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Double].map {
+        _ % 1e10
+      })
 }
 
 class SparseOptimizationSpaceTest_Double
-    extends OptimizationSpaceTest[
-      CSCMatrix[Double],
-      SparseVector[Double],
-      Double] {
-  override implicit val space: MutableOptimizationSpace[
-    CSCMatrix[Double],
-    SparseVector[Double],
-    Double] =
+    extends OptimizationSpaceTest[CSCMatrix[Double], SparseVector[
+      Double], Double] {
+  override implicit val space: MutableOptimizationSpace[CSCMatrix[
+    Double], SparseVector[Double], Double] =
     MutableOptimizationSpace.SparseDoubleOptimizationSpace.sparseDoubleOptSpace
 
   // TODO: generate arbitrarily dimensioned matrices
@@ -368,9 +390,10 @@ class SparseOptimizationSpaceTest_Double
   val M = 30
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map {
-      _ % 1e10
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Double].map {
+        _ % 1e10
+      })
 
   val arbColIndex = Arbitrary(Gen.choose[Int](0, N - 1))
   val arbRowIndex = Arbitrary(Gen.choose[Int](0, M - 1))

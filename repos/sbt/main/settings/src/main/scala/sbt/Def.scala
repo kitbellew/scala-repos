@@ -72,10 +72,12 @@ object Def extends Init[Scope] with TaskMacroExtra {
       s: Setting[T],
       allowDynamic: Boolean): Option[String] =
     super.deriveAllowed(s, allowDynamic) orElse
-      (if (s.key.scope != ThisScope)
-         Some(s"Scope cannot be defined for ${definedSettingString(s)}")
-       else
-         None) orElse
+      (
+        if (s.key.scope != ThisScope)
+          Some(s"Scope cannot be defined for ${definedSettingString(s)}")
+        else
+          None
+      ) orElse
       s.dependencies
         .find(k => k.scope != ThisScope)
         .map(k =>
@@ -176,8 +178,9 @@ object Def extends Init[Scope] with TaskMacroExtra {
     (TaskKey[T](name, description, DTask), dummyTask(name))
   private[sbt] def dummyTask[T](name: String): Task[T] = {
     import std.TaskExtra.{task => newTask, _}
-    val base: Task[T] = newTask(sys.error(
-      "Dummy task '" + name + "' did not get converted to a full task.")) named name
+    val base: Task[T] = newTask(
+      sys.error(
+        "Dummy task '" + name + "' did not get converted to a full task.")) named name
     base.copy(info = base.info.set(isDummyTask, true))
   }
   private[sbt] def isDummy(t: Task[_]): Boolean =

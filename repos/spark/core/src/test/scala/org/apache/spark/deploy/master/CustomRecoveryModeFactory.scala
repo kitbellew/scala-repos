@@ -28,10 +28,8 @@ import org.apache.spark.SparkConf
 import org.apache.spark.deploy.master._
 import org.apache.spark.serializer.Serializer
 
-class CustomRecoveryModeFactory(
-    conf: SparkConf,
-    serializer: Serializer
-) extends StandaloneRecoveryModeFactory(conf, serializer) {
+class CustomRecoveryModeFactory(conf: SparkConf, serializer: Serializer)
+    extends StandaloneRecoveryModeFactory(conf, serializer) {
 
   CustomRecoveryModeFactory.instantiationAttempts += 1
 

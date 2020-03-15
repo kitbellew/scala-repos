@@ -114,10 +114,8 @@ class DeploymentManager(
           taskQueue,
           storage,
           healthCheckManager,
-          eventBus
-        ),
-        plan.id
-      )
+          eventBus),
+        plan.id)
       runningDeployments += plan.id -> DeploymentInfo(ref, plan)
 
     case stepInfo: DeploymentStepInfo =>

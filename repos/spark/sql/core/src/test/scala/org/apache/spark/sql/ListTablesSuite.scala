@@ -95,8 +95,7 @@ class ListTablesSuite
         checkAnswer(
           sql(
             "SELECT isTemporary, tableName from tables WHERE tableName = 'ListTablesSuiteTable'"),
-          Row(true, "ListTablesSuiteTable")
-        )
+          Row(true, "ListTablesSuiteTable"))
         checkAnswer(
           sqlContext
             .tables()

@@ -84,18 +84,24 @@ object BundleBuilder {
           }
 
         def points(i: EntryInfo): Int = {
-          (if (i.lang == lang)
-             4
-           else
-             0) +
-            (if (i.country == country)
-               2
-             else
-               0) +
-            (if (i.default)
-               1
-             else
-               0)
+          (
+            if (i.lang == lang)
+              4
+            else
+              0
+          ) +
+            (
+              if (i.country == country)
+                2
+              else
+                0
+            ) +
+            (
+              if (i.default)
+                1
+              else
+                0
+            )
         }
 
         def choose(lst: List[(EntryInfo, NodeSeq)]): NodeSeq =
@@ -114,26 +120,28 @@ object BundleBuilder {
             }
           }._2
 
-        val res: Map[String, NodeSeq] = Map(map.map {
-          case (name, lst) => name -> choose(lst)
-        }.toSeq: _*)
+        val res: Map[String, NodeSeq] = Map(
+          map.map {
+            case (name, lst) => name -> choose(lst)
+          }.toSeq: _*)
 
-        List(new ResourceBundle {
-          def getKeys(): Enumeration[String] = {
-            val it = res.keys.iterator
-            new Enumeration[String] {
-              def hasMoreElements() = it.hasNext
-              def nextElement() = it.next
+        List(
+          new ResourceBundle {
+            def getKeys(): Enumeration[String] = {
+              val it = res.keys.iterator
+              new Enumeration[String] {
+                def hasMoreElements() = it.hasNext
+                def nextElement() = it.next
+              }
             }
-          }
 
-          def handleGetObject(key: String): Object =
-            res.get(key) match {
-              case Some(IsText(str)) => str
-              case Some(ns)          => ns
-              case _                 => null
-            }
-        })
+            def handleGetObject(key: String): Object =
+              res.get(key) match {
+                case Some(IsText(str)) => str
+                case Some(ns)          => ns
+                case _                 => null
+              }
+          })
       }
 
       case _ => Nil

@@ -53,13 +53,14 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
       val ec = ArgumentCaptor.forClass(classOf[DownstreamMessageEvent])
       verify(ctx, atLeastOnce()).sendDownstream(ec.capture)
       val e = ec.getValue
-      assert(e.getMessage match {
-        case buf: ChannelBuffer =>
-          val a = Array(x, xs: _*)
-          val bufBytes = Array.ofDim[Byte](buf.readableBytes())
-          buf.getBytes(0, bufBytes)
-          Arrays.equals(bufBytes, a)
-      })
+      assert(
+        e.getMessage match {
+          case buf: ChannelBuffer =>
+            val a = Array(x, xs: _*)
+            val bufBytes = Array.ofDim[Byte](buf.readableBytes())
+            buf.getBytes(0, bufBytes)
+            Arrays.equals(bufBytes, a)
+        })
     }
 
     def receiveBytesFromServer(ch: SocksConnectHandler, bytes: Array[Byte]) {
@@ -370,8 +371,7 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
       new InetSocketAddress(InetAddress.getLoopbackAddress, 2222),
       new InetSocketAddress(InetAddress.getLoopbackAddress, 80),
       Seq(Unauthenticated),
-      pipeline
-    )
+      pipeline)
 
     assert(pipeline.get("socketAddressResolver") == null)
   }
@@ -383,8 +383,7 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
       InetSocketAddress.createUnresolved("meow.meow", 2222),
       new InetSocketAddress(InetAddress.getLoopbackAddress, 80),
       Seq(Unauthenticated),
-      pipeline
-    )
+      pipeline)
     assert(
       pipeline
         .get("socketAddressResolver")

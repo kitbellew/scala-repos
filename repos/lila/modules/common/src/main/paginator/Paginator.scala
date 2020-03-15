@@ -76,8 +76,9 @@ object Paginator {
     else if (maxPerPage <= 0)
       !!("Current page must be greater than zero")
     else
-      Success(for {
-        results ← adapter.slice((currentPage - 1) * maxPerPage, maxPerPage)
-        nbResults ← adapter.nbResults
-      } yield new Paginator(currentPage, maxPerPage, results, nbResults))
+      Success(
+        for {
+          results ← adapter.slice((currentPage - 1) * maxPerPage, maxPerPage)
+          nbResults ← adapter.nbResults
+        } yield new Paginator(currentPage, maxPerPage, results, nbResults))
 }

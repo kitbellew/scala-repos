@@ -377,8 +377,7 @@ class RowMatrix @Since("1.0.0") (
         seqOp = (s: (Long, BDV[Double]), v: Vector) =>
           (s._1 + 1L, s._2 += v.toBreeze),
         combOp = (s1: (Long, BDV[Double]), s2: (Long, BDV[Double])) =>
-          (s1._1 + s2._1, s1._2 += s2._2)
-      )
+          (s1._1 + s2._1, s1._2 += s2._2))
 
     if (m <= 1) {
       sys.error(

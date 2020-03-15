@@ -77,8 +77,9 @@ class SortingSuite
         (rand.nextInt(), rand.nextInt())
       }
     val pairs = sc.parallelize(pairArr, 2)
-    assert(pairs.sortByKey(false).collect() === pairArr.sortWith((x, y) =>
-      x._1 > y._1))
+    assert(
+      pairs.sortByKey(false).collect() === pairArr.sortWith((x, y) =>
+        x._1 > y._1))
   }
 
   test("sort descending with one split") {
@@ -88,8 +89,9 @@ class SortingSuite
         (rand.nextInt(), rand.nextInt())
       }
     val pairs = sc.parallelize(pairArr, 1)
-    assert(pairs.sortByKey(false, 1).collect() === pairArr.sortWith((x, y) =>
-      x._1 > y._1))
+    assert(
+      pairs.sortByKey(false, 1).collect() === pairArr.sortWith((x, y) =>
+        x._1 > y._1))
   }
 
   test("sort descending with many partitions") {
@@ -99,8 +101,9 @@ class SortingSuite
         (rand.nextInt(), rand.nextInt())
       }
     val pairs = sc.parallelize(pairArr, 2)
-    assert(pairs.sortByKey(false, 20).collect() === pairArr.sortWith((x, y) =>
-      x._1 > y._1))
+    assert(
+      pairs.sortByKey(false, 20).collect() === pairArr.sortWith((x, y) =>
+        x._1 > y._1))
   }
 
   test("more partitions than elements") {

@@ -103,10 +103,9 @@ trait DB extends Loggable {
       },
       () => {
         logger.trace("Trying JNDI lookup on %s".format(name.jndiName))
-        (new InitialContext)
-          .lookup(name.jndiName)
-          .asInstanceOf[DataSource]
-          .getConnection
+        (
+          new InitialContext
+        ).lookup(name.jndiName).asInstanceOf[DataSource].getConnection
 
       }
     )
@@ -399,7 +398,9 @@ trait DB extends Loggable {
       }
       case Some(ConnectionHolder(c, n, post, rb)) =>
         logger.trace(
-          "Did not release " + name + " on thread " + Thread.currentThread + " count " + (n - 1))
+          "Did not release " + name + " on thread " + Thread.currentThread + " count " + (
+            n - 1
+          ))
         info(name) = ConnectionHolder(c, n - 1, post, rb)
       case x =>
       // ignore

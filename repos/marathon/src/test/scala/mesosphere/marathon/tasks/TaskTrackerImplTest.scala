@@ -306,8 +306,7 @@ class TaskTrackerImplTest
     ScalaFutures.whenReady(res.failed) { e =>
       assert(
         e.getCause.getMessage == s"${sampleTask.taskId} of app [/foo] does not exist",
-        s"Got message: ${e.getCause.getMessage}"
-      )
+        s"Got message: ${e.getCause.getMessage}")
     }
     shouldNotContainTask(taskTracker.appTasksSync(TEST_APP_NAME), sampleTask)
     stateShouldNotContainKey(state, sampleTask.taskId)
@@ -562,8 +561,7 @@ class TaskTrackerImplTest
   def shouldHaveTaskStatus(task: Task, taskStatus: TaskStatus) {
     assert(
       task.launched.exists(_.status.mesosStatus.get == taskStatus),
-      s"Should have task status ${taskStatus.getState.toString}"
-    )
+      s"Should have task status ${taskStatus.getState.toString}")
   }
 
   def stateShouldNotContainKey(state: PersistentStore, key: Task.Id) {

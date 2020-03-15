@@ -45,117 +45,123 @@ object BidiFlowDocSpec {
   }
   //#codec-impl
 
-  val codecVerbose = BidiFlow.fromGraph(GraphDSL.create() { b =>
-    // construct and add the top flow, going outbound
-    val outbound = b.add(Flow[Message].map(toBytes))
-    // construct and add the bottom flow, going inbound
-    val inbound = b.add(Flow[ByteString].map(fromBytes))
-    // fuse them together into a BidiShape
-    BidiShape.fromFlows(outbound, inbound)
-  })
+  val codecVerbose = BidiFlow.fromGraph(
+    GraphDSL.create() { b =>
+      // construct and add the top flow, going outbound
+      val outbound = b.add(Flow[Message].map(toBytes))
+      // construct and add the bottom flow, going inbound
+      val inbound = b.add(Flow[ByteString].map(fromBytes))
+      // fuse them together into a BidiShape
+      BidiShape.fromFlows(outbound, inbound)
+    })
 
   // this is the same as the above
   val codec = BidiFlow.fromFunctions(toBytes _, fromBytes _)
   //#codec
 
   //#framing
-  val framing = BidiFlow.fromGraph(GraphDSL.create() { b =>
-    implicit val order = ByteOrder.LITTLE_ENDIAN
+  val framing = BidiFlow.fromGraph(
+    GraphDSL.create() { b =>
+      implicit val order = ByteOrder.LITTLE_ENDIAN
 
-    def addLengthHeader(bytes: ByteString) = {
-      val len = bytes.length
-      ByteString.newBuilder.putInt(len).append(bytes).result()
-    }
+      def addLengthHeader(bytes: ByteString) = {
+        val len = bytes.length
+        ByteString.newBuilder.putInt(len).append(bytes).result()
+      }
 
-    class FrameParser extends GraphStage[FlowShape[ByteString, ByteString]] {
+      class FrameParser extends GraphStage[FlowShape[ByteString, ByteString]] {
 
-      val in = Inlet[ByteString]("FrameParser.in")
-      val out = Outlet[ByteString]("FrameParser.out")
-      override val shape = FlowShape.of(in, out)
+        val in = Inlet[ByteString]("FrameParser.in")
+        val out = Outlet[ByteString]("FrameParser.out")
+        override val shape = FlowShape.of(in, out)
 
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic =
-        new GraphStageLogic(shape) {
+        override def createLogic(
+            inheritedAttributes: Attributes): GraphStageLogic =
+          new GraphStageLogic(shape) {
 
-          // this holds the received but not yet parsed bytes
-          var stash = ByteString.empty
-          // this holds the current message length or -1 if at a boundary
-          var needed = -1
+            // this holds the received but not yet parsed bytes
+            var stash = ByteString.empty
+            // this holds the current message length or -1 if at a boundary
+            var needed = -1
 
-          setHandler(
-            out,
-            new OutHandler {
-              override def onPull(): Unit = {
-                if (isClosed(in))
+            setHandler(
+              out,
+              new OutHandler {
+                override def onPull(): Unit = {
+                  if (isClosed(in))
+                    run()
+                  else
+                    pull(in)
+                }
+              })
+            setHandler(
+              in,
+              new InHandler {
+                override def onPush(): Unit = {
+                  val bytes = grab(in)
+                  stash = stash ++ bytes
                   run()
-                else
-                  pull(in)
-              }
-            })
-          setHandler(
-            in,
-            new InHandler {
-              override def onPush(): Unit = {
-                val bytes = grab(in)
-                stash = stash ++ bytes
-                run()
-              }
+                }
 
-              override def onUpstreamFinish(): Unit = {
-                if (stash.isEmpty)
-                  completeStage()
-                // wait with completion and let run() complete when the
-                // rest of the stash has been sent downstream
+                override def onUpstreamFinish(): Unit = {
+                  if (stash.isEmpty)
+                    completeStage()
+                  // wait with completion and let run() complete when the
+                  // rest of the stash has been sent downstream
+                }
               }
-            }
-          )
+            )
 
-          private def run(): Unit = {
-            if (needed == -1) {
-              // are we at a boundary? then figure out next length
-              if (stash.length < 4) {
+            private def run(): Unit = {
+              if (needed == -1) {
+                // are we at a boundary? then figure out next length
+                if (stash.length < 4) {
+                  if (isClosed(in))
+                    completeStage()
+                  else
+                    pull(in)
+                } else {
+                  needed = stash.iterator.getInt
+                  stash = stash.drop(4)
+                  run() // cycle back to possibly already emit the next chunk
+                }
+              } else if (stash.length < needed) {
+                // we are in the middle of a message, need more bytes,
+                // or have to stop if input closed
                 if (isClosed(in))
                   completeStage()
                 else
                   pull(in)
               } else {
-                needed = stash.iterator.getInt
-                stash = stash.drop(4)
-                run() // cycle back to possibly already emit the next chunk
+                // we have enough to emit at least one message, so do it
+                val emit = stash.take(needed)
+                stash = stash.drop(needed)
+                needed = -1
+                push(out, emit)
               }
-            } else if (stash.length < needed) {
-              // we are in the middle of a message, need more bytes,
-              // or have to stop if input closed
-              if (isClosed(in))
-                completeStage()
-              else
-                pull(in)
-            } else {
-              // we have enough to emit at least one message, so do it
-              val emit = stash.take(needed)
-              stash = stash.drop(needed)
-              needed = -1
-              push(out, emit)
             }
           }
-        }
-    }
+      }
 
-    val outbound = b.add(Flow[ByteString].map(addLengthHeader))
-    val inbound = b.add(Flow[ByteString].via(new FrameParser))
-    BidiShape.fromFlows(outbound, inbound)
-  })
+      val outbound = b.add(Flow[ByteString].map(addLengthHeader))
+      val inbound = b.add(Flow[ByteString].via(new FrameParser))
+      BidiShape.fromFlows(outbound, inbound)
+    })
   //#framing
 
-  val chopUp = BidiFlow.fromGraph(GraphDSL.create() { b =>
-    val f = Flow[ByteString].mapConcat(_.map(ByteString(_)))
-    BidiShape.fromFlows(b.add(f), b.add(f))
-  })
+  val chopUp = BidiFlow.fromGraph(
+    GraphDSL.create() { b =>
+      val f = Flow[ByteString].mapConcat(_.map(ByteString(_)))
+      BidiShape.fromFlows(b.add(f), b.add(f))
+    })
 
-  val accumulate = BidiFlow.fromGraph(GraphDSL.create() { b =>
-    val f = Flow[ByteString].grouped(1000).map(_.fold(ByteString.empty)(_ ++ _))
-    BidiShape.fromFlows(b.add(f), b.add(f))
-  })
+  val accumulate = BidiFlow.fromGraph(
+    GraphDSL.create() { b =>
+      val f = Flow[ByteString]
+        .grouped(1000)
+        .map(_.fold(ByteString.empty)(_ ++ _))
+      BidiShape.fromFlows(b.add(f), b.add(f))
+    })
 }
 
 class BidiFlowDocSpec extends AkkaSpec {
@@ -198,9 +204,10 @@ class BidiFlowDocSpec extends AkkaSpec {
       val flow = stack
         .atop(chopUp)
         .atop(stack.reversed)
-        .join(Flow[Message].map {
-          case Ping(id) => Pong(id)
-        })
+        .join(
+          Flow[Message].map {
+            case Ping(id) => Pong(id)
+          })
       val f = Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
       Await.result(f, 1.second) should ===((0 to 9).map(Pong))
     }
@@ -210,9 +217,10 @@ class BidiFlowDocSpec extends AkkaSpec {
       val flow = stack
         .atop(accumulate)
         .atop(stack.reversed)
-        .join(Flow[Message].map {
-          case Ping(id) => Pong(id)
-        })
+        .join(
+          Flow[Message].map {
+            case Ping(id) => Pong(id)
+          })
       val f = Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
       Await.result(f, 1.second) should ===((0 to 9).map(Pong))
     }

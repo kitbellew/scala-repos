@@ -37,8 +37,7 @@ class Timer(
       wheelSize = wheelSize,
       startMs = startMs,
       taskCounter = taskCounter,
-      delayQueue
-    )
+      delayQueue)
 
   // Locks used to protect data structures while ticking
   private[this] val readWriteLock = new ReentrantReadWriteLock()

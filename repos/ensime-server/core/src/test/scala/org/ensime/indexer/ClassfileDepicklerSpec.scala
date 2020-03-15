@@ -33,7 +33,6 @@ class ClassfileDepicklerSpec extends EnsimeSpec with SharedEnsimeVFSFixture {
   it should "find type aliases" in withVFS { vfs =>
     new ClassfileDepickler(
       vfs.vres("scala/Predef.class")).getTypeAliases should contain(
-      RawType(s"scala.Predef$$String", Public)
-    )
+      RawType(s"scala.Predef$$String", Public))
   }
 }

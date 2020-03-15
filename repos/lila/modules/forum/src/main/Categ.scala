@@ -47,6 +47,5 @@ object Categ {
 
   private[forum] lazy val tube = JsTube(
     reader = (__.json update merge(defaults)) andThen Json.reads[Categ],
-    writer = Json.writes[Categ]
-  )
+    writer = Json.writes[Categ])
 }

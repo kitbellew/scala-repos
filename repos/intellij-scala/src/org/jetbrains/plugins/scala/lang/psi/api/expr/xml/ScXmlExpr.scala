@@ -13,9 +13,10 @@ import com.intellij.psi.PsiElement
   */
 trait ScXmlExpr extends ScExpression {
   def getElements: Seq[PsiElement] =
-    getChildren.filter(_ match {
-      case _: ScXmlElement | _: ScXmlPI | _: ScXmlCDSect | _: ScXmlComment =>
-        true
-      case _ => false
-    })
+    getChildren.filter(
+      _ match {
+        case _: ScXmlElement | _: ScXmlPI | _: ScXmlCDSect | _: ScXmlComment =>
+          true
+        case _ => false
+      })
 }

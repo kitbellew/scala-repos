@@ -27,10 +27,12 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
       def startOffset(element: PsiElement) = element.getTextRange.getStartOffset
       def endOffset(element: PsiElement) = element.getTextRange.getEndOffset
       def shiftInNewFile(offset: Int, semicolonOffset: Int): Int =
-        offset + (if (offset > semicolonOffset)
-                    1
-                  else
-                    0)
+        offset + (
+          if (offset > semicolonOffset)
+            1
+          else
+            0
+        )
 
       override def visitElement(element: PsiElement) {
         if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {

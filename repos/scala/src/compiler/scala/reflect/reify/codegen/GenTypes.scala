@@ -76,7 +76,9 @@ trait GenTypes {
   def reificationIsConcrete: Boolean = state.reificationIsConcrete
 
   def spliceType(tpe: Type): Tree = {
-    if (tpe.isSpliceable && !(boundSymbolsInCallstack contains tpe.typeSymbol)) {
+    if (tpe.isSpliceable && !(
+          boundSymbolsInCallstack contains tpe.typeSymbol
+        )) {
       if (reifyDebug)
         println("splicing " + tpe)
 
@@ -133,7 +135,9 @@ trait GenTypes {
   private def spliceAsManifest(tpe: Type): Tree = {
     def isSynthetic(manifest: Tree) =
       manifest exists (sub =>
-        sub.symbol != null && (sub.symbol == FullManifestModule || sub.symbol.owner == FullManifestModule))
+        sub.symbol != null && (
+          sub.symbol == FullManifestModule || sub.symbol.owner == FullManifestModule
+        ))
     def searchForManifest(typer: analyzer.Typer): Tree =
       analyzer.inferImplicit(
         EmptyTree,

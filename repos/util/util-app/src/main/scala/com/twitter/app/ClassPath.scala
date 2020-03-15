@@ -64,7 +64,9 @@ private object ClassPath {
   }
 
   private def isClass(name: String) =
-    (name endsWith ".class") && ((name endsWith "$.class") || !(name contains "$"))
+    (name endsWith ".class") && (
+      (name endsWith "$.class") || !(name contains "$")
+    )
 
   private def getEntries(loader: ClassLoader): Seq[(URI, ClassLoader)] = {
     val ents = mutable.Buffer[(URI, ClassLoader)]()
@@ -87,8 +89,7 @@ private object ClassPath {
       uri: URI,
       loader: ClassLoader,
       buf: mutable.Buffer[Info],
-      seenUris: mutable.Set[URI]
-  ): Unit = {
+      seenUris: mutable.Set[URI]): Unit = {
     if (uri.getScheme != "file")
       return
     val f = new File(uri)
@@ -105,8 +106,7 @@ private object ClassPath {
       dir: File,
       loader: ClassLoader,
       prefix: String,
-      buf: mutable.Buffer[Info]
-  ): Unit = {
+      buf: mutable.Buffer[Info]): Unit = {
     if (ignoredPackages.contains(prefix)) {
       println("ignored " + prefix)
       return
@@ -123,8 +123,7 @@ private object ClassPath {
       file: File,
       loader: ClassLoader,
       buf: mutable.Buffer[Info],
-      seenUris: mutable.Set[URI]
-  ): Unit = {
+      seenUris: mutable.Set[URI]): Unit = {
     val jarFile =
       try new JarFile(file)
       catch {

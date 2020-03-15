@@ -219,14 +219,15 @@ class LiftServlet extends Loggable {
     }
 
     val role = NamedPF.applyBox(req, LiftRules.httpAuthProtectedResource.toList)
-    role.map(_ match {
-      case Full(r) =>
-        LiftRules.authentication.verified_?(req) match {
-          case true => checkRoles(r, userRoles.get)
-          case _    => false
-        }
-      case _ => LiftRules.authentication.verified_?(req)
-    }) openOr true
+    role.map(
+      _ match {
+        case Full(r) =>
+          LiftRules.authentication.verified_?(req) match {
+            case true => checkRoles(r, userRoles.get)
+            case _    => false
+          }
+        case _ => LiftRules.authentication.verified_?(req)
+      }) openOr true
   }
 
   private val recent: LRUMap[String, Int] = new LRUMap(2000)
@@ -265,8 +266,7 @@ class LiftServlet extends Loggable {
         Full(
           session
             .map(_.checkRedirect(req.createNotFound))
-            .getOrElse(req.createNotFound)
-        )
+            .getOrElse(req.createNotFound))
       }
     }
 
@@ -291,14 +291,15 @@ class LiftServlet extends Loggable {
       val role = NamedPF.applyBox(
         req,
         LiftRules.httpAuthProtectedResource.toList)
-      role.map(_ match {
-        case Full(r) =>
-          LiftRules.authentication.verified_?(req) match {
-            case true => checkRoles(r, userRoles.get)
-            case _    => false
-          }
-        case _ => LiftRules.authentication.verified_?(req)
-      }) openOr true
+      role.map(
+        _ match {
+          case Full(r) =>
+            LiftRules.authentication.verified_?(req) match {
+              case true => checkRoles(r, userRoles.get)
+              case _    => false
+            }
+          case _ => LiftRules.authentication.verified_?(req)
+        }) openOr true
     }
 
     def process(req: Req) =
@@ -391,12 +392,14 @@ class LiftServlet extends Loggable {
             // if the request is matched is defined in the stateless table, dispatch
             tmpStatelessHolder = NamedPF
               .applyBox(req, LiftRules.statelessDispatch.toList)
-              .map(_.apply() match {
-                case Full(a) =>
-                  Full(
-                    LiftRules.convertResponse((a, Nil, S.responseCookies, req)))
-                case r => r
-              })
+              .map(
+                _.apply() match {
+                  case Full(a) =>
+                    Full(
+                      LiftRules.convertResponse(
+                        (a, Nil, S.responseCookies, req)))
+                  case r => r
+                })
             tmpStatelessHolder.isDefined
           }) {
         val f = tmpStatelessHolder.openOrThrowException(
@@ -457,8 +460,7 @@ class LiftServlet extends Loggable {
     CheckAuth,
     SessionLossCheck,
     StatelessResponse,
-    StatefulResponse
-  )
+    StatefulResponse)
 
   /**
     * Service the HTTP request
@@ -638,8 +640,7 @@ class LiftServlet extends Loggable {
               36),
             Integer
               .parseInt(ajaxPathPart.substring(ajaxPathPart.length - 1), 36)
-          )
-        )
+          ))
       else
         None
     }
@@ -686,15 +687,16 @@ class LiftServlet extends Loggable {
 
         case _ =>
           try {
-            val what = flatten(try {
-              liftSession.runParams(requestState)
-            } catch {
-              case ResponseShortcutException(_, Full(to), _) =>
-                import net.liftweb.http.js.JsCmds._
-                List(RedirectTo(to))
-              case responseShortcut: ResponseShortcutException =>
-                List(responseShortcut.response)
-            })
+            val what = flatten(
+              try {
+                liftSession.runParams(requestState)
+              } catch {
+                case ResponseShortcutException(_, Full(to), _) =>
+                  import net.liftweb.http.js.JsCmds._
+                  List(RedirectTo(to))
+                case responseShortcut: ResponseShortcutException =>
+                  List(responseShortcut.response)
+              })
 
             val what2 = what.flatMap {
               case js: JsCmd       => List(js)
@@ -710,10 +712,16 @@ class LiftServlet extends Loggable {
                 case (json: JsObj) :: Nil => JsonResponse(json)
                 case (jv: JValue) :: Nil  => JsonResponse(jv)
                 case (js: JsCmd) :: xs => {
-                  (JsCommands(S.noticesToJsCmd :: Nil) &
-                    (js :: (xs.collect {
-                      case js: JsCmd => js
-                    }).reverse)).toResponse
+                  (
+                    JsCommands(S.noticesToJsCmd :: Nil) &
+                      (
+                        js :: (
+                          xs.collect {
+                            case js: JsCmd => js
+                          }
+                        ).reverse
+                      )
+                  ).toResponse
                 }
 
                 case (n: Node) :: _         => XmlResponse(n)
@@ -1054,9 +1062,10 @@ class LiftServlet extends Loggable {
 
         val ret2 = f.get(cometTimeout) openOr Nil
 
-        Full(S.init(Box !! originalRequest, session) {
-          convertAnswersToCometResponse(session, ret2, actors)
-        })
+        Full(
+          S.init(Box !! originalRequest, session) {
+            convertAnswersToCometResponse(session, ret2, actors)
+          })
       } finally {
         session.exitComet(cont)
       }
@@ -1096,14 +1105,18 @@ class LiftServlet extends Loggable {
             (
               v._1,
               (
-                (for (updated <- Full(
-                        (if (!LiftRules.excludePathFromContextPathRewriting
-                               .vend(uri))
-                           u.contextPath
-                         else
-                           "") + uri).filter(ignore => uri.startsWith("/"));
-                      rwf <- URLRewriter.rewriteFunc)
-                  yield rwf(updated)) openOr uri
+                (
+                  for (updated <- Full(
+                         (
+                           if (!LiftRules.excludePathFromContextPathRewriting
+                                 .vend(uri))
+                             u.contextPath
+                           else
+                             ""
+                         ) + uri).filter(ignore => uri.startsWith("/"));
+                       rwf <- URLRewriter.rewriteFunc)
+                    yield rwf(updated)
+                ) openOr uri
               ))
           case _ => v
         })
@@ -1149,10 +1162,12 @@ class LiftServlet extends Loggable {
           LiftRules.defaultHeaders(NodeSeq.Empty -> request) :::
             /* List(("Content-Type",
         LiftRules.determineContentType(pairFromRequest(request)))) ::: */
-            (if (len >= 0)
-               List(("Content-Length", len.toString))
-             else
-               Nil)
+            (
+              if (len >= 0)
+                List(("Content-Length", len.toString))
+              else
+                Nil
+            )
         )
 
     LiftRules.beforeSend.toList.foreach(f =>
@@ -1161,14 +1176,14 @@ class LiftServlet extends Loggable {
     response.addCookies(resp.cookies)
 
     // send the response
-    response.addHeaders(header.map {
-      case (name, value) => HTTPParam(name, value)
-    })
+    response.addHeaders(
+      header.map {
+        case (name, value) => HTTPParam(name, value)
+      })
     response.addHeaders(
       LiftRules.supplementalHeaders.vend.map {
         case (name, value) => HTTPParam(name, value)
-      }
-    )
+      })
 
     liftResp match {
       case ResponseWithReason(_, reason) =>

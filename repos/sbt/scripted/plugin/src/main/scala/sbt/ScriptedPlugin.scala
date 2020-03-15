@@ -95,8 +95,7 @@ object ScriptedPlugin extends Plugin {
     sbtTestDirectory := sourceDirectory.value / "sbt-test",
     libraryDependencies ++= Seq(
       "org.scala-sbt" % "scripted-sbt" % scriptedSbt.value % scriptedConf.toString,
-      "org.scala-sbt" % "sbt-launch" % scriptedSbt.value % scriptedLaunchConf.toString
-    ),
+      "org.scala-sbt" % "sbt-launch" % scriptedSbt.value % scriptedLaunchConf.toString),
     scriptedBufferLog := true,
     scriptedClasspath := getJars(scriptedConf).value,
     scriptedTests <<= scriptedTestsTask,

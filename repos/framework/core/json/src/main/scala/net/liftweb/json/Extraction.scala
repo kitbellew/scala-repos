@@ -99,9 +99,12 @@ object Extraction {
         case x: JValue                    => x
         case x if primitive_?(x.getClass) => primitive2jvalue(x)(formats)
         case x: Map[_, _] =>
-          JObject((x map {
-            case (k: String, v) => JField(k, decompose(v))
-          }).toList)
+          JObject(
+            (
+              x map {
+                case (k: String, v) => JField(k, decompose(v))
+              }
+            ).toList)
         case x: Iterable[_] => JArray(x.toList map decompose)
         case x if (x.getClass.isArray) =>
           JArray(x.asInstanceOf[Array[_]].toList map decompose)
@@ -210,8 +213,7 @@ object Extraction {
               prefix + "["))
           .map(t => (t._1.substring(prefix.length), t._2))
           .toList
-          .toArray: _*
-      )
+          .toArray: _*)
 
     val ArrayProp = new Regex("""^(\.([^\.\[]+))\[(\d+)\].*$""")
     val ArrayElem = new Regex("""^(\[(\d+)\]).*$""")
@@ -230,13 +232,15 @@ object Extraction {
       .sortWith(_ < _) // Sort is necessary to get array order right
 
     uniquePaths.foldLeft[JValue](JNothing) { (jvalue, key) =>
-      jvalue.merge(key match {
-        case ArrayProp(p, f, i) =>
-          JObject(List(JField(f, unflatten(submap(key)))))
-        case ArrayElem(p, i) => JArray(List(unflatten(submap(key))))
-        case OtherProp(p, f) => JObject(List(JField(f, unflatten(submap(key)))))
-        case ""              => extractValue(map(key))
-      })
+      jvalue.merge(
+        key match {
+          case ArrayProp(p, f, i) =>
+            JObject(List(JField(f, unflatten(submap(key)))))
+          case ArrayElem(p, i) => JArray(List(unflatten(submap(key))))
+          case OtherProp(p, f) =>
+            JObject(List(JField(f, unflatten(submap(key)))))
+          case "" => extractValue(map(key))
+        })
     }
   }
 
@@ -274,8 +278,9 @@ object Extraction {
             }
           constructor
             .bestMatching(argNames)
-            .getOrElse(fail(
-              "No constructor for type " + constructor.targetType.clazz + ", " + json))
+            .getOrElse(
+              fail(
+                "No constructor for type " + constructor.targetType.clazz + ", " + json))
         }
       }
 
@@ -308,17 +313,19 @@ object Extraction {
                   jsonFields.get(name).foreach {
                     case (n, v) =>
                       val typeArgs = typeInfo.parameterizedType
-                        .map(_.getActualTypeArguments
-                          .map(_.asInstanceOf[Class[_]])
-                          .toList
-                          .zipWithIndex
-                          .map {
-                            case (t, idx) =>
-                              if (t == classOf[java.lang.Object])
-                                ScalaSigReader.readField(name, a.getClass, idx)
-                              else
-                                t
-                          })
+                        .map(
+                          _.getActualTypeArguments
+                            .map(_.asInstanceOf[Class[_]])
+                            .toList
+                            .zipWithIndex
+                            .map {
+                              case (t, idx) =>
+                                if (t == classOf[java.lang.Object])
+                                  ScalaSigReader
+                                    .readField(name, a.getClass, idx)
+                                else
+                                  t
+                            })
                       val value = extract0(
                         v,
                         typeInfo.clazz,

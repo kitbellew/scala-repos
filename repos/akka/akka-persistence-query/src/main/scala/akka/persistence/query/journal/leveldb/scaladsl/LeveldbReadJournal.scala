@@ -72,8 +72,9 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
     // no polling for this query, the write journal will push all changes, i.e.
     // no refreshInterval
     Source
-      .actorPublisher[String](AllPersistenceIdsPublisher
-        .props(liveQuery = true, maxBufSize, writeJournalPluginId))
+      .actorPublisher[String](
+        AllPersistenceIdsPublisher
+          .props(liveQuery = true, maxBufSize, writeJournalPluginId))
       .mapMaterializedValue(_ ⇒ NotUsed)
       .named("allPersistenceIds")
   }
@@ -85,8 +86,9 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
     */
   override def currentPersistenceIds(): Source[String, NotUsed] = {
     Source
-      .actorPublisher[String](AllPersistenceIdsPublisher
-        .props(liveQuery = false, maxBufSize, writeJournalPluginId))
+      .actorPublisher[String](
+        AllPersistenceIdsPublisher
+          .props(liveQuery = false, maxBufSize, writeJournalPluginId))
       .mapMaterializedValue(_ ⇒ NotUsed)
       .named("currentPersistenceIds")
   }

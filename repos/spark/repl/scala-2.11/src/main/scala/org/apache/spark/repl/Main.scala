@@ -64,8 +64,7 @@ object Main extends Logging {
       "-Yrepl-outdir",
       s"${outputDir.getAbsolutePath}",
       "-classpath",
-      jars
-    ) ++ args.toList
+      jars) ++ args.toList
 
     val settings = new GenericRunnerSettings(scalaOptionError)
     settings.processArguments(interpArguments, true)

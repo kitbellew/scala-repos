@@ -111,10 +111,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "pass raw request URI to Actions" in {
       requestFromServer("/abc?foo=bar") { request =>
         request
-          .withHeaders(
-            ACCEPT_ENCODING -> "utf-8",
-            ACCEPT_LANGUAGE -> "en-US"
-          )
+          .withHeaders(ACCEPT_ENCODING -> "utf-8", ACCEPT_LANGUAGE -> "en-US")
           .get()
       } {
         case ("GET", "/abc") =>
@@ -134,8 +131,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           .withHeaders(
             ACCEPT_ENCODING -> "utf-8",
             ACCEPT_LANGUAGE -> "en-US",
-            `Raw-Request-URI`.name -> "/foo/bar/baz"
-          )
+            `Raw-Request-URI`.name -> "/foo/bar/baz")
           .get()
       } {
         case ("GET", "/abc") =>

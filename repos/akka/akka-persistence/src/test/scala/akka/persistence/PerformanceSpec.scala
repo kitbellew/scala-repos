@@ -115,11 +115,12 @@ object PerformanceSpec {
         m
     }
 
-    val receiveCommand: Receive =
-      printProgress andThen (controlBehavior orElse {
+    val receiveCommand: Receive = printProgress andThen (
+      controlBehavior orElse {
         case "a" ⇒ persist("a")(_ ⇒ context.become(processC))
         case "b" ⇒ persist("b")(_ ⇒ ())
-      })
+      }
+    )
 
     val processC: Receive = printProgress andThen {
       case "c" ⇒

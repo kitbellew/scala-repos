@@ -154,16 +154,20 @@ object TypeRep {
   def getType[A](x: A)(implicit rep: TypeRep[A]): TypeRep[A] = rep
 
   def getType[A](x: Option[A])(implicit rep: TypeRep[A]): TypeRep[Option[A]] =
-    (x match {
-      case Some(v) => SomeRep(rep)
-      case None    => NoneRep
-    }).asInstanceOf[TypeRep[Option[A]]]
+    (
+      x match {
+        case Some(v) => SomeRep(rep)
+        case None    => NoneRep
+      }
+    ).asInstanceOf[TypeRep[Option[A]]]
 
   def getType[A](x: List[A])(implicit rep: TypeRep[A]): TypeRep[List[A]] =
-    (x match {
-      case h :: t => ListRep(rep)
-      case Nil    => NilRep
-    }).asInstanceOf[TypeRep[List[A]]]
+    (
+      x match {
+        case h :: t => ListRep(rep)
+        case Nil    => NilRep
+      }
+    ).asInstanceOf[TypeRep[List[A]]]
 
   implicit def boolRep: TypeRep[Boolean] = BooleanRep
   implicit def byteRep: TypeRep[Byte] = ByteRep

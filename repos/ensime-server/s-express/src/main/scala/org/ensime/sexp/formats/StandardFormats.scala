@@ -71,10 +71,11 @@ trait StandardFormats extends ThreadLocalSupport {
         }
     }
 
-  implicit val UuidFormat: SexpFormat[UUID] = viaString(new ViaString[UUID] {
-    def toSexpString(uuid: UUID) = uuid.toString
-    def fromSexpString(s: String) = UUID.fromString(s)
-  })
+  implicit val UuidFormat: SexpFormat[UUID] = viaString(
+    new ViaString[UUID] {
+      def toSexpString(uuid: UUID) = uuid.toString
+      def fromSexpString(s: String) = UUID.fromString(s)
+    })
 
   // URL is intentionally discouraged in data objects because .equals
   // calls out to the interwebz.
@@ -83,39 +84,42 @@ trait StandardFormats extends ThreadLocalSupport {
   //   def fromSexpString(s: String) = new URL(s)
   // })
 
-  implicit val UriFormat: SexpFormat[URI] = viaString(new ViaString[URI] {
-    def toSexpString(uri: URI) = uri.toASCIIString
-    def fromSexpString(s: String) = new URI(s)
-  })
+  implicit val UriFormat: SexpFormat[URI] = viaString(
+    new ViaString[URI] {
+      def toSexpString(uri: URI) = uri.toASCIIString
+      def fromSexpString(s: String) = new URI(s)
+    })
 
-  implicit val FileFormat: SexpFormat[File] = viaString(new ViaString[File] {
-    def toSexpString(file: File) = file.getPath
-    def fromSexpString(s: String) = new File(s)
-  })
+  implicit val FileFormat: SexpFormat[File] = viaString(
+    new ViaString[File] {
+      def toSexpString(file: File) = file.getPath
+      def fromSexpString(s: String) = new File(s)
+    })
 
   /**
     * Uses ISO_8601 which is well supported on the emacs side (we
     * suspend belief about `Date`'s mutability). If you want to use
     * UNIX epoch time, override with your own implementation.
     */
-  implicit val DateFormat: SexpFormat[Date] = viaString(new ViaString[Date] {
-    private val localFormatter = local {
-      // SimpleDateFormat isn't ISO_8601 compliant on Java 6, for a discussion see
-      // http://stackoverflow.com/questions/2201925
-      val s = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-      s.setTimeZone(TimeZone.getTimeZone("UTC"))
-      s
-    }
-    def toSexpString(date: Date) = {
-      val formatted = localFormatter.get.format(date)
-      formatted.substring(0, 22) + ":" + formatted.substring(22)
-    }
-    def fromSexpString(s: String) = {
-      val s1 = s.replace("Z", "+00:00")
-      val processed = s1.substring(0, 22) + s1.substring(23)
-      localFormatter.get.parse(processed)
-    }
-  })
+  implicit val DateFormat: SexpFormat[Date] = viaString(
+    new ViaString[Date] {
+      private val localFormatter = local {
+        // SimpleDateFormat isn't ISO_8601 compliant on Java 6, for a discussion see
+        // http://stackoverflow.com/questions/2201925
+        val s = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+        s.setTimeZone(TimeZone.getTimeZone("UTC"))
+        s
+      }
+      def toSexpString(date: Date) = {
+        val formatted = localFormatter.get.format(date)
+        formatted.substring(0, 22) + ":" + formatted.substring(22)
+      }
+      def fromSexpString(s: String) = {
+        val s1 = s.replace("Z", "+00:00")
+        val processed = s1.substring(0, 22) + s1.substring(23)
+        localFormatter.get.parse(processed)
+      }
+    })
 }
 
 trait OptionAltFormat {

@@ -334,10 +334,12 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
         throw new ActorTimeoutException(
           "Message [" + message +
             "]\n\tsent to [" + actorClassName +
-            "]\n\tfrom [" + (if (sender ne null)
-                               sender.actorClassName
-                             else
-                               "nowhere") +
+            "]\n\tfrom [" + (
+            if (sender ne null)
+              sender.actorClassName
+            else
+              "nowhere"
+          ) +
             "]\n\twith timeout [" + timeout +
             "]\n\ttimed out."))
       .asInstanceOf[AnyRef]

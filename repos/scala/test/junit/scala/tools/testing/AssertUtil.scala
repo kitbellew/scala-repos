@@ -67,8 +67,7 @@ object AssertUtil {
         f"${if (message.nonEmpty)
           s"$message "
         else
-          ""}expected:<${stringOf(expected)}> but was:<${stringOf(actual)}>"
-      )
+          ""}expected:<${stringOf(expected)}> but was:<${stringOf(actual)}>")
 
   /** Convenient for testing iterators.
     */

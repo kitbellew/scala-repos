@@ -49,8 +49,7 @@ class HeadOptionTest extends OperationsOnCollectionInspectionTest {
     doTest(
       s"val seq = Seq(0); seq.${START}lift(0)$END",
       "val seq = Seq(0); seq.lift(0)",
-      "val seq = Seq(0); seq.headOption"
-    )
+      "val seq = Seq(0); seq.headOption")
   }
 }
 
@@ -98,7 +97,6 @@ class LastOptionTest extends OperationsOnCollectionInspectionTest {
     doTest(
       s"val seq = Seq(0); seq.${START}lift(seq.size - 1)$END",
       "val seq = Seq(0); seq.lift(seq.size - 1)",
-      "val seq = Seq(0); seq.lastOption"
-    )
+      "val seq = Seq(0); seq.lastOption")
   }
 }

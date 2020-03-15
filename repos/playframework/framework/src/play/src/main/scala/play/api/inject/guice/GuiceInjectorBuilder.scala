@@ -212,10 +212,11 @@ abstract class GuiceBuilder[Self] protected (
         e.getCause match {
           case p: PlayException => throw p
           case _ => {
-            e.getErrorMessages.asScala.foreach(_.getCause match {
-              case p: PlayException => throw p
-              case _                => // do nothing
-            })
+            e.getErrorMessages.asScala.foreach(
+              _.getCause match {
+                case p: PlayException => throw p
+                case _                => // do nothing
+              })
             throw e
           }
         }
@@ -275,8 +276,7 @@ final class GuiceInjectorBuilder(
       overrides,
       disabled,
       binderOptions,
-      eagerly
-    ) {
+      eagerly) {
 
   // extra constructor for creating from Java
   def this() = this(environment = Environment.simple())
@@ -336,8 +336,7 @@ object GuiceableModule extends GuiceableModuleConversions {
       case unknown =>
         throw new PlayException(
           "Unknown module type",
-          s"Module [$unknown] is not a Play module or a Guice module"
-        )
+          s"Module [$unknown] is not a Play module or a Guice module")
     }
 
   /**

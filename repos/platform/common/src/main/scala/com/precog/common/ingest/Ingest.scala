@@ -121,22 +121,23 @@ object Ingest {
   val extractorV1a =
     new Extractor[Ingest] {
       def validated(obj: JValue): Validation[Error, Ingest] = {
-        (obj.validated[APIKey]("apiKey") |@|
-          obj.validated[Path]("path") |@|
-          obj.validated[Option[AccountId]]("ownerAccountId")) {
-          (apiKey, path, ownerAccountId) =>
-            val jv = (obj \ "data")
-            Ingest(
-              apiKey,
-              path,
-              ownerAccountId.map(Authorities(_)),
-              if (jv == JUndefined)
-                Vector()
-              else
-                Vector(jv),
-              None,
-              EventMessage.defaultTimestamp,
-              StreamRef.Append)
+        (
+          obj.validated[APIKey]("apiKey") |@|
+            obj.validated[Path]("path") |@|
+            obj.validated[Option[AccountId]]("ownerAccountId")
+        ) { (apiKey, path, ownerAccountId) =>
+          val jv = (obj \ "data")
+          Ingest(
+            apiKey,
+            path,
+            ownerAccountId.map(Authorities(_)),
+            if (jv == JUndefined)
+              Vector()
+            else
+              Vector(jv),
+            None,
+            EventMessage.defaultTimestamp,
+            StreamRef.Append)
         }
       }
     }
@@ -144,8 +145,10 @@ object Ingest {
   val extractorV0 =
     new Extractor[Ingest] {
       def validated(obj: JValue): Validation[Error, Ingest] = {
-        (obj.validated[String]("tokenId") |@|
-          obj.validated[Path]("path")) { (apiKey, path) =>
+        (
+          obj.validated[String]("tokenId") |@|
+            obj.validated[Path]("path")
+        ) { (apiKey, path) =>
           val jv = (obj \ "data")
           Ingest(
             apiKey,
@@ -184,10 +187,12 @@ case class Archive(
 object Archive {
   implicit val archiveIso = Iso.hlist(Archive.apply _, Archive.unapply _)
 
-  val schemaV1 =
-    "apiKey" :: "path" :: "jobId" :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
-  val schemaV0 =
-    "tokenId" :: "path" :: Omit :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
+  val schemaV1 = "apiKey" :: "path" :: "jobId" :: (
+    "timestamp" ||| EventMessage.defaultTimestamp
+  ) :: HNil
+  val schemaV0 = "tokenId" :: "path" :: Omit :: (
+    "timestamp" ||| EventMessage.defaultTimestamp
+  ) :: HNil
 
   val decomposerV1: Decomposer[Archive] = decomposerV[Archive](
     schemaV1,
@@ -283,14 +288,20 @@ object StreamRef {
         jv match {
           case JString("append") => Success(Append)
           case other =>
-            ((other \? "create") map { jv =>
-              (jv, Create.apply _)
-            }) orElse ((other \? "replace") map { jv =>
-              (jv, Replace.apply _)
-            }) map {
+            (
+              (other \? "create") map { jv =>
+                (jv, Create.apply _)
+              }
+            ) orElse (
+              (other \? "replace") map { jv =>
+                (jv, Replace.apply _)
+              }
+            ) map {
               case (jv, f) =>
-                (jv.validated[UUID]("uuid") |@| jv.validated[Boolean](
-                  "terminal")) {
+                (
+                  jv.validated[UUID]("uuid") |@| jv.validated[Boolean](
+                    "terminal")
+                ) {
                   f
                 }
             } getOrElse {

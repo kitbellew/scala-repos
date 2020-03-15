@@ -47,21 +47,11 @@ class UnreachableCodeTest extends ClearAfterClass {
 
   @Test
   def basicElimination(): Unit = {
-    assertEliminateDead(
-      Op(ACONST_NULL),
-      Op(ATHROW),
-      Op(RETURN).dead
-    )
+    assertEliminateDead(Op(ACONST_NULL), Op(ATHROW), Op(RETURN).dead)
 
-    assertEliminateDead(
-      Op(RETURN)
-    )
+    assertEliminateDead(Op(RETURN))
 
-    assertEliminateDead(
-      Op(RETURN),
-      Op(ACONST_NULL).dead,
-      Op(ATHROW).dead
-    )
+    assertEliminateDead(Op(RETURN), Op(ACONST_NULL).dead, Op(ATHROW).dead)
   }
 
   @Test
@@ -70,8 +60,7 @@ class UnreachableCodeTest extends ClearAfterClass {
       // reachable, but removed anyway.
       Op(NOP).dead,
       Op(RETURN),
-      Op(NOP).dead
-    )
+      Op(NOP).dead)
   }
 
   @Test
@@ -81,14 +70,9 @@ class UnreachableCodeTest extends ClearAfterClass {
       Op(ACONST_NULL).dead,
       Op(ATHROW).dead,
       Label(1),
-      Op(RETURN)
-    )
+      Op(RETURN))
 
-    assertEliminateDead(
-      Jump(GOTO, Label(1)),
-      Label(1),
-      Op(RETURN)
-    )
+    assertEliminateDead(Jump(GOTO, Label(1)), Label(1), Op(RETURN))
   }
 
   @Test
@@ -108,8 +92,7 @@ class UnreachableCodeTest extends ClearAfterClass {
       // not dead, visited by data flow analysis.
       Op(ACONST_NULL),
       Op(POP),
-      Op(RETURN)
-    )
+      Op(RETURN))
   }
 
   @Test
@@ -119,8 +102,7 @@ class UnreachableCodeTest extends ClearAfterClass {
       Jump(IFNULL, Label(1)),
       Op(RETURN), // not dead
       Label(1),
-      Op(RETURN)
-    )
+      Op(RETURN))
   }
 
   @Test
@@ -192,14 +174,12 @@ class UnreachableCodeTest extends ClearAfterClass {
   def metaTest(): Unit = {
     assertThrows[AssertionError](
       assertEliminateDead(Op(RETURN).dead),
-      _.contains("Expected: List()\nActual  : List(Op(RETURN))")
-    )
+      _.contains("Expected: List()\nActual  : List(Op(RETURN))"))
 
     assertThrows[AssertionError](
       assertEliminateDead(Op(RETURN), Op(RETURN)),
       _.contains(
-        "Expected: List(Op(RETURN), Op(RETURN))\nActual  : List(Op(RETURN))")
-    )
+        "Expected: List(Op(RETURN), Op(RETURN))\nActual  : List(Op(RETURN))"))
   }
 
   @Test

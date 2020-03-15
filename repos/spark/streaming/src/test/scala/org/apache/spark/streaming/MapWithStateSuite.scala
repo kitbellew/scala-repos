@@ -87,8 +87,7 @@ class MapWithStateSuite
         expectedData: Option[Int],
         shouldBeUpdated: Boolean = false,
         shouldBeRemoved: Boolean = false,
-        shouldBeTimingOut: Boolean = false
-    ): Unit = {
+        shouldBeTimingOut: Boolean = false): Unit = {
       if (expectedData.isDefined) {
         assert(state.exists)
         assert(state.get() === expectedData.get)
@@ -157,8 +156,7 @@ class MapWithStateSuite
       Seq("a", "b", "c"),
       Seq("a", "b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val outputData = Seq(
       Seq(),
@@ -167,8 +165,7 @@ class MapWithStateSuite
       Seq(3, 2, 1),
       Seq(4, 3),
       Seq(5),
-      Seq()
-    )
+      Seq())
 
     val stateData = Seq(
       Seq(),
@@ -202,8 +199,7 @@ class MapWithStateSuite
       Seq("a", "b", "c"),
       Seq("a", "b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val outputData = Seq(
       Seq(),
@@ -212,8 +208,7 @@ class MapWithStateSuite
       Seq("aa", "bb", "cc"),
       Seq("aa", "bb"),
       Seq("aa"),
-      Seq()
-    )
+      Seq())
 
     val stateData = Seq(
       Seq(),
@@ -304,8 +299,7 @@ class MapWithStateSuite
       Seq("a", "b", "c"),
       Seq("a", "b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val outputData = Seq(
       Seq(),
@@ -314,8 +308,7 @@ class MapWithStateSuite
       Seq(("a", 3), ("b", 2), ("c", 1)),
       Seq(("a", 4), ("b", 3)),
       Seq(("a", 5)),
-      Seq()
-    )
+      Seq())
 
     val stateData = Seq(
       Seq(),
@@ -354,8 +347,7 @@ class MapWithStateSuite
       Seq("a", "b", "c"),
       Seq("a", "b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val outputData = Seq.fill(inputData.size)(Seq.empty[Int])
 
@@ -404,8 +396,7 @@ class MapWithStateSuite
       Seq("a", "c"),
       Seq("b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val stateData = Seq(
       Seq(),
@@ -415,8 +406,7 @@ class MapWithStateSuite
       Seq(("b", 1)),
       Seq(("a", 1)),
       Seq(),
-      Seq()
-    )
+      Seq())
 
     val mappingFunc =
       (time: Time, key: String, value: Option[Int], state: State[Int]) => {
@@ -468,9 +458,10 @@ class MapWithStateSuite
     assert(collectedOutputs.flatten.sorted === Seq("b", "c"))
 
     // States for a, b, c should be defined at one point of time
-    assert(collectedStateSnapshots.exists {
-      _.toSet == Set(("a", 1), ("b", 1), ("c", 1))
-    })
+    assert(
+      collectedStateSnapshots.exists {
+        _.toSet == Set(("a", 1), ("b", 1), ("c", 1))
+      })
 
     // Finally state should be defined only for a
     assert(collectedStateSnapshots.last.toSet === Set(("a", 1)))
@@ -483,8 +474,7 @@ class MapWithStateSuite
     def testCheckpointDuration(
         batchDuration: Duration,
         expectedCheckpointDuration: Duration,
-        explicitCheckpointDuration: Option[Duration] = None
-    ): Unit = {
+        explicitCheckpointDuration: Option[Duration] = None): Unit = {
       val ssc = new StreamingContext(sc, batchDuration)
 
       try {
@@ -527,8 +517,7 @@ class MapWithStateSuite
       Seq("a", "b", "c"),
       Seq("a", "b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val stateData = Seq(
       Seq(),
@@ -573,8 +562,7 @@ class MapWithStateSuite
       input: Seq[Seq[K]],
       mapWithStateSpec: StateSpec[K, Int, S, T],
       expectedOutputs: Seq[Seq[T]],
-      expectedStateSnapshots: Seq[Seq[(K, S)]]
-  ): Unit = {
+      expectedStateSnapshots: Seq[Seq[(K, S)]]): Unit = {
     require(expectedOutputs.size == expectedStateSnapshots.size)
 
     val (collectedOutputs, collectedStateSnapshots) = getOperationOutput(
@@ -588,8 +576,7 @@ class MapWithStateSuite
   private def getOperationOutput[K: ClassTag, S: ClassTag, T: ClassTag](
       input: Seq[Seq[K]],
       mapWithStateSpec: StateSpec[K, Int, S, T],
-      numBatches: Int
-  ): (Seq[Seq[T]], Seq[Seq[(K, S)]]) = {
+      numBatches: Int): (Seq[Seq[T]], Seq[Seq[(K, S)]]) = {
 
     // Setup the stream computation
     val ssc = new StreamingContext(sc, Seconds(1))

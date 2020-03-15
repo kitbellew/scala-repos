@@ -48,8 +48,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       groupNames0: Map[String, Body] = Map.empty,
       groupPrio0: Map[String, Body] = Map.empty,
       hideImplicitConversions0: List[Body] = List.empty,
-      shortDescription0: List[Body] = List.empty
-  ): Comment =
+      shortDescription0: List[Body] = List.empty): Comment =
     new Comment {
       val body = body0 getOrElse Body(Seq.empty)
       val authors = authors0
@@ -259,8 +258,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         tags: Map[TagKey, List[String]],
         lastTagKey: Option[TagKey],
         remaining: List[String],
-        inCodeBlock: Boolean
-    ): Comment =
+        inCodeBlock: Boolean): Comment =
       remaining match {
 
         case CodeBlockStartRegex(before, marker, after) :: ls
@@ -466,10 +464,12 @@ trait CommentFactoryBase { this: MemberLookupBase =>
                       s"Only one '@${key.name}' tag for symbol ${key.symbol} is allowed")
                   (key.symbol, bs.head)
                 }
-            Map.empty[String, Body] ++ (if (filterEmpty)
-                                          pairs.filterNot(_._2.blocks.isEmpty)
-                                        else
-                                          pairs)
+            Map.empty[String, Body] ++ (
+              if (filterEmpty)
+                pairs.filterNot(_._2.blocks.isEmpty)
+              else
+                pairs
+            )
           }
 
           def linkedExceptions: Map[String, Body] = {
@@ -582,8 +582,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     /** listStyle ::= '-' spc | '1.' spc | 'I.' spc | 'i.' spc | 'A.' spc | 'a.' spc
       * Characters used to build lists and their constructors */
-    protected val listStyles = Map[String, (Seq[
-      Block] => Block)]( // TODO Should this be defined at some list companion?
+    protected val listStyles = Map[
+      String,
+      (Seq[Block] => Block)
+    ]( // TODO Should this be defined at some list companion?
       "- " -> (UnorderedList(_)),
       "1. " -> (OrderedList(_, "decimal")),
       "I. " -> (OrderedList(_, "upperRoman")),
@@ -594,9 +596,11 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     /** Checks if the current line is formed with more than one space and one the listStyles */
     def checkList =
-      (countWhitespace > 0) && (listStyles.keys exists {
-        checkSkipInitWhitespace(_)
-      })
+      (countWhitespace > 0) && (
+        listStyles.keys exists {
+          checkSkipInitWhitespace(_)
+        }
+      )
 
     /** {{{
       * nListBlock ::= nLine { mListBlock }
@@ -635,9 +639,11 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
       val indent = countWhitespace
       val style =
-        (listStyles.keys find {
-          checkSkipInitWhitespace(_)
-        }).getOrElse(listStyles.keys.head)
+        (
+          listStyles.keys find {
+            checkSkipInitWhitespace(_)
+          }
+        ).getOrElse(listStyles.keys.head)
       listLevel(indent, style)
     }
 
@@ -855,8 +861,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         if (jump("."))
           Chain(List(i, Text(".")))
         else
-          i
-      )
+          i)
     }
 
     def link(): Inline = {
@@ -937,19 +942,21 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     def checkParaEnded(): Boolean = {
       (char == endOfText) ||
-      ((char == endOfLine) && {
-        val poff = offset
-        nextChar() // read EOL
-        val ok = {
-          checkSkipInitWhitespace(endOfLine) ||
-          checkSkipInitWhitespace('=') ||
-          checkSkipInitWhitespace("{{{") ||
-          checkList ||
-          checkSkipInitWhitespace('\u003D')
+      (
+        (char == endOfLine) && {
+          val poff = offset
+          nextChar() // read EOL
+          val ok = {
+            checkSkipInitWhitespace(endOfLine) ||
+            checkSkipInitWhitespace('=') ||
+            checkSkipInitWhitespace("{{{") ||
+            checkList ||
+            checkSkipInitWhitespace('\u003D')
+          }
+          offset = poff
+          ok
         }
-        offset = poff
-        ok
-      })
+      )
     }
 
     def checkSentenceEnded(): Boolean = {

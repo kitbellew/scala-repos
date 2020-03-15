@@ -90,17 +90,18 @@ abstract class RehighlightingPerformanceTypingTestBase
           }
         }
       )
-      .setup(new ThrowableRunnable[Nothing] {
-        override def run(): Unit = {
-          //file.refresh(false, false)
-          inWriteCommandAction(myProject) {
-            editor.getDocument.setText(initialText)
+      .setup(
+        new ThrowableRunnable[Nothing] {
+          override def run(): Unit = {
+            //file.refresh(false, false)
+            inWriteCommandAction(myProject) {
+              editor.getDocument.setText(initialText)
+            }
+            editor.getCaretModel.moveToLogicalPosition(pos)
+            typeInSetup.foreach(myCodeInsightTestFixture.`type`)
+            myCodeInsightTestFixture.doHighlighting()
           }
-          editor.getCaretModel.moveToLogicalPosition(pos)
-          typeInSetup.foreach(myCodeInsightTestFixture.`type`)
-          myCodeInsightTestFixture.doHighlighting()
-        }
-      })
+        })
       .assertTiming()
     inWriteCommandAction(myProject) {
       editor.getDocument.setText(initialText)

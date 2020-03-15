@@ -212,22 +212,26 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
         tables <- localTables
         sequences <- localSequences
         _ <- DBIO.seq(
-          (tables.map(t =>
-            sqlu"""drop table if exists #${profile.quoteIdentifier(
-              t)} cascade""") ++
-            sequences.map(t =>
-              sqlu"""drop sequence if exists #${profile.quoteIdentifier(
-                t)} cascade""")): _*)
+          (
+            tables.map(t =>
+              sqlu"""drop table if exists #${profile.quoteIdentifier(
+                t)} cascade""") ++
+              sequences.map(t =>
+                sqlu"""drop sequence if exists #${profile.quoteIdentifier(
+                  t)} cascade""")
+          ): _*)
       } yield ()
     }
   def assertTablesExist(tables: String*) =
-    DBIO.seq(tables.map(t =>
-      sql"""select 1 from #${profile
-        .quoteIdentifier(t)} where 1 < 0""".as[Int]): _*)
+    DBIO.seq(
+      tables.map(t =>
+        sql"""select 1 from #${profile.quoteIdentifier(t)} where 1 < 0"""
+          .as[Int]): _*)
   def assertNotTablesExist(tables: String*) =
-    DBIO.seq(tables.map(t =>
-      sql"""select 1 from #${profile
-        .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
+    DBIO.seq(
+      tables.map(t =>
+        sql"""select 1 from #${profile
+          .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
   def createSingleSessionDatabase(implicit
       session: profile.Backend#Session,
       executor: AsyncExecutor = AsyncExecutor
@@ -309,14 +313,12 @@ abstract class ExternalJdbcTestDB(confName: String)
       println("[Creating test database " + this + "]")
       await(
         databaseFor("adminConn").run(
-          DBIO.seq((drop ++ create).map(s => sqlu"#$s"): _*).withPinnedSession
-        ))
+          DBIO.seq((drop ++ create).map(s => sqlu"#$s"): _*).withPinnedSession))
     }
     if (!postCreate.isEmpty) {
       await(
         createDB().run(
-          DBIO.seq(postCreate.map(s => sqlu"#$s"): _*).withPinnedSession
-        ))
+          DBIO.seq(postCreate.map(s => sqlu"#$s"): _*).withPinnedSession))
     }
   }
 
@@ -325,8 +327,7 @@ abstract class ExternalJdbcTestDB(confName: String)
       println("[Dropping test database " + this + "]")
       await(
         databaseFor("adminConn").run(
-          DBIO.seq(drop.map(s => sqlu"#$s"): _*).withPinnedSession
-        ))
+          DBIO.seq(drop.map(s => sqlu"#$s"): _*).withPinnedSession))
     }
   }
 

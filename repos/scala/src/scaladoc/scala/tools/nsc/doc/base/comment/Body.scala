@@ -38,9 +38,11 @@ final case class Body(blocks: Seq[Block]) {
         case Link(_, title)    => summaryInInline(title)
         case _                 => Nil
       }
-    (blocks flatMap {
-      summaryInBlock(_)
-    }).toList match {
+    (
+      blocks flatMap {
+        summaryInBlock(_)
+      }
+    ).toList match {
       case Nil           => None
       case inline :: Nil => Some(inline)
       case inlines       => Some(Chain(inlines))

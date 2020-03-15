@@ -92,8 +92,7 @@ object StringHandler {
     */
   def apply(
       formatter: Formatter = new Formatter(),
-      level: Option[Level] = None
-  ) = () => new StringHandler(formatter, level)
+      level: Option[Level] = None) = () => new StringHandler(formatter, level)
 
   /**
     * for java compatibility
@@ -137,8 +136,7 @@ object ConsoleHandler {
     */
   def apply(
       formatter: Formatter = new Formatter(),
-      level: Option[Level] = None
-  ) = () => new ConsoleHandler(formatter, level)
+      level: Option[Level] = None) = () => new ConsoleHandler(formatter, level)
 
   /**
     * for java compatibility

@@ -158,23 +158,27 @@ trait PerfTestSuite extends Logging {
                 result,
                 baseline)
 
-              withPrinter(_.println(config.format match {
-                case OutputFormat.Legible =>
-                  delta.toPrettyString
+              withPrinter(
+                _.println(
+                  config.format match {
+                    case OutputFormat.Legible =>
+                      delta.toPrettyString
 
-                case OutputFormat.Json =>
-                  delta.toJson.renderCompact
-              }))
+                    case OutputFormat.Json =>
+                      delta.toJson.renderCompact
+                  }))
             }
 
           case None =>
-            withPrinter(_.println(config.format match {
-              case OutputFormat.Legible =>
-                result.toPrettyString
+            withPrinter(
+              _.println(
+                config.format match {
+                  case OutputFormat.Legible =>
+                    result.toPrettyString
 
-              case OutputFormat.Json =>
-                result.toJson.renderCompact
-            }))
+                  case OutputFormat.Json =>
+                    result.toJson.renderCompact
+                }))
         }
       }
       runner.shutdown()

@@ -144,13 +144,15 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
       //#stop-syntax
 
       //#transform-syntax
-      when(SomeState)(transform {
-        case Event(bytes: ByteString, read) => stay using (read + bytes.length)
-      } using {
-        case s @ FSM.State(state, read, timeout, stopReason, replies)
-            if read > 1000 =>
-          goto(Processing)
-      })
+      when(SomeState)(
+        transform {
+          case Event(bytes: ByteString, read) =>
+            stay using (read + bytes.length)
+        } using {
+          case s @ FSM.State(state, read, timeout, stopReason, replies)
+              if read > 1000 =>
+            goto(Processing)
+        })
       //#transform-syntax
 
       //#alt-transform-syntax
@@ -160,9 +162,11 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
           goto(Processing)
       }
 
-      when(SomeState)(transform {
-        case Event(bytes: ByteString, read) => stay using (read + bytes.length)
-      } using processingTrigger)
+      when(SomeState)(
+        transform {
+          case Event(bytes: ByteString, read) =>
+            stay using (read + bytes.length)
+        } using processingTrigger)
       //#alt-transform-syntax
 
       //#termination-syntax

@@ -553,8 +553,7 @@ class BatchedWriteAheadLogSuite
     val events = Seq(
       BlockAdditionEvent(ReceivedBlockInfo(0, None, None, null)),
       BatchAllocationEvent(null, null),
-      BatchCleanupEvent(Nil)
-    )
+      BatchCleanupEvent(Nil))
 
     val buffers = events.map(e =>
       Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
@@ -585,10 +584,11 @@ class BatchedWriteAheadLogSuite
       event: String,
       time: Long): Promise[Unit] = {
     val p = Promise[Unit]()
-    p.completeWith(Future {
-      val v = wal.write(event, time)
-      assert(v === walHandle)
-    }(walBatchingExecutionContext))
+    p.completeWith(
+      Future {
+        val v = wal.write(event, time)
+        assert(v === walHandle)
+      }(walBatchingExecutionContext))
     p
   }
 

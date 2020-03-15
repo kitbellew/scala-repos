@@ -137,8 +137,7 @@ object Transport {
   case class Liveness(
       readTimeout: Duration,
       writeTimeout: Duration,
-      keepAlive: Option[Boolean]
-  ) {
+      keepAlive: Option[Boolean]) {
     def mk(): (Liveness, Stack.Param[Liveness]) = (this, Liveness.param)
   }
   object Liveness {
@@ -248,10 +247,11 @@ object Transport {
       chunkOfA: A => Future[Option[Buf]]): Reader with Future[Unit] =
     new Promise[Unit] with Reader {
       private[this] val rw = Reader.writable()
-      become(Transport.copyToWriter(trans, rw)(chunkOfA) respond {
-        case Throw(exc) => rw.fail(exc)
-        case Return(_)  => rw.close()
-      })
+      become(
+        Transport.copyToWriter(trans, rw)(chunkOfA) respond {
+          case Throw(exc) => rw.fail(exc)
+          case Return(_)  => rw.close()
+        })
 
       def read(n: Int) = rw.read(n)
 

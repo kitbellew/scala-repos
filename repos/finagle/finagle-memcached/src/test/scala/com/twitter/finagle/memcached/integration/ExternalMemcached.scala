@@ -28,17 +28,17 @@ private[memcached] object InternalMemcached {
       val server =
         new InProcessMemcached(
           address.getOrElse(
-            new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        )
-      Some(new TestMemcachedServer {
-        val address = server
-          .start()
-          .boundAddress
-          .asInstanceOf[InetSocketAddress]
-        def stop() {
-          server.stop(true)
-        }
-      })
+            new InetSocketAddress(InetAddress.getLoopbackAddress, 0)))
+      Some(
+        new TestMemcachedServer {
+          val address = server
+            .start()
+            .boundAddress
+            .asInstanceOf[InetSocketAddress]
+          def stop() {
+            server.stop(true)
+          }
+        })
     } catch {
       case NonFatal(_) => None
     }
@@ -68,9 +68,7 @@ private[memcached] object ExternalMemcached { self =>
       sys.error("Couldn't get an address for the external memcached")
 
     takenPorts += address
-      .getOrElse(
-        new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-      )
+      .getOrElse(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
       .getPort
     address
   }
@@ -97,13 +95,14 @@ private[memcached] object ExternalMemcached { self =>
         processes :+= proc
 
         if (waitForPort(addr.getPort))
-          Some(new TestMemcachedServer {
-            val address = addr
-            def stop() {
-              proc.destroy()
-              proc.waitFor()
-            }
-          })
+          Some(
+            new TestMemcachedServer {
+              val address = addr
+              def stop() {
+                proc.destroy()
+                proc.waitFor()
+              }
+            })
         else
           None
       } catch {
@@ -148,12 +147,13 @@ private[memcached] object ExternalMemcached { self =>
   // Make sure the process is always killed eventually
   Runtime
     .getRuntime()
-    .addShutdownHook(new Thread {
-      override def run() {
-        processes foreach { p =>
-          p.destroy()
-          p.waitFor()
+    .addShutdownHook(
+      new Thread {
+        override def run() {
+          processes foreach { p =>
+            p.destroy()
+            p.waitFor()
+          }
         }
-      }
-    })
+      })
 }

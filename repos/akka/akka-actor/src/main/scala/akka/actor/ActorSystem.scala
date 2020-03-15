@@ -280,10 +280,12 @@ object ActorSystem {
       Iterator.from(2 /*is the magic number, promise*/ ).map(get) dropWhile {
         c ⇒
           c != null &&
-          (c.getName.startsWith("akka.actor.ActorSystem") ||
-          c.getName.startsWith("scala.Option") ||
-          c.getName.startsWith("scala.collection.Iterator") ||
-          c.getName.startsWith("akka.util.Reflect"))
+          (
+            c.getName.startsWith("akka.actor.ActorSystem") ||
+            c.getName.startsWith("scala.Option") ||
+            c.getName.startsWith("scala.collection.Iterator") ||
+            c.getName.startsWith("akka.util.Reflect")
+          )
       } next () match {
         case null ⇒ getClass.getClassLoader
         case c ⇒ c.getClassLoader
@@ -746,13 +748,14 @@ private[akka] class ActorSystemImpl(
   val internalCallingThreadExecutionContext: ExecutionContext = dynamicAccess
     .getObjectFor[ExecutionContext](
       "scala.concurrent.Future$InternalCallbackExecutor$")
-    .getOrElse(new ExecutionContext with BatchingExecutor {
-      override protected def unbatchedExecute(r: Runnable): Unit = r.run()
-      override protected def resubmitOnBlock: Boolean =
-        false // Since we execute inline, no gain in resubmitting
-      override def reportFailure(t: Throwable): Unit =
-        dispatcher reportFailure t
-    })
+    .getOrElse(
+      new ExecutionContext with BatchingExecutor {
+        override protected def unbatchedExecute(r: Runnable): Unit = r.run()
+        override protected def resubmitOnBlock: Boolean =
+          false // Since we execute inline, no gain in resubmitting
+        override def reportFailure(t: Throwable): Unit =
+          dispatcher reportFailure t
+      })
 
   private[this] final val terminationCallbacks =
     new TerminationCallbacks(provider.terminationFuture)(dispatcher)
@@ -790,9 +793,10 @@ private[akka] class ActorSystemImpl(
 
   def start(): this.type = _start
   def registerOnTermination[T](code: ⇒ T) {
-    registerOnTermination(new Runnable {
-      def run = code
-    })
+    registerOnTermination(
+      new Runnable {
+        def run = code
+      })
   }
   def registerOnTermination(code: Runnable) {
     terminationCallbacks.add(code)
@@ -959,41 +963,57 @@ private[akka] class ActorSystemImpl(
       node match {
         case wc: ActorRefWithCell ⇒
           val cell = wc.underlying
-          (if (indent.isEmpty)
-             "-> "
-           else
-             indent.dropRight(1) + "⌊-> ") +
+          (
+            if (indent.isEmpty)
+              "-> "
+            else
+              indent.dropRight(1) + "⌊-> "
+          ) +
             node.path.name + " " + Logging.simpleName(node) + " " +
-            (cell match {
-              case real: ActorCell ⇒
-                if (real.actor ne null)
-                  real.actor.getClass
-                else
-                  "null"
-              case _ ⇒ Logging.simpleName(cell)
-            }) +
-            (cell match {
-              case real: ActorCell ⇒ " status=" + real.mailbox.currentStatus
-              case _ ⇒ ""
-            }) +
-            " " + (cell.childrenRefs match {
-            case ChildrenContainer.TerminatingChildrenContainer(
-                  _,
-                  toDie,
-                  reason) ⇒
-              "Terminating(" + reason + ")" +
-                (toDie.toSeq.sorted mkString ("\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""))
-            case x @ (ChildrenContainer.TerminatedChildrenContainer |
-                ChildrenContainer.EmptyChildrenContainer) ⇒
-              x.toString
-            case n: ChildrenContainer.NormalChildrenContainer ⇒
-              n.c.size + " children"
-            case x ⇒ Logging.simpleName(x)
-          }) +
-            (if (cell.childrenRefs.children.isEmpty)
-               ""
-             else
-               "\n") +
+            (
+              cell match {
+                case real: ActorCell ⇒
+                  if (real.actor ne null)
+                    real.actor.getClass
+                  else
+                    "null"
+                case _ ⇒ Logging.simpleName(cell)
+              }
+            ) +
+            (
+              cell match {
+                case real: ActorCell ⇒ " status=" + real.mailbox.currentStatus
+                case _ ⇒ ""
+              }
+            ) +
+            " " + (
+            cell.childrenRefs match {
+              case ChildrenContainer.TerminatingChildrenContainer(
+                    _,
+                    toDie,
+                    reason) ⇒
+                "Terminating(" + reason + ")" +
+                  (
+                    toDie.toSeq.sorted mkString (
+                      "\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""
+                    )
+                  )
+              case x @ (
+                    ChildrenContainer.TerminatedChildrenContainer |
+                    ChildrenContainer.EmptyChildrenContainer
+                  ) ⇒
+                x.toString
+              case n: ChildrenContainer.NormalChildrenContainer ⇒
+                n.c.size + " children"
+              case x ⇒ Logging.simpleName(x)
+            }
+          ) +
+            (
+              if (cell.childrenRefs.children.isEmpty)
+                ""
+              else
+                "\n"
+            ) +
             ({
               val children = cell.childrenRefs.children.toSeq.sorted
               val bulk =
@@ -1030,9 +1050,10 @@ private[akka] class ActorSystemImpl(
             throw new RejectedExecutionException(
               "ActorSystem already terminated.")
           case some if ref.compareAndSet(some, p) ⇒
-            some.completeWith(p.future.andThen {
-              case _ ⇒ r.run()
-            })
+            some.completeWith(
+              p.future.andThen {
+                case _ ⇒ r.run()
+              })
           case _ ⇒ addRec(r, p)
         }
       addRec(r, Promise[T]())

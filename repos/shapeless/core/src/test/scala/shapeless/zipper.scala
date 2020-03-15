@@ -137,8 +137,7 @@ class ZipperTests {
     Employee("Menelaus", 3000) ::
       Employee("Achilles", 2000) ::
       Employee("Odysseus", 2000) ::
-      HNil
-  )
+      HNil)
 
   @Test
   def testCaseClasses {

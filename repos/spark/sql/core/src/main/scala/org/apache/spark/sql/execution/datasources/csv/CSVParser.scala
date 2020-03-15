@@ -179,7 +179,9 @@ private class StringIteratorReader(val iter: Iterator[String])
       if (iter.hasNext) {
         str = iter.next()
         start = length
-        length += (str.length + 1) // allowance for newline removed by SparkContext.textFile()
+        length += (
+          str.length + 1
+        ) // allowance for newline removed by SparkContext.textFile()
       } else {
         str = null
       }

@@ -190,9 +190,10 @@ class ActivityTest extends FunSuite {
 
     val exc1 = new Exception
     w.notify(Throw(exc1))
-    assert(intercept[Exception] {
-      a.sample()
-    } == exc1)
+    assert(
+      intercept[Exception] {
+        a.sample()
+      } == exc1)
 
     w.notify(Return(123))
     assert(a.sample() == 123)

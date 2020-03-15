@@ -157,9 +157,7 @@ class EvalTest extends WordSpec {
 
     "throws a compilation error when Ruby is #included" in {
       intercept[Throwable] {
-        Eval[() => String](
-          TempFile.fromResourcePath("RubyInclude.scala")
-        )
+        Eval[() => String](TempFile.fromResourcePath("RubyInclude.scala"))
       }
     }
 

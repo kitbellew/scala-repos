@@ -217,8 +217,7 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
         .createDataFrame(
           boundaries.toSeq.zip(predictions).map {
             case (b, p) => Data(b, p)
-          }
-        )
+          })
         .write
         .parquet(dataPath(path))
     }
@@ -255,8 +254,7 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
         throw new Exception(
           s"IsotonicRegressionModel.load did not recognize model with (className, format version):" +
             s"($loadedClassName, $version).  Supported:\n" +
-            s"  ($classNameV1_0, 1.0)"
-        )
+            s"  ($classNameV1_0, 1.0)")
     }
   }
 }

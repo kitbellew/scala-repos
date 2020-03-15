@@ -93,9 +93,10 @@ class NaiveBayesModel private[spark] (
       case Bernoulli =>
         val negTheta = thetaMatrix.map(value => math.log(1.0 - math.exp(value)))
         val ones =
-          new DenseVector(Array.fill(thetaMatrix.numCols) {
-            1.0
-          })
+          new DenseVector(
+            Array.fill(thetaMatrix.numCols) {
+              1.0
+            })
         val thetaMinusNegTheta = thetaMatrix.map { value =>
           value - math.log(1.0 - math.exp(value))
         }
@@ -220,9 +221,9 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       val metadata = compact(
         render(
           ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-            ("numFeatures" -> data
-              .theta(0)
-              .length) ~ ("numClasses" -> data.pi.length)))
+            ("numFeatures" -> data.theta(0).length) ~ (
+            "numClasses" -> data.pi.length
+          )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
 
       // Create Parquet data.
@@ -275,9 +276,9 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       val metadata = compact(
         render(
           ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-            ("numFeatures" -> data
-              .theta(0)
-              .length) ~ ("numClasses" -> data.pi.length)))
+            ("numFeatures" -> data.theta(0).length) ~ (
+            "numClasses" -> data.pi.length
+          )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
 
       // Create Parquet data.

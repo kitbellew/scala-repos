@@ -5,8 +5,6 @@ class T {
 
   def f() {
     var a = this
-    a.send(
-      c(a.send(()))
-    )
+    a.send(c(a.send(())))
   }
 }

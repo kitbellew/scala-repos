@@ -54,8 +54,7 @@ object BodyParserSpec
       Results.Ok,
       Results.BadRequest,
       Results.NotFound,
-      Results.InternalServerError
-    )
+      Results.InternalServerError)
   }
 
   /* map and mapM should satisfy the functor laws, namely,

@@ -100,12 +100,8 @@ trait RelationalProfile
       * key matches the parameter value. */
     def findBy[P](f: (T => Rep[P]))(implicit
         ashape: Shape[ColumnsShapeLevel, Rep[P], P, Rep[P]],
-        pshape: Shape[ColumnsShapeLevel, P, P, _]): CompiledFunction[
-      Rep[P] => Query[T, U, Seq],
-      Rep[P],
-      P,
-      Query[T, U, Seq],
-      Seq[U]] = {
+        pshape: Shape[ColumnsShapeLevel, P, P, _]): CompiledFunction[Rep[
+      P] => Query[T, U, Seq], Rep[P], P, Query[T, U, Seq], Seq[U]] = {
       import self.api._
       Compiled { (p: Rep[P]) =>
         (q: Query[T, U, Seq]).filter(table =>
@@ -121,10 +117,13 @@ trait RelationalProfile
 
   class FastPathExtensionMethods[M <: ResultConverterDomain, T, P](
       val mp: MappedProjection[T, P]) {
-    def fastPath(fpf: (
-        TypeMappingResultConverter[M, T, _] => SimpleFastPathResultConverter[
-          M,
-          T])): MappedProjection[T, P] =
+    def fastPath(
+        fpf: (
+            TypeMappingResultConverter[
+              M,
+              T,
+              _] => SimpleFastPathResultConverter[M, T]))
+        : MappedProjection[T, P] =
       mp.genericFastPath {
         case tm @ TypeMappingResultConverter(
               _: ProductResultConverter[_, _],
@@ -200,16 +199,20 @@ trait RelationalTableComponent { self: RelationalProfile =>
       new Rep.TypedRep[C] {
         override def toNode =
           Select(
-            (tableTag match {
-              case r: RefTag => r.path
-              case _         => tableNode
-            }),
+            (
+              tableTag match {
+                case r: RefTag => r.path
+                case _         => tableNode
+              }
+            ),
             FieldSymbol(n)(options, tt)) :@ tt
         override def toString =
-          (tableTag match {
-            case r: RefTag => "(" + _tableName + " " + r.path + ")"
-            case _         => _tableName
-          }) + "." + n
+          (
+            tableTag match {
+              case r: RefTag => "(" + _tableName + " " + r.path + ")"
+              case _         => _tableName
+            }
+          ) + "." + n
       }
     }
   }

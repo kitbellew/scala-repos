@@ -298,12 +298,14 @@ object MethodResolveProcessor {
       s,
       proc).followed(InferUtil.undefineSubstitutor(prevTypeInfo))
 
-    val typeParameters: Seq[TypeParameter] = prevTypeInfo ++ (element match {
-      case fun: ScFunction => fun.typeParameters.map(new TypeParameter(_))
-      case fun: PsiMethod =>
-        fun.getTypeParameters.map(new TypeParameter(_)).toSeq
-      case _ => Seq.empty
-    })
+    val typeParameters: Seq[TypeParameter] = prevTypeInfo ++ (
+      element match {
+        case fun: ScFunction => fun.typeParameters.map(new TypeParameter(_))
+        case fun: PsiMethod =>
+          fun.getTypeParameters.map(new TypeParameter(_)).toSeq
+        case _ => Seq.empty
+      }
+    )
 
     def addExpectedTypeProblems(
         eOption: Option[ScType] = expectedOption()): Unit = {
@@ -456,8 +458,10 @@ object MethodResolveProcessor {
         case method: PsiMethod if method.isConstructor =>
           javaConstructorCompatibility(method)
         case fun: ScFunction
-            if (typeArgElements.isEmpty ||
-              typeArgElements.length == fun.typeParameters.length) && fun.paramClauses.clauses.length == 1 &&
+            if (
+              typeArgElements.isEmpty ||
+                typeArgElements.length == fun.typeParameters.length
+            ) && fun.paramClauses.clauses.length == 1 &&
               fun.paramClauses.clauses.head.isImplicit &&
               argumentClauses.isEmpty =>
           addExpectedTypeProblems()
@@ -466,8 +470,10 @@ object MethodResolveProcessor {
           ) //special case for cases like Seq.toArray
         //eta expansion
         case fun: ScTypeParametersOwner
-            if (typeArgElements.isEmpty ||
-              typeArgElements.length == fun.typeParameters.length) && argumentClauses.isEmpty &&
+            if (
+              typeArgElements.isEmpty ||
+                typeArgElements.length == fun.typeParameters.length
+            ) && argumentClauses.isEmpty &&
               fun.isInstanceOf[PsiNamedElement] =>
           fun match {
             case function: ScFunction if function.isConstructor =>
@@ -477,8 +483,10 @@ object MethodResolveProcessor {
           }
           checkFunction(fun.asInstanceOf[PsiNamedElement])
         case fun: PsiTypeParameterListOwner
-            if (typeArgElements.isEmpty ||
-              typeArgElements.length == fun.getTypeParameters.length) && argumentClauses.isEmpty &&
+            if (
+              typeArgElements.isEmpty ||
+                typeArgElements.length == fun.getTypeParameters.length
+            ) && argumentClauses.isEmpty &&
               fun.isInstanceOf[PsiNamedElement] =>
           checkFunction(fun.asInstanceOf[PsiNamedElement])
         //simple application including empty application
@@ -561,10 +569,9 @@ object MethodResolveProcessor {
             typez.recursiveUpdate {
               case tpt: ScTypeParameterType =>
                 typeParameters.find(tp =>
-                  (
-                    tp.name,
-                    ScalaPsiUtil.getPsiElementId(
-                      tp.ptp)) == (tpt.name, tpt.getId)) match {
+                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+                    tpt.name, tpt.getId
+                  )) match {
                   case None => (true, tpt)
                   case _ =>
                     hasRecursiveTypeParameters = true

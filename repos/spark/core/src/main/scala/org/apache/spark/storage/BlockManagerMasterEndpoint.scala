@@ -170,8 +170,7 @@ private[spark] class BlockManagerMasterEndpoint(
     Future.sequence(
       blockManagerInfo.values.map { bm =>
         bm.slaveEndpoint.ask[Int](removeMsg)
-      }.toSeq
-    )
+      }.toSeq)
   }
 
   private def removeShuffle(shuffleId: Int): Future[Seq[Boolean]] = {
@@ -180,8 +179,7 @@ private[spark] class BlockManagerMasterEndpoint(
     Future.sequence(
       blockManagerInfo.values.map { bm =>
         bm.slaveEndpoint.ask[Boolean](removeMsg)
-      }.toSeq
-    )
+      }.toSeq)
   }
 
   /**
@@ -199,8 +197,7 @@ private[spark] class BlockManagerMasterEndpoint(
     Future.sequence(
       requiredBlockManagers.map { bm =>
         bm.slaveEndpoint.ask[Int](removeMsg)
-      }.toSeq
-    )
+      }.toSeq)
   }
 
   private def removeBlockManager(blockManagerId: BlockManagerId) {
@@ -331,8 +328,7 @@ private[spark] class BlockManagerMasterEndpoint(
               }
             }
           future
-        }
-      )
+        })
       .map(_.flatten.toSeq)
   }
 

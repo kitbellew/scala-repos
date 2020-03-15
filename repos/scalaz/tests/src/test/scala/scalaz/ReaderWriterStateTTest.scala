@@ -9,25 +9,29 @@ object ReaderWriterStateTTest extends SpecLite {
   implicit val RWSOptIntArb = Arbitrary(
     Gen.oneOf[RWSOptInt[Int]](
       Gen.const(RWST[Option, Int, Int, Int, Int]((r: Int, s: Int) => None)),
-      Gen.const(RWST[Option, Int, Int, Int, Int]((r: Int, s: Int) =>
-        Some((0, 0, 0)))),
-      Gen.const(RWST[Option, Int, Int, Int, Int]((r: Int, s: Int) =>
-        Some((r, r, r)))),
-      Gen.const(RWST[Option, Int, Int, Int, Int]((r: Int, s: Int) =>
-        Some((s, s, s))))
+      Gen.const(
+        RWST[Option, Int, Int, Int, Int]((r: Int, s: Int) => Some((0, 0, 0)))),
+      Gen.const(
+        RWST[Option, Int, Int, Int, Int]((r: Int, s: Int) => Some((r, r, r)))),
+      Gen.const(
+        RWST[Option, Int, Int, Int, Int]((r: Int, s: Int) => Some((s, s, s))))
     ))
   implicit val RWSOptIntIntArb = Arbitrary(
     Gen.oneOf[RWSOptInt[Int => Int]](
-      Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
-        None)),
-      Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
-        Some((0, x => 0, 0)))),
-      Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
-        Some((r, x => r, r)))),
-      Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
-        Some((s, x => s, s)))),
-      Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
-        Some((s, x => x, s))))
+      Gen.const(
+        RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) => None)),
+      Gen.const(
+        RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
+          Some((0, x => 0, 0)))),
+      Gen.const(
+        RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
+          Some((r, x => r, r)))),
+      Gen.const(
+        RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
+          Some((s, x => s, s)))),
+      Gen.const(
+        RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
+          Some((s, x => x, s))))
     ))
 
   implicit val RWSOptIntEqual =

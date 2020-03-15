@@ -48,10 +48,9 @@ trait Naming {
   //   $line3.$read$$iw$$iw$Bippy@4a6a00ca
   lazy val lineRegex = {
     val sn = sessionNames
-    val members = List(
-      sn.read,
-      sn.eval,
-      sn.print) map Regex.quote mkString ("(?:", "|", ")")
+    val members = List(sn.read, sn.eval, sn.print) map Regex.quote mkString (
+      "(?:", "|", ")"
+    )
     debugging("lineRegex")(
       Regex.quote(sn.line) + """\d+[./]""" + members + """[$.]""")
   }

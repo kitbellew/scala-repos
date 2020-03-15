@@ -7,9 +7,10 @@ class AccessTokenServiceSpec extends FunSuite with ServiceSpecBase {
 
   test("generateAccessToken") {
     withTestDB { implicit session =>
-      assert(AccessTokenService.generateAccessToken("root", "note") match {
-        case (id, token) => id != 0
-      })
+      assert(
+        AccessTokenService.generateAccessToken("root", "note") match {
+          case (id, token) => id != 0
+        })
     }
   }
 
@@ -52,9 +53,10 @@ class AccessTokenServiceSpec extends FunSuite with ServiceSpecBase {
   test("getAccountByAccessToken") {
     withTestDB { implicit session =>
       val (id, token) = AccessTokenService.generateAccessToken("root", "note")
-      assert(AccessTokenService.getAccountByAccessToken(token) match {
-        case Some(user) => user.userName == "root"
-      })
+      assert(
+        AccessTokenService.getAccountByAccessToken(token) match {
+          case Some(user) => user.userName == "root"
+        })
     }
   }
 
@@ -92,9 +94,10 @@ class AccessTokenServiceSpec extends FunSuite with ServiceSpecBase {
         .map(_.userName)
         .update("user3")
 
-      assert(AccessTokenService.getAccountByAccessToken(token) match {
-        case Some(user) => user.userName == "user3"
-      })
+      assert(
+        AccessTokenService.getAccountByAccessToken(token) match {
+          case Some(user) => user.userName == "user3"
+        })
     }
   }
 }

@@ -216,13 +216,10 @@ class WeightedPageRank(args: Args) extends Job(args) {
       nodeJoined
         .crossWithTiny(deadPagerank)
         .mapTo(
-          (
-            'src_id,
-            'mass_prior,
-            'deadMass,
-            'mass_input) -> ('src_id, 'mass_n, 'mass_input)) {
-          ranks: (Int, Double, Double, Double) =>
-            (ranks._1, ranks._2 * ALPHA + ranks._3 * (1 - ALPHA), ranks._4)
+          ('src_id, 'mass_prior, 'deadMass, 'mass_input) -> (
+            'src_id, 'mass_n, 'mass_input
+          )) { ranks: (Int, Double, Double, Double) =>
+          (ranks._1, ranks._2 * ALPHA + ranks._3 * (1 - ALPHA), ranks._4)
         }
 
     // 'src_id, 'mass_n

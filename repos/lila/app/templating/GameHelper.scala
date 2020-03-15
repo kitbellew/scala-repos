@@ -122,8 +122,7 @@ trait GameHelper {
         player.rating.ifTrue(withRating).fold(u.titleName) { r =>
           s"${u.titleName} ($r)"
         }
-      }
-    ) { level =>
+      }) { level =>
       s"A.I. level $level"
     }
 

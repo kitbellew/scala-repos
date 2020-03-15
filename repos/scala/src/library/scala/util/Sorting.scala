@@ -182,10 +182,12 @@ object Sorting {
           else
             iA = ix
         }
-        val ix = iA + (if (ord.compare(next, a(iA)) < 0)
-                         0
-                       else
-                         1)
+        val ix = iA + (
+          if (ord.compare(next, a(iA)) < 0)
+            0
+          else
+            1
+        )
         var i = i0 + m
         while (i > ix) {
           a(i) = a(i - 1)

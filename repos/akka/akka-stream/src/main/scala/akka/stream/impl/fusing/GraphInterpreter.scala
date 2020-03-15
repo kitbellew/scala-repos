@@ -669,8 +669,9 @@ private[stream] final class GraphInterpreter(
       // PULL
     } else if ((code & (Pulling | OutClosed | InClosed)) == Pulling) {
       if (Debug)
-        println(s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(
-          connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
+        println(
+          s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(connection)} (${outHandlers(
+            connection)}) [${outLogicName(connection)}]")
       portStates(connection) ^= PullEndFlip
       activeStage = safeLogics(assembly.outOwners(connection))
       outHandlers(connection).onPull()
@@ -680,8 +681,9 @@ private[stream] final class GraphInterpreter(
       val stageId = assembly.outOwners(connection)
       activeStage = safeLogics(stageId)
       if (Debug)
-        println(s"$Name CANCEL ${inOwnerName(connection)} -> ${outOwnerName(
-          connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
+        println(
+          s"$Name CANCEL ${inOwnerName(connection)} -> ${outOwnerName(
+            connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
       portStates(connection) |= OutClosed
       completeConnection(stageId)
       outHandlers(connection).onDownstreamFinish()
@@ -691,8 +693,9 @@ private[stream] final class GraphInterpreter(
       if ((code & Pushing) == 0) {
         // Normal completion (no push pending)
         if (Debug)
-          println(s"$Name COMPLETE ${outOwnerName(connection)} -> ${inOwnerName(
-            connection)} (${inHandlers(connection)}) [${inLogicName(connection)}]")
+          println(
+            s"$Name COMPLETE ${outOwnerName(connection)} -> ${inOwnerName(
+              connection)} (${inHandlers(connection)}) [${inLogicName(connection)}]")
         portStates(connection) |= InClosed
         val stageId = assembly.inOwners(connection)
         activeStage = safeLogics(stageId)
@@ -714,8 +717,9 @@ private[stream] final class GraphInterpreter(
   private def dequeue(): Int = {
     val idx = queueHead & mask
     if (fuzzingMode) {
-      val swapWith = (ThreadLocalRandom.current.nextInt(
-        queueTail - queueHead) + queueHead) & mask
+      val swapWith = (
+        ThreadLocalRandom.current.nextInt(queueTail - queueHead) + queueHead
+      ) & mask
       val ev = eventQueue(swapWith)
       eventQueue(swapWith) = eventQueue(idx)
       eventQueue(idx) = ev
@@ -867,14 +871,17 @@ private[stream] final class GraphInterpreter(
     for (i ← portStates.indices) {
       portStates(i) match {
         case InReady ⇒
-          builder.append(s"""  ${nameIn(i)} -> ${nameOut(
-            i)} [label=shouldPull; color=blue]""")
+          builder.append(
+            s"""  ${nameIn(i)} -> ${nameOut(
+              i)} [label=shouldPull; color=blue]""")
         case OutReady ⇒
-          builder.append(s"""  ${nameOut(i)} -> ${nameIn(
-            i)} [label=shouldPush; color=red];""")
+          builder.append(
+            s"""  ${nameOut(i)} -> ${nameIn(
+              i)} [label=shouldPush; color=red];""")
         case x if (x | InClosed | OutClosed) == (InClosed | OutClosed) ⇒
-          builder.append(s"""  ${nameIn(i)} -> ${nameOut(
-            i)} [style=dotted; label=closed dir=both];""")
+          builder.append(
+            s"""  ${nameIn(i)} -> ${nameOut(
+              i)} [style=dotted; label=closed dir=both];""")
         case _ ⇒
       }
       builder.append("\n")

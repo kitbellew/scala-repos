@@ -56,8 +56,7 @@ class TaskTrackerActorTest
     f.taskTrackerActor ! TaskTrackerActor.ForwardTaskOp(
       deadline,
       Task.Id("task1"),
-      TaskOpProcessor.Action.Noop
-    )
+      TaskOpProcessor.Action.Noop)
 
     Then("it will eventuall die")
     watch(f.taskTrackerActor)
@@ -104,8 +103,7 @@ class TaskTrackerActorTest
     val runningTask2 = MarathonTestHelper.runningTaskProto("running2")
     val appDataMap = TaskTracker.TasksByApp.of(
       TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
-    )
+        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("the task tracker has started up")
@@ -127,8 +125,7 @@ class TaskTrackerActorTest
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
     val appDataMap = TaskTracker.TasksByApp.of(
       TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
-    )
+        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("staged task gets deleted")
@@ -166,8 +163,7 @@ class TaskTrackerActorTest
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
     val appDataMap = TaskTracker.TasksByApp.of(
       TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
-    )
+        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("staged task transitions to running")
@@ -195,8 +191,7 @@ class TaskTrackerActorTest
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
     val appDataMap = TaskTracker.TasksByApp.of(
       TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
-    )
+        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("a new staged task gets added")
@@ -216,20 +211,23 @@ class TaskTrackerActorTest
 
   class Fixture {
     def failProps =
-      Props(new Actor {
-        override def receive: Receive = {
-          case _: Any => throw new RuntimeException("severe simulated failure")
-        }
-      })
+      Props(
+        new Actor {
+          override def receive: Receive = {
+            case _: Any =>
+              throw new RuntimeException("severe simulated failure")
+          }
+        })
 
     lazy val spyProbe = TestProbe()
 
     def spyActor =
-      Props(new Actor {
-        override def receive: Receive = {
-          case msg: Any => spyProbe.ref.forward(msg)
-        }
-      })
+      Props(
+        new Actor {
+          override def receive: Receive = {
+            case msg: Any => spyProbe.ref.forward(msg)
+          }
+        })
 
     def updaterProps(trackerRef: ActorRef): Props = spyActor
     lazy val taskLoader = mock[TaskLoader]

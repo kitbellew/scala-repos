@@ -44,8 +44,10 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
   if (!typeExistResponse.isExists) {
     val json =
       (estype ->
-        ("properties" ->
-          ("name" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
+        (
+          "properties" ->
+            ("name" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))
+        ))
     indices
       .preparePutMapping(index)
       .setType(estype)

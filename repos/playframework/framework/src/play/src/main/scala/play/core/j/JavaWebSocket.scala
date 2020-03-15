@@ -60,9 +60,10 @@ object JavaWebSocket extends JavaHelpers {
                 .map { msg =>
                   socketIn.callbacks.asScala.foreach(_.accept(msg))
                 }
-                .to(Sink.onComplete { _ =>
-                  socketIn.closeCallbacks.asScala.foreach(_.run())
-                })
+                .to(
+                  Sink.onComplete { _ =>
+                    socketIn.closeCallbacks.asScala.foreach(_.run())
+                  })
 
               val source = Source
                 .actorRef[A](256, OverflowStrategy.dropNew)
@@ -81,8 +82,7 @@ object JavaWebSocket extends JavaHelpers {
                 }
 
               transformer.transform(Flow.fromSinkAndSource(sink, source))
-            }
-          )
+            })
         }
       }
     }
@@ -110,10 +110,7 @@ object JavaWebSocket extends JavaHelpers {
   // -- Json (JsonNode)
 
   implicit val jsonFrame = MessageFlowTransformer.stringMessageFlowTransformer
-    .map(
-      play.libs.Json.parse,
-      play.libs.Json.stringify
-    )
+    .map(play.libs.Json.parse, play.libs.Json.stringify)
 
   def ofJson(retrieveWebSocket: => LegacyWebSocket[JsonNode]): WebSocket =
     webSocketWrapper[JsonNode](

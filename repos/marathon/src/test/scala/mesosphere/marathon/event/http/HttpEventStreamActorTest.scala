@@ -105,8 +105,6 @@ class HttpEventStreamActorTest
     def handleStreamProps(handle: HttpEventStreamHandle) =
       Props(new HttpEventStreamHandleActor(handle, stream, 1))
     streamActor = TestActorRef(
-      Props(
-        new HttpEventStreamActor(leaderInfo, metrics, handleStreamProps)
-      ))
+      Props(new HttpEventStreamActor(leaderInfo, metrics, handleStreamProps)))
   }
 }

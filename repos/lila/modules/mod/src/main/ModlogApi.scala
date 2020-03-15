@@ -73,9 +73,7 @@ final class ModlogApi {
         mod,
         user,
         Modlog.deletePost,
-        details = Some(
-          author.??(_ + " ") + ip.??(_ + " ") + text.take(140)
-        ))
+        details = Some(author.??(_ + " ") + ip.??(_ + " ") + text.take(140)))
     }
 
   def toggleCloseTopic(
@@ -88,9 +86,7 @@ final class ModlogApi {
         mod,
         none,
         closed ? Modlog.closeTopic | Modlog.openTopic,
-        details = Some(
-          categ + " / " + topic
-        ))
+        details = Some(categ + " / " + topic))
     }
 
   def toggleHideTopic(
@@ -103,9 +99,7 @@ final class ModlogApi {
         mod,
         none,
         hidden ? Modlog.hideTopic | Modlog.showTopic,
-        details = Some(
-          categ + " / " + topic
-        ))
+        details = Some(categ + " / " + topic))
     }
 
   def deleteQaQuestion(mod: String, user: String, title: String) =
@@ -152,18 +146,10 @@ final class ModlogApi {
   def recent = $find($query($select.all) sort $sort.naturalDesc, 100)
 
   def wasUnengined(userId: String) =
-    $count.exists(
-      Json.obj(
-        "user" -> userId,
-        "action" -> Modlog.unengine
-      ))
+    $count.exists(Json.obj("user" -> userId, "action" -> Modlog.unengine))
 
   def wasUnbooster(userId: String) =
-    $count.exists(
-      Json.obj(
-        "user" -> userId,
-        "action" -> Modlog.unbooster
-      ))
+    $count.exists(Json.obj("user" -> userId, "action" -> Modlog.unbooster))
 
   def userHistory(userId: String): Fu[List[Modlog]] =
     $find($query(Json.obj("user" -> userId)) sort $sort.desc("date"), 100)

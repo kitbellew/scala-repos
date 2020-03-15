@@ -54,8 +54,10 @@ object Challenge extends LilaController {
               html.challenge.mine.apply _,
               html.challenge.theirs.apply _)(c, json))
         },
-        api = _ => Ok(json).fuccess
-      ) flatMap withChallengeAnonCookie(mine && c.challengerIsAnon, c, true)
+        api = _ => Ok(json).fuccess) flatMap withChallengeAnonCookie(
+        mine && c.challengerIsAnon,
+        c,
+        true)
     }
 
   private def isMine(challenge: ChallengeModel)(implicit ctx: Context) =
@@ -78,8 +80,7 @@ object Challenge extends LilaController {
               api = apiVersion =>
                 Env.api.roundApi.player(pov, apiVersion) map {
                   Ok(_)
-                }
-            ) flatMap withChallengeAnonCookie(ctx.isAnon, c, false)
+                }) flatMap withChallengeAnonCookie(ctx.isAnon, c, false)
           case None =>
             negotiate(
               html = Redirect(routes.Round.watcher(c.id, "white")).fuccess,

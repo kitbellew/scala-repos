@@ -205,10 +205,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       typed.nameContext,
                       place,
                       false) &&
-                    (originalPlace == null || !PsiTreeUtil.isContextAncestor(
-                      typed.nameContext,
-                      originalPlace,
-                      false)))
+                    (
+                      originalPlace == null || !PsiTreeUtil.isContextAncestor(
+                        typed.nameContext,
+                        originalPlace,
+                        false)
+                    ))
                   for (tt <- typed.getType(TypingContext.empty))
                     checkType(tt, ScSubstitutor.empty, checkForSecondCompletion)
               case f: PsiField =>
@@ -387,10 +389,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   thisProjections = true) match {
                   case Success(scType, _) =>
                     import org.jetbrains.plugins.scala.lang.psi.types.Nothing
-                    val lookupString = (if (foundClazz)
-                                          t.name + "."
-                                        else
-                                          "") + "this"
+                    val lookupString = (
+                      if (foundClazz)
+                        t.name + "."
+                      else
+                        ""
+                    ) + "this"
                     val el = new ScalaLookupItem(t, lookupString)
                     if (!scType.equiv(Nothing) && typez.exists(
                           scType conforms _)) {

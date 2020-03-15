@@ -144,8 +144,9 @@ object DevServerStart {
 
                                 if (lastState.isSuccess) {
                                   println()
-                                  println(play.utils.Colors
-                                    .magenta("--- (RELOAD) ---"))
+                                  println(
+                                    play.utils.Colors
+                                      .magenta("--- (RELOAD) ---"))
                                   println()
                                 }
 
@@ -239,8 +240,7 @@ object DevServerStart {
                 .asInstanceOf[Option[Result]]
                 .orElse(
                   currentWebCommands.flatMap(
-                    _.handleWebCommand(request, buildLink, path))
-                )
+                    _.handleWebCommand(request, buildLink, path)))
 
             }
 

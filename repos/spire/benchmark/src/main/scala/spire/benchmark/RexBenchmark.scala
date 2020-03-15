@@ -28,13 +28,17 @@ class RexBenchmarks extends MyBenchmark with BenchmarkData {
   def timeGeneric(reps: Int): Unit = run(reps)(runGeneric(fs, ds, 20))
 
   def runDirect(a: Array[Float], b: Array[Double], n: Int): Double = {
-    (for (i <- 2 to n by 2)
-      yield nearlyMaxF(a, n) + nearlyMaxD(b, n)).sum
+    (
+      for (i <- 2 to n by 2)
+        yield nearlyMaxF(a, n) + nearlyMaxD(b, n)
+    ).sum
   }
 
   def runGeneric(a: Array[Float], b: Array[Double], n: Int): Double = {
-    (for (i <- 2 to n by 2)
-      yield nearlyMaxG(a, n) + nearlyMaxG(b, n)).sum
+    (
+      for (i <- 2 to n by 2)
+        yield nearlyMaxG(a, n) + nearlyMaxG(b, n)
+    ).sum
   }
 
   def nearlyMaxF(

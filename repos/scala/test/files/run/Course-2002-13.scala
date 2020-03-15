@@ -82,10 +82,12 @@ object Terms {
 
   case class Con(a: String, ts: List[Term]) extends Term {
     override def toString() =
-      a + (if (ts.isEmpty)
-             ""
-           else
-             ts.mkString("(", ",", ")"));
+      a + (
+        if (ts.isEmpty)
+          ""
+        else
+          ts.mkString("(", ",", ")")
+      );
     def map(s: Subst): Term = Con(a, ts map (t => t map s));
     def tyvars = (ts flatMap (t => t.tyvars)).distinct;
   }
@@ -349,8 +351,7 @@ object Test {
         "complement(A,D,N) :- article(A), adjectif(D), nom(N).\n" +
         "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
 
-        "?phrase(S,V,A,D,N).\n" + "?more.\n"
-    );
+        "?phrase(S,V,A,D,N).\n" + "?more.\n");
     Console.println;
 
     Prolog.process(
@@ -368,8 +369,7 @@ object Test {
         "complement(A,D,N) :- article(A,G), adjectif(D,G), nom(N,G).\n" +
         "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
 
-        "?phrase(S,V,A,D,N).\n" + "?more.\n"
-    );
+        "?phrase(S,V,A,D,N).\n" + "?more.\n");
     Console.println;
 
     Prolog.process(
@@ -394,8 +394,7 @@ object Test {
 
         "?phrase(jean,mange,le,nil,cheval).\n" +
         "?phrase(jean,mange,le,cons(grand,nil),cheval).\n" +
-        "?phrase(jean,mange,le,cons(grand,nil),table).\n"
-    );
+        "?phrase(jean,mange,le,cons(grand,nil),table).\n");
     Console.println;
 
     ()

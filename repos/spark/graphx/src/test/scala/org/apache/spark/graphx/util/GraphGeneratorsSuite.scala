@@ -60,20 +60,22 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
       numEdges10,
       maxVertexId,
       seed = 12345)
-    assert(edges10_round1.zip(edges10_round2).forall {
-      case (e1, e2) =>
-        e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
-    })
+    assert(
+      edges10_round1.zip(edges10_round2).forall {
+        case (e1, e2) =>
+          e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
+      })
 
     val edges10_round3 = GraphGenerators.generateRandomEdges(
       src,
       numEdges10,
       maxVertexId,
       seed = 3467)
-    assert(!edges10_round1.zip(edges10_round3).forall {
-      case (e1, e2) =>
-        e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
-    })
+    assert(
+      !edges10_round1.zip(edges10_round3).forall {
+        case (e1, e2) =>
+          e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
+      })
   }
 
   test("GraphGenerators.sampleLogNormal") {
@@ -124,10 +126,11 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
       val graph_round1_edges = graph_round1.edges.collect()
       val graph_round2_edges = graph_round2.edges.collect()
 
-      assert(graph_round1_edges.zip(graph_round2_edges).forall {
-        case (e1, e2) =>
-          e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
-      })
+      assert(
+        graph_round1_edges.zip(graph_round2_edges).forall {
+          case (e1, e2) =>
+            e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
+        })
 
       val graph_round3 = GraphGenerators.logNormalGraph(
         sc,
@@ -138,10 +141,11 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
 
       val graph_round3_edges = graph_round3.edges.collect()
 
-      assert(!graph_round1_edges.zip(graph_round3_edges).forall {
-        case (e1, e2) =>
-          e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
-      })
+      assert(
+        !graph_round1_edges.zip(graph_round3_edges).forall {
+          case (e1, e2) =>
+            e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
+        })
     }
   }
 

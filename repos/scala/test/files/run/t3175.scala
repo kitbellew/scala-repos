@@ -4,18 +4,22 @@
 import scala.language.reflectiveCalls
 
 object Test {
-  def len(x: {
-    def length: Int
-  }) = x.length
-  def f1(x: {
-    def apply(x: Int): Long
-  }) = x(0)
-  def f2(x: {
-    def apply(x: Int): Byte
-  }) = x(0)
-  def f3(x: {
-    def apply(x: Int): String
-  }) = x(0).length
+  def len(
+      x: {
+        def length: Int
+      }) = x.length
+  def f1(
+      x: {
+        def apply(x: Int): Long
+      }) = x(0)
+  def f2(
+      x: {
+        def apply(x: Int): Byte
+      }) = x(0)
+  def f3(
+      x: {
+        def apply(x: Int): String
+      }) = x(0).length
 
   def f4(
       x: {
@@ -33,19 +37,23 @@ object Test {
       },
       y: String) = x(0) = y
 
-  def f7(x: {
-    def length: Any
-  }) = x.length
+  def f7(
+      x: {
+        def length: Any
+      }) = x.length
 
-  def f8(x: {
-    def apply(x: Int): Any
-  }) = x(0)
-  def f9(x: {
-    def apply(x: Int): Int
-  }) = x(0)
-  def f10(x: {
-    def apply(x: Int): Long
-  }) = x(0)
+  def f8(
+      x: {
+        def apply(x: Int): Any
+      }) = x(0)
+  def f9(
+      x: {
+        def apply(x: Int): Int
+      }) = x(0)
+  def f10(
+      x: {
+        def apply(x: Int): Long
+      }) = x(0)
 
   // update has some interesting special cases
   def f11(

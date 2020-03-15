@@ -165,12 +165,10 @@ private[internal] trait TypeConstraints {
     def instWithinBounds = instValid && isWithinBounds(inst)
 
     def isWithinBounds(tp: Type): Boolean =
-      (
-        lobounds.forall(_ <:< tp)
-          && hibounds.forall(tp <:< _)
-          && (numlo == NoType || (numlo weak_<:< tp))
-          && (numhi == NoType || (tp weak_<:< numhi))
-      )
+      (lobounds.forall(_ <:< tp)
+        && hibounds.forall(tp <:< _)
+        && (numlo == NoType || (numlo weak_<:< tp))
+        && (numhi == NoType || (tp weak_<:< numhi)))
 
     var inst: Type = NoType // @M reduce visibility?
 
@@ -285,19 +283,17 @@ private[internal] trait TypeConstraints {
           NoType // necessary because hibounds/lobounds may contain tvar
 
         //println("solving "+tvar+" "+up+" "+(if (up) (tvar.constr.hiBounds) else tvar.constr.loBounds)+((if (up) (tvar.constr.hiBounds) else tvar.constr.loBounds) map (_.widen)))
-        val newInst = (
-          if (up) {
-            if (depth.isAnyDepth)
-              glb(tvar.constr.hiBounds)
-            else
-              glb(tvar.constr.hiBounds, depth)
-          } else {
-            if (depth.isAnyDepth)
-              lub(tvar.constr.loBounds)
-            else
-              lub(tvar.constr.loBounds, depth)
-          }
-        )
+        val newInst = (if (up) {
+                         if (depth.isAnyDepth)
+                           glb(tvar.constr.hiBounds)
+                         else
+                           glb(tvar.constr.hiBounds, depth)
+                       } else {
+                         if (depth.isAnyDepth)
+                           lub(tvar.constr.loBounds)
+                         else
+                           lub(tvar.constr.loBounds, depth)
+                       })
 
         debuglog(s"$tvar setInst $newInst")
         tvar setInst newInst

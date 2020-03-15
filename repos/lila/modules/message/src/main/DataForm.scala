@@ -38,11 +38,7 @@ private[message] final class DataForm(security: MessageSecurity) {
             text = text)
       })(_.export.some))
 
-  def post =
-    Form(
-      single(
-        "text" -> text(minLength = 3)
-      ))
+  def post = Form(single("text" -> text(minLength = 3)))
 
   private def fetchUser(username: String) =
     UserRepo named username awaitSeconds 2

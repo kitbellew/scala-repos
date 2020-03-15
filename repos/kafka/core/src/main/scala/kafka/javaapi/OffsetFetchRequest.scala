@@ -47,8 +47,7 @@ class OffsetFetchRequest(
       requestInfo = scalaSeq,
       versionId = versionId,
       correlationId = correlationId,
-      clientId = clientId
-    )
+      clientId = clientId)
   }
 
   override def toString = underlying.toString

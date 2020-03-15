@@ -93,8 +93,10 @@ object CreateWorkflow extends Logging {
       } text ("Path to evaluator parameters")
       opt[String]("env") action { (x, c) =>
         c.copy(env = Some(x))
-      } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
-        "format) to pass to the Spark execution environment.")
+      } text (
+        "Comma-separated list of environmental variables (in 'FOO=BAR' " +
+          "format) to pass to the Spark execution environment."
+      )
       opt[Unit]("verbose") action { (x, c) =>
         c.copy(verbose = true)
       } text ("Enable verbose output.")

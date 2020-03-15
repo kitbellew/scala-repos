@@ -35,8 +35,7 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
         name = "test",
         active = true,
         location = "localhost",
-        executorId = "1"
-      ))
+        executorId = "1"))
     listenerWrapper.onReceiverStarted(receiverStarted)
     assertReceiverInfo(
       listener.receiverStarted.receiverInfo,
@@ -48,8 +47,7 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
         name = "test",
         active = false,
         location = "localhost",
-        executorId = "1"
-      ))
+        executorId = "1"))
     listenerWrapper.onReceiverStopped(receiverStopped)
     assertReceiverInfo(
       listener.receiverStopped.receiverInfo,
@@ -199,8 +197,7 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
         description = "operation1",
         startTime = Some(1003L),
         endTime = None,
-        failureReason = None
-      ))
+        failureReason = None))
     listenerWrapper.onOutputOperationStarted(outputOperationStarted)
     assertOutputOperationInfo(
       listener.outputOperationStarted.outputOperationInfo,
@@ -214,8 +211,7 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
         description = "operation1",
         startTime = Some(1003L),
         endTime = Some(1004L),
-        failureReason = None
-      ))
+        failureReason = None))
     listenerWrapper.onOutputOperationCompleted(outputOperationCompleted)
     assertOutputOperationInfo(
       listener.outputOperationCompleted.outputOperationInfo,

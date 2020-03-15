@@ -239,17 +239,18 @@ object MergeService {
             None
           }
         }
-        .orElse(Option(repository.resolve(conflictedBranchName)).flatMap {
-          conflicted =>
-            if (parseCommit(conflicted).getParents().toSet == Set(
-                  mergeBaseTip,
-                  mergeTip)) {
-              // conflict branch exists
-              Some(true)
-            } else {
-              None
-            }
-        })
+        .orElse(
+          Option(repository.resolve(conflictedBranchName)).flatMap {
+            conflicted =>
+              if (parseCommit(conflicted).getParents().toSet == Set(
+                    mergeBaseTip,
+                    mergeTip)) {
+                // conflict branch exists
+                Some(true)
+              } else {
+                None
+              }
+          })
     }
     def checkConflict(): Boolean = {
       checkConflictCache.getOrElse(checkConflictForce)

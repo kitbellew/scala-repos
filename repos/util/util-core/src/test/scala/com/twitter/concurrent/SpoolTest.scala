@@ -25,9 +25,12 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     }
 
     "map" in {
-      assert((s map {
-        _ * 2
-      }) == Spool.empty[Int])
+      assert(
+        (
+          s map {
+            _ * 2
+          }
+        ) == Spool.empty[Int])
     }
 
     "mapFuture" in {
@@ -38,10 +41,11 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     }
 
     "deconstruct" in {
-      assert(s match {
-        case x *:: Future(rest) => false
-        case _                  => true
-      })
+      assert(
+        s match {
+          case x *:: Future(rest) => false
+          case _                  => true
+        })
     }
 
     "append via ++" in {
@@ -118,9 +122,11 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     }
 
     "map" in {
-      assert(Await.result(s.map {
-        _ * 2
-      }.toSeq) == Seq(2, 4))
+      assert(
+        Await.result(
+          s.map {
+            _ * 2
+          }.toSeq) == Seq(2, 4))
     }
 
     "mapFuture" in {
@@ -136,13 +142,14 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     }
 
     "deconstruct" in {
-      assert(s match {
-        case x *:: Future(Return(rest)) =>
-          assert(x == 1)
-          rest match {
-            case y *:: Future(Return(rest)) if y == 2 && rest.isEmpty => true
-          }
-      })
+      assert(
+        s match {
+          case x *:: Future(Return(rest)) =>
+            assert(x == 1)
+            rest match {
+              case y *:: Future(Return(rest)) if y == 2 && rest.isEmpty => true
+            }
+        })
     }
 
     "append via ++" in {
@@ -371,10 +378,11 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       val h = new SimpleDelayedSpoolHelper
       import h._
 
-      assert(s match {
-        case fst *:: rest if fst == 1 && !rest.isDefined => true
-        case _                                           => false
-      })
+      assert(
+        s match {
+          case fst *:: rest if fst == 1 && !rest.isDefined => true
+          case _                                           => false
+        })
     }
 
     "collect" in {
@@ -389,15 +397,17 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       p() = Return(2 *:: p1)
       assert(f.isDefined == true)
       val s1 = Await.result(f)
-      assert(s1 match {
-        case x *:: rest if x == 4 && !rest.isDefined => true
-        case _                                       => false
-      })
+      assert(
+        s1 match {
+          case x *:: rest if x == 4 && !rest.isDefined => true
+          case _                                       => false
+        })
       p1() = Return(3 *:: p2)
-      assert(s1 match {
-        case x *:: rest if x == 4 && !rest.isDefined => true
-        case _                                       => false
-      })
+      assert(
+        s1 match {
+          case x *:: rest if x == 4 && !rest.isDefined => true
+          case _                                       => false
+        })
       p2() = Return(4 *:: Future.value(Spool.empty[Int]))
       val s1s = s1.toSeq
       assert(s1s.isDefined == true)
@@ -495,9 +505,10 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
     "zip lazily" in {
       applyLazily { spool =>
-        Future.value(spool.zip(spool).map {
-          case (a, b) => a + b
-        })
+        Future.value(
+          spool.zip(spool).map {
+            case (a, b) => a + b
+          })
       }
     }
 
@@ -579,8 +590,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     ).map(Future.value)
     assert(
       Await.result(Spool.merge(spools).flatMap(_.toSeq), 5.seconds) ==
-        Seq("a", "1", "foo", "b", "2", "bar", "c", "3", "baz")
-    )
+        Seq("a", "1", "foo", "b", "2", "bar", "c", "3", "baz"))
   }
 
   "Spool.distinctBy should distinct" in {

@@ -115,15 +115,17 @@ trait LzoText
 trait LzoTsv extends DelimitedScheme with LocalTapSource {
   override def hdfsScheme =
     HadoopSchemeInstance(
-      (new LzoTextDelimited(
-        fields,
-        skipHeader,
-        writeHeader,
-        separator,
-        strict,
-        quote,
-        types,
-        safe)).asInstanceOf[Scheme[_, _, _, _, _]])
+      (
+        new LzoTextDelimited(
+          fields,
+          skipHeader,
+          writeHeader,
+          separator,
+          strict,
+          quote,
+          types,
+          safe)
+      ).asInstanceOf[Scheme[_, _, _, _, _]])
 }
 
 trait LzoTypedTsv[T]
@@ -135,15 +137,17 @@ trait LzoTypedTsv[T]
     TupleSetter.asSubSetter[T, U](TupleSetter.singleSetter[T])
   override def hdfsScheme =
     HadoopSchemeInstance(
-      (new LzoTextDelimited(
-        fields,
-        skipHeader,
-        writeHeader,
-        separator,
-        strict,
-        quote,
-        types,
-        safe)).asInstanceOf[Scheme[_, _, _, _, _]])
+      (
+        new LzoTextDelimited(
+          fields,
+          skipHeader,
+          writeHeader,
+          separator,
+          strict,
+          quote,
+          types,
+          safe)
+      ).asInstanceOf[Scheme[_, _, _, _, _]])
 
   def mf: Manifest[T]
 

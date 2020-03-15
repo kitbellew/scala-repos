@@ -46,11 +46,11 @@ object AllowedHostsFilterSpec extends PlaySpecification {
     new GuiceApplicationBuilder()
       .configure(Configuration(ConfigFactory.parseString(config)))
       .overrides(
-        bind[Router].to(Router.from {
-          case request => Action(result(request))
-        }),
-        bind[HttpFilters].to[Filters]
-      )
+        bind[Router].to(
+          Router.from {
+            case request => Action(result(request))
+          }),
+        bind[HttpFilters].to[Filters])
       .build()
   }
 

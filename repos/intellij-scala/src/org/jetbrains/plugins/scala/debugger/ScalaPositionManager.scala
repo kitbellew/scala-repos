@@ -472,30 +472,30 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         fileNames.add(fileNameWithoutExtension + "." + extention)
       }
       val result = new Ref[PsiFile]
-      query.forEach(new Processor[VirtualFile] {
-        override def process(vDir: VirtualFile): Boolean = {
-          var isFound = false
-          for {
-            fileName <- fileNames
-            if !isFound
-            vFile <- vDir.findChild(fileName).toOption
-          } {
-            val psiFile: PsiFile = PsiManager
-              .getInstance(project)
-              .findFile(vFile)
-            val debugFile: PsiFile = ScalaMacroDebuggingUtil
-              .loadCode(psiFile, force = false)
-            if (debugFile != null) {
-              result.set(debugFile)
-              isFound = true
-            } else if (psiFile.isInstanceOf[ScalaFile]) {
-              result.set(psiFile)
-              isFound = true
+      query.forEach(
+        new Processor[VirtualFile] {
+          override def process(vDir: VirtualFile): Boolean = {
+            var isFound = false
+            for {
+              fileName <- fileNames
+              if !isFound
+              vFile <- vDir.findChild(fileName).toOption
+            } {
+              val psiFile
+                  : PsiFile = PsiManager.getInstance(project).findFile(vFile)
+              val debugFile: PsiFile = ScalaMacroDebuggingUtil
+                .loadCode(psiFile, force = false)
+              if (debugFile != null) {
+                result.set(debugFile)
+                isFound = true
+              } else if (psiFile.isInstanceOf[ScalaFile]) {
+                result.set(psiFile)
+                isFound = true
+              }
             }
+            !isFound
           }
-          !isFound
-        }
-      })
+        })
       result.get
     }
 
@@ -625,8 +625,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
       if (lastRefTypeLine - firstRefTypeLine >= 2) {
         val offsetsInTheMiddle = Seq(
           document.getLineEndOffset(firstRefTypeLine),
-          document.getLineEndOffset(firstRefTypeLine + 1)
-        )
+          document.getLineEndOffset(firstRefTypeLine + 1))
         offsetsInTheMiddle.flatMap(findAt).distinct
       } else {
         val firstLinePositions = positionsOnLine(file, firstRefTypeLine)
@@ -807,14 +806,15 @@ object ScalaPositionManager {
     val debugProcess = scPosManager.debugProcess
 
     instances.put(debugProcess, scPosManager)
-    debugProcess.addDebugProcessListener(new DebugProcessAdapter {
-      override def processDetached(
-          process: DebugProcess,
-          closedByUser: Boolean): Unit = {
-        ScalaPositionManager.instances.remove(process)
-        debugProcess.removeDebugProcessListener(this)
-      }
-    })
+    debugProcess.addDebugProcessListener(
+      new DebugProcessAdapter {
+        override def processDetached(
+            process: DebugProcess,
+            closedByUser: Boolean): Unit = {
+          ScalaPositionManager.instances.remove(process)
+          debugProcess.removeDebugProcessListener(this)
+        }
+      })
   }
 
   def instance(vm: VirtualMachine): Option[ScalaPositionManager] =
@@ -917,7 +917,9 @@ object ScalaPositionManager {
           case _: ScConstructorPattern | _: ScInfixPattern |
               _: ScBindingPattern =>
             true
-          case callRefId childOf ((ref: ScReferenceExpression) childOf (_: ScMethodCall))
+          case callRefId childOf (
+                (ref: ScReferenceExpression) childOf (_: ScMethodCall)
+              )
               if ref.nameId == callRefId && ref.getTextRange.getStartOffset < startLine =>
             true
           case _: ScTypeDefinition => true
@@ -1218,14 +1220,15 @@ object ScalaPositionManager {
   private[debugger] class ScalaPositionManagerCaches(
       debugProcess: DebugProcess) {
 
-    debugProcess.addDebugProcessListener(new DebugProcessAdapter {
-      override def processDetached(
-          process: DebugProcess,
-          closedByUser: Boolean): Unit = {
-        clear()
-        process.removeDebugProcessListener(this)
-      }
-    })
+    debugProcess.addDebugProcessListener(
+      new DebugProcessAdapter {
+        override def processDetached(
+            process: DebugProcess,
+            closedByUser: Boolean): Unit = {
+          clear()
+          process.removeDebugProcessListener(this)
+        }
+      })
 
     val refTypeToFileCache = mutable.HashMap[ReferenceType, PsiFile]()
     val refTypeToElementCache = mutable

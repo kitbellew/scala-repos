@@ -164,9 +164,10 @@ class FutureSpec
     "have different ECs" in {
       def namedCtx(n: String) =
         ExecutionContext.fromExecutorService(
-          Executors.newSingleThreadExecutor(new ThreadFactory {
-            def newThread(r: Runnable) = new Thread(r, n)
-          }))
+          Executors.newSingleThreadExecutor(
+            new ThreadFactory {
+              def newThread(r: Runnable) = new Thread(r, n)
+            }))
 
       val A = namedCtx("A")
       val B = namedCtx("B")
@@ -183,9 +184,10 @@ class FutureSpec
         }
       }
 
-      p.completeWith(Future {
-        "Hi "
-      }(B))
+      p.completeWith(
+        Future {
+          "Hi "
+        }(B))
       try {
         Await.result(result, timeout.duration) should ===("Hi A")
       } finally {
@@ -233,15 +235,17 @@ class FutureSpec
                   FutureSpec.ready(f, timeout.duration).value.get
                 val result = (future /: actions)(_ /: _)
                 val expected = (wrap(future) /: actions)(_ /: _)
-                ((wrap(result), expected) match {
-                  case (Success(a), Success(b)) ⇒ a == b
-                  case (Failure(a), Failure(b)) if a.toString == b.toString ⇒
-                    true
-                  case (Failure(a), Failure(b))
-                      if a.getStackTrace.isEmpty || b.getStackTrace.isEmpty ⇒
-                    a.getClass.toString == b.getClass.toString
-                  case _ ⇒ false
-                }) :| result.value.get.toString + " is expected to be " + expected.toString
+                (
+                  (wrap(result), expected) match {
+                    case (Success(a), Success(b)) ⇒ a == b
+                    case (Failure(a), Failure(b)) if a.toString == b.toString ⇒
+                      true
+                    case (Failure(a), Failure(b))
+                        if a.getStackTrace.isEmpty || b.getStackTrace.isEmpty ⇒
+                      a.getClass.toString == b.getClass.toString
+                    case _ ⇒ false
+                  }
+                ) :| result.value.get.toString + " is expected to be " + expected.toString
               },
               minSuccessful(10000),
               workers(4)
@@ -278,11 +282,13 @@ class FutureSpec
       "will return a result" must {
         behave like futureWithResult { test ⇒
           val actor1 = system.actorOf(Props[TestActor])
-          val actor2 = system.actorOf(Props(new Actor {
-            def receive = {
-              case s: String ⇒ sender() ! s.toUpperCase
-            }
-          }))
+          val actor2 = system.actorOf(
+            Props(
+              new Actor {
+                def receive = {
+                  case s: String ⇒ sender() ! s.toUpperCase
+                }
+              }))
           val future = actor1 ? "Hello" flatMap {
             case s: String ⇒ actor2 ? s
           }
@@ -296,13 +302,15 @@ class FutureSpec
         behave like futureWithException[ArithmeticException] { test ⇒
           filterException[ArithmeticException] {
             val actor1 = system.actorOf(Props[TestActor])
-            val actor2 = system.actorOf(Props(new Actor {
-              def receive = {
-                case s: String ⇒
-                  sender() ! Status.Failure(
-                    new ArithmeticException("/ by zero"))
-              }
-            }))
+            val actor2 = system.actorOf(
+              Props(
+                new Actor {
+                  def receive = {
+                    case s: String ⇒
+                      sender() ! Status.Failure(
+                        new ArithmeticException("/ by zero"))
+                  }
+                }))
             val future = actor1 ? "Hello" flatMap {
               case s: String ⇒ actor2 ? s
             }
@@ -317,11 +325,13 @@ class FutureSpec
         behave like futureWithException[NoSuchElementException] { test ⇒
           filterException[NoSuchElementException] {
             val actor1 = system.actorOf(Props[TestActor])
-            val actor2 = system.actorOf(Props(new Actor {
-              def receive = {
-                case s: String ⇒ sender() ! s.toUpperCase
-              }
-            }))
+            val actor2 = system.actorOf(
+              Props(
+                new Actor {
+                  def receive = {
+                    case s: String ⇒ sender() ! s.toUpperCase
+                  }
+                }))
             val future = actor1 ? "Hello" flatMap {
               case i: Int ⇒ actor2 ? i
             }
@@ -338,12 +348,14 @@ class FutureSpec
 
       "compose with for-comprehensions" in {
         filterException[ClassCastException] {
-          val actor = system.actorOf(Props(new Actor {
-            def receive = {
-              case s: String ⇒ sender() ! s.length
-              case i: Int ⇒ sender() ! (i * 2).toString
-            }
-          }))
+          val actor = system.actorOf(
+            Props(
+              new Actor {
+                def receive = {
+                  case s: String ⇒ sender() ! s.length
+                  case i: Int ⇒ sender() ! (i * 2).toString
+                }
+              }))
 
           val future0 = actor ? "Hello"
 
@@ -372,12 +384,14 @@ class FutureSpec
 
       "support pattern matching within a for-comprehension" in {
         filterException[NoSuchElementException] {
-          val actor = system.actorOf(Props(new Actor {
-            def receive = {
-              case Req(s: String) ⇒ sender() ! Res(s.length)
-              case Req(i: Int) ⇒ sender() ! Res((i * 2).toString)
-            }
-          }))
+          val actor = system.actorOf(
+            Props(
+              new Actor {
+                def receive = {
+                  case Req(s: String) ⇒ sender() ! Res(s.length)
+                  case Req(i: Int) ⇒ sender() ! Res((i * 2).toString)
+                }
+              }))
 
           val future1 =
             for {
@@ -533,9 +547,10 @@ class FutureSpec
 
       "fold" in {
         Await.result(
-          Future.fold((1 to 10).toList map { i ⇒
-            Future(i)
-          })(0)(_ + _),
+          Future.fold(
+            (1 to 10).toList map { i ⇒
+              Future(i)
+            })(0)(_ + _),
           remainingOrDefault) should ===(55)
       }
 
@@ -666,14 +681,16 @@ class FutureSpec
       }
 
       "traverse Futures" in {
-        val oddActor = system.actorOf(Props(new Actor {
-          var counter = 1
-          def receive = {
-            case 'GetNext ⇒
-              sender() ! counter
-              counter += 2
-          }
-        }))
+        val oddActor = system.actorOf(
+          Props(
+            new Actor {
+              var counter = 1
+              def receive = {
+                case 'GetNext ⇒
+                  sender() ! counter
+                  counter += 2
+              }
+            }))
 
         val oddFutures = List.fill(100)(oddActor ? 'GetNext mapTo classTag[Int])
 
@@ -921,11 +938,13 @@ class FutureSpec
         Await.result(
           future zip Promise.successful("foo").future,
           timeout.duration) should ===((result, "foo"))
-        (intercept[RuntimeException] {
-          Await.result(
-            future zip Promise.failed(new RuntimeException("ohnoes")).future,
-            timeout.duration)
-        }).getMessage should ===("ohnoes")
+        (
+          intercept[RuntimeException] {
+            Await.result(
+              future zip Promise.failed(new RuntimeException("ohnoes")).future,
+              timeout.duration)
+          }
+        ).getMessage should ===("ohnoes")
       }
     }
     "not recover from exception" in {
@@ -947,9 +966,11 @@ class FutureSpec
     }
     "not project a failure" in {
       f((future, result) ⇒
-        (intercept[NoSuchElementException] {
-          Await.result(future.failed, timeout.duration)
-        }).getMessage should ===(
+        (
+          intercept[NoSuchElementException] {
+            Await.result(future.failed, timeout.duration)
+          }
+        ).getMessage should ===(
           "Future.failed not completed with a throwable."))
     }
     "not perform action on exception" is pending
@@ -980,49 +1001,63 @@ class FutureSpec
     }
     "throw exception with 'get'" in {
       f((future, message) ⇒
-        (intercept[java.lang.Exception] {
-          Await.result(future, timeout.duration)
-        }).getMessage should ===(message))
+        (
+          intercept[java.lang.Exception] {
+            Await.result(future, timeout.duration)
+          }
+        ).getMessage should ===(message))
     }
     "throw exception with 'Await.result'" in {
       f((future, message) ⇒
-        (intercept[java.lang.Exception] {
-          Await.result(future, timeout.duration)
-        }).getMessage should ===(message))
+        (
+          intercept[java.lang.Exception] {
+            Await.result(future, timeout.duration)
+          }
+        ).getMessage should ===(message))
     }
     "retain exception with filter" in {
       f { (future, message) ⇒
-        (intercept[java.lang.Exception] {
-          Await.result(future filter (_ ⇒ true), timeout.duration)
-        }).getMessage should ===(message)
-        (intercept[java.lang.Exception] {
-          Await.result(future filter (_ ⇒ false), timeout.duration)
-        }).getMessage should ===(message)
+        (
+          intercept[java.lang.Exception] {
+            Await.result(future filter (_ ⇒ true), timeout.duration)
+          }
+        ).getMessage should ===(message)
+        (
+          intercept[java.lang.Exception] {
+            Await.result(future filter (_ ⇒ false), timeout.duration)
+          }
+        ).getMessage should ===(message)
       }
     }
     "retain exception with map" in {
       f((future, message) ⇒
-        (intercept[java.lang.Exception] {
-          Await.result(future map (_.toString.length), timeout.duration)
-        }).getMessage should ===(message))
+        (
+          intercept[java.lang.Exception] {
+            Await.result(future map (_.toString.length), timeout.duration)
+          }
+        ).getMessage should ===(message))
     }
     "retain exception with flatMap" in {
       f((future, message) ⇒
-        (intercept[java.lang.Exception] {
-          Await.result(
-            future flatMap (_ ⇒ Promise.successful[Any]("foo").future),
-            timeout.duration)
-        }).getMessage should ===(message))
+        (
+          intercept[java.lang.Exception] {
+            Await.result(
+              future flatMap (_ ⇒ Promise.successful[Any]("foo").future),
+              timeout.duration)
+          }
+        ).getMessage should ===(message))
     }
     "not perform action with foreach" is pending
 
     "zip properly" in {
       f { (future, message) ⇒
-        (intercept[java.lang.Exception] {
-          Await.result(
-            future zip Promise.successful("foo").future,
-            timeout.duration)
-        }).getMessage should ===(message)
+        (
+          intercept[java.lang.Exception] {
+            Await.result(
+              future zip Promise.successful("foo").future,
+              timeout.duration)
+          }
+        ).getMessage should ===(message)
       }
     }
     "recover from exception" in {
@@ -1050,9 +1085,11 @@ class FutureSpec
     }
     "always cast successfully using mapTo" in {
       f((future, message) ⇒
-        (evaluating {
-          Await.result(future.mapTo[java.lang.Thread], timeout.duration)
-        } should produce[java.lang.Exception]).getMessage should ===(message))
+        (
+          evaluating {
+            Await.result(future.mapTo[java.lang.Thread], timeout.duration)
+          } should produce[java.lang.Exception]
+        ).getMessage should ===(message))
     }
   }
 

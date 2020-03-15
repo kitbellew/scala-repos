@@ -63,10 +63,12 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("ops that force tail evaluation") {
     def isForced(f: AsyncStream[_] => Future[_]): Unit = {
       var forced = false
-      Await.ready(f(() +:: {
-        forced = true;
-        AsyncStream.empty
-      }))
+      Await.ready(
+        f(
+          () +:: {
+            forced = true;
+            AsyncStream.empty
+          }))
       assert(forced)
     }
 
@@ -614,8 +616,7 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val gen = Gen.zip(
       Gen.choose(0, 10).label("numActions"),
       Gen.choose(0, 10).flatMap(Gen.listOfN(_, Arbitrary.arbitrary[Int])),
-      Gen.choose(1, 11).label("concurrency")
-    )
+      Gen.choose(1, 11).label("concurrency"))
 
     forAll(gen) {
       case (numActions, items, concurrency) =>
@@ -700,10 +701,12 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
         // Is lazy on initial application (with the exception of the first element)
         assert(
-          i == (if (xs.isEmpty)
-                  0
-                else
-                  1))
+          i == (
+            if (xs.isEmpty)
+              0
+            else
+              1
+          ))
 
         // Is lazy when consuming the stream
         await(s.take(n).force)

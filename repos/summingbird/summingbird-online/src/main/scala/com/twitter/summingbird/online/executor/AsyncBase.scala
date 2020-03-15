@@ -53,14 +53,16 @@ abstract class AsyncBase[I, O, S, D, RC](
     .linkedNonBlocking[(Seq[S], Try[TraversableOnce[O]])]
 
   override def executeTick =
-    finishExecute(tick.onFailure { thr =>
-      responses.put(((Seq(), Failure(thr))))
-    })
+    finishExecute(
+      tick.onFailure { thr =>
+        responses.put(((Seq(), Failure(thr))))
+      })
 
   override def execute(state: S, data: I) =
-    finishExecute(apply(state, data).onFailure { thr =>
-      responses.put(((List(state), Failure(thr))))
-    })
+    finishExecute(
+      apply(state, data).onFailure { thr =>
+        responses.put(((List(state), Failure(thr))))
+      })
 
   private def finishExecute(
       fIn: Future[TraversableOnce[(Seq[S], Future[TraversableOnce[O]])]]) = {
@@ -99,8 +101,7 @@ abstract class AsyncBase[I, O, S, D, RC](
           logger.debug(
             "Exceeded maxWaitingFutures({}), put {} futures",
             maxWaitingFutures.get,
-            iterSize
-          )
+            iterSize)
         }
     }
 

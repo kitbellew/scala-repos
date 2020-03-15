@@ -37,8 +37,7 @@ object Store {
     storeColl
       .find(
         BSONDocument("_id" -> sessionId, "up" -> true),
-        BSONDocument("user" -> true, "_id" -> false)
-      )
+        BSONDocument("user" -> true, "_id" -> false))
       .one[BSONDocument] map {
       _ flatMap (_.getAs[String]("user"))
     }
@@ -52,8 +51,7 @@ object Store {
     storeColl
       .find(
         BSONDocument("_id" -> sessionId, "up" -> true),
-        BSONDocument("user" -> true, "fp" -> true, "_id" -> false)
-      )
+        BSONDocument("user" -> true, "fp" -> true, "_id" -> false))
       .one[UserIdAndFingerprint]
 
   def delete(sessionId: String): Funit =
@@ -94,9 +92,7 @@ object Store {
   private implicit val UserSessionBSONHandler = Macros.handler[UserSession]
   def openSessions(userId: String, nb: Int): Fu[List[UserSession]] =
     storeColl
-      .find(
-        BSONDocument("user" -> userId, "up" -> true)
-      )
+      .find(BSONDocument("user" -> userId, "up" -> true))
       .sort(BSONDocument("date" -> -1))
       .cursor[UserSession]()
       .collect[List](nb)
@@ -111,8 +107,7 @@ object Store {
     } flatMap { hash =>
       storeColl.update(
         BSONDocument("_id" -> id),
-        BSONDocument("$set" -> BSONDocument("fp" -> hash))
-      ) inject hash
+        BSONDocument("$set" -> BSONDocument("fp" -> hash))) inject hash
     }
   }
 
@@ -125,8 +120,7 @@ object Store {
     storeColl
       .find(
         BSONDocument("user" -> userId),
-        BSONDocument("_id" -> false, "ip" -> true, "ua" -> true, "fp" -> true)
-      )
+        BSONDocument("_id" -> false, "ip" -> true, "ua" -> true, "fp" -> true))
       .cursor[Info]()
       .collect[List]()
 
@@ -137,11 +131,7 @@ object Store {
 
   def dedup(userId: String, keepSessionId: String): Funit =
     storeColl
-      .find(
-        BSONDocument(
-          "user" -> userId,
-          "up" -> true
-        ))
+      .find(BSONDocument("user" -> userId, "up" -> true))
       .sort(BSONDocument("date" -> -1))
       .cursor[DedupInfo]()
       .collect[List]() flatMap { sessions =>
@@ -152,9 +142,7 @@ object Store {
         .flatten
         .filter(_._id != keepSessionId)
       storeColl
-        .remove(
-          BSONDocument("_id" -> BSONDocument("$in" -> olds.map(_._id)))
-        )
+        .remove(BSONDocument("_id" -> BSONDocument("$in" -> olds.map(_._id))))
         .void
     }
 }

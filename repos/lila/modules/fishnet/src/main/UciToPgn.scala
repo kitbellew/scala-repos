@@ -17,9 +17,11 @@ private object UciToPgn {
   def apply(replay: Replay, analysis: Analysis): WithErrors[Analysis] = {
 
     val pliesWithAdviceAndVariation =
-      (analysis.advices collect {
-        case a if a.info.hasVariation => a.ply
-      }).toSet
+      (
+        analysis.advices collect {
+          case a if a.info.hasVariation => a.ply
+        }
+      ).toSet
 
     val onlyMeaningfulVariations: List[Info] = analysis.infos map { info =>
       if (pliesWithAdviceAndVariation(info.ply))
@@ -33,9 +35,9 @@ private object UciToPgn {
         situation ← if (ply == replay.setup.startedAtTurn + 1)
           success(replay.setup.situation)
         else
-          replay moveAtPly ply map (_.fold(
-            _.situationBefore,
-            _.situationBefore)) toValid "No move found"
+          replay moveAtPly ply map (
+            _.fold(_.situationBefore, _.situationBefore)
+          ) toValid "No move found"
         ucis ← variation
           .map(Uci.Move.apply)
           .sequence toValid "Invalid UCI moves " + variation
@@ -58,8 +60,7 @@ private object UciToPgn {
       case ((infos, errs), info) =>
         uciToPgn(info.ply, info.variation).fold(
           err => (info.dropVariation :: infos, LilaException(err) :: errs),
-          pgn => (info.copy(variation = pgn) :: infos, errs)
-        )
+          pgn => (info.copy(variation = pgn) :: infos, errs))
     } match {
       case (infos, errors) => analysis.copy(infos = infos.reverse) -> errors
     }

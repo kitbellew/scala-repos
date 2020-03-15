@@ -187,8 +187,7 @@ object QueryCompiler {
   val interpreterPhases = Vector(
     Phase.pruneProjections,
     Phase.createResultSetMapping,
-    Phase.removeFieldNames
-  )
+    Phase.removeFieldNames)
 
   /** The default compiler */
   val standard = new QueryCompiler(standardPhases)

@@ -106,8 +106,8 @@ package object signal {
       range: OptRange = OptRange.All,
       overhang: OptOverhang = OptOverhang.None,
       padding: OptPadding = OptPadding.Zero,
-      method: OptMethod = OptMethod.Automatic
-  )(implicit canConvolve: CanConvolve[Input, KernelType, Output]): Output =
+      method: OptMethod = OptMethod.Automatic)(
+      implicit canConvolve: CanConvolve[Input, KernelType, Output]): Output =
     canConvolve(
       data,
       kernel,
@@ -128,8 +128,8 @@ package object signal {
       range: OptRange = OptRange.All,
       overhang: OptOverhang = OptOverhang.None,
       padding: OptPadding = OptPadding.Zero,
-      method: OptMethod = OptMethod.Automatic
-  )(implicit canConvolve: CanConvolve[Input, KernelType, Output]): Output =
+      method: OptMethod = OptMethod.Automatic)(
+      implicit canConvolve: CanConvolve[Input, KernelType, Output]): Output =
     canConvolve(
       data,
       kernel,

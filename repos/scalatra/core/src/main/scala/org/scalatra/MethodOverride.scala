@@ -17,8 +17,7 @@ object MethodOverride {
   val HeaderName: SortedSet[String] = SortedSet(
     "X-HTTP-METHOD-OVERRIDE",
     "X-HTTP-METHOD",
-    "X-METHOD-OVERRIDE"
-  )
+    "X-METHOD-OVERRIDE")
 
 }
 

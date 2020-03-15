@@ -63,8 +63,7 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
       new LoadingFutureCache(
         CacheBuilder
           .newBuilder()
-          .build(explodingCacheLoader)
-      )
+          .build(explodingCacheLoader))
     val fCache = new LazilyEvictingCache(cache)
 
     fCache.set("key", Future.value("value"))
@@ -80,8 +79,7 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
       new LoadingFutureCache(
         CacheBuilder
           .newBuilder()
-          .build(explodingCacheLoader)
-      )
+          .build(explodingCacheLoader))
     val fCache = new LazilyEvictingCache(cache)
 
     val p = Promise[String]
@@ -108,9 +106,7 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
                 loadCount += 1
                 Future.value(loadCount)
               }
-            }
-          )
-      )
+            }))
     val fCache = new LazilyEvictingCache(cache)
 
     assert(fCache.getOrElseUpdate("key")(p).poll == p.poll)
@@ -146,9 +142,7 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
                 loadCount += 1
                 Future.value(loadCount)
               }
-            }
-          )
-      )
+            }))
     val fCache = new LazilyEvictingCache(cache)
 
     assert(fCache.getOrElseUpdate("key")(p).poll == p.poll)

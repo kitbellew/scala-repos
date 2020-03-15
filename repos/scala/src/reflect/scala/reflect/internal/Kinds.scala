@@ -22,8 +22,7 @@ trait Kinds {
   case class KindErrors(
       arity: List[SymPair] = Nil,
       variance: List[SymPair] = Nil,
-      strictness: List[SymPair] = Nil
-  ) {
+      strictness: List[SymPair] = Nil) {
     def isEmpty = arity.isEmpty && variance.isEmpty && strictness.isEmpty
 
     def arityError(syms: SymPair) = copy(arity = arity :+ syms)
@@ -34,8 +33,7 @@ trait Kinds {
       KindErrors(
         arity ++ errs.arity,
         variance ++ errs.variance,
-        strictness ++ errs.strictness
-      )
+        strictness ++ errs.strictness)
     // @M TODO this method is duplicated all over the place (varianceString)
     private def varStr(s: Symbol): String =
       if (s.isCovariant)
@@ -95,20 +93,18 @@ trait Kinds {
           countAsString(p.typeParams.length)))
 
     private def buildMessage(xs: List[SymPair], f: (Symbol, Symbol) => String) =
-      (
-        if (xs.isEmpty)
-          ""
-        else
-          xs map f.tupled mkString ("\n", ", ", "")
-      )
+      (if (xs.isEmpty)
+         ""
+       else
+         xs map f.tupled mkString ("\n", ", ", ""))
 
     def errorMessage(targ: Type, tparam: Symbol): String =
-      (
-        (targ + "'s type parameters do not match " + tparam + "'s expected parameters:")
-          + buildMessage(arity, arityMessage)
-          + buildMessage(variance, varianceMessage)
-          + buildMessage(strictness, strictnessMessage)
+      ((
+        targ + "'s type parameters do not match " + tparam + "'s expected parameters:"
       )
+        + buildMessage(arity, arityMessage)
+        + buildMessage(variance, varianceMessage)
+        + buildMessage(strictness, strictnessMessage))
   }
   val NoKindErrors = KindErrors(Nil, Nil, Nil)
 
@@ -127,10 +123,8 @@ trait Kinds {
     *  If `sym2` is invariant, `sym1`'s variance is irrelevant. Otherwise they must be equal.
     */
   private def variancesMatch(sym1: Symbol, sym2: Symbol) =
-    (
-      sym2.variance.isInvariant
-        || sym1.variance == sym2.variance
-    )
+    (sym2.variance.isInvariant
+      || sym1.variance == sym2.variance)
 
   /** Check well-kindedness of type application (assumes arities are already checked) -- @M
     *
@@ -152,8 +146,7 @@ trait Kinds {
       targs: List[Type],
       pre: Type,
       owner: Symbol,
-      explainErrors: Boolean
-  ): List[(Type, Symbol, KindErrors)] = {
+      explainErrors: Boolean): List[(Type, Symbol, KindErrors)] = {
 
     // instantiate type params that come from outside the abstract type we're currently checking
     def transform(tp: Type, clazz: Symbol): Type = tp.asSeenFrom(pre, clazz)
@@ -166,8 +159,7 @@ trait Kinds {
         param: Symbol,
         paramowner: Symbol,
         underHKParams: List[Symbol],
-        withHKArgs: List[Symbol]
-    ): KindErrors = {
+        withHKArgs: List[Symbol]): KindErrors = {
 
       var kindErrors: KindErrors = NoKindErrors
       def bindHKParams(tp: Type) = tp.substSym(underHKParams, withHKArgs)
@@ -228,8 +220,7 @@ trait Kinds {
                 " declared bounds: " + declaredBounds +
                 " after instantiating earlier hkparams: " + declaredBoundsInst + "\n" +
                 "checkKindBoundsHK base case: " + hkarg +
-                " has bounds: " + argumentBounds
-            )
+                " has bounds: " + argumentBounds)
           } else {
             hkarg.initialize // SI-7902 otherwise hkarg.typeParams yields List(NoSymbol)!
             debuglog(
@@ -240,8 +231,7 @@ trait Kinds {
               hkparam,
               paramowner,
               underHKParams ++ hkparam.typeParams,
-              withHKArgs ++ hkarg.typeParams
-            )
+              withHKArgs ++ hkarg.typeParams)
           }
           if (!explainErrors && !kindErrors.isEmpty)
             return kindErrors
@@ -255,8 +245,7 @@ trait Kinds {
     if (settings.debug && (tparams.nonEmpty || targs.nonEmpty))
       log(
         "checkKindBounds0(" + tparams + ", " + targs + ", " + pre + ", "
-          + owner + ", " + explainErrors + ")"
-      )
+          + owner + ", " + explainErrors + ")")
 
     flatMap2(tparams, targs) { (tparam, targ) =>
       // Prevent WildcardType from causing kind errors, as typevars may be higher-order
@@ -275,8 +264,7 @@ trait Kinds {
             tparam,
             tparam.owner,
             tparam.typeParams,
-            tparamsHO
-          )
+            tparamsHO)
           if (kindErrors.isEmpty)
             Nil
           else {
@@ -374,12 +362,14 @@ trait Kinds {
       // Replace Head(o, Some(1), a) with Head(o, None, a) if countByOrder(o) <= 1, so F1[A] becomes F[A]
       def removeOnes: StringState = {
         val maxOrder =
-          (tokens map {
-            case Head(o, _, _) => o
-            case _             => 0
-          }).max
-        StringState((tokens /: (0 to maxOrder)) {
-          (ts: Seq[ScalaNotation], o: Int) =>
+          (
+            tokens map {
+              case Head(o, _, _) => o
+              case _             => 0
+            }
+          ).max
+        StringState(
+          (tokens /: (0 to maxOrder)) { (ts: Seq[ScalaNotation], o: Int) =>
             if (countByOrder(o) <= 1)
               ts map {
                 case Head(`o`, _, a) => Head(o, None, a)
@@ -387,14 +377,15 @@ trait Kinds {
               }
             else
               ts
-        })
+          })
       }
       // Replace Head(o, n, Some(_)) with Head(o, n, None), so F[F] becomes F[A].
       def removeAlias: StringState = {
-        StringState(tokens map {
-          case Head(o, n, Some(_)) => Head(o, n, None)
-          case t                   => t
-        })
+        StringState(
+          tokens map {
+            case Head(o, n, Some(_)) => Head(o, n, None)
+            case t                   => t
+          })
       }
     }
     private[internal] object StringState {
@@ -460,16 +451,22 @@ trait Kinds {
     }
     def starNotation: String = {
       import Variance._
-      (args map { arg =>
-        (if (arg.kind.order == 0)
-           arg.kind.starNotation
-         else
-           "(" + arg.kind.starNotation + ")") +
-          (if (arg.variance == Invariant)
-             " -> "
-           else
-             " -(" + arg.variance.symbolicString + ")-> ")
-      }).mkString + "*" + bounds.starNotation(_.toString)
+      (
+        args map { arg =>
+          (
+            if (arg.kind.order == 0)
+              arg.kind.starNotation
+            else
+              "(" + arg.kind.starNotation + ")"
+          ) +
+            (
+              if (arg.variance == Invariant)
+                " -> "
+              else
+                " -(" + arg.variance.symbolicString + ")-> "
+            )
+        }
+      ).mkString + "*" + bounds.starNotation(_.toString)
     }
   }
   object TypeConKind {

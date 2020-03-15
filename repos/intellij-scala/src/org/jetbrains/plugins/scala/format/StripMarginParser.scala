@@ -53,11 +53,13 @@ object WithStrippedMargin {
             Some(ref),
             Nil) if lit.isMultiLineString && ref.refName == STRIP_MARGIN =>
         Some(refExpr, '|')
-      case _ childOf(MethodRepr(
-            mc: ScMethodCall,
-            Some(lit: ScLiteral),
-            Some(ref),
-            List(argLit: ScLiteral)))
+      case _ childOf(
+            MethodRepr(
+              mc: ScMethodCall,
+              Some(lit: ScLiteral),
+              Some(ref),
+              List(argLit: ScLiteral))
+          )
           if lit.isMultiLineString && ref.refName == STRIP_MARGIN &&
             argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR =>
         Some(mc, argLit.getValue.asInstanceOf[Char])

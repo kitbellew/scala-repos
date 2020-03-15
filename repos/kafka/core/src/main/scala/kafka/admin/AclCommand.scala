@@ -30,8 +30,7 @@ object AclCommand {
   val ResourceTypeToValidOperations = Map[ResourceType, Set[Operation]](
     Topic -> Set(Read, Write, Describe, All),
     Group -> Set(Read, All),
-    Cluster -> Set(Create, ClusterAction, All)
-  )
+    Cluster -> Set(Create, ClusterAction, All))
 
   def main(args: Array[String]) {
 
@@ -107,9 +106,10 @@ object AclCommand {
                 s"Are you sure you want to delete all ACLs for resource `${resource}`? (y/n)"))
             authorizer.removeAcls(resource)
         } else {
-          if (confirmAction(s"Are you sure you want to remove ACLs: $Newline ${acls
-                .map("\t" + _)
-                .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
+          if (confirmAction(
+                s"Are you sure you want to remove ACLs: $Newline ${acls
+                  .map("\t" + _)
+                  .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
             authorizer.removeAcls(acls, resource)
         }
       }
@@ -470,9 +470,11 @@ object AclCommand {
           parser,
           "With --producer you must specify a --topic")
 
-      if (options.has(consumerOpt) && (!options.has(topicOpt) || !options.has(
-            groupOpt) || (!options.has(producerOpt) && options.has(
-            clusterOpt))))
+      if (options.has(consumerOpt) && (
+            !options.has(topicOpt) || !options.has(groupOpt) || (
+              !options.has(producerOpt) && options.has(clusterOpt)
+            )
+          ))
         CommandLineUtils.printUsageAndDie(
           parser,
           "With --consumer you must specify a --topic and a --group and no --cluster option should be specified.")

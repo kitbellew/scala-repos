@@ -71,13 +71,14 @@ class PerAccountThreadPooling(accountFinder: AccountFinder[Future]) {
 
   def getAccountExecutionContext(
       apiKey: APIKey): EitherT[Future, String, ExecutionContext] = {
-    EitherT.eitherT(accountFinder.findAccountByAPIKey(apiKey) map {
-      case None =>
-        \/.left("Could not locate accountId for apiKey " + apiKey)
-      case Some(accountId) =>
-        \/.right(
-          asyncContextFor(accountId)
-        ) // FIXME: Which account should we use if there's more than one?
-    })
+    EitherT.eitherT(
+      accountFinder.findAccountByAPIKey(apiKey) map {
+        case None =>
+          \/.left("Could not locate accountId for apiKey " + apiKey)
+        case Some(accountId) =>
+          \/.right(
+            asyncContextFor(accountId)
+          ) // FIXME: Which account should we use if there's more than one?
+      })
   }
 }

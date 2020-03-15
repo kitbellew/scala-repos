@@ -132,10 +132,12 @@ trait Picklers { self: Global =>
     def ownerNames(sym: Symbol, buf: ListBuffer[Name]): ListBuffer[Name] = {
       if (!sym.isRoot) {
         ownerNames(sym.owner, buf)
-        buf += (if (sym.isModuleClass)
-                  sym.sourceModule
-                else
-                  sym).name
+        buf += (
+          if (sym.isModuleClass)
+            sym.sourceModule
+          else
+            sym
+        ).name
         if (!sym.isType && !sym.isStable) { // TODO: what's the reasoning behind this condition!?
           val sym1 = sym.owner.info.decl(sym.name)
           if (sym1.isOverloaded) {
@@ -254,10 +256,11 @@ trait Picklers { self: Global =>
       .asClass(classOf[AskLinkPosItem])
 
   implicit def askDocCommentItem: CondPickler[AskDocCommentItem] =
-    (pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~ pkl[List[(
-        Symbol,
-        SourceFile)]])
-      .wrapped {
+    (
+      pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~ pkl[List[(
+          Symbol,
+          SourceFile)]]
+    ).wrapped {
         case sym ~ source ~ site ~ fragments =>
           new AskDocCommentItem(sym, source, site, fragments, new Response)
       } { item =>

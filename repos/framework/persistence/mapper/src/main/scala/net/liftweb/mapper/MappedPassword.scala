@@ -218,26 +218,28 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     S.fmapFunc({ s: List[String] =>
       this.setFromAny(s)
     }) { funcName =>
-      Full(<span>{
-        appendFieldId(<input type={
+      Full(
+        <span>{
+          appendFieldId(
+            <input type={
+              formInputType
+            } name={
+              funcName
+            }
+            value={
+              get.toString
+            }/>)
+        }&nbsp;{
+          S.?("repeat")
+        }&nbsp;<input
+            type={
           formInputType
         } name={
           funcName
         }
             value={
           get.toString
-        }/>)
-      }&nbsp;{
-        S.?("repeat")
-      }&nbsp;<input
-            type={
-        formInputType
-      } name={
-        funcName
-      }
-            value={
-        get.toString
-      }/></span>)
+        }/></span>)
     }
   }
 
@@ -330,10 +332,12 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.salt_i() = (if (v == null)
-                             null
-                           else
-                             v.toString);
+            tv.salt_i() = (
+              if (v == null)
+                null
+              else
+                v.toString
+            );
             tv.resetDirty
           }
         }
@@ -346,10 +350,12 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.password() = (if (v == null)
-                               null
-                             else
-                               v.toString);
+            tv.password() = (
+              if (v == null)
+                null
+              else
+                v.toString
+            );
             tv.resetDirty
           }
         }
@@ -364,8 +370,10 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     * Given the driver type, return the string required to create the column in the database
     */
   def fieldCreatorString(dbType: DriverType, colName: String): String =
-    (if (colName.endsWith("_pw"))
-       colName + " VARCHAR(48)"
-     else
-       colName + " VARCHAR(20)") + notNullAppender()
+    (
+      if (colName.endsWith("_pw"))
+        colName + " VARCHAR(48)"
+      else
+        colName + " VARCHAR(20)"
+    ) + notNullAppender()
 }

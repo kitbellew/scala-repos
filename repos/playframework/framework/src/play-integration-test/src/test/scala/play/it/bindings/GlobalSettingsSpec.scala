@@ -32,19 +32,24 @@ trait GlobalSettingsSpec
       block: String => T) = {
     implicit val port = testServerPort
     val additionalSettings = applicationGlobal.fold(Map.empty[String, String]) {
-      s: String => Map("application.global" -> s"play.it.bindings.$s")
-    } + ("play.http.requestHandler" -> "play.http.GlobalSettingsHttpRequestHandler")
+      s: String =>
+        Map("application.global" -> s"play.it.bindings.$s")
+    } + (
+      "play.http.requestHandler" -> "play.http.GlobalSettingsHttpRequestHandler"
+    )
     import play.api.inject._
     import play.api.routing.sird._
     lazy val app: Application = new GuiceApplicationBuilder()
       .configure(additionalSettings)
-      .overrides(bind[Router].to(Router.from {
-        case p"/scala" =>
-          Action { request =>
-            Ok(request.headers.get("X-Foo").getOrElse("null"))
-          }
-        case p"/java" => JAction(app, JavaAction)
-      }))
+      .overrides(
+        bind[Router].to(
+          Router.from {
+            case p"/scala" =>
+              Action { request =>
+                Ok(request.headers.get("X-Foo").getOrElse("null"))
+              }
+            case p"/java" => JAction(app, JavaAction)
+          }))
       .build()
     running(TestServer(port, app)) {
       val response = await(wsUrl(uri).get())

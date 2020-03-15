@@ -96,13 +96,19 @@ object Configuration {
       val gotAllSupported =
         enabled.toSet diff engine.getSupportedCipherSuites.toSet
       val gotAllEnabled = enabled.toSet diff engine.getEnabledCipherSuites.toSet
-      gotAllSupported.isEmpty || (throw new IllegalArgumentException(
-        "Cipher Suite not supported: " + gotAllSupported))
-      gotAllEnabled.isEmpty || (throw new IllegalArgumentException(
-        "Cipher Suite not enabled: " + gotAllEnabled))
+      gotAllSupported.isEmpty || (
+        throw new IllegalArgumentException(
+          "Cipher Suite not supported: " + gotAllSupported)
+      )
+      gotAllEnabled.isEmpty || (
+        throw new IllegalArgumentException(
+          "Cipher Suite not enabled: " + gotAllEnabled)
+      )
       engine.getSupportedProtocols.contains(settings.SSLProtocol.get) ||
-      (throw new IllegalArgumentException(
-        "Protocol not supported: " + settings.SSLProtocol.get))
+      (
+        throw new IllegalArgumentException(
+          "Protocol not supported: " + settings.SSLProtocol.get)
+      )
 
       CipherConfig(true, config, cipher, localPort, remotePort)
     } catch {
@@ -209,11 +215,12 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
   ("-") must {
     if (cipherConfig.runTest && preCondition) {
       val ignoreMe = other.actorOf(
-        Props(new Actor {
-          def receive = {
-            case ("ping", x) ⇒ sender() ! ((("pong", x), sender()))
-          }
-        }),
+        Props(
+          new Actor {
+            def receive = {
+              case ("ping", x) ⇒ sender() ! ((("pong", x), sender()))
+            }
+          }),
         "echo")
       val otherAddress =
         other

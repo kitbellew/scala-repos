@@ -114,10 +114,12 @@ abstract class AbstractList[E] protected ()
 
   override def hashCode(): Int = {
     this.foldLeft(1) { (prev, elem) =>
-      31 * prev + (if (elem == null)
-                     0
-                   else
-                     elem.hashCode)
+      31 * prev + (
+        if (elem == null)
+          0
+        else
+          elem.hashCode
+      )
     }
   }
 

@@ -72,13 +72,17 @@ class CompileSocket extends CompileOutputCommon {
   /** The class name of the scala compile server */
   protected val serverClass = "scala.tools.nsc.CompileServer"
   protected def serverClassArgs =
-    (if (verbose)
-       List("-v")
-     else
-       Nil) ::: (if (fixPort > 0)
-                   List("-p", fixPort.toString)
-                 else
-                   Nil)
+    (
+      if (verbose)
+        List("-v")
+      else
+        Nil
+    ) ::: (
+      if (fixPort > 0)
+        List("-p", fixPort.toString)
+      else
+        Nil
+    )
 
   /** A temporary directory to use */
   val tmpDir = {
@@ -100,8 +104,9 @@ class CompileSocket extends CompileOutputCommon {
     *  @param vmArgs  the argument string to be passed to the java or scala command
     */
   private def serverCommand(vmArgs: Seq[String]): Seq[String] =
-    Seq(vmCommand) ++ vmArgs ++ Seq(
-      serverClass) ++ serverClassArgs filterNot (_ == "")
+    Seq(vmCommand) ++ vmArgs ++ Seq(serverClass) ++ serverClassArgs filterNot (
+      _ == ""
+    )
 
   /** Start a new server. */
   private def startNewServer(vmArgs: String) = {

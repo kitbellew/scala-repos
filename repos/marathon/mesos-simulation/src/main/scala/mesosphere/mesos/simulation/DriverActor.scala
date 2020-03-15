@@ -106,19 +106,22 @@ class DriverActor(schedulerProps: Props) extends Actor {
       .setFrameworkId(FrameworkID.newBuilder().setValue("notanidframework"))
       .setSlaveId(SlaveID.newBuilder().setValue("notanidslave"))
       .setHostname("hostname")
-      .addAllResources(Seq(
-        resource("cpus", 100),
-        resource("mem", 500000),
-        resource("disk", 1000000000),
-        Resource
-          .newBuilder()
-          .setName("ports")
-          .setType(Value.Type.RANGES)
-          .setRanges(Value.Ranges
+      .addAllResources(
+        Seq(
+          resource("cpus", 100),
+          resource("mem", 500000),
+          resource("disk", 1000000000),
+          Resource
             .newBuilder()
-            .addRange(Value.Range.newBuilder().setBegin(10000).setEnd(20000)))
-          .build()
-      ))
+            .setName("ports")
+            .setType(Value.Type.RANGES)
+            .setRanges(
+              Value.Ranges
+                .newBuilder()
+                .addRange(
+                  Value.Range.newBuilder().setBegin(10000).setEnd(20000)))
+            .build()
+        ))
       .build()
   }
   private[this] def offers: ResourceOffers =
@@ -131,8 +134,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
     import context.dispatcher
     periodicOffers = Some(
-      context.system.scheduler.schedule(1.second, 1.seconds)(scheduler ! offers)
-    )
+      context.system.scheduler.schedule(1.second, 1.seconds)(
+        scheduler ! offers))
   }
 
   override def postStop(): Unit = {

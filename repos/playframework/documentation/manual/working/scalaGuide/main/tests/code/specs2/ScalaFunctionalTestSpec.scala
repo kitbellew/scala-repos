@@ -42,12 +42,13 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
     // #scalafunctionaltest-application
 
     val applicationWithRouter = GuiceApplicationBuilder()
-      .router(Router.from {
-        case GET(p"/Bob") =>
-          Action {
-            Ok("Hello Bob") as "text/html; charset=utf-8"
-          }
-      })
+      .router(
+        Router.from {
+          case GET(p"/Bob") =>
+            Action {
+              Ok("Hello Bob") as "text/html; charset=utf-8"
+            }
+        })
       .build()
 
     // #scalafunctionaltest-respondtoroute
@@ -86,10 +87,11 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
     // #scalafunctionaltest-testwithbrowser
     def applicationWithBrowser =
       new GuiceApplicationBuilder()
-        .router(Router.from {
-          case GET(p"/") =>
-            Action {
-              Ok("""
+        .router(
+          Router.from {
+            case GET(p"/") =>
+              Action {
+                Ok("""
               |<html>
               |<body>
               |  <div id="title">Hello Guest</div>
@@ -97,18 +99,18 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
               |</body>
               |</html>
             """.stripMargin) as "text/html"
-            }
-          case GET(p"/login") =>
-            Action {
-              Ok("""
+              }
+            case GET(p"/login") =>
+              Action {
+                Ok("""
               |<html>
               |<body>
               |  <div id="title">Hello Coco</div>
               |</body>
               |</html>
             """.stripMargin) as "text/html"
-            }
-        })
+              }
+          })
         .build()
 
     "run in a browser" in new WithBrowser(
@@ -148,12 +150,13 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
 
     // #scalafunctionaltest-testws
     val appWithRoutes = GuiceApplicationBuilder()
-      .router(Router.from {
-        case GET(p"/") =>
-          Action {
-            Ok("ok")
-          }
-      })
+      .router(
+        Router.from {
+          case GET(p"/") =>
+            Action {
+              Ok("ok")
+            }
+        })
       .build()
 
     "test WS logic" in new WithServer(app = appWithRoutes, port = 3333) {

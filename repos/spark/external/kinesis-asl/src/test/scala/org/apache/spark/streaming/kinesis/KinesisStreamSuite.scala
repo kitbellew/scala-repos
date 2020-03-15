@@ -186,15 +186,18 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       nonEmptyRDD.partitions.map {
         _.asInstanceOf[KinesisBackedBlockRDDPartition]
       }.toSeq
-    assert(partitions.map {
-      _.seqNumberRanges
-    } === Seq(seqNumRanges1, seqNumRanges2))
-    assert(partitions.map {
-      _.blockId
-    } === Seq(blockId1, blockId2))
-    assert(partitions.forall {
-      _.isBlockIdValid === true
-    })
+    assert(
+      partitions.map {
+        _.seqNumberRanges
+      } === Seq(seqNumRanges1, seqNumRanges2))
+    assert(
+      partitions.map {
+        _.blockId
+      } === Seq(blockId1, blockId2))
+    assert(
+      partitions.forall {
+        _.isBlockIdValid === true
+      })
 
     // Verify that KinesisBackedBlockRDD is generated even when there are no blocks
     val emptyRDD = kinesisStream.createBlockRDD(time, Seq.empty)
@@ -367,7 +370,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       assert(isCheckpointPresent && numBatchesWithData > 10)
     }
     ssc.stop(stopSparkContext =
-      true) // stop the SparkContext so that the blocks are not reused
+      true
+    ) // stop the SparkContext so that the blocks are not reused
 
     // Restart the context from checkpoint and verify whether the
     logInfo("Restarting from checkpoint")

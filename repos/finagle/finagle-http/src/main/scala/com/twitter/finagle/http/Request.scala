@@ -164,12 +164,14 @@ abstract class Request extends Message with HttpRequestProxy {
 
   /** Get all parameters. */
   def getParams(): JList[JMap.Entry[String, String]] =
-    (params.toList.map {
-      case (k, v) =>
-        // cast to appease asJava
-        (new AbstractMap.SimpleImmutableEntry(k, v))
-          .asInstanceOf[JMap.Entry[String, String]]
-    }).asJava
+    (
+      params.toList.map {
+        case (k, v) =>
+          // cast to appease asJava
+          (new AbstractMap.SimpleImmutableEntry(k, v))
+            .asInstanceOf[JMap.Entry[String, String]]
+      }
+    ).asJava
 
   /** Check if parameter exists. */
   def containsParam(name: String): Boolean = params.contains(name)
@@ -296,8 +298,7 @@ object Request {
       version: Version,
       method: Method,
       uri: String,
-      reader: Reader
-  ): Request = {
+      reader: Reader): Request = {
     val httpReq = new DefaultHttpRequest(from(version), from(method), uri)
     httpReq.setChunked(true)
     apply(httpReq, reader, new InetSocketAddress(0))
@@ -306,8 +307,7 @@ object Request {
   private[http] def apply(
       reqIn: HttpRequest,
       readerIn: Reader,
-      remoteAddr: InetSocketAddress
-  ): Request =
+      remoteAddr: InetSocketAddress): Request =
     new Request {
       override val reader = readerIn
       val httpRequest = reqIn

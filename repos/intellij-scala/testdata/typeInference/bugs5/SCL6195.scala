@@ -16,9 +16,11 @@ object SCL6195 {
   def foo(x: Int) = "text"
 
   /*start*/
-  foo(new Blah(2, 2) with C with D {
-    val c = 2
-    val d = 6
-  }) /*end*/
+  foo(
+    new Blah(2, 2) with C with D {
+      val c = 2
+      val d = 6
+    }
+  ) /*end*/
 }
 //Int

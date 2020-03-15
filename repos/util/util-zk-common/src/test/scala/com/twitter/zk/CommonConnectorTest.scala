@@ -54,9 +54,10 @@ class CommonConnectorTest extends WordSpec with BeforeAndAfter {
       }
 
       "have 'zookeeper' in '/'" in {
-        assert(Await.result(zkClient("/").getChildren(), timeout).children map {
-          _.name
-        } contains ("zookeeper"))
+        assert(
+          Await.result(zkClient("/").getChildren(), timeout).children map {
+            _.name
+          } contains ("zookeeper"))
       }
     }
   }

@@ -198,8 +198,10 @@ private[tournament] final class TournamentApi(
         socketReload(tour.id)
         publish()
         if (!tour.`private`)
-          timeline ! (Propagate(
-            TourJoin(me.id, tour.id, tour.fullName)) toFollowersOf me.id)
+          timeline ! (
+            Propagate(
+              TourJoin(me.id, tour.id, tour.fullName)) toFollowersOf me.id
+          )
       }
     }
   }
@@ -276,9 +278,11 @@ private[tournament] final class TournamentApi(
   }
 
   private def updatePlayer(tour: Tournament)(userId: String): Funit =
-    (tour.perfType.ifTrue(tour.mode.rated) ?? {
-      UserRepo.perfOf(userId, _)
-    }) flatMap { perf =>
+    (
+      tour.perfType.ifTrue(tour.mode.rated) ?? {
+        UserRepo.perfOf(userId, _)
+      }
+    ) flatMap { perf =>
       PlayerRepo.update(tour.id, userId) { player =>
         PairingRepo.finishedByPlayerChronological(tour.id, userId) map {
           pairings =>
@@ -415,10 +419,7 @@ private[tournament] final class TournamentApi(
             fetchVisibleTournaments foreach { vis =>
               site ! SendToFlag(
                 "tournament",
-                Json.obj(
-                  "t" -> "reload",
-                  "d" -> scheduleJsonView(vis)
-                ))
+                Json.obj("t" -> "reload", "d" -> scheduleJsonView(vis)))
             }
             TournamentRepo.promotable foreach { tours =>
               renderer ? TournamentTable(tours) map {

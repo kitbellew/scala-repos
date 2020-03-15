@@ -150,8 +150,8 @@ class ShuffleJob(args: Args) extends Job(args) {
 }
 
 class ShuffleJobTest extends WordSpec with Matchers {
-  val expectedShuffle: List[Int] = List(10, 5, 9, 12, 0, 1, 4, 8, 11, 6, 2, 3,
-    7)
+  val expectedShuffle: List[Int] = List(
+    10, 5, 9, 12, 0, 1, 4, 8, 11, 6, 2, 3, 7)
 
   "A ShuffleJob" should {
     val input = (0 to 12).map {
@@ -325,9 +325,11 @@ class MRMTest extends WordSpec with Matchers {
       }
       .sink[Int](Tsv("outputSetTo")) { outBuf =>
         "use flattenTo" in {
-          outBuf.toList.sorted shouldBe (input.map {
-            _._2
-          }.sorted)
+          outBuf.toList.sorted shouldBe (
+            input.map {
+              _._2
+            }.sorted
+          )
         }
       }
       .run
@@ -729,9 +731,11 @@ class MergeTest extends WordSpec with Matchers {
         _._1
       }
       .mapValues { itup =>
-        (itup.map {
-          _._2
-        }.max)
+        (
+          itup.map {
+            _._2
+          }.max
+        )
       }
     //Now we have the expected input and output:
     JobTest(new MergeTestJob(_))
@@ -745,9 +749,11 @@ class MergeTest extends WordSpec with Matchers {
       }
       .sink[(Double, Double)](Tsv("out2")) { outBuf =>
         "correctly self merge" in {
-          outBuf.toMap shouldBe (big.groupBy(_._1).mapValues { iter =>
-            iter.map(_._2).max
-          })
+          outBuf.toMap shouldBe (
+            big.groupBy(_._1).mapValues { iter =>
+              iter.map(_._2).max
+            }
+          )
         }
       }
       .run
@@ -1128,13 +1134,15 @@ class CrossTest extends WordSpec with Matchers {
       .sink[(Int, Int, Int)](Tsv("fakeOut")) { outBuf =>
         (idx + ": must look exactly right") in {
           outBuf should have size 6
-          outBuf.toSet shouldBe (Set(
-            (0, 1, 4),
-            (0, 1, 5),
-            (1, 2, 4),
-            (1, 2, 5),
-            (2, 3, 4),
-            (2, 3, 5)))
+          outBuf.toSet shouldBe (
+            Set(
+              (0, 1, 4),
+              (0, 1, 5),
+              (1, 2, 4),
+              (1, 2, 5),
+              (2, 3, 4),
+              (2, 3, 5))
+          )
         }
         idx += 1
       }
@@ -1404,13 +1412,15 @@ class PivotTest extends WordSpec with Matchers with FieldConversions {
       .sink[(String, String, String)](Tsv("unpivot")) { outBuf =>
         "unpivot columns correctly" in {
           outBuf should have size 6
-          outBuf.toList.sorted shouldBe (List(
-            ("1", "w", "a"),
-            ("1", "y", "b"),
-            ("1", "z", "c"),
-            ("2", "w", "d"),
-            ("2", "y", "e"),
-            ("2", "z", "f")).sorted)
+          outBuf.toList.sorted shouldBe (
+            List(
+              ("1", "w", "a"),
+              ("1", "y", "b"),
+              ("1", "z", "c"),
+              ("2", "w", "d"),
+              ("2", "y", "e"),
+              ("2", "z", "f")).sorted
+          )
         }
       }
       .sink[(String, String, String, String)](Tsv("pivot")) { outBuf =>
@@ -1423,9 +1433,9 @@ class PivotTest extends WordSpec with Matchers with FieldConversions {
         outBuf =>
           "pivot back to the original with the missing column replace by the specified default" in {
             outBuf should have size 2
-            outBuf.toList.sorted shouldBe (List(
-              ("1", "a", "b", "c", 2.0),
-              ("2", "d", "e", "f", 2.0)).sorted)
+            outBuf.toList.sorted shouldBe (
+              List(("1", "a", "b", "c", 2.0), ("2", "d", "e", "f", 2.0)).sorted
+            )
           }
       }
       .run

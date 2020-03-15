@@ -31,12 +31,7 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
   def orElse(x: => LazyEitherT[F, A, B])(
       implicit m: Bind[F]): LazyEitherT[F, A, B] = {
     val g = run
-    LazyEitherT(
-      m.bind(g)(
-        _.fold(
-          _ => x.run,
-          _ => g
-        )))
+    LazyEitherT(m.bind(g)(_.fold(_ => x.run, _ => g)))
   }
 
   /** Return this if it is a right, otherwise, return the given value. Alias for `orElse` */
@@ -82,8 +77,9 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
   def traverse[G[_], C](f: B => G[C])(implicit
       F: Traverse[F],
       G: Applicative[G]): G[LazyEitherT[F, A, C]] = {
-    G.map(F.traverse(run)(o =>
-      LazyEither.lazyEitherInstance[A].traverse(o)(f)))(LazyEitherT(_))
+    G.map(
+      F.traverse(run)(o => LazyEither.lazyEitherInstance[A].traverse(o)(f)))(
+      LazyEitherT(_))
   }
 
   def foldRight[Z](z: => Z)(f: (B, => Z) => Z)(implicit F: Foldable[F]): Z = {
@@ -120,8 +116,8 @@ object LazyEitherT extends LazyEitherTInstances {
         type A = A0;
         type B = B0
       },
-      l: Leibniz.===[AB, LazyEither[A0, B0]]
-  ): LazyEitherT[u1.M, A0, B0] = LazyEitherT(l.subst[u1.M](u1(fab)))
+      l: Leibniz.===[AB, LazyEither[A0, B0]]): LazyEitherT[u1.M, A0, B0] =
+    LazyEitherT(l.subst[u1.M](u1(fab)))
 
   import LazyEither._
 
@@ -179,11 +175,7 @@ object LazyEitherT extends LazyEitherTInstances {
         implicit m: Bind[F]): LazyEitherT[F, A, B] = {
       val g = lazyEitherT.run
       LazyEitherT(
-        m.bind(g)((z: LazyEither[A, B]) =>
-          z.fold(
-            _ => g,
-            _ => x.run
-          )))
+        m.bind(g)((z: LazyEither[A, B]) => z.fold(_ => g, _ => x.run)))
     }
 
     def toLazyOption(implicit F: Functor[F]): LazyOptionT[F, A] =
@@ -389,18 +381,15 @@ private trait LazyEitherTPlus[F[_], E] extends Plus[LazyEitherT[F, E, ?]] {
   def E: Semigroup[E]
 
   override def plus[A](a: LazyEitherT[F, E, A], b: => LazyEitherT[F, E, A]) =
-    LazyEitherT(F.bind(a.run) { r =>
-      r.fold(
-        l =>
-          F.map(b.run) { rr =>
-            rr.fold(
-              ll => LazyEither.lazyLeft(E.append(l, ll)),
-              _ => rr
-            )
-          },
-        _ => F.point(r)
-      )
-    })
+    LazyEitherT(
+      F.bind(a.run) { r =>
+        r.fold(
+          l =>
+            F.map(b.run) { rr =>
+              rr.fold(ll => LazyEither.lazyLeft(E.append(l, ll)), _ => rr)
+            },
+          _ => F.point(r))
+      })
 }
 
 private trait LazyEitherTMonadPlus[F[_], E]
@@ -475,8 +464,7 @@ private trait LazyEitherTBindRec[F[_], E]
           _.fold(
             e => \/.right(LazyEither.lazyLeft(e)),
             _.map(b => LazyEither.lazyRight(b)))
-        })(a)
-    )
+        })(a))
 }
 
 private trait LazyEitherTMonadError[F[_], E]

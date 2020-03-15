@@ -36,8 +36,7 @@ object JSSE {
       certificatePath: String,
       keyPath: String,
       caCertPath: Option[String],
-      useCache: Boolean = true
-  ): Option[Engine] = {
+      useCache: Boolean = true): Option[Engine] = {
     def makeContext: SSLContext = {
       val context = SSLContext.getInstance(protocol)
       val kms = PEMEncodedKeyManager(certificatePath, keyPath, caCertPath)
@@ -45,8 +44,7 @@ object JSSE {
 
       log.finest(
         "JSSE context instantiated for certificate '%s'".format(
-          certificatePath
-        ))
+          certificatePath))
 
       context
     }
@@ -55,8 +53,7 @@ object JSSE {
       if (useCache)
         contextCache.getOrElseUpdate(
           List(certificatePath, keyPath, caCertPath).mkString(" + "),
-          makeContext
-        )
+          makeContext)
       else
         makeContext
     }

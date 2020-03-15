@@ -13,9 +13,10 @@ class ConcurrentSkipListSet[E] private (inner: TreeSet[E])
     with Serializable {
 
   def this(collection: Collection[_ <: E]) = {
-    this(new TreeSet[E](collection) {
-      override def add(e: E): Boolean = inner.add(Box(e))
-    })
+    this(
+      new TreeSet[E](collection) {
+        override def add(e: E): Boolean = inner.add(Box(e))
+      })
   }
 
   def this() = this(Collections.emptySet[E]: Collection[E])

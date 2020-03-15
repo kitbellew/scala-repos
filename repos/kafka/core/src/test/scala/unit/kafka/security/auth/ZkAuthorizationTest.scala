@@ -252,10 +252,11 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
         case true  => list.size == 2
         case false => list.size == 1
       }
-    isListSizeCorrect && list.asScala.forall(secure match {
-      case true  => isAclSecure
-      case false => isAclUnsecure
-    })
+    isListSizeCorrect && list.asScala.forall(
+      secure match {
+        case true  => isAclSecure
+        case false => isAclUnsecure
+      })
   }
 
   /**
@@ -322,10 +323,12 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
     info(s"Deleting $path")
     var result: Try[Boolean] = Success(true)
     for (child <- zkUtils.getChildren(path))
-      result = (path match {
-        case "/"  => deleteRecursive(zkUtils, s"/$child")
-        case path => deleteRecursive(zkUtils, s"$path/$child")
-      }) match {
+      result = (
+        path match {
+          case "/"  => deleteRecursive(zkUtils, s"/$child")
+          case path => deleteRecursive(zkUtils, s"$path/$child")
+        }
+      ) match {
         case Success(v) => result
         case Failure(e) => Failure(e)
       }

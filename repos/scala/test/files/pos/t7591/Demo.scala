@@ -66,7 +66,9 @@ class Demo(args: List[String]) extends {
   def helpMsg = DemoSpec.helpMsg
   def demoSpecMethods = this.getClass.getMethods.toList
   private def isDemo(m: Method) =
-    (m.getName startsWith "opt") && !(m.getName contains "$") && (m.getParameterTypes.isEmpty)
+    (m.getName startsWith "opt") && !(m.getName contains "$") && (
+      m.getParameterTypes.isEmpty
+    )
 
   def demoString(ms: List[Method]) = {
     val longest = ms map (_.getName.length) max

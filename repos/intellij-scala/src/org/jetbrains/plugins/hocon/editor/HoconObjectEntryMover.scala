@@ -57,12 +57,14 @@ class HoconObjectEntryMover extends LineMover {
       file,
       info,
       down) && !editor.getSelectionModel.hasSelection &&
-      (file match {
-        case hoconFile: HoconPsiFile =>
-          checkAvailableHocon(editor, hoconFile, info, down)
-        case _ =>
-          false
-      })
+      (
+        file match {
+          case hoconFile: HoconPsiFile =>
+            checkAvailableHocon(editor, hoconFile, info, down)
+          case _ =>
+            false
+        }
+      )
 
   private def checkAvailableHocon(
       editor: Editor,

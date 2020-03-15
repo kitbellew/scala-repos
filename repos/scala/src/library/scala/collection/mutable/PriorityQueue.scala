@@ -218,9 +218,10 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
     */
   def reverse = {
     val revq =
-      new PriorityQueue[A]()(new scala.math.Ordering[A] {
-        def compare(x: A, y: A) = ord.compare(y, x)
-      })
+      new PriorityQueue[A]()(
+        new scala.math.Ordering[A] {
+          def compare(x: A, y: A) = ord.compare(y, x)
+        })
     for (i <- 1 until resarr.length)
       revq += resarr(i)
     revq

@@ -395,10 +395,12 @@ class ScalaControlFlowBuilder(
   }
 
   override def visitReturnStatement(ret: ScReturnStmt) {
-    val isNodeNeeded = myHead == null || (myHead.element match {
-      case Some(e) => e != ret
-      case None    => false
-    })
+    val isNodeNeeded = myHead == null || (
+      myHead.element match {
+        case Some(e) => e != ret
+        case None    => false
+      }
+    )
     ret.expr match {
       case Some(e) => e.accept(this)
       case None    =>
@@ -505,10 +507,12 @@ class ScalaControlFlowBuilder(
   }
 
   override def visitThrowExpression(throwStmt: ScThrowStmt) {
-    val isNodeNeeded = myHead == null || (myHead.element match {
-      case Some(e) => e != throwStmt
-      case None    => false
-    })
+    val isNodeNeeded = myHead == null || (
+      myHead.element match {
+        case Some(e) => e != throwStmt
+        case None    => false
+      }
+    )
     throwStmt.body.map(_.accept(this))
     if (isNodeNeeded)
       startNode(Some(throwStmt)) { rs =>

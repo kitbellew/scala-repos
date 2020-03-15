@@ -32,8 +32,7 @@ trait IntegrationTest {
       runConfig: RunnerAndConfigurationSettings,
       checkOutputs: Boolean = false,
       duration: Int = 3000,
-      debug: Boolean = false
-  ): (String, Option[AbstractTestProxy])
+      debug: Boolean = false): (String, Option[AbstractTestProxy])
 
   protected def createTestFromLocation(
       lineNumber: Int,
@@ -93,9 +92,10 @@ trait IntegrationTest {
 
     var res = false
 
-    UsefulTestCase.edt(new Runnable() {
-      override def run(): Unit = res = helper(root, "")
-    })
+    UsefulTestCase.edt(
+      new Runnable() {
+        override def run(): Unit = res = helper(root, "")
+      })
     res
   }
 
@@ -129,14 +129,18 @@ trait IntegrationTest {
       testClass: String,
       testNames: Seq[String],
       config: AbstractTestRunConfiguration): Boolean = {
-    config.getTestClassPath == testClass && (config.getTestName match {
-      case "" => testNames.isEmpty
-      case configTestName =>
-        val configTests = parseTestName(configTestName)
-        configTests.size == testNames.size && ((configTests zip testNames) forall {
-          case (actual, required) => actual == required
-        })
-    })
+    config.getTestClassPath == testClass && (
+      config.getTestName match {
+        case "" => testNames.isEmpty
+        case configTestName =>
+          val configTests = parseTestName(configTestName)
+          configTests.size == testNames.size && (
+            (configTests zip testNames) forall {
+              case (actual, required) => actual == required
+            }
+          )
+      }
+    )
   }
 
   protected def checkResultTreeHasExactNamedPath(
@@ -171,7 +175,9 @@ trait IntegrationTest {
         case 0 => List(_ => true) //got an empty list of names as initial input
         case 1 =>
           ((node: AbstractTestProxy) =>
-            node.getName == names.head && (node.isLeaf || allowTail)) :: acc //last element must be leaf
+            node.getName == names.head && (
+              node.isLeaf || allowTail
+            )) :: acc //last element must be leaf
         case _ =>
           buildConditions(
             names.tail,
@@ -260,19 +266,20 @@ trait IntegrationTest {
     val semaphore = new Semaphore
     semaphore.down()
 
-    SwingUtilities.invokeLater(new Runnable() {
-      override def run(): Unit = {
-        try {
-          assert(testTreeRoot.isDefined && testTreeCheck(testTreeRoot.get))
+    SwingUtilities.invokeLater(
+      new Runnable() {
+        override def run(): Unit = {
+          try {
+            assert(testTreeRoot.isDefined && testTreeCheck(testTreeRoot.get))
 
-          if (checkOutputs) {
-            assert(res == expectedText)
+            if (checkOutputs) {
+              assert(res == expectedText)
+            }
+          } finally {
+            semaphore.up()
           }
-        } finally {
-          semaphore.up()
         }
-      }
-    })
+      })
 
     semaphore.waitFor()
   }
@@ -304,10 +311,11 @@ trait IntegrationTest {
     val (_, testTreeRoot) = runTestFromConfig(configurationCheck, runConfig)
 
     assert(testTreeRoot.isDefined)
-    UsefulTestCase.edt(new Runnable() {
-      override def run(): Unit =
-        checkGoToSourceTest(testTreeRoot.get, testNames, fileName, sourceLine)
-    })
+    UsefulTestCase.edt(
+      new Runnable() {
+        override def run(): Unit =
+          checkGoToSourceTest(testTreeRoot.get, testNames, fileName, sourceLine)
+      })
   }
 
   private def checkGoToSourceTest(

@@ -389,9 +389,10 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
    *       function to allow long running jobs by notifying Cascading of progress.
    */
   def timeout[T](timeout: AbsoluteDuration)(t: => T): Option[T] = {
-    val f = timeoutExecutor.submit(new Callable[Option[T]] {
-      def call(): Option[T] = Some(t)
-    });
+    val f = timeoutExecutor.submit(
+      new Callable[Option[T]] {
+        def call(): Option[T] = Some(t)
+      });
     try {
       f.get(timeout.toMillisecs, TimeUnit.MILLISECONDS)
     } catch {
@@ -473,9 +474,11 @@ trait DefaultDateRangeJob extends Job {
       else // return a new job with the new startDate
         Some(
           clone(
-            args + ("date" -> List(
-              nextStartDate.toString("yyyy-MM-dd"),
-              endDate.toString("yyyy-MM-dd")))))
+            args + (
+              "date" -> List(
+                nextStartDate.toString("yyyy-MM-dd"),
+                endDate.toString("yyyy-MM-dd"))
+            )))
     } else
       None
 }
@@ -509,8 +512,9 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
   def result: Future[T] = resultPromise.future
 
   override def buildFlow: Flow[_] =
-    sys.error("ExecutionJobs do not have a single accessible flow. " +
-      "You cannot print the graph as it may be dynamically built or recurrent")
+    sys.error(
+      "ExecutionJobs do not have a single accessible flow. " +
+        "You cannot print the graph as it may be dynamically built or recurrent")
 
   final override def run = {
     val r = Config

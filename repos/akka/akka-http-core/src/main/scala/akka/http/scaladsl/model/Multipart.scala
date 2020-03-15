@@ -333,8 +333,9 @@ object Multipart {
                 params - "name",
                 headers.filterNot(_ is "content-disposition")))
           case None ⇒
-            Failure(IllegalHeaderException(
-              "multipart/form-data part must contain `Content-Disposition` header with `name` parameter"))
+            Failure(
+              IllegalHeaderException(
+                "multipart/form-data part must contain `Content-Disposition` header with `name` parameter"))
         }
       }
       private[BodyPart] def tryCreateByteRangesBodyPart[T](
@@ -345,8 +346,9 @@ object Multipart {
           case Some(`Content-Range`(unit, range)) ⇒
             Success(f(range, unit, headers.filterNot(_ is "content-range")))
           case None ⇒
-            Failure(IllegalHeaderException(
-              "multipart/byteranges part must contain `Content-Range` header"))
+            Failure(
+              IllegalHeaderException(
+                "multipart/byteranges part must contain `Content-Range` header"))
         }
     }
     object BodyPart {
@@ -456,8 +458,9 @@ object Multipart {
         file: File,
         chunkSize: Int = -1): Multipart.FormData =
       Multipart.FormData(
-        Source.single(Multipart.FormData.BodyPart
-          .fromFile(name, contentType, file, chunkSize)))
+        Source.single(
+          Multipart.FormData.BodyPart
+            .fromFile(name, contentType, file, chunkSize)))
 
     /**
       * Strict [[FormData]].

@@ -112,12 +112,14 @@ class NIHDBProjectionSpecs
     def close(proj: NIHDB) = fromFuture(proj.close(actorSystem))
 
     def stop = {
-      (for {
-        _ <- IO {
-          close(nihdb)
-        }
-        _ <- IOUtils.recursiveDelete(workDir)
-      } yield ()).unsafePerformIO
+      (
+        for {
+          _ <- IO {
+            close(nihdb)
+          }
+          _ <- IOUtils.recursiveDelete(workDir)
+        } yield ()
+      ).unsafePerformIO
     }
   }
 
@@ -154,14 +156,15 @@ class NIHDBProjectionSpecs
 
         results.onComplete { _ =>
           ctxt.stop
-        } must awaited(maxDuration)(beLike {
-          case Some(BlockProjectionData(min, max, data)) =>
-            min mustEqual 0L
-            max mustEqual 0L
-            data.size mustEqual 3
-            data.toJsonElements.map(_("value")) must containAllOf(
-              expected).only.inOrder
-        })
+        } must awaited(maxDuration)(
+          beLike {
+            case Some(BlockProjectionData(min, max, data)) =>
+              min mustEqual 0L
+              max mustEqual 0L
+              data.size mustEqual 3
+              data.toJsonElements.map(_("value")) must containAllOf(
+                expected).only.inOrder
+          })
     }
 
     "Insert, close and re-read values below the cook threshold" in check {
@@ -177,16 +180,19 @@ class NIHDBProjectionSpecs
           JNum(4L))
 
         val io =
-          nihdb.insert((0L to 2L).toSeq.map { i =>
-            NIHDB.Batch(i, Seq(JNum(i)))
-          }) >>
-            // Ensure we handle skips/overlap properly. First tests a complete skip, second tests partial
-            nihdb.insert((0L to 2L).toSeq.map { i =>
+          nihdb.insert(
+            (0L to 2L).toSeq.map { i =>
               NIHDB.Batch(i, Seq(JNum(i)))
             }) >>
-            nihdb.insert((0L to 4L).toSeq.map { i =>
-              NIHDB.Batch(i, Seq(JNum(i)))
-            })
+            // Ensure we handle skips/overlap properly. First tests a complete skip, second tests partial
+            nihdb.insert(
+              (0L to 2L).toSeq.map { i =>
+                NIHDB.Batch(i, Seq(JNum(i)))
+              }) >>
+            nihdb.insert(
+              (0L to 4L).toSeq.map { i =>
+                NIHDB.Batch(i, Seq(JNum(i)))
+              })
 
         val result =
           for {
@@ -246,22 +252,23 @@ class NIHDBProjectionSpecs
           (firstBlock, secondBlock)
         }
 
-      result must awaited(maxDuration)(beLike {
-        case (
-              Some(BlockProjectionData(min1, max1, data1)),
-              Some(BlockProjectionData(min2, max2, data2))) =>
-          min1 mustEqual 0L
-          max1 mustEqual 0L
-          data1.size mustEqual 1200
-          data1.toJsonElements.map(_("value")) must containAllOf(
-            expected.take(1200)).only.inOrder
+      result must awaited(maxDuration)(
+        beLike {
+          case (
+                Some(BlockProjectionData(min1, max1, data1)),
+                Some(BlockProjectionData(min2, max2, data2))) =>
+            min1 mustEqual 0L
+            max1 mustEqual 0L
+            data1.size mustEqual 1200
+            data1.toJsonElements.map(_("value")) must containAllOf(
+              expected.take(1200)).only.inOrder
 
-          min2 mustEqual 1L
-          max2 mustEqual 1L
-          data2.size mustEqual 751
-          data2.toJsonElements.map(_("value")) must containAllOf(
-            expected.drop(1200)).only.inOrder
-      })
+            min2 mustEqual 1L
+            max2 mustEqual 1L
+            data2.size mustEqual 751
+            data2.toJsonElements.map(_("value")) must containAllOf(
+              expected.drop(1200)).only.inOrder
+        })
     }
 
   }

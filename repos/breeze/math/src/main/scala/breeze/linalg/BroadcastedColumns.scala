@@ -56,11 +56,9 @@ object BroadcastedColumns {
 
   implicit def canMapValues[T, ColumnType, ResultColumn, Result](implicit
       cc: CanCollapseAxis[T, Axis._0.type, ColumnType, ResultColumn, Result])
-      : CanMapValues[
-        BroadcastedColumns[T, ColumnType],
-        ColumnType,
-        ResultColumn,
-        Result] = {
+      : CanMapValues[BroadcastedColumns[
+        T,
+        ColumnType], ColumnType, ResultColumn, Result] = {
     new CanMapValues[
       BroadcastedColumns[T, ColumnType],
       ColumnType,

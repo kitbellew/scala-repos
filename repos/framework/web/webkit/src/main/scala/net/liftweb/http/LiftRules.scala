@@ -177,9 +177,8 @@ object LiftRules extends LiftRulesMocker {
   type URINotFoundPF = PartialFunction[(Req, Box[Failure]), NotFound]
   type URLDecoratorPF = PartialFunction[String, String]
   type SnippetDispatchPF = PartialFunction[String, DispatchSnippet]
-  type ViewDispatchPF = PartialFunction[
-    List[String],
-    Either[() => Box[NodeSeq], LiftView]]
+  type ViewDispatchPF = PartialFunction[List[String], Either[() => Box[
+    NodeSeq], LiftView]]
   type HttpAuthProtectedResourcePF = PartialFunction[Req, Box[Role]]
   type ExceptionHandlerPF = PartialFunction[
     (Props.RunModes.Value, Req, Throwable),
@@ -388,10 +387,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   @volatile var attachResourceId: (String) => String =
     (name) => {
-      name + (if (name contains ("?"))
-                "&"
-              else
-                "?") + instanceResourceId + "=_"
+      name + (
+        if (name contains ("?"))
+          "&"
+        else
+          "?"
+      ) + instanceResourceId + "=_"
     }
 
   /**
@@ -802,9 +803,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
     // We need to determine the full set of IDs that need messages rendered.
     val idSet =
-      (S.idMessages((S.errors)) ++
-        S.idMessages((S.warnings)) ++
-        S.idMessages((S.notices))).map(_._1).distinct
+      (
+        S.idMessages((S.errors)) ++
+          S.idMessages((S.warnings)) ++
+          S.idMessages((S.notices))
+      ).map(_._1).distinct
 
     // Merge each Id's messages and effects into the JsCmd chain
     idSet.foldLeft(groupMessages) { (chain, id) =>
@@ -973,9 +976,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * IE6/7/8 compatibility mode
     */
   @volatile var calcIEMode: () => Boolean = () =>
-    (for (r <- S.request)
-      yield r.isIE6 || r.isIE7 ||
-        r.isIE8) openOr true
+    (
+      for (r <- S.request)
+        yield r.isIE6 || r.isIE7 ||
+          r.isIE8
+    ) openOr true
 
   /**
     * The JavaScript to execute to log a message on the client side when
@@ -1028,10 +1033,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 
     case (_, _, Full(s))
-        if (s.toLowerCase.startsWith("text/xml") ||
-          s.toLowerCase.startsWith("text/xhtml") ||
-          s.toLowerCase.startsWith("application/xml") ||
-          s.toLowerCase.startsWith("application/xhtml+xml")) =>
+        if (
+          s.toLowerCase.startsWith("text/xml") ||
+            s.toLowerCase.startsWith("text/xhtml") ||
+            s.toLowerCase.startsWith("application/xml") ||
+            s.toLowerCase.startsWith("application/xhtml+xml")
+        ) =>
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 
     case _ => ""
@@ -1161,9 +1168,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     new FactoryMaker(() =>
       (
           () =>
-            Map.empty: PartialFunction[
-              (String, String),
-              Box[NodeSeq => NodeSeq]])) {}
+            Map.empty: PartialFunction[(String, String), Box[
+              NodeSeq => NodeSeq]])) {}
 
   /**
     * This FactoryMaker can be used to disable the little used attributeSnippets
@@ -1758,11 +1764,13 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         "Exception being returned to browser when processing " + r.uri.toString,
         e)
       XhtmlResponse(
-        (<html> <body>Exception occured while processing {
-          r.uri
-        }<pre>{
-          showException(e)
-        }</pre> </body> </html>),
+        (
+          <html> <body>Exception occured while processing {
+            r.uri
+          }<pre>{
+            showException(e)
+          }</pre> </body> </html>
+        ),
         S.htmlProperties.docType,
         List("Content-Type" -> "text/html; charset=utf-8"),
         Nil,
@@ -1775,9 +1783,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         "Exception being returned to browser when processing " + r.uri.toString,
         e)
       XhtmlResponse(
-        (<html> <body>Something unexpected happened while serving the page at {
-          r.uri
-        }</body> </html>),
+        (
+          <html> <body>Something unexpected happened while serving the page at {
+            r.uri
+          }</body> </html>
+        ),
         S.htmlProperties.docType,
         List("Content-Type" -> "text/html; charset=utf-8"),
         Nil,
@@ -1791,9 +1801,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * URI is invalid and you're not using a site map
     *
     */
-  val uriNotFound = RulesSeq[URINotFoundPF].prepend(NamedPF("default") {
-    case (r, _) => DefaultNotFound
-  })
+  val uriNotFound = RulesSeq[URINotFoundPF].prepend(
+    NamedPF("default") {
+      case (r, _) => DefaultNotFound
+    })
 
   /**
     * If you use the form attribute in a snippet invocation, what attributes should
@@ -1920,8 +1931,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val javaScriptSettings: FactoryMaker[() => Box[LiftSession => JsObj]] =
     new FactoryMaker(() =>
       () =>
-        (Full((session: LiftSession) => LiftJavaScript.settings): Box[
-          LiftSession => JsObj])) {}
+        (
+          Full((session: LiftSession) => LiftJavaScript.settings): Box[
+            LiftSession => JsObj]
+        )) {}
 
   /**
     * Define the XHTML validator
@@ -1958,13 +1971,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   @volatile var contentSecurityPolicyViolationReport
       : (ContentSecurityPolicyViolation) => Box[LiftResponse] = { violation =>
-    logger.warn(
-      s"""Content security policy violation reported on page
+    logger.warn(s"""Content security policy violation reported on page
        | '${violation.documentUri}' from referrer '${violation.referrer}':
        | '${violation.blockedUri}' was blocked because it violated the
        | directive '${violation.violatedDirective}'. The policy that specified
-       | this directive is: '${violation.originalPolicy}'.""".trim
-    )
+       | this directive is: '${violation.originalPolicy}'.""".trim)
 
     Empty
   }
@@ -2179,10 +2190,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   private def ctor() {
     appendGlobalFormBuilder(
       FormBuilderLocator[String]((value, setter) => SHtml.text(value, setter)))
-    appendGlobalFormBuilder(FormBuilderLocator[Int]((value, setter) =>
-      SHtml.text(value.toString, s => Helpers.asInt(s).foreach((setter)))))
-    appendGlobalFormBuilder(FormBuilderLocator[Boolean]((value, setter) =>
-      SHtml.checkbox(value, s => setter(s))))
+    appendGlobalFormBuilder(
+      FormBuilderLocator[Int]((value, setter) =>
+        SHtml.text(value.toString, s => Helpers.asInt(s).foreach((setter)))))
+    appendGlobalFormBuilder(
+      FormBuilderLocator[Boolean]((value, setter) =>
+        SHtml.checkbox(value, s => setter(s))))
 
     import net.liftweb.builtin.snippet._
 
@@ -2301,12 +2314,13 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       * Precompute the current rule set
       */
     private def doCur[A](f: => A): A = {
-      cur.doWith((pre.value, app.value) match {
-        case (null, null) | (null, Nil) | (Nil, null) | (Nil, Nil) => rules
-        case (null, xs)                                            => rules ::: xs
-        case (xs, null)                                            => xs ::: rules
-        case (p, a)                                                => p ::: rules ::: a
-      })(f)
+      cur.doWith(
+        (pre.value, app.value) match {
+          case (null, null) | (null, Nil) | (Nil, null) | (Nil, Nil) => rules
+          case (null, xs)                                            => rules ::: xs
+          case (xs, null)                                            => xs ::: rules
+          case (p, a)                                                => p ::: rules ::: a
+        })(f)
     }
 
     def toList: List[T] =
@@ -2432,22 +2446,24 @@ abstract class GenericValidator extends XHtmlValidator with Loggable {
   private lazy val schema = tryo(sf.newSchema(new URL(ngurl)))
 
   def apply(in: Node): List[XHTMLValidationError] = {
-    (for {
-      sc <- schema
-      v <- tryo(sc.newValidator)
-      source = new StreamSource(
-        new ByteArrayInputStream(in.toString.getBytes("UTF-8")))
-    } yield try {
-      v.validate(source)
-      Nil
-    } catch {
-      case e: org.xml.sax.SAXParseException =>
-        List(
-          XHTMLValidationError(
-            e.getMessage,
-            e.getLineNumber,
-            e.getColumnNumber))
-    }) match {
+    (
+      for {
+        sc <- schema
+        v <- tryo(sc.newValidator)
+        source = new StreamSource(
+          new ByteArrayInputStream(in.toString.getBytes("UTF-8")))
+      } yield try {
+        v.validate(source)
+        Nil
+      } catch {
+        case e: org.xml.sax.SAXParseException =>
+          List(
+            XHTMLValidationError(
+              e.getMessage,
+              e.getLineNumber,
+              e.getColumnNumber))
+      }
+    ) match {
       case Full(x) => x
       case Failure(msg, _, _) =>
         logger.info("XHTML Validation Failure: " + msg)

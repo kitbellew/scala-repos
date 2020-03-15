@@ -419,19 +419,20 @@ object Enumerator {
     */
   def unfoldM[S, E](s: S)(f: S => Future[Option[(S, E)]])(
       implicit ec: ExecutionContext): Enumerator[E] =
-    checkContinue1(s)(new TreatCont1[E, S] {
-      private val pec = ec.prepare()
+    checkContinue1(s)(
+      new TreatCont1[E, S] {
+        private val pec = ec.prepare()
 
-      def apply[A](
-          loop: (Iteratee[E, A], S) => Future[Iteratee[E, A]],
-          s: S,
-          k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] = {
-        executeFuture(f(s))(pec).flatMap {
-          case Some((newS, e)) => loop(k(Input.El(e)), newS)
-          case None            => Future.successful(Cont(k))
-        }(dec)
-      }
-    })
+        def apply[A](
+            loop: (Iteratee[E, A], S) => Future[Iteratee[E, A]],
+            s: S,
+            k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] = {
+          executeFuture(f(s))(pec).flatMap {
+            case Some((newS, e)) => loop(k(Input.El(e)), newS)
+            case None            => Future.successful(Cont(k))
+          }(dec)
+        }
+      })
 
   /**
     * Unfold a value of type S into input for an enumerator.
@@ -452,18 +453,19 @@ object Enumerator {
     */
   def unfold[S, E](s: S)(f: S => Option[(S, E)])(
       implicit ec: ExecutionContext): Enumerator[E] =
-    checkContinue1(s)(new TreatCont1[E, S] {
-      private val pec = ec.prepare()
+    checkContinue1(s)(
+      new TreatCont1[E, S] {
+        private val pec = ec.prepare()
 
-      def apply[A](
-          loop: (Iteratee[E, A], S) => Future[Iteratee[E, A]],
-          s: S,
-          k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
-        Future(f(s))(pec).flatMap {
-          case Some((s, e)) => loop(k(Input.El(e)), s)
-          case None         => Future.successful(Cont(k))
-        }(dec)
-    })
+        def apply[A](
+            loop: (Iteratee[E, A], S) => Future[Iteratee[E, A]],
+            s: S,
+            k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
+          Future(f(s))(pec).flatMap {
+            case Some((s, e)) => loop(k(Input.El(e)), s)
+            case None         => Future.successful(Cont(k))
+          }(dec)
+      })
 
   /**
     * Repeat the given input function indefinitely.
@@ -472,15 +474,16 @@ object Enumerator {
     * $paramEcSingle
     */
   def repeat[E](e: => E)(implicit ec: ExecutionContext): Enumerator[E] =
-    checkContinue0(new TreatCont0[E] {
-      private val pec = ec.prepare()
+    checkContinue0(
+      new TreatCont0[E] {
+        private val pec = ec.prepare()
 
-      def apply[A](
-          loop: Iteratee[E, A] => Future[Iteratee[E, A]],
-          k: Input[E] => Iteratee[E, A]) =
-        Future(e)(pec).flatMap(ee => loop(k(Input.El(ee))))(dec)
+        def apply[A](
+            loop: Iteratee[E, A] => Future[Iteratee[E, A]],
+            k: Input[E] => Iteratee[E, A]) =
+          Future(e)(pec).flatMap(ee => loop(k(Input.El(ee))))(dec)
 
-    })
+      })
 
   /**
     * Like [[play.api.libs.iteratee.Enumerator.repeat]], but allows repeated values to be asynchronously fetched.
@@ -490,15 +493,16 @@ object Enumerator {
     */
   def repeatM[E](e: => Future[E])(
       implicit ec: ExecutionContext): Enumerator[E] =
-    checkContinue0(new TreatCont0[E] {
-      private val pec = ec.prepare()
+    checkContinue0(
+      new TreatCont0[E] {
+        private val pec = ec.prepare()
 
-      def apply[A](
-          loop: Iteratee[E, A] => Future[Iteratee[E, A]],
-          k: Input[E] => Iteratee[E, A]) =
-        executeFuture(e)(pec).flatMap(ee => loop(k(Input.El(ee))))(dec)
+        def apply[A](
+            loop: Iteratee[E, A] => Future[Iteratee[E, A]],
+            k: Input[E] => Iteratee[E, A]) =
+          executeFuture(e)(pec).flatMap(ee => loop(k(Input.El(ee))))(dec)
 
-    })
+      })
 
   /**
     * Like [[play.api.libs.iteratee.Enumerator.repeatM]], but the callback returns an Option, which allows the stream
@@ -509,17 +513,18 @@ object Enumerator {
     */
   def generateM[E](e: => Future[Option[E]])(
       implicit ec: ExecutionContext): Enumerator[E] =
-    checkContinue0(new TreatCont0[E] {
-      private val pec = ec.prepare()
+    checkContinue0(
+      new TreatCont0[E] {
+        private val pec = ec.prepare()
 
-      def apply[A](
-          loop: Iteratee[E, A] => Future[Iteratee[E, A]],
-          k: Input[E] => Iteratee[E, A]) =
-        executeFuture(e)(pec).flatMap {
-          case Some(e) => loop(k(Input.El(e)))
-          case None    => Future.successful(Cont(k))
-        }(dec)
-    })
+        def apply[A](
+            loop: Iteratee[E, A] => Future[Iteratee[E, A]],
+            k: Input[E] => Iteratee[E, A]) =
+          executeFuture(e)(pec).flatMap {
+            case Some(e) => loop(k(Input.El(e)))
+            case None    => Future.successful(Cont(k))
+          }(dec)
+      })
 
   trait TreatCont0[E] {
 
@@ -801,27 +806,29 @@ object Enumerator {
   }
 
   private[iteratee] def enumerateSeq1[E](s: Seq[E]): Enumerator[E] =
-    checkContinue1(s)(new TreatCont1[E, Seq[E]] {
-      def apply[A](
-          loop: (Iteratee[E, A], Seq[E]) => Future[Iteratee[E, A]],
-          s: Seq[E],
-          k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
-        if (!s.isEmpty)
-          loop(k(Input.El(s.head)), s.tail)
-        else
-          Future.successful(Cont(k))
-    })
+    checkContinue1(s)(
+      new TreatCont1[E, Seq[E]] {
+        def apply[A](
+            loop: (Iteratee[E, A], Seq[E]) => Future[Iteratee[E, A]],
+            s: Seq[E],
+            k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
+          if (!s.isEmpty)
+            loop(k(Input.El(s.head)), s.tail)
+          else
+            Future.successful(Cont(k))
+      })
 
   private[iteratee] def enumerateSeq2[E](s: Seq[Input[E]]): Enumerator[E] =
-    checkContinue1(s)(new TreatCont1[E, Seq[Input[E]]] {
-      def apply[A](
-          loop: (Iteratee[E, A], Seq[Input[E]]) => Future[Iteratee[E, A]],
-          s: Seq[Input[E]],
-          k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
-        if (!s.isEmpty)
-          loop(k(s.head), s.tail)
-        else
-          Future.successful(Cont(k))
-    })
+    checkContinue1(s)(
+      new TreatCont1[E, Seq[Input[E]]] {
+        def apply[A](
+            loop: (Iteratee[E, A], Seq[Input[E]]) => Future[Iteratee[E, A]],
+            s: Seq[Input[E]],
+            k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
+          if (!s.isEmpty)
+            loop(k(s.head), s.tail)
+          else
+            Future.successful(Cont(k))
+      })
 
 }

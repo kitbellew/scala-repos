@@ -27,13 +27,14 @@ object Atomic extends Atomics
 
 trait Atomics {
   def newAtomic[A](a: A): IO[Atomic[A]] =
-    IO(new Atomic[A] {
-      val value = new AtomicReference(a)
+    IO(
+      new Atomic[A] {
+        val value = new AtomicReference(a)
 
-      def compareAndSet(expected: A, newValue: A) =
-        IO(value.compareAndSet(expected, newValue))
-      def get = IO(value.get)
-      def getAndSet(a: A) = IO(value.getAndSet(a))
-      def set(a: => A) = IO(value.set(a))
-    })
+        def compareAndSet(expected: A, newValue: A) =
+          IO(value.compareAndSet(expected, newValue))
+        def get = IO(value.get)
+        def getAndSet(a: A) = IO(value.getAndSet(a))
+        def set(a: => A) = IO(value.set(a))
+      })
 }

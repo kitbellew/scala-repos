@@ -43,9 +43,10 @@ trait RequestBodyHandlingSpec
       }
     }
 
-    "handle large bodies" in withServer(EssentialAction { rh =>
-      Accumulator(Sink.ignore).map(_ => Results.Ok)
-    }) { port =>
+    "handle large bodies" in withServer(
+      EssentialAction { rh =>
+        Accumulator(Sink.ignore).map(_ => Results.Ok)
+      }) { port =>
       val body = new String(Random.alphanumeric.take(50 * 1024).toArray)
       val responses =
         BasicHttpClient.makeRequests(port, trickleFeed = Some(100L))(

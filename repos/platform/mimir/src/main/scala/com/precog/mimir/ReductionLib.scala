@@ -125,16 +125,18 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new Monoid[Result] {
           def zero = None
           def append(left: Result, right: => Result): Result = {
-            (for {
-              l <- left
-              r <- right
-            } yield {
-              val res = NumericComparisons.compare(l, r)
-              if (res > 0)
-                l
-              else
-                r
-            }) orElse left orElse right
+            (
+              for {
+                l <- left
+                r <- right
+              } yield {
+                val res = NumericComparisons.compare(l, r)
+                if (res > 0)
+                  l
+                else
+                  r
+              }
+            ) orElse left orElse right
           }
         }
 
@@ -191,16 +193,18 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new Monoid[Result] {
           def zero = None
           def append(left: Result, right: => Result): Result = {
-            (for {
-              l <- left
-              r <- right
-            } yield {
-              val res = NumericComparisons.compare(l, r)
-              if (res < 0)
-                l
-              else
-                r
-            }) orElse left orElse right
+            (
+              for {
+                l <- left
+                r <- right
+              } yield {
+                val res = NumericComparisons.compare(l, r)
+                if (res < 0)
+                  l
+                else
+                  r
+              }
+            ) orElse left orElse right
           }
         }
 
@@ -258,9 +262,11 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new Monoid[Result] {
           def zero = None
           def append(left: Result, right: => Result): Result = {
-            (for (l <- left;
-                  r <- right)
-              yield l max r) orElse left orElse right
+            (
+              for (l <- left;
+                   r <- right)
+                yield l max r
+            ) orElse left orElse right
           }
         }
 
@@ -344,9 +350,11 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new Monoid[Result] {
           def zero = None
           def append(left: Result, right: => Result): Result = {
-            (for (l <- left;
-                  r <- right)
-              yield l min r) orElse left orElse right
+            (
+              for (l <- left;
+                   r <- right)
+                yield l min r
+            ) orElse left orElse right
           }
         }
 

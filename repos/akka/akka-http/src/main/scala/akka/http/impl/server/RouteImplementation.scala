@@ -213,10 +213,12 @@ private[http] object RouteImplementation
             scalaResolver(resolver))
         }
       case FileAndResourceRouteWithDefaultResolver(constructor) ⇒
-        RouteImplementation(constructor(new directives.ContentTypeResolver {
-          def resolve(fileName: String): ContentType =
-            ContentTypeResolver.Default(fileName)
-        }))
+        RouteImplementation(
+          constructor(
+            new directives.ContentTypeResolver {
+              def resolve(fileName: String): ContentType =
+                ContentTypeResolver.Default(fileName)
+            }))
 
       case HandleWebSocketMessages(handler) ⇒
         handleWebSocketMessages(JavaMapping.toScala(handler))
@@ -246,10 +248,11 @@ private[http] object RouteImplementation
           runToRoute)
 
       case o: OpaqueRoute ⇒
-        (ctx ⇒
-          o.handle(new RequestContextImpl(ctx))
-            .asInstanceOf[RouteResultImpl]
-            .underlying)
+        (
+            ctx ⇒
+              o.handle(new RequestContextImpl(ctx))
+                .asInstanceOf[RouteResultImpl]
+                .underlying)
       case p: Product ⇒
         extractExecutionContext { implicit ec ⇒
           complete((500, s"Not implemented: ${p.productPrefix}"))

@@ -43,8 +43,7 @@ trait NamesDefaults { self: Analyzer =>
       qual: Option[Tree],
       targs: List[Tree],
       vargss: List[List[Tree]],
-      blockTyper: Typer
-  ) {}
+      blockTyper: Typer) {}
 
   private def nameOfNamedArg(arg: Tree) =
     Some(arg) collect {
@@ -160,8 +159,10 @@ trait NamesDefaults { self: Analyzer =>
             val targsInSource =
               tpt.tpe match {
                 case TypeRef(pre, sym, args)
-                    if (!args.forall(a =>
-                      context.undetparams contains a.typeSymbol)) =>
+                    if (
+                      !args.forall(a =>
+                        context.undetparams contains a.typeSymbol)
+                    ) =>
                   args.map(TypeTree(_))
                 case _ =>
                   Nil
@@ -183,8 +184,9 @@ trait NamesDefaults { self: Analyzer =>
       def blockWithQualifier(qual: Tree, selected: Name) = {
         val sym = blockTyper.context.owner.newValue(
           unit.freshTermName(nme.QUAL_PREFIX),
-          newFlags = ARTIFACT) setInfo uncheckedBounds(
-          qual.tpe) setPos (qual.pos.makeTransparent)
+          newFlags = ARTIFACT) setInfo uncheckedBounds(qual.tpe) setPos (
+          qual.pos.makeTransparent
+        )
         blockTyper.context.scope enter sym
         val vd = atPos(sym.pos)(ValDef(sym, qual) setType NoType)
         // it stays in Vegas: SI-5720, SI-5727
@@ -547,12 +549,13 @@ trait NamesDefaults { self: Analyzer =>
                 TypeApply(default1, targs.map(_.duplicate))
             val default2 = (default1 /: previousArgss)((tree, args) =>
               Apply(tree, args.map(_.duplicate)))
-            Some(atPos(pos) {
-              if (positional)
-                default2
-              else
-                AssignOrNamedArg(Ident(p.name), default2)
-            })
+            Some(
+              atPos(pos) {
+                if (positional)
+                  default2
+                else
+                  AssignOrNamedArg(Ident(p.name), default2)
+              })
           }
         })
         (givenArgs ::: defaultArgs, Nil)

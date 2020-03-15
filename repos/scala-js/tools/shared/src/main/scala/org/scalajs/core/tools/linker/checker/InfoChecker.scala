@@ -134,10 +134,12 @@ private final class InfoChecker(
       errorCount += 1
       logger.error(
         s"Method info mismatch for $className.${expectedInfo.encodedName}" +
-          (if (expectedInfo.isStatic)
-             " (static)"
-           else
-             ""))
+          (
+            if (expectedInfo.isStatic)
+              " (static)"
+            else
+              ""
+          ))
       logger.error(s"Expected:\n${methodInfoString(expectedInfo)}")
       logger.error(s"Got:\n${methodInfoString(info)}")
     }

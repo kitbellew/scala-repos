@@ -120,5 +120,4 @@ class EngineManifestSerializer
                   "engineFactory",
                   JString(enginemanifest.engineFactory)) ::
                 Nil)
-        }
-      ))
+        }))

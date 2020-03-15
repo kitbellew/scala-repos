@@ -150,8 +150,7 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
     private def setStopped() =
       require(
         isRunning.compareAndSet(true, false),
-        "Concurrent modification of HDFSState!"
-      )
+        "Concurrent modification of HDFSState!")
 
     /**
       * On success, checkpoint successful batches
@@ -180,10 +179,12 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
   private def alignedToBatchBoundaries(
       low: Lower[Timestamp],
       high: Upper[Timestamp]): Boolean =
-    (for {
-      lowerBound <- low.least
-      upperBound <- high.strictUpperBound
-    } yield checkpointStore.batcher.isLowerBatchEdge(lowerBound)
-      && checkpointStore.batcher.isLowerBatchEdge(upperBound)).getOrElse(false)
+    (
+      for {
+        lowerBound <- low.least
+        upperBound <- high.strictUpperBound
+      } yield checkpointStore.batcher.isLowerBatchEdge(lowerBound)
+        && checkpointStore.batcher.isLowerBatchEdge(upperBound)
+    ).getOrElse(false)
 
 }

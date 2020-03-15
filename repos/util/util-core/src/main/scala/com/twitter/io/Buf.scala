@@ -244,8 +244,8 @@ object Buf {
   class ByteArray(
       private[Buf] val bytes: Array[Byte],
       private[Buf] val begin: Int,
-      private[Buf] val end: Int
-  ) extends Buf {
+      private[Buf] val end: Int)
+      extends Buf {
 
     def write(buf: Array[Byte], off: Int): Unit =
       System.arraycopy(bytes, begin, buf, off, length)

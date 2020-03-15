@@ -572,9 +572,9 @@ class Scene(
   /**
     * Gets the list of mnemonics for this `Scene`.
     */
-  def getMnemonics: jfxc.ObservableMap[
-    jfxsi.KeyCombination,
-    jfxc.ObservableList[jfxsi.Mnemonic]] = delegate.getMnemonics
+  def getMnemonics
+      : jfxc.ObservableMap[jfxsi.KeyCombination, jfxc.ObservableList[
+        jfxsi.Mnemonic]] = delegate.getMnemonics
 
   /**
     * Gets the list of accelerators for this Scene.

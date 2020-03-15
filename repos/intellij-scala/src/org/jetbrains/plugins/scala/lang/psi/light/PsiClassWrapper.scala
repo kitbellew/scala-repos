@@ -231,7 +231,9 @@ class PsiClassWrapper(
     definition match {
       case o: ScObject =>
         baseClass.getQualifiedName == "java.lang.Object" ||
-          (baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated)
+          (
+            baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated
+          )
       case _ => false
     }
   }
@@ -240,7 +242,9 @@ class PsiClassWrapper(
     definition match {
       case o: ScObject =>
         baseClass.getQualifiedName == "java.lang.Object" ||
-          (baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated)
+          (
+            baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated
+          )
       case _ => false
     }
   }

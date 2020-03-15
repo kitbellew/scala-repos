@@ -59,14 +59,15 @@ object StressTestLog {
 
     Runtime
       .getRuntime()
-      .addShutdownHook(new Thread() {
-        override def run() = {
-          running.set(false)
-          writer.join()
-          reader.join()
-          CoreUtils.rm(dir)
-        }
-      })
+      .addShutdownHook(
+        new Thread() {
+          override def run() = {
+            running.set(false)
+            writer.join()
+            reader.join()
+            CoreUtils.rm(dir)
+          }
+        })
 
     while (running.get) {
       println(

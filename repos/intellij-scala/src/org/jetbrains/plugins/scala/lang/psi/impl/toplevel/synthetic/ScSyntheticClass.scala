@@ -118,9 +118,8 @@ class ScSyntheticClass(
       extends mutable.HashMap[String, mutable.Set[ScSyntheticFunction]]
       with mutable.MultiMap[String, ScSyntheticFunction]
   protected object specialMethods
-      extends mutable.HashMap[
-        String,
-        mutable.Set[GlobalSearchScope => ScSyntheticFunction]]
+      extends mutable.HashMap[String, mutable.Set[
+        GlobalSearchScope => ScSyntheticFunction]]
       with mutable.MultiMap[String, GlobalSearchScope => ScSyntheticFunction]
 
   def addMethod(method: ScSyntheticFunction) =
@@ -260,11 +259,12 @@ class SyntheticClasses(project: Project)
   def initComponent() {
     StartupManager
       .getInstance(project)
-      .registerPostStartupActivity(new Runnable {
-        def run() {
-          registerClasses()
-        }
-      })
+      .registerPostStartupActivity(
+        new Runnable {
+          def run() {
+            registerClasses()
+          }
+        })
   }
 
   private var classesInitialized: Boolean = false
@@ -435,19 +435,16 @@ class SyntheticClasses(project: Project)
       syntheticObjects += obj
     }
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Boolean {
  	def box(x: Boolean): java.lang.Boolean = throw new Error()
  	def unbox(x: Object): Boolean = throw new Error()
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Byte {
@@ -456,11 +453,9 @@ object Byte {
   def MinValue = java.lang.Byte.MIN_VALUE
  	def MaxValue = java.lang.Byte.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Char {
@@ -469,11 +464,9 @@ object Char {
  	def MinValue = java.lang.Character.MIN_VALUE
  	def MaxValue = java.lang.Character.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Double {
@@ -490,11 +483,9 @@ object Double {
  	def PositiveInfinity = java.lang.Double.POSITIVE_INFINITY
  	def NegativeInfinity = java.lang.Double.NEGATIVE_INFINITY
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Float {
@@ -511,11 +502,9 @@ object Float {
  	def PositiveInfinity = java.lang.Float.POSITIVE_INFINITY
  	def NegativeInfinity = java.lang.Float.NEGATIVE_INFINITY
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Int {
@@ -524,11 +513,9 @@ object Int {
  	def MinValue = java.lang.Integer.MIN_VALUE
  	def MaxValue = java.lang.Integer.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Long {
@@ -537,11 +524,9 @@ object Long {
  	def MinValue = java.lang.Long.MIN_VALUE
  	def MaxValue = java.lang.Long.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Short {
@@ -550,16 +535,13 @@ object Short {
  	def MinValue = java.lang.Short.MIN_VALUE
  	def MaxValue = java.lang.Short.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Unit
-"""
-    )
+""")
 
     classesInitialized = true
   }

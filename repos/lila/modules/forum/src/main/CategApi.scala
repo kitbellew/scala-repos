@@ -12,19 +12,21 @@ private[forum] final class CategApi(env: Env) {
   def list(teams: Set[String], troll: Boolean): Fu[List[CategView]] =
     for {
       categs ← CategRepo withTeams teams
-      views ← (categs map { categ =>
-        env.postApi get (categ lastPostId troll) map { topicPost =>
-          CategView(
-            categ,
-            topicPost map {
-              _ match {
-                case (topic, post) =>
-                  (topic, post, env.postApi lastPageOf topic)
-              }
-            },
-            troll)
+      views ← (
+        categs map { categ =>
+          env.postApi get (categ lastPostId troll) map { topicPost =>
+            CategView(
+              categ,
+              topicPost map {
+                _ match {
+                  case (topic, post) =>
+                    (topic, post, env.postApi lastPageOf topic)
+                }
+              },
+              troll)
+          }
         }
-      }).sequenceFu
+      ).sequenceFu
     } yield views
 
   def teamNbPosts(slug: String): Fu[Int] = CategRepo nbPosts teamSlug(slug)
@@ -74,9 +76,10 @@ private[forum] final class CategApi(env: Env) {
       page: Int,
       troll: Boolean): Fu[Option[(Categ, Paginator[TopicView])]] =
     optionT(CategRepo bySlug slug) flatMap { categ =>
-      optionT(env.topicApi.paginator(categ, page, troll) map {
-        (categ, _).some
-      })
+      optionT(
+        env.topicApi.paginator(categ, page, troll) map {
+          (categ, _).some
+        })
     }
 
   def denormalize(categ: Categ): Funit =

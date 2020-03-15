@@ -109,8 +109,7 @@ private[repl] trait SparkILoopInit {
       if (isReplPower)
         Some(() => enablePowerMode(true))
       else
-        None
-    ).flatten
+        None).flatten
   // ++ (
   //   warningsThunks
   // )

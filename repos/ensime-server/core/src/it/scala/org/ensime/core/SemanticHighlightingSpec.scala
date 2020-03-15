@@ -20,8 +20,8 @@ class SemanticHighlightingSpec
       config: EnsimeConfig,
       cc: RichCompilerControl,
       content: String,
-      tpes: List[SourceSymbol] = SourceSymbol.allSymbols
-  ): List[(SourceSymbol, String)] = {
+      tpes: List[SourceSymbol] = SourceSymbol.allSymbols)
+      : List[(SourceSymbol, String)] = {
 
     val file = srcFile(config, "abc.scala", contents(content))
     cc.askLoadedTyped(file)
@@ -88,8 +88,7 @@ class SemanticHighlightingSpec
         (ConstructorSymbol, "X1"),
         (ConstructorSymbol, "new X1(  )"),
         (ConstructorSymbol, "X2"),
-        (ConstructorSymbol, "new   X3")
-      ))
+        (ConstructorSymbol, "new   X3")))
   }
 
   it should "highlight function calls" in withPresCompiler { (config, cc) =>
@@ -113,8 +112,7 @@ class SemanticHighlightingSpec
         (FunctionCallSymbol, "fun"),
         (FunctionCallSymbol, "foo"),
         (FunctionCallSymbol, "substring"),
-        (FunctionCallSymbol, "quux")
-      ))
+        (FunctionCallSymbol, "quux")))
   }
 
   it should "highlight deprecated symbols" in withPresCompiler { (config, cc) =>
@@ -194,10 +192,7 @@ class SemanticHighlightingSpec
         List(DeprecatedSymbol)
       )
 
-      sds should ===(
-        List(
-          (DeprecatedSymbol, "BadTrait")
-        ))
+      sds should ===(List((DeprecatedSymbol, "BadTrait")))
   }
 
   it should "highlight imported names" in withPresCompiler { (config, cc) =>
@@ -216,8 +211,7 @@ class SemanticHighlightingSpec
       List(
         (ImportedNameSymbol, "RangePosition"),
         (ImportedNameSymbol, "Matchers"),
-        (ImportedNameSymbol, "FunSpec")
-      ))
+        (ImportedNameSymbol, "FunSpec")))
   }
 
   it should "highlight objects" in withPresCompiler { (config, cc) =>
@@ -263,29 +257,19 @@ class SemanticHighlightingSpec
       List(OperatorFieldSymbol)
     )
     // TODO We should highlight the "+="
-    sds should ===(
-      List(
-        (OperatorFieldSymbol, "+"),
-        (OperatorFieldSymbol, "*")
-      ))
+    sds should ===(List((OperatorFieldSymbol, "+"), (OperatorFieldSymbol, "*")))
   }
 
   it should "highlight packages" in withPresCompiler { (config, cc) =>
-    val sds = getSymbolDesignations(
-      config,
-      cc,
-      """
+    val sds = getSymbolDesignations(config, cc, """
              package com.example
              package other
-          """,
-      List(PackageSymbol)
-    )
+          """, List(PackageSymbol))
     sds should ===(
       List(
         (PackageSymbol, "com"),
         (PackageSymbol, "example"),
-        (PackageSymbol, "other")
-      ))
+        (PackageSymbol, "other")))
   }
 
   it should "highlight params" in withPresCompiler { (config, cc) =>
@@ -305,8 +289,7 @@ class SemanticHighlightingSpec
         (ParamSymbol, "u"),
         (ParamSymbol, "v"),
         (ParamSymbol, "v"),
-        (ParamSymbol, "u")
-      ))
+        (ParamSymbol, "u")))
   }
 
   it should "highlight traits" in withPresCompiler { (config, cc) =>
@@ -339,8 +322,7 @@ class SemanticHighlightingSpec
         (TraitSymbol, "X3"),
         (TraitSymbol, "X4"),
         (TraitSymbol, "X5[ String]"),
-        (TraitSymbol, "v2 .X6")
-      ))
+        (TraitSymbol, "v2 .X6")))
   }
 
   it should "highlight typeParams" in withPresCompiler { (config, cc) =>
@@ -364,8 +346,7 @@ class SemanticHighlightingSpec
         (TypeParamSymbol, "YY"),
         (TypeParamSymbol, "YY"),
         (TypeParamSymbol, "XX"),
-        (TypeParamSymbol, "YY")
-      ))
+        (TypeParamSymbol, "YY")))
   }
 
   it should "highlight vals" in withPresCompiler { (config, cc) =>
@@ -384,12 +365,7 @@ class SemanticHighlightingSpec
           """,
       List(ValSymbol)
     )
-    sds should ===(
-      List(
-        (ValSymbol, "u"),
-        (ValSymbol, "v"),
-        (ValSymbol, "u")
-      ))
+    sds should ===(List((ValSymbol, "u"), (ValSymbol, "v"), (ValSymbol, "u")))
   }
 
   it should "highlight valFields" in withPresCompiler { (config, cc) =>
@@ -414,8 +390,7 @@ class SemanticHighlightingSpec
         (ValFieldSymbol, "u"),
         (ValFieldSymbol, "v"),
         (ValFieldSymbol, "u"),
-        (ValFieldSymbol, "v")
-      ))
+        (ValFieldSymbol, "v")))
   }
 
   it should "highlight vars" in withPresCompiler { (config, cc) =>
@@ -434,12 +409,7 @@ class SemanticHighlightingSpec
           """,
       List(VarSymbol)
     )
-    sds should ===(
-      List(
-        (VarSymbol, "u"),
-        (VarSymbol, "v"),
-        (VarSymbol, "u")
-      ))
+    sds should ===(List((VarSymbol, "u"), (VarSymbol, "v"), (VarSymbol, "u")))
   }
 
   it should "highlight varFields" in withPresCompiler { (config, cc) =>
@@ -464,8 +434,7 @@ class SemanticHighlightingSpec
         (VarFieldSymbol, "u"),
         (VarFieldSymbol, "v"),
         (VarFieldSymbol, "u"),
-        (VarFieldSymbol, "v")
-      ))
+        (VarFieldSymbol, "v")))
   }
 
   it should "highlight lazy val fields correctly as vals" in withPresCompiler {
@@ -486,11 +455,7 @@ class SemanticHighlightingSpec
           """,
         List(ValFieldSymbol)
       )
-      sds should ===(
-        List(
-          (ValFieldSymbol, "u"),
-          (ValFieldSymbol, "v")
-        ))
+      sds should ===(List((ValFieldSymbol, "u"), (ValFieldSymbol, "v")))
   }
 
   it should "highlight setter operators" in withPresCompiler { (config, cc) =>
@@ -510,28 +475,16 @@ class SemanticHighlightingSpec
           """,
       List(OperatorFieldSymbol)
     )
-    sds should ===(
-      List(
-        (OperatorFieldSymbol, "value")
-      ))
+    sds should ===(List((OperatorFieldSymbol, "value")))
   }
 
   it should "not be confused by whitespace" in withPresCompiler {
     (config, cc) =>
-      val sds = getSymbolDesignations(
-        config,
-        cc,
-        """
+      val sds = getSymbolDesignations(config, cc, """
             package com.  example
-          """,
-        List(PackageSymbol)
-      )
+          """, List(PackageSymbol))
       // only part of "example" is highlighted
-      sds should ===(
-        List(
-          (PackageSymbol, "com"),
-          (PackageSymbol, "example")
-        ))
+      sds should ===(List((PackageSymbol, "com"), (PackageSymbol, "example")))
   }
 
   it should "highlight negation operators" in withPresCompiler { (config, cc) =>
@@ -548,10 +501,7 @@ class SemanticHighlightingSpec
     )
     // Call to foo is missing
     sds should ===(
-      List(
-        (OperatorFieldSymbol, "!"),
-        (OperatorFieldSymbol, "==")
-      ))
+      List((OperatorFieldSymbol, "!"), (OperatorFieldSymbol, "==")))
   }
 
   it should "highlight implicit conversions" in withPresCompiler {
@@ -570,10 +520,7 @@ class SemanticHighlightingSpec
           """,
         List(ImplicitConversionSymbol)
       )
-      sds should ===(
-        List(
-          (ImplicitConversionSymbol, "\"sample\"")
-        ))
+      sds should ===(List((ImplicitConversionSymbol, "\"sample\"")))
   }
 
   it should "highlight implicit parameters" in withPresCompiler {
@@ -594,10 +541,7 @@ class SemanticHighlightingSpec
           """,
         List(ImplicitParamsSymbol)
       )
-      sds should ===(
-        List(
-          (ImplicitParamsSymbol, "zz(1)")
-        ))
+      sds should ===(List((ImplicitParamsSymbol, "zz(1)")))
   }
 
   it should "highlight method calls after operators" in withPresCompiler {
@@ -616,9 +560,6 @@ class SemanticHighlightingSpec
         List(FunctionCallSymbol)
       )
       sds should ===(
-        List(
-          (FunctionCallSymbol, "fun"),
-          (FunctionCallSymbol, "foo")
-        ))
+        List((FunctionCallSymbol, "fun"), (FunctionCallSymbol, "foo")))
   }
 }

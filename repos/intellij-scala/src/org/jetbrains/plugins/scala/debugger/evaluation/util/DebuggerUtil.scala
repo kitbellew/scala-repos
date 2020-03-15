@@ -384,12 +384,13 @@ object DebuggerUtil {
     }
 
     def getDisplayName(debugProcess: DebugProcessImpl): String = {
-      ApplicationManager.getApplication.runReadAction(new Computable[String] {
-        def compute: String = {
-          JVMNameUtil
-            .getSourcePositionClassDisplayName(debugProcess, sourcePosition)
-        }
-      })
+      ApplicationManager.getApplication.runReadAction(
+        new Computable[String] {
+          def compute: String = {
+            JVMNameUtil
+              .getSourcePositionClassDisplayName(debugProcess, sourcePosition)
+          }
+        })
     }
   }
 
@@ -599,34 +600,35 @@ object DebuggerUtil {
     }
 
     val buf = new mutable.HashSet[ScTypedDefinition]
-    block.accept(new ScalaRecursiveElementVisitor {
-      override def visitReference(ref: ScReferenceElement) {
-        if (ref.qualifier.isDefined) {
-          super.visitReference(ref)
-          return
+    block.accept(
+      new ScalaRecursiveElementVisitor {
+        override def visitReference(ref: ScReferenceElement) {
+          if (ref.qualifier.isDefined) {
+            super.visitReference(ref)
+            return
+          }
+          val elem = ref.resolve()
+          elem match {
+            case null =>
+            case fun: ScFunctionDefinition
+                if fun.isLocal && !visited.contains(fun) =>
+              visited += fun
+              buf ++= localParamsForFunDef(fun, visited).filter(atRightPlace)
+            case fun: ScMethodLike
+                if fun.isConstructor && !visited.contains(fun) =>
+              fun.containingClass match {
+                case c: ScClass if isLocalClass(c) =>
+                  visited += c
+                  buf ++= localParamsForConstructor(c, visited).filter(
+                    atRightPlace)
+                case _ =>
+              }
+            case td: ScTypedDefinition if isLocalV(td) && atRightPlace(td) =>
+              buf += td
+            case _ => super.visitReference(ref)
+          }
         }
-        val elem = ref.resolve()
-        elem match {
-          case null =>
-          case fun: ScFunctionDefinition
-              if fun.isLocal && !visited.contains(fun) =>
-            visited += fun
-            buf ++= localParamsForFunDef(fun, visited).filter(atRightPlace)
-          case fun: ScMethodLike
-              if fun.isConstructor && !visited.contains(fun) =>
-            fun.containingClass match {
-              case c: ScClass if isLocalClass(c) =>
-                visited += c
-                buf ++= localParamsForConstructor(c, visited).filter(
-                  atRightPlace)
-              case _ =>
-            }
-          case td: ScTypedDefinition if isLocalV(td) && atRightPlace(td) =>
-            buf += td
-          case _ => super.visitReference(ref)
-        }
-      }
-    })
+      })
     buf.toSeq.sortBy(e =>
       (e.isInstanceOf[ScObject], e.getTextRange.getStartOffset))
   }

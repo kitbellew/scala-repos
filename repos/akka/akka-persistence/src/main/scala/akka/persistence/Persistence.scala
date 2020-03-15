@@ -199,20 +199,22 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
 
   config
     .getStringList("journal.auto-start-journals")
-    .forEach(new Consumer[String] {
-      override def accept(id: String): Unit = {
-        log.info(s"Auto-starting journal plugin `$id`")
-        journalFor(id)
-      }
-    })
+    .forEach(
+      new Consumer[String] {
+        override def accept(id: String): Unit = {
+          log.info(s"Auto-starting journal plugin `$id`")
+          journalFor(id)
+        }
+      })
   config
     .getStringList("snapshot-store.auto-start-snapshot-stores")
-    .forEach(new Consumer[String] {
-      override def accept(id: String): Unit = {
-        log.info(s"Auto-starting snapshot store `$id`")
-        snapshotStoreFor(id)
-      }
-    })
+    .forEach(
+      new Consumer[String] {
+        override def accept(id: String): Unit = {
+          log.info(s"Auto-starting snapshot store `$id`")
+          snapshotStoreFor(id)
+        }
+      })
 
   /**
     * Returns an [[akka.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.

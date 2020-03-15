@@ -76,15 +76,15 @@ object ScalaOAuthSpec extends PlaySpecification {
             case Left(e) => throw e
           }
         }
-        .getOrElse(oauth.retrieveRequestToken(
-          "https://localhost:9000/auth") match {
-          case Right(t) => {
-            // We received the unauthorized tokens in the OAuth object - store it before we proceed
-            Redirect(oauth.redirectUrl(t.token))
-              .withSession("token" -> t.token, "secret" -> t.secret)
-          }
-          case Left(e) => throw e
-        })
+        .getOrElse(
+          oauth.retrieveRequestToken("https://localhost:9000/auth") match {
+            case Right(t) => {
+              // We received the unauthorized tokens in the OAuth object - store it before we proceed
+              Redirect(oauth.redirectUrl(t.token))
+                .withSession("token" -> t.token, "secret" -> t.secret)
+            }
+            case Left(e) => throw e
+          })
     }
   //#flow
 

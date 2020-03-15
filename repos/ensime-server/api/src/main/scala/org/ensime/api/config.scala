@@ -25,8 +25,7 @@ case class EnsimeConfig(
     javaLibs: List[File],
     // WORKAROUND: https://github.com/ensime/ensime-server/issues/1042
     disableSourceMonitoring: Boolean = false,
-    disableClassMonitoring: Boolean = false
-) {
+    disableClassMonitoring: Boolean = false) {
   (rootDir :: cacheDir :: javaHome :: referenceSourceRoots ::: javaLibs)
     .foreach { f =>
       require(f.exists, "" + f + " is required but does not exist")
@@ -50,10 +49,12 @@ case class EnsimeConfig(
   def compileClasspath: Set[File] =
     modules.values.toSet.flatMap { m: EnsimeModule =>
       m.compileDeps ++ m.testDeps
-    } ++ (if (sourceMode)
-            List.empty
-          else
-            targetClasspath)
+    } ++ (
+      if (sourceMode)
+        List.empty
+      else
+        targetClasspath
+    )
 
   def targetClasspath: Set[File] =
     modules.values.toSet.flatMap { m: EnsimeModule =>
@@ -85,11 +86,12 @@ case class EnsimeModule(
     testDeps: List[File],
     sourceRoots: List[File],
     docJars: List[File],
-    referenceSourceRoots: List[File]
-) {
+    referenceSourceRoots: List[File]) {
   // only check the files, not the directories, see below
-  (compileDeps ::: runtimeDeps :::
-    testDeps ::: referenceSourceRoots).foreach { f =>
+  (
+    compileDeps ::: runtimeDeps :::
+      testDeps ::: referenceSourceRoots
+  ).foreach { f =>
     require(f.exists, "" + f + " is required but does not exist")
   }
 

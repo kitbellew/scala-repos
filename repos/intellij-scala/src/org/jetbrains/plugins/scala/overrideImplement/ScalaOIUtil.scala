@@ -189,10 +189,12 @@ object ScalaOIUtil {
           return true
         val clazz = m.containingClass
         clazz != null && clazz.qualifiedName == "scala.Product" &&
-        (m.name match {
-          case "productArity" | "productElement" => true
-          case _                                 => false
-        })
+        (
+          m.name match {
+            case "productArity" | "productElement" => true
+            case _                                 => false
+          }
+        )
       case x: ScTemplateDefinition =>
         x.superTypes.map(t => ScType.extractClass(t)).find {
           case Some(c) => isProductAbstractMethod(m, c, visited + clazz)
@@ -239,8 +241,10 @@ object ScalaOIUtil {
       case x: ScFunction if x.isSyntheticCopy          => false
       case x if x.containingClass == clazz             => false
       case x: PsiModifierListOwner
-          if (x.hasModifierPropertyScala("abstract") &&
-            !x.isInstanceOf[ScFunctionDefinition])
+          if (
+            x.hasModifierPropertyScala("abstract") &&
+              !x.isInstanceOf[ScFunctionDefinition]
+          )
             || x.hasModifierPropertyScala("final") =>
         false
       case x if x.isConstructor => false

@@ -352,8 +352,13 @@ abstract class KafkaShardIngestActor(
 
     case GetMessages(requestor) =>
       try {
-        logger.trace("Responding to GetMessages from %s starting from checkpoint %s. Running batches = %d/%d"
-          .format(requestor, lastCheckpoint, runningBatches.get, maxCacheSize))
+        logger.trace(
+          "Responding to GetMessages from %s starting from checkpoint %s. Running batches = %d/%d"
+            .format(
+              requestor,
+              lastCheckpoint,
+              runningBatches.get,
+              maxCacheSize))
         if (runningBatches.get < maxCacheSize) {
           // Funky handling of current count due to the fact that any errors will occur within a future
           runningBatches.getAndIncrement
@@ -493,8 +498,7 @@ abstract class KafkaShardIngestActor(
           topic,
           partition = 0,
           offset = lastCheckpoint.offset,
-          maxSize = fetchBufferSize
-        )
+          maxSize = fetchBufferSize)
 
       // read a fetch buffer worth of messages from kafka, deserializing each one
       // and recording the offset
@@ -522,9 +526,9 @@ abstract class KafkaShardIngestActor(
           }.toList
         }
 
-      val batched: Validation[
-        Error,
-        Future[(Vector[(Long, EventMessage)], YggCheckpoint)]] =
+      val batched: Validation[Error, Future[(
+          Vector[(Long, EventMessage)],
+          YggCheckpoint)]] =
         eventMessages.sequence[
           ({
             type λ[α] = Validation[Error, α]

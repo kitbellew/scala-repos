@@ -13,7 +13,5 @@ class Preparator extends PPreparator[TrainingData, PreparedData] {
   }
 }
 
-class PreparedData(
-    val items: RDD[Item],
-    val ratings: RDD[Rating]
-) extends Serializable
+class PreparedData(val items: RDD[Item], val ratings: RDD[Rating])
+    extends Serializable

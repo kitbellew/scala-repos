@@ -74,8 +74,10 @@ object ModuleExtDataService {
       if (scalaLibraries.nonEmpty) {
         val scalaLibrary = scalaLibraries
           .find(_.scalaVersion.contains(compilerVersion))
-          .orElse(scalaLibraries.find(_.scalaVersion.exists(
-            _.toLanguageLevel == compilerVersion.toLanguageLevel)))
+          .orElse(
+            scalaLibraries.find(
+              _.scalaVersion.exists(
+                _.toLanguageLevel == compilerVersion.toLanguageLevel)))
 
         scalaLibrary match {
           case Some(library) if !library.isScalaSdk =>

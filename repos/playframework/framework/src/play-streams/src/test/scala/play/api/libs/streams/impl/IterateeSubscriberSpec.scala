@@ -39,10 +39,11 @@ class IterateeSubscriberSpec extends Specification {
     def contStep(): Unit = {
       val oldPromise = nextIterateePromise
       nextIterateePromise = Promise[Iteratee[T, T]]()
-      oldPromise.success(Cont { input =>
-        record(ContInput(input))
-        nextIteratee
-      })
+      oldPromise.success(
+        Cont { input =>
+          record(ContInput(input))
+          nextIteratee
+        })
     }
 
     def doneStep(result: T, remaining: Input[T]): Unit = {

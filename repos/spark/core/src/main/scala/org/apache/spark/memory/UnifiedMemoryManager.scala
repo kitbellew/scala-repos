@@ -181,8 +181,9 @@ object UnifiedMemoryManager {
     new UnifiedMemoryManager(
       conf,
       maxMemory = maxMemory,
-      storageRegionSize = (maxMemory * conf
-        .getDouble("spark.memory.storageFraction", 0.5)).toLong,
+      storageRegionSize = (
+        maxMemory * conf.getDouble("spark.memory.storageFraction", 0.5)
+      ).toLong,
       numCores = numCores)
   }
 

@@ -89,30 +89,32 @@ class FlowParallelismDocSpec extends AkkaSpec {
   "Demonstrate pipelined parallel processing" in {
     //#pipelined-parallel
     val pancakeChefs1: Flow[ScoopOfBatter, HalfCookedPancake, NotUsed] = Flow
-      .fromGraph(GraphDSL.create() { implicit builder =>
-        val dispatchBatter = builder.add(Balance[ScoopOfBatter](2))
-        val mergeHalfPancakes = builder.add(Merge[HalfCookedPancake](2))
+      .fromGraph(
+        GraphDSL.create() { implicit builder =>
+          val dispatchBatter = builder.add(Balance[ScoopOfBatter](2))
+          val mergeHalfPancakes = builder.add(Merge[HalfCookedPancake](2))
 
-        // Two chefs work with one frying pan for each, half-frying the pancakes then putting
-        // them into a common pool
-        dispatchBatter.out(0) ~> fryingPan1.async ~> mergeHalfPancakes.in(0)
-        dispatchBatter.out(1) ~> fryingPan1.async ~> mergeHalfPancakes.in(1)
+          // Two chefs work with one frying pan for each, half-frying the pancakes then putting
+          // them into a common pool
+          dispatchBatter.out(0) ~> fryingPan1.async ~> mergeHalfPancakes.in(0)
+          dispatchBatter.out(1) ~> fryingPan1.async ~> mergeHalfPancakes.in(1)
 
-        FlowShape(dispatchBatter.in, mergeHalfPancakes.out)
-      })
+          FlowShape(dispatchBatter.in, mergeHalfPancakes.out)
+        })
 
     val pancakeChefs2: Flow[HalfCookedPancake, Pancake, NotUsed] = Flow
-      .fromGraph(GraphDSL.create() { implicit builder =>
-        val dispatchHalfPancakes = builder.add(Balance[HalfCookedPancake](2))
-        val mergePancakes = builder.add(Merge[Pancake](2))
+      .fromGraph(
+        GraphDSL.create() { implicit builder =>
+          val dispatchHalfPancakes = builder.add(Balance[HalfCookedPancake](2))
+          val mergePancakes = builder.add(Merge[Pancake](2))
 
-        // Two chefs work with one frying pan for each, finishing the pancakes then putting
-        // them into a common pool
-        dispatchHalfPancakes.out(0) ~> fryingPan2.async ~> mergePancakes.in(0)
-        dispatchHalfPancakes.out(1) ~> fryingPan2.async ~> mergePancakes.in(1)
+          // Two chefs work with one frying pan for each, finishing the pancakes then putting
+          // them into a common pool
+          dispatchHalfPancakes.out(0) ~> fryingPan2.async ~> mergePancakes.in(0)
+          dispatchHalfPancakes.out(1) ~> fryingPan2.async ~> mergePancakes.in(1)
 
-        FlowShape(dispatchHalfPancakes.in, mergePancakes.out)
-      })
+          FlowShape(dispatchHalfPancakes.in, mergePancakes.out)
+        })
 
     val kitchen: Flow[ScoopOfBatter, Pancake, NotUsed] = pancakeChefs1.via(
       pancakeChefs2)

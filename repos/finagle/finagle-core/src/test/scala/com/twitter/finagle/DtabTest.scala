@@ -14,8 +14,7 @@ class DtabTest extends FunSuite with AssertionsForJUnit {
       if (Equiv[T].equiv(left, right))
         None
       else
-        Some(left + "!=" + right)
-    )
+        Some(left + "!=" + right))
 
   test("d1 ++ d2") {
     val d1 = Dtab.read("/foo => /bar")

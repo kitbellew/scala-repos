@@ -11,9 +11,8 @@ import com.twitter.io.{Buf, Charsets}
 @RunWith(classOf[JUnitRunner])
 class KeyValidationTest extends FunSuite {
 
-  private class BasicKeyValidation(
-      override val keys: Seq[Buf]
-  ) extends KeyValidation
+  private class BasicKeyValidation(override val keys: Seq[Buf])
+      extends KeyValidation
 
   test("reject invalid key that is too long") {
     val length = 251
@@ -31,8 +30,7 @@ class KeyValidationTest extends FunSuite {
       "hi withwhitespace",
       "anda\rcarraigereturn",
       "yo\u0000ihaveacontrolchar",
-      "andheres\nanewline"
-    ) map {
+      "andheres\nanewline") map {
       Buf.Utf8(_)
     }
 

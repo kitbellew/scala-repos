@@ -86,9 +86,7 @@ private sealed trait OneAndBind[F[_]]
         F.bind(fa.tail) { a =>
           val x = f(a)
           G.plus(F.point(x.head), x.tail)
-        }
-      )
-    )
+        }))
 }
 
 private sealed trait OneAndPlus[F[_]] extends Plus[OneAnd[F, ?]] {

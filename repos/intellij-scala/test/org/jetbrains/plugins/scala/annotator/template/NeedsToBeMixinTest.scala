@@ -11,9 +11,7 @@ class NeedsToBeMixinTest extends AnnotatorTestBase(NeedsToBeMixin) {
   def testProblem() {
     val Message = NeedsToBeMixin.message("Class", "C", ("base", "T"))
 
-    assertMatches(
-      messages(
-        """
+    assertMatches(messages("""
         |trait Base {
         |  def base: Int
         |}
@@ -21,16 +19,13 @@ class NeedsToBeMixinTest extends AnnotatorTestBase(NeedsToBeMixin) {
         |  abstract override def base: Int = 1
         |}
         |class C extends T
-      """.stripMargin
-      )) {
+      """.stripMargin)) {
       case Error("C", Message) :: Nil =>
     }
   }
 
   def testFine() {
-    assertNothing(
-      messages(
-        """
+    assertNothing(messages("""
         |trait Base {
         |  def base: Int
         |}
@@ -41,7 +36,6 @@ class NeedsToBeMixinTest extends AnnotatorTestBase(NeedsToBeMixin) {
         |  def base: Int = 2
         |}
         |class C extends Impl with T
-      """.stripMargin
-      ))
+      """.stripMargin))
   }
 }

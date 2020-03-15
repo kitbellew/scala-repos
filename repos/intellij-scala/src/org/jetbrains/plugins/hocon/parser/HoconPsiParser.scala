@@ -47,11 +47,12 @@ class HoconPsiParser extends PsiParser {
           def text = getter.get(i)
 
           def entireLineComment =
-            token == commentToken && (if (i > 0)
-                                        tokens.get(
-                                          i - 1) == LineBreakingWhitespace
-                                      else
-                                        atStreamEdge)
+            token == commentToken && (
+              if (i > 0)
+                tokens.get(i - 1) == LineBreakingWhitespace
+              else
+                atStreamEdge
+            )
           def noBlankLineWhitespace =
             Whitespace
               .contains(token) && text.charIterator.count(_ == '\n') <= 1
@@ -90,9 +91,14 @@ class HoconPsiParser extends PsiParser {
     }
 
     def matches(matcher: Matcher) =
-      (matcher.tokenSet.contains(
-        builder.getTokenType) && (!matcher.requireNoNewLine || !newLinesBeforeCurrentToken)) ||
-        (matcher.matchNewLine && newLinesBeforeCurrentToken) || (matcher.matchEof && builder.eof)
+      (
+        matcher.tokenSet.contains(builder.getTokenType) && (
+          !matcher.requireNoNewLine || !newLinesBeforeCurrentToken
+        )
+      ) ||
+        (matcher.matchNewLine && newLinesBeforeCurrentToken) || (
+        matcher.matchEof && builder.eof
+      )
 
     def matchesUnquoted(str: String) =
       matches(UnquotedChars) && builder.getTokenText == str
@@ -104,7 +110,9 @@ class HoconPsiParser extends PsiParser {
 
     def pass(matcher: Matcher): Boolean = {
       val result = matches(matcher)
-      if (result && (!matcher.matchNewLine || !newLinesBeforeCurrentToken) && (!matcher.matchEof || !builder.eof)) {
+      if (result && (!matcher.matchNewLine || !newLinesBeforeCurrentToken) && (
+            !matcher.matchEof || !builder.eof
+          )) {
         advanceLexer()
       }
       result
@@ -196,10 +204,12 @@ class HoconPsiParser extends PsiParser {
           pass(Comma)
         } else {
           tokenError(
-            "expected object field" + (if (insideObject)
-                                         ", include or '}'"
-                                       else
-                                         " or include"))
+            "expected object field" + (
+              if (insideObject)
+                ", include or '}'"
+              else
+                " or include"
+            ))
         }
       }
 
@@ -497,7 +507,9 @@ class HoconPsiParser extends PsiParser {
           }
         }
 
-        (!gotPeriod || noPeriodWhitespace) && (!gotDecimalPart || noDecimalPartWhitespace) && isValid
+        (!gotPeriod || noPeriodWhitespace) && (
+          !gotDecimalPart || noDecimalPartWhitespace
+        ) && isValid
       }
 
     def parseArray(): Unit = {

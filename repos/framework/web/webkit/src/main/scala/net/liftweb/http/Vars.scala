@@ -155,8 +155,9 @@ abstract class SessionVar[T](dflt: => T)
   }
 
   override protected def testWasSet(name: String, bn: String): Boolean = {
-    S.session.flatMap(_.get(name)).isDefined || (S.session.flatMap(
-      _.get(bn)) openOr false)
+    S.session
+      .flatMap(_.get(name))
+      .isDefined || (S.session.flatMap(_.get(bn)) openOr false)
   }
 
   protected override def registerCleanupFunc(in: LiftSession => Unit): Unit =
@@ -283,11 +284,13 @@ abstract class ContainerVar[T](dflt: => T)(
 
   override protected def testWasSet(name: String, bn: String): Boolean = {
     S.session.flatMap(s => localGet(s, name)).isDefined ||
-    (S.session.flatMap(s =>
-      localGet(s, bn) match {
-        case Full(b: Boolean) => Full(b)
-        case _                => Empty
-      }) openOr false)
+    (
+      S.session.flatMap(s =>
+        localGet(s, bn) match {
+          case Full(b: Boolean) => Full(b)
+          case _                => Empty
+        }) openOr false
+    )
   }
 
   protected override def registerCleanupFunc(in: LiftSession => Unit): Unit =
@@ -470,8 +473,9 @@ abstract class RequestVar[T](dflt: => T)
   // no sync necessary for RequestVars... always on the same thread
 
   override protected def testWasSet(name: String, bn: String): Boolean = {
-    RequestVarHandler.get(name).isDefined || (RequestVarHandler.get(
-      bn) openOr false)
+    RequestVarHandler
+      .get(name)
+      .isDefined || (RequestVarHandler.get(bn) openOr false)
   }
 
   /**
@@ -609,9 +613,7 @@ private[http] trait CoreRequestVarHandler {
 
               ret
             }
-          }
-        )
-      )
+          }))
   }
 
   protected def backingStore
@@ -682,17 +684,16 @@ private[http] trait CoreRequestVarHandler {
                   .foreach(key =>
                     vals.value(key) match {
                       case (rv, _, true) if rv.logUnreadVal =>
-                        logger.warn("RequestVar %s was set but not read".format(
-                          key.replace(VarConstants.varPrefix, "")))
+                        logger.warn(
+                          "RequestVar %s was set but not read".format(
+                            key.replace(VarConstants.varPrefix, "")))
                       case _ =>
                     })
               }
 
               ret
             }
-          }
-        )
-      )
+          }))
     }
   }
 }

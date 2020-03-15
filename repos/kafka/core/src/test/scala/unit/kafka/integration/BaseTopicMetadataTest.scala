@@ -59,8 +59,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
       new BrokerEndPoint(
         server1.config.brokerId,
         server1.config.hostName,
-        server1.boundPort(SecurityProtocol.PLAINTEXT))
-    )
+        server1.boundPort(SecurityProtocol.PLAINTEXT)))
   }
 
   @After
@@ -322,11 +321,13 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
         },
         "Topic metadata is not correctly updated for broker " + x + ".\n" +
           "Expected ISR: " + expectedIsr + "\n" +
-          "Actual ISR  : " + (if (metadata.topicsMetadata.nonEmpty &&
-                                  metadata.topicsMetadata.head.partitionsMetadata.nonEmpty)
-                                metadata.topicsMetadata.head.partitionsMetadata.head.isr
-                              else
-                                ""),
+          "Actual ISR  : " + (
+          if (metadata.topicsMetadata.nonEmpty &&
+              metadata.topicsMetadata.head.partitionsMetadata.nonEmpty)
+            metadata.topicsMetadata.head.partitionsMetadata.head.isr
+          else
+            ""
+        ),
         8000L
       )
     })

@@ -319,13 +319,15 @@ class ScalaGlobalMembersCompletionContributor
       namesCache.getAllMethodNames.iterator ++ namesCache.getAllJavaMethodNames.iterator
 
     def isAccessible(member: PsiMember, containingClass: PsiClass): Boolean = {
-      invocationCount >= 3 || (ResolveUtils.isAccessible(
-        member,
-        ref,
-        forCompletion = true) && ResolveUtils.isAccessible(
-        containingClass,
-        ref,
-        forCompletion = true))
+      invocationCount >= 3 || (
+        ResolveUtils.isAccessible(
+          member,
+          ref,
+          forCompletion = true) && ResolveUtils.isAccessible(
+          containingClass,
+          ref,
+          forCompletion = true)
+      )
     }
 
     while (methodNamesIterator.hasNext) {

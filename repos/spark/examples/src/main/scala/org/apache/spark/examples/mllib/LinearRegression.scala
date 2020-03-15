@@ -68,8 +68,9 @@ object LinearRegression {
           .text(s"initial step size, default: ${defaultParams.stepSize}")
           .action((x, c) => c.copy(stepSize = x))
         opt[String]("regType")
-          .text(s"regularization type (${RegType.values.mkString(",")}), " +
-            s"default: ${defaultParams.regType}")
+          .text(
+            s"regularization type (${RegType.values.mkString(",")}), " +
+              s"default: ${defaultParams.regType}")
           .action((x, c) => c.copy(regType = RegType.withName(x)))
         opt[Double]("regParam")
           .text(s"regularization parameter, default: ${defaultParams.regParam}")

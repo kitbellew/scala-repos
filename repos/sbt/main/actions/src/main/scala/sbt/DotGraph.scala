@@ -28,10 +28,12 @@ object DotGraph {
       (path: String) => {
         val last = path.lastIndexOf(File.separatorChar)
         val packagePath =
-          (if (last > 0)
-             path.substring(0, last)
-           else
-             path).trim
+          (
+            if (last > 0)
+              path.substring(0, last)
+            else
+              path
+          ).trim
         if (packagePath.isEmpty)
           ""
         else

@@ -43,8 +43,7 @@ class FlowModule(leadershipModule: LeadershipModule) {
         conf,
         marathonEventStream,
         offersWanted,
-        driverHolder
-      )
+        driverHolder)
       val actorRef = leadershipModule.startWhenLeader(
         reviveOffersActor,
         "reviveOffersWhenWanted")
@@ -71,11 +70,7 @@ class FlowModule(leadershipModule: LeadershipModule) {
       taskStatusObservables: TaskStatusObservables,
       offerMatcherManager: OfferMatcherManager): Unit = {
     lazy val offerMatcherLaunchTokensProps = OfferMatcherLaunchTokensActor
-      .props(
-        conf,
-        taskStatusObservables,
-        offerMatcherManager
-      )
+      .props(conf, taskStatusObservables, offerMatcherManager)
     leadershipModule.startWhenLeader(
       offerMatcherLaunchTokensProps,
       "offerMatcherLaunchTokens")

@@ -50,8 +50,7 @@ object SocksConnectHandler {
       proxyAddr: SocketAddress,
       addr: InetSocketAddress,
       authenticationSettings: Seq[AuthenticationSetting],
-      pipeline: ChannelPipeline
-  ): SocksConnectHandler = {
+      pipeline: ChannelPipeline): SocksConnectHandler = {
     val handler =
       new SocksConnectHandler(proxyAddr, addr, authenticationSettings)
     pipeline.addFirst("socksConnect", handler)
@@ -228,22 +227,24 @@ class SocksConnectHandler(
 
         // proxy cancellation
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
-        de.getFuture.addListener(new ChannelFutureListener {
-          def operationComplete(f: ChannelFuture) {
-            if (f.isCancelled)
-              wrappedConnectFuture.cancel()
-          }
-        })
+        de.getFuture.addListener(
+          new ChannelFutureListener {
+            def operationComplete(f: ChannelFuture) {
+              if (f.isCancelled)
+                wrappedConnectFuture.cancel()
+            }
+          })
         // Proxy failures here so that if the connect fails, it is
         // propagated to the listener, not just on the channel.
-        wrappedConnectFuture.addListener(new ChannelFutureListener {
-          def operationComplete(f: ChannelFuture) {
-            if (f.isSuccess || f.isCancelled)
-              return
+        wrappedConnectFuture.addListener(
+          new ChannelFutureListener {
+            def operationComplete(f: ChannelFuture) {
+              if (f.isSuccess || f.isCancelled)
+                return
 
-            fail(f.getChannel, f.getCause)
-          }
-        })
+              fail(f.getChannel, f.getCause)
+            }
+          })
 
         val wrappedEvent =
           new DownstreamChannelStateEvent(
@@ -269,14 +270,15 @@ class SocksConnectHandler(
     }
 
     // proxy cancellations again.
-    connectFuture.get.addListener(new ChannelFutureListener {
-      def operationComplete(f: ChannelFuture) {
-        if (f.isSuccess)
-          SocksConnectHandler.super.channelConnected(ctx, e)
-        else if (f.isCancelled)
-          fail(ctx.getChannel, new ChannelClosedException(addr))
-      }
-    })
+    connectFuture.get.addListener(
+      new ChannelFutureListener {
+        def operationComplete(f: ChannelFuture) {
+          if (f.isSuccess)
+            SocksConnectHandler.super.channelConnected(ctx, e)
+          else if (f.isCancelled)
+            fail(ctx.getChannel, new ChannelClosedException(addr))
+        }
+      })
 
     state = Connected
     writeInit(ctx)

@@ -609,7 +609,9 @@ trait JdbcBackend extends RelationalBackend {
 
     def pushStatementParameters(p: JdbcBackend.StatementParameters): Unit = {
       val p2 =
-        if ((p.rsType eq null) || (p.rsConcurrency eq null) || (p.rsHoldability eq null) || (p.statementInit eq null)) {
+        if ((p.rsType eq null) || (p.rsConcurrency eq null) || (
+              p.rsHoldability eq null
+            ) || (p.statementInit eq null)) {
           val curr =
             if (statementParameters eq null)
               JdbcBackend.defaultStatementParameters
@@ -640,10 +642,12 @@ trait JdbcBackend extends RelationalBackend {
           )
         } else
           p
-      statementParameters = p2 :: (if (statementParameters eq null)
-                                     Nil
-                                   else
-                                     statementParameters)
+      statementParameters = p2 :: (
+        if (statementParameters eq null)
+          Nil
+        else
+          statementParameters
+      )
     }
 
     def popStatementParameters: Unit = {

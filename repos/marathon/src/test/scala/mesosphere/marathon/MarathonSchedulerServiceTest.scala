@@ -133,8 +133,7 @@ class MarathonSchedulerServiceTest
         system,
         migration,
         schedulerActor,
-        events
-      ) {
+        events) {
         override def runDriver(
             abdicateCmdOption: Option[ExceptionalCommand[JoinException]])
             : Unit = ()
@@ -170,8 +169,7 @@ class MarathonSchedulerServiceTest
         system,
         migration,
         schedulerActor,
-        events
-      ) {
+        events) {
         override def runDriver(
             abdicateCmdOption: Option[ExceptionalCommand[JoinException]])
             : Unit = ()
@@ -206,8 +204,7 @@ class MarathonSchedulerServiceTest
         migration,
         schedulerActor,
         events,
-        metrics = new Metrics(new MetricRegistry)
-      ) {
+        metrics = new Metrics(new MetricRegistry)) {
         override def runDriver(
             abdicateCmdOption: Option[ExceptionalCommand[JoinException]])
             : Unit = ()
@@ -258,8 +255,7 @@ class MarathonSchedulerServiceTest
         system,
         migration,
         schedulerActor,
-        events
-      ) {
+        events) {
         override def runDriver(
             abdicateCmdOption: Option[ExceptionalCommand[JoinException]])
             : Unit = ()
@@ -291,8 +287,7 @@ class MarathonSchedulerServiceTest
         system,
         migration,
         schedulerActor,
-        events
-      ) {
+        events) {
         override lazy val initialOfferLeadershipBackOff: FiniteDuration =
           1.milliseconds
         override def runDriver(
@@ -302,12 +297,13 @@ class MarathonSchedulerServiceTest
 
     // use an Answer object here because Mockito's thenThrow does only
     // allow to throw RuntimeExceptions
-    when(migration.migrate()).thenAnswer(new Answer[StorageVersion] {
-      override def answer(invocation: InvocationOnMock): StorageVersion = {
-        import java.util.concurrent.TimeoutException
-        throw new TimeoutException("Failed to wait for future within timeout")
-      }
-    })
+    when(migration.migrate()).thenAnswer(
+      new Answer[StorageVersion] {
+        override def answer(invocation: InvocationOnMock): StorageVersion = {
+          import java.util.concurrent.TimeoutException
+          throw new TimeoutException("Failed to wait for future within timeout")
+        }
+      })
 
     schedulerService.onElected(mock[ExceptionalCommand[Group.JoinException]])
 
@@ -334,8 +330,7 @@ class MarathonSchedulerServiceTest
         system,
         migration,
         schedulerActor,
-        events
-      ) {
+        events) {
         override lazy val initialOfferLeadershipBackOff: FiniteDuration =
           1.milliseconds
         override def runDriver(
@@ -373,8 +368,7 @@ class MarathonSchedulerServiceTest
         system,
         migration,
         schedulerActor,
-        events
-      ) {
+        events) {
         override lazy val initialOfferLeadershipBackOff: FiniteDuration =
           1.milliseconds
         override def runDriver(
@@ -412,8 +406,7 @@ class MarathonSchedulerServiceTest
         system,
         migration,
         schedulerActor,
-        events
-      ) {
+        events) {
         override lazy val initialOfferLeadershipBackOff: FiniteDuration =
           1.milliseconds
       }

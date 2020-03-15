@@ -62,8 +62,9 @@ private[sql] object InferSchema {
               }
             } catch {
               case _: JsonParseException if shouldHandleCorruptRecord =>
-                Some(StructType(
-                  Seq(StructField(columnNameOfCorruptRecords, StringType))))
+                Some(
+                  StructType(
+                    Seq(StructField(columnNameOfCorruptRecords, StringType))))
               case _: JsonParseException =>
                 None
             }

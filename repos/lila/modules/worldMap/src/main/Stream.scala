@@ -82,8 +82,7 @@ object Stream {
         game.points.map { p =>
           List(p.lat, p.lon) map truncate
         }
-      }
-    )
+      })
 
   case class Point(lat: Double, lon: Double)
   def toPoint(ipLoc: IpLocation): Option[Point] =

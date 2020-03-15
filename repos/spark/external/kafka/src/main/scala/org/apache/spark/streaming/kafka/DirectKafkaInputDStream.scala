@@ -61,8 +61,8 @@ private[streaming] class DirectKafkaInputDStream[
     _ssc: StreamingContext,
     val kafkaParams: Map[String, String],
     val fromOffsets: Map[TopicAndPartition, Long],
-    messageHandler: MessageAndMetadata[K, V] => R
-) extends InputDStream[R](_ssc)
+    messageHandler: MessageAndMetadata[K, V] => R)
+    extends InputDStream[R](_ssc)
     with Logging {
   val maxRetries = context.sparkContext.getConf
     .getInt("spark.streaming.kafka.maxRetries", 1)
@@ -110,10 +110,12 @@ private[streaming] class DirectKafkaInputDStream[
           lagPerPartition.map {
             case (tp, lag) =>
               val backpressureRate = Math.round(lag / totalLag.toFloat * rate)
-              tp -> (if (maxRateLimitPerPartition > 0) {
-                       Math.min(backpressureRate, maxRateLimitPerPartition)
-                     } else
-                       backpressureRate)
+              tp -> (
+                if (maxRateLimitPerPartition > 0) {
+                  Math.min(backpressureRate, maxRateLimitPerPartition)
+                } else
+                  backpressureRate
+              )
           }
         case None =>
           offsets.map {
@@ -124,9 +126,10 @@ private[streaming] class DirectKafkaInputDStream[
     if (effectiveRateLimitPerPartition.values.sum > 0) {
       val secsPerBatch =
         context.graph.batchDuration.milliseconds.toDouble / 1000
-      Some(effectiveRateLimitPerPartition.map {
-        case (tp, limit) => tp -> (secsPerBatch * limit).toLong
-      })
+      Some(
+        effectiveRateLimitPerPartition.map {
+          case (tp, limit) => tp -> (secsPerBatch * limit).toLong
+        })
     } else {
       None
     }
@@ -214,8 +217,8 @@ private[streaming] class DirectKafkaInputDStream[
       extends DStreamCheckpointData(this) {
     def batchForTime
         : mutable.HashMap[Time, Array[(String, Int, Long, Long)]] = {
-      data.asInstanceOf[
-        mutable.HashMap[Time, Array[OffsetRange.OffsetRangeTuple]]]
+      data.asInstanceOf[mutable.HashMap[Time, Array[
+        OffsetRange.OffsetRangeTuple]]]
     }
 
     override def update(time: Time) {

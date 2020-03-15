@@ -48,8 +48,7 @@ object PropsSpec extends Specification {
             "test propsters",
             () =>
               Full(
-                new ByteArrayInputStream("test.prop=value".getBytes("UTF-8"))))
-        )
+                new ByteArrayInputStream("test.prop=value".getBytes("UTF-8")))))
       }
 
       testProps.getInt("jetty.port") must_== Empty

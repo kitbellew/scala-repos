@@ -45,8 +45,8 @@ class ShuffleBlockFetcherIteratorSuite
   private def createMockTransfer(
       data: Map[BlockId, ManagedBuffer]): BlockTransferService = {
     val transfer = mock(classOf[BlockTransferService])
-    when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
-      .thenAnswer(new Answer[Unit] {
+    when(transfer.fetchBlocks(any(), any(), any(), any(), any())).thenAnswer(
+      new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           val blocks = invocation.getArguments()(3).asInstanceOf[Array[String]]
           val listener = invocation
@@ -167,8 +167,8 @@ class ShuffleBlockFetcherIteratorSuite
     val sem = new Semaphore(0)
 
     val transfer = mock(classOf[BlockTransferService])
-    when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
-      .thenAnswer(new Answer[Unit] {
+    when(transfer.fetchBlocks(any(), any(), any(), any(), any())).thenAnswer(
+      new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           val listener = invocation
             .getArguments()(4)
@@ -239,8 +239,8 @@ class ShuffleBlockFetcherIteratorSuite
     val sem = new Semaphore(0)
 
     val transfer = mock(classOf[BlockTransferService])
-    when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
-      .thenAnswer(new Answer[Unit] {
+    when(transfer.fetchBlocks(any(), any(), any(), any(), any())).thenAnswer(
+      new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           val listener = invocation
             .getArguments()(4)

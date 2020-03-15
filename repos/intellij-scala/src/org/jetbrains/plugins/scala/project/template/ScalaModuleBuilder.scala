@@ -35,14 +35,15 @@ class ScalaModuleBuilder(
 
   private var libraryCompositionSettings: LibraryCompositionSettings = _
 
-  addModuleConfigurationUpdater(new ModuleConfigurationUpdater() {
-    override def update(module: Module, rootModel: ModifiableRootModel) {
-      libraryCompositionSettings.addLibraries(
-        rootModel,
-        new util.ArrayList[Library](),
-        librariesContainer)
-    }
-  })
+  addModuleConfigurationUpdater(
+    new ModuleConfigurationUpdater() {
+      override def update(module: Module, rootModel: ModifiableRootModel) {
+        libraryCompositionSettings.addLibraries(
+          rootModel,
+          new util.ArrayList[Library](),
+          librariesContainer)
+      }
+    })
 
   override def modifySettingsStep(
       settingsStep: SettingsStep): ModuleWizardStep = {

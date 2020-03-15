@@ -182,9 +182,8 @@ object Forms {
       a10: (String, Mapping[A10]),
       a11: (String, Mapping[A11]))(
       apply: Function11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, R])(
-      unapply: Function1[
-        R,
-        Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)]]): Mapping[R] = {
+      unapply: Function1[R, Option[
+        (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)]]): Mapping[R] = {
     new ObjectMapping11(
       apply,
       unapply,
@@ -215,10 +214,8 @@ object Forms {
       a11: (String, Mapping[A11]),
       a12: (String, Mapping[A12]))(
       apply: Function12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, R])(
-      unapply: Function1[
-        R,
-        Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)]])
-      : Mapping[R] = {
+      unapply: Function1[R, Option[
+        (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)]]): Mapping[R] = {
     new ObjectMapping12(
       apply,
       unapply,
@@ -265,9 +262,8 @@ object Forms {
         A12,
         A13,
         R])(
-      unapply: Function1[
-        R,
-        Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)]])
+      unapply: Function1[R, Option[
+        (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)]])
       : Mapping[R] = {
     new ObjectMapping13(
       apply,
@@ -318,9 +314,8 @@ object Forms {
         A13,
         A14,
         R])(
-      unapply: Function1[
-        R,
-        Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)]])
+      unapply: Function1[R, Option[
+        (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)]])
       : Mapping[R] = {
     new ObjectMapping14(
       apply,
@@ -389,9 +384,9 @@ object Forms {
         A13,
         A14,
         A15,
-        R])(unapply: Function1[
-    R,
-    Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]])
+        R])(
+      unapply: Function1[R, Option[
+        (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]])
       : Mapping[R] = {
     new ObjectMapping15(
       apply,
@@ -464,11 +459,25 @@ object Forms {
         A14,
         A15,
         A16,
-        R])(unapply: Function1[
-    R,
-    Option[
-      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16)]])
-      : Mapping[R] = {
+        R])(
+      unapply: Function1[R, Option[
+        (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16)]]): Mapping[R] = {
     new ObjectMapping16(
       apply,
       unapply,
@@ -545,27 +554,25 @@ object Forms {
         A16,
         A17,
         R])(
-      unapply: Function1[
-        R,
-        Option[
-          (
-              A1,
-              A2,
-              A3,
-              A4,
-              A5,
-              A6,
-              A7,
-              A8,
-              A9,
-              A10,
-              A11,
-              A12,
-              A13,
-              A14,
-              A15,
-              A16,
-              A17)]]): Mapping[R] = {
+      unapply: Function1[R, Option[
+        (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17)]]): Mapping[R] = {
     new ObjectMapping17(
       apply,
       unapply,
@@ -646,28 +653,26 @@ object Forms {
         A17,
         A18,
         R])(
-      unapply: Function1[
-        R,
-        Option[
-          (
-              A1,
-              A2,
-              A3,
-              A4,
-              A5,
-              A6,
-              A7,
-              A8,
-              A9,
-              A10,
-              A11,
-              A12,
-              A13,
-              A14,
-              A15,
-              A16,
-              A17,
-              A18)]]): Mapping[R] = {
+      unapply: Function1[R, Option[
+        (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18)]]): Mapping[R] = {
     new ObjectMapping18(
       apply,
       unapply,
@@ -752,29 +757,27 @@ object Forms {
         A18,
         A19,
         R])(
-      unapply: Function1[
-        R,
-        Option[
-          (
-              A1,
-              A2,
-              A3,
-              A4,
-              A5,
-              A6,
-              A7,
-              A8,
-              A9,
-              A10,
-              A11,
-              A12,
-              A13,
-              A14,
-              A15,
-              A16,
-              A17,
-              A18,
-              A19)]]): Mapping[R] = {
+      unapply: Function1[R, Option[
+        (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18,
+            A19)]]): Mapping[R] = {
     new ObjectMapping19(
       apply,
       unapply,
@@ -863,30 +866,28 @@ object Forms {
         A19,
         A20,
         R])(
-      unapply: Function1[
-        R,
-        Option[
-          (
-              A1,
-              A2,
-              A3,
-              A4,
-              A5,
-              A6,
-              A7,
-              A8,
-              A9,
-              A10,
-              A11,
-              A12,
-              A13,
-              A14,
-              A15,
-              A16,
-              A17,
-              A18,
-              A19,
-              A20)]]): Mapping[R] = {
+      unapply: Function1[R, Option[
+        (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18,
+            A19,
+            A20)]]): Mapping[R] = {
     new ObjectMapping20(
       apply,
       unapply,
@@ -979,31 +980,29 @@ object Forms {
         A20,
         A21,
         R])(
-      unapply: Function1[
-        R,
-        Option[
-          (
-              A1,
-              A2,
-              A3,
-              A4,
-              A5,
-              A6,
-              A7,
-              A8,
-              A9,
-              A10,
-              A11,
-              A12,
-              A13,
-              A14,
-              A15,
-              A16,
-              A17,
-              A18,
-              A19,
-              A20,
-              A21)]]): Mapping[R] = {
+      unapply: Function1[R, Option[
+        (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18,
+            A19,
+            A20,
+            A21)]]): Mapping[R] = {
     new ObjectMapping21(
       apply,
       unapply,
@@ -1100,32 +1099,30 @@ object Forms {
         A21,
         A22,
         R])(
-      unapply: Function1[
-        R,
-        Option[
-          (
-              A1,
-              A2,
-              A3,
-              A4,
-              A5,
-              A6,
-              A7,
-              A8,
-              A9,
-              A10,
-              A11,
-              A12,
-              A13,
-              A14,
-              A15,
-              A16,
-              A17,
-              A18,
-              A19,
-              A20,
-              A21,
-              A22)]]): Mapping[R] = {
+      unapply: Function1[R, Option[
+        (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18,
+            A19,
+            A20,
+            A21,
+            A22)]]): Mapping[R] = {
     new ObjectMapping22(
       apply,
       unapply,
@@ -1552,23 +1549,25 @@ object Forms {
           a14,
           a15,
           a16))(
-      (t: (
-          A1,
-          A2,
-          A3,
-          A4,
-          A5,
-          A6,
-          A7,
-          A8,
-          A9,
-          A10,
-          A11,
-          A12,
-          A13,
-          A14,
-          A15,
-          A16)) => Some(t))
+      (
+        t: (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16)
+      ) => Some(t))
 
   def tuple[
       A1,
@@ -1604,25 +1603,24 @@ object Forms {
       a14: (String, Mapping[A14]),
       a15: (String, Mapping[A15]),
       a16: (String, Mapping[A16]),
-      a17: (String, Mapping[A17])): Mapping[
-    (
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17)] =
+      a17: (String, Mapping[A17])): Mapping[(
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17)] =
     mapping(
       a1,
       a2,
@@ -1677,24 +1675,26 @@ object Forms {
           a15,
           a16,
           a17))(
-      (t: (
-          A1,
-          A2,
-          A3,
-          A4,
-          A5,
-          A6,
-          A7,
-          A8,
-          A9,
-          A10,
-          A11,
-          A12,
-          A13,
-          A14,
-          A15,
-          A16,
-          A17)) => Some(t))
+      (
+        t: (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17)
+      ) => Some(t))
 
   def tuple[
       A1,
@@ -1732,26 +1732,25 @@ object Forms {
       a15: (String, Mapping[A15]),
       a16: (String, Mapping[A16]),
       a17: (String, Mapping[A17]),
-      a18: (String, Mapping[A18])): Mapping[
-    (
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18)] =
+      a18: (String, Mapping[A18])): Mapping[(
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18)] =
     mapping(
       a1,
       a2,
@@ -1809,25 +1808,27 @@ object Forms {
           a16,
           a17,
           a18))(
-      (t: (
-          A1,
-          A2,
-          A3,
-          A4,
-          A5,
-          A6,
-          A7,
-          A8,
-          A9,
-          A10,
-          A11,
-          A12,
-          A13,
-          A14,
-          A15,
-          A16,
-          A17,
-          A18)) => Some(t))
+      (
+        t: (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18)
+      ) => Some(t))
 
   def tuple[
       A1,
@@ -1867,27 +1868,26 @@ object Forms {
       a16: (String, Mapping[A16]),
       a17: (String, Mapping[A17]),
       a18: (String, Mapping[A18]),
-      a19: (String, Mapping[A19])): Mapping[
-    (
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18,
-        A19)] =
+      a19: (String, Mapping[A19])): Mapping[(
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18,
+      A19)] =
     mapping(
       a1,
       a2,
@@ -1948,26 +1948,28 @@ object Forms {
           a17,
           a18,
           a19))(
-      (t: (
-          A1,
-          A2,
-          A3,
-          A4,
-          A5,
-          A6,
-          A7,
-          A8,
-          A9,
-          A10,
-          A11,
-          A12,
-          A13,
-          A14,
-          A15,
-          A16,
-          A17,
-          A18,
-          A19)) => Some(t))
+      (
+        t: (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18,
+            A19)
+      ) => Some(t))
 
   def tuple[
       A1,
@@ -2009,28 +2011,27 @@ object Forms {
       a17: (String, Mapping[A17]),
       a18: (String, Mapping[A18]),
       a19: (String, Mapping[A19]),
-      a20: (String, Mapping[A20])): Mapping[
-    (
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18,
-        A19,
-        A20)] =
+      a20: (String, Mapping[A20])): Mapping[(
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18,
+      A19,
+      A20)] =
     mapping(
       a1,
       a2,
@@ -2094,27 +2095,29 @@ object Forms {
           a18,
           a19,
           a20))(
-      (t: (
-          A1,
-          A2,
-          A3,
-          A4,
-          A5,
-          A6,
-          A7,
-          A8,
-          A9,
-          A10,
-          A11,
-          A12,
-          A13,
-          A14,
-          A15,
-          A16,
-          A17,
-          A18,
-          A19,
-          A20)) => Some(t))
+      (
+        t: (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18,
+            A19,
+            A20)
+      ) => Some(t))
 
   def tuple[
       A1,
@@ -2158,29 +2161,28 @@ object Forms {
       a18: (String, Mapping[A18]),
       a19: (String, Mapping[A19]),
       a20: (String, Mapping[A20]),
-      a21: (String, Mapping[A21])): Mapping[
-    (
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18,
-        A19,
-        A20,
-        A21)] =
+      a21: (String, Mapping[A21])): Mapping[(
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18,
+      A19,
+      A20,
+      A21)] =
     mapping(
       a1,
       a2,
@@ -2247,28 +2249,30 @@ object Forms {
           a19,
           a20,
           a21))(
-      (t: (
-          A1,
-          A2,
-          A3,
-          A4,
-          A5,
-          A6,
-          A7,
-          A8,
-          A9,
-          A10,
-          A11,
-          A12,
-          A13,
-          A14,
-          A15,
-          A16,
-          A17,
-          A18,
-          A19,
-          A20,
-          A21)) => Some(t))
+      (
+        t: (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18,
+            A19,
+            A20,
+            A21)
+      ) => Some(t))
 
   def tuple[
       A1,
@@ -2314,30 +2318,29 @@ object Forms {
       a19: (String, Mapping[A19]),
       a20: (String, Mapping[A20]),
       a21: (String, Mapping[A21]),
-      a22: (String, Mapping[A22])): Mapping[
-    (
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17,
-        A18,
-        A19,
-        A20,
-        A21,
-        A22)] =
+      a22: (String, Mapping[A22])): Mapping[(
+      A1,
+      A2,
+      A3,
+      A4,
+      A5,
+      A6,
+      A7,
+      A8,
+      A9,
+      A10,
+      A11,
+      A12,
+      A13,
+      A14,
+      A15,
+      A16,
+      A17,
+      A18,
+      A19,
+      A20,
+      A21,
+      A22)] =
     mapping(
       a1,
       a2,
@@ -2407,29 +2410,31 @@ object Forms {
           a20,
           a21,
           a22))(
-      (t: (
-          A1,
-          A2,
-          A3,
-          A4,
-          A5,
-          A6,
-          A7,
-          A8,
-          A9,
-          A10,
-          A11,
-          A12,
-          A13,
-          A14,
-          A15,
-          A16,
-          A17,
-          A18,
-          A19,
-          A20,
-          A21,
-          A22)) => Some(t))
+      (
+        t: (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16,
+            A17,
+            A18,
+            A19,
+            A20,
+            A21,
+            A22)
+      ) => Some(t))
 
   // --
 
@@ -2630,8 +2635,9 @@ object Forms {
     } else if (max == typeMax) {
       number verifying Constraints.min(min, strict)
     } else {
-      number verifying (Constraints
-        .min(min, strict), Constraints.max(max, strict))
+      number verifying (
+        Constraints.min(min, strict), Constraints.max(max, strict)
+      )
     }
   }
 

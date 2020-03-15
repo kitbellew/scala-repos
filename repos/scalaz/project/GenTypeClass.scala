@@ -15,12 +15,14 @@ case class TypeClass(
   def packageString = pack.mkString(".")
   def fqn = (pack :+ name).mkString(".")
   def doc =
-    "[[" + fqn + "]]" + (if (extendsList.nonEmpty)
-                           " extends " + extendsList
-                             .map(tc => "[[" + tc.fqn + "]]")
-                             .mkString(" with ")
-                         else
-                           "")
+    "[[" + fqn + "]]" + (
+      if (extendsList.nonEmpty)
+        " extends " + extendsList
+          .map(tc => "[[" + tc.fqn + "]]")
+          .mkString(" with ")
+      else
+        ""
+    )
 }
 
 object TypeClass {
@@ -349,11 +351,13 @@ object GenTypeClass {
     def extendsToSyntaxListText =
       kind match {
         case Kind.*->* | Kind.*^*->* =>
-          "extends To" + typeClassName + "Ops0" + (extendsList match {
-            case Seq() => ""
-            case es =>
-              es.map(n => "To" + n + "Ops").mkString(" with ", " with ", "")
-          })
+          "extends To" + typeClassName + "Ops0" + (
+            extendsList match {
+              case Seq() => ""
+              case es =>
+                es.map(n => "To" + n + "Ops").mkString(" with ", " with ", "")
+            }
+          )
         case _ =>
           extendsList match {
             case Seq() => ""
@@ -363,13 +367,12 @@ object GenTypeClass {
       }
     val extendsLikeList = extendsListText("")
 
-    val syntaxPackString = tc.syntaxPack
-      .map("package " + _)
-      .mkString("\n") + (if (tc.pack == Seq("scalaz"))
-                           ""
-                         else
-                           "\n\n" + "import " + (tc.pack :+ tc.name)
-                             .mkString("."))
+    val syntaxPackString = tc.syntaxPack.map("package " + _).mkString("\n") + (
+      if (tc.pack == Seq("scalaz"))
+        ""
+      else
+        "\n\n" + "import " + (tc.pack :+ tc.name).mkString(".")
+    )
     val syntaxPackString1 = tc.syntaxPack.mkString(".")
     val syntaxMember =
       if (tc.createSyntax) {

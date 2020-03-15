@@ -9,6 +9,5 @@ class Crash {
       val xxx = t;
       42
     },
-    a = 0
-  )
+    a = 0)
 }

@@ -237,16 +237,20 @@ trait Mapper[A <: Mapper[A]]
   def toForm(button: Box[String], f: A => Any): NodeSeq =
     getSingleton.toForm(this) ++
       S.fmapFunc((ignore: List[String]) => f(this)) { (name: String) =>
-        (<input type='hidden' name={
-          name
-        } value="n/a" />)
+        (
+          <input type='hidden' name={
+            name
+          } value="n/a" />
+        )
       } ++
-      (button.map(b =>
-        getSingleton.formatFormElement(
-          <xml:group>&nbsp;</xml:group>,
-          <input type="submit" value={
-            b
-          }/>)) openOr scala.xml.Text(""))
+      (
+        button.map(b =>
+          getSingleton.formatFormElement(
+            <xml:group>&nbsp;</xml:group>,
+            <input type="submit" value={
+              b
+            }/>)) openOr scala.xml.Text("")
+      )
 
   def toForm(
       button: Box[String],
@@ -267,12 +271,14 @@ trait Mapper[A <: Mapper[A]]
         <input type='hidden' name={
           name
         } value="n/a" />) ++
-      (button.map(b =>
-        getSingleton.formatFormElement(
-          <xml:group>&nbsp;</xml:group>,
-          <input type="submit" value={
-            b
-          }/>)) openOr scala.xml.Text(""))
+      (
+        button.map(b =>
+          getSingleton.formatFormElement(
+            <xml:group>&nbsp;</xml:group>,
+            <input type="submit" value={
+              b
+            }/>)) openOr scala.xml.Text("")
+      )
   }
 
   def saved_? : Boolean = getSingleton.saved_?(this)

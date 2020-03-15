@@ -22,16 +22,20 @@ object ConcurrentTest extends SpecLite {
     }
 
     "run test with timeout" in {
-      (withTimeout(2000) {
-        true
-      })
+      (
+        withTimeout(2000) {
+          true
+        }
+      )
     }
 
     "fail when timeout occurs" in {
-      (withTimeout(100) {
-        Thread.sleep(2000)
-        ()
-      }).mustThrowA[RuntimeException]
+      (
+        withTimeout(100) {
+          Thread.sleep(2000)
+          ()
+        }
+      ).mustThrowA[RuntimeException]
     }
   }
 

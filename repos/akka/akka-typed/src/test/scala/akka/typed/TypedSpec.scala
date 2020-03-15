@@ -55,9 +55,10 @@ class TypedSpec(config: Config)
 
   val blackhole = await(
     system ? Create(
-      Props(ScalaDSL.Full[Any] {
-        case _ ⇒ ScalaDSL.Same
-      }),
+      Props(
+        ScalaDSL.Full[Any] {
+          case _ ⇒ ScalaDSL.Same
+        }),
       "blackhole"))
 
   /**

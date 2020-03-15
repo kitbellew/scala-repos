@@ -219,14 +219,16 @@ object Docs {
 
       val projectId = moduleName in ref get structure.data
 
-      val confs = (unmanagedResources in Compile in ref get structure.data)
-        .map(_.map { resources =>
-          (for {
-            conf <- resources.filter(resource =>
-              resource.name == "reference.conf" || resource.name.endsWith(
-                ".xml"))
-            id <- projectId.toSeq
-          } yield id -> conf).distinct
+      val confs = (unmanagedResources in Compile in ref get structure.data).map(
+        _.map { resources =>
+          (
+            for {
+              conf <- resources.filter(resource =>
+                resource.name == "reference.conf" || resource.name.endsWith(
+                  ".xml"))
+              id <- projectId.toSeq
+            } yield id -> conf
+          ).distinct
         })
 
       // Join them

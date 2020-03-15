@@ -69,12 +69,13 @@ class ReceiverTrackerSuite extends TestSuiteBase {
   test("should restart receiver after stopping it") {
     withStreamingContext(new StreamingContext(conf, Milliseconds(100))) { ssc =>
       @volatile var startTimes = 0
-      ssc.addStreamingListener(new StreamingListener {
-        override def onReceiverStarted(
-            receiverStarted: StreamingListenerReceiverStarted): Unit = {
-          startTimes += 1
-        }
-      })
+      ssc.addStreamingListener(
+        new StreamingListener {
+          override def onReceiverStarted(
+              receiverStarted: StreamingListenerReceiverStarted): Unit = {
+            startTimes += 1
+          }
+        })
       val input = ssc.receiverStream(new StoppableReceiver)
       val output = new TestOutputStream(input)
       output.register()
@@ -96,11 +97,13 @@ class ReceiverTrackerSuite extends TestSuiteBase {
     withStreamingContext(new StreamingContext(_conf, Milliseconds(100))) {
       ssc =>
         @volatile var receiverTaskLocality: TaskLocality = null
-        ssc.sparkContext.addSparkListener(new SparkListener {
-          override def onTaskStart(taskStart: SparkListenerTaskStart): Unit = {
-            receiverTaskLocality = taskStart.taskInfo.taskLocality
-          }
-        })
+        ssc.sparkContext.addSparkListener(
+          new SparkListener {
+            override def onTaskStart(
+                taskStart: SparkListenerTaskStart): Unit = {
+              receiverTaskLocality = taskStart.taskInfo.taskLocality
+            }
+          })
         val input = ssc.receiverStream(new TestReceiver)
         val output = new TestOutputStream(input)
         output.register()
@@ -123,11 +126,12 @@ private[streaming] class RateTestInputDStream(_ssc: StreamingContext)
   var publishedRates = 0
 
   override val rateController: Option[RateController] = {
-    Some(new RateController(id, new ConstantEstimator(100)) {
-      override def publish(rate: Long): Unit = {
-        publishedRates += 1
-      }
-    })
+    Some(
+      new RateController(id, new ConstantEstimator(100)) {
+        override def publish(rate: Long): Unit = {
+          publishedRates += 1
+        }
+      })
   }
 }
 
@@ -145,8 +149,7 @@ private[streaming] class RateTestReceiver(
       override def onError(message: String, throwable: Throwable): Unit = {}
       override def onGenerateBlock(blockId: StreamBlockId): Unit = {}
       override def onAddData(data: Any, metadata: Any): Unit = {}
-    }
-  )
+    })
 
   setReceiverId(receiverId)
 

@@ -166,8 +166,7 @@ object Resolvers {
           "cmd" +: "/c" +: command
         else
           command,
-        cwd
-      ) !;
+        cwd) !;
     if (result != 0)
       sys.error("Nonzero exit code (" + result + "): " + command.mkString(" "))
   }

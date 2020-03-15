@@ -169,12 +169,16 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
   lazy val quotelessPath = fullUrl(path, "")
 
   lazy val phrase =
-    (((contentParser ~ singleQuotedPath) |||
-      (contentParser ~ doubleQuotedPath) |||
-      (contentParser ~ quotelessPath)).* ^^ {
-      case l =>
-        l.flatMap(f => f._1 + f._2).mkString("")
-    }) ~ contentParser ^^ {
+    (
+      (
+        (contentParser ~ singleQuotedPath) |||
+          (contentParser ~ doubleQuotedPath) |||
+          (contentParser ~ quotelessPath)
+      ).* ^^ {
+        case l =>
+          l.flatMap(f => f._1 + f._2).mkString("")
+      }
+    ) ~ contentParser ^^ {
       case a ~ b =>
         a + b
     }
@@ -187,10 +191,7 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
       case Success(_, remaining) =>
         val remainingString =
           remaining.source
-            .subSequence(
-              remaining.offset,
-              remaining.source.length
-            )
+            .subSequence(remaining.offset, remaining.source.length)
             .toString
 
         common.Failure(

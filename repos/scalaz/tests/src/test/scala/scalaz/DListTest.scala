@@ -16,9 +16,11 @@ object DListTest extends SpecLite {
   checkAll(bindRec.laws[DList])
   checkAll(monadPlus.strongLaws[DList])
 
-  "DList append" ! ((0 to 100000)
-    .foldLeft(DList[Int]())(_ :+ _)
-    .toList must_== (0 to 100000).toList)
+  "DList append" ! (
+    (0 to 100000).foldLeft(DList[Int]())(_ :+ _).toList must_== (
+      0 to 100000
+    ).toList
+  )
 
   "headOption, tailOption" ! forAll { (n: Int, d: DList[Int]) =>
     // Defined when appropriate?

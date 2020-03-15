@@ -71,11 +71,7 @@ object HB_0_8_0 {
     "creationTimeZone" -> "ctz"
   ).mapValues(Bytes.toBytes(_))
 
-  class RowKey(
-      val appId: Int,
-      val millis: Long,
-      val uuidLow: Long
-  ) {
+  class RowKey(val appId: Int, val millis: Long, val uuidLow: Long) {
     lazy val toBytes: Array[Byte] = {
       // add UUID least significant bits for multiple actions at the same time
       // (UUID's most significant bits are actually timestamp,
@@ -110,8 +106,7 @@ object HB_0_8_0 {
       new RowKey(
         appId = Bytes.toInt(b.slice(0, 4)),
         millis = Bytes.toLong(b.slice(4, 12)),
-        uuidLow = Bytes.toLong(b.slice(12, 20))
-      )
+        uuidLow = Bytes.toLong(b.slice(12, 20)))
     }
   }
 
@@ -174,10 +169,7 @@ object HB_0_8_0 {
       .getOrElse(EventValidation.defaultTimeZone)
 
     val creationTime: DateTime =
-      new DateTime(
-        getTimestamp("event"),
-        creationTimeZone
-      )
+      new DateTime(getTimestamp("event"), creationTimeZone)
 
     Event(
       eventId = Some(RowKey(result.getRow()).toString),

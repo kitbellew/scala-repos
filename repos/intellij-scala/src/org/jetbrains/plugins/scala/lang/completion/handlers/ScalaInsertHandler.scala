@@ -207,10 +207,12 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       def shiftEndOffset(shift: Int, withSomeNum: Boolean = withSomeNum) {
         endOffset += shift
         editor.getCaretModel.moveToOffset(
-          endOffset + (if (withSomeNum)
-                         someNum
-                       else
-                         0))
+          endOffset + (
+            if (withSomeNum)
+              someNum
+            else
+              0
+          ))
       }
       val documentText: String = document.getText
       val nextChar: Char =
@@ -241,8 +243,10 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
             shiftEndOffset(1)
           }
         }
-      } else if (withSpace && (nextChar != ' ' || documentText.charAt(
-                   endOffset + 1) != openChar)) {
+      } else if (withSpace && (
+                   nextChar != ' ' || documentText.charAt(
+                     endOffset + 1) != openChar
+                 )) {
         document.insertString(endOffset, " ")
         shiftEndOffset(1, withSomeNum = false)
         insertIfNeeded(

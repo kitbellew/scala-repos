@@ -71,16 +71,14 @@ class ClusterClientTest
     // connect to zookeeper server
     zookeeperClient = boundedWait(
       zookeeperServer.createClient(
-        ZooKeeperClient.digestCredentials("user", "pass"))
-    )
+        ZooKeeperClient.digestCredentials("user", "pass")))
 
     // create serverset
     val serverSet = boundedWait(
       ServerSets.create(
         zookeeperClient,
         ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-        zkPath)
-    )
+        zkPath))
     zkServerSetCluster = new ZookeeperServerSetCluster(serverSet)
 
     // start five memcached server and join the cluster
@@ -96,8 +94,7 @@ class ClusterClientTest
             case None =>
               fail("could not start TestMemcachedServer")
           }
-        }
-      ),
+        }),
       TimeOut
     )
 
@@ -157,9 +154,10 @@ class ClusterClientTest
 
     val count = 100
     Await.result(
-      Future.collect((0 until count) map { n =>
-        client.set("foo" + n, Buf.Utf8("bar" + n))
-      }),
+      Future.collect(
+        (0 until count) map { n =>
+          client.set("foo" + n, Buf.Utf8("bar" + n))
+        }),
       TimeOut)
 
     val tmpClients = testServers map {
@@ -419,8 +417,7 @@ class ClusterClientTest
         Future.collect(
           (0 until count) map { n =>
             client.set("foo" + n, Buf.Utf8("bar" + n))
-          }
-        ),
+          }),
         TimeOut)
 
       (0 until count).foreach { n =>
@@ -683,8 +680,7 @@ class ClusterClientTest
   def initializePool(
       expectedSize: Int,
       backupPool: Option[scala.collection.immutable.Set[CacheNode]] = None,
-      ignoreConfigData: Boolean = false
-  ): Cluster[CacheNode] = {
+      ignoreConfigData: Boolean = false): Cluster[CacheNode] = {
     val myCachePool =
       if (!ignoreConfigData)
         CachePoolCluster.newZkCluster(
@@ -716,8 +712,7 @@ class ClusterClientTest
       currentSize: Int,
       expectedPoolSize: Int,
       expectedAdd: Int,
-      expectedRem: Int
-  )(ops: => Unit): Future[Unit] = {
+      expectedRem: Int)(ops: => Unit): Future[Unit] = {
     var addSeen = 0
     var remSeen = 0
     var poolSeen = mutable.HashSet[CacheNode]()
@@ -755,7 +750,9 @@ class ClusterClientTest
 
   def trackCacheShards(client: PartitionedClient) =
     mutable.Set.empty[Client] ++
-      ((0 until 100).map { n =>
-        client.clientOf("foo" + n)
-      })
+      (
+        (0 until 100).map { n =>
+          client.clientOf("foo" + n)
+        }
+      )
 }

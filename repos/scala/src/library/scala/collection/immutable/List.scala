@@ -328,10 +328,12 @@ sealed abstract class List[+A]
             h = new ::(x.asInstanceOf[B], Nil)
           rest = rest.tail
           if (rest eq Nil)
-            return (if (h eq null)
-                      Nil
-                    else
-                      h).asInstanceOf[That]
+            return (
+              if (h eq null)
+                Nil
+              else
+                h
+            ).asInstanceOf[That]
         } while (h eq null)
         var t = h
         // Remaining elements
@@ -374,10 +376,12 @@ sealed abstract class List[+A]
           }
           rest = rest.tail
         }
-        (if (!found)
-           Nil
-         else
-           h).asInstanceOf[That]
+        (
+          if (!found)
+            Nil
+          else
+            h
+        ).asInstanceOf[That]
       }
     } else
       super.flatMap(f)

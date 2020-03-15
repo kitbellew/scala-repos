@@ -202,9 +202,7 @@ case class TungstenAggregate(
         val resultVars = resultExpressions.map { e =>
           BindReferences.bindReference(e, aggregateAttributes).gen(ctx)
         }
-        (
-          resultVars,
-          s"""
+        (resultVars, s"""
         |$evaluateAggResults
         |${evaluateVariables(resultVars)}
        """.stripMargin)

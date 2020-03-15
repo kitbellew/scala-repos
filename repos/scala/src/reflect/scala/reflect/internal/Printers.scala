@@ -622,7 +622,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
               print("<type: ", tt.original, ">")
             else
               print("<type ?>")
-          } else if ((tree.tpe.typeSymbol ne null) && tree.tpe.typeSymbol.isAnonymousClass) {
+          } else if ((
+                       tree.tpe.typeSymbol ne null
+                     ) && tree.tpe.typeSymbol.isAnonymousClass) {
             print(tree.tpe.typeSymbol.toString)
           } else {
             print(tree.tpe.toString)
@@ -724,10 +726,14 @@ trait Printers extends api.Printers { self: SymbolTable =>
       val brackets = List('[', ']', '(', ')', '{', '}')
 
       def addBackquotes(s: String) =
-        if (decoded && (decName.exists(ch =>
-              brackets.contains(ch) || isWhitespace(ch) || isDot(ch)) ||
-            (name.isOperatorName && decName.exists(isOperatorPart) && decName
-              .exists(isScalaLetter) && !decName.contains(bslash))))
+        if (decoded && (
+              decName.exists(ch =>
+                brackets.contains(ch) || isWhitespace(ch) || isDot(ch)) ||
+              (
+                name.isOperatorName && decName.exists(isOperatorPart) && decName
+                  .exists(isScalaLetter) && !decName.contains(bslash)
+              )
+            ))
           s"`$s`"
         else
           s
@@ -783,8 +789,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
       t match {
         // case for: 1) (if (a) b else c).meth1.meth2 or 2) 1 + 5 should be represented as (1).+(5)
         case Select(qual, name)
-            if (name.isTermName && needsParentheses(qual)(insideLabelDef =
-              false)) || isIntLitWithDecodedOp(qual, name) =>
+            if (
+              name.isTermName && needsParentheses(qual)(insideLabelDef = false)
+            ) || isIntLitWithDecodedOp(qual, name) =>
           s"(${resolveSelect(qual)}).${printedName(name)}"
         case Select(qual, name) if name.isTermName =>
           s"${resolveSelect(qual)}.${printedName(name)}"
@@ -893,10 +900,13 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
     def printModifiers(mods: Modifiers, primaryCtorParam: Boolean): Unit = {
       def modsAccepted =
-        List(currentTree, currentParent) exists (_ map {
-          case _: ClassDef | _: ModuleDef | _: Template | _: PackageDef => true
-          case _                                                        => false
-        } getOrElse false)
+        List(currentTree, currentParent) exists (
+          _ map {
+            case _: ClassDef | _: ModuleDef | _: Template | _: PackageDef =>
+              true
+            case _ => false
+          } getOrElse false
+        )
 
       if (currentParent.isEmpty || modsAccepted)
         printFlags(mods, primaryCtorParam)
@@ -1097,10 +1107,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
             printOpt(": ", tp)
           } {
             printOpt(
-              " = " + (if (mods.isMacro)
-                         "macro "
-                       else
-                         ""),
+              " = " + (
+                if (mods.isMacro)
+                  "macro "
+                else
+                  ""
+              ),
               rhs)
           }
 
@@ -1151,10 +1163,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
                   print("{")
                   printColumn(earlyDefs, "", ";", "")
                   print(
-                    "} " + (if (printedParents.nonEmpty)
-                              "with "
-                            else
-                              ""))
+                    "} " + (
+                      if (printedParents.nonEmpty)
+                        "with "
+                      else
+                        ""
+                    ))
                 }
                 ctBody collectFirst {
                   case apply: Apply => apply
@@ -1337,16 +1351,20 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
         case Select(qual, name) =>
           def checkRootPackage(tr: Tree): Boolean =
-            (currentParent match { //check that Select is not for package def name
-              case Some(_: PackageDef) => false
-              case _                   => true
-            }) && (tr match { // check that Select contains package
-              case Select(q, _) => checkRootPackage(q)
-              case _: Ident | _: This =>
-                val sym = tr.symbol
-                tr.hasExistingSymbol && sym.hasPackageFlag && sym.name != nme.ROOTPKG
-              case _ => false
-            })
+            (
+              currentParent match { //check that Select is not for package def name
+                case Some(_: PackageDef) => false
+                case _                   => true
+              }
+            ) && (
+              tr match { // check that Select contains package
+                case Select(q, _) => checkRootPackage(q)
+                case _: Ident | _: This =>
+                  val sym = tr.symbol
+                  tr.hasExistingSymbol && sym.hasPackageFlag && sym.name != nme.ROOTPKG
+                case _ => false
+              }
+            )
 
           if (printRootPkg && checkRootPackage(tree))
             print(s"${printedName(nme.ROOTPKG)}.")
@@ -1398,11 +1416,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
               print(trQuotes)
             case _ =>
               // processing Float constants
-              val printValue =
-                x.escapedStringValue + (if (x.value.isInstanceOf[Float])
-                                          "F"
-                                        else
-                                          "")
+              val printValue = x.escapedStringValue + (
+                if (x.value.isInstanceOf[Float])
+                  "F"
+                else
+                  ""
+              )
               print(printValue)
           }
 

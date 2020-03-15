@@ -93,9 +93,8 @@ class IngestServiceHandler(
     postMode: WriteMode)(implicit
     val M: Monad[Future],
     executor: ExecutionContext)
-    extends CustomHttpService[
-      ByteChunk,
-      (APIKey, Path) => Future[HttpResponse[JValue]]]
+    extends CustomHttpService[ByteChunk, (APIKey, Path) => Future[
+      HttpResponse[JValue]]]
     with IngestSupport
     with Logging {
 
@@ -161,8 +160,10 @@ class IngestServiceHandler(
     right(chooseProcessing(apiKey, path, authorities, request)) flatMap {
       case Some(processing) =>
         EitherT {
-          (processing.forRequest(request) tuple request.content.toSuccess(
-            nels("Ingest request missing body content."))) traverse {
+          (
+            processing.forRequest(request) tuple request.content.toSuccess(
+              nels("Ingest request missing body content."))
+          ) traverse {
             case (processor, data) =>
               processor.ingest(durability, errorHandling, storeMode, data)
           } map {
@@ -171,8 +172,9 @@ class IngestServiceHandler(
         }
 
       case None =>
-        right(Promise successful NotIngested(
-          "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
+        right(
+          Promise successful NotIngested(
+            "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
     }
 
   def notifyJob(
@@ -316,12 +318,13 @@ class IngestServiceHandler(
                         "ingested" -> JNum(ingested),
                         "failed" -> JNum(failed),
                         "skipped" -> JNum(total - ingested - failed),
-                        "errors" -> JArray(errs map {
-                          case (line, msg) =>
-                            JObject(
-                              "line" -> JNum(line),
-                              "reason" -> JString(msg))
-                        }: _*),
+                        "errors" -> JArray(
+                          errs map {
+                            case (line, msg) =>
+                              JObject(
+                                "line" -> JNum(line),
+                                "reason" -> JString(msg))
+                          }: _*),
                         "ingestId" -> durability.jobId
                           .map(JString(_))
                           .getOrElse(JUndefined)
@@ -345,8 +348,9 @@ class IngestServiceHandler(
               } valueOr { errors =>
                 HttpResponse(
                   BadRequest,
-                  content = Some(JString(
-                    "Errors were encountered processing your ingest request: " + errors)))
+                  content = Some(
+                    JString(
+                      "Errors were encountered processing your ingest request: " + errors)))
               }
             } getOrElse {
               logger.warn(

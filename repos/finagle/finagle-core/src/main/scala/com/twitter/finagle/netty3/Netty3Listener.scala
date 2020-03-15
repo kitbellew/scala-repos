@@ -98,11 +98,12 @@ object Netty3Listener {
           snap.map(_.getCloseFuture).asJava)
 
       val p = new Promise[Unit]
-      closing.addListener(new ChannelGroupFutureListener {
-        def operationComplete(f: ChannelGroupFuture) {
-          p.setDone()
-        }
-      })
+      closing.addListener(
+        new ChannelGroupFutureListener {
+          def operationComplete(f: ChannelGroupFuture) {
+            p.setDone()
+          }
+        })
 
       p.within(deadline - Time.now) transform { _ =>
         activeChannels.close()
@@ -142,8 +143,7 @@ object Netty3Listener {
 
     pipeline.addFirst(
       "sslConnect",
-      new SslListenerConnectionHandler(handler, onShutdown)
-    )
+      new SslListenerConnectionHandler(handler, onShutdown))
   }
 
   val channelFactory: ServerChannelFactory =
@@ -174,8 +174,7 @@ object Netty3Listener {
     */
   def apply[In, Out](
       pipeline: ChannelPipelineFactory,
-      params: Stack.Params
-  ): Listener[In, Out] = {
+      params: Stack.Params): Listener[In, Out] = {
     val Label(label) = params[Label]
     val Logger(logger) = params[Logger]
     val Monitor(monitor) = params[Monitor]
@@ -273,8 +272,7 @@ case class Netty3Listener[In, Out](
     bootstrapOptions: Map[String, Object] = Map(
       "soLinger" -> (0: java.lang.Integer),
       "reuseAddress" -> java.lang.Boolean.TRUE,
-      "child.tcpNoDelay" -> java.lang.Boolean.TRUE
-    ),
+      "child.tcpNoDelay" -> java.lang.Boolean.TRUE),
     channelReadTimeout: Duration = Duration.Top,
     channelWriteCompletionTimeout: Duration = Duration.Top,
     tlsConfig: Option[Netty3ListenerTLSConfig] = None,
@@ -282,8 +280,8 @@ case class Netty3Listener[In, Out](
     nettyTimer: org.jboss.netty.util.Timer = DefaultTimer.netty,
     statsReceiver: StatsReceiver = ServerStatsReceiver,
     monitor: com.twitter.util.Monitor = NullMonitor,
-    logger: java.util.logging.Logger = DefaultLogger
-) extends Listener[In, Out] {
+    logger: java.util.logging.Logger = DefaultLogger)
+    extends Listener[In, Out] {
   import Netty3Listener._
 
   private[this] val statsHandlers =
@@ -363,8 +361,7 @@ case class Netty3Listener[In, Out](
           serveTransport,
           logger,
           scopedStatsReceiver,
-          closer.activeChannels
-        )
+          closer.activeChannels)
       val bootstrap = new ServerBootstrap(channelFactory)
       bootstrap.setOptions(bootstrapOptions.asJava)
       bootstrap.setPipelineFactory(
@@ -396,8 +393,8 @@ private[netty3] class ServerBridge[In, Out](
     serveTransport: Transport[In, Out] => Unit,
     log: java.util.logging.Logger,
     statsReceiver: StatsReceiver,
-    channels: ChannelGroup
-) extends SimpleChannelHandler {
+    channels: ChannelGroup)
+    extends SimpleChannelHandler {
   import ServerBridge.FinestIOExceptionMessages
 
   private[this] val readTimeoutCounter = statsReceiver.counter("read_timeout")

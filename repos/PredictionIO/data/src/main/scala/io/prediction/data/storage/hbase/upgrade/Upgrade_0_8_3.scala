@@ -94,9 +94,13 @@ object Upgrade_0_8_3 {
     eventClient
       .find(appId = appId)
       .filter(e =>
-        (obsEntityTypes.contains(e.entityType) ||
-          e.targetEntityType.map(obsEntityTypes.contains(_)).getOrElse(false) ||
-          (!e.properties.keySet.forall(!obsProperties.contains(_)))))
+        (
+          obsEntityTypes.contains(e.entityType) ||
+            e.targetEntityType
+              .map(obsEntityTypes.contains(_))
+              .getOrElse(false) ||
+            (!e.properties.keySet.forall(!obsProperties.contains(_)))
+        ))
       .hasNext
   }
 
@@ -130,17 +134,18 @@ object Upgrade_0_8_3 {
               NameMap.getOrElse(et, et)
             }
 
-          val toProperties = DataMap(fromEvent.properties.fields.map {
-            case (k, v) =>
-              val newK =
-                if (obsProperties.contains(k)) {
-                  val nK = k.stripPrefix("pio_")
-                  logger.info(s"property ${k} will be renamed to ${nK}")
-                  nK
-                } else
-                  k
-              (newK, v)
-          })
+          val toProperties = DataMap(
+            fromEvent.properties.fields.map {
+              case (k, v) =>
+                val newK =
+                  if (obsProperties.contains(k)) {
+                    val nK = k.stripPrefix("pio_")
+                    logger.info(s"property ${k} will be renamed to ${nK}")
+                    nK
+                  } else
+                    k
+                (newK, v)
+            })
 
           val toEvent = fromEvent.copy(
             entityType = toEntityType,

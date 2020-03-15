@@ -31,11 +31,14 @@ abstract class SelectionHandlerSettings(config: Config) {
     getString("max-channels") match {
       case "unlimited" ⇒ -1
       case _ ⇒
-        getInt(
-          "max-channels") requiring (_ > 0, "max-channels must be > 0 or 'unlimited'")
+        getInt("max-channels") requiring (
+          _ > 0, "max-channels must be > 0 or 'unlimited'"
+        )
     }
-  val SelectorAssociationRetries: Int = getInt(
-    "selector-association-retries") requiring (_ >= 0, "selector-association-retries must be >= 0")
+  val SelectorAssociationRetries: Int =
+    getInt("selector-association-retries") requiring (
+      _ >= 0, "selector-association-retries must be >= 0"
+  )
 
   val SelectorDispatcher: String = getString("selector-dispatcher")
   val WorkerDispatcher: String = getString("worker-dispatcher")
@@ -334,8 +337,11 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
                 }
               case e ⇒ e.getMessage
             }
-          context.system.eventStream.publish(Logging
-            .Debug(child.path.toString, classOf[SelectionHandler], logMessage))
+          context.system.eventStream.publish(
+            Logging.Debug(
+              child.path.toString,
+              classOf[SelectionHandler],
+              logMessage))
         } catch {
           case NonFatal(_) ⇒
         }

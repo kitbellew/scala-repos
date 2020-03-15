@@ -17,39 +17,43 @@ import Gen._
 import Arbitrary.arbitrary
 
 object PolynomialSetup {
-  implicit val arbitraryRational = Arbitrary(for {
-    n0 <- arbitrary[Long]
-    d0 <- arbitrary[Long]
-  } yield {
-    val (n, d) = (n0 % 100, d0 % 100)
-    if (d == 0L)
-      Rational(n, 1L)
-    else
-      Rational(n, d)
-  })
+  implicit val arbitraryRational = Arbitrary(
+    for {
+      n0 <- arbitrary[Long]
+      d0 <- arbitrary[Long]
+    } yield {
+      val (n, d) = (n0 % 100, d0 % 100)
+      if (d == 0L)
+        Rational(n, 1L)
+      else
+        Rational(n, d)
+    })
 
   // default scalacheck bigdecimals are weird
-  implicit val arbitraryBigDecimal = Arbitrary(for {
-    r <- arbitrary[Int]
-  } yield {
-    BigDecimal(r)
-  })
+  implicit val arbitraryBigDecimal = Arbitrary(
+    for {
+      r <- arbitrary[Int]
+    } yield {
+      BigDecimal(r)
+    })
 
   implicit def arbitraryComplex[A: Arbitrary: Fractional: Trig] =
-    Arbitrary(for {
-      re <- arbitrary[A]
-      im <- arbitrary[A]
-    } yield {
-      Complex(re, im)
-    })
+    Arbitrary(
+      for {
+        re <- arbitrary[A]
+        im <- arbitrary[A]
+      } yield {
+        Complex(re, im)
+      })
 
   implicit def arbitraryTerm[A: Arbitrary: Ring: Eq: ClassTag] =
-    Arbitrary(for {
-      c <- arbitrary[A]
-      e0 <- arbitrary[Int]
-    } yield {
-      Term(c, (e0 % 100).abs)
-    })
+    Arbitrary(
+      for {
+        c <- arbitrary[A]
+        e0 <- arbitrary[Int]
+      } yield {
+        Term(c, (e0 % 100).abs)
+      })
 }
 
 class PolynomialCheck
@@ -71,20 +75,22 @@ class PolynomialCheck
   // runSparse[BigDecimal]("decimal")(arbitraryBigDecimal, sbd, fbd, cbd)
 
   def runDense[A: Arbitrary: Eq: Field: ClassTag](typ: String): Unit = {
-    implicit val arb: Arbitrary[Polynomial[A]] = Arbitrary(for {
-      ts <- arbitrary[List[Term[A]]]
-    } yield {
-      Polynomial(ts).toDense
-    })
+    implicit val arb: Arbitrary[Polynomial[A]] = Arbitrary(
+      for {
+        ts <- arbitrary[List[Term[A]]]
+      } yield {
+        Polynomial(ts).toDense
+      })
     runTest[A](s"$typ/dense")
   }
 
   def runSparse[A: Arbitrary: Eq: Field: ClassTag](typ: String): Unit = {
-    implicit val arb: Arbitrary[Polynomial[A]] = Arbitrary(for {
-      ts <- arbitrary[List[Term[A]]]
-    } yield {
-      Polynomial(ts).toSparse
-    })
+    implicit val arb: Arbitrary[Polynomial[A]] = Arbitrary(
+      for {
+        ts <- arbitrary[List[Term[A]]]
+      } yield {
+        Polynomial(ts).toSparse
+      })
     runTest[A](s"$typ/sparse")
   }
 
@@ -175,9 +181,10 @@ class PolynomialCheck
   property("(x compose y)(z) == x(y(z))") {
     forAll { (rs1: List[Rational], rs2: List[Rational], r: Rational) =>
       def xyz(rs: List[Rational]): Polynomial[Rational] =
-        Polynomial(rs.take(4).zipWithIndex.map {
-          case (c, e) => Term(c, e)
-        })
+        Polynomial(
+          rs.take(4).zipWithIndex.map {
+            case (c, e) => Term(c, e)
+          })
 
       val (p1, p2) = (xyz(rs1), xyz(rs2))
       val p3 = p1 compose p2
@@ -185,17 +192,19 @@ class PolynomialCheck
     }
   }
 
-  implicit val arbDense: Arbitrary[PolyDense[Rational]] = Arbitrary(for {
-    ts <- arbitrary[List[Term[Rational]]]
-  } yield {
-    Polynomial(ts).toDense
-  })
+  implicit val arbDense: Arbitrary[PolyDense[Rational]] = Arbitrary(
+    for {
+      ts <- arbitrary[List[Term[Rational]]]
+    } yield {
+      Polynomial(ts).toDense
+    })
 
-  implicit val arbSparse: Arbitrary[PolySparse[Rational]] = Arbitrary(for {
-    ts <- arbitrary[List[Term[Rational]]]
-  } yield {
-    Polynomial(ts).toSparse
-  })
+  implicit val arbSparse: Arbitrary[PolySparse[Rational]] = Arbitrary(
+    for {
+      ts <- arbitrary[List[Term[Rational]]]
+    } yield {
+      Polynomial(ts).toSparse
+    })
 
   property("terms") {
     forAll { (t: Term[Rational]) =>
@@ -280,12 +289,13 @@ class PolynomialCheck
   property("x % gcd(x, y) == 0 && y % gcd(x, y) == 0") {
     implicit val arbPolynomial: Arbitrary[Polynomial[Rational]] = Arbitrary(
       for {
-        ts <- Gen.listOf(for {
-          c <- arbitrary[Rational]
-          e <- arbitrary[Int] map { n =>
-            (n % 10).abs
-          }
-        } yield (e, c))
+        ts <- Gen.listOf(
+          for {
+            c <- arbitrary[Rational]
+            e <- arbitrary[Int] map { n =>
+              (n % 10).abs
+            }
+          } yield (e, c))
       } yield {
         Polynomial(ts.toMap).toDense
       })
@@ -361,13 +371,9 @@ class PolynomialTest extends FunSuite {
 
     assert(p1 + p2 === Polynomial.dense(Array(r"1/1", r"5/1", r"1/2")))
     assert(
-      (legDense(2) * legDense(3)).coeffsArray === Array(
-        r"0",
-        r"3/4",
-        r"0",
-        r"-7/2",
-        r"0",
-        r"15/4"))
+      (
+        legDense(2) * legDense(3)
+      ).coeffsArray === Array(r"0", r"3/4", r"0", r"-7/2", r"0", r"15/4"))
     assert(p1 % p2 === Polynomial("-x"))
     assert(p1 /~ p2 === Polynomial("1"))
 

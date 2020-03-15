@@ -6,9 +6,10 @@ object A {
       type B = B
     }
 
-  def foo(x: C {
-    type B = String
-  }) = 1
+  def foo(
+      x: C {
+        type B = String
+      }) = 1
 
   /*start*/
   foo(z) /*end*/

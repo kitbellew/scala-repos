@@ -67,9 +67,10 @@ private[finagle] class Cache[A](
   private[this] def scheduleTimer(): Unit =
     synchronized {
       require(!timerTask.isDefined)
-      timerTask = Some(timer.schedule(ttl.fromNow) {
-        timeout()
-      })
+      timerTask = Some(
+        timer.schedule(ttl.fromNow) {
+          timeout()
+        })
     }
 
   private[this] def cancelTimer() =

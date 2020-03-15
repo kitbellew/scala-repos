@@ -44,10 +44,12 @@ class ScFunctionExprImpl(node: ASTNode)
       place: PsiElement): Boolean = {
     result match {
       case Some(x)
-          if x == lastParent || (lastParent.isInstanceOf[ScalaPsiElement] &&
-            x == lastParent
-              .asInstanceOf[ScalaPsiElement]
-              .getDeepSameElementInContext) =>
+          if x == lastParent || (
+            lastParent.isInstanceOf[ScalaPsiElement] &&
+              x == lastParent
+                .asInstanceOf[ScalaPsiElement]
+                .getDeepSameElementInContext
+          ) =>
         for (p <- parameters) {
           if (!processor.execute(p, state))
             return false

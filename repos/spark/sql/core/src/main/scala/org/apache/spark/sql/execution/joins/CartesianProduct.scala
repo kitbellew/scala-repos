@@ -79,9 +79,9 @@ private[spark] class UnsafeCartesianRDD(
       for (x <- rdd1.iterator(partition.s1, context);
            y <- createIter())
         yield (x, y)
-    CompletionIterator[
-      (UnsafeRow, UnsafeRow),
-      Iterator[(UnsafeRow, UnsafeRow)]](resultIter, sorter.cleanupResources)
+    CompletionIterator[(UnsafeRow, UnsafeRow), Iterator[(
+        UnsafeRow,
+        UnsafeRow)]](resultIter, sorter.cleanupResources)
   }
 }
 

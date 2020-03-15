@@ -124,8 +124,8 @@ abstract class SnapshotStoreSpec(config: Config)
       snapshotStore.tell(
         LoadSnapshot(
           pid,
-          SnapshotSelectionCriteria.Latest.copy(maxTimestamp =
-            metadata(2).timestamp),
+          SnapshotSelectionCriteria.Latest
+            .copy(maxTimestamp = metadata(2).timestamp),
           13),
         senderProbe.ref)
       senderProbe.expectMsg(
@@ -133,7 +133,8 @@ abstract class SnapshotStoreSpec(config: Config)
     }
     "delete a single snapshot identified by sequenceNr in snapshot metadata" in {
       val md = metadata(2).copy(timestamp =
-        0L) // don't care about timestamp for delete of single snap
+        0L
+      ) // don't care about timestamp for delete of single snap
       val cmd = DeleteSnapshot(md)
       val sub = TestProbe()
 

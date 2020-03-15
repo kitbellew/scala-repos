@@ -88,12 +88,13 @@ trait ScPattern extends ScalaPsiElement {
     def inner(p: ScPattern) {
       p match {
         case ScTypedPattern(te) =>
-          te.accept(new ScalaRecursiveElementVisitor {
-            override def visitTypeVariableTypeElement(
-                tvar: ScTypeVariableTypeElement): Unit = {
-              b += tvar
-            }
-          })
+          te.accept(
+            new ScalaRecursiveElementVisitor {
+              override def visitTypeVariableTypeElement(
+                  tvar: ScTypeVariableTypeElement): Unit = {
+                b += tvar
+              }
+            })
         case _ =>
       }
 
@@ -611,14 +612,16 @@ object ScPattern {
                     Seq(tp)
                   else {
                     val productFqn = "scala.Product" + productChance.length
-                    (for {
-                      productClass <- ScalaPsiManager
-                        .instance(place.getProject)
-                        .getCachedClass(place.getResolveScope, productFqn)
-                      clazz <- ScType.extractClass(tp, Some(place.getProject))
-                    } yield clazz == productClass || clazz.isInheritor(
-                      productClass,
-                      true)).filter(identity).fold(Seq(tp))(_ => productChance)
+                    (
+                      for {
+                        productClass <- ScalaPsiManager
+                          .instance(place.getProject)
+                          .getCachedClass(place.getResolveScope, productFqn)
+                        clazz <- ScType.extractClass(tp, Some(place.getProject))
+                      } yield clazz == productClass || clazz.isInheritor(
+                        productClass,
+                        true)
+                    ).filter(identity).fold(Seq(tp))(_ => productChance)
                   }
                 }
                 args.head match {

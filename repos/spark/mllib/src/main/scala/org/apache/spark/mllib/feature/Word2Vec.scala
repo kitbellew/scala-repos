@@ -46,8 +46,7 @@ private case class VocabWord(
     var cn: Int,
     var point: Array[Int],
     var code: Array[Int],
-    var codeLen: Int
-)
+    var codeLen: Int)
 
 /**
   * Word2Vec creates vector representation of words in a text corpus.
@@ -353,7 +352,11 @@ class Word2Vec extends Serializable with Logging {
                   lwc = wordCount
                   // TODO: discount by iteration?
                   alpha =
-                    learningRate * (1 - numPartitions * wordCount.toDouble / (trainWordsCount + 1))
+                    learningRate * (
+                      1 - numPartitions * wordCount.toDouble / (
+                        trainWordsCount + 1
+                      )
+                    )
                   if (alpha < learningRate * 0.0001)
                     alpha = learningRate * 0.0001
                   logInfo("wordCount = " + wordCount + ", alpha = " + alpha)
@@ -388,12 +391,14 @@ class Word2Vec extends Serializable with Logging {
                             1)
                           if (f > -MAX_EXP && f < MAX_EXP) {
                             val ind =
-                              ((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)).toInt
+                              (
+                                (f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)
+                              ).toInt
                             f = expTable.value(ind)
                             val g =
-                              ((1 - bcVocab
-                                .value(word)
-                                .code(d) - f) * alpha).toFloat
+                              (
+                                (1 - bcVocab.value(word).code(d) - f) * alpha
+                              ).toFloat
                             blas.saxpy(vectorSize, g, syn1, l2, 1, neu1e, 0, 1)
                             blas.saxpy(vectorSize, g, syn0, l1, 1, syn1, l2, 1)
                             syn1Modify(inner) += 1

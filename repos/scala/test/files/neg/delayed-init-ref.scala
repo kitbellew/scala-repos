@@ -41,8 +41,9 @@ object Spec {
     println(foo) // no warn
     println(this.foo) // no warn
     println({
-      locally(());
-      this
-    }.foo) // warn (spurious, but we can't discriminate)
+        locally(());
+        this
+      }.foo
+    ) // warn (spurious, but we can't discriminate)
   }
 }

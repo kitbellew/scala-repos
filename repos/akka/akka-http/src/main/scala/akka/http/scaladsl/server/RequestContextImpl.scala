@@ -141,20 +141,22 @@ private[http] class RequestContextImpl(
   override def withAcceptAll: RequestContext =
     request.header[headers.Accept] match {
       case Some(accept @ headers.Accept(ranges)) if !accept.acceptsAll ⇒
-        mapRequest(_.mapHeaders(_.map {
-          case `accept` ⇒
-            val acceptAll =
-              if (ranges.exists(_.isWildcard))
-                ranges.map(r ⇒
-                  if (r.isWildcard)
-                    MediaRanges.`*/*;q=MIN`
+        mapRequest(
+          _.mapHeaders(
+            _.map {
+              case `accept` ⇒
+                val acceptAll =
+                  if (ranges.exists(_.isWildcard))
+                    ranges.map(r ⇒
+                      if (r.isWildcard)
+                        MediaRanges.`*/*;q=MIN`
+                      else
+                        r)
                   else
-                    r)
-              else
-                ranges :+ MediaRanges.`*/*;q=MIN`
-            accept.copy(mediaRanges = acceptAll)
-          case x ⇒ x
-        }))
+                    ranges :+ MediaRanges.`*/*;q=MIN`
+                accept.copy(mediaRanges = acceptAll)
+              case x ⇒ x
+            }))
       case _ ⇒ this
     }
 

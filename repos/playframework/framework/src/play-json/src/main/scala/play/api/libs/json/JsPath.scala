@@ -34,14 +34,15 @@ case class RecursiveSearch(key: String) extends PathNode {
     json match {
       case obj: JsObject =>
         var found = false
-        val o = JsObject(obj.fields.map {
-          case (k, v) =>
-            if (k == this.key) {
-              found = true
-              k -> transform(v)
-            } else
-              k -> set(v, transform)
-        })
+        val o = JsObject(
+          obj.fields.map {
+            case (k, v) =>
+              if (k == this.key) {
+                found = true
+                k -> transform(v)
+              } else
+                k -> set(v, transform)
+          })
 
         o
       case _ => json
@@ -81,14 +82,15 @@ case class KeyPathNode(key: String) extends PathNode {
     json match {
       case obj: JsObject =>
         var found = false
-        val o = JsObject(obj.fields.map {
-          case (k, v) =>
-            if (k == this.key) {
-              found = true
-              k -> transform(v)
-            } else
-              k -> v
-        })
+        val o = JsObject(
+          obj.fields.map {
+            case (k, v) =>
+              if (k == this.key) {
+                found = true
+                k -> transform(v)
+              } else
+                k -> v
+          })
         if (!found)
           o ++ Json.obj(this.key -> transform(Json.obj()))
         else
@@ -127,13 +129,14 @@ case class IdxPathNode(idx: Int) extends PathNode {
   def set(json: JsValue, transform: JsValue => JsValue): JsValue =
     json match {
       case arr: JsArray =>
-        JsArray(arr.value.zipWithIndex.map {
-          case (js, j) =>
-            if (j == idx)
-              transform(js)
-            else
-              js
-        })
+        JsArray(
+          arr.value.zipWithIndex.map {
+            case (js, j) =>
+              if (j == idx)
+                transform(js)
+              else
+                js
+          })
       case _ => transform(json)
     }
 
@@ -238,8 +241,10 @@ case class JsPath(path: List[PathNode] = List()) {
             case List(js) => Right(JsSuccess(js))
             case _ :: _ =>
               Right(
-                JsError(Seq(
-                  this -> Seq(ValidationError("error.path.result.multiple")))))
+                JsError(
+                  Seq(
+                    this -> Seq(
+                      ValidationError("error.path.result.multiple")))))
           }
         case head :: tail =>
           head(json) match {
@@ -250,8 +255,10 @@ case class JsPath(path: List[PathNode] = List()) {
             case List(js) => step(tail, js)
             case _ :: _ =>
               Left(
-                JsError(Seq(
-                  this -> Seq(ValidationError("error.path.result.multiple")))))
+                JsError(
+                  Seq(
+                    this -> Seq(
+                      ValidationError("error.path.result.multiple")))))
           }
       }
 

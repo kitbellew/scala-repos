@@ -59,8 +59,9 @@ trait AttributesMap
   def as[T](key: String)(implicit
       mf: Manifest[T],
       converter: TypeConverter[Any, T]): T = {
-    getAs[T](key) getOrElse (throw new ScalatraException(
-      "Key " + key + " not found"))
+    getAs[T](key) getOrElse (
+      throw new ScalatraException("Key " + key + " not found")
+    )
   }
 
   /**

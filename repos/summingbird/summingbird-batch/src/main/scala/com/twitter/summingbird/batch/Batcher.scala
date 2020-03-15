@@ -87,15 +87,13 @@ object Batcher {
         if (b == BatchID(0))
           Intersection(
             InclusiveLower(Timestamp.Min),
-            InclusiveUpper(Timestamp.Max)
-          )
+            InclusiveUpper(Timestamp.Max))
         else
           Empty[Timestamp]()
 
       val totalBatchInterval = Intersection(
         InclusiveLower(currentBatch),
-        ExclusiveUpper(currentBatch.next)
-      )
+        ExclusiveUpper(currentBatch.next))
       override def batchesCoveredBy(
           interval: Interval[Timestamp]): Interval[BatchID] =
         interval match {
@@ -226,8 +224,7 @@ trait Batcher extends Serializable {
     val latestInclusive = latestTimeOf(batchID)
     BatchID.range(
       other.batchOf(earliestInclusive),
-      other.batchOf(latestInclusive)
-    )
+      other.batchOf(latestInclusive))
   }
 
   def enclosedBy(
@@ -238,8 +235,7 @@ trait Batcher extends Serializable {
       BatchID
         .range(bottom, top)
         .toSeq
-        .flatMap(enclosedBy(_, other)): _*
-    )
+        .flatMap(enclosedBy(_, other)): _*)
   }
 }
 

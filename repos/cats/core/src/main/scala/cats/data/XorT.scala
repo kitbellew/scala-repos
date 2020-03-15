@@ -33,10 +33,11 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
 
   def orElse[AA, BB >: B](default: => XorT[F, AA, BB])(
       implicit F: Monad[F]): XorT[F, AA, BB] = {
-    XorT(F.flatMap(value) {
-      case Xor.Left(_)      => default.value
-      case r @ Xor.Right(_) => F.pure(r)
-    })
+    XorT(
+      F.flatMap(value) {
+        case Xor.Left(_)      => default.value
+        case r @ Xor.Right(_) => F.pure(r)
+      })
   }
 
   def recover(pf: PartialFunction[A, B])(
@@ -44,10 +45,11 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
 
   def recoverWith(pf: PartialFunction[A, XorT[F, A, B]])(
       implicit F: Monad[F]): XorT[F, A, B] =
-    XorT(F.flatMap(value) {
-      case Xor.Left(a) if pf.isDefinedAt(a) => pf(a).value
-      case other                            => F.pure(other)
-    })
+    XorT(
+      F.flatMap(value) {
+        case Xor.Left(a) if pf.isDefinedAt(a) => pf(a).value
+        case other                            => F.pure(other)
+      })
 
   def valueOr[BB >: B](f: A => BB)(implicit F: Functor[F]): F[BB] =
     fold(f, identity)
@@ -86,10 +88,11 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
 
   def flatMap[AA >: A, D](f: B => XorT[F, AA, D])(
       implicit F: Monad[F]): XorT[F, AA, D] =
-    XorT(F.flatMap(value) {
-      case l @ Xor.Left(_) => F.pure(l)
-      case Xor.Right(b)    => f(b).value
-    })
+    XorT(
+      F.flatMap(value) {
+        case l @ Xor.Left(_) => F.pure(l)
+        case Xor.Right(b)    => f(b).value
+      })
 
   def flatMapF[AA >: A, D](f: B => F[AA Xor D])(
       implicit F: Monad[F]): XorT[F, AA, D] = flatMap(f andThen XorT.apply)
@@ -120,8 +123,9 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
       traverseF: Traverse[F],
       traverseXorA: Traverse[A Xor ?],
       applicativeG: Applicative[G]): G[XorT[F, A, D]] =
-    applicativeG.map(traverseF.traverse(value)(axb =>
-      traverseXorA.traverse(axb)(f)))(XorT.apply)
+    applicativeG.map(
+      traverseF.traverse(value)(axb => traverseXorA.traverse(axb)(f)))(
+      XorT.apply)
 
   def foldLeft[C](c: C)(f: (C, B) => C)(implicit F: Foldable[F]): C =
     F.foldLeft(value, c)((c, axb) => axb.foldLeft(c)(f))
@@ -337,15 +341,17 @@ private[data] trait XorTMonadError[F[_], L]
     fa flatMap f
   def handleErrorWith[A](fea: XorT[F, L, A])(
       f: L => XorT[F, L, A]): XorT[F, L, A] =
-    XorT(F.flatMap(fea.value) {
-      case Xor.Left(e)      => f(e).value
-      case r @ Xor.Right(_) => F.pure(r)
-    })
+    XorT(
+      F.flatMap(fea.value) {
+        case Xor.Left(e)      => f(e).value
+        case r @ Xor.Right(_) => F.pure(r)
+      })
   override def handleError[A](fea: XorT[F, L, A])(f: L => A): XorT[F, L, A] =
-    XorT(F.flatMap(fea.value) {
-      case Xor.Left(e)      => F.pure(Xor.Right(f(e)))
-      case r @ Xor.Right(_) => F.pure(r)
-    })
+    XorT(
+      F.flatMap(fea.value) {
+        case Xor.Left(e)      => F.pure(Xor.Right(f(e)))
+        case r @ Xor.Right(_) => F.pure(r)
+      })
   def raiseError[A](e: L): XorT[F, L, A] = XorT.left(F.pure(e))
   override def attempt[A](fla: XorT[F, L, A]): XorT[F, L, L Xor A] =
     XorT.right(fla.value)
@@ -360,14 +366,15 @@ private[data] trait XorTSemigroupK[F[_], L] extends SemigroupK[XorT[F, L, ?]] {
   implicit val F: Monad[F]
   implicit val L: Semigroup[L]
   def combineK[A](x: XorT[F, L, A], y: XorT[F, L, A]): XorT[F, L, A] =
-    XorT(F.flatMap(x.value) {
-      case Xor.Left(l1) =>
-        F.map(y.value) {
-          case Xor.Left(l2)     => Xor.Left(L.combine(l1, l2))
-          case r @ Xor.Right(_) => r
-        }
-      case r @ Xor.Right(_) => F.pure[L Xor A](r)
-    })
+    XorT(
+      F.flatMap(x.value) {
+        case Xor.Left(l1) =>
+          F.map(y.value) {
+            case Xor.Left(l2)     => Xor.Left(L.combine(l1, l2))
+            case r @ Xor.Right(_) => r
+          }
+        case r @ Xor.Right(_) => F.pure[L Xor A](r)
+      })
 }
 
 private[data] trait XorTMonadFilter[F[_], L]

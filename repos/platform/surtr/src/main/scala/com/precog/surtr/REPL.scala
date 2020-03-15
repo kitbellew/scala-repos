@@ -294,16 +294,14 @@ trait REPL
 
   // %%
 
-  lazy val prompt: Parser[Command] = (
-    expr ^^ { t =>
-      Eval(t)
+  lazy val prompt: Parser[Command] = (expr ^^ { t =>
+    Eval(t)
+  }
+    | ":tree" ~ expr ^^ { (_, t) =>
+      PrintTree(t)
     }
-      | ":tree" ~ expr ^^ { (_, t) =>
-        PrintTree(t)
-      }
-      | ":help" ^^^ Help
-      | ":quit" ^^^ Quit
-  )
+    | ":help" ^^^ Help
+    | ":quit" ^^^ Quit)
 
   sealed trait Command
 

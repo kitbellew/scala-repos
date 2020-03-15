@@ -50,11 +50,9 @@ class ActorPathSpec extends WordSpec with Matchers {
     }
 
     "have correct path elements" in {
-      (RootActorPath(
-        Address(
-          "akka.tcp",
-          "mysys")) / "user" / "foo" / "bar").elements.toSeq should ===(
-        Seq("user", "foo", "bar"))
+      (
+        RootActorPath(Address("akka.tcp", "mysys")) / "user" / "foo" / "bar"
+      ).elements.toSeq should ===(Seq("user", "foo", "bar"))
     }
 
     "create correct toStringWithoutAddress" in {
@@ -63,9 +61,9 @@ class ActorPathSpec extends WordSpec with Matchers {
       (RootActorPath(a) / "user").toStringWithoutAddress should ===("/user")
       (RootActorPath(a) / "user" / "foo").toStringWithoutAddress should ===(
         "/user/foo")
-      (RootActorPath(
-        a) / "user" / "foo" / "bar").toStringWithoutAddress should ===(
-        "/user/foo/bar")
+      (
+        RootActorPath(a) / "user" / "foo" / "bar"
+      ).toStringWithoutAddress should ===("/user/foo/bar")
     }
 
     "validate path elements" in {

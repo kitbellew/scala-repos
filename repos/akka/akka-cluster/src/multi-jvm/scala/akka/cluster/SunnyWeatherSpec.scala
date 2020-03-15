@@ -62,14 +62,16 @@ abstract class SunnyWeatherSpec
 
       val unexpected = new AtomicReference[SortedSet[Member]](SortedSet.empty)
       cluster.subscribe(
-        system.actorOf(Props(new Actor {
-          def receive = {
-            case event: MemberEvent ⇒
-              // we don't expected any changes to the cluster
-              unexpected.set(unexpected.get + event.member)
-            case _: CurrentClusterState ⇒ // ignore
-          }
-        })),
+        system.actorOf(
+          Props(
+            new Actor {
+              def receive = {
+                case event: MemberEvent ⇒
+                  // we don't expected any changes to the cluster
+                  unexpected.set(unexpected.get + event.member)
+                case _: CurrentClusterState ⇒ // ignore
+              }
+            })),
         classOf[MemberEvent]
       )
 

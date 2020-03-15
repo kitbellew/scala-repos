@@ -107,8 +107,7 @@ object ThriftMux
       new SimpleFilter[mux.Request, mux.Response] {
         def apply(
             request: mux.Request,
-            svc: Service[mux.Request, mux.Response]
-        ): Future[mux.Response] = {
+            svc: Service[mux.Request, mux.Response]): Future[mux.Response] = {
           // we're reasonably sure that this filter sits just after the ThriftClientRequest's
           // message array is wrapped by a ChannelBuffer
           recordRpc(Buf.ByteArray.Owned.extract(request.body))
@@ -171,11 +170,8 @@ object ThriftMux
       .ClientId(clientId) = params[Thrift.param.ClientId]
 
     private[this] object ThriftMuxToMux
-        extends Filter[
-          ThriftClientRequest,
-          Array[Byte],
-          mux.Request,
-          mux.Response] {
+        extends Filter[ThriftClientRequest, Array[
+          Byte], mux.Request, mux.Response] {
       def apply(
           req: ThriftClientRequest,
           service: Service[mux.Request, mux.Response]): Future[Array[Byte]] = {
@@ -206,8 +202,7 @@ object ThriftMux
       val classifier =
         if (params.contains[param.ResponseClassifier]) {
           ThriftMuxResponseClassifier.usingDeserializeCtx(
-            params[param.ResponseClassifier].responseClassifier
-          )
+            params[param.ResponseClassifier].responseClassifier)
         } else {
           ThriftMuxResponseClassifier.DeserializeCtxOnly
         }
@@ -274,14 +269,13 @@ object ThriftMux
 
   def newClient(
       dest: Name,
-      label: String
-  ): ServiceFactory[ThriftClientRequest, Array[Byte]] =
+      label: String): ServiceFactory[ThriftClientRequest, Array[Byte]] =
     client.newClient(dest, label)
 
   def newService(
       dest: Name,
-      label: String
-  ): Service[ThriftClientRequest, Array[Byte]] = client.newService(dest, label)
+      label: String): Service[ThriftClientRequest, Array[Byte]] =
+    client.newService(dest, label)
 
   /**
     * Produce a [[com.twitter.finagle.ThriftMux.Client]] using the provided
@@ -329,8 +323,7 @@ object ThriftMux
 
     protected def copy1(
         stack: Stack[ServiceFactory[mux.Request, mux.Response]] = this.stack,
-        params: Stack.Params = this.params
-    ) = copy(stack, params)
+        params: Stack.Params = this.params) = copy(stack, params)
 
     protected def newListener(): Listener[In, Out] = {
       val Stats(sr) = params[Stats]
@@ -343,19 +336,17 @@ object ThriftMux
       new Listener[In, Out] {
         private[this] val underlying = Netty3Listener[In, Out](
           new thriftmux.PipelineFactory(scoped, pf),
-          params
-        )
+          params)
 
         def listen(addr: SocketAddress)(
-            serveTransport: Transport[In, Out] => Unit
-        ): ListeningServer = underlying.listen(addr)(serveTransport)
+            serveTransport: Transport[In, Out] => Unit): ListeningServer =
+          underlying.listen(addr)(serveTransport)
       }
     }
 
     protected def newDispatcher(
         transport: Transport[In, Out],
-        service: Service[mux.Request, mux.Response]
-    ): Closable = {
+        service: Service[mux.Request, mux.Response]): Closable = {
       val param.Tracer(tracer) = params[param.Tracer]
 
       val negotiatedTrans = mux.Handshake.server(
@@ -380,8 +371,8 @@ object ThriftMux
       new Filter[mux.Request, mux.Response, Array[Byte], Array[Byte]] {
         def apply(
             request: mux.Request,
-            service: Service[Array[Byte], Array[Byte]]
-        ): Future[mux.Response] = {
+            service: Service[Array[Byte], Array[Byte]])
+            : Future[mux.Response] = {
           val reqBytes = Buf.ByteArray.Owned.extract(request.body)
           service(reqBytes) map { repBytes =>
             mux.Response(Buf.ByteArray.Owned(repBytes))
@@ -393,8 +384,7 @@ object ThriftMux
         extends SimpleFilter[mux.Request, mux.Response] {
       def apply(
           request: mux.Request,
-          service: Service[mux.Request, mux.Response]
-      ): Future[mux.Response] =
+          service: Service[mux.Request, mux.Response]): Future[mux.Response] =
         service(request).rescue {
           case e @ RetryPolicy.RetryableWriteException(_) =>
             Future.exception(e)
@@ -408,16 +398,15 @@ object ThriftMux
     }
 
     private[ThriftMux] val ExnHandler =
-      new Stack.Module1[
-        Thrift.param.ProtocolFactory,
-        ServiceFactory[mux.Request, mux.Response]] {
+      new Stack.Module1[Thrift.param.ProtocolFactory, ServiceFactory[
+        mux.Request,
+        mux.Response]] {
         val role = Stack.Role("appExceptionHandling")
         val description =
           "Translates uncaught application exceptions into Thrift messages"
         def make(
             _pf: Thrift.param.ProtocolFactory,
-            next: ServiceFactory[mux.Request, mux.Response]
-        ) = {
+            next: ServiceFactory[mux.Request, mux.Response]) = {
           val Thrift.param.ProtocolFactory(pf) = _pf
           val exnFilter = new ExnFilter(pf)
           exnFilter.andThen(next)
@@ -481,8 +470,7 @@ object ThriftMux
 
     def serve(
         addr: SocketAddress,
-        factory: ServiceFactory[Array[Byte], Array[Byte]]
-    ): ListeningServer = {
+        factory: ServiceFactory[Array[Byte], Array[Byte]]): ListeningServer = {
       muxer.serve(
         addr,
         MuxToArrayFilter.andThen(tracingFilter).andThen(factory))
@@ -517,6 +505,6 @@ object ThriftMux
 
   def serve(
       addr: SocketAddress,
-      factory: ServiceFactory[Array[Byte], Array[Byte]]
-  ): ListeningServer = server.serve(addr, factory)
+      factory: ServiceFactory[Array[Byte], Array[Byte]]): ListeningServer =
+    server.serve(addr, factory)
 }

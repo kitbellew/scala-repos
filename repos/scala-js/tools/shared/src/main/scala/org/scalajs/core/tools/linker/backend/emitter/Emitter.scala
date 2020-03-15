@@ -204,8 +204,7 @@ final class Emitter private (
         classTreeCache.instanceTests.getOrElseUpdate(
           js.Block(
             classEmitter.genInstanceTests(linkedClass),
-            classEmitter.genArrayInstanceTests(linkedClass)
-          )(linkedClass.pos)))
+            classEmitter.genArrayInstanceTests(linkedClass))(linkedClass.pos)))
     }
 
     if (linkedClass.hasRuntimeTypeInfo) {

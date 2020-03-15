@@ -78,10 +78,12 @@ final case class ResultSetMapping(generator: TermSymbol, from: Node, map: Node)
           val map2 = map.infer(scope + (generator -> t), typeChildren)
           (map2, map2.nodeType)
       }
-    withChildren(ConstArray[Node](from2, map2)) :@ (if (!hasType)
-                                                      newType
-                                                    else
-                                                      nodeType)
+    withChildren(ConstArray[Node](from2, map2)) :@ (
+      if (!hasType)
+        newType
+      else
+        nodeType
+    )
   }
   def nodeMapServerSide(keepType: Boolean, r: Node => Node) = {
     val this2 = mapScopedChildren {

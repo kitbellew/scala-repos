@@ -102,9 +102,10 @@ class WebSocketIntegrationSpec
               .joinMat(
                 Flow
                   .fromGraph(GraphStages.breaker[ByteString])
-                  .via(Tcp().outgoingConnection(
-                    new InetSocketAddress("localhost", myPort),
-                    halfClose = true)))(Keep.both)
+                  .via(
+                    Tcp().outgoingConnection(
+                      new InetSocketAddress("localhost", myPort),
+                      halfClose = true)))(Keep.both)
           }(Keep.right)
           .toMat(TestSink.probe[Message])(Keep.both)
           .run()
@@ -165,22 +166,23 @@ class WebSocketIntegrationSpec
       .assertAllStagesStopped {
         val N = 100
 
-        val handler = Flow.fromGraph(GraphDSL.create() { implicit b ⇒
-          val merge = b.add(Merge[Int](2))
+        val handler = Flow.fromGraph(
+          GraphDSL.create() { implicit b ⇒
+            val merge = b.add(Merge[Int](2))
 
-          // convert to int so we can connect to merge
-          val mapMsgToInt = b.add(Flow[Message].map(_ ⇒ -1))
-          val mapIntToMsg = b.add(
-            Flow[Int].map(x ⇒ TextMessage.Strict(s"Sending: $x")))
+            // convert to int so we can connect to merge
+            val mapMsgToInt = b.add(Flow[Message].map(_ ⇒ -1))
+            val mapIntToMsg = b.add(
+              Flow[Int].map(x ⇒ TextMessage.Strict(s"Sending: $x")))
 
-          // source we want to use to send message to the connected websocket sink
-          val rangeSource = b.add(Source(1 to N))
+            // source we want to use to send message to the connected websocket sink
+            val rangeSource = b.add(Source(1 to N))
 
-          mapMsgToInt ~> merge // this part of the merge will never provide msgs
-          rangeSource ~> merge ~> mapIntToMsg
+            mapMsgToInt ~> merge // this part of the merge will never provide msgs
+            rangeSource ~> merge ~> mapIntToMsg
 
-          FlowShape(mapMsgToInt.in, mapIntToMsg.out)
-        })
+            FlowShape(mapMsgToInt.in, mapIntToMsg.out)
+          })
 
         val bindingFuture = Http().bindAndHandleSync(
           {
@@ -207,9 +209,10 @@ class WebSocketIntegrationSpec
               // the resource leak of #19398 existed only for severed websocket connections
               .atopMat(GraphStages.bidiBreaker[ByteString, ByteString])(
                 Keep.right)
-              .join(Tcp().outgoingConnection(
-                new InetSocketAddress("localhost", myPort),
-                halfClose = true))
+              .join(
+                Tcp().outgoingConnection(
+                  new InetSocketAddress("localhost", myPort),
+                  halfClose = true))
           }(Keep.right)
           .toMat(Sink.foreach(_ ⇒ messages += 1))(Keep.both)
           .run()

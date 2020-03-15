@@ -329,8 +329,7 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
           nondeterministic,
           Except(
             Filter(deterministic, left),
-            Filter(pushToRight(deterministic, rewrites), right)
-          ))
+            Filter(pushToRight(deterministic, rewrites), right)))
     }
 }
 
@@ -360,9 +359,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
           .copy(projectList = p2.projectList.filter(p.references.contains)))
       case p @ Project(_, a: Aggregate)
           if (a.outputSet -- p.references).nonEmpty =>
-        p.copy(
-          child = a.copy(aggregateExpressions = a.aggregateExpressions.filter(
-            p.references.contains)))
+        p.copy(child = a.copy(aggregateExpressions = a.aggregateExpressions
+          .filter(p.references.contains)))
       case a @ Project(_, e @ Expand(_, _, grandChild))
           if (e.outputSet -- a.references).nonEmpty =>
         val newOutput = e.output.filter(a.references.contains(_))
@@ -429,9 +427,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
       // Prune unnecessary window expressions
       case p @ Project(_, w: Window)
           if (w.windowOutputSet -- p.references).nonEmpty =>
-        p.copy(child = w.copy(
-          windowExpressions = w.windowExpressions.filter(
-            p.references.contains)))
+        p.copy(child = w.copy(windowExpressions = w.windowExpressions.filter(
+          p.references.contains)))
 
       // Eliminate no-op Window
       case w: Window if w.windowExpressions.isEmpty => w.child
@@ -475,15 +472,17 @@ object CollapseProject extends Rule[LogicalPlan] {
       case p @ Project(projectList1, Project(projectList2, child)) =>
         // Create a map of Aliases to their values from the child projection.
         // e.g., 'SELECT ... FROM (SELECT a + b AS c, d ...)' produces Map(c -> Alias(a + b, c)).
-        val aliasMap = AttributeMap(projectList2.collect {
-          case a: Alias => (a.toAttribute, a)
-        })
+        val aliasMap = AttributeMap(
+          projectList2.collect {
+            case a: Alias => (a.toAttribute, a)
+          })
 
         // We only collapse these two Projects if their overlapped expressions are all
         // deterministic.
-        val hasNondeterministic = projectList1.exists(_.collect {
-          case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
-        }.exists(!_.deterministic))
+        val hasNondeterministic = projectList1.exists(
+          _.collect {
+            case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
+          }.exists(!_.deterministic))
 
         if (hasNondeterministic) {
           p
@@ -493,9 +492,10 @@ object CollapseProject extends Rule[LogicalPlan] {
           // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
           // TODO: Fix TransformBase to avoid the cast below.
           val substitutedProjection = projectList1
-            .map(_.transform {
-              case a: Attribute => aliasMap.getOrElse(a, a)
-            })
+            .map(
+              _.transform {
+                case a: Attribute => aliasMap.getOrElse(a, a)
+              })
             .asInstanceOf[Seq[NamedExpression]]
           // collapse 2 projects may introduce unnecessary Aliases, trim them here.
           val cleanedProjection = substitutedProjection.map(p =>
@@ -511,15 +511,17 @@ object CollapseProject extends Rule[LogicalPlan] {
       case p @ Project(projectList1, agg @ Aggregate(_, projectList2, child)) =>
         // Create a map of Aliases to their values from the child projection.
         // e.g., 'SELECT ... FROM (SELECT a + b AS c, d ...)' produces Map(c -> Alias(a + b, c)).
-        val aliasMap = AttributeMap(projectList2.collect {
-          case a: Alias => (a.toAttribute, a)
-        })
+        val aliasMap = AttributeMap(
+          projectList2.collect {
+            case a: Alias => (a.toAttribute, a)
+          })
 
         // We only collapse these two Projects if their overlapped expressions are all
         // deterministic.
-        val hasNondeterministic = projectList1.exists(_.collect {
-          case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
-        }.exists(!_.deterministic))
+        val hasNondeterministic = projectList1.exists(
+          _.collect {
+            case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
+          }.exists(!_.deterministic))
 
         if (hasNondeterministic) {
           p
@@ -529,9 +531,10 @@ object CollapseProject extends Rule[LogicalPlan] {
           // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
           // TODO: Fix TransformBase to avoid the cast below.
           val substitutedProjection = projectList1
-            .map(_.transform {
-              case a: Attribute => aliasMap.getOrElse(a, a)
-            })
+            .map(
+              _.transform {
+                case a: Attribute => aliasMap.getOrElse(a, a)
+              })
             .asInstanceOf[Seq[NamedExpression]]
           // collapse 2 projects may introduce unnecessary Aliases, trim them here.
           val cleanedProjection = substitutedProjection.map(p =>
@@ -931,9 +934,10 @@ object CombineFilters extends Rule[LogicalPlan] with PredicateHelper {
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transform {
       case ff @ Filter(fc, nf @ Filter(nc, grandChild)) =>
-        (ExpressionSet(splitConjunctivePredicates(fc)) --
-          ExpressionSet(splitConjunctivePredicates(nc)))
-          .reduceOption(And) match {
+        (
+          ExpressionSet(splitConjunctivePredicates(fc)) --
+            ExpressionSet(splitConjunctivePredicates(nc))
+        ).reduceOption(And) match {
           case Some(ac) =>
             Filter(And(ac, nc), grandChild)
           case None =>
@@ -1013,9 +1017,10 @@ object PushPredicateThroughProject
           if fields.forall(_.deterministic) =>
         // Create a map of Aliases to their values from the child projection.
         // e.g., 'SELECT a + b AS c, d ...' produces Map(c -> a + b).
-        val aliasMap = AttributeMap(fields.collect {
-          case a: Alias => (a.toAttribute, a.child)
-        })
+        val aliasMap = AttributeMap(
+          fields.collect {
+            case a: Alias => (a.toAttribute, a.child)
+          })
 
         // Split the condition into small conditions by `And`, so that we can push down part of this
         // condition without nondeterministic expressions.
@@ -1097,11 +1102,12 @@ object PushPredicateThroughAggregate
       case filter @ Filter(condition, aggregate: Aggregate) =>
         // Find all the aliased expressions in the aggregate list that don't include any actual
         // AggregateExpression, and create a map from the alias to the expression
-        val aliasMap = AttributeMap(aggregate.aggregateExpressions.collect {
-          case a: Alias
-              if a.child.find(_.isInstanceOf[AggregateExpression]).isEmpty =>
-            (a.toAttribute, a.child)
-        })
+        val aliasMap = AttributeMap(
+          aggregate.aggregateExpressions.collect {
+            case a: Alias
+                if a.child.find(_.isInstanceOf[AggregateExpression]).isEmpty =>
+              (a.toAttribute, a.child)
+          })
 
         // For each filter, expand the alias and check if the filter can be evaluated using
         // attributes produced by the aggregate operator's child operator.
@@ -1324,10 +1330,9 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
             val newJoinCond = joinCondition
             val newJoin = Join(newLeft, newRight, RightOuter, newJoinCond)
 
-            (leftFilterConditions ++ commonFilterCondition)
-              .reduceLeftOption(And)
-              .map(Filter(_, newJoin))
-              .getOrElse(newJoin)
+            (
+              leftFilterConditions ++ commonFilterCondition
+            ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
           case _ @(LeftOuter | LeftSemi) =>
             // push down the left side only `where` condition
             val newLeft = leftFilterConditions
@@ -1338,10 +1343,9 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
             val newJoinCond = joinCondition
             val newJoin = Join(newLeft, newRight, joinType, newJoinCond)
 
-            (rightFilterConditions ++ commonFilterCondition)
-              .reduceLeftOption(And)
-              .map(Filter(_, newJoin))
-              .getOrElse(newJoin)
+            (
+              rightFilterConditions ++ commonFilterCondition
+            ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
           case FullOuter       => f // DO Nothing for Full Outer Join
           case NaturalJoin(_)  => sys.error("Untransformed NaturalJoin node")
           case UsingJoin(_, _) => sys.error("Untransformed Using join node")

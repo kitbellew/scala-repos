@@ -47,11 +47,12 @@ object ConsoleProducer {
           new NewShinyProducer(getNewProducerProps(config))
         }
 
-      Runtime.getRuntime.addShutdownHook(new Thread() {
-        override def run() {
-          producer.close()
-        }
-      })
+      Runtime.getRuntime.addShutdownHook(
+        new Thread() {
+          override def run() {
+            producer.close()
+          }
+        })
 
       var message: ProducerRecord[Array[Byte], Array[Byte]] = null
       do {
@@ -424,10 +425,12 @@ object ConsoleProducer {
                   s"No key found on line ${lineNumber}: $line")
             case n =>
               val value =
-                (if (n + keySeparator.size > line.size)
-                   ""
-                 else
-                   line.substring(n + keySeparator.size)).getBytes
+                (
+                  if (n + keySeparator.size > line.size)
+                    ""
+                  else
+                    line.substring(n + keySeparator.size)
+                ).getBytes
               new ProducerRecord(topic, line.substring(0, n).getBytes, value)
           }
         case (line, false) =>

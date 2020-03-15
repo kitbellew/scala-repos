@@ -169,19 +169,15 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     }
 
     "strip the ids if elements have an id matching a previous one" in {
-      val xml = Group(
-        <boom id="thing" />
+      val xml = Group(<boom id="thing" />
           <hello id="thing" />
-          <bye id="thing" />
-      )
+          <bye id="thing" />)
 
       val uniqued = NodeSeq.seqToNodeSeq(ensureUniqueId(xml).flatten)
 
-      uniqued must ==/(
-        <boom id="thing" />
+      uniqued must ==/(<boom id="thing" />
         <hello />
-        <bye />
-      )
+        <bye />)
     }
 
     "leave child element ids alone even if they match the ids of the root element or each other" in {
@@ -218,19 +214,15 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     }
 
     "strip the ids if elements have an id matching a previous one" in {
-      val xml = Group(
-        <boom id="thing" />
+      val xml = Group(<boom id="thing" />
           <hello id="thing" />
-          <bye id="thing" />
-      )
+          <bye id="thing" />)
 
       val uniqued = NodeSeq.seqToNodeSeq(deepEnsureUniqueId(xml).flatten)
 
-      uniqued must ==/(
-        <boom id="thing" />
+      uniqued must ==/(<boom id="thing" />
         <hello />
-        <bye />
-      )
+        <bye />)
     }
 
     "strip child element ids alone if they match the ids of the root element or each other" in {
@@ -247,8 +239,7 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
           deepEnsureUniqueId(xml).head
         }</wrapper>
 
-      uniqued must ==/(
-        <wrapper>
+      uniqued must ==/(<wrapper>
           <boom id="thing">
             <hello />
             <good id="other-thing">Boom</good>
@@ -256,8 +247,7 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
               <other />
             </bye>
           </boom>
-        </wrapper>
-      )
+        </wrapper>)
     }
   }
 
@@ -297,19 +287,15 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     }
 
     "not affect other elements" in {
-      val xml = Group(
-        <boom id="thing" />
+      val xml = Group(<boom id="thing" />
           <hello id="thing" />
-          <bye id="thing" />
-      )
+          <bye id="thing" />)
 
       val uniqued = NodeSeq.seqToNodeSeq(ensureId(xml, "other-thinger").flatten)
 
-      uniqued must ==/(
-        <boom id="other-thinger" />
+      uniqued must ==/(<boom id="other-thinger" />
         <hello id="thing" />
-        <bye id="thing" />
-      )
+        <bye id="thing" />)
     }
   }
 }

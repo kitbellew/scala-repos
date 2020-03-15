@@ -124,8 +124,9 @@ object CSVRelation extends Logging {
           Some(row)
         } catch {
           case NonFatal(e) if params.dropMalformed =>
-            logWarning("Parse exception. " +
-              s"Dropping malformed line: ${tokens.mkString(params.delimiter.toString)}")
+            logWarning(
+              "Parse exception. " +
+                s"Dropping malformed line: ${tokens.mkString(params.delimiter.toString)}")
             None
         }
       }

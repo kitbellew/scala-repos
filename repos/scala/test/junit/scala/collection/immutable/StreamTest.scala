@@ -89,9 +89,11 @@ class StreamTest {
         n > 5
     }
 
-    assertTrue(Try {
-      wf.map(identity)
-    }.isFailure) // throws on n == 5
+    assertTrue(
+      Try {
+        wf.map(identity)
+      }.isFailure
+    ) // throws on n == 5
 
     shouldThrow = false // won't throw next time
 

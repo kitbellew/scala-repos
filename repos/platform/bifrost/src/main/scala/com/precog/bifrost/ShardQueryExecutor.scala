@@ -149,8 +149,10 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
             val resultVN: N[EvaluationError \/ Table] = {
               bytecode map { instrs =>
-                ((systemError _) <-: (StackException(_)) <-: decorate(
-                  instrs).disjunction) traverse { dag =>
+                (
+                  (systemError _) <-: (StackException(_)) <-: decorate(
+                    instrs).disjunction
+                ) traverse { dag =>
                   applyQueryOptions(opts) {
                     logger.debug("[QID:%d] Evaluating query".format(qid))
 
@@ -188,10 +190,12 @@ trait ShardQueryExecutorPlatform[M[+_]]
                       false
                     }
                 } map { errors =>
-                  faults -> (if (errors.exists(_ == true))
-                               Table.empty
-                             else
-                               table)
+                  faults -> (
+                    if (errors.exists(_ == true))
+                      Table.empty
+                    else
+                      table
+                  )
                 }
               }
             }
@@ -213,15 +217,16 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
       def sort(table: N[Table]): N[Table] =
         if (!opts.sortOn.isEmpty) {
-          val sortKey = InnerArrayConcat(opts.sortOn map { cpath =>
-            WrapArray(
-              cpath.nodes.foldLeft(constants.SourceValue.Single: TransSpec1) {
-                case (inner, f @ CPathField(_)) =>
-                  DerefObjectStatic(inner, f)
-                case (inner, i @ CPathIndex(_)) =>
-                  DerefArrayStatic(inner, i)
-              })
-          }: _*)
+          val sortKey = InnerArrayConcat(
+            opts.sortOn map { cpath =>
+              WrapArray(
+                cpath.nodes.foldLeft(constants.SourceValue.Single: TransSpec1) {
+                  case (inner, f @ CPathField(_)) =>
+                    DerefObjectStatic(inner, f)
+                  case (inner, i @ CPathIndex(_)) =>
+                    DerefArrayStatic(inner, i)
+                })
+            }: _*)
 
           table flatMap { tbl =>
             mn(tbl.sort(sortKey, opts.sortOrder))

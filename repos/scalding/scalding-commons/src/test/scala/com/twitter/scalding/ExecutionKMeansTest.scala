@@ -37,9 +37,10 @@ class ExecutionKMeansTest extends WordSpec with Matchers {
 
       // To have the seeds stay sane for kmeans k == vectorCount
       val vectorCount = k
-      val vectors = TypedPipe.from((0 until vectorCount).map { i =>
-        randVect(i % k)
-      })
+      val vectors = TypedPipe.from(
+        (0 until vectorCount).map { i =>
+          randVect(i % k)
+        })
 
       val labels =
         KMeans(k, vectors)

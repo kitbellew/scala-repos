@@ -291,8 +291,8 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
     val rdd = sc.parallelize(Seq(1, 2))
     val (histogramBuckets, histogramResults) = rdd.histogram(10)
     val expectedHistogramResults = Array(1, 0, 0, 0, 0, 0, 0, 0, 0, 1)
-    val expectedHistogramBuckets = Array(1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7,
-      1.8, 1.9, 2.0)
+    val expectedHistogramBuckets = Array(
+      1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0)
     assert(histogramResults === expectedHistogramResults)
     assert(histogramBuckets === expectedHistogramBuckets)
   }
@@ -302,8 +302,8 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
     val rdd = sc.parallelize(6 to 99)
     val (histogramBuckets, histogramResults) = rdd.histogram(8)
     val expectedHistogramResults = Array(12, 12, 11, 12, 12, 11, 12, 12)
-    val expectedHistogramBuckets = Array(6.0, 17.625, 29.25, 40.875, 52.5,
-      64.125, 75.75, 87.375, 99.0)
+    val expectedHistogramBuckets = Array(
+      6.0, 17.625, 29.25, 40.875, 52.5, 64.125, 75.75, 87.375, 99.0)
     assert(histogramResults === expectedHistogramResults)
     assert(histogramBuckets === expectedHistogramBuckets)
   }

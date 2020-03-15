@@ -94,8 +94,8 @@ class TextAreaControls(target: TextArea)
       items = ObservableBuffer[Int](0, 5, 10, 15, 20, 25, 30)
     }
   // In JAvaFX 2.1, bind TextArea.prefColumnCount with value
-  chbPrefColumnCount.delegate.selectionModelProperty
-    .addListener(new ChangeListener[Any] {
+  chbPrefColumnCount.delegate.selectionModelProperty.addListener(
+    new ChangeListener[Any] {
       def changed(
           observable: ObservableValue[_],
           oldValue: Any,
@@ -109,8 +109,8 @@ class TextAreaControls(target: TextArea)
       items = ObservableBuffer[Int](0, 5, 10, 15, 20, 25, 30)
     }
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
-  chbPrefRowCount.delegate.selectionModelProperty
-    .addListener(new ChangeListener[Any] {
+  chbPrefRowCount.delegate.selectionModelProperty.addListener(
+    new ChangeListener[Any] {
       def changed(
           observable: ObservableValue[_],
           oldValue: Any,
@@ -125,8 +125,8 @@ class TextAreaControls(target: TextArea)
     }
   //  chbScrollLeft.delegate.selectionModelProperty.set
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
-  chbPrefRowCount.delegate.selectionModelProperty
-    .addListener(new ChangeListener[Any] {
+  chbPrefRowCount.delegate.selectionModelProperty.addListener(
+    new ChangeListener[Any] {
       def changed(
           observable: ObservableValue[_],
           oldValue: Any,
@@ -142,8 +142,8 @@ class TextAreaControls(target: TextArea)
       items = ObservableBuffer[Double](-10, -5, 0, 5, 10, 15, 20)
     }
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
-  chbPrefRowCount.delegate.selectionModelProperty
-    .addListener(new ChangeListener[Any] {
+  chbPrefRowCount.delegate.selectionModelProperty.addListener(
+    new ChangeListener[Any] {
       def changed(
           observable: ObservableValue[_],
           oldValue: Any,

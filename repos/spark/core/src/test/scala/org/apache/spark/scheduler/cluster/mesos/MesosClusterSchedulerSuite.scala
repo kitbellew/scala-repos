@@ -160,8 +160,7 @@ class MesosClusterSchedulerSuite
     when(
       driver.launchTasks(
         Matchers.eq(Collections.singleton(offer.getId)),
-        capture.capture())
-    ).thenReturn(Status.valueOf(1))
+        capture.capture())).thenReturn(Status.valueOf(1))
 
     scheduler.resourceOffers(driver, Collections.singletonList(offer))
 
@@ -183,7 +182,6 @@ class MesosClusterSchedulerSuite
 
     verify(driver, times(1)).launchTasks(
       Matchers.eq(Collections.singleton(offer.getId)),
-      capture.capture()
-    )
+      capture.capture())
   }
 }

@@ -74,20 +74,23 @@ trait CodingDirectives {
           mapRequest { request ⇒
             effectiveDecoder
               .decode(request)
-              .mapEntity(StreamUtils.mapEntityError {
-                case NonFatal(e) ⇒
-                  IllegalRequestException(
-                    StatusCodes.BadRequest,
-                    ErrorInfo(
-                      "The request's encoding is corrupt",
-                      e.getMessage))
-              })
+              .mapEntity(
+                StreamUtils.mapEntityError {
+                  case NonFatal(e) ⇒
+                    IllegalRequestException(
+                      StatusCodes.BadRequest,
+                      ErrorInfo(
+                        "The request's encoding is corrupt",
+                        e.getMessage))
+                })
           }
         }
 
-    requestEntityEmpty | (requestEncodedWith(decoder.encoding) &
-      applyDecoder &
-      cancelRejections(classOf[UnsupportedRequestEncodingRejection]))
+    requestEntityEmpty | (
+      requestEncodedWith(decoder.encoding) &
+        applyDecoder &
+        cancelRejections(classOf[UnsupportedRequestEncodingRejection])
+    )
   }
 
   /**

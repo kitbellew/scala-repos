@@ -7,17 +7,23 @@ object Test extends App {
   }
 
   def go1 =
-    (new AnyRef with Happy with Sad {
-      override val status = "happysad"
-    }).status
+    (
+      new AnyRef with Happy with Sad {
+        override val status = "happysad"
+      }
+    ).status
   def go2 =
-    (new AnyRef with Happy with Sad {
-      val blurp = "happysad";
-      override val status = blurp
-    }).status
+    (
+      new AnyRef with Happy with Sad {
+        val blurp = "happysad";
+        override val status = blurp
+      }
+    ).status
   def go3 =
-    (new AnyRef with Happy with Sad {
-      override val status = blurp;
-      val blurp = "happysad"
-    }).status
+    (
+      new AnyRef with Happy with Sad {
+        override val status = blurp;
+        val blurp = "happysad"
+      }
+    ).status
 }

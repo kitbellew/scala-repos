@@ -92,10 +92,11 @@ class BackoffSupervisorDocSpec {
         .withAutoReset(
           10.seconds
         ) // the child must send BackoffSupervisor.Reset to its parent
-        .withSupervisorStrategy(OneForOneStrategy() {
-          case _: MyException ⇒ SupervisorStrategy.Restart
-          case _ ⇒ SupervisorStrategy.Escalate
-        }))
+        .withSupervisorStrategy(
+          OneForOneStrategy() {
+            case _: MyException ⇒ SupervisorStrategy.Restart
+            case _ ⇒ SupervisorStrategy.Escalate
+          }))
     //#backoff-custom-fail
 
     system.actorOf(supervisor, name = "echoSupervisor")

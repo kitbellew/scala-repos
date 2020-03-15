@@ -352,36 +352,37 @@ object Execution {
       * from multiple threads. This thread does all the Flow starting.
       */
     protected lazy val thread =
-      new Thread(new Runnable {
-        def run() {
-          @annotation.tailrec
-          def go(): Unit =
-            messageQueue.take match {
-              case Stop => ()
-              case RunFlowDef(conf, mode, fd, promise) =>
-                try {
-                  promise.completeWith(
-                    ExecutionContext.newContext(conf)(fd, mode).run)
-                } catch {
-                  case t: Throwable =>
-                    // something bad happened, but this thread is a daemon
-                    // that should only stop if all others have stopped or
-                    // we have received the stop message.
-                    // Stopping this thread prematurely can deadlock
-                    // futures from the promise we have.
-                    // In a sense, this thread does not exist logically and
-                    // must forward all exceptions to threads that requested
-                    // this work be started.
-                    promise.tryFailure(t)
-                }
-                // Loop
-                go()
-            }
+      new Thread(
+        new Runnable {
+          def run() {
+            @annotation.tailrec
+            def go(): Unit =
+              messageQueue.take match {
+                case Stop => ()
+                case RunFlowDef(conf, mode, fd, promise) =>
+                  try {
+                    promise.completeWith(
+                      ExecutionContext.newContext(conf)(fd, mode).run)
+                  } catch {
+                    case t: Throwable =>
+                      // something bad happened, but this thread is a daemon
+                      // that should only stop if all others have stopped or
+                      // we have received the stop message.
+                      // Stopping this thread prematurely can deadlock
+                      // futures from the promise we have.
+                      // In a sense, this thread does not exist logically and
+                      // must forward all exceptions to threads that requested
+                      // this work be started.
+                      promise.tryFailure(t)
+                  }
+                  // Loop
+                  go()
+              }
 
-          // Now we actually run the recursive loop
-          go()
-        }
-      })
+            // Now we actually run the recursive loop
+            go()
+          }
+        })
 
     def runFlowDef(conf: Config, mode: Mode, fd: FlowDef): Future[JobStats] =
       try {
@@ -750,11 +751,12 @@ object Execution {
         tail: List[ToWrite])(
         implicit cec: ConcurrentExecutionContext): Future[ExecutionCounters] = {
       for {
-        flowDef <- toFuture(Try {
-          val fd = new FlowDef;
-          (head :: tail).foreach(_.write(conf, fd, mode));
-          fd
-        })
+        flowDef <- toFuture(
+          Try {
+            val fd = new FlowDef;
+            (head :: tail).foreach(_.write(conf, fd, mode));
+            fd
+          })
         _ = FlowStateMap.validateSources(flowDef, mode)
         jobStats <- cache.runFlowDef(conf, mode, flowDef)
         _ = FlowStateMap.clear(flowDef)
@@ -1154,10 +1156,12 @@ object ExecutionCounters {
       import scala.collection.JavaConverters._
 
       val keys =
-        (for {
-          group <- cs.getCounterGroups.asScala
-          counter <- cs.getCountersFor(group).asScala
-        } yield StatKey(counter, group)).toSet
+        (
+          for {
+            group <- cs.getCounterGroups.asScala
+            counter <- cs.getCountersFor(group).asScala
+          } yield StatKey(counter, group)
+        ).toSet
 
       def get(k: StatKey) =
         if (keys(k)) {
@@ -1202,9 +1206,10 @@ object ExecutionCounters {
       override def isNonZero(that: ExecutionCounters) = that.keys.nonEmpty
       def zero = ExecutionCounters.empty
       def plus(left: ExecutionCounters, right: ExecutionCounters) = {
-        fromMap((left.keys ++ right.keys).map { k =>
-          (k, left(k) + right(k))
-        }.toMap)
+        fromMap(
+          (left.keys ++ right.keys).map { k =>
+            (k, left(k) + right(k))
+          }.toMap)
       }
     }
 }

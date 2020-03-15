@@ -174,11 +174,12 @@ sealed trait ExpressionDag[N[_]] { self =>
   private def gc: ExpressionDag[N] = {
     val goodIds = reachableIds
     type BoolT[t] = Boolean
-    val toKeepI2E = idToExp.filter(new GenFunction[HMap[Id, E]#Pair, BoolT] {
-      def apply[T] = { idExp =>
-        goodIds(idExp._1)
-      }
-    })
+    val toKeepI2E = idToExp.filter(
+      new GenFunction[HMap[Id, E]#Pair, BoolT] {
+        def apply[T] = { idExp =>
+          goodIds(idExp._1)
+        }
+      })
     copy(id2Exp = toKeepI2E)
   }
 
@@ -354,9 +355,10 @@ sealed trait ExpressionDag[N[_]] { self =>
         }
       }
     idToExp
-      .collectValues[({
-        type IntT[T] = Int
-      })#IntT](partial)
+      .collectValues[
+        ({
+          type IntT[T] = Int
+        })#IntT](partial)
       .sum
   }
 

@@ -12,9 +12,7 @@ import scala.io.Source // ADDED
 import io.prediction.controller.Params // ADDED
 
 // ADDED CustomPreparatorParams case class
-case class CustomPreparatorParams(
-    val filepath: String
-) extends Params
+case class CustomPreparatorParams(val filepath: String) extends Params
 
 class IdentityPreparator(pp: EmptyPreparatorParams)
     extends PPreparator[TrainingData, TrainingData] {

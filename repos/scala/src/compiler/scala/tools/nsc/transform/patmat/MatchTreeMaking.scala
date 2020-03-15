@@ -173,10 +173,12 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       // sub patterns bound to wildcard (_) are never stored as they can't be referenced
       // dirty debuggers will have to get dirty to see the wildcards
       lazy val storedBinders: Set[Symbol] =
-        (if (debugInfoEmitVars)
-           subPatBinders.toSet
-         else
-           Set.empty) ++ extraStoredBinders -- ignoredSubPatBinders
+        (
+          if (debugInfoEmitVars)
+            subPatBinders.toSet
+          else
+            Set.empty
+        ) ++ extraStoredBinders -- ignoredSubPatBinders
 
       // e.g., mutable fields of a case class in ProductExtractorTreeMaker
       def extraStoredBinders: Set[Symbol]
@@ -266,8 +268,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         extractorReturnsBoolean: Boolean,
         val checkedLength: Option[Int],
         val prevBinder: Symbol,
-        val ignoredSubPatBinders: Set[Symbol]
-    ) extends FunTreeMaker
+        val ignoredSubPatBinders: Set[Symbol])
+        extends FunTreeMaker
         with PreserveSubPatBinders {
 
       def extraStoredBinders: Set[Symbol] = potentiallyMutableBinders
@@ -296,8 +298,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           if (extractorReturnsBoolean)
             casegen.flatMapCond(extractor, CODE.UNIT, nextBinder, condAndNext)
           else
-            casegen.flatMap(extractor, nextBinder, condAndNext)
-        )
+            casegen.flatMap(extractor, nextBinder, condAndNext))
       }
 
       override def toString = "X" + ((extractor, nextBinder.name))
@@ -332,8 +333,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         val subPatRefs: List[Tree],
         val mutableBinders: List[Symbol],
         binderKnownNonNull: Boolean,
-        val ignoredSubPatBinders: Set[Symbol]
-    ) extends FunTreeMaker
+        val ignoredSubPatBinders: Set[Symbol])
+        extends FunTreeMaker
         with PreserveSubPatBinders {
 
       import CODE._
@@ -348,8 +349,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           if (binderKnownNonNull)
             extraCond
           else
-            (extraCond map (nullCheck AND _)
-              orElse Some(nullCheck))
+            (
+              extraCond map (nullCheck AND _)
+                orElse Some(nullCheck)
+            )
 
         cond match {
           case Some(cond) =>
@@ -449,9 +452,11 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                 val synthOuterGetter = expectedTp.typeSymbol.newMethod(
                   vpmName.outer,
                   newFlags = SYNTHETIC | ARTIFACT) setInfo expectedPrefix
-                val outerTest = (Select(
-                  codegen._asInstanceOf(testedBinder, expectedTp),
-                  synthOuterGetter)) OBJ_EQ expectedOuterRef
+                val outerTest = (
+                  Select(
+                    codegen._asInstanceOf(testedBinder, expectedTp),
+                    synthOuterGetter)
+                ) OBJ_EQ expectedOuterRef
                 and(orig, outerTest)
             }
         }
@@ -561,17 +566,14 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         // If we do not conform to expected type:
         //   have to test type and outer (non-null is implied by successful type test)
         def mkDefault =
-          (
-            if (isExpectedPrimitiveType)
-              tru
-            else
-              addOuterTest(
-                if (isExpectedReferenceType)
-                  mkNullTest
-                else
-                  mkTypeTest
-              )
-          )
+          (if (isExpectedPrimitiveType)
+             tru
+           else
+             addOuterTest(
+               if (isExpectedReferenceType)
+                 mkNullTest
+               else
+                 mkTypeTest))
 
         // true when called to type-test the argument to an extractor
         // don't do any fancy equality checking, just test the type
@@ -648,8 +650,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           // (for now,) alternatives may not bind variables (except wildcards), so we don't care about the final substitution built internally by makeTreeMakers
           val combinedAlts = altss map (altTreeMakers =>
             ((casegen: Casegen) =>
-              combineExtractors(altTreeMakers :+ TrivialTreeMaker(
-                casegen.one(mkTRUE)))(casegen)))
+              combineExtractors(
+                altTreeMakers :+ TrivialTreeMaker(casegen.one(mkTRUE)))(
+                casegen)))
 
           val findAltMatcher =
             codegenAlt.matcher(EmptyTree, NoSymbol, BooleanTpe)(
@@ -724,9 +727,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           matchFailGenOverride orElse Some(Throw(MatchErrorClass.tpe, _: Tree))
 
         debug.patmat(
-          "combining cases: " + (casesNoSubstOnly
-            .map(_.mkString(" >> "))
-            .mkString("{", "\n", "}")))
+          "combining cases: " + (
+            casesNoSubstOnly.map(_.mkString(" >> ")).mkString("{", "\n", "}")
+          ))
 
         val (suppression, requireSwitch): (Suppression, Boolean) =
           if (settings.XnoPatmatAnalysis)
@@ -834,7 +837,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
               t.symbol = currentOwner.newAnonymousFunctionValue(t.pos)
               debug.patmat("new symbol for " + ((t, t.symbol.ownerChain)))
             case Function(_, _)
-                if (t.symbol.owner == NoSymbol) || (t.symbol.owner == origOwner) =>
+                if (
+                  t.symbol.owner == NoSymbol
+                ) || (t.symbol.owner == origOwner) =>
               debug.patmat(
                 "fundef: " + (
                   (
@@ -843,7 +848,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                     currentOwner.ownerChain)))
               t.symbol.owner = currentOwner
             case d: DefTree
-                if (d.symbol != NoSymbol) && ((d.symbol.owner == NoSymbol) || (d.symbol.owner == origOwner)) => // don't indiscriminately change existing owners! (see e.g., pos/t3440, pos/t3534, pos/unapplyContexts2)
+                if (d.symbol != NoSymbol) && (
+                  (d.symbol.owner == NoSymbol) || (d.symbol.owner == origOwner)
+                ) => // don't indiscriminately change existing owners! (see e.g., pos/t3440, pos/t3534, pos/unapplyContexts2)
               debug.patmat(
                 "def: " + ((d, d.symbol.ownerChain, currentOwner.ownerChain)))
 

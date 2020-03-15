@@ -55,8 +55,7 @@ class StressTest {
   def makechef =
     new Chef(
       VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-      VersionedSegmentFormat(Map(1 -> V1SegmentFormat))
-    )
+      VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))
 
   val chefs = (1 to 4).map { _ =>
     actorSystem.actorOf(Props(makechef))
@@ -102,12 +101,14 @@ class StressTest {
     def close(proj: NIHDB) = fromFuture(proj.close(actorSystem))
 
     def finish() = {
-      (for {
-        _ <- IO {
-          close(nihdb)
-        }
-        _ <- IOUtils.recursiveDelete(workDir)
-      } yield ()).unsafePerformIO
+      (
+        for {
+          _ <- IO {
+            close(nihdb)
+          }
+          _ <- IOUtils.recursiveDelete(workDir)
+        } yield ()
+      ).unsafePerformIO
     }
 
     def runNihAsync(i: Int, f: File, bufSize: Int, _eventid: Long): Long = {
@@ -173,9 +174,10 @@ class StressTest {
           StreamT.unfoldM[Future, Unit, Option[Long]](None) { key =>
             projection
               .getBlockAfter(key, None)
-              .map(_.map {
-                case BlockProjectionData(_, maxKey, _) => ((), Some(maxKey))
-              })
+              .map(
+                _.map {
+                  case BlockProjectionData(_, maxKey, _) => ((), Some(maxKey))
+                })
           }
         stream.length
       }

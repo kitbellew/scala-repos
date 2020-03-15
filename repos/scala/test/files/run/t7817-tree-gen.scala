@@ -22,13 +22,11 @@ object Test extends CompilerTest {
   import global._
   override def extraSettings = super.extraSettings + " -d " + testOutput.path
   override def sources =
-    List(
-      """
+    List("""
     package test { class C { object O } }
     class D { object P }
     package test2 { object `package` { object PO; def bar = 0 } }
-    """
-    )
+    """)
   def check(source: String, unit: CompilationUnit) =
     enteringTyper {
       def checkTree(msg: String, t: => Tree) = {

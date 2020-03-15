@@ -59,10 +59,9 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
 
   def testFine() {
     val intStrings =
-      (intValues ++ randomIntValues(numOfGenInteger))
-        .flatMap(expandIntegerLiteral)
-        .flatMap(prependSign)
-        .distinct
+      (
+        intValues ++ randomIntValues(numOfGenInteger)
+      ).flatMap(expandIntegerLiteral).flatMap(prependSign).distinct
     for (s <- intStrings) {
       assertNothing(messages(s"val a = $s"))
     }

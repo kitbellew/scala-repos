@@ -184,12 +184,8 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
 
     useColl { coll =>
       val cur = f(coll)
-        .limit(
-          findOpts.find(_.isInstanceOf[Limit]).map(_.value).getOrElse(0)
-        )
-        .skip(
-          findOpts.find(_.isInstanceOf[Skip]).map(_.value).getOrElse(0)
-        )
+        .limit(findOpts.find(_.isInstanceOf[Limit]).map(_.value).getOrElse(0))
+        .skip(findOpts.find(_.isInstanceOf[Skip]).map(_.value).getOrElse(0))
       sort.foreach(s => cur.sort(s))
       // This retrieves all documents and puts them in memory.
       (cur: Iterator[DBObject]).map(fromDBObject).toList
@@ -410,8 +406,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
                 .foldLeft(BasicDBObjectBuilder.start) { (builder, pair) =>
                   builder.add(pair._1, pair._2)
                 }
-                .get
-            )
+                .get)
           }
 
           if (fieldsToUnset.length > 0) {
@@ -421,8 +416,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
                 .foldLeft(BasicDBObjectBuilder.start) { (builder, fieldName) =>
                   builder.add(fieldName, 1)
                 }
-                .get
-            )
+                .get)
           }
 
           update(inst, dbo.get)

@@ -61,32 +61,34 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     * The activity which behaves as `f` applied to Ok values.
     */
   def flatMap[U](f: T => Activity[U]): Activity[U] =
-    Activity(run flatMap {
-      case Ok(v) =>
-        val a =
-          try f(v)
-          catch {
-            case NonFatal(exc) => Activity.exception(exc)
-          }
+    Activity(
+      run flatMap {
+        case Ok(v) =>
+          val a =
+            try f(v)
+            catch {
+              case NonFatal(exc) => Activity.exception(exc)
+            }
 
-        a.run
-      case Pending         => Var.value(Activity.Pending)
-      case exc @ Failed(_) => Var.value(exc)
-    })
+          a.run
+        case Pending         => Var.value(Activity.Pending)
+        case exc @ Failed(_) => Var.value(exc)
+      })
 
   /**
     * The activity which behaves as `f`  to the state
     * of this activity.
     */
   def transform[U](f: Activity.State[T] => Activity[U]): Activity[U] =
-    Activity(run flatMap { act =>
-      val a =
-        try f(act)
-        catch {
-          case NonFatal(exc) => Activity.exception(exc)
-        }
-      a.run
-    })
+    Activity(
+      run flatMap { act =>
+        val a =
+          try f(act)
+          catch {
+            case NonFatal(exc) => Activity.exception(exc)
+          }
+        a.run
+      })
 
   /**
     * Recover a failed activity.

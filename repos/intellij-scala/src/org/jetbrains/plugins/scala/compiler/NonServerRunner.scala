@@ -59,9 +59,12 @@ class NonServerRunner(
         null
       case Right(jdk) =>
         val commands =
-          ((FileUtil toCanonicalPath jdk.executable.getPath) +: "-cp" +: classPath(
-            jdk) +: jvmParameters :+
-            SERVER_CLASS_NAME).++(args)
+          (
+            (
+              FileUtil toCanonicalPath jdk.executable.getPath
+            ) +: "-cp" +: classPath(jdk) +: jvmParameters :+
+              SERVER_CLASS_NAME
+          ).++(args)
 
         val builder = new ProcessBuilder(commands.asJava)
 
@@ -89,11 +92,12 @@ class NonServerRunner(
                     BaseOSProcessHandler.ExecutorServiceHolder.submit(task)
                 })
 
-            processWaitFor.setTerminationCallback(new Consumer[Integer] {
-              override def consume(t: Integer) {
-                myCallbacks.foreach(c => c())
-              }
-            })
+            processWaitFor.setTerminationCallback(
+              new Consumer[Integer] {
+                override def consume(t: Integer) {
+                  myCallbacks.foreach(c => c())
+                }
+              })
           }
 
           override def stop() {

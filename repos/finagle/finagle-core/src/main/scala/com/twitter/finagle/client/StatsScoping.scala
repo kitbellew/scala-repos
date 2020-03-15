@@ -24,9 +24,10 @@ object StatsScoping {
     def mk(): (Scoper, Stack.Param[Scoper]) = (this, Scoper.param)
   }
   object Scoper {
-    implicit val param = Stack.Param(Scoper { (stats, _) =>
-      stats
-    })
+    implicit val param = Stack.Param(
+      Scoper { (stats, _) =>
+        stats
+      })
   }
 
   def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =

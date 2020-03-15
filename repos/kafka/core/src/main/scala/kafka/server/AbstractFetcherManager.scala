@@ -112,10 +112,12 @@ abstract class AbstractFetcherManager(
       }
     }
 
-    info("Added fetcher for partitions %s".format(partitionAndOffsets.map {
-      case (topicAndPartition, brokerAndInitialOffset) =>
-        "[" + topicAndPartition + ", initOffset " + brokerAndInitialOffset.initOffset + " to broker " + brokerAndInitialOffset.broker + "] "
-    }))
+    info(
+      "Added fetcher for partitions %s".format(
+        partitionAndOffsets.map {
+          case (topicAndPartition, brokerAndInitialOffset) =>
+            "[" + topicAndPartition + ", initOffset " + brokerAndInitialOffset.initOffset + " to broker " + brokerAndInitialOffset.broker + "] "
+        }))
   }
 
   def removeFetcherForPartitions(partitions: Set[TopicAndPartition]) {

@@ -91,9 +91,7 @@ object CleanWorksheetAction {
             commonModel.getValue,
             commonModel.getExtent,
             commonModel.getMinimum,
-            commonModel.getMaximum
-          )
-        )
+            commonModel.getMaximum))
       case _ =>
     }
   }

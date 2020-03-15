@@ -347,11 +347,7 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Convert to a These. */
-  def toThese: A \&/ B =
-    fold(
-      a => \&/.This(a),
-      b => \&/.That(b)
-    )
+  def toThese: A \&/ B = fold(a => \&/.This(a), b => \&/.That(b))
 
 }
 
@@ -533,19 +529,11 @@ sealed abstract class DisjunctionInstances2 {
       def reassociateLeft[A, B, C](f: \/[A, \/[B, C]]) =
         f.fold(
           a => \/.left(\/.left(a)),
-          _.fold(
-            b => \/.left(\/.right(b)),
-            \/.right
-          )
-        )
+          _.fold(b => \/.left(\/.right(b)), \/.right))
 
       def reassociateRight[A, B, C](f: \/[\/[A, B], C]) =
         f.fold(
-          _.fold(
-            \/.left,
-            b => \/.right(\/.left(b))
-          ),
-          c => \/.right(\/.right(c))
-        )
+          _.fold(\/.left, b => \/.right(\/.left(b))),
+          c => \/.right(\/.right(c)))
     }
 }

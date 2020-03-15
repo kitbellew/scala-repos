@@ -49,8 +49,10 @@ object Test {
     assert(u2.size == 500)
     assert(u1.iterator.toList == (0 until 500).toList)
     assert(
-      (for (elem <- u1)
-        yield elem) sameElements (0 until 500))
+      (
+        for (elem <- u1)
+          yield elem
+      ) sameElements (0 until 500))
 
     u1 concat u2
     assert(u1.size == 1000)
@@ -123,9 +125,12 @@ object Test {
     for (i <- 0 until sz)
       assert(store(i) == u1(i))
 
-    assert((u1 map { x =>
-      x
-    }) == u1)
+    assert(
+      (
+        u1 map { x =>
+          x
+        }
+      ) == u1)
     assert(u1.iterator.toSeq.size == u1.size)
   }
 

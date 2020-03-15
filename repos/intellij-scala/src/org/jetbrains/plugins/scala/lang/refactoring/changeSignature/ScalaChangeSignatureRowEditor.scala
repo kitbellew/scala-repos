@@ -71,11 +71,12 @@ class ScalaChangeSignatureRowEditor(
 
   def addTypeEditor() {
     myTypeEditor.addDocumentListener(signatureUpdater)
-    myTypeEditor.addDocumentListener(new DocumentAdapter {
-      override def documentChanged(e: DocumentEvent): Unit = {
-        item.typeText = myTypeEditor.getText
-      }
-    })
+    myTypeEditor.addDocumentListener(
+      new DocumentAdapter {
+        override def documentChanged(e: DocumentEvent): Unit = {
+          item.typeText = myTypeEditor.getText
+        }
+      })
     myTypeEditor.addDocumentListener(new this.RowEditorChangeListener(1))
     add(createLabeledPanel("Type:", myTypeEditor), BorderLayout.CENTER)
   }
@@ -96,11 +97,12 @@ class ScalaChangeSignatureRowEditor(
     myDefaultValueEditor.setPreferredWidth(table.getWidth / 2)
     myDefaultValueEditor.addDocumentListener(
       new this.RowEditorChangeListener(2))
-    myDefaultValueEditor.addDocumentListener(new DocumentAdapter {
-      override def documentChanged(e: DocumentEvent): Unit = {
-        item.parameter.defaultValue = myDefaultValueEditor.getText.trim
-      }
-    })
+    myDefaultValueEditor.addDocumentListener(
+      new DocumentAdapter {
+        override def documentChanged(e: DocumentEvent): Unit = {
+          item.parameter.defaultValue = myDefaultValueEditor.getText.trim
+        }
+      })
     additionalPanel.add(
       createLabeledPanel("Default value:", myDefaultValueEditor),
       BorderLayout.WEST)

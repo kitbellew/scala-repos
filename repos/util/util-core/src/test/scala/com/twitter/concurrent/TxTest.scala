@@ -38,36 +38,40 @@ class TxTest extends WordSpec {
       val (stx, rtx) = Tx.twoParty(123)
       rtx.ack()
 
-      assert(intercept[Exception] {
-        rtx.ack()
-      } == Tx.AlreadyAckd)
+      assert(
+        intercept[Exception] {
+          rtx.ack()
+        } == Tx.AlreadyAckd)
     }
 
     "complain on ack nack" in {
       val (stx, rtx) = Tx.twoParty(123)
       rtx.ack()
 
-      assert(intercept[Exception] {
-        rtx.nack()
-      } == Tx.AlreadyAckd)
+      assert(
+        intercept[Exception] {
+          rtx.nack()
+        } == Tx.AlreadyAckd)
     }
 
     "complain on nack ack" in {
       val (stx, rtx) = Tx.twoParty(123)
       rtx.nack()
 
-      assert(intercept[Exception] {
-        rtx.ack()
-      } == Tx.AlreadyNackd)
+      assert(
+        intercept[Exception] {
+          rtx.ack()
+        } == Tx.AlreadyNackd)
     }
 
     "complain on nack nack" in {
       val (stx, rtx) = Tx.twoParty(123)
       rtx.nack()
 
-      assert(intercept[Exception] {
-        rtx.nack()
-      } == Tx.AlreadyNackd)
+      assert(
+        intercept[Exception] {
+          rtx.nack()
+        } == Tx.AlreadyNackd)
     }
 
     "complain when already done" in {
@@ -75,9 +79,10 @@ class TxTest extends WordSpec {
       stx.ack()
       rtx.ack()
 
-      assert(intercept[Exception] {
-        stx.ack()
-      } == Tx.AlreadyDone)
+      assert(
+        intercept[Exception] {
+          stx.ack()
+        } == Tx.AlreadyDone)
     }
   }
 }

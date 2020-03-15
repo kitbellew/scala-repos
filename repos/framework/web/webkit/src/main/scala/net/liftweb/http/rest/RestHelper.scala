@@ -42,11 +42,17 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected def jsonResponse_?(in: Req): Boolean = {
     (in.acceptsJson_? && !in.acceptsStarStar) ||
-    ((in.weightedAccept.isEmpty ||
-    in.acceptsStarStar) &&
-    (in.path.suffix.equalsIgnoreCase("json") ||
-    in.json_? ||
-    (in.path.suffix.length == 0 && defaultGetAsJson))) ||
+    (
+      (
+        in.weightedAccept.isEmpty ||
+        in.acceptsStarStar
+      ) &&
+      (
+        in.path.suffix.equalsIgnoreCase("json") ||
+        in.json_? ||
+        (in.path.suffix.length == 0 && defaultGetAsJson)
+      )
+    ) ||
     suplimentalJsonResponse_?(in)
   }
 
@@ -92,11 +98,17 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected def xmlResponse_?(in: Req): Boolean = {
     (in.acceptsXml_? && !in.acceptsStarStar) ||
-    ((in.weightedAccept.isEmpty ||
-    in.acceptsStarStar) &&
-    (in.path.suffix.equalsIgnoreCase("xml") ||
-    in.xml_? ||
-    (in.path.suffix.length == 0 && defaultGetAsXml))) ||
+    (
+      (
+        in.weightedAccept.isEmpty ||
+        in.acceptsStarStar
+      ) &&
+      (
+        in.path.suffix.equalsIgnoreCase("xml") ||
+        in.xml_? ||
+        (in.path.suffix.length == 0 && defaultGetAsXml)
+      )
+    ) ||
     suplimentalXmlResponse_?(in)
   }
 
@@ -367,30 +379,31 @@ trait RestHelper extends LiftRules.DispatchPF {
       selection: Req => BoxOrRaw[SelectType])(
       pf: PartialFunction[Req, BoxOrRaw[T]])(implicit
       cvt: PartialFunction[(SelectType, T, Req), LiftResponse]): Unit = {
-    serve(new PartialFunction[Req, () => Box[LiftResponse]] {
-      def isDefinedAt(r: Req): Boolean =
-        selection(r).isDefined && pf.isDefinedAt(r)
+    serve(
+      new PartialFunction[Req, () => Box[LiftResponse]] {
+        def isDefinedAt(r: Req): Boolean =
+          selection(r).isDefined && pf.isDefinedAt(r)
 
-      def apply(r: Req): () => Box[LiftResponse] =
-        () => {
-          pf(r).box match {
-            case Full(resp) =>
-              val selType = selection(r).openOrThrowException(
-                "Full because pass isDefinedAt")
-              if (cvt.isDefinedAt((selType, resp, r)))
-                Full(cvt((selType, resp, r)))
-              else
-                emptyToResp(
-                  ParamFailure(
-                    "Unabled to convert the message",
-                    Empty,
-                    Empty,
-                    500))
+        def apply(r: Req): () => Box[LiftResponse] =
+          () => {
+            pf(r).box match {
+              case Full(resp) =>
+                val selType = selection(r).openOrThrowException(
+                  "Full because pass isDefinedAt")
+                if (cvt.isDefinedAt((selType, resp, r)))
+                  Full(cvt((selType, resp, r)))
+                else
+                  emptyToResp(
+                    ParamFailure(
+                      "Unabled to convert the message",
+                      Empty,
+                      Empty,
+                      500))
 
-            case e: EmptyBox => emptyToResp(e)
+              case e: EmptyBox => emptyToResp(e)
+            }
           }
-        }
-    })
+      })
   }
 
   /**
@@ -580,19 +593,16 @@ trait RestHelper extends LiftRules.DispatchPF {
     * @return Nothing
     */
   protected implicit def asyncToResponse[AsyncResolvableType, T](
-      asyncContainer: AsyncResolvableType
-  )(implicit
+      asyncContainer: AsyncResolvableType)(implicit
       asyncResolveProvider: CanResolveAsync[AsyncResolvableType, T],
-      responseCreator: T => LiftResponse
-  ): () => Box[LiftResponse] =
+      responseCreator: T => LiftResponse): () => Box[LiftResponse] =
     () => {
       RestContinuation.async(reply => {
         asyncResolveProvider.resolveAsync(
           asyncContainer,
           { resolved =>
             reply(responseCreator(resolved))
-          }
-        )
+          })
       })
     }
 
@@ -604,19 +614,16 @@ trait RestHelper extends LiftRules.DispatchPF {
     * @return Nothing
     */
   protected implicit def asyncBoxToResponse[AsyncResolvableType, T](
-      asyncBoxContainer: AsyncResolvableType
-  )(implicit
+      asyncBoxContainer: AsyncResolvableType)(implicit
       asyncResolveProvider: CanResolveAsync[AsyncResolvableType, Box[T]],
-      responseCreator: T => LiftResponse
-  ): () => Box[LiftResponse] =
+      responseCreator: T => LiftResponse): () => Box[LiftResponse] =
     () => {
       RestContinuation.async(reply => {
         asyncResolveProvider.resolveAsync(
           asyncBoxContainer,
           { resolvedBox =>
             boxToResp(resolvedBox).apply() openOr NotFoundResponse()
-          }
-        )
+          })
       })
     }
 
@@ -639,8 +646,10 @@ trait RestHelper extends LiftRules.DispatchPF {
         Full(
           InMemoryResponse(
             msg.getBytes("UTF-8"),
-            ("Content-Type" ->
-              "text/plain; charset=utf-8") ::
+            (
+              "Content-Type" ->
+                "text/plain; charset=utf-8"
+            ) ::
               Nil,
             Nil,
             code))
@@ -676,8 +685,10 @@ trait RestHelper extends LiftRules.DispatchPF {
           Full(
             InMemoryResponse(
               msg.getBytes("UTF-8"),
-              ("Content-Type" ->
-                "text/plain; charset=utf-8") ::
+              (
+                "Content-Type" ->
+                  "text/plain; charset=utf-8"
+              ) ::
                 Nil,
               Nil,
               code))

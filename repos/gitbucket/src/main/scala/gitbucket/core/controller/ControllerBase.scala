@@ -157,12 +157,13 @@ abstract class ControllerBase
               "/signin?redirect=" + StringUtil.urlEncode(
                 defining(request.getQueryString) { queryString =>
                   request.getRequestURI.substring(
-                    request.getContextPath.length) + (if (queryString != null)
-                                                        "?" + queryString
-                                                      else
-                                                        "")
-                }
-              )))
+                    request.getContextPath.length) + (
+                    if (queryString != null)
+                      "?" + queryString
+                    else
+                      ""
+                  )
+                })))
         }
       }
     }
@@ -199,12 +200,14 @@ abstract class ControllerBase
   def extractFromJsonBody[A](implicit
       request: HttpServletRequest,
       mf: Manifest[A]): Option[A] = {
-    (request.contentType.map(_.split(";").head.toLowerCase) match {
-      case Some("application/x-www-form-urlencoded") =>
-        multiParams.keys.headOption.map(parse(_))
-      case Some("application/json") => Some(parsedBody)
-      case _                        => Some(parse(request.body))
-    }).filterNot(_ == JNothing).flatMap(j => Try(j.extract[A]).toOption)
+    (
+      request.contentType.map(_.split(";").head.toLowerCase) match {
+        case Some("application/x-www-form-urlencoded") =>
+          multiParams.keys.headOption.map(parse(_))
+        case Some("application/json") => Some(parsedBody)
+        case _                        => Some(parse(request.body))
+      }
+    ).filterNot(_ == JNothing).flatMap(j => Try(j.extract[A]).toOption)
   }
 }
 
@@ -267,8 +270,7 @@ trait AccountManagementControllerBase extends ControllerBase {
           session.getAndRemove(Keys.Session.Upload(fileId)).get)
         FileUtils.moveFile(
           new java.io.File(getTemporaryDir(session.getId), fileId),
-          new java.io.File(getUserUploadDir(userName), filename)
-        )
+          new java.io.File(getUserUploadDir(userName), filename))
         updateAvatarImage(userName, Some(filename))
       }
     }

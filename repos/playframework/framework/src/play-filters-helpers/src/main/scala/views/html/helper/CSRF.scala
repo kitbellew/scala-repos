@@ -22,8 +22,7 @@ object CSRF {
       s"${call.url}${if (call.url.contains("?"))
         "&"
       else
-        "?"}${token.name}=${token.value}"
-    )
+        "?"}${token.name}=${token.value}")
   }
 
   /**

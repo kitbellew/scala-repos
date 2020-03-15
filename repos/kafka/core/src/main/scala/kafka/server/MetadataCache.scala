@@ -231,27 +231,29 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
           if (info.leader == LeaderAndIsr.LeaderDuringDelete) {
             removePartitionInfo(tp.topic, tp.partition)
             stateChangeLogger.trace(
-              ("Broker %d deleted partition %s from metadata cache in response to UpdateMetadata request " +
-                "sent by controller %d epoch %d with correlation id %d")
-                .format(
-                  brokerId,
-                  tp,
-                  updateMetadataRequest.controllerId,
-                  updateMetadataRequest.controllerEpoch,
-                  correlationId))
+              (
+                "Broker %d deleted partition %s from metadata cache in response to UpdateMetadata request " +
+                  "sent by controller %d epoch %d with correlation id %d"
+              ).format(
+                brokerId,
+                tp,
+                updateMetadataRequest.controllerId,
+                updateMetadataRequest.controllerEpoch,
+                correlationId))
           } else {
             val partitionInfo = partitionStateToPartitionStateInfo(info)
             addOrUpdatePartitionInfo(tp.topic, tp.partition, partitionInfo)
             stateChangeLogger.trace(
-              ("Broker %d cached leader info %s for partition %s in response to UpdateMetadata request " +
-                "sent by controller %d epoch %d with correlation id %d")
-                .format(
-                  brokerId,
-                  info,
-                  tp,
-                  updateMetadataRequest.controllerId,
-                  updateMetadataRequest.controllerEpoch,
-                  correlationId))
+              (
+                "Broker %d cached leader info %s for partition %s in response to UpdateMetadata request " +
+                  "sent by controller %d epoch %d with correlation id %d"
+              ).format(
+                brokerId,
+                info,
+                tp,
+                updateMetadataRequest.controllerId,
+                updateMetadataRequest.controllerEpoch,
+                correlationId))
           }
       }
     }

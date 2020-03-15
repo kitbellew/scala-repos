@@ -67,8 +67,7 @@ class PackCheck
         longToByte(n)(4),
         longToByte(n)(5),
         longToByte(n)(6),
-        longToByte(n)(7)
-      )
+        longToByte(n)(7))
 
       val i = 0
       val bs2 = Array(

@@ -204,8 +204,7 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
       () => (),
       metastoreQuery,
       metastoreAnswer,
-      implicitly[ClassTag[MetastoreRelation]]
-    )
+      implicitly[ClassTag[MetastoreRelation]])
   }
 
   test(

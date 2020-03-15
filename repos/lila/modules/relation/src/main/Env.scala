@@ -42,8 +42,7 @@ final class Env(
       new RelationActor(
         getOnlineUserIds = getOnlineUserIds,
         lightUser = lightUser,
-        api = api
-      )),
+        api = api)),
     name = ActorName)
 
   {

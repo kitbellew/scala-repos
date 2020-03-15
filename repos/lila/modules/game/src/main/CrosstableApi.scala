@@ -26,12 +26,7 @@ final class CrosstableApi(coll: Coll) {
         coll.find(select(u1, u2)).one[Crosstable])
 
   def nbGames(u1: String, u2: String): Fu[Int] =
-    coll
-      .find(
-        select(u1, u2),
-        BSONDocument("n" -> true)
-      )
-      .one[BSONDocument] map {
+    coll.find(select(u1, u2), BSONDocument("n" -> true)).one[BSONDocument] map {
       ~_.flatMap(_.getAs[Int]("n"))
     }
 
@@ -44,23 +39,23 @@ final class CrosstableApi(coll: Coll) {
         val bson = BSONDocument(
           "$inc" -> BSONDocument(
             Crosstable.BSONFields.nbGames -> BSONInteger(1),
-            "s1" -> BSONInteger(game.winnerUserId match {
-              case Some(u) if u == u1 => 10
-              case None               => 5
-              case _                  => 0
-            }),
-            "s2" -> BSONInteger(game.winnerUserId match {
-              case Some(u) if u == u2 => 10
-              case None               => 5
-              case _                  => 0
-            })
-          )
-        ) ++ BSONDocument(
+            "s1" -> BSONInteger(
+              game.winnerUserId match {
+                case Some(u) if u == u1 => 10
+                case None               => 5
+                case _                  => 0
+              }),
+            "s2" -> BSONInteger(
+              game.winnerUserId match {
+                case Some(u) if u == u2 => 10
+                case None               => 5
+                case _                  => 0
+              })
+          )) ++ BSONDocument(
           "$push" -> BSONDocument(
             Crosstable.BSONFields.results -> BSONDocument(
               "$each" -> List(bsonResult),
-              "$slice" -> -maxGames
-            )))
+              "$slice" -> -maxGames)))
         coll.update(select(u1, u2), bson).void
       case _ => funit
     }
@@ -116,8 +111,7 @@ final class CrosstableApi(coll: Coll) {
                   obj.getAs[Int]("nb").fold(ct) { nb =>
                     ct.addWins(obj.getAs[String]("_id"), nb)
                   }
-              }
-            )
+              })
 
           _ <- coll insert crosstable
         } yield crosstable.some

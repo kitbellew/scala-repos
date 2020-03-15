@@ -61,21 +61,22 @@ class HttpExecutionContext(
     delegate: ExecutionContext)
     extends ExecutionContextExecutor {
   override def execute(runnable: Runnable) =
-    delegate.execute(new Runnable {
-      def run() {
-        val thread = Thread.currentThread()
-        val oldContextClassLoader = thread.getContextClassLoader()
-        val oldHttpContext = Http.Context.current.get()
-        thread.setContextClassLoader(contextClassLoader)
-        Http.Context.current.set(httpContext)
-        try {
-          runnable.run()
-        } finally {
-          thread.setContextClassLoader(oldContextClassLoader)
-          Http.Context.current.set(oldHttpContext)
+    delegate.execute(
+      new Runnable {
+        def run() {
+          val thread = Thread.currentThread()
+          val oldContextClassLoader = thread.getContextClassLoader()
+          val oldHttpContext = Http.Context.current.get()
+          thread.setContextClassLoader(contextClassLoader)
+          Http.Context.current.set(httpContext)
+          try {
+            runnable.run()
+          } finally {
+            thread.setContextClassLoader(oldContextClassLoader)
+            Http.Context.current.set(oldHttpContext)
+          }
         }
-      }
-    })
+      })
 
   override def reportFailure(t: Throwable) = delegate.reportFailure(t)
 

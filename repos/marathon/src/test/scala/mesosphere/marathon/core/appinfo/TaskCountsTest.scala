@@ -33,9 +33,7 @@ class TaskCountsTest
 
   test("one staged task") {
     Given("one staged task")
-    val oneStagedTask = Seq(
-      MarathonTestHelper.stagedTask("task1")
-    )
+    val oneStagedTask = Seq(MarathonTestHelper.stagedTask("task1"))
     When("getting counts")
     val counts = TaskCounts(
       appTasks = oneStagedTask,
@@ -46,9 +44,7 @@ class TaskCountsTest
 
   test("one running task") {
     Given("one running task")
-    val oneRunningTask = Seq(
-      MarathonTestHelper.runningTask("task1")
-    )
+    val oneRunningTask = Seq(MarathonTestHelper.runningTask("task1"))
     When("getting counts")
     val counts = TaskCounts(
       appTasks = oneRunningTask,
@@ -59,9 +55,7 @@ class TaskCountsTest
 
   test("one healthy task") {
     Given("one task with alive Health")
-    val oneRunningTask = Seq(
-      MarathonTestHelper.runningTask("task1")
-    )
+    val oneRunningTask = Seq(MarathonTestHelper.runningTask("task1"))
     When("getting counts")
     val counts = TaskCounts(
       appTasks = oneRunningTask,
@@ -72,9 +66,7 @@ class TaskCountsTest
 
   test("one unhealthy task") {
     Given("one task with !alive health")
-    val oneRunningTask = Seq(
-      MarathonTestHelper.runningTask("task1")
-    )
+    val oneRunningTask = Seq(MarathonTestHelper.runningTask("task1"))
     When("getting counts")
     val counts = TaskCounts(
       appTasks = oneRunningTask,
@@ -85,9 +77,7 @@ class TaskCountsTest
 
   test("a task with mixed health is counted as unhealthy") {
     Given("one task with mixed health")
-    val oneRunningTask = Seq(
-      MarathonTestHelper.runningTask("task1")
-    )
+    val oneRunningTask = Seq(MarathonTestHelper.runningTask("task1"))
     When("getting counts")
     val counts = TaskCounts(
       appTasks = oneRunningTask,
@@ -98,9 +88,7 @@ class TaskCountsTest
 
   test("one running task with empty health is not counted for health") {
     Given("one running task with empty health info")
-    val oneRunningTask = Seq(
-      MarathonTestHelper.runningTask("task1")
-    )
+    val oneRunningTask = Seq(MarathonTestHelper.runningTask("task1"))
     When("getting counts")
     val counts = TaskCounts(
       appTasks = oneRunningTask,
@@ -122,17 +110,14 @@ class TaskCountsTest
       appTasks = oneStagedTask,
       healthStatuses = Map(
         Task.Id("task3") -> aliveHealth,
-        Task.Id("task4") -> notAliveHealth
-      )
-    )
+        Task.Id("task4") -> notAliveHealth))
     Then("all counts are 0 except staged")
     counts should be(
       TaskCounts.zero.copy(
         tasksStaged = 1,
         tasksRunning = 3,
         tasksHealthy = 1,
-        tasksUnhealthy = 1
-      ))
+        tasksUnhealthy = 1))
   }
 
   test("task count difference") {
@@ -140,23 +125,19 @@ class TaskCountsTest
       tasksStaged = 10,
       tasksRunning = 20,
       tasksHealthy = 30,
-      tasksUnhealthy = 40
-    )
+      tasksUnhealthy = 40)
     val counts2 = TaskCounts(
       tasksStaged = 11,
       tasksRunning = 22,
       tasksHealthy = 33,
-      tasksUnhealthy = 44
-    )
+      tasksUnhealthy = 44)
 
     (counts2 - counts1) should equal(
       TaskCounts(
         tasksStaged = 1,
         tasksRunning = 2,
         tasksHealthy = 3,
-        tasksUnhealthy = 4
-      )
-    )
+        tasksUnhealthy = 4))
   }
 
   test("task count addition") {
@@ -164,23 +145,19 @@ class TaskCountsTest
       tasksStaged = 10,
       tasksRunning = 20,
       tasksHealthy = 30,
-      tasksUnhealthy = 40
-    )
+      tasksUnhealthy = 40)
     val counts2 = TaskCounts(
       tasksStaged = 1,
       tasksRunning = 2,
       tasksHealthy = 3,
-      tasksUnhealthy = 4
-    )
+      tasksUnhealthy = 4)
 
     (counts2 + counts1) should equal(
       TaskCounts(
         tasksStaged = 11,
         tasksRunning = 22,
         tasksHealthy = 33,
-        tasksUnhealthy = 44
-      )
-    )
+        tasksUnhealthy = 44))
   }
 
   private[this] val noHealths = Seq.empty[Health]
@@ -198,11 +175,7 @@ class Fixture {
     Task.Id("task1"),
     Task.AgentInfo("some.host", Some("agent-1"), Iterable.empty),
     appVersion = Timestamp(0),
-    Task.Status(
-      stagedAt = Timestamp(1),
-      startedAt = None,
-      mesosStatus = None
-    ),
+    Task.Status(stagedAt = Timestamp(1), startedAt = None, mesosStatus = None),
     Task.NoNetworking
   )
 

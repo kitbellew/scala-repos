@@ -175,12 +175,13 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
       val ts = metric.start()
       super.apply(conn).transform {
         case Return(svc) =>
-          Future.value(new ServiceProxy(svc) {
-            override def close(deadline: Time) =
-              super.close(deadline).ensure {
-                metric.end(ts)
-              }
-          })
+          Future.value(
+            new ServiceProxy(svc) {
+              override def close(deadline: Time) =
+                super.close(deadline).ensure {
+                  metric.end(ts)
+                }
+            })
 
         case t @ Throw(_) =>
           metric.end(ts)
@@ -195,9 +196,5 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
     Node(factory, new Metric(statsReceiver, factory.toString), rng.nextInt())
 
   protected def failingNode(cause: Throwable) =
-    Node(
-      new FailingFactory(cause),
-      new Metric(NullStatsReceiver, "failing"),
-      0
-    )
+    Node(new FailingFactory(cause), new Metric(NullStatsReceiver, "failing"), 0)
 }

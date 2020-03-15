@@ -159,7 +159,9 @@ trait ScriptedTest extends Matchers {
     }
 
     def mayProvideInput: Boolean =
-      currentScript.someInsPending && (pendingRequests > 0) && (currentScript.pendingOuts <= maximumBuffer)
+      currentScript.someInsPending && (pendingRequests > 0) && (
+        currentScript.pendingOuts <= maximumBuffer
+      )
     def mayRequestMore: Boolean = remainingDemand > 0
 
     def shakeIt(): Boolean = {

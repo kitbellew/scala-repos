@@ -400,9 +400,10 @@ object Flow {
   def fromSinkAndSourceMat[I, O, M1, M2, M](
       sink: Graph[SinkShape[I], M1],
       source: Graph[SourceShape[O], M2])(combine: (M1, M2) ⇒ M): Flow[I, O, M] =
-    fromGraph(GraphDSL.create(sink, source)(combine) { implicit b ⇒ (in, out) ⇒
-      FlowShape(in.in, out.out)
-    })
+    fromGraph(
+      GraphDSL.create(sink, source)(combine) { implicit b ⇒ (in, out) ⇒
+        FlowShape(in.in, out.out)
+      })
 }
 
 object RunnableGraph {

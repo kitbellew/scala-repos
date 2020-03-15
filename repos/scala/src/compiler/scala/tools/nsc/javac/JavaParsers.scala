@@ -606,8 +606,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           if (!isVoid)
             rtpt = optArrayBrackets(rtpt)
           optThrows()
-          val isConcreteInterfaceMethod =
-            !inInterface || (mods hasFlag Flags.JAVA_DEFAULTMETHOD) || (mods hasFlag Flags.STATIC)
+          val isConcreteInterfaceMethod = !inInterface || (
+            mods hasFlag Flags.JAVA_DEFAULTMETHOD
+          ) || (mods hasFlag Flags.STATIC)
           val bodyOk =
             !(mods1 hasFlag Flags.DEFERRED) && isConcreteInterfaceMethod
           val body =
@@ -892,11 +893,14 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           if (in.token == ENUM || definesInterface(in.token))
             mods |= Flags.STATIC
           val decls = memberDecl(mods, parentToken)
-          (if (mods.hasStaticFlag || inInterface && !(decls exists (_.isInstanceOf[
-                 DefDef])))
-             statics
-           else
-             members) ++= decls
+          (
+            if (mods.hasStaticFlag || inInterface && !(
+                  decls exists (_.isInstanceOf[DefDef])
+                ))
+              statics
+            else
+              members
+          ) ++= decls
         }
       }
       def forwarders(sdef: Tree): List[Tree] =
@@ -918,8 +922,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       List(
         gen.scalaAnnotationDot(tpnme.Annotation),
         Select(javaLangDot(nme.annotation), tpnme.Annotation),
-        gen.scalaAnnotationDot(tpnme.ClassfileAnnotation)
-      )
+        gen.scalaAnnotationDot(tpnme.ClassfileAnnotation))
     def annotationDecl(mods: Modifiers): List[Tree] = {
       accept(AT)
       accept(INTERFACE)

@@ -47,8 +47,7 @@ private final class ExplorerIndexer(
           Query.finished ++
           Query.turnsMoreThan(8) ++
           Query.noProvisional ++
-          Query.bothRatingsGreaterThan(1501)
-      )
+          Query.bothRatingsGreaterThan(1501))
       import reactivemongo.api._
       pimpQB(query)
         .sort(Query.sortChronological)
@@ -125,8 +124,10 @@ private final class ExplorerIndexer(
       game.rated &&
       game.turns >= 10 &&
       game.variant != chess.variant.FromPosition &&
-      (game.variant != chess.variant.Horde || game.createdAt.isAfter(
-        Query.hordeWhitePawnsSince))
+      (
+        game.variant != chess.variant.Horde || game.createdAt.isAfter(
+          Query.hordeWhitePawnsSince)
+      )
 
   private def stableRating(player: Player) =
     player.rating ifFalse player.provisional
@@ -152,51 +153,53 @@ private final class ExplorerIndexer(
   }
 
   private def makeFastPgn(game: Game): Fu[Option[String]] =
-    ~(for {
-      whiteRating <- stableRating(game.whitePlayer)
-      blackRating <- stableRating(game.blackPlayer)
-      minPlayerRating = if (game.variant.exotic)
-        1400
-      else
-        1500
-      minAverageRating = if (game.variant.exotic)
-        1520
-      else
-        1600
-      if whiteRating >= minPlayerRating
-      if blackRating >= minPlayerRating
-      averageRating = (whiteRating + blackRating) / 2
-      if averageRating >= minAverageRating
-      if probability(game, averageRating) > nextFloat
-      if valid(game)
-    } yield GameRepo initialFen game flatMap { initialFen =>
-      UserRepo.usernamesByIds(game.userIds) map { usernames =>
-        def username(color: chess.Color) =
-          game.player(color).userId flatMap { id =>
-            usernames.find(_.toLowerCase == id)
-          } orElse game.player(color).userId getOrElse "?"
-        val fenTags = initialFen.?? { fen =>
-          List(s"[FEN $fen]")
-        }
-        val timeControl =
-          game.clock.fold("-") { c =>
-            s"${c.limit}+${c.increment}"
+    ~(
+      for {
+        whiteRating <- stableRating(game.whitePlayer)
+        blackRating <- stableRating(game.blackPlayer)
+        minPlayerRating = if (game.variant.exotic)
+          1400
+        else
+          1500
+        minAverageRating = if (game.variant.exotic)
+          1520
+        else
+          1600
+        if whiteRating >= minPlayerRating
+        if blackRating >= minPlayerRating
+        averageRating = (whiteRating + blackRating) / 2
+        if averageRating >= minAverageRating
+        if probability(game, averageRating) > nextFloat
+        if valid(game)
+      } yield GameRepo initialFen game flatMap { initialFen =>
+        UserRepo.usernamesByIds(game.userIds) map { usernames =>
+          def username(color: chess.Color) =
+            game.player(color).userId flatMap { id =>
+              usernames.find(_.toLowerCase == id)
+            } orElse game.player(color).userId getOrElse "?"
+          val fenTags = initialFen.?? { fen =>
+            List(s"[FEN $fen]")
           }
-        val otherTags = List(
-          s"[LichessID ${game.id}]",
-          s"[Variant ${game.variant.name}]",
-          s"[TimeControl $timeControl]",
-          s"[White ${username(chess.White)}]",
-          s"[Black ${username(chess.Black)}]",
-          s"[WhiteElo $whiteRating]",
-          s"[BlackElo $blackRating]",
-          s"[Result ${PgnDump.result(game)}]",
-          s"[Date ${pgnDateFormat.print(game.createdAt)}]"
-        )
-        val allTags = fenTags ::: otherTags
-        s"${allTags.mkString("\n")}\n\n${game.pgnMoves.take(maxPlies).mkString(" ")}".some
+          val timeControl =
+            game.clock.fold("-") { c =>
+              s"${c.limit}+${c.increment}"
+            }
+          val otherTags = List(
+            s"[LichessID ${game.id}]",
+            s"[Variant ${game.variant.name}]",
+            s"[TimeControl $timeControl]",
+            s"[White ${username(chess.White)}]",
+            s"[Black ${username(chess.Black)}]",
+            s"[WhiteElo $whiteRating]",
+            s"[BlackElo $blackRating]",
+            s"[Result ${PgnDump.result(game)}]",
+            s"[Date ${pgnDateFormat.print(game.createdAt)}]"
+          )
+          val allTags = fenTags ::: otherTags
+          s"${allTags.mkString("\n")}\n\n${game.pgnMoves.take(maxPlies).mkString(" ")}".some
+        }
       }
-    })
+    )
 
   private val logger = lila.log("explorer")
 }

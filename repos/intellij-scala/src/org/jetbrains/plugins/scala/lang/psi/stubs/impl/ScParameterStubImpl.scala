@@ -19,9 +19,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   */
 class ScParameterStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScParameter](parent, elemType)
     with ScParameterStub {
   private var name: String = _
@@ -39,9 +38,8 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       name: String,
       typeText: String,
       stable: Boolean,
@@ -70,9 +68,8 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       name: StringRef,
       typeText: StringRef,
       stable: Boolean,
@@ -106,7 +103,9 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
   def getTypeElement: Option[ScTypeElement] = {
     if (myTypeElement != null) {
       val typeElement = myTypeElement.get
-      if (typeElement != null && (typeElement.isEmpty || (typeElement.get.getContext eq getPsi)))
+      if (typeElement != null && (
+            typeElement.isEmpty || (typeElement.get.getContext eq getPsi)
+          ))
         return typeElement
     }
     val res: Option[ScTypeElement] =
@@ -137,7 +136,9 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
   def getDefaultExpr: Option[ScExpression] = {
     if (myDefaultExpression != null) {
       val expression = myDefaultExpression.get
-      if (expression != null && (expression.isEmpty || (expression.get.getContext eq getPsi)))
+      if (expression != null && (
+            expression.isEmpty || (expression.get.getContext eq getPsi)
+          ))
         return expression
     }
     val res: Option[ScExpression] =

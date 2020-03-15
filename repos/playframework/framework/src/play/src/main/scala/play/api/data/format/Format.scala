@@ -14,8 +14,7 @@ import annotation.implicitNotFound
   */
 @implicitNotFound(
   msg =
-    "Cannot find Formatter type class for ${T}. Perhaps you will need to import play.api.data.format.Formats._ "
-)
+    "Cannot find Formatter type class for ${T}. Perhaps you will need to import play.api.data.format.Formats._ ")
 trait Formatter[T] {
 
   /**
@@ -76,9 +75,7 @@ object Formats {
           .get(key)
           .filter(s => s.length == 1 && s != " ")
           .map(s => Right(s.charAt(0)))
-          .getOrElse(
-            Left(Seq(FormError(key, "error.required", Nil)))
-          )
+          .getOrElse(Left(Seq(FormError(key, "error.required", Nil))))
       def unbind(key: String, value: Char) = Map(key -> value.toString)
     }
 
@@ -181,8 +178,7 @@ object Formats {
                   case Some((p, s)) =>
                     FormError(key, "error.real.precision", Seq(p, s))
                   case None => FormError(key, "error.real", Nil)
-                }
-              )
+                })
             }
         }
       }

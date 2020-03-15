@@ -207,10 +207,12 @@ trait AtmosphereSupport
       .filter(_.metadata.contains('Atmosphere))
 
   private[this] def atmosphereRoute(req: HttpServletRequest) =
-    (for {
-      route <- atmosphereRoutes.toStream
-      matched <- route(requestPath)
-    } yield matched).headOption
+    (
+      for {
+        route <- atmosphereRoutes.toStream
+        matched <- route(requestPath)
+      } yield matched
+    ).headOption
 
   private[this] def configureBroadcasterFactory() {
     val factory =

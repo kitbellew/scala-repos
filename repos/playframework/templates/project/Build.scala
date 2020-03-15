@@ -83,8 +83,9 @@ object Templates {
       val ignore: Set[String] = ignoreTemplateFiles.value.to[Set]
       val outDir: File = target.value / "prepared-templates"
 
-      streams.value.log.info("Preparing templates for Play " + params(
-        "PLAY_VERSION") + " with Scala " + params("SCALA_VERSION"))
+      streams.value.log.info(
+        "Preparing templates for Play " + params(
+          "PLAY_VERSION") + " with Scala " + params("SCALA_VERSION"))
 
       // Don't sync directories or .gitkeep files. We can remove
       // .gitkeep files. These files are only there to make sure we preserve
@@ -158,9 +159,10 @@ object Templates {
           IO.copyDirectory(template, templateDir)
           streams.value.log.info("Testing template: " + template.getName)
           @volatile var out = List.empty[String]
-          val rc = Process("sbt test", templateDir).!(StdOutLogger { s =>
-            out = s :: out
-          })
+          val rc = Process("sbt test", templateDir).!(
+            StdOutLogger { s =>
+              out = s :: out
+            })
           if (rc != 0) {
             out.reverse.foreach(println)
             streams.value.log
@@ -305,13 +307,14 @@ object Templates {
                     val js = resp.json
                     val uuid = (js \ "uuid").as[String]
                     val statusUrl =
-                      (for {
-                        links <- (js \ "_links").asOpt[JsObject]
-                        status <- (links \ "activator/templates/status")
-                          .asOpt[JsObject]
-                        url <- (status \ "href").asOpt[String]
-                      } yield url)
-                        .getOrElse(s"/activator/template/status/$uuid")
+                      (
+                        for {
+                          links <- (js \ "_links").asOpt[JsObject]
+                          status <- (links \ "activator/templates/status")
+                            .asOpt[JsObject]
+                          url <- (status \ "href").asOpt[String]
+                        } yield url
+                      ).getOrElse(s"/activator/template/status/$uuid")
                     waitUntilNotPending(uuid, statusUrl)
                 }
                 .map(result => (name, key, result))
@@ -398,8 +401,9 @@ object Templates {
           case None                  => failure("No template with name " + name)
         }
       }
-    (Space ~> rep1sep(templateParser, Space)) ~ (token(
-      Space ~> matched(state.combinedParser)) ?? "")
+    (Space ~> rep1sep(templateParser, Space)) ~ (
+      token(Space ~> matched(state.combinedParser)) ?? ""
+    )
   }
 
   private class TemplateBuildFailed(template: String)

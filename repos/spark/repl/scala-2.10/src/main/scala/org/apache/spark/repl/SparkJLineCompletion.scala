@@ -60,12 +60,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
   def resetVerbosity() = verbosity = 0
 
   private def getSymbol(name: String, isModule: Boolean) =
-    (
-      if (isModule)
-        getModuleIfDefined(name)
-      else
-        getModuleIfDefined(name)
-    )
+    (if (isModule)
+       getModuleIfDefined(name)
+     else
+       getModuleIfDefined(name))
   private def getType(name: String, isModule: Boolean) =
     getSymbol(name, isModule).tpe
   private def typeOf(name: String) = getType(name, false)
@@ -93,7 +91,9 @@ class SparkJLineCompletion(val intp: SparkIMain)
     // compiler to crash for reasons not yet known.
     def members =
       afterTyper(
-        (effectiveTp.nonPrivateMembers.toList ++ anyMembers) filter (_.isPublic))
+        (effectiveTp.nonPrivateMembers.toList ++ anyMembers) filter (
+          _.isPublic
+        ))
     def methods = members.toList filter (_.isMethod)
     def packages = members.toList filter (_.isPackage)
     def aliases = members.toList filter (_.isAliasType)
@@ -175,12 +175,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
     }
 
     def exclude(name: String): Boolean =
-      (
-        (name contains "$") ||
-          (excludeNames contains name) ||
-          (excludeEndsWith exists (name endsWith _)) ||
-          (excludeStartsWith exists (name startsWith _))
-      )
+      ((name contains "$") ||
+        (excludeNames contains name) ||
+        (excludeEndsWith exists (name endsWith _)) ||
+        (excludeStartsWith exists (name startsWith _)))
     def filtered(xs: List[String]) = xs filterNot exclude distinct
 
     def completions(verbosity: Int) =
@@ -188,9 +186,9 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
     override def follow(s: String): Option[CompletionAware] =
       debugging(tp + " -> '" + s + "' ==> ")(
-        Some(
-          TypeMemberCompletion(
-            memberNamed(s).tpe)) filterNot (_ eq NoTypeCompletion))
+        Some(TypeMemberCompletion(memberNamed(s).tpe)) filterNot (
+          _ eq NoTypeCompletion
+        ))
 
     override def alternativesFor(id: String): List[String] =
       debugging(id + " alternatives ==> ") {
@@ -299,9 +297,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
     override def excludeNames = anyref.methodNames
 
     override def exclude(name: String) =
-      super.exclude(name) || (
-        (name contains "2")
-      )
+      super.exclude(name) || ((name contains "2"))
 
     override def completions(verbosity: Int) =
       verbosity match {
@@ -315,9 +311,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
     def skipArity(name: String) =
       arityClasses exists (x => name != x && (name startsWith x))
     override def exclude(name: String) =
-      super.exclude(name) || (
-        skipArity(name)
-      )
+      super.exclude(name) || (skipArity(name))
 
     override def completions(verbosity: Int) =
       verbosity match {
@@ -465,11 +459,9 @@ class SparkJLineCompletion(val intp: SparkIMain)
           tryCompletion(Parsed.dotted(buf drop 1, cursor), lastResultFor)
 
       def tryAll =
-        (
-          lastResultCompletion
-            orElse tryCompletion(mkDotted, topLevelFor)
-            getOrElse Candidates(cursor, Nil)
-        )
+        (lastResultCompletion
+          orElse tryCompletion(mkDotted, topLevelFor)
+          getOrElse Candidates(cursor, Nil))
 
       /**
         *  This is the kickoff point for all manner of theoretically

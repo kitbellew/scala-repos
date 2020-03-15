@@ -311,10 +311,12 @@ object CrossValidation {
     def accuracy(results: List[Result[V, K]]): F = {
       results.foldLeft(field.zero) {
         case (acc, Result(_, output, predicted)) =>
-          acc + (if (predicted == output)
-                   field.one
-                 else
-                   field.zero)
+          acc + (
+            if (predicted == output)
+              field.one
+            else
+              field.zero
+          )
       } / results.size
     }
 

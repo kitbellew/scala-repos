@@ -87,16 +87,14 @@ abstract class Duplicators extends Analyzer {
       override def mapOver(tpe: Type): Type =
         tpe match {
           case TypeRef(NoPrefix, sym, args) if sym.isTypeParameterOrSkolem =>
-            val sym1 = (
-              context.scope lookup sym.name orElse {
-                // try harder (look in outer scopes)
-                // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but
-                // is defined in the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
-                BodyDuplicator.super
-                  .silent(_ typedType Ident(sym.name))
-                  .fold(NoSymbol: Symbol)(_.symbol)
-              } filter (_ ne sym)
-            )
+            val sym1 = (context.scope lookup sym.name orElse {
+              // try harder (look in outer scopes)
+              // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but
+              // is defined in the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
+              BodyDuplicator.super
+                .silent(_ typedType Ident(sym.name))
+                .fold(NoSymbol: Symbol)(_.symbol)
+            } filter (_ ne sym))
             if (sym1.exists) {
               debuglog(s"fixing $sym -> $sym1")
               typeRef(NoPrefix, sym1, mapOverArgs(args, sym1.typeParams))
@@ -156,8 +154,9 @@ abstract class Duplicators extends Analyzer {
 
     private def invalidate(tree: Tree, owner: Symbol = NoSymbol) {
       debuglog(s"attempting to invalidate symbol = ${tree.symbol}")
-      if ((tree.isDef || tree
-            .isInstanceOf[Function]) && tree.symbol != NoSymbol) {
+      if ((
+            tree.isDef || tree.isInstanceOf[Function]
+          ) && tree.symbol != NoSymbol) {
         debuglog("invalid " + tree.symbol)
         invalidSyms(tree.symbol) = tree
 
@@ -318,39 +317,40 @@ abstract class Duplicators extends Analyzer {
           // overloaded, you will crash in the backend.
           val memberByName = newClassOwner.thisType.member(tree.symbol.name)
           def nameSelection = Select(This(newClassOwner), tree.symbol.name)
-          val newTree = (
-            if (memberByName.isOverloaded) {
-              // Find the types of the overload alternatives as seen in the new class,
-              // and filter the list down to those which match the old type (after
-              // fixing the old type so it is seen as if from the new class.)
-              val typeInNewClass = fixType(
-                oldClassOwner.info memberType tree.symbol)
-              val alts = memberByName.alternatives
-              val memberTypes = alts map (newClassOwner.info memberType _)
-              val memberString = memberByName.defString
-              alts zip memberTypes filter (_._2 =:= typeInNewClass) match {
-                case ((alt, tpe)) :: Nil =>
-                  log(
-                    s"Arrested overloaded type in Duplicators, narrowing to ${alt
-                      .defStringSeenAs(tpe)}\n  Overload was: $memberString")
-                  Select(This(newClassOwner), alt)
-                case xs =>
-                  alts filter (alt =>
-                    (alt.paramss corresponds tree.symbol.paramss)(
-                      _.size == _.size)) match {
-                    case alt :: Nil =>
-                      log(
-                        s"Resorted to parameter list arity to disambiguate to $alt\n  Overload was: $memberString")
-                      Select(This(newClassOwner), alt)
-                    case _ =>
-                      log(
-                        s"Could not disambiguate $memberTypes. Attempting name-based selection, but we may crash later.")
-                      nameSelection
-                  }
-              }
-            } else
-              nameSelection
-          )
+          val newTree = (if (memberByName.isOverloaded) {
+                           // Find the types of the overload alternatives as seen in the new class,
+                           // and filter the list down to those which match the old type (after
+                           // fixing the old type so it is seen as if from the new class.)
+                           val typeInNewClass = fixType(
+                             oldClassOwner.info memberType tree.symbol)
+                           val alts = memberByName.alternatives
+                           val memberTypes =
+                             alts map (newClassOwner.info memberType _)
+                           val memberString = memberByName.defString
+                           alts zip memberTypes filter (
+                             _._2 =:= typeInNewClass
+                           ) match {
+                             case ((alt, tpe)) :: Nil =>
+                               log(
+                                 s"Arrested overloaded type in Duplicators, narrowing to ${alt.defStringSeenAs(
+                                   tpe)}\n  Overload was: $memberString")
+                               Select(This(newClassOwner), alt)
+                             case xs =>
+                               alts filter (alt =>
+                                 (alt.paramss corresponds tree.symbol.paramss)(
+                                   _.size == _.size)) match {
+                                 case alt :: Nil =>
+                                   log(
+                                     s"Resorted to parameter list arity to disambiguate to $alt\n  Overload was: $memberString")
+                                   Select(This(newClassOwner), alt)
+                                 case _ =>
+                                   log(
+                                     s"Could not disambiguate $memberTypes. Attempting name-based selection, but we may crash later.")
+                                   nameSelection
+                               }
+                           }
+                         } else
+                           nameSelection)
           super.typed(atPos(tree.pos)(newTree), mode, pt)
 
         case This(_)

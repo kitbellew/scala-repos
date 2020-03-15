@@ -264,16 +264,18 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |
             |"""
         ) should generalMultiParseTo(
-          Right(baseRequest.withEntity(Chunked(
-            `application/pdf`,
-            source(
-              Chunk(ByteString("abc")),
-              Chunk(ByteString("0123456789ABCDEF"), "some=stuff;bla"),
-              Chunk(ByteString("0123456789ABCDEF"), "foo=bar"),
-              Chunk(ByteString("0123456789"), ""),
-              LastChunk
-            )
-          ))))
+          Right(
+            baseRequest.withEntity(
+              Chunked(
+                `application/pdf`,
+                source(
+                  Chunk(ByteString("abc")),
+                  Chunk(ByteString("0123456789ABCDEF"), "some=stuff;bla"),
+                  Chunk(ByteString("0123456789ABCDEF"), "foo=bar"),
+                  Chunk(ByteString("0123456789"), ""),
+                  LastChunk
+                )
+              ))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -281,8 +283,9 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         Seq(start, """0
             |
             |""") should generalMultiParseTo(
-          Right(baseRequest.withEntity(
-            Chunked(`application/pdf`, source(LastChunk)))))
+          Right(
+            baseRequest.withEntity(
+              Chunked(`application/pdf`, source(LastChunk)))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -294,11 +297,15 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |
             |""") should generalMultiParseTo(
           Right(
-            baseRequest.withEntity(Chunked(
-              `application/pdf`,
-              source(LastChunk(
-                "nice=true",
-                List(RawHeader("Foo", "pip apo"), RawHeader("Bar", "xyz"))))))))
+            baseRequest.withEntity(
+              Chunked(
+                `application/pdf`,
+                source(
+                  LastChunk(
+                    "nice=true",
+                    List(
+                      RawHeader("Foo", "pip apo"),
+                      RawHeader("Bar", "xyz"))))))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -395,8 +402,10 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       "too-long chunk extension" in new Test {
         Seq(start, "3;" + ("x" * 257)) should generalMultiParseTo(
           Right(baseRequest),
-          Left(EntityStreamError(ErrorInfo(
-            "HTTP chunk extension length exceeds configured limit of 256 characters"))))
+          Left(
+            EntityStreamError(
+              ErrorInfo(
+                "HTTP chunk extension length exceeds configured limit of 256 characters"))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -404,8 +413,10 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         Seq(start, """1a2b3c4d5e
             |""") should generalMultiParseTo(
           Right(baseRequest),
-          Left(EntityStreamError(ErrorInfo(
-            "HTTP chunk size exceeds the configured limit of 1048576 bytes"))))
+          Left(
+            EntityStreamError(
+              ErrorInfo(
+                "HTTP chunk size exceeds the configured limit of 1048576 bytes"))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -558,8 +569,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       override def equals(other: scala.Any): Boolean =
         other match {
           case other: StrictEqualHttpRequest ⇒
-            this.req.copy(entity = HttpEntity.Empty) == other.req.copy(entity =
-              HttpEntity.Empty) &&
+            this.req.copy(entity = HttpEntity.Empty) == other.req
+              .copy(entity = HttpEntity.Empty) &&
               this.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost) ==
                 other.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
         }

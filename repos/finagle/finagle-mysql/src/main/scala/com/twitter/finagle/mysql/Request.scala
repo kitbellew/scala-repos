@@ -108,8 +108,8 @@ case class HandshakeResponse(
     salt: Array[Byte],
     serverCap: Capability,
     charset: Short,
-    maxPacketSize: Int
-) extends Request {
+    maxPacketSize: Int)
+    extends Request {
   import Capability._
   override val seq: Short = 1
 
@@ -169,8 +169,8 @@ class ExecuteRequest(
     val stmtId: Int,
     val params: IndexedSeq[Parameter],
     val hasNewParams: Boolean,
-    val flags: Byte
-) extends CommandRequest(Command.COM_STMT_EXECUTE) {
+    val flags: Byte)
+    extends CommandRequest(Command.COM_STMT_EXECUTE) {
   private[this] val log = Logger.getLogger("finagle-mysql")
 
   private[this] def makeNullBitmap(
@@ -271,8 +271,7 @@ object ExecuteRequest {
       stmtId: Int,
       params: IndexedSeq[Parameter] = IndexedSeq.empty,
       hasNewParams: Boolean = true,
-      flags: Byte = 0
-  ) = {
+      flags: Byte = 0) = {
     val sanitizedParams = params.map {
       case null  => Parameter.NullParameter
       case other => other

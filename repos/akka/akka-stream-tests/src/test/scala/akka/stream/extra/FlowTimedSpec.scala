@@ -40,9 +40,10 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       val testRuns = 1 to 2
 
       def script =
-        Script((1 to n) map { x ⇒
-          Seq(x) -> Seq(x)
-        }: _*)
+        Script(
+          (1 to n) map { x ⇒
+            Seq(x) -> Seq(x)
+          }: _*)
       testRuns foreach (_ ⇒
         runScript(script, settings) { flow ⇒
           flow
@@ -52,8 +53,9 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
               onInterval = printInfo)
         })
 
-      val expectedNrOfOnIntervalCalls =
-        testRuns.size * ((n / measureBetweenEvery) - 1) // first time has no value to compare to, so skips calling onInterval
+      val expectedNrOfOnIntervalCalls = testRuns.size * (
+        (n / measureBetweenEvery) - 1
+      ) // first time has no value to compare to, so skips calling onInterval
       1 to expectedNrOfOnIntervalCalls foreach { _ ⇒
         testActor.expectMsgType[Duration]
       }
@@ -72,9 +74,10 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       val testRuns = 1 to 3
 
       def script =
-        Script((1 to n) map { x ⇒
-          Seq(x) -> Seq(x)
-        }: _*)
+        Script(
+          (1 to n) map { x ⇒
+            Seq(x) -> Seq(x)
+          }: _*)
       testRuns foreach (_ ⇒
         runScript(script, settings) { flow ⇒
           flow.timed(_.map(identity), onComplete = printInfo)

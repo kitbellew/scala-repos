@@ -35,11 +35,12 @@ object CombinableBox {
     }
 
   implicit def boxToCombinableBox[A](in: Box[A]): CombinableBox[A, HNil] =
-    CombinableBox(in match {
-      case Full(a)      => Right(a :+: HNil)
-      case (f: Failure) => Left(f :: Nil)
-      case _            => Left(Failure("Empty") :: Nil)
-    })
+    CombinableBox(
+      in match {
+        case Full(a)      => Right(a :+: HNil)
+        case (f: Failure) => Left(f :: Nil)
+        case _            => Left(Failure("Empty") :: Nil)
+      })
 
   implicit def boxableToCombinableBox[A](
       in: Boxable[A]): CombinableBox[A, HNil] = in.asBox

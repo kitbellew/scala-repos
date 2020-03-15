@@ -24,8 +24,9 @@ sealed abstract class StatusCode
 object StatusCode {
   import StatusCodes._
   implicit def int2StatusCode(code: Int): StatusCode =
-    getForKey(code).getOrElse(throw new RuntimeException(
-      "Non-standard status codes cannot be created by implicit conversion. Use `StatusCodes.custom` instead."))
+    getForKey(code).getOrElse(
+      throw new RuntimeException(
+        "Non-standard status codes cannot be created by implicit conversion. Use `StatusCodes.custom` instead."))
 }
 
 object StatusCodes extends ObjectRegistry[Int, StatusCode] {

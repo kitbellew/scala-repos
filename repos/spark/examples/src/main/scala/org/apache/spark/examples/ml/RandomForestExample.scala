@@ -100,9 +100,10 @@ object RandomForestExample {
             s"number of trees in ensemble, default: ${defaultParams.numTrees}")
           .action((x, c) => c.copy(numTrees = x))
         opt[String]("featureSubsetStrategy")
-          .text(s"number of features to use per node (supported:" +
-            s" ${RandomForestClassifier.supportedFeatureSubsetStrategies.mkString(",")})," +
-            s" default: ${defaultParams.numTrees}")
+          .text(
+            s"number of features to use per node (supported:" +
+              s" ${RandomForestClassifier.supportedFeatureSubsetStrategies.mkString(",")})," +
+              s" default: ${defaultParams.numTrees}")
           .action((x, c) => c.copy(featureSubsetStrategy = x))
         opt[Double]("fracTest")
           .text(
@@ -110,8 +111,9 @@ object RandomForestExample {
               s"this option is ignored. default: ${defaultParams.fracTest}")
           .action((x, c) => c.copy(fracTest = x))
         opt[Boolean]("cacheNodeIds")
-          .text(s"whether to use node Id cache during training, " +
-            s"default: ${defaultParams.cacheNodeIds}")
+          .text(
+            s"whether to use node Id cache during training, " +
+              s"default: ${defaultParams.cacheNodeIds}")
           .action((x, c) => c.copy(cacheNodeIds = x))
         opt[String]("checkpointDir")
           .text(
@@ -122,8 +124,9 @@ object RandomForestExample {
               }}")
           .action((x, c) => c.copy(checkpointDir = Some(x)))
         opt[Int]("checkpointInterval")
-          .text(s"how often to checkpoint the node Id cache, " +
-            s"default: ${defaultParams.checkpointInterval}")
+          .text(
+            s"how often to checkpoint the node Id cache, " +
+              s"default: ${defaultParams.checkpointInterval}")
           .action((x, c) => c.copy(checkpointInterval = x))
         opt[String]("testInput")
           .text(

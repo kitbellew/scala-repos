@@ -57,10 +57,12 @@ object MediaRange {
       defaultQ: Float = 1.0f): (Map[String, String], Float) =
     params.get("q") match {
       case Some(x) ⇒
-        (params - "q") -> (try x.toFloat
-        catch {
-          case _: NumberFormatException ⇒ 1.0f
-        })
+        (params - "q") -> (
+          try x.toFloat
+          catch {
+            case _: NumberFormatException ⇒ 1.0f
+          }
+        )
       case None ⇒ params -> defaultQ
     }
 

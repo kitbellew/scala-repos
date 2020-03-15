@@ -114,8 +114,11 @@ class MakeTypeMoreSpecificStrategy(editor: Option[Editor]) extends Strategy {
     val types = computeBaseTypes(declaredType, dynamicType).sortWith((t1, t2) =>
       t1.conforms(t2))
     if (types.size == 1) {
-      val replaced = te.replace(ScalaPsiElementFactory
-        .createTypeElementFromText(types.head.canonicalText, te.getContext, te))
+      val replaced = te.replace(
+        ScalaPsiElementFactory.createTypeElementFromText(
+          types.head.canonicalText,
+          te.getContext,
+          te))
       TypeAdjuster.markToAdjust(replaced)
     } else {
       val texts = types.map(ScTypeText)

@@ -68,10 +68,12 @@ trait ScTypePresentation {
         case e: PsiClass =>
           "<a href=\"psi_element://" + e.qualifiedName + "\"><code>" +
             StringEscapeUtils.escapeHtml(e.name) +
-            "</code></a>" + (if (withPoint)
-                               "."
-                             else
-                               "")
+            "</code></a>" + (
+            if (withPoint)
+              "."
+            else
+              ""
+          )
         case pack: PsiPackage if withPoint => ""
         case _                             => StringEscapeUtils.escapeHtml(e.name) + "."
       }
@@ -90,27 +92,30 @@ trait ScTypePresentation {
         .mkString(".")
     }
     def nameFun(e: PsiNamedElement, withPoint: Boolean): String = {
-      removeKeywords(e match {
-        case c: PsiClass =>
-          val qname = c.qualifiedName
-          if (qname != null && qname != c.name /* exlude default package*/ )
-            "_root_." + qname
-          else
-            c.name
-        case p: PsiPackage => "_root_." + p.getQualifiedName
-        case _ =>
-          ScalaPsiUtil.nameContext(e) match {
-            case m: ScMember =>
-              m.containingClass match {
-                case o: ScObject => nameFun(o, withPoint = true) + e.name
-                case _           => e.name
-              }
-            case _ => e.name
-          }
-      }) + (if (withPoint)
-              "."
+      removeKeywords(
+        e match {
+          case c: PsiClass =>
+            val qname = c.qualifiedName
+            if (qname != null && qname != c.name /* exlude default package*/ )
+              "_root_." + qname
             else
-              "")
+              c.name
+          case p: PsiPackage => "_root_." + p.getQualifiedName
+          case _ =>
+            ScalaPsiUtil.nameContext(e) match {
+              case m: ScMember =>
+                m.containingClass match {
+                  case o: ScObject => nameFun(o, withPoint = true) + e.name
+                  case _           => e.name
+                }
+              case _ => e.name
+            }
+        }) + (
+        if (withPoint)
+          "."
+        else
+          ""
+      )
     }
     typeText(t, nameFun(_, withPoint = false), nameFun(_, withPoint = true))
   }
@@ -283,17 +288,21 @@ trait ScTypePresentation {
               case bp: ScBindingPattern =>
                 val b = ScBindingPattern.getCompoundCopy(rt, bp)
                 Seq(
-                  (if (b.isVar)
-                     "var "
-                   else
-                     "val ") + b.name + " : " + typeText0(rt))
+                  (
+                    if (b.isVar)
+                      "var "
+                    else
+                      "val "
+                  ) + b.name + " : " + typeText0(rt))
               case fi: ScFieldId =>
                 val f = ScFieldId.getCompoundCopy(rt, fi)
                 Seq(
-                  (if (f.isVar)
-                     "var "
-                   else
-                     "val ") + f.name + " : " + typeText0(rt))
+                  (
+                    if (f.isVar)
+                      "var "
+                    else
+                      "val "
+                  ) + f.name + " : " + typeText0(rt))
               case _ => Seq.empty
             }
           }

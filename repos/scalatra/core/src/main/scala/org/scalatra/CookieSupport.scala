@@ -50,18 +50,20 @@ case class Cookie(name: String, value: String)(
     if (cookieOptions.domain.nonBlank && cookieOptions.domain != "localhost")
       sb.append("; Domain=")
         .append({
-          if (!cookieOptions.domain.startsWith("."))
-            "." + cookieOptions.domain
-          else
-            cookieOptions.domain
-        }.toLowerCase(Locale.ENGLISH))
+            if (!cookieOptions.domain.startsWith("."))
+              "." + cookieOptions.domain
+            else
+              cookieOptions.domain
+          }.toLowerCase(Locale.ENGLISH))
 
     val pth = cookieOptions.path
     if (pth.nonBlank) {
-      sb append "; Path=" append (if (!pth.startsWith("/"))
-                                    "/" + pth
-                                  else
-                                    pth)
+      sb append "; Path=" append (
+        if (!pth.startsWith("/"))
+          "/" + pth
+        else
+          pth
+      )
     }
     if (cookieOptions.comment.nonBlank) {
       sb append ("; Comment=") append cookieOptions.comment
@@ -117,8 +119,9 @@ class SweetCookies(
   def get(key: String): Option[String] = cookies.get(key)
 
   def apply(key: String): String = {
-    cookies.get(key) getOrElse (throw new Exception(
-      "No cookie could be found for the specified key"))
+    cookies.get(key) getOrElse (
+      throw new Exception("No cookie could be found for the specified key")
+    )
   }
 
   def update(name: String, value: String)(

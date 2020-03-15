@@ -30,13 +30,9 @@ import scala.collection.mutable
   *
   * No objects were allocated in the making of this film.
   */
-final class RingDeque[@specialized(
-  Boolean,
-  Int,
-  Long,
-  Double,
-  Float,
-  Short) A: ClassManifest](_bound: Int) {
+final class RingDeque[
+    @specialized(Boolean, Int, Long, Double, Float, Short) A: ClassManifest](
+    _bound: Int) {
   val bound = _bound + 1
 
   private val ring = new Array[A](bound)
@@ -79,10 +75,12 @@ final class RingDeque[@specialized(
   }
 
   def length: Int =
-    (if (back > front)
-       back - front
-     else
-       (back + bound) - front) - 1
+    (
+      if (back > front)
+        back - front
+      else
+        (back + bound) - front
+    ) - 1
 
   def toList: List[A] = {
     @inline

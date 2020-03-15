@@ -40,12 +40,13 @@ final class EmailConfirmMailGun(
       val url = s"$baseUrl/signup/confirm/$token"
       WS.url(s"$apiUrl/messages")
         .withAuth("api", apiKey, WSAuthScheme.BASIC)
-        .post(Map(
-          "from" -> Seq(sender),
-          "to" -> Seq(email),
-          "subject" -> Seq(
-            s"Confirm your lichess.org account, ${user.username}"),
-          "text" -> Seq(s"""
+        .post(
+          Map(
+            "from" -> Seq(sender),
+            "to" -> Seq(email),
+            "subject" -> Seq(
+              s"Confirm your lichess.org account, ${user.username}"),
+            "text" -> Seq(s"""
 Final step!
 
 Confirm your email address to complete your lichess account. It's easy — just click on the link below.
@@ -55,7 +56,7 @@ $url
 
 Please do not reply to this message; it was sent from an unmonitored email address. This message is a service email related to your use of lichess.org.
 """)
-        ))
+          ))
         .void
     }
 

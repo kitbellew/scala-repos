@@ -15,11 +15,9 @@ trait WebHookEventComponent extends TemplateComponent { self: Profile =>
     val url = column[String]("URL")
     val event = column[WebHook.Event]("EVENT")
     def * =
-      (
-        userName,
-        repositoryName,
-        url,
-        event) <> ((WebHookEvent.apply _).tupled, WebHookEvent.unapply)
+      (userName, repositoryName, url, event) <> (
+        (WebHookEvent.apply _).tupled, WebHookEvent.unapply
+      )
 
     def byWebHook(owner: String, repository: String, url: String) =
       byRepository(owner, repository) && (this.url === url.bind)
@@ -29,9 +27,9 @@ trait WebHookEventComponent extends TemplateComponent { self: Profile =>
         url: Column[String]) =
       byRepository(userName, repositoryName) && (this.url === url)
     def byWebHook(webhook: WebHooks) =
-      byRepository(
-        webhook.userName,
-        webhook.repositoryName) && (this.url === webhook.url)
+      byRepository(webhook.userName, webhook.repositoryName) && (
+        this.url === webhook.url
+      )
     def byPrimaryKey(
         owner: String,
         repository: String,
@@ -45,5 +43,4 @@ case class WebHookEvent(
     userName: String,
     repositoryName: String,
     url: String,
-    event: WebHook.Event
-)
+    event: WebHook.Event)

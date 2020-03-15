@@ -79,10 +79,11 @@ object RandomDataGenerator {
       rand: Random,
       numFields: Int,
       acceptedTypes: Seq[DataType]): StructType = {
-    StructType(Seq.tabulate(numFields) { i =>
-      val dt = acceptedTypes(rand.nextInt(acceptedTypes.size))
-      StructField("col_" + i, dt, nullable = rand.nextBoolean())
-    })
+    StructType(
+      Seq.tabulate(numFields) { i =>
+        val dt = acceptedTypes(rand.nextInt(acceptedTypes.size))
+        StructField("col_" + i, dt, nullable = rand.nextBoolean())
+      })
   }
 
   /**

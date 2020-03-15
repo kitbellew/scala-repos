@@ -31,29 +31,30 @@ object Finagle extends Build {
   val nettyLib = "io.netty" % "netty" % "3.10.1.Final"
   val netty4Libs = Seq(
     "io.netty" % "netty-handler" % netty4Version,
-    "io.netty" % "netty-transport" % netty4Version
-  )
+    "io.netty" % "netty-transport" % netty4Version)
   val netty4Http = "io.netty" % "netty-codec-http" % netty4Version
   val ostrichLib = "com.twitter" %% "ostrich" % ostrichVersion
   val jacksonVersion = "2.4.4"
   val jacksonLibs = Seq(
     "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
     "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion exclude ("com.google.guava", "guava"),
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion exclude (
+      "com.google.guava", "guava"
+    ),
     guavaLib
   )
   val thriftLibs = Seq(
     "org.apache.thrift" % "libthrift" % libthriftVersion intransitive (),
-    "org.slf4j" % "slf4j-api" % "1.7.7" % "provided"
-  )
+    "org.slf4j" % "slf4j-api" % "1.7.7" % "provided")
   val scroogeLibs =
     thriftLibs ++ Seq("com.twitter" %% "scrooge-core" % scroogeVersion)
 
   def util(which: String) =
-    "com.twitter" %% ("util-" + which) % utilVersion excludeAll (ExclusionRule(
-      organization = "junit"),
-    ExclusionRule(organization = "org.scala-tools.testing"),
-    ExclusionRule(organization = "org.mockito"))
+    "com.twitter" %% ("util-" + which) % utilVersion excludeAll (
+      ExclusionRule(organization = "junit"),
+      ExclusionRule(organization = "org.scala-tools.testing"),
+      ExclusionRule(organization = "org.mockito")
+    )
 
   def scalacOptionsVersion(sv: String): Seq[String] = {
     Seq(
@@ -62,16 +63,13 @@ object Finagle extends Build {
       "-feature",
       "-language:_",
       "-encoding",
-      "utf8"
-    ) ++ (CrossVersion.partialVersion(sv) match {
-      case Some((2, x)) if x >= 11 =>
-        Seq(
-          "-Xlint:-missing-interpolator",
-          "-Ypatmat-exhaust-depth",
-          "40"
-        )
-      case _ => Seq("-Xlint")
-    })
+      "utf8") ++ (
+      CrossVersion.partialVersion(sv) match {
+        case Some((2, x)) if x >= 11 =>
+          Seq("-Xlint:-missing-interpolator", "-Ypatmat-exhaust-depth", "40")
+        case _ => Seq("-Xlint")
+      }
+    )
   }
 
   val sharedSettings = Seq(
@@ -150,9 +148,7 @@ object Finagle extends Build {
     },
     // Prevent eviction warnings
     dependencyOverrides <++= scalaVersion { vsn =>
-      Set(
-        "org.apache.thrift" % "libthrift" % libthriftVersion
-      )
+      Set("org.apache.thrift" % "libthrift" % libthriftVersion)
     },
     resourceGenerators in Compile <+=
       (resourceManaged in Compile, name, version) map { (dir, name, ver) =>
@@ -174,8 +170,7 @@ object Finagle extends Build {
       "asm" % "asm" % "3.3.1" % "test",
       "org.objenesis" % "objenesis" % "1.1" % "test",
       "org.hamcrest" % "hamcrest-all" % "1.1" % "test"
-    )
-  )
+    ))
 
   lazy val finagle = Project(
     id = "finagle",
@@ -184,8 +179,7 @@ object Finagle extends Build {
       sharedSettings ++
       unidocSettings ++ Seq(
       unidocProjectFilter in (ScalaUnidoc, unidoc) :=
-        inAnyProject -- inProjects(finagleExample)
-    )
+        inAnyProject -- inProjects(finagleExample))
   ) aggregate (
     // Core, support.
     finagleCore, finagleStats, finagleNetty4,
@@ -208,25 +202,22 @@ object Finagle extends Build {
     id = "finagle-integration",
     base = file("finagle-integration"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-integration",
-      libraryDependencies ++= Seq(util("core"))
-    )
+      libraryDependencies ++= Seq(util("core")))
     .dependsOn(
       finagleCore,
       finagleHttp,
       finagleMySQL,
       finagleMemcached,
-      finagleMux
-    )
+      finagleMux)
 
   lazy val finagleCore = Project(
     id = "finagle-core",
     base = file("finagle-core"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings).settings(
     name := "finagle-core",
     libraryDependencies ++= Seq(
       util("app"),
@@ -251,43 +242,36 @@ object Finagle extends Build {
     id = "finagle-netty4",
     base = file("finagle-netty4"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-netty4",
       libraryDependencies ++= Seq(util("core")),
-      libraryDependencies ++= netty4Libs
-    )
+      libraryDependencies ++= netty4Libs)
     .dependsOn(finagleCore)
 
   lazy val finagleOstrich4 = Project(
     id = "finagle-ostrich4",
     base = file("finagle-ostrich4"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-ostrich4",
-      libraryDependencies ++= Seq(
-        ostrichLib,
-        util("registry"),
-        util("stats")
-      )
-    )
+      libraryDependencies ++= Seq(ostrichLib, util("registry"), util("stats")))
     .dependsOn(finagleCore, finagleHttp)
 
   lazy val finagleStats = Project(
     id = "finagle-stats",
     base = file("finagle-stats"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-stats",
       libraryDependencies ++= Seq(
         "com.twitter.common" % "metrics" % "0.0.37",
         util("events"),
         util("logging"),
         util("registry"),
-        util("stats")
-      ),
+        util("stats")),
       libraryDependencies ++= jacksonLibs
     )
     .dependsOn(finagleCore, finagleHttp)
@@ -296,49 +280,43 @@ object Finagle extends Build {
     id = "finagle-zipkin",
     base = file("finagle-zipkin"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-zipkin",
       libraryDependencies ++= Seq(util("codec"), util("events")) ++ scroogeLibs,
-      libraryDependencies ++= jacksonLibs
-    )
+      libraryDependencies ++= jacksonLibs)
     .dependsOn(finagleCore, finagleThrift)
 
   lazy val finagleException = Project(
     id = "finagle-exception",
     base = file("finagle-exception"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-exception",
-      libraryDependencies ++= Seq(
-        util("codec")
-      ) ++ scroogeLibs,
-      libraryDependencies ++= jacksonLibs
-    )
+      libraryDependencies ++= Seq(util("codec")) ++ scroogeLibs,
+      libraryDependencies ++= jacksonLibs)
     .dependsOn(finagleCore, finagleThrift)
 
   lazy val finagleCommonsStats = Project(
     id = "finagle-commons-stats",
     base = file("finagle-commons-stats"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-commons-stats",
       libraryDependencies ++= Seq(
         "com.twitter.common" % "stats" % "0.0.114",
         util("registry"),
-        util("stats")
-      )
-    )
+        util("stats")))
     .dependsOn(finagleCore)
 
   lazy val finagleServersets = Project(
     id = "finagle-serversets",
     base = file("finagle-serversets"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-serversets",
       fork in Test := true,
       libraryDependencies ++= Seq(
@@ -347,8 +325,7 @@ object Finagle extends Build {
         util("zk-common"),
         util("zk-test") % "test",
         "com.twitter.common.zookeeper" % "server-set" % "1.0.103",
-        guavaLib
-      ),
+        guavaLib),
       libraryDependencies ++= jacksonLibs,
       excludeFilter in unmanagedSources := "ZkTest.scala",
       ivyXML :=
@@ -378,103 +355,87 @@ object Finagle extends Build {
     id = "finagle-http",
     base = file("finagle-http"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-http",
       libraryDependencies ++= Seq(
         util("codec"),
         util("logging"),
         "commons-lang" % "commons-lang" % "2.6",
-        guavaLib
-      )
-    )
+        guavaLib))
     .dependsOn(finagleCore)
 
   lazy val finagleHttpNetty4 = Project(
     id = "finagle-http-netty4",
     base = file("finagle-http-netty4"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-http-netty4",
       libraryDependencies ++= Seq(
         util("codec"),
         util("logging"),
         "commons-lang" % "commons-lang" % "2.6",
-        netty4Http
-      )
-    )
+        netty4Http))
     .dependsOn(finagleCore, finagleNetty4, finagleHttp)
 
   lazy val finagleHttpCompat = Project(
     id = "finagle-http-compat",
     base = file("finagle-http-compat"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "finagle-http-compat"
-    )
+      sharedSettings)
+    .settings(name := "finagle-http-compat")
     .dependsOn(finagleCore, finagleHttp)
 
   lazy val finagleNative = Project(
     id = "finagle-native",
     base = file("finagle-native"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "finagle-native"
-    )
+      sharedSettings)
+    .settings(name := "finagle-native")
     .dependsOn(finagleCore, finagleHttp)
 
   lazy val finagleStream = Project(
     id = "finagle-stream",
     base = file("finagle-stream"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "finagle-stream"
-    )
-    .dependsOn(finagleCore)
+      sharedSettings).settings(name := "finagle-stream").dependsOn(finagleCore)
 
   lazy val finagleThrift = Project(
     id = "finagle-thrift",
     base = file("finagle-thrift"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-thrift",
       libraryDependencies ++= Seq(
-        "silly" % "silly-thrift" % "0.5.0" % "test") ++ scroogeLibs
-    )
+        "silly" % "silly-thrift" % "0.5.0" % "test") ++ scroogeLibs)
     .dependsOn(finagleCore)
 
   lazy val finagleCacheResolver = Project(
     id = "finagle-cacheresolver",
     base = file("finagle-cacheresolver"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-cacheresolver",
       libraryDependencies ++= Seq(
-        "com.twitter.common" % "zookeeper-testing" % "0.0.53" % "test"
-      ),
-      libraryDependencies ++= jacksonLibs
-    )
+        "com.twitter.common" % "zookeeper-testing" % "0.0.53" % "test"),
+      libraryDependencies ++= jacksonLibs)
     .dependsOn(finagleCore, finagleServersets)
 
   lazy val finagleMemcached = Project(
     id = "finagle-memcached",
     base = file("finagle-memcached"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-memcached",
       libraryDependencies ++= Seq(
         util("hashing"),
         util("zk-test") % "test",
         guavaLib,
-        "com.twitter.common" % "zookeeper-testing" % "0.0.53" % "test"
-      ),
+        "com.twitter.common" % "zookeeper-testing" % "0.0.53" % "test"),
       libraryDependencies ++= jacksonLibs
     )
     .dependsOn(finagleCacheResolver, finagleCore, finagleServersets)
@@ -483,26 +444,22 @@ object Finagle extends Build {
     id = "finagle-kestrel",
     base = file("finagle-kestrel"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "finagle-kestrel",
-      libraryDependencies ++= scroogeLibs
-    )
+      sharedSettings)
+    .settings(name := "finagle-kestrel", libraryDependencies ++= scroogeLibs)
     .dependsOn(finagleCore, finagleMemcached, finagleThrift)
 
   lazy val finagleRedis = Project(
     id = "finagle-redis",
     base = file("finagle-redis"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-redis",
-      libraryDependencies ++= Seq(
-        util("logging")
-      ),
-      testOptions in Test := Seq(Tests.Filter { name =>
-        !name.startsWith("com.twitter.finagle.redis.integration")
-      })
+      libraryDependencies ++= Seq(util("logging")),
+      testOptions in Test := Seq(
+        Tests.Filter { name =>
+          !name.startsWith("com.twitter.finagle.redis.integration")
+        })
     )
     .dependsOn(finagleCore)
 
@@ -510,31 +467,27 @@ object Finagle extends Build {
     id = "finagle-mux",
     base = file("finagle-mux"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-mux",
       libraryDependencies ++= Seq(
-        "com.twitter.common" % "stats-util" % "0.0.58")
-    )
+        "com.twitter.common" % "stats-util" % "0.0.58"))
     .dependsOn(finagleCore)
 
   lazy val finagleThriftMux = Project(
     id = "finagle-thriftmux",
     base = file("finagle-thriftmux"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "finagle-thriftmux",
-      libraryDependencies ++= scroogeLibs
-    )
+      sharedSettings)
+    .settings(name := "finagle-thriftmux", libraryDependencies ++= scroogeLibs)
     .dependsOn(finagleCore, finagleMux, finagleThrift)
 
   lazy val finagleMySQL = Project(
     id = "finagle-mysql",
     base = file("finagle-mysql"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-mysql",
       libraryDependencies ++= Seq(util("logging"), util("cache")),
       excludeFilter in unmanagedSources := {
@@ -547,13 +500,8 @@ object Finagle extends Build {
     id = "finagle-exp",
     base = file("finagle-exp"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "finagle-exp",
-      libraryDependencies ++= Seq(
-        jsr166eLib
-      )
-    )
+      sharedSettings)
+    .settings(name := "finagle-exp", libraryDependencies ++= Seq(jsr166eLib))
     .dependsOn(finagleCore, finagleThrift)
 
   // Uses
@@ -562,25 +510,22 @@ object Finagle extends Build {
     id = "finagle-mdns",
     base = file("finagle-mdns"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-mdns",
-      libraryDependencies += "javax.jmdns" % "jmdns" % "3.4.1"
-    )
+      libraryDependencies += "javax.jmdns" % "jmdns" % "3.4.1")
     .dependsOn(finagleCore)
 
   lazy val finagleExample = Project(
     id = "finagle-example",
     base = file("finagle-example"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "finagle-example",
       libraryDependencies ++= Seq(
         util("codec"),
-        "org.slf4j" % "slf4j-nop" % "1.7.7" % "provided"
-      ) ++ scroogeLibs
-    )
+        "org.slf4j" % "slf4j-nop" % "1.7.7" % "provided") ++ scroogeLibs)
     .dependsOn(
       finagleCore,
       finagleThrift,
@@ -595,18 +540,16 @@ object Finagle extends Build {
     id = "finagle-benchmark-thrift",
     base = file("finagle-benchmark-thrift"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      libraryDependencies ++= scroogeLibs
-    )
+      sharedSettings)
+    .settings(libraryDependencies ++= scroogeLibs)
     .dependsOn(finagleThrift)
 
   lazy val finagleBenchmark = Project(
     id = "finagle-benchmark",
     base = file("finagle-benchmark"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings ++ JmhPlugin.projectSettings
-  ).enablePlugins(JmhPlugin)
+      sharedSettings ++ JmhPlugin.projectSettings)
+    .enablePlugins(JmhPlugin)
     .settings(
       name := "finagle-benchmark",
       libraryDependencies ++= Seq(
@@ -633,21 +576,13 @@ object Finagle extends Build {
     id = "finagle-testers",
     base = file("finagle-testers"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "finagle-testers"
-    )
-    .dependsOn(finagleCore)
+      sharedSettings).settings(name := "finagle-testers").dependsOn(finagleCore)
 
   lazy val finagleSpdy = Project(
     id = "finagle-spdy",
     base = file("finagle-spdy"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "finagle-spdy"
-    )
-    .dependsOn(finagleCore)
+      sharedSettings).settings(name := "finagle-spdy").dependsOn(finagleCore)
 
   lazy val finagleDoc = Project(
     id = "finagle-doc",
@@ -656,7 +591,9 @@ object Finagle extends Build {
       .sphinxSupport() ++ sharedSettings ++ Seq(
       scalacOptions in doc <++= version.map(v =>
         Seq("-doc-title", "Finagle", "-doc-version", v)),
-      includeFilter in Sphinx := ("*.html" | "*.png" | "*.svg" | "*.js" | "*.css" | "*.gif" | "*.txt"),
+      includeFilter in Sphinx := (
+        "*.html" | "*.png" | "*.svg" | "*.js" | "*.css" | "*.gif" | "*.txt"
+      ),
       // Workaround for sbt bug: Without a testGrouping for all test configs,
       // the wrong tests are run
       testGrouping <<= definedTests in Test map partitionTests,

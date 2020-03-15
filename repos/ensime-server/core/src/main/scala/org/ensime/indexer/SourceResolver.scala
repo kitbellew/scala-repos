@@ -12,11 +12,8 @@ import org.ensime.util.list._
 import org.ensime.util.map._
 
 // mutable: lookup of user's source files are atomically updated
-class SourceResolver(
-    config: EnsimeConfig
-)(implicit
-    vfs: EnsimeVFS
-) extends FileChangeListener
+class SourceResolver(config: EnsimeConfig)(implicit vfs: EnsimeVFS)
+    extends FileChangeListener
     with SLF4JLogging {
 
   // it's not worth doing incremental updates - this is cheap

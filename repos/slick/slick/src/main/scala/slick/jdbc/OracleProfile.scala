@@ -324,10 +324,7 @@ trait OracleProfile extends JdbcProfile {
             t.tableName + "__" + column.name + "_trg"
           else
             triggerName)
-        Seq(
-          s"drop trigger $trg",
-          s"drop sequence $seq"
-        )
+        Seq(s"drop trigger $trg", s"drop sequence $seq")
       }
   }
 
@@ -482,17 +479,19 @@ trait OracleProfile extends JdbcProfile {
       ti: JdbcType[T],
       idx: Int): ResultConverter[JdbcResultConverterDomain, Option[T]] =
     if (ti.scalaType == ScalaBaseType.stringType)
-      (new OptionResultConverter[String](
-        ti.asInstanceOf[JdbcType[String]],
-        idx) {
-        override def read(pr: ResultSet) = {
-          val v = ti.getValue(pr, idx)
-          if ((v eq null) || v.length == 0)
-            None
-          else
-            Some(v)
+      (
+        new OptionResultConverter[String](
+          ti.asInstanceOf[JdbcType[String]],
+          idx) {
+          override def read(pr: ResultSet) = {
+            val v = ti.getValue(pr, idx)
+            if ((v eq null) || v.length == 0)
+              None
+            else
+              Some(v)
+          }
         }
-      }).asInstanceOf[ResultConverter[JdbcResultConverterDomain, Option[T]]]
+      ).asInstanceOf[ResultConverter[JdbcResultConverterDomain, Option[T]]]
     else
       super.createOptionResultConverter(ti, idx)
 

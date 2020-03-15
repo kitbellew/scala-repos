@@ -23,8 +23,8 @@ class DarkTrafficFilter[Req, Rep](
   def this(
       darkService: Service[Req, Rep],
       enableSampling: Req => Boolean,
-      statsReceiver: StatsReceiver
-  ) = this(darkService, enableSampling, statsReceiver, false)
+      statsReceiver: StatsReceiver) =
+    this(darkService, enableSampling, statsReceiver, false)
 
   private[this] val scopedStatsReceiver = statsReceiver.scope(
     "darkTrafficFilter")

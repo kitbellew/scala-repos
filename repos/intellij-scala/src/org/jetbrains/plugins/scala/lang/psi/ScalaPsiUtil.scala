@@ -393,9 +393,7 @@ object ScalaPsiUtil {
         .getCachedClass(
           "scala.Function1",
           e.getResolveScope,
-          ScalaPsiManager.ClassCategory.TYPE
-        )
-    ) collect {
+          ScalaPsiManager.ClassCategory.TYPE)) collect {
       case cl: ScTrait =>
         ScParameterizedType(
           ScType.designator(cl),
@@ -453,13 +451,13 @@ object ScalaPsiUtil {
                 _.getTypeAfterImplicitConversion(
                   checkImplicits = false,
                   isShape = m.isShapeResolve,
-                  None)._1.getOrAny
-              ))
+                  None)._1.getOrAny))
           case _ => Seq.empty
         }
       val exprType = ImplicitCollector
         .exprType(e, fromUnder = false)
-        .getOrElse(return
+        .getOrElse(
+          return
         )
       if (exprType.equiv(types.Nothing))
         return //do not proceed with nothing type, due to performance problems.
@@ -621,23 +619,20 @@ object ScalaPsiUtil {
         "update"
       else
         "apply"
-    val args: Seq[ScExpression] =
-      call.argumentExpressions ++ (if (isUpdate)
-                                     call.getContext
-                                       .asInstanceOf[ScAssignStmt]
-                                       .getRExpression match {
-                                       case Some(x) => Seq[ScExpression](x)
-                                       case None =>
-                                         Seq[ScExpression](
-                                           ScalaPsiElementFactory
-                                             .createExpressionFromText(
-                                               "{val x: Nothing = null; x}",
-                                               call.getManager
-                                             )
-                                         ) //we can't to not add something => add Nothing expression
-                                     }
-                                   else
-                                     Seq.empty)
+    val args: Seq[ScExpression] = call.argumentExpressions ++ (
+      if (isUpdate)
+        call.getContext.asInstanceOf[ScAssignStmt].getRExpression match {
+          case Some(x) => Seq[ScExpression](x)
+          case None =>
+            Seq[ScExpression](
+              ScalaPsiElementFactory.createExpressionFromText(
+                "{val x: Nothing = null; x}",
+                call.getManager)
+            ) //we can't to not add something => add Nothing expression
+        }
+      else
+        Seq.empty
+    )
     val (expr, exprTp, typeArgs: Seq[ScTypeElement]) =
       call.getEffectiveInvokedExpr match {
         case gen: ScGenericCall =>
@@ -697,10 +692,12 @@ object ScalaPsiUtil {
         candidates = processor.candidatesS
       case _ =>
     }
-    if (candidates.isEmpty && (!isDynamic || approveDynamic(
-          exprTp.inferValueType,
-          call.getProject,
-          call.getResolveScope))) {
+    if (candidates.isEmpty && (
+          !isDynamic || approveDynamic(
+            exprTp.inferValueType,
+            call.getProject,
+            call.getResolveScope)
+        )) {
       val state: ResolveState = ResolveState.initial
         .put(BaseProcessor.FROM_TYPE_KEY, exprTp.inferValueType)
       processor.processType(
@@ -970,7 +967,8 @@ object ScalaPsiUtil {
         case j: JavaArrayType =>
           val parameterizedType = j.getParameterizedType(project, scope)
           collectParts(
-            parameterizedType.getOrElse(return
+            parameterizedType.getOrElse(
+              return
             ))
         case proj @ ScProjectionType(projected, _, _) =>
           collectParts(projected)
@@ -1481,8 +1479,9 @@ object ScalaPsiUtil {
     beanMethods.foreach { method =>
       val sigs =
         TypeDefinitionMembers.getSignatures(clazz).forName(method.name)._1
-      (sigs.get(
-        new PhysicalSignature(method, ScSubstitutor.empty)): @unchecked) match {
+      (
+        sigs.get(new PhysicalSignature(method, ScSubstitutor.empty)): @unchecked
+      ) match {
         //partial match
         case Some(node) if !withSelfType || node.info.namedElement == method =>
           res ++= node.supers.map {
@@ -1624,9 +1623,10 @@ object ScalaPsiUtil {
     TypeDefinitionMembers
       .getSignatures(clazz)
       .allFirstSeq()
-      .flatMap(_.filter {
-        case (_, n) => n.info.isInstanceOf[PhysicalSignature]
-      })
+      .flatMap(
+        _.filter {
+          case (_, n) => n.info.isInstanceOf[PhysicalSignature]
+        })
       .map {
         case (_, n) => n.info.asInstanceOf[PhysicalSignature]
       }
@@ -1651,13 +1651,15 @@ object ScalaPsiUtil {
     getMethodsForName(clazz, "unapply") ++ getMethodsForName(
       clazz,
       "unapplySeq") ++
-      (clazz match {
-        case c: ScObject =>
-          c.allSynthetics
-            .filter(s => s.name == "unapply" || s.name == "unapplySeq")
-            .map(new PhysicalSignature(_, ScSubstitutor.empty))
-        case _ => Seq.empty[PhysicalSignature]
-      })
+      (
+        clazz match {
+          case c: ScObject =>
+            c.allSynthetics
+              .filter(s => s.name == "unapply" || s.name == "unapplySeq")
+              .map(new PhysicalSignature(_, ScSubstitutor.empty))
+          case _ => Seq.empty[PhysicalSignature]
+        }
+      )
   }
 
   def getUpdateMethods(clazz: PsiClass): Seq[PhysicalSignature] = {
@@ -2147,10 +2149,12 @@ object ScalaPsiUtil {
           case block: ScBlock if block.statements == Seq(exp) =>
             parameterOf(block)
           case ie: ScInfixExpr
-              if exp == (if (ie.isLeftAssoc)
-                           ie.lOp
-                         else
-                           ie.rOp) =>
+              if exp == (
+                if (ie.isLeftAssoc)
+                  ie.lOp
+                else
+                  ie.rOp
+              ) =>
             ie.operation match {
               case ResolvesTo(f: ScFunction) =>
                 f.parameters.headOption.map(p => new Parameter(p))
@@ -2262,8 +2266,9 @@ object ScalaPsiUtil {
         case us: ScUnderscoreSection =>
           us.bindingExpr.flatMap(referencedMethod(_, canBeParameterless = true))
         case ScMethodCall(
-              invoked @ (_: ScReferenceExpression | _: ScGenericCall |
-              _: ScMethodCall),
+              invoked @ (
+                _: ScReferenceExpression | _: ScGenericCall | _: ScMethodCall
+              ),
               args) if args.nonEmpty && args.forall(isSimpleUnderscore) =>
           referencedMethod(invoked, canBeParameterless = false)
         case mc: ScMethodCall if !mc.getParent.isInstanceOf[ScMethodCall] =>

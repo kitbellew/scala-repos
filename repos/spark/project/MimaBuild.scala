@@ -50,8 +50,7 @@ object MimaBuild {
     Seq(
       excludePackage(className),
       ProblemFilters.exclude[MissingClassProblem](className),
-      ProblemFilters.exclude[MissingTypesProblem](className)
-    )
+      ProblemFilters.exclude[MissingTypesProblem](className))
 
   // Exclude a Spark class, that is in the package org.apache.spark
   def excludeSparkClass(className: String) = {

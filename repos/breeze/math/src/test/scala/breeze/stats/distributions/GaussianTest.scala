@@ -52,12 +52,13 @@ class GaussianTest
   }
 
   test("Probability of mean") {
-    check(Prop.forAll { (m: Double, s: Double) =>
-      (s == 0) || {
-        val b = new Gaussian(mu = m, sigma = s.abs);
-        b.unnormalizedLogPdf(m) == 0.0;
-      }
-    })
+    check(
+      Prop.forAll { (m: Double, s: Double) =>
+        (s == 0) || {
+          val b = new Gaussian(mu = m, sigma = s.abs);
+          b.unnormalizedLogPdf(m) == 0.0;
+        }
+      })
   }
 
   test("#295, cdf/inverseCdf broken") {

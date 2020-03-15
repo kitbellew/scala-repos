@@ -30,8 +30,7 @@ class JdbcMiscTest extends AsyncTest[JdbcTestDB] {
       t1 += "a",
       t3 += Some("a"),
       t3 += None,
-      (t1 += null.asInstanceOf[String]).failed
-    )
+      (t1 += null.asInstanceOf[String]).failed)
   }
 
   def testSimpleDBIO = {

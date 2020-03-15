@@ -63,9 +63,10 @@ object VanishingCircles extends JFXApp {
             stroke = White
             // add this for event listeners:
             onMouseClicked = handle {
-              Timeline(at(3 s) {
-                radius -> 0
-              }).play()
+              Timeline(
+                at(3 s) {
+                  radius -> 0
+                }).play()
             }
           }
       content = circles
@@ -80,8 +81,7 @@ object VanishingCircles extends JFXApp {
         yield at(40 s) {
           Set(
             circle.centerX -> random * stage.width(),
-            circle.centerY -> random * stage.height()
-          )
+            circle.centerY -> random * stage.height())
         }
   }.play()
 }

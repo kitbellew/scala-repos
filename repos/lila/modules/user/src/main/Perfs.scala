@@ -140,24 +140,21 @@ case class Perfs(
     } mkString ", "
 
   def updateStandard =
-    copy(
-      standard = {
-        val subs = List(bullet, blitz, classical, correspondence)
-        subs.maxBy(_.latest.fold(0L)(_.getMillis)).latest.fold(standard) {
-          date =>
-            val nb = subs.map(_.nb).sum
-            val glicko = Glicko(
-              rating =
-                subs.map(s => s.glicko.rating * (s.nb / nb.toDouble)).sum,
-              deviation =
-                subs.map(s => s.glicko.deviation * (s.nb / nb.toDouble)).sum,
-              volatility =
-                subs.map(s => s.glicko.volatility * (s.nb / nb.toDouble)).sum
-            )
-            Perf(glicko = glicko, nb = nb, recent = Nil, latest = date.some)
-        }
+    copy(standard = {
+      val subs = List(bullet, blitz, classical, correspondence)
+      subs.maxBy(_.latest.fold(0L)(_.getMillis)).latest.fold(standard) {
+        date =>
+          val nb = subs.map(_.nb).sum
+          val glicko = Glicko(
+            rating = subs.map(s => s.glicko.rating * (s.nb / nb.toDouble)).sum,
+            deviation =
+              subs.map(s => s.glicko.deviation * (s.nb / nb.toDouble)).sum,
+            volatility =
+              subs.map(s => s.glicko.volatility * (s.nb / nb.toDouble)).sum
+          )
+          Perf(glicko = glicko, nb = nb, recent = Nil, latest = date.some)
       }
-    )
+    })
 }
 
 case object Perfs {

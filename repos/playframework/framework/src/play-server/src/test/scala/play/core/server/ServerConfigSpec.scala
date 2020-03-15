@@ -16,8 +16,7 @@ object ServerConfigSpec extends Specification {
         rootDir = new File("/asdasd"),
         port = None,
         sslPort = None,
-        properties = new Properties()
-      ) must throwAn[IllegalArgumentException]
+        properties = new Properties()) must throwAn[IllegalArgumentException]
     }
   }
 

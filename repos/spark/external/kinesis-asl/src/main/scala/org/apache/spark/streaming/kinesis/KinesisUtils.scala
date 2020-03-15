@@ -411,8 +411,7 @@ object KinesisUtils {
       regionName: String,
       initialPositionInStream: InitialPositionInStream,
       checkpointInterval: Duration,
-      storageLevel: StorageLevel
-  ): JavaReceiverInputDStream[Array[Byte]] = {
+      storageLevel: StorageLevel): JavaReceiverInputDStream[Array[Byte]] = {
     createStream[Array[Byte]](
       jssc.ssc,
       kinesisAppName,
@@ -533,8 +532,7 @@ private class KinesisUtilsPythonHelper {
       checkpointInterval: Duration,
       storageLevel: StorageLevel,
       awsAccessKeyId: String,
-      awsSecretKey: String
-  ): JavaReceiverInputDStream[Array[Byte]] = {
+      awsSecretKey: String): JavaReceiverInputDStream[Array[Byte]] = {
     if (awsAccessKeyId == null && awsSecretKey != null) {
       throw new IllegalArgumentException(
         "awsSecretKey is set but awsAccessKeyId is null")

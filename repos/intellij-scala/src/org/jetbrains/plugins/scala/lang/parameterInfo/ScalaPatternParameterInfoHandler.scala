@@ -129,11 +129,12 @@ class ScalaPatternParameterInfoHandler
                     case (param, o) =>
                       val buffer: StringBuilder = new StringBuilder("")
                       buffer.append(ScType.presentableText(param))
-                      val isSeq = methodName == "unapplySeq" && (ScType
-                        .extractClass(param) match {
-                        case Some(clazz) => clazz.qualifiedName == "scala.Seq"
-                        case _           => false
-                      })
+                      val isSeq = methodName == "unapplySeq" && (
+                        ScType.extractClass(param) match {
+                          case Some(clazz) => clazz.qualifiedName == "scala.Seq"
+                          case _           => false
+                        }
+                      )
                       if (isSeq) {
                         buffer.delete(0, buffer.indexOf("[") + 1)
                         buffer.deleteCharAt(buffer.length - 1)

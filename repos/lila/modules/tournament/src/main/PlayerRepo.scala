@@ -65,10 +65,7 @@ object PlayerRepo {
     coll.count(selectTourUser(tourId, userId).some) map (0 !=)
 
   def existsActive(tourId: String, userId: String) =
-    coll.count(
-      Some(
-        selectTourUser(tourId, userId) ++ selectActive
-      )) map (0 !=)
+    coll.count(Some(selectTourUser(tourId, userId) ++ selectActive)) map (0 !=)
 
   def unWithdraw(tourId: String) =
     coll
@@ -92,8 +89,9 @@ object PlayerRepo {
     find(tourId, userId) flatMap {
       _ ?? { player =>
         coll.count(
-          Some(selectTour(tourId) ++ BSONDocument(
-            "m" -> BSONDocument("$gt" -> player.magicScore)))) map { n =>
+          Some(
+            selectTour(tourId) ++ BSONDocument(
+              "m" -> BSONDocument("$gt" -> player.magicScore)))) map { n =>
           PlayerInfo((n + 1), player.withdraw).some
         }
       }
@@ -118,9 +116,7 @@ object PlayerRepo {
 
   def withPoints(tourId: String): Fu[List[Player]] =
     coll
-      .find(
-        selectTour(tourId) ++ BSONDocument("m" -> BSONDocument("$gt" -> 0))
-      )
+      .find(selectTour(tourId) ++ BSONDocument("m" -> BSONDocument("$gt" -> 0)))
       .cursor[Player]()
       .collect[List]()
 
@@ -175,8 +171,7 @@ object PlayerRepo {
     coll
       .find(
         selectTour(tourId) ++ BSONDocument(
-          "uid" -> BSONDocument("$in" -> userIds)
-        ))
+          "uid" -> BSONDocument("$in" -> userIds)))
       .cursor[Player]()
       .collect[List]()
       .chronometer

@@ -341,12 +341,14 @@ class ScalaLookupItem(
             return
           while (ref.getParent != null && ref.getParent
                    .isInstanceOf[ScReferenceElement] &&
-                 (ref.getParent
-                   .asInstanceOf[ScReferenceElement]
-                   .qualifier match {
-                   case Some(r) => r != ref
-                   case _       => true
-                 }))
+                 (
+                   ref.getParent
+                     .asInstanceOf[ScReferenceElement]
+                     .qualifier match {
+                     case Some(r) => r != ref
+                     case _       => true
+                   }
+                 ))
             ref = ref.getParent.asInstanceOf[ScReferenceElement]
           val newRef =
             ref match {
@@ -382,18 +384,18 @@ class ScalaLookupItem(
           ref.getNode.getTreeParent.replaceChild(ref.getNode, newRef.getNode)
           newRef.bindToElement(cl.element)
           if (cl.element.isInstanceOf[ScObject] && isInStableCodeReference) {
-            context.setLaterRunnable(new Runnable {
-              def run() {
-                AutoPopupController
-                  .getInstance(context.getProject)
-                  .scheduleAutoPopup(
-                    context.getEditor,
-                    new Condition[PsiFile] {
-                      def value(t: PsiFile): Boolean = t == context.getFile
-                    }
-                  )
-              }
-            })
+            context.setLaterRunnable(
+              new Runnable {
+                def run() {
+                  AutoPopupController
+                    .getInstance(context.getProject)
+                    .scheduleAutoPopup(
+                      context.getEditor,
+                      new Condition[PsiFile] {
+                        def value(t: PsiFile): Boolean = t == context.getFile
+                      })
+                }
+              })
           }
         case p: PsiPackage if shouldImport =>
           simpleInsert(context)

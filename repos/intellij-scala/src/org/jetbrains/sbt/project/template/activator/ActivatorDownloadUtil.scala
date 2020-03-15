@@ -46,26 +46,27 @@ object ActivatorDownloadUtil {
       HttpRequests
         .request(location)
         .productNameAsUserAgent
-        .connect(new HttpRequests.RequestProcessor[Object]() {
-          def process(request: HttpRequests.Request): AnyRef = {
-            try {
-              val contentLength: Int = request.getConnection.getContentLength
-              substituteContentLength(progress, originalText, contentLength)
-              NetUtils.copyStreamContent(
-                progress,
-                request.getInputStream,
-                output,
-                contentLength)
-            } catch {
-              case e: IOException =>
-                throw new IOException(
-                  HttpRequests.createErrorMessage(e, request, true),
-                  e)
-            }
+        .connect(
+          new HttpRequests.RequestProcessor[Object]() {
+            def process(request: HttpRequests.Request): AnyRef = {
+              try {
+                val contentLength: Int = request.getConnection.getContentLength
+                substituteContentLength(progress, originalText, contentLength)
+                NetUtils.copyStreamContent(
+                  progress,
+                  request.getInputStream,
+                  output,
+                  contentLength)
+              } catch {
+                case e: IOException =>
+                  throw new IOException(
+                    HttpRequests.createErrorMessage(e, request, true),
+                    e)
+              }
 
-            null
-          }
-        })
+              null
+            }
+          })
     } catch {
       case e: IOException =>
         throw new IOException("Cannot download " + location, e)

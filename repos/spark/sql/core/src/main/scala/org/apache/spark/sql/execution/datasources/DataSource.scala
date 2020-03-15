@@ -246,13 +246,15 @@ case class DataSource(
           // If they gave a schema, then we try and figure out the types of the partition columns
           // from that schema.
           val partitionSchema = userSpecifiedSchema.map { schema =>
-            StructType(partitionColumns.map { c =>
-              // TODO: Case sensitivity.
-              schema
-                .find(_.name.toLowerCase() == c.toLowerCase())
-                .getOrElse(
-                  throw new AnalysisException(s"Invalid partition column '$c'"))
-            })
+            StructType(
+              partitionColumns.map { c =>
+                // TODO: Case sensitivity.
+                schema
+                  .find(_.name.toLowerCase() == c.toLowerCase())
+                  .getOrElse(
+                    throw new AnalysisException(
+                      s"Invalid partition column '$c'"))
+              })
           }
 
           val fileCatalog: FileCatalog =
@@ -335,8 +337,9 @@ case class DataSource(
             org.apache.spark.sql.catalyst.analysis.caseInsensitiveResolution
           }
 
-        val dataSchema = StructType(data.schema.filterNot(f =>
-          partitionColumns.exists(equality(_, f.name))))
+        val dataSchema = StructType(
+          data.schema.filterNot(f =>
+            partitionColumns.exists(equality(_, f.name))))
 
         // If we are appending to a table that already exists, make sure the partitioning matches
         // up.  If we fail to load the table for whatever reason, ignore the check.

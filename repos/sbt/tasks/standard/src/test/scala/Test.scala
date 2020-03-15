@@ -10,13 +10,15 @@ import Execute._
 
 object Test extends std.TaskExtra {
   def t2[A, B](a: Task[A], b: Task[B]) =
-    multInputTask[({
-      type l[L[x]] = (L[A], L[B])
-    })#l]((a, b))(AList.tuple2)
+    multInputTask[
+      ({
+        type l[L[x]] = (L[A], L[B])
+      })#l]((a, b))(AList.tuple2)
   def t3[A, B, C](a: Task[A], b: Task[B], c: Task[C]) =
-    multInputTask[({
-      type l[L[x]] = (L[A], L[B], L[C])
-    })#l]((a, b, c))(AList.tuple3)
+    multInputTask[
+      ({
+        type l[L[x]] = (L[A], L[B], L[C])
+      })#l]((a, b, c))(AList.tuple3)
 
   val a = task(3)
   val b = task[Boolean](sys.error("test"))

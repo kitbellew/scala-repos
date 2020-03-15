@@ -29,13 +29,15 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     }
 
     val exc = new Exception("can't coerce to string")
-    q.offer(new Object {
-      override def toString() = throw exc
-    })
+    q.offer(
+      new Object {
+        override def toString() = throw exc
+      })
 
-    assert(exc == intercept[Exception] {
-      Await.result(trans.read())
-    })
+    assert(
+      exc == intercept[Exception] {
+        Await.result(trans.read())
+      })
   }
 
   def fromList[A](seq: => List[A]) =
@@ -176,106 +178,111 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     }
   }
 
-  test("Transport.collate: read through")(new Collate {
-    // Long read
-    val r1 = coll.read(10)
-    assert(!r1.isDefined)
-    readq.offer("hello")
-    assert(Await.result(r1) == Some(Buf.Utf8("hello")))
+  test("Transport.collate: read through")(
+    new Collate {
+      // Long read
+      val r1 = coll.read(10)
+      assert(!r1.isDefined)
+      readq.offer("hello")
+      assert(Await.result(r1) == Some(Buf.Utf8("hello")))
 
-    assert(!coll.isDefined)
+      assert(!coll.isDefined)
 
-    // Short read
-    val r2 = coll.read(2)
-    assert(!r2.isDefined)
-    readq.offer("hello")
-    assert(Await.result(r2) == Some(Buf.Utf8("he")))
+      // Short read
+      val r2 = coll.read(2)
+      assert(!r2.isDefined)
+      readq.offer("hello")
+      assert(Await.result(r2) == Some(Buf.Utf8("he")))
 
-    // Now, the EOF; but this isn't propagated yet.
-    readq.offer("eof")
-    assert(!coll.isDefined)
+      // Now, the EOF; but this isn't propagated yet.
+      readq.offer("eof")
+      assert(!coll.isDefined)
 
-    val r3 = coll.read(10)
-    assert(r3.isDefined)
-    assert(Await.result(r3) == Some(Buf.Utf8("llo")))
+      val r3 = coll.read(10)
+      assert(r3.isDefined)
+      assert(Await.result(r3) == Some(Buf.Utf8("llo")))
 
-    assert(coll.isDefined)
-    Await.result(coll) // no exceptions
+      assert(coll.isDefined)
+      Await.result(coll) // no exceptions
 
-    // Further reads are EOF
-    assert(Await.result(coll.read(10)) == None)
-  })
+      // Further reads are EOF
+      assert(Await.result(coll.read(10)) == None)
+    })
 
-  test("Transport.collate: discard while reading")(new Collate {
-    val trans1 =
-      new Transport[String, String] {
-        val p = new Promise[String]
-        var theIntr: Throwable = null
-        p.setInterruptHandler {
-          case intr =>
-            theIntr = intr
+  test("Transport.collate: discard while reading")(
+    new Collate {
+      val trans1 =
+        new Transport[String, String] {
+          val p = new Promise[String]
+          var theIntr: Throwable = null
+          p.setInterruptHandler {
+            case intr =>
+              theIntr = intr
+          }
+          def write(s: String) = ???
+          def read() = p
+          def status = ???
+          val onClose = Future.never
+          def localAddress = ???
+          def remoteAddress = ???
+          def peerCertificate = ???
+          def close(deadline: Time) = ???
         }
-        def write(s: String) = ???
-        def read() = p
-        def status = ???
-        val onClose = Future.never
-        def localAddress = ???
-        def remoteAddress = ???
-        def peerCertificate = ???
-        def close(deadline: Time) = ???
-      }
 
-    val coll1 = Transport.collate(trans1, read)
-    val r1 = coll1.read(10)
-    assert(!r1.isDefined)
+      val coll1 = Transport.collate(trans1, read)
+      val r1 = coll1.read(10)
+      assert(!r1.isDefined)
 
-    assert(trans1.theIntr == null)
-    coll1.discard()
-    assertDiscarded(r1)
+      assert(trans1.theIntr == null)
+      coll1.discard()
+      assertDiscarded(r1)
 
-    assert(!coll1.isDefined)
-    assert(trans1.theIntr != null)
-    assert(trans1.theIntr.isInstanceOf[Reader.ReaderDiscarded])
+      assert(!coll1.isDefined)
+      assert(trans1.theIntr != null)
+      assert(trans1.theIntr.isInstanceOf[Reader.ReaderDiscarded])
 
-    // This is what a typical transport will do.
-    trans1.p.setException(trans1.theIntr)
-    assertDiscarded(coll1)
-  })
+      // This is what a typical transport will do.
+      trans1.p.setException(trans1.theIntr)
+      assertDiscarded(coll1)
+    })
 
-  test("Transport.collate: discard while writing")(new Collate {
-    readq.offer("hello")
+  test("Transport.collate: discard while writing")(
+    new Collate {
+      readq.offer("hello")
 
-    coll.discard()
-    assertDiscarded(coll)
-    assertDiscarded(coll.read(10))
-  })
+      coll.discard()
+      assertDiscarded(coll)
+      assertDiscarded(coll.read(10))
+    })
 
-  test("Transport.collate: discard while buffering")(new Collate {
-    readq.offer("hello")
-    val r1 = coll.read(1)
-    assert(Await.result(r1) == Some(Buf.Utf8("h")))
+  test("Transport.collate: discard while buffering")(
+    new Collate {
+      readq.offer("hello")
+      val r1 = coll.read(1)
+      assert(Await.result(r1) == Some(Buf.Utf8("h")))
 
-    coll.discard()
-    assertDiscarded(coll)
-    assertDiscarded(coll.read(10))
-  })
+      coll.discard()
+      assertDiscarded(coll)
+      assertDiscarded(coll.read(10))
+    })
 
-  test("Transport.collate: conversion failure")(new Collate {
-    readq.offer("hello")
-    val r1 = coll.read(10)
-    assert(Await.result(r1) == Some(Buf.Utf8("hello")))
+  test("Transport.collate: conversion failure")(
+    new Collate {
+      readq.offer("hello")
+      val r1 = coll.read(10)
+      assert(Await.result(r1) == Some(Buf.Utf8("hello")))
 
-    val r2 = coll.read(10)
-    assert(!r2.isDefined)
+      val r2 = coll.read(10)
+      assert(!r2.isDefined)
 
-    assert(!coll.isDefined)
+      assert(!coll.isDefined)
 
-    readq.offer("fail")
+      readq.offer("fail")
 
-    assert(r2.isDefined)
-    assert(r2.poll == Some(Throw(fail)))
+      assert(r2.isDefined)
+      assert(r2.poll == Some(Throw(fail)))
 
-    assert(coll.isDefined)
-    assert(coll.poll == Some(Throw(fail)))
-  })
+      assert(coll.isDefined)
+      assert(coll.poll == Some(Throw(fail)))
+    })
 }

@@ -226,8 +226,9 @@ class CrossValidatorSuite
                 assert(lr.uid === lr2.uid)
                 assert(lr.getMaxIter === lr2.getMaxIter)
               case other =>
-                throw new AssertionError(s"Loaded internal CrossValidator expected to be" +
-                  s" LogisticRegression but found type ${other.getClass.getName}")
+                throw new AssertionError(
+                  s"Loaded internal CrossValidator expected to be" +
+                    s" LogisticRegression but found type ${other.getClass.getName}")
             }
             assert(lrcv.uid === lrcv2.uid)
             assert(

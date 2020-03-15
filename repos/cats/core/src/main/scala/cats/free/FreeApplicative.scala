@@ -51,9 +51,10 @@ sealed abstract class FreeApplicative[F[_], A]
 
   /** Interpret this algebra into a Monoid */
   final def analyze[M: Monoid](f: F ~> λ[α => M]): M =
-    foldMap[Const[M, ?]](new (F ~> Const[M, ?]) {
-      def apply[X](x: F[X]): Const[M, X] = Const(f(x))
-    }).getConst
+    foldMap[Const[M, ?]](
+      new (F ~> Const[M, ?]) {
+        def apply[X](x: F[X]): Const[M, X] = Const(f(x))
+      }).getConst
 
   /** Compile this FreeApplicative algebra into a Free algebra. */
   final def monad: Free[F, A] =

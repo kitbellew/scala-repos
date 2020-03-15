@@ -102,16 +102,17 @@ class ChannelTransport[In, Out](ch: Channel)
     // are note cancellable. That is, there is no way to interrupt or
     // preempt them once the write event has been sent into the pipeline.
     val writeFuture = new DefaultChannelFuture(ch, false /* cancellable */ )
-    writeFuture.addListener(new ChannelFutureListener {
-      def operationComplete(f: ChannelFuture): Unit = {
-        if (f.isSuccess)
-          p.setDone()
-        else {
-          // since we can't cancel, `f` must be an exception.
-          p.setException(ChannelException(f.getCause, ch.getRemoteAddress))
+    writeFuture.addListener(
+      new ChannelFutureListener {
+        def operationComplete(f: ChannelFuture): Unit = {
+          if (f.isSuccess)
+            p.setDone()
+          else {
+            // since we can't cancel, `f` must be an exception.
+            p.setException(ChannelException(f.getCause, ch.getRemoteAddress))
+          }
         }
-      }
-    })
+      })
 
     // Ordering here is important. We want to call `addListener` on
     // `writeFuture` before giving it a chance to be satisfied, since

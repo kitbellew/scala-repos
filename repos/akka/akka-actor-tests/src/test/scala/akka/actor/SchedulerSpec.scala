@@ -43,16 +43,18 @@ trait SchedulerSpec
       case object Tick
       case object Tock
 
-      val tickActor, tickActor2 = system.actorOf(Props(new Actor {
-        var ticks = 0
-        def receive = {
-          case Tick ⇒
-            if (ticks < 3) {
-              sender() ! Tock
-              ticks += 1
+      val tickActor, tickActor2 = system.actorOf(
+        Props(
+          new Actor {
+            var ticks = 0
+            def receive = {
+              case Tick ⇒
+                if (ticks < 3) {
+                  sender() ! Tock
+                  ticks += 1
+                }
             }
-        }
-      }))
+          }))
       // run every 50 milliseconds
       collectCancellable(
         system.scheduler
@@ -76,11 +78,13 @@ trait SchedulerSpec
     }
 
     "stop continuous scheduling if the receiving actor has been terminated" taggedAs TimingTest in {
-      val actor = system.actorOf(Props(new Actor {
-        def receive = {
-          case x ⇒ sender() ! x
-        }
-      }))
+      val actor = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case x ⇒ sender() ! x
+            }
+          }))
 
       // run immediately and then every 100 milliseconds
       collectCancellable(
@@ -96,12 +100,13 @@ trait SchedulerSpec
 
     "stop continuous scheduling if the task throws exception" taggedAs TimingTest in {
       val count = new AtomicInteger(0)
-      collectCancellable(system.scheduler.schedule(0 milliseconds, 20.millis) {
-        val c = count.incrementAndGet()
-        testActor ! c
-        if (c == 3)
-          throw new RuntimeException("TEST") with NoStackTrace
-      })
+      collectCancellable(
+        system.scheduler.schedule(0 milliseconds, 20.millis) {
+          val c = count.incrementAndGet()
+          testActor ! c
+          if (c == 3)
+            throw new RuntimeException("TEST") with NoStackTrace
+        })
       expectMsg(1)
       expectMsg(2)
       expectMsg(3)
@@ -111,11 +116,13 @@ trait SchedulerSpec
     "schedule once" taggedAs TimingTest in {
       case object Tick
       val countDownLatch = new CountDownLatch(3)
-      val tickActor = system.actorOf(Props(new Actor {
-        def receive = {
-          case Tick ⇒ countDownLatch.countDown()
-        }
-      }))
+      val tickActor = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case Tick ⇒ countDownLatch.countDown()
+            }
+          }))
 
       // run after 300 millisec
       collectCancellable(
@@ -208,16 +215,18 @@ trait SchedulerSpec
       val pingLatch = new TestLatch(6)
 
       val supervisor = system.actorOf(
-        Props(new Supervisor(
-          AllForOneStrategy(3, 1 second)(List(classOf[Exception])))))
-      val props = Props(new Actor {
-        def receive = {
-          case Ping ⇒ pingLatch.countDown()
-          case Crash ⇒ throw new Exception("CRASH")
-        }
+        Props(
+          new Supervisor(
+            AllForOneStrategy(3, 1 second)(List(classOf[Exception])))))
+      val props = Props(
+        new Actor {
+          def receive = {
+            case Ping ⇒ pingLatch.countDown()
+            case Crash ⇒ throw new Exception("CRASH")
+          }
 
-        override def postRestart(reason: Throwable) = restartLatch.open
-      })
+          override def postRestart(reason: Throwable) = restartLatch.open
+        })
       val actor = Await.result(
         (supervisor ? props).mapTo[ActorRef],
         timeout.duration)
@@ -241,16 +250,19 @@ trait SchedulerSpec
 
       final case class Msg(ts: Long)
 
-      val actor = system.actorOf(Props(new Actor {
-        def receive = {
-          case Msg(ts) ⇒
-            val now = System.nanoTime
-            // Make sure that no message has been dispatched before the scheduled time (10ms) has occurred
-            if (now < ts)
-              throw new RuntimeException("Interval is too small: " + (now - ts))
-            ticks.countDown()
-        }
-      }))
+      val actor = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case Msg(ts) ⇒
+                val now = System.nanoTime
+                // Make sure that no message has been dispatched before the scheduled time (10ms) has occurred
+                if (now < ts)
+                  throw new RuntimeException(
+                    "Interval is too small: " + (now - ts))
+                ticks.countDown()
+            }
+          }))
 
       (1 to 300).foreach { i ⇒
         collectCancellable(
@@ -267,11 +279,13 @@ trait SchedulerSpec
 
       case object Msg
 
-      val actor = system.actorOf(Props(new Actor {
-        def receive = {
-          case Msg ⇒ ticks.countDown()
-        }
-      }))
+      val actor = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case Msg ⇒ ticks.countDown()
+            }
+          }))
 
       val startTime = System.nanoTime()
       collectCancellable(
@@ -576,10 +590,11 @@ class LightArrayRevolverSchedulerSpec
           .continually(
             Try(sched.scheduleOnce(100.millis)(counter.incrementAndGet())))
           .take(cap)
-          .takeWhile(_.isSuccess || {
-            overrun -= 1;
-            overrun >= 0
-          })
+          .takeWhile(
+            _.isSuccess || {
+              overrun -= 1;
+              overrun >= 0
+            })
           .partition(_.isSuccess)
         val s = success.size
         s should be < cap
@@ -633,10 +648,12 @@ class LightArrayRevolverSchedulerSpec
         override protected def waitNanos(ns: Long): Unit = {
           // println(s"waiting $ns")
           prb.ref ! ns
-          try time += (lbq.get match {
-            case q: LinkedBlockingQueue[Long] ⇒ q.take()
-            case _ ⇒ 0L
-          })
+          try time += (
+            lbq.get match {
+              case q: LinkedBlockingQueue[Long] ⇒ q.take()
+              case _ ⇒ 0L
+            }
+          )
           catch {
             case _: InterruptedException ⇒ Thread.currentThread.interrupt()
           }

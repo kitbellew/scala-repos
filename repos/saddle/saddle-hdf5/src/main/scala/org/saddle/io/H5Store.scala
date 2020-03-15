@@ -392,13 +392,14 @@ object H5Store {
   // *** private helper functions
 
   // release resources / cleanup on JVM shutdown
-  Runtime.getRuntime.addShutdownHook(new Thread() {
-    override def run() {
-      withMonitor {
-        H5Reg.closeAll()
+  Runtime.getRuntime.addShutdownHook(
+    new Thread() {
+      override def run() {
+        withMonitor {
+          H5Reg.closeAll()
+        }
       }
-    }
-  })
+    })
 
   private val ic = classOf[Int]
   private val lc = classOf[Long]

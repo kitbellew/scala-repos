@@ -23,14 +23,8 @@ class StandardFormatsSpec
   it should "support Either" in {
     val left = Left(13)
     val right = Right("thirteen")
-    assertFormat(
-      left: Either[Int, String],
-      SexpNumber(13)
-    )
-    assertFormat(
-      right: Either[Int, String],
-      SexpString("thirteen")
-    )
+    assertFormat(left: Either[Int, String], SexpNumber(13))
+    assertFormat(right: Either[Int, String], SexpString("thirteen"))
   }
 
   it should "support UUID" in {

@@ -52,9 +52,10 @@ object MacroUtil {
           .getPsiFile(context.getEditor.getDocument))
         .map(_.findElementAt(context.getStartOffset))
         .filter(_ != null)
-        .map(ScalaPsiElementFactory
-          .createExpressionFromText(result.toString, _)
-          .asInstanceOf[ScExpression])
+        .map(
+          ScalaPsiElementFactory
+            .createExpressionFromText(result.toString, _)
+            .asInstanceOf[ScExpression])
     } catch {
       case _: IncorrectOperationException => None
     }

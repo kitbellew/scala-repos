@@ -111,12 +111,14 @@ private[akka] final class FilePublisher(
       maxChunks: Int,
       chunks: Vector[ByteString]): Vector[ByteString] =
     if (chunks.size <= maxChunks && isActive && !eofEncountered) {
-      (try chan.read(buf)
-      catch {
-        case NonFatal(ex) ⇒
-          onErrorThenStop(ex);
-          Int.MinValue
-      }) match {
+      (
+        try chan.read(buf)
+        catch {
+          case NonFatal(ex) ⇒
+            onErrorThenStop(ex);
+            Int.MinValue
+        }
+      ) match {
         case -1 ⇒ // EOF
           eofReachedAtOffset = chan.position
           log.debug(

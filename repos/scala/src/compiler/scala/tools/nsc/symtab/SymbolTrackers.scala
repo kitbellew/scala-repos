@@ -51,7 +51,9 @@ trait SymbolTrackers {
       if (unit.body == null)
         Map()
       else
-        unit.body filter containsSymbol groupBy (_.symbol) mapValues (_.toSet) toMap
+        unit.body filter containsSymbol groupBy (_.symbol) mapValues (
+          _.toSet
+        ) toMap
     }
     def apply(unit: CompilationUnit) =
       new SymbolTracker(() =>
@@ -115,8 +117,7 @@ trait SymbolTrackers {
               "O"
             else
               "",
-            "  "
-          ).mkString take 2
+            "  ").mkString take 2
 
       def changedOwnerString =
         changed.owners get root match {
@@ -131,14 +132,12 @@ trait SymbolTrackers {
             val all = masked | oldFlags
             val strs = 0 to 63 map { bit =>
               val flag = 1L << bit
-              val prefix = (
-                if ((added & flag) != 0L)
-                  "+"
-                else if ((removed & flag) != 0L)
-                  "-"
-                else
-                  ""
-              )
+              val prefix = (if ((added & flag) != 0L)
+                              "+"
+                            else if ((removed & flag) != 0L)
+                              "-"
+                            else
+                              "")
               if ((all & flag) == 0L)
                 ""
               else
@@ -153,16 +152,14 @@ trait SymbolTrackers {
               " (" + Flags.flagsToString(masked) + ")"
         }
       def symString(sym: Symbol) =
-        (
-          if (settings.debug && sym.hasCompleteInfo) {
-            val s = sym.defString take 240
-            if (s.length == 240)
-              s + "..."
-            else
-              s
-          } else
-            sym + changedOwnerString + flagSummaryString
-        )
+        (if (settings.debug && sym.hasCompleteInfo) {
+           val s = sym.defString take 240
+           if (s.length == 240)
+             s + "..."
+           else
+             s
+         } else
+           sym + changedOwnerString + flagSummaryString)
 
       def flatten = children.foldLeft(Set(root))(_ ++ _.flatten)
       def indentString(indent: String): String = {
@@ -173,8 +170,9 @@ trait SymbolTrackers {
             if (children.isEmpty)
               ""
             else
-              children map (c =>
-                c.indentString(indent + "    ")) mkString ("\n", "\n", "")
+              children map (c => c.indentString(indent + "    ")) mkString (
+                "\n", "\n", ""
+              )
           )
         }
       }

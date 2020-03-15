@@ -13,14 +13,15 @@ object Export {
     api.puzzle.export(nb * 2).map { puzzles =>
       puzzles
         .map { puzzle =>
-          val encoded = base64(Json stringify {
-            Json.obj(
-              "id" -> puzzle.id,
-              "fen" -> puzzle.fen,
-              "color" -> puzzle.color.name,
-              "move" -> puzzle.initialMove,
-              "lines" -> lila.puzzle.Line.toJson(puzzle.lines))
-          })
+          val encoded = base64(
+            Json stringify {
+              Json.obj(
+                "id" -> puzzle.id,
+                "fen" -> puzzle.fen,
+                "color" -> puzzle.color.name,
+                "move" -> puzzle.initialMove,
+                "lines" -> lila.puzzle.Line.toJson(puzzle.lines))
+            })
           s""""$encoded"""" -> puzzle.vote.sum
         }
         .sortBy(_._1.size)

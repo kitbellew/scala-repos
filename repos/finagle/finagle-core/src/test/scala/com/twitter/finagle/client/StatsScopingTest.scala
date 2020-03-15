@@ -51,17 +51,18 @@ class StatsScopingTest extends FunSuite with AssertionsForJUnit {
     }
   }
 
-  test("scope based on metadata")(new Ctx {
-    val service =
-      mkService(Addr.Metadata("zone" -> "foo")) { (stats0, metadata) =>
-        stats0.scope(metadata("zone").toString)
-      }
-    assert(Map.empty == stats.counters)
+  test("scope based on metadata")(
+    new Ctx {
+      val service =
+        mkService(Addr.Metadata("zone" -> "foo")) { (stats0, metadata) =>
+          stats0.scope(metadata("zone").toString)
+        }
+      assert(Map.empty == stats.counters)
 
-    Await.result(service("bar"))
-    Await.result(service("baz"))
+      Await.result(service("bar"))
+      Await.result(service("baz"))
 
-    assert(
-      Map(Seq("foo", "bar") -> 1, Seq("foo", "baz") -> 1) == stats.counters)
-  })
+      assert(
+        Map(Seq("foo", "bar") -> 1, Seq("foo", "baz") -> 1) == stats.counters)
+    })
 }

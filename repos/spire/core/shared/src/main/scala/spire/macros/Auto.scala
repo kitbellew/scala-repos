@@ -80,10 +80,12 @@ abstract class AutoOps {
     val tpeA = c.weakTypeTag[A].tpe
     val tpeB = c.weakTypeTag[B].tpe
     tpeA.members exists { m =>
-      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (m.typeSignature match {
-        case MethodType(Nil, ret) => ret =:= tpeB
-        case _                    => false
-      })
+      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (
+        m.typeSignature match {
+          case MethodType(Nil, ret) => ret =:= tpeB
+          case _                    => false
+        }
+      )
     }
   }
 
@@ -93,12 +95,14 @@ abstract class AutoOps {
     val tpeB = c.weakTypeTag[B].tpe
     val tpeC = c.weakTypeTag[C].tpe
     tpeA.members exists { m =>
-      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (m.typeSignature match {
-        case MethodType(List(param), ret) =>
-          param.typeSignature =:= tpeB && ret =:= tpeC
-        case _ =>
-          false
-      })
+      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (
+        m.typeSignature match {
+          case MethodType(List(param), ret) =>
+            param.typeSignature =:= tpeB && ret =:= tpeC
+          case _ =>
+            false
+        }
+      )
     }
   }
 

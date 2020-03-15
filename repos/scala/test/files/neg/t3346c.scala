@@ -37,9 +37,10 @@ object Test extends App {
       val self = ma
     }
   implicit def ToTCValueBin1[M[_, _], A, B](ma: M[A, B])(implicit
-      M0: TC[({
-        type λ[α] = M[A, α]
-      })#λ]): TCValue[
+      M0: TC[
+        ({
+          type λ[α] = M[A, α]
+        })#λ]): TCValue[
     ({
       type λ[α] = M[A, α]
     })#λ,
@@ -53,9 +54,10 @@ object Test extends App {
       val self = ma
     }
   implicit def ToTCValueBin2[M[_, _], A, B](ma: M[A, B])(implicit
-      M0: TC[({
-        type λ[α] = M[α, B]
-      })#λ]): TCValue[
+      M0: TC[
+        ({
+          type λ[α] = M[α, B]
+        })#λ]): TCValue[
     ({
       type λ[α] = M[α, B]
     })#λ,

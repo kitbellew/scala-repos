@@ -32,8 +32,7 @@ object helpers
       (1000L * 60 * 60, "hour"),
       (1000L * 60 * 60 * 24, "day"),
       (1000L * 60 * 60 * 24 * 30, "month"),
-      (1000L * 60 * 60 * 24 * 365, "year")
-    ).reverse
+      (1000L * 60 * 60 * 24 * 365, "year")).reverse
 
   /**
     * Format java.util.Date to "x {seconds/minutes/hours/days/months/years} ago"
@@ -313,13 +312,16 @@ object helpers
       userName: String,
       mailAddress: String = "",
       styleClass: String = "")(content: Html)(implicit context: Context): Html =
-    (if (mailAddress.isEmpty) {
-       getAccountByUserName(userName)
-     } else {
-       getAccountByMailAddress(mailAddress)
-     }).map { account =>
-      Html(s"""<a href="${url(
-        account.userName)}" class="${styleClass}">${content}</a>""")
+    (
+      if (mailAddress.isEmpty) {
+        getAccountByUserName(userName)
+      } else {
+        getAccountByMailAddress(mailAddress)
+      }
+    ).map { account =>
+      Html(
+        s"""<a href="${url(
+          account.userName)}" class="${styleClass}">${content}</a>""")
     } getOrElse content
 
   /**
@@ -379,16 +381,17 @@ object helpers
   }
 
   def commitStateIcon(state: CommitState) =
-    Html(state match {
-      case CommitState.PENDING =>
-        """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-primitive-dot"></i>"""
-      case CommitState.SUCCESS =>
-        """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-check"></i>"""
-      case CommitState.ERROR =>
-        """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
-      case CommitState.FAILURE =>
-        """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
-    })
+    Html(
+      state match {
+        case CommitState.PENDING =>
+          """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-primitive-dot"></i>"""
+        case CommitState.SUCCESS =>
+          """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-check"></i>"""
+        case CommitState.ERROR =>
+          """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
+        case CommitState.FAILURE =>
+          """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
+      })
 
   def commitStateText(state: CommitState, commitId: String) =
     state match {
@@ -412,13 +415,14 @@ object helpers
           val url = m.group(0)
           val href = url.replace("\"", "&quot;")
           (
-            x ++ (Seq(
-              if (pos < m.start)
-                Some(HtmlFormat.escape(text.substring(pos, m.start)))
-              else
-                None,
-              Some(Html(s"""<a href="${href}">${url}</a>"""))
-            ).flatten),
+            x ++ (
+              Seq(
+                if (pos < m.start)
+                  Some(HtmlFormat.escape(text.substring(pos, m.start)))
+                else
+                  None,
+                Some(Html(s"""<a href="${href}">${url}</a>"""))).flatten
+            ),
             m.end)
       }
     // append rest fragment

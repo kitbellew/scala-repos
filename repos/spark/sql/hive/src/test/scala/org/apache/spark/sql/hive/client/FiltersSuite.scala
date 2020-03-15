@@ -64,9 +64,9 @@ class FiltersSuite extends SparkFunSuite with Logging {
 
   filterTest(
     "int and string filter",
-    (Literal(1) === a("intcol", IntegerType)) :: (Literal("a") === a(
-      "strcol",
-      IntegerType)) :: Nil,
+    (
+      Literal(1) === a("intcol", IntegerType)
+    ) :: (Literal("a") === a("strcol", IntegerType)) :: Nil,
     "1 = intcol and \"a\" = strcol")
 
   filterTest(

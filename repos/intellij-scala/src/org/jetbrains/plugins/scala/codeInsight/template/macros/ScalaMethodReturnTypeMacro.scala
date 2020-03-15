@@ -20,10 +20,11 @@ class ScalaMethodReturnTypeMacro extends Macro {
       PsiTreeUtil.getParentOfType(
         context.getPsiElementAtStartOffset,
         classOf[ScFunction]))
-      .map(_.getType(TypingContext.empty).getOrAny match {
-        case ScFunctionType(rt, _) => rt
-        case t                     => t
-      })
+      .map(
+        _.getType(TypingContext.empty).getOrAny match {
+          case ScFunctionType(rt, _) => rt
+          case t                     => t
+        })
       .map(new ScalaTypeResult(_))
       .orNull
   }

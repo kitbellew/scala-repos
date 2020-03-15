@@ -95,8 +95,7 @@ class DataMapSpec extends Specification {
         prop1 = Some(2.345),
         prop2 = Some("value1"),
         prop3 = None,
-        prop4 = List(1, 2, 3)
-      )
+        prop4 = List(1, 2, 3))
 
       properties.get[DataMapSpec.Context]("context") must beEqualTo(expected)
     }
@@ -135,8 +134,7 @@ class DataMapSpec extends Specification {
         prop3 = List(1, 2, 3),
         prop4 = true,
         prop5 = List("a", "b", "c", "c"),
-        prop6 = 4.56
-      )
+        prop6 = 4.56)
 
       result must beEqualTo(expected)
     }
@@ -158,8 +156,7 @@ class DataMapSpec extends Specification {
         prop3 = None,
         prop4 = None,
         prop5 = None,
-        prop6 = None
-      )
+        prop6 = None)
 
       val resultSome = propertiesSome.extract[DataMapSpec.OptionProperty]
       val expectedSome = DataMapSpec.OptionProperty(
@@ -168,8 +165,7 @@ class DataMapSpec extends Specification {
         prop3 = None,
         prop4 = None,
         prop5 = Some(List("a", "b", "c", "c")),
-        prop6 = Some(4.56)
-      )
+        prop6 = Some(4.56))
 
       resultEmpty must beEqualTo(expectedEmpty)
       resultSome must beEqualTo(expectedSome)
@@ -196,8 +192,7 @@ class DataMapSpec extends Specification {
           prop1 = Some(2.345),
           prop2 = Some("value1"),
           prop3 = None,
-          prop4 = List(1, 2, 3)
-        ),
+          prop4 = List(1, 2, 3)),
         anotherPropertyA = 4.567,
         anotherPropertyB = false
       )
@@ -216,8 +211,7 @@ object DataMapSpec {
       prop1: Option[Double],
       prop2: Option[String],
       prop3: Option[Int],
-      prop4: List[Int]
-  )
+      prop4: List[Int])
 
   case class BasicProperty(
       prop1: Int,
@@ -225,8 +219,7 @@ object DataMapSpec {
       prop3: List[Int],
       prop4: Boolean,
       prop5: List[String],
-      prop6: Double
-  )
+      prop6: Double)
 
   case class OptionProperty(
       prop1: Option[Int],
@@ -234,12 +227,10 @@ object DataMapSpec {
       prop3: Option[List[Int]],
       prop4: Option[Boolean],
       prop5: Option[List[String]],
-      prop6: Option[Double]
-  )
+      prop6: Option[Double])
 
   case class MultiLevelProperty(
       context: Context,
       anotherPropertyA: Double,
-      anotherPropertyB: Boolean
-  )
+      anotherPropertyB: Boolean)
 }

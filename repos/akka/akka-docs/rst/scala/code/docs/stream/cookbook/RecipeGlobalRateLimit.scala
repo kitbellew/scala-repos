@@ -83,8 +83,9 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       override def postStop(): Unit = {
         replenishTimer.cancel()
-        waitQueue foreach (_ ! Status.Failure(
-          new IllegalStateException("limiter stopped")))
+        waitQueue foreach (
+          _ ! Status.Failure(new IllegalStateException("limiter stopped"))
+        )
       }
     }
     //#global-limiter-actor
@@ -120,13 +121,14 @@ class RecipeGlobalRateLimit extends RecipeSpec {
       val probe = TestSubscriber.manualProbe[String]()
 
       RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b =>
-          import GraphDSL.Implicits._
-          val merge = b.add(Merge[String](2))
-          source1 ~> merge ~> Sink.fromSubscriber(probe)
-          source2 ~> merge
-          ClosedShape
-        })
+        .fromGraph(
+          GraphDSL.create() { implicit b =>
+            import GraphDSL.Implicits._
+            val merge = b.add(Merge[String](2))
+            source1 ~> merge ~> Sink.fromSubscriber(probe)
+            source2 ~> merge
+            ClosedShape
+          })
         .run()
 
       probe.expectSubscription().request(1000)

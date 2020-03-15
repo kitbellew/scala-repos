@@ -98,13 +98,14 @@ private[yarn] class ExecutorRunnable(
       appId,
       localResources)
 
-    logInfo(s"""
+    logInfo(
+      s"""
       |===============================================================================
       |YARN executor launch context:
       |  env:
       |${env.map {
-                 case (k, v) => s"    $k -> $v\n"
-               }.mkString}
+           case (k, v) => s"    $k -> $v\n"
+         }.mkString}
       |  command:
       |    ${commands.mkString(" ")}
       |===============================================================================
@@ -181,8 +182,7 @@ private[yarn] class ExecutorRunnable(
     javaOpts += "-Djava.io.tmpdir=" +
       new Path(
         YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
-        YarnConfiguration.DEFAULT_CONTAINER_TEMP_DIR
-      )
+        YarnConfiguration.DEFAULT_CONTAINER_TEMP_DIR)
 
     // Certain configs need to be passed here because they are needed before the Executor
     // registers with the Scheduler and transfers the spark configs. Since the Executor backend
@@ -224,7 +224,9 @@ private[yarn] class ExecutorRunnable(
      */
 
     // For log4j configuration to reference
-    javaOpts += ("-Dspark.yarn.app.container.log.dir=" + ApplicationConstants.LOG_DIR_EXPANSION_VAR)
+    javaOpts += (
+      "-Dspark.yarn.app.container.log.dir=" + ApplicationConstants.LOG_DIR_EXPANSION_VAR
+    )
     YarnCommandBuilderUtils.addPermGenSizeOpt(javaOpts)
 
     val userClassPath =
@@ -378,8 +380,7 @@ private[yarn] class ExecutorRunnable(
     // lookup appropriate http scheme for container log urls
     val yarnHttpPolicy = yarnConf.get(
       YarnConfiguration.YARN_HTTP_POLICY_KEY,
-      YarnConfiguration.YARN_HTTP_POLICY_DEFAULT
-    )
+      YarnConfiguration.YARN_HTTP_POLICY_DEFAULT)
     val httpScheme =
       if (yarnHttpPolicy == "HTTPS_ONLY")
         "https://"

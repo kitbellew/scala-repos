@@ -465,14 +465,10 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   @expand.valify
   implicit def canDot_DV_DV[@expand.args(Int, Long) T](
       implicit @expand.sequence[T](0, 0L) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        DenseVector[T],
-        DenseVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      DenseVector[T],
-      DenseVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], DenseVector[
+        T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], DenseVector[
+      T], T] {
       def apply(a: DenseVector[T], b: DenseVector[T]) = {
         require(b.length == a.length, "Vectors must be the same length!")
 
@@ -809,10 +805,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
   }
 
   implicit object canSaxpy
-      extends scaleAdd.InPlaceImpl3[
-        DenseVector[Float],
-        Float,
-        DenseVector[Float]]
+      extends scaleAdd.InPlaceImpl3[DenseVector[Float], Float, DenseVector[
+        Float]]
       with Serializable {
     def apply(y: DenseVector[Float], a: Float, x: DenseVector[Float]) {
       require(x.length == y.length, s"Vectors must have same length")
@@ -843,10 +837,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
     TernaryUpdateRegistry[Vector[Float], Float, Vector[Float], scaleAdd.type]]
     .register(canSaxpy)
 
-  implicit val canAddF: OpAdd.Impl2[
-    DenseVector[Float],
-    DenseVector[Float],
-    DenseVector[Float]] = {
+  implicit val canAddF: OpAdd.Impl2[DenseVector[Float], DenseVector[
+    Float], DenseVector[Float]] = {
     pureFromUpdate_Float(canAddIntoF)
   }
   implicitly[
@@ -864,21 +856,16 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
     }
 
   }
-  implicit val canSubF: OpSub.Impl2[
-    DenseVector[Float],
-    DenseVector[Float],
-    DenseVector[Float]] = {
+  implicit val canSubF: OpSub.Impl2[DenseVector[Float], DenseVector[
+    Float], DenseVector[Float]] = {
     pureFromUpdate_Float(canSubIntoF)
   }
 
-  implicit val canDot_DV_DV_Float: breeze.linalg.operators.OpMulInner.Impl2[
-    DenseVector[Float],
-    DenseVector[Float],
-    Float] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      DenseVector[Float],
-      DenseVector[Float],
-      Float] {
+  implicit val canDot_DV_DV_Float
+      : breeze.linalg.operators.OpMulInner.Impl2[DenseVector[
+        Float], DenseVector[Float], Float] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[DenseVector[
+      Float], DenseVector[Float], Float] {
       def apply(a: DenseVector[Float], b: DenseVector[Float]) = {
         require(a.length == b.length, s"Vectors must have same length")
         if (a.noOffsetOrStride && b.noOffsetOrStride && a.length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH) {
@@ -896,7 +883,9 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
       private def blasPath(
           a: DenseVector[Float],
           b: DenseVector[Float]): Float = {
-        if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b.stride == 1) {
+        if ((
+              a.length <= 300 || !usingNatives
+            ) && a.stride == 1 && b.stride == 1) {
           DenseVectorSupportMethods.dotProduct_Float(
             a.data,
             a.offset,

@@ -456,10 +456,9 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                     null
                 }
               case sn: SNode[K, V] =>
-                if (sn.hc == hc && equal(
-                      sn.k,
-                      k,
-                      ct) && (v == null || sn.v == v)) {
+                if (sn.hc == hc && equal(sn.k, k, ct) && (
+                      v == null || sn.v == v
+                    )) {
                   val ncn = cn.removedAt(pos, flag, gen).toContracted(lev)
                   if (GCAS(cn, ncn, ct))
                     Some(sn.v)
@@ -877,8 +876,7 @@ final class TrieMap[K, V] private (
       AtomicReferenceFieldUpdater
         .newUpdater(classOf[TrieMap[K, V]], classOf[AnyRef], "root"),
       hashf,
-      ef
-    )
+      ef)
 
   def this() = this(Hashing.default, Equiv.universal)
 

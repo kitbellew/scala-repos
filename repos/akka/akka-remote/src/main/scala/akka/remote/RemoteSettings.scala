@@ -83,7 +83,9 @@ final class RemoteSettings(val config: Config) {
 
   val SysMsgAckTimeout: FiniteDuration = {
     config.getMillisDuration("akka.remote.system-message-ack-piggyback-timeout")
-  } requiring (_ > Duration.Zero, "system-message-ack-piggyback-timeout must be > 0")
+  } requiring (
+    _ > Duration.Zero, "system-message-ack-piggyback-timeout must be > 0"
+  )
 
   val SysResendTimeout: FiniteDuration = {
     config.getMillisDuration("akka.remote.resend-interval")
@@ -100,7 +102,9 @@ final class RemoteSettings(val config: Config) {
   val InitialSysMsgDeliveryTimeout: FiniteDuration = {
     config.getMillisDuration(
       "akka.remote.initial-system-message-delivery-timeout")
-  } requiring (_ > Duration.Zero, "initial-system-message-delivery-timeout must be > 0")
+  } requiring (
+    _ > Duration.Zero, "initial-system-message-delivery-timeout must be > 0"
+  )
 
   val QuarantineSilentSystemTimeout: FiniteDuration = {
     config.getMillisDuration("akka.remote.quarantine-after-silence")
@@ -124,14 +128,20 @@ final class RemoteSettings(val config: Config) {
     WatchFailureDetectorConfig.getString("implementation-class")
   val WatchHeartBeatInterval: FiniteDuration = {
     WatchFailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  } requiring (_ > Duration.Zero, "watch-failure-detector.heartbeat-interval must be > 0")
+  } requiring (
+    _ > Duration.Zero, "watch-failure-detector.heartbeat-interval must be > 0"
+  )
   val WatchUnreachableReaperInterval: FiniteDuration = {
     WatchFailureDetectorConfig.getMillisDuration(
       "unreachable-nodes-reaper-interval")
-  } requiring (_ > Duration.Zero, "watch-failure-detector.unreachable-nodes-reaper-interval must be > 0")
+  } requiring (
+    _ > Duration.Zero, "watch-failure-detector.unreachable-nodes-reaper-interval must be > 0"
+  )
   val WatchHeartbeatExpectedResponseAfter: FiniteDuration = {
     WatchFailureDetectorConfig.getMillisDuration("expected-response-after")
-  } requiring (_ > Duration.Zero, "watch-failure-detector.expected-response-after > 0")
+  } requiring (
+    _ > Duration.Zero, "watch-failure-detector.expected-response-after > 0"
+  )
 
   val Transports: immutable.Seq[(String, immutable.Seq[String], Config)] =
     transportNames.map { name ⇒

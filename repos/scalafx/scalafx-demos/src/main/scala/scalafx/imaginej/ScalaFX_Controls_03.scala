@@ -89,11 +89,7 @@ object ScalaFX_Controls_03 extends JFXApp {
   val vBox =
     new VBox {
       spacing = 10
-      children = List(
-        homeRadioButton,
-        calendarRadioButton,
-        contactsRadioButton
-      )
+      children = List(homeRadioButton, calendarRadioButton, contactsRadioButton)
     }
 
   val iconImageView = new ImageView {}
@@ -102,10 +98,7 @@ object ScalaFX_Controls_03 extends JFXApp {
     new HBox {
       spacing = 50
       padding = Insets(20, 10, 10, 20)
-      children = List(
-        vBox,
-        iconImageView
-      )
+      children = List(vBox, iconImageView)
     }
 
   stage = new PrimaryStage {

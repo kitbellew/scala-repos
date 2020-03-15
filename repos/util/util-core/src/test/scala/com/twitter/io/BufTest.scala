@@ -23,8 +23,7 @@ class BufTest
     Charsets.Utf8,
     Charsets.Utf16,
     Charsets.Utf16BE,
-    Charsets.Utf16LE
-  )
+    Charsets.Utf16LE)
 
   test("Buf.ByteArray.slice") {
     val arr = Array.range(0, 16).map(_.toByte)
@@ -157,8 +156,9 @@ class BufTest
     val bytes = new Array[Byte](21)
     buf.write(bytes, 0)
 
-    val expected = Array[Byte](-17, -65, -68, -17, -65, -68, -17, -65, -68, -17,
-      -65, -68, -17, -65, -68, -17, -65, -68, -17, -65, -68)
+    val expected = Array[Byte](
+      -17, -65, -68, -17, -65, -68, -17, -65, -68, -17, -65, -68, -17, -65, -68,
+      -17, -65, -68, -17, -65, -68)
 
     assert(bytes.toSeq == expected.toSeq)
 
@@ -335,45 +335,53 @@ class BufTest
     ae(Buf.Utf8(string), Buf.ByteArray.Owned(shifted, 3, 3 + bytes.length))
   }
 
-  check(Prop.forAll { (in: Int) =>
-    val buf = Buf.U32BE(in)
-    val Buf.U32BE(out, _) = buf
+  check(
+    Prop.forAll { (in: Int) =>
+      val buf = Buf.U32BE(in)
+      val Buf.U32BE(out, _) = buf
 
-    val outByteBuf = java.nio.ByteBuffer.wrap(Buf.ByteArray.Owned.extract(buf))
-    outByteBuf.order(java.nio.ByteOrder.BIG_ENDIAN)
+      val outByteBuf = java.nio.ByteBuffer
+        .wrap(Buf.ByteArray.Owned.extract(buf))
+      outByteBuf.order(java.nio.ByteOrder.BIG_ENDIAN)
 
-    out == in && outByteBuf.getInt == in
-  })
+      out == in && outByteBuf.getInt == in
+    })
 
-  check(Prop.forAll { (in: Int) =>
-    val buf = Buf.U32LE(in)
-    val Buf.U32LE(out, _) = buf
+  check(
+    Prop.forAll { (in: Int) =>
+      val buf = Buf.U32LE(in)
+      val Buf.U32LE(out, _) = buf
 
-    val outByteBuf = java.nio.ByteBuffer.wrap(Buf.ByteArray.Owned.extract(buf))
-    outByteBuf.order(java.nio.ByteOrder.LITTLE_ENDIAN)
+      val outByteBuf = java.nio.ByteBuffer
+        .wrap(Buf.ByteArray.Owned.extract(buf))
+      outByteBuf.order(java.nio.ByteOrder.LITTLE_ENDIAN)
 
-    out == in && outByteBuf.getInt == in
-  })
+      out == in && outByteBuf.getInt == in
+    })
 
-  check(Prop.forAll { (in: Long) =>
-    val buf = Buf.U64BE(in)
-    val Buf.U64BE(out, _) = buf
+  check(
+    Prop.forAll { (in: Long) =>
+      val buf = Buf.U64BE(in)
+      val Buf.U64BE(out, _) = buf
 
-    val outByteBuf = java.nio.ByteBuffer.wrap(Buf.ByteArray.Owned.extract(buf))
-    outByteBuf.order(java.nio.ByteOrder.BIG_ENDIAN)
+      val outByteBuf = java.nio.ByteBuffer
+        .wrap(Buf.ByteArray.Owned.extract(buf))
+      outByteBuf.order(java.nio.ByteOrder.BIG_ENDIAN)
 
-    out == in && outByteBuf.getLong == in
-  })
+      out == in && outByteBuf.getLong == in
+    })
 
-  check(Prop.forAll { (in: Long) =>
-    val buf = Buf.U64LE(in)
-    val Buf.U64LE(out, _) = buf
+  check(
+    Prop.forAll { (in: Long) =>
+      val buf = Buf.U64LE(in)
+      val Buf.U64LE(out, _) = buf
 
-    val outByteBuf = java.nio.ByteBuffer.wrap(Buf.ByteArray.Owned.extract(buf))
-    outByteBuf.order(java.nio.ByteOrder.LITTLE_ENDIAN)
+      val outByteBuf = java.nio.ByteBuffer
+        .wrap(Buf.ByteArray.Owned.extract(buf))
+      outByteBuf.order(java.nio.ByteOrder.LITTLE_ENDIAN)
 
-    out == in && outByteBuf.getLong == in
-  })
+      out == in && outByteBuf.getLong == in
+    })
 
   test("Buf num matching") {
     val hasMatch =
@@ -463,10 +471,11 @@ class BufTest
       s => Buf.ByteBuffer.Owned(UTF_8.encode(CharBuffer.wrap(s)))
     )
 
-    Arbitrary(for {
-      s <- Arbitrary.arbitrary[String]
-      c <- Gen.oneOf(ctors)
-    } yield c.apply(s))
+    Arbitrary(
+      for {
+        s <- Arbitrary.arbitrary[String]
+        c <- Gen.oneOf(ctors)
+      } yield c.apply(s))
   }
 
   test("Buf.slice") {

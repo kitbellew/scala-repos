@@ -79,10 +79,12 @@ class ScalaBlock(
       !isLeaf &&
         Set(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tLPARENTHESIS)
           .contains(scope.getNode.getElementType) &&
-        (scope.getParent match {
-          case _: ScTryBlock | _: ScForStatement | _: ScPackaging => true
-          case _                                                  => false
-        })
+        (
+          scope.getParent match {
+            case _: ScTryBlock | _: ScForStatement | _: ScPackaging => true
+            case _                                                  => false
+          }
+        )
     parent match {
       case m: ScMatchStmt =>
         if (m.caseClauses.length == 0) {
@@ -111,10 +113,12 @@ class ScalaBlock(
         if (elem.getElementType != TokenType.WHITE_SPACE || !elem.getText
               .contains("\n"))
           i = 0
-        val indent = i + (if (!braceShifted)
-                            1
-                          else
-                            0)
+        val indent = i + (
+          if (!braceShifted)
+            1
+          else
+            0
+        )
         new ChildAttributes(Indent.getSpaceIndent(indent * indentSize), null)
       case _: ScBlockExpr | _: ScEarlyDefinitions | _: ScTemplateBody |
           _: ScForStatement | _: ScWhileStmt | _: ScTryBlock |
@@ -147,9 +151,10 @@ class ScalaBlock(
       case _: ScBlock =>
         val grandParent = parent.getParent
         new ChildAttributes(
-          if (grandParent != null && (grandParent
-                .isInstanceOf[ScCaseClause] || grandParent
-                .isInstanceOf[ScFunctionExpr]))
+          if (grandParent != null && (
+                grandParent.isInstanceOf[ScCaseClause] || grandParent
+                  .isInstanceOf[ScFunctionExpr]
+              ))
             Indent.getNormalIndent
           else
             Indent.getNoneIndent,
@@ -214,8 +219,9 @@ class ScalaBlock(
   private def isConstructorArgOrMemberFunctionParameter(
       paramClause: ScParameterClause): Boolean = {
     val owner = paramClause.owner
-    owner != null && (owner.isInstanceOf[ScPrimaryConstructor] || owner
-      .isInstanceOf[ScFunction])
+    owner != null && (
+      owner.isInstanceOf[ScPrimaryConstructor] || owner.isInstanceOf[ScFunction]
+    )
   }
 
   def getSpacing(child1: Block, child2: Block) = {
@@ -246,8 +252,10 @@ class ScalaBlock(
       return true
     var lastChild = node.getLastChildNode
     while (lastChild != null &&
-           (lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild.getPsi
-             .isInstanceOf[PsiComment])) {
+           (
+             lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild.getPsi
+               .isInstanceOf[PsiComment]
+           )) {
       lastChild = lastChild.getTreePrev
     }
     if (lastChild == null) {

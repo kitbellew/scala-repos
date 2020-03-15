@@ -60,10 +60,11 @@ class IorTests extends CatsSuite {
 
   test("onlyBoth consistent with left and right") {
     forAll { (i: Int Ior String) =>
-      i.onlyBoth should ===(for {
-        left <- i.left
-        right <- i.right
-      } yield (left, right))
+      i.onlyBoth should ===(
+        for {
+          left <- i.left
+          right <- i.right
+        } yield (left, right))
     }
   }
 

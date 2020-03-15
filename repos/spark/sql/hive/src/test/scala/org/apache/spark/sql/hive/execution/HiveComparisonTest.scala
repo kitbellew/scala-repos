@@ -219,10 +219,7 @@ abstract class HiveComparisonTest
 
   // This list contains indicators for those lines which do not have actual results and we
   // want to ignore.
-  lazy val ignoredLineIndicators = Seq(
-    "# Partition Information",
-    "# col_name"
-  )
+  lazy val ignoredLineIndicators = Seq("# Partition Information", "# col_name")
 
   protected def ignoredLine(line: String) =
     ignoredLineIndicators.exists(line contains _)
@@ -397,10 +394,12 @@ abstract class HiveComparisonTest
                     // from Seq("").
                     stringToFile(
                       cachedAnswerFile,
-                      answer.mkString("\n") + (if (answer.nonEmpty)
-                                                 "\n"
-                                               else
-                                                 ""))
+                      answer.mkString("\n") + (
+                        if (answer.nonEmpty)
+                          "\n"
+                        else
+                          ""
+                      ))
                     answer
                   } catch {
                     case e: Exception =>
@@ -597,11 +596,7 @@ abstract class HiveComparisonTest
       }
 
       val canSpeculativelyTryWithoutReset: Boolean = {
-        val excludedSubstrings = Seq(
-          "into table",
-          "create table",
-          "drop index"
-        )
+        val excludedSubstrings = Seq("into table", "create table", "drop index")
         !queryList.map(_.toLowerCase).exists { query =>
           excludedSubstrings.exists(s => query.contains(s))
         }

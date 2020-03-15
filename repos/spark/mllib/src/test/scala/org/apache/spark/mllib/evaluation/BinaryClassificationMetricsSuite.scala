@@ -212,8 +212,7 @@ class BinaryClassificationMetricsSuite
         (0.6, 1.0),
         (0.8, 1.0),
         (1.0, 1.0),
-        (1.0, 1.0)
-      ) ==
+        (1.0, 1.0)) ==
         originalROC)
 
     val numBins = 4
@@ -223,10 +222,14 @@ class BinaryClassificationMetricsSuite
     val downsampledROC = downsampled.roc().collect().sorted.toList
     assert(
       // May have to add 1 if the sample factor didn't divide evenly
-      2 + (numBins + (if (scoreAndLabels.size % numBins == 0)
-                        0
-                      else
-                        1)) ==
+      2 + (
+        numBins + (
+          if (scoreAndLabels.size % numBins == 0)
+            0
+          else
+            1
+        )
+      ) ==
         downsampledROC.size)
     assert(
       List(
@@ -236,8 +239,7 @@ class BinaryClassificationMetricsSuite
         (0.6, 0.75),
         (0.8, 1.0),
         (1.0, 1.0),
-        (1.0, 1.0)
-      ) ==
+        (1.0, 1.0)) ==
         downsampledROC)
   }
 

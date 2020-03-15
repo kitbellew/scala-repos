@@ -23,10 +23,7 @@ class Foo {
 
 }
 object Test extends App {
-  case class R(
-      sales: Int,
-      name: String
-  )
+  case class R(sales: Int, name: String)
   val foo = new Foo
   println(foo.foo)
 }

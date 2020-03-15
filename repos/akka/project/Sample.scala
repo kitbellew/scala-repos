@@ -27,9 +27,8 @@ object Sample {
     (ti: BuildLoader.TransformInfo) =>
       ti.base.name match {
         case s if s.startsWith("akka-sample") =>
-          ti.unit.copy(
-            loadedDefinitions = ti.unit.definitions.copy(
-              projects = libraryToProjectDeps(ti.unit.definitions.projects)))
+          ti.unit.copy(loadedDefinitions = ti.unit.definitions.copy(projects =
+            libraryToProjectDeps(ti.unit.definitions.projects)))
         case _ => ti.unit
       }
 
@@ -60,8 +59,7 @@ object Sample {
           BuildDependencies(
             classpathWithProjectDependencies,
             dependencies.aggregate)
-        }
-      )
+        })
 
   private val excludeLibraryDependencies =
     (project: Project) =>
@@ -76,8 +74,7 @@ object Sample {
               */
             module.excludeAll(ExclusionRule(organization = module.organization))
           case module => module
-        }
-      )
+        })
 
   /**
     * AutoPlugins are not enabled for externally loaded projects.

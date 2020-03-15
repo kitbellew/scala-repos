@@ -57,8 +57,7 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
         createArray('id).as("arr"),
         array(array('id), createArray('id)).as("arr2"),
         lit("""{"f1": "1", "f2": "2", "f3": 3}""").as("json"),
-        'id
-      )
+        'id)
       .write
       .saveAsTable("parquet_t3")
   }
@@ -486,15 +485,10 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
     }
 
     // Attributes
-    checkColumnNames(
-      """SELECT * FROM (
+    checkColumnNames("""SELECT * FROM (
         |  SELECT 1 AS a, 2 AS b, 3 AS `we``ird`
         |) s
-      """.stripMargin,
-      "a",
-      "b",
-      "we`ird"
-    )
+      """.stripMargin, "a", "b", "we`ird")
 
     checkColumnNames(
       """SELECT x.a, y.a, x.b, y.b
@@ -509,11 +503,7 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
     )
 
     // String literal
-    checkColumnNames(
-      "SELECT 'foo', '\"bar\\''",
-      "foo",
-      "\"bar\'"
-    )
+    checkColumnNames("SELECT 'foo', '\"bar\\''", "foo", "\"bar\'")
 
     // Numeric literals (should have CAST or suffixes in column names)
     checkColumnNames(
@@ -523,14 +513,10 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       "3",
       "4",
       "5.1",
-      "6.1"
-    )
+      "6.1")
 
     // Aliases
-    checkColumnNames(
-      "SELECT 1 AS a",
-      "a"
-    )
+    checkColumnNames("SELECT 1 AS a", "a")
 
     // Complex type extractors
     checkColumnNames(

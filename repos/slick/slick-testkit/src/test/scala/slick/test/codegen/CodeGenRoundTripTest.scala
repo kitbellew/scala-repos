@@ -31,8 +31,7 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
           Posts ++= Seq(
             PostsRow(1, "post 1", Some(1)),
             PostsRow(2, "post 2", Some(1)),
-            PostsRow(3, "post 3", Some(1))
-          ),
+            PostsRow(3, "post 3", Some(1))),
           Categories += CategoriesRow(2, "cat"),
           Posts.length.result
             .zip(
@@ -60,13 +59,12 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
                 .map(res => assertEquals(oData, res))
             )
           },
-          (X.map(r =>
-            (
-              r.pk,
-              r.pk2,
-              r.column,
-              r.schemaNameXX,
-              r.schemaNameX)) += (1, 1, 1, 1.1, "test")).map { _ =>
+          (
+            X.map(r =>
+              (r.pk, r.pk2, r.column, r.schemaNameXX, r.schemaNameX)) += (
+              1, 1, 1, 1.1, "test"
+            )
+          ).map { _ =>
             // testing name and types especially in case of collisions
             import slick.lifted._
             X.map(r => {
@@ -100,14 +98,14 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
               (r.postsFk: ForeignKeyQuery[Posts, PostsRow]) == null
             })
             X.map(r => {
-              (r.categoriesFk2: ForeignKeyQuery[
-                Categories,
-                CategoriesRow]) == null
+              (
+                r.categoriesFk2: ForeignKeyQuery[Categories, CategoriesRow]
+              ) == null
             })
             X.map(r => {
-              (r.categoriesFk3: ForeignKeyQuery[
-                Categories,
-                CategoriesRow]) == null
+              (
+                r.categoriesFk3: ForeignKeyQuery[Categories, CategoriesRow]
+              ) == null
             })
             X.map(r => {
               (r.index1X: Index) == null

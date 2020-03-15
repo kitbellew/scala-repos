@@ -29,8 +29,7 @@ private[reconcile] object OffersWantedForReconciliationActor {
         reviveOffersConfig,
         clock,
         eventStream,
-        offersWanted
-      ))
+        offersWanted))
 
   private case class RequestOffers(reason: String)
   case object RecheckInterest
@@ -46,8 +45,11 @@ private[reconcile] class OffersWantedForReconciliationActor(
 
   /** Make certain that the normal number of revives that the user specified will be executed. */
   private[this] val interestDuration =
-    (reviveOffersConfig.minReviveOffersInterval() * (reviveOffersConfig
-      .reviveOffersRepetitions() + 0.5)).millis
+    (
+      reviveOffersConfig.minReviveOffersInterval() * (
+        reviveOffersConfig.reviveOffersRepetitions() + 0.5
+      )
+    ).millis
 
   override def preStart(): Unit = {
     super.preStart()
@@ -79,8 +81,7 @@ private[reconcile] class OffersWantedForReconciliationActor(
           .map(_.id)
           .mkString(", ")
         self ! OffersWantedForReconciliationActor.RequestOffers(
-          s"terminated resident app(s) $terminatedResidentAppsString"
-        )
+          s"terminated resident app(s) $terminatedResidentAppsString")
       }
   }
 
@@ -97,8 +98,7 @@ private[reconcile] class OffersWantedForReconciliationActor(
     context.system.scheduler.scheduleOnce(
       interestDuration,
       self,
-      OffersWantedForReconciliationActor.RecheckInterest
-    )(context.dispatcher)
+      OffersWantedForReconciliationActor.RecheckInterest)(context.dispatcher)
   }
 
   private[this] def subscribedToOffers(

@@ -100,9 +100,10 @@ object CacheNodeGroup {
           (host, port.toInt, weight.toInt, Some(key))
       }
 
-    newStaticGroup(hostSeq.map {
-      case (host, port, weight, key) => new CacheNode(host, port, weight, key)
-    }.toSet)
+    newStaticGroup(
+      hostSeq.map {
+        case (host, port, weight, key) => new CacheNode(host, port, weight, key)
+      }.toSet)
   }
 
   def apply(
@@ -127,8 +128,7 @@ object CacheNodeGroup {
   def newZkCacheNodeGroup(
       path: String,
       zkClient: ZooKeeperClient,
-      statsReceiver: StatsReceiver = NullStatsReceiver
-  ) =
+      statsReceiver: StatsReceiver = NullStatsReceiver) =
     new ZookeeperCacheNodeGroup(
       zkPath = path,
       zkClient = zkClient,
@@ -200,14 +200,12 @@ object CachePoolCluster {
     * @param zkPath the zookeeper path representing the cache pool
     * @param zkClient zookeeper client talking to the zookeeper, it will only be used to read zookeeper
     */
-  def newUnmanagedZkCluster(
-      zkPath: String,
-      zkClient: ZooKeeperClient
-  ) =
+  def newUnmanagedZkCluster(zkPath: String, zkClient: ZooKeeperClient) =
     new ZookeeperServerSetCluster(
-      ServerSets
-        .create(zkClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)
-    ) map {
+      ServerSets.create(
+        zkClient,
+        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+        zkPath)) map {
       case addr: InetSocketAddress =>
         CacheNode(addr.getHostName, addr.getPort, 1)
     }
@@ -323,8 +321,11 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   import ZookeeperCachePoolCluster._
 
   private[this] val zkServerSetCluster =
-    new ZookeeperServerSetCluster(ServerSets
-      .create(zkClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)) map {
+    new ZookeeperServerSetCluster(
+      ServerSets.create(
+        zkClient,
+        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+        zkPath)) map {
       case addr: InetSocketAddress =>
         CacheNode(addr.getHostName, addr.getPort, 1)
     }
@@ -355,8 +356,10 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   // cache client needs to be restarted.
   backupPool foreach { pool =>
     if (!pool.isEmpty) {
-      ready within (CachePoolCluster.timer, BackupPoolFallBackTimeout) onFailure {
-        _ => updatePool(pool)
+      ready within (
+        CachePoolCluster.timer, BackupPoolFallBackTimeout
+      ) onFailure { _ =>
+        updatePool(pool)
       }
     }
   }
@@ -397,8 +400,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   private[this] def waitForClusterComplete(
       currentSet: Set[CacheNode],
       expectedSize: Int,
-      spoolChanges: Future[Spool[Cluster.Change[CacheNode]]]
-  ): Future[Set[CacheNode]] = {
+      spoolChanges: Future[Spool[Cluster.Change[CacheNode]]])
+      : Future[Set[CacheNode]] = {
     if (expectedSize == currentSet.size) {
       Future.value(currentSet)
     } else
@@ -428,8 +431,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
 class ZookeeperCacheNodeGroup(
     protected val zkPath: String,
     protected val zkClient: ZooKeeperClient,
-    protected val statsReceiver: StatsReceiver = NullStatsReceiver
-) extends Group[CacheNode]
+    protected val statsReceiver: StatsReceiver = NullStatsReceiver)
+    extends Group[CacheNode]
     with ZookeeperStateMonitor {
 
   protected[finagle] val set = Var(Set[CacheNode]())

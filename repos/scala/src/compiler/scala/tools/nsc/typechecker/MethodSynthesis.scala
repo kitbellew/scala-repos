@@ -28,8 +28,7 @@ trait MethodSynthesis {
         if (clazz.isClass)
           Select(This(clazz), sym)
         else
-          Ident(sym)
-      )
+          Ident(sym))
 
     private def isOverride(name: TermName) =
       clazzMember(name).alternatives exists (sym =>
@@ -220,11 +219,10 @@ trait MethodSynthesis {
             if deriveAccessors(vd) && !vd.symbol.isModuleVar =>
           // If we don't save the annotations, they seem to wander off.
           val annotations = stat.symbol.initialize.annotations
-          val trees = (
-            (field(vd) ::: standardAccessors(vd) ::: beanAccessors(vd))
+          val trees =
+            ((field(vd) ::: standardAccessors(vd) ::: beanAccessors(vd))
               map (acc => atPos(vd.pos.focus)(acc derive annotations))
-              filterNot (_ eq EmptyTree)
-          )
+              filterNot (_ eq EmptyTree))
           // Verify each annotation landed safely somewhere, else warn.
           // Filtering when isParamAccessor is a necessary simplification
           // because there's a bunch of unwritten annotation code involving
@@ -248,12 +246,16 @@ trait MethodSynthesis {
           context.unit.synthetics get meth match {
             case Some(mdef) =>
               context.unit.synthetics -= meth
-              meth setAnnotations (annotations filter annotationFilter(
-                MethodTargetClass,
-                defaultRetention = false))
-              cd.symbol setAnnotations (annotations filter annotationFilter(
-                ClassTargetClass,
-                defaultRetention = true))
+              meth setAnnotations (
+                annotations filter annotationFilter(
+                  MethodTargetClass,
+                  defaultRetention = false)
+              )
+              cd.symbol setAnnotations (
+                annotations filter annotationFilter(
+                  ClassTargetClass,
+                  defaultRetention = true)
+              )
               List(cd, mdef)
             case _ =>
               // Shouldn't happen, but let's give ourselves a reasonable error when it does
@@ -474,10 +476,12 @@ trait MethodSynthesis {
       def name = tree.name
       def flagsMask = GetterFlags
       def flagsExtra =
-        ACCESSOR.toLong | (if (tree.mods.isMutable)
-                             0
-                           else
-                             STABLE)
+        ACCESSOR.toLong | (
+          if (tree.mods.isMutable)
+            0
+          else
+            STABLE
+        )
 
       override def validate() {
         assert(derivedSym != NoSymbol, tree)
@@ -514,7 +518,9 @@ trait MethodSynthesis {
             // Range position errors ensue if we don't duplicate this in some
             // circumstances (at least: concrete vals with existential types.)
             case _: ExistentialType =>
-              TypeTree() setOriginal (tree.tpt.duplicate setPos tree.tpt.pos.focus)
+              TypeTree() setOriginal (
+                tree.tpt.duplicate setPos tree.tpt.pos.focus
+              )
             case _ if isDeferred =>
               TypeTree() setOriginal tree.tpt // keep type tree of original abstract field
             case _ => TypeTree(getterTp)
@@ -677,12 +683,10 @@ trait MethodSynthesis {
       val hasBoolBP = mods hasAnnotationNamed tpnme.BooleanBeanPropertyAnnot
 
       if (hasBP || hasBoolBP) {
-        val getter = (
-          if (hasBP)
-            new BeanGetter(tree) with NoSymbolBeanGetter
-          else
-            new BooleanBeanGetter(tree) with NoSymbolBeanGetter
-        )
+        val getter = (if (hasBP)
+                        new BeanGetter(tree) with NoSymbolBeanGetter
+                      else
+                        new BooleanBeanGetter(tree) with NoSymbolBeanGetter)
         getter :: {
           if (mods.isMutable)
             List(BeanSetter(tree))

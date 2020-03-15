@@ -45,12 +45,13 @@ import scalafx.util.converter.DoubleStringConverter
 class SliderLabelControl(property: DoubleProperty) extends FlowPane {
 
   def this(intProp: IntegerProperty) =
-    this(new DoubleProperty(intProp.getValue, intProp.name) {
-      override def value = intProp.value.toDouble
-      override def value_=(v: Double) {
-        intProp.value = v.toInt
-      }
-    })
+    this(
+      new DoubleProperty(intProp.getValue, intProp.name) {
+        override def value = intProp.value.toDouble
+        override def value_=(v: Double) {
+          intProp.value = v.toInt
+        }
+      })
 
   val originalPattern = "%02.1f"
 

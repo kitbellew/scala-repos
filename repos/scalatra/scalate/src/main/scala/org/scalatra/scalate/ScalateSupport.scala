@@ -18,8 +18,7 @@ object ScalateSupport {
   val DefaultLayouts = Seq(
     "/WEB-INF/templates/layouts/default",
     "/WEB-INF/layouts/default",
-    "/WEB-INF/scalate/layouts/default"
-  )
+    "/WEB-INF/scalate/layouts/default")
   private def setLayoutStrategy(engine: TemplateEngine) = {
     val layouts =
       for {
@@ -225,8 +224,7 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     List(
       "/WEB-INF/templates/views",
       "/WEB-INF/views",
-      "/WEB-INF/scalate/templates"
-    )
+      "/WEB-INF/scalate/templates")
 
   /**
     * The default path to search for templates.  Left as a def so it can be
@@ -289,8 +287,10 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     val buffer = new StringWriter()
     val out = new PrintWriter(buffer)
     val context = createRenderContext(out)
-    val attrs = templateAttributes ++ (defaultLayoutPath map (p =>
-      Map("layout" -> p) ++ Map(attributes: _*)) getOrElse Map(attributes: _*))
+    val attrs = templateAttributes ++ (
+      defaultLayoutPath map (p =>
+        Map("layout" -> p) ++ Map(attributes: _*)) getOrElse Map(attributes: _*)
+    )
 
     attrs foreach {
       case (k, v) => context.attributes(k) = v

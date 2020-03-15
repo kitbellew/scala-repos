@@ -85,29 +85,29 @@ private[spark] object AllRDDResource {
 
     val dataDistribution =
       if (includeDetails) {
-        Some(storageStatusList.map { status =>
-          new RDDDataDistribution(
-            address = status.blockManagerId.hostPort,
-            memoryUsed = status.memUsedByRdd(rddId),
-            memoryRemaining = status.memRemaining,
-            diskUsed = status.diskUsedByRdd(rddId)
-          )
-        })
+        Some(
+          storageStatusList.map { status =>
+            new RDDDataDistribution(
+              address = status.blockManagerId.hostPort,
+              memoryUsed = status.memUsedByRdd(rddId),
+              memoryRemaining = status.memRemaining,
+              diskUsed = status.diskUsedByRdd(rddId))
+          })
       } else {
         None
       }
     val partitions =
       if (includeDetails) {
-        Some(blocks.map {
-          case (id, block, locations) =>
-            new RDDPartitionInfo(
-              blockName = id.name,
-              storageLevel = block.storageLevel.description,
-              memoryUsed = block.memSize,
-              diskUsed = block.diskSize,
-              executors = locations
-            )
-        })
+        Some(
+          blocks.map {
+            case (id, block, locations) =>
+              new RDDPartitionInfo(
+                blockName = id.name,
+                storageLevel = block.storageLevel.description,
+                memoryUsed = block.memSize,
+                diskUsed = block.diskSize,
+                executors = locations)
+          })
       } else {
         None
       }
@@ -121,7 +121,6 @@ private[spark] object AllRDDResource {
       memoryUsed = rddInfo.memSize,
       diskUsed = rddInfo.diskSize,
       dataDistribution = dataDistribution,
-      partitions = partitions
-    )
+      partitions = partitions)
   }
 }

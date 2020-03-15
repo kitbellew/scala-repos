@@ -27,8 +27,7 @@ import java.net.SocketAddress
 object DefaultClient {
   private def defaultFailureAccrual(
       sr: StatsReceiver,
-      responseClassifier: ResponseClassifier
-  ): ServiceFactoryWrapper =
+      responseClassifier: ResponseClassifier): ServiceFactoryWrapper =
     FailureAccrualFactory.wrapper(
       sr,
       FailureAccrualFactory.defaultPolicy(),
@@ -93,8 +92,8 @@ case class DefaultClient[Req, Rep](
     reporter: ReporterFactory = LoadedReporterFactory,
     loadBalancer: LoadBalancerFactory = DefaultBalancerFactory,
     newTraceInitializer: Stackable[ServiceFactory[Req, Rep]] =
-      TraceInitializerFilter.clientModule[Req, Rep]
-) extends Client[Req, Rep] { outer =>
+      TraceInitializerFilter.clientModule[Req, Rep])
+    extends Client[Req, Rep] { outer =>
 
   private[this] def transform(stack: Stack[ServiceFactory[Req, Rep]]) = {
     val failureAccrualTransform: Transformer[Req, Rep] =
@@ -156,10 +155,9 @@ case class DefaultClient[Req, Rep](
     protected def newDispatcher(transport: Transport[In, Out]) = throw unimpl
 
     override protected val endpointer: Stackable[ServiceFactory[Req, Rep]] =
-      new Stack.Module2[
-        Transporter.EndpointAddr,
-        param.Stats,
-        ServiceFactory[Req, Rep]] {
+      new Stack.Module2[Transporter.EndpointAddr, param.Stats, ServiceFactory[
+        Req,
+        Rep]] {
         val role = com.twitter.finagle.stack.Endpoint
         val description = "Send requests over the wire"
         def make(

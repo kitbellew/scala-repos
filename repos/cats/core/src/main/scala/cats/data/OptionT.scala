@@ -29,10 +29,11 @@ final case class OptionT[F[_], A](value: F[Option[A]]) {
     flatMapF(a => f(a).value)
 
   def flatMapF[B](f: A => F[Option[B]])(implicit F: Monad[F]): OptionT[F, B] =
-    OptionT(F.flatMap(value) {
-      case Some(a) => f(a)
-      case None    => F.pure(None)
-    })
+    OptionT(
+      F.flatMap(value) {
+        case Some(a) => f(a)
+        case None    => F.pure(None)
+      })
 
   def transform[B](f: Option[A] => Option[B])(
       implicit F: Functor[F]): OptionT[F, B] = OptionT(F.map(value)(f))
@@ -73,10 +74,11 @@ final case class OptionT[F[_], A](value: F[Option[A]]) {
     orElseF(default.value)
 
   def orElseF(default: => F[Option[A]])(implicit F: Monad[F]): OptionT[F, A] =
-    OptionT(F.flatMap(value) {
-      case s @ Some(_) => F.pure(s)
-      case None        => default
-    })
+    OptionT(
+      F.flatMap(value) {
+        case s @ Some(_) => F.pure(s)
+        case None        => default
+      })
 
   def toRight[L](left: => L)(implicit F: Functor[F]): XorT[F, L, A] =
     XorT(cata(Xor.Left(left), Xor.Right.apply))

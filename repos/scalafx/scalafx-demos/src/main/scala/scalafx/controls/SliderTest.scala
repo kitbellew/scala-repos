@@ -113,11 +113,12 @@ class SliderControls(target: Slider)
   }
 
   val txfLabelFormatter = new TextField
-  txfLabelFormatter.text.onChange(if (txfLabelFormatter.text.get.isEmpty) {
-    target.labelFormatter = null
-  } else {
-    target.labelFormatter = new DoubleStringConverter
-  })
+  txfLabelFormatter.text.onChange(
+    if (txfLabelFormatter.text.get.isEmpty) {
+      target.labelFormatter = null
+    } else {
+      target.labelFormatter = new DoubleStringConverter
+    })
 
   val originalMajorTickUnit = target.majorTickUnit.get()
   val txfMajorTickUnit =

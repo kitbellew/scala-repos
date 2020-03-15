@@ -293,12 +293,10 @@ object CrossValidator extends MLReadable[CrossValidator] {
                     "name" -> p.name,
                     "value" -> p.jsonEncode(v))
               }
-          }.toSeq
-        ))
+          }.toSeq))
       val jsonParams = List(
         "numFolds" -> parse(instance.numFolds.jsonEncode(instance.getNumFolds)),
-        "estimatorParamMaps" -> parse(estimatorParamMapsJson)
-      )
+        "estimatorParamMaps" -> parse(estimatorParamMapsJson))
       DefaultParamsWriter.saveMetadata(
         instance,
         path,

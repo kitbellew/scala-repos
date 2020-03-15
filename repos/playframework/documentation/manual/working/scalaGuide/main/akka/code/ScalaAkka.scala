@@ -88,11 +88,12 @@ package scalaguide.akka {
       "allow using the scheduler" in withActorSystem { system =>
         import akka.actor._
         val testActor = system.actorOf(
-          Props(new Actor() {
-            def receive = {
-              case _: String =>
-            }
-          }),
+          Props(
+            new Actor() {
+              def receive = {
+                case _: String =>
+              }
+            }),
           name = "testActor")
         //#schedule-actor
         import scala.concurrent.duration._
@@ -279,9 +280,8 @@ package scalaguide.akka {
       case class GetChild(key: String)
     }
 
-    class ParentActor @Inject() (
-        childFactory: ConfiguredChildActor.Factory
-    ) extends Actor
+    class ParentActor @Inject() (childFactory: ConfiguredChildActor.Factory)
+        extends Actor
         with InjectedActorSupport {
       import ParentActor._
 

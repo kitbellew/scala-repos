@@ -30,9 +30,7 @@ trait FlashCookieSpec
       .routes {
         case ("GET", "/flash") =>
           Action {
-            Redirect("/landing").flashing(
-              "success" -> "found"
-            )
+            Redirect("/landing").flashing("success" -> "found")
           }
         case ("GET", "/set-cookie") =>
           Action {

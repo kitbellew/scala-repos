@@ -96,8 +96,7 @@ case class AppUpdate(
   def withCanonizedIds(base: PathId = PathId.empty): AppUpdate =
     copy(
       id = id.map(_.canonicalPath(base)),
-      dependencies = dependencies.map(_.map(_.canonicalPath(base)))
-    )
+      dependencies = dependencies.map(_.map(_.canonicalPath(base))))
 }
 
 object AppUpdate {

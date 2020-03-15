@@ -1,9 +1,10 @@
 object P {
   def a[T](
       x: {
-        def b(y: {
-          val c: T
-        })
+        def b(
+            y: {
+              val c: T
+            })
       },
       z: T): T = {
     object Y {
@@ -15,9 +16,10 @@ object P {
 
   def d() = {
     object X {
-      def b(y: {
-        val c: String
-      }) {}
+      def b(
+          y: {
+            val c: String
+          }) {}
     }
     /*start*/
     a(X, "") /*end*/ // False error here

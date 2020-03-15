@@ -1312,12 +1312,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
   def batched[In, Out](
       sizeThreshold: Int,
       timeThreshold: Duration = Duration.Top,
-      sizePercentile: => Float = 1.0f
-  )(
-      f: Seq[In] => Future[Seq[Out]]
-  )(implicit
-      timer: Timer
-  ): Batcher[In, Out] = {
+      sizePercentile: => Float = 1.0f)(f: Seq[In] => Future[Seq[Out]])(
+      implicit timer: Timer): Batcher[In, Out] = {
     new Batcher[In, Out](
       new BatchExecutor[In, Out](
         sizeThreshold,
@@ -1694,8 +1690,7 @@ abstract class Future[+A] extends Awaitable[A] {
     * @see [[handle]]
     */
   def rescue[B >: A](
-      rescueException: PartialFunction[Throwable, Future[B]]
-  ): Future[B] =
+      rescueException: PartialFunction[Throwable, Future[B]]): Future[B] =
     transform({
       case Throw(t) =>
         val result = rescueException.applyOrElse(t, Future.AlwaysNotApplied)
@@ -2059,15 +2054,16 @@ abstract class Future[+A] extends Awaitable[A] {
 class ConstFuture[A](result: Try[A]) extends Future[A] {
   def respond(k: Try[A] => Unit): Future[A] = {
     val saved = Local.save()
-    Scheduler.submit(new Runnable {
-      def run() {
-        val current = Local.save()
-        Local.restore(saved)
-        try k(result)
-        catch Monitor.catcher
-        finally Local.restore(current)
-      }
-    })
+    Scheduler.submit(
+      new Runnable {
+        def run() {
+          val current = Local.save()
+          Local.restore(saved)
+          try k(result)
+          catch Monitor.catcher
+          finally Local.restore(current)
+        }
+      })
     this
   }
 
@@ -2076,23 +2072,24 @@ class ConstFuture[A](result: Try[A]) extends Future[A] {
   def transform[B](f: Try[A] => Future[B]): Future[B] = {
     val p = new Promise[B]
     val saved = Local.save()
-    Scheduler.submit(new Runnable {
-      def run() {
-        val current = Local.save()
-        Local.restore(saved)
-        val computed =
-          try f(result)
-          catch {
-            case e: NonLocalReturnControl[_] =>
-              Future.exception(new FutureNonLocalReturnControl(e))
-            case NonFatal(e) => Future.exception(e)
-            case t: Throwable =>
-              Monitor.handle(t)
-              throw t
-          } finally Local.restore(current)
-        p.become(computed)
-      }
-    })
+    Scheduler.submit(
+      new Runnable {
+        def run() {
+          val current = Local.save()
+          Local.restore(saved)
+          val computed =
+            try f(result)
+            catch {
+              case e: NonLocalReturnControl[_] =>
+                Future.exception(new FutureNonLocalReturnControl(e))
+              case NonFatal(e) => Future.exception(e)
+              case t: Throwable =>
+                Monitor.handle(t)
+                throw t
+            } finally Local.restore(current)
+          p.become(computed)
+        }
+      })
     p
   }
 

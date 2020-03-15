@@ -24,20 +24,17 @@ private final class MoveBroadcast extends Actor {
       games get move.gameId foreach { mIds =>
         val msg = Socket.makeMessage(
           "fen",
-          play.api.libs.json.Json.obj(
-            "id" -> move.gameId,
-            "fen" -> move.fen,
-            "lm" -> move.move
-          ))
+          play.api.libs.json.Json
+            .obj("id" -> move.gameId, "fen" -> move.fen, "lm" -> move.move))
         mIds foreach { mId =>
           members get mId foreach (_.member push msg)
         }
       }
 
     case StartWatching(uid, member, gameIds) =>
-      members += (uid -> WatchingMember(
-        member,
-        gameIds ++ members.get(uid).??(_.gameIds)))
+      members += (
+        uid -> WatchingMember(member, gameIds ++ members.get(uid).??(_.gameIds))
+      )
       gameIds foreach { id =>
         games += (id -> (~games.get(id) + uid))
       }

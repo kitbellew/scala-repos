@@ -12,19 +12,21 @@ object PhoneCode {
     val dictEntriesDigified2Words = {
       val wordToDigits = {
         val mappingReversed =
-          (for (chars2Digit <- Array(
-                  "e",
-                  "jnq",
-                  "rwx",
-                  "dsy",
-                  "ft",
-                  "am",
-                  "civ",
-                  "bku",
-                  "lop",
-                  "ghz").zipWithIndex;
-                char <- (chars2Digit._1 ++ chars2Digit._1.toUpperCase))
-            yield (char -> chars2Digit._2)).toMap
+          (
+            for (chars2Digit <- Array(
+                   "e",
+                   "jnq",
+                   "rwx",
+                   "dsy",
+                   "ft",
+                   "am",
+                   "civ",
+                   "bku",
+                   "lop",
+                   "ghz").zipWithIndex;
+                 char <- (chars2Digit._1 ++ chars2Digit._1.toUpperCase))
+              yield (char -> chars2Digit._2)
+          ).toMap
         (word: String) => word.map(mappingReversed).mkString
       }
       dictEntries.toArray.groupBy(cleanString andThen wordToDigits)
@@ -54,15 +56,19 @@ object PhoneCode {
               def allMatches(matchAgainst: String) = {
                 //collect all possible next translation steps of the remaining numbers
                 val matchingWords =
-                  (for (len <- 1 to matchAgainst.length;
-                        opt <- dictEntriesDigified2Words.get(
-                          matchAgainst.take(len)))
-                    yield opt).flatten
+                  (
+                    for (len <- 1 to matchAgainst.length;
+                         opt <- dictEntriesDigified2Words.get(
+                           matchAgainst.take(len)))
+                      yield opt
+                  ).flatten
                 if (matchingWords.nonEmpty) //spead the tree
                   for ((translated, remaining) <- matchingWords.map(e =>
                          e -> matchAgainst.drop(e.count(_.isLetter))))
-                    yield (current
-                      .copy(current.translated + " " + translated, remaining))
+                    yield (
+                      current
+                        .copy(current.translated + " " + translated, remaining)
+                      )
                 else
                   current.asFallback(matchAgainst)
               }

@@ -56,8 +56,7 @@ trait ClassfileIndexer {
         name: String,
         signature: String,
         superName: String,
-        interfaces: Array[String]
-    ): Unit = {
+        interfaces: Array[String]): Unit = {
 
       clazz = RawClassfile(
         ClassName.fromInternal(name),
@@ -86,8 +85,7 @@ trait ClassfileIndexer {
         MemberName(clazz.name, name),
         ClassName.fromDescriptor(desc),
         Option(signature),
-        Access(access)
-      )
+        Access(access))
       clazz = clazz.copy(fields = clazz.fields :+ field)
       super.visitField(access, name, desc, signature, value)
     }
@@ -158,8 +156,7 @@ trait ClassfileIndexer {
             typeRef: Int,
             typePath: TypePath,
             desc: String,
-            visible: Boolean
-        ) = handleAnn(desc)
+            visible: Boolean) = handleAnn(desc)
       }
 
     override def visitField(
@@ -206,8 +203,7 @@ trait ClassfileIndexer {
         override def visitEnum(
             name: String,
             desc: String,
-            value: String
-        ): Unit = handleAnn(desc)
+            value: String): Unit = handleAnn(desc)
       }
     private def handleAnn(desc: String): AnnotationVisitor = {
       addRef(ClassName.fromDescriptor(desc))
@@ -219,8 +215,7 @@ trait ClassfileIndexer {
         typeRef: Int,
         typePath: TypePath,
         desc: String,
-        visible: Boolean
-    ) = handleAnn(desc)
+        visible: Boolean) = handleAnn(desc)
   }
 
   private trait ReferenceInMethodHunter {
@@ -240,8 +235,7 @@ trait ClassfileIndexer {
         signature: String,
         start: Label,
         end: Label,
-        index: Int
-    ): Unit = {
+        index: Int): Unit = {
       internalRefs :+= ClassName.fromDescriptor(desc)
     }
 
@@ -257,8 +251,7 @@ trait ClassfileIndexer {
         opcode: Int,
         owner: String,
         name: String,
-        desc: String
-    ): Unit = {
+        desc: String): Unit = {
       internalRefs :+= memberOrInit(owner, name)
       internalRefs :+= ClassName.fromDescriptor(desc)
     }
@@ -268,8 +261,7 @@ trait ClassfileIndexer {
         owner: String,
         name: String,
         desc: String,
-        itf: Boolean
-    ): Unit = {
+        itf: Boolean): Unit = {
       internalRefs :+= memberOrInit(owner, name)
       internalRefs = internalRefs.enqueue(classesInDescriptor(desc))
     }
@@ -303,8 +295,7 @@ trait ClassfileIndexer {
         typeRef: Int,
         typePath: TypePath,
         desc: String,
-        visible: Boolean
-    ) = handleAnn(desc)
+        visible: Boolean) = handleAnn(desc)
     override def visitLocalVariableAnnotation(
         typeRef: Int,
         typePath: TypePath,
@@ -312,24 +303,20 @@ trait ClassfileIndexer {
         end: Array[Label],
         index: Array[Int],
         desc: String,
-        visible: Boolean
-    ) = handleAnn(desc)
+        visible: Boolean) = handleAnn(desc)
     override def visitParameterAnnotation(
         parameter: Int,
         desc: String,
-        visible: Boolean
-    ) = handleAnn(desc)
+        visible: Boolean) = handleAnn(desc)
     override def visitTryCatchAnnotation(
         typeRef: Int,
         typePath: TypePath,
         desc: String,
-        visible: Boolean
-    ) = handleAnn(desc)
+        visible: Boolean) = handleAnn(desc)
     override def visitTypeAnnotation(
         typeRef: Int,
         typePath: TypePath,
         desc: String,
-        visible: Boolean
-    ) = handleAnn(desc)
+        visible: Boolean) = handleAnn(desc)
   }
 }

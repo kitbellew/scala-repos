@@ -68,12 +68,10 @@ class SliceMatrix[
 
 object SliceMatrix {
   implicit def canMapKeyValuePairs[K1, K2, V, V2: ClassTag: Zero]
-      : CanMapKeyValuePairs[
-        SliceMatrix[K1, K2, V],
-        (Int, Int),
-        V,
-        V2,
-        DenseMatrix[V2]] = {
+      : CanMapKeyValuePairs[SliceMatrix[
+        K1,
+        K2,
+        V], (Int, Int), V, V2, DenseMatrix[V2]] = {
     new CanMapKeyValuePairs[
       SliceMatrix[K1, K2, V],
       (Int, Int),

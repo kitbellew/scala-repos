@@ -387,8 +387,7 @@ object nat {
     implicit def range2[A <: Nat, B <: Nat, L <: HList, LO <: HList](implicit
         w: Witness.Aux[B],
         r: Range.Aux[A, B, L],
-        prep: Prepend.Aux[L, B :: HNil, LO]
-    ): Aux[A, Succ[B], LO] =
+        prep: Prepend.Aux[L, B :: HNil, LO]): Aux[A, Succ[B], LO] =
       new Range[A, Succ[B]] {
         type Out = LO
 
@@ -450,8 +449,7 @@ object nat {
         implicit
         prod: Prod.Aux[A, B, M],
         gcd: GCD.Aux[A, B, N],
-        div: Div[M, N]
-    ): Aux[A, B, div.Out] =
+        div: Div[M, N]): Aux[A, B, div.Out] =
       new LCM[A, B] {
         type Out = div.Out
       }

@@ -33,8 +33,8 @@ object ApplyUsage extends App {
   assert(Apply[Option].ap(1.some)(none[Int => Int]) === none[Int])
   assert(Apply[Option].ap(none)(none[Int => Int]) === none[Int])
   assert(
-    Apply[List].ap(List(1, 2, 3))(List(double, addTwo)) === List(2, 4, 6, 3, 4,
-      5))
+    Apply[List].ap(List(1, 2, 3))(List(double, addTwo)) === List(
+      2, 4, 6, 3, 4, 5))
 
   // from these two methods (map and ap) we are able to derive some
   // very useful methods which allow us to "lift" a function of
@@ -83,8 +83,10 @@ object ApplyUsage extends App {
   def add8(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int, g: Int, h: Int) =
     a + b + c + d + e + f + g + h
   val someOf8Options =
-    (1.some |@| 2.some |@| 3.some |@| 4.some |@|
-      5.some |@| 6.some |@| 7.some |@| 8.some)(add8 _)
+    (
+      1.some |@| 2.some |@| 3.some |@| 4.some |@|
+        5.some |@| 6.some |@| 7.some |@| 8.some
+    )(add8 _)
   assert(someOf8Options === 36.some)
 
   // the applicative builder created by |@| also has a "tupled" method

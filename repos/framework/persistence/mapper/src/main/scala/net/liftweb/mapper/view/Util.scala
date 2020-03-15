@@ -72,8 +72,7 @@ object Util {
   def eachField[T <: net.liftweb.mapper.Mapper[T]](
       mapper: T,
       fn: MappedField[_, T] => CssSel,
-      filter: MappedField[_, T] => Boolean
-  ): NodeSeq => NodeSeq = {
+      filter: MappedField[_, T] => Boolean): NodeSeq => NodeSeq = {
     def fieldBindIfWanted(fieldName: String) = {
       mapper.fieldByName(fieldName).filter(filter) match {
         case Full(field) =>
@@ -109,7 +108,7 @@ object Util {
   }
   def eachField[T <: net.liftweb.mapper.Mapper[T]](
       mapper: T,
-      fn: MappedField[_, T] => CssSel
-  ): NodeSeq => NodeSeq = eachField(mapper, fn, (f: MappedField[_, T]) => true)
+      fn: MappedField[_, T] => CssSel): NodeSeq => NodeSeq =
+    eachField(mapper, fn, (f: MappedField[_, T]) => true)
 
 }

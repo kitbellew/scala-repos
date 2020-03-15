@@ -58,9 +58,7 @@ trait PathReads {
                 a match {
                   case JsNull => JsSuccess(None)
                   case js     => reads.reads(js).repath(path).map(Some(_))
-                }
-            )
-        )
+                }))
     }
 
   def jsPick[A <: JsValue](path: JsPath)(implicit reads: Reads[A]): Reads[A] =
@@ -241,8 +239,7 @@ trait PathWrites {
         path -> path(js).headOption
           .flatMap(js =>
             js.asOpt[JsObject].map(obj => obj.deepMerge(wrs.writes(obj))))
-          .getOrElse(JsNull)
-      )
+          .getOrElse(JsNull))
     }
 
   def pure[A](path: JsPath, fixed: => A)(

@@ -84,18 +84,16 @@ class Stream[Req: RequestType] extends CodecFactory[Req, StreamResponse] {
 
         override def newClientDispatcher(
             trans: Transport[Any, Any],
-            params: Stack.Params
-        ): Service[Req, StreamResponse] =
+            params: Stack.Params): Service[Req, StreamResponse] =
           new StreamClientDispatcher(
             trans,
             params[param.Stats].statsReceiver
-              .scope(GenSerialClientDispatcher.StatsScope)
-          )
+              .scope(GenSerialClientDispatcher.StatsScope))
 
         // TODO: remove when the Meta[_] patch lands.
         override def prepareServiceFactory(
-            underlying: ServiceFactory[Req, StreamResponse]
-        ): ServiceFactory[Req, StreamResponse] =
+            underlying: ServiceFactory[Req, StreamResponse])
+            : ServiceFactory[Req, StreamResponse] =
           underlying map (new DelayedReleaseService(_))
 
         // TODO: remove when ChannelTransport is the default for clients.

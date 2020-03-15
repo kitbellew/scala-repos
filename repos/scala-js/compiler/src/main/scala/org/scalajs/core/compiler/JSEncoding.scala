@@ -49,8 +49,7 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
   def withNewLocalNameScope[A](body: => A): A =
     withScopedVars(
       usedLocalNames := mutable.Set.empty,
-      localSymbolNames := mutable.Map.empty
-    )(body)
+      localSymbolNames := mutable.Map.empty)(body)
 
   private def freshName(base: String = "x"): String = {
     var suffix = 1
@@ -81,8 +80,10 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
 
   private lazy val allRefClasses: Set[Symbol] = {
     import definitions._
-    (Set(ObjectRefClass, VolatileObjectRefClass) ++
-      refClass.values ++ volatileRefClass.values)
+    (
+      Set(ObjectRefClass, VolatileObjectRefClass) ++
+        refClass.values ++ volatileRefClass.values
+    )
   }
 
   def encodeFieldSym(sym: Symbol)(implicit pos: Position): js.Ident = {
@@ -225,10 +226,12 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
 
   def encodeClassFullName(sym: Symbol): String = {
     ir.Definitions.encodeClassName(
-      sym.fullName + (if (needsModuleClassSuffix(sym))
-                        "$"
-                      else
-                        ""))
+      sym.fullName + (
+        if (needsModuleClassSuffix(sym))
+          "$"
+        else
+          ""
+      ))
   }
 
   def needsModuleClassSuffix(sym: Symbol): Boolean =

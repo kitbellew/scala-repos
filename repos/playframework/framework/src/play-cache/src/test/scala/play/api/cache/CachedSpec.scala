@@ -35,8 +35,7 @@ class CachedSpec extends PlaySpecification {
     }
 
     "cache values using named injected CachedApi" in new WithApplication(
-      _.configure("play.cache.bindCaches" -> Seq("custom"))
-    ) {
+      _.configure("play.cache.bindCaches" -> Seq("custom"))) {
       val controller = app.injector.instanceOf[NamedCachedController]
       val result1 = controller.action(FakeRequest()).run()
       contentAsString(result1) must_== "1"
@@ -68,8 +67,9 @@ class CachedSpec extends PlaySpecification {
             .timeToLiveSeconds(60)
             .timeToIdleSeconds(30)
             .diskExpiryThreadIntervalSeconds(0)
-            .persistence(new PersistenceConfiguration()
-              .strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
+            .persistence(
+              new PersistenceConfiguration()
+                .strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
       cacheManager.addCache(diskEhcache)
       val diskEhcache2 = cacheManager.getCache("disk")
       assert(diskEhcache2 != null)
@@ -143,11 +143,14 @@ class CachedSpec extends PlaySpecification {
       val action = Cached(_.uri)(Action(Results.Ok))
       val resultA = action(FakeRequest("GET", "/a")).run()
       status(resultA) must_== 200
-      status(action(FakeRequest("GET", "/a").withHeaders(
-        IF_NONE_MATCH -> "foo")).run) must_== 200
       status(
-        action(FakeRequest("GET", "/b").withHeaders(
-          IF_NONE_MATCH -> header(ETAG, resultA).get)).run) must_== 200
+        action(
+          FakeRequest("GET", "/a").withHeaders(
+            IF_NONE_MATCH -> "foo")).run) must_== 200
+      status(
+        action(
+          FakeRequest("GET", "/b").withHeaders(
+            IF_NONE_MATCH -> header(ETAG, resultA).get)).run) must_== 200
       status(
         action(
           FakeRequest("GET", "/c").withHeaders(
@@ -298,8 +301,7 @@ class CachedSpec extends PlaySpecification {
 
   "EhCacheModule" should {
     "support binding multiple different caches" in new WithApplication(
-      _.configure("play.cache.bindCaches" -> Seq("custom"))
-    ) {
+      _.configure("play.cache.bindCaches" -> Seq("custom"))) {
       val component = app.injector.instanceOf[SomeComponent]
       val defaultCache = app.injector.instanceOf[CacheApi]
       component.set("foo", "bar")

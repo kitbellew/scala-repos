@@ -36,45 +36,53 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
           nilStack[String, String])
           .push(verifyModule(expected))
           .push(AddrMetadataExtraction.module)
-          .make(Stack.Params.empty + LoadBalancerFactory.Dest(
-            addr) + BindingFactory.Dest(name))
+          .make(
+            Stack.Params.empty + LoadBalancerFactory.Dest(addr) + BindingFactory
+              .Dest(name))
 
       factory()
     }
   }
 
-  test("extract from Addr.Bound")(new Ctx {
-    Await.result(verify(Var(addrBound), unbound, metadata))
-  })
+  test("extract from Addr.Bound")(
+    new Ctx {
+      Await.result(verify(Var(addrBound), unbound, metadata))
+    })
 
-  test("add bound name id")(new Ctx {
-    val vaddr = Var(addrBound)
-    val name = Name.Bound(vaddr, "baz")
-    Await.result(verify(vaddr, name, metadata ++ Addr.Metadata("id" -> "baz")))
-  })
+  test("add bound name id")(
+    new Ctx {
+      val vaddr = Var(addrBound)
+      val name = Name.Bound(vaddr, "baz")
+      Await.result(
+        verify(vaddr, name, metadata ++ Addr.Metadata("id" -> "baz")))
+    })
 
-  test("add bound name path id")(new Ctx {
-    Await.result(
-      verify(vaddrBound, bound, metadata ++ Addr.Metadata("id" -> "/baz")))
-  })
+  test("add bound name path id")(
+    new Ctx {
+      Await.result(
+        verify(vaddrBound, bound, metadata ++ Addr.Metadata("id" -> "/baz")))
+    })
 
-  test("empty for Addr.Neg")(new Ctx {
-    Await.result(verify(Var(Addr.Neg), unbound, Addr.Metadata.empty))
-  })
+  test("empty for Addr.Neg")(
+    new Ctx {
+      Await.result(verify(Var(Addr.Neg), unbound, Addr.Metadata.empty))
+    })
 
-  test("undefined for Addr.Pending until Addr.Bound")(new Ctx {
-    val addr = Var[Addr](Addr.Pending)
-    val result = verify(addr, unbound, metadata)
-    assert(!result.isDefined)
-    addr() = addrBound
-    Await.result(result)
-  })
+  test("undefined for Addr.Pending until Addr.Bound")(
+    new Ctx {
+      val addr = Var[Addr](Addr.Pending)
+      val result = verify(addr, unbound, metadata)
+      assert(!result.isDefined)
+      addr() = addrBound
+      Await.result(result)
+    })
 
-  test("just id for Addr.Failed")(new Ctx {
-    Await.result(
-      verify(
-        Var(Addr.Failed(new RuntimeException)),
-        bound,
-        Addr.Metadata("id" -> "/baz")))
-  })
+  test("just id for Addr.Failed")(
+    new Ctx {
+      Await.result(
+        verify(
+          Var(Addr.Failed(new RuntimeException)),
+          bound,
+          Addr.Metadata("id" -> "/baz")))
+    })
 }

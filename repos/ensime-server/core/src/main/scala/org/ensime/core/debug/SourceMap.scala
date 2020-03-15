@@ -20,13 +20,15 @@ class SourceMap(config: EnsimeConfig) {
 
   def locToPos(loc: Location): Option[LineSourcePosition] = {
     try {
-      (for (set <- sourceMap.get(loc.sourceName()))
-        yield {
-          if (set.size > 1) {
-            log.warn(s"Warning, ambiguous source name: ${loc.sourceName()}")
+      (
+        for (set <- sourceMap.get(loc.sourceName()))
+          yield {
+            if (set.size > 1) {
+              log.warn(s"Warning, ambiguous source name: ${loc.sourceName()}")
+            }
+            set.headOption.map(f => LineSourcePosition(f, loc.lineNumber))
           }
-          set.headOption.map(f => LineSourcePosition(f, loc.lineNumber))
-        }).getOrElse(None)
+      ).getOrElse(None)
     } catch {
       case e: AbsentInformationException => None
     }

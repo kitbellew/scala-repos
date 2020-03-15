@@ -61,25 +61,30 @@ private[finagle] class PipelineFactory(
       val request_ = InputBuffer.peelMessage(
         ThriftMuxUtil.bufferToArray(req),
         header,
-        protocolFactory
-      )
+        protocolFactory)
       val richHeader = new RichRequestHeader(header)
 
       val contextBuf =
         new mutable.ArrayBuffer[(ChannelBuffer, ChannelBuffer)](
-          2 + (if (header.contexts == null)
-                 0
-               else
-                 header.contexts.size))
+          2 + (
+            if (header.contexts == null)
+              0
+            else
+              header.contexts.size
+          ))
 
-      contextBuf += (BufChannelBuffer(Trace.idCtx.marshalId) ->
-        BufChannelBuffer(Trace.idCtx.marshal(richHeader.traceId)))
+      contextBuf += (
+        BufChannelBuffer(Trace.idCtx.marshalId) ->
+          BufChannelBuffer(Trace.idCtx.marshal(richHeader.traceId))
+      )
 
       richHeader.clientId match {
         case Some(clientId) =>
           val clientIdBuf = ClientId.clientIdCtx.marshal(Some(clientId))
-          contextBuf += (BufChannelBuffer(ClientId.clientIdCtx.marshalId) ->
-            BufChannelBuffer(clientIdBuf))
+          contextBuf += (
+            BufChannelBuffer(ClientId.clientIdCtx.marshalId) ->
+              BufChannelBuffer(clientIdBuf)
+          )
         case None =>
       }
 
@@ -194,8 +199,13 @@ private[finagle] class PipelineFactory(
         ctx,
         new UpstreamMessageEvent(
           e.getChannel,
-          Message.encode(Message
-            .Tdispatch(Message.Tags.MinTag, Nil, Path.empty, Dtab.empty, buf)),
+          Message.encode(
+            Message.Tdispatch(
+              Message.Tags.MinTag,
+              Nil,
+              Path.empty,
+              Dtab.empty,
+              buf)),
           e.getRemoteAddress))
     }
   }
@@ -325,12 +335,13 @@ private[finagle] class PipelineFactory(
           // decrement on channel closure.
           downgradedConnects.incr()
           downgradedConnectionCount.incrementAndGet()
-          ctx.getChannel.getCloseFuture.addListener(new ChannelFutureListener {
-            override def operationComplete(f: ChannelFuture): Unit =
-              if (!f.isCancelled) { // on success or failure
-                downgradedConnectionCount.decrementAndGet()
-              }
-          })
+          ctx.getChannel.getCloseFuture.addListener(
+            new ChannelFutureListener {
+              override def operationComplete(f: ChannelFuture): Unit =
+                if (!f.isCancelled) { // on success or failure
+                  downgradedConnectionCount.decrementAndGet()
+                }
+            })
 
           // Add a ChannelHandler to serialize the requests since we may
           // deal with a client that pipelines requests
@@ -366,12 +377,13 @@ private[finagle] class PipelineFactory(
           // decrement on channel closure.
           thriftmuxConnects.incr()
           thriftMuxConnectionCount.incrementAndGet()
-          ctx.getChannel.getCloseFuture.addListener(new ChannelFutureListener {
-            override def operationComplete(f: ChannelFuture): Unit =
-              if (!f.isCancelled) { // on success or failure
-                thriftMuxConnectionCount.decrementAndGet()
-              }
-          })
+          ctx.getChannel.getCloseFuture.addListener(
+            new ChannelFutureListener {
+              override def operationComplete(f: ChannelFuture): Unit =
+                if (!f.isCancelled) { // on success or failure
+                  thriftMuxConnectionCount.decrementAndGet()
+                }
+            })
 
           pipeline.remove(this)
           super.messageReceived(ctx, e)

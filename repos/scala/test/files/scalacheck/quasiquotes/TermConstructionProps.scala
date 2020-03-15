@@ -39,13 +39,11 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("unquote trees into block") = forAll {
     (t1: Tree, t2: Tree, t3: Tree) =>
-      blockInvariant(
-        q"""{
+      blockInvariant(q"""{
       $t1
       $t2
       $t3
-    }""",
-        List(t1, t2, t3))
+    }""", List(t1, t2, t3))
   }
 
   property("unquote tree into new") = forAll { (tree: Tree) =>
@@ -93,10 +91,12 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("unquote trees into type apply") = forAll {
     (fun: TreeIsTerm, types: List[Tree]) =>
-      q"$fun[..$types]" ≈ (if (types.nonEmpty)
-                             TypeApply(fun, types)
-                           else
-                             fun)
+      q"$fun[..$types]" ≈ (
+        if (types.nonEmpty)
+          TypeApply(fun, types)
+        else
+          fun
+      )
   }
 
   property("unquote trees into while loop") = forAll {
@@ -124,12 +124,14 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   def blockInvariant(quote: Tree, trees: List[Tree]) =
-    quote ≈ (trees match {
-      case Nil                       => q"{}"
-      case _ :+ last if !last.isTerm => Block(trees, q"()")
-      case head :: Nil               => head
-      case init :+ last              => Block(init, last)
-    })
+    quote ≈ (
+      trees match {
+        case Nil                       => q"{}"
+        case _ :+ last if !last.isTerm => Block(trees, q"()")
+        case head :: Nil               => head
+        case init :+ last              => Block(init, last)
+      }
+    )
 
   property("unquote list of trees into block (1)") = forAll {
     (trees: List[Tree]) => blockInvariant(q"{ ..$trees }", trees)
@@ -219,10 +221,11 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
     val baz = q"baz"
     assert(q"f(..${l1 ++ l2})" ≈ q"f(foo, bar)")
     assert(q"f(..${l1 ++ l2}, $baz)" ≈ q"f(foo, bar, baz)")
-    assert(q"f(${if (true)
-      q"a"
-    else
-      q"b"})" ≈ q"f(a)")
+    assert(
+      q"f(${if (true)
+        q"a"
+      else
+        q"b"})" ≈ q"f(a)")
   }
 
   property("unquote iterable of non-parametric type") = test {

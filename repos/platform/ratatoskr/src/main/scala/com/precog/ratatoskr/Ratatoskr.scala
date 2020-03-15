@@ -115,8 +115,7 @@ object Ratatoskr {
     ZookeeperTools,
     ImportTools,
     CSVTools,
-    APIKeyTools
-  )
+    APIKeyTools)
 
   val commandMap: Map[String, Command] =
     commands.map(c => (c.name, c))(collection.breakOut)
@@ -380,52 +379,56 @@ object KafkaTools extends Command {
         state: ReportState,
         msg: IngestMessage) = {
       // Track timestamps
-      (if (msg.timestamp != EventMessage.defaultTimestamp) {
-         //println("Exact timestamp found: " + msg.timestamp)
-         Some(ExactTime(msg.timestamp.getMillis, state.index))
-       } else {
-         // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
-         val timestamps =
-           (msg.data.map(_.value \ "timeStamp") ++ msg.data.map(
-             _.value \ "timestamp"))
-             .flatMap {
-               case JString(date) =>
-                 // Dirty hack for trying variations of ISO8601 in use by customers
-                 List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
-                   .flatMap { date =>
-                     List(date, date + ".000Z")
-                   }
-               case _ => None
-             }
-             .flatMap { date =>
-               try {
-                 val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
-                 if (ts.getMillis > lastTimestamp.time) {
-                   //println("Assigning new timestamp: " + ts)
-                   Some(ts)
-                 } else {
-                   //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
-                   None
-                 }
-               } catch {
-                 case t =>
-                   //println("Error on datetime parse: " + t)
-                   None
-               }
-             }
+      (
+        if (msg.timestamp != EventMessage.defaultTimestamp) {
+          //println("Exact timestamp found: " + msg.timestamp)
+          Some(ExactTime(msg.timestamp.getMillis, state.index))
+        } else {
+          // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
+          val timestamps =
+            (
+              msg.data.map(_.value \ "timeStamp") ++ msg.data.map(
+                _.value \ "timestamp")
+            ).flatMap {
+                case JString(date) =>
+                  // Dirty hack for trying variations of ISO8601 in use by customers
+                  List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
+                    .flatMap { date =>
+                      List(date, date + ".000Z")
+                    }
+                case _ => None
+              }
+              .flatMap { date =>
+                try {
+                  val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
+                  if (ts.getMillis > lastTimestamp.time) {
+                    //println("Assigning new timestamp: " + ts)
+                    Some(ts)
+                  } else {
+                    //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
+                    None
+                  }
+                } catch {
+                  case t =>
+                    //println("Error on datetime parse: " + t)
+                    None
+                }
+              }
 
-         //println("Deducing timestamp from " + timestamps)
+          //println("Deducing timestamp from " + timestamps)
 
-         timestamps.headOption.map { ts =>
-           ExactTime(ts.getMillis, state.index)
-         }
-       }).foreach { newTimestamp =>
+          timestamps.headOption.map { ts =>
+            ExactTime(ts.getMillis, state.index)
+          }
+        }
+      ).foreach { newTimestamp =>
         if (newTimestamp.time <= System.currentTimeMillis) {
           if (pendingTimes.nonEmpty) {
             //println("Updating pending times: " + pendingTimes)
             interpolationMap ++= pendingTimes.map { interp =>
-              val interpFraction =
-                (interp.index - lastTimestamp.index).toDouble / (newTimestamp.index - lastTimestamp.index)
+              val interpFraction = (
+                interp.index - lastTimestamp.index
+              ).toDouble / (newTimestamp.index - lastTimestamp.index)
               val timeSpanSize = newTimestamp.time - lastTimestamp.time
               val interpTS =
                 (interpFraction * timeSpanSize + lastTimestamp.time).toLong
@@ -451,8 +454,9 @@ object KafkaTools extends Command {
 
         ReportState(
           state.index + 1,
-          state.pathSize + (path -> (state.pathSize
-            .getOrElse(path, 0L) + size)))
+          state.pathSize + (
+            path -> (state.pathSize.getOrElse(path, 0L) + size)
+          ))
       } else {
         state.inc
       }
@@ -537,10 +541,12 @@ object KafkaTools extends Command {
           case (index, byAccount) =>
             val accountTotals = trackedAccounts.sorted.map(
               byAccount.getOrElse(_, 0L))
-            (index match {
-              case ExactTime(time, _) => Some(time)
-              case i: Interpolated    => interpolationMap.get(i)
-            }).foreach { timestamp =>
+            (
+              index match {
+                case ExactTime(time, _) => Some(time)
+                case i: Interpolated    => interpolationMap.get(i)
+              }
+            ).foreach { timestamp =>
               //println(index + " => " + timestamp)
               println(
                 "%d,%d,%s".format(
@@ -552,10 +558,12 @@ object KafkaTools extends Command {
       } else {
         slices.foreach {
           case (index, byAccount) =>
-            (index match {
-              case ExactTime(time, _) => Some(time)
-              case i: Interpolated    => interpolationMap.get(i)
-            }).foreach { timestamp =>
+            (
+              index match {
+                case ExactTime(time, _) => Some(time)
+                case i: Interpolated    => interpolationMap.get(i)
+              }
+            ).foreach { timestamp =>
               //println(index + " => " + timestamp)
               println(
                 JObject(
@@ -630,11 +638,12 @@ object KafkaTools extends Command {
 
     def parseOffset(s: String): Either[Unit, Option[Int]] = {
       try {
-        Right(if (s.trim.length == 0) {
-          None
-        } else {
-          Some(s.toInt)
-        })
+        Right(
+          if (s.trim.length == 0) {
+            None
+          } else {
+            Some(s.toInt)
+          })
       } catch {
         case ex => Left("Parse error for: " + s)
       }
@@ -1052,8 +1061,7 @@ object ImportTools extends Command with Logging {
       var accountId: AccountId = "not-a-real-account",
       var verbose: Boolean = false,
       var storageRoot: File = new File("./data"),
-      var archiveRoot: File = new File("./archive")
-  )
+      var archiveRoot: File = new File("./archive"))
 
   def run(args: Array[String]) {
     val config = new Config
@@ -1242,8 +1250,9 @@ object ImportTools extends Command with Logging {
 
             if (!errors.isEmpty) {
               sys.error(
-                "found %d parse errors.\nfirst 5 were: %s" format (errors.length, errors
-                  .take(5)))
+                "found %d parse errors.\nfirst 5 were: %s" format (
+                  errors.length, errors.take(5)
+                ))
             } else if (results.size > 0) {
               val eventidobj = EventId(pid, sid.getAndIncrement)
               logger.info("Sending %d events".format(results.size))
@@ -1261,8 +1270,7 @@ object ImportTools extends Command with Logging {
                       records,
                       None,
                       yggConfig.clock.instant,
-                      StreamRef.Append)))
-              )
+                      StreamRef.Append))))
 
               (vfsModule.projectionsActor ? update) flatMap { _ =>
                 logger.info("Batch saved")
@@ -1487,13 +1495,11 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         MongoAPIKeyManager.createRootAPIKey(
           database,
           config.mongoSettings.apiKeys,
-          config.mongoSettings.grants
-        )
+          config.mongoSettings.grants)
       } else {
         MongoAPIKeyManager.findRootAPIKey(
           database,
-          config.mongoSettings.apiKeys
-        )
+          config.mongoSettings.apiKeys)
       }
 
     rootKey map { k =>
@@ -1580,8 +1586,7 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
     def mongoSettings: MongoAPIKeyManagerSettings =
       MongoAPIKeyManagerSettings(
         apiKeys = collection,
-        deletedAPIKeys = deletedCollection
-      )
+        deletedAPIKeys = deletedCollection)
 
     def mongoConfig: Configuration = {
       Configuration.parse("servers = %s".format(mongoServers))

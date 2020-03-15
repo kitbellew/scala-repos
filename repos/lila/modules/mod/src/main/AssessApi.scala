@@ -101,14 +101,18 @@ final class AssessApi(
 
   def refreshAssessByUsername(username: String): Funit =
     withUser(username) { user =>
-      (GameRepo.gamesForAssessment(user.id, 100) flatMap { gs =>
-        (gs map { g =>
-          AnalysisRepo.byId(g.id) flatMap {
-            case Some(a) => onAnalysisReady(g, a, false)
-            case _       => funit
-          }
-        }).sequenceFu.void
-      }) >> assessUser(user.id)
+      (
+        GameRepo.gamesForAssessment(user.id, 100) flatMap { gs =>
+          (
+            gs map { g =>
+              AnalysisRepo.byId(g.id) flatMap {
+                case Some(a) => onAnalysisReady(g, a, false)
+                case _       => funit
+              }
+            }
+          ).sequenceFu.void
+        }
+      ) >> assessUser(user.id)
     }
 
   def onAnalysisReady(
@@ -136,10 +140,12 @@ final class AssessApi(
       val assessible = Assessible(Analysed(game, analysis))
       createPlayerAssessment(assessible playerAssessment chess.White) >>
         createPlayerAssessment(assessible playerAssessment chess.Black)
-    } >> ((shouldAssess && thenAssessUser) ?? {
-      game.whitePlayer.userId.??(assessUser) >> game.blackPlayer.userId
-        .??(assessUser)
-    })
+    } >> (
+      (shouldAssess && thenAssessUser) ?? {
+        game.whitePlayer.userId.??(assessUser) >> game.blackPlayer.userId
+          .??(assessUser)
+      }
+    )
   }
 
   def assessUser(userId: String): Funit =

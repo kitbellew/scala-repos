@@ -82,14 +82,15 @@ class ScalaImportTypeFix(
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     CommandProcessor
       .getInstance()
-      .runUndoTransparentAction(new Runnable {
-        def run() {
-          if (!ref.isValid)
-            return
-          classes = ScalaImportTypeFix.getTypesToImport(ref, project)
-          new ScalaAddImportAction(editor, classes, ref).execute()
-        }
-      })
+      .runUndoTransparentAction(
+        new Runnable {
+          def run() {
+            if (!ref.isValid)
+              return
+            classes = ScalaImportTypeFix.getTypesToImport(ref, project)
+            new ScalaAddImportAction(editor, classes, ref).execute()
+          }
+        })
   }
 
   def showHint(editor: Editor): Boolean = {
@@ -112,11 +113,12 @@ class ScalaImportTypeFix(
                 !caretNear(editor) =>
             CommandProcessor
               .getInstance()
-              .runUndoTransparentAction(new Runnable {
-                def run() {
-                  new ScalaAddImportAction(editor, classes, ref).execute()
-                }
-              })
+              .runUndoTransparentAction(
+                new Runnable {
+                  def run() {
+                    new ScalaAddImportAction(editor, classes, ref).execute()
+                  }
+                })
             false
           case _ =>
             fixesAction(editor)
@@ -147,39 +149,41 @@ class ScalaImportTypeFix(
   private def endOffset(editor: Editor) = range(editor).getEndOffset
 
   private def fixesAction(editor: Editor) {
-    ApplicationManager.getApplication.invokeLater(new Runnable {
-      def run() {
-        if (!ref.isValid)
-          return
-        if (ref.resolve != null)
-          return
+    ApplicationManager.getApplication.invokeLater(
+      new Runnable {
+        def run() {
+          if (!ref.isValid)
+            return
+          if (ref.resolve != null)
+            return
 
-        if (HintManagerImpl.getInstanceImpl
-              .hasShownHintsThatWillHideByOtherHint(true))
-          return
-        val action =
-          new ScalaAddImportAction(editor, classes, ref: ScReferenceElement)
+          if (HintManagerImpl.getInstanceImpl
+                .hasShownHintsThatWillHideByOtherHint(true))
+            return
+          val action =
+            new ScalaAddImportAction(editor, classes, ref: ScReferenceElement)
 
-        val offset = ref.getTextRange.getStartOffset
-        if (classes.nonEmpty && offset >= startOffset(
-              editor) && offset <= endOffset(editor) && editor != null &&
-            offset <= editor.getDocument.getTextLength) {
-          HintManager
-            .getInstance()
-            .showQuestionHint(
-              editor,
-              if (classes.length == 1)
-                classes(0).qualifiedName + "? Alt+Enter"
-              else
-                classes(0).qualifiedName + "? (multiple choices...) Alt+Enter",
-              offset,
-              offset + ref.getTextLength,
-              action
-            )
-          return
+          val offset = ref.getTextRange.getStartOffset
+          if (classes.nonEmpty && offset >= startOffset(
+                editor) && offset <= endOffset(editor) && editor != null &&
+              offset <= editor.getDocument.getTextLength) {
+            HintManager
+              .getInstance()
+              .showQuestionHint(
+                editor,
+                if (classes.length == 1)
+                  classes(0).qualifiedName + "? Alt+Enter"
+                else
+                  classes(
+                    0).qualifiedName + "? (multiple choices...) Alt+Enter",
+                offset,
+                offset + ref.getTextLength,
+                action
+              )
+            return
+          }
         }
-      }
-    })
+      })
   }
 
   def startInWriteAction(): Boolean = true
@@ -190,32 +194,34 @@ class ScalaImportTypeFix(
       ref: ScReferenceElement)
       extends QuestionAction {
     def addImportOrReference(clazz: TypeToImport) {
-      ApplicationManager.getApplication.invokeLater(new Runnable() {
-        def run() {
-          if (!ref.isValid || !FileModificationService.getInstance
-                .prepareFileForWrite(ref.getContainingFile))
-            return
-          ScalaUtils.runWriteAction(
-            new Runnable {
-              def run() {
-                PsiDocumentManager
-                  .getInstance(project)
-                  .commitDocument(editor.getDocument)
-                if (!ref.isValid)
-                  return
-                if (!ref.isInstanceOf[ScDocResolvableCodeReference])
-                  ref.bindToElement(clazz.element)
-                else
-                  ref.replace(
-                    ScalaPsiElementFactory
-                      .createDocLinkValue(clazz.qualifiedName, ref.getManager))
-              }
-            },
-            clazz.getProject,
-            "Add import action"
-          )
-        }
-      })
+      ApplicationManager.getApplication.invokeLater(
+        new Runnable() {
+          def run() {
+            if (!ref.isValid || !FileModificationService.getInstance
+                  .prepareFileForWrite(ref.getContainingFile))
+              return
+            ScalaUtils.runWriteAction(
+              new Runnable {
+                def run() {
+                  PsiDocumentManager
+                    .getInstance(project)
+                    .commitDocument(editor.getDocument)
+                  if (!ref.isValid)
+                    return
+                  if (!ref.isInstanceOf[ScDocResolvableCodeReference])
+                    ref.bindToElement(clazz.element)
+                  else
+                    ref.replace(
+                      ScalaPsiElementFactory.createDocLinkValue(
+                        clazz.qualifiedName,
+                        ref.getManager))
+                }
+              },
+              clazz.getProject,
+              "Add import action"
+            )
+          }
+        })
     }
 
     def chooseClass() {

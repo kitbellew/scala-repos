@@ -65,8 +65,7 @@ object SimpleConsumerPerformance {
             OffsetRequest.LatestTime
           else
             OffsetRequest.EarliestTime,
-          1)
-      ))
+          1)))
     var offset: Long =
       consumer
         .getOffsetsBefore(request)

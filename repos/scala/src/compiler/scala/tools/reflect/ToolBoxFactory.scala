@@ -114,8 +114,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             ft != ft2 && ft.name == ft2.name)
           if (namesakes.length > 0)
             name += ("$" + (namesakes.length + 1))
-          freeTermNames += (ft -> newTermName(
-            name + nme.REIFY_FREE_VALUE_SUFFIX))
+          freeTermNames += (
+            ft -> newTermName(name + nme.REIFY_FREE_VALUE_SUFFIX)
+          )
         })
         val expr =
           new Transformer {
@@ -492,8 +493,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
       def throwIfErrors() = {
         if (frontEnd.hasErrors)
           throw ToolBoxError(
-            "reflective compilation has failed:" + EOL + EOL + (frontEnd.infos map (_.msg) mkString EOL)
-          )
+            "reflective compilation has failed:" + EOL + EOL + (
+              frontEnd.infos map (_.msg) mkString EOL
+            ))
       }
     }
 
@@ -526,8 +528,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             if (frontEnd.hasErrors) {
               throw ToolBoxError(
                 "reflective compilation has failed: cannot initialize the compiler:" + EOL + EOL +
-                  (frontEnd.infos map (_.msg) mkString EOL)
-              )
+                  (frontEnd.infos map (_.msg) mkString EOL))
             }
             instance
           } catch {

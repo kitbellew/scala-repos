@@ -91,16 +91,17 @@ package object project {
         .librariesOnly()
         .exportedOnly()
 
-      enumerator.forEachLibrary(new Processor[Library] {
-        override def process(library: Library) = {
-          if (library.isScalaSdk) {
-            result = Some(new ScalaSdk(library))
-            false
-          } else {
-            true
+      enumerator.forEachLibrary(
+        new Processor[Library] {
+          override def process(library: Library) = {
+            if (library.isScalaSdk) {
+              result = Some(new ScalaSdk(library))
+              false
+            } else {
+              true
+            }
           }
-        }
-      })
+        })
 
       result
     }

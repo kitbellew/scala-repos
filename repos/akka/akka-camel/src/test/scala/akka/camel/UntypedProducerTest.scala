@@ -101,14 +101,15 @@ object UntypedProducerTest {
   class TestRoute extends RouteBuilder {
     def configure {
       from("direct:forward-test-1").to("mock:mock")
-      from("direct:producer-test-1").process(new Processor() {
-        def process(exchange: Exchange) = {
-          exchange.getIn.getBody match {
-            case "fail" ⇒ throw new Exception("failure")
-            case body ⇒ exchange.getOut.setBody("received %s" format body)
+      from("direct:producer-test-1").process(
+        new Processor() {
+          def process(exchange: Exchange) = {
+            exchange.getIn.getBody match {
+              case "fail" ⇒ throw new Exception("failure")
+              case body ⇒ exchange.getOut.setBody("received %s" format body)
+            }
           }
-        }
-      })
+        })
     }
   }
 }

@@ -47,11 +47,7 @@ trait ActionResultTestBase {
       else
         "Content-Type"
 
-    Ok(
-      "Hello, world!",
-      headers = Map(
-        headerName -> "application/vnd.ms-excel"
-      ))
+    Ok("Hello, world!", headers = Map(headerName -> "application/vnd.ms-excel"))
   }
 
   get("/custom-reason") {

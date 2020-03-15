@@ -11,9 +11,10 @@ class TryTest extends FunSuite {
 
   test("Try.apply(): should catch exceptions and lift into the Try type") {
     assert(Try[Int](1) == Return(1))
-    assert(Try[Int] {
-      throw e
-    } == Throw(e))
+    assert(
+      Try[Int] {
+        throw e
+      } == Throw(e))
   }
 
   test("Try.apply(): should propagate fatal exceptions") {
@@ -199,30 +200,34 @@ class TryTest extends FunSuite {
 
   test("Try.orThrow: returns on Some") {
     val exc = new Exception("boom!")
-    assert(Try.orThrow(Some("OK")) { () =>
-      exc
-    } == Return("OK"))
+    assert(
+      Try.orThrow(Some("OK")) { () =>
+        exc
+      } == Return("OK"))
   }
 
   test("Try.orThrow: fails on empty on Some") {
     val exc = new Exception("boom!")
-    assert(Try.orThrow(None) { () =>
-      exc
-    } == Throw(exc))
+    assert(
+      Try.orThrow(None) { () =>
+        exc
+      } == Throw(exc))
   }
 
   test("Try.orThrow: OK if you throw") {
     val exc = new Exception("boom!")
-    assert(Try.orThrow(None) { () =>
-      throw exc
-    } == Throw(exc))
+    assert(
+      Try.orThrow(None) { () =>
+        throw exc
+      } == Throw(exc))
   }
 
   test("OrThrow implicits in nicely") {
     import Try._
     val exc = new Exception("boom!")
-    assert(Some("OK").orThrow {
-      exc
-    } == Return("OK"))
+    assert(
+      Some("OK").orThrow {
+        exc
+      } == Return("OK"))
   }
 }

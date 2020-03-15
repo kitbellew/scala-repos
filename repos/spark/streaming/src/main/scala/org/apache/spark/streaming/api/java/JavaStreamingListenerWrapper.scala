@@ -48,8 +48,7 @@ private[streaming] class JavaStreamingListenerWrapper(
       streamInputInfo.inputStreamId,
       streamInputInfo.numRecords: Long,
       streamInputInfo.metadata.asJava,
-      streamInputInfo.metadataDescription.orNull
-    )
+      streamInputInfo.metadataDescription.orNull)
   }
 
   private def toJavaOutputOperationInfo(

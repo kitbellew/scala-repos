@@ -43,8 +43,7 @@ object QueueingHandler {
   def apply[H <: Handler](
       handler: () => H,
       maxQueueSize: Int = Int.MaxValue,
-      inferClassNames: Boolean = false
-  ): () => QueueingHandler =
+      inferClassNames: Boolean = false): () => QueueingHandler =
     () => new QueueingHandler(handler(), maxQueueSize, inferClassNames)
 
   def apply(handler: HandlerFactory, maxQueueSize: Int): () => QueueingHandler =

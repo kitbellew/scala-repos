@@ -45,8 +45,7 @@ class ISettings(intp: IMain) {
       "maxPrintString" -> maxPrintString,
       "maxAutoprintCompletion" -> maxAutoprintCompletion,
       "unwrapStrings" -> unwrapStrings,
-      "deprecation" -> deprecation
-    )
+      "deprecation" -> deprecation)
 
   private def allSettingsString =
     allSettings.toList sortBy (_._1) map {

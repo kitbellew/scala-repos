@@ -54,8 +54,7 @@ object BinaryVectorizer {
           .filter(e => properties.contains(e._1))
           .distinct
           .collect
-          .zipWithIndex: _*
-      ))
+          .zipWithIndex: _*))
   }
 
   def apply(input: Seq[(String, String)]): BinaryVectorizer = {

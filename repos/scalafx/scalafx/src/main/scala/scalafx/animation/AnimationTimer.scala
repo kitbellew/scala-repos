@@ -58,11 +58,12 @@ object AnimationTimer {
     * @return a new $AT.
     */
   def apply(handler: Long => Unit): AnimationTimer =
-    new AnimationTimer(new jfxa.AnimationTimer {
-      def handle(now: Long) {
-        handler(now)
-      }
-    }) {}
+    new AnimationTimer(
+      new jfxa.AnimationTimer {
+        def handle(now: Long) {
+          handler(now)
+        }
+      }) {}
 
 }
 

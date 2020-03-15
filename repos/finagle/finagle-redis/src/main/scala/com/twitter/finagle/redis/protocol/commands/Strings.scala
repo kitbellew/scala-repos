@@ -34,13 +34,17 @@ case class BitCount(
   def toChannelBuffer = {
     RedisCodec.toUnifiedFormat(
       Seq(CommandBytes.BITCOUNT, key) ++
-        (start match {
+        (
+          start match {
+            case Some(i) => Seq(StringToChannelBuffer(i.toString))
+            case None    => Seq.empty
+          }
+        ) ++ (
+        end match {
           case Some(i) => Seq(StringToChannelBuffer(i.toString))
           case None    => Seq.empty
-        }) ++ (end match {
-        case Some(i) => Seq(StringToChannelBuffer(i.toString))
-        case None    => Seq.empty
-      }))
+        }
+      ))
   }
 }
 object BitCount {
@@ -332,21 +336,26 @@ case class Set(
   def toChannelBuffer =
     RedisCodec.toUnifiedFormat(
       Seq(CommandBytes.SET, key, value) ++
-        (ttl match {
-          case Some(InSeconds(seconds)) =>
-            Seq(Set.ExBytes, StringToChannelBuffer(seconds.toString))
-          case Some(InMilliseconds(millis)) =>
-            Seq(Set.PxBytes, StringToChannelBuffer(millis.toString))
-          case _ => Seq()
-        }) ++ (if (nx)
-                 Seq(Set.NxBytes)
-               else
-                 Seq()) ++
-        (if (xx)
-           Seq(Set.XxBytes)
-         else
-           Seq())
-    )
+        (
+          ttl match {
+            case Some(InSeconds(seconds)) =>
+              Seq(Set.ExBytes, StringToChannelBuffer(seconds.toString))
+            case Some(InMilliseconds(millis)) =>
+              Seq(Set.PxBytes, StringToChannelBuffer(millis.toString))
+            case _ => Seq()
+          }
+        ) ++ (
+        if (nx)
+          Seq(Set.NxBytes)
+        else
+          Seq()
+      ) ++
+        (
+          if (xx)
+            Seq(Set.XxBytes)
+          else
+            Seq()
+        ))
 }
 object Set {
   private val Ex = "EX"
@@ -382,9 +391,11 @@ object Set {
                 case Some(bytes) =>
                   run(
                     args.tail.tail,
-                    set.copy(ttl = Some(InSeconds(RequireClientProtocol.safe {
-                      NumberFormat.toLong(BytesToString(bytes))
-                    }))))
+                    set.copy(ttl = Some(
+                      InSeconds(
+                        RequireClientProtocol.safe {
+                          NumberFormat.toLong(BytesToString(bytes))
+                        }))))
               }
             case Px =>
               args.tail.headOption match {
@@ -393,9 +404,10 @@ object Set {
                   run(
                     args.tail.tail,
                     set.copy(ttl = Some(
-                      InMilliseconds(RequireClientProtocol.safe {
-                        NumberFormat.toLong(BytesToString(bytes))
-                      }))))
+                      InMilliseconds(
+                        RequireClientProtocol.safe {
+                          NumberFormat.toLong(BytesToString(bytes))
+                        }))))
               }
             case Nx => run(args.tail, set.copy(nx = true))
             case Xx => run(args.tail, set.copy(xx = true))
@@ -444,8 +456,7 @@ case class SetEx(key: ChannelBuffer, seconds: Long, value: ChannelBuffer)
         CommandBytes.SETEX,
         key,
         StringToChannelBuffer(seconds.toString),
-        value
-      ))
+        value))
 }
 object SetEx {
   def apply(args: Seq[Array[Byte]]) = {
@@ -456,8 +467,7 @@ object SetEx {
     new SetEx(
       ChannelBuffers.wrappedBuffer(args(0)),
       seconds,
-      ChannelBuffers.wrappedBuffer(list(2))
-    )
+      ChannelBuffers.wrappedBuffer(list(2)))
   }
 }
 
@@ -487,8 +497,7 @@ case class SetRange(key: ChannelBuffer, offset: Int, value: ChannelBuffer)
         CommandBytes.SETRANGE,
         key,
         StringToChannelBuffer(offset.toString),
-        value
-      ))
+        value))
 }
 object SetRange {
   def apply(args: Seq[Array[Byte]]) = {
@@ -500,8 +509,7 @@ object SetRange {
     new SetRange(
       ChannelBuffers.wrappedBuffer(list(0)),
       offset,
-      ChannelBuffers.wrappedBuffer(value)
-    )
+      ChannelBuffers.wrappedBuffer(value))
   }
 }
 

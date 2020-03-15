@@ -191,11 +191,15 @@ package object rearranger {
 
   val tokensForType = immutable.HashMap(
     TYPE -> (commonModifiers + OVERRIDE),
-    FUNCTION -> (commonModifiers +
-      OVERRIDE + IMPLICIT),
+    FUNCTION -> (
+      commonModifiers +
+        OVERRIDE + IMPLICIT
+    ),
     CLASS -> (commonModifiers + ABSTRACT + SEALED),
-    TRAIT -> (commonModifiers +
-      ABSTRACT + SEALED),
+    TRAIT -> (
+      commonModifiers +
+        ABSTRACT + SEALED
+    ),
     VAL -> (commonModifiers + OVERRIDE + LAZY + ABSTRACT),
     VAR -> (commonModifiers + OVERRIDE),
     MACRO -> (commonModifiers + OVERRIDE),

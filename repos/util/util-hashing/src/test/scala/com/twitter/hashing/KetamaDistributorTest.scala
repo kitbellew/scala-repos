@@ -67,8 +67,7 @@ class KetamaDistributorTest extends WordSpec {
         8796093022208L -> 3,
         4312515125124L -> 2,
         -8192481414141L -> 1,
-        -9515121512312L -> 5
-      )
+        -9515121512312L -> 5)
 
       knownGoodValues foreach {
         case (key, node) =>

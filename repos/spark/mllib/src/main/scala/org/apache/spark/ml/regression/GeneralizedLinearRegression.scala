@@ -402,9 +402,9 @@ object GeneralizedLinearRegression
           val eta = model.predict(instance.features)
           val mu = fitted(eta)
           val offset = eta + (instance.label - mu) * link.deriv(mu)
-          val weight =
-            instance.weight / (math.pow(this.link.deriv(mu), 2.0) * family
-              .variance(mu))
+          val weight = instance.weight / (
+            math.pow(this.link.deriv(mu), 2.0) * family.variance(mu)
+          )
           (offset, weight)
         }
     }
@@ -483,8 +483,9 @@ object GeneralizedLinearRegression
         numInstances: Double,
         weightSum: Double): Double = {
       val wt = predictions.map(x => math.log(x._3)).sum()
-      numInstances * (math.log(
-        deviance / numInstances * 2.0 * math.Pi) + 1.0) + 2.0 - wt
+      numInstances * (
+        math.log(deviance / numInstances * 2.0 * math.Pi) + 1.0
+      ) + 2.0 - wt
     }
 
     override def project(mu: Double): Double = {
@@ -519,8 +520,10 @@ object GeneralizedLinearRegression
 
     override def deviance(y: Double, mu: Double, weight: Double): Double = {
       val my = 1.0 - y
-      2.0 * weight * (y * math.log(math.max(y, 1.0) / mu) +
-        my * math.log(math.max(my, 1.0) / (1.0 - mu)))
+      2.0 * weight * (
+        y * math.log(math.max(y, 1.0) / mu) +
+          my * math.log(math.max(my, 1.0) / (1.0 - mu))
+      )
     }
 
     override def aic(

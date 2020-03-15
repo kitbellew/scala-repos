@@ -44,12 +44,14 @@ object Page extends LilaController {
 
   def variant(key: String) =
     Open { implicit ctx =>
-      (for {
-        variant <- chess.variant.Variant.byKey get key
-        perfType <- lila.rating.PerfType byVariant variant
-      } yield OptionOk(Prismic getVariant variant) {
-        case (doc, resolver) =>
-          views.html.site.variant(doc, resolver, variant, perfType)
-      }) | notFound
+      (
+        for {
+          variant <- chess.variant.Variant.byKey get key
+          perfType <- lila.rating.PerfType byVariant variant
+        } yield OptionOk(Prismic getVariant variant) {
+          case (doc, resolver) =>
+            views.html.site.variant(doc, resolver, variant, perfType)
+        }
+      ) | notFound
     }
 }

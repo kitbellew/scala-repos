@@ -121,18 +121,23 @@ trait BatchedSink[T] extends Sink[T] {
           optBuilt: Option[(Interval[BatchID], FlowToPipe[T])])
           : Try[((Interval[Timestamp], Mode), FlowToPipe[T])] = {
         val (aBatches, aFlows) = existing.unzip
-        val flows = aFlows ++ (optBuilt.map {
-          _._2
-        })
-        val batches = aBatches ++ (optBuilt
-          .map { pair =>
-            BatchID.toIterable(pair._1)
+        val flows = aFlows ++ (
+          optBuilt.map {
+            _._2
           }
-          .getOrElse(Iterable.empty))
+        )
+        val batches = aBatches ++ (
+          optBuilt
+            .map { pair =>
+              BatchID.toIterable(pair._1)
+            }
+            .getOrElse(Iterable.empty)
+          )
 
         if (flows.isEmpty)
-          Left(List(
-            "Zero batches requested, should never occur: " + timeSpan.toString))
+          Left(
+            List(
+              "Zero batches requested, should never occur: " + timeSpan.toString))
         else {
           // it is a static (i.e. independent from input) bug if this get ever throws
           val available = batchOps.intersect(batches, timeSpan).get

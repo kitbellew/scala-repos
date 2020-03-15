@@ -189,9 +189,10 @@ class CircuitBreaker(
     * @return CircuitBreaker for fluent usage
     */
   def onOpen(callback: ⇒ Unit): CircuitBreaker =
-    onOpen(new Runnable {
-      def run = callback
-    })
+    onOpen(
+      new Runnable {
+        def run = callback
+      })
 
   /**
     * Java API for onOpen
@@ -213,9 +214,10 @@ class CircuitBreaker(
     * @return CircuitBreaker for fluent usage
     */
   def onHalfOpen(callback: ⇒ Unit): CircuitBreaker =
-    onHalfOpen(new Runnable {
-      def run = callback
-    })
+    onHalfOpen(
+      new Runnable {
+        def run = callback
+      })
 
   /**
     * JavaAPI for onHalfOpen
@@ -237,9 +239,10 @@ class CircuitBreaker(
     * @return CircuitBreaker for fluent usage
     */
   def onClose(callback: ⇒ Unit): CircuitBreaker =
-    onClose(new Runnable {
-      def run = callback
-    })
+    onClose(
+      new Runnable {
+        def run = callback
+      })
 
   /**
     * JavaAPI for onClose

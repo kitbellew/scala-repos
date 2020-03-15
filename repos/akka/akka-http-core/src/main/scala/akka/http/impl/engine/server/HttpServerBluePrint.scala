@@ -893,12 +893,13 @@ private[http] object HttpServerBluePrint {
             }
 
           val sinkIn = new SubSinkInlet[ByteString]("FrameSink")
-          sinkIn.setHandler(new InHandler {
-            override def onPush(): Unit = push(toNet, sinkIn.grab())
-            override def onUpstreamFinish(): Unit = complete(toNet)
-            override def onUpstreamFailure(ex: Throwable): Unit =
-              fail(toNet, ex)
-          })
+          sinkIn.setHandler(
+            new InHandler {
+              override def onPush(): Unit = push(toNet, sinkIn.grab())
+              override def onUpstreamFinish(): Unit = complete(toNet)
+              override def onUpstreamFailure(ex: Throwable): Unit =
+                fail(toNet, ex)
+            })
 
           if (isClosed(fromNet)) {
             setHandler(
@@ -944,20 +945,22 @@ private[http] object HttpServerBluePrint {
                   sourceOut.fail(ex)
               }
             )
-            sourceOut.setHandler(new OutHandler {
-              override def onPull(): Unit = {
-                if (!hasBeenPulled(fromNet))
-                  pull(fromNet)
-                cancelTimeout(timeoutKey)
-                sourceOut.setHandler(new OutHandler {
-                  override def onPull(): Unit =
-                    if (!hasBeenPulled(fromNet))
-                      pull(fromNet)
-                  override def onDownstreamFinish(): Unit = cancel(fromNet)
-                })
-              }
-              override def onDownstreamFinish(): Unit = cancel(fromNet)
-            })
+            sourceOut.setHandler(
+              new OutHandler {
+                override def onPull(): Unit = {
+                  if (!hasBeenPulled(fromNet))
+                    pull(fromNet)
+                  cancelTimeout(timeoutKey)
+                  sourceOut.setHandler(
+                    new OutHandler {
+                      override def onPull(): Unit =
+                        if (!hasBeenPulled(fromNet))
+                          pull(fromNet)
+                      override def onDownstreamFinish(): Unit = cancel(fromNet)
+                    })
+                }
+                override def onDownstreamFinish(): Unit = cancel(fromNet)
+              })
 
             WebSocket.framing
               .join(frameHandler)

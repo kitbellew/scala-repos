@@ -278,8 +278,9 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         throw new SubmitRestConnectionException(
           "Unable to connect to server",
           unreachable)
-      case malformed @ (_: JsonProcessingException |
-          _: SubmitRestProtocolException) =>
+      case malformed @ (
+            _: JsonProcessingException | _: SubmitRestProtocolException
+          ) =>
         throw new SubmitRestProtocolException(
           "Malformed response received from server",
           malformed)
@@ -475,8 +476,9 @@ private[spark] object RestSubmissionClient {
       env: Map[String, String]): Map[String, String] = {
     env.filterKeys { k =>
       // SPARK_HOME is filtered out because it is usually wrong on the remote machine (SPARK-12345)
-      (k.startsWith(
-        "SPARK_") && k != "SPARK_ENV_LOADED" && k != "SPARK_HOME") ||
+      (
+        k.startsWith("SPARK_") && k != "SPARK_ENV_LOADED" && k != "SPARK_HOME"
+      ) ||
       k.startsWith("MESOS_")
     }
   }

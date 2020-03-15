@@ -247,25 +247,27 @@ trait ObservableMap[K, V]
     * @param op Function that will handle this $OM's modifications data to be activated when some change was made.
     */
   def onChange(op: (ObservableMap[K, V], Change[K, V]) => Unit) {
-    delegate.addListener(new jfxc.MapChangeListener[K, V] {
-      def onChanged(change: jfxc.MapChangeListener.Change[_ <: K, _ <: V]) {
-        val changeEvent: Change[K, V] =
-          (change.wasAdded, change.wasRemoved) match {
-            case (true, true) =>
-              Replace(
-                change.getKey,
-                change.getValueAdded,
-                change.getValueRemoved)
-            case (true, false) => Add(change.getKey, change.getValueAdded)
-            case (false, true) => Remove(change.getKey, change.getValueRemoved)
-            case (false, false) =>
-              throw new IllegalStateException(
-                "Irregular Change: neither addition nor remotion")
-          }
+    delegate.addListener(
+      new jfxc.MapChangeListener[K, V] {
+        def onChanged(change: jfxc.MapChangeListener.Change[_ <: K, _ <: V]) {
+          val changeEvent: Change[K, V] =
+            (change.wasAdded, change.wasRemoved) match {
+              case (true, true) =>
+                Replace(
+                  change.getKey,
+                  change.getValueAdded,
+                  change.getValueRemoved)
+              case (true, false) => Add(change.getKey, change.getValueAdded)
+              case (false, true) =>
+                Remove(change.getKey, change.getValueRemoved)
+              case (false, false) =>
+                throw new IllegalStateException(
+                  "Irregular Change: neither addition nor remotion")
+            }
 
-        op(ObservableMap.this, changeEvent)
-      }
-    })
+          op(ObservableMap.this, changeEvent)
+        }
+      })
   }
 
   /**
@@ -274,11 +276,12 @@ trait ObservableMap[K, V]
     * @param op No-argument function to be activated when some change in this $OM was made.
     */
   def onChange(op: => Unit) {
-    delegate.addListener(new jfxc.MapChangeListener[K, V] {
-      def onChanged(change: jfxc.MapChangeListener.Change[_ <: K, _ <: V]) {
-        op
-      }
-    })
+    delegate.addListener(
+      new jfxc.MapChangeListener[K, V] {
+        def onChanged(change: jfxc.MapChangeListener.Change[_ <: K, _ <: V]) {
+          op
+        }
+      })
   }
 
 }

@@ -20,11 +20,7 @@ private final class DeviceApi(coll: Coll) {
   private[push] def findLastByUserId(platform: String)(
       userId: String): Fu[Option[Device]] =
     coll
-      .find(
-        BSONDocument(
-          "platform" -> platform,
-          "userId" -> userId
-        ))
+      .find(BSONDocument("platform" -> platform, "userId" -> userId))
       .sort(BSONDocument("seenAt" -> -1))
       .one[Device]
 
@@ -37,8 +33,7 @@ private final class DeviceApi(coll: Coll) {
           _id = deviceId,
           platform = platform,
           userId = user.id,
-          seenAt = DateTime.now
-        ),
+          seenAt = DateTime.now),
         upsert = true)
       .void
   }

@@ -20,14 +20,8 @@ class PrimaryKeyTest extends AsyncTest[RelationalTestDB] {
 
     seq(
       as.schema.create,
-      as ++= Seq(
-        (1, 1, "a11"),
-        (1, 2, "a12"),
-        (2, 1, "a21"),
-        (2, 2, "a22")
-      ),
+      as ++= Seq((1, 1, "a11"), (1, 2, "a12"), (2, 1, "a21"), (2, 2, "a22")),
       (as += (1, 1, "a11-conflict")).failed,
-      as.schema.drop
-    )
+      as.schema.drop)
   }
 }

@@ -236,10 +236,12 @@ trait Foldable[F[_]] { self =>
 
   def filterLength[A](fa: F[A])(f: A => Boolean): Int =
     foldLeft(fa, 0)((b, a) =>
-      (if (f(a))
-         1
-       else
-         0) + b)
+      (
+        if (f(a))
+          1
+        else
+          0
+      ) + b)
 
   import Ordering.{GT, LT}
   import std.option.{some, none}
@@ -346,9 +348,11 @@ trait Foldable[F[_]] { self =>
 
   /** Insert an `A` between every A, yielding the sum. */
   def intercalate[A](fa: F[A], a: A)(implicit A: Monoid[A]): A =
-    (foldRight(fa, none[A]) { (l, oa) =>
-      some(A.append(l, oa map (A.append(a, _)) getOrElse A.zero))
-    }).getOrElse(A.zero)
+    (
+      foldRight(fa, none[A]) { (l, oa) =>
+        some(A.append(l, oa map (A.append(a, _)) getOrElse A.zero))
+      }
+    ).getOrElse(A.zero)
 
   /**
     * Splits the elements into groups that alternatively satisfy and don't satisfy the predicate p.

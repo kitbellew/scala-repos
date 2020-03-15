@@ -23,13 +23,15 @@ final class PerfStatIndexer(storage: PerfStatStorage, sequencer: ActorRef) {
   private def compute(user: User, perfType: PerfType): Funit = {
     import lila.game.tube.gameTube
     import lila.game.BSONHandlers.gameBSONHandler
-    pimpQB($query {
-      Query.user(user.id) ++
-        Query.finished ++
-        Query.turnsMoreThan(2) ++
-        Query.variant(PerfType variantOf perfType)
+    pimpQB(
+      $query {
+        Query.user(user.id) ++
+          Query.finished ++
+          Query.turnsMoreThan(2) ++
+          Query.variant(PerfType variantOf perfType)
 
-    }).sort(Query.sortChronological)
+      })
+      .sort(Query.sortChronological)
       .cursor[Game]()
       .enumerate(Int.MaxValue, stopOnError = true) |>>>
       Iteratee.fold[Game, PerfStat](PerfStat.init(user.id, perfType)) {

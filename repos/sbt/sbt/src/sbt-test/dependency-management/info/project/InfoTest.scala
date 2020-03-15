@@ -26,19 +26,21 @@ object InfoTest extends Build {
       moduleID: String,
       version: String): NodeSeq =
     if (addInfo)
-      (<info organisation={
-        organization
-      } module={
-        moduleID
-      } revision={
-        version
-      }>
+      (
+        <info organisation={
+          organization
+        } module={
+          moduleID
+        } revision={
+          version
+        }>
 				<license name="Two-clause BSD-style" url="http://github.com/szeiger/scala-query/blob/master/LICENSE.txt" />
 				<description homepage="http://github.com/szeiger/scala-query/">
 					ScalaQuery is a type-safe database query API for Scala.
 				</description>
 			</info>
-			<dependency org="org.scala-tools.testing" name="scalacheck_2.9.1" rev="1.9"/>)
+			<dependency org="org.scala-tools.testing" name="scalacheck_2.9.1" rev="1.9"/>
+      )
     else
       <dependency org="org.scala-tools.testing" name="scalacheck_2.9.1" rev="1.9"/>
 
@@ -55,7 +57,9 @@ object InfoTest extends Build {
       else if (addInfo) {
         if (!deliveredWithCustom(d))
           sys.error(
-            "Expected 'license' and 'description' tags in info tag, got: \n" + (d \ "info"))
+            "Expected 'license' and 'description' tags in info tag, got: \n" + (
+              d \ "info"
+            ))
         else
           ()
       } else if (deliveredWithCustom(d))

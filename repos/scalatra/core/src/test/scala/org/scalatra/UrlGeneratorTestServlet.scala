@@ -39,9 +39,10 @@ class UrlGeneratorTestServlet extends ScalatraServlet {
   val pathPattern = get(new PathPattern(".".r, Nil)) {}
 
   val customMatcher =
-    get(new RouteMatcher {
-      def apply(requestPath: String) = None
-    }) {}
+    get(
+      new RouteMatcher {
+        def apply(requestPath: String) = None
+      }) {}
 
   val stringAndCustomMatcher =
     get(

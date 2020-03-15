@@ -139,9 +139,10 @@ class UseAsScalaTypesTest {
     }
 
     js.use(new A)
-      .as[JSTypeMember {
-        type R = Int
-      }]
+      .as[
+        JSTypeMember {
+          type R = Int
+        }]
   }
 
   @Test def should_resolve_exports_with_class_level_type_parameter(): Unit = {
@@ -277,9 +278,10 @@ class UseAsScalaTypesTest {
   }
 
   @Test def should_support_anonymous_types(): Unit = {
-    js.use(new {
-        @JSExport def m(a: Int, b: String): js.Object = ???
-      })
+    js.use(
+        new {
+          @JSExport def m(a: Int, b: String): js.Object = ???
+        })
       .as[JSBasic]
   }
 

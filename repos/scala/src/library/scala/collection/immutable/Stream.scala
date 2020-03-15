@@ -391,8 +391,7 @@ abstract class Stream[+A]
         if (isEmpty)
           that.toStream
         else
-          cons(head, asStream[A](tail ++ that))
-      )
+          cons(head, asStream[A](tail ++ that)))
     else
       super.++(that)(bf)
 
@@ -424,8 +423,7 @@ abstract class Stream[+A]
         if (isEmpty)
           Stream(z)
         else
-          cons(z, asStream[B](tail.scanLeft(op(z, head))(op)))
-      )
+          cons(z, asStream[B](tail.scanLeft(op(z, head))(op))))
     else
       super.scanLeft(z)(op)(bf)
 
@@ -450,8 +448,7 @@ abstract class Stream[+A]
         if (isEmpty)
           Stream.Empty
         else
-          cons(f(head), asStream[B](tail map f))
-      )
+          cons(f(head), asStream[B](tail map f)))
     else
       super.map(f)(bf)
   }
@@ -541,8 +538,7 @@ abstract class Stream[+A]
             Stream.empty
           else
             prefix append asStream[B](nonEmptyPrefix.tail flatMap f)
-        }
-      )
+        })
     else
       super.flatMap(f)(bf)
 
@@ -688,8 +684,7 @@ abstract class Stream[+A]
         else
           cons(
             (this.head, that.head),
-            asStream[(A1, B)](this.tail zip that.tail))
-      )
+            asStream[(A1, B)](this.tail zip that.tail)))
     else
       super.zip(that)(bf)
 
@@ -865,8 +860,7 @@ abstract class Stream[+A]
       else if (n == 1)
         cons(head, Stream.empty)
       else
-        cons(head, tail take n - 1)
-    )
+        cons(head, tail take n - 1))
 
   @tailrec final override def drop(n: Int): Stream[A] =
     if (n <= 0 || isEmpty)

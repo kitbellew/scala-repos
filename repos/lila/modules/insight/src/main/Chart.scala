@@ -36,8 +36,7 @@ object Chart {
         .obj(
           "name" -> light.map(_.name),
           "title" -> light.map(_.title),
-          "rating" -> player.rating
-        )
+          "rating" -> player.rating)
         .noNull
     }
 

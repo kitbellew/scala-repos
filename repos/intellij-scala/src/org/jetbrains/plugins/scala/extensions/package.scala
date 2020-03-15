@@ -327,9 +327,11 @@ package object extensions {
           }
         case t: ScTypedDefinition
             if t.isVal || t.isVar ||
-              (t.isInstanceOf[ScClassParameter] && t
-                .asInstanceOf[ScClassParameter]
-                .isCaseClassVal) =>
+              (
+                t.isInstanceOf[ScClassParameter] && t
+                  .asInstanceOf[ScClassParameter]
+                  .isCaseClassVal
+              ) =>
           PsiTypedDefinitionWrapper.processWrappersFor(
             t,
             concreteClassFor(t),
@@ -463,9 +465,10 @@ package object extensions {
   }
 
   def inWriteAction[T](body: => T): T = {
-    ApplicationManager.getApplication.runWriteAction(new Computable[T] {
-      def compute: T = body
-    })
+    ApplicationManager.getApplication.runWriteAction(
+      new Computable[T] {
+        def compute: T = body
+      })
   }
 
   def inWriteCommandAction[T](
@@ -483,9 +486,10 @@ package object extensions {
   }
 
   def inReadAction[T](body: => T): T = {
-    ApplicationManager.getApplication.runReadAction(new Computable[T] {
-      def compute: T = body
-    })
+    ApplicationManager.getApplication.runReadAction(
+      new Computable[T] {
+        def compute: T = body
+      })
   }
 
   def executeOnPooledThread[T](body: => T): Future[T] = {
@@ -525,9 +529,10 @@ package object extensions {
   def postponeFormattingWithin[T](project: Project)(body: => T): T = {
     PostprocessReformattingAspect
       .getInstance(project)
-      .postponeFormattingInside(new Computable[T] {
-        def compute(): T = body
-      })
+      .postponeFormattingInside(
+        new Computable[T] {
+          def compute(): T = body
+        })
   }
 
   def withDisabledPostprocessFormatting[T](project: Project)(body: => T): T = {
@@ -541,20 +546,22 @@ package object extensions {
   }
 
   def invokeLater[T](body: => T) {
-    ApplicationManager.getApplication.invokeLater(new Runnable {
-      def run() {
-        body
-      }
-    })
-  }
-
-  def invokeAndWait[T](body: => Unit) {
-    preservingControlFlow {
-      SwingUtilities.invokeAndWait(new Runnable {
+    ApplicationManager.getApplication.invokeLater(
+      new Runnable {
         def run() {
           body
         }
       })
+  }
+
+  def invokeAndWait[T](body: => Unit) {
+    preservingControlFlow {
+      SwingUtilities.invokeAndWait(
+        new Runnable {
+          def run() {
+            body
+          }
+        })
     }
   }
 

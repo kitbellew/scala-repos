@@ -148,13 +148,17 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           )
         }
         .filter { m =>
-          (!cls.getName.endsWith("Service") || !m.getName.equals(
-            "setForeground")) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
-          (!cls.getName.endsWith("WebView") || !m.getName.equals(
-            "getZoomControls")) && //https://github.com/pocorall/scaloid/issues/56
-          (!cls.getName.endsWith("View") || !m.getName.equals(
-            "setBackground"
-          )) // manually specifies this method
+          (
+            !cls.getName.endsWith("Service") || !m.getName.equals(
+              "setForeground")
+          ) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
+          (
+            !cls.getName.endsWith("WebView") || !m.getName.equals(
+              "getZoomControls")
+          ) && //https://github.com/pocorall/scaloid/issues/56
+          (
+            !cls.getName.endsWith("View") || !m.getName.equals("setBackground")
+          ) // manually specifies this method
         }
 
       val allMethodNames = clsMethods.map(_.getName).toSet
@@ -177,8 +181,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
                 .flatten
                 .nonEmpty
 
-            if (setters.isEmpty && (getter.isEmpty || getter.get.name
-                  .startsWith("is")))
+            if (setters.isEmpty && (
+                  getter.isEmpty || getter.get.name.startsWith("is")
+                ))
               None
             else {
               val nameClashes = allMethodNames(name) || superGetterExists
@@ -238,8 +243,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           cm.retType,
           cm.argTypes,
           false,
-          cm.isDeprecated
-        )
+          cm.isDeprecated)
       }
 
       def listenerName(
@@ -303,7 +307,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
     val constructorNames: Map[List[String], List[String]] = {
       val constRegex =
-        ("public +" + clsName + """(?:\<[\w\<\>\[\]]+)? *\(([^)]*)\) *(?:\{?|[^;])""").r
+        (
+          "public +" + clsName + """(?:\<[\w\<\>\[\]]+)? *\(([^)]*)\) *(?:\{?|[^;])"""
+        ).r
       val argRegex = """(.+?) +([a-z][^\[,. ]*)(?:,|$)""".r
 
       constRegex
@@ -349,8 +355,10 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         javaTypes.reverse match {
           case Nil => Nil
           case last :: init =>
-            (toTypeStr(last, isVarArgs, true) :: init.map(
-              toTypeStr(_, isVarArgs, false))).reverse
+            (
+              toTypeStr(last, isVarArgs, true) :: init.map(
+                toTypeStr(_, isVarArgs, false))
+            ).reverse
         }
 
       val args =

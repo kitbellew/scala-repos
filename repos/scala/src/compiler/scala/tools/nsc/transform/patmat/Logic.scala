@@ -47,8 +47,9 @@ trait Logic extends Debugging {
       lineSep: String = "\n"): String = {
     val maxLen = max(xss map (_.length))
     val padded = xss map (xs => xs ++ List.fill(maxLen - xs.length)(null))
-    padded.transpose.map(alignedColumns).transpose map (_.mkString(
-      sep)) mkString (lineSep)
+    padded.transpose
+      .map(alignedColumns)
+      .transpose map (_.mkString(sep)) mkString (lineSep)
   }
 
   // ftp://ftp.cis.upenn.edu/pub/cis511/public_html/Spring04/chap3.pdf
@@ -305,17 +306,21 @@ trait Logic extends Debugging {
 
     def gatherVariables(p: Prop): Set[Var] = {
       val vars = new mutable.HashSet[Var]()
-      (new PropTraverser {
-        override def applyVar(v: Var) = vars += v
-      })(p)
+      (
+        new PropTraverser {
+          override def applyVar(v: Var) = vars += v
+        }
+      )(p)
       vars.toSet
     }
 
     def gatherSymbols(p: Prop): Set[Sym] = {
       val syms = new mutable.HashSet[Sym]()
-      (new PropTraverser {
-        override def applySymbol(s: Sym) = syms += s
-      })(p)
+      (
+        new PropTraverser {
+          override def applySymbol(s: Sym) = syms += s
+        }
+      )(p)
       syms.toSet
     }
 
@@ -614,13 +619,15 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           // values and null
           lower == upper ||
             // type implication
-            (lower != NullConst && !upper.isValue &&
-              instanceOfTpImplies(
-                if (lower.isValue)
-                  lower.wideTp
-                else
-                  lower.tp,
-                upper.tp))
+            (
+              lower != NullConst && !upper.isValue &&
+                instanceOfTpImplies(
+                  if (lower.isValue)
+                    lower.wideTp
+                  else
+                    lower.tp,
+                  upper.tp)
+            )
 
         // if(r) debug.patmat("implies    : "+(lower, lower.tp, upper, upper.tp))
         // else  debug.patmat("NOT implies: "+(lower, upper))
@@ -787,18 +794,19 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           mkFresh: => Const): Const =
         uniques
           .get(tp)
-          .getOrElse(uniques.find {
-            case (oldTp, oldC) => oldTp =:= tp
-          } match {
-            case Some((_, c)) =>
-              debug.patmat("unique const: " + ((tp, c)))
-              c
-            case _ =>
-              val fresh = mkFresh
-              debug.patmat("uniqued const: " + ((tp, fresh)))
-              uniques(tp) = fresh
-              fresh
-          })
+          .getOrElse(
+            uniques.find {
+              case (oldTp, oldC) => oldTp =:= tp
+            } match {
+              case Some((_, c)) =>
+                debug.patmat("unique const: " + ((tp, c)))
+                c
+              case _ =>
+                val fresh = mkFresh
+                debug.patmat("uniqued const: " + ((tp, fresh)))
+                uniques(tp) = fresh
+                fresh
+            })
 
       private val trees = mutable.HashSet.empty[Tree]
 

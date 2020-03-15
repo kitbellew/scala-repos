@@ -20,8 +20,7 @@ trait Imports {
     val hd :: tl = sym.fullName.split('.').toList map newTermName
     val tree = Import(
       tl.foldLeft(Ident(hd): Tree)((x, y) => Select(x, y)),
-      ImportSelector.wildList
-    )
+      ImportSelector.wildList)
     tree setSymbol sym
     new ImportHandler(tree)
   }
@@ -138,8 +137,9 @@ trait Imports {
               h.importedNames.exists(x => wanted.contains(x))
             case _: ImportHandler => true
             case x if generousImports =>
-              x.definesImplicit || (x.definedNames exists (d =>
-                wanted.exists(w => d.startsWith(w))))
+              x.definesImplicit || (
+                x.definedNames exists (d => wanted.exists(w => d.startsWith(w)))
+              )
             case x => x.definesImplicit || (x.definedNames exists wanted)
           }
 

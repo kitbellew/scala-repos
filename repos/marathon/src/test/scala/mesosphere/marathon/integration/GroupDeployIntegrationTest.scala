@@ -171,8 +171,10 @@ class GroupDeployIntegrationTest
     val v1Checks = appProxyCheck(appId, "v1", state = true)
 
     When("The group is updated")
-    waitForChange(marathon
-      .updateGroup(gid, group.copy(apps = Some(Set(appProxy(appId, "v2", 2))))))
+    waitForChange(
+      marathon.updateGroup(
+        gid,
+        group.copy(apps = Some(Set(appProxy(appId, "v2", 2))))))
 
     Then("The new version is deployed")
     val v2Checks = appProxyCheck(appId, "v2", state = true)
@@ -354,8 +356,8 @@ class GroupDeployIntegrationTest
       Set.empty[AppDefinition],
       Set(
         GroupUpdate(PathId("db"), apps = Set(db)),
-        GroupUpdate(PathId("service"), apps = Set(service)).copy(dependencies =
-          Some(Set("/test/db".toTestPath))),
+        GroupUpdate(PathId("service"), apps = Set(service))
+          .copy(dependencies = Some(Set("/test/db".toTestPath))),
         GroupUpdate(PathId("frontend"), apps = Set(frontend))
           .copy(dependencies = Some(Set("/test/service".toTestPath)))
       )

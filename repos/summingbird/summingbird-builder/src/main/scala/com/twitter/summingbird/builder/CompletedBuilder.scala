@@ -68,8 +68,7 @@ case class CompletedBuilder[P <: Platform[P], K, V](
     new IterableRegistrar(
       eventRegistrar,
       injectionDefaultRegistrar(keyCodec),
-      injectionDefaultRegistrar(valCodec)
-    )
+      injectionDefaultRegistrar(valCodec))
 
   // Set any Option
   def set[T](opt: T)(implicit env: Env) = {

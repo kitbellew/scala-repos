@@ -26,8 +26,9 @@ object RestartNode3MultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        "akka.cluster.auto-down-unreachable-after = off"))
+      .withFallback(
+        ConfigFactory.parseString(
+          "akka.cluster.auto-down-unreachable-after = off"))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 
   testTransport(on = true)
@@ -77,13 +78,14 @@ abstract class RestartNode3Spec
       // we must transfer its address to first
       runOn(first, third) {
         system.actorOf(
-          Props(new Actor {
-            def receive = {
-              case a: UniqueAddress ⇒
-                secondUniqueAddress = a
-                sender() ! "ok"
-            }
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              def receive = {
+                case a: UniqueAddress ⇒
+                  secondUniqueAddress = a
+                  sender() ! "ok"
+              }
+            }).withDeploy(Deploy.local),
           name = "address-receiver")
         enterBarrier("second-address-receiver-ready")
       }
@@ -120,9 +122,10 @@ abstract class RestartNode3Spec
       runOn(second) {
         Cluster(secondSystem).joinSeedNodes(seedNodes)
         awaitAssert(Cluster(secondSystem).readView.members.size should ===(3))
-        awaitAssert(Cluster(secondSystem).readView.members.collectFirst {
-          case m if m.address == Cluster(secondSystem).selfAddress ⇒ m.status
-        } should ===(Some(Joining)))
+        awaitAssert(
+          Cluster(secondSystem).readView.members.collectFirst {
+            case m if m.address == Cluster(secondSystem).selfAddress ⇒ m.status
+          } should ===(Some(Joining)))
       }
       enterBarrier("second-joined")
 

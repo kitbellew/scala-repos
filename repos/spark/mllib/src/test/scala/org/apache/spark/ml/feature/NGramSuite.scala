@@ -43,8 +43,7 @@ class NGramSuite
       Seq(
         NGramTestData(
           Array("Test", "for", "ngram", "."),
-          Array("Test for", "for ngram", "ngram .")
-        )))
+          Array("Test for", "for ngram", "ngram ."))))
     testNGram(nGram, dataset)
   }
 
@@ -57,8 +56,7 @@ class NGramSuite
       Seq(
         NGramTestData(
           Array("a", "b", "c", "d", "e"),
-          Array("a b c d", "b c d e")
-        )))
+          Array("a b c d", "b c d e"))))
     testNGram(nGram, dataset)
   }
 
@@ -68,11 +66,7 @@ class NGramSuite
       .setOutputCol("nGrams")
       .setN(4)
     val dataset = sqlContext.createDataFrame(
-      Seq(
-        NGramTestData(
-          Array(),
-          Array()
-        )))
+      Seq(NGramTestData(Array(), Array())))
     testNGram(nGram, dataset)
   }
 
@@ -82,11 +76,7 @@ class NGramSuite
       .setOutputCol("nGrams")
       .setN(6)
     val dataset = sqlContext.createDataFrame(
-      Seq(
-        NGramTestData(
-          Array("a", "b", "c", "d", "e"),
-          Array()
-        )))
+      Seq(NGramTestData(Array("a", "b", "c", "d", "e"), Array())))
     testNGram(nGram, dataset)
   }
 

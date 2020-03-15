@@ -19,8 +19,9 @@ object Test {
     3
   }
   def test1(x: Int = lx) = ???
-  def test2(x: Int = lx match {
-    case 0 => 1;
-    case 3 => 4
-  }) = ???
+  def test2(
+      x: Int = lx match {
+        case 0 => 1;
+        case 3 => 4
+      }) = ???
 }

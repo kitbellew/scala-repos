@@ -8,7 +8,9 @@ object PartestUtil {
       testBase: File) {
     private val testCaseDir =
       new SimpleFileFilter(f =>
-        f.isDirectory && f.listFiles.nonEmpty && !(f.getParentFile / (f.name + ".res")).exists)
+        f.isDirectory && f.listFiles.nonEmpty && !(
+          f.getParentFile / (f.name + ".res")
+        ).exists)
     private val testCaseFilter =
       GlobFilter("*.scala") | GlobFilter("*.java") | GlobFilter(
         "*.res") || testCaseDir
@@ -25,10 +27,12 @@ object PartestUtil {
       if (f == null || !f.exists)
         Iterator()
       else
-        Iterator(f) ++ (if (f.getParentFile == null)
-                          Nil
-                        else
-                          parentChain(f.getParentFile))
+        Iterator(f) ++ (
+          if (f.getParentFile == null)
+            Nil
+          else
+            parentChain(f.getParentFile)
+        )
     def isParentOf(parent: File, f2: File, maxDepth: Int) =
       parentChain(f2).take(maxDepth).exists(p1 => equiv(p1, parent))
     def isTestCase(f: File) = {
@@ -141,17 +145,18 @@ object PartestUtil {
       token(grepOption <~ Space) ~> token(globOrPattern, tokenCompletion)
     }
 
-    val SrcPath = ((token(srcPathOption) <~ Space) ~ token(
-      StringBasic.examples(Set("files", "pending", "scaladoc")))) map {
+    val SrcPath = (
+      (token(srcPathOption) <~ Space) ~ token(
+        StringBasic.examples(Set("files", "pending", "scaladoc")))
+    ) map {
       case opt ~ path =>
         srcPath = path
         opt + " " + path
     }
     val P = oneOf(
       knownUnaryOptions.map(x => token(x))) | SrcPath | TestPathParser | Grep
-    (Space ~> repsep(P, oneOrMore(Space)))
-      .map(_.mkString(" "))
-      .?
-      .map(_.getOrElse("")) <~ OptSpace
+    (
+      Space ~> repsep(P, oneOrMore(Space))
+    ).map(_.mkString(" ")).?.map(_.getOrElse("")) <~ OptSpace
   }
 }

@@ -38,8 +38,13 @@ object FSM {
 
     def schedule(actor: ActorRef, timeout: Duration) {
       if (repeat) {
-        ref = Some(Scheduler
-          .schedule(actor, this, timeout.length, timeout.length, timeout.unit))
+        ref = Some(
+          Scheduler.schedule(
+            actor,
+            this,
+            timeout.length,
+            timeout.length,
+            timeout.unit))
       } else {
         ref = Some(
           Scheduler.scheduleOnce(actor, this, timeout.length, timeout.unit))

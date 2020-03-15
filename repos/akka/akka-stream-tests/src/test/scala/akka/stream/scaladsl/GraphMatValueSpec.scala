@@ -29,12 +29,13 @@ class GraphMatValueSpec extends AkkaSpec {
         "expose the materialized value as source" in {
           val sub = TestSubscriber.manualProbe[Int]()
           val f = RunnableGraph
-            .fromGraph(GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
-              Source(1 to 10) ~> fold
-              b.materializedValue.mapAsync(4)(identity) ~> Sink.fromSubscriber(
-                sub)
-              ClosedShape
-            })
+            .fromGraph(
+              GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
+                Source(1 to 10) ~> fold
+                b.materializedValue.mapAsync(4)(identity) ~> Sink
+                  .fromSubscriber(sub)
+                ClosedShape
+              })
             .run()
 
           val r1 = Await.result(f, 3.seconds)
@@ -48,15 +49,16 @@ class GraphMatValueSpec extends AkkaSpec {
           val sub = TestSubscriber.manualProbe[Int]()
 
           val f = RunnableGraph
-            .fromGraph(GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
-              val zip = b.add(ZipWith[Int, Int, Int](_ + _))
-              Source(1 to 10) ~> fold
-              b.materializedValue.mapAsync(4)(identity) ~> zip.in0
-              b.materializedValue.mapAsync(4)(identity) ~> zip.in1
+            .fromGraph(
+              GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
+                val zip = b.add(ZipWith[Int, Int, Int](_ + _))
+                Source(1 to 10) ~> fold
+                b.materializedValue.mapAsync(4)(identity) ~> zip.in0
+                b.materializedValue.mapAsync(4)(identity) ~> zip.in1
 
-              zip.out ~> Sink.fromSubscriber(sub)
-              ClosedShape
-            })
+                zip.out ~> Sink.fromSubscriber(sub)
+                ClosedShape
+              })
             .run()
 
           val r1 = Await.result(f, 3.seconds)
@@ -68,10 +70,11 @@ class GraphMatValueSpec extends AkkaSpec {
 
         // Exposes the materialized value as a stream value
         val foldFeedbackSource: Source[Future[Int], Future[Int]] = Source
-          .fromGraph(GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
-            Source(1 to 10) ~> fold
-            SourceShape(b.materializedValue)
-          })
+          .fromGraph(
+            GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
+              Source(1 to 10) ~> fold
+              SourceShape(b.materializedValue)
+            })
 
         "allow exposing the materialized value as port" in {
           val (f1, f2) = foldFeedbackSource
@@ -158,20 +161,21 @@ class GraphMatValueSpec extends AkkaSpec {
               Source.empty.mapMaterializedValue(_ ⇒ done = true) ~> Sink.ignore
               ClosedShape
             }
-          val r = RunnableGraph.fromGraph(GraphDSL.create(Sink.ignore) {
-            implicit b ⇒ (s) ⇒
+          val r = RunnableGraph.fromGraph(
+            GraphDSL.create(Sink.ignore) { implicit b ⇒ (s) ⇒
               b.add(g)
               Source(1 to 10) ~> s
               ClosedShape
-          })
+            })
           r.run().futureValue should ===(akka.Done)
           done should ===(true)
         }
 
         "produce NotUsed when not importing materialized value" in {
-          val source = Source.fromGraph(GraphDSL.create() { implicit b ⇒
-            SourceShape(b.materializedValue)
-          })
+          val source = Source.fromGraph(
+            GraphDSL.create() { implicit b ⇒
+              SourceShape(b.materializedValue)
+            })
           source.runWith(Sink.seq).futureValue should ===(List(akka.NotUsed))
         }
 
@@ -185,8 +189,9 @@ class GraphMatValueSpec extends AkkaSpec {
         "produce NotUsed when starting from Flow.via with transformation" in {
           var done = false
           Source.empty
-            .viaMat(Flow[Int].via(Flow[Int].mapMaterializedValue(_ ⇒
-              done = true)))(Keep.right)
+            .viaMat(
+              Flow[Int].via(Flow[Int].mapMaterializedValue(_ ⇒ done = true)))(
+              Keep.right)
             .to(Sink.ignore)
             .run() should ===(akka.NotUsed)
           done should ===(true)

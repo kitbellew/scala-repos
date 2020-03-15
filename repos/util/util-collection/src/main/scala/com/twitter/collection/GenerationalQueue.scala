@@ -56,9 +56,11 @@ class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
 
   def collectAll(age: Duration): Iterable[A] =
     synchronized {
-      (container filter {
-        case (_, t) => t.untilNow > age
-      }).keys
+      (
+        container filter {
+          case (_, t) => t.untilNow > age
+        }
+      ).keys
     }
 }
 
@@ -99,8 +101,7 @@ class BucketGenerationalQueue[A](timeout: Duration)
         origin.inMilliseconds,
         span.inMilliseconds,
         age().toString,
-        super.size
-      )
+        super.size)
   }
 
   private[this] val timeSlice = timeout / 3

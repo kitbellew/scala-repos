@@ -29,9 +29,10 @@ abstract class Reifier extends States with Phases with Errors with Utils {
   override def getReifier: Reifier {
     val global: Reifier.this.global.type
   } =
-    this.asInstanceOf[Reifier {
-      val global: Reifier.this.global.type
-    }]
+    this.asInstanceOf[
+      Reifier {
+        val global: Reifier.this.global.type
+      }]
   override def hasReifier = true
 
   /** For `reifee` and other reification parameters, generate a tree of the form

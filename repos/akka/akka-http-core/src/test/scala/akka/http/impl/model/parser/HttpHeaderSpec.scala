@@ -281,9 +281,12 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         `Content-Type`(ContentType(`text/plain`, `UTF-8`))
           .renderedTo("text/plain; charset=UTF-8")
       "Content-Type: text/xml2; version=3; charset=windows-1252" =!=
-        `Content-Type`(MediaType
-          .customWithOpenCharset("text", "xml2", params = Map("version" -> "3"))
-          withCharset HttpCharsets.getForKey("windows-1252").get)
+        `Content-Type`(
+          MediaType.customWithOpenCharset(
+            "text",
+            "xml2",
+            params = Map("version" -> "3"))
+            withCharset HttpCharsets.getForKey("windows-1252").get)
       "Content-Type: text/plain; charset=fancy-pants" =!=
         `Content-Type`(
           `text/plain` withCharset HttpCharset.custom("fancy-pants"))
@@ -1051,10 +1054,11 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     outer ⇒
     def apply(line: String) = {
       val Array(name, value) = line.split(": ", 2)
-      HttpHeader.parse(name, value, settings) should (equal(
-        HttpHeader.ParsingResult.Ok(header, Nil)) and renderFromHeaderTo(
-        this,
-        line))
+      HttpHeader.parse(name, value, settings) should (
+        equal(HttpHeader.ParsingResult.Ok(header, Nil)) and renderFromHeaderTo(
+          this,
+          line)
+      )
     }
     def rendering(line: String): String = line
     def settings: HeaderParser.Settings = HeaderParser.DefaultSettings

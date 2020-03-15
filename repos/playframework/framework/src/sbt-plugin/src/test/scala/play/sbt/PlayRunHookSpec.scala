@@ -26,9 +26,10 @@ object PlayRunHookSpec extends Specification {
         HashMap.empty
       class HookMockException extends Throwable
 
-      val hooks = Seq.fill(3)(new PlayRunHook {
-        executedHooks += ((this, true))
-      }) :+ new PlayRunHook {
+      val hooks = Seq.fill(3)(
+        new PlayRunHook {
+          executedHooks += ((this, true))
+        }) :+ new PlayRunHook {
         override def beforeStarted(): Unit = throw new HookMockException()
       }
 

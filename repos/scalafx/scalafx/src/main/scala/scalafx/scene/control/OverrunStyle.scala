@@ -78,8 +78,7 @@ object OverrunStyle
       CenterEllipsis,
       CenterWordEllipsis,
       LeadingEllipsis,
-      LeadingWordEllipsis
-    )
+      LeadingWordEllipsis)
 }
 
 sealed case class OverrunStyle(override val delegate: jfxsc.OverrunStyle)

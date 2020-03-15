@@ -97,14 +97,18 @@ object Markdown {
     }
 
     override def code(code: String, lang: String, escaped: Boolean): String = {
-      "<pre class=\"prettyprint" + (if (lang != null)
-                                      s" ${options.getLangPrefix}${lang}"
-                                    else
-                                      "") + "\">" +
-        (if (escaped)
-           code
-         else
-           escape(code, true)) + "</pre>"
+      "<pre class=\"prettyprint" + (
+        if (lang != null)
+          s" ${options.getLangPrefix}${lang}"
+        else
+          ""
+      ) + "\">" +
+        (
+          if (escaped)
+            code
+          else
+            escape(code, true)
+        ) + "</pre>"
     }
 
     override def list(body: String, ordered: Boolean): String = {
@@ -188,10 +192,12 @@ object Markdown {
         ("#" + generateAnchorName(url.substring(1)))
       } else if (!enableWikiLink) {
         if (context.currentPath.contains("/blob/")) {
-          url + (if (isImage)
-                   "?raw=true"
-                 else
-                   "")
+          url + (
+            if (isImage)
+              "?raw=true"
+            else
+              ""
+          )
         } else if (context.currentPath.contains("/tree/")) {
           val paths = context.currentPath.split("/")
           val branch =
@@ -201,10 +207,12 @@ object Markdown {
               repository.repository.defaultBranch
           repository.httpUrl
             .replaceFirst("/git/", "/")
-            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (if (isImage)
-                                                                      "?raw=true"
-                                                                    else
-                                                                      "")
+            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
+            if (isImage)
+              "?raw=true"
+            else
+              ""
+          )
         } else {
           val paths = context.currentPath.split("/")
           val branch =
@@ -214,10 +222,12 @@ object Markdown {
               repository.repository.defaultBranch
           repository.httpUrl
             .replaceFirst("/git/", "/")
-            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (if (isImage)
-                                                                      "?raw=true"
-                                                                    else
-                                                                      "")
+            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
+            if (isImage)
+              "?raw=true"
+            else
+              ""
+          )
         }
       } else {
         repository.httpUrl

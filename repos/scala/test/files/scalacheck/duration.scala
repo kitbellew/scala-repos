@@ -47,8 +47,7 @@ object Test extends Properties("Division of Duration by Long") {
     1 -> (0L, Long.MinValue),
     1 -> (1L, Long.MinValue),
     1 -> (-1L, Long.MinValue),
-    90 -> genClose
-  )
+    90 -> genClose)
 
   def mul(a: Long, b: Long): Long = {
     (fromNanos(a) * b).toNanos
@@ -76,11 +75,12 @@ object Test extends Properties("Division of Duration by Long") {
       case (a, b) =>
         val shouldFit =
           a != Long.MinValue && // must fail due to illegal duration length
-            (b != Long.MinValue || a == 0) && // Long factor may only be MinValue if the duration is zero, otherwise the result will be illegal
-            (abs(b) <= Long.MaxValue / max(
-              1,
-              abs(a)
-            )) // check the rest against the “safe” division method
+            (
+              b != Long.MinValue || a == 0
+            ) && // Long factor may only be MinValue if the duration is zero, otherwise the result will be illegal
+            (
+              abs(b) <= Long.MaxValue / max(1, abs(a))
+            ) // check the rest against the “safe” division method
         try {
           mul(a, b);
           shouldFit

@@ -93,8 +93,7 @@ object JsonValidSpec extends Specification {
             JsPath \ "key1" -> Seq(ValidationError("error.expected.jsnumber")),
             JsPath \ "key2" -> Seq(ValidationError("error.expected.jsnumber")),
             JsPath \ "key3" -> Seq(ValidationError("error.expected.jsnumber"))
-          ))
-      )
+          )))
 
       Json
         .obj("key1" -> "value1", "key2" -> 5, "key3" -> true)
@@ -102,9 +101,8 @@ object JsonValidSpec extends Specification {
         JsError(
           Seq(
             JsPath \ "key1" -> Seq(ValidationError("error.expected.jsnumber")),
-            JsPath \ "key3" -> Seq(ValidationError("error.expected.jsnumber"))
-          ))
-      )
+            JsPath \ "key3" -> Seq(
+              ValidationError("error.expected.jsnumber")))))
     }
 
     "validate JsArray to List" in {
@@ -123,24 +121,20 @@ object JsonValidSpec extends Specification {
             JsPath(0) -> Seq(ValidationError("error.expected.int")),
             JsPath(1) -> Seq(ValidationError("error.expected.int")),
             JsPath(2) -> Seq(ValidationError("error.expected.int"))
-          ))
-      )
+          )))
       Json.arr("alpha", "beta", "delta").validate[List[Int]] must equalTo(
         JsError(
           Seq(
             JsPath(0) -> Seq(ValidationError("error.expected.jsnumber")),
             JsPath(1) -> Seq(ValidationError("error.expected.jsnumber")),
             JsPath(2) -> Seq(ValidationError("error.expected.jsnumber"))
-          ))
-      )
+          )))
 
       Json.arr("alpha", 5, true).validate[List[Int]] must equalTo(
         JsError(
           Seq(
             JsPath(0) -> Seq(ValidationError("error.expected.jsnumber")),
-            JsPath(2) -> Seq(ValidationError("error.expected.jsnumber"))
-          ))
-      )
+            JsPath(2) -> Seq(ValidationError("error.expected.jsnumber")))))
     }
 
     "validate JsArray of stream to List" in {
@@ -162,17 +156,14 @@ object JsonValidSpec extends Specification {
             JsPath(1) -> Seq(ValidationError("error.expected.jsnumber")),
             JsPath(2) -> Seq(ValidationError("error.expected.jsnumber")),
             JsPath(4) -> Seq(ValidationError("error.expected.jsnumber"))
-          ))
-      )
+          )))
 
       JsArray(Stream(JsString("alpha"), JsNumber(5), JsBoolean(true)))
         .validate[List[Int]] must equalTo(
         JsError(
           Seq(
             JsPath(0) -> Seq(ValidationError("error.expected.jsnumber")),
-            JsPath(2) -> Seq(ValidationError("error.expected.jsnumber"))
-          ))
-      )
+            JsPath(2) -> Seq(ValidationError("error.expected.jsnumber")))))
     }
 
     "validate Dates" in {
@@ -252,15 +243,21 @@ object JsonValidSpec extends Specification {
       }
       val json = Json.obj("day1" -> Weekdays.Mon, "day2" -> "tue", "day3" -> 3)
 
-      (json
-        .validate((__ \ "day1").read(Reads.enumNameReads(Weekdays)))
-        .asOpt must beSome(Weekdays.Mon)) and
-        (json
-          .validate((__ \ "day2").read(Reads.enumNameReads(Weekdays)))
-          .asOpt must beNone) and
-        (json
-          .validate((__ \ "day3").read(Reads.enumNameReads(Weekdays)))
-          .asOpt must beNone)
+      (
+        json
+          .validate((__ \ "day1").read(Reads.enumNameReads(Weekdays)))
+          .asOpt must beSome(Weekdays.Mon)
+      ) and
+        (
+          json
+            .validate((__ \ "day2").read(Reads.enumNameReads(Weekdays)))
+            .asOpt must beNone
+        ) and
+        (
+          json
+            .validate((__ \ "day3").read(Reads.enumNameReads(Weekdays)))
+            .asOpt must beNone
+        )
     }
 
     "Can reads with nullable" in {
@@ -314,8 +311,7 @@ object JsonValidSpec extends Specification {
       val obj = JsPath.createObj(
         JsPath \ "toto" \ "toto1" -> JsString("alpha"),
         JsPath \ "titi" \ "titi1" -> JsString("beta"),
-        JsPath \ "titi" \ "titi2" -> JsString("beta2")
-      )
+        JsPath \ "titi" \ "titi2" -> JsString("beta2"))
       success
     }
 
@@ -392,8 +388,7 @@ object JsonValidSpec extends Specification {
 
       val js = Json.obj(
         "uuid" -> "550e8400-e29b-41d4-a716-446655440000",
-        "nb" -> 654
-      )
+        "nb" -> 654)
 
       js.validate[(String, Int)] must equalTo(
         JsSuccess("550e8400-e29b-41d4-a716-446655440000" -> 654))
@@ -408,8 +403,7 @@ object JsonValidSpec extends Specification {
 
       val js = Json.obj(
         "uuid" -> "550e8400-e29b-41d4-a716-446655440000",
-        "nb" -> 654
-      )
+        "nb" -> 654)
 
       js.validate[(String, Int)] must equalTo(
         JsSuccess("550e8400-e29b-41d4-a716-446655440000" -> 654))
@@ -424,8 +418,7 @@ object JsonValidSpec extends Specification {
 
       val js = Json.obj(
         "uuid" -> "550e8400-e29b-41d4-a716-446655440000",
-        "nb" -> 654
-      )
+        "nb" -> 654)
 
       Json.toJson("550e8400-e29b-41d4-a716-446655440000" -> 654) must equalTo(
         js)
@@ -440,8 +433,7 @@ object JsonValidSpec extends Specification {
 
       val js = Json.obj(
         "uuid" -> "550e8400-e29b-41d4-a716-446655440000",
-        "nb" -> 654
-      )
+        "nb" -> 654)
 
       Json.toJson("550e8400-e29b-41d4-a716-446655440000" -> 654) must equalTo(
         js)
@@ -484,8 +476,7 @@ object JsonValidSpec extends Specification {
       val js = Json.obj(
         "field1" -> "alpha",
         "field2" -> 123L,
-        "field3" -> Json.obj("field31" -> "beta", "field32" -> 345)
-      )
+        "field3" -> Json.obj("field31" -> "beta", "field32" -> 345))
       val reads1 = (__ \ 'field3).json.pick
       val reads2 =
         ((__ \ 'field32).read[Int] and (__ \ 'field31).read[String]).tupled
@@ -515,8 +506,7 @@ object JsonValidSpec extends Specification {
       jsOk.validate[Numbers] must equalTo(JsSuccess(ok))
       jsFail.validate[Numbers] must equalTo(
         JsError((__ \ 'f), ValidationError("error.min", 13.0f)) ++
-          JsError((__ \ 'd), ValidationError("error.max", 1.0))
-      )
+          JsError((__ \ 'd), ValidationError("error.max", 1.0)))
     }
 
   }
@@ -526,13 +516,9 @@ object JsonValidSpec extends Specification {
       import Reads._
       val js0 = Json.obj(
         "key1" -> "value1",
-        "key2" -> Json.obj(
-          "key21" -> 123,
-          "key23" -> true,
-          "key24" -> "blibli"
-        ),
-        "key3" -> "alpha"
-      )
+        "key2" -> Json
+          .obj("key21" -> 123, "key23" -> true, "key24" -> "blibli"),
+        "key3" -> "alpha")
 
       val js = Json.obj(
         "key1" -> "value1",
@@ -540,8 +526,7 @@ object JsonValidSpec extends Specification {
           "key21" -> 123,
           "key22" -> Json.obj("key222" -> "blabla"),
           "key23" -> true,
-          "key24" -> "blibli"
-        ),
+          "key24" -> "blibli"),
         "key3" -> Json.arr("alpha", "beta", "gamma")
       )
 
@@ -557,16 +542,10 @@ object JsonValidSpec extends Specification {
               (
                 (__ \ "key22").json.update((__ \ "key222").json.pick) and
                   (__ \ "key233").json.copyFrom((__ \ "key23").json.pick)
-              ).reduce
-            ) and
+              ).reduce) and
             (__ \ "key3").json.pickBranch[JsArray](pure(Json.arr("delta"))) and
             (__ \ "key4").json.put(
-              Json.obj(
-                "key41" -> 345,
-                "key42" -> "alpha",
-                "key43" -> func
-              )
-            )
+              Json.obj("key41" -> 345, "key42" -> "alpha", "key43" -> func))
         ).reduce
 
       val res = Json.obj(
@@ -576,16 +555,14 @@ object JsonValidSpec extends Specification {
           "key22" -> "blabla",
           "key23" -> true,
           "key24" -> "blibli",
-          "key233" -> true
-        ),
+          "key233" -> true),
         "key3" -> Json.arr("delta"),
         "key4" -> Json.obj("key41" -> 345, "key42" -> "alpha", "key43" -> func)
       )
 
       js0.validate(jsonTransformer) must beEqualTo(
         //JsError( (__ \ 'key3), "error.expected.jsarray" ) ++
-        JsError((__ \ 'key2 \ 'key22), "error.path.missing")
-      )
+        JsError((__ \ 'key2 \ 'key22), "error.path.missing"))
 
       js.validate(jsonTransformer) must beEqualTo(JsSuccess(res))
     }
@@ -606,65 +583,42 @@ object JsonValidSpec extends Specification {
       Json
         .obj(
           "name" -> "john",
-          "coords" -> Json.obj(
-            "email" -> "john@xxx.yyy",
-            "phone" -> "0123456789"
-          )
-        )
+          "coords" -> Json
+            .obj("email" -> "john@xxx.yyy", "phone" -> "0123456789"))
         .validate[User] must beEqualTo(
-        JsSuccess(User("john", "john@xxx.yyy", Some("0123456789")))
-      )
+        JsSuccess(User("john", "john@xxx.yyy", Some("0123456789"))))
 
       Json
         .obj(
           "name" -> "john",
-          "coords" -> Json.obj(
-            "email" -> "john@xxx.yyy",
-            "phone2" -> "0123456789"
-          )
-        )
+          "coords" -> Json
+            .obj("email" -> "john@xxx.yyy", "phone2" -> "0123456789"))
         .validate[User] must beEqualTo(
-        JsSuccess(User("john", "john@xxx.yyy", None))
-      )
+        JsSuccess(User("john", "john@xxx.yyy", None)))
+
+      Json
+        .obj("name" -> "john", "coords" -> Json.obj("email" -> "john@xxx.yyy"))
+        .validate[User] must beEqualTo(
+        JsSuccess(User("john", "john@xxx.yyy", None)))
 
       Json
         .obj(
           "name" -> "john",
-          "coords" -> Json.obj(
-            "email" -> "john@xxx.yyy"
-          )
-        )
+          "coords" -> Json.obj("email" -> "john@xxx.yyy", "phone" -> JsNull))
         .validate[User] must beEqualTo(
-        JsSuccess(User("john", "john@xxx.yyy", None))
-      )
+        JsSuccess(User("john", "john@xxx.yyy", None)))
 
       Json
         .obj(
           "name" -> "john",
-          "coords" -> Json.obj(
-            "email" -> "john@xxx.yyy",
-            "phone" -> JsNull
-          )
-        )
-        .validate[User] must beEqualTo(
-        JsSuccess(User("john", "john@xxx.yyy", None))
-      )
-
-      Json
-        .obj(
-          "name" -> "john",
-          "coords2" -> Json.obj(
-            "email" -> "john@xxx.yyy",
-            "phone" -> "0123456789"
-          )
-        )
+          "coords2" -> Json
+            .obj("email" -> "john@xxx.yyy", "phone" -> "0123456789"))
         .validate[User] must beEqualTo(
         JsError(
           Seq(
             __ \ 'coords \ 'phone -> Seq(ValidationError("error.path.missing")),
-            __ \ 'coords \ 'email -> Seq(ValidationError("error.path.missing"))
-          ))
-      )
+            __ \ 'coords \ 'email -> Seq(
+              ValidationError("error.path.missing")))))
     }
 
     "report correct path for validation errors" in {
@@ -723,10 +677,10 @@ object JsonValidSpec extends Specification {
               Reads.verifyingIf[JsObject] {
                 case JsObject(fields) => !fields.isEmpty
               }(
-                ((__ \ "title").read[String] and
-                  (__ \ "created").read[java.util.Date]).tupled
-              )
-            )
+                (
+                  (__ \ "title").read[String] and
+                    (__ \ "created").read[java.util.Date]
+                ).tupled))
         ).tupled
 
       val d = (new java.util.Date()).getTime()
@@ -758,8 +712,8 @@ object JsonValidSpec extends Specification {
       val js = Json.obj(
         "id" -> 123L,
         "name" -> "bob",
-        "friend" -> Json.obj("id" -> 124L, "name" -> "john", "friend" -> JsNull)
-      )
+        "friend" -> Json
+          .obj("id" -> 124L, "name" -> "john", "friend" -> JsNull))
 
       js.validate[User] must beEqualTo(
         JsSuccess(User(123L, "bob", Some(User(124L, "john", None)))))
@@ -767,8 +721,7 @@ object JsonValidSpec extends Specification {
       val js2 = Json.obj(
         "id" -> 123L,
         "name" -> "bob",
-        "friend" -> Json.obj("id" -> 124L, "name" -> "john")
-      )
+        "friend" -> Json.obj("id" -> 124L, "name" -> "john"))
 
       js2.validate[User] must beEqualTo(
         JsSuccess(User(123L, "bob", Some(User(124L, "john", None)))))
@@ -791,8 +744,7 @@ object JsonValidSpec extends Specification {
       val js = Json.obj(
         "id" -> 123L,
         "name" -> "bob",
-        "friend" -> Json.obj("id" -> 124L, "name" -> "john")
-      )
+        "friend" -> Json.obj("id" -> 124L, "name" -> "john"))
 
       Json.toJson(
         User(123L, "bob", Some(User(124L, "john", None)))) must beEqualTo(js)
@@ -814,8 +766,7 @@ object JsonValidSpec extends Specification {
       val js = Json.obj(
         "id" -> 123L,
         "name" -> "bob",
-        "friend" -> Json.obj("id" -> 124L, "name" -> "john")
-      )
+        "friend" -> Json.obj("id" -> 124L, "name" -> "john"))
 
       js.validate[User] must beEqualTo(
         JsSuccess(User(123L, "bob", Some(User(124L, "john", None)))))
@@ -870,8 +821,7 @@ object JsonValidSpec extends Specification {
             "val9",
             "val10",
             "val11",
-            "val12"))
-      )
+            "val12")))
     }
 
     "single field case class" in {
@@ -962,34 +912,27 @@ object JsonValidSpec extends Specification {
               "arg11",
               123L,
               123.456f),
-            ValidationError("msg2.msg21.msg22", 456, 123.456, true, 123)
-          ),
+            ValidationError("msg2.msg21.msg22", 456, 123.456, true, 123)),
           (__ \ 'field2 \ 'field21) -> Seq(
             ValidationError("msg1.msg21", "arg1", Json.obj("test" -> "test2")),
-            ValidationError("msg2", "arg1", "arg2")
-          )
+            ValidationError("msg2", "arg1", "arg2"))
         ))
 
       val json = Json.obj(
         "obj.field1.field11" -> Json.arr(
           Json.obj(
             "msg" -> Json.arr("msg1.msg11", "msg1.msg12"),
-            "args" -> Json.arr("arg11", 123, 123.456f)
-          ),
+            "args" -> Json.arr("arg11", 123, 123.456f)),
           Json.obj(
             "msg" -> Json.arr("msg2.msg21.msg22"),
-            "args" -> Json.arr(456, 123.456, true, 123)
-          )
+            "args" -> Json.arr(456, 123.456, true, 123))
         ),
         "obj.field2.field21" -> Json.arr(
           Json.obj(
             "msg" -> Json.arr("msg1.msg21"),
-            "args" -> Json.arr("arg1", Json.obj("test" -> "test2"))
-          ),
-          Json.obj(
-            "msg" -> Json.arr("msg2"),
-            "args" -> Json.arr("arg1", "arg2")
-          )
+            "args" -> Json.arr("arg1", Json.obj("test" -> "test2"))),
+          Json
+            .obj("msg" -> Json.arr("msg2"), "args" -> Json.arr("arg1", "arg2"))
         )
       )
 
@@ -1003,21 +946,18 @@ object JsonValidSpec extends Specification {
         "field1" -> "alpha",
         "field2" -> Json
           .obj("field21" -> 123, "field22" -> true, "field23" -> "blabla"),
-        "field3" -> "beta"
-      )
+        "field3" -> "beta")
 
       val res = Json.obj(
         "field1" -> "alpha",
         "field2" -> Json.obj("field22" -> true),
-        "field3" -> "beta"
-      )
+        "field3" -> "beta")
 
       val myReads: Reads[JsObject] =
         (
           (__ \ 'field1).json.pickBranch and
             (__ \ 'field2).json.pickBranch(
-              (__ \ 'field21).json.prune andThen (__ \ 'field23).json.prune
-            ) and
+              (__ \ 'field21).json.prune andThen (__ \ 'field23).json.prune) and
             (__ \ 'field3).json.pickBranch
         ).reduce
 
@@ -1126,8 +1066,10 @@ object JsonValidSpec extends Specification {
       }
 
       "JsError" in {
-        val res2: JsResult[String] = JsError(Seq(
-          JsPath(List(KeyPathNode("bar"))) -> Seq(ValidationError("baz.bah"))))
+        val res2: JsResult[String] = JsError(
+          Seq(
+            JsPath(List(KeyPathNode("bar"))) -> Seq(
+              ValidationError("baz.bah"))))
         res2.map(identity) must equalTo(res2)
       }
     }

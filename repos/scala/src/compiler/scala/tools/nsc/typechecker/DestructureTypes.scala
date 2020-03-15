@@ -76,8 +76,7 @@ trait DestructureTypes {
           case x: NameTree => atom(x.name.toString, x)
           case _           => wrapAtom(tree)
         },
-        tree.productPrefix
-      )
+        tree.productPrefix)
     def wrapSymbolInfo(sym: Symbol): Node = {
       if ((sym eq NoSymbol) || openSymbols(sym))
         wrapEmpty
@@ -92,12 +91,10 @@ trait DestructureTypes {
     def product(tp: Type, nodes: Node*): Node =
       product(typeTypeName(tp), nodes: _*)
     def product(typeName: String, nodes: Node*): Node =
-      (
-        nodes.toList filterNot (_ == wrapEmpty) match {
-          case Nil => wrapEmpty
-          case xs  => withType(wrapProduct(xs), typeName)
-        }
-      )
+      (nodes.toList filterNot (_ == wrapEmpty) match {
+        case Nil => wrapEmpty
+        case xs  => withType(wrapProduct(xs), typeName)
+      })
 
     def atom[U](label: String, value: U): Node = node(label, wrapAtom(value))
     def constant(label: String, const: Constant): Node = atom(label, const)
@@ -143,21 +140,18 @@ trait DestructureTypes {
         "AnnotationInfo",
         this("atp", ann.atp),
         node("args", treeList(ann.args)),
-        assocsNode(ann)
-      )
+        assocsNode(ann))
     def typeConstraint(constr: TypeConstraint): Node =
       product(
         "TypeConstraint",
         node("lo", typeList(constr.loBounds)),
         node("hi", typeList(constr.hiBounds)),
-        this("inst", constr.inst)
-      )
+        this("inst", constr.inst))
     def annotatedType(annotations: List[AnnotationInfo], underlying: Type) =
       product(
         "AnnotatedType",
         node("annotations", annotationList(annotations)),
-        this("underlying", underlying)
-      )
+        this("underlying", underlying))
 
     /** This imposes additional structure beyond that which is visible in
       *  the case class hierarchy.  In particular, (too) many different constructs
@@ -189,22 +183,20 @@ trait DestructureTypes {
     }
 
     def symbolType(sym: Symbol) =
-      (
-        if (sym.isRefinementClass)
-          "Refinement"
-        else if (sym.isAliasType)
-          "Alias"
-        else if (sym.isTypeSkolem)
-          "TypeSkolem"
-        else if (sym.isTypeParameter)
-          "TypeParam"
-        else if (sym.isAbstractType)
-          "AbstractType"
-        else if (sym.isType)
-          "TypeSymbol"
-        else
-          "TermSymbol"
-      )
+      (if (sym.isRefinementClass)
+         "Refinement"
+       else if (sym.isAliasType)
+         "Alias"
+       else if (sym.isTypeSkolem)
+         "TypeSkolem"
+       else if (sym.isTypeParameter)
+         "TypeParam"
+       else if (sym.isAbstractType)
+         "AbstractType"
+       else if (sym.isType)
+         "TypeSymbol"
+       else
+         "TermSymbol")
     def typeRefType(sym: Symbol) =
       (
         if (sym.isRefinementClass)
@@ -219,10 +211,12 @@ trait DestructureTypes {
           "AbstractTypeRef"
         else
           "TypeRef"
-      ) + (if (sym.isFBounded)
-             "(F-Bounded)"
-           else
-             "")
+      ) + (
+        if (sym.isFBounded)
+          "(F-Bounded)"
+        else
+          ""
+      )
 
     def node(label: String, node: Node): Node = withLabel(node, label)
     def apply(label: String, tp: Type): Node = withLabel(this(tp), label)

@@ -14,16 +14,20 @@ object Test extends App {
   }
   println(is)
   // Match from same pattern
-  val js = (ns map {
-    u findFirstMatchIn _
-  }).flatten map {
+  val js = (
+    ns map {
+      u findFirstMatchIn _
+    }
+  ).flatten map {
     case r(x) => x
   }
   println(js)
   // Match not from same pattern
-  val ks = (ns map {
-    q findFirstMatchIn _
-  }).flatten map {
+  val ks = (
+    ns map {
+      q findFirstMatchIn _
+    }
+  ).flatten map {
     case r(x) => x
   }
   println(ks)

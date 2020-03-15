@@ -223,8 +223,7 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
         Service.mk { _req: Request =>
           req = _req
           p
-        }
-      )
+        })
 
       clientToServer.offer(
         Message.Tdispatch(0, Seq.empty, Path.empty, Dtab.empty, buf))
@@ -347,9 +346,10 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
       import Message._
 
       val server =
-        new Server(Service.mk { req: Request =>
-          Future.value(Response.empty)
-        })
+        new Server(
+          Service.mk { req: Request =>
+            Future.value(Response.empty)
+          })
 
       server.request( // request before closing
         Message.Tdispatch(

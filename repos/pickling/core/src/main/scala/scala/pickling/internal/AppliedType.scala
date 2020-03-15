@@ -58,8 +58,10 @@ object AppliedType {
   */
 case class AppliedType(typename: String, typeargs: List[AppliedType]) {
   override def toString =
-    typename + (if (typeargs.isEmpty)
-                  ""
-                else
-                  typeargs.mkString("[", ",", "]"))
+    typename + (
+      if (typeargs.isEmpty)
+        ""
+      else
+        typeargs.mkString("[", ",", "]")
+    )
 }

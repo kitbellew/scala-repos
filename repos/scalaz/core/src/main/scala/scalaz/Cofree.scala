@@ -241,8 +241,7 @@ private trait CofreeZipApply[F[_]]
                 F.apply2(Tags.Zip.subst(fat), Tags.Zip.subst(fab)) { (a, b) =>
                   Tag.unwrap(ap(a)(b))
                 }))
-      )
-    )
+      ))
 }
 
 private trait CofreeZipApplicative[F[_]]

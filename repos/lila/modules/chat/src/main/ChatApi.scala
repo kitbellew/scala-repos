@@ -89,8 +89,7 @@ final class ChatApi(
         "$push" -> BSONDocument(
           Chat.BSONFields.lines -> BSONDocument(
             "$each" -> List(line),
-            "$slice" -> -maxLinesPerChat)
-        )),
+            "$slice" -> -maxLinesPerChat))),
       upsert = true
     ) >>- lila.mon.chat.message()
 

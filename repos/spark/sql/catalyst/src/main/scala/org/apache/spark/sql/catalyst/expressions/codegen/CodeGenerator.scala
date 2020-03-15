@@ -749,14 +749,15 @@ object CodeGenerator extends Logging {
   private val cache = CacheBuilder
     .newBuilder()
     .maximumSize(100)
-    .build(new CacheLoader[String, GeneratedClass]() {
-      override def load(code: String): GeneratedClass = {
-        val startTime = System.nanoTime()
-        val result = doCompile(code)
-        val endTime = System.nanoTime()
-        def timeMs: Double = (endTime - startTime).toDouble / 1000000
-        logInfo(s"Code generated in $timeMs ms")
-        result
-      }
-    })
+    .build(
+      new CacheLoader[String, GeneratedClass]() {
+        override def load(code: String): GeneratedClass = {
+          val startTime = System.nanoTime()
+          val result = doCompile(code)
+          val endTime = System.nanoTime()
+          def timeMs: Double = (endTime - startTime).toDouble / 1000000
+          logInfo(s"Code generated in $timeMs ms")
+          result
+        }
+      })
 }

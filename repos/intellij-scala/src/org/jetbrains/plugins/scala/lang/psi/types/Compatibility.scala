@@ -87,8 +87,7 @@ object Compatibility {
                   .getCachedClass(
                     "scala.Function1",
                     place.getResolveScope,
-                    ScalaPsiManager.ClassCategory.TYPE
-                  ) match {
+                    ScalaPsiManager.ClassCategory.TYPE) match {
                   case function1: ScTrait =>
                     ScParameterizedType(
                       ScType.designator(function1),

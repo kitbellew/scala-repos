@@ -35,8 +35,8 @@ import org.scalajs.core.tools.linker.backend.emitter.{Emitter, CoreJSLibs}
 final class ClosureLinkerBackend(
     semantics: Semantics,
     withSourceMap: Boolean,
-    config: LinkerBackend.Config
-) extends LinkerBackend(semantics, ESLevel.ES5, withSourceMap, config) {
+    config: LinkerBackend.Config)
+    extends LinkerBackend(semantics, ESLevel.ES5, withSourceMap, config) {
 
   private[this] val emitter = {
     new Emitter(semantics, OutputMode.ECMAScript51Isolated)

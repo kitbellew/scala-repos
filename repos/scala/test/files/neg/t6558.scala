@@ -6,7 +6,5 @@ class AnnotNotFound {
 
   class D[@typeparam T]
 
-  class E(
-      @valueparam x: Any
-  )
+  class E(@valueparam x: Any)
 }

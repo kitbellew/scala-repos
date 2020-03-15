@@ -157,25 +157,26 @@ package Generic1TestsAux {
 
     implicit def isCPointedSingleSingleton[C](implicit
         w: Witness.Aux[C],
-        pf: Lazy[Pointed[Const[C]#λ]]
-    ): Pointed[({
-      type λ[A] = Const[C]#λ[A] :+: Const[CNil]#λ[A]
-    })#λ] =
-      new Pointed[({
+        pf: Lazy[Pointed[Const[C]#λ]]): Pointed[
+      ({
         type λ[A] = Const[C]#λ[A] :+: Const[CNil]#λ[A]
-      })#λ] {
+      })#λ] =
+      new Pointed[
+        ({
+          type λ[A] = Const[C]#λ[A] :+: Const[CNil]#λ[A]
+        })#λ] {
         def point[A](a: A): Const[C]#λ[A] :+: Const[CNil]#λ[A] =
           Inl(pf.value.point(a))
       }
 
-    implicit def isCPointedSingle[F[_]](implicit
-        pf: Lazy[Pointed[F]]
-    ): Pointed[({
-      type λ[A] = F[A] :+: Const[CNil]#λ[A]
-    })#λ] =
-      new Pointed[({
+    implicit def isCPointedSingle[F[_]](implicit pf: Lazy[Pointed[F]]): Pointed[
+      ({
         type λ[A] = F[A] :+: Const[CNil]#λ[A]
-      })#λ] {
+      })#λ] =
+      new Pointed[
+        ({
+          type λ[A] = F[A] :+: Const[CNil]#λ[A]
+        })#λ] {
         def point[A](a: A): F[A] :+: Const[CNil]#λ[A] = Inl(pf.value.point(a))
       }
 
@@ -209,12 +210,14 @@ package Generic1TestsAux {
   trait Pointed1 {
 
     // HACKING the fact that CNil can't be pointed
-    implicit def isCPointedSimpleType: Pointed[({
-      type λ[A] = A :+: Const[CNil]#λ[A]
-    })#λ] =
-      new Pointed[({
+    implicit def isCPointedSimpleType: Pointed[
+      ({
         type λ[A] = A :+: Const[CNil]#λ[A]
-      })#λ] {
+      })#λ] =
+      new Pointed[
+        ({
+          type λ[A] = A :+: Const[CNil]#λ[A]
+        })#λ] {
         def point[A](a: A): A :+: Const[CNil]#λ[A] = Inl(a)
       }
 
@@ -296,9 +299,10 @@ class Generic1Tests {
 
     val fr = gen0.fr
     typed[TC2[gen0.R]](fr)
-    typed[TC2[({
-      type λ[t] = t :: List[t] :: HNil
-    })#λ]](fr)
+    typed[TC2[
+      ({
+        type λ[t] = t :: List[t] :: HNil
+      })#λ]](fr)
   }
 
   @Test
@@ -424,24 +428,12 @@ class Generic1Tests {
     assertEquals(expectedProd, p1)
 
     // Any ADT has a Functor ... even with recursion
-    val tree = Node(
-      Leaf("quux"),
-      Node(
-        Leaf("foo"),
-        Leaf("wibble")
-      )
-    )
+    val tree = Node(Leaf("quux"), Node(Leaf("foo"), Leaf("wibble")))
 
     val t0 = transform(tree)(_.length)
     val t1 = tree.map(_.length) // they also have Functor syntax ...
 
-    val expectedTree = Node(
-      Leaf(4),
-      Node(
-        Leaf(3),
-        Leaf(6)
-      )
-    )
+    val expectedTree = Node(Leaf(4), Node(Leaf(3), Leaf(6)))
     assertEquals(expectedTree, t0)
     assertEquals(expectedTree, t1)
   }

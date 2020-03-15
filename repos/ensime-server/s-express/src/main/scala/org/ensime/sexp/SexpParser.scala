@@ -42,8 +42,7 @@ object SexpParser {
     "e" -> "\u001b",
     "s" -> " ",
     "d" -> "\u007f",
-    "\\" -> "\\"
-  )
+    "\\" -> "\\")
 
   val SexpQuote = SexpSymbol("quote")
   val SymbolsPredicate = CharPredicate("+-*/_~!@$%^&=:<>{}")

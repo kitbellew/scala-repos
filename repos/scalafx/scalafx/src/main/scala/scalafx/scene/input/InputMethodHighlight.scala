@@ -66,12 +66,7 @@ object InputMethodHighlight
   val SELECTED_CONVERTED = SelectedConverted
 
   protected override def unsortedValues: Array[InputMethodHighlight] =
-    Array(
-      UnselectedRaw,
-      SelectedRaw,
-      UnselectedConverted,
-      SelectedConverted
-    )
+    Array(UnselectedRaw, SelectedRaw, UnselectedConverted, SelectedConverted)
 }
 
 sealed case class InputMethodHighlight(

@@ -49,7 +49,6 @@ case class StormEnv(override val jobName: String, override val args: Args)
       }
       .run(
         builder.node.name(builder.id).asInstanceOf[TailProducer[Storm, _]],
-        classSuffix
-      )
+        classSuffix)
   }
 }

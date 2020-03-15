@@ -62,17 +62,19 @@ class IntegralDeltaSuite extends SparkFunSuite {
       val headerSize = CompressionScheme.columnHeaderSize(buffer)
 
       // Compression scheme ID + compressed contents
-      val compressedSize = 4 + (if (deltas.isEmpty) {
-                                  0
-                                } else {
-                                  val oneBoolean = columnType.defaultSize
-                                  1 + oneBoolean + deltas.map { d =>
-                                    if (math.abs(d) <= Byte.MaxValue)
-                                      1
-                                    else
-                                      1 + oneBoolean
-                                  }.sum
-                                })
+      val compressedSize = 4 + (
+        if (deltas.isEmpty) {
+          0
+        } else {
+          val oneBoolean = columnType.defaultSize
+          1 + oneBoolean + deltas.map { d =>
+            if (math.abs(d) <= Byte.MaxValue)
+              1
+            else
+              1 + oneBoolean
+          }.sum
+        }
+      )
 
       // 4 extra bytes for compression scheme type ID
       assertResult(headerSize + compressedSize, "Wrong buffer capacity")(

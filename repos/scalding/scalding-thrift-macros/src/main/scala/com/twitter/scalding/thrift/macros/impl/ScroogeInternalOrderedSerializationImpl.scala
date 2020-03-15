@@ -49,8 +49,9 @@ object ScroogeInternalOrderedSerializationImpl {
       .orElse(scroogeEnumDispatcher)
       .orElse(scroogeUnionDispatcher)
       .orElse(scroogeOuterOrderedBuf)
-      .orElse(OrderedSerializationProviderImpl.scaldingBasicDispatchers(c)(
-        buildDispatcher))
+      .orElse(
+        OrderedSerializationProviderImpl.scaldingBasicDispatchers(c)(
+          buildDispatcher))
       .orElse(OrderedSerializationProviderImpl.fallbackImplicitDispatcher(c))
       .orElse {
         case tpe: Type =>

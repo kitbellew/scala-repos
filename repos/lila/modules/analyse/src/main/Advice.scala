@@ -14,13 +14,16 @@ sealed trait Advice {
   def mate = info.mate
 
   def makeComment(withEval: Boolean, withBestMove: Boolean): String =
-    withEval.??(evalComment ?? { c =>
-      s"($c) "
-    }) +
-      (this match {
-        case MateAdvice(seq, _, _, _) => seq.desc
-        case CpAdvice(nag, _, _)      => nag.toString
-      }) + "." + {
+    withEval.??(
+      evalComment ?? { c =>
+        s"($c) "
+      }) +
+      (
+        this match {
+          case MateAdvice(seq, _, _, _) => seq.desc
+          case CpAdvice(nag, _, _)      => nag.toString
+        }
+      ) + "." + {
       withBestMove ?? {
         info.variation.headOption ?? { move =>
           s" Best move was $move."

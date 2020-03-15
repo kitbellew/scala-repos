@@ -51,15 +51,16 @@ class GraphUnzipWithSpec extends AkkaSpec {
     val rightSubscriber = TestSubscriber.probe[RightOutput]()
 
     RunnableGraph
-      .fromGraph(GraphDSL.create() { implicit b ⇒
-        val f = fixture(b)
+      .fromGraph(
+        GraphDSL.create() { implicit b ⇒
+          val f = fixture(b)
 
-        Source.fromPublisher(p) ~> f.in
-        f.left ~> Sink.fromSubscriber(leftSubscriber)
-        f.right ~> Sink.fromSubscriber(rightSubscriber)
+          Source.fromPublisher(p) ~> f.in
+          f.left ~> Sink.fromSubscriber(leftSubscriber)
+          f.right ~> Sink.fromSubscriber(rightSubscriber)
 
-        ClosedShape
-      })
+          ClosedShape
+        })
       .run()
 
     (leftSubscriber, rightSubscriber)
@@ -104,19 +105,20 @@ class GraphUnzipWithSpec extends AkkaSpec {
       val rightProbe = TestSubscriber.manualProbe[RightOutput]()
 
       RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val unzip = b.add(UnzipWith(f))
-          Source(1 to 4) ~> unzip.in
+        .fromGraph(
+          GraphDSL.create() { implicit b ⇒
+            val unzip = b.add(UnzipWith(f))
+            Source(1 to 4) ~> unzip.in
 
-          unzip.out0 ~> Flow[LeftOutput].buffer(
-            4,
-            OverflowStrategy.backpressure) ~> Sink.fromSubscriber(leftProbe)
-          unzip.out1 ~> Flow[RightOutput].buffer(
-            4,
-            OverflowStrategy.backpressure) ~> Sink.fromSubscriber(rightProbe)
+            unzip.out0 ~> Flow[LeftOutput].buffer(
+              4,
+              OverflowStrategy.backpressure) ~> Sink.fromSubscriber(leftProbe)
+            unzip.out1 ~> Flow[RightOutput].buffer(
+              4,
+              OverflowStrategy.backpressure) ~> Sink.fromSubscriber(rightProbe)
 
-          ClosedShape
-        })
+            ClosedShape
+          })
         .run()
 
       val leftSubscription = leftProbe.expectSubscription()
@@ -160,17 +162,18 @@ class GraphUnzipWithSpec extends AkkaSpec {
       val rightProbe = TestSubscriber.manualProbe[RightOutput]()
 
       RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val unzip = b.add(
-            UnzipWith[Int, Int, String]((b: Int) ⇒ (1 / b, 1 + "/" + b)))
+        .fromGraph(
+          GraphDSL.create() { implicit b ⇒
+            val unzip = b.add(
+              UnzipWith[Int, Int, String]((b: Int) ⇒ (1 / b, 1 + "/" + b)))
 
-          Source(-2 to 2) ~> unzip.in
+            Source(-2 to 2) ~> unzip.in
 
-          unzip.out0 ~> Sink.fromSubscriber(leftProbe)
-          unzip.out1 ~> Sink.fromSubscriber(rightProbe)
+            unzip.out0 ~> Sink.fromSubscriber(leftProbe)
+            unzip.out1 ~> Sink.fromSubscriber(rightProbe)
 
-          ClosedShape
-        })
+            ClosedShape
+          })
         .run()
 
       val leftSubscription = leftProbe.expectSubscription()
@@ -211,17 +214,18 @@ class GraphUnzipWithSpec extends AkkaSpec {
       case class Person(name: String, surname: String, int: Int)
 
       RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val unzip = b.add(UnzipWith((a: Person) ⇒ Person.unapply(a).get))
+        .fromGraph(
+          GraphDSL.create() { implicit b ⇒
+            val unzip = b.add(UnzipWith((a: Person) ⇒ Person.unapply(a).get))
 
-          Source.single(Person("Caplin", "Capybara", 3)) ~> unzip.in
+            Source.single(Person("Caplin", "Capybara", 3)) ~> unzip.in
 
-          unzip.out0 ~> Sink.fromSubscriber(probe0)
-          unzip.out1 ~> Sink.fromSubscriber(probe1)
-          unzip.out2 ~> Sink.fromSubscriber(probe2)
+            unzip.out0 ~> Sink.fromSubscriber(probe0)
+            unzip.out1 ~> Sink.fromSubscriber(probe1)
+            unzip.out2 ~> Sink.fromSubscriber(probe2)
 
-          ClosedShape
-        })
+            ClosedShape
+          })
         .run()
 
       val subscription0 = probe0.expectSubscription()
@@ -249,67 +253,68 @@ class GraphUnzipWithSpec extends AkkaSpec {
       val probe19 = TestSubscriber.manualProbe[String]()
 
       RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val split20 =
-            (a: (List[Int])) ⇒
-              (
-                a(0),
-                a(0).toString,
-                a(1),
-                a(1).toString,
-                a(2),
-                a(2).toString,
-                a(3),
-                a(3).toString,
-                a(4),
-                a(4).toString,
-                a(5),
-                a(5).toString,
-                a(6),
-                a(6).toString,
-                a(7),
-                a(7).toString,
-                a(8),
-                a(8).toString,
-                a(9),
-                a(9).toString)
+        .fromGraph(
+          GraphDSL.create() { implicit b ⇒
+            val split20 =
+              (a: (List[Int])) ⇒
+                (
+                  a(0),
+                  a(0).toString,
+                  a(1),
+                  a(1).toString,
+                  a(2),
+                  a(2).toString,
+                  a(3),
+                  a(3).toString,
+                  a(4),
+                  a(4).toString,
+                  a(5),
+                  a(5).toString,
+                  a(6),
+                  a(6).toString,
+                  a(7),
+                  a(7).toString,
+                  a(8),
+                  a(8).toString,
+                  a(9),
+                  a(9).toString)
 
-          // odd input ports will be Int, even input ports will be String
-          val unzip = b.add(UnzipWith(split20))
+            // odd input ports will be Int, even input ports will be String
+            val unzip = b.add(UnzipWith(split20))
 
-          Source.single((0 to 19).toList) ~> unzip.in
+            Source.single((0 to 19).toList) ~> unzip.in
 
-          def createSink[T](o: Outlet[T]) =
-            o ~> Flow[T].buffer(1, OverflowStrategy.backpressure) ~> Sink
-              .fromSubscriber(TestSubscriber.manualProbe[T]())
+            def createSink[T](o: Outlet[T]) =
+              o ~> Flow[T].buffer(1, OverflowStrategy.backpressure) ~> Sink
+                .fromSubscriber(TestSubscriber.manualProbe[T]())
 
-          unzip.out0 ~> Sink.fromSubscriber(probe0)
-          createSink(unzip.out1)
-          createSink(unzip.out2)
-          createSink(unzip.out3)
-          createSink(unzip.out4)
+            unzip.out0 ~> Sink.fromSubscriber(probe0)
+            createSink(unzip.out1)
+            createSink(unzip.out2)
+            createSink(unzip.out3)
+            createSink(unzip.out4)
 
-          unzip.out5 ~> Sink.fromSubscriber(probe5)
-          createSink(unzip.out6)
-          createSink(unzip.out7)
-          createSink(unzip.out8)
-          createSink(unzip.out9)
+            unzip.out5 ~> Sink.fromSubscriber(probe5)
+            createSink(unzip.out6)
+            createSink(unzip.out7)
+            createSink(unzip.out8)
+            createSink(unzip.out9)
 
-          unzip.out10 ~> Sink.fromSubscriber(probe10)
-          createSink(unzip.out11)
-          createSink(unzip.out12)
-          createSink(unzip.out13)
-          createSink(unzip.out14)
+            unzip.out10 ~> Sink.fromSubscriber(probe10)
+            createSink(unzip.out11)
+            createSink(unzip.out12)
+            createSink(unzip.out13)
+            createSink(unzip.out14)
 
-          unzip.out15 ~> Sink.fromSubscriber(probe15)
-          createSink(unzip.out16)
-          createSink(unzip.out17)
-          createSink(unzip.out18)
+            unzip.out15 ~> Sink.fromSubscriber(probe15)
+            createSink(unzip.out16)
+            createSink(unzip.out17)
+            createSink(unzip.out18)
 
-          unzip.out19 ~> Sink.fromSubscriber(probe19)
+            unzip.out19 ~> Sink.fromSubscriber(probe19)
 
-          ClosedShape
-        })
+            ClosedShape
+          })
         .run()
 
       probe0.expectSubscription().request(1)

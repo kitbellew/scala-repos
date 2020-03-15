@@ -740,17 +740,16 @@ trait Internals { self: Universe =>
           parents: List[Tree],
           selfType: Tree,
           body: List[Tree]): ClassDef
-      def unapply(tree: Tree): Option[
-        (
-            Modifiers,
-            TypeName,
-            List[TypeDef],
-            Modifiers,
-            List[List[ValDef]],
-            List[Tree],
-            List[Tree],
-            ValDef,
-            List[Tree])]
+      def unapply(tree: Tree): Option[(
+          Modifiers,
+          TypeName,
+          List[TypeDef],
+          Modifiers,
+          List[List[ValDef]],
+          List[Tree],
+          List[Tree],
+          ValDef,
+          List[Tree])]
     }
 
     val SyntacticTraitDef: SyntacticTraitDefExtractor
@@ -764,15 +763,14 @@ trait Internals { self: Universe =>
           parents: List[Tree],
           selfType: Tree,
           body: List[Tree]): ClassDef
-      def unapply(tree: Tree): Option[
-        (
-            Modifiers,
-            TypeName,
-            List[TypeDef],
-            List[Tree],
-            List[Tree],
-            ValDef,
-            List[Tree])]
+      def unapply(tree: Tree): Option[(
+          Modifiers,
+          TypeName,
+          List[TypeDef],
+          List[Tree],
+          List[Tree],
+          ValDef,
+          List[Tree])]
     }
 
     val SyntacticObjectDef: SyntacticObjectDefExtractor

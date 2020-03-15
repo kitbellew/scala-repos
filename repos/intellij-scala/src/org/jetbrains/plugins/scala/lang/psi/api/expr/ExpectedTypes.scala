@@ -194,11 +194,14 @@ private[expr] object ExpectedTypes {
               null: ScExpression) == expr.getSameElementInContext =>
           a.getLExpression match {
             case ref: ScReferenceExpression
-                if (!a.getContext
-                  .isInstanceOf[ScArgumentExprList] && !(a.getContext
-                  .isInstanceOf[ScInfixArgumentExpression] && a.getContext
-                  .asInstanceOf[ScInfixArgumentExpression]
-                  .isCall)) ||
+                if (
+                  !a.getContext.isInstanceOf[ScArgumentExprList] && !(
+                    a.getContext
+                      .isInstanceOf[ScInfixArgumentExpression] && a.getContext
+                      .asInstanceOf[ScInfixArgumentExpression]
+                      .isCall
+                  )
+                ) ||
                   ref.qualifier.isDefined ||
                   ScUnderScoreSectionUtil.isUnderscore(
                     expr
@@ -315,9 +318,12 @@ private[expr] object ExpectedTypes {
           }
           buffer.toArray
         case infix: ScInfixExpr
-            if ((infix.isLeftAssoc && infix.lOp == expr.getSameElementInContext) ||
-              (!infix.isLeftAssoc && infix.rOp == expr.getSameElementInContext)) && !expr
-              .isInstanceOf[ScTuple] =>
+            if (
+              (
+                infix.isLeftAssoc && infix.lOp == expr.getSameElementInContext
+              ) ||
+                (!infix.isLeftAssoc && infix.rOp == expr.getSameElementInContext)
+            ) && !expr.isInstanceOf[ScTuple] =>
           val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
           val zExpr: ScExpression =
             expr match {
@@ -363,10 +369,13 @@ private[expr] object ExpectedTypes {
             case _ => Array.empty
           }
         //SLS[4.6]
-        case v: ScFunctionDefinition if (v.body match {
-              case None    => false
-              case Some(b) => b == expr.getSameElementInContext
-            }) =>
+        case v: ScFunctionDefinition
+            if (
+              v.body match {
+                case None    => false
+                case Some(b) => b == expr.getSameElementInContext
+              }
+            ) =>
           v.returnTypeElement match {
             case Some(te) =>
               v.returnType.toOption.map(x => (x, Some(te))).toArray
@@ -586,10 +595,11 @@ private[expr] object ExpectedTypes {
         if (params.length == 1 && !params.head.isRepeated && exprs.length > 1) {
           params.head.paramType match {
             case ScTupleType(args) =>
-              applyForParams(args.zipWithIndex.map {
-                case (tpe, index) =>
-                  new Parameter("", None, tpe, false, false, false, index)
-              })
+              applyForParams(
+                args.zipWithIndex.map {
+                  case (tpe, index) =>
+                    new Parameter("", None, tpe, false, false, false, index)
+                })
             case _ =>
           }
         } else
@@ -603,10 +613,11 @@ private[expr] object ExpectedTypes {
         if (newParams.length == 1 && !newParams.head.isRepeated && exprs.length > 1) {
           newParams.head.paramType match {
             case ScTupleType(args) =>
-              applyForParams(args.zipWithIndex.map {
-                case (tpe, index) =>
-                  new Parameter("", None, tpe, false, false, false, index)
-              })
+              applyForParams(
+                args.zipWithIndex.map {
+                  case (tpe, index) =>
+                    new Parameter("", None, tpe, false, false, false, index)
+                })
             case _ =>
           }
         } else

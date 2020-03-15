@@ -60,8 +60,7 @@ object WhiteSpaceMathTests extends TestSuite {
       )
       * - check(
         "1  +  - ",
-        """ expr:1:1 / addSub:1:1 / divMul:1:7 / factor:1:7 / (number | parens):1:7 ..."- " """
-      )
+        """ expr:1:1 / addSub:1:1 / divMul:1:7 / factor:1:7 / (number | parens):1:7 ..."- " """)
     }
   }
 

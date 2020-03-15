@@ -197,18 +197,7 @@ object DeserializeModuleNoConstructor {
     val ca = new c.A
     val cc = new c.C
 
-    val outers: List[Object] = List(
-      a,
-      a.N,
-      aa,
-      ac,
-      a.a,
-      c,
-      c.N,
-      ca,
-      cc,
-      c.a
-    )
+    val outers: List[Object] = List(a, a.N, aa, ac, a.a, c, c.N, ca, cc, c.a)
 
     println(
       "serializing outer objects should not initialize any nested objects")

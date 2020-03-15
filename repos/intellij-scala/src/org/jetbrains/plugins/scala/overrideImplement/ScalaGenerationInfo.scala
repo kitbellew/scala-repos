@@ -202,10 +202,12 @@ object ScalaGenerationInfo {
           " "
         else
           ""
-      name + (if (param.isVarArgs)
-                whitespace + ": _*"
-              else
-                "")
+      name + (
+        if (param.isVarArgs)
+          whitespace + ": _*"
+        else
+          ""
+      )
     }
     val methodName = ScalaNamesUtil.changeKeyword(method.name)
     val parametersText: String = {

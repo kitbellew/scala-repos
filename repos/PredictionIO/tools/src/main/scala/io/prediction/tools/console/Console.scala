@@ -120,8 +120,7 @@ case class UpgradeArgs(
     from: String = "0.0.0",
     to: String = "0.0.0",
     oldAppId: Int = 0,
-    newAppId: Int = 0
-)
+    newAppId: Int = 0)
 
 object Console extends Logging {
   def main(args: Array[String]): Unit = {
@@ -130,30 +129,37 @@ object Console extends Logging {
         override def showUsageOnError: Boolean = false
         head("PredictionIO Command Line Interface Console", BuildInfo.version)
         help("")
-        note("Note that it is possible to supply pass-through arguments at\n" +
-          "the end of the command by using a '--' separator, e.g.\n\n" +
-          "pio train --params-path params -- --master spark://mycluster:7077\n" +
-          "\nIn the example above, the '--master' argument will be passed to\n" +
-          "underlying spark-submit command. Please refer to the usage section\n" +
-          "for each command for more information.\n\n" +
-          "The following options are common to all commands:\n")
+        note(
+          "Note that it is possible to supply pass-through arguments at\n" +
+            "the end of the command by using a '--' separator, e.g.\n\n" +
+            "pio train --params-path params -- --master spark://mycluster:7077\n" +
+            "\nIn the example above, the '--master' argument will be passed to\n" +
+            "underlying spark-submit command. Please refer to the usage section\n" +
+            "for each command for more information.\n\n" +
+            "The following options are common to all commands:\n")
         opt[String]("pio-home") action { (x, c) =>
           c.copy(common = c.common.copy(pioHome = Some(x)))
-        } text ("Root directory of a PredictionIO installation.\n" +
-          "        Specify this if automatic discovery fail.")
+        } text (
+          "Root directory of a PredictionIO installation.\n" +
+            "        Specify this if automatic discovery fail."
+        )
         opt[String]("spark-home") action { (x, c) =>
           c.copy(common = c.common.copy(sparkHome = Some(x)))
-        } text ("Root directory of an Apache Spark installation.\n" +
-          "        If not specified, will try to use the SPARK_HOME\n" +
-          "        environmental variable. If this fails as well, default to\n" +
-          "        current directory.")
+        } text (
+          "Root directory of an Apache Spark installation.\n" +
+            "        If not specified, will try to use the SPARK_HOME\n" +
+            "        environmental variable. If this fails as well, default to\n" +
+            "        current directory."
+        )
         opt[String]("engine-id") abbr ("ei") action { (x, c) =>
           c.copy(common = c.common.copy(engineId = Some(x)))
         } text ("Specify an engine ID. Usually used by distributed deployment.")
         opt[String]("engine-version") abbr ("ev") action { (x, c) =>
           c.copy(common = c.common.copy(engineVersion = Some(x)))
-        } text ("Specify an engine version. Usually used by distributed " +
-          "deployment.")
+        } text (
+          "Specify an engine version. Usually used by distributed " +
+            "deployment."
+        )
         opt[File]("variant") abbr ("v") action { (x, c) =>
           c.copy(common = c.common.copy(variantJson = x))
         }
@@ -236,8 +242,10 @@ object Console extends Logging {
           } text ("Directory to lookup parameters JSON files. Default: params"),
           opt[String]("metrics-params") abbr ("mp") action { (x, c) =>
             c.copy(metricsParamsJsonPath = Some(x))
-          } text ("Metrics parameters JSON file. Will try to use\n" +
-            "        metrics.json in the base path."),
+          } text (
+            "Metrics parameters JSON file. Will try to use\n" +
+              "        metrics.json in the base path."
+          ),
           opt[Unit]("skip-sanity-check") abbr ("ssc") action { (x, c) =>
             c.copy(common = c.common.copy(skipSanityCheck = true))
           },
@@ -288,7 +296,9 @@ object Console extends Logging {
             "[<engine-parameters-generator-class>]") optional () action {
             (x, c) =>
               c.copy(common = c.common.copy(engineParamsGenerator = Some(x)))
-          } text ("Optional engine parameters generator class, overriding the first argument"),
+          } text (
+            "Optional engine parameters generator class, overriding the first argument"
+          ),
           opt[String]("batch") action { (x, c) =>
             c.copy(common = c.common.copy(batch = x))
           } text ("Batch label of the run."),
@@ -307,9 +317,10 @@ object Console extends Logging {
         )
         note("")
         cmd("deploy")
-          .text("Deploy an engine instance as a prediction server. This\n" +
-            "command will pass all pass-through arguments to its underlying\n" +
-            "spark-submit command.")
+          .text(
+            "Deploy an engine instance as a prediction server. This\n" +
+              "command will pass all pass-through arguments to its underlying\n" +
+              "spark-submit command.")
           .action { (_, c) =>
             c.copy(commands = c.commands :+ "deploy")
           } children (
@@ -421,11 +432,12 @@ object Console extends Logging {
         )
         note("")
         cmd("run")
-          .text("Launch a driver program. This command will pass all\n" +
-            "pass-through arguments to its underlying spark-submit command.\n" +
-            "In addition, it also supports a second level of pass-through\n" +
-            "arguments to the driver program, e.g.\n" +
-            "pio run -- --master spark://localhost:7077 -- --driver-arg foo")
+          .text(
+            "Launch a driver program. This command will pass all\n" +
+              "pass-through arguments to its underlying spark-submit command.\n" +
+              "In addition, it also supports a second level of pass-through\n" +
+              "arguments to the driver program, e.g.\n" +
+              "pio run -- --master spark://localhost:7077 -- --driver-arg foo")
           .action { (_, c) =>
             c.copy(commands = c.commands :+ "run")
           } children (
@@ -548,7 +560,9 @@ object Console extends Logging {
             } text ("Channel name to be deleted."),
             opt[Unit]("force") abbr ("f") action { (x, c) =>
               c.copy(app = c.app.copy(force = true))
-            } text ("Delete a channel of the app without prompting for confirmation")
+            } text (
+              "Delete a channel of the app without prompting for confirmation"
+            )
           )
         )
         note("")
@@ -566,8 +580,8 @@ object Console extends Logging {
             },
             arg[String]("[<event1> <event2> ...]") unbounded () optional ()
               action { (x, c) =>
-                c.copy(accessKey = c.accessKey.copy(
-                  events = c.accessKey.events :+ x))
+                c.copy(accessKey = c.accessKey
+                  .copy(events = c.accessKey.events :+ x))
               }
           ),
           cmd("list").text("List all access keys of an app.").action { (_, c) =>
@@ -754,10 +768,12 @@ object Console extends Logging {
       mainHelp
     } else {
       val stripped =
-        (if (commands.head == "help")
-           commands.drop(1)
-         else
-           commands).mkString("-")
+        (
+          if (commands.head == "help")
+            commands.drop(1)
+          else
+            commands
+        ).mkString("-")
       helpText.getOrElse(stripped, s"Help is unavailable for ${stripped}.")
     }
   }
@@ -874,10 +890,7 @@ object Console extends Logging {
     info(
       s"Creating Admin Server at ${ca.adminServer.ip}:${ca.adminServer.port}")
     AdminServer.createAdminServer(
-      AdminServerConfig(
-        ip = ca.adminServer.ip,
-        port = ca.adminServer.port
-      ))
+      AdminServerConfig(ip = ca.adminServer.ip, port = ca.adminServer.port))
   }
 
   def undeploy(ca: ConsoleArgs): Int = {
@@ -947,10 +960,12 @@ object Console extends Logging {
       else
         ""
     val buildCmd = s"${sbt} ${ca.build.sbtExtra.getOrElse("")}${clean} " +
-      (if (ca.build.uberJar)
-         "assembly"
-       else
-         s"package${asm}")
+      (
+        if (ca.build.uberJar)
+          "assembly"
+        else
+          s"package${asm}"
+      )
     val core = new File(s"pio-assembly-${BuildInfo.version}.jar")
     if (ca.build.uberJar) {
       info(s"Uber JAR enabled. Putting ${core.getName} in lib.")
@@ -965,8 +980,9 @@ object Console extends Logging {
         info(s"Uber JAR disabled. Making sure lib/${core.getName} is absent.")
         new File("lib", core.getName).delete()
       } else {
-        info("Uber JAR disabled, but current working directory does not look " +
-          s"like an engine project directory. Please delete lib/${core.getName} manually.")
+        info(
+          "Uber JAR disabled, but current working directory does not look " +
+            s"like an engine project directory. Please delete lib/${core.getName} manually.")
       }
     }
     info(s"Going to run: ${buildCmd}")
@@ -1010,11 +1026,13 @@ object Console extends Logging {
     val allJarFiles = jarFiles.map(_.getCanonicalPath)
     val cmd = s"${getSparkHome(ca.common.sparkHome)}/bin/spark-submit --jars " +
       s"${allJarFiles.mkString(",")} " +
-      (if (extraFiles.size > 0) {
-         s"--files ${extraFiles.mkString(",")} "
-       } else {
-         ""
-       }) +
+      (
+        if (extraFiles.size > 0) {
+          s"--files ${extraFiles.mkString(",")} "
+        } else {
+          ""
+        }
+      ) +
       "--class " +
       s"${ca.mainClass.get} ${ca.common.sparkPassThrough.mkString(" ")} " +
       coreAssembly(ca.common.pioHome.get) + " " +
@@ -1055,8 +1073,9 @@ object Console extends Logging {
           .mkString
           .split(' ')
         if (sparkReleaseStrings.length < 2) {
-          warn(stripMarginAndNewlines(
-            s"""|Apache Spark version information cannot be found (RELEASE file
+          warn(
+            stripMarginAndNewlines(
+              s"""|Apache Spark version information cannot be found (RELEASE file
                 |is empty). This is a known issue for certain vendors (e.g.
                 |Cloudera). Please make sure you are using a version of at least
                 |$sparkMinVersion."""))
@@ -1249,8 +1268,9 @@ object Console extends Logging {
     val libFiles = jarFilesForScalaFilter(jarFilesAt(new File("lib")))
     val targetFiles = jarFilesForScalaFilter(
       jarFilesAt(
-        new File("target" +
-          File.separator + s"scala-${scalaVersionNoPatch}")))
+        new File(
+          "target" +
+            File.separator + s"scala-${scalaVersionNoPatch}")))
     // Use libFiles is target is empty.
     if (targetFiles.size > 0)
       targetFiles

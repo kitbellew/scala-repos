@@ -68,8 +68,8 @@ object TraceId {
       traceId: Option[SpanId],
       parentId: Option[SpanId],
       spanId: SpanId,
-      sampled: Option[Boolean]
-  ): TraceId = TraceId(traceId, parentId, spanId, sampled, Flags())
+      sampled: Option[Boolean]): TraceId =
+    TraceId(traceId, parentId, spanId, sampled, Flags())
 
   /**
     * Serialize a TraceId into an array of bytes.

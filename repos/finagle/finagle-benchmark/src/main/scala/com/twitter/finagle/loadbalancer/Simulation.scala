@@ -47,16 +47,14 @@ private object LatencyProfile {
       p95: Duration,
       p99: Duration,
       p999: Duration,
-      p9999: Duration
-  ): () => Duration = {
+      p9999: Duration): () => Duration = {
     val dist = Seq(
       0.5 -> between(min, p50),
       0.4 -> between(p50, p90),
       0.05 -> between(p90, p95),
       0.04 -> between(p95, p99),
       0.009 -> between(p99, p999),
-      0.0009 -> between(p999, p9999)
-    )
+      0.0009 -> between(p999, p9999))
     val (d, l) = dist.unzip
     apply(d, l.toIndexedSeq)
   }
@@ -67,8 +65,7 @@ private object LatencyProfile {
     */
   def apply(
       dist: Seq[Double],
-      latencies: IndexedSeq[() => Duration]
-  ): () => Duration = {
+      latencies: IndexedSeq[() => Duration]): () => Duration = {
     val drv = Drv(dist)
     () => latencies(drv(rng))()
   }
@@ -122,8 +119,7 @@ private[finagle] class LatencyFactory(sr: StatsReceiver) {
   def apply(
       name: Int,
       next: () => Duration,
-      _weight: Double = 1.0
-  ): ServiceFactory[Unit, Unit] = {
+      _weight: Double = 1.0): ServiceFactory[Unit, Unit] = {
     val service =
       new Service[Unit, Unit] {
         implicit val timer = DefaultTimer.twitter
@@ -135,8 +131,7 @@ private[finagle] class LatencyFactory(sr: StatsReceiver) {
           },
           sr.scope("maxload").addGauge("" + name) {
             maxload.get()
-          }
-        )
+          })
         val count = sr.scope("count").counter("" + name)
 
         def apply(req: Unit) = {

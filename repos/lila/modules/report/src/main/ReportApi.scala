@@ -29,10 +29,9 @@ private[report] final class ReportApi {
                 reportTube.coll.update(
                   selectRecent(user, reason),
                   Json.obj(
-                    "$set" -> (reportTube
-                      .toMongo(report)
-                      .get - "processedBy" - "_id"))
-                ) flatMap { res =>
+                    "$set" -> (
+                      reportTube.toMongo(report).get - "processedBy" - "_id"
+                    ))) flatMap { res =>
                   (res.n == 0) ?? $insert(report)
                 }
               else
@@ -116,10 +115,7 @@ private[report] final class ReportApi {
 
   def clean(userId: String): Funit =
     $update(
-      Json.obj(
-        "user" -> userId,
-        "reason" -> "cheat"
-      ) ++ unprocessedSelect,
+      Json.obj("user" -> userId, "reason" -> "cheat") ++ unprocessedSelect,
       $set("processedBy" -> "lichess"),
       multi = true)
 
@@ -129,8 +125,7 @@ private[report] final class ReportApi {
         $update(
           Json.obj(
             "user" -> report.user,
-            "reason" -> report.reason
-          ) ++ unprocessedSelect,
+            "reason" -> report.reason) ++ unprocessedSelect,
           $set("processedBy" -> by.id),
           multi = true)
       } >>- monitorUnprocessed >>- lila.mon.mod.report.close()
@@ -140,8 +135,10 @@ private[report] final class ReportApi {
     $update(
       Json.obj(
         "user" -> userId,
-        "reason" -> $in(List(Reason.Cheat.name, Reason.CheatPrint.name))
-      ) ++ unprocessedSelect,
+        "reason" -> $in(
+          List(
+            Reason.Cheat.name,
+            Reason.CheatPrint.name))) ++ unprocessedSelect,
       $set("processedBy" -> byModId),
       multi = true) >>- monitorUnprocessed
 
@@ -150,8 +147,10 @@ private[report] final class ReportApi {
       Json.obj(
         "user" -> userId,
         "reason" -> $in(
-          List(Reason.Insult.name, Reason.Troll.name, Reason.Other.name))
-      ) ++ unprocessedSelect,
+          List(
+            Reason.Insult.name,
+            Reason.Troll.name,
+            Reason.Other.name))) ++ unprocessedSelect,
       $set("processedBy" -> byModId),
       multi = true
     ) >>- monitorUnprocessed

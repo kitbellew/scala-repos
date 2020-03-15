@@ -170,10 +170,11 @@ private[spark] class MetricsSystem private (
   def removeSource(source: Source) {
     sources -= source
     val regName = buildRegistryName(source)
-    registry.removeMatching(new MetricFilter {
-      def matches(name: String, metric: Metric): Boolean =
-        name.startsWith(regName)
-    })
+    registry.removeMatching(
+      new MetricFilter {
+        def matches(name: String, metric: Metric): Boolean =
+          name.startsWith(regName)
+      })
   }
 
   private def registerSources() {

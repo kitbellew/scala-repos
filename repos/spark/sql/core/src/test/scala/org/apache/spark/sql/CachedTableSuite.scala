@@ -149,17 +149,19 @@ class CachedTableSuite
     sqlContext.cacheTable("testData")
 
     assertCached(sqlContext.table("testData"))
-    assert(sqlContext.table("testData").queryExecution.withCachedData match {
-      case _: InMemoryRelation => true
-      case _                   => false
-    })
+    assert(
+      sqlContext.table("testData").queryExecution.withCachedData match {
+        case _: InMemoryRelation => true
+        case _                   => false
+      })
 
     sqlContext.uncacheTable("testData")
     assert(!sqlContext.isCached("testData"))
-    assert(sqlContext.table("testData").queryExecution.withCachedData match {
-      case _: InMemoryRelation => false
-      case _                   => true
-    })
+    assert(
+      sqlContext.table("testData").queryExecution.withCachedData match {
+        case _: InMemoryRelation => false
+        case _                   => true
+      })
   }
 
   test("SPARK-1669: cacheTable should be idempotent") {
@@ -395,21 +397,24 @@ class CachedTableSuite
         |abc a join abc b on a.key=b.key
         |join abc c on a.key=c.key""".stripMargin).queryExecution.sparkPlan
 
-    assert(sparkPlan.collect {
-      case e: InMemoryColumnarTableScan => e
-    }.size === 3)
-    assert(sparkPlan.collect {
-      case e: PhysicalRDD => e
-    }.size === 0)
+    assert(
+      sparkPlan.collect {
+        case e: InMemoryColumnarTableScan => e
+      }.size === 3)
+    assert(
+      sparkPlan.collect {
+        case e: PhysicalRDD => e
+      }.size === 0)
   }
 
   /**
     * Verifies that the plan for `df` contains `expected` number of Exchange operators.
     */
   private def verifyNumExchanges(df: DataFrame, expected: Int): Unit = {
-    assert(df.queryExecution.executedPlan.collect {
-      case e: ShuffleExchange => e
-    }.size == expected)
+    assert(
+      df.queryExecution.executedPlan.collect {
+        case e: ShuffleExchange => e
+      }.size == expected)
   }
 
   test(

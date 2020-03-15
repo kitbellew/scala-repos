@@ -48,8 +48,7 @@ object CartesianProductExample extends App {
 
     implicit def hlist[HF, A, XH, XT <: HList, OutH, OutT <: HList](implicit
         applied: Case2.Aux[HF, A, XH, OutH],
-        mapper: ApplyMapper[HF, A, XT, OutT]
-    ) =
+        mapper: ApplyMapper[HF, A, XT, OutT]) =
       new ApplyMapper[HF, A, XH :: XT, OutH :: OutT] {
         def apply(a: A, x: XH :: XT) = applied(a, x.head) :: mapper(a, x.tail)
       }
@@ -75,12 +74,10 @@ object CartesianProductExample extends App {
         XT <: HList,
         Y <: HList,
         Out1 <: HList,
-        Out2 <: HList
-    ](implicit
+        Out2 <: HList](implicit
         mapper: ApplyMapper[HF, XH, Y, Out1],
         lift: LiftA2[HF, XT, Y, Out2],
-        prepend: Prepend[Out1, Out2]
-    ) =
+        prepend: Prepend[Out1, Out2]) =
       new LiftA2[HF, XH :: XT, Y, prepend.Out] {
         def apply(x: XH :: XT, y: Y) =
           prepend(mapper(x.head, y), lift(x.tail, y))
@@ -92,8 +89,7 @@ object CartesianProductExample extends App {
     * lifted to work on two HLists.
     */
   def liftA2[HF, X <: HList, Y <: HList, Out <: HList](hf: HF)(x: X, y: Y)(
-      implicit lift: LiftA2[HF, X, Y, Out]
-  ) = lift(x, y)
+      implicit lift: LiftA2[HF, X, Y, Out]) = lift(x, y)
 
   /**
     * A polymorphic binary function that pairs its arguments.

@@ -218,9 +218,7 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
             norm,
             t.getClass,
             norm.getClass,
-            t.isInstanceOf[TypeRef]
-          )
-        )
+            t.isInstanceOf[TypeRef]))
     }
 
   /** Return the type kind of a class, possibly an array type.

@@ -15,9 +15,8 @@ object ValidationSpec extends Specification {
   "text" should {
     "throw an IllegalArgumentException if maxLength is negative" in {
       {
-        Form(
-          "value" -> Forms.text(maxLength = -1)
-        ).bind(Map("value" -> "hello"))
+        Form("value" -> Forms.text(maxLength = -1))
+          .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }
 
@@ -30,15 +29,13 @@ object ValidationSpec extends Specification {
           },
           { textData =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
 
     "throw an IllegalArgumentException if minLength is negative" in {
       {
-        Form(
-          "value" -> Forms.text(minLength = -1)
-        ).bind(Map("value" -> "hello"))
+        Form("value" -> Forms.text(minLength = -1))
+          .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }
 
@@ -51,8 +48,7 @@ object ValidationSpec extends Specification {
           },
           { textData =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
   }
 
@@ -66,8 +62,7 @@ object ValidationSpec extends Specification {
           },
           { textData =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
   }
 
@@ -76,8 +71,8 @@ object ValidationSpec extends Specification {
       {
         Form(
           "value" -> Forms.text.verifying(
-            Constraints.pattern(null, "nullRegex", "error"))
-        ).bind(Map("value" -> "hello"))
+            Constraints.pattern(null, "nullRegex", "error")))
+          .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }
 
@@ -85,16 +80,16 @@ object ValidationSpec extends Specification {
       {
         Form(
           "value" -> Forms.text.verifying(
-            Constraints.pattern(".*".r, null, "error"))
-        ).bind(Map("value" -> "hello"))
+            Constraints.pattern(".*".r, null, "error")))
+          .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }
 
     "throw an IllegalArgumentException if error is null" in {
       {
         Form(
-          "value" -> Forms.text.verifying(pattern(".*".r, "nullRegex", null))
-        ).bind(Map("value" -> "hello"))
+          "value" -> Forms.text.verifying(pattern(".*".r, "nullRegex", null)))
+          .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }
 
@@ -118,8 +113,7 @@ object ValidationSpec extends Specification {
               formWithErrors => false,
               { _ =>
                 true
-              }
-            )
+              })
         }
         .exists(_.unary_!) must beFalse
     }
@@ -130,8 +124,7 @@ object ValidationSpec extends Specification {
       "\"\"test\blah\"\"@example.com",
       "\"test\rblah\"@example.com",
       "\"\"test\"\"blah\"\"@example.com",
-      "Ima Fool@example.com"
-    )
+      "Ima Fool@example.com")
     "invalidate invalid addresses" in {
       invalid
         .map { addr =>
@@ -141,8 +134,7 @@ object ValidationSpec extends Specification {
               formWithErrors => true,
               { _ =>
                 false
-              }
-            )
+              })
         }
         .exists(_.unary_!) must beFalse
     }
@@ -158,8 +150,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             number must equalTo(5)
-          }
-        )
+          })
     }
 
     "15 must not be a valid number(1,10)" in {
@@ -171,8 +162,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
   }
 
@@ -186,8 +176,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             number must equalTo(12345678902L)
-          }
-        )
+          })
     }
 
     "-12345678902 must not be a valid longNumber(1,10)" in {
@@ -199,8 +188,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
   }
 
@@ -214,8 +202,7 @@ object ValidationSpec extends Specification {
           },
           { str =>
             str must equalTo("Toto")
-          }
-        )
+          })
     }
 
     "AA must not be over CC" in {
@@ -227,8 +214,7 @@ object ValidationSpec extends Specification {
           },
           { str =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
   }
 
@@ -242,8 +228,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             number must equalTo(10.2)
-          }
-        )
+          })
     }
 
     "110.3 must not be over 100.1" in {
@@ -255,8 +240,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
   }
 
@@ -270,8 +254,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             number must equalTo(5)
-          }
-        )
+          })
     }
 
     "5 must still be a valid number(5,10)" in {
@@ -283,8 +266,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             number must equalTo(5)
-          }
-        )
+          })
     }
 
     "5 must not be a valid number(5,10, strict = true)" in {
@@ -296,8 +278,7 @@ object ValidationSpec extends Specification {
           },
           { number =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
 
     "Text containing whitespace only should be rejected by nonEmptyText" in {
@@ -309,8 +290,7 @@ object ValidationSpec extends Specification {
           },
           { text =>
             "The mapping should fail." must equalTo("Error")
-          }
-        )
+          })
     }
   }
 

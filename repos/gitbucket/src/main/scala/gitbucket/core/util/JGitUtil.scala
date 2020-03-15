@@ -141,8 +141,7 @@ object JGitUtil {
       newObjectId: Option[String],
       oldMode: String,
       newMode: String,
-      tooLarge: Boolean
-  )
+      tooLarge: Boolean)
 
   /**
     * The file content data for the file content view of the repository viewer.
@@ -299,21 +298,23 @@ object JGitUtil {
           : (ObjectId, FileMode, String, Option[String], RevCommit) =
         tuple match {
           case (oid, FileMode.TREE, name, _, commit) =>
-            (using(new TreeWalk(git.getRepository)) { walk =>
-              walk.addTree(oid)
-              // single tree child, or None
-              if (walk.next() && walk.getFileMode(0) == FileMode.TREE) {
-                Some(
-                  (
-                    walk.getObjectId(0),
-                    walk.getFileMode(0),
-                    name + "/" + walk.getNameString,
-                    None,
-                    commit)).filterNot(_ => walk.next())
-              } else {
-                None
+            (
+              using(new TreeWalk(git.getRepository)) { walk =>
+                walk.addTree(oid)
+                // single tree child, or None
+                if (walk.next() && walk.getFileMode(0) == FileMode.TREE) {
+                  Some(
+                    (
+                      walk.getObjectId(0),
+                      walk.getFileMode(0),
+                      name + "/" + walk.getNameString,
+                      None,
+                      commit)).filterNot(_ => walk.next())
+                } else {
+                  None
+                }
               }
-            }) match {
+            ) match {
               case Some(child) => simplifyPath(child)
               case _           => tuple
             }
@@ -353,9 +354,10 @@ object JGitUtil {
             var nextRest = skips
             var nextResult = result
             // Map[(name, oid), (tuple, parentsMap)]
-            val rest = scala.collection.mutable.Map(thisTimeChecks.map { t =>
-              (t._1._3 -> t._1._1) -> t
-            }: _*)
+            val rest = scala.collection.mutable.Map(
+              thisTimeChecks.map { t =>
+                (t._1._3 -> t._1._1) -> t
+              }: _*)
             lazy val newParentsMap =
               newCommit.getParents.map(_ -> newCommit).toMap
             useTreeWalk(newCommit) { walk =>
@@ -394,8 +396,10 @@ object JGitUtil {
                 .map(_.url)
             } else
               None
-          fileList +:= (treeWalk.getObjectId(0), treeWalk.getFileMode(
-            0), treeWalk.getNameString, linkUrl)
+          fileList +:= (
+            treeWalk.getObjectId(0), treeWalk.getFileMode(
+              0), treeWalk.getNameString, linkUrl
+          )
         }
       }
       revWalk.markStart(revCommit)
@@ -662,40 +666,42 @@ object JGitUtil {
           while (treeWalk.next) {
             val newIsImage = FileUtil.isImage(treeWalk.getPathString)
             buffer.append(
-              (if (!fetchContent) {
-                 DiffInfo(
-                   changeType = ChangeType.ADD,
-                   oldPath = null,
-                   newPath = treeWalk.getPathString,
-                   oldContent = None,
-                   newContent = None,
-                   oldIsImage = false,
-                   newIsImage = newIsImage,
-                   oldObjectId = None,
-                   newObjectId = Option(treeWalk.getObjectId(0)).map(_.name),
-                   oldMode = treeWalk.getFileMode(0).toString,
-                   newMode = treeWalk.getFileMode(0).toString,
-                   tooLarge = false
-                 )
-               } else {
-                 DiffInfo(
-                   changeType = ChangeType.ADD,
-                   oldPath = null,
-                   newPath = treeWalk.getPathString,
-                   oldContent = None,
-                   newContent = JGitUtil
-                     .getContentFromId(git, treeWalk.getObjectId(0), false)
-                     .filter(FileUtil.isText)
-                     .map(convertFromByteArray),
-                   oldIsImage = false,
-                   newIsImage = newIsImage,
-                   oldObjectId = None,
-                   newObjectId = Option(treeWalk.getObjectId(0)).map(_.name),
-                   oldMode = treeWalk.getFileMode(0).toString,
-                   newMode = treeWalk.getFileMode(0).toString,
-                   tooLarge = false
-                 )
-               }))
+              (
+                if (!fetchContent) {
+                  DiffInfo(
+                    changeType = ChangeType.ADD,
+                    oldPath = null,
+                    newPath = treeWalk.getPathString,
+                    oldContent = None,
+                    newContent = None,
+                    oldIsImage = false,
+                    newIsImage = newIsImage,
+                    oldObjectId = None,
+                    newObjectId = Option(treeWalk.getObjectId(0)).map(_.name),
+                    oldMode = treeWalk.getFileMode(0).toString,
+                    newMode = treeWalk.getFileMode(0).toString,
+                    tooLarge = false
+                  )
+                } else {
+                  DiffInfo(
+                    changeType = ChangeType.ADD,
+                    oldPath = null,
+                    newPath = treeWalk.getPathString,
+                    oldContent = None,
+                    newContent = JGitUtil
+                      .getContentFromId(git, treeWalk.getObjectId(0), false)
+                      .filter(FileUtil.isText)
+                      .map(convertFromByteArray),
+                    oldIsImage = false,
+                    newIsImage = newIsImage,
+                    oldObjectId = None,
+                    newObjectId = Option(treeWalk.getObjectId(0)).map(_.name),
+                    oldMode = treeWalk.getFileMode(0).toString,
+                    newMode = treeWalk.getFileMode(0).toString,
+                    tooLarge = false
+                  )
+                }
+              ))
           }
           (buffer.toList, None)
         }
@@ -790,9 +796,11 @@ object JGitUtil {
         commit =>
           git.getRepository.getAllRefs.entrySet.asScala
             .filter { e =>
-              (e.getKey.startsWith(Constants.R_HEADS) && revWalk.isMergedInto(
-                commit,
-                revWalk.parseCommit(e.getValue.getObjectId)))
+              (
+                e.getKey.startsWith(Constants.R_HEADS) && revWalk.isMergedInto(
+                  commit,
+                  revWalk.parseCommit(e.getValue.getObjectId))
+              )
             }
             .map { e =>
               e.getValue.getName.substring(
@@ -813,9 +821,11 @@ object JGitUtil {
         commit =>
           git.getRepository.getAllRefs.entrySet.asScala
             .filter { e =>
-              (e.getKey.startsWith(Constants.R_TAGS) && revWalk.isMergedInto(
-                commit,
-                revWalk.parseCommit(e.getValue.getObjectId)))
+              (
+                e.getKey.startsWith(Constants.R_TAGS) && revWalk.isMergedInto(
+                  commit,
+                  revWalk.parseCommit(e.getValue.getObjectId))
+              )
             }
             .map { e =>
               e.getValue.getName.substring(
@@ -863,8 +873,8 @@ object JGitUtil {
           repository.repository.defaultBranch
         else
           revstr),
-      repository.branchList.headOption
-    ).flatMap {
+      repository.branchList.headOption)
+      .flatMap {
         case Some(rev) => Some((git.getRepository.resolve(rev), rev))
         case None      => None
       }
@@ -929,21 +939,24 @@ object JGitUtil {
   def getSubmodules(git: Git, tree: RevTree): List[SubmoduleInfo] = {
     val repository = git.getRepository
     getContentFromPath(git, tree, ".gitmodules", true).map { bytes =>
-      (try {
-        val config = new BlobBasedConfig(repository.getConfig(), bytes)
-        config.getSubsections("submodule").asScala.map { module =>
-          val path = config.getString("submodule", module, "path")
-          val url = config.getString("submodule", module, "url")
-          SubmoduleInfo(module, path, url)
+      (
+        try {
+          val config = new BlobBasedConfig(repository.getConfig(), bytes)
+          config.getSubsections("submodule").asScala.map { module =>
+            val path = config.getString("submodule", module, "path")
+            val url = config.getString("submodule", module, "url")
+            SubmoduleInfo(module, path, url)
+          }
+        } catch {
+          case e: ConfigInvalidException => {
+            logger.error(
+              "Failed to load .gitmodules file for " + repository
+                .getDirectory(),
+              e)
+            Nil
+          }
         }
-      } catch {
-        case e: ConfigInvalidException => {
-          logger.error(
-            "Failed to load .gitmodules file for " + repository.getDirectory(),
-            e)
-          Nil
-        }
-      }).toList
+      ).toList
     } getOrElse Nil
   }
 
@@ -1032,8 +1045,9 @@ object JGitUtil {
     try {
       using(git.getRepository.getObjectDatabase) { db =>
         val loader = db.open(id)
-        if (loader.isLarge || (fetchLargeFile == false && FileUtil.isLarge(
-              loader.getSize))) {
+        if (loader.isLarge || (
+              fetchLargeFile == false && FileUtil.isLarge(loader.getSize)
+            )) {
           None
         } else {
           Some(loader.getBytes)

@@ -33,8 +33,7 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
       evG: G[A] =:= Id[A]): Bijection[X[A, C], X[B, D]] =
     bijection(
       F.bimap(_)(_to andThen evF, g.to(_)): Id[X[B, D]],
-      F.bimap(_)(_from andThen evG, g.from(_)): Id[X[A, C]]
-    )
+      F.bimap(_)(_from andThen evG, g.from(_)): Id[X[A, C]])
 
   def ***[C, D](g: Bijection[C, D])(implicit
       evF: F[B] =:= Id[B],
@@ -47,10 +46,7 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
   def compose[C](g: BijectionT[F, G, C, A])(implicit
       FM: Bind[F],
       GM: Bind[G]): BijectionT[F, G, C, B] =
-    bijection(
-      (toK <=< g.toK).run,
-      (fromK >=> g.fromK).run
-    )
+    bijection((toK <=< g.toK).run, (fromK >=> g.fromK).run)
 
   /** alias for `compose` */
   def <=<[C](that: BijectionT[F, G, C, A])(implicit
@@ -212,8 +208,7 @@ private trait BijectionTSplit[F[_], G[_]]
       },
       {
         case (b, d) => G.tuple2(ab.from(b), cd.from(d))
-      }
-    )
+      })
 }
 
 private trait BijectionTCategory[F[_], G[_]]

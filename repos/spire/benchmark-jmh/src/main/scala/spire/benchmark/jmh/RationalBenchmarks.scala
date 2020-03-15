@@ -13,13 +13,17 @@ object RationalUtil {
     x.getClass.getSimpleName.endsWith("BigRational")
 
   def classify(a: Rational): String =
-    (if (isBig(a))
-       "b"
-     else
-       "l") + (if (a.isWhole)
-                 "i"
-               else
-                 "f")
+    (
+      if (isBig(a))
+        "b"
+      else
+        "l"
+    ) + (
+      if (a.isWhole)
+        "i"
+      else
+        "f"
+    )
 
   def classify(a: Rational, op_a: Rational): String =
     classify(a) + "_" + classify(op_a)

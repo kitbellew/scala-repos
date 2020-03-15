@@ -53,12 +53,13 @@ object GenerateOrdering
     * Creates a code gen ordering for sorting this schema, in ascending order.
     */
   def create(schema: StructType): BaseOrdering = {
-    create(schema.zipWithIndex.map {
-      case (field, ordinal) =>
-        SortOrder(
-          BoundReference(ordinal, field.dataType, nullable = true),
-          Ascending)
-    })
+    create(
+      schema.zipWithIndex.map {
+        case (field, ordinal) =>
+          SortOrder(
+            BoundReference(ordinal, field.dataType, nullable = true),
+            Ascending)
+      })
   }
 
   /**
@@ -196,11 +197,12 @@ object LazilyGeneratedOrdering {
     * Creates a [[LazilyGeneratedOrdering]] for the given schema, in natural ascending order.
     */
   def forSchema(schema: StructType): LazilyGeneratedOrdering = {
-    new LazilyGeneratedOrdering(schema.zipWithIndex.map {
-      case (field, ordinal) =>
-        SortOrder(
-          BoundReference(ordinal, field.dataType, nullable = true),
-          Ascending)
-    })
+    new LazilyGeneratedOrdering(
+      schema.zipWithIndex.map {
+        case (field, ordinal) =>
+          SortOrder(
+            BoundReference(ordinal, field.dataType, nullable = true),
+            Ascending)
+      })
   }
 }

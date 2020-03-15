@@ -57,7 +57,9 @@ private[round] final class Takebacker(
         prefApi.getPref(userId, (p: Pref) => p.takeback)
       }.sequenceFu map {
         _.forall { p =>
-          p == Pref.Takeback.ALWAYS || (p == Pref.Takeback.CASUAL && game.casual)
+          p == Pref.Takeback.ALWAYS || (
+            p == Pref.Takeback.CASUAL && game.casual
+          )
         }
       }
 

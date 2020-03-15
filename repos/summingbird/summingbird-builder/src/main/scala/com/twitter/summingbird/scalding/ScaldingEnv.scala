@@ -111,11 +111,12 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
 
     // Support for the old setting based writing
     val toRun: TailProducer[Scalding, (Any, (Option[Any], Any))] =
-      (for {
-        opt <- opts.get(scaldingBuilder.id)
-        stid <- opt.get[StoreIntermediateData[Any, Any]]
-      } yield addDeltaWrite(scaldingBuilder.node, stid.sink))
-        .getOrElse(scaldingBuilder.node)
+      (
+        for {
+          opt <- opts.get(scaldingBuilder.id)
+          stid <- opt.get[StoreIntermediateData[Any, Any]]
+        } yield addDeltaWrite(scaldingBuilder.node, stid.sink)
+      ).getOrElse(scaldingBuilder.node)
         .name(scaldingBuilder.id)
 
     val scald = Scalding(name, opts)

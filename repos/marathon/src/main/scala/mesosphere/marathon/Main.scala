@@ -24,14 +24,12 @@ class MarathonApp extends App {
   lazy val zk: ZooKeeperClient = {
     require(
       conf.zooKeeperSessionTimeout() < Integer.MAX_VALUE,
-      "ZooKeeper timeout too large!"
-    )
+      "ZooKeeper timeout too large!")
 
     val client =
       new ZooKeeperClient(
         Amount.of(conf.zooKeeperSessionTimeout().toInt, Time.MILLISECONDS),
-        conf.zooKeeperHostAddresses.asJavaCollection
-      )
+        conf.zooKeeperHostAddresses.asJavaCollection)
 
     // Marathon can't do anything useful without a ZK connection
     // so we wait to proceed until one is available
@@ -93,8 +91,7 @@ class MarathonApp extends App {
     run(
       classOf[HttpService],
       classOf[MarathonSchedulerService],
-      classOf[MetricsReporterService]
-    )
+      classOf[MetricsReporterService])
   }
 
   /**

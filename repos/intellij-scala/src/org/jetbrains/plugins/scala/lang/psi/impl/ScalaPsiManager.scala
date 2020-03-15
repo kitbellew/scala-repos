@@ -429,16 +429,17 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
           clearOnOutOfCodeBlockChange()
         }
 
-        LowMemoryWatcher.register(new Runnable {
-          def run(): Unit = {
-            clearCacheOnLowMemory.foreach(_.clear())
-            Conformance.cache.clear()
-            Equivalence.cache.clear()
-            ScParameterizedType.substitutorCache.clear()
-            ScalaPsiUtil.collectImplicitObjectsCache.clear()
-            ImplicitCollector.cache.clear()
-          }
-        })
+        LowMemoryWatcher.register(
+          new Runnable {
+            def run(): Unit = {
+              clearCacheOnLowMemory.foreach(_.clear())
+              Conformance.cache.clear()
+              Equivalence.cache.clear()
+              ScParameterizedType.substitutorCache.clear()
+              ScalaPsiUtil.collectImplicitObjectsCache.clear()
+              ImplicitCollector.cache.clear()
+            }
+          })
       }
     )
   }

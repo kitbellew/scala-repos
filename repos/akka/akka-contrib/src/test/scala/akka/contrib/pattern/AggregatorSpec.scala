@@ -276,22 +276,25 @@ class WorkListSpec extends FunSuiteLike {
   test("Process temp entries") {
 
     // ProcessAndRemove something in the middle
-    assert(workList process {
-      case TestEntry(2) ⇒ true
-      case _ ⇒ false
-    })
+    assert(
+      workList process {
+        case TestEntry(2) ⇒ true
+        case _ ⇒ false
+      })
 
     // ProcessAndRemove the head
-    assert(workList process {
-      case TestEntry(0) ⇒ true
-      case _ ⇒ false
-    })
+    assert(
+      workList process {
+        case TestEntry(0) ⇒ true
+        case _ ⇒ false
+      })
 
     // ProcessAndRemove the tail
-    assert(workList process {
-      case TestEntry(3) ⇒ true
-      case _ ⇒ false
-    })
+    assert(
+      workList process {
+        case TestEntry(3) ⇒ true
+        case _ ⇒ false
+      })
   }
 
   test("Re-insert permanent entry") {
@@ -302,10 +305,11 @@ class WorkListSpec extends FunSuiteLike {
   }
 
   test("Process permanent entry") {
-    assert(workList process {
-      case TestEntry(4) ⇒ true
-      case _ ⇒ false
-    })
+    assert(
+      workList process {
+        case TestEntry(4) ⇒ true
+        case _ ⇒ false
+      })
   }
 
   test("Remove permanent entry") {

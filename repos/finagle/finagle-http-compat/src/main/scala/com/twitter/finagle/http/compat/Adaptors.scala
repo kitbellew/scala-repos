@@ -35,9 +35,10 @@ object NettyAdaptor extends Adaptor[netty.HttpRequest, netty.HttpResponse] {
     if (r.isChunked)
       Future.exception(NoStreaming)
     else
-      Future.value(new http.Response {
-        val httpResponse = r
-      })
+      Future.value(
+        new http.Response {
+          val httpResponse = r
+        })
 }
 
 /**
@@ -63,10 +64,11 @@ object NettyClientAdaptor
     if (req.isChunked)
       Future.exception(NoStreaming)
     else
-      Future.value(new http.Request {
-        val httpRequest = req
-        lazy val remoteSocketAddress = new InetSocketAddress(0)
-      })
+      Future.value(
+        new http.Request {
+          val httpRequest = req
+          lazy val remoteSocketAddress = new InetSocketAddress(0)
+        })
 
   private[compat] def out(rep: http.Response): Future[netty.HttpResponse] =
     if (rep.isChunked)

@@ -163,9 +163,12 @@ object JsonParser {
       def reverse(v: JValue): JValue =
         v match {
           case JObject(l) =>
-            JObject((l.map { field =>
-              field.copy(value = reverse(field.value))
-            }).reverse)
+            JObject(
+              (
+                l.map { field =>
+                  field.copy(value = reverse(field.value))
+                }
+              ).reverse)
           case JArray(l) => JArray(l.map(reverse).reverse)
           case x         => x
         }
@@ -292,8 +295,10 @@ object JsonParser {
           } else if (c == '.' || c == 'e' || c == 'E') {
             doubleVal = true
             s.append(c)
-          } else if (!(Character.isDigit(
-                       c) || c == '.' || c == 'e' || c == 'E' || c == '-' || c == '+')) {
+          } else if (!(
+                       Character.isDigit(
+                         c) || c == '.' || c == 'e' || c == 'E' || c == '-' || c == '+'
+                     )) {
             wasInt = false
             buf.back
           } else

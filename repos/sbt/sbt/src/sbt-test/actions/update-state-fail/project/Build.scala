@@ -8,9 +8,7 @@ object TestBuild extends Build {
   lazy val check = InputKey[Unit]("check")
   lazy val root = Project("root", file("."))
     .aggregate(a, b)
-    .settings(
-      check := checkState(checkParser.parsed, state.value)
-    )
+    .settings(check := checkState(checkParser.parsed, state.value))
 
   lazy val a = Project("a", file("a")).settings(t := sys.error("Failing"))
 

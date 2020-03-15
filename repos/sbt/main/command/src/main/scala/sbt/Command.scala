@@ -122,9 +122,9 @@ object Command {
       sc: SimpleCommand): State => Parser[() => State] = {
     def usageError = s"${sc.name} usage:" + Help.message(sc.help0, None)
     s =>
-      (Parser
-        .softFailure(usageError, definitive = true): Parser[() => State]) | sc
-        .parser(s)
+      (
+        Parser.softFailure(usageError, definitive = true): Parser[() => State]
+      ) | sc.parser(s)
   }
 
   def simpleParser(commandMap: Map[String, State => Parser[() => State]])
@@ -167,7 +167,9 @@ object Command {
       maxSuggestions: Int = 3): Seq[String] =
     bs.map { b =>
       (b, distance(a, b))
-    } filter (_._2 <= maxDistance) sortBy (_._2) take (maxSuggestions) map (_._1)
+    } filter (_._2 <= maxDistance) sortBy (_._2) take (maxSuggestions) map (
+      _._1
+    )
   def distance(a: String, b: String): Int =
     EditDistance.levenshtein(
       a,

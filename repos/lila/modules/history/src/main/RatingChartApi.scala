@@ -31,8 +31,7 @@ final class RatingChartApi(
       Json.arr("string", "Date"),
       Json.arr("number", "Standard"),
       Json.arr("number", "Opponent Rating"),
-      Json.arr("number", "Average")
-    )
+      Json.arr("number", "Average"))
   }
 
   private def build(user: User): Fu[Option[String]] = {

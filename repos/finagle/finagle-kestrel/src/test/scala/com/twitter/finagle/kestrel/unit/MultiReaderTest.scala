@@ -73,19 +73,20 @@ class MultiReaderTest
 
     def newKestrelService(
         executor: Option[ExecutorService],
-        queues: LoadingCache[Buf, BlockingDeque[Buf]]
-    ): Service[Command, Response] = {
+        queues: LoadingCache[Buf, BlockingDeque[Buf]])
+        : Service[Command, Response] = {
       val interpreter = new Interpreter(queues)
       new Service[Command, Response] {
         def apply(request: Command) = {
           val promise = new Promise[Response]()
           executor match {
             case Some(exec) =>
-              exec.submit(new Runnable {
-                def run() {
-                  promise.setValue(interpreter(request))
-                }
-              })
+              exec.submit(
+                new Runnable {
+                  def run() {
+                    promise.setValue(interpreter(request))
+                  }
+                })
             case None => promise.setValue(interpreter(request))
           }
           promise
@@ -97,9 +98,10 @@ class MultiReaderTest
       hosts.map { host =>
         val queues = CacheBuilder
           .newBuilder()
-          .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
-            def load(k: Buf) = new LinkedBlockingDeque[Buf]
-          })
+          .build(
+            new CacheLoader[Buf, BlockingDeque[Buf]] {
+              def load(k: Buf) = new LinkedBlockingDeque[Buf]
+            })
         (host, queues)
       }.toMap
 
@@ -189,19 +191,20 @@ class MultiReaderTest
 
     def newKestrelService(
         executor: Option[ExecutorService],
-        queues: LoadingCache[Buf, BlockingDeque[Buf]]
-    ): Service[Command, Response] = {
+        queues: LoadingCache[Buf, BlockingDeque[Buf]])
+        : Service[Command, Response] = {
       val interpreter = new Interpreter(queues)
       new Service[Command, Response] {
         def apply(request: Command) = {
           val promise = new Promise[Response]()
           executor match {
             case Some(exec) =>
-              exec.submit(new Runnable {
-                def run() {
-                  promise.setValue(interpreter(request))
-                }
-              })
+              exec.submit(
+                new Runnable {
+                  def run() {
+                    promise.setValue(interpreter(request))
+                  }
+                })
             case None => promise.setValue(interpreter(request))
           }
           promise
@@ -213,9 +216,10 @@ class MultiReaderTest
       hosts.map { host =>
         val queues = CacheBuilder
           .newBuilder()
-          .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
-            def load(k: Buf) = new LinkedBlockingDeque[Buf]
-          })
+          .build(
+            new CacheLoader[Buf, BlockingDeque[Buf]] {
+              def load(k: Buf) = new LinkedBlockingDeque[Buf]
+            })
         (host, queues)
       }.toMap
 
@@ -311,8 +315,7 @@ class MultiReaderTest
             (handle.messages ??),
             (handle.messages ??),
             (handle.messages ??)) ==
-            ISet(ms(0), ms(1), ms(2))
-        )
+            ISet(ms(0), ms(1), ms(2)))
       }
     }
   }

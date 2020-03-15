@@ -13,18 +13,20 @@ case class Assessible(analysed: Analysed) {
   import analysed._
 
   def suspiciousErrorRate(color: Color): Boolean =
-    listAverage(
-      Accuracy.diffsList(Pov(game, color), analysis)) < (game.speed match {
-      case Speed.Bullet => 25
-      case Speed.Blitz  => 20
-      case _            => 15
-    })
+    listAverage(Accuracy.diffsList(Pov(game, color), analysis)) < (
+      game.speed match {
+        case Speed.Bullet => 25
+        case Speed.Blitz  => 20
+        case _            => 15
+      }
+    )
 
   def alwaysHasAdvantage(color: Color): Boolean =
     !analysis.infos.exists { info =>
-      info.score.fold(info.mate.fold(false) { a =>
-        (signum(a).toInt == color.fold(-1, 1))
-      }) { cp =>
+      info.score.fold(
+        info.mate.fold(false) { a =>
+          (signum(a).toInt == color.fold(-1, 1))
+        }) { cp =>
         color.fold(cp.centipawns < -100, cp.centipawns > 100)
       }
     }

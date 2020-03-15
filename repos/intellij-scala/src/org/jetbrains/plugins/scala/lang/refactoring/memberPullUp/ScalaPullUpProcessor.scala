@@ -161,14 +161,15 @@ class ScalaPullUpProcessor(
         val copy = funDef.copy().asInstanceOf[ScFunctionDefinition]
         copy.setModifierProperty("override", value = false)
         Seq(copy.assignment, copy.body).flatten.foreach(_.delete())
-        copy.accept(new ScalaRecursiveElementVisitor() {
-          override def visitSimpleTypeElement(te: ScSimpleTypeElement) = {
-            val tpe = te.calcType
-            te.replace(
-              ScalaPsiElementFactory
-                .createTypeElementFromText(tpe.canonicalText, te.getManager))
-          }
-        })
+        copy.accept(
+          new ScalaRecursiveElementVisitor() {
+            override def visitSimpleTypeElement(te: ScSimpleTypeElement) = {
+              val tpe = te.calcType
+              te.replace(
+                ScalaPsiElementFactory
+                  .createTypeElementFromText(tpe.canonicalText, te.getManager))
+            }
+          })
         Seq(copy.getText)
       case valDef: ScPatternDefinition =>
         val copy = valDef.copy().asInstanceOf[ScPatternDefinition]

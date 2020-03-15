@@ -57,10 +57,12 @@ abstract class MixinNodes {
       mutable.HashMap.empty
     def addToMap(key: T, node: Node) {
       val name = ScalaPsiUtil.convertMemberName(elemName(key))
-      (if (!isPrivate(key))
-         this
-       else
-         privatesMap).getOrElseUpdate(name, new ArrayBuffer) += ((key, node))
+      (
+        if (!isPrivate(key))
+          this
+        else
+          privatesMap
+      ).getOrElseUpdate(name, new ArrayBuffer) += ((key, node))
       if (isImplicit(key))
         implicitNames.add(name)
     }
@@ -418,8 +420,7 @@ abstract class MixinNodes {
                         new ScSubstitutor(
                           Map.empty,
                           Map.empty,
-                          Some(ScThisType(t)))
-                      )
+                          Some(ScThisType(t))))
                     case _ =>
                   }
                   placer = placer.getContext
@@ -455,8 +456,7 @@ abstract class MixinNodes {
                         new ScSubstitutor(
                           Map.empty,
                           Map.empty,
-                          Some(ScThisType(t)))
-                      )
+                          Some(ScThisType(t))))
                     case _ =>
                   }
                   placer = placer.getContext
@@ -533,11 +533,13 @@ abstract class MixinNodes {
           }
         case _ =>
       }
-      (superType.isAliasType match {
-        case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
-          lower.getOrElse(superType)
-        case _ => superType
-      }) match {
+      (
+        superType.isAliasType match {
+          case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
+            lower.getOrElse(superType)
+          case _ => superType
+        }
+      ) match {
         case c: ScCompoundType =>
           processRefinement(c, map, place)
         case _ =>
@@ -553,8 +555,10 @@ abstract class MixinNodes {
       superClass: PsiClass) = {
     var res: ScSubstitutor = ScSubstitutor.empty
     for (tp <- superClass.getTypeParameters) {
-      res = res bindT ((tp.name, ScalaPsiUtil.getPsiElementId(tp)),
-      derived.subst(superSubst.subst(ScalaPsiManager.typeVariable(tp))))
+      res = res bindT (
+        (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
+        derived.subst(superSubst.subst(ScalaPsiManager.typeVariable(tp)))
+      )
     }
     superClass match {
       case td: ScTypeDefinition =>
@@ -686,11 +690,13 @@ object MixinNodes {
               buffer.update(i, tp)
           }
         case _ =>
-          (tp.isAliasType match {
-            case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
-              lower.getOrElse(tp)
-            case _ => tp
-          }) match {
+          (
+            tp.isAliasType match {
+              case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
+                lower.getOrElse(tp)
+              case _ => tp
+            }
+          ) match {
             case c: ScCompoundType => c +=: buffer
             case _                 =>
           }
@@ -722,11 +728,13 @@ object MixinNodes {
             add(subst.subst(tp))
           }
         case _ =>
-          (tp.isAliasType match {
-            case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
-              lower.getOrElse(tp)
-            case _ => tp
-          }) match {
+          (
+            tp.isAliasType match {
+              case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
+                lower.getOrElse(tp)
+              case _ => tp
+            }
+          ) match {
             case c: ScCompoundType =>
               val lin = linearization(c, addTp = true)
               val newIterator = lin.reverseIterator

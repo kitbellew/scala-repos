@@ -19,10 +19,11 @@ class AkkaException(message: String, cause: Throwable)
   */
 trait OnlyCauseStackTrace { self: Throwable ⇒
   override def fillInStackTrace(): Throwable = {
-    setStackTrace(getCause match {
-      case null ⇒ Array.empty
-      case some ⇒ some.getStackTrace
-    })
+    setStackTrace(
+      getCause match {
+        case null ⇒ Array.empty
+        case some ⇒ some.getStackTrace
+      })
     this
   }
 }

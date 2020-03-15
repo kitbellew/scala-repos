@@ -90,8 +90,9 @@ object CSRFConfig {
   private def defaultCreateIfNotFound(request: RequestHeader) = {
     // If the request isn't accepting HTML, then it won't be rendering a form, so there's no point in generating a
     // CSRF token for it.
-    (request.method == "GET" || request.method == "HEAD") && (request.accepts(
-      "text/html") || request.accepts("application/xml+xhtml"))
+    (request.method == "GET" || request.method == "HEAD") && (
+      request.accepts("text/html") || request.accepts("application/xml+xhtml")
+    )
   }
 
   private[play] val HeaderNoCheck = "nocheck"
@@ -151,8 +152,9 @@ object CSRFConfig {
         }
       }
 
-      (protectHeaders.isEmpty || foundHeaderValues(
-        protectHeaders)) && !foundHeaderValues(bypassHeaders)
+      (
+        protectHeaders.isEmpty || foundHeaderValues(protectHeaders)
+      ) && !foundHeaderValues(bypassHeaders)
     }
 
     CSRFConfig(
@@ -324,8 +326,9 @@ class CSRFModule extends Module {
     Seq(
       bind[CSRFConfig].toProvider[CSRFConfigProvider],
       bind[CSRF.TokenProvider].toProvider[CSRF.TokenProviderProvider],
-      bind[CSRFFilter].toSelf
-    ) ++ ErrorHandler.bindingsFromConfiguration(environment, configuration)
+      bind[CSRFFilter].toSelf) ++ ErrorHandler.bindingsFromConfiguration(
+      environment,
+      configuration)
   }
 }
 

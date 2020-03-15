@@ -46,11 +46,12 @@ class ReadOnlyFloatProperty(override val delegate: jfxbp.ReadOnlyFloatProperty)
     with ReadOnlyProperty[Float, Number]
     with SFXDelegate[jfxbp.ReadOnlyFloatProperty] {
   def this(bean: Object, name: String, value: Float) =
-    this(new jfxbp.ReadOnlyFloatPropertyBase() {
-      def getBean = bean
-      def getName = name
-      def get = value
-    })
+    this(
+      new jfxbp.ReadOnlyFloatPropertyBase() {
+        def getBean = bean
+        def getName = name
+        def get = value
+      })
 
   override def value = delegate.get
 }

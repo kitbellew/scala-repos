@@ -259,8 +259,7 @@ object SparkPlanTest {
                 sys.error(
                   s"Invalid Test: Cannot resolve $u given input $inputMap"))
           }
-      }
-    )
+      })
     resolvedPlan.executeCollectPublic().toSeq
   }
 }

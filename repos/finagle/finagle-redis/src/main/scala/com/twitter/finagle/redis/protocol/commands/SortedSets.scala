@@ -44,8 +44,7 @@ case class ZCount(key: ChannelBuffer, min: ZInterval, max: ZInterval)
         CommandBytes.ZCOUNT,
         key,
         StringToChannelBuffer(min.toString),
-        StringToChannelBuffer(max.toString)
-      ))
+        StringToChannelBuffer(max.toString)))
 }
 object ZCount {
   def apply(args: Seq[Array[Byte]]) = {
@@ -425,18 +424,12 @@ sealed trait StrictZMembersCommand extends ZMembersCommand {
   }
   def membersByteArray: Seq[Array[Byte]] = {
     members.map { member =>
-      Seq(
-        StringToBytes(member.score.toString),
-        member.member.array
-      )
+      Seq(StringToBytes(member.score.toString), member.member.array)
     }.flatten
   }
   def membersChannelBuffers: Seq[ChannelBuffer] = {
     members.map { member =>
-      Seq(
-        StringToChannelBuffer(member.score.toString),
-        member.member
-      )
+      Seq(StringToChannelBuffer(member.score.toString), member.member)
     }.flatten
   }
 }

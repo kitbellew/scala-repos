@@ -402,8 +402,9 @@ trait IntroduceExpressions {
     val parentExprs =
       if (occCount == 1)
         ScalaRefactoringUtil.findParentExpr(file, firstRange) match {
-          case _ childOf ((block: ScBlock) childOf ((_) childOf (call: ScMethodCall)))
-              if isFunExpr && block.statements.size == 1 =>
+          case _ childOf (
+                (block: ScBlock) childOf ((_) childOf (call: ScMethodCall))
+              ) if isFunExpr && block.statements.size == 1 =>
             Seq(call)
           case _ childOf ((block: ScBlock) childOf (infix: ScInfixExpr))
               if isFunExpr && block.statements.size == 1 =>

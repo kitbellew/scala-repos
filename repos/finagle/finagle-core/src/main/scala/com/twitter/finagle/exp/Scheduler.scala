@@ -21,8 +21,7 @@ object scheduler
     extends GlobalFlag(
       "local",
       "Which scheduler to use for futures " +
-        "<local> | <lifo> | <bridged>[:<num workers>] | <forkjoin>[:<num workers>]"
-    )
+        "<local> | <lifo> | <bridged>[:<num workers>] | <forkjoin>[:<num workers>]")
 
 private[finagle] object FinagleScheduler {
   private val log = DefaultLogger
@@ -40,9 +39,7 @@ private[finagle] object FinagleScheduler {
   private def switchToBridged(numWorkers: Int) {
     val queue =
       try Class
-        .forName(
-          "java.util.concurrent.LinkedTransferQueue"
-        )
+        .forName("java.util.concurrent.LinkedTransferQueue")
         .newInstance
         .asInstanceOf[BlockingQueue[Runnable]]
       catch {

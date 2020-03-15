@@ -53,8 +53,7 @@ class EnsembleTreeView extends EnsembleExample {
             new TreeItem[String] {
               value = "Node 3"
               children = ObservableBuffer(
-                (4 to 12).map(n => new TreeItem[String]("Child Node " + n))
-              )
+                (4 to 12).map(n => new TreeItem[String]("Child Node " + n)))
             }
           )
         }

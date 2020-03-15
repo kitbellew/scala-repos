@@ -43,10 +43,12 @@ object ByteArray {
   implicit object JsByteArrayFormat extends OFormat[ByteArray] {
 
     def reads(json: JsValue) =
-      (for {
-        hexStr ← json str "$binary"
-        bytes ← fromHexStr(hexStr).toOption
-      } yield bytes) match {
+      (
+        for {
+          hexStr ← json str "$binary"
+          bytes ← fromHexStr(hexStr).toOption
+        } yield bytes
+      ) match {
         case None     => JsError(s"error reading ByteArray from $json")
         case Some(ba) => JsSuccess(ba)
       }

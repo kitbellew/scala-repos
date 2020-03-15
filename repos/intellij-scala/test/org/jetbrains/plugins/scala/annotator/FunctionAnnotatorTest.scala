@@ -98,9 +98,7 @@ class FunctionAnnotatorTest extends SimpleTestCase {
   }
 
   def testTry(): Unit = {
-    assertMatches(
-      messages(
-        """
+    assertMatches(messages("""
         |def myFunc(): Int = {
         |  try {
         |    val something = "some string"
@@ -109,8 +107,7 @@ class FunctionAnnotatorTest extends SimpleTestCase {
         |    case e: Exception => throw e
         |  }
         |}
-      """.stripMargin
-      )) {
+      """.stripMargin)) {
       case Error("}", TypeMismatch()) :: Nil =>
     }
   }

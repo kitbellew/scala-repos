@@ -29,11 +29,12 @@ class SinkholeSubscriberTest
       }
 
       override def onSubscribe(s: Subscription): Unit = {
-        probe.registerOnSubscribe(new SubscriberPuppet() {
-          override def triggerRequest(elements: Long): Unit =
-            s.request(elements)
-          override def signalCancel(): Unit = s.cancel()
-        })
+        probe.registerOnSubscribe(
+          new SubscriberPuppet() {
+            override def triggerRequest(elements: Long): Unit =
+              s.request(elements)
+            override def signalCancel(): Unit = s.cancel()
+          })
         hole.onSubscribe(s)
       }
 

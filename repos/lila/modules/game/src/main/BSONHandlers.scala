@@ -47,8 +47,7 @@ object BSONHandlers {
             o.pockets.white.roles.map(_.forsythUpper).mkString +
               o.pockets.black.roles.map(_.forsyth).mkString
           },
-          "t" -> o.promoted.map(_.piotr).mkString
-        )
+          "t" -> o.promoted.map(_.piotr).mkString)
     }
 
   implicit val gameBSONHandler =
@@ -131,20 +130,24 @@ object BSONHandlers {
           playerIds -> (o.whitePlayer.id + o.blackPlayer.id),
           playerUids -> w.listO(
             List(~o.whitePlayer.userId, ~o.blackPlayer.userId)),
-          whitePlayer -> w.docO(playerBSONHandler write ((_: Color) =>
-            (_: Player.Id) =>
-              (_: Player.UserId) => (_: Player.Win) => o.whitePlayer)),
-          blackPlayer -> w.docO(playerBSONHandler write ((_: Color) =>
-            (_: Player.Id) =>
-              (_: Player.UserId) => (_: Player.Win) => o.blackPlayer)),
+          whitePlayer -> w.docO(
+            playerBSONHandler write ((_: Color) =>
+              (_: Player.Id) =>
+                (_: Player.UserId) => (_: Player.Win) => o.whitePlayer)),
+          blackPlayer -> w.docO(
+            playerBSONHandler write ((_: Color) =>
+              (_: Player.Id) =>
+                (_: Player.UserId) => (_: Player.Win) => o.blackPlayer)),
           binaryPieces -> o.binaryPieces,
           binaryPgn -> w.byteArrayO(o.binaryPgn),
           status -> o.status,
           turns -> o.turns,
           startedAtTurn -> w.intO(o.startedAtTurn),
-          clock -> (o.clock map { c =>
-            clockBSONWrite(o.createdAt, c)
-          }),
+          clock -> (
+            o.clock map { c =>
+              clockBSONWrite(o.createdAt, c)
+            }
+          ),
           positionHashes -> w.bytesO(o.positionHashes),
           checkCount -> o.checkCount.nonEmpty.option(o.checkCount),
           castleLastMoveTime -> CastleLastMoveTime.castleLastMoveTimeBSONHandler
@@ -177,11 +180,7 @@ object BSONHandlers {
       def read(bin: BSONBinary) =
         BinaryFormat
           .clock(since)
-          .read(
-            ByteArrayBSONHandler read bin,
-            whiteBerserk,
-            blackBerserk
-          )
+          .read(ByteArrayBSONHandler read bin, whiteBerserk, blackBerserk)
     }
   private[game] def clockBSONWrite(since: DateTime, clock: Clock) =
     ByteArrayBSONHandler write {

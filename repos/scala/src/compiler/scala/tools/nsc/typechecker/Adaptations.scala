@@ -33,17 +33,19 @@ trait Adaptations {
           case _                    => EmptyTree
         }
       def callString =
-        (
-          (if (t.symbol.isConstructor)
-             "new "
-           else
-             "") +
-            (t.symbol.owner.decodedName) +
-            (if (t.symbol.isConstructor || t.symbol.name == nme.apply)
-               ""
-             else
-               "." + t.symbol.decodedName)
-        )
+        ((
+          if (t.symbol.isConstructor)
+            "new "
+          else
+            ""
+        ) +
+          (t.symbol.owner.decodedName) +
+          (
+            if (t.symbol.isConstructor || t.symbol.name == nme.apply)
+              ""
+            else
+              "." + t.symbol.decodedName
+          ))
       def sigString =
         t.symbol.owner.decodedName + (
           if (t.symbol.isConstructor)
@@ -66,10 +68,12 @@ trait Adaptations {
         msg +
           "\n        signature: " + sigString +
           "\n  given arguments: " + givenString +
-          (if (showAdaptation)
-             "\n after adaptation: " + callString + "(" + adaptedArgs + ")"
-           else
-             "")
+          (
+            if (showAdaptation)
+              "\n after adaptation: " + callString + "(" + adaptedArgs + ")"
+            else
+              ""
+          )
 
       // A one-argument method accepting Object (which may look like "Any"
       // at this point if the class is java defined) is a "leaky target" for
@@ -107,10 +111,12 @@ trait Adaptations {
               showAdaptation = false))
         else {
           val msg =
-            "Adaptation of argument list by inserting () has been deprecated: " + (if (isLeakyTarget)
-                                                                                     "leaky (Object-receiving) target makes this especially dangerous."
-                                                                                   else
-                                                                                     "this is unlikely to be what you want.")
+            "Adaptation of argument list by inserting () has been deprecated: " + (
+              if (isLeakyTarget)
+                "leaky (Object-receiving) target makes this especially dangerous."
+              else
+                "this is unlikely to be what you want."
+            )
           context.deprecationWarning(t.pos, t.symbol, adaptWarningMessage(msg))
         }
       } else if (settings.warnAdaptedArgs)

@@ -214,9 +214,10 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
         StructField("arrayFieldSimple", ArrayType(IntegerType), true) ::
         StructField(
           "arrayFieldComplex",
-          ArrayType(MapType(
-            StringType,
-            StructType(StructField("key", LongType, true) :: Nil))),
+          ArrayType(
+            MapType(
+              StringType,
+              StructType(StructField("key", LongType, true) :: Nil))),
           true) ::
         StructField("mapFieldSimple", MapType(IntegerType, StringType), true) ::
         StructField(
@@ -227,8 +228,9 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
           true) ::
         StructField(
           "structFieldSimple",
-          StructType(StructField("key", IntegerType, true) ::
-            StructField("Value", StringType, true) :: Nil),
+          StructType(
+            StructField("key", IntegerType, true) ::
+              StructField("Value", StringType, true) :: Nil),
           true) ::
         StructField(
           "structFieldComplex",
@@ -241,8 +243,7 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
                 true) :: Nil),
           true
         ) ::
-        Nil
-    )
+        Nil)
 
     assert(
       expectedSchema == caseInsensitiveContext.table("tableWithSchema").schema)

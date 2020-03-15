@@ -17,8 +17,7 @@ class ClientBuilderTest extends FlatSpec {
     readOnlyOK = false,
     sessionId = None,
     password = None,
-    timer = Timer.Nil
-  )
+    timer = Timer.Nil)
 
   "reader" should "return Apache ZK reader" in {
     val zkr = ClientBuilder().reader()

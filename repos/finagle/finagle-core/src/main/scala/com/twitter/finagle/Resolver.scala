@@ -100,8 +100,8 @@ object InetResolver {
 
 private[finagle] class InetResolver(
     unscopedStatsReceiver: StatsReceiver,
-    pollIntervalOpt: Option[Duration]
-) extends Resolver {
+    pollIntervalOpt: Option[Duration])
+    extends Resolver {
   import InetSocketAddressUtil._
 
   type HostPortMetadata = (String, Int, Addr.Metadata)
@@ -146,14 +146,15 @@ private[finagle] class InetResolver(
   def toAddr(hp: Seq[HostPortMetadata]): Future[Addr] = {
     val elapsed = Stopwatch.start()
     Future
-      .collectToTry(hp.map {
-        case (host, port, meta) =>
-          resolveHost(host).map { inetAddrs =>
-            inetAddrs.map { inetAddr =>
-              Address.Inet(new InetSocketAddress(inetAddr, port), meta)
+      .collectToTry(
+        hp.map {
+          case (host, port, meta) =>
+            resolveHost(host).map { inetAddrs =>
+              inetAddrs.map { inetAddr =>
+                Address.Inet(new InetSocketAddress(inetAddr, port), meta)
+              }
             }
-          }
-      })
+        })
       .flatMap { seq: Seq[Try[Seq[Address]]] =>
         // Filter out all successes. If there was at least 1 success, consider
         // the entire operation a success
@@ -215,10 +216,11 @@ private[finagle] class InetResolver(
   def bind(hosts: String): Var[Addr] =
     Try(parseHostPorts(hosts)) match {
       case Return(hp) =>
-        bindHostPortsToAddr(hp.map {
-          case (host, port) =>
-            (host, port, Addr.Metadata.empty)
-        })
+        bindHostPortsToAddr(
+          hp.map {
+            case (host, port) =>
+              (host, port, Addr.Metadata.empty)
+          })
       case Throw(exc) =>
         Var.value(Addr.Failed(exc))
     }
@@ -248,8 +250,8 @@ object FixedInetResolver {
   */
 private[finagle] class FixedInetResolver(
     statsReceiver: StatsReceiver,
-    resolveOverride: Option[String => Future[Seq[InetAddress]]]
-) extends InetResolver(statsReceiver, None) {
+    resolveOverride: Option[String => Future[Seq[InetAddress]]])
+    extends InetResolver(statsReceiver, None) {
 
   override val scheme = FixedInetResolver.scheme
 
@@ -261,9 +263,10 @@ private[finagle] class FixedInetResolver(
   private[this] val cache = CacheBuilder
     .newBuilder()
     .maximumSize(16000L)
-    .build(new CacheLoader[String, Future[Seq[InetAddress]]]() {
-      def load(host: String) = resolveFn(host)
-    })
+    .build(
+      new CacheLoader[String, Future[Seq[InetAddress]]]() {
+        def load(host: String) = resolveFn(host)
+      })
   private[this] val futureCache = GuavaCache.fromLoadingCache(cache)
 
   override def resolveHost(host: String): Future[Seq[InetAddress]] =

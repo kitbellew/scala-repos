@@ -68,9 +68,11 @@ object FilesSpec extends Specification with After {
         val appLoader =
           new ApplicationLoader {
             def load(context: Context) = {
-              (new BuiltInComponentsFromContext(context) {
-                lazy val router = Router.empty
-              }).application
+              (
+                new BuiltInComponentsFromContext(context) {
+                  lazy val router = Router.empty
+                }
+              ).application
             }
           }
         val app = appLoader.load(context)

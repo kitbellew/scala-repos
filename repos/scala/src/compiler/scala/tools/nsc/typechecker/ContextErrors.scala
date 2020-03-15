@@ -122,24 +122,24 @@ trait ContextErrors {
     def parents = tp.parents filterNot isTrivialTopType
     def onlyAny = tp.parents forall (_.typeSymbol == AnyClass)
     def parents_s =
-      (if (parents.isEmpty)
-         tp.parents
-       else
-         parents) mkString ", "
-    def what =
       (
-        if (tp.typeSymbol.isAbstractType) {
-          val descr =
-            if (onlyAny)
-              "unbounded"
-            else
-              "bounded only by " + parents_s
-          s"$name is $descr, which means AnyRef is not a known parent"
-        } else if (tp.typeSymbol.isAnonOrRefinementClass)
-          s"the parents of this type ($parents_s) extend Any, not AnyRef"
+        if (parents.isEmpty)
+          tp.parents
         else
-          s"$name extends Any, not AnyRef"
-      )
+          parents
+      ) mkString ", "
+    def what =
+      (if (tp.typeSymbol.isAbstractType) {
+         val descr =
+           if (onlyAny)
+             "unbounded"
+           else
+             "bounded only by " + parents_s
+         s"$name is $descr, which means AnyRef is not a known parent"
+       } else if (tp.typeSymbol.isAnonOrRefinementClass)
+         s"the parents of this type ($parents_s) extend Any, not AnyRef"
+       else
+         s"$name extends Any, not AnyRef")
     if (isPrimitiveValueType(found) || isTrivialTopType(tp))
       ""
     else
@@ -206,11 +206,12 @@ trait ContextErrors {
         }
         issueNormalTypeError(
           tree,
-          "stable identifier required, but " + tree + " found." + (if (treeInfo.hasVolatileType(
-                                                                         tree))
-                                                                     addendum
-                                                                   else
-                                                                     ""))
+          "stable identifier required, but " + tree + " found." + (
+            if (treeInfo.hasVolatileType(tree))
+              addendum
+            else
+              ""
+          ))
         setError(tree)
       }
 
@@ -444,18 +445,15 @@ trait ContextErrors {
               } else
                 ""
             }
-            val semicolon = (
-              if (linePrecedes(qual, sel))
-                "\npossible cause: maybe a semicolon is missing before `" + nameString + "'?"
-              else
-                ""
-            )
-            val notAnyRef = (
-              if (ObjectClass.info.member(name).exists)
-                notAnyRefMessage(target)
-              else
-                ""
-            )
+            val semicolon =
+              (if (linePrecedes(qual, sel))
+                 "\npossible cause: maybe a semicolon is missing before `" + nameString + "'?"
+               else
+                 "")
+            val notAnyRef = (if (ObjectClass.info.member(name).exists)
+                               notAnyRefMessage(target)
+                             else
+                               "")
             companion + notAnyRef + semicolon
           }
           def targetStr = targetKindString + target.directObjectString
@@ -463,8 +461,7 @@ trait ContextErrors {
             if (name == nme.CONSTRUCTOR)
               s"$target does not have a constructor"
             else
-              s"$nameString is not a member of $targetStr$addendum"
-          )
+              s"$nameString is not a member of $targetStr$addendum")
         }
         issueNormalTypeError(sel, errMsg)
         // the error has to be set for the copied tree, otherwise
@@ -939,14 +936,17 @@ trait ContextErrors {
 
       def DefDefinedTwiceError(sym0: Symbol, sym1: Symbol) = {
         // Most of this hard work is associated with SI-4893.
-        val isBug =
-          sym0.isAbstractType && sym1.isAbstractType && (sym0.name startsWith "_$")
+        val isBug = sym0.isAbstractType && sym1.isAbstractType && (
+          sym0.name startsWith "_$"
+        )
         val addendums = List(
           if (sym0.associatedFile eq sym1.associatedFile)
             Some(
               "conflicting symbols both originated in file '%s'".format(
                 sym0.associatedFile.canonicalPath))
-          else if ((sym0.associatedFile ne NoAbstractFile) && (sym1.associatedFile ne NoAbstractFile))
+          else if ((
+                     sym0.associatedFile ne NoAbstractFile
+                   ) && (sym1.associatedFile ne NoAbstractFile))
             Some(
               "conflicting symbols originated in files '%s' and '%s'".format(
                 sym0.associatedFile.canonicalPath,
@@ -1076,7 +1076,11 @@ trait ContextErrors {
                 .getStackTrace()
                 .take(relevancyThreshold + 1)
               def isMacroInvoker(este: StackTraceElement) =
-                este.isNativeMethod || (este.getClassName != null && (este.getClassName contains "fastTrack"))
+                este.isNativeMethod || (
+                  este.getClassName != null && (
+                    este.getClassName contains "fastTrack"
+                  )
+                )
               var threshold =
                 relevantElements.reverse.indexWhere(isMacroInvoker) + 1
               while (threshold != relevantElements.length && isMacroInvoker(
@@ -1114,16 +1118,12 @@ trait ContextErrors {
 
       def MacroFreeSymbolError(expandee: Tree, sym: FreeSymbol) = {
         def template(kind: String) =
-          (
-            s"Macro expansion contains free $kind variable %s. Have you forgotten to use %s? "
-              + s"If you have troubles tracking free $kind variables, consider using -Xlog-free-${kind}s"
-          )
-        val forgotten = (
-          if (sym.isTerm)
-            "splice when splicing this variable into a reifee"
-          else
-            "c.WeakTypeTag annotation for this type parameter"
-        )
+          (s"Macro expansion contains free $kind variable %s. Have you forgotten to use %s? "
+            + s"If you have troubles tracking free $kind variables, consider using -Xlog-free-${kind}s")
+        val forgotten = (if (sym.isTerm)
+                           "splice when splicing this variable into a reifee"
+                         else
+                           "c.WeakTypeTag annotation for this type parameter")
         macroExpansionError(
           expandee,
           template(sym.name.nameKind)
@@ -1338,10 +1338,12 @@ trait ContextErrors {
         if (!(argtpes exists (_.isErroneous)) && !pt.isErroneous) {
           val msg0 =
             "argument types " + argtpes.mkString("(", ",", ")") +
-              (if (pt == WildcardType)
-                 ""
-               else
-                 " and expected result type " + pt)
+              (
+                if (pt == WildcardType)
+                  ""
+                else
+                  " and expected result type " + pt
+              )
           issueAmbiguousTypeErrorUnlessErroneous(
             tree.pos,
             pre,

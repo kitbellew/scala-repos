@@ -133,9 +133,8 @@ object ShardCoordinator {
     def allocateShard(
         requester: ActorRef,
         shardId: String,
-        currentShardAllocations: java.util.Map[
-          ActorRef,
-          immutable.IndexedSeq[String]]): Future[ActorRef]
+        currentShardAllocations: java.util.Map[ActorRef, immutable.IndexedSeq[
+          String]]): Future[ActorRef]
 
     /**
       * Invoked periodically to decide which shards to rebalance to another location.
@@ -146,9 +145,8 @@ object ShardCoordinator {
       * @return a `Future` of the shards to be migrated, may be empty to skip rebalance in this round
       */
     def rebalance(
-        currentShardAllocations: java.util.Map[
-          ActorRef,
-          immutable.IndexedSeq[String]],
+        currentShardAllocations: java.util.Map[ActorRef, immutable.IndexedSeq[
+          String]],
         rebalanceInProgress: java.util.Set[String])
         : Future[java.util.Set[String]]
   }
@@ -550,9 +548,11 @@ abstract class ShardCoordinator(
 
   def isMember(region: ActorRef): Boolean = {
     val regionAddress = region.path.address
-    (region.path.address == self.path.address ||
-    cluster.state.members.exists(m ⇒
-      m.address == regionAddress && m.status == MemberStatus.Up))
+    (
+      region.path.address == self.path.address ||
+      cluster.state.members.exists(m ⇒
+        m.address == regionAddress && m.status == MemberStatus.Up)
+    )
   }
 
   def active: Receive =
@@ -709,23 +709,25 @@ abstract class ShardCoordinator(
         import akka.pattern.ask
         implicit val timeout: Timeout = waitMax
         Future
-          .sequence(aliveRegions.map { regionActor ⇒
-            (regionActor ? ShardRegion.GetShardRegionStats)
-              .mapTo[ShardRegion.ShardRegionStats]
-              .map(stats ⇒ regionActor -> stats)
-          })
+          .sequence(
+            aliveRegions.map { regionActor ⇒
+              (regionActor ? ShardRegion.GetShardRegionStats)
+                .mapTo[ShardRegion.ShardRegionStats]
+                .map(stats ⇒ regionActor -> stats)
+            })
           .map { allRegionStats ⇒
-            ShardRegion.ClusterShardingStats(allRegionStats.map {
-              case (region, stats) ⇒
-                val regionAddress = region.path.address
-                val address: Address =
-                  if (regionAddress.hasLocalScope && regionAddress.system == cluster.selfAddress.system)
-                    cluster.selfAddress
-                  else
-                    regionAddress
+            ShardRegion.ClusterShardingStats(
+              allRegionStats.map {
+                case (region, stats) ⇒
+                  val regionAddress = region.path.address
+                  val address: Address =
+                    if (regionAddress.hasLocalScope && regionAddress.system == cluster.selfAddress.system)
+                      cluster.selfAddress
+                    else
+                      regionAddress
 
-                address -> stats
-            }.toMap)
+                  address -> stats
+              }.toMap)
           }
           .recover {
             case x: AskTimeoutException ⇒
@@ -744,12 +746,13 @@ abstract class ShardCoordinator(
         context.become(shuttingDown)
 
       case ShardRegion.GetCurrentRegions ⇒
-        val reply = ShardRegion.CurrentRegions(state.regions.keySet.map { ref ⇒
-          if (ref.path.address.host.isEmpty)
-            cluster.selfAddress
-          else
-            ref.path.address
-        })
+        val reply = ShardRegion.CurrentRegions(
+          state.regions.keySet.map { ref ⇒
+            if (ref.path.address.host.isEmpty)
+              cluster.selfAddress
+            else
+              ref.path.address
+          })
         sender() ! reply
 
     }: Receive).orElse[Any, Unit](receiveTerminated)

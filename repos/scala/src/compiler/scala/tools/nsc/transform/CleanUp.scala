@@ -23,7 +23,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
   /* used in GenBCode: collects ClassDef symbols owning a main(Array[String]) method */
   private var entryPoints: List[Symbol] = Nil
   def getEntryPoints: List[Symbol] =
-    entryPoints sortBy ("" + _.fullName) // For predictably ordered error messages.
+    entryPoints sortBy (
+      "" + _.fullName
+    ) // For predictably ordered error messages.
 
   protected def newTransformer(unit: CompilationUnit): Transformer =
     new CleanUpTransformer(unit)
@@ -160,18 +162,22 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                 def methodSymRHS =
                   ((REF(forReceiverSym) DOT Class_getMethod)(
                     LIT(method),
-                    (REF(
-                      methodCache) DOT StructuralCallSite_getParameterTypes)()))
+                    (
+                      REF(methodCache) DOT StructuralCallSite_getParameterTypes
+                    )()))
                 def cacheAdd =
                   ((REF(methodCache) DOT StructuralCallSite_add)(
                     REF(forReceiverSym),
                     REF(methodSym)))
                 BLOCK(
-                  REF(methodSym) === (REF(
-                    currentRun.runDefinitions.ensureAccessibleMethod) APPLY (methodSymRHS)),
+                  REF(methodSym) === (
+                    REF(
+                      currentRun.runDefinitions.ensureAccessibleMethod) APPLY (
+                      methodSymRHS
+                    )
+                  ),
                   cacheAdd,
-                  Return(REF(methodSym))
-                )
+                  Return(REF(methodSym)))
               }
           )
         })
@@ -202,14 +208,12 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
        */
       def getPrimitiveReplacementForStructuralCall(
           name: Name): Option[(Symbol, Tree => Tree)] = {
-        val methodName = (
-          if (params.isEmpty)
-            nme.primitivePostfixMethodName(name)
-          else if (params.tail.isEmpty)
-            nme.primitiveInfixMethodName(name)
-          else
-            nme.NO_NAME
-        )
+        val methodName = (if (params.isEmpty)
+                            nme.primitivePostfixMethodName(name)
+                          else if (params.tail.isEmpty)
+                            nme.primitiveInfixMethodName(name)
+                          else
+                            nme.NO_NAME)
         getDeclIfDefined(BoxesRunTimeClass, methodName) match {
           case NoSymbol => None
           case sym =>
@@ -243,11 +247,10 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           // parameter types and the (unboxed) result type should all be primitive types,
           // and the method name should be in the primitive->structural map.
           def isJavaValueMethod =
-            (
-              (resType :: paramTypes forall isJavaValueType) && // issue #1110
-                (getPrimitiveReplacementForStructuralCall(
-                  methSym.name).isDefined)
-            )
+            ((resType :: paramTypes forall isJavaValueType) && // issue #1110
+              (
+                getPrimitiveReplacementForStructuralCall(methSym.name).isDefined
+              ))
           // Erasure lets Unit through as Unit, but a method returning Any will have an
           // erased return type of Object and should also allow Unit.
           def isDefinitelyUnit = (resultSym == UnitClass)
@@ -331,9 +334,10 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               Throw(Apply(Select(Ident(invokeExc), nme.getCause), Nil))
 
             // try { method.invoke } catch { case e: InvocationTargetExceptionClass => throw e.getCause() }
-            fixResult(TRY(invocation) CATCH {
-              CASE(catchVar) ==> catchBody
-            } ENDTRY)
+            fixResult(
+              TRY(invocation) CATCH {
+                CASE(catchVar) ==> catchBody
+              } ENDTRY)
           }
 
           /* A possible primitive method call, represented by methods in BoxesRunTime. */
@@ -354,8 +358,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
             fixResult(
               methSym.name match {
                 case nme.length =>
-                  REF(boxMethod(IntClass)) APPLY (REF(
-                    arrayLengthMethod) APPLY args)
+                  REF(boxMethod(IntClass)) APPLY (
+                    REF(arrayLengthMethod) APPLY args
+                  )
                 case nme.update =>
                   REF(arrayUpdateMethod) APPLY List(
                     args(0),
@@ -375,7 +380,10 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
            * so we have to generate both kinds of code.
            */
           def genArrayCallWithTest =
-            IF((qual1() GETCLASS ()) DOT nme.isArray) THEN genArrayCall ELSE genDefaultCall
+            IF(
+              (
+                qual1() GETCLASS ()
+              ) DOT nme.isArray) THEN genArrayCall ELSE genDefaultCall
 
           localTyper typed (
             if (isMaybeBoxed && isJavaValueMethod)
@@ -424,7 +432,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                   s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args
                     .map(_.tpe)
                 )
-                alts filter (_.paramss.flatten.size == params.length) map (_.tpe) match {
+                alts filter (
+                  _.paramss.flatten.size == params.length
+                ) map (_.tpe) match {
                   case mt @ MethodType(mparams, resType) :: Nil =>
                     reporter.warning(
                       NoPosition,
@@ -444,8 +454,7 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
 
             BLOCK(
               ValDef(sym, qual0),
-              callAsReflective(mparams map (_.tpe), resType)
-            )
+              callAsReflective(mparams map (_.tpe), resType))
           }
         }
 

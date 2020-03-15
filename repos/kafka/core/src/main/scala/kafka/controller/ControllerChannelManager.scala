@@ -133,8 +133,7 @@ class ControllerChannelManager(
             config.interBrokerSecurityProtocol,
             Mode.CLIENT,
             LoginType.SERVER,
-            config.values)
-        )
+            config.values))
       new NetworkClient(
         selector,
         new ManualMetadataUpdater(Seq(brokerNode).asJava),
@@ -144,8 +143,7 @@ class ControllerChannelManager(
         Selectable.USE_DEFAULT_BUFFER_SIZE,
         Selectable.USE_DEFAULT_BUFFER_SIZE,
         config.requestTimeoutMs,
-        time
-      )
+        time)
     }
     val threadName =
       threadNamePrefix match {
@@ -259,8 +257,10 @@ class RequestSendThread(
           } catch {
             case e: Throwable => // if the send was not successful, reconnect to broker and resend the message
               warn(
-                ("Controller %d epoch %d fails to send request %s to broker %s. " +
-                  "Reconnecting to broker.").format(
+                (
+                  "Controller %d epoch %d fails to send request %s to broker %s. " +
+                    "Reconnecting to broker."
+                ).format(
                   controllerId,
                   controllerContext.epoch,
                   request.toString,
@@ -502,8 +502,10 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
                 else
                   "become-follower"
               stateChangeLogger.trace(
-                ("Controller %d epoch %d sending %s LeaderAndIsr request %s to broker %d " +
-                  "for partition [%s,%d]").format(
+                (
+                  "Controller %d epoch %d sending %s LeaderAndIsr request %s to broker %d " +
+                    "for partition [%s,%d]"
+                ).format(
                   controllerId,
                   controllerEpoch,
                   typeOfRequest,
@@ -558,8 +560,10 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
         case (broker, partitionStateInfos) =>
           partitionStateInfos.foreach(p =>
             stateChangeLogger.trace(
-              ("Controller %d epoch %d sending UpdateMetadata request %s " +
-                "to broker %d for partition %s").format(
+              (
+                "Controller %d epoch %d sending UpdateMetadata request %s " +
+                  "to broker %d for partition %s"
+              ).format(
                 controllerId,
                 controllerEpoch,
                 p._2.leaderIsrAndControllerEpoch,

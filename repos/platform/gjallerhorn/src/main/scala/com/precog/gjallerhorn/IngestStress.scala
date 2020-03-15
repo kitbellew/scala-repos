@@ -68,22 +68,23 @@ class IngestStress(settings: Settings) extends Task(settings) {
 
   val threads = accountSet.zipWithIndex map {
     case (account, i) => {
-      new Thread(new Runnable {
-        def run() {
-          val generator = sample(schema)
-          while (true) {
-            val rate = randomIngest(account, eps / clients, generator)
-            rates.set(i, rate)
+      new Thread(
+        new Runnable {
+          def run() {
+            val generator = sample(schema)
+            while (true) {
+              val rate = randomIngest(account, eps / clients, generator)
+              rates.set(i, rate)
 
-            // throttle to the target EPS
-            if (rate > eps) {
-              val delay = 1000 / (rate - eps)
-              throttles.set(i, delay)
-              Thread.sleep(delay.toLong)
+              // throttle to the target EPS
+              if (rate > eps) {
+                val delay = 1000 / (rate - eps)
+                throttles.set(i, delay)
+                Thread.sleep(delay.toLong)
+              }
             }
           }
-        }
-      })
+        })
     }
   }
 

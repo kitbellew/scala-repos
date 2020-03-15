@@ -264,8 +264,7 @@ class KafkaController(
           1
         else
           0
-    }
-  )
+    })
 
   newGauge(
     "OfflinePartitionsCount",
@@ -578,8 +577,10 @@ class KafkaController(
       deleteTopicManager.isTopicQueuedUpForDeletion(p.topic))
     if (replicasForTopicsToBeDeleted.size > 0) {
       info(
-        ("Some replicas %s for topics scheduled for deletion %s are on the newly restarted brokers %s. " +
-          "Signaling restart of topic deletion for these topics").format(
+        (
+          "Some replicas %s for topics scheduled for deletion %s are on the newly restarted brokers %s. " +
+            "Signaling restart of topic deletion for these topics"
+        ).format(
           replicasForTopicsToBeDeleted.mkString(","),
           deleteTopicManager.topicsToBeDeleted.mkString(","),
           newBrokers.mkString(",")))
@@ -748,8 +749,10 @@ class KafkaController(
             .partitionReplicaAssignment(topicAndPartition)
             .toSet
         val newAndOldReplicas =
-          (reassignedPartitionContext.newReplicas ++ controllerContext
-            .partitionReplicaAssignment(topicAndPartition)).toSet
+          (
+            reassignedPartitionContext.newReplicas ++ controllerContext
+              .partitionReplicaAssignment(topicAndPartition)
+          ).toSet
         //1. Update AR in ZK with OAR + RAR.
         updateAssignedReplicasForPartition(
           topicAndPartition,
@@ -1327,8 +1330,10 @@ class KafkaController(
           }
         }
         stateChangeLogger.trace(
-          ("Controller %d epoch %d sent LeaderAndIsr request %s with new assigned replica list %s " +
-            "to leader %d for partition being reassigned %s").format(
+          (
+            "Controller %d epoch %d sent LeaderAndIsr request %s with new assigned replica list %s " +
+              "to leader %d for partition being reassigned %s"
+          ).format(
             config.brokerId,
             controllerContext.epoch,
             updatedLeaderIsrAndControllerEpoch,
@@ -1338,8 +1343,10 @@ class KafkaController(
           ))
       case None => // fail the reassignment
         stateChangeLogger.error(
-          ("Controller %d epoch %d failed to send LeaderAndIsr request with new assigned replica list %s " +
-            "to leader for partition being reassigned %s").format(
+          (
+            "Controller %d epoch %d failed to send LeaderAndIsr request with new assigned replica list %s " +
+              "to leader for partition being reassigned %s"
+          ).format(
             config.brokerId,
             controllerContext.epoch,
             newAssignedReplicas.mkString(","),
@@ -1681,9 +1688,10 @@ class KafkaController(
           updateSucceeded
         case None =>
           throw new IllegalStateException(
-            ("Cannot update leader epoch for partition %s as leaderAndIsr path is empty. " +
-              "This could mean we somehow tried to reassign a partition that doesn't exist")
-              .format(topicAndPartition))
+            (
+              "Cannot update leader epoch for partition %s as leaderAndIsr path is empty. " +
+                "This could mean we somehow tried to reassign a partition that doesn't exist"
+            ).format(topicAndPartition))
           true
       }
     }
@@ -1767,7 +1775,9 @@ class KafkaController(
           }
           // check ratio and if greater than desired ratio, trigger a rebalance for the topic partitions
           // that need to be on this broker
-          if (imbalanceRatio > (config.leaderImbalancePerBrokerPercentage.toDouble / 100)) {
+          if (imbalanceRatio > (
+                config.leaderImbalancePerBrokerPercentage.toDouble / 100
+              )) {
             topicsNotInPreferredReplica.foreach {
               case (topicPartition, replicas) => {
                 inLock(controllerContext.controllerLock) {
@@ -1917,8 +1927,11 @@ class ReassignedPartitionsIsrChangeListener(
                           .mkString(",")))
                 }
               case None =>
-                error("Error handling reassignment of partition %s to replicas %s as it was never created"
-                  .format(topicAndPartition, reassignedReplicas.mkString(",")))
+                error(
+                  "Error handling reassignment of partition %s to replicas %s as it was never created"
+                    .format(
+                      topicAndPartition,
+                      reassignedReplicas.mkString(",")))
             }
           case None =>
         }

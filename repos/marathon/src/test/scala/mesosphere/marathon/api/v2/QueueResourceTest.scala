@@ -30,9 +30,7 @@ class QueueResourceTest
         tasksLeftToLaunch = 23,
         taskLaunchesInFlight = 0,
         tasksLaunched = 0,
-        clock.now() + 100.seconds
-      )
-    )
+        clock.now() + 100.seconds))
 
     //when
     val response = queueResource.index(auth.request)
@@ -63,9 +61,7 @@ class QueueResourceTest
         tasksLeftToLaunch = 23,
         taskLaunchesInFlight = 0,
         tasksLaunched = 0,
-        backOffUntil = clock.now() - 100.seconds
-      )
-    )
+        backOffUntil = clock.now() - 100.seconds))
     //when
     val response = queueResource.index(auth.request)
 
@@ -104,9 +100,7 @@ class QueueResourceTest
         tasksLeftToLaunch = 23,
         taskLaunchesInFlight = 0,
         tasksLaunched = 0,
-        backOffUntil = clock.now() + 100.seconds
-      )
-    )
+        backOffUntil = clock.now() + 100.seconds))
 
     //when
     val response = queueResource.resetDelay("app", auth.request)
@@ -179,12 +173,7 @@ class QueueResourceTest
     auth = new TestAuthFixture
     config = mock[MarathonConf]
     queue = mock[LaunchQueue]
-    queueResource = new QueueResource(
-      clock,
-      queue,
-      auth.auth,
-      auth.auth,
-      config
-    )
+    queueResource =
+      new QueueResource(clock, queue, auth.auth, auth.auth, config)
   }
 }

@@ -17,8 +17,7 @@ trait SplitTests[F[_, _]] extends ComposeTests[F] {
       ArbFDE: Arbitrary[F[D, E]],
       ArbFEG: Arbitrary[F[E, G]],
       EqFAD: Eq[F[A, D]],
-      EqFADCG: Eq[F[(A, D), (C, G)]]
-  ): RuleSet =
+      EqFADCG: Eq[F[(A, D), (C, G)]]): RuleSet =
     new DefaultRuleSet(
       name = "split",
       parent = Some(compose[A, B, C, D]),

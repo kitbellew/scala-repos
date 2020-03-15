@@ -34,9 +34,7 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
           //just look for last parenthesis
           val end =
             if (Set(ScalaTokenTypes.tRPARENTHESIS, ScalaTokenTypes.tRSQBRACKET)
-                  .contains(
-                    e.getNode.getLastChildNode.getElementType
-                  ))
+                  .contains(e.getNode.getLastChildNode.getElementType))
               range.getEndOffset - 1
             else
               range.getEndOffset

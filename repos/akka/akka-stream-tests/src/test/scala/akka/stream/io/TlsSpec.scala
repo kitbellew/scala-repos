@@ -393,8 +393,9 @@ class TlsSpec
       s"work in mode ${commPattern.name} while sending ${scenario.name}" in assertAllStagesStopped {
         val onRHS = debug.via(scenario.flow)
         val f = Source(scenario.inputs)
-          .via(commPattern
-            .decorateFlow(scenario.leftClosing, scenario.rightClosing, onRHS))
+          .via(
+            commPattern
+              .decorateFlow(scenario.leftClosing, scenario.rightClosing, onRHS))
           .transform(() ⇒
             new PushStage[SslTlsInbound, SslTlsInbound] {
               override def onPush(
@@ -449,8 +450,9 @@ class TlsSpec
         .bind("localhost", 0)
         .map(c ⇒ {
           c.flow
-            .joinMat(serverTls(IgnoreBoth).reversed.joinMat(simple)(
-              Keep.right))(Keep.right)
+            .joinMat(
+              serverTls(IgnoreBoth).reversed.joinMat(simple)(Keep.right))(
+              Keep.right)
             .run()
         })
         .toMat(Sink.head)(Keep.both)

@@ -51,8 +51,7 @@ object Test extends Properties("IndexScript") {
           "scala.tools.nsc",
           "scala.tools.nsc.doc",
           "scala.tools.nsc.doc.html",
-          "scala.tools.nsc.doc.html.page"
-        )
+          "scala.tools.nsc.doc.html.page")
       case None =>
         false
     }

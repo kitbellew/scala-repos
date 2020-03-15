@@ -298,12 +298,14 @@ object ClusterEvent {
     else {
       val oldUnreachableNodes =
         oldGossip.overview.reachability.allUnreachableOrTerminated
-      (newGossip.overview.reachability.allUnreachableOrTerminated.collect {
-        case node
-            if !oldUnreachableNodes.contains(
-              node) && node != selfUniqueAddress ⇒
-          UnreachableMember(newGossip.member(node))
-      })(collection.breakOut)
+      (
+        newGossip.overview.reachability.allUnreachableOrTerminated.collect {
+          case node
+              if !oldUnreachableNodes.contains(
+                node) && node != selfUniqueAddress ⇒
+            UnreachableMember(newGossip.member(node))
+        }
+      )(collection.breakOut)
     }
 
   /**
@@ -316,12 +318,14 @@ object ClusterEvent {
     if (newGossip eq oldGossip)
       Nil
     else {
-      (oldGossip.overview.reachability.allUnreachable.collect {
-        case node
-            if newGossip.hasMember(node) && newGossip.overview.reachability
-              .isReachable(node) && node != selfUniqueAddress ⇒
-          ReachableMember(newGossip.member(node))
-      })(collection.breakOut)
+      (
+        oldGossip.overview.reachability.allUnreachable.collect {
+          case node
+              if newGossip.hasMember(node) && newGossip.overview.reachability
+                .isReachable(node) && node != selfUniqueAddress ⇒
+            ReachableMember(newGossip.member(node))
+        }
+      )(collection.breakOut)
 
     }
 

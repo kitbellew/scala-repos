@@ -528,7 +528,6 @@ private[spark] object ExecutorsPage {
       totalShuffleRead,
       totalShuffleWrite,
       maxMem,
-      executorLogs
-    )
+      executorLogs)
   }
 }

@@ -99,13 +99,14 @@ object Iteratee {
         case Input.Empty => Cont[E, A](step(s))
         case Input.El(e) => {
           val newS = executeFuture(f(s, e))(pec);
-          flatten(newS.map[Iteratee[E, A]] {
-            case (s1, done) =>
-              if (!done)
-                Cont[E, A](step(s1))
-              else
-                Done(s1, Input.Empty)
-          }(dec))
+          flatten(
+            newS.map[Iteratee[E, A]] {
+              case (s1, done) =>
+                if (!done)
+                  Cont[E, A](step(s1))
+                else
+                  Done(s1, Input.Empty)
+            }(dec))
         }
       }
     (Cont[E, A](step(state)))
@@ -860,9 +861,10 @@ private final class DoneIteratee[E, A](a: A, e: Input[E])
     */
   override def mapM[B](f: A => Future[B])(
       implicit ec: ExecutionContext): Iteratee[E, B] = {
-    Iteratee.flatten(executeFuture {
-      f(a).map[Iteratee[E, B]](Done(_, e))(dec)
-    }(ec /* delegate preparation */ ))
+    Iteratee.flatten(
+      executeFuture {
+        f(a).map[Iteratee[E, B]](Done(_, e))(dec)
+      }(ec /* delegate preparation */ ))
   }
 
 }

@@ -161,9 +161,10 @@ object EvaluatePython {
         c
 
       case (c: java.util.List[_], ArrayType(elementType, _)) =>
-        new GenericArrayData(c.asScala.map { e =>
-          fromJava(e, elementType)
-        }.toArray)
+        new GenericArrayData(
+          c.asScala.map { e =>
+            fromJava(e, elementType)
+          }.toArray)
 
       case (c, ArrayType(elementType, _)) if c.getClass.isArray =>
         new GenericArrayData(
@@ -180,12 +181,12 @@ object EvaluatePython {
         if (array.length != fields.length) {
           throw new IllegalStateException(
             s"Input row doesn't have expected number of values required by the schema. " +
-              s"${fields.length} fields are required while ${array.length} values are provided."
-          )
+              s"${fields.length} fields are required while ${array.length} values are provided.")
         }
-        new GenericInternalRow(array.zip(fields).map {
-          case (e, f) => fromJava(e, f.dataType)
-        })
+        new GenericInternalRow(
+          array.zip(fields).map {
+            case (e, f) => fromJava(e, f.dataType)
+          })
 
       case (_, udt: UserDefinedType[_]) => fromJava(obj, udt.sqlType)
 

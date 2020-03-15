@@ -373,8 +373,9 @@ object StackTrace {
         message.split("\n").length > stacktrace.split("\n").length
       if (!stacktrace) {
         extractOpera9(e) // use e.message
-      } else if ((message.indexOf(
-                   "\n") > -1) && messageIsLongerThanStacktrace) {
+      } else if ((
+                   message.indexOf("\n") > -1
+                 ) && messageIsLongerThanStacktrace) {
         // e.message may have more stack entries than e.stacktrace
         extractOpera9(e) // use e.message
       } else {
@@ -397,8 +398,10 @@ object StackTrace {
   }
 
   private def extractRhino(e: js.Dynamic): js.Array[String] = {
-    (e.stack
-      .asInstanceOf[js.UndefOr[String]])
+    (
+      e.stack
+        .asInstanceOf[js.UndefOr[String]]
+      )
       .getOrElse("")
       .jsReplace("""^\s+at\s+""".re("gm"), "") // remove 'at' and indentation
       .jsReplace("""^(.+?)(?: \((.+)\))?$""".re("gm"), "$2@$1")
@@ -433,16 +436,20 @@ object StackTrace {
   }
 
   private def extractFirefox(e: js.Dynamic): js.Array[String] = {
-    (e.stack
-      .asInstanceOf[String])
+    (
+      e.stack
+        .asInstanceOf[String]
+      )
       .jsReplace("""(?:\n@:0)?\s+$""".re("m"), "")
       .jsReplace("""^(?:\((\S*)\))?@""".re("gm"), "{anonymous}($1)@")
       .jsSplit("\n")
   }
 
   private def extractIE(e: js.Dynamic): js.Array[String] = {
-    (e.stack
-      .asInstanceOf[String])
+    (
+      e.stack
+        .asInstanceOf[String]
+      )
       .jsReplace("""^\s*at\s+(.*)$""".re("gm"), "$1")
       .jsReplace("""^Anonymous function\s+""".re("gm"), "{anonymous}() ")
       .jsReplace(
@@ -453,8 +460,10 @@ object StackTrace {
   }
 
   private def extractSafari(e: js.Dynamic): js.Array[String] = {
-    (e.stack
-      .asInstanceOf[String])
+    (
+      e.stack
+        .asInstanceOf[String]
+      )
       .jsReplace("""\[native code\]\n""".re("m"), "")
       .jsReplace("""^(?=\w+Error\:).*$\n""".re("m"), "")
       .jsReplace("""^@""".re("gm"), "{anonymous}()@")
@@ -589,8 +598,7 @@ object StackTrace {
           methodName = methodName,
           fileName = fileName,
           lineNumber = lineNumber,
-          columnNumber = columnNumber
-        )
+          columnNumber = columnNumber)
         .asInstanceOf[JSStackTraceElem]
     }
   }

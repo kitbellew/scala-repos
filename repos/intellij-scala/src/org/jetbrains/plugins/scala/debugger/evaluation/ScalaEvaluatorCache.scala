@@ -86,8 +86,9 @@ class ScalaEvaluatorCache(project: Project)
       cachedEvaluators.get((file, offset)) match {
         case Some(map) => map += (element -> evaluator)
         case None =>
-          cachedEvaluators += ((file, offset) -> mutable.HashMap(
-            element -> evaluator))
+          cachedEvaluators += (
+            (file, offset) -> mutable.HashMap(element -> evaluator)
+          )
       }
     }
     evaluator

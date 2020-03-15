@@ -23,9 +23,10 @@ object ParsingSpec
             _.getBytes): _*)
         val parsed = data |>>> Parsing
           .search("kiki".getBytes)
-          .transform(Iteratee.fold(List.empty[MatchInfo[Array[Byte]]]) {
-            (s, c: MatchInfo[Array[Byte]]) => s :+ c
-          }(foldEC))
+          .transform(
+            Iteratee.fold(List.empty[MatchInfo[Array[Byte]]]) {
+              (s, c: MatchInfo[Array[Byte]]) => s :+ c
+            }(foldEC))
 
         val result = Await
           .result(parsed, Duration.Inf)
@@ -53,9 +54,10 @@ object ParsingSpec
             "i").map(_.getBytes): _*)
         val parsed = data |>>> Parsing
           .search("kiki".getBytes)
-          .transform(Iteratee.fold(List.empty[MatchInfo[Array[Byte]]]) {
-            (s, c: MatchInfo[Array[Byte]]) => s :+ c
-          }(foldEC))
+          .transform(
+            Iteratee.fold(List.empty[MatchInfo[Array[Byte]]]) {
+              (s, c: MatchInfo[Array[Byte]]) => s :+ c
+            }(foldEC))
 
         val result = Await
           .result(parsed, Duration.Inf)

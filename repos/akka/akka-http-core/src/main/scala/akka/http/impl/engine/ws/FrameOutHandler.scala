@@ -36,8 +36,10 @@ private[http] class FrameOutHandler(
             if !code.exists(Protocol.CloseCodes.isError) ⇒
           // let user complete it, FIXME: maybe make configurable? immediately, or timeout
           become(
-            new WaitingForUserHandlerClosed(FrameEvent
-              .closeFrame(code.getOrElse(Protocol.CloseCodes.Regular), reason)))
+            new WaitingForUserHandlerClosed(
+              FrameEvent.closeFrame(
+                code.getOrElse(Protocol.CloseCodes.Regular),
+                reason)))
           ctx.pull()
         case PeerClosed(code, reason) ⇒
           val closeFrame = FrameEvent.closeFrame(

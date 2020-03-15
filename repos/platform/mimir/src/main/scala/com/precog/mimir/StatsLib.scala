@@ -301,12 +301,14 @@ trait StatsLibModule[M[+_]]
             init: Option[BigDecimal],
             cols: Map[ColumnRef, Column],
             range: Range): (Option[BigDecimal], Map[ColumnRef, Column]) = {
-          val values = unifyNumColumns(cols.collect {
-            case (ColumnRef(ValuePath, _), col) => col
-          })
-          val alphas = unifyNumColumns(cols.collect {
-            case (ColumnRef(AlphaPath, _), col) => col
-          })
+          val values = unifyNumColumns(
+            cols.collect {
+              case (ColumnRef(ValuePath, _), col) => col
+            })
+          val alphas = unifyNumColumns(
+            cols.collect {
+              case (ColumnRef(AlphaPath, _), col) => col
+            })
 
           init orElse findFirst(values, range.start, range.end) map { init0 =>
             val smoothed = new Array[BigDecimal](range.end)
@@ -388,15 +390,18 @@ trait StatsLibModule[M[+_]]
             state0: ScannerState,
             cols: Map[ColumnRef, Column],
             range: Range): (ScannerState, Map[ColumnRef, Column]) = {
-          val values = unifyNumColumns(cols.collect {
-            case (ColumnRef(ValuePath, _), col) => col
-          })
-          val alphas = unifyNumColumns(cols.collect {
-            case (ColumnRef(AlphaPath, _), col) => col
-          })
-          val betas = unifyNumColumns(cols.collect {
-            case (ColumnRef(BetaPath, _), col) => col
-          })
+          val values = unifyNumColumns(
+            cols.collect {
+              case (ColumnRef(ValuePath, _), col) => col
+            })
+          val alphas = unifyNumColumns(
+            cols.collect {
+              case (ColumnRef(AlphaPath, _), col) => col
+            })
+          val betas = unifyNumColumns(
+            cols.collect {
+              case (ColumnRef(BetaPath, _), col) => col
+            })
 
           // This is a bit messy, but it's because we need the first 2 values
           // in order to initialize s_1 and b_1. Since a slice may have 0 or
@@ -515,14 +520,13 @@ trait StatsLibModule[M[+_]]
             BigDecimal,
             BigDecimal,
             BigDecimal) // (count, sum1, sum2, sumsq1, sumsq2, productSum)
-      type Result = Option[
-        (
-            BigDecimal,
-            BigDecimal,
-            BigDecimal,
-            BigDecimal,
-            BigDecimal,
-            BigDecimal)]
+      type Result = Option[(
+          BigDecimal,
+          BigDecimal,
+          BigDecimal,
+          BigDecimal,
+          BigDecimal,
+          BigDecimal)]
 
       implicit def monoid = implicitly[Monoid[Result]]
 
@@ -1563,8 +1567,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1597,8 +1602,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1631,8 +1637,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1665,8 +1672,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1699,8 +1707,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1733,8 +1742,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1767,8 +1777,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1801,8 +1812,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1835,8 +1847,9 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (math.log(v1.toDouble) * math.log(
-                              v1.toDouble)),
+                            sumsq1 + (
+                              math.log(v1.toDouble) * math.log(v1.toDouble)
+                            ),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)

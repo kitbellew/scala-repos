@@ -552,10 +552,12 @@ trait Iterator[+A] extends TraversableOnce[A] {
         true
       }
       def next(): B =
-        (if (hasNext)
-           cur
-         else
-           empty).next()
+        (
+          if (hasNext)
+            cur
+          else
+            empty
+        ).next()
     }
 
   /** Returns an iterator over all the elements of this iterator that satisfy the predicate `p`.
@@ -1595,10 +1597,12 @@ trait Iterator[+A] extends TraversableOnce[A] {
     *  @note    Reuse: $preservesIterator
     */
   override def toString =
-    (if (hasNext)
-       "non-empty"
-     else
-       "empty") + " iterator"
+    (
+      if (hasNext)
+        "non-empty"
+      else
+        "empty"
+    ) + " iterator"
 }
 
 /** Explicit instantiation of the `Iterator` trait to reduce class file size in subclasses. */

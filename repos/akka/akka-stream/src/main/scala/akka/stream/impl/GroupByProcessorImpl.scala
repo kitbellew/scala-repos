@@ -110,7 +110,9 @@ private[akka] class GroupByProcessorImpl(
   initialPhase(1, waitFirst)
 
   override def invalidateSubstreamOutput(substream: SubstreamKey): Unit = {
-    if ((pendingSubstreamOutput ne null) && substream == pendingSubstreamOutput.key) {
+    if ((
+          pendingSubstreamOutput ne null
+        ) && substream == pendingSubstreamOutput.key) {
       pendingSubstreamOutput = null
       nextPhase(waitNext)
     }

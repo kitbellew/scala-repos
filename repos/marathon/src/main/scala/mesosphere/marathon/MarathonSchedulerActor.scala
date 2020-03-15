@@ -110,90 +110,91 @@ class MarathonSchedulerActor private (
   //TODO: fix style issue and enable this scalastyle check
   //scalastyle:off cyclomatic.complexity method.length
   def started: Receive =
-    LoggingReceive.withLabel("started")(sharedHandlers orElse {
-      case LocalLeadershipEvent.Standby =>
-        log.info("Suspending scheduler actor")
-        healthCheckManager.removeAll()
-        deploymentManager ! CancelAllDeployments
-        lockedApps = Set.empty
-        context.become(suspended)
+    LoggingReceive.withLabel("started")(
+      sharedHandlers orElse {
+        case LocalLeadershipEvent.Standby =>
+          log.info("Suspending scheduler actor")
+          healthCheckManager.removeAll()
+          deploymentManager ! CancelAllDeployments
+          lockedApps = Set.empty
+          context.become(suspended)
 
-      case LocalLeadershipEvent.ElectedAsLeader => // ignore
+        case LocalLeadershipEvent.ElectedAsLeader => // ignore
 
-      case ReconcileTasks =>
-        import akka.pattern.pipe
-        import context.dispatcher
-        val reconcileFuture =
-          activeReconciliation match {
-            case None =>
-              log.info("initiate task reconciliation")
-              val newFuture = schedulerActions.reconcileTasks(driver)
-              activeReconciliation = Some(newFuture)
-              newFuture.onFailure {
-                case NonFatal(e) =>
-                  log.error(e, "error while reconciling tasks")
-              }
-              newFuture
-              // the self notification MUST happen before informing the initiator
-              // if we want to ensure that we trigger a new reconciliation for
-              // the first call after the last ReconcileTasks.answer has been received.
-                .andThen {
-                  case _ => self ! ReconcileFinished
+        case ReconcileTasks =>
+          import akka.pattern.pipe
+          import context.dispatcher
+          val reconcileFuture =
+            activeReconciliation match {
+              case None =>
+                log.info("initiate task reconciliation")
+                val newFuture = schedulerActions.reconcileTasks(driver)
+                activeReconciliation = Some(newFuture)
+                newFuture.onFailure {
+                  case NonFatal(e) =>
+                    log.error(e, "error while reconciling tasks")
                 }
-            case Some(active) =>
-              log.info("task reconciliation still active, reusing result")
-              active
+                newFuture
+                // the self notification MUST happen before informing the initiator
+                // if we want to ensure that we trigger a new reconciliation for
+                // the first call after the last ReconcileTasks.answer has been received.
+                  .andThen {
+                    case _ => self ! ReconcileFinished
+                  }
+              case Some(active) =>
+                log.info("task reconciliation still active, reusing result")
+                active
+            }
+          reconcileFuture.map(_ => ReconcileTasks.answer).pipeTo(sender)
+
+        case ReconcileFinished =>
+          log.info("task reconciliation has finished")
+          activeReconciliation = None
+
+        case ReconcileHealthChecks =>
+          schedulerActions.reconcileHealthChecks()
+
+        case ScaleApps => schedulerActions.scaleApps()
+
+        case cmd @ ScaleApp(appId) =>
+          val origSender = sender()
+          withLockFor(appId) {
+            val res = schedulerActions.scale(driver, appId)
+
+            if (origSender != context.system.deadLetters)
+              res.sendAnswer(origSender, cmd)
+
+            res andThen {
+              case _ => self ! cmd.answer // unlock app
+            }
           }
-        reconcileFuture.map(_ => ReconcileTasks.answer).pipeTo(sender)
 
-      case ReconcileFinished =>
-        log.info("task reconciliation has finished")
-        activeReconciliation = None
+        case cmd: CancelDeployment =>
+          deploymentManager forward cmd
 
-      case ReconcileHealthChecks =>
-        schedulerActions.reconcileHealthChecks()
+        case cmd @ Deploy(plan, force) =>
+          deploy(sender(), cmd)
 
-      case ScaleApps => schedulerActions.scaleApps()
+        case cmd @ KillTasks(appId, taskIds) =>
+          val origSender = sender()
+          withLockFor(appId) {
+            val promise = Promise[Unit]()
+            context.actorOf(
+              TaskKillActor
+                .props(driver, appId, taskTracker, eventBus, taskIds, promise))
+            val res =
+              for {
+                _ <- promise.future
+                Some(app) <- appRepository.currentVersion(appId)
+              } yield schedulerActions.scale(driver, app)
 
-      case cmd @ ScaleApp(appId) =>
-        val origSender = sender()
-        withLockFor(appId) {
-          val res = schedulerActions.scale(driver, appId)
+            res onComplete { _ =>
+              self ! cmd.answer // unlock app
+            }
 
-          if (origSender != context.system.deadLetters)
             res.sendAnswer(origSender, cmd)
-
-          res andThen {
-            case _ => self ! cmd.answer // unlock app
           }
-        }
-
-      case cmd: CancelDeployment =>
-        deploymentManager forward cmd
-
-      case cmd @ Deploy(plan, force) =>
-        deploy(sender(), cmd)
-
-      case cmd @ KillTasks(appId, taskIds) =>
-        val origSender = sender()
-        withLockFor(appId) {
-          val promise = Promise[Unit]()
-          context.actorOf(
-            TaskKillActor
-              .props(driver, appId, taskTracker, eventBus, taskIds, promise))
-          val res =
-            for {
-              _ <- promise.future
-              Some(app) <- appRepository.currentVersion(appId)
-            } yield schedulerActions.scale(driver, app)
-
-          res onComplete { _ =>
-            self ! cmd.answer // unlock app
-          }
-
-          res.sendAnswer(origSender, cmd)
-        }
-    })
+      })
 
   /**
     * handlers for messages that unlock apps and to retrieve running deployments
@@ -515,8 +516,7 @@ class SchedulerActions(
         for (unknownAppId <- tasksByApp.allAppIdsWithTasks -- appIds) {
           log.warn(
             s"App $unknownAppId exists in TaskTracker, but not App store. " +
-              "The app was likely terminated. Will now expunge."
-          )
+              "The app was likely terminated. Will now expunge.")
           for (orphanTask <- tasksByApp.marathonAppTasks(unknownAppId)) {
             log.info(s"Killing task ${orphanTask.getId}")
             driver.killTask(protos.TaskID(orphanTask.getId))

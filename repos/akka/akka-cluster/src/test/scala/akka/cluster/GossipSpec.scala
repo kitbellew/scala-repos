@@ -67,9 +67,7 @@ class GossipSpec extends WordSpec with Matchers {
     "not reach convergence when unreachable" in {
       val r1 = Reachability.empty
         .unreachable(b1.uniqueAddress, a1.uniqueAddress)
-      val g1 = (Gossip(
-        members = SortedSet(a1, b1),
-        overview = GossipOverview(reachability = r1)))
+      val g1 = (Gossip(members = SortedSet(a1, b1), overview = GossipOverview(reachability = r1)))
         .seen(a1.uniqueAddress)
         .seen(b1.uniqueAddress)
       g1.convergence(b1.uniqueAddress) should ===(false)
@@ -81,12 +79,14 @@ class GossipSpec extends WordSpec with Matchers {
       // e3 is Down
       val r1 = Reachability.empty
         .unreachable(e3.uniqueAddress, a1.uniqueAddress)
-      val g1 = (Gossip(
-        members = SortedSet(a1, b1, e3),
-        overview = GossipOverview(reachability = r1)))
-        .seen(a1.uniqueAddress)
-        .seen(b1.uniqueAddress)
-        .seen(e3.uniqueAddress)
+      val g1 =
+        (
+          Gossip(
+            members = SortedSet(a1, b1, e3),
+            overview = GossipOverview(reachability = r1))
+        ).seen(a1.uniqueAddress)
+          .seen(b1.uniqueAddress)
+          .seen(e3.uniqueAddress)
       g1.convergence(b1.uniqueAddress) should ===(true)
     }
 

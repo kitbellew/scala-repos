@@ -79,9 +79,11 @@ private[json] object ScalaSigReader {
   }
 
   private def findField(c: ClassSymbol, name: String): Option[MethodSymbol] =
-    (c.children collect {
-      case m: MethodSymbol if m.name == name => m
-    }).headOption
+    (
+      c.children collect {
+        case m: MethodSymbol if m.name == name => m
+      }
+    ).headOption
 
   private def findArgType(
       s: MethodSymbol,

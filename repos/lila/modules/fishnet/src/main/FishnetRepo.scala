@@ -44,9 +44,10 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
       .void >> clientCache.remove(key)
   def allRecentClients =
     clientColl
-      .find(BSONDocument(
-        "instance.seenAt" -> BSONDocument("$gt" -> Client.Instance.recentSince)
-      ))
+      .find(
+        BSONDocument(
+          "instance.seenAt" -> BSONDocument(
+            "$gt" -> Client.Instance.recentSince)))
       .cursor[Client]()
       .collect[List]()
   def lichessClients =
@@ -54,8 +55,7 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
       .find(
         BSONDocument(
           "enabled" -> true,
-          "userId" -> BSONDocument("$regex" -> "^lichess-")
-        ))
+          "userId" -> BSONDocument("$regex" -> "^lichess-")))
       .cursor[Client]()
       .collect[List]()
 
@@ -75,9 +75,7 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
       updateAnalysis(ana)
   def countAnalysis(acquired: Boolean) =
     analysisColl.count(
-      BSONDocument(
-        "acquired" -> BSONDocument("$exists" -> acquired)
-      ).some)
+      BSONDocument("acquired" -> BSONDocument("$exists" -> acquired)).some)
 
   def getSimilarAnalysis(work: Work.Analysis): Fu[Option[Work.Analysis]] =
     analysisColl

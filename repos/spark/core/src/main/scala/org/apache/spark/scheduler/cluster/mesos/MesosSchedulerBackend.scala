@@ -85,8 +85,7 @@ private[spark] class MesosSchedulerBackend(
       sc.conf,
       sc.conf
         .getOption("spark.mesos.driver.webui.url")
-        .orElse(sc.ui.map(_.appUIAddress))
-    )
+        .orElse(sc.ui.map(_.appUIAddress)))
     startScheduler(driver)
   }
 
@@ -307,8 +306,10 @@ private[spark] class MesosSchedulerBackend(
             cpus >= (mesosExecutorCores + scheduler.CPUS_PER_TASK)
           val meetsRequirements =
             (meetsMemoryRequirements && meetsCPURequirements) ||
-              (slaveIdToExecutorInfo.contains(
-                slaveId) && cpus >= scheduler.CPUS_PER_TASK)
+              (
+                slaveIdToExecutorInfo.contains(
+                  slaveId) && cpus >= scheduler.CPUS_PER_TASK
+              )
           val debugstr =
             if (meetsRequirements)
               "Accepting"
@@ -427,9 +428,10 @@ private[spark] class MesosSchedulerBackend(
       .setExecutor(executorInfo)
       .setName(task.name)
       .addAllResources(cpuResources.asJava)
-      .setData(MesosTaskLaunchData(
-        task.serializedTask,
-        task.attemptNumber).toByteString)
+      .setData(
+        MesosTaskLaunchData(
+          task.serializedTask,
+          task.attemptNumber).toByteString)
       .build()
     (taskInfo, finalResources.asJava)
   }
@@ -524,8 +526,7 @@ private[spark] class MesosSchedulerBackend(
       TaskID
         .newBuilder()
         .setValue(taskId.toString)
-        .build()
-    )
+        .build())
   }
 
   // TODO: query Mesos for number of cores

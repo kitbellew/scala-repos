@@ -26,15 +26,15 @@ object CORSFilterSpec extends CORSCommonSpec {
       block: => T): T = {
     running(
       _.configure(conf).overrides(
-        bind[Router].to(Router.from {
-          case p"/error" =>
-            Action { req =>
-              throw sys.error("error")
-            }
-          case _ => Action(Results.Ok)
-        }),
-        bind[HttpFilters].to[Filters]
-      ))(_ => block)
+        bind[Router].to(
+          Router.from {
+            case p"/error" =>
+              Action { req =>
+                throw sys.error("error")
+              }
+            case _ => Action(Results.Ok)
+          }),
+        bind[HttpFilters].to[Filters]))(_ => block)
   }
 
   "The CORSFilter" should {
@@ -73,15 +73,15 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
       conf: Map[String, _ <: Any] = Map())(block: Application => T): T = {
     running(
       _.configure(conf).overrides(
-        bind[Router].to(Router.from {
-          case p"/error" =>
-            Action { req =>
-              throw sys.error("error")
-            }
-          case _ => CSRFCheck(Action(Results.Ok))
-        }),
-        bind[HttpFilters].to(filters)
-      ))(block)
+        bind[Router].to(
+          Router.from {
+            case p"/error" =>
+              Action { req =>
+                throw sys.error("error")
+              }
+            case _ => CSRFCheck(Action(Results.Ok))
+          }),
+        bind[HttpFilters].to(filters)))(block)
   }
 
   def withApplication[T](conf: Map[String, _] = Map.empty)(block: => T) =
@@ -92,8 +92,7 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
       .withHeaders(
         ORIGIN -> "http://localhost",
         CONTENT_TYPE -> ContentTypes.FORM,
-        COOKIE -> "foo=bar"
-      )
+        COOKIE -> "foo=bar")
       .withBody("foo=1&bar=2")
 
   "The CORSFilter" should {
@@ -122,32 +121,35 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
 
   def withApplication[T](conf: Map[String, _ <: Any] = Map.empty)(
       block: => T): T = {
-    running(_.routes {
-      case (_, "/error") =>
-        CORSActionBuilder(Configuration.reference ++ Configuration.from(conf)) {
-          req => throw sys.error("error")
-        }
-      case _ =>
-        CORSActionBuilder(Configuration.reference ++ Configuration.from(conf))(
-          Results.Ok)
-    })(_ => block)
+    running(
+      _.routes {
+        case (_, "/error") =>
+          CORSActionBuilder(
+            Configuration.reference ++ Configuration.from(conf)) { req =>
+            throw sys.error("error")
+          }
+        case _ =>
+          CORSActionBuilder(
+            Configuration.reference ++ Configuration.from(conf))(Results.Ok)
+      })(_ => block)
   }
 
   def withApplicationWithPathConfiguredAction[T](
       configPath: String,
       conf: Map[String, _ <: Any] = Map.empty)(block: => T): T = {
-    running(_.configure(conf).routes {
-      case (_, "/error") =>
-        CORSActionBuilder(
-          Configuration.reference ++ Configuration.from(conf),
-          configPath = configPath) { req =>
-          throw sys.error("error")
-        }
-      case _ =>
-        CORSActionBuilder(
-          Configuration.reference ++ Configuration.from(conf),
-          configPath = configPath)(Results.Ok)
-    })(_ => block)
+    running(
+      _.configure(conf).routes {
+        case (_, "/error") =>
+          CORSActionBuilder(
+            Configuration.reference ++ Configuration.from(conf),
+            configPath = configPath) { req =>
+            throw sys.error("error")
+          }
+        case _ =>
+          CORSActionBuilder(
+            Configuration.reference ++ Configuration.from(conf),
+            configPath = configPath)(Results.Ok)
+      })(_ => block)
   }
 
   "The CORSActionBuilder with" should {
@@ -193,9 +195,7 @@ trait CORSCommonSpec extends PlaySpecification {
   }
 
   def fakeRequest(method: String = "GET", path: String = "/") =
-    FakeRequest(method, path).withHeaders(
-      HOST -> "www.example.com"
-    )
+    FakeRequest(method, path).withHeaders(HOST -> "www.example.com")
 
   def commonTests = {
 
@@ -212,8 +212,7 @@ trait CORSCommonSpec extends PlaySpecification {
           route(
             FakeRequest().withHeaders(
               ORIGIN -> "http://www.example.com:9000",
-              HOST -> "www.example.com:9000"
-            )).get
+              HOST -> "www.example.com:9000")).get
 
         status(result) must_== OK
         mustBeNoAccessControlResponseHeaders(result)
@@ -223,8 +222,7 @@ trait CORSCommonSpec extends PlaySpecification {
           route(
             FakeRequest().withHeaders(
               ORIGIN -> "http://www.example.com",
-              HOST -> "www.example.com"
-            )).get
+              HOST -> "www.example.com")).get
 
         status(result) must_== OK
         mustBeNoAccessControlResponseHeaders(result)
@@ -236,8 +234,7 @@ trait CORSCommonSpec extends PlaySpecification {
         route(
           fakeRequest().withHeaders(
             ORIGIN -> "http://www.example.com",
-            HOST -> "example.com"
-          )).get
+            HOST -> "example.com")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
@@ -249,8 +246,7 @@ trait CORSCommonSpec extends PlaySpecification {
         route(
           fakeRequest().withHeaders(
             ORIGIN -> "http://www.example.com:9000",
-            HOST -> "www.example.com:9001"
-          )).get
+            HOST -> "www.example.com:9001")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
@@ -262,8 +258,7 @@ trait CORSCommonSpec extends PlaySpecification {
         route(
           fakeRequest().withHeaders(
             ORIGIN -> "https://www.example.com:9000",
-            HOST -> "www.example.com:9000"
-          )).get
+            HOST -> "www.example.com:9000")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(

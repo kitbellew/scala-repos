@@ -81,8 +81,9 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
         shardOption map {
           Future.value(_)
         } getOrElse {
-          Future.exception(new RejectedExecutionException(
-            "Could not get a shard, polluted zk tree?"))
+          Future.exception(
+            new RejectedExecutionException(
+              "Could not get a shard, polluted zk tree?"))
         }
       } rescue {
         case err: LackOfConsensusException =>

@@ -127,10 +127,11 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
   def asJsExp: JsExp = JE.Num(toLong)
 
   def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case x    => JsonAST.JInt(x.getTime)
-    })
+    Full(
+      get match {
+        case null => JsonAST.JNull
+        case x    => JsonAST.JInt(x.getTime)
+      })
 
   /**
     * Get the JDBC SQL Type for this field
@@ -160,18 +161,20 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
     S.fmapFunc({ s: List[String] =>
       this.setFromAny(s)
     }) { funcName =>
-      Full(appendFieldId(<input type={
-        formInputType
-      }
+      Full(
+        appendFieldId(
+          <input type={
+            formInputType
+          }
                      name={
-        funcName
-      }
+            funcName
+          }
                      value={
-        get match {
-          case null => ""
-          case s    => format(s)
-        }
-      }/>))
+            get match {
+              case null => ""
+              case s    => format(s)
+            }
+          }/>))
     }
 
   override def setFromAny(f: Any): Date =

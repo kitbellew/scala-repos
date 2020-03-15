@@ -241,8 +241,7 @@ object Memcached
   private[finagle] def registerClient(
       label: String,
       hasher: String,
-      isPipelining: Boolean
-  ): Unit = {
+      isPipelining: Boolean): Unit = {
     GlobalRegistry.get.put(
       Seq(
         ClientRegistry.registryName,
@@ -274,8 +273,7 @@ object Memcached
 
     protected def copy1(
         stack: Stack[ServiceFactory[Command, Response]] = this.stack,
-        params: Stack.Params = this.params
-    ): Client = copy(stack, params)
+        params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected type In = Command
     protected type Out = Response
@@ -288,8 +286,7 @@ object Memcached
       new PipeliningDispatcher(
         transport,
         params[finagle.param.Stats].statsReceiver
-          .scope(GenSerialClientDispatcher.StatsScope)
-      )
+          .scope(GenSerialClientDispatcher.StatsScope))
 
     def newTwemcacheClient(dest: Name, label: String): TwemcacheClient = {
       val _dest =
@@ -424,8 +421,7 @@ object Memcached
 
     protected def copy1(
         stack: Stack[ServiceFactory[Command, Response]] = this.stack,
-        params: Stack.Params = this.params
-    ): Server = copy(stack, params)
+        params: Stack.Params = this.params): Server = copy(stack, params)
 
     protected type In = Response
     protected type Out = Command
@@ -436,8 +432,8 @@ object Memcached
 
     protected def newDispatcher(
         transport: Transport[In, Out],
-        service: Service[Command, Response]
-    ): Closable = new SerialServerDispatcher(transport, service)
+        service: Service[Command, Response]): Closable =
+      new SerialServerDispatcher(transport, service)
 
     // Java-friendly forwarders
     //See https://issues.scala-lang.org/browse/SI-8905

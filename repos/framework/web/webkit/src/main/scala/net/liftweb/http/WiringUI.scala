@@ -141,11 +141,12 @@ object WiringUI {
           case _       => false
         }
         .map(_.asInstanceOf[Elem])
-        .getOrElse(<span id={
-          Helpers.nextFuncName
-        }>{
-          in
-        }</span>)
+        .getOrElse(
+          <span id={
+            Helpers.nextFuncName
+          }>{
+            in
+          }</span>)
 
       addHistJsFunc(cell, (old: Box[T], nw: T) => f(old, nw, in))
 
@@ -279,11 +280,12 @@ object WiringUI {
         case _       => false
       }
       .map(_.asInstanceOf[Elem])
-      .getOrElse(<span id={
-        Helpers.nextFuncName
-      }>{
-        in
-      }</span>)
+      .getOrElse(
+        <span id={
+          Helpers.nextFuncName
+        }>{
+          in
+        }</span>)
 
     val (elem: Elem, id: String) = Helpers.findOrAddId(myElem)
     addJsFunc(
@@ -323,11 +325,12 @@ object WiringUI {
           case _       => false
         }
         .map(_.asInstanceOf[Elem])
-        .getOrElse(<span id={
-          Helpers.nextFuncName
-        }>{
-          in
-        }</span>)
+        .getOrElse(
+          <span id={
+            Helpers.nextFuncName
+          }>{
+            in
+          }</span>)
 
       val (elem: Elem, id: String) = Helpers.findOrAddId(myElem)
       addJsFunc(

@@ -93,10 +93,12 @@ private[remote] class DefaultMessageDispatcher(
           log.debug("received local message {}", msgLog)
         payload match {
           case sel: ActorSelectionMessage ⇒
-            if (UntrustedMode && (!TrustedSelectionPaths.contains(
-                  sel.elements.mkString("/", "/", "")) ||
-                sel.msg
-                  .isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
+            if (UntrustedMode && (
+                  !TrustedSelectionPaths.contains(
+                    sel.elements.mkString("/", "/", "")) ||
+                  sel.msg
+                    .isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian
+                ))
               log.debug(
                 "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
                   "allow it by adding the path to 'akka.remote.trusted-selection-paths' configuration",
@@ -292,7 +294,9 @@ private[remote] class ReliableDeliverySupervisor(
         )
         uidConfirmed = false // Need confirmation of UID again
         if (bufferWasInUse) {
-          if ((resendBuffer.nacked.nonEmpty || resendBuffer.nonAcked.nonEmpty) && bailoutAt.isEmpty)
+          if ((
+                resendBuffer.nacked.nonEmpty || resendBuffer.nonAcked.nonEmpty
+              ) && bailoutAt.isEmpty)
             bailoutAt = Some(
               Deadline.now + settings.InitialSysMsgDeliveryTimeout)
           context.become(
@@ -473,8 +477,10 @@ private[remote] class ReliableDeliverySupervisor(
         localAddress,
         remoteAddress,
         uid,
-        new TimeoutException("Remote system has been silent for too long. " +
-          s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(TimeUnit.HOURS)} hours)"))
+        new TimeoutException(
+          "Remote system has been silent for too long. " +
+            s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(
+              TimeUnit.HOURS)} hours)"))
     case EndpointWriter.FlushAndStop ⇒ context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) ⇒
       replyTo ! EndpointWriter.StoppedReading(w)
@@ -543,17 +549,18 @@ private[remote] class ReliableDeliverySupervisor(
     context.watch(
       context.actorOf(
         RARP(context.system)
-          .configureDispatcher(EndpointWriter.props(
-            handleOrActive = currentHandle,
-            localAddress = localAddress,
-            remoteAddress = remoteAddress,
-            refuseUid,
-            transport = transport,
-            settings = settings,
-            AkkaPduProtobufCodec,
-            receiveBuffers = receiveBuffers,
-            reliableDeliverySupervisor = Some(self)
-          ))
+          .configureDispatcher(
+            EndpointWriter.props(
+              handleOrActive = currentHandle,
+              localAddress = localAddress,
+              remoteAddress = remoteAddress,
+              refuseUid,
+              transport = transport,
+              settings = settings,
+              AkkaPduProtobufCodec,
+              receiveBuffers = receiveBuffers,
+              reliableDeliverySupervisor = Some(self)
+            ))
           .withDeploy(Deploy.local),
         "endpointWriter"
       ))
@@ -1107,8 +1114,10 @@ private[remote] class EndpointWriter(
       case Some(h) ⇒
         Serialization.currentTransportInformation.withValue(
           Serialization.Information(h.localAddress, extendedSystem)) {
-          (MessageSerializer
-            .serialize(extendedSystem, msg.asInstanceOf[AnyRef]))
+          (
+            MessageSerializer
+              .serialize(extendedSystem, msg.asInstanceOf[AnyRef])
+            )
         }
       case None ⇒
         throw new EndpointException(
@@ -1280,8 +1289,9 @@ private[remote] class EndpointReader(
         throw InvalidAssociation(
           localAddress,
           remoteAddress,
-          InvalidAssociationException("The remote system has quarantined this system. No further associations " +
-            "to the remote system are possible until this system is restarted."),
+          InvalidAssociationException(
+            "The remote system has quarantined this system. No further associations " +
+              "to the remote system are possible until this system is restarted."),
           Some(AssociationHandle.Quarantined)
         )
     }

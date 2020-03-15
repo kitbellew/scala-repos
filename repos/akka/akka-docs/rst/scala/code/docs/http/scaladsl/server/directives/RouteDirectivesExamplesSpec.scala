@@ -19,9 +19,9 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
         path("b") {
           complete((StatusCodes.Created, "bar"))
         } ~
-        (path("c") & complete(
-          "baz"
-        )) // `&` also works with `complete` as the 2nd argument
+        (
+          path("c") & complete("baz")
+        ) // `&` also works with `complete` as the 2nd argument
 
     // tests:
     Get("/a") ~> route ~> check {

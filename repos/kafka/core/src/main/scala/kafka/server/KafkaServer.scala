@@ -192,8 +192,7 @@ class KafkaServer(
     "BrokerState",
     new Gauge[Int] {
       def value = brokerState.currentState
-    }
-  )
+    })
 
   newGauge(
     "yammer-metrics-count",
@@ -201,8 +200,7 @@ class KafkaServer(
       def value = {
         com.yammer.metrics.Metrics.defaultRegistry().allMetrics().size()
       }
-    }
-  )
+    })
 
   /**
     * Start up API for bringing up a single instance of the Kafka server.
@@ -442,8 +440,7 @@ class KafkaServer(
               config.interBrokerSecurityProtocol,
               Mode.CLIENT,
               LoginType.SERVER,
-              config.values)
-          )
+              config.values))
         new NetworkClient(
           selector,
           metadataUpdater,

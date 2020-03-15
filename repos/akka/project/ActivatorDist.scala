@@ -18,8 +18,7 @@ object ActivatorDist {
 
   lazy val settings: Seq[Setting[_]] = Seq(
     activatorDistDirectory <<= crossTarget / "activator-dist",
-    activatorDist <<= activatorDistTask
-  )
+    activatorDist <<= activatorDistTask)
 
   def activatorDistTask: Initialize[Task[File]] = {
     (
@@ -45,8 +44,9 @@ object ActivatorDist {
             val gitignoreFileFilter =
               (".gitignore" :: localGitignoreLines ::: rootGitignoreLines)
                 .foldLeft[FileFilter](NothingFilter)((acc, x) => acc || x)
-            val filteredPathFinder = PathFinder(
-              dir) descendantsExcept ("*", gitignoreFileFilter) filter (_.isFile)
+            val filteredPathFinder = PathFinder(dir) descendantsExcept (
+              "*", gitignoreFileFilter
+            ) filter (_.isFile)
             filteredPathFinder pair Path.rebase(
               dir,
               activatorDistDirectory / dir.name) map {

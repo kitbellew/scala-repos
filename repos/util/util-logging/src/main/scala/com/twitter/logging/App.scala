@@ -87,23 +87,20 @@ trait Logging { self: App =>
           appendFlag(),
           rotateCountFlag(),
           defaultFormatter,
-          level
-        )
+          level)
 
     List(
       if (asyncFlag())
         QueueingHandler(handler, asyncMaxSizeFlag(), inferClassNamesFlag())
       else
-        handler
-    )
+        handler)
   }
 
   def loggerFactories: List[LoggerFactory] = {
     LoggerFactory(
       node = "",
       level = Some(levelFlag()),
-      handlers = handlers
-    ) :: Nil
+      handlers = handlers) :: Nil
   }
 
   premain {

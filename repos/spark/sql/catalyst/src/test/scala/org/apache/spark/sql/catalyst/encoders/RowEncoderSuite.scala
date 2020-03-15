@@ -30,8 +30,16 @@ class ExamplePoint(val x: Double, val y: Double) extends Serializable {
   override def equals(that: Any): Boolean = {
     if (that.isInstanceOf[ExamplePoint]) {
       val e = that.asInstanceOf[ExamplePoint]
-      (this.x == e.x || (this.x.isNaN && e.x.isNaN) || (this.x.isInfinity && e.x.isInfinity)) &&
-      (this.y == e.y || (this.y.isNaN && e.y.isNaN) || (this.y.isInfinity && e.y.isInfinity))
+      (
+        this.x == e.x || (this.x.isNaN && e.x.isNaN) || (
+          this.x.isInfinity && e.x.isInfinity
+        )
+      ) &&
+      (
+        this.y == e.y || (this.y.isNaN && e.y.isNaN) || (
+          this.y.isInfinity && e.y.isInfinity
+        )
+      )
     } else {
       false
     }
@@ -164,12 +172,10 @@ class RowEncoderSuite extends SparkFunSuite {
         }
       } catch {
         case e: Exception =>
-          fail(
-            s"""
+          fail(s"""
                |schema: ${schema.simpleString}
                |input: ${input}
-             """.stripMargin,
-            e)
+             """.stripMargin, e)
       }
     }
   }

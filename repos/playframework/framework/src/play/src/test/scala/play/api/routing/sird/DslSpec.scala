@@ -17,9 +17,10 @@ object DslSpec extends Specification {
         }
       }
       "no match" in {
-        FakeRequest("POST", "/foo") must not(beLike {
-          case GET(_) => ok
-        })
+        FakeRequest("POST", "/foo") must not(
+          beLike {
+            case GET(_) => ok
+          })
       }
     }
 
@@ -30,9 +31,10 @@ object DslSpec extends Specification {
         }
       }
       "no match" in {
-        FakeRequest("GET", "/foo") must not(beLike {
-          case POST(_) => ok
-        })
+        FakeRequest("GET", "/foo") must not(
+          beLike {
+            case POST(_) => ok
+          })
       }
     }
 
@@ -43,9 +45,10 @@ object DslSpec extends Specification {
         }
       }
       "no match" in {
-        FakeRequest("POST", "/foo") must not(beLike {
-          case PUT(_) => ok
-        })
+        FakeRequest("POST", "/foo") must not(
+          beLike {
+            case PUT(_) => ok
+          })
       }
     }
 
@@ -56,9 +59,10 @@ object DslSpec extends Specification {
         }
       }
       "no match" in {
-        FakeRequest("POST", "/foo") must not(beLike {
-          case DELETE(_) => ok
-        })
+        FakeRequest("POST", "/foo") must not(
+          beLike {
+            case DELETE(_) => ok
+          })
       }
     }
 
@@ -69,9 +73,10 @@ object DslSpec extends Specification {
         }
       }
       "no match" in {
-        FakeRequest("POST", "/foo") must not(beLike {
-          case PATCH(_) => ok
-        })
+        FakeRequest("POST", "/foo") must not(
+          beLike {
+            case PATCH(_) => ok
+          })
       }
     }
 
@@ -82,9 +87,10 @@ object DslSpec extends Specification {
         }
       }
       "no match" in {
-        FakeRequest("POST", "/foo") must not(beLike {
-          case OPTIONS(_) => ok
-        })
+        FakeRequest("POST", "/foo") must not(
+          beLike {
+            case OPTIONS(_) => ok
+          })
       }
     }
 
@@ -95,9 +101,10 @@ object DslSpec extends Specification {
         }
       }
       "no match" in {
-        FakeRequest("POST", "/foo") must not(beLike {
-          case HEAD(_) => ok
-        })
+        FakeRequest("POST", "/foo") must not(
+          beLike {
+            case HEAD(_) => ok
+          })
       }
     }
 

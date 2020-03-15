@@ -136,8 +136,11 @@ trait Implicits {
     //         `implicitSearchContext.undetparams`, *not* in `context.undetparams`
     //         Here, we copy them up to parent context (analogously to the way the errors are copied above),
     //         and then filter out any which *were* inferred and are part of the substitutor in the implicit search result.
-    context.undetparams =
-      ((context.undetparams ++ result.undetparams) filterNot result.subst.from.contains).distinct
+    context.undetparams = (
+      (
+        context.undetparams ++ result.undetparams
+      ) filterNot result.subst.from.contains
+    ).distinct
 
     if (Statistics.canEnable)
       Statistics.stopTimer(implicitNanos, start)
@@ -358,12 +361,10 @@ trait Implicits {
       }
     override def hashCode = name.## + pre.## + sym.##
     override def toString =
-      (
-        if (tpeCache eq null)
-          name + ": ?"
-        else
-          name + ": " + tpe
-      )
+      (if (tpeCache eq null)
+         name + ": ?"
+       else
+         name + ": " + tpe)
   }
 
   /** A class which is used to track pending implicits to prevent infinite implicit searches.
@@ -429,8 +430,9 @@ trait Implicits {
             case List(sym) =>
               sym.tpe match {
                 case MethodType(params, restpe)
-                    if (params forall (_.tpe
-                      .isInstanceOf[BoundedWildcardType])) =>
+                    if (
+                      params forall (_.tpe.isInstanceOf[BoundedWildcardType])
+                    ) =>
                   Some((sym.name, params map (_.tpe.bounds.lo), restpe))
                 case _ => None
               }
@@ -614,8 +616,9 @@ trait Implicits {
         }
       val dtor1 = stripped(core(dtor))
       val dted1 = stripped(core(dted))
-      overlaps(dtor1, dted1) && (dtor1 =:= dted1 || complexity(
-        dtor1) > complexity(dted1))
+      overlaps(dtor1, dted1) && (
+        dtor1 =:= dted1 || complexity(dtor1) > complexity(dted1)
+      )
     }
 
     /** The expected type with all undetermined type parameters replaced with wildcards. */
@@ -645,10 +648,14 @@ trait Implicits {
       // otherwise, the macro writer could check `c.openMacros` and `c.openImplicits` and do `c.abort` when expansions are deemed to be divergent
       // upon receiving `c.abort` the typechecker will decide that the corresponding implicit search has failed
       // which will fail the entire stack of implicit searches, producing a nice error message provided by the programmer
-      (context.openImplicits find {
-        case OpenImplicit(info, tp, tree1) =>
-          !info.sym.isMacro && tree1.symbol == tree.symbol && dominates(pt, tp)
-      }) match {
+      (
+        context.openImplicits find {
+          case OpenImplicit(info, tp, tree1) =>
+            !info.sym.isMacro && tree1.symbol == tree.symbol && dominates(
+              pt,
+              tp)
+        }
+      ) match {
         case Some(pending) =>
           //println("Pending implicit "+pending+" dominates "+pt+"/"+undetParams) //@MDEBUG
           DivergentSearchFailure
@@ -695,9 +702,7 @@ trait Implicits {
       result
     }
     private def matchesPt(info: ImplicitInfo): Boolean =
-      (
-        info.isStablePrefix && matchesPt(depoly(info.tpe), wildPt, Nil)
-      )
+      (info.isStablePrefix && matchesPt(depoly(info.tpe), wildPt, Nil))
 
     private def matchesPtView(
         tp: Type,
@@ -725,8 +730,10 @@ trait Implicits {
       (ptarg weak_<:< tparg) && {
         ptres match {
           case HasMethodMatching(name, argtpes, restpe) =>
-            (tpres.member(name) filter (m =>
-              isApplicableSafe(undet, m.tpe, argtpes, restpe))) != NoSymbol
+            (
+              tpres.member(name) filter (m =>
+                isApplicableSafe(undet, m.tpe, argtpes, restpe))
+            ) != NoSymbol
           case _ =>
             tpres <:< ptres
         }
@@ -816,7 +823,9 @@ trait Implicits {
         case tr1 @ TypeRef(_, sym1, _) if sym1.isClass =>
           tp2.dealiasWiden match {
             case TypeRef(_, sym2, _) =>
-              ((sym1 eq ByNameParamClass) != (sym2 eq ByNameParamClass)) || (sym2.isClass && !(sym1 isWeakSubClass sym2))
+              ((sym1 eq ByNameParamClass) != (sym2 eq ByNameParamClass)) || (
+                sym2.isClass && !(sym1 isWeakSubClass sym2)
+              )
             case RefinedType(parents, decls) =>
               decls.nonEmpty && tr1.member(decls.head.name) == NoSymbol
             case _ => false
@@ -889,8 +898,7 @@ trait Implicits {
                       itree1,
                       List(Ident(nme.argument) setType approximate(arg1)))),
                   EXPRmode,
-                  approximate(arg2)
-                ) match {
+                  approximate(arg2)) match {
                   // try to infer implicit parameters immediately in order to:
                   //   1) guide type inference for implicit views
                   //   2) discard ineligible views right away instead of risking spurious ambiguous implicits
@@ -1073,15 +1081,16 @@ trait Implicits {
       }
       def comesBefore(sym: Symbol, owner: Symbol) = {
         val ownerPos = owner.pos.pointOrElse(Int.MaxValue)
-        sym.pos.pointOrElse(0) < ownerPos && (if (sym.hasAccessorFlag) {
-                                                val symAcc =
-                                                  sym.accessed // #3373
-                                                symAcc.pos.pointOrElse(
-                                                  0) < ownerPos &&
-                                                !(owner.ownerChain exists (o =>
-                                                  (o eq sym) || (o eq symAcc))) // probably faster to iterate only once, don't feel like duplicating hasTransOwner for this case
-                                              } else
-                                                !(owner hasTransOwner sym)) // faster than owner.ownerChain contains sym
+        sym.pos.pointOrElse(0) < ownerPos && (
+          if (sym.hasAccessorFlag) {
+            val symAcc = sym.accessed // #3373
+            symAcc.pos.pointOrElse(0) < ownerPos &&
+            !(
+              owner.ownerChain exists (o => (o eq sym) || (o eq symAcc))
+            ) // probably faster to iterate only once, don't feel like duplicating hasTransOwner for this case
+          } else
+            !(owner hasTransOwner sym)
+        ) // faster than owner.ownerChain contains sym
       }
 
       sym.isInitialized ||
@@ -1128,27 +1137,26 @@ trait Implicits {
       private var best: SearchResult = SearchFailure
 
       private def isIneligible(info: ImplicitInfo) =
-        (
-          info.isCyclicOrErroneous
-            || isView && (info.sym eq Predef_conforms) // as an implicit conversion, Predef.$conforms is a no-op, so exclude it
-            || (!context.macrosEnabled && info.sym.isTermMacro)
-        )
+        (info.isCyclicOrErroneous
+          || isView && (
+            info.sym eq Predef_conforms
+          ) // as an implicit conversion, Predef.$conforms is a no-op, so exclude it
+          || (!context.macrosEnabled && info.sym.isTermMacro))
 
       /** True if a given ImplicitInfo (already known isValid) is eligible.
         */
       def survives(info: ImplicitInfo) =
-        (
-          !isIneligible(
-            info
-          ) // cyclic, erroneous, shadowed, or specially excluded
-            && isPlausiblyCompatible(
-              info.tpe,
-              wildPt
-            ) // optimization to avoid matchesPt
-            && !shadower.isShadowed(
-              info.name
-            ) // OPT rare, only check for plausible candidates
-            && matchesPt(info) // stable and matches expected type
+        (!isIneligible(
+          info
+        ) // cyclic, erroneous, shadowed, or specially excluded
+          && isPlausiblyCompatible(
+            info.tpe,
+            wildPt
+          ) // optimization to avoid matchesPt
+          && !shadower.isShadowed(
+            info.name
+          ) // OPT rare, only check for plausible candidates
+          && matchesPt(info) // stable and matches expected type
         )
 
       /** The implicits that are not valid because they come later in the source and
@@ -1601,8 +1609,7 @@ trait Implicits {
               // this situation happens very often, so emitting an error message here (even if only for -Xlog-implicits) would be too much
               //return failure(tp, "tag error: unsupported prefix type %s (%s)".format(pre, pre.kind))
               return SearchFailure
-          }
-      )
+          })
       // todo. migrate hardcoded materialization in Implicits to corresponding implicit macros
       val materializer =
         atPos(pos.focus)(
@@ -1732,10 +1739,12 @@ trait Implicits {
               manifestFactoryCall(
                 "classType",
                 tp,
-                (if ((pre eq NoPrefix) || pre.typeSymbol.isStaticOwner)
-                   suffix
-                 else
-                   findSubManifest(pre) :: suffix): _*)
+                (
+                  if ((pre eq NoPrefix) || pre.typeSymbol.isStaticOwner)
+                    suffix
+                  else
+                    findSubManifest(pre) :: suffix
+                ): _*)
             } else if (sym.isExistentiallyBound && full) {
               manifestFactoryCall(
                 "wildcardType",
@@ -1949,8 +1958,9 @@ trait Implicits {
                   s"the result type of an implicit conversion must be more specific than ${sym.name}")
                 true
               }
-            if (prohibit(AnyRefClass) || (settings.isScala211 && prohibit(
-                  AnyValClass)))
+            if (prohibit(AnyRefClass) || (
+                  settings.isScala211 && prohibit(AnyValClass)
+                ))
               result = SearchFailure
           case _ => false
         }
@@ -2026,11 +2036,12 @@ trait Implicits {
     def check(sym: Symbol): Option[String] =
       sym
         .getAnnotation(clazz)
-        .flatMap(_.stringArg(0) match {
-          case Some(m) => new Message(sym, m, annotationName).validate
-          case None =>
-            Some(s"Missing argument `msg` on $annotationName annotation.")
-        })
+        .flatMap(
+          _.stringArg(0) match {
+            case Some(m) => new Message(sym, m, annotationName).validate
+            case None =>
+              Some(s"Missing argument `msg` on $annotationName annotation.")
+          })
   }
 
   object ImplicitNotFoundMsg

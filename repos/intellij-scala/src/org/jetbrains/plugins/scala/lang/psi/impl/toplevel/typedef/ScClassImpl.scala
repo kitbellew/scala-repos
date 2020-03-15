@@ -197,8 +197,7 @@ class ScClassImpl private (
         "def canEqual(that: Any): Boolean = ???",
         "def equals(that: Any): Boolean = ???",
         "def productArity: Int = ???",
-        "def productElement(n: Int): Any = ???"
-      )
+        "def productElement(n: Int): Any = ???")
 
       caseClassGeneratedFunctions.foreach { funText =>
         val fun: ScFunction = ScalaPsiElementFactory.createMethodWithContext(
@@ -287,11 +286,13 @@ class ScClassImpl private (
 
   private def copyMethodText: String = {
     val x = constructor.getOrElse(return "")
-    val paramString = (if (x.parameterList.clauses.length == 1 &&
-                           x.parameterList.clauses.head.isImplicit)
-                         "()"
-                       else
-                         "") + x.parameterList.clauses
+    val paramString = (
+      if (x.parameterList.clauses.length == 1 &&
+          x.parameterList.clauses.head.isImplicit)
+        "()"
+      else
+        ""
+    ) + x.parameterList.clauses
       .map { c =>
         val start =
           if (c.isImplicit)

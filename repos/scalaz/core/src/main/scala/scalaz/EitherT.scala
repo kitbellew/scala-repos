@@ -150,10 +150,11 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
   /** Return this if it is a right, otherwise, return the given value. Alias for `|||` */
   def orElse(x: => EitherT[F, A, B])(implicit F: Monad[F]): EitherT[F, A, B] = {
     val g = run
-    EitherT(F.bind(g) {
-      case -\/(_)       => x.run
-      case r @ (\/-(_)) => F.point(r)
-    })
+    EitherT(
+      F.bind(g) {
+        case -\/(_)       => x.run
+        case r @ (\/-(_)) => F.point(r)
+      })
   }
 
   /** Return this if it is a right, otherwise, return the given value. Alias for `orElse` */
@@ -430,8 +431,7 @@ private trait EitherTBindRec[F[_], E]
           _.fold(
             e => \/.right(\/.left(e)),
             _.fold(a => \/.left(a), b => \/.right(\/.right(b))))
-        })(a)
-    )
+        })(a))
 }
 
 private trait EitherTMonad[F[_], E]
@@ -447,15 +447,16 @@ private trait EitherTPlus[F[_], E] extends Plus[EitherT[F, E, ?]] {
   def G: Semigroup[E]
 
   def plus[A](a: EitherT[F, E, A], b: => EitherT[F, E, A]): EitherT[F, E, A] =
-    EitherT(F.bind(a.run) {
-      case -\/(l) =>
-        F.map(b.run) {
-          case -\/(ll)    => -\/(G.append(l, ll))
-          case r @ \/-(_) => r
-        }
-      case r =>
-        F.point(r)
-    })
+    EitherT(
+      F.bind(a.run) {
+        case -\/(l) =>
+          F.map(b.run) {
+            case -\/(ll)    => -\/(G.append(l, ll))
+            case r @ \/-(_) => r
+          }
+        case r =>
+          F.point(r)
+      })
 }
 
 private trait EitherTMonadPlus[F[_], E]
@@ -564,8 +565,9 @@ private trait EitherTMonadError[F[_], E]
   def raiseError[A](e: E): EitherT[F, E, A] = EitherT(F.point(-\/(e)))
   def handleError[A](fa: EitherT[F, E, A])(
       f: E => EitherT[F, E, A]): EitherT[F, E, A] =
-    EitherT(F.bind(fa.run) {
-      case -\/(e) => f(e).run
-      case r      => F.point(r)
-    })
+    EitherT(
+      F.bind(fa.run) {
+        case -\/(e) => f(e).run
+        case r      => F.point(r)
+      })
 }

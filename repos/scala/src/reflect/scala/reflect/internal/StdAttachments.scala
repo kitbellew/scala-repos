@@ -13,9 +13,10 @@ trait StdAttachments {
       type Pos = Position
     } = NoPosition
     def attachments = rawatt
-    def setAttachments(attachments: scala.reflect.macros.Attachments {
-      type Pos = Position
-    }): this.type = {
+    def setAttachments(
+        attachments: scala.reflect.macros.Attachments {
+          type Pos = Position
+        }): this.type = {
       rawatt = attachments;
       this
     }

@@ -35,11 +35,12 @@ object BootstrapApplication {
   var launched = false
   def launch() {
     if (!launched) {
-      new Thread(new Runnable() {
-        def run() {
-          Application.launch(classOf[BootstrapApplication])
-        }
-      }).start()
+      new Thread(
+        new Runnable() {
+          def run() {
+            Application.launch(classOf[BootstrapApplication])
+          }
+        }).start()
       launchLatch.await()
       launched = true
     }

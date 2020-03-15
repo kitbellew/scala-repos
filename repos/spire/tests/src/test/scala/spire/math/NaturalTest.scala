@@ -54,10 +54,9 @@ class NaturalTest
 
   property("x /% y") {
     forAll { (x: N, y: Positive[BigInt]) =>
-      (Natural(x.num) /% Natural(y.num)) shouldBe (
-        (
-          Natural(x.num / y.num),
-          Natural(x.num % y.num)))
+      (
+        Natural(x.num) /% Natural(y.num)
+      ) shouldBe ((Natural(x.num / y.num), Natural(x.num % y.num)))
     }
   }
 

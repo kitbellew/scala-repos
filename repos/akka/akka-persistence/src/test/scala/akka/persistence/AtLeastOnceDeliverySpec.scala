@@ -210,7 +210,9 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
 
   "AtLeastOnceDelivery" must {
     List(true, false).foreach { deliverUsingActorSelection ⇒
-      s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs (TimingTest) in {
+      s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs (
+        TimingTest
+      ) in {
         val probe = TestProbe()
         val probeA = TestProbe()
         val destinations = Map(
@@ -231,7 +233,9 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
         probeA.expectNoMsg(1.second)
       }
 
-      s"re-deliver lost messages (using actorSelection: $deliverUsingActorSelection)" taggedAs (TimingTest) in {
+      s"re-deliver lost messages (using actorSelection: $deliverUsingActorSelection)" taggedAs (
+        TimingTest
+      ) in {
         val probe = TestProbe()
         val probeA = TestProbe()
         val dst = system.actorOf(destinationProps(probeA.ref))
@@ -318,7 +322,9 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       probeA.expectNoMsg(1.second)
     }
 
-    "re-send replayed deliveries with an 'initially in-order' strategy, before delivering fresh messages" taggedAs (TimingTest) in {
+    "re-send replayed deliveries with an 'initially in-order' strategy, before delivering fresh messages" taggedAs (
+      TimingTest
+    ) in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
@@ -502,7 +508,9 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
         .toSet should ===((1 to N).map(n ⇒ "c-" + n).toSet)
     }
 
-    "limit the number of messages redelivered at once" taggedAs (TimingTest) in {
+    "limit the number of messages redelivered at once" taggedAs (
+      TimingTest
+    ) in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))

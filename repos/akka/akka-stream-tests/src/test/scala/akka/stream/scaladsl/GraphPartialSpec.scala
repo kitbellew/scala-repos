@@ -118,13 +118,14 @@ class GraphPartialSpec extends AkkaSpec {
         }
 
       val fut = RunnableGraph
-        .fromGraph(GraphDSL.create(Sink.head[Int], p)(Keep.left) {
-          implicit b ⇒ (sink, flow) ⇒
-            import GraphDSL.Implicits._
-            Source.single(0) ~> flow.in
-            flow.out ~> sink.in
-            ClosedShape
-        })
+        .fromGraph(
+          GraphDSL.create(Sink.head[Int], p)(Keep.left) {
+            implicit b ⇒ (sink, flow) ⇒
+              import GraphDSL.Implicits._
+              Source.single(0) ~> flow.in
+              flow.out ~> sink.in
+              ClosedShape
+          })
         .run()
 
       Await.result(fut, 3.seconds) should be(1)

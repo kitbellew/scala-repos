@@ -425,11 +425,12 @@ private[util] trait Props extends Logger {
     } match {
       // if we've got a propety file, create name/value pairs and turn them into a Map
       case Full(prop) =>
-        Map(prop.entrySet.toArray.flatMap {
-          case s: JMap.Entry[_, _] =>
-            List((s.getKey.toString, s.getValue.toString))
-          case _ => Nil
-        }: _*)
+        Map(
+          prop.entrySet.toArray.flatMap {
+            case s: JMap.Entry[_, _] =>
+              List((s.getKey.toString, s.getValue.toString))
+            case _ => Nil
+          }: _*)
 
       case _ =>
         error(

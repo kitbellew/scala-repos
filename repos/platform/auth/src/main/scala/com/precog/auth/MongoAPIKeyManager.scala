@@ -53,8 +53,7 @@ case class MongoAPIKeyManagerSettings(
     deletedAPIKeys: String = "tokens_deleted",
     deletedGrants: String = "grants_deleted",
     timeout: Timeout = new Timeout(30000),
-    rootKeyId: String = "invalid"
-)
+    rootKeyId: String = "invalid")
 
 object MongoAPIKeyManagerSettings {
   val defaults = MongoAPIKeyManagerSettings()
@@ -84,8 +83,7 @@ object MongoAPIKeyManager extends Logging {
       deletedAPIKeys,
       deletedGrants,
       timeoutMillis,
-      rootKeyId
-    )
+      rootKeyId)
 
     val mongo = RealMongo(config.detach("mongo"))
     val database = mongo.database(dbName)
@@ -119,8 +117,7 @@ object MongoAPIKeyManager extends Logging {
     val rootPermissions = Set[Permission](
       WritePermission(Path.Root, WriteAsAny),
       ReadPermission(Path.Root, WrittenByAny),
-      DeletePermission(Path.Root, WrittenByAny)
-    )
+      DeletePermission(Path.Root, WrittenByAny))
 
     val rootGrant = Grant(
       rootGrantId,
@@ -130,8 +127,7 @@ object MongoAPIKeyManager extends Logging {
       Set(),
       rootPermissions,
       new Instant(0L),
-      None
-    )
+      None)
 
     val rootAPIKeyRecord = APIKeyRecord(
       rootAPIKeyId,
@@ -389,9 +385,10 @@ class MongoAPIKeyManager(
   def deleteGrant(gid: GrantId): Future[Set[Grant]] = {
     for {
       children <- findGrantChildren(gid)
-      deletedChildren <- Future.sequence(children map { g =>
-        deleteGrant(g.grantId)
-      }) map {
+      deletedChildren <- Future.sequence(
+        children map { g =>
+          deleteGrant(g.grantId)
+        }) map {
         _.flatten
       }
       leafOpt <- findGrant(gid)

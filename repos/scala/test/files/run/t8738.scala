@@ -14,8 +14,7 @@ object Test {
         check(i until j by n, k until l by m) &&
           check(i until j by n, k to l by m) &&
           check(i to j by n, k until l by m) &&
-          check(i to j by n, k to l by m)
-      )
+          check(i to j by n, k to l by m))
     }
   }
 }

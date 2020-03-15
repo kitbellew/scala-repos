@@ -60,18 +60,16 @@ trait BaseForeignKey extends BaseMappedField {
 }
 
 object MappedForeignKey {
-  implicit def getObj[
-      KeyType,
-      MyOwner <: Mapper[MyOwner],
-      Other <: KeyedMapper[KeyType, Other]](
-      in: MappedForeignKey[KeyType, MyOwner, Other]): Box[Other] = in.obj
+  implicit def getObj[KeyType, MyOwner <: Mapper[MyOwner], Other <: KeyedMapper[
+    KeyType,
+    Other]](in: MappedForeignKey[KeyType, MyOwner, Other]): Box[Other] = in.obj
 }
 
 /**
   * The Trait that defines a field that is mapped to a foreign key
   */
-trait MappedForeignKey[
-    KeyType, MyOwner <: Mapper[MyOwner], Other <: KeyedMapper[KeyType, Other]]
+trait MappedForeignKey[KeyType, MyOwner <: Mapper[
+  MyOwner], Other <: KeyedMapper[KeyType, Other]]
     extends MappedField[KeyType, MyOwner]
     with LifecycleCallbacks {
   type FieldType <: KeyType
@@ -111,9 +109,10 @@ trait MappedForeignKey[
           case xs =>
             Full(SHtml.selectObj(xs, Full(this.get), this.set))
         }
-        .openOr(<span>{
-          immutableMsg
-        }</span>))
+        .openOr(
+          <span>{
+            immutableMsg
+          }</span>))
 
   /**
     * Is the key defined
@@ -131,11 +130,13 @@ trait MappedForeignKey[
   override protected def dirty_?(b: Boolean) =
     synchronized { // issue 165
       // invalidate if the primary key has changed Issue 370
-      if (_obj.isEmpty || (_calcedObj && _obj.isDefined &&
-          _obj
-            .openOrThrowException("_obj was just checked as full.")
-            .primaryKeyField
-            .get != this.i_is_!)) {
+      if (_obj.isEmpty || (
+            _calcedObj && _obj.isDefined &&
+            _obj
+              .openOrThrowException("_obj was just checked as full.")
+              .primaryKeyField
+              .get != this.i_is_!
+          )) {
         _obj = Empty
         _calcedObj = false
       }
@@ -314,9 +315,9 @@ abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
 
 }
 
-abstract class MappedStringForeignKey[
-    T <: Mapper[T],
-    O <: KeyedMapper[String, O]](
+abstract class MappedStringForeignKey[T <: Mapper[T], O <: KeyedMapper[
+  String,
+  O]](
     override val fieldOwner: T,
     foreign: => KeyedMetaMapper[String, O],
     override val maxLen: Int)

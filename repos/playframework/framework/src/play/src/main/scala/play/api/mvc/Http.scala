@@ -421,10 +421,12 @@ package play.api.mvc {
       * Transform this call to an absolute URL.
       */
     def absoluteURL(secure: Boolean)(implicit request: RequestHeader): String =
-      "http" + (if (secure)
-                  "s"
-                else
-                  "") + "://" + request.host + this.url + this.appendFragment
+      "http" + (
+        if (secure)
+          "s"
+        else
+          ""
+      ) + "://" + request.host + this.url + this.appendFragment
 
     /**
       * Transform this call to an WebSocket URL.
@@ -444,10 +446,12 @@ package play.api.mvc {
       * Transform this call to an WebSocket URL.
       */
     def webSocketURL(secure: Boolean)(implicit request: RequestHeader): String =
-      "ws" + (if (secure)
-                "s"
-              else
-                "") + "://" + request.host + this.url
+      "ws" + (
+        if (secure)
+          "s"
+        else
+          ""
+      ) + "://" + request.host + this.url
 
   }
 
@@ -510,9 +514,10 @@ package play.api.mvc {
       */
     def remove(keys: String*) = {
       val keySet = TreeSet(keys: _*)(CaseInsensitiveOrdered)
-      new Headers(headers.filterNot {
-        case (name, _) => keySet(name)
-      })
+      new Headers(
+        headers.filterNot {
+          case (name, _) => keySet(name)
+        })
     }
 
     /**
@@ -943,8 +948,7 @@ package play.api.mvc {
           fromMap(
             decodeSetCookieHeader(headerValue)
               .groupBy(_.name)
-              .mapValues(_.head)
-          )
+              .mapValues(_.head))
         case None => fromMap(Map.empty)
       }
 
@@ -954,8 +958,7 @@ package play.api.mvc {
           fromMap(
             decodeCookieHeader(headerValue)
               .groupBy(_.name)
-              .mapValues(_.head)
-          )
+              .mapValues(_.head))
         case None => fromMap(Map.empty)
       }
 
@@ -997,9 +1000,10 @@ package play.api.mvc {
       */
     def encodeCookieHeader(cookies: Seq[Cookie]): String = {
       val encoder = config.clientEncoder
-      encoder.encode(cookies.map { cookie =>
-        new DefaultCookie(cookie.name, cookie.value)
-      }.asJava)
+      encoder.encode(
+        cookies.map { cookie =>
+          new DefaultCookie(cookie.name, cookie.value)
+        }.asJava)
     }
 
     /**
@@ -1046,10 +1050,7 @@ package play.api.mvc {
           .decode(cookieHeader)
           .asScala
           .map { cookie =>
-            Cookie(
-              cookie.name,
-              cookie.value
-            )
+            Cookie(cookie.name, cookie.value)
           }
           .toSeq
       }.getOrElse {

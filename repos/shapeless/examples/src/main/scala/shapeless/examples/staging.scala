@@ -35,10 +35,12 @@ object StagedTypeClassExample extends App {
     implicit val booleanDouble =
       new TupleConsumer[Boolean, Double] {
         def apply(t: (Boolean, Double)) =
-          (if (t._1)
-             "+"
-           else
-             "-") + t._2
+          (
+            if (t._1)
+              "+"
+            else
+              "-"
+          ) + t._2
       }
   }
 

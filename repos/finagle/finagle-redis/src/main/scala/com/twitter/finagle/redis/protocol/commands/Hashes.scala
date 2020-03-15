@@ -158,8 +158,8 @@ case class HScan(
     key: ChannelBuffer,
     cursor: Long,
     count: Option[JLong] = None,
-    pattern: Option[ChannelBuffer] = None
-) extends Command {
+    pattern: Option[ChannelBuffer] = None)
+    extends Command {
   def command = Commands.HSCAN
   def toChannelBuffer = {
     val bufs = Seq(

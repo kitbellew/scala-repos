@@ -41,9 +41,8 @@ class LBFGSB(
     tolerance: Double = 1e-8,
     maxZoomIter: Int = 64,
     maxLineSearchIter: Int = 64)
-    extends FirstOrderMinimizer[
-      DenseVector[Double],
-      DiffFunction[DenseVector[Double]]](
+    extends FirstOrderMinimizer[DenseVector[Double], DiffFunction[
+      DenseVector[Double]]](
       LBFGSB
         .defaultConvergenceCheck(lowerBounds, upperBounds, tolerance, maxIter))
     with SerializableLogging {
@@ -212,8 +211,9 @@ class LBFGSB(
       val bRowOfW: DenseVector[Double] = W(b, ::).t
       fDerivative += deltaT * fSecondDerivative + g(b) * g(b) + theta * g(
         b) * zb - (bRowOfW.t :* g(b)) * (M * c)
-      fSecondDerivative += -1.0 * theta * g(b) * g(b) - 2.0 * (g(b) * (bRowOfW
-        .dot(M * p))) - g(b) * g(b) * (bRowOfW.t * (M * bRowOfW))
+      fSecondDerivative += -1.0 * theta * g(b) * g(b) - 2.0 * (
+        g(b) * (bRowOfW.dot(M * p))
+      ) - g(b) * g(b) * (bRowOfW.t * (M * bRowOfW))
       p += (bRowOfW :* g(b));
       d(b) = 0.0
       dtMin = -fDerivative / fSecondDerivative
@@ -335,15 +335,13 @@ class LBFGSB(
       } else if (yHistory.cols < m) {
         history.copy(
           yHistory = DenseMatrix.horzcat(yHistory, newY.toDenseMatrix.t),
-          sHistory = DenseMatrix.horzcat(sHistory, newS.toDenseMatrix.t)
-        )
+          sHistory = DenseMatrix.horzcat(sHistory, newS.toDenseMatrix.t))
       } else { //m <= k discard the oldest yk and sk
         history.copy(
           yHistory = DenseMatrix
             .horzcat(yHistory(::, 1 until m), newY.toDenseMatrix.t),
           sHistory = DenseMatrix
-            .horzcat(sHistory(::, 1 until m), newS.toDenseMatrix.t)
-        )
+            .horzcat(sHistory(::, 1 until m), newS.toDenseMatrix.t))
       }
 
     }

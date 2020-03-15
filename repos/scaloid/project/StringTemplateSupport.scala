@@ -85,9 +85,10 @@ class StringTemplateSupport(
         level: Int = 0): Map[String, Any] = {
       lmap
         .groupBy(_._1.head)
-        .mapValues(_.map {
-          case (k, v) => k.tail -> v
-        })
+        .mapValues(
+          _.map {
+            case (k, v) => k.tail -> v
+          })
         .mapValues { m: Map[List[String], Any] =>
           val (leaves, branches) = m.partition(_._1.length == 1)
           leaves.map {

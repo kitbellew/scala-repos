@@ -57,8 +57,7 @@ trait CollectionFormats {
   implicit def genTraversableFormat[T[_], E](implicit
       evidence: T[E] <:< GenTraversable[E],
       cbf: CanBuildFrom[T[E], E, T[E]],
-      ef: SexpFormat[E]
-  ): SexpFormat[T[E]] =
+      ef: SexpFormat[E]): SexpFormat[T[E]] =
     new SexpFormat[T[E]] {
       def write(t: T[E]) = SexpList(t.map(_.toSexp)(breakOut): List[Sexp])
 
@@ -80,13 +79,13 @@ trait CollectionFormats {
       ev: M[K, V] <:< GenMap[K, V],
       cbf: CanBuildFrom[M[K, V], (K, V), M[K, V]],
       kf: SexpFormat[K],
-      vf: SexpFormat[V]
-  ): SexpFormat[M[K, V]] =
+      vf: SexpFormat[V]): SexpFormat[M[K, V]] =
     new SexpFormat[M[K, V]] {
       def write(m: M[K, V]) =
-        SexpList(m.map {
-          case (k, v) => SexpList(k.toSexp, v.toSexp)
-        }(breakOut): List[Sexp])
+        SexpList(
+          m.map {
+            case (k, v) => SexpList(k.toSexp, v.toSexp)
+          }(breakOut): List[Sexp])
 
       def read(v: Sexp): M[K, V] =
         v match {
@@ -169,8 +168,7 @@ trait CollectionFormats {
       SexpData(
         start -> SexpNumber(r.start),
         end -> SexpNumber(r.end),
-        step -> SexpNumber(r.step)
-      )
+        step -> SexpNumber(r.step))
 
     def read(s: Sexp) =
       s match {
@@ -197,8 +195,7 @@ trait CollectionFormats {
           start -> r.start.toSexp,
           end -> r.end.toSexp,
           step -> r.step.toSexp,
-          inclusive -> BooleanFormat.write(r.isInclusive)
-        )
+          inclusive -> BooleanFormat.write(r.isInclusive))
 
       def read(s: Sexp): im.NumericRange[E] =
         s match {
@@ -208,8 +205,7 @@ trait CollectionFormats {
                 im.NumericRange.inclusive(
                   s.convertTo[E],
                   e.convertTo[E],
-                  st.convertTo[E]
-                )
+                  st.convertTo[E])
               case (s, e, st, incl) =>
                 im.NumericRange(s.convertTo[E], e.convertTo[E], st.convertTo[E])
               case _ => deserializationError(s)

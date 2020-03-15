@@ -81,9 +81,10 @@ final case class StructType(elements: ConstArray[(TermSymbol, Type)])
     if (ch2 eq ch)
       this
     else
-      StructType(elements.zip(ch2).map {
-        case (e, t) => (e._1, t)
-      })
+      StructType(
+        elements.zip(ch2).map {
+          case (e, t) => (e._1, t)
+        })
   }
   override def select(sym: TermSymbol) =
     sym match {
@@ -482,8 +483,9 @@ class ScalaBaseType[T](implicit
         1
     new scala.math.Ordering[T] {
       def compare(x: T, y: T): Int = {
-        if ((x.asInstanceOf[AnyRef] eq null) && (y
-              .asInstanceOf[AnyRef] eq null))
+        if ((
+              x.asInstanceOf[AnyRef] eq null
+            ) && (y.asInstanceOf[AnyRef] eq null))
           0
         else if (x.asInstanceOf[AnyRef] eq null)
           nullsFirst

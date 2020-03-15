@@ -67,9 +67,10 @@ object Test {
   }
   def f12 = {
     abstract class A
-        extends Seq[U forSome {
-          type U <: Int
-        }];
+        extends Seq[
+          U forSome {
+            type U <: Int
+          }];
     List[A]()
   }
 
@@ -135,9 +136,10 @@ object Test {
   }
   val g12 = {
     abstract class A
-        extends Seq[U forSome {
-          type U <: Int
-        }];
+        extends Seq[
+          U forSome {
+            type U <: Int
+          }];
     List[A]()
   }
 
@@ -179,9 +181,10 @@ object Misc {
   object o1 {
     def f1 = {
       trait A
-          extends Seq[U forSome {
-            type U <: Bippy
-          }];
+          extends Seq[
+            U forSome {
+              type U <: Bippy
+            }];
       abstract class B extends A;
       trait C extends B;
       (null: C)

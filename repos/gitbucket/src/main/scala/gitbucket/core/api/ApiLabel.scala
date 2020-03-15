@@ -13,8 +13,5 @@ case class ApiLabel(name: String, color: String)(
 
 object ApiLabel {
   def apply(label: Label, repositoryName: RepositoryName): ApiLabel =
-    ApiLabel(
-      name = label.labelName,
-      color = label.color
-    )(repositoryName)
+    ApiLabel(name = label.labelName, color = label.color)(repositoryName)
 }

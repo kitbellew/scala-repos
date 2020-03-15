@@ -14,8 +14,7 @@ case class FilterConfig(
       variant map (_.id),
       mode map (_.id),
       speed map (_.id),
-      ratingRange.toString
-    ).some
+      ratingRange.toString).some
 
   def render =
     play.api.libs.json.Json.obj(
@@ -60,8 +59,7 @@ object FilterConfig {
       variant = v map chess.variant.Variant.apply flatten,
       mode = m map Mode.apply flatten,
       speed = s map Speed.apply flatten,
-      ratingRange = RatingRange orDefault e
-    ).nonEmpty
+      ratingRange = RatingRange orDefault e).nonEmpty
 
   import reactivemongo.bson._
   import lila.db.BSON

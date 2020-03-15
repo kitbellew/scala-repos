@@ -67,12 +67,13 @@ object RemotingSpec {
     }
   }
 
-  val cfg: Config = ConfigFactory parseString (s"""
+  val cfg: Config = ConfigFactory parseString (
+    s"""
     common-ssl-settings {
       key-store = "${getClass.getClassLoader.getResource("keystore").getPath}"
       trust-store = "${getClass.getClassLoader
-    .getResource("truststore")
-    .getPath}"
+      .getResource("truststore")
+      .getPath}"
       key-store-password = "changeme"
       key-password = "changeme"
       trust-store-password = "changeme"
@@ -123,7 +124,8 @@ object RemotingSpec {
         /looker2/child/grandchild.remote = "akka.test://RemotingSpec@localhost:12345"
       }
     }
-  """)
+  """
+  )
 
   def muteSystem(system: ActorSystem) {
     system.eventStream.publish(
@@ -182,21 +184,24 @@ class RemotingSpec
   private def verifySend(msg: Any)(afterSend: ⇒ Unit) {
     val bigBounceId = s"bigBounce-${ThreadLocalRandom.current.nextInt()}"
     val bigBounceOther = remoteSystem.actorOf(
-      Props(new Actor {
-        def receive = {
-          case x: Int ⇒ sender() ! byteStringOfSize(x)
-          case x ⇒ sender() ! x
-        }
-      }).withDeploy(Deploy.local),
+      Props(
+        new Actor {
+          def receive = {
+            case x: Int ⇒ sender() ! byteStringOfSize(x)
+            case x ⇒ sender() ! x
+          }
+        }).withDeploy(Deploy.local),
       bigBounceId)
     val bigBounceHere = system.actorFor(
       s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
 
-    val eventForwarder = system.actorOf(Props(new Actor {
-      def receive = {
-        case x ⇒ testActor ! x
-      }
-    }).withDeploy(Deploy.local))
+    val eventForwarder = system.actorOf(
+      Props(
+        new Actor {
+          def receive = {
+            case x ⇒ testActor ! x
+          }
+        }).withDeploy(Deploy.local))
     system.eventStream.subscribe(eventForwarder, classOf[AssociationErrorEvent])
     system.eventStream.subscribe(eventForwarder, classOf[DisassociatedEvent])
     try {
@@ -370,12 +375,13 @@ class RemotingSpec
 
     "look-up actors across node boundaries" in {
       val l = system.actorOf(
-        Props(new Actor {
-          def receive = {
-            case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
-            case ActorForReq(s) ⇒ sender() ! context.actorFor(s)
-          }
-        }),
+        Props(
+          new Actor {
+            def receive = {
+              case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
+              case ActorForReq(s) ⇒ sender() ! context.actorFor(s)
+            }
+          }),
         "looker1")
       // child is configured to be deployed on remote-sys (remoteSystem)
       l ! ((Props[Echo1], "child"))
@@ -421,12 +427,13 @@ class RemotingSpec
 
     "select actors across node boundaries" in {
       val l = system.actorOf(
-        Props(new Actor {
-          def receive = {
-            case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
-            case ActorSelReq(s) ⇒ sender() ! context.actorSelection(s)
-          }
-        }),
+        Props(
+          new Actor {
+            def receive = {
+              case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
+              case ActorSelReq(s) ⇒ sender() ! context.actorSelection(s)
+            }
+          }),
         "looker2")
       // child is configured to be deployed on remoteSystem
       l ! ((Props[Echo1], "child"))
@@ -781,8 +788,8 @@ class RemotingSpec
 
         val remoteHandle = remoteTransportProbe
           .expectMsgType[Transport.InboundAssociation]
-        remoteHandle.association.readHandlerPromise
-          .success(new HandleEventListener {
+        remoteHandle.association.readHandlerPromise.success(
+          new HandleEventListener {
             override def notify(ev: HandleEvent): Unit = ()
           })
 
@@ -882,8 +889,8 @@ class RemotingSpec
 
         val remoteHandle = remoteTransportProbe
           .expectMsgType[Transport.InboundAssociation]
-        remoteHandle.association.readHandlerPromise
-          .success(new HandleEventListener {
+        remoteHandle.association.readHandlerPromise.success(
+          new HandleEventListener {
             override def notify(ev: HandleEvent): Unit = ()
           })
 

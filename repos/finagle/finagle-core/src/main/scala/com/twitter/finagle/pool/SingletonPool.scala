@@ -94,31 +94,32 @@ class SingletonPool[Req, Rep](
         case Idle | Closed | Awaiting(_) | Open(_) => false
       }
 
-    done.become(underlying(conn) transform {
-      case Throw(exc) =>
-        failStat.incr()
-        complete(Idle)
-        Future.exception(exc)
+    done.become(
+      underlying(conn) transform {
+        case Throw(exc) =>
+          failStat.incr()
+          complete(Idle)
+          Future.exception(exc)
 
-      case Return(svc) if svc.status == Status.Closed =>
-        // If we are returned a closed service, we treat the connect
-        // as a failure. This is both correct -- the connect did fail -- and
-        // also prevents us from entering potentially infinite loops where
-        // every returned service is unavailable, which then causes the
-        // follow-on apply() to attempt to reconnect.
-        deadStat.incr()
-        complete(Idle)
-        svc.close()
-        Future.exception(
-          Failure("Returned unavailable service", Failure.Restartable)
-            .withSource(Failure.Source.Role, SingletonPool.role))
-
-      case Return(svc) =>
-        if (!complete(Open(new RefcountedService(svc))))
+        case Return(svc) if svc.status == Status.Closed =>
+          // If we are returned a closed service, we treat the connect
+          // as a failure. This is both correct -- the connect did fail -- and
+          // also prevents us from entering potentially infinite loops where
+          // every returned service is unavailable, which then causes the
+          // follow-on apply() to attempt to reconnect.
+          deadStat.incr()
+          complete(Idle)
           svc.close()
+          Future.exception(
+            Failure("Returned unavailable service", Failure.Restartable)
+              .withSource(Failure.Source.Role, SingletonPool.role))
 
-        Future.Done
-    })
+        case Return(svc) =>
+          if (!complete(Open(new RefcountedService(svc))))
+            svc.close()
+
+          Future.Done
+      })
   }
 
   // These two await* methods are required to trick the compiler into accepting

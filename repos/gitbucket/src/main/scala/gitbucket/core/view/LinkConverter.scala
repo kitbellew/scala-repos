@@ -58,20 +58,22 @@ trait LinkConverter { self: RequestCache =>
       }
       // convert username/project#Num to link
       .replaceBy(
-        ("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)" + issueIdPrefix + "([0-9]+)(?=(\\W|$))").r) {
-        m =>
-          getIssue(m.group(2), m.group(3), m.group(4)) match {
-            case Some(issue) if (issue.isPullRequest) =>
-              Some(s"""<a href="${context.path}/${m.group(2)}/${m.group(
-                3)}/pull/${m.group(4)}">${m.group(2)}/${m.group(3)}#${m.group(
-                4)}</a>""")
-            case Some(_) =>
-              Some(s"""<a href="${context.path}/${m.group(2)}/${m.group(
+        (
+          "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)" + issueIdPrefix + "([0-9]+)(?=(\\W|$))"
+        ).r) { m =>
+        getIssue(m.group(2), m.group(3), m.group(4)) match {
+          case Some(issue) if (issue.isPullRequest) =>
+            Some(
+              s"""<a href="${context.path}/${m.group(2)}/${m.group(3)}/pull/${m
+                .group(4)}">${m.group(2)}/${m.group(3)}#${m.group(4)}</a>""")
+          case Some(_) =>
+            Some(
+              s"""<a href="${context.path}/${m.group(2)}/${m.group(
                 3)}/issues/${m.group(4)}">${m.group(2)}/${m.group(3)}#${m.group(
                 4)}</a>""")
-            case None =>
-              Some(s"""${m.group(2)}/${m.group(3)}#${m.group(4)}""")
-          }
+          case None =>
+            Some(s"""${m.group(2)}/${m.group(3)}#${m.group(4)}""")
+        }
       }
       // convert username@SHA to link
       .replaceBy(
@@ -84,20 +86,23 @@ trait LinkConverter { self: RequestCache =>
       }
       // convert username#Num to link
       .replaceBy(
-        ("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)" + issueIdPrefix + "([0-9]+)(?=(\\W|$))").r) {
-        m =>
-          getIssue(m.group(2), repository.name, m.group(3)) match {
-            case Some(issue) if (issue.isPullRequest) =>
-              Some(s"""<a href="${context.path}/${m.group(
+        (
+          "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)" + issueIdPrefix + "([0-9]+)(?=(\\W|$))"
+        ).r) { m =>
+        getIssue(m.group(2), repository.name, m.group(3)) match {
+          case Some(issue) if (issue.isPullRequest) =>
+            Some(
+              s"""<a href="${context.path}/${m.group(
                 2)}/${repository.name}/pull/${m.group(3)}">${m.group(2)}#${m
                 .group(3)}</a>""")
-            case Some(_) =>
-              Some(s"""<a href="${context.path}/${m.group(
+          case Some(_) =>
+            Some(
+              s"""<a href="${context.path}/${m.group(
                 2)}/${repository.name}/issues/${m.group(3)}">${m.group(2)}#${m
                 .group(3)}</a>""")
-            case None =>
-              Some(s"""${m.group(2)}#${m.group(3)}""")
-          }
+          case None =>
+            Some(s"""${m.group(2)}#${m.group(3)}""")
+        }
       }
       // convert issue id to link
       .replaceBy(

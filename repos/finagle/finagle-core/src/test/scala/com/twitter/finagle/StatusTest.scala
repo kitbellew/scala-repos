@@ -28,8 +28,7 @@ class StatusTest
         () => Status.Busy,
         () => Status.Open,
         () => fail("element should not be evaluated")),
-      _.apply
-    )
+      _.apply)
     assert(res == Status.Open)
   }
 
@@ -39,8 +38,7 @@ class StatusTest
         () => Status.Busy,
         () => Status.Closed,
         () => fail("element should not be evaluated")),
-      _.apply
-    )
+      _.apply)
     assert(res == Status.Closed)
   }
 
@@ -102,9 +100,9 @@ class StatusTest
 
     forAll(idx2) {
       case (left, right) =>
-        Ordering[Status]
-          .compare(ord(left), ord(right))
-          .signum == (left - right).signum
+        Ordering[Status].compare(ord(left), ord(right)).signum == (
+          left - right
+        ).signum
     }
   }
 }

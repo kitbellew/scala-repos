@@ -392,8 +392,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     val oldFields = parse(oldJson).asInstanceOf[JObject].obj
     val newFields = oldFields ++ Seq(
       JField("tomato", JString("not-a-fruit")),
-      JField("potato", JString("not-po-tah-to"))
-    )
+      JField("potato", JString("not-po-tah-to")))
     val newJson = pretty(render(JObject(newFields)))
     // send two requests, one with the unknown fields and the other without
     val (response1, code1) = sendHttpRequestWithResponse(

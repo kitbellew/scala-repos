@@ -2,13 +2,10 @@ import scala.tools.partest._
 object Test extends CompilerTest {
   import global._
   override def extraSettings = super.extraSettings + " -Yrangepos"
-  override def sources =
-    List(
-      """|import scala.language.postfixOps
+  override def sources = List("""|import scala.language.postfixOps
        |class A {
        |  val one = 1 toString
-       |}""".stripMargin
-    )
+       |}""".stripMargin)
   def check(source: String, unit: CompilationUnit) {
     for (ClassDef(_, _, _, Template(_, _, stats)) <- unit.body;
          stat <- stats;

@@ -55,21 +55,23 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
       return Collections.emptyList[SmartStepTarget]
     }
     val (element, doc) =
-      (for {
-        sf @ (_sf: ScalaFile) <- position.getFile.toOption
-        if !sf.isCompiled
-        vFile <- sf.getVirtualFile.toOption
-        doc <- FileDocumentManager.getInstance().getDocument(vFile).toOption
-        if doc.getLineCount > line
-      } yield {
-        val startOffset: Int = doc.getLineStartOffset(line)
-        val offset: Int = CharArrayUtil.shiftForward(
-          doc.getCharsSequence,
-          startOffset,
-          " \t{")
-        val element: PsiElement = sf.findElementAt(offset)
-        (element, doc)
-      }) match {
+      (
+        for {
+          sf @ (_sf: ScalaFile) <- position.getFile.toOption
+          if !sf.isCompiled
+          vFile <- sf.getVirtualFile.toOption
+          doc <- FileDocumentManager.getInstance().getDocument(vFile).toOption
+          if doc.getLineCount > line
+        } yield {
+          val startOffset: Int = doc.getLineStartOffset(line)
+          val offset: Int = CharArrayUtil.shiftForward(
+            doc.getCharsSequence,
+            startOffset,
+            " \t{")
+          val element: PsiElement = sf.findElementAt(offset)
+          (element, doc)
+        }
+      ) match {
         case Some((null, _)) => return Collections.emptyList[SmartStepTarget]
         case Some((e, d))    => (e, d)
         case _               => return Collections.emptyList[SmartStepTarget]

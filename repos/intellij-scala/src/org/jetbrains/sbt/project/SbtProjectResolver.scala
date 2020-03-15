@@ -162,8 +162,9 @@ class SbtProjectResolver
         moduleProject.dependencies.projects.foreach { dependencyId =>
           val dependency = moduleNodes
             .find(_.getId == dependencyId.project)
-            .getOrElse(throw new ExternalSystemException(
-              "Cannot find project dependency: " + dependencyId.project))
+            .getOrElse(
+              throw new ExternalSystemException(
+                "Cannot find project dependency: " + dependencyId.project))
           val data = new ModuleDependencyNode(moduleNode, dependency)
           data.setScope(scopeFor(dependencyId.configuration))
           data.setExported(true)

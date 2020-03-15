@@ -45,7 +45,9 @@ class ScalaMethodCallArgUnwrapper
   private def forMethodCallArg[T](e: PsiElement)(
       ifArg: (ScExpression, ScMethodCall) => T)(ifNot: => T) = {
     e match {
-      case (expr: ScExpression) childOf ((_: ScArgumentExprList) childOf (call: ScMethodCall)) =>
+      case (
+            expr: ScExpression
+          ) childOf ((_: ScArgumentExprList) childOf (call: ScMethodCall)) =>
         @tailrec
         def maxCall(call: ScMethodCall): ScMethodCall =
           call.getParent match {

@@ -53,11 +53,7 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
     }
     val as = TableQuery[A]
 
-    DBIO.seq(
-      as.schema.create,
-      as += 42,
-      as.result.map(_ shouldBe Seq(1))
-    )
+    DBIO.seq(as.schema.create, as += 42, as.result.map(_ shouldBe Seq(1)))
   }
 
   def testReturning =
@@ -76,29 +72,31 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
           (i, v._1, v._2))
       def ins4 = as.map(a => (a.s1, a.s2)) returning as.map(a => a)
 
-      (for {
-        _ <- as.schema.create
-        _ <- (ins1 += ("a", "b")) map { id1: Int =>
-          id1 shouldBe 1
-        }
-        _ <- ifCap(jcap.returnInsertOther) {
-          (ins2 += ("c", "d")) map { id2: (Int, String) =>
-            id2 shouldBe (2, "c")
+      (
+        for {
+          _ <- as.schema.create
+          _ <- (ins1 += ("a", "b")) map { id1: Int =>
+            id1 shouldBe 1
           }
-        }
-        _ <- ifNotCap(jcap.returnInsertOther) {
-          (ins1 += ("c", "d")) map { id2: Int =>
-            id2 shouldBe 2
+          _ <- ifCap(jcap.returnInsertOther) {
+            (ins2 += ("c", "d")) map { id2: (Int, String) =>
+              id2 shouldBe (2, "c")
+            }
           }
-        }
-        _ <- (ins1 ++= Seq(("e", "f"), ("g", "h"))) map (_ shouldBe Seq(3, 4))
-        _ <- (ins3 += ("i", "j")) map (_ shouldBe (5, "i", "j"))
-        _ <- ifCap(jcap.returnInsertOther) {
-          (ins4 += ("k", "l")) map { id5: (Int, String, String) =>
-            id5 shouldBe (6, "k", "l")
+          _ <- ifNotCap(jcap.returnInsertOther) {
+            (ins1 += ("c", "d")) map { id2: Int =>
+              id2 shouldBe 2
+            }
           }
-        }
-      } yield ()).withPinnedSession // Some database servers (e.g. DB2) preallocate ID blocks per session
+          _ <- (ins1 ++= Seq(("e", "f"), ("g", "h"))) map (_ shouldBe Seq(3, 4))
+          _ <- (ins3 += ("i", "j")) map (_ shouldBe (5, "i", "j"))
+          _ <- ifCap(jcap.returnInsertOther) {
+            (ins4 += ("k", "l")) map { id5: (Int, String, String) =>
+              id5 shouldBe (6, "k", "l")
+            }
+          }
+        } yield ()
+      ).withPinnedSession // Some database servers (e.g. DB2) preallocate ID blocks per session
     }
 
   def testForced = {
@@ -131,9 +129,10 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
         seq(
           ts.forceInsert(104, "A", 1, false, "S1", "S2", 0),
           ts.map(_.ins)
-            .forceInsertAll(Seq(
-              (105, "B", 1, false, "S1", "S2", 0),
-              (106, "C", 1, false, "S1", "S2", 0))),
+            .forceInsertAll(
+              Seq(
+                (105, "B", 1, false, "S1", "S2", 0),
+                (106, "C", 1, false, "S1", "S2", 0))),
           ts.filter(_.id > 100).length.result.map(_ shouldBe 3),
           ts.map(_.ins)
             .forceInsertAll(Seq((111, "D", 1, false, "S1", "S2", 0))),
@@ -178,26 +177,28 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
     }
     val ts = TableQuery[T]
 
-    (for {
-      _ <- ts.schema.create
-      _ <- ts ++= Seq((1, "a"), (2, "b"))
-      _ <- ts.insertOrUpdate((0, "c")).map(_ shouldBe 1)
-      _ <- ts.insertOrUpdate((1, "d")).map(_ shouldBe 1)
-      _ <- ts
-        .sortBy(_.id)
-        .result
-        .map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
-      _ <- ifCap(jcap.returnInsertKey) {
-        val q = ts returning ts.map(_.id)
-        for {
-          _ <- q.insertOrUpdate((0, "e")).map(_ shouldBe Some(4))
-          _ <- q.insertOrUpdate((1, "f")).map(_ shouldBe None)
-          _ <- ts
-            .sortBy(_.id)
-            .result
-            .map(_ shouldBe Seq((1, "f"), (2, "b"), (3, "c"), (4, "e")))
-        } yield ()
-      }
-    } yield ()).withPinnedSession
+    (
+      for {
+        _ <- ts.schema.create
+        _ <- ts ++= Seq((1, "a"), (2, "b"))
+        _ <- ts.insertOrUpdate((0, "c")).map(_ shouldBe 1)
+        _ <- ts.insertOrUpdate((1, "d")).map(_ shouldBe 1)
+        _ <- ts
+          .sortBy(_.id)
+          .result
+          .map(_ shouldBe Seq((1, "d"), (2, "b"), (3, "c")))
+        _ <- ifCap(jcap.returnInsertKey) {
+          val q = ts returning ts.map(_.id)
+          for {
+            _ <- q.insertOrUpdate((0, "e")).map(_ shouldBe Some(4))
+            _ <- q.insertOrUpdate((1, "f")).map(_ shouldBe None)
+            _ <- ts
+              .sortBy(_.id)
+              .result
+              .map(_ shouldBe Seq((1, "f"), (2, "b"), (3, "c"), (4, "e")))
+          } yield ()
+        }
+      } yield ()
+    ).withPinnedSession
   }
 }

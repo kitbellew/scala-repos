@@ -14,9 +14,10 @@ object SecuritySpec extends PlaySpecification {
 
   "AuthenticatedBuilder" should {
     "block unauthenticated requests" in withApplication {
-      status(TestAction { req =>
-        Results.Ok(req.user)
-      }(FakeRequest())) must_== UNAUTHORIZED
+      status(
+        TestAction { req =>
+          Results.Ok(req.user)
+        }(FakeRequest())) must_== UNAUTHORIZED
     }
     "allow authenticated requests" in withApplication {
       val result =

@@ -124,8 +124,7 @@ class SortedMapperPaginator[T <: Mapper[T]](
           if (ascending)
             Ascending
           else
-            Descending
-        )
+            Descending)
     }
 }
 
@@ -138,6 +137,6 @@ class SortedMapperPaginator[T <: Mapper[T]](
 class SortedMapperPaginatorSnippet[T <: Mapper[T]](
     meta: MetaMapper[T],
     initialSort: net.liftweb.mapper.MappedField[_, T],
-    headers: (String, MappedField[_, T])*
-) extends SortedMapperPaginator[T](meta, initialSort, headers: _*)
+    headers: (String, MappedField[_, T])*)
+    extends SortedMapperPaginator[T](meta, initialSort, headers: _*)
     with SortedPaginatorSnippet[T, MappedField[_, T]]

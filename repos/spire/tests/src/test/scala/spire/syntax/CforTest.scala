@@ -101,8 +101,7 @@ class CforTest extends SpireProperties {
         x => {
           b += x
         }
-      }
-    )
+      })
     v shouldBe 111
     b.toList shouldBe List(0, 1, 2)
   }

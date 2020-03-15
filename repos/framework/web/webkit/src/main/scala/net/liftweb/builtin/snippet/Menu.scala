@@ -172,14 +172,18 @@ object Menu extends DispatchSnippet {
                     buildUlLine(kids)
                   }</xml:group>
                 ) %
-                  (if (m.path)
-                     S.prefixedAttrsToMetaData("li_path", liMap)
-                   else
-                     Null) %
-                  (if (m.current)
-                     S.prefixedAttrsToMetaData("li_item", liMap)
-                   else
-                     Null)
+                  (
+                    if (m.path)
+                      S.prefixedAttrsToMetaData("li_path", liMap)
+                    else
+                      Null
+                  ) %
+                  (
+                    if (m.current)
+                      S.prefixedAttrsToMetaData("li_item", liMap)
+                    else
+                      Null
+                  )
               )
 
             case MenuItem(text, uri, kids, true, _, _) if linkToSelf =>
@@ -313,13 +317,15 @@ object Menu extends DispatchSnippet {
   }
 
   private def renderWhat(expandAll: Boolean): Seq[MenuItem] =
-    (if (expandAll)
-       for {
-         sm <- LiftRules.siteMap;
-         req <- S.request
-       } yield sm.buildMenu(req.location).lines
-     else
-       S.request.map(_.buildMenu.lines)) openOr Nil
+    (
+      if (expandAll)
+        for {
+          sm <- LiftRules.siteMap;
+          req <- S.request
+        } yield sm.buildMenu(req.location).lines
+      else
+        S.request.map(_.buildMenu.lines)
+    ) openOr Nil
 
   def jsonMenu(ignore: NodeSeq): NodeSeq = {
     val toRender = renderWhat(true)
@@ -536,11 +542,13 @@ object Menu extends DispatchSnippet {
       .map(Helpers.toBoolean) openOr false
 
     val text =
-      ("a" #> ((n: NodeSeq) =>
-        n match {
-          case e: Elem => e.child
-          case xs      => xs
-        })).apply(_text)
+      (
+        "a" #> ((n: NodeSeq) =>
+          n match {
+            case e: Elem => e.child
+            case xs      => xs
+          })
+      ).apply(_text)
 
     for {
       name <- S.attr("name").toList
@@ -552,13 +560,14 @@ object Menu extends DispatchSnippet {
 
       // Builds a link for the given loc
       def buildLink[T](loc: Loc[T]) = {
-        Group(SiteMap.buildLink(name, text) match {
-          case e: Elem =>
-            Helpers.addCssClass(
-              loc.cssClassForMenuItem,
-              e % S.prefixedAttrsToMetaData("a"))
-          case x => x
-        })
+        Group(
+          SiteMap.buildLink(name, text) match {
+            case e: Elem =>
+              Helpers.addCssClass(
+                loc.cssClassForMenuItem,
+                e % S.prefixedAttrsToMetaData("a"))
+            case x => x
+          })
       }
 
       (
@@ -568,17 +577,19 @@ object Menu extends DispatchSnippet {
         case (_, Full(param), Full(loc: Loc[_] with ConvertableLoc[_])) => {
           val typedLoc = loc.asInstanceOf[Loc[T] with ConvertableLoc[T]]
 
-          (for {
-            pv <- typedLoc.convert(param)
-            link <- typedLoc.createLink(pv)
-          } yield {
-            Helpers.addCssClass(
-              typedLoc.cssClassForMenuItem,
-              <a href={
-                link
-              }></a> %
-                S.prefixedAttrsToMetaData("a"))
-          }) openOr {
+          (
+            for {
+              pv <- typedLoc.convert(param)
+              link <- typedLoc.createLink(pv)
+            } yield {
+              Helpers.addCssClass(
+                typedLoc.cssClassForMenuItem,
+                <a href={
+                  link
+                }></a> %
+                  S.prefixedAttrsToMetaData("a"))
+            }
+          ) openOr {
             Text("")
           }
         }

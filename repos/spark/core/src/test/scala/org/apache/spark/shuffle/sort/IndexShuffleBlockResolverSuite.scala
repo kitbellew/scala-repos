@@ -49,11 +49,12 @@ class IndexShuffleBlockResolverSuite
     MockitoAnnotations.initMocks(this)
 
     when(blockManager.diskBlockManager).thenReturn(diskBlockManager)
-    when(diskBlockManager.getFile(any[BlockId])).thenAnswer(new Answer[File] {
-      override def answer(invocation: InvocationOnMock): File = {
-        new File(tempDir, invocation.getArguments.head.toString)
-      }
-    })
+    when(diskBlockManager.getFile(any[BlockId])).thenAnswer(
+      new Answer[File] {
+        override def answer(invocation: InvocationOnMock): File = {
+          new File(tempDir, invocation.getArguments.head.toString)
+        }
+      })
   }
 
   override def afterEach(): Unit = {

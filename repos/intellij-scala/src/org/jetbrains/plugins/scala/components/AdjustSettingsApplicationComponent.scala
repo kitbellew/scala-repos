@@ -31,16 +31,20 @@ class AdjustSettingsApplicationComponent extends ApplicationComponent {
 
     if (xmx != -1) {
       val preferredXmx =
-        (if (SystemInfo.is32Bit)
-           1024
-         else
-           2048).max(xmx)
+        (
+          if (SystemInfo.is32Bit)
+            1024
+          else
+            2048
+        ).max(xmx)
       val xss = VMOptions.readOption(XSS_PATTERN).max(1)
       val preferredXss =
-        (if (SystemInfo.is32Bit)
-           1
-         else
-           2).max(xss)
+        (
+          if (SystemInfo.is32Bit)
+            1
+          else
+            2
+        ).max(xss)
       val xms = VMOptions.readOption(XMS_PATTERN).max(0)
       val preferredXms = preferredXmx
 
@@ -122,11 +126,12 @@ class AdjustSettingsApplicationComponent extends ApplicationComponent {
       } catch {
         case n: NumberFormatException => //do nothing
       } finally {
-        SwingUtilities.invokeLater(new Runnable {
-          override def run(): Unit = {
-            ApplicationManager.getApplication.restart()
-          }
-        })
+        SwingUtilities.invokeLater(
+          new Runnable {
+            override def run(): Unit = {
+              ApplicationManager.getApplication.restart()
+            }
+          })
         super.doOKAction() //close OK dialog
       }
     }

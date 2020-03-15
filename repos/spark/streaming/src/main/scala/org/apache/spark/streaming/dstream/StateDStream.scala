@@ -29,8 +29,8 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
     updateFunc: (Iterator[(K, Seq[V], Option[S])]) => Iterator[(K, S)],
     partitioner: Partitioner,
     preservePartitioning: Boolean,
-    initialRDD: Option[RDD[(K, S)]]
-) extends DStream[(K, S)](parent.ssc) {
+    initialRDD: Option[RDD[(K, S)]])
+    extends DStream[(K, S)](parent.ssc) {
 
   super.persist(StorageLevel.MEMORY_ONLY_SER)
 

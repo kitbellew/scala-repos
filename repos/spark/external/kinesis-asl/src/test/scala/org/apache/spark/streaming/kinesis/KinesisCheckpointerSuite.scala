@@ -135,12 +135,13 @@ class KinesisCheckpointerSuite
     when(receiverMock.getLatestSeqNumToCheckpoint(shardId))
       .thenReturn(someSeqNum)
       .thenReturn(someOtherSeqNum)
-    when(checkpointerMock.checkpoint(anyString)).thenAnswer(new Answer[Unit] {
-      override def answer(invocations: InvocationOnMock): Unit = {
-        clock.waitTillTime(
-          clock.getTimeMillis() + checkpointInterval.milliseconds / 2)
-      }
-    })
+    when(checkpointerMock.checkpoint(anyString)).thenAnswer(
+      new Answer[Unit] {
+        override def answer(invocations: InvocationOnMock): Unit = {
+          clock.waitTillTime(
+            clock.getTimeMillis() + checkpointInterval.milliseconds / 2)
+        }
+      })
 
     kinesisCheckpointer.setCheckpointer(shardId, checkpointerMock)
     clock.advance(checkpointInterval.milliseconds)

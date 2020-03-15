@@ -96,10 +96,11 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
     if (s.isEmpty)
       Map()
     else
-      Map(s.split("""\s*,\s*""").map(_.trim).map { it: String =>
-        val parts = it.split("""\s*:\s*""")
-        (parts(0), parts(1))
-      }: _*)
+      Map(
+        s.split("""\s*,\s*""").map(_.trim).map { it: String =>
+          val parts = it.split("""\s*:\s*""")
+          (parts(0), parts(1))
+        }: _*)
   }
 
   def doTest() {

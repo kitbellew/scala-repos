@@ -30,11 +30,9 @@ class SubSource[+Out, +Mat](
       scaladsl.RunnableGraph[Mat]]) {
 
   /** Converts this Flow to its Scala DSL counterpart */
-  def asScala: scaladsl.SubFlow[
+  def asScala: scaladsl.SubFlow[Out, Mat, scaladsl.Source[
     Out,
-    Mat,
-    scaladsl.Source[Out, Mat]#Repr,
-    scaladsl.RunnableGraph[Mat]] @uncheckedVariance = delegate
+    Mat]#Repr, scaladsl.RunnableGraph[Mat]] @uncheckedVariance = delegate
 
   /**
     * Flatten the sub-flows back into the super-source by performing a merge
@@ -145,9 +143,10 @@ class SubSource[+Out, +Mat](
     */
   def mapConcat[T](
       f: function.Function[Out, java.lang.Iterable[T]]): SubSource[T, Mat] =
-    new SubSource(delegate.mapConcat { elem ⇒
-      Util.immutableSeq(f(elem))
-    })
+    new SubSource(
+      delegate.mapConcat { elem ⇒
+        Util.immutableSeq(f(elem))
+      })
 
   /**
     * Transform each input element into an `Iterable` of output elements that is
@@ -176,10 +175,11 @@ class SubSource[+Out, +Mat](
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]])
       : SubSource[T, Mat] =
-    new SubSource(delegate.statefulMapConcat { () ⇒
-      val fun = f.create()
-      elem ⇒ Util.immutableSeq(fun(elem))
-    })
+    new SubSource(
+      delegate.statefulMapConcat { () ⇒
+        val fun = f.create()
+        elem ⇒ Util.immutableSeq(fun(elem))
+      })
 
   /**
     * Transform this stream by applying the given function to each of the elements
@@ -904,14 +904,13 @@ class SubSource[+Out, +Mat](
     *
     * '''Cancels when''' downstream cancels or substream cancels
     */
-  def prefixAndTail(n: Int): SubSource[
-    akka.japi.Pair[
-      java.util.List[Out @uncheckedVariance],
-      javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
-    new SubSource(delegate.prefixAndTail(n).map {
-      case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
-    })
+  def prefixAndTail(n: Int): SubSource[akka.japi.Pair[
+    java.util.List[Out @uncheckedVariance],
+    javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
+    new SubSource(
+      delegate.prefixAndTail(n).map {
+        case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+      })
 
   /**
     * Transform each input element into a `Source` of output elements that is

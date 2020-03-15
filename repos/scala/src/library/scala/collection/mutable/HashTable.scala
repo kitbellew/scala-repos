@@ -438,8 +438,7 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
       tableSize,
       threshold,
       seedvalue,
-      sizemap
-    )
+      sizemap)
 }
 
 private[collection] object HashTable {
@@ -544,8 +543,7 @@ private[collection] object HashTable {
       val tableSize: Int,
       val threshold: Int,
       val seedvalue: Int,
-      val sizemap: Array[Int]
-  ) {
+      val sizemap: Array[Int]) {
     import scala.collection.DebugUtils._
     private[collection] def debugInformation =
       buildString { append =>

@@ -122,35 +122,42 @@ trait BaselineComparisons {
           case (acc, obj) =>
             (obj \? "stats") match {
               case Some(stats) =>
-                (for {
-                  JArray(jpath) <- obj \? "path" flatMap (_ -->? classOf[
-                    JArray])
-                  JNum(mean) <- stats \? "mean" flatMap (_ -->? classOf[JNum])
-                  JNum(variance) <- stats \? "variance" flatMap (_ -->? classOf[
-                    JNum])
-                  JNum(stdDev) <- stats \? "stdDev" flatMap (_ -->? classOf[
-                    JNum])
-                  JNum(min) <- stats \? "min" flatMap (_ -->? classOf[JNum])
-                  JNum(max) <- stats \? "max" flatMap (_ -->? classOf[JNum])
-                  JNum(count) <- stats \? "count" flatMap (_ -->? classOf[JNum])
-                } yield {
-                  val path =
-                    (
-                      jpath collect {
-                        case JString(p) => p
-                      },
-                      (obj \? "query") collect {
-                        case JString(query) => query
-                      })
-                  val n = count.toInt
-                  path -> Statistics(
-                    0,
-                    List(min.toDouble),
-                    List(max.toDouble),
-                    mean.toDouble,
-                    (n - 1) * variance.toDouble,
-                    n)
-                }) map (acc + _) getOrElse {
+                (
+                  for {
+                    JArray(jpath) <- obj \? "path" flatMap (
+                      _ -->? classOf[JArray]
+                    )
+                    JNum(mean) <- stats \? "mean" flatMap (_ -->? classOf[JNum])
+                    JNum(variance) <- stats \? "variance" flatMap (
+                      _ -->? classOf[JNum]
+                    )
+                    JNum(stdDev) <- stats \? "stdDev" flatMap (
+                      _ -->? classOf[JNum]
+                    )
+                    JNum(min) <- stats \? "min" flatMap (_ -->? classOf[JNum])
+                    JNum(max) <- stats \? "max" flatMap (_ -->? classOf[JNum])
+                    JNum(count) <- stats \? "count" flatMap (
+                      _ -->? classOf[JNum]
+                    )
+                  } yield {
+                    val path =
+                      (
+                        jpath collect {
+                          case JString(p) => p
+                        },
+                        (obj \? "query") collect {
+                          case JString(query) => query
+                        })
+                    val n = count.toInt
+                    path -> Statistics(
+                      0,
+                      List(min.toDouble),
+                      List(max.toDouble),
+                      mean.toDouble,
+                      (n - 1) * variance.toDouble,
+                      n)
+                  }
+                ) map (acc + _) getOrElse {
                   // TODO: Replace these errors with something more useful.
                   sys.error("Error parsing: %s" format obj.toString)
                 }

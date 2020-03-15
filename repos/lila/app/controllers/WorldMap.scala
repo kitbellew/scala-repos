@@ -17,9 +17,7 @@ object WorldMap extends LilaController {
   def stream =
     Action.async {
       Env.worldMap.getStream map { stream =>
-        Ok.chunked(
-          stream &> EventSource()
-        ) as "text/event-stream"
+        Ok.chunked(stream &> EventSource()) as "text/event-stream"
       }
     }
 }

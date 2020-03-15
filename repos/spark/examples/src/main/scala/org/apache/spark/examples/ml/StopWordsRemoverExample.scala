@@ -39,8 +39,7 @@ object StopWordsRemoverExample {
       .createDataFrame(
         Seq(
           (0, Seq("I", "saw", "the", "red", "baloon")),
-          (1, Seq("Mary", "had", "a", "little", "lamb"))
-        ))
+          (1, Seq("Mary", "had", "a", "little", "lamb"))))
       .toDF("id", "raw")
 
     remover.transform(dataSet).show()

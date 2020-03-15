@@ -66,34 +66,34 @@ object FormSpec extends Specification {
           "k20" -> of[String],
           "k21" -> of[String],
           "k22" -> of[String]
-        )
-      )
+        ))
 
       form
-        .bind(Map(
-          "k1" -> "v1",
-          "k2" -> "v2",
-          "k3" -> "v3",
-          "k4" -> "v4",
-          "k5" -> "v5",
-          "k6" -> "v6",
-          "k7" -> "v7",
-          "k8" -> "v8",
-          "k9" -> "v9",
-          "k10" -> "v10",
-          "k11" -> "v11",
-          "k12" -> "v12",
-          "k13" -> "v13",
-          "k14" -> "v14",
-          "k15" -> "v15",
-          "k16" -> "v16",
-          "k17" -> "v17",
-          "k18" -> "v18",
-          "k19" -> "v19",
-          "k20" -> "v20",
-          "k21" -> "v21",
-          "k22" -> "v22"
-        ))
+        .bind(
+          Map(
+            "k1" -> "v1",
+            "k2" -> "v2",
+            "k3" -> "v3",
+            "k4" -> "v4",
+            "k5" -> "v5",
+            "k6" -> "v6",
+            "k7" -> "v7",
+            "k8" -> "v8",
+            "k9" -> "v9",
+            "k10" -> "v10",
+            "k11" -> "v11",
+            "k12" -> "v12",
+            "k13" -> "v13",
+            "k14" -> "v14",
+            "k15" -> "v15",
+            "k16" -> "v16",
+            "k17" -> "v17",
+            "k18" -> "v18",
+            "k19" -> "v19",
+            "k20" -> "v20",
+            "k21" -> "v21",
+            "k22" -> "v22"
+          ))
         .fold(_ => "errors", t => t._21) must_== "v21"
     }
 
@@ -198,8 +198,7 @@ object FormSpec extends Specification {
               true
             else
               throw new AssertionError(
-                "Validation was run when it wasn't meant to"))
-      )
+                "Validation was run when it wasn't meant to")))
       failingValidatorForm.fill("foo").errors must beEmpty
     }
   }
@@ -343,17 +342,11 @@ object FormSpec extends Specification {
     case class Items(seq: Seq[Item])
     val itemForm = Form[Items](
       mapping(
-        "seq" -> seq(
-          mapping("text" -> nonEmptyText)(Item)(Item.unapply)
-        )
-      )(Items)(Items.unapply)
-    )
+        "seq" -> seq(mapping("text" -> nonEmptyText)(Item)(Item.unapply)))(
+        Items)(Items.unapply))
 
     val filled = itemForm.fillAndValidate(Items(Seq(Item(""))))
-    val result = filled.fold(
-      errors => false,
-      success => true
-    )
+    val result = filled.fold(errors => false, success => true)
 
     result should beFalse
   }
@@ -397,23 +390,14 @@ object ScalaForms {
   val userForm = Form(
     mapping(
       "name" -> of[String].verifying(nonEmpty),
-      "age" -> of[Int].verifying(min(0), max(100))
-    )(User.apply)(User.unapply)
-  )
+      "age" -> of[Int].verifying(min(0), max(100)))(User.apply)(User.unapply))
 
-  val loginForm = Form(
-    tuple(
-      "email" -> of[String],
-      "password" -> of[Int]
-    )
-  )
+  val loginForm = Form(tuple("email" -> of[String], "password" -> of[Int]))
 
   val defaultValuesForm = Form(
     tuple(
       "pos" -> default(number, 42),
-      "name" -> default(text, "default text")
-    )
-  )
+      "name" -> default(text, "default text")))
 
   val helloForm = Form(
     tuple(
@@ -435,41 +419,28 @@ object ScalaForms {
       "12" -> optional(text),
       "13" -> optional(text),
       "14" -> optional(text)
-    )
-  )
+    ))
 
   val repeatedForm = Form(
-    tuple(
-      "name" -> nonEmptyText,
-      "emails" -> list(nonEmptyText)
-    )
-  )
+    tuple("name" -> nonEmptyText, "emails" -> list(nonEmptyText)))
 
   val repeatedFormWithSet = Form(
-    tuple(
-      "name" -> nonEmptyText,
-      "emails" -> set(nonEmptyText)
-    )
-  )
+    tuple("name" -> nonEmptyText, "emails" -> set(nonEmptyText)))
 
   val form = Form(
     "foo" -> Forms.text
       .verifying(
         "first.digit",
         s =>
-          (s.headOption map {
-            _ == '3'
-          }) getOrElse false)
+          (
+            s.headOption map {
+              _ == '3'
+            }
+          ) getOrElse false)
       .transform[Int](Integer.parseInt _, _.toString)
-      .verifying("number.42", _ < 42)
-  )
+      .verifying("number.42", _ < 42))
 
-  val emailForm = Form(
-    tuple(
-      "email" -> email,
-      "name" -> of[String]
-    )
-  )
+  val emailForm = Form(tuple("email" -> email, "name" -> of[String]))
 
   val longNumberForm = Form("longNumber" -> longNumber(10, 42))
 

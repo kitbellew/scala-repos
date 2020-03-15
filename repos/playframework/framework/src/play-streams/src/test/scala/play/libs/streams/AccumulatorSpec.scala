@@ -47,14 +47,16 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
     f.toCompletableFuture.get(10, TimeUnit.SECONDS)
 
   def errorSource[T] =
-    Source.fromPublisher(new Publisher[T] {
-      def subscribe(s: Subscriber[_ >: T]) = {
-        s.onSubscribe(new Subscription {
-          def cancel() = s.onComplete()
-          def request(n: Long) = s.onError(new RuntimeException("error"))
-        })
-      }
-    })
+    Source.fromPublisher(
+      new Publisher[T] {
+        def subscribe(s: Subscriber[_ >: T]) = {
+          s.onSubscribe(
+            new Subscription {
+              def cancel() = s.onComplete()
+              def request(n: Long) = s.onError(new RuntimeException("error"))
+            })
+        }
+      })
 
   "an accumulator" should {
     "be flattenable from a future of itself" in {
@@ -76,8 +78,9 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
         await(fAcc.run(source, m)) must throwA[ExecutionException].like {
           case ex =>
             val cause = ex.getCause
-            cause.isInstanceOf[
-              RuntimeException] must beTrue and (cause.getMessage must_== "failed")
+            cause.isInstanceOf[RuntimeException] must beTrue and (
+              cause.getMessage must_== "failed"
+            )
         }
       }
 
@@ -90,8 +93,9 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
         await(fAcc.run(errorSource, m)) must throwA[ExecutionException].like {
           case ex =>
             val cause = ex.getCause
-            cause.isInstanceOf[
-              RuntimeException] must beTrue and (cause.getMessage must_== "error")
+            cause.isInstanceOf[RuntimeException] must beTrue and (
+              cause.getMessage must_== "error"
+            )
         }
       }
     }

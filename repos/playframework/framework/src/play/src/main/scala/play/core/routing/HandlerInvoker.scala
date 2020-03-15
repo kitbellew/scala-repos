@@ -237,9 +237,8 @@ object HandlerInvokerFactory {
 
   implicit def javaBytesPromiseWebSocket
       : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[Array[Byte]]]] =
-    new JavaWebSocketInvokerFactory[
-      CompletionStage[LegacyWebSocket[Array[Byte]]],
-      Array[Byte]] {
+    new JavaWebSocketInvokerFactory[CompletionStage[
+      LegacyWebSocket[Array[Byte]]], Array[Byte]] {
       def webSocketCall(
           call: => CompletionStage[LegacyWebSocket[Array[Byte]]]) =
         JavaWebSocket.promiseOfBytes(call)
@@ -247,18 +246,16 @@ object HandlerInvokerFactory {
 
   implicit def javaStringPromiseWebSocket
       : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[String]]] =
-    new JavaWebSocketInvokerFactory[
-      CompletionStage[LegacyWebSocket[String]],
-      String] {
+    new JavaWebSocketInvokerFactory[CompletionStage[
+      LegacyWebSocket[String]], String] {
       def webSocketCall(call: => CompletionStage[LegacyWebSocket[String]]) =
         JavaWebSocket.promiseOfString(call)
     }
 
   implicit def javaJsonPromiseWebSocket
       : HandlerInvokerFactory[CompletionStage[LegacyWebSocket[JsonNode]]] =
-    new JavaWebSocketInvokerFactory[
-      CompletionStage[LegacyWebSocket[JsonNode]],
-      JsonNode] {
+    new JavaWebSocketInvokerFactory[CompletionStage[
+      LegacyWebSocket[JsonNode]], JsonNode] {
       def webSocketCall(call: => CompletionStage[LegacyWebSocket[JsonNode]]) =
         JavaWebSocket.promiseOfJson(call)
     }

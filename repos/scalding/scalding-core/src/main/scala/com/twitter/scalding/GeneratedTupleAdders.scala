@@ -5288,8 +5288,8 @@ trait GeneratedTupleAdders {
         S,
         T]) = new Tuple20Adder(tup)
 
-  class Tuple21Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T,
-  U](
+  class Tuple21Adder[
+      A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
       tup: Tuple21[
         A,
         B,

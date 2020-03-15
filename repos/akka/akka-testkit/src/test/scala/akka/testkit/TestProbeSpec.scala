@@ -80,15 +80,16 @@ class TestProbeSpec extends AkkaSpec with DefaultTimeout {
     "have an AutoPilot" in {
       //#autopilot
       val probe = TestProbe()
-      probe.setAutoPilot(new TestActor.AutoPilot {
-        def run(sender: ActorRef, msg: Any): TestActor.AutoPilot =
-          msg match {
-            case "stop" ⇒ TestActor.NoAutoPilot
-            case x ⇒
-              testActor.tell(x, sender);
-              TestActor.KeepRunning
-          }
-      })
+      probe.setAutoPilot(
+        new TestActor.AutoPilot {
+          def run(sender: ActorRef, msg: Any): TestActor.AutoPilot =
+            msg match {
+              case "stop" ⇒ TestActor.NoAutoPilot
+              case x ⇒
+                testActor.tell(x, sender);
+                TestActor.KeepRunning
+            }
+        })
       //#autopilot
       probe.ref ! "hallo"
       probe.ref ! "welt"
@@ -128,9 +129,11 @@ class TestProbeSpec extends AkkaSpec with DefaultTimeout {
     "watch actors when queue non-empty" in {
       val probe = TestProbe()
       // deadLetters does not send Terminated
-      val target = system.actorOf(Props(new Actor {
-        def receive = Actor.emptyBehavior
-      }))
+      val target = system.actorOf(
+        Props(
+          new Actor {
+            def receive = Actor.emptyBehavior
+          }))
       system.stop(target)
       probe.ref ! "hello"
       probe watch target

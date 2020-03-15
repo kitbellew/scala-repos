@@ -214,25 +214,26 @@ object LoadBalancerFactory {
       def newBalancer(endpoints: Activity[Set[ServiceFactory[Req, Rep]]]) =
         loadBalancerFactory.newBalancer(endpoints, balancerStats, balancerExc)
 
-      val destActivity: Activity[Set[Address]] = Activity(dest.map {
-        case Addr.Bound(set, _) =>
-          Activity.Ok(set)
-        case Addr.Neg =>
-          log.info(
-            s"$label: name resolution is negative (local dtab: ${Dtab.local})")
-          Activity.Ok(Set.empty)
-        case Addr.Failed(e) =>
-          log.log(
-            Level.INFO,
-            s"$label: name resolution failed  (local dtab: ${Dtab.local})",
-            e)
-          Activity.Failed(e)
-        case Addr.Pending =>
-          if (log.isLoggable(Level.FINE)) {
-            log.fine(s"$label: name resolution is pending")
-          }
-          Activity.Pending
-      }: Var[Activity.State[Set[Address]]])
+      val destActivity: Activity[Set[Address]] = Activity(
+        dest.map {
+          case Addr.Bound(set, _) =>
+            Activity.Ok(set)
+          case Addr.Neg =>
+            log.info(
+              s"$label: name resolution is negative (local dtab: ${Dtab.local})")
+            Activity.Ok(Set.empty)
+          case Addr.Failed(e) =>
+            log.log(
+              Level.INFO,
+              s"$label: name resolution failed  (local dtab: ${Dtab.local})",
+              e)
+            Activity.Failed(e)
+          case Addr.Pending =>
+            if (log.isLoggable(Level.FINE)) {
+              log.fine(s"$label: name resolution is pending")
+            }
+            Activity.Pending
+        }: Var[Activity.State[Set[Address]]])
 
       // Instead of simply creating a newBalancer here, we defer to the
       // traffic distributor to interpret weighted `Addresses`.
@@ -243,8 +244,7 @@ object LoadBalancerFactory {
           newEndpoint = newEndpoint,
           newBalancer = newBalancer,
           eagerEviction = !probationEnabled,
-          statsReceiver = balancerStats
-        )
+          statsReceiver = balancerStats)
       )
     }
   }
@@ -335,8 +335,7 @@ abstract class LoadBalancerFactory {
   def newBalancer[Req, Rep](
       endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
       statsReceiver: StatsReceiver,
-      emptyException: NoBrokersAvailableException
-  ): ServiceFactory[Req, Rep]
+      emptyException: NoBrokersAvailableException): ServiceFactory[Req, Rep]
 }
 
 /**
@@ -384,8 +383,7 @@ object DefaultBalancerFactory extends LoadBalancerFactory {
   def newBalancer[Req, Rep](
       endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
       statsReceiver: StatsReceiver,
-      emptyException: NoBrokersAvailableException
-  ): ServiceFactory[Req, Rep] = {
+      emptyException: NoBrokersAvailableException): ServiceFactory[Req, Rep] = {
     underlying.newBalancer(endpoints, statsReceiver, emptyException)
   }
 }

@@ -19,10 +19,8 @@ final class DataForm(
   case class Empty(gameId: String, move: String)
 
   val empty = Form(
-    mapping(
-      "gameId" -> nonEmptyText,
-      "move" -> nonEmptyText
-    )(Empty.apply)(_ => None)
+    mapping("gameId" -> nonEmptyText, "move" -> nonEmptyText)(Empty.apply)(_ =>
+      None)
       .verifying(captchaFailMessage, validateCaptcha _))
 
   def emptyWithCaptcha = withCaptcha(empty)
@@ -67,8 +65,8 @@ final class DataForm(
       mapping(
         "username" -> username,
         "password" -> text(minLength = 4),
-        "email" -> optional(acceptableUniqueEmail(none))
-      )(MobileSignupData.apply)(_ => None))
+        "email" -> optional(acceptableUniqueEmail(none)))(
+        MobileSignupData.apply)(_ => None))
 
     def websiteWithCaptcha = withCaptcha(website)
   }
@@ -77,16 +75,12 @@ final class DataForm(
     mapping(
       "email" -> anyEmail, // allow unacceptable emails for BC
       "gameId" -> nonEmptyText,
-      "move" -> nonEmptyText
-    )(PasswordReset.apply)(_ => None)
+      "move" -> nonEmptyText)(PasswordReset.apply)(_ => None)
       .verifying(captchaFailMessage, validateCaptcha _))
 
   def passwordResetWithCaptcha = withCaptcha(passwordReset)
 
-  val newPassword = Form(
-    single(
-      "password" -> text(minLength = 4)
-    ))
+  val newPassword = Form(single("password" -> text(minLength = 4)))
 
   case class PasswordResetConfirm(newPasswd1: String, newPasswd2: String) {
     def samePasswords = newPasswd1 == newPasswd2
@@ -95,18 +89,15 @@ final class DataForm(
   val passwdReset = Form(
     mapping(
       "newPasswd1" -> nonEmptyText(minLength = 2),
-      "newPasswd2" -> nonEmptyText(minLength = 2)
-    )(PasswordResetConfirm.apply)(PasswordResetConfirm.unapply).verifying(
-      "the new passwords don't match",
-      _.samePasswords
-    ))
+      "newPasswd2" -> nonEmptyText(minLength = 2))(PasswordResetConfirm.apply)(
+      PasswordResetConfirm.unapply)
+      .verifying("the new passwords don't match", _.samePasswords))
 
   def changeEmail(user: User) =
     Form(
       mapping(
         "email" -> acceptableUniqueEmail(user.some),
-        "passwd" -> nonEmptyText
-      )(ChangeEmail.apply)(ChangeEmail.unapply))
+        "passwd" -> nonEmptyText)(ChangeEmail.apply)(ChangeEmail.unapply))
 
   def modEmail(user: User) =
     Form(single("email" -> acceptableUniqueEmail(user.some)))

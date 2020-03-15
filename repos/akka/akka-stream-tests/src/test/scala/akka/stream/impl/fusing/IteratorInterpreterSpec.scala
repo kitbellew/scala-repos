@@ -62,14 +62,16 @@ class IteratorInterpreterSpec extends AkkaSpec {
       val itr =
         new IteratorInterpreter[Int, Int](
           List(1, 2, 3).iterator,
-          Seq(new PushStage[Int, Int] {
-            override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
-              if (elem == 2)
-                ctx.fail(new ArithmeticException())
-              else
-                ctx.push(elem)
-            }
-          })).iterator
+          Seq(
+            new PushStage[Int, Int] {
+              override def onPush(elem: Int, ctx: Context[Int])
+                  : SyncDirective = {
+                if (elem == 2)
+                  ctx.fail(new ArithmeticException())
+                else
+                  ctx.push(elem)
+              }
+            })).iterator
 
       itr.next() should be(1)
       itr.hasNext should be(true)
@@ -83,14 +85,16 @@ class IteratorInterpreterSpec extends AkkaSpec {
       val itr =
         new IteratorInterpreter[Int, Int](
           List(1, 2, 3).iterator,
-          Seq(new PushStage[Int, Int] {
-            override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
-              if (elem == 2)
-                throw new ArithmeticException()
-              else
-                ctx.push(elem)
-            }
-          })).iterator
+          Seq(
+            new PushStage[Int, Int] {
+              override def onPush(elem: Int, ctx: Context[Int])
+                  : SyncDirective = {
+                if (elem == 2)
+                  throw new ArithmeticException()
+                else
+                  ctx.push(elem)
+              }
+            })).iterator
 
       itr.next() should be(1)
       itr.hasNext should be(true)

@@ -203,17 +203,15 @@ abstract class TreeGen {
 
   /** Computes stable type for a tree if possible */
   def stableTypeFor(tree: Tree): Type =
-    (
-      if (!treeInfo.admitsTypeSelection(tree))
-        NoType
-      else
-        tree match {
-          case This(_)         => ThisType(tree.symbol)
-          case Ident(_)        => singleType(tree.symbol.owner.thisType, tree.symbol)
-          case Select(qual, _) => singleType(qual.tpe, tree.symbol)
-          case _               => NoType
-        }
-    )
+    (if (!treeInfo.admitsTypeSelection(tree))
+       NoType
+     else
+       tree match {
+         case This(_)         => ThisType(tree.symbol)
+         case Ident(_)        => singleType(tree.symbol.owner.thisType, tree.symbol)
+         case Select(qual, _) => singleType(qual.tpe, tree.symbol)
+         case _               => NoType
+       })
 
   /** Builds a reference with stable type to given symbol */
   def mkAttributedStableRef(pre: Type, sym: Symbol): Tree =
@@ -229,7 +227,9 @@ abstract class TreeGen {
 
   def mkAttributedSelect(qual: Tree, sym: Symbol): RefTree = {
     // Tests involving the repl fail without the .isEmptyPackage condition.
-    if (qual.symbol != null && (qual.symbol.isEffectiveRoot || qual.symbol.isEmptyPackage))
+    if (qual.symbol != null && (
+          qual.symbol.isEffectiveRoot || qual.symbol.isEmptyPackage
+        ))
       mkAttributedIdent(sym)
     else {
       // Have to recognize anytime a selection is made on a package
@@ -237,18 +237,17 @@ abstract class TreeGen {
       // foo.bar.name if name is in the package object.
       // TODO - factor out the common logic between this and
       // the Typers method "isInPackageObject", used in typedIdent.
-      val qualsym = (
-        if (qual.tpe ne null)
-          qual.tpe.typeSymbol
-        else if (qual.symbol ne null)
-          qual.symbol
-        else
-          NoSymbol
-      )
-      val needsPackageQualifier = (
-        (sym ne null)
-          && qualsym.hasPackageFlag
-          && !(sym.isDefinedInPackage || sym.moduleClass.isDefinedInPackage) // SI-7817 work around strangeness in post-flatten `Symbol#owner`
+      val qualsym = (if (qual.tpe ne null)
+                       qual.tpe.typeSymbol
+                     else if (qual.symbol ne null)
+                       qual.symbol
+                     else
+                       NoSymbol)
+      val needsPackageQualifier = ((sym ne null)
+        && qualsym.hasPackageFlag
+        && !(
+          sym.isDefinedInPackage || sym.moduleClass.isDefinedInPackage
+        ) // SI-7817 work around strangeness in post-flatten `Symbol#owner`
       )
       val pkgQualifier =
         if (needsPackageQualifier) {
@@ -457,7 +456,9 @@ abstract class TreeGen {
         val param =
           atPos(vd.pos.makeTransparent) {
             val mods = Modifiers(
-              vd.mods.flags & (IMPLICIT | DEFAULTPARAM | BYNAMEPARAM) | PARAM | PARAMACCESSOR)
+              vd.mods.flags & (
+                IMPLICIT | DEFAULTPARAM | BYNAMEPARAM
+              ) | PARAM | PARAMACCESSOR)
             ValDef(
               mods withAnnotations vd.mods.annotations,
               vd.name,
@@ -596,13 +597,14 @@ abstract class TreeGen {
       val x = tpnme.ANON_CLASS_NAME
       atPos(npos union cpos) {
         Block(
-          List(atPos(cpos) {
-            ClassDef(
-              Modifiers(FINAL),
-              x,
-              Nil,
-              mkTemplate(parents, self, NoMods, ListOfNil, stats, cpos.focus))
-          }),
+          List(
+            atPos(cpos) {
+              ClassDef(
+                Modifiers(FINAL),
+                x,
+                Nil,
+                mkTemplate(parents, self, NoMods, ListOfNil, stats, cpos.focus))
+            }),
           atPos(npos) {
             New(Ident(x) setPos npos.focus, Nil)
           }
@@ -801,16 +803,19 @@ abstract class TreeGen {
     def makeClosure(pos: Position, pat: Tree, body: Tree): Tree = {
       def wrapped = wrappingPos(List(pat, body))
       def splitpos =
-        (if (pos != NoPosition)
-           wrapped.withPoint(pos.point)
-         else
-           pos).makeTransparent
+        (
+          if (pos != NoPosition)
+            wrapped.withPoint(pos.point)
+          else
+            pos
+        ).makeTransparent
       matchVarPattern(pat) match {
         case Some((name, tpt)) =>
           Function(
-            List(atPos(pat.pos) {
-              ValDef(Modifiers(PARAM), name.toTermName, tpt, EmptyTree)
-            }),
+            List(
+              atPos(pat.pos) {
+                ValDef(Modifiers(PARAM), name.toTermName, tpt, EmptyTree)
+              }),
             body) setPos splitpos
         case None =>
           atPos(splitpos) {
@@ -934,9 +939,10 @@ abstract class TreeGen {
       implicit fresh: FreshNameCreator): List[ValDef] =
     matchVarPattern(pat) match {
       case Some((name, tpt)) =>
-        List(atPos(pat.pos union rhs.pos) {
-          ValDef(mods, name.toTermName, tpt, rhs)
-        })
+        List(
+          atPos(pat.pos union rhs.pos) {
+            ValDef(mods, name.toTermName, tpt, rhs)
+          })
 
       case None =>
         //  in case there is exactly one variable x_1 in pattern
@@ -980,14 +986,14 @@ abstract class TreeGen {
                     pat1,
                     EmptyTree,
                     mkTuple(vars map (_._1) map Ident.apply))
-                }
-              ))
+                }))
           }
         vars match {
           case List((vname, tpt, pos)) =>
-            List(atPos(pat.pos union pos union rhs.pos) {
-              ValDef(mods, vname.toTermName, tpt, matchExpr)
-            })
+            List(
+              atPos(pat.pos union pos union rhs.pos) {
+                ValDef(mods, vname.toTermName, tpt, matchExpr)
+              })
           case _ =>
             val tmp = freshTermName()
             val firstDef =
@@ -1031,8 +1037,7 @@ abstract class TreeGen {
     else {
       val cases = List(
         CaseDef(pat.duplicate, EmptyTree, Literal(Constant(true))),
-        CaseDef(Ident(nme.WILDCARD), EmptyTree, Literal(Constant(false)))
-      )
+        CaseDef(Ident(nme.WILDCARD), EmptyTree, Literal(Constant(false))))
       val visitor = mkVisitor(
         cases,
         checkExhaustive = false,

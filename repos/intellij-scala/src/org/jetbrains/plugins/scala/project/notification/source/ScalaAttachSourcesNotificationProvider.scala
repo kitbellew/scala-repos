@@ -137,12 +137,13 @@ class ScalaAttachSourcesNotificationProvider(
             val onFinish: Runnable =
               new Runnable {
                 def run() {
-                  SwingUtilities.invokeLater(new Runnable {
-                    def run() {
-                      panel.setText(
-                        ScalaBundle.message("library.sources.not.found"))
-                    }
-                  })
+                  SwingUtilities.invokeLater(
+                    new Runnable {
+                      def run() {
+                        panel.setText(
+                          ScalaBundle.message("library.sources.not.found"))
+                      }
+                    })
                 }
               }
             val callback: ActionCallback = each.perform(

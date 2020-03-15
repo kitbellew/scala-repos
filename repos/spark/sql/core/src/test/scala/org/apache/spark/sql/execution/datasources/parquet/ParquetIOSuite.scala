@@ -823,9 +823,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
             val v = (row.getString(0), row.getInt(1))
             result += v
           }
-          assert(data.map { x =>
-            (x._2, x._1)
-          } == result)
+          assert(
+            data.map { x =>
+              (x._2, x._1)
+            } == result)
         } finally {
           reader.close()
         }

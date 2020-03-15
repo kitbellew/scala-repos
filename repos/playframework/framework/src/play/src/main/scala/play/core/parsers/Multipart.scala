@@ -117,22 +117,24 @@ object Multipart {
               }
 
             parseError orElse bufferExceededError getOrElse {
-              Future.successful(Right(MultipartFormData(
-                parts
-                  .collect {
-                    case dp: DataPart => dp
-                  }
-                  .groupBy(_.key)
-                  .map {
-                    case (key, partValues) => key -> partValues.map(_.value)
-                  },
-                parts.collect {
-                  case fp: FilePart[A] => fp
-                },
-                parts.collect {
-                  case bad: BadPart => bad
-                }
-              )))
+              Future.successful(
+                Right(
+                  MultipartFormData(
+                    parts
+                      .collect {
+                        case dp: DataPart => dp
+                      }
+                      .groupBy(_.key)
+                      .map {
+                        case (key, partValues) => key -> partValues.map(_.value)
+                      },
+                    parts.collect {
+                      case fp: FilePart[A] => fp
+                    },
+                    parts.collect {
+                      case bad: BadPart => bad
+                    }
+                  )))
             }
 
         }
@@ -146,8 +148,9 @@ object Multipart {
   def handleFilePartAsTemporaryFile: FilePartHandler[TemporaryFile] = {
     case FileInfo(partName, filename, contentType) =>
       val tempFile = TemporaryFile("multipartBody", "asTemporaryFile")
-      Accumulator(StreamConverters.fromOutputStream(() =>
-        new java.io.FileOutputStream(tempFile.file))).map { _ =>
+      Accumulator(
+        StreamConverters.fromOutputStream(() =>
+          new java.io.FileOutputStream(tempFile.file))).map { _ =>
         FilePart(partName, filename, contentType, tempFile)
       }
   }
@@ -521,7 +524,9 @@ object Multipart {
         }
       } catch {
         case NotEnoughDataException =>
-          if (memoryBufferSize + (input.length - partStart - needle.length) > maxMemoryBufferSize) {
+          if (memoryBufferSize + (
+                input.length - partStart - needle.length
+              ) > maxMemoryBufferSize) {
             bufferExceeded("Memory buffer full on part " + partName)
           }
           continue(input, partStart)(
@@ -607,8 +612,9 @@ object Multipart {
         input: ByteString,
         offset: Int,
         ix: Int = 2): Boolean =
-      (ix == needle.length) || (byteAt(input, offset + ix - 2) == needle(
-        ix)) && boundary(input, offset, ix + 1)
+      (ix == needle.length) || (
+        byteAt(input, offset + ix - 2) == needle(ix)
+      ) && boundary(input, offset, ix + 1)
 
     def crlf(input: ByteString, offset: Int): Boolean =
       byteChar(input, offset) == '\r' && byteChar(input, offset + 1) == '\n'

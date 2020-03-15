@@ -707,11 +707,12 @@ class JsonProtocolSuite extends SparkFunSuite {
     val blocks = Seq[(BlockId, BlockStatus)](
       (TestBlockId("meebo"), BlockStatus(StorageLevel.MEMORY_ONLY, 1L, 2L)),
       (TestBlockId("feebo"), BlockStatus(StorageLevel.DISK_ONLY, 3L, 4L)))
-    val blocksJson = JArray(blocks.toList.map {
-      case (id, status) =>
-        ("Block ID" -> id.toString) ~
-          ("Status" -> JsonProtocol.blockStatusToJson(status))
-    })
+    val blocksJson = JArray(
+      blocks.toList.map {
+        case (id, status) =>
+          ("Block ID" -> id.toString) ~
+            ("Status" -> JsonProtocol.blockStatusToJson(status))
+      })
     testAccumValue(Some(RESULT_SIZE), 3L, JInt(3))
     testAccumValue(Some(shuffleRead.REMOTE_BLOCKS_FETCHED), 2, JInt(2))
     testAccumValue(Some(input.READ_METHOD), "aka", JString("aka"))
@@ -1289,11 +1290,12 @@ private[spark] object JsonProtocolSuite extends Assertions {
           -1)
     }
     // Make at most 6 blocks
-    t.setUpdatedBlockStatuses((1 to (e % 5 + 1)).map { i =>
-      (
-        RDDBlockId(e % i, f % i),
-        BlockStatus(StorageLevel.MEMORY_AND_DISK_SER_2, a % i, b % i))
-    }.toSeq)
+    t.setUpdatedBlockStatuses(
+      (1 to (e % 5 + 1)).map { i =>
+        (
+          RDDBlockId(e % i, f % i),
+          BlockStatus(StorageLevel.MEMORY_AND_DISK_SER_2, a % i, b % i))
+      }.toSeq)
     t
   }
 

@@ -87,15 +87,16 @@ class ScalaReflectionSuite extends SparkFunSuite {
     val schema = schemaFor[PrimitiveData]
     assert(
       schema === Schema(
-        StructType(Seq(
-          StructField("intField", IntegerType, nullable = false),
-          StructField("longField", LongType, nullable = false),
-          StructField("doubleField", DoubleType, nullable = false),
-          StructField("floatField", FloatType, nullable = false),
-          StructField("shortField", ShortType, nullable = false),
-          StructField("byteField", ByteType, nullable = false),
-          StructField("booleanField", BooleanType, nullable = false)
-        )),
+        StructType(
+          Seq(
+            StructField("intField", IntegerType, nullable = false),
+            StructField("longField", LongType, nullable = false),
+            StructField("doubleField", DoubleType, nullable = false),
+            StructField("floatField", FloatType, nullable = false),
+            StructField("shortField", ShortType, nullable = false),
+            StructField("byteField", ByteType, nullable = false),
+            StructField("booleanField", BooleanType, nullable = false)
+          )),
         nullable = true
       ))
   }
@@ -104,23 +105,24 @@ class ScalaReflectionSuite extends SparkFunSuite {
     val schema = schemaFor[NullableData]
     assert(
       schema === Schema(
-        StructType(Seq(
-          StructField("intField", IntegerType, nullable = true),
-          StructField("longField", LongType, nullable = true),
-          StructField("doubleField", DoubleType, nullable = true),
-          StructField("floatField", FloatType, nullable = true),
-          StructField("shortField", ShortType, nullable = true),
-          StructField("byteField", ByteType, nullable = true),
-          StructField("booleanField", BooleanType, nullable = true),
-          StructField("stringField", StringType, nullable = true),
-          StructField(
-            "decimalField",
-            DecimalType.SYSTEM_DEFAULT,
-            nullable = true),
-          StructField("dateField", DateType, nullable = true),
-          StructField("timestampField", TimestampType, nullable = true),
-          StructField("binaryField", BinaryType, nullable = true)
-        )),
+        StructType(
+          Seq(
+            StructField("intField", IntegerType, nullable = true),
+            StructField("longField", LongType, nullable = true),
+            StructField("doubleField", DoubleType, nullable = true),
+            StructField("floatField", FloatType, nullable = true),
+            StructField("shortField", ShortType, nullable = true),
+            StructField("byteField", ByteType, nullable = true),
+            StructField("booleanField", BooleanType, nullable = true),
+            StructField("stringField", StringType, nullable = true),
+            StructField(
+              "decimalField",
+              DecimalType.SYSTEM_DEFAULT,
+              nullable = true),
+            StructField("dateField", DateType, nullable = true),
+            StructField("timestampField", TimestampType, nullable = true),
+            StructField("binaryField", BinaryType, nullable = true)
+          )),
         nullable = true
       ))
   }
@@ -129,19 +131,20 @@ class ScalaReflectionSuite extends SparkFunSuite {
     val schema = schemaFor[OptionalData]
     assert(
       schema === Schema(
-        StructType(Seq(
-          StructField("intField", IntegerType, nullable = true),
-          StructField("longField", LongType, nullable = true),
-          StructField("doubleField", DoubleType, nullable = true),
-          StructField("floatField", FloatType, nullable = true),
-          StructField("shortField", ShortType, nullable = true),
-          StructField("byteField", ByteType, nullable = true),
-          StructField("booleanField", BooleanType, nullable = true),
-          StructField(
-            "structField",
-            schemaFor[PrimitiveData].dataType,
-            nullable = true)
-        )),
+        StructType(
+          Seq(
+            StructField("intField", IntegerType, nullable = true),
+            StructField("longField", LongType, nullable = true),
+            StructField("doubleField", DoubleType, nullable = true),
+            StructField("floatField", FloatType, nullable = true),
+            StructField("shortField", ShortType, nullable = true),
+            StructField("byteField", ByteType, nullable = true),
+            StructField("booleanField", BooleanType, nullable = true),
+            StructField(
+              "structField",
+              schemaFor[PrimitiveData].dataType,
+              nullable = true)
+          )),
         nullable = true
       ))
   }
@@ -150,50 +153,52 @@ class ScalaReflectionSuite extends SparkFunSuite {
     val schema = schemaFor[ComplexData]
     assert(
       schema === Schema(
-        StructType(Seq(
-          StructField(
-            "arrayField",
-            ArrayType(IntegerType, containsNull = false),
-            nullable = true),
-          StructField(
-            "arrayField1",
-            ArrayType(IntegerType, containsNull = false),
-            nullable = true),
-          StructField(
-            "arrayField2",
-            ArrayType(IntegerType, containsNull = false),
-            nullable = true),
-          StructField(
-            "arrayFieldContainsNull",
-            ArrayType(IntegerType, containsNull = true),
-            nullable = true),
-          StructField(
-            "mapField",
-            MapType(IntegerType, LongType, valueContainsNull = false),
-            nullable = true),
-          StructField(
-            "mapFieldValueContainsNull",
-            MapType(IntegerType, LongType, valueContainsNull = true),
-            nullable = true),
-          StructField(
-            "structField",
-            StructType(Seq(
-              StructField("intField", IntegerType, nullable = false),
-              StructField("longField", LongType, nullable = false),
-              StructField("doubleField", DoubleType, nullable = false),
-              StructField("floatField", FloatType, nullable = false),
-              StructField("shortField", ShortType, nullable = false),
-              StructField("byteField", ByteType, nullable = false),
-              StructField("booleanField", BooleanType, nullable = false)
-            )),
-            nullable = true
-          ),
-          StructField(
-            "nestedArrayField",
-            ArrayType(
+        StructType(
+          Seq(
+            StructField(
+              "arrayField",
               ArrayType(IntegerType, containsNull = false),
-              containsNull = true))
-        )),
+              nullable = true),
+            StructField(
+              "arrayField1",
+              ArrayType(IntegerType, containsNull = false),
+              nullable = true),
+            StructField(
+              "arrayField2",
+              ArrayType(IntegerType, containsNull = false),
+              nullable = true),
+            StructField(
+              "arrayFieldContainsNull",
+              ArrayType(IntegerType, containsNull = true),
+              nullable = true),
+            StructField(
+              "mapField",
+              MapType(IntegerType, LongType, valueContainsNull = false),
+              nullable = true),
+            StructField(
+              "mapFieldValueContainsNull",
+              MapType(IntegerType, LongType, valueContainsNull = true),
+              nullable = true),
+            StructField(
+              "structField",
+              StructType(
+                Seq(
+                  StructField("intField", IntegerType, nullable = false),
+                  StructField("longField", LongType, nullable = false),
+                  StructField("doubleField", DoubleType, nullable = false),
+                  StructField("floatField", FloatType, nullable = false),
+                  StructField("shortField", ShortType, nullable = false),
+                  StructField("byteField", ByteType, nullable = false),
+                  StructField("booleanField", BooleanType, nullable = false)
+                )),
+              nullable = true
+            ),
+            StructField(
+              "nestedArrayField",
+              ArrayType(
+                ArrayType(IntegerType, containsNull = false),
+                containsNull = true))
+          )),
         nullable = true
       ))
   }

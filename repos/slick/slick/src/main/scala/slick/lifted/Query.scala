@@ -406,12 +406,14 @@ final class BaseJoinQuery[+E1, +E2, U1, U2, C[_], +B1, +B2](
 class TableQuery[E <: AbstractTable[_]](cons: Tag => E)
     extends Query[E, E#TableElementType, Seq] {
   lazy val shaped = {
-    val baseTable = cons(new BaseTag { base =>
-      def taggedAs(path: Node): AbstractTable[_] =
-        cons(new RefTag(path) {
-          def taggedAs(path: Node) = base.taggedAs(path)
-        })
-    })
+    val baseTable = cons(
+      new BaseTag { base =>
+        def taggedAs(path: Node): AbstractTable[_] =
+          cons(
+            new RefTag(path) {
+              def taggedAs(path: Node) = base.taggedAs(path)
+            })
+      })
     ShapedValue(baseTable, RepShape[FlatShapeLevel, E, E#TableElementType])
   }
 
@@ -449,8 +451,7 @@ object TableQueryMacroImpl {
             EmptyTree)),
         Apply(
           Select(New(TypeTree(e.tpe)), termNames.CONSTRUCTOR),
-          List(Ident(TermName("tag")))
-        )
+          List(Ident(TermName("tag"))))
       ))
     reify {
       TableQuery.apply[E](cons.splice)

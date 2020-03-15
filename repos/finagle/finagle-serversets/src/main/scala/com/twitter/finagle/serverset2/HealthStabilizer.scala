@@ -28,8 +28,7 @@ private[serverset2] object HealthStabilizer {
   def apply(
       va: Var[ClientHealth],
       probationEpoch: Epoch,
-      statsReceiver: StatsReceiver
-  ): Var[ClientHealth] = {
+      statsReceiver: StatsReceiver): Var[ClientHealth] = {
 
     Var.async[ClientHealth](ClientHealth.Healthy) { u =>
       val stateChanges =
@@ -58,9 +57,10 @@ private[serverset2] object HealthStabilizer {
           }
 
       val currentStatus = new AtomicReference[Status]()
-      val gaugeListener = stateChanges.dedup.register(Witness {
-        currentStatus
-      })
+      val gaugeListener = stateChanges.dedup.register(
+        Witness {
+          currentStatus
+        })
       val gauge =
         statsReceiver.addGauge("zkHealth") {
           currentStatus.get() match {

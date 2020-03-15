@@ -116,10 +116,8 @@ class CategoricalNaiveBayesTest
     val score = model.logScore(
       LabeledPoint(
         fruit.Banana,
-        Array(fruit.Long, fruit.NotSweet, "Not Exist")
-      ),
-      ls => ls.min - math.log(2)
-    )
+        Array(fruit.Long, fruit.NotSweet, "Not Exist")),
+      ls => ls.min - math.log(2))
 
     score should not be None
     score.get should be(-4.9236 +- Tolerance)

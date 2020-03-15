@@ -327,10 +327,9 @@ class OffsetIndex(
     */
   private def forceUnmap(m: MappedByteBuffer) {
     try {
-      if (m.isInstanceOf[sun.nio.ch.DirectBuffer])(m
-        .asInstanceOf[sun.nio.ch.DirectBuffer])
-        .cleaner()
-        .clean()
+      if (m.isInstanceOf[sun.nio.ch.DirectBuffer])(
+        m.asInstanceOf[sun.nio.ch.DirectBuffer]
+      ).cleaner().clean()
     } catch {
       case t: Throwable => warn("Error when freeing index buffer", t)
     }

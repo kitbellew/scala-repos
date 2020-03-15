@@ -48,8 +48,9 @@ trait HttpPipeliningSpec
       EssentialAction { req =>
         req.path match {
           case "/long" =>
-            Accumulator.done(after(100.milliseconds, actorSystem.scheduler)(
-              Future(Results.Ok("long"))))
+            Accumulator.done(
+              after(100.milliseconds, actorSystem.scheduler)(
+                Future(Results.Ok("long"))))
           case "/short" => Accumulator.done(Results.Ok("short"))
           case _        => Accumulator.done(Results.NotFound)
         }
@@ -75,8 +76,7 @@ trait HttpPipeliningSpec
                     initialDelay = 50.milliseconds,
                     interval = 50.milliseconds,
                     tick = "chunk")
-                  .take(3))
-            )
+                  .take(3)))
           case "/short" => Accumulator.done(Results.Ok("short"))
           case _        => Accumulator.done(Results.NotFound)
         }

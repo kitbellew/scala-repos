@@ -309,31 +309,33 @@ private[json] object Meta {
     case object `* -> *` extends Kind
     case object `(*,*) -> *` extends Kind
 
-    val primitives = Map[Class[_], Unit]() ++ (List[Class[_]](
-      classOf[String],
-      classOf[Int],
-      classOf[Long],
-      classOf[Double],
-      classOf[Float],
-      classOf[Byte],
-      classOf[BigInt],
-      classOf[Boolean],
-      classOf[Short],
-      classOf[java.lang.Integer],
-      classOf[java.lang.Long],
-      classOf[java.lang.Double],
-      classOf[java.lang.Float],
-      classOf[java.lang.Byte],
-      classOf[java.lang.Boolean],
-      classOf[Number],
-      classOf[java.lang.Short],
-      classOf[Date],
-      classOf[Timestamp],
-      classOf[Symbol],
-      classOf[JValue],
-      classOf[JObject],
-      classOf[JArray]
-    ).map((_, ())))
+    val primitives = Map[Class[_], Unit]() ++ (
+      List[Class[_]](
+        classOf[String],
+        classOf[Int],
+        classOf[Long],
+        classOf[Double],
+        classOf[Float],
+        classOf[Byte],
+        classOf[BigInt],
+        classOf[Boolean],
+        classOf[Short],
+        classOf[java.lang.Integer],
+        classOf[java.lang.Long],
+        classOf[java.lang.Double],
+        classOf[java.lang.Float],
+        classOf[java.lang.Byte],
+        classOf[java.lang.Boolean],
+        classOf[Number],
+        classOf[java.lang.Short],
+        classOf[Date],
+        classOf[Timestamp],
+        classOf[Symbol],
+        classOf[JValue],
+        classOf[JObject],
+        classOf[JArray]
+      ).map((_, ()))
+    )
 
     private val primaryConstructorArgumentsMemo =
       new Memo[Class[_], List[(String, Type)]]
@@ -490,10 +492,12 @@ private[json] object Meta {
                 case p: ParameterizedType => Some(p)
                 case _                    => None
               })))
-      fs ::: (if (clazz.getSuperclass == null)
-                Nil
-              else
-                fields(clazz.getSuperclass))
+      fs ::: (
+        if (clazz.getSuperclass == null)
+          Nil
+        else
+          fields(clazz.getSuperclass)
+      )
     }
 
     def setField(a: AnyRef, name: String, value: Any) = {

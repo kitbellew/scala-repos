@@ -31,10 +31,12 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
       completer: SymbolLoader): Symbol = {
     completer.sourcefile match {
       case Some(src) =>
-        (if (member.isModule)
-           member.moduleClass
-         else
-           member).associatedFile = src
+        (
+          if (member.isModule)
+            member.moduleClass
+          else
+            member
+        ).associatedFile = src
       case _ =>
     }
     val decls = owner.info.decls

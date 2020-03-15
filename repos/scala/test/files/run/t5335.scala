@@ -3,8 +3,9 @@ import scala.tools.reflect.Eval
 
 object Test extends App {
   reify {
-    println(new {
-      def x = 2
-    }.x)
+    println(
+      new {
+        def x = 2
+      }.x)
   }.eval
 }

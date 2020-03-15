@@ -62,14 +62,14 @@ private[round] final class Socket(
 
     private def isHostingSimul: Fu[Boolean] =
       userId ?? { u =>
-        simulActor ? lila.hub.actorApi.simul.GetHostIds mapTo manifest[
-          Set[String]] map (_ contains u)
+        simulActor ? lila.hub.actorApi.simul.GetHostIds mapTo manifest[Set[
+          String]] map (_ contains u)
       }
 
     def isGone =
-      if (time < (nowMillis - isBye
-            .fold(ragequitTimeout, disconnectTimeout)
-            .toMillis))
+      if (time < (
+            nowMillis - isBye.fold(ragequitTimeout, disconnectTimeout).toMillis
+          ))
         isHostingSimul map (!_)
       else
         fuccess(false)
@@ -173,10 +173,13 @@ private[round] final class Socket(
     case eventList: EventList => notify(eventList.events)
 
     case lila.chat.actorApi.ChatLine(chatId, line) =>
-      notify(List(line match {
-        case l: lila.chat.UserLine   => Event.UserMessage(l, chatId endsWith "/w")
-        case l: lila.chat.PlayerLine => Event.PlayerMessage(l)
-      }))
+      notify(
+        List(
+          line match {
+            case l: lila.chat.UserLine =>
+              Event.UserMessage(l, chatId endsWith "/w")
+            case l: lila.chat.PlayerLine => Event.PlayerMessage(l)
+          }))
 
     case AnalysisAvailable => notifyAll("analysisAvailable")
 

@@ -61,25 +61,27 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
           clazz.extendsBlock.templateBody match {
             case Some(body) =>
               for (expr <- body.exprs) {
-                (expr match {
-                  case expr: ScMethodCall =>
-                    TestNodeProvider.extractTestViewElement(
-                      expr,
-                      clazz,
-                      project)
-                  case expr: ScInfixExpr =>
-                    TestNodeProvider.extractTestViewElementInfix(
-                      expr,
-                      clazz,
-                      project)
-                  case expr: ScPatternDefinition =>
-                    TestNodeProvider.extractTestViewElementPatternDef(
-                      expr,
-                      clazz,
-                      project)
-                  case _ =>
-                    None
-                }).map(children.add)
+                (
+                  expr match {
+                    case expr: ScMethodCall =>
+                      TestNodeProvider.extractTestViewElement(
+                        expr,
+                        clazz,
+                        project)
+                    case expr: ScInfixExpr =>
+                      TestNodeProvider.extractTestViewElementInfix(
+                        expr,
+                        clazz,
+                        project)
+                    case expr: ScPatternDefinition =>
+                      TestNodeProvider.extractTestViewElementPatternDef(
+                        expr,
+                        clazz,
+                        project)
+                    case _ =>
+                      None
+                  }
+                ).map(children.add)
               }
             case _ =>
           }
@@ -203,11 +205,14 @@ object TestNodeProvider {
   }
 
   private def getInnerExprs(expr: PsiElement) = {
-    (expr match {
-      case infixExpr: ScInfixExpr   => expr.getLastChild.getChildren
-      case methodCall: ScMethodCall => methodCall.args.getLastChild.getChildren
-      case _                        => Array[ScExpression]()
-    }).filter(_.isInstanceOf[ScExpression]).map(_.asInstanceOf[ScExpression])
+    (
+      expr match {
+        case infixExpr: ScInfixExpr => expr.getLastChild.getChildren
+        case methodCall: ScMethodCall =>
+          methodCall.args.getLastChild.getChildren
+        case _ => Array[ScExpression]()
+      }
+    ).filter(_.isInstanceOf[ScExpression]).map(_.asInstanceOf[ScExpression])
   }
 
   private def checkMethodCallPending(expr: ScMethodCall): Boolean = {
@@ -295,10 +300,11 @@ object TestNodeProvider {
       paramNames: List[String]*): Boolean = {
     clauses.length == paramNames.length && (clauses zip paramNames).forall {
       case (clause, names) =>
-        clause.parameters.length == names.length && (clause.parameters zip names)
-          .forall {
-            case (param, name) => param.getType.getCanonicalText == name
-          }
+        clause.parameters.length == names.length && (
+          clause.parameters zip names
+        ).forall {
+          case (param, name) => param.getType.getCanonicalText == name
+        }
     }
   }
 
@@ -332,10 +338,11 @@ object TestNodeProvider {
       funDef: Option[ScFunctionDefinition],
       paramNames: Option[Seq[List[String]]]): Boolean = {
     funDef
-      .orElse(refExpr.resolve() match {
-        case funDef: ScFunctionDefinition => Some(funDef)
-        case _                            => None
-      })
+      .orElse(
+        refExpr.resolve() match {
+          case funDef: ScFunctionDefinition => Some(funDef)
+          case _                            => None
+        })
       .exists(funDef => {
         funDef.getName == funName &&
           paramNames
@@ -345,20 +352,22 @@ object TestNodeProvider {
   }
 
   private def checkSpecsPending(expr: ScInfixExpr): Boolean = {
-    (expr.getLastChild match {
-      case refExpr: ScReferenceExpression =>
-        Some(refExpr)
-      case methodCall: ScMethodCall =>
-        methodCall.getEffectiveInvokedExpr match {
-          case ref: ScReferenceExpression => Some(ref)
-          case otherExpr =>
-            Option(
-              otherExpr.findFirstChildByType(
-                ScalaElementTypes.REFERENCE_EXPRESSION))
-              .map(_.asInstanceOf[ScReferenceExpression])
-        }
-      case _ => None
-    }).exists(refExpr =>
+    (
+      expr.getLastChild match {
+        case refExpr: ScReferenceExpression =>
+          Some(refExpr)
+        case methodCall: ScMethodCall =>
+          methodCall.getEffectiveInvokedExpr match {
+            case ref: ScReferenceExpression => Some(ref)
+            case otherExpr =>
+              Option(
+                otherExpr.findFirstChildByType(
+                  ScalaElementTypes.REFERENCE_EXPRESSION))
+                .map(_.asInstanceOf[ScReferenceExpression])
+          }
+        case _ => None
+      }
+    ).exists(refExpr =>
       checkRefExpr(
         refExpr,
         "pendingUntilFixed",
@@ -369,10 +378,10 @@ object TestNodeProvider {
       expr: ScInfixExpr,
       entry: ExtractEntry,
       project: Project): Option[TestStructureViewElement] = {
-    if (entry.canIgnore && (checkScInfixExpr(
-          expr,
-          "ignore",
-          List("void")) || checkIgnoreExpr(expr))) {
+    if (entry.canIgnore && (
+          checkScInfixExpr(expr, "ignore", List("void")) || checkIgnoreExpr(
+            expr)
+        )) {
       Some(
         ignoredScalaTestElement(
           expr,
@@ -406,10 +415,12 @@ object TestNodeProvider {
   }
 
   private def checkPendingExpr(expr: ScExpression): Boolean = {
-    Option(expr match {
-      case refExpr: ScReferenceExpression => refExpr
-      case _                              => expr.findLastChildByType(ScalaElementTypes.REFERENCE_EXPRESSION)
-    }).exists(checkRefExpr(_, "pending"))
+    Option(
+      expr match {
+        case refExpr: ScReferenceExpression => refExpr
+        case _ =>
+          expr.findLastChildByType(ScalaElementTypes.REFERENCE_EXPRESSION)
+      }).exists(checkRefExpr(_, "pending"))
   }
 
   private def checkIgnoreExpr(expr: ScInfixExpr): Boolean = {
@@ -754,13 +765,12 @@ object TestNodeProvider {
       import scala.collection.JavaConversions._
       expr.args.findFirstChildByType(ScalaElementTypes.BLOCK_EXPR) match {
         case blockExpr: ScBlockExpr =>
-          (for (methodExpr <- blockExpr.children
-                if methodExpr.isInstanceOf[ScInfixExpr] || methodExpr
-                  .isInstanceOf[ScMethodCall])
-            yield extractUTestInner(methodExpr, project))
-            .filter(_.isDefined)
-            .map(_.get)
-            .toList
+          (
+            for (methodExpr <- blockExpr.children
+                 if methodExpr.isInstanceOf[ScInfixExpr] || methodExpr
+                   .isInstanceOf[ScMethodCall])
+              yield extractUTestInner(methodExpr, project)
+          ).filter(_.isDefined).map(_.get).toList
         case _ => new util.ArrayList[TreeElement]
       }
     } else
@@ -835,8 +845,7 @@ object TestNodeProvider {
                 Option(
                   PsiTreeUtil.getChildOfType(parent, classOf[ScPatternList]))
               case _ => None
-            }
-          )
+            })
           .map((_, None))
     }
   }
@@ -846,15 +855,17 @@ object TestNodeProvider {
       case Some((pattern, indexOpt))
           if pattern.getParent != null && pattern.getParent
             .isInstanceOf[ScPatternDefinition] =>
-        ((pattern.getParent.getLastChild, indexOpt) match {
-          case (suiteMethodCall: ScMethodCall, None) =>
-            suiteMethodCall //left-hand is a simple pattern
-          case (tuple: ScTuple, Some((index, size)))
-              if size == tuple.exprs.size =>
-            //left-hand is a tuple
-            tuple.exprs(index)
-          case _ => null
-        }) match {
+        (
+          (pattern.getParent.getLastChild, indexOpt) match {
+            case (suiteMethodCall: ScMethodCall, None) =>
+              suiteMethodCall //left-hand is a simple pattern
+            case (tuple: ScTuple, Some((index, size)))
+                if size == tuple.exprs.size =>
+              //left-hand is a tuple
+              tuple.exprs(index)
+            case _ => null
+          }
+        ) match {
           case suite: ScMethodCall
               if TestNodeProvider.isUTestSuiteApplyCall(suite) =>
             Some(suite) //getTestSuiteName(suite).orNull

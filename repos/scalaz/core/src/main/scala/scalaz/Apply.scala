@@ -65,8 +65,9 @@ trait Apply[F[_]] extends Functor[F] { self =>
       fc: => F[C],
       fd: => F[D],
       fe: => F[E])(f: F[(A, B, C, D, E) => R]): F[R] =
-    ap2(fd, fe)(ap3(fa, fb, fc)(map(f)(f =>
-      ((a: A, b: B, c: C) => (d: D, e: E) => f(a, b, c, d, e)))))
+    ap2(fd, fe)(
+      ap3(fa, fb, fc)(
+        map(f)(f => ((a: A, b: B, c: C) => (d: D, e: E) => f(a, b, c, d, e)))))
   def ap6[A, B, C, D, E, FF, R](
       fa: => F[A],
       fb: => F[B],
@@ -74,8 +75,14 @@ trait Apply[F[_]] extends Functor[F] { self =>
       fd: => F[D],
       fe: => F[E],
       ff: => F[FF])(f: F[(A, B, C, D, E, FF) => R]): F[R] =
-    ap3(fd, fe, ff)(ap3(fa, fb, fc)(map(f)(f =>
-      ((a: A, b: B, c: C) => (d: D, e: E, ff: FF) => f(a, b, c, d, e, ff)))))
+    ap3(fd, fe, ff)(
+      ap3(fa, fb, fc)(
+        map(f)(f =>
+          (
+              (
+                  a: A,
+                  b: B,
+                  c: C) => (d: D, e: E, ff: FF) => f(a, b, c, d, e, ff)))))
   def ap7[A, B, C, D, E, FF, G, R](
       fa: => F[A],
       fb: => F[B],

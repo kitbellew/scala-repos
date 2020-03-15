@@ -515,13 +515,15 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "report error if pull is called while op is terminating" in new OneBoundedSetup[
-      Int](Seq(new PushPullStage[Any, Any] {
-      override def onPull(ctx: Context[Any]): SyncDirective = ctx.pull()
-      override def onPush(elem: Any, ctx: Context[Any]): SyncDirective =
-        ctx.pull()
-      override def onUpstreamFinish(ctx: Context[Any]): TerminationDirective =
-        ctx.absorbTermination()
-    })) {
+      Int](
+      Seq(
+        new PushPullStage[Any, Any] {
+          override def onPull(ctx: Context[Any]): SyncDirective = ctx.pull()
+          override def onPush(elem: Any, ctx: Context[Any]): SyncDirective =
+            ctx.pull()
+          override def onUpstreamFinish(
+              ctx: Context[Any]): TerminationDirective = ctx.absorbTermination()
+        })) {
       lastEvents() should be(Set.empty)
 
       downstream.requestOne()

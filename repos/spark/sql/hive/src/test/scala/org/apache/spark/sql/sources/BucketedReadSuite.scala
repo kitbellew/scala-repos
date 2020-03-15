@@ -46,10 +46,12 @@ class BucketedReadSuite
     .map(i => (i % 5, i % 13, i.toString))
     .toDF("i", "j", "k")
   private val nullDF =
-    (for {
-      i <- 0 to 50
-      s <- Seq(null, "a", "b", "c", "d", "e", "f", null, "g")
-    } yield (i % 5, s, i % 13)).toDF("i", "j", "k")
+    (
+      for {
+        i <- 0 to 50
+        s <- Seq(null, "a", "b", "c", "d", "e", "f", null, "g")
+      } yield (i % 5, s, i % 13)
+    ).toDF("i", "j", "k")
 
   test("read bucketed data") {
     withTable("bucketed_table") {

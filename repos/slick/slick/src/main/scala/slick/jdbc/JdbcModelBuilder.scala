@@ -294,26 +294,27 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
           None
         else {
           // NOTE: When extending this list, please also extend the code generator accordingly
-          Some((v, tpe) match {
-            case (v, "Byte")   => v.toByte
-            case (v, "Short")  => v.toShort
-            case (v, "Int")    => v.toInt
-            case (v, "Long")   => v.toLong
-            case (v, "Double") => v.toDouble
-            case (v, "Float")  => v.toFloat
-            case (v, "Char") =>
-              v.length match {
-                case 1 => v(0)
-                case 3 => v(1) // quoted character
-              }
-            case (v, "String") if meta.typeName == "CHAR" =>
-              v.head // FIXME: check length
-            case (v, "scala.math.BigDecimal") =>
-              v // FIXME: probably we shouldn't use a string here
-            case (StringPattern(str), "String") => str
-            case ("TRUE", "Boolean")            => true
-            case ("FALSE", "Boolean")           => false
-          })
+          Some(
+            (v, tpe) match {
+              case (v, "Byte")   => v.toByte
+              case (v, "Short")  => v.toShort
+              case (v, "Int")    => v.toInt
+              case (v, "Long")   => v.toLong
+              case (v, "Double") => v.toDouble
+              case (v, "Float")  => v.toFloat
+              case (v, "Char") =>
+                v.length match {
+                  case 1 => v(0)
+                  case 3 => v(1) // quoted character
+                }
+              case (v, "String") if meta.typeName == "CHAR" =>
+                v.head // FIXME: check length
+              case (v, "scala.math.BigDecimal") =>
+                v // FIXME: probably we shouldn't use a string here
+              case (StringPattern(str), "String") => str
+              case ("TRUE", "Boolean")            => true
+              case ("FALSE", "Boolean")           => false
+            })
         }
       }
 
@@ -344,9 +345,9 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
               if (nullable)
                 d
               else
-                d.getOrElse(throw new SlickException(
-                  s"Invalid default value $d for non-nullable column ${tableBuilder.namer.qualifiedName.asString}.$name of type $tpe, meta data: " + meta.toString))
-            ))
+                d.getOrElse(
+                  throw new SlickException(
+                    s"Invalid default value $d for non-nullable column ${tableBuilder.namer.qualifiedName.asString}.$name of type $tpe, meta data: " + meta.toString))))
         }
 
     private def convenientDefault
@@ -375,21 +376,27 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
         nullable = nullable,
         options = Set() ++
           dbType.map(SqlProfile.ColumnOption.SqlType) ++
-          (if (autoInc)
-             Some(ColumnOption.AutoInc)
-           else
-             None) ++
-          (if (createPrimaryKeyColumnOption)
-             Some(ColumnOption.PrimaryKey)
-           else
-             None) ++
+          (
+            if (autoInc)
+              Some(ColumnOption.AutoInc)
+            else
+              None
+          ) ++
+          (
+            if (createPrimaryKeyColumnOption)
+              Some(ColumnOption.PrimaryKey)
+            else
+              None
+          ) ++
           length.map(
             RelationalProfile.ColumnOption.Length
               .apply(_, varying = varying)) ++
-          (if (!autoInc)
-             convenientDefault
-           else
-             None)
+          (
+            if (!autoInc)
+              convenientDefault
+            else
+              None
+          )
       )
   }
 
@@ -409,8 +416,7 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
           m.PrimaryKey(
             name,
             tableBuilder.namer.qualifiedName,
-            columns.map(tableBuilder.columnsByName))
-        )
+            columns.map(tableBuilder.columnsByName)))
   }
 
   class ForeignKeyBuilder(tableBuilder: TableBuilder, meta: Seq[MForeignKey]) {
@@ -457,19 +463,21 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * - non-unique indices matching foreign keys referencing columns
       * - indices matching foreign keys referenced columns */
     def enabled =
-      (
-        idx.indexType != DatabaseMetaData.tableIndexStatistic &&
-          (tableBuilder.mPrimaryKeys.isEmpty || tableBuilder.mPrimaryKeys
+      (idx.indexType != DatabaseMetaData.tableIndexStatistic &&
+        (
+          tableBuilder.mPrimaryKeys.isEmpty || tableBuilder.mPrimaryKeys
             .map(_.column)
-            .toSet != columns.toSet) &&
-          // preserve additional uniqueness constraints on (usually not unique) fk columns
-          (unique || tableBuilder.mForeignKeys.forall(
-            _.map(_.fkColumn).toSet != columns.toSet)) &&
-          // postgres may refer to column oid, skipping index for now. Maybe we should generate a column and include it
-          // instead. And maybe this should be moved into PostgresModelBuilder.
-          // TODO: This needs a test case!
-          columns.forall(tableBuilder.columnsByName.isDefinedAt)
-      )
+            .toSet != columns.toSet
+        ) &&
+        // preserve additional uniqueness constraints on (usually not unique) fk columns
+        (
+          unique || tableBuilder.mForeignKeys.forall(
+            _.map(_.fkColumn).toSet != columns.toSet)
+        ) &&
+        // postgres may refer to column oid, skipping index for now. Maybe we should generate a column and include it
+        // instead. And maybe this should be moved into PostgresModelBuilder.
+        // TODO: This needs a test case!
+        columns.forall(tableBuilder.columnsByName.isDefinedAt))
 
     def unique = !idx.nonUnique
     def columns = meta.flatMap(_.column)

@@ -29,8 +29,9 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala", "Some"), Some("map[B](f:A=>B):Option[B]")),
-            DocSig(DocFqn("scala", "Some"), Some("map(scala.Function1)"))
-          )) shouldBe Some(
+            DocSig(
+              DocFqn("scala", "Some"),
+              Some("map(scala.Function1)")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@map[B](f:A=>B):Option[B]")
 
         serv.resolve(
@@ -47,8 +48,7 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala", "Boolean"), None),
-            DocSig(DocFqn("", "boolean"), None)
-          )) shouldBe Some(
+            DocSig(DocFqn("", "boolean"), None))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Boolean")
 
         serv.resolve(
@@ -65,8 +65,9 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala", "Option"), Some("isDefined:Boolean")),
-            DocSig(DocFqn("scala", "Option"), Some("isDefined"))
-          )) shouldBe Some(
+            DocSig(
+              DocFqn("scala", "Option"),
+              Some("isDefined")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Option@isDefined:Boolean")
 
         serv.resolve(
@@ -85,8 +86,9 @@ class DocResolverSpec
             DocSig(
               DocFqn("scala", "Some"),
               Some("flatMap[B](f:A=>Option[B]):Option[B]")),
-            DocSig(DocFqn("scala", "Some"), Some("flatMap(scala.Function1)"))
-          )) shouldBe Some(
+            DocSig(
+              DocFqn("scala", "Some"),
+              Some("flatMap(scala.Function1)")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@flatMap[B](f:A=>Option[B]):Option[B]")
 
         serv.resolve(
@@ -127,8 +129,7 @@ class DocResolverSpec
               Some("fold[B](ifEmpty:=>B)(f:A=>B):B")),
             DocSig(
               DocFqn("scala", "Some"),
-              Some("fold(scala.<byname>, scala.Function1)"))
-          )) shouldBe Some(
+              Some("fold(scala.<byname>, scala.Function1)")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@fold[B](ifEmpty:=>B)(f:A=>B):B")
 
         serv.resolve(
@@ -168,8 +169,7 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala", "Some"), Some("mkString:String")),
-            DocSig(DocFqn("scala", "Some"), Some("mkString"))
-          )) shouldBe Some(
+            DocSig(DocFqn("scala", "Some"), Some("mkString")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@mkString:String")
 
         serv.resolve(
@@ -183,10 +183,14 @@ class DocResolverSpec
           )) shouldBe Some(
           "docs/guava-18.0-javadoc.jar/com/google/common/io/Files.html#simplifyPath(java.lang.String)")
 
-        serv.resolve(DocSigPair(
-          DocSig(DocFqn("scala", "Some"), Some("mkString(sep:String):String")),
-          DocSig(DocFqn("scala", "Some"), Some("mkString(java.lang.String)"))
-        )) shouldBe Some(
+        serv.resolve(
+          DocSigPair(
+            DocSig(
+              DocFqn("scala", "Some"),
+              Some("mkString(sep:String):String")),
+            DocSig(
+              DocFqn("scala", "Some"),
+              Some("mkString(java.lang.String)")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@mkString(sep:String):String")
 
         serv.resolve(
@@ -205,8 +209,9 @@ class DocResolverSpec
             DocSig(
               DocFqn("scala", "Some"),
               Some("getOrElse[B>:A](default:=>B):B")),
-            DocSig(DocFqn("scala", "Some"), Some("getOrElse(scala.<byname>)"))
-          )) shouldBe Some(
+            DocSig(
+              DocFqn("scala", "Some"),
+              Some("getOrElse(scala.<byname>)")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@getOrElse[B>:A](default:=>B):B")
 
         serv.resolve(
@@ -225,8 +230,9 @@ class DocResolverSpec
             DocSig(
               DocFqn("scala", "Some"),
               Some("grouped(size:Int):Iterator[Repr]")),
-            DocSig(DocFqn("scala", "Some"), Some("grouped(int)"))
-          )) shouldBe Some(
+            DocSig(
+              DocFqn("scala", "Some"),
+              Some("grouped(int)")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@grouped(size:Int):Iterator[Repr]")
 
         serv.resolve(
@@ -245,8 +251,9 @@ class DocResolverSpec
             DocSig(
               DocFqn("scala.collection.immutable", "List$"),
               Some("empty[A]:List[A]")),
-            DocSig(DocFqn("scala.collection.immutable", "List"), Some("empty"))
-          )) shouldBe Some(
+            DocSig(
+              DocFqn("scala.collection.immutable", "List"),
+              Some("empty")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.collection.immutable.List$@empty[A]:List[A]")
 
         serv.resolve(
@@ -377,8 +384,7 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala", "Some"), None),
-            DocSig(DocFqn("scala", "Some"), None)
-          )) shouldBe Some(
+            DocSig(DocFqn("scala", "Some"), None))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some")
 
         serv.resolve(
@@ -406,8 +412,7 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala", "Int"), None),
-            DocSig(DocFqn("", "int"), None)
-          )) shouldBe Some(
+            DocSig(DocFqn("", "int"), None))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Int")
 
         serv.resolve(
@@ -446,8 +451,9 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala", "Predef$$DummyImplicit$"), None),
-            DocSig(DocFqn("scala", "Predef.DummyImplicit"), None)
-          )) shouldBe Some(
+            DocSig(
+              DocFqn("scala", "Predef.DummyImplicit"),
+              None))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Predef$$DummyImplicit$")
 
         serv.resolve(
@@ -508,8 +514,7 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala.collection", ".package"), None),
-            DocSig(DocFqn("scala.collection", "package"), None)
-          )) shouldBe None
+            DocSig(DocFqn("scala.collection", "package"), None))) shouldBe None
 
         serv.resolve(
           DocSigPair(
@@ -525,8 +530,9 @@ class DocResolverSpec
         serv.resolve(
           DocSigPair(
             DocSig(DocFqn("scala", "package"), Some("Exception=Exception")),
-            DocSig(DocFqn("scala", "package"), Some("Exception"))
-          )) shouldBe Some(
+            DocSig(
+              DocFqn("scala", "package"),
+              Some("Exception")))) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.package@Exception=Exception")
 
         serv.resolve(
@@ -618,19 +624,15 @@ class DocResolverSpec
 
         val serv = resolver(Some("1.6"))
 
-        serv.resolve(
-          DocSig(DocFqn("java.io", "File"), None)
-        ) shouldBe Some(
+        serv.resolve(DocSig(DocFqn("java.io", "File"), None)) shouldBe Some(
           "http://docs.oracle.com/javase/6/docs/api/java/io/File.html")
 
         serv.resolve(
-          DocSig(DocFqn("java.util", "Map.Entry"), None)
-        ) shouldBe Some(
+          DocSig(DocFqn("java.util", "Map.Entry"), None)) shouldBe Some(
           "http://docs.oracle.com/javase/6/docs/api/java/util/Map.Entry.html")
 
         serv.resolve(
-          DocSig(DocFqn("java.util", "package"), None)
-        ) shouldBe Some(
+          DocSig(DocFqn("java.util", "package"), None)) shouldBe Some(
           "http://docs.oracle.com/javase/6/docs/api/java/util/package-summary.html")
 
       }
@@ -645,23 +647,24 @@ class DocResolverSpec
       serv.resolve(
         DocSig(
           DocFqn("com.github.dvdme.ForecastIOLib", "ForecastIO"),
-          Some("getForecast(com.eclipsesource.json.JsonObject)"))
-      ) shouldBe Some(
+          Some(
+            "getForecast(com.eclipsesource.json.JsonObject)"))) shouldBe Some(
         "docs/ForecastIOLib-1.5.1-javadoc.jar/com/github/dvdme/ForecastIOLib/ForecastIO.html#getForecast-com.eclipsesource.json.JsonObject-")
 
       serv.resolve(
-        DocSig(DocFqn("java.io", "File"), Some("delete()"))
-      ) shouldBe Some(
+        DocSig(DocFqn("java.io", "File"), Some("delete()"))) shouldBe Some(
         "http://docs.oracle.com/javase/8/docs/api/java/io/File.html#delete--")
 
       serv.resolve(
-        DocSig(DocFqn("java.lang", "Math"), Some("max(int, int)"))
-      ) shouldBe Some(
+        DocSig(
+          DocFqn("java.lang", "Math"),
+          Some("max(int, int)"))) shouldBe Some(
         "http://docs.oracle.com/javase/8/docs/api/java/lang/Math.html#max-int-int-")
 
       serv.resolve(
-        DocSig(DocFqn("java.util", "Arrays"), Some("binarySearch(int[], int)"))
-      ) shouldBe Some(
+        DocSig(
+          DocFqn("java.util", "Arrays"),
+          Some("binarySearch(int[], int)"))) shouldBe Some(
         "http://docs.oracle.com/javase/8/docs/api/java/util/Arrays.html#binarySearch-int:A-int-")
     }
   }

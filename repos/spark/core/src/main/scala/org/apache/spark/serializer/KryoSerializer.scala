@@ -192,226 +192,206 @@ class KryoSerializer(conf: SparkConf)
     kryo.register(
       classOf[Array[Tuple10[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(
-      classOf[
-        Array[Tuple11[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
+      classOf[Array[
+        Tuple11[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(
       classOf[Array[
         Tuple12[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple13[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple13[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple14[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple14[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple15[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple15[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple16[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple16[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple17[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple17[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple18[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple18[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple19[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple19[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple20[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple20[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple21[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple21[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
     kryo.register(
-      classOf[
-        Array[
-          Tuple22[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+      classOf[Array[Tuple22[
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any,
+        Any]]])
 
     // scalastyle:on
 
@@ -643,22 +623,17 @@ private[serializer] object KryoSerializer {
 
   private val toRegisterSerializer = Map[Class[_], KryoClassSerializer[_]](
     classOf[RoaringBitmap] -> new KryoClassSerializer[RoaringBitmap]() {
-      override def write(
-          kryo: Kryo,
-          output: KryoOutput,
-          bitmap: RoaringBitmap): Unit = {
+      override def write(kryo: Kryo, output: KryoOutput, bitmap: RoaringBitmap)
+          : Unit = {
         bitmap.serialize(new KryoOutputObjectOutputBridge(kryo, output))
       }
-      override def read(
-          kryo: Kryo,
-          input: KryoInput,
-          cls: Class[RoaringBitmap]): RoaringBitmap = {
+      override def read(kryo: Kryo, input: KryoInput, cls: Class[RoaringBitmap])
+          : RoaringBitmap = {
         val ret = new RoaringBitmap
         ret.deserialize(new KryoInputObjectInputBridge(kryo, input))
         ret
       }
-    }
-  )
+    })
 }
 
 /**

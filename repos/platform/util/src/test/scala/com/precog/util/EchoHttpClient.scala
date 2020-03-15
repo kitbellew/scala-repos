@@ -34,9 +34,11 @@ trait EchoHttpClientModule[M[+_]] extends HttpClientModule[M] {
         val json = JParser.parseUnsafe(data)
         val JString(field) = json \ "field"
         val JArray(elems) = json \ "data"
-        val out = jobject("data" -> JArray(elems map { e =>
-          jobject(jfield(field, e))
-        }))
+        val out = jobject(
+          "data" -> JArray(
+            elems map { e =>
+              jobject(jfield(field, e))
+            }))
         out.renderCompact
       }
     )
@@ -83,9 +85,9 @@ trait EchoHttpClientModule[M[+_]] extends HttpClientModule[M] {
     EitherT(M point \/-(response))
   }
 
-  private val urlMap: Map[
-    String,
-    Request[String] => EitherT[M, HttpClientError, Response[String]]] = Map(
+  private val urlMap
+      : Map[String, Request[String] => EitherT[M, HttpClientError, Response[
+        String]]] = Map(
     "http://wrapper" -> (wrapper(_)),
     "http://echo" -> (echo(_)),
     "http://options" -> (options(_)),
@@ -99,8 +101,10 @@ trait EchoHttpClientModule[M[+_]] extends HttpClientModule[M] {
         : EitherT[M, HttpClientError, Response[String]] =
       urlMap get baseUrl map (_(request)) getOrElse {
         EitherT(
-          M.point(-\/(HttpClientError
-            .ConnectionError(Some(baseUrl), new java.io.IOException))))
+          M.point(
+            -\/(
+              HttpClientError
+                .ConnectionError(Some(baseUrl), new java.io.IOException))))
       }
   }
 

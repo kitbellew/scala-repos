@@ -44,8 +44,9 @@ class MarathonStore[S <: MarathonState[_, S]](
           stateFromBytes(entity.bytes.toArray)
         }
       }
-      .recover(exceptionTransform(
-        s"Could not fetch ${ct.runtimeClass.getSimpleName} with key: $key"))
+      .recover(
+        exceptionTransform(
+          s"Could not fetch ${ct.runtimeClass.getSimpleName} with key: $key"))
   }
 
   def modify(key: String, onSuccess: (S) => Unit = _ => ())(
@@ -70,8 +71,9 @@ class MarathonStore[S <: MarathonState[_, S]](
           onSuccess(result)
           result
         }
-        .recover(exceptionTransform(
-          s"Could not modify ${ct.runtimeClass.getSimpleName} with key: $key"))
+        .recover(
+          exceptionTransform(
+            s"Could not modify ${ct.runtimeClass.getSimpleName} with key: $key"))
     }
   }
 
@@ -84,8 +86,9 @@ class MarathonStore[S <: MarathonState[_, S]](
           onSuccess()
           result
         }
-        .recover(exceptionTransform(
-          s"Could not expunge ${ct.runtimeClass.getSimpleName} with key: $key"))
+        .recover(
+          exceptionTransform(
+            s"Could not expunge ${ct.runtimeClass.getSimpleName} with key: $key"))
     }
 
   def names(): Future[Seq[String]] = {
@@ -97,8 +100,9 @@ class MarathonStore[S <: MarathonState[_, S]](
             name.replaceFirst(prefix, "")
         }
       }
-      .recover(exceptionTransform(
-        s"Could not list names for ${ct.runtimeClass.getSimpleName}"))
+      .recover(
+        exceptionTransform(
+          s"Could not list names for ${ct.runtimeClass.getSimpleName}"))
   }
 
   private[this] def exceptionTransform[T](

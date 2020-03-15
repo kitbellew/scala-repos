@@ -27,27 +27,28 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
     lookupItems.map { elem =>
       LookupElementBuilder
         .create(elem, lookupString(elem))
-        .withInsertHandler(new InsertHandler[LookupElement] {
-          override def handleInsert(
-              context: InsertionContext,
-              item: LookupElement): Unit = {
-            val topLevelEditor = InjectedLanguageUtil.getTopLevelEditor(
-              context.getEditor)
-            val templateState = TemplateManagerImpl.getTemplateState(
-              topLevelEditor)
-            if (templateState != null) {
-              val range = templateState.getCurrentVariableRange
-              if (range != null) {
-                //need to insert with FQNs
-                val newText = result(item.getObject.asInstanceOf[T])
-                topLevelEditor.getDocument.replaceString(
-                  range.getStartOffset,
-                  range.getEndOffset,
-                  newText)
+        .withInsertHandler(
+          new InsertHandler[LookupElement] {
+            override def handleInsert(
+                context: InsertionContext,
+                item: LookupElement): Unit = {
+              val topLevelEditor = InjectedLanguageUtil.getTopLevelEditor(
+                context.getEditor)
+              val templateState = TemplateManagerImpl.getTemplateState(
+                topLevelEditor)
+              if (templateState != null) {
+                val range = templateState.getCurrentVariableRange
+                if (range != null) {
+                  //need to insert with FQNs
+                  val newText = result(item.getObject.asInstanceOf[T])
+                  topLevelEditor.getDocument.replaceString(
+                    range.getStartOffset,
+                    range.getEndOffset,
+                    newText)
+                }
               }
             }
-          }
-        })
+          })
     }
 
   override def calculateResult(context: ExpressionContext): Result =

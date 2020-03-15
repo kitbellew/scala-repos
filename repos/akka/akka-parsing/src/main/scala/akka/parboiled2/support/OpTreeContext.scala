@@ -141,8 +141,9 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       RuleCall(
         Right(call),
         Literal(
-          Constant(callName(call) getOrElse c
-            .abort(call.pos, "Illegal rule call: " + call))))
+          Constant(
+            callName(call) getOrElse c
+              .abort(call.pos, "Illegal rule call: " + call))))
   }
 
   def OpTree(tree: Tree): OpTree =

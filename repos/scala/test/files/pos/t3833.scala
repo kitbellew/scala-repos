@@ -1,12 +1,14 @@
 object Main {
   def mkArray[T <: A](atype: Int): T#AType = {
-    (atype match {
-      case 1 =>
-        new Array[Int](10)
-      // Decompiled code: return (Object[])new int[10];
-      case 2 =>
-        new Array[Float](10)
-    }).asInstanceOf[T#AType]
+    (
+      atype match {
+        case 1 =>
+          new Array[Int](10)
+        // Decompiled code: return (Object[])new int[10];
+        case 2 =>
+          new Array[Float](10)
+      }
+    ).asInstanceOf[T#AType]
   }
 
   def main(args: Array[String]) {

@@ -250,15 +250,17 @@ class HeartbeatReceiverSuite
   }
 
   private def addExecutorAndVerify(executorId: String): Unit = {
-    assert(heartbeatReceiver.addExecutor(executorId).map { f =>
-      Await.result(f, 10.seconds)
-    } === Some(true))
+    assert(
+      heartbeatReceiver.addExecutor(executorId).map { f =>
+        Await.result(f, 10.seconds)
+      } === Some(true))
   }
 
   private def removeExecutorAndVerify(executorId: String): Unit = {
-    assert(heartbeatReceiver.removeExecutor(executorId).map { f =>
-      Await.result(f, 10.seconds)
-    } === Some(true))
+    assert(
+      heartbeatReceiver.removeExecutor(executorId).map { f =>
+        Await.result(f, 10.seconds)
+      } === Some(true))
   }
 
   private def getTrackedExecutors: Map[String, Long] = {

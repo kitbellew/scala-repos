@@ -95,8 +95,7 @@ object SampleData extends CValueGenerators {
             println("depth: " + depth);
             throw ex
         }
-      }
-    )
+      })
 
   def distinctBy[T, C[X] <: Seq[X], S](c: C[T])(key: T => S)(
       implicit cbf: CanBuildFrom[C[T], T, C[T]]): C[T] = {
@@ -130,8 +129,7 @@ object SampleData extends CValueGenerators {
         sampleData <- arbitrary(sample)
       } yield {
         SampleData(sampleData.data.sorted, sampleData.schema)
-      }
-    )
+      })
   }
 
   def shuffle(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
@@ -151,8 +149,7 @@ object SampleData extends CValueGenerators {
         sampleData <- arbitrary(sample)
       } yield {
         SampleData(sampleData.data.distinct, sampleData.schema)
-      }
-    )
+      })
   }
 
   def distinctKeys(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
@@ -161,8 +158,7 @@ object SampleData extends CValueGenerators {
         sampleData <- arbitrary(sample)
       } yield {
         SampleData(distinctBy(sampleData.data)(_ \ "keys"), sampleData.schema)
-      }
-    )
+      })
   }
 
   def distinctValues(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
@@ -171,8 +167,7 @@ object SampleData extends CValueGenerators {
         sampleData <- arbitrary(sample)
       } yield {
         SampleData(distinctBy(sampleData.data)(_ \ "value"), sampleData.schema)
-      }
-    )
+      })
   }
 
   def duplicateRows(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {

@@ -113,14 +113,13 @@ class IMain(
     null // wrapper exposing addURL
 
   def compilerClasspath: Seq[java.net.URL] =
-    (
-      if (isInitializeComplete)
-        global.classPath.asURLs
-      else
-        PathResolverFactory
-          .create(settings)
-          .resultAsURLs // the compiler's classpath
-    )
+    (if (isInitializeComplete)
+       global.classPath.asURLs
+     else
+       PathResolverFactory
+         .create(settings)
+         .resultAsURLs // the compiler's classpath
+     )
   def settings = initialSettings
   // Run the code body with the given boolean settings flipped to true.
   def withoutWarnings[T](body: => T): T =
@@ -208,15 +207,11 @@ class IMain(
     }
 
   def getClassIfDefined(path: String) =
-    (
-      noFatal(runtimeMirror staticClass path)
-        orElse noFatal(rootMirror staticClass path)
-    )
+    (noFatal(runtimeMirror staticClass path)
+      orElse noFatal(rootMirror staticClass path))
   def getModuleIfDefined(path: String) =
-    (
-      noFatal(runtimeMirror staticModule path)
-        orElse noFatal(rootMirror staticModule path)
-    )
+    (noFatal(runtimeMirror staticModule path)
+      orElse noFatal(rootMirror staticModule path))
 
   implicit class ReplTypeOps(tp: Type) {
     def andAlso(fn: Type => Type): Type =
@@ -344,13 +339,11 @@ class IMain(
   }
 
   def backticked(s: String): String =
-    (
-      (s split '.').toList map {
-        case "_"                               => "_"
-        case s if nme.keywords(newTermName(s)) => s"`$s`"
-        case s                                 => s
-      } mkString "."
-    )
+    ((s split '.').toList map {
+      case "_"                               => "_"
+      case s if nme.keywords(newTermName(s)) => s"`$s`"
+      case s                                 => s
+    } mkString ".")
   def readRootPath(readPath: String) = getModuleIfDefined(readPath)
 
   abstract class PhaseDependentOps {
@@ -587,8 +580,7 @@ class IMain(
         }
         subs map (t0 =>
           "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
-      }) mkString "\n"
-    )
+      }) mkString "\n")
     // If the last tree is a bare expression, pinpoint where it begins using the
     // AST node position and snap the line off there.  Rewrite the code embodied
     // by the last tree as a ValDef instead, so we can access the value.
@@ -645,8 +637,7 @@ class IMain(
                 case (label, s) => label + ": '" + s + "'"
               } mkString "\n")
             combined
-          }
-        )
+          })
         // Rewriting    "foo ; bar ; 123"
         // to           "foo ; bar ; val resXX = 123"
         requestFromLine(rewrittenLine, synthetic) match {
@@ -981,7 +972,9 @@ class IMain(
           case ((pos, msg)) :: rest =>
             val filtered = rest filter {
               case (pos0, msg0) =>
-                (msg != msg0) || (pos.lineContent.trim != pos0.lineContent.trim) || {
+                (
+                  msg != msg0
+                ) || (pos.lineContent.trim != pos0.lineContent.trim) || {
                   // same messages and same line content after whitespace removal
                   // but we want to let through multiple warnings on the same line
                   // from the same run.  The untrimmed line will be the same since
@@ -1174,8 +1167,7 @@ class IMain(
         evalResult,
         lineRep.printName,
         executionWrapper,
-        fullAccessPath
-      )
+        fullAccessPath)
 
       val postamble = """
       |    )
@@ -1303,12 +1295,14 @@ class IMain(
     if (mostRecentlyHandledTree.isEmpty)
       ""
     else
-      "" + (mostRecentlyHandledTree.get match {
-        case x: ValOrDefDef         => x.name
-        case Assign(Ident(name), _) => name
-        case ModuleDef(_, name, _)  => name
-        case _                      => naming.mostRecentVar
-      })
+      "" + (
+        mostRecentlyHandledTree.get match {
+          case x: ValOrDefDef         => x.name
+          case Assign(Ident(name), _) => name
+          case ModuleDef(_, name, _)  => name
+          case _                      => naming.mostRecentVar
+        }
+      )
 
   private var mostRecentWarnings: List[(global.Position, String)] = Nil
   def lastWarnings = mostRecentWarnings
@@ -1385,7 +1379,9 @@ class IMain(
       val staticSym = tpe.typeSymbol
       val runtimeSym = getClassIfDefined(clazz.getName)
 
-      if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) && (runtimeSym isSubClass staticSym))
+      if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) && (
+            runtimeSym isSubClass staticSym
+          ))
         runtimeSym.info
       else
         NoType
@@ -1393,13 +1389,7 @@ class IMain(
   }
 
   def cleanTypeAfterTyper(sym: => Symbol): Type = {
-    exitingTyper(
-      dealiasNonPublic(
-        dropNullaryMethod(
-          sym.tpe_*
-        )
-      )
-    )
+    exitingTyper(dealiasNonPublic(dropNullaryMethod(sym.tpe_*)))
   }
   def cleanMemberDecl(owner: Symbol, member: Name): Type =
     cleanTypeAfterTyper(owner.info nonPrivateDecl member)
@@ -1502,8 +1492,7 @@ class IMain(
     TypeStrings.quieter(
       exitingTyper(sym.defString),
       sym.owner.name + ".this.",
-      sym.owner.fullName + "."
-    )
+      sym.owner.fullName + ".")
   }
 
   def showCodeIfDebugging(code: String) {
@@ -1619,7 +1608,9 @@ object IMain {
     def maxStringLength: Int
     def isTruncating: Boolean
     def truncate(str: String): String = {
-      if (isTruncating && (maxStringLength != 0 && str.length > maxStringLength))
+      if (isTruncating && (
+            maxStringLength != 0 && str.length > maxStringLength
+          ))
         (str take maxStringLength - 3) + "..."
       else
         str

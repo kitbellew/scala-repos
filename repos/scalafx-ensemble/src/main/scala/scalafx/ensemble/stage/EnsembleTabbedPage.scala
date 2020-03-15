@@ -51,8 +51,7 @@ object EnsembleTabbedPage {
           new Tab() {
             text = "Source"
             closable = false
-          }
-        )
+          })
       }
 
     new EnsembleTabbedPage(tabbedPage, ctrlName, ctrlgrop)

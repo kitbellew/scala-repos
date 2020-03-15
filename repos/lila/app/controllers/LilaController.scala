@@ -50,8 +50,7 @@ private[controllers] trait LilaController
   protected def NoCache(res: Result): Result =
     res.withHeaders(
       CACHE_CONTROL -> "no-cache, no-store, must-revalidate",
-      EXPIRES -> "0"
-    )
+      EXPIRES -> "0")
 
   protected def Socket[A: FrameFormatter](
       f: Context => Fu[(Iteratee[A, _], Enumerator[A])]) =
@@ -156,11 +155,13 @@ private[controllers] trait LilaController
   protected def Firewall[A <: Result](a: => Fu[A])(
       implicit ctx: Context): Fu[Result] =
     Env.security.firewall.accepts(ctx.req) flatMap {
-      _ fold (a, {
-        fuccess {
-          Redirect(routes.Lobby.home())
+      _ fold (
+        a, {
+          fuccess {
+            Redirect(routes.Lobby.home())
+          }
         }
-      })
+      )
     }
 
   protected def NoEngine[A <: Result](a: => Fu[A])(
@@ -183,8 +184,7 @@ private[controllers] trait LilaController
             fuccess {
               Forbidden(
                 jsonError(
-                  s"Banned from playing for ${ban.remainingMinutes} minutes. Reason: Too many aborts or unplayed games"
-                )) as JSON
+                  s"Banned from playing for ${ban.remainingMinutes} minutes. Reason: Too many aborts or unplayed games")) as JSON
             }
         )
       }
@@ -200,10 +200,8 @@ private[controllers] trait LilaController
             fuccess {
               Forbidden(
                 jsonError(
-                  s"You are already playing ${current.opponent}"
-                )) as JSON
-            }
-        )
+                  s"You are already playing ${current.opponent}")) as JSON
+            })
       }
     }
 
@@ -247,8 +245,7 @@ private[controllers] trait LilaController
         err(form) map {
           BadRequest(_)
         },
-      data => op(data)
-    )
+      data => op(data))
 
   protected def FuRedirect(fua: Fu[Call]) =
     fua map {
@@ -353,10 +350,12 @@ private[controllers] trait LilaController
 
   protected def negotiate(html: => Fu[Result], api: Int => Fu[Result])(
       implicit ctx: Context): Fu[Result] =
-    (lila.api.Mobile.Api.requestVersion(ctx.req) match {
-      case Some(1) => api(1) map (_ as JSON)
-      case _       => html
-    }) map (_.withHeaders("Vary" -> "Accept"))
+    (
+      lila.api.Mobile.Api.requestVersion(ctx.req) match {
+        case Some(1) => api(1) map (_ as JSON)
+        case _       => html
+      }
+    ) map (_.withHeaders("Vary" -> "Accept"))
 
   protected def reqToCtx(req: RequestHeader): Fu[HeaderContext] =
     restoreUser(req) flatMap { d =>
@@ -384,11 +383,13 @@ private[controllers] trait LilaController
           import lila.hub.actorApi.relation._
           import akka.pattern.ask
           import makeTimeout.short
-          (Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
-            case OnlineFriends(users) => users
-          } recover {
-            case _ => Nil
-          }) zip
+          (
+            Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
+              case OnlineFriends(users) => users
+            } recover {
+              case _ => Nil
+            }
+          ) zip
             Env.team.api.nbRequests(me.id) zip
             Env.message.api.unreadIds(me.id) zip
             Env.challenge.api.countInFor(me.id)

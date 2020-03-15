@@ -112,8 +112,9 @@ object RootIsolator {
                       Rational(1, BigInt(1) << -exp)
                   // We map the upper bound for p back to a bound for the initial
                   // polynomial by using the inverse Mobius transformation.
-                  (Rational(d) * ub0 - Rational(b)) / (Rational(
-                    -c) * ub0 + Rational(a))
+                  (Rational(d) * ub0 - Rational(b)) / (
+                    Rational(-c) * ub0 + Rational(a)
+                  )
                 }
                 val i0 =
                   if (c == 0)

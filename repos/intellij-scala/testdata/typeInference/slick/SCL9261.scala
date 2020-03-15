@@ -12,8 +12,8 @@ object SCL9261 extends App {
 
   class B[T <: AbstractTable[_], U, P](cons: Tag => T with HasId[U, P])(implicit
       ushape: Shape[ColumnsShapeLevel, U, U, _],
-      pshape: Shape[ColumnsShapeLevel, P, U, P]
-  ) extends TableQuery(cons) {}
+      pshape: Shape[ColumnsShapeLevel, P, U, P])
+      extends TableQuery(cons) {}
 
   class T(tag: Tag)
       extends Table[(Long, String)](tag, "test")

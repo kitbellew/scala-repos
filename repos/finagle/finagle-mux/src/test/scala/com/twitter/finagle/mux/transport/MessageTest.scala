@@ -36,78 +36,104 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
   val goodDurationLeases = Seq(Message.Tlease.MinLease, Message.Tlease.MaxLease)
   val goodTimeLeases = Seq(Time.epoch, Time.now, Time.now + 5.minutes)
   val goodContexts =
-    Seq() ++ (for {
-      k <- goodKeys;
-      v <- goodBufs
-    } yield (k, v)).combinations(2).toSeq
+    Seq() ++ (
+      for {
+        k <- goodKeys;
+        v <- goodBufs
+      } yield (k, v)
+    ).combinations(2).toSeq
 
   test("d(e(m)) == m") {
     val ms = mutable.Buffer[Message]()
 
-    ms ++= (for {
-      tag <- goodTags
-      version <- goodVersions
-      ctx <- goodContexts
-    } yield Tinit(tag, version, ctx))
+    ms ++= (
+      for {
+        tag <- goodTags
+        version <- goodVersions
+        ctx <- goodContexts
+      } yield Tinit(tag, version, ctx)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-      version <- goodVersions
-      ctx <- goodContexts
-    } yield Rinit(tag, version, ctx))
+    ms ++= (
+      for {
+        tag <- goodTags
+        version <- goodVersions
+        ctx <- goodContexts
+      } yield Rinit(tag, version, ctx)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-      traceId <- goodTraceIds
-      body <- goodBufs
-    } yield Treq(tag, traceId, body))
+    ms ++= (
+      for {
+        tag <- goodTags
+        traceId <- goodTraceIds
+        body <- goodBufs
+      } yield Treq(tag, traceId, body)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-      body <- goodBufs
-    } yield RreqOk(tag, body))
+    ms ++= (
+      for {
+        tag <- goodTags
+        body <- goodBufs
+      } yield RreqOk(tag, body)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-    } yield Tdrain(tag))
+    ms ++= (
+      for {
+        tag <- goodTags
+      } yield Tdrain(tag)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-      reason <- goodStrings
-    } yield Tdiscarded(tag, reason))
+    ms ++= (
+      for {
+        tag <- goodTags
+        reason <- goodStrings
+      } yield Tdiscarded(tag, reason)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-      ctx <- goodContexts
-      dest <- goodDests
-      dtab <- goodDtabs
-      body <- goodBufs
-    } yield Tdispatch(tag, ctx, dest, dtab, body))
+    ms ++= (
+      for {
+        tag <- goodTags
+        ctx <- goodContexts
+        dest <- goodDests
+        dtab <- goodDtabs
+        body <- goodBufs
+      } yield Tdispatch(tag, ctx, dest, dtab, body)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-      ctx <- goodContexts
-      body <- goodBufs
-    } yield RdispatchOk(tag, ctx, body))
+    ms ++= (
+      for {
+        tag <- goodTags
+        ctx <- goodContexts
+        body <- goodBufs
+      } yield RdispatchOk(tag, ctx, body)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-      ctx <- goodContexts
-      err <- goodStrings
-    } yield RdispatchError(tag, ctx, err))
+    ms ++= (
+      for {
+        tag <- goodTags
+        ctx <- goodContexts
+        err <- goodStrings
+      } yield RdispatchError(tag, ctx, err)
+    )
 
-    ms ++= (for {
-      tag <- goodTags
-      ctx <- goodContexts
-    } yield RdispatchNack(tag, ctx))
+    ms ++= (
+      for {
+        tag <- goodTags
+        ctx <- goodContexts
+      } yield RdispatchNack(tag, ctx)
+    )
 
-    ms ++= (for {
-      lease <- goodDurationLeases
-    } yield Tlease(lease))
+    ms ++= (
+      for {
+        lease <- goodDurationLeases
+      } yield Tlease(lease)
+    )
 
-    ms ++= (for {
-      lease <- goodTimeLeases
-    } yield Tlease(lease))
+    ms ++= (
+      for {
+        lease <- goodTimeLeases
+      } yield Tlease(lease)
+    )
 
     def assertEquiv(a: Message, b: Message) =
       (a, b) match {
@@ -126,21 +152,25 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
   }
 
   test("not encode invalid messages") {
-    assert(intercept[BadMessageException] {
-      encode(Treq(-1, Some(tracing.Trace.nextId), body))
-    } == BadMessageException("invalid tag number -1"))
-    assert(intercept[BadMessageException] {
-      encode(Treq(1 << 24, Some(tracing.Trace.nextId), body))
-    } == BadMessageException("invalid tag number 16777216"))
+    assert(
+      intercept[BadMessageException] {
+        encode(Treq(-1, Some(tracing.Trace.nextId), body))
+      } == BadMessageException("invalid tag number -1"))
+    assert(
+      intercept[BadMessageException] {
+        encode(Treq(1 << 24, Some(tracing.Trace.nextId), body))
+      } == BadMessageException("invalid tag number 16777216"))
   }
 
   test("not decode invalid messages") {
-    assert(intercept[BadMessageException] {
-      decode(ChannelBuffers.EMPTY_BUFFER)
-    } == BadMessageException("short message"))
-    assert(intercept[BadMessageException] {
-      decode(ChannelBuffers.wrappedBuffer(Array[Byte](0, 0, 0, 1)))
-    } == BadMessageException("unknown message type: 0 [tag=1]"))
+    assert(
+      intercept[BadMessageException] {
+        decode(ChannelBuffers.EMPTY_BUFFER)
+      } == BadMessageException("short message"))
+    assert(
+      intercept[BadMessageException] {
+        decode(ChannelBuffers.wrappedBuffer(Array[Byte](0, 0, 0, 1)))
+      } == BadMessageException("unknown message type: 0 [tag=1]"))
   }
 
   test("extract control messages") {

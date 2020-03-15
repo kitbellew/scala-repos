@@ -155,12 +155,14 @@ trait BaseGetPoster {
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
       : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
-    val fullUrl = url + (params
-      .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
-      .mkString("&") match {
-      case s if s.length == 0 => "";
-      case s                  => "?" + s
-    })
+    val fullUrl = url + (
+      params
+        .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
+        .mkString("&") match {
+        case s if s.length == 0 => "";
+        case s                  => "?" + s
+      }
+    )
     val getter = new GetMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers)
@@ -184,12 +186,14 @@ trait BaseGetPoster {
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
       : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
-    val fullUrl = url + (params
-      .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
-      .mkString("&") match {
-      case s if s.length == 0 => "";
-      case s                  => "?" + s
-    })
+    val fullUrl = url + (
+      params
+        .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
+        .mkString("&") match {
+        case s if s.length == 0 => "";
+        case s                  => "?" + s
+      }
+    )
     val getter = new DeleteMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers)
@@ -296,19 +300,20 @@ trait BaseGetPoster {
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers)
       poster.setRequestHeader(name, value)
-    poster.setRequestEntity(new RequestEntity {
-      private val bytes = body
+    poster.setRequestEntity(
+      new RequestEntity {
+        private val bytes = body
 
-      def getContentLength() = bytes.length
+        def getContentLength() = bytes.length
 
-      def getContentType() = contentType
+        def getContentType() = contentType
 
-      def isRepeatable() = true
+        def isRepeatable() = true
 
-      def writeRequest(out: OutputStream) {
-        out.write(bytes)
-      }
-    })
+        def writeRequest(out: OutputStream) {
+          out.write(bytes)
+        }
+      })
     capture(url, httpClient, poster)
   }
 
@@ -372,19 +377,20 @@ trait BaseGetPoster {
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers)
       poster.setRequestHeader(name, value)
-    poster.setRequestEntity(new RequestEntity {
-      private val bytes = body
+    poster.setRequestEntity(
+      new RequestEntity {
+        private val bytes = body
 
-      def getContentLength() = bytes.length
+        def getContentLength() = bytes.length
 
-      def getContentType() = contentType
+        def getContentType() = contentType
 
-      def isRepeatable() = true
+        def isRepeatable() = true
 
-      def writeRequest(out: OutputStream) {
-        out.write(bytes)
-      }
-    })
+        def writeRequest(out: OutputStream) {
+          out.write(bytes)
+        }
+      })
 
     capture(url, httpClient, poster)
   }
@@ -565,11 +571,12 @@ trait TestFramework extends TestKit {
       for (t <- (1 to cnt).toList)
         yield {
           val th =
-            new Thread(new Runnable {
-              def run {
-                f(t)
-              }
-            })
+            new Thread(
+              new Runnable {
+                def run {
+                  f(t)
+                }
+              })
           th.start
           th
         }
@@ -654,13 +661,15 @@ object TestHelpers {
       headers: List[(String, String)],
       respHeaders: Map[String, List[String]]): Box[String] = {
     val ret =
-      (headers
-        .filter {
-          case ("Cookie", _) => true;
-          case _             => false
-        }
-        .map(_._2) :::
-        respHeaders.get("Set-Cookie").toList.flatMap(x => x)) match {
+      (
+        headers
+          .filter {
+            case ("Cookie", _) => true;
+            case _             => false
+          }
+          .map(_._2) :::
+          respHeaders.get("Set-Cookie").toList.flatMap(x => x)
+      ) match {
         case Nil       => Empty
         case "" :: Nil => Empty
         case "" :: xs  => Full(xs.mkString(","))

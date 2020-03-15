@@ -9,10 +9,12 @@ object LameName {
     (lameSuffixes exists name.endsWith)
   }
 
-  private val lamePrefixes = "_" :: "-" :: (for {
-    title <- ("wg" :: "ncfigl".toList).map(_ + "m")
-    sep <- List("-", "_")
-  } yield s"$title$sep") ::: (0 to 9).toList map (_.toString)
+  private val lamePrefixes = "_" :: "-" :: (
+    for {
+      title <- ("wg" :: "ncfigl".toList).map(_ + "m")
+      sep <- List("-", "_")
+    } yield s"$title$sep"
+  ) ::: (0 to 9).toList map (_.toString)
 
   private val lameSuffixes = List("-", "_")
 

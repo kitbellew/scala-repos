@@ -21,8 +21,9 @@ final class ChallengeApi(
   import Challenge._
 
   def allFor(userId: User.ID): Fu[AllChallenges] =
-    createdByDestId(userId) zip createdByChallengerId(
-      userId) map (AllChallenges.apply _).tupled
+    createdByDestId(userId) zip createdByChallengerId(userId) map (
+      AllChallenges.apply _
+    ).tupled
 
   def create(c: Challenge): Funit = {
     repo like c flatMap {

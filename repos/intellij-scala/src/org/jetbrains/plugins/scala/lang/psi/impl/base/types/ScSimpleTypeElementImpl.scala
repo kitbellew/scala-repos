@@ -123,52 +123,55 @@ class ScSimpleTypeElementImpl(node: ASTNode)
       constr match {
         case fun: ScFunction =>
           (
-            fun.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
-              val paramType: ScType = subst.subst(
-                p.getType(TypingContext.empty).getOrAny)
-              new Parameter(
-                p.name,
-                p.deprecatedName,
-                paramType,
-                paramType,
-                p.isDefaultParam,
-                p.isRepeatedParameter,
-                p.isCallByNameParameter,
-                p.index,
-                Some(p),
-                p.getDefaultExpression.flatMap(_.getType().toOption))
-            }),
+            fun.effectiveParameterClauses.map(
+              _.effectiveParameters.map { p =>
+                val paramType: ScType = subst.subst(
+                  p.getType(TypingContext.empty).getOrAny)
+                new Parameter(
+                  p.name,
+                  p.deprecatedName,
+                  paramType,
+                  paramType,
+                  p.isDefaultParam,
+                  p.isRepeatedParameter,
+                  p.isCallByNameParameter,
+                  p.index,
+                  Some(p),
+                  p.getDefaultExpression.flatMap(_.getType().toOption))
+              }),
             fun.parameterList.clauses.lastOption.exists(_.isImplicit))
         case f: ScPrimaryConstructor =>
           (
-            f.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
-              val paramType: ScType = subst.subst(
-                p.getType(TypingContext.empty).getOrAny)
-              new Parameter(
-                p.name,
-                p.deprecatedName,
-                paramType,
-                paramType,
-                p.isDefaultParam,
-                p.isRepeatedParameter,
-                p.isCallByNameParameter,
-                p.index,
-                Some(p),
-                p.getDefaultExpression.flatMap(_.getType().toOption))
-            }),
+            f.effectiveParameterClauses.map(
+              _.effectiveParameters.map { p =>
+                val paramType: ScType = subst.subst(
+                  p.getType(TypingContext.empty).getOrAny)
+                new Parameter(
+                  p.name,
+                  p.deprecatedName,
+                  paramType,
+                  paramType,
+                  p.isDefaultParam,
+                  p.isRepeatedParameter,
+                  p.isCallByNameParameter,
+                  p.index,
+                  Some(p),
+                  p.getDefaultExpression.flatMap(_.getType().toOption))
+              }),
             f.parameterList.clauses.lastOption.exists(_.isImplicit))
         case m: PsiMethod =>
           (
-            Seq(m.getParameterList.getParameters.map { p =>
-              new Parameter(
-                "",
-                None,
-                p.exactParamType(),
-                false,
-                p.isVarArgs,
-                false,
-                p.index)
-            }),
+            Seq(
+              m.getParameterList.getParameters.map { p =>
+                new Parameter(
+                  "",
+                  None,
+                  p.exactParamType(),
+                  false,
+                  p.isVarArgs,
+                  false,
+                  p.index)
+              }),
             false)
       }
     }
@@ -495,8 +498,10 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   to: ScTypeParametersOwner,
                   subst: ScSubstitutor))
               if constrRef && to.isInstanceOf[PsiNamedElement] &&
-                (to.typeParameters.isEmpty || getContext
-                  .isInstanceOf[ScParameterizedTypeElement]) =>
+                (
+                  to.typeParameters.isEmpty || getContext
+                    .isInstanceOf[ScParameterizedTypeElement]
+                ) =>
             val (tp, ss) =
               getContext match {
                 case p: ScParameterizedTypeElement
@@ -508,8 +513,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   (Success(parameterized, Some(this)), ss)
                 case _ =>
                   (
-                    ScSimpleTypeElementImpl
-                      .calculateReferenceType(ref, shapesOnly = false),
+                    ScSimpleTypeElementImpl.calculateReferenceType(
+                      ref,
+                      shapesOnly = false),
                     ScSubstitutor.empty)
               }
             updateImplicitsWithoutLocalTypeInference(tp, ss)
@@ -518,8 +524,10 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   to: PsiTypeParameterListOwner,
                   subst: ScSubstitutor))
               if constrRef && to.isInstanceOf[PsiNamedElement] &&
-                (to.getTypeParameters.isEmpty || getContext
-                  .isInstanceOf[ScParameterizedTypeElement]) =>
+                (
+                  to.getTypeParameters.isEmpty || getContext
+                    .isInstanceOf[ScParameterizedTypeElement]
+                ) =>
             val (result, ss) =
               getContext match {
                 case p: ScParameterizedTypeElement
@@ -531,8 +539,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   (Success(parameterized, Some(this)), ss)
                 case _ =>
                   (
-                    ScSimpleTypeElementImpl
-                      .calculateReferenceType(ref, shapesOnly = false),
+                    ScSimpleTypeElementImpl.calculateReferenceType(
+                      ref,
+                      shapesOnly = false),
                     ScSubstitutor.empty)
               }
             updateImplicitsWithoutLocalTypeInference(result, ss)
@@ -587,8 +596,7 @@ object ScSimpleTypeElementImpl {
         }
       case superRef: ScSuperReference =>
         val template = superRef.drvTemplate.getOrElse(
-          return Failure("Cannot find enclosing container", Some(superRef))
-        )
+          return Failure("Cannot find enclosing container", Some(superRef)))
         Success(ScThisType(template), Some(path))
     }
   }
@@ -597,35 +605,41 @@ object ScSimpleTypeElementImpl {
       ref: ScStableCodeReferenceElement,
       shapesOnly: Boolean): TypeResult[ScType] = {
     val (resolvedElement, fromType) =
-      (if (!shapesOnly) {
-         if (ref.isConstructorReference) {
-           ref.resolveNoConstructor match {
-             case Array(
-                   r @ ScalaResolveResult(
-                     to: ScTypeParametersOwner,
-                     subst: ScSubstitutor))
-                 if to.isInstanceOf[PsiNamedElement] &&
-                   (to.typeParameters.isEmpty || ref.getContext
-                     .isInstanceOf[ScParameterizedTypeElement]) =>
-               Some(r)
-             case Array(
-                   r @ ScalaResolveResult(
-                     to: PsiTypeParameterListOwner,
-                     subst: ScSubstitutor))
-                 if to.isInstanceOf[PsiNamedElement] &&
-                   (to.getTypeParameters.isEmpty || ref.getContext
-                     .isInstanceOf[ScParameterizedTypeElement]) =>
-               Some(r)
-             case _ => ref.bind()
-           }
-         } else
-           ref.bind()
-       } else {
-         ref.shapeResolve match {
-           case Array(r: ScalaResolveResult) => Some(r)
-           case _                            => None
-         }
-       }) match {
+      (
+        if (!shapesOnly) {
+          if (ref.isConstructorReference) {
+            ref.resolveNoConstructor match {
+              case Array(
+                    r @ ScalaResolveResult(
+                      to: ScTypeParametersOwner,
+                      subst: ScSubstitutor))
+                  if to.isInstanceOf[PsiNamedElement] &&
+                    (
+                      to.typeParameters.isEmpty || ref.getContext
+                        .isInstanceOf[ScParameterizedTypeElement]
+                    ) =>
+                Some(r)
+              case Array(
+                    r @ ScalaResolveResult(
+                      to: PsiTypeParameterListOwner,
+                      subst: ScSubstitutor))
+                  if to.isInstanceOf[PsiNamedElement] &&
+                    (
+                      to.getTypeParameters.isEmpty || ref.getContext
+                        .isInstanceOf[ScParameterizedTypeElement]
+                    ) =>
+                Some(r)
+              case _ => ref.bind()
+            }
+          } else
+            ref.bind()
+        } else {
+          ref.shapeResolve match {
+            case Array(r: ScalaResolveResult) => Some(r)
+            case _                            => None
+          }
+        }
+      ) match {
         case Some(r @ ScalaResolveResult(n: PsiMethod, _)) if n.isConstructor =>
           (n.containingClass, r.fromType)
         case Some(r @ ScalaResolveResult(n: PsiNamedElement, _)) =>

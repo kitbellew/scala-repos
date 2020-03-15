@@ -31,10 +31,11 @@ object Flow {
   def fromProcessorMat[I, O, Mat](
       processorFactory: function.Creator[Pair[Processor[I, O], Mat]])
       : javadsl.Flow[I, O, Mat] =
-    new Flow(scaladsl.Flow.fromProcessorMat { () ⇒
-      val javaPair = processorFactory.create()
-      (javaPair.first, javaPair.second)
-    })
+    new Flow(
+      scaladsl.Flow.fromProcessorMat { () ⇒
+        val javaPair = processorFactory.create()
+        (javaPair.first, javaPair.second)
+      })
 
   /**
     * Creates a [Flow] which will use the given function to transform its inputs to outputs. It is equivalent
@@ -323,9 +324,10 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def mapConcat[T](f: function.Function[Out, java.lang.Iterable[T]])
       : javadsl.Flow[In, T, Mat] =
-    new Flow(delegate.mapConcat { elem ⇒
-      Util.immutableSeq(f(elem))
-    })
+    new Flow(
+      delegate.mapConcat { elem ⇒
+        Util.immutableSeq(f(elem))
+      })
 
   /**
     * Transform each input element into an `Iterable` of output elements that is
@@ -354,10 +356,11 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]])
       : javadsl.Flow[In, T, Mat] =
-    new Flow(delegate.statefulMapConcat { () ⇒
-      val fun = f.create()
-      elem ⇒ Util.immutableSeq(fun(elem))
-    })
+    new Flow(
+      delegate.statefulMapConcat { () ⇒
+        val fun = f.create()
+        elem ⇒ Util.immutableSeq(fun(elem))
+      })
 
   /**
     * Transform this stream by applying the given function to each of the elements
@@ -1094,15 +1097,13 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     *
     * '''Cancels when''' downstream cancels or substream cancels
     */
-  def prefixAndTail(n: Int): javadsl.Flow[
-    In,
-    akka.japi.Pair[
-      java.util.List[Out @uncheckedVariance],
-      javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
-    new Flow(delegate.prefixAndTail(n).map {
-      case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
-    })
+  def prefixAndTail(n: Int): javadsl.Flow[In, akka.japi.Pair[
+    java.util.List[Out @uncheckedVariance],
+    javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
+    new Flow(
+      delegate.prefixAndTail(n).map {
+        case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+      })
 
   /**
     * This operation demultiplexes the incoming stream into separate output
@@ -1606,10 +1607,9 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
       Flow.fromGraph(
         GraphDSL.create(
           that,
-          new function.Function2[
-            GraphDSL.Builder[M],
-            SourceShape[T],
-            FlowShape[Out, Out @uncheckedVariance Pair T]] {
+          new function.Function2[GraphDSL.Builder[M], SourceShape[T], FlowShape[
+            Out,
+            Out @uncheckedVariance Pair T]] {
             def apply(b: GraphDSL.Builder[M], s: SourceShape[T])
                 : FlowShape[Out, Out @uncheckedVariance Pair T] = {
               val zip: FanInShape2[Out, T, Out Pair T] = b.add(

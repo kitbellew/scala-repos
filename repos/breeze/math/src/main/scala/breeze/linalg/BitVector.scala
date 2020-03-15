@@ -51,12 +51,14 @@ class BitVector(
       var nextReady = true
       var _next = firstBit
       def hasNext: Boolean =
-        (_next >= 0) && (nextReady || {
-          _next += 1
-          _next = data.nextSetBit(_next)
-          nextReady = _next >= 0
-          nextReady
-        })
+        (_next >= 0) && (
+          nextReady || {
+            _next += 1
+            _next = data.nextSetBit(_next)
+            nextReady = _next >= 0
+            nextReady
+          }
+        )
 
       def next(): Int = {
         if (!nextReady) {

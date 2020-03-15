@@ -39,10 +39,11 @@ case class DataSource(val dsp: DataSourceParams)
   override def read(
       sc: SparkContext): Seq[(Null, RDD[Rating], RDD[((Int, Int), Double)])] = {
     val data = sc.textFile(dsp.filepath)
-    val ratings: RDD[Rating] = data.map(_.split("::") match {
-      case Array(user, item, rate) =>
-        Rating(user.toInt, item.toInt, rate.toDouble)
-    })
+    val ratings: RDD[Rating] = data.map(
+      _.split("::") match {
+        case Array(user, item, rate) =>
+          Rating(user.toInt, item.toInt, rate.toDouble)
+      })
 
     val featureTargets: RDD[((Int, Int), Double)] = ratings.map {
       case Rating(user, product, rate) => ((user, product), rate)
@@ -86,12 +87,8 @@ object PMatrixFactorizationModel
 }
 
 class ALSAlgorithm(val ap: AlgorithmParams)
-    extends PAlgorithm[
-      AlgorithmParams,
-      RDD[Rating],
-      PMatrixFactorizationModel,
-      (Int, Int),
-      Double] {
+    extends PAlgorithm[AlgorithmParams, RDD[
+      Rating], PMatrixFactorizationModel, (Int, Int), Double] {
 
   def train(data: RDD[Rating]): PMatrixFactorizationModel = {
     val m = ALS.train(data, ap.rank, ap.numIterations, ap.lambda)
@@ -142,10 +139,7 @@ object Run {
       algorithmClassMapOpt = Some(Map("" -> classOf[ALSAlgorithm])),
       algorithmParamsList = Seq(("", ap)),
       servingClassOpt = Some(LFirstServing(classOf[ALSAlgorithm])),
-      params = WorkflowParams(
-        batch = "Imagine: P Recommendations",
-        verbose = 1
-      )
+      params = WorkflowParams(batch = "Imagine: P Recommendations", verbose = 1)
     )
   }
 }
@@ -168,5 +162,4 @@ class Tuple2IntSerializer
         },
         {
           case x: (Int, Int) => JArray(List(JInt(x._1), JInt(x._2)))
-        }
-      ))
+        }))

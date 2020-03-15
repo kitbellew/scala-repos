@@ -22,8 +22,7 @@ object ScriptSpec extends Specification {
     "not delimit statements on double-semicolons, rather escaping them to a single semicolon" in {
       val statements = IndexedSeq(
         "SELECT * FROM punctuation WHERE characters = ';' OR characters = ';;'",
-        "DROP the_beat"
-      )
+        "DROP the_beat")
 
       // double the semicolons
       val statementsWithEscapeSequence = statements.map(_.replace(";", ";;"))
@@ -71,11 +70,10 @@ object ScriptSpec extends Specification {
 
       val downRest = (1 to 9).reverse.map(i =>
         Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
-      val upRest = Evolution(
-        9,
-        "DifferentDummySQLUP",
-        "DifferentDummySQLDOWN") +: (1 to 8).reverse.map(i =>
-        Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
+      val upRest =
+        Evolution(9, "DifferentDummySQLUP", "DifferentDummySQLDOWN") +: (
+          1 to 8
+        ).reverse.map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
 
       val (conflictingDowns, conflictingUps) = Evolutions.conflictings(
         downRest,

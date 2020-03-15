@@ -197,8 +197,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
         Row(1, "A", 1, "a"),
         Row(2, "B", 2, "b"),
         Row(3, "C", 3, "c"),
-        Row(4, "D", 4, "d")
-      ))
+        Row(4, "D", 4, "d")))
   }
 
   test("inner join ON, one match per row") {
@@ -208,8 +207,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
         Row(1, "A", 1, "a"),
         Row(2, "B", 2, "b"),
         Row(3, "C", 3, "c"),
-        Row(4, "D", 4, "d")
-      ))
+        Row(4, "D", 4, "d")))
   }
 
   test("inner join, where, multiple matches") {
@@ -220,8 +218,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
       Row(1, 1, 1, 1) ::
         Row(1, 1, 1, 2) ::
         Row(1, 2, 1, 1) ::
-        Row(1, 2, 1, 2) :: Nil
-    )
+        Row(1, 2, 1, 2) :: Nil)
   }
 
   test("inner join, no matches") {
@@ -485,8 +482,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
       Seq(
         (
           "SELECT * FROM testData LEFT SEMI JOIN testData2 ON key = a",
-          classOf[BroadcastHashJoin])
-      ).foreach {
+          classOf[BroadcastHashJoin])).foreach {
         case (query, joinClass) => assertJoin(query, joinClass)
       }
     }
@@ -495,8 +491,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
       Seq(
         (
           "SELECT * FROM testData LEFT SEMI JOIN testData2 ON key = a",
-          classOf[ShuffledHashJoin])
-      ).foreach {
+          classOf[ShuffledHashJoin])).foreach {
         case (query, joinClass) => assertJoin(query, joinClass)
       }
     }

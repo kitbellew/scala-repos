@@ -84,9 +84,10 @@ object RValue {
   def fromJValue(jv: JValue): RValue =
     jv match {
       case JObject(fields) =>
-        RObject(fields map {
-          case (k, v) => (k, fromJValue(v))
-        })
+        RObject(
+          fields map {
+            case (k, v) => (k, fromJValue(v))
+          })
       case JArray(elements) => RArray(elements map fromJValue)
       case other            => CType.toCValue(other)
     }
@@ -107,10 +108,12 @@ object RValue {
           def update(l: List[RValue], j: Int): List[RValue] =
             l match {
               case x :: xs =>
-                (if (j == i)
-                   rec(x, rem, v)
-                 else
-                   x) :: update(xs, j + 1)
+                (
+                  if (j == i)
+                    rec(x, rem, v)
+                  else
+                    x
+                ) :: update(xs, j + 1)
               case Nil => Nil
             }
 
@@ -157,8 +160,9 @@ object RValue {
             }
 
           case x =>
-            sys.error("RValue insert would overwrite existing data: " + x + " cannot be updated to " + value + " at " + path +
-              " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
+            sys.error(
+              "RValue insert would overwrite existing data: " + x + " cannot be updated to " + value + " at " + path +
+                " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
         }
       }
     }
@@ -169,9 +173,10 @@ object RValue {
 
 case class RObject(fields: Map[String, RValue]) extends RValue {
   def toJValue =
-    JObject(fields map {
-      case (k, v) => (k, v.toJValue)
-    })
+    JObject(
+      fields map {
+        case (k, v) => (k, v.toJValue)
+      })
   def \(fieldName: String): RValue = fields(fieldName)
 }
 
@@ -182,9 +187,10 @@ object RObject {
 
 case class RArray(elements: List[RValue]) extends RValue {
   def toJValue =
-    JArray(elements map {
-      _.toJValue
-    })
+    JArray(
+      elements map {
+        _.toJValue
+      })
   def \(fieldName: String): RValue = CUndefined
 }
 

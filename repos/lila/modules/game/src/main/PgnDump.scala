@@ -40,8 +40,7 @@ final class PgnDump(
             dateFormat.print(game.createdAt),
             player(game.whitePlayer, wu),
             player(game.blackPlayer, bu),
-            game.id
-          ),
+            game.id),
           "_")
     }
 
@@ -49,7 +48,9 @@ final class PgnDump(
 
   private def gameLightUsers(
       game: Game): (Option[LightUser], Option[LightUser]) =
-    (game.whitePlayer.userId ?? getLightUser) -> (game.blackPlayer.userId ?? getLightUser)
+    (game.whitePlayer.userId ?? getLightUser) -> (
+      game.blackPlayer.userId ?? getLightUser
+    )
 
   private val dateFormat = DateTimeFormat forPattern "yyyy.MM.dd";
 
@@ -111,11 +112,8 @@ final class PgnDump(
               }
             }
           )
-        ) ::: customStartPosition(game.variant).??(
-          List(
-            Tag(_.FEN, initialFen | "?"),
-            Tag("SetUp", "1")
-          ))
+        ) ::: customStartPosition(game.variant)
+          .??(List(Tag(_.FEN, initialFen | "?"), Tag("SetUp", "1")))
     }
 
   private def turns(moves: List[String], from: Int): List[chessPgn.Turn] =

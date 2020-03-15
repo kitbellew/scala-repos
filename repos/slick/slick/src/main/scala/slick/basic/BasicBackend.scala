@@ -237,10 +237,11 @@ trait BasicBackend { self =>
           val p = Promise[R]()
           runInContext(base, ctx, streaming, topLevel).onComplete { t1 =>
             try {
-              val a2 = f(t1 match {
-                case Success(_) => None
-                case Failure(t) => Some(t)
-              })
+              val a2 = f(
+                t1 match {
+                  case Success(_) => None
+                  case Failure(t) => Some(t)
+                })
               runInContext(a2, ctx, false, false).onComplete { t2 =>
                 if (t2.isFailure && (t1.isSuccess || !keepFailure))
                   p.complete(t2.asInstanceOf[Failure[R]])
@@ -249,10 +250,12 @@ trait BasicBackend { self =>
               }(DBIO.sameThreadExecutionContext)
             } catch {
               case NonFatal(ex) =>
-                throw (t1 match {
-                  case Failure(t) if keepFailure => t
-                  case _                         => ex
-                })
+                throw (
+                  t1 match {
+                    case Failure(t) if keepFailure => t
+                    case _                         => ex
+                  }
+                )
             }
           }(ctx.getEC(ec))
           p.future
@@ -325,31 +328,32 @@ trait BasicBackend { self =>
       ctx
         .getEC(synchronousExecutionContext)
         .prepare
-        .execute(new AsyncExecutor.PrioritizedRunnable {
-          def highPriority = highPrio
-          def run: Unit =
-            try {
-              ctx.readSync
-              val res =
-                try {
-                  acquireSession(ctx)
-                  val res =
-                    try a.run(ctx)
-                    catch {
-                      case NonFatal(ex) =>
-                        releaseSession(ctx, true)
-                        throw ex
-                    }
-                  releaseSession(ctx, false)
-                  res
-                } finally {
-                  ctx.sync = 0
-                }
-              promise.success(res)
-            } catch {
-              case NonFatal(ex) => promise.tryFailure(ex)
-            }
-        })
+        .execute(
+          new AsyncExecutor.PrioritizedRunnable {
+            def highPriority = highPrio
+            def run: Unit =
+              try {
+                ctx.readSync
+                val res =
+                  try {
+                    acquireSession(ctx)
+                    val res =
+                      try a.run(ctx)
+                      catch {
+                        case NonFatal(ex) =>
+                          releaseSession(ctx, true)
+                          throw ex
+                      }
+                    releaseSession(ctx, false)
+                    res
+                  } finally {
+                    ctx.sync = 0
+                  }
+                promise.success(res)
+              } catch {
+                case NonFatal(ex) => promise.tryFailure(ex)
+              }
+          })
       promise.future
     }
 
@@ -372,96 +376,101 @@ trait BasicBackend { self =>
         ctx
           .getEC(synchronousExecutionContext)
           .prepare
-          .execute(new AsyncExecutor.PrioritizedRunnable {
-            private[this] def str(l: Long) =
-              if (l != Long.MaxValue)
-                l
-              else if (GlobalConfig.unicodeDump)
-                "\u221E"
-              else
-                "oo"
+          .execute(
+            new AsyncExecutor.PrioritizedRunnable {
+              private[this] def str(l: Long) =
+                if (l != Long.MaxValue)
+                  l
+                else if (GlobalConfig.unicodeDump)
+                  "\u221E"
+                else
+                  "oo"
 
-            def highPriority = highPrio
+              def highPriority = highPrio
 
-            def run: Unit =
-              try {
-                val debug = streamLogger.isDebugEnabled
-                var state = initialState
-                ctx.readSync
-                if (state eq null)
-                  acquireSession(ctx)
-                var demand = ctx.demandBatch
-                var realDemand =
-                  if (demand < 0)
-                    demand - Long.MinValue
-                  else
-                    demand
-                do {
-                  try {
-                    if (debug)
-                      streamLogger.debug(
-                        (if (state eq null)
-                           "Starting initial"
-                         else
-                           "Restarting ") + " streaming action, realDemand = " + str(
-                          realDemand))
-                    if (ctx.cancelled) {
-                      if (ctx.deferredError ne null)
-                        throw ctx.deferredError
-                      if (state ne null) { // streaming cancelled before finishing
-                        val oldState = state
-                        state = null
-                        a.cancelStream(ctx, oldState)
-                      }
-                    } else if ((realDemand > 0 || (state eq null))) {
-                      val oldState = state
-                      state = null
-                      state = a.emitStream(ctx, realDemand, oldState)
-                    }
-                    if (state eq null) { // streaming finished and cleaned up
-                      releaseSession(ctx, true)
-                      ctx.streamingResultPromise.trySuccess(null)
-                    }
-                  } catch {
-                    case NonFatal(ex) =>
-                      if (state ne null)
-                        try a.cancelStream(ctx, state)
-                        catch ignoreFollowOnError
-                      releaseSession(ctx, true)
-                      throw ex
-                  } finally {
-                    ctx.streamState = state
-                    ctx.sync = 0
-                  }
-                  if (debug) {
-                    if (state eq null)
-                      streamLogger.debug(
-                        s"Sent up to ${str(realDemand)} elements - Stream " + (if (ctx.cancelled)
-                                                                                 "cancelled"
-                                                                               else
-                                                                                 "completely delivered"))
-                    else
-                      streamLogger.debug(
-                        s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")
-                  }
-                  demand = ctx.delivered(demand)
-                  realDemand =
+              def run: Unit =
+                try {
+                  val debug = streamLogger.isDebugEnabled
+                  var state = initialState
+                  ctx.readSync
+                  if (state eq null)
+                    acquireSession(ctx)
+                  var demand = ctx.demandBatch
+                  var realDemand =
                     if (demand < 0)
                       demand - Long.MinValue
                     else
                       demand
-                } while ((state ne null) && realDemand > 0)
-                if (debug) {
-                  if (state ne null)
-                    streamLogger.debug(
-                      "Suspending streaming action with continuation (more data available)")
-                  else
-                    streamLogger.debug("Finished streaming action")
+                  do {
+                    try {
+                      if (debug)
+                        streamLogger.debug(
+                          (
+                            if (state eq null)
+                              "Starting initial"
+                            else
+                              "Restarting "
+                          ) + " streaming action, realDemand = " + str(
+                            realDemand))
+                      if (ctx.cancelled) {
+                        if (ctx.deferredError ne null)
+                          throw ctx.deferredError
+                        if (state ne null) { // streaming cancelled before finishing
+                          val oldState = state
+                          state = null
+                          a.cancelStream(ctx, oldState)
+                        }
+                      } else if ((realDemand > 0 || (state eq null))) {
+                        val oldState = state
+                        state = null
+                        state = a.emitStream(ctx, realDemand, oldState)
+                      }
+                      if (state eq null) { // streaming finished and cleaned up
+                        releaseSession(ctx, true)
+                        ctx.streamingResultPromise.trySuccess(null)
+                      }
+                    } catch {
+                      case NonFatal(ex) =>
+                        if (state ne null)
+                          try a.cancelStream(ctx, state)
+                          catch ignoreFollowOnError
+                        releaseSession(ctx, true)
+                        throw ex
+                    } finally {
+                      ctx.streamState = state
+                      ctx.sync = 0
+                    }
+                    if (debug) {
+                      if (state eq null)
+                        streamLogger.debug(
+                          s"Sent up to ${str(realDemand)} elements - Stream " + (
+                            if (ctx.cancelled)
+                              "cancelled"
+                            else
+                              "completely delivered"
+                          ))
+                      else
+                        streamLogger.debug(
+                          s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")
+                    }
+                    demand = ctx.delivered(demand)
+                    realDemand =
+                      if (demand < 0)
+                        demand - Long.MinValue
+                      else
+                        demand
+                  } while ((state ne null) && realDemand > 0)
+                  if (debug) {
+                    if (state ne null)
+                      streamLogger.debug(
+                        "Suspending streaming action with continuation (more data available)")
+                    else
+                      streamLogger.debug("Finished streaming action")
+                  }
+                } catch {
+                  case NonFatal(ex) => ctx.streamingResultPromise.tryFailure(ex)
                 }
-              } catch {
-                case NonFatal(ex) => ctx.streamingResultPromise.tryFailure(ex)
-              }
-          })
+            })
       } catch {
         case NonFatal(ex) =>
           streamLogger.warn("Error scheduling synchronous streaming", ex)

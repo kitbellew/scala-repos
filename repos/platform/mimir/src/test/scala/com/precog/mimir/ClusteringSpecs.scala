@@ -348,10 +348,11 @@ trait ClusteringLibSpecs[M[+_]]
   }
 
   def makeClusters(centers: Array[Array[Double]]) = {
-    RObject(pointsToJson(centers).zipWithIndex.map {
-      case (ctr, idx) =>
-        ("cluster" + (idx + 1), ctr)
-    }.toMap)
+    RObject(
+      pointsToJson(centers).zipWithIndex.map {
+        case (ctr, idx) =>
+          ("cluster" + (idx + 1), ctr)
+      }.toMap)
   }
 
   def createDAG(pointsDataSet: String, modelDataSet: String) = {
@@ -392,9 +393,10 @@ trait ClusteringLibSpecs[M[+_]]
           case SDecimal(d) => d
         }
 
-        val rvalue = clusterMap((model("clusterId"): @unchecked) match {
-          case SString(s) => s
-        })
+        val rvalue = clusterMap(
+          (model("clusterId"): @unchecked) match {
+            case SString(s) => s
+          })
         val res =
           (rvalue: @unchecked) match {
             case RArray(values) =>
@@ -593,9 +595,10 @@ trait ClusteringLibSpecs[M[+_]]
                   Map("bar" -> SDecimal(9.0), "foo" -> SDecimal(4.4))))))),
         SObject(
           Map(
-            "model2" -> SObject(Map(
-              "clusterId" -> SString("cluster1"),
-              "clusterCenter" -> SObject(Map("baz" -> SDecimal(4.0))))))),
+            "model2" -> SObject(
+              Map(
+                "clusterId" -> SString("cluster1"),
+                "clusterCenter" -> SObject(Map("baz" -> SDecimal(4.0))))))),
         SObject(
           Map(
             "model1" -> SObject(

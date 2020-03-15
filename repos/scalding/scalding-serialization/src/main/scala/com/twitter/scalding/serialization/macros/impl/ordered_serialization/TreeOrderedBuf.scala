@@ -42,10 +42,12 @@ object CommonCompareBinary {
       lenA: Int,
       inputStreamB: InputStream,
       lenB: Int): Boolean =
-    (lenA > minSizeForFulBinaryCompare &&
-      (lenA == lenB) &&
-      inputStreamA.markSupported &&
-      inputStreamB.markSupported) && {
+    (
+      lenA > minSizeForFulBinaryCompare &&
+        (lenA == lenB) &&
+        inputStreamA.markSupported &&
+        inputStreamB.markSupported
+    ) && {
       inputStreamA.mark(lenA)
       inputStreamB.mark(lenB)
 
@@ -84,10 +86,11 @@ object TreeOrderedBuf {
           case _: NoLengthCalculationAvailable[_]  => None
           case const: ConstantLengthCalculation[_] => None
           case f: FastLengthCalculation[_] =>
-            Some(q"""
+            Some(
+              q"""
         _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f
-              .asInstanceOf[FastLengthCalculation[c.type]]
-              .t})
+                .asInstanceOf[FastLengthCalculation[c.type]]
+                .t})
         """)
           case m: MaybeLengthCalculation[_] =>
             Some(m.asInstanceOf[MaybeLengthCalculation[c.type]].t)
@@ -110,9 +113,7 @@ object TreeOrderedBuf {
       val lensLen = freshT("lensLen")
       val element = freshT("element")
       val callDynamic =
-        (
-          q"""override def staticSize: Option[Int] = None""",
-          q"""
+        (q"""override def staticSize: Option[Int] = None""", q"""
 
       override def dynamicSize($element: $typeName): Option[Int] = {
         if(skipLenCalc) None else {
@@ -134,17 +135,12 @@ object TreeOrderedBuf {
       """)
 
       t.length(q"$element") match {
-        case _: NoLengthCalculationAvailable[_] =>
-          (
-            q"""
-          override def staticSize: Option[Int] = None""",
-            q"""
+        case _: NoLengthCalculationAvailable[_] => (q"""
+          override def staticSize: Option[Int] = None""", q"""
           override def dynamicSize($element: $typeName): Option[Int] = None""")
         case const: ConstantLengthCalculation[_] =>
-          (
-            q"""
-          override val staticSize: Option[Int] = Some(${const.toInt})""",
-            q"""
+          (q"""
+          override val staticSize: Option[Int] = Some(${const.toInt})""", q"""
           override def dynamicSize($element: $typeName): Option[Int] = staticSize""")
         case f: FastLengthCalculation[_]  => callDynamic
         case m: MaybeLengthCalculation[_] => callDynamic

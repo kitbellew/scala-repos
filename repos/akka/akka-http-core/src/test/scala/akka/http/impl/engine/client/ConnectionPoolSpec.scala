@@ -396,9 +396,10 @@ class ConnectionPoolSpec
           .collect[ByteString] {
             case SendBytes(x) ⇒ mapServerSideOutboundRawBytes(x)
           }
-          .transform(StreamUtils.recover {
-            case NoErrorComplete ⇒ ByteString.empty
-          }),
+          .transform(
+            StreamUtils.recover {
+              case NoErrorComplete ⇒ ByteString.empty
+            }),
         Flow[ByteString].map(SessionBytes(null, _))
       )
       val sink =

@@ -24,8 +24,10 @@ package object quirrel {
 
   case class Identifier(namespace: Vector[String], id: String) {
     override def toString =
-      (namespace map {
-        _ + "::"
-      } mkString) + id
+      (
+        namespace map {
+          _ + "::"
+        } mkString
+      ) + id
   }
 }

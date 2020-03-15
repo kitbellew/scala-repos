@@ -68,8 +68,9 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
       numBatches,
       numBatches)
 
-    assert(outputBatches.flatten.forall(res =>
-      res.pValue > 0.05 && res.method == WelchTTest.methodName))
+    assert(
+      outputBatches.flatten.forall(res =>
+        res.pValue > 0.05 && res.method == WelchTTest.methodName))
   }
 
   test("accuracy for alternative hypothesis using welch t-test") {
@@ -106,8 +107,9 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
       numBatches,
       numBatches)
 
-    assert(outputBatches.flatten.forall(res =>
-      res.pValue < 0.05 && res.method == WelchTTest.methodName))
+    assert(
+      outputBatches.flatten.forall(res =>
+        res.pValue < 0.05 && res.method == WelchTTest.methodName))
   }
 
   test("accuracy for null hypothesis using student t-test") {
@@ -144,8 +146,9 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
       numBatches,
       numBatches)
 
-    assert(outputBatches.flatten.forall(res =>
-      res.pValue > 0.05 && res.method == StudentTTest.methodName))
+    assert(
+      outputBatches.flatten.forall(res =>
+        res.pValue > 0.05 && res.method == StudentTTest.methodName))
   }
 
   test("accuracy for alternative hypothesis using student t-test") {
@@ -182,8 +185,9 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
       numBatches,
       numBatches)
 
-    assert(outputBatches.flatten.forall(res =>
-      res.pValue < 0.05 && res.method == StudentTTest.methodName))
+    assert(
+      outputBatches.flatten.forall(res =>
+        res.pValue < 0.05 && res.method == StudentTTest.methodName))
   }
 
   test("batches within same test window are grouped") {
@@ -269,7 +273,9 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
       numBatches)
 
     assert(
-      outputBatches.flatten.length == (numBatches - peacePeriod) * pointsPerBatch)
+      outputBatches.flatten.length == (
+        numBatches - peacePeriod
+      ) * pointsPerBatch)
   }
 
   test("null hypothesis when only data from one group is present") {

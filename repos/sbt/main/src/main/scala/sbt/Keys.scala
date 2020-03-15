@@ -542,8 +542,8 @@ object Keys {
     "aggregate",
     "Configures task aggregation.",
     BMinusSetting)
-  val sourcePositionMappers = TaskKey[
-    Seq[xsbti.Position => Option[xsbti.Position]]](
+  val sourcePositionMappers = TaskKey[Seq[
+    xsbti.Position => Option[xsbti.Position]]](
     "source-position-mappers",
     "Maps positions in generated source files to the original source it was generated from",
     DTask)

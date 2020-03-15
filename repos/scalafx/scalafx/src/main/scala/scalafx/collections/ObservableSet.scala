@@ -214,21 +214,23 @@ trait ObservableSet[T]
     * @param op Function that will handle this $OS's modifications data to be activated when some change was made.
     */
   def onChange[J >: T](op: (ObservableSet[T], Change[J]) => Unit) {
-    delegate.addListener(new jfxc.SetChangeListener[T] {
-      def onChanged(change: jfxc.SetChangeListener.Change[_ <: T]) {
-        val changeEvent: Change[J] =
-          (change.wasAdded, change.wasRemoved) match {
-            case (true, false) => ObservableSet.Add(change.getElementAdded)
-            case (false, true) => ObservableSet.Remove(change.getElementRemoved)
-            case _ =>
-              throw new IllegalStateException(
-                "Irregular Change. Added: " +
-                  change.getElementAdded + ", Removed: " + change.getElementRemoved)
-          }
+    delegate.addListener(
+      new jfxc.SetChangeListener[T] {
+        def onChanged(change: jfxc.SetChangeListener.Change[_ <: T]) {
+          val changeEvent: Change[J] =
+            (change.wasAdded, change.wasRemoved) match {
+              case (true, false) => ObservableSet.Add(change.getElementAdded)
+              case (false, true) =>
+                ObservableSet.Remove(change.getElementRemoved)
+              case _ =>
+                throw new IllegalStateException(
+                  "Irregular Change. Added: " +
+                    change.getElementAdded + ", Removed: " + change.getElementRemoved)
+            }
 
-        op(ObservableSet.this, changeEvent)
-      }
-    })
+          op(ObservableSet.this, changeEvent)
+        }
+      })
   }
 
   /**
@@ -237,11 +239,12 @@ trait ObservableSet[T]
     * @param op No-argument function to be activated when some change in this $OS was made.
     */
   def onChange(op: => Unit) {
-    delegate.addListener(new jfxc.SetChangeListener[T] {
-      def onChanged(change: jfxc.SetChangeListener.Change[_ <: T]) {
-        op
-      }
-    })
+    delegate.addListener(
+      new jfxc.SetChangeListener[T] {
+        def onChanged(change: jfxc.SetChangeListener.Change[_ <: T]) {
+          op
+        }
+      })
   }
 
 }

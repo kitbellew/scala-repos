@@ -71,9 +71,10 @@ object PhysicalNode {
       with PhysicalNode[Nothing] {
     def run(implicit ec: ExecutionContext): Future[Unit] =
       Future
-        .sequence(data.map { o =>
-          next.push(o)
-        })
+        .sequence(
+          data.map { o =>
+            next.push(o)
+          })
         .map(_ => ())
 
     def push(item: Nothing)(implicit ec: ExecutionContext) =
@@ -204,9 +205,10 @@ class ConcurrentMemory(
                 }
               (
                 res.last._1,
-                FanOut[U](res.collect {
-                  case (_, Some(phys)) => phys
-                }))
+                FanOut[U](
+                  res.collect {
+                    case (_, Some(phys)) => phys
+                  }))
           }
 
         def cast[A](out: (HMap[ProdCons, PhysicalNode], PhysicalNode[A]))

@@ -258,11 +258,12 @@ case class RawBuffer(
     */
   def asBytes(maxLength: Long = memoryThreshold): Option[ByteString] = {
     if (size <= maxLength) {
-      Some(if (inMemory != null) {
-        inMemory
-      } else {
-        ByteString(PlayIO.readFile(backedByTemporaryFile.file))
-      })
+      Some(
+        if (inMemory != null) {
+          inMemory
+        } else {
+          ByteString(PlayIO.readFile(backedByTemporaryFile.file))
+        })
     } else {
       None
     }
@@ -362,8 +363,7 @@ trait BodyParsers {
       when(
         _.contentType.exists(_.equalsIgnoreCase("text/plain")),
         tolerantText(maxLength),
-        createBadResult("Expecting text/plain body", UNSUPPORTED_MEDIA_TYPE)
-      )
+        createBadResult("Expecting text/plain body", UNSUPPORTED_MEDIA_TYPE))
 
     /**
       * Parse the body as text if the Content-Type is text/plain.
@@ -545,8 +545,7 @@ trait BodyParsers {
                 // to RFC 2616, we use that.
                 case mt if mt.mediaType == "text" => "iso-8859-1"
                 // Otherwise, there should be no default, it will be detected by the XML parser.
-              }
-            )
+              })
             .foreach { charset =>
               inputSource.setEncoding(charset)
             }
@@ -591,8 +590,9 @@ trait BodyParsers {
     def file(to: File): BodyParser[File] =
       BodyParser("file, to=" + to) { request =>
         import play.api.libs.iteratee.Execution.Implicits.trampoline
-        Accumulator(StreamConverters.fromOutputStream(() =>
-          new FileOutputStream(to))).map(_ => Right(to))
+        Accumulator(
+          StreamConverters.fromOutputStream(() => new FileOutputStream(to)))
+          .map(_ => Right(to))
       }
 
     /**
@@ -689,24 +689,24 @@ trait BodyParsers {
         contentType match {
           case Some("text/plain") =>
             logger.trace("Parsing AnyContent as text")
-            text(maxLengthOrDefault)(request).map(_.right.map(s =>
-              AnyContentAsText(s)))
+            text(maxLengthOrDefault)(request)
+              .map(_.right.map(s => AnyContentAsText(s)))
 
           case Some("text/xml") | Some("application/xml") |
               Some(ApplicationXmlMatcher()) =>
             logger.trace("Parsing AnyContent as xml")
-            xml(maxLengthOrDefault)(request).map(_.right.map(x =>
-              AnyContentAsXml(x)))
+            xml(maxLengthOrDefault)(request)
+              .map(_.right.map(x => AnyContentAsXml(x)))
 
           case Some("text/json") | Some("application/json") =>
             logger.trace("Parsing AnyContent as json")
-            json(maxLengthOrDefault)(request).map(_.right.map(j =>
-              AnyContentAsJson(j)))
+            json(maxLengthOrDefault)(request)
+              .map(_.right.map(j => AnyContentAsJson(j)))
 
           case Some("application/x-www-form-urlencoded") =>
             logger.trace("Parsing AnyContent as urlFormEncoded")
-            urlFormEncoded(maxLengthOrDefault)(request).map(_.right.map(d =>
-              AnyContentAsFormUrlEncoded(d)))
+            urlFormEncoded(maxLengthOrDefault)(request)
+              .map(_.right.map(d => AnyContentAsFormUrlEncoded(d)))
 
           case Some("multipart/form-data") =>
             logger.trace("Parsing AnyContent as multipartFormData")
@@ -768,8 +768,8 @@ trait BodyParsers {
           // Apply the request
           val parserSink = parser.apply(request).toSink
 
-          Accumulator(takeUpToFlow.toMat(parserSink) {
-            (statusFuture, resultFuture) =>
+          Accumulator(
+            takeUpToFlow.toMat(parserSink) { (statusFuture, resultFuture) =>
               statusFuture.flatMap {
                 case exceeded: MaxSizeExceeded =>
                   Future.successful(Right(Left(exceeded)))
@@ -779,7 +779,7 @@ trait BodyParsers {
                     case Right(a)     => Right(Right(a))
                   }
               }
-          })
+            })
       }
 
     /**
@@ -831,8 +831,8 @@ trait BodyParsers {
         accumulator: Accumulator[ByteString, Either[Result, A]])
         : Accumulator[ByteString, Either[Result, A]] = {
       val takeUpToFlow = Flow.fromGraph(new BodyParsers.TakeUpTo(maxLength))
-      Accumulator(takeUpToFlow.toMat(accumulator.toSink) {
-        (statusFuture, resultFuture) =>
+      Accumulator(
+        takeUpToFlow.toMat(accumulator.toSink) { (statusFuture, resultFuture) =>
           import play.api.libs.iteratee.Execution.Implicits.trampoline
           val defaultCtx =
             play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -849,7 +849,7 @@ trait BodyParsers {
               badResult.map(Left(_))
             case MaxSizeNotExceeded => resultFuture
           }
-      })
+        })
     }
 
     /**
@@ -873,8 +873,7 @@ trait BodyParsers {
           maxLength,
           Accumulator(
             Sink.fold[ByteString, ByteString](ByteString.empty)((state, bs) =>
-              state ++ bs)
-          ) mapFuture { bytes =>
+              state ++ bs)) mapFuture { bytes =>
             try {
               Future.successful(Right(parser(request, bytes)))
             } catch {

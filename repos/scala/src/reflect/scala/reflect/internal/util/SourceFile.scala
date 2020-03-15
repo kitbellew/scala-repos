@@ -137,12 +137,10 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   // token cannot be used as an index into the char array.
   // The least painful way to address this was to add a
   // newline to the array.
-  val content = (
-    if (content0.length == 0 || !content0.last.isWhitespace)
-      content0 :+ '\n'
-    else
-      content0
-  )
+  val content = (if (content0.length == 0 || !content0.last.isWhitespace)
+                   content0 :+ '\n'
+                 else
+                   content0)
   val length = content.length
   def start = 0
   def isSelfContained = true
@@ -200,16 +198,14 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   def offsetToLine(offset: Int): Int = {
     val lines = lineIndices
     def findLine(lo: Int, hi: Int, mid: Int): Int =
-      (
-        if (mid < lo || hi < mid)
-          mid // minimal sanity check - as written this easily went into infinite loopyland
-        else if (offset < lines(mid))
-          findLine(lo, mid - 1, (lo + mid - 1) / 2)
-        else if (offset >= lines(mid + 1))
-          findLine(mid + 1, hi, (mid + 1 + hi) / 2)
-        else
-          mid
-      )
+      (if (mid < lo || hi < mid)
+         mid // minimal sanity check - as written this easily went into infinite loopyland
+       else if (offset < lines(mid))
+         findLine(lo, mid - 1, (lo + mid - 1) / 2)
+       else if (offset >= lines(mid + 1))
+         findLine(mid + 1, hi, (mid + 1 + hi) / 2)
+       else
+         mid)
     lastLine = findLine(0, lines.length, lastLine)
     lastLine
   }

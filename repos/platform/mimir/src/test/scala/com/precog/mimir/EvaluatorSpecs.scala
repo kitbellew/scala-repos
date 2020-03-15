@@ -163,8 +163,9 @@ trait EvaluatorTestSupport[M[+_]]
               }
 
             case x =>
-              failure(ResourceError.corrupt(
-                "Attempted to load JSON as a table from something that wasn't a string: " + x))
+              failure(
+                ResourceError.corrupt(
+                  "Attempted to load JSON as a table from something that wasn't a string: " + x))
           }
 
           eventsV.disjunction.map(ss => fromJson(ss.flatten))
@@ -220,10 +221,12 @@ trait EvaluatorSpecs[M[+_]]
     val ctx = defaultEvaluationContext.copy(
       basePath = path,
       scriptPath = scriptPath)
-    (consumeEval(graph, ctx, optimize) match {
-      case Success(results) => test(results)
-      case Failure(error)   => throw error
-    }) /* and
+    (
+      consumeEval(graph, ctx, optimize) match {
+        case Success(results) => test(results)
+        case Failure(error)   => throw error
+      }
+    ) /* and
     (consumeEval(testAPIKey, graph, ctx, path, false) match {
       case Success(results) => test(results)
       case Failure(error) => throw error
@@ -463,9 +466,9 @@ trait EvaluatorSpecs[M[+_]]
           case (ids, SDecimal(d)) if ids.size == 2 => d.toInt
         }
 
-        result2 must contain(84, 54, 119, 43, 55, 43, 54, 24, 89, 13, 25, 13,
-          119, 89, 154, 78, 90, 78, 43, 13, 78, 2, 14, 2, 55, 25, 90, 14, 26,
-          14)
+        result2 must contain(
+          84, 54, 119, 43, 55, 43, 54, 24, 89, 13, 25, 13, 119, 89, 154, 78, 90,
+          78, 43, 13, 78, 2, 14, 2, 55, 25, 90, 14, 26, 14)
       }
     }
 
@@ -3192,9 +3195,9 @@ trait EvaluatorSpecs[M[+_]]
 
         result2 must haveSize(23)
 
-        result2 must contain(0, -377, -780, 6006, -76, 5929, 1, 156, 169, 2,
-          1764, 2695, 144, 1806, -360, 1176, -832, 182, 4851, -1470, -13, -41,
-          -24)
+        result2 must contain(
+          0, -377, -780, 6006, -76, 5929, 1, 156, 169, 2, 1764, 2695, 144, 1806,
+          -360, 1176, -832, 182, 4851, -1470, -13, -41, -24)
       }
     }
 
@@ -3242,8 +3245,9 @@ trait EvaluatorSpecs[M[+_]]
 
         result2 must haveSize(20)
 
-        result2 must contain(0, 1260, -1470, 1722, 1218, -360, -780, 132, -12,
-          2695, 5005, 5852, 4928, -41, -11, -76, -377, 13, -832, 156)
+        result2 must contain(
+          0, 1260, -1470, 1722, 1218, -360, -780, 132, -12, 2695, 5005, 5852,
+          4928, -41, -11, -76, -377, 13, -832, 156)
       }
     }
 

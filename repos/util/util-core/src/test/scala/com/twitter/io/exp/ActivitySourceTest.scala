@@ -56,10 +56,11 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
 
   test("CachingActivitySource") {
     val cache =
-      new CachingActivitySource[String](new ActivitySource[String] {
-        def get(varName: String) =
-          Activity.value(Random.alphanumeric.take(10).mkString)
-      })
+      new CachingActivitySource[String](
+        new ActivitySource[String] {
+          def get(varName: String) =
+            Activity.value(Random.alphanumeric.take(10).mkString)
+        })
 
     val a = cache.get("a")
     assert(a == cache.get("a"))

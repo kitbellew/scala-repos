@@ -46,10 +46,12 @@ class ScalarTagAny[T: CLM] extends ScalarTag[T] {
   def negInf(implicit ev: NUM[T]) = sys.error("Infinities not supported")
 
   def show(v: T) =
-    "%s" format (if (v == null)
-                   "NA"
-                 else
-                   v.toString)
+    "%s" format (
+      if (v == null)
+        "NA"
+      else
+        v.toString
+    )
 
   override def runtimeClass = implicitly[CLM[T]].erasure
 

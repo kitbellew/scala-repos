@@ -116,9 +116,10 @@ trait JoinAlgorithms {
     val renaming = collisions.toList
     val orig = new Fields(renaming: _*)
     val temp =
-      new Fields(renaming.map {
-        rename
-      }: _*)
+      new Fields(
+        renaming.map {
+          rename
+        }: _*)
     // Now construct the new join keys, where we check for a rename
     // otherwise use the original key:
     val newJoinKeys =
@@ -277,13 +278,14 @@ trait JoinAlgorithms {
         that,
         fs._2,
         intersection)
-      (new HashJoin(
-        assignName(pipe),
-        fs._1,
-        assignName(renamedThat),
-        newJoinFields,
-        WrappedJoiner(new InnerJoin)))
-        .discard(temp)
+      (
+        new HashJoin(
+          assignName(pipe),
+          fs._1,
+          assignName(renamedThat),
+          newJoinFields,
+          WrappedJoiner(new InnerJoin))
+      ).discard(temp)
     }
   }
 

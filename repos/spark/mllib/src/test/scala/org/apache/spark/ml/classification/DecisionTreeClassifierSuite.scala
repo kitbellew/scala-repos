@@ -153,9 +153,9 @@ class DecisionTreeClassifierSuite
   test(
     "Multiclass classification stump with unordered categorical features," +
       " with just enough bins") {
-    val maxBins = 2 * (math
-      .pow(2, 3 - 1)
-      .toInt - 1) // just enough bins to allow unordered features
+    val maxBins = 2 * (
+      math.pow(2, 3 - 1).toInt - 1
+    ) // just enough bins to allow unordered features
     val rdd = categoricalDataPointsForMulticlassRDD
     val dt = new DecisionTreeClassifier()
       .setImpurity("Gini")

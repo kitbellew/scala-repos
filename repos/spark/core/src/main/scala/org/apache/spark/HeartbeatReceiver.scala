@@ -139,19 +139,20 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
       if (scheduler != null) {
         if (executorLastSeen.contains(executorId)) {
           executorLastSeen(executorId) = clock.getTimeMillis()
-          eventLoopThread.submit(new Runnable {
-            override def run(): Unit =
-              Utils.tryLogNonFatalError {
-                val unknownExecutor =
-                  !scheduler.executorHeartbeatReceived(
-                    executorId,
-                    accumUpdates,
-                    blockManagerId)
-                val response = HeartbeatResponse(reregisterBlockManager =
-                  unknownExecutor)
-                context.reply(response)
-              }
-          })
+          eventLoopThread.submit(
+            new Runnable {
+              override def run(): Unit =
+                Utils.tryLogNonFatalError {
+                  val unknownExecutor =
+                    !scheduler.executorHeartbeatReceived(
+                      executorId,
+                      accumUpdates,
+                      blockManagerId)
+                  val response = HeartbeatResponse(reregisterBlockManager =
+                    unknownExecutor)
+                  context.reply(response)
+                }
+            })
         } else {
           // This may happen if we get an executor's in-flight heartbeat immediately
           // after we just removed it. It's not really an error condition so we should
@@ -228,14 +229,15 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
             "Executor heartbeat " +
               s"timed out after ${now - lastSeenMs} ms"))
         // Asynchronously kill the executor to avoid blocking the current thread
-        killExecutorThread.submit(new Runnable {
-          override def run(): Unit =
-            Utils.tryLogNonFatalError {
-              // Note: we want to get an executor back after expiring this one,
-              // so do not simply call `sc.killExecutor` here (SPARK-8119)
-              sc.killAndReplaceExecutor(executorId)
-            }
-        })
+        killExecutorThread.submit(
+          new Runnable {
+            override def run(): Unit =
+              Utils.tryLogNonFatalError {
+                // Note: we want to get an executor back after expiring this one,
+                // so do not simply call `sc.killExecutor` here (SPARK-8119)
+                sc.killAndReplaceExecutor(executorId)
+              }
+          })
         executorLastSeen.remove(executorId)
       }
     }

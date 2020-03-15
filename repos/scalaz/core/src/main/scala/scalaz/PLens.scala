@@ -302,10 +302,7 @@ trait PLensFamilyFunctions extends PLensInstances {
 
   def eitherLensFamily[S1, S2, A, B](l: PLensFamily[S1, S2, A \/ B, A \/ B])
       : (PLensFamily[S1, S2, A, A], PLensFamily[S1, S2, B, B]) =
-    (
-      leftPLensFamily compose l,
-      rightPLensFamily compose l
-    )
+    (leftPLensFamily compose l, rightPLensFamily compose l)
 
   import LazyOption._
 
@@ -418,10 +415,7 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
       PLens[S, I]) = PLensFamilyUnzip[S, S].unzip7(lens.xmapbB(tuple7B))
 
   def eitherLens[S, A, B](l: S @?> (A \/ B)): (S @?> A, S @?> B) =
-    (
-      leftPLens compose l,
-      rightPLens compose l
-    )
+    (leftPLens compose l, rightPLens compose l)
 
   import LazyOption._
 
@@ -616,8 +610,7 @@ abstract class PLensInstances {
             a run x map (c => {
               val (p, q) = c.pos
               IndexedStore(a => c.put((p, a)): R, q)
-            }))
-        )
+            })))
     }
 
   /** Allow the illusion of imperative updates to potential numbers viewed through a partial lens */

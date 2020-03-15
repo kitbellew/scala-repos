@@ -436,28 +436,22 @@ object Test extends Properties("HtmlFactory") {
 
   property("SI-5287: Display correct \"Definition classes\"") =
     checkText("SI_5287.scala")(
-      (
-        None,
-        """def method(): Int
+      (None, """def method(): Int
            [use case] The usecase explanation
            [use case] The usecase explanation
-           Definition Classes SI_5287 SI_5287_B SI_5287_A""",
-        true)
+           Definition Classes SI_5287 SI_5287_B SI_5287_A""", true)
     ) // the explanation appears twice, as small comment and full comment
 
   property("Comment inheritance: Correct comment inheritance for overriding") =
     checkText("implicit-inheritance-override.scala")(
-      (
-        Some("Base"),
-        """def function[T](arg1: T, arg2: String): Double
+      (Some("Base"), """def function[T](arg1: T, arg2: String): Double
           The base comment.
           The base comment. And another sentence...
           T the type of the first argument
           arg1 The T term comment
           arg2 The string comment
           returns The return comment
-          """,
-        true),
+          """, true),
       (
         Some("DerivedA"),
         """def function[T](arg1: T, arg2: String): Double
@@ -469,33 +463,24 @@ object Test extends Properties("HtmlFactory") {
           returns The return comment
           """,
         true),
-      (
-        Some("DerivedB"),
-        """def function[T](arg1: T, arg2: String): Double
+      (Some("DerivedB"), """def function[T](arg1: T, arg2: String): Double
           T the type of the first argument
           arg1 The overridden T term comment
           arg2 The overridden string comment
           returns The return comment
-          """,
-        true),
-      (
-        Some("DerivedC"),
-        """def function[T](arg1: T, arg2: String): Double
+          """, true),
+      (Some("DerivedC"), """def function[T](arg1: T, arg2: String): Double
           T the type of the first argument
           arg1 The T term comment
           arg2 The string comment
           returns The overridden return comment
-          """,
-        true),
-      (
-        Some("DerivedD"),
-        """def function[T](arg1: T, arg2: String): Double
+          """, true),
+      (Some("DerivedD"), """def function[T](arg1: T, arg2: String): Double
           T The overridden type parameter comment
           arg1 The T term comment
           arg2 The string comment
           returns The return comment
-          """,
-        true)
+          """, true)
     )
 
   for (useCaseFile <- List(
@@ -503,26 +488,20 @@ object Test extends Properties("HtmlFactory") {
          "UseCaseOverrideInheritance")) {
     property("Comment inheritance: Correct comment inheritance for usecases") =
       checkText("implicit-inheritance-usecase.scala")(
-        (
-          Some(useCaseFile),
-          """def missing_arg[T](arg1: T): Double
+        (Some(useCaseFile), """def missing_arg[T](arg1: T): Double
             [use case]
             [use case]
             T The type parameter
             arg1 The T term comment
             returns The return comment
-            """,
-          true),
-        (
-          Some(useCaseFile),
-          """def missing_targ(arg1: Int, arg2: String): Double
+            """, true),
+        (Some(useCaseFile), """def missing_targ(arg1: Int, arg2: String): Double
             [use case]
             [use case]
             arg1 The T term comment
             arg2 The string comment
             returns The return comment
-            """,
-          true),
+            """, true),
         (
           Some(useCaseFile),
           """def overridden_arg1[T](implicit arg1: T, arg2: String): Double
@@ -648,46 +627,31 @@ object Test extends Properties("HtmlFactory") {
   property(
     "Comment inheritance: Correct explicit inheritance in corner cases") =
     checkText("inheritdoc-corner-cases.scala")(
-      (
-        Some("D"),
-        """def hello1: Int
+      (Some("D"), """def hello1: Int
           Inherited: Hello 1 comment
           Inherited: Hello 1 comment
           Definition Classes D → A
-       """,
-        true),
-      (
-        Some("D"),
-        """def hello2: Int
+       """, true),
+      (Some("D"), """def hello2: Int
           Inherited: Hello 2 comment
           Inherited: Hello 2 comment
           Definition Classes D → B
-       """,
-        true),
-      (
-        Some("G"),
-        """def hello1: Int
+       """, true),
+      (Some("G"), """def hello1: Int
           Inherited: Hello 1 comment
           Inherited: Hello 1 comment
           Definition Classes G → D → A
-       """,
-        true),
-      (
-        Some("G"),
-        """def hello2: Int
+       """, true),
+      (Some("G"), """def hello2: Int
           Inherited: Hello 2 comment
           Inherited: Hello 2 comment
           Definition Classes G → D → B
-       """,
-        true),
-      (
-        Some("I"),
-        """def hello1(i: Int): Unit
+       """, true),
+      (Some("I"), """def hello1(i: Int): Unit
           [use case] Inherited: Hello 1 comment
           [use case] Inherited: Hello 1 comment
           Definition Classes I → G → D → A
-       """,
-        true)
+       """, true)
       // traits E, F and H shouldn't crash scaladoc but we don't need to check the output
     )
 
@@ -788,20 +752,14 @@ object Test extends Properties("HtmlFactory") {
 
     property("SI-8514: No inconsistencies") =
       checkText("SI-8514.scala")(
-        (
-          Some("a/index"),
-          """class A extends AnyRef
+        (Some("a/index"), """class A extends AnyRef
             Some doc here
             Some doc here
             Annotations @DeveloperApi()
-         """,
-          true),
-        (
-          Some("a/index"),
-          """class B extends AnyRef
+         """, true),
+        (Some("a/index"), """class B extends AnyRef
             Annotations @DeveloperApi()
-         """,
-          true)
+         """, true)
       )
   }
 
@@ -820,21 +778,25 @@ object Test extends Properties("HtmlFactory") {
     implicit class AssertionAwareNode(node: scala.xml.NodeSeq) {
 
       def assertTypeLink(expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq =
-          node \\ "div" \@ ("id", "definition") \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq = node \\ "div" \@ (
+          "id", "definition"
+        ) \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertMemberLink(
           group: String)(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq =
-          node \\ "div" \@ ("id", group) \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq = node \\ "div" \@ ("id", group) \\ "li" \@ (
+          "name", memberName
+        ) \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertValuesLink(memberName: String, expectedUrl: String): Boolean = {
         val linkElement: NodeSeq =
-          node \\ "div" \@ ("class", "values members") \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
+          node \\ "div" \@ ("class", "values members") \\ "li" \@ (
+            "name", memberName
+          ) \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
@@ -852,38 +814,53 @@ object Test extends Properties("HtmlFactory") {
     property("SI-8144: Members' permalink - inner package") =
       check("some/pack/index.html") { node =>
         ("type link" |: node.assertTypeLink("../../some/pack/index.html")) &&
-        ("member: SomeType (object)" |: node.assertValuesLink(
-          "some.pack.SomeType",
-          "../../some/pack/index.html#SomeType")) &&
-        ("member: SomeType (class)" |: node.assertMemberLink("types")(
-          "some.pack.SomeType",
-          "../../some/pack/index.html#SomeTypeextendsAnyRef"))
+        (
+          "member: SomeType (object)" |: node.assertValuesLink(
+            "some.pack.SomeType",
+            "../../some/pack/index.html#SomeType")
+        ) &&
+        (
+          "member: SomeType (class)" |: node.assertMemberLink("types")(
+            "some.pack.SomeType",
+            "../../some/pack/index.html#SomeTypeextendsAnyRef")
+        )
       }
 
     property("SI-8144: Members' permalink - companion object") =
       check("some/pack/SomeType$.html") { node =>
-        ("type link" |: node.assertTypeLink(
-          "../../some/pack/SomeType$.html")) &&
-        ("member: someVal" |: node.assertMemberLink("allMembers")(
-          "some.pack.SomeType#someVal",
-          "../../some/pack/SomeType$.html#someVal:String"))
+        (
+          "type link" |: node.assertTypeLink("../../some/pack/SomeType$.html")
+        ) &&
+        (
+          "member: someVal" |: node.assertMemberLink("allMembers")(
+            "some.pack.SomeType#someVal",
+            "../../some/pack/SomeType$.html#someVal:String")
+        )
       }
 
     property("SI-8144: Members' permalink - class") =
       check("some/pack/SomeType.html") { node =>
         ("type link" |: node.assertTypeLink("../../some/pack/SomeType.html")) &&
-        ("constructor " |: node.assertMemberLink("constructors")(
-          "some.pack.SomeType#<init>",
-          "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")) &&
-        ("member: type TypeAlias" |: node.assertMemberLink("types")(
-          "some.pack.SomeType.TypeAlias",
-          "../../some/pack/SomeType.html#TypeAlias=String")) &&
-        ("member: def >#<():Int " |: node.assertValuesLink(
-          "some.pack.SomeType#>#<",
-          "../../some/pack/SomeType.html#>#<():Int")) &&
-        ("member: def >@<():TypeAlias " |: node.assertValuesLink(
-          "some.pack.SomeType#>@<",
-          "../../some/pack/SomeType.html#>@<():SomeType.this.TypeAlias"))
+        (
+          "constructor " |: node.assertMemberLink("constructors")(
+            "some.pack.SomeType#<init>",
+            "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")
+        ) &&
+        (
+          "member: type TypeAlias" |: node.assertMemberLink("types")(
+            "some.pack.SomeType.TypeAlias",
+            "../../some/pack/SomeType.html#TypeAlias=String")
+        ) &&
+        (
+          "member: def >#<():Int " |: node.assertValuesLink(
+            "some.pack.SomeType#>#<",
+            "../../some/pack/SomeType.html#>#<():Int")
+        ) &&
+        (
+          "member: def >@<():TypeAlias " |: node.assertValuesLink(
+            "some.pack.SomeType#>@<",
+            "../../some/pack/SomeType.html#>@<():SomeType.this.TypeAlias")
+        )
       }
 
   }

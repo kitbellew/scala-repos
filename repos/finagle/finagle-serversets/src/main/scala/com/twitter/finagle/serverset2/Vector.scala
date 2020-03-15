@@ -55,8 +55,7 @@ private[serverset2] object Selector {
 private[serverset2] case class Descriptor(
     selector: Selector,
     weight: Double,
-    priority: Int
-) {
+    priority: Int) {
   def matches(e: Entry) = selector matches e
 }
 

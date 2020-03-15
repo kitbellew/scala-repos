@@ -72,23 +72,24 @@ class PersistenceEventAdapterDocSpec(config: String) extends AkkaSpec(config) {
     "demonstrate how to implement a JSON adapter" in {
       val p = TestProbe()
 
-      val props = Props(new PersistentActor {
-        override def persistenceId: String = "json-actor"
-        override def journalPluginId: String =
-          "akka.persistence.journal.auto-json-store"
+      val props = Props(
+        new PersistentActor {
+          override def persistenceId: String = "json-actor"
+          override def journalPluginId: String =
+            "akka.persistence.journal.auto-json-store"
 
-        override def receiveRecover: Receive = {
-          case RecoveryCompleted => // ignore...
-          case e                 => p.ref ! e
-        }
+          override def receiveRecover: Receive = {
+            case RecoveryCompleted => // ignore...
+            case e                 => p.ref ! e
+          }
 
-        override def receiveCommand: Receive = {
-          case c =>
-            persist(c) { e =>
-              p.ref ! e
-            }
-        }
-      })
+          override def receiveCommand: Receive = {
+            case c =>
+              persist(c) { e =>
+                p.ref ! e
+              }
+          }
+        })
 
       val p1 = system.actorOf(props)
       val m1 = Person("Caplin", 42)
@@ -108,23 +109,24 @@ class PersistenceEventAdapterDocSpec(config: String) extends AkkaSpec(config) {
     "demonstrate how to implement a JSON adapter" in {
       val p = TestProbe()
 
-      val props = Props(new PersistentActor {
-        override def persistenceId: String = "json-actor"
-        override def journalPluginId: String =
-          "akka.persistence.journal.manual-json-store"
+      val props = Props(
+        new PersistentActor {
+          override def persistenceId: String = "json-actor"
+          override def journalPluginId: String =
+            "akka.persistence.journal.manual-json-store"
 
-        override def receiveRecover: Receive = {
-          case RecoveryCompleted => // ignore...
-          case e                 => p.ref ! e
-        }
+          override def receiveRecover: Receive = {
+            case RecoveryCompleted => // ignore...
+            case e                 => p.ref ! e
+          }
 
-        override def receiveCommand: Receive = {
-          case c =>
-            persist(c) { e =>
-              p.ref ! e
-            }
-        }
-      })
+          override def receiveCommand: Receive = {
+            case c =>
+              persist(c) { e =>
+                p.ref ! e
+              }
+          }
+        })
 
       val p1 = system.actorOf(props)
       val m1 = Person("Caplin", 42)

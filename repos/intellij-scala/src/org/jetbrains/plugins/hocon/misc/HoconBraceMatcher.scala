@@ -14,8 +14,7 @@ class HoconBraceMatcher extends PairedBraceMatcher {
     Array(
       new BracePair(LBrace, RBrace, true),
       new BracePair(LBracket, RBracket, false),
-      new BracePair(SubLBrace, SubRBrace, false)
-    )
+      new BracePair(SubLBrace, SubRBrace, false))
 
   private val AllowsPairedBraceBefore =
     WhitespaceOrComment | Comma | RBrace | RBracket

@@ -40,10 +40,11 @@ class ScalaAnnotatedMacro extends Macro {
       context: ExpressionContext): Result = {
     Option(getAnnotatedMembers(params, context).findFirst())
       .map(member =>
-        new TextResult(member match {
-          case psiClass: PsiClass => psiClass.getQualifiedName
-          case _                  => member.getName
-        }))
+        new TextResult(
+          member match {
+            case psiClass: PsiClass => psiClass.getQualifiedName
+            case _                  => member.getName
+          }))
       .orNull
   }
 

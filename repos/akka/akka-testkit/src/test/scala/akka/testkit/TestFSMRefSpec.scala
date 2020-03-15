@@ -65,11 +65,13 @@ class TestFSMRefSpec extends AkkaSpec {
 
     val guardian = system.asInstanceOf[ActorSystemImpl].guardian
 
-    val parent = system.actorOf(Props(new Actor {
-      def receive = {
-        case _ ⇒
-      }
-    }))
+    val parent = system.actorOf(
+      Props(
+        new Actor {
+          def receive = {
+            case _ ⇒
+          }
+        }))
 
     class TestFSMActor extends Actor with FSM[Int, Null] {
       startWith(1, null)

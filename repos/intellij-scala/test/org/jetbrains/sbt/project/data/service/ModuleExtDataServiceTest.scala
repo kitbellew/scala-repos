@@ -169,8 +169,7 @@ class ModuleExtDataServiceTest
       "-deprecation",
       "-target",
       "1.8",
-      "-Werror"
-    )
+      "-Werror")
     importProjectData(generateJavaProject(None, options))
 
     val compilerConfiguration = CompilerConfiguration.getInstance(getProject)
@@ -323,14 +322,15 @@ class ModuleExtDataServiceTest
   }
 
   private def setUpJdks(): Unit = {
-    ApplicationManagerEx.getApplicationEx.runWriteAction(new Runnable {
-      def run(): Unit = {
-        val projectJdkTable = ProjectJdkTable.getInstance()
-        projectJdkTable.getAllJdks.foreach(projectJdkTable.removeJdk)
-        projectJdkTable.addJdk(IdeaTestUtil.getMockJdk17)
-        projectJdkTable.addJdk(IdeaTestUtil.getMockJdk18)
-      }
-    })
+    ApplicationManagerEx.getApplicationEx.runWriteAction(
+      new Runnable {
+        def run(): Unit = {
+          val projectJdkTable = ProjectJdkTable.getInstance()
+          projectJdkTable.getAllJdks.foreach(projectJdkTable.removeJdk)
+          projectJdkTable.addJdk(IdeaTestUtil.getMockJdk17)
+          projectJdkTable.addJdk(IdeaTestUtil.getMockJdk18)
+        }
+      })
     // TODO: find a way to create mock Android SDK
   }
 

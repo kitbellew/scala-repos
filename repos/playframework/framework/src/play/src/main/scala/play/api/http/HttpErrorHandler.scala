@@ -104,8 +104,9 @@ private[play] class GlobalSettingsHttpErrorHandler @Inject() (
       case NOT_FOUND => global.get.onHandlerNotFound(request)
       case clientError if statusCode >= 400 && statusCode < 500 =>
         Future.successful(
-          Results.Status(clientError)(views.html.defaultpages
-            .badRequest(request.method, request.uri, message)))
+          Results.Status(clientError)(
+            views.html.defaultpages
+              .badRequest(request.method, request.uri, message)))
       case nonClientError =>
         throw new IllegalArgumentException(
           s"onClientError invoked with non client error status code $statusCode: $message")
@@ -186,8 +187,10 @@ class DefaultHttpErrorHandler(
   protected def onBadRequest(
       request: RequestHeader,
       message: String): Future[Result] =
-    Future.successful(BadRequest(
-      views.html.defaultpages.badRequest(request.method, request.uri, message)))
+    Future.successful(
+      BadRequest(
+        views.html.defaultpages
+          .badRequest(request.method, request.uri, message)))
 
   /**
     * Invoked when a client makes a request that was forbidden.
@@ -209,12 +212,15 @@ class DefaultHttpErrorHandler(
   protected def onNotFound(
       request: RequestHeader,
       message: String): Future[Result] = {
-    Future.successful(NotFound(environment.mode match {
-      case Mode.Prod =>
-        views.html.defaultpages.notFound(request.method, request.uri)
-      case _ =>
-        views.html.defaultpages.devNotFound(request.method, request.uri, router)
-    }))
+    Future.successful(
+      NotFound(
+        environment.mode match {
+          case Mode.Prod =>
+            views.html.defaultpages.notFound(request.method, request.uri)
+          case _ =>
+            views.html.defaultpages
+              .devNotFound(request.method, request.uri, router)
+        }))
   }
 
   /**
@@ -229,8 +235,10 @@ class DefaultHttpErrorHandler(
       request: RequestHeader,
       statusCode: Int,
       message: String): Future[Result] = {
-    Future.successful(Results.Status(statusCode)(
-      views.html.defaultpages.badRequest(request.method, request.uri, message)))
+    Future.successful(
+      Results.Status(statusCode)(
+        views.html.defaultpages
+          .badRequest(request.method, request.uri, message)))
   }
 
   /**

@@ -174,16 +174,18 @@ object TerminateJson {
         Some({
           val sb = new StringBuilder()
           while (stack.nonEmpty) {
-            sb ++= (stack.pop() match {
-              case ExpectValue => "null"
-              case ExpectField => "\"\":null"
-              case SkipChar    => "\""
-              case FieldDelim  => ":"
-              case CloseString => "\""
-              case CloseArray  => "]"
-              case CloseObject => "}"
-              case _           => sys.error("Unreachable.")
-            })
+            sb ++= (
+              stack.pop() match {
+                case ExpectValue => "null"
+                case ExpectField => "\"\":null"
+                case SkipChar    => "\""
+                case FieldDelim  => ":"
+                case CloseString => "\""
+                case CloseArray  => "]"
+                case CloseObject => "}"
+                case _           => sys.error("Unreachable.")
+              }
+            )
           }
           CharBuffer.wrap(sb.toString)
         })
@@ -192,15 +194,16 @@ object TerminateJson {
     def rec(
         stack0: ArrayStack[Int],
         stream: StreamT[M, CharBuffer]): StreamT[M, CharBuffer] = {
-      StreamT(stream.uncons map {
-        case Some((buf0, tail)) =>
-          val (stack, buf) = build(stack0, buf0)
-          StreamT.Yield(buf, rec(stack, tail))
-        case None =>
-          terminal(stack0) map { buf =>
-            StreamT.Yield(buf, StreamT.empty)
-          } getOrElse StreamT.Done
-      })
+      StreamT(
+        stream.uncons map {
+          case Some((buf0, tail)) =>
+            val (stack, buf) = build(stack0, buf0)
+            StreamT.Yield(buf, rec(stack, tail))
+          case None =>
+            terminal(stack0) map { buf =>
+              StreamT.Yield(buf, StreamT.empty)
+            } getOrElse StreamT.Done
+        })
     }
 
     val init = new ArrayStack[Int]

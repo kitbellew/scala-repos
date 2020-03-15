@@ -133,8 +133,7 @@ class AppsResourceTest
       id = PathId("/app"),
       cmd = Some("cmd"),
       portDefinitions = PortDefinitions(1000, 1001),
-      versionInfo = OnlyVersion(Timestamp.zero)
-    )
+      versionInfo = OnlyVersion(Timestamp.zero))
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
     val appJson = Json.toJson(app).as[JsObject]
@@ -636,8 +635,7 @@ class AppsResourceTest
       config,
       auth.auth,
       auth.auth,
-      groupManager
-    )
+      groupManager)
   }
 
   private[this] def useRealGroupManager(): Unit = {
@@ -657,7 +655,6 @@ class AppsResourceTest
       config,
       auth.auth,
       auth.auth,
-      groupManager
-    )
+      groupManager)
   }
 }

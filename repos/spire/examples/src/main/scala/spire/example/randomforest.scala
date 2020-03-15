@@ -211,8 +211,10 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
 
             leftRegion += outputs(members(j))
             rightRegion -= outputs(members(j))
-            val error = (leftRegion.error * (j + 1) +
-              rightRegion.error * (members.length - j - 1)) / members.length
+            val error = (
+              leftRegion.error * (j + 1) +
+                rightRegion.error * (members.length - j - 1)
+            ) / members.length
             if (error < minError) {
               minError = error
               minVar = axis
@@ -240,8 +242,10 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
         // We split the region directly between the left's furthest right point
         // and the right's furthest left point.
 
-        val boundary = (data(members(minIdx)).coord(minVar) +
-          data(members(minIdx + 1)).coord(minVar)) / 2
+        val boundary = (
+          data(members(minIdx)).coord(minVar) +
+            data(members(minIdx + 1)).coord(minVar)
+        ) / 2
         val left = members take (minIdx + 1)
         val right = members drop (minIdx + 1)
         Split(minVar, boundary, growTree(left), growTree(right))

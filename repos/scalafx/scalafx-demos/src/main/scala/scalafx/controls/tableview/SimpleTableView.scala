@@ -37,8 +37,7 @@ object SimpleTableView extends JFXApp {
 
   val characters = ObservableBuffer[Person](
     new Person("Peggy", "Sue", "555-6798"),
-    new Person("Rocky", "Raccoon", "555-6798")
-  )
+    new Person("Rocky", "Raccoon", "555-6798"))
 
   stage = new PrimaryStage {
     title = "Simple Table View"

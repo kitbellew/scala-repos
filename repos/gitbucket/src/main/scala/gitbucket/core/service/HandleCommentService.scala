@@ -33,11 +33,13 @@ trait HandleCommentService {
           .collect {
             case "close" if (!issue.closed) =>
               true ->
-                (Some("close") -> Some(
-                  if (issue.isPullRequest)
-                    recordClosePullRequestActivity _
-                  else
-                    recordCloseIssueActivity _))
+                (
+                  Some("close") -> Some(
+                    if (issue.isPullRequest)
+                      recordClosePullRequestActivity _
+                    else
+                      recordCloseIssueActivity _)
+                )
             case "reopen" if (issue.closed) =>
               false ->
                 (Some("reopen") -> Some(recordReopenIssueActivity _))
@@ -74,18 +76,17 @@ trait HandleCommentService {
 
         // record comment activity if comment is entered
         content foreach {
-          (if (issue.isPullRequest)
-             recordCommentPullRequestActivity _
-           else
-             recordCommentIssueActivity _)
+          (
+            if (issue.isPullRequest)
+              recordCommentPullRequestActivity _
+            else
+              recordCommentIssueActivity _
+          )
           (owner, name, userName, issue.issueId, _)
         }
-        recordActivity foreach (_(
-          owner,
-          name,
-          userName,
-          issue.issueId,
-          issue.title))
+        recordActivity foreach (
+          _(owner, name, userName, issue.issueId, issue.title)
+        )
 
         // extract references and create refer comment
         content.map { content =>

@@ -51,13 +51,14 @@ object RedisCluster { self =>
   // Make sure the process is always killed eventually
   Runtime
     .getRuntime()
-    .addShutdownHook(new Thread {
-      override def run() {
-        self.instanceStack.foreach { instance =>
-          instance.stop()
+    .addShutdownHook(
+      new Thread {
+        override def run() {
+          self.instanceStack.foreach { instance =>
+            instance.stop()
+          }
         }
-      }
-    });
+      });
 }
 
 class ExternalRedis() {

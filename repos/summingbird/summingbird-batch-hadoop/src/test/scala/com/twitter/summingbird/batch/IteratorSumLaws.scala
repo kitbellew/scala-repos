@@ -31,9 +31,10 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   }
   property("groupedSum on a single key is <= 1 size") = forAll {
     (key0: Int, in: List[Long]) =>
-      groupedSum(in.iterator.map { v =>
-        (key0, v)
-      }).size <= 1
+      groupedSum(
+        in.iterator.map { v =>
+          (key0, v)
+        }).size <= 1
   }
   property("groupedSum never empty if input is non-empty") = forAll {
     (in: List[(Int, Long)]) =>
@@ -59,8 +60,9 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   }
   property("partials gives partial sums") = forAll { (in: List[(Int, Long)]) =>
     val s = partials(in.iterator).toList
-    in.isEmpty || (s.last._2._1
-      .getOrElse(0L) == (in.dropRight(1).map(_._2).sum))
+    in.isEmpty || (
+      s.last._2._1.getOrElse(0L) == (in.dropRight(1).map(_._2).sum)
+    )
   }
   property("optimizedPairSemigroup works") = {
     val opsg = optimizedPairSemigroup[Int, Long](20)

@@ -76,11 +76,13 @@ class RemoteRandomSpec
         }
 
         val replies: Map[Address, Int] =
-          (receiveWhile(
-            5.seconds,
-            messages = connectionCount * iterationCount) {
-            case ref: ActorRef ⇒ ref.path.address
-          }).foldLeft(
+          (
+            receiveWhile(
+              5.seconds,
+              messages = connectionCount * iterationCount) {
+              case ref: ActorRef ⇒ ref.path.address
+            }
+          ).foldLeft(
             Map(
               node(first).address -> 0,
               node(second).address -> 0,

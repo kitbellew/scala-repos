@@ -6,38 +6,41 @@ final case class OneOr[F[_], A](run: F[A] \/ A) {
     OneOr(run.bimap(F.lift(f), f))
 
   def ap[B](f: OneOr[F, A => B])(implicit F: Apply[F]): OneOr[F, B] =
-    OneOr(f.run match {
-      case -\/(g) =>
-        run match {
-          case -\/(h) =>
-            -\/(F.ap(h)(g))
-          case \/-(h) =>
-            -\/(F.map(g)(_(h)))
-        }
-      case \/-(g) =>
-        run match {
-          case -\/(h) =>
-            -\/(F.map(h)(g))
-          case \/-(h) =>
-            \/-(g(h))
-        }
-    })
+    OneOr(
+      f.run match {
+        case -\/(g) =>
+          run match {
+            case -\/(h) =>
+              -\/(F.ap(h)(g))
+            case \/-(h) =>
+              -\/(F.map(g)(_(h)))
+          }
+        case \/-(g) =>
+          run match {
+            case -\/(h) =>
+              -\/(F.map(h)(g))
+            case \/-(h) =>
+              \/-(g(h))
+          }
+      })
 
   def cojoin(implicit F: Cobind[F]): OneOr[F, OneOr[F, A]] =
-    OneOr(run match {
-      case \/-(_) =>
-        \/-(this)
-      case -\/(a) =>
-        -\/(F.extend(a)(t => OneOr(-\/(t))))
-    })
+    OneOr(
+      run match {
+        case \/-(_) =>
+          \/-(this)
+        case -\/(a) =>
+          -\/(F.extend(a)(t => OneOr(-\/(t))))
+      })
 
   def cobind[B](f: OneOr[F, A] => B)(implicit F: Cobind[F]): OneOr[F, B] =
-    OneOr(run match {
-      case \/-(_) =>
-        \/-(f(this))
-      case -\/(a) =>
-        -\/(F.cobind(a)(t => f(OneOr(-\/(t)))))
-    })
+    OneOr(
+      run match {
+        case \/-(_) =>
+          \/-(f(this))
+        case -\/(a) =>
+          -\/(F.cobind(a)(t => f(OneOr(-\/(t)))))
+      })
 
   def copoint(implicit F: Comonad[F]): A = run valueOr F.copoint
 

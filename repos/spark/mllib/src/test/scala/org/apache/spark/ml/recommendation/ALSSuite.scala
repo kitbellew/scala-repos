@@ -706,8 +706,7 @@ object ALSSuite {
     * This excludes input columns to simplify some tests.
     */
   val allModelParamSettings: Map[String, Any] = Map(
-    "predictionCol" -> "myPredictionCol"
-  )
+    "predictionCol" -> "myPredictionCol")
 
   /**
     * Mapping from all Params to valid settings which differ from the defaults.

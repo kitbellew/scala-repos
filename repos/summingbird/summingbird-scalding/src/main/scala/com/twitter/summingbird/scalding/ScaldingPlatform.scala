@@ -230,10 +230,8 @@ object Scalding {
     */
   def optionMappedPipeFactory[T, U](factory: (DateRange) => Mappable[T])(
       fn: T => Option[U])(implicit timeOf: TimeExtractor[U]): PipeFactory[U] =
-    StateWithError[
-      (Interval[Timestamp], Mode),
-      List[FailureReason],
-      FlowToPipe[U]] { (timeMode: (Interval[Timestamp], Mode)) =>
+    StateWithError[(Interval[Timestamp], Mode), List[FailureReason], FlowToPipe[
+      U]] { (timeMode: (Interval[Timestamp], Mode)) =>
       {
         val (timeSpan, mode) = timeMode
 
@@ -263,10 +261,8 @@ object Scalding {
 
   def pipeFactoryExact[T](factory: (DateRange) => Mappable[T])(
       implicit timeOf: TimeExtractor[T]): PipeFactory[T] =
-    StateWithError[
-      (Interval[Timestamp], Mode),
-      List[FailureReason],
-      FlowToPipe[T]] { (timeMode: (Interval[Timestamp], Mode)) =>
+    StateWithError[(Interval[Timestamp], Mode), List[FailureReason], FlowToPipe[
+      T]] { (timeMode: (Interval[Timestamp], Mode)) =>
       {
         val (timeSpan, mode) = timeMode
 
@@ -302,8 +298,9 @@ object Scalding {
       .map {
         Right(_)
       }
-      .getOrElse(Left(List(
-        "only finite time ranges are supported by scalding: " + timeSpan.toString)))
+      .getOrElse(
+        Left(
+          List("only finite time ranges are supported by scalding: " + timeSpan.toString)))
 
   /**
     * This makes sure that the output FlowToPipe[T] produces a TypedPipe[T] with only
@@ -568,9 +565,11 @@ object Scalding {
                             ) // extra producer for store, join the two FlowToPipes
                         }
                       }
-                      .getOrElse(leftPf.map { p =>
-                        p.map((_, TypedPipe.empty))
-                      }) // no extra producer for store
+                      .getOrElse(
+                        leftPf.map { p =>
+                          p.map((_, TypedPipe.empty))
+                        }
+                      ) // no extra producer for store
                     servOut = flowToPipe.map {
                       case (lpipe, dpipe) =>
                         InternalService.loopJoin[Timestamp, K, V, U](

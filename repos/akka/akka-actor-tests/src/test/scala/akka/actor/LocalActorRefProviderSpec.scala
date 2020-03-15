@@ -35,27 +35,31 @@ class LocalActorRefProviderSpec
   "An LocalActorRefProvider" must {
 
     "find actor refs using actorFor" in {
-      val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case _ ⇒
-        }
-      }))
+      val a = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case _ ⇒
+            }
+          }))
       val b = system.actorFor(a.path)
       a should ===(b)
     }
 
     "find child actor with URL encoded name using actorFor" in {
       val childName = "akka%3A%2F%2FClusterSystem%40127.0.0.1%3A2552"
-      val a = system.actorOf(Props(new Actor {
-        val child = context.actorOf(Props.empty, name = childName)
-        def receive = {
-          case "lookup" ⇒
-            if (childName == child.path.name)
-              sender() ! context.actorFor(childName)
-            else
-              sender() ! s"$childName is not ${child.path.name}!"
-        }
-      }))
+      val a = system.actorOf(
+        Props(
+          new Actor {
+            val child = context.actorOf(Props.empty, name = childName)
+            def receive = {
+              case "lookup" ⇒
+                if (childName == child.path.name)
+                  sender() ! context.actorFor(childName)
+                else
+                  sender() ! s"$childName is not ${child.path.name}!"
+            }
+          }))
       a.tell("lookup", testActor)
       val b = expectMsgType[ActorRef]
       b.isTerminated should ===(false)
@@ -116,12 +120,15 @@ class LocalActorRefProviderSpec
   "A LocalActorRef's ActorCell" must {
     "not retain its original Props when terminated" in {
       val GetChild = "GetChild"
-      val a = watch(system.actorOf(Props(new Actor {
-        val child = context.actorOf(Props.empty)
-        def receive = {
-          case `GetChild` ⇒ sender() ! child
-        }
-      })))
+      val a = watch(
+        system.actorOf(
+          Props(
+            new Actor {
+              val child = context.actorOf(Props.empty)
+              def receive = {
+                case `GetChild` ⇒ sender() ! child
+              }
+            })))
       a.tell(GetChild, testActor)
       val child = expectMsgType[ActorRef]
       val childProps1 = child.asInstanceOf[LocalActorRef].underlying.props
@@ -156,11 +163,12 @@ class LocalActorRefProviderSpec
           for (j ← 1 to 4)
             yield Future(
               system.actorOf(
-                Props(new Actor {
-                  def receive = {
-                    case _ ⇒
-                  }
-                }),
+                Props(
+                  new Actor {
+                    def receive = {
+                      case _ ⇒
+                    }
+                  }),
                 address))
         val set = Set() ++ actors.map(a ⇒
           Await.ready(a, timeout.duration).value match {
@@ -173,12 +181,14 @@ class LocalActorRefProviderSpec
     }
 
     "only create one instance of an actor from within the same message invocation" in {
-      val supervisor = system.actorOf(Props(new Actor {
-        def receive = {
-          case "" ⇒
-            val a, b = context.actorOf(Props.empty, "duplicate")
-        }
-      }))
+      val supervisor = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case "" ⇒
+                val a, b = context.actorOf(Props.empty, "duplicate")
+            }
+          }))
       EventFilter[InvalidActorNameException](occurrences = 1) intercept {
         supervisor ! ""
       }

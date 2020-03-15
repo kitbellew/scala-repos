@@ -276,10 +276,12 @@ case class GetJsonObject(json: Expression, path: Expression)
             while (p.nextToken() != END_ARRAY) {
               // track the number of array elements and only emit an outer array if
               // we've written more than one element, this matches Hive's behavior
-              dirty += (if (evaluatePath(p, flattenGenerator, nextStyle, xs))
-                          1
-                        else
-                          0)
+              dirty += (
+                if (evaluatePath(p, flattenGenerator, nextStyle, xs))
+                  1
+                else
+                  0
+              )
             }
             flattenGenerator.writeEndArray()
         }

@@ -64,9 +64,7 @@ object AsyncRenderComet {
           cometName = Full(s"lazy-${S.renderVersion}"),
           cometHtml = NodeSeq.Empty,
           cometAttributes = Map.empty,
-          receiveUpdatesOnPage = true
-        )
-      )
+          receiveUpdatesOnPage = true))
 
   /**
     * If you're going to be managing the asynchronicity of the render externally,

@@ -134,8 +134,10 @@ object CreateServer extends Logging {
         }
         opt[String]("env") action { (x, c) =>
           c.copy(env = Some(x))
-        } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
-          "format) to pass to the Spark execution environment.")
+        } text (
+          "Comma-separated list of environmental variables (in 'FOO=BAR' " +
+            "format) to pass to the Spark execution environment."
+        )
         opt[Int]("port") action { (x, c) =>
           c.copy(port = x)
         } text ("Port to bind to (default: 8000).")
@@ -245,8 +247,7 @@ object CreateServer extends Logging {
       engineParams,
       engineInstance.id,
       modelsFromEngineInstance,
-      params = WorkflowParams()
-    )
+      params = WorkflowParams())
 
     val algorithms = engineParams.algorithmParamsList.map {
       case (n, p) =>
@@ -485,8 +486,9 @@ class ServerActor[Q, P](
     try {
       scalaj.http
         .Http(logUrl)
-        .postData(logPrefix + write(
-          Map("engineInstance" -> engineInstance, "message" -> message)))
+        .postData(
+          logPrefix + write(
+            Map("engineInstance" -> engineInstance, "message" -> message)))
         .asString
     } catch {
       case e: Throwable =>
@@ -546,8 +548,7 @@ class ServerActor[Q, P](
                   queryString,
                   algorithms.head.queryClass,
                   algorithms.head.querySerializer,
-                  algorithms.head.gsonTypeAdapterFactories
-                )
+                  algorithms.head.gsonTypeAdapterFactories)
                 val queryJValue = JsonExtractor.toJValue(
                   jsonExtractorOption,
                   query,
@@ -663,7 +664,9 @@ class ServerActor[Q, P](
                 // Bookkeeping
                 val servingEndTime = DateTime.now
                 lastServingSec =
-                  (servingEndTime.getMillis - servingStartTime.getMillis) / 1000.0
+                  (
+                    servingEndTime.getMillis - servingStartTime.getMillis
+                  ) / 1000.0
                 avgServingSec =
                   ((avgServingSec * requestCount) + lastServingSec) /
                     (requestCount + 1)
@@ -727,24 +730,25 @@ class ServerActor[Q, P](
         get {
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
-              Map("plugins" -> Map(
-                "outputblockers" -> pluginContext.outputBlockers.map {
-                  case (n, p) =>
-                    n -> Map(
-                      "name" -> p.pluginName,
-                      "description" -> p.pluginDescription,
-                      "class" -> p.getClass.getName,
-                      "params" -> pluginContext.pluginParams(p.pluginName))
-                },
-                "outputsniffers" -> pluginContext.outputSniffers.map {
-                  case (n, p) =>
-                    n -> Map(
-                      "name" -> p.pluginName,
-                      "description" -> p.pluginDescription,
-                      "class" -> p.getClass.getName,
-                      "params" -> pluginContext.pluginParams(p.pluginName))
-                }
-              ))
+              Map(
+                "plugins" -> Map(
+                  "outputblockers" -> pluginContext.outputBlockers.map {
+                    case (n, p) =>
+                      n -> Map(
+                        "name" -> p.pluginName,
+                        "description" -> p.pluginDescription,
+                        "class" -> p.getClass.getName,
+                        "params" -> pluginContext.pluginParams(p.pluginName))
+                  },
+                  "outputsniffers" -> pluginContext.outputSniffers.map {
+                    case (n, p) =>
+                      n -> Map(
+                        "name" -> p.pluginName,
+                        "description" -> p.pluginDescription,
+                        "class" -> p.getClass.getName,
+                        "params" -> pluginContext.pluginParams(p.pluginName))
+                  }
+                ))
             }
           }
         }

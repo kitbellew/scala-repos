@@ -344,10 +344,11 @@ object Schema {
       }
       .toSet
       .flatMap { (i: Int) =>
-        mkType(ctpes.collect {
-          case ColumnRef(CPath(CPathIndex(`i`), tail @ _*), ctpe) =>
-            ColumnRef(CPath(tail: _*), ctpe)
-        }).map(i -> _)
+        mkType(
+          ctpes.collect {
+            case ColumnRef(CPath(CPathIndex(`i`), tail @ _*), ctpe) =>
+              ColumnRef(CPath(tail: _*), ctpe)
+          }).map(i -> _)
       }
     val array =
       if (elements.isEmpty)
@@ -362,10 +363,11 @@ object Schema {
       }
 
     val members = keys.flatMap { key =>
-      mkType(ctpes.collect {
-        case ColumnRef(CPath(CPathField(`key`), tail @ _*), ctpe) =>
-          ColumnRef(CPath(tail: _*), ctpe)
-      }).map(key -> _)
+      mkType(
+        ctpes.collect {
+          case ColumnRef(CPath(CPathField(`key`), tail @ _*), ctpe) =>
+            ColumnRef(CPath(tail: _*), ctpe)
+        }).map(key -> _)
     }
     val obj =
       if (members.isEmpty)
@@ -384,14 +386,16 @@ object Schema {
     * in the case of homogeneous arrays when only need a few elements).
     */
   def requiredBy(jtpe: JType, path: CPath, ctpe: CType): Boolean =
-    includes(jtpe, path, ctpe) || ((jtpe, path, ctpe) match {
-      case (
-            JArrayFixedT(elements),
-            CPath(CPathArray, tail @ _*),
-            CArrayType(elemType)) =>
-        elements.values exists (requiredBy(_, CPath(tail: _*), elemType))
-      case _ => false
-    })
+    includes(jtpe, path, ctpe) || (
+      (jtpe, path, ctpe) match {
+        case (
+              JArrayFixedT(elements),
+              CPath(CPathArray, tail @ _*),
+              CArrayType(elemType)) =>
+          elements.values exists (requiredBy(_, CPath(tail: _*), elemType))
+        case _ => false
+      }
+    )
 
   /**
     * Tests whether the supplied JType includes the supplied CPath and CType.

@@ -764,8 +764,9 @@ object MB {
     Console.println("th(x) = " + th);
     Console.println;
 
-    val f4 =
-      (x + _3) * (_2 + x) * x * (x + _1) + (x + _5) * (x * (x + _2) + x + _1) + (x ^ 2) + x;
+    val f4 = (x + _3) * (_2 + x) * x * (x + _1) + (x + _5) * (
+      x * (x + _2) + x + _1
+    ) + (x ^ 2) + x;
     val f3 = f4.derive(x);
     val f2 = f3.derive(x);
     val f1 = f2.derive(x);

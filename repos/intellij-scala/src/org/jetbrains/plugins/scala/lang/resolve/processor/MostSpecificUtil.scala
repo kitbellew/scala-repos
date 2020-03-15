@@ -247,12 +247,22 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             calcParams(t2, existential = false)) match {
             case (Left(p1), Left(p2)) =>
               var (params1, params2) = (p1, p2)
-              if ((t1.isInstanceOf[ScTypePolymorphicType] && t2
-                    .isInstanceOf[ScTypePolymorphicType] ||
-                  (!(m1.isInstanceOf[ScFunction] || m1.isInstanceOf[ScFun] || m1
-                    .isInstanceOf[ScPrimaryConstructor]) ||
-                  !(m2.isInstanceOf[ScFunction] || m2.isInstanceOf[ScFun] || m2
-                    .isInstanceOf[ScPrimaryConstructor]))) &&
+              if ((
+                    t1.isInstanceOf[ScTypePolymorphicType] && t2
+                      .isInstanceOf[ScTypePolymorphicType] ||
+                    (
+                      !(
+                        m1.isInstanceOf[ScFunction] || m1
+                          .isInstanceOf[ScFun] || m1
+                          .isInstanceOf[ScPrimaryConstructor]
+                      ) ||
+                      !(
+                        m2.isInstanceOf[ScFunction] || m2
+                          .isInstanceOf[ScFun] || m2
+                          .isInstanceOf[ScPrimaryConstructor]
+                      )
+                    )
+                  ) &&
                   (lastRepeated(params1) ^ lastRepeated(params2)))
                 return lastRepeated(
                   params2
@@ -339,10 +349,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       typeParams.find(tp =>
-                        (
-                          tp.name,
-                          ScalaPsiUtil.getPsiElementId(
-                            tp.ptp)) == (tpt.name, tpt.getId)) match {
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+                          tpt.name, tpt.getId
+                        )) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true

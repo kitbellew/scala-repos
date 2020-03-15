@@ -178,7 +178,8 @@ trait ResolvableStableCodeReferenceElement
         val fromType = s.subst(
           typed
             .getType(TypingContext.empty)
-            .getOrElse(return
+            .getOrElse(
+              return
             ))
         processor.processType(
           fromType,

@@ -148,9 +148,9 @@ trait TraitView[This <: android.view.View]
   @inline def hereWithoutStyle[LP <: ViewGroupLayoutParams[_, _]](
       implicit defaultLayoutParam: This => LP) = {
     val parent = parentViewGroupIfExists
-    if (parent != null)(parent.basis
-      .asInstanceOf[ViewGroup])
-      .addView(basis) // TODO remove asInstanceOf
+    if (parent != null)(
+      parent.basis.asInstanceOf[ViewGroup]
+    ).addView(basis) // TODO remove asInstanceOf
     basis
   }
 
@@ -2058,20 +2058,22 @@ trait TraitView[This <: android.view.View]
   }
 
   @inline def onClick[U](f: android.view.View => U): This = {
-    basis.setOnClickListener(new android.view.View.OnClickListener {
-      def onClick(p: android.view.View): Unit = {
-        f(p)
-      }
-    })
+    basis.setOnClickListener(
+      new android.view.View.OnClickListener {
+        def onClick(p: android.view.View): Unit = {
+          f(p)
+        }
+      })
     basis
   }
 
   @inline def onClick[U](f: => U): This = {
-    basis.setOnClickListener(new android.view.View.OnClickListener {
-      def onClick(p: android.view.View): Unit = {
-        f
-      }
-    })
+    basis.setOnClickListener(
+      new android.view.View.OnClickListener {
+        def onClick(p: android.view.View): Unit = {
+          f
+        }
+      })
     basis
   }
 
@@ -2107,38 +2109,46 @@ trait TraitView[This <: android.view.View]
 
   @inline def onDrag(
       f: (android.view.View, android.view.DragEvent) => Boolean): This = {
-    basis.setOnDragListener(new android.view.View.OnDragListener {
-      def onDrag(p1: android.view.View, p2: android.view.DragEvent): Boolean = {
-        f(p1, p2)
-      }
-    })
+    basis.setOnDragListener(
+      new android.view.View.OnDragListener {
+        def onDrag(
+            p1: android.view.View,
+            p2: android.view.DragEvent): Boolean = {
+          f(p1, p2)
+        }
+      })
     basis
   }
 
   @inline def onDrag(f: => Boolean): This = {
-    basis.setOnDragListener(new android.view.View.OnDragListener {
-      def onDrag(p1: android.view.View, p2: android.view.DragEvent): Boolean = {
-        f
-      }
-    })
+    basis.setOnDragListener(
+      new android.view.View.OnDragListener {
+        def onDrag(
+            p1: android.view.View,
+            p2: android.view.DragEvent): Boolean = {
+          f
+        }
+      })
     basis
   }
 
   @inline def onFocusChange[U](f: (android.view.View, Boolean) => U): This = {
-    basis.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener {
-      def onFocusChange(p1: android.view.View, p2: Boolean): Unit = {
-        f(p1, p2)
-      }
-    })
+    basis.setOnFocusChangeListener(
+      new android.view.View.OnFocusChangeListener {
+        def onFocusChange(p1: android.view.View, p2: Boolean): Unit = {
+          f(p1, p2)
+        }
+      })
     basis
   }
 
   @inline def onFocusChange[U](f: => U): This = {
-    basis.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener {
-      def onFocusChange(p1: android.view.View, p2: Boolean): Unit = {
-        f
-      }
-    })
+    basis.setOnFocusChangeListener(
+      new android.view.View.OnFocusChangeListener {
+        def onFocusChange(p1: android.view.View, p2: Boolean): Unit = {
+          f
+        }
+      })
     basis
   }
 
@@ -2169,49 +2179,49 @@ trait TraitView[This <: android.view.View]
 
   @inline def onHover(
       f: (android.view.View, android.view.MotionEvent) => Boolean): This = {
-    basis.setOnHoverListener(new android.view.View.OnHoverListener {
-      def onHover(
-          p1: android.view.View,
-          p2: android.view.MotionEvent): Boolean = {
-        f(p1, p2)
-      }
-    })
+    basis.setOnHoverListener(
+      new android.view.View.OnHoverListener {
+        def onHover(
+            p1: android.view.View,
+            p2: android.view.MotionEvent): Boolean = {
+          f(p1, p2)
+        }
+      })
     basis
   }
 
   @inline def onHover(f: => Boolean): This = {
-    basis.setOnHoverListener(new android.view.View.OnHoverListener {
-      def onHover(
-          p1: android.view.View,
-          p2: android.view.MotionEvent): Boolean = {
-        f
-      }
-    })
+    basis.setOnHoverListener(
+      new android.view.View.OnHoverListener {
+        def onHover(
+            p1: android.view.View,
+            p2: android.view.MotionEvent): Boolean = {
+          f
+        }
+      })
     basis
   }
 
   @inline def onKey(
       f: (android.view.View, Int, android.view.KeyEvent) => Boolean): This = {
-    basis.setOnKeyListener(new android.view.View.OnKeyListener {
-      def onKey(
-          p1: android.view.View,
-          p2: Int,
-          p3: android.view.KeyEvent): Boolean = {
-        f(p1, p2, p3)
-      }
-    })
+    basis.setOnKeyListener(
+      new android.view.View.OnKeyListener {
+        def onKey(p1: android.view.View, p2: Int, p3: android.view.KeyEvent)
+            : Boolean = {
+          f(p1, p2, p3)
+        }
+      })
     basis
   }
 
   @inline def onKey(f: => Boolean): This = {
-    basis.setOnKeyListener(new android.view.View.OnKeyListener {
-      def onKey(
-          p1: android.view.View,
-          p2: Int,
-          p3: android.view.KeyEvent): Boolean = {
-        f
-      }
-    })
+    basis.setOnKeyListener(
+      new android.view.View.OnKeyListener {
+        def onKey(p1: android.view.View, p2: Int, p3: android.view.KeyEvent)
+            : Boolean = {
+          f
+        }
+      })
     basis
   }
 
@@ -2256,20 +2266,22 @@ trait TraitView[This <: android.view.View]
   }
 
   @inline def onLongClick(f: android.view.View => Boolean): This = {
-    basis.setOnLongClickListener(new android.view.View.OnLongClickListener {
-      def onLongClick(p: android.view.View): Boolean = {
-        f(p)
-      }
-    })
+    basis.setOnLongClickListener(
+      new android.view.View.OnLongClickListener {
+        def onLongClick(p: android.view.View): Boolean = {
+          f(p)
+        }
+      })
     basis
   }
 
   @inline def onLongClick(f: => Boolean): This = {
-    basis.setOnLongClickListener(new android.view.View.OnLongClickListener {
-      def onLongClick(p: android.view.View): Boolean = {
-        f
-      }
-    })
+    basis.setOnLongClickListener(
+      new android.view.View.OnLongClickListener {
+        def onLongClick(p: android.view.View): Boolean = {
+          f
+        }
+      })
     basis
   }
 
@@ -2295,24 +2307,26 @@ trait TraitView[This <: android.view.View]
 
   @inline def onTouch(
       f: (android.view.View, android.view.MotionEvent) => Boolean): This = {
-    basis.setOnTouchListener(new android.view.View.OnTouchListener {
-      def onTouch(
-          p1: android.view.View,
-          p2: android.view.MotionEvent): Boolean = {
-        f(p1, p2)
-      }
-    })
+    basis.setOnTouchListener(
+      new android.view.View.OnTouchListener {
+        def onTouch(
+            p1: android.view.View,
+            p2: android.view.MotionEvent): Boolean = {
+          f(p1, p2)
+        }
+      })
     basis
   }
 
   @inline def onTouch(f: => Boolean): This = {
-    basis.setOnTouchListener(new android.view.View.OnTouchListener {
-      def onTouch(
-          p1: android.view.View,
-          p2: android.view.MotionEvent): Boolean = {
-        f
-      }
-    })
+    basis.setOnTouchListener(
+      new android.view.View.OnTouchListener {
+        def onTouch(
+            p1: android.view.View,
+            p2: android.view.MotionEvent): Boolean = {
+          f
+        }
+      })
     basis
   }
 
@@ -3205,20 +3219,26 @@ trait TraitViewStub[This <: android.view.ViewStub] extends TraitView[This] {
 
   @inline def onInflate[U](
       f: (android.view.ViewStub, android.view.View) => U): This = {
-    basis.setOnInflateListener(new android.view.ViewStub.OnInflateListener {
-      def onInflate(p1: android.view.ViewStub, p2: android.view.View): Unit = {
-        f(p1, p2)
-      }
-    })
+    basis.setOnInflateListener(
+      new android.view.ViewStub.OnInflateListener {
+        def onInflate(
+            p1: android.view.ViewStub,
+            p2: android.view.View): Unit = {
+          f(p1, p2)
+        }
+      })
     basis
   }
 
   @inline def onInflate[U](f: => U): This = {
-    basis.setOnInflateListener(new android.view.ViewStub.OnInflateListener {
-      def onInflate(p1: android.view.ViewStub, p2: android.view.View): Unit = {
-        f
-      }
-    })
+    basis.setOnInflateListener(
+      new android.view.ViewStub.OnInflateListener {
+        def onInflate(
+            p1: android.view.ViewStub,
+            p2: android.view.View): Unit = {
+          f
+        }
+      })
     basis
   }
 

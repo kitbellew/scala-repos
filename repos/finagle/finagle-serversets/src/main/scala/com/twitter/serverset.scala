@@ -38,12 +38,13 @@ private[twitter] trait BaseServersetNamer extends Namer {
       case Some(name) =>
         // We have to bind the name ourselves in order to know whether
         // it resolves negatively.
-        Activity(name.addr map {
-          case Addr.Bound(_, _) => Activity.Ok(NameTree.Leaf(name))
-          case Addr.Neg         => Activity.Ok(NameTree.Neg)
-          case Addr.Pending     => Activity.Pending
-          case Addr.Failed(exc) => Activity.Failed(exc)
-        })
+        Activity(
+          name.addr map {
+            case Addr.Bound(_, _) => Activity.Ok(NameTree.Leaf(name))
+            case Addr.Neg         => Activity.Ok(NameTree.Neg)
+            case Addr.Pending     => Activity.Pending
+            case Addr.Failed(exc) => Activity.Failed(exc)
+          })
 
       case None => Activity.value(NameTree.Neg)
     }

@@ -48,8 +48,10 @@ object FormUrlEncodedParserSpec extends Specification {
       val result: Map[String, Seq[String]] = FormUrlEncodedParser.parse(
         url_encoded)
       val strings =
-        (for (k <- result.keysIterator)
-          yield "&" + k + "=" + result(k).head).mkString
+        (
+          for (k <- result.keysIterator)
+            yield "&" + k + "=" + result(k).head
+        ).mkString
       val reconstructed = strings.substring(1)
       reconstructed must equalTo(url_encoded)
     }

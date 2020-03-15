@@ -14,8 +14,7 @@ import org.apache.thrift.transport.TMemoryInputTransport
 object maxReusableBufferSize
     extends GlobalFlag[StorageUnit](
       16.kilobytes,
-      "Max size (bytes) for ThriftServiceIface reusable transport buffer"
-    )
+      "Max size (bytes) for ThriftServiceIface reusable transport buffer")
 
 /**
   * Typeclass ServiceIfaceBuilder[T] creates T-typed interfaces from thrift clients.
@@ -32,8 +31,7 @@ trait ServiceIfaceBuilder[ServiceIface] {
   def newServiceIface(
       thriftService: Service[ThriftClientRequest, Array[Byte]],
       pf: TProtocolFactory,
-      stats: StatsReceiver
-  ): ServiceIface
+      stats: StatsReceiver): ServiceIface
 }
 
 /**
@@ -113,8 +111,7 @@ object ThriftServiceIface {
       method: ThriftMethod,
       thriftService: Service[ThriftClientRequest, Array[Byte]],
       pf: TProtocolFactory,
-      stats: StatsReceiver
-  ): Service[method.Args, method.Result] = {
+      stats: StatsReceiver): Service[method.Args, method.Result] = {
     statsFilter(method, stats) andThen
       thriftCodecFilter(method, pf) andThen
       thriftService
@@ -126,15 +123,12 @@ object ThriftServiceIface {
     */
   private def statsFilter(
       method: ThriftMethod,
-      stats: StatsReceiver
-  ): SimpleFilter[method.Args, method.Result] = {
+      stats: StatsReceiver): SimpleFilter[method.Args, method.Result] = {
     val methodStats = ThriftMethodStats(
       stats.scope(method.serviceName).scope(method.name))
     new SimpleFilter[method.Args, method.Result] {
-      def apply(
-          args: method.Args,
-          service: Service[method.Args, method.Result]
-      ): Future[method.Result] = {
+      def apply(args: method.Args, service: Service[method.Args, method.Result])
+          : Future[method.Result] = {
         methodStats.requestsCounter.incr()
         service(args).onSuccess { result =>
           if (result.successField.isDefined) {
@@ -156,15 +150,13 @@ object ThriftServiceIface {
     * A [[Filter]] that wraps a binary thrift Service[ThriftClientRequest, Array[Byte]]
     * and produces a [[Service]] from a [[ThriftStruct]] to [[ThriftClientRequest]] (i.e. bytes).
     */
-  private def thriftCodecFilter(
-      method: ThriftMethod,
-      pf: TProtocolFactory
-  ): Filter[method.Args, method.Result, ThriftClientRequest, Array[Byte]] =
+  private def thriftCodecFilter(method: ThriftMethod, pf: TProtocolFactory)
+      : Filter[method.Args, method.Result, ThriftClientRequest, Array[Byte]] =
     new Filter[method.Args, method.Result, ThriftClientRequest, Array[Byte]] {
       override def apply(
           args: method.Args,
-          service: Service[ThriftClientRequest, Array[Byte]]
-      ): Future[method.Result] = {
+          service: Service[ThriftClientRequest, Array[Byte]])
+          : Future[method.Result] = {
         val request = encodeRequest(method.name, args, pf, method.oneway)
         service(request).map { bytes =>
           decodeResponse(bytes, method.responseCodec, pf)
@@ -172,14 +164,11 @@ object ThriftServiceIface {
       }
     }
 
-  def resultFilter(
-      method: ThriftMethod
-  ): Filter[method.Args, method.SuccessType, method.Args, method.Result] =
+  def resultFilter(method: ThriftMethod)
+      : Filter[method.Args, method.SuccessType, method.Args, method.Result] =
     new Filter[method.Args, method.SuccessType, method.Args, method.Result] {
-      def apply(
-          args: method.Args,
-          service: Service[method.Args, method.Result]
-      ): Future[method.SuccessType] = {
+      def apply(args: method.Args, service: Service[method.Args, method.Result])
+          : Future[method.SuccessType] = {
         service(args).flatMap { response: method.Result =>
           response.firstException() match {
             case Some(exception) =>
@@ -193,8 +182,7 @@ object ThriftServiceIface {
                   Future.exception(
                     new TApplicationException(
                       TApplicationException.MISSING_RESULT,
-                      s"Thrift method '${method.name}' failed: missing result"
-                    ))
+                      s"Thrift method '${method.name}' failed: missing result"))
               }
           }
         }
@@ -223,8 +211,7 @@ object ThriftServiceIface {
       methodName: String,
       args: ThriftStruct,
       pf: TProtocolFactory,
-      oneway: Boolean
-  ): ThriftClientRequest = {
+      oneway: Boolean): ThriftClientRequest = {
     val buf = getReusableBuffer()
     val oprot = pf.getProtocol(buf)
 
@@ -241,8 +228,7 @@ object ThriftServiceIface {
   private def decodeResponse[T <: ThriftStruct](
       resBytes: Array[Byte],
       codec: ThriftStructCodec[T],
-      pf: TProtocolFactory
-  ): T = {
+      pf: TProtocolFactory): T = {
     val iprot = pf.getProtocol(new TMemoryInputTransport(resBytes))
     val msg = iprot.readMessageBegin()
     if (msg.`type` == TMessageType.EXCEPTION) {

@@ -34,10 +34,12 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
       i + 1
 
   private[this] def dec(i: Int): Int =
-    (if (i == 0)
-       items.length
-     else
-       i) - 1
+    (
+      if (i == 0)
+        items.length
+      else
+        i
+    ) - 1
 
   private[this] def itemAt(i: Int): E = items(i).asInstanceOf[E]
 
@@ -145,10 +147,12 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
 
   def peek: E =
     locked(
-      (if (count == 0)
-         null
-       else
-         itemAt(takeIndex)))
+      (
+        if (count == 0)
+          null
+        else
+          itemAt(takeIndex)
+      ))
 
   def size: Int = locked(count)
 

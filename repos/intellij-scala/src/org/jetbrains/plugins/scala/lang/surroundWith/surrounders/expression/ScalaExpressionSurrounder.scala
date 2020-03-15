@@ -90,8 +90,7 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
         "(" + getTemplateAsString(elements) + ")"
       else
         getTemplateAsString(elements),
-      elements(0).getManager
-    )
+      elements(0).getManager)
 
   def getTemplateAsString(elements: Array[PsiElement]): String = {
     var s: String = ""

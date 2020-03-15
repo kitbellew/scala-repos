@@ -48,8 +48,9 @@ class GitRepositoryServlet extends GitServlet with SystemSettingsService {
       res: HttpServletResponse): Unit = {
     val agent = req.getHeader("USER-AGENT")
     val index = req.getRequestURI.indexOf(".git")
-    if (index >= 0 && (agent == null || agent.toLowerCase.indexOf(
-          "git/") < 0)) {
+    if (index >= 0 && (
+          agent == null || agent.toLowerCase.indexOf("git/") < 0
+        )) {
       // redirect for browsers
       val paths = req.getRequestURI.substring(0, index).split("/")
       res.sendRedirect(

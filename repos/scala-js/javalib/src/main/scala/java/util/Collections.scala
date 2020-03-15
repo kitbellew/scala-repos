@@ -12,11 +12,12 @@ import scala.collection.JavaConversions._
 object Collections {
 
   final lazy val EMPTY_SET: Set[_] = {
-    new ImmutableSet(new AbstractSet[Any] with Serializable {
-      override def size(): Int = 0
+    new ImmutableSet(
+      new AbstractSet[Any] with Serializable {
+        override def size(): Int = 0
 
-      override def iterator(): Iterator[Any] = emptyIterator[Any]
-    })
+        override def iterator(): Iterator[Any] = emptyIterator[Any]
+      })
   }
 
   final lazy val EMPTY_LIST: List[_] = {
@@ -30,10 +31,11 @@ object Collections {
   }
 
   final lazy val EMPTY_MAP: Map[_, _] = {
-    new ImmutableMap(new AbstractMap[Any, Any] with Serializable {
-      override def entrySet(): Set[Map.Entry[Any, Any]] =
-        EMPTY_SET.asInstanceOf[Set[Map.Entry[Any, Any]]]
-    })
+    new ImmutableMap(
+      new AbstractMap[Any, Any] with Serializable {
+        override def entrySet(): Set[Map.Entry[Any, Any]] =
+          EMPTY_SET.asInstanceOf[Set[Map.Entry[Any, Any]]]
+      })
   }
 
   private lazy val EMPTY_ITERATOR: Iterator[_] = new EmptyIterator
@@ -467,45 +469,48 @@ object Collections {
   def emptyMap[K, V](): Map[K, V] = EMPTY_MAP.asInstanceOf[Map[K, V]]
 
   def singleton[T](o: T): Set[T] = {
-    new ImmutableSet(new AbstractSet[T] with Serializable {
-      def size(): Int = 1
+    new ImmutableSet(
+      new AbstractSet[T] with Serializable {
+        def size(): Int = 1
 
-      def iterator(): Iterator[T] = {
-        new Iterator[T] {
-          private var _hasNext: Boolean = true
+        def iterator(): Iterator[T] = {
+          new Iterator[T] {
+            private var _hasNext: Boolean = true
 
-          def hasNext(): Boolean = _hasNext
+            def hasNext(): Boolean = _hasNext
 
-          def next(): T = {
-            if (!_hasNext)
-              throw new NoSuchElementException
-            _hasNext = false
-            o
+            def next(): T = {
+              if (!_hasNext)
+                throw new NoSuchElementException
+              _hasNext = false
+              o
+            }
+
+            def remove(): Unit = throw new UnsupportedOperationException
           }
-
-          def remove(): Unit = throw new UnsupportedOperationException
         }
-      }
-    })
+      })
   }
 
   def singletonList[T](o: T): List[T] = {
-    new ImmutableList(new AbstractList[T] with Serializable {
-      def size(): Int = 1
+    new ImmutableList(
+      new AbstractList[T] with Serializable {
+        def size(): Int = 1
 
-      def get(index: Int): T =
-        if (index == 0)
-          o
-        else
-          throw new IndexOutOfBoundsException(index.toString)
-    })
+        def get(index: Int): T =
+          if (index == 0)
+            o
+          else
+            throw new IndexOutOfBoundsException(index.toString)
+      })
   }
 
   def singletonMap[K, V](key: K, value: V): Map[K, V] = {
-    new ImmutableMap(new AbstractMap[K, V] with Serializable {
-      def entrySet(): Set[Map.Entry[K, V]] =
-        singleton(new AbstractMap.SimpleImmutableEntry(key, value))
-    })
+    new ImmutableMap(
+      new AbstractMap[K, V] with Serializable {
+        def entrySet(): Set[Map.Entry[K, V]] =
+          singleton(new AbstractMap.SimpleImmutableEntry(key, value))
+      })
   }
 
   def nCopies[T](n: Int, o: T): List[T] = {

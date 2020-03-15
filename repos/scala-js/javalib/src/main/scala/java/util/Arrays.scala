@@ -234,10 +234,12 @@ object Arrays {
             else
               iA = ix
           }
-          val ix = iA + (if (ord.compare(next, a(iA)) < 0)
-                           0
-                         else
-                           1)
+          val ix = iA + (
+            if (ord.compare(next, a(iA)) < 0)
+              0
+            else
+              1
+          )
           var i = i0 + m
           while (i > ix) {
             a(i) = a(i - 1)
@@ -373,10 +375,12 @@ object Arrays {
             else
               iA = ix
           }
-          val ix = iA + (if (ord.compare(next, a(iA)) < 0)
-                           0
-                         else
-                           1)
+          val ix = iA + (
+            if (ord.compare(next, a(iA)) < 0)
+              0
+            else
+              1
+          )
           var i = i0 + m
           while (i > ix) {
             a(i) = a(i - 1)
@@ -585,8 +589,10 @@ object Arrays {
 
   @inline
   private def equalsImpl[T](a: Array[T], b: Array[T]): Boolean = {
-    (a eq b) || (a != null && b != null && a.length == b.length &&
-    a.indices.forall(i => a(i) == b(i)))
+    (a eq b) || (
+      a != null && b != null && a.length == b.length &&
+      a.indices.forall(i => a(i) == b(i))
+    )
   }
 
   @noinline def fill(a: Array[Long], value: Long): Unit =
@@ -863,10 +869,12 @@ object Arrays {
       0
     else
       a.foldLeft(1)((acc, x) =>
-        31 * acc + (if (x == null)
-                      0
-                    else
-                      elementHashCode(x)))
+        31 * acc + (
+          if (x == null)
+            0
+          else
+            elementHashCode(x)
+        ))
   }
 
   @noinline def deepHashCode(a: Array[AnyRef]): Int = {

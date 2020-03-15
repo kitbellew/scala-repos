@@ -108,8 +108,7 @@ class AllowedHostsModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[AllowedHostsConfig].toProvider[AllowedHostsConfigProvider],
-      bind[AllowedHostsFilter].toSelf
-    )
+      bind[AllowedHostsFilter].toSelf)
 }
 
 trait AllowedHostsComponents {

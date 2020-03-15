@@ -71,15 +71,16 @@ class BasicWorkflow
 
           project ! PublicSymbolSearchReq(List("java", "io", "File"), 30)
           val javaSearchSymbol = expectMsgType[SymbolSearchResults]
-          assert(javaSearchSymbol.syms.exists {
-            case TypeSearchResult(
-                  "java.io.File",
-                  "File",
-                  DeclaredAs.Class,
-                  Some(_)) =>
-              true
-            case _ => false
-          })
+          assert(
+            javaSearchSymbol.syms.exists {
+              case TypeSearchResult(
+                    "java.io.File",
+                    "File",
+                    DeclaredAs.Class,
+                    Some(_)) =>
+                true
+              case _ => false
+            })
           //-----------------------------------------------------------------------------------------------
           // public symbol search - scala.util.Random
           project ! PublicSymbolSearchReq(List("scala", "util", "Random"), 2)
@@ -466,8 +467,7 @@ class BasicWorkflow
                   List(
                     TextEdit(`fooFile`, 214, 217, "bar"),
                     TextEdit(`fooFile`, 252, 255, "bar"),
-                    TextEdit(`fooFile`, 269, 272, "bar")
-                  ),
+                    TextEdit(`fooFile`, 269, 272, "bar")),
                   _) =>
           }
 

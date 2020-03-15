@@ -103,10 +103,12 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
     object D extends DoubleParamMatcher("d")
 
     assert {
-      (Path("/test.json") :? ParamMap(
-        "i" -> "1",
-        "l" -> "2147483648",
-        "d" -> "1.3")) match {
+      (
+        Path("/test.json") :? ParamMap(
+          "i" -> "1",
+          "l" -> "2147483648",
+          "d" -> "1.3")
+      ) match {
         case Root / "test.json" :? (I(i) :& L(l) :& D(d)) =>
           i == 1 && l == 2147483648L && d == 1.3d
         case _ => false
@@ -161,10 +163,12 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("Root extractor, no partial match") {
     assert {
-      (Path("/test.json") match {
-        case Root => true
-        case _    => false
-      }) == false
+      (
+        Path("/test.json") match {
+          case Root => true
+          case _    => false
+        }
+      ) == false
     }
   }
 
@@ -206,19 +210,23 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("Integer extractor, invalid int") {
     assert {
-      (Path("/user/invalid") match {
-        case Root / "user" / Integer(userId) => true
-        case _                               => false
-      }) == false
+      (
+        Path("/user/invalid") match {
+          case Root / "user" / Integer(userId) => true
+          case _                               => false
+        }
+      ) == false
     }
   }
 
   test("Integer extractor, number format error") {
     assert {
-      (Path("/user/2147483648") match {
-        case Root / "user" / Integer(userId) => true
-        case _                               => false
-      }) == false
+      (
+        Path("/user/2147483648") match {
+          case Root / "user" / Integer(userId) => true
+          case _                               => false
+        }
+      ) == false
     }
   }
 
@@ -233,19 +241,23 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("Long extractor, invalid int") {
     assert {
-      (Path("/user/invalid") match {
-        case Root / "user" / Long(userId) => true
-        case _                            => false
-      }) == false
+      (
+        Path("/user/invalid") match {
+          case Root / "user" / Long(userId) => true
+          case _                            => false
+        }
+      ) == false
     }
   }
 
   test("Long extractor, number format error") {
     assert {
-      (Path("/user/9223372036854775808") match {
-        case Root / "user" / Long(userId) => true
-        case _                            => false
-      }) == false
+      (
+        Path("/user/9223372036854775808") match {
+          case Root / "user" / Long(userId) => true
+          case _                            => false
+        }
+      ) == false
     }
   }
 }

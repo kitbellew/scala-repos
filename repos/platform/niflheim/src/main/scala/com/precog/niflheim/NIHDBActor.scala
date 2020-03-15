@@ -284,8 +284,14 @@ private[niflheim] object NIHDBActor extends Logging {
         _ map { s =>
           (
             s.authorities,
-            actorSystem.actorOf(Props(
-              new NIHDBActor(s, baseDir, chef, cookThreshold, txLogScheduler))))
+            actorSystem.actorOf(
+              Props(
+                new NIHDBActor(
+                  s,
+                  baseDir,
+                  chef,
+                  cookThreshold,
+                  txLogScheduler))))
         }
       }
     }
@@ -449,18 +455,21 @@ private[niflheim] class NIHDBActor private (
   private def computeBlockMap(current: BlockState) = {
     val allBlocks: List[StorageReader] =
       (current.cooked ++ current.pending.values :+ current.rawLog)
-    SortedMap(allBlocks.map { r =>
-      r.id -> r
-    }.toSeq: _*)
+    SortedMap(
+      allBlocks.map { r =>
+        r.id -> r
+      }.toSeq: _*)
   }
 
   def updatedThresholds(
       current: Map[Int, Int],
       ids: Seq[Long]): Map[Int, Int] = {
-    (current.toSeq ++ ids.map { i =>
-      val EventId(p, s) = EventId.fromLong(i);
-      (p -> s)
-    }).groupBy(_._1).map {
+    (
+      current.toSeq ++ ids.map { i =>
+        val EventId(p, s) = EventId.fromLong(i);
+        (p -> s)
+      }
+    ).groupBy(_._1).map {
       case (p, ids) => (p -> ids.map(_._2).max)
     }
   }
@@ -477,14 +486,12 @@ private[niflheim] class NIHDBActor private (
       state.blockState = state.blockState.copy(
         cooked = CookedReader.load(cookedDir, file) :: state.blockState.cooked
           .filterNot(_.id == id),
-        pending = state.blockState.pending - id
-      )
+        pending = state.blockState.pending - id)
 
       state.currentBlocks = computeBlockMap(state.blockState)
 
-      currentState = currentState.copy(
-        cookedMap = currentState.cookedMap + (id -> file.getPath)
-      )
+      currentState = currentState.copy(cookedMap =
+        currentState.cookedMap + (id -> file.getPath))
 
       logger.debug("Cook complete on %d".format(id))
 

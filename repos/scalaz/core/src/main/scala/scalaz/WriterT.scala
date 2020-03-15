@@ -59,17 +59,19 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   def flatMapF[B](f: A => F[(W, B)])(implicit
       F: Bind[F],
       s: Semigroup[W]): WriterT[F, W, B] =
-    writerT(F.bind(run) { wa =>
-      val z = f(wa._2)
-      F.map(z)(wb => (s.append(wa._1, wb._1), wb._2))
-    })
+    writerT(
+      F.bind(run) { wa =>
+        val z = f(wa._2)
+        F.map(z)(wb => (s.append(wa._1, wb._1), wb._2))
+      })
 
   def traverse[G[_], B](f: A => G[B])(implicit
       G: Applicative[G],
       F: Traverse[F]): G[WriterT[F, W, B]] = {
-    G.map(F.traverse(run) {
-      case (w, a) => G.map(f(a))(b => (w, b))
-    })(WriterT(_))
+    G.map(
+      F.traverse(run) {
+        case (w, a) => G.map(f(a))(b => (w, b))
+      })(WriterT(_))
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
@@ -78,9 +80,10 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
     }
 
   def bimap[C, D](f: W => C, g: A => D)(implicit F: Functor[F]) =
-    writerT[F, C, D](F.map(run)({
-      case (a, b) => (f(a), g(b))
-    }))
+    writerT[F, C, D](
+      F.map(run)({
+        case (a, b) => (f(a), g(b))
+      }))
 
   def leftMap[C](f: W => C)(implicit F: Functor[F]): WriterT[F, C, A] =
     bimap(f, identity)
@@ -88,9 +91,10 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   def bitraverse[G[_], C, D](f: W => G[C], g: A => G[D])(implicit
       G: Applicative[G],
       F: Traverse[F]) =
-    G.map(F.traverse[G, (W, A), (C, D)](run) {
-      case (a, b) => G.tuple2(f(a), g(b))
-    })(writerT(_))
+    G.map(
+      F.traverse[G, (W, A), (C, D)](run) {
+        case (a, b) => G.tuple2(f(a), g(b))
+      })(writerT(_))
 
   def rwst[R, S](implicit F: Functor[F]): ReaderWriterStateT[F, R, W, S, A] =
     ReaderWriterStateT((r, s) =>
@@ -101,9 +105,10 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   def wpoint[G[_]](implicit
       F: Functor[F],
       P: Applicative[G]): WriterT[F, G[W], A] =
-    writerT(F.map(self.run) {
-      case (w, a) => (P.point(w), a)
-    })
+    writerT(
+      F.map(self.run) {
+        case (w, a) => (P.point(w), a)
+      })
 
   def colocal[X](f: W => X)(implicit F: Functor[F]): WriterT[F, X, A] =
     mapWritten(f)
@@ -329,8 +334,8 @@ trait WriterTFunctions {
         type A = A0;
         type B = B0
       },
-      l: Leibniz.===[AB, (A0, B0)]
-  ): WriterT[u1.M, A0, B0] = WriterT(l.subst[u1.M](u1(fab)))
+      l: Leibniz.===[AB, (A0, B0)]): WriterT[u1.M, A0, B0] =
+    WriterT(l.subst[u1.M](u1(fab)))
 
   def writer[W, A](v: (W, A)): Writer[W, A] = writerT[Id, W, A](v)
 
@@ -413,10 +418,11 @@ private trait WriterTBindRec[F[_], W]
           e.bimap((w1, _), (w1, _))
       }
 
-    WriterT(F.bind(f(a).run) {
-      case (w, -\/(a0)) => F.tailrecM(go)((w, a0))
-      case (w, \/-(b))  => A.point((w, b))
-    })
+    WriterT(
+      F.bind(f(a).run) {
+        case (w, -\/(a0)) => F.tailrecM(go)((w, a0))
+        case (w, \/-(b))  => A.point((w, b))
+      })
   }
 }
 
@@ -514,7 +520,8 @@ private trait WriterTMonadListen[F[_], W]
   def writer[A](w: W, v: A): WriterT[F, W, A] = WriterT.writerT(F.point((w, v)))
 
   def listen[A](fa: WriterT[F, W, A]): WriterT[F, W, (A, W)] =
-    WriterT(F.bind(fa.run) {
-      case (w, a) => F.point((w, (a, w)))
-    })
+    WriterT(
+      F.bind(fa.run) {
+        case (w, a) => F.point((w, (a, w)))
+      })
 }

@@ -44,9 +44,10 @@ object ExecutionUtil {
   def runDateRangeWithParallelism[T](duration: Duration, parallelism: Int = 1)(
       fn: DateRange => Execution[T])(
       implicit dr: DateRange): Execution[Seq[T]] =
-    runDatesWithParallelism(duration, parallelism)(fn).map(_.map {
-      case (_, t) => t
-    })
+    runDatesWithParallelism(duration, parallelism)(fn).map(
+      _.map {
+        case (_, t) => t
+      })
 
   /**
     * Same as runDateRangeWithParallelism, but sums the sequence
@@ -72,8 +73,9 @@ object ExecutionUtil {
     require(dr.each(duration).nonEmpty, s"Date Range can not be empty")
 
     runDateRangeWithParallelism(duration, parallelism)(fn)(dr)
-      .map(_.reduceLeft[T] {
-        case (l, r) => Semigroup.plus(l, r)
-      })
+      .map(
+        _.reduceLeft[T] {
+          case (l, r) => Semigroup.plus(l, r)
+        })
   }
 }

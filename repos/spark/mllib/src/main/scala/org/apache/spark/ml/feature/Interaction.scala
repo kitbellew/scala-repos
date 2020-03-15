@@ -152,8 +152,9 @@ class Interaction @Since("1.6.0") (override val uid: String)
             val attrs = AttributeGroup
               .fromStructField(f)
               .attributes
-              .getOrElse(throw new SparkException(
-                "Vector attributes must be defined for interaction."))
+              .getOrElse(
+                throw new SparkException(
+                  "Vector attributes must be defined for interaction."))
             attrs.map(getNumFeatures).toArray
         }
       new FeatureEncoder(numFeatures)

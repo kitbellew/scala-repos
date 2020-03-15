@@ -106,8 +106,8 @@ class DeploymentActorTest
     when(tracker.appTasksLaunchedSync(app3.id)).thenReturn(Set(task3_1))
     when(tracker.appTasksLaunchedSync(app4.id)).thenReturn(Set(task4_1))
 
-    when(driver.killTask(task1_2.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task1_2.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -125,8 +125,8 @@ class DeploymentActorTest
         }
       })
 
-    when(driver.killTask(task2_1.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task2_1.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -144,53 +144,56 @@ class DeploymentActorTest
         }
       })
 
-    when(queue.add(same(app2New), any[Int])).thenAnswer(new Answer[Boolean] {
-      def answer(invocation: InvocationOnMock): Boolean = {
-        println(invocation.getArguments.toSeq)
-        for (i <- 0 until invocation.getArguments()(1).asInstanceOf[Int])
+    when(queue.add(same(app2New), any[Int])).thenAnswer(
+      new Answer[Boolean] {
+        def answer(invocation: InvocationOnMock): Boolean = {
+          println(invocation.getArguments.toSeq)
+          for (i <- 0 until invocation.getArguments()(1).asInstanceOf[Int])
+            system.eventStream.publish(
+              MesosStatusUpdateEvent(
+                slaveId = "",
+                taskId = Task.Id.forApp(app2New.id),
+                taskStatus = "TASK_RUNNING",
+                message = "",
+                appId = app2.id,
+                host = "",
+                ipAddresses = Nil,
+                ports = Nil,
+                version = app2New.version.toString
+              ))
+          true
+        }
+      })
+
+    when(scheduler.startApp(driver, app3)).thenAnswer(
+      new Answer[Future[Unit]] {
+        def answer(invocation: InvocationOnMock): Future[Unit] = {
+          // system.eventStream.publish(MesosStatusUpdateEvent("", "task3_1", "TASK_RUNNING", "", app3.id, "", "", Nil, app3.version.toString))
+          Future.successful(())
+        }
+      })
+
+    when(scheduler.scale(driver, app3)).thenAnswer(
+      new Answer[Future[Unit]] {
+        def answer(invocation: InvocationOnMock): Future[Unit] = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
               slaveId = "",
-              taskId = Task.Id.forApp(app2New.id),
+              taskId = Task.Id("task3_1"),
               taskStatus = "TASK_RUNNING",
               message = "",
-              appId = app2.id,
+              appId = app3.id,
               host = "",
               ipAddresses = Nil,
               ports = Nil,
-              version = app2New.version.toString
+              version = app3.version.toString
             ))
-        true
-      }
-    })
+          Future.successful(())
+        }
+      })
 
-    when(scheduler.startApp(driver, app3)).thenAnswer(new Answer[Future[Unit]] {
-      def answer(invocation: InvocationOnMock): Future[Unit] = {
-        // system.eventStream.publish(MesosStatusUpdateEvent("", "task3_1", "TASK_RUNNING", "", app3.id, "", "", Nil, app3.version.toString))
-        Future.successful(())
-      }
-    })
-
-    when(scheduler.scale(driver, app3)).thenAnswer(new Answer[Future[Unit]] {
-      def answer(invocation: InvocationOnMock): Future[Unit] = {
-        system.eventStream.publish(
-          MesosStatusUpdateEvent(
-            slaveId = "",
-            taskId = Task.Id("task3_1"),
-            taskStatus = "TASK_RUNNING",
-            message = "",
-            appId = app3.id,
-            host = "",
-            ipAddresses = Nil,
-            ports = Nil,
-            version = app3.version.toString
-          ))
-        Future.successful(())
-      }
-    })
-
-    when(driver.killTask(task4_1.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task4_1.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -220,9 +223,7 @@ class DeploymentActorTest
           queue,
           storage,
           hcManager,
-          system.eventStream
-        )
-      )
+          system.eventStream))
 
       plan.steps.zipWithIndex.foreach {
         case (step, num) =>
@@ -274,8 +275,8 @@ class DeploymentActorTest
       List(DeploymentStep(List(RestartApplication(appNew)))),
       Timestamp.now())
 
-    when(driver.killTask(task1_1.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task1_1.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -292,8 +293,8 @@ class DeploymentActorTest
         }
       })
 
-    when(driver.killTask(task1_2.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task1_2.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -312,27 +313,29 @@ class DeploymentActorTest
 
     val taskIDs = Iterator.from(3)
 
-    when(queue.count(appNew.id)).thenAnswer(new Answer[Int] {
-      override def answer(p1: InvocationOnMock): Int = appNew.instances
-    })
+    when(queue.count(appNew.id)).thenAnswer(
+      new Answer[Int] {
+        override def answer(p1: InvocationOnMock): Int = appNew.instances
+      })
 
-    when(queue.add(same(appNew), any[Int])).thenAnswer(new Answer[Boolean] {
-      def answer(invocation: InvocationOnMock): Boolean = {
-        for (i <- 0 until invocation.getArguments()(1).asInstanceOf[Int])
-          system.eventStream.publish(
-            MesosStatusUpdateEvent(
-              "",
-              Task.Id(s"task1_${taskIDs.next()}"),
-              "TASK_RUNNING",
-              "",
-              app.id,
-              "",
-              Nil,
-              Nil,
-              appNew.version.toString))
-        true
-      }
-    })
+    when(queue.add(same(appNew), any[Int])).thenAnswer(
+      new Answer[Boolean] {
+        def answer(invocation: InvocationOnMock): Boolean = {
+          for (i <- 0 until invocation.getArguments()(1).asInstanceOf[Int])
+            system.eventStream.publish(
+              MesosStatusUpdateEvent(
+                "",
+                Task.Id(s"task1_${taskIDs.next()}"),
+                "TASK_RUNNING",
+                "",
+                app.id,
+                "",
+                Nil,
+                Nil,
+                appNew.version.toString))
+          true
+        }
+      })
 
     try {
       TestActorRef(
@@ -346,9 +349,7 @@ class DeploymentActorTest
           queue,
           storage,
           hcManager,
-          system.eventStream
-        )
-      )
+          system.eventStream))
 
       receiverProbe.expectMsg(DeploymentFinished(plan))
 
@@ -396,9 +397,7 @@ class DeploymentActorTest
           queue,
           storage,
           hcManager,
-          system.eventStream
-        )
-      )
+          system.eventStream))
 
       receiverProbe.expectMsg(DeploymentFinished(plan))
     } finally {
@@ -442,8 +441,8 @@ class DeploymentActorTest
     when(tracker.appTasksLaunchedSync(app1.id))
       .thenReturn(Set(task1_1, task1_2, task1_3))
 
-    when(driver.killTask(task1_2.taskId.mesosTaskId))
-      .thenAnswer(new Answer[Status] {
+    when(driver.killTask(task1_2.taskId.mesosTaskId)).thenAnswer(
+      new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
           system.eventStream.publish(
             MesosStatusUpdateEvent(
@@ -472,9 +471,7 @@ class DeploymentActorTest
           queue,
           storage,
           hcManager,
-          system.eventStream
-        )
-      )
+          system.eventStream))
 
       plan.steps.zipWithIndex.foreach {
         case (step, num) =>

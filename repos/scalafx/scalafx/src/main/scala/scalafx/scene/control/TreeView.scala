@@ -138,11 +138,12 @@ object TreeView {
     * TreeView.
     */
   def apply[T](layoutChildrenOp: () => Unit) =
-    new TreeView[T](new jfxsc.TreeView[T] {
-      override def layoutChildren() {
-        layoutChildrenOp()
-      }
-    })
+    new TreeView[T](
+      new jfxsc.TreeView[T] {
+        override def layoutChildren() {
+          layoutChildrenOp()
+        }
+      })
 
 }
 

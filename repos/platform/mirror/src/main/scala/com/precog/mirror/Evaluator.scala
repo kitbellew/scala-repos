@@ -84,9 +84,11 @@ trait EvaluatorModule
       }
 
       // done in this order for eagerness reasons
-      raw zip (Stream from init map {
-        Vector(_)
-      }) map {
+      raw zip (
+        Stream from init map {
+          Vector(_)
+        }
+      ) map {
         case (a, b) => (b, a)
       }
     }
@@ -134,9 +136,11 @@ trait EvaluatorModule
           }
 
           // done in this order for eagerness reasons
-          raw zip (Stream from init map {
-            Vector(_)
-          }) map {
+          raw zip (
+            Stream from init map {
+              Vector(_)
+            }
+          ) map {
             case (a, b) => (b, a)
           }
         }
@@ -145,12 +149,14 @@ trait EvaluatorModule
           val fromRes = loop(env, restrict)(from)
           val toRes = loop(env, restrict)(to)
 
-          val fromIdx = Set(fromRes map {
-            case (ids, _) => ids
-          }: _*)
-          val toIdx = Set(toRes map {
-            case (ids, _) => ids
-          }: _*)
+          val fromIdx = Set(
+            fromRes map {
+              case (ids, _) => ids
+            }: _*)
+          val toIdx = Set(
+            toRes map {
+              case (ids, _) => ids
+            }: _*)
 
           loop(
             env,
@@ -693,7 +699,9 @@ trait EvaluatorModule
             case (l, r) => CoproductProvenance(l, r)
           }
 
-          merged ++ (leftRec drop merged.length) ++ (rightRec drop merged.length)
+          merged ++ (leftRec drop merged.length) ++ (
+            rightRec drop merged.length
+          )
         }
 
         case prov => prov :: Nil

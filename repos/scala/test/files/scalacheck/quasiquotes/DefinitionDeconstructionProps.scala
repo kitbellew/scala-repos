@@ -68,9 +68,10 @@ trait ClassDeconstruction { self: QuasiquoteProperties =>
 
   property("class tparams") = test {
     val q"class $name[..$tparams]" = q"class Foo[A, B]"
-    assert(tparams.map {
-      _.name
-    } == List(TypeName("A"), TypeName("B")))
+    assert(
+      tparams.map {
+        _.name
+      } == List(TypeName("A"), TypeName("B")))
   }
 
   property("deconstruct bare case class") = test {

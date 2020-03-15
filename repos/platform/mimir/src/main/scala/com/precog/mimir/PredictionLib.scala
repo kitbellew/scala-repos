@@ -101,10 +101,11 @@ trait PredictionLibModule[M[+_]]
                                 new Array[Double](range.end),
                                 new Array[Double](range.end))) {
                               case (Intervals(arrConf, arrPred), i) =>
-                                val includedDoubles =
-                                  1.0 +: (scannerPrelims.cpaths map {
+                                val includedDoubles = 1.0 +: (
+                                  scannerPrelims.cpaths map {
                                     scannerPrelims.includedCols(_).apply(i)
-                                  })
+                                  }
+                                )
                                 val includedMatrix =
                                   new Matrix(Array(includedDoubles.toArray))
 
@@ -222,9 +223,10 @@ trait PredictionLibModule[M[+_]]
             }
             val tables: M[Seq[Table]] = (tables0.toList).sequence
 
-            tables.map(_.reduceOption {
-              _ concat _
-            } getOrElse Table.empty)
+            tables.map(
+              _.reduceOption {
+                _ concat _
+              } getOrElse Table.empty)
           }
         }
     }
@@ -294,9 +296,10 @@ trait PredictionLibModule[M[+_]]
             }
             val tables: M[Seq[Table]] = (tables0.toList).sequence
 
-            tables.map(_.reduceOption {
-              _ concat _
-            } getOrElse Table.empty)
+            tables.map(
+              _.reduceOption {
+                _ concat _
+              } getOrElse Table.empty)
           }
         }
     }

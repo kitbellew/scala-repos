@@ -127,7 +127,11 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   def compareElem(left: Elem, right: Elem): Boolean =
     compareXml(left.child, right.child) &&
       left.label == right.label &&
-      (((null eq left.prefix) && (null eq right.prefix)) || left.prefix == right.prefix) &&
+      (
+        (
+          (null eq left.prefix) && (null eq right.prefix)
+        ) || left.prefix == right.prefix
+      ) &&
       left.scope == right.scope &&
       compareMetaData(left.attributes.toList, right.attributes.toList)
 

@@ -285,10 +285,13 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       // UNREACHABLE CODE
       // Both AliasingAnalyzer (used in copyProp) and ProdConsAnalyzer (used in eliminateStaleStores,
       // boxUnboxElimination) require not having unreachable instructions (null frames).
-      val runDCE =
-        (compilerSettings.YoptUnreachableCode && (requestDCE || nullnessOptChanged)) ||
-          compilerSettings.YoptBoxUnbox ||
-          compilerSettings.YoptCopyPropagation
+      val runDCE = (
+        compilerSettings.YoptUnreachableCode && (
+          requestDCE || nullnessOptChanged
+        )
+      ) ||
+        compilerSettings.YoptBoxUnbox ||
+        compilerSettings.YoptCopyPropagation
       val (codeRemoved, liveLabels) =
         if (runDCE)
           removeUnreachableCodeImpl(method, ownerClassName)
@@ -304,36 +307,41 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       traceIfChanged("boxUnbox")
 
       // COPY PROPAGATION
-      val runCopyProp =
-        compilerSettings.YoptCopyPropagation && (firstIteration || boxUnboxChanged)
+      val runCopyProp = compilerSettings.YoptCopyPropagation && (
+        firstIteration || boxUnboxChanged
+      )
       val copyPropChanged =
         runCopyProp && copyPropagation(method, ownerClassName)
       traceIfChanged("copyProp")
 
       // STALE STORES
-      val runStaleStores =
-        compilerSettings.YoptCopyPropagation && (requestStaleStores || nullnessOptChanged || codeRemoved || boxUnboxChanged || copyPropChanged)
+      val runStaleStores = compilerSettings.YoptCopyPropagation && (
+        requestStaleStores || nullnessOptChanged || codeRemoved || boxUnboxChanged || copyPropChanged
+      )
       val storesRemoved =
         runStaleStores && eliminateStaleStores(method, ownerClassName)
       traceIfChanged("staleStores")
 
       // REDUNDANT CASTS
-      val runRedundantCasts =
-        compilerSettings.YoptRedundantCasts && (firstIteration || boxUnboxChanged)
+      val runRedundantCasts = compilerSettings.YoptRedundantCasts && (
+        firstIteration || boxUnboxChanged
+      )
       val castRemoved =
         runRedundantCasts && eliminateRedundantCasts(method, ownerClassName)
       traceIfChanged("redundantCasts")
 
       // PUSH-POP
-      val runPushPop =
-        compilerSettings.YoptCopyPropagation && (requestPushPop || firstIteration || storesRemoved || castRemoved)
+      val runPushPop = compilerSettings.YoptCopyPropagation && (
+        requestPushPop || firstIteration || storesRemoved || castRemoved
+      )
       val pushPopRemoved =
         runPushPop && eliminatePushPop(method, ownerClassName)
       traceIfChanged("pushPop")
 
       // STORE-LOAD PAIRS
-      val runStoreLoad =
-        compilerSettings.YoptCopyPropagation && (requestStoreLoad || boxUnboxChanged || copyPropChanged || pushPopRemoved)
+      val runStoreLoad = compilerSettings.YoptCopyPropagation && (
+        requestStoreLoad || boxUnboxChanged || copyPropChanged || pushPopRemoved
+      )
       val storeLoadRemoved = runStoreLoad && eliminateStoreLoad(method)
       traceIfChanged("storeLoadPairs")
 
@@ -648,9 +656,10 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     AsmAnalyzer.sizeOKForBasicValue(method) && {
       def isSubType(aRefDesc: String, bClass: InternalName): Boolean =
         aRefDesc == bClass || bClass == ObjectRef.internalName || {
-          (bTypeForDescriptorOrInternalNameFromClassfile(
-            aRefDesc) conformsTo classBTypeFromParsedClassfile(bClass))
-            .getOrElse(false)
+          (
+            bTypeForDescriptorOrInternalNameFromClassfile(
+              aRefDesc) conformsTo classBTypeFromParsedClassfile(bClass)
+          ).getOrElse(false)
         }
 
       lazy val typeAnalyzer = new NonLubbingTypeFlowAnalyzer(method, owner)
@@ -700,11 +709,13 @@ object LocalOptImpls {
     def containsExecutableCode(
         start: AbstractInsnNode,
         end: LabelNode): Boolean = {
-      start != end && ((start.getOpcode: @switch) match {
-        // FrameNode, LabelNode and LineNumberNode have opcode == -1.
-        case -1 | GOTO => containsExecutableCode(start.getNext, end)
-        case _         => true
-      })
+      start != end && (
+        (start.getOpcode: @switch) match {
+          // FrameNode, LabelNode and LineNumberNode have opcode == -1.
+          case -1 | GOTO => containsExecutableCode(start.getNext, end)
+          case _         => true
+        }
+      )
     }
 
     var removedHandlers = Set.empty[TryCatchBlockNode]
@@ -734,11 +745,13 @@ object LocalOptImpls {
         start: AbstractInsnNode,
         end: LabelNode,
         varIndex: Int): Boolean = {
-      start != end && (start match {
-        case v: VarInsnNode if v.`var` == varIndex  => true
-        case i: IincInsnNode if i.`var` == varIndex => true
-        case _                                      => variableIsUsed(start.getNext, end, varIndex)
-      })
+      start != end && (
+        start match {
+          case v: VarInsnNode if v.`var` == varIndex  => true
+          case i: IincInsnNode if i.`var` == varIndex => true
+          case _                                      => variableIsUsed(start.getNext, end, varIndex)
+        }
+      )
     }
 
     val initialNumVars = method.localVariables.size
@@ -1054,21 +1067,23 @@ object LocalOptImpls {
     def simplifyGotoReturn(
         instruction: AbstractInsnNode,
         inTryBlock: Boolean): Boolean =
-      !inTryBlock && (instruction match {
-        case Goto(jump) =>
-          nextExecutableInstruction(jump.label) match {
-            case Some(target) =>
-              if (isReturn(target) || target.getOpcode == ATHROW) {
-                method.instructions.set(jump, target.clone(null))
-                removeJumpFromMap(jump)
-                true
-              } else
-                false
+      !inTryBlock && (
+        instruction match {
+          case Goto(jump) =>
+            nextExecutableInstruction(jump.label) match {
+              case Some(target) =>
+                if (isReturn(target) || target.getOpcode == ATHROW) {
+                  method.instructions.set(jump, target.clone(null))
+                  removeJumpFromMap(jump)
+                  true
+                } else
+                  false
 
-            case _ => false
-          }
-        case _ => false
-      })
+              case _ => false
+            }
+          case _ => false
+        }
+      )
 
     def run(): Boolean = {
       var changed = false

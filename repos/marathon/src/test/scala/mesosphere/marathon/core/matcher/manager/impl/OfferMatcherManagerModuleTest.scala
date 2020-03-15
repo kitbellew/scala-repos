@@ -150,8 +150,7 @@ class OfferMatcherManagerModuleTest
         makeOneCPUTask("task1_1"),
         makeOneCPUTask("task1_2"),
         makeOneCPUTask("task2_1"),
-        makeOneCPUTask("task2_2")
-      ))
+        makeOneCPUTask("task2_2")))
   }
 
   test(
@@ -207,8 +206,9 @@ class OfferMatcherManagerModuleTest
       processCycle += 1
       tasks.map { task =>
         task.toBuilder
-          .setTaskId(task.getTaskId.toBuilder.setValue(
-            task.getTaskId.getValue + "_" + processCycle))
+          .setTaskId(
+            task.getTaskId.toBuilder.setValue(
+              task.getTaskId.getValue + "_" + processCycle))
           .build()
       }
     }

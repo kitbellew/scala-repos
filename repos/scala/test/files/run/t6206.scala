@@ -21,8 +21,7 @@ class Outer1 {
         self.apply(this), // a) this works
         self(this), // b) this does not work!
         this apply this,
-        this(this)
-      ) foreach println
+        this(this)) foreach println
     }
   }
 }

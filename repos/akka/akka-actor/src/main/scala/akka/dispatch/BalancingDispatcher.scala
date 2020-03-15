@@ -50,10 +50,11 @@ class BalancingDispatcher(
     */
   private[akka] val team =
     new ConcurrentSkipListSet[ActorCell](
-      Helpers.identityHashComparator(new Comparator[ActorCell] {
-        def compare(l: ActorCell, r: ActorCell) =
-          l.self.path compareTo r.self.path
-      }))
+      Helpers.identityHashComparator(
+        new Comparator[ActorCell] {
+          def compare(l: ActorCell, r: ActorCell) =
+            l.self.path compareTo r.self.path
+        }))
 
   /**
     * INTERNAL API
@@ -108,10 +109,12 @@ class BalancingDispatcher(
       @tailrec def scheduleOne(i: Iterator[ActorCell] = team.iterator): Unit =
         if (messageQueue.hasMessages
             && i.hasNext
-            && (executorService.executor match {
-              case lm: LoadMetrics ⇒ lm.atFullThrottle == false
-              case other ⇒ true
-            })
+            && (
+              executorService.executor match {
+                case lm: LoadMetrics ⇒ lm.atFullThrottle == false
+                case other ⇒ true
+              }
+            )
             && !registerForExecution(i.next.mailbox, false, false))
           scheduleOne(i)
 

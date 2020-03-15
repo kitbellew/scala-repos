@@ -27,8 +27,8 @@ class JavaCompiler(
     val reportHandler: ReportHandler,
     val indexer: ActorRef,
     val search: SearchService,
-    val vfs: EnsimeVFS
-) extends JavaDocFinding
+    val vfs: EnsimeVFS)
+    extends JavaDocFinding
     with JavaCompletion
     with JavaSourceFinding
     with Helpers
@@ -50,8 +50,7 @@ class JavaCompiler(
   def getTask(
       lint: String,
       listener: DiagnosticListener[JavaFileObject],
-      files: java.lang.Iterable[JavaFileObject]
-  ): JavacTask = {
+      files: java.lang.Iterable[JavaFileObject]): JavacTask = {
     val compiler = ToolProvider.getSystemJavaCompiler()
 
     // Try to re-use file manager.
@@ -76,12 +75,7 @@ class JavaCompiler(
         null,
         fileManager,
         listener,
-        List(
-          "-cp",
-          cp,
-          "-Xlint:" + lint,
-          "-proc:none"
-        ).asJava,
+        List("-cp", cp, "-Xlint:" + lint, "-proc:none").asJava,
         null,
         files)
       .asInstanceOf[JavacTask]
@@ -160,8 +154,7 @@ class JavaCompiler(
       file: SourceFileInfo,
       offset: Int,
       maxResults: Int,
-      caseSens: Boolean
-  ): CompletionInfoList = {
+      caseSens: Boolean): CompletionInfoList = {
     completionsAt(file, offset, maxResults, caseSens)
   }
 
@@ -219,8 +212,9 @@ class JavaCompiler(
       log.info(
         "Parsed and analyzed: " + (System.currentTimeMillis() - t) + "ms")
     } catch {
-      case e @ (_: Abort | _: ArrayIndexOutOfBoundsException |
-          _: AssertionError) =>
+      case e @ (
+            _: Abort | _: ArrayIndexOutOfBoundsException | _: AssertionError
+          ) =>
         log.error("Javac error: " + e.getMessage())
     }
   }
@@ -247,12 +241,14 @@ class JavaCompiler(
           .toVector
       task.analyze()
       log.info(
-        "Parsed and analyzed for trees: " + (System
-          .currentTimeMillis() - t) + "ms")
+        "Parsed and analyzed for trees: " + (
+          System.currentTimeMillis() - t
+        ) + "ms")
       units
     } catch {
-      case e @ (_: Abort | _: ArrayIndexOutOfBoundsException |
-          _: AssertionError) =>
+      case e @ (
+            _: Abort | _: ArrayIndexOutOfBoundsException | _: AssertionError
+          ) =>
         log.error("Javac error: " + e.getMessage())
         Vector()
     }
@@ -302,8 +298,7 @@ class JavaCompiler(
             diag.getEndPosition().toInt,
             diag.getLineNumber().toInt,
             diag.getColumnNumber().toInt
-          )
-        ))
+          )))
     }
   }
 

@@ -226,13 +226,15 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             None
         }
 
-        val canRewrite = keepBox || (copyOpsToEliminate match {
-          case Some(copyOps) =>
-            toDelete ++= copyOps
-            true
+        val canRewrite = keepBox || (
+          copyOpsToEliminate match {
+            case Some(copyOps) =>
+              toDelete ++= copyOps
+              true
 
-          case _ => false
-        })
+            case _ => false
+          }
+        )
 
         if (canRewrite) {
           val localSlots: Vector[(Int, Type)] =
@@ -437,7 +439,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                         allCreations,
                         allConsumers,
                         boxKind)
-                    } else if (allCreations.size == 1 && (!hasEscaping || !boxKind.isMutable)) {
+                    } else if (allCreations.size == 1 && (
+                                 !hasEscaping || !boxKind.isMutable
+                               )) {
                       // M1 -- see doc comment in the beginning of this file
                       replaceBoxOperationsSingleCreation(
                         allCreations.head,
@@ -600,10 +604,12 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
               new VarInsnNode(opc, tp._2)
             }
           val locs = newLocals(vi.`var`)
-          replacements += vi -> (if (isLoad)
-                                   locs.map(typedVarOp)
-                                 else
-                                   locs.reverseMap(typedVarOp))
+          replacements += vi -> (
+            if (isLoad)
+              locs.map(typedVarOp)
+            else
+              locs.reverseMap(typedVarOp)
+          )
 
         case copyOp =>
           if (copyOp.getOpcode == DUP && valueTypes.lengthCompare(1) == 0) {

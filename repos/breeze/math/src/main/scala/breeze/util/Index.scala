@@ -277,9 +277,10 @@ object Index {
     * Loads a String index, one line per item with line
     * numbers (starting at 0) as the indices.
     */
-  def load(source: {
-    def getLines: Iterator[String]
-  }): Index[String] = {
+  def load(
+      source: {
+        def getLines: Iterator[String]
+      }): Index[String] = {
     apply(source.getLines.map(_.stripLineEnd))
   }
 

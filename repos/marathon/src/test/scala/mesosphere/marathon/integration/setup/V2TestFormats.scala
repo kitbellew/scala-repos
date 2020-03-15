@@ -19,8 +19,7 @@ object V2TestFormats {
         original = (js \ "original").as[Group],
         target = (js \ "target").as[Group],
         version = (js \ "version").as[Timestamp])
-        .copy(id = (js \ "id").as[String])
-    )
+        .copy(id = (js \ "id").as[String]))
   }
 
   implicit lazy val SubscribeReads: Reads[Subscribe] = Json.reads[Subscribe]

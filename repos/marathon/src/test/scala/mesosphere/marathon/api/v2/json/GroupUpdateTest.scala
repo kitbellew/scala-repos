@@ -17,9 +17,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
         GroupUpdate(
           "test".toPath,
           Set.empty[AppDefinition],
-          Set(
-            GroupUpdate.empty("foo".toPath)
-          )),
+          Set(GroupUpdate.empty("foo".toPath))),
         GroupUpdate(
           "apps".toPath,
           Set(
@@ -29,8 +27,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
               dependencies = Set(
                 "d1".toPath,
                 "../test/foo".toPath,
-                "/test".toPath)))
-        )
+                "/test".toPath))))
       )
     )
     val timestamp = Timestamp.now()
@@ -63,8 +60,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
         Group(
           "/test".toPath,
           apps = Set(AppDefinition("/test/bla".toPath, Some("foo")))),
-        Group("/apps".toPath, groups = Set(Group("/apps/foo".toPath)))
-      )
+        Group("/apps".toPath, groups = Set(Group("/apps/foo".toPath))))
     )
     val update = GroupUpdate(
       PathId.empty,
@@ -73,8 +69,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
         GroupUpdate(
           "test".toPath,
           Set.empty[AppDefinition],
-          Set(GroupUpdate.empty("foo".toPath))
-        ),
+          Set(GroupUpdate.empty("foo".toPath))),
         GroupUpdate(
           "apps".toPath,
           Set(
@@ -84,8 +79,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
               dependencies = Set(
                 "d1".toPath,
                 "../test/foo".toPath,
-                "/test".toPath)))
-        )
+                "/test".toPath))))
       )
     )
     val timestamp = Timestamp.now()
@@ -191,8 +185,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
               "test-app2".toPath,
               Some("foo"),
               dependencies = Set("test-app1".toPath)))
-        )
-      )
+        ))
     )
 
     When("The update is performed")

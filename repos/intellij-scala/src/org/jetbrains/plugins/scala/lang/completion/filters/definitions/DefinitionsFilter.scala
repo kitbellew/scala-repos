@@ -39,8 +39,10 @@ class DefinitionsFilter extends ElementFilter {
         if (p == null)
           return null
         p.getParent match {
-          case parent @ (_: ScBlock | _: ScCaseClause | _: ScTemplateBody |
-              _: ScClassParameter | _: ScalaFile) =>
+          case parent @ (
+                _: ScBlock | _: ScCaseClause | _: ScTemplateBody |
+                _: ScClassParameter | _: ScalaFile
+              ) =>
             parent match {
               case clause: ScCaseClause =>
                 clause.funType match {
@@ -54,12 +56,18 @@ class DefinitionsFilter extends ElementFilter {
             if (!parent.isInstanceOf[ScalaFile] || parent
                   .asInstanceOf[ScalaFile]
                   .isScriptFile())
-              if ((leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-                  leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
-                  (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
-                  (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-                  !parent.getPrevSibling.getPrevSibling.getLastChild
-                    .isInstanceOf[PsiErrorElement])))
+              if ((
+                    leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
+                    leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF
+                  ) &&
+                  (
+                    parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
+                    (
+                      parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
+                      !parent.getPrevSibling.getPrevSibling.getLastChild
+                        .isInstanceOf[PsiErrorElement]
+                    )
+                  ))
                 return p
             null
           case _ => findParent(p.getParent)

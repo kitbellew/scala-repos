@@ -31,9 +31,10 @@ class ScalaDocFormattingPanel(val settings: CodeStyleSettings)
     super.init()
 
     myEnableCheckBox = new JCheckBox("Enable scaladoc formatting")
-    myEnableCheckBox.addActionListener(new ActionListener() {
-      override def actionPerformed(e: ActionEvent): Unit = update()
-    })
+    myEnableCheckBox.addActionListener(
+      new ActionListener() {
+        override def actionPerformed(e: ActionEvent): Unit = update()
+      })
 
     myAsteriskStyleCheckBox = new JCheckBox(
       "Use scaladoc indent for leading asterisk")

@@ -88,9 +88,9 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
             previousTestObject = null
             try ch.run(testObject)
             finally {
-              val skipCleanup =
-                idx == last || (testObject.reuseInstance && (ch.cl eq is(
-                  idx + 1)._1._1.cl))
+              val skipCleanup = idx == last || (
+                testObject.reuseInstance && (ch.cl eq is(idx + 1)._1._1.cl)
+              )
               if (skipCleanup) {
                 if (idx == last)
                   testObject.closeKeepAlive()
@@ -380,12 +380,13 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
   def materialize[T](p: Publisher[T]): Future[Vector[T]] = {
     val builder = Vector.newBuilder[T]
     val pr = Promise[Vector[T]]()
-    try p.subscribe(new Subscriber[T] {
-      def onSubscribe(s: Subscription): Unit = s.request(Long.MaxValue)
-      def onComplete(): Unit = pr.success(builder.result())
-      def onError(t: Throwable): Unit = pr.failure(t)
-      def onNext(t: T): Unit = builder += t
-    })
+    try p.subscribe(
+      new Subscriber[T] {
+        def onSubscribe(s: Subscription): Unit = s.request(Long.MaxValue)
+        def onComplete(): Unit = pr.success(builder.result())
+        def onError(t: Throwable): Unit = pr.failure(t)
+        def onNext(t: T): Unit = builder += t
+      })
     catch {
       case NonFatal(ex) => pr.failure(ex)
     }
@@ -395,12 +396,13 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
   /** Iterate synchronously over a Reactive Stream. */
   def foreach[T](p: Publisher[T])(f: T => Any): Future[Unit] = {
     val pr = Promise[Unit]()
-    try p.subscribe(new Subscriber[T] {
-      def onSubscribe(s: Subscription): Unit = s.request(Long.MaxValue)
-      def onComplete(): Unit = pr.success(())
-      def onError(t: Throwable): Unit = pr.failure(t)
-      def onNext(t: T): Unit = f(t)
-    })
+    try p.subscribe(
+      new Subscriber[T] {
+        def onSubscribe(s: Subscription): Unit = s.request(Long.MaxValue)
+        def onComplete(): Unit = pr.success(())
+        def onError(t: Throwable): Unit = pr.failure(t)
+        def onNext(t: T): Unit = f(t)
+      })
     catch {
       case NonFatal(ex) => pr.failure(ex)
     }
@@ -440,26 +442,27 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       }
       f
     }
-    try p.subscribe(new Subscriber[T] {
-      def onSubscribe(s: Subscription): Unit =
-        async {
-          sub = s
-          sub.request(1L)
-        }
-      def onComplete(): Unit = async(pr.trySuccess(builder.result()))
-      def onError(t: Throwable): Unit = async(pr.tryFailure(t))
-      def onNext(t: T): Unit =
-        async {
-          tr(t).onComplete {
-            case Success(r) =>
-              builder += r
-              sub.request(1L)
-            case Failure(t) =>
-              pr.tryFailure(t)
-              sub.cancel()
-          }(ec)
-        }
-    })
+    try p.subscribe(
+      new Subscriber[T] {
+        def onSubscribe(s: Subscription): Unit =
+          async {
+            sub = s
+            sub.request(1L)
+          }
+        def onComplete(): Unit = async(pr.trySuccess(builder.result()))
+        def onError(t: Throwable): Unit = async(pr.tryFailure(t))
+        def onNext(t: T): Unit =
+          async {
+            tr(t).onComplete {
+              case Success(r) =>
+                builder += r
+                sub.request(1L)
+              case Failure(t) =>
+                pr.tryFailure(t)
+                sub.cancel()
+            }(ec)
+          }
+      })
     catch {
       case NonFatal(ex) => pr.tryFailure(ex)
     }
@@ -503,8 +506,9 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
 
     def shouldBeA[T](implicit ct: ClassTag[T]): Unit = {
       if (!ct.runtimeClass.isInstance(v))
-        fixStack(Assert.fail(
-          "Expected value of type " + ct.runtimeClass.getName + ", got " + v.getClass.getName))
+        fixStack(
+          Assert.fail(
+            "Expected value of type " + ct.runtimeClass.getName + ", got " + v.getClass.getName))
     }
   }
 

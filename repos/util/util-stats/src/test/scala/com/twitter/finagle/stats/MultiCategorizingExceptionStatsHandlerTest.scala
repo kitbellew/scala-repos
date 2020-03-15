@@ -151,8 +151,7 @@ class MultiCategorizingExceptionStatsHandlerTest extends FunSuite {
       keys == Seq(
         "failures",
         "failures/java.lang.RuntimeException",
-        "failures/java.lang.RuntimeException/java.lang.Exception"
-      ))
+        "failures/java.lang.RuntimeException/java.lang.Exception"))
   }
 
   test("support no roll up") {

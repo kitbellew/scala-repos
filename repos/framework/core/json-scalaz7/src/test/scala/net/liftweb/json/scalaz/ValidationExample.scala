@@ -36,11 +36,13 @@ object ValidationExample extends Specification {
       // Age must be between 18 an 60
       val ageResult =
         (jValue: JValue) =>
-          (for {
-            age <- field[Int]("age")(jValue).disjunction
-            _ <- min(18)(age).disjunction
-            _ <- max(60)(age).disjunction
-          } yield age).validation
+          (
+            for {
+              age <- field[Int]("age")(jValue).disjunction
+              _ <- min(18)(age).disjunction
+              _ <- max(60)(age).disjunction
+            } yield age
+          ).validation
       val person = Person.applyJSON(field[String]("name"), ageResult)
       person(json) mustEqual Failure(
         NonEmptyList(UncategorizedError("min", "17 < 18", Nil)))
@@ -50,11 +52,13 @@ object ValidationExample extends Specification {
       // Age must be between 16 an 60
       val ageResult =
         (jValue: JValue) =>
-          (for {
-            age <- field[Int]("age")(jValue).disjunction
-            _ <- min(16)(age).disjunction
-            _ <- max(60)(age).disjunction
-          } yield age).validation
+          (
+            for {
+              age <- field[Int]("age")(jValue).disjunction
+              _ <- min(16)(age).disjunction
+              _ <- max(60)(age).disjunction
+            } yield age
+          ).validation
       val person = Person.applyJSON(field[String]("name"), ageResult)
       person(json) mustEqual Success(Person("joe", 17))
     }
@@ -81,11 +85,13 @@ object ValidationExample extends Specification {
     implicit def rangeJSON: JSONR[Range] =
       new JSONR[Range] {
         def read(json: JValue) = {
-          (for {
-            s <- field[Int]("s")(json).disjunction
-            e <- field[Int]("e")(json).disjunction
-            r <- ascending(s, e).disjunction
-          } yield Range.tupled(r)).validation
+          (
+            for {
+              s <- field[Int]("s")(json).disjunction
+              e <- field[Int]("e")(json).disjunction
+              r <- ascending(s, e).disjunction
+            } yield Range.tupled(r)
+          ).validation
         }
       }
 

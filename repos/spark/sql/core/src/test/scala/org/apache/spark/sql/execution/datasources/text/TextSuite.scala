@@ -106,8 +106,9 @@ class TextSuite extends QueryTest with SharedSQLContext {
         .text(tempDirPath)
     }
     assert(
-      errMsg.getMessage.contains("Codec [illegal] is not available. " +
-        "Known codecs are"))
+      errMsg.getMessage.contains(
+        "Codec [illegal] is not available. " +
+          "Known codecs are"))
   }
 
   test("SPARK-13543 Write the output as uncompressed via option()") {

@@ -218,10 +218,12 @@ case class DefaultOptimalSizeExploringResizer(
       case ActorRefRoutee(a: ActorRefWithCell) ⇒
         a.underlying match {
           case cell: ActorCell ⇒
-            cell.mailbox.numberOfMessages + (if (cell.currentMessage != null)
-                                               1
-                                             else
-                                               0)
+            cell.mailbox.numberOfMessages + (
+              if (cell.currentMessage != null)
+                1
+              else
+                0
+            )
           case cell ⇒ cell.numberOfMessages
         }
       case x ⇒ 0
@@ -255,7 +257,9 @@ case class DefaultOptimalSizeExploringResizer(
           //exponentially decrease the weight of old last metrics data
           val toUpdate =
             performanceLog.get(currentSize).fold(last) { oldSpeed ⇒
-              (oldSpeed * (1.0 - weightOfLatestMetric)) + (last * weightOfLatestMetric)
+              (oldSpeed * (1.0 - weightOfLatestMetric)) + (
+                last * weightOfLatestMetric
+              )
             }
           performanceLog + (currentSize → toUpdate)
         } else
@@ -277,10 +281,13 @@ case class DefaultOptimalSizeExploringResizer(
     val currentSize = currentRoutees.length
     val now = LocalDateTime.now
     val proposedChange =
-      if (record.underutilizationStreak.fold(false)(_.start.isBefore(
-            now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
+      if (record.underutilizationStreak.fold(false)(
+            _.start.isBefore(
+              now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
         val downsizeTo =
-          (record.underutilizationStreak.get.highestUtilization * downsizeRatio).toInt
+          (
+            record.underutilizationStreak.get.highestUtilization * downsizeRatio
+          ).toInt
         Math.min(downsizeTo - currentSize, 0)
       } else if (performanceLog.isEmpty || record.underutilizationStreak.isDefined) {
         0

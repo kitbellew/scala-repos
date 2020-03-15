@@ -22,9 +22,10 @@ class EndpointRecorderTest extends FunSuite {
 
   val dtab = Dtab.read("/foo => /bar")
 
-  val neverFactory = ServiceFactory.const(new Service[Int, Int] {
-    def apply(req: Int) = Future.never
-  })
+  val neverFactory = ServiceFactory.const(
+    new Service[Int, Int] {
+      def apply(req: Int) = Future.never
+    })
 
   def getEndpoints(
       registry: EndpointRegistry,
@@ -36,9 +37,7 @@ class EndpointRecorderTest extends FunSuite {
 
   test("EndpointRecorder is disabled if BindingFactory.Dest is not bound") {
     val stk: StackBuilder[ServiceFactory[Int, Int]] =
-      new StackBuilder(
-        Stack.Leaf(Stack.Role("never"), neverFactory)
-      )
+      new StackBuilder(Stack.Leaf(Stack.Role("never"), neverFactory))
 
     stk.push(EndpointRecorder.module[Int, Int])
 

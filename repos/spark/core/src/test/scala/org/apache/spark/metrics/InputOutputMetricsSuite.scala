@@ -239,15 +239,17 @@ class InputOutputMetricsSuite
     var outputWritten = 0L
     var shuffleRead = 0L
     var shuffleWritten = 0L
-    sc.addSparkListener(new SparkListener() {
-      override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
-        val metrics = taskEnd.taskMetrics
-        metrics.inputMetrics.foreach(inputRead += _.recordsRead)
-        metrics.outputMetrics.foreach(outputWritten += _.recordsWritten)
-        metrics.shuffleReadMetrics.foreach(shuffleRead += _.recordsRead)
-        metrics.shuffleWriteMetrics.foreach(shuffleWritten += _.recordsWritten)
-      }
-    })
+    sc.addSparkListener(
+      new SparkListener() {
+        override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
+          val metrics = taskEnd.taskMetrics
+          metrics.inputMetrics.foreach(inputRead += _.recordsRead)
+          metrics.outputMetrics.foreach(outputWritten += _.recordsWritten)
+          metrics.shuffleReadMetrics.foreach(shuffleRead += _.recordsRead)
+          metrics.shuffleWriteMetrics.foreach(
+            shuffleWritten += _.recordsWritten)
+        }
+      })
 
     val tmpFile = new File(tmpDir, getClass.getSimpleName)
 
@@ -302,7 +304,9 @@ class InputOutputMetricsSuite
     // p1. Thus the math below for the test.
     assert(cartesianBytes != 0)
     assert(
-      cartesianBytes == firstSize * numPartitions + (cartVector.length * secondSize))
+      cartesianBytes == firstSize * numPartitions + (
+        cartVector.length * secondSize
+      ))
   }
 
   private def runAndReturnBytesRead(job: => Unit): Long = {
@@ -325,11 +329,12 @@ class InputOutputMetricsSuite
     // Avoid receiving earlier taskEnd events
     sc.listenerBus.waitUntilEmpty(500)
 
-    sc.addSparkListener(new SparkListener() {
-      override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
-        collector(taskEnd).foreach(taskMetrics += _)
-      }
-    })
+    sc.addSparkListener(
+      new SparkListener() {
+        override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
+          collector(taskEnd).foreach(taskMetrics += _)
+        }
+      })
 
     job
 
@@ -371,11 +376,12 @@ class InputOutputMetricsSuite
 
     if (SparkHadoopUtil.get.getFSBytesWrittenOnThreadCallback().isDefined) {
       val taskBytesWritten = new ArrayBuffer[Long]()
-      sc.addSparkListener(new SparkListener() {
-        override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
-          taskBytesWritten += taskEnd.taskMetrics.outputMetrics.get.bytesWritten
-        }
-      })
+      sc.addSparkListener(
+        new SparkListener() {
+          override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
+            taskBytesWritten += taskEnd.taskMetrics.outputMetrics.get.bytesWritten
+          }
+        })
 
       val rdd = sc.parallelize(Array("a", "b", "c", "d"), 2)
 

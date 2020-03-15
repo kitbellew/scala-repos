@@ -59,12 +59,14 @@ object ActorSystemSpec {
     def receive = {
       case n: Int ⇒
         master = sender()
-        terminaters = Set() ++ (for (i ← 1 to n)
-          yield {
-            val man = context.watch(context.system.actorOf(Props[Terminater]))
-            man ! "run"
-            man
-          })
+        terminaters = Set() ++ (
+          for (i ← 1 to n)
+            yield {
+              val man = context.watch(context.system.actorOf(Props[Terminater]))
+              man ! "run"
+              man
+            }
+        )
       case Terminated(child) if terminaters contains child ⇒
         terminaters -= child
         if (terminaters.isEmpty) {
@@ -255,8 +257,10 @@ class ActorSystemSpec
       Await.ready(latch, 5 seconds)
 
       val expected =
-        (for (i ← 1 to count)
-          yield i).reverse
+        (
+          for (i ← 1 to count)
+            yield i
+        ).reverse
 
       immutableSeq(result) should ===(expected)
     }
@@ -372,11 +376,13 @@ class ActorSystemSpec
           .parseString(
             "akka.actor.guardian-supervisor-strategy=akka.actor.StoppingSupervisorStrategy")
           .withFallback(AkkaSpec.testConf))
-      val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case "die" ⇒ throw new Exception("hello")
-        }
-      }))
+      val a = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case "die" ⇒ throw new Exception("hello")
+            }
+          }))
       val probe = TestProbe()
       probe.watch(a)
       EventFilter[Exception]("hello", occurrences = 1) intercept {
@@ -396,11 +402,13 @@ class ActorSystemSpec
           .parseString(
             "akka.actor.guardian-supervisor-strategy=\"akka.actor.ActorSystemSpec$Strategy\"")
           .withFallback(AkkaSpec.testConf))
-      val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case "die" ⇒ throw new Exception("hello")
-        }
-      }))
+      val a = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case "die" ⇒ throw new Exception("hello")
+            }
+          }))
       EventFilter[Exception]("hello") intercept {
         a ! "die"
         Await.ready(system.whenTerminated, Duration.Inf)
@@ -419,11 +427,13 @@ class ActorSystemSpec
         defaultExecutionContext = Some(ec))
 
       try {
-        val ref = system2.actorOf(Props(new Actor {
-          def receive = {
-            case "ping" ⇒ sender() ! "pong"
-          }
-        }))
+        val ref = system2.actorOf(
+          Props(
+            new Actor {
+              def receive = {
+                case "ping" ⇒ sender() ! "pong"
+              }
+            }))
 
         val probe = TestProbe()
 
@@ -451,11 +461,13 @@ class ActorSystemSpec
         defaultExecutionContext = Some(ec))
 
       try {
-        val ref = system2.actorOf(Props(new Actor {
-          def receive = {
-            case "ping" ⇒ sender() ! "pong"
-          }
-        }))
+        val ref = system2.actorOf(
+          Props(
+            new Actor {
+              def receive = {
+                case "ping" ⇒ sender() ! "pong"
+              }
+            }))
 
         val probe = TestProbe()
 

@@ -170,7 +170,9 @@ object BytecodeUtils {
     val op = jump.getOpcode
     if ((op >= IFEQ && op <= IFLE) || op == IFNULL || op == IFNONNULL) {
       instructions.insert(jump, getPop(1))
-    } else if ((op >= IF_ICMPEQ && op <= IF_ICMPLE) || op == IF_ACMPEQ || op == IF_ACMPNE) {
+    } else if ((
+                 op >= IF_ICMPEQ && op <= IF_ICMPLE
+               ) || op == IF_ACMPEQ || op == IF_ACMPNE) {
       instructions.insert(jump, getPop(1))
       instructions.insert(jump, getPop(1))
     } else {
@@ -255,12 +257,12 @@ object BytecodeUtils {
     * The number of local variable slots used for parameters and for the `this` reference.
     */
   def parametersSize(methodNode: MethodNode): Int = {
-    (Type
-      .getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (if (isStaticMethod(
-                                                                  methodNode))
-                                                              1
-                                                            else
-                                                              0)
+    (Type.getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (
+      if (isStaticMethod(methodNode))
+        1
+      else
+        0
+    )
   }
 
   def labelReferences(method: MethodNode): Map[LabelNode, Set[AnyRef]] = {
@@ -354,8 +356,10 @@ object BytecodeUtils {
       eval.getMaxSize
     }
 
-    (roughUpperBound(caller) + roughUpperBound(
-      callee) > maxMethodSizeAfterInline) &&
+    (
+      roughUpperBound(caller) + roughUpperBound(
+        callee) > maxMethodSizeAfterInline
+    ) &&
     (maxSize(caller) + maxSize(callee) > maxMethodSizeAfterInline)
   }
 
@@ -412,8 +416,7 @@ object BytecodeUtils {
           localVariable.signature,
           labelMap(localVariable.start),
           labelMap(localVariable.end),
-          localVariable.index + shift
-        ))
+          localVariable.index + shift))
       .toList
   }
 
@@ -432,8 +435,7 @@ object BytecodeUtils {
           labelMap(tryCatch.start),
           labelMap(tryCatch.end),
           labelMap(tryCatch.handler),
-          tryCatch.`type`
-        ))
+          tryCatch.`type`))
       .toList
   }
 

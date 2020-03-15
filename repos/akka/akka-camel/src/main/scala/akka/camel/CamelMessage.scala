@@ -80,8 +80,9 @@ class CamelMessage(
     Try(
       headers
         .get(name)
-        .map(camelContext.getTypeConverter
-          .mandatoryConvertTo[T](t.runtimeClass.asInstanceOf[Class[T]], _))
+        .map(
+          camelContext.getTypeConverter
+            .mandatoryConvertTo[T](t.runtimeClass.asInstanceOf[Class[T]], _))
         .getOrElse(throw new NoSuchElementException(name)))
 
   /**

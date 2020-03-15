@@ -17,8 +17,12 @@ trait Calculate {
 
   implicit class RichCalculateType(tpe: Type) {
     def isLocalToReifee =
-      tpe != null && (tpe exists (tp =>
-        (localSymbols contains tp.typeSymbol) || (localSymbols contains tp.termSymbol)))
+      tpe != null && (
+        tpe exists (tp =>
+          (localSymbols contains tp.typeSymbol) || (
+            localSymbols contains tp.termSymbol
+          ))
+      )
   }
 
   private def localSymbols: Map[Symbol, Int] =
@@ -55,9 +59,11 @@ trait Calculate {
               println(
                 "boundSym: %s of type %s".format(
                   tree.symbol,
-                  (tree.productIterator.toList collect {
-                    case tt: TypeTree => tt
-                  }).headOption.getOrElse(TypeTree(tree.tpe))))
+                  (
+                    tree.productIterator.toList collect {
+                      case tt: TypeTree => tt
+                    }
+                  ).headOption.getOrElse(TypeTree(tree.tpe))))
             registerLocalSymbol(tree.symbol, currMetalevel)
 
             bindRelatedSymbol(tree.symbol.sourceModule, "sourceModule")

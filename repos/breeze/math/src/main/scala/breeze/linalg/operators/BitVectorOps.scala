@@ -25,11 +25,8 @@ trait BitVectorOps {
 
   @expand
   @expand.valify
-  implicit def bv_bv_UpdateOp[@expand.args(
-    OpAnd,
-    OpOr,
-    OpXor,
-    OpSet) Op <: OpType](implicit
+  implicit def bv_bv_UpdateOp[
+      @expand.args(OpAnd, OpOr, OpXor, OpSet) Op <: OpType](implicit
       @expand.sequence[Op](
         {
           _ and _
@@ -180,10 +177,8 @@ trait BitVectorOps {
   @expand.valify
   implicit def canDot_BV_SV[@expand.args(Int, Long, BigInt, Complex) T](
       implicit @expand.sequence[T](0, 0L, BigInt(0), Complex.zero) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        BitVector,
-        SparseVector[T],
-        T] = {
+      : breeze.linalg.operators.OpMulInner.Impl2[BitVector, SparseVector[
+        T], T] = {
     new breeze.linalg.operators.OpMulInner.Impl2[
       BitVector,
       SparseVector[T],

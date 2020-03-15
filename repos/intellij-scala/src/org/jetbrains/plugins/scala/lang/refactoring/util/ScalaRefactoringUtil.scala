@@ -97,16 +97,18 @@ object ScalaRefactoringUtil {
     if (start == end)
       return
     while (file.findElementAt(start).isInstanceOf[PsiWhiteSpace] ||
-           (file
-             .findElementAt(start)
-             .isInstanceOf[PsiComment] && trimComments) ||
+           (
+             file.findElementAt(start).isInstanceOf[PsiComment] && trimComments
+           ) ||
            file.getText.charAt(start) == '\n' ||
            file.getText.charAt(start) == ' ')
       start = start + 1
     while (file.findElementAt(end - 1).isInstanceOf[PsiWhiteSpace] ||
-           (file
-             .findElementAt(end - 1)
-             .isInstanceOf[PsiComment] && trimComments) ||
+           (
+             file
+               .findElementAt(end - 1)
+               .isInstanceOf[PsiComment] && trimComments
+           ) ||
            file.getText.charAt(end - 1) == '\n' ||
            file.getText.charAt(end - 1) == ' ')
       end = end - 1
@@ -717,19 +719,20 @@ object ScalaRefactoringUtil {
         }
       }
     )
-    list.addListSelectionListener(new ListSelectionListener {
-      def valueChanged(e: ListSelectionEvent) {
-        highlighter.dropHighlight()
-        val index: Int = list.getSelectedIndex
-        if (index < 0)
-          return
-        val element: T = model.get(index).asInstanceOf[T]
-        val toExtract: util.ArrayList[PsiElement] =
-          new util.ArrayList[PsiElement]
-        toExtract.add(toHighlight(element))
-        highlighter.highlight(toHighlight(element), toExtract)
-      }
-    })
+    list.addListSelectionListener(
+      new ListSelectionListener {
+        def valueChanged(e: ListSelectionEvent) {
+          highlighter.dropHighlight()
+          val index: Int = list.getSelectedIndex
+          if (index < 0)
+            return
+          val element: T = model.get(index).asInstanceOf[T]
+          val toExtract: util.ArrayList[PsiElement] =
+            new util.ArrayList[PsiElement]
+          toExtract.add(toHighlight(element))
+          highlighter.highlight(toHighlight(element), toExtract)
+        }
+      })
 
     JBPopupFactory.getInstance
       .createListPopupBuilder(list)
@@ -737,21 +740,23 @@ object ScalaRefactoringUtil {
       .setMovable(false)
       .setResizable(false)
       .setRequestFocus(true)
-      .setItemChoosenCallback(new Runnable {
-        def run() {
-          pass(list.getSelectedValue.asInstanceOf[T])
-        }
-      })
-      .addListener(new JBPopupAdapter {
-        override def beforeShown(event: LightweightWindowEvent): Unit = {
-          selection.addHighlighter()
-        }
+      .setItemChoosenCallback(
+        new Runnable {
+          def run() {
+            pass(list.getSelectedValue.asInstanceOf[T])
+          }
+        })
+      .addListener(
+        new JBPopupAdapter {
+          override def beforeShown(event: LightweightWindowEvent): Unit = {
+            selection.addHighlighter()
+          }
 
-        override def onClosed(event: LightweightWindowEvent) {
-          highlighter.dropHighlight()
-          selection.removeHighlighter()
-        }
-      })
+          override def onClosed(event: LightweightWindowEvent) {
+            highlighter.dropHighlight()
+            selection.removeHighlighter()
+          }
+        })
       .createPopup
       .showInBestPositionFor(editor)
   }
@@ -872,10 +877,11 @@ object ScalaRefactoringUtil {
       case t: ScTypedStmt =>
         builder.append(getShortText(t.expr))
         builder.append(" : ")
-        builder.append(t.typeElement match {
-          case Some(te) => te.getText
-          case _        => "..."
-        })
+        builder.append(
+          t.typeElement match {
+            case Some(te) => te.getText
+            case _        => "..."
+          })
       case u: ScUnderscoreSection =>
         if (u.bindingExpr.isEmpty)
           builder.append("_")
@@ -1080,10 +1086,14 @@ object ScalaRefactoringUtil {
   }
 
   def commonParent(file: PsiFile, textRanges: TextRange*): PsiElement = {
-    val elemSeq = (for (occurence <- textRanges)
-      yield file.findElementAt(occurence.getStartOffset)) ++
-      (for (occurence <- textRanges)
-        yield file.findElementAt(occurence.getEndOffset - 1))
+    val elemSeq = (
+      for (occurence <- textRanges)
+        yield file.findElementAt(occurence.getStartOffset)
+    ) ++
+      (
+        for (occurence <- textRanges)
+          yield file.findElementAt(occurence.getEndOffset - 1)
+      )
     PsiTreeUtil.findCommonParent(elemSeq: _*)
   }
 
@@ -1226,17 +1236,21 @@ object ScalaRefactoringUtil {
             prevElemType) || ScalaTokenTypes.KEYWORDS.contains(prevElemType)
         }
         shift =
-          pars.getTextRange.getStartOffset - inner.getTextRange.getStartOffset + (if (afterWord)
-                                                                                    1
-                                                                                  else
-                                                                                    0)
+          pars.getTextRange.getStartOffset - inner.getTextRange.getStartOffset + (
+            if (afterWord)
+              1
+            else
+              0
+          )
         document.replaceString(
           textRange.getStartOffset,
           textRange.getEndOffset,
-          (if (afterWord)
-             " "
-           else
-             "") + newString)
+          (
+            if (afterWord)
+              " "
+            else
+              ""
+          ) + newString)
       case ChildOf(ScPostfixExpr(_, `parent`)) =>
         //This case for block argument expression
         val textRange = parent.getTextRange
@@ -1270,10 +1284,12 @@ object ScalaRefactoringUtil {
               s"$${$newString}"
             else
               s"$$$newString"
-          shift += (if (needBraces)
-                      2
-                    else
-                      1)
+          shift += (
+            if (needBraces)
+              2
+            else
+              1
+          )
           document.replaceString(
             newRange.getStartOffset,
             newRange.getEndOffset,
@@ -1594,8 +1610,10 @@ object ScalaRefactoringUtil {
       place: PsiElement): Option[ScBlockStatement] = {
     place match {
       case null => None
-      case (bs: ScBlockStatement) childOf (_: ScBlock | _: ScEarlyDefinitions |
-          _: ScalaFile | _: ScTemplateBody) =>
+      case (bs: ScBlockStatement) childOf (
+            _: ScBlock | _: ScEarlyDefinitions | _: ScalaFile |
+            _: ScTemplateBody
+          ) =>
         Some(bs)
       case other => findEnclosingBlockStatement(other.getParent)
     }

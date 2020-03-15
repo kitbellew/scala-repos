@@ -42,17 +42,18 @@ object RoutesCompiler {
         }
 
       if (lines.contains("// @GENERATOR:play-routes-compiler")) {
-        Some(new GeneratedSource {
-          val source: Option[File] = lines
-            .find(_.startsWith("// @SOURCE:"))
-            .map(m => new File(m.trim.drop(11)))
+        Some(
+          new GeneratedSource {
+            val source: Option[File] = lines
+              .find(_.startsWith("// @SOURCE:"))
+              .map(m => new File(m.trim.drop(11)))
 
-          def mapLine(generatedLine: Int): Option[Int] = {
-            lines.view.take(generatedLine).reverse.collectFirst {
-              case LineMarker(line) => Integer.parseInt(line)
+            def mapLine(generatedLine: Int): Option[Int] = {
+              lines.view.take(generatedLine).reverse.collectFirst {
+                case LineMarker(line) => Integer.parseInt(line)
+              }
             }
-          }
-        })
+          })
       } else {
         None
       }

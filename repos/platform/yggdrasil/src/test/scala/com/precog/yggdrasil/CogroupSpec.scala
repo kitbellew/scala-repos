@@ -74,8 +74,7 @@ trait CogroupSpec[M[+_]]
       (
         SampleData(l.sortBy(_ \ "key").toStream),
         SampleData(r.sortBy(_ \ "key").toStream))
-    }
-  )
+    })
 
   type CogroupResult[A] = Stream[Either3[A, (A, A), A]]
 
@@ -240,8 +239,7 @@ trait CogroupSpec[M[+_]]
       recBoth(8),
       recBoth(8),
       recBoth(8),
-      recBoth(8)
-    )
+      recBoth(8))
 
     val result: Table =
       ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
@@ -271,8 +269,14 @@ trait CogroupSpec[M[+_]]
     val ltable = fromSample(
       SampleData(
         Stream(recl(0, 1), recl(1, 12), recl(3, 13), recl(4, 42), recl(5, 77))))
-    val rtable = fromSample(SampleData(
-      Stream(recr(6, -1), recr(7, 0), recr(8, 14), recr(9, 42), recr(10, 77))))
+    val rtable = fromSample(
+      SampleData(
+        Stream(
+          recr(6, -1),
+          recr(7, 0),
+          recr(8, 14),
+          recr(9, 42),
+          recr(10, 77))))
 
     val expected = Vector(
       recl(0, 1),
@@ -284,8 +288,7 @@ trait CogroupSpec[M[+_]]
       recr(7, 0),
       recr(8, 14),
       recr(9, 42),
-      recr(10, 77)
-    )
+      recr(10, 77))
 
     val result: Table =
       ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
@@ -328,8 +331,7 @@ trait CogroupSpec[M[+_]]
       recl(4),
       recr(5),
       recBoth(6),
-      recBoth(7)
-    )
+      recBoth(7))
 
     val result: Table =
       ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
@@ -372,8 +374,7 @@ trait CogroupSpec[M[+_]]
       recr(4),
       recl(5),
       recBoth(6),
-      recBoth(7)
-    )
+      recBoth(7))
 
     val result: Table =
       ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
@@ -648,8 +649,7 @@ trait CogroupSpec[M[+_]]
 
     val expected = Stream(
       parseUnsafe("""{ "id": "foo", "left": 4, "right": 2 }"""),
-      parseUnsafe("""{ "id": "foo", "left": 4, "right": 4 }""")
-    )
+      parseUnsafe("""{ "id": "foo", "left": 4, "right": 4 }"""))
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("id"))
     val result =
@@ -675,9 +675,11 @@ trait CogroupSpec[M[+_]]
   def testLongEqualSpansOnRight = {
     val record = JParser.parseUnsafe("""{"key":"Bob","value":42}""")
     val ltable = fromSample(SampleData(Stream(record)))
-    val rtable = fromSample(SampleData(Stream.tabulate(22) { i =>
-      JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
-    }))
+    val rtable = fromSample(
+      SampleData(
+        Stream.tabulate(22) { i =>
+          JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
+        }))
 
     val expected = Stream.tabulate(22)(JNum(_))
 
@@ -686,8 +688,7 @@ trait CogroupSpec[M[+_]]
       ltable.cogroup(keySpec, keySpec, rtable)(
         WrapObject(Leaf(Source), "blah!"),
         WrapObject(Leaf(Source), "argh!"),
-        DerefObjectStatic(Leaf(SourceRight), CPathField("value"))
-      )
+        DerefObjectStatic(Leaf(SourceRight), CPathField("value")))
 
     val jsonResult = toJson(result).copoint
     jsonResult must_== expected
@@ -695,9 +696,11 @@ trait CogroupSpec[M[+_]]
 
   def testLongEqualSpansOnLeft = {
     val record = JParser.parseUnsafe("""{"key":"Bob","value":42}""")
-    val ltable = fromSample(SampleData(Stream.tabulate(22) { i =>
-      JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
-    }))
+    val ltable = fromSample(
+      SampleData(
+        Stream.tabulate(22) { i =>
+          JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
+        }))
     val rtable = fromSample(SampleData(Stream(record)))
 
     val expected = Stream.tabulate(22)(JNum(_))
@@ -707,26 +710,29 @@ trait CogroupSpec[M[+_]]
       ltable.cogroup(keySpec, keySpec, rtable)(
         WrapObject(Leaf(Source), "blah!"),
         WrapObject(Leaf(Source), "argh!"),
-        DerefObjectStatic(Leaf(SourceLeft), CPathField("value"))
-      )
+        DerefObjectStatic(Leaf(SourceLeft), CPathField("value")))
 
     val jsonResult = toJson(result).copoint
     jsonResult must_== expected
   }
 
   def testLongEqualSpansOnBoth = {
-    val table = fromSample(SampleData(Stream.tabulate(22) { i =>
-      JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
-    }))
+    val table = fromSample(
+      SampleData(
+        Stream.tabulate(22) { i =>
+          JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
+        }))
 
     val expected =
-      (for {
-        left <- 0 until 22
-        right <- 0 until 22
-      } yield {
-        JParser.parseUnsafe(
-          """{ "left": %d, "right": %d }""" format (left, right))
-      }).toStream
+      (
+        for {
+          left <- 0 until 22
+          right <- 0 until 22
+        } yield {
+          JParser.parseUnsafe(
+            """{ "left": %d, "right": %d }""" format (left, right))
+        }
+      ).toStream
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("key"))
     val result: Table =
@@ -748,15 +754,16 @@ trait CogroupSpec[M[+_]]
   }
 
   def testLongLeftSpanWithIncreasingRight = {
-    val ltable = fromSample(SampleData(Stream.tabulate(12) { i =>
-      JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
-    }))
+    val ltable = fromSample(
+      SampleData(
+        Stream.tabulate(12) { i =>
+          JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
+        }))
     val rtable = fromSample(
       SampleData(
         Stream(
           JParser.parseUnsafe("""{"key":"Bob","value":50}"""),
-          JParser.parseUnsafe("""{"key":"Charlie","value":60}""")
-        )))
+          JParser.parseUnsafe("""{"key":"Charlie","value":60}"""))))
 
     val expected = Stream.tabulate(12) { i =>
       JParser.parseUnsafe("""{ "left": %d, "right": 50 }""" format i)

@@ -63,8 +63,11 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
     assert(
       mm.acquireExecutionMemory(10L, taskAttemptId, MemoryMode.ON_HEAP) === 10L)
     assert(mm.executionMemoryUsed === 10L)
-    assert(mm
-      .acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
+    assert(
+      mm.acquireExecutionMemory(
+        100L,
+        taskAttemptId,
+        MemoryMode.ON_HEAP) === 100L)
     // Acquire up to the max
     assert(
       mm.acquireExecutionMemory(
@@ -140,8 +143,11 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
     val dummyBlock = TestBlockId("ain't nobody love like you do")
     val (mm, ms) = makeThings(maxExecutionMem, maxStorageMem)
     // Only execution memory should increase
-    assert(mm
-      .acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
+    assert(
+      mm.acquireExecutionMemory(
+        100L,
+        taskAttemptId,
+        MemoryMode.ON_HEAP) === 100L)
     assert(mm.storageMemoryUsed === 0L)
     assert(mm.executionMemoryUsed === 100L)
     assert(

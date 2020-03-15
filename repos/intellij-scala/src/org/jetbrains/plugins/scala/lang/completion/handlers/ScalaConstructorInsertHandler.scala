@@ -52,18 +52,18 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           document.insertString(endOffset, ".")
           endOffset += 1
           editor.getCaretModel.moveToOffset(endOffset)
-          context.setLaterRunnable(new Runnable {
-            def run() {
-              AutoPopupController
-                .getInstance(context.getProject)
-                .scheduleAutoPopup(
-                  context.getEditor,
-                  new Condition[PsiFile] {
-                    def value(t: PsiFile): Boolean = t == context.getFile
-                  }
-                )
-            }
-          })
+          context.setLaterRunnable(
+            new Runnable {
+              def run() {
+                AutoPopupController
+                  .getInstance(context.getProject)
+                  .scheduleAutoPopup(
+                    context.getEditor,
+                    new Condition[PsiFile] {
+                      def value(t: PsiFile): Boolean = t == context.getFile
+                    })
+              }
+            })
         }
       case item @ ScalaLookupItem(clazz: PsiClass) =>
         val isRenamed = item.isRenamed.isDefined
@@ -159,29 +159,35 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           ScalaPsiUtil.adjustTypes(newT)
         }
 
-        if ((clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
-            clazz.hasModifierPropertyScala(
-              "abstract")) && !item.typeParametersProblem) {
-          context.setLaterRunnable(new Runnable {
-            def run() {
-              val file = context.getFile
-              val element = file.findElementAt(editor.getCaretModel.getOffset)
-              if (element == null)
-                return
+        if ((
+              clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
+              clazz.hasModifierPropertyScala("abstract")
+            ) && !item.typeParametersProblem) {
+          context.setLaterRunnable(
+            new Runnable {
+              def run() {
+                val file = context.getFile
+                val element = file.findElementAt(editor.getCaretModel.getOffset)
+                if (element == null)
+                  return
 
-              element.getParent match {
-                case (_: ScTemplateBody) childOf ((_: ScExtendsBlock) childOf (newTemplateDef: ScNewTemplateDefinition)) =>
-                  val members = ScalaOIUtil.getMembersToImplement(
-                    newTemplateDef)
-                  ScalaOIUtil.runAction(
-                    members.toSeq,
-                    isImplement = true,
-                    newTemplateDef,
-                    editor)
-                case _ =>
+                element.getParent match {
+                  case (_: ScTemplateBody) childOf (
+                        (
+                          _: ScExtendsBlock
+                        ) childOf (newTemplateDef: ScNewTemplateDefinition)
+                      ) =>
+                    val members = ScalaOIUtil.getMembersToImplement(
+                      newTemplateDef)
+                    ScalaOIUtil.runAction(
+                      members.toSeq,
+                      isImplement = true,
+                      newTemplateDef,
+                      editor)
+                  case _ =>
+                }
               }
-            }
-          })
+            })
         }
       case _ =>
     }

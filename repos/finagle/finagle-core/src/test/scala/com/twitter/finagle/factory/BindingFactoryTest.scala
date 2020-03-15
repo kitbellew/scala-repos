@@ -60,10 +60,7 @@ class BindingFactoryTest
   }
 
   trait Ctx {
-    def withExpectedTrace(
-        f: => Unit,
-        expected: Seq[Annotation]
-    ) {
+    def withExpectedTrace(f: => Unit, expected: Seq[Annotation]) {
       val tracer: Tracer = spy(new NullTracer)
       val captor: ArgumentCaptor[Record] = ArgumentCaptor.forClass(
         classOf[Record])
@@ -92,9 +89,10 @@ class BindingFactoryTest
           news += 1
           def apply(conn: ClientConnection) = {
             tcOpt.foreach(_.advance(1234.microseconds))
-            Future.value(Service.mk { _ =>
-              Future.value(bound.addr)
-            })
+            Future.value(
+              Service.mk { _ =>
+                Future.value(bound.addr)
+              })
           }
 
           def close(deadline: Time) = {
@@ -123,9 +121,10 @@ class BindingFactoryTest
     (bound: Name.Bound) =>
       new ServiceFactory[Unit, Var[Addr]] {
         def apply(conn: ClientConnection) =
-          Future.value(Service.mk { _ =>
-            Future.exception(new Exception("nup"))
-          })
+          Future.value(
+            Service.mk { _ =>
+              Future.exception(new Exception("nup"))
+            })
         def close(deadline: Time) = Future.Done
         override def status = st
       }
@@ -143,62 +142,63 @@ class BindingFactoryTest
           assert(factory.status == status)
         }
       }
-    }
-  )
+    })
 
-  test("stats")(Time.withCurrentTimeFrozen { tc =>
+  test("stats")(
+    Time.withCurrentTimeFrozen { tc =>
+      new Ctx {
+        override val tcOpt = Some(tc)
+
+        val v = Var[Activity.State[NameTree[Name]]](Activity.Pending)
+        TestNamer.f = { _ =>
+          Activity(v)
+        }
+        val f = Dtab.unwind {
+          Dtab.local = Dtab.read(
+            "/foo/bar=>/$/com.twitter.finagle.factory.BindingFactoryTest$TestNamer")
+          factory()
+        }
+        tc.advance(5678.microseconds)
+        v() = Activity.Ok(NameTree.Leaf(Name.Path(Path.read("/test1010"))))
+        Await.result(Await.result(f).close())
+
+        val expected = Map(Seq("bind_latency_us") -> Seq(5678.0))
+
+        assert(imsr.stats == expected)
+      }
+    })
+
+  test("Uses Dtab.base")(
     new Ctx {
-      override val tcOpt = Some(tc)
+      val n1 = Dtab.read("/foo/bar=>/test1010")
+      val s1 = newWith(n1)
+      val v1 = Await.result(s1(()))
+      assert(v1.sample() == Addr.Bound(Address(1010)))
 
-      val v = Var[Activity.State[NameTree[Name]]](Activity.Pending)
-      TestNamer.f = { _ =>
-        Activity(v)
+      s1.close()
+    })
+
+  test("Respects Dtab.base changes after service factory creation")(
+    new Ctx {
+      // factory is already created here
+      Dtab.base ++= Dtab.read("/test1010=>/$/inet/0/1011")
+      val n1 = Dtab.read("/foo/bar=>/test1010")
+      val s1 = newWith(n1)
+      val v1 = Await.result(s1(()))
+      assert(v1.sample() == Addr.Bound(Address(1011)))
+
+      s1.close()
+    })
+
+  test("Includes path in NoBrokersAvailableException")(
+    new Ctx {
+      val noBrokers = intercept[NoBrokersAvailableException] {
+        Await.result(factory())
       }
-      val f = Dtab.unwind {
-        Dtab.local = Dtab.read(
-          "/foo/bar=>/$/com.twitter.finagle.factory.BindingFactoryTest$TestNamer")
-        factory()
-      }
-      tc.advance(5678.microseconds)
-      v() = Activity.Ok(NameTree.Leaf(Name.Path(Path.read("/test1010"))))
-      Await.result(Await.result(f).close())
 
-      val expected = Map(
-        Seq("bind_latency_us") -> Seq(5678.0)
-      )
-
-      assert(imsr.stats == expected)
-    }
-  })
-
-  test("Uses Dtab.base")(new Ctx {
-    val n1 = Dtab.read("/foo/bar=>/test1010")
-    val s1 = newWith(n1)
-    val v1 = Await.result(s1(()))
-    assert(v1.sample() == Addr.Bound(Address(1010)))
-
-    s1.close()
-  })
-
-  test("Respects Dtab.base changes after service factory creation")(new Ctx {
-    // factory is already created here
-    Dtab.base ++= Dtab.read("/test1010=>/$/inet/0/1011")
-    val n1 = Dtab.read("/foo/bar=>/test1010")
-    val s1 = newWith(n1)
-    val v1 = Await.result(s1(()))
-    assert(v1.sample() == Addr.Bound(Address(1011)))
-
-    s1.close()
-  })
-
-  test("Includes path in NoBrokersAvailableException")(new Ctx {
-    val noBrokers = intercept[NoBrokersAvailableException] {
-      Await.result(factory())
-    }
-
-    assert(noBrokers.name == "/foo/bar")
-    assert(noBrokers.localDtab == Dtab.empty)
-  })
+      assert(noBrokers.name == "/foo/bar")
+      assert(noBrokers.localDtab == Dtab.empty)
+    })
 
   test(
     "Includes path and Dtab.local in NoBrokersAvailableException from name resolution")(
@@ -240,168 +240,176 @@ class BindingFactoryTest
     assert(noBrokers.localDtab == localDtab)
   }
 
-  test("Trace on success")(new Ctx {
-    withExpectedTrace(
-      {
-        val n1 = Dtab.read("/foo/bar=>/test1010")
-        val s1 = newWith(n1)
-        val v1 = Await.result(s1(()))
-        s1.close()
-      },
-      Seq(
-        Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
-        Annotation.Message("namer.success"),
-        Annotation.BinaryAnnotation("namer.tree", "/$/inet/0/1010"),
-        Annotation.BinaryAnnotation("namer.name", "/$/inet/0/1010")
+  test("Trace on success")(
+    new Ctx {
+      withExpectedTrace(
+        {
+          val n1 = Dtab.read("/foo/bar=>/test1010")
+          val s1 = newWith(n1)
+          val v1 = Await.result(s1(()))
+          s1.close()
+        },
+        Seq(
+          Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
+          Annotation
+            .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+          Annotation.Message("namer.success"),
+          Annotation.BinaryAnnotation("namer.tree", "/$/inet/0/1010"),
+          Annotation.BinaryAnnotation("namer.name", "/$/inet/0/1010")
+        )
       )
-    )
-  })
+    })
 
-  test("Trace on exception")(new Ctx {
-    withExpectedTrace(
-      {
-        val exc = new RuntimeException
+  test("Trace on exception")(
+    new Ctx {
+      withExpectedTrace(
+        {
+          val exc = new RuntimeException
 
-        NameInterpreter.global = new NameInterpreter {
-          override def bind(dtab: Dtab, path: Path) = Activity.exception(exc)
-        }
-
-        assert(
-          intercept[Failure](Await.result(factory())).isFlagged(Failure.Naming))
-      },
-      Seq(
-        Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
-        Annotation
-          .BinaryAnnotation("namer.failure", "java.lang.RuntimeException")
-      )
-    )
-  })
-
-  test("Trace on negative resolution")(new Ctx {
-    withExpectedTrace(
-      {
-        intercept[NoBrokersAvailableException] {
-          Await.result(factory())
-        }
-      },
-      Seq(
-        Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
-        Annotation.Message("namer.success"),
-        Annotation.BinaryAnnotation("namer.tree", "~")
-      )
-    )
-  })
-
-  test("Trace on service creation failure")(new Ctx {
-    withExpectedTrace(
-      {
-        val localDtab = Dtab.read("/foo/bar=>/test1010")
-
-        val f =
-          new BindingFactory(
-            Path.read("/foo/bar"),
-            newFactory = { addr =>
-              new ServiceFactory[Unit, Unit] {
-                def apply(conn: ClientConnection) =
-                  Future.exception(new NoBrokersAvailableException("/foo/bar"))
-
-                def close(deadline: Time) = Future.Done
-              }
-            })
-
-        intercept[NoBrokersAvailableException] {
-          Dtab.unwind {
-            Dtab.local = localDtab
-            Await.result(f())
+          NameInterpreter.global = new NameInterpreter {
+            override def bind(dtab: Dtab, path: Path) = Activity.exception(exc)
           }
-        }
-      },
-      Seq(
-        Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
-        Annotation.Message("namer.success"),
-        Annotation.BinaryAnnotation("namer.tree", "/$/inet/0/1010"),
-        Annotation.BinaryAnnotation("namer.name", "/$/inet/0/1010")
+
+          assert(
+            intercept[Failure](Await.result(factory()))
+              .isFlagged(Failure.Naming))
+        },
+        Seq(
+          Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
+          Annotation
+            .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+          Annotation
+            .BinaryAnnotation("namer.failure", "java.lang.RuntimeException")
+        )
       )
-    )
-  })
+    })
 
-  test("Caches namers")(new Ctx {
-    val n1 = Dtab.read("/foo/bar=>/$/inet/0/1")
-    val n2 = Dtab.read("/foo/bar=>/$/inet/0/2")
-    val n3 = Dtab.read("/foo/bar=>/$/inet/0/3")
-    val n4 = Dtab.read("/foo/bar=>/$/inet/0/4")
+  test("Trace on negative resolution")(
+    new Ctx {
+      withExpectedTrace(
+        {
+          intercept[NoBrokersAvailableException] {
+            Await.result(factory())
+          }
+        },
+        Seq(
+          Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
+          Annotation
+            .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+          Annotation.Message("namer.success"),
+          Annotation.BinaryAnnotation("namer.tree", "~")
+        )
+      )
+    })
 
-    assert(news == 0)
-    Await.result(newWith(n1).close() before newWith(n1).close())
-    assert(news == 1)
-    assert(closes == 0)
+  test("Trace on service creation failure")(
+    new Ctx {
+      withExpectedTrace(
+        {
+          val localDtab = Dtab.read("/foo/bar=>/test1010")
 
-    val s2 = newWith(n2)
-    assert(news == 2)
-    assert(closes == 0)
+          val f =
+            new BindingFactory(
+              Path.read("/foo/bar"),
+              newFactory = { addr =>
+                new ServiceFactory[Unit, Unit] {
+                  def apply(conn: ClientConnection) =
+                    Future.exception(
+                      new NoBrokersAvailableException("/foo/bar"))
 
-    // This should evict n1
-    val s3 = newWith(n3)
-    assert(news == 3)
-    assert(closes == 1)
+                  def close(deadline: Time) = Future.Done
+                }
+              })
 
-    // n2, n3 are outstanding, so additional requests
-    // should hit the one-shot path.
-    val s1 = newWith(n1)
-    assert(news == 4)
-    assert(closes == 1)
-    // Closing this should close the factory immediately.
-    s1.close()
-    assert(closes == 2)
+          intercept[NoBrokersAvailableException] {
+            Dtab.unwind {
+              Dtab.local = localDtab
+              Await.result(f())
+            }
+          }
+        },
+        Seq(
+          Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
+          Annotation
+            .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+          Annotation.Message("namer.success"),
+          Annotation.BinaryAnnotation("namer.tree", "/$/inet/0/1010"),
+          Annotation.BinaryAnnotation("namer.name", "/$/inet/0/1010")
+        )
+      )
+    })
 
-    Await.result(newWith(n2).close() before newWith(n3).close())
-    assert(news == 4)
-    assert(closes == 2)
-  })
+  test("Caches namers")(
+    new Ctx {
+      val n1 = Dtab.read("/foo/bar=>/$/inet/0/1")
+      val n2 = Dtab.read("/foo/bar=>/$/inet/0/2")
+      val n3 = Dtab.read("/foo/bar=>/$/inet/0/3")
+      val n4 = Dtab.read("/foo/bar=>/$/inet/0/4")
 
-  test("Caches names")(new Ctx {
-    val n1 = Dtab.read("/foo/bar=>/$/inet/0/1; /bar/baz=>/$/nil")
-    val n2 = Dtab.read("/foo/bar=>/$/inet/0/1")
-    val n3 = Dtab.read("/foo/bar=>/$/inet/0/2")
-    val n4 = Dtab.read("/foo/bar=>/$/inet/0/3")
+      assert(news == 0)
+      Await.result(newWith(n1).close() before newWith(n1).close())
+      assert(news == 1)
+      assert(closes == 0)
 
-    assert(news == 0)
-    Await.result(newWith(n1).close() before newWith(n1).close())
-    assert(news == 1)
-    assert(closes == 0)
+      val s2 = newWith(n2)
+      assert(news == 2)
+      assert(closes == 0)
 
-    Await.result(newWith(n2).close())
-    assert(news == 1)
-    assert(closes == 0)
+      // This should evict n1
+      val s3 = newWith(n3)
+      assert(news == 3)
+      assert(closes == 1)
 
-    Await.result(newWith(n3).close())
-    assert(news == 2)
-    assert(closes == 0)
+      // n2, n3 are outstanding, so additional requests
+      // should hit the one-shot path.
+      val s1 = newWith(n1)
+      assert(news == 4)
+      assert(closes == 1)
+      // Closing this should close the factory immediately.
+      s1.close()
+      assert(closes == 2)
 
-    Await.result(newWith(n4).close())
-    assert(news == 3)
-    assert(closes == 1)
+      Await.result(newWith(n2).close() before newWith(n3).close())
+      assert(news == 4)
+      assert(closes == 2)
+    })
 
-    Await.result(newWith(n3).close())
-    assert(news == 3)
-    assert(closes == 1)
+  test("Caches names")(
+    new Ctx {
+      val n1 = Dtab.read("/foo/bar=>/$/inet/0/1; /bar/baz=>/$/nil")
+      val n2 = Dtab.read("/foo/bar=>/$/inet/0/1")
+      val n3 = Dtab.read("/foo/bar=>/$/inet/0/2")
+      val n4 = Dtab.read("/foo/bar=>/$/inet/0/3")
 
-    Await.result(newWith(n1).close())
-    assert(news == 4)
-    assert(closes == 2)
+      assert(news == 0)
+      Await.result(newWith(n1).close() before newWith(n1).close())
+      assert(news == 1)
+      assert(closes == 0)
 
-    Await.result(newWith(n2).close())
-    assert(news == 4)
-    assert(closes == 2)
-  })
+      Await.result(newWith(n2).close())
+      assert(news == 1)
+      assert(closes == 0)
+
+      Await.result(newWith(n3).close())
+      assert(news == 2)
+      assert(closes == 0)
+
+      Await.result(newWith(n4).close())
+      assert(news == 3)
+      assert(closes == 1)
+
+      Await.result(newWith(n3).close())
+      assert(news == 3)
+      assert(closes == 1)
+
+      Await.result(newWith(n1).close())
+      assert(news == 4)
+      assert(closes == 2)
+
+      Await.result(newWith(n2).close())
+      assert(news == 4)
+      assert(closes == 2)
+    })
 
   test("BindingFactory.Module: filters with bound residual paths") {
     val module =
@@ -470,24 +478,27 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
     val dyn = new DynNameFactory[String, String](name, cache)
   }
 
-  test("DynNameFactory is Busy when name is unresolved")(new Ctx {
-    intercept[IllegalStateException] {
-      name.sample()
-    }
-    assert(dyn.status == Status.Busy)
-  })
+  test("DynNameFactory is Busy when name is unresolved")(
+    new Ctx {
+      intercept[IllegalStateException] {
+        name.sample()
+      }
+      assert(dyn.status == Status.Busy)
+    })
 
-  test("DynNameFactory is Closed when name resolution fails")(new Ctx {
-    assert(dyn.status == Status.Busy)
-    namew.notify(Throw(new Exception("boom")))
-    assert(dyn.status == Status.Closed)
-  })
+  test("DynNameFactory is Closed when name resolution fails")(
+    new Ctx {
+      assert(dyn.status == Status.Busy)
+      namew.notify(Throw(new Exception("boom")))
+      assert(dyn.status == Status.Closed)
+    })
 
-  test("DynNameFactory is Closed after closing")(new Ctx {
-    assert(dyn.status == Status.Busy)
-    Await.ready(dyn.close())
-    assert(dyn.status == Status.Closed)
-  })
+  test("DynNameFactory is Closed after closing")(
+    new Ctx {
+      assert(dyn.status == Status.Busy)
+      Await.ready(dyn.close())
+      assert(dyn.status == Status.Closed)
+    })
 
   test("DynNameFactory reflects status of underlying cached service factory")(
     for (status <- Seq(Status.Closed, Status.Busy, Status.Open)) {
@@ -496,63 +507,65 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
         namew.notify(Return(NameTree.Leaf(Name.empty)))
         assert(dyn.status == status)
       }
-    }
-  )
+    })
 
-  test("queue requests until name is nonpending (ok)")(new Ctx {
-    when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
-      .thenReturn(Future.value(svc))
+  test("queue requests until name is nonpending (ok)")(
+    new Ctx {
+      when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
+        .thenReturn(Future.value(svc))
 
-    val f1, f2 = dyn()
-    assert(!f1.isDefined)
-    assert(!f2.isDefined)
+      val f1, f2 = dyn()
+      assert(!f1.isDefined)
+      assert(!f2.isDefined)
 
-    namew.notify(Return(NameTree.Leaf(Name.empty)))
+      namew.notify(Return(NameTree.Leaf(Name.empty)))
 
-    assert(f1.poll == Some(Return(svc)))
-    assert(f2.poll == Some(Return(svc)))
+      assert(f1.poll == Some(Return(svc)))
+      assert(f2.poll == Some(Return(svc)))
 
-    Await.result(f1)("foo")
-    Await.result(f1)("bar")
-    Await.result(f2)("baz")
-  })
+      Await.result(f1)("foo")
+      Await.result(f1)("bar")
+      Await.result(f2)("baz")
+    })
 
-  test("queue requests until name is nonpending (fail)")(new Ctx {
-    when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
-      .thenReturn(Future.never)
+  test("queue requests until name is nonpending (fail)")(
+    new Ctx {
+      when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
+        .thenReturn(Future.never)
 
-    val f1, f2 = dyn()
-    assert(!f1.isDefined)
-    assert(!f2.isDefined)
+      val f1, f2 = dyn()
+      assert(!f1.isDefined)
+      assert(!f2.isDefined)
 
-    val exc = new Exception
-    namew.notify(Throw(exc))
+      val exc = new Exception
+      namew.notify(Throw(exc))
 
-    assert(f1.poll == Some(Throw(Failure(exc, Failure.Naming))))
-    assert(f2.poll == Some(Throw(Failure(exc, Failure.Naming))))
-  })
+      assert(f1.poll == Some(Throw(Failure(exc, Failure.Naming))))
+      assert(f2.poll == Some(Throw(Failure(exc, Failure.Naming))))
+    })
 
-  test("dequeue interrupted requests")(new Ctx {
-    when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
-      .thenReturn(Future.never)
+  test("dequeue interrupted requests")(
+    new Ctx {
+      when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
+        .thenReturn(Future.never)
 
-    val f1, f2 = dyn()
-    assert(!f1.isDefined)
-    assert(!f2.isDefined)
+      val f1, f2 = dyn()
+      assert(!f1.isDefined)
+      assert(!f2.isDefined)
 
-    val exc = new Exception
-    f1.raise(exc)
+      val exc = new Exception
+      f1.raise(exc)
 
-    f1.poll match {
-      case Some(Throw(cce: CancelledConnectionException)) =>
-        assert(cce.getCause == exc)
-      case _ => fail()
-    }
-    assert(f2.poll == None)
+      f1.poll match {
+        case Some(Throw(cce: CancelledConnectionException)) =>
+          assert(cce.getCause == exc)
+        case _ => fail()
+      }
+      assert(f2.poll == None)
 
-    namew.notify(Return(NameTree.Leaf(Name.empty)))
-    assert(f2.poll == None)
-  })
+      namew.notify(Return(NameTree.Leaf(Name.empty)))
+      assert(f2.poll == None)
+    })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -627,33 +640,36 @@ class NameTreeFactoryTest extends FunSuite {
       ).isAvailable
 
     assert(
-      isAvailable(NameTree.Union(
-        NameTree.Weighted(
-          1d,
-          NameTree.Union(
-            NameTree.Weighted(1d, NameTree.Leaf(Status.Open)),
-            NameTree.Weighted(1d, NameTree.Leaf(Status.Open)))),
-        NameTree.Weighted(1d, NameTree.Leaf(Status.Open))
-      )))
+      isAvailable(
+        NameTree.Union(
+          NameTree.Weighted(
+            1d,
+            NameTree.Union(
+              NameTree.Weighted(1d, NameTree.Leaf(Status.Open)),
+              NameTree.Weighted(1d, NameTree.Leaf(Status.Open)))),
+          NameTree.Weighted(1d, NameTree.Leaf(Status.Open))
+        )))
 
     assert(
-      !isAvailable(NameTree.Union(
-        NameTree.Weighted(
-          1d,
-          NameTree.Union(
-            NameTree.Weighted(1d, NameTree.Leaf(Status.Open)),
-            NameTree.Weighted(1d, NameTree.Leaf(Status.Closed)))),
-        NameTree.Weighted(1d, NameTree.Leaf(Status.Open))
-      )))
+      !isAvailable(
+        NameTree.Union(
+          NameTree.Weighted(
+            1d,
+            NameTree.Union(
+              NameTree.Weighted(1d, NameTree.Leaf(Status.Open)),
+              NameTree.Weighted(1d, NameTree.Leaf(Status.Closed)))),
+          NameTree.Weighted(1d, NameTree.Leaf(Status.Open))
+        )))
 
     assert(
-      !isAvailable(NameTree.Union(
-        NameTree.Weighted(
-          1d,
-          NameTree.Union(
-            NameTree.Weighted(1d, NameTree.Leaf(Status.Open)),
-            NameTree.Weighted(1d, NameTree.Leaf(Status.Open)))),
-        NameTree.Weighted(1d, NameTree.Empty)
-      )))
+      !isAvailable(
+        NameTree.Union(
+          NameTree.Weighted(
+            1d,
+            NameTree.Union(
+              NameTree.Weighted(1d, NameTree.Leaf(Status.Open)),
+              NameTree.Weighted(1d, NameTree.Leaf(Status.Open)))),
+          NameTree.Weighted(1d, NameTree.Empty)
+        )))
   }
 }

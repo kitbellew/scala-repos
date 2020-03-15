@@ -51,10 +51,13 @@ object SafeNodeSeq {
   def unapply(any: Any): Option[Seq[Node]] =
     any match {
       case s: Seq[_] =>
-        Some(s flatMap (_ match {
-          case n: Node => n
-          case _       => NodeSeq.Empty
-        }))
+        Some(
+          s flatMap (
+            _ match {
+              case n: Node => n
+              case _       => NodeSeq.Empty
+            }
+          ))
       case _ => None
     }
 }

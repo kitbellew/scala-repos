@@ -174,8 +174,9 @@ abstract class Storm(
           s"Node (${dag.getNodeName(node)}): Using default setting $default")
         default
       case Some((namedSource, option)) =>
-        logger.info(s"Node ${dag.getNodeName(
-          node)}: Using $option found via NamedProducer ${'"'}$namedSource${'"'}")
+        logger.info(
+          s"Node ${dag.getNodeName(
+            node)}: Using $option found via NamedProducer ${'"'}$namedSource${'"'}")
         option
     }
 
@@ -368,11 +369,7 @@ abstract class Storm(
     val parallelism =
       getOrElse(stormDag, node, DEFAULT_SUMMER_PARALLELISM).parHint
     val declarer = topologyBuilder
-      .setBolt(
-        nodeName,
-        sinkBolt,
-        parallelism
-      )
+      .setBolt(nodeName, sinkBolt, parallelism)
       .addConfigurations(tickConfig)
     val dependenciesNames = stormDag.dependenciesOf(node).collect {
       case x: StormNode => stormDag.getNodeName(x)

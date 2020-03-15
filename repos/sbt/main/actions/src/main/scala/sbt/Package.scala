@@ -131,9 +131,10 @@ object Package {
       IMPLEMENTATION_VENDOR,
       IMPLEMENTATION_VENDOR_ID)
     val attribVals = Seq(name, version, orgName, org)
-    ManifestAttributes((attribKeys zip attribVals) ++ {
-      homepage map (h => (IMPLEMENTATION_URL, h.toString))
-    }: _*)
+    ManifestAttributes(
+      (attribKeys zip attribVals) ++ {
+        homepage map (h => (IMPLEMENTATION_URL, h.toString))
+      }: _*)
   }
   def makeJar(
       sources: Seq[(File, String)],
@@ -147,9 +148,11 @@ object Package {
     log.info("Done packaging.")
   }
   def sourcesDebugString(sources: Seq[(File, String)]): String =
-    "Input file mappings:\n\t" + (sources map {
-      case (f, s) => s + "\n\t  " + f
-    } mkString ("\n\t"))
+    "Input file mappings:\n\t" + (
+      sources map {
+        case (f, s) => s + "\n\t  " + f
+      } mkString ("\n\t")
+    )
 
   implicit def manifestEquiv: Equiv[Manifest] = defaultEquiv
   implicit def manifestFormat: Format[Manifest] =

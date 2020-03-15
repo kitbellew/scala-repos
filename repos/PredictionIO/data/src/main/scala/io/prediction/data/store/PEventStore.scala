@@ -59,8 +59,8 @@ object PEventStore {
       entityId: Option[String] = None,
       eventNames: Option[Seq[String]] = None,
       targetEntityType: Option[Option[String]] = None,
-      targetEntityId: Option[Option[String]] = None
-  )(sc: SparkContext): RDD[Event] = {
+      targetEntityId: Option[Option[String]] = None)(
+      sc: SparkContext): RDD[Event] = {
 
     val (appId, channelId) = Common.appNameToId(appName, channelName)
 
@@ -107,8 +107,7 @@ object PEventStore {
       channelId = channelId,
       startTime = startTime,
       untilTime = untilTime,
-      required = required
-    )(sc)
+      required = required)(sc)
 
   }
 

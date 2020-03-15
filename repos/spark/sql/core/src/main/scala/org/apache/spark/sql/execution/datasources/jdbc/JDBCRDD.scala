@@ -229,41 +229,43 @@ private[sql] object JDBCRDD extends Logging {
     * Returns None for an unhandled filter.
     */
   private[jdbc] def compileFilter(f: Filter): Option[String] = {
-    Option(f match {
-      case EqualTo(attr, value) => s"$attr = ${compileValue(value)}"
-      case EqualNullSafe(attr, value) =>
-        s"(NOT ($attr != ${compileValue(value)} OR $attr IS NULL OR " +
-          s"${compileValue(value)} IS NULL) OR ($attr IS NULL AND ${compileValue(value)} IS NULL))"
-      case LessThan(attr, value)           => s"$attr < ${compileValue(value)}"
-      case GreaterThan(attr, value)        => s"$attr > ${compileValue(value)}"
-      case LessThanOrEqual(attr, value)    => s"$attr <= ${compileValue(value)}"
-      case GreaterThanOrEqual(attr, value) => s"$attr >= ${compileValue(value)}"
-      case IsNull(attr)                    => s"$attr IS NULL"
-      case IsNotNull(attr)                 => s"$attr IS NOT NULL"
-      case StringStartsWith(attr, value)   => s"${attr} LIKE '${value}%'"
-      case StringEndsWith(attr, value)     => s"${attr} LIKE '%${value}'"
-      case StringContains(attr, value)     => s"${attr} LIKE '%${value}%'"
-      case In(attr, value)                 => s"$attr IN (${compileValue(value)})"
-      case Not(f)                          => compileFilter(f).map(p => s"(NOT ($p))").getOrElse(null)
-      case Or(f1, f2)                      =>
-        // We can't compile Or filter unless both sub-filters are compiled successfully.
-        // It applies too for the following And filter.
-        // If we can make sure compileFilter supports all filters, we can remove this check.
-        val or = Seq(f1, f2).flatMap(compileFilter(_))
-        if (or.size == 2) {
-          or.map(p => s"($p)").mkString(" OR ")
-        } else {
-          null
-        }
-      case And(f1, f2) =>
-        val and = Seq(f1, f2).flatMap(compileFilter(_))
-        if (and.size == 2) {
-          and.map(p => s"($p)").mkString(" AND ")
-        } else {
-          null
-        }
-      case _ => null
-    })
+    Option(
+      f match {
+        case EqualTo(attr, value) => s"$attr = ${compileValue(value)}"
+        case EqualNullSafe(attr, value) =>
+          s"(NOT ($attr != ${compileValue(value)} OR $attr IS NULL OR " +
+            s"${compileValue(value)} IS NULL) OR ($attr IS NULL AND ${compileValue(value)} IS NULL))"
+        case LessThan(attr, value)        => s"$attr < ${compileValue(value)}"
+        case GreaterThan(attr, value)     => s"$attr > ${compileValue(value)}"
+        case LessThanOrEqual(attr, value) => s"$attr <= ${compileValue(value)}"
+        case GreaterThanOrEqual(attr, value) =>
+          s"$attr >= ${compileValue(value)}"
+        case IsNull(attr)                  => s"$attr IS NULL"
+        case IsNotNull(attr)               => s"$attr IS NOT NULL"
+        case StringStartsWith(attr, value) => s"${attr} LIKE '${value}%'"
+        case StringEndsWith(attr, value)   => s"${attr} LIKE '%${value}'"
+        case StringContains(attr, value)   => s"${attr} LIKE '%${value}%'"
+        case In(attr, value)               => s"$attr IN (${compileValue(value)})"
+        case Not(f)                        => compileFilter(f).map(p => s"(NOT ($p))").getOrElse(null)
+        case Or(f1, f2)                    =>
+          // We can't compile Or filter unless both sub-filters are compiled successfully.
+          // It applies too for the following And filter.
+          // If we can make sure compileFilter supports all filters, we can remove this check.
+          val or = Seq(f1, f2).flatMap(compileFilter(_))
+          if (or.size == 2) {
+            or.map(p => s"($p)").mkString(" OR ")
+          } else {
+            null
+          }
+        case And(f1, f2) =>
+          val and = Seq(f1, f2).flatMap(compileFilter(_))
+          if (and.size == 2) {
+            and.map(p => s"($p)").mkString(" AND ")
+          } else {
+            null
+          }
+        case _ => null
+      })
   }
 
   /**

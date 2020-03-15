@@ -16,71 +16,59 @@ class ConvertScalaToJavaCollectionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testIntentionIsAvailable2() {
-    checkIntentionIsAvailable(
-      """
+    checkIntentionIsAvailable("""
         |class UsesScalaCollections {
         |  val list = List(1,2,3)
         |  val javaList = lis<caret>t
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsAvailable_MutableMap() {
-    checkIntentionIsAvailable(
-      """
+    checkIntentionIsAvailable("""
         |import scala.collection.mutable
         |
         |class UsesScalaCollections {
         |  val map = mutable.Map(1 -> "1")
         |  val javaMap = ma<caret>p
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsAvailable_Seq() {
-    checkIntentionIsAvailable(
-      """
+    checkIntentionIsAvailable("""
         |class UsesScalaCollections {
         |  val seq = Seq("1")
         |  val javaList = se<caret>q
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsAvailable_Set() {
-    checkIntentionIsAvailable(
-      """
+    checkIntentionIsAvailable("""
         |class UsesScalaCollections {
         |  val set = Set("1")
         |  val javaSet = se<caret>t
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsAvailable_Iterator() {
-    checkIntentionIsAvailable(
-      """
+    checkIntentionIsAvailable("""
         |class UsesScalaCollections {
         |  val iter = Iterator(1)
         |  val javaIter = it<caret>er
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsAvailable_Iterable() {
-    checkIntentionIsAvailable(
-      """
+    checkIntentionIsAvailable("""
         |class UsesScalaCollections {
         |  val iter = Iterable(1)
         |  val javaIter = it<caret>er
         |}
-      """
-    )
+      """)
   }
 
   def testIntentionIsNotAvailable() {

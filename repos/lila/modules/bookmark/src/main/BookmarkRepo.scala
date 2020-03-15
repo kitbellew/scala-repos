@@ -16,8 +16,7 @@ private[bookmark] object BookmarkRepo {
     $count exists selectId(gameId, userId) flatMap { e =>
       e.fold(
         remove(gameId, userId),
-        add(gameId, userId, DateTime.now)
-      ) inject !e
+        add(gameId, userId, DateTime.now)) inject !e
     }
 
   def gameIdsByUserId(userId: String): Fu[Set[String]] =

@@ -21,8 +21,7 @@ class CapConcurrentExecutionsTest
   def capMetrics: CapConcurrentExecutionsMetrics =
     new CapConcurrentExecutionsMetrics(
       new Metrics(new MetricRegistry),
-      classOf[CapConcurrentExecutionsTest]
-    )
+      classOf[CapConcurrentExecutionsTest])
 
   test("submit successful futures after each other") {
     val serialize = CapConcurrentExecutions(

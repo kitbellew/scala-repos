@@ -96,10 +96,12 @@ class PrintStream private (
        * checkError() result. This is not clearly specified by the JavaDoc,
        * but, experimentally, the JDK seems to behave that way.
        */
-      errorFlag || (out match {
-        case out: PrintStream => out.checkError()
-        case _                => false
-      })
+      errorFlag || (
+        out match {
+          case out: PrintStream => out.checkError()
+          case _                => false
+        }
+      )
     }
   }
 

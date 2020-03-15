@@ -357,8 +357,7 @@ object JE {
             name + ".appendChild(lift$.swappable(" + AnonFunc(
               JsCmds.JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
                 addToDocFrag("df", visible.toList) &
-                JE.JsRaw("return df").cmd
-            ).toJsCmd
+                JE.JsRaw("return df").cmd).toJsCmd
               + "(), " + AnonFunc(
               JsCmds.JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
                 addToDocFrag("df", hidden.toList) &
@@ -375,15 +374,17 @@ object JE {
       new JsExp {
         def toJsCmd =
           "lift$.buildIndex(" + obj + ", " + indexName.encJs +
-            (if (tables.isEmpty)
-               ""
-             else
-               ", " +
-                 tables
-                   .map {
-                     case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
-                   }
-                   .mkString(", ")) +
+            (
+              if (tables.isEmpty)
+                ""
+              else
+                ", " +
+                  tables
+                    .map {
+                      case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                    }
+                    .mkString(", ")
+            ) +
             ")"
       }
 
@@ -391,15 +392,17 @@ object JE {
       new JsExp {
         def toJsCmd =
           "lift$.buildIndex(" + obj.toJsCmd + ", " + indexName.encJs +
-            (if (tables.isEmpty)
-               ""
-             else
-               ", " +
-                 tables
-                   .map {
-                     case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
-                   }
-                   .mkString(", ")) +
+            (
+              if (tables.isEmpty)
+                ""
+              else
+                ", " +
+                  tables
+                    .map {
+                      case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                    }
+                    .mkString(", ")
+            ) +
             ")"
       }
   }
@@ -541,10 +544,12 @@ object JE {
 
   case class JsVar(varName: String, andThen: String*) extends JsExp {
     def toJsCmd =
-      varName + (if (andThen.isEmpty)
-                   ""
-                 else
-                   andThen.mkString(".", ".", ""))
+      varName + (
+        if (andThen.isEmpty)
+          ""
+        else
+          andThen.mkString(".", ".", "")
+      )
   }
 
   /**
@@ -709,11 +714,7 @@ trait HtmlFixer {
     val xhtml =
       S.session.map { session =>
         session.normalizeHtmlAndAppendEventHandlers(
-          session.processSurroundAndInclude(
-            s"JS SetHTML id: $uid",
-            content
-          )
-        )
+          session.processSurroundAndInclude(s"JS SetHTML id: $uid", content))
       } openOr {
         content
       }
@@ -722,15 +723,17 @@ trait HtmlFixer {
     val lb = new ListBuffer[JsCmd]
 
     val revised =
-      ("script" #> nsFunc(ns => {
-        ns match {
-          case FindScript(e) => {
-            lb += JE.JsRaw(ns.text).cmd
-            NodeSeq.Empty
+      (
+        "script" #> nsFunc(ns => {
+          ns match {
+            case FindScript(e) => {
+              lb += JE.JsRaw(ns.text).cmd
+              NodeSeq.Empty
+            }
+            case x => x
           }
-          case x => x
-        }
-      })).apply(xhtml)
+        })
+      ).apply(xhtml)
 
     S.htmlProperties.htmlWriter(Group(revised), w)
 
@@ -831,8 +834,10 @@ object JsCmds {
   object FocusOnLoad {
     def apply(in: Elem): NodeSeq = {
       val (elem, id) = findOrAddId(in)
-      elem ++ Script(LiftRules.jsArtifacts.onLoad(Run(
-        "if (document.getElementById(" + id.encJs + ")) {document.getElementById(" + id.encJs + ").focus();};")))
+      elem ++ Script(
+        LiftRules.jsArtifacts.onLoad(
+          Run(
+            "if (document.getElementById(" + id.encJs + ")) {document.getElementById(" + id.encJs + ").focus();};")))
     }
   }
 
@@ -979,10 +984,12 @@ object JsCmds {
 
   case class JsTry(what: JsCmd, alert: Boolean) extends JsCmd {
     def toJsCmd =
-      "try { " + what.toJsCmd + " } catch (e) {" + (if (alert)
-                                                      "alert(e);"
-                                                    else
-                                                      "") + "}"
+      "try { " + what.toJsCmd + " } catch (e) {" + (
+        if (alert)
+          "alert(e);"
+        else
+          ""
+      ) + "}"
   }
 
   /**
@@ -1052,10 +1059,12 @@ object JsCmds {
               "y=document.createElement('option'); " +
                 "y.text = " + text.encJs + "; " +
                 "y.value = " + value.encJs + "; " +
-                (if (Full(value) == dflt)
-                   "y.selected = true; "
-                 else
-                   "") +
+                (
+                  if (Full(value) == dflt)
+                    "y.selected = true; "
+                  else
+                    ""
+                ) +
                 " try {x.add(y, null);} catch(e) {if (typeof(e) == 'object' && typeof(e.number) == 'number' && (e.number & 0xFFFF) == 5){ x.add(y,x.options.length); } } "
           }
           .mkString("\n") + "};"

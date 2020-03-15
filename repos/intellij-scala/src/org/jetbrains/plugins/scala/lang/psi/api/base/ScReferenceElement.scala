@@ -293,22 +293,23 @@ trait ScReferenceElement
       if (!res)
         return false
       var reject = false
-      getContainingFile.accept(new ScalaRecursiveElementVisitor {
-        override def visitReference(ref: ScReferenceElement) {
-          if (reject)
-            return
-          if (usedNames.contains(ref.refName)) {
-            ref.bind() match {
-              case Some(r: ScalaResolveResult)
-                  if ref != ScReferenceElement.this && r.importsUsed.isEmpty =>
-                reject = true
-                return
-              case _ =>
+      getContainingFile.accept(
+        new ScalaRecursiveElementVisitor {
+          override def visitReference(ref: ScReferenceElement) {
+            if (reject)
+              return
+            if (usedNames.contains(ref.refName)) {
+              ref.bind() match {
+                case Some(r: ScalaResolveResult)
+                    if ref != ScReferenceElement.this && r.importsUsed.isEmpty =>
+                  reject = true
+                  return
+                case _ =>
+              }
             }
+            super.visitReference(ref)
           }
-          super.visitReference(ref)
-        }
-      })
+        })
       !reject
     }
     val prefixImport = ScalaCodeStyleSettings
@@ -347,19 +348,20 @@ trait ScReferenceElement
                   this,
                   getProject)
                 var res = true
-                holder.accept(new ScalaRecursiveElementVisitor {
-                  //Override also visitReferenceExpression! and visitTypeProjection!
-                  override def visitReference(ref: ScReferenceElement) {
-                    ref.qualifier match {
-                      case Some(_) =>
-                      case None =>
-                        if (!ref.getParent.isInstanceOf[ScImportSelector]) {
-                          if (ref.refName == parts(index))
-                            res = false
-                        }
+                holder.accept(
+                  new ScalaRecursiveElementVisitor {
+                    //Override also visitReferenceExpression! and visitTypeProjection!
+                    override def visitReference(ref: ScReferenceElement) {
+                      ref.qualifier match {
+                        case Some(_) =>
+                        case None =>
+                          if (!ref.getParent.isInstanceOf[ScImportSelector]) {
+                            if (ref.refName == parts(index))
+                              res = false
+                          }
+                      }
                     }
-                  }
-                })
+                  })
                 res
               }
               result match {

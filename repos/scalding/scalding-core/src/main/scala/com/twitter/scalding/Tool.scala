@@ -141,11 +141,13 @@ class Tool extends Configured with HTool {
       } else {
         throw new RuntimeException(
           "Job failed to run: " + jobName +
-            (if (cnt > 0) {
-               " child: " + cnt.toString + ", class: " + j.getClass.getName
-             } else {
-               ""
-             }))
+            (
+              if (cnt > 0) {
+                " child: " + cnt.toString + ", class: " + j.getClass.getName
+              } else {
+                ""
+              }
+            ))
       }
     }
     //start a counter to see how deep we recurse:

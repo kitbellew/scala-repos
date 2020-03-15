@@ -88,7 +88,11 @@ class ScImportSelectorImpl private (
             node.getTreePrev
         t = node.getElementType
       }
-    } while (node != null && !(t == ScalaElementTypes.IMPORT_SELECTOR || t == ScalaTokenTypes.tUNDER))
+    } while (
+      node != null && !(
+        t == ScalaElementTypes.IMPORT_SELECTOR || t == ScalaTokenTypes.tUNDER
+      )
+    )
 
     expr.selectors match {
       case Seq(sel: ScImportSelector) if !sel.isAliasedImport =>

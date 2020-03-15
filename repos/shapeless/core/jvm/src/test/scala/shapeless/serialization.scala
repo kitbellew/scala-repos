@@ -87,10 +87,12 @@ object SerializationTestDefns {
     implicit def cs = at[Int, String]((acc, s) => acc + s.length)
     implicit def cb =
       at[Int, Boolean]((acc, b) =>
-        acc + (if (b)
-                 1
-               else
-                 0))
+        acc + (
+          if (b)
+            1
+          else
+            0
+        ))
   }
 
   object combineR extends Poly2 {
@@ -98,10 +100,12 @@ object SerializationTestDefns {
     implicit def cs = at[String, Int]((s, acc) => acc + s.length)
     implicit def cb =
       at[Boolean, Int]((b, acc) =>
-        acc + (if (b)
-                 1
-               else
-                 0))
+        acc + (
+          if (b)
+            1
+          else
+            0
+        ))
   }
 
   object selInt extends Poly1 {
@@ -1004,9 +1008,8 @@ class SerializationTests {
     assertSerializableBeforeAfter(
       implicitly[Lazy[Lazy.Values[Generic[Wibble] :: HNil]]])(_.value)
     assertSerializableBeforeAfter(
-      implicitly[
-        Lazy[Lazy.Values[Generic[Wibble] :: Generic1[Box, TC1] :: HNil]]])(
-      _.value)
+      implicitly[Lazy[
+        Lazy.Values[Generic[Wibble] :: Generic1[Box, TC1] :: HNil]]])(_.value)
   }
 
   @Test

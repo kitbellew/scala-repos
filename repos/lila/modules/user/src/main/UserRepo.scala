@@ -109,8 +109,7 @@ object UserRepo {
     coll
       .find(
         BSONDocument("_id" -> BSONDocument("$in" -> BSONArray(u1, u2))),
-        BSONDocument(s"${F.count}.game" -> true)
-      )
+        BSONDocument(s"${F.count}.game" -> true))
       .cursor[BSONDocument]()
       .collect[List]() map { docs =>
       docs
@@ -133,8 +132,7 @@ object UserRepo {
         coll
           .find(
             BSONDocument("_id" -> BSONDocument("$in" -> BSONArray(u1, u2))),
-            BSONDocument("_id" -> true)
-          )
+            BSONDocument("_id" -> true))
           .sort(BSONDocument(F.colorIt -> 1))
           .one[BSONDocument]
           .map {
@@ -159,16 +157,13 @@ object UserRepo {
     }
     diff.nonEmpty ?? $update(
       $select(user.id),
-      BSONDocument("$set" -> BSONDocument(diff))
-    )
+      BSONDocument("$set" -> BSONDocument(diff)))
   }
 
   def setPerf(userId: String, perfName: String, perf: Perf) =
     $update(
       $select(userId),
-      $setBson(
-        s"${F.perfs}.$perfName" -> Perf.perfBSONHandler.write(perf)
-      ))
+      $setBson(s"${F.perfs}.$perfName" -> Perf.perfBSONHandler.write(perf)))
 
   def setProfile(id: ID, profile: Profile): Funit =
     $update(
@@ -220,22 +215,25 @@ object UserRepo {
       "count.game".some,
       rated option "count.rated",
       ai option "count.ai",
-      (result match {
-        case -1 => "count.loss".some
-        case 1  => "count.win".some
-        case 0  => "count.draw".some
-        case _  => none
-      }),
-      (result match {
-        case -1 => "count.lossH".some
-        case 1  => "count.winH".some
-        case 0  => "count.drawH".some
-        case _  => none
-      }) ifFalse ai
+      (
+        result match {
+          case -1 => "count.loss".some
+          case 1  => "count.win".some
+          case 0  => "count.draw".some
+          case _  => none
+        }
+      ),
+      (
+        result match {
+          case -1 => "count.lossH".some
+          case 1  => "count.winH".some
+          case 0  => "count.drawH".some
+          case _  => none
+        }
+      ) ifFalse ai
     ).flatten.map(_ -> 1) ::: List(
       totalTime map (s"${F.playTime}.total" -> _),
-      tvTime map (s"${F.playTime}.tv" -> _)
-    ).flatten
+      tvTime map (s"${F.playTime}.tv" -> _)).flatten
 
     $update($select(id), $incBson(incs: _*))
   }
@@ -323,8 +321,7 @@ object UserRepo {
       $select.byId($regex(regex)) ++ enabledSelect,
       F.username,
       _ sort $sort.desc("_id"),
-      max.some
-    )(_.asOpt[String])
+      max.some)(_.asOpt[String])
   }
 
   def toggleEngine(id: ID): Funit =
@@ -361,8 +358,7 @@ object UserRepo {
       BSONDocument("$set" -> BSONDocument("enabled" -> false)) ++
         user.lameOrTroll.fold(
           BSONDocument(),
-          BSONDocument("$unset" -> BSONDocument("email" -> true))
-        )
+          BSONDocument("$unset" -> BSONDocument("email" -> true)))
     )
 
   def passwd(id: ID, password: String): Funit =
@@ -385,8 +381,7 @@ object UserRepo {
     coll
       .find(
         BSONDocument("_id" -> id),
-        BSONDocument(s"${F.perfs}.${perfType.key}" -> true)
-      )
+        BSONDocument(s"${F.perfs}.${perfType.key}" -> true))
       .one[BSONDocument]
       .map {
         _.flatMap(_.getAs[BSONDocument](F.perfs))
@@ -404,8 +399,7 @@ object UserRepo {
         F.enabled -> true,
         "seenAt" -> BSONDocument("$gt" -> since),
         "count.game" -> BSONDocument("$gt" -> 9),
-        "kid" -> BSONDocument("$ne" -> true)
-      ).some) map lila.db.BSON.asStrings
+        "kid" -> BSONDocument("$ne" -> true)).some) map lila.db.BSON.asStrings
 
   def setLang(id: ID, lang: String) = $update.field(id, "lang", lang)
 
@@ -417,8 +411,7 @@ object UserRepo {
       .map(
         _.documents.headOption flatMap {
           _.getAs[Int](F.toints)
-        }
-      )
+        })
       .map(~_)
 
   def filterByEngine(userIds: List[String]): Fu[List[String]] =
@@ -430,8 +423,7 @@ object UserRepo {
     coll.count(
       BSONDocument(
         "_id" -> BSONDocument("$in" -> userIds),
-        F.engine -> true
-      ).some)
+        F.engine -> true).some)
 
   def mustConfirmEmail(id: String): Fu[Boolean] =
     $count.exists($select(id) ++ Json.obj(F.mustConfirmEmail -> $exists(true)))

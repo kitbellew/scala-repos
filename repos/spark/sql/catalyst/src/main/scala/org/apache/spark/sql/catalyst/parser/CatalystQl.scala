@@ -110,8 +110,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           val keyIndex = keyMap
             .find(_._1.treeEquals(col))
             .map(_._2)
-            .getOrElse(throw new AnalysisException(
-              s"${col.treeString} doesn't show up in the GROUP BY list"))
+            .getOrElse(
+              throw new AnalysisException(
+                s"${col.treeString} doesn't show up in the GROUP BY list"))
           // 0 means that the column at the given index is a grouping column, 1 means it is not,
           // so we unset the bit in bitmap.
           bitmap & ~(1 << (keys.length - 1 - keyIndex))
@@ -360,14 +361,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               .getOrElse(withSort)
 
             // Collect all window specifications defined in the WINDOW clause.
-            val windowDefinitions = windowClause.map(_.children.collect {
-              case Token(
-                    "TOK_WINDOWDEF",
-                    Token(windowName, Nil) :: Token(
-                      "TOK_WINDOWSPEC",
-                      spec) :: Nil) =>
-                windowName -> nodesToWindowSpecification(spec)
-            }.toMap)
+            val windowDefinitions = windowClause.map(
+              _.children.collect {
+                case Token(
+                      "TOK_WINDOWDEF",
+                      Token(windowName, Nil) :: Token(
+                        "TOK_WINDOWSPEC",
+                        spec) :: Nil) =>
+                  windowName -> nodesToWindowSpecification(spec)
+              }.toMap)
             // Handle cases like
             // window w1 as (partition by p_mfgr order by p_name
             //               range between 2 preceding and 2 following),
@@ -471,7 +473,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               // adjust the fraction.
               require(
                 fraction.toDouble >= (0.0 - RandomSampler.roundingEpsilon)
-                  && fraction.toDouble <= (100.0 + RandomSampler.roundingEpsilon),
+                  && fraction.toDouble <= (
+                    100.0 + RandomSampler.roundingEpsilon
+                  ),
                 s"Sampling fraction ($fraction) must be on interval [0, 100]"
               )
               Sample(
@@ -573,15 +577,16 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         val tableIdent = extractTableIdent(tableNameParts)
 
         val partitionKeys = partitionClause
-          .map(_.children.map {
-            // Parse partitions. We also make keys case insensitive.
-            case Token(
-                  "TOK_PARTVAL",
-                  Token(key, Nil) :: Token(value, Nil) :: Nil) =>
-              cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
-            case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
-              cleanIdentifier(key.toLowerCase) -> None
-          }.toMap)
+          .map(
+            _.children.map {
+              // Parse partitions. We also make keys case insensitive.
+              case Token(
+                    "TOK_PARTVAL",
+                    Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+                cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
+              case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
+                cleanIdentifier(key.toLowerCase) -> None
+            }.toMap)
           .getOrElse(Map.empty)
 
         InsertIntoTable(
@@ -602,15 +607,16 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         val tableIdent = extractTableIdent(tableNameParts)
 
         val partitionKeys = partitionClause
-          .map(_.children.map {
-            // Parse partitions. We also make keys case insensitive.
-            case Token(
-                  "TOK_PARTVAL",
-                  Token(key, Nil) :: Token(value, Nil) :: Nil) =>
-              cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
-            case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
-              cleanIdentifier(key.toLowerCase) -> None
-          }.toMap)
+          .map(
+            _.children.map {
+              // Parse partitions. We also make keys case insensitive.
+              case Token(
+                    "TOK_PARTVAL",
+                    Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+                cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
+              case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
+                cleanIdentifier(key.toLowerCase) -> None
+            }.toMap)
           .getOrElse(Map.empty)
 
         InsertIntoTable(
@@ -980,14 +986,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         // Handle Partition By and Order By.
         val (partitionSpec, orderSpec) = partitionClause
           .map { partitionAndOrdering =>
-            val (partitionByClause :: orderByClause :: sortByClause :: clusterByClause :: Nil) =
-              getClauses(
-                Seq(
-                  "TOK_DISTRIBUTEBY",
-                  "TOK_ORDERBY",
-                  "TOK_SORTBY",
-                  "TOK_CLUSTERBY"),
-                partitionAndOrdering.children)
+            val (
+              partitionByClause :: orderByClause :: sortByClause :: clusterByClause :: Nil
+            ) = getClauses(
+              Seq(
+                "TOK_DISTRIBUTEBY",
+                "TOK_ORDERBY",
+                "TOK_SORTBY",
+                "TOK_CLUSTERBY"),
+              partitionAndOrdering.children)
 
             (
               partitionByClause,
@@ -1055,8 +1062,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                     noParseRule("Window Frame", frame)
                 }
               }
-              .getOrElse(sys.error(
-                s"If you see this, please file a bug report with your query."))
+              .getOrElse(
+                sys.error(
+                  s"If you see this, please file a bug report with your query."))
           }
 
         WindowSpecDefinition(partitionSpec, orderSpec, windowFrame)

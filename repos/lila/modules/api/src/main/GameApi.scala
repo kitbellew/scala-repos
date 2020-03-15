@@ -54,13 +54,11 @@ private[api] final class GameApi(
                 BSONDocument("$exists" -> false)))
           ),
           projection = BSONDocument(),
-          sort = BSONDocument(G.createdAt -> -1)
-        ),
+          sort = BSONDocument(G.createdAt -> -1)),
         nbResults = fuccess {
           rated.fold(user.count.game)(
             _.fold(user.count.rated, user.count.casual))
-        }
-      ),
+        }),
       currentPage = math.max(0, page | 1),
       maxPerPage = math.max(1, math.min(100, nb | 10))
     ) flatMap { pag =>
@@ -91,8 +89,7 @@ private[api] final class GameApi(
           withOpening = withOpening,
           withFens = withFens && g.finished,
           withMoveTimes = withMoveTimes,
-          token = token
-        )(List(g)) map (_.headOption)
+          token = token)(List(g)) map (_.headOption)
       }
     }
 
@@ -160,36 +157,32 @@ private[api] final class GameApi(
           Json.obj(
             "initial" -> clock.limit,
             "increment" -> clock.increment,
-            "totalTime" -> clock.estimateTotalTime
-          )
+            "totalTime" -> clock.estimateTotalTime)
         },
         "daysPerTurn" -> g.daysPerTurn,
-        "players" -> JsObject(g.players.zipWithIndex map {
-          case (p, i) =>
-            p.color.name -> Json
-              .obj(
-                "userId" -> p.userId,
-                "name" -> p.name,
-                "rating" -> p.rating,
-                "ratingDiff" -> p.ratingDiff,
-                "provisional" -> p.provisional.option(true),
-                "moveTimes" -> withMoveTimes.fold(
-                  g.moveTimes.zipWithIndex.filter(_._2 % 2 == i).map(_._1),
-                  JsNull),
-                "blurs" -> withBlurs.option(p.blurs),
-                "hold" -> p.holdAlert.ifTrue(withHold).fold[JsValue](JsNull) {
-                  h =>
-                    Json.obj(
-                      "ply" -> h.ply,
-                      "mean" -> h.mean,
-                      "sd" -> h.sd
-                    )
-                },
-                "analysis" -> analysisOption.flatMap(
-                  analysisApi.player(p.color))
-              )
-              .noNull
-        }),
+        "players" -> JsObject(
+          g.players.zipWithIndex map {
+            case (p, i) =>
+              p.color.name -> Json
+                .obj(
+                  "userId" -> p.userId,
+                  "name" -> p.name,
+                  "rating" -> p.rating,
+                  "ratingDiff" -> p.ratingDiff,
+                  "provisional" -> p.provisional.option(true),
+                  "moveTimes" -> withMoveTimes.fold(
+                    g.moveTimes.zipWithIndex.filter(_._2 % 2 == i).map(_._1),
+                    JsNull),
+                  "blurs" -> withBlurs.option(p.blurs),
+                  "hold" -> p.holdAlert.ifTrue(withHold).fold[JsValue](JsNull) {
+                    h =>
+                      Json.obj("ply" -> h.ply, "mean" -> h.mean, "sd" -> h.sd)
+                  },
+                  "analysis" -> analysisOption.flatMap(
+                    analysisApi.player(p.color))
+                )
+                .noNull
+          }),
         "analysis" -> analysisOption
           .ifTrue(withAnalysis)
           .|@|(pgnOption)

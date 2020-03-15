@@ -55,8 +55,7 @@ final class Env(
       new actor.Router(
         baseUrl = Env.api.Net.BaseUrl,
         protocol = Env.api.Net.Protocol,
-        domain = Env.api.Net.Domain
-      )),
+        domain = Env.api.Net.Domain)),
     name = RouterName)
 
   lila.log.boot.info("Preloading modules")

@@ -43,35 +43,38 @@ object ColumnarTestUtils {
       bytes
     }
 
-    (columnType match {
-      case NULL    => null
-      case BOOLEAN => Random.nextBoolean()
-      case BYTE    => (Random.nextInt(Byte.MaxValue * 2) - Byte.MaxValue).toByte
-      case SHORT =>
-        (Random.nextInt(Short.MaxValue * 2) - Short.MaxValue).toShort
-      case INT    => Random.nextInt()
-      case LONG   => Random.nextLong()
-      case FLOAT  => Random.nextFloat()
-      case DOUBLE => Random.nextDouble()
-      case STRING =>
-        UTF8String.fromString(Random.nextString(Random.nextInt(32)))
-      case BINARY => randomBytes(Random.nextInt(32))
-      case COMPACT_DECIMAL(precision, scale) =>
-        Decimal(Random.nextLong() % 100, precision, scale)
-      case LARGE_DECIMAL(precision, scale) =>
-        Decimal(Random.nextLong(), precision, scale)
-      case STRUCT(_) =>
-        new GenericInternalRow(
-          Array[Any](UTF8String.fromString(Random.nextString(10))))
-      case ARRAY(_) =>
-        new GenericArrayData(Array[Any](Random.nextInt(), Random.nextInt()))
-      case MAP(_) =>
-        ArrayBasedMapData(
-          Map(Random.nextInt() -> UTF8String.fromString(
-            Random.nextString(Random.nextInt(32)))))
-      case _ =>
-        throw new IllegalArgumentException(s"Unknown column type $columnType")
-    }).asInstanceOf[JvmType]
+    (
+      columnType match {
+        case NULL    => null
+        case BOOLEAN => Random.nextBoolean()
+        case BYTE    => (Random.nextInt(Byte.MaxValue * 2) - Byte.MaxValue).toByte
+        case SHORT =>
+          (Random.nextInt(Short.MaxValue * 2) - Short.MaxValue).toShort
+        case INT    => Random.nextInt()
+        case LONG   => Random.nextLong()
+        case FLOAT  => Random.nextFloat()
+        case DOUBLE => Random.nextDouble()
+        case STRING =>
+          UTF8String.fromString(Random.nextString(Random.nextInt(32)))
+        case BINARY => randomBytes(Random.nextInt(32))
+        case COMPACT_DECIMAL(precision, scale) =>
+          Decimal(Random.nextLong() % 100, precision, scale)
+        case LARGE_DECIMAL(precision, scale) =>
+          Decimal(Random.nextLong(), precision, scale)
+        case STRUCT(_) =>
+          new GenericInternalRow(
+            Array[Any](UTF8String.fromString(Random.nextString(10))))
+        case ARRAY(_) =>
+          new GenericArrayData(Array[Any](Random.nextInt(), Random.nextInt()))
+        case MAP(_) =>
+          ArrayBasedMapData(
+            Map(
+              Random.nextInt() -> UTF8String.fromString(
+                Random.nextString(Random.nextInt(32)))))
+        case _ =>
+          throw new IllegalArgumentException(s"Unknown column type $columnType")
+      }
+    ).asInstanceOf[JvmType]
   }
 
   def makeRandomValues(head: ColumnType[_], tail: ColumnType[_]*): Seq[Any] =

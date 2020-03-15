@@ -23,13 +23,10 @@ import scala.concurrent.duration._
   * We have an H2 database for storing relational information
   * and Lucene for advanced indexing.
   */
-class SearchService(
-    config: EnsimeConfig,
-    resolver: SourceResolver
-)(implicit
+class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
     actorSystem: ActorSystem,
-    vfs: EnsimeVFS
-) extends ClassfileIndexer
+    vfs: EnsimeVFS)
+    extends ClassfileIndexer
     with FileChangeListener
     with SLF4JLogging {
 
@@ -131,9 +128,10 @@ class SearchService(
         base => (base, checksLookup.get(base.getName().getURI()))
       }
       Future
-        .sequence(basesWithChecks.map {
-          case (file, check) => indexBase(file, check)
-        })
+        .sequence(
+          basesWithChecks.map {
+            case (file, check) => indexBase(file, check)
+          })
         .map(_.flatten.sum)
     }
 
@@ -299,8 +297,7 @@ class SearchService(
   // deletion in both Lucene and H2 is really slow, batching helps
   def deleteInBatches(
       files: List[FileObject],
-      batchSize: Int = 1000
-  ): Future[Int] = {
+      batchSize: Int = 1000): Future[Int] = {
     val removing = files.grouped(batchSize).map(delete)
     Future.sequence(removing).map(_.sum)
   }
@@ -370,13 +367,14 @@ class IndexingQueueActor(searchService: SearchService)
       log.debug(s"Indexing ${batch.size} files")
 
       Future
-        .sequence(batch.map {
-          case (_, f) =>
-            if (!f.exists())
-              Future.successful(f -> Nil)
-            else
-              searchService.extractSymbolsFromClassOrJar(f).map(f ->)
-        })
+        .sequence(
+          batch.map {
+            case (_, f) =>
+              if (!f.exists())
+                Future.successful(f -> Nil)
+              else
+                searchService.extractSymbolsFromClassOrJar(f).map(f ->)
+          })
         .onComplete {
           case Failure(t) =>
             log.error(s"failed to index batch of ${batch.size} files", t)

@@ -218,11 +218,7 @@ trait Xml extends Core {
         '\uAC00' to '\uD7A3'
       ))
     val Ideographic = P(
-      CharIn(
-        '\u4E00' to '\u9FA5',
-        "\u3007",
-        '\u3021' to '\u3029'
-      ))
+      CharIn('\u4E00' to '\u9FA5', "\u3007", '\u3021' to '\u3029'))
     val Eq = P(WL.? ~ "=" ~ WL.?)
 
     val TagHeader = P("<" ~ Name ~ (WL ~ Attribute).rep ~ WL.?)
@@ -246,8 +242,7 @@ trait Xml extends Core {
     val AttValue = P(
       "\"" ~ (CharQ | Reference).rep ~ "\"" |
         "'" ~ (CharA | Reference).rep ~ "'" |
-        ScalaExpr
-    )
+        ScalaExpr)
 
     val Comment = P(
       "<!--" ~ ((!"-" ~ Char) | ("-" ~ (!"-" ~ Char))).rep ~ "-->")
@@ -295,8 +290,7 @@ trait Xml extends Core {
         '0' to '9',
         "\u00B7",
         '\u0300' to '\u036F',
-        '\u203F' to '\u2040'
-      ))
+        '\u203F' to '\u2040'))
     val ElemPattern: P0 = P(
       TagPHeader ~ (EmptyElemTagPEnd | STagPEnd ~ ContentP ~ ETagP))
     val TagPHeader = P("<" ~ Name ~ WL.?)

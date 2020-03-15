@@ -19,9 +19,10 @@ class FlowCompileSpec extends AkkaSpec {
   val strSeq = Source(Seq("a", "b", "c"))
 
   import scala.concurrent.ExecutionContext.Implicits.global
-  val intFut = Source.fromFuture(Future {
-    3
-  })
+  val intFut = Source.fromFuture(
+    Future {
+      3
+    })
   implicit val materializer = ActorMaterializer(
     ActorMaterializerSettings(system))
 

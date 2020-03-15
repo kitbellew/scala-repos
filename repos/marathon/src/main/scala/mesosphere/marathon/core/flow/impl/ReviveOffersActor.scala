@@ -111,10 +111,8 @@ private[impl] class ReviveOffersActor(
 
   override def receive: Receive =
     LoggingReceive {
-      Seq(
-        receiveOffersWantedNotifications,
-        receiveReviveOffersEvents
-      ).reduceLeft[Receive](_.orElse[Any, Unit](_))
+      Seq(receiveOffersWantedNotifications, receiveReviveOffersEvents)
+        .reduceLeft[Receive](_.orElse[Any, Unit](_))
     }
 
   private[this] def receiveOffersWantedNotifications: Receive = {
@@ -139,8 +137,10 @@ private[impl] class ReviveOffersActor(
   }
 
   private[this] def receiveReviveOffersEvents: Receive = {
-    case msg @ (_: SchedulerRegisteredEvent | _: SchedulerReregisteredEvent |
-        OfferReviverDelegate.ReviveOffers) =>
+    case msg @ (
+          _: SchedulerRegisteredEvent | _: SchedulerReregisteredEvent |
+          OfferReviverDelegate.ReviveOffers
+        ) =>
       if (offersCurrentlyWanted) {
         log.info(
           s"Received reviveOffers notification: ${msg.getClass.getSimpleName}")

@@ -155,11 +155,12 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
     //#test-expecting-exceptions
     import akka.testkit.TestActorRef
 
-    val actorRef = TestActorRef(new Actor {
-      def receive = {
-        case "hello" => throw new IllegalArgumentException("boom")
-      }
-    })
+    val actorRef = TestActorRef(
+      new Actor {
+        def receive = {
+          case "hello" => throw new IllegalArgumentException("boom")
+        }
+      })
     intercept[IllegalArgumentException] {
       actorRef.receive("hello")
     }

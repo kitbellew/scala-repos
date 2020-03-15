@@ -40,11 +40,13 @@ object Packaging {
       entries: Seq[PackageEntry],
       libraries: Classpath): Seq[(File, String)] = {
     val resolvedLibraries =
-      (for {
-        jarFile <- libraries
-        moduleId <- jarFile.get(moduleID.key)
-        key = moduleId.organization % moduleId.name % moduleId.revision
-      } yield (key, jarFile.data)).toMap
+      (
+        for {
+          jarFile <- libraries
+          moduleId <- jarFile.get(moduleID.key)
+          key = moduleId.organization % moduleId.name % moduleId.revision
+        } yield (key, jarFile.data)
+      ).toMap
     entries.map(e => convertEntry(e, resolvedLibraries))
   }
 

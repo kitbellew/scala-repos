@@ -201,10 +201,11 @@ class AnalysisServiceHandler(
               queryOptions.copy(cacheControl = cacheControl0)) map { sqr =>
               HttpResponse(
                 OK,
-                headers = HttpHeaders(sqr.cachedAt.toSeq map { lmod =>
-                  `Last-Modified`(
-                    HttpDateTimes.StandardDateTime(lmod.toDateTime))
-                }: _*),
+                headers = HttpHeaders(
+                  sqr.cachedAt.toSeq map { lmod =>
+                    `Last-Modified`(
+                      HttpDateTimes.StandardDateTime(lmod.toDateTime))
+                  }: _*),
                 content = Some(
                   Right(
                     ColumnarTableModule.toCharBuffers(
@@ -286,9 +287,9 @@ class SyncQueryServiceHandler(
         val data = ensureTermination(data0)
         val prefix = CharBuffer.wrap(
           """{"errors":[],"warnings":[],"serverWarnings":[{"message":"Job service is down; errors/warnings are disabled."}],"data":""")
-        val result: StreamT[Future, CharBuffer] =
-          (prefix :: data) ++ (CharBuffer.wrap("}") :: StreamT
-            .empty[Future, CharBuffer])
+        val result: StreamT[Future, CharBuffer] = (prefix :: data) ++ (
+          CharBuffer.wrap("}") :: StreamT.empty[Future, CharBuffer]
+        )
         HttpResponse[QueryResult](OK, content = Some(Right(result)))
           .point[Future]
 
@@ -318,18 +319,18 @@ class SyncQueryServiceHandler(
                     jobId,
                     channels.ServerWarning,
                     None)
-                  (warningsM |@| errorsM |@| serverErrorsM |@| serverWarningsM) {
-                    (warnings, errors, serverErrors, serverWarnings) =>
-                      val suffix =
-                        """, "errors": %s, "warnings": %s, "serverErrors": %s, "serverWarnings": %s }""" format (
-                          JArray(errors.toList map (_.value)).renderCompact,
-                          JArray(warnings.toList map (_.value)).renderCompact,
-                          JArray(
-                            serverErrors.toList map (_.value)).renderCompact,
-                          JArray(
-                            serverWarnings.toList map (_.value)).renderCompact
-                      )
-                      Some((CharBuffer.wrap(suffix), None))
+                  (
+                    warningsM |@| errorsM |@| serverErrorsM |@| serverWarningsM
+                  ) { (warnings, errors, serverErrors, serverWarnings) =>
+                    val suffix =
+                      """, "errors": %s, "warnings": %s, "serverErrors": %s, "serverWarnings": %s }""" format (
+                        JArray(errors.toList map (_.value)).renderCompact,
+                        JArray(warnings.toList map (_.value)).renderCompact,
+                        JArray(serverErrors.toList map (_.value)).renderCompact,
+                        JArray(
+                          serverWarnings.toList map (_.value)).renderCompact
+                    )
+                    Some((CharBuffer.wrap(suffix), None))
                   }
               }
 
@@ -351,20 +352,21 @@ class SyncQueryServiceHandler(
       stream0: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] = {
     def loop(
         stream: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] = {
-      StreamT(stream.uncons map {
-        case Some((s, tail)) => StreamT.Yield(s, loop(tail))
-        case None            => StreamT.Done
-      } recover {
-        case _: QueryCancelledException =>
-          StreamT.Done
-        case _: QueryExpiredException =>
-          StreamT.Done
-        case ex =>
-          val msg = new StringWriter()
-          ex.printStackTrace(new PrintWriter(msg))
-          logger.error("Error executing bifrost query:\n" + msg.toString())
-          StreamT.Done
-      })
+      StreamT(
+        stream.uncons map {
+          case Some((s, tail)) => StreamT.Yield(s, loop(tail))
+          case None            => StreamT.Done
+        } recover {
+          case _: QueryCancelledException =>
+            StreamT.Done
+          case _: QueryExpiredException =>
+            StreamT.Done
+          case ex =>
+            val msg = new StringWriter()
+            ex.printStackTrace(new PrintWriter(msg))
+            logger.error("Error executing bifrost query:\n" + msg.toString())
+            StreamT.Done
+        })
     }
 
     loop(stream0)

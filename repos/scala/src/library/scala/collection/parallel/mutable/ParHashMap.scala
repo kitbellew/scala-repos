@@ -188,8 +188,10 @@ class ParHashMap[K, V] private[collection] (
       else if (index(elemHashCode(e.key)) == i)
         check(e.next)
       else
-        ("Element " + e.key + " at " + i + " with " + elemHashCode(
-          e.key) + " maps to " + index(elemHashCode(e.key))) :: check(e.next)
+        (
+          "Element " + e.key + " at " + i + " with " + elemHashCode(
+            e.key) + " maps to " + index(elemHashCode(e.key))
+        ) :: check(e.next)
     check(table(i))
   }
 }
@@ -213,11 +215,10 @@ object ParHashMap extends ParMapFactory[ParHashMap] {
 
 private[mutable] abstract class ParHashMapCombiner[K, V](
     private val tableLoadFactor: Int)
-    extends scala.collection.parallel.BucketCombiner[
-      (K, V),
-      ParHashMap[K, V],
-      DefaultEntry[K, V],
-      ParHashMapCombiner[K, V]](ParHashMapCombiner.numblocks)
+    extends scala.collection.parallel.BucketCombiner[(K, V), ParHashMap[
+      K,
+      V], DefaultEntry[K, V], ParHashMapCombiner[K, V]](
+      ParHashMapCombiner.numblocks)
     with scala.collection.mutable.HashTable.HashUtils[K] {
   private val nonmasklen = ParHashMapCombiner.nonmasklength
   private val seedvalue = 27

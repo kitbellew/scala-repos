@@ -73,11 +73,12 @@ object Platform {
     * }}}
     */
   def runLater[R](op: => R) {
-    runLater(new Runnable {
-      def run() {
-        op
-      }
-    })
+    runLater(
+      new Runnable {
+        def run() {
+          op
+        }
+      })
   }
 
   def isAccessibilityActive: Boolean = jfxa.Platform.isAccessibilityActive

@@ -31,8 +31,7 @@ trait ThriftTest { self: FunSuite =>
   case class ThriftTestDefinition(
       label: String,
       clientIdOpt: Option[ClientId],
-      testFunction: ((Iface, BufferingTracer) => Unit)
-  )
+      testFunction: ((Iface, BufferingTracer) => Unit))
 
   private val thriftTests = mutable.ListBuffer[ThriftTestDefinition]()
 
@@ -41,17 +40,13 @@ trait ThriftTest { self: FunSuite =>
     * of known thrift configurations. Run when `runThriftTests` is
     * invoked.
     */
-  def testThrift(
-      label: String,
-      clientIdOpt: Option[ClientId] = None
-  )(theTest: (Iface, BufferingTracer) => Unit) {
+  def testThrift(label: String, clientIdOpt: Option[ClientId] = None)(
+      theTest: (Iface, BufferingTracer) => Unit) {
     thriftTests += ThriftTestDefinition(label, clientIdOpt, theTest)
   }
 
-  def skipTestThrift(
-      label: String,
-      clientIdOpt: Option[ClientId] = None
-  )(theTest: (Iface, BufferingTracer) => Unit) {
+  def skipTestThrift(label: String, clientIdOpt: Option[ClientId] = None)(
+      theTest: (Iface, BufferingTracer) => Unit) {
     () // noop
   }
 
@@ -75,8 +70,7 @@ trait ThriftTest { self: FunSuite =>
   private val newBuilderClient = (
       protocolFactory: TProtocolFactory,
       addr: SocketAddress,
-      clientIdOpt: Option[ClientId]
-  ) =>
+      clientIdOpt: Option[ClientId]) =>
     new {
       val serviceFactory = ClientBuilder()
         .hosts(Seq(addr.asInstanceOf[InetSocketAddress]))
@@ -111,8 +105,7 @@ trait ThriftTest { self: FunSuite =>
   private val newAPIClient = (
       protocolFactory: TProtocolFactory,
       addr: SocketAddress,
-      clientIdOpt: Option[ClientId]
-  ) =>
+      clientIdOpt: Option[ClientId]) =>
     new {
       implicit val cls = ifaceManifest
       val client = {
@@ -151,13 +144,11 @@ trait ThriftTest { self: FunSuite =>
 
   private val clients = Map[String, NewClient](
     "builder" -> newBuilderClient,
-    "api" -> newAPIClient
-  )
+    "api" -> newAPIClient)
 
   private val servers = Map[String, NewServer](
     "builder" -> newBuilderServer,
-    "api" -> newAPIServer
-  )
+    "api" -> newAPIServer)
 
   /** Invoke this in your test to run all defined thrift tests */
   def runThriftTests() =

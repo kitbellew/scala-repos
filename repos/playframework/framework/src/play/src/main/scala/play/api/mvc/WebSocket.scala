@@ -67,9 +67,7 @@ object WebSocket {
         f: NewOut => Out): MessageFlowTransformer[In, NewOut] = {
       new MessageFlowTransformer[In, NewOut] {
         def transform(flow: Flow[In, NewOut, _]) = {
-          self.transform(
-            flow map f
-          )
+          self.transform(flow map f)
         }
       }
     }
@@ -80,9 +78,7 @@ object WebSocket {
     def map[NewIn](f: In => NewIn): MessageFlowTransformer[NewIn, Out] = {
       new MessageFlowTransformer[NewIn, Out] {
         def transform(flow: Flow[NewIn, Out, _]) = {
-          self.transform(
-            Flow[In] map f via flow
-          )
+          self.transform(Flow[In] map f via flow)
         }
       }
     }
@@ -95,9 +91,7 @@ object WebSocket {
         g: NewOut => Out): MessageFlowTransformer[NewIn, NewOut] = {
       new MessageFlowTransformer[NewIn, NewOut] {
         def transform(flow: Flow[NewIn, NewOut, _]) = {
-          self.transform(
-            Flow[In] map f via flow map g
-          )
+          self.transform(Flow[In] map f via flow map g)
         }
       }
     }
@@ -183,9 +177,10 @@ object WebSocket {
               case BinaryMessage(data) =>
                 closeOnException(Json.parse(data.iterator.asInputStream))
               case TextMessage(text) => closeOnException(Json.parse(text))
-            })(flow map { json =>
-            TextMessage(Json.stringify(json))
-          })
+            })(
+            flow map { json =>
+              TextMessage(Json.stringify(json))
+            })
         }
       }
     }
@@ -248,10 +243,11 @@ object WebSocket {
   @deprecated("Use accept with an Akka streams flow instead", "2.5.0")
   def adapter[A](f: RequestHeader => Enumeratee[A, A])(
       implicit transformer: MessageFlowTransformer[A, A]): WebSocket = {
-    using(f.andThen { enumeratee =>
-      val (iteratee, enumerator) = Concurrent.joined[A]
-      (enumeratee &> iteratee, enumerator)
-    })
+    using(
+      f.andThen { enumeratee =>
+        val (iteratee, enumerator) = Concurrent.joined[A]
+        (enumeratee &> iteratee, enumerator)
+      })
   }
 
   /**
@@ -263,24 +259,28 @@ object WebSocket {
       f: RequestHeader => Future[
         Either[Result, (Iteratee[A, _], Enumerator[A])]])(
       implicit transformer: MessageFlowTransformer[A, A]): WebSocket = {
-    acceptOrResult[A, A](f.andThen(_.map(_.right.map {
-      case (iteratee, enumerator) =>
-        // Play 2.4 and earlier only closed the WebSocket if the enumerator specifically fed EOF. So, you could
-        // return an empty enumerator, and it would never close the socket. Converting an empty enumerator to a
-        // publisher however will close the socket, so, we need to ensure the enumerator only completes if EOF
-        // is sent.
-        val enumeratorCompletion = Promise[Enumerator[A]]()
-        val nonCompletingEnumerator = onEOF(
-          enumerator,
-          () => {
-            enumeratorCompletion.success(Enumerator.empty)
-          }) >>> Enumerator.flatten(enumeratorCompletion.future)
-        val publisher = Streams.enumeratorToPublisher(nonCompletingEnumerator)
-        val (subscriber, _) = Streams.iterateeToSubscriber(iteratee)
-        Flow.fromSinkAndSource(
-          Sink.fromSubscriber(subscriber),
-          Source.fromPublisher(publisher))
-    })))
+    acceptOrResult[A, A](
+      f.andThen(
+        _.map(
+          _.right.map {
+            case (iteratee, enumerator) =>
+              // Play 2.4 and earlier only closed the WebSocket if the enumerator specifically fed EOF. So, you could
+              // return an empty enumerator, and it would never close the socket. Converting an empty enumerator to a
+              // publisher however will close the socket, so, we need to ensure the enumerator only completes if EOF
+              // is sent.
+              val enumeratorCompletion = Promise[Enumerator[A]]()
+              val nonCompletingEnumerator = onEOF(
+                enumerator,
+                () => {
+                  enumeratorCompletion.success(Enumerator.empty)
+                }) >>> Enumerator.flatten(enumeratorCompletion.future)
+              val publisher = Streams.enumeratorToPublisher(
+                nonCompletingEnumerator)
+              val (subscriber, _) = Streams.iterateeToSubscriber(iteratee)
+              Flow.fromSinkAndSource(
+                Sink.fromSubscriber(subscriber),
+                Source.fromPublisher(publisher))
+          })))
   }
 
   /**
@@ -367,9 +367,12 @@ object WebSocket {
 
     implicit val system = app.actorSystem
 
-    acceptOrResult(f.andThen(_.map(_.right.map { props =>
-      ActorFlow.actorRef(props)
-    })))
+    acceptOrResult(
+      f.andThen(
+        _.map(
+          _.right.map { props =>
+            ActorFlow.actorRef(props)
+          })))
   }
 
   /**
@@ -387,12 +390,13 @@ object WebSocket {
               implicit ec: ExecutionContext) =
             i.fold {
               case Step.Cont(k) =>
-                folder(Step.Cont {
-                  case eof @ Input.EOF =>
-                    action()
-                    wrap(k(eof))
-                  case other => wrap(k(other))
-                })
+                folder(
+                  Step.Cont {
+                    case eof @ Input.EOF =>
+                      action()
+                      wrap(k(eof))
+                    case other => wrap(k(other))
+                  })
               case other => folder(other)
             }(ec)
         }

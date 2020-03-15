@@ -10,8 +10,7 @@ class DebugConfTest extends MarathonSpec {
     val conf = MarathonTestHelper.makeConfig(
       "--master",
       "127.0.0.1:5050",
-      "--tracing"
-    )
+      "--tracing")
     assert(conf.enableDebugTracing)
   }
 
@@ -19,8 +18,7 @@ class DebugConfTest extends MarathonSpec {
     val conf = MarathonTestHelper.makeConfig(
       "--master",
       "127.0.0.1:5050",
-      "--enable_tracing"
-    )
+      "--enable_tracing")
     assert(conf.enableDebugTracing)
   }
 
@@ -42,8 +40,7 @@ class DebugConfTest extends MarathonSpec {
     val conf = MarathonTestHelper.makeConfig(
       "--master",
       "127.0.0.1:5050",
-      "--metrics"
-    )
+      "--metrics")
     assert(conf.metrics())
   }
 
@@ -51,8 +48,7 @@ class DebugConfTest extends MarathonSpec {
     val conf = MarathonTestHelper.makeConfig(
       "--master",
       "127.0.0.1:5050",
-      "--enable_metrics"
-    )
+      "--enable_metrics")
     assert(conf.metrics())
   }
 
@@ -60,8 +56,7 @@ class DebugConfTest extends MarathonSpec {
     val conf = MarathonTestHelper.makeConfig(
       "--master",
       "127.0.0.1:5050",
-      "--disable_metrics"
-    )
+      "--disable_metrics")
     assert(!conf.metrics())
   }
 }

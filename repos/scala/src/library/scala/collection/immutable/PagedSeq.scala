@@ -74,13 +74,14 @@ object PagedSeq {
     */
   def fromLines(source: Iterator[String]): PagedSeq[Char] = {
     var isFirst = true
-    fromStrings(source map { line =>
-      if (isFirst) {
-        isFirst = false
-        line
-      } else
-        "\n" + line
-    })
+    fromStrings(
+      source map { line =>
+        if (isFirst) {
+          isFirst = false
+          line
+        } else
+          "\n" + line
+      })
   }
 
   /** Constructs a paged character sequence from a line iterable

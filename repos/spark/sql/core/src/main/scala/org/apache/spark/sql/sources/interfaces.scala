@@ -421,9 +421,10 @@ case class HadoopFsRelation(
 
   val schema: StructType = {
     val dataSchemaColumnNames = dataSchema.map(_.name.toLowerCase).toSet
-    StructType(dataSchema ++ partitionSchema.filterNot { column =>
-      dataSchemaColumnNames.contains(column.name.toLowerCase)
-    })
+    StructType(
+      dataSchema ++ partitionSchema.filterNot { column =>
+        dataSchemaColumnNames.contains(column.name.toLowerCase)
+      })
   }
 
   def partitionSchemaOption: Option[StructType] =
@@ -600,14 +601,15 @@ class HDFSFileCatalog(
         .reduceOption(expressions.And)
         .getOrElse(Literal(true))
 
-      val boundPredicate = InterpretedPredicate.create(predicate.transform {
-        case a: AttributeReference =>
-          val index = partitionColumns.indexWhere(a.name == _.name)
-          BoundReference(
-            index,
-            partitionColumns(index).dataType,
-            nullable = true)
-      })
+      val boundPredicate = InterpretedPredicate.create(
+        predicate.transform {
+          case a: AttributeReference =>
+            val index = partitionColumns.indexWhere(a.name == _.name)
+            BoundReference(
+              index,
+              partitionColumns(index).dataType,
+              nullable = true)
+        })
 
       val selected = partitions.filter {
         case PartitionDirectory(values, _) => boundPredicate(values)
@@ -680,11 +682,12 @@ class HDFSFileCatalog(
         // Without auto inference, all of value in the `row` should be null or in StringType,
         // we need to cast into the data type that user specified.
         def castPartitionValuesToUserSchema(row: InternalRow) = {
-          InternalRow((0 until row.numFields).map { i =>
-            Cast(
-              Literal.create(row.getUTF8String(i), StringType),
-              userProvidedSchema.fields(i).dataType).eval()
-          }: _*)
+          InternalRow(
+            (0 until row.numFields).map { i =>
+              Cast(
+                Literal.create(row.getUTF8String(i), StringType),
+                userProvidedSchema.fields(i).dataType).eval()
+            }: _*)
         }
 
         PartitionSpec(

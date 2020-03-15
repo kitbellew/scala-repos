@@ -35,14 +35,15 @@ private[parser] trait LinkHeader {
         | ws("title") ~ ws('=') ~ word ~> LinkParams.title
         | ws("title*") ~ ws(
           '=') ~ word ~> LinkParams.`title*` // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
-        | ws("type") ~ ws('=') ~ (ws('"') ~ `link-media-type` ~ ws(
-          '"') | `link-media-type`) ~> LinkParams.`type`)
+        | ws("type") ~ ws('=') ~ (
+          ws('"') ~ `link-media-type` ~ ws('"') | `link-media-type`
+        ) ~> LinkParams.`type`)
   // TODO: support `link-extension`
 
   def `relation-types` =
     rule(
-      ws('"') ~ oneOrMore(`relation-type`).separatedBy(
-        oneOrMore(SP)) ~> (_.mkString(" ")) ~ ws('"')
+      ws('"') ~ oneOrMore(`relation-type`)
+        .separatedBy(oneOrMore(SP)) ~> (_.mkString(" ")) ~ ws('"')
         | `relation-type` ~ OWS)
 
   def `relation-type` =
@@ -64,8 +65,9 @@ private[parser] trait LinkHeader {
 
   def UriReference(terminationChar: Char) =
     rule {
-      capture(oneOrMore(!terminationChar ~ VCHAR)) ~> (newUriParser(_)
-        .parseUriReference())
+      capture(oneOrMore(!terminationChar ~ VCHAR)) ~> (
+        newUriParser(_).parseUriReference()
+      )
     }
 
   def URI =

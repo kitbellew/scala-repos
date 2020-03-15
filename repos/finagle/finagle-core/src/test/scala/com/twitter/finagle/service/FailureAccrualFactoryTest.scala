@@ -730,41 +730,55 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val p2: Param = Replaced(_ => ServiceFactoryWrapper.identity)
     val p3: Param = Disabled
 
-    assert((p1 match {
-      case Param.Configured(x) => x()
-      case x                   => throw new MatchError(x)
-    }) == failureAccrualPolicy)
+    assert(
+      (
+        p1 match {
+          case Param.Configured(x) => x()
+          case x                   => throw new MatchError(x)
+        }
+      ) == failureAccrualPolicy)
 
-    assert((p2 match {
-      case Param.Replaced(f) => f(null)
-      case x                 => throw new MatchError(x)
-    }) == ServiceFactoryWrapper.identity)
+    assert(
+      (
+        p2 match {
+          case Param.Replaced(f) => f(null)
+          case x                 => throw new MatchError(x)
+        }
+      ) == ServiceFactoryWrapper.identity)
 
-    assert(p3 match {
-      case Disabled => true
-      case x        => throw new MatchError(x)
-    })
+    assert(
+      p3 match {
+        case Disabled => true
+        case x        => throw new MatchError(x)
+      })
 
     val ps1: Stack.Params = Stack.Params.empty + p1
     assert(ps1.contains[Param])
-    assert((ps1[Param] match {
-      case Param.Configured(x) => x()
-      case x                   => throw new MatchError(x)
-    }) == failureAccrualPolicy)
+    assert(
+      (
+        ps1[Param] match {
+          case Param.Configured(x) => x()
+          case x                   => throw new MatchError(x)
+        }
+      ) == failureAccrualPolicy)
 
     val ps2: Stack.Params = Stack.Params.empty + p2 + p1
     assert(ps2.contains[Param])
-    assert((ps2[Param] match {
-      case Param.Configured(x) => x()
-      case x                   => throw new MatchError(x)
-    }) == failureAccrualPolicy)
+    assert(
+      (
+        ps2[Param] match {
+          case Param.Configured(x) => x()
+          case x                   => throw new MatchError(x)
+        }
+      ) == failureAccrualPolicy)
 
     val ps3: Stack.Params = Stack.Params.empty + p1 + p2 + p3
     assert(ps3.contains[Param])
-    assert(ps3[Param] match {
-      case Disabled => true
-      case x        => throw new MatchError(x)
-    })
+    assert(
+      ps3[Param] match {
+        case Disabled => true
+        case x        => throw new MatchError(x)
+      })
   }
 
   test("module") {
@@ -781,9 +795,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
       !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 
     // replaced
-    Await.ready(s
-      .make(ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
-      .toService(10))
+    Await.ready(
+      s.make(
+          ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
+        .toService(10))
     assert(
       !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 

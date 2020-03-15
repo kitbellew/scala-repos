@@ -61,7 +61,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
         unifyProvenance(relations)(left.provenance, right.provenance)
 
       val (provenance, contribErrors, contribConstr) = {
-        if ((left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance) && expr.disallowsInfinite) {
+        if ((
+              left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance
+            ) && expr.disallowsInfinite) {
           val provenance = NullProvenance
           val errors = Set(Error(expr, CannotUseDistributionWithoutSampling))
 
@@ -131,7 +133,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
             val unified = unifyProvenance(relations)(prov1, prov2)
 
-            if ((prov1 == InfiniteProvenance || prov2 == InfiniteProvenance) && expr.disallowsInfinite) {
+            if ((
+                  prov1 == InfiniteProvenance || prov2 == InfiniteProvenance
+                ) && expr.disallowsInfinite) {
               val errors = Set(
                 Error(expr, CannotUseDistributionWithoutSampling))
               (NullProvenance, addedConstr, addedErrors ++ errors)
@@ -586,10 +590,16 @@ trait ProvenanceChecker extends parser.AST with Binder {
                   (Set(), Set())
               }
 
-            val relations2 = relations + (from.provenance -> (relations
-              .getOrElse(from.provenance, Set()) + to.provenance))
-            val relations3 = relations2 + (to.provenance -> (relations
-              .getOrElse(to.provenance, Set()) + from.provenance))
+            val relations2 = relations + (
+              from.provenance -> (
+                relations.getOrElse(from.provenance, Set()) + to.provenance
+              )
+            )
+            val relations3 = relations2 + (
+              to.provenance -> (
+                relations.getOrElse(to.provenance, Set()) + from.provenance
+              )
+            )
 
             val constraints2 =
               constraints + (from.provenance -> from) + (to.provenance -> to)
@@ -644,9 +654,11 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 val ids = let.params map {
                   Identifier(Vector(), _)
                 }
-                val zipped = ids zip (actuals map {
-                  _.provenance
-                })
+                val zipped = ids zip (
+                  actuals map {
+                    _.provenance
+                  }
+                )
 
                 def sub(target: Provenance): Provenance = {
                   zipped.foldLeft(target) {

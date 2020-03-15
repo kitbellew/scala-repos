@@ -11,16 +11,17 @@ object Test extends App {
     val toolbox = cm.mkToolBox(
       frontEnd = mkConsoleFrontEnd(),
       options = "-deprecation")
-    toolbox.eval(reify {
-      object Utils {
-        @deprecated("test", "2.10.0")
-        def foo {
-          println("hello")
+    toolbox.eval(
+      reify {
+        object Utils {
+          @deprecated("test", "2.10.0")
+          def foo {
+            println("hello")
+          }
         }
-      }
 
-      Utils.foo
-    }.tree)
+        Utils.foo
+      }.tree)
     println("============compiler console=============")
     errs.flush()
     println(baos.toString);

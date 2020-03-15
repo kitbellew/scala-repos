@@ -145,10 +145,12 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
       " * Copyright 2013 ScalaFX Project\n" +
       " * All right reserved.\n" +
       " */\n" +
-      (if (!originalPackageName.isEmpty)
-         "package " + originalPackageName + "\n"
-       else
-         "") +
+      (
+        if (!originalPackageName.isEmpty)
+          "package " + originalPackageName + "\n"
+        else
+          ""
+      ) +
       "\n" +
       "import scalafx.application.JFXApp\n" +
       "import scalafx.scene.Scene\n" +
@@ -169,10 +171,12 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
       "  stage = new JFXApp.PrimaryStage {\n" +
       "    title = \"" + formatAddSpaces(
       extractSampleName(sourceRaw)) + " Example\"\n" +
-      (if (stageProperties.isEmpty)
-         ""
-       else
-         stageProperties.mkString("    ", "\n    ", "\n")) +
+      (
+        if (stageProperties.isEmpty)
+          ""
+        else
+          stageProperties.mkString("    ", "\n    ", "\n")
+      ) +
       "    scene = new Scene {\n" +
       "      root ="
     source = source.replaceFirst("""\s*def\s*getContent\s*=""", stageHeader)

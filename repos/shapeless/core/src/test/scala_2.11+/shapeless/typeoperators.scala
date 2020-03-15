@@ -65,9 +65,10 @@ class TypeOperator211Tests {
     }
 
     val b0 = bar0[Boolean, Int]
-    typed[Bar[Boolean] {
-      type U = Int
-    }](b0)
+    typed[
+      Bar[Boolean] {
+        type U = Int
+      }](b0)
 
     val b1 = bar1[Boolean, Int]
     typed[Option[Int]](b1)

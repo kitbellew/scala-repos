@@ -165,9 +165,10 @@ sealed trait InputKey[T]
       f: T => T,
       source: SourcePosition): Setting[InputTask[T]] =
     set(
-      scopedKey(_ mapTask {
-        _ map f
-      }),
+      scopedKey(
+        _ mapTask {
+          _ map f
+        }),
       source)
 }
 

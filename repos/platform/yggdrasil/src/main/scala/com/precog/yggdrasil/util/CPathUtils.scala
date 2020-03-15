@@ -136,9 +136,10 @@ object CPathUtils {
           cand(
             p :: left,
             right,
-            CPath(left.foldLeft(CPathIndex(i + 1) :: zero(right)) { (acc, p) =>
-              p :: acc
-            }) :: candidates)
+            CPath(
+              left.foldLeft(CPathIndex(i + 1) :: zero(right)) { (acc, p) =>
+                p :: acc
+              }) :: candidates)
 
         case p :: right =>
           cand(p :: left, right, candidates)

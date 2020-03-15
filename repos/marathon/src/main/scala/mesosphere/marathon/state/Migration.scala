@@ -84,8 +84,7 @@ class Migration @Inject() (
           resultsFuture.flatMap { res =>
             log.info(
               s"Migration for storage: ${from.str} to current: ${current.str}: " +
-                s"apply change for version: ${migrateVersion.str} "
-            )
+                s"apply change for version: ${migrateVersion.str} ")
             change.apply().map(_ => res :+ migrateVersion)
           }
       }
@@ -287,11 +286,13 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
 
     store
       .load("task:" + taskKey)
-      .map(_.flatMap { entity =>
-        val source =
-          new ObjectInputStream(new ByteArrayInputStream(entity.bytes.toArray))
-        deserialize(taskKey, source)
-      })
+      .map(
+        _.flatMap { entity =>
+          val source =
+            new ObjectInputStream(
+              new ByteArrayInputStream(entity.bytes.toArray))
+          deserialize(taskKey, source)
+        })
   }
 
   def migrateTasks(): Future[Unit] = {
@@ -437,8 +438,9 @@ class MigrationTo0_16(
             appRepository.app(appId, version).flatMap {
               case Some(app) => appRepository.store(app).map(_ => ())
               case None =>
-                Future.failed(new MigrationFailedException(
-                  s"App $appId:$version not found"))
+                Future.failed(
+                  new MigrationFailedException(
+                    s"App $appId:$version not found"))
             }
           }
         }
@@ -461,11 +463,7 @@ object StorageVersions {
   def current: StorageVersion = {
     BuildInfo.version match {
       case VersionRegex(major, minor, patch) =>
-        StorageVersions(
-          major.toInt,
-          minor.toInt,
-          patch.toInt
-        )
+        StorageVersions(major.toInt, minor.toInt, patch.toInt)
     }
   }
 

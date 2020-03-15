@@ -56,10 +56,10 @@ private[spark] trait ClassifierParams
   * @tparam M  Concrete Model type
   */
 @DeveloperApi
-abstract class Classifier[
-    FeaturesType,
-    E <: Classifier[FeaturesType, E, M],
-    M <: ClassificationModel[FeaturesType, M]]
+abstract class Classifier[FeaturesType, E <: Classifier[
+  FeaturesType,
+  E,
+  M], M <: ClassificationModel[FeaturesType, M]]
     extends Predictor[FeaturesType, E, M]
     with ClassifierParams {
 

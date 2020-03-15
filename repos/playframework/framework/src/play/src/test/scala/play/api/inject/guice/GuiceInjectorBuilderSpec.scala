@@ -123,10 +123,7 @@ object GuiceInjectorBuilderSpec extends Specification {
       val injector =
         new GuiceInjectorBuilder()
           .requireExplicitBindings()
-          .bindings(
-            bind[A].to[A1],
-            bind[B].to[B1]
-          )
+          .bindings(bind[A].to[A1], bind[B].to[B1])
           .injector
       injector.instanceOf[A] must beAnInstanceOf[A1]
       injector.instanceOf[B] must beAnInstanceOf[B1]
@@ -140,16 +137,12 @@ object GuiceInjectorBuilderSpec extends Specification {
 
   class EnvironmentModule extends Module {
     def bindings(env: Environment, conf: Configuration) =
-      Seq(
-        bind[Environment] to env
-      )
+      Seq(bind[Environment] to env)
   }
 
   class ConfigurationModule extends Module {
     def bindings(env: Environment, conf: Configuration) =
-      Seq(
-        bind[Configuration] to conf
-      )
+      Seq(bind[Configuration] to conf)
   }
 
   class SetConfigurationModule(conf: Configuration) extends AbstractModule {

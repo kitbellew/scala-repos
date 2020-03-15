@@ -119,8 +119,9 @@ object Constants {
   //
   // canvas
   //
-  val CANVAS_WIDTH =
-    (NUMBER_OF_STONES + 1) * STONE_TOTAL_WIDTH + (NUMBER_OF_STONES - 1) * STONE_GAP
+  val CANVAS_WIDTH = (NUMBER_OF_STONES + 1) * STONE_TOTAL_WIDTH + (
+    NUMBER_OF_STONES - 1
+  ) * STONE_GAP
   //
 }
 

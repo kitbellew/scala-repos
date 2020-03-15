@@ -18,8 +18,7 @@ class StructureViewBuilderSpec
   def getStructure(
       config: EnsimeConfig,
       cc: RichCompilerControl,
-      content: String
-  ): List[String] = {
+      content: String): List[String] = {
 
     val result = ListBuffer[String]()
 
@@ -61,8 +60,7 @@ class StructureViewBuilderSpec
         "(class)Test",
         "(def)Test.fun",
         "(object)Test",
-        "(def)Test.apply"
-      )
+        "(def)Test.apply")
     }
   }
 
@@ -90,8 +88,7 @@ class StructureViewBuilderSpec
       "(class)Test.Nested",
       "(def)Test.Nested.fun",
       "(object)Test.Nested",
-      "(def)Test.Nested.apply"
-    )
+      "(def)Test.Nested.apply")
   }
 
   it should "skip accessors" in withPresCompiler { (config, cc) =>
@@ -114,8 +111,7 @@ class StructureViewBuilderSpec
       "(class)CaseTest",
       "(object)Test",
       "(class)Test.Nested",
-      "(class)Test.NestedCase"
-    )
+      "(class)Test.NestedCase")
   }
 
 }

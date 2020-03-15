@@ -101,7 +101,9 @@ trait AnnotationCheckers {
 
   /** @see AnnotationChecker.annotationsConform */
   def annotationsConform(tp1: Type, tp2: Type): Boolean =
-    if (annotationCheckers.isEmpty || (tp1.annotations.isEmpty && tp2.annotations.isEmpty))
+    if (annotationCheckers.isEmpty || (
+          tp1.annotations.isEmpty && tp2.annotations.isEmpty
+        ))
       true
     else
       annotationCheckers.forall(checker => {

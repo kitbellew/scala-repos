@@ -62,8 +62,7 @@ abstract class Covariance(x: Expression, y: Expression)
       If(isNull, n, newN),
       If(isNull, xAvg, newXAvg),
       If(isNull, yAvg, newYAvg),
-      If(isNull, ck, newCk)
-    )
+      If(isNull, ck, newCk))
   }
 
   override val mergeExpressions: Seq[Expression] = {

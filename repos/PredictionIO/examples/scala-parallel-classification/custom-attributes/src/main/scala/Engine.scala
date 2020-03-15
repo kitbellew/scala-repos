@@ -3,15 +3,10 @@ package com.test1
 import io.prediction.controller.IEngineFactory
 import io.prediction.controller.Engine
 
-class Query(
-    val gender: String,
-    val age: Int,
-    val education: String
-) extends Serializable
+class Query(val gender: String, val age: Int, val education: String)
+    extends Serializable
 
-class PredictedResult(
-    val label: Double
-) extends Serializable
+class PredictedResult(val label: Double) extends Serializable
 
 object ClassificationEngine extends IEngineFactory {
   def apply() = {

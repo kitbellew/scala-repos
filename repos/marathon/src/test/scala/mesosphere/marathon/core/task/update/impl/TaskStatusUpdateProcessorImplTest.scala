@@ -93,8 +93,7 @@ class TaskStatusUpdateProcessorImplTest
           taskId.appId,
           Task.Reservation(
             Iterable.empty,
-            MarathonTestHelper.taskReservationStateNew)))
-    )
+            MarathonTestHelper.taskReservationStateNew))))
 
     When("we process the updated")
     f.updateProcessor.publish(status).futureValue
@@ -251,9 +250,7 @@ class TaskStatusUpdateProcessorImplTest
           notifyLaunchQueue,
           emitUpdate,
           postToEventStream,
-          scaleApp
-        )
-      )
+          scaleApp))
 
     def verifyNoMoreInteractions(): Unit = {
       noMoreInteractions(eventBus)

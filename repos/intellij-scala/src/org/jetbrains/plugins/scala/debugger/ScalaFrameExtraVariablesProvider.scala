@@ -213,19 +213,21 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         return false
 
       val placesToSearch = ArrayBuffer[PsiElement]()
-      contextClass.accept(new ScalaRecursiveElementVisitor() {
-        override def visitFunctionDefinition(
-            fun: ScFunctionDefinition): Unit = {
-          placesToSearch += fun
-        }
-
-        override def visitPatternDefinition(pat: ScPatternDefinition): Unit = {
-          pat match {
-            case LazyVal(_) => placesToSearch += pat
-            case _          =>
+      contextClass.accept(
+        new ScalaRecursiveElementVisitor() {
+          override def visitFunctionDefinition(
+              fun: ScFunctionDefinition): Unit = {
+            placesToSearch += fun
           }
-        }
-      })
+
+          override def visitPatternDefinition(
+              pat: ScPatternDefinition): Unit = {
+            pat match {
+              case LazyVal(_) => placesToSearch += pat
+              case _          =>
+            }
+          }
+        })
       if (placesToSearch.isEmpty)
         true
       else {

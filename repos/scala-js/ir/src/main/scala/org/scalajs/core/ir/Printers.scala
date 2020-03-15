@@ -340,13 +340,14 @@ object Printers {
         case UnaryOp(op, lhs) =>
           import UnaryOp._
           print('(')
-          print((op: @switch) match {
-            case Boolean_!                => "!"
-            case IntToLong | DoubleToLong => "(long)"
-            case DoubleToInt | LongToInt  => "(int)"
-            case DoubleToFloat            => "(float)"
-            case LongToDouble             => "(double)"
-          })
+          print(
+            (op: @switch) match {
+              case Boolean_!                => "!"
+              case IntToLong | DoubleToLong => "(long)"
+              case DoubleToInt | LongToInt  => "(int)"
+              case DoubleToFloat            => "(float)"
+              case LongToDouble             => "(double)"
+            })
           print(lhs)
           print(')')
 
@@ -388,69 +389,70 @@ object Printers {
           print('(')
           print(lhs)
           print(' ')
-          print((op: @switch) match {
-            case === => "==="
-            case !== => "!=="
+          print(
+            (op: @switch) match {
+              case === => "==="
+              case !== => "!=="
 
-            case String_+ => "+[string]"
+              case String_+ => "+[string]"
 
-            case Int_+ => "+[int]"
-            case Int_- => "-[int]"
-            case Int_* => "*[int]"
-            case Int_/ => "/[int]"
-            case Int_% => "%[int]"
+              case Int_+ => "+[int]"
+              case Int_- => "-[int]"
+              case Int_* => "*[int]"
+              case Int_/ => "/[int]"
+              case Int_% => "%[int]"
 
-            case Int_|   => "|"
-            case Int_&   => "&"
-            case Int_^   => "^"
-            case Int_<<  => "<<"
-            case Int_>>> => ">>>"
-            case Int_>>  => ">>"
+              case Int_|   => "|"
+              case Int_&   => "&"
+              case Int_^   => "^"
+              case Int_<<  => "<<"
+              case Int_>>> => ">>>"
+              case Int_>>  => ">>"
 
-            case Float_+ => "+[float]"
-            case Float_- => "-[float]"
-            case Float_* => "*[float]"
-            case Float_/ => "/[float]"
-            case Float_% => "%[float]"
+              case Float_+ => "+[float]"
+              case Float_- => "-[float]"
+              case Float_* => "*[float]"
+              case Float_/ => "/[float]"
+              case Float_% => "%[float]"
 
-            case Double_+ => "+"
-            case Double_- => "-"
-            case Double_* => "*"
-            case Double_/ => "/"
-            case Double_% => "%"
+              case Double_+ => "+"
+              case Double_- => "-"
+              case Double_* => "*"
+              case Double_/ => "/"
+              case Double_% => "%"
 
-            case Num_== => "=="
-            case Num_!= => "!="
-            case Num_<  => "<"
-            case Num_<= => "<="
-            case Num_>  => ">"
-            case Num_>= => ">="
+              case Num_== => "=="
+              case Num_!= => "!="
+              case Num_<  => "<"
+              case Num_<= => "<="
+              case Num_>  => ">"
+              case Num_>= => ">="
 
-            case Long_+ => "+[long]"
-            case Long_- => "-[long]"
-            case Long_* => "*[long]"
-            case Long_/ => "/[long]"
-            case Long_% => "%[long]"
+              case Long_+ => "+[long]"
+              case Long_- => "-[long]"
+              case Long_* => "*[long]"
+              case Long_/ => "/[long]"
+              case Long_% => "%[long]"
 
-            case Long_|   => "|[long]"
-            case Long_&   => "&[long]"
-            case Long_^   => "^[long]"
-            case Long_<<  => "<<[long]"
-            case Long_>>> => ">>>[long]"
-            case Long_>>  => ">>[long]"
+              case Long_|   => "|[long]"
+              case Long_&   => "&[long]"
+              case Long_^   => "^[long]"
+              case Long_<<  => "<<[long]"
+              case Long_>>> => ">>>[long]"
+              case Long_>>  => ">>[long]"
 
-            case Long_== => "==[long]"
-            case Long_!= => "!=[long]"
-            case Long_<  => "<[long]"
-            case Long_<= => "<=[long]"
-            case Long_>  => ">[long]"
-            case Long_>= => ">=[long]"
+              case Long_== => "==[long]"
+              case Long_!= => "!=[long]"
+              case Long_<  => "<[long]"
+              case Long_<= => "<=[long]"
+              case Long_>  => ">[long]"
+              case Long_>= => ">=[long]"
 
-            case Boolean_== => "==[bool]"
-            case Boolean_!= => "!=[bool]"
-            case Boolean_|  => "|[bool]"
-            case Boolean_&  => "&[bool]"
-          })
+              case Boolean_== => "==[bool]"
+              case Boolean_!= => "!=[bool]"
+              case Boolean_|  => "|[bool]"
+              case Boolean_&  => "&[bool]"
+            })
           print(' ')
           print(rhs)
           print(')')
@@ -618,14 +620,15 @@ object Printers {
         case JSUnaryOp(op, lhs) =>
           import JSUnaryOp._
           print('(')
-          print((op: @switch) match {
-            case + => "+"
-            case - => "-"
-            case ~ => "~"
-            case ! => "!"
+          print(
+            (op: @switch) match {
+              case + => "+"
+              case - => "-"
+              case ~ => "~"
+              case ! => "!"
 
-            case `typeof` => "typeof "
-          })
+              case `typeof` => "typeof "
+            })
           print(lhs)
           print(")")
 
@@ -634,34 +637,35 @@ object Printers {
           print('(')
           print(lhs)
           print(" ")
-          print((op: @switch) match {
-            case === => "==="
-            case !== => "!=="
+          print(
+            (op: @switch) match {
+              case === => "==="
+              case !== => "!=="
 
-            case + => "+"
-            case - => "-"
-            case * => "*"
-            case / => "/"
-            case % => "%"
+              case + => "+"
+              case - => "-"
+              case * => "*"
+              case / => "/"
+              case % => "%"
 
-            case |   => "|"
-            case &   => "&"
-            case ^   => "^"
-            case <<  => "<<"
-            case >>  => ">>"
-            case >>> => ">>>"
+              case |   => "|"
+              case &   => "&"
+              case ^   => "^"
+              case <<  => "<<"
+              case >>  => ">>"
+              case >>> => ">>>"
 
-            case <  => "<"
-            case <= => "<="
-            case >  => ">"
-            case >= => ">="
+              case <  => "<"
+              case <= => "<="
+              case >  => ">"
+              case >= => ">="
 
-            case && => "&&"
-            case || => "||"
+              case && => "&&"
+              case || => "||"
 
-            case `in`         => "in"
-            case `instanceof` => "instanceof"
-          })
+              case `in`         => "in"
+              case `instanceof` => "instanceof"
+            })
           print(" ")
           print(rhs)
           print(')')

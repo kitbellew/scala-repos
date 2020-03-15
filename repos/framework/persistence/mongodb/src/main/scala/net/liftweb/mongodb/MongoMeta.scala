@@ -193,20 +193,14 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
         qry,
         newobj,
         dboOpts.find(_ == Upsert).map(x => true).getOrElse(false),
-        dboOpts.find(_ == Multi).map(x => true).getOrElse(false)
-      )
+        dboOpts.find(_ == Multi).map(x => true).getOrElse(false))
   }
 
   /*
    * Update document with a JObject query using the given Mongo instance.
    */
   def update(qry: JObject, newobj: JObject, db: DB, opts: UpdateOption*) {
-    update(
-      JObjectParser.parse(qry),
-      JObjectParser.parse(newobj),
-      db,
-      opts: _*
-    )
+    update(JObjectParser.parse(qry), JObjectParser.parse(newobj), db, opts: _*)
   }
 
   /*

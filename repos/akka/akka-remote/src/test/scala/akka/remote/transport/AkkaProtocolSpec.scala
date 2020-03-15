@@ -230,10 +230,11 @@ class AkkaProtocolSpec
       // this associate will now be ignored
       reader ! testAssociate(uid = 33, cookie = None)
 
-      awaitCond(registry.logSnapshot.exists {
-        case DisassociateAttempt(requester, remote) ⇒ true
-        case _ ⇒ false
-      })
+      awaitCond(
+        registry.logSnapshot.exists {
+          case DisassociateAttempt(requester, remote) ⇒ true
+          case _ ⇒ false
+        })
     }
 
     "in outbound mode delay readiness until hadnshake finished" in {
@@ -297,10 +298,11 @@ class AkkaProtocolSpec
 
       reader ! testAssociate(uid = 33, Some("xyzzy"))
 
-      awaitCond(registry.logSnapshot.exists {
-        case DisassociateAttempt(requester, remote) ⇒ true
-        case _ ⇒ false
-      })
+      awaitCond(
+        registry.logSnapshot.exists {
+          case DisassociateAttempt(requester, remote) ⇒ true
+          case _ ⇒ false
+        })
     }
 
     "accept incoming associations with correct cookie" in {

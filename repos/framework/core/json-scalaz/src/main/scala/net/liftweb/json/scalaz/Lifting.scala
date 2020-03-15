@@ -102,8 +102,10 @@ trait Lifting { this: Types =>
           f: JValue => Result[F],
           g: JValue => Result[G]): JValue => Result[R] =
         (json: JValue) =>
-          (a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@| f(
-            json) |@| g(json))(z)
+          (
+            a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@| f(
+              json) |@| g(json)
+          )(z)
     }
 
   implicit def Func8ToJSON[
@@ -127,7 +129,9 @@ trait Lifting { this: Types =>
           g: JValue => Result[G],
           h: JValue => Result[H]): JValue => Result[R] =
         (json: JValue) =>
-          (a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@| f(
-            json) |@| g(json) |@| h(json))(z)
+          (
+            a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@| f(
+              json) |@| g(json) |@| h(json)
+          )(z)
     }
 }

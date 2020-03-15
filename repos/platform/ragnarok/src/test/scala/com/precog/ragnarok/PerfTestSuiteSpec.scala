@@ -62,15 +62,11 @@ class PerfTestSuiteSpec extends Specification {
                     RunConcurrent,
                     Stream(
                       Tree.leaf[PerfTest](RunQuery("1")),
-                      Tree.leaf[PerfTest](RunQuery("2"))
-                    ))
-                )),
+                      Tree.leaf[PerfTest](RunQuery("2")))))),
               Tree.leaf[PerfTest](RunQuery("3"))
             )
-          )
-        )
-      )
-    )
+          ))
+      ))
   )
 
   "the DSL" should {
@@ -127,8 +123,9 @@ class PerfTestSuiteSpec extends Specification {
             List(
               Tree.leaf[PerfTest](RunQuery("1")),
               Tree.leaf[PerfTest](RunQuery("2")),
-              Tree.leaf[PerfTest](RunQuery("3"))
-            )) ^^ (treeEq[PerfTest].equal(_, _))
+              Tree.leaf[PerfTest](RunQuery("3")))) ^^ (
+            treeEq[PerfTest].equal(_, _)
+          )
       }
     }
   }

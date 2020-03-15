@@ -46,10 +46,11 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       import system.dispatcher
 
       def batchable[T](f: ⇒ T)(implicit ec: ExecutionContext): Unit =
-        ec.execute(new Batchable {
-          override def isBatchable = true
-          override def run: Unit = f
-        })
+        ec.execute(
+          new Batchable {
+            override def isBatchable = true
+            override def run: Unit = f
+          })
 
       val p = Promise[Unit]()
       batchable {
@@ -80,10 +81,11 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       import system.dispatcher
 
       def batchable[T](f: ⇒ T)(implicit ec: ExecutionContext): Unit =
-        ec.execute(new Batchable {
-          override def isBatchable = true
-          override def run: Unit = f
-        })
+        ec.execute(
+          new Batchable {
+            override def isBatchable = true
+            override def run: Unit = f
+          })
 
       val latch = TestLatch(101)
       batchable {
@@ -152,33 +154,39 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
     "work with same-thread executor plus blocking" in {
       val ec = akka.dispatch.ExecutionContexts.sameThreadExecutionContext
       var x = 0
-      ec.execute(new Runnable {
-        override def run = {
-          ec.execute(new Runnable {
-            override def run =
-              blocking {
-                x = 1
-              }
-          })
-        }
-      })
+      ec.execute(
+        new Runnable {
+          override def run = {
+            ec.execute(
+              new Runnable {
+                override def run =
+                  blocking {
+                    x = 1
+                  }
+              })
+          }
+        })
       x should be(1)
     }
 
     "work with same-thread dispatcher plus blocking" in {
-      val a = TestActorRef(Props(new Actor {
-        def receive = {
-          case msg ⇒
-            blocking {
-              sender() ! msg
+      val a = TestActorRef(
+        Props(
+          new Actor {
+            def receive = {
+              case msg ⇒
+                blocking {
+                  sender() ! msg
+                }
             }
-        }
-      }))
-      val b = TestActorRef(Props(new Actor {
-        def receive = {
-          case msg ⇒ a forward msg
-        }
-      }))
+          }))
+      val b = TestActorRef(
+        Props(
+          new Actor {
+            def receive = {
+              case msg ⇒ a forward msg
+            }
+          }))
       val p = TestProbe()
       p.send(b, "hello")
       p.expectMsg(0.seconds, "hello")
@@ -190,21 +198,23 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       }
       val ec = system.dispatchers.lookup(CallingThreadDispatcher.Id)
       var x = 0
-      ec.execute(new RunBatch {
-        override def run = {
-          // enqueue a task to the batch
-          ec.execute(new RunBatch {
-            override def run =
-              blocking {
-                x = 1
-              }
-          })
-          // now run it
-          blocking {
-            ()
+      ec.execute(
+        new RunBatch {
+          override def run = {
+            // enqueue a task to the batch
+            ec.execute(
+              new RunBatch {
+                override def run =
+                  blocking {
+                    x = 1
+                  }
+              })
+            // now run it
+            blocking {
+              ()
+            }
           }
-        }
-      })
+        })
       x should be(1)
     }
   }

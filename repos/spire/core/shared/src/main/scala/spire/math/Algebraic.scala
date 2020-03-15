@@ -1015,8 +1015,7 @@ object Algebraic extends AlgebraicInstances {
           val lDigits = digits + 2 - rhs.lowerBound.decimalDigits
           val rDigits = max(
             1 - rhs.lowerBound.decimalDigits,
-            digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs.upperBound.decimalDigits
-          )
+            digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs.upperBound.decimalDigits)
           if (lDigits >= Int.MaxValue || rDigits >= Int.MaxValue) {
             throw new IllegalArgumentException("required precision is too high")
           } else {
@@ -1045,8 +1044,7 @@ object Algebraic extends AlgebraicInstances {
       def toBigDecimal(digits: Int): JBigDecimal = {
         val digits0 = max(
           checked(digits + 1),
-          checked(1 - (sub.lowerBound.decimalDigits + 1) / 2)
-        )
+          checked(1 - (sub.lowerBound.decimalDigits + 1) / 2))
         if (digits0 >= Int.MaxValue) {
           throw new IllegalArgumentException("required precision is too high")
         } else {
@@ -1357,8 +1355,7 @@ object Algebraic extends AlgebraicInstances {
                   truncatedUnscaledValue
                     .multiply(BigInteger.TEN)
                     .add(BigInteger.valueOf(5)),
-                  scale + 1
-                ))
+                  scale + 1))
               val cmp = exact compare Algebraic(splitter)
               val roundUp =
                 (mode: @unchecked) match {
@@ -1444,8 +1441,7 @@ object Algebraic extends AlgebraicInstances {
         /** Lower bound on the value. */
         lb: Long,
         /** Upper bound on the value. */
-        ub: Long
-    ) {
+        ub: Long) {
       def getBitBound(degreeBound: Long): Long =
         checked {
           ub * (degreeBound - 1) + lc
@@ -1484,8 +1480,7 @@ object Algebraic extends AlgebraicInstances {
               root.tail.bitLength + 1L,
               distBound,
               Roots.lowerBound(poly),
-              Roots.upperBound(poly)
-            )
+              Roots.upperBound(poly))
 
           case Neg(sub) =>
             sub.getBound(this)
@@ -1617,40 +1612,25 @@ object Algebraic extends AlgebraicInstances {
     // require us to work outside of log arithmetic.
     private def add(lhs: Bound, rhs: Bound): Bound =
       checked {
-        Bound(
-          lhs.l + rhs.l,
-          math.max(lhs.u + rhs.l, lhs.l + rhs.u) + 1
-        )
+        Bound(lhs.l + rhs.l, math.max(lhs.u + rhs.l, lhs.l + rhs.u) + 1)
       }
 
     private def mul(lhs: Bound, rhs: Bound): Bound =
       checked {
-        Bound(
-          lhs.l + rhs.l,
-          lhs.u + rhs.u
-        )
+        Bound(lhs.l + rhs.l, lhs.u + rhs.u)
       }
 
     private def div(lhs: Bound, rhs: Bound): Bound =
       checked {
-        Bound(
-          lhs.l + rhs.u,
-          lhs.u + rhs.l
-        )
+        Bound(lhs.l + rhs.u, lhs.u + rhs.l)
       }
 
     private def nroot(sub: Bound, k: Int): Bound =
       checked {
         if (sub.u < sub.l) {
-          Bound(
-            (sub.l + (k - 1) * sub.u) / k,
-            sub.u
-          )
+          Bound((sub.l + (k - 1) * sub.u) / k, sub.u)
         } else {
-          Bound(
-            sub.l,
-            (sub.u * (k - 1) * sub.l) / k
-          )
+          Bound(sub.l, (sub.u * (k - 1) * sub.l) / k)
         }
       }
 
@@ -1668,10 +1648,7 @@ object Algebraic extends AlgebraicInstances {
         }
 
       if (k > 1) {
-        Bound(
-          sum(sub.l, k - 1, sub.l),
-          sum(sub.u, k - 1, sub.u)
-        )
+        Bound(sum(sub.l, k - 1, sub.l), sum(sub.u, k - 1, sub.u))
       } else if (k == 1) {
         sub
       } else if (k == 0) {

@@ -30,10 +30,12 @@ trait Helpers {
         name.asInstanceOf[st.Name] match {
           case FreshName(prefix) =>
             Some(
-              (if (name.isTermName)
-                 TermName(prefix)
-               else
-                 TypeName(prefix)).asInstanceOf[T])
+              (
+                if (name.isTermName)
+                  TermName(prefix)
+                else
+                  TypeName(prefix)
+              ).asInstanceOf[T])
         }
     }
 
@@ -74,7 +76,9 @@ trait Helpers {
 
   implicit class TestSimilarMods(mods: Modifiers) {
     def ≈(other: Modifiers) =
-      (mods.flags == other.flags) && (mods.privateWithin ≈ other.privateWithin) && (mods.annotations ≈ other.annotations)
+      (mods.flags == other.flags) && (
+        mods.privateWithin ≈ other.privateWithin
+      ) && (mods.annotations ≈ other.annotations)
   }
 
   def assertThrows[T <: AnyRef](f: => Any)(

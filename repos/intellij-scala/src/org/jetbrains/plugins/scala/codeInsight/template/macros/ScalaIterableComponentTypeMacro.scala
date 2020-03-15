@@ -19,18 +19,19 @@ class ScalaIterableComponentTypeMacro extends Macro {
       return null
     Option(params(0).calculateResult(context))
       .flatMap(MacroUtil.resultToScExpr(_, context))
-      .flatMap(_.getType().toOption.flatMap { exprType =>
-        MacroUtil.getComponentFromArrayType(exprType) match {
-          case Some(arrComponentType) => Some(arrComponentType)
-          case None =>
-            ScType.extractClass(exprType, Some(context.getProject)) match {
-              case Some(x: ScTypeDefinition)
-                  if x.functionsByName("foreach").nonEmpty =>
-                Some(exprType)
-              case _ => None
-            }
-        }
-      })
+      .flatMap(
+        _.getType().toOption.flatMap { exprType =>
+          MacroUtil.getComponentFromArrayType(exprType) match {
+            case Some(arrComponentType) => Some(arrComponentType)
+            case None =>
+              ScType.extractClass(exprType, Some(context.getProject)) match {
+                case Some(x: ScTypeDefinition)
+                    if x.functionsByName("foreach").nonEmpty =>
+                  Some(exprType)
+                case _ => None
+              }
+          }
+        })
       .map(new ScalaTypeResult(_))
       .orNull
   }

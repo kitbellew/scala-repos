@@ -60,15 +60,9 @@ class FileProcessLogger(file: File)
     extends ProcessLogger
     with Closeable
     with Flushable {
-  private val writer = (
-    new PrintWriter(
-      new BufferedWriter(
-        new OutputStreamWriter(
-          new FileOutputStream(file, true)
-        )
-      )
-    )
-  )
+  private val writer = (new PrintWriter(
+    new BufferedWriter(
+      new OutputStreamWriter(new FileOutputStream(file, true)))))
   def out(s: => String): Unit = writer println s
   def err(s: => String): Unit = writer println s
   def buffer[T](f: => T): T = f

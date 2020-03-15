@@ -38,27 +38,29 @@ class ScalaMethodImplementor extends MethodImplementor {
   def createImplementationPrototypes(
       inClass: PsiClass,
       method: PsiMethod): Array[PsiMethod] = {
-    (for {
-      td <- inClass.asOptionOf[ScTemplateDefinition].toSeq
-      member <- ScalaOIUtil.getMembersToImplement(td).collect {
-        case mm: ScMethodMember if mm.getElement == method => mm
+    (
+      for {
+        td <- inClass.asOptionOf[ScTemplateDefinition].toSeq
+        member <- ScalaOIUtil.getMembersToImplement(td).collect {
+          case mm: ScMethodMember if mm.getElement == method => mm
+        }
+      } yield {
+        val specifyType =
+          ScalaApplicationSettings.getInstance().SPECIFY_RETURN_TYPE_EXPLICITLY
+        val body = ScalaGenerationInfo.defaultValue(
+          member.scType,
+          inClass.getContainingFile)
+        val prototype = ScalaPsiElementFactory
+          .createOverrideImplementMethod(
+            member.sign,
+            inClass.getManager,
+            needsOverrideModifier = true,
+            specifyType,
+            body)
+        prototypeToBaseMethod += (prototype -> method)
+        prototype
       }
-    } yield {
-      val specifyType =
-        ScalaApplicationSettings.getInstance().SPECIFY_RETURN_TYPE_EXPLICITLY
-      val body = ScalaGenerationInfo.defaultValue(
-        member.scType,
-        inClass.getContainingFile)
-      val prototype = ScalaPsiElementFactory
-        .createOverrideImplementMethod(
-          member.sign,
-          inClass.getManager,
-          needsOverrideModifier = true,
-          specifyType,
-          body)
-      prototypeToBaseMethod += (prototype -> method)
-      prototype
-    }).toArray
+    ).toArray
   }
 
   def createGenerationInfo(

@@ -29,8 +29,8 @@ class FakePsiMethod(
     name: String,
     val params: Array[Parameter],
     val retType: ScType,
-    hasModifier: String => Boolean
-) extends {
+    hasModifier: String => Boolean)
+    extends {
   val project: Project = navElement.getProject
   val scope: GlobalSearchScope = navElement.getResolveScope
   val manager = navElement.getManager

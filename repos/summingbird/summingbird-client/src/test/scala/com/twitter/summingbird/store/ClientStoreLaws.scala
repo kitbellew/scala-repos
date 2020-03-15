@@ -36,8 +36,7 @@ class ClientStoreLaws extends WordSpec {
       "b" -> Some((BatchID(9), 1)),
       "c" -> Some((BatchID(9), 1)),
       "d" -> None,
-      "e" -> None
-    ))
+      "e" -> None))
 
   val online = TestStore[(String, BatchID), Int](
     Map(
@@ -59,8 +58,7 @@ class ClientStoreLaws extends WordSpec {
       ("f", BatchID(8)) -> Some(2),
       ("f", BatchID(9)) -> Some(3),
       ("f", BatchID(10)) -> Some(4)
-    )
-  )
+    ))
   val clientStore = ClientStore(offline, online, 3)
   val keys = Set("a", "b", "c", "d", "e", "f")
   val retMap = clientStore.multiGet(keys)

@@ -33,11 +33,9 @@ object JsPathSpec extends Specification {
     "retrieve 1-level recursive path" in {
       val obj = Json.obj(
         "key1" -> Json.obj(
-          "key11" -> Json.obj("tags" -> Json.arr("alpha1", "beta1", "gamma1"))
-        ),
+          "key11" -> Json.obj("tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
         "key2" -> Json.obj(
-          "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-        ),
+          "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))),
         "key3" -> "blabla"
       )
 
@@ -51,11 +49,11 @@ object JsPathSpec extends Specification {
       val obj = Json.obj(
         "level1" -> Json.obj(
           "key1" -> Json.obj(
-            "key11" -> Json.obj("tags" -> Json.arr("alpha1", "beta1", "gamma1"))
-          ),
+            "key11" -> Json.obj(
+              "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          ),
+            "key21" -> Json.obj(
+              "tags" -> Json.arr("alpha2", "beta2", "gamma2"))),
           "key3" -> "blabla"
         ),
         "level2" -> 5
@@ -71,12 +69,9 @@ object JsPathSpec extends Specification {
       val obj = Json.obj(
         "level1" -> Json.obj(
           "key1" -> Json.obj(
-            "key11" -> Json.obj("tags" -> Json.obj("sub" -> "alpha1"))
-          ),
+            "key11" -> Json.obj("tags" -> Json.obj("sub" -> "alpha1"))),
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.obj("sub" -> "beta2"))
-          )
-        ),
+            "key21" -> Json.obj("tags" -> Json.obj("sub" -> "beta2")))),
         "level2" -> 5
       )
 
@@ -85,9 +80,7 @@ object JsPathSpec extends Specification {
     }
 
     "retrieve simple indexed path" in {
-      val obj = Json.obj(
-        "level1" -> Json.arr(5, "alpha", true)
-      )
+      val obj = Json.obj("level1" -> Json.arr(5, "alpha", true))
 
       (JsPath \ "level1")(2)(obj) must equalTo(Seq(JsBoolean(true)))
     }
@@ -96,11 +89,11 @@ object JsPathSpec extends Specification {
       val obj = Json.obj(
         "level1" -> Json.obj(
           "key1" -> Json.obj(
-            "key11" -> Json.obj("tags" -> Json.arr("alpha1", "beta1", "gamma1"))
-          ),
+            "key11" -> Json.obj(
+              "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          )
+            "key21" -> Json.obj(
+              "tags" -> Json.arr("alpha2", "beta2", "gamma2")))
         ),
         "level2" -> 5
       )
@@ -115,13 +108,13 @@ object JsPathSpec extends Specification {
         "level1" -> Json.obj(
           "key1" -> Json.arr(
             "key11",
-            Json.obj("key111" -> Json.obj(
-              "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
-            "key12"
-          ),
+            Json.obj(
+              "key111" -> Json.obj(
+                "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
+            "key12"),
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          )
+            "key21" -> Json.obj(
+              "tags" -> Json.arr("alpha2", "beta2", "gamma2")))
         ),
         "level2" -> 5
       )
@@ -149,9 +142,7 @@ object JsPathSpec extends Specification {
           "key2" -> Json.obj(
             "key21" -> Json.obj(
               "alpha" -> Json.arr("a", "b", "c"),
-              "key212" -> Json.obj("blabla" -> "xxx", "blibli" -> "yyy")
-            )
-          )
+              "key212" -> Json.obj("blabla" -> "xxx", "blibli" -> "yyy")))
         ),
         "level2" -> 5
       )
@@ -165,12 +156,15 @@ object JsPathSpec extends Specification {
       val obj = Json.obj(
         "nothing" -> "really",
         "array" -> Json.arr(
-          Json.obj("field" -> Json
-            .obj("alpha" -> "v11", "beta" -> "v12", "gamma" -> "v13")),
-          Json.obj("field" -> Json
-            .obj("alpha" -> "v21", "gamma" -> "v23", "beta" -> "v22")),
-          Json.obj("field" -> Json
-            .obj("beta" -> "v32", "alpha" -> "v31", "gamma" -> "v33"))
+          Json.obj(
+            "field" -> Json
+              .obj("alpha" -> "v11", "beta" -> "v12", "gamma" -> "v13")),
+          Json.obj(
+            "field" -> Json
+              .obj("alpha" -> "v21", "gamma" -> "v23", "beta" -> "v22")),
+          Json.obj(
+            "field" -> Json
+              .obj("beta" -> "v32", "alpha" -> "v31", "gamma" -> "v33"))
         )
       )
 
@@ -184,13 +178,13 @@ object JsPathSpec extends Specification {
         "level1" -> Json.obj(
           "key1" -> Json.arr(
             "key11",
-            Json.obj("key111" -> Json.obj(
-              "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
-            "key12"
-          ),
+            Json.obj(
+              "key111" -> Json.obj(
+                "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
+            "key12"),
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          )
+            "key21" -> Json.obj(
+              "tags" -> Json.arr("alpha2", "beta2", "gamma2")))
         ),
         "level2" -> 5
       )
@@ -205,13 +199,13 @@ object JsPathSpec extends Specification {
         "level1" -> Json.obj(
           "key1" -> Json.arr(
             "key11",
-            Json.obj("key111" -> Json.obj(
-              "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
-            "key12"
-          ),
+            Json.obj(
+              "key111" -> Json.obj(
+                "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
+            "key12"),
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          )
+            "key21" -> Json.obj(
+              "tags" -> Json.arr("alpha2", "beta2", "gamma2")))
         ),
         "level2" -> 5
       )
@@ -220,35 +214,31 @@ object JsPathSpec extends Specification {
         "level1" -> Json.obj(
           "key1" -> Json.arr(
             "key11",
-            Json.obj("key111" -> Json.obj(
-              "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
-            "key12"
-          ),
+            Json.obj(
+              "key111" -> Json.obj(
+                "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
+            "key12"),
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          )
-        )
-      )
+            "key21" -> Json.obj(
+              "tags" -> Json.arr("alpha2", "beta2", "gamma2")))
+        ))
 
       val res2 = Json.obj(
         "level1" -> Json.obj(
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          )
-        ),
-        "level2" -> 5
-      )
+            "key21" -> Json.obj(
+              "tags" -> Json.arr("alpha2", "beta2", "gamma2")))),
+        "level2" -> 5)
 
       val res3 = Json.obj(
         "level1" -> Json.obj(
           "key1" -> Json.arr(
             "key11",
-            Json.obj("key111" -> Json.obj(
-              "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
-            "key12"
-          ),
-          "key2" -> Json.obj()
-        ),
+            Json.obj(
+              "key111" -> Json.obj(
+                "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
+            "key12"),
+          "key2" -> Json.obj()),
         "level2" -> 5
       )
 
@@ -264,33 +254,28 @@ object JsPathSpec extends Specification {
         "level1" -> Json.obj(
           "key1" -> Json.arr(
             "key11",
-            Json.obj("key111" -> Json.obj(
-              "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
-            "key12"
-          ),
+            Json.obj(
+              "key111" -> Json.obj(
+                "tags" -> Json.arr("alpha1", "beta1", "gamma1"))),
+            "key12"),
           "key2" -> Json.obj(
-            "key21" -> Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          )
-        )
-      )
+            "key21" -> Json.obj(
+              "tags" -> Json.arr("alpha2", "beta2", "gamma2")))
+        ))
 
       (__ \ 'level1 \ 'key2 \ 'key21).applyTillLast(res) must beEqualTo(
         Right(
-          JsSuccess(
-            Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2"))
-          )))
+          JsSuccess(Json.obj("tags" -> Json.arr("alpha2", "beta2", "gamma2")))))
 
       (__ \ 'level1 \ 'key2 \ 'key23).applyTillLast(res) must beEqualTo(
         Right(
           JsError(
             __ \ 'level1 \ 'key2 \ 'key23,
-            ValidationError("error.path.missing")))
-      )
+            ValidationError("error.path.missing"))))
 
       (__ \ 'level2 \ 'key3).applyTillLast(res) must beEqualTo(
         Left(
-          JsError(__ \ 'level2 \ 'key3, ValidationError("error.path.missing")))
-      )
+          JsError(__ \ 'level2 \ 'key3, ValidationError("error.path.missing"))))
     }
 
     /*"set 1-level field in simple jsobject" in {

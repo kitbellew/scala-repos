@@ -119,8 +119,7 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
           Seq(
             parentRef.expectedType().filterNot(_.isInstanceOf[NonValueType]),
             extractSeqType,
-            getScopeType
-          ).flatten
+            getScopeType).flatten
         val expectedType =
           expectedTypes match {
             case Seq(t, rest @ _*) => t
@@ -178,7 +177,11 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                 if typed.getType().getOrAny.conforms(expectedType) =>
               variant.isLocalVariable =
                 (typed.isVar || typed.isVal) &&
-                  (typed.containingFile exists (_.getName == parameters.getOriginalFile.getName))
+                  (
+                    typed.containingFile exists (
+                      _.getName == parameters.getOriginalFile.getName
+                    )
+                  )
               apply(variant)
             case _ => // do nothing
           }

@@ -385,8 +385,9 @@ object StructType extends AbstractDataType {
   }
 
   protected[sql] def fromAttributes(attributes: Seq[Attribute]): StructType =
-    StructType(attributes.map(a =>
-      StructField(a.name, a.dataType, a.nullable, a.metadata)))
+    StructType(
+      attributes.map(a =>
+        StructField(a.name, a.dataType, a.nullable, a.metadata)))
 
   def removeMetadata(key: String, dt: DataType): DataType =
     dt match {
@@ -456,7 +457,9 @@ object StructType extends AbstractDataType {
             DecimalType.Fixed(rightPrecision, rightScale)) =>
         if ((leftPrecision == rightPrecision) && (leftScale == rightScale)) {
           DecimalType(leftPrecision, leftScale)
-        } else if ((leftPrecision != rightPrecision) && (leftScale != rightScale)) {
+        } else if ((
+                     leftPrecision != rightPrecision
+                   ) && (leftScale != rightScale)) {
           throw new SparkException(
             "Failed to merge decimal types with incompatible " +
               s"precision $leftPrecision and $rightPrecision & scale $leftScale and $rightScale")

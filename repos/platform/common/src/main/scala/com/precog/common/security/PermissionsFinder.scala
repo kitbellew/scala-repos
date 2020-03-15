@@ -73,9 +73,11 @@ class PermissionsFinder[M[+_]: Monad](
       path: Path,
       at: Option[Instant]): Set[WritePermission] = {
     keyDetails.grants filter { g =>
-      (at exists {
-        g.isValidAt _
-      }) || g.createdAt.isBefore(timestampRequiredAfter)
+      (
+        at exists {
+          g.isValidAt _
+        }
+      ) || g.createdAt.isBefore(timestampRequiredAfter)
     } flatMap {
       _.permissions collect {
         case perm @ WritePermission(path0, _)
@@ -102,9 +104,11 @@ class PermissionsFinder[M[+_]: Monad](
           case WritePermission(_, WriteAsAny) =>
             left(accountWriter)
           case WritePermission(_, WriteAsAll(accountIds)) =>
-            (Authorities
-              .ifPresent(accountIds)
-              .map(a => Some(a).point[M]) \/> accountWriter)
+            (
+              Authorities
+                .ifPresent(accountIds)
+                .map(a => Some(a).point[M]) \/> accountWriter
+            )
         })(collection.breakOut)
 
       // if it is possible to write as the account holder for the api key, then do so, otherwise,
@@ -128,10 +132,9 @@ class PermissionsFinder[M[+_]: Monad](
 
     apiKeyFinder.findAPIKey(apiKey, None) flatMap {
       _ map {
-        (filterWritePermissions(
-          _: v1.APIKeyDetails,
-          path,
-          at)) andThen (selectWriter _)
+        (
+          filterWritePermissions(_: v1.APIKeyDetails, path, at)
+        ) andThen (selectWriter _)
       } getOrElse {
         None.point[M]
       }

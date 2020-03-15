@@ -109,10 +109,11 @@ class ReplicatedMetrics(
       maxHeap = c.get(MaxHeapKey).entries
 
     case c @ Changed(UsedHeapKey) ⇒
-      val usedHeapPercent = UsedHeap(c.get(UsedHeapKey).entries.collect {
-        case (key, value) if maxHeap.contains(key) ⇒
-          (key -> (value.toDouble / maxHeap(key)) * 100.0)
-      })
+      val usedHeapPercent = UsedHeap(
+        c.get(UsedHeapKey).entries.collect {
+          case (key, value) if maxHeap.contains(key) ⇒
+            (key -> (value.toDouble / maxHeap(key)) * 100.0)
+        })
       log.debug("Node {} observed:\n{}", node, usedHeapPercent)
       context.system.eventStream.publish(usedHeapPercent)
 

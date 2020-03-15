@@ -66,8 +66,7 @@ class DeploymentManagerTest
       AlwaysElectedLeadershipModule.forActorSystem(system),
       new InMemoryStore,
       config,
-      metrics
-    )
+      metrics)
     scheduler = mock[SchedulerActions]
     storage = mock[StorageProvider]
     appRepo = new AppRepository(
@@ -77,8 +76,7 @@ class DeploymentManagerTest
         () => AppDefinition(),
         prefix = "app:"),
       None,
-      metrics
-    )
+      metrics)
     hcManager = mock[HealthCheckManager]
   }
 
@@ -92,8 +90,7 @@ class DeploymentManagerTest
         scheduler,
         storage,
         hcManager,
-        eventBus)
-    )
+        eventBus))
 
     val app = AppDefinition("app".toRootPath)
 
@@ -106,8 +103,7 @@ class DeploymentManagerTest
 
     awaitCond(
       manager.underlyingActor.runningDeployments.contains(plan.id),
-      5.seconds
-    )
+      5.seconds)
   }
 
   test("StopActor") {
@@ -120,18 +116,18 @@ class DeploymentManagerTest
         scheduler,
         storage,
         hcManager,
-        eventBus)
-    )
+        eventBus))
     val probe = TestProbe()
 
-    probe.setAutoPilot(new AutoPilot {
-      override def run(sender: ActorRef, msg: Any): AutoPilot =
-        msg match {
-          case Cancel(_) =>
-            system.stop(probe.ref)
-            NoAutoPilot
-        }
-    })
+    probe.setAutoPilot(
+      new AutoPilot {
+        override def run(sender: ActorRef, msg: Any): AutoPilot =
+          msg match {
+            case Cancel(_) =>
+              system.stop(probe.ref)
+              NoAutoPilot
+          }
+      })
 
     val ex = new Exception
 
@@ -150,8 +146,7 @@ class DeploymentManagerTest
         scheduler,
         storage,
         hcManager,
-        eventBus)
-    )
+        eventBus))
 
     implicit val timeout = Timeout(1.minute)
 

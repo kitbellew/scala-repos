@@ -95,14 +95,15 @@ trait Event[+T] { self =>
         val mu = new Object()
         var q = Queue.empty[T]
         self.respond { t =>
-          s.notify(mu.synchronized {
-            q = q.enqueue(t)
-            while (q.length > n) {
-              val (_, q1) = q.dequeue
-              q = q1
-            }
-            q
-          })
+          s.notify(
+            mu.synchronized {
+              q = q.enqueue(t)
+              while (q.length > n) {
+                val (_, q1) = q.dequeue
+                q = q1
+              }
+              q
+            })
         }
       }
     }
@@ -136,13 +137,14 @@ trait Event[+T] { self =>
     new Event[Either[T, U]] {
       def register(s: Witness[Either[T, U]]): Closable =
         Closable.all(
-          self.register(s.comap { t =>
-            Left(t)
-          }),
-          other.register(s.comap { u =>
-            Right(u)
-          })
-        )
+          self.register(
+            s.comap { t =>
+              Left(t)
+            }),
+          other.register(
+            s.comap { u =>
+              Right(u)
+            }))
     }
 
   /**
@@ -252,12 +254,13 @@ trait Event[+T] { self =>
       def register(s: Witness[T]): Closable = {
         val n = new AtomicInteger(0)
         val c = new AtomicReference(Closable.nop)
-        c.set(self.respond { t =>
-          if (n.incrementAndGet() <= howmany)
-            s.notify(t)
-          else
-            c.getAndSet(Closable.nop).close()
-        })
+        c.set(
+          self.respond { t =>
+            if (n.incrementAndGet() <= howmany)
+              s.notify(t)
+            else
+              c.getAndSet(Closable.nop).close()
+          })
 
         if (n.get() == howmany)
           c.getAndSet(Closable.nop).close()

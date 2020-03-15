@@ -18,17 +18,12 @@ case class DMClassPrepareEvent(
     eventSet: EventSet)
 
 object DebugManager {
-  def apply(
-      broadcaster: ActorRef
-  )(implicit
-      config: EnsimeConfig
-  ): Props = Props(new DebugManager(broadcaster, config))
+  def apply(broadcaster: ActorRef)(implicit config: EnsimeConfig): Props =
+    Props(new DebugManager(broadcaster, config))
 }
 
-class DebugManager(
-    broadcaster: ActorRef,
-    config: EnsimeConfig
-) extends Actor
+class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
+    extends Actor
     with ActorLogging {
 
   // TODO this is built once on startup - probably makes sense for it to be done each time a debug vm is created
@@ -120,8 +115,8 @@ class DebugManager(
   def vmOptions(): List[String] =
     List(
       "-classpath",
-      config.runtimeClasspath.mkString("\"", File.pathSeparator, "\"")
-    ) ++ config.debugVMArgs
+      config.runtimeClasspath
+        .mkString("\"", File.pathSeparator, "\"")) ++ config.debugVMArgs
 
   def withVM[T](action: (VM => T)): Option[T] = {
     maybeVM.synchronized {
@@ -154,10 +149,12 @@ class DebugManager(
   private def handleRPCWithVMAndThread(threadId: DebugThreadId)(
       action: ((VM, ThreadReference) => RpcResponse)): RpcResponse = {
     withVM { vm =>
-      (for (thread <- vm.threadById(threadId))
-        yield {
-          action(vm, thread)
-        }).getOrElse {
+      (
+        for (thread <- vm.threadById(threadId))
+          yield {
+            action(vm, thread)
+          }
+      ).getOrElse {
         log.warning(s"Could not find thread: $threadId")
         FalseResponse
       }
@@ -206,27 +203,31 @@ class DebugManager(
     case e: VMDisconnectEvent =>
       disconnectDebugVM()
     case e: StepEvent =>
-      (for (pos <- sourceMap.locToPos(e.location()))
-        yield {
-          broadcaster ! DebugStepEvent(
-            DebugThreadId(e.thread().uniqueID()),
-            e.thread().name,
-            pos.file,
-            pos.line)
-        }) getOrElse {
+      (
+        for (pos <- sourceMap.locToPos(e.location()))
+          yield {
+            broadcaster ! DebugStepEvent(
+              DebugThreadId(e.thread().uniqueID()),
+              e.thread().name,
+              pos.file,
+              pos.line)
+          }
+      ) getOrElse {
         val loc = e.location()
         log.warning(
           s"Step position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
       }
     case e: BreakpointEvent =>
-      (for (pos <- sourceMap.locToPos(e.location()))
-        yield {
-          broadcaster ! DebugBreakEvent(
-            DebugThreadId(e.thread().uniqueID()),
-            e.thread().name,
-            pos.file,
-            pos.line)
-        }) getOrElse {
+      (
+        for (pos <- sourceMap.locToPos(e.location()))
+          yield {
+            broadcaster ! DebugBreakEvent(
+              DebugThreadId(e.thread().uniqueID()),
+              e.thread().name,
+              pos.file,
+              pos.line)
+          }
+      ) getOrElse {
         val loc = e.location()
         log.warning(
           s"Break position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
@@ -246,8 +247,7 @@ class DebugManager(
         DebugThreadId(e.thread().uniqueID()),
         e.thread().name,
         pos.map(_.file),
-        pos.map(_.line)
-      )
+        pos.map(_.line))
     case e: ThreadDeathEvent =>
       broadcaster ! DebugThreadDeathEvent(DebugThreadId(e.thread().uniqueID()))
     case e: ThreadStartEvent =>
@@ -355,31 +355,19 @@ class DebugManager(
 
     case DebugNextReq(threadId: DebugThreadId) =>
       sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(
-          thread,
-          StepRequest.STEP_LINE,
-          StepRequest.STEP_OVER
-        )
+        vm.newStepRequest(thread, StepRequest.STEP_LINE, StepRequest.STEP_OVER)
         TrueResponse
       }
 
     case DebugStepReq(threadId: DebugThreadId) =>
       sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(
-          thread,
-          StepRequest.STEP_LINE,
-          StepRequest.STEP_INTO
-        )
+        vm.newStepRequest(thread, StepRequest.STEP_LINE, StepRequest.STEP_INTO)
         TrueResponse
       }
 
     case DebugStepOutReq(threadId: DebugThreadId) =>
       sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(
-          thread,
-          StepRequest.STEP_LINE,
-          StepRequest.STEP_OUT
-        )
+        vm.newStepRequest(thread, StepRequest.STEP_LINE, StepRequest.STEP_OUT)
         TrueResponse
       }
 

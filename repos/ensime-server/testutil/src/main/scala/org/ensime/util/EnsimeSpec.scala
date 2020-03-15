@@ -39,8 +39,7 @@ trait EnsimeSpec
     .getDouble("akka.test.timefactor")
   implicit override val patienceConfig = PatienceConfig(
     timeout = scaled(akkaTimeout),
-    interval = scaled(Span(5, Millis))
-  )
+    interval = scaled(Span(5, Millis)))
 
   // taggedAs(org.scalatest.tagobject.Retryable)
   // will be retried (don't abuse it)

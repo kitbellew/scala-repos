@@ -48,10 +48,12 @@ class ScPackagingImpl private (
   }
 
   def fullPackageName: String =
-    (if (prefix.length == 0)
-       ""
-     else
-       prefix + ".") + getPackageName
+    (
+      if (prefix.length == 0)
+        ""
+      else
+        prefix + "."
+    ) + getPackageName
 
   override def toString = "ScPackaging"
 
@@ -119,8 +121,7 @@ class ScPackagingImpl private (
         TokenSet.create(
           ScalaElementTypes.OBJECT_DEF,
           ScalaElementTypes.CLASS_DEF,
-          ScalaElementTypes.TRAIT_DEF
-        ),
+          ScalaElementTypes.TRAIT_DEF),
         JavaArrayFactoryUtil.ScTypeDefinitionFactory)
     } else {
       val buffer = new ArrayBuffer[ScTypeDefinition]
@@ -168,10 +169,12 @@ class ScPackagingImpl private (
 
     //If stub is not null, then we are not trying to resolve packaging reference.
     if (getStub != null || !reference.contains(lastParent)) {
-      val pName = (if (prefix.length == 0)
-                     ""
-                   else
-                     prefix + ".") + getPackageName
+      val pName = (
+        if (prefix.length == 0)
+          ""
+        else
+          prefix + "."
+      ) + getPackageName
       ProgressManager.checkCanceled()
       val p = ScPackageImpl(
         JavaPsiFacade.getInstance(getProject).findPackage(pName))

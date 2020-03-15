@@ -60,14 +60,7 @@ private[round] final class SocketHandler(
               promise.future onFailure {
                 case _: Exception => socket ! Resync(uid)
               }
-              send(
-                HumanPlay(
-                  playerId,
-                  move,
-                  blur,
-                  lag.millis,
-                  promise.some
-                ))
+              send(HumanPlay(playerId, move, blur, lag.millis, promise.some))
               member push ackEvent
           }
         case ("drop", o) =>
@@ -78,14 +71,7 @@ private[round] final class SocketHandler(
               promise.future onFailure {
                 case _: Exception => socket ! Resync(uid)
               }
-              send(
-                HumanPlay(
-                  playerId,
-                  drop,
-                  blur,
-                  lag.millis,
-                  promise.some
-                ))
+              send(HumanPlay(playerId, drop, blur, lag.millis, promise.some))
           }
         case ("rematch-yes", _)  => send(RematchYes(playerId))
         case ("rematch-no", _)   => send(RematchNo(playerId))

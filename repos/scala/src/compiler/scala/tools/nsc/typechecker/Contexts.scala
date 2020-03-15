@@ -67,8 +67,7 @@ trait Contexts { self: Analyzer =>
       noSelfType,
       List()) setSymbol global.NoSymbol setType global.NoType,
     rootMirror.RootClass,
-    rootMirror.RootClass.info.decls
-  )
+    rootMirror.RootClass.info.decls)
 
   private lazy val allUsedSelectors =
     mutable.Map[ImportInfo, Set[ImportSelector]]() withDefaultValue Set()
@@ -271,10 +270,12 @@ trait Contexts { self: Analyzer =>
     val depth: Int = {
       val increasesDepth =
         isRootImport || outerIsNoContext || (outer.scope != scope)
-      (if (increasesDepth)
-         1
-       else
-         0) + outerDepth
+      (
+        if (increasesDepth)
+          1
+        else
+          0
+      ) + outerDepth
     }
 
     /** The currently visible imports */
@@ -847,8 +848,10 @@ trait Contexts { self: Analyzer =>
           // is `o` or one of its transitive owners equal to `ab`?
           // stops at first package, since further owners can only be surrounding packages
           @tailrec def abEnclosesStopAtPkg(o: Symbol): Boolean =
-            (o eq ab) || (!o.isPackageClass && (o ne NoSymbol) && abEnclosesStopAtPkg(
-              o.owner))
+            (o eq ab) || (
+              !o.isPackageClass && (o ne NoSymbol) && abEnclosesStopAtPkg(
+                o.owner)
+            )
           abEnclosesStopAtPkg(owner)
         } else
           (owner hasTransOwner ab)
@@ -890,18 +893,23 @@ trait Contexts { self: Analyzer =>
       (pre == NoPrefix) || {
         val ab = sym.accessBoundary(sym.owner)
 
-        ((ab.isTerm || ab == rootMirror.RootClass)
-        || (accessWithin(ab) || accessWithinLinked(ab)) &&
-        (!sym.isLocalToThis
-        || sym.isProtected && isSubThisType(pre, sym.owner)
-        || pre =:= sym.owner.thisType)
-        || sym.isProtected &&
-        (superAccess
-        || pre.isInstanceOf[ThisType]
-        || phase.erasedTypes
-        || (sym.overrideChain exists isProtectedAccessOK)
-        // that last condition makes protected access via self types work.
-        ))
+        (
+          (ab.isTerm || ab == rootMirror.RootClass)
+          || (accessWithin(ab) || accessWithinLinked(ab)) &&
+          (
+            !sym.isLocalToThis
+            || sym.isProtected && isSubThisType(pre, sym.owner)
+            || pre =:= sym.owner.thisType
+          )
+          || sym.isProtected &&
+          (
+            superAccess
+            || pre.isInstanceOf[ThisType]
+            || phase.erasedTypes
+            || (sym.overrideChain exists isProtectedAccessOK)
+            // that last condition makes protected access via self types work.
+          )
+        )
         // note: phase.erasedTypes disables last test, because after addinterfaces
         // implementation classes are not in the superclass chain. If we enable the
         // test, bug780 fails.
@@ -943,8 +951,7 @@ trait Contexts { self: Analyzer =>
             if (isUnique && isPresent)
               devWarningResult(
                 s"Preserving inference: ${sym.nameString}=$hi in $current (based on $current_s) before restoring $sym to saved $saved_s")(
-                current.instantiateTypeParams(List(sym), List(hi))
-              )
+                current.instantiateTypeParams(List(sym), List(hi)))
             else if (isPresent)
               devWarningResult(
                 s"Discarding inferred $current_s because it does not uniquely determine $sym in")(
@@ -990,10 +997,14 @@ trait Contexts { self: Analyzer =>
         imported: Boolean) =
       sym.isImplicit &&
         isAccessible(sym, pre) &&
-        !(imported && {
-          val e = scope.lookupEntry(name)
-          (e ne null) && (e.owner == scope) && (!settings.isScala212 || e.sym.exists)
-        })
+        !(
+          imported && {
+            val e = scope.lookupEntry(name)
+            (e ne null) && (e.owner == scope) && (
+              !settings.isScala212 || e.sym.exists
+            )
+          }
+        )
 
     /** Do something with the symbols with name `name` imported via the import in `imp`,
       *  if any such symbol is accessible from this context and is a qualifying implicit.
@@ -1151,8 +1162,7 @@ trait Contexts { self: Analyzer =>
         List(
           s"types:  $t1 =:= $t2  ${t1 =:= t2}  members: ${mt1 =:= mt2}",
           s"member type 1: $mt1",
-          s"member type 2: $mt2"
-        ).mkString("\n  ")
+          s"member type 2: $mt2").mkString("\n  ")
 
       if (!ambiguous || !imp2Symbol.exists)
         Some(imp1)
@@ -1178,8 +1188,7 @@ trait Contexts { self: Analyzer =>
         } else {
           log(s"Import is genuinely ambiguous:\n  " + characterize)
           None
-        }
-      )
+        })
     }
 
     /** The symbol with name `name` imported via the import in `imp`,
@@ -1194,12 +1203,10 @@ trait Contexts { self: Analyzer =>
         isAccessible(s, imp.qual.tpe, superAccess = false))
 
     private def requiresQualifier(s: Symbol): Boolean =
-      (
-        s.owner.isClass
-          && !s.owner.isPackageClass
-          && !s.isTypeParameterOrSkolem
-          && !s.isExistentiallyBound
-      )
+      (s.owner.isClass
+        && !s.owner.isPackageClass
+        && !s.isTypeParameterOrSkolem
+        && !s.isExistentiallyBound)
 
     /** Must `sym` defined in package object of package `pkg`, if
       *  it selected from a prefix with `pkg` as its type symbol?
@@ -1228,16 +1235,14 @@ trait Contexts { self: Analyzer =>
       var symbolDepth: Int = -1 // the depth of the directly found symbol
 
       def finish(qual: Tree, sym: Symbol): NameLookup =
-        (
-          if (lookupError ne null)
-            lookupError
-          else
-            sym match {
-              case NoSymbol if inaccessible ne null => inaccessible
-              case NoSymbol                         => LookupNotFound
-              case _                                => LookupSucceeded(qual, sym)
-            }
-        )
+        (if (lookupError ne null)
+           lookupError
+         else
+           sym match {
+             case NoSymbol if inaccessible ne null => inaccessible
+             case NoSymbol                         => LookupNotFound
+             case _                                => LookupSucceeded(qual, sym)
+           })
       def finishDefSym(sym: Symbol, pre0: Type): NameLookup =
         if (requiresQualifier(sym))
           finish(gen.mkAttributedQualifier(pre0), sym)
@@ -1245,12 +1250,10 @@ trait Contexts { self: Analyzer =>
           finish(EmptyTree, sym)
 
       def isPackageOwnedInDifferentUnit(s: Symbol) =
-        (
-          s.isDefinedInPackage && (
-            !currentRun.compiles(s)
-              || unit.exists && s.sourceFile != unit.source.file
-          )
-        )
+        (s.isDefinedInPackage && (
+          !currentRun.compiles(s)
+            || unit.exists && s.sourceFile != unit.source.file
+        ))
       def lookupInPrefix(name: Name) = pre member name filter qualifies
       def accessibleInPrefix(s: Symbol) =
         isAccessible(s, pre, superAccess = false)
@@ -1268,8 +1271,9 @@ trait Contexts { self: Analyzer =>
       }
 
       def lookupInScope(scope: Scope) =
-        (scope lookupUnshadowedEntries name filter (e =>
-          qualifies(e.sym))).toList
+        (
+          scope lookupUnshadowedEntries name filter (e => qualifies(e.sym))
+        ).toList
 
       def newOverloaded(owner: Symbol, pre: Type, entries: List[ScopeEntry]) =
         logResult(s"overloaded symbol in $pre")(
@@ -1339,11 +1343,11 @@ trait Contexts { self: Analyzer =>
       //     highest precedence.
       //  2) Explicit imports have next highest precedence.
       def depthOk(imp: ImportInfo) =
-        (
-          imp.depth > symbolDepth
-            || (unit.isJava && imp.isExplicitImport(
-              name) && imp.depth == symbolDepth)
-        )
+        (imp.depth > symbolDepth
+          || (
+            unit.isJava && imp.isExplicitImport(
+              name) && imp.depth == symbolDepth
+          ))
 
       while (!impSym.exists && imports.nonEmpty && depthOk(imports.head)) {
         impSym = lookupImport(imp1, requireExplicit = false)
@@ -1373,11 +1377,9 @@ trait Contexts { self: Analyzer =>
         //   - imp1 and imp2 are at the same depth
         //   - imp1 is a wildcard import, so all explicit imports from outer scopes must be checked
         def keepLooking =
-          (
-            lookupError == null
-              && imports.tail.nonEmpty
-              && (sameDepth || !imp1Explicit)
-          )
+          (lookupError == null
+            && imports.tail.nonEmpty
+            && (sameDepth || !imp1Explicit))
         // If we find a competitor imp2 which imports the same name, possible outcomes are:
         //
         //  - same depth, imp1 wild, imp2 explicit:        imp2 wins, drop imp1
@@ -1581,8 +1583,9 @@ trait Contexts { self: Analyzer =>
 
     def propagateImplicitTypeErrorsTo(target: ContextReporter) = {
       errors foreach {
-        case err @ (_: DivergentImplicitTypeError |
-            _: AmbiguousImplicitTypeError) =>
+        case err @ (
+              _: DivergentImplicitTypeError | _: AmbiguousImplicitTypeError
+            ) =>
           target.errorBuffer += err
         case _ =>
       }

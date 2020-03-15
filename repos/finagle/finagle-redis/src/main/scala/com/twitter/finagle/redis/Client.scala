@@ -109,10 +109,12 @@ class BaseClient(service: Service[Command, Reply]) {
     */
   private[redis] def doRequest[T](cmd: Command)(
       handler: PartialFunction[Reply, Future[T]]) =
-    service(cmd) flatMap (handler orElse {
-      case ErrorReply(message) => Future.exception(new ServerError(message))
-      case _                   => Future.exception(new IllegalStateException)
-    })
+    service(cmd) flatMap (
+      handler orElse {
+        case ErrorReply(message) => Future.exception(new ServerError(message))
+        case _                   => Future.exception(new IllegalStateException)
+      }
+    )
 
   /**
     * Helper function to convert a Redis multi-bulk reply into a map of pairs
@@ -188,8 +190,8 @@ object TransactionalClient {
   * Connects to a single Redis host supporting transactions
   */
 private[redis] class ConnectedTransactionalClient(
-    serviceFactory: ServiceFactory[Command, Reply]
-) extends Client(serviceFactory.toService)
+    serviceFactory: ServiceFactory[Command, Reply])
+    extends Client(serviceFactory.toService)
     with TransactionalClient {
 
   def transaction(cmds: Seq[Command]): Future[Seq[Reply]] = {

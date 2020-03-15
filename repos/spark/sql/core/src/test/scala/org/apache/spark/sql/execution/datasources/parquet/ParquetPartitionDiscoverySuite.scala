@@ -909,27 +909,29 @@ class ParquetPartitionDiscoverySuite
           Seq("file:/tmp/foo/a=1", "file:/tmp/foo/b=1")))
 
     assert(
-      listConflictingPartitionColumns(Seq(
-        (
-          new Path("file:/tmp/foo/a=1/_temporary"),
-          PartitionValues(Seq("a"), Seq(Literal(1)))),
-        (
-          new Path("file:/tmp/foo/a=1"),
-          PartitionValues(Seq("a"), Seq(Literal(1))))
-      )).trim ===
+      listConflictingPartitionColumns(
+        Seq(
+          (
+            new Path("file:/tmp/foo/a=1/_temporary"),
+            PartitionValues(Seq("a"), Seq(Literal(1)))),
+          (
+            new Path("file:/tmp/foo/a=1"),
+            PartitionValues(Seq("a"), Seq(Literal(1))))
+        )).trim ===
         makeExpectedMessage(
           Seq("a"),
           Seq("file:/tmp/foo/a=1/_temporary", "file:/tmp/foo/a=1")))
 
     assert(
-      listConflictingPartitionColumns(Seq(
-        (
-          new Path("file:/tmp/foo/a=1"),
-          PartitionValues(Seq("a"), Seq(Literal(1)))),
-        (
-          new Path("file:/tmp/foo/a=1/b=foo"),
-          PartitionValues(Seq("a", "b"), Seq(Literal(1), Literal("foo"))))
-      )).trim ===
+      listConflictingPartitionColumns(
+        Seq(
+          (
+            new Path("file:/tmp/foo/a=1"),
+            PartitionValues(Seq("a"), Seq(Literal(1)))),
+          (
+            new Path("file:/tmp/foo/a=1/b=foo"),
+            PartitionValues(Seq("a", "b"), Seq(Literal(1), Literal("foo"))))
+        )).trim ===
         makeExpectedMessage(
           Seq("a", "a, b"),
           Seq("file:/tmp/foo/a=1", "file:/tmp/foo/a=1/b=foo")))

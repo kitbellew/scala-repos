@@ -126,10 +126,7 @@ final class Env(
   lazy val cli = new Cli(system.lilaBus, renderer)
 
   system.actorOf(
-    Props(
-      new KamonPusher(
-        countUsers = () => userEnv.onlineUserIdMemo.count
-      )))
+    Props(new KamonPusher(countUsers = () => userEnv.onlineUserIdMemo.count)))
 }
 
 object Env {

@@ -52,8 +52,7 @@ object product {
     implicit def toTuple[P, L <: HList, T, Out0](implicit
         gen: Generic.Aux[P, L],
         tupler: ops.hlist.Tupler.Aux[L, T],
-        ev: T <:< Out0
-    ): Aux[P, Out0] =
+        ev: T <:< Out0): Aux[P, Out0] =
       new ToTuple[P] {
         type Out = Out0
         def apply(p: P) = ev(tupler(gen.to(p)))
@@ -74,8 +73,7 @@ object product {
 
     implicit def toHList[P, Out0 <: HList, L <: HList](implicit
         gen: Generic.Aux[P, L],
-        ev: L <:< Out0
-    ): Aux[P, Out0] =
+        ev: L <:< Out0): Aux[P, Out0] =
       new ToHList[P] {
         type Out = Out0
         def apply(p: P) = ev(gen.to(p))
@@ -97,8 +95,7 @@ object product {
 
     implicit def toRecord[P, Out0 <: HList, R <: HList](implicit
         lgen: LabelledGeneric.Aux[P, R],
-        ev: R <:< Out0
-    ): Aux[P, Out0] =
+        ev: R <:< Out0): Aux[P, Out0] =
       new ToRecord[P] {
         type Out = Out0
         def apply(p: P) = ev(lgen.to(p))
@@ -122,8 +119,7 @@ object product {
 
     implicit def productToMap[P, K0, V0, R <: HList](implicit
         lgen: LabelledGeneric.Aux[P, R],
-        toMap: ops.record.ToMap.Aux[R, K0, V0]
-    ): Aux[P, K0, V0] =
+        toMap: ops.record.ToMap.Aux[R, K0, V0]): Aux[P, K0, V0] =
       new ToMap[P] {
         type K = K0
         type V = V0
@@ -132,8 +128,8 @@ object product {
 
     implicit def emptyProductToMapNothing[P, K0](implicit
         lgen: LabelledGeneric.Aux[P, HNil],
-        toMap: ops.record.ToMap.Aux[HNil, K0, Nothing]
-    ): Aux[P, K0, Nothing] = productToMap[P, K0, Nothing, HNil]
+        toMap: ops.record.ToMap.Aux[HNil, K0, Nothing]): Aux[P, K0, Nothing] =
+      productToMap[P, K0, Nothing, HNil]
   }
 
   trait ToTraversable[P, M[_]] extends DepFn1[P] {
@@ -153,8 +149,8 @@ object product {
 
     implicit def productToTraversable[P, M[_], Lub0, L <: HList](implicit
         gen: Generic.Aux[P, L],
-        toTraversable: ops.hlist.ToTraversable.Aux[L, M, Lub0]
-    ): Aux[P, M, Lub0] =
+        toTraversable: ops.hlist.ToTraversable.Aux[L, M, Lub0])
+        : Aux[P, M, Lub0] =
       new ToTraversable[P, M] {
         type Lub = Lub0
         def apply(p: P) = toTraversable(gen.to(p))
@@ -162,8 +158,8 @@ object product {
 
     implicit def emptyProductToTraversableNothing[P, M[_]](implicit
         gen: Generic.Aux[P, HNil],
-        toTraversable: ops.hlist.ToTraversable.Aux[HNil, M, Nothing]
-    ): Aux[P, M, Nothing] = productToTraversable[P, M, Nothing, HNil]
+        toTraversable: ops.hlist.ToTraversable.Aux[HNil, M, Nothing])
+        : Aux[P, M, Nothing] = productToTraversable[P, M, Nothing, HNil]
   }
 
   trait ToSized[P, M[_]] extends DepFn1[P] {
@@ -185,8 +181,7 @@ object product {
 
     implicit def productToSized[P, M[_], Lub0, N0 <: Nat, L <: HList](implicit
         gen: Generic.Aux[P, L],
-        toSized: ops.hlist.ToSized.Aux[L, M, Lub0, N0]
-    ): Aux[P, M, Lub0, N0] =
+        toSized: ops.hlist.ToSized.Aux[L, M, Lub0, N0]): Aux[P, M, Lub0, N0] =
       new ToSized[P, M] {
         type Lub = Lub0
         type N = N0
@@ -195,7 +190,7 @@ object product {
 
     implicit def emptyProductToSizedNothing[P, M[_]](implicit
         gen: Generic.Aux[P, HNil],
-        toSized: ops.hlist.ToSized.Aux[HNil, M, Nothing, _0]
-    ): Aux[P, M, Nothing, _0] = productToSized[P, M, Nothing, _0, HNil]
+        toSized: ops.hlist.ToSized.Aux[HNil, M, Nothing, _0])
+        : Aux[P, M, Nothing, _0] = productToSized[P, M, Nothing, _0, HNil]
   }
 }

@@ -195,8 +195,9 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
 
       // TODO - Check to see if we're asking for latest.* version, and if so, we should run a latest version query
       //        first and use that result to return the metadata/final module.
-      Message.debug(s"Requesting conf [${dd.getModuleConfigurations.mkString(
-        ",")}] from Aether module ${drid} in resolver ${getName}")
+      Message.debug(
+        s"Requesting conf [${dd.getModuleConfigurations.mkString(
+          ",")}] from Aether module ${drid} in resolver ${getName}")
       val request = new AetherDescriptorRequest()
       val coords = aetherCoordsFromMrid(drid)
       Message.debug(s"Aether about to resolve [$coords]...")
@@ -476,8 +477,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
               d.getArtifact.getGroupId,
               d.getArtifact.getArtifactId,
               d.getArtifact.getVersion,
-              props.asJava
-            )
+              props.asJava)
           case _ => tmp
         }
       }
@@ -502,7 +502,11 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
       // TODO - Unify this borrowed Java code into something a bit friendlier.
       // Now we add the artifact....
-      if ((d.getArtifact.getClassifier != null) || ((d.getArtifact.getExtension != null) && !("jar" == d.getArtifact.getExtension))) {
+      if ((d.getArtifact.getClassifier != null) || (
+            (
+              d.getArtifact.getExtension != null
+            ) && !("jar" == d.getArtifact.getExtension)
+          )) {
         val tpe: String =
           if (d.getArtifact.getExtension != null)
             d.getArtifact.getExtension
@@ -706,8 +710,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
                 art.getExt,
                 t.module.getRevision,
                 getArtifactProperties(t.module),
-                file
-              )
+                file)
             }
         publishArtifacts(artifacts)
         // TODO - Any kind of validity checking?

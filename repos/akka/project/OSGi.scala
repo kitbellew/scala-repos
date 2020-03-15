@@ -16,14 +16,15 @@ object OSGi {
     defaultOsgiSettings ++ Seq(
       packagedArtifact in (Compile, packageBin) <<= (
         artifact in (Compile, packageBin),
-        OsgiKeys.bundle).identityMap
-    )
+        OsgiKeys.bundle).identityMap)
 
   val actor = osgiSettings ++ Seq(
     OsgiKeys.exportPackage := Seq("akka*"),
     OsgiKeys.privatePackage := Seq("akka.osgi.impl"),
     //akka-actor packages are not imported, as contained in the CP
-    OsgiKeys.importPackage := (osgiOptionalImports map optionalResolution) ++ Seq(
+    OsgiKeys.importPackage := (
+      osgiOptionalImports map optionalResolution
+    ) ++ Seq(
       "!sun.misc",
       scalaJava8CompatImport(),
       scalaVersion(scalaImport).value,
@@ -122,8 +123,7 @@ object OSGi {
   def exports(packages: Seq[String] = Seq(), imports: Seq[String] = Nil) =
     osgiSettings ++ Seq(
       OsgiKeys.importPackage := imports ++ scalaVersion(defaultImports).value,
-      OsgiKeys.exportPackage := packages
-    )
+      OsgiKeys.exportPackage := packages)
   def defaultImports(scalaVersion: String) =
     Seq(
       "!sun.misc",

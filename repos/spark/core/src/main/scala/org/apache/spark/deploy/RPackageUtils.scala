@@ -232,13 +232,14 @@ private[deploy] object RPackageUtils extends Logging {
       Set.empty[File]
     } else {
       if (dir.isDirectory) {
-        val subDir = dir.listFiles(new FilenameFilter {
-          override def accept(dir: File, name: String): Boolean = {
-            !excludePatterns
-              .map(name.contains)
-              .reduce(_ || _) // exclude files with given pattern
-          }
-        })
+        val subDir = dir.listFiles(
+          new FilenameFilter {
+            override def accept(dir: File, name: String): Boolean = {
+              !excludePatterns
+                .map(name.contains)
+                .reduce(_ || _) // exclude files with given pattern
+            }
+          })
         subDir.flatMap(listFilesRecursively(_, excludePatterns)).toSet
       } else {
         Set(dir)

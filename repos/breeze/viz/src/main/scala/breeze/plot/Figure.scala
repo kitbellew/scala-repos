@@ -116,21 +116,23 @@ class Figure(
       plots.remove(plots.length - 1)
     }
 
-    SwingUtilities.invokeLater(new Runnable {
-      def run() {
-        contents.removeAll()
-        contents.setSize(width_, height_)
-        contents.setLayout(new java.awt.GridLayout(rows, cols))
-        for (plot <- plots) {
-          contents.add(plot match {
-            case Some(plot) => plot.panel;
-            case None       => new JPanel()
-          })
+    SwingUtilities.invokeLater(
+      new Runnable {
+        def run() {
+          contents.removeAll()
+          contents.setSize(width_, height_)
+          contents.setLayout(new java.awt.GridLayout(rows, cols))
+          for (plot <- plots) {
+            contents.add(
+              plot match {
+                case Some(plot) => plot.panel;
+                case None       => new JPanel()
+              })
+          }
+          frame.setSize(width_, height_)
+          frame.setVisible(visible)
         }
-        frame.setSize(width_, height_)
-        frame.setVisible(visible)
-      }
-    })
+      })
 
     frame.repaint()
   }

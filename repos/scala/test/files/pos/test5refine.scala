@@ -86,9 +86,10 @@ object test {
           type If = Q
         }
     } =
-      g[F {
-        type If = Q
-      }](val_np);
+      g[
+        F {
+          type If = Q
+        }](val_np);
     def val_njy: G {
       type Ig = Q;
     } = g[Q](val_nq);
@@ -98,9 +99,10 @@ object test {
           type Ig = Q
         }
     } =
-      g[G {
-        type Ig = Q;
-      }](val_njy);
+      g[
+        G {
+          type Ig = Q;
+        }](val_njy);
 
     // Check type i.P
     i.chk_ip(val_mp);

@@ -210,9 +210,7 @@ class TemplateExample
 
   get("/logout") {
     session.invalidate
-    displayPage(
-      "Scalatra: Session Example",
-      <pre>You have logged out</pre>
+    displayPage("Scalatra: Session Example", <pre>You have logged out</pre>
       <pre>Route: /logout</pre>)
   }
 
@@ -257,8 +255,7 @@ class TemplateExample
       title = "Scalatra: Flash  Example",
       content = <span>Message = {
         flash.getOrElse("message", "")
-      }</span>
-    )
+      }</span>)
   }
 
   post("/echo") {

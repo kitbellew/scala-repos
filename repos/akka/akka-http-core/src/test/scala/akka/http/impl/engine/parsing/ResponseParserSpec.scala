@@ -203,16 +203,18 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |
             |"""
         ) should generalMultiParseTo(
-          Right(baseResponse.withEntity(Chunked(
-            `application/pdf`,
-            source(
-              Chunk(ByteString("abc")),
-              Chunk(ByteString("0123456789ABCDEF"), "some=stuff;bla"),
-              Chunk(ByteString("0123456789ABCDEF"), "foo=bar"),
-              Chunk(ByteString("0123456789ABCDEF")),
-              LastChunk
-            )
-          ))))
+          Right(
+            baseResponse.withEntity(
+              Chunked(
+                `application/pdf`,
+                source(
+                  Chunk(ByteString("abc")),
+                  Chunk(ByteString("0123456789ABCDEF"), "some=stuff;bla"),
+                  Chunk(ByteString("0123456789ABCDEF"), "foo=bar"),
+                  Chunk(ByteString("0123456789ABCDEF")),
+                  LastChunk
+                )
+              ))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -220,8 +222,9 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         Seq(start, """0
             |
             |""") should generalMultiParseTo(
-          Right(baseResponse.withEntity(
-            Chunked(`application/pdf`, source(LastChunk)))))
+          Right(
+            baseResponse.withEntity(
+              Chunked(`application/pdf`, source(LastChunk)))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -233,11 +236,15 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |
             |HT""") should generalMultiParseTo(
           Right(
-            baseResponse.withEntity(Chunked(
-              `application/pdf`,
-              source(LastChunk(
-                "nice=true",
-                List(RawHeader("Foo", "pip apo"), RawHeader("Bar", "xyz"))))))),
+            baseResponse.withEntity(
+              Chunked(
+                `application/pdf`,
+                source(
+                  LastChunk(
+                    "nice=true",
+                    List(
+                      RawHeader("Foo", "pip apo"),
+                      RawHeader("Bar", "xyz"))))))),
           Left(
             MessageStartError(
               400: StatusCode,
@@ -247,11 +254,9 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       }
 
       "response with additional transfer encodings" in new Test {
-        Seq(
-          """HTTP/1.1 200 OK
+        Seq("""HTTP/1.1 200 OK
           |Transfer-Encoding: fancy, chunked
-          |Cont""",
-          """ent-Type: application/pdf
+          |Cont""", """ent-Type: application/pdf
           |
           |""") should generalMultiParseTo(
           Right(
@@ -286,10 +291,11 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         Seq(
           "HTTP/1.1 204 12345678",
           "90123456789012\r\n") should generalMultiParseTo(
-          Left(MessageStartError(
-            400: StatusCode,
-            ErrorInfo(
-              "Response reason phrase exceeds the configured limit of 21 characters"))))
+          Left(
+            MessageStartError(
+              400: StatusCode,
+              ErrorInfo(
+                "Response reason phrase exceeds the configured limit of 21 characters"))))
       }
 
       "with a missing reason phrase and no trailing space" in new Test {

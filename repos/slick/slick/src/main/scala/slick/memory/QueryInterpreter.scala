@@ -116,9 +116,11 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               }
             if (inner.headOption.isEmpty)
               Vector(
-                new ProductValue(Vector(
-                  l,
-                  createNullRow(right.nodeType.asCollectionType.elementType))))
+                new ProductValue(
+                  Vector(
+                    l,
+                    createNullRow(
+                      right.nodeType.asCollectionType.elementType))))
             else
               inner
           }
@@ -163,9 +165,11 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               }
             if (inner.headOption.isEmpty)
               Vector(
-                new ProductValue(Vector(
-                  l,
-                  createNullRow(right.nodeType.asCollectionType.elementType))))
+                new ProductValue(
+                  Vector(
+                    l,
+                    createNullRow(
+                      right.nodeType.asCollectionType.elementType))))
             else
               inner
           }
@@ -228,18 +232,19 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             by.toSeq.map {
               case (b, _) => run(b)
             }: IndexedSeq[Any]
-          }(new scala.math.Ordering[IndexedSeq[Any]] {
-            def compare(x: IndexedSeq[Any], y: IndexedSeq[Any]): Int = {
-              var i = 0
-              while (i < ords.length) {
-                val v = ords(i).compare(x(i), y(i))
-                if (v != 0)
-                  return v
-                i += 1
+          }(
+            new scala.math.Ordering[IndexedSeq[Any]] {
+              def compare(x: IndexedSeq[Any], y: IndexedSeq[Any]): Int = {
+                var i = 0
+                while (i < ords.length) {
+                  val v = ords(i).compare(x(i), y(i))
+                  if (v != 0)
+                    return v
+                  i += 1
+                }
+                0
               }
-              0
-            }
-          })
+            })
           scope.remove(gen)
           b.result()
         case GroupBy(gen, from, by, _) =>
@@ -358,13 +363,16 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 val (els, singleType) = unwrapSingleColumn(
                   whereV.asInstanceOf[Coll],
                   ct)
-                (if (singleType.isInstanceOf[OptionType])
-                   els.map(_.asInstanceOf[Option[Any]] match {
-                     case Some(v) => whatBase == v
-                     case None    => false
-                   })
-                 else
-                   els.map(whatBase.==)) contains true
+                (
+                  if (singleType.isInstanceOf[OptionType])
+                    els.map(
+                      _.asInstanceOf[Option[Any]] match {
+                        case Some(v) => whatBase == v
+                        case None    => false
+                      })
+                  else
+                    els.map(whatBase.==)
+                ) contains true
             }
           }
         case Library.Sum(ch) =>
@@ -545,10 +553,12 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Library.Count =>
         val CollectionType(_, elType) = args(0)._1
         val coll = args(0)._2.asInstanceOf[Coll]
-        (elType match {
-          case ProductType(_) => coll
-          case _              => coll.iterator.filter(v => v != null && v != None)
-        }).size
+        (
+          elType match {
+            case ProductType(_) => coll
+            case _              => coll.iterator.filter(v => v != null && v != None)
+          }
+        ).size
       case Library.Database => ""
       case Library.Degrees =>
         val t = args(0)._1.asInstanceOf[ScalaNumericType[Any]]

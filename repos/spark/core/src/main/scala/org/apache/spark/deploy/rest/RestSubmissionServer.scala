@@ -274,8 +274,9 @@ private[rest] abstract class SubmitRequestServlet extends RestServlet {
         handleSubmit(requestMessageJson, requestMessage, responseServlet)
       } catch {
         // The client failed to provide a valid JSON, so this is not our fault
-        case e @ (_: JsonProcessingException |
-            _: SubmitRestProtocolException) =>
+        case e @ (
+              _: JsonProcessingException | _: SubmitRestProtocolException
+            ) =>
           responseServlet.setStatus(HttpServletResponse.SC_BAD_REQUEST)
           handleError("Malformed request: " + formatException(e))
       }

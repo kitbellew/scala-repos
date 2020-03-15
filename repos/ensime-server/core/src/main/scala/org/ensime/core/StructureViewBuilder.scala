@@ -15,8 +15,7 @@ trait StructureViewBuilder {
       keyword: String,
       name: String,
       pos: SourcePosition,
-      members: ListBuffer[DefsBuilder]
-  ) {
+      members: ListBuffer[DefsBuilder]) {
     def build: StructureViewMember =
       StructureViewMember(keyword, name, pos, members.map(_.build).toList)
   }
@@ -33,7 +32,9 @@ trait StructureViewBuilder {
     }
 
     def shouldShow(x: DefDef): Boolean =
-      !(x.name == nme.CONSTRUCTOR || x.name == nme.MIXIN_CONSTRUCTOR || x.symbol.isAccessor)
+      !(
+        x.name == nme.CONSTRUCTOR || x.name == nme.MIXIN_CONSTRUCTOR || x.symbol.isAccessor
+      )
 
     def pos(x: Symbol) =
       locateSymbolPos(x, PosNeededYes)

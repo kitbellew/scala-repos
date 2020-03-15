@@ -403,9 +403,11 @@ case class TestRecord(
     this(pieces(0), pieces(1).toInt, pieces(2).toLong, pieces(3) == "d")
   def this(line: String) = this(line.split("\t"))
   override def toString() =
-    topic + "\t" + key + "\t" + value + "\t" + (if (delete)
-                                                  "d"
-                                                else
-                                                  "u")
+    topic + "\t" + key + "\t" + value + "\t" + (
+      if (delete)
+        "d"
+      else
+        "u"
+    )
   def topicAndKey = topic + key
 }

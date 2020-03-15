@@ -229,26 +229,27 @@ class GraphStageTimersSpec extends AkkaSpec {
 
       Source
         .fromPublisher(upstream)
-        .via(new SimpleLinearGraphStage[Int] {
-          override def createLogic(inheritedAttributes: Attributes) =
-            new TimerGraphStageLogic(shape) {
-              override def preStart(): Unit = scheduleOnce("tick", 100.millis)
+        .via(
+          new SimpleLinearGraphStage[Int] {
+            override def createLogic(inheritedAttributes: Attributes) =
+              new TimerGraphStageLogic(shape) {
+                override def preStart(): Unit = scheduleOnce("tick", 100.millis)
 
-              setHandler(
-                in,
-                new InHandler {
-                  override def onPush() = () // Ingore
-                })
+                setHandler(
+                  in,
+                  new InHandler {
+                    override def onPush() = () // Ingore
+                  })
 
-              setHandler(
-                out,
-                new OutHandler {
-                  override def onPull(): Unit = pull(in)
-                })
+                setHandler(
+                  out,
+                  new OutHandler {
+                    override def onPull(): Unit = pull(in)
+                  })
 
-              override def onTimer(timerKey: Any) = throw exception
-            }
-        })
+                override def onTimer(timerKey: Any) = throw exception
+              }
+          })
         .runWith(Sink.fromSubscriber(downstream))
 
       downstream.request(1)

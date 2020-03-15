@@ -214,16 +214,14 @@ class LazyMacros(val c: whitebox.Context)
   def mkLazyImpl[I](implicit iTag: WeakTypeTag[I]): Tree =
     mkImpl[I](
       (tree, actualType) => q"_root_.shapeless.Lazy.apply[$actualType]($tree)",
-      q"null.asInstanceOf[_root_.shapeless.Lazy[_root_.scala.Nothing]]"
-    )
+      q"null.asInstanceOf[_root_.shapeless.Lazy[_root_.scala.Nothing]]")
 
   def mkStrictImpl[I](implicit iTag: WeakTypeTag[I]): Tree =
     mkImpl[I](
       (
           tree,
           actualType) => q"_root_.shapeless.Strict.apply[$actualType]($tree)",
-      q"null.asInstanceOf[_root_.shapeless.Strict[_root_.scala.Nothing]]"
-    )
+      q"null.asInstanceOf[_root_.shapeless.Strict[_root_.scala.Nothing]]")
 
   def mkImpl[I](mkInst: (Tree, Type) => Tree, nullInst: => Tree)(
       implicit iTag: WeakTypeTag[I]): Tree = {
@@ -239,12 +237,9 @@ class LazyMacros(val c: whitebox.Context)
   }
 
   def setAnnotation(msg: String): Unit = {
-    val tree0 = c.typecheck(
-      q"""
+    val tree0 = c.typecheck(q"""
           new _root_.scala.annotation.implicitNotFound("dummy")
-        """,
-      silent = false
-    )
+        """, silent = false)
 
     class SubstMessage extends Transformer {
       val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
@@ -275,8 +270,7 @@ class LazyMacros(val c: whitebox.Context)
         symbol: Symbol,
         inst: Option[Tree],
         actualTpe: Type,
-        dependsOn: List[Type]
-    ) {
+        dependsOn: List[Type]) {
       def ident = Ident(symbol)
     }
 
@@ -319,8 +313,9 @@ class LazyMacros(val c: whitebox.Context)
             val tree = c.inferImplicitValue(tpe, silent = true)
             if (tree.isEmpty) {
               tpe.typeSymbol.annotations
-                .find(_.tree.tpe =:= typeOf[
-                  _root_.scala.annotation.implicitNotFound])
+                .find(
+                  _.tree.tpe =:= typeOf[
+                    _root_.scala.annotation.implicitNotFound])
                 .foreach { infAnn =>
                   val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
                   val analyzer: global.analyzer.type = global.analyzer
@@ -394,8 +389,7 @@ class LazyMacros(val c: whitebox.Context)
         dict: ListMap[TypeWrapper, Instance],
         open: List[Instance],
         /** Types whose derivation must fail no matter what */
-        prevent: List[TypeWrapper]
-    ) {
+        prevent: List[TypeWrapper]) {
       def addDependency(tpe: Type): State = {
         import scala.::
         val open0 =
@@ -482,9 +476,7 @@ class LazyMacros(val c: whitebox.Context)
     def resolve0(state: State)(tpe: Type): Option[(State, Tree, Type)] = {
       val extInstOpt = State
         .resolveInstance(state)(tpe)
-        .orElse(
-          stripRefinements(tpe).flatMap(State.resolveInstance(state))
-        )
+        .orElse(stripRefinements(tpe).flatMap(State.resolveInstance(state)))
 
       extInstOpt.map {
         case (state0, extInst) =>
@@ -494,15 +486,13 @@ class LazyMacros(val c: whitebox.Context)
 
     def deriveLowPriority(
         state0: State,
-        instTpe: Type
-    ): Option[Either[String, (State, Instance)]] = {
+        instTpe: Type): Option[Either[String, (State, Instance)]] = {
 
       def helper(
           state: State,
           wrappedTpe: Type,
           innerTpe: Type,
-          ignoring: String
-      ): (State, Instance) = {
+          ignoring: String): (State, Instance) = {
 
         val tmpState = state.copy(prevent =
           state.prevent :+ TypeWrapper(wrappedTpe))

@@ -65,15 +65,7 @@ object ContentDisplay
   val TOP = Top
 
   protected override def unsortedValues: Array[ContentDisplay] =
-    Array(
-      Top,
-      Right,
-      Bottom,
-      Left,
-      Center,
-      GraphicOnly,
-      TextOnly
-    )
+    Array(Top, Right, Bottom, Left, Center, GraphicOnly, TextOnly)
 }
 
 sealed case class ContentDisplay(override val delegate: jfxsc.ContentDisplay)

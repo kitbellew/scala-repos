@@ -35,12 +35,10 @@ abstract class SyntaxAnalyzer
 
     /** Prune this tree and all trees beneath it. Can be overridden. */
     def prune(md: MemberDef): Boolean =
-      (
-        md.mods.isSynthetic
-          || md.mods.isParamAccessor
-          || nme.isConstructorName(md.name)
-          || (md.name containsName nme.ANON_CLASS_NAME)
-      )
+      (md.mods.isSynthetic
+        || md.mods.isParamAccessor
+        || nme.isConstructorName(md.name)
+        || (md.name containsName nme.ANON_CLASS_NAME))
 
     override def traverse(t: Tree): Unit =
       t match {

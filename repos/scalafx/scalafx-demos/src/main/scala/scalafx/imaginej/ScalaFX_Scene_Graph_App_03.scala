@@ -69,9 +69,7 @@ object ScalaFX_Scene_Graph_App_03 extends JFXApp {
     title = "ScalaFX Scene Graph App 03"
     scene = new Scene(500, 500) {
       fill = Color.Black
-      content = List(
-        rectangle
-      )
+      content = List(rectangle)
     }
     val parallelTransition =
       new ParallelTransition {
@@ -104,8 +102,7 @@ object ScalaFX_Scene_Graph_App_03 extends JFXApp {
                 duration = (1 s)
                 toX = 1
                 toY = 1
-              }
-            )
+              })
           }
         )
       }

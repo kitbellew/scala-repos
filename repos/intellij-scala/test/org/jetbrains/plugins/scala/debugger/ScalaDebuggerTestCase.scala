@@ -61,34 +61,35 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
       mainClass: String = mainClassName,
       debug: Boolean = false)(callback: => Unit) {
     var processHandler: ProcessHandler = null
-    UsefulTestCase.edt(new Runnable {
-      def run() {
-        if (needMake) {
-          make()
-          saveChecksums()
+    UsefulTestCase.edt(
+      new Runnable {
+        def run() {
+          if (needMake) {
+            make()
+            saveChecksums()
+          }
+          addBreakpoints()
+          val runner =
+            ProgramRunner.PROGRAM_RUNNER_EP.getExtensions.find {
+              _.getClass == classOf[GenericDebuggerRunner]
+            }.get
+          processHandler = runProcess(
+            mainClass,
+            getModule,
+            classOf[DefaultDebugExecutor],
+            new ProcessAdapter {
+              override def onTextAvailable(
+                  event: ProcessEvent,
+                  outputType: Key[_]) {
+                val text = event.getText
+                if (debug)
+                  print(text)
+              }
+            },
+            runner
+          )
         }
-        addBreakpoints()
-        val runner =
-          ProgramRunner.PROGRAM_RUNNER_EP.getExtensions.find {
-            _.getClass == classOf[GenericDebuggerRunner]
-          }.get
-        processHandler = runProcess(
-          mainClass,
-          getModule,
-          classOf[DefaultDebugExecutor],
-          new ProcessAdapter {
-            override def onTextAvailable(
-                event: ProcessEvent,
-                outputType: Key[_]) {
-              val text = event.getText
-              if (debug)
-                print(text)
-            }
-          },
-          runner
-        )
-      }
-    })
+      })
     callback
     clearXBreakpoints()
     getDebugProcess.stop(true)
@@ -175,16 +176,17 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
   }
 
   private def clearXBreakpoints(): Unit = {
-    UsefulTestCase.edt(new Runnable {
-      def run() {
-        val xBreakpointManager =
-          XDebuggerManager.getInstance(getProject).getBreakpointManager
-        inWriteAction {
-          xBreakpointManager.getAllBreakpoints.foreach(
-            xBreakpointManager.removeBreakpoint)
+    UsefulTestCase.edt(
+      new Runnable {
+        def run() {
+          val xBreakpointManager =
+            XDebuggerManager.getInstance(getProject).getBreakpointManager
+          inWriteAction {
+            xBreakpointManager.getAllBreakpoints.foreach(
+              xBreakpointManager.removeBreakpoint)
+          }
         }
-      }
-    })
+      })
   }
 
   protected def scalaLineBreakpointType =

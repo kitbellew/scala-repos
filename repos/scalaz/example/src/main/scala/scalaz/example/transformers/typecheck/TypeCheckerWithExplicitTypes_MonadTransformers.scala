@@ -71,17 +71,18 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
         for {
           operatorType <- typeCheck(operator)
           operandType <- typeCheck(operand)
-          res <- liftK(operatorType match {
-            case TyLam(argType, resultType) =>
-              compare(
-                argType,
-                operandType,
-                resultType,
-                "function expected arg of type: " + argType + ", but got: " + operandType)
-            case _ =>
-              typeError(
-                "function application expected function, but got: " + operatorType)
-          })
+          res <- liftK(
+            operatorType match {
+              case TyLam(argType, resultType) =>
+                compare(
+                  argType,
+                  operandType,
+                  resultType,
+                  "function expected arg of type: " + argType + ", but got: " + operandType)
+              case _ =>
+                typeError(
+                  "function application expected function, but got: " + operatorType)
+            })
         } yield res
     }
 }

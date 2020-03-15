@@ -39,17 +39,18 @@ object ProjectTests extends TestSuite {
 
     val grouped = Await
       .result(
-        Future.sequence(pythonFiles.map { p =>
-          Future {
-            print("-")
-            (
-              Seq(
-                "python",
-                "pythonparse/jvm/src/test/resources/pythonparse/parse.py",
-                p).!,
-              p)
-          }
-        }),
+        Future.sequence(
+          pythonFiles.map { p =>
+            Future {
+              print("-")
+              (
+                Seq(
+                  "python",
+                  "pythonparse/jvm/src/test/resources/pythonparse/parse.py",
+                  p).!,
+                p)
+            }
+          }),
         Duration.Inf)
       .groupBy(_._1)
       .mapValues(_.map(_._2))
@@ -68,9 +69,7 @@ object ProjectTests extends TestSuite {
   }
   val tests = TestSuite {
     "dropbox/changes" - check()
-    "django/django" - check(
-      ignored = Seq("tests/i18n/test_compilation.py")
-    )
+    "django/django" - check(ignored = Seq("tests/i18n/test_compilation.py"))
     "mitsuhiko/flask" - check()
     "zulip/zulip" - check()
     "ansible/ansible" - check()

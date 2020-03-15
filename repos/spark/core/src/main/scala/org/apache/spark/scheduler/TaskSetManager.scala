@@ -325,10 +325,11 @@ private[spark] class TaskSetManager(
       // on multiple nodes when we replicate cached blocks, as in Spark Streaming
       for (index <- speculatableTasks if canRunOnHost(index)) {
         val prefs = tasks(index).preferredLocations
-        val executors = prefs.flatMap(_ match {
-          case e: ExecutorCacheTaskLocation => Some(e.executorId)
-          case _                            => None
-        });
+        val executors = prefs.flatMap(
+          _ match {
+            case e: ExecutorCacheTaskLocation => Some(e.executorId)
+            case _                            => None
+          });
         if (executors.contains(execId)) {
           speculatableTasks -= index
           return Some((index, TaskLocality.PROCESS_LOCAL))

@@ -78,24 +78,29 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
   }
 
   def jdbcTypeFor(t: Type): JdbcType[Any] =
-    ((t.structural match {
-      case tmd: JdbcType[_]             => tmd
-      case ScalaBaseType.booleanType    => columnTypes.booleanJdbcType
-      case ScalaBaseType.bigDecimalType => columnTypes.bigDecimalJdbcType
-      case ScalaBaseType.byteType       => columnTypes.byteJdbcType
-      case ScalaBaseType.charType       => columnTypes.charJdbcType
-      case ScalaBaseType.doubleType     => columnTypes.doubleJdbcType
-      case ScalaBaseType.floatType      => columnTypes.floatJdbcType
-      case ScalaBaseType.intType        => columnTypes.intJdbcType
-      case ScalaBaseType.longType       => columnTypes.longJdbcType
-      case ScalaBaseType.nullType       => columnTypes.nullJdbcType
-      case ScalaBaseType.shortType      => columnTypes.shortJdbcType
-      case ScalaBaseType.stringType     => columnTypes.stringJdbcType
-      case t: OptionType                => jdbcTypeFor(t.elementType)
-      case t: ErasedScalaBaseType[_, _] => jdbcTypeFor(t.erasure)
-      case t =>
-        throw new SlickException("JdbcProfile has no JdbcType for type " + t)
-    }): JdbcType[_]).asInstanceOf[JdbcType[Any]]
+    (
+      (
+        t.structural match {
+          case tmd: JdbcType[_]             => tmd
+          case ScalaBaseType.booleanType    => columnTypes.booleanJdbcType
+          case ScalaBaseType.bigDecimalType => columnTypes.bigDecimalJdbcType
+          case ScalaBaseType.byteType       => columnTypes.byteJdbcType
+          case ScalaBaseType.charType       => columnTypes.charJdbcType
+          case ScalaBaseType.doubleType     => columnTypes.doubleJdbcType
+          case ScalaBaseType.floatType      => columnTypes.floatJdbcType
+          case ScalaBaseType.intType        => columnTypes.intJdbcType
+          case ScalaBaseType.longType       => columnTypes.longJdbcType
+          case ScalaBaseType.nullType       => columnTypes.nullJdbcType
+          case ScalaBaseType.shortType      => columnTypes.shortJdbcType
+          case ScalaBaseType.stringType     => columnTypes.stringJdbcType
+          case t: OptionType                => jdbcTypeFor(t.elementType)
+          case t: ErasedScalaBaseType[_, _] => jdbcTypeFor(t.erasure)
+          case t =>
+            throw new SlickException(
+              "JdbcProfile has no JdbcType for type " + t)
+        }
+      ): JdbcType[_]
+    ).asInstanceOf[JdbcType[Any]]
 
   def defaultSqlTypeName(tmd: JdbcType[_], sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
@@ -393,6 +398,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
 
 object JdbcTypesComponent {
   private[slick] lazy val typeNames = Map() ++
-    (for (f <- classOf[java.sql.Types].getFields)
-      yield f.get(null).asInstanceOf[Int] -> f.getName)
+    (
+      for (f <- classOf[java.sql.Types].getFields)
+        yield f.get(null).asInstanceOf[Int] -> f.getName
+    )
 }

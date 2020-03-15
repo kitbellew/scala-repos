@@ -62,7 +62,9 @@ private[spark] object RpcEndpointAddress {
           host == null ||
           port < 0 ||
           name == null ||
-          (uri.getPath != null && !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
+          (
+            uri.getPath != null && !uri.getPath.isEmpty
+          ) || // uri.getPath returns "" instead of null
           uri.getFragment != null ||
           uri.getQuery != null) {
         throw new SparkException("Invalid Spark URL: " + sparkUrl)

@@ -27,9 +27,7 @@ class LoadingFutureCacheTest extends FunSuite {
                 cacheLoaderCount += 1
                 Future.value(k.hashCode)
               }
-            }
-          )
-      )
+            }))
   }
 
   test("return CacheLoader result for unset keys") {

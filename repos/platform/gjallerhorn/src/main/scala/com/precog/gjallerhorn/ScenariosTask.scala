@@ -170,8 +170,10 @@ class ScenariosTask(settings: Settings)
       val account2 = createAccount
 
       val req = (security / "").addQueryParameter("apiKey", account1.apiKey) <<
-        ("""{"grants":[{"permissions":[{"accessType":"write", "path":"%s", "ownerAccountIds":["%s"]}]}]}""" format
-          (account1.rootPath + "/foo", account1.accountId))
+        (
+          """{"grants":[{"permissions":[{"accessType":"write", "path":"%s", "ownerAccountIds":["%s"]}]}]}""" format
+            (account1.rootPath + "/foo", account1.accountId)
+        )
 
       val result = Http(req OK as.String)
       val json = JParser.parseFromString(result()).valueOr(throw _)

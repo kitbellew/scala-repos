@@ -119,10 +119,11 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
   def asJsExp: JsExp = throw new NullPointerException("No way")
 
   def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null  => JsonAST.JNull
-      case value => JsonAST.JString(base64Encode(value))
-    })
+    Full(
+      get match {
+        case null  => JsonAST.JNull
+        case value => JsonAST.JString(base64Encode(value))
+      })
 
   override def setFromAny(f: Any): Array[Byte] =
     f match {
@@ -261,10 +262,11 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
   def asJsExp: JsExp = JE.Str(get)
 
   def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case str  => JsonAST.JString(str)
-    })
+    Full(
+      get match {
+        case null => JsonAST.JNull
+        case str  => JsonAST.JString(str)
+      })
 
   protected def i_obscure_!(in: String): String = ""
 
@@ -436,10 +438,11 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
   def asJsExp: JsExp = JE.Str(get)
 
   def asJsonValue: Box[JsonAST.JValue] =
-    Full(get match {
-      case null => JsonAST.JNull
-      case str  => JsonAST.JString(str)
-    })
+    Full(
+      get match {
+        case null => JsonAST.JNull
+        case str  => JsonAST.JString(str)
+      })
 
   override def setFromAny(in: Any): String = {
     in match {

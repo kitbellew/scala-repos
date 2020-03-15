@@ -565,8 +565,8 @@ private[joins] final class LongArrayRelation(
     private var start: Long,
     private var offsets: Array[Int],
     private var sizes: Array[Int],
-    private var bytes: Array[Byte]
-) extends UniqueHashedRelation
+    private var bytes: Array[Byte])
+    extends UniqueHashedRelation
     with LongHashedRelation
     with Externalizable {
 

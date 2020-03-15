@@ -44,8 +44,7 @@ case object PeriodSerializer
         },
         {
           case p: Period => JString(p.toString)
-        }
-      ))
+        }))
 
 case object DurationSerializer
     extends CustomSerializer[Duration](format =>
@@ -56,8 +55,7 @@ case object DurationSerializer
         },
         {
           case d: Duration => JInt(d.getMillis)
-        }
-      ))
+        }))
 
 case object InstantSerializer
     extends CustomSerializer[Instant](format =>
@@ -68,8 +66,7 @@ case object InstantSerializer
         },
         {
           case i: Instant => JInt(i.getMillis)
-        }
-      ))
+        }))
 
 object DateParser {
   def parse(s: String, format: Formats) =
@@ -88,8 +85,7 @@ case object DateTimeSerializer
         },
         {
           case d: DateTime => JString(format.dateFormat.format(d.toDate))
-        }
-      ))
+        }))
 
 case object DateMidnightSerializer
     extends CustomSerializer[DateMidnight](format =>
@@ -100,29 +96,30 @@ case object DateMidnightSerializer
         },
         {
           case d: DateMidnight => JString(format.dateFormat.format(d.toDate))
-        }
-      ))
+        }))
 
 private[ext] case class _Interval(start: Long, end: Long)
 object IntervalSerializer {
   def apply() =
-    new ClassSerializer(new ClassType[Interval, _Interval]() {
-      def unwrap(i: _Interval)(implicit format: Formats) =
-        new Interval(i.start, i.end)
-      def wrap(i: Interval)(implicit format: Formats) =
-        _Interval(i.getStartMillis, i.getEndMillis)
-    })
+    new ClassSerializer(
+      new ClassType[Interval, _Interval]() {
+        def unwrap(i: _Interval)(implicit format: Formats) =
+          new Interval(i.start, i.end)
+        def wrap(i: Interval)(implicit format: Formats) =
+          _Interval(i.getStartMillis, i.getEndMillis)
+      })
 }
 
 private[ext] case class _LocalDate(year: Int, month: Int, day: Int)
 object LocalDateSerializer {
   def apply() =
-    new ClassSerializer(new ClassType[LocalDate, _LocalDate]() {
-      def unwrap(d: _LocalDate)(implicit format: Formats) =
-        new LocalDate(d.year, d.month, d.day)
-      def wrap(d: LocalDate)(implicit format: Formats) =
-        _LocalDate(d.getYear(), d.getMonthOfYear, d.getDayOfMonth)
-    })
+    new ClassSerializer(
+      new ClassType[LocalDate, _LocalDate]() {
+        def unwrap(d: _LocalDate)(implicit format: Formats) =
+          new LocalDate(d.year, d.month, d.day)
+        def wrap(d: LocalDate)(implicit format: Formats) =
+          _LocalDate(d.getYear(), d.getMonthOfYear, d.getDayOfMonth)
+      })
 }
 
 private[ext] case class _LocalTime(
@@ -132,16 +129,17 @@ private[ext] case class _LocalTime(
     millis: Int)
 object LocalTimeSerializer {
   def apply() =
-    new ClassSerializer(new ClassType[LocalTime, _LocalTime]() {
-      def unwrap(t: _LocalTime)(implicit format: Formats) =
-        new LocalTime(t.hour, t.minute, t.second, t.millis)
-      def wrap(t: LocalTime)(implicit format: Formats) =
-        _LocalTime(
-          t.getHourOfDay,
-          t.getMinuteOfHour,
-          t.getSecondOfMinute,
-          t.getMillisOfSecond)
-    })
+    new ClassSerializer(
+      new ClassType[LocalTime, _LocalTime]() {
+        def unwrap(t: _LocalTime)(implicit format: Formats) =
+          new LocalTime(t.hour, t.minute, t.second, t.millis)
+        def wrap(t: LocalTime)(implicit format: Formats) =
+          _LocalTime(
+            t.getHourOfDay,
+            t.getMinuteOfHour,
+            t.getSecondOfMinute,
+            t.getMillisOfSecond)
+      })
 }
 
 private[ext] trait ClassType[A, B] {

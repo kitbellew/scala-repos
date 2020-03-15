@@ -99,18 +99,24 @@ object IngestTest {
             (stats, _) =>
               config.ingest.foldLeft(stats) {
                 case (stats, (path, file)) =>
-                  stats + (path -> (stats.getOrElse(path, None) |+| Some(
-                    timeIngest(path, file))))
+                  stats + (
+                    path -> (
+                      stats.getOrElse(path, None) |+| Some(
+                        timeIngest(path, file))
+                    )
+                  )
               }
           }
         }
 
         run(config.dryRuns)
         val stats = run(config.runs)
-        println(JObject(stats.toList collect {
-          case (path, Some(s)) =>
-            JField(path, s.toJson)
-        }))
+        println(
+          JObject(
+            stats.toList collect {
+              case (path, Some(s)) =>
+                JField(path, s.toJson)
+            }))
 
       } finally {
         runner.shutdown()

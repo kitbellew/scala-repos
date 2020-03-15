@@ -44,7 +44,9 @@ abstract class Plugin {
   def options: List[String] = {
     // Process plugin options of form plugin:option
     def namec = name + ":"
-    global.settings.pluginOptions.value filter (_ startsWith namec) map (_ stripPrefix namec)
+    global.settings.pluginOptions.value filter (_ startsWith namec) map (
+      _ stripPrefix namec
+    )
   }
 
   /** Handle any plugin-specific options.

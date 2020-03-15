@@ -80,14 +80,16 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       val tp = eb.templateParents
       tp match {
         case Some(tp1) =>
-          (for (te <- tp1.allTypeElements;
-                t = te.getType(TypingContext.empty).getOrAny;
-                asPsi = ScType.toPsi(
-                  t,
-                  getProject,
-                  GlobalSearchScope.allScope(getProject))
-                if asPsi.isInstanceOf[PsiClassType])
-            yield asPsi.asInstanceOf[PsiClassType]).toArray[PsiClassType]
+          (
+            for (te <- tp1.allTypeElements;
+                 t = te.getType(TypingContext.empty).getOrAny;
+                 asPsi = ScType.toPsi(
+                   t,
+                   getProject,
+                   GlobalSearchScope.allScope(getProject))
+                 if asPsi.isInstanceOf[PsiClassType])
+              yield asPsi.asInstanceOf[PsiClassType]
+          ).toArray[PsiClassType]
         case _ => PsiClassType.EMPTY_ARRAY
       }
     } else
@@ -237,9 +239,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             TypeDefinitionMembers
               .getTypes(c, Some(clazzType), this)
               .allFirstSeq()
-              .flatMap(_.map {
-                case (_, n) => (n.info, n.substitutor)
-              })
+              .flatMap(
+                _.map {
+                  case (_, n) => (n.info, n.substitutor)
+                })
           case _ =>
             allTypeAliases
         }
@@ -256,14 +259,16 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
         n.filter {
           case (_, x) =>
             !x.info.isInstanceOf[PhysicalSignature] &&
-              (x.info.namedElement match {
-                case v =>
-                  ScalaPsiUtil.nameContext(v) match {
-                    case _: ScVariable => v.name == x.info.name
-                    case _: ScValue    => v.name == x.info.name
-                    case _             => true
-                  }
-              })
+              (
+                x.info.namedElement match {
+                  case v =>
+                    ScalaPsiUtil.nameContext(v) match {
+                      case _: ScVariable => v.name == x.info.name
+                      case _: ScValue    => v.name == x.info.name
+                      case _             => true
+                    }
+                }
+              )
         })
       .map {
         case (_, n) => (n.info.namedElement, n.substitutor)
@@ -282,14 +287,16 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                 n.filter {
                   case (_, x) =>
                     !x.info.isInstanceOf[PhysicalSignature] &&
-                      (x.info.namedElement match {
-                        case v =>
-                          ScalaPsiUtil.nameContext(v) match {
-                            case _: ScVariable => v.name == x.info.name
-                            case _: ScValue    => v.name == x.info.name
-                            case _             => true
-                          }
-                      })
+                      (
+                        x.info.namedElement match {
+                          case v =>
+                            ScalaPsiUtil.nameContext(v) match {
+                              case _: ScVariable => v.name == x.info.name
+                              case _: ScValue    => v.name == x.info.name
+                              case _             => true
+                            }
+                        }
+                      )
                 })
               .map {
                 case (_, n) => (n.info.namedElement, n.substitutor)
@@ -306,9 +313,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     TypeDefinitionMembers
       .getSignatures(this)
       .allFirstSeq()
-      .flatMap(_.filter {
-        case (_, n) => n.info.isInstanceOf[PhysicalSignature]
-      })
+      .flatMap(
+        _.filter {
+          case (_, n) => n.info.isInstanceOf[PhysicalSignature]
+        })
       .map {
         case (_, n) => n.info.asInstanceOf[PhysicalSignature]
       } ++
@@ -324,9 +332,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             TypeDefinitionMembers
               .getSignatures(c, Some(clazzType), this)
               .allFirstSeq()
-              .flatMap(_.filter {
-                case (_, n) => n.info.isInstanceOf[PhysicalSignature]
-              })
+              .flatMap(
+                _.filter {
+                  case (_, n) => n.info.isInstanceOf[PhysicalSignature]
+                })
               .map {
                 case (_, n) => n.info.asInstanceOf[PhysicalSignature]
               } ++
@@ -344,9 +353,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     TypeDefinitionMembers
       .getSignatures(this)
       .allFirstSeq()
-      .flatMap(_.map {
-        case (_, n) => n.info
-      })
+      .flatMap(
+        _.map {
+          case (_, n) => n.info
+        })
 
   def allSignaturesIncludingSelfType = {
     selfType match {
@@ -357,9 +367,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             TypeDefinitionMembers
               .getSignatures(c, Some(clazzType), this)
               .allFirstSeq()
-              .flatMap(_.map {
-                case (_, n) => n.info
-              })
+              .flatMap(
+                _.map {
+                  case (_, n) => n.info
+                })
           case _ =>
             allSignatures
         }
@@ -570,11 +581,13 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
   }
 
   def functionsByName(name: String): Seq[PsiMethod] = {
-    (for ((p: PhysicalSignature, _) <- TypeDefinitionMembers
-            .getSignatures(this)
-            .forName(name)
-            ._1)
-      yield p.method).++(syntheticMethodsNoOverride.filter(_.name == name))
+    (
+      for ((p: PhysicalSignature, _) <- TypeDefinitionMembers
+             .getSignatures(this)
+             .forName(name)
+             ._1)
+        yield p.method
+    ).++(syntheticMethodsNoOverride.filter(_.name == name))
   }
 
   override def isInheritor(baseClass: PsiClass, deep: Boolean): Boolean = {

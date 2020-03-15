@@ -18,9 +18,10 @@ class TraceInitializationTest extends FunSuite {
   def req = RequestBuilder().url("http://foo/this/is/a/uri/path").buildGet()
 
   def assertAnnotationsInOrder(records: Seq[Record], annos: Seq[Annotation]) {
-    assert(records.collect {
-      case Record(_, _, ann, _) if annos.contains(ann) => ann
-    } == annos)
+    assert(
+      records.collect {
+        case Record(_, _, ann, _) if annos.contains(ann) => ann
+      } == annos)
   }
 
   /**

@@ -50,13 +50,9 @@ object AsyncMeter {
     *
     * @param maxWaiters: the number of allowable waiters at a given time
     */
-  def newMeter(
-      burstSize: Int,
-      burstDuration: Duration,
-      maxWaiters: Int
-  )(implicit
-      timer: Timer
-  ): AsyncMeter = new AsyncMeter(burstSize, burstDuration, maxWaiters)
+  def newMeter(burstSize: Int, burstDuration: Duration, maxWaiters: Int)(
+      implicit timer: Timer): AsyncMeter =
+    new AsyncMeter(burstSize, burstDuration, maxWaiters)
 
   /**
     * Allows the user to `await` on requests that have a wider width than the
@@ -192,8 +188,9 @@ class AsyncMeter private[concurrent] (
     */
   def await(permits: Int): Future[Unit] = {
     if (permits > burstSize)
-      return Future.exception(new IllegalArgumentException(
-        s"Tried to await on $permits permits, but the maximum burst size was $burstSize"))
+      return Future.exception(
+        new IllegalArgumentException(
+          s"Tried to await on $permits permits, but the maximum burst size was $burstSize"))
 
     // don't jump the queue-this is racy, but the race here is indistinguishable
     // from the synchronized behavior
@@ -225,8 +222,9 @@ class AsyncMeter private[concurrent] (
       restartTimerIfDead()
       p
     } else {
-      Future.exception(new RejectedExecutionException(
-        "Tried to wait when there were already the maximum number of waiters."))
+      Future.exception(
+        new RejectedExecutionException(
+          "Tried to wait when there were already the maximum number of waiters."))
     }
   }
 
@@ -238,14 +236,15 @@ class AsyncMeter private[concurrent] (
   // we refresh the bucket with as many tokens as we have accrued since we last
   // refreshed.
   private[this] def refreshTokens(): Unit =
-    bucket.put(synchronized {
-      val newTokens = period.numPeriods(elapsed())
-      elapsed = Stopwatch.start()
-      val num = newTokens + remainder
-      val floor = math.floor(num)
-      remainder = num - floor
-      floor.toInt
-    })
+    bucket.put(
+      synchronized {
+        val newTokens = period.numPeriods(elapsed())
+        elapsed = Stopwatch.start()
+        val num = newTokens + remainder
+        val floor = math.floor(num)
+        remainder = num - floor
+        floor.toInt
+      })
 
   private[this] def restartTimerIfDead(): Unit =
     synchronized {

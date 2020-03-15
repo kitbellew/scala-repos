@@ -267,9 +267,11 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def regexComponentPathPart: Parser[DynamicPart] =
-    "$" ~> identifier ~ ("<" ~> (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
-      case c => c.mkString
-    }) ^^ {
+    "$" ~> identifier ~ (
+      "<" ~> (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
+        case c => c.mkString
+      }
+    ) ^^ {
       case name ~ regex => DynamicPart(name, regex, encode = false)
     }
 
@@ -279,9 +281,13 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def path: Parser[PathPattern] =
-    "/" ~ ((positioned(singleComponentPathPart) | positioned(
-      multipleComponentsPathPart) | positioned(
-      regexComponentPathPart) | staticPathPart) *) ^^ {
+    "/" ~ (
+      (
+        positioned(singleComponentPathPart) | positioned(
+          multipleComponentsPathPart) | positioned(
+          regexComponentPathPart) | staticPathPart
+      ) *
+    ) ^^ {
       case _ ~ parts => PathPattern(parts)
     }
 
@@ -331,8 +337,9 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def parameter: Parser[Parameter] =
     ((identifier | tickedIdentifier) <~ ignoreWhiteSpace) ~ opt(
-      parameterType) ~ (ignoreWhiteSpace ~> opt(
-      parameterDefaultValue | parameterFixedValue)) ^^ {
+      parameterType) ~ (
+      ignoreWhiteSpace ~> opt(parameterDefaultValue | parameterFixedValue)
+    ) ^^ {
       case name ~ t ~ d =>
         Parameter(
           name,
@@ -387,7 +394,9 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def sentence: Parser[Product with Serializable] =
     namedError(
       (comment | positioned(include) | positioned(route)),
-      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (newLine | EOF)
+      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (
+      newLine | EOF
+    )
 
   def parser: Parser[List[Rule]] =
     phrase((blankLine | sentence *) <~ end) ^^ {

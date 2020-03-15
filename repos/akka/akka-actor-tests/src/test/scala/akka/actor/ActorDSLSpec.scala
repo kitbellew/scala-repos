@@ -23,11 +23,13 @@ class ActorDSLDummy {
 
 class ActorDSLSpec extends AkkaSpec {
 
-  val echo = system.actorOf(Props(new Actor {
-    def receive = {
-      case x ⇒ sender() ! x
-    }
-  }))
+  val echo = system.actorOf(
+    Props(
+      new Actor {
+        def receive = {
+          case x ⇒ sender() ! x
+        }
+      }))
 
   "An Inbox" must {
 
@@ -140,11 +142,12 @@ class ActorDSLSpec extends AkkaSpec {
 
     "support creating regular actors" in {
       //#simple-actor
-      val a = actor(new Act {
-        become {
-          case "hello" ⇒ sender() ! "hi"
-        }
-      })
+      val a = actor(
+        new Act {
+          become {
+            case "hello" ⇒ sender() ! "hi"
+          }
+        })
       //#simple-actor
 
       implicit val i = inbox()
@@ -154,17 +157,18 @@ class ActorDSLSpec extends AkkaSpec {
 
     "support becomeStacked" in {
       //#becomeStacked
-      val a = actor(new Act {
-        become { // this will replace the initial (empty) behavior
-          case "info" ⇒ sender() ! "A"
-          case "switch" ⇒
-            becomeStacked { // this will stack upon the "A" behavior
-              case "info" ⇒ sender() ! "B"
-              case "switch" ⇒ unbecome() // return to the "A" behavior
-            }
-          case "lobotomize" ⇒ unbecome() // OH NOES: Actor.emptyBehavior
-        }
-      })
+      val a = actor(
+        new Act {
+          become { // this will replace the initial (empty) behavior
+            case "info" ⇒ sender() ! "A"
+            case "switch" ⇒
+              becomeStacked { // this will stack upon the "A" behavior
+                case "info" ⇒ sender() ! "B"
+                case "switch" ⇒ unbecome() // return to the "A" behavior
+              }
+            case "lobotomize" ⇒ unbecome() // OH NOES: Actor.emptyBehavior
+          }
+        })
       //#becomeStacked
 
       implicit val sender = testActor
@@ -180,14 +184,15 @@ class ActorDSLSpec extends AkkaSpec {
 
     "support setup/teardown" in {
       //#simple-start-stop
-      val a = actor(new Act {
-        whenStarting {
-          testActor ! "started"
-        }
-        whenStopping {
-          testActor ! "stopped"
-        }
-      })
+      val a = actor(
+        new Act {
+          whenStarting {
+            testActor ! "started"
+          }
+          whenStopping {
+            testActor ! "stopped"
+          }
+        })
       //#simple-start-stop
 
       system stop a
@@ -197,17 +202,18 @@ class ActorDSLSpec extends AkkaSpec {
 
     "support restart" in {
       //#failing-actor
-      val a = actor(new Act {
-        become {
-          case "die" ⇒ throw new Exception
-        }
-        whenFailing {
-          case m @ (cause, msg) ⇒ testActor ! m
-        }
-        whenRestarted { cause ⇒
-          testActor ! cause
-        }
-      })
+      val a = actor(
+        new Act {
+          become {
+            case "die" ⇒ throw new Exception
+          }
+          whenFailing {
+            case m @ (cause, msg) ⇒ testActor ! m
+          }
+          whenRestarted { cause ⇒
+            testActor ! cause
+          }
+        })
       //#failing-actor
 
       EventFilter[Exception](occurrences = 1) intercept {
@@ -222,27 +228,30 @@ class ActorDSLSpec extends AkkaSpec {
     }
 
     "support superviseWith" in {
-      val a = actor(new Act {
-        val system = null // shadow the implicit system
-        //#supervise-with
-        superviseWith(OneForOneStrategy() {
-          case e: Exception if e.getMessage == "hello" ⇒ Stop
-          case _: Exception ⇒ Resume
+      val a = actor(
+        new Act {
+          val system = null // shadow the implicit system
+          //#supervise-with
+          superviseWith(
+            OneForOneStrategy() {
+              case e: Exception if e.getMessage == "hello" ⇒ Stop
+              case _: Exception ⇒ Resume
+            })
+          //#supervise-with
+          val child =
+            actor("child")(
+              new Act {
+                whenFailing { (_, _) ⇒
+                }
+                become {
+                  case ref: ActorRef ⇒ whenStopping(ref ! "stopped")
+                  case ex: Exception ⇒ throw ex
+                }
+              })
+          become {
+            case x ⇒ child ! x
+          }
         })
-        //#supervise-with
-        val child =
-          actor("child")(new Act {
-            whenFailing { (_, _) ⇒
-            }
-            become {
-              case ref: ActorRef ⇒ whenStopping(ref ! "stopped")
-              case ex: Exception ⇒ throw ex
-            }
-          })
-        become {
-          case x ⇒ child ! x
-        }
-      })
       a ! testActor
       EventFilter.warning("hi", occurrences = 1) intercept {
         a ! new Exception("hi")
@@ -259,17 +268,19 @@ class ActorDSLSpec extends AkkaSpec {
       //#nested-actor
       // here we pass in the ActorRefFactory explicitly as an example
       val a =
-        actor(system, "fred")(new Act {
-          val b =
-            actor("barney")(new Act {
-              whenStarting {
-                context.parent ! ("hello from " + self.path)
-              }
-            })
-          become {
-            case x ⇒ testActor ! x
-          }
-        })
+        actor(system, "fred")(
+          new Act {
+            val b =
+              actor("barney")(
+                new Act {
+                  whenStarting {
+                    context.parent ! ("hello from " + self.path)
+                  }
+                })
+            become {
+              case x ⇒ testActor ! x
+            }
+          })
       //#nested-actor
       expectMsg("hello from akka://ActorDSLSpec/user/fred/barney")
       lastSender should ===(a)
@@ -277,19 +288,20 @@ class ActorDSLSpec extends AkkaSpec {
 
     "support Stash" in {
       //#act-with-stash
-      val a = actor(new ActWithStash {
-        become {
-          case 1 ⇒ stash()
-          case 2 ⇒
-            testActor ! 2;
-            unstashAll();
-            becomeStacked {
-              case 1 ⇒
-                testActor ! 1;
-                unbecome()
-            }
-        }
-      })
+      val a = actor(
+        new ActWithStash {
+          become {
+            case 1 ⇒ stash()
+            case 2 ⇒
+              testActor ! 2;
+              unstashAll();
+              becomeStacked {
+                case 1 ⇒
+                  testActor ! 1;
+                  unbecome()
+              }
+          }
+        })
       //#act-with-stash
 
       a ! 1

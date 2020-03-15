@@ -29,10 +29,11 @@ object O3 {
 }
 
 object O4 {
-  def resultDefDefault(a: Any = {
-    class C
-    check("O4.resultDefDefault", classOf[C])
-  }) = ();
+  def resultDefDefault(
+      a: Any = {
+        class C
+        check("O4.resultDefDefault", classOf[C])
+      }) = ();
 }
 
 object Test extends App {

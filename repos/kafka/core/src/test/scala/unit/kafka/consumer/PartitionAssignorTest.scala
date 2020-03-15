@@ -45,16 +45,18 @@ class PartitionAssignorTest extends Logging {
           .map(topic => {
             (
               "topic-" + topic,
-              PartitionAssignorTest.MinPartitionCount.max(TestUtils.random
-                .nextInt(PartitionAssignorTest.MaxPartitionCount)))
+              PartitionAssignorTest.MinPartitionCount.max(
+                TestUtils.random.nextInt(
+                  PartitionAssignorTest.MaxPartitionCount)))
           })
           .toSeq: _*)
 
       val subscriptions = Map(
         (1 to consumerCount)
           .map(consumer => {
-            val streamCount = 1.max(TestUtils.random.nextInt(
-              PartitionAssignorTest.MaxStreamCount + 1))
+            val streamCount = 1.max(
+              TestUtils.random.nextInt(
+                PartitionAssignorTest.MaxStreamCount + 1))
             (
               "g1c" + consumer,
               WildcardSubscriptionInfo(streamCount, ".*", isWhitelist = true))
@@ -85,8 +87,9 @@ class PartitionAssignorTest extends Logging {
           .map(topic => {
             (
               "topic-" + topic,
-              PartitionAssignorTest.MinPartitionCount.max(TestUtils.random
-                .nextInt(PartitionAssignorTest.MaxPartitionCount)))
+              PartitionAssignorTest.MinPartitionCount.max(
+                TestUtils.random.nextInt(
+                  PartitionAssignorTest.MaxPartitionCount)))
           })
           .toSeq: _*)
 
@@ -96,8 +99,9 @@ class PartitionAssignorTest extends Logging {
             val streamCounts = Map(
               (1 to topicCount)
                 .map(topic => {
-                  val streamCount = 1.max(TestUtils.random.nextInt(
-                    PartitionAssignorTest.MaxStreamCount + 1))
+                  val streamCount = 1.max(
+                    TestUtils.random.nextInt(
+                      PartitionAssignorTest.MaxStreamCount + 1))
                   ("topic-" + topic, streamCount)
                 })
                 .toSeq: _*)
@@ -152,10 +156,12 @@ private object PartitionAssignorTest extends Logging {
         Map(
           "version" -> 1,
           "subscription" -> Map(regex -> streamCount),
-          "pattern" -> (if (isWhitelist)
-                          "white_list"
-                        else
-                          "black_list")))
+          "pattern" -> (
+            if (isWhitelist)
+              "white_list"
+            else
+              "black_list"
+          )))
 
     override def toString = {
       "\"%s\":%d (%s)".format(
@@ -207,8 +213,9 @@ private object PartitionAssignorTest extends Logging {
 
     scenario.topicPartitionCounts.foreach {
       case (topic, partitionCount) =>
-        val replicaAssignment = Map((0 until partitionCount).map(partition =>
-          (partition.toString, Seq(0))): _*)
+        val replicaAssignment = Map(
+          (0 until partitionCount).map(partition =>
+            (partition.toString, Seq(0))): _*)
         EasyMock
           .expect(
             zkClient.readData("/brokers/topics/%s".format(topic), new Stat()))

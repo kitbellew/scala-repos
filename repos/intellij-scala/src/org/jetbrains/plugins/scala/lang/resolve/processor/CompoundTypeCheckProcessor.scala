@@ -173,13 +173,14 @@ class CompoundTypeCheckSignatureProcessor(
 
     element match {
       case _: ScBindingPattern | _: ScFieldId | _: ScParameter =>
-        val rt = subst.subst(element match {
-          case b: ScBindingPattern =>
-            b.getType(TypingContext.empty).getOrNothing
-          case f: ScFieldId => f.getType(TypingContext.empty).getOrNothing
-          case param: ScParameter =>
-            param.getType(TypingContext.empty).getOrNothing
-        })
+        val rt = subst.subst(
+          element match {
+            case b: ScBindingPattern =>
+              b.getType(TypingContext.empty).getOrNothing
+            case f: ScFieldId => f.getType(TypingContext.empty).getOrNothing
+            case param: ScParameter =>
+              param.getType(TypingContext.empty).getOrNothing
+          })
         val dcl: ScTypedDefinition = element.asInstanceOf[ScTypedDefinition]
         val isVar = dcl.isVar
         if (!checkSignature(

@@ -21,8 +21,7 @@ trait JavaCompilerFixture {
           EnsimeConfig,
           JavaCompiler,
           JavaStoreReporter,
-          SearchService) => Any
-  ): Any
+          SearchService) => Any): Any
 
   def runForPositionInCompiledSource(
       config: EnsimeConfig,
@@ -54,11 +53,9 @@ object JavaCompilerFixture {
   private[fixture] def create(
       config: EnsimeConfig,
       reportHandler: ReportHandler,
-      search: SearchService
-  )(implicit
+      search: SearchService)(implicit
       system: ActorSystem,
-      vfs: EnsimeVFS
-  ): JavaCompiler = {
+      vfs: EnsimeVFS): JavaCompiler = {
     val indexer = TestProbe()
     val parent = TestProbe()
     new JavaCompiler(config, reportHandler, indexer.ref, search, vfs)
@@ -88,8 +85,7 @@ trait IsolatedJavaCompilerFixture
           EnsimeConfig,
           JavaCompiler,
           JavaStoreReporter,
-          SearchService) => Any
-  ): Any = {
+          SearchService) => Any): Any = {
     withVFS { implicit vfs =>
       withTestKit { testkit =>
         import testkit._

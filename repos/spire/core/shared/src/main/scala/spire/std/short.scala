@@ -57,10 +57,12 @@ trait ShortOrder extends Order[Short] {
 trait ShortIsSigned extends Signed[Short] {
   def signum(a: Short): Int = a
   def abs(a: Short): Short =
-    (if (a < 0)
-       -a
-     else
-       a).toShort
+    (
+      if (a < 0)
+        -a
+      else
+        a
+    ).toShort
 }
 
 trait ShortIsReal extends IsIntegral[Short] with ShortOrder with ShortIsSigned {

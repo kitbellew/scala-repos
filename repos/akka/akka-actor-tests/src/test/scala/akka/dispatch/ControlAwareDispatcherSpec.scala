@@ -39,21 +39,25 @@ class ControlAwareDispatcherSpec
     // with RepointableActorRef, since messages might be queued in
     // UnstartedCell and the sent to the PriorityQueue and consumed immediately
     // without the ordering taking place.
-    val actor = system.actorOf(Props(new Actor {
-      context.actorOf(Props(new Actor {
+    val actor = system.actorOf(
+      Props(
+        new Actor {
+          context.actorOf(
+            Props(
+              new Actor {
 
-        self ! "test"
-        self ! "test2"
-        self ! ImportantMessage
+                self ! "test"
+                self ! "test2"
+                self ! ImportantMessage
 
-        def receive = {
-          case x ⇒ testActor ! x
-        }
-      }).withDispatcher(dispatcherKey))
+                def receive = {
+                  case x ⇒ testActor ! x
+                }
+              }).withDispatcher(dispatcherKey))
 
-      def receive = Actor.emptyBehavior
+          def receive = Actor.emptyBehavior
 
-    }))
+        }))
 
     expectMsg(ImportantMessage)
     expectMsg("test")

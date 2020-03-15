@@ -30,18 +30,19 @@ class FlowStatefulMapConcatSpec extends AkkaSpec with ScriptedTest {
         Seq(3) -> Seq(3),
         Seq(6) -> Seq(6, 6, 6))
       TestConfig.RandomTestRange foreach (_ ⇒
-        runScript(script, settings)(_.statefulMapConcat(() ⇒ {
-          var prev: Option[Int] = None
-          x ⇒
-            prev match {
-              case Some(e) ⇒
-                prev = Some(x)
-                (1 to e) map (_ ⇒ x)
-              case None ⇒
-                prev = Some(x)
-                List.empty[Int]
-            }
-        })))
+        runScript(script, settings)(
+          _.statefulMapConcat(() ⇒ {
+            var prev: Option[Int] = None
+            x ⇒
+              prev match {
+                case Some(e) ⇒
+                  prev = Some(x)
+                  (1 to e) map (_ ⇒ x)
+                case None ⇒
+                  prev = Some(x)
+                  List.empty[Int]
+              }
+          })))
     }
 
     "be able to restart" in {
@@ -61,8 +62,8 @@ class FlowStatefulMapConcatSpec extends AkkaSpec with ScriptedTest {
             }
           }
         })
-        .withAttributes(ActorAttributes.supervisionStrategy(
-          Supervision.restartingDecider))
+        .withAttributes(
+          ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
         .runWith(TestSink.probe[Int])
         .request(2)
         .expectNext(1, 1)
@@ -88,8 +89,8 @@ class FlowStatefulMapConcatSpec extends AkkaSpec with ScriptedTest {
             }
           }
         })
-        .withAttributes(ActorAttributes.supervisionStrategy(
-          Supervision.resumingDecider))
+        .withAttributes(
+          ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
         .runWith(TestSink.probe[Int])
         .request(2)
         .expectNext(1, 1)

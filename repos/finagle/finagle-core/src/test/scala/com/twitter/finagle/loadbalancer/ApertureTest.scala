@@ -48,13 +48,14 @@ private trait ApertureTesting {
     def apply(conn: ClientConnection) = {
       n += 1
       p += 1
-      Future.value(new Service[Unit, Unit] {
-        def apply(unit: Unit) = ???
-        override def close(deadline: Time) = {
-          p -= 1
-          Future.Done
-        }
-      })
+      Future.value(
+        new Service[Unit, Unit] {
+          def apply(unit: Unit) = ???
+          override def close(deadline: Time) = {
+            p -= 1
+            Future.Done
+          }
+        })
     }
 
     @volatile var _status: Status = Status.Open

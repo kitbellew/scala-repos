@@ -221,8 +221,9 @@ trait ScFunction
               Some(
                 typeParamSubst
                   .followed(subst)
-                  .subst(ScType
-                    .create(fun.getReturnType, getProject, getResolveScope)))
+                  .subst(
+                    ScType
+                      .create(fun.getReturnType, getProject, getResolveScope)))
             case _ => None
           }
         superReturnType
@@ -884,8 +885,9 @@ trait ScFunction
       case Some(params) =>
         val project = getProject
         val resolveScope = getResolveScope
-        rt.map(params.foldLeft(_)((res, params) =>
-          ScFunctionType(res, params)(project, resolveScope)))
+        rt.map(
+          params.foldLeft(_)((res, params) =>
+            ScFunctionType(res, params)(project, resolveScope)))
       case None => Failure("no params", Some(this))
     }
   }

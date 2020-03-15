@@ -25,9 +25,10 @@ object ExecutionSpec extends Specification {
     "not overflow the stack" in {
       def executeRecursively(ec: ExecutionContext, times: Int) {
         if (times > 0) {
-          ec.execute(new Runnable {
-            def run() = executeRecursively(ec, times - 1)
-          })
+          ec.execute(
+            new Runnable {
+              def run() = executeRecursively(ec, times - 1)
+            })
         }
       }
 
@@ -74,8 +75,7 @@ object ExecutionSpec extends Specification {
             2,
             TestRunnable(4, TestRunnable(6), TestRunnable(7)),
             TestRunnable(5, TestRunnable(8))),
-          TestRunnable(3))
-      )
+          TestRunnable(3)))
 
       runRecord must equalTo(0 to 8)
     }

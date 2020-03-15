@@ -130,8 +130,8 @@ private[streaming] class BlockManagerBasedBlockHandler(
 private[streaming] case class WriteAheadLogBasedStoreResult(
     blockId: StreamBlockId,
     numRecords: Option[Long],
-    walRecordHandle: WriteAheadLogRecordHandle
-) extends ReceivedBlockStoreResult
+    walRecordHandle: WriteAheadLogRecordHandle)
+    extends ReceivedBlockStoreResult
 
 /**
   * Implementation of a [[org.apache.spark.streaming.receiver.ReceivedBlockHandler]] which
@@ -144,8 +144,8 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
     conf: SparkConf,
     hadoopConf: Configuration,
     checkpointDir: String,
-    clock: Clock = new SystemClock
-) extends ReceivedBlockHandler
+    clock: Clock = new SystemClock)
+    extends ReceivedBlockHandler
     with Logging {
 
   private val blockStoreTimeout =

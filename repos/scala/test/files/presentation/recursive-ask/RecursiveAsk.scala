@@ -9,10 +9,11 @@ object Test extends InteractiveTest {
       val res = compiler.askForResponse(() => {
         println("[nested] askForResponse")
       })
-      println(res.get(5000) match {
-        case Some(_) => "passed"
-        case None    => "timeout"
-      })
+      println(
+        res.get(5000) match {
+          case Some(_) => "passed"
+          case None    => "timeout"
+        })
     })
 
     res0.get

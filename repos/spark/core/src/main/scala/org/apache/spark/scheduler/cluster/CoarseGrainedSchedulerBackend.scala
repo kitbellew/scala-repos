@@ -250,9 +250,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
         .foreach(
           removeExecutor(
             _,
-            SlaveLost("Remote RPC client disassociated. Likely due to " +
-              "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
-              "messages.")
+            SlaveLost(
+              "Remote RPC client disassociated. Likely due to " +
+                "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
+                "messages.")
           ))
     }
 
@@ -440,9 +441,11 @@ private[spark] class CoarseGrainedSchedulerBackend(
         // because (1) disconnected event is not yet received; (2) executors die silently.
         executorDataMap.toMap.foreach {
           case (eid, _) =>
-            driverEndpoint.askWithRetry[Boolean](RemoveExecutor(
-              eid,
-              SlaveLost("Stale executor after cluster manager re-registered.")))
+            driverEndpoint.askWithRetry[Boolean](
+              RemoveExecutor(
+                eid,
+                SlaveLost(
+                  "Stale executor after cluster manager re-registered.")))
         }
       }
     }
@@ -483,8 +486,9 @@ private[spark] class CoarseGrainedSchedulerBackend(
           s"reached minRegisteredResourcesRatio: $minRegisteredRatio")
       return true
     }
-    if ((System
-          .currentTimeMillis() - createTime) >= maxRegisteredWaitingTimeMs) {
+    if ((
+          System.currentTimeMillis() - createTime
+        ) >= maxRegisteredWaitingTimeMs) {
       logInfo(
         "SchedulerBackend is ready for scheduling beginning after waiting " +
           s"maxRegisteredResourcesWaitingTime: $maxRegisteredWaitingTimeMs(ms)")
@@ -537,8 +541,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
   final override def requestTotalExecutors(
       numExecutors: Int,
       localityAwareTasks: Int,
-      hostToLocalTaskCount: Map[String, Int]
-  ): Boolean =
+      hostToLocalTaskCount: Map[String, Int]): Boolean =
     synchronized {
       if (numExecutors < 0) {
         throw new IllegalArgumentException(

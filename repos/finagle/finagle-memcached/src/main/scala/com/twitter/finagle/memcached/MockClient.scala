@@ -15,14 +15,18 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
   def this() = this(mutable.Map[String, Buf]())
 
   def this(contents: Map[String, Array[Byte]]) =
-    this(mutable.Map[String, Buf]() ++ (contents mapValues { v =>
-      Buf.ByteArray.Owned(v)
-    }))
+    this(
+      mutable.Map[String, Buf]() ++ (
+        contents mapValues { v =>
+          Buf.ByteArray.Owned(v)
+        }
+      ))
 
   def this(contents: Map[String, String])(implicit m: Manifest[String]) =
-    this(contents mapValues {
-      _.getBytes
-    })
+    this(
+      contents mapValues {
+        _.getBytes
+      })
 
   protected def _get(keys: Iterable[String]): GetResult = {
     val hits = mutable.Map[String, Value]()
@@ -32,10 +36,12 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       keys foreach { key =>
         map.get(key) match {
           case Some(v: Buf) =>
-            hits += (key -> Value(
-              Buf.Utf8(key),
-              v,
-              Some(Interpreter.generateCasUnique(v))))
+            hits += (
+              key -> Value(
+                Buf.Utf8(key),
+                v,
+                Some(Interpreter.generateCasUnique(v)))
+            )
           case _ =>
             misses += key
         }
@@ -74,8 +80,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         } else {
           false
         }
-      }
-    )
+      })
 
   /**
     * Note: expiry and flags are ignored.
@@ -94,8 +99,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
           case None =>
             false
         }
-      }
-    )
+      })
 
   /**
     * Note: expiry and flags are ignored.
@@ -114,8 +118,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
           case None =>
             false
         }
-      }
-    )
+      })
 
   /**
     * Note: expiry and flags are ignored.
@@ -133,8 +136,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         } else {
           false
         }
-      }
-    )
+      })
 
   /**
     * Checks if value is same as previous value, if not, do a swap and return true.
@@ -146,8 +148,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       flags: Int,
       expiry: Time,
       value: Buf,
-      casUnique: Buf
-  ): Future[CasResult] =
+      casUnique: Buf): Future[CasResult] =
     Future.value(
       map.synchronized {
         map.get(key) match {
@@ -159,8 +160,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
           case Some(_) => CasResult.Exists
           case None    => CasResult.NotFound
         }
-      }
-    )
+      })
 
   def delete(key: String): Future[JBoolean] =
     Future.value(
@@ -171,8 +171,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         } else {
           false
         }
-      }
-    )
+      })
 
   def incr(key: String, delta: Long): Future[Option[JLong]] =
     Future.value(
@@ -193,8 +192,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
           case None =>
             None
         }
-      }
-    )
+      })
 
   def decr(key: String, delta: Long): Future[Option[JLong]] = incr(key, -delta)
 

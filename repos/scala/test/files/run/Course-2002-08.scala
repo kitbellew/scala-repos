@@ -305,10 +305,12 @@ object M5 {
           0;
 
       def test(a: Int) = {
-        ain setSignal (if (a == 0)
-                         false
-                       else
-                         true);
+        ain setSignal (
+          if (a == 0)
+            false
+          else
+            true
+        );
         run;
         Console.println("!" + a + " = " + result);
         Console.println;
@@ -333,14 +335,18 @@ object M5 {
           0;
 
       def test(a: Int, b: Int) = {
-        ain setSignal (if (a == 0)
-                         false
-                       else
-                         true);
-        bin setSignal (if (b == 0)
-                         false
-                       else
-                         true);
+        ain setSignal (
+          if (a == 0)
+            false
+          else
+            true
+        );
+        bin setSignal (
+          if (b == 0)
+            false
+          else
+            true
+        );
         run;
         Console.println(a + " & " + b + " = " + result);
         Console.println;
@@ -368,14 +374,18 @@ object M5 {
           0;
 
       def test(a: Int, b: Int) = {
-        ain setSignal (if (a == 0)
-                         false
-                       else
-                         true);
-        bin setSignal (if (b == 0)
-                         false
-                       else
-                         true);
+        ain setSignal (
+          if (a == 0)
+            false
+          else
+            true
+        );
+        bin setSignal (
+          if (b == 0)
+            false
+          else
+            true
+        );
         run;
         Console.println(a + " | " + b + " = " + result);
         Console.println;
@@ -398,24 +408,32 @@ object M5 {
       halfAdder(ain, bin, sout, cout);
 
       def result =
-        ((if (sout.getSignal)
+        ((
+          if (sout.getSignal)
             1
           else
-            0) +
-          (if (cout.getSignal)
-             2
-           else
-             0));
+            0
+        ) +
+          (
+            if (cout.getSignal)
+              2
+            else
+              0
+          ));
 
       def test(a: Int, b: Int) = {
-        ain setSignal (if (a == 0)
-                         false
-                       else
-                         true);
-        bin setSignal (if (b == 0)
-                         false
-                       else
-                         true);
+        ain setSignal (
+          if (a == 0)
+            false
+          else
+            true
+        );
+        bin setSignal (
+          if (b == 0)
+            false
+          else
+            true
+        );
         run;
         Console.println(a + " + " + b + " = " + result);
         Console.println;
@@ -440,28 +458,38 @@ object M5 {
       fullAdder(ain, bin, cin, sout, cout);
 
       def result =
-        ((if (sout.getSignal)
+        ((
+          if (sout.getSignal)
             1
           else
-            0) +
-          (if (cout.getSignal)
-             2
-           else
-             0));
+            0
+        ) +
+          (
+            if (cout.getSignal)
+              2
+            else
+              0
+          ));
 
       def test(a: Int, b: Int, c: Int) = {
-        ain setSignal (if (a == 0)
-                         false
-                       else
-                         true);
-        bin setSignal (if (b == 0)
-                         false
-                       else
-                         true);
-        cin setSignal (if (c == 0)
-                         false
-                       else
-                         true);
+        ain setSignal (
+          if (a == 0)
+            false
+          else
+            true
+        );
+        bin setSignal (
+          if (b == 0)
+            false
+          else
+            true
+        );
+        cin setSignal (
+          if (c == 0)
+            false
+          else
+            true
+        );
         run;
         Console.println(a + " + " + b + " + " + c + " = " + result);
         Console.println;

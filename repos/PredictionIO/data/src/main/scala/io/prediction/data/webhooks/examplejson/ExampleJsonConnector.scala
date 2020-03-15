@@ -104,11 +104,13 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
         ("entityType" -> "user") ~
         ("entityId" -> userAction.userId) ~
         ("eventTime" -> userAction.timestamp) ~
-        ("properties" -> (
-          ("context" -> userAction.context) ~
-            ("anotherProperty1" -> userAction.anotherProperty1) ~
-            ("anotherProperty2" -> userAction.anotherProperty2)
-        ))
+        (
+          "properties" -> (
+            ("context" -> userAction.context) ~
+              ("anotherProperty1" -> userAction.anotherProperty1) ~
+              ("anotherProperty2" -> userAction.anotherProperty2)
+          )
+        )
     json
   }
 
@@ -123,18 +125,18 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
         ("targetEntityType" -> "item") ~
         ("targetEntityId" -> userActionItem.itemId) ~
         ("eventTime" -> userActionItem.timestamp) ~
-        ("properties" -> (
-          ("context" -> userActionItem.context) ~
-            ("anotherPropertyA" -> userActionItem.anotherPropertyA) ~
-            ("anotherPropertyB" -> userActionItem.anotherPropertyB)
-        ))
+        (
+          "properties" -> (
+            ("context" -> userActionItem.context) ~
+              ("anotherPropertyA" -> userActionItem.anotherPropertyA) ~
+              ("anotherPropertyB" -> userActionItem.anotherPropertyB)
+          )
+        )
     json
   }
 
   // Common required fields
-  case class Common(
-      `type`: String
-  )
+  case class Common(`type`: String)
 
   // User Actions fields
   case class UserAction(
@@ -143,8 +145,7 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
       context: Option[JObject],
       anotherProperty1: Int,
       anotherProperty2: Option[String],
-      timestamp: String
-  )
+      timestamp: String)
 
   // UserActionItem fields
   case class UserActionItem(
@@ -154,7 +155,6 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
       context: JObject,
       anotherPropertyA: Option[Double],
       anotherPropertyB: Option[Boolean],
-      timestamp: String
-  )
+      timestamp: String)
 
 }

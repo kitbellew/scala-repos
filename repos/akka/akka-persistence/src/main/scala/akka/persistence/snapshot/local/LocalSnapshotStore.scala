@@ -214,8 +214,9 @@ private[persistence] class LocalSnapshotStore
         tms: String): Boolean = {
       pid.equals(URLEncoder.encode(md.persistenceId)) &&
       Try(
-        snr.toLong == md.sequenceNr && (md.timestamp == 0L || tms.toLong == md.timestamp))
-        .getOrElse(false)
+        snr.toLong == md.sequenceNr && (
+          md.timestamp == 0L || tms.toLong == md.timestamp
+        )).getOrElse(false)
     }
 
     def accept(dir: File, name: String): Boolean =

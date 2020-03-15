@@ -143,8 +143,9 @@ object Schemifier extends Loggable {
           desc: String,
           f: => Collector): Collector = {
         actualTableNames.get(t._dbTableNameLC).map(x => f).getOrElse {
-          logger.warn("Skipping %s on table '%s' since it doesn't exist"
-            .format(desc, t.dbTableName))
+          logger.warn(
+            "Skipping %s on table '%s' since it doesn't exist"
+              .format(desc, t.dbTableName))
           EmptyCollector
         }
       }
@@ -167,30 +168,34 @@ object Schemifier extends Loggable {
                 t,
                 connection,
                 actualTableNames))) +
-          (if (structureOnly)
-             EmptyCollector
-           else
-             (tables.foldLeft(EmptyCollector)((b, t) =>
-               b + tableCheck(
-                 t,
-                 "ensureIndexes",
-                 ensureIndexes(
-                   performWrite,
-                   logFunc,
-                   t,
-                   connection,
-                   actualTableNames))) +
-               tables.foldLeft(EmptyCollector)((b, t) =>
-                 b + tableCheck(
-                   t,
-                   "ensureConstraints",
-                   ensureConstraints(
-                     performWrite,
-                     logFunc,
-                     t,
-                     dbId,
-                     connection,
-                     actualTableNames)))))
+          (
+            if (structureOnly)
+              EmptyCollector
+            else
+              (
+                tables.foldLeft(EmptyCollector)((b, t) =>
+                  b + tableCheck(
+                    t,
+                    "ensureIndexes",
+                    ensureIndexes(
+                      performWrite,
+                      logFunc,
+                      t,
+                      connection,
+                      actualTableNames))) +
+                  tables.foldLeft(EmptyCollector)((b, t) =>
+                    b + tableCheck(
+                      t,
+                      "ensureConstraints",
+                      ensureConstraints(
+                        performWrite,
+                        logFunc,
+                        t,
+                        dbId,
+                        connection,
+                        actualTableNames)))
+              )
+          )
 
       if (performWrite) {
         logger.debug("Executing DDL statements")
@@ -223,24 +228,26 @@ object Schemifier extends Loggable {
       logFunc: (=> AnyRef) => Unit,
       stables: List[BaseMetaMapper]) {
     val th = new HashMap[String, String]()
-    (DB.use(dbId) { conn =>
-      val sConn = conn // SuperConnection(conn)
-      val tables = stables.toList.filter(t => hasTable_?(t, sConn, th))
+    (
+      DB.use(dbId) { conn =>
+        val sConn = conn // SuperConnection(conn)
+        val tables = stables.toList.filter(t => hasTable_?(t, sConn, th))
 
-      tables.foreach { table =>
-        try {
-          val ct = "DROP TABLE " + table._dbTableNameLC
-          val st = conn.createStatement
-          st.execute(ct)
-          logFunc(ct)
-          st.close
-        } catch {
-          case e: Exception => // dispose... probably just an SQL Exception
+        tables.foreach { table =>
+          try {
+            val ct = "DROP TABLE " + table._dbTableNameLC
+            val st = conn.createStatement
+            st.execute(ct)
+            logFunc(ct)
+            st.close
+          } catch {
+            case e: Exception => // dispose... probably just an SQL Exception
+          }
         }
-      }
 
-      tables
-    }) match {
+        tables
+      }
+    ) match {
       case t if t.length > 0 && cnt < 1000 =>
         destroyTables_!!(dbId, cnt + 1, logFunc, t)
       case _ =>
@@ -251,8 +258,9 @@ object Schemifier extends Loggable {
     * Retrieves schema name where the unqualified db objects are searched.
     */
   def getDefaultSchemaName(connection: SuperConnection): String =
-    (connection.schemaName or connection.driverType.defaultSchemaName or DB.globalDefaultSchemaName)
-      .openOr(connection.getMetaData.getUserName)
+    (
+      connection.schemaName or connection.driverType.defaultSchemaName or DB.globalDefaultSchemaName
+    ).openOr(connection.getMetaData.getUserName)
 
   private def hasTable_?(
       table: BaseMetaMapper,
@@ -393,7 +401,9 @@ object Schemifier extends Loggable {
             "ALTER TABLE " + table._dbTableNameLC + " " + connection.driverType.alterAddColumn + " " + field
               .fieldCreatorString(connection.driverType, colName)
           }
-          if ((!connection.driverType.pkDefinedByIndexColumn_?) && field.dbPrimaryKey_?) {
+          if ((
+                !connection.driverType.pkDefinedByIndexColumn_?
+              ) && field.dbPrimaryKey_?) {
             // Add primary key only when it has not been created by the index field itself.
             cmds += maybeWrite(performWrite, logFunc, connection) { () =>
               "ALTER TABLE " + table._dbTableNameLC + " ADD CONSTRAINT " + table._dbTableNameLC + "_PK PRIMARY KEY(" + field._dbColumnNameLC + ")"
@@ -470,7 +480,9 @@ object Schemifier extends Loggable {
       .flatMap { field =>
         if (!indexedFields.contains(List(field._dbColumnNameLC.toLowerCase))) {
           cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-            "CREATE INDEX " + (table._dbTableNameLC + "_" + field._dbColumnNameLC) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"
+            "CREATE INDEX " + (
+              table._dbTableNameLC + "_" + field._dbColumnNameLC
+            ) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"
           }
           field.dbAddedIndex.toList
         } else
@@ -480,9 +492,11 @@ object Schemifier extends Loggable {
     table.dbIndexes.foreach { index =>
       val columns = index.columns.toList
 
-      val standardCreationStatement = (table._dbTableNameLC + "_" + columns
-        .map(_.field._dbColumnNameLC)
-        .mkString("_")) + " ON " + table._dbTableNameLC + " ( " + columns
+      val standardCreationStatement = (
+        table._dbTableNameLC + "_" + columns
+          .map(_.field._dbColumnNameLC)
+          .mkString("_")
+      ) + " ON " + table._dbTableNameLC + " ( " + columns
         .map(_.indexDesc)
         .comma + " )"
 
@@ -548,8 +562,9 @@ object Schemifier extends Loggable {
               while (!foundIt && rs.next) {
                 val pkName = rs.getString(4)
                 val fkName = rs.getString(8)
-                foundIt =
-                  (field._dbColumnNameLC.toLowerCase == fkName.toLowerCase && field.dbKeyToColumn._dbColumnNameLC.toLowerCase == pkName.toLowerCase)
+                foundIt = (
+                  field._dbColumnNameLC.toLowerCase == fkName.toLowerCase && field.dbKeyToColumn._dbColumnNameLC.toLowerCase == pkName.toLowerCase
+                )
               })
 
             if (!foundIt) {

@@ -36,36 +36,27 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
   test("groupBy") {
     checkAnswer(
       testData2.groupBy("a").agg(sum($"b")),
-      Seq(Row(1, 3), Row(2, 3), Row(3, 3))
-    )
+      Seq(Row(1, 3), Row(2, 3), Row(3, 3)))
     checkAnswer(
       testData2.groupBy("a").agg(sum($"b").as("totB")).agg(sum('totB)),
-      Row(9)
-    )
+      Row(9))
     checkAnswer(
       testData2.groupBy("a").agg(count("*")),
-      Row(1, 2) :: Row(2, 2) :: Row(3, 2) :: Nil
-    )
+      Row(1, 2) :: Row(2, 2) :: Row(3, 2) :: Nil)
     checkAnswer(
       testData2.groupBy("a").agg(Map("*" -> "count")),
-      Row(1, 2) :: Row(2, 2) :: Row(3, 2) :: Nil
-    )
+      Row(1, 2) :: Row(2, 2) :: Row(3, 2) :: Nil)
     checkAnswer(
       testData2.groupBy("a").agg(Map("b" -> "sum")),
-      Row(1, 3) :: Row(2, 3) :: Row(3, 3) :: Nil
-    )
+      Row(1, 3) :: Row(2, 3) :: Row(3, 3) :: Nil)
 
     val df1 = Seq(("a", 1, 0, "b"), ("b", 2, 4, "c"), ("a", 2, 3, "d"))
       .toDF("key", "value1", "value2", "rest")
 
     checkAnswer(
       df1.groupBy("key").min(),
-      df1.groupBy("key").min("value1", "value2").collect()
-    )
-    checkAnswer(
-      df1.groupBy("key").min("value2"),
-      Seq(Row("a", 0), Row("b", 4))
-    )
+      df1.groupBy("key").min("value1", "value2").collect())
+    checkAnswer(df1.groupBy("key").min("value2"), Seq(Row("a", 0), Row("b", 4)))
   }
 
   test("rollup") {
@@ -219,29 +210,21 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
   test("spark.sql.retainGroupColumns config") {
     checkAnswer(
       testData2.groupBy("a").agg(sum($"b")),
-      Seq(Row(1, 3), Row(2, 3), Row(3, 3))
-    )
+      Seq(Row(1, 3), Row(2, 3), Row(3, 3)))
 
     sqlContext.conf.setConf(SQLConf.DATAFRAME_RETAIN_GROUP_COLUMNS, false)
     checkAnswer(
       testData2.groupBy("a").agg(sum($"b")),
-      Seq(Row(3), Row(3), Row(3))
-    )
+      Seq(Row(3), Row(3), Row(3)))
     sqlContext.conf.setConf(SQLConf.DATAFRAME_RETAIN_GROUP_COLUMNS, true)
   }
 
   test("agg without groups") {
-    checkAnswer(
-      testData2.agg(sum('b)),
-      Row(9)
-    )
+    checkAnswer(testData2.agg(sum('b)), Row(9))
   }
 
   test("agg without groups and functions") {
-    checkAnswer(
-      testData2.agg(lit(1)),
-      Row(1)
-    )
+    checkAnswer(testData2.agg(lit(1)), Row(1))
   }
 
   test("average") {
@@ -296,15 +279,11 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
   }
 
   test("null count") {
-    checkAnswer(
-      testData3.groupBy('a).agg(count('b)),
-      Seq(Row(1, 0), Row(2, 1))
-    )
+    checkAnswer(testData3.groupBy('a).agg(count('b)), Seq(Row(1, 0), Row(2, 1)))
 
     checkAnswer(
       testData3.groupBy('a).agg(count('a + 'b)),
-      Seq(Row(1, 0), Row(2, 1))
-    )
+      Seq(Row(1, 0), Row(2, 1)))
 
     checkAnswer(
       testData3.agg(
@@ -313,14 +292,12 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         count(lit(1)),
         countDistinct('a),
         countDistinct('b)),
-      Row(2, 1, 2, 2, 1)
-    )
+      Row(2, 1, 2, 2, 1))
 
     checkAnswer(
       testData3
         .agg(count('b), countDistinct('b), sumDistinct('b)), // non-partial
-      Row(1, 1, 2)
-    )
+      Row(1, 1, 2))
   }
 
   test("multiple column distinct count") {
@@ -332,20 +309,13 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
       ("x", "q", null.asInstanceOf[String]))
       .toDF("key1", "key2", "key3")
 
-    checkAnswer(
-      df1.agg(countDistinct('key1, 'key2)),
-      Row(3)
-    )
+    checkAnswer(df1.agg(countDistinct('key1, 'key2)), Row(3))
 
-    checkAnswer(
-      df1.agg(countDistinct('key1, 'key2, 'key3)),
-      Row(3)
-    )
+    checkAnswer(df1.agg(countDistinct('key1, 'key2, 'key3)), Row(3))
 
     checkAnswer(
       df1.groupBy('key1).agg(countDistinct('key2, 'key3)),
-      Seq(Row("a", 2), Row("x", 1))
-    )
+      Seq(Row("a", 2), Row("x", 1)))
   }
 
   test("zero count") {

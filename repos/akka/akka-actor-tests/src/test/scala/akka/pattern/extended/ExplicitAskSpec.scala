@@ -21,11 +21,13 @@ class ExplicitAskSpec extends AkkaSpec {
     "allow to access an explicit reference to actor to respond to" in {
       implicit val timeout = Timeout(5.seconds)
 
-      val target = system.actorOf(Props(new Actor {
-        def receive = {
-          case Request(respondTo) ⇒ respondTo ! Response(self)
-        }
-      }))
+      val target = system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case Request(respondTo) ⇒ respondTo ! Response(self)
+            }
+          }))
 
       val f = target ? (respondTo ⇒ Request(respondTo))
       f.futureValue should ===(Response(target))
@@ -35,11 +37,12 @@ class ExplicitAskSpec extends AkkaSpec {
       implicit val timeout = Timeout(5.seconds)
 
       val target = system.actorOf(
-        Props(new Actor {
-          def receive = {
-            case Request(respondTo) ⇒ respondTo ! Response(self)
-          }
-        }),
+        Props(
+          new Actor {
+            def receive = {
+              case Request(respondTo) ⇒ respondTo ! Response(self)
+            }
+          }),
         "select-echo")
 
       val selection = system.actorSelection("/user/select-echo")

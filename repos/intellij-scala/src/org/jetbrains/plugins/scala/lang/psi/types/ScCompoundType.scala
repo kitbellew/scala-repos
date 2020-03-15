@@ -170,8 +170,7 @@ case class ScCompoundType(
                     case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
                     case named        => named
                   },
-                  s.hasRepeatedParam
-                ),
+                  s.hasRepeatedParam),
                 rt)
           },
           typesMap.map {
@@ -228,8 +227,7 @@ case class ScCompoundType(
                   tParams,
                   ScSubstitutor.empty,
                   s.namedElement,
-                  s.hasRepeatedParam
-                ),
+                  s.hasRepeatedParam),
                 tp.recursiveVarianceUpdateModifiable(newData, update, 1))
           },
           typesMap.map {
@@ -388,8 +386,7 @@ object ScCompoundType {
                   1,
                   subst,
                   e),
-                psi.types.Unit
-              )
+                psi.types.Unit)
             ) //setter
           }
         case valDecl: ScValue =>

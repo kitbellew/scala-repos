@@ -50,8 +50,7 @@ object ProjectTests extends TestSuite {
         val testSource =
           scala.io.Source
             .fromInputStream(
-              getClass.getResourceAsStream("/scalaparse/Test.scala")
-            )
+              getClass.getResourceAsStream("/scalaparse/Test.scala"))
             .mkString
         TestUtil.check(testSource)
       }
@@ -104,9 +103,8 @@ object ProjectTests extends TestSuite {
       "ensime/ensime-server" - checkRepo()
       "GravityLabs/goose" - checkRepo()
       "ornicar/lila" - checkRepo(x =>
-        !Seq(
-          "target/repos/lila/modules/lobby/src/main/SocketHandler.scala"
-        ).exists(x.startsWith))
+        !Seq("target/repos/lila/modules/lobby/src/main/SocketHandler.scala")
+          .exists(x.startsWith))
       "precog/platform" - checkRepo()
       "twitter/util" - checkRepo()
       "scala/pickling" - checkRepo()

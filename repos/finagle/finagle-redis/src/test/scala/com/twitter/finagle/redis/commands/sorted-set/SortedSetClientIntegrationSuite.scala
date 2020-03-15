@@ -55,9 +55,9 @@ final class SortedSetClientIntegrationSuite extends RedisClientTest {
                  Some(Limit(0, 5))))
              .left) {
         assert(
-          CBToString.fromTuplesWithDoubles(left.asTuples) == (Seq(
-            ("bar", 10),
-            ("baz", 20))))
+          CBToString.fromTuplesWithDoubles(left.asTuples) == (
+            Seq(("bar", 10), ("baz", 20))
+          ))
       }
       for (left <- Await
              .result(

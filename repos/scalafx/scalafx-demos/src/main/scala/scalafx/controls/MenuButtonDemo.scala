@@ -53,8 +53,7 @@ object MenuButtonDemo extends JFXApp {
                   }
                 }
               },
-              new MenuItem("MenuItem B")
-            )
+              new MenuItem("MenuItem B"))
           },
           new MenuButton {
             text = "MenuButton 2"
@@ -66,8 +65,7 @@ object MenuButtonDemo extends JFXApp {
                   }
                 }
               },
-              new MenuItem("MenuItem D")
-            )
+              new MenuItem("MenuItem D"))
           }
         )
       }

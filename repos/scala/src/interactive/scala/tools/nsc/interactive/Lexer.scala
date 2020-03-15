@@ -75,10 +75,12 @@ object Lexer {
 
   private def toUDigit(ch: Int): Char = {
     val d = ch & 0xF
-    (if (d < 10)
-       d + '0'
-     else
-       d - 10 + 'A').toChar
+    (
+      if (d < 10)
+        d + '0'
+      else
+        d - 10 + 'A'
+    ).toChar
   }
 
   private def addToStr(buf: StringBuilder, ch: Char) {
@@ -274,7 +276,9 @@ class Lexer(rd: Reader) {
           case 'r'  => sb += '\r'
           case 't'  => sb += '\t'
           case 'u' =>
-            sb += (udigit() << 12 | udigit() << 8 | udigit() << 4 | udigit()).toChar
+            sb += (
+              udigit() << 12 | udigit() << 8 | udigit() << 4 | udigit()
+            ).toChar
           case _ => error("illegal escape character: '" + ch + "'")
         }
         nextChar()

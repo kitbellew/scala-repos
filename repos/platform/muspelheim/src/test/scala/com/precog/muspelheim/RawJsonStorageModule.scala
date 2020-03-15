@@ -126,8 +126,7 @@ trait RawJsonStorageModule[M[+_]] { self =>
           M.point(
             projections.keySet
               .filter(_.isDirectChildOf(path))
-              .map(PathMetadata(_, DataOnly(FileContent.XQuirrelData)))
-          )
+              .map(PathMetadata(_, DataOnly(FileContent.XQuirrelData))))
         }
 
       def pathStructure(

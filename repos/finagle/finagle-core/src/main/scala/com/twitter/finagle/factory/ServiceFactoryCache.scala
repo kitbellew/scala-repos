@@ -41,12 +41,13 @@ private class IdlingFactory[Req, Rep](self: ServiceFactory[Req, Rep])
         Future.exception(exc)
 
       case Return(service) =>
-        Future.value(new ServiceProxy(service) {
-          override def close(deadline: Time) = {
-            decr()
-            super.close(deadline)
-          }
-        })
+        Future.value(
+          new ServiceProxy(service) {
+            override def close(deadline: Time) = {
+              decr()
+              super.close(deadline)
+            }
+          })
     }
   }
 

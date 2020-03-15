@@ -59,30 +59,21 @@ case class Last(child: Expression, ignoreNullsExpr: Expression)
   override lazy val aggBufferAttributes: Seq[AttributeReference] = last :: Nil
 
   override lazy val initialValues: Seq[Literal] = Seq(
-    /* last = */ Literal.create(null, child.dataType)
-  )
+    /* last = */ Literal.create(null, child.dataType))
 
   override lazy val updateExpressions: Seq[Expression] = {
     if (ignoreNulls) {
-      Seq(
-        /* last = */ If(IsNull(child), last, child)
-      )
+      Seq( /* last = */ If(IsNull(child), last, child))
     } else {
-      Seq(
-        /* last = */ child
-      )
+      Seq( /* last = */ child)
     }
   }
 
   override lazy val mergeExpressions: Seq[Expression] = {
     if (ignoreNulls) {
-      Seq(
-        /* last = */ If(IsNull(last.right), last.left, last.right)
-      )
+      Seq( /* last = */ If(IsNull(last.right), last.left, last.right))
     } else {
-      Seq(
-        /* last = */ last.right
-      )
+      Seq( /* last = */ last.right)
     }
   }
 

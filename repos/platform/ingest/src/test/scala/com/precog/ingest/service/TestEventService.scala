@@ -161,9 +161,10 @@ trait TestEventService
           }
       }
     val jobManager =
-      new InMemoryJobManager[({
-        type l[+a] = EitherT[Future, String, a]
-      })#l]
+      new InMemoryJobManager[
+        ({
+          type l[+a] = EitherT[Future, String, a]
+        })#l]
     val shardClient =
       new HttpClient.EchoClient((_: HttpRequest[ByteChunk]).content)
     val localhost = ServiceLocation("http", "localhost", 80, None)
@@ -198,8 +199,8 @@ trait TestEventService
       sync: Boolean = true,
       batch: Boolean = false)(data: A)(implicit
       bi: A => Future[JValue],
-      t: AsyncHttpTranscoder[A, ByteChunk]
-  ): Future[(HttpResponse[JValue], List[Ingest])] = {
+      t: AsyncHttpTranscoder[A, ByteChunk])
+      : Future[(HttpResponse[JValue], List[Ingest])] = {
     val svc = client
       .contentType[A](contentType)
       .query("receipt", sync.toString)
@@ -228,8 +229,7 @@ trait TestEventService
         response.copy(content = content),
         stored.toList collect {
           case in: Ingest => in
-        }
-      )
+        })
     }
   }
 }

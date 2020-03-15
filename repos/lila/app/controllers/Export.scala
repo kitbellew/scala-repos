@@ -18,27 +18,31 @@ object Export extends LilaController {
     Open { implicit ctx =>
       OnlyHumans {
         OptionFuResult(GameRepo game id) { game =>
-          (game.pgnImport.ifTrue(~get("as") == "imported") match {
-            case Some(i) => fuccess(i.pgn)
-            case None =>
-              for {
-                initialFen <- GameRepo initialFen game
-                pgn = Env.api.pgnDump(game, initialFen)
-                analysis ← !get("as").contains(
-                  "raw") ?? (Env.analyse.analyser get game.id)
-              } yield Env.analyse
-                .annotator(
-                  pgn,
-                  analysis,
-                  game.opening,
-                  game.winnerColor,
-                  game.status,
-                  game.clock)
-                .toString
-          }) map { content =>
+          (
+            game.pgnImport.ifTrue(~get("as") == "imported") match {
+              case Some(i) => fuccess(i.pgn)
+              case None =>
+                for {
+                  initialFen <- GameRepo initialFen game
+                  pgn = Env.api.pgnDump(game, initialFen)
+                  analysis ← !get("as")
+                    .contains("raw") ?? (Env.analyse.analyser get game.id)
+                } yield Env.analyse
+                  .annotator(
+                    pgn,
+                    analysis,
+                    game.opening,
+                    game.winnerColor,
+                    game.status,
+                    game.clock)
+                  .toString
+            }
+          ) map { content =>
             Ok(content).withHeaders(
               CONTENT_TYPE -> ContentTypes.TEXT,
-              CONTENT_DISPOSITION -> ("attachment; filename=" + (Env.api.pgnDump filename game)))
+              CONTENT_DISPOSITION -> (
+                "attachment; filename=" + (Env.api.pgnDump filename game)
+              ))
           }
         }
       }

@@ -301,12 +301,13 @@ private trait LoadBand[Req, Rep] {
       adjustNode(this, 1)
       super.apply(conn).transform {
         case Return(svc) =>
-          Future.value(new ServiceProxy(svc) {
-            override def close(deadline: Time) =
-              super.close(deadline).ensure {
-                adjustNode(Node.this, -1)
-              }
-          })
+          Future.value(
+            new ServiceProxy(svc) {
+              override def close(deadline: Time) =
+                super.close(deadline).ensure {
+                  adjustNode(Node.this, -1)
+                }
+            })
 
         case t @ Throw(_) =>
           adjustNode(this, -1)

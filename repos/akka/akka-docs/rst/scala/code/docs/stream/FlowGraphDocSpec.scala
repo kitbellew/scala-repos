@@ -22,8 +22,8 @@ class FlowGraphDocSpec extends AkkaSpec {
   "build simple graph" in {
     //format: OFF
     //#simple-flow-graph
-    val g = RunnableGraph.fromGraph(GraphDSL.create() {
-      implicit builder: GraphDSL.Builder[NotUsed] =>
+    val g = RunnableGraph.fromGraph(
+      GraphDSL.create() { implicit builder: GraphDSL.Builder[NotUsed] =>
         import GraphDSL.Implicits._
         val in = Source(1 to 10)
         val out = Sink.ignore
@@ -36,7 +36,7 @@ class FlowGraphDocSpec extends AkkaSpec {
         in ~> f1 ~> bcast ~> f2 ~> merge ~> f3 ~> out
         bcast ~> f4 ~> merge
         ClosedShape
-    })
+      })
     //#simple-flow-graph
     //format: ON
 
@@ -48,18 +48,19 @@ class FlowGraphDocSpec extends AkkaSpec {
   "flow connection errors" in {
     intercept[IllegalArgumentException] {
       //#simple-graph
-      RunnableGraph.fromGraph(GraphDSL.create() { implicit builder =>
-        import GraphDSL.Implicits._
-        val source1 = Source(1 to 10)
-        val source2 = Source(1 to 10)
+      RunnableGraph.fromGraph(
+        GraphDSL.create() { implicit builder =>
+          import GraphDSL.Implicits._
+          val source1 = Source(1 to 10)
+          val source2 = Source(1 to 10)
 
-        val zip = builder.add(Zip[Int, Int]())
+          val zip = builder.add(Zip[Int, Int]())
 
-        source1 ~> zip.in0
-        source2 ~> zip.in1
-        // unconnected zip.out (!) => "must have at least 1 outgoing edge"
-        ClosedShape
-      })
+          source1 ~> zip.in0
+          source2 ~> zip.in1
+          // unconnected zip.out (!) => "must have at least 1 outgoing edge"
+          ClosedShape
+        })
       //#simple-graph
     }.getMessage should include("ZipWith2.out")
   }
@@ -175,23 +176,24 @@ class FlowGraphDocSpec extends AkkaSpec {
     val worker2 = Flow[String].map("step 2 " + _)
 
     RunnableGraph
-      .fromGraph(GraphDSL.create() { implicit b =>
-        import GraphDSL.Implicits._
+      .fromGraph(
+        GraphDSL.create() { implicit b =>
+          import GraphDSL.Implicits._
 
-        val priorityPool1 = b.add(PriorityWorkerPool(worker1, 4))
-        val priorityPool2 = b.add(PriorityWorkerPool(worker2, 2))
+          val priorityPool1 = b.add(PriorityWorkerPool(worker1, 4))
+          val priorityPool2 = b.add(PriorityWorkerPool(worker2, 2))
 
-        Source(1 to 100).map("job: " + _) ~> priorityPool1.jobsIn
-        Source(1 to 100).map(
-          "priority job: " + _) ~> priorityPool1.priorityJobsIn
+          Source(1 to 100).map("job: " + _) ~> priorityPool1.jobsIn
+          Source(1 to 100).map(
+            "priority job: " + _) ~> priorityPool1.priorityJobsIn
 
-        priorityPool1.resultsOut ~> priorityPool2.jobsIn
-        Source(1 to 100).map(
-          "one-step, priority " + _) ~> priorityPool2.priorityJobsIn
+          priorityPool1.resultsOut ~> priorityPool2.jobsIn
+          Source(1 to 100).map(
+            "one-step, priority " + _) ~> priorityPool2.priorityJobsIn
 
-        priorityPool2.resultsOut ~> Sink.foreach(println)
-        ClosedShape
-      })
+          priorityPool2.resultsOut ~> Sink.foreach(println)
+          ClosedShape
+        })
       .run()
     //#flow-graph-components-use
 

@@ -21,19 +21,17 @@ trait $operator {
   def $inc[A: Writes](pairs: (String, A)*) =
     Json.obj("$inc" -> Json.obj(wrap(pairs): _*))
   def $incBson(pairs: (String, Int)*) =
-    BSONDocument("$inc" -> BSONDocument(pairs map {
-      case (k, v) => k -> BSONInteger(v)
-    }))
+    BSONDocument(
+      "$inc" -> BSONDocument(
+        pairs map {
+          case (k, v) => k -> BSONInteger(v)
+        }))
   def $push[A: Writes](field: String, value: A) =
     Json.obj("$push" -> Json.obj(field -> value))
   def $pushSlice[A: Writes](field: String, value: A, max: Int) =
     Json.obj(
       "$push" -> Json.obj(
-        field -> Json.obj(
-          "$each" -> List(value),
-          "$slice" -> max
-        )
-      ))
+        field -> Json.obj("$each" -> List(value), "$slice" -> max)))
   def $pull[A: Writes](field: String, value: A) =
     Json.obj("$pull" -> Json.obj(field -> value))
 

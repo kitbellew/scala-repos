@@ -17,8 +17,7 @@ class AdminAPISpec extends Specification {
     new CommandClient(
       appClient = Storage.getMetaDataApps,
       accessKeyClient = Storage.getMetaDataAccessKeys,
-      eventClient = Storage.getLEvents()
-    )
+      eventClient = Storage.getLEvents())
 
   val adminActor = system.actorOf(
     Props(classOf[AdminServiceActor], commandClient))
@@ -33,10 +32,7 @@ class AdminAPISpec extends Specification {
           200,
           HttpEntity(
             contentType = ContentTypes.`application/json`,
-            string = """{"status":"alive"}"""
-          )
-        )
-      )
+            string = """{"status":"alive"}""")))
       success
     }
   }

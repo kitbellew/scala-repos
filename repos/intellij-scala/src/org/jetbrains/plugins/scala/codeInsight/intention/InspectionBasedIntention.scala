@@ -50,8 +50,9 @@ class InspectionBasedIntention(
     do {
       visitor.visitElement(e)
       e = e.getParent
-    } while (holder.getResultCount == 0 && e != null && !e
-      .isInstanceOf[ScBlockExpr])
+    } while (
+      holder.getResultCount == 0 && e != null && !e.isInstanceOf[ScBlockExpr]
+    )
     if (holder.getResultCount > 0)
       Some(holder.getResults.get(0))
     else

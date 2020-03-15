@@ -68,18 +68,17 @@ class ScribeHandlerTest extends WordSpec with BeforeAndAfter with Eventually {
 
         assert(scribe.queue.size == 2)
         assert(
-          scribe
-            .makeBuffer(2)
-            .array
-            .hexlify == ("000000b080010001000000034c6f67000000000f0001" +
-            "0c000000020b000100000004746573740b0002000000" +
-            "36494e46205b32303038303332392d30353a35333a31" +
-            "362e3732325d2068656c6c6f3a205468697320697320" +
-            "61206d6573736167652e0a000b000100000004746573" +
-            "740b00020000003c494e46205b32303038303332392d" +
-            "30353a35333a31362e3732325d2068656c6c6f3a2054" +
-            "68697320697320616e6f74686572206d657373616765" +
-            "2e0a0000"))
+          scribe.makeBuffer(2).array.hexlify == (
+            "000000b080010001000000034c6f67000000000f0001" +
+              "0c000000020b000100000004746573740b0002000000" +
+              "36494e46205b32303038303332392d30353a35333a31" +
+              "362e3732325d2068656c6c6f3a205468697320697320" +
+              "61206d6573736167652e0a000b000100000004746573" +
+              "740b00020000003c494e46205b32303038303332392d" +
+              "30353a35333a31362e3732325d2068656c6c6f3a2054" +
+              "68697320697320616e6f74686572206d657373616765" +
+              "2e0a0000"
+          ))
       }
     }
 
@@ -112,8 +111,7 @@ class ScribeHandlerTest extends WordSpec with BeforeAndAfter with Eventually {
         maxMessagesToBuffer = 1,
         formatter = BareFormatter,
         category = "test",
-        statsReceiver = statsReceiver
-      ).apply()
+        statsReceiver = statsReceiver).apply()
 
       scribe.updateLastTransmission()
       scribe.publish(record1)
@@ -186,20 +184,19 @@ class ScribeHandlerTest extends WordSpec with BeforeAndAfter with Eventually {
         maxMessagesToBuffer = 1,
         formatter = BareFormatter,
         category = "test",
-        statsReceiver = statsReceiver
-      ).apply()
+        statsReceiver = statsReceiver).apply()
 
       // Set up a rejectedExecutionHandler to count number of rejected tasks.
       val rejected = new AtomicInteger(0)
-      scribe.flusher.setRejectedExecutionHandler(new RejectedExecutionHandler {
-        val inner = scribe.flusher.getRejectedExecutionHandler()
-        def rejectedExecution(
-            r: Runnable,
-            executor: ThreadPoolExecutor): Unit = {
-          rejected.getAndIncrement()
-          inner.rejectedExecution(r, executor)
-        }
-      })
+      scribe.flusher.setRejectedExecutionHandler(
+        new RejectedExecutionHandler {
+          val inner = scribe.flusher.getRejectedExecutionHandler()
+          def rejectedExecution(r: Runnable, executor: ThreadPoolExecutor)
+              : Unit = {
+            rejected.getAndIncrement()
+            inner.rejectedExecution(r, executor)
+          }
+        })
 
       // crude form to allow all 100 submission and get predictable dropping of tasks
       scribe.synchronized {

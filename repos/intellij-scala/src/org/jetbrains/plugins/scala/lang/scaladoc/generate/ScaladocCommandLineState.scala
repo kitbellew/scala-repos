@@ -79,14 +79,15 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     val handler: OSProcessHandler = JavaCommandLineStateUtil.startProcess(
       createCommandLine)
     if (showInBrowser) {
-      handler.addProcessListener(new ProcessAdapter {
-        override def processTerminated(event: ProcessEvent) {
-          val url: File = new File(outputDir, "index.html")
-          if (url.exists && event.getExitCode == 0) {
-            BrowserUtil.browse(url.getPath)
+      handler.addProcessListener(
+        new ProcessAdapter {
+          override def processTerminated(event: ProcessEvent) {
+            val url: File = new File(outputDir, "index.html")
+            if (url.exists && event.getExitCode == 0) {
+              BrowserUtil.browse(url.getPath)
+            }
           }
-        }
-      })
+        })
     }
     handler
   }
@@ -320,8 +321,9 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
         for (param <- paramListSimple) {
           var paramEsc = param
-          if (param.contains(" ") && !(param.startsWith("\"") && param.endsWith(
-                "\""))) {
+          if (param.contains(" ") && !(
+                param.startsWith("\"") && param.endsWith("\"")
+              )) {
             paramEsc = "\"" + param + "\""
           }
 

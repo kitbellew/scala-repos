@@ -551,8 +551,9 @@ private[parquet] class CatalystSchemaConverter(
               .repeatedGroup()
               .addField(
                 convertField(StructField("key", keyType, nullable = false)))
-              .addField(convertField(
-                StructField("value", valueType, valueContainsNull)))
+              .addField(
+                convertField(
+                  StructField("value", valueType, valueContainsNull)))
               .named("key_value"))
           .named(field.name)
 
@@ -616,8 +617,9 @@ private[parquet] object CatalystSchemaConverter {
   def maxPrecisionForBytes(numBytes: Int): Int = {
     Math
       .round( // convert double to long
-        Math.floor(Math.log10( // number of base-10 digits
-          Math.pow(2, 8 * numBytes - 1) - 1))
+        Math.floor(
+          Math.log10( // number of base-10 digits
+            Math.pow(2, 8 * numBytes - 1) - 1))
       ) // max value stored in numBytes
       .asInstanceOf[Int]
   }

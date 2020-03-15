@@ -122,11 +122,8 @@ object ArraySupport {
     z
   }
 
-  def timesl[@sp(
-    Int,
-    Long,
-    Float,
-    Double) A: ClassTag: MultiplicativeSemigroup](
+  def timesl[
+      @sp(Int, Long, Float, Double) A: ClassTag: MultiplicativeSemigroup](
       r: A,
       x: Array[A]): Array[A] = {
     val y = new Array[A](x.length)
@@ -174,12 +171,9 @@ trait ArrayInstances0 {
 trait ArrayInstances1 extends ArrayInstances0 {
   type NI1[A] = NoImplicit[NormedVectorSpace[Array[A], A]]
 
-  implicit def ArrayVectorSpace[@sp(
-    Int,
-    Long,
-    Float,
-    Double) A: NI1: ClassTag: Field]: VectorSpace[Array[A], A] =
-    new ArrayVectorSpace[A]
+  implicit def ArrayVectorSpace[
+      @sp(Int, Long, Float, Double) A: NI1: ClassTag: Field]
+      : VectorSpace[Array[A], A] = new ArrayVectorSpace[A]
 
   implicit def ArrayEq[@sp A: Eq]: Eq[Array[A]] = new ArrayEq[A]
 }
@@ -192,10 +186,9 @@ trait ArrayInstances2 extends ArrayInstances1 {
 }
 
 trait ArrayInstances3 extends ArrayInstances2 {
-  implicit def ArrayNormedVectorSpace[@sp(
-    Float,
-    Double) A: Field: NRoot: ClassTag]: NormedVectorSpace[Array[A], A] =
-    ArrayInnerProductSpace[A].normed
+  implicit def ArrayNormedVectorSpace[
+      @sp(Float, Double) A: Field: NRoot: ClassTag]
+      : NormedVectorSpace[Array[A], A] = ArrayInnerProductSpace[A].normed
 }
 
 trait ArrayInstances extends ArrayInstances3 {
@@ -219,11 +212,8 @@ private final class ArrayModule[
 }
 
 @SerialVersionUID(0L)
-private final class ArrayVectorSpace[@sp(
-  Int,
-  Float,
-  Long,
-  Double) A: ClassTag: Field](
+private final class ArrayVectorSpace[
+    @sp(Int, Float, Long, Double) A: ClassTag: Field](
     implicit nnvs: NoImplicit[NormedVectorSpace[Array[A], A]])
     extends VectorSpace[Array[A], A]
     with Serializable {

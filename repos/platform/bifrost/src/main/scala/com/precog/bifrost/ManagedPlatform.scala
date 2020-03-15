@@ -127,10 +127,9 @@ trait ManagedExecution
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
       : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]]
 
-  def executorFor(apiKey: APIKey): EitherT[
+  def executorFor(apiKey: APIKey): EitherT[Future, String, QueryExecutor[
     Future,
-    String,
-    QueryExecutor[Future, StreamT[Future, Slice]]] = {
+    StreamT[Future, Slice]]] = {
     import scalaz.syntax.monad._
     for (queryExec <- syncExecutorFor(apiKey))
       yield {
@@ -150,10 +149,9 @@ trait ManagedExecution
   def asyncExecutorFor(
       apiKey: APIKey): EitherT[Future, String, QueryExecutor[Future, JobId]]
 
-  def syncExecutorFor(apiKey: APIKey): EitherT[
+  def syncExecutorFor(apiKey: APIKey): EitherT[Future, String, QueryExecutor[
     Future,
-    String,
-    QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]]
+    (Option[JobId], StreamT[Future, Slice])]]
 
   trait ManagedQueryExecutor[+A] extends QueryExecutor[Future, A] {
     import UserQuery.Serialization._
@@ -255,8 +253,9 @@ trait ManagedExecution
         }
       } getOrElse {
         EitherT.left(
-          Future(InvalidStateError(
-            "Jobs service is down; cannot execute asynchronous queries.")))
+          Future(
+            InvalidStateError(
+              "Jobs service is down; cannot execute asynchronous queries.")))
       }
     }
   }

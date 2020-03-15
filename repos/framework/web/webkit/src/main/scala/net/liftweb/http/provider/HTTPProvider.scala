@@ -71,8 +71,10 @@ trait HTTPProvider {
           NamedPF
             .applyBox(resp.encodeUrl(url), LiftRules.urlDecorate.toList) openOr
             resp.encodeUrl(url)) {
-          if (!(isLiftRequest_?(newReq) &&
-                actualServlet.service(newReq, resp))) {
+          if (!(
+                isLiftRequest_?(newReq) &&
+                  actualServlet.service(newReq, resp)
+              )) {
             chain
           }
         }
@@ -125,11 +127,12 @@ trait HTTPProvider {
 
   private def preBoot() {
     // do this stateless
-    LiftRules.statelessDispatch.prepend(NamedPF("Classpath service") {
-      case r @ Req(mainPath :: subPath, suffx, _)
-          if (mainPath == LiftRules.resourceServerPath) =>
-        ResourceServer.findResourceInClasspath(r, r.path.wholePath.drop(1))
-    })
+    LiftRules.statelessDispatch.prepend(
+      NamedPF("Classpath service") {
+        case r @ Req(mainPath :: subPath, suffx, _)
+            if (mainPath == LiftRules.resourceServerPath) =>
+          ResourceServer.findResourceInClasspath(r, r.path.wholePath.drop(1))
+      })
   }
 
   private def postBoot {
@@ -163,10 +166,12 @@ trait HTTPProvider {
       case Full(b) => b
       case _ =>
         session.path.endSlash ||
-          (session.path.wholePath.takeRight(1) match {
-            case Nil     => true
-            case x :: xs => liftHandled(x)
-          }) ||
+          (
+            session.path.wholePath.takeRight(1) match {
+              case Nil     => true
+              case x :: xs => liftHandled(x)
+            }
+          ) ||
           context.resource(session.uri) == null
     }
   }

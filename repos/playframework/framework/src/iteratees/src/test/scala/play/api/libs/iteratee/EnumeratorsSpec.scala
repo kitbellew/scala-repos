@@ -167,8 +167,7 @@ object EnumeratorsSpec
         val count = new java.util.concurrent.atomic.AtomicInteger()
         mustPropagateFailure(
           Enumerator(1, 2, 3).onDoneEnumerating(count.incrementAndGet())(
-            onDoneEC)
-        )
+            onDoneEC))
         count.get() must_== 1
       }
     }
@@ -246,8 +245,7 @@ object EnumeratorsSpec
       val enum = Enumerator.fromCallback1[String](
         b => Future.successful(None),
         () => (),
-        (msg, input) => errorCount.incrementAndGet()
-      )
+        (msg, input) => errorCount.incrementAndGet())
 
       val result = enum |>>> it
 
@@ -267,8 +265,7 @@ object EnumeratorsSpec
       val enum = Enumerator.fromCallback1[String](
         b => Future.successful(Some("")),
         () => (),
-        (msg, input) => errorCount.incrementAndGet()
-      )
+        (msg, input) => errorCount.incrementAndGet())
 
       val result1 = enum |>>> it1
       val result2 = enum |>>> it2
@@ -416,8 +413,9 @@ object EnumeratorsSpec
     "supply input from a by-name arg" in {
       mustExecute(3) { repeatEC =>
         val count = new AtomicInteger(0)
-        val fut = Enumerator.repeat(count.incrementAndGet())(
-          repeatEC) |>>> (Enumeratee.take(3) &>> Iteratee.getChunks[Int])
+        val fut = Enumerator.repeat(count.incrementAndGet())(repeatEC) |>>> (
+          Enumeratee.take(3) &>> Iteratee.getChunks[Int]
+        )
         Await.result(fut, Duration.Inf) must equalTo(List(1, 2, 3))
       }
     }

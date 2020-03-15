@@ -167,12 +167,10 @@ private[http] final case class RequestConfig[HasUrl, HasForm](
     headers: Map[String, Seq[String]] = Map.empty,
     formElements: Seq[FormElement] = Nil,
     version: Version = Version.Http11,
-    proxied: Boolean = false
-)
+    proxied: Boolean = false)
 
 class RequestBuilder[HasUrl, HasForm] private[http] (
-    config: RequestConfig[HasUrl, HasForm]
-) {
+    config: RequestConfig[HasUrl, HasForm]) {
   import RequestConfig._
 
   type This = RequestBuilder[HasUrl, HasForm]
@@ -328,8 +326,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   def build(method: Method, content: Option[Buf])(implicit
       HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
-        HasForm]
-  ): Request = {
+        HasForm]): Request = {
     content match {
       case Some(content) => withContent(method, content)
       case None          => withoutContent(method)
@@ -342,8 +339,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   def buildGet()(implicit
       HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
-        HasForm]
-  ): Request = withoutContent(Method.Get)
+        HasForm]): Request = withoutContent(Method.Get)
 
   /**
     * Construct an HTTP HEAD request.
@@ -351,8 +347,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   def buildHead()(implicit
       HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
-        HasForm]
-  ): Request = withoutContent(Method.Head)
+        HasForm]): Request = withoutContent(Method.Head)
 
   /**
     * Construct an HTTP DELETE request.
@@ -360,8 +355,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   def buildDelete()(implicit
       HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
-        HasForm]
-  ): Request = withoutContent(Method.Delete)
+        HasForm]): Request = withoutContent(Method.Delete)
 
   /**
     * Construct an HTTP POST request.
@@ -369,8 +363,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   def buildPost(content: Buf)(implicit
       HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
-        HasForm]
-  ): Request = withContent(Method.Post, content)
+        HasForm]): Request = withContent(Method.Post, content)
 
   /**
     * Construct an HTTP PUT request.
@@ -378,8 +371,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   def buildPut(content: Buf)(implicit
       HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
-        HasForm]
-  ): Request = withContent(Method.Put, content)
+        HasForm]): Request = withContent(Method.Put, content)
 
   /**
     * Construct a form post request.
@@ -387,8 +379,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   def buildFormPost(multipart: Boolean = false)(implicit
       HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.PostRequestEvidence[
         HasUrl,
-        HasForm]
-  ): Request = {
+        HasForm]): Request = {
     val dataFactory = new DefaultHttpDataFactory(false) // we don't use disk
     val req = withoutContent(Method.Post)
     val encoder =

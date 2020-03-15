@@ -67,18 +67,19 @@ object TestResultLogger {
       t: TestResultLogger,
       f: TestResultLogger) =
     TestResultLogger((log, results, taskName) =>
-      (if (cond(results, taskName))
-         t
-       else
-         f).run(log, results, taskName))
+      (
+        if (cond(results, taskName))
+          t
+        else
+          f
+      ).run(log, results, taskName))
 
   /** Transforms the input to be completely silent when the subject module doesn't contain any tests. */
   def silenceWhenNoTests(d: Defaults.Main) =
     d.copy(
       printStandard = d.printStandard.unless((results, _) =>
         results.events.isEmpty),
-      printNoTests = Null
-    )
+      printNoTests = Null)
 
   object Defaults {
 

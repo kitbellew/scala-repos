@@ -37,8 +37,7 @@ object Auth extends LilaController {
             get("referrer").filter(_.nonEmpty) orElse req.session.get(
               api.AccessUri) getOrElse routes.Lobby.home.url
           }.fuccess,
-          api = _ => mobileUserOk(u)
-        ) map {
+          api = _ => mobileUserOk(u)) map {
           _ withCookies LilaCookie.withSession { session =>
             session + ("sessionId" -> sessionId) - api.AccessUri
           }
@@ -76,8 +75,7 @@ object Auth extends LilaController {
             negotiate(
               html =
                 Unauthorized(html.auth.login(err, get("referrer"))).fuccess,
-              api = _ => Unauthorized(errorsAsJson(err)).fuccess
-            ),
+              api = _ => Unauthorized(errorsAsJson(err)).fuccess),
           _.fold(InternalServerError("Authentication error").fuccess)(
             authenticateUser)
         )
@@ -90,8 +88,9 @@ object Auth extends LilaController {
       req.session get "sessionId" foreach lila.security.Store.delete
       negotiate(
         html = fuccess(Redirect(routes.Main.mobile)),
-        api = apiVersion => Ok(Json.obj("ok" -> true)).fuccess
-      ) map (_ withCookies LilaCookie.newSession)
+        api = apiVersion => Ok(Json.obj("ok" -> true)).fuccess) map (
+        _ withCookies LilaCookie.newSession
+      )
     }
 
   def signup =

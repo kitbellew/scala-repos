@@ -81,12 +81,14 @@ object FutureTest extends SpecLite {
       val start = System.currentTimeMillis()
       val result =
         Future
-          .fork(Future.gatherUnordered(times.map { time =>
-            Future.fork {
-              Thread.sleep(time)
-              Future.now(time)
-            }
-          }))
+          .fork(
+            Future.gatherUnordered(
+              times.map { time =>
+                Future.fork {
+                  Thread.sleep(time)
+                  Future.now(time)
+                }
+              }))
           .unsafePerformSync
       val duration = System.currentTimeMillis() - start
 
@@ -111,12 +113,10 @@ object FutureTest extends SpecLite {
         Future.delay({
           Thread.sleep(20)
           List(System.currentTimeMillis)
-        })
-      )
+        }))
     else
       Future.fork(
         non.both(deadlocks(depth - 1), deadlocks(depth - 1)) map ({
           case (l, r) => l ++ r
-        })
-      )
+        }))
 }

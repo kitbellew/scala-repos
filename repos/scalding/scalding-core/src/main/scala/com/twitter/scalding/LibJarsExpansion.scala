@@ -47,10 +47,12 @@ object ExpandLibJarsGlobs {
     if (!root.exists || (skipHidden && root.isHidden))
       Stream.empty
     else
-      root #:: (root.listFiles match {
-        case null  => Stream.empty
-        case files => files.toStream.flatMap(tree(_, skipHidden))
-      })
+      root #:: (
+        root.listFiles match {
+          case null  => Stream.empty
+          case files => files.toStream.flatMap(tree(_, skipHidden))
+        }
+      )
 
   def fromGlob(glob: String, filesOnly: Boolean = true): Stream[Path] = {
     import java.nio._

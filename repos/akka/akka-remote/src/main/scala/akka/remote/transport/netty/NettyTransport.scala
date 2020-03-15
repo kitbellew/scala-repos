@@ -66,34 +66,36 @@ object NettyTransportSettings {
 object NettyFutureBridge {
   def apply(nettyFuture: ChannelFuture): Future[Channel] = {
     val p = Promise[Channel]()
-    nettyFuture.addListener(new ChannelFutureListener {
-      def operationComplete(future: ChannelFuture): Unit =
-        p complete Try(
-          if (future.isSuccess)
-            future.getChannel
-          else if (future.isCancelled)
-            throw new CancellationException
-          else
-            throw future.getCause)
-    })
+    nettyFuture.addListener(
+      new ChannelFutureListener {
+        def operationComplete(future: ChannelFuture): Unit =
+          p complete Try(
+            if (future.isSuccess)
+              future.getChannel
+            else if (future.isCancelled)
+              throw new CancellationException
+            else
+              throw future.getCause)
+      })
     p.future
   }
 
   def apply(nettyFuture: ChannelGroupFuture): Future[ChannelGroup] = {
     import scala.collection.JavaConverters._
     val p = Promise[ChannelGroup]
-    nettyFuture.addListener(new ChannelGroupFutureListener {
-      def operationComplete(future: ChannelGroupFuture): Unit =
-        p complete Try(
-          if (future.isCompleteSuccess)
-            future.getGroup
-          else
-            throw future.iterator.asScala.collectFirst {
-              case f if f.isCancelled ⇒ new CancellationException
-              case f if !f.isSuccess ⇒ f.getCause
-            } getOrElse new IllegalStateException(
-              "Error reported in ChannelGroupFuture, but no error found in individual futures."))
-    })
+    nettyFuture.addListener(
+      new ChannelGroupFutureListener {
+        def operationComplete(future: ChannelGroupFuture): Unit =
+          p complete Try(
+            if (future.isCompleteSuccess)
+              future.getGroup
+            else
+              throw future.iterator.asScala.collectFirst {
+                case f if f.isCancelled ⇒ new CancellationException
+                case f if !f.isSuccess ⇒ f.getCause
+              } getOrElse new IllegalStateException(
+                "Error reported in ChannelGroupFuture, but no error found in individual futures."))
+      })
     p.future
   }
 }
@@ -118,8 +120,9 @@ class NettyTransportSettings(config: Config) {
         throw new ConfigurationException(s"Unknown transport: [$unknown]")
     }
 
-  val EnableSsl: Boolean = getBoolean(
-    "enable-ssl") requiring (!_ || TransportMode == Tcp, s"$TransportMode does not support SSL")
+  val EnableSsl: Boolean = getBoolean("enable-ssl") requiring (
+    !_ || TransportMode == Tcp, s"$TransportMode does not support SSL"
+  )
 
   val UseDispatcherForIo: Option[String] =
     getString("use-dispatcher-for-io") match {
@@ -148,12 +151,15 @@ class NettyTransportSettings(config: Config) {
   val SendBufferSize: Option[Int] = optionSize("send-buffer-size")
 
   val ReceiveBufferSize: Option[Int] = optionSize(
-    "receive-buffer-size") requiring (s ⇒
-    s.isDefined || TransportMode != Udp, "receive-buffer-size must be specified for UDP")
+    "receive-buffer-size") requiring (
+    s ⇒
+      s.isDefined || TransportMode != Udp, "receive-buffer-size must be specified for UDP"
+  )
 
-  val MaxFrameSize: Int =
-    getBytes("maximum-frame-size").toInt requiring (_ >= 32000,
-    s"Setting 'maximum-frame-size' must be at least 32000 bytes")
+  val MaxFrameSize: Int = getBytes("maximum-frame-size").toInt requiring (
+    _ >= 32000,
+    s"Setting 'maximum-frame-size' must be at least 32000 bytes"
+  )
 
   val Backlog: Int = getInt("backlog")
 
@@ -286,8 +292,9 @@ private[netty] abstract class ServerHandler(
             transport.system.name,
             hostName = None,
             port = None)
-          .getOrElse(throw new NettyTransportException(
-            s"Unknown inbound remote address type [${remoteSocketAddress.getClass.getName}]"))
+          .getOrElse(
+            throw new NettyTransportException(
+              s"Unknown inbound remote address type [${remoteSocketAddress.getClass.getName}]"))
         init(channel, remoteSocketAddress, remoteAddress, msg) {
           listener notify InboundAssociation(_)
         }
@@ -384,17 +391,20 @@ class NettyTransport(
   import settings._
 
   implicit val executionContext: ExecutionContext = settings.UseDispatcherForIo
-    .orElse(RARP(system).provider.remoteSettings.Dispatcher match {
-      case "" ⇒ None
-      case dispatcherName ⇒ Some(dispatcherName)
-    })
+    .orElse(
+      RARP(system).provider.remoteSettings.Dispatcher match {
+        case "" ⇒ None
+        case dispatcherName ⇒ Some(dispatcherName)
+      })
     .map(system.dispatchers.lookup)
     .getOrElse(system.dispatcher)
 
-  override val schemeIdentifier: String = (if (EnableSsl)
-                                             "ssl."
-                                           else
-                                             "") + TransportMode
+  override val schemeIdentifier: String = (
+    if (EnableSsl)
+      "ssl."
+    else
+      ""
+  ) + TransportMode
   override def maximumPayloadBytes: Int = settings.MaxFrameSize
 
   private final val isDatagram = TransportMode == Udp
@@ -673,10 +683,11 @@ class NettyTransport(
     else {
       val bootstrap: ClientBootstrap = outboundBootstrap(remoteAddress)
 
-      (for {
-        socketAddress ← addressToSocketAddress(remoteAddress)
-        readyChannel ← NettyFutureBridge(bootstrap.connect(socketAddress)) map {
-          channel ⇒
+      (
+        for {
+          socketAddress ← addressToSocketAddress(remoteAddress)
+          readyChannel ← NettyFutureBridge(
+            bootstrap.connect(socketAddress)) map { channel ⇒
             if (EnableSsl)
               blocking {
                 channel.getPipeline
@@ -687,29 +698,30 @@ class NettyTransport(
             if (!isDatagram)
               channel.setReadable(false)
             channel
-        }
-        handle ← if (isDatagram)
-          Future {
-            readyChannel.getRemoteAddress match {
-              case addr: InetSocketAddress ⇒
-                val handle =
-                  new UdpAssociationHandle(
-                    localAddress,
-                    remoteAddress,
-                    readyChannel,
-                    NettyTransport.this)
-                handle.readHandlerPromise.future.onSuccess {
-                  case listener ⇒ udpConnectionTable.put(addr, listener)
-                }
-                handle
-              case unknown ⇒
-                throw new NettyTransportException(
-                  s"Unknown outbound remote address type [${unknown.getClass.getName}]")
-            }
           }
-        else
-          readyChannel.getPipeline.get(classOf[ClientHandler]).statusFuture
-      } yield handle) recover {
+          handle ← if (isDatagram)
+            Future {
+              readyChannel.getRemoteAddress match {
+                case addr: InetSocketAddress ⇒
+                  val handle =
+                    new UdpAssociationHandle(
+                      localAddress,
+                      remoteAddress,
+                      readyChannel,
+                      NettyTransport.this)
+                  handle.readHandlerPromise.future.onSuccess {
+                    case listener ⇒ udpConnectionTable.put(addr, listener)
+                  }
+                  handle
+                case unknown ⇒
+                  throw new NettyTransportException(
+                    s"Unknown outbound remote address type [${unknown.getClass.getName}]")
+              }
+            }
+          else
+            readyChannel.getPipeline.get(classOf[ClientHandler]).statusFuture
+        } yield handle
+      ) recover {
         case c: CancellationException ⇒
           throw new NettyTransportException("Connection was cancelled")
             with NoStackTrace

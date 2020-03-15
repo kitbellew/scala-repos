@@ -105,8 +105,7 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
     val messageList = List(
       new Message("msg1".getBytes),
       new Message("msg2".getBytes),
-      new Message("msg3".getBytes)
-    )
+      new Message("msg3".getBytes))
 
     // test for uncompressed regular messages
     {

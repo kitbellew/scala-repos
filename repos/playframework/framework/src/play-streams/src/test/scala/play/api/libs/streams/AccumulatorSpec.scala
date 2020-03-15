@@ -32,14 +32,16 @@ object AccumulatorSpec extends Specification {
   def await[T](f: Future[T]) = Await.result(f, 10.seconds)
   def error[T](any: Any): T = throw sys.error("error")
   def errorSource[T] =
-    Source.fromPublisher(new Publisher[T] {
-      def subscribe(s: Subscriber[_ >: T]) = {
-        s.onSubscribe(new Subscription {
-          def cancel() = s.onComplete()
-          def request(n: Long) = s.onError(new RuntimeException("error"))
-        })
-      }
-    })
+    Source.fromPublisher(
+      new Publisher[T] {
+        def subscribe(s: Subscriber[_ >: T]) = {
+          s.onSubscribe(
+            new Subscription {
+              def cancel() = s.onComplete()
+              def request(n: Long) = s.onError(new RuntimeException("error"))
+            })
+        }
+      })
 
   "an accumulator" should {
     "provide map" in withMaterializer { implicit m =>

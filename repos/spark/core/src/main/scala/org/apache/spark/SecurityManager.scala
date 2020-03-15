@@ -212,14 +212,18 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
 
   private val secretKey = generateSecretKey()
   logInfo(
-    "SecurityManager: authentication " + (if (authOn)
-                                            "enabled"
-                                          else
-                                            "disabled") +
-      "; ui acls " + (if (aclsOn)
-                        "enabled"
-                      else
-                        "disabled") +
+    "SecurityManager: authentication " + (
+      if (authOn)
+        "enabled"
+      else
+        "disabled"
+    ) +
+      "; ui acls " + (
+      if (aclsOn)
+        "enabled"
+      else
+        "disabled"
+    ) +
       "; users with view permissions: " + viewAcls.toString() +
       "; users with modify permissions: " + modifyAcls.toString())
 
@@ -239,8 +243,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
           }
           return passAuth
         }
-      }
-    )
+      })
   }
 
   // the default SSL configuration - it will be used by all communication layers unless overwritten

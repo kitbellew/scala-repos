@@ -21,8 +21,9 @@ object PomRepoTest extends Build {
     ivyPaths <<= baseDirectory(dir => new IvyPaths(dir, Some(dir / "ivy-home")))
   )
 
-  val local =
-    "local-maven-repo" at "file://" + (Path.userHome / ".m2" / "repository").absolutePath
+  val local = "local-maven-repo" at "file://" + (
+    Path.userHome / ".m2" / "repository"
+  ).absolutePath
 
   def pomIncludeRepository(base: File, prev: MavenRepository => Boolean) =
     (r: MavenRepository) =>
@@ -52,10 +53,12 @@ object PomRepoTest extends Build {
     } map {
       "Repository should not be exported: " + _
     } orElse
-      (expected.find { e =>
-        !extracted.exists(r => e.accept(r.root))
-      } map {
-        "Repository should be exported: " + _
-      }) foreach error
+      (
+        expected.find { e =>
+          !extracted.exists(r => e.accept(r.root))
+        } map {
+          "Repository should be exported: " + _
+        }
+      ) foreach error
   }
 }

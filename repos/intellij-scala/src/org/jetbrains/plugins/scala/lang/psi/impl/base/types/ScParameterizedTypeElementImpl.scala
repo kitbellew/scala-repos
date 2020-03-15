@@ -257,8 +257,10 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       _.getOrAny
     }
     def fails(t: ScType) =
-      (for (f @ Failure(_, _) <- argTypesWrapped)
-        yield f).foldLeft(Success(t, Some(this)))(_.apply(_))
+      (
+        for (f @ Failure(_, _) <- argTypesWrapped)
+          yield f
+      ).foldLeft(Success(t, Some(this)))(_.apply(_))
 
     //Find cyclic type references
     argTypesWrapped.find(_.isCyclic) match {
@@ -267,8 +269,10 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       case None =>
         val typeArgs = args.map(_.getType(ctx))
         val result = ScParameterizedType(res, typeArgs.map(_.getOrAny))
-        (for (f @ Failure(_, _) <- typeArgs)
-          yield f).foldLeft(Success(result, Some(this)))(_.apply(_))
+        (
+          for (f @ Failure(_, _) <- typeArgs)
+            yield f
+        ).foldLeft(Success(result, Some(this)))(_.apply(_))
     }
   }
 

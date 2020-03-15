@@ -39,11 +39,13 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
   private def toDoc(game: Game, analysed: Boolean) =
     Json
       .obj(
-        Fields.status -> (game.status match {
-          case s if s.is(_.Timeout) => chess.Status.Resign
-          case s if s.is(_.NoStart) => chess.Status.Resign
-          case s                    => game.status
-        }).id,
+        Fields.status -> (
+          game.status match {
+            case s if s.is(_.Timeout) => chess.Status.Resign
+            case s if s.is(_.NoStart) => chess.Status.Resign
+            case s                    => game.status
+          }
+        ).id,
         Fields.turns -> math.ceil(game.turns.toFloat / 2),
         Fields.rated -> game.rated,
         Fields.perf -> game.perfType.map(_.id),
@@ -52,7 +54,9 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
         Fields.winnerColor -> game.winner.fold(3)(_.color.fold(1, 2)),
         Fields.averageRating -> game.averageUsersRating,
         Fields.ai -> game.aiLevel,
-        Fields.date -> (lila.search.Date.formatter print game.updatedAtOrCreatedAt),
+        Fields.date -> (
+          lila.search.Date.formatter print game.updatedAtOrCreatedAt
+        ),
         Fields.duration -> game.durationSeconds,
         Fields.clockInit -> game.clock.map(_.limit),
         Fields.clockInc -> game.clock.map(_.increment),
@@ -111,9 +115,7 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
     // val maxGames = 10 * 1000 * 1000
 
     lila.game.tube.gameTube.coll
-      .find(BSONDocument(
-        "ca" -> BSONDocument("$gt" -> since)
-      ))
+      .find(BSONDocument("ca" -> BSONDocument("$gt" -> since)))
       .sort(BSONDocument("ca" -> 1))
       .cursor[Game](ReadPreference.secondaryPreferred)
       .enumerate(maxGames, stopOnError = true) &>
@@ -123,9 +125,10 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
       } &>
         Iteratee.foldM[(Seq[Game], Set[String]), Long](nowMillis) {
           case (millis, (games, analysedIds)) =>
-            client.storeBulk(games map { g =>
-              Id(g.id) -> toDoc(g, analysedIds(g.id))
-            }) inject {
+            client.storeBulk(
+              games map { g =>
+                Id(g.id) -> toDoc(g, analysedIds(g.id))
+              }) inject {
               val date =
                 games.headOption.map(_.createdAt) ?? dateTimeFormatter.print
               val gameMs = (nowMillis - millis) / batchSize.toDouble

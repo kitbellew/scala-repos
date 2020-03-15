@@ -61,8 +61,8 @@ import org.apache.spark.util.Utils
 class SparkILoop(
     private val in0: Option[BufferedReader],
     protected val out: JPrintWriter,
-    val master: Option[String]
-) extends AnyRef
+    val master: Option[String])
+    extends AnyRef
     with LoopCommands
     with SparkILoopInit
     with Logging {
@@ -286,11 +286,12 @@ class SparkILoop(
     val old = fallbackMode
     fallbackMode = !old
     System.setProperty("spark.repl.fallback", fallbackMode.toString)
-    echo(s"""
+    echo(
+      s"""
       |Switched ${if (old)
-              "off"
-            else
-              "on"} fallback mode without restarting.
+           "off"
+         else
+           "on"} fallback mode without restarting.
       |       If you have defined classes in the repl, it would
       |be good to redefine them incase you plan to use them. If you still run
       |into issues it would be good to restart the repl and turn on `:fallback`
@@ -484,18 +485,13 @@ class SparkILoop(
             ""
           else
             found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(
-          typeMsg,
-          termMsg,
-          implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
+        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (
+          _ == ""
+        ) mkString ("(", ", ", ")")
 
         intp.reporter.printMessage(
-          "%2d) %-30s %s%s".format(
-            idx + 1,
-            handler.importString,
-            statsMsg,
-            foundMsg
-          ))
+          "%2d) %-30s %s%s"
+            .format(idx + 1, handler.importString, statsMsg, foundMsg))
     }
   }
 
@@ -541,10 +537,8 @@ class SparkILoop(
               val memberGroups: List[List[Symbol]] = {
                 val groups = members groupBy (_.tpe.finalResultType) toList
                 val (big, small) = groups partition (_._2.size > 3)
-                val xss = (
-                  (big sortBy (_._1.toString) map (_._2)) :+
-                    (small flatMap (_._2))
-                )
+                val xss = ((big sortBy (_._1.toString) map (_._2)) :+
+                  (small flatMap (_._2)))
 
                 xss map (xs => xs sortBy (_.name.toString))
               }
@@ -617,8 +611,9 @@ class SparkILoop(
           // the end of the flattened name.
           def className = intp flatName path
           def moduleName =
-            (intp flatName path.stripSuffix(
-              MODULE_SUFFIX_STRING)) + MODULE_SUFFIX_STRING
+            (
+              intp flatName path.stripSuffix(MODULE_SUFFIX_STRING)
+            ) + MODULE_SUFFIX_STRING
 
           val bytes = super.tryClass(className)
           if (bytes.nonEmpty)
@@ -1093,8 +1088,7 @@ class SparkILoop(
         if (settings.noCompletion.value)
           NoCompletion
         else
-          new SparkJLineCompletion(intp)
-      )
+          new SparkJLineCompletion(intp))
       catch {
         case ex @ (_: Exception | _: NoClassDefFoundError) =>
           echo(
@@ -1245,14 +1239,18 @@ class SparkILoop(
   def process(args: Array[String]): Boolean = {
     val command = new SparkCommandLine(args.toList, msg => echo(msg))
     def neededHelp(): String =
-      (if (command.settings.help.value)
-         command.usageMsg + "\n"
-       else
-         "") +
-        (if (command.settings.Xhelp.value)
-           command.xusageMsg + "\n"
-         else
-           "")
+      (
+        if (command.settings.help.value)
+          command.usageMsg + "\n"
+        else
+          ""
+      ) +
+        (
+          if (command.settings.Xhelp.value)
+            command.xusageMsg + "\n"
+          else
+            ""
+        )
 
     // if they asked for no help and command is valid, we call the real main
     neededHelp() match {

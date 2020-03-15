@@ -203,18 +203,20 @@ object getDummyBlocks {
             null
         for (child <- children if isCorrectBlock(child)) {
           val context =
-            (child.getElementType match {
-              case ScalaDocElementTypes.DOC_TAG =>
-                val currentTag = Option(child.getFirstChildNode)
-                  .filter(_.getElementType == ScalaDocTokenType.DOC_TAG_NAME)
-                  .map(_.getText)
-                if (scalaDocPrevChildTag.isEmpty || scalaDocPrevChildTag != currentTag) {
-                  contextAlignment = Alignment.createAlignment(true)
-                }
-                scalaDocPrevChildTag = currentTag
-                Some(contextAlignment)
-              case _ => None
-            }).map(a => new SubBlocksContext(alignment = Some(a)))
+            (
+              child.getElementType match {
+                case ScalaDocElementTypes.DOC_TAG =>
+                  val currentTag = Option(child.getFirstChildNode)
+                    .filter(_.getElementType == ScalaDocTokenType.DOC_TAG_NAME)
+                    .map(_.getText)
+                  if (scalaDocPrevChildTag.isEmpty || scalaDocPrevChildTag != currentTag) {
+                    contextAlignment = Alignment.createAlignment(true)
+                  }
+                  scalaDocPrevChildTag = currentTag
+                  Some(contextAlignment)
+                case _ => None
+              }
+            ).map(a => new SubBlocksContext(alignment = Some(a)))
           subBlocks.add(
             new ScalaBlock(
               block,
@@ -427,8 +429,10 @@ object getDummyBlocks {
     }
 
     if (ScalaDocTokenType.ALL_SCALADOC_TOKENS.contains(node.getElementType) ||
-        (node.getTreeParent != null && node.getTreeParent.getElementType == ScalaDocElementTypes.DOC_TAG &&
-        node.getPsi.isInstanceOf[PsiErrorElement])) {
+        (
+          node.getTreeParent != null && node.getTreeParent.getElementType == ScalaDocElementTypes.DOC_TAG &&
+          node.getPsi.isInstanceOf[PsiErrorElement]
+        )) {
       val children = ArrayBuffer[ASTNode]()
       var scaladocNode =
         node.getElementType match {
@@ -457,9 +461,11 @@ object getDummyBlocks {
           children += scaladocNode
         }
 
-      } while (scaladocNode != lastNode && (
-        scaladocNode = scaladocNode.getTreeNext,
-        true)._2)
+      } while (
+        scaladocNode != lastNode && (
+          scaladocNode = scaladocNode.getTreeNext,
+          true)._2
+      )
 
       val normalAlignment = block.myParentBlock.subBlocksContext
         .flatMap(_.alignment)
@@ -552,33 +558,36 @@ object getDummyBlocks {
         } else if (isCorrectBlock(child)) {
           subBlocks.addAll(getTemplateParentsBlocks(child, block))
         }
-      } while (child != lastNode && {
-        child = child.getTreeNext;
-        child != null
-      })
+      } while (
+        child != lastNode && {
+          child = child.getTreeNext;
+          child != null
+        }
+      )
     }
 
     //it is not used right now, but could come in handy later
-    block.subBlocksContext.foreach(_.additionalNodes.foreach { additionalNode =>
-      val indent = ScalaIndentProcessor.getChildIndent(block, additionalNode)
-      val (childAlignment, childWrap) =
-        (
-          block.getCustomAlignment(additionalNode).orNull,
-          arrangeSuggestedWrapForChild(
+    block.subBlocksContext.foreach(
+      _.additionalNodes.foreach { additionalNode =>
+        val indent = ScalaIndentProcessor.getChildIndent(block, additionalNode)
+        val (childAlignment, childWrap) =
+          (
+            block.getCustomAlignment(additionalNode).orNull,
+            arrangeSuggestedWrapForChild(
+              block,
+              additionalNode,
+              settings,
+              block.suggestedWrap))
+        subBlocks.add(
+          new ScalaBlock(
             block,
             additionalNode,
-            settings,
-            block.suggestedWrap))
-      subBlocks.add(
-        new ScalaBlock(
-          block,
-          additionalNode,
-          block.getChildBlockLastNode(additionalNode),
-          childAlignment,
-          indent,
-          childWrap,
-          block.getSettings))
-    })
+            block.getChildBlockLastNode(additionalNode),
+            childAlignment,
+            indent,
+            childWrap,
+            block.getSettings))
+      })
 
     subBlocks
   }
@@ -1073,10 +1082,12 @@ object getDummyBlocks {
     val simpleIndent = Indent.getAbsoluteNoneIndent
     val prefixIndent = Indent.getSpaceIndent(
       marginIndent +
-        (if (node.getElementType == ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING)
-           1
-         else
-           0),
+        (
+          if (node.getElementType == ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING)
+            1
+          else
+            0
+        ),
       true)
 
     val lines = node.getText.split("\n")
@@ -1305,19 +1316,17 @@ object getDummyBlocks {
         addSubBlock(expr, null)
         addSubBlock(
           dot,
-          (id :: delegatedChildren)
-            .sortBy(_.getTextRange.getStartOffset)
-            .lastOption
-            .orNull,
+          (
+            id :: delegatedChildren
+          ).sortBy(_.getTextRange.getStartOffset).lastOption.orNull,
           Some(SubBlocksContext(id, alignment, delegatedChildren)))
       case expr :: typeArgs :: Nil
           if typeArgs.getPsi.isInstanceOf[ScTypeArgs] =>
         addSubBlock(
           expr,
-          (typeArgs :: delegatedChildren)
-            .sortBy(_.getTextRange.getStartOffset)
-            .lastOption
-            .orNull,
+          (
+            typeArgs :: delegatedChildren
+          ).sortBy(_.getTextRange.getStartOffset).lastOption.orNull,
           Some(SubBlocksContext(typeArgs, alignment, delegatedChildren))
         )
       case expr :: Nil =>

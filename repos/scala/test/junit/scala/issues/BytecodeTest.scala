@@ -77,14 +77,18 @@ class BytecodeTest extends ClearAfterClass {
         new BatchSourceFile("Test.scala", scalaSrc)))
     val outDir = compiler.settings.outputDirs.getSingleOutput.get
     val outfiles =
-      (for (f <- outDir.iterator if !f.isDirectory)
-        yield (f.name, f.toByteArray)).toList
+      (
+        for (f <- outDir.iterator if !f.isDirectory)
+          yield (f.name, f.toByteArray)
+      ).toList
 
     def check(classfile: String, annotName: String) = {
       val f =
-        (outfiles collect {
-          case (`classfile`, bytes) => AsmUtils.readClass(bytes)
-        }).head
+        (
+          outfiles collect {
+            case (`classfile`, bytes) => AsmUtils.readClass(bytes)
+          }
+        ).head
       val descs = f.visibleAnnotations.asScala.map(_.desc).toList
       assertTrue(descs.toString, descs exists (_ contains annotName))
     }

@@ -41,9 +41,8 @@ import scalaz._
 class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
     executor: ExecutionContext,
     M: Monad[Future])
-    extends CustomHttpService[
-      ByteChunk,
-      APIKey => Future[HttpResponse[ByteChunk]]] {
+    extends CustomHttpService[ByteChunk, APIKey => Future[
+      HttpResponse[ByteChunk]]] {
   import JobManager._
   import JobState._
   import scalaz.syntax.monad._
@@ -73,9 +72,12 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                       },
                       {
                         case (mimeType0, data0) =>
-                          val mimeType =
-                            mimeType0 getOrElse (MimeTypes.application / MimeTypes.json)
-                          if (mimeType != (MimeTypes.application / MimeTypes.json)) {
+                          val mimeType = mimeType0 getOrElse (
+                            MimeTypes.application / MimeTypes.json
+                          )
+                          if (mimeType != (
+                                MimeTypes.application / MimeTypes.json
+                              )) {
                             HttpResponse[ByteChunk](
                               HttpStatus(
                                 InternalServerError,
@@ -85,12 +87,14 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                               HttpHeaders.Empty + `Content-Type`(mimeType)
                             val data = data0
                             val prefix =
-                              ("""{ "errors": %s, "warnings": %s, "data": """ format (
-                                JArray(
-                                  errors.toList map (_.value)).renderCompact,
-                                JArray(
-                                  warnings.toList map (_.value)).renderCompact
-                              )).getBytes(Utf8)
+                              (
+                                """{ "errors": %s, "warnings": %s, "data": """ format (
+                                  JArray(
+                                    errors.toList map (_.value)).renderCompact,
+                                  JArray(
+                                    warnings.toList map (_.value)).renderCompact
+                                )
+                              ).getBytes(Utf8)
                             val suffix = " }".getBytes(Utf8) :: StreamT
                               .empty[Future, Array[Byte]]
 

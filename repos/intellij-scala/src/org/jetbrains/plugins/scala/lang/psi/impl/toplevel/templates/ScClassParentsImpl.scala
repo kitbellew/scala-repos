@@ -52,9 +52,11 @@ class ScClassParentsImpl private (
         .asInstanceOf[ScTemplateParentsStub]
         .getTemplateParentsTypeElements
     }
-    (constructor match {
-      case Some(x) => Array[ScTypeElement](x.typeElement)
-      case None    => Array[ScTypeElement]()
-    }) ++ findChildrenByClassScala(classOf[ScTypeElement])
+    (
+      constructor match {
+        case Some(x) => Array[ScTypeElement](x.typeElement)
+        case None    => Array[ScTypeElement]()
+      }
+    ) ++ findChildrenByClassScala(classOf[ScTypeElement])
   }
 }

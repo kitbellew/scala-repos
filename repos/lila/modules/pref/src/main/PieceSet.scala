@@ -42,8 +42,7 @@ object PieceSet extends PieceSetObject {
     "companion",
     "fantasy",
     "spatial",
-    "shapes"
-  ) map { name =>
+    "shapes") map { name =>
     new PieceSet(name)
   }
 }

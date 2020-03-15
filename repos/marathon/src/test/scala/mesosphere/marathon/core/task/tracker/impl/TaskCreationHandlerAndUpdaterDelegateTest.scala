@@ -32,8 +32,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
       TaskTrackerActor.ForwardTaskOp(
         f.timeoutFromNow,
         task.taskId,
-        TaskOpProcessor.Action.Update(task))
-    )
+        TaskOpProcessor.Action.Update(task)))
 
     When("the request is acknowledged")
     f.taskTrackerProbe.reply(())
@@ -54,8 +53,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
       TaskTrackerActor.ForwardTaskOp(
         f.timeoutFromNow,
         task.taskId,
-        TaskOpProcessor.Action.Update(task))
-    )
+        TaskOpProcessor.Action.Update(task)))
 
     When("the response is an error")
     val cause: RuntimeException = new scala.RuntimeException("test failure")
@@ -80,8 +78,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
       TaskTrackerActor.ForwardTaskOp(
         f.timeoutFromNow,
         task.taskId,
-        TaskOpProcessor.Action.Expunge)
-    )
+        TaskOpProcessor.Action.Expunge))
 
     When("the request is acknowledged")
     f.taskTrackerProbe.reply(())
@@ -102,8 +99,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
       TaskTrackerActor.ForwardTaskOp(
         f.timeoutFromNow,
         task.taskId,
-        TaskOpProcessor.Action.Expunge)
-    )
+        TaskOpProcessor.Action.Expunge))
 
     When("the response is an error")
     val cause: RuntimeException = new scala.RuntimeException("test failure")
@@ -134,8 +130,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
       TaskTrackerActor.ForwardTaskOp(
         f.timeoutFromNow,
         Task.Id(taskId),
-        TaskOpProcessor.Action.UpdateStatus(update))
-    )
+        TaskOpProcessor.Action.UpdateStatus(update)))
 
     When("the request is acknowledged")
     f.taskTrackerProbe.reply(())
@@ -161,8 +156,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
       TaskTrackerActor.ForwardTaskOp(
         f.timeoutFromNow,
         taskId,
-        TaskOpProcessor.Action.UpdateStatus(update))
-    )
+        TaskOpProcessor.Action.UpdateStatus(update)))
 
     When("the response is an error")
     val cause: RuntimeException = new scala.RuntimeException("test failure")

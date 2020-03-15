@@ -33,42 +33,39 @@ object HttpBinApplication {
           "origin" -> r.remoteAddress,
           "url" -> "",
           "args" -> r.queryString.mapValues(_.head),
-          "headers" -> r.headers.toSimpleMap
-        )
+          "headers" -> r.headers.toSimpleMap)
     }
 
   private def requestWriter[A] =
     new Writes[Request[A]] {
       def writes(r: Request[A]): JsValue =
         requestHeaderWriter.writes(r).as[JsObject] ++
-          Json.obj(
-            "json" -> JsNull,
-            "data" -> "",
-            "form" -> JsObject(Nil)
-          ) ++ (r.body match {
-          // Json Body
-          case e: JsValue =>
-            Json.obj("json" -> e)
-          // X-WWW-Form-Encoded
-          case f: Map[String, Seq[String]] @unchecked =>
-            Json.obj(
-              "form" -> JsObject(
-                f.mapValues(x => JsString(x.mkString(", "))).toSeq))
-          // Anything else
-          case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
-            Json.obj(
-              "form" -> m.mdf.dataParts.map {
-                case (k, v) => k -> JsString(v.mkString)
-              },
-              "file" -> JsString(
-                m.mdf
-                  .file("upload")
-                  .map(v => FileUtils.readFileToString(v.ref.file))
-                  .getOrElse(""))
-            )
-          case b =>
-            Json.obj("data" -> JsString(b.toString))
-        })
+          Json.obj("json" -> JsNull, "data" -> "", "form" -> JsObject(Nil)) ++ (
+          r.body match {
+            // Json Body
+            case e: JsValue =>
+              Json.obj("json" -> e)
+            // X-WWW-Form-Encoded
+            case f: Map[String, Seq[String]] @unchecked =>
+              Json.obj(
+                "form" -> JsObject(
+                  f.mapValues(x => JsString(x.mkString(", "))).toSeq))
+            // Anything else
+            case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
+              Json.obj(
+                "form" -> m.mdf.dataParts.map {
+                  case (k, v) => k -> JsString(v.mkString)
+                },
+                "file" -> JsString(
+                  m.mdf
+                    .file("upload")
+                    .map(v => FileUtils.readFileToString(v.ref.file))
+                    .getOrElse(""))
+              )
+            case b =>
+              Json.obj("data" -> JsString(b.toString))
+          }
+        )
     }
 
   val getIp: Routes = {
@@ -134,10 +131,12 @@ object HttpBinApplication {
       .map { method =>
         val route: Routes = {
           case r @ p"/gzip" if r.method == method =>
-            gzipFilter(mat)(Action { request =>
-              Ok(requestHeaderWriter.writes(request).as[JsObject] ++ Json
-                .obj("gzipped" -> true, "method" -> method))
-            })
+            gzipFilter(mat)(
+              Action { request =>
+                Ok(
+                  requestHeaderWriter.writes(request).as[JsObject] ++ Json
+                    .obj("gzipped" -> true, "method" -> method))
+              })
         }
         route
       }
@@ -187,8 +186,10 @@ object HttpBinApplication {
   val cookies: Routes = {
     case GET(p"/cookies") =>
       Action { request =>
-        Ok(Json.obj("cookies" -> JsObject(request.cookies.toSeq.map(x =>
-          x.name -> JsString(x.value)))))
+        Ok(
+          Json.obj(
+            "cookies" -> JsObject(
+              request.cookies.toSeq.map(x => x.name -> JsString(x.value)))))
       }
   }
 
@@ -221,8 +222,9 @@ object HttpBinApplication {
               .drop(1)
               .headOption
               .filter { encoded =>
-                new String(org.apache.commons.codec.binary.Base64.decodeBase64(
-                  encoded.getBytes)).split(":").toList match {
+                new String(
+                  org.apache.commons.codec.binary.Base64.decodeBase64(
+                    encoded.getBytes)).split(":").toList match {
                   case u :: p :: Nil if u == username && password == p => true
                   case _                                               => false
                 }
@@ -384,8 +386,7 @@ object HttpBinApplication {
             .orElse(stream)
             .orElse(delay)
             .orElse(html)
-            .orElse(robots)
-        )
+            .orElse(robots))
     }.application
   }
 

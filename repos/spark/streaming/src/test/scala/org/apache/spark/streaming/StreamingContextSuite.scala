@@ -114,8 +114,10 @@ class StreamingContextSuite
     addInputStream(ssc1).register()
     ssc1.start()
     val cp = new Checkpoint(ssc1, Time(1000))
-    assert(Utils.timeStringAsSeconds(
-      cp.sparkConfPairs.toMap.getOrElse("spark.dummyTimeConfig", "-1")) === 10)
+    assert(
+      Utils.timeStringAsSeconds(
+        cp.sparkConfPairs.toMap
+          .getOrElse("spark.dummyTimeConfig", "-1")) === 10)
     ssc1.stop()
     val newCp = Utils.deserialize[Checkpoint](Utils.serialize(cp))
     assert(
@@ -332,8 +334,7 @@ class StreamingContextSuite
       assert(
         TestReceiver.counter.get() == runningCount + 1,
         "Received records = " + TestReceiver.counter.get() + ", " +
-          "processed records = " + runningCount
-      )
+          "processed records = " + runningCount)
       Thread.sleep(100)
     }
   }

@@ -84,8 +84,7 @@ object build extends Build {
     publish := {},
     publishLocal := {},
     publishSigned := {},
-    publishLocalSigned := {}
-  )
+    publishLocalSigned := {})
 
   // avoid move files
   // https://github.com/scala-js/scala-js/blob/v0.6.7/sbt-plugin/src/main/scala/scala/scalajs/sbtplugin/cross/CrossProject.scala#L193-L206
@@ -104,10 +103,12 @@ object build extends Build {
     organization := "org.scalaz",
     scalaVersion := "2.10.6",
     crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0-M3"),
-    resolvers ++= (if (scalaVersion.value.endsWith("-SNAPSHOT"))
-                     List(Opts.resolver.sonatypeSnapshots)
-                   else
-                     Nil),
+    resolvers ++= (
+      if (scalaVersion.value.endsWith("-SNAPSHOT"))
+        List(Opts.resolver.sonatypeSnapshots)
+      else
+        Nil
+    ),
     fullResolvers ~= {
       _.filterNot(_.name == "jcenter")
     }, // https://github.com/sbt/sbt/issues/2217
@@ -123,15 +124,13 @@ object build extends Build {
       "-language:existentials",
       "-language:postfixOps",
       "-unchecked"
-    ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 10)) => scalac210Options
-      case _ =>
-        Seq(
-          "-Ybackend:GenBCode",
-          "-Ydelambdafy:method",
-          "-target:jvm-1.8"
-        )
-    }),
+    ) ++ (
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 10)) => scalac210Options
+        case _ =>
+          Seq("-Ybackend:GenBCode", "-Ydelambdafy:method", "-target:jvm-1.8")
+      }
+    ),
     scalacOptions in (Compile, doc) ++= {
       val base = (baseDirectory in LocalRootProject).value.getAbsolutePath
       Seq(
@@ -266,16 +265,14 @@ object build extends Build {
       "org.spire-math" % "kind-projector" % "0.7.1" cross CrossVersion.binary)
   ) ++ osgiSettings ++ Seq[Sett](
     OsgiKeys.additionalHeaders := Map(
-      "-removeheaders" -> "Include-Resource,Private-Package")
-  )
+      "-removeheaders" -> "Include-Resource,Private-Package"))
 
   private[this] lazy val jsProjects = Seq[ProjectReference](
     coreJS,
     effectJS,
     iterateeJS,
     scalacheckBindingJS,
-    testsJS
-  )
+    testsJS)
 
   private[this] lazy val jvmProjects = Seq[ProjectReference](
     coreJVM,
@@ -284,8 +281,7 @@ object build extends Build {
     scalacheckBindingJVM,
     testsJVM,
     concurrent,
-    example
-  )
+    example)
 
   lazy val scalaz = Project(
     id = "scalaz",
@@ -302,22 +298,12 @@ object build extends Build {
     aggregate = jvmProjects ++ jsProjects
   )
 
-  lazy val rootJS = Project(
-    "rootJS",
-    file("rootJS")
-  ).settings(
-      standardSettings,
-      notPublish
-    )
+  lazy val rootJS = Project("rootJS", file("rootJS"))
+    .settings(standardSettings, notPublish)
     .aggregate(jsProjects: _*)
 
-  lazy val rootJVM = Project(
-    "rootJVM",
-    file("rootJVM")
-  ).settings(
-      standardSettings,
-      notPublish
-    )
+  lazy val rootJVM = Project("rootJVM", file("rootJVM"))
+    .settings(standardSettings, notPublish)
     .aggregate(jvmProjects: _*)
 
   lazy val core = crossProject
@@ -337,9 +323,7 @@ object build extends Build {
     .enablePlugins(sbtbuildinfo.BuildInfoPlugin)
     .jsSettings(
       scalajsProjectSettings ++ Seq(
-        libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.1.0"
-      ): _*
-    )
+        libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.1.0"): _*)
     .jvmSettings(
       libraryDependencies ++= PartialFunction
         .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
@@ -375,9 +359,7 @@ object build extends Build {
       osgiExport("scalaz.effect", "scalaz.std.effect", "scalaz.syntax.effect"))
     .dependsOn(core)
     .jsSettings(scalajsProjectSettings: _*)
-    .jvmSettings(
-      typeClasses := TypeClass.effect
-    )
+    .jvmSettings(typeClasses := TypeClass.effect)
 
   lazy val effectJVM = effect.jvm
   lazy val effectJS = effect.js
@@ -398,8 +380,7 @@ object build extends Build {
     dependencies = Seq(coreJVM, iterateeJVM, concurrent),
     settings = standardSettings ++ Seq[Sett](
       name := "scalaz-example",
-      publishArtifact := false
-    )
+      publishArtifact := false)
   )
 
   lazy val scalacheckBinding = CrossProject(
@@ -428,10 +409,7 @@ object build extends Build {
     .dependsOn(core, effect, iteratee, scalacheckBinding)
     .jvmConfigure(_ dependsOn concurrent)
     .jsSettings(scalajsProjectSettings: _*)
-    .jsSettings(
-      jsEnv := NodeJSEnv().value,
-      scalaJSUseRhino in Global := false
-    )
+    .jsSettings(jsEnv := NodeJSEnv().value, scalaJSUseRhino in Global := false)
 
   lazy val testsJVM = tests.jvm
   lazy val testsJS = tests.js

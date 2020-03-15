@@ -167,9 +167,10 @@ object ScalaRoutingSpec extends Specification {
       router: Class[_ <: Router] = classOf[Routes]) = {
     running() { app =>
       implicit val mat = ActorMaterializer()(app.actorSystem)
-      contentAsString(app.injector.instanceOf(router).routes(rh) match {
-        case e: EssentialAction => e(rh).run()
-      })
+      contentAsString(
+        app.injector.instanceOf(router).routes(rh) match {
+          case e: EssentialAction => e(rh).run()
+        })
     }
   }
 }

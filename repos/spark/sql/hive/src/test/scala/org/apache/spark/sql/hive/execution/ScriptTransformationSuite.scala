@@ -45,8 +45,7 @@ class ScriptTransformationSuite extends SparkPlanTest with TestHiveSingleton {
 
   private val serdeIOSchema = noSerdeIOSchema.copy(
     inputSerdeClass = Some(classOf[LazySimpleSerDe].getCanonicalName),
-    outputSerdeClass = Some(classOf[LazySimpleSerDe].getCanonicalName)
-  )
+    outputSerdeClass = Some(classOf[LazySimpleSerDe].getCanonicalName))
 
   test("cat without SerDe") {
     val rowsDf = Seq("a", "b", "c").map(Tuple1.apply).toDF("a")
@@ -58,8 +57,7 @@ class ScriptTransformationSuite extends SparkPlanTest with TestHiveSingleton {
           script = "cat",
           output = Seq(AttributeReference("a", StringType)()),
           child = child,
-          ioschema = noSerdeIOSchema
-        )(hiveContext),
+          ioschema = noSerdeIOSchema)(hiveContext),
       rowsDf.collect()
     )
   }
@@ -74,8 +72,7 @@ class ScriptTransformationSuite extends SparkPlanTest with TestHiveSingleton {
           script = "cat",
           output = Seq(AttributeReference("a", StringType)()),
           child = child,
-          ioschema = serdeIOSchema
-        )(hiveContext),
+          ioschema = serdeIOSchema)(hiveContext),
       rowsDf.collect()
     )
   }
@@ -92,8 +89,7 @@ class ScriptTransformationSuite extends SparkPlanTest with TestHiveSingleton {
             script = "cat",
             output = Seq(AttributeReference("a", StringType)()),
             child = ExceptionInjectingOperator(child),
-            ioschema = noSerdeIOSchema
-          )(hiveContext),
+            ioschema = noSerdeIOSchema)(hiveContext),
         rowsDf.collect()
       )
     }
@@ -112,8 +108,7 @@ class ScriptTransformationSuite extends SparkPlanTest with TestHiveSingleton {
             script = "cat",
             output = Seq(AttributeReference("a", StringType)()),
             child = ExceptionInjectingOperator(child),
-            ioschema = serdeIOSchema
-          )(hiveContext),
+            ioschema = serdeIOSchema)(hiveContext),
         rowsDf.collect()
       )
     }

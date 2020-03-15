@@ -157,10 +157,12 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
         val batch = capturedBatcher.batchOf(t)
         (LTuple2(k, batch), (t, v))
     }
-    (commutativity match {
-      case Commutative    => inits.sumByLocalKeys
-      case NonCommutative => inits
-    })
+    (
+      commutativity match {
+        case Commutative    => inits.sumByLocalKeys
+        case NonCommutative => inits
+      }
+    )
   }
 
   /**
@@ -268,9 +270,10 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       sorted.mapValueStream { it: Iterator[(BatchID, (Timestamp, V))] =>
         // each BatchID appears at most once, so it fits in RAM
         val batched: Map[BatchID, (Timestamp, V)] = groupedSum(it).toMap
-        partials((inBatch :: batches).iterator.map { bid =>
-          (bid, batched.get(bid))
-        })
+        partials(
+          (inBatch :: batches).iterator.map { bid =>
+            (bid, batched.get(bid))
+          })
       }.toTypedPipe
     }
 
@@ -281,8 +284,12 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       optopt.flatMap(identity)
 
     // This builds the format we write to disk, which is the total sum
-    def toLastFormat(res: TypedPipe[
-      (K, (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
+    def toLastFormat(
+        res: TypedPipe[(
+            K,
+            (
+                BatchID,
+                (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
         : TypedPipe[(BatchID, (K, V))] =
       res.flatMap {
         case (k, (batchid, (prev, v))) =>
@@ -294,8 +301,12 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       }
 
     // This builds the format we send to consumer nodes
-    def toOutputFormat(res: TypedPipe[
-      (K, (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
+    def toOutputFormat(
+        res: TypedPipe[(
+            K,
+            (
+                BatchID,
+                (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
         : TypedPipe[(Timestamp, (K, (Option[V], V)))] =
       res.flatMap {
         case (k, (batchid, (optopt, opt))) =>
@@ -327,13 +338,16 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       // This object combines some common scalding batching operations:
       val batchOps = new BatchedOperations(batcher)
 
-      (batchOps.coverIt(timeSpan).toList match {
-        case Nil =>
-          Left(
-            List("Timespan is covered by Nil: %s batcher: %s"
-              .format(timeSpan, batcher)))
-        case list => Right((in, list))
-      })
+      (
+        batchOps.coverIt(timeSpan).toList match {
+          case Nil =>
+            Left(
+              List(
+                "Timespan is covered by Nil: %s batcher: %s"
+                  .format(timeSpan, batcher)))
+          case list => Right((in, list))
+        }
+      )
     })
 
   /**
@@ -406,13 +420,14 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
 
       // Make sure that the time we can read includes the time just after the last
       // snapshot. We can't roll the store forward without this.
-      _ <- fromEither[FactoryInput](if (readDeltaTimestamps.contains(
-                                          firstDeltaTimestamp))
-        Right(())
-      else
-        Left(
-          List("Cannot load initial timestamp " + firstDeltaTimestamp.toString + " of deltas " +
-            " at " + this.toString + " only " + readDeltaTimestamps.toString)))
+      _ <- fromEither[FactoryInput](
+        if (readDeltaTimestamps.contains(firstDeltaTimestamp))
+          Right(())
+        else
+          Left(
+            List(
+              "Cannot load initial timestamp " + firstDeltaTimestamp.toString + " of deltas " +
+                " at " + this.toString + " only " + readDeltaTimestamps.toString)))
 
       // Record the timespan we actually read.
       _ <- putState((readDeltaTimestamps, mode))
@@ -449,8 +464,9 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
   private def atLeastOneBatch(readTimespan: Interval[Timestamp]) =
     fromEither[FactoryInput] {
       if (batcher.batchesCoveredBy(readTimespan) == Empty()) {
-        Left(List(
-          "readTimespan is not convering at least one batch: " + readTimespan.toString))
+        Left(
+          List(
+            "readTimespan is not convering at least one batch: " + readTimespan.toString))
       } else {
         Right(())
       }

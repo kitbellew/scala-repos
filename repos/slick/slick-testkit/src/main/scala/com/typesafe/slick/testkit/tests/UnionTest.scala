@@ -44,44 +44,44 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
     val q4c = q4 union q4 union q4
     val q5 = managers.map(m => (m.id, 0)) union employees.map(e => (e.id, e.id))
 
-    (for {
-      _ <- (managers.schema ++ employees.schema).create
-      _ <- managers ++= Seq(
-        (1, "Peter", "HR"),
-        (2, "Amy", "IT"),
-        (3, "Steve", "IT")
-      )
-      _ <- employees ++= Seq(
-        (4, "Jennifer", 1),
-        (5, "Tom", 1),
-        (6, "Leonard", 2),
-        (7, "Ben", 2),
-        (8, "Greg", 3)
-      )
-      _ <- mark("q1", q1.result).map(r =>
-        r.toSet shouldBe Set((2, "Amy"), (3, "Steve")))
-      _ <- mark("q2", q2.result).map(r =>
-        r.toSet shouldBe Set((7, "Ben"), (8, "Greg"), (6, "Leonard")))
-      _ <- mark("q3", q3.result).map(
-        _ shouldBe List(
-          (2, "Amy"),
-          (7, "Ben"),
-          (8, "Greg"),
-          (6, "Leonard"),
-          (3, "Steve")))
-      _ <- mark("q4b", q4b.result).map(r => r.toSet shouldBe Set(1, 2, 3))
-      _ <- mark("q4c", q4c.result).map(r => r.toSet shouldBe Set(1, 2, 3))
-      _ <- mark("q5", q5.result).map(r =>
-        r.toSet shouldBe Set(
-          (7, 7),
-          (6, 6),
-          (2, 0),
-          (4, 4),
-          (3, 0),
-          (8, 8),
-          (5, 5),
-          (1, 0)))
-    } yield ()) andFinally (managers.schema ++ employees.schema).drop
+    (
+      for {
+        _ <- (managers.schema ++ employees.schema).create
+        _ <- managers ++= Seq(
+          (1, "Peter", "HR"),
+          (2, "Amy", "IT"),
+          (3, "Steve", "IT"))
+        _ <- employees ++= Seq(
+          (4, "Jennifer", 1),
+          (5, "Tom", 1),
+          (6, "Leonard", 2),
+          (7, "Ben", 2),
+          (8, "Greg", 3))
+        _ <- mark("q1", q1.result).map(r =>
+          r.toSet shouldBe Set((2, "Amy"), (3, "Steve")))
+        _ <- mark("q2", q2.result).map(r =>
+          r.toSet shouldBe Set((7, "Ben"), (8, "Greg"), (6, "Leonard")))
+        _ <- mark("q3", q3.result).map(
+          _ shouldBe List(
+            (2, "Amy"),
+            (7, "Ben"),
+            (8, "Greg"),
+            (6, "Leonard"),
+            (3, "Steve")))
+        _ <- mark("q4b", q4b.result).map(r => r.toSet shouldBe Set(1, 2, 3))
+        _ <- mark("q4c", q4c.result).map(r => r.toSet shouldBe Set(1, 2, 3))
+        _ <- mark("q5", q5.result).map(r =>
+          r.toSet shouldBe Set(
+            (7, 7),
+            (6, 6),
+            (2, 0),
+            (4, 4),
+            (3, 0),
+            (8, 8),
+            (5, 5),
+            (1, 0)))
+      } yield ()
+    ) andFinally (managers.schema ++ employees.schema).drop
   }
 
   def testUnionWithoutProjection = {
@@ -96,8 +96,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       managers ++= Seq(
         (1, "Peter", "HR"),
         (2, "Amy", "IT"),
-        (3, "Steve", "IT")
-      ),
+        (3, "Steve", "IT")),
       q.result.map(r =>
         r.toSet shouldBe Set((1, "Peter", "HR"), (2, "Amy", "IT")))
     ) andFinally managers.schema.drop
@@ -127,16 +126,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
     seq(
       (coffees.schema ++ teas.schema).create,
-      coffees ++= Seq(
-        (10L, 1L),
-        (20L, 2L),
-        (30L, 3L)
-      ),
-      teas ++= Seq(
-        (100L, 1L),
-        (200L, 2L),
-        (300L, 3L)
-      ),
+      coffees ++= Seq((10L, 1L), (20L, 2L), (30L, 3L)),
+      teas ++= Seq((100L, 1L), (200L, 2L), (300L, 3L)),
       q1.result.map(r => r.toSet shouldBe Set((10L, 1L), (20L, 2L), (30L, 3L))),
       q2.result.map(r =>
         r.toSet shouldBe Set((100L, 1L), (200L, 2L), (300L, 3L))),
@@ -175,23 +166,25 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
     }
 
     def leftSide = {
-      (for {
-        d <- TableQuery[Deliveries]
-        m <- TableQuery[Messages] if d.messageId === m.id
-      } yield (d, m))
-        .filter {
-          case (d, m) => d.sentAt >= 1400000000L
-        }
+      (
+        for {
+          d <- TableQuery[Deliveries]
+          m <- TableQuery[Messages] if d.messageId === m.id
+        } yield (d, m)
+      ).filter {
+        case (d, m) => d.sentAt >= 1400000000L
+      }
     }
 
     def rightSide = {
-      (for {
-        d <- TableQuery[Deliveries]
-        m <- TableQuery[Messages] if d.messageId === m.id
-      } yield (d, m))
-        .filter {
-          case (d, m) => d.sentAt < 1400000000L
-        }
+      (
+        for {
+          d <- TableQuery[Deliveries]
+          m <- TableQuery[Messages] if d.messageId === m.id
+        } yield (d, m)
+      ).filter {
+        case (d, m) => d.sentAt < 1400000000L
+      }
     }
 
     val query = leftSide.union(rightSide).length
@@ -199,8 +192,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
     DBIO.seq(
       TableQuery[Deliveries].schema.create,
       TableQuery[Messages].schema.create,
-      mark("q", query.result).map(_ shouldBe 0)
-    )
+      mark("q", query.result).map(_ shouldBe 0))
   }
 
   def testCountWithUnionAndSort = {
@@ -226,8 +218,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
     DBIO.seq(
       TableQuery[Deliveries].schema.create,
-      mark("q", query.result).map(_ shouldBe 0)
-    )
+      mark("q", query.result).map(_ shouldBe 0))
   }
 
 }

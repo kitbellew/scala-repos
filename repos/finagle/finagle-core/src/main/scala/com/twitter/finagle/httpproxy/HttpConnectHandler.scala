@@ -30,8 +30,7 @@ object HttpConnectHandler {
       proxyAddr: SocketAddress,
       addr: InetSocketAddress,
       pipeline: ChannelPipeline,
-      proxyCredentials: Option[Credentials]
-  ): HttpConnectHandler = {
+      proxyCredentials: Option[Credentials]): HttpConnectHandler = {
     val clientCodec = new HttpClientCodec()
     val handler =
       new HttpConnectHandler(proxyAddr, addr, clientCodec, proxyCredentials)
@@ -50,8 +49,7 @@ object HttpConnectHandler {
   def addHandler(
       proxyAddr: SocketAddress,
       addr: InetSocketAddress,
-      pipeline: ChannelPipeline
-  ): HttpConnectHandler = {
+      pipeline: ChannelPipeline): HttpConnectHandler = {
     addHandler(proxyAddr, addr, pipeline, None)
   }
 }
@@ -104,22 +102,24 @@ class HttpConnectHandler(
 
         // proxy cancellation
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
-        de.getFuture.addListener(new ChannelFutureListener {
-          def operationComplete(f: ChannelFuture) {
-            if (f.isCancelled)
-              wrappedConnectFuture.cancel()
-          }
-        })
+        de.getFuture.addListener(
+          new ChannelFutureListener {
+            def operationComplete(f: ChannelFuture) {
+              if (f.isCancelled)
+                wrappedConnectFuture.cancel()
+            }
+          })
         // Proxy failures here so that if the connect fails, it is
         // propagated to the listener, not just on the channel.
-        wrappedConnectFuture.addListener(new ChannelFutureListener {
-          def operationComplete(f: ChannelFuture) {
-            if (f.isSuccess || f.isCancelled)
-              return
+        wrappedConnectFuture.addListener(
+          new ChannelFutureListener {
+            def operationComplete(f: ChannelFuture) {
+              if (f.isSuccess || f.isCancelled)
+                return
 
-            fail(f.getChannel, f.getCause)
-          }
-        })
+              fail(f.getChannel, f.getCause)
+            }
+          })
 
         val wrappedEvent =
           new DownstreamChannelStateEvent(
@@ -145,14 +145,15 @@ class HttpConnectHandler(
     }
 
     // proxy cancellations again.
-    connectFuture.get.addListener(new ChannelFutureListener {
-      def operationComplete(f: ChannelFuture) {
-        if (f.isSuccess)
-          HttpConnectHandler.super.channelConnected(ctx, e)
-        else if (f.isCancelled)
-          fail(ctx.getChannel, new ChannelClosedException(addr))
-      }
-    })
+    connectFuture.get.addListener(
+      new ChannelFutureListener {
+        def operationComplete(f: ChannelFuture) {
+          if (f.isSuccess)
+            HttpConnectHandler.super.channelConnected(ctx, e)
+          else if (f.isCancelled)
+            fail(ctx.getChannel, new ChannelClosedException(addr))
+        }
+      })
 
     writeRequest(ctx, e)
   }

@@ -174,14 +174,15 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     val topicAndPartition = TopicAndPartition(topic, partition)
     if (!hasStarted.get)
       throw new StateChangeFailedException(
-        ("Controller %d epoch %d initiated state change of replica %d for partition %s " +
-          "to %s failed because replica state machine has not started")
-          .format(
-            controllerId,
-            controller.epoch,
-            replicaId,
-            topicAndPartition,
-            targetState))
+        (
+          "Controller %d epoch %d initiated state change of replica %d for partition %s " +
+            "to %s failed because replica state machine has not started"
+        ).format(
+          controllerId,
+          controller.epoch,
+          replicaId,
+          topicAndPartition,
+          targetState))
     val currState = replicaState.getOrElseUpdate(
       partitionAndReplica,
       NonExistentReplica)

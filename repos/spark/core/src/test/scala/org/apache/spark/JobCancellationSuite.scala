@@ -131,11 +131,12 @@ class JobCancellationSuite
 
     // Add a listener to release the semaphore once any tasks are launched.
     val sem = new Semaphore(0)
-    sc.addSparkListener(new SparkListener {
-      override def onTaskStart(taskStart: SparkListenerTaskStart) {
-        sem.release()
-      }
-    })
+    sc.addSparkListener(
+      new SparkListener {
+        override def onTaskStart(taskStart: SparkListenerTaskStart) {
+          sem.release()
+        }
+      })
 
     // jobA is the one to be cancelled.
     val jobA = Future {
@@ -168,11 +169,12 @@ class JobCancellationSuite
 
     // Add a listener to release the semaphore once any tasks are launched.
     val sem = new Semaphore(0)
-    sc.addSparkListener(new SparkListener {
-      override def onTaskStart(taskStart: SparkListenerTaskStart) {
-        sem.release()
-      }
-    })
+    sc.addSparkListener(
+      new SparkListener {
+        override def onTaskStart(taskStart: SparkListenerTaskStart) {
+          sem.release()
+        }
+      })
 
     sc.setJobGroup("jobA", "this is a job to be cancelled")
     @volatile var exception: Exception = null
@@ -209,11 +211,12 @@ class JobCancellationSuite
 
     // Add a listener to release the semaphore once any tasks are launched.
     val sem = new Semaphore(0)
-    sc.addSparkListener(new SparkListener {
-      override def onTaskStart(taskStart: SparkListenerTaskStart) {
-        sem.release()
-      }
-    })
+    sc.addSparkListener(
+      new SparkListener {
+        override def onTaskStart(taskStart: SparkListenerTaskStart) {
+          sem.release()
+        }
+      })
 
     // jobA is the one to be cancelled.
     val jobA = Future {
@@ -251,11 +254,12 @@ class JobCancellationSuite
     val sem1 = new Semaphore(0)
 
     sc = new SparkContext("local[2]", "test")
-    sc.addSparkListener(new SparkListener {
-      override def onTaskStart(taskStart: SparkListenerTaskStart) {
-        sem1.release()
-      }
-    })
+    sc.addSparkListener(
+      new SparkListener {
+        override def onTaskStart(taskStart: SparkListenerTaskStart) {
+          sem1.release()
+        }
+      })
 
     // Create two actions that would share the some stages.
     val rdd = sc
@@ -307,11 +311,12 @@ class JobCancellationSuite
     {
       // Add a listener to release the semaphore once any tasks are launched.
       val sem = new Semaphore(0)
-      sc.addSparkListener(new SparkListener {
-        override def onTaskStart(taskStart: SparkListenerTaskStart) {
-          sem.release()
-        }
-      })
+      sc.addSparkListener(
+        new SparkListener {
+          override def onTaskStart(taskStart: SparkListenerTaskStart) {
+            sem.release()
+          }
+        })
 
       val f = sc
         .parallelize(1 to 10000, 2)
@@ -357,11 +362,12 @@ class JobCancellationSuite
     {
       // Add a listener to release the semaphore once any tasks are launched.
       val sem = new Semaphore(0)
-      sc.addSparkListener(new SparkListener {
-        override def onTaskStart(taskStart: SparkListenerTaskStart) {
-          sem.release()
-        }
-      })
+      sc.addSparkListener(
+        new SparkListener {
+          override def onTaskStart(taskStart: SparkListenerTaskStart) {
+            sem.release()
+          }
+        })
       val f = sc
         .parallelize(1 to 10000, 2)
         .map { i =>

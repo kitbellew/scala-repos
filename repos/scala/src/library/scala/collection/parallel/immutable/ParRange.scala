@@ -71,8 +71,7 @@ class ParRange(val range: Range) extends ParSeq[Int] with Serializable {
       else
         Seq(
           new ParRangeIterator(rleft.take(elemleft / 2)),
-          new ParRangeIterator(rleft.drop(elemleft / 2))
-        )
+          new ParRangeIterator(rleft.drop(elemleft / 2)))
     }
 
     def psplit(sizes: Int*) = {
@@ -118,6 +117,5 @@ object ParRange {
       if (inclusive)
         new Range.Inclusive(start, end, step)
       else
-        new Range(start, end, step)
-    )
+        new Range(start, end, step))
 }

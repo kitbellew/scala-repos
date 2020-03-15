@@ -184,12 +184,13 @@ class ScalaMoveClassesOrPackagesHandler
         new JCheckBox(ScalaBundle.message("move.with.companion"))
       chbMoveCompanion.setSelected(
         ScalaApplicationSettings.getInstance().MOVE_COMPANION)
-      chbMoveCompanion.addActionListener(new ActionListener {
-        def actionPerformed(e: ActionEvent) {
-          ScalaApplicationSettings.getInstance().MOVE_COMPANION =
-            chbMoveCompanion.isSelected
-        }
-      })
+      chbMoveCompanion.addActionListener(
+        new ActionListener {
+          def actionPerformed(e: ActionEvent) {
+            ScalaApplicationSettings.getInstance().MOVE_COMPANION =
+              chbMoveCompanion.isSelected
+          }
+        })
       chbMoveCompanion.setMnemonic('t')
       result.add(chbMoveCompanion, BorderLayout.WEST)
       result

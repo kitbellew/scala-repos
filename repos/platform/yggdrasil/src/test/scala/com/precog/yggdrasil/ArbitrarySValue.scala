@@ -113,8 +113,7 @@ trait CValueGenerators extends ArbitraryBigDecimal {
       CNum,
       CNull,
       CEmptyObject,
-      CEmptyArray
-    )
+      CEmptyArray)
 
   // FIXME: TODO Should this provide some form for CDate?
   def jvalue(ctype: CType): Gen[JValue] =
@@ -161,9 +160,10 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         containerOfN[List, Long](idCount, posNum[Long]))
       values <- containerOfN[List, Seq[(JPath, JValue)]](
         dataSize,
-        Gen.sequence[List, (JPath, JValue)](jschema map {
-          case (jpath, ctype) => jvalue(ctype).map(jpath ->)
-        }))
+        Gen.sequence[List, (JPath, JValue)](
+          jschema map {
+            case (jpath, ctype) => jvalue(ctype).map(jpath ->)
+          }))
 
       falseDepth <- choose(1, 3)
       falseSchema <- schema(falseDepth)
@@ -173,16 +173,18 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         containerOfN[List, Long](idCount, posNum[Long]))
       falseValues <- containerOfN[List, Seq[(JPath, JValue)]](
         falseSize,
-        Gen.sequence[List, (JPath, JValue)](falseSchema map {
-          case (jpath, ctype) => jvalue(ctype).map(jpath ->)
-        }))
+        Gen.sequence[List, (JPath, JValue)](
+          falseSchema map {
+            case (jpath, ctype) => jvalue(ctype).map(jpath ->)
+          }))
 
       falseIds2 = falseIds -- ids // distinct ids
     } yield {
       (
         idCount,
-        (ids.map(_.toArray) zip values).toStream ++ (falseIds2.map(
-          _.toArray) zip falseValues).toStream)
+        (ids.map(_.toArray) zip values).toStream ++ (
+          falseIds2.map(_.toArray) zip falseValues
+        ).toStream)
     }
 
   def assemble(parts: Seq[(JPath, JValue)]): JValue = {
@@ -280,16 +282,17 @@ trait ArbitraryBigDecimal {
   val MAX_EXPONENT = 50000
   // BigDecimal *isn't* arbitrary precision!  AWESOME!!!
   implicit def arbBigDecimal: Arbitrary[BigDecimal] =
-    Arbitrary(for {
-      mantissa <- arbitrary[Long]
-      exponent <- Gen.chooseNum(-MAX_EXPONENT, MAX_EXPONENT)
+    Arbitrary(
+      for {
+        mantissa <- arbitrary[Long]
+        exponent <- Gen.chooseNum(-MAX_EXPONENT, MAX_EXPONENT)
 
-      adjusted = if (exponent.toLong + mantissa.toString.length >= Int.MaxValue.toLong)
-        exponent - mantissa.toString.length
-      else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
-        exponent + mantissa.toString.length
-      else
-        exponent
-    } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
+        adjusted = if (exponent.toLong + mantissa.toString.length >= Int.MaxValue.toLong)
+          exponent - mantissa.toString.length
+        else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
+          exponent + mantissa.toString.length
+        else
+          exponent
+      } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
 }
 // vim: set ts=4 sw=4 et:

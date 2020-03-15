@@ -20,16 +20,14 @@ class ForwardedHeaderHandlerSpec extends Specification {
     "parse rfc7239 entries" in {
       val results = processHeaders(
         version("rfc7239") ++ trustedProxies("192.0.2.60/24"),
-        headers(
-          """
+        headers("""
           |Forwarded: for="_gazonk"
           |Forwarded: For="[2001:db8:cafe::17]:4711"
           |Forwarded: for=192.0.2.60;proto=http;by=203.0.113.43
           |Forwarded: for=192.0.2.43, for=198.51.100.17, for=127.0.0.1
           |Forwarded: for=192.0.2.61;proto=https
           |Forwarded: for=unknown
-        """.stripMargin
-        )
+        """.stripMargin)
       )
       results.length must_== 8
       results(0)._1 must_== ForwardedEntry(Some("_gazonk"), None)
@@ -68,8 +66,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
           """
           |X-Forwarded-For: 192.168.1.1, ::1, [2001:db8:cafe::17], 127.0.0.1
           |X-Forwarded-Proto: https, http, https, http
-        """.stripMargin
-        )
+        """.stripMargin)
       )
       results.length must_== 4
       results(0)._1 must_== ForwardedEntry(Some("192.168.1.1"), Some("https"))
@@ -231,10 +228,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
 
     "ignore rfc7239 header with empty addresses" in {
       handler(version("rfc7239") ++ trustedProxies("192.0.2.43"))
-        .remoteConnection(
-          addr("192.0.2.43"),
-          true,
-          headers("""
+        .remoteConnection(addr("192.0.2.43"), true, headers("""
           |Forwarded: for=""
         """.stripMargin)) mustEqual ConnectionInfo(addr("192.0.2.43"), true)
     }
@@ -423,10 +417,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
 
     "fall back to connection when single x-forwarded-for entry cannot be parsed" in {
       handler(version("x-forwarded") ++ trustedProxies("127.0.0.1"))
-        .remoteConnection(
-          localhost,
-          false,
-          headers("""
+        .remoteConnection(localhost, false, headers("""
           |X-Forwarded-For: ???
         """.stripMargin)) mustEqual ConnectionInfo(localhost, false)
     }
@@ -434,10 +425,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     // example from issue #5299
     "handle single unquoted IPv6 addresses in x-forwarded-for headers" in {
       handler(version("x-forwarded") ++ trustedProxies("127.0.0.1"))
-        .remoteConnection(
-          localhost,
-          false,
-          headers("""
+        .remoteConnection(localhost, false, headers("""
           |X-Forwarded-For: ::1
         """.stripMargin)) mustEqual ConnectionInfo(addr("::1"), false)
     }
@@ -481,10 +469,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
 
     "ignore x-forward header with empty addresses" in {
       handler(version("x-forwarded") ++ trustedProxies("192.0.2.43"))
-        .remoteConnection(
-          addr("192.0.2.43"),
-          true,
-          headers("""
+        .remoteConnection(addr("192.0.2.43"), true, headers("""
           |X-Forwarded-For: ,,
         """.stripMargin)) mustEqual ConnectionInfo(addr("192.0.2.43"), true)
     }

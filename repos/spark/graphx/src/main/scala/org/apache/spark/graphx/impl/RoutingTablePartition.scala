@@ -81,10 +81,11 @@ private[graphx] object RoutingTablePartition {
       dstFlags(pid) += (position & 0x2) != 0
     }
 
-    new RoutingTablePartition(pid2vid.zipWithIndex.map {
-      case (vids, pid) =>
-        (vids.trim().array, toBitSet(srcFlags(pid)), toBitSet(dstFlags(pid)))
-    })
+    new RoutingTablePartition(
+      pid2vid.zipWithIndex.map {
+        case (vids, pid) =>
+          (vids.trim().array, toBitSet(srcFlags(pid)), toBitSet(dstFlags(pid)))
+      })
   }
 
   /** Compact the given vector of Booleans into a BitSet. */
@@ -122,9 +123,10 @@ private[graphx] class RoutingTablePartition(
 
   /** Returns a new RoutingTablePartition reflecting a reversal of all edge directions. */
   def reverse: RoutingTablePartition = {
-    new RoutingTablePartition(routingTable.map {
-      case (vids, srcVids, dstVids) => (vids, dstVids, srcVids)
-    })
+    new RoutingTablePartition(
+      routingTable.map {
+        case (vids, srcVids, dstVids) => (vids, dstVids, srcVids)
+      })
   }
 
   /**

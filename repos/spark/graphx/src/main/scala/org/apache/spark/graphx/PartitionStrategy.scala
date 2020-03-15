@@ -98,10 +98,14 @@ object PartitionStrategy {
         val lastColRows = numParts - rows * (cols - 1)
         val col = (math.abs(src * mixingPrime) % numParts / rows).toInt
         val row =
-          (math.abs(dst * mixingPrime) % (if (col < cols - 1)
-                                            rows
-                                          else
-                                            lastColRows)).toInt
+          (
+            math.abs(dst * mixingPrime) % (
+              if (col < cols - 1)
+                rows
+              else
+                lastColRows
+            )
+          ).toInt
         col * rows + row
 
       }

@@ -82,8 +82,10 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
               val placeResult = json.validate[Place]
               placeResult.fold(
                 errors => {
-                  BadRequest(Json
-                    .obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+                  BadRequest(
+                    Json.obj(
+                      "status" -> "KO",
+                      "message" -> JsError.toJson(errors)))
                 },
                 place => {
                   Place.save(place)
@@ -190,15 +192,8 @@ object Place {
 
   var list: List[Place] = {
     List(
-      Place(
-        "Sandleford",
-        Location(51.377797, -1.318965)
-      ),
-      Place(
-        "Watership Down",
-        Location(51.235685, -1.309197)
-      )
-    )
+      Place("Sandleford", Location(51.377797, -1.318965)),
+      Place("Watership Down", Location(51.235685, -1.309197)))
   }
 
   def save(place: Place) = {

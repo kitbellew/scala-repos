@@ -36,8 +36,8 @@ case class RawValue(
     typ: Short,
     charset: Short,
     isBinary: Boolean,
-    bytes: Array[Byte]
-) extends Value
+    bytes: Array[Byte])
+    extends Value
 
 /**
   * A type class used for injecting values of a domain type `A` into
@@ -234,25 +234,20 @@ class TimestampValue(
     "TimestampValue(InjectionTimeZone, ExtractionTimeZone)",
   "6.20.2")
 object TimestampValue
-    extends TimestampValue(
-      TimeZone.getDefault(),
-      TimeZone.getTimeZone("UTC")
-    ) {
+    extends TimestampValue(TimeZone.getDefault(), TimeZone.getTimeZone("UTC")) {
   private[this] val log = Logger.getLogger("finagle-mysql")
 
   override def apply(ts: Timestamp): Value = {
     log.warning(
       "Injecting timezone-less `java.sql.Timestamp` with a hardcoded local timezone (%s)"
-        .format(injectionTimeZone.getID)
-    )
+        .format(injectionTimeZone.getID))
     super.apply(ts)
   }
 
   override def unapply(v: Value): Option[Timestamp] = {
     log.warning(
       "Extracting TIMESTAMP or DATETIME row as a `java.sql.Timestamp` with a hardcoded timezone (%s)"
-        .format(extractionTimeZone.getID)
-    )
+        .format(extractionTimeZone.getID))
     super.unapply(v)
   }
 }

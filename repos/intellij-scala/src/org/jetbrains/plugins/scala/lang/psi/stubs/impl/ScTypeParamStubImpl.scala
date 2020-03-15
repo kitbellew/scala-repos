@@ -18,9 +18,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   */
 class ScTypeParamStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScTypeParam](parent, elemType)
     with ScTypeParamStub {
   private var name: StringRef = _
@@ -42,9 +41,8 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       name: StringRef,
       upperText: StringRef,
       lowerText: StringRef,
@@ -84,7 +82,11 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getLowerTypeElement: Option[ScTypeElement] = {
     if (lowerElement != null) {
       val lowerTypeElement = lowerElement.get
-      if (lowerTypeElement != null && (lowerTypeElement.isEmpty || (lowerTypeElement.get.getContext eq getPsi))) {
+      if (lowerTypeElement != null && (
+            lowerTypeElement.isEmpty || (
+              lowerTypeElement.get.getContext eq getPsi
+            )
+          )) {
         return lowerTypeElement
       }
     }
@@ -102,7 +104,11 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getUpperTypeElement: Option[ScTypeElement] = {
     if (upperElement != null) {
       val upperTypeElement = upperElement.get
-      if (upperTypeElement != null && (upperTypeElement.isEmpty || (upperTypeElement.get.getContext eq getPsi))) {
+      if (upperTypeElement != null && (
+            upperTypeElement.isEmpty || (
+              upperTypeElement.get.getContext eq getPsi
+            )
+          )) {
         return upperTypeElement
       }
     }

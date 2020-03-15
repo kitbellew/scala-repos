@@ -77,8 +77,7 @@ object Evaluation1 {
         dataSourceParams = dsp,
         preparatorParams = CommonParams.PreparatorParams,
         algorithmParamsList = Seq(
-          ("mahoutItemBased", CommonParams.MahoutAlgoParams0))
-      )
+          ("mahoutItemBased", CommonParams.MahoutAlgoParams0)))
 
     // Evaluator Setting
     val evaluatorParams =
@@ -87,8 +86,7 @@ object Evaluation1 {
           actionsMap = Map("rate" -> None),
           goodThreshold = 3),
         measureType = MeasureType.PrecisionAtK,
-        measureK = 10
-      )
+        measureK = 10)
 
     // Run
     Workflow.runEngine(
@@ -111,8 +109,7 @@ object Evaluation2 {
         dataSourceParams = CommonParams.CompleteDataSourceParams,
         preparatorParams = CommonParams.PreparatorParams,
         algorithmParamsList = Seq(
-          ("mahoutItemBased", CommonParams.MahoutAlgoParams0))
-      )
+          ("mahoutItemBased", CommonParams.MahoutAlgoParams0)))
 
     // Evaluator Setting
     val evaluatorParams =
@@ -121,8 +118,7 @@ object Evaluation2 {
           actionsMap = Map("rate" -> None),
           goodThreshold = 3),
         measureType = MeasureType.PrecisionAtK,
-        measureK = 10
-      )
+        measureK = 10)
 
     // Run
     Workflow.runEngine(

@@ -345,15 +345,16 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
         }
       val client = connect(service)
       client(Request())
-      Await.ready(timer.doLater(20.milliseconds) {
-        Await.ready(client.close())
-        intercept[CancelledRequestException] {
-          promise.isInterrupted match {
-            case Some(intr) => throw intr
-            case _          =>
+      Await.ready(
+        timer.doLater(20.milliseconds) {
+          Await.ready(client.close())
+          intercept[CancelledRequestException] {
+            promise.isInterrupted match {
+              case Some(intr) => throw intr
+              case _          =>
+            }
           }
-        }
-      })
+        })
     }
 
     test(name + ": measure payload size") {
@@ -548,25 +549,26 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     test(name + ": trace") {
       var (outerTrace, outerSpan) = ("", "")
 
-      val inner = connect(new HttpService {
-        def apply(request: Request) = {
-          val response = Response(request)
-          response.contentString = Seq(
-            Trace.id.traceId.toString,
-            Trace.id.spanId.toString,
-            Trace.id.parentId.toString
-          ).mkString(".")
-          Future.value(response)
-        }
-      })
+      val inner = connect(
+        new HttpService {
+          def apply(request: Request) = {
+            val response = Response(request)
+            response.contentString = Seq(
+              Trace.id.traceId.toString,
+              Trace.id.spanId.toString,
+              Trace.id.parentId.toString).mkString(".")
+            Future.value(response)
+          }
+        })
 
-      val outer = connect(new HttpService {
-        def apply(request: Request) = {
-          outerTrace = Trace.id.traceId.toString
-          outerSpan = Trace.id.spanId.toString
-          inner(request)
-        }
-      })
+      val outer = connect(
+        new HttpService {
+          def apply(request: Request) = {
+            outerTrace = Trace.id.traceId.toString
+            outerSpan = Trace.id.spanId.toString
+            inner(request)
+          }
+        })
 
       val response = Await.result(outer(Request()))
       val Seq(innerTrace, innerSpan, innerParent) =

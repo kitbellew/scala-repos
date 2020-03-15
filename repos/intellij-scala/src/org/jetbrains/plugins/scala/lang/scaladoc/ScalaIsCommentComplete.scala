@@ -98,8 +98,10 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
           return lexer.getTokenEnd - lexer.getTokenStart == 2 //difference from EnterHandler
         }
       }
-      if (!continue && (tokenType == commenter.getDocumentationCommentTokenType ||
-          tokenType == commenter.getBlockCommentTokenType)) {
+      if (!continue && (
+            tokenType == commenter.getDocumentationCommentTokenType ||
+            tokenType == commenter.getBlockCommentTokenType
+          )) {
         return false
       } else if (!continue) {
         lexer.advance()

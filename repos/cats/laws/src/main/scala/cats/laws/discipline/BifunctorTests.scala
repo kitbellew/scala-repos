@@ -19,8 +19,7 @@ trait BifunctorTests[F[_, _]] extends Laws {
       EqFAB: Eq[F[A, B]],
       EqFCZ: Eq[F[A3, B3]],
       EqFA3B: Eq[F[A3, B]],
-      EqFAB3: Eq[F[A, B3]]
-  ): RuleSet = {
+      EqFAB3: Eq[F[A, B3]]): RuleSet = {
     new DefaultRuleSet(
       name = "Bifunctor",
       parent = None,
@@ -34,8 +33,7 @@ trait BifunctorTests[F[_, _]] extends Laws {
       "Bifunctor leftMap associativity" -> forAll(
         laws.bifunctorLeftMapComposition[A, B, A2, A3] _),
       "Bifunctor rightMap associativity" -> forAll(
-        laws.bifunctorRightMapComposition[A, B, B2, B3] _)
-    )
+        laws.bifunctorRightMapComposition[A, B, B2, B3] _))
   }
 }
 

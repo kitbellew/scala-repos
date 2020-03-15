@@ -434,11 +434,12 @@ private[sql] class DynamicPartitionWriterContainer(
       partitionColumns ++ bucketIdExpression ++ sortColumns
     val getSortingKey = UnsafeProjection.create(sortingExpressions, inputSchema)
 
-    val sortingKeySchema = StructType(sortingExpressions.map {
-      case a: Attribute => StructField(a.name, a.dataType, a.nullable)
-      // The sorting expressions are all `Attribute` except bucket id.
-      case _ => StructField("bucketId", IntegerType, nullable = false)
-    })
+    val sortingKeySchema = StructType(
+      sortingExpressions.map {
+        case a: Attribute => StructField(a.name, a.dataType, a.nullable)
+        // The sorting expressions are all `Attribute` except bucket id.
+        case _ => StructField("bucketId", IntegerType, nullable = false)
+      })
 
     // Returns the data columns to be written given an input row
     val getOutputRow = UnsafeProjection.create(dataColumns, inputSchema)

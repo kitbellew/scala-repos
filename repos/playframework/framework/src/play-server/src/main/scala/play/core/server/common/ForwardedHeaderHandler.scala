@@ -85,8 +85,7 @@ private[server] class ForwardedHeaderHandler(
           configuration.parseEntry(entry) match {
             case Left(error) =>
               ForwardedHeaderHandler.logger.debug(
-                s"Error with info in forwarding header $entry, using $prev instead: $error."
-              )
+                s"Error with info in forwarding header $entry, using $prev instead: $error.")
               prev
             case Right(connection) =>
               scan(connection)
@@ -156,11 +155,12 @@ private[server] object ForwardedHeaderHandler {
     def forwardedHeaders(headers: Headers): Seq[ForwardedEntry] =
       version match {
         case Rfc7239 =>
-          (for {
-            fhs <- headers.getAll("Forwarded")
-            fh <- fhs.split(",\\s*")
-          } yield fh)
-            .map(
+          (
+            for {
+              fhs <- headers.getAll("Forwarded")
+              fh <- fhs.split(",\\s*")
+            } yield fh
+          ).map(
               _.split(";")
                 .flatMap(s => {
                   val splitted = s.split("=", 2)

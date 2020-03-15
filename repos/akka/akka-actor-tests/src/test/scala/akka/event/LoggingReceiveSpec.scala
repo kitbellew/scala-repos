@@ -51,11 +51,12 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
       .parseMap(Map("akka.actor.debug.lifecycle" -> true).asJava)
       .withFallback(config))
 
-  val filter = TestEvent.Mute(EventFilter.custom {
-    case _: Logging.Debug ⇒ true
-    case _: Logging.Info ⇒ true
-    case _ ⇒ false
-  })
+  val filter = TestEvent.Mute(
+    EventFilter.custom {
+      case _: Logging.Debug ⇒ true
+      case _: Logging.Info ⇒ true
+      case _ ⇒ false
+    })
   appLogging.eventStream.publish(filter)
   appAuto.eventStream.publish(filter)
   appLifecycle.eventStream.publish(filter)
@@ -78,14 +79,16 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
       new TestKit(appLogging) {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
         system.eventStream.subscribe(testActor, classOf[UnhandledMessage])
-        val a = system.actorOf(Props(new Actor {
-          def receive =
-            new LoggingReceive(
-              Some("funky"),
-              {
-                case null ⇒
-              })
-        }))
+        val a = system.actorOf(
+          Props(
+            new Actor {
+              def receive =
+                new LoggingReceive(
+                  Some("funky"),
+                  {
+                    case null ⇒
+                  })
+            }))
         a ! "hallo"
         expectMsg(
           1 second,
@@ -107,15 +110,16 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
           case null ⇒
         }
 
-        val actor = TestActorRef(new Actor {
-          def switch: Actor.Receive = {
-            case "becomenull" ⇒ context.become(r, false)
-          }
-          def receive =
-            switch orElse LoggingReceive {
-              case x ⇒ sender() ! "x"
+        val actor = TestActorRef(
+          new Actor {
+            def switch: Actor.Receive = {
+              case "becomenull" ⇒ context.become(r, false)
             }
-        })
+            def receive =
+              switch orElse LoggingReceive {
+                case x ⇒ sender() ! "x"
+              }
+          })
 
         val name = actor.path.toString
         actor ! "buh"
@@ -142,12 +146,14 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
     "not duplicate logging" in {
       new TestKit(appLogging) with ImplicitSender {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
-        val actor = TestActorRef(new Actor {
-          def receive =
-            LoggingReceive(LoggingReceive {
-              case _ ⇒ sender() ! "x"
-            })
-        })
+        val actor = TestActorRef(
+          new Actor {
+            def receive =
+              LoggingReceive(
+                LoggingReceive {
+                  case _ ⇒ sender() ! "x"
+                })
+          })
         actor ! "buh"
         within(1 second) {
           expectMsg(
@@ -167,11 +173,12 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
     "log AutoReceiveMessages if requested" in {
       new TestKit(appAuto) {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
-        val actor = TestActorRef(new Actor {
-          def receive = {
-            case _ ⇒
-          }
-        })
+        val actor = TestActorRef(
+          new Actor {
+            def receive = {
+              case _ ⇒
+            }
+          })
         val name = actor.path.toString
         actor ! PoisonPill
         expectMsgPF() {

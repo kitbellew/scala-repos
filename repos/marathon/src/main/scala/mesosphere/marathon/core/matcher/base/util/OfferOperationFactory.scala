@@ -61,8 +61,7 @@ class OfferOperationFactory(
             .newBuilder()
             .setPrincipal(principal)
             .setLabels(
-              TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
-        )
+              TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels))
         .build()
     }
 

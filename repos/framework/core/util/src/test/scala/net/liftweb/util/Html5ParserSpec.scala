@@ -41,9 +41,10 @@ object Html5ParserSpec
     }
 
     "ignore attributes that are null" in {
-      toString(<foo id={
-        None
-      }/>) must_== """<foo></foo>"""
+      toString(
+        <foo id={
+          None
+        }/>) must_== """<foo></foo>"""
     }
   }
 

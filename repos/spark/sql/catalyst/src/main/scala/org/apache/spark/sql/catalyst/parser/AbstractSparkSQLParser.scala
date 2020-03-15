@@ -147,10 +147,12 @@ class SqlLexical extends StdLexical {
     }
 
   override def whitespace: Parser[Any] =
-    (whitespaceChar
-      | '/' ~ '*' ~ comment
-      | '/' ~ '/' ~ chrExcept(EofCh, '\n').*
-      | '#' ~ chrExcept(EofCh, '\n').*
-      | '-' ~ '-' ~ chrExcept(EofCh, '\n').*
-      | '/' ~ '*' ~ failure("unclosed comment")).*
+    (
+      whitespaceChar
+        | '/' ~ '*' ~ comment
+        | '/' ~ '/' ~ chrExcept(EofCh, '\n').*
+        | '#' ~ chrExcept(EofCh, '\n').*
+        | '-' ~ '-' ~ chrExcept(EofCh, '\n').*
+        | '/' ~ '*' ~ failure("unclosed comment")
+    ).*
 }

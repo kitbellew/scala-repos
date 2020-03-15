@@ -23,8 +23,9 @@ object Reflect {
       try cls.getDeclaredField(name)
       catch {
         case nsf: NoSuchFieldException =>
-          if ((cls.getSuperclass != null) && (cls.getSuperclass != classOf[
-                Object]) && cls.getSuperclass != cls)
+          if ((cls.getSuperclass != null) && (
+                cls.getSuperclass != classOf[Object]
+              ) && cls.getSuperclass != cls)
             getFieldHelper(cls.getSuperclass)
           else
             throw new PicklingException(

@@ -71,9 +71,8 @@ private[sql] case class InMemoryRelation(
     tableName: Option[String])(
     @transient private[sql] var _cachedColumnBuffers: RDD[CachedBatch] = null,
     @transient private[sql] var _statistics: Statistics = null,
-    private[sql] var _batchStats: Accumulable[
-      ArrayBuffer[InternalRow],
-      InternalRow] = null)
+    private[sql] var _batchStats: Accumulable[ArrayBuffer[
+      InternalRow], InternalRow] = null)
     extends logical.LeafNode
     with MultiInstanceRelation {
 

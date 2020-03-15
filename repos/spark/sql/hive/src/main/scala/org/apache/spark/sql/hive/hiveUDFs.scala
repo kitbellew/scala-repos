@@ -150,34 +150,36 @@ private[hive] class HiveFunctionRegistry(
 
   /* List all of the registered function names. */
   override def listFunction(): Seq[String] = {
-    (FunctionRegistry.getFunctionNames.asScala ++ underlying
-      .listFunction()).toList.sorted
+    (
+      FunctionRegistry.getFunctionNames.asScala ++ underlying.listFunction()
+    ).toList.sorted
   }
 
   /* Get the class of the registered function by specified name. */
   override def lookupFunction(name: String): Option[ExpressionInfo] = {
     underlying
       .lookupFunction(name)
-      .orElse(Try {
-        val info = getFunctionInfo(name)
-        val annotation = info.getFunctionClass.getAnnotation(
-          classOf[Description])
-        if (annotation != null) {
-          Some(
-            new ExpressionInfo(
-              info.getFunctionClass.getCanonicalName,
-              annotation.name(),
-              annotation.value(),
-              annotation.extended()))
-        } else {
-          Some(
-            new ExpressionInfo(
-              info.getFunctionClass.getCanonicalName,
-              name,
-              null,
-              null))
-        }
-      }.getOrElse(None))
+      .orElse(
+        Try {
+          val info = getFunctionInfo(name)
+          val annotation = info.getFunctionClass.getAnnotation(
+            classOf[Description])
+          if (annotation != null) {
+            Some(
+              new ExpressionInfo(
+                info.getFunctionClass.getCanonicalName,
+                annotation.name(),
+                annotation.value(),
+                annotation.extended()))
+          } else {
+            Some(
+              new ExpressionInfo(
+                info.getFunctionClass.getCanonicalName,
+                name,
+                null,
+                null))
+          }
+        }.getOrElse(None))
   }
 }
 

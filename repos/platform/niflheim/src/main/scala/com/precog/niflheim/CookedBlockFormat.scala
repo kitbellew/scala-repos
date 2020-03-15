@@ -139,8 +139,11 @@ case class VersionedCookedBlockFormat(formats: Map[Int, CookedBlockFormat])
       formats get version map { format =>
         format.readCookedBlock(channel)
       } getOrElse {
-        Failure(new IOException(
-          "Invalid version found. Expected one of %s, found %d." format (formats.keys mkString ",", version)))
+        Failure(
+          new IOException(
+            "Invalid version found. Expected one of %s, found %d." format (
+              formats.keys mkString ",", version
+            )))
       }
     }
   }

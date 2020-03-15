@@ -11,8 +11,7 @@ object Test {
       x.toFloat,
       x.toDouble,
       BigInt(x),
-      BigDecimal(x)
-    ) ::: (
+      BigDecimal(x)) ::: (
       if (x < 0)
         Nil
       else
@@ -26,8 +25,7 @@ object Test {
       x.toFloat,
       x.toDouble,
       BigInt(x.toInt),
-      BigDecimal(x)
-    )
+      BigDecimal(x))
 
   def main(args: Array[String]): Unit = {
     var xs = makeFromInt(5)

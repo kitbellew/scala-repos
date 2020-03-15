@@ -34,28 +34,31 @@ import scala.concurrent.duration._
 class Task[+A](val get: Future[Throwable \/ A]) {
 
   def flatMap[B](f: A => Task[B]): Task[B] =
-    new Task(get flatMap {
-      case -\/(e) => Future.now(-\/(e))
-      case \/-(a) =>
-        Task.Try(f(a)) match {
-          case e @ -\/(_) => Future.now(e)
-          case \/-(task)  => task.get
-        }
-    })
+    new Task(
+      get flatMap {
+        case -\/(e) => Future.now(-\/(e))
+        case \/-(a) =>
+          Task.Try(f(a)) match {
+            case e @ -\/(_) => Future.now(e)
+            case \/-(task)  => task.get
+          }
+      })
 
   def map[B](f: A => B): Task[B] =
-    new Task(get map {
-      _ flatMap { a =>
-        Task.Try(f(a))
-      }
-    })
+    new Task(
+      get map {
+        _ flatMap { a =>
+          Task.Try(f(a))
+        }
+      })
 
   /** 'Catches' exceptions in the given task and returns them as values. */
   def attempt: Task[Throwable \/ A] =
-    new Task(get map {
-      case -\/(e) => \/-(-\/(e))
-      case \/-(a) => \/-(\/-(a))
-    })
+    new Task(
+      get map {
+        case -\/(e) => \/-(-\/(e))
+        case \/-(a) => \/-(\/-(a))
+      })
 
   /**
     * Returns a new `Task` in which `f` is scheduled to be run on completion.
@@ -63,14 +66,17 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     * `Task`.
     */
   def onFinish(f: Option[Throwable] => Task[Unit]): Task[A] =
-    new Task(get flatMap {
-      case -\/(e) =>
-        Task
-          .Try(f(Some(e)))
-          .fold(e2 => Future.now(-\/(e2)), _.get *> Future.now(-\/(e)))
-      case r =>
-        Task.Try(f(None)).fold(e => Future.now(-\/(e)), _.get *> Future.now(r))
-    })
+    new Task(
+      get flatMap {
+        case -\/(e) =>
+          Task
+            .Try(f(Some(e)))
+            .fold(e2 => Future.now(-\/(e2)), _.get *> Future.now(-\/(e)))
+        case r =>
+          Task
+            .Try(f(None))
+            .fold(e => Future.now(-\/(e)), _.get *> Future.now(r))
+      })
 
   /**
     * Calls `attempt` and handles some exceptions using the given partial
@@ -96,10 +102,11 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     * `flatMap` for more fine grained control of exception handling.
     */
   def or[B >: A](t2: Task[B]): Task[B] =
-    new Task(this.get flatMap {
-      case -\/(e) => t2.get
-      case a      => Future.now(a)
-    })
+    new Task(
+      this.get flatMap {
+        case -\/(e) => t2.get
+        case a      => Future.now(a)
+      })
 
   /**
     * Run this `Task` and block until its result is available. This will
@@ -340,13 +347,15 @@ object Task {
       def point[A](a: => A) = Task.point(a)
       def bind[A, B](a: Task[A])(f: A => Task[B]): Task[B] = a flatMap f
       def chooseAny[A](h: Task[A], t: Seq[Task[A]]): Task[(A, Seq[Task[A]])] =
-        new Task(F.map(F.chooseAny(h.get, t map (_ get))) {
-          case (a, residuals) =>
-            a.map((_, residuals.map(new Task(_))))
-        })
+        new Task(
+          F.map(F.chooseAny(h.get, t map (_ get))) {
+            case (a, residuals) =>
+              a.map((_, residuals.map(new Task(_))))
+          })
       override def gatherUnordered[A](fs: Seq[Task[A]]): Task[List[A]] = {
-        new Task(F.map(F.gatherUnordered(fs.map(_ get)))(eithers =>
-          Traverse[List].sequenceU(eithers)))
+        new Task(
+          F.map(F.gatherUnordered(fs.map(_ get)))(eithers =>
+            Traverse[List].sequenceU(eithers)))
       }
       def fail[A](e: Throwable): Task[A] = new Task(Future.now(-\/(e)))
       def attempt[A](a: Task[A]): Task[Throwable \/ A] = a.attempt
@@ -387,10 +396,12 @@ object Task {
     * stack overflows.
     */
   def suspend[A](a: => Task[A]): Task[A] =
-    new Task(Future.suspend(Try(a.get) match {
-      case -\/(e) => Future.now(-\/(e))
-      case \/-(f) => f
-    }))
+    new Task(
+      Future.suspend(
+        Try(a.get) match {
+          case -\/(e) => Future.now(-\/(e))
+          case \/-(f) => f
+        }))
 
   /** Create a `Task` that will evaluate `a` using the given `ExecutorService`. */
   def apply[A](a: => A)(implicit
@@ -427,8 +438,8 @@ object Task {
     new Task(Future.async(register))
 
   def schedule[A](a: => A, delay: Duration)(implicit
-  pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler): Task[A] =
-    new Task(Future.schedule(Try(a), delay))
+      pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
+      : Task[A] = new Task(Future.schedule(Try(a), delay))
 
   /**
     * Like `Nondeterminism[Task].gatherUnordered`, but if `exceptionCancels` is true,
@@ -455,58 +466,61 @@ object Task {
         case Seq()  => Task.now(R.zero)
         case Seq(t) => t.map(R.unit)
         case _ =>
-          new Task(Future.Async { cb =>
-            val interrupt = new AtomicBoolean(false)
-            val results = new ConcurrentLinkedQueue[M]
-            val togo = new AtomicInteger(tasks.size)
+          new Task(
+            Future.Async { cb =>
+              val interrupt = new AtomicBoolean(false)
+              val results = new ConcurrentLinkedQueue[M]
+              val togo = new AtomicInteger(tasks.size)
 
-            tasks.foreach {
-              t =>
-                val handle: (Throwable \/ A) => Trampoline[Unit] = {
-                  case \/-(success) =>
-                    // Try to reduce number of values in the queue
-                    val front = results.poll()
-                    if (front == null)
-                      results.add(R.unit(success))
-                    else
-                      results.add(R.cons(success, front))
+              tasks.foreach {
+                t =>
+                  val handle: (Throwable \/ A) => Trampoline[Unit] = {
+                    case \/-(success) =>
+                      // Try to reduce number of values in the queue
+                      val front = results.poll()
+                      if (front == null)
+                        results.add(R.unit(success))
+                      else
+                        results.add(R.cons(success, front))
 
-                    // only last completed f will hit the 0 here.
-                    if (togo.decrementAndGet() == 0)
-                      cb(\/-(results.toList.foldLeft(R.zero)((a, b) =>
-                        R.append(a, b))))
-                    else
-                      Trampoline.done(())
-                  case e @ (-\/(failure)) =>
-                    // Only allow the first failure to invoke the callback, so we
-                    // race to set `togo` to 0 here.
-                    // If we win, invoke the callback with our error, otherwise, noop
-                    @annotation.tailrec
-                    def firstFailure: Boolean = {
-                      val current = togo.get
-                      if (current > 0) {
-                        if (togo.compareAndSet(current, 0))
-                          true
-                        else
-                          firstFailure
-                      } else
-                        false
-                    }
-
-                    if (firstFailure) // invoke `cb`, then cancel any computation not running yet
-                      // food for thought - might be safe to set the interrupt first
-                      // but, this may also kill `cb(e)`
-                      // could have separate AtomicBooleans for each task
-                      cb(e) *> Trampoline.delay {
-                        interrupt.set(true);
-                        ()
+                      // only last completed f will hit the 0 here.
+                      if (togo.decrementAndGet() == 0)
+                        cb(
+                          \/-(
+                            results.toList.foldLeft(R.zero)((a, b) =>
+                              R.append(a, b))))
+                      else
+                        Trampoline.done(())
+                    case e @ (-\/(failure)) =>
+                      // Only allow the first failure to invoke the callback, so we
+                      // race to set `togo` to 0 here.
+                      // If we win, invoke the callback with our error, otherwise, noop
+                      @annotation.tailrec
+                      def firstFailure: Boolean = {
+                        val current = togo.get
+                        if (current > 0) {
+                          if (togo.compareAndSet(current, 0))
+                            true
+                          else
+                            firstFailure
+                        } else
+                          false
                       }
-                    else
-                      Trampoline.done(())
-                }
-                t.get.unsafePerformListenInterruptibly(handle, interrupt)
-            }
-          })
+
+                      if (firstFailure) // invoke `cb`, then cancel any computation not running yet
+                        // food for thought - might be safe to set the interrupt first
+                        // but, this may also kill `cb(e)`
+                        // could have separate AtomicBooleans for each task
+                        cb(e) *> Trampoline.delay {
+                          interrupt.set(true);
+                          ()
+                        }
+                      else
+                        Trampoline.done(())
+                  }
+                  t.get.unsafePerformListenInterruptibly(handle, interrupt)
+              }
+            })
       }
 
   /** Utility function - evaluate `a` and catch and return any exceptions. */

@@ -327,7 +327,11 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
           throw new InterruptedException(
             "Interrupted while processing actor messages")
         processAllSystemMessages()
-        if ((left > 1) && ((dispatcher.isThroughputDeadlineTimeDefined == false) || (System.nanoTime - deadlineNs) < 0))
+        if ((left > 1) && (
+              (
+                dispatcher.isThroughputDeadlineTimeDefined == false
+              ) || (System.nanoTime - deadlineNs) < 0
+            ))
           processMailbox(left - 1, deadlineNs)
       }
     }
@@ -371,11 +375,12 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       catch {
         case e: InterruptedException ⇒ interruption = e
         case NonFatal(e) ⇒
-          actor.system.eventStream.publish(Error(
-            e,
-            actor.self.path.toString,
-            this.getClass,
-            "error while enqueuing " + msg + " to deadLetters: " + e.getMessage))
+          actor.system.eventStream.publish(
+            Error(
+              e,
+              actor.self.path.toString,
+              this.getClass,
+              "error while enqueuing " + msg + " to deadLetters: " + e.getMessage))
       }
     }
     // if we got an interrupted exception while handling system messages, then rethrow it

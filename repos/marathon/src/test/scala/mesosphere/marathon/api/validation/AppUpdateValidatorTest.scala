@@ -22,8 +22,7 @@ class AppUpdateValidatorTest extends MarathonSpec with Matchers {
       Container(
         `type` = mesos.ContainerInfo.Type.DOCKER,
         volumes = Nil,
-        docker = None
-      )
+        docker = None)
   }
 
 }

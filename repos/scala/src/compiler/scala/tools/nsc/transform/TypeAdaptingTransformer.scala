@@ -86,9 +86,9 @@ trait TypeAdaptingTransformer {
                         log(s"boxing an unbox: ${tree.symbol} -> ${arg.tpe}")
                         arg
                       case _ =>
-                        (REF(
-                          currentRun.runDefinitions.boxMethod(
-                            x)) APPLY tree) setPos (tree.pos) setType ObjectTpe
+                        (
+                          REF(currentRun.runDefinitions.boxMethod(x)) APPLY tree
+                        ) setPos (tree.pos) setType ObjectTpe
                     }
                 }
             }
@@ -158,18 +158,16 @@ trait TypeAdaptingTransformer {
     def cast(tree: Tree, pt: Type): Tree = {
       if ((tree.tpe ne null) && !(tree.tpe =:= ObjectTpe)) {
         def word =
-          (
-            if (tree.tpe <:< pt)
-              "upcast"
-            else if (pt <:< tree.tpe)
-              "downcast"
-            else if (pt weak_<:< tree.tpe)
-              "coerce"
-            else if (tree.tpe weak_<:< pt)
-              "widen"
-            else
-              "cast"
-          )
+          (if (tree.tpe <:< pt)
+             "upcast"
+           else if (pt <:< tree.tpe)
+             "downcast"
+           else if (pt weak_<:< tree.tpe)
+             "coerce"
+           else if (tree.tpe weak_<:< pt)
+             "widen"
+           else
+             "cast")
         log(s"erasure ${word}s from ${tree.tpe} to $pt")
       }
       if (pt =:= UnitTpe) {

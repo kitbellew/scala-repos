@@ -22,8 +22,7 @@ sealed abstract class IterateeT[E, F[_], A] {
 
   def foldT[Z](
       cont: (Input[E] => IterateeT[E, F, A]) => F[Z],
-      done: (=> A, => Input[E]) => F[Z]
-  )(implicit F: Bind[F]): F[Z] =
+      done: (=> A, => Input[E]) => F[Z])(implicit F: Bind[F]): F[Z] =
     F.bind(value)((s: StepT[E, F, A]) => s(cont, done))
 
   /**
@@ -33,8 +32,7 @@ sealed abstract class IterateeT[E, F[_], A] {
     F.bind((this &= enumEofT[E, F]).value)((s: StepT[E, F, A]) =>
       s.fold(
         cont = _ => sys.error("diverging iteratee"),
-        done = (a, _) => F.point(a)
-      ))
+        done = (a, _) => F.point(a)))
   }
 
   def flatMap[B](f: A => IterateeT[E, F, B])(
@@ -51,8 +49,7 @@ sealed abstract class IterateeT[E, F[_], A] {
                 F.bind(f(a).value)(
                   _.fold(
                     cont = kk => kk(i).value,
-                    done = (aa, _) => F.point(StepT.sdone[E, F, B](aa, i))
-                  ))
+                    done = (aa, _) => F.point(StepT.sdone[E, F, B](aa, i))))
           )))
     through(this)
   }
@@ -71,8 +68,7 @@ sealed abstract class IterateeT[E, F[_], A] {
             if (i.isEof)
               eofInput
             else
-              emptyInput)
-      )
+              emptyInput))
 
     this >>== step
   }
@@ -118,8 +114,7 @@ sealed abstract class IterateeT[E, F[_], A] {
     def step: StepT[E, F, A] => StepT[E, G, A] =
       _.fold(
         cont = k => scont[E, G, A](k andThen loop),
-        done = (a, i) => sdone[E, G, A](a, i)
-      )
+        done = (a, i) => sdone[E, G, A](a, i))
     def loop: IterateeT[E, F, A] => IterateeT[E, G, A] =
       i => iterateeT(f(F.map(i.value)(step)))
     loop(this)
@@ -128,9 +123,10 @@ sealed abstract class IterateeT[E, F[_], A] {
   def up[G[_]](implicit
       G: Applicative[G],
       F: Comonad[F]): IterateeT[E, G, A] = {
-    mapI(new (F ~> G) {
-      def apply[A](a: F[A]) = G.point(F.copoint(a))
-    })
+    mapI(
+      new (F ~> G) {
+        def apply[A](a: F[A]) = G.point(F.copoint(a))
+      })
   }
 
   def joinI[I, B](implicit
@@ -143,8 +139,7 @@ sealed abstract class IterateeT[E, F[_], A] {
           k(eofInput) >>== { s =>
             s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
           },
-        done = (a, _) => M0.point(a)
-      )
+        done = (a, _) => M0.point(a))
 
     outer(this) flatMap check
   }
@@ -181,8 +176,7 @@ sealed abstract class IterateeT[E, F[_], A] {
         .liftM(
           i.foldT[(Option[(Z, Input[E])], IterateeT[E, F, Z])](
             cont = k => F.point((None, k(in))),
-            done = (a, x) => F.point((Some((a, x)), done(a, x)))
-          ))
+            done = (a, x) => F.point((Some((a, x)), done(a, x)))))
     def loop(x: IterateeT[E, F, A], y: IterateeT[E, F, B])(
         in: Input[E]): IterateeT[E, F, (A, B)] =
       in(

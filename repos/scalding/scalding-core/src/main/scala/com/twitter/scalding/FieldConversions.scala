@@ -55,9 +55,10 @@ trait LowPriorityFieldConversions {
     */
   implicit def productToFields(f: Product) = {
     val fields =
-      new Fields(f.productIterator.map {
-        anyToFieldArg
-      }.toSeq: _*)
+      new Fields(
+        f.productIterator.map {
+          anyToFieldArg
+        }.toSeq: _*)
     f.productIterator.foreach {
       _ match {
         case field: Field[_] => fields.setComparator(field.id, field.ord)
@@ -198,18 +199,20 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * that List will not conflict with Product.
     */
   implicit def fromEnum[T <: Enumeration](enumeration: T): Fields =
-    new Fields(enumeration.values.toList.map {
-      _.toString
-    }: _*)
+    new Fields(
+      enumeration.values.toList.map {
+        _.toString
+      }: _*)
 
   implicit def fields[T <: TraversableOnce[Symbol]](f: T) =
     new Fields(f.toSeq.map(_.name): _*)
   implicit def strFields[T <: TraversableOnce[String]](f: T) =
     new Fields(f.toSeq: _*)
   implicit def intFields[T <: TraversableOnce[Int]](f: T) = {
-    new Fields(f.toSeq.map {
-      new java.lang.Integer(_)
-    }: _*)
+    new Fields(
+      f.toSeq.map {
+        new java.lang.Integer(_)
+      }: _*)
   }
   implicit def fieldFields[T <: TraversableOnce[Field[_]]](f: T) =
     RichFields(f.toSeq)
@@ -221,9 +224,10 @@ trait FieldConversions extends LowPriorityFieldConversions {
     */
   implicit def parseAnySeqToFields[T <: TraversableOnce[Any]](anyf: T) = {
     val fields =
-      new Fields(anyf.toSeq.map {
-        anyToFieldArg
-      }: _*)
+      new Fields(
+        anyf.toSeq.map {
+          anyToFieldArg
+        }: _*)
     anyf.foreach {
       _ match {
         case field: Field[_] => fields.setComparator(field.id, field.ord)
@@ -264,18 +268,19 @@ trait FieldConversions extends LowPriorityFieldConversions {
     // "one at a time" by querying for a specific index, while the Comparators are only
     // available "all at once" by calling getComparators.)
 
-    new RichFields(asList(fields).zip(fields.getComparators).map {
-      case (id: Comparable[_], comparator: Comparator[_]) =>
-        id match {
-          case x: java.lang.Integer =>
-            IntField(x)(Ordering.comparatorToOrdering(comparator), None)
-          case y: String =>
-            StringField(y)(Ordering.comparatorToOrdering(comparator), None)
-          case z =>
-            sys.error(
-              "not expecting object of type " + z.getClass + " as field name")
-        }
-    })
+    new RichFields(
+      asList(fields).zip(fields.getComparators).map {
+        case (id: Comparable[_], comparator: Comparator[_]) =>
+          id match {
+            case x: java.lang.Integer =>
+              IntField(x)(Ordering.comparatorToOrdering(comparator), None)
+            case y: String =>
+              StringField(y)(Ordering.comparatorToOrdering(comparator), None)
+            case z =>
+              sys.error(
+                "not expecting object of type " + z.getClass + " as field name")
+          }
+      })
   }
 
 }
@@ -287,9 +292,10 @@ trait FieldConversions extends LowPriorityFieldConversions {
 // myFields.toFieldList
 
 case class RichFields(val toFieldList: List[Field[_]])
-    extends Fields(toFieldList.map {
-      _.id
-    }: _*) {
+    extends Fields(
+      toFieldList.map {
+        _.id
+      }: _*) {
   toFieldList.foreach { field: Field[_] =>
     setComparator(field.id, field.ord)
   }

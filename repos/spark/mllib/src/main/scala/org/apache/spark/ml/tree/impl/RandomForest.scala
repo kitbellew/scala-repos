@@ -633,8 +633,9 @@ private[ml] object RandomForest extends Logging {
 
           // Extract info for this node.  Create children if not leaf.
           val isLeaf =
-            (stats.gain <= 0) || (LearningNode.indexToLevel(
-              nodeIndex) == metadata.maxDepth)
+            (stats.gain <= 0) || (
+              LearningNode.indexToLevel(nodeIndex) == metadata.maxDepth
+            )
           node.isLeaf = isLeaf
           node.stats = stats
           logDebug("Node = " + node)

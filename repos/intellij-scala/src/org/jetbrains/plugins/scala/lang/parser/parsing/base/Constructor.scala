@@ -27,14 +27,18 @@ object Constructor {
     val constrMarker = builder.mark
     val latestDoneMarker = builder.getLatestDoneMarker
     val annotationAllowed = latestDoneMarker == null ||
-      (latestDoneMarker.getTokenType != ScalaElementTypes.TYPE_GENERIC_CALL &&
-        latestDoneMarker.getTokenType != ScalaElementTypes.MODIFIERS &&
-        latestDoneMarker.getTokenType != ScalaElementTypes.TYPE_PARAM_CLAUSE)
+      (
+        latestDoneMarker.getTokenType != ScalaElementTypes.TYPE_GENERIC_CALL &&
+          latestDoneMarker.getTokenType != ScalaElementTypes.MODIFIERS &&
+          latestDoneMarker.getTokenType != ScalaElementTypes.TYPE_PARAM_CLAUSE
+      )
 
-    if ((!isAnnotation && !AnnotType.parse(
-          builder,
-          isPattern = false,
-          multipleSQBrackets = false)) ||
+    if ((
+          !isAnnotation && !AnnotType.parse(
+            builder,
+            isPattern = false,
+            multipleSQBrackets = false)
+        ) ||
         (isAnnotation && !SimpleType.parse(builder, isPattern = false))) {
       constrMarker.drop()
       return false
@@ -43,7 +47,9 @@ object Constructor {
     if (builder.getTokenType == ScalaTokenTypes.tLPARENTHESIS) {
       if (!builder.newlineBeforeCurrentToken)
         ArgumentExprs parse builder
-      while (builder.getTokenType == ScalaTokenTypes.tLPARENTHESIS && (!isAnnotation || annotationAllowed) && !builder.newlineBeforeCurrentToken) {
+      while (builder.getTokenType == ScalaTokenTypes.tLPARENTHESIS && (
+               !isAnnotation || annotationAllowed
+             ) && !builder.newlineBeforeCurrentToken) {
         ArgumentExprs parse builder
       }
     }

@@ -162,8 +162,7 @@ object Jar {
       import scala.util.Properties._
       Map(
         Name.MANIFEST_VERSION -> "1.0",
-        ScalaCompilerVersion -> versionNumberString
-      )
+        ScalaCompilerVersion -> versionNumberString)
     }
 
     def apply(name: Attributes.Name): String = attrs(name)

@@ -49,8 +49,12 @@ object Message {
   val ValueSizeLength = 4
 
   private val MessageHeaderSizeMap = Map(
-    (0: Byte) -> (CrcLength + MagicLength + AttributesLength + KeySizeLength + ValueSizeLength),
-    (1: Byte) -> (CrcLength + MagicLength + AttributesLength + TimestampLength + KeySizeLength + ValueSizeLength)
+    (0: Byte) -> (
+      CrcLength + MagicLength + AttributesLength + KeySizeLength + ValueSizeLength
+    ),
+    (1: Byte) -> (
+      CrcLength + MagicLength + AttributesLength + TimestampLength + KeySizeLength + ValueSizeLength
+    )
   )
 
   /**
@@ -160,22 +164,28 @@ class Message(
         Message.CrcLength +
           Message.MagicLength +
           Message.AttributesLength +
-          (if (magicValue == Message.MagicValue_V0)
-             0
-           else
-             Message.TimestampLength) +
+          (
+            if (magicValue == Message.MagicValue_V0)
+              0
+            else
+              Message.TimestampLength
+          ) +
           Message.KeySizeLength +
-          (if (key == null)
-             0
-           else
-             key.length) +
+          (
+            if (key == null)
+              0
+            else
+              key.length
+          ) +
           Message.ValueSizeLength +
-          (if (bytes == null)
-             0
-           else if (payloadSize >= 0)
-             payloadSize
-           else
-             bytes.length - payloadOffset)))
+          (
+            if (bytes == null)
+              0
+            else if (payloadSize >= 0)
+              payloadSize
+            else
+              bytes.length - payloadOffset
+          )))
     validateTimestampAndMagicValue(timestamp, magicValue)
     // skip crc, we will fill that in at the end
     buffer.position(MagicOffset)

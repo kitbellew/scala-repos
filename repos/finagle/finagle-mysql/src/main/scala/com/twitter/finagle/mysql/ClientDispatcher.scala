@@ -37,10 +37,8 @@ case class LostSyncException(underlying: Throwable)
   * implementation of prepared statements in the presence of a connection pool.
   * The cache is capped at `max` and least recently used elements are evicted.
   */
-private[mysql] class PrepareCache(
-    svc: Service[Request, Result],
-    max: Int = 20
-) extends ServiceProxy[Request, Result](svc) {
+private[mysql] class PrepareCache(svc: Service[Request, Result], max: Int = 20)
+    extends ServiceProxy[Request, Result](svc) {
 
   private[this] val fn = {
     val listener =
@@ -92,8 +90,8 @@ object ClientDispatcher {
     */
   def apply(
       trans: Transport[Packet, Packet],
-      handshake: HandshakeInit => Try[HandshakeResponse]
-  ): Service[Request, Result] = {
+      handshake: HandshakeInit => Try[HandshakeResponse])
+      : Service[Request, Result] = {
     new PrepareCache(new ClientDispatcher(trans, handshake))
   }
 
@@ -104,9 +102,10 @@ object ClientDispatcher {
     * error (or corrupt data) between the client and server.
     */
   private def const[T](result: Try[T]): Future[T] =
-    Future.const(result rescue {
-      case exc => Throw(LostSyncException(exc))
-    })
+    Future.const(
+      result rescue {
+        case exc => Throw(LostSyncException(exc))
+      })
 }
 
 /**
@@ -119,8 +118,8 @@ object ClientDispatcher {
   */
 class ClientDispatcher(
     trans: Transport[Packet, Packet],
-    handshake: HandshakeInit => Try[HandshakeResponse]
-) extends GenSerialClientDispatcher[Request, Result, Packet, Packet](trans) {
+    handshake: HandshakeInit => Try[HandshakeResponse])
+    extends GenSerialClientDispatcher[Request, Result, Packet, Packet](trans) {
   import ClientDispatcher._
 
   override def apply(req: Request): Future[Result] =
@@ -191,8 +190,7 @@ class ClientDispatcher(
   private[this] def decodePacket(
       packet: Packet,
       cmd: Byte,
-      signal: Promise[Unit]
-  ): Future[Result] =
+      signal: Promise[Unit]): Future[Result] =
     packet.body.headOption match {
       case Some(Packet.OkByte) if cmd == Command.COM_STMT_PREPARE =>
         // decode PrepareOk Result: A header packet potentially followed
@@ -203,12 +201,14 @@ class ClientDispatcher(
             ok <- const(PrepareOK(packet))
             (seq1, _) <- readTx(ok.numOfParams)
             (seq2, _) <- readTx(ok.numOfCols)
-            ps <- Future.collect(seq1 map { p =>
-              const(Field(p))
-            })
-            cs <- Future.collect(seq2 map { p =>
-              const(Field(p))
-            })
+            ps <- Future.collect(
+              seq1 map { p =>
+                const(Field(p))
+              })
+            cs <- Future.collect(
+              seq2 map { p =>
+                const(Field(p))
+              })
           } yield ok.copy(params = ps, columns = cs)
 
         result ensure signal.setDone()

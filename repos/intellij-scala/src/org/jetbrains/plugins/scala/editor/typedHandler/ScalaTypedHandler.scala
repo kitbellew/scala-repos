@@ -106,10 +106,12 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
             .trim() == "case") {
         chooseXmlTask(withAttr = false)
       }
-    } else if (c == '{' && (element.getParent match {
-                 case l: ScInterpolatedStringLiteral => !l.isMultiLineString;
-                 case _                              => false
-               })) {
+    } else if (c == '{' && (
+                 element.getParent match {
+                   case l: ScInterpolatedStringLiteral => !l.isMultiLineString;
+                   case _                              => false
+                 }
+               )) {
       myTask = completeInterpolatedStringBraces
     } else if (c == '>' || c == '-') {
       myTask = replaceArrowTask(file, editor)
@@ -124,13 +126,15 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       if (ScalaPsiUtil.isLineTerminator(prevPositionElement)) {
         prevPositionElement
           .getPrevSiblingCondition(_.getTextLength != 0)
-          .foreach(_.getNode.getElementType match {
-            case ScalaTokenTypes.tDOT   => myTask = indentRefExprDot(file)
-            case ScalaTokenTypes.tCOMMA => myTask = indentParametersComma(file)
-            case ScalaTokenTypes.tASSIGN =>
-              myTask = indentDefinitionAssign(file)
-            case _ =>
-          })
+          .foreach(
+            _.getNode.getElementType match {
+              case ScalaTokenTypes.tDOT => myTask = indentRefExprDot(file)
+              case ScalaTokenTypes.tCOMMA =>
+                myTask = indentParametersComma(file)
+              case ScalaTokenTypes.tASSIGN =>
+                myTask = indentDefinitionAssign(file)
+              case _ =>
+            })
       }
     }
 
@@ -173,23 +177,30 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     }
 
     // TODO split "if" condition
-    if ((c == '"' && Set(
-          ScalaTokenTypes.tMULTILINE_STRING,
-          ScalaTokenTypes.tINTERPOLATED_STRING_END).contains(elementType) &&
-        element.getTextOffset + element.getTextLength - offset < 4) ||
-        isInDocComment(element) && (elementType
-          .isInstanceOf[ScaladocSyntaxElementType] ||
-        elementType == ScalaDocTokenType.DOC_INNER_CLOSE_CODE_TAG) &&
+    if ((
+          c == '"' && Set(
+            ScalaTokenTypes.tMULTILINE_STRING,
+            ScalaTokenTypes.tINTERPOLATED_STRING_END).contains(elementType) &&
+          element.getTextOffset + element.getTextLength - offset < 4
+        ) ||
+        isInDocComment(element) && (
+          elementType.isInstanceOf[ScaladocSyntaxElementType] ||
+          elementType == ScalaDocTokenType.DOC_INNER_CLOSE_CODE_TAG
+        ) &&
         element.getParent.getLastChild == element && element.getText.startsWith(
           "" + c) &&
-        !(elementType == ScalaDocTokenType.DOC_ITALIC_TAG && element.getPrevSibling != null
-          && element.getPrevSibling.getNode.getElementType == ScalaDocTokenType.DOC_ITALIC_TAG)) {
+        !(
+          elementType == ScalaDocTokenType.DOC_ITALIC_TAG && element.getPrevSibling != null
+            && element.getPrevSibling.getNode.getElementType == ScalaDocTokenType.DOC_ITALIC_TAG
+        )) {
       moveCaret()
       return Result.STOP
     } else if (c == '"' && elementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_END_DELIMITER) {
       moveCaret()
       return Result.STOP
-    } else if ((c == '>' || c == '/') && elementType == ScalaXmlTokenTypes.XML_EMPTY_ELEMENT_END) {
+    } else if ((
+                 c == '>' || c == '/'
+               ) && elementType == ScalaXmlTokenTypes.XML_EMPTY_ELEMENT_END) {
       moveCaret()
       return Result.STOP
     } else if (c == '>' && elementType == ScalaXmlTokenTypes.XML_TAG_END) {
@@ -222,8 +233,10 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           .getIndentOptions
           .CONTINUATION_INDENT_SIZE
       val indentString =
-        (for (i <- 1 to indent)
-          yield " ").foldLeft("")(_ + _)
+        (
+          for (i <- 1 to indent)
+            yield " "
+        ).foldLeft("")(_ + _)
       extensions.inWriteAction {
         val document = editor.getDocument
         document.insertString(offset, indentString)
@@ -320,7 +333,9 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     if (element.getNode.getElementType == tLBRACE &&
         Option(element.getParent.getPrevSibling)
           .exists(_.getNode.getElementType == tINTERPOLATED_STRING_INJECTION) &&
-        (element.getNextSibling == null || element.getNextSibling.getNode.getElementType != tRBRACE)) {
+        (
+          element.getNextSibling == null || element.getNextSibling.getNode.getElementType != tRBRACE
+        )) {
       insertAndCommit(offset, "}", document, project)
     }
   }
@@ -565,8 +580,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
         editor,
         new Condition[PsiFile] {
           def value(t: PsiFile): Boolean = t == file
-        }
-      )
+        })
   }
 
   private def startAutopopupCompletionInInterpolatedString(

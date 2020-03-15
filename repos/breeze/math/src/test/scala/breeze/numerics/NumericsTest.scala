@@ -34,12 +34,16 @@ class NumericsTest extends FunSuite with Checkers with Matchers {
     (softmax(mlog(2), mlog(5)) should be(mlog(7) +- 1e-10))
     (softmax(Double.NegativeInfinity, mlog(5)) should be(mlog(5) +- 1e-10))
     (softmax(mlog(5), Double.NegativeInfinity) should be(mlog(5) +- 1e-10))
-    (softmax(Double.NegativeInfinity, Double.NegativeInfinity) should be(
-      Double.NegativeInfinity))
+    (
+      softmax(Double.NegativeInfinity, Double.NegativeInfinity) should be(
+        Double.NegativeInfinity)
+    )
 
     (softmax(Array(mlog(1), mlog(2), mlog(3))) should be(mlog(6) +- 1e-10))
-    (softmax(Array(mlog(1), mlog(2), Double.NegativeInfinity)) should be(
-      mlog(3) +- (1e-10)))
+    (
+      softmax(Array(mlog(1), mlog(2), Double.NegativeInfinity)) should be(
+        mlog(3) +- (1e-10))
+    )
 
     val s = log1p(Array.tabulate(5)(_.toDouble))
     (softmax(s) should be(mlog(15) +- 1e-10))
@@ -67,28 +71,32 @@ class NumericsTest extends FunSuite with Checkers with Matchers {
 
   // TODO 2.9 filter out Double.MaxValue.
   test("softmax is approximately associative") {
-    check(Prop.forAll { (a: Double, b: Double, c: Double) =>
-      Seq(a, b, c).exists(x => x > 1e300 || x < -1e300) ||
-      softmax(a, softmax(b, c)) =~= softmax(softmax(a, b), c)
-    })
-    check(Prop.forAll { (a: Double, b: Double, c: Double) =>
-      Seq(a, b, c).exists(x => x > 1e300 || x < -1e300) ||
-      softmax(a, softmax(b, c)) =~= softmax(Array(a, b, c))
-    })
+    check(
+      Prop.forAll { (a: Double, b: Double, c: Double) =>
+        Seq(a, b, c).exists(x => x > 1e300 || x < -1e300) ||
+        softmax(a, softmax(b, c)) =~= softmax(softmax(a, b), c)
+      })
+    check(
+      Prop.forAll { (a: Double, b: Double, c: Double) =>
+        Seq(a, b, c).exists(x => x > 1e300 || x < -1e300) ||
+        softmax(a, softmax(b, c)) =~= softmax(Array(a, b, c))
+      })
   }
 
   test("sum distributes over softmax") {
-    check(Prop.forAll { (a: Double, b: Double, c: Double) =>
-      Seq(a, b, c).exists(x => x > 1e300 || x < -1e300) ||
-      (a + softmax(b, c)) =~= (softmax(a + b, a + c))
-    })
+    check(
+      Prop.forAll { (a: Double, b: Double, c: Double) =>
+        Seq(a, b, c).exists(x => x > 1e300 || x < -1e300) ||
+        (a + softmax(b, c)) =~= (softmax(a + b, a + c))
+      })
   }
 
   test("exp(digamma(x)) ≈ x - .5, x >= 10") {
-    check(Prop.forAll { (a: Double) =>
-      a.abs < 10 || a.abs > Double.MaxValue / 2 || exp(
-        breeze.numerics.digamma(a.abs)) =~= (a.abs - .5)
-    })
+    check(
+      Prop.forAll { (a: Double) =>
+        a.abs < 10 || a.abs > Double.MaxValue / 2 || exp(
+          breeze.numerics.digamma(a.abs)) =~= (a.abs - .5)
+      })
   }
 
   test("lgamma") {

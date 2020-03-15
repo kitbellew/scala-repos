@@ -45,8 +45,7 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
           )
           .nodes
 
-      result must ==/(
-        <html>
+      result must ==/(<html>
           <head>
             <script src="testscript"></script>
             <link href="testlink" />
@@ -62,8 +61,7 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
             <p>Thingies</p>
             <p>More thingies</p>
           </body>
-        </html>
-      )
+        </html>)
     }
 
     "extract events from all elements at any depth" in {
@@ -116,8 +114,7 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
         .normalizeHtmlAndEventHandlers(
           <myelement id="testid" onevent="doStuff" />,
           "/context-path",
-          false
-        )
+          false)
 
       html must ==/(<myelement id="testid" />)
       js.toJsCmd must_== """lift.onEvent("testid","event",function(event) {doStuff;});"""
@@ -128,8 +125,7 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
         .normalizeHtmlAndEventHandlers(
           <myelement onevent="doStuff" />,
           "/context-path",
-          false
-        )
+          false)
 
       val id = html \@ "id"
 
@@ -148,13 +144,15 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
         false
       )
 
-      js.toJsCmd must be matching ("""(?s)\Qlift.onEvent("lift-event-js-\E[^"]+\Q","event",function(event) {doStuff;});
+      js.toJsCmd must be matching (
+        """(?s)\Qlift.onEvent("lift-event-js-\E[^"]+\Q","event",function(event) {doStuff;});
         |lift.onEvent("hello","event",function(event) {doStuff2;});
         |lift.onEvent("lift-event-js-\E[^"]+\Q","event",function(event) {doStuff3;});\E"""
-        .stripMargin('|')
-        .lines
-        .mkString("\n")
-        .r)
+          .stripMargin('|')
+          .lines
+          .mkString("\n")
+          .r
+      )
     }
 
     "extract events from hrefs and actions" in {
@@ -175,14 +173,16 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
 
       (html \ "myelement").map(_ \@ "href").filter(_.nonEmpty) must beEmpty
       (html \ "myelement").map(_ \@ "action").filter(_.nonEmpty) must beEmpty
-      js.toJsCmd must be matching ("""(?s)\Qlift.onEvent("lift-event-js-\E[^"]+\Q","click",function(event) {doStuff; event.preventDefault();});
+      js.toJsCmd must be matching (
+        """(?s)\Qlift.onEvent("lift-event-js-\E[^"]+\Q","click",function(event) {doStuff; event.preventDefault();});
         |lift.onEvent("hello","submit",function(event) {doStuff2; event.preventDefault();});
         |lift.onEvent("hello2","click",function(event) {doStuff3; event.preventDefault();});
         |lift.onEvent("lift-event-js-\E[^"]+\Q","submit",function(event) {/doStuff4; event.preventDefault();});\E"""
-        .stripMargin('|')
-        .lines
-        .mkString("\n")
-        .r)
+          .stripMargin('|')
+          .lines
+          .mkString("\n")
+          .r
+      )
     }
 
     "not extract events from hrefs and actions without the proper prefix" in {

@@ -477,21 +477,13 @@ sealed abstract class ValidationInstances0 extends ValidationInstances1 {
           f: Validation[A, Validation[B, C]]): Validation[Validation[A, B], C] =
         f.fold(
           a => Failure(Failure(a)),
-          _.fold(
-            b => Failure(Success(b)),
-            Success(_)
-          )
-        )
+          _.fold(b => Failure(Success(b)), Success(_)))
 
       override def reassociateRight[A, B, C](
           f: Validation[Validation[A, B], C]): Validation[A, Validation[B, C]] =
         f.fold(
-          _.fold(
-            Failure(_),
-            b => Success(Failure(b))
-          ),
-          c => Success(Success(c))
-        )
+          _.fold(Failure(_), b => Success(Failure(b))),
+          c => Success(Success(c)))
 
     }
 }

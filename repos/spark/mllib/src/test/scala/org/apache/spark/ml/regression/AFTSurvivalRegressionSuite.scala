@@ -419,6 +419,5 @@ object AFTSurvivalRegressionSuite {
     "predictionCol" -> "myPrediction",
     "fitIntercept" -> true,
     "maxIter" -> 2,
-    "tol" -> 0.01
-  )
+    "tol" -> 0.01)
 }

@@ -240,14 +240,12 @@ abstract class FormatInterpolator {
               Select(scalaPackage, TermName("collection")),
               TermName("immutable")),
             TypeName("StringOps"))),
-        termNames.CONSTRUCTOR
-      )
+        termNames.CONSTRUCTOR)
       val expr = Apply(
         Select(
           Apply(newStringOps, List(Literal(Constant(format)))),
           TermName("format")),
-        ids.toList
-      )
+        ids.toList)
       val p = c.macroApplication.pos
       Block(evals.toList, atPos(p.focus)(expr)) setPos p.makeTransparent
     }
@@ -424,8 +422,9 @@ abstract class FormatInterpolator {
     override def verify =
       op match {
         case "%" =>
-          super.verify && noPrecision && truly(width foreach (_ =>
-            c.warning(groupPos(Width), "width ignored on literal")))
+          super.verify && noPrecision && truly(
+            width foreach (_ =>
+              c.warning(groupPos(Width), "width ignored on literal")))
         case "n" => noFlags && noWidth && noPrecision
       }
     override protected val okFlags = "-"
@@ -473,15 +472,17 @@ abstract class FormatInterpolator {
   class FloatingPointXn(val m: Match, val pos: Position, val argc: Int)
       extends Conversion {
     override def verify =
-      super.verify && (cc match {
-        case 'a' | 'A' =>
-          val badFlags = ",(" filter hasFlag
-          noPrecision && badFlags.isEmpty || falsely {
-            badFlags foreach (badf =>
-              badFlag(badf, s"'$badf' not allowed for a, A"))
-          }
-        case _ => true
-      })
+      super.verify && (
+        cc match {
+          case 'a' | 'A' =>
+            val badFlags = ",(" filter hasFlag
+            noPrecision && badFlags.isEmpty || falsely {
+              badFlags foreach (badf =>
+                badFlag(badf, s"'$badf' not allowed for a, A"))
+            }
+          case _ => true
+        }
+      )
     def accepts(arg: Tree) =
       pickAcceptable(arg, DoubleTpe, FloatTpe, tagOfBigDecimal.tpe)
   }

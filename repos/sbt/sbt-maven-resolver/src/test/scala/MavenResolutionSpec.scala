@@ -153,8 +153,10 @@ class MavenResolutionSpec extends BaseIvySpecification {
     System.err.println(s"${newJars.mkString("\n")}")
     (newJars should have size 1)
     (oldJars should have size 1)
-    (oldJars.map(_._2) should not(
-      contain theSameElementsAs (newJars.map(_._2))))
+    (
+      oldJars.map(_._2) should not(
+        contain theSameElementsAs (newJars.map(_._2)))
+    )
   }
 
   def resolveSnapshotPubDate = {
@@ -187,7 +189,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
         conf <- report.configurations
         if conf.configuration == "compile"
         m <- conf.modules
-        if (m.module.name == "scala-library") || (m.module.name contains "parser")
+        if (m.module.name == "scala-library") || (
+          m.module.name contains "parser"
+        )
         (a, f) <- m.artifacts
         if a.extension == "jar"
       } yield f
@@ -270,7 +274,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
         conf <- report.configurations
         if conf.configuration == "compile"
         m <- conf.modules
-        if (m.module.name contains "akka-actor") && !(m.module.name contains "testkit")
+        if (m.module.name contains "akka-actor") && !(
+          m.module.name contains "testkit"
+        )
         (a, f) <- m.artifacts
         if a.extension == "jar"
       } yield f
@@ -279,7 +285,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
         conf <- report.configurations
         if conf.configuration == "compile"
         m <- conf.modules
-        if (m.module.name contains "akka-actor") && (m.module.name contains "testkit")
+        if (m.module.name contains "akka-actor") && (
+          m.module.name contains "testkit"
+        )
         (a, f) <- m.artifacts
         if a.extension == "jar"
       } yield f
@@ -340,8 +348,7 @@ class MavenResolutionSpec extends BaseIvySpecification {
       ModuleID("com.example", "test-it", "1.0-SNAPSHOT", Some("compile")),
       Seq(),
       None,
-      defaultUpdateOptions.withLatestSnapshots(true)
-    )
+      defaultUpdateOptions.withLatestSnapshots(true))
     sbt.io.IO.withTemporaryDirectory { dir =>
       val pomFile = new java.io.File(dir, "pom.xml")
       sbt.io.IO.write(
@@ -364,8 +371,7 @@ class MavenResolutionSpec extends BaseIvySpecification {
           Resolver.publishMavenLocal,
           Map(
             Artifact("test-it-1.0-SNAPSHOT.jar") -> pomFile,
-            Artifact("test-it-1.0-SNAPSHOT.pom", "pom", "pom") -> jarFile
-          ))
+            Artifact("test-it-1.0-SNAPSHOT.pom", "pom", "pom") -> jarFile))
       )
     }
     val baseLocalMavenDir: java.io.File = Resolver.publishMavenLocal.rootFile

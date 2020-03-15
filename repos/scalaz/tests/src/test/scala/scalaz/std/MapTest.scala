@@ -8,12 +8,14 @@ import scala.collection.immutable.{Map => SMap, MapLike}
 import scala.math.{Ordering => SOrdering}
 import org.scalacheck.Prop.forAll
 
-abstract class XMapTest[
-    Map[K, V] <: SMap[K, V] with MapLike[K, V, Map[K, V]],
-    BKC[_]](dict: MapSubInstances with MapSubFunctions {
-  type XMap[A, B] = Map[A, B]
-  type BuildKeyConstraint[A] = BKC[A]
-})(implicit BKCF: Contravariant[BKC], OI: BKC[Int], OS: BKC[String])
+abstract class XMapTest[Map[K, V] <: SMap[K, V] with MapLike[
+  K,
+  V,
+  Map[K, V]], BKC[_]](
+    dict: MapSubInstances with MapSubFunctions {
+      type XMap[A, B] = Map[A, B]
+      type BuildKeyConstraint[A] = BKC[A]
+    })(implicit BKCF: Contravariant[BKC], OI: BKC[Int], OS: BKC[String])
     extends SpecLite {
   import dict._
 
@@ -79,12 +81,14 @@ abstract class XMapTest[
     x.filter(_._2.isThat).keySet must_=== (keysB -- keysA)
     x.filter(_._2.isBoth).keySet must_=== (keysA & keysB)
 
-    x.filter(_._2.isThis) must_=== F.map(a.filter {
-      case (k, _) => !keysB(k)
-    })(This(_))
-    x.filter(_._2.isThat) must_=== F.map(b.filter {
-      case (k, _) => !keysA(k)
-    })(That(_))
+    x.filter(_._2.isThis) must_=== F.map(
+      a.filter {
+        case (k, _) => !keysB(k)
+      })(This(_))
+    x.filter(_._2.isThat) must_=== F.map(
+      b.filter {
+        case (k, _) => !keysA(k)
+      })(That(_))
   }
 
   "getOrAdd" ! forAll { (m0: Map[Int, Long], k: Int, vOld: Long, vNew: Long) =>

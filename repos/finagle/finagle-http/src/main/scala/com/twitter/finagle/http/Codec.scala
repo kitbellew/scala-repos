@@ -97,8 +97,8 @@ case class Http(
     _maxInitialLineLength: StorageUnit = 4096.bytes,
     _maxHeaderSize: StorageUnit = 8192.bytes,
     _streaming: Boolean = false,
-    _statsReceiver: StatsReceiver = NullStatsReceiver
-) extends CodecFactory[Request, Response] {
+    _statsReceiver: StatsReceiver = NullStatsReceiver)
+    extends CodecFactory[Request, Response] {
 
   def this(
       _compressionLevel: Int,
@@ -110,8 +110,7 @@ case class Http(
       _enableTracing: Boolean,
       _maxInitialLineLength: StorageUnit,
       _maxHeaderSize: StorageUnit,
-      _streaming: Boolean
-  ) =
+      _streaming: Boolean) =
     this(
       _compressionLevel,
       _maxRequestSize,
@@ -179,14 +178,13 @@ case class Http(
         }
 
       override def prepareServiceFactory(
-          underlying: ServiceFactory[Request, Response]
-      ): ServiceFactory[Request, Response] =
+          underlying: ServiceFactory[Request, Response])
+          : ServiceFactory[Request, Response] =
         underlying.map(new DelayedReleaseService(_))
 
       override def prepareConnFactory(
           underlying: ServiceFactory[Request, Response],
-          params: Stack.Params
-      ): ServiceFactory[Request, Response] =
+          params: Stack.Params): ServiceFactory[Request, Response] =
         // Note: This is a horrible hack to ensure that close() calls from
         // ExpiringService do not propagate until all chunks have been read
         // Waiting on CSL-915 for a proper fix.
@@ -196,8 +194,7 @@ case class Http(
               new PayloadSizeFilter[Request, Response](
                 params[param.Stats].statsReceiver,
                 _.content.length,
-                _.content.length
-              ))
+                _.content.length))
 
           filters.andThen(new DelayedReleaseService(u))
         }
@@ -213,8 +210,7 @@ case class Http(
         new HttpClientDispatcher(
           transport,
           params[param.Stats].statsReceiver
-            .scope(GenSerialClientDispatcher.StatsScope)
-        )
+            .scope(GenSerialClientDispatcher.StatsScope))
 
       override def newTraceInitializer =
         if (_enableTracing)
@@ -280,14 +276,12 @@ case class Http(
 
       override def newServerDispatcher(
           transport: Transport[Any, Any],
-          service: Service[Request, Response]
-      ): Closable =
+          service: Service[Request, Response]): Closable =
         new HttpServerDispatcher(new HttpTransport(transport), service)
 
       override def prepareConnFactory(
           underlying: ServiceFactory[Request, Response],
-          params: Stack.Params
-      ): ServiceFactory[Request, Response] = {
+          params: Stack.Params): ServiceFactory[Request, Response] = {
         val param.Stats(stats) = params[param.Stats]
         new HttpNackFilter(stats)
           .andThen(new DtabFilter.Finagle[Request])

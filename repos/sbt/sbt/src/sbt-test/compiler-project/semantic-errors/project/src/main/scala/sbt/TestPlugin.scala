@@ -18,8 +18,7 @@ object TestPlugin extends AutoPlugin {
     Seq(
       savedReporter := new CollectingReporter,
       compilerReporter in (Compile, compile) := savedReporter.value,
-      problems := savedReporter.value.problems
-    )
+      problems := savedReporter.value.problems)
 }
 
 class CollectingReporter extends xsbti.Reporter {

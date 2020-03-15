@@ -74,12 +74,12 @@ trait EnumeratorT[E, F[_]] { self =>
                 k(eofInput) >>== { s =>
                   s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
                 },
-              done = (a, _) => step.mapCont(f => f(elInput(a)))
-            )
+              done = (a, _) => step.mapCont(f => f(elInput(a))))
 
-          iterateeT(M.bind((IterateeT.fold[E, F, B](b)(f) &= self).value) { s =>
-            check(s).value
-          })
+          iterateeT(
+            M.bind((IterateeT.fold[E, F, B](b)(f) &= self).value) { s =>
+              check(s).value
+            })
         }
     }
 
@@ -116,9 +116,10 @@ trait EnumeratorTInstances extends EnumeratorTInstances0 {
         new EnumeratorT[E, G] {
           def apply[A] =
             (s: StepT[E, G, A]) =>
-              iterateeT(Monad[G].bind(ga) { e =>
-                s.mapCont(k => k(elInput(e))).value
-              })
+              iterateeT(
+                Monad[G].bind(ga) { e =>
+                  s.mapCont(k => k(elInput(e))).value
+                })
         }
 
       implicit def apply[G[_]: Monad]: Monad[EnumeratorT[?, G]] =
@@ -149,9 +150,10 @@ trait EnumeratorTFunctions {
     new EnumeratorT[E, F] {
       def apply[A] =
         s =>
-          iterateeT(Monad[F].bind(f) { _ =>
-            s.pointI.value
-          })
+          iterateeT(
+            Monad[F].bind(f) { _ =>
+              s.pointI.value
+            })
     }
 
   def enumOne[E, F[_]: Applicative](e: E): EnumeratorT[E, F] =

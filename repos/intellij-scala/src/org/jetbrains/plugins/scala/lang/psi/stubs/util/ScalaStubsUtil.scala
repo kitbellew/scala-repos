@@ -129,12 +129,13 @@ object ScalaStubsUtil {
     processClass(clazz)
     ClassInheritorsSearch
       .search(clazz, scope, true)
-      .forEach(new Processor[PsiClass] {
-        def process(t: PsiClass) = {
-          processClass(t)
-          true
-        }
-      })
+      .forEach(
+        new Processor[PsiClass] {
+          def process(t: PsiClass) = {
+            processClass(t)
+            true
+          }
+        })
     inheritors.toSeq
   }
 

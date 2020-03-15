@@ -202,9 +202,10 @@ final class DetectedPlugins(
   /** A function to select the right [[AutoPlugin]]s from [[autoPlugins]] for a [[Project]]. */
   @deprecated("Use deducePluginsFromProject", "0.13.8")
   lazy val deducePlugins: (Plugins, Logger) => Seq[AutoPlugin] = Plugins
-    .deducer(autoPlugins.toList map {
-      _.value
-    })
+    .deducer(
+      autoPlugins.toList map {
+        _.value
+      })
 
   /** Selects the right [[AutoPlugin]]s from a [[Project]]. */
   def deducePluginsFromProject(p: Project, log: Logger): Seq[AutoPlugin] = {
@@ -392,6 +393,8 @@ object BuildStreams {
       data: Settings[Scope]): File =
     refTarget(GlobalScope.copy(project = Select(ref)), fallbackBase, data)
   def refTarget(scope: Scope, fallbackBase: File, data: Settings[Scope]): File =
-    (Keys.target in scope get data getOrElse outputDirectory(
-      fallbackBase).asFile) / StreamsDirectory
+    (
+      Keys.target in scope get data getOrElse outputDirectory(
+        fallbackBase).asFile
+    ) / StreamsDirectory
 }

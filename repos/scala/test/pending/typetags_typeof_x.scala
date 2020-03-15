@@ -10,9 +10,11 @@ object Test extends App {
 
   println(typeOf(2))
   println(typeOf(List(1, "1")))
-  println(typeOf(new {
-    def x = 2
-  }))
+  println(
+    typeOf(
+      new {
+        def x = 2
+      }))
   println(typeOf[Null])
   println(typeOf[Nothing])
   println(typeOf(null))

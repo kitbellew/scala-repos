@@ -12,10 +12,11 @@ object Test {
       assertUnspecialized();
       i
     }).apply("")
-    (() => {
-      assertSpecialized();
-      0
-    }).apply()
+    (
+        () => {
+          assertSpecialized();
+          0
+        }).apply()
     ((i: Int) => {
       assertSpecialized();
       i

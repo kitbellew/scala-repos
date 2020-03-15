@@ -202,9 +202,11 @@ trait PersistentFSMBase[S, D, E]
 
   final class TransformHelper(func: StateFunction) {
     def using(andThen: PartialFunction[State, State]): StateFunction =
-      func andThen (andThen orElse {
-        case x ⇒ x
-      })
+      func andThen (
+        andThen orElse {
+          case x ⇒ x
+        }
+      )
   }
 
   final def transform(func: StateFunction): TransformHelper =
@@ -226,10 +228,12 @@ trait PersistentFSMBase[S, D, E]
       repeat: Boolean = false): Unit = {
     if (debugEvent)
       log.debug(
-        "setting " + (if (repeat)
-                        "repeating "
-                      else
-                        "") + "timer '" + name + "'/" + timeout + ": " + msg)
+        "setting " + (
+          if (repeat)
+            "repeating "
+          else
+            ""
+        ) + "timer '" + name + "'/" + timeout + ": " + msg)
     if (timers contains name) {
       timers(name).cancel
     }

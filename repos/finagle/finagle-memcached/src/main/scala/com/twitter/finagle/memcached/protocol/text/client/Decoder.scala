@@ -75,8 +75,7 @@ class Decoder extends AbstractDecoder with StateMachine {
             valuesSoFar :+
               TokensWithData(
                 tokens.map(ChannelBufferBuf.Owned(_)),
-                ChannelBufferBuf.Owned(data))
-          )
+                ChannelBufferBuf.Owned(data)))
           NeedMoreData
         }
       case AwaitingResponseOrEnd(valuesSoFar) =>
@@ -103,8 +102,7 @@ class Decoder extends AbstractDecoder with StateMachine {
   private[this] def awaitData(
       valuesSoFar: Seq[TokensWithData],
       tokens: Seq[ChannelBuffer],
-      bytesNeeded: Int
-  ): Unit = {
+      bytesNeeded: Int): Unit = {
     state = AwaitingData(valuesSoFar, tokens, bytesNeeded)
   }
 

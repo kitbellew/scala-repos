@@ -16,9 +16,10 @@ trait Importers { to: SymbolTable =>
       if (to eq from0) {
         new Importer {
           val from = from0
-          val reverse = this.asInstanceOf[from.Importer {
-            val from: to.type
-          }]
+          val reverse = this.asInstanceOf[
+            from.Importer {
+              val from: to.type
+            }]
           def importSymbol(their: from.Symbol) = their.asInstanceOf[to.Symbol]
           def importType(their: from.Type) = their.asInstanceOf[to.Type]
           def importTree(their: from.Tree) = their.asInstanceOf[to.Tree]
@@ -34,9 +35,10 @@ trait Importers { to: SymbolTable =>
           val from = from0.asInstanceOf[SymbolTable]
         }
       }
-    ).asInstanceOf[Importer {
-      val from: from0.type
-    }]
+    ).asInstanceOf[
+      Importer {
+        val from: from0.type
+      }]
 
   abstract class StandardImporter extends Importer {
 
@@ -225,10 +227,12 @@ trait Importers { to: SymbolTable =>
             if (isModuleClass)
               importSymbol(their.sourceModule).moduleClass
             else if (isTparam)
-              (if (myowner hasFlag Flags.LOCKED)
-                 NoSymbol
-               else
-                 myowner.typeParams(their.paramPos))
+              (
+                if (myowner hasFlag Flags.LOCKED)
+                  NoSymbol
+                else
+                  myowner.typeParams(their.paramPos)
+              )
             else if (isOverloaded)
               myowner.newOverloaded(
                 myowner.thisType,
@@ -245,7 +249,9 @@ trait Importers { to: SymbolTable =>
                 assert(
                   !result.isOverloaded,
                   "import failure: cannot determine unique overloaded method alternative from\n " +
-                    (result.alternatives map (_.defString) mkString "\n") + "\n that matches " + their + ":" + their.tpe
+                    (
+                      result.alternatives map (_.defString) mkString "\n"
+                    ) + "\n that matches " + their + ":" + their.tpe
                 )
                 result
               }
@@ -515,9 +521,10 @@ trait Importers { to: SymbolTable =>
         case from.Ident(name) =>
           new Ident(importName(name))
         case from.ReferenceToBoxed(ident) =>
-          new ReferenceToBoxed(importTree(ident) match {
-            case ident: Ident => ident
-          })
+          new ReferenceToBoxed(
+            importTree(ident) match {
+              case ident: Ident => ident
+            })
         case from.Literal(constant @ from.Constant(_)) =>
           new Literal(importConstant(constant))
         case theirtt @ from.TypeTree() =>
@@ -639,10 +646,11 @@ trait Importers { to: SymbolTable =>
     def importCaseDef(tree: from.CaseDef): CaseDef =
       importTree(tree).asInstanceOf[CaseDef]
     def importConstant(constant: from.Constant): Constant =
-      new Constant(constant.tag match {
-        case ClazzTag => importType(constant.value.asInstanceOf[from.Type])
-        case EnumTag  => importSymbol(constant.value.asInstanceOf[from.Symbol])
-        case _        => constant.value
-      })
+      new Constant(
+        constant.tag match {
+          case ClazzTag => importType(constant.value.asInstanceOf[from.Type])
+          case EnumTag  => importSymbol(constant.value.asInstanceOf[from.Symbol])
+          case _        => constant.value
+        })
   }
 }

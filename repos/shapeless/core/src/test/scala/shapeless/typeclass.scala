@@ -191,10 +191,8 @@ class TypeClassTests {
             "b1",
             Product(Atom("string"), "b2", EmptyProduct))),
         "CaseB",
-        EmptyCoproduct
-      )
-    )
-  )
+        EmptyCoproduct)
+    ))
 
   @Test
   def testManualSingle {

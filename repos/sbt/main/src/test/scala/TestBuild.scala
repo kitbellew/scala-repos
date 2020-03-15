@@ -144,8 +144,7 @@ object TestBuild {
       inheritProject,
       inheritConfig,
       inheritTask,
-      (ref, mp) => Nil
-    )
+      (ref, mp) => Nil)
     lazy val allFullScopes: Seq[Scope] =
       for {
         (ref, p) <- (Global, root.root) +: allProjects.map {
@@ -345,9 +344,10 @@ object TestBuild {
   def genAcyclic[A, T](maxDeps: Gen[Int], keys: List[T])(
       make: T => Gen[Seq[A] => A]): Gen[Seq[A]] =
     genAcyclic(maxDeps, keys, Nil) flatMap { pairs =>
-      sequence(pairs.map {
-        case (key, deps) => mapMake(key, deps, make)
-      }) flatMap { inputs =>
+      sequence(
+        pairs.map {
+          case (key, deps) => mapMake(key, deps, make)
+        }) flatMap { inputs =>
         val made = new collection.mutable.HashMap[T, A]
         for ((key, deps, mk) <- inputs)
           made(key) = mk(deps map made)
@@ -378,9 +378,10 @@ object TestBuild {
     }
   def sequence[T](gs: Seq[Gen[T]]): Gen[Seq[T]] =
     Gen.parameterized { prms =>
-      wrap(gs map { g =>
-        g(prms) getOrElse sys.error("failed generator")
-      })
+      wrap(
+        gs map { g =>
+          g(prms) getOrElse sys.error("failed generator")
+        })
     }
   type Inputs[A, T] = (T, Seq[T], Seq[A] => A)
 }

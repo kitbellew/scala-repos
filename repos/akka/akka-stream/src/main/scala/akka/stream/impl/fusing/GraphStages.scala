@@ -146,9 +146,8 @@ object GraphStages {
   }
 
   object Breaker
-      extends GraphStageWithMaterializedValue[
-        FlowShape[Any, Any],
-        Future[Breaker]] {
+      extends GraphStageWithMaterializedValue[FlowShape[Any, Any], Future[
+        Breaker]] {
     sealed trait Operation
     case object Complete extends Operation
     case object Cancel extends Operation
@@ -173,13 +172,15 @@ object GraphStages {
 
           override def preStart(): Unit = {
             pull(shape.in)
-            promise.success(new Breaker(getAsyncCallback[Operation] {
-              case Complete ⇒ complete(shape.out)
-              case Cancel ⇒ cancel(shape.in)
-              case Fail(ex) ⇒ fail(shape.out, ex)
-              case CompleteAndCancel ⇒ completeStage()
-              case FailAndCancel(ex) ⇒ failStage(ex)
-            }.invoke))
+            promise.success(
+              new Breaker(
+                getAsyncCallback[Operation] {
+                  case Complete ⇒ complete(shape.out)
+                  case Cancel ⇒ cancel(shape.in)
+                  case Fail(ex) ⇒ fail(shape.out, ex)
+                  case CompleteAndCancel ⇒ completeStage()
+                  case FailAndCancel(ex) ⇒ failStage(ex)
+                }.invoke))
           }
         }
 
@@ -242,19 +243,21 @@ object GraphStages {
             })
 
           override def preStart(): Unit = {
-            promise.success(new Breaker(getAsyncCallback[Operation] {
-              case Complete ⇒
-                complete(shape.out1)
-                complete(shape.out2)
-              case Cancel ⇒
-                cancel(shape.in1)
-                cancel(shape.in2)
-              case Fail(ex) ⇒
-                fail(shape.out1, ex)
-                fail(shape.out2, ex)
-              case CompleteAndCancel ⇒ completeStage()
-              case FailAndCancel(ex) ⇒ failStage(ex)
-            }.invoke))
+            promise.success(
+              new Breaker(
+                getAsyncCallback[Operation] {
+                  case Complete ⇒
+                    complete(shape.out1)
+                    complete(shape.out2)
+                  case Cancel ⇒
+                    cancel(shape.in1)
+                    cancel(shape.in2)
+                  case Fail(ex) ⇒
+                    fail(shape.out1, ex)
+                    fail(shape.out2, ex)
+                  case CompleteAndCancel ⇒ completeStage()
+                  case FailAndCancel(ex) ⇒ failStage(ex)
+                }.invoke))
           }
         }
 

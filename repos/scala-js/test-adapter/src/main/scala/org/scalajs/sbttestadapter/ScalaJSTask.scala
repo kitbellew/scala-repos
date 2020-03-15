@@ -25,8 +25,8 @@ final class ScalaJSTask private (
     runner: ScalaJSRunner,
     val taskDef: TaskDef,
     val tags: Array[String],
-    serializedTask: String
-) extends Task {
+    serializedTask: String)
+    extends Task {
 
   def execute(handler: EventHandler, loggers: Array[Logger]): Array[Task] = {
     val slave = runner.getSlave()

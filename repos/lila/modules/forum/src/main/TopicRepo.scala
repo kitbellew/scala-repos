@@ -18,8 +18,7 @@ sealed abstract class TopicRepo(troll: Boolean) {
 
   private lazy val trollFilter = troll.fold(
     Json.obj(),
-    Json.obj("troll" -> false)
-  )
+    Json.obj("troll" -> false))
 
   def close(id: String, value: Boolean): Funit =
     $update.field(id, "closed", value)
@@ -36,10 +35,7 @@ sealed abstract class TopicRepo(troll: Boolean) {
     val slug = Topic.nameToId(name) + ~(it != 1).option("-" + it)
     // also take troll topic into accounts
     TopicRepoTroll.byTree(categ.slug, slug) flatMap {
-      _.isDefined.fold(
-        nextSlug(categ, name, it + 1),
-        fuccess(slug)
-      )
+      _.isDefined.fold(nextSlug(categ, name, it + 1), fuccess(slug))
     }
   }
 

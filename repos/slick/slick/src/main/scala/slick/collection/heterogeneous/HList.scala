@@ -156,8 +156,9 @@ sealed abstract class HList extends Product {
 final object HList {
   import syntax._
 
-  final class HListShape[Level <: ShapeLevel, M <: HList, U <: HList: ClassTag,
-  P <: HList](val shapes: Seq[Shape[_, _, _, _]])
+  final class HListShape[
+      Level <: ShapeLevel, M <: HList, U <: HList: ClassTag, P <: HList](
+      val shapes: Seq[Shape[_, _, _, _]])
       extends MappedScalaProductShape[Level, HList, M, U, P] {
     def buildValue(elems: IndexedSeq[Any]) =
       elems.foldRight(HNil: HList)(_ :: _)
@@ -180,9 +181,10 @@ final object HList {
 }
 // Separate object for macro impl to avoid dependency of companion class on scala.reflect, see https://github.com/xeno-by/sbt-example-paradise210/issues/1#issuecomment-21021396
 final object HListMacros {
-  def applyImpl(ctx: Context {
-    type PrefixType = HList
-  })(n: ctx.Expr[Int]): ctx.Expr[Any] = {
+  def applyImpl(
+      ctx: Context {
+        type PrefixType = HList
+      })(n: ctx.Expr[Int]): ctx.Expr[Any] = {
     import ctx.universe._
     val _Succ = typeOf[Succ[_]].typeSymbol
     val _Zero = reify(Zero).tree
@@ -197,11 +199,8 @@ final object HListMacros {
           Apply(
             TypeApply(
               Select(ctx.prefix.tree, TermName("_unsafeApply")),
-              List(tt)
-            ),
-            List(t)
-          )
-        )
+              List(tt)),
+            List(t)))
       case _ => reify(ctx.prefix.splice.productElement(n.splice))
     }
   }

@@ -192,10 +192,11 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
       watch(ref)
       expectNoMsg(200.millis)
 
-      sub.onSubscribe(new Subscription {
-        override def cancel(): Unit = testActor ! "cancel"
-        override def request(n: Long): Unit = ()
-      })
+      sub.onSubscribe(
+        new Subscription {
+          override def cancel(): Unit = testActor ! "cancel"
+          override def request(n: Long): Unit = ()
+        })
       expectMsg("cancel")
       expectTerminated(ref, 200.millis)
     }

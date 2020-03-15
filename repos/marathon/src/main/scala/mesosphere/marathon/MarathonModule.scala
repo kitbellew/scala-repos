@@ -197,8 +197,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
           conf.zkHosts,
           conf.zkTimeoutDuration.toMillis,
           TimeUnit.MILLISECONDS,
-          conf.zooKeeperStatePath
-        )
+          conf.zooKeeperStatePath)
       new MesosStateStore(state, conf.zkTimeoutDuration)
     }
     conf.internalStoreBackend.get match {
@@ -257,9 +256,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
           schedulerActions,
           storage,
           healthCheckManager,
-          eventBus
-        )
-      )
+          eventBus))
     }
 
     val historyActorProps = Props(
@@ -365,8 +362,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       actorRefFactory,
       "serializeGroupUpdates",
       maxParallel = 1,
-      maxQueued = conf.internalMaxQueuedRootGroupUpdates()
-    )
+      maxQueued = conf.internalMaxQueuedRootGroupUpdates())
   }
 
   @Provides
@@ -388,8 +384,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
         appRepo,
         storage,
         conf,
-        eventBus
-      )
+        eventBus)
 
     metrics.gauge(
       "service.mesosphere.marathon.app.count",
@@ -532,8 +527,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
         TaskFailure(
           PathId.empty,
           mesos.TaskID.newBuilder().setValue("").build,
-          mesos.TaskState.TASK_STAGING
-        ))
+          mesos.TaskState.TASK_STAGING))
   }
 
   @Named(ModuleNames.STORE_TASK)
@@ -549,8 +543,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       prefix = "task:",
       newState = () =>
         MarathonTaskState(
-          MarathonTask.newBuilder().setId(UUID.randomUUID().toString).build())
-    )
+          MarathonTask.newBuilder().setId(UUID.randomUUID().toString).build()))
   }
 
   @Named(ModuleNames.STORE_EVENT_SUBSCRIBERS)

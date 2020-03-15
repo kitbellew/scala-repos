@@ -38,8 +38,7 @@ case class BatchInfo(
     submissionTime: Long,
     processingStartTime: Option[Long],
     processingEndTime: Option[Long],
-    outputOperationInfos: Map[Int, OutputOperationInfo]
-) {
+    outputOperationInfos: Map[Int, OutputOperationInfo]) {
 
   /**
     * Time taken for the first job of this batch to start processing from the time this batch

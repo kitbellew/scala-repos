@@ -13,8 +13,8 @@ private[parser] trait CacheControlHeader {
   // http://tools.ietf.org/html/rfc7234#section-5.2
   def `cache-control` =
     rule {
-      oneOrMore(`cache-directive`).separatedBy(
-        listSep) ~ EOI ~> (`Cache-Control`(_))
+      oneOrMore(`cache-directive`)
+        .separatedBy(listSep) ~ EOI ~> (`Cache-Control`(_))
     }
 
   def `cache-directive` =
@@ -26,10 +26,13 @@ private[parser] trait CacheControlHeader {
         | "min-fresh=" ~ `delta-seconds` ~> (`min-fresh`(_))
         | "only-if-cached" ~ push(`only-if-cached`)
         | "public" ~ push(`public`)
-        | "private" ~ (ws('=') ~ `field-names` ~> (`private`(_: _*)) | push(
-          `private`(Nil: _*)))
-        | "no-cache" ~ (ws('=') ~ `field-names` ~> (`no-cache`(_: _*)) | push(
-          `no-cache`))
+        | "private" ~ (
+          ws('=') ~ `field-names` ~> (`private`(_: _*)) | push(
+            `private`(Nil: _*))
+        )
+        | "no-cache" ~ (
+          ws('=') ~ `field-names` ~> (`no-cache`(_: _*)) | push(`no-cache`)
+        )
         | "must-revalidate" ~ push(`must-revalidate`)
         | "proxy-revalidate" ~ push(`proxy-revalidate`)
         | "s-maxage=" ~ `delta-seconds` ~> (`s-maxage`(_))

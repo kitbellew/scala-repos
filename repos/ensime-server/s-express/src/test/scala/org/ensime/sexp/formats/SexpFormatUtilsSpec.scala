@@ -13,9 +13,10 @@ class SexpFormatUtilsSpec extends FormatSpec with SexpFormats {
   val bar = SexpSymbol("bar")
 
   "SexpFormatUtils" should "lift writers" in {
-    val lifted = lift(new SexpWriter[SexpString] {
-      def write(o: SexpString) = o
-    })
+    val lifted = lift(
+      new SexpWriter[SexpString] {
+        def write(o: SexpString) = o
+      })
     foo.toSexp(lifted) should ===(foo)
     intercept[UnsupportedOperationException] {
       foo.convertTo[SexpString](lifted)
@@ -23,9 +24,10 @@ class SexpFormatUtilsSpec extends FormatSpec with SexpFormats {
   }
 
   it should "lift readers" in {
-    val lifted = lift(new SexpReader[SexpString] {
-      def read(o: Sexp) = o.asInstanceOf[SexpString]
-    })
+    val lifted = lift(
+      new SexpReader[SexpString] {
+        def read(o: Sexp) = o.asInstanceOf[SexpString]
+      })
     foo.convertTo[SexpString](lifted) should ===(foo)
     intercept[UnsupportedOperationException] {
       foo.toSexp(lifted)
@@ -68,8 +70,7 @@ class SexpFormatUtilsSpec extends FormatSpec with SexpFormats {
             case s: SexpString => s
             case x             => deserializationError(x)
           }
-      }
-    )
+      })
 
     foo.convertTo[Try[SexpString]](safe) should ===(Success(foo))
     bar.convertTo[Try[SexpString]](safe) shouldBe a[Failure[_]]

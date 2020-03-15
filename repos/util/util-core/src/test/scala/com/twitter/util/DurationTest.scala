@@ -58,8 +58,7 @@ class DurationTest extends {
         assert(
           (c >= Long.MaxValue && d == Duration.Top) ||
             (c <= Long.MinValue && d == Duration.Bottom) ||
-            (d == c.toLong.nanoseconds)
-        )
+            (d == c.toLong.nanoseconds))
       }
     }
 
@@ -159,8 +158,7 @@ class DurationTest extends {
         assert(
           (c >= Long.MaxValue && d == Duration.Top) ||
             (c <= Long.MinValue && d == Duration.Bottom) ||
-            (d == c.toLong.nanoseconds)
-        )
+            (d == c.toLong.nanoseconds))
       }
     }
 
@@ -215,7 +213,9 @@ class DurationTest extends {
 
     "toString should handle negative durations" in {
       assert(
-        (-9999999.seconds).toString == "-115.days-17.hours-46.minutes-39.seconds")
+        (
+          -9999999.seconds
+        ).toString == "-115.days-17.hours-46.minutes-39.seconds")
     }
 
     "parse the format from toString" in {
@@ -229,8 +229,7 @@ class DurationTest extends {
         9999999.seconds,
         Duration.Bottom,
         Duration.Top,
-        Duration.Undefined
-      ) foreach { d =>
+        Duration.Undefined) foreach { d =>
         assert(Duration.parse(d.toString) == d)
       }
     }
@@ -276,8 +275,7 @@ class DurationTest extends {
           "2.minutes 1.second",
           "98 milliseconds",
           "98 millisecons",
-          "99.minutes +"
-        ) foreach { s =>
+          "99.minutes +") foreach { s =>
           Duration.parse(s)
         }
       }

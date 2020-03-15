@@ -150,10 +150,8 @@ import scala.collection.parallel.ParallelCollectionImplicits._
   *  @define Coll `ParIterable`
   *  @define coll parallel iterable
   */
-trait ParIterableLike[
-    +T,
-    +Repr <: ParIterable[T],
-    +Sequential <: Iterable[T] with IterableLike[T, Sequential]]
+trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
+  T] with IterableLike[T, Sequential]]
     extends GenIterableLike[T, Repr]
     with CustomParallelizable[T, Repr]
     with Parallel
@@ -404,9 +402,10 @@ trait ParIterableLike[
     *  if this $coll is empty.
     */
   def reduce[U >: T](op: (U, U) => U): U = {
-    tasksupport.executeAndWaitResult(new Reduce(op, splitter) mapResult {
-      _.get
-    })
+    tasksupport.executeAndWaitResult(
+      new Reduce(op, splitter) mapResult {
+        _.get
+      })
   }
 
   /** Optionally reduces the elements of this sequence using the specified associative binary operator.
@@ -519,17 +518,19 @@ trait ParIterableLike[
 
   def min[U >: T](implicit ord: Ordering[U]): T = {
     tasksupport
-      .executeAndWaitResult(new Min(ord, splitter) mapResult {
-        _.get
-      })
+      .executeAndWaitResult(
+        new Min(ord, splitter) mapResult {
+          _.get
+        })
       .asInstanceOf[T]
   }
 
   def max[U >: T](implicit ord: Ordering[U]): T = {
     tasksupport
-      .executeAndWaitResult(new Max(ord, splitter) mapResult {
-        _.get
-      })
+      .executeAndWaitResult(
+        new Max(ord, splitter) mapResult {
+          _.get
+        })
       .asInstanceOf[T]
   }
 
@@ -729,11 +730,12 @@ trait ParIterableLike[
           cb += elem
         cb
       }
-      tasksupport.executeAndWaitResult((copythis parallel copythat) {
-        _ combine _
-      } mapResult {
-        _.resultWithTaskSupport
-      })
+      tasksupport.executeAndWaitResult(
+        (copythis parallel copythat) {
+          _ combine _
+        } mapResult {
+          _.resultWithTaskSupport
+        })
     } else {
       // println("case not a parallel builder")
       val b = bf(repr)
@@ -752,8 +754,7 @@ trait ParIterableLike[
         combinerFactory,
         splitter) mapResult { p =>
         (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
-      }
-    )
+      })
   }
 
   def groupBy[K](f: T => K): immutable.ParMap[K, Repr] = {
@@ -842,8 +843,7 @@ trait ParIterableLike[
     tasksupport.executeAndWaitResult(
       new SplitAt(n, combinerFactory, combinerFactory, splitter) mapResult {
         p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
-      }
-    )
+      })
   }
 
   /** Computes a prefix scan of the elements of the collection.
@@ -982,8 +982,7 @@ trait ParIterableLike[
         combinerFactory,
         splitter assign cntx) mapResult {
         _._2.resultWithTaskSupport
-      }
-    )
+      })
   }
 
   def copyToArray[U >: T](xs: Array[U]) = copyToArray(xs, 0)
@@ -1030,8 +1029,7 @@ trait ParIterableLike[
           splitter,
           thatseq.splitter) mapResult {
           _.resultWithTaskSupport
-        }
-      )
+        })
     } else
       setTaskSupport(
         seq.zipAll(that, thisElem, thatElem)(bf2seq(bf)),
@@ -1492,8 +1490,8 @@ trait ParIterableLike[
   protected[this] class GroupBy[K, U >: T](
       f: U => K,
       mcf: () => HashMapCombiner[K, U],
-      protected[this] val pit: IterableSplitter[T]
-  ) extends Transformer[HashMapCombiner[K, U], GroupBy[K, U]] {
+      protected[this] val pit: IterableSplitter[T])
+      extends Transformer[HashMapCombiner[K, U], GroupBy[K, U]] {
     @volatile var result: Result = null
     final def leaf(prev: Option[Result]) = {
       // note: HashMapCombiner doesn't merge same keys until evaluation
@@ -1916,8 +1914,7 @@ trait ParIterableLike[
         case ScanNode(left, right) =>
           Seq(
             new FromScanTree(left, z, op, cbf),
-            new FromScanTree(right, z, op, cbf)
-          )
+            new FromScanTree(right, z, op, cbf))
         case _ =>
           throw new UnsupportedOperationException("Cannot be split further")
       }
@@ -2011,9 +2008,10 @@ trait ParIterableLike[
 
   import scala.collection.DebugUtils._
   private[parallel] def printDebugBuffer() =
-    println(buildString { append =>
-      for (s <- debugBuffer) {
-        append(s)
-      }
-    })
+    println(
+      buildString { append =>
+        for (s <- debugBuffer) {
+          append(s)
+        }
+      })
 }

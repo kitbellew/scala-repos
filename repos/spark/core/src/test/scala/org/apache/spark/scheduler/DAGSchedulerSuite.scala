@@ -796,9 +796,10 @@ class DAGSchedulerSuite
     // Confirm job finished successfully
     sc.listenerBus.waitUntilEmpty(1000)
     assert(ended === true)
-    assert(results === (0 until parts).map { idx =>
-      idx -> 42
-    }.toMap)
+    assert(
+      results === (0 until parts).map { idx =>
+        idx -> 42
+      }.toMap)
     assertDataStructuresEmpty()
   }
 
@@ -1454,10 +1455,7 @@ class DAGSchedulerSuite
     // check that we have all the map output for stage 0 (it should have been there even before
     // the last round of completions from stage 1, but just to double check it hasn't been messed
     // up) and also the newly available stage 1
-    val stageToReduceIdxs = Seq(
-      0 -> (0 until 3),
-      1 -> (0 until 1)
-    )
+    val stageToReduceIdxs = Seq(0 -> (0 until 3), 1 -> (0 until 1))
     for {
       (stage, reduceIdxs) <- stageToReduceIdxs
       reduceIdx <- reduceIdxs

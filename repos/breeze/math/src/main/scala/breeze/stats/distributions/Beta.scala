@@ -127,8 +127,9 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
   def variance = (a * b) / ((a + b) * (a + b) * (a + b + 1))
   def mode = (a - 1) / (a + b - 2)
   def entropy =
-    logNormalizer - (a - 1) * digamma(a) - (b - 1) * digamma(
-      b) + (a + b - 2) * digamma(a + b)
+    logNormalizer - (a - 1) * digamma(a) - (b - 1) * digamma(b) + (
+      a + b - 2
+    ) * digamma(a + b)
 
   // Probability that x < a <= Y
   override def cdf(x: Double): Double = {
@@ -178,8 +179,11 @@ object Beta
         if (a < 0 || b < 0)
           (Double.PositiveInfinity, (0.0, 0.0))
         else {
-          val obj = n * (lgamma(a) + lgamma(b) - lgamma(
-            a + b) - (a - 1) * stats.meanLog - (b - 1) * stats.meanLog1M)
+          val obj = n * (
+            lgamma(a) + lgamma(b) - lgamma(a + b) - (a - 1) * stats.meanLog - (
+              b - 1
+            ) * stats.meanLog1M
+          )
           val gradA = n * (digamma(a) - digamma(a + b) - stats.meanLog)
           val gradB = n * (digamma(b) - digamma(a + b) - stats.meanLog1M)
           (obj, (gradA, gradB))

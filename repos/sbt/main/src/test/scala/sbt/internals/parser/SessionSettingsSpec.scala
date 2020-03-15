@@ -34,9 +34,10 @@ abstract class AbstractSessionSettingsSpec(folder: String)
 
     val allFiles =
       rootDir
-        .listFiles(new FilenameFilter() {
-          def accept(dir: File, name: String) = name.endsWith(".sbt.txt")
-        })
+        .listFiles(
+          new FilenameFilter() {
+            def accept(dir: File, name: String) = name.endsWith(".sbt.txt")
+          })
         .toList
     foreach(allFiles) { file =>
       val originalLines = Source.fromFile(file).getLines().toList
@@ -56,17 +57,19 @@ abstract class AbstractSessionSettingsSpec(folder: String)
   protected def replace(f: File) = {
     val dirs =
       rootDir
-        .listFiles(new FilenameFilter() {
-          def accept(dir: File, name: String) = {
-            val startsWith = f.getName + "_"
-            name.startsWith(startsWith)
-          }
-        })
+        .listFiles(
+          new FilenameFilter() {
+            def accept(dir: File, name: String) = {
+              val startsWith = f.getName + "_"
+              name.startsWith(startsWith)
+            }
+          })
         .toSeq
     dirs.flatMap { dir =>
-      val files = dir.listFiles(new FilenameFilter {
-        override def accept(dir: File, name: String) = name.endsWith(".set")
-      })
+      val files = dir.listFiles(
+        new FilenameFilter {
+          override def accept(dir: File, name: String) = name.endsWith(".set")
+        })
       files.map { file =>
         val seq = Source.fromFile(file).getLines().toSeq
         val result =

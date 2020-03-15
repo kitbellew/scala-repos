@@ -36,39 +36,42 @@ class JobQueryLoggerSpec extends Specification {
   import JobState._
 
   def withReport[A](f: JobQueryLogger[Need, Unit] => A): A = {
-    f(new JobQueryLogger[Need, Unit] with TimingQueryLogger[Need, Unit] {
-      val M = Need.need
-      val clock = Clock.System
-      val jobManager = new InMemoryJobManager[Need]
-      val jobId =
-        jobManager
-          .createJob(
-            "password",
-            "error-report-spec",
-            "hard",
-            None,
-            Some(clock.now()))
-          .copoint
-          .id
-      val decomposer =
-        new Decomposer[Unit] {
-          def decompose(u: Unit): JValue = JNull
-        }
-    })
+    f(
+      new JobQueryLogger[Need, Unit] with TimingQueryLogger[Need, Unit] {
+        val M = Need.need
+        val clock = Clock.System
+        val jobManager = new InMemoryJobManager[Need]
+        val jobId =
+          jobManager
+            .createJob(
+              "password",
+              "error-report-spec",
+              "hard",
+              None,
+              Some(clock.now()))
+            .copoint
+            .id
+        val decomposer =
+          new Decomposer[Unit] {
+            def decompose(u: Unit): JValue = JNull
+          }
+      })
   }
 
   def testChannel(channel: String)(
       f: (QueryLogger[Need, Unit], String) => Need[Unit]) = {
     withReport { report =>
       val messages =
-        (for {
-          _ <- f(report, "Hi there!")
-          _ <- f(report, "Goodbye now.")
-          messages <- report.jobManager.listMessages(
-            report.jobId,
-            channel,
-            None)
-        } yield messages).copoint.toList
+        (
+          for {
+            _ <- f(report, "Hi there!")
+            _ <- f(report, "Goodbye now.")
+            messages <- report.jobManager.listMessages(
+              report.jobId,
+              channel,
+              None)
+          } yield messages
+        ).copoint.toList
 
       messages map {
         case Message(_, _, _, jobj) =>
@@ -94,11 +97,13 @@ class JobQueryLoggerSpec extends Specification {
     "cancel jobs on a die" in {
       withReport { report =>
         val reason = "Arrrgggggggggggghhhhhhh....."
-        (for {
-          _ <- report.error((), reason)
-          _ <- report.die()
-          job <- report.jobManager.findJob(report.jobId)
-        } yield job).copoint must beLike {
+        (
+          for {
+            _ <- report.error((), reason)
+            _ <- report.die()
+            job <- report.jobManager.findJob(report.jobId)
+          } yield job
+        ).copoint must beLike {
           case Some(Job(_, _, _, _, _, Cancelled(_, _, _))) => ok
         }
       }

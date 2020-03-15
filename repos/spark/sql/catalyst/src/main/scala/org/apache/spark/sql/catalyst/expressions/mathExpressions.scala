@@ -305,8 +305,7 @@ object Factorial {
     1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600,
     6227020800L, 87178291200L, 1307674368000L, 20922789888000L,
     355687428096000L, 6402373705728000L, 121645100408832000L,
-    2432902008176640000L
-  )
+    2432902008176640000L)
 }
 
 case class Factorial(child: Expression)
@@ -429,8 +428,7 @@ case class Bin(child: Expression)
 object Hex {
   val hexDigits = Array[Char](
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
-    'F'
-  ).map(_.toByte)
+    'F').map(_.toByte)
 
   // lookup table to translate '0' -> 0 ... 'F'/'f' -> 15
   val unhexDigits = {
@@ -526,10 +524,12 @@ case class Hex(child: Expression)
       ev,
       (c) => {
         val hex = Hex.getClass.getName.stripSuffix("$")
-        s"${ev.value} = " + (child.dataType match {
-          case StringType => s"""$hex.hex($c.getBytes());"""
-          case _          => s"""$hex.hex($c);"""
-        })
+        s"${ev.value} = " + (
+          child.dataType match {
+            case StringType => s"""$hex.hex($c.getBytes());"""
+            case _          => s"""$hex.hex($c);"""
+          }
+        )
       }
     )
   }

@@ -21,17 +21,14 @@ class TaskStatsByVersionTest
       now = now,
       versionInfo = versionInfo,
       tasks = Seq.empty,
-      statuses = Map.empty[Task.Id, Seq[Health]]
-    )
+      statuses = Map.empty[Task.Id, Seq[Health]])
     Then("we get none")
     stats should be(
       TaskStatsByVersion(
         maybeStartedAfterLastScaling = None,
         maybeWithLatestConfig = None,
         maybeWithOutdatedConfig = None,
-        maybeTotalSummary = None
-      )
-    )
+        maybeTotalSummary = None))
   }
 
   test("tasks are correctly split along categories") {
@@ -39,16 +36,15 @@ class TaskStatsByVersionTest
     taskIdCounter = 0
     val outdatedTasks = Vector(
       runningTaskStartedAt(outdatedVersion, 1.seconds),
-      runningTaskStartedAt(outdatedVersion, 2.seconds)
-    )
+      runningTaskStartedAt(outdatedVersion, 2.seconds))
     val afterLastScalingTasks = Vector(
       runningTaskStartedAt(lastScalingAt, 1.seconds),
-      runningTaskStartedAt(lastScalingAt, 2.seconds)
-    )
+      runningTaskStartedAt(lastScalingAt, 2.seconds))
     val afterLastConfigChangeTasks = Vector(
       runningTaskStartedAt(lastConfigChangeAt, 1.seconds),
-      runningTaskStartedAt(intermediaryScalingAt, 2.seconds)
-    ) ++ afterLastScalingTasks
+      runningTaskStartedAt(
+        intermediaryScalingAt,
+        2.seconds)) ++ afterLastScalingTasks
 
     val tasks = outdatedTasks ++ afterLastConfigChangeTasks
     val statuses = Map.empty[Task.Id, Seq[Health]]
@@ -58,8 +54,7 @@ class TaskStatsByVersionTest
       now = now,
       versionInfo = versionInfo,
       tasks = tasks,
-      statuses = statuses
-    )
+      statuses = statuses)
     Then("we get the correct stats")
     import mesosphere.marathon.api.v2.json.Formats._
     withClue(Json.prettyPrint(Json.obj("stats" -> stats, "tasks" -> tasks))) {
@@ -86,8 +81,7 @@ class TaskStatsByVersionTest
           maybeWithOutdatedConfig = TaskStats
             .forSomeTasks(now, outdatedTasks, statuses),
           maybeTotalSummary = TaskStats.forSomeTasks(now, tasks, statuses)
-        )
-      )
+        ))
     }
 
   }
@@ -100,8 +94,7 @@ class TaskStatsByVersionTest
   private[this] val versionInfo = AppDefinition.VersionInfo.FullVersionInfo(
     version = lastScalingAt,
     lastScalingAt = lastScalingAt,
-    lastConfigChangeAt = lastConfigChangeAt
-  )
+    lastConfigChangeAt = lastConfigChangeAt)
   private[this] var taskIdCounter = 0
   private[this] def newTaskId(): String = {
     taskIdCounter += 1

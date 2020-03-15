@@ -18,8 +18,7 @@ object CokleisliTest extends SpecLite {
         arb((_, n, _) => n),
         arb((a, b, c) => a getOrElse b),
         arb((a, b, c) => a.map(_ + b) getOrElse c),
-        arb((a, b, c) => a.map(_ - b) getOrElse c)
-      ))
+        arb((a, b, c) => a.map(_ - b) getOrElse c)))
   }
 
   implicit val cokleisliArb2: Arbitrary[Cokleisli[Option, Int, Int => Int]] = {
@@ -35,8 +34,7 @@ object CokleisliTest extends SpecLite {
         arb((_, n) => _ + n),
         arb((_, n) => _ - n),
         arb((a, b) => a.map(_ + b) getOrElse _),
-        arb((a, b) => a.map(_ - b) getOrElse _)
-      ))
+        arb((a, b) => a.map(_ - b) getOrElse _)))
   }
 
   implicit val cokleisliEqual: Equal[Cokleisli[Option, Int, Int]] = Equal

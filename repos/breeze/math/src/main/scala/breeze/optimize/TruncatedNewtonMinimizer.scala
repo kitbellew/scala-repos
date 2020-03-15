@@ -146,8 +146,10 @@ class TruncatedNewtonMinimizer[T, H](
               actualReduction))
         val stop_cond =
           if (adjNewV < -1.0e+32 ||
-              (math.abs(actualReduction) <= math.abs(adjNewV) * 1.0e-12
-              && math.abs(predictedReduction) <= math.abs(adjNewV) * 1.0e-12))
+              (
+                math.abs(actualReduction) <= math.abs(adjNewV) * 1.0e-12
+                && math.abs(predictedReduction) <= math.abs(adjNewV) * 1.0e-12
+              ))
             true
           else
             false
@@ -178,8 +180,10 @@ class TruncatedNewtonMinimizer[T, H](
             iter
         val stop_cond =
           if (adjFval < -1.0e+32 ||
-              (math.abs(actualReduction) <= math.abs(adjFval) * 1.0e-12 && math
-                .abs(predictedReduction) <= math.abs(adjFval) * 1.0e-12))
+              (
+                math.abs(actualReduction) <= math.abs(adjFval) * 1.0e-12 && math
+                  .abs(predictedReduction) <= math.abs(adjFval) * 1.0e-12
+              ))
             true
           else
             false

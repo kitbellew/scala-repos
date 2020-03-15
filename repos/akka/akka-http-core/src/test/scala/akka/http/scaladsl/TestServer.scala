@@ -64,10 +64,9 @@ object TestServer extends App {
 
   ////////////// helpers //////////////
 
-  lazy val index = HttpResponse(
-    entity = HttpEntity(
-      ContentTypes.`text/html(UTF-8)`,
-      """|<html>
+  lazy val index = HttpResponse(entity = HttpEntity(
+    ContentTypes.`text/html(UTF-8)`,
+    """|<html>
          | <body>
          |    <h1>Say hello to <i>akka-http-core</i>!</h1>
          |    <p>Defined resources:</p>
@@ -77,7 +76,7 @@ object TestServer extends App {
          |    </ul>
          |  </body>
          |</html>""".stripMargin
-    ))
+  ))
 
   def echoWebSocketService: Flow[Message, Message, NotUsed] =
     Flow[Message] // just let message flow directly to the output

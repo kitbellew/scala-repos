@@ -50,8 +50,7 @@ object Round extends LilaController with TheftPrevention {
                   uid,
                   ~get("ran"),
                   ctx.me,
-                  ctx.ip
-                ) map Right.apply
+                  ctx.ip) map Right.apply
               case None => fuccess(Left(NotFound))
             }
         case None => fuccess(Left(NotFound))
@@ -155,10 +154,12 @@ object Round extends LilaController with TheftPrevention {
         } flatMap {
           case Some(next) => renderPlayer(next)
           case None =>
-            fuccess(Redirect(currentGame.simulId match {
-              case Some(simulId) => routes.Simul.show(simulId)
-              case None          => routes.Round.watcher(gameId, "white")
-            }))
+            fuccess(
+              Redirect(
+                currentGame.simulId match {
+                  case Some(simulId) => routes.Simul.show(simulId)
+                  case None          => routes.Round.watcher(gameId, "white")
+                }))
         }
       }
     }

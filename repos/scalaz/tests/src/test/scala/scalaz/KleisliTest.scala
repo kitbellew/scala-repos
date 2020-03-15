@@ -19,8 +19,7 @@ object KleisliTest extends SpecLite {
       Gen.frequency[Int => Option[Int]](
         (1, Gen.const((x: Int) => Some(x))),
         (1, Gen.const((x: Int) => Some(x + 1))),
-        (3, A.arbitrary.map(a => (_: Int) => a))
-      ))
+        (3, A.arbitrary.map(a => (_: Int) => a))))
 
   implicit def KleisliEqual[M[_]](
       implicit M: Equal[M[Int]]): Equal[Kleisli[M, Int, Int]] =
@@ -33,8 +32,9 @@ object KleisliTest extends SpecLite {
     }
 
   "mapK" ! forAll { (f: Int => Option[Int], a: Int) =>
-    Kleisli(f).mapK(_.toList.map(_.toString)).run(a) must_=== (f(a).toList
-      .map(_.toString))
+    Kleisli(f).mapK(_.toList.map(_.toString)).run(a) must_=== (
+      f(a).toList.map(_.toString)
+    )
   }
 
   checkAll(monoid.laws[KleisliOptInt[Int]])

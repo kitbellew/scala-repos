@@ -409,8 +409,9 @@ trait BlockParsers extends Parsers {
     * by more blockquote or paragraph lines, ends optionally with empty lines
     */
   def blockquoteFragment: Parser[List[MarkdownLine]] =
-    line(classOf[BlockQuoteLine]) ~ ((line(classOf[BlockQuoteLine]) | line(
-      classOf[OtherLine])) *) ~ (optEmptyLines) ^^ {
+    line(classOf[BlockQuoteLine]) ~ (
+      (line(classOf[BlockQuoteLine]) | line(classOf[OtherLine])) *
+    ) ~ (optEmptyLines) ^^ {
       case l ~ ls ~ e => (l :: ls ++ e)
     }
 
@@ -443,18 +444,18 @@ trait BlockParsers extends Parsers {
   /**parses an item in an unsorted list
     */
   def uItem: Parser[ListItem] =
-    lookup ~ line(
-      classOf[
-        UItemStartLine]) ~ itemLines ~ (itemContinuation *) ~ optEmptyLines ^^ {
+    lookup ~ line(classOf[UItemStartLine]) ~ itemLines ~ (
+      itemContinuation *
+    ) ~ optEmptyLines ^^ {
       case lu ~ s ~ ls ~ cs ~ e => new ListItem(s :: ls ++ cs.flatten ++ e, lu)
     }
 
   /**parses an item in a sorted list
     */
   def oItem: Parser[ListItem] =
-    lookup ~ line(
-      classOf[
-        OItemStartLine]) ~ itemLines ~ (itemContinuation *) ~ optEmptyLines ^^ {
+    lookup ~ line(classOf[OItemStartLine]) ~ itemLines ~ (
+      itemContinuation *
+    ) ~ optEmptyLines ^^ {
       case lu ~ s ~ ls ~ cs ~ e => new ListItem(s :: ls ++ cs.flatten ++ e, lu)
     }
 

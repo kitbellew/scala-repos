@@ -75,10 +75,11 @@ trait ListHelpers {
         case (o, Nil) => o.foreach(t => ret += f(RemoveDelta(t)))
         case (Nil, n) => {
           n.foreach { t =>
-            ret += f(insertAfter match {
-              case Full(x) => InsertAfterDelta(t, x)
-              case _       => AppendDelta(t)
-            })
+            ret += f(
+              insertAfter match {
+                case Full(x) => InsertAfterDelta(t, x)
+                case _       => AppendDelta(t)
+              })
             insertAfter = Full(t)
           }
         }

@@ -122,8 +122,7 @@ class ScSubstitutor(
           placer match {
             case t: ScTemplateDefinition =>
               zSubst = zSubst.followed(
-                new ScSubstitutor(Map.empty, Map.empty, Some(ScThisType(t)))
-              )
+                new ScSubstitutor(Map.empty, Map.empty, Some(ScThisType(t))))
             case _ =>
           }
           placer = placer.getContext
@@ -646,47 +645,49 @@ class ScUndefinedSubstitutor(
       variance: Int = -1): ScUndefinedSubstitutor = {
     var index = 0
     val lower =
-      (_lower match {
-        case ScAbstractType(_, absLower, upper) =>
-          if (absLower.equiv(Nothing))
-            return this
-          absLower //upper will be added separately
-        case _ =>
-          _lower.recursiveVarianceUpdate(
-            (tp: ScType, i: Int) => {
-              tp match {
-                case ScAbstractType(_, absLower, upper) =>
-                  i match {
-                    case -1 => (true, absLower)
-                    case 1  => (true, upper)
-                    case 0 =>
-                      (
-                        true,
-                        absLower /*ScSkolemizedType(s"_$$${index += 1; index}", Nil, absLower, upper)*/
-                      ) //todo: why this is right?
-                  }
-                case ScSkolemizedType(_, _, skoLower, upper) =>
-                  i match {
-                    case -1 => (true, skoLower)
-                    case 1  => (true, upper)
-                    case 0 =>
-                      (
-                        true,
-                        ScSkolemizedType(
-                          s"_$$${
-                            index += 1;
-                            index
-                          }",
-                          Nil,
-                          skoLower,
-                          upper))
-                  }
-                case _ => (false, tp)
-              }
-            },
-            variance
-          )
-      }).unpackedType
+      (
+        _lower match {
+          case ScAbstractType(_, absLower, upper) =>
+            if (absLower.equiv(Nothing))
+              return this
+            absLower //upper will be added separately
+          case _ =>
+            _lower.recursiveVarianceUpdate(
+              (tp: ScType, i: Int) => {
+                tp match {
+                  case ScAbstractType(_, absLower, upper) =>
+                    i match {
+                      case -1 => (true, absLower)
+                      case 1  => (true, upper)
+                      case 0 =>
+                        (
+                          true,
+                          absLower /*ScSkolemizedType(s"_$$${index += 1; index}", Nil, absLower, upper)*/
+                        ) //todo: why this is right?
+                    }
+                  case ScSkolemizedType(_, _, skoLower, upper) =>
+                    i match {
+                      case -1 => (true, skoLower)
+                      case 1  => (true, upper)
+                      case 0 =>
+                        (
+                          true,
+                          ScSkolemizedType(
+                            s"_$$${
+                              index += 1;
+                              index
+                            }",
+                            Nil,
+                            skoLower,
+                            upper))
+                    }
+                  case _ => (false, tp)
+                }
+              },
+              variance
+            )
+        }
+      ).unpackedType
     val lMap =
       if (additional)
         lowerAdditionalMap
@@ -713,58 +714,59 @@ class ScUndefinedSubstitutor(
       variance: Int = 1): ScUndefinedSubstitutor = {
     var index = 0
     val upper =
-      (_upper match {
-        case ScAbstractType(_, lower, absUpper) if variance == 0 =>
-          if (absUpper.equiv(Any))
+      (
+        _upper match {
+          case ScAbstractType(_, lower, absUpper) if variance == 0 =>
+            if (absUpper.equiv(Any))
+              return this
+            absUpper // lower will be added separately
+          case ScAbstractType(_, lower, absUpper)
+              if variance == 1 && absUpper.equiv(Any) =>
             return this
-          absUpper // lower will be added separately
-        case ScAbstractType(_, lower, absUpper)
-            if variance == 1 && absUpper.equiv(Any) =>
-          return this
-        case _ =>
-          _upper.recursiveVarianceUpdate(
-            (tp: ScType, i: Int) => {
-              tp match {
-                case ScAbstractType(_, lower, absUpper) =>
-                  i match {
-                    case -1 => (true, lower)
-                    case 1  => (true, absUpper)
-                    case 0 =>
-                      (
-                        true,
-                        ScSkolemizedType(
-                          s"_$$${
-                            index += 1;
-                            index
-                          }",
-                          Nil,
-                          lower,
-                          absUpper
-                        )
-                      ) //todo: why this is right?
-                  }
-                case ScSkolemizedType(_, _, lower, skoUpper) =>
-                  i match {
-                    case -1 => (true, lower)
-                    case 1  => (true, skoUpper)
-                    case 0 =>
-                      (
-                        true,
-                        ScSkolemizedType(
-                          s"_$$${
-                            index += 1;
-                            index
-                          }",
-                          Nil,
-                          lower,
-                          skoUpper))
-                  }
-                case _ => (false, tp)
-              }
-            },
-            variance
-          )
-      }).unpackedType
+          case _ =>
+            _upper.recursiveVarianceUpdate(
+              (tp: ScType, i: Int) => {
+                tp match {
+                  case ScAbstractType(_, lower, absUpper) =>
+                    i match {
+                      case -1 => (true, lower)
+                      case 1  => (true, absUpper)
+                      case 0 =>
+                        (
+                          true,
+                          ScSkolemizedType(
+                            s"_$$${
+                              index += 1;
+                              index
+                            }",
+                            Nil,
+                            lower,
+                            absUpper)
+                        ) //todo: why this is right?
+                    }
+                  case ScSkolemizedType(_, _, lower, skoUpper) =>
+                    i match {
+                      case -1 => (true, lower)
+                      case 1  => (true, skoUpper)
+                      case 0 =>
+                        (
+                          true,
+                          ScSkolemizedType(
+                            s"_$$${
+                              index += 1;
+                              index
+                            }",
+                            Nil,
+                            lower,
+                            skoUpper))
+                    }
+                  case _ => (false, tp)
+                }
+              },
+              variance
+            )
+        }
+      ).unpackedType
     val uMap =
       if (additional)
         upperAdditionalMap
@@ -817,16 +819,18 @@ class ScUndefinedSubstitutor(
       tvMap.get(name) match {
         case Some(tp) => Some(tp)
         case _ =>
-          (lowerMap
-            .get(name)
-            .map(set =>
-              lowerAdditionalMap.get(name) match {
-                case Some(set1) => set ++ set1
-                case _          => set
-              }) match {
-            case Some(set) => Some(set)
-            case _         => lowerAdditionalMap.get(name)
-          }) match {
+          (
+            lowerMap
+              .get(name)
+              .map(set =>
+                lowerAdditionalMap.get(name) match {
+                  case Some(set1) => set ++ set1
+                  case _          => set
+                }) match {
+              case Some(set) => Some(set)
+              case _         => lowerAdditionalMap.get(name)
+            }
+          ) match {
             case Some(set) =>
               var res = false
               def checkRecursive(tp: ScType): Boolean = {
@@ -879,16 +883,18 @@ class ScUndefinedSubstitutor(
               }
             case None =>
           }
-          (upperMap
-            .get(name)
-            .map(set =>
-              upperAdditionalMap.get(name) match {
-                case Some(set1) => set ++ set1
-                case _          => set
-              }) match {
-            case Some(set) => Some(set)
-            case _         => upperAdditionalMap.get(name)
-          }) match {
+          (
+            upperMap
+              .get(name)
+              .map(set =>
+                upperAdditionalMap.get(name) match {
+                  case Some(set1) => set ++ set1
+                  case _          => set
+                }) match {
+              case Some(set) => Some(set)
+              case _         => upperAdditionalMap.get(name)
+            }
+          ) match {
             case Some(set) =>
               var res = false
               def checkRecursive(tp: ScType): Boolean = {

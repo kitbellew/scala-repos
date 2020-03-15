@@ -147,11 +147,13 @@ trait ShardService
           } ~
             requireAccount(state.accountFinder) {
               // async handler *always* returns a JSON object containing the job ID
-              shardService[({
-                type λ[+α] = (((APIKey, AccountDetails)) => α)
-              })#λ] {
-                asyncQuery(post(
-                  new AsyncQueryServiceHandler(state.platform.asynchronous)))
+              shardService[
+                ({
+                  type λ[+α] = (((APIKey, AccountDetails)) => α)
+                })#λ] {
+                asyncQuery(
+                  post(
+                    new AsyncQueryServiceHandler(state.platform.asynchronous)))
               }
             }
         }
@@ -169,9 +171,10 @@ trait ShardService
       jsonAPIKey(state.apiKeyFinder) {
         requireAccount(state.accountFinder) {
           dataPath("/analytics/fs") {
-            shardService[({
-              type λ[+α] = (((APIKey, AccountDetails), Path) => α)
-            })#λ] {
+            shardService[
+              ({
+                type λ[+α] = (((APIKey, AccountDetails), Path) => α)
+              })#λ] {
               query[QueryResult] {
                 {
                   get {
@@ -200,8 +203,7 @@ trait ShardService
                       }
                     }
                   }
-                }
-              )(
+                })(
                 ResponseModifier.responseFG[
                   ({
                     type λ[α] = (APIKey, Path) => α
@@ -227,8 +229,7 @@ trait ShardService
                       }
                     }
                   }
-                }
-              )(
+                })(
                 ResponseModifier.responseFG[
                   ({
                     type λ[α] = (APIKey, Path) => α
@@ -279,9 +280,10 @@ trait ShardService
       requireAccount(state.accountFinder) {
         dataPath("/analysis/fs") {
           get {
-            shardService[({
-              type λ[+α] = ((APIKey, AccountDetails), Path) => α
-            })#λ] {
+            shardService[
+              ({
+                type λ[+α] = ((APIKey, AccountDetails), Path) => α
+              })#λ] {
               new AnalysisServiceHandler(
                 state.platform,
                 state.scheduler,

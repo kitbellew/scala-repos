@@ -61,37 +61,38 @@ final class ScalaCallerMethodsTreeStructure(
     for (methodToFind <- methodsToFind) {
       MethodReferencesSearch
         .search(methodToFind, searchScope, true)
-        .forEach(new Processor[PsiReference] {
-          def process(reference: PsiReference): Boolean = {
-            val element: PsiElement = reference.getElement
-            val key: PsiMember = PsiTreeUtil.getNonStrictParentOfType(
-              element,
-              classOf[PsiMethod],
-              classOf[PsiClass])
-            methodToDescriptorMap synchronized {
-              var d: CallHierarchyNodeDescriptor =
-                methodToDescriptorMap.get(key) match {
-                  case Some(call) =>
-                    if (!call.hasReference(reference)) {
-                      call.incrementUsageCount()
-                    }
-                    call
-                  case _ =>
-                    val newD =
-                      new CallHierarchyNodeDescriptor(
-                        myProject,
-                        descriptor,
-                        element,
-                        false,
-                        true)
-                    methodToDescriptorMap.put(key, newD)
-                    newD
-                }
-              d.addReference(reference)
+        .forEach(
+          new Processor[PsiReference] {
+            def process(reference: PsiReference): Boolean = {
+              val element: PsiElement = reference.getElement
+              val key: PsiMember = PsiTreeUtil.getNonStrictParentOfType(
+                element,
+                classOf[PsiMethod],
+                classOf[PsiClass])
+              methodToDescriptorMap synchronized {
+                var d: CallHierarchyNodeDescriptor =
+                  methodToDescriptorMap.get(key) match {
+                    case Some(call) =>
+                      if (!call.hasReference(reference)) {
+                        call.incrementUsageCount()
+                      }
+                      call
+                    case _ =>
+                      val newD =
+                        new CallHierarchyNodeDescriptor(
+                          myProject,
+                          descriptor,
+                          element,
+                          false,
+                          true)
+                      methodToDescriptorMap.put(key, newD)
+                      newD
+                  }
+                d.addReference(reference)
+              }
+              true
             }
-            true
-          }
-        })
+          })
     }
     methodToDescriptorMap.values.toArray
   }

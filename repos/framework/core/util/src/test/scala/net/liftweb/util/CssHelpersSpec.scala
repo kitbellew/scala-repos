@@ -66,14 +66,12 @@ class CssHelpersSpec extends Specification {
       |}""".stripMargin('|')
 
       CssUrlPrefixer("prefix").fixCss(baseCss) must_==
-        Full(
-          """
+        Full("""
           |#booyan {
           |  background: url(prefix/boom);
           |  background-image: url('prefix/boom?bam,"sloop#shap%20bap');
           |  image-set: url("prefix/boom.com/magic?bam,'sloop#bam%21bap")
-          |}""".stripMargin('|')
-        )
+          |}""".stripMargin('|'))
     }
 
     "fail on mismatched quotes or parens and report where it failed" in {

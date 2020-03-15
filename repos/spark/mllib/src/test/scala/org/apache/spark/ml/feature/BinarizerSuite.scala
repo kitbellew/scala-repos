@@ -102,9 +102,7 @@ class BinarizerSuite
         0.0)
     val dataFrame: DataFrame = sqlContext
       .createDataFrame(
-        Seq(
-          (Vectors.dense(data), Vectors.dense(defaultBinarized))
-        ))
+        Seq((Vectors.dense(data), Vectors.dense(defaultBinarized))))
       .toDF("feature", "expected")
 
     val binarizer: Binarizer = new Binarizer()
@@ -130,9 +128,7 @@ class BinarizerSuite
         0.0)
     val dataFrame: DataFrame = sqlContext
       .createDataFrame(
-        Seq(
-          (Vectors.dense(data), Vectors.dense(defaultBinarized))
-        ))
+        Seq((Vectors.dense(data), Vectors.dense(defaultBinarized))))
       .toDF("feature", "expected")
 
     val binarizer: Binarizer = new Binarizer()

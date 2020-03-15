@@ -104,8 +104,9 @@ class HTTPRequestServlet(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] =
-    headers find (_.name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] = headers find (
+    _.name equalsIgnoreCase "user-agent"
+  ) flatMap (_.values.headOption)
 
   def remotePort: Int = req.getRemotePort
 
@@ -145,57 +146,60 @@ class HTTPRequestServlet(
     } yield id
 
   def extractFiles: List[ParamHolder] =
-    (new Iterator[ParamHolder] {
-      val mimeUpload = (new ServletFileUpload)
-      mimeUpload.setProgressListener(new ProgressListener {
-        lazy val progList: (Long, Long, Int) => Unit = S.session.flatMap(
-          _.progressListener) openOr LiftRules.progressListener
+    (
+      new Iterator[ParamHolder] {
+        val mimeUpload = (new ServletFileUpload)
+        mimeUpload.setProgressListener(
+          new ProgressListener {
+            lazy val progList: (Long, Long, Int) => Unit = S.session.flatMap(
+              _.progressListener) openOr LiftRules.progressListener
 
-        def update(a: Long, b: Long, c: Int) {
-          progList(a, b, c)
-        }
-      })
+            def update(a: Long, b: Long, c: Int) {
+              progList(a, b, c)
+            }
+          })
 
-      mimeUpload.setSizeMax(LiftRules.maxMimeSize)
-      mimeUpload.setFileSizeMax(LiftRules.maxMimeFileSize)
-      val what = mimeUpload.getItemIterator(req)
+        mimeUpload.setSizeMax(LiftRules.maxMimeSize)
+        mimeUpload.setFileSizeMax(LiftRules.maxMimeFileSize)
+        val what = mimeUpload.getItemIterator(req)
 
-      def hasNext = what.hasNext
+        def hasNext = what.hasNext
 
-      import scala.collection.JavaConversions._
+        import scala.collection.JavaConversions._
 
-      def next =
-        what.next match {
-          case f if (f.isFormField) =>
-            NormalParamHolder(
-              f.getFieldName,
-              new String(readWholeStream(f.openStream), "UTF-8"))
-          case f => {
-            val headers = f.getHeaders()
-            val names: List[String] =
-              if (headers eq null)
-                Nil
-              else
-                headers
-                  .getHeaderNames()
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList
-            val map: Map[String, List[String]] = Map(
-              names.map(n =>
-                n -> headers
-                  .getHeaders(n)
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList): _*)
-            LiftRules.withMimeHeaders(map) {
-              LiftRules.handleMimeFile(
+        def next =
+          what.next match {
+            case f if (f.isFormField) =>
+              NormalParamHolder(
                 f.getFieldName,
-                f.getContentType,
-                f.getName,
-                f.openStream)
+                new String(readWholeStream(f.openStream), "UTF-8"))
+            case f => {
+              val headers = f.getHeaders()
+              val names: List[String] =
+                if (headers eq null)
+                  Nil
+                else
+                  headers
+                    .getHeaderNames()
+                    .asInstanceOf[java.util.Iterator[String]]
+                    .toList
+              val map: Map[String, List[String]] = Map(
+                names.map(n =>
+                  n -> headers
+                    .getHeaders(n)
+                    .asInstanceOf[java.util.Iterator[String]]
+                    .toList): _*)
+              LiftRules.withMimeHeaders(map) {
+                LiftRules.handleMimeFile(
+                  f.getFieldName,
+                  f.getContentType,
+                  f.getName,
+                  f.openStream)
+              }
             }
           }
-        }
-    }).toList
+      }
+    ).toList
 
   def setCharacterEncoding(encoding: String) =
     req.setCharacterEncoding(encoding)
@@ -223,8 +227,10 @@ class HTTPRequestServlet(
   lazy val suspendResumeSupport_? = {
     LiftRules.asyncProviderMeta.map(
       _.suspendResumeSupport_? &&
-        (asyncProvider.map(_.suspendResumeSupport_?) openOr
-          false)) openOr false
+        (
+          asyncProvider.map(_.suspendResumeSupport_?) openOr
+            false
+        )) openOr false
   }
 }
 
@@ -330,7 +336,8 @@ private class OfflineRequestSnapshot(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] =
-    headers find (_.name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] = headers find (
+    _.name equalsIgnoreCase "user-agent"
+  ) flatMap (_.values.headOption)
 
 }

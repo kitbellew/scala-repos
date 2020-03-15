@@ -257,8 +257,9 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       case mm: ScalaNamedMember =>
         val lookupItem = LookupElementBuilder
           .create(mm.getElement, name(mm, td))
-          .withIcon(mm.getPsiElement.getIcon(
-            ICON_FLAG_VISIBILITY | ICON_FLAG_READ_STATUS))
+          .withIcon(
+            mm.getPsiElement.getIcon(
+              ICON_FLAG_VISIBILITY | ICON_FLAG_READ_STATUS))
           .withInsertHandler(insertionHandler(mm))
 
         val renderingDecorator = LookupElementDecorator.withRenderer(

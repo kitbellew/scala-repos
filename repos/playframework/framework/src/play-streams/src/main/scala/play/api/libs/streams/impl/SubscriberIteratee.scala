@@ -97,16 +97,18 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
       folder: (Step[T, Unit]) => Future[B],
       ec: ExecutionContext): Unit = {
     Future {
-      promise.completeWith(folder(Step.Cont[T, Unit] {
-        case Input.EOF =>
-          subscriber.onComplete()
-          Done(())
-        case Input.El(t) =>
-          subscriber.onNext(t)
-          self
-        case Input.Empty =>
-          self
-      }))
+      promise.completeWith(
+        folder(
+          Step.Cont[T, Unit] {
+            case Input.EOF =>
+              subscriber.onComplete()
+              Done(())
+            case Input.El(t) =>
+              subscriber.onNext(t)
+              self
+            case Input.Empty =>
+              self
+          }))
     }(ec)
   }
 

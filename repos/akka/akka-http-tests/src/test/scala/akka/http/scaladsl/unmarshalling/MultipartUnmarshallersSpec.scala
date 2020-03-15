@@ -78,9 +78,10 @@ class MultipartUnmarshallersSpec
             |Perfectly fine part content.
             |--XYZABC--""".stripMarginWithNewline("\r\n")
           )).to[Multipart.General] should haveParts(
-          Multipart.General.BodyPart.Strict(HttpEntity(
-            ContentTypes.`text/plain(UTF-8)`,
-            "Perfectly fine part content.")))
+          Multipart.General.BodyPart.Strict(
+            HttpEntity(
+              ContentTypes.`text/plain(UTF-8)`,
+              "Perfectly fine part content.")))
       }
       "an implicitly typed part (without headers) (Default)" in {
         val content = """--XYZABC
@@ -95,9 +96,10 @@ class MultipartUnmarshallersSpec
             content.length,
             Source(byteStrings)))
           .to[Multipart.General] should haveParts(
-          Multipart.General.BodyPart.Strict(HttpEntity(
-            ContentTypes.`text/plain(UTF-8)`,
-            "Perfectly fine part content.")))
+          Multipart.General.BodyPart.Strict(
+            HttpEntity(
+              ContentTypes.`text/plain(UTF-8)`,
+              "Perfectly fine part content.")))
       }
       "one non-empty form-data part" in {
         Unmarshal(
@@ -141,24 +143,26 @@ class MultipartUnmarshallersSpec
             List(RawHeader("Content-Transfer-Encoding", "binary")))
         )
       }
-      "illegal headers" in (Unmarshal(
-        HttpEntity(
-          `multipart/form-data` withBoundary "XYZABC" withCharset `UTF-8`,
-          """--XYZABC
+      "illegal headers" in (
+        Unmarshal(
+          HttpEntity(
+            `multipart/form-data` withBoundary "XYZABC" withCharset `UTF-8`,
+            """--XYZABC
             |Date: unknown
             |content-disposition: form-data; name=email
             |
             |test@there.com
             |--XYZABC--""".stripMarginWithNewline("\r\n")
-        )).to[Multipart.General] should haveParts(
-        Multipart.General.BodyPart.Strict(
-          HttpEntity(ContentTypes.`text/plain(UTF-8)`, "test@there.com"),
-          List(
-            RawHeader("date", "unknown"),
-            `Content-Disposition`(
-              ContentDispositionTypes.`form-data`,
-              Map("name" -> "email")))
-        )))
+          )).to[Multipart.General] should haveParts(
+          Multipart.General.BodyPart.Strict(
+            HttpEntity(ContentTypes.`text/plain(UTF-8)`, "test@there.com"),
+            List(
+              RawHeader("date", "unknown"),
+              `Content-Disposition`(
+                ContentDispositionTypes.`form-data`,
+                Map("name" -> "email")))
+          ))
+      )
       "a full example (Strict)" in {
         Unmarshal(
           HttpEntity(
@@ -259,14 +263,17 @@ class MultipartUnmarshallersSpec
       "a stray boundary" in {
         Await
           .result(
-            Unmarshal(HttpEntity(
-              `multipart/form-data` withBoundary "ABC" withCharset `UTF-8`,
-              """--ABC
+            Unmarshal(
+              HttpEntity(
+                `multipart/form-data` withBoundary "ABC" withCharset `UTF-8`,
+                """--ABC
             |Content-type: text/plain; charset=UTF8
             |--ABCContent-type: application/json
             |content-disposition: form-data; name="email"
             |-----""".stripMarginWithNewline("\r\n")
-            )).to[Multipart.General].failed,
+              ))
+              .to[Multipart.General]
+              .failed,
             1.second
           )
           .getMessage shouldEqual "Illegal multipart boundary in message content"
@@ -274,16 +281,19 @@ class MultipartUnmarshallersSpec
       "duplicate Content-Type header" in {
         Await
           .result(
-            Unmarshal(HttpEntity(
-              `multipart/form-data` withBoundary "-" withCharset `UTF-8`,
-              """---
+            Unmarshal(
+              HttpEntity(
+                `multipart/form-data` withBoundary "-" withCharset `UTF-8`,
+                """---
             |Content-type: text/plain; charset=UTF8
             |Content-type: application/json
             |content-disposition: form-data; name="email"
             |
             |test@there.com
             |-----""".stripMarginWithNewline("\r\n")
-            )).to[Multipart.General].failed,
+              ))
+              .to[Multipart.General]
+              .failed,
             1.second
           )
           .getMessage shouldEqual
@@ -317,8 +327,9 @@ class MultipartUnmarshallersSpec
           `multipart/form-data` withBoundary "-" withCharset `UTF-8`
         Await
           .result(
-            Unmarshal(HttpEntity
-              .Default(contentType, content.length, Source(byteStrings)))
+            Unmarshal(
+              HttpEntity
+                .Default(contentType, content.length, Source(byteStrings)))
               .to[Multipart.General]
               .flatMap(_ toStrict 1.second)
               .failed,
@@ -453,8 +464,7 @@ class MultipartUnmarshallersSpec
             List(
               RawHeader("Content-Transfer-Encoding", "binary"),
               RawHeader("Content-Additional-1", "anything"),
-              RawHeader("Content-Additional-2", "really-anything")
-            )
+              RawHeader("Content-Additional-2", "really-anything"))
           )
         ) // verifies order of headers is preserved
       }

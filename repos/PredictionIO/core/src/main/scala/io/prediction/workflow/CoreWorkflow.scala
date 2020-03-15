@@ -62,8 +62,7 @@ object CoreWorkflow {
         sc = sc,
         engineParams = engineParams,
         engineInstanceId = engineInstance.id,
-        params = params
-      )
+        params = params)
 
       val instanceId = Storage.getMetaDataEngineInstances
 
@@ -76,15 +75,13 @@ object CoreWorkflow {
       logger.info("Updating engine instance")
       val engineInstances = Storage.getMetaDataEngineInstances
       engineInstances.update(
-        engineInstance.copy(
-          status = "COMPLETED",
-          endTime = DateTime.now
-        ))
+        engineInstance.copy(status = "COMPLETED", endTime = DateTime.now))
 
       logger.info("Training completed successfully.")
     } catch {
-      case e @ (_: StopAfterReadInterruption |
-          _: StopAfterPrepareInterruption) => {
+      case e @ (
+            _: StopAfterReadInterruption | _: StopAfterPrepareInterruption
+          ) => {
         logger.info(s"Training interrupted by $e.")
       }
     } finally {

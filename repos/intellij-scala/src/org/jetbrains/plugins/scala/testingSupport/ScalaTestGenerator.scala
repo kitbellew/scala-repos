@@ -625,8 +625,9 @@ object ScalaTestGenerator {
       templateBody.addBefore(
         ScalaPsiElementFactory.createElement(
           methods
-            .map(normalIndentString + "\"" +
-              _.getMember.getName + "\" - {}\n")
+            .map(
+              normalIndentString + "\"" +
+                _.getMember.getName + "\" - {}\n")
             .fold("val methodsTests = TestSuite{")(_ + "\n" + _) + "}",
           psiManager,
           Def.parse(_)),

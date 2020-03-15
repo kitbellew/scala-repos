@@ -409,10 +409,14 @@ package object array {
       Array(start)
     else {
       val result = Array.ofDim[Double](num)
-      val step = (stop - start) / (num - (if (endpoint)
-                                            1
-                                          else
-                                            0))
+      val step = (stop - start) / (
+        num - (
+          if (endpoint)
+            1
+          else
+            0
+        )
+      )
 
       var i = 1
       val n = num - 1

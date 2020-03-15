@@ -111,14 +111,14 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       .unionAll(testData)
 
     // Before optimizer, Union should be combined.
-    assert(unionDF.queryExecution.analyzed.collect {
-      case j: Union if j.children.size == 5 => j
-    }.size === 1)
+    assert(
+      unionDF.queryExecution.analyzed.collect {
+        case j: Union if j.children.size == 5 => j
+      }.size === 1)
 
     checkAnswer(
       unionDF.agg(avg('key), max('key), min('key), sum('key)),
-      Row(50.5, 100, 1, 25250) :: Nil
-    )
+      Row(50.5, 100, 1, 25250) :: Nil)
   }
 
   test("unionAll should union DataFrames with UDTs (SPARK-13410)") {
@@ -141,8 +141,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       df1.unionAll(df2).orderBy("label"),
       Seq(
         Row(1, new ExamplePoint(1.0, 2.0)),
-        Row(2, new ExamplePoint(3.0, 4.0)))
-    )
+        Row(2, new ExamplePoint(3.0, 4.0))))
   }
 
   test("empty data frame") {
@@ -171,8 +170,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
           word.split(" ").toSeq
         }
         .select('word),
-      Row("a") :: Row("b") :: Row("c") :: Row("d") :: Row("e") :: Nil
-    )
+      Row("a") :: Row("b") :: Row("c") :: Row("d") :: Row("e") :: Nil)
   }
 
   test("explode") {
@@ -187,8 +185,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         .select('_1 as 'letter, 'number)
         .groupBy('letter)
         .agg(countDistinct('number)),
-      Row("a", 3) :: Row("b", 2) :: Row("c", 1) :: Nil
-    )
+      Row("a", 3) :: Row("b", 2) :: Row("c", 1) :: Nil)
   }
 
   test(
@@ -367,8 +364,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     // SPARK-12340: overstep the bounds of Int in SparkPlan.executeTake
     checkAnswer(
       sqlContext.range(2).toDF().limit(2147483638),
-      Row(0) :: Row(1) :: Nil
-    )
+      Row(0) :: Row(1) :: Nil)
   }
 
   test("except") {
@@ -439,8 +435,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       // SELECT *, foo(key, value) FROM testData
       testData.select($"*", foo('key, 'value)).limit(3),
-      Row(1, "1", "11") :: Row(2, "2", "22") :: Row(3, "3", "33") :: Nil
-    )
+      Row(1, "1", "11") :: Row(2, "2", "22") :: Row(3, "3", "33") :: Nil)
   }
 
   test("callUDF in SQLContext") {
@@ -693,8 +688,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   test("showString: array") {
     val df = Seq(
       (Array(1, 2, 3), Array(1, 2, 3)),
-      (Array(2, 3, 4), Array(2, 3, 4))
-    ).toDF()
+      (Array(2, 3, 4), Array(2, 3, 4))).toDF()
     val expectedAnswer = """+---------+---------+
                            ||       _1|       _2|
                            |+---------+---------+
@@ -725,10 +719,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   test("showString: minimum column width") {
-    val df = Seq(
-      (1, 1),
-      (2, 2)
-    ).toDF()
+    val df = Seq((1, 1), (2, 2)).toDF()
     val expectedAnswer = """+---+---+
                            || _1| _2|
                            |+---+---+
@@ -790,17 +781,11 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   test("SPARK-7551: support backticks for DataFrame attribute resolution") {
     val df = sqlContext.read.json(
       sparkContext.makeRDD("""{"a.b": {"c": {"d..e": {"f": 1}}}}""" :: Nil))
-    checkAnswer(
-      df.select(df("`a.b`.c.`d..e`.`f`")),
-      Row(1)
-    )
+    checkAnswer(df.select(df("`a.b`.c.`d..e`.`f`")), Row(1))
 
     val df2 = sqlContext.read.json(
       sparkContext.makeRDD("""{"a  b": {"c": {"d  e": {"f": 1}}}}""" :: Nil))
-    checkAnswer(
-      df2.select(df2("`a  b`.c.d  e.f")),
-      Row(1)
-    )
+    checkAnswer(df2.select(df2("`a  b`.c.d  e.f")), Row(1))
 
     def checkError(testFun: => Unit): Unit = {
       val e = intercept[org.apache.spark.sql.AnalysisException] {
@@ -1171,10 +1156,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     }
 
     val union = df1.unionAll(df2)
-    checkAnswer(
-      union.filter('i < rand(7) * 10),
-      expected(union)
-    )
+    checkAnswer(union.filter('i < rand(7) * 10), expected(union))
     checkAnswer(
       union.select(rand(7)),
       union.rdd.collectPartitions().zipWithIndex.flatMap {
@@ -1185,16 +1167,10 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     )
 
     val intersect = df1.intersect(df2)
-    checkAnswer(
-      intersect.filter('i < rand(7) * 10),
-      expected(intersect)
-    )
+    checkAnswer(intersect.filter('i < rand(7) * 10), expected(intersect))
 
     val except = df1.except(df2)
-    checkAnswer(
-      except.filter('i < rand(7) * 10),
-      expected(except)
-    )
+    checkAnswer(except.filter('i < rand(7) * 10), expected(except))
   }
 
   test("SPARK-10743: keep the name of expression if possible when do cast") {
@@ -1412,10 +1388,12 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     sqlContext.udf.register(
       "boxedUDF",
       (i: java.lang.Integer) =>
-        (if (i == null)
-           -10
-         else
-           null): java.lang.Integer)
+        (
+          if (i == null)
+            -10
+          else
+            null
+        ): java.lang.Integer)
     checkAnswer(
       sql("select boxedUDF(null), boxedUDF(-1)"),
       Row(-10, null) :: Nil)
@@ -1459,10 +1437,11 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
     val df9 = Seq((1L, Tuple4(1L, Tuple4(1L, 2L, 3L, 4L), 2L, 3L), 20.0, 1))
       .toDF("c1", "c2", "c3", "c4")
-    assert(df9.toString ===
-      "[c1: bigint, c2: struct<_1: bigint," +
-        " _2: struct<_1: bigint," +
-        " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
+    assert(
+      df9.toString ===
+        "[c1: bigint, c2: struct<_1: bigint," +
+          " _2: struct<_1: bigint," +
+          " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
 
   }
 
@@ -1472,24 +1451,29 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       val join = df.join(df, "id")
       val plan = join.queryExecution.executedPlan
       checkAnswer(join, df)
-      assert(join.queryExecution.executedPlan.collect {
-        case e: ShuffleExchange => true
-      }.size === 1)
-      assert(join.queryExecution.executedPlan.collect {
-        case e: ReusedExchange => true
-      }.size === 1)
+      assert(
+        join.queryExecution.executedPlan.collect {
+          case e: ShuffleExchange => true
+        }.size === 1)
+      assert(
+        join.queryExecution.executedPlan.collect {
+          case e: ReusedExchange => true
+        }.size === 1)
       val broadcasted = broadcast(join)
       val join2 = join.join(broadcasted, "id").join(broadcasted, "id")
       checkAnswer(join2, df)
-      assert(join2.queryExecution.executedPlan.collect {
-        case e: ShuffleExchange => true
-      }.size === 1)
-      assert(join2.queryExecution.executedPlan.collect {
-        case e: BroadcastExchange => true
-      }.size === 1)
-      assert(join2.queryExecution.executedPlan.collect {
-        case e: ReusedExchange => true
-      }.size === 4)
+      assert(
+        join2.queryExecution.executedPlan.collect {
+          case e: ShuffleExchange => true
+        }.size === 1)
+      assert(
+        join2.queryExecution.executedPlan.collect {
+          case e: BroadcastExchange => true
+        }.size === 1)
+      assert(
+        join2.queryExecution.executedPlan.collect {
+          case e: ReusedExchange => true
+        }.size === 4)
     }
   }
 

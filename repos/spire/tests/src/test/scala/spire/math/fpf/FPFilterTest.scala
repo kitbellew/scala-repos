@@ -151,12 +151,15 @@ class FpFilterTest extends FunSuite with Checkers {
   implicit def arbDegenerateSimplex: Arbitrary[Degenerate[Simplex]] =
     Arbitrary(genDegenerateSimplex map (new Degenerate(_)))
 
-  test("Orientation test for simple case")(check(forAll { (s: Simplex) =>
-    Sign(signExact(s)) == Sign(signFpFilter(s))
-  }))
+  test("Orientation test for simple case")(
+    check(
+      forAll { (s: Simplex) =>
+        Sign(signExact(s)) == Sign(signFpFilter(s))
+      }))
 
-  test("Orientation test for degenerate case")(check(forAll {
-    (s: Degenerate[Simplex]) =>
-      Sign(signExact(s.value)) == Sign(signFpFilter(s.value))
-  }))
+  test("Orientation test for degenerate case")(
+    check(
+      forAll { (s: Degenerate[Simplex]) =>
+        Sign(signExact(s.value)) == Sign(signFpFilter(s.value))
+      }))
 }

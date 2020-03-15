@@ -71,15 +71,16 @@ class DBSpec extends Specification with Mockito {
 
       val lw = DB.buildLoanWrapper(true)
 
-      tryo(lw.apply {
-        DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
-        DB.currentConnection.map { c =>
-          DB.exec(c, "stuff") { dummy =>
+      tryo(
+        lw.apply {
+          DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
+          DB.currentConnection.map { c =>
+            DB.exec(c, "stuff") { dummy =>
+            }
           }
-        }
-        throw new RuntimeException("oh no")
-        42
-      })
+          throw new RuntimeException("oh no")
+          42
+        })
       there was one(activeConnection).rollback
       there was one(m).f(false)
     }
@@ -117,19 +118,20 @@ class DBSpec extends Specification with Mockito {
 
       val lw = DB.buildLoanWrapper(false)
 
-      tryo(lw.apply {
-        DB.use(DefaultConnectionIdentifier) { c =>
-          DB.exec(c, "more stuff") { dummy =>
+      tryo(
+        lw.apply {
+          DB.use(DefaultConnectionIdentifier) { c =>
+            DB.exec(c, "more stuff") { dummy =>
+            }
           }
-        }
-        DB.use(DefaultConnectionIdentifier) { c =>
-          DB.appendPostTransaction(m.f _)
-          DB.exec(c, "stuff") { dummy =>
-            throw new RuntimeException("oh no")
+          DB.use(DefaultConnectionIdentifier) { c =>
+            DB.appendPostTransaction(m.f _)
+            DB.exec(c, "stuff") { dummy =>
+              throw new RuntimeException("oh no")
+            }
           }
-        }
-        42
-      })
+          42
+        })
       there was one(activeConnection).rollback
       there was one(m).f(false)
     }
@@ -160,13 +162,14 @@ class DBSpec extends Specification with Mockito {
         DefaultConnectionIdentifier,
         dBVendor(activeConnection))
 
-      tryo(DB.use(DefaultConnectionIdentifier) { c =>
-        DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
-        DB.exec(c, "stuff") { dummy =>
-          throw new RuntimeException("Oh no")
-        }
-        42
-      })
+      tryo(
+        DB.use(DefaultConnectionIdentifier) { c =>
+          DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
+          DB.exec(c, "stuff") { dummy =>
+            throw new RuntimeException("Oh no")
+          }
+          42
+        })
 
       there was one(activeConnection).rollback
       there was one(m).f(false)
@@ -190,11 +193,12 @@ class DBSpec extends Specification with Mockito {
         DefaultConnectionIdentifier,
         dBVendor(activeConnection))
 
-      tryo(DB.use(DefaultConnectionIdentifier) { c =>
-        DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
-        DB.rollback(DefaultConnectionIdentifier)
-        42
-      })
+      tryo(
+        DB.use(DefaultConnectionIdentifier) { c =>
+          DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
+          DB.rollback(DefaultConnectionIdentifier)
+          42
+        })
 
       there was one(activeConnection).rollback
       there was one(m).f(false)

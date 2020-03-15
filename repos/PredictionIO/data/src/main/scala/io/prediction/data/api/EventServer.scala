@@ -143,16 +143,12 @@ class EventServiceActor(
   private val FailedAuth = Left(
     AuthenticationFailedRejection(
       AuthenticationFailedRejection.CredentialsRejected,
-      List()
-    )
-  )
+      List()))
 
   private val MissedAuth = Left(
     AuthenticationFailedRejection(
       AuthenticationFailedRejection.CredentialsMissing,
-      List()
-    )
-  )
+      List()))
 
   lazy val statsActorRef = actorRefFactory.actorSelection("/user/StatsActor")
   lazy val pluginsActorRef = actorRefFactory.actorSelection(
@@ -173,22 +169,23 @@ class EventServiceActor(
         get {
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
-              Map("plugins" -> Map(
-                "inputblockers" -> pluginContext.inputBlockers.map {
-                  case (n, p) =>
-                    n -> Map(
-                      "name" -> p.pluginName,
-                      "description" -> p.pluginDescription,
-                      "class" -> p.getClass.getName)
-                },
-                "inputsniffers" -> pluginContext.inputSniffers.map {
-                  case (n, p) =>
-                    n -> Map(
-                      "name" -> p.pluginName,
-                      "description" -> p.pluginDescription,
-                      "class" -> p.getClass.getName)
-                }
-              ))
+              Map(
+                "plugins" -> Map(
+                  "inputblockers" -> pluginContext.inputBlockers.map {
+                    case (n, p) =>
+                      n -> Map(
+                        "name" -> p.pluginName,
+                        "description" -> p.pluginDescription,
+                        "class" -> p.getClass.getName)
+                  },
+                  "inputsniffers" -> pluginContext.inputSniffers.map {
+                    case (n, p) =>
+                      n -> Map(
+                        "name" -> p.pluginName,
+                        "description" -> p.pluginDescription,
+                        "class" -> p.getClass.getName)
+                  }
+                ))
             }
           }
         }
@@ -242,11 +239,9 @@ class EventServiceActor(
                       .map { eventOpt =>
                         eventOpt
                           .map(event => (StatusCodes.OK, event))
-                          .getOrElse(
-                            (
-                              StatusCodes.NotFound,
-                              Map("message" -> "Not Found"))
-                          )
+                          .getOrElse((
+                            StatusCodes.NotFound,
+                            Map("message" -> "Not Found")))
                       }
                     data
                   }
@@ -368,8 +363,10 @@ class EventServiceActor(
                               s"li=${limit} rev=${reversed} ")
 
                           require(
-                            !((reversed == Some(true))
-                              && (entityType.isEmpty || entityId.isEmpty)),
+                            !(
+                              (reversed == Some(true))
+                                && (entityType.isEmpty || entityId.isEmpty)
+                            ),
                             "the parameter reversed can only be used with" +
                               " both entityType and entityId specified."
                           )
@@ -473,9 +470,10 @@ class EventServiceActor(
                         }
                       data
                     } else {
-                      Future.successful(Map(
-                        "status" -> StatusCodes.Forbidden.intValue,
-                        "message" -> s"${event.event} events are not allowed"))
+                      Future.successful(
+                        Map(
+                          "status" -> StatusCodes.Forbidden.intValue,
+                          "message" -> s"${event.event} events are not allowed"))
                     }
                   }
                   case Failure(exception) => {
@@ -494,8 +492,10 @@ class EventServiceActor(
                       (
                         StatusCodes.BadRequest,
                         Map(
-                          "message" -> (s"Batch request must have less than or equal to " +
-                            s"${MaxNumberOfEventsPerBatchRequest} events")))
+                          "message" -> (
+                            s"Batch request must have less than or equal to " +
+                              s"${MaxNumberOfEventsPerBatchRequest} events"
+                          )))
                     }
                   }
                 }
@@ -690,8 +690,7 @@ object EventServer {
         accessKeysClient,
         channelsClient,
         config),
-      "EventServerActor"
-    )
+      "EventServerActor")
     if (config.stats)
       system.actorOf(Props[StatsActor], "StatsActor")
     system.actorOf(Props[PluginsActor], "PluginsActor")

@@ -205,8 +205,7 @@ trait ParSeqLike[
           () => bf(repr).asCombiner,
           splitter) mapResult {
           _.resultWithTaskSupport
-        }
-      )
+        })
     } else
       setTaskSupport(seq.reverseMap(f)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
@@ -235,8 +234,7 @@ trait ParSeqLike[
         tasksupport.executeAndWaitResult(
           new SameElements(
             splitter.psplitWithSignalling(offset, pthat.length)(1) assign ctx,
-            pthat.splitter)
-        )
+            pthat.splitter))
       }
     } otherwise seq.startsWith(that, offset)
 
@@ -274,8 +272,9 @@ trait ParSeqLike[
   def patch[U >: T, That](from: Int, patch: GenSeq[U], replaced: Int)(
       implicit bf: CanBuildFrom[Repr, U, That]): That = {
     val realreplaced = replaced min (length - from)
-    if (patch.isParSeq && bf(
-          repr).isCombiner && (size - realreplaced + patch.size) > MIN_FOR_COPY) {
+    if (patch.isParSeq && bf(repr).isCombiner && (
+          size - realreplaced + patch.size
+        ) > MIN_FOR_COPY) {
       val that = patch.asParSeq
       val pits = splitter.psplitWithSignalling(
         from,
@@ -288,13 +287,16 @@ trait ParSeqLike[
         tasksupport.executeAndWaitResult(tsk)
       }
       val copyend = new Copy[U, That](cfactory, pits(2))
-      tasksupport.executeAndWaitResult(((copystart parallel copymiddle) {
-        _ combine _
-      } parallel copyend) {
-        _ combine _
-      } mapResult {
-        _.resultWithTaskSupport
-      })
+      tasksupport.executeAndWaitResult(
+        (
+          (copystart parallel copymiddle) {
+            _ combine _
+          } parallel copyend
+        ) {
+          _ combine _
+        } mapResult {
+          _.resultWithTaskSupport
+        })
     } else
       patch_sequential(from, patch.seq, replaced)
   }
@@ -323,8 +325,7 @@ trait ParSeqLike[
           combinerFactory(() => bf(repr).asCombiner),
           splitter) mapResult {
           _.resultWithTaskSupport
-        }
-      )
+        })
     } else
       setTaskSupport(seq.updated(index, elem)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
@@ -359,8 +360,7 @@ trait ParSeqLike[
           splitter,
           thatseq.splitter) mapResult {
           _.resultWithTaskSupport
-        }
-      )
+        })
     } else
       super.zip(that)(bf)
 
@@ -630,8 +630,7 @@ trait ParSeqLike[
       val opits = otherpit.psplitWithSignalling(fp, sp)
       Seq(
         new Zip(fp, cf, pits(0), opits(0)),
-        new Zip(sp, cf, pits(1), opits(1))
-      )
+        new Zip(sp, cf, pits(1), opits(1)))
     }
     override def merge(that: Zip[U, S, That]) =
       result = result combine that.result

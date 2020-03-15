@@ -37,10 +37,7 @@ class HashingTFSuite
 
   test("hashingTF") {
     val df = sqlContext
-      .createDataFrame(
-        Seq(
-          (0, "a a b b c d".split(" ").toSeq)
-        ))
+      .createDataFrame(Seq((0, "a a b b c d".split(" ").toSeq)))
       .toDF("id", "words")
     val n = 100
     val hashingTF = new HashingTF()

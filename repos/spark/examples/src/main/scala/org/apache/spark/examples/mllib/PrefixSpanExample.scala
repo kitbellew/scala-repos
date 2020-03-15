@@ -36,8 +36,7 @@ object PrefixSpanExample {
           Array(Array(1, 2), Array(3)),
           Array(Array(1), Array(3, 2), Array(1, 2)),
           Array(Array(1, 2), Array(5)),
-          Array(Array(6))
-        ),
+          Array(Array(6))),
         2)
       .cache()
     val prefixSpan = new PrefixSpan()

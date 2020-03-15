@@ -33,16 +33,13 @@ trait EnsimeTestData {
     symFile,
     List(
       SymbolDesignation(7, 9, ObjectSymbol),
-      SymbolDesignation(11, 22, TraitSymbol)
-    )
-  )
+      SymbolDesignation(11, 22, TraitSymbol)))
 
   val symbolInfo = new SymbolInfo("name", "localName", None, typeInfo, false)
 
   val implicitInfos = List(
     ImplicitConversionInfo(5, 6, symbolInfo),
-    ImplicitParamInfo(7, 8, symbolInfo, List(symbolInfo, symbolInfo), true)
-  )
+    ImplicitParamInfo(7, 8, symbolInfo, List(symbolInfo, symbolInfo), true))
 
   val batchSourceFile = "/abc"
 
@@ -196,8 +193,7 @@ trait EnsimeTestData {
         keyword = "class",
         name = "StructureView",
         position = sourcePos1,
-        members = Nil
-      ),
+        members = Nil),
       StructureViewMember(
         keyword = "object",
         name = "StructureView",
@@ -207,9 +203,7 @@ trait EnsimeTestData {
             keyword = "type",
             name = "BasicType",
             position = sourcePos4,
-            members = Nil
-          )
-        )
+            members = Nil))
       )
     ))
 }

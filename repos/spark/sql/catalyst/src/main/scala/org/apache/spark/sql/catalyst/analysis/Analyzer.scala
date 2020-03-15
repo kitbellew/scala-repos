@@ -258,11 +258,12 @@ class Analyzer(
     }
 
     private def hasGroupingId(expr: Seq[Expression]): Boolean = {
-      expr.exists(_.collectFirst {
-        case u: UnresolvedAttribute
-            if resolver(u.name, VirtualColumn.groupingIdName) =>
-          u
-      }.isDefined)
+      expr.exists(
+        _.collectFirst {
+          case u: UnresolvedAttribute
+              if resolver(u.name, VirtualColumn.groupingIdName) =>
+            u
+        }.isDefined)
     }
 
     def apply(plan: LogicalPlan): LogicalPlan =
@@ -583,12 +584,10 @@ class Analyzer(
           )
 
         case t: ScriptTransformation if containsStar(t.input) =>
-          t.copy(
-            input = t.input.flatMap {
-              case s: Star => s.expand(t.child, resolver)
-              case o       => o :: Nil
-            }
-          )
+          t.copy(input = t.input.flatMap {
+            case s: Star => s.expand(t.child, resolver)
+            case o       => o :: Nil
+          })
 
         // If the aggregate function argument contains Stars, expand it.
         case a: Aggregate if containsStar(a.aggregateExpressions) =>
@@ -709,18 +708,20 @@ class Analyzer(
     }
 
     def findAliases(projectList: Seq[NamedExpression]): AttributeSet = {
-      AttributeSet(projectList.collect {
-        case a: Alias => a.toAttribute
-      })
+      AttributeSet(
+        projectList.collect {
+          case a: Alias => a.toAttribute
+        })
     }
 
     /**
       * Returns true if `exprs` contains a [[Star]].
       */
     def containsStar(exprs: Seq[Expression]): Boolean =
-      exprs.exists(_.collect {
-        case _: Star => true
-      }.nonEmpty)
+      exprs.exists(
+        _.collect {
+          case _: Star => true
+        }.nonEmpty)
   }
 
   private def resolveExpression(
@@ -944,9 +945,10 @@ class Analyzer(
         }.toSet
 
       // Find the first Aggregate Expression that is not Windowed.
-      exprs.exists(_.collectFirst {
-        case ae: AggregateExpression if !windowedAggExprs.contains(ae) => ae
-      }.isDefined)
+      exprs.exists(
+        _.collectFirst {
+          case ae: AggregateExpression if !windowedAggExprs.contains(ae) => ae
+        }.isDefined)
     }
   }
 
@@ -1165,9 +1167,10 @@ class Analyzer(
           case (t, nullable, name) => AttributeReference(name, t, nullable)()
         }
       } else {
-        failAnalysis("The number of aliases supplied in the AS clause does not match the number of columns " +
-          s"output by the UDTF expected ${elementTypes.size} aliases but got " +
-          s"${names.mkString(",")} ")
+        failAnalysis(
+          "The number of aliases supplied in the AS clause does not match the number of columns " +
+            s"output by the UDTF expected ${elementTypes.size} aliases but got " +
+            s"${names.mkString(",")} ")
       }
     }
   }
@@ -1237,8 +1240,9 @@ class Analyzer(
             // If a named expression is not in regularExpressions, add it to
             // extractedExprBuffer and replace it with an AttributeReference.
             val missingExpr =
-              AttributeSet(
-                Seq(expr)) -- (regularExpressions ++ extractedExprBuffer)
+              AttributeSet(Seq(expr)) -- (
+                regularExpressions ++ extractedExprBuffer
+              )
             if (missingExpr.nonEmpty) {
               extractedExprBuffer += ne
             }
@@ -1607,7 +1611,9 @@ class Analyzer(
             left.resolveQuoted(col.name, resolver))
           val rCols = usingCols.flatMap(col =>
             right.resolveQuoted(col.name, resolver))
-          if ((lCols.length == usingCols.length) && (rCols.length == usingCols.length)) {
+          if ((
+                lCols.length == usingCols.length
+              ) && (rCols.length == usingCols.length)) {
             val joinNames = lCols.map(exp => exp.name)
             commonNaturalJoinProcessing(left, right, joinType, joinNames, None)
           } else {
@@ -1778,12 +1784,13 @@ object ResolveUpCast extends Rule[LogicalPlan] {
       from: Expression,
       to: DataType,
       walkedTypePath: Seq[String]) = {
-    throw new AnalysisException(s"Cannot up cast ${from.sql} from " +
-      s"${from.dataType.simpleString} to ${to.simpleString} as it may truncate\n" +
-      "The type path of the target object is:\n" + walkedTypePath
-      .mkString("", "\n", "\n") +
-      "You can either add an explicit cast to the input data or choose a higher precision " +
-      "type of the field in the target object")
+    throw new AnalysisException(
+      s"Cannot up cast ${from.sql} from " +
+        s"${from.dataType.simpleString} to ${to.simpleString} as it may truncate\n" +
+        "The type path of the target object is:\n" + walkedTypePath
+        .mkString("", "\n", "\n") +
+        "You can either add an explicit cast to the input data or choose a higher precision " +
+        "type of the field in the target object")
   }
 
   private def illegalNumericPrecedence(

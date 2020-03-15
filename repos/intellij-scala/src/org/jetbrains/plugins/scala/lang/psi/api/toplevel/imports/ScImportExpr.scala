@@ -35,8 +35,10 @@ trait ScImportExpr extends ScalaPsiElement {
   def getNames: Array[String] =
     getLastChild match {
       case s: ScImportSelectors =>
-        (for (selector <- selectors)
-          yield selector.getText).toArray
+        (
+          for (selector <- selectors)
+            yield selector.getText
+        ).toArray
       case _ =>
         getNode.getLastChildNode.getText match {
           case "_" => Array[String]("_")

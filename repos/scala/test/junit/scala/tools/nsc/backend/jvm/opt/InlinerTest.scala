@@ -373,8 +373,9 @@ class InlinerTest extends ClearAfterClass {
       """.stripMargin
     val List(c) = compile(code)
     assert(
-      callGraph.callsites.valuesIterator.flatMap(
-        _.valuesIterator) exists (_.callsiteInstruction.name == "clone"))
+      callGraph.callsites.valuesIterator.flatMap(_.valuesIterator) exists (
+        _.callsiteInstruction.name == "clone"
+      ))
   }
 
   @Test
@@ -1104,18 +1105,20 @@ class InlinerTest extends ClearAfterClass {
     val List(c, _, _) = compile(code)
 
     val t1 = getSingleMethod(c, "t1")
-    assert(t1.instructions forall { // indy is eliminated by push-pop
-      case _: InvokeDynamic => false
-      case _                => true
-    })
+    assert(
+      t1.instructions forall { // indy is eliminated by push-pop
+        case _: InvokeDynamic => false
+        case _                => true
+      })
     // the indy call is inlined into t, and the closure elimination rewrites the closure invocation to the body method
     assertInvoke(t1, "C", "C$$$anonfun$2")
 
     val t2 = getSingleMethod(c, "t2")
-    assert(t2.instructions forall { // indy is eliminated by push-pop
-      case _: InvokeDynamic => false
-      case _                => true
-    })
+    assert(
+      t2.instructions forall { // indy is eliminated by push-pop
+        case _: InvokeDynamic => false
+        case _                => true
+      })
     assertInvoke(t2, "M$", "M$$$anonfun$1")
   }
 

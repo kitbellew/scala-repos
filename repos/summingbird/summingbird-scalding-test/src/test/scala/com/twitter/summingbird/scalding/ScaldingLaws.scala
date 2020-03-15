@@ -583,8 +583,9 @@ class ScaldingLaws extends WordSpec {
       val scald = Scalding("scalaCheckleftJoinWithStoreJob")
       val ws = new LoopState(intr)
       val mode: Mode = TestMode(
-        (storeAndService.sourceToBuffer ++ finalStore.sourceToBuffer ++ buffer1 ++ buffer2)
-          .get(_))
+        (
+          storeAndService.sourceToBuffer ++ finalStore.sourceToBuffer ++ buffer1 ++ buffer2
+        ).get(_))
 
       scald.run(ws, mode, summer)
 
@@ -971,9 +972,10 @@ class ScaldingLaws extends WordSpec {
 
     "contain and be able to init a ScaldingRuntimeStatsProvider object" in {
       val s = SummingbirdRuntimeStats.SCALDING_STATS_MODULE
-      assert(ScalaTry[Unit] {
-        Class.forName(s)
-      }.toOption.isDefined)
+      assert(
+        ScalaTry[Unit] {
+          Class.forName(s)
+        }.toOption.isDefined)
     }
   }
 }

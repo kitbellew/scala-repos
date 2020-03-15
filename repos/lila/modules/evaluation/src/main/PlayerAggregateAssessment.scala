@@ -35,18 +35,29 @@ case class PlayerAggregateAssessment(
     val markable: Boolean = !isGreatUser && isWorthLookingAt && (
       (cheatingSum >= 3 || cheatingSum + likelyCheatingSum >= 6)
       // more than 10 percent of games are cheating
-        && (cheatingSum.toDouble / assessmentsCount >= 0.1 - relationModifier
-        // or more than 20 percent of games are likely cheating
-          || (cheatingSum + likelyCheatingSum).toDouble / assessmentsCount >= 0.20 - relationModifier)
+        && (
+          cheatingSum.toDouble / assessmentsCount >= 0.1 - relationModifier
+          // or more than 20 percent of games are likely cheating
+            || (
+              cheatingSum + likelyCheatingSum
+            ).toDouble / assessmentsCount >= 0.20 - relationModifier
+        )
     )
 
     val reportable: Boolean = isWorthLookingAt && (
-      (cheatingSum >= 2 || cheatingSum + likelyCheatingSum >= (isNewRatedUser
-        .fold(2, 4)))
+      (
+        cheatingSum >= 2 || cheatingSum + likelyCheatingSum >= (
+          isNewRatedUser.fold(2, 4)
+        )
+      )
       // more than 5 percent of games are cheating
-        && (cheatingSum.toDouble / assessmentsCount >= 0.05 - relationModifier
-        // or more than 10 percent of games are likely cheating
-          || (cheatingSum + likelyCheatingSum).toDouble / assessmentsCount >= 0.10 - relationModifier)
+        && (
+          cheatingSum.toDouble / assessmentsCount >= 0.05 - relationModifier
+          // or more than 10 percent of games are likely cheating
+            || (
+              cheatingSum + likelyCheatingSum
+            ).toDouble / assessmentsCount >= 0.10 - relationModifier
+        )
     )
 
     val bannable: Boolean =
@@ -143,13 +154,16 @@ case class PlayerAggregateAssessment(
   } || user.perfs.bestProgress > 200
 
   def reportText(maxGames: Int = 10): String = {
-    val gameLinks: String = (playerAssessments
-      .sortBy(-_.assessment.id)
-      .take(maxGames)
-      .map { a =>
-        a.assessment.emoticon + " http://lichess.org/" + a.gameId + "/" + a.color.name
-      })
-      .mkString("\n")
+    val gameLinks: String =
+      (
+        playerAssessments
+          .sortBy(-_.assessment.id)
+          .take(maxGames)
+          .map { a =>
+            a.assessment.emoticon + " http://lichess.org/" + a.gameId + "/" + a.color.name
+          }
+        )
+        .mkString("\n")
 
     s"""[AUTOREPORT]
     Cheating Games: $cheatingSum

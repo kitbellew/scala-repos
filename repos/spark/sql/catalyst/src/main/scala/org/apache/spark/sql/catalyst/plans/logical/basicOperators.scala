@@ -42,11 +42,12 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan)
   override def maxRows: Option[Long] = child.maxRows
 
   override lazy val resolved: Boolean = {
-    val hasSpecialExpressions = projectList.exists(_.collect {
-      case agg: AggregateExpression => agg
-      case generator: Generator     => generator
-      case window: WindowExpression => window
-    }.nonEmpty)
+    val hasSpecialExpressions = projectList.exists(
+      _.collect {
+        case agg: AggregateExpression => agg
+        case generator: Generator     => generator
+        case window: WindowExpression => window
+      }.nonEmpty)
 
     !expressions.exists(
       !_.resolved) && childrenResolved && !hasSpecialExpressions
@@ -125,9 +126,10 @@ abstract class SetOperation(left: LogicalPlan, right: LogicalPlan)
   protected def rightConstraints: Set[Expression] = {
     require(left.output.size == right.output.size)
     val attributeRewrites = AttributeMap(right.output.zip(left.output))
-    right.constraints.map(_ transform {
-      case a: Attribute => attributeRewrites(a)
-    })
+    right.constraints.map(
+      _ transform {
+        case a: Attribute => attributeRewrites(a)
+      })
   }
 }
 
@@ -254,9 +256,10 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
       constraints: Set[Expression]): Set[Expression] = {
     require(reference.size == original.size)
     val attributeRewrites = AttributeMap(original.zip(reference))
-    constraints.map(_ transform {
-      case a: Attribute => attributeRewrites(a)
-    })
+    constraints.map(
+      _ transform {
+        case a: Attribute => attributeRewrites(a)
+      })
   }
 
   override protected def validConstraints: Set[Expression] = {
@@ -425,7 +428,9 @@ case class Range(
   val numElements: BigInt = {
     val safeStart = BigInt(start)
     val safeEnd = BigInt(end)
-    if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (step > 0)) {
+    if ((safeEnd - safeStart) % step == 0 || (
+          safeEnd > safeStart
+        ) != (step > 0)) {
       (safeEnd - safeStart) / step
     } else {
       // the remainder has the same sign with range, could add 1 more
@@ -449,9 +454,10 @@ case class Aggregate(
     extends UnaryNode {
 
   override lazy val resolved: Boolean = {
-    val hasWindowExpressions = aggregateExpressions.exists(_.collect {
-      case window: WindowExpression => window
-    }.nonEmpty)
+    val hasWindowExpressions = aggregateExpressions.exists(
+      _.collect {
+        case window: WindowExpression => window
+      }.nonEmpty)
 
     !expressions.exists(
       !_.resolved) && childrenResolved && !hasWindowExpressions

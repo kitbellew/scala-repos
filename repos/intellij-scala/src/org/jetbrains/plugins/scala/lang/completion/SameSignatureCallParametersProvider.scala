@@ -192,8 +192,10 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
             val signatures =
               ScType.extractClassType(tp, Some(position.getProject)) match {
                 case Some((clazz: ScClass, subst))
-                    if !clazz.hasTypeParameters || (clazz.hasTypeParameters &&
-                      typeElement.isInstanceOf[ScParameterizedTypeElement]) =>
+                    if !clazz.hasTypeParameters || (
+                      clazz.hasTypeParameters &&
+                        typeElement.isInstanceOf[ScParameterizedTypeElement]
+                    ) =>
                   clazz.constructors.toSeq
                     .map {
                       case fun: ScMethodLike =>
@@ -209,8 +211,10 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                     }
                     .filter(_.length > 1)
                 case Some((clazz: PsiClass, subst))
-                    if !clazz.hasTypeParameters || (clazz.hasTypeParameters &&
-                      typeElement.isInstanceOf[ScParameterizedTypeElement]) =>
+                    if !clazz.hasTypeParameters || (
+                      clazz.hasTypeParameters &&
+                        typeElement.isInstanceOf[ScParameterizedTypeElement]
+                    ) =>
                   clazz.getConstructors.toSeq
                     .map {
                       case c: PsiMethod =>
@@ -271,23 +275,24 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
         val element = LookupElementBuilder
           .create(res)
           .withIcon(icon)
-          .withInsertHandler(new InsertHandler[LookupElement] {
-            def handleInsert(context: InsertionContext, item: LookupElement) {
-              val completionChar = context.getCompletionChar
-              if (completionChar == ')')
-                return
+          .withInsertHandler(
+            new InsertHandler[LookupElement] {
+              def handleInsert(context: InsertionContext, item: LookupElement) {
+                val completionChar = context.getCompletionChar
+                if (completionChar == ')')
+                  return
 
-              val file = context.getFile
-              val element = file.findElementAt(context.getStartOffset)
-              val exprs = PsiTreeUtil
-                .getContextOfType(element, classOf[ScArgumentExprList])
-              if (exprs == null)
-                return
-              context.getEditor.getCaretModel.moveToOffset(
-                exprs.getTextRange.getEndOffset
-              ) // put caret after )
-            }
-          })
+                val file = context.getFile
+                val element = file.findElementAt(context.getStartOffset)
+                val exprs = PsiTreeUtil
+                  .getContextOfType(element, classOf[ScArgumentExprList])
+                if (exprs == null)
+                  return
+                context.getEditor.getCaretModel.moveToOffset(
+                  exprs.getTextRange.getEndOffset
+                ) // put caret after )
+              }
+            })
         element.putUserData(
           JavaCompletionUtil.SUPER_METHOD_PARAMETERS,
           java.lang.Boolean.TRUE)

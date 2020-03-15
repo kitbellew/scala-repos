@@ -153,10 +153,12 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
       }
     override def hashCode() = name.hashCode + value.hashCode
     override def toString() =
-      name + " = " + (if (value == "")
-                        "\"\""
-                      else
-                        value)
+      name + " = " + (
+        if (value == "")
+          "\"\""
+        else
+          value
+      )
   }
 
   trait InternalSetting extends AbsSetting {

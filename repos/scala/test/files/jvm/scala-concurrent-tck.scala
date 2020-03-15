@@ -21,9 +21,10 @@ trait TestBase {
   def once(body: Done => Unit) {
     import java.util.concurrent.{LinkedBlockingQueue, TimeUnit}
     val q = new LinkedBlockingQueue[Try[Boolean]]
-    body(new Done {
-      def apply(proof: => Boolean): Unit = q offer Try(proof)
-    })
+    body(
+      new Done {
+        def apply(proof: => Boolean): Unit = q offer Try(proof)
+      })
     assert(q.poll(2000, TimeUnit.MILLISECONDS).get)
     // Check that we don't get more than one completion
     assert(q.poll(50, TimeUnit.MILLISECONDS) eq null)
@@ -668,9 +669,10 @@ trait FutureCombinators extends TestBase {
   def testFallbackToThis(): Unit = {
     def check(f: Future[Int]) = assert((f fallbackTo f) eq f)
 
-    check(Future {
-      1
-    })
+    check(
+      Future {
+        1
+      })
     check(Future.successful(1))
     check(Future.failed[Int](new Exception))
   }

@@ -88,8 +88,9 @@ trait ScAssignStmt extends ScExpression {
 
   def isDynamicNamedAssignment: Boolean = {
     getContext match {
-      case context @ (_: ScTuple | _: ScParenthesisedExpr |
-          _: ScArgumentExprList) =>
+      case context @ (
+            _: ScTuple | _: ScParenthesisedExpr | _: ScArgumentExprList
+          ) =>
         context.getContext match {
           case m: MethodInvocation if m.argumentExpressions.contains(this) =>
             m.getEffectiveInvokedExpr match {

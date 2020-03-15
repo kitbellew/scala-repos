@@ -542,28 +542,24 @@ class CleanerTester(
     rddIds.foreach { rddId =>
       assert(
         sc.persistentRdds.contains(rddId),
-        "RDD " + rddId + " have not been persisted, cannot start cleaner test"
-      )
+        "RDD " + rddId + " have not been persisted, cannot start cleaner test")
 
       assert(
         !getRDDBlocks(rddId).isEmpty,
         "Blocks of RDD " + rddId + " cannot be found in block manager, " +
-          "cannot start cleaner test"
-      )
+          "cannot start cleaner test")
     }
 
     // Verify the shuffle ids are registered and blocks are present
     shuffleIds.foreach { shuffleId =>
       assert(
         mapOutputTrackerMaster.containsShuffle(shuffleId),
-        "Shuffle " + shuffleId + " have not been registered, cannot start cleaner test"
-      )
+        "Shuffle " + shuffleId + " have not been registered, cannot start cleaner test")
 
       assert(
         !getShuffleBlocks(shuffleId).isEmpty,
         "Blocks of shuffle " + shuffleId + " cannot be found in block manager, " +
-          "cannot start cleaner test"
-      )
+          "cannot start cleaner test")
     }
 
     // Verify that the broadcast blocks are present
@@ -571,8 +567,7 @@ class CleanerTester(
       assert(
         !getBroadcastBlocks(broadcastId).isEmpty,
         "Blocks of broadcast " + broadcastId + "cannot be found in block manager, " +
-          "cannot start cleaner test"
-      )
+          "cannot start cleaner test")
     }
   }
 
@@ -585,34 +580,29 @@ class CleanerTester(
     rddIds.foreach { rddId =>
       assert(
         !sc.persistentRdds.contains(rddId),
-        "RDD " + rddId + " was not cleared from sc.persistentRdds"
-      )
+        "RDD " + rddId + " was not cleared from sc.persistentRdds")
 
       assert(
         getRDDBlocks(rddId).isEmpty,
-        "Blocks of RDD " + rddId + " were not cleared from block manager"
-      )
+        "Blocks of RDD " + rddId + " were not cleared from block manager")
     }
 
     // Verify the shuffle ids are registered and blocks are present
     shuffleIds.foreach { shuffleId =>
       assert(
         !mapOutputTrackerMaster.containsShuffle(shuffleId),
-        "Shuffle " + shuffleId + " was not deregistered from map output tracker"
-      )
+        "Shuffle " + shuffleId + " was not deregistered from map output tracker")
 
       assert(
         getShuffleBlocks(shuffleId).isEmpty,
-        "Blocks of shuffle " + shuffleId + " were not cleared from block manager"
-      )
+        "Blocks of shuffle " + shuffleId + " were not cleared from block manager")
     }
 
     // Verify that the broadcast blocks are present
     broadcastIds.foreach { broadcastId =>
       assert(
         getBroadcastBlocks(broadcastId).isEmpty,
-        "Blocks of broadcast " + broadcastId + " were not cleared from block manager"
-      )
+        "Blocks of broadcast " + broadcastId + " were not cleared from block manager")
     }
   }
 

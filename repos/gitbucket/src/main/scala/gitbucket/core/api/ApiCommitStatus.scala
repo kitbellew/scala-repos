@@ -17,8 +17,7 @@ case class ApiCommitStatus(
     description: Option[String],
     id: Int,
     context: String,
-    creator: ApiUser
-)(sha: String, repositoryName: RepositoryName) {
+    creator: ApiUser)(sha: String, repositoryName: RepositoryName) {
   val url = ApiPath(
     s"/api/v3/repos/${repositoryName.fullName}/commits/${sha}/statuses")
 }

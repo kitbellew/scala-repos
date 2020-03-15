@@ -46,9 +46,10 @@ final object Aggregation {
   type Values[T] = Seq[KeyValue[T]]
   type AnyKeys = Values[_]
   def seqParser[T](ps: Values[Parser[T]]): Parser[Seq[KeyValue[T]]] =
-    seq(ps.map {
-      case KeyValue(k, p) => p.map(v => KeyValue(k, v))
-    })
+    seq(
+      ps.map {
+        case KeyValue(k, p) => p.map(v => KeyValue(k, v))
+      })
 
   def applyTasks[T](
       s: State,
@@ -175,7 +176,9 @@ final object Aggregation {
       else
         s + " "
     val nowString = format.format(new java.util.Date(endTime))
-    "Total " + ss + "time: " + (endTime - startTime + 500) / 1000 + " s, completed " + nowString
+    "Total " + ss + "time: " + (
+      endTime - startTime + 500
+    ) / 1000 + " s, completed " + nowString
   }
   def defaultFormat = {
     import java.text.DateFormat

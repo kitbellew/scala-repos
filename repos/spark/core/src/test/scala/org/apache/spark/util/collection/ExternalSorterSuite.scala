@@ -315,8 +315,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       (1 to size).iterator.map(i => (i.toString, i.toString)) ++ Iterator(
         (null.asInstanceOf[String], "1"),
         ("1", null.asInstanceOf[String]),
-        (null.asInstanceOf[String], null.asInstanceOf[String])
-      ))
+        (null.asInstanceOf[String], null.asInstanceOf[String])))
     assert(sorter.numSpills > 0, "sorter did not spill")
     val it = sorter.iterator
     while (it.hasNext) {
@@ -637,12 +636,13 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         Some(ord))
     if (withFailures) {
       intercept[SparkException] {
-        sorter.insertAll((0 until size).iterator.map { i =>
-          if (i == size - 1) {
-            throw new SparkException("intentional failure")
-          }
-          (i, i)
-        })
+        sorter.insertAll(
+          (0 until size).iterator.map { i =>
+            if (i == size - 1) {
+              throw new SparkException("intentional failure")
+            }
+            (i, i)
+          })
       }
     } else {
       sorter.insertAll((0 until size).iterator.map(i => (i, i)))
@@ -726,9 +726,10 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         agg,
         Some(new HashPartitioner(3)),
         ord)
-    sorter.insertAll((0 until size).iterator.map { i =>
-      (i / 4, i)
-    })
+    sorter.insertAll(
+      (0 until size).iterator.map { i =>
+        (i / 4, i)
+      })
     if (withSpilling) {
       assert(sorter.numSpills > 0, "sorter did not spill")
     } else {

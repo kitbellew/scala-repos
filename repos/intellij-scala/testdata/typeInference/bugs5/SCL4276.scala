@@ -12,9 +12,10 @@ object SCL4276 {
 
   class StreamUser {
 
-    def use(stream: AnyRef {
-      def indexOf(x: String): Int
-    }) = 1
+    def use(
+        stream: AnyRef {
+          def indexOf(x: String): Int
+        }) = 1
     def use(x: Boolean): Boolean = false
   }
 }

@@ -44,8 +44,9 @@ class TestJob1(env: Env) extends AbstractJob(env) {
       .map { e =>
         (e % 2, e)
       }
-      .groupAndSumTo(CompoundStore.fromOffline[Long, Long](
-        new InitialBatchedStore(BatchID(12L), null)))
+      .groupAndSumTo(
+        CompoundStore.fromOffline[Long, Long](
+          new InitialBatchedStore(BatchID(12L), null)))
       .set(BMonoidIsCommutative(true))
   } catch {
     case t: Throwable => t.printStackTrace

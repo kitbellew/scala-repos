@@ -62,10 +62,12 @@ object Memcache {
     key: T =>
       def concat(bytes: Array[Byte]): Array[Byte] = namespace.getBytes ++ bytes
 
-      (inj
-        .andThen(concat _)
-        .andThen(HashEncoder())
-        .andThen(Bijection.connect[Array[Byte], Base64String]))(key)
+      (
+        inj
+          .andThen(concat _)
+          .andThen(HashEncoder())
+          .andThen(Bijection.connect[Array[Byte], Base64String])
+        )(key)
         .str
   }
 

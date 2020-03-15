@@ -67,10 +67,7 @@ class StopWordsRemoverSuite
       .setCaseSensitive(true)
     val dataSet = sqlContext
       .createDataFrame(
-        Seq(
-          (Seq("A"), Seq("A")),
-          (Seq("The", "the"), Seq("The"))
-        ))
+        Seq((Seq("A"), Seq("A")), (Seq("The", "the"), Seq("The"))))
       .toDF("raw", "expected")
 
     testStopWordsRemover(remover, dataSet)
@@ -86,8 +83,7 @@ class StopWordsRemoverSuite
       .createDataFrame(
         Seq(
           (Seq("python", "scala", "a"), Seq()),
-          (Seq("Python", "Scala", "swift"), Seq("swift"))
-        ))
+          (Seq("Python", "Scala", "swift"), Seq("swift"))))
       .toDF("raw", "expected")
 
     testStopWordsRemover(remover, dataSet)
@@ -108,10 +104,7 @@ class StopWordsRemoverSuite
       .setInputCol("raw")
       .setOutputCol(outputCol)
     val dataSet = sqlContext
-      .createDataFrame(
-        Seq(
-          (Seq("The", "the", "swift"), Seq("swift"))
-        ))
+      .createDataFrame(Seq((Seq("The", "the", "swift"), Seq("swift"))))
       .toDF("raw", outputCol)
 
     val thrown = intercept[IllegalArgumentException] {

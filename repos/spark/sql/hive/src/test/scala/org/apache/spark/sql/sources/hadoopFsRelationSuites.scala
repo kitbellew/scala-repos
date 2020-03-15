@@ -52,16 +52,20 @@ abstract class HadoopFsRelationTest
   lazy val testDF = (1 to 3).map(i => (i, s"val_$i")).toDF("a", "b")
 
   lazy val partitionedTestDF1 =
-    (for {
-      i <- 1 to 3
-      p2 <- Seq("foo", "bar")
-    } yield (i, s"val_$i", 1, p2)).toDF("a", "b", "p1", "p2")
+    (
+      for {
+        i <- 1 to 3
+        p2 <- Seq("foo", "bar")
+      } yield (i, s"val_$i", 1, p2)
+    ).toDF("a", "b", "p1", "p2")
 
   lazy val partitionedTestDF2 =
-    (for {
-      i <- 1 to 3
-      p2 <- Seq("foo", "bar")
-    } yield (i, s"val_$i", 2, p2)).toDF("a", "b", "p1", "p2")
+    (
+      for {
+        i <- 1 to 3
+        p2 <- Seq("foo", "bar")
+      } yield (i, s"val_$i", 2, p2)
+    ).toDF("a", "b", "p1", "p2")
 
   lazy val partitionedTestDF = partitionedTestDF1.unionAll(partitionedTestDF2)
 
@@ -151,8 +155,7 @@ abstract class HadoopFsRelationTest
           .forType(
             dataType = dataType,
             nullable = true,
-            new Random(System.nanoTime())
-          )
+            new Random(System.nanoTime()))
           .getOrElse {
             fail(s"Failed to create data generator for schema $dataType")
           }
@@ -162,8 +165,8 @@ abstract class HadoopFsRelationTest
         val schema = new StructType()
           .add("index", IntegerType, nullable = false)
           .add("col", dataType, nullable = true)
-        val rdd = sqlContext.sparkContext.parallelize((1 to 10).map(i =>
-          Row(i, dataGenerator())))
+        val rdd = sqlContext.sparkContext.parallelize(
+          (1 to 10).map(i => Row(i, dataGenerator())))
         val df = sqlContext
           .createDataFrame(rdd, schema)
           .orderBy("index")
@@ -436,8 +439,7 @@ abstract class HadoopFsRelationTest
     withTable("t") {
       checkAnswer(
         sqlContext.table("t").sort('id),
-        Row(0, true) :: Row(1, false) :: Nil
-      )
+        Row(0, true) :: Row(1, false) :: Nil)
     }
   }
 
@@ -596,16 +598,12 @@ abstract class HadoopFsRelationTest
   test("SPARK-9735 Partition column type casting") {
     withTempPath { file =>
       val df =
-        (for {
-          i <- 1 to 3
-          p2 <- Seq("foo", "bar")
-        } yield (i, s"val_$i", 1.0d, p2, 123, 123.123f)).toDF(
-          "a",
-          "b",
-          "p1",
-          "p2",
-          "p3",
-          "f")
+        (
+          for {
+            i <- 1 to 3
+            p2 <- Seq("foo", "bar")
+          } yield (i, s"val_$i", 1.0d, p2, 123, 123.123f)
+        ).toDF("a", "b", "p1", "p2", "p3", "f")
 
       val input = df.select(
         'a,

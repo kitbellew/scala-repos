@@ -79,8 +79,8 @@ object IdleConnectionFilter {
 class IdleConnectionFilter[Req, Rep](
     self: ServiceFactory[Req, Rep],
     threshold: OpenConnectionsThresholds,
-    statsReceiver: StatsReceiver = NullStatsReceiver
-) extends ServiceFactoryProxy[Req, Rep](self) {
+    statsReceiver: StatsReceiver = NullStatsReceiver)
+    extends ServiceFactoryProxy[Req, Rep](self) {
   private[this] val queue =
     new BucketGenerationalQueue[ClientConnection](threshold.idleTimeout)
   private[this] val connectionCounter = new AtomicInteger(0)

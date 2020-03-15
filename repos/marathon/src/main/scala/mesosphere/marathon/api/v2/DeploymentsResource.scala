@@ -63,11 +63,8 @@ class DeploymentsResource @Inject() (
             // create a new deployment to return to the previous state
             deploymentResult(
               result(
-                groupManager.update(
-                  plan.original.id,
-                  plan.revert,
-                  force = true
-                )))
+                groupManager
+                  .update(plan.original.id, plan.revert, force = true)))
         }
       }
     }
@@ -93,6 +90,5 @@ class DeploymentsResource @Inject() (
   def actionToMap(action: DeploymentAction): Map[String, String] =
     Map(
       "action" -> action.getClass.getSimpleName,
-      "app" -> action.app.id.toString
-    )
+      "app" -> action.app.id.toString)
 }

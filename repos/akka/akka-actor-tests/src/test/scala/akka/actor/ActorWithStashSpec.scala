@@ -156,26 +156,27 @@ class ActorWithStashSpec
       val restartLatch = new TestLatch
       val hasMsgLatch = new TestLatch
 
-      val slaveProps = Props(new Actor with Stash {
-        def receive = {
-          case "crash" ⇒
-            throw new Exception("Crashing...")
+      val slaveProps = Props(
+        new Actor with Stash {
+          def receive = {
+            case "crash" ⇒
+              throw new Exception("Crashing...")
 
-          // when restartLatch is not yet open, stash all messages != "crash"
-          case msg if !restartLatch.isOpen ⇒
-            stash()
+            // when restartLatch is not yet open, stash all messages != "crash"
+            case msg if !restartLatch.isOpen ⇒
+              stash()
 
-          // when restartLatch is open, must receive "hello"
-          case "hello" ⇒
-            hasMsgLatch.open()
-        }
+            // when restartLatch is open, must receive "hello"
+            case "hello" ⇒
+              hasMsgLatch.open()
+          }
 
-        override def preRestart(reason: Throwable, message: Option[Any]) = {
-          if (!restartLatch.isOpen)
-            restartLatch.open()
-          super.preRestart(reason, message)
-        }
-      })
+          override def preRestart(reason: Throwable, message: Option[Any]) = {
+            if (!restartLatch.isOpen)
+              restartLatch.open()
+            super.preRestart(reason, message)
+          }
+        })
       val slave = Await.result(
         (boss ? slaveProps).mapTo[ActorRef],
         timeout.duration)
@@ -198,14 +199,15 @@ class ActorWithStashSpec
 
     "allow using whenRestarted" in {
       import ActorDSL._
-      val a = actor(new ActWithStash {
-        become {
-          case "die" ⇒ throw new RuntimeException("dying")
-        }
-        whenRestarted { thr ⇒
-          testActor ! "restarted"
-        }
-      })
+      val a = actor(
+        new ActWithStash {
+          become {
+            case "die" ⇒ throw new RuntimeException("dying")
+          }
+          whenRestarted { thr ⇒
+            testActor ! "restarted"
+          }
+        })
       EventFilter[RuntimeException]("dying", occurrences = 1) intercept {
         a ! "die"
       }
@@ -214,11 +216,12 @@ class ActorWithStashSpec
 
     "allow using whenStopping" in {
       import ActorDSL._
-      val a = actor(new ActWithStash {
-        whenStopping {
-          testActor ! "stopping"
-        }
-      })
+      val a = actor(
+        new ActWithStash {
+          whenStopping {
+            testActor ! "stopping"
+          }
+        })
       a ! PoisonPill
       expectMsg("stopping")
     }

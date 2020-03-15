@@ -36,14 +36,16 @@ class MatchToPartialFunctionInspection
     case fun @ ScFunctionExpr(
           Seq(param),
           Some(ms @ ScMatchStmt(ref: ScReferenceExpression, _)))
-        if ref.resolve() == param && !(param.typeElement.isDefined && notExpectedType(
-          fun)) && checkSameResolve(fun) =>
+        if ref.resolve() == param && !(
+          param.typeElement.isDefined && notExpectedType(fun)
+        ) && checkSameResolve(fun) =>
       registerProblem(holder, ms, fun)
     case fun @ ScFunctionExpr(
           Seq(param),
           Some(ScBlock(ms @ ScMatchStmt(ref: ScReferenceExpression, _))))
-        if ref.resolve() == param && !(param.typeElement.isDefined && notExpectedType(
-          fun)) && checkSameResolve(fun) =>
+        if ref.resolve() == param && !(
+          param.typeElement.isDefined && notExpectedType(fun)
+        ) && checkSameResolve(fun) =>
       registerProblem(
         holder,
         ms,
@@ -194,7 +196,8 @@ class MatchToPartialFunctionQuickFix(
     val clauses = matchStmt.caseClauses
     val name = matchStmt.expr
       .map(_.getText)
-      .getOrElse(return
+      .getOrElse(
+        return
       )
     indexes.map(i => clauses(i).pattern).foreach {
       case Some(w: ScWildcardPattern) =>

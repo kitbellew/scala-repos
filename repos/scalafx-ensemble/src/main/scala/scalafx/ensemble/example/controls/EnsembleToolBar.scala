@@ -53,8 +53,7 @@ class EnsembleToolBar extends EnsembleExample {
           new Button {
             text = "Help"
             minWidth = 75
-          }
-        )
+          })
       }
     }
 }

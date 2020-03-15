@@ -946,20 +946,21 @@ object Serializers {
         case TagArrayType => readArrayType()
 
         case TagRecordType =>
-          RecordType(List.fill(input.readInt()) {
-            val name = readString()
-            val originalName = readString()
-            val tpe = readType()
-            val mutable = input.readBoolean()
-            RecordType.Field(
-              name,
-              if (originalName.isEmpty)
-                None
-              else
-                Some(originalName),
-              tpe,
-              mutable)
-          })
+          RecordType(
+            List.fill(input.readInt()) {
+              val name = readString()
+              val originalName = readString()
+              val tpe = readType()
+              val mutable = input.readBoolean()
+              RecordType.Field(
+                name,
+                if (originalName.isEmpty)
+                  None
+                else
+                  Some(originalName),
+                tpe,
+                mutable)
+            })
       }
     }
 

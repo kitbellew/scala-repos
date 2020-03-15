@@ -204,9 +204,11 @@ abstract class ActorTransportAdapter(
   @volatile protected var manager: ActorRef = _
 
   private def registerManager(): Future[ActorRef] =
-    (system.actorSelection("/system/transports") ? RegisterTransportActor(
-      managerProps,
-      managerName)).mapTo[ActorRef]
+    (
+      system.actorSelection("/system/transports") ? RegisterTransportActor(
+        managerProps,
+        managerName)
+    ).mapTo[ActorRef]
 
   override def interceptListen(
       listenAddress: Address,

@@ -23,8 +23,7 @@ trait MonadCombineTests[F[_]]
       EqFB: Eq[F[B]],
       EqFC: Eq[F[C]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]
-  ): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet = {
     new RuleSet {
       def name: String = "monadCombine"
       def bases: Seq[(String, RuleSet)] = Nil
@@ -33,8 +32,7 @@ trait MonadCombineTests[F[_]]
       def props: Seq[(String, Prop)] =
         Seq(
           "monadCombine left distributivity" -> forAll(
-            laws.monadCombineLeftDistributivity[A, B] _)
-        )
+            laws.monadCombineLeftDistributivity[A, B] _))
     }
   }
 }

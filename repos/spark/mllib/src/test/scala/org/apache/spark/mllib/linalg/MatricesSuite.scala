@@ -472,8 +472,8 @@ class MatricesSuite extends SparkFunSuite {
   test("sprand") {
     val rng = mock[Random]
     when(rng.nextInt(4)).thenReturn(0, 1, 1, 3, 2, 2, 0, 1, 3, 0)
-    when(rng.nextDouble()).thenReturn(1.0, 2.0, 3.0, 4.0, 0.5, 0.6, 0.7, 0.8,
-      0.9, 1.0)
+    when(rng.nextDouble()).thenReturn(
+      1.0, 2.0, 3.0, 4.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
     val mat = SparseMatrix.sprand(4, 4, 0.25, rng)
     assert(mat.numRows === 4)
     assert(mat.numCols === 4)

@@ -47,21 +47,23 @@ import scalaz._
 import scalaz.Id.Id
 
 class InMemoryJobManagerSpec extends Specification {
-  include(new JobManagerSpec[Id] {
-    val validAPIKey = "Anything should work!"
-    val jobs = new InMemoryJobManager[Id]
-    val M: Monad[Id] with Comonad[Id] = implicitly
-  })
+  include(
+    new JobManagerSpec[Id] {
+      val validAPIKey = "Anything should work!"
+      val jobs = new InMemoryJobManager[Id]
+      val M: Monad[Id] with Comonad[Id] = implicitly
+    })
 }
 
 class FileJobManagerSpec extends Specification {
   val tempDir = IOUtils.createTmpDir("FileJobManagerSpec").unsafePerformIO
 
-  include(new JobManagerSpec[Id] {
-    val validAPIKey = "Anything should work!"
-    val jobs = FileJobManager[Id](tempDir, Id.id)
-    val M: Monad[Id] with Comonad[Id] = implicitly
-  })
+  include(
+    new JobManagerSpec[Id] {
+      val validAPIKey = "Anything should work!"
+      val jobs = FileJobManager[Id](tempDir, Id.id)
+      val M: Monad[Id] with Comonad[Id] = implicitly
+    })
 
   override def map(fs: => Fragments) =
     Step {
@@ -70,25 +72,28 @@ class FileJobManagerSpec extends Specification {
 }
 
 class WebJobManagerSpec extends TestJobService { self =>
-  include(new JobManagerSpec[Future] {
-    val validAPIKey = self.validAPIKey
+  include(
+    new JobManagerSpec[Future] {
+      val validAPIKey = self.validAPIKey
 
-    implicit val executionContext = self.executionContext
-    implicit val M: Monad[Future] with Comonad[Future] =
-      new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
+      implicit val executionContext = self.executionContext
+      implicit val M: Monad[Future] with Comonad[Future] =
+        new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
 
-    val jobs =
-      (new WebJobManager {
-        val executionContext = self.executionContext
-        val M = self.M
-        protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
-          f(client.path("/jobs/v1/"))
-      }).withM[Future](
-        ResponseAsFuture(M),
-        FutureAsResponse(M),
-        Monad[Response],
-        M)
-  })
+      val jobs =
+        (
+          new WebJobManager {
+            val executionContext = self.executionContext
+            val M = self.M
+            protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
+              f(client.path("/jobs/v1/"))
+          }
+        ).withM[Future](
+          ResponseAsFuture(M),
+          FutureAsResponse(M),
+          Monad[Response],
+          M)
+    })
 }
 
 class MongoJobManagerSpec extends Specification with RealMongoSpecSupport {
@@ -100,16 +105,17 @@ class MongoJobManagerSpec extends Specification with RealMongoSpecSupport {
     actorSystem = ActorSystem("mongo-job-manager-spec")
   }
 
-  include(new JobManagerSpec[Future] {
-    val validAPIKey = "Anything should work!"
-    implicit lazy val M: Monad[Future] with Comonad[Future] =
-      new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
-    lazy val jobs =
-      new MongoJobManager(
-        mongo.database("jobs"),
-        MongoJobManagerSettings.default,
-        new InMemoryFileStorage[Future])
-  })
+  include(
+    new JobManagerSpec[Future] {
+      val validAPIKey = "Anything should work!"
+      implicit lazy val M: Monad[Future] with Comonad[Future] =
+        new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
+      lazy val jobs =
+        new MongoJobManager(
+          mongo.database("jobs"),
+          MongoJobManagerSettings.default,
+          new InMemoryFileStorage[Future])
+    })
 
   step {
     actorSystem.shutdown()
@@ -159,8 +165,7 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val data: JValue = JObject(
         List(
           JField("a", JArray(JString("a"), JNum(2))),
-          JField("b", JNum(1.675))
-        ))
+          JField("b", JNum(1.675))))
 
       val job =
         jobs
@@ -331,8 +336,7 @@ trait JobManagerSpec[M[+_]] extends Specification {
         JObject(
           List(
             JField("name", JString(name)),
-            JField("message", JString(message))
-          ))
+            JField("message", JString(message))))
 
       val m1 = jobs.addMessage(job.id, "chat", say("Tom", "Hello")).copoint
       val m2 = jobs.addMessage(job.id, "chat", say("Bob", "Hi")).copoint

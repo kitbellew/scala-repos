@@ -36,15 +36,15 @@ object Scaladoc extends AutoPlugin {
         scalacOptions in Compile <++= (
           version,
           baseDirectory in ThisBuild) map scaladocOptions,
-        autoAPIMappings := CliOptions.scaladocAutoAPI.get
-      )) ++
+        autoAPIMappings := CliOptions.scaladocAutoAPI.get)) ++
       Seq(validateDiagrams in Compile := true) ++
-      CliOptions.scaladocDiagramsEnabled.ifTrue(doc in Compile := {
-        val docs = (doc in Compile).value
-        if ((validateDiagrams in Compile).value)
-          scaladocVerifier(docs)
-        docs
-      })
+      CliOptions.scaladocDiagramsEnabled.ifTrue(
+        doc in Compile := {
+          val docs = (doc in Compile).value
+          if ((validateDiagrams in Compile).value)
+            scaladocVerifier(docs)
+          docs
+        })
   }
 
   def scaladocOptions(ver: String, base: File): List[String] = {
@@ -75,8 +75,9 @@ object Scaladoc extends AutoPlugin {
             val hd =
               try source
                 .getLines()
-                .exists(_.contains(
-                  "<div class=\"toggleContainer block diagram-container\" id=\"inheritance-diagram-container\">"))
+                .exists(
+                  _.contains(
+                    "<div class=\"toggleContainer block diagram-container\" id=\"inheritance-diagram-container\">"))
               catch {
                 case e: Exception =>
                   throw new IllegalStateException(
@@ -108,8 +109,7 @@ object ScaladocNoVerificationOfDiagrams extends AutoPlugin {
   override def requires = Scaladoc
 
   override lazy val projectSettings = Seq(
-    Scaladoc.validateDiagrams in Compile := false
-  )
+    Scaladoc.validateDiagrams in Compile := false)
 }
 
 /**
@@ -124,14 +124,17 @@ object UnidocRoot extends AutoPlugin {
   override def trigger = noTrigger
 
   val akkaSettings = UnidocRoot.CliOptions.genjavadocEnabled
-    .ifTrue(Seq(
-      javacOptions in (JavaUnidoc, unidoc) ++= Seq("-Xdoclint:none"),
-      // genjavadoc needs to generate synthetic methods since the java code uses them
-      scalacOptions += "-P:genjavadoc:suppressSynthetic=false",
-      // FIXME: see #18056
-      sources in (JavaUnidoc, unidoc) ~= (_.filterNot(
-        _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
-    ))
+    .ifTrue(
+      Seq(
+        javacOptions in (JavaUnidoc, unidoc) ++= Seq("-Xdoclint:none"),
+        // genjavadoc needs to generate synthetic methods since the java code uses them
+        scalacOptions += "-P:genjavadoc:suppressSynthetic=false",
+        // FIXME: see #18056
+        sources in (JavaUnidoc, unidoc) ~= (
+          _.filterNot(
+            _.getPath.contains("Access$minusControl$minusAllow$minusOrigin"))
+        )
+      ))
     .getOrElse(Nil)
 
   def settings(ignoreAggregates: Seq[Project], ignoreProjects: Seq[Project]) = {
@@ -182,9 +185,10 @@ object Unidoc extends AutoPlugin {
         scalacOptions in Compile += "-P:genjavadoc:fabricateParams=true",
         unidocGenjavadocVersion in Global := "0.9",
         // FIXME: see #18056
-        sources in (Genjavadoc, doc) ~= (_.filterNot(
-          _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
-      )
-    )
+        sources in (Genjavadoc, doc) ~= (
+          _.filterNot(
+            _.getPath.contains("Access$minusControl$minusAllow$minusOrigin"))
+        )
+      ))
     .getOrElse(Seq.empty)
 }

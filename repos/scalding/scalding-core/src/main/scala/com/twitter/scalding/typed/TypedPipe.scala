@@ -277,8 +277,9 @@ trait TypedPipe[+T] extends Serializable {
     * }
     * The latter creates 1 map/reduce phase rather than 2
     */
-  @annotation.implicitNotFound(msg =
-    "For distinct method to work, the type in TypedPipe must have an Ordering.")
+  @annotation.implicitNotFound(
+    msg =
+      "For distinct method to work, the type in TypedPipe must have an Ordering.")
   def distinct(implicit ord: Ordering[_ >: T]): TypedPipe[T] =
     asKeys(ord.asInstanceOf[Ordering[T]]).sum.keys
 
@@ -323,9 +324,11 @@ trait TypedPipe[+T] extends Serializable {
       implicit ev: T <:< (K, V)): TypedPipe[(K, Either[V, R])] =
     mapValues { (v: V) =>
       Left(v)
-    } ++ (that.mapValues { (r: R) =>
-      Right(r)
-    })
+    } ++ (
+      that.mapValues { (r: R) =>
+        Right(r)
+      }
+    )
 
   /**
     * If you are going to create two branches or forks,

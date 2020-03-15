@@ -246,9 +246,7 @@ abstract class ScalaExpressionsEvaluatorBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints(
-    "JavaLib.scala",
-    s"""
+  addFileWithBreakpoints("JavaLib.scala", s"""
       |object JavaLib {
       |  def main(args: Array[String]) {
       |    ""$bp

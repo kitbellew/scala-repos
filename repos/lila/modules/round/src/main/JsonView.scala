@@ -93,8 +93,7 @@ final class JsonView(
               .noNull,
             "url" -> Json.obj(
               "socket" -> s"/$fullId/socket/v$apiVersion",
-              "round" -> s"/$fullId"
-            ),
+              "round" -> s"/$fullId"),
             "pref" -> Json.obj(
               "blindfold" -> pref.isBlindfold,
               "animationDuration" -> animationDuration(pov, pref),
@@ -124,12 +123,13 @@ final class JsonView(
                 .option(true)
             ),
             "chat" -> chat.map { c =>
-              JsArray(c.lines map {
-                case lila.chat.UserLine(username, text, _) =>
-                  Json.obj("u" -> username, "t" -> text)
-                case lila.chat.PlayerLine(color, text) =>
-                  Json.obj("c" -> color.name, "t" -> text)
-              })
+              JsArray(
+                c.lines map {
+                  case lila.chat.UserLine(username, text, _) =>
+                    Json.obj("u" -> username, "t" -> text)
+                  case lila.chat.PlayerLine(color, text) =>
+                    Json.obj("c" -> color.name, "t" -> text)
+                })
             },
             "possibleMoves" -> possibleMoves(pov),
             "possibleDrops" -> possibleDrops(pov),
@@ -206,8 +206,7 @@ final class JsonView(
             "orientation" -> pov.color.name,
             "url" -> Json.obj(
               "socket" -> s"/$gameId/${color.name}/socket",
-              "round" -> s"/$gameId/${color.name}"
-            ),
+              "round" -> s"/$gameId/${color.name}"),
             "pref" -> Json.obj(
               "animationDuration" -> animationDuration(pov, pref),
               "highlight" -> pref.highlight,
@@ -221,10 +220,11 @@ final class JsonView(
               Json.obj("channel" -> onTv.channel, "flip" -> onTv.flip)
             },
             "chat" -> chat.map { c =>
-              JsArray(c.lines map {
-                case lila.chat.UserLine(username, text, _) =>
-                  Json.obj("u" -> username, "t" -> text)
-              })
+              JsArray(
+                c.lines map {
+                  case lila.chat.UserLine(username, text, _) =>
+                    Json.obj("u" -> username, "t" -> text)
+                })
             }
           )
           .noNull
@@ -255,21 +255,16 @@ final class JsonView(
             "player" -> game.turnColor.name,
             "status" -> game.status
           ),
-          "player" -> Json.obj(
-            "id" -> owner.option(pov.playerId),
-            "color" -> color.name
-          ),
-          "opponent" -> Json.obj(
-            "color" -> opponent.color.name,
-            "ai" -> opponent.aiLevel
-          ),
+          "player" -> Json
+            .obj("id" -> owner.option(pov.playerId), "color" -> color.name),
+          "opponent" -> Json
+            .obj("color" -> opponent.color.name, "ai" -> opponent.aiLevel),
           "orientation" -> orientation.name,
           "pref" -> Json.obj(
             "animationDuration" -> animationDuration(pov, pref),
             "highlight" -> pref.highlight,
             "destination" -> pref.destination,
-            "coords" -> pref.coords
-          ),
+            "coords" -> pref.coords),
           "path" -> pov.game.turns,
           "userAnalysis" -> true
         )
@@ -303,10 +298,7 @@ final class JsonView(
 
   private def blurs(game: Game, player: lila.game.Player) = {
     val percent = game.playerBlurPercent(player.color)
-    (percent > 30) option Json.obj(
-      "nb" -> player.blurs,
-      "percent" -> percent
-    )
+    (percent > 30) option Json.obj("nb" -> player.blurs, "percent" -> percent)
   }
 
   private def hold(player: lila.game.Player) =
@@ -325,7 +317,9 @@ final class JsonView(
       game: Game,
       forUser: Option[User]): Fu[Option[lila.chat.UserChat]] =
     forUser ?? { user =>
-      chatApi.userChat find s"${game.id}/w" map (_ forUser user.some) map (_.some)
+      chatApi.userChat find s"${game.id}/w" map (_ forUser user.some) map (
+        _.some
+      )
     }
 
   private def getUsers(game: Game) =
@@ -366,8 +360,7 @@ final class JsonView(
           1,
           math.max(
             0,
-            math.min(1.2, ((pov.game.estimateTotalTime - 60) / 60) * 0.2))
-        )
+            math.min(1.2, ((pov.game.estimateTotalTime - 60) / 60) * 0.2)))
     }
 }
 
@@ -408,10 +401,6 @@ object JsonView {
 
   implicit val openingWriter: OWrites[chess.opening.FullOpening.AtPly] =
     OWrites { o =>
-      Json.obj(
-        "eco" -> o.opening.eco,
-        "name" -> o.opening.name,
-        "ply" -> o.ply
-      )
+      Json.obj("eco" -> o.opening.eco, "name" -> o.opening.name, "ply" -> o.ply)
     }
 }

@@ -47,9 +47,11 @@ object O6
       val x = "".toString
       F.byname(x);
       F.hof(() => x);
-      (new {
-        val xx = x
-      }.xx)
+      (
+        new {
+          val xx = x
+        }.xx
+      )
     })
 
 class C1
@@ -82,9 +84,11 @@ class C6
       val x = "".toString
       F.byname(x);
       F.hof(() => x);
-      (new {
-        val xx = x
-      }.xx)
+      (
+        new {
+          val xx = x
+        }.xx
+      )
     })
 
 class C11(a: Any) {

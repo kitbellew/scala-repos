@@ -53,9 +53,10 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
         200 millis,
         10 seconds,
         0.0)
-      .withSupervisorStrategy(OneForOneStrategy() {
-        case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
-      })
+      .withSupervisorStrategy(
+        OneForOneStrategy() {
+          case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
+        })
     BackoffSupervisor.props(options)
   }
 
@@ -148,9 +149,10 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
           1 nanos,
           1 nanos,
           0.0)
-        .withSupervisorStrategy(OneForOneStrategy(loggingEnabled = false) {
-          case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
-        })
+        .withSupervisorStrategy(
+          OneForOneStrategy(loggingEnabled = false) {
+            case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
+          })
       val supervisor = system.actorOf(BackoffSupervisor.props(options))
 
       supervisor ! BackoffSupervisor.GetCurrentChild

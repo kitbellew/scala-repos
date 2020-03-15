@@ -291,12 +291,14 @@ class YarnSparkHadoopUtilSuite
     // thrift picks up on port 0 and bails out, without trying to talk to endpoint
     hadoopConf.set("hive.metastore.uris", "http://localhost:0")
     val util = new YarnSparkHadoopUtil
-    assertNestedHiveException(intercept[InvocationTargetException] {
-      util.obtainTokenForHiveMetastoreInner(hadoopConf)
-    })
-    assertNestedHiveException(intercept[InvocationTargetException] {
-      util.obtainTokenForHiveMetastore(hadoopConf)
-    })
+    assertNestedHiveException(
+      intercept[InvocationTargetException] {
+        util.obtainTokenForHiveMetastoreInner(hadoopConf)
+      })
+    assertNestedHiveException(
+      intercept[InvocationTargetException] {
+        util.obtainTokenForHiveMetastore(hadoopConf)
+      })
   }
 
   private def assertNestedHiveException(

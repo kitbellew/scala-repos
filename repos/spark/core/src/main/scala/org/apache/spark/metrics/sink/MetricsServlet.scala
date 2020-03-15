@@ -58,8 +58,7 @@ private[spark] class MetricsServlet(
         servletPath,
         new ServletParams(request => getMetricsSnapshot(request), "text/json"),
         securityMgr,
-        conf)
-    )
+        conf))
   }
 
   def getMetricsSnapshot(request: HttpServletRequest): String = {

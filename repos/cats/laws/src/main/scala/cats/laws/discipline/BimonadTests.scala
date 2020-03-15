@@ -23,8 +23,7 @@ trait BimonadTests[F[_]] extends MonadTests[F] with ComonadTests[F] {
       EqFB: Eq[F[B]],
       EqFC: Eq[F[C]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]
-  ): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet = {
     new RuleSet {
       def name: String = "bimonad"
       def bases: Seq[(String, RuleSet)] = Nil

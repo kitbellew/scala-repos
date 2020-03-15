@@ -87,13 +87,14 @@ class KafkaScheduler(
       executor = new ScheduledThreadPoolExecutor(threads)
       executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false)
       executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false)
-      executor.setThreadFactory(new ThreadFactory() {
-        def newThread(runnable: Runnable): Thread =
-          Utils.newThread(
-            threadNamePrefix + schedulerThreadId.getAndIncrement(),
-            runnable,
-            daemon)
-      })
+      executor.setThreadFactory(
+        new ThreadFactory() {
+          def newThread(runnable: Runnable): Thread =
+            Utils.newThread(
+              threadNamePrefix + schedulerThreadId.getAndIncrement(),
+              runnable,
+              daemon)
+        })
     }
   }
 

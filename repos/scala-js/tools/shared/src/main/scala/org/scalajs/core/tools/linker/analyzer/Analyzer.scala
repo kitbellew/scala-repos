@@ -547,15 +547,18 @@ private final class Analyzer(
       val syntheticInfo = Infos.MethodInfo(
         encodedName = proxyName,
         methodsCalled = Map(this.encodedName -> List(targetName)),
-        methodsCalledStatically =
-          (if (returnsChar)
-             Map(BoxedCharacterClass -> List("init___C"))
-           else
-             Map.empty),
-        instantiatedClasses = (if (returnsChar)
-                                 List(BoxedCharacterClass)
-                               else
-                                 Nil)
+        methodsCalledStatically = (
+          if (returnsChar)
+            Map(BoxedCharacterClass -> List("init___C"))
+          else
+            Map.empty
+        ),
+        instantiatedClasses = (
+          if (returnsChar)
+            List(BoxedCharacterClass)
+          else
+            Nil
+        )
       )
       val m = new MethodInfo(this, syntheticInfo)
       m.syntheticKind = MethodSyntheticKind.ReflectiveProxy(targetName)

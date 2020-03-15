@@ -4,8 +4,7 @@ case class ScalaType(
     params: List[ScalaType],
     bounds: List[ScalaType],
     isVar: Boolean,
-    javaName: String
-)
+    javaName: String)
 
 object ScalaType {
   def apply(
@@ -22,10 +21,7 @@ object ScalaType {
       name /* reuse scala name by default */ )
 }
 
-case class Argument(
-    name: String,
-    tpe: ScalaType
-)
+case class Argument(name: String, tpe: ScalaType)
 
 case class AndroidMethod(
     name: String,
@@ -34,16 +30,14 @@ case class AndroidMethod(
     paramedTypes: List[ScalaType],
     isAbstract: Boolean,
     isOverride: Boolean,
-    isDeprecated: Boolean
-)
+    isDeprecated: Boolean)
 
 case class AndroidCallbackMethod(
     name: String,
     retType: ScalaType,
     argTypes: List[ScalaType],
     hasBody: Boolean,
-    isDeprecated: Boolean
-)
+    isDeprecated: Boolean)
 
 case class AndroidProperty(
     name: String,
@@ -51,8 +45,7 @@ case class AndroidProperty(
     getter: Option[AndroidMethod],
     setters: List[AndroidMethod],
     switch: Option[String],
-    nameClashes: Boolean
-)
+    nameClashes: Boolean)
 
 case class AndroidListener(
     name: String,
@@ -63,11 +56,11 @@ case class AndroidListener(
     setterArgTypes: List[ScalaType],
     callbackClassName: String,
     callbackMethods: List[AndroidCallbackMethod],
-    isDeprecated: Boolean
-) {
+    isDeprecated: Boolean) {
   def isSafe: Boolean =
-    (!setter.startsWith(
-      "set")) || callbackMethods.length == 1 || callbackMethods.forall(
+    (
+      !setter.startsWith("set")
+    ) || callbackMethods.length == 1 || callbackMethods.forall(
       _.retType.name == "Unit")
 }
 
@@ -76,8 +69,7 @@ case class AndroidIntentMethod(
     retType: ScalaType,
     argTypes: List[ScalaType],
     zeroArgs: Boolean,
-    isDeprecated: Boolean
-)
+    isDeprecated: Boolean)
 
 case class ScalaConstructor(
     args: List[Argument],
@@ -85,8 +77,7 @@ case class ScalaConstructor(
     explicitArgs: List[Argument],
     paramedTypes: List[ScalaType],
     isVarArgs: Boolean,
-    isDeprecated: Boolean
-)
+    isDeprecated: Boolean)
 
 case class AndroidClass(
     name: String,
@@ -101,5 +92,4 @@ case class AndroidClass(
     isAbstract: Boolean,
     isFinal: Boolean,
     hasBlankConstructor: Boolean,
-    isDeprecated: Boolean
-)
+    isDeprecated: Boolean)

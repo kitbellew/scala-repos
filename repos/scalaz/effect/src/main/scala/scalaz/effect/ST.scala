@@ -184,17 +184,18 @@ object ST extends STInstances {
       ivs: F[(Int, B)])(implicit F: Foldable[F]): ImmutableArray[A] = {
     import std.anyVal.unitInstance
     type STA[S] = ST[S, ImmutableArray[A]]
-    runST(new Forall[STA] {
-      def apply[S] =
-        for {
-          a <- newArr(size, z)
-          _ <- {
-            F.foldMap(ivs)((x: (Int, B)) => a.update(f, x._1, x._2))(
-              stMonoid[S, Unit])
-          }
-          frozen <- a.freeze
-        } yield frozen
-    })
+    runST(
+      new Forall[STA] {
+        def apply[S] =
+          for {
+            a <- newArr(size, z)
+            _ <- {
+              F.foldMap(ivs)((x: (Int, B)) => a.update(f, x._1, x._2))(
+                stMonoid[S, Unit])
+            }
+            frozen <- a.freeze
+          } yield frozen
+      })
   }
 }
 

@@ -513,9 +513,10 @@ trait LinearRegressionLibModule[M[+_]]
         val thetaInSchema = theta.transform(spec)
 
         val varCovarArr = varianceCovariance.getArray
-        val varCovarRv = RArray(varCovarArr map { arr =>
-          RArray(arr.map(CNum(_)): _*)
-        }: _*)
+        val varCovarRv = RArray(
+          varCovarArr map { arr =>
+            RArray(arr.map(CNum(_)): _*)
+          }: _*)
         val varCovarTable0 = Table.fromRValues(Stream(varCovarRv))
 
         val varCovarTable = varCovarTable0.transform(

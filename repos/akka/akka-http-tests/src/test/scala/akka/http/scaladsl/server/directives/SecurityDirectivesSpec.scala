@@ -204,9 +204,10 @@ class SecurityDirectivesSpec extends RoutingSpec {
       }
       val bothAuth = dontBasicAuth | otherAuth
 
-      Get() ~> Route.seal(bothAuth {
-        echoComplete
-      }) ~> check {
+      Get() ~> Route.seal(
+        bothAuth {
+          echoComplete
+        }) ~> check {
         status shouldEqual StatusCodes.Unauthorized
         headers.collect {
           case `WWW-Authenticate`(challenge +: Nil) ⇒ challenge

@@ -57,17 +57,18 @@ final class Env(
   lazy val jsonView = new JsonView(lightUser)
 
   private val socketHub = system.actorOf(
-    Props(new lila.socket.SocketHubActor.Default[Socket] {
-      def mkActor(simulId: String) =
-        new Socket(
-          simulId = simulId,
-          history = new History(ttl = HistoryMessageTtl),
-          getSimul = repo.find,
-          jsonView = jsonView,
-          uidTimeout = UidTimeout,
-          socketTimeout = SocketTimeout,
-          lightUser = lightUser)
-    }),
+    Props(
+      new lila.socket.SocketHubActor.Default[Socket] {
+        def mkActor(simulId: String) =
+          new Socket(
+            simulId = simulId,
+            history = new History(ttl = HistoryMessageTtl),
+            getSimul = repo.find,
+            jsonView = jsonView,
+            uidTimeout = UidTimeout,
+            socketTimeout = SocketTimeout,
+            lightUser = lightUser)
+      }),
     name = SocketName
   )
 
@@ -80,27 +81,30 @@ final class Env(
       exists = repo.exists)
 
   system.actorOf(
-    Props(new Actor {
-      override def preStart() {
-        system.lilaBus.subscribe(self, 'finishGame, 'adjustCheater, 'moveEvent)
-      }
-      import akka.pattern.pipe
-      def receive = {
-        case lila.game.actorApi.FinishGame(game, _, _) => api finishGame game
-        case lila.hub.actorApi.mod.MarkCheater(userId) =>
-          api ejectCheater userId
-        case lila.hub.actorApi.simul.GetHostIds =>
-          api.currentHostIds pipeTo sender
-        case move: lila.hub.actorApi.round.MoveEvent =>
-          move.simulId foreach { simulId =>
-            move.opponentUserId foreach { opId =>
-              hub.actor.userRegister ! lila.hub.actorApi.SendTo(
-                opId,
-                lila.socket.Socket.makeMessage("simulPlayerMove", move.gameId))
+    Props(
+      new Actor {
+        override def preStart() {
+          system.lilaBus
+            .subscribe(self, 'finishGame, 'adjustCheater, 'moveEvent)
+        }
+        import akka.pattern.pipe
+        def receive = {
+          case lila.game.actorApi.FinishGame(game, _, _) => api finishGame game
+          case lila.hub.actorApi.mod.MarkCheater(userId) =>
+            api ejectCheater userId
+          case lila.hub.actorApi.simul.GetHostIds =>
+            api.currentHostIds pipeTo sender
+          case move: lila.hub.actorApi.round.MoveEvent =>
+            move.simulId foreach { simulId =>
+              move.opponentUserId foreach { opId =>
+                hub.actor.userRegister ! lila.hub.actorApi.SendTo(
+                  opId,
+                  lila.socket.Socket
+                    .makeMessage("simulPlayerMove", move.gameId))
+              }
             }
-          }
-      }
-    }),
+        }
+      }),
     name = ActorName
   )
 
@@ -120,9 +124,11 @@ final class Env(
 
   private[simul] val simulColl = db(CollectionSimul)
 
-  private val sequencerMap = system.actorOf(Props(ActorMap { id =>
-    new Sequencer(SequencerTimeout.some, logger = logger)
-  }))
+  private val sequencerMap = system.actorOf(
+    Props(
+      ActorMap { id =>
+        new Sequencer(SequencerTimeout.some, logger = logger)
+      }))
 
   private lazy val simulCleaner = new SimulCleaner(repo, api, socketHub)
 

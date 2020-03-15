@@ -318,9 +318,7 @@ class ScImplicitlyConvertible(
           .getCachedClass(
             "scala.Function1",
             place.getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE
-          )
-      ) collect {
+            ScalaPsiManager.ClassCategory.TYPE)) collect {
         case cl: ScTrait =>
           ScParameterizedType(
             ScType.designator(cl),
@@ -421,10 +419,9 @@ class ScImplicitlyConvertible(
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       f.typeParameters.find(tp =>
-                        (
-                          tp.name,
-                          ScalaPsiUtil.getPsiElementId(
-                            tp)) == (tpt.name, tpt.getId)) match {
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp)) == (
+                          tpt.name, tpt.getId
+                        )) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true
@@ -485,14 +482,15 @@ class ScImplicitlyConvertible(
                       val implicitClauseParameters =
                         f.paramClauses.clauses.last.parameters
                       var res = false
-                      f.returnType.foreach(_.recursiveUpdate {
-                        case rtTp if res => (true, rtTp)
-                        case ScDesignatorType(p: ScParameter)
-                            if implicitClauseParameters.contains(p) =>
-                          res = true
-                          (true, tp)
-                        case tp: ScType => (false, tp)
-                      })
+                      f.returnType.foreach(
+                        _.recursiveUpdate {
+                          case rtTp if res => (true, rtTp)
+                          case ScDesignatorType(p: ScParameter)
+                              if implicitClauseParameters.contains(p) =>
+                            res = true
+                            (true, tp)
+                          case tp: ScType => (false, tp)
+                        })
                       res
                     }
 
@@ -665,8 +663,9 @@ class ScImplicitlyConvertible(
             case b: ScBindingPattern =>
               ScalaPsiUtil.nameContext(b) match {
                 case d: ScDeclaredElementsHolder
-                    if (d.isInstanceOf[ScValue] || d
-                      .isInstanceOf[ScVariable]) &&
+                    if (
+                      d.isInstanceOf[ScValue] || d.isInstanceOf[ScVariable]
+                    ) &&
                       d.asInstanceOf[ScModifierListOwner]
                         .hasModifierProperty("implicit") =>
                   if (!ResolveUtils.isAccessible(

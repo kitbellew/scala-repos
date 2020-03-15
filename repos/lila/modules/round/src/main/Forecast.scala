@@ -21,8 +21,7 @@ case class Forecast(
                 .is(move) =>
             rest
         },
-        date = DateTime.now
-      ) -> move
+        date = DateTime.now) -> move
     }
 
   // accept up to 30 lines of 30 moves each

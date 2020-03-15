@@ -137,8 +137,7 @@ class LocalKafkaEventStore(
     val toSend = event.fold(
       ingest => encodeAll(List(event), Vector.empty),
       archive => right(List(codec.toMessage(archive))),
-      storeFile => encodeAll(List(event), Vector.empty)
-    )
+      storeFile => encodeAll(List(event), Vector.empty))
 
     toSend traverse { kafkaMessages =>
       Future {
@@ -170,9 +169,10 @@ object LocalKafkaEventStore {
 
     val producer =
       new Producer[String, Message](new ProducerConfig(localProperties))
-    val stoppable = Stoppable.fromFuture(Future {
-      producer.close
-    })
+    val stoppable = Stoppable.fromFuture(
+      Future {
+        producer.close
+      })
 
     Some(
       new LocalKafkaEventStore(

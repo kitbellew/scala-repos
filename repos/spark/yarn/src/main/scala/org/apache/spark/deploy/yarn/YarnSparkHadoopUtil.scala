@@ -135,8 +135,7 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       paths: Set[Path],
       conf: Configuration,
       creds: Credentials,
-      renewer: Option[String] = None
-  ): Unit = {
+      renewer: Option[String] = None): Unit = {
     if (UserGroupInformation.isSecurityEnabled()) {
       val delegTokenRenewer = renewer.getOrElse(getTokenRenewer(conf))
       paths.foreach { dst =>
@@ -352,9 +351,10 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
     // For some reason the Scala-generated anonymous class ends up causing an
     // UndeclaredThrowableException, even if you annotate the method with @throws.
     try {
-      realUser.doAs(new PrivilegedExceptionAction[T]() {
-        override def run(): T = fn
-      })
+      realUser.doAs(
+        new PrivilegedExceptionAction[T]() {
+          override def run(): T = fn
+        })
     } catch {
       case e: UndeclaredThrowableException =>
         throw Option(e.getCause()).getOrElse(e)
@@ -514,8 +514,7 @@ object YarnSparkHadoopUtil {
       securityMgr: SecurityManager): Map[ApplicationAccessType, String] = {
     Map[ApplicationAccessType, String](
       ApplicationAccessType.VIEW_APP -> securityMgr.getViewAcls,
-      ApplicationAccessType.MODIFY_APP -> securityMgr.getModifyAcls
-    )
+      ApplicationAccessType.MODIFY_APP -> securityMgr.getModifyAcls)
   }
 
   /**

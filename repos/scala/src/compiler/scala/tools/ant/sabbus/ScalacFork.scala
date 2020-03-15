@@ -41,8 +41,8 @@ import scala.reflect.internal.util.ScalaClassLoader
 class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
 
   private def originOfThis: String =
-    ScalaClassLoader.originOfClass(
-      classOf[ScalacFork]) map (_.toString) getOrElse "<unknown>"
+    ScalaClassLoader
+      .originOfClass(classOf[ScalacFork]) map (_.toString) getOrElse "<unknown>"
 
   /** Sets the `srcdir` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `sourceDir`. */
@@ -122,8 +122,7 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
         getDirectoryScanner(sourceDir).getIncludedFiles,
         sourceDir,
         destinationDir,
-        mapper
-      ) map (x => new File(sourceDir, x))
+        mapper) map (x => new File(sourceDir, x))
 
     /* Nothing to do. */
     if (includedFiles.isEmpty && argfile.isEmpty)
@@ -152,10 +151,12 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
       t map { s =>
         if (s.find(c => c <= ' ' || "\"'\\".contains(c)).isDefined)
           "\"" + s.flatMap(c =>
-            (if (c == '"' || c == '\\')
-               "\\"
-             else
-               "") + c) + "\""
+            (
+              if (c == '"' || c == '\\')
+                "\\"
+              else
+                ""
+            ) + c) + "\""
         else
           s
       } mkString "\n"

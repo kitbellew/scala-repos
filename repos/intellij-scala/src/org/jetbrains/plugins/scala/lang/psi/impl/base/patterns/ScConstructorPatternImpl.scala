@@ -103,16 +103,18 @@ class ScConstructorPatternImpl(node: ASTNode)
               val clazzType = ScParameterizedType(
                 refType,
                 td.getTypeParameters.map(tp =>
-                  ScUndefinedType(tp match {
-                    case tp: ScTypeParam =>
-                      new ScTypeParameterType(tp, r.substitutor)
-                    case _ => new ScTypeParameterType(tp, r.substitutor)
-                  }))
+                  ScUndefinedType(
+                    tp match {
+                      case tp: ScTypeParam =>
+                        new ScTypeParameterType(tp, r.substitutor)
+                      case _ => new ScTypeParameterType(tp, r.substitutor)
+                    }))
               )
               val emptySubst: ScSubstitutor =
                 new ScSubstitutor(
-                  Map(td.typeParameters.map(tp =>
-                    ((tp.name, ScalaPsiUtil.getPsiElementId(tp)), Any)): _*),
+                  Map(
+                    td.typeParameters.map(tp =>
+                      ((tp.name, ScalaPsiUtil.getPsiElementId(tp)), Any)): _*),
                   Map.empty,
                   None)
               expectedType match {

@@ -75,8 +75,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     "Int.scala",
     "Float.scala",
     "Long.scala",
-    "Double.scala"
-  )
+    "Double.scala")
 
   /**
     * True if the current compilation unit is of a primitive class (scala.Boolean et al).
@@ -452,8 +451,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         superClassSym == ObjectClass
       else
         // A ClassBType for a primitive class (scala.Boolean et al) is only created when compiling these classes.
-        ((superClassSym != NoSymbol) && !superClassSym.isInterface) || (isCompilingPrimitive && primitiveTypeToBType
-          .contains(classSym)),
+        (
+          (superClassSym != NoSymbol) && !superClassSym.isInterface
+        ) || (isCompilingPrimitive && primitiveTypeToBType.contains(classSym)),
       s"Bad superClass for $classSym: $superClassSym"
     )
     val superClass =
@@ -631,9 +631,13 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // in the source code.
 
         // (2) Java compatibility. See the big comment in BTypes that summarizes the InnerClass spec.
-        if ((innerClassSym.isJavaDefined && innerClassSym.rawowner.isModuleClass) || // (1)
-            (!isAnonymousOrLocalClass(innerClassSym) && isTopLevelModuleClass(
-              innerClassSym.rawowner))) { // (2)
+        if ((
+              innerClassSym.isJavaDefined && innerClassSym.rawowner.isModuleClass
+            ) || // (1)
+            (
+              !isAnonymousOrLocalClass(innerClassSym) && isTopLevelModuleClass(
+                innerClassSym.rawowner)
+            )) { // (2)
           // phase travel for linkedCoC - does not always work in late phases
           exitingPickler(innerClassSym.rawowner.linkedClassOfClass) match {
             case NoSymbol =>
@@ -820,8 +824,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     // new instances via outerClassInstance.new InnerModuleClass$().
     // TODO: do this early, mark the symbol private.
     val privateFlag =
-      sym.isPrivate || (sym.isPrimaryConstructor && isTopLevelModuleClass(
-        sym.owner))
+      sym.isPrivate || (
+        sym.isPrimaryConstructor && isTopLevelModuleClass(sym.owner)
+      )
 
     // Symbols marked in source as `final` have the FINAL flag. (In the past, the flag was also
     // added to modules and module classes, not anymore since 296b706).
@@ -866,8 +871,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         ACC_PRIVATE
       else
         ACC_PUBLIC,
-      if ((sym.isDeferred && !sym.hasFlag(
-            symtab.Flags.JAVA_DEFAULTMETHOD)) || sym.hasAbstractFlag)
+      if ((
+            sym.isDeferred && !sym.hasFlag(symtab.Flags.JAVA_DEFAULTMETHOD)
+          ) || sym.hasAbstractFlag)
         ACC_ABSTRACT
       else
         0,

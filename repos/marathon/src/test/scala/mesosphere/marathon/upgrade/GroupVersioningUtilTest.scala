@@ -16,11 +16,8 @@ class GroupVersioningUtilTest
       Group(
         id = PathId("/nested"),
         apps = Set(
-          AppDefinition(PathId("/nested/app"), cmd = Some("sleep 123"))
-        ),
-        version = Timestamp(2)
-      )
-    ),
+          AppDefinition(PathId("/nested/app"), cmd = Some("sleep 123"))),
+        version = Timestamp(2))),
     version = Timestamp(2)
   )
 
@@ -32,11 +29,8 @@ class GroupVersioningUtilTest
           AppDefinition(
             PathId("/nested/app"),
             cmd = Some("sleep 123"),
-            instances = 2)
-        ),
-        version = Timestamp(2)
-      )
-    ),
+            instances = 2)),
+        version = Timestamp(2))),
     version = Timestamp(2)
   )
 
@@ -45,11 +39,8 @@ class GroupVersioningUtilTest
       Group(
         id = PathId("/nested"),
         apps = Set(
-          AppDefinition(PathId("/nested/app"), cmd = Some("sleep 234"))
-        ),
-        version = Timestamp(2)
-      )
-    ),
+          AppDefinition(PathId("/nested/app"), cmd = Some("sleep 234"))),
+        version = Timestamp(2))),
     version = Timestamp(2)
   )
 
@@ -85,11 +76,7 @@ class GroupVersioningUtilTest
         .map(_.copy(versionInfo = VersionInfo.forNewConfig(Timestamp(10))))
         .get
     updated should be(
-      nestedApp.updateApp(
-        PathId("/nested/app"),
-        update,
-        Timestamp(10)
-      ))
+      nestedApp.updateApp(PathId("/nested/app"), update, Timestamp(10)))
   }
 
   test("A scaled app should get proper versionInfo") {
@@ -108,11 +95,7 @@ class GroupVersioningUtilTest
         .get
     updated.toString should be(
       nestedAppScaled
-        .updateApp(
-          PathId("/nested/app"),
-          update,
-          Timestamp(10)
-        )
+        .updateApp(PathId("/nested/app"), update, Timestamp(10))
         .toString)
   }
 
@@ -129,11 +112,7 @@ class GroupVersioningUtilTest
         .get
     updated.toString should be(
       nestedAppUpdated
-        .updateApp(
-          PathId("/nested/app"),
-          update,
-          Timestamp(10)
-        )
+        .updateApp(PathId("/nested/app"), update, Timestamp(10))
         .toString)
   }
 }

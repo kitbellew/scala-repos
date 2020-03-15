@@ -185,8 +185,7 @@ class JsonFormatSpec extends FunSuite {
         ApiCommitListItem.Commit(
           message = "Fix all the bugs",
           author = apiPersonIdent,
-          committer = apiPersonIdent
-        )(sha1, repo1Name),
+          committer = apiPersonIdent)(sha1, repo1Name),
       author = Some(apiUser),
       committer = Some(apiUser),
       parents = Seq(

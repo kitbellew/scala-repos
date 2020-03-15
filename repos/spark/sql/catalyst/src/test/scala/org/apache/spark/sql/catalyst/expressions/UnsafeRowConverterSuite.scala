@@ -296,8 +296,7 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
   test("basic conversion with struct type") {
     val fieldTypes: Array[DataType] = Array(
       new StructType().add("i", IntegerType),
-      new StructType().add("nest", new StructType().add("l", LongType))
-    )
+      new StructType().add("nest", new StructType().add("l", LongType)))
 
     val converter = UnsafeProjection.create(fieldTypes)
 
@@ -363,8 +362,7 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
   test("basic conversion with array type") {
     val fieldTypes: Array[DataType] = Array(
       ArrayType(IntegerType),
-      ArrayType(ArrayType(IntegerType))
-    )
+      ArrayType(ArrayType(IntegerType)))
     val converter = UnsafeProjection.create(fieldTypes)
 
     val row = new GenericMutableRow(fieldTypes.length)
@@ -393,8 +391,7 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
   test("basic conversion with map type") {
     val fieldTypes: Array[DataType] = Array(
       MapType(IntegerType, IntegerType),
-      MapType(IntegerType, MapType(IntegerType, IntegerType))
-    )
+      MapType(IntegerType, MapType(IntegerType, IntegerType)))
     val converter = UnsafeProjection.create(fieldTypes)
 
     val map1 = createMap(1, 2)(3, 4)
@@ -440,8 +437,7 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
   test("basic conversion with struct and array") {
     val fieldTypes: Array[DataType] = Array(
       new StructType().add("arr", ArrayType(IntegerType)),
-      ArrayType(new StructType().add("l", LongType))
-    )
+      ArrayType(new StructType().add("l", LongType)))
     val converter = UnsafeProjection.create(fieldTypes)
 
     val row = new GenericMutableRow(fieldTypes.length)
@@ -481,8 +477,7 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
   test("basic conversion with struct and map") {
     val fieldTypes: Array[DataType] = Array(
       new StructType().add("map", MapType(IntegerType, IntegerType)),
-      MapType(IntegerType, new StructType().add("l", LongType))
-    )
+      MapType(IntegerType, new StructType().add("l", LongType)))
     val converter = UnsafeProjection.create(fieldTypes)
 
     val row = new GenericMutableRow(fieldTypes.length)
@@ -530,8 +525,7 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
   test("basic conversion with array and map") {
     val fieldTypes: Array[DataType] = Array(
       ArrayType(MapType(IntegerType, IntegerType)),
-      MapType(IntegerType, ArrayType(IntegerType))
-    )
+      MapType(IntegerType, ArrayType(IntegerType)))
     val converter = UnsafeProjection.create(fieldTypes)
 
     val row = new GenericMutableRow(fieldTypes.length)

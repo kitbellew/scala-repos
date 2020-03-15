@@ -126,20 +126,20 @@ trait Reporting extends scala.reflect.internal.Reporting {
         else
           "should"
       val fqname = "scala.language." + featureName
-      val explain = (
-        if (reportedFeature contains featureTrait)
-          ""
-        else
-          s"""|
+      val explain = (if (reportedFeature contains featureTrait)
+                       ""
+                     else
+                       s"""|
             |This can be achieved by adding the import clause 'import $fqname'
             |or by setting the compiler option -language:$featureName.
             |See the Scaladoc for value $fqname for a discussion
-            |why the feature $req be explicitly enabled.""".stripMargin
-      )
+            |why the feature $req be explicitly enabled.""".stripMargin)
       reportedFeature += featureTrait
 
       val msg =
-        s"$featureDesc $req be enabled\nby making the implicit value $fqname visible.$explain" replace ("#", construct)
+        s"$featureDesc $req be enabled\nby making the implicit value $fqname visible.$explain" replace (
+          "#", construct
+      )
       if (required)
         reporter.error(pos, msg)
       else

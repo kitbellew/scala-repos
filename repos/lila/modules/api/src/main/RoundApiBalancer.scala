@@ -41,40 +41,44 @@ private[api] final class RoundApiBalancer(
     val router = system.actorOf(
       akka.routing
         .RoundRobinPool(nbActors)
-        .props(Props(new lila.hub.SequentialProvider {
-          val futureTimeout = 20.seconds
-          val logger = RoundApiBalancer.this.logger
-          def process = {
-            case Player(pov, apiVersion, ctx) => {
-                api.player(pov, apiVersion)(ctx) addFailureEffect { e =>
-                  logger.error(pov.toString, e)
-                }
-              }.chronometer
-                .logIfSlow(500, logger) { _ =>
-                  s"inner player $pov"
-                }
-                .result
-            case Watcher(
-                  pov,
-                  apiVersion,
-                  tv,
-                  analysis,
-                  initialFenO,
-                  withMoveTimes,
-                  withOpening,
-                  ctx) =>
-              api.watcher(
-                pov,
-                apiVersion,
-                tv,
-                analysis,
-                initialFenO,
-                withMoveTimes,
-                withOpening)(ctx)
-            case UserAnalysis(pov, pref, initialFen, orientation, owner) =>
-              api.userAnalysisJson(pov, pref, initialFen, orientation, owner)
-          }
-        })),
+        .props(
+          Props(
+            new lila.hub.SequentialProvider {
+              val futureTimeout = 20.seconds
+              val logger = RoundApiBalancer.this.logger
+              def process = {
+                case Player(pov, apiVersion, ctx) =>
+                  {
+                    api.player(pov, apiVersion)(ctx) addFailureEffect { e =>
+                      logger.error(pov.toString, e)
+                    }
+                  }.chronometer
+                    .logIfSlow(500, logger) { _ =>
+                      s"inner player $pov"
+                    }
+                    .result
+                case Watcher(
+                      pov,
+                      apiVersion,
+                      tv,
+                      analysis,
+                      initialFenO,
+                      withMoveTimes,
+                      withOpening,
+                      ctx) =>
+                  api.watcher(
+                    pov,
+                    apiVersion,
+                    tv,
+                    analysis,
+                    initialFenO,
+                    withMoveTimes,
+                    withOpening)(ctx)
+                case UserAnalysis(pov, pref, initialFen, orientation, owner) =>
+                  api
+                    .userAnalysisJson(pov, pref, initialFen, orientation, owner)
+              }
+            })),
       "api.round.router"
     )
   }

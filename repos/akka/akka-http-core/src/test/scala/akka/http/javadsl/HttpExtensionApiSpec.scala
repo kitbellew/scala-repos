@@ -315,15 +315,12 @@ class HttpExtensionApiSpec
     "create a cached connection pool (with a ConnectToHttp and a materializer)" in {
       val (host, port, binding) = runServer()
 
-      val poolFlow: Flow[
-        Pair[HttpRequest, NotUsed],
-        Pair[Try[HttpResponse], NotUsed],
-        HostConnectionPool] = http
+      val poolFlow: Flow[Pair[HttpRequest, NotUsed], Pair[Try[
+        HttpResponse], NotUsed], HostConnectionPool] = http
         .cachedHostConnectionPool[NotUsed](toHost(host, port), materializer)
 
-      val pair: Pair[
-        HostConnectionPool,
-        CompletionStage[Pair[Try[HttpResponse], NotUsed]]] = Source
+      val pair: Pair[HostConnectionPool, CompletionStage[
+        Pair[Try[HttpResponse], NotUsed]]] = Source
         .single(
           new Pair(
             HttpRequest.GET(s"http://$host:$port/"),
@@ -331,9 +328,8 @@ class HttpExtensionApiSpec
         .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
         .toMat(
           Sink.head(),
-          Keep.both[
-            HostConnectionPool,
-            CompletionStage[Pair[Try[HttpResponse], NotUsed]]])
+          Keep.both[HostConnectionPool, CompletionStage[
+            Pair[Try[HttpResponse], NotUsed]]])
         .run(materializer)
 
       waitFor(pair.second).first.isSuccess should be(true)
@@ -345,18 +341,16 @@ class HttpExtensionApiSpec
       pending
       val (host, port, binding) = runServer()
 
-      val poolFlow: Flow[
-        Pair[HttpRequest, NotUsed],
-        Pair[Try[HttpResponse], NotUsed],
-        HostConnectionPool] = http.cachedHostConnectionPool[NotUsed](
-        toHost(host, port),
-        poolSettings,
-        loggingAdapter,
-        materializer)
+      val poolFlow: Flow[Pair[HttpRequest, NotUsed], Pair[Try[
+        HttpResponse], NotUsed], HostConnectionPool] = http
+        .cachedHostConnectionPool[NotUsed](
+          toHost(host, port),
+          poolSettings,
+          loggingAdapter,
+          materializer)
 
-      val pair: Pair[
-        HostConnectionPool,
-        CompletionStage[Pair[Try[HttpResponse], NotUsed]]] = Source
+      val pair: Pair[HostConnectionPool, CompletionStage[
+        Pair[Try[HttpResponse], NotUsed]]] = Source
         .single(
           new Pair(
             HttpRequest.GET(s"http://$host:$port/"),
@@ -364,9 +358,8 @@ class HttpExtensionApiSpec
         .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
         .toMat(
           Sink.head(),
-          Keep.both[
-            HostConnectionPool,
-            CompletionStage[Pair[Try[HttpResponse], NotUsed]]])
+          Keep.both[HostConnectionPool, CompletionStage[
+            Pair[Try[HttpResponse], NotUsed]]])
         .run(materializer)
 
       waitFor(pair.second).first.get.status() should be(StatusCodes.OK)
@@ -376,15 +369,12 @@ class HttpExtensionApiSpec
     "create a cached connection pool (with a String and a Materializer)" in {
       val (host, port, binding) = runServer()
 
-      val poolFlow: Flow[
-        Pair[HttpRequest, NotUsed],
-        Pair[Try[HttpResponse], NotUsed],
-        HostConnectionPool] = http
+      val poolFlow: Flow[Pair[HttpRequest, NotUsed], Pair[Try[
+        HttpResponse], NotUsed], HostConnectionPool] = http
         .cachedHostConnectionPool[NotUsed](s"http://$host:$port", materializer)
 
-      val pair: Pair[
-        HostConnectionPool,
-        CompletionStage[Pair[Try[HttpResponse], NotUsed]]] = Source
+      val pair: Pair[HostConnectionPool, CompletionStage[
+        Pair[Try[HttpResponse], NotUsed]]] = Source
         .single(
           new Pair(
             HttpRequest.GET(s"http://$host:$port/"),
@@ -392,9 +382,8 @@ class HttpExtensionApiSpec
         .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
         .toMat(
           Sink.head(),
-          Keep.both[
-            HostConnectionPool,
-            CompletionStage[Pair[Try[HttpResponse], NotUsed]]])
+          Keep.both[HostConnectionPool, CompletionStage[
+            Pair[Try[HttpResponse], NotUsed]]])
         .run(materializer)
 
       waitFor(pair.second).first.get.status() should be(StatusCodes.OK)
@@ -407,16 +396,14 @@ class HttpExtensionApiSpec
       val poolFlow = http
         .newHostConnectionPool[NotUsed](toHost(host, port), materializer)
 
-      val pair: Pair[
-        HostConnectionPool,
-        CompletionStage[Pair[Try[HttpResponse], NotUsed]]] = Source
+      val pair: Pair[HostConnectionPool, CompletionStage[
+        Pair[Try[HttpResponse], NotUsed]]] = Source
         .single(new Pair(get(host, port), NotUsed.getInstance()))
         .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
         .toMat(
           Sink.head(),
-          Keep.both[
-            HostConnectionPool,
-            CompletionStage[Pair[Try[HttpResponse], NotUsed]]])
+          Keep.both[HostConnectionPool, CompletionStage[
+            Pair[Try[HttpResponse], NotUsed]]])
         .run(materializer)
 
       waitFor(pair.second).first.get.status() should be(StatusCodes.OK)
@@ -435,16 +422,14 @@ class HttpExtensionApiSpec
         loggingAdapter,
         materializer)
 
-      val pair: Pair[
-        HostConnectionPool,
-        CompletionStage[Pair[Try[HttpResponse], NotUsed]]] = Source
+      val pair: Pair[HostConnectionPool, CompletionStage[
+        Pair[Try[HttpResponse], NotUsed]]] = Source
         .single(new Pair(get(host, port), NotUsed.getInstance()))
         .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
         .toMat(
           Sink.head(),
-          Keep.both[
-            HostConnectionPool,
-            CompletionStage[Pair[Try[HttpResponse], NotUsed]]])
+          Keep.both[HostConnectionPool, CompletionStage[
+            Pair[Try[HttpResponse], NotUsed]]])
         .run(materializer)
 
       waitFor(pair.second).first.get.status() should be(StatusCodes.OK)
@@ -458,16 +443,14 @@ class HttpExtensionApiSpec
       val poolFlow = http
         .newHostConnectionPool[NotUsed](s"http://$host:$port", materializer)
 
-      val pair: Pair[
-        HostConnectionPool,
-        CompletionStage[Pair[Try[HttpResponse], NotUsed]]] = Source
+      val pair: Pair[HostConnectionPool, CompletionStage[
+        Pair[Try[HttpResponse], NotUsed]]] = Source
         .single(new Pair(get(host, port), NotUsed.getInstance()))
         .viaMat(poolFlow, Keep.right[NotUsed, HostConnectionPool])
         .toMat(
           Sink.head(),
-          Keep.both[
-            HostConnectionPool,
-            CompletionStage[Pair[Try[HttpResponse], NotUsed]]])
+          Keep.both[HostConnectionPool, CompletionStage[
+            Pair[Try[HttpResponse], NotUsed]]])
         .run(materializer)
 
       waitFor(pair.second).first.get.status() should be(StatusCodes.OK)
@@ -582,9 +565,8 @@ class HttpExtensionApiSpec
           Keep.right[NotUsed, CompletionStage[WebSocketUpgradeResponse]])
         .toMat(
           Sink.head[Message](),
-          Keep.both[
-            CompletionStage[WebSocketUpgradeResponse],
-            CompletionStage[Message]])
+          Keep.both[CompletionStage[WebSocketUpgradeResponse], CompletionStage[
+            Message]])
         .run(materializer)
 
       waitFor(pair.first).response.status() should be(
@@ -608,9 +590,8 @@ class HttpExtensionApiSpec
           Keep.right[NotUsed, CompletionStage[WebSocketUpgradeResponse]])
         .toMat(
           Sink.head[Message](),
-          Keep.both[
-            CompletionStage[WebSocketUpgradeResponse],
-            CompletionStage[Message]])
+          Keep.both[CompletionStage[WebSocketUpgradeResponse], CompletionStage[
+            Message]])
         .run(materializer)
 
       waitFor(pair.first).response.status() should be(

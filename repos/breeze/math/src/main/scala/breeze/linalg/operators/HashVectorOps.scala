@@ -44,14 +44,10 @@ trait DenseVector_HashVector_Ops { this: HashVector.type =>
   @expand
   implicit def canDot_DV_HV[@expand.args(Int, Double, Float, Long) T](
       implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        DenseVector[T],
-        HashVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      DenseVector[T],
-      HashVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], HashVector[
+        T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], HashVector[
+      T], T] {
       def apply(a: DenseVector[T], b: HashVector[T]) = {
         var result: T = zero
 
@@ -167,14 +163,10 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
 
   @expand
   implicit def canDot_HV_DV[@expand.args(Int, Float, Double, Long) T]
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        HashVector[T],
-        DenseVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      HashVector[T],
-      DenseVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], DenseVector[
+        T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], DenseVector[
+      T], T] {
       def apply(a: HashVector[T], b: DenseVector[T]) = {
         require(b.length == a.length, "Vectors must be the same length!")
         b dot a
@@ -434,14 +426,10 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   @expand
   implicit def canDot_HV_HV[@expand.args(Int, Long, Double, Float) T](
       implicit @expand.sequence[T](0, 0L, 0.0, 0f) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        HashVector[T],
-        HashVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      HashVector[T],
-      HashVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], HashVector[
+        T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], HashVector[
+      T], T] {
       def apply(a: HashVector[T], b: HashVector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
 
@@ -617,14 +605,10 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
   @expand
   implicit def canDot_HV_SV[@expand.args(Int, Long, Float, Double) T](
       implicit @expand.sequence[T](0, 0L, 0f, 0.0) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        HashVector[T],
-        SparseVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      HashVector[T],
-      SparseVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], SparseVector[
+        T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], SparseVector[
+      T], T] {
       def apply(a: HashVector[T], b: SparseVector[T]) = {
         require(b.length == a.length, "Vectors must be the same length!")
         var result: T = zero
@@ -753,14 +737,10 @@ trait SparseVector_HashVector_Ops
 
   implicit def canDot_SV_HV[T](
       implicit op: OpMulInner.Impl2[HashVector[T], SparseVector[T], T])
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        SparseVector[T],
-        HashVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      SparseVector[T],
-      HashVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[SparseVector[T], HashVector[
+        T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[SparseVector[T], HashVector[
+      T], T] {
       def apply(a: SparseVector[T], b: HashVector[T]) = {
         b dot a
       }

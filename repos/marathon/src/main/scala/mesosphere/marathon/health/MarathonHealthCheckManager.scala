@@ -267,8 +267,7 @@ class MarathonHealthCheckManager @Inject() (
               case ActiveHealthCheck(_, actor) =>
                 (actor ? GetTaskHealth(taskId)).mapTo[Health]
             }
-            .to[Seq]
-        )
+            .to[Seq])
     }
   }
 

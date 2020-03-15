@@ -43,10 +43,12 @@ object Main {
         (event: Event) => {
           val encode = Base64Converter.encode(event.toBytes)
           out.write(
-            (if (standalone && !encode.endsWith("="))
-               encode + "="
-             else
-               encode).getBytes)
+            (
+              if (standalone && !encode.endsWith("="))
+                encode + "="
+              else
+                encode
+            ).getBytes)
         }
       new EventGeneratingClient(eventHandler, out.checkError) {
         override def error(

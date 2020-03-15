@@ -268,7 +268,9 @@ trait ExecutableMailbox extends Runnable { self: MessageQueue =>
                 null // If we are suspended, abort
               } else { // If we aren't suspended, we need to make sure we're not overstepping our boundaries
                 processedMessages += 1
-                if ((processedMessages >= dispatcher.throughput) || (isDeadlineEnabled && System.nanoTime >= deadlineNs)) // If we're throttled, break out
+                if ((processedMessages >= dispatcher.throughput) || (
+                      isDeadlineEnabled && System.nanoTime >= deadlineNs
+                    )) // If we're throttled, break out
                   null //We reached our boundaries, abort
                 else
                   self.dequeue //Dequeue the next message

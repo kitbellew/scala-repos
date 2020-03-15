@@ -233,7 +233,9 @@ trait StreamTest extends QueryTest with Timeouts {
       actions.zipWithIndex
         .map {
           case (a, i) =>
-            if ((pos == i && startedManually) || (pos == (i + 1) && !startedManually)) {
+            if ((
+                  pos == i && startedManually
+                ) || (pos == (i + 1) && !startedManually)) {
               "=> " + a.toString
             } else {
               "   " + a.toString
@@ -335,9 +337,8 @@ trait StreamTest extends QueryTest with Timeouts {
               .asInstanceOf[StreamExecution]
             currentStream.microBatchThread.setUncaughtExceptionHandler(
               new UncaughtExceptionHandler {
-                override def uncaughtException(
-                    t: Thread,
-                    e: Throwable): Unit = {
+                override def uncaughtException(t: Thread, e: Throwable)
+                    : Unit = {
                   streamDeathCause = e
                   testThread.interrupt()
                 }
@@ -550,8 +551,7 @@ trait StreamTest extends QueryTest with Timeouts {
     def test(
         expectedBehavior: ExpectedBehavior,
         awaitTermFunc: () => Unit,
-        testTimeout: Span = DEFAULT_TEST_TIMEOUT
-    ): Unit = {
+        testTimeout: Span = DEFAULT_TEST_TIMEOUT): Unit = {
 
       expectedBehavior match {
         case ExpectNotBlocked =>

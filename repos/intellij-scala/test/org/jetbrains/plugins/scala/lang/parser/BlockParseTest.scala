@@ -29,8 +29,7 @@ class BlockParseTest extends SimpleTestCase {
           holder,
           new ScalaLexer,
           ScalaFileType.SCALA_LANGUAGE,
-          s)
-      )
+          s))
     BlockExpr.parse(builder)
     val node = builder.getTreeBuilt
     holder.rawAddChildren(node.asInstanceOf[TreeElement])
@@ -43,8 +42,7 @@ class BlockParseTest extends SimpleTestCase {
   }
 
   def testBlock() {
-    doTest(
-      """{
+    doTest("""{
   val a = new df
   val agaga =  agadg+"/"+aa
   val agd = try {
@@ -55,8 +53,7 @@ class BlockParseTest extends SimpleTestCase {
   val adg = asdgasdg(adgasdg.asdg(asdg))
   asdg.asdg.adsg(asdgasdg,-1)
   asdg
-}"""
-    )
+}""")
   }
 
   def testBlock2() {
@@ -99,14 +96,12 @@ class BlockParseTest extends SimpleTestCase {
         TemplateManager.getInstance(project).startTemplate(newEditor, template)
       }
     }
-}"""
-    )
+}""")
 
   }
 
   def testBlock3() {
-    doTest(
-      """{
+    doTest("""{
       var asdga = adf
       val adf = """"" + """"
         gads P { fasdf A, B; }
@@ -132,20 +127,17 @@ class BlockParseTest extends SimpleTestCase {
       }
 
       assert(adsfadsf, "")
-    }"""
-    )
+    }""")
   }
 
   def testBlock4() {
-    doTest(
-      """{
+    doTest("""{
     val asdfadf = fadfad.:
     fadfa {
       dafsdfa {
         case 'take => asdfasd(asdfadf)
       }
     }
-  }"""
-    )
+  }""")
   }
 }

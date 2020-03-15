@@ -150,8 +150,9 @@ object Stages {
       process: String => NextStep): Stage = {
     ensureDelimiter('\n'.toByte) { (n, buffer) =>
       val end =
-        if ((n > 1) && (buffer.getByte(
-              buffer.readerIndex + n - 2) == '\r'.toByte)) {
+        if ((
+              n > 1
+            ) && (buffer.getByte(buffer.readerIndex + n - 2) == '\r'.toByte)) {
           n - 2
         } else {
           n - 1
@@ -162,10 +163,12 @@ object Stages {
         new String(
           byteBuffer,
           0,
-          (if (removeLF)
-             end
-           else
-             n),
+          (
+            if (removeLF)
+              end
+            else
+              n
+          ),
           encoding))
     }
   }

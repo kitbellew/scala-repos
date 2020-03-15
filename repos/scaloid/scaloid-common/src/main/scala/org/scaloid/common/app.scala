@@ -69,11 +69,12 @@ trait TraitActivity[+This <: Activity] {
     if (uiThread == Thread.currentThread) {
       f
     } else {
-      handler.post(new Runnable() {
-        def run() {
-          f
-        }
-      })
+      handler.post(
+        new Runnable() {
+          def run() {
+            f
+          }
+        })
     }
   }
 }

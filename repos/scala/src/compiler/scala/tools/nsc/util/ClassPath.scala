@@ -194,9 +194,10 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
   def mergeUrlsIntoClassPath(urls: URL*): MergedClassPath[T] = {
     // Collect our new jars/directories and add them to the existing set of classpaths
     val allEntries =
-      (entries ++
-        urls.map(url =>
-          context.newClassPath(io.AbstractFile.getURL(url)))).distinct
+      (
+        entries ++
+          urls.map(url => context.newClassPath(io.AbstractFile.getURL(url)))
+      ).distinct
 
     // Combine all of our classpaths (old and new) into one merged classpath
     new MergedClassPath(allEntries, context)
@@ -362,8 +363,10 @@ class MergedClassPath[T](
     entries flatMap (_.sourcepaths)
 
   override def origin =
-    Some(entries map (x =>
-      x.origin getOrElse x.name) mkString ("Merged(", ", ", ")"))
+    Some(
+      entries map (x => x.origin getOrElse x.name) mkString (
+        "Merged(", ", ", ")"
+      ))
   override def asClassPathString: String =
     join(entries map (_.asClassPathString): _*)
 

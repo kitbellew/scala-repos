@@ -28,8 +28,7 @@ final class Env(
         getFriendIds = getFriendIds,
         getFollowerIds = getFollowerIds,
         unsubApi = unsubApi,
-        entryRepo = entryRepo
-      )),
+        entryRepo = entryRepo)),
     name = UserActorName
   )
 

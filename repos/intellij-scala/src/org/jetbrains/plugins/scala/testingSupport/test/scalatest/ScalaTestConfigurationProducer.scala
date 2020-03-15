@@ -92,10 +92,12 @@ class ScalaTestConfigurationProducer extends {
       .getInstance(location.getProject)
       .createRunConfiguration(
         StringUtil.getShortName(testClassPath) +
-          (if (testName != null)
-             "." + testName
-           else
-             ""),
+          (
+            if (testName != null)
+              "." + testName
+            else
+              ""
+          ),
         confFactory)
     val runConfiguration = settings.getConfiguration
       .asInstanceOf[ScalaTestRunConfiguration]
@@ -436,10 +438,12 @@ class ScalaTestConfigurationProducer extends {
             Map("feature" -> fqn)) match {
             case SuccessResult(_, featureName, _) =>
               //check with Informing is used to distinguish scalatest 2.0 from scalatest 1.9.2
-              testName = (if (isInheritor(clazz, "org.scalatest.Informing"))
-                            "Feature: "
-                          else
-                            "") +
+              testName = (
+                if (isInheritor(clazz, "org.scalatest.Informing"))
+                  "Feature: "
+                else
+                  ""
+              ) +
                 featureName + " " + testName
             case WrongResult => return None
             case _           =>
@@ -582,8 +586,9 @@ class ScalaTestConfigurationProducer extends {
     def endupWithIt(it: ScReferenceExpression): Option[String] = {
       var elem: PsiElement = it
       var parent = it.getParent
-      while (parent != null && (!parent
-               .isInstanceOf[ScTemplateBody] || parent != tb)) {
+      while (parent != null && (
+               !parent.isInstanceOf[ScTemplateBody] || parent != tb
+             )) {
         elem = parent
         parent = parent.getParent
       }
@@ -790,10 +795,12 @@ class ScalaTestConfigurationProducer extends {
                 ) match {
                   case SuccessResult(invoc, tName, middleName) =>
                     call = invoc
-                    testName = tName + " " + middleName + (if (testName.isEmpty)
-                                                             ""
-                                                           else
-                                                             " ") + testName
+                    testName = tName + " " + middleName + (
+                      if (testName.isEmpty)
+                        ""
+                      else
+                        " "
+                    ) + testName
                   case WrongResult => return None
                   case _           => call = null
                 }
@@ -873,60 +880,62 @@ class ScalaTestConfigurationProducer extends {
     val oldResult =
       (
         clazz,
-        (getFunSuiteBases.toStream
-          .map(checkFunSuite)
-          .find(_.isDefined)
-          .getOrElse(None) ++
-          getFeatureSpecBases.toStream
-            .map(checkFeatureSpec)
+        (
+          getFunSuiteBases.toStream
+            .map(checkFunSuite)
             .find(_.isDefined)
             .getOrElse(None) ++
-          getFreeSpecBases.toStream
-            .map(checkFreeSpec)
-            .find(_.isDefined)
-            .getOrElse(None) ++
-          getJUnit3SuiteBases.toStream
-            .map(checkJUnit3Suite)
-            .find(_.isDefined)
-            .getOrElse(None) ++
-          getJUnitSuiteBases.toStream
-            .map(checkJUnitSuite)
-            .find(_.isDefined)
-            .getOrElse(None) ++
-          getPropSpecBases.toStream
-            .map(checkPropSpec)
-            .find(_.isDefined)
-            .getOrElse(None) ++
-          /**
+            getFeatureSpecBases.toStream
+              .map(checkFeatureSpec)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            getFreeSpecBases.toStream
+              .map(checkFreeSpec)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            getJUnit3SuiteBases.toStream
+              .map(checkJUnit3Suite)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            getJUnitSuiteBases.toStream
+              .map(checkJUnitSuite)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            getPropSpecBases.toStream
+              .map(checkPropSpec)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            /**
               //TODO: actually implement checkSpec for scalatest 2.0 Spec
         checkSpec("org.scalatest.Spec") ++
         checkSpec("org.scalatest.SpecLike") ++
         checkSpec("org.scalatest.fixture.Spec") ++
         checkSpec("org.scalatest.fixture.SpecLike") ++
-            */
-          //this is intended for scalatest versions < 2.0
-          getFunSpecBasesPre2_0.toStream
-            .map(checkFunSpec)
-            .find(_.isDefined)
-            .getOrElse(None) ++
-          //this is intended for scalatest version 2.0
-          getFunSpecBasesPost2_0.toStream
-            .map(checkFunSpec)
-            .find(_.isDefined)
-            .getOrElse(None) ++
-          //---
-          getTestNGSuiteBases.toStream
-            .map(checkTestNGSuite)
-            .find(_.isDefined)
-            .getOrElse(None) ++
-          getFlatSpecBases.toStream
-            .map(checkFlatSpec)
-            .find(_.isDefined)
-            .getOrElse(None) ++
-          getWordSpecBases.toStream
-            .map(checkWordSpec)
-            .find(_.isDefined)
-            .getOrElse(None)).orNull)
+              */
+            //this is intended for scalatest versions < 2.0
+            getFunSpecBasesPre2_0.toStream
+              .map(checkFunSpec)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            //this is intended for scalatest version 2.0
+            getFunSpecBasesPost2_0.toStream
+              .map(checkFunSpec)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            //---
+            getTestNGSuiteBases.toStream
+              .map(checkTestNGSuite)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            getFlatSpecBases.toStream
+              .map(checkFlatSpec)
+              .find(_.isDefined)
+              .getOrElse(None) ++
+            getWordSpecBases.toStream
+              .map(checkWordSpec)
+              .find(_.isDefined)
+              .getOrElse(None)
+        ).orNull)
 
     val astTransformer = new ScalaTestAstTransformer()
     val selection = astTransformer.testSelection(location)

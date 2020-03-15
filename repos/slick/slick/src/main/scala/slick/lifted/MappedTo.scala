@@ -38,8 +38,7 @@ object MappedToBase {
             EmptyTree)),
         Apply(
           Select(New(TypeTree(e.tpe)), termNames.CONSTRUCTOR),
-          List(Ident(TermName("v")))
-        )
+          List(Ident(TermName("v"))))
       ))
     val res = reify {
       new Isomorphism[E, E#Underlying](_.value, cons.splice)

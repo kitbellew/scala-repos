@@ -45,9 +45,10 @@ class EliminateSerializationSuite extends PlanTest {
   private val func2 = identity[Iterator[OtherTuple]] _
 
   def assertObjectCreations(count: Int, plan: LogicalPlan): Unit = {
-    val newInstances = plan.flatMap(_.expressions.collect {
-      case n: NewInstance => n
-    })
+    val newInstances = plan.flatMap(
+      _.expressions.collect {
+        case n: NewInstance => n
+      })
 
     if (newInstances.size != count) {
       fail(s"""

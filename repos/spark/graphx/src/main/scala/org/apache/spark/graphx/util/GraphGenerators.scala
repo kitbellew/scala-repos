@@ -165,8 +165,10 @@ object GraphGenerators extends Logging {
     // This ensures that the 4 quadrants are the same size at all recursion levels
     val numVertices =
       math
-        .round(math
-          .pow(2.0, math.ceil(math.log(requestedNumVertices) / math.log(2.0))))
+        .round(
+          math.pow(
+            2.0,
+            math.ceil(math.log(requestedNumVertices) / math.log(2.0))))
         .toInt
     val numEdgesUpperBound =
       math.pow(2.0, 2 * ((math.log(numVertices) / math.log(2.0)) - 1)).toInt
@@ -300,16 +302,20 @@ object GraphGenerators extends Logging {
     val edges: RDD[Edge[Double]] = vertices
       .flatMap {
         case (vid, (r, c)) =>
-          (if (r + 1 < rows) {
-             Seq((sub2ind(r, c), sub2ind(r + 1, c)))
-           } else {
-             Seq.empty
-           }) ++
-            (if (c + 1 < cols) {
-               Seq((sub2ind(r, c), sub2ind(r, c + 1)))
-             } else {
-               Seq.empty
-             })
+          (
+            if (r + 1 < rows) {
+              Seq((sub2ind(r, c), sub2ind(r + 1, c)))
+            } else {
+              Seq.empty
+            }
+          ) ++
+            (
+              if (c + 1 < cols) {
+                Seq((sub2ind(r, c), sub2ind(r, c + 1)))
+              } else {
+                Seq.empty
+              }
+            )
       }
       .map {
         case (src, dst) => Edge(src, dst, 1.0)

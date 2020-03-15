@@ -298,8 +298,8 @@ object Test extends App {
     sp = true)
 
   testAnonFunClass({
-    case x: Int => x
-  }: PartialFunction[Any, Any])
+      case x: Int => x
+    }: PartialFunction[Any, Any])
 
   testAnonFunClass(
     {
@@ -308,14 +308,14 @@ object Test extends App {
     sp = true)
 
   testAnonFunClass({
-    case x: String => 1
-  }: PartialFunction[String, Int])
+      case x: String => 1
+    }: PartialFunction[String, Int])
 
   testAnonFunClass({
-    case x: String => ()
-  }: PartialFunction[String, Unit])
+      case x: String => ()
+    }: PartialFunction[String, Unit])
 
   testAnonFunClass({
-    case x: String => x
-  }: PartialFunction[String, String])
+      case x: String => x
+    }: PartialFunction[String, String])
 }

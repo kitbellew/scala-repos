@@ -173,17 +173,16 @@ object Namer {
     */
   def bind(
       lookup: Path => Activity[NameTree[Name]],
-      tree: NameTree[Path]
-  ): Activity[NameTree[Name.Bound]] =
-    bind(lookup, 0, None)(tree map { path =>
-      Name.Path(path)
-    })
+      tree: NameTree[Path]): Activity[NameTree[Name.Bound]] =
+    bind(lookup, 0, None)(
+      tree map { path =>
+        Name.Path(path)
+      })
 
   private[this] def bindUnion(
       lookup: Path => Activity[NameTree[Name]],
       depth: Int,
-      trees: Seq[Weighted[Name]]
-  ): Activity[NameTree[Name.Bound]] = {
+      trees: Seq[Weighted[Name]]): Activity[NameTree[Name.Bound]] = {
 
     val weightedTreeVars
         : Seq[Var[Activity.State[NameTree.Weighted[Name.Bound]]]] = trees.map {

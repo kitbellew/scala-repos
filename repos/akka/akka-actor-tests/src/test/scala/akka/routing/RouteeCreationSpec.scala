@@ -17,10 +17,15 @@ class RouteeCreationSpec extends AkkaSpec {
 
     "result in visible routees" in {
       val N = 100
-      system.actorOf(RoundRobinPool(N).props(Props(new Actor {
-        system.actorSelection(self.path).tell(Identify(self.path), testActor)
-        def receive = Actor.emptyBehavior
-      })))
+      system.actorOf(
+        RoundRobinPool(N).props(
+          Props(
+            new Actor {
+              system
+                .actorSelection(self.path)
+                .tell(Identify(self.path), testActor)
+              def receive = Actor.emptyBehavior
+            })))
       for (i ← 1 to N) {
         expectMsgType[ActorIdentity] match {
           case ActorIdentity(_, Some(_)) ⇒ // fine
@@ -31,12 +36,15 @@ class RouteeCreationSpec extends AkkaSpec {
 
     "allow sending to context.parent" in {
       val N = 100
-      system.actorOf(RoundRobinPool(N).props(Props(new Actor {
-        context.parent ! "one"
-        def receive = {
-          case "one" ⇒ testActor forward "two"
-        }
-      })))
+      system.actorOf(
+        RoundRobinPool(N).props(
+          Props(
+            new Actor {
+              context.parent ! "one"
+              def receive = {
+                case "one" ⇒ testActor forward "two"
+              }
+            })))
       val gotit =
         receiveWhile(messages = N) {
           case "two" ⇒ lastSender.toString

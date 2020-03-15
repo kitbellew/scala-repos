@@ -95,13 +95,14 @@ object Cache {
   case class OnRemoval[K, V](onRemove: (K, V, RemovalCause) => PrecogUnit)
       extends CacheOption[K, V] {
     def apply(builder: CacheBuilder[K, V]) =
-      builder.removalListener(new RemovalListener[K, V] {
-        def onRemoval(notification: RemovalNotification[K, V]) =
-          onRemove(
-            notification.getKey,
-            notification.getValue,
-            notification.getCause)
-      })
+      builder.removalListener(
+        new RemovalListener[K, V] {
+          def onRemoval(notification: RemovalNotification[K, V]) =
+            onRemove(
+              notification.getKey,
+              notification.getValue,
+              notification.getCause)
+        })
   }
 
   private def createBuilder[K, V](
@@ -116,9 +117,10 @@ object Cache {
 
   def auto[K, V](options: CacheOption[K, V]*)(
       loader: K => V): AutoCache[K, V] = {
-    val backing = createBuilder(options).build(new CacheLoader[K, V] {
-      def load(key: K) = loader(key)
-    })
+    val backing = createBuilder(options).build(
+      new CacheLoader[K, V] {
+        def load(key: K) = loader(key)
+      })
     new AutoCache[K, V](backing)
   }
 }

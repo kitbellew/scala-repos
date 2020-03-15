@@ -165,10 +165,12 @@ trait SymbolTables {
       val buf = new StringBuilder
       buf
         .append(
-          "symbol table = " + (if (syms.length == 0)
-                                 "<empty>"
-                               else
-                                 ""))
+          "symbol table = " + (
+            if (syms.length == 0)
+              "<empty>"
+            else
+              ""
+          ))
         .append(EOL)
       syms foreach (sym => buf.append(symDef(sym)).append(EOL))
       buf.delete(buf.length - EOL.length, buf.length)

@@ -14,8 +14,8 @@ private[importer] final class DataForm {
   lazy val importForm = Form(
     mapping(
       "pgn" -> nonEmptyText.verifying("Invalid PGN", checkPgn _),
-      "analyse" -> optional(nonEmptyText)
-    )(ImportData.apply)(ImportData.unapply))
+      "analyse" -> optional(nonEmptyText))(ImportData.apply)(
+      ImportData.unapply))
 
   private def checkPgn(pgn: String): Boolean =
     ImportData(pgn, none).preprocess(none).isSuccess
@@ -86,9 +86,7 @@ case class ImportData(pgn: String, analyse: Option[String]) {
                   pgnImport =
                     PgnImport.make(user = user, date = date, pgn = pgn).some
                 )
-                .copy(
-                  binaryPgn = BinaryFormat.pgn write replay.state.pgnMoves
-                )
+                .copy(binaryPgn = BinaryFormat.pgn write replay.state.pgnMoves)
                 .start
 
             Preprocessed(dbGame, replay, result)

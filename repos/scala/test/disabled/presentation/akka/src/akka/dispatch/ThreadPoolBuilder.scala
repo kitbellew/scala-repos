@@ -100,8 +100,8 @@ trait DispatcherBuilder {
 }
 
 object ThreadPoolConfigDispatcherBuilder {
-  def conf_?[T](opt: Option[T])(fun: (
-      T) => ThreadPoolConfigDispatcherBuilder => ThreadPoolConfigDispatcherBuilder)
+  def conf_?[T](opt: Option[T])(
+      fun: (T) => ThreadPoolConfigDispatcherBuilder => ThreadPoolConfigDispatcherBuilder)
       : Option[
         (ThreadPoolConfigDispatcherBuilder) => ThreadPoolConfigDispatcherBuilder] =
     opt map fun
@@ -229,9 +229,10 @@ class MonitorableThread(runnable: Runnable, name: String)
       runnable,
       name + "-" + MonitorableThread.created.incrementAndGet) {
 
-  setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-    def uncaughtException(thread: Thread, cause: Throwable) = {}
-  })
+  setUncaughtExceptionHandler(
+    new Thread.UncaughtExceptionHandler() {
+      def uncaughtException(thread: Thread, cause: Throwable) = {}
+    })
 
   override def run = {
     try {
@@ -253,15 +254,16 @@ class BoundedExecutorDecorator(val executor: ExecutorService, bound: Int)
   override def execute(command: Runnable) = {
     semaphore.acquire
     try {
-      executor.execute(new Runnable() {
-        def run = {
-          try {
-            command.run
-          } finally {
-            semaphore.release
+      executor.execute(
+        new Runnable() {
+          def run = {
+            try {
+              command.run
+            } finally {
+              semaphore.release
+            }
           }
-        }
-      })
+        })
     } catch {
       case e: RejectedExecutionException =>
         EventHandler.warning(this, e.toString)

@@ -80,8 +80,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
       null,
       true,
       true,
-      indexers
-    )
+      indexers)
   }
 
   def close(): Unit =
@@ -134,8 +133,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
           new DefaultArtifactContextProducer(
             new DefaultArtifactPackagingMapper)),
         indexerEngine,
-        queryCreator
-      )
+        queryCreator)
     val nexusContext = nexusIndexer.addIndexingContext(
       root.shaDigest,
       root.shaDigest,
@@ -156,8 +154,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
       null,
       true,
       true,
-      indexers
-    )
+      indexers)
   }
 
   private def updateRemote(progressIndicator: Option[ProgressIndicator]) {
@@ -190,8 +187,9 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
   def foreach(
       f: (ArtifactInfo => Unit),
       progressIndicator: Option[ProgressIndicator]) {
-    progressIndicator foreach (_.setText2(
-      SbtBundle("sbt.resolverIndexer.progress.converting")))
+    progressIndicator foreach (
+      _.setText2(SbtBundle("sbt.resolverIndexer.progress.converting"))
+    )
     val searcher = context.acquireIndexSearcher()
     try {
       val reader = searcher.getIndexReader
@@ -205,8 +203,9 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
           context)
         if (info != null)
           f(info)
-        progressIndicator foreach (_.setFraction(
-          0.5 + 0.5 * (i.toFloat / maxDoc)))
+        progressIndicator foreach (
+          _.setFraction(0.5 + 0.5 * (i.toFloat / maxDoc))
+        )
       }
     } finally {
       context.releaseIndexSearcher(searcher)

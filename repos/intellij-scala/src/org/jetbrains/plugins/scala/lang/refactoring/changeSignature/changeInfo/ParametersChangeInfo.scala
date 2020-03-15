@@ -36,9 +36,12 @@ private[changeInfo] trait ParametersChangeInfo {
   val isParameterTypesChanged: Boolean = newParameters.zipWithIndex.exists {
     case (p, i) =>
       (p.oldIndex == i) &&
-        (p.getTypeText != getOldParameterTypes(i) ||
-          p.isRepeatedParameter != oldParametersArray(i).isRepeatedParameter ||
-          p.isByName != oldParametersArray(i).isByName)
+        (
+          p.getTypeText != getOldParameterTypes(i) ||
+            p.isRepeatedParameter != oldParametersArray(
+              i).isRepeatedParameter ||
+            p.isByName != oldParametersArray(i).isByName
+        )
   }
 
   val wasVararg: Boolean = false

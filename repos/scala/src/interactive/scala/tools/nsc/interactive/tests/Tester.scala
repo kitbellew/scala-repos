@@ -86,10 +86,12 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
 
     override def toString =
       "In " + inputs(sfidx) + " at " + start + " take " + nchars + " to " +
-        (if (toLeft)
-           "left"
-         else
-           "right")
+        (
+          if (toLeft)
+            "left"
+          else
+            "right"
+        )
 
     def deleteOne() {
       val sf = inputs(sfidx)

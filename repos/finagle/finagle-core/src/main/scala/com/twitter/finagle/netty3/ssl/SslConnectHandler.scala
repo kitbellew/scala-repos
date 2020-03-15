@@ -34,14 +34,15 @@ private[netty3] class SslListenerConnectionHandler(
       e: ChannelStateEvent): Unit = {
     sslHandler
       .handshake()
-      .addListener(new ChannelFutureListener {
-        override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess) {
-            SslListenerConnectionHandler.super.channelConnected(ctx, e)
-          } else {
-            Channels.close(ctx.getChannel)
-          }
-      })
+      .addListener(
+        new ChannelFutureListener {
+          override def operationComplete(f: ChannelFuture): Unit =
+            if (f.isSuccess) {
+              SslListenerConnectionHandler.super.channelConnected(ctx, e)
+            } else {
+              Channels.close(ctx.getChannel)
+            }
+        })
   }
 
   override def exceptionCaught(
@@ -71,8 +72,8 @@ private[netty3] class SslListenerConnectionHandler(
   */
 class SslConnectHandler(
     sslHandler: SslHandler,
-    sessionError: SSLSession => Option[Throwable] = Function.const(None)
-) extends SimpleChannelHandler {
+    sessionError: SSLSession => Option[Throwable] = Function.const(None))
+    extends SimpleChannelHandler {
   private[this] val connectFuture = new AtomicReference[ChannelFuture](null)
 
   private[this] def fail(c: Channel, t: Throwable) {
@@ -103,23 +104,25 @@ class SslConnectHandler(
 
         // proxy cancellation
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
-        de.getFuture.addListener(new ChannelFutureListener {
-          override def operationComplete(f: ChannelFuture): Unit =
-            if (f.isCancelled) {
-              wrappedConnectFuture.cancel()
-            }
-        })
+        de.getFuture.addListener(
+          new ChannelFutureListener {
+            override def operationComplete(f: ChannelFuture): Unit =
+              if (f.isCancelled) {
+                wrappedConnectFuture.cancel()
+              }
+          })
 
         // Proxy failures here so that if the connect fails, it is
         // propagated to the listener, not just on the channel.
-        wrappedConnectFuture.addListener(new ChannelFutureListener {
-          def operationComplete(f: ChannelFuture) {
-            if (f.isSuccess || f.isCancelled)
-              return
+        wrappedConnectFuture.addListener(
+          new ChannelFutureListener {
+            def operationComplete(f: ChannelFuture) {
+              if (f.isSuccess || f.isCancelled)
+                return
 
-            fail(f.getChannel, f.getCause)
-          }
-        })
+              fail(f.getChannel, f.getCause)
+            }
+          })
 
         val wrappedEvent =
           new DownstreamChannelStateEvent(
@@ -145,31 +148,33 @@ class SslConnectHandler(
     }
 
     // proxy cancellations again.
-    connectFuture.get.addListener(new ChannelFutureListener {
-      override def operationComplete(f: ChannelFuture): Unit =
-        if (f.isCancelled) {
-          fail(ctx.getChannel, new ChannelClosedException(_))
-        }
-    })
+    connectFuture.get.addListener(
+      new ChannelFutureListener {
+        override def operationComplete(f: ChannelFuture): Unit =
+          if (f.isCancelled) {
+            fail(ctx.getChannel, new ChannelClosedException(_))
+          }
+      })
 
     sslHandler
       .handshake()
-      .addListener(new ChannelFutureListener {
-        override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess) {
-            sessionError(sslHandler.getEngine.getSession) match {
-              case Some(t) =>
-                fail(ctx.getChannel, t)
-              case None =>
-                connectFuture.get.setSuccess()
-                SslConnectHandler.super.channelConnected(ctx, e)
+      .addListener(
+        new ChannelFutureListener {
+          override def operationComplete(f: ChannelFuture): Unit =
+            if (f.isSuccess) {
+              sessionError(sslHandler.getEngine.getSession) match {
+                case Some(t) =>
+                  fail(ctx.getChannel, t)
+                case None =>
+                  connectFuture.get.setSuccess()
+                  SslConnectHandler.super.channelConnected(ctx, e)
+              }
+            } else if (f.isCancelled) {
+              fail(ctx.getChannel, new InconsistentStateException(_))
+            } else {
+              fail(ctx.getChannel, new SslHandshakeException(f.getCause, _))
             }
-          } else if (f.isCancelled) {
-            fail(ctx.getChannel, new InconsistentStateException(_))
-          } else {
-            fail(ctx.getChannel, new SslHandshakeException(f.getCause, _))
-          }
-      })
+        })
   }
 }
 

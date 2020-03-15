@@ -55,9 +55,11 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
       om.column(
         Library.In,
         n,
-        ProductNode(ConstArray.from(seq.map { v =>
-          LiteralNode(implicitly[TypedType[B1]], v)
-        })))
+        ProductNode(
+          ConstArray.from(
+            seq.map { v =>
+              LiteralNode(implicitly[TypedType[B1]], v)
+            })))
   def inSetBind[R](seq: Traversable[B1])(implicit om: o#to[Boolean, R]) =
     if (seq.isEmpty)
       om(LiteralColumn(false))
@@ -65,8 +67,10 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
       om.column(
         Library.In,
         n,
-        ProductNode(ConstArray.from(seq.map(v =>
-          LiteralNode(implicitly[TypedType[B1]], v, vol = true)))))
+        ProductNode(
+          ConstArray.from(
+            seq.map(v =>
+              LiteralNode(implicitly[TypedType[B1]], v, vol = true)))))
 
   def between[P2, P3, R](start: Rep[P2], end: Rep[P3])(
       implicit om: o#arg[B1, P2]#arg[B1, P3]#to[Boolean, R]) =

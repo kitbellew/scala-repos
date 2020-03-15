@@ -45,8 +45,7 @@ object RequestSemaphoreFilter {
                   },
                   sr.addGauge("request_queue_size") {
                     sem.numWaiters
-                  }
-                )
+                  })
               }
             filter andThen next
         }

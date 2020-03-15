@@ -311,8 +311,7 @@ sealed abstract class Node[V, A](implicit r: Reducer[A, V]) {
         f(a1);
         f(a2);
         f(a3)
-      }
-    )
+      })
   }
 
   def iterator =
@@ -495,8 +494,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
               measurer.append(v1, v2),
               pr1,
               addDigits0(m1, sf1, pr2, m2),
-              sf2)
-        )
+              sf2))
     )
   }
 
@@ -520,8 +518,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
               measurer.append((measurer.snoc(v1, n)), v2),
               pr1,
               addDigits1(m1, sf1, n, pr2, m2),
-              sf2)
-        )
+              sf2))
     )
   }
 
@@ -1080,8 +1077,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
         pr.foreach(f);
         m.foreach(_.foreach(f));
         sf.foreach(f)
-      }
-    )
+      })
   }
 
   /** An iterator that visits each element in the tree. */
@@ -1151,8 +1147,10 @@ sealed abstract class FingerTreeInstances {
       implicit m: Reducer[A, V]): Reducer[Node[V, A], V] = {
     implicit val vm = m.monoid
     UnitReducer((a: Node[V, A]) =>
-      a fold ((v, _, _) => v,
-      (v, _, _, _) => v))
+      a fold (
+        (v, _, _) => v,
+        (v, _, _, _) => v
+      ))
   }
 
   implicit def fingerTreeMeasure[A, V](
@@ -1402,8 +1400,9 @@ final class IndSeq[A](val self: FingerTree[Int, A]) {
   import FingerTree.fingerTreeFoldable
 
   def flatMap[B](f: A => IndSeq[B]): IndSeq[B] =
-    indSeq(fingerTreeFoldable.foldLeft(self, empty[Int, B])((ys, x) =>
-      ys <++> f(x).self))
+    indSeq(
+      fingerTreeFoldable.foldLeft(self, empty[Int, B])((ys, x) =>
+        ys <++> f(x).self))
 }
 
 object IndSeq extends IndSeqInstances {
@@ -1475,8 +1474,9 @@ sealed abstract class OrdSeq[A] extends Ops[FingerTree[LastOption[A], A]] {
     */
   def partition(a: A): (OrdSeq[A], OrdSeq[A]) =
     function1Instance.product(
-      OrdSeq.ordSeq[A](_: FingerTree[LastOption[A], A]))(self.split(a1 =>
-      Order[LastOption[A]].greaterThanOrEqual(a1, Tags.Last(some(a)))))
+      OrdSeq.ordSeq[A](_: FingerTree[LastOption[A], A]))(
+      self.split(a1 =>
+        Order[LastOption[A]].greaterThanOrEqual(a1, Tags.Last(some(a)))))
 
   /** Insert `a` at a the first point that all elements to the left are of higher priority */
   def insert(a: A): OrdSeq[A] =

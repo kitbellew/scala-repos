@@ -214,9 +214,11 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
           val compute = dataStream.readDouble
           val output = dataStream.readDouble
           logInfo(
-            ("Times: boot = %.3f s, init = %.3f s, broadcast = %.3f s, " +
-              "read-input = %.3f s, compute = %.3f s, write-output = %.3f s, " +
-              "total = %.3f s").format(
+            (
+              "Times: boot = %.3f s, init = %.3f s, broadcast = %.3f s, " +
+                "read-input = %.3f s, compute = %.3f s, write-output = %.3f s, " +
+                "total = %.3f s"
+            ).format(
               boot,
               init,
               broadcast,

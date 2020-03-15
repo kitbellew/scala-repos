@@ -180,9 +180,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       def containsSymbolInSubquery(s: TermSymbol) =
         c.children.iterator
           .drop(1)
-          .flatMap(_.collect {
-            case c: Comprehension => c
-          }.toSeq.flatMap(_.findNode(_ == Ref(s))))
+          .flatMap(
+            _.collect {
+              case c: Comprehension => c
+            }.toSeq.flatMap(_.findNode(_ == Ref(s))))
           .nonEmpty
       currentUniqueFrom = from match {
         case Seq((s, _: TableNode)) if !containsSymbolInSubquery(s) => Some(s)
@@ -294,13 +295,14 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       building(WherePart)(where.foreach(p => b"\nwhere !$p"))
 
     protected def buildGroupByClause(groupBy: Option[Node]) =
-      building(OtherPart)(groupBy.foreach { n =>
-        b"\ngroup by "
-        n match {
-          case ProductNode(es) => b.sep(es, ", ")(buildGroupByColumn)
-          case e               => buildGroupByColumn(e)
-        }
-      })
+      building(OtherPart)(
+        groupBy.foreach { n =>
+          b"\ngroup by "
+          n match {
+            case ProductNode(es) => b.sep(es, ", ")(buildGroupByColumn)
+            case e               => buildGroupByColumn(e)
+          }
+        })
 
     protected def buildGroupByColumn(by: Node) =
       by match {
@@ -458,10 +460,12 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
               /* If tuples are not supported, selecting multiple individial columns
                * in exists(select ...) is probably not supported, either, so we rewrite
                * such sub-queries to "select 1". */
-              b"exists\[!${(if (supportsTuples)
-                              c
-                            else
-                              c.copy(select = Pure(LiteralNode(1))).infer()): Node}\]"
+              b"exists\[!${(
+                if (supportsTuples)
+                  c
+                else
+                  c.copy(select = Pure(LiteralNode(1))).infer()
+              ): Node}\]"
             case Library.Concat(l, r) if concatOperator.isDefined =>
               b"\($l${concatOperator.get}$r\)"
             case Library.User()

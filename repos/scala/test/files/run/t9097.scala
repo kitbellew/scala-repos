@@ -9,8 +9,7 @@ object Test extends StoreReporterDirectTest {
       "-Xfatal-warnings",
       "-Ydelambdafy:method",
       "-Xprint:delambdafy",
-      s"-d ${testOutput.path}"
-    ) mkString " "
+      s"-d ${testOutput.path}") mkString " "
 
   override def code = """package o
                         |package a {

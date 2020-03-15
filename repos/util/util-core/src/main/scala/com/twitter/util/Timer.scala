@@ -149,9 +149,10 @@ class ThreadStoppingTimer(underlying: Timer, executor: ExecutorService)
       f: => Unit): TimerTask = underlying.schedule(when, period)(f)
 
   def stop(): Unit = {
-    executor.submit(new Runnable {
-      def run() = underlying.stop()
-    })
+    executor.submit(
+      new Runnable {
+        def run() = underlying.stop()
+      })
   }
 }
 

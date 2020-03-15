@@ -113,8 +113,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       tableDefinition: CatalogTable,
       ignoreIfExists: Boolean): Unit = {
     val db = tableDefinition.name.database.getOrElse(currentDb)
-    val newTableDefinition = tableDefinition.copy(
-      name = TableIdentifier(tableDefinition.name.table, Some(db)))
+    val newTableDefinition = tableDefinition
+      .copy(name = TableIdentifier(tableDefinition.name.table, Some(db)))
     externalCatalog.createTable(db, newTableDefinition, ignoreIfExists)
   }
 
@@ -129,8 +129,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     */
   def alterTable(tableDefinition: CatalogTable): Unit = {
     val db = tableDefinition.name.database.getOrElse(currentDb)
-    val newTableDefinition = tableDefinition.copy(
-      name = TableIdentifier(tableDefinition.name.table, Some(db)))
+    val newTableDefinition = tableDefinition
+      .copy(name = TableIdentifier(tableDefinition.name.table, Some(db)))
     externalCatalog.alterTable(db, newTableDefinition)
   }
 
@@ -375,8 +375,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     */
   def createFunction(funcDefinition: CatalogFunction): Unit = {
     val db = funcDefinition.name.database.getOrElse(currentDb)
-    val newFuncDefinition = funcDefinition.copy(
-      name = FunctionIdentifier(funcDefinition.name.funcName, Some(db)))
+    val newFuncDefinition = funcDefinition
+      .copy(name = FunctionIdentifier(funcDefinition.name.funcName, Some(db)))
     externalCatalog.createFunction(db, newFuncDefinition)
   }
 
@@ -400,8 +400,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     */
   def alterFunction(funcDefinition: CatalogFunction): Unit = {
     val db = funcDefinition.name.database.getOrElse(currentDb)
-    val newFuncDefinition = funcDefinition.copy(
-      name = FunctionIdentifier(funcDefinition.name.funcName, Some(db)))
+    val newFuncDefinition = funcDefinition
+      .copy(name = FunctionIdentifier(funcDefinition.name.funcName, Some(db)))
     externalCatalog.alterFunction(db, newFuncDefinition)
   }
 

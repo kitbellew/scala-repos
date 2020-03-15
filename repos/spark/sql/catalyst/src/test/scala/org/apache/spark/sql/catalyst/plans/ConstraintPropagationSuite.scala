@@ -38,19 +38,20 @@ class ConstraintPropagationSuite extends SparkFunSuite {
     val missing = expected -- found
     val extra = found -- expected
     if (missing.nonEmpty || extra.nonEmpty) {
-      fail(s"""
+      fail(
+        s"""
            |== FAIL: Constraints do not match ===
            |Found: ${found.mkString(",")}
            |Expected: ${expected.mkString(",")}
            |== Result ==
            |Missing: ${if (missing.isEmpty)
-                "N/A"
-              else
-                missing.mkString(",")}
+             "N/A"
+           else
+             missing.mkString(",")}
            |Found but not expected: ${if (extra.isEmpty)
-                "N/A"
-              else
-                extra.mkString(",")}
+             "N/A"
+           else
+             extra.mkString(",")}
          """.stripMargin)
     }
   }
@@ -147,9 +148,10 @@ class ConstraintPropagationSuite extends SparkFunSuite {
     assert(
       tr1
         .where('a.attr > 10)
-        .unionAll(tr2
-          .where('e.attr > 10)
-          .unionAll(tr3.where('i.attr > 10)))
+        .unionAll(
+          tr2
+            .where('e.attr > 10)
+            .unionAll(tr3.where('i.attr > 10)))
         .analyze
         .constraints
         .isEmpty)

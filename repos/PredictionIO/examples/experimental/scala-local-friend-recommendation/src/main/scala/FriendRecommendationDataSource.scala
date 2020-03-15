@@ -5,8 +5,8 @@ import scala.io.Source
 import scala.collection.immutable.HashMap
 
 class FriendRecommendationDataSource(
-    val dsp: FriendRecommendationDataSourceParams
-) extends LDataSource[
+    val dsp: FriendRecommendationDataSourceParams)
+    extends LDataSource[
       FriendRecommendationTrainingData,
       EmptyEvaluationInfo,
       FriendRecommendationQuery,

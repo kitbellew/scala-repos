@@ -16,8 +16,9 @@ object MapContainsFalse extends SimplificationType {
     InspectionBundle.message("replace.map.contains.false.with.not.forall")
   override def getSimplification(expr: ScExpression): Option[Simplification] = {
     expr match {
-      case qual `.map` (pred @ returnsBoolean()) `.contains`(literal(
-            "false")) =>
+      case qual `.map` (
+            pred @ returnsBoolean()
+          ) `.contains`(literal("false")) =>
         val notForallText = invocationText(
           negation = true,
           qual,

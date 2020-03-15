@@ -221,8 +221,11 @@ trait SeqLike[+A, +Repr]
     private[this] def init() = {
       val m = mutable.HashMap[A, Int]()
       val (es, is) =
-        (thisCollection map (e =>
-          (e, m.getOrElseUpdate(e, m.size))) sortBy (_._2)).unzip
+        (
+          thisCollection map (e => (e, m.getOrElseUpdate(e, m.size))) sortBy (
+            _._2
+          )
+        ).unzip
 
       (es.toBuffer, is.toArray)
     }
@@ -279,8 +282,11 @@ trait SeqLike[+A, +Repr]
 
       // e => (e, weight(e))
       val (es, is) =
-        (thisCollection map (e =>
-          (e, m.getOrElseUpdate(e, m.size))) sortBy (_._2)).unzip
+        (
+          thisCollection map (e => (e, m.getOrElseUpdate(e, m.size))) sortBy (
+            _._2
+          )
+        ).unzip
       val cs = new Array[Int](m.size)
       is foreach (i => cs(i) += 1)
       val ns = new Array[Int](cs.length)
@@ -916,10 +922,12 @@ object SeqLike {
             if (Wopt(i) == S(zero + delta * (i + m))) {
               i += 1
               if (i == n1 - n0)
-                return (if (forward)
-                          m + m0
-                        else
-                          m1 - m - i)
+                return (
+                  if (forward)
+                    m + m0
+                  else
+                    m1 - m - i
+                )
             } else {
               val ti = T(i)
               m += i - ti
@@ -995,8 +1003,7 @@ object SeqLike {
       target: Seq[B],
       targetOffset: Int,
       targetCount: Int,
-      fromIndex: Int
-  ): Int = {
+      fromIndex: Int): Int = {
     // Fiddle with variables to match previous behavior and use kmpSearch
     // Doing LOTS of max/min, both clearer and faster to use math._
     val slen = source.length
@@ -1036,8 +1043,7 @@ object SeqLike {
       target: Seq[B],
       targetOffset: Int,
       targetCount: Int,
-      fromIndex: Int
-  ): Int = {
+      fromIndex: Int): Int = {
     // Fiddle with variables to match previous behavior and use kmpSearch
     // Doing LOTS of max/min, both clearer and faster to use math._
     val slen = source.length

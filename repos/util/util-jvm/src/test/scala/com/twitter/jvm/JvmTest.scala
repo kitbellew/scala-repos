@@ -127,8 +127,7 @@ class JvmTest extends WordSpec with TestLogging {
           assert(
             logLines() == Seq(
               "Missed 1 collections for pcopy due to sampling",
-              "Missed 8 collections for pcopy due to sampling"
-            ))
+              "Missed 8 collections for pcopy due to sampling"))
         }
     }
 

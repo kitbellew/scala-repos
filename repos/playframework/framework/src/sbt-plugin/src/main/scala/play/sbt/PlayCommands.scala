@@ -70,11 +70,7 @@ object PlayCommands {
     val compileTask = Def.taskDyn(
       playAssetsWithCompilation ?? (compile in Compile).value)
 
-    compileTask.all(
-      ScopeFilter(
-        inDependencies(thisProjectRef.value)
-      )
-    )
+    compileTask.all(ScopeFilter(inDependencies(thisProjectRef.value)))
   }
 
   val h2Command =
@@ -102,10 +98,7 @@ object PlayCommands {
     val projectRef = thisProjectRef.value
 
     def filter =
-      ScopeFilter(
-        inDependencies(projectRef),
-        inConfigurations(Compile, Assets)
-      )
+      ScopeFilter(inDependencies(projectRef), inConfigurations(Compile, Assets))
 
     Def.task {
 

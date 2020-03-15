@@ -43,7 +43,6 @@ object PortDefinitionSerializer {
         Some(proto.getName)
       else
         None,
-      labels
-    )
+      labels)
   }
 }

@@ -37,14 +37,16 @@ trait ObservableMap[A, B]
     get(key) match {
       case None =>
         super.+=(kv)
-        publish(new Include((key, value)) with Undoable {
-          def undo = -=(key)
-        })
+        publish(
+          new Include((key, value)) with Undoable {
+            def undo = -=(key)
+          })
       case Some(old) =>
         super.+=(kv)
-        publish(new Update((key, value)) with Undoable {
-          def undo = +=((key, old))
-        })
+        publish(
+          new Update((key, value)) with Undoable {
+            def undo = +=((key, old))
+          })
     }
     this
   }
@@ -54,17 +56,20 @@ trait ObservableMap[A, B]
       case None =>
       case Some(old) =>
         super.-=(key)
-        publish(new Remove((key, old)) with Undoable {
-          def undo = update(key, old)
-        })
+        publish(
+          new Remove((key, old)) with Undoable {
+            def undo = update(key, old)
+          })
     }
     this
   }
 
   abstract override def clear(): Unit = {
     super.clear()
-    publish(new Reset with Undoable {
-      def undo(): Unit = throw new UnsupportedOperationException("cannot undo")
-    })
+    publish(
+      new Reset with Undoable {
+        def undo(): Unit =
+          throw new UnsupportedOperationException("cannot undo")
+      })
   }
 }

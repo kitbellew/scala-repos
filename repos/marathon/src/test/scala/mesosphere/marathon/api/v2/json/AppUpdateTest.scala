@@ -54,8 +54,7 @@ class AppUpdateTest extends MarathonSpec {
     shouldViolate(
       update.copy(portDefinitions = Some(PortDefinitions(9000, 8080, 9000))),
       "/portDefinitions",
-      "Ports must be unique."
-    )
+      "Ports must be unique.")
 
     shouldViolate(
       update.copy(portDefinitions = Some(
@@ -122,30 +121,17 @@ class AppUpdateTest extends MarathonSpec {
         Container(
           `type` = mesos.ContainerInfo.Type.DOCKER,
           volumes = Nil,
-          docker = Some(Docker(image = "docker:///group/image"))
-        )
-      ),
+          docker = Some(Docker(image = "docker:///group/image")))),
       healthChecks = Some(Set[HealthCheck]()),
       dependencies = Some(Set[PathId]()),
       upgradeStrategy = Some(UpgradeStrategy.empty),
-      labels = Some(
-        Map(
-          "one" -> "aaa",
-          "two" -> "bbb",
-          "three" -> "ccc"
-        )
-      ),
+      labels = Some(Map("one" -> "aaa", "two" -> "bbb", "three" -> "ccc")),
       ipAddress = Some(
         IpAddress(
           groups = Seq("a", "b", "c"),
-          labels = Map(
-            "foo" -> "bar",
-            "baz" -> "buzz"
-          ),
-          discoveryInfo = DiscoveryInfo(
-            ports = Seq(Port(name = "http", number = 80, protocol = "tcp"))
-          )
-        ))
+          labels = Map("foo" -> "bar", "baz" -> "buzz"),
+          discoveryInfo = DiscoveryInfo(ports = Seq(
+            Port(name = "http", number = 80, protocol = "tcp")))))
     )
     JsonTestHelper.assertSerializationRoundtripWorks(update1)
   }
@@ -250,8 +236,7 @@ class AppUpdateTest extends MarathonSpec {
     val app = AppDefinition(
       id = PathId("test"),
       cmd = Some("sleep 1"),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1)))
 
     val updateCmd = AppUpdate(cmd = Some("sleep 2"))
     assert(updateCmd(app) == app)

@@ -313,8 +313,11 @@ class OfferTest extends WordSpec with MockitoSugar {
     "sync integration: when first transaction aborts" should {
       class SyncIntegrationHelper {
         val tx2 = new Promise[Tx[Int]]
-        val e0 = spy(new SimpleOffer(Future.value(
-          Tx.aborted: Tx[Int]) #:: (tx2: Future[Tx[Int]]) #:: Stream.empty))
+        val e0 = spy(
+          new SimpleOffer(
+            Future.value(Tx.aborted: Tx[Int]) #:: (
+              tx2: Future[Tx[Int]]
+            ) #:: Stream.empty))
         val offer = e0 orElse Offer.const(123)
       }
 
@@ -425,8 +428,7 @@ class OfferTest extends WordSpec with MockitoSugar {
         b0.send(123) const {
           "put!"
         },
-        b1.recv
-      )
+        b1.recv)
 
       val f = o.sync()
       assert(f.isDefined == false)

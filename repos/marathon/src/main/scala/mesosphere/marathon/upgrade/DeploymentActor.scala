@@ -124,9 +124,7 @@ private class DeploymentActor(
         eventBus,
         app,
         scaleTo,
-        promise
-      )
-    )
+        promise))
     promise.future
   }
 
@@ -161,9 +159,7 @@ private class DeploymentActor(
             eventBus,
             app,
             scaleTo,
-            promise
-          )
-        )
+            promise))
         promise.future
       }
 
@@ -251,7 +247,6 @@ object DeploymentActor {
         taskQueue,
         storage,
         healthCheckManager,
-        eventBus
-      ))
+        eventBus))
   }
 }

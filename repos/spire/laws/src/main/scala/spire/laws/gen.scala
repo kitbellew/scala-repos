@@ -219,8 +219,9 @@ object gen {
       images(i) = images(j)
       images(j) = i
     }
-    Perm(images.zipWithIndex.filter {
-      case (p, i) => p != i
-    }.toMap)
+    Perm(
+      images.zipWithIndex.filter {
+        case (p, i) => p != i
+      }.toMap)
   }
 }

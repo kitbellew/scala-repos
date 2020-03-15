@@ -30,10 +30,7 @@ class MetricEvaluatorDevSuite extends FunSuite with SharedSparkContext {
   import io.prediction.controller.MetricEvaluatorSuite._
 
   test("a") {
-    val metricEvaluator = MetricEvaluator(
-      Metric0(),
-      Seq(Metric0(), Metric0())
-    )
+    val metricEvaluator = MetricEvaluator(Metric0(), Seq(Metric0(), Metric0()))
 
     val engineEvalDataSet = Seq(
       (

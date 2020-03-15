@@ -21,12 +21,9 @@ private final class GooglePush(
             Json.obj(
               "to" -> device.deviceId,
               "priority" -> "normal",
-              "notification" -> Json.obj(
-                "title" -> data.title,
-                "body" -> data.body
-              ),
-              "data" -> data.payload
-            ))
+              "notification" -> Json
+                .obj("title" -> data.title, "body" -> data.body),
+              "data" -> data.payload))
           .flatMap {
             case res if res.status == 200 => funit
             case res =>

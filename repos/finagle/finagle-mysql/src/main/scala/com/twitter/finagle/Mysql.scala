@@ -117,8 +117,7 @@ object Mysql
 
     protected def copy1(
         stack: Stack[ServiceFactory[Request, Result]] = this.stack,
-        params: Stack.Params = this.params
-    ): Client = copy(stack, params)
+        params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected type In = Packet
     protected type Out = Packet

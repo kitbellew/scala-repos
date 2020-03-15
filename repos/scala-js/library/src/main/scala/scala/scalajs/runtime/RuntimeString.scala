@@ -87,8 +87,10 @@ private[runtime] object RuntimeString {
   def compareTo(thiz: String, anotherString: String): Int = {
     if (thiz.equals(anotherString))
       0
-    else if ((thiz.asInstanceOf[js.Dynamic] <
-               anotherString.asInstanceOf[js.Dynamic]).asInstanceOf[Boolean])
+    else if ((
+               thiz.asInstanceOf[js.Dynamic] <
+                 anotherString.asInstanceOf[js.Dynamic]
+             ).asInstanceOf[Boolean])
       -1
     else
       1
@@ -99,10 +101,12 @@ private[runtime] object RuntimeString {
 
   @inline
   def equalsIgnoreCase(thiz: String, that: String): Boolean =
-    thiz.toLowerCase() == (if (that == null)
-                             null
-                           else
-                             that.toLowerCase())
+    thiz.toLowerCase() == (
+      if (that == null)
+        null
+      else
+        that.toLowerCase()
+    )
 
   @inline
   def concat(thiz: String, s: String): String = checkNull(thiz) + s
@@ -270,8 +274,10 @@ private[runtime] object RuntimeString {
 
   @inline
   def startsWith(thiz: String, prefix: String, toffset: Int): Boolean = {
-    (toffset <= thiz.length && toffset >= 0 &&
-    thiz.jsSubstring(toffset, toffset + prefix.length) == prefix)
+    (
+      toffset <= thiz.length && toffset >= 0 &&
+      thiz.jsSubstring(toffset, toffset + prefix.length) == prefix
+    )
   }
 
   @inline

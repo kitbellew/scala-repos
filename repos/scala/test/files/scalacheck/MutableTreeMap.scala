@@ -87,10 +87,12 @@ package scala.collection.mutable {
       entries.foreach {
         case (k, v) => RB.insert(tree, k, v)
       }
-      RB.min(tree) == (if (entries.isEmpty)
-                         None
-                       else
-                         Some(entries.toMap.min))
+      RB.min(tree) == (
+        if (entries.isEmpty)
+          None
+        else
+          Some(entries.toMap.min)
+      )
     }
 
     property("max") = forAll { (entries: Seq[(K, V)]) =>
@@ -98,10 +100,12 @@ package scala.collection.mutable {
       entries.foreach {
         case (k, v) => RB.insert(tree, k, v)
       }
-      RB.max(tree) == (if (entries.isEmpty)
-                         None
-                       else
-                         Some(entries.toMap.max))
+      RB.max(tree) == (
+        if (entries.isEmpty)
+          None
+        else
+          Some(entries.toMap.max)
+      )
     }
   }
 
@@ -171,10 +175,12 @@ package scala.collection.mutable {
       val deletedElems = ks.toSet
       oldElems.forall {
         case (k, v) =>
-          map.get(k) == (if (deletedElems(k))
-                           None
-                         else
-                           Some(v))
+          map.get(k) == (
+            if (deletedElems(k))
+              None
+            else
+              Some(v)
+          )
       }
     }
 
@@ -267,9 +273,11 @@ package scala.collection.mutable {
         entries: This,
         from: Option[K],
         until: Option[K])(implicit bf: CanBuildFrom[This, (K, V), That]) = {
-      (bf.apply(entries) ++= entries.filter {
-        case (k, _) => in(k, from, until)
-      }).result()
+      (
+        bf.apply(entries) ++= entries.filter {
+          case (k, _) => in(k, from, until)
+        }
+      ).result()
     }
 
     property("get, contains") = forAll {
@@ -284,10 +292,12 @@ package scala.collection.mutable {
           case (k, v) =>
             mapView
               .contains(k) == (in(k, from, until) && entries.contains(k)) &&
-              mapView.get(k) == (if (in(k, from, until))
-                                   entries.get(k)
-                                 else
-                                   None)
+              mapView.get(k) == (
+                if (in(k, from, until))
+                  entries.get(k)
+                else
+                  None
+              )
         }
     }
 
@@ -325,10 +335,12 @@ package scala.collection.mutable {
         map.contains(k) && map.get(k) == Some(
           v) && map.size == newExpectedSize &&
         mapView.contains(k) == isInRange &&
-        mapView.get(k) == (if (isInRange)
-                             Some(v)
-                           else
-                             None)
+        mapView.get(k) == (
+          if (isInRange)
+            Some(v)
+          else
+            None
+        )
     }
 
     property("++=") = forAll {
@@ -342,10 +354,12 @@ package scala.collection.mutable {
         entries.toMap.forall {
           case (k, v) =>
             map.get(k) == Some(v) &&
-              mapView.get(k) == (if (in(k, from, until))
-                                   Some(v)
-                                 else
-                                   None)
+              mapView.get(k) == (
+                if (in(k, from, until))
+                  Some(v)
+                else
+                  None
+              )
         }
     }
 

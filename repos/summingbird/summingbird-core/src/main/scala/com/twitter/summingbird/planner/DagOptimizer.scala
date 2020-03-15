@@ -302,9 +302,10 @@ trait DagOptimizer[P <: Platform[P]] {
       case KeyFlatMappedProducer(in, fn) =>
         // we know that (K, V) <: T due to the case match, but scala can't see it
         def cast[K, V](p: Prod[(K, V)]): Prod[T] = p.asInstanceOf[Prod[T]]
-        cast(in.flatMap {
-          case (k, v) => fn(k).map((_, v))
-        })
+        cast(
+          in.flatMap {
+            case (k, v) => fn(k).map((_, v))
+          })
     }
   }
 
@@ -317,9 +318,10 @@ trait DagOptimizer[P <: Platform[P]] {
       case ValueFlatMappedProducer(in, fn) =>
         // we know that (K, V) <: T due to the case match, but scala can't see it
         def cast[K, V](p: Prod[(K, V)]): Prod[T] = p.asInstanceOf[Prod[T]]
-        cast(in.flatMap {
-          case (k, v) => fn(v).map((k, _))
-        })
+        cast(
+          in.flatMap {
+            case (k, v) => fn(v).map((k, _))
+          })
     }
   }
 
@@ -348,8 +350,9 @@ trait DagOptimizer[P <: Platform[P]] {
       case MergedProducer(
             left @ FlatMappedProducer(inleft, fnleft),
             right @ FlatMappedProducer(inright, fnright))
-          if (inleft == inright) && (on.fanOut(left) == 1) && (on.fanOut(
-            right) == 1) =>
+          if (inleft == inright) && (on.fanOut(left) == 1) && (
+            on.fanOut(right) == 1
+          ) =>
         FlatMappedProducer(inleft, MergeResults(fnleft, fnright))
     }
   }

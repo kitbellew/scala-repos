@@ -35,9 +35,10 @@ object Test {
     // BTW: if we use the commented out type decls, the code compiles successfully
     // type gristType = Grist {type settingsType <: self.settingsType; type moduleType <: commonModuleType }
 
-    val tools: List[Tool {
-      type settingsType = self.settingsType
-    }]
+    val tools: List[
+      Tool {
+        type settingsType = self.settingsType
+      }]
 
     protected def f: List[commonModuleType] = {
       val inputGrists = tools.flatMap(

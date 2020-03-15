@@ -69,8 +69,7 @@ class Netty4ListenerTest
       p,
       transportFactory = { _: SocketChannel =>
         new NullTransport
-      }
-    )
+      })
   }
 
   test(
@@ -135,8 +134,7 @@ class Netty4ListenerTest
       p,
       transportFactory = { _: SocketChannel =>
         new NullTransport
-      }
-    )
+      })
     val server1 =
       listener.listen(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(
         nopDispatch)

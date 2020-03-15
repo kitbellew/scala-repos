@@ -581,10 +581,12 @@ object ScalaPsiElementFactory {
   }
 
   def createIdentifier(name: String, manager: PsiManager): ASTNode = {
-    val text = "package " + (if (!ScalaNamesUtil.isKeyword(name))
-                               name
-                             else
-                               "`" + name + "`")
+    val text = "package " + (
+      if (!ScalaNamesUtil.isKeyword(name))
+        name
+      else
+        "`" + name + "`"
+    )
     try {
       val dummyFile = PsiFileFactory
         .getInstance(manager.getProject)
@@ -684,10 +686,12 @@ object ScalaPsiElementFactory {
           }
       }
     val name = getShortName(qualifiedName, packageName)
-    val text = "import " + (if (isResolved(name, clazz, packageName, manager))
-                              name
-                            else
-                              "_root_." + qualifiedName)
+    val text = "import " + (
+      if (isResolved(name, clazz, packageName, manager))
+        name
+      else
+        "_root_." + qualifiedName
+    )
     val dummyFile = PsiFileFactory
       .getInstance(manager.getProject)
       .createFileFromText(
@@ -714,11 +718,13 @@ object ScalaPsiElementFactory {
     for (expr <- exprs)
       names ++= expr.getNames
     val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
-    if ((names("_") ||
-        ScalaCodeStyleSettings
-          .getInstance(manager.getProject)
-          .getClassCountToUseImportOnDemand <=
-          names.size) &&
+    if ((
+          names("_") ||
+          ScalaCodeStyleSettings
+            .getInstance(manager.getProject)
+            .getClassCountToUseImportOnDemand <=
+            names.size
+        ) &&
         names.filter(_.indexOf(arrow) != -1).toSeq.size == 0)
       text = text + "._"
     else {
@@ -762,9 +768,9 @@ object ScalaPsiElementFactory {
     (parents: @unchecked) match {
       case Some(p) =>
         val elements = p.typeElements
-        (elements.head
-          .asInstanceOf[ScSimpleTypeElement]
-          .reference: @unchecked) match {
+        (
+          elements.head.asInstanceOf[ScSimpleTypeElement].reference: @unchecked
+        ) match {
           case Some(r) => r
         }
       case _ => throw new com.intellij.util.IncorrectOperationException()
@@ -1106,12 +1112,14 @@ object ScalaPsiElementFactory {
         text)
       .asInstanceOf[ScalaFile]
     val imp: ScStableCodeReferenceElement =
-      (dummyFile.getImportStatements.headOption match {
-        case Some(x) => x
-        case None    =>
-          //cannot be
-          null
-      }).importExprs(0).reference match {
+      (
+        dummyFile.getImportStatements.headOption match {
+          case Some(x) => x
+          case None    =>
+            //cannot be
+            null
+        }
+      ).importExprs(0).reference match {
         case Some(x) => x
         case None    => return false
       }
@@ -1202,7 +1210,9 @@ object ScalaPsiElementFactory {
                   ScTypeUtil.stripTypeArgs(substitutor.subst(tp)))
             }
             val boundsText =
-              (lowerBoundText.toSeq ++ upperBoundText.toSeq ++ viewBoundText ++ contextBoundText).mkString
+              (
+                lowerBoundText.toSeq ++ upperBoundText.toSeq ++ viewBoundText ++ contextBoundText
+              ).mkString
             s"$variance${typeParam.name}$clauseText$boundsText"
           }
 
@@ -1225,13 +1235,17 @@ object ScalaPsiElementFactory {
                   val typeText = ScType.canonicalText(
                     substitutor.subst(x.getType(TypingContext.empty).getOrAny))
                   val arrow = ScalaPsiUtil.functionArrow(param.getProject)
-                  name + colon + (if (param.isCallByNameParameter)
-                                    arrow
-                                  else
-                                    "") + typeText + (if (param.isRepeatedParameter)
-                                                        "*"
-                                                      else
-                                                        "")
+                  name + colon + (
+                    if (param.isCallByNameParameter)
+                      arrow
+                    else
+                      ""
+                  ) + typeText + (
+                    if (param.isRepeatedParameter)
+                      "*"
+                    else
+                      ""
+                  )
                 case _ => name
               }
             }
@@ -1388,8 +1402,9 @@ object ScalaPsiElementFactory {
         case _                      => null
       }
     val overrideText =
-      if (needsOverride && (modOwner == null || !modOwner.hasModifierProperty(
-            "override")))
+      if (needsOverride && (
+            modOwner == null || !modOwner.hasModifierProperty("override")
+          ))
         "override "
       else
         ""

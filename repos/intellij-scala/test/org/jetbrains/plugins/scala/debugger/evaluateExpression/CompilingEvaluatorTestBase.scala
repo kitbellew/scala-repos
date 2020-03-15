@@ -111,8 +111,7 @@ abstract class CompilingEvaluatorTestBase extends ScalaDebuggerTestCase {
   def testInConstructor(): Unit = {
     evaluateCodeFragments(
       "None.getOrElse(a)" -> "a",
-      "foo().map(_.toUpper)" -> "FOO"
-    )
+      "foo().map(_.toUpper)" -> "FOO")
   }
 
   addFileWithBreakpoints(
@@ -128,11 +127,8 @@ abstract class CompilingEvaluatorTestBase extends ScalaDebuggerTestCase {
   """.stripMargin.trim
   )
   def testAddBraces(): Unit = {
-    evaluateCodeFragments(
-      "None.getOrElse(foo())" -> "foo",
-      """def bar = "bar"
+    evaluateCodeFragments("None.getOrElse(foo())" -> "foo", """def bar = "bar"
         |foo() + bar
-      """ -> "foobar"
-    )
+      """ -> "foobar")
   }
 }

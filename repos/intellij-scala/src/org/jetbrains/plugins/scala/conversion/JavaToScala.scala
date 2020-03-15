@@ -180,12 +180,13 @@ object JavaToScala {
         case f: PsiForStatement =>
           val initialization = Option(f.getInitialization)
             .map(convertPsiToIntermdeiate(_, externalProperties))
-          val condition = Some(f.getCondition match {
-            case empty: PsiEmptyStatement => LiteralExpression("true")
-            case null                     => LiteralExpression("true")
-            case _ =>
-              convertPsiToIntermdeiate(f.getCondition, externalProperties)
-          })
+          val condition = Some(
+            f.getCondition match {
+              case empty: PsiEmptyStatement => LiteralExpression("true")
+              case null                     => LiteralExpression("true")
+              case _ =>
+                convertPsiToIntermdeiate(f.getCondition, externalProperties)
+            })
           val body = Option(f.getBody)
             .map(convertPsiToIntermdeiate(_, externalProperties))
           val update = Option(f.getUpdate)
@@ -988,8 +989,10 @@ object JavaToScala {
           statement: PsiStatement,
           where: Seq[PsiExpressionStatement]): Boolean = {
         !statement.isInstanceOf[PsiExpressionStatement] ||
-        (statement.isInstanceOf[PsiExpressionStatement] && !where.contains(
-          statement))
+        (
+          statement.isInstanceOf[PsiExpressionStatement] && !where.contains(
+            statement)
+        )
       }
 
       def getSuperCall(dropStatements: ArrayBuffer[PsiExpressionStatement])

@@ -554,8 +554,10 @@ package object collections {
 
       def isSideEffectCollectionMethod(ref: ScReferenceExpression): Boolean = {
         val refName = ref.refName
-        (refName.endsWith("=") || refName.endsWith(
-          "=:") || sideEffectsCollectionMethods.contains(refName)) &&
+        (
+          refName.endsWith("=") || refName.endsWith(
+            "=:") || sideEffectsCollectionMethods.contains(refName)
+        ) &&
         checkResolve(
           ref,
           Array("scala.collection.mutable._", "scala.collection.Iterator"))
@@ -613,8 +615,10 @@ package object collections {
           infix
         case MethodRepr(
               itself,
-              Some(definedOutside(
-                ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue)))),
+              Some(
+                definedOutside(
+                  ScalaPsiUtil.inNameContext(
+                    v @ (_: ScVariable | _: ScValue)))),
               Some(ref),
               _)
             if isSideEffectCollectionMethod(ref) || isSetter(

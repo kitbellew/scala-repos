@@ -213,8 +213,7 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             WrapObject(
               InnerArrayConcat(
                 DerefObjectStatic(Leaf(Source), paths.Key),
-                WrapArray(Scan(Leaf(Source), freshIdScanner))
-              ),
+                WrapArray(Scan(Leaf(Source), freshIdScanner))),
               paths.Key.name),
             WrapObject(
               DerefObjectStatic(Leaf(Source), paths.Value),

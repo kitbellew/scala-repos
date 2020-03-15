@@ -179,14 +179,15 @@ class BinaryClassificationMetrics @Since("1.3.0") (
               s"Curve too large ($countsSize) for $numBins bins; capping at ${Int.MaxValue}")
             grouping = Int.MaxValue
           }
-          counts.mapPartitions(_.grouped(grouping.toInt).map { pairs =>
-            // The score of the combined point will be just the first one's score
-            val firstScore = pairs.head._1
-            // The point will contain all counts in this chunk
-            val agg = new BinaryLabelCounter()
-            pairs.foreach(pair => agg += pair._2)
-            (firstScore, agg)
-          })
+          counts.mapPartitions(
+            _.grouped(grouping.toInt).map { pairs =>
+              // The score of the combined point will be just the first one's score
+              val firstScore = pairs.head._1
+              // The point will contain all counts in this chunk
+              val agg = new BinaryLabelCounter()
+              pairs.foreach(pair => agg += pair._2)
+              (firstScore, agg)
+            })
         }
       }
 

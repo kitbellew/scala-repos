@@ -32,12 +32,16 @@ package object util {
     val origErr = System.err
     val origOut = System.out
     try {
-      System.setErr(new PrintStream(new OutputStream {
-        def write(b: Int) = {}
-      }))
-      System.setOut(new PrintStream(new OutputStream {
-        def write(b: Int) = {}
-      }))
+      System.setErr(
+        new PrintStream(
+          new OutputStream {
+            def write(b: Int) = {}
+          }))
+      System.setOut(
+        new PrintStream(
+          new OutputStream {
+            def write(b: Int) = {}
+          }))
 
       f
     } finally {
@@ -109,10 +113,12 @@ package object util {
 
     leftPadded.zip(rightPadded).map {
       case (l, r) =>
-        (if (l == r)
-           " "
-         else
-           "!") + l + (" " * ((maxLeftSize - l.length) + 3)) + r
+        (
+          if (l == r)
+            " "
+          else
+            "!"
+        ) + l + (" " * ((maxLeftSize - l.length) + 3)) + r
     }
   }
 

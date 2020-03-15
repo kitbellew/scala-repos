@@ -269,8 +269,9 @@ class HistoryServerSuite
       "applications/local-1430917381534/stages/0/0/taskSummary?quantiles=foo,0.1")
     badQuantiles._1 should be(HttpServletResponse.SC_BAD_REQUEST)
     badQuantiles._3 should be(
-      Some("Bad value for parameter \"quantiles\".  Expected a double, " +
-        "got \"foo\""))
+      Some(
+        "Bad value for parameter \"quantiles\".  Expected a double, " +
+          "got \"foo\""))
 
     getContentAndCode("foobar")._1 should be(HttpServletResponse.SC_NOT_FOUND)
   }

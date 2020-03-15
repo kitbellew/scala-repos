@@ -37,18 +37,24 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
 
   override def hashCode(): Int = {
     var res = super.hashCode()
-    res = 31 * res + (if (isImplementingTypeDefinitions)
-                        1
-                      else
-                        0)
-    res = 31 * res + (if (isMembersUsages)
-                        1
-                      else
-                        0)
-    res = 31 * res + (if (isSearchCompanionModule)
-                        1
-                      else
-                        0)
+    res = 31 * res + (
+      if (isImplementingTypeDefinitions)
+        1
+      else
+        0
+    )
+    res = 31 * res + (
+      if (isMembersUsages)
+        1
+      else
+        0
+    )
+    res = 31 * res + (
+      if (isSearchCompanionModule)
+        1
+      else
+        0
+    )
     res
   }
 

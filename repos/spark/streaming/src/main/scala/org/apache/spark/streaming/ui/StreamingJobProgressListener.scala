@@ -287,9 +287,10 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
 
   def retainedBatches: Seq[BatchUIData] =
     synchronized {
-      (waitingBatchUIData.values.toSeq ++
-        runningBatchUIData.values.toSeq ++ completedBatchUIData)
-        .sortBy(_.batchTime)(Time.ordering)
+      (
+        waitingBatchUIData.values.toSeq ++
+          runningBatchUIData.values.toSeq ++ completedBatchUIData
+      ).sortBy(_.batchTime)(Time.ordering)
     }
 
   def getBatchUIData(batchTime: Time): Option[BatchUIData] =

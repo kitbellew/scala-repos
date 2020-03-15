@@ -559,8 +559,7 @@ private[akka] class LocalActorRefProvider private[akka] (
         causeOfTermination.trySuccess(
           Terminated(provider.rootGuardian)(
             existenceConfirmed = true,
-            addressTerminated = true
-          )
+            addressTerminated = true)
         ) //Idempotent
         terminationPromise.tryCompleteWith(
           causeOfTermination.future
@@ -846,10 +845,12 @@ private[akka] class LocalActorRefProvider private[akka] (
 
         val props2 =
           // mailbox and dispatcher defined in deploy should override props
-          (if (lookupDeploy)
-             deployer.lookup(path)
-           else
-             deploy) match {
+          (
+            if (lookupDeploy)
+              deployer.lookup(path)
+            else
+              deploy
+          ) match {
             case Some(d) ⇒
               (d.dispatcher, d.mailbox) match {
                 case (Deploy.NoDispatcherGiven, Deploy.NoMailboxGiven) ⇒ props

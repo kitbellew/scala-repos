@@ -200,43 +200,48 @@ object IO extends IOInstances {
   /** Writes a character to standard output. */
   def putChar(c: Char): IO[Unit] =
     io(rw =>
-      return_(rw -> {
-        print(c)
-        ()
-      }))
+      return_(
+        rw -> {
+          print(c)
+          ()
+        }))
 
   /** Writes a string to standard output. */
   def putStr(s: String): IO[Unit] =
     io(rw =>
-      return_(rw -> {
-        print(s)
-        ()
-      }))
+      return_(
+        rw -> {
+          print(s)
+          ()
+        }))
 
   /** Writes a string to standard output, followed by a newline.*/
   def putStrLn(s: String): IO[Unit] =
     io(rw =>
-      return_(rw -> {
-        println(s)
-        ()
-      }))
+      return_(
+        rw -> {
+          println(s)
+          ()
+        }))
 
   /** Reads a line of standard input. */
   def readLn: IO[String] = IO(readLine())
 
   def put[A](a: A)(implicit S: Show[A]): IO[Unit] =
     io(rw =>
-      return_(rw -> {
-        print(S shows a)
-        ()
-      }))
+      return_(
+        rw -> {
+          print(S shows a)
+          ()
+        }))
 
   def putLn[A](a: A)(implicit S: Show[A]): IO[Unit] =
     io(rw =>
-      return_(rw -> {
-        println(S shows a)
-        ()
-      }))
+      return_(
+        rw -> {
+          println(S shows a)
+          ()
+        }))
 
   type RunInBase[M[_], Base[_]] = Forall[λ[α => M[α] => Base[M[α]]]]
 
@@ -255,9 +260,10 @@ object IO extends IOInstances {
 
   def idLiftControl[M[_], A](f: RunInBase[M, M] => M[A])(
       implicit m: Monad[M]): M[A] =
-    f(new RunInBase[M, M] {
-      def apply[B] = (x: M[B]) => m.point(x)
-    })
+    f(
+      new RunInBase[M, M] {
+        def apply[B] = (x: M[B]) => m.point(x)
+      })
 
   def controlIO[M[_], A](f: RunInBase[M, IO] => IO[M[A]])(
       implicit M: MonadControlIO[M]): M[A] = M.join(M.liftControlIO(f))
@@ -268,12 +274,15 @@ object IO extends IOInstances {
     */
   def onExit[S, P[_]: MonadIO](
       finalizer: IO[Unit]): RegionT[S, P, FinalizerHandle[RegionT[S, P, ?]]] =
-    regionT(kleisli(hsIORef =>
-      (for {
-        refCntIORef <- newIORef(1)
-        h = refCountedFinalizer(finalizer, refCntIORef)
-        _ <- hsIORef.mod(h :: _)
-      } yield finalizerHandle[RegionT[S, P, ?]](h)).liftIO[P]))
+    regionT(
+      kleisli(hsIORef =>
+        (
+          for {
+            refCntIORef <- newIORef(1)
+            h = refCountedFinalizer(finalizer, refCntIORef)
+            _ <- hsIORef.mod(h :: _)
+          } yield finalizerHandle[RegionT[S, P, ?]](h)
+        ).liftIO[P]))
 
   /**
     * Execute a region inside its parent region P. All resources which have been opened in the given

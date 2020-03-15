@@ -69,11 +69,7 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
       .map {
         case (key, Buf.Utf8(value)) => (key, value)
       }
-    assert(
-      result == Map(
-        "foo" -> "bar",
-        "baz" -> "boing"
-      ))
+    assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }
 
   if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
@@ -93,11 +89,9 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
           "foos" -> (
             (
               "xyz",
-              "1"
-            )
+              "1")
           ), // the "cas unique" values are predictable from a fresh memcached
-          "bazs" -> (("zyx", "3"))
-        ))
+          "bazs" -> (("zyx", "3"))))
     }
   }
 

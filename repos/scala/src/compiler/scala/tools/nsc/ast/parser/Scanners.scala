@@ -415,8 +415,10 @@ trait Scanners extends ScannersCommon {
     /** Is current token first one after a newline? */
     private def afterLineEnd(): Boolean =
       lastOffset < lineStartOffset &&
-        (lineStartOffset <= offset ||
-          lastOffset < lastLineStartOffset && lastLineStartOffset <= offset)
+        (
+          lineStartOffset <= offset ||
+            lastOffset < lastLineStartOffset && lastLineStartOffset <= offset
+        )
 
     /** Is there a blank line between the current token and the last one?
       *  @pre  afterLineEnd().
@@ -564,7 +566,9 @@ trait Scanners extends ScannersCommon {
               charLitOr(getIdentRest)
             else if (isOperatorPart(ch) && (ch != '\\'))
               charLitOr(getOperatorRest)
-            else if (!isAtEnd && (ch != SU && ch != CR && ch != LF || isUnicodeEscape)) {
+            else if (!isAtEnd && (
+                       ch != SU && ch != CR && ch != LF || isUnicodeEscape
+                     )) {
               getLitChar()
               if (ch == '\'') {
                 nextChar()
@@ -634,8 +638,9 @@ trait Scanners extends ScannersCommon {
               getOperatorRest()
             } else {
               syntaxError(
-                "illegal character '" + ("" + '\\' + 'u' + "%04x".format(
-                  ch.toInt)) + "'")
+                "illegal character '" + (
+                  "" + '\\' + 'u' + "%04x".format(ch.toInt)
+                ) + "'")
               nextChar()
             }
           }
@@ -832,8 +837,9 @@ trait Scanners extends ScannersCommon {
             "invalid string interpolation: `$$', `$'ident or `$'BlockExpr expected")
         }
       } else {
-        val isUnclosedLiteral =
-          !isUnicodeEscape && (ch == SU || (!multiLine && (ch == CR || ch == LF)))
+        val isUnclosedLiteral = !isUnicodeEscape && (
+          ch == SU || (!multiLine && (ch == CR || ch == LF))
+        )
         if (isUnclosedLiteral) {
           if (multiLine)
             incompleteInputError("unclosed multi-line string literal")
@@ -928,7 +934,9 @@ trait Scanners extends ScannersCommon {
     }
 
     private def getLitChars(delimiter: Char) = {
-      while (ch != delimiter && !isAtEnd && (ch != SU && ch != CR && ch != LF || isUnicodeEscape))
+      while (ch != delimiter && !isAtEnd && (
+               ch != SU && ch != CR && ch != LF || isUnicodeEscape
+             ))
         getLitChar()
     }
 

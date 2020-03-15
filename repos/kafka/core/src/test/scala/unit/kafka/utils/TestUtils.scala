@@ -109,11 +109,12 @@ object TestUtils extends Logging {
 
     Runtime
       .getRuntime()
-      .addShutdownHook(new Thread() {
-        override def run() = {
-          CoreUtils.rm(f)
-        }
-      })
+      .addShutdownHook(
+        new Thread() {
+          override def run() = {
+            CoreUtils.rm(f)
+          }
+        })
     f
   }
 
@@ -581,8 +582,7 @@ object TestUtils extends Logging {
     val defaultProps = Map(
       ProducerConfig.RETRY_BACKOFF_MS_CONFIG -> "100",
       ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG -> "200",
-      ProducerConfig.LINGER_MS_CONFIG -> lingerMs.toString
-    )
+      ProducerConfig.LINGER_MS_CONFIG -> lingerMs.toString)
 
     defaultProps.foreach {
       case (key, value) =>
@@ -1189,8 +1189,7 @@ object TestUtils extends Logging {
     val producer = createNewProducer(
       TestUtils.getBrokerListStrFromServers(servers),
       retries = 5,
-      requestTimeoutMs = 2000
-    )
+      requestTimeoutMs = 2000)
 
     val values = (0 until numMessages).map(x => s"test-$x")
 
@@ -1212,8 +1211,7 @@ object TestUtils extends Logging {
     val producer = createNewProducer(
       TestUtils.getBrokerListStrFromServers(servers),
       retries = 5,
-      requestTimeoutMs = 2000
-    )
+      requestTimeoutMs = 2000)
     producer
       .send(new ProducerRecord(topic, topic.getBytes, message.getBytes))
       .get
@@ -1240,8 +1238,9 @@ object TestUtils extends Logging {
         val iterator = messageStream.iterator()
         try {
           var i = 0
-          while ((shouldGetAllMessages && iterator
-                   .hasNext()) || (i < nMessagesPerThread)) {
+          while ((
+                   shouldGetAllMessages && iterator.hasNext()
+                 ) || (i < nMessagesPerThread)) {
             assertTrue(iterator.hasNext)
             val message =
               iterator.next.message // will throw a timeout exception if the message isn't there

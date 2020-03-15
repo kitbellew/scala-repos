@@ -95,8 +95,9 @@ private[akka] final case class TailChoppingRoutees(
 
     val sendTimeout =
       scheduler.scheduleOnce(within)(
-        promise.tryFailure(new AskTimeoutException(
-          s"Ask timed out on [$sender] after [$within.toMillis} ms]")))
+        promise.tryFailure(
+          new AskTimeoutException(
+            s"Ask timed out on [$sender] after [$within.toMillis} ms]")))
 
     val f = promise.future
     f.onComplete {

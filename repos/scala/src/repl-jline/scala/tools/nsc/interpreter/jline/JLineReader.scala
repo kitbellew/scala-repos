@@ -164,20 +164,21 @@ private class JLineConsoleReader
     // And checking we don't get an extra } on the line.
     ///
     val handler = getCompletionHandler
-    setCompletionHandler(new CompletionHandler {
-      override def complete(
-          consoleReader: ConsoleReader,
-          list: JList[CharSequence],
-          i: Int): Boolean = {
-        try {
-          handler.complete(consoleReader, list, i)
-        } finally if (getCursorBuffer.cursor != getCursorBuffer.length()) {
-          print(" ")
-          getCursorBuffer.write(' ')
-          backspace()
+    setCompletionHandler(
+      new CompletionHandler {
+        override def complete(
+            consoleReader: ConsoleReader,
+            list: JList[CharSequence],
+            i: Int): Boolean = {
+          try {
+            handler.complete(consoleReader, list, i)
+          } finally if (getCursorBuffer.cursor != getCursorBuffer.length()) {
+            print(" ")
+            getCursorBuffer.write(' ')
+            backspace()
+          }
         }
-      }
-    })
+      })
     setAutoprintThreshold(400) // max completion candidates without warning
   }
 }

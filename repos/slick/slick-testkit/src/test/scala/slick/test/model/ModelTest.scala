@@ -21,10 +21,7 @@ class ModelTest {
       Seq(
         Table(
           B,
-          Seq(
-            b_id,
-            b_a_id
-          ),
+          Seq(b_id, b_a_id),
           None,
           Seq(
             ForeignKey(

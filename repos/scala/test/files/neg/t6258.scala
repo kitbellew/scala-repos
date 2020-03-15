@@ -24,7 +24,8 @@ class X {
 
   case class M[X](a: X)
 
-  bar[M[Any]](foo { // undefined param
-    case M(_) => null
-  })
+  bar[M[Any]](
+    foo { // undefined param
+      case M(_) => null
+    })
 }

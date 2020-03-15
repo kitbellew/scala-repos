@@ -33,10 +33,11 @@ class InterpretedProjection(expressions: Seq[Expression]) extends Projection {
   def this(expressions: Seq[Expression], inputSchema: Seq[Attribute]) =
     this(expressions.map(BindReferences.bindReference(_, inputSchema)))
 
-  expressions.foreach(_.foreach {
-    case n: Nondeterministic => n.setInitialValues()
-    case _                   =>
-  })
+  expressions.foreach(
+    _.foreach {
+      case n: Nondeterministic => n.setInitialValues()
+      case _                   =>
+    })
 
   // null check is required for when Kryo invokes the no-arg constructor.
   protected val exprArray =
@@ -71,10 +72,11 @@ case class InterpretedMutableProjection(expressions: Seq[Expression])
 
   private[this] val buffer = new Array[Any](expressions.size)
 
-  expressions.foreach(_.foreach {
-    case n: Nondeterministic => n.setInitialValues()
-    case _                   =>
-  })
+  expressions.foreach(
+    _.foreach {
+      case n: Nondeterministic => n.setInitialValues()
+      case _                   =>
+    })
 
   private[this] val exprArray = expressions.toArray
   private[this] var mutableRow: MutableRow =
@@ -128,10 +130,11 @@ object UnsafeProjection {
     * Returns an UnsafeProjection for given sequence of Expressions (bounded).
     */
   def create(exprs: Seq[Expression]): UnsafeProjection = {
-    val unsafeExprs = exprs.map(_ transform {
-      case CreateStruct(children)      => CreateStructUnsafe(children)
-      case CreateNamedStruct(children) => CreateNamedStructUnsafe(children)
-    })
+    val unsafeExprs = exprs.map(
+      _ transform {
+        case CreateStruct(children)      => CreateStructUnsafe(children)
+        case CreateNamedStruct(children) => CreateNamedStructUnsafe(children)
+      })
     GenerateUnsafeProjection.generate(unsafeExprs)
   }
 
@@ -157,10 +160,11 @@ object UnsafeProjection {
       subexpressionEliminationEnabled: Boolean): UnsafeProjection = {
     val e = exprs
       .map(BindReferences.bindReference(_, inputSchema))
-      .map(_ transform {
-        case CreateStruct(children)      => CreateStructUnsafe(children)
-        case CreateNamedStruct(children) => CreateNamedStructUnsafe(children)
-      })
+      .map(
+        _ transform {
+          case CreateStruct(children)      => CreateStructUnsafe(children)
+          case CreateNamedStruct(children) => CreateNamedStructUnsafe(children)
+        })
     GenerateUnsafeProjection.generate(e, subexpressionEliminationEnabled)
   }
 }
@@ -181,9 +185,10 @@ object FromUnsafeProjection {
     * Returns an UnsafeProjection for given Array of DataTypes.
     */
   def apply(fields: Seq[DataType]): Projection = {
-    create(fields.zipWithIndex.map(x => {
-      new BoundReference(x._2, x._1, true)
-    }))
+    create(
+      fields.zipWithIndex.map(x => {
+        new BoundReference(x._2, x._1, true)
+      }))
   }
 
   /**

@@ -24,25 +24,28 @@ object DriverRegistrationSpec extends Specification {
         DriverManager.deregisterDriver(DriverManager.getDriver(jdbcUrl))
       }
 
-      DriverManager.getDriver(jdbcUrl) aka "Acolyte driver" must (throwA[
-        SQLException](message = "No suitable driver"))
+      DriverManager.getDriver(jdbcUrl) aka "Acolyte driver" must (
+        throwA[SQLException](message = "No suitable driver")
+      )
     }
 
     "be registered for both Acolyte & H2 when databases are connected" in {
       dbApi.connect()
 
       (DriverManager.getDriver(jdbcUrl) aka "Acolyte driver" must not(beNull))
-        .and(DriverManager.getDriver("jdbc:h2:mem:").aka("H2 driver") must not(
-          beNull))
+        .and(
+          DriverManager.getDriver("jdbc:h2:mem:").aka("H2 driver") must not(
+            beNull))
     }
 
     "be deregistered for Acolyte but still there for H2 after databases stop" in {
       dbApi.shutdown()
 
       (DriverManager.getDriver("jdbc:h2:mem:") aka "H2 driver" must not(beNull))
-        .and(DriverManager.getDriver(jdbcUrl) aka "Acolyte driver" must {
-          throwA[SQLException](message = "No suitable driver")
-        })
+        .and(
+          DriverManager.getDriver(jdbcUrl) aka "Acolyte driver" must {
+            throwA[SQLException](message = "No suitable driver")
+          })
     }
   }
 
@@ -57,11 +60,7 @@ object DriverRegistrationSpec extends Specification {
       Map(
         "default" ->
           Configuration
-            .from(
-              Map(
-                "driver" -> "acolyte.jdbc.Driver",
-                "url" -> jdbcUrl
-              ))
+            .from(Map("driver" -> "acolyte.jdbc.Driver", "url" -> jdbcUrl))
             .underlying
             .withFallback(
               ConfigFactory.defaultReference.getConfig("play.db.prototype"))))

@@ -1738,8 +1738,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     val millisInHour = 60L * millisInMinute
 
     val millis: java.lang.Long = Option(
-      getLong(KafkaConfig.LogRetentionTimeMillisProp))
-      .getOrElse(Option(getInt(KafkaConfig.LogRetentionTimeMinutesProp)) match {
+      getLong(KafkaConfig.LogRetentionTimeMillisProp)).getOrElse(
+      Option(getInt(KafkaConfig.LogRetentionTimeMinutesProp)) match {
         case Some(mins) => millisInMinute * mins
         case None =>
           getInt(KafkaConfig.LogRetentionTimeHoursProp) * millisInHour

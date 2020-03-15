@@ -64,8 +64,7 @@ object Validation {
             case (description, ruleViolation) =>
               Json.obj(
                 "path" -> description,
-                "errors" -> ruleViolation.map(r => JsString(r.constraint))
-              )
+                "errors" -> ruleViolation.map(r => JsString(r.constraint)))
           }
       }
     )
@@ -92,24 +91,26 @@ object Validation {
 
     violation match {
       case r: RuleViolation =>
-        Set(parentDesc.map { p =>
-          r.description.map {
-            // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
-            case "value" => r.withDescription("/" + p)
-            // Error is on property level, having a parent description. Prepend '/' as root.
-            case s: String =>
-              r.withDescription(
-                concatPath("/" + p, r.description, prependSlash))
-            // Error is on unknown level, having a parent description. Prepend '/' as root.
-          } getOrElse r.withDescription("/" + p)
-        } getOrElse {
-          r.withDescription(r.description.map {
-            // Error is on object level, having no parent description, being a root error.
-            case "value" => "/"
-            // Error is on property level, having no parent description, being a property of root error.
-            case s: String => "/" + s
-          } getOrElse "/")
-        })
+        Set(
+          parentDesc.map { p =>
+            r.description.map {
+              // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
+              case "value" => r.withDescription("/" + p)
+              // Error is on property level, having a parent description. Prepend '/' as root.
+              case s: String =>
+                r.withDescription(
+                  concatPath("/" + p, r.description, prependSlash))
+              // Error is on unknown level, having a parent description. Prepend '/' as root.
+            } getOrElse r.withDescription("/" + p)
+          } getOrElse {
+            r.withDescription(
+              r.description.map {
+                // Error is on object level, having no parent description, being a root error.
+                case "value" => "/"
+                // Error is on property level, having no parent description, being a property of root error.
+                case s: String => "/" + s
+              } getOrElse "/")
+          })
       case g: GroupViolation =>
         g.children.flatMap { c =>
           val dot =
@@ -145,8 +146,7 @@ object Validation {
               Success //if we come here, we could read the stream
           }
         }.getOrElse(
-          Failure(Set(RuleViolation(url, "URL could not be resolved.", None)))
-        )
+          Failure(Set(RuleViolation(url, "URL could not be resolved.", None))))
       }
     }
   }
@@ -241,16 +241,14 @@ object Validation {
     import ViolationBuilder._
     new NullSafeValidator[T](
       test = options.contains,
-      failure = _ -> s"is not one of (${options.mkString(",")})"
-    )
+      failure = _ -> s"is not one of (${options.mkString(",")})")
   }
 
   def oneOf[T <: AnyRef](options: T*): Validator[T] = {
     import ViolationBuilder._
     new NullSafeValidator[T](
       test = options.contains,
-      failure = _ -> s"is not one of (${options.mkString(",")})"
-    )
+      failure = _ -> s"is not one of (${options.mkString(",")})")
   }
 
   def configValueSet[T <: AnyRef](config: String*): Validator[T] =

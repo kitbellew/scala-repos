@@ -69,9 +69,10 @@ object PlayReload {
           getProblems(incomplete, streams)
             .find(_.severity == xsbti.Severity.Error)
             .map(CompilationException)
-            .getOrElse(UnexpectedException(
-              Some("The compilation failed without reporting any problem!"),
-              Some(e)))
+            .getOrElse(
+              UnexpectedException(
+                Some("The compilation failed without reporting any problem!"),
+                Some(e)))
         case e: Exception => UnexpectedException(unexpected = Some(e))
       }
       .getOrElse {

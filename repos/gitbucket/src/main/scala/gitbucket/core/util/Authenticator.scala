@@ -52,10 +52,12 @@ trait OwnerAuthenticator {
             case Some(x) if (x.isAdmin) => action(repository)
             case Some(x) if (repository.owner == x.userName) =>
               action(repository)
-            case Some(x) if (getGroupMembers(repository.owner).exists {
-                  member =>
+            case Some(x)
+                if (
+                  getGroupMembers(repository.owner).exists { member =>
                     member.userName == x.userName && member.isManager == true
-                }) =>
+                  }
+                ) =>
               action(repository)
             case _ => Unauthorized()
           }
@@ -130,8 +132,9 @@ trait CollaboratorsAuthenticator {
             case Some(x) if (x.isAdmin)              => action(repository)
             case Some(x) if (paths(0) == x.userName) => action(repository)
             case Some(x)
-                if (getCollaborators(paths(0), paths(1)).contains(
-                  x.userName)) =>
+                if (
+                  getCollaborators(paths(0), paths(1)).contains(x.userName)
+                ) =>
               action(repository)
             case _ => Unauthorized()
           }
@@ -164,8 +167,9 @@ trait ReferrerAuthenticator { self: ControllerBase with RepositoryService =>
               case Some(x) if (x.isAdmin)              => action(repository)
               case Some(x) if (paths(0) == x.userName) => action(repository)
               case Some(x)
-                  if (getCollaborators(paths(0), paths(1)).contains(
-                    x.userName)) =>
+                  if (
+                    getCollaborators(paths(0), paths(1)).contains(x.userName)
+                  ) =>
                 action(repository)
               case _ => Unauthorized()
             }
@@ -199,8 +203,9 @@ trait ReadableUsersAuthenticator {
               action(repository)
             case Some(x) if (paths(0) == x.userName) => action(repository)
             case Some(x)
-                if (getCollaborators(paths(0), paths(1)).contains(
-                  x.userName)) =>
+                if (
+                  getCollaborators(paths(0), paths(1)).contains(x.userName)
+                ) =>
               action(repository)
             case _ => Unauthorized()
           }
@@ -226,9 +231,12 @@ trait GroupManagerAuthenticator { self: ControllerBase with AccountService =>
     {
       defining(request.paths) { paths =>
         context.loginAccount match {
-          case Some(x) if (getGroupMembers(paths(0)).exists { member =>
-                member.userName == x.userName && member.isManager
-              }) =>
+          case Some(x)
+              if (
+                getGroupMembers(paths(0)).exists { member =>
+                  member.userName == x.userName && member.isManager
+                }
+              ) =>
             action
           case _ => Unauthorized()
         }

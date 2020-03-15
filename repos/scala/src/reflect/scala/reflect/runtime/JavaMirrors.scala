@@ -81,17 +81,17 @@ private[scala] trait JavaMirrors
     import runDefinitions._
 
     override lazy val RootPackage =
-      (new RootPackage
-        with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
+      (new RootPackage with SynchronizedTermSymbol)
+        .markFlagsCompleted(mask = AllFlags)
     override lazy val RootClass =
-      (new RootClass
-        with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
+      (new RootClass with SynchronizedModuleClassSymbol)
+        .markFlagsCompleted(mask = AllFlags)
     override lazy val EmptyPackage =
-      (new EmptyPackage
-        with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
+      (new EmptyPackage with SynchronizedTermSymbol)
+        .markFlagsCompleted(mask = AllFlags)
     override lazy val EmptyPackageClass =
-      (new EmptyPackageClass
-        with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
+      (new EmptyPackageClass with SynchronizedModuleClassSymbol)
+        .markFlagsCompleted(mask = AllFlags)
 
     /** The lazy type for root.
       */
@@ -221,8 +221,9 @@ private[scala] trait JavaMirrors
         schemaAndValue match {
           case ConstantArg(value) => LiteralAnnotArg(Constant(value))
           case (clazz @ ArrayClass(), value: Array[_]) =>
-            ArrayAnnotArg(value map (x =>
-              apply(ScalaRunTime.arrayElementClass(clazz) -> x)))
+            ArrayAnnotArg(
+              value map (x =>
+                apply(ScalaRunTime.arrayElementClass(clazz) -> x)))
           case (AnnotationClass(), value: jAnnotation) =>
             NestedAnnotArg(JavaAnnotationProxy(value))
           case _ => UnmappableAnnotArg
@@ -242,12 +243,11 @@ private[scala] trait JavaMirrors
 
       // todo. find out the exact order of assocs as they are written in the class file
       // currently I'm simply sorting the methods to guarantee stability of the output
-      override lazy val assocs: List[(Name, ClassfileAnnotArg)] = (
-        jann.annotationType.getDeclaredMethods.sortBy(_.getName).toList map (
+      override lazy val assocs: List[(Name, ClassfileAnnotArg)] =
+        (jann.annotationType.getDeclaredMethods.sortBy(_.getName).toList map (
           m =>
             TermName(m.getName) -> toAnnotArg(
-              m.getReturnType -> m.invoke(jann)))
-      )
+              m.getReturnType -> m.invoke(jann))))
     }
 
     def reflect[T: ClassTag](obj: T): InstanceMirror =
@@ -408,7 +408,9 @@ private[scala] trait JavaMirrors
     private def isGetClass(meth: MethodSymbol) =
       (meth.name string_== "getClass") && meth.paramss.flatten.isEmpty
     private def isStringConcat(meth: MethodSymbol) =
-      meth == String_+ || (meth.owner.isPrimitiveValueClass && meth.returnType =:= StringClass.toType)
+      meth == String_+ || (
+        meth.owner.isPrimitiveValueClass && meth.returnType =:= StringClass.toType
+      )
     lazy val bytecodelessMethodOwners = Set[Symbol](
       AnyClass,
       AnyValClass,
@@ -830,11 +832,10 @@ private[scala] trait JavaMirrors
 
     /** Does `path` correspond to a Java class with that fully qualified name in the current class loader? */
     def tryJavaClass(path: String): Option[jClass[_]] =
-      (
-        try Some(javaClass(path))
-        catch {
-          case ex @ (_: LinkageError | _: ClassNotFoundException) => None
-        } // TODO - log
+      (try Some(javaClass(path))
+      catch {
+        case ex @ (_: LinkageError | _: ClassNotFoundException) => None
+      } // TODO - log
       )
 
     /** The mirror that corresponds to the classloader that original defined the given Java class */
@@ -869,10 +870,12 @@ private[scala] trait JavaMirrors
           ex.printStackTrace()
         val msg = ex.getMessage()
         MissingRequirementError.signal(
-          (if (msg eq null)
-             "reflection error while loading " + clazz.name
-           else
-             "error while loading " + clazz.name) + ", " + msg)
+          (
+            if (msg eq null)
+              "reflection error while loading " + clazz.name
+            else
+              "error while loading " + clazz.name
+          ) + ", " + msg)
       }
       // don't use classOf[scala.reflect.ScalaSignature] here, because it will use getClass.getClassLoader, not mirror's classLoader
       // don't use asInstanceOf either because of the same reason (lol, I cannot believe I fell for it)
@@ -883,7 +886,9 @@ private[scala] trait JavaMirrors
         tryJavaClass(name) flatMap { annotClass =>
           val anns = jclazz.getAnnotations
           val result = anns find (_.annotationType == annotClass)
-          if (result.isEmpty && (anns exists (_.annotationType.getName == name)))
+          if (result.isEmpty && (
+                anns exists (_.annotationType.getName == name)
+              ))
             throw new ClassNotFoundException(
               sm"""Mirror classloader mismatch: $jclazz (loaded by ${ReflectionUtils
                 .show(jclazz.getClassLoader)})
@@ -1032,15 +1037,19 @@ private[scala] trait JavaMirrors
       /** used to avoid cycles while initializing classes */
       private var parentsLevel = 0
       private var pendingLoadActions: List[() => Unit] = Nil
-      private val relatedSymbols = clazz +: (if (module != NoSymbol)
-                                               List(module, module.moduleClass)
-                                             else
-                                               Nil)
+      private val relatedSymbols = clazz +: (
+        if (module != NoSymbol)
+          List(module, module.moduleClass)
+        else
+          Nil
+      )
 
       override def load(sym: Symbol): Unit = {
         debugInfo("completing from Java " + sym + "/" + clazz.fullName) //debug
         assert(
-          sym == clazz || (module != NoSymbol && (sym == module || sym == module.moduleClass)),
+          sym == clazz || (
+            module != NoSymbol && (sym == module || sym == module.moduleClass)
+          ),
           sym)
 
         assignAssociatedFile(clazz, module, jclazz)
@@ -1077,10 +1086,12 @@ private[scala] trait JavaMirrors
               else if (jclazz.isInterface)
                 ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
               else
-                (if (jsuperclazz == null)
-                   AnyTpe
-                 else
-                   typeToScala(jsuperclazz)) :: ifaces
+                (
+                  if (jsuperclazz == null)
+                    AnyTpe
+                  else
+                    typeToScala(jsuperclazz)
+                ) :: ifaces
             } finally {
               parentsLevel -= 1
             }
@@ -1219,17 +1230,15 @@ private[scala] trait JavaMirrors
       */
     private def lookup(clazz: Symbol, jname: String): Symbol = {
       def approximateMatch(sym: Symbol, jstr: String): Boolean =
-        (
-          (sym.name string_== jstr)
-            || sym.isPrivate && (nme.expandedName(
-              sym.name.toTermName,
-              sym.owner) string_== jstr)
-        )
+        ((sym.name string_== jstr)
+          || sym.isPrivate && (
+            nme.expandedName(sym.name.toTermName, sym.owner) string_== jstr
+          ))
 
       clazz.info.decl(newTermName(jname)) orElse {
-        (clazz.info.decls.iterator filter (approximateMatch(
-          _,
-          jname))).toList match {
+        (
+          clazz.info.decls.iterator filter (approximateMatch(_, jname))
+        ).toList match {
           case List()    => NoSymbol
           case List(sym) => sym
           case alts      => clazz.newOverloaded(alts.head.tpe.prefix, alts)
@@ -1249,9 +1258,11 @@ private[scala] trait JavaMirrors
       val jOwner = jmeth.getDeclaringClass
       val preOwner = classToScala(jOwner)
       val owner = followStatic(preOwner, jmeth.javaFlags)
-      (lookup(owner, jmeth.getName) suchThat (erasesTo(
-        _,
-        jmeth)) orElse jmethodAsScala(jmeth)).asMethod
+      (
+        lookup(owner, jmeth.getName) suchThat (
+          erasesTo(_, jmeth)
+        ) orElse jmethodAsScala(jmeth)
+      ).asMethod
     }
 
     /**
@@ -1266,9 +1277,11 @@ private[scala] trait JavaMirrors
       val owner = followStatic(
         classToScala(jconstr.getDeclaringClass),
         jconstr.javaFlags)
-      (lookup(owner, jconstr.getName) suchThat (erasesTo(
-        _,
-        jconstr)) orElse jconstrAsScala(jconstr)).asMethod
+      (
+        lookup(owner, jconstr.getName) suchThat (
+          erasesTo(_, jconstr)
+        ) orElse jconstrAsScala(jconstr)
+      ).asMethod
     }
 
     /**
@@ -1395,10 +1408,12 @@ private[scala] trait JavaMirrors
 
         assert(
           cls.isType,
-          (if (cls != NoSymbol)
-             s"not a type: symbol $cls"
-           else
-             "no symbol could be") +
+          (
+            if (cls != NoSymbol)
+              s"not a type: symbol $cls"
+            else
+              "no symbol could be"
+          ) +
             s" loaded from $jclazz in $owner with name $simpleName and classloader $classLoader"
         )
 
@@ -1452,9 +1467,11 @@ private[scala] trait JavaMirrors
           case jwild: WildcardType =>
             val tparam = owner
               .newExistential(newTypeName("T$" + tparams.length))
-              .setInfo(TypeBounds(
-                lub(jwild.getLowerBounds.toList map typeToScala),
-                glb(jwild.getUpperBounds.toList map typeToScala map objToAny)))
+              .setInfo(
+                TypeBounds(
+                  lub(jwild.getLowerBounds.toList map typeToScala),
+                  glb(
+                    jwild.getUpperBounds.toList map typeToScala map objToAny)))
             tparams += tparam
             typeRef(NoPrefix, tparam, List())
           case _ =>

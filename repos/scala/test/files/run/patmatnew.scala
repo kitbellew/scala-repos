@@ -183,11 +183,13 @@ object Test {
     def run() {
       assertEquals(
         1,
-        ((NoContext: Any) match {
-          case that: AnyRef if this eq that => 0
-          case NoContext                    => 1
-          case _                            => 2
-        }))
+        (
+          (NoContext: Any) match {
+            case that: AnyRef if this eq that => 0
+            case NoContext                    => 1
+            case _                            => 2
+          }
+        ))
     }
   }
 
@@ -282,13 +284,15 @@ object Test {
           case _ => Nil
         }
       assertEquals(
-        "res instance" + res.isInstanceOf[Seq[Con] forSome {
-          type Con
-        }] + " res(0)=" + res(0),
+        "res instance" + res.isInstanceOf[
+          Seq[Con] forSome {
+            type Con
+          }] + " res(0)=" + res(0),
         true,
-        res.isInstanceOf[Seq[Foo] forSome {
-          type Foo
-        }] && res(0) == Foo())
+        res.isInstanceOf[
+          Seq[Foo] forSome {
+            type Foo
+          }] && res(0) == Foo())
     }
   }
 
@@ -576,9 +580,12 @@ object Test {
       val x = "Hello, world";
       val y = 100;
       y match {
-        case _: Int if (x match {
-              case t => t.trim().length() > 0
-            }) =>
+        case _: Int
+            if (
+              x match {
+                case t => t.trim().length() > 0
+              }
+            ) =>
           false;
         case _ => true;
       }
@@ -690,10 +697,11 @@ object Test {
 
   object Bug1093 {
     def run() {
-      assert((Some(3): @unchecked) match {
-        case Some(1 | 2) => false
-        case Some(3)     => true
-      })
+      assert(
+        (Some(3): @unchecked) match {
+          case Some(1 | 2) => false
+          case Some(3)     => true
+        })
     }
   }
 

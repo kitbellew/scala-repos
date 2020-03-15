@@ -462,11 +462,11 @@ class SetMapConsistencyTest {
       () => boxIim,
       () => boxIhm[Int],
       () => boxIlm[Int],
-      () => boxItm[Int]
-    )
-    assert(maps.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), intKeys, 2000)
-    })
+      () => boxItm[Int])
+    assert(
+      maps.sliding(2).forall { ms =>
+        churn(ms(0)(), ms(1)(), intKeys, 2000)
+      })
   }
 
   @Test
@@ -480,11 +480,11 @@ class SetMapConsistencyTest {
       () => boxMtm[Long],
       () => boxMohm[Long],
       () => boxIhm[Long],
-      () => boxIlm[Long]
-    )
-    assert(maps.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), longKeys, 10000)
-    })
+      () => boxIlm[Long])
+    assert(
+      maps.sliding(2).forall { ms =>
+        churn(ms(0)(), ms(1)(), longKeys, 10000)
+      })
   }
 
   @Test
@@ -496,11 +496,11 @@ class SetMapConsistencyTest {
       () => boxMarm[String],
       () => boxJavaM[String],
       () => boxIhm[String],
-      () => boxIlm[String]
-    )
-    assert(maps.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), stringKeys, 5000)
-    })
+      () => boxIlm[String])
+    assert(
+      maps.sliding(2).forall { ms =>
+        churn(ms(0)(), ms(1)(), stringKeys, 5000)
+      })
   }
 
   @Test
@@ -511,11 +511,11 @@ class SetMapConsistencyTest {
       () => boxMohm[Any],
       () => boxJavaM[Any],
       () => boxIhm[Any],
-      () => boxIlm[Any]
-    )
-    assert(maps.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), anyKeys, 10000)
-    })
+      () => boxIlm[Any])
+    assert(
+      maps.sliding(2).forall { ms =>
+        churn(ms(0)(), ms(1)(), anyKeys, 10000)
+      })
   }
 
   @Test
@@ -532,9 +532,10 @@ class SetMapConsistencyTest {
       () => boxIls[Int],
       () => boxIts[Int]
     )
-    assert(sets.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), smallKeys, 1000, valuer = _ => 0)
-    })
+    assert(
+      sets.sliding(2).forall { ms =>
+        churn(ms(0)(), ms(1)(), smallKeys, 1000, valuer = _ => 0)
+      })
   }
 
   @Test
@@ -545,11 +546,11 @@ class SetMapConsistencyTest {
       () => boxJavaS[Any],
       () => boxMhs[Any],
       () => boxIhs[Any],
-      () => boxIls[Any]
-    )
-    assert(sets.sliding(2).forall { ms =>
-      churn(ms(0)(), ms(1)(), anyKeys, 10000, valuer = _ => 0)
-    })
+      () => boxIls[Any])
+    assert(
+      sets.sliding(2).forall { ms =>
+        churn(ms(0)(), ms(1)(), anyKeys, 10000, valuer = _ => 0)
+      })
   }
 
   @Test
@@ -589,8 +590,10 @@ class SetMapConsistencyTest {
     assert {
       val m2 = lm.mapValuesNow(_ + 2)
       lm.transformValues(_ + 2)
-      m2 == lm && !(m2 eq lm) && (for ((_, v) <- lm)
-        yield v).sum == 33L
+      m2 == lm && !(m2 eq lm) && (
+        for ((_, v) <- lm)
+          yield v
+      ).sum == 33L
     }
 
     assert {
@@ -616,10 +619,12 @@ class SetMapConsistencyTest {
     assert {
       arm.map {
         case (k, v) =>
-          (if (k == null)
-             ""
-           else
-             k + k) -> v.toString
+          (
+            if (k == null)
+              ""
+            else
+              k + k
+          ) -> v.toString
       }.getClass == arm.getClass
     }
 
@@ -653,8 +658,10 @@ class SetMapConsistencyTest {
     assert {
       val m2 = arm.mapValuesNow(_ + 2)
       arm.transformValues(_ + 2)
-      m2 == arm && !(m2 eq arm) && (for ((_, v) <- arm)
-        yield v).sum == 33L
+      m2 == arm && !(m2 eq arm) && (
+        for ((_, v) <- arm)
+          yield v
+      ).sum == 33L
     }
 
     assert {
@@ -755,10 +762,11 @@ class SetMapConsistencyTest {
       else
         None
     }
-    assert(f() match {
-      case Some((a, b)) if (a == null || b == null) => false
-      case _                                        => true
-    })
+    assert(
+      f() match {
+        case Some((a, b)) if (a == null || b == null) => false
+        case _                                        => true
+      })
   }
 
   @Test

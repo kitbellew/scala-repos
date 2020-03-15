@@ -47,10 +47,11 @@ class TypeCollectionAnotatorTest
     val holder = new AnnotatorHolderMock
     annotate(text, holder)
 
-    assert(holder.annotations.exists {
-      case Info(`highlightedText`, `highlightingMessage`) => true
-      case _                                              => false
-    })
+    assert(
+      holder.annotations.exists {
+        case Info(`highlightedText`, `highlightingMessage`) => true
+        case _                                              => false
+      })
   }
 
   private def testCannotAnnotate(
@@ -59,10 +60,11 @@ class TypeCollectionAnotatorTest
     val holder = new AnnotatorHolderMock
     annotate(text, holder)
 
-    assert(!holder.annotations.exists {
-      case Info(`textCantHighlight`._1, `textCantHighlight`._2) => true
-      case _                                                    => false
-    })
+    assert(
+      !holder.annotations.exists {
+        case Info(`textCantHighlight`._1, `textCantHighlight`._2) => true
+        case _                                                    => false
+      })
   }
 
   def testAnnotateImmutableSimpple() {

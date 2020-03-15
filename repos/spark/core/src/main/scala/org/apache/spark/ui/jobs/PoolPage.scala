@@ -55,9 +55,10 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
 
       // For now, pool information is only accessible in live UIs
       val pools =
-        sc.map(_.getPoolForName(poolName).getOrElse {
-            throw new IllegalArgumentException(s"Unknown poolname: $poolName")
-          })
+        sc.map(
+            _.getPoolForName(poolName).getOrElse {
+              throw new IllegalArgumentException(s"Unknown poolname: $poolName")
+            })
           .toSeq
       val poolTable = new PoolTable(pools, parent)
 

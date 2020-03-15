@@ -252,12 +252,15 @@ object Conformance {
           case a: ScAbstractType =>
             val subst =
               new ScSubstitutor(
-                Map(a.tpt.args.zip(p.typeArgs).map {
-                  case (tpt: ScTypeParameterType, tp: ScType) =>
-                    (
-                      (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
-                      tp)
-                }: _*),
+                Map(
+                  a.tpt.args.zip(p.typeArgs).map {
+                    case (tpt: ScTypeParameterType, tp: ScType) =>
+                      (
+                        (
+                          tpt.param.name,
+                          ScalaPsiUtil.getPsiElementId(tpt.param)),
+                        tp)
+                  }: _*),
                 Map.empty,
                 None)
             val lower: ScType =
@@ -370,10 +373,11 @@ object Conformance {
                   ScalaPsiManager.ClassCategory.TYPE)
               if (notNullClass != null) {
                 val notNullType = ScDesignatorType(notNullClass)
-                result = (
-                  !conforms(notNullType, l),
-                  undefinedSubst
-                ) //todo: think about undefinedSubst
+                result =
+                  (
+                    !conforms(notNullType, l),
+                    undefinedSubst
+                  ) //todo: think about undefinedSubst
               } else {
                 result = (true, undefinedSubst)
               }
@@ -1075,10 +1079,12 @@ object Conformance {
         case p2: ScParameterizedType =>
           val args = p2.typeArgs
           val des = p2.designator
-          if (args.length == 1 && (ScType.extractClass(des) match {
-                case Some(q) => q.qualifiedName == "scala.Array"
-                case _       => false
-              })) {
+          if (args.length == 1 && (
+                ScType.extractClass(des) match {
+                  case Some(q) => q.qualifiedName == "scala.Array"
+                  case _       => false
+                }
+              )) {
             val arg = a1.arg
             val argsPair = (arg, args(0))
             argsPair match {
@@ -1218,12 +1224,13 @@ object Conformance {
         case a: ScAbstractType =>
           val subst =
             new ScSubstitutor(
-              Map(a.tpt.args.zip(p.typeArgs).map {
-                case (tpt: ScTypeParameterType, tp: ScType) =>
-                  (
-                    (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
-                    tp)
-              }: _*),
+              Map(
+                a.tpt.args.zip(p.typeArgs).map {
+                  case (tpt: ScTypeParameterType, tp: ScType) =>
+                    (
+                      (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
+                      tp)
+                }: _*),
               Map.empty,
               None)
           val upper: ScType =
@@ -1368,8 +1375,9 @@ object Conformance {
             case ScParameterizedType(
                   des2 @ ScDesignatorType(a2: ScTypeAlias),
                   args2)
-                if a.isInstanceOf[
-                  ScTypeAliasDeclaration] && (p.designator equiv des2) =>
+                if a.isInstanceOf[ScTypeAliasDeclaration] && (
+                  p.designator equiv des2
+                ) =>
               processEquivalentDesignators(args2)
               return
             case _ =>
@@ -1406,10 +1414,12 @@ object Conformance {
         case _: JavaArrayType =>
           val args = p.typeArgs
           val des = p.designator
-          if (args.length == 1 && (ScType.extractClass(des) match {
-                case Some(q) => q.qualifiedName == "scala.Array"
-                case _       => false
-              })) {
+          if (args.length == 1 && (
+                ScType.extractClass(des) match {
+                  case Some(q) => q.qualifiedName == "scala.Array"
+                  case _       => false
+                }
+              )) {
             val arg = r.asInstanceOf[JavaArrayType].arg
             val argsPair = (arg, args(0))
             argsPair match {
@@ -1709,14 +1719,15 @@ object Conformance {
                 if t.args.length == p2.typeArgs.length =>
               val subst =
                 new ScSubstitutor(
-                  Map(t.args.zip(p.typeArgs).map {
-                    case (tpt: ScTypeParameterType, tp: ScType) =>
-                      (
+                  Map(
+                    t.args.zip(p.typeArgs).map {
+                      case (tpt: ScTypeParameterType, tp: ScType) =>
                         (
-                          tpt.param.name,
-                          ScalaPsiUtil.getPsiElementId(tpt.param)),
-                        tp)
-                  }: _*),
+                          (
+                            tpt.param.name,
+                            ScalaPsiUtil.getPsiElementId(tpt.param)),
+                          tp)
+                    }: _*),
                   Map.empty,
                   None)
               result = conformsInner(
@@ -1766,12 +1777,13 @@ object Conformance {
         case t: ScTypeParameterType if t.args.length == p.typeArgs.length =>
           val subst =
             new ScSubstitutor(
-              Map(t.args.zip(p.typeArgs).map {
-                case (tpt: ScTypeParameterType, tp: ScType) =>
-                  (
-                    (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
-                    tp)
-              }: _*),
+              Map(
+                t.args.zip(p.typeArgs).map {
+                  case (tpt: ScTypeParameterType, tp: ScType) =>
+                    (
+                      (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
+                      tp)
+                }: _*),
               Map.empty,
               None)
           result = conformsInner(
@@ -1873,8 +1885,7 @@ object Conformance {
                     wild.upperBound,
                     ScalaPsiElementFactory.createTypeParameterFromText(
                       wild.name,
-                      PsiManager.getInstance(ta.getProject)
-                    )
+                      PsiManager.getInstance(ta.getProject))
                   )
                 )
                 (true, tpt)

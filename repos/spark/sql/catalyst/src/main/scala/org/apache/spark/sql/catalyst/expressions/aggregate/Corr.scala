@@ -73,8 +73,7 @@ case class Corr(x: Expression, y: Expression) extends DeclarativeAggregate {
       If(isNull, yAvg, newYAvg),
       If(isNull, ck, newCk),
       If(isNull, xMk, newXMk),
-      If(isNull, yMk, newYMk)
-    )
+      If(isNull, yMk, newYMk))
   }
 
   override val mergeExpressions: Seq[Expression] = {

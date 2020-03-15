@@ -160,8 +160,9 @@ object PatternAnnotator {
           pattern.getText)
         holder.createErrorAnnotation(pattern, message)
       case _: ScInterpolationPattern => //do not check interpolated patterns for number of arguments
-      case (_: ScConstructorPattern |
-          _: ScInfixPattern) => //check number of arguments
+      case (
+            _: ScConstructorPattern | _: ScInfixPattern
+          ) => //check number of arguments
         val (reference, numPatterns) =
           pattern match {
             case constr: ScConstructorPattern =>
@@ -283,13 +284,15 @@ object PatternAnnotatorUtil {
         }
     }
 
-    matching.weakConforms(matched) || ((matching, matched) match {
-      case (arrayType(arg1), arrayType(arg2)) => matchesPattern(arg1, arg2)
-      case (_, parameterized: ScParameterizedType) =>
-        val newtp = abstraction(parameterized)
-        !matched.equiv(newtp) && matching.weakConforms(newtp)
-      case _ => false
-    })
+    matching.weakConforms(matched) || (
+      (matching, matched) match {
+        case (arrayType(arg1), arrayType(arg2)) => matchesPattern(arg1, arg2)
+        case (_, parameterized: ScParameterizedType) =>
+          val newtp = abstraction(parameterized)
+          !matched.equiv(newtp) && matching.weakConforms(newtp)
+        case _ => false
+      }
+    )
   }
 
   def patternType(pattern: ScPattern): Option[ScType] = {

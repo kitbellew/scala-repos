@@ -68,15 +68,14 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           meq(acls.asJava),
           meq(mode),
           any[AsyncCallback.StringCallback],
-          meq(null)
-        )
-      ) thenAnswer answer[AsyncCallback.StringCallback](4) { cbValue =>
-        wait onSuccess { newPath =>
-          cbValue.processResult(0, path, null, newPath)
-        } onFailure {
-          case ke: KeeperException =>
-            cbValue.processResult(ke.code.intValue, path, null, null)
-        }
+          meq(null))) thenAnswer answer[AsyncCallback.StringCallback](4) {
+        cbValue =>
+          wait onSuccess { newPath =>
+            cbValue.processResult(0, path, null, newPath)
+          } onFailure {
+            case ke: KeeperException =>
+              cbValue.processResult(ke.code.intValue, path, null, null)
+          }
       }
     }
 
@@ -103,15 +102,14 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           meq(path),
           meq(false),
           any[AsyncCallback.StatCallback],
-          meq(null)
-        )
-      ) thenAnswer answer[AsyncCallback.StatCallback](2) { cbValue =>
-        stat onSuccess {
-          cbValue.processResult(0, path, null, _)
-        } onFailure {
-          case ke: KeeperException =>
-            cbValue.processResult(ke.code.intValue, path, null, null)
-        }
+          meq(null))) thenAnswer answer[AsyncCallback.StatCallback](2) {
+        cbValue =>
+          stat onSuccess {
+            cbValue.processResult(0, path, null, _)
+          } onFailure {
+            case ke: KeeperException =>
+              cbValue.processResult(ke.code.intValue, path, null, null)
+          }
       }
     }
 
@@ -406,10 +404,11 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         } catch {
           case _: ClassCastException => fail("not ZNode")
         }
-        assert(transformed.retryPolicy match {
-          case RetryPolicy.Basic(r) => r == retries
-          case _                    => false
-        })
+        assert(
+          transformed.retryPolicy match {
+            case RetryPolicy.Basic(r) => r == retries
+            case _                    => false
+          })
       }
 
       "withRetryPolicy" in {
@@ -457,21 +456,23 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       "with data" in {
         val data = "blah".getBytes
         create(path, data)(Future(path))
-        assert(Await.result(zkClient(path).create(data)) match {
-          case ZNode(p) => p == path
-        })
+        assert(
+          Await.result(zkClient(path).create(data)) match {
+            case ZNode(p) => p == path
+          })
       }
 
       "error" in {
         val data = null
         create(path, data)(
           Future.exception(new KeeperException.NodeExistsException(path)))
-        Await.ready(zkClient(path).create(data) map { _ =>
-          fail("Unexpected success")
-        } handle {
-          case e: KeeperException.NodeExistsException =>
-            assert(e.getPath == path)
-        })
+        Await.ready(
+          zkClient(path).create(data) map { _ =>
+            fail("Unexpected success")
+          } handle {
+            case e: KeeperException.NodeExistsException =>
+              assert(e.getPath == path)
+          })
       }
 
       "sequential" in {
@@ -501,12 +502,13 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           create(childPath, data) {
             Future.exception(new KeeperException.NodeExistsException(childPath))
           }
-          Await.ready(zkClient(path).create(data, child = Some("child")) map {
-            _ => fail("Unexpected success")
-          } handle {
-            case e: KeeperException.NodeExistsException =>
-              assert(e.getPath == childPath)
-          })
+          Await.ready(
+            zkClient(path).create(data, child = Some("child")) map { _ =>
+              fail("Unexpected success")
+            } handle {
+              case e: KeeperException.NodeExistsException =>
+                assert(e.getPath == childPath)
+            })
         }
 
         "sequential, with an empty name" in {
@@ -535,20 +537,22 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       val path = "/path"
       "ok" in {
         delete(path, version)(Future.Done)
-        assert(Await.result(zkClient(path).delete(version)) match {
-          case ZNode(p) => p == path
-        })
+        assert(
+          Await.result(zkClient(path).delete(version)) match {
+            case ZNode(p) => p == path
+          })
       }
 
       "error" in {
         delete(path, version)(
           Future.exception(new KeeperException.NoNodeException(path)))
-        Await.ready(zkClient(path).delete(version) map { _ =>
-          fail("Unexpected success")
-        } handle {
-          case e: KeeperException.NoNodeException =>
-            assert(e.getPath == path)
-        })
+        Await.ready(
+          zkClient(path).delete(version) map { _ =>
+            fail("Unexpected success")
+          } handle {
+            case e: KeeperException.NoNodeException =>
+              assert(e.getPath == path)
+          })
       }
     }
 
@@ -570,12 +574,13 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         "error" in {
           exists(znode.path)(
             Future.exception(new KeeperException.NoNodeException(znode.path)))
-          Await.ready(znode.exists() map { _ =>
-            fail("Unexpected success")
-          } handle {
-            case e: KeeperException.NoNodeException =>
-              assert(e.getPath == znode.path)
-          })
+          Await.ready(
+            znode.exists() map { _ =>
+              fail("Unexpected success")
+            } handle {
+              case e: KeeperException.NoNodeException =>
+                assert(e.getPath == znode.path)
+            })
         }
       }
 
@@ -585,16 +590,17 @@ class ZkClientTest extends WordSpec with MockitoSugar {
 
         val event = NodeEvent.Deleted(znode.path)
         watch(znode.path)(Future(result.stat))(Future(event))
-        Await.ready(znode.exists.watch() onSuccess {
-          case ZNode.Watch(r, update) =>
-            r onSuccess { exists =>
-              assert(exists == result)
-              update onSuccess {
-                case e @ NodeEvent.Deleted(name) => assert(e == event)
-                case e                           => fail("Incorrect event: %s".format(e))
+        Await.ready(
+          znode.exists.watch() onSuccess {
+            case ZNode.Watch(r, update) =>
+              r onSuccess { exists =>
+                assert(exists == result)
+                update onSuccess {
+                  case e @ NodeEvent.Deleted(name) => assert(e == event)
+                  case e                           => fail("Incorrect event: %s".format(e))
+                }
               }
-            }
-        })
+          })
       }
 
       "monitor" should {
@@ -648,8 +654,9 @@ class ZkClientTest extends WordSpec with MockitoSugar {
               Future(NodeEvent.Deleted(znode.path)))
             assert(offer.syncWait().get() == result)
 
-            watch(znode.path)(Future.exception(
-              new KeeperException.NoNodeException(znode.path)))(update)
+            watch(znode.path)(
+              Future.exception(
+                new KeeperException.NoNodeException(znode.path)))(update)
             offer.sync()
             intercept[KeeperException.NoNodeException] {
               offer syncWait () get ()
@@ -703,31 +710,33 @@ class ZkClientTest extends WordSpec with MockitoSugar {
             Future.exception(
               new KeeperException.NoChildrenForEphemeralsException(znode.path))
           }
-          Await.ready(znode.getChildren() map { _ =>
-            fail("Unexpected success")
-          } handle {
-            case e: KeeperException.NoChildrenForEphemeralsException =>
-              assert(e.getPath == znode.path)
-          })
+          Await.ready(
+            znode.getChildren() map { _ =>
+              fail("Unexpected success")
+            } handle {
+              case e: KeeperException.NoChildrenForEphemeralsException =>
+                assert(e.getPath == znode.path)
+            })
         }
       }
 
       "watch" in {
         watchChildren(znode.path)(Future(result))(
           Future(NodeEvent.ChildrenChanged(znode.path)))
-        Await.ready(znode.getChildren.watch().onSuccess {
-          case ZNode.Watch(r, f) =>
-            r onSuccess {
-              case ZNode.Children(p, s, c) =>
-                assert(p == result.path)
-                assert(s == result.stat)
-                f onSuccess {
-                  case NodeEvent.ChildrenChanged(name) =>
-                    assert(name == znode.path)
-                  case e => fail("Incorrect event: %s".format(e))
-                }
-            }
-        })
+        Await.ready(
+          znode.getChildren.watch().onSuccess {
+            case ZNode.Watch(r, f) =>
+              r onSuccess {
+                case ZNode.Children(p, s, c) =>
+                  assert(p == result.path)
+                  assert(s == result.stat)
+                  f onSuccess {
+                    case NodeEvent.ChildrenChanged(name) =>
+                      assert(name == znode.path)
+                    case e => fail("Incorrect event: %s".format(e))
+                  }
+              }
+          })
       }
 
       "monitor" in {
@@ -776,12 +785,13 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           getData(znode.path) {
             Future.exception(new KeeperException.SessionExpiredException)
           }
-          Await.ready(znode.getData() map { _ =>
-            fail("Unexpected success")
-          } handle {
-            case e: KeeperException.SessionExpiredException =>
-              assert(e.getPath == znode.path)
-          })
+          Await.ready(
+            znode.getData() map { _ =>
+              fail("Unexpected success")
+            } handle {
+              case e: KeeperException.SessionExpiredException =>
+                assert(e.getPath == znode.path)
+            })
         }
       }
 
@@ -795,16 +805,17 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           Future(NodeEvent.DataChanged(znode.path))
         }
         try {
-          Await.ready(znode.getData.watch().onSuccess {
-            case ZNode.Watch(Return(z), u) => {
-              assert(z == result)
-              u onSuccess {
-                case NodeEvent.DataChanged(name) => assert(name == znode.path)
-                case e                           => fail("Incorrect event: %s".format(e))
+          Await.ready(
+            znode.getData.watch().onSuccess {
+              case ZNode.Watch(Return(z), u) => {
+                assert(z == result)
+                u onSuccess {
+                  case NodeEvent.DataChanged(name) => assert(name == znode.path)
+                  case e                           => fail("Incorrect event: %s".format(e))
+                }
               }
-            }
-            case _ => fail("unexpected return value")
-          })
+              case _ => fail("unexpected return value")
+            })
         } catch {
           case e: Throwable => fail("unexpected error: %s".format(e))
         }
@@ -918,11 +929,12 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           val ztu = Await.result(offer sync (), 1.second)
           val e = expectedByPath(ztu.parent.path)
           assert(ztu.parent.path == e.parent.path)
-          assert(ztu.added.map {
-            _.path
-          } == e.added.map {
-            _.path
-          }.toSet)
+          assert(
+            ztu.added.map {
+              _.path
+            } == e.added.map {
+              _.path
+            }.toSet)
           assert(ztu.removed == Set())
         }
 
@@ -939,11 +951,12 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           val ztu = Await.result(offer sync (), 1.second)
           val e = updatesByPath(z.path)
           assert(ztu.parent.path == e.parent.path)
-          assert(ztu.added.map {
-            _.path
-          } == e.added.map {
-            _.path
-          }.toSet)
+          assert(
+            ztu.added.map {
+              _.path
+            } == e.added.map {
+              _.path
+            }.toSet)
           assert(ztu.removed == Set())
         }
         intercept[TimeoutException] {
@@ -973,11 +986,12 @@ class ZkClientTest extends WordSpec with MockitoSugar {
             val ztu = Await.result(offer sync (), 1.second)
             val e = expectedByPath(ztu.parent.path)
             assert(ztu.parent == e.parent)
-            assert(ztu.added.map {
-              _.path
-            } == e.added.map {
-              _.path
-            }.toSet)
+            assert(
+              ztu.added.map {
+                _.path
+              } == e.added.map {
+                _.path
+              }.toSet)
             assert(ztu.removed == List())
           }
           Await.result(offer.sync(), 1.second)

@@ -107,12 +107,14 @@ private[akka] object Reflect {
             .iterator filter { c ⇒
             val parameterTypes = c.getParameterTypes
             parameterTypes.length == length &&
-            (parameterTypes.iterator zip args.iterator forall {
-              case (found, required) ⇒
-                found.isInstance(required) || BoxedType(found).isInstance(
-                  required) ||
-                  (required == null && !found.isPrimitive)
-            })
+            (
+              parameterTypes.iterator zip args.iterator forall {
+                case (found, required) ⇒
+                  found.isInstance(required) || BoxedType(found).isInstance(
+                    required) ||
+                    (required == null && !found.isPrimitive)
+              }
+            )
           }
         if (candidates.hasNext) {
           val cstrtr = candidates.next()

@@ -101,9 +101,10 @@ private[ml] class WeightedLeastSquares(
 
     if (bStd == 0) {
       if (fitIntercept) {
-        logWarning(s"The standard deviation of the label is zero, so the coefficients will be " +
-          s"zeros and the intercept will be the mean of the label; as a result, " +
-          s"training is not needed.")
+        logWarning(
+          s"The standard deviation of the label is zero, so the coefficients will be " +
+            s"zeros and the intercept will be the mean of the label; as a result, " +
+            s"training is not needed.")
         val coefficients = new DenseVector(Array.ofDim(k - 1))
         val intercept = bBar
         val diagInvAtWA = new DenseVector(Array(0d))
@@ -157,9 +158,10 @@ private[ml] class WeightedLeastSquares(
 
     // aaInv is a packed upper triangular matrix, here we get all elements on diagonal
     val diagInvAtWA =
-      new DenseVector((1 to k).map { i =>
-        aaInv(i + (i - 1) * i / 2 - 1) / wSum
-      }.toArray)
+      new DenseVector(
+        (1 to k).map { i =>
+          aaInv(i + (i - 1) * i / 2 - 1) / wSum
+        }.toArray)
 
     val (coefficients, intercept) =
       if (fitIntercept) {

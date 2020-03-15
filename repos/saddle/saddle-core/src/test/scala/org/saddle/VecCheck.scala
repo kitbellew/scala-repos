@@ -289,8 +289,9 @@ class VecCheck extends Specification with ScalaCheck {
       forAll { (v: Vec[Double]) =>
         val res = v.filterScanLeft(_ > 0.5)(0)((c: Int, x: Double) => c + 1)
         res.length must_== v.length
-        (res.last.isNA must beTrue) or (res.last must_== Value(
-          v.filter(_ > 0.5).count))
+        (res.last.isNA must beTrue) or (
+          res.last must_== Value(v.filter(_ > 0.5).count)
+        )
       }
     }
 
@@ -387,13 +388,17 @@ class VecCheck extends Specification with ScalaCheck {
               a = dat(i)
               b = dat(i + 1)
             } yield
-              (if (a.isNaN)
-                 0
-               else
-                 a) + (if (b.isNaN)
-                         0
-                       else
-                         b)
+              (
+                if (a.isNaN)
+                  0
+                else
+                  a
+              ) + (
+                if (b.isNaN)
+                  0
+                else
+                  b
+              )
 
           res must_== Vec(exp: _*)
         }

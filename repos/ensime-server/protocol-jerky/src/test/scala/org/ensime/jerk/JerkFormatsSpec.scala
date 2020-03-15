@@ -18,15 +18,13 @@ class JerkFormatsSpec
   "Jerk Formats" should "roundtrip request envelopes" in {
     roundtrip(
       RpcRequestEnvelope(ConnectionInfoReq, 13),
-      """{"callId":13,"req":{"typehint":"ConnectionInfoReq"}}"""
-    )
+      """{"callId":13,"req":{"typehint":"ConnectionInfoReq"}}""")
   }
 
   it should "roundtrip RPC response envelopes" in {
     roundtrip(
       RpcResponseEnvelope(Some(13), sourcePos3),
-      """{"callId":13,"payload":{"typehint":"EmptySourcePosition"}}"""
-    )
+      """{"callId":13,"payload":{"typehint":"EmptySourcePosition"}}""")
   }
 
   it should "roundtrip async response envelopes" in {
@@ -39,15 +37,13 @@ class JerkFormatsSpec
   it should "roundtrip startup messages" in {
     roundtrip(
       ConnectionInfoReq: RpcRequest,
-      """{"typehint":"ConnectionInfoReq"}"""
-    )
+      """{"typehint":"ConnectionInfoReq"}""")
   }
 
   it should "unmarshal RpcSearchRequests" in {
     roundtrip(
       PublicSymbolSearchReq(List("foo", "bar"), 10): RpcRequest,
-      """{"typehint":"PublicSymbolSearchReq","keywords":["foo","bar"],"maxResults":10}"""
-    )
+      """{"typehint":"PublicSymbolSearchReq","keywords":["foo","bar"],"maxResults":10}""")
 
     roundtrip(
       ImportSuggestionsReq(Left(file1), 1, List("foo", "bar"), 10): RpcRequest,
@@ -58,8 +54,7 @@ class JerkFormatsSpec
   it should "unmarshal RpcAnalyserRequests" in {
     roundtrip(
       RemoveFileReq(file1): RpcRequest,
-      s"""{"typehint":"RemoveFileReq","file":"$file1"}"""
-    )
+      s"""{"typehint":"RemoveFileReq","file":"$file1"}""")
 
     roundtrip(
       TypecheckFileReq(sourceFileInfo): RpcRequest,
@@ -68,23 +63,15 @@ class JerkFormatsSpec
 
     roundtrip(
       TypecheckFilesReq(List(Left(file1), Left(file2))): RpcRequest,
-      s"""{"typehint":"TypecheckFilesReq","files":["$file1","$file2"]}"""
-    )
+      s"""{"typehint":"TypecheckFilesReq","files":["$file1","$file2"]}""")
 
-    roundtrip(
-      UnloadAllReq: RpcRequest,
-      """{"typehint":"UnloadAllReq"}"""
-    )
+    roundtrip(UnloadAllReq: RpcRequest, """{"typehint":"UnloadAllReq"}""")
 
-    roundtrip(
-      TypecheckAllReq: RpcRequest,
-      """{"typehint":"TypecheckAllReq"}"""
-    )
+    roundtrip(TypecheckAllReq: RpcRequest, """{"typehint":"TypecheckAllReq"}""")
 
     roundtrip(
       FormatSourceReq(List(file1, file2)): RpcRequest,
-      s"""{"typehint":"FormatSourceReq","files":["$file1","$file2"]}"""
-    )
+      s"""{"typehint":"FormatSourceReq","files":["$file1","$file2"]}""")
 
     roundtrip(
       FormatOneSourceReq(sourceFileInfo): RpcRequest,
@@ -93,13 +80,11 @@ class JerkFormatsSpec
 
     roundtrip(
       DocUriAtPointReq(Left(file1), OffsetRange(1, 10)): RpcRequest,
-      s"""{"typehint":"DocUriAtPointReq","file":"$file1","point":{"from":1,"to":10}}"""
-    )
+      s"""{"typehint":"DocUriAtPointReq","file":"$file1","point":{"from":1,"to":10}}""")
 
     roundtrip(
       DocUriForSymbolReq("foo.bar", Some("Baz"), None): RpcRequest,
-      """{"typehint":"DocUriForSymbolReq","typeFullName":"foo.bar","memberName":"Baz"}"""
-    )
+      """{"typehint":"DocUriForSymbolReq","typeFullName":"foo.bar","memberName":"Baz"}""")
 
     roundtrip(
       CompletionsReq(sourceFileInfo, 10, 100, true, false): RpcRequest,
@@ -108,18 +93,15 @@ class JerkFormatsSpec
 
     roundtrip(
       PackageMemberCompletionReq("foo", "bar"): RpcRequest,
-      """{"typehint":"PackageMemberCompletionReq","path":"foo","prefix":"bar"}"""
-    )
+      """{"typehint":"PackageMemberCompletionReq","path":"foo","prefix":"bar"}""")
 
     roundtrip(
       UsesOfSymbolAtPointReq(Left(file1), 100): RpcRequest,
-      s"""{"typehint":"UsesOfSymbolAtPointReq","file":"$file1","point":100}"""
-    )
+      s"""{"typehint":"UsesOfSymbolAtPointReq","file":"$file1","point":100}""")
 
     roundtrip(
       TypeByNameReq("foo.bar"): RpcRequest,
-      """{"typehint":"TypeByNameReq","name":"foo.bar"}"""
-    )
+      """{"typehint":"TypeByNameReq","name":"foo.bar"}""")
 
     roundtrip(
       TypeByNameAtPointReq(
@@ -131,8 +113,7 @@ class JerkFormatsSpec
 
     roundtrip(
       TypeAtPointReq(Left(file1), OffsetRange(1, 100)): RpcRequest,
-      s"""{"typehint":"TypeAtPointReq","file":"$file1","range":{"from":1,"to":100}}"""
-    )
+      s"""{"typehint":"TypeAtPointReq","file":"$file1","range":{"from":1,"to":100}}""")
 
     roundtrip(
       InspectTypeAtPointReq(Left(file1), OffsetRange(1, 100)): RpcRequest,
@@ -141,23 +122,19 @@ class JerkFormatsSpec
 
     roundtrip(
       InspectTypeByNameReq("foo.Bar"): RpcRequest,
-      """{"typehint":"InspectTypeByNameReq","name":"foo.Bar"}"""
-    )
+      """{"typehint":"InspectTypeByNameReq","name":"foo.Bar"}""")
 
     roundtrip(
       SymbolAtPointReq(Left(file1), 101): RpcRequest,
-      s"""{"typehint":"SymbolAtPointReq","file":"$file1","point":101}"""
-    )
+      s"""{"typehint":"SymbolAtPointReq","file":"$file1","point":101}""")
 
     roundtrip(
       SymbolByNameReq("foo.Bar", Some("baz"), None): RpcRequest,
-      """{"typehint":"SymbolByNameReq","typeFullName":"foo.Bar","memberName":"baz"}"""
-    )
+      """{"typehint":"SymbolByNameReq","typeFullName":"foo.Bar","memberName":"baz"}""")
 
     roundtrip(
       InspectPackageByPathReq("foo.bar"): RpcRequest,
-      """{"typehint":"InspectPackageByPathReq","path":"foo.bar"}"""
-    )
+      """{"typehint":"InspectPackageByPathReq","path":"foo.bar"}""")
 
     roundtrip(
       PrepareRefactorReq(
@@ -170,13 +147,11 @@ class JerkFormatsSpec
 
     roundtrip(
       ExecRefactorReq(1, RefactorType.Rename): RpcRequest,
-      """{"typehint":"ExecRefactorReq","procId":1,"tpe":{"typehint":"Rename"}}"""
-    )
+      """{"typehint":"ExecRefactorReq","procId":1,"tpe":{"typehint":"Rename"}}""")
 
     roundtrip(
       CancelRefactorReq(1): RpcRequest,
-      """{"typehint":"CancelRefactorReq","procId":1}"""
-    )
+      """{"typehint":"CancelRefactorReq","procId":1}""")
 
     roundtrip(
       RefactorReq(
@@ -191,8 +166,7 @@ class JerkFormatsSpec
         Left(file1),
         1,
         100,
-        List(ObjectSymbol, ValSymbol)
-      ): RpcRequest,
+        List(ObjectSymbol, ValSymbol)): RpcRequest,
       s"""{"requestedTypes":[{"typehint":"ObjectSymbol"},{"typehint":"ValSymbol"}],"typehint":"SymbolDesignationsReq","end":100,"file":"$file1","start":1}"""
     )
 
@@ -201,20 +175,17 @@ class JerkFormatsSpec
         Right(SourceFileInfo(file1, None, None)),
         1,
         100,
-        List(ObjectSymbol, ValSymbol)
-      ): RpcRequest,
+        List(ObjectSymbol, ValSymbol)): RpcRequest,
       s"""{"requestedTypes":[{"typehint":"ObjectSymbol"},{"typehint":"ValSymbol"}],"typehint":"SymbolDesignationsReq","file":{"file":"$file1"}, "end":100,"start":1}"""
     )
 
     roundtrip(
       ExpandSelectionReq(file1, 100, 200): RpcRequest,
-      s"""{"typehint":"ExpandSelectionReq","file":"$file1","start":100,"end":200}"""
-    )
+      s"""{"typehint":"ExpandSelectionReq","file":"$file1","start":100,"end":200}""")
 
     roundtrip(
       ImplicitInfoReq(Left(file1), OffsetRange(0, 123)): RpcRequest,
-      s"""{"typehint":"ImplicitInfoReq","file":"$file1","range":{"from":0,"to":123}}"""
-    )
+      s"""{"typehint":"ImplicitInfoReq","file":"$file1","range":{"from":0,"to":123}}""")
 
     roundtrip(
       StructureViewReq(sourceFileInfo): RpcRequest,
@@ -226,73 +197,55 @@ class JerkFormatsSpec
   it should "roundtrip RpcDebugRequests" in {
     roundtrip(
       DebugActiveVmReq: RpcRequest,
-      """{"typehint":"DebugActiveVmReq"}"""
-    )
+      """{"typehint":"DebugActiveVmReq"}""")
 
     roundtrip(
       DebugStartReq("blah blah blah"): RpcRequest,
-      """{"typehint":"DebugStartReq","commandLine":"blah blah blah"}"""
-    )
+      """{"typehint":"DebugStartReq","commandLine":"blah blah blah"}""")
 
     roundtrip(
       DebugAttachReq("mylovelyhorse", "13"): RpcRequest,
-      """{"typehint":"DebugAttachReq","hostname":"mylovelyhorse","port":"13"}"""
-    )
+      """{"typehint":"DebugAttachReq","hostname":"mylovelyhorse","port":"13"}""")
 
-    roundtrip(
-      DebugStopReq: RpcRequest,
-      """{"typehint":"DebugStopReq"}"""
-    )
+    roundtrip(DebugStopReq: RpcRequest, """{"typehint":"DebugStopReq"}""")
 
     roundtrip(
       DebugSetBreakReq(file1, 13): RpcRequest,
-      s"""{"typehint":"DebugSetBreakReq","file":"$file1","line":13}"""
-    )
+      s"""{"typehint":"DebugSetBreakReq","file":"$file1","line":13}""")
 
     roundtrip(
       DebugClearBreakReq(file1, 13): RpcRequest,
-      s"""{"typehint":"DebugClearBreakReq","file":"$file1","line":13}"""
-    )
+      s"""{"typehint":"DebugClearBreakReq","file":"$file1","line":13}""")
 
     roundtrip(
       DebugClearAllBreaksReq: RpcRequest,
-      """{"typehint":"DebugClearAllBreaksReq"}"""
-    )
+      """{"typehint":"DebugClearAllBreaksReq"}""")
 
     roundtrip(
       DebugListBreakpointsReq: RpcRequest,
-      """{"typehint":"DebugListBreakpointsReq"}"""
-    )
+      """{"typehint":"DebugListBreakpointsReq"}""")
 
-    roundtrip(
-      DebugRunReq: RpcRequest,
-      """{"typehint":"DebugRunReq"}"""
-    )
+    roundtrip(DebugRunReq: RpcRequest, """{"typehint":"DebugRunReq"}""")
 
     roundtrip(
       DebugContinueReq(dtid): RpcRequest,
-      """{"typehint":"DebugContinueReq","threadId":13}"""
-    )
+      """{"typehint":"DebugContinueReq","threadId":13}""")
 
     roundtrip(
       DebugStepReq(dtid): RpcRequest,
-      """{"typehint":"DebugStepReq","threadId":13}"""
-    )
+      """{"typehint":"DebugStepReq","threadId":13}""")
 
     roundtrip(
       DebugNextReq(dtid): RpcRequest,
-      """{"typehint":"DebugNextReq","threadId":13}"""
-    )
+      """{"typehint":"DebugNextReq","threadId":13}""")
 
     roundtrip(
       DebugStepOutReq(dtid): RpcRequest,
-      """{"typehint":"DebugStepOutReq","threadId":13}"""
-    )
+      """{"typehint":"DebugStepOutReq","threadId":13}""")
 
     roundtrip(
       DebugLocateNameReq(dtid, "foo"): RpcRequest,
-      """{"typehint":"DebugLocateNameReq","threadId":13,"name":"foo"}"""
-    )
+      """{"typehint":"DebugLocateNameReq","threadId":13,"name":"foo"}""")
 
     roundtrip(
       DebugValueReq(debugLocationArray): RpcRequest,
@@ -311,51 +264,51 @@ class JerkFormatsSpec
 
     roundtrip(
       DebugBacktraceReq(dtid, 100, 200): RpcRequest,
-      """{"typehint":"DebugBacktraceReq","threadId":13,"index":100,"count":200}"""
-    )
+      """{"typehint":"DebugBacktraceReq","threadId":13,"index":100,"count":200}""")
 
   }
 
   it should "roundtrip EnsimeGeneralEvent as EnsimeEvent" in {
     roundtrip(
       SendBackgroundMessageEvent("ABCDEF", 1): EnsimeServerMessage,
-      """{"typehint":"SendBackgroundMessageEvent","detail":"ABCDEF","code":1}"""
-    )
+      """{"typehint":"SendBackgroundMessageEvent","detail":"ABCDEF","code":1}""")
 
     roundtrip(
       AnalyzerReadyEvent: EnsimeServerMessage,
-      """{"typehint":"AnalyzerReadyEvent"}"""
-    )
+      """{"typehint":"AnalyzerReadyEvent"}""")
 
     roundtrip(
       FullTypeCheckCompleteEvent: EnsimeServerMessage,
-      """{"typehint":"FullTypeCheckCompleteEvent"}"""
-    )
+      """{"typehint":"FullTypeCheckCompleteEvent"}""")
 
     roundtrip(
       IndexerReadyEvent: EnsimeServerMessage,
-      """{"typehint":"IndexerReadyEvent"}"""
-    )
+      """{"typehint":"IndexerReadyEvent"}""")
 
     roundtrip(
       NewScalaNotesEvent(
         isFull = false,
-        List(new Note("foo.scala", "testMsg", NoteWarn, 50, 55, 77, 5))
-      ): EnsimeServerMessage,
+        List(
+          new Note(
+            "foo.scala",
+            "testMsg",
+            NoteWarn,
+            50,
+            55,
+            77,
+            5))): EnsimeServerMessage,
       """{"typehint":"NewScalaNotesEvent","isFull":false,"notes":[{"beg":50,"line":77,"col":5,"end":55,"file":"foo.scala","msg":"testMsg","severity":{"typehint":"NoteWarn"}}]}"""
     )
 
     roundtrip(
       ClearAllScalaNotesEvent: EnsimeServerMessage,
-      """{"typehint":"ClearAllScalaNotesEvent"}"""
-    )
+      """{"typehint":"ClearAllScalaNotesEvent"}""")
   }
 
   it should "roundtrip DebugEvent as EnsimeEvent" in {
     roundtrip(
       DebugOutputEvent("XXX"): EnsimeServerMessage,
-      """{"typehint":"DebugOutputEvent","body":"XXX"}"""
-    )
+      """{"typehint":"DebugOutputEvent","body":"XXX"}""")
 
     roundtrip(
       DebugStepEvent(
@@ -378,12 +331,10 @@ class JerkFormatsSpec
 
     roundtrip(
       DebugVMStartEvent: EnsimeServerMessage,
-      """{"typehint":"DebugVMStartEvent"}"""
-    )
+      """{"typehint":"DebugVMStartEvent"}""")
     roundtrip(
       DebugVMDisconnectEvent: EnsimeServerMessage,
-      """{"typehint":"DebugVMDisconnectEvent"}"""
-    )
+      """{"typehint":"DebugVMDisconnectEvent"}""")
     roundtrip(
       DebugExceptionEvent(
         33L,
@@ -405,34 +356,28 @@ class JerkFormatsSpec
 
     roundtrip(
       DebugThreadStartEvent(dtid): EnsimeServerMessage,
-      """{"typehint":"DebugThreadStartEvent","threadId":13}"""
-    )
+      """{"typehint":"DebugThreadStartEvent","threadId":13}""")
     roundtrip(
       DebugThreadDeathEvent(dtid): EnsimeServerMessage,
-      """{"typehint":"DebugThreadDeathEvent","threadId":13}"""
-    )
+      """{"typehint":"DebugThreadDeathEvent","threadId":13}""")
   }
 
   it should "roundtrip DebugLocation" in {
     roundtrip(
       DebugObjectReference(57L): EnsimeServerMessage,
-      """{"typehint":"DebugObjectReference","objectId":{"id":57}}"""
-    )
+      """{"typehint":"DebugObjectReference","objectId":{"id":57}}""")
 
     roundtrip(
       DebugArrayElement(DebugObjectId(58L), 2): EnsimeServerMessage,
-      """{"typehint":"DebugArrayElement","objectId":{"id":58},"index":2}"""
-    )
+      """{"typehint":"DebugArrayElement","objectId":{"id":58},"index":2}""")
 
     roundtrip(
       DebugObjectField(DebugObjectId(58L), "fieldName"): EnsimeServerMessage,
-      """{"typehint":"DebugObjectField","objectId":{"id":58},"field":"fieldName"}"""
-    )
+      """{"typehint":"DebugObjectField","objectId":{"id":58},"field":"fieldName"}""")
 
     roundtrip(
       DebugStackSlot(DebugThreadId(27), 12, 23): EnsimeServerMessage,
-      """{"typehint":"DebugStackSlot","threadId":27,"frame":12,"offset":23}"""
-    )
+      """{"typehint":"DebugStackSlot","threadId":27,"frame":12,"offset":23}""")
   }
 
   it should "roundtrip DebugValue" in {
@@ -461,8 +406,7 @@ class JerkFormatsSpec
 
     roundtrip(
       DebugNullValue("typeNameStr"): EnsimeServerMessage,
-      """{"typehint":"DebugNullValue","typeName":"typeNameStr"}"""
-    )
+      """{"typehint":"DebugNullValue","typeName":"typeNameStr"}""")
 
     roundtrip(
       DebugArrayInstance(
@@ -475,13 +419,11 @@ class JerkFormatsSpec
 
     roundtrip(
       debugClassField: EnsimeServerMessage,
-      """{"typehint":"DebugClassField","index":19,"name":"nameStr","typeName":"typeNameStr","summary":"summaryStr"}"""
-    )
+      """{"typehint":"DebugClassField","index":19,"name":"nameStr","typeName":"typeNameStr","summary":"summaryStr"}""")
 
     roundtrip(
       debugStackLocal1: EnsimeServerMessage,
-      """{"typehint":"DebugStackLocal","index":3,"name":"name1","summary":"summary1","typeName":"type1"}"""
-    )
+      """{"typehint":"DebugStackLocal","index":3,"name":"name1","summary":"summary1","typeName":"type1"}""")
 
     roundtrip(
       debugStackFrame: EnsimeServerMessage,
@@ -498,25 +440,20 @@ class JerkFormatsSpec
 
     roundtrip(
       sourcePos1: EnsimeServerMessage,
-      s"""{"typehint":"LineSourcePosition","file":"$file1","line":57}"""
-    )
+      s"""{"typehint":"LineSourcePosition","file":"$file1","line":57}""")
     roundtrip(
       sourcePos2: EnsimeServerMessage,
-      s"""{"typehint":"LineSourcePosition","file":"$file1","line":59}"""
-    )
+      s"""{"typehint":"LineSourcePosition","file":"$file1","line":59}""")
     roundtrip(
       sourcePos3: EnsimeServerMessage,
-      """{"typehint":"EmptySourcePosition"}"""
-    )
+      """{"typehint":"EmptySourcePosition"}""")
     roundtrip(
       sourcePos4: EnsimeServerMessage,
-      s"""{"typehint":"OffsetSourcePosition","file":"$file1","offset":456}"""
-    )
+      s"""{"typehint":"OffsetSourcePosition","file":"$file1","offset":456}""")
 
     roundtrip(
       breakPoint1: EnsimeServerMessage,
-      s"""{"typehint":"Breakpoint","file":"$file1","line":57}"""
-    )
+      s"""{"typehint":"Breakpoint","file":"$file1","line":57}""")
 
     roundtrip(
       BreakpointList(List(breakPoint1), List(breakPoint2)): EnsimeServerMessage,
@@ -525,13 +462,11 @@ class JerkFormatsSpec
 
     roundtrip(
       DebugVmSuccess(): EnsimeServerMessage,
-      """{"typehint":"DebugVmSuccess","status":"success"}"""
-    )
+      """{"typehint":"DebugVmSuccess","status":"success"}""")
 
     roundtrip(
       DebugVmError(303, "xxxx"): EnsimeServerMessage,
-      """{"typehint":"DebugVmError","errorCode":303,"details":"xxxx","status":"error"}"""
-    )
+      """{"typehint":"DebugVmError","errorCode":303,"details":"xxxx","status":"error"}""")
   }
 
   it should "roundtrip various informational types" in {
@@ -587,8 +522,7 @@ class JerkFormatsSpec
 
     roundtrip(
       packageInfo: EnsimeServerMessage,
-      """{"typehint":"PackageInfo","name":"name","fullName":"fullName","members":[]}"""
-    )
+      """{"typehint":"PackageInfo","name":"name","fullName":"fullName","members":[]}""")
 
     roundtrip(
       interfaceInfo: EnsimeServerMessage,
@@ -638,17 +572,14 @@ class JerkFormatsSpec
 
     roundtrip(
       FileRange("/abc", 7, 9): EnsimeServerMessage,
-      s"""{"typehint":"FileRange","file":"/abc","start":7,"end":9}"""
-    )
+      s"""{"typehint":"FileRange","file":"/abc","start":7,"end":9}""")
 
     roundtrip(
       SymbolDesignations(
         symFile,
         List(
           SymbolDesignation(7, 9, VarFieldSymbol),
-          SymbolDesignation(11, 22, ClassSymbol)
-        )
-      ): EnsimeServerMessage,
+          SymbolDesignation(11, 22, ClassSymbol))): EnsimeServerMessage,
       s"""{"typehint":"SymbolDesignations","file":"$symFile","syms":[{"start":7,"end":9,"symType":{"typehint":"VarFieldSymbol"}},{"start":11,"end":22,"symType":{"typehint":"ClassSymbol"}}]}"""
     )
 
@@ -675,8 +606,7 @@ class JerkFormatsSpec
   it should "support refactoring messages" in {
     roundtrip(
       RefactorFailure(7, "message"): EnsimeServerMessage,
-      """{"typehint":"RefactorFailure","procedureId":7,"reason":"message","status":"failure"}"""
-    )
+      """{"typehint":"RefactorFailure","procedureId":7,"reason":"message","status":"failure"}""")
 
     roundtrip(
       refactorEffect: EnsimeServerMessage,
@@ -698,22 +628,18 @@ class JerkFormatsSpec
   it should "support legacy raw response types" in {
     roundtrip(
       FalseResponse: EnsimeServerMessage,
-      """{"typehint":"FalseResponse"}"""
-    )
+      """{"typehint":"FalseResponse"}""")
 
     roundtrip(
       TrueResponse: EnsimeServerMessage,
-      """{"typehint":"TrueResponse"}"""
-    )
+      """{"typehint":"TrueResponse"}""")
 
     roundtrip(
       StringResponse("wibble"): EnsimeServerMessage,
-      """{"typehint":"StringResponse","text":"wibble"}"""
-    )
+      """{"typehint":"StringResponse","text":"wibble"}""")
 
     roundtrip(
       VoidResponse: EnsimeServerMessage,
-      """{"typehint":"VoidResponse"}"""
-    )
+      """{"typehint":"VoidResponse"}""")
   }
 }

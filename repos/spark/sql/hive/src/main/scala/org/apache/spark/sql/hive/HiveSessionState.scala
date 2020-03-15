@@ -66,10 +66,12 @@ private[hive] class HiveSessionState(ctx: HiveContext)
           python.ExtractPythonUDFs ::
           PreInsertCastAndRename ::
           DataSourceAnalysis ::
-          (if (conf.runSQLOnFile)
-             new ResolveDataSource(ctx) :: Nil
-           else
-             Nil)
+          (
+            if (conf.runSQLOnFile)
+              new ResolveDataSource(ctx) :: Nil
+            else
+              Nil
+          )
 
       override val extendedCheckRules = Seq(PreWriteCheck(catalog))
     }

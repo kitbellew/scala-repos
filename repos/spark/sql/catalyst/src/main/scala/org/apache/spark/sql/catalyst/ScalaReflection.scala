@@ -414,8 +414,7 @@ object ScalaReflection extends ScalaReflection {
             expressions.If(
               IsNull(getPath),
               expressions.Literal.create(null, ObjectType(cls)),
-              newInstance
-            )
+              newInstance)
           } else {
             newInstance
           }
@@ -578,20 +577,21 @@ object ScalaReflection extends ScalaReflection {
 
           case t if t <:< localTypeOf[Product] =>
             val params = getConstructorParameters(t)
-            val nonNullOutput = CreateNamedStruct(params.flatMap {
-              case (fieldName, fieldType) =>
-                val fieldValue = Invoke(
-                  inputObject,
-                  fieldName,
-                  dataTypeFor(fieldType))
-                val clsName = getClassNameFromType(fieldType)
-                val newPath =
-                  s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
-                expressions.Literal(fieldName) :: extractorFor(
-                  fieldValue,
-                  fieldType,
-                  newPath) :: Nil
-            })
+            val nonNullOutput = CreateNamedStruct(
+              params.flatMap {
+                case (fieldName, fieldType) =>
+                  val fieldValue = Invoke(
+                    inputObject,
+                    fieldName,
+                    dataTypeFor(fieldType))
+                  val clsName = getClassNameFromType(fieldType)
+                  val newPath =
+                    s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
+                  expressions.Literal(fieldName) :: extractorFor(
+                    fieldValue,
+                    fieldType,
+                    newPath) :: Nil
+              })
             val nullOutput = expressions.Literal
               .create(null, nonNullOutput.dataType)
             expressions.If(IsNull(inputObject), nullOutput, nonNullOutput)
@@ -835,11 +835,12 @@ trait ScalaReflection {
         case t if t <:< localTypeOf[Product] =>
           val params = getConstructorParameters(t)
           Schema(
-            StructType(params.map {
-              case (fieldName, fieldType) =>
-                val Schema(dataType, nullable) = schemaFor(fieldType)
-                StructField(fieldName, dataType, nullable)
-            }),
+            StructType(
+              params.map {
+                case (fieldName, fieldType) =>
+                  val Schema(dataType, nullable) = schemaFor(fieldType)
+                  StructField(fieldName, dataType, nullable)
+              }),
             nullable = true
           )
         case t if t <:< localTypeOf[String] =>

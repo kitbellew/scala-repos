@@ -261,8 +261,7 @@ class RuntimePickler(
             else if (fir.tpe.typeSymbol.asType.isAbstractType)
               new AbstractLogic(fir)
             else
-              new DefaultLogic(fir)
-          )
+              new DefaultLogic(fir))
         else
           try {
             val javaField = clazz.getDeclaredField(fir.name)
@@ -270,8 +269,7 @@ class RuntimePickler(
               if (fir.tpe.typeSymbol.isEffectivelyFinal)
                 new PrivateEffectivelyFinalJavaFieldLogic(fir, javaField)
               else
-                new PrivateJavaFieldLogic(fir, javaField)
-            )
+                new PrivateJavaFieldLogic(fir, javaField))
           } catch {
             case e: java.lang.NoSuchFieldException => List()
           }

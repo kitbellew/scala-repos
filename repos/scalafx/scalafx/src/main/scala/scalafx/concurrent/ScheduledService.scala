@@ -84,9 +84,10 @@ object ScheduledService {
     *           the JavaFX Application Thread.
     */
   def apply[T](op: => jfxc.Task[T]) =
-    new ScheduledService[T](new jfxc.ScheduledService[T] {
-      protected def createTask = op
-    }) {}
+    new ScheduledService[T](
+      new jfxc.ScheduledService[T] {
+        protected def createTask = op
+      }) {}
 }
 
 /**

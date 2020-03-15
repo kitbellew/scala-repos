@@ -105,10 +105,12 @@ object Analytics extends Logging {
         println("GRAPHX: Number of edges " + graph.edges.count)
 
         val pr =
-          (numIterOpt match {
-            case Some(numIter) => PageRank.run(graph, numIter)
-            case None          => PageRank.runUntilConvergence(graph, tol)
-          }).vertices.cache()
+          (
+            numIterOpt match {
+              case Some(numIter) => PageRank.run(graph, numIter)
+              case None          => PageRank.runUntilConvergence(graph, tol)
+            }
+          ).vertices.cache()
 
         println("GRAPHX: Total rank: " + pr.map(_._2).reduce(_ + _))
 

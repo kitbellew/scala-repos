@@ -329,10 +329,12 @@ class DefaultCSRFTokenSigner @Inject() (signer: CookieSigner, clock: Clock)
     * Compare two signed tokens
     */
   def compareSignedTokens(tokenA: String, tokenB: String): Boolean = {
-    (for {
-      rawA <- extractSignedToken(tokenA)
-      rawB <- extractSignedToken(tokenB)
-    } yield CSRFTokenSigner.constantTimeEquals(rawA, rawB)).getOrElse(false)
+    (
+      for {
+        rawA <- extractSignedToken(tokenA)
+        rawB <- extractSignedToken(tokenB)
+      } yield CSRFTokenSigner.constantTimeEquals(rawA, rawB)
+    ).getOrElse(false)
   }
 
   /**
@@ -545,8 +547,7 @@ class CryptoConfigParser @Inject() (
           val secret =
             appConfLocation.fold(
               // No application.conf?  Oh well, just use something hard coded.
-              "she sells sea shells on the sea shore"
-            )(_.toString)
+              "she sells sea shells on the sea shore")(_.toString)
           val md5Secret = DigestUtils.md5Hex(secret)
           logger.debug(
             s"Generated dev mode secret $md5Secret for app at ${appConfLocation.getOrElse("unknown location")}")

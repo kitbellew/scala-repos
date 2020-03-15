@@ -205,11 +205,13 @@ object ScalaClassNameCompletionContributor {
         return
 
       val isAccessible =
-        invocationCount >= 2 || (typeToImport.element match {
-          case member: PsiMember =>
-            ResolveUtils.isAccessible(member, position, forCompletion = true)
-          case _ => true
-        })
+        invocationCount >= 2 || (
+          typeToImport.element match {
+            case member: PsiMember =>
+              ResolveUtils.isAccessible(member, position, forCompletion = true)
+            case _ => true
+          }
+        )
       if (!isAccessible)
         return
 

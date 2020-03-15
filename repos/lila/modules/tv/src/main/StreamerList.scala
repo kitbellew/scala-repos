@@ -4,10 +4,11 @@ import com.typesafe.config.{Config, ConfigFactory}
 import scala.collection.JavaConversions._
 import scala.util.{Try, Success, Failure}
 
-final class StreamerList(val store: {
-  def get: Fu[String]
-  def set(text: String): Funit
-}) {
+final class StreamerList(
+    val store: {
+      def get: Fu[String]
+      def set(text: String): Funit
+    }) {
 
   import StreamerList._
 
@@ -73,8 +74,7 @@ final class StreamerList(val store: {
               case (_, errs) =>
                 Invalid(ValidationError(errs.map(_.getMessage) mkString ","))
             }
-          })
-      ))
+          })))
   }
 }
 

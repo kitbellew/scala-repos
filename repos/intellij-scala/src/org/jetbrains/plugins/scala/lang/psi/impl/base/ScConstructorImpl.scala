@@ -316,20 +316,25 @@ class ScConstructorImpl(node: ASTNode)
           Seq(m.getParameterList.getParameters.toSeq)
         case _ => Seq.empty
       }
-    (for {
-      (paramClause, argList) <- paramClauses.zip(arguments)
-      (arg, idx) <- argList.exprs.zipWithIndex
-    } yield {
-      arg match {
-        case ScAssignStmt(refToParam: ScReferenceExpression, Some(expr)) =>
-          val param = paramClause
-            .find(_.getName == refToParam.refName)
-            .orElse(refToParam.resolve().asOptionOf[ScParameter])
-          param.map(p => (expr, new Parameter(p))).toSeq
-        case expr =>
-          val paramIndex = Math.min(idx, paramClause.size - 1)
-          paramClause.lift(paramIndex).map(p => (expr, new Parameter(p))).toSeq
+    (
+      for {
+        (paramClause, argList) <- paramClauses.zip(arguments)
+        (arg, idx) <- argList.exprs.zipWithIndex
+      } yield {
+        arg match {
+          case ScAssignStmt(refToParam: ScReferenceExpression, Some(expr)) =>
+            val param = paramClause
+              .find(_.getName == refToParam.refName)
+              .orElse(refToParam.resolve().asOptionOf[ScParameter])
+            param.map(p => (expr, new Parameter(p))).toSeq
+          case expr =>
+            val paramIndex = Math.min(idx, paramClause.size - 1)
+            paramClause
+              .lift(paramIndex)
+              .map(p => (expr, new Parameter(p)))
+              .toSeq
+        }
       }
-    }).flatten
+    ).flatten
   }
 }

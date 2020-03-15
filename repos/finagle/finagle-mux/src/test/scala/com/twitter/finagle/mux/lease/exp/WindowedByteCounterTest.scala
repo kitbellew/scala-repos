@@ -25,9 +25,7 @@ class WindowedByteCounterTest
   // cleans up thread
   private[this] def withCounter(
       fakeBean: FakeGarbageCollectorMXBean,
-      fakePool: FakeMemoryPool)(
-      fn: (ByteCounter, () => Unit) => Unit
-  ): Unit = {
+      fakePool: FakeMemoryPool)(fn: (ByteCounter, () => Unit) => Unit): Unit = {
     Time.withCurrentTimeFrozen { ctl =>
       val nfo = new JvmInfo(fakePool, fakeBean)
       val counter = new WindowedByteCounter(nfo, Local.save())
@@ -100,8 +98,10 @@ class WindowedByteCounterTest
           nextPeriod()
         }
 
-        assert(counter
-          .rate() == (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds)
+        assert(
+          counter.rate() == (
+            WindowedByteCounter.N.kilobytes
+          ).inBytes / WindowedByteCounter.W.inMilliseconds)
     }
   }
 
@@ -117,8 +117,10 @@ class WindowedByteCounterTest
           nextPeriod()
         }
 
-        assert(counter
-          .rate() == (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds)
+        assert(
+          counter.rate() == (
+            WindowedByteCounter.N.kilobytes
+          ).inBytes / WindowedByteCounter.W.inMilliseconds)
 
         for (i <- 1 to WindowedByteCounter.N) {
           fakePool.setSnapshot(
@@ -127,8 +129,12 @@ class WindowedByteCounterTest
           nextPeriod()
         }
 
-        assert(counter
-          .rate() == (2 * (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds))
+        assert(
+          counter.rate() == (
+            2 * (
+              WindowedByteCounter.N.kilobytes
+            ).inBytes / WindowedByteCounter.W.inMilliseconds
+          ))
     }
   }
 
@@ -180,8 +186,9 @@ class WindowedByteCounterTest
           nextPeriod()
         }
 
-        assert(counter
-          .rate() == WindowedByteCounter.N.kilobytes.inBytes / WindowedByteCounter.W.inMilliseconds)
+        assert(
+          counter
+            .rate() == WindowedByteCounter.N.kilobytes.inBytes / WindowedByteCounter.W.inMilliseconds)
     }
   }
 

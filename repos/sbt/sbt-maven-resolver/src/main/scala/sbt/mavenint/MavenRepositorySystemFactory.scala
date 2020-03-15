@@ -31,14 +31,15 @@ object MavenRepositorySystemFactory {
   def newRepositorySystemImpl: RepositorySystem = {
     // For now we just log Aether instantiation issues.  These should probably cause fatal errors.
     val locator = MavenRepositorySystemUtils.newServiceLocator()
-    locator.setErrorHandler(new DefaultServiceLocator.ErrorHandler {
-      override def serviceCreationFailed(
-          tpe: Class[_],
-          impl: Class[_],
-          exception: Throwable): Unit = {
-        Message.error(s"Failed to create $tpe, of class $impl")
-      }
-    })
+    locator.setErrorHandler(
+      new DefaultServiceLocator.ErrorHandler {
+        override def serviceCreationFailed(
+            tpe: Class[_],
+            impl: Class[_],
+            exception: Throwable): Unit = {
+          Message.error(s"Failed to create $tpe, of class $impl")
+        }
+      })
     // Here we register the Ivy <-> Aether transport bridge
     locator.addService(classOf[TransporterFactory], classOf[MyTransportFactory])
     // This connects the download mechanism to our transports.  Why is it needed? no clue.
@@ -71,8 +72,9 @@ object MavenRepositorySystemFactory {
       localRepoDir: File): RepositorySystemSession = {
     val session = MavenRepositorySystemUtils.newSession()
     val localRepo = new LocalRepository(localRepoDir)
-    session setLocalRepositoryManager (system
-      .newLocalRepositoryManager(session, localRepo))
+    session setLocalRepositoryManager (
+      system.newLocalRepositoryManager(session, localRepo)
+    )
     // Here we set a descriptor policy that FORCES the pom.xml to exist, otherwise Ivy's resolution
     // algorithm freaks out.   What we could do is also do the ivy lame-thing of checking for a JAR
     // instead of a pom.xml, but let's see if this is actually a problem in practice.

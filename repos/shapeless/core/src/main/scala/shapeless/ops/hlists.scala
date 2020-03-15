@@ -435,8 +435,7 @@ object hlist {
         Out0 <: HList](implicit
         hc: Case1.Aux[HF, InH, OutH],
         mt: FlatMapper.Aux[HF, InT, OutT],
-        prepend: Prepend.Aux[OutH, OutT, Out0]
-    ): Aux[HF, InH :: InT, Out0] =
+        prepend: Prepend.Aux[OutH, OutT, Out0]): Aux[HF, InH :: InT, Out0] =
       new FlatMapper[HF, InH :: InT] {
         type Out = Out0
         def apply(l: InH :: InT): Out = prepend(hc(l.head), mt(l.tail))
@@ -822,11 +821,8 @@ object hlist {
         new NotIn[CH :+: CT, T] {}
     }
 
-    implicit def hconsToCoproductTraversable1[
-        LH,
-        LT <: HList,
-        M[_],
-        CT <: Coproduct](implicit
+    implicit def hconsToCoproductTraversable1[LH, LT <: HList, M[
+        _], CT <: Coproduct](implicit
         coproductOfT: Aux[LT, M, CT],
         cbf: CanBuildFrom[M[CT], CT, M[CT]],
         asTraversable: M[CT] <:< Traversable[CT],
@@ -851,11 +847,8 @@ object hlist {
         def apply(l: L) = cbf().result()
       }
 
-    implicit def hconsToCoproductTraversable0[
-        LH,
-        LT <: HList,
-        M[_],
-        CT <: Coproduct](implicit
+    implicit def hconsToCoproductTraversable0[LH, LT <: HList, M[
+        _], CT <: Coproduct](implicit
         coproductOfT: Aux[LT, M, CT],
         cbf: CanBuildFrom[M[CT], LH :+: CT, M[LH :+: CT]],
         asTraversable: M[CT] <:< Traversable[CT],
@@ -1076,8 +1069,9 @@ object hlist {
     *
     * @author Ievgen Garkusha
     */
-  @annotation.implicitNotFound(msg =
-    "Field types set of ${S} is not fully contained in type definition of ${L}")
+  @annotation.implicitNotFound(
+    msg =
+      "Field types set of ${S} is not fully contained in type definition of ${L}")
   trait SelectAll[L <: HList, S <: HList] extends DepFn1[L] with Serializable {
     type Out = S
   }
@@ -1207,8 +1201,7 @@ object hlist {
         L <: HList,
         LPrefix <: HList,
         LSuffix <: HList](implicit
-        p: Aux[L, H, LPrefix, LSuffix]
-    ): Aux[H :: L, H, H :: LPrefix, LSuffix] =
+        p: Aux[L, H, LPrefix, LSuffix]): Aux[H :: L, H, H :: LPrefix, LSuffix] =
       new Partition[H :: L, H] {
         type Prefix = H :: LPrefix
         type Suffix = LSuffix
@@ -1224,8 +1217,7 @@ object hlist {
         LPrefix <: HList,
         LSuffix <: HList](implicit
         p: Aux[L, U, LPrefix, LSuffix],
-        e: U =:!= H
-    ): Aux[H :: L, U, LPrefix, H :: LSuffix] =
+        e: U =:!= H): Aux[H :: L, U, LPrefix, H :: LSuffix] =
       new Partition[H :: L, U] {
         type Prefix = LPrefix
         type Suffix = H :: LSuffix
@@ -1263,8 +1255,8 @@ object hlist {
         take: ops.hlist.Take.Aux[L, N, OutT],
         drop: ops.hlist.Drop.Aux[L, M, OutD],
         tup: ops.hlist.Tupler.Aux[OutT, T],
-        grouper: Grouper[OutD, N, Step]
-    ): Grouper.Aux[L, N, Step, tup.Out :: grouper.Out] =
+        grouper: Grouper[OutD, N, Step])
+        : Grouper.Aux[L, N, Step, tup.Out :: grouper.Out] =
       new Grouper[L, N, Step] {
         type Out = tup.Out :: grouper.Out
 
@@ -1273,9 +1265,9 @@ object hlist {
   }
 
   object Grouper extends LowPriorityGrouper {
-    def apply[L <: HList, N <: Nat, Step <: Nat](implicit
-        grouper: Grouper[L, N, Step]
-    ): Aux[L, N, Step, grouper.Out] = grouper
+    def apply[L <: HList, N <: Nat, Step <: Nat](
+        implicit grouper: Grouper[L, N, Step]): Aux[L, N, Step, grouper.Out] =
+      grouper
 
     type Aux[L <: HList, N <: Nat, Step <: Nat, Out0] =
       Grouper[L, N, Step] {
@@ -1292,8 +1284,7 @@ object hlist {
     implicit def hlistGrouper1[L <: HList, A <: Nat, N <: Nat, Step <: Nat](
         implicit
         len: ops.hlist.Length.Aux[L, A],
-        lt: ops.nat.LT[A, N]
-    ): Aux[L, N, Step, HNil] =
+        lt: ops.nat.LT[A, N]): Aux[L, N, Step, HNil] =
       new Grouper[L, N, Step] {
         type Out = HNil
 
@@ -1330,8 +1321,8 @@ object hlist {
         sum: ops.nat.Sum.Aux[LL, M, S],
         min: ops.nat.Min.Aux[LPL, S, MI],
         take: Take.Aux[PL, MI, T],
-        grouper: Grouper[T, N, Step]
-    ): PaddedGrouper.Aux[L, N, Step, Pad, grouper.Out] =
+        grouper: Grouper[T, N, Step])
+        : PaddedGrouper.Aux[L, N, Step, Pad, grouper.Out] =
       new PaddedGrouper[L, N, Step, Pad] {
 
         type Out = grouper.Out
@@ -1348,9 +1339,9 @@ object hlist {
   }
 
   object PaddedGrouper extends LowPriorityPaddedGrouper {
-    def apply[L <: HList, N <: Nat, Step <: Nat, Pad <: HList](implicit
-        grouper: PaddedGrouper[L, N, Step, Pad]
-    ): Aux[L, N, Step, Pad, grouper.Out] = grouper
+    def apply[L <: HList, N <: Nat, Step <: Nat, Pad <: HList](
+        implicit grouper: PaddedGrouper[L, N, Step, Pad])
+        : Aux[L, N, Step, Pad, grouper.Out] = grouper
 
     type Aux[L <: HList, N <: Nat, Step <: Nat, Pad <: HList, Out0] =
       PaddedGrouper[L, N, Step, Pad] {
@@ -1367,8 +1358,7 @@ object hlist {
         len: Length.Aux[L, A],
         mod: ops.nat.Mod.Aux[A, Step, B],
         eq: B =:= _0,
-        grouper: Grouper[L, N, Step]
-    ): Aux[L, N, Step, Pad, grouper.Out] =
+        grouper: Grouper[L, N, Step]): Aux[L, N, Step, Pad, grouper.Out] =
       new PaddedGrouper[L, N, Step, Pad] {
 
         type Out = grouper.Out
@@ -1397,8 +1387,8 @@ object hlist {
       }
 
     implicit def hlistFilter[L <: HList, U, LPrefix <: HList, LSuffix <: HList](
-        implicit partition: Partition.Aux[L, U, LPrefix, LSuffix]
-    ): Aux[L, U, LPrefix] =
+        implicit
+        partition: Partition.Aux[L, U, LPrefix, LSuffix]): Aux[L, U, LPrefix] =
       new Filter[L, U] {
         type Out = LPrefix
 
@@ -1429,8 +1419,7 @@ object hlist {
         U,
         LPrefix <: HList,
         LSuffix <: HList](implicit
-        partition: Partition.Aux[L, U, LPrefix, LSuffix]
-    ): Aux[L, U, LSuffix] =
+        partition: Partition.Aux[L, U, LPrefix, LSuffix]): Aux[L, U, LSuffix] =
       new FilterNot[L, U] {
         type Out = LSuffix
 
@@ -1576,8 +1565,7 @@ object hlist {
     // let (H :: T) ∪ M  =  H :: (T ∪ M) when H ∉ M
     implicit def hlistUnion1[H, T <: HList, M <: HList](implicit
         u: Union[T, M],
-        f: FilterNot.Aux[M, H, M]
-    ): Aux[H :: T, M, H :: u.Out] =
+        f: FilterNot.Aux[M, H, M]): Aux[H :: T, M, H :: u.Out] =
       new Union[H :: T, M] {
         type Out = H :: u.Out
         def apply(l: H :: T, m: M): Out = l.head :: u(l.tail, m)
@@ -1586,8 +1574,7 @@ object hlist {
     // let (H :: T) ∪ M  =  H :: (T ∪ (M - H)) when H ∈ M
     implicit def hlistUnion2[H, T <: HList, M <: HList, MR <: HList](implicit
         r: Remove.Aux[M, H, (H, MR)],
-        u: Union[T, MR]
-    ): Aux[H :: T, M, H :: u.Out] =
+        u: Union[T, MR]): Aux[H :: T, M, H :: u.Out] =
       new Union[H :: T, M] {
         type Out = H :: u.Out
         def apply(l: H :: T, m: M): Out = l.head :: u(l.tail, r(m)._2)
@@ -1640,8 +1627,7 @@ object hlist {
     // let (H :: T) ∩ M  =  T ∩ M  when H ∉ M
     implicit def hlistIntersection1[H, T <: HList, M <: HList](implicit
         i: Intersection[T, M],
-        f: FilterNot.Aux[M, H, M]
-    ): Aux[H :: T, M, i.Out] =
+        f: FilterNot.Aux[M, H, M]): Aux[H :: T, M, i.Out] =
       new Intersection[H :: T, M] {
         type Out = i.Out
         def apply(l: H :: T): Out = i(l.tail)
@@ -1651,8 +1637,7 @@ object hlist {
     implicit def hlistIntersection2[H, T <: HList, M <: HList, MR <: HList](
         implicit
         r: Remove.Aux[M, H, (H, MR)],
-        i: Intersection[T, MR]
-    ): Aux[H :: T, M, H :: i.Out] =
+        i: Intersection[T, MR]): Aux[H :: T, M, H :: i.Out] =
       new Intersection[H :: T, M] {
         type Out = H :: i.Out
         def apply(l: H :: T): Out = l.head :: i(l.tail)
@@ -1698,8 +1683,7 @@ object hlist {
 
     implicit def hconsDiff2[L <: HList, LT <: HList, H, T <: HList](implicit
         r: Remove.Aux[L, H, (H, LT)],
-        d: Diff[LT, T]
-    ): Aux[L, H :: T, d.Out] =
+        d: Diff[LT, T]): Aux[L, H :: T, d.Out] =
       new Diff[L, H :: T] {
         type Out = d.Out
         def apply(l: L): Out = d(r(l)._2)
@@ -1809,8 +1793,8 @@ object hlist {
     implicit def hlistModifierAt[L <: HList, OutL <: HList, N <: Nat, F, U, V](
         implicit
         at: At.Aux[L, N, U],
-        replacer: ReplaceAt.Aux[L, N, V, (U, OutL)]
-    ): Aux[L, N, U, V, (U, OutL)] =
+        replacer: ReplaceAt.Aux[L, N, V, (U, OutL)])
+        : Aux[L, N, U, V, (U, OutL)] =
       new ModifierAt[L, N, U, V] {
         type Out = (U, OutL)
 
@@ -2924,8 +2908,7 @@ object hlist {
         }
 
       implicit def hcons[H, T <: HList, OutT <: HList, N <: Nat](implicit
-          tail: Helper.Aux[T, Succ[N], OutT]
-      ): Aux[H :: T, N, (H, N) :: OutT] =
+          tail: Helper.Aux[T, Succ[N], OutT]): Aux[H :: T, N, (H, N) :: OutT] =
         new Helper[H :: T, N] {
           type Out = (H, N) :: OutT
           def apply(l: H :: T, n: N) = (l.head -> n) :: tail(l.tail, Succ[N]())
@@ -3190,13 +3173,11 @@ object hlist {
         Size <: Nat,
         NModSize <: Nat,
         Before <: HList,
-        After <: HList
-    ](implicit
+        After <: HList](implicit
         length: Length.Aux[L, Size],
         mod: nat.Mod.Aux[N, Size, NModSize],
         split: Split.Aux[L, NModSize, Before, After],
-        prepend: Prepend[After, Before]
-    ): RotateLeft.Aux[L, N, prepend.Out] =
+        prepend: Prepend[After, Before]): RotateLeft.Aux[L, N, prepend.Out] =
       new RotateLeft[L, N] {
         type Out = prepend.Out
 
@@ -3248,13 +3229,12 @@ object hlist {
         N <: Nat,
         Size <: Nat,
         NModSize <: Nat,
-        Size_Diff_NModSize <: Nat
-    ](implicit
+        Size_Diff_NModSize <: Nat](implicit
         length: Length.Aux[L, Size],
         mod: nat.Mod.Aux[N, Size, NModSize],
         diff: nat.Diff.Aux[Size, NModSize, Size_Diff_NModSize],
-        rotateLeft: RotateLeft[L, Size_Diff_NModSize]
-    ): RotateRight.Aux[L, N, rotateLeft.Out] =
+        rotateLeft: RotateLeft[L, Size_Diff_NModSize])
+        : RotateRight.Aux[L, N, rotateLeft.Out] =
       new RotateRight[L, N] {
         type Out = rotateLeft.Out
 

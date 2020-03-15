@@ -40,20 +40,13 @@ class InnerJoinSuite extends SparkPlanTest with SharedSQLContext {
         Row(4, "D"),
         Row(5, "E"),
         Row(6, "F"),
-        Row(null, "G")
-      )),
+        Row(null, "G"))),
     new StructType().add("N", IntegerType).add("L", StringType)
   )
 
   private lazy val myLowerCaseData = sqlContext.createDataFrame(
     sparkContext.parallelize(
-      Seq(
-        Row(1, "a"),
-        Row(2, "b"),
-        Row(3, "c"),
-        Row(4, "d"),
-        Row(null, "e")
-      )),
+      Seq(Row(1, "a"), Row(2, "b"), Row(3, "c"), Row(4, "d"), Row(null, "e"))),
     new StructType().add("n", IntegerType).add("l", StringType))
 
   private lazy val myTestData1 = Seq(
@@ -62,8 +55,7 @@ class InnerJoinSuite extends SparkPlanTest with SharedSQLContext {
     (2, 1),
     (2, 2),
     (3, 1),
-    (3, 2)
-  ).toDF("a", "b")
+    (3, 2)).toDF("a", "b")
 
   private lazy val myTestData2 = Seq(
     (1, 1),
@@ -71,8 +63,7 @@ class InnerJoinSuite extends SparkPlanTest with SharedSQLContext {
     (2, 1),
     (2, 2),
     (3, 1),
-    (3, 2)
-  ).toDF("a", "b")
+    (3, 2)).toDF("a", "b")
 
   // Note: the input dataframes and expression must be evaluated lazily because
   // the SQLContext should be used only within a test to keep SQL tests stable
@@ -311,12 +302,7 @@ class InnerJoinSuite extends SparkPlanTest with SharedSQLContext {
     myUpperCaseData,
     myLowerCaseData,
     () => (myUpperCaseData.col("N") === myLowerCaseData.col("n")).expr,
-    Seq(
-      (1, "A", 1, "a"),
-      (2, "B", 2, "b"),
-      (3, "C", 3, "c"),
-      (4, "D", 4, "d")
-    )
+    Seq((1, "A", 1, "a"), (2, "B", 2, "b"), (3, "C", 3, "c"), (4, "D", 4, "d"))
   )
 
   {
@@ -327,13 +313,7 @@ class InnerJoinSuite extends SparkPlanTest with SharedSQLContext {
       left,
       right,
       () => (left.col("a") === right.col("a")).expr,
-      Seq(
-        (1, 1, 1, 1),
-        (1, 1, 1, 2),
-        (1, 2, 1, 1),
-        (1, 2, 1, 2)
-      )
-    )
+      Seq((1, 1, 1, 1), (1, 1, 1, 2), (1, 2, 1, 1), (1, 2, 1, 2)))
   }
 
   {
@@ -344,8 +324,7 @@ class InnerJoinSuite extends SparkPlanTest with SharedSQLContext {
       left,
       right,
       () => (left.col("a") === right.col("a")).expr,
-      Seq.empty
-    )
+      Seq.empty)
   }
 
   {
@@ -356,10 +335,6 @@ class InnerJoinSuite extends SparkPlanTest with SharedSQLContext {
       left,
       right,
       () => (left.col("b") <=> right.col("b")).expr,
-      Seq(
-        (1, 0, 1, 0),
-        (2, null, 2, null)
-      )
-    )
+      Seq((1, 0, 1, 0), (2, null, 2, null)))
   }
 }

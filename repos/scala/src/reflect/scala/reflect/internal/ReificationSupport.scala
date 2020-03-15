@@ -503,10 +503,12 @@ trait ReificationSupport { self: SymbolTable =>
           parents: List[Tree],
           selfType: Tree,
           body: List[Tree]): ClassDef = {
-        val extraFlags = PARAMACCESSOR | (if (mods.isCase)
-                                            CASEACCESSOR
-                                          else
-                                            0L)
+        val extraFlags = PARAMACCESSOR | (
+          if (mods.isCase)
+            CASEACCESSOR
+          else
+            0L
+        )
         val vparamss0 = mkParam(
           vparamss,
           extraFlags,
@@ -534,17 +536,16 @@ trait ReificationSupport { self: SymbolTable =>
         gen.mkClassDef(mods, name, tparams0, templ)
       }
 
-      def unapply(tree: Tree): Option[
-        (
-            Modifiers,
-            TypeName,
-            List[TypeDef],
-            Modifiers,
-            List[List[ValDef]],
-            List[Tree],
-            List[Tree],
-            ValDef,
-            List[Tree])] =
+      def unapply(tree: Tree): Option[(
+          Modifiers,
+          TypeName,
+          List[TypeDef],
+          Modifiers,
+          List[List[ValDef]],
+          List[Tree],
+          List[Tree],
+          ValDef,
+          List[Tree])] =
         tree match {
           case ClassDef(
                 mods,
@@ -592,15 +593,14 @@ trait ReificationSupport { self: SymbolTable =>
         gen.mkClassDef(mods0, name, mkTparams(tparams), templ)
       }
 
-      def unapply(tree: Tree): Option[
-        (
-            Modifiers,
-            TypeName,
-            List[TypeDef],
-            List[Tree],
-            List[Tree],
-            ValDef,
-            List[Tree])] =
+      def unapply(tree: Tree): Option[(
+          Modifiers,
+          TypeName,
+          List[TypeDef],
+          List[Tree],
+          List[Tree],
+          ValDef,
+          List[Tree])] =
         tree match {
           case ClassDef(
                 mods,
@@ -700,9 +700,10 @@ trait ReificationSupport { self: SymbolTable =>
     }
     protected object TupleClassRef extends ScalaMemberRef(TupleClass.seq)
     protected object TupleCompanionRef
-        extends ScalaMemberRef(TupleClass.seq.map {
-          _.companionModule
-        })
+        extends ScalaMemberRef(
+          TupleClass.seq.map {
+            _.companionModule
+          })
     protected object UnitClassRef extends ScalaMemberRef(Seq(UnitClass))
     protected object FunctionClassRef extends ScalaMemberRef(FunctionClass.seq)
 

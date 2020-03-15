@@ -20,22 +20,20 @@ final class DetectLanguage(url: String, key: String) {
   def apply(message: String): Fu[Option[Lang]] =
     WS.url(url)
       .post(
-        Map(
-          "key" -> Seq(key),
-          "q" -> Seq(message take messageMaxLength)
-        )) map { response =>
-      (response.json \ "data" \ "detections").asOpt[List[Detection]] match {
-        case None =>
-          lila
-            .log("DetectLanguage")
-            .warn(s"Invalide service response ${response.json}")
-          None
-        case Some(res) =>
-          res
-            .filter(_.isReliable)
-            .sortBy(-_.confidence)
-            .headOption map (_.language) flatMap Lang.get
-      }
+        Map("key" -> Seq(key), "q" -> Seq(message take messageMaxLength))) map {
+      response =>
+        (response.json \ "data" \ "detections").asOpt[List[Detection]] match {
+          case None =>
+            lila
+              .log("DetectLanguage")
+              .warn(s"Invalide service response ${response.json}")
+            None
+          case Some(res) =>
+            res
+              .filter(_.isReliable)
+              .sortBy(-_.confidence)
+              .headOption map (_.language) flatMap Lang.get
+        }
     } recover {
       case e: Exception =>
         lila.log("DetectLanguage").warn(e.getMessage, e)

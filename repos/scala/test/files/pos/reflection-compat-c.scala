@@ -88,12 +88,13 @@ object Test extends App {
     locally(sym.isLocal: Boolean)
     locally(sym.isOverride: Boolean)
     locally(tsym.isSkolem: Boolean)
-    locally(manifestToTypeTag(
-      mirror,
-      manifest): scala.reflect.api.Universe#TypeTag[Int])
-    locally(mkImporter(scala.reflect.runtime.universe): Importer {
-      val from: scala.reflect.runtime.universe.type
-    })
+    locally(
+      manifestToTypeTag(mirror, manifest): scala.reflect.api.Universe#TypeTag[
+        Int])
+    locally(
+      mkImporter(scala.reflect.runtime.universe): Importer {
+        val from: scala.reflect.runtime.universe.type
+      })
     locally(sym.newClassSymbol(tyname, pos, flags): ClassSymbol)
     locally(sym.newMethodSymbol(tename, pos, flags): MethodSymbol)
     locally(

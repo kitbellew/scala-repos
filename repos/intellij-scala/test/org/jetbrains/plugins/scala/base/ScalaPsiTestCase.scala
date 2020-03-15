@@ -63,12 +63,13 @@ abstract class ScalaPsiTestCase extends PsiTestCase {
           VfsUtil.getUrlForLibraryRoot(srcRoot),
           OrderRootType.SOURCES)
 
-        ApplicationManager.getApplication.runWriteAction(new Runnable {
-          def run() {
-            libModel.commit()
-            rootModel.commit()
-          }
-        })
+        ApplicationManager.getApplication.runWriteAction(
+          new Runnable {
+            def run() {
+              libModel.commit()
+              rootModel.commit()
+            }
+          })
       } finally {
         if (!Disposer.isDisposed(libModel)) {
           Disposer.dispose(libModel)

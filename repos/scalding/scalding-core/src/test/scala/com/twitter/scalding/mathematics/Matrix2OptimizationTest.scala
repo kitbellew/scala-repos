@@ -236,8 +236,9 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
     }
 
     "handle an unoptimized plan with sum" in {
-      (combinedOptimizedPlanCost, combinedOptimizedPlan) shouldBe (optimize(
-        combinedUnoptimizedPlan))
+      (combinedOptimizedPlanCost, combinedOptimizedPlan) shouldBe (
+        optimize(combinedUnoptimizedPlan)
+      )
     }
 
     "not break A*(B+C)" in {
@@ -253,8 +254,9 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
     }
 
     "handle a G^5 V plan" in {
-      optimizedGraphVectorPlan shouldBe (optimize(
-        unoptimizedGraphVectorPlan)._2)
+      optimizedGraphVectorPlan shouldBe (
+        optimize(unoptimizedGraphVectorPlan)._2
+      )
     }
 
     "handle an optimized G^5 V plan" in {
@@ -346,10 +348,12 @@ object Matrix2Props extends Properties("Matrix2") {
     } yield
       if (depth > 5)
         randomProduct(p)
-      else (if (v > 0)
-              randomProduct(p)
-            else
-              Sum(left, right, ring))
+      else (
+        if (v > 0)
+          randomProduct(p)
+        else
+          Sum(left, right, ring)
+      )
 
   def genFormula(depth: Int): Gen[Matrix2[Any, Any, Double]] =
     if (depth > 5)
@@ -407,14 +411,18 @@ object Matrix2Props extends Properties("Matrix2") {
         case Sum(left, right, _) => {
           val (lastLP, leftR) = toProducts(left)
           val (lastRP, rightR) = toProducts(right)
-          val total = leftR ++ rightR ++ (if (lastLP.isDefined)
-                                            List(lastLP.get)
-                                          else
-                                            Nil) ++
-            (if (lastRP.isDefined)
-               List(lastRP.get)
-             else
-               Nil)
+          val total = leftR ++ rightR ++ (
+            if (lastLP.isDefined)
+              List(lastLP.get)
+            else
+              Nil
+          ) ++
+            (
+              if (lastRP.isDefined)
+                List(lastRP.get)
+              else
+                Nil
+            )
           (None, total)
         }
         case Product(
@@ -553,7 +561,9 @@ object Matrix2Props extends Properties("Matrix2") {
           // diff is computed in the labeled tree - it measures "spread" of the tree
           // diff corresponds to (k - i) or (j - k - 1) in optimize: (k - i) * computeCosts(p, i, k) + (j - k - 1) * computeCosts(p, k + 1, j)
           Some(
-            labels.right.get.diff * cost + (left.sizeHint * (left.sizeHint * pRight.sizeHint)).total.get,
+            labels.right.get.diff * cost + (
+              left.sizeHint * (left.sizeHint * pRight.sizeHint)
+            ).total.get,
             left,
             pRight)
         }
@@ -564,7 +574,9 @@ object Matrix2Props extends Properties("Matrix2") {
               _) => {
           val (cost, pLeft, pRight) = evaluateProduct(left, labels.left.get).get
           Some(
-            labels.left.get.diff * cost + (pLeft.sizeHint * (pRight.sizeHint * right.sizeHint)).total.get,
+            labels.left.get.diff * cost + (
+              pLeft.sizeHint * (pRight.sizeHint * right.sizeHint)
+            ).total.get,
             pLeft,
             right)
         }
@@ -574,7 +586,9 @@ object Matrix2Props extends Properties("Matrix2") {
           val (cost2, p2Left, p2Right) =
             evaluateProduct(right, labels.right.get).get
           Some(
-            labels.left.get.diff * cost1 + labels.right.get.diff * cost2 + (p1Left.sizeHint * (p1Right.sizeHint * p2Right.sizeHint)).total.get,
+            labels.left.get.diff * cost1 + labels.right.get.diff * cost2 + (
+              p1Left.sizeHint * (p1Right.sizeHint * p2Right.sizeHint)
+            ).total.get,
             p1Left,
             p2Right)
         }

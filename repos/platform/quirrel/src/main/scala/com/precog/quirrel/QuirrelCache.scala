@@ -77,8 +77,7 @@ trait QuirrelCache extends AST { parser: Parser =>
       Keep("b", boolRe),
       Keep("s", strRe),
       Keep("p", pathRe),
-      Ignore(wordRe)
-    )
+      Ignore(wordRe))
 
     def fromString(input: String): (String, IndexedSeq[Binding]) = {
       var counter = 1
@@ -156,7 +155,9 @@ trait QuirrelCache extends AST { parser: Parser =>
               ("b", 5)
             else {
               sys.error(
-                "error recovering boolean literal from %s (%s at %s)" format (s, original, i))
+                "error recovering boolean literal from %s (%s at %s)" format (
+                  s, original, i
+                ))
             }
           case _: NumLit =>
             parser.numLiteralRegex
@@ -164,7 +165,9 @@ trait QuirrelCache extends AST { parser: Parser =>
               .map(x => ("n", x.length))
               .getOrElse {
                 sys.error(
-                  "error recovering number literal from %s (%s at %s)" format (s, original, i))
+                  "error recovering number literal from %s (%s at %s)" format (
+                    s, original, i
+                  ))
               }
           case _: StrLit =>
             parser.pathLiteralRegex
@@ -182,7 +185,9 @@ trait QuirrelCache extends AST { parser: Parser =>
               }
               .getOrElse {
                 sys.error(
-                  "error recovering string literal from %s (%s at %s)" format (s, original, i))
+                  "error recovering string literal from %s (%s at %s)" format (
+                    s, original, i
+                  ))
               }
         }
       }
@@ -376,10 +381,12 @@ trait QuirrelCache extends AST { parser: Parser =>
 
         case ObjectDef(loc, props0) =>
           for {
-            props <- (props0 map {
-              case (prop, expr) =>
-                repl(expr) map (prop -> _)
-            }: Vector[BindingS[(String, Expr)]]).sequence
+            props <- (
+              props0 map {
+                case (prop, expr) =>
+                  repl(expr) map (prop -> _)
+              }: Vector[BindingS[(String, Expr)]]
+            ).sequence
           } yield ObjectDef(updateLoc(loc), props)
 
         case ArrayDef(loc, values0) =>

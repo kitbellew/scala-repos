@@ -79,8 +79,9 @@ private[sql] class DefaultSource extends FileFormat with DataSourceRegister {
         if (!shortOrcCompressionCodecNames.contains(codecName.toLowerCase)) {
           val availableCodecs = shortOrcCompressionCodecNames.keys.map(
             _.toLowerCase)
-          throw new IllegalArgumentException(s"Codec [$codecName] " +
-            s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
+          throw new IllegalArgumentException(
+            s"Codec [$codecName] " +
+              s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
         }
         codecName.toLowerCase
       }
@@ -192,8 +193,7 @@ private[orc] class OrcOutputWriter(
         new Path(path, filename).getFileSystem(conf),
         conf.asInstanceOf[JobConf],
         new Path(path, filename).toString,
-        Reporter.NULL
-      )
+        Reporter.NULL)
       .asInstanceOf[RecordWriter[NullWritable, Writable]]
   }
 
@@ -332,8 +332,7 @@ private[orc] case class OrcTableScan(
         conf.asInstanceOf[JobConf],
         inputFormatClass,
         classOf[NullWritable],
-        classOf[Writable]
-      )
+        classOf[Writable])
       .asInstanceOf[HadoopRDD[NullWritable, Writable]]
 
     val wrappedConf = new SerializableConfiguration(conf)
@@ -370,6 +369,5 @@ private[orc] object OrcRelation {
     CompressionKind.NONE.name -> "",
     CompressionKind.SNAPPY.name -> ".snappy",
     CompressionKind.ZLIB.name -> ".zlib",
-    CompressionKind.LZO.name -> ".lzo"
-  )
+    CompressionKind.LZO.name -> ".lzo")
 }

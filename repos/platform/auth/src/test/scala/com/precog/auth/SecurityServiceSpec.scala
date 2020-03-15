@@ -178,7 +178,9 @@ class SecurityServiceSpec
     authService.query("apiKey", authAPIKey).get("/permissions/fs/" + path)
 
   def equalGrant(g1: Grant, g2: Grant) =
-    (g1.grantId == g2.grantId) && (g1.permissions == g2.permissions) && (g1.expirationDate == g2.expirationDate)
+    (g1.grantId == g2.grantId) && (g1.permissions == g2.permissions) && (
+      g1.expirationDate == g2.expirationDate
+    )
 
   def mkNewGrantRequest(grant: Grant) =
     grant match {
@@ -273,8 +275,7 @@ class SecurityServiceSpec
   val rootPermissions = Set[Permission](
     WritePermission(Path.Root, WriteAsAny),
     ReadPermission(Path.Root, WrittenByAny),
-    DeletePermission(Path.Root, WrittenByAny)
-  )
+    DeletePermission(Path.Root, WrittenByAny))
 
   val rootGrants = {
     Set(
@@ -286,8 +287,7 @@ class SecurityServiceSpec
         Set(),
         rootPermissions,
         new Instant(0L),
-        None
-      ))
+        None))
   }
 
   val rootGrantRequests = rootGrants map mkNewGrantRequest
@@ -606,33 +606,36 @@ class SecurityServiceSpec
     }
 
     "delete a grant" in {
-      (for {
-        HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- addGrantChild(
-          user1.apiKey,
-          user1Grant.grantId,
-          v1.NewGrantRequest(
-            None,
-            None,
-            Set.empty[GrantId],
-            Set(
-              ReadPermission(Path("/user1/secret"), WrittenByAccount("user1"))),
-            None)
-        )
-        details = jid.deserialize[v1.GrantDetails]
-        HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <- getGrantChildren(
-          user1.apiKey,
-          user1Grant.grantId)
-        beforeDelete = jgs.deserialize[Set[v1.GrantDetails]]
-        if beforeDelete.exists(_.grantId == details.grantId)
-        HttpResponse(HttpStatus(NoContent, _), _, None, _) <- deleteGrant(
-          user1.apiKey,
-          details.grantId)
-        HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <- getGrantChildren(
-          user1.apiKey,
-          user1Grant.grantId)
-        afterDelete = jgs.deserialize[Set[v1.GrantDetails]]
-      } yield !afterDelete.exists(_.grantId == details.grantId)) must awaited(
-        to) {
+      (
+        for {
+          HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- addGrantChild(
+            user1.apiKey,
+            user1Grant.grantId,
+            v1.NewGrantRequest(
+              None,
+              None,
+              Set.empty[GrantId],
+              Set(
+                ReadPermission(
+                  Path("/user1/secret"),
+                  WrittenByAccount("user1"))),
+              None)
+          )
+          details = jid.deserialize[v1.GrantDetails]
+          HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <- getGrantChildren(
+            user1.apiKey,
+            user1Grant.grantId)
+          beforeDelete = jgs.deserialize[Set[v1.GrantDetails]]
+          if beforeDelete.exists(_.grantId == details.grantId)
+          HttpResponse(HttpStatus(NoContent, _), _, None, _) <- deleteGrant(
+            user1.apiKey,
+            details.grantId)
+          HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <- getGrantChildren(
+            user1.apiKey,
+            user1Grant.grantId)
+          afterDelete = jgs.deserialize[Set[v1.GrantDetails]]
+        } yield !afterDelete.exists(_.grantId == details.grantId)
+      ) must awaited(to) {
         beTrue
       }
     }

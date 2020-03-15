@@ -34,8 +34,7 @@ class IsotonicRegressionSuite
       .createDataFrame(
         labels.zipWithIndex.map {
           case (label, i) => (label, i.toDouble, 1.0)
-        }
-      )
+        })
       .toDF("label", "features", "weight")
   }
 
@@ -222,6 +221,5 @@ object IsotonicRegressionSuite {
   val allParamSettings: Map[String, Any] = Map(
     "predictionCol" -> "myPrediction",
     "isotonic" -> true,
-    "featureIndex" -> 0
-  )
+    "featureIndex" -> 0)
 }

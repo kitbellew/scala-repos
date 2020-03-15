@@ -29,8 +29,9 @@ case class GroupUpdate(
         val changedIdList = changedIds.toList
         val groupUpdates = changedIdList
           .flatMap(gid => current.groups.find(_.id == gid))
-          .zip(changedIdList.flatMap(gid =>
-            updates.find(_.groupId.canonicalPath(current.id) == gid)))
+          .zip(
+            changedIdList.flatMap(gid =>
+              updates.find(_.groupId.canonicalPath(current.id) == gid)))
           .map {
             case (group, groupUpdate) => groupUpdate(group, timestamp)
           }

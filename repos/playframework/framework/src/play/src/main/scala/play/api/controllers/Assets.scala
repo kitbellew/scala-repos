@@ -475,8 +475,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
               .fromPublisher(Streams.enumeratorToPublisher(resourceData))
               .map(ByteString.apply),
             Some(length),
-            Some(mimeType)
-          ))
+            Some(mimeType)))
       } else {
         Ok.sendEntity(HttpEntity.Strict(ByteString.empty, Some(mimeType)))
       }
@@ -567,8 +566,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
                   assetInfo.mimeType,
                   resourceData,
                   gzipRequested,
-                  assetInfo.gzipUrl.isDefined)
-              )
+                  assetInfo.gzipUrl.isDefined))
             })
         }
       case None => notFound

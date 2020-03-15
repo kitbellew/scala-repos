@@ -49,8 +49,7 @@ class AnalyticsTask(settings: Settings)
     val req = (analytics / "queries").POST <<? List(
       "apiKey" -> auth,
       "q" -> query,
-      "prefixPath" -> prefixPath
-    )
+      "prefixPath" -> prefixPath)
     val json = JParser
       .parseFromString(Http(req OK as.String)())
       .valueOr(throw _)

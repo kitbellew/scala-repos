@@ -80,12 +80,16 @@ class HttpComponentsClientSpec
     }
 
     "submit body for POST/PUT/PATCH requests" in {
-      (doReqWithBody("POST", "post test") must equalTo(
-        "received: post test")) and
-        (doReqWithBody("PUT", "put test") must equalTo(
-          "received: put test")) and
-        (doReqWithBody("PATCH", "patch test") must equalTo(
-          "received: patch test"))
+      (
+        doReqWithBody("POST", "post test") must equalTo("received: post test")
+      ) and
+        (
+          doReqWithBody("PUT", "put test") must equalTo("received: put test")
+        ) and
+        (
+          doReqWithBody("PATCH", "patch test") must equalTo(
+            "received: patch test")
+        )
     }
   }
 

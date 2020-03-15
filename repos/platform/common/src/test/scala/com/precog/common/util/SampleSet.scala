@@ -228,9 +228,7 @@ object AdSamples {
           "platform" -> JString(plat),
           "campaign" -> JString(camp),
           "cpm" -> JNum(cpm),
-          "ageRange" -> ageRange
-        )
-      )
+          "ageRange" -> ageRange))
     }
 
   def adOrganizationSample =
@@ -247,9 +245,7 @@ object AdSamples {
           "employees" -> JString(emps),
           "revenue" -> JString(rev),
           "category" -> JString(cat),
-          "campaign" -> JString(camp)
-        )
-      )
+          "campaign" -> JString(camp)))
     }
 
   def interactionSample =
@@ -266,9 +262,7 @@ object AdSamples {
           "timeZone" -> JString(tz),
           "timeString" -> JString(toISO8601(time, tz)),
           "pageId" -> JString(pid),
-          "userId" -> JString(uid)
-        )
-      )
+          "userId" -> JString(uid)))
     }
 
   def interactionSample2 =
@@ -283,9 +277,7 @@ object AdSamples {
           "time" -> JNum(time),
           "timeZone" -> JString(tz),
           "pageId" -> JString(pid),
-          "userId" -> JString(uid)
-        )
-      )
+          "userId" -> JString(uid)))
     }
 
   def eventsSample =
@@ -298,9 +290,7 @@ object AdSamples {
         Map(
           "time" -> JString(time),
           "platform" -> JString(platform),
-          "eventName" -> JString(eventName)
-        )
-      )
+          "eventName" -> JString(eventName)))
     }
 
   def usersSample =
@@ -315,9 +305,7 @@ object AdSamples {
         Map(
           "age" -> JNum(age),
           "income" -> JNum(income),
-          "location" -> JObject(Map("state" -> JString(state)))
-        )
-      )
+          "location" -> JObject(Map("state" -> JString(state)))))
     }
 
   def ordersSample =
@@ -340,16 +328,15 @@ object AdSamples {
           "taxRate" -> JNum(taxRate),
           "subTotal" -> JNum(subTotal),
           "shipping" -> JNum(shipping),
-          "handling" -> JNum(handling)
-        )
-      )
+          "handling" -> JNum(handling)))
     }
 
   def recipientsSample =
     listOfN(2, oneOf(departments)).map { list =>
-      JArray(list.map {
-        JString(_)
-      })
+      JArray(
+        list.map {
+          JString(_)
+        })
     }
 
   def paymentsSample =

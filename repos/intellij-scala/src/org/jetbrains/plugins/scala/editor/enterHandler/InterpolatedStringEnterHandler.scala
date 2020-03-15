@@ -71,10 +71,11 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
                       lexer.getTokenEnd + a.getTextOffset - caretOffset.get())
                   }
                 }
-              } while (caretOffset
-                .get() > lexer.getTokenEnd + a.getTextOffset && (
-                lexer.advance(),
-                lexer.getTokenType != null)._2)
+              } while (
+                caretOffset.get() > lexer.getTokenEnd + a.getTextOffset && (
+                  lexer.advance(),
+                  lexer.getTokenType != null)._2
+              )
             }
 
             extensions.inWriteAction {

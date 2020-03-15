@@ -33,17 +33,15 @@ import org.json4s.native.JsonMethods.parse
 class PropertyMap(
     fields: Map[String, JValue],
     val firstUpdated: DateTime,
-    val lastUpdated: DateTime
-) extends DataMap(fields) {
+    val lastUpdated: DateTime)
+    extends DataMap(fields) {
 
   override def toString: String =
     s"PropertyMap(${fields}, ${firstUpdated}, ${lastUpdated})"
 
   override def hashCode: Int =
     41 * (
-      41 * (
-        41 + fields.hashCode
-      ) + firstUpdated.hashCode
+      41 * (41 + fields.hashCode) + firstUpdated.hashCode
     ) + lastUpdated.hashCode
 
   override def equals(other: Any): Boolean =
@@ -94,6 +92,5 @@ object PropertyMap {
     apply(
       fields = parse(js).asInstanceOf[JObject].obj.toMap,
       firstUpdated = firstUpdated,
-      lastUpdated = lastUpdated
-    )
+      lastUpdated = lastUpdated)
 }

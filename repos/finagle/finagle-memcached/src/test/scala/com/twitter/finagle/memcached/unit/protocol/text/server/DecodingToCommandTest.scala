@@ -44,8 +44,7 @@ class DecodingToCommandTest extends FunSuite {
             Seq("set", key, flags, expectedTime.expireTime.toString, dataSize)
               .map(Buf.Utf8(_)),
             Buf.Utf8(data),
-            None
-          )
+            None)
           val command = decodingToCommand.decode(null, null, buffer)
           assert(command.getClass == classOf[Set])
           val set = command.asInstanceOf[Set]

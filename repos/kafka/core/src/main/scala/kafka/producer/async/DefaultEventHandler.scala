@@ -133,8 +133,12 @@ class DefaultEventHandler[K, V](
         for ((brokerid, messagesPerBrokerMap) <- partitionedData) {
           if (logger.isTraceEnabled) {
             messagesPerBrokerMap.foreach(partitionAndEvent =>
-              trace("Handling event for Topic: %s, Broker: %d, Partitions: %s"
-                .format(partitionAndEvent._1, brokerid, partitionAndEvent._2)))
+              trace(
+                "Handling event for Topic: %s, Broker: %d, Partitions: %s"
+                  .format(
+                    partitionAndEvent._1,
+                    brokerid,
+                    partitionAndEvent._2)))
           }
           val messageSetPerBrokerOpt = groupMessagesToSet(messagesPerBrokerMap)
           messageSetPerBrokerOpt match {
@@ -197,17 +201,12 @@ class DefaultEventHandler[K, V](
     serializedMessages
   }
 
-  def partitionAndCollate(messages: Seq[KeyedMessage[K, Message]]): Option[Map[
-    Int,
-    collection.mutable.Map[
-      TopicAndPartition,
-      Seq[KeyedMessage[K, Message]]]]] = {
+  def partitionAndCollate(messages: Seq[KeyedMessage[K, Message]])
+      : Option[Map[Int, collection.mutable.Map[TopicAndPartition, Seq[
+        KeyedMessage[K, Message]]]]] = {
     val ret =
-      new HashMap[
-        Int,
-        collection.mutable.Map[
-          TopicAndPartition,
-          Seq[KeyedMessage[K, Message]]]]
+      new HashMap[Int, collection.mutable.Map[TopicAndPartition, Seq[
+        KeyedMessage[K, Message]]]]
     try {
       for (message <- messages) {
         val topicPartitionsList = getPartitionListForTopic(message)
@@ -224,8 +223,8 @@ class DefaultEventHandler[K, V](
             : HashMap[TopicAndPartition, Seq[KeyedMessage[K, Message]]] = null
         ret.get(leaderBrokerId) match {
           case Some(element) =>
-            dataPerBroker = element.asInstanceOf[
-              HashMap[TopicAndPartition, Seq[KeyedMessage[K, Message]]]]
+            dataPerBroker = element.asInstanceOf[HashMap[TopicAndPartition, Seq[
+              KeyedMessage[K, Message]]]]
           case None =>
             dataPerBroker =
               new HashMap[TopicAndPartition, Seq[KeyedMessage[K, Message]]]
@@ -321,7 +320,9 @@ class DefaultEventHandler[K, V](
     if (partition < 0 || partition >= numPartitions)
       throw new UnknownTopicOrPartitionException(
         "Invalid partition id: " + partition + " for topic " + topic +
-          "; Valid values are in the inclusive range of [0, " + (numPartitions - 1) + "]")
+          "; Valid values are in the inclusive range of [0, " + (
+          numPartitions - 1
+        ) + "]")
     trace(
       "Assigning message of topic %s and key %s to a selected partition %d"
         .format(
@@ -405,8 +406,10 @@ class DefaultEventHandler[K, V](
             val errorString = failedPartitionsAndStatus
               .sortWith((p1, p2) =>
                 p1._1.topic.compareTo(p2._1.topic) < 0 ||
-                  (p1._1.topic.compareTo(
-                    p2._1.topic) == 0 && p1._1.partition < p2._1.partition))
+                  (
+                    p1._1.topic.compareTo(
+                      p2._1.topic) == 0 && p1._1.partition < p2._1.partition
+                  ))
               .map {
                 case (topicAndPartition, status) =>
                   topicAndPartition.toString + ": " + Errors

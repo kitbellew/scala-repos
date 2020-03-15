@@ -23,10 +23,11 @@ class ExpandTables extends Phase {
         tpe: Type): Node =
       tpe match {
         case p: ProductType =>
-          ProductNode(p.elements.zipWithIndex.map {
-            case (t, i) =>
-              createResult(expansions, Select(path, ElementSymbol(i + 1)), t)
-          })
+          ProductNode(
+            p.elements.zipWithIndex.map {
+              case (t, i) =>
+                createResult(expansions, Select(path, ElementSymbol(i + 1)), t)
+            })
         case NominalType(tsym: TableIdentitySymbol, _)
             if expansions contains tsym =>
           val (sym, exp) = expansions(tsym)
@@ -135,10 +136,12 @@ class ExpandTables extends Phase {
       }
       .withWellTyped(true)
     if (createdOption)
-      s2 + (Phase.assignUniqueSymbols -> state
-        .get(Phase.assignUniqueSymbols)
-        .get
-        .copy(nonPrimitiveOption = true))
+      s2 + (
+        Phase.assignUniqueSymbols -> state
+          .get(Phase.assignUniqueSymbols)
+          .get
+          .copy(nonPrimitiveOption = true)
+      )
     else
       s2
   }

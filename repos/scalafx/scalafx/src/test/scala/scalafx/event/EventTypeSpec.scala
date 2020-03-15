@@ -37,9 +37,8 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 /** EventType[T] Spec tests. */
 @RunWith(classOf[JUnitRunner])
 class EventTypeSpec
-    extends SimpleSFXDelegateSpec[
-      jfxe.EventType[jfxe.Event],
-      EventType[jfxe.Event]](
+    extends SimpleSFXDelegateSpec[jfxe.EventType[jfxe.Event], EventType[
+      jfxe.Event]](
       classOf[jfxe.EventType[jfxe.Event]],
       classOf[EventType[jfxe.Event]]) {
 

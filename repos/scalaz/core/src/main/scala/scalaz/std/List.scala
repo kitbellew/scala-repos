@@ -176,10 +176,12 @@ trait ListInstances extends ListInstances0 {
             case Nil     => acc
             case x :: xs => commaSep(xs, (acc :+ ",") ++ Show[A].show(x))
           }
-        "[" +: (as match {
-          case Nil     => Cord()
-          case x :: xs => commaSep(xs, Show[A].show(x))
-        }) :+ "]"
+        "[" +: (
+          as match {
+            case Nil     => Cord()
+            case x :: xs => commaSep(xs, Show[A].show(x))
+          }
+        ) :+ "]"
       }
     }
 
@@ -285,13 +287,14 @@ trait ListFunctions {
     as match {
       case Nil => F.point(Nil: List[A], Nil: List[A])
       case h :: t =>
-        F.ap(partitionM(t)(p))(F.map(p(h))(b => {
-          case (x, y) =>
-            if (b)
-              (h :: x, y)
-            else
-              (x, h :: y)
-        }))
+        F.ap(partitionM(t)(p))(
+          F.map(p(h))(b => {
+            case (x, y) =>
+              if (b)
+                (h :: x, y)
+              else
+                (x, h :: y)
+          }))
     }
 
   /** A pair of the longest prefix of passing `as` against `p`, and

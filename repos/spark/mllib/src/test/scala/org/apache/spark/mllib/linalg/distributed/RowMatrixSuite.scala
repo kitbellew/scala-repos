@@ -46,8 +46,7 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     Vectors.dense(0.0, 1.0, 2.0),
     Vectors.dense(3.0, 4.0, 5.0),
     Vectors.dense(6.0, 7.0, 8.0),
-    Vectors.dense(9.0, 0.0, 1.0)
-  )
+    Vectors.dense(9.0, 0.0, 1.0))
   val sparseData = Seq(
     Vectors.sparse(3, Seq((1, 1.0), (2, 2.0))),
     Vectors.sparse(3, Seq((0, 3.0), (1, 4.0), (2, 5.0))),
@@ -238,8 +237,9 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
         principalComponents,
         k)
       assert(
-        closeToZero(BDV(expVariance.toArray) -
-          BDV(Arrays.copyOfRange(explainedVariance.data, 0, k))))
+        closeToZero(
+          BDV(expVariance.toArray) -
+            BDV(Arrays.copyOfRange(explainedVariance.data, 0, k))))
       // Check that this method returns the same answer
       assert(pc === mat.computePrincipalComponents(k))
     }
@@ -256,8 +256,7 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
           Vectors.dense(5.0, 14.0),
           Vectors.dense(14.0, 50.0),
           Vectors.dense(23.0, 86.0),
-          Vectors.dense(2.0, 32.0)
-        ))
+          Vectors.dense(2.0, 32.0)))
     }
   }
 

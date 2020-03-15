@@ -184,18 +184,20 @@ class Scentry[UserType <: AnyRef](
         strategies.values
       else
         strategies.filterKeys(names.contains).values
-    (subset filter (_.isValid) map { strat =>
-      logger.debug("Authenticating with: %s" format strat.name)
-      runCallbacks(_.isValid) {
-        _.beforeAuthenticate
+    (
+      subset filter (_.isValid) map { strat =>
+        logger.debug("Authenticating with: %s" format strat.name)
+        runCallbacks(_.isValid) {
+          _.beforeAuthenticate
+        }
+        strat.authenticate() match {
+          case Some(usr) ⇒ Some(strat.name -> usr)
+          case _ ⇒
+            strat.unauthenticated()
+            None
+        }
       }
-      strat.authenticate() match {
-        case Some(usr) ⇒ Some(strat.name -> usr)
-        case _ ⇒
-          strat.unauthenticated()
-          None
-      }
-    }).find(_.isDefined) getOrElse None
+    ).find(_.isDefined) getOrElse None
   }
 
   private[this] var defaultUnauthenticated: Option[() ⇒ Unit] = None

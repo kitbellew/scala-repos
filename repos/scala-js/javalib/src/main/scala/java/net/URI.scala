@@ -750,10 +750,12 @@ object URI {
     var res = ""
     while (buf.hasRemaining) {
       val c = buf.get & 0xff
-      res += (if (c <= 0xf)
-                "%0"
-              else
-                "%") + Integer.toHexString(c).toUpperCase
+      res += (
+        if (c <= 0xf)
+          "%0"
+        else
+          "%"
+      ) + Integer.toHexString(c).toUpperCase
     }
 
     res

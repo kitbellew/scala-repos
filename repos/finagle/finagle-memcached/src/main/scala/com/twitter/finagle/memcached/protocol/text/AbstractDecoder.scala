@@ -51,8 +51,8 @@ abstract class AbstractDecoder extends FrameDecoder {
     */
   protected def decodeLine(
       buffer: ChannelBuffer,
-      needsData: Seq[ChannelBuffer] => Int
-  )(continue: Seq[ChannelBuffer] => Decoding): Decoding = {
+      needsData: Seq[ChannelBuffer] => Int)(
+      continue: Seq[ChannelBuffer] => Decoding): Decoding = {
     val frameLength = buffer.bytesBefore(FindCRLF)
     if (frameLength < 0) {
       null
@@ -76,10 +76,8 @@ abstract class AbstractDecoder extends FrameDecoder {
     }
   }
 
-  protected def decodeData(
-      bytesNeeded: Int,
-      buffer: ChannelBuffer
-  )(continue: ChannelBuffer => Decoding): Decoding = {
+  protected def decodeData(bytesNeeded: Int, buffer: ChannelBuffer)(
+      continue: ChannelBuffer => Decoding): Decoding = {
     if (buffer.readableBytes < (bytesNeeded + DelimiterLength))
       null
     else {

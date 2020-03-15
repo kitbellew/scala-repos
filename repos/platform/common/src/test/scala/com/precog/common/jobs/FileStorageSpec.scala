@@ -33,10 +33,11 @@ import scalaz.syntax.monad._
 import scalaz.syntax.comonad._
 
 class InMemoryFileStorageSpec extends Specification {
-  include(new FileStorageSpec[Need] {
-    val M: Monad[Need] with Comonad[Need] = Need.need
-    val fs = new InMemoryFileStorage[Need]
-  })
+  include(
+    new FileStorageSpec[Need] {
+      val M: Monad[Need] with Comonad[Need] = Need.need
+      val fs = new InMemoryFileStorage[Need]
+    })
 }
 
 trait FileStorageSpec[M[+_]] extends Specification {
@@ -96,10 +97,12 @@ trait FileStorageSpec[M[+_]] extends Specification {
     }
 
     "say a file exists when its been saved" in {
-      (for {
-        _ <- fs.save("f3", data1)
-        exists <- fs.exists("f3")
-      } yield exists).copoint must_== true
+      (
+        for {
+          _ <- fs.save("f3", data1)
+          exists <- fs.exists("f3")
+        } yield exists
+      ).copoint must_== true
     }
 
     "not pretend files exist when they don't" in {

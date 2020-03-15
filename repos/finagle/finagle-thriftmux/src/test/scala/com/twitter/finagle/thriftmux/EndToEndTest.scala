@@ -229,8 +229,7 @@ class EndToEndTest
 
     def clients(
         pf: TProtocolFactory,
-        port: Int
-    ): Seq[(String, TestService$FinagleClient, Closable)] = {
+        port: Int): Seq[(String, TestService$FinagleClient, Closable)] = {
       val dest = s"localhost:$port"
       val builder = ClientBuilder()
         .stack(ThriftMux.client.withClientId(clientId).withProtocolFactory(pf))
@@ -374,9 +373,10 @@ class EndToEndTest
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
         def query(x: String) =
-          Future.value(ClientId.current map {
-            _.name
-          } getOrElse (""))
+          Future.value(
+            ClientId.current map {
+              _.name
+            } getOrElse (""))
       }
     )
 
@@ -399,9 +399,10 @@ class EndToEndTest
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
         def query(x: String) =
-          Future.value(ClientId.current map {
-            _.name
-          } getOrElse (""))
+          Future.value(
+            ClientId.current map {
+              _.name
+            } getOrElse (""))
       }
     )
 
@@ -452,9 +453,10 @@ class EndToEndTest
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
         def query(x: String) =
-          Future.value(ClientId.current map {
-            _.name
-          } getOrElse (""))
+          Future.value(
+            ClientId.current map {
+              _.name
+            } getOrElse (""))
       }
     )
 
@@ -611,8 +613,7 @@ class EndToEndTest
 
   private def testFailureClassification(
       sr: InMemoryStatsReceiver,
-      client: TestService.FutureIface
-  ): Unit = {
+      client: TestService.FutureIface): Unit = {
     val ex = intercept[InvalidQueryException] {
       Await.result(client.query("hi"), 5.seconds)
     }
@@ -671,16 +672,16 @@ class EndToEndTest
       .name("client")
       .reportTo(sr)
       .responseClassifier(classifier)
-      .dest(Name.bound(
-        Address(server.boundAddress.asInstanceOf[InetSocketAddress])))
+      .dest(
+        Name.bound(
+          Address(server.boundAddress.asInstanceOf[InetSocketAddress])))
       .build()
     val client =
       new TestService.FinagledClient(
         clientBuilder,
         serviceName = "client",
         stats = sr,
-        responseClassifier = classifier
-      )
+        responseClassifier = classifier)
 
     testFailureClassification(sr, client)
     server.close()

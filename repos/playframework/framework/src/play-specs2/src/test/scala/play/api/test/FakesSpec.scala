@@ -25,12 +25,13 @@ object FakesSpec extends PlaySpecification {
   "FakeApplication" should {
 
     "allow adding routes inline" in {
-      running(_.routes {
-        case ("GET", "/inline") =>
-          Action {
-            Results.Ok("inline route")
-          }
-      }) { app =>
+      running(
+        _.routes {
+          case ("GET", "/inline") =>
+            Action {
+              Results.Ok("inline route")
+            }
+        }) { app =>
         route(app, FakeRequest("GET", "/inline")) must beSome.which { result =>
           status(result) must equalTo(OK)
           contentAsString(result) must equalTo("inline route")
@@ -76,9 +77,7 @@ object FakesSpec extends PlaySpecification {
       val bytes = ByteString(xml.toString, "utf-16le")
       val req = FakeRequest(PUT, "/process")
         .withRawBody(bytes)
-        .withHeaders(
-          CONTENT_TYPE -> "text/xml;charset=utf-16le"
-        )
+        .withHeaders(CONTENT_TYPE -> "text/xml;charset=utf-16le")
       route(req) aka "response" must beSome.which { resp =>
         contentAsString(resp) aka "content" must_== "text/xml;charset=utf-16le"
       }

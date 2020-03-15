@@ -43,15 +43,13 @@ private[loadbalancer] trait P2CSuite {
   def newBal(
       fs: Var[Traversable[P2CServiceFactory]],
       sr: StatsReceiver = NullStatsReceiver,
-      clock: (() => Long) = System.nanoTime
-  ): ServiceFactory[Unit, Int] =
+      clock: (() => Long) = System.nanoTime): ServiceFactory[Unit, Int] =
     new P2CBalancer(
       Activity(fs.map(Activity.Ok(_))),
       maxEffort = 5,
       rng = Rng(12345L),
       statsReceiver = sr,
-      emptyException = noBrokers
-    )
+      emptyException = noBrokers)
 
   def assertEven(fs: Traversable[P2CServiceFactory]) {
     val ml = fs.head.meanLoad
@@ -86,15 +84,16 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
       sum += load
       count += 1
 
-      Future.value(new Service[Unit, Int] {
-        def apply(req: Unit) = Future.value(which)
-        override def close(deadline: Time) = {
-          load -= 1
-          sum += load
-          count += 1
-          Future.Done
-        }
-      })
+      Future.value(
+        new Service[Unit, Int] {
+          def apply(req: Unit) = Future.value(which)
+          override def close(deadline: Time) = {
+            load -= 1
+            sum += load
+            count += 1
+            Future.Done
+          }
+        })
     }
 
     def close(deadline: Time) = Future.Done
@@ -338,16 +337,14 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
   override def newBal(
       fs: Var[Traversable[P2CServiceFactory]],
       sr: StatsReceiver = NullStatsReceiver,
-      clock: (() => Long) = System.nanoTime
-  ): ServiceFactory[Unit, Int] =
+      clock: (() => Long) = System.nanoTime): ServiceFactory[Unit, Int] =
     new P2CBalancerPeakEwma(
       Activity(fs.map(Activity.Ok(_))),
       maxEffort = 5,
       decayTime = 150.nanoseconds,
       rng = Rng(12345L),
       statsReceiver = sr,
-      emptyException = noBrokers
-    ) {
+      emptyException = noBrokers) {
       override def nanoTime() = clock()
     }
 
@@ -364,9 +361,9 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
         else {
           val svc = Await.result(bal())
           val latency = Await.result(svc((): Unit)).toLong
-          val work = (clock() + latency -> (schedule.getOrElse(
-            clock() + latency,
-            Nil) :+ svc))
+          val work = (clock() + latency -> (
+            schedule.getOrElse(clock() + latency, Nil) :+ svc
+          ))
           schedule + work
         }
       for (seq <- next.get(step);
@@ -391,9 +388,10 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
     def apply(conn: ClientConnection) = {
       load += 1
       sum += load
-      Future.value(new Service[Unit, Int] {
-        def apply(req: Unit) = Future.value(latency((): Unit))
-      })
+      Future.value(
+        new Service[Unit, Int] {
+          def apply(req: Unit) = Future.value(latency((): Unit))
+        })
     }
     def close(deadline: Time) = Future.Done
     override def toString = which.toString

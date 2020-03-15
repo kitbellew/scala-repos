@@ -59,12 +59,13 @@ object MongoPlatformSpecEngine extends Logging {
 
   private[this] val scheduler = Executors.newScheduledThreadPool(1)
 
-  Runtime.getRuntime.addShutdownHook(new Thread() {
-    override def run() {
-      if (engine != null)
-        engine.shutdown()
-    }
-  })
+  Runtime.getRuntime.addShutdownHook(
+    new Thread() {
+      override def run() {
+        if (engine != null)
+          engine.shutdown()
+      }
+    })
 
   def acquire =
     lock.synchronized {
@@ -251,11 +252,15 @@ trait MongoPlatformSpecs
   }
 
   override def map(fs: => Fragments): Fragments =
-    (Step {
-      startup()
-    }) ^ fs ^ (Step {
-      shutdown()
-    })
+    (
+      Step {
+        startup()
+      }
+    ) ^ fs ^ (
+      Step {
+        shutdown()
+      }
+    )
 
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =

@@ -92,10 +92,12 @@ class ScalaTool extends ScalaMatchingTask {
     platforms = input.split(",").toList.flatMap { s: String =>
       val st = s.trim
       if (Platforms.isPermissible(st))
-        (if (input != "")
-           List(st)
-         else
-           Nil)
+        (
+          if (input != "")
+            List(st)
+          else
+            Nil
+        )
       else {
         buildError("Platform " + st + " does not exist.")
       }
@@ -276,8 +278,7 @@ class ScalaTool extends ScalaMatchingTask {
       ("class", mainClass.get),
       ("properties", getProperties),
       ("javaflags", javaFlags),
-      ("toolflags", toolFlags)
-    )
+      ("toolflags", toolFlags))
     // Consolidate Paths into classpath
     classpath = classpath ::: classpathPath.list.toList
     // Generate the scripts

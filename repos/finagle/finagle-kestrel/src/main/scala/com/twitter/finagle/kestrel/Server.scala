@@ -15,9 +15,10 @@ class Server(address: SocketAddress) {
 
       private[this] val queues = CacheBuilder
         .newBuilder()
-        .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
-          def load(k: Buf) = new LinkedBlockingDeque[Buf]
-        })
+        .build(
+          new CacheLoader[Buf, BlockingDeque[Buf]] {
+            def load(k: Buf) = new LinkedBlockingDeque[Buf]
+          })
 
       def apply(conn: ClientConnection) =
         Future.value(new InterpreterService(new Interpreter(queues)))

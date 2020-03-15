@@ -48,13 +48,15 @@ object Decompiler {
                   .get
 
               val parts =
-                (bytesElem.elementValue match {
-                  case ConstValueIndex(index) => Seq(constantWrapped(index))
-                  case ArrayValue(seq) =>
-                    seq.collect {
-                      case ConstValueIndex(index) => constantWrapped(index)
-                    }
-                }).collect {
+                (
+                  bytesElem.elementValue match {
+                    case ConstValueIndex(index) => Seq(constantWrapped(index))
+                    case ArrayValue(seq) =>
+                      seq.collect {
+                        case ConstValueIndex(index) => constantWrapped(index)
+                      }
+                  }
+                ).collect {
                   case x: StringBytesPair => x.bytes
                 }
 

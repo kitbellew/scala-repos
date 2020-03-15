@@ -30,16 +30,17 @@ private[finagle] class ChannelClosingHandler
       if (awaitingClose) {
         channel
           .close()
-          .addListener(new ChannelFutureListener {
-            override def operationComplete(f: ChannelFuture): Unit =
-              if (f.isSuccess) {
-                channelCloseFuture.setSuccess()
-              } else if (f.isCancelled) {
-                channelCloseFuture.cancel()
-              } else {
-                channelCloseFuture.setFailure(f.getCause)
-              }
-          })
+          .addListener(
+            new ChannelFutureListener {
+              override def operationComplete(f: ChannelFuture): Unit =
+                if (f.isSuccess) {
+                  channelCloseFuture.setSuccess()
+                } else if (f.isCancelled) {
+                  channelCloseFuture.cancel()
+                } else {
+                  channelCloseFuture.setFailure(f.getCause)
+                }
+            })
       }
     }
 

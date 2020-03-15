@@ -29,11 +29,13 @@ class HStringManipulator extends AbstractElementManipulator[HString] {
       }
 
     val needsQuoting = strType == UnquotedString &&
-      (newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(
-        " ")
-        || (str.elementType == KeyPart && newContent.contains('.'))
-        || newContent.exists(
-          HoconLexer.ForbiddenChars.contains) || escapedContent != newContent)
+      (
+        newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(
+          " ")
+          || (str.elementType == KeyPart && newContent.contains('.'))
+          || newContent.exists(
+            HoconLexer.ForbiddenChars.contains) || escapedContent != newContent
+      )
 
     val unquotedText =
       oldText.substring(0, range.getStartOffset) + escapedContent + oldText
@@ -65,17 +67,21 @@ class HStringManipulator extends AbstractElementManipulator[HString] {
       case QuotedString =>
         new TextRange(
           1,
-          element.getTextLength - (if (element.isClosed)
-                                     1
-                                   else
-                                     0))
+          element.getTextLength - (
+            if (element.isClosed)
+              1
+            else
+              0
+          ))
       case MultilineString =>
         new TextRange(
           3,
-          element.getTextLength - (if (element.isClosed)
-                                     3
-                                   else
-                                     0))
+          element.getTextLength - (
+            if (element.isClosed)
+              3
+            else
+              0
+          ))
       case _ =>
         super.getRangeInElement(element)
     }

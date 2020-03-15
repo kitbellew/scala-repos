@@ -120,10 +120,8 @@ package object interpreter extends ReplConfig with ReplStrings {
               val memberGroups: List[List[Symbol]] = {
                 val groups = members groupBy (_.tpe.finalResultType) toList
                 val (big, small) = groups partition (_._2.size > 3)
-                val xss = (
-                  (big sortBy (_._1.toString) map (_._2)) :+
-                    (small flatMap (_._2))
-                )
+                val xss = ((big sortBy (_._1.toString) map (_._2)) :+
+                  (small flatMap (_._2)))
 
                 xss map (xs => xs sortBy (_.name.toString))
               }
@@ -167,13 +165,14 @@ package object interpreter extends ReplConfig with ReplStrings {
           case sym: TypeSymbol => Some(sym)
           case _               => None
         }
-      (typeFromTypeString orElse typeFromNameTreatedAsTerm orElse typeFromFullName orElse typeOfTerm) foreach {
-        sym =>
-          val (kind, tpe) = exitingTyper {
-            val tpe = sym.tpeHK
-            (intp.global.inferKind(NoPrefix)(tpe, sym.owner), tpe)
-          }
-          echoKind(tpe, kind, verbose)
+      (
+        typeFromTypeString orElse typeFromNameTreatedAsTerm orElse typeFromFullName orElse typeOfTerm
+      ) foreach { sym =>
+        val (kind, tpe) = exitingTyper {
+          val tpe = sym.tpeHK
+          (intp.global.inferKind(NoPrefix)(tpe, sym.owner), tpe)
+        }
+        echoKind(tpe, kind, verbose)
       }
     }
 

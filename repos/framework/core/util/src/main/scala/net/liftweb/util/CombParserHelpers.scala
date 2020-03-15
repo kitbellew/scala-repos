@@ -131,8 +131,10 @@ trait CombParserHelpers {
     * @return a parser discarding end of lines
     */
   def EOL: Parser[Unit] =
-    (accept("\n\r") | accept("\r\n") | '\r' |
-      '\n' | EOF) ^^^ ()
+    (
+      accept("\n\r") | accept("\r\n") | '\r' |
+        '\n' | EOF
+    ) ^^^ ()
 
   def notEOL: Parser[Elem] = (not(EOL) ~> anyChar)
 
@@ -180,9 +182,11 @@ trait CombParserHelpers {
           }
         case xs =>
           func(xs)
-            .map(_.foldRight(right)(_ ~ _ ^^ {
-              case ~(x, xs) => x :: xs
-            }))
+            .map(
+              _.foldRight(right)(
+                _ ~ _ ^^ {
+                  case ~(x, xs) => x :: xs
+                }))
             .reduceLeft((a: Parser[List[T]], b: Parser[List[T]]) => a | b)
       }
     }

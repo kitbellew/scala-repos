@@ -59,9 +59,11 @@ class StatsTest extends WordSpec with Matchers {
 
   it should {
     "skip verifyCounters() if job fails" in {
-      (the[FlowException] thrownBy runJobTest(
-        new StatsTestJob1(_),
-        List((null, 0)))).getCause.getCause shouldBe a[NullPointerException]
+      (
+        the[FlowException] thrownBy runJobTest(
+          new StatsTestJob1(_),
+          List((null, 0)))
+      ).getCause.getCause shouldBe a[NullPointerException]
     }
   }
 

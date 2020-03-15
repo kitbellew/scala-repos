@@ -252,14 +252,18 @@ trait SQLServerProfile extends JdbcProfile {
         sb,
         fk.targetTable.tableName)
       // SQLServer has no RESTRICT. Equivalent is NO ACTION. http://technet.microsoft.com/en-us/library/aa902684%28v=sql.80%29.aspx
-      sb append ") on update " append (if (updateAction == "RESTRICT")
-                                         "NO ACTION"
-                                       else
-                                         updateAction)
-      sb append " on delete " append (if (deleteAction == "RESTRICT")
-                                        "NO ACTION"
-                                      else
-                                        deleteAction)
+      sb append ") on update " append (
+        if (updateAction == "RESTRICT")
+          "NO ACTION"
+        else
+          updateAction
+      )
+      sb append " on delete " append (
+        if (deleteAction == "RESTRICT")
+          "NO ACTION"
+        else
+          deleteAction
+      )
     }
   }
 
@@ -371,8 +375,8 @@ class ProtectGroupBy extends Phase {
             logger.debug("Examining GroupBy", g1)
             val (b2, b2s) = source(s2, b1, f1)
             logger.debug(s"Narrowed 'by' clause down to: (over $b2s)", b2)
-            val refsOK = ProductNode(ConstArray(b2)).flatten.children
-              .forall(_.findNode {
+            val refsOK = ProductNode(ConstArray(b2)).flatten.children.forall(
+              _.findNode {
                 case Ref(s) if s == b2s => true
                 case _                  => false
               }.isDefined)

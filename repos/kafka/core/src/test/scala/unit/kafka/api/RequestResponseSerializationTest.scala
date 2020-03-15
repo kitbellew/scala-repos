@@ -218,8 +218,9 @@ object SerializationTestUtils {
         TopicAndPartition(topic1, 0) -> ProducerResponseStatus(
           0.toShort,
           10001),
-        TopicAndPartition(topic2, 0) -> ProducerResponseStatus(0.toShort, 20001)
-      ),
+        TopicAndPartition(topic2, 0) -> ProducerResponseStatus(
+          0.toShort,
+          20001)),
       ProducerRequest.CurrentVersion,
       100
     )
@@ -236,8 +237,7 @@ object SerializationTestUtils {
     new OffsetRequest(
       collection.immutable.Map(
         TopicAndPartition(topic1, 1) -> PartitionOffsetRequestInfo(1000, 200)),
-      replicaId = 0
-    )
+      replicaId = 0)
 
   def createTestOffsetResponse: OffsetResponse = {
     new OffsetResponse(
@@ -256,8 +256,7 @@ object SerializationTestUtils {
         TopicAndPartition(topic1, 0) -> OffsetAndMetadata(42L, "some metadata"),
         TopicAndPartition(topic1, 1) -> OffsetAndMetadata(
           100L,
-          OffsetMetadata.NoMetadata)
-      ))
+          OffsetMetadata.NoMetadata)))
   }
 
   def createTestOffsetCommitRequestV1: OffsetCommitRequest = {
@@ -284,8 +283,7 @@ object SerializationTestUtils {
         TopicAndPartition(topic1, 0) -> OffsetAndMetadata(42L, "some metadata"),
         TopicAndPartition(topic1, 1) -> OffsetAndMetadata(
           100L,
-          OffsetMetadata.NoMetadata)
-      ))
+          OffsetMetadata.NoMetadata)))
   }
 
   def createTestOffsetCommitResponse: OffsetCommitResponse = {
@@ -298,10 +296,7 @@ object SerializationTestUtils {
   def createTestOffsetFetchRequest: OffsetFetchRequest = {
     new OffsetFetchRequest(
       "group 1",
-      Seq(
-        TopicAndPartition(topic1, 0),
-        TopicAndPartition(topic1, 1)
-      ))
+      Seq(TopicAndPartition(topic1, 0), TopicAndPartition(topic1, 1)))
   }
 
   def createTestOffsetFetchResponse: OffsetFetchResponse = {
@@ -401,15 +396,13 @@ class RequestResponseSerializationTest extends JUnitSuite {
       1,
       Map(
         TopicAndPartition("t1", 0) -> ProducerResponseStatus(0.toShort, 10001),
-        TopicAndPartition("t2", 0) -> ProducerResponseStatus(0.toShort, 20001)
-      ))
+        TopicAndPartition("t2", 0) -> ProducerResponseStatus(0.toShort, 20001)))
 
     val newClientResponse = ProducerResponse(
       1,
       Map(
         TopicAndPartition("t1", 0) -> ProducerResponseStatus(0.toShort, 10001),
-        TopicAndPartition("t2", 0) -> ProducerResponseStatus(0.toShort, 20001)
-      ),
+        TopicAndPartition("t2", 0) -> ProducerResponseStatus(0.toShort, 20001)),
       1,
       100)
 
@@ -431,8 +424,7 @@ class RequestResponseSerializationTest extends JUnitSuite {
       Map(
         TopicAndPartition("t1", 0) -> new FetchResponsePartitionData(
           messages =
-            new ByteBufferMessageSet(new Message("first message".getBytes)))
-      ),
+            new ByteBufferMessageSet(new Message("first message".getBytes)))),
       0)
 
     val newClientResponse = FetchResponse(
@@ -440,8 +432,7 @@ class RequestResponseSerializationTest extends JUnitSuite {
       Map(
         TopicAndPartition("t1", 0) -> new FetchResponsePartitionData(
           messages =
-            new ByteBufferMessageSet(new Message("first message".getBytes)))
-      ),
+            new ByteBufferMessageSet(new Message("first message".getBytes)))),
       1,
       100)
 

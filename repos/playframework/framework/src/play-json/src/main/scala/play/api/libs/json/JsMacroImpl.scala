@@ -62,14 +62,18 @@ object JsMacroImpl {
     // Helper function to create parameter lists for function invocations based on whether this is a reads,
     // writes or both.
     def conditionalList[T](ifReads: T, ifWrites: T): List[T] =
-      (if (reads)
-         List(ifReads)
-       else
-         Nil) :::
-        (if (writes)
-           List(ifWrites)
-         else
-           Nil)
+      (
+        if (reads)
+          List(ifReads)
+        else
+          Nil
+      ) :::
+        (
+          if (writes)
+            List(ifWrites)
+          else
+            Nil
+        )
 
     import c.universe._
 
@@ -154,10 +158,12 @@ object JsMacroImpl {
             val someUnapplyLast = unapplyReturnTypes.map(_.last)
             val initsMatch = someInitApply == someInitUnapply
             val lastMatch =
-              (for {
-                lastApply <- someApplyLast
-                lastUnapply <- someUnapplyLast
-              } yield lastApply <:< lastUnapply).getOrElse(false)
+              (
+                for {
+                  lastApply <- someApplyLast
+                  lastUnapply <- someUnapplyLast
+                } yield lastApply <:< lastUnapply
+              ).getOrElse(false)
             initsMatch && lastMatch
           } =>
         apply

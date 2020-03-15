@@ -109,8 +109,7 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
     coll
       .remove(
         BSONDocument(
-          "_id" -> BSONDocument("$in" -> chess.Color.all.map(g.fullIdOf))
-        ))
+          "_id" -> BSONDocument("$in" -> chess.Color.all.map(g.fullIdOf))))
       .void
 
   def clearPov(pov: Pov) = coll.remove(BSONDocument("_id" -> pov.fullId)).void

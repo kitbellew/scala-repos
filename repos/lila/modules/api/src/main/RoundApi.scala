@@ -44,9 +44,10 @@ private[api] final class RoundApi(
               withSimul(pov, simulOption) _ compose
               withSteps(pov, none, initialFen, withOpening = false) _ compose
               withNote(note) _ compose
-              withBookmark(ctx.me ?? {
-                bookmarkApi.bookmarked(pov.game, _)
-              }) _ compose
+              withBookmark(
+                ctx.me ?? {
+                  bookmarkApi.bookmarked(pov.game, _)
+                }) _ compose
               withForecastCount(forecast.map(_.steps.size)) _
           )(json)
       }
@@ -80,9 +81,10 @@ private[api] final class RoundApi(
                 withTournament(pov, tourOption) _ compose
                 withSimul(pov, simulOption) _ compose
                 withNote(note) _ compose
-                withBookmark(ctx.me ?? {
-                  bookmarkApi.bookmarked(pov.game, _)
-                }) _ compose
+                withBookmark(
+                  ctx.me ?? {
+                    bookmarkApi.bookmarked(pov.game, _)
+                  }) _ compose
                 withSteps(
                   pov,
                   analysis,
@@ -110,13 +112,15 @@ private[api] final class RoundApi(
       a: Option[(Pgn, Analysis)],
       initialFen: Option[String],
       withOpening: Boolean)(obj: JsObject) =
-    obj + ("steps" -> lila.round.StepBuilder(
-      id = pov.game.id,
-      pgnMoves = pov.game.pgnMoves,
-      variant = pov.game.variant,
-      a = a,
-      initialFen = initialFen | pov.game.variant.initialFen,
-      withOpening = withOpening))
+    obj + (
+      "steps" -> lila.round.StepBuilder(
+        id = pov.game.id,
+        pgnMoves = pov.game.pgnMoves,
+        variant = pov.game.variant,
+        a = a,
+        initialFen = initialFen | pov.game.variant.initialFen,
+        withOpening = withOpening)
+    )
 
   private def withNote(note: String)(json: JsObject) =
     if (note.isEmpty)
@@ -138,53 +142,59 @@ private[api] final class RoundApi(
   private def withForecast(pov: Pov, owner: Boolean, fco: Option[Forecast])(
       json: JsObject) =
     if (pov.game.forecastable && owner)
-      json + ("forecast" -> {
-        if (pov.forecastable)
-          fco.fold[JsValue](Json.obj("none" -> true)) { fc =>
-            import Forecast.forecastJsonWriter
-            Json toJson fc
-          }
-        else
-          Json.obj("onMyTurn" -> true)
-      })
+      json + (
+        "forecast" -> {
+          if (pov.forecastable)
+            fco.fold[JsValue](Json.obj("none" -> true)) { fc =>
+              import Forecast.forecastJsonWriter
+              Json toJson fc
+            }
+          else
+            Json.obj("onMyTurn" -> true)
+        }
+      )
     else
       json
 
   private def withAnalysis(a: Option[(Pgn, Analysis)])(json: JsObject) =
     a.fold(json) {
       case (pgn, analysis) =>
-        json + ("analysis" -> Json.obj(
-          "white" -> analysisApi.player(chess.Color.White)(analysis),
-          "black" -> analysisApi.player(chess.Color.Black)(analysis)
-        ))
+        json + (
+          "analysis" -> Json.obj(
+            "white" -> analysisApi.player(chess.Color.White)(analysis),
+            "black" -> analysisApi.player(chess.Color.Black)(analysis))
+        )
     }
 
   private def withTournament(pov: Pov, tourOption: Option[TourAndRanks])(
       json: JsObject) =
     tourOption.fold(json) { data =>
-      json + ("tournament" -> Json
-        .obj(
-          "id" -> data.tour.id,
-          "name" -> data.tour.name,
-          "running" -> data.tour.isStarted,
-          "berserkable" -> data.tour.isStarted.option(data.tour.berserkable),
-          "nbSecondsForFirstMove" -> data.tour.isStarted.option {
-            SecondsToDoFirstMove.secondsToMoveFor(data.tour)
-          },
-          "ranks" -> data.tour.isStarted.option(
-            Json.obj("white" -> data.whiteRank, "black" -> data.blackRank))
-        )
-        .noNull)
+      json + (
+        "tournament" -> Json
+          .obj(
+            "id" -> data.tour.id,
+            "name" -> data.tour.name,
+            "running" -> data.tour.isStarted,
+            "berserkable" -> data.tour.isStarted.option(data.tour.berserkable),
+            "nbSecondsForFirstMove" -> data.tour.isStarted.option {
+              SecondsToDoFirstMove.secondsToMoveFor(data.tour)
+            },
+            "ranks" -> data.tour.isStarted.option(
+              Json.obj("white" -> data.whiteRank, "black" -> data.blackRank))
+          )
+          .noNull
+      )
     }
 
   private def withSimul(pov: Pov, simulOption: Option[Simul])(json: JsObject) =
     simulOption.fold(json) { simul =>
-      json + ("simul" -> Json.obj(
-        "id" -> simul.id,
-        "hostId" -> simul.hostId,
-        "name" -> simul.name,
-        "nbPlaying" -> simul.playingPairings.size
-      ))
+      json + (
+        "simul" -> Json.obj(
+          "id" -> simul.id,
+          "hostId" -> simul.hostId,
+          "name" -> simul.name,
+          "nbPlaying" -> simul.playingPairings.size)
+      )
     }
 
   private def blindMode(js: JsObject)(implicit ctx: Context) =

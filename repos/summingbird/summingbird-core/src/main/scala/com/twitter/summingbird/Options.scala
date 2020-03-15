@@ -33,10 +33,12 @@ object Options {
   def getFirst[T <: AnyRef: ClassTag](
       options: Map[String, Options],
       names: List[String]): Option[(String, T)] =
-    (for {
-      id <- names :+ "DEFAULT"
-      option <- get[T](options, id)
-    } yield (id, option)).headOption
+    (
+      for {
+        id <- names :+ "DEFAULT"
+        option <- get[T](options, id)
+      } yield (id, option)
+    ).headOption
 
   /**
     * Get the option of type T for the given name

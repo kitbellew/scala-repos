@@ -48,7 +48,9 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
       return false
 
     val offset = editor.getCaretModel.getOffset
-    if (!(ifStmt.getTextRange.getStartOffset <= offset && offset <= condition.getTextRange.getStartOffset - 1))
+    if (!(
+          ifStmt.getTextRange.getStartOffset <= offset && offset <= condition.getTextRange.getStartOffset - 1
+        ))
       return false
 
     val elseBranch = ifStmt.elseBranch.orNull

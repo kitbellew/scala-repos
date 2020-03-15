@@ -35,8 +35,8 @@ class ServiceDiscovererTest
   class ServiceDiscovererWithExposedCache(
       varZkSession: Var[ZkSession],
       statsReceiver: StatsReceiver,
-      timer: Timer = DefaultTimer.twitter
-  ) extends ServiceDiscoverer(
+      timer: Timer = DefaultTimer.twitter)
+      extends ServiceDiscoverer(
         varZkSession,
         statsReceiver,
         ForeverEpoch,
@@ -390,9 +390,10 @@ class ServiceDiscovererTest
 
       val stabilizedHealth =
         new AtomicReference[ClientHealth](ClientHealth.Healthy)
-      sd.health.changes.register(Witness {
-        stabilizedHealth
-      })
+      sd.health.changes.register(
+        Witness {
+          stabilizedHealth
+        })
 
       // should start as healthy until updated otherwise
       assert(stabilizedHealth.get == ClientHealth.Healthy)
@@ -430,9 +431,10 @@ class ServiceDiscovererTest
         DefaultTimer.twitter)
 
     val health = new AtomicReference[ClientHealth](ClientHealth.Healthy)
-    sd.rawHealth.changes.register(Witness {
-      health
-    })
+    sd.rawHealth.changes.register(
+      Witness {
+        health
+      })
 
     // should start as healthy until updated otherwise
     assert(health.get == ClientHealth.Healthy)

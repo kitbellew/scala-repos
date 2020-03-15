@@ -77,14 +77,12 @@ trait TypeDiagnostics {
     (_: String) + addendums.getOrElse(pos, () => "")()
 
   def decodeWithKind(name: Name, owner: Symbol): String = {
-    val prefix = (
-      if (name.isTypeName)
-        "type "
-      else if (owner.isPackageClass)
-        "object "
-      else
-        "value "
-    )
+    val prefix = (if (name.isTypeName)
+                    "type "
+                  else if (owner.isPackageClass)
+                    "object "
+                  else
+                    "value ")
     prefix + name.decode
   }
 
@@ -131,16 +129,19 @@ trait TypeDiagnostics {
     */
   final def exampleTuplePattern(names: List[Name]): String = {
     val arity = names.length
-    val varPatterNames: Option[List[String]] = sequence(names map {
-      case name if nme.isVariableName(name) => Some(name.decode)
-      case _                                => None
-    })
+    val varPatterNames: Option[List[String]] = sequence(
+      names map {
+        case name if nme.isVariableName(name) => Some(name.decode)
+        case _                                => None
+      })
     def parenthesize(a: String) = s"($a)"
     def genericParams =
-      (Seq("param1") ++ (if (arity > 2)
-                           Seq("...")
-                         else
-                           Nil) ++ Seq(s"param$arity"))
+      (Seq("param1") ++ (
+        if (arity > 2)
+          Seq("...")
+        else
+          Nil
+      ) ++ Seq(s"param$arity"))
     parenthesize(varPatterNames.getOrElse(genericParams).mkString(", "))
   }
 
@@ -150,8 +151,9 @@ trait TypeDiagnostics {
       case _                                 => Nil
     }
   def alternativesString(tree: Tree) =
-    alternatives(tree) map (x =>
-      "  " + methodTypeErrorString(x)) mkString ("", " <and>\n", "\n")
+    alternatives(tree) map (x => "  " + methodTypeErrorString(x)) mkString (
+      "", " <and>\n", "\n"
+    )
 
   /** The symbol which the given accessor represents (possibly in part).
     *  This is used for error messages, where we want to speak in terms
@@ -218,10 +220,12 @@ trait TypeDiagnostics {
     ss match {
       case Nil => Nil
       case s :: ss =>
-        s :: (ss map {
-          case `s` => "(some other)" + s;
-          case x   => x
-        })
+        s :: (
+          ss map {
+            case `s` => "(some other)" + s;
+            case x   => x
+          }
+        )
     }
 
   // todo: use also for other error messages
@@ -324,11 +328,9 @@ trait TypeDiagnostics {
                 Some("Note: " + explainFound + explainDef + suggestChange)
               }
               // In these cases the arg is OK and needs no explanation.
-              val conforms = (
-                (arg =:= reqArg)
-                  || ((arg <:< reqArg) && param.isCovariant)
-                  || ((reqArg <:< arg) && param.isContravariant)
-              )
+              val conforms = ((arg =:= reqArg)
+                || ((arg <:< reqArg) && param.isCovariant)
+                || ((reqArg <:< arg) && param.isContravariant))
               val invariant = param.variance.isInvariant
 
               if (conforms)
@@ -365,14 +367,14 @@ trait TypeDiagnostics {
   // that condition, I see it.
   def foundReqMsg(found: Type, req: Type): String = {
     def baseMessage =
-      (
-        ";\n found   : " + found.toLongString + existentialContext(
-          found) + explainAlias(found) +
-          "\n required: " + req + existentialContext(req) + explainAlias(req)
-      )
-    (withDisambiguation(Nil, found, req)(baseMessage)
-      + explainVariance(found, req)
-      + explainAnyVsAnyRef(found, req))
+      (";\n found   : " + found.toLongString + existentialContext(
+        found) + explainAlias(found) +
+        "\n required: " + req + existentialContext(req) + explainAlias(req))
+    (
+      withDisambiguation(Nil, found, req)(baseMessage)
+        + explainVariance(found, req)
+        + explainAnyVsAnyRef(found, req)
+    )
   }
 
   def typePatternAdvice(sym: Symbol, ptSym: Symbol) = {
@@ -383,14 +385,18 @@ trait TypeDiagnostics {
         sym
     val caseString =
       if (clazz.isCaseClass && (clazz isSubClass ptSym))
-        (clazz.caseFieldAccessors
-          map (_ => "_") // could use the actual param names here
-          mkString (s"`case ${clazz.name}(", ",", ")`"))
+        (
+          clazz.caseFieldAccessors
+            map (_ => "_") // could use the actual param names here
+            mkString (s"`case ${clazz.name}(", ",", ")`")
+        )
       else
-        "`case _: " + (clazz.typeParams match {
-          case Nil => "" + clazz.name
-          case xs  => xs map (_ => "_") mkString (clazz.name + "[", ",", "]")
-        }) + "`"
+        "`case _: " + (
+          clazz.typeParams match {
+            case Nil => "" + clazz.name
+            case xs  => xs map (_ => "_") mkString (clazz.name + "[", ",", "]")
+          }
+        ) + "`"
 
     if (!clazz.exists)
       ""
@@ -460,8 +466,7 @@ trait TypeDiagnostics {
         tp.typeSymbol,
         tp.typeSymbol.owner,
         tp.typeSymbolDirect,
-        tp.typeSymbolDirect.owner
-      )
+        tp.typeSymbolDirect.owner)
     }
   }
 
@@ -576,21 +581,21 @@ trait TypeDiagnostics {
         def localVars = defnSymbols filter (t => t.isLocalToBlock && t.isVar)
 
         def qualifiesTerm(sym: Symbol) =
-          (
-            (sym.isModule || sym.isMethod || sym.isPrivateLocal || sym.isLocalToBlock)
-              && !nme.isLocalName(sym.name)
-              && !sym.isParameter
-              && !sym.isParamAccessor // could improve this, but it's a pain
-              && !sym.isEarlyInitialized // lots of false positives in the way these are encoded
-              && !(sym.isGetter && sym.accessed.isEarlyInitialized)
+          ((
+            sym.isModule || sym.isMethod || sym.isPrivateLocal || sym.isLocalToBlock
           )
+            && !nme.isLocalName(sym.name)
+            && !sym.isParameter
+            && !sym.isParamAccessor // could improve this, but it's a pain
+            && !sym.isEarlyInitialized // lots of false positives in the way these are encoded
+            && !(sym.isGetter && sym.accessed.isEarlyInitialized))
         def qualifiesType(sym: Symbol) = !sym.isDefinedInPackage
         def qualifies(sym: Symbol) =
-          (
-            (sym ne null)
-              && (sym.isTerm && qualifiesTerm(
-                sym) || sym.isType && qualifiesType(sym))
-          )
+          ((sym ne null)
+            && (
+              sym.isTerm && qualifiesTerm(sym) || sym.isType && qualifiesType(
+                sym)
+            ))
 
         override def traverse(t: Tree): Unit = {
           t match {
@@ -622,26 +627,23 @@ trait TypeDiagnostics {
           super.traverse(t)
         }
         def isUnusedType(m: Symbol): Boolean =
-          (
-            m.isType
-              && !m.isTypeParameterOrSkolem // would be nice to improve this
-              && (m.isPrivate || m.isLocalToBlock)
-              && !(treeTypes.exists(tp =>
-                tp exists (t => t.typeSymbolDirect == m)))
-          )
+          (m.isType
+            && !m.isTypeParameterOrSkolem // would be nice to improve this
+            && (m.isPrivate || m.isLocalToBlock)
+            && !(treeTypes.exists(tp =>
+              tp exists (t => t.typeSymbolDirect == m))))
         def isUnusedTerm(m: Symbol): Boolean =
-          (
-            (m.isTerm)
-              && (m.isPrivate || m.isLocalToBlock)
-              && !targets(m)
-              && !(m.name == nme.WILDCARD) // e.g. val _ = foo
-              && !ignoreNames(m.name.toTermName) // serialization methods
-              && !isConstantType(
-                m.info.resultType
-              ) // subject to constant inlining
-              && !treeTypes.exists(
-                _ contains m
-              ) // e.g. val a = new Foo ; new a.Bar
+          ((m.isTerm)
+            && (m.isPrivate || m.isLocalToBlock)
+            && !targets(m)
+            && !(m.name == nme.WILDCARD) // e.g. val _ = foo
+            && !ignoreNames(m.name.toTermName) // serialization methods
+            && !isConstantType(
+              m.info.resultType
+            ) // subject to constant inlining
+            && !treeTypes.exists(
+              _ contains m
+            ) // e.g. val a = new Foo ; new a.Bar
           )
         def unusedTypes = defnTrees.toList filter (t => isUnusedType(t.symbol))
         def unusedTerms = defnTrees.toList filter (v => isUnusedTerm(v.symbol))
@@ -655,40 +657,36 @@ trait TypeDiagnostics {
         val unused = p.unusedTerms
         unused foreach { defn: DefTree =>
           val sym = defn.symbol
-          val pos = (
-            if (defn.pos.isDefined)
-              defn.pos
-            else if (sym.pos.isDefined)
-              sym.pos
-            else
-              sym match {
-                case sym: TermSymbol => sym.referenced.pos
-                case _               => NoPosition
-              }
-          )
+          val pos = (if (defn.pos.isDefined)
+                       defn.pos
+                     else if (sym.pos.isDefined)
+                       sym.pos
+                     else
+                       sym match {
+                         case sym: TermSymbol => sym.referenced.pos
+                         case _               => NoPosition
+                       })
           val why =
             if (sym.isPrivate)
               "private"
             else
               "local"
-          val what = (
-            if (sym.isDefaultGetter)
-              "default argument"
-            else if (sym.isConstructor)
-              "constructor"
-            else if (sym.isVar || sym.isGetter && sym.accessed.isVar)
-              "var"
-            else if (sym.isVal || sym.isGetter && sym.accessed.isVal || sym.isLazy)
-              "val"
-            else if (sym.isSetter)
-              "setter"
-            else if (sym.isMethod)
-              "method"
-            else if (sym.isModule)
-              "object"
-            else
-              "term"
-          )
+          val what = (if (sym.isDefaultGetter)
+                        "default argument"
+                      else if (sym.isConstructor)
+                        "constructor"
+                      else if (sym.isVar || sym.isGetter && sym.accessed.isVar)
+                        "var"
+                      else if (sym.isVal || sym.isGetter && sym.accessed.isVal || sym.isLazy)
+                        "val"
+                      else if (sym.isSetter)
+                        "setter"
+                      else if (sym.isMethod)
+                        "method"
+                      else if (sym.isModule)
+                        "object"
+                      else
+                        "term")
           reporter.warning(pos, s"$why $what in ${sym.owner} is never used")
         }
         p.unsetVars foreach { v =>
@@ -717,9 +715,9 @@ trait TypeDiagnostics {
 
       private def exprOK =
         (expr != Object_synchronized) &&
-          !(expr.isLabel && treeInfo.isSynthCaseSymbol(
-            expr
-          )) // it's okay to jump to matchEnd (or another case) with an argument of type nothing
+          !(
+            expr.isLabel && treeInfo.isSynthCaseSymbol(expr)
+          ) // it's okay to jump to matchEnd (or another case) with an argument of type nothing
 
       private def treeOK(tree: Tree) = {
         val isLabelDef =
@@ -774,16 +772,20 @@ trait TypeDiagnostics {
         case DefDef(_, _, _, _, tpt, _) if tpt.tpe == null =>
           List(cyclicAdjective(sym), sym, "needs result type") mkString " "
         case Import(expr, selectors) =>
-          ("encountered unrecoverable cycle resolving import." +
-            "\nNote: this is often due in part to a class depending on a definition nested within its companion." +
-            "\nIf applicable, you may wish to try moving some members into another object.")
+          (
+            "encountered unrecoverable cycle resolving import." +
+              "\nNote: this is often due in part to a class depending on a definition nested within its companion." +
+              "\nIf applicable, you may wish to try moving some members into another object."
+          )
       }
 
     // warn about class/method/type-members' type parameters that shadow types already in scope
     def warnTypeParameterShadow(tparams: List[TypeDef], sym: Symbol): Unit =
       if (settings.warnTypeParameterShadow && !isPastTyper && !sym.isSynthetic) {
         def enclClassOrMethodOrTypeMember(c: Context): Context =
-          if (!c.owner.exists || c.owner.isClass || c.owner.isMethod || (c.owner.isType && !c.owner.isParameter))
+          if (!c.owner.exists || c.owner.isClass || c.owner.isMethod || (
+                c.owner.isType && !c.owner.isParameter
+              ))
             c
           else
             enclClassOrMethodOrTypeMember(c.outer)

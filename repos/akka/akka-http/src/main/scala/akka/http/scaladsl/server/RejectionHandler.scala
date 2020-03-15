@@ -218,8 +218,9 @@ object RejectionHandler {
           complete(
             (
               RequestedRangeNotSatisfiable,
-              List(`Content-Range`(
-                ContentRange.Unsatisfiable(actualEntityLength))),
+              List(
+                `Content-Range`(
+                  ContentRange.Unsatisfiable(actualEntityLength))),
               unsatisfiableRanges.mkString(
                 "None of the following requested Ranges were satisfiable:\n",
                 "\n",
@@ -278,14 +279,15 @@ object RejectionHandler {
       }
       .handleAll[UnsupportedWebSocketSubprotocolRejection] { rejections ⇒
         val supported = rejections.map(_.supportedProtocol)
-        complete(HttpResponse(
-          BadRequest,
-          entity =
-            s"None of the websocket subprotocols offered in the request are supported. Supported are ${supported
-              .map("'" + _ + "'")
-              .mkString(",")}.",
-          headers = `Sec-WebSocket-Protocol`(supported) :: Nil
-        ))
+        complete(
+          HttpResponse(
+            BadRequest,
+            entity =
+              s"None of the websocket subprotocols offered in the request are supported. Supported are ${supported
+                .map("'" + _ + "'")
+                .mkString(",")}.",
+            headers = `Sec-WebSocket-Protocol`(supported) :: Nil
+          ))
       }
       .handle {
         case ValidationRejection(msg, _) ⇒ complete((BadRequest, msg))
@@ -306,8 +308,10 @@ object RejectionHandler {
       rejections: immutable.Seq[Rejection]): immutable.Seq[Rejection] = {
     val (transformations, rest) = rejections.partition(
       _.isInstanceOf[TransformationRejection])
-    (rest.distinct /: transformations
-      .asInstanceOf[Seq[TransformationRejection]]) {
+    (
+      rest.distinct /: transformations
+        .asInstanceOf[Seq[TransformationRejection]]
+    ) {
       case (remaining, transformation) ⇒ transformation.transform(remaining)
     }
   }

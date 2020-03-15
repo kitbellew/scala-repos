@@ -225,10 +225,12 @@ object Templates {
               val le = sl.iterator
               while (!found && le.hasNext) {
                 val p = le.next
-                val name = pls + p + (if (suffix.length > 0)
-                                        "." + suffix
-                                      else
-                                        "")
+                val name = pls + p + (
+                  if (suffix.length > 0)
+                    "." + suffix
+                  else
+                    ""
+                )
                 import scala.xml.dtd.ValidationException
                 val xmlb =
                   try {
@@ -239,19 +241,20 @@ object Templates {
                   } catch {
                     case e: ValidationException
                         if Props.devMode | Props.testMode =>
-                      return Helpers.errorDiv(<div>Error locating template: <b>{
-                        name
-                      }</b><br/>
+                      return Helpers.errorDiv(
+                        <div>Error locating template: <b>{
+                          name
+                        }</b><br/>
                       Message: <b>{
-                        e.getMessage
-                      }</b><br/>
+                          e.getMessage
+                        }</b><br/>
                       {
-                        <pre>{
-                          e.toString
-                        }{
-                          e.getStackTrace.map(_.toString).mkString("\n")
-                        }</pre>
-                      }
+                          <pre>{
+                            e.toString
+                          }{
+                            e.getStackTrace.map(_.toString).mkString("\n")
+                          }</pre>
+                        }
                     </div>)
 
                     case e: ValidationException => Empty
@@ -269,23 +272,24 @@ object Templates {
                            (Props.devMode | Props.testMode)) {
                   val msg = xmlb.asInstanceOf[Failure].msg
                   val e = xmlb.asInstanceOf[Failure].exception
-                  return Helpers.errorDiv(<div>Error locating template: <b>{
-                    name
-                  }</b><br/>Message: <b>{
-                    msg
-                  }</b><br/>{
-                    {
-                      e match {
-                        case Full(e) =>
-                          <pre>{
-                            e.toString
-                          }{
-                            e.getStackTrace.map(_.toString).mkString("\n")
-                          }</pre>
-                        case _ => NodeSeq.Empty
+                  return Helpers.errorDiv(
+                    <div>Error locating template: <b>{
+                      name
+                    }</b><br/>Message: <b>{
+                      msg
+                    }</b><br/>{
+                      {
+                        e match {
+                          case Full(e) =>
+                            <pre>{
+                              e.toString
+                            }{
+                              e.getStackTrace.map(_.toString).mkString("\n")
+                            }</pre>
+                          case _ => NodeSeq.Empty
+                        }
                       }
                     }
-                  }
                   </div>)
                 }
               }
@@ -316,12 +320,14 @@ object Templates {
       try {
         tryo(List(classOf[ClassNotFoundException]), Empty)(
           Class.forName(clsName).asInstanceOf[Class[AnyRef]]).flatMap { c =>
-          (c.newInstance match {
-            case inst: InsecureLiftView => c.getMethod(action).invoke(inst)
-            case inst: LiftView if inst.dispatch.isDefinedAt(action) =>
-              inst.dispatch(action)()
-            case _ => Empty
-          }) match {
+          (
+            c.newInstance match {
+              case inst: InsecureLiftView => c.getMethod(action).invoke(inst)
+              case inst: LiftView if inst.dispatch.isDefinedAt(action) =>
+                inst.dispatch(action)()
+              case _ => Empty
+            }
+          ) match {
             case null | Empty | None  => Empty
             case n: Group             => Full(n)
             case n: Elem              => Full(n)

@@ -185,8 +185,9 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
           case Running(_, value) =>
             value
           case Cancelled =>
-            M.jobId map (jobManager
-              .abort(_, "Query was cancelled.", yggConfig.clock.now()))
+            M.jobId map (
+              jobManager.abort(_, "Query was cancelled.", yggConfig.clock.now())
+            )
             throw QueryCancelledException(
               "Query was cancelled before it was completed.")
           case Expired =>
@@ -209,10 +210,11 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
       M: JobQueryTFMonad,
       t: JobQueryTF ~> N): StreamT[N, A] = {
     val finish: StreamT[JobQueryTF, A] = StreamT[JobQueryTF, A](
-      M.point(StreamT.Skip {
-        M.jobId map (jobManager.finish(_, yggConfig.clock.now()))
-        StreamT.empty[JobQueryTF, A]
-      }))
+      M.point(
+        StreamT.Skip {
+          M.jobId map (jobManager.finish(_, yggConfig.clock.now()))
+          StreamT.empty[JobQueryTF, A]
+        }))
 
     implicitly[Hoist[StreamT]].hoist[JobQueryTF, N](t).apply(result ++ finish)
   }
@@ -281,8 +283,10 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
     def start(): Unit =
       lock.synchronized {
         if (poller.isEmpty) {
-          poller = Some(jobActorSystem.scheduler
-            .schedule(yggConfig.jobPollFrequency, yggConfig.jobPollFrequency) {
+          poller = Some(
+            jobActorSystem.scheduler.schedule(
+              yggConfig.jobPollFrequency,
+              yggConfig.jobPollFrequency) {
               poll()
             })
         }

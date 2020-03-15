@@ -135,14 +135,16 @@ object CSVConverter {
       def from(s: String): Try[Option[V] :: T] =
         s.span(_ != ',') match {
           case (before, after) =>
-            (for {
-              front <- scv.value.from(before)
-              back <- sct.value.from(
-                if (after.isEmpty)
-                  after
-                else
-                  after.tail)
-            } yield Some(front) :: back).orElse {
+            (
+              for {
+                front <- scv.value.from(before)
+                back <- sct.value.from(
+                  if (after.isEmpty)
+                    after
+                  else
+                    after.tail)
+              } yield Some(front) :: back
+            ).orElse {
               sct.value.from(s).map(None :: _)
             }
 

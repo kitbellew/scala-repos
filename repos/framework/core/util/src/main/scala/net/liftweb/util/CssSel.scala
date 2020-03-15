@@ -152,8 +152,11 @@ private class SelectorMap(binds: List[CssBind])
 
       case i @ CssBind(AttrSelector(name, value, _)) => {
         val oldMap = attrMap.getOrElse(name, Map())
-        attrMap += (name -> (oldMap + (value -> sortBinds(
-          i :: oldMap.getOrElse(value, Nil)))))
+        attrMap += (
+          name -> (
+            oldMap + (value -> sortBinds(i :: oldMap.getOrElse(value, Nil)))
+          )
+        )
       }
     }
 
@@ -350,10 +353,12 @@ private class SelectorMap(binds: List[CssBind])
           other: MetaData,
           stripId: Boolean,
           skipClassMerge: Boolean): MetaData = {
-        var oldAttrs = attrs - (if (stripId)
-                                  "id"
-                                else
-                                  "")
+        var oldAttrs = attrs - (
+          if (stripId)
+            "id"
+          else
+            ""
+        )
 
         var builtMeta: MetaData = Null
         var pos = other
@@ -501,13 +506,15 @@ private class SelectorMap(binds: List[CssBind])
             case n => {
               val calcedList = calced.toList
               val availableIds =
-                (attrs.get("id").toList ++
-                  calcedList
-                    .collect({
-                      case e: Elem => e.attribute("id")
-                    })
-                    .flatten
-                    .map(_.toString)).toSet
+                (
+                  attrs.get("id").toList ++
+                    calcedList
+                      .collect({
+                        case e: Elem => e.attribute("id")
+                      })
+                      .flatten
+                      .map(_.toString)
+                ).toSet
               val merged =
                 calcedList.foldLeft((availableIds, Nil: List[Seq[xml.Node]])) {
                   (idsAndResult, a) =>
@@ -515,9 +522,9 @@ private class SelectorMap(binds: List[CssBind])
                     a match {
                       case Group(g) => (ids, g :: result)
                       case e: Elem => {
-                        val targetId =
-                          e.attribute("id").map(_.toString) orElse (attrs.get(
-                            "id"))
+                        val targetId = e
+                          .attribute("id")
+                          .map(_.toString) orElse (attrs.get("id"))
                         val keepId = targetId map { id =>
                           ids.contains(id)
                         } getOrElse (false)
@@ -562,10 +569,12 @@ private class SelectorMap(binds: List[CssBind])
     final def forStar(buff: ListBuffer[CssBind], depth: Int) {
       for {
         binds <- starFunc
-        bind <- binds if (bind match {
-          case CssBind(StarSelector(_, topOnly)) => !topOnly || (depth == 0)
-          case _                                 => true
-        })
+        bind <- binds if (
+          bind match {
+            case CssBind(StarSelector(_, topOnly)) => !topOnly || (depth == 0)
+            case _                                 => true
+          }
+        )
       } buff += bind
     }
 
@@ -801,11 +810,12 @@ trait CssBind extends CssSel {
     css match {
       case Full(c) => selectorMap(in)
       case _ =>
-        Helpers.errorDiv(<div>
+        Helpers.errorDiv(
+          <div>
         Syntax error in CSS selector definition:
         {
-          stringSelector openOr "N/A"
-        }
+            stringSelector openOr "N/A"
+          }
         .
         The selector will not be applied.
       </div>) openOr NodeSeq.Empty

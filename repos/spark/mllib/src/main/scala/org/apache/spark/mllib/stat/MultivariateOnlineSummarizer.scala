@@ -214,8 +214,10 @@ class MultivariateOnlineSummarizer
       var i = 0
       val len = currM2n.length
       while (i < len) {
-        realVariance(i) = (currM2n(i) + deltaMean(i) * deltaMean(i) * nnz(i) *
-          (weightSum - nnz(i)) / weightSum) / denominator
+        realVariance(i) = (
+          currM2n(i) + deltaMean(i) * deltaMean(i) * nnz(i) *
+            (weightSum - nnz(i)) / weightSum
+        ) / denominator
         i += 1
       }
     }

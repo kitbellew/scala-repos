@@ -649,9 +649,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def htmlProperties: HtmlProperties = {
     session.map(_.requestHtmlProperties.is) openOr
-      LiftRules.htmlProperties.vend(
-        S.request openOr Req.nil
-      )
+      LiftRules.htmlProperties.vend(S.request openOr Req.nil)
   }
 
   /**
@@ -866,8 +864,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     requestCometVersions.set(
       requestCometVersions.is + CVP(
         cometActor.uniqueId,
-        cometActor.lastRenderTime)
-    )
+        cometActor.lastRenderTime))
   }
 
   /**
@@ -886,8 +883,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       cometName: Box[String] = Empty,
       cometHtml: NodeSeq = NodeSeq.Empty,
       cometAttributes: Map[String, String] = Map.empty,
-      receiveUpdatesOnPage: Boolean = false
-  ): Box[LiftCometActor] = {
+      receiveUpdatesOnPage: Boolean = false): Box[LiftCometActor] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
       cometActor <- session.findOrCreateComet(
@@ -918,8 +914,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       cometName: Box[String],
       cometHtml: NodeSeq,
       cometAttributes: Map[String, String],
-      receiveUpdatesOnPage: Boolean
-  )(implicit cometManifest: Manifest[T]): Box[T] = {
+      receiveUpdatesOnPage: Boolean)(
+      implicit cometManifest: Manifest[T]): Box[T] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
       cometActor <- session
@@ -984,14 +980,12 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
               cometVersions.toList.map {
                 case CometVersionPair(guid, version) =>
                   (guid, js.JE.Num(version))
-              }: _*
-            ),
+              }: _*),
             // Don't kick off a new comet request client-side if we're responding
             // to a comet request right now.
             !currentCometActor.isDefined
           )
-          .cmd
-      )
+          .cmd)
     } else {
       Nil
     }
@@ -1070,17 +1064,18 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def loc(str: String): Box[NodeSeq] =
     resourceBundles
       .flatMap(r =>
-        tryo(r.getObject(str) match {
-          case null =>
-            LiftRules.localizationLookupFailureNotice.foreach(_(str, locale));
-            Empty
-          case s: String   => Full(LiftRules.localizeStringToXml(s))
-          case g: Group    => Full(g)
-          case e: Elem     => Full(e)
-          case n: Node     => Full(n)
-          case ns: NodeSeq => Full(ns)
-          case x           => Full(Text(x.toString))
-        }).flatMap(s => s))
+        tryo(
+          r.getObject(str) match {
+            case null =>
+              LiftRules.localizationLookupFailureNotice.foreach(_(str, locale));
+              Empty
+            case s: String   => Full(LiftRules.localizeStringToXml(s))
+            case g: Group    => Full(g)
+            case e: Elem     => Full(e)
+            case n: Node     => Full(n)
+            case ns: NodeSeq => Full(ns)
+            case x           => Full(Text(x.toString))
+          }).flatMap(s => s))
       .find(e => true)
 
   /**
@@ -1133,36 +1128,39 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def resourceBundles(loc: Locale): List[ResourceBundle] = {
     _resBundle.box match {
       case Full(Nil) => {
-        _resBundle.set(LiftRules.resourceForCurrentLoc.vend() :::
-          LiftRules.resourceNames.flatMap(name =>
-            tryo {
-              if (Props.devMode) {
-                tryo {
-                  val clz = this.getClass.getClassLoader
-                    .loadClass("java.util.ResourceBundle")
-                  val meth =
-                    clz.getDeclaredMethods
-                      .filter { m =>
-                        m.getName == "clearCache" && m.getParameterTypes.length == 0
-                      }
-                      .toList
-                      .head
-                  meth.invoke(null)
+        _resBundle.set(
+          LiftRules.resourceForCurrentLoc.vend() :::
+            LiftRules.resourceNames.flatMap(name =>
+              tryo {
+                if (Props.devMode) {
+                  tryo {
+                    val clz = this.getClass.getClassLoader
+                      .loadClass("java.util.ResourceBundle")
+                    val meth =
+                      clz.getDeclaredMethods
+                        .filter { m =>
+                          m.getName == "clearCache" && m.getParameterTypes.length == 0
+                        }
+                        .toList
+                        .head
+                    meth.invoke(null)
+                  }
                 }
-              }
-              List(ResourceBundle.getBundle(name, loc))
-            }.openOr(
-              NamedPF
-                .applyBox((name, loc), LiftRules.resourceBundleFactories.toList)
-                .map(List(_)) openOr Nil
-            )))
+                List(ResourceBundle.getBundle(name, loc))
+              }.openOr(
+                NamedPF
+                  .applyBox(
+                    (name, loc),
+                    LiftRules.resourceBundleFactories.toList)
+                  .map(List(_)) openOr Nil)))
         _resBundle.value
       }
       case Full(bundles) => bundles
       case _ =>
-        throw new IllegalStateException("Attempted to use resource bundles outside of an initialized S scope. " +
-          "S only usable when initialized, such as during request processing. " +
-          "Did you call S.? from Boot?")
+        throw new IllegalStateException(
+          "Attempted to use resource bundles outside of an initialized S scope. " +
+            "S only usable when initialized, such as during request processing. " +
+            "Did you call S.? from Boot?")
     }
   }
 
@@ -1240,12 +1238,13 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   private def ?!(str: String, resBundle: List[ResourceBundle]): String =
     resBundle
       .flatMap(r =>
-        tryo(r.getObject(str) match {
-          case s: String   => Full(s)
-          case n: Node     => Full(n.text)
-          case ns: NodeSeq => Full(ns.text)
-          case _           => Empty
-        }).flatMap(s => s))
+        tryo(
+          r.getObject(str) match {
+            case s: String   => Full(s)
+            case n: Node     => Full(n.text)
+            case ns: NodeSeq => Full(ns.text)
+            case _           => Empty
+          }).flatMap(s => s))
       .find(s => true) getOrElse {
       LiftRules.localizationLookupFailureNotice.foreach(_(str, locale));
       str
@@ -1844,7 +1843,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   private def doStatefulRewrite(old: Box[Req]): Box[Req] = {
     // Don't even try to rewrite Req.nil
     old.map { req =>
-      if (statefulRequest_? && req.path.partPath.nonEmpty && (req.request ne null)) {
+      if (statefulRequest_? && req.path.partPath.nonEmpty && (
+            req.request ne null
+          )) {
         Req(
           req,
           S.sessionRewriter.map(_.rewrite) :::
@@ -2450,10 +2451,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *
     */
   def getSessionAttribute(what: String): Box[String] =
-    containerSession.flatMap(_.attribute(what) match {
-      case s: String => Full(s)
-      case _         => Empty
-    })
+    containerSession.flatMap(
+      _.attribute(what) match {
+        case s: String => Full(s)
+        case _         => Empty
+      })
 
   /**
     * Returns the HttpSession
@@ -3289,11 +3291,12 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       f: => List[(NodeSeq, Box[String])]): List[(String, List[NodeSeq])] = {
     val res = new HashMap[String, List[NodeSeq]]
     f.filter(_._2.isEmpty == false)
-      .foreach(_ match {
-        case (node, id) =>
-          val key = id openOrThrowException ("legacy code")
-          res += (key -> (res.getOrElseUpdate(key, Nil) ::: List(node)))
-      })
+      .foreach(
+        _ match {
+          case (node, id) =>
+            val key = id openOrThrowException ("legacy code")
+            res += (key -> (res.getOrElseUpdate(key, Nil) ::: List(node)))
+        })
 
     res.toList
   }

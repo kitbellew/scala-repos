@@ -103,8 +103,7 @@ class ParHashSet[T] private[immutable] (private[this] val trie: HashSet[T])
             val sndlength = previousRemaining - fstlength
             Seq(
               new ParHashSetIterator(fst, fstlength),
-              new ParHashSetIterator(snd, sndlength)
-            )
+              new ParHashSetIterator(snd, sndlength))
           case _ =>
             // iterator of the collision map case
             val buff = triter.toBuffer
@@ -139,11 +138,8 @@ object ParHashSet extends ParSetFactory[ParHashSet] {
 }
 
 private[immutable] abstract class HashSetCombiner[T]
-    extends scala.collection.parallel.BucketCombiner[
-      T,
-      ParHashSet[T],
-      Any,
-      HashSetCombiner[T]](HashSetCombiner.rootsize) {
+    extends scala.collection.parallel.BucketCombiner[T, ParHashSet[
+      T], Any, HashSetCombiner[T]](HashSetCombiner.rootsize) {
 //self: EnvironmentPassingCombiner[T, ParHashSet[T]] =>
   import HashSetCombiner._
   val emptyTrie = HashSet.empty[T]

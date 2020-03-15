@@ -75,8 +75,10 @@ object DateProperties extends Properties("Date Properties") {
       0
 
   property("Before/After works") = forAll { (dr: DateRange, rd: RichDate) =>
-    (asInt(dr.contains(rd)) + asInt(dr.isBefore(rd)) + asInt(
-      dr.isAfter(rd)) == 1) &&
+    (
+      asInt(dr.contains(rd)) + asInt(dr.isBefore(rd)) + asInt(
+        dr.isAfter(rd)) == 1
+    ) &&
     (dr.isBefore(dr.end + (dr.end - dr.start))) &&
     (dr.isAfter(dr.start - (dr.end - dr.start)))
   }
@@ -139,12 +141,14 @@ object DateProperties extends Properties("Date Properties") {
   }
 
   def toRegex(glob: String) =
-    (glob.flatMap { c =>
-      if (c == '*')
-        ".*"
-      else
-        c.toString
-    }).r
+    (
+      glob.flatMap { c =>
+        if (c == '*')
+          ".*"
+        else
+          c.toString
+      }
+    ).r
 
   def matches(l: List[String], arg: String): Int =
     l.map {

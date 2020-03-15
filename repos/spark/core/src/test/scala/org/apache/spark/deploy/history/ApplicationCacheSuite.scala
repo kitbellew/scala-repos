@@ -132,12 +132,14 @@ class ApplicationCacheSuite
         ui: SparkUI,
         completed: Boolean,
         timestamp: Long): Unit = {
-      instances += (CacheKey(appId, attemptId) ->
-        new CacheEntry(
-          ui,
-          completed,
-          updateProbe(appId, attemptId, timestamp),
-          timestamp))
+      instances += (
+        CacheKey(appId, attemptId) ->
+          new CacheEntry(
+            ui,
+            completed,
+            updateProbe(appId, attemptId, timestamp),
+            timestamp)
+      )
     }
 
     /**
@@ -534,11 +536,12 @@ class ApplicationCacheSuite
       .thenReturn("http://localhost:18080/history/local-123/jobs/job/")
     when(request.getQueryString()).thenReturn("id=2")
     val resp = mock[HttpServletResponse]
-    when(resp.encodeRedirectURL(any())).thenAnswer(new Answer[String]() {
-      override def answer(invocationOnMock: InvocationOnMock): String = {
-        invocationOnMock.getArguments()(0).asInstanceOf[String]
-      }
-    })
+    when(resp.encodeRedirectURL(any())).thenAnswer(
+      new Answer[String]() {
+        override def answer(invocationOnMock: InvocationOnMock): String = {
+          invocationOnMock.getArguments()(0).asInstanceOf[String]
+        }
+      })
     filter.doFilter(request, resp, null)
     verify(resp).sendRedirect(
       "http://localhost:18080/history/local-123/jobs/job/?id=2")

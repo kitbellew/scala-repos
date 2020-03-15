@@ -56,10 +56,11 @@ class TimeoutFactoryTest extends FunSuite with MockitoSugar {
   test(
     "TimeoutFactory after the timeout should interrupt the underlying promise with a TimeoutException") {
     new AfterHelper {
-      assert(promise.interrupted forall {
-        case _: java.util.concurrent.TimeoutException => true
-        case _                                        => false
-      })
+      assert(
+        promise.interrupted forall {
+          case _: java.util.concurrent.TimeoutException => true
+          case _                                        => false
+        })
     }
   }
 

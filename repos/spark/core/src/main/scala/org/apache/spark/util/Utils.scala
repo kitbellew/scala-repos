@@ -128,11 +128,12 @@ private[spark] object Utils extends Logging {
   /** Serialize via nested stream using specific serializer */
   def serializeViaNestedStream(os: OutputStream, ser: SerializerInstance)(
       f: SerializationStream => Unit): Unit = {
-    val osWrapper = ser.serializeStream(new OutputStream {
-      override def write(b: Int): Unit = os.write(b)
-      override def write(b: Array[Byte], off: Int, len: Int): Unit =
-        os.write(b, off, len)
-    })
+    val osWrapper = ser.serializeStream(
+      new OutputStream {
+        override def write(b: Int): Unit = os.write(b)
+        override def write(b: Array[Byte], off: Int, len: Int): Unit =
+          os.write(b, off, len)
+      })
     try {
       f(osWrapper)
     } finally {
@@ -143,11 +144,12 @@ private[spark] object Utils extends Logging {
   /** Deserialize via nested stream using specific serializer */
   def deserializeViaNestedStream(is: InputStream, ser: SerializerInstance)(
       f: DeserializationStream => Unit): Unit = {
-    val isWrapper = ser.deserializeStream(new InputStream {
-      override def read(): Int = is.read()
-      override def read(b: Array[Byte], off: Int, len: Int): Int =
-        is.read(b, off, len)
-    })
+    val isWrapper = ser.deserializeStream(
+      new InputStream {
+        override def read(): Int = is.read()
+        override def read(b: Array[Byte], off: Int, len: Int): Int =
+          is.read(b, off, len)
+      })
     try {
       f(isWrapper)
     } finally {
@@ -442,8 +444,7 @@ private[spark] object Utils extends Logging {
         url,
         cachedFile,
         targetFile,
-        conf.getBoolean("spark.files.overwrite", false)
-      )
+        conf.getBoolean("spark.files.overwrite", false))
     } else {
       doFetchFile(url, targetDir, fileName, conf, securityMgr, hadoopConf)
     }
@@ -531,16 +532,11 @@ private[spark] object Utils extends Logging {
       if (!filesEqualRecursive(sourceFile, destFile)) {
         if (fileOverwrite) {
           logInfo(
-            s"File $destFile exists and does not match contents of $url, replacing it with $url"
-          )
+            s"File $destFile exists and does not match contents of $url, replacing it with $url")
           if (!destFile.delete()) {
             throw new SparkException(
               "Failed to delete %s while attempting to overwrite it with %s"
-                .format(
-                  destFile.getAbsolutePath,
-                  sourceFile.getAbsolutePath
-                )
-            )
+                .format(destFile.getAbsolutePath, sourceFile.getAbsolutePath))
           }
         } else {
           throw new SparkException(
@@ -550,11 +546,8 @@ private[spark] object Utils extends Logging {
         // Do nothing if the file contents are the same, i.e. this file has been copied
         // previously.
         logInfo(
-          "%s has been previously copied to %s".format(
-            sourceFile.getAbsolutePath,
-            destFile.getAbsolutePath
-          )
-        )
+          "%s has been previously copied to %s"
+            .format(sourceFile.getAbsolutePath, destFile.getAbsolutePath))
         return
       }
     }
@@ -1654,10 +1647,12 @@ private[spark] object Utils extends Logging {
    */
   def nonNegativeMod(x: Int, mod: Int): Int = {
     val rawMod = x % mod
-    rawMod + (if (rawMod < 0)
-                mod
-              else
-                0)
+    rawMod + (
+      if (rawMod < 0)
+        mod
+      else
+        0
+    )
   }
 
   // Handles idiosyncrasies with hash (add more as required)
@@ -2093,9 +2088,10 @@ private[spark] object Utils extends Logging {
   def getDefaultPropertiesFile(env: Map[String, String] = sys.env): String = {
     env
       .get("SPARK_CONF_DIR")
-      .orElse(env.get("SPARK_HOME").map { t =>
-        s"$t${File.separator}conf"
-      })
+      .orElse(
+        env.get("SPARK_HOME").map { t =>
+          s"$t${File.separator}conf"
+        })
       .map { t =>
         new File(s"$t${File.separator}spark-defaults.conf")
       }
@@ -2370,7 +2366,9 @@ private[spark] object Utils extends Logging {
       if (uri.getScheme != "spark" ||
           host == null ||
           port < 0 ||
-          (uri.getPath != null && !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
+          (
+            uri.getPath != null && !uri.getPath.isEmpty
+          ) || // uri.getPath returns "" instead of null
           uri.getFragment != null ||
           uri.getQuery != null ||
           uri.getUserInfo != null) {
@@ -2468,9 +2466,11 @@ private[spark] object Utils extends Logging {
         "Dynamic Allocation and num executors both set, thus dynamic allocation disabled.")
     }
     numExecutor == 0 && dynamicAllocationEnabled &&
-    (!isLocalMaster(conf) || conf.getBoolean(
-      "spark.dynamicAllocation.testing",
-      false))
+    (
+      !isLocalMaster(conf) || conf.getBoolean(
+        "spark.dynamicAllocation.testing",
+        false)
+    )
   }
 
   def tryWithResource[R <: Closeable, T](createResource: => R)(f: R => T): T = {

@@ -66,20 +66,21 @@ object CascadingBinaryComparator {
       if (m.isEmpty)
         error(s"Splice must have KeySelectors: $s")
       else {
-        reduce(m.map {
-          case (pipename, fields) =>
-            /*
-             * Scalding typed-API ALWAYS puts the key into field position 0.
-             * If OrderedSerialization is enabled, this must be a CascadingBinaryComparator
-             */
-            if (fields
-                  .getComparators()(0)
-                  .isInstanceOf[CascadingBinaryComparator[_]])
-              Success(())
-            else
-              error(
-                s"pipe: $s, fields: $fields, comparators: ${fields.getComparators.toList}")
-        })
+        reduce(
+          m.map {
+            case (pipename, fields) =>
+              /*
+               * Scalding typed-API ALWAYS puts the key into field position 0.
+               * If OrderedSerialization is enabled, this must be a CascadingBinaryComparator
+               */
+              if (fields
+                    .getComparators()(0)
+                    .isInstanceOf[CascadingBinaryComparator[_]])
+                Success(())
+              else
+                error(
+                  s"pipe: $s, fields: $fields, comparators: ${fields.getComparators.toList}")
+          })
       }
     }
 

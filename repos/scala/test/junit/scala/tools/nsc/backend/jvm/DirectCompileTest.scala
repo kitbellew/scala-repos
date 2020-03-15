@@ -85,8 +85,7 @@ class DirectCompileTest extends ClearAfterClass {
         Label(7),
         Ldc(LDC, "b"),
         Op(ARETURN),
-        Label(11)
-      )
+        Label(11))
     )
   }
 

@@ -81,17 +81,18 @@ object WebSocketClient {
   private implicit class ToFuture(chf: ChannelFuture) {
     def toScala: Future[Channel] = {
       val promise = Promise[Channel]()
-      chf.addListener(new ChannelFutureListener {
-        def operationComplete(future: ChannelFuture) = {
-          if (future.isSuccess) {
-            promise.success(future.channel())
-          } else if (future.isCancelled) {
-            promise.failure(new RuntimeException("Future cancelled"))
-          } else {
-            promise.failure(future.cause())
+      chf.addListener(
+        new ChannelFutureListener {
+          def operationComplete(future: ChannelFuture) = {
+            if (future.isSuccess) {
+              promise.success(future.channel())
+            } else if (future.isCancelled) {
+              promise.failure(new RuntimeException("Future cancelled"))
+            } else {
+              promise.failure(future.cause())
+            }
           }
-        }
-      })
+        })
       promise.future
     }
 
@@ -104,12 +105,13 @@ object WebSocketClient {
       .group(eventLoop)
       .channel(classOf[NioSocketChannel])
       .option(ChannelOption.AUTO_READ, java.lang.Boolean.FALSE)
-      .handler(new ChannelInitializer[SocketChannel] {
-        def initChannel(ch: SocketChannel) = {
-          ch.pipeline()
-            .addLast(new HttpClientCodec, new HttpObjectAggregator(8192))
-        }
-      })
+      .handler(
+        new ChannelInitializer[SocketChannel] {
+          def initChannel(ch: SocketChannel) = {
+            ch.pipeline()
+              .addLast(new HttpClientCodec, new HttpObjectAggregator(8192))
+          }
+        })
 
     /**
       * Connect to the given URI

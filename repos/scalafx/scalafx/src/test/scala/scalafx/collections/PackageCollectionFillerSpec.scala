@@ -57,16 +57,17 @@ class PackageCollectionFillerSpec extends FlatSpec with RunOnApplicationThread {
     var wasAdded = false
     var secondChange: Boolean = false
 
-    originalList.addListener(new jfxc.ListChangeListener[T] {
-      def onChanged(change: jfxc.ListChangeListener.Change[_ <: T]) {
-        change.next
-        wasRemoved = change.wasRemoved()
-        wasAdded = change.wasAdded()
-        addedElements = change.getAddedSubList
-        removedElements = change.getRemoved
-        secondChange = change.next
-      }
-    })
+    originalList.addListener(
+      new jfxc.ListChangeListener[T] {
+        def onChanged(change: jfxc.ListChangeListener.Change[_ <: T]) {
+          change.next
+          wasRemoved = change.wasRemoved()
+          wasAdded = change.wasAdded()
+          addedElements = change.getAddedSubList
+          removedElements = change.getRemoved
+          secondChange = change.next
+        }
+      })
 
   }
 

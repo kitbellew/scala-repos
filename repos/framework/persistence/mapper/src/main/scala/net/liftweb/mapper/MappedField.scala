@@ -236,8 +236,8 @@ trait TypedField[FieldType] {
 /**
   * A Mapped field that is Nullable in the database.  Will return Empty box for NULL values and Full for non-null values
   */
-trait MappedNullableField[
-    NullableFieldType <: Any, OwnerType <: Mapper[OwnerType]]
+trait MappedNullableField[NullableFieldType <: Any, OwnerType <: Mapper[
+  OwnerType]]
     extends MappedField[Box[NullableFieldType], OwnerType] {
 
   /**
@@ -254,20 +254,22 @@ trait MappedNullableField[
     S.fmapFunc({ s: List[String] =>
       this.setFromAny(s)
     }) { funcName =>
-      Full(appendFieldId(<input type={
-        formInputType
-      }
+      Full(
+        appendFieldId(
+          <input type={
+            formInputType
+          }
                        name={
-        funcName
-      }
+            funcName
+          }
                        value={
-        get match {
-          case null       => ""
-          case Full(null) => ""
-          case Full(s)    => s.toString
-          case _          => ""
-        }
-      }/>))
+            get match {
+              case null       => ""
+              case Full(null) => ""
+              case Full(s)    => s.toString
+              case _          => ""
+            }
+          }/>))
     }
 }
 
@@ -506,18 +508,20 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     S.fmapFunc({ s: List[String] =>
       this.setFromAny(s)
     }) { funcName =>
-      Full(appendFieldId(<input type={
-        formInputType
-      }
+      Full(
+        appendFieldId(
+          <input type={
+            formInputType
+          }
                        name={
-        funcName
-      }
+            funcName
+          }
                        value={
-        get match {
-          case null => ""
-          case s    => s.toString
-        }
-      }/>))
+            get match {
+              case null => ""
+              case s    => s.toString
+            }
+          }/>))
     }
 
   /**

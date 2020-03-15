@@ -248,10 +248,12 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
     "find own account" in {
       val (user, pass) = ("test0003@email.com", "password")
-      (for {
-        id <- createAccountAndGetId(user, pass)
-        resp <- getAccount(id, user, pass)
-      } yield resp).copoint must beLike {
+      (
+        for {
+          id <- createAccountAndGetId(user, pass)
+          resp <- getAccount(id, user, pass)
+        } yield resp
+      ).copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
           jv \ "email" must_== JString(user)
       }
@@ -259,11 +261,13 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
     "delete own account" in {
       val (user, pass) = ("test0005@email.com", "password")
-      (for {
-        id <- createAccountAndGetId(user, pass)
-        res0 <- deleteAccount(id, user, pass)
-        res1 <- getAccount(id, user, pass)
-      } yield ((res0, res1))).copoint must beLike {
+      (
+        for {
+          id <- createAccountAndGetId(user, pass)
+          res0 <- deleteAccount(id, user, pass)
+          res1 <- getAccount(id, user, pass)
+        } yield ((res0, res1))
+      ).copoint must beLike {
         case (
               HttpResponse(HttpStatus(NoContent, _), _, _, _),
               HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) =>
@@ -274,12 +278,14 @@ class AccountServiceSpec extends TestAccountService with Tags {
     "change password of account" in {
       val (user, oldPass) = ("test0006@email.com", "password")
       val newPass = "super"
-      (for {
-        id <- createAccountAndGetId(user, oldPass)
-        res0 <- changePassword(id, user, oldPass, newPass)
-        res1 <- getAccount(id, user, oldPass)
-        res2 <- getAccount(id, user, newPass)
-      } yield ((res0, res1, res2))).copoint must beLike {
+      (
+        for {
+          id <- createAccountAndGetId(user, oldPass)
+          res0 <- changePassword(id, user, oldPass, newPass)
+          res1 <- getAccount(id, user, oldPass)
+          res2 <- getAccount(id, user, newPass)
+        } yield ((res0, res1, res2))
+      ).copoint must beLike {
         case (
               HttpResponse(HttpStatus(OK, _), _, _, _),
               HttpResponse(HttpStatus(Unauthorized, _), _, _, _),
@@ -290,10 +296,12 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
     "get account plan type" in {
       val (user, pass) = ("test0007@email.com", "password")
-      (for {
-        id <- createAccountAndGetId(user, pass)
-        res <- getAccountPlan(id, user, pass)
-      } yield res).copoint must beLike {
+      (
+        for {
+          id <- createAccountAndGetId(user, pass)
+          res <- getAccountPlan(id, user, pass)
+        } yield res
+      ).copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
           jv \ "type" must_== JString("Free")
       }
@@ -301,11 +309,13 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
     "update account plan type" in {
       val (user, pass) = ("test0008@email.com", "password")
-      (for {
-        id <- createAccountAndGetId(user, pass)
-        res0 <- putAccountPlan(id, user, pass, "Root")
-        res1 <- getAccountPlan(id, user, pass)
-      } yield ((res0, res1))).copoint must beLike {
+      (
+        for {
+          id <- createAccountAndGetId(user, pass)
+          res0 <- putAccountPlan(id, user, pass, "Root")
+          res1 <- getAccountPlan(id, user, pass)
+        } yield ((res0, res1))
+      ).copoint must beLike {
         case (
               HttpResponse(HttpStatus(OK, _), _, _, _),
               HttpResponse(HttpStatus(OK, _), _, Some(jv), _)) =>
@@ -315,12 +325,14 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
     "delete account plan" in {
       val (user, pass) = ("test0009@email.com", "password")
-      (for {
-        id <- createAccountAndGetId(user, pass)
-        _ <- putAccountPlan(id, user, pass, "Root")
-        _ <- removeAccountPlan(id, user, pass)
-        res <- getAccountPlan(id, user, pass)
-      } yield res).copoint must beLike {
+      (
+        for {
+          id <- createAccountAndGetId(user, pass)
+          _ <- putAccountPlan(id, user, pass, "Root")
+          _ <- removeAccountPlan(id, user, pass)
+          res <- getAccountPlan(id, user, pass)
+        } yield res
+      ).copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
           jv \ "type" must_== JString("Free")
       }
@@ -353,11 +365,13 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
     "not find other account" in {
       val (user, pass) = ("test0011@email.com", "password")
-      (for {
-        id1 <- createAccountAndGetId(user, pass)
-        id2 <- createAccountAndGetId("some-other-email@email.com", "password")
-        resp <- getAccount(id2, user, pass)
-      } yield resp).copoint must beLike {
+      (
+        for {
+          id1 <- createAccountAndGetId(user, pass)
+          id2 <- createAccountAndGetId("some-other-email@email.com", "password")
+          resp <- getAccount(id2, user, pass)
+        } yield resp
+      ).copoint must beLike {
         case HttpResponse(HttpStatus(Unauthorized, _), _, Some(jv), _) =>
           ok
       }
@@ -370,29 +384,31 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
       val accountId = createAccountAndGetId(user, pass).copoint
 
-      (for {
-        genToken <- createResetToken(accountId, user)
-        resetToken <- Future {
-          Mailbox.get(user).asScala.toList match {
-            case message :: Nil =>
-              // Our test email template subject is simply the token, so easy to extract
-              val output = new java.io.ByteArrayOutputStream
-              message.writeTo(output)
-              output.close
-              logger.debug("Got reset email: " + output.toString("UTF-8"))
-              message.getSubject
+      (
+        for {
+          genToken <- createResetToken(accountId, user)
+          resetToken <- Future {
+            Mailbox.get(user).asScala.toList match {
+              case message :: Nil =>
+                // Our test email template subject is simply the token, so easy to extract
+                val output = new java.io.ByteArrayOutputStream
+                message.writeTo(output)
+                output.close
+                logger.debug("Got reset email: " + output.toString("UTF-8"))
+                message.getSubject
 
-            case problem => failure("Reset email not received, got " + problem)
+              case problem =>
+                failure("Reset email not received, got " + problem)
+            }
           }
-        }
-        resetResult <- resetPassword(accountId, resetToken, newPass)
-        newAuthResult <- getAccount(accountId, user, newPass)
-      } yield (genToken, resetResult, newAuthResult)).copoint must beLike {
+          resetResult <- resetPassword(accountId, resetToken, newPass)
+          newAuthResult <- getAccount(accountId, user, newPass)
+        } yield (genToken, resetResult, newAuthResult)
+      ).copoint must beLike {
         case (
               HttpResponse(HttpStatus(OK, _), _, _, _),
               HttpResponse(HttpStatus(OK, _), _, _, _),
-              HttpResponse(HttpStatus(OK, _), _, _, _)
-            ) =>
+              HttpResponse(HttpStatus(OK, _), _, _, _)) =>
           ok
       }
     }

@@ -252,7 +252,9 @@ class LogisticRegressionSuite
         prediction != expected.label
     }
     // At least 83% of the predictions should be on.
-    ((input.length - numOffPredictions).toDouble / input.length) should be > expectedAcc
+    (
+      (input.length - numOffPredictions).toDouble / input.length
+    ) should be > expectedAcc
   }
 
   // Test if we can correctly learn A, B where Y = logistic(A + B*X)
@@ -567,8 +569,9 @@ class LogisticRegressionSuite
       * The following weights and xMean/xVariance are computed from iris dataset with lambda = 0.2.
       * As a result, we are actually drawing samples from probability distribution of built model.
       */
-    val weights = Array(-0.57997, 0.912083, -0.371077, -0.819866, 2.688191,
-      -0.16624, -0.84355, -0.048509, -0.301789, 4.170682)
+    val weights = Array(
+      -0.57997, 0.912083, -0.371077, -0.819866, 2.688191, -0.16624, -0.84355,
+      -0.048509, -0.301789, 4.170682)
 
     val xMean = Array(5.843, 3.057, 3.758, 1.199)
     val xVariance = Array(0.6856, 0.1899, 3.116, 0.581)
@@ -641,8 +644,9 @@ class LogisticRegressionSuite
       *    data.V5 -0.29198337
       */
     val weightsR = Vectors.dense(
-      Array(-0.5837166, 0.9285260, -0.3783612, -0.8123411, 2.6228269,
-        -0.1691865, -0.811048, -0.0646380, -0.2919834, 4.1119745))
+      Array(
+        -0.5837166, 0.9285260, -0.3783612, -0.8123411, 2.6228269, -0.1691865,
+        -0.811048, -0.0646380, -0.2919834, 4.1119745))
 
     assert(model.weights ~== weightsR relTol 0.05)
 

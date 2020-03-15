@@ -59,8 +59,9 @@ object Protobuf {
             val relative =
               src
                 .relativeTo(sources)
-                .getOrElse(throw new Exception(
-                  s"path $src is not a in source tree $sources"))
+                .getOrElse(
+                  throw new Exception(
+                    s"path $src is not a in source tree $sources"))
                 .toString
             val tmp = targets / "protoc" / relative
             IO.delete(tmp)
@@ -88,8 +89,9 @@ object Protobuf {
     } catch {
       case e: Exception =>
         throw new RuntimeException(
-          "error while executing '%s' with args: %s" format (protoc, args
-            .mkString(" ")),
+          "error while executing '%s' with args: %s" format (
+            protoc, args.mkString(" ")
+          ),
           e)
     }
 
@@ -107,7 +109,9 @@ object Protobuf {
     val version = res.split(" ").last.trim
     if (version != protocVersion) {
       sys.error(
-        "Wrong protoc version! Expected %s but got %s" format (protocVersion, version))
+        "Wrong protoc version! Expected %s but got %s" format (
+          protocVersion, version
+        ))
     }
   }
 

@@ -109,10 +109,6 @@ final class SeekApi(
 
   def removeBy(seekId: String, userId: String) =
     coll
-      .remove(
-        BSONDocument(
-          "_id" -> seekId,
-          "user.id" -> userId
-        ))
+      .remove(BSONDocument("_id" -> seekId, "user.id" -> userId))
       .void >> cache.clear
 }

@@ -513,9 +513,13 @@ class ApacheZooKeeperTest
   }
 
   "setData" should "handle synchronous error" in {
-    when(mockZK
-      .setData(meq(path), meq(_data), meq(version), statCB.capture, meq(null)))
-      .thenThrow(new IllegalArgumentException)
+    when(
+      mockZK.setData(
+        meq(path),
+        meq(_data),
+        meq(version),
+        statCB.capture,
+        meq(null))).thenThrow(new IllegalArgumentException)
     val nodeStat = zk.setData(path, Some(data), Some(version))
 
     verify(mockZK).setData(
@@ -756,11 +760,7 @@ class ApacheZooKeeperTest
   "sync" should "submit properly constructed sync" in {
     val synced = zk.sync(path)
 
-    verify(mockZK).sync(
-      meq(path),
-      voidCB.capture,
-      meq(null)
-    )
+    verify(mockZK).sync(meq(path), voidCB.capture, meq(null))
 
     voidCB.getValue.processResult(apacheOk, path, null)
     assert(Await.result(synced.liftToTry) == Return.Unit)
@@ -770,11 +770,7 @@ class ApacheZooKeeperTest
   "sync" should "handle ZK error" in {
     val synced = zk.sync(path)
 
-    verify(mockZK).sync(
-      meq(path),
-      voidCB.capture,
-      meq(null)
-    )
+    verify(mockZK).sync(meq(path), voidCB.capture, meq(null))
 
     voidCB.getValue.processResult(apacheConnLoss, path, null)
     intercept[KeeperException.ConnectionLoss] {
@@ -784,19 +780,11 @@ class ApacheZooKeeperTest
   }
 
   "sync" should "handle synchronous error" in {
-    when(
-      mockZK.sync(
-        meq(path),
-        voidCB.capture,
-        meq(null)
-      )).thenThrow(new IllegalArgumentException)
+    when(mockZK.sync(meq(path), voidCB.capture, meq(null)))
+      .thenThrow(new IllegalArgumentException)
     val synced = zk.sync(path)
 
-    verify(mockZK).sync(
-      meq(path),
-      voidCB.capture,
-      meq(null)
-    )
+    verify(mockZK).sync(meq(path), voidCB.capture, meq(null))
 
     intercept[IllegalArgumentException] {
       Await.result(synced)

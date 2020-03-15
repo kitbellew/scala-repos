@@ -27,9 +27,7 @@ object TaskLifeTime {
       Some(
         TaskLifeTime(
           averageSeconds = lifeTimes.sum / lifeTimes.size,
-          medianSeconds = lifeTimes(lifeTimes.size / 2)
-        )
-      )
+          medianSeconds = lifeTimes(lifeTimes.size / 2)))
     }
   }
 }

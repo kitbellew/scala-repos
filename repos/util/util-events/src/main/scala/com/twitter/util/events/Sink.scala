@@ -52,8 +52,7 @@ trait Sink {
       objectVal: Object = Event.NoObject,
       doubleVal: Double = Event.NoDouble,
       traceIdVal: Long = Event.NoTraceId,
-      spanIdVal: Long = Event.NoSpanId
-  ): Unit
+      spanIdVal: Long = Event.NoSpanId): Unit
 
   /**
     * Returns all currently available events.
@@ -109,8 +108,7 @@ object Sink {
           objectVal: Object,
           doubleVal: Double,
           traceIdVal: Long,
-          spanIdVal: Long
-      ): Unit = ()
+          spanIdVal: Long): Unit = ()
 
       override def events: Iterator[Event] = Iterator.empty
     }

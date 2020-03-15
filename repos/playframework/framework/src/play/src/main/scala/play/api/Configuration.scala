@@ -99,8 +99,7 @@ object Configuration {
         directConfig,
         applicationConfig,
         playOverridesConfig,
-        referenceConfig
-      ).reduceLeft(_ withFallback _)
+        referenceConfig).reduceLeft(_ withFallback _)
 
       // Resolve settings. Among other things, the `play.server.dir` setting defined in directConfig will
       // be substituted into the default settings in referenceConfig.
@@ -251,8 +250,9 @@ case class Configuration(underlying: Config) {
         case Some(values) =>
           throw reportError(
             path,
-            "Incorrect value, one of " + (values.reduceLeft(
-              _ + ", " + _)) + " was expected.")
+            "Incorrect value, one of " + (
+              values.reduceLeft(_ + ", " + _)
+            ) + " was expected.")
         case None => value
       }
     }
@@ -1196,8 +1196,8 @@ private[play] object ConfigLoader {
       .map(millis => FiniteDuration(millis, TimeUnit.MILLISECONDS))
   implicit val seqFiniteDurationLoader: ConfigLoader[Seq[FiniteDuration]] =
     ConfigLoader(config => config.getDurationList(_, TimeUnit.MILLISECONDS))
-      .map(toScala(_).map(millis =>
-        FiniteDuration(millis, TimeUnit.MILLISECONDS)))
+      .map(
+        toScala(_).map(millis => FiniteDuration(millis, TimeUnit.MILLISECONDS)))
 
   implicit val doubleLoader = ConfigLoader(_.getDouble)
   implicit val seqDoubleLoader = ConfigLoader(_.getDoubleList).map(toScala)

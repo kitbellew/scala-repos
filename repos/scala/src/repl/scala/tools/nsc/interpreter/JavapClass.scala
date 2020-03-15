@@ -43,8 +43,8 @@ import Javap.{JpResult, JpError, Showable, helper, toolArgs, DefaultOptions}
 class JavapClass(
     val loader: ScalaClassLoader,
     val printWriter: PrintWriter,
-    intp: IMain
-) extends Javap {
+    intp: IMain)
+    extends Javap {
   import JavapClass._
 
   lazy val tool = JavapTool()
@@ -101,9 +101,9 @@ class JavapClass(
   /** Assume the string is a path and try to find the classfile it represents.
     */
   def tryFile(path: String): Option[Array[Byte]] =
-    (Try(
-      File(
-        path.asClassResource)) filter (_.exists) map (_.toByteArray())).toOption
+    (
+      Try(File(path.asClassResource)) filter (_.exists) map (_.toByteArray())
+    ).toOption
 
   /** Assume the string is a fully qualified class name and try to
     *  find the class object it represents.
@@ -125,10 +125,12 @@ class JavapClass(
         val tran = intp translatePath name
         def loadableOrNone(strip: Boolean) = {
           def suffix(strip: Boolean)(x: String) =
-            (if (strip && (x endsWith "$"))
-               x.init
-             else
-               x) + sufx
+            (
+              if (strip && (x endsWith "$"))
+                x.init
+              else
+                x
+            ) + sufx
           val res = tran map (suffix(strip) _)
           if (res.isDefined && loadable(res.get))
             res
@@ -160,8 +162,7 @@ class JavapClass(
       // take path as a synthetic derived from some Name in scope
         orElse desynthesize(p)
       // just try it plain
-        getOrElse p
-    )
+        getOrElse p)
     load(q)
   }
 
@@ -261,8 +262,7 @@ class JavapClass(
       classOf[JavaFileManager],
       classOf[DiagnosticListener[_]],
       classOf[JIterable[String]],
-      classOf[JIterable[String]]
-    ) orFailed null
+      classOf[JIterable[String]]) orFailed null
 
     class JavaReporter
         extends DiagnosticListener[JavaFileObject]
@@ -292,14 +292,16 @@ class JavapClass(
 
     // DisassemblerTool.getStandardFileManager(reporter,locale,charset)
     val defaultFileManager: JavaFileManager =
-      (loader
-        .tryToLoadClass[JavaFileManager]("com.sun.tools.javap.JavapFileManager")
-        .get getMethod (
-        "create",
-        classOf[DiagnosticListener[_]],
-        classOf[PrintWriter]
-      ) invoke (null, reporter, new PrintWriter(System.err, true)))
-        .asInstanceOf[JavaFileManager] orFailed null
+      (
+        loader
+          .tryToLoadClass[JavaFileManager](
+            "com.sun.tools.javap.JavapFileManager")
+          .get getMethod (
+          "create",
+          classOf[DiagnosticListener[_]],
+          classOf[PrintWriter]
+        ) invoke (null, reporter, new PrintWriter(System.err, true))
+      ).asInstanceOf[JavaFileManager] orFailed null
 
     // manages named arrays of bytes, which might have failed to load
     class JavapFileManager(val managed: Seq[Input])(
@@ -411,10 +413,13 @@ class JavapClass(
     /** Run the tool. */
     def apply(options: Seq[String], filter: Boolean)(
         inputs: Seq[Input]): List[JpResult] =
-      (inputs map {
-        case (klass, Success(_)) => applyOne(options, filter, klass, inputs).get
-        case (_, Failure(e))     => JpResult(e.toString)
-      }).toList orFailed List(noToolError)
+      (
+        inputs map {
+          case (klass, Success(_)) =>
+            applyOne(options, filter, klass, inputs).get
+          case (_, Failure(e)) => JpResult(e.toString)
+        }
+      ).toList orFailed List(noToolError)
   }
 
   object JavapTool {
@@ -439,8 +444,7 @@ object JavapClass {
   def apply(
       loader: ScalaClassLoader = ScalaClassLoader.appLoader,
       printWriter: PrintWriter = new PrintWriter(System.out, true),
-      intp: IMain
-  ) = new JavapClass(loader, printWriter, intp)
+      intp: IMain) = new JavapClass(loader, printWriter, intp)
 
   /** Match foo#bar, both groups are optional (may be null). */
   val HashSplit = "([^#]+)?(?:#(.+)?)?".r
@@ -595,14 +599,18 @@ object Javap {
     if (res.nonEmpty)
       res
     else
-      (unpacked(arg)
-        getOrElse (Seq("-help"))) // or else someone needs help
+      (
+        unpacked(arg)
+          getOrElse (Seq("-help"))
+      ) // or else someone needs help
   }
 
   def helpText: String =
-    (helps map {
-      case (name, help) => f"$name%-12.12s$help%n"
-    }).mkString
+    (
+      helps map {
+        case (name, help) => f"$name%-12.12s$help%n"
+      }
+    ).mkString
 
   def helper(pw: PrintWriter) =
     new Showable {

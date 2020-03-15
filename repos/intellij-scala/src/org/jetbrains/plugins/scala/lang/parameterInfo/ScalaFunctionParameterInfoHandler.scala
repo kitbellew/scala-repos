@@ -213,8 +213,10 @@ class ScalaFunctionParameterInfoHandler
                   buffer.append(param._2)
                 }
               }
-              if (k == index || (k == parameters.length - 1 && index >= parameters.length &&
-                  parameters.last._1.isRepeated)) {
+              if (k == index || (
+                    k == parameters.length - 1 && index >= parameters.length &&
+                    parameters.last._1.isRepeated
+                  )) {
                 buffer.append("<b>")
               }
               if (k < index && !isGrey) {
@@ -279,8 +281,10 @@ class ScalaFunctionParameterInfoHandler
                   }
                 }
               }
-              if (k == index || (k == parameters.length - 1 && index >= parameters.length &&
-                  parameters.last._1.isRepeated)) {
+              if (k == index || (
+                    k == parameters.length - 1 && index >= parameters.length &&
+                    parameters.last._1.isRepeated
+                  )) {
                 buffer.append("</b>")
               }
               k = k + 1
@@ -327,11 +331,12 @@ class ScalaFunctionParameterInfoHandler
                       false,
                       false,
                       paramIndex),
-                    t._1 + ": " + ScType
-                      .presentableText(t._2) + (if (t._3 != null)
-                                                  " = " + t._3.getText
-                                                else
-                                                  ""))
+                    t._1 + ": " + ScType.presentableText(t._2) + (
+                      if (t._3 != null)
+                        " = " + t._3.getText
+                      else
+                        ""
+                    ))
               }
               applyToParameters(
                 paramsSeq,
@@ -392,9 +397,10 @@ class ScalaFunctionParameterInfoHandler
                           buffer.append(" = _")
 
                         val isBold =
-                          if (method.params.indexOf(
-                                param) == index || (param.isRepeated && method.params
-                                .indexOf(param) <= index))
+                          if (method.params.indexOf(param) == index || (
+                                param.isRepeated && method.params.indexOf(
+                                  param) <= index
+                              ))
                             true
                           else {
                             //todo: check type
@@ -437,15 +443,17 @@ class ScalaFunctionParameterInfoHandler
                           buffer.append(name)
                         }
                         buffer.append(": ")
-                        buffer.append(ScType.presentableText(
-                          subst.subst(param.exactParamType())))
+                        buffer.append(
+                          ScType.presentableText(
+                            subst.subst(param.exactParamType())))
                         if (param.isVarArgs)
                           buffer.append("*")
 
                         val isBold =
-                          if (p.getParameters.indexOf(
-                                param) == index || (param.isVarArgs && p.getParameters
-                                .indexOf(param) <= index))
+                          if (p.getParameters.indexOf(param) == index || (
+                                param.isVarArgs && p.getParameters.indexOf(
+                                  param) <= index
+                              ))
                             true
                           else {
                             //todo: check type
@@ -777,10 +785,14 @@ class ScalaFunctionParameterInfoHandler
                     }
                     for (constr <- clazz.functions
                          if !constr.isInstanceOf[ScPrimaryConstructor] &&
-                           constr.isConstructor && ((constr.clauses match {
-                           case Some(x) => x.clauses.length
-                           case None    => 1
-                         }) > i))
+                           constr.isConstructor && (
+                           (
+                             constr.clauses match {
+                               case Some(x) => x.clauses.length
+                               case None    => 1
+                             }
+                           ) > i
+                         ))
                       res += ((new PhysicalSignature(constr, subst), i))
                   case clazz: PsiClass if clazz.isAnnotationType =>
                     val resulting: (AnnotationParameters, Int) =

@@ -139,8 +139,7 @@ class SafeLongCompareBenchmark {
 
   val pairs: Map[String, (SafeLong, SafeLong)] = Map(
     "l_l" → ((SafeLong.one, SafeLong.one + 1)),
-    "b_b" → ((SafeLong.safe64, SafeLong.safe64 + 1))
-  )
+    "b_b" → ((SafeLong.safe64, SafeLong.safe64 + 1)))
   check(pairs)
 
   @Param(Array("l_l", "b_b"))

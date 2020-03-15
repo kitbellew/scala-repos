@@ -588,7 +588,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
           closeServerSideAndWaitForClientReadable(fullClose =
-            false) // send EOF (fin) from the server side
+            false
+          ) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
           connectionHandler.expectMsg(PeerClosed)
@@ -607,7 +608,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
           closeServerSideAndWaitForClientReadable(fullClose =
-            false) // send EOF (fin) from the server side
+            false
+          ) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
           connectionHandler.expectMsg(PeerClosed)
@@ -1182,10 +1184,12 @@ class TcpConnectionSpec extends AkkaSpec("""
         def apply(key: SelectionKey) =
           MatchResult(
             checkFor(key, interest, duration.toMillis.toInt),
-            "%s key was not selected for %s after %s" format (key
-              .attachment(), interestsDesc(interest), duration),
-            "%s key was selected for %s after %s" format (key
-              .attachment(), interestsDesc(interest), duration)
+            "%s key was not selected for %s after %s" format (
+              key.attachment(), interestsDesc(interest), duration
+            ),
+            "%s key was selected for %s after %s" format (
+              key.attachment(), interestsDesc(interest), duration
+            )
           )
       }
 

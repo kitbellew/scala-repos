@@ -34,9 +34,11 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
 
     "reject with a MalformedHeaderRejection if the extract function throws an exception" in {
       Get("/abc") ~> addHeader(Connection("close")) ~> {
-        (headerValuePF {
-          case _ ⇒ sys.error("Naah!")
-        }) {
+        (
+          headerValuePF {
+            case _ ⇒ sys.error("Naah!")
+          }
+        ) {
           echoComplete
         }
       } ~> check {

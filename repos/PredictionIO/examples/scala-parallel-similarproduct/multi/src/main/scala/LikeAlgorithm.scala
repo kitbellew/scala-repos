@@ -57,12 +57,14 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
         val iindex = itemStringIntMap.getOrElse(r.item, -1)
 
         if (uindex == -1)
-          logger.info(s"Couldn't convert nonexistent user ID ${r.user}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent user ID ${r.user}"
+              + " to Int index.")
 
         if (iindex == -1)
-          logger.info(s"Couldn't convert nonexistent item ID ${r.item}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent item ID ${r.item}"
+              + " to Int index.")
 
         // key is (uindex, iindex) tuple, value is (like, t) tuple
         ((uindex, iindex), (r.like, r.t))
@@ -119,8 +121,7 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
     new ALSModel(
       productFeatures = m.productFeatures,
       itemStringIntMap = itemStringIntMap,
-      items = items
-    )
+      items = items)
   }
 
 }

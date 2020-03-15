@@ -121,15 +121,15 @@ class CacheConditionDirectivesSpec extends RoutingSpec {
       val weakTag = tag.copy(weak = true)
       Get() ~> `If-None-Match`(tag) ~> weak ~> check {
         status shouldEqual NotModified
-        headers should contain theSameElementsAs (List(
-          ETag(weakTag),
-          `Last-Modified`(timestamp)))
+        headers should contain theSameElementsAs (
+          List(ETag(weakTag), `Last-Modified`(timestamp))
+        )
       }
       Get() ~> `If-None-Match`(weakTag) ~> weak ~> check {
         status shouldEqual NotModified
-        headers should contain theSameElementsAs (List(
-          ETag(weakTag),
-          `Last-Modified`(timestamp)))
+        headers should contain theSameElementsAs (
+          List(ETag(weakTag), `Last-Modified`(timestamp))
+        )
       }
     }
 

@@ -110,12 +110,14 @@ class XorTests extends CatsSuite {
   }
 
   test("catchNonFatal catches non-fatal exceptions") {
-    assert(Xor.catchNonFatal {
-      "foo".toInt
-    }.isLeft)
-    assert(Xor.catchNonFatal {
-      throw new Throwable("blargh")
-    }.isLeft)
+    assert(
+      Xor.catchNonFatal {
+        "foo".toInt
+      }.isLeft)
+    assert(
+      Xor.catchNonFatal {
+        throw new Throwable("blargh")
+      }.isLeft)
   }
 
   test("fromTry is left for failed Try") {

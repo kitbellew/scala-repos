@@ -100,8 +100,7 @@ private[twitter] object ThriftUtil {
       cls: Class[_],
       protocolFactory: TProtocolFactory,
       sr: StatsReceiver,
-      responseClassifier: ResponseClassifier
-  ): Iface = {
+      responseClassifier: ResponseClassifier): Iface = {
     val clsName = cls.getName
 
     def tryThriftFinagleClient: Option[Iface] =
@@ -182,8 +181,7 @@ private[twitter] object ThriftUtil {
       protocolFactory: TProtocolFactory,
       stats: StatsReceiver,
       maxThriftBufferSize: Int,
-      label: String
-  ): BinaryService = {
+      label: String): BinaryService = {
     def tryThriftFinagleService(iface: Class[_]): Option[BinaryService] =
       for {
         baseName <- findRootWithSuffix(iface.getName, "$ServiceIface")
@@ -192,36 +190,38 @@ private[twitter] object ThriftUtil {
       } yield cons.newInstance(impl, protocolFactory)
 
     def tryScroogeFinagleService(iface: Class[_]): Option[BinaryService] =
-      (for {
-        baseName <- findRootWithSuffix(iface.getName, "$FutureIface") orElse
-          Some(iface.getName)
-        serviceCls <- findClass[BinaryService](
-          baseName + "$FinagleService") orElse
-          findClass[BinaryService](baseName + "$FinagledService")
-        baseClass <- findClass1(baseName)
-      } yield {
-        // The new constructor takes one more 'label' paramater than the old one, so we first try find
-        // the new constructor, it it doesn't not exist, fallback to the one without 'label' parameter.
-        val oldParameters = Seq(
-          baseClass,
-          classOf[TProtocolFactory],
-          classOf[StatsReceiver],
-          Integer.TYPE)
-        val newParameters = oldParameters :+ classOf[String]
-        val oldArgs = Seq(
-          impl,
-          protocolFactory,
-          stats,
-          Int.box(maxThriftBufferSize))
-        val newArgs = oldArgs :+ label
-        def newConsCall: Option[BinaryService] =
-          findConstructor(serviceCls, newParameters: _*).map(cons =>
-            cons.newInstance(newArgs: _*))
-        def oldConsCall: Option[BinaryService] =
-          findConstructor(serviceCls, oldParameters: _*).map(cons =>
-            cons.newInstance(oldArgs: _*))
-        newConsCall.orElse(oldConsCall)
-      }).flatten
+      (
+        for {
+          baseName <- findRootWithSuffix(iface.getName, "$FutureIface") orElse
+            Some(iface.getName)
+          serviceCls <- findClass[BinaryService](
+            baseName + "$FinagleService") orElse
+            findClass[BinaryService](baseName + "$FinagledService")
+          baseClass <- findClass1(baseName)
+        } yield {
+          // The new constructor takes one more 'label' paramater than the old one, so we first try find
+          // the new constructor, it it doesn't not exist, fallback to the one without 'label' parameter.
+          val oldParameters = Seq(
+            baseClass,
+            classOf[TProtocolFactory],
+            classOf[StatsReceiver],
+            Integer.TYPE)
+          val newParameters = oldParameters :+ classOf[String]
+          val oldArgs = Seq(
+            impl,
+            protocolFactory,
+            stats,
+            Int.box(maxThriftBufferSize))
+          val newArgs = oldArgs :+ label
+          def newConsCall: Option[BinaryService] =
+            findConstructor(serviceCls, newParameters: _*).map(cons =>
+              cons.newInstance(newArgs: _*))
+          def oldConsCall: Option[BinaryService] =
+            findConstructor(serviceCls, oldParameters: _*).map(cons =>
+              cons.newInstance(oldArgs: _*))
+          newConsCall.orElse(oldConsCall)
+        }
+      ).flatten
 
     // The legacy $FinagleService that doesn't take stats.
     def tryLegacyScroogeFinagleService(iface: Class[_]): Option[BinaryService] =
@@ -450,9 +450,8 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
     * @param dest Address of the service to connect to, in the format accepted by [[Resolver.eval]].
     * @param label Assign a label for scoped stats.
     */
-  def newServiceIface[ServiceIface](dest: String, label: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
-  ): ServiceIface = {
+  def newServiceIface[ServiceIface](dest: String, label: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]): ServiceIface = {
     val thriftService = newService(dest, label)
     val statsLabel =
       if (label.isEmpty)
@@ -463,9 +462,8 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
     builder.newServiceIface(thriftService, protocolFactory, scopedStats)
   }
 
-  def newServiceIface[ServiceIface](dest: Name, label: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
-  ): ServiceIface = {
+  def newServiceIface[ServiceIface](dest: Name, label: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]): ServiceIface = {
     val thriftService = newService(dest, label)
     val statsLabel =
       if (label.isEmpty)
@@ -477,18 +475,19 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
   }
 
   @deprecated("Must provide service label", "2015-10-26")
-  def newServiceIface[ServiceIface](dest: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
-  ): ServiceIface = newServiceIface(dest, "")
+  def newServiceIface[ServiceIface](dest: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]): ServiceIface =
+    newServiceIface(dest, "")
 
   @deprecated("Must provide service label", "2015-10-26")
-  def newServiceIface[ServiceIface](dest: Name)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
-  ): ServiceIface = newServiceIface(dest, "")
+  def newServiceIface[ServiceIface](dest: Name)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]): ServiceIface =
+    newServiceIface(dest, "")
 
-  def newMethodIface[ServiceIface, FutureIface](serviceIface: ServiceIface)(
-      implicit builder: MethodIfaceBuilder[ServiceIface, FutureIface]
-  ): FutureIface = builder.newMethodIface(serviceIface)
+  def newMethodIface[ServiceIface, FutureIface](
+      serviceIface: ServiceIface)(implicit
+      builder: MethodIfaceBuilder[ServiceIface, FutureIface]): FutureIface =
+    builder.newMethodIface(serviceIface)
 }
 
 /**

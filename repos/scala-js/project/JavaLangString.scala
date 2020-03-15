@@ -159,8 +159,7 @@ object JavaLangString {
                 Ident("end", Some("end")),
                 IntType,
                 mutable = false,
-                rest = false)
-            ),
+                rest = false)),
             ClassType("jl_CharSequence"), {
               Apply(
                 LoadModule(ClassType("sjsr_RuntimeString$")),

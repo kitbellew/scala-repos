@@ -399,12 +399,12 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               currentTime,
               pageSize = taskPageSize,
               sortColumn = taskSortColumn,
-              desc = taskSortDesc
-            )
+              desc = taskSortDesc)
           (_taskTable, _taskTable.table(page))
         } catch {
-          case e @ (_: IllegalArgumentException |
-              _: IndexOutOfBoundsException) =>
+          case e @ (
+                _: IllegalArgumentException | _: IndexOutOfBoundsException
+              ) =>
             val errorMessage =
               <div class="alert alert-error">
               <p>Error while rendering stage table:</p>
@@ -875,10 +875,13 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           .getOrElse(0L)
         val shuffleReadTimeProportion = toProportion(shuffleReadTime)
         val shuffleWriteTime =
-          (metricsOpt
-            .flatMap(_.shuffleWriteMetrics
-              .map(_.writeTime))
-            .getOrElse(0L) / 1e6).toLong
+          (
+            metricsOpt
+              .flatMap(
+                _.shuffleWriteMetrics
+                  .map(_.writeTime))
+              .getOrElse(0L) / 1e6
+          ).toLong
         val shuffleWriteTimeProportion = toProportion(shuffleWriteTime)
 
         val serializationTime = metricsOpt
@@ -1043,8 +1046,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
     </div> ++
       <script type="text/javascript">
       {
-        Unparsed(s"drawTaskAssignmentTimeline(" +
-          s"$groupArrayStr, $executorsArrayStr, $minLaunchTime, $maxFinishTime)")
+        Unparsed(
+          s"drawTaskAssignmentTimeline(" +
+            s"$groupArrayStr, $executorsArrayStr, $minLaunchTime, $maxFinishTime)")
       }
     </script>
   }
@@ -1326,8 +1330,7 @@ private[ui] class TaskDataSource(
             writeTimeSortable,
             writeTimeReadable,
             shuffleWriteSortable,
-            s"$shuffleWriteReadable / $shuffleWriteRecords"
-          ))
+            s"$shuffleWriteReadable / $shuffleWriteRecords"))
       } else {
         None
       }
@@ -1339,8 +1342,7 @@ private[ui] class TaskDataSource(
             memoryBytesSpilledSortable,
             memoryBytesSpilledReadable,
             diskBytesSpilledSortable,
-            diskBytesSpilledReadable
-          ))
+            diskBytesSpilledReadable))
       } else {
         None
       }
@@ -1977,11 +1979,12 @@ private[ui] class TaskPagedTable(
   private def errorMessageCell(error: String): Seq[Node] = {
     val isMultiline = error.indexOf('\n') >= 0
     // Display the first line by default
-    val errorSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      error.substring(0, error.indexOf('\n'))
-    } else {
-      error
-    })
+    val errorSummary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline) {
+        error.substring(0, error.indexOf('\n'))
+      } else {
+        error
+      })
     val details =
       if (isMultiline) {
         // scalastyle:off

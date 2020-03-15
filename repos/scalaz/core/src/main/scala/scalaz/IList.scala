@@ -281,13 +281,14 @@ sealed abstract class IList[A] extends Product with Serializable {
   }
 
   def partition(f: A => Boolean): (IList[A], IList[A]) =
-    BFT.umap(foldLeft((IList.empty[A], IList.empty[A])) {
-      case ((ts, fs), a) =>
-        if (f(a))
-          (a :: ts, fs)
-        else
-          (ts, a :: fs)
-    })(_.reverse)
+    BFT.umap(
+      foldLeft((IList.empty[A], IList.empty[A])) {
+        case ((ts, fs), a) =>
+          if (f(a))
+            (a :: ts, fs)
+          else
+            (ts, a :: fs)
+      })(_.reverse)
 
   def patch(from: Int, patch: IList[A], replaced: Int): IList[A] = {
     val (init, tail) = splitAt(from)
@@ -457,9 +458,10 @@ sealed abstract class IList[A] extends Product with Serializable {
     }
 
   def unzip[B, C](implicit ev: A <~< (B, C)): (IList[B], IList[C]) =
-    BFT.bimap(widen[(B, C)].foldLeft((IList.empty[B], IList.empty[C])) {
-      case ((as, bs), (a, b)) => (a :: as, b :: bs)
-    })(_.reverse, _.reverse)
+    BFT.bimap(
+      widen[(B, C)].foldLeft((IList.empty[B], IList.empty[C])) {
+        case ((as, bs), (a, b)) => (a :: as, b :: bs)
+      })(_.reverse, _.reverse)
 
   /** Unlike stdlib's version, this is total and simply ignores indices that are out of range */
   def updated(index: Int, a: A): IList[A] = {
@@ -739,10 +741,12 @@ sealed abstract class IListInstances extends IListInstance0 {
             case INil()       => acc
             case ICons(x, xs) => commaSep(xs, (acc :+ ",") ++ A.show(x))
           }
-        "[" +: (as match {
-          case INil()       => Cord()
-          case ICons(x, xs) => commaSep(xs, A.show(x))
-        }) :+ "]"
+        "[" +: (
+          as match {
+            case INil()       => Cord()
+            case ICons(x, xs) => commaSep(xs, A.show(x))
+          }
+        ) :+ "]"
       }
     }
 

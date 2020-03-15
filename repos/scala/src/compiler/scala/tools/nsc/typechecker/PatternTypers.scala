@@ -94,12 +94,11 @@ trait PatternTypers {
       def resultType = (fun.tpe memberType member).finalResultType
       def isEmptyType = resultOfMatchingMethod(resultType, nme.isEmpty)()
       def isOkay =
-        (
-          resultType.isErroneous
-            || (resultType <:< BooleanTpe)
-            || (isEmptyType <:< BooleanTpe)
-            || member.isMacro
-            || member.isOverloaded // the whole overloading situation is over the rails
+        (resultType.isErroneous
+          || (resultType <:< BooleanTpe)
+          || (isEmptyType <:< BooleanTpe)
+          || member.isMacro
+          || member.isOverloaded // the whole overloading situation is over the rails
         )
 
       // Dueling test cases: pos/overloaded-unapply.scala, run/case-class-23.scala, pos/t5022.scala
@@ -139,9 +138,9 @@ trait PatternTypers {
       val FixedAndRepeatedTypes(fixed, elem) = formals
       val front = (args, fixed).zipped map typedArgWithFormal
       def rest =
-        context withinStarPatterns (args drop front.length map (typedArgWithFormal(
-          _,
-          elem)))
+        context withinStarPatterns (
+          args drop front.length map (typedArgWithFormal(_, elem))
+        )
 
       elem match {
         case NoType => front
@@ -206,11 +205,9 @@ trait PatternTypers {
       // !!! FIXME - skipping this when variance.isInvariant allows unsoundness, see SI-5189
       // Test case which presently requires the exclusion is run/gadts.scala.
       def eligible(tparam: Symbol) =
-        (
-          tparam.isTypeParameterOrSkolem
-            && tparam.owner.isTerm
-            && (settings.strictInference || !variance.isInvariant)
-        )
+        (tparam.isTypeParameterOrSkolem
+          && tparam.owner.isTerm
+          && (settings.strictInference || !variance.isInvariant))
 
       def skolems =
         try skolemBuffer.toList
@@ -218,14 +215,12 @@ trait PatternTypers {
       def apply(tp: Type): Type =
         mapOver(tp) match {
           case tp @ TypeRef(NoPrefix, tpSym, Nil) if eligible(tpSym) =>
-            val bounds = (
-              if (variance.isInvariant)
-                tpSym.tpeHK.bounds
-              else if (variance.isPositive)
-                TypeBounds.upper(tpSym.tpeHK)
-              else
-                TypeBounds.lower(tpSym.tpeHK)
-            )
+            val bounds = (if (variance.isInvariant)
+                            tpSym.tpeHK.bounds
+                          else if (variance.isPositive)
+                            TypeBounds.upper(tpSym.tpeHK)
+                          else
+                            TypeBounds.lower(tpSym.tpeHK))
             // origin must be the type param so we can deskolemize
             val skolem = context.owner.newGADTSkolem(
               unit.freshTypeName("?" + tpSym.name),
@@ -381,17 +376,15 @@ trait PatternTypers {
         pattp.substSym(freeVars, skolems)
       }
 
-      val unapplyArg = (
-        context.owner.newValue(
-          nme.SELECTOR_DUMMY,
-          fun.pos,
-          Flags.SYNTHETIC) setInfo (
-          if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType))
-            pt
-          else
-            freshUnapplyArgType()
-        )
-      )
+      val unapplyArg = (context.owner.newValue(
+        nme.SELECTOR_DUMMY,
+        fun.pos,
+        Flags.SYNTHETIC) setInfo (
+        if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType))
+          pt
+        else
+          freshUnapplyArgType()
+      ))
       val unapplyArgTree =
         Ident(unapplyArg) updateAttachment SubpatternsAttachment(args)
 

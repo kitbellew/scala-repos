@@ -39,16 +39,17 @@ class FlowJoinSpec
       val source = Source(0 to end)
       val probe = TestSubscriber.manualProbe[Seq[Int]]()
 
-      val flow1 = Flow.fromGraph(GraphDSL.create() { implicit b ⇒
-        import GraphDSL.Implicits._
-        val merge = b.add(Merge[Int](2))
-        val broadcast = b.add(Broadcast[Int](2))
-        source ~> merge.in(0)
-        merge.out ~> broadcast.in
-        broadcast.out(0).grouped(1000) ~> Sink.fromSubscriber(probe)
+      val flow1 = Flow.fromGraph(
+        GraphDSL.create() { implicit b ⇒
+          import GraphDSL.Implicits._
+          val merge = b.add(Merge[Int](2))
+          val broadcast = b.add(Broadcast[Int](2))
+          source ~> merge.in(0)
+          merge.out ~> broadcast.in
+          broadcast.out(0).grouped(1000) ~> Sink.fromSubscriber(probe)
 
-        FlowShape(merge.in(1), broadcast.out(1))
-      })
+          FlowShape(merge.in(1), broadcast.out(1))
+        })
 
       val flow2 = Flow[Int]
         .filter(_ % 2 == 1)
@@ -67,8 +68,8 @@ class FlowJoinSpec
     "allow for merge cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
-        implicit b ⇒ sink ⇒
+      val flow1 = Flow.fromGraph(
+        GraphDSL.create(Sink.head[String]) { implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(Merge[String](2))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -77,7 +78,7 @@ class FlowJoinSpec
           broadcast.out(0) ~> sink
 
           FlowShape(merge.in(1), broadcast.out(1))
-      })
+        })
 
       whenReady(flow1.join(Flow[String]).run())(_ shouldBe "lonely traveler")
     }
@@ -85,8 +86,8 @@ class FlowJoinSpec
     "allow for merge preferred cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
-        implicit b ⇒ sink ⇒
+      val flow1 = Flow.fromGraph(
+        GraphDSL.create(Sink.head[String]) { implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(MergePreferred[String](1))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -95,7 +96,7 @@ class FlowJoinSpec
           broadcast.out(0) ~> sink
 
           FlowShape(merge.in(0), broadcast.out(1))
-      })
+        })
 
       whenReady(flow1.join(Flow[String]).run())(_ shouldBe "lonely traveler")
     }
@@ -115,8 +116,8 @@ class FlowJoinSpec
           FlowShape(zip.in1, broadcast.out(1))
         })
 
-      val feedback = Flow.fromGraph(GraphDSL.create(Source.single("ignition")) {
-        implicit b ⇒ ignition ⇒
+      val feedback = Flow.fromGraph(
+        GraphDSL.create(Source.single("ignition")) { implicit b ⇒ ignition ⇒
           import GraphDSL.Implicits._
           val flow = b.add(Flow[(String, String)].map(_._1))
           val merge = b.add(Merge[String](2))
@@ -125,7 +126,7 @@ class FlowJoinSpec
           flow ~> merge.in(1)
 
           FlowShape(flow.in, merge.out)
-      })
+        })
 
       val probe = flow.join(feedback).run()
       probe.requestNext(("traveler1", "ignition"))
@@ -157,8 +158,8 @@ class FlowJoinSpec
     "allow for interleave cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
-        implicit b ⇒ sink ⇒
+      val flow1 = Flow.fromGraph(
+        GraphDSL.create(Sink.head[String]) { implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(Interleave[String](2, 1))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -167,7 +168,7 @@ class FlowJoinSpec
           broadcast.out(0) ~> sink
 
           FlowShape(merge.in(1), broadcast.out(1))
-      })
+        })
 
       whenReady(flow1.join(Flow[String]).run())(_ shouldBe "lonely traveler")
     }

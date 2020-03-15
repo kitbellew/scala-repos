@@ -113,12 +113,13 @@ class DriverRunnerTest extends SparkFunSuite {
     runner.setSleeper(sleeper)
 
     val (processBuilder, process) = createProcessBuilderAndProcess()
-    when(process.waitFor()).thenAnswer(new Answer[Int] {
-      def answer(invocation: InvocationOnMock): Int = {
-        runner.kill()
-        -1
-      }
-    })
+    when(process.waitFor()).thenAnswer(
+      new Answer[Int] {
+        def answer(invocation: InvocationOnMock): Int = {
+          runner.kill()
+          -1
+        }
+      })
 
     runner.runCommandWithRetry(processBuilder, p => (), supervise = true)
 

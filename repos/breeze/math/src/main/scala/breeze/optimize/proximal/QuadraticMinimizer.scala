@@ -747,9 +747,10 @@ object QuadraticMinimizer {
       init)
     val owlqnTime = System.nanoTime() - startOWLQN
 
-    println(s"||owlqn - sparseqp|| norm ${norm(
-      owlqnResult.x - sparseQpResult.x,
-      2)} inf-norm ${norm(owlqnResult.x - sparseQpResult.x, inf)}")
+    println(
+      s"||owlqn - sparseqp|| norm ${norm(
+        owlqnResult.x - sparseQpResult.x,
+        2)} inf-norm ${norm(owlqnResult.x - sparseQpResult.x, inf)}")
     println(
       s"sparseQp ${sparseQpTime / 1e6} ms iters ${sparseQpResult.iter} owlqn ${owlqnTime / 1e6} ms iters ${owlqnResult.iter}")
 

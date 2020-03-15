@@ -30,32 +30,34 @@ private[sbtplugin] object ScalajspUtils {
 
     override def apply(): Iterable[String] = {
       val allExamples =
-        (for {
-          relPath <- allRelPaths
-          if relPath.startsWith(prefix)
-        } yield {
-          // Returned examples must not include the prefix
-          val remaining = relPath.substring(prefix.length)
+        (
+          for {
+            relPath <- allRelPaths
+            if relPath.startsWith(prefix)
+          } yield {
+            // Returned examples must not include the prefix
+            val remaining = relPath.substring(prefix.length)
 
-          /* For files in subdirectories wrt. the current prefix, do not show
-           * the entire remaining path. Instead, show only the remaining path
-           * to the subdirectory, '/' included. This means that:
-           *
-           * > scalajsp hello<tab>
-           *
-           * will complete to
-           *
-           * > scalajsp helloworld/
-           *
-           * and further tabs are necessary to show to files and directories
-           * under the helloworld/ subdirectory.
-           */
-          val nextSlashPos = remaining.indexOf('/')
-          if (nextSlashPos == -1)
-            remaining
-          else
-            remaining.substring(0, nextSlashPos + 1)
-        }).distinct
+            /* For files in subdirectories wrt. the current prefix, do not show
+             * the entire remaining path. Instead, show only the remaining path
+             * to the subdirectory, '/' included. This means that:
+             *
+             * > scalajsp hello<tab>
+             *
+             * will complete to
+             *
+             * > scalajsp helloworld/
+             *
+             * and further tabs are necessary to show to files and directories
+             * under the helloworld/ subdirectory.
+             */
+            val nextSlashPos = remaining.indexOf('/')
+            if (nextSlashPos == -1)
+              remaining
+            else
+              remaining.substring(0, nextSlashPos + 1)
+          }
+        ).distinct
 
       val (dirs, files) = allExamples.partition(_.endsWith("/"))
       dirs.sorted ++ files.sorted

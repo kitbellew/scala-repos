@@ -16,8 +16,7 @@ class ResourceUtilTest
   test("no base resources") {
     val leftOvers = ResourceUtil.consumeResources(
       Seq(),
-      Seq(ports("ports", 2 to 12))
-    )
+      Seq(ports("ports", 2 to 12)))
     assert(leftOvers == Seq())
   }
 
@@ -42,8 +41,7 @@ class ResourceUtilTest
   test("resource repeated consumed resources with the same name/role") {
     val leftOvers = ResourceUtil.consumeResources(
       Seq(MTH.scalarResource("cpus", 3)),
-      Seq(MTH.scalarResource("cpus", 2), MTH.scalarResource("cpus", 1))
-    )
+      Seq(MTH.scalarResource("cpus", 2), MTH.scalarResource("cpus", 1)))
     assert(leftOvers == Seq())
   }
 
@@ -90,47 +88,45 @@ class ResourceUtilTest
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation),
-      usedResources = Iterable(resourceWithReservation)
-    ) should be(empty)
+      usedResources = Iterable(resourceWithReservation)) should be(empty)
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithoutReservation),
-      usedResources = Iterable(resourceWithoutReservation)
-    ) should be(empty)
+      usedResources = Iterable(resourceWithoutReservation)) should be(empty)
 
     // ensure that the correct choice is made
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithoutReservation, resourceWithReservation),
-      usedResources = Iterable(resourceWithReservation)
-    ) should be(Seq(resourceWithoutReservation))
+      usedResources = Iterable(resourceWithReservation)) should be(
+      Seq(resourceWithoutReservation))
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation, resourceWithoutReservation),
-      usedResources = Iterable(resourceWithReservation)
-    ) should be(Seq(resourceWithoutReservation))
+      usedResources = Iterable(resourceWithReservation)) should be(
+      Seq(resourceWithoutReservation))
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation, resourceWithoutReservation),
-      usedResources = Iterable(resourceWithoutReservation)
-    ) should be(Seq(resourceWithReservation))
+      usedResources = Iterable(resourceWithoutReservation)) should be(
+      Seq(resourceWithReservation))
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithoutReservation, resourceWithReservation),
-      usedResources = Iterable(resourceWithoutReservation)
-    ) should be(Seq(resourceWithReservation))
+      usedResources = Iterable(resourceWithoutReservation)) should be(
+      Seq(resourceWithReservation))
 
     // if there is no match, leave resources unchanged
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation),
-      usedResources = Iterable(resourceWithoutReservation)
-    ) should be(Seq(resourceWithReservation))
+      usedResources = Iterable(resourceWithoutReservation)) should be(
+      Seq(resourceWithReservation))
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation),
-      usedResources = Iterable(resourceWithoutReservation)
-    ) should be(Seq(resourceWithReservation))
+      usedResources = Iterable(resourceWithoutReservation)) should be(
+      Seq(resourceWithReservation))
   }
 
   test("resource consumption considers reservation labels") {
@@ -164,47 +160,45 @@ class ResourceUtilTest
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation1),
-      usedResources = Iterable(resourceWithReservation1)
-    ) should be(empty)
+      usedResources = Iterable(resourceWithReservation1)) should be(empty)
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation2),
-      usedResources = Iterable(resourceWithReservation2)
-    ) should be(empty)
+      usedResources = Iterable(resourceWithReservation2)) should be(empty)
 
     // ensure that the correct choice is made
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation2, resourceWithReservation1),
-      usedResources = Iterable(resourceWithReservation1)
-    ) should be(Seq(resourceWithReservation2))
+      usedResources = Iterable(resourceWithReservation1)) should be(
+      Seq(resourceWithReservation2))
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation1, resourceWithReservation2),
-      usedResources = Iterable(resourceWithReservation1)
-    ) should be(Seq(resourceWithReservation2))
+      usedResources = Iterable(resourceWithReservation1)) should be(
+      Seq(resourceWithReservation2))
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation1, resourceWithReservation2),
-      usedResources = Iterable(resourceWithReservation2)
-    ) should be(Seq(resourceWithReservation1))
+      usedResources = Iterable(resourceWithReservation2)) should be(
+      Seq(resourceWithReservation1))
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation2, resourceWithReservation1),
-      usedResources = Iterable(resourceWithReservation2)
-    ) should be(Seq(resourceWithReservation1))
+      usedResources = Iterable(resourceWithReservation2)) should be(
+      Seq(resourceWithReservation1))
 
     // if there is no match, leave resources unchanged
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation1),
-      usedResources = Iterable(resourceWithReservation2)
-    ) should be(Seq(resourceWithReservation1))
+      usedResources = Iterable(resourceWithReservation2)) should be(
+      Seq(resourceWithReservation1))
 
     ResourceUtil.consumeResources(
       resources = Iterable(resourceWithReservation1),
-      usedResources = Iterable(resourceWithReservation2)
-    ) should be(Seq(resourceWithReservation1))
+      usedResources = Iterable(resourceWithReservation2)) should be(
+      Seq(resourceWithReservation1))
   }
 
   test("display resources indicates reservation") {

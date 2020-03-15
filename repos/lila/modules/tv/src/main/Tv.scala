@@ -16,8 +16,9 @@ final class Tv(actor: ActorRef) {
   implicit private def timeout = makeTimeout(200 millis)
 
   def getGame(channel: Tv.Channel): Fu[Option[Game]] =
-    (actor ? TvActor
-      .GetGameId(channel) mapTo manifest[Option[String]]) recover {
+    (
+      actor ? TvActor.GetGameId(channel) mapTo manifest[Option[String]]
+    ) recover {
       case e: Exception =>
         logger.warn("[TV]" + e.getMessage)
         none
@@ -26,8 +27,9 @@ final class Tv(actor: ActorRef) {
     }
 
   def getGames(channel: Tv.Channel, max: Int): Fu[List[Game]] =
-    (actor ? TvActor
-      .GetGameIds(channel, max) mapTo manifest[List[String]]) recover {
+    (
+      actor ? TvActor.GetGameIds(channel, max) mapTo manifest[List[String]]
+    ) recover {
       case e: Exception => Nil
     } flatMap GameRepo.games
 

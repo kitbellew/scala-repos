@@ -139,10 +139,7 @@ object OpenSSL {
     }
 
     val engine: SSLEngine = linker.sslEngineCtor
-      .newInstance(
-        contextHolder,
-        bufferPool
-      )
+      .newInstance(contextHolder, bufferPool)
       .asInstanceOf[SSLEngine]
 
     Some(new Engine(engine, true))

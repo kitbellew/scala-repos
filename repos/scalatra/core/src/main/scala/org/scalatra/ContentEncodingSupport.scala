@@ -32,10 +32,12 @@ trait ContentEncodingSupport extends Handler { self: ScalatraBase =>
 
   /** Decodes the request if necessary. */
   private def decodedRequest(req: HttpServletRequest): HttpServletRequest = {
-    (for {
-      name <- Option(req.getHeader("Content-Encoding"))
-      enc <- ContentEncoding.forName(name)
-    } yield enc(req)).getOrElse(req)
+    (
+      for {
+        name <- Option(req.getHeader("Content-Encoding"))
+        enc <- ContentEncoding.forName(name)
+      } yield enc(req)
+    ).getOrElse(req)
   }
 
 }

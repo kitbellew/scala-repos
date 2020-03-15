@@ -72,16 +72,19 @@ object BinaryClassification {
           .text("number of iterations")
           .action((x, c) => c.copy(numIterations = x))
         opt[Double]("stepSize")
-          .text("initial step size (ignored by logistic regression), " +
-            s"default: ${defaultParams.stepSize}")
+          .text(
+            "initial step size (ignored by logistic regression), " +
+              s"default: ${defaultParams.stepSize}")
           .action((x, c) => c.copy(stepSize = x))
         opt[String]("algorithm")
-          .text(s"algorithm (${Algorithm.values.mkString(",")}), " +
-            s"default: ${defaultParams.algorithm}")
+          .text(
+            s"algorithm (${Algorithm.values.mkString(",")}), " +
+              s"default: ${defaultParams.algorithm}")
           .action((x, c) => c.copy(algorithm = Algorithm.withName(x)))
         opt[String]("regType")
-          .text(s"regularization type (${RegType.values.mkString(",")}), " +
-            s"default: ${defaultParams.regType}")
+          .text(
+            s"regularization type (${RegType.values.mkString(",")}), " +
+              s"default: ${defaultParams.regType}")
           .action((x, c) => c.copy(regType = RegType.withName(x)))
         opt[Double]("regParam")
           .text(s"regularization parameter, default: ${defaultParams.regParam}")

@@ -32,12 +32,8 @@ case class DataSourceParams(
     extends Params
 
 case class ParallelDataSource(val dsp: DataSourceParams)
-    extends PDataSource[
-      DataSourceParams,
-      Integer,
-      RDD[LabeledPoint],
-      Vector,
-      Double] {
+    extends PDataSource[DataSourceParams, Integer, RDD[
+      LabeledPoint], Vector, Double] {
   override def read(sc: SparkContext)
       : Seq[(Integer, RDD[LabeledPoint], RDD[(Vector, Double)])] = {
     val input = sc.textFile(dsp.filepath)
@@ -65,12 +61,8 @@ case class AlgorithmParams(
     extends Params
 
 case class ParallelSGDAlgorithm(val ap: AlgorithmParams)
-    extends P2LAlgorithm[
-      AlgorithmParams,
-      RDD[LabeledPoint],
-      RegressionModel,
-      Vector,
-      Double] {
+    extends P2LAlgorithm[AlgorithmParams, RDD[
+      LabeledPoint], RegressionModel, Vector, Double] {
 
   def train(data: RDD[LabeledPoint]): RegressionModel = {
     LinearRegressionWithSGD.train(data, ap.numIterations, ap.stepSize)
@@ -132,5 +124,4 @@ class VectorSerializer
         {
           case x: Vector =>
             JArray(x.toArray.toList.map(d => JDouble(d)))
-        }
-      ))
+        }))

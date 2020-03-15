@@ -21,24 +21,26 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
   def flatMap[E, B](f: A => IndexedContsT[W, M, O, E, B])(
       implicit W: Cobind[W]): IndexedContsT[W, M, R, E, B] =
     IndexedContsT { wbme =>
-      run(W.cobind(wbme) {
-        wk =>
-          { a =>
-            f(a).run(wk)
-          }
-      })
+      run(
+        W.cobind(wbme) {
+          wk =>
+            { a =>
+              f(a).run(wk)
+            }
+        })
     }
 
   def contramap[I](f: I => O)(implicit
       M: Functor[M],
       W: Functor[W]): IndexedContsT[W, M, R, I, A] =
     IndexedContsT { wami =>
-      run(W.map(wami) {
-        ami =>
-          { a =>
-            M.map(ami(a))(f)
-          }
-      })
+      run(
+        W.map(wami) {
+          ami =>
+            { a =>
+              M.map(ami(a))(f)
+            }
+        })
     }
 
   def imap[E](f: R => E)(implicit M: Functor[M]): IndexedContsT[W, M, E, O, A] =
@@ -57,12 +59,14 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
       M: Functor[M],
       W: Functor[W]): IndexedContsT[W, M, E, I, A] =
     IndexedContsT { wami =>
-      M.map(run(W.map(wami) {
-        ami =>
-          { a =>
-            M.map(ami(a))(g)
-          }
-      }))(f)
+      M.map(
+        run(
+          W.map(wami) {
+            ami =>
+              { a =>
+                M.map(ami(a))(g)
+              }
+          }))(f)
     }
 
   import BijectionT._
@@ -71,12 +75,14 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
       M: Functor[M],
       W: Functor[W]): ContsT[W, M, Z, A] =
     IndexedContsT { wami =>
-      M.map(run(W.map(wami) {
-        ami =>
-          { a =>
-            M.map(ami(a))(f from _)
-          }
-      }))(f to _)
+      M.map(
+        run(
+          W.map(wami) {
+            ami =>
+              { a =>
+                M.map(ami(a))(f from _)
+              }
+          }))(f to _)
     }
 }
 
@@ -108,12 +114,14 @@ trait IndexedContsTFunctions {
       def apply[A](
           fa: IndexedContsT[W, M, R, O, A]): IndexedContsT[W, N, R, O, A] =
         IndexedContsT { wk =>
-          f(fa.run(W.map(wk) {
-            k =>
-              { x =>
-                g(k(x))
-              }
-          }))
+          f(
+            fa.run(
+              W.map(wk) {
+                k =>
+                  { x =>
+                    g(k(x))
+                  }
+              }))
         }
     }
 
@@ -134,11 +142,13 @@ trait IndexedContsTFunctions {
       WA: Applicative[W],
       M: Monad[M]): IndexedContsT[W, M, R, O, A] =
     IndexedContsT { k0 =>
-      (f { a =>
-        IndexedContsT { k1 =>
-          M.bind(W.copoint(k0)(a))(W.copoint(k1))
+      (
+        f { a =>
+          IndexedContsT { k1 =>
+            M.bind(W.copoint(k0)(a))(W.copoint(k1))
+          }
         }
-      }).run_
+      ).run_
     }
 
   def reset[W[_], M[_], R, O, A](v: IndexedContsT[W, M, A, O, O])(implicit
@@ -153,11 +163,13 @@ trait IndexedContsTFunctions {
       f: (A => IndexedContsT[W, M, O, O, B]) => IndexedContsT[W, M, R, O, A])(
       implicit W: Comonad[W]): IndexedContsT[W, M, R, O, A] =
     IndexedContsT { k =>
-      (f { a =>
-        IndexedContsT[W, M, O, O, B] { _ =>
-          W.copoint(k)(a)
+      (
+        f { a =>
+          IndexedContsT[W, M, O, O, B] { _ =>
+            W.copoint(k)(a)
+          }
         }
-      }).run(k)
+      ).run(k)
     }
 }
 

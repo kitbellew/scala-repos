@@ -73,8 +73,10 @@ object FunctionTest extends SpecLite {
 
   "fix" ! forAll { (n: Int) =>
     fix[Int](_ => n) must_=== (n)
-    (fix[Stream[Int]](ns => n #:: (2 * n) #:: ns).take(4).toList
-      must_=== (List(n, 2 * n, n, 2 * n)))
+    (
+      fix[Stream[Int]](ns => n #:: (2 * n) #:: ns).take(4).toList
+        must_=== (List(n, 2 * n, n, 2 * n))
+    )
   }
 
   object instances {

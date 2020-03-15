@@ -459,8 +459,7 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
         case _ =>
           throw new IllegalArgumentException(
             s"Count-min Sketch only supports string type and integral types, " +
-              s"and does not support type $colType."
-          )
+              s"and does not support type $colType.")
       }
 
     singleCol.queryExecution.toRdd.aggregate(zero)(
@@ -468,8 +467,7 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
         updater(sketch, row)
         sketch
       },
-      (sketch1, sketch2) => sketch1.mergeInPlace(sketch2)
-    )
+      (sketch1, sketch2) => sketch1.mergeInPlace(sketch2))
   }
 
   /**
@@ -555,8 +553,7 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
         case _ =>
           throw new IllegalArgumentException(
             s"Bloom filter only supports string type and integral types, " +
-              s"and does not support type $colType."
-          )
+              s"and does not support type $colType.")
       }
 
     singleCol.queryExecution.toRdd.aggregate(zero)(
@@ -564,7 +561,6 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
         updater(filter, row)
         filter
       },
-      (filter1, filter2) => filter1.mergeInPlace(filter2)
-    )
+      (filter1, filter2) => filter1.mergeInPlace(filter2))
   }
 }

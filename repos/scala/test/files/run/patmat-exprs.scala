@@ -145,10 +145,12 @@ trait Pattern {
 
     /** Counts number of occurrences of the given subexpression. */
     def count(condition: Expr[_] => Boolean): Int =
-      (if (condition(this))
-         1
-       else
-         0) + args.map(_.count(condition)).sum
+      (
+        if (condition(this))
+          1
+        else
+          0
+      ) + args.map(_.count(condition)).sum
 
     /** Executes some code for every subexpression in the depth-first order */
     def foreach[U](block: Expr[_] => U): Unit = {
@@ -193,11 +195,12 @@ trait Pattern {
         case Add3(a, b, c) => Add(a :: b :: c :: Nil)
         case Sub(a, b)     => Add(a :: Neg(b) :: Nil)
         case Add(x) =>
-          Add(x flatMap {
-            case Neg(Add(y)) => y.map(Neg(_))
-            case Add(y)      => y
-            case y           => y :: Nil
-          })
+          Add(
+            x flatMap {
+              case Neg(Add(y)) => y.map(Neg(_))
+              case Add(y)      => y
+              case y           => y :: Nil
+            })
         case x => x
       }
     }
@@ -245,9 +248,10 @@ trait Pattern {
             case y: One[_] => Const(num.one);
             case y         => y
           }
-          val constant = num.sum(noOnes.collect {
-            case c: Const[T] => c.value
-          })
+          val constant = num.sum(
+            noOnes.collect {
+              case c: Const[T] => c.value
+            })
           val rest = noOnes.filter(x => !x.isInstanceOf[Const[_]]).toList
           val reduced = reduceComponents(rest)
           val args =
@@ -330,10 +334,12 @@ trait Pattern {
     }
 
     private def optimizeWith(f: Expr[T] => Expr[T]): Expr[T] = {
-      f(mapArgs(EndoFunction[Expr[_]](a =>
-        a match {
-          case x: Expr[T] => x.optimizeWith(f)
-        })))
+      f(
+        mapArgs(
+          EndoFunction[Expr[_]](a =>
+            a match {
+              case x: Expr[T] => x.optimizeWith(f)
+            })))
     }
 
     /** Simplifies this expression to make evaluation faster and more accurate.*/
@@ -474,8 +480,7 @@ trait Pattern {
     def derivative(v: Var[T]) =
       Div(
         Sub(Mul(left.derivative(v), right), Mul(left, right.derivative(v))),
-        Sqr(right)
-      )
+        Sqr(right))
 
     def eval(f: Any => Any) = num.div(left.eval(f), right.eval(f))
     def mapArgs(f: EndoFunction[Expr[_]]) = Div(f(left), f(right))

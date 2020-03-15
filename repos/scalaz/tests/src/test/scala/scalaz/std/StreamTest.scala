@@ -71,14 +71,18 @@ object StreamTest extends SpecLite {
 
   "foldl is foldLeft" ! forAll { (rnge: Stream[List[Int]]) =>
     val F = Foldable[Stream]
-    (rnge.foldLeft(List[Int]())(_ ++ _)
-      must_=== (F.foldLeft(rnge, List[Int]())(_ ++ _)))
+    (
+      rnge.foldLeft(List[Int]())(_ ++ _)
+        must_=== (F.foldLeft(rnge, List[Int]())(_ ++ _))
+    )
   }
 
   "foldr is foldRight" ! forAll { (rnge: Stream[List[Int]]) =>
     val F = Foldable[Stream]
-    (rnge.foldRight(List[Int]())(_ ++ _)
-      must_=== (F.foldRight(rnge, List[Int]())(_ ++ _)))
+    (
+      rnge.foldRight(List[Int]())(_ ++ _)
+        must_=== (F.foldRight(rnge, List[Int]())(_ ++ _))
+    )
   }
 
   "foldMap evaluates lazily" in {
@@ -98,9 +102,11 @@ object StreamTest extends SpecLite {
     val F = Traverse[Stream]
     F.zipL(infinite, infinite)
     F.zipL(finite, infinite).length must_=== (size)
-    F.zipL(finite, infinite) must_=== ((finite zip infinite).map { x =>
-      (x._1, Option(x._2))
-    })
+    F.zipL(finite, infinite) must_=== (
+      (finite zip infinite).map { x =>
+        (x._1, Option(x._2))
+      }
+    )
     F.zipL(infinite, finite).take(1000).length must_=== (1000)
     F.zipL(infinite, finite).takeWhile(_._2.isDefined).length must_=== (size)
   }

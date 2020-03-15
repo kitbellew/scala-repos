@@ -20,8 +20,8 @@ private[parser] trait WebSocketHeaders {
 
   def `sec-websocket-extensions` =
     rule {
-      oneOrMore(extension).separatedBy(
-        listSep) ~ EOI ~> (`Sec-WebSocket-Extensions`(_))
+      oneOrMore(extension)
+        .separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Extensions`(_))
     }
 
   def `sec-websocket-key` =
@@ -31,14 +31,14 @@ private[parser] trait WebSocketHeaders {
 
   def `sec-websocket-protocol` =
     rule {
-      oneOrMore(token).separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Protocol`(
-        _))
+      oneOrMore(token)
+        .separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Protocol`(_))
     }
 
   def `sec-websocket-version` =
     rule {
-      oneOrMore(version).separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Version`(
-        _))
+      oneOrMore(version)
+        .separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Version`(_))
     }
 
   private def `base64-value-non-empty` =

@@ -57,9 +57,10 @@ class MongoCaseClassField[OwnerType <: Record[OwnerType], CaseType](
     jvalue match {
       case JNothing | JNull => setBox(Empty)
       case s =>
-        setBox(Helpers.tryo[CaseType] {
-          s.extract[CaseType]
-        })
+        setBox(
+          Helpers.tryo[CaseType] {
+            s.extract[CaseType]
+          })
     }
 
   def asDBObject: DBObject = {
@@ -116,10 +117,12 @@ class MongoCaseClassListField[OwnerType <: Record[OwnerType], CaseType](
   def setFromJValue(jvalue: JValue): Box[MyType] =
     jvalue match {
       case JArray(contents) =>
-        setBox(Full(contents.flatMap(s =>
-          Helpers.tryo[CaseType] {
-            s.extract[CaseType]
-          })))
+        setBox(
+          Full(
+            contents.flatMap(s =>
+              Helpers.tryo[CaseType] {
+                s.extract[CaseType]
+              })))
       case _ => setBox(Empty)
     }
 

@@ -149,9 +149,11 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     */
   case class ScalaSigBytes(bytes: Array[Byte]) extends ClassfileAnnotArg {
     override def toString =
-      (bytes map { byte =>
-        (byte & 0xff).toHexString
-      }).mkString("[ ", " ", " ]")
+      (
+        bytes map { byte =>
+          (byte & 0xff).toHexString
+        }
+      ).mkString("[ ", " ", " ]")
     lazy val sevenBitsMayBeZero: Array[Byte] = {
       mapToNextModSevenBits(
         scala.reflect.internal.pickling.ByteCodecs.encode8to7(bytes))
@@ -183,10 +185,12 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
       val srclen = src.length
       while (i < srclen) {
         val in = src(i)
-        src(i) = (if (in == 0x7f)
-                    0.toByte
-                  else
-                    (in + 1).toByte)
+        src(i) = (
+          if (in == 0x7f)
+            0.toByte
+          else
+            (in + 1).toByte
+        )
         i += 1
       }
       src
@@ -233,8 +237,8 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
   class CompleteAnnotationInfo(
       val atp: Type,
       val args: List[Tree],
-      val assocs: List[(Name, ClassfileAnnotArg)]
-  ) extends AnnotationInfo {
+      val assocs: List[(Name, ClassfileAnnotArg)])
+      extends AnnotationInfo {
     // Classfile annot: args empty. Scala annot: assocs empty.
     assert(args.isEmpty || assocs.isEmpty, atp)
 
@@ -259,9 +263,11 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
         ""
     val s_assocs =
       if (!assocs.isEmpty)
-        (assocs map {
-          case (x, y) => x + " = " + y
-        } mkString ("(", ", ", ")"))
+        (
+          assocs map {
+            case (x, y) => x + " = " + y
+          } mkString ("(", ", ", ")")
+        )
       else
         ""
     s"${atp}${s_args}${s_assocs}"
@@ -512,9 +518,13 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
             case Nil => Nil
           }
         val atp = tpt.tpe
-        if (atp != null && (atp.typeSymbol isNonBottomSubClass StaticAnnotationClass))
+        if (atp != null && (
+              atp.typeSymbol isNonBottomSubClass StaticAnnotationClass
+            ))
           AnnotationInfo(atp, args, Nil)
-        else if (atp != null && (atp.typeSymbol isNonBottomSubClass ClassfileAnnotationClass))
+        else if (atp != null && (
+                   atp.typeSymbol isNonBottomSubClass ClassfileAnnotationClass
+                 ))
           AnnotationInfo(atp, Nil, encodeJavaArgs(args))
         else
           throw new Exception(

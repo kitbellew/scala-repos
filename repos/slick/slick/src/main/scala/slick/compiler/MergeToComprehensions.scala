@@ -168,11 +168,12 @@ class MergeToComprehensions extends Phase {
                   .map(l => ("_" :: l).mkString("."))
                   .mkString(", "))
               val targets = leakedPaths.map(_.foldLeft(b2)(_ select _))
-              targets.indexWhere(_.findNode {
-                case _: QueryParameter => true
-                case n: LiteralNode    => n.volatileHint
-                case _                 => false
-              }.isDefined) >= 0
+              targets.indexWhere(
+                _.findNode {
+                  case _: QueryParameter => true
+                  case n: LiteralNode    => n.volatileHint
+                  case _                 => false
+                }.isDefined) >= 0
             })
             if (isParam) {
               logger.debug(
@@ -190,10 +191,11 @@ class MergeToComprehensions extends Phase {
                 case Apply(f: AggregateFunctionSymbol, ConstArray(ch)) :@ tpe =>
                   Apply(
                     f,
-                    ConstArray(ch match {
-                      case StructNode(ConstArray(ch, _*)) => ch._2
-                      case n                              => n
-                    }))(tpe)
+                    ConstArray(
+                      ch match {
+                        case StructNode(ConstArray(ch, _*)) => ch._2
+                        case n                              => n
+                      }))(tpe)
               }
             case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 =>
               rest
@@ -321,10 +323,12 @@ class MergeToComprehensions extends Phase {
                       case Some(ElementSymbol(idx) :: ss) =>
                         //logger.debug(s"Found $idx :: $ss")
                         FwdPath(
-                          (if (idx == 1)
-                             ls
-                           else
-                             rs) :: ss)
+                          (
+                            if (idx == 1)
+                              ls
+                            else
+                              rs
+                          ) :: ss)
                       case _ => p
                     }
                 },
@@ -422,9 +426,10 @@ class MergeToComprehensions extends Phase {
     logger.debug("Building new Comprehension from:", n)
     val newSyms = mappings.map(x => (x, new AnonSymbol))
     val s = new AnonSymbol
-    val struct = StructNode(newSyms.map {
-      case ((_, ss), as) => (as, FwdPath(s :: ss))
-    })
+    val struct = StructNode(
+      newSyms.map {
+        case ((_, ss), as) => (as, FwdPath(s :: ss))
+      })
     val pid = new AnonTypeSymbol
     val res = Comprehension(s, n, select = Pure(struct, pid)).infer()
     logger.debug("Built new Comprehension:", res)

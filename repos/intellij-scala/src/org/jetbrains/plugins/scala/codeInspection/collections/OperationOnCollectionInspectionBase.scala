@@ -112,14 +112,12 @@ abstract class OperationOnCollectionInspectionBase
 
   private val patternLists = Map(
     likeCollectionKey -> getLikeCollectionClasses _,
-    likeOptionKey -> getLikeOptionClasses _
-  )
+    likeOptionKey -> getLikeOptionClasses _)
 
   private val setPatternLists = {
     Map(
       likeCollectionKey -> setLikeCollectionClasses _,
-      likeOptionKey -> setLikeOptionClasses _
-    )
+      likeOptionKey -> setLikeOptionClasses _)
   }
 
   override def createOptionsPanel: JComponent = {
@@ -130,12 +128,13 @@ abstract class OperationOnCollectionInspectionBase
         val enabled: Array[java.lang.Boolean] = getSimplificationTypesEnabled
         val checkBox =
           new JCheckBox(possibleSimplificationTypes(i).description, enabled(i))
-        checkBox.getModel.addChangeListener(new ChangeListener {
-          def stateChanged(e: ChangeEvent) {
-            enabled(i) = checkBox.isSelected
-            setSimplificationTypesEnabled(enabled)
-          }
-        })
+        checkBox.getModel.addChangeListener(
+          new ChangeListener {
+            def stateChanged(e: ChangeEvent) {
+              enabled(i) = checkBox.isSelected
+              setSimplificationTypesEnabled(enabled)
+            }
+          })
         innerPanel.add(checkBox)
       }
       val extPanel = new JPanel()
@@ -161,44 +160,46 @@ abstract class OperationOnCollectionInspectionBase
       val panel =
         ToolbarDecorator
           .createDecorator(patternJBList)
-          .setAddAction(new AnActionButtonRunnable {
-            def addPattern(pattern: String) {
-              if (pattern == null)
-                return
-              val index: Int =
-                -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
-              if (index < 0)
-                return
-              JListCompatibility.add(listModel, index, pattern)
-              resetValues()
-              patternJBList.setSelectedValue(pattern, true)
-              ScrollingUtil.ensureIndexIsVisible(patternJBList, index, 0)
-              IdeFocusManager.getGlobalInstance
-                .requestFocus(patternJBList, false)
-            }
+          .setAddAction(
+            new AnActionButtonRunnable {
+              def addPattern(pattern: String) {
+                if (pattern == null)
+                  return
+                val index: Int =
+                  -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
+                if (index < 0)
+                  return
+                JListCompatibility.add(listModel, index, pattern)
+                resetValues()
+                patternJBList.setSelectedValue(pattern, true)
+                ScrollingUtil.ensureIndexIsVisible(patternJBList, index, 0)
+                IdeFocusManager.getGlobalInstance
+                  .requestFocus(patternJBList, false)
+              }
 
-            def run(button: AnActionButton) {
-              val validator: InputValidator =
-                ScalaProjectSettingsUtil.getPatternValidator
-              val inputMessage = inputMessages(patternListKey)
-              val inputTitle = inputTitles(patternListKey)
-              val newPattern: String = Messages.showInputDialog(
-                parent,
-                inputMessage,
-                inputTitle,
-                Messages.getWarningIcon,
-                "",
-                validator)
-              addPattern(newPattern)
-            }
-          })
-          .setRemoveAction(new AnActionButtonRunnable {
-            def run(t: AnActionButton) {
-              patternJBList.getSelectedIndices.foreach(
-                listModel.removeElementAt)
-              resetValues()
-            }
-          })
+              def run(button: AnActionButton) {
+                val validator: InputValidator =
+                  ScalaProjectSettingsUtil.getPatternValidator
+                val inputMessage = inputMessages(patternListKey)
+                val inputTitle = inputTitles(patternListKey)
+                val newPattern: String = Messages.showInputDialog(
+                  parent,
+                  inputMessage,
+                  inputTitle,
+                  Messages.getWarningIcon,
+                  "",
+                  validator)
+                addPattern(newPattern)
+              }
+            })
+          .setRemoveAction(
+            new AnActionButtonRunnable {
+              def run(t: AnActionButton) {
+                patternJBList.getSelectedIndices.foreach(
+                  listModel.removeElementAt)
+                resetValues()
+              }
+            })
           .disableUpDownActions
           .createPanel
 

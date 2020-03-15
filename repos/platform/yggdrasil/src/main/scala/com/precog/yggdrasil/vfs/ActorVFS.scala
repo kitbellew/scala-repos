@@ -309,13 +309,14 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     /** Suck the file into a String */
     def asString(implicit M: Monad[Future]): OptionT[Future, String] =
-      OptionT(M point {
-        stringTypes
-          .contains(mimeType)
-          .option(IOUtils.readFileToString(dataFile))
-          .sequence
-          .unsafePerformIO
-      })
+      OptionT(
+        M point {
+          stringTypes
+            .contains(mimeType)
+            .option(IOUtils.readFileToString(dataFile))
+            .sequence
+            .unsafePerformIO
+        })
 
     /** Stream the file off disk. */
     def ioStream: StreamT[IO, Array[Byte]] = {
@@ -339,9 +340,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
       StreamT.unfoldM[IO, Array[Byte], Long](0L) { offset =>
         IO(new FileInputStream(dataFile)).bracket(f => IO(f.close())) { in =>
-          IO(readChunk(in, offset) map { bytes =>
-            (bytes, offset + bytes.length)
-          })
+          IO(
+            readChunk(in, offset) map { bytes =>
+              (bytes, offset + bytes.length)
+            })
         }
       }
     }
@@ -396,9 +398,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         for {
           // it's necessary to group by path then traverse since each path will respond to ingest independently.
           // -- a bit of a leak of implementation detail, but that's the actor model for you.
-          allResults <- (data groupBy {
-            case (offset, msg) => msg.path
-          }).toStream traverse {
+          allResults <- (
+            data groupBy {
+              case (offset, msg) => msg.path
+            }
+          ).toStream traverse {
             case (path, subset) =>
               (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
           }
@@ -487,8 +491,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       MaxSize(maxOpenPaths),
       OnRemoval({ (p: Path, _: Unit, _: RemovalCause) =>
         pathActors.get(p).foreach(_ ! ReceiveTimeout)
-      })
-    )
+      }))
 
     private[this] var pathActors = Map.empty[Path, ActorRef]
 
@@ -703,17 +706,20 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               resource <- EitherT {
                 openf(dir) flatMap {
                   _ tap { resourceV =>
-                    IO(resourceV foreach { r =>
-                      versions += (version -> r)
-                    })
+                    IO(
+                      resourceV foreach { r =>
+                        versions += (version -> r)
+                      })
                   }
                 }
               }
             } yield resource
         } getOrElse {
           left(
-            IO(Corrupt("No version %s found to exist for resource %s."
-              .format(version, path.path))))
+            IO(
+              Corrupt(
+                "No version %s found to exist for resource %s."
+                  .format(version, path.path))))
         }
       }
     }
@@ -758,8 +764,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       } yield {
         created.fold(
           error => PathOpFailure(path, error),
-          (_: Resource) => UpdateSuccess(path)
-        )
+          (_: Resource) => UpdateSuccess(path))
       }
     }
 
@@ -813,10 +818,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         openResource(version) flatMap {
           _.fold(
             blob =>
-              left(IO(NotFound(
-                "Located resource on %s is a BLOB, not a projection" format path.path))),
-            db => right(IO(db))
-          )
+              left(
+                IO(
+                  NotFound(
+                    "Located resource on %s is a BLOB, not a projection" format path.path))),
+            db => right(IO(db)))
         }
       }
 
@@ -926,8 +932,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 terminal)
 
             case StreamRef.Replace(streamId, terminal) =>
-              logger.trace("Received replace for %s stream %s: complete: %b"
-                .format(path.path, streamId, versionLog.isCompleted(streamId)))
+              logger.trace(
+                "Received replace for %s stream %s: complete: %b".format(
+                  path.path,
+                  streamId,
+                  versionLog.isCompleted(streamId)))
               persistNIHDB(
                 !versionLog.isCompleted(streamId),
                 offset,
@@ -1034,8 +1043,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 IO(
                   PathOpFailure(
                     path,
-                    NotFound("No current version found for path %s".format(
-                      path.path))))
+                    NotFound(
+                      "No current version found for path %s".format(
+                        path.path))))
               }
 
             case Version.Archived(id) =>

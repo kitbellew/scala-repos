@@ -11,8 +11,7 @@ object Test {
       else if (result == 0)
         0
       else
-        1
-    )
+        1)
 
   def main(args: Array[String]) = {
     println(Foo indexWhere (_ >= 2, 1))

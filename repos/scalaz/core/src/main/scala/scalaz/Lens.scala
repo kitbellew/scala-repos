@@ -274,11 +274,9 @@ trait LensFamilyFunctions {
       : LensFamily[LazyTuple2[A, B1], LazyTuple2[A, B2], B1, B2] =
     lensFamily(z => IndexedStore(x => LazyTuple2(z._1, x), z._2))
 
-  def predicateLensFamily[A1, A2]: LensFamily[
-    Store[A1, Boolean],
-    Store[A2, Boolean],
-    (A1 \/ A1),
-    (A2 \/ A2)] =
+  def predicateLensFamily[A1, A2]: LensFamily[Store[A1, Boolean], Store[
+    A2,
+    Boolean], (A1 \/ A1), (A2 \/ A2)] =
     lensFamily(q =>
       IndexedStore(
         _ match {
@@ -494,8 +492,7 @@ abstract class LensInstances extends LensInstances0 {
             val c = a run x
             val (p, q) = c.pos
             IndexedStore(a => c.put((p, a)): R, q)
-          })
-        )
+          }))
     }
 
   type SetLens[S, K] = SetLensFamily[S, S, K]
@@ -515,8 +512,7 @@ abstract class LensInstances extends LensInstances0 {
                 else
                   m - key,
               s): Id[S2],
-        s => lens.get(s).contains(key)
-      )
+        s => lens.get(s).contains(key))
 
     def &=(that: Set[K]): IndexedState[S1, S2, Set[K]] = lens %= (_ & that)
 
@@ -559,10 +555,12 @@ abstract class LensInstances extends LensInstances0 {
           opt =>
             lens.mod(
               (m: Map[K, V]) =>
-                (opt match {
-                  case Some(v) => m + (k -> v)
-                  case None    => m - k
-                }): Map[K, V],
+                (
+                  opt match {
+                    case Some(v) => m + (k -> v)
+                    case None    => m - k
+                  }
+                ): Map[K, V],
               s): Id[S2],
         s => lens.get(s).get(k))
 
@@ -663,8 +661,7 @@ abstract class LensInstances extends LensInstances0 {
                 copy
               },
               s): Id[S2],
-        s => lens.get(s) apply n
-      )
+        s => lens.get(s) apply n)
 
     def length: State[S1, Int] = lens >- (_.length)
   }

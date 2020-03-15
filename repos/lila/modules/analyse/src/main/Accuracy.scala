@@ -27,17 +27,18 @@ object Accuracy {
     (pov.color == pov.game.startColor)
       .fold(
         Info.start(pov.game.startedAtTurn) :: analysis.infos,
-        analysis.infos
-      )
+        analysis.infos)
       .grouped(2)
       .foldLeft(List[Int]()) {
         case (list, List(i1, i2)) =>
           makeDiff.lift(i1.score, i1.mate, i2.score, i2.mate).fold(list) {
             diff =>
-              (if (pov.color.white)
-                 -diff
-               else
-                 diff).max(0) :: list
+              (
+                if (pov.color.white)
+                  -diff
+                else
+                  diff
+              ).max(0) :: list
           }
         case (list, _) => list
       }
@@ -47,8 +48,7 @@ object Accuracy {
     (pov.color == pov.game.startColor)
       .fold(
         Info.start(pov.game.startedAtTurn) :: analysis.infos,
-        analysis.infos
-      )
+        analysis.infos)
       .zipWithIndex
       .collect {
         case (e, i) if (i % 2) == 0 => e

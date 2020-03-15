@@ -8,13 +8,8 @@ import Prop._
 trait TraverseTests[F[_]] extends FunctorTests[F] with FoldableTests[F] {
   def laws: TraverseLaws[F]
 
-  def traverse[
-      A: Arbitrary,
-      B: Arbitrary,
-      C: Arbitrary,
-      M: Arbitrary,
-      X[_]: Applicative,
-      Y[_]: Applicative](implicit
+  def traverse[A: Arbitrary, B: Arbitrary, C: Arbitrary, M: Arbitrary, X[
+      _]: Applicative, Y[_]: Applicative](implicit
       ArbFA: Arbitrary[F[A]],
       ArbXB: Arbitrary[X[B]],
       ArbYB: Arbitrary[Y[B]],
@@ -25,8 +20,7 @@ trait TraverseTests[F[_]] extends FunctorTests[F] with FoldableTests[F] {
       EqM: Eq[M],
       EqXYFC: Eq[X[Y[F[C]]]],
       EqXFB: Eq[X[F[B]]],
-      EqYFB: Eq[Y[F[B]]]
-  ): RuleSet = {
+      EqYFB: Eq[Y[F[B]]]): RuleSet = {
     implicit def EqXFBYFB: Eq[(X[F[B]], Y[F[B]])] =
       new Eq[(X[F[B]], Y[F[B]])] {
         override def eqv(

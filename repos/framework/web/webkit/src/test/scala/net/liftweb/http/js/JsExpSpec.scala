@@ -35,8 +35,9 @@ object JsExpSpec extends Specification {
     "Deal with lift-json" in {
       val json = ("a" -> 4) ~ ("b" -> 44)
 
-      JE.JsArray(json, "dog")
-        .toJsCmd must_== ("""[{"a":4,"b":44}, "dog"]""" + "\n")
+      JE.JsArray(json, "dog").toJsCmd must_== (
+        """[{"a":4,"b":44}, "dog"]""" + "\n"
+      )
 
     }
 
@@ -55,9 +56,10 @@ object JsExpSpec extends Specification {
       import JsExp._
 
       // Can't get this to work:  JE.JsArray(l map {d => (d.getOrElse(0.0)):JsExp}) must_== JE.JsArray(1.0, 0.0)
-      JE.JsArray(l map { d =>
-        (d.getOrElse(0.0): Double): JsExp
-      }) must_== JE.JsArray(1.0, 0.0)
+      JE.JsArray(
+        l map { d =>
+          (d.getOrElse(0.0): Double): JsExp
+        }) must_== JE.JsArray(1.0, 0.0)
     }
 
   }

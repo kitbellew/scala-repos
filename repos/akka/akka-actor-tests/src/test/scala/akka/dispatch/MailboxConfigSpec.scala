@@ -152,8 +152,10 @@ abstract class MailboxSpec
 
         def createProducer(fromNum: Int, toNum: Int): Future[Vector[Envelope]] =
           spawn {
-            val messages = Vector() ++ (for (i ← fromNum to toNum)
-              yield createMessageInvocation(i))
+            val messages = Vector() ++ (
+              for (i ← fromNum to toNum)
+                yield createMessageInvocation(i)
+            )
             for (i ← messages)
               q.enqueue(testActor, i)
             messages
@@ -326,24 +328,29 @@ class SingleConsumerOnlyMailboxVerificationSpec
 
   def pathologicalPingPong(dispatcherId: String): Unit = {
     val total = 2000000
-    val runner = system.actorOf(Props(new Actor {
-      val a, b = context.watch(context.actorOf(Props(new Actor {
-        var n = total / 2
-        def receive = {
-          case Ping ⇒
-            n -= 1
-            sender() ! Ping
-            if (n == 0)
-              context stop self
-        }
-      }).withDispatcher(dispatcherId)))
-      def receive = {
-        case Ping ⇒ a.tell(Ping, b)
-        case Terminated(`a` | `b`) ⇒
-          if (context.children.isEmpty)
-            context stop self
-      }
-    }))
+    val runner = system.actorOf(
+      Props(
+        new Actor {
+          val a, b = context.watch(
+            context.actorOf(
+              Props(
+                new Actor {
+                  var n = total / 2
+                  def receive = {
+                    case Ping ⇒
+                      n -= 1
+                      sender() ! Ping
+                      if (n == 0)
+                        context stop self
+                  }
+                }).withDispatcher(dispatcherId)))
+          def receive = {
+            case Ping ⇒ a.tell(Ping, b)
+            case Terminated(`a` | `b`) ⇒
+              if (context.children.isEmpty)
+                context stop self
+          }
+        }))
     watch(runner)
     runner ! Ping
     expectTerminated(runner)

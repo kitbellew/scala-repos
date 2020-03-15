@@ -35,8 +35,8 @@ class SVDPlusPlusSuite extends SparkFunSuite with LocalSparkContext {
             fields(2).toDouble)
         }
       val conf =
-        new SVDPlusPlus.Conf(10, 2, 0.0, 5.0, 0.007, 0.007, 0.005,
-          0.015) // 2 iterations
+        new SVDPlusPlus.Conf(
+          10, 2, 0.0, 5.0, 0.007, 0.007, 0.005, 0.015) // 2 iterations
       val (graph, _) = SVDPlusPlus.run(edges, conf)
       graph.cache()
       val err = graph.vertices

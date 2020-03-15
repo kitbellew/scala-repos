@@ -128,9 +128,11 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
           suitableMethods get 0,
           companionObject.EMPTY_ARGS)
       } catch {
-        case (_: EvaluateException | _: InvocationException |
-            _: InvalidTypeException | _: IncompatibleThreadStateException |
-            _: ClassNotLoadedException) =>
+        case (
+              _: EvaluateException | _: InvocationException |
+              _: InvalidTypeException | _: IncompatibleThreadStateException |
+              _: ClassNotLoadedException
+            ) =>
           null
       }
     }
@@ -235,16 +237,19 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
     descriptor.getValue match {
       case obj: ObjectReference =>
         val tpe = obj.referenceType()
-        val sizeString = " size = " + (tryToGetSize(obj, context) match {
-          case Success(value: Int) => value
-          case _                   => "?"
-        })
+        val sizeString = " size = " + (
+          tryToGetSize(obj, context) match {
+            case Success(value: Int) => value
+            case _                   => "?"
+          }
+        )
 
-        stringBuilder append (if (tpe != null)
-                                ScalaCollectionRenderer.transformName(
-                                  tpe.name) + sizeString
-                              else
-                                "{...}")
+        stringBuilder append (
+          if (tpe != null)
+            ScalaCollectionRenderer.transformName(tpe.name) + sizeString
+          else
+            "{...}"
+        )
       case _ => stringBuilder append "{...}"
     }
 
@@ -276,9 +281,11 @@ object NonStrictCollectionsRenderer {
         case _                         => MethodNotFound()
       }
     } catch {
-      case e @ (_: EvaluateException | _: InvocationException |
-          _: InvalidTypeException | _: IncompatibleThreadStateException |
-          _: ClassNotLoadedException) =>
+      case e @ (
+            _: EvaluateException | _: InvocationException |
+            _: InvalidTypeException | _: IncompatibleThreadStateException |
+            _: ClassNotLoadedException
+          ) =>
         Fail[Throwable](e)
     }
   }

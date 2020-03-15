@@ -220,10 +220,8 @@ object CanConvolve extends SerializableLogging {
       : Output = canCorrelateNoOverhang(data, kernel, range)
   @expand
   @expand.valify
-  implicit def correlateLoopNoOverhangRangeT[@expand.args(
-    Double,
-    Float,
-    Long) T]
+  implicit def correlateLoopNoOverhangRangeT[
+      @expand.args(Double, Float, Long) T]
       : CanCorrelateNoOverhang[DenseVector[T], DenseVector[T], DenseVector[T]] =
     new CanCorrelateNoOverhang[DenseVector[T], DenseVector[T], DenseVector[T]] {
       def apply(
@@ -264,14 +262,11 @@ object CanConvolve extends SerializableLogging {
       }
     }
 
-  implicit val correlateLoopNoOverhangRangeInt: CanCorrelateNoOverhang[
-    DenseVector[Int],
-    DenseVector[Int],
-    DenseVector[Int]] =
-    new CanCorrelateNoOverhang[
-      DenseVector[Int],
-      DenseVector[Int],
-      DenseVector[Int]] {
+  implicit val correlateLoopNoOverhangRangeInt
+      : CanCorrelateNoOverhang[DenseVector[Int], DenseVector[Int], DenseVector[
+        Int]] =
+    new CanCorrelateNoOverhang[DenseVector[Int], DenseVector[Int], DenseVector[
+      Int]] {
       def apply(
           data: DenseVector[Int],
           kernel: DenseVector[Int],

@@ -641,9 +641,8 @@ object HttpEntity {
                 case None ⇒
               }
 
-            def onPush(
-                elem: Out,
-                ctx: stage.Context[Out]): stage.SyncDirective = {
+            def onPush(elem: Out, ctx: stage.Context[Out])
+                : stage.SyncDirective = {
               bytesLeft -= sizeOf(elem)
               if (bytesLeft >= 0)
                 ctx.push(elem)

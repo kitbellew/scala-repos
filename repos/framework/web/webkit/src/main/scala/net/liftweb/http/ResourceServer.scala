@@ -72,22 +72,24 @@ object ResourceServer {
       lastModCache.get(str)
     else {
       val ret: Long =
-        (for {
-          uc <- tryo(in.openConnection)
-        } yield {
-          uc.getLastModified match {
-            case 0L =>
-              uc match {
-                case jc: JarURLConnection =>
-                  jc.getJarEntry() match {
-                    case null => 0L
-                    case e    => e.getTime()
-                  }
-                case _ => 0L
-              }
-            case x => x
+        (
+          for {
+            uc <- tryo(in.openConnection)
+          } yield {
+            uc.getLastModified match {
+              case 0L =>
+                uc match {
+                  case jc: JarURLConnection =>
+                    jc.getJarEntry() match {
+                      case null => 0L
+                      case e    => e.getTime()
+                    }
+                  case _ => 0L
+                }
+              case x => x
+            }
           }
-        }) openOr 0L
+        ) openOr 0L
       lastModCache.put(str, ret)
       ret
     }
@@ -112,10 +114,12 @@ object ResourceServer {
         stream,
         () => stream.close,
         uc.getContentLength,
-        (if (lastModified == 0L)
-           Nil
-         else
-           List("Last-Modified" -> toInternetDate(lastModified))) :::
+        (
+          if (lastModified == 0L)
+            Nil
+          else
+            List("Last-Modified" -> toInternetDate(lastModified))
+        ) :::
           List(
             "Expires" -> toInternetDate(millis + 30.days),
             "Date" -> Helpers.nowAsInternetDate,
@@ -141,8 +145,10 @@ object ResourceServer {
     */
   def detectContentType(path: String): String = {
     // Configure response with content type of resource
-    (LiftRules.context.mimeType(path) or
-      (Box !! URLConnection.getFileNameMap().getContentTypeFor(path))) openOr
+    (
+      LiftRules.context.mimeType(path) or
+        (Box !! URLConnection.getFileNameMap().getContentTypeFor(path))
+    ) openOr
       "application/octet-stream"
   }
 

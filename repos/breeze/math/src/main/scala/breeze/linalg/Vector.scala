@@ -780,17 +780,11 @@ trait VectorOps { this: Vector.type =>
     }
   @expand
   @expand.valify
-  implicit def canDot_V_V[@expand.args(Int, Long, Float, Double) T](
-      implicit @expand.sequence[T](0, 0L, 0.0f, 0.0) zero: T): BinaryRegistry[
-    Vector[T],
-    Vector[T],
-    breeze.linalg.operators.OpMulInner.type,
-    T] = {
-    new BinaryRegistry[
-      Vector[T],
-      Vector[T],
-      breeze.linalg.operators.OpMulInner.type,
-      T] {
+  implicit def canDot_V_V[@expand.args(Int, Long, Float, Double) T](implicit
+      @expand.sequence[T](0, 0L, 0.0f, 0.0) zero: T): BinaryRegistry[Vector[
+    T], Vector[T], breeze.linalg.operators.OpMulInner.type, T] = {
+    new BinaryRegistry[Vector[T], Vector[
+      T], breeze.linalg.operators.OpMulInner.type, T] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
         if (a.activeSize > b.activeSize) {
@@ -806,16 +800,10 @@ trait VectorOps { this: Vector.type =>
     }
   }
 
-  implicit def canDot_V_V[T: ClassTag: Semiring]: BinaryRegistry[
-    Vector[T],
-    Vector[T],
-    breeze.linalg.operators.OpMulInner.type,
-    T] = {
-    new BinaryRegistry[
-      Vector[T],
-      Vector[T],
-      breeze.linalg.operators.OpMulInner.type,
-      T] {
+  implicit def canDot_V_V[T: ClassTag: Semiring]: BinaryRegistry[Vector[
+    T], Vector[T], breeze.linalg.operators.OpMulInner.type, T] = {
+    new BinaryRegistry[Vector[T], Vector[
+      T], breeze.linalg.operators.OpMulInner.type, T] {
       val s = implicitly[Semiring[T]]
       override def bindingMissing(a: Vector[T], b: Vector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -871,11 +859,9 @@ trait VectorOps { this: Vector.type =>
   @expand
   @expand.valify
   implicit def zipValuesImpl_V_V[@expand.args(Int, Double, Float, Long) T]
-      : BinaryRegistry[
-        Vector[T],
-        Vector[T],
-        zipValues.type,
-        ZippedValues[T, T]] = {
+      : BinaryRegistry[Vector[T], Vector[T], zipValues.type, ZippedValues[
+        T,
+        T]] = {
     new BinaryRegistry[
       Vector[T],
       Vector[T],

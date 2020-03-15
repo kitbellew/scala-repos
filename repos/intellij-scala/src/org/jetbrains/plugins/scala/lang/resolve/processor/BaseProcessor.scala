@@ -148,12 +148,20 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         case null                    => true
         case DeclarationKind.PACKAGE => kinds contains ResolveTargets.PACKAGE
         case DeclarationKind.CLASS if classKind =>
-          (kinds contains ResolveTargets.CLASS) || (kinds contains ResolveTargets.OBJECT) ||
-            (kinds contains ResolveTargets.METHOD) //case classes get 'apply' generated
+          (
+            kinds contains ResolveTargets.CLASS
+          ) || (kinds contains ResolveTargets.OBJECT) ||
+            (
+              kinds contains ResolveTargets.METHOD
+            ) //case classes get 'apply' generated
         case DeclarationKind.VARIABLE =>
-          (kinds contains ResolveTargets.VAR) || (kinds contains ResolveTargets.VAL)
+          (kinds contains ResolveTargets.VAR) || (
+            kinds contains ResolveTargets.VAL
+          )
         case DeclarationKind.FIELD =>
-          (kinds contains ResolveTargets.VAR) || (kinds contains ResolveTargets.VAL)
+          (kinds contains ResolveTargets.VAR) || (
+            kinds contains ResolveTargets.VAL
+          )
         case DeclarationKind.METHOD => kinds contains ResolveTargets.METHOD
         case _                      => false
       }
@@ -374,15 +382,17 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         SyntheticClasses.get(place.getProject).byName(name) match {
           case Some(c) =>
             if (!c.processDeclarations(this, state, null, place) ||
-                !(tSuper match {
-                  case Some(ts) =>
-                    processType(
-                      ts,
-                      place,
-                      visitedAliases = visitedAliases,
-                      visitedTypeParameter = visitedTypeParameter)
-                  case _ => true
-                }))
+                !(
+                  tSuper match {
+                    case Some(ts) =>
+                      processType(
+                        ts,
+                        place,
+                        visitedAliases = visitedAliases,
+                        visitedTypeParameter = visitedTypeParameter)
+                    case _ => true
+                  }
+                ))
               return false
           case None => //nothing to do
         }

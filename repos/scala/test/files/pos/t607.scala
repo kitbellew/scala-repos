@@ -7,9 +7,10 @@ object Test {
     trait X
   }
 
-  def test(x: Foo {
-    type T = FooX.X
-  }) = {}
+  def test(
+      x: Foo {
+        type T = FooX.X
+      }) = {}
 
   def main(argv: Array[String]): Unit = {
     test(FooX)

@@ -513,8 +513,10 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
           var i = 0
           var eq = true
           while (eq && i < this.length) {
-            eq &&= (apply(i) == rv(i) || this.scalarTag
-              .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
+            eq &&= (
+              apply(i) == rv(i) || this.scalarTag
+                .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i))
+            )
             i += 1
           }
           eq
@@ -544,12 +546,14 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
       }.map(scalarTag.show(_)).foldLeft(0)(maxf)
 
       def createRow(r: Int): String =
-        ("%" + {
-          if (vlen > 0)
-            vlen
-          else
-            1
-        } + "s\n").format(scalarTag.show(apply(r)))
+        (
+          "%" + {
+            if (vlen > 0)
+              vlen
+            else
+              1
+          } + "s\n"
+        ).format(scalarTag.show(apply(r)))
       buf append util.buildStr(len, length, createRow, " ... \n")
     }
 

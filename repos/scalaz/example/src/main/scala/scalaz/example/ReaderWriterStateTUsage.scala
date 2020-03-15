@@ -78,8 +78,7 @@ object CABRunLengthEncoder {
         * if we are emitting less than minRun tokens, just emit them as
         * individual tokens instead of as a run of tokens
         */
-      minRun: Int
-  )
+      minRun: Int)
 
   import Token._
   import Free.Trampoline

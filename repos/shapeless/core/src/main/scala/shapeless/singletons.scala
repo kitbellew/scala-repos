@@ -109,9 +109,10 @@ object NatWith {
   implicit def apply[TC[_ <: Nat]](i: Any): NatWith[TC] =
     macro SingletonTypeMacros.convertInstanceImplNat[TC]
 
-  implicit def apply2[B, T <: B, TC[_ <: B, _ <: Nat]](i: Int): NatWith[({
-    type λ[t <: Nat] = TC[T, t]
-  })#λ] = macro SingletonTypeMacros.convertInstanceImplNat1[B, T, TC]
+  implicit def apply2[B, T <: B, TC[_ <: B, _ <: Nat]](i: Int): NatWith[
+    ({
+      type λ[t <: Nat] = TC[T, t]
+    })#λ] = macro SingletonTypeMacros.convertInstanceImplNat1[B, T, TC]
 }
 
 /**
@@ -438,9 +439,10 @@ class SingletonTypeMacros(val c: whitebox.Context)
       val tc2 = tc2Tag.tpe.typeConstructor
       val s = sTag.tpe
 
-      val parent = weakTypeOf[WitnessWith[({
-        type λ[X] = TC2[S, X]
-      })#λ]].map {
+      val parent = weakTypeOf[WitnessWith[
+        ({
+          type λ[X] = TC2[S, X]
+        })#λ]].map {
         case TypeRef(prefix, sym, args) if sym.isFreeType =>
           internal.typeRef(NoPrefix, tc2.typeSymbol, args)
         case tpe => tpe

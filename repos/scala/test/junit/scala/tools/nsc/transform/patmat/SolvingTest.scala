@@ -244,16 +244,18 @@ class SolvingTest {
   }
 
   def formatModel(model: Model): String = {
-    (for {
-      (SymName(name), value) <- model
-    } yield {
-      val v =
-        if (value)
-          "T"
-        else
-          "F"
-      s"$name -> $v"
-    }).mkString(", ")
+    (
+      for {
+        (SymName(name), value) <- model
+      } yield {
+        val v =
+          if (value)
+            "T"
+          else
+            "F"
+        s"$name -> $v"
+      }
+    ).mkString(", ")
   }
 
   def sym(name: String) = Sym(Var(Tree(name)), NullConst)
@@ -292,8 +294,7 @@ class SolvingTest {
       Seq(
         Map(pSym -> false, qSym -> false),
         Map(pSym -> true, qSym -> false),
-        Map(pSym -> true, qSym -> true)
-      ).sorted
+        Map(pSym -> true, qSym -> true)).sorted
 
     assertEquals(expected, expanded)
   }

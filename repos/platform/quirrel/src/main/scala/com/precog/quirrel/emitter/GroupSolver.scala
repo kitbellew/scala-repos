@@ -101,9 +101,10 @@ trait GroupSolver
             case _            => true
           }
 
-          val (constrSpecM, constrErrors) = mergeSpecs(filtered map {
-            solveConstraint(expr, _, sigma, Nil)
-          })
+          val (constrSpecM, constrErrors) = mergeSpecs(
+            filtered map {
+              solveConstraint(expr, _, sigma, Nil)
+            })
 
           val mergedM =
             for (forestSpec <- forestSpecM;
@@ -530,9 +531,11 @@ trait GroupSolver
         }
       }
 
-    if (back.isDefined && !(errors collect {
-          case Error(tpe) => tpe
-        } contains ConstraintsWithinInnerSolve))
+    if (back.isDefined && !(
+          errors collect {
+            case Error(tpe) => tpe
+          } contains ConstraintsWithinInnerSolve
+        ))
       (back, Set())
     else
       (back, errors)
@@ -802,8 +805,9 @@ trait GroupSolver
           sigma)
 
       case t @ TicVar(_, name)
-          if b.isDefined && (t.binding == SolveBinding(
-            b.get) || t.binding == FreeBinding(b.get)) => {
+          if b.isDefined && (
+            t.binding == SolveBinding(b.get) || t.binding == FreeBinding(b.get)
+          ) => {
         t.binding match {
           case SolveBinding(b2) => Set((Some(b2), name))
           case FreeBinding(b2)  => Set((Some(b2), name))
@@ -830,17 +834,21 @@ trait GroupSolver
             case FormalBinding(let) => listTicVars(b, sigma((id, let)), sigma)
             case _                  => Set[(Option[Solve], TicId)]()
           }
-        (actuals map {
-          listTicVars(b, _, sigma)
-        }).fold(leftSet) {
+        (
+          actuals map {
+            listTicVars(b, _, sigma)
+          }
+        ).fold(leftSet) {
           _ ++ _
         }
       }
 
       case NaryOp(_, values) =>
-        (values map {
-          listTicVars(b, _, sigma)
-        }).fold(Set()) {
+        (
+          values map {
+            listTicVars(b, _, sigma)
+          }
+        ).fold(Set()) {
           _ ++ _
         }
     }

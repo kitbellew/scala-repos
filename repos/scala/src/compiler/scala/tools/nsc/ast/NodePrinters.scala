@@ -75,9 +75,9 @@ abstract class NodePrinters {
         ""
       else {
         try {
-          List(
-            showSymbol(tree),
-            showType(tree)) filterNot (_ == "") mkString ", " trim
+          List(showSymbol(tree), showType(tree)) filterNot (
+            _ == ""
+          ) mkString ", " trim
         } catch {
           case ex: Throwable => "sym= <error> " + ex.getMessage
         }
@@ -113,11 +113,13 @@ abstract class NodePrinters {
         if (prefix0 == "")
           ""
         else
-          (tree match {
-            case SelectFromTypeTree(_, _) => prefix0 + "#"
-            case Select(_, _)             => prefix0 + "."
-            case _                        => ""
-          })
+          (
+            tree match {
+              case SelectFromTypeTree(_, _) => prefix0 + "#"
+              case Select(_, _)             => prefix0 + "."
+              case _                        => ""
+            }
+          )
       prefix + showNameAndPos(tree) + emptyOrComment(showAttributes(tree))
     }
 

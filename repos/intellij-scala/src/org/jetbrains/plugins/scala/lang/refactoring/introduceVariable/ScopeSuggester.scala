@@ -62,8 +62,10 @@ object ScopeSuggester {
         val pparent = PsiTreeUtil.getParentOfType(
           parent,
           classOf[ScTemplateDefinition])
-        if (pparent != null && (!elementOwner.isAncestorOf(
-              pparent) || !elementOwner.isInstanceOf[ScTemplateDefinition])) {
+        if (pparent != null && (
+              !elementOwner.isAncestorOf(pparent) || !elementOwner
+                .isInstanceOf[ScTemplateDefinition]
+            )) {
           result = false
         }
       }

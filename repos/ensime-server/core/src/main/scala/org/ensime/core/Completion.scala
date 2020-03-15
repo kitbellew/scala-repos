@@ -63,15 +63,15 @@ trait CompletionControl {
       source: SourceFile,
       offset: Int,
       prefix: String,
-      constructing: Boolean
-  ) extends CompletionContext
+      constructing: Boolean)
+      extends CompletionContext
 
   case class MemberContext(
       source: SourceFile,
       offset: Int,
       prefix: String,
-      constructing: Boolean
-  ) extends CompletionContext
+      constructing: Boolean)
+      extends CompletionContext
 
   import CompletionUtil._
 
@@ -94,10 +94,8 @@ trait CompletionControl {
         else
           maxResultsArg
 
-      val preceding = inputP.source.content.slice(
-        Math.max(0, inputP.point - 100),
-        inputP.point
-      )
+      val preceding = inputP.source.content
+        .slice(Math.max(0, inputP.point - 100), inputP.point)
 
       val defaultPrefix =
         IdentRegexp.findFirstMatchIn(preceding) match {
@@ -227,8 +225,10 @@ trait CompletionControl {
             makeAll(context, maxResults, caseSens)
               .sortWith({ (c1, c2) =>
                 c1.relevance > c2.relevance ||
-                (c1.relevance == c2.relevance &&
-                c1.name.length < c2.name.length)
+                (
+                  c1.relevance == c2.relevance &&
+                  c1.name.length < c2.name.length
+                )
               })
               .take(maxResults)
           )
@@ -247,8 +247,7 @@ trait CompletionControl {
         sym: Symbol,
         tpe: Type,
         inherited: Boolean,
-        viaView: Symbol
-    ): List[CompletionInfo] = {
+        viaView: Symbol): List[CompletionInfo] = {
 
       var score = 0
       if (sym.nameString.startsWith(context.prefix))
@@ -333,8 +332,9 @@ trait CompletionControl {
         m match {
           case m @ ScopeMember(sym, tpe, accessible, viaView) =>
             val p = sym.pos
-            val inSymbol =
-              p.isRange && (context.offset >= p.startOrCursor && context.offset <= p.endOrCursor)
+            val inSymbol = p.isRange && (
+              context.offset >= p.startOrCursor && context.offset <= p.endOrCursor
+            )
             if (!sym.isConstructor && !inSymbol) {
               buff ++= toCompletionInfo(
                 context,
@@ -498,8 +498,7 @@ object CompletionUtil {
               CompletionSignature(List.empty, s.name, false),
               isCallable = false,
               40,
-              None
-            )
+              None)
           }
         case unknown =>
           throw new IllegalStateException(

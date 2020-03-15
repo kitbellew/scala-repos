@@ -151,117 +151,97 @@ object Test {
           ctx match {
             case Class =>
               val name = freshName("Class") + "_" + depth
-              (
-                """
+              ("""
              class %s {
                %s
                def run { %s }
              }
-           """.format(name, body, trigger),
-                "(new %s).run".format(name))
+           """.format(name, body, trigger), "(new %s).run".format(name))
 
             case Trait =>
               val name = freshName("Trait") + "_" + depth
-              (
-                """
+              ("""
              trait %s {
                %s
                def run { %s }
              }
-           """.format(name, body, trigger),
-                "(new %s {}).run".format(name))
+           """.format(name, body, trigger), "(new %s {}).run".format(name))
 
             case Object =>
               val name = freshName("Object") + "_" + depth
-              (
-                """
+              ("""
              object %s {
                %s
                def run { %s } // trigger
              }
-           """.format(name, body, trigger),
-                "%s.run".format(name))
+           """.format(name, body, trigger), "%s.run".format(name))
 
             case Method =>
               val name = freshName("method") + "_" + depth
-              (
-                """
+              ("""
              def %s {
                %s
                %s // trigger
              }
-           """.format(name, body, trigger),
-                name)
+           """.format(name, body, trigger), name)
 
             case PrivateMethod =>
               val name = freshName("method") + "_" + depth
-              (
-                """
+              ("""
              private def %s {
                %s
                %s // trigger
              }
-           """.format(name, body, trigger),
-                name)
+           """.format(name, body, trigger), name)
 
             case Val =>
               val name = freshName("value") + "_" + depth
-              (
-                """
+              ("""
                val %s = {
                  %s
                  %s // trigger
                }
-             """.format(name, body, trigger),
-                name)
+             """.format(name, body, trigger), name)
 
             case LazyVal =>
               val name = freshName("lzvalue") + "_" + depth
-              (
-                """
+              ("""
                lazy val %s = {
                  %s
                  %s // trigger
                }
-             """.format(name, body, trigger),
-                name)
+             """.format(name, body, trigger), name)
 
             case Anonfun =>
               val name = freshName("fun") + "_" + depth
-              (
-                """
+              ("""
                val %s = () => {
                  %s
                  %s // trigger
                }
-             """.format(name, body, trigger),
-                name + "()")
+             """.format(name, body, trigger), name + "()")
 
             case ClassConstructor =>
               val name = freshName("Class") + "_" + depth
-              (
-                """
+              ("""
              class %s {
                { // in primary constructor
                  %s
                  %s // trigger
                }
              }
-           """.format(name, body, trigger),
-                "(new %s)".format(name))
+           """.format(name, body, trigger), "(new %s)".format(name))
 
             case TraitConstructor =>
               val name = freshName("Trait") + "_" + depth
-              (
-                """
+              ("""
              trait %s {
                { // in primary constructor
                  %s
                  %s // trigger
                }
              }
-           """.format(name, body, trigger),
-                "(new %s {})".format(name))
+           """.format(name, body, trigger), "(new %s {})".format(name))
 
           }
         generate(depth - 1, body1, trigger1, ctx :: nested, p)

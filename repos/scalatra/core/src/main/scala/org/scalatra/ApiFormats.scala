@@ -161,8 +161,8 @@ trait ApiFormats extends ScalatraBase {
   protected def formatForMimeTypes(mimeTypes: String*): Option[String] = {
     val defaultMimeType = formats(defaultFormat.name)
     def matchMimeType(tm: String, f: String) = {
-      tm.toLowerCase(ENGLISH).startsWith(f) || (defaultMimeType == f && tm
-        .contains(defaultMimeType))
+      tm.toLowerCase(ENGLISH)
+        .startsWith(f) || (defaultMimeType == f && tm.contains(defaultMimeType))
     }
     mimeTypes find { hdr =>
       formats exists {
@@ -199,9 +199,11 @@ trait ApiFormats extends ScalatraBase {
       else
         accepted.map(_.name).toList
     }
-    conditions.isEmpty || (conditions filter { s =>
-      formats.get(s).isDefined
-    } contains contentType)
+    conditions.isEmpty || (
+      conditions filter { s =>
+        formats.get(s).isDefined
+      } contains contentType
+    )
   }
 
   private def getFormat(implicit

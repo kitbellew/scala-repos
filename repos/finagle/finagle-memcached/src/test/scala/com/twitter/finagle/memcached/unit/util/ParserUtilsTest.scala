@@ -43,8 +43,7 @@ class ParserUtilsTest extends FunSuite {
     " " -> false,
     "x" -> false,
     " 9" -> false,
-    "9 " -> false
-  )
+    "9 " -> false)
 
   test("isDigits: Buf") {
     strings foreach {

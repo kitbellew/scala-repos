@@ -35,14 +35,12 @@ class HttpsRulesSpec extends Specification {
 
     "generate a correct Strict-Transport-Security header without sub-domains" in {
       HttpsRules(Some(Duration(1440, SECONDS)), false).headers must_== List(
-        "Strict-Transport-Security" -> "max-age=1440"
-      )
+        "Strict-Transport-Security" -> "max-age=1440")
     }
 
     "generate a correct Strict-Transport-Security header including sub-domains" in {
       HttpsRules(Some(Duration(1440, SECONDS)), true).headers must_== List(
-        "Strict-Transport-Security" -> "max-age=1440 ; includeSubDomains"
-      )
+        "Strict-Transport-Security" -> "max-age=1440 ; includeSubDomains")
     }
   }
 }
@@ -57,8 +55,7 @@ class ContentSecurityPolicySpec extends Specification {
     "default to allowing script eval and script sources only from self" in {
       ContentSecurityPolicy().scriptSources must_== List(
         ContentSourceRestriction.UnsafeEval,
-        ContentSourceRestriction.Self
-      )
+        ContentSourceRestriction.Self)
     }
 
     "default to allowing everything else only from self" in {
@@ -154,8 +151,7 @@ class ContentSecurityPolicySpec extends Specification {
         Nil,
         Nil,
         Nil,
-        reportUri = None
-      ).headers(enforce = true).head._2 must_== ""
+        reportUri = None).headers(enforce = true).head._2 must_== ""
     }
 
     "combine restrictions for multiple content types correctly" in {

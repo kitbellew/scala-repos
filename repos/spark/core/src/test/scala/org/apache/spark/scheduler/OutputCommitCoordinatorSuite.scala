@@ -104,35 +104,38 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
     val mockTaskScheduler = spy(
       sc.taskScheduler.asInstanceOf[TaskSchedulerImpl])
 
-    doAnswer(new Answer[Unit]() {
-      override def answer(invoke: InvocationOnMock): Unit = {
-        // Submit the tasks, then force the task scheduler to dequeue the
-        // speculated task
-        invoke.callRealMethod()
-        mockTaskScheduler.backend.reviveOffers()
-      }
-    }).when(mockTaskScheduler).submitTasks(Matchers.any())
+    doAnswer(
+      new Answer[Unit]() {
+        override def answer(invoke: InvocationOnMock): Unit = {
+          // Submit the tasks, then force the task scheduler to dequeue the
+          // speculated task
+          invoke.callRealMethod()
+          mockTaskScheduler.backend.reviveOffers()
+        }
+      }).when(mockTaskScheduler).submitTasks(Matchers.any())
 
-    doAnswer(new Answer[TaskSetManager]() {
-      override def answer(invoke: InvocationOnMock): TaskSetManager = {
-        val taskSet = invoke.getArguments()(0).asInstanceOf[TaskSet]
-        new TaskSetManager(mockTaskScheduler, taskSet, 4) {
-          var hasDequeuedSpeculatedTask = false
-          override def dequeueSpeculativeTask(
-              execId: String,
-              host: String,
-              locality: TaskLocality.Value)
-              : Option[(Int, TaskLocality.Value)] = {
-            if (!hasDequeuedSpeculatedTask) {
-              hasDequeuedSpeculatedTask = true
-              Some(0, TaskLocality.PROCESS_LOCAL)
-            } else {
-              None
+    doAnswer(
+      new Answer[TaskSetManager]() {
+        override def answer(invoke: InvocationOnMock): TaskSetManager = {
+          val taskSet = invoke.getArguments()(0).asInstanceOf[TaskSet]
+          new TaskSetManager(mockTaskScheduler, taskSet, 4) {
+            var hasDequeuedSpeculatedTask = false
+            override def dequeueSpeculativeTask(
+                execId: String,
+                host: String,
+                locality: TaskLocality.Value)
+                : Option[(Int, TaskLocality.Value)] = {
+              if (!hasDequeuedSpeculatedTask) {
+                hasDequeuedSpeculatedTask = true
+                Some(0, TaskLocality.PROCESS_LOCAL)
+              } else {
+                None
+              }
             }
           }
         }
-      }
-    }).when(mockTaskScheduler)
+      })
+      .when(mockTaskScheduler)
       .createTaskSetManager(Matchers.any(), Matchers.any())
 
     sc.taskScheduler = mockTaskScheduler

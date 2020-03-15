@@ -176,16 +176,17 @@ object SparkSubmit {
           args.proxyUser,
           UserGroupInformation.getCurrentUser())
         try {
-          proxyUser.doAs(new PrivilegedExceptionAction[Unit]() {
-            override def run(): Unit = {
-              runMain(
-                childArgs,
-                childClasspath,
-                sysProps,
-                childMainClass,
-                args.verbose)
-            }
-          })
+          proxyUser.doAs(
+            new PrivilegedExceptionAction[Unit]() {
+              override def run(): Unit = {
+                runMain(
+                  childArgs,
+                  childClasspath,
+                  sysProps,
+                  childMainClass,
+                  args.verbose)
+              }
+            })
         } catch {
           case e: Exception =>
             // Hadoop's AuthorizationException suppresses the exception's stack trace, which

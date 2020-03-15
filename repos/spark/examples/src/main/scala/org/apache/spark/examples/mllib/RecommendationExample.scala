@@ -32,10 +32,11 @@ object RecommendationExample {
     // $example on$
     // Load and parse the data
     val data = sc.textFile("data/mllib/als/test.data")
-    val ratings = data.map(_.split(',') match {
-      case Array(user, item, rate) =>
-        Rating(user.toInt, item.toInt, rate.toDouble)
-    })
+    val ratings = data.map(
+      _.split(',') match {
+        case Array(user, item, rate) =>
+          Rating(user.toInt, item.toInt, rate.toDouble)
+      })
 
     // Build the recommendation model using ALS
     val rank = 10

@@ -52,21 +52,20 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
   val posts = TableQuery[Posts]
 
   class DefaultTest(tag: Tag)
-      extends Table[
-        (
-            Boolean,
-            Boolean,
-            Boolean,
-            Option[Boolean],
-            Option[Boolean],
-            Option[Boolean],
-            String,
-            String,
-            String,
-            Option[String],
-            Option[String],
-            Option[String],
-            Option[String])](tag, "default_test") {
+      extends Table[(
+          Boolean,
+          Boolean,
+          Boolean,
+          Option[Boolean],
+          Option[Boolean],
+          Option[Boolean],
+          String,
+          String,
+          String,
+          Option[String],
+          Option[String],
+          Option[String],
+          Option[String])](tag, "default_test") {
     def someBool = column[Boolean]("some_bool")
     def someBoolDefaultTrue =
       column[Boolean]("some_bool_default_true", O.Default(true))
@@ -159,8 +158,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
               Option[java.sql.Time],
               Option[java.sql.Timestamp],
               Option[java.sql.Blob] //,Option[java.sql.Clob]
-          )
-      )](tag, "TYPE_TEST") {
+          ))](tag, "TYPE_TEST") {
     def `type` = column[String]("type") // <- test escaping of keywords
     def Boolean = column[Boolean]("Boolean", O.Default(true))
     def Byte = column[Byte]("Byte")
@@ -239,8 +237,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           Option_java_sql_Time,
           Option_java_sql_Timestamp,
           Option_java_sql_Blob //,Option_java_sql_Clob
-        )
-      )
+        ))
     def pk = primaryKey("PK", (Int, Long))
   }
   val typeTest = TableQuery[TypeTest]
@@ -259,7 +256,9 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
       val DBTypePattern = "^[a-zA-Z][a-zA-Z0-9 ]*$".r
 
       for {
-        _ <- (posts.schema ++ categories.schema ++ defaultTest.schema ++ noDefaultTest.schema ++ typeTest.schema).create
+        _ <- (
+          posts.schema ++ categories.schema ++ defaultTest.schema ++ noDefaultTest.schema ++ typeTest.schema
+        ).create
         _ <- createModel(ignoreInvalidDefaults = false).map(_.assertConsistency)
         tables <- tdb.profile.defaultTables
         _ <- createModel(Some(tables), ignoreInvalidDefaults = false)
@@ -354,15 +353,13 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
               "BPCHAR" // bpchar: postgres
               //"char" // jtds
             ) contains tpe("title").toUpperCase,
-            tpe("title")
-          )
+            tpe("title"))
           assert(
             Seq(
               "VARCHAR",
               "VARCHAR2" // oracle
             ) contains tpe("some_string").toUpperCase,
-            tpe("title")
-          )
+            tpe("title"))
           assertEquals(
             (99, false),
             posts.columns
@@ -417,9 +414,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             ifNotCapU(jcap.booleanMetaData) {
               assertEquals(false, column("some_bool_default_true").nullable)
               assert(
-                Seq(Some(1), Some('1')).contains(
-                  columnDefault("some_bool_default_true")
-                ),
+                Seq(Some(1), Some('1'))
+                  .contains(columnDefault("some_bool_default_true")),
                 columnDefault("some_bool_default_true").toString)
             }
             ifCapU(jcap.booleanMetaData) {
@@ -429,9 +425,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             }
             ifNotCapU(jcap.booleanMetaData) {
               assert(
-                Seq(Some(0), Some('0')).contains(
-                  columnDefault("some_bool_default_false")
-                ),
+                Seq(Some(0), Some('0'))
+                  .contains(columnDefault("some_bool_default_false")),
                 columnDefault("some_bool_default_false").toString)
             }
             ifCapU(jcap.nullableNoDefault) {
@@ -447,9 +442,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             }
             ifNotCapU(jcap.booleanMetaData) {
               assert(
-                Seq(Some(Some(1)), Some(Some('1'))).contains(
-                  columnDefault("some_bool_option_default_some")
-                ),
+                Seq(Some(Some(1)), Some(Some('1')))
+                  .contains(columnDefault("some_bool_option_default_some")),
                 columnDefault("some_bool_option_default_some").toString)
             }
             assertEquals(
@@ -586,8 +580,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
 
           DBIO.seq(
             noDefaultTest.map(_.int) += 1,
-            noDefaultTest.map(_.stringOption).result.head.map(_ shouldBe None)
-          )
+            noDefaultTest.map(_.stringOption).result.head.map(_ shouldBe None))
         }
       } yield ()
     }

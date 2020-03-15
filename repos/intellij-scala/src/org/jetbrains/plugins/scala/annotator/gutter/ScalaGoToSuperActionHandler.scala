@@ -113,19 +113,22 @@ private object ScalaGoToSuperActionHandler {
         d: ScDeclaredElementsHolder): Array[PsiElement] = {
       var el = file.findElementAt(offset)
       val elOrig = el
-      while (el != null && !(el
-               .isInstanceOf[ScTypedDefinition] && el != elOrig))
+      while (el != null && !(
+               el.isInstanceOf[ScTypedDefinition] && el != elOrig
+             ))
         el = el.getParent
       val elements = d.declaredElements
       if (elements.isEmpty)
         return empty
       val supers = mutable.HashSet[NavigatablePsiElement](
-        (if (el != null && elements.contains(
-               el.asInstanceOf[ScTypedDefinition])) {
-           ScalaPsiUtil.superValsSignatures(el.asInstanceOf[ScTypedDefinition])
-         } else
-           ScalaPsiUtil.superValsSignatures(elements.head))
-          .flatMap(_.namedElement match {
+        (
+          if (el != null && elements.contains(
+                el.asInstanceOf[ScTypedDefinition])) {
+            ScalaPsiUtil.superValsSignatures(el.asInstanceOf[ScTypedDefinition])
+          } else
+            ScalaPsiUtil.superValsSignatures(elements.head)
+        ).flatMap(
+          _.namedElement match {
             case n: NavigatablePsiElement => Some(n)
             case _                        => None
           }): _*)
@@ -141,10 +144,11 @@ private object ScalaGoToSuperActionHandler {
         (templateSupers(template), ScalaPsiUtil.superTypeMembers(template))
       case func: ScFunction =>
         val supers = mutable.HashSet[NavigatablePsiElement](
-          func.superSignatures.flatMap(_.namedElement match {
-            case n: NavigatablePsiElement => Some(n)
-            case _                        => None
-          }): _*)
+          func.superSignatures.flatMap(
+            _.namedElement match {
+              case n: NavigatablePsiElement => Some(n)
+              case _                        => None
+            }): _*)
         (Seq(), supers.toSeq)
       case d: ScDeclaredElementsHolder =>
         (Seq(), declaredElementHolderSupers(d))

@@ -72,58 +72,65 @@ object ResolveUtils {
       element: PsiElement,
       kinds: Set[ResolveTargets.Value]): Boolean =
     kinds == null ||
-      (element match {
-        case _: PsiPackage | _: ScPackaging       => kinds contains PACKAGE
-        case obj: ScObject if obj.isPackageObject => kinds contains PACKAGE
-        case obj: ScObject                        => (kinds contains OBJECT) || (kinds contains METHOD)
-        case _: ScTypeVariableTypeElement         => kinds contains CLASS
-        case _: ScTypeParam                       => kinds contains CLASS
-        case _: ScTypeAlias                       => kinds contains CLASS
-        case _: ScTypeDefinition                  => kinds contains CLASS
-        case _: ScSyntheticClass                  => kinds contains CLASS
-        case c: PsiClass =>
-          if (kinds contains CLASS)
-            true
-          else {
-            def isStaticCorrect(clazz: PsiClass): Boolean = {
-              val cclazz = clazz.getContainingClass
-              cclazz == null || (clazz.hasModifierProperty(
-                PsiModifier.STATIC) && isStaticCorrect(cclazz))
+      (
+        element match {
+          case _: PsiPackage | _: ScPackaging       => kinds contains PACKAGE
+          case obj: ScObject if obj.isPackageObject => kinds contains PACKAGE
+          case obj: ScObject =>
+            (kinds contains OBJECT) || (kinds contains METHOD)
+          case _: ScTypeVariableTypeElement => kinds contains CLASS
+          case _: ScTypeParam               => kinds contains CLASS
+          case _: ScTypeAlias               => kinds contains CLASS
+          case _: ScTypeDefinition          => kinds contains CLASS
+          case _: ScSyntheticClass          => kinds contains CLASS
+          case c: PsiClass =>
+            if (kinds contains CLASS)
+              true
+            else {
+              def isStaticCorrect(clazz: PsiClass): Boolean = {
+                val cclazz = clazz.getContainingClass
+                cclazz == null || (
+                  clazz.hasModifierProperty(
+                    PsiModifier.STATIC) && isStaticCorrect(cclazz)
+                )
+              }
+              (kinds contains OBJECT) && isStaticCorrect(c)
             }
-            (kinds contains OBJECT) && isStaticCorrect(c)
-          }
-        case patt: ScBindingPattern =>
-          val parent = ScalaPsiUtil.getParentOfType(
-            patt,
-            classOf[ScVariable],
-            classOf[ScValue])
-          parent match {
-            case x: ScVariable => kinds contains VAR
-            case _             => kinds contains VAL
-          }
-        case patt: ScFieldId =>
-          if (patt.getParent /*list of ids*/ .getParent
-                .isInstanceOf[ScVariable])
-            kinds contains VAR
-          else
-            kinds contains VAL
-        case classParam: ScClassParameter =>
-          if (classParam.isVar)
-            kinds.contains(VAR)
-          else
-            kinds.contains(VAL)
-        case param: ScParameter   => kinds contains VAL
-        case _: ScSelfTypeElement => kinds contains VAL
-        case _: PsiMethod         => kinds contains METHOD
-        case _: ScFun             => kinds contains METHOD
-        case _: ScSyntheticValue  => kinds contains VAL
-        case f: PsiField =>
-          (kinds contains VAR) || (f.hasModifierPropertyScala(
-            PsiModifier.FINAL) && kinds.contains(VAL))
-        case _: PsiParameter =>
-          kinds contains VAL //to enable named Parameters resolve in Play 2.0 routing file for java methods
-        case _ => false
-      })
+          case patt: ScBindingPattern =>
+            val parent = ScalaPsiUtil.getParentOfType(
+              patt,
+              classOf[ScVariable],
+              classOf[ScValue])
+            parent match {
+              case x: ScVariable => kinds contains VAR
+              case _             => kinds contains VAL
+            }
+          case patt: ScFieldId =>
+            if (patt.getParent /*list of ids*/ .getParent
+                  .isInstanceOf[ScVariable])
+              kinds contains VAR
+            else
+              kinds contains VAL
+          case classParam: ScClassParameter =>
+            if (classParam.isVar)
+              kinds.contains(VAR)
+            else
+              kinds.contains(VAL)
+          case param: ScParameter   => kinds contains VAL
+          case _: ScSelfTypeElement => kinds contains VAL
+          case _: PsiMethod         => kinds contains METHOD
+          case _: ScFun             => kinds contains METHOD
+          case _: ScSyntheticValue  => kinds contains VAL
+          case f: PsiField =>
+            (kinds contains VAR) || (
+              f.hasModifierPropertyScala(PsiModifier.FINAL) && kinds.contains(
+                VAL)
+            )
+          case _: PsiParameter =>
+            kinds contains VAL //to enable named Parameters resolve in Play 2.0 routing file for java methods
+          case _ => false
+        }
+      )
 
   def methodType(m: PsiMethod, s: ScSubstitutor, scope: GlobalSearchScope) =
     ScFunctionType(
@@ -390,9 +397,11 @@ object ResolveUtils {
                           .getCompanionModule(td)
                           .getOrElse(null: PsiElement),
                         place,
-                        false) || (td.isInstanceOf[ScObject] &&
-                      td.asInstanceOf[ScObject]
-                        .isPackageObject && processPackage(td.qualifiedName))
+                        false) || (
+                      td.isInstanceOf[ScObject] &&
+                        td.asInstanceOf[ScObject]
+                          .isPackageObject && processPackage(td.qualifiedName)
+                    )
                   case pack: PsiPackage =>
                     val packageName = pack.getQualifiedName
                     processPackage(packageName)
@@ -543,12 +552,14 @@ object ResolveUtils {
               enclosing match {
                 case td: ScTypeDefinition =>
                   if (PsiTreeUtil.isContextAncestor(td, place, false) ||
-                      (withCompanion && PsiTreeUtil.isContextAncestor(
-                        ScalaPsiUtil
-                          .getCompanionModule(td)
-                          .getOrElse(null: PsiElement),
-                        place,
-                        false)))
+                      (
+                        withCompanion && PsiTreeUtil.isContextAncestor(
+                          ScalaPsiUtil
+                            .getCompanionModule(td)
+                            .getOrElse(null: PsiElement),
+                          place,
+                          false)
+                      ))
                     return true
                   checkProtected(td, withCompanion)
                 case td: ScTemplateDefinition =>

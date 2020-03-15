@@ -412,10 +412,12 @@ private[math] final case class SafeLongLong(x: Long) extends SafeLong {
 
   def >>(n: Int): SafeLong =
     if (n >= 64)
-      (if (x >= 0)
-         SafeLong.zero
-       else
-         SafeLong.minusOne)
+      (
+        if (x >= 0)
+          SafeLong.zero
+        else
+          SafeLong.minusOne
+      )
     else if (n >= 0)
       SafeLongLong(x >> n)
     else if (n == Int.MinValue)

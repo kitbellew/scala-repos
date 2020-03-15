@@ -217,8 +217,9 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
     */
   private def directVerification(queryString: Map[String, Seq[String]])(
       server: OpenIDServer) = {
-    val fields = (queryString - "openid.mode" + ("openid.mode" -> Seq(
-      "check_authentication")))
+    val fields = (queryString - "openid.mode" + (
+      "openid.mode" -> Seq("check_authentication")
+    ))
     ws.url(server.url)
       .post(fields)
       .map(response => {
@@ -306,10 +307,12 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
             path
 
         val uri =
-          (if (url.matches("^(http|HTTP)(s|S)?:.*"))
-             new URI(url)
-           else
-             new URI("http://" + url)).normalize()
+          (
+            if (url.matches("^(http|HTTP)(s|S)?:.*"))
+              new URI(url)
+            else
+              new URI("http://" + url)
+          ).normalize()
         new URI(
           scheme(uri),
           uri.getUserInfo,
@@ -367,9 +370,11 @@ private[openid] object Discovery {
       } yield OpenIDServer(typeId, uri, None)
 
     private def findUriWithType(xml: Node)(typeId: String) =
-      (xml \ "XRD" \ "Service" find (node =>
-        (node \ "Type").find(inner => inner.text == typeId).isDefined)).map {
-        node => (typeId, (node \ "URI").text.trim)
+      (
+        xml \ "XRD" \ "Service" find (node =>
+          (node \ "Type").find(inner => inner.text == typeId).isDefined)
+      ).map { node =>
+        (typeId, (node \ "URI").text.trim)
       }
   }
 
@@ -417,10 +422,7 @@ private[openid] object Discovery {
   */
 class OpenIDModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = {
-    Seq(
-      bind[OpenIdClient].to[WsOpenIdClient],
-      bind[Discovery].to[WsDiscovery]
-    )
+    Seq(bind[OpenIdClient].to[WsOpenIdClient], bind[Discovery].to[WsDiscovery])
   }
 }
 

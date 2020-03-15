@@ -89,17 +89,19 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
       case JArray(array) =>
         setBox(
           Full(
-            (array
-              .map {
-                case JsonObjectId(objectId) => objectId
-                case JsonRegex(regex)       => regex
-                case JsonUUID(uuid)         => uuid
-                case JsonDateTime(dt)
-                    if (mf.toString == "org.joda.time.DateTime") =>
-                  dt
-                case JsonDate(date) => date
-                case other          => other.values
-              })
+            (
+              array
+                .map {
+                  case JsonObjectId(objectId) => objectId
+                  case JsonRegex(regex)       => regex
+                  case JsonUUID(uuid)         => uuid
+                  case JsonDateTime(dt)
+                      if (mf.toString == "org.joda.time.DateTime") =>
+                    dt
+                  case JsonDate(date) => date
+                  case other          => other.values
+                }
+              )
               .asInstanceOf[MyType]))
       case other => setBox(FieldHelpers.expectedA("JArray", other))
     }
@@ -117,16 +119,16 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
 
   private def elem = {
     def elem0 =
-      SHtml.multiSelectObj[ListType](
-        options,
-        value,
-        set(_)
-      ) % ("tabindex" -> tabIndex.toString)
+      SHtml.multiSelectObj[ListType](options, value, set(_)) % (
+        "tabindex" -> tabIndex.toString
+      )
 
-    SHtml.hidden(() => set(Nil)) ++ (uniqueFieldId match {
-      case Full(id) => (elem0 % ("id" -> id))
-      case _        => elem0
-    })
+    SHtml.hidden(() => set(Nil)) ++ (
+      uniqueFieldId match {
+        case Full(id) => (elem0 % ("id" -> id))
+        case _        => elem0
+      }
+    )
   }
 
   def toForm: Box[NodeSeq] =
@@ -136,15 +138,16 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
       Empty
 
   def asJValue: JValue =
-    JArray(value.map(li =>
-      li.asInstanceOf[AnyRef] match {
-        case x if primitive_?(x.getClass) => primitive2jvalue(x)
-        case x if mongotype_?(x.getClass) =>
-          mongotype2jvalue(x)(owner.meta.formats)
-        case x if datetype_?(x.getClass) =>
-          datetype2jvalue(x)(owner.meta.formats)
-        case _ => JNothing
-      }))
+    JArray(
+      value.map(li =>
+        li.asInstanceOf[AnyRef] match {
+          case x if primitive_?(x.getClass) => primitive2jvalue(x)
+          case x if mongotype_?(x.getClass) =>
+            mongotype2jvalue(x)(owner.meta.formats)
+          case x if datetype_?(x.getClass) =>
+            datetype2jvalue(x)(owner.meta.formats)
+          case _ => JNothing
+        }))
 
   /*
    * Convert this field's value into a DBObject so it can be stored in Mongo.
@@ -172,9 +175,8 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
 /*
  * List of JsonObject case classes
  */
-class MongoJsonObjectListField[
-    OwnerType <: BsonRecord[OwnerType],
-    JObjectType <: JsonObject[JObjectType]](
+class MongoJsonObjectListField[OwnerType <: BsonRecord[
+  OwnerType], JObjectType <: JsonObject[JObjectType]](
     rec: OwnerType,
     valueMeta: JsonObjectMeta[JObjectType])(implicit mf: Manifest[JObjectType])
     extends MongoListField[OwnerType, JObjectType](rec: OwnerType) {
@@ -190,12 +192,14 @@ class MongoJsonObjectListField[
   }
 
   override def setFromDBObject(dbo: DBObject): Box[List[JObjectType]] =
-    setBox(Full(dbo.keySet.toList.map(k => {
-      valueMeta.create(
-        JObjectParser
-          .serialize(dbo.get(k.toString))(owner.meta.formats)
-          .asInstanceOf[JObject])(owner.meta.formats)
-    })))
+    setBox(
+      Full(
+        dbo.keySet.toList.map(k => {
+          valueMeta.create(
+            JObjectParser
+              .serialize(dbo.get(k.toString))(owner.meta.formats)
+              .asInstanceOf[JObject])(owner.meta.formats)
+        })))
 
   override def asJValue: JValue =
     JArray(value.map(_.asJObject()(owner.meta.formats)))
@@ -204,9 +208,11 @@ class MongoJsonObjectListField[
     jvalue match {
       case JNothing | JNull if optional_? => setBox(Empty)
       case JArray(arr) =>
-        setBox(Full(arr.map(jv => {
-          valueMeta.create(jv.asInstanceOf[JObject])(owner.meta.formats)
-        })))
+        setBox(
+          Full(
+            arr.map(jv => {
+              valueMeta.create(jv.asInstanceOf[JObject])(owner.meta.formats)
+            })))
       case other => setBox(FieldHelpers.expectedA("JArray", other))
     }
 }

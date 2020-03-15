@@ -4,12 +4,14 @@ object Test {
   trait Monad[M[_]] {
     def foo[A](ma: M[A])(f: M[A] => Any) = f(ma)
   }
-  implicit def function1Covariant[T]: Monad[({
-    type l[a] = (T => a)
-  })#l] =
-    new Monad[({
+  implicit def function1Covariant[T]: Monad[
+    ({
       type l[a] = (T => a)
-    })#l] {}
+    })#l] =
+    new Monad[
+      ({
+        type l[a] = (T => a)
+      })#l] {}
 
   def main(args: Array[String]) {
     // inference of T = (=> Any) here was outlawed by SI-7899 / 8ed7099
@@ -22,9 +24,10 @@ object Test {
     //
     // We need to introduce the stricter inference rules gradually, probably
     // with a warning.
-    val m = implicitly[Monad[({
-      type f[+x] = (=> Any) => x
-    })#f]]
+    val m = implicitly[Monad[
+      ({
+        type f[+x] = (=> Any) => x
+      })#f]]
     assert(m.foo[Int]((x => 0))(f => f(???)) == 0)
   }
 }

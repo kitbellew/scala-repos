@@ -27,21 +27,25 @@ trait Transforms { self: SymbolTable =>
   }
 
   private val refChecksLazy =
-    new Lazy(new {
-      val global: Transforms.this.type = self
-    } with RefChecks)
+    new Lazy(
+      new {
+        val global: Transforms.this.type = self
+      } with RefChecks)
   private val uncurryLazy =
-    new Lazy(new {
-      val global: Transforms.this.type = self
-    } with UnCurry)
+    new Lazy(
+      new {
+        val global: Transforms.this.type = self
+      } with UnCurry)
   private val erasureLazy =
-    new Lazy(new {
-      val global: Transforms.this.type = self
-    } with Erasure)
+    new Lazy(
+      new {
+        val global: Transforms.this.type = self
+      } with Erasure)
   private val postErasureLazy =
-    new Lazy(new {
-      val global: Transforms.this.type = self
-    } with PostErasure)
+    new Lazy(
+      new {
+        val global: Transforms.this.type = self
+      } with PostErasure)
 
   def refChecks = refChecksLazy.force
   def uncurry = uncurryLazy.force

@@ -170,9 +170,9 @@ object OpenIDSpec extends Specification with Mockito {
       val openId = new WsOpenIdClient(ws, new WsDiscovery(ws))
 
       val spoofedEndpoint = "http://evilhackerendpoint.com"
-      val responseQueryString =
-        openIdResponse - "openid.op_endpoint" + ("openid.op_endpoint" -> Seq(
-          spoofedEndpoint))
+      val responseQueryString = openIdResponse - "openid.op_endpoint" + (
+        "openid.op_endpoint" -> Seq(spoofedEndpoint)
+      )
 
       Await.result(
         openId.verifiedId(setupMockRequest(responseQueryString)),

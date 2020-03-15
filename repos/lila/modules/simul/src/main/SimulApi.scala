@@ -52,15 +52,19 @@ private[simul] final class SimulApi(
       _.filter(_.isNotBrandNew).map(_.id).foreach(abort)
     }
     (repo create simul) >>- publish() >>- {
-      timeline ! (Propagate(
-        SimulCreate(me.id, simul.id, simul.fullName)) toFollowersOf me.id)
+      timeline ! (
+        Propagate(
+          SimulCreate(me.id, simul.id, simul.fullName)) toFollowersOf me.id
+      )
     } inject simul
   }
 
   def addApplicant(simulId: Simul.ID, user: User, variantKey: String) {
     WithSimul(repo.findCreated, simulId) { simul =>
-      timeline ! (Propagate(
-        SimulJoin(user.id, simul.id, simul.fullName)) toFollowersOf user.id)
+      timeline ! (
+        Propagate(
+          SimulJoin(user.id, simul.id, simul.fullName)) toFollowersOf user.id
+      )
       Variant(variantKey).filter(simul.variants.contains).fold(simul) {
         variant => simul addApplicant SimulApplicant(SimulPlayer(user, variant))
       }
@@ -136,18 +140,14 @@ private[simul] final class SimulApi(
           _ ?? { simul =>
             val simul2 = simul.updatePairing(
               game.id,
-              _.finish(game.status, game.winnerUserId, game.turns)
-            )
+              _.finish(game.status, game.winnerUserId, game.turns))
             update(simul2) >> currentHostIdsCache.clear >>- {
               if (simul2.isFinished)
                 userRegister ! lila.hub.actorApi.SendTo(
                   simul2.hostId,
                   lila.socket.Socket.makeMessage(
                     "simulEnd",
-                    Json.obj(
-                      "id" -> simul.id,
-                      "name" -> simul.name
-                    )))
+                    Json.obj("id" -> simul.id, "name" -> simul.name)))
             }
           }
         }

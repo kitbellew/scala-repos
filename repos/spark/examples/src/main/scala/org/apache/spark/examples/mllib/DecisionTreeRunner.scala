@@ -81,8 +81,9 @@ object DecisionTreeRunner {
             s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
           .action((x, c) => c.copy(algo = Algo.withName(x)))
         opt[String]("impurity")
-          .text(s"impurity type (${ImpurityType.values.mkString(",")}), " +
-            s"default: ${defaultParams.impurity}")
+          .text(
+            s"impurity type (${ImpurityType.values.mkString(",")}), " +
+              s"default: ${defaultParams.impurity}")
           .action((x, c) => c.copy(impurity = ImpurityType.withName(x)))
         opt[Int]("maxDepth")
           .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")
@@ -100,13 +101,15 @@ object DecisionTreeRunner {
             s"min info gain required to create a split, default: ${defaultParams.minInfoGain}")
           .action((x, c) => c.copy(minInfoGain = x))
         opt[Int]("numTrees")
-          .text(s"number of trees (1 = decision tree, 2+ = random forest)," +
-            s" default: ${defaultParams.numTrees}")
+          .text(
+            s"number of trees (1 = decision tree, 2+ = random forest)," +
+              s" default: ${defaultParams.numTrees}")
           .action((x, c) => c.copy(numTrees = x))
         opt[String]("featureSubsetStrategy")
-          .text(s"feature subset sampling strategy" +
-            s" (${RandomForest.supportedFeatureSubsetStrategies.mkString(", ")}), " +
-            s"default: ${defaultParams.featureSubsetStrategy}")
+          .text(
+            s"feature subset sampling strategy" +
+              s" (${RandomForest.supportedFeatureSubsetStrategies.mkString(", ")}), " +
+              s"default: ${defaultParams.featureSubsetStrategy}")
           .action((x, c) => c.copy(featureSubsetStrategy = x))
         opt[Double]("fracTest")
           .text(
@@ -114,8 +117,9 @@ object DecisionTreeRunner {
               s"this option is ignored. default: ${defaultParams.fracTest}")
           .action((x, c) => c.copy(fracTest = x))
         opt[Boolean]("useNodeIdCache")
-          .text(s"whether to use node Id cache during training, " +
-            s"default: ${defaultParams.useNodeIdCache}")
+          .text(
+            s"whether to use node Id cache during training, " +
+              s"default: ${defaultParams.useNodeIdCache}")
           .action((x, c) => c.copy(useNodeIdCache = x))
         opt[String]("checkpointDir")
           .text(
@@ -126,8 +130,9 @@ object DecisionTreeRunner {
               }}")
           .action((x, c) => c.copy(checkpointDir = Some(x)))
         opt[Int]("checkpointInterval")
-          .text(s"how often to checkpoint the node Id cache, " +
-            s"default: ${defaultParams.checkpointInterval}")
+          .text(
+            s"how often to checkpoint the node Id cache, " +
+              s"default: ${defaultParams.checkpointInterval}")
           .action((x, c) => c.copy(checkpointInterval = x))
         opt[String]("testInput")
           .text(
@@ -324,8 +329,9 @@ object DecisionTreeRunner {
       }
       if (params.algo == Classification) {
         val trainAccuracy =
-          new MulticlassMetrics(training.map(lp =>
-            (model.predict(lp.features), lp.label))).precision
+          new MulticlassMetrics(
+            training.map(lp =>
+              (model.predict(lp.features), lp.label))).precision
         println(s"Train accuracy = $trainAccuracy")
         val testAccuracy =
           new MulticlassMetrics(
@@ -356,8 +362,9 @@ object DecisionTreeRunner {
           println(model) // Print model summary.
         }
         val trainAccuracy =
-          new MulticlassMetrics(training.map(lp =>
-            (model.predict(lp.features), lp.label))).precision
+          new MulticlassMetrics(
+            training.map(lp =>
+              (model.predict(lp.features), lp.label))).precision
         println(s"Train accuracy = $trainAccuracy")
         val testAccuracy =
           new MulticlassMetrics(

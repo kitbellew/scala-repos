@@ -47,7 +47,9 @@ package org.ensime.core
 trait DocFinding { self: RichPresentationCompiler =>
 
   private def isRoot(s: Symbol) =
-    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
+    (
+      s eq NoSymbol
+    ) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
 
   private def fullPackage(sym: Symbol): String =
     sym.ownerChain.reverse
@@ -95,10 +97,12 @@ trait DocFinding { self: RichPresentationCompiler =>
 
   protected def scalaFqn(sym: Symbol): DocFqn = {
     def nameString(s: Symbol) =
-      s.nameString + (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
-                        "$"
-                      else
-                        "")
+      s.nameString + (
+        if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
+          "$"
+        else
+          ""
+      )
     if (sym.isPackageObjectOrClass) {
       DocFqn(fullPackage(sym.owner), "package")
     } else if (sym.hasPackageFlag) {
@@ -116,17 +120,20 @@ trait DocFinding { self: RichPresentationCompiler =>
   }
 
   private def signatureString(sym: Symbol, java: Boolean): String = {
-    sym.nameString + (if (java) {
-                        if (sym.paramLists.isEmpty)
-                          ""
-                        else
-                          sym.paramLists
-                            .flatMap(_.map { sym =>
-                              javaFqn(sym.tpe).mkString
-                            })
-                            .mkString("(", ", ", ")")
-                      } else
-                        sym.signatureString.replaceAll("[\\s]", ""))
+    sym.nameString + (
+      if (java) {
+        if (sym.paramLists.isEmpty)
+          ""
+        else
+          sym.paramLists
+            .flatMap(
+              _.map { sym =>
+                javaFqn(sym.tpe).mkString
+              })
+            .mkString("(", ", ", ")")
+      } else
+        sym.signatureString.replaceAll("[\\s]", "")
+    )
   }
 
   def docSignature(sym: Symbol, pos: Option[Position]): Option[DocSigPair] = {

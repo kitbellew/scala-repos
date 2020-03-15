@@ -143,14 +143,16 @@ class FutureTests extends MinimalScalaTest {
         f.onFailure({
           case _ => fail("onFailure should not have been called")
         })(ec))
-      assert(ECNotUsed(ec =>
-        f.recover({
-          case _ => fail("recover should not have been called")
-        })(ec)) eq f)
-      assert(ECNotUsed(ec =>
-        f.recoverWith({
-          case _ => fail("flatMap should not have been called")
-        })(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.recover({
+            case _ => fail("recover should not have been called")
+          })(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.recoverWith({
+            case _ => fail("flatMap should not have been called")
+          })(ec)) eq f)
       assert(
         f.fallbackTo(f) eq f,
         "Future.fallbackTo must be the same instance as Future.fallbackTo")
@@ -179,20 +181,25 @@ class FutureTests extends MinimalScalaTest {
         f.onSuccess({
           case _ => fail("onSuccess should not have been called")
         })(ec))
-      assert(ECNotUsed(ec =>
-        f.map(_ => fail("map should not have been called"))(ec)) eq f)
-      assert(ECNotUsed(ec =>
-        f.flatMap(_ => fail("flatMap should not have been called"))(ec)) eq f)
-      assert(ECNotUsed(ec =>
-        f.filter(_ => fail("filter should not have been called"))(ec)) eq f)
-      assert(ECNotUsed(ec =>
-        f.collect({
-          case _ => fail("collect should not have been called")
-        })(ec)) eq f)
-      assert(ECNotUsed(ec =>
-        f.zipWith(f)({ (_, _) =>
-          fail("zipWith should not have been called")
-        })(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.map(_ => fail("map should not have been called"))(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.flatMap(_ => fail("flatMap should not have been called"))(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.filter(_ => fail("filter should not have been called"))(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.collect({
+            case _ => fail("collect should not have been called")
+          })(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.zipWith(f)({ (_, _) =>
+            fail("zipWith should not have been called")
+          })(ec)) eq f)
     }
   }
 
@@ -335,9 +342,11 @@ class FutureTests extends MinimalScalaTest {
       val future2 =
         for {
           a <- future0.mapTo[Int]
-          b <- (Future {
-            (a * 2).toString
-          }).mapTo[Int]
+          b <- (
+            Future {
+              (a * 2).toString
+            }
+          ).mapTo[Int]
           c <- Future {
             (7 * 2).toString
           }
@@ -875,9 +884,10 @@ class FutureTests extends MinimalScalaTest {
 
       val oddFutures =
         List
-          .fill(100)(Future {
-            counter.incAndGet()
-          })
+          .fill(100)(
+            Future {
+              counter.incAndGet()
+            })
           .iterator
       val traversed = Future.sequence(oddFutures)
       Await.result(traversed, defaultTimeout).sum mustBe (10000)

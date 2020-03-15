@@ -77,9 +77,10 @@ object ValidationError {
   */
 class ErrorCodeSerializer(knownCodes: ErrorCode*)
     extends Serializer[ErrorCode] {
-  val ecs = Map(knownCodes map { c ⇒
-    c.getClass.getSimpleName.replaceAll("\\$$", "").toUpperCase -> c
-  }: _*)
+  val ecs = Map(
+    knownCodes map { c ⇒
+      c.getClass.getSimpleName.replaceAll("\\$$", "").toUpperCase -> c
+    }: _*)
   val Class = classOf[ErrorCode]
 
   def deserialize(implicit

@@ -139,19 +139,21 @@ object Main {
   }
 
   private def addShutdownHook(bootables: immutable.Seq[Bootable]): Unit = {
-    Runtime.getRuntime.addShutdownHook(new Thread(new Runnable {
-      def run = {
-        log("")
-        log("Shutting down Akka...")
+    Runtime.getRuntime.addShutdownHook(
+      new Thread(
+        new Runnable {
+          def run = {
+            log("")
+            log("Shutting down Akka...")
 
-        for (bootable ← bootables) {
-          log("Shutting down " + bootable.getClass.getName)
-          bootable.shutdown()
-        }
+            for (bootable ← bootables) {
+              log("Shutting down " + bootable.getClass.getName)
+              bootable.shutdown()
+            }
 
-        log("Successfully shut down Akka")
-      }
-    }))
+            log("Successfully shut down Akka")
+          }
+        }))
   }
 
   private def banner =

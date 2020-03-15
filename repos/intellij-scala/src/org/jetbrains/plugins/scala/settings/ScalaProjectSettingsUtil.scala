@@ -101,20 +101,21 @@ object ScalaProjectSettingsUtil {
 
     ToolbarDecorator
       .createDecorator(patternJBList.getList)
-      .setAddAction(new AnActionButtonRunnable {
-        def run(button: AnActionButton) {
-          val validator: InputValidator =
-            ScalaProjectSettingsUtil.getPatternValidator
-          val pattern: String = Messages.showInputDialog(
-            parent,
-            inputMessage,
-            inputTitle,
-            Messages.getWarningIcon,
-            "",
-            validator)
-          addPattern(pattern, patternJBList)
-        }
-      })
+      .setAddAction(
+        new AnActionButtonRunnable {
+          def run(button: AnActionButton) {
+            val validator: InputValidator =
+              ScalaProjectSettingsUtil.getPatternValidator
+            val pattern: String = Messages.showInputDialog(
+              parent,
+              inputMessage,
+              inputTitle,
+              Messages.getWarningIcon,
+              "",
+              validator)
+            addPattern(pattern, patternJBList)
+          }
+        })
       .disableUpDownActions
       .createPanel
   }
@@ -145,54 +146,57 @@ object ScalaProjectSettingsUtil {
 
     ToolbarDecorator
       .createDecorator(patternJBList.getList)
-      .setAddAction(new AnActionButtonRunnable {
-        def run(button: AnActionButton) {
-          val validator: InputValidator =
-            ScalaProjectSettingsUtil.getPackageValidator
-          val pattern: String = Messages.showInputDialog(
-            parent,
-            inputMessage,
-            inputTitle,
-            Messages.getWarningIcon,
-            "",
-            validator)
-          addPattern(pattern, patternJBList)
-        }
-      })
-      .addExtraAction(new AnActionButton(
-        ApplicationBundle.message("button.add.blank"),
-        IconUtil.getAddBlankLineIcon) {
-        def actionPerformed(e: AnActionEvent) {
-          addPattern(ScalaCodeStyleSettings.BLANK_LINE, patternJBList)
-        }
-      })
-      .setRemoveAction(new AnActionButtonRunnable {
-        override def run(t: AnActionButton): Unit = {
-          val listModel =
-            JListCompatibility.getDefaultListModel(
-              patternJBList.getList.getModel) match {
-              case null    => return
-              case default => default
-            }
-          val index = patternJBList.getList.getSelectedIndex
-          if (index != -1) {
-            if (listModel.get(
-                  index) == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
-              return
-            val size = listModel.size()
-            listModel.remove(index)
-            val to =
-              if (index == size - 1)
-                index - 1
-              else
-                index
-            patternJBList.getList.setSelectedIndex(to)
-            ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, to, 0)
-            IdeFocusManager.getGlobalInstance
-              .requestFocus(patternJBList.getList, false)
+      .setAddAction(
+        new AnActionButtonRunnable {
+          def run(button: AnActionButton) {
+            val validator: InputValidator =
+              ScalaProjectSettingsUtil.getPackageValidator
+            val pattern: String = Messages.showInputDialog(
+              parent,
+              inputMessage,
+              inputTitle,
+              Messages.getWarningIcon,
+              "",
+              validator)
+            addPattern(pattern, patternJBList)
           }
-        }
-      })
+        })
+      .addExtraAction(
+        new AnActionButton(
+          ApplicationBundle.message("button.add.blank"),
+          IconUtil.getAddBlankLineIcon) {
+          def actionPerformed(e: AnActionEvent) {
+            addPattern(ScalaCodeStyleSettings.BLANK_LINE, patternJBList)
+          }
+        })
+      .setRemoveAction(
+        new AnActionButtonRunnable {
+          override def run(t: AnActionButton): Unit = {
+            val listModel =
+              JListCompatibility.getDefaultListModel(
+                patternJBList.getList.getModel) match {
+                case null    => return
+                case default => default
+              }
+            val index = patternJBList.getList.getSelectedIndex
+            if (index != -1) {
+              if (listModel.get(
+                    index) == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+                return
+              val size = listModel.size()
+              listModel.remove(index)
+              val to =
+                if (index == size - 1)
+                  index - 1
+                else
+                  index
+              patternJBList.getList.setSelectedIndex(to)
+              ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, to, 0)
+              IdeFocusManager.getGlobalInstance
+                .requestFocus(patternJBList.getList, false)
+            }
+          }
+        })
       .createPanel
   }
 }

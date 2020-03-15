@@ -24,22 +24,23 @@ object MaterializationBenchmark {
 
   val graphWithJunctionsBuilder =
     (numOfJunctions: Int) =>
-      RunnableGraph.fromGraph(GraphDSL.create() { implicit b =>
-        import GraphDSL.Implicits._
+      RunnableGraph.fromGraph(
+        GraphDSL.create() { implicit b =>
+          import GraphDSL.Implicits._
 
-        val broadcast = b.add(Broadcast[Unit](numOfJunctions))
-        var outlet = broadcast.out(0)
-        for (i <- 1 until numOfJunctions) {
-          val merge = b.add(Merge[Unit](2))
-          outlet ~> merge
-          broadcast.out(i) ~> merge
-          outlet = merge.out
-        }
+          val broadcast = b.add(Broadcast[Unit](numOfJunctions))
+          var outlet = broadcast.out(0)
+          for (i <- 1 until numOfJunctions) {
+            val merge = b.add(Merge[Unit](2))
+            outlet ~> merge
+            broadcast.out(i) ~> merge
+            outlet = merge.out
+          }
 
-        Source.single(()) ~> broadcast
-        outlet ~> Sink.ignore
-        ClosedShape
-      })
+          Source.single(()) ~> broadcast
+          outlet ~> Sink.ignore
+          ClosedShape
+        })
 
   val graphWithNestedImportsBuilder =
     (numOfNestedGraphs: Int) => {
@@ -51,17 +52,18 @@ object MaterializationBenchmark {
           }
       }
 
-      RunnableGraph.fromGraph(GraphDSL.create(flow) { implicit b ⇒ flow ⇒
-        import GraphDSL.Implicits._
-        Source.single(()) ~> flow ~> Sink.ignore
-        ClosedShape
-      })
+      RunnableGraph.fromGraph(
+        GraphDSL.create(flow) { implicit b ⇒ flow ⇒
+          import GraphDSL.Implicits._
+          Source.single(()) ~> flow ~> Sink.ignore
+          ClosedShape
+        })
     }
 
   val graphWithImportedFlowBuilder =
     (numOfFlows: Int) =>
-      RunnableGraph.fromGraph(GraphDSL.create(Source.single(())) {
-        implicit b ⇒ source ⇒
+      RunnableGraph.fromGraph(
+        GraphDSL.create(Source.single(())) { implicit b ⇒ source ⇒
           import GraphDSL.Implicits._
           val flow = Flow[Unit].map(identity)
           var out: Outlet[Unit] = source.out
@@ -72,7 +74,7 @@ object MaterializationBenchmark {
           }
           out ~> Sink.ignore
           ClosedShape
-      })
+        })
 }
 
 @State(Scope.Benchmark)

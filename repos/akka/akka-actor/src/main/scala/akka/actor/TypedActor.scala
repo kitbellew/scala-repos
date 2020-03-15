@@ -511,9 +511,10 @@ object TypedActor
       method.getName match {
         case "toString" ⇒ actor.toString
         case "equals" ⇒
-          (args.length == 1 && (proxy eq args(0)) || actor == extension
-            .getActorRefFor(args(0)))
-            .asInstanceOf[AnyRef] //Force boxing of the boolean
+          (
+            args.length == 1 && (proxy eq args(0)) || actor == extension
+              .getActorRefFor(args(0))
+          ).asInstanceOf[AnyRef] //Force boxing of the boolean
         case "hashCode" ⇒ actor.hashCode.asInstanceOf[AnyRef]
         case _ ⇒
           implicit val dispatcher = extension.system.dispatcher
@@ -529,11 +530,13 @@ object TypedActor
               }
             case m if m.returnsJOption || m.returnsOption ⇒
               val f = ask(actor, m)(timeout)
-              (try {
-                Await.ready(f, timeout.duration).value
-              } catch {
-                case _: TimeoutException ⇒ None
-              }) match {
+              (
+                try {
+                  Await.ready(f, timeout.duration).value
+                } catch {
+                  case _: TimeoutException ⇒ None
+                }
+              ) match {
                 case None | Some(Success(NullResponse)) | Some(
                       Failure(_: AskTimeoutException)) ⇒
                   if (m.returnsJOption)
@@ -824,9 +827,11 @@ class TypedActorExtension(val system: ExtendedActorSystem)
     val actorVar = new AtomVar[ActorRef](null)
     val proxy = Proxy
       .newProxyInstance(
-        (props.loader orElse props.interfaces.collectFirst {
-          case any ⇒ any.getClassLoader
-        }).orNull, //If we have no loader, we arbitrarily take the loader of the first interface
+        (
+          props.loader orElse props.interfaces.collectFirst {
+            case any ⇒ any.getClassLoader
+          }
+        ).orNull, //If we have no loader, we arbitrarily take the loader of the first interface
         props.interfaces.toArray,
         new TypedActorInvocationHandler(
           this,

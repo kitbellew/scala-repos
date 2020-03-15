@@ -48,8 +48,7 @@ object MacroSupportInterpolationImpl {
                       skipParens,
                       TermName(NameTransformer.encode("unary_!"))),
                     append(Literal(Constant(c2))),
-                    ctx.universe.EmptyTree
-                  )
+                    ctx.universe.EmptyTree)
                 case '{' => // optional open parentheses with indent
                   flushSB
                   exprs += If(
@@ -59,8 +58,7 @@ object MacroSupportInterpolationImpl {
                     Block(
                       List(
                         append(Literal(Constant('('))),
-                        Select(sqlBuilder, TermName("newLineIndent"))
-                      ),
+                        Select(sqlBuilder, TermName("newLineIndent"))),
                       Literal(Constant(()))),
                     ctx.universe.EmptyTree
                   )
@@ -73,8 +71,7 @@ object MacroSupportInterpolationImpl {
                     Block(
                       List(
                         Select(sqlBuilder, TermName("newLineDedent")),
-                        append(Literal(Constant(')')))
-                      ),
+                        append(Literal(Constant(')')))),
                       Literal(Constant(()))),
                     ctx.universe.EmptyTree
                   )

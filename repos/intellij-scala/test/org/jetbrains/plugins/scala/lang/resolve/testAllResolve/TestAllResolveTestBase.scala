@@ -31,15 +31,16 @@ abstract class TestAllResolveTestBase
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
     configureFromFileTextAdapter(getTestName(false) + ".scala", fileText)
     val scalaFile = getFileAdapter.asInstanceOf[ScalaFile]
-    scalaFile.accept(new ScalaRecursiveElementVisitor {
-      override def visitReference(ref: ScReferenceElement) {
-        val resolve = ref.resolve()
-        assertNotNull(
-          "Failed on reference: " + ref.getText + ". Reference Range: (" +
-            ref.getTextRange.getStartOffset + ", " + ref.getTextRange.getEndOffset + ")",
-          resolve)
-        super.visitReference(ref)
-      }
-    })
+    scalaFile.accept(
+      new ScalaRecursiveElementVisitor {
+        override def visitReference(ref: ScReferenceElement) {
+          val resolve = ref.resolve()
+          assertNotNull(
+            "Failed on reference: " + ref.getText + ". Reference Range: (" +
+              ref.getTextRange.getStartOffset + ", " + ref.getTextRange.getEndOffset + ")",
+            resolve)
+          super.visitReference(ref)
+        }
+      })
   }
 }

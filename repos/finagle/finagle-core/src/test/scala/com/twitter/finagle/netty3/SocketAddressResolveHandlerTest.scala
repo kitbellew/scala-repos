@@ -26,14 +26,15 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     val channel = mock[Channel]
     when(ctx.getChannel) thenReturn channel
     val pipeline = mock[ChannelPipeline]
-    doAnswer(new Answer[ChannelFuture] {
-      override def answer(invocation: InvocationOnMock) = {
-        invocation.getArguments.headOption.foreach {
-          case r: Runnable => r.run()
+    doAnswer(
+      new Answer[ChannelFuture] {
+        override def answer(invocation: InvocationOnMock) = {
+          invocation.getArguments.headOption.foreach {
+            case r: Runnable => r.run()
+          }
+          mock[ChannelFuture]
         }
-        mock[ChannelFuture]
-      }
-    }).when(pipeline).execute(any[Runnable])
+      }).when(pipeline).execute(any[Runnable])
     when(ctx.getPipeline) thenReturn pipeline
     when(channel.getPipeline) thenReturn pipeline
     val closeFuture = Channels.future(channel)

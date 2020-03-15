@@ -44,11 +44,13 @@ final class FishnetApi(
   }
 
   def acquire(client: Client): Fu[Option[JsonApi.Work]] =
-    (client.skill match {
-      case Skill.Move     => acquireMove(client)
-      case Skill.Analysis => acquireAnalysis(client)
-      case Skill.All      => acquireMove(client) orElse acquireAnalysis(client)
-    }).chronometer
+    (
+      client.skill match {
+        case Skill.Move     => acquireMove(client)
+        case Skill.Analysis => acquireAnalysis(client)
+        case Skill.All      => acquireMove(client) orElse acquireAnalysis(client)
+      }
+    ).chronometer
       .mon(_.fishnet.acquire time client.skill.key)
       .logIfSlow(100, logger)(_ => s"acquire ${client.skill}")
       .result
@@ -73,10 +75,7 @@ final class FishnetApi(
   private def acquireAnalysis(client: Client): Fu[Option[JsonApi.Work]] =
     sequencer {
       analysisColl
-        .find(
-          BSONDocument(
-            "acquired" -> BSONDocument("$exists" -> false)
-          ))
+        .find(BSONDocument("acquired" -> BSONDocument("$exists" -> false)))
         .sort(
           BSONDocument(
             "sender.system" -> 1, // user requests first, then lichess auto analysis
@@ -167,11 +166,7 @@ final class FishnetApi(
 
   def prioritaryAnalysisExists(gameId: String): Fu[Boolean] =
     analysisColl
-      .count(
-        BSONDocument(
-          "game.id" -> gameId,
-          "sender.system" -> false
-        ).some)
+      .count(BSONDocument("game.id" -> gameId, "sender.system" -> false).some)
       .map(0 !=)
 
   private[fishnet] def createClient(

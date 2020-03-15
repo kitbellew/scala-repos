@@ -404,9 +404,7 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
         ParamFailure(
           "Apple",
           Empty,
-          Full(
-            ParamFailure("Apple", Empty, Empty, 404)
-          ),
+          Full(ParamFailure("Apple", Empty, Empty, 404)),
           "apple")
     }
   }
@@ -510,8 +508,7 @@ trait BoxGenerator {
       frequency(
         (3, const(Empty)),
         (3, a.arbitrary.map(Full[T])),
-        (1, genFailureBox)
-      )
+        (1, genFailureBox))
     }
 
   def genFailureBox: Gen[Failure] =

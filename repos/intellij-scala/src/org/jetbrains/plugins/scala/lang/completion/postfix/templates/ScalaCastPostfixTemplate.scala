@@ -49,13 +49,14 @@ class ScalaCastPostfixTemplate
 
     template.addVariable(
       "expr",
-      new TextExpression(expression match {
-        case _: ScSugarCallExpr | _: ScDoStmt | _: ScIfStmt | _: ScTryStmt |
-            _: ScForStatement | _: ScWhileStmt | _: ScThrowStmt |
-            _: ScReturnStmt =>
-          "(" + expression.getText + ")"
-        case _ => expression.getText
-      }),
+      new TextExpression(
+        expression match {
+          case _: ScSugarCallExpr | _: ScDoStmt | _: ScIfStmt | _: ScTryStmt |
+              _: ScForStatement | _: ScWhileStmt | _: ScThrowStmt |
+              _: ScReturnStmt =>
+            "(" + expression.getText + ")"
+          case _ => expression.getText
+        }),
       false
     )
 

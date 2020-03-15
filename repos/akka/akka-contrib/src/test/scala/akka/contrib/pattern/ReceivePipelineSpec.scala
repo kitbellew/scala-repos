@@ -371,9 +371,11 @@ class PersistentReceivePipelineSpec(config: Config)
       val probe = new TestProbe(system)
       val probeRef = probe.ref
 
-      val totaller = system.actorOf(Props(new TotallerActor with Timer {
-        def notifyDuration(d: Long) = probeRef ! d
-      }))
+      val totaller = system.actorOf(
+        Props(
+          new TotallerActor with Timer {
+            def notifyDuration(d: Long) = probeRef ! d
+          }))
 
       totaller ! 6
       totaller ! "get"

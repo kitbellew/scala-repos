@@ -98,7 +98,9 @@ abstract class ClassfileParser {
   protected final def s1(): Int =
     in.nextByte.toInt // sign-extend the byte to int
   protected final def s2(): Int =
-    (in.nextByte.toInt << 8) | u1 // sign-extend and shift the first byte, or with the unsigned second byte
+    (
+      in.nextByte.toInt << 8
+    ) | u1 // sign-extend and shift the first byte, or with the unsigned second byte
 
   private def readInnerClassFlags() = readClassFlags()
   private def readClassFlags() = JavaAccFlags classFlags u2
@@ -239,19 +241,17 @@ abstract class ClassfileParser {
 
     /** Return the name found at given index. */
     def getName(index: Int): Name =
-      (
-        if (index <= 0 || len <= index)
-          errorBadIndex(index)
-        else
-          values(index) match {
-            case name: Name => name
-            case _ =>
-              val start = firstExpecting(index, CONSTANT_UTF8)
-              recordAtIndex(
-                newTermName(in.buf, start + 2, in.getChar(start).toInt),
-                index)
-          }
-      )
+      (if (index <= 0 || len <= index)
+         errorBadIndex(index)
+       else
+         values(index) match {
+           case name: Name => name
+           case _ =>
+             val start = firstExpecting(index, CONSTANT_UTF8)
+             recordAtIndex(
+               newTermName(in.buf, start + 2, in.getChar(start).toInt),
+               index)
+         })
 
     /** Return the name found at given index in the constant pool, with '/' replaced by '.'. */
     def getExternalName(index: Int): Name = {
@@ -322,21 +322,19 @@ abstract class ClassfileParser {
       *  appear as entries in 'newarray' or 'cast' opcodes.
       */
     def getClassOrArrayType(index: Int): Type =
-      (
-        if (index <= 0 || len <= index)
-          errorBadIndex(index)
-        else
-          values(index) match {
-            case tp: Type    => tp
-            case cls: Symbol => cls.tpe_*
-            case _ =>
-              val name = getClassName(index)
-              name charAt 0 match {
-                case ARRAY_TAG => recordAtIndex(sigToType(null, name), index)
-                case _         => recordAtIndex(classNameToSymbol(name), index).tpe_*
-              }
-          }
-      )
+      (if (index <= 0 || len <= index)
+         errorBadIndex(index)
+       else
+         values(index) match {
+           case tp: Type    => tp
+           case cls: Symbol => cls.tpe_*
+           case _ =>
+             val name = getClassName(index)
+             name charAt 0 match {
+               case ARRAY_TAG => recordAtIndex(sigToType(null, name), index)
+               case _         => recordAtIndex(classNameToSymbol(name), index).tpe_*
+             }
+         })
 
     def getType(index: Int): Type = getType(null, index)
     def getType(sym: Symbol, index: Int): Type =
@@ -351,31 +349,30 @@ abstract class ClassfileParser {
 
     private def createConstant(index: Int): Constant = {
       val start = starts(index)
-      Constant((in.buf(start).toInt: @switch) match {
-        case CONSTANT_STRING  => getName(in.getChar(start + 1).toInt).toString
-        case CONSTANT_INTEGER => in.getInt(start + 1)
-        case CONSTANT_FLOAT   => in.getFloat(start + 1)
-        case CONSTANT_LONG    => in.getLong(start + 1)
-        case CONSTANT_DOUBLE  => in.getDouble(start + 1)
-        case CONSTANT_CLASS =>
-          getClassOrArrayType(
-            index).typeSymbol.tpe_* // !!! Is this necessary or desirable?
-        case _ => errorBadTag(start)
-      })
+      Constant(
+        (in.buf(start).toInt: @switch) match {
+          case CONSTANT_STRING  => getName(in.getChar(start + 1).toInt).toString
+          case CONSTANT_INTEGER => in.getInt(start + 1)
+          case CONSTANT_FLOAT   => in.getFloat(start + 1)
+          case CONSTANT_LONG    => in.getLong(start + 1)
+          case CONSTANT_DOUBLE  => in.getDouble(start + 1)
+          case CONSTANT_CLASS =>
+            getClassOrArrayType(
+              index).typeSymbol.tpe_* // !!! Is this necessary or desirable?
+          case _ => errorBadTag(start)
+        })
     }
     def getConstant(index: Char): Constant = getConstant(index.toInt)
     def getConstant(index: Int): Constant =
-      (
-        if (index <= 0 || len <= index)
-          errorBadIndex(index)
-        else
-          values(index) match {
-            case const: Constant => const
-            case sym: Symbol     => Constant(sym.tpe_*)
-            case tpe: Type       => Constant(tpe)
-            case _               => recordAtIndex(createConstant(index), index)
-          }
-      )
+      (if (index <= 0 || len <= index)
+         errorBadIndex(index)
+       else
+         values(index) match {
+           case const: Constant => const
+           case sym: Symbol     => Constant(sym.tpe_*)
+           case tpe: Type       => Constant(tpe)
+           case _               => recordAtIndex(createConstant(index), index)
+         })
 
     private def getSubArray(bytes: Array[Byte]): Array[Byte] = {
       val decodedLength = ByteCodecs.decode(bytes)
@@ -385,20 +382,18 @@ abstract class ClassfileParser {
     }
 
     def getBytes(index: Int): Array[Byte] =
-      (
-        if (index <= 0 || len <= index)
-          errorBadIndex(index)
-        else
-          values(index) match {
-            case xs: Array[Byte] => xs
-            case _ =>
-              val start = firstExpecting(index, CONSTANT_UTF8)
-              val len = (in getChar start).toInt
-              val bytes = new Array[Byte](len)
-              System.arraycopy(in.buf, start + 2, bytes, 0, len)
-              recordAtIndex(getSubArray(bytes), index)
-          }
-      )
+      (if (index <= 0 || len <= index)
+         errorBadIndex(index)
+       else
+         values(index) match {
+           case xs: Array[Byte] => xs
+           case _ =>
+             val start = firstExpecting(index, CONSTANT_UTF8)
+             val len = (in getChar start).toInt
+             val bytes = new Array[Byte](len)
+             System.arraycopy(in.buf, start + 2, bytes, 0, len)
+             recordAtIndex(getSubArray(bytes), index)
+         })
 
     def getBytes(indices: List[Int]): Array[Byte] = {
       val head = indices.head
@@ -470,12 +465,10 @@ abstract class ClassfileParser {
     *  The method called "getClassByName" should either return the class or not.
     */
   private def lookupClass(name: Name) =
-    (
-      if (name containsChar '.')
-        rootMirror getClassByName name // see tickets #2464, #3756
-      else
-        definitions.getMember(rootMirror.EmptyPackageClass, name.toTypeName)
-    )
+    (if (name containsChar '.')
+       rootMirror getClassByName name // see tickets #2464, #3756
+     else
+       definitions.getMember(rootMirror.EmptyPackageClass, name.toTypeName))
 
   /** Return the class symbol of the given name. */
   def classNameToSymbol(name: Name): Symbol = {
@@ -523,7 +516,9 @@ abstract class ClassfileParser {
     }
 
     val isTopLevel =
-      !(currentClass containsChar '$') // Java class name; *don't* try to to use Scala name decoding (SI-7532)
+      !(
+        currentClass containsChar '$'
+      ) // Java class name; *don't* try to to use Scala name decoding (SI-7532)
 
     val c =
       if (isTopLevel)
@@ -574,11 +569,9 @@ abstract class ClassfileParser {
         0 until u2 foreach (_ => parseField())
         sawPrivateConstructor = false
         0 until u2 foreach (_ => parseMethod())
-        val needsConstructor = (
-          !sawPrivateConstructor
-            && !(instanceScope containsName nme.CONSTRUCTOR)
-            && (sflags & INTERFACE) == 0
-        )
+        val needsConstructor = (!sawPrivateConstructor
+          && !(instanceScope containsName nme.CONSTRUCTOR)
+          && (sflags & INTERFACE) == 0)
         if (needsConstructor)
           instanceScope enter clazz.newClassConstructor(NoPosition)
       }
@@ -973,7 +966,9 @@ abstract class ClassfileParser {
             while (i < paramCount) {
               val name = pool.getName(u2)
               val access = u2
-              if ((access & ACC_SYNTHETIC) != ACC_SYNTHETIC) { // name not synthetic
+              if ((
+                    access & ACC_SYNTHETIC
+                  ) != ACC_SYNTHETIC) { // name not synthetic
                 val params =
                   sym.paramss.head // Java only has exactly one parameter list
                 params(i).name = name.encode
@@ -1139,7 +1134,9 @@ abstract class ClassfileParser {
               case Some(c) => nvpairs += ((name, c))
               case None    => hasError = true
             }
-          else if ((attrType == ScalaLongSignatureAnnotation.tpe) && (name == nme.bytes))
+          else if ((
+                     attrType == ScalaLongSignatureAnnotation.tpe
+                   ) && (name == nme.bytes))
             parseScalaLongSigBytes match {
               case Some(c) => nvpairs += ((name, c))
               case None    => hasError = true
@@ -1377,12 +1374,10 @@ abstract class ClassfileParser {
     private def innerSymbol(entry: InnerClassEntry): Symbol = {
       val name = entry.originalName.toTypeName
       val enclosing = entry.enclosing
-      val member = (
-        if (enclosing == clazz)
-          entry.scope lookup name
-        else
-          lookupMemberAtTyperPhaseIfPossible(enclosing, name)
-      )
+      val member = (if (enclosing == clazz)
+                      entry.scope lookup name
+                    else
+                      lookupMemberAtTyperPhaseIfPossible(enclosing, name))
       def newStub =
         enclosing.newStubSymbol(
           name,

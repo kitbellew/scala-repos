@@ -49,12 +49,14 @@ object WebSocketClientBlueprint {
       request: WebSocketRequest,
       settings: ClientConnectionSettings,
       log: LoggingAdapter): Http.WebSocketClientLayer =
-    (simpleTls.atopMat(handshake(request, settings, log))(Keep.right) atop
-      WebSocket.framing atop
-      WebSocket.stack(
-        serverSide = false,
-        maskingRandomFactory = settings.websocketRandomFactory,
-        log = log)).reversed
+    (
+      simpleTls.atopMat(handshake(request, settings, log))(Keep.right) atop
+        WebSocket.framing atop
+        WebSocket.stack(
+          serverSide = false,
+          maskingRandomFactory = settings.websocketRandomFactory,
+          log = log)
+    ).reversed
 
   /**
     * A bidi flow that injects and inspects the WS handshake and then goes out of the way. This BidiFlow
@@ -63,12 +65,9 @@ object WebSocketClientBlueprint {
   def handshake(
       request: WebSocketRequest,
       settings: ClientConnectionSettings,
-      log: LoggingAdapter): BidiFlow[
-    ByteString,
-    ByteString,
-    ByteString,
-    ByteString,
-    Future[WebSocketUpgradeResponse]] = {
+      log: LoggingAdapter)
+      : BidiFlow[ByteString, ByteString, ByteString, ByteString, Future[
+        WebSocketUpgradeResponse]] = {
     import request._
     val result = Promise[WebSocketUpgradeResponse]()
 
@@ -151,8 +150,9 @@ object WebSocketClientBlueprint {
                       InvalidUpgradeResponse(
                         response,
                         s"WebSocket server at $uri returned $problem"))
-                    ctx.fail(new IllegalArgumentException(
-                      s"WebSocket upgrade did not finish because of '$problem'"))
+                    ctx.fail(
+                      new IllegalArgumentException(
+                        s"WebSocket upgrade did not finish because of '$problem'"))
                 }
               case other ⇒
                 throw new IllegalStateException(
@@ -169,25 +169,26 @@ object WebSocketClientBlueprint {
         }
     }
 
-    BidiFlow.fromGraph(GraphDSL.create() { implicit b ⇒
-      import GraphDSL.Implicits._
+    BidiFlow.fromGraph(
+      GraphDSL.create() { implicit b ⇒
+        import GraphDSL.Implicits._
 
-      val networkIn = b.add(Flow[ByteString].transform(() ⇒ new UpgradeStage))
-      val wsIn = b.add(Flow[ByteString])
+        val networkIn = b.add(Flow[ByteString].transform(() ⇒ new UpgradeStage))
+        val wsIn = b.add(Flow[ByteString])
 
-      val handshakeRequestSource = b.add(
-        Source.single(renderedInitialRequest) ++ valve.source)
-      val httpRequestBytesAndThenWSBytes = b.add(Concat[ByteString]())
+        val handshakeRequestSource = b.add(
+          Source.single(renderedInitialRequest) ++ valve.source)
+        val httpRequestBytesAndThenWSBytes = b.add(Concat[ByteString]())
 
-      handshakeRequestSource ~> httpRequestBytesAndThenWSBytes
-      wsIn.outlet ~> httpRequestBytesAndThenWSBytes
+        handshakeRequestSource ~> httpRequestBytesAndThenWSBytes
+        wsIn.outlet ~> httpRequestBytesAndThenWSBytes
 
-      BidiShape(
-        networkIn.in,
-        networkIn.out,
-        wsIn.in,
-        httpRequestBytesAndThenWSBytes.out)
-    }) mapMaterializedValue (_ ⇒ result.future)
+        BidiShape(
+          networkIn.in,
+          networkIn.out,
+          wsIn.in,
+          httpRequestBytesAndThenWSBytes.out)
+      }) mapMaterializedValue (_ ⇒ result.future)
   }
 
   def simpleTls

@@ -32,25 +32,29 @@ object Agent {
     def get(): T = ref.single.get
 
     def send(newValue: T): Unit =
-      withinTransaction(new Runnable {
-        def run = ref.single.update(newValue)
-      })
+      withinTransaction(
+        new Runnable {
+          def run = ref.single.update(newValue)
+        })
 
     def send(f: T ⇒ T): Unit =
-      withinTransaction(new Runnable {
-        def run = ref.single.transform(f)
-      })
+      withinTransaction(
+        new Runnable {
+          def run = ref.single.transform(f)
+        })
 
     def sendOff(f: T ⇒ T)(implicit ec: ExecutionContext): Unit =
-      withinTransaction(new Runnable {
-        def run =
-          try updater.suspend()
-          finally ec.execute(new Runnable {
-            def run =
-              try ref.single.transform(f)
-              finally updater.resume()
-          })
-      })
+      withinTransaction(
+        new Runnable {
+          def run =
+            try updater.suspend()
+            finally ec.execute(
+              new Runnable {
+                def run =
+                  try ref.single.transform(f)
+                  finally updater.resume()
+              })
+        })
 
     def alter(newValue: T): Future[T] =
       doAlter({
@@ -62,14 +66,15 @@ object Agent {
 
     def alterOff(f: T ⇒ T)(implicit ec: ExecutionContext): Future[T] = {
       val result = Promise[T]()
-      withinTransaction(new Runnable {
-        def run = {
-          updater.suspend()
-          result completeWith Future(
-            try ref.single.transformAndGet(f)
-            finally updater.resume())
-        }
-      })
+      withinTransaction(
+        new Runnable {
+          def run = {
+            updater.suspend()
+            result completeWith Future(
+              try ref.single.transformAndGet(f)
+              finally updater.resume())
+          }
+        })
       result.future
     }
 

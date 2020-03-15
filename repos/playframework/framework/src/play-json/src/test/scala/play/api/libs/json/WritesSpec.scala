@@ -29,10 +29,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     "be written as number" in {
       Writes.LocalDateTimeNumberWrites
         .writes(
-          LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(1234567890L),
-            ZoneOffset.UTC
-          ))
+          LocalDateTime
+            .ofInstant(Instant.ofEpochMilli(1234567890L), ZoneOffset.UTC))
         .aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
     }
 
@@ -83,10 +81,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     "be written as number" in {
       Writes.ZonedDateTimeNumberWrites
         .writes(
-          ZonedDateTime.ofInstant(
-            Instant.ofEpochMilli(1234567890L),
-            ZoneOffset.UTC
-          ))
+          ZonedDateTime
+            .ofInstant(Instant.ofEpochMilli(1234567890L), ZoneOffset.UTC))
         .aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
     }
 
@@ -179,9 +175,10 @@ object WritesSpec extends org.specs2.mutable.Specification {
     }
 
     "be transformed with another OWrites" in {
-      val transformed: OWrites[Foo] = writes.transform(OWrites[JsObject] {
-        obj => obj ++ Json.obj("time" -> time)
-      })
+      val transformed: OWrites[Foo] = writes.transform(
+        OWrites[JsObject] { obj =>
+          obj ++ Json.obj("time" -> time)
+        })
       val written: JsObject = transformed.writes(Foo("Lorem"))
 
       written must_== Json.obj("bar" -> "Lorem", "time" -> time)

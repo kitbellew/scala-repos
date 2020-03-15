@@ -73,8 +73,7 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     List(
       sstring("", theRest),
       sstring("\nAdditional debug settings:", debugs),
-      sstring("\nDeprecated settings:", deprecateds)
-    ).flatten mkString "\n"
+      sstring("\nDeprecated settings:", deprecateds)).flatten mkString "\n"
   }
 
   def createUsageMsg(
@@ -84,8 +83,7 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     val prefix = List(
       Some(shortUsage),
       Some(explainAdvanced) filter (_ => shouldExplain),
-      Some(label + " options include:")
-    ).flatten mkString "\n"
+      Some(label + " options include:")).flatten mkString "\n"
 
     prefix + createUsageMsg(cond)
   }

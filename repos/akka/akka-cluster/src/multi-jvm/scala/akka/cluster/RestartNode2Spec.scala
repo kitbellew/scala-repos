@@ -26,8 +26,9 @@ object RestartNode2SpecMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+      .withFallback(
+        ConfigFactory.parseString(
+          """
       akka.cluster.auto-down-unreachable-after = 2s
       akka.cluster.retry-unsuccessful-join-after = 3s
       akka.remote.retry-gate-closed-for = 45s
@@ -81,13 +82,14 @@ abstract class RestartNode2SpecSpec
       // we must transfer its address to seed2
       runOn(seed2) {
         system.actorOf(
-          Props(new Actor {
-            def receive = {
-              case a: Address ⇒
-                seedNode1Address = a
-                sender() ! "ok"
-            }
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              def receive = {
+                case a: Address ⇒
+                  seedNode1Address = a
+                  sender() ! "ok"
+              }
+            }).withDeploy(Deploy.local),
           name = "address-receiver")
         enterBarrier("seed1-address-receiver-ready")
       }

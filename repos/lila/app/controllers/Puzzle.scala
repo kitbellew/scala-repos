@@ -32,13 +32,16 @@ object Puzzle extends LilaController {
 
   def daily =
     Open { implicit ctx =>
-      OptionFuResult(env.daily() flatMap {
-        _.map(_.id) ?? env.api.puzzle.find
-      }) { puzzle =>
+      OptionFuResult(
+        env.daily() flatMap {
+          _.map(_.id) ?? env.api.puzzle.find
+        }) { puzzle =>
         negotiate(
-          html = (ctx.me ?? {
-            env.api.attempt.hasPlayed(_, puzzle) map (!_)
-          }) flatMap { asPlay =>
+          html = (
+            ctx.me ?? {
+              env.api.attempt.hasPlayed(_, puzzle) map (!_)
+            }
+          ) flatMap { asPlay =>
             renderShow(puzzle, asPlay.fold("play", "try")) map {
               Ok(_)
             }
@@ -67,9 +70,11 @@ object Puzzle extends LilaController {
   def show(id: PuzzleId) =
     Open { implicit ctx =>
       OptionFuOk(env.api.puzzle find id) { puzzle =>
-        (ctx.me ?? {
-          env.api.attempt.hasPlayed(_, puzzle) map (!_)
-        }) flatMap { asPlay =>
+        (
+          ctx.me ?? {
+            env.api.attempt.hasPlayed(_, puzzle) map (!_)
+          }
+        ) flatMap { asPlay =>
           renderShow(puzzle, asPlay.fold("play", "try"))
         }
       }
@@ -84,9 +89,11 @@ object Puzzle extends LilaController {
 
   private def puzzleJson(puzzle: PuzzleModel)(implicit ctx: Context) =
     (env userInfos ctx.me) zip
-      (ctx.me ?? {
-        env.api.attempt.hasPlayed(_, puzzle) map (!_)
-      }) map {
+      (
+        ctx.me ?? {
+          env.api.attempt.hasPlayed(_, puzzle) map (!_)
+        }
+      ) map {
       case (infos, asPlay) =>
         JsData(
           puzzle,
@@ -107,8 +114,7 @@ object Puzzle extends LilaController {
           api = _ =>
             fuccess {
               Ok(JsData history ui)
-            }
-        )
+            })
       }
     }
 

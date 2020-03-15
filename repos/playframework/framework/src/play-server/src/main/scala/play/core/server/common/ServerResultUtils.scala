@@ -24,8 +24,10 @@ object ServerResultUtils {
             .exists(_.equalsIgnoreCase(CLOSE))) {
         // Close connection, header already exists
         DefaultClose
-      } else if ((result.body.isInstanceOf[
-                   HttpEntity.Streamed] && result.body.contentLength.isEmpty)
+      } else if ((
+                   result.body.isInstanceOf[
+                     HttpEntity.Streamed] && result.body.contentLength.isEmpty
+                 )
                  || request.headers
                    .get(CONNECTION)
                    .exists(_.equalsIgnoreCase(CLOSE))) {
@@ -39,8 +41,10 @@ object ServerResultUtils {
             .get(CONNECTION)
             .exists(_.equalsIgnoreCase(CLOSE))) {
         DefaultClose
-      } else if ((result.body.isInstanceOf[
-                   HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
+      } else if ((
+                   result.body.isInstanceOf[
+                     HttpEntity.Streamed] && result.body.contentLength.isEmpty
+                 ) ||
                  request.headers
                    .get(CONNECTION)
                    .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) {

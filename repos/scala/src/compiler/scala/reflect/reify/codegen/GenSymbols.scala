@@ -75,7 +75,9 @@ trait GenSymbols {
        */
       val hasPackagelessParent =
         sym.ownerChain.tail.tail exists (_.isEmptyPackageClass)
-      if (sym.isStatic && (sym.isClass || sym.isModule) && !hasPackagelessParent) {
+      if (sym.isStatic && (
+            sym.isClass || sym.isModule
+          ) && !hasPackagelessParent) {
         // SI-6238: if applicable, emit references to StandardDefinitions instead of staticClass/staticModule calls
         val resolver =
           if (sym.isType)
@@ -124,15 +126,19 @@ trait GenSymbols {
     reifyIntoSymtab(binding.symbol) { sym =>
       if (reifyDebug)
         println(
-          "Free term" + (if (sym.isCapturedVariable)
-                           " (captured)"
-                         else
-                           "") + ": " + sym + "(" + sym.accurateKindString + ")")
+          "Free term" + (
+            if (sym.isCapturedVariable)
+              " (captured)"
+            else
+              ""
+          ) + ": " + sym + "(" + sym.accurateKindString + ")")
       val name = newTermName(
-        "" + nme.REIFY_FREE_PREFIX + sym.name + (if (sym.isType)
-                                                   nme.REIFY_FREE_THIS_SUFFIX
-                                                 else
-                                                   ""))
+        "" + nme.REIFY_FREE_PREFIX + sym.name + (
+          if (sym.isType)
+            nme.REIFY_FREE_THIS_SUFFIX
+          else
+            ""
+        ))
       // We need to note whether the free value being reified is stable or not to guide subsequent reflective compilation.
       // Here's why reflection compilation needs our help.
       //

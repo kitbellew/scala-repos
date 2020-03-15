@@ -103,8 +103,9 @@ trait Holes { self: Quasiquotes =>
       if (isBottomType(strippedTpe))
         cantSplice()
       else if (isNativeType(strippedTpe)) {
-        if (strippedRank != NoDot && !(strippedTpe <:< treeType) && !isLiftableType(
-              strippedTpe))
+        if (strippedRank != NoDot && !(
+              strippedTpe <:< treeType
+            ) && !isLiftableType(strippedTpe))
           cantSplice()
         else
           (strippedTpe, iterableTypeFromRank(annotatedRank, strippedTpe))
@@ -151,9 +152,9 @@ trait Holes { self: Quasiquotes =>
           unquoteeRankMsg
         else
           ""
-      val suggestLifting =
-        (annotatedRank == NoDot || iterableRank != NoDot) && !(iterableType <:< treeType) && !isLiftableType(
-          iterableType)
+      val suggestLifting = (
+        annotatedRank == NoDot || iterableRank != NoDot
+      ) && !(iterableType <:< treeType) && !isLiftableType(iterableType)
       val liftedTpe =
         if (annotatedRank != NoDot)
           iterableType

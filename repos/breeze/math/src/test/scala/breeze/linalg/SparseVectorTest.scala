@@ -36,8 +36,8 @@ class SparseVectorTest extends FunSuite {
     val a = SparseVector(0.56390, 0.36231, 0.14601, 0.60294, 0.14535)
     val b = SparseVector(0.15951, 0.83671, 0.56002, 0.57797, 0.54450)
     val bd = DenseVector(0.15951, 0.83671, 0.56002, 0.57797, 0.54450)
-    val bdSplit = DenseVector(0.0, 0.15951, 0.0, 0.83671, 0.0, 0.56002, 0.0,
-      0.57797, 0.0, 0.54450)
+    val bdSplit = DenseVector(
+      0.0, 0.15951, 0.0, 0.83671, 0.0, 0.56002, 0.0, 0.57797, 0.0, 0.54450)
     val bdd = bdSplit(1 to 9 by 2)
     assertClose(a dot b, .90249)
 //    assertClose(a dot bd, .90249)
@@ -308,8 +308,7 @@ class SparseVectorTest extends FunSuite {
       (1, 2, 3, 4, 5, 6),
       (2, 4, 6, 8, 10, 12),
       (3, 6, 9, 12, 15, 18),
-      (12, 1, 1, 0, 3, 4)
-    )
+      (12, 1, 1, 0, 3, 4))
 
     assert(
       (m * x) ===
@@ -414,9 +413,10 @@ class SparseVectorOps_DoubleTest
   }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map {
-      _ % 1e10
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Double].map {
+        _ % 1e10
+      })
 }
 
 /**
@@ -459,9 +459,10 @@ class SparseVectorOps_FloatTest
   }
 
   def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map {
-      _ % 1000
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Float].map {
+        _ % 1000
+      })
 
 }
 
@@ -504,7 +505,8 @@ class SparseVectorOps_IntTest
   }
 
   def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map {
-      _ % 1000
-    })
+    Arbitrary(
+      Arbitrary.arbitrary[Int].map {
+        _ % 1000
+      })
 }

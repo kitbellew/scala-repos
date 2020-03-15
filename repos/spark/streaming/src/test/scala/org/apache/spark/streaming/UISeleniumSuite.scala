@@ -111,8 +111,8 @@ class UISeleniumSuite
           findAll(cssSelector("#stat-table th")).map(_.text).toSeq
         statTableHeaders.exists(
           _.matches(
-            "Timelines \\(Last \\d+ batches, \\d+ active, \\d+ completed\\)")
-        ) should be(true)
+            "Timelines \\(Last \\d+ batches, \\d+ active, \\d+ completed\\)")) should be(
+          true)
         statTableHeaders should contain("Histograms")
 
         val statTableCells =
@@ -159,7 +159,9 @@ class UISeleniumSuite
         batchLinks.size should be >= 1
 
         // Check a normal batch page
-        go to (batchLinks.last) // Last should be the first batch, so it will have some jobs
+        go to (
+          batchLinks.last
+        ) // Last should be the first batch, so it will have some jobs
         val summaryText = findAll(cssSelector("li strong")).map(_.text).toSeq
         summaryText should contain("Batch Duration:")
         summaryText should contain("Input data size:")
@@ -222,8 +224,9 @@ class UISeleniumSuite
         webDriver.getPageSource should include("Missing id parameter")
 
         // Check a non-exist batch
-        go to (sparkUI.appUIAddress.stripSuffix(
-          "/") + "/streaming/batch/?id=12345")
+        go to (
+          sparkUI.appUIAddress.stripSuffix("/") + "/streaming/batch/?id=12345"
+        )
         webDriver.getPageSource should include("does not exist")
       }
 

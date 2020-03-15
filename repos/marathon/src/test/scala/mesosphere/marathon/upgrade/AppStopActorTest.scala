@@ -64,19 +64,11 @@ class AppStopActorTest
           taskTracker,
           system.eventStream,
           app,
-          promise
-        ))
-    )
+          promise)))
     watch(ref)
 
     val historyRef = TestActorRef[HistoryActor](
-      Props(
-        new HistoryActor(
-          system.eventStream,
-          taskFailureRepository
-        )
-      )
-    )
+      Props(new HistoryActor(system.eventStream, taskFailureRepository)))
 
     val statusUpdateEventA = MesosStatusUpdateEvent(
       slaveId = "",
@@ -87,8 +79,7 @@ class AppStopActorTest
       host = "",
       ipAddresses = Nil,
       ports = Nil,
-      version = app.version.toString
-    )
+      version = app.version.toString)
 
     val statusUpdateEventB = MesosStatusUpdateEvent(
       slaveId = "",
@@ -99,8 +90,7 @@ class AppStopActorTest
       host = "",
       ipAddresses = Nil,
       ports = Nil,
-      version = app.version.toString
-    )
+      version = app.version.toString)
 
     val Some(taskFailureA) = TaskFailure.FromMesosStatusUpdateEvent(
       statusUpdateEventA)
@@ -140,9 +130,7 @@ class AppStopActorTest
           taskTracker,
           system.eventStream,
           app,
-          promise
-        ))
-    )
+          promise)))
     watch(ref)
 
     Await.result(promise.future, 5.seconds)
@@ -167,9 +155,7 @@ class AppStopActorTest
           taskTracker,
           system.eventStream,
           app,
-          promise
-        ))
-    )
+          promise)))
     watch(ref)
 
     ref.stop()
@@ -200,9 +186,7 @@ class AppStopActorTest
         taskTracker,
         system.eventStream,
         app,
-        promise
-      )
-    )
+        promise))
     watch(ref)
 
     ref.underlyingActor.periodicalCheck.cancel()

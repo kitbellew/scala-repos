@@ -54,12 +54,14 @@ trait DAG extends Instructions {
     import dag._
 
     val adjustMemotable = mutable.Map[(Int, DepGraph), DepGraph]()
-    implicit val M: Traverse[({
-      type λ[α] = Either[StackError, α]
-    })#λ]
-      with Monad[({
+    implicit val M: Traverse[
+      ({
         type λ[α] = Either[StackError, α]
-      })#λ] = eitherMonad[StackError]
+      })#λ]
+      with Monad[
+        ({
+          type λ[α] = Either[StackError, α]
+        })#λ] = eitherMonad[StackError]
 
     def loop(
         loc: Line,
@@ -68,14 +70,14 @@ trait DAG extends Instructions {
         stream: Vector[Instruction])
         : Trampoline[Either[StackError, DepGraph]] = {
       @inline def continue(
-          f: List[Either[BucketSpec, DepGraph]] => Either[
-            StackError,
-            List[Either[BucketSpec, DepGraph]]])
+          f: List[Either[BucketSpec, DepGraph]] => Either[StackError, List[
+            Either[BucketSpec, DepGraph]]])
           : Trampoline[Either[StackError, DepGraph]] = {
         Free.suspend(
-          M.sequence(f(roots).right map { roots2 =>
-              loop(loc, roots2, splits, stream.tail)
-            })
+          M.sequence(
+              f(roots).right map { roots2 =>
+                loop(loc, roots2, splits, stream.tail)
+              })
             .map(_.joinRight))
       }
 
@@ -282,11 +284,9 @@ trait DAG extends Instructions {
           case Merge => {
             val (eitherRoots, splits2) =
               splits match {
-                case (open @ OpenSplit(
-                      loc,
-                      spec,
-                      oldTail,
-                      id)) :: splitsTail => {
+                case (
+                      open @ OpenSplit(loc, spec, oldTail, id)
+                    ) :: splitsTail => {
                   roots match {
                     case Right(child) :: tl => {
                       val oldTailSet = Set(oldTail: _*)
@@ -308,9 +308,10 @@ trait DAG extends Instructions {
                 case Nil => (Left(UnmatchedMerge), Nil)
               }
 
-            M.sequence(eitherRoots.right map { roots2 =>
-                loop(loc, roots2, splits2, stream.tail)
-              })
+            M.sequence(
+                eitherRoots.right map { roots2 =>
+                  loop(loc, roots2, splits2, stream.tail)
+                })
               .map(_.joinRight)
           }
 
@@ -482,9 +483,10 @@ trait DAG extends Instructions {
     if (stream.isEmpty) {
       Left(EmptyStream)
     } else {
-      M.sequence(findFirstRoot(None, stream).right map {
-          case (root, tail) => loop(root.loc, Right(root) :: Nil, Nil, tail)
-        })
+      M.sequence(
+          findFirstRoot(None, stream).right map {
+            case (root, tail) => loop(root.loc, Right(root) :: Nil, Nil, tail)
+          })
         .map(_.joinRight)
         .run
     }
@@ -530,9 +532,10 @@ trait DAG extends Instructions {
     case class Specs(specs: Vector[dag.IdentitySpec]) extends Identities {
       override def length = specs.length
       override def distinct =
-        Specs(specs map {
-          _.canonicalize
-        } distinct)
+        Specs(
+          specs map {
+            _.canonicalize
+          } distinct)
       override def fold[A](identities: Vector[dag.IdentitySpec] => A, b: A) =
         identities(specs)
     }
@@ -1242,8 +1245,9 @@ trait DAG extends Instructions {
       private def specs(policy: IdentityPolicy): Vector[IdentitySpec] =
         policy match {
           case IdentityPolicy.Product(left, right) =>
-            (specs(left) ++ specs(
-              right)).distinct // keeps first instance seen of the id
+            (
+              specs(left) ++ specs(right)
+            ).distinct // keeps first instance seen of the id
           case (_: IdentityPolicy.Retain) =>
             parent.identities.fold(Predef.identity, Vector.empty)
           case IdentityPolicy.Synthesize => Vector(SynthIds(IdGen.nextInt()))
@@ -1269,8 +1273,9 @@ trait DAG extends Instructions {
       private def specs(policy: IdentityPolicy): Vector[IdentitySpec] =
         policy match {
           case IdentityPolicy.Product(left, right) =>
-            (specs(left) ++ specs(
-              right)).distinct // keeps first instance seen of the id
+            (
+              specs(left) ++ specs(right)
+            ).distinct // keeps first instance seen of the id
           case IdentityPolicy.Retain.Left =>
             left.identities.fold(Predef.identity, Vector.empty)
           case IdentityPolicy.Retain.Right =>
@@ -1684,9 +1689,11 @@ trait DAG extends Instructions {
       def identities: Identities =
         (left.identities, right.identities) match {
           case (Identities.Specs(lSpecs), Identities.Specs(rSpecs)) =>
-            val specs = (sharedIndices map {
-              case (lIdx, _) => lSpecs(lIdx)
-            }) ++
+            val specs = (
+              sharedIndices map {
+                case (lIdx, _) => lSpecs(lIdx)
+              }
+            ) ++
               (leftIndices map lSpecs) ++ (rightIndices map rSpecs)
             Identities.Specs(specs map (_.canonicalize))
           case (_, _) => Identities.Undefined

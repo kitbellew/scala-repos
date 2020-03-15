@@ -39,8 +39,9 @@ object LEventAggregator {
   def aggregateProperties(events: Iterator[Event]): Map[String, PropertyMap] = {
     events.toList
       .groupBy(_.entityId)
-      .mapValues(_.sortBy(_.eventTime.getMillis)
-        .foldLeft[Prop](Prop())(propAggregator))
+      .mapValues(
+        _.sortBy(_.eventTime.getMillis)
+          .foldLeft[Prop](Prop())(propAggregator))
       .filter {
         case (k, v) => v.dm.isDefined
       }
@@ -55,8 +56,7 @@ object LEventAggregator {
         PropertyMap(
           fields = v.dm.get.fields,
           firstUpdated = v.firstUpdated.get,
-          lastUpdated = v.lastUpdated.get
-        )
+          lastUpdated = v.lastUpdated.get)
       }
   }
 
@@ -86,8 +86,7 @@ object LEventAggregator {
       PropertyMap(
         fields = d.fields,
         firstUpdated = prop.firstUpdated.get,
-        lastUpdated = prop.lastUpdated.get
-      )
+        lastUpdated = prop.lastUpdated.get)
     }
   }
 
@@ -156,6 +155,5 @@ object LEventAggregator {
   private case class Prop(
       dm: Option[DataMap] = None,
       firstUpdated: Option[DateTime] = None,
-      lastUpdated: Option[DateTime] = None
-  )
+      lastUpdated: Option[DateTime] = None)
 }

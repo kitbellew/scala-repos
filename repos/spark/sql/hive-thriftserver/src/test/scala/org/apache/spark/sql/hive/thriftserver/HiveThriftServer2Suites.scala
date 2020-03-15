@@ -283,8 +283,7 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
       { statement =>
         val queries = Seq(
           s"SET ${SQLConf.SHUFFLE_PARTITIONS.key}=291",
-          "SET hive.cli.print.header=true"
-        )
+          "SET hive.cli.print.header=true")
 
         queries.map(statement.execute)
         val rs1 = statement.executeQuery(
@@ -398,8 +397,7 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
           val sf = Future {
             statement.executeQuery(
               "SELECT COUNT(*) FROM test_map " +
-                List.fill(4)("join test_map").mkString(" ")
-            )
+                List.fill(4)("join test_map").mkString(" "))
           }
           // Similarly, this is also slightly race-prone on fast machines where the query above
           // might race and complete before we issue the cancel.
@@ -528,8 +526,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
 
       Seq(
         s"CREATE TABLE test_udtf(key INT, value STRING)",
-        s"LOAD DATA LOCAL INPATH '$dataPath' OVERWRITE INTO TABLE test_udtf"
-      ).foreach(statement.execute)
+        s"LOAD DATA LOCAL INPATH '$dataPath' OVERWRITE INTO TABLE test_udtf")
+        .foreach(statement.execute)
 
       val rs2 = statement.executeQuery(
         "SELECT key, cc FROM test_udtf LATERAL VIEW udtf_count2(value) dd AS cc")

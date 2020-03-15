@@ -79,9 +79,7 @@ private[simul] final class SimulRepo(simulColl: Coll) {
 
   def allCreated: Fu[List[Simul]] =
     simulColl
-      .find(
-        createdSelect
-      )
+      .find(createdSelect)
       .sort(createdSort)
       .cursor[Simul]()
       .collect[List]()
@@ -91,27 +89,21 @@ private[simul] final class SimulRepo(simulColl: Coll) {
       .find(
         createdSelect ++ BSONDocument(
           "createdAt" -> BSONDocument("$gte" -> DateTime.now.minusMinutes(15)),
-          "hostRating" -> BSONDocument("$gte" -> 1700)
-        )
-      )
+          "hostRating" -> BSONDocument("$gte" -> 1700)))
       .sort(createdSort)
       .cursor[Simul]()
       .collect[List]()
 
   def allStarted: Fu[List[Simul]] =
     simulColl
-      .find(
-        startedSelect
-      )
+      .find(startedSelect)
       .sort(createdSort)
       .cursor[Simul]()
       .collect[List]()
 
   def allFinished(max: Int): Fu[List[Simul]] =
     simulColl
-      .find(
-        finishedSelect
-      )
+      .find(finishedSelect)
       .sort(createdSort)
       .cursor[Simul]()
       .collect[List](max)
@@ -119,8 +111,8 @@ private[simul] final class SimulRepo(simulColl: Coll) {
   def allNotFinished =
     simulColl
       .find(
-        BSONDocument("status" -> BSONDocument("$ne" -> SimulStatus.Finished.id))
-      )
+        BSONDocument(
+          "status" -> BSONDocument("$ne" -> SimulStatus.Finished.id)))
       .cursor[Simul]()
       .collect[List]()
 
@@ -136,16 +128,14 @@ private[simul] final class SimulRepo(simulColl: Coll) {
     simulColl
       .update(
         BSONDocument("_id" -> simul.id),
-        BSONDocument("$set" -> BSONDocument("hostGameId" -> gameId))
-      )
+        BSONDocument("$set" -> BSONDocument("hostGameId" -> gameId)))
       .void
 
   def setHostSeenNow(simul: Simul) =
     simulColl
       .update(
         BSONDocument("_id" -> simul.id),
-        BSONDocument("$set" -> BSONDocument("hostSeenAt" -> DateTime.now))
-      )
+        BSONDocument("$set" -> BSONDocument("hostSeenAt" -> DateTime.now)))
       .void
 
   def cleanup =

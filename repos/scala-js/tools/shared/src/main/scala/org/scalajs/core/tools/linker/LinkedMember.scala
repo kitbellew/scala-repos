@@ -25,5 +25,4 @@ import ir.Infos
 final class LinkedMember[+T <: Tree](
     val info: Infos.MethodInfo,
     val tree: T,
-    val version: Option[String]
-)
+    val version: Option[String])

@@ -35,13 +35,17 @@ trait PrecogJValueOrder extends Order[JValue] {
     val prims0 = a.flattenWithPath.toMap
     val prims1 = b.flattenWithPath.toMap
     val cols0 =
-      (prims1.mapValues { _ =>
-        JUndefined
-      } ++ prims0).toList.sorted
+      (
+        prims1.mapValues { _ =>
+          JUndefined
+        } ++ prims0
+      ).toList.sorted
     val cols1 =
-      (prims0.mapValues { _ =>
-        JUndefined
-      } ++ prims1).toList.sorted
+      (
+        prims0.mapValues { _ =>
+          JUndefined
+        } ++ prims1
+      ).toList.sorted
     Order[List[(JPath, JValue)]].order(cols0, cols1)
   }
 }

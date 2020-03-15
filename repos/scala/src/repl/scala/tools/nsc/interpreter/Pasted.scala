@@ -47,10 +47,8 @@ abstract class Pasted(prompt: String) {
   def running = isRunning
 
   private def matchesString(line: String, target: String): Boolean =
-    (
-      (line startsWith target) ||
-        (line.nonEmpty && spacey(line.head) && matchesString(line.tail, target))
-    )
+    ((line startsWith target) ||
+      (line.nonEmpty && spacey(line.head) && matchesString(line.tail, target)))
   private def stripString(line: String, target: String) =
     line indexOf target match {
       case -1  => line
@@ -70,7 +68,9 @@ abstract class Pasted(prompt: String) {
       else
         AltPromptString) getOrElse PromptString
     val cmds =
-      lines reduceLeft append split ActualPromptString filterNot (_.trim == "") toList
+      lines reduceLeft append split ActualPromptString filterNot (
+        _.trim == ""
+      ) toList
 
     /** If it's a prompt or continuation line, strip the formatting bits and
       *  assemble the code.  Otherwise ship it off to be analyzed for res references

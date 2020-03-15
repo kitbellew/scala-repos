@@ -494,8 +494,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     */
   def countByValueApprox(
       timeout: Long,
-      confidence: Double
-  ): PartialResult[java.util.Map[T, BoundedDouble]] =
+      confidence: Double): PartialResult[java.util.Map[T, BoundedDouble]] =
     rdd.countByValueApprox(timeout, confidence).map(mapAsSerializableJavaMap)
 
   /**

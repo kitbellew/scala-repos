@@ -102,16 +102,14 @@ object DependencyGroups {
     compilerInterfaceSources,
     bundledJline,
     incrementalCompiler,
-    sbtInterface
-  )
+    sbtInterface)
 
   val plexusContainer = Seq(
     plexusContainerDefault,
     plexusClassworlds,
     plexusUtils,
     plexusComponentAnnotations,
-    xbeanReflect
-  )
+    xbeanReflect)
 
   val lucene = Seq(
     luceneCore,
@@ -120,19 +118,11 @@ object DependencyGroups {
     luceneQueries,
     luceneQueryParser,
     luceneAnalyzers,
-    luceneSandbox
-  )
+    luceneSandbox)
 
-  val aether = Seq(
-    aetherApi,
-    aetherUtil
-  )
+  val aether = Seq(aetherApi, aetherUtil)
 
-  val sisu = Seq(
-    sisuInjectPlexus,
-    sisuInjectBean,
-    sisuGuice
-  )
+  val sisu = Seq(sisuInjectPlexus, sisuInjectBean, sisuGuice)
 
   val wagon = Seq(
     wagonHttp,
@@ -144,18 +134,13 @@ object DependencyGroups {
     commonsLogging,
     commonsLang,
     commonsIo,
-    jsoup
-  )
+    jsoup)
 
-  val scalastyle = Seq(
-    scalastyle_2_11,
-    scalariform_2_11
-  )
+  val scalastyle = Seq(scalastyle_2_11, scalariform_2_11)
 
   val mavenIndexer = Seq(
     mavenIndexerCore,
-    mavenModel
-  ) ++ plexusContainer ++ lucene ++ aether ++ sisu ++ wagon
+    mavenModel) ++ plexusContainer ++ lucene ++ aether ++ sisu ++ wagon
 
   val scalaCommunity = Seq(
     scalaLibrary,
@@ -165,20 +150,13 @@ object DependencyGroups {
     sbtStructureCore,
     evoInflector,
     scalatestFindersPatched,
-    jamm
-  ) ++ mavenIndexer ++ scalastyle
+    jamm) ++ mavenIndexer ++ scalastyle
 
-  val scalap = Seq(
-    scalaLibrary,
-    scalaReflect,
-    scalaCompiler,
-    commonsLang
-  )
+  val scalap = Seq(scalaLibrary, scalaReflect, scalaCompiler, commonsLang)
 
   val scalaRunner = Seq(
     "org.specs2" %% "specs2" % "2.3.11" % "provided" excludeAll ExclusionRule(
-      organization = "org.ow2.asm")
-  )
+      organization = "org.ow2.asm"))
 
   val runners = Seq(
     "org.specs2" %% "specs2" % "2.3.11" % "provided" excludeAll ExclusionRule(
@@ -259,6 +237,5 @@ object DependencyGroups {
   val sbtRuntime = Seq(
     sbtStructureExtractor012,
     sbtStructureExtractor013,
-    sbtLaunch
-  )
+    sbtLaunch)
 }

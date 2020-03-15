@@ -95,8 +95,10 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     val context = getContext
     (context.isInstanceOf[ScInfixExpr] || context.isInstanceOf[ScMethodCall]) &&
     refName.endsWith("=") &&
-    !(refName.startsWith("=") || Seq("!=", "<=", ">=").contains(
-      refName) || refName.exists(_.isLetterOrDigit))
+    !(
+      refName.startsWith("=") || Seq("!=", "<=", ">=").contains(
+        refName) || refName.exists(_.isLetterOrDigit)
+    )
   }
 
   def isUnaryOperator = {
@@ -491,7 +493,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         val tp: ScType = clazz
           .asInstanceOf[ScClass]
           .getType(TypingContext.empty)
-          .getOrElse(return
+          .getOrElse(
+            return
           )
         val typeArgs: Seq[ScTypeElement] = Seq.empty
         val arguments = s.arguments
@@ -509,7 +512,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case constr: ScConstructor =>
         val tp: ScType = constr.typeElement
           .getType(TypingContext.empty)
-          .getOrElse(return
+          .getOrElse(
+            return
           )
         val typeArgs: Seq[ScTypeElement] = constr.typeArgList
           .map(_.typeArgs)
@@ -637,10 +641,13 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case _                                 =>
     }
 
-    if (candidates.isEmpty || (!shape && candidates.forall(
-          !_.isApplicable())) ||
-        (processor.isInstanceOf[CompletionProcessor] &&
-        processor.asInstanceOf[CompletionProcessor].collectImplicits)) {
+    if (candidates.isEmpty || (
+          !shape && candidates.forall(!_.isApplicable())
+        ) ||
+        (
+          processor.isInstanceOf[CompletionProcessor] &&
+          processor.asInstanceOf[CompletionProcessor].collectImplicits
+        )) {
       processor match {
         case rp: ResolveProcessor =>
           rp.resetPrecedence() //do not clear candidate set, we want wrong resolve, if don't found anything

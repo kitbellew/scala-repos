@@ -27,10 +27,7 @@ final case class PluginManagement(
   def addOverrides(cp: Classpath): PluginManagement =
     addOverrides(extractOverrides(cp))
 
-  def inject: Seq[Setting[_]] =
-    Seq(
-      Keys.dependencyOverrides ++= overrides
-    )
+  def inject: Seq[Setting[_]] = Seq(Keys.dependencyOverrides ++= overrides)
 
   def resetDepth: PluginManagement =
     copy(context = Context(globalPluginProject = false, pluginProjectDepth = 0))

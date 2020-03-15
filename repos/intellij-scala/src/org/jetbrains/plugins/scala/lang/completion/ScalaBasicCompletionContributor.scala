@@ -161,7 +161,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
           return
         val lookingForAnnotations: Boolean =
           Option(
-            insertedElement.getContainingFile findElementAt (insertedElement.getTextOffset - 1)) exists {
+            insertedElement.getContainingFile findElementAt (
+              insertedElement.getTextOffset - 1
+            )) exists {
             _.getNode.getElementType == ScalaTokenTypes.tAT
           }
 
@@ -203,7 +205,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                             }
                           })
 
-                      if (!isExcluded && !classNameCompletion && (!lookingForAnnotations || clazz.isAnnotationType)) {
+                      if (!isExcluded && !classNameCompletion && (
+                            !lookingForAnnotations || clazz.isAnnotationType
+                          )) {
                         if (isAfterNew) {
                           val lookupElement = getLookupElementFromClass(
                             expectedTypesAfterNew,
@@ -382,9 +386,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
   override def advertise(parameters: CompletionParameters): String = {
     if (!parameters.getOriginalFile.isInstanceOf[ScalaFile])
       return null
-    val messages = Array[String](
-      null
-    )
+    val messages = Array[String](null)
     messages apply (new Random).nextInt(messages.length)
   }
 
@@ -403,15 +405,17 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
       parameters: CompletionParameters): ScType = {
     ref match {
       case refExpr: ScReferenceExpression =>
-        (for (qualifier <- refExpr.qualifier)
-          yield {
-            val evaluator = refExpr.getContainingFile.getCopyableUserData(
-              ScalaRuntimeTypeEvaluator.KEY)
-            if (evaluator != null)
-              evaluator(qualifier)
-            else
-              null
-          }).orNull
+        (
+          for (qualifier <- refExpr.qualifier)
+            yield {
+              val evaluator = refExpr.getContainingFile.getCopyableUserData(
+                ScalaRuntimeTypeEvaluator.KEY)
+              if (evaluator != null)
+                evaluator(qualifier)
+              else
+                null
+            }
+        ).orNull
       case _ => null
     }
   }

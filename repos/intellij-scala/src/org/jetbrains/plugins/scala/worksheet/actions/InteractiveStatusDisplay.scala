@@ -58,9 +58,10 @@ class InteractiveStatusDisplay extends TopComponentDisplayable {
 
   private def setBorder(border: LineBorder) {
     if (isBorderEnabled)
-      ApplicationManager.getApplication.invokeLater(new Runnable {
-        override def run(): Unit = myPanel.setBorder(border)
-      })
+      ApplicationManager.getApplication.invokeLater(
+        new Runnable {
+          override def run(): Unit = myPanel.setBorder(border)
+        })
   }
 
   private def isBorderEnabled = false //right now we don't need it (?)
@@ -91,11 +92,12 @@ class InteractiveStatusDisplay extends TopComponentDisplayable {
     val i =
       new AnimatedIcon(
         "Compiling...",
-        (for (i <- 0 to steps)
-          yield new RotatedIcon(icon1, step * i)).toArray[Icon],
+        (
+          for (i <- 0 to steps)
+            yield new RotatedIcon(icon1, step * i)
+        ).toArray[Icon],
         icon2,
-        ICON_CYCLE_LENGTH
-      )
+        ICON_CYCLE_LENGTH)
     i.resume()
     i
   }

@@ -310,8 +310,12 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
               Metrics.defaultRegistry().removeMetric(registeredMetric)
               val afterRemovalSize =
                 Metrics.defaultRegistry().allMetrics().keySet().size
-              trace("Removing metric %s. Metrics registry size reduced from %d to %d"
-                .format(registeredMetric, beforeRemovalSize, afterRemovalSize))
+              trace(
+                "Removing metric %s. Metrics registry size reduced from %d to %d"
+                  .format(
+                    registeredMetric,
+                    beforeRemovalSize,
+                    afterRemovalSize))
             }
             case _ =>
           }

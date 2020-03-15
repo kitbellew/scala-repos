@@ -103,8 +103,10 @@ object ReassignPartitionsCommand extends Logging {
   def generateAssignment(
       zkUtils: ZkUtils,
       opts: ReassignPartitionsCommandOptions) {
-    if (!(opts.options.has(opts.topicsToMoveJsonFileOpt) && opts.options.has(
-          opts.brokerListOpt)))
+    if (!(
+          opts.options.has(opts.topicsToMoveJsonFileOpt) && opts.options.has(
+            opts.brokerListOpt)
+        ))
       CommandLineUtils.printUsageAndDie(
         opts.parser,
         "If --generate option is used, command must include both --topics-to-move-json-file and --broker-list options")
@@ -230,12 +232,15 @@ object ReassignPartitionsCommand extends Logging {
       .getReplicaAssignmentForTopics(partitionsToBeReassigned.map(_._1.topic))
     println(
       "Current partition replica assignment\n\n%s\n\nSave this to use as the --reassignment-json-file option during rollback"
-        .format(zkUtils.getPartitionReassignmentZkData(
-          currentPartitionReplicaAssignment)))
+        .format(
+          zkUtils.getPartitionReassignmentZkData(
+            currentPartitionReplicaAssignment)))
     // start the reassignment
     if (reassignPartitionsCommand.reassignPartitions())
-      println("Successfully started reassignment of partitions %s".format(
-        zkUtils.getPartitionReassignmentZkData(partitionsToBeReassigned.toMap)))
+      println(
+        "Successfully started reassignment of partitions %s".format(
+          zkUtils.getPartitionReassignmentZkData(
+            partitionsToBeReassigned.toMap)))
     else
       println(
         "Failed to reassign partitions %s".format(partitionsToBeReassigned))
@@ -279,8 +284,10 @@ object ReassignPartitionsCommand extends Logging {
           ReassignmentCompleted
         else {
           println(
-            ("ERROR: Assigned replicas (%s) don't match the list of replicas for reassignment (%s)" +
-              " for partition %s").format(
+            (
+              "ERROR: Assigned replicas (%s) don't match the list of replicas for reassignment (%s)" +
+                " for partition %s"
+            ).format(
               assignedReplicas.mkString(","),
               newReplicas.mkString(","),
               topicAndPartition))

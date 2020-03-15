@@ -358,8 +358,7 @@ trait ProtoUser {
           loginPageURL,
           RedirectState(() => {
             loginRedirect.set(uri)
-          })
-        )
+          }))
       }
     )
 
@@ -453,9 +452,7 @@ trait ProtoUser {
           "LostPassword" + menuNameSuffix,
           lostPasswordPath,
           S.?("lost.password"),
-          lostPasswordMenuLocParams ::: globalUserLocParams
-        )
-      )
+          lostPasswordMenuLocParams ::: globalUserLocParams))
     ) // not logged in
 
   /**
@@ -477,9 +474,7 @@ trait ProtoUser {
           "ResetPassword" + menuNameSuffix,
           (passwordResetPath, true),
           S.?("reset.password"),
-          resetPasswordMenuLocParams ::: globalUserLocParams
-        )
-      )
+          resetPasswordMenuLocParams ::: globalUserLocParams))
     ) //not Logged in
 
   /**
@@ -613,16 +608,20 @@ trait ProtoUser {
     ItemList
       .filter(i => i.display && i.loggedIn == li)
       .map(i =>
-        (<a href={
-          i.pathStr
-        }>{
-          i.name
-        }</a>))
+        (
+          <a href={
+            i.pathStr
+          }>{
+            i.name
+          }</a>
+        ))
   }
 
   protected def snarfLastItem: String =
-    (for (r <- S.request)
-      yield r.path.wholePath.last) openOr ""
+    (
+      for (r <- S.request)
+        yield r.path.wholePath.last
+    ) openOr ""
 
   lazy val ItemList: List[MenuItem] = List(
     MenuItem(S.?("sign.up"), signUpPath, false),
@@ -720,50 +719,54 @@ trait ProtoUser {
   def currentUser: Box[TheUserType] = curUser.get
 
   def signupXhtml(user: TheUserType) = {
-    (<form method="post" action={
-      S.uri
-    }><table><tr><td
+    (
+      <form method="post" action={
+        S.uri
+      }><table><tr><td
               colspan="2">{
-      S.?("sign.up")
-    }</td></tr>
+        S.?("sign.up")
+      }</td></tr>
           {
-      localForm(user, false, signupFields)
-    }
+        localForm(user, false, signupFields)
+      }
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
-                                        </table></form>)
+                                        </table></form>
+    )
   }
 
   def signupMailBody(user: TheUserType, validationLink: String): Elem = {
-    (<html>
+    (
+      <html>
         <head>
           <title>{
-      S.?("sign.up.confirmation")
-    }</title>
+        S.?("sign.up.confirmation")
+      }</title>
         </head>
         <body>
           <p>{
-      S.?("dear")
-    } {
-      user.getFirstName
-    },
+        S.?("dear")
+      } {
+        user.getFirstName
+      },
             <br/>
             <br/>
             {
-      S.?("sign.up.validation.link")
-    }
+        S.?("sign.up.validation.link")
+      }
             <br/><a href={
-      validationLink
-    }>{
-      validationLink
-    }</a>
+        validationLink
+      }>{
+        validationLink
+      }</a>
             <br/>
             <br/>
             {
-      S.?("thank.you")
-    }
+        S.?("thank.you")
+      }
           </p>
         </body>
-     </html>)
+     </html>
+    )
   }
 
   def signupMailSubject = S.?("sign.up.confirmation")
@@ -785,9 +788,11 @@ trait ProtoUser {
     Mailer.sendMail(
       From(emailFrom),
       Subject(signupMailSubject),
-      (To(user.getEmail) ::
-        generateValidationEmailBodies(user, resetLink) :::
-        (bccEmail.toList.map(BCC(_)))): _*)
+      (
+        To(user.getEmail) ::
+          generateValidationEmailBodies(user, resetLink) :::
+          (bccEmail.toList.map(BCC(_)))
+      ): _*)
   }
 
   /**
@@ -863,9 +868,9 @@ trait ProtoUser {
     }
 
     def innerSignup = {
-      ("type=submit" #> signupSubmitButton(
-        S ? "sign.up",
-        testSignup _)) apply signupXhtml(theUser)
+      (
+        "type=submit" #> signupSubmitButton(S ? "sign.up", testSignup _)
+      ) apply signupXhtml(theUser)
     }
 
     innerSignup
@@ -914,25 +919,27 @@ trait ProtoUser {
   def userNameNotFoundString: String = S.?("email.address.not.found")
 
   def loginXhtml = {
-    (<form method="post" action={
-      S.uri
-    }><table><tr><td
+    (
+      <form method="post" action={
+        S.uri
+      }><table><tr><td
               colspan="2">{
-      S.?("log.in")
-    }</td></tr>
+        S.?("log.in")
+      }</td></tr>
           <tr><td>{
-      userNameFieldString
-    }</td><td><input type="text" class="email" /></td></tr>
+        userNameFieldString
+      }</td><td><input type="text" class="email" /></td></tr>
           <tr><td>{
-      S.?("password")
-    }</td><td><input type="password" class="password" /></td></tr>
+        S.?("password")
+      }</td><td><input type="password" class="password" /></td></tr>
           <tr><td><a href={
-      lostPasswordPath.mkString("/", "/", "")
-    }
+        lostPasswordPath.mkString("/", "/", "")
+      }
                 >{
-      S.?("recover.password")
-    }</a></td><td><input type="submit" /></td></tr></table>
-     </form>)
+        S.?("recover.password")
+      }</a></td><td><input type="submit" /></td></tr></table>
+     </form>
+    )
   }
 
   /**
@@ -1016,52 +1023,56 @@ trait ProtoUser {
   }
 
   def lostPasswordXhtml = {
-    (<form method="post" action={
-      S.uri
-    }>
+    (
+      <form method="post" action={
+        S.uri
+      }>
         <table><tr><td
               colspan="2">{
-      S.?("enter.email")
-    }</td></tr>
+        S.?("enter.email")
+      }</td></tr>
           <tr><td>{
-      userNameFieldString
-    }</td><td><input type="text" class="email" /></td></tr>
+        userNameFieldString
+      }</td><td><input type="text" class="email" /></td></tr>
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
         </table>
-     </form>)
+     </form>
+    )
   }
 
   def passwordResetMailBody(user: TheUserType, resetLink: String): Elem = {
-    (<html>
+    (
+      <html>
         <head>
           <title>{
-      S.?("reset.password.confirmation")
-    }</title>
+        S.?("reset.password.confirmation")
+      }</title>
         </head>
         <body>
           <p>{
-      S.?("dear")
-    } {
-      user.getFirstName
-    },
+        S.?("dear")
+      } {
+        user.getFirstName
+      },
             <br/>
             <br/>
             {
-      S.?("click.reset.link")
-    }
+        S.?("click.reset.link")
+      }
             <br/><a href={
-      resetLink
-    }>{
-      resetLink
-    }</a>
+        resetLink
+      }>{
+        resetLink
+      }</a>
             <br/>
             <br/>
             {
-      S.?("thank.you")
-    }
+        S.?("thank.you")
+      }
           </p>
         </body>
-     </html>)
+     </html>
+    )
   }
 
   /**
@@ -1096,9 +1107,11 @@ trait ProtoUser {
         Mailer.sendMail(
           From(emailFrom),
           Subject(passwordResetEmailSubject),
-          (To(user.getEmail) ::
-            generateResetEmailBodies(user, resetLink) :::
-            (bccEmail.toList.map(BCC(_)))): _*)
+          (
+            To(user.getEmail) ::
+              generateResetEmailBodies(user, resetLink) :::
+              (bccEmail.toList.map(BCC(_)))
+          ): _*)
 
         S.notice(S.?("password.reset.email.sent"))
         S.redirectTo(homePage)
@@ -1127,21 +1140,23 @@ trait ProtoUser {
   }
 
   def passwordResetXhtml = {
-    (<form method="post" action={
-      S.uri
-    }>
+    (
+      <form method="post" action={
+        S.uri
+      }>
         <table><tr><td colspan="2">{
-      S.?("reset.your.password")
-    }</td></tr>
+        S.?("reset.your.password")
+      }</td></tr>
           <tr><td>{
-      S.?("enter.your.new.password")
-    }</td><td><input type="password" /></td></tr>
+        S.?("enter.your.new.password")
+      }</td><td><input type="password" /></td></tr>
           <tr><td>{
-      S.?("repeat.your.new.password")
-    }</td><td><input type="password" /></td></tr>
+        S.?("repeat.your.new.password")
+      }</td><td><input type="password" /></td></tr>
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
         </table>
-     </form>)
+     </form>
+    )
   }
 
   def passwordReset(id: String) =
@@ -1182,24 +1197,26 @@ trait ProtoUser {
   }
 
   def changePasswordXhtml = {
-    (<form method="post" action={
-      S.uri
-    }>
+    (
+      <form method="post" action={
+        S.uri
+      }>
         <table><tr><td colspan="2">{
-      S.?("change.password")
-    }</td></tr>
+        S.?("change.password")
+      }</td></tr>
           <tr><td>{
-      S.?("old.password")
-    }</td><td><input type="password" class="old-password" /></td></tr>
+        S.?("old.password")
+      }</td><td><input type="password" class="old-password" /></td></tr>
           <tr><td>{
-      S.?("new.password")
-    }</td><td><input type="password" class="new-password" /></td></tr>
+        S.?("new.password")
+      }</td><td><input type="password" class="new-password" /></td></tr>
           <tr><td>{
-      S.?("repeat.password")
-    }</td><td><input type="password" class="new-password" /></td></tr>
+        S.?("repeat.password")
+      }</td><td><input type="password" class="new-password" /></td></tr>
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
         </table>
-     </form>)
+     </form>
+    )
   }
 
   def changePassword = {
@@ -1244,18 +1261,20 @@ trait ProtoUser {
   }
 
   def editXhtml(user: TheUserType) = {
-    (<form method="post" action={
-      S.uri
-    }>
+    (
+      <form method="post" action={
+        S.uri
+      }>
         <table><tr><td colspan="2">{
-      S.?("edit")
-    }</td></tr>
+        S.?("edit")
+      }</td></tr>
           {
-      localForm(user, true, editFields)
-    }
+        localForm(user, true, editFields)
+      }
           <tr><td>&nbsp;</td><td><input type="submit" /></td></tr>
         </table>
-     </form>)
+     </form>
+    )
   }
 
   object editFunc extends RequestVar[Box[() => NodeSeq]](Empty) {
@@ -1293,9 +1312,9 @@ trait ProtoUser {
     }
 
     def innerEdit = {
-      ("type=submit" #> editSubmitButton(
-        S.?("save"),
-        testEdit _)) apply editXhtml(theUser)
+      (
+        "type=submit" #> editSubmitButton(S.?("save"), testEdit _)
+      ) apply editXhtml(theUser)
     }
 
     innerEdit
@@ -1335,11 +1354,13 @@ trait ProtoUser {
   }
 
   protected def wrapIt(in: NodeSeq): NodeSeq =
-    screenWrap.map(new RuleTransformer(new RewriteRule {
-      override def transform(n: Node) =
-        n match {
-          case e: Elem if "bind" == e.label && "lift" == e.prefix => in
-          case _                                                  => n
-        }
-    })) openOr in
+    screenWrap.map(
+      new RuleTransformer(
+        new RewriteRule {
+          override def transform(n: Node) =
+            n match {
+              case e: Elem if "bind" == e.label && "lift" == e.prefix => in
+              case _                                                  => n
+            }
+        })) openOr in
 }

@@ -103,8 +103,7 @@ class Zk2Resolver(
             retryStream,
             hosts,
             sessionTimeout = sessionTimeout,
-            statsReceiver)
-      )
+            statsReceiver))
       new ServiceDiscoverer(
         varZkSession,
         statsReceiver.scope(statsOf(hosts)),
@@ -118,8 +117,7 @@ class Zk2Resolver(
     },
     statsReceiver.addGauge("observed_serversets") {
       nsets.get()
-    }
-  )
+    })
 
   private[this] def mkDiscoverer(hosts: String) = {
     val key = hosts.split(",").sorted mkString ","
@@ -132,9 +130,8 @@ class Zk2Resolver(
     value
   }
 
-  private[this] val serverSetOf = Memoize[
-    (ServiceDiscoverer, String),
-    Var[Activity.State[Seq[(Entry, Double)]]]] {
+  private[this] val serverSetOf = Memoize[(ServiceDiscoverer, String), Var[
+    Activity.State[Seq[(Entry, Double)]]]] {
     case (discoverer, path) => discoverer(path).run
   }
 
@@ -214,8 +211,8 @@ class Zk2Resolver(
           // stable Addr doesn't vary.
           var lastu: Addr = Addr.Pending
 
-          val reg = (discoverer.health.changes joinLast states)
-            .register(Witness { tuple =>
+          val reg = (discoverer.health.changes joinLast states).register(
+            Witness { tuple =>
               val (clientHealth, state) = tuple
 
               if (chatty()) {

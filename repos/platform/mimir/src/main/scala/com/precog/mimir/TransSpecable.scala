@@ -68,44 +68,46 @@ trait TransSpecableModule[M[+_]]
     }
 
     def isTransSpecable(to: DepGraph, from: DepGraph): Boolean =
-      foldDownTransSpecable(to, Some(from))(new TransSpecableFold[Boolean] {
-        def EqualLiteral(
-            node: Join)(parent: Boolean, value: RValue, invert: Boolean) =
-          parent
-        def WrapObject(node: Join)(parent: Boolean, field: String) = parent
-        def DerefObjectStatic(node: Join)(parent: Boolean, field: String) =
-          parent
-        def DerefMetadataStatic(node: Join)(parent: Boolean, field: String) =
-          parent
-        def DerefArrayStatic(node: Join)(parent: Boolean, index: Int) = parent
-        def ArraySwap(node: Join)(parent: Boolean, index: Int) = parent
-        def InnerObjectConcat(node: Join)(parent: Boolean) = parent
-        def InnerArrayConcat(node: Join)(parent: Boolean) = parent
-        def Map1Left(node: Join)(
-            parent: Boolean,
-            op: Op2F2,
-            graph: DepGraph,
-            value: RValue) = parent
-        def Map1Right(node: Join)(
-            parent: Boolean,
-            op: Op2F2,
-            graph: DepGraph,
-            value: RValue) = parent
-        def binOp(node: Join)(
-            leftParent: Boolean,
-            rightParent: => Boolean,
-            op: BinaryOperation) = leftParent && rightParent
-        def Filter(
-            node: dag.Filter)(leftParent: Boolean, rightParent: => Boolean) =
-          leftParent && rightParent
-        def WrapArray(node: Operate)(parent: Boolean) = parent
-        def Op1(node: Operate)(parent: Boolean, op: UnaryOperation) = parent
-        def Cond(node: dag.Cond)(pred: Boolean, left: Boolean, right: Boolean) =
-          pred && left && right
-        def Const(node: dag.Const)(under: Boolean) = under
-        def unmatched(node: DepGraph) = false
-        def done(node: DepGraph) = true
-      })
+      foldDownTransSpecable(to, Some(from))(
+        new TransSpecableFold[Boolean] {
+          def EqualLiteral(
+              node: Join)(parent: Boolean, value: RValue, invert: Boolean) =
+            parent
+          def WrapObject(node: Join)(parent: Boolean, field: String) = parent
+          def DerefObjectStatic(node: Join)(parent: Boolean, field: String) =
+            parent
+          def DerefMetadataStatic(node: Join)(parent: Boolean, field: String) =
+            parent
+          def DerefArrayStatic(node: Join)(parent: Boolean, index: Int) = parent
+          def ArraySwap(node: Join)(parent: Boolean, index: Int) = parent
+          def InnerObjectConcat(node: Join)(parent: Boolean) = parent
+          def InnerArrayConcat(node: Join)(parent: Boolean) = parent
+          def Map1Left(node: Join)(
+              parent: Boolean,
+              op: Op2F2,
+              graph: DepGraph,
+              value: RValue) = parent
+          def Map1Right(node: Join)(
+              parent: Boolean,
+              op: Op2F2,
+              graph: DepGraph,
+              value: RValue) = parent
+          def binOp(node: Join)(
+              leftParent: Boolean,
+              rightParent: => Boolean,
+              op: BinaryOperation) = leftParent && rightParent
+          def Filter(
+              node: dag.Filter)(leftParent: Boolean, rightParent: => Boolean) =
+            leftParent && rightParent
+          def WrapArray(node: Operate)(parent: Boolean) = parent
+          def Op1(node: Operate)(parent: Boolean, op: UnaryOperation) = parent
+          def Cond(
+              node: dag.Cond)(pred: Boolean, left: Boolean, right: Boolean) =
+            pred && left && right
+          def Const(node: dag.Const)(under: Boolean) = under
+          def unmatched(node: DepGraph) = false
+          def done(node: DepGraph) = true
+        })
 
     private[this] def snd[A, B](a: A, b: B): Option[B] = Some(b)
 
@@ -171,13 +173,14 @@ trait TransSpecableModule[M[+_]]
 
         def EqualLiteral(
             node: Join)(parent: N[S], value: RValue, invert: Boolean) =
-          parent.flatMap(leftMap(_) { target =>
-            val inner = trans.Equal(target, transRValue(value, target))
-            if (invert)
-              op1ForUnOp(Comp).spec(MorphContext(ctx, node))(inner)
-            else
-              inner
-          })
+          parent.flatMap(
+            leftMap(_) { target =>
+              val inner = trans.Equal(target, transRValue(value, target))
+              if (invert)
+                op1ForUnOp(Comp).spec(MorphContext(ctx, node))(inner)
+              else
+                inner
+            })
 
         def WrapObject(node: Join)(parent: N[S], field: String) =
           parent.flatMap(leftMap(_)(trans.WrapObject(_, field)))
@@ -209,36 +212,38 @@ trait TransSpecableModule[M[+_]]
             op: Op2F2,
             graph: DepGraph,
             value: RValue) =
-          parent.flatMap(leftMap(_) { target =>
-            value match {
-              case cv: CValue =>
-                trans.Map1(target, op.f2(MorphContext(ctx, node)).applyr(cv))
+          parent.flatMap(
+            leftMap(_) { target =>
+              value match {
+                case cv: CValue =>
+                  trans.Map1(target, op.f2(MorphContext(ctx, node)).applyr(cv))
 
-              case _ =>
-                trans.Typed(
-                  trans.Typed(target, JNullT),
-                  JTextT
-                ) // nuke all the things
-            }
-          })
+                case _ =>
+                  trans.Typed(
+                    trans.Typed(target, JNullT),
+                    JTextT
+                  ) // nuke all the things
+              }
+            })
 
         def Map1Right(node: Join)(
             parent: N[S],
             op: Op2F2,
             graph: DepGraph,
             value: RValue) =
-          parent.flatMap(leftMap(_) { target =>
-            value match {
-              case cv: CValue =>
-                trans.Map1(target, op.f2(MorphContext(ctx, node)).applyl(cv))
+          parent.flatMap(
+            leftMap(_) { target =>
+              value match {
+                case cv: CValue =>
+                  trans.Map1(target, op.f2(MorphContext(ctx, node)).applyl(cv))
 
-              case _ =>
-                trans.Typed(
-                  trans.Typed(target, JNullT),
-                  JTextT
-                ) // nuke all the things
-            }
-          })
+                case _ =>
+                  trans.Typed(
+                    trans.Typed(target, JNullT),
+                    JTextT
+                  ) // nuke all the things
+              }
+            })
 
         def binOp(node: Join)(
             leftParent: N[S],
@@ -273,8 +278,9 @@ trait TransSpecableModule[M[+_]]
           parent.flatMap(leftMap(_)(trans.WrapArray(_)))
 
         def Op1(node: Operate)(parent: N[S], op: UnaryOperation) =
-          parent.flatMap(leftMap(_)(parent =>
-            op1ForUnOp(op).spec(MorphContext(ctx, node))(parent)))
+          parent.flatMap(
+            leftMap(_)(parent =>
+              op1ForUnOp(op).spec(MorphContext(ctx, node))(parent)))
 
         def Cond(node: dag.Cond)(pred: N[S], left: N[S], right: N[S]) = {
           for {

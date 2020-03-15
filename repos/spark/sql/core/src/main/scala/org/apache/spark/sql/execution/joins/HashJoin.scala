@@ -288,11 +288,11 @@ trait HashJoin {
     streamIter.filter { current =>
       val key = joinKeys(current)
       lazy val rowBuffer = hashedRelation.get(key)
-      val r =
-        !key.anyNull && rowBuffer != null && (condition.isEmpty || rowBuffer
-          .exists { (row: InternalRow) =>
-            boundCondition(joinedRow(current, row))
-          })
+      val r = !key.anyNull && rowBuffer != null && (
+        condition.isEmpty || rowBuffer.exists { (row: InternalRow) =>
+          boundCondition(joinedRow(current, row))
+        }
+      )
       if (r)
         numOutputRows += 1
       r

@@ -69,35 +69,36 @@ object WebAccountFinder extends Logging {
           serviceConfig[String]("hardcoded_rootKey", ""),
           serviceConfig.get[String]("hardcoded_rootPath")))
     } getOrElse {
-      (serviceConfig
-        .get[String]("protocol")
-        .toSuccess(
-          nels("Configuration property service.protocol is required")) |@|
+      (
         serviceConfig
-          .get[String]("host")
+          .get[String]("protocol")
           .toSuccess(
-            nels("Configuration property service.host is required")) |@|
-        serviceConfig
-          .get[Int]("port")
-          .toSuccess(
-            nels("Configuration property service.port is required")) |@|
-        serviceConfig
-          .get[String]("path")
-          .toSuccess(
-            nels("Configuration property service.path is required")) |@|
-        serviceConfig
-          .get[String]("user")
-          .toSuccess(
-            nels("Configuration property service.user is required")) |@|
-        serviceConfig
-          .get[String]("password")
-          .toSuccess(
-            nels("Configuration property service.password is required"))) {
-        (protocol, host, port, path, user, password) =>
-          logger.info(
-            "Creating new WebAccountFinder with properties %s://%s:%s/%s %s:%s"
-              .format(protocol, host, port.toString, path, user, password))
-          new WebAccountFinder(protocol, host, port, path, user, password)
+            nels("Configuration property service.protocol is required")) |@|
+          serviceConfig
+            .get[String]("host")
+            .toSuccess(
+              nels("Configuration property service.host is required")) |@|
+          serviceConfig
+            .get[Int]("port")
+            .toSuccess(
+              nels("Configuration property service.port is required")) |@|
+          serviceConfig
+            .get[String]("path")
+            .toSuccess(
+              nels("Configuration property service.path is required")) |@|
+          serviceConfig
+            .get[String]("user")
+            .toSuccess(
+              nels("Configuration property service.user is required")) |@|
+          serviceConfig
+            .get[String]("password")
+            .toSuccess(
+              nels("Configuration property service.password is required"))
+      ) { (protocol, host, port, path, user, password) =>
+        logger.info(
+          "Creating new WebAccountFinder with properties %s://%s:%s/%s %s:%s"
+            .format(protocol, host, port.toString, path, user, password))
+        new WebAccountFinder(protocol, host, port, path, user, password)
       }
     }
   }
@@ -132,29 +133,33 @@ class WebAccountFinder(
         password).toString)
     invoke { client =>
       logger.info("Querying accounts service for API key %s".format(apiKey))
-      eitherT(client.query("apiKey", apiKey).get[JValue]("/accounts/") map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jaccountId), _) =>
-          logger.info("Got response for apiKey " + apiKey)
-          (((_: Extractor.Error).message) <-: jaccountId
-            .validated[WrappedAccountId] :-> { wid =>
-            Some(wid.accountId)
-          }).disjunction
+      eitherT(
+        client.query("apiKey", apiKey).get[JValue]("/accounts/") map {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jaccountId), _) =>
+            logger.info("Got response for apiKey " + apiKey)
+            (
+              ((_: Extractor.Error).message) <-: jaccountId
+                .validated[WrappedAccountId] :-> { wid =>
+                Some(wid.accountId)
+              }
+            ).disjunction
 
-        case HttpResponse(HttpStatus(OK, _), _, None, _) =>
-          logger.warn("No account found for apiKey: " + apiKey)
-          right(None)
+          case HttpResponse(HttpStatus(OK, _), _, None, _) =>
+            logger.warn("No account found for apiKey: " + apiKey)
+            right(None)
 
-        case res =>
-          logger.error(
-            "Unexpected response from accounts service for findAccountByAPIKey: " + res)
-          left(
-            "Unexpected response from accounts service; unable to proceed: " + res)
-      } recoverWith {
-        case ex =>
-          logger.error("findAccountByAPIKey for " + apiKey + "failed.", ex)
-          Promise.successful(left(
-            "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
-      })
+          case res =>
+            logger.error(
+              "Unexpected response from accounts service for findAccountByAPIKey: " + res)
+            left(
+              "Unexpected response from accounts service; unable to proceed: " + res)
+        } recoverWith {
+          case ex =>
+            logger.error("findAccountByAPIKey for " + apiKey + "failed.", ex)
+            Promise.successful(
+              left(
+                "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
+        })
     }
   }
 
@@ -162,23 +167,27 @@ class WebAccountFinder(
       accountId: AccountId): Response[Option[AccountDetails]] = {
     logger.debug("Finding accoung for id: " + accountId)
     invoke { client =>
-      eitherT(client.get[JValue]("/accounts/" + accountId) map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jaccount), _) =>
-          logger.info("Got response for AccountId " + accountId)
-          (((_: Extractor.Error).message) <-: jaccount
-            .validated[Option[AccountDetails]]).disjunction
+      eitherT(
+        client.get[JValue]("/accounts/" + accountId) map {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jaccount), _) =>
+            logger.info("Got response for AccountId " + accountId)
+            (
+              ((_: Extractor.Error).message) <-: jaccount
+                .validated[Option[AccountDetails]]
+            ).disjunction
 
-        case res =>
-          logger.error(
-            "Unexpected response from accounts serviceon findAccountDetailsById: " + res)
-          left(
-            "Unexpected response from accounts service; unable to proceed: " + res)
-      } recoverWith {
-        case ex =>
-          logger.error("findAccountById for " + accountId + "failed.", ex)
-          Promise.successful(left(
-            "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
-      })
+          case res =>
+            logger.error(
+              "Unexpected response from accounts serviceon findAccountDetailsById: " + res)
+            left(
+              "Unexpected response from accounts service; unable to proceed: " + res)
+        } recoverWith {
+          case ex =>
+            logger.error("findAccountById for " + accountId + "failed.", ex)
+            Promise.successful(
+              left(
+                "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
+        })
     }
   }
 

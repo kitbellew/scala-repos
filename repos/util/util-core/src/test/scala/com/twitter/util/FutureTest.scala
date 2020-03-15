@@ -602,10 +602,7 @@ class FutureTest
         }
 
         "accept maps of futures" in {
-          val map = Map(
-            "1" -> Future.value("1"),
-            "2" -> Future.value("2")
-          )
+          val map = Map("1" -> Future.value("1"), "2" -> Future.value("2"))
 
           assert(
             Await.result(Future.collect(map)) == Map("1" -> "1", "2" -> "2"))
@@ -619,8 +616,7 @@ class FutureTest
         "return future exception if one of the map values is future exception" in {
           val map = Map(
             "1" -> Future.value("1"),
-            "2" -> Future.exception(new Exception)
-          )
+            "2" -> Future.exception(new Exception))
 
           intercept[Exception] {
             Await.result(Future.collect(map))
@@ -861,10 +857,11 @@ class FutureTest
           val jf = f.toJavaFuture
           assert(f.handled == None)
           jf.cancel(true)
-          assert(f.handled match {
-            case Some(e: java.util.concurrent.CancellationException) => true
-            case _                                                   => false
-          })
+          assert(
+            f.handled match {
+              case Some(e: java.util.concurrent.CancellationException) => true
+              case _                                                   => false
+            })
         }
       }
 
@@ -1087,46 +1084,51 @@ class FutureTest
         "flatMap" in {
           const
             .value(1)
-            .transformedBy(new FutureTransformer[Int, Int] {
-              override def flatMap(value: Int) = const.value(value + 1)
-              override def rescue(t: Throwable) = const.value(0)
-            }) mustProduce (Return(2))
+            .transformedBy(
+              new FutureTransformer[Int, Int] {
+                override def flatMap(value: Int) = const.value(value + 1)
+                override def rescue(t: Throwable) = const.value(0)
+              }) mustProduce (Return(2))
         }
 
         "rescue" in {
           const
             .exception(e)
-            .transformedBy(new FutureTransformer[Int, Int] {
-              override def flatMap(value: Int) = const.value(value + 1)
-              override def rescue(t: Throwable) = const.value(0)
-            }) mustProduce (Return(0))
+            .transformedBy(
+              new FutureTransformer[Int, Int] {
+                override def flatMap(value: Int) = const.value(value + 1)
+                override def rescue(t: Throwable) = const.value(0)
+              }) mustProduce (Return(0))
         }
 
         "exceptions thrown during transformation" in {
           const
             .value(1)
-            .transformedBy(new FutureTransformer[Int, Int] {
-              override def flatMap(value: Int) = throw e
-              override def rescue(t: Throwable) = const.value(0)
-            }) mustProduce (Throw(e))
+            .transformedBy(
+              new FutureTransformer[Int, Int] {
+                override def flatMap(value: Int) = throw e
+                override def rescue(t: Throwable) = const.value(0)
+              }) mustProduce (Throw(e))
         }
 
         "map" in {
           const
             .value(1)
-            .transformedBy(new FutureTransformer[Int, Int] {
-              override def map(value: Int) = value + 1
-              override def handle(t: Throwable) = 0
-            }) mustProduce (Return(2))
+            .transformedBy(
+              new FutureTransformer[Int, Int] {
+                override def map(value: Int) = value + 1
+                override def handle(t: Throwable) = 0
+              }) mustProduce (Return(2))
         }
 
         "handle" in {
           const
             .exception(e)
-            .transformedBy(new FutureTransformer[Int, Int] {
-              override def map(value: Int) = value + 1
-              override def handle(t: Throwable) = 0
-            }) mustProduce (Return(0))
+            .transformedBy(
+              new FutureTransformer[Int, Int] {
+                override def map(value: Int) = value + 1
+                override def handle(t: Throwable) = 0
+              }) mustProduce (Return(0))
         }
       }
 
@@ -1419,8 +1421,10 @@ class FutureTest
       }
 
       "willEqual" in {
-        assert(Await
-          .result(const.value(1) willEqual (const.value(1)), 1.second) == true)
+        assert(
+          Await.result(
+            const.value(1) willEqual (const.value(1)),
+            1.second) == true)
       }
 
       "Future() handles exceptions" in {
@@ -1593,8 +1597,7 @@ class FutureTest
           val p = new HandledPromise[Int]
           intercept[TimeoutException] {
             Await.result(
-              p.within(20.milliseconds).raiseWithin(50.milliseconds, skyFall)
-            )
+              p.within(20.milliseconds).raiseWithin(50.milliseconds, skyFall))
           }
           timer.stop()
           assert(p.handled == None)

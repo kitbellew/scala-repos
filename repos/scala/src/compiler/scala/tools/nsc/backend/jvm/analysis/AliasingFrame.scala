@@ -712,10 +712,9 @@ object AliasSet {
     private def checkABCD(x: Int, num: Int): Boolean = {
       // assert(x == a && num == 1 || x == b && num == 2 || ...)
       x != -1 && {
-        val otherHasA =
-          x == notA || x == notB || x == notC || x == notD || (notXs != null && bsContains(
-            notXs,
-            x))
+        val otherHasA = x == notA || x == notB || x == notC || x == notD || (
+          notXs != null && bsContains(notXs, x)
+        )
         if (otherHasA)
           setThisAndOther(x)
         else
@@ -746,8 +745,11 @@ object AliasSet {
                    val thisHasI = (xs(index) & mask) != 0L
                    !thisHasI || {
                      val otherHasI =
-                       i == notA || i == notB || i == notC || i == notD || (notXs != null && index < notXs.length && (notXs(
-                         index) & mask) != 0L)
+                       i == notA || i == notB || i == notC || i == notD || (
+                         notXs != null && index < notXs.length && (
+                           notXs(index) & mask
+                         ) != 0L
+                       )
                      if (otherHasI)
                        setThisAndOther(i)
                      otherHasI

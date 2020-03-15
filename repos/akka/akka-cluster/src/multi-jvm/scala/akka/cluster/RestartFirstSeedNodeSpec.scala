@@ -24,14 +24,10 @@ object RestartFirstSeedNodeMultiJvmSpec extends MultiNodeConfig {
   val seed2 = role("seed2")
   val seed3 = role("seed3")
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
       akka.cluster.auto-down-unreachable-after = off
       akka.cluster.retry-unsuccessful-join-after = 3s
-      """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+      """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 }
 
 class RestartFirstSeedNodeMultiJvmNode1 extends RestartFirstSeedNodeSpec
@@ -78,13 +74,14 @@ abstract class RestartFirstSeedNodeSpec
       // we must transfer its address to seed2 and seed3
       runOn(seed2, seed3) {
         system.actorOf(
-          Props(new Actor {
-            def receive = {
-              case a: Address ⇒
-                seedNode1Address = a
-                sender() ! "ok"
-            }
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              def receive = {
+                case a: Address ⇒
+                  seedNode1Address = a
+                  sender() ! "ok"
+              }
+            }).withDeploy(Deploy.local),
           name = "address-receiver")
         enterBarrier("seed1-address-receiver-ready")
       }

@@ -133,9 +133,11 @@ trait StandaloneQueryExecutor
     logger.debug(
       "Creating new async executor for %s => %s"
         .format(apiKey, executionContext))
-    Promise.successful(Success(new AsyncQueryExecutor {
-      def executionContext: ExecutionContext = platform.executionContext
-    }))
+    Promise.successful(
+      Success(
+        new AsyncQueryExecutor {
+          def executionContext: ExecutionContext = platform.executionContext
+        }))
   }
 
   def syncExecutorFor(apiKey: APIKey): Future[Validation[
@@ -144,9 +146,11 @@ trait StandaloneQueryExecutor
     logger.debug(
       "Creating new sync executor for %s => %s"
         .format(apiKey, executionContext))
-    Promise.successful(Success(new SyncQueryExecutor {
-      def executionContext: ExecutionContext = platform.executionContext
-    }))
+    Promise.successful(
+      Success(
+        new SyncQueryExecutor {
+          def executionContext: ExecutionContext = platform.executionContext
+        }))
   }
 
 }

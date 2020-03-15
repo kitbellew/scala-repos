@@ -81,10 +81,11 @@ object SuggestNamesUtil {
           try {
             val items = (new ScalaVariableOfTypeMacro)
               .calculateLookupItems(
-                Array[String](x(0) match {
-                  case "option"  => "scala.Option"
-                  case "foreach" => "foreach"
-                }),
+                Array[String](
+                  x(0) match {
+                    case "option"  => "scala.Option"
+                    case "foreach" => "foreach"
+                  }),
                 context,
                 showOne = true)
               .map(_.getObject)

@@ -92,16 +92,17 @@ abstract class SbtImportNotificationProvider(
               def execute() {
                 ProjectRootManagerEx
                   .getInstanceEx(project)
-                  .mergeRootsChangesDuring(new Runnable {
-                    def run() {
-                      val dataManager: ProjectDataManager = ServiceManager
-                        .getService(classOf[ProjectDataManager])
-                      dataManager.importData[ProjectData](
-                        Collections.singleton(externalProject),
-                        project,
-                        false)
-                    }
-                  })
+                  .mergeRootsChangesDuring(
+                    new Runnable {
+                      def run() {
+                        val dataManager: ProjectDataManager = ServiceManager
+                          .getService(classOf[ProjectDataManager])
+                        dataManager.importData[ProjectData](
+                          Collections.singleton(externalProject),
+                          project,
+                          false)
+                      }
+                    })
               }
             })
         }
@@ -118,9 +119,11 @@ abstract class SbtImportNotificationProvider(
   }
 
   protected def getExternalProject(filePath: String): Option[String] =
-    (!project.isDisposed && Sbt.isProjectDefinitionFile(
-      project,
-      filePath.toFile)).option(project.getBasePath)
+    (
+      !project.isDisposed && Sbt.isProjectDefinitionFile(
+        project,
+        filePath.toFile)
+    ).option(project.getBasePath)
 
   protected def getProjectSettings(
       file: VirtualFile): Option[SbtProjectSettings] =

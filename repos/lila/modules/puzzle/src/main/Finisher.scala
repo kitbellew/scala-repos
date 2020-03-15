@@ -47,19 +47,21 @@ private[puzzle] final class Finisher(api: PuzzleApi, puzzleColl: Coll) {
             puzzleRatingDiff = puzzlePerf.intRating - puzzle.perf.intRating,
             userRating = user.perfs.puzzle.intRating,
             userRatingDiff = userPerf.intRating - user.perfs.puzzle.intRating)
-        ((api.attempt add a) >> {
-          puzzleColl.update(
-            BSONDocument("_id" -> puzzle.id),
-            BSONDocument(
-              "$inc" -> BSONDocument(
-                Puzzle.BSONFields.attempts -> BSONInteger(1),
-                Puzzle.BSONFields.wins -> BSONInteger(data.isWin ? 1 | 0)
-              )) ++ BSONDocument(
-              "$set" -> BSONDocument(
-                Puzzle.BSONFields.perf -> Perf.perfBSONHandler.write(puzzlePerf)
-              ))
-          ) zip UserRepo.setPerf(user.id, "puzzle", userPerf)
-        }) recover lila.db.recoverDuplicateKey(_ => ()) inject (a -> none)
+        (
+          (api.attempt add a) >> {
+            puzzleColl.update(
+              BSONDocument("_id" -> puzzle.id),
+              BSONDocument(
+                "$inc" -> BSONDocument(
+                  Puzzle.BSONFields.attempts -> BSONInteger(1),
+                  Puzzle.BSONFields.wins -> BSONInteger(
+                    data.isWin ? 1 | 0))) ++ BSONDocument(
+                "$set" -> BSONDocument(
+                  Puzzle.BSONFields.perf -> Perf.perfBSONHandler.write(
+                    puzzlePerf)))
+            ) zip UserRepo.setPerf(user.id, "puzzle", userPerf)
+          }
+        ) recover lila.db.recoverDuplicateKey(_ => ()) inject (a -> none)
     }
 
   private val VOLATILITY = Glicko.default.volatility

@@ -151,10 +151,12 @@ class RewriteJoins extends Phase {
   /** Hoist `Filter` nodes in `Join` generators into join predicates. */
   def hoistFilters(j: Join): (Join, Set[TypeSymbol]) = {
     def hoist(ts: TermSymbol, n: Node): (Node, Option[Node], Set[TypeSymbol]) =
-      (n match {
-        case b: Bind => hoistFilterFromBind(b)
-        case n       => (n, Set.empty[TypeSymbol])
-      }) match {
+      (
+        n match {
+          case b: Bind => hoistFilterFromBind(b)
+          case n       => (n, Set.empty[TypeSymbol])
+        }
+      ) match {
         case (Filter(s, f, p), invalid) =>
           val p2 = p.replace({
             case Ref(rs) :@ tpe if rs == s => Ref(ts)
@@ -185,10 +187,12 @@ class RewriteJoins extends Phase {
     * modified tree plus a set of invalidated TypeSymbols (non-empty if additional columns
     * have to be added to the base projection for the filters). */
   def hoistFilterFromBind(b: Bind): (Node, Set[TypeSymbol]) = {
-    (b.from match {
-      case b2: Bind => hoistFilterFromBind(b2)
-      case n        => (n, Set.empty[TypeSymbol])
-    }) match {
+    (
+      b.from match {
+        case b2: Bind => hoistFilterFromBind(b2)
+        case n        => (n, Set.empty[TypeSymbol])
+      }
+    ) match {
       case (Filter(fs1, from1, pred1), tss1) =>
         logger.debug("Hoisting Filter out of Bind from:", b)
         val sRefs = pred1.collect(
@@ -229,9 +233,11 @@ class RewriteJoins extends Phase {
           else
             (
               Pure(
-                StructNode(struct1 ++ ConstArray.from(newDefs.map {
-                  case (_, (pOnGen, s)) => (s, pOnGen)
-                })),
+                StructNode(
+                  struct1 ++ ConstArray.from(
+                    newDefs.map {
+                      case (_, (pOnGen, s)) => (s, pOnGen)
+                    })),
                 pts),
               tss1 + pts)
         val fs = new AnonSymbol
@@ -284,9 +290,10 @@ class RewriteJoins extends Phase {
           sn)
         val requiredOkPaths =
           illegalDefs
-            .flatMap(_._2.collect {
-              case p @ FwdPath(s :: _) if s == ok => p
-            }.toSeq)
+            .flatMap(
+              _._2.collect {
+                case p @ FwdPath(s :: _) if s == ok => p
+              }.toSeq)
             .toSet
         val existingOkDefs =
           legalDefs.collect {
@@ -299,9 +306,11 @@ class RewriteJoins extends Phase {
         val sn2 = StructNode(ConstArray.from(legalDefs ++ createDefs))
         logger.debug("Pulled refs out of:", sn2)
         val replacements =
-          (existingOkDefs ++ createDefs.map {
-            case (s, n) => (n, s)
-          }).toMap
+          (
+            existingOkDefs ++ createDefs.map {
+              case (s, n) => (n, s)
+            }
+          ).toMap
         def rebase(n: Node): Node =
           n.replace(
             {
@@ -419,15 +428,16 @@ class RewriteJoins extends Phase {
         if (on1Down.nonEmpty || on2Up.nonEmpty) {
           val refS2 = Ref(s2) :@ j2b.nodeType.asCollectionType.elementType
           val on1b = and(
-            on1Keep ++ on2Up.map(_.replace(
-              {
-                case Ref(s) :@ tpe if s == j2b.leftGen =>
-                  Select(refS2, ElementSymbol(1)) :@ tpe
-                case Ref(s) :@ tpe if s == j2b.rightGen =>
-                  Select(refS2, ElementSymbol(2)) :@ tpe
-              },
-              keepType = true
-            )))
+            on1Keep ++ on2Up.map(
+              _.replace(
+                {
+                  case Ref(s) :@ tpe if s == j2b.leftGen =>
+                    Select(refS2, ElementSymbol(1)) :@ tpe
+                  case Ref(s) :@ tpe if s == j2b.rightGen =>
+                    Select(refS2, ElementSymbol(2)) :@ tpe
+                },
+                keepType = true
+              )))
           val on2b = and(
             on1Down.map(
               _.replace(
@@ -477,25 +487,27 @@ class RewriteJoins extends Phase {
           }
         val a1 = isAliasing(p1)
         if (a1 || isAliasing(p2)) {
-          logger.debug(s"Bind(${if (a1)
-            s1
-          else
-            s2}) is aliasing. Merging Bind($s1, Bind($s2)) to Bind($s2)")
+          logger.debug(
+            s"Bind(${if (a1)
+              s1
+            else
+              s2}) is aliasing. Merging Bind($s1, Bind($s2)) to Bind($s2)")
           val m = p1.iterator.toMap
           Bind(
             s2,
             f,
             Pure(
-              StructNode(p2.map {
-                case (f1, n) =>
-                  (
-                    f1,
-                    n.replace(
-                      {
-                        case Select(Ref(s), f2) if s == s1 => m(f2)
-                      },
-                      keepType = true))
-              }),
+              StructNode(
+                p2.map {
+                  case (f1, n) =>
+                    (
+                      f1,
+                      n.replace(
+                        {
+                          case Select(Ref(s), f2) if s == s1 => m(f2)
+                        },
+                        keepType = true))
+                }),
               ts2)).infer()
         } else
           b

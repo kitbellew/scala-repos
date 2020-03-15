@@ -47,12 +47,13 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
   }
 
   test("Probability of mean") {
-    check(Prop.forAll { (m: DenseVector[Double], s: DenseMatrix[Double]) =>
-      {
-        val b = new MultivariateGaussian(m, s)
-        b.unnormalizedLogPdf(m) == 0.0
-      }
-    })
+    check(
+      Prop.forAll { (m: DenseVector[Double], s: DenseMatrix[Double]) =>
+        {
+          val b = new MultivariateGaussian(m, s)
+          b.unnormalizedLogPdf(m) == 0.0
+        }
+      })
   }
 
   test("Probability of N(0,1)(1) propto exp(-.5))") {
@@ -71,34 +72,36 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
   val numSamples = 5000
 
   test("mean") {
-    check(Prop.forAll { (distr: MultivariateGaussian) =>
-      val sample = DenseVector.horzcat(distr.sample(numSamples): _*)
-      val m = mean(sample(*, ::))
-      if (norm(m - distr.mean, Double.PositiveInfinity) > 1e-1) {
-        println("MExpected " + distr.mean + " but got " + m)
-        false
-      } else {
-        true
-      }
+    check(
+      Prop.forAll { (distr: MultivariateGaussian) =>
+        val sample = DenseVector.horzcat(distr.sample(numSamples): _*)
+        val m = mean(sample(*, ::))
+        if (norm(m - distr.mean, Double.PositiveInfinity) > 1e-1) {
+          println("MExpected " + distr.mean + " but got " + m)
+          false
+        } else {
+          true
+        }
 
-    })
+      })
   }
 
   val VARIANCE_TOLERANCE = 0.1
   test("variance") {
-    check(Prop.forAll { (distr: MultivariateGaussian) =>
-      // try twice, and only fail if both fail.
-      // just a little more robustness...
-      Iterator.range(0, 2).exists { _ =>
-        val sample = DenseVector.horzcat(distr.sample(numSamples): _*)
-        val vari = cov(sample.t)
+    check(
+      Prop.forAll { (distr: MultivariateGaussian) =>
+        // try twice, and only fail if both fail.
+        // just a little more robustness...
+        Iterator.range(0, 2).exists { _ =>
+          val sample = DenseVector.horzcat(distr.sample(numSamples): _*)
+          val vari = cov(sample.t)
 
-        if (max(abs(vari - distr.variance)) > VARIANCE_TOLERANCE) {
-          println("Expected " + distr.variance + " but got " + vari)
-          false
-        } else
-          true
-      }
-    })
+          if (max(abs(vari - distr.variance)) > VARIANCE_TOLERANCE) {
+            println("Expected " + distr.variance + " but got " + vari)
+            false
+          } else
+            true
+        }
+      })
   }
 }

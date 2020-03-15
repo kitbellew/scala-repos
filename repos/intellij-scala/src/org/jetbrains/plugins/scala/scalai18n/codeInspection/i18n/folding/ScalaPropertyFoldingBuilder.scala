@@ -40,11 +40,12 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
     val file: ScalaFile = element.asInstanceOf[ScalaFile]
     val project: Project = file.getProject
     val result = new java.util.ArrayList[FoldingDescriptor]
-    file.accept(new ScalaRecursiveElementVisitor {
-      override def visitLiteral(expression: ScLiteral) {
-        checkLiteral(project, expression, result)
-      }
-    })
+    file.accept(
+      new ScalaRecursiveElementVisitor {
+        override def visitLiteral(expression: ScLiteral) {
+          checkLiteral(project, expression, result)
+        }
+      })
     result.toArray(new Array[FoldingDescriptor](result.size))
   }
 

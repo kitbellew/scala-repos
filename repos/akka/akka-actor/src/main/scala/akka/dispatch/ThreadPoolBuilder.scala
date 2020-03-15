@@ -206,13 +206,14 @@ object MonitorableThreadFactory {
       with BlockContext {
     override def blockOn[T](thunk: ⇒ T)(implicit permission: CanAwait): T = {
       val result = new AtomicReference[Option[T]](None)
-      ForkJoinPool.managedBlock(new ForkJoinPool.ManagedBlocker {
-        def block(): Boolean = {
-          result.set(Some(thunk))
-          true
-        }
-        def isReleasable = result.get.isDefined
-      })
+      ForkJoinPool.managedBlock(
+        new ForkJoinPool.ManagedBlocker {
+          def block(): Boolean = {
+            result.set(Some(thunk))
+            true
+          }
+          def isReleasable = result.get.isDefined
+        })
       result.get.get // Exception intended if None
     }
   }

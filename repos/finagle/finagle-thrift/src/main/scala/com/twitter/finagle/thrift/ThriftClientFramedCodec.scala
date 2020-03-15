@@ -68,8 +68,8 @@ class ThriftClientFramedCodec(
     protocolFactory: TProtocolFactory,
     config: ClientCodecConfig,
     clientId: Option[ClientId] = None,
-    useCallerSeqIds: Boolean = false
-) extends Codec[ThriftClientRequest, Array[Byte]] {
+    useCallerSeqIds: Boolean = false)
+    extends Codec[ThriftClientRequest, Array[Byte]] {
 
   private[this] val preparer = ThriftClientPreparer(
     protocolFactory,
@@ -82,8 +82,7 @@ class ThriftClientFramedCodec(
 
   override def prepareConnFactory(
       underlying: ServiceFactory[ThriftClientRequest, Array[Byte]],
-      params: Stack.Params
-  ) = preparer.prepare(underlying, params)
+      params: Stack.Params) = preparer.prepare(underlying, params)
 
   override val protocolLibraryName: String = "thrift"
 }
@@ -104,16 +103,18 @@ private[thrift] class ThriftClientChannelBufferEncoder
           ChannelBuffers.wrappedBuffer(request.message))
         if (request.oneway) {
           // oneway RPCs are satisfied when the write is complete.
-          e.getFuture.addListener(new ChannelFutureListener {
-            override def operationComplete(f: ChannelFuture): Unit =
-              if (f.isSuccess) {
-                Channels.fireMessageReceived(ctx, ChannelBuffers.EMPTY_BUFFER)
-              } else if (f.isCancelled) {
-                Channels.fireExceptionCaught(ctx, new CancelledRequestException)
-              } else {
-                Channels.fireExceptionCaught(ctx, f.getCause)
-              }
-          })
+          e.getFuture.addListener(
+            new ChannelFutureListener {
+              override def operationComplete(f: ChannelFuture): Unit =
+                if (f.isSuccess) {
+                  Channels.fireMessageReceived(ctx, ChannelBuffers.EMPTY_BUFFER)
+                } else if (f.isCancelled) {
+                  Channels
+                    .fireExceptionCaught(ctx, new CancelledRequestException)
+                } else {
+                  Channels.fireExceptionCaught(ctx, f.getCause)
+                }
+            })
         }
 
       case _ =>
@@ -135,14 +136,13 @@ private[finagle] case class ThriftClientPreparer(
     useCallerSeqIds: Boolean = false) {
 
   def prepareService(params: Stack.Params)(
-      service: Service[ThriftClientRequest, Array[Byte]]
-  ): Future[Service[ThriftClientRequest, Array[Byte]]] = {
+      service: Service[ThriftClientRequest, Array[Byte]])
+      : Future[Service[ThriftClientRequest, Array[Byte]]] = {
     val payloadSize =
       new PayloadSizeFilter[ThriftClientRequest, Array[Byte]](
         params[param.Stats].statsReceiver,
         _.message.length,
-        _.length
-      )
+        _.length)
     val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) = params[
       Thrift.param.AttemptTTwitterUpgrade]
     val payloadSizeService = payloadSize.andThen(service)
@@ -160,8 +160,8 @@ private[finagle] case class ThriftClientPreparer(
 
   def prepare(
       underlying: ServiceFactory[ThriftClientRequest, Array[Byte]],
-      params: Stack.Params
-  ): ServiceFactory[ThriftClientRequest, Array[Byte]] = {
+      params: Stack.Params)
+      : ServiceFactory[ThriftClientRequest, Array[Byte]] = {
     val param.Stats(stats) = params[param.Stats]
     val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) = params[
       Thrift.param.AttemptTTwitterUpgrade]
@@ -182,9 +182,8 @@ private[finagle] case class ThriftClientPreparer(
     }
   }
 
-  private def upgrade(
-      service: Service[ThriftClientRequest, Array[Byte]]
-  ): Future[Service[ThriftClientRequest, Array[Byte]]] = {
+  private def upgrade(service: Service[ThriftClientRequest, Array[Byte]])
+      : Future[Service[ThriftClientRequest, Array[Byte]]] = {
     // Attempt to upgrade the protocol the first time around by
     // sending a magic method invocation.
     val buffer = new OutputBuffer(protocolFactory)

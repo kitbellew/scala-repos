@@ -9,26 +9,32 @@ object A {
 
   class Bippy[T]
   def f6(x: Int) =
-    new Bippy[t forSome {
-      type t <: Int
-    }]
-  def f7(x: T forSome {
-    type T <: Float
-  }) = x
-  def f8(x: T forSome {
-    type T <: Unit
-  }) = x
-  def f9(x: T forSome {
-    type T <: runtime.BoxedUnit
-  }) = x
+    new Bippy[
+      t forSome {
+        type t <: Int
+      }]
+  def f7(
+      x: T forSome {
+        type T <: Float
+      }) = x
+  def f8(
+      x: T forSome {
+        type T <: Unit
+      }) = x
+  def f9(
+      x: T forSome {
+        type T <: runtime.BoxedUnit
+      }) = x
   def f10(x: Int) =
-    new Bippy[t forSome {
-      type t <: Unit
-    }]
+    new Bippy[
+      t forSome {
+        type t <: Unit
+      }]
   def f11(x: Int) =
-    new Bippy[t forSome {
-      type t >: Null
-    }]
+    new Bippy[
+      t forSome {
+        type t >: Null
+      }]
 
   class Boppy[+T1, -T2]
   def g1 =

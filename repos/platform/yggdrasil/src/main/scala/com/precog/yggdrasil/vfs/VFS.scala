@@ -75,25 +75,27 @@ object VFSModule {
         stream: StreamT[M, CharBuffer],
         buf: ByteBuffer,
         arr: Array[Byte]): StreamT[M, Array[Byte]] = {
-      StreamT(stream.uncons map {
-        case Some((cbuf, tail)) =>
-          val result = encoder.encode(cbuf, buf, false)
-          if (result == CoderResult.OVERFLOW) {
-            val arr2 = new Array[Byte](bufferSize)
-            StreamT.Yield(arr, loop(cbuf :: tail, ByteBuffer.wrap(arr2), arr2))
-          } else {
-            StreamT.Skip(loop(tail, buf, arr))
-          }
+      StreamT(
+        stream.uncons map {
+          case Some((cbuf, tail)) =>
+            val result = encoder.encode(cbuf, buf, false)
+            if (result == CoderResult.OVERFLOW) {
+              val arr2 = new Array[Byte](bufferSize)
+              StreamT
+                .Yield(arr, loop(cbuf :: tail, ByteBuffer.wrap(arr2), arr2))
+            } else {
+              StreamT.Skip(loop(tail, buf, arr))
+            }
 
-        case None =>
-          val result = encoder.encode(CharBuffer.wrap(""), buf, true)
-          if (result == CoderResult.OVERFLOW) {
-            val arr2 = new Array[Byte](bufferSize)
-            StreamT.Yield(arr, loop(stream, ByteBuffer.wrap(arr2), arr2))
-          } else {
-            StreamT.Yield(Arrays.copyOf(arr, buf.position), StreamT.empty)
-          }
-      })
+          case None =>
+            val result = encoder.encode(CharBuffer.wrap(""), buf, true)
+            if (result == CoderResult.OVERFLOW) {
+              val arr2 = new Array[Byte](bufferSize)
+              StreamT.Yield(arr, loop(stream, ByteBuffer.wrap(arr2), arr2))
+            } else {
+              StreamT.Yield(Arrays.copyOf(arr, buf.position), StreamT.empty)
+            }
+        })
     }
 
     val arr = new Array[Byte](bufferSize)
@@ -131,8 +133,7 @@ trait VFSModule[M[+_], Block] extends Logging {
         EitherT {
           resource.fold(
             br => br.asString.run.map(_.toRightDisjunction(notAQuery)),
-            _ => \/.left(notAQuery).point[M]
-          )
+            _ => \/.left(notAQuery).point[M])
         }
     }
 
@@ -145,8 +146,7 @@ trait VFSModule[M[+_], Block] extends Logging {
               .format(path.path, version))
         resource.fold(
           _ => EitherT.left(notAProjection.point[M]),
-          pr => EitherT.right(pr.projection)
-        )
+          pr => EitherT.right(pr.projection))
     }
   }
 
@@ -165,12 +165,16 @@ trait VFSModule[M[+_], Block] extends Logging {
       // Map to the type we'll use for conversion and the type we report to the user
       // FIXME: We're dealing with MimeType in too many places here
       val acceptableMimeTypes =
-        ((Seq(ApplicationJson, XJsonStream, TextCSV).map { mt =>
-          mt -> (mt, mt)
-        }) ++
-          Seq(
-            AnyMimeType -> (XJsonStream, XJsonStream),
-            OctetStream -> (XJsonStream, OctetStream))).toMap
+        (
+          (
+            Seq(ApplicationJson, XJsonStream, TextCSV).map { mt =>
+              mt -> (mt, mt)
+            }
+          ) ++
+            Seq(
+              AnyMimeType -> (XJsonStream, XJsonStream),
+              OctetStream -> (XJsonStream, OctetStream))
+        ).toMap
       for {
         selectedMT <- OptionT(
           M.point(requestedMimeTypes.find(acceptableMimeTypes.contains)))

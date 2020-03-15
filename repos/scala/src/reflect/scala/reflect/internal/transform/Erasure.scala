@@ -25,8 +25,9 @@ trait Erasure {
          * owners (e.g. when computing lubs, <root> is used). All packageClass symbols have `isJavaDefined == true`.
          */
         case TypeRef(_, sym, _)
-            if sym.isAbstractType && (!sym.owner.isJavaDefined || sym.hasFlag(
-              Flags.EXISTENTIAL)) =>
+            if sym.isAbstractType && (
+              !sym.owner.isJavaDefined || sym.hasFlag(Flags.EXISTENTIAL)
+            ) =>
           tp
         case ExistentialType(tparams, restp) =>
           genericCore(restp)
@@ -367,18 +368,22 @@ trait Erasure {
       } else {
         // implement new spec for erasure of refined types.
         def isUnshadowed(psym: Symbol) =
-          !(psyms exists (qsym =>
-            (psym ne qsym) && (qsym isNonBottomSubClass psym)))
+          !(
+            psyms exists (qsym =>
+              (psym ne qsym) && (qsym isNonBottomSubClass psym))
+          )
         val cs = parents.iterator.filter {
           p => // isUnshadowed is a bit expensive, so try classes first
             val psym = p.typeSymbol
             psym.initialize
             psym.isClass && !psym.isTrait && isUnshadowed(psym)
         }
-        (if (cs.hasNext)
-           cs
-         else
-           parents.iterator.filter(p => isUnshadowed(p.typeSymbol))).next()
+        (
+          if (cs.hasNext)
+            cs
+          else
+            parents.iterator.filter(p => isUnshadowed(p.typeSymbol))
+        ).next()
       }
     }
   }

@@ -48,16 +48,17 @@ object Source {
     * with an empty Optional.
     */
   def maybe[T]: Source[T, CompletableFuture[Optional[T]]] = {
-    new Source(scaladsl.Source.maybe[T].mapMaterializedValue {
-      scalaOptionPromise: Promise[Option[T]] ⇒
-        val javaOptionPromise = new CompletableFuture[Optional[T]]()
-        scalaOptionPromise.completeWith(
-          javaOptionPromise.toScala
-            .map(_.asScala)(
-              akka.dispatch.ExecutionContexts.sameThreadExecutionContext))
+    new Source(
+      scaladsl.Source.maybe[T].mapMaterializedValue {
+        scalaOptionPromise: Promise[Option[T]] ⇒
+          val javaOptionPromise = new CompletableFuture[Optional[T]]()
+          scalaOptionPromise.completeWith(
+            javaOptionPromise.toScala
+              .map(_.asScala)(
+                akka.dispatch.ExecutionContexts.sameThreadExecutionContext))
 
-        javaOptionPromise
-    })
+          javaOptionPromise
+      })
   }
 
   /**
@@ -147,12 +148,14 @@ object Source {
     * @see [[scala.collection.immutable.Range.inclusive(Int, Int, Int)]]
     */
   def range(start: Int, end: Int, step: Int): javadsl.Source[Integer, NotUsed] =
-    fromIterator[Integer](new function.Creator[util.Iterator[Integer]]() {
-      def create(): util.Iterator[Integer] =
-        new Inclusive(start, end, step) {
-          override def toString: String = s"Range($start to $end, step = $step)"
-        }.iterator.asJava.asInstanceOf[util.Iterator[Integer]]
-    })
+    fromIterator[Integer](
+      new function.Creator[util.Iterator[Integer]]() {
+        def create(): util.Iterator[Integer] =
+          new Inclusive(start, end, step) {
+            override def toString: String =
+              s"Range($start to $end, step = $step)"
+          }.iterator.asJava.asInstanceOf[util.Iterator[Integer]]
+      })
 
   /**
     * Start a new `Source` from the given `Future`. The stream will consist of
@@ -293,9 +296,9 @@ object Source {
       first: Source[T, _ <: Any],
       second: Source[T, _ <: Any],
       rest: java.util.List[Source[T, _ <: Any]],
-      strategy: function.Function[
-        java.lang.Integer,
-        _ <: Graph[UniformFanInShape[T, U], NotUsed]]): Source[U, NotUsed] = {
+      strategy: function.Function[java.lang.Integer, _ <: Graph[
+        UniformFanInShape[T, U],
+        NotUsed]]): Source[U, NotUsed] = {
     import scala.collection.JavaConverters._
     val seq =
       if (rest != null)
@@ -909,10 +912,11 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]])
       : javadsl.Source[T, Mat] =
-    new Source(delegate.statefulMapConcat { () ⇒
-      val fun = f.create()
-      elem ⇒ Util.immutableSeq(fun(elem))
-    })
+    new Source(
+      delegate.statefulMapConcat { () ⇒
+        val fun = f.create()
+        elem ⇒ Util.immutableSeq(fun(elem))
+      })
 
   /**
     * Transform this stream by applying the given function to each of the elements
@@ -1596,14 +1600,13 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     *
     * '''Cancels when''' downstream cancels or substream cancels
     */
-  def prefixAndTail(n: Int): javadsl.Source[
-    akka.japi.Pair[
-      java.util.List[Out @uncheckedVariance],
-      javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
-    new Source(delegate.prefixAndTail(n).map {
-      case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
-    })
+  def prefixAndTail(n: Int): javadsl.Source[akka.japi.Pair[
+    java.util.List[Out @uncheckedVariance],
+    javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
+    new Source(
+      delegate.prefixAndTail(n).map {
+        case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+      })
 
   /**
     * This operation demultiplexes the incoming stream into separate output

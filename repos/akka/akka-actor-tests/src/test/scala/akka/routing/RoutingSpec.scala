@@ -209,13 +209,14 @@ class RoutingSpec
             SupervisorStrategy.Restart
         }
       val supervisor = system.actorOf(Props(new Supervisor(restarter)))
-      supervisor ! RoundRobinPool(3).props(routeeProps = Props(new Actor {
-        def receive = {
-          case x: String ⇒ throw new Exception(x)
-        }
-        override def postRestart(reason: Throwable): Unit =
-          testActor ! "restarted"
-      }))
+      supervisor ! RoundRobinPool(3).props(routeeProps = Props(
+        new Actor {
+          def receive = {
+            case x: String ⇒ throw new Exception(x)
+          }
+          override def postRestart(reason: Throwable): Unit =
+            testActor ! "restarted"
+        }))
       val router = expectMsgType[ActorRef]
       EventFilter[Exception]("die", occurrences = 1) intercept {
         router ! "die"
@@ -227,17 +228,20 @@ class RoutingSpec
     }
 
     "start in-line for context.actorOf()" in {
-      system.actorOf(Props(new Actor {
-        def receive = {
-          case "start" ⇒
-            context.actorOf(
-              RoundRobinPool(2).props(routeeProps = Props(new Actor {
-                def receive = {
-                  case x ⇒ sender() ! x
-                }
-              }))) ? "hello" pipeTo sender()
-        }
-      })) ! "start"
+      system.actorOf(
+        Props(
+          new Actor {
+            def receive = {
+              case "start" ⇒
+                context.actorOf(
+                  RoundRobinPool(2).props(routeeProps = Props(
+                    new Actor {
+                      def receive = {
+                        case x ⇒ sender() ! x
+                      }
+                    }))) ? "hello" pipeTo sender()
+            }
+          })) ! "start"
       expectMsg("hello")
     }
 

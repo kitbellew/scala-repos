@@ -353,22 +353,26 @@ trait BlockAlignSpec[M[+_]]
         rtable: Table,
         alignOnR: TransSpec1) = {
       val (ljsondirect, rjsondirect) =
-        (for {
-          aligned <- Table.align(ltable, alignOnL, rtable, alignOnR)
-          ljson <- aligned._1.toJson
-          rjson <- aligned._2.toJson
-        } yield {
-          (ljson, rjson)
-        }).copoint
+        (
+          for {
+            aligned <- Table.align(ltable, alignOnL, rtable, alignOnR)
+            ljson <- aligned._1.toJson
+            rjson <- aligned._2.toJson
+          } yield {
+            (ljson, rjson)
+          }
+        ).copoint
 
       val (ljsonreversed, rjsonreversed) =
-        (for {
-          aligned <- Table.align(rtable, alignOnR, ltable, alignOnL)
-          ljson <- aligned._1.toJson
-          rjson <- aligned._2.toJson
-        } yield {
-          (ljson, rjson)
-        }).copoint
+        (
+          for {
+            aligned <- Table.align(rtable, alignOnR, ltable, alignOnL)
+            ljson <- aligned._1.toJson
+            rjson <- aligned._2.toJson
+          } yield {
+            (ljson, rjson)
+          }
+        ).copoint
 
       (ljsonreversed.toList must_== rjsondirect.toList) and
         (rjsonreversed.toList must_== ljsondirect.toList)

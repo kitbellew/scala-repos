@@ -162,13 +162,11 @@ object ShowPickled extends Names {
       printSymbolRef()
       val pflags = buf.readLongNat()
       def printFlags(privateWithin: Option[Int]) = {
-        val accessBoundary = (
-          for (idx <- privateWithin)
-            yield {
-              val s = entryList nameAt idx
-              idx + "(" + s + ")"
-            }
-        )
+        val accessBoundary = (for (idx <- privateWithin)
+          yield {
+            val s = entryList nameAt idx
+            idx + "(" + s + ")"
+          })
         val flagString = {
           val arg1 = Flags.pickledToRawFlags(pflags)
           accessBoundary match {
@@ -303,8 +301,7 @@ object ShowPickled extends Names {
           "BAD ENTRY END: computed = %d, actual = %d, bytes = %s".format(
             end,
             buf.readIndex,
-            buf.bytes.slice(index(i), (end max buf.readIndex)).mkString(", ")
-          ))
+            buf.bytes.slice(index(i), (end max buf.readIndex)).mkString(", ")))
       }
     }
 

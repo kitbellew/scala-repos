@@ -362,8 +362,8 @@ class WebSocketClientSpec
       val netOut = ByteStringSinkProbe()
       val netIn = TestPublisher.probe[ByteString]()
 
-      val graph = RunnableGraph.fromGraph(GraphDSL.create(clientLayer) {
-        implicit b ⇒ client ⇒
+      val graph = RunnableGraph.fromGraph(
+        GraphDSL.create(clientLayer) { implicit b ⇒ client ⇒
           import GraphDSL.Implicits._
           Source.fromPublisher(netIn) ~> Flow[ByteString].map(
             SessionBytes(null, _)) ~> client.in2
@@ -372,7 +372,7 @@ class WebSocketClientSpec
           } ~> netOut.sink
           client.out2 ~> clientImplementation ~> client.in1
           ClosedShape
-      })
+        })
 
       val response = graph.run()
 

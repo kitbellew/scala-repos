@@ -86,10 +86,12 @@ class MessageTest extends FunSuite {
         request.headers.set("Content-Type", header)
         // shorthand for empty mediaTypes really being returned as None after being parsed.
         assert(
-          request.mediaType == (if (expected.isEmpty)
-                                  None
-                                else
-                                  Some(expected)))
+          request.mediaType == (
+            if (expected.isEmpty)
+              None
+            else
+              Some(expected)
+          ))
     }
   }
 
@@ -105,8 +107,7 @@ class MessageTest extends FunSuite {
       ("x;p1; p2 ;p3" -> "y") -> "y;p1; p2 ;p3",
       ("x;" -> "y") -> "y",
       (";" -> "y") -> "y",
-      ("" -> "y") -> "y"
-    )
+      ("" -> "y") -> "y")
     tests.foreach {
       case ((header, mediaType), expected) =>
         val request = Request()

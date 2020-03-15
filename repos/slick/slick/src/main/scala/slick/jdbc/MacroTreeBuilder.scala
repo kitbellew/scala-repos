@@ -49,10 +49,7 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     * scala.Predef.implicitly[GetResult[Int]]
     */
   def implicitTree(reqType: Tree, baseType: Tree) =
-    TypeApply(
-      ImplicitlyTree,
-      List(AppliedTypeTree(baseType, List(reqType)))
-    )
+    TypeApply(ImplicitlyTree, List(AppliedTypeTree(baseType, List(reqType))))
 
   //Some commonly used trees that are created on demand
   lazy val GetResultTypeTree = createClassTreeFromString(
@@ -108,8 +105,7 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
             Select(
               Select(Ident(termNames.ROOTPKG), TermName("scala")),
               TypeName("Tuple" + resultTypes.size)),
-            resultTypeTrees.toList
-          ),
+            resultTypeTrees.toList),
           GetResultTypeTree
         )
       case n =>
@@ -127,10 +123,7 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
         val zipped = (0 until n) zip resultTypeTrees
         val << = Select(Ident(TermName("p")), TermName("$less$less"))
         Apply(
-          TypeApply(
-            Select(GetResultTree, TermName("apply")),
-            List(rtypeTree)
-          ),
+          TypeApply(Select(GetResultTree, TermName("apply")), List(rtypeTree)),
           List(
             Function(
               List(
@@ -163,8 +156,7 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
                   )
                 }
               )
-            )
-          )
+            ))
         )
     }
   }
@@ -220,10 +212,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
                     implicitTree(
                       TypeTree(param.actualType),
                       SetParameterTypeTree),
-                    TermName("applied")
-                  ),
-                  List(param.tree)
-                )
+                    TermName("applied")),
+                  List(param.tree))
               }
             }
         }
@@ -246,18 +236,14 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
                     Modifiers(Flag.PARAM),
                     TermName("pp"),
                     TypeTree(),
-                    EmptyTree)
-                ),
+                    EmptyTree)),
                 Block(
                   remaining.toList map (sp =>
                     Apply(
                       Select(sp.tree, TermName("apply")),
-                      List(Ident(TermName("u")), Ident(TermName("pp")))
-                    )),
-                  Literal(Constant(()))
-                )
-              )
-            )
+                      List(Ident(TermName("u")), Ident(TermName("pp"))))),
+                  Literal(Constant(())))
+              ))
           )
       (fuse(queryString.result()), pconv)
     }

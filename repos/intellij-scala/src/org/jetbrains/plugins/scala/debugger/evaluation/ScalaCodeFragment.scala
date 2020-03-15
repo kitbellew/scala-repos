@@ -97,8 +97,10 @@ class ScalaCodeFragment(project: Project, text: String) extends {
     UndoManager
       .getInstance(project)
       .undoableActionPerformed(
-        new ScalaCodeFragment.ImportClassUndoableAction(path, document, imports)
-      )
+        new ScalaCodeFragment.ImportClassUndoableAction(
+          path,
+          document,
+          imports))
     val newRef =
       ref match {
         case st: ScStableCodeReferenceElement if st.resolve() == null =>

@@ -16,10 +16,7 @@ import views._
 object Main extends LilaController {
 
   private lazy val blindForm = Form(
-    tuple(
-      "enable" -> nonEmptyText,
-      "redirect" -> nonEmptyText
-    ))
+    tuple("enable" -> nonEmptyText, "redirect" -> nonEmptyText))
 
   def toggleBlindMode =
     OpenBody { implicit ctx =>

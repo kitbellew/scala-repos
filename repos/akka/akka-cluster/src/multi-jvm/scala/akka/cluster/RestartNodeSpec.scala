@@ -26,8 +26,9 @@ object RestartNodeMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        "akka.cluster.auto-down-unreachable-after = 5s"))
+      .withFallback(
+        ConfigFactory.parseString(
+          "akka.cluster.auto-down-unreachable-after = 5s"))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 }
 
@@ -74,13 +75,14 @@ abstract class RestartNodeSpec
       // we must transfer its address to first
       runOn(first, third) {
         system.actorOf(
-          Props(new Actor {
-            def receive = {
-              case a: UniqueAddress ⇒
-                secondUniqueAddress = a
-                sender() ! "ok"
-            }
-          }).withDeploy(Deploy.local),
+          Props(
+            new Actor {
+              def receive = {
+                case a: UniqueAddress ⇒
+                  secondUniqueAddress = a
+                  sender() ! "ok"
+              }
+            }).withDeploy(Deploy.local),
           name = "address-receiver")
         enterBarrier("second-address-receiver-ready")
       }

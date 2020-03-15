@@ -6,11 +6,12 @@ import Arbitrary._
 class Counter(r: Range) {
   var cnt = 0L
   var last: Option[Int] = None
-  val str =
-    "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive)
-                                                           "]"
-                                                         else
-                                                           ")")
+  val str = "Range[" + r.start + ", " + r.end + ", " + r.step + (
+    if (r.isInclusive)
+      "]"
+    else
+      ")"
+  )
   def apply(x: Int) = {
     cnt += 1L
     if (cnt % 500000000L == 0L) {
@@ -21,8 +22,9 @@ class Counter(r: Range) {
       println(msg) // exception is likely to be eaten by an out of memory error
       sys error msg
     }
-    if ((r.step > 0 && last.exists(_ > x)) || (r.step < 0 && last.exists(
-          _ < x))) {
+    if ((
+          r.step > 0 && last.exists(_ > x)
+        ) || (r.step < 0 && last.exists(_ < x))) {
       val msg = "Range %s wrapped: %d %s" format (str, x, last.toString)
       println(msg) // exception is likely to be eaten by an out of memory error
       sys error msg
@@ -95,10 +97,12 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       yield r.start to r.end
 
   def str(r: Range) =
-    "Range[" + r.start + ", " + r.end + ", " + r.step + (if (r.isInclusive)
-                                                           "]"
-                                                         else
-                                                           ")")
+    "Range[" + r.start + ", " + r.end + ", " + r.step + (
+      if (r.isInclusive)
+        "]"
+      else
+        ")"
+    )
 
   def expectedSize(r: Range): Long =
     if (r.isInclusive) {
@@ -116,10 +120,14 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
         case (true, true) | (false, false) =>
           (
             (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong
-              + (if ((r.end.toLong - r.start.toLong).abs % r.step.abs.toLong > 0L)
-                   1L
-                 else
-                   0L)
+              + (
+                if ((
+                      r.end.toLong - r.start.toLong
+                    ).abs % r.step.abs.toLong > 0L)
+                  1L
+                else
+                  0L
+              )
           )
         case _ => 0L
       }
@@ -127,15 +135,19 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
 
   def within(r: Range, x: Int) =
     if (r.step > 0)
-      r.start <= x && (if (r.isInclusive)
-                         x <= r.end
-                       else
-                         x < r.end)
+      r.start <= x && (
+        if (r.isInclusive)
+          x <= r.end
+        else
+          x < r.end
+      )
     else
-      r.start >= x && (if (r.isInclusive)
-                         x >= r.end
-                       else
-                         x > r.end)
+      r.start >= x && (
+        if (r.isInclusive)
+          x >= r.end
+        else
+          x > r.end
+      )
 
   def multiple(r: Range, x: Int) = (x.toLong - r.start) % r.step == 0
 
@@ -274,8 +286,9 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       arbInt.arbitrary) { (r, x) =>
 //    println("take "+str(r))
       val t = r take x
-      (t.size == (0 max x min r.size) && t.start == r.start && t.step == r.step) :| str(
-        r) + " / " + str(t) + ": " + x
+      (
+        t.size == (0 max x min r.size) && t.start == r.start && t.step == r.step
+      ) :| str(r) + " / " + str(t) + ": " + x
     }
 
   property("init") =

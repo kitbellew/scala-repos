@@ -13,33 +13,27 @@ object Test {
     // #4321
     assert((Int.MinValue to Int.MaxValue by Int.MaxValue).size == 3)
     // #4308
-    val caught = (
-      try {
-        (Long.MinValue to Long.MaxValue).sum;
-        false
-      } catch {
-        case _: IllegalArgumentException => true
-      }
-    )
+    val caught = (try {
+      (Long.MinValue to Long.MaxValue).sum;
+      false
+    } catch {
+      case _: IllegalArgumentException => true
+    })
     assert(caught)
     // #7432
-    val noElemAtMin = (
-      try {
-        (10 until 10).min;
-        false
-      } catch {
-        case _: NoSuchElementException => true
-      }
-    )
+    val noElemAtMin = (try {
+      (10 until 10).min;
+      false
+    } catch {
+      case _: NoSuchElementException => true
+    })
     assert(noElemAtMin)
-    val noElemAtMax = (
-      try {
-        (10 until 10).max;
-        false
-      } catch {
-        case _: NoSuchElementException => true
-      }
-    )
+    val noElemAtMax = (try {
+      (10 until 10).max;
+      false
+    } catch {
+      case _: NoSuchElementException => true
+    })
     assert(noElemAtMax)
   }
 
@@ -76,8 +70,7 @@ object Test {
       GR(BigInt(5)),
       GR(5L),
       GR(5.0d),
-      GR(2.toByte)
-    )
+      GR(2.toByte))
     val grs = _grs ::: (_grs map (_.negated))
     grs foreach (_.check)
 

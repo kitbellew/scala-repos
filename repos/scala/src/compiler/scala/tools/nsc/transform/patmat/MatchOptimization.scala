@@ -71,10 +71,16 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             // is there an earlier test that checks our condition and whose dependencies are implied by ours?
             dependencies find {
               case (priorTest, deps) =>
-                ((simplify(
-                  priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
-                  (nonTrivial subsetOf deps) // or if it depends on a superset of our conditions
-                ) && (deps subsetOf tested) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
+                (
+                  (
+                    simplify(priorTest.prop) == nonTrivial
+                  ) || // our conditions are implied by priorTest if it checks the same thing directly
+                    (
+                      nonTrivial subsetOf deps
+                    ) // or if it depends on a superset of our conditions
+                ) && (
+                  deps subsetOf tested
+                ) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
             } foreach {
               case (priorTest, _) =>
                 // if so, note the dependency in both tests
@@ -113,11 +119,13 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         // if there's no sharing, simply map to the tree makers corresponding to the tests
         var currDeps = Set[Prop]()
         val (sharedPrefix, suffix) = tests span { test =>
-          (test.prop == True) || (for (reusedTest <- test.reuses;
-                                       nextDeps <- dependencies.get(reusedTest);
-                                       diff <- (nextDeps -- currDeps).headOption;
-                                       _ <- Some(currDeps = nextDeps))
-            yield diff).nonEmpty
+          (test.prop == True) || (
+            for (reusedTest <- test.reuses;
+                 nextDeps <- dependencies.get(reusedTest);
+                 diff <- (nextDeps -- currDeps).headOption;
+                 _ <- Some(currDeps = nextDeps))
+              yield diff
+          ).nonEmpty
         }
 
         val collapsedTreeMakers =
@@ -307,9 +315,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           tms match {
             case (btm @ BodyTreeMaker(body, _)) :: Nil =>
               Some((EmptyTree, btm.substitution(body)))
-            case (gtm @ GuardTreeMaker(guard)) :: (btm @ BodyTreeMaker(
-                  body,
-                  _)) :: Nil =>
+            case (
+                  gtm @ GuardTreeMaker(guard)
+                ) :: (btm @ BodyTreeMaker(body, _)) :: Nil =>
               Some((gtm.substitution(guard), btm.substitution(body)))
             case _ => None
           }
@@ -776,12 +784,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           body: Tree = defaultBody): CaseDef = {
         import CODE._;
         atPos(body.pos) {
-          (CASE(
-            Bind(
-              scrutSym,
-              Typed(
-                Ident(nme.WILDCARD),
-                TypeTree(ThrowableTpe)))) IF guard) ==> body
+          (
+            CASE(
+              Bind(
+                scrutSym,
+                Typed(Ident(nme.WILDCARD), TypeTree(ThrowableTpe)))) IF guard
+          ) ==> body
         }
       }
     }

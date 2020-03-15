@@ -679,11 +679,13 @@ object Replicator {
         totChunks: Int)
         extends ReplicatorMessage {
       override def toString: String =
-        (digests
-          .map {
-            case (key, bytes) ⇒
-              key + " -> " + bytes.map(byte ⇒ f"$byte%02x").mkString("")
-          })
+        (
+          digests
+            .map {
+              case (key, bytes) ⇒
+                key + " -> " + bytes.map(byte ⇒ f"$byte%02x").mkString("")
+            }
+          )
           .mkString("Status(", ", ", ")")
     }
     final case class Gossip(
@@ -1349,12 +1351,16 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def hasSubscriber(subscriber: ActorRef): Boolean =
-    (subscribers.exists {
-      case (k, s) ⇒ s.contains(subscriber)
-    }) ||
-      (newSubscribers.exists {
+    (
+      subscribers.exists {
         case (k, s) ⇒ s.contains(subscriber)
-      })
+      }
+    ) ||
+      (
+        newSubscribers.exists {
+          case (k, s) ⇒ s.contains(subscriber)
+        }
+      )
 
   def receiveTerminated(ref: ActorRef): Unit = {
     val keys1 = subscribers.collect {
@@ -1502,7 +1508,9 @@ final class Replicator(settings: ReplicatorSettings)
 
     pruningPerformed.foreach {
       case (removed, timestamp)
-          if ((allReachableClockTime - timestamp) > maxPruningDisseminationNanos) &&
+          if (
+            (allReachableClockTime - timestamp) > maxPruningDisseminationNanos
+          ) &&
             allPruningPerformed(removed) ⇒
         log.debug("All pruning performed for [{}], tombstoned", removed)
         pruningPerformed -= removed

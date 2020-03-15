@@ -192,7 +192,9 @@ object PathResolver {
         envOrSome("JDK_HOME", envOrNone("JAVA_HOME")) map (p => Path(p))
       val install = Some(Path(javaHome))
 
-      (home flatMap jarAt) orElse (install flatMap jarAt) orElse (install map (_.parent) flatMap jarAt) orElse
+      (home flatMap jarAt) orElse (install flatMap jarAt) orElse (
+        install map (_.parent) flatMap jarAt
+      ) orElse
         (jdkDir flatMap deeply)
     }
     override def toString = s"""
@@ -243,9 +245,8 @@ trait PathResolverResult {
   def resultAsURLs: Seq[URL] = result.asURLs
 }
 
-abstract class PathResolverBase[
-    BaseClassPathType <: ClassFileLookup[AbstractFile],
-    ResultClassPathType <: BaseClassPathType](
+abstract class PathResolverBase[BaseClassPathType <: ClassFileLookup[
+  AbstractFile], ResultClassPathType <: BaseClassPathType](
     settings: Settings,
     classPathFactory: ClassPathFactory[BaseClassPathType])
     extends PathResolverResult {
@@ -253,10 +254,12 @@ abstract class PathResolverBase[
   import PathResolver.{AsLines, Defaults, ppcp}
 
   private def cmdLineOrElse(name: String, alt: String) = {
-    (commandLineFor(name) match {
-      case Some("") => None
-      case x        => x
-    }) getOrElse alt
+    (
+      commandLineFor(name) match {
+        case Some("") => None
+        case x        => x
+      }
+    ) getOrElse alt
   }
 
   private def commandLineFor(s: String): Option[String] =
@@ -354,8 +357,12 @@ abstract class PathResolverBase[
       Console print s"Calculated: $Calculated"
 
       val xs = (Calculated.basis drop 2).flatten.distinct
-      Console print (xs mkLines (s"After java boot/extdirs classpath has ${xs.size} entries:", indented =
-        true))
+      Console print (
+        xs mkLines (
+          s"After java boot/extdirs classpath has ${xs.size} entries:", indented =
+            true
+        )
+      )
     }
     cp
   }

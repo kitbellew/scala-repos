@@ -213,8 +213,7 @@ class ComparingUnrelatedTypesInspectionTest
   }
 
   def testOverridenWithImplicitParam(): Unit = {
-    checkTextHasError(
-      s"""
+    checkTextHasError(s"""
         |class Store(val foo: Int, val bar: String)
         |trait Binder[T] {
         |  def get(implicit store: Store): T
@@ -235,8 +234,7 @@ class ComparingUnrelatedTypesInspectionTest
         |  implicit val store = new Store(12, ":)")
         |  (fooBinder == 12, fooBinder == 3, ${START}fooBinder == ":)"$END, barBinder == ":)") // (true, false, false, true)
         |}
-      """.stripMargin
-    )
+      """.stripMargin)
 
   }
 

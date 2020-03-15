@@ -228,8 +228,7 @@ abstract class WebSpec(boot: () => Any = () => {})
               }
             }
           }) ^
-          fragmentFactory.break
-      )
+          fragmentFactory.break)
     }
   }
 
@@ -252,8 +251,7 @@ abstract class WebSpec(boot: () => Any = () => {})
               }
             }
           }) ^
-          fragmentFactory.break
-      )
+          fragmentFactory.break)
     }
   }
 
@@ -284,16 +282,16 @@ abstract class WebSpec(boot: () => Any = () => {})
                     case Full(sReq) =>
                       expectations(S.runTemplate(sReq.path.partPath))
                     case other =>
-                      failure("Error: withTemplateFor call did not result in " +
-                        "request initialization (S.request = " + other + ")")
+                      failure(
+                        "Error: withTemplateFor call did not result in " +
+                          "request initialization (S.request = " + other + ")")
                   }
                 }
               }
             }
           }
         ) ^
-          fragmentFactory.break
-      )
+          fragmentFactory.break)
     }
   }
 }

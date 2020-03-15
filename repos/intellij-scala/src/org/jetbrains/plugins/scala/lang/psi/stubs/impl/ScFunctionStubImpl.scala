@@ -20,9 +20,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   */
 class ScFunctionStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScFunction](parent, elemType)
     with ScFunctionStub {
   private var name: StringRef = _
@@ -38,9 +37,8 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       name: String,
       isDeclaration: Boolean,
       annotations: Array[String],
@@ -65,9 +63,8 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       name: StringRef,
       isDeclaration: Boolean,
       annotations: Array[StringRef],
@@ -101,7 +98,11 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
   def getReturnTypeElement: Option[ScTypeElement] = {
     if (myReturnTypeElement != null) {
       val returnTypeElement = myReturnTypeElement.get
-      if (returnTypeElement != null && (returnTypeElement.isEmpty || (returnTypeElement.get.getContext eq getPsi))) {
+      if (returnTypeElement != null && (
+            returnTypeElement.isEmpty || (
+              returnTypeElement.get.getContext eq getPsi
+            )
+          )) {
         return returnTypeElement
       }
     }

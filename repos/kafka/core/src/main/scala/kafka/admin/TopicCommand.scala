@@ -305,17 +305,26 @@ object TopicCommand extends Logging {
                 topic,
                 partitionId)
               val leader = zkUtils.getLeaderForPartition(topic, partitionId)
-              if ((!reportUnderReplicatedPartitions && !reportUnavailablePartitions) ||
-                  (reportUnderReplicatedPartitions && inSyncReplicas.size < assignedReplicas.size) ||
-                  (reportUnavailablePartitions && (!leader.isDefined || !liveBrokers
-                    .contains(leader.get)))) {
+              if ((
+                    !reportUnderReplicatedPartitions && !reportUnavailablePartitions
+                  ) ||
+                  (
+                    reportUnderReplicatedPartitions && inSyncReplicas.size < assignedReplicas.size
+                  ) ||
+                  (
+                    reportUnavailablePartitions && (
+                      !leader.isDefined || !liveBrokers.contains(leader.get)
+                    )
+                  )) {
                 print("\tTopic: " + topic)
                 print("\tPartition: " + partitionId)
                 print(
-                  "\tLeader: " + (if (leader.isDefined)
-                                    leader.get
-                                  else
-                                    "none"))
+                  "\tLeader: " + (
+                    if (leader.isDefined)
+                      leader.get
+                    else
+                      "none"
+                  ))
                 print("\tReplicas: " + assignedReplicas.mkString(","))
                 println("\tIsr: " + inSyncReplicas.mkString(","))
               }

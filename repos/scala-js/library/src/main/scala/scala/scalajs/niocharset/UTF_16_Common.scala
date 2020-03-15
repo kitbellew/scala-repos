@@ -69,10 +69,12 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
             val bigEndian = endianness == BigEndian
 
             @inline def bytes2char(hi: Int, lo: Int): Char =
-              (if (bigEndian)
-                 (hi << 8) | lo
-               else
-                 (lo << 8) | hi).toChar
+              (
+                if (bigEndian)
+                  (hi << 8) | lo
+                else
+                  (lo << 8) | hi
+              ).toChar
 
             val c1 = bytes2char(b1, b2)
 

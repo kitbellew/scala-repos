@@ -124,11 +124,12 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
     def byteLength = data.length.toLong
 
     def asString(implicit M: Monad[M]): OptionT[M, String] =
-      OptionT(M point {
-        FileContent.stringTypes
-          .contains(mimeType)
-          .option(new String(data, "UTF-8"))
-      })
+      OptionT(
+        M point {
+          FileContent.stringTypes
+            .contains(mimeType)
+            .option(new String(data, "UTF-8"))
+        })
 
     def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) =
       OptionT {
@@ -160,8 +161,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                 }
 
               PathStructure(types, columnRefs.map(_.selector))
-            }
-        )
+            })
     }
   }
 
@@ -214,8 +214,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       case (p, (r, auth)) =>
         (p, Version.Current) -> r.fold(
           BinaryRecord(_, auth, newVersion),
-          JsonRecord(_, auth, newVersion)
-        )
+          JsonRecord(_, auth, newVersion))
     }
 
     def toResource(record: Record): M[Resource] =
@@ -233,12 +232,12 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
         val path = key._1
         appendTo match {
           case Some(record @ BinaryRecord(resource, uuid)) =>
-            acc + ((path, Version.Archived(uuid)) -> record) + ((
-              path,
-              Version.Current) -> JsonRecord(
-              Vector(values: _*),
-              writeAs,
-              newVersion))
+            acc + ((path, Version.Archived(uuid)) -> record) + (
+              (path, Version.Current) -> JsonRecord(
+                Vector(values: _*),
+                writeAs,
+                newVersion)
+            )
 
           case Some(rec @ JsonRecord(resource, _)) =>
             //TODO: fix the ugly
@@ -253,9 +252,11 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
 
       IO {
         data =
-          (events groupBy {
-            case (offset, msg) => msg.path
-          }).foldLeft(data) {
+          (
+            events groupBy {
+              case (offset, msg) => msg.path
+            }
+          ).foldLeft(data) {
             case (acc, (path, messages)) =>
               val currentKey = (path, Version.Current)
               // We can discard the event IDs for the purposes of this class
@@ -318,26 +319,33 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                       rec.resource
                         .append(NIHDB.Batch(0, records.map(_.value)))
                         .unsafePerformIO
-                      acc + ((if (acc.contains(currentKey))
-                                currentKey
-                              else
-                                archiveKey) -> rec)
+                      acc + (
+                        (
+                          if (acc.contains(currentKey))
+                            currentKey
+                          else
+                            archiveKey
+                        ) -> rec
+                      )
 
                     case record =>
                       // replace when id is not recognized, or when record is binary
-                      acc + ((
-                        path,
-                        Version.Archived(
-                          record.versionId)) -> record) + (currentKey -> JsonRecord(
-                        Vector(records.map(_.value): _*),
-                        writeAs,
-                        id))
+                      acc + (
+                        (path, Version.Archived(record.versionId)) -> record
+                      ) + (
+                        currentKey -> JsonRecord(
+                          Vector(records.map(_.value): _*),
+                          writeAs,
+                          id)
+                      )
                   } getOrElse {
                     // start a new current version
-                    acc + (currentKey -> JsonRecord(
-                      Vector(records.map(_.value): _*),
-                      writeAs,
-                      id))
+                    acc + (
+                      currentKey -> JsonRecord(
+                        Vector(records.map(_.value): _*),
+                        writeAs,
+                        id)
+                    )
                   }
 
                 case (
@@ -387,8 +395,10 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       EitherT {
         data
           .get((path, version))
-          .toRightDisjunction(NotFound("No data found for path %s version %s"
-            .format(path.path, version))) traverse {
+          .toRightDisjunction(
+            NotFound(
+              "No data found for path %s version %s"
+                .format(path.path, version))) traverse {
           toResource
         }
       }

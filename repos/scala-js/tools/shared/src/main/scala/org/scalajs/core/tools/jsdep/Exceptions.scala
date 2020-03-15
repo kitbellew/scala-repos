@@ -4,15 +4,14 @@ abstract class DependencyException(msg: String) extends Exception(msg)
 
 class MissingDependencyException(
     val originatingLib: FlatJSDependency,
-    val missingLib: String
-) extends DependencyException(
+    val missingLib: String)
+    extends DependencyException(
       s"The JS dependency ${originatingLib.relPath} declared " +
         s"from ${originatingLib.origin} has an unmet transitive " +
         s"dependency $missingLib")
 
-class CyclicDependencyException(
-    val participants: List[ResolutionInfo]
-) extends DependencyException(CyclicDependencyException.mkMsg(participants))
+class CyclicDependencyException(val participants: List[ResolutionInfo])
+    extends DependencyException(CyclicDependencyException.mkMsg(participants))
 
 private object CyclicDependencyException {
   private def mkMsg(parts: List[ResolutionInfo]) = {
@@ -36,9 +35,8 @@ private object CyclicDependencyException {
   }
 }
 
-class ConflictingNameException(
-    val participants: List[FlatJSDependency]
-) extends DependencyException(ConflictingNameException.mkMsg(participants))
+class ConflictingNameException(val participants: List[FlatJSDependency])
+    extends DependencyException(ConflictingNameException.mkMsg(participants))
 
 private object ConflictingNameException {
   private def mkMsg(parts: List[FlatJSDependency]) = {
@@ -54,9 +52,8 @@ private object ConflictingNameException {
   }
 }
 
-class ConflictingMinifiedJSException(
-    val participants: List[FlatJSDependency]
-) extends DependencyException(
+class ConflictingMinifiedJSException(val participants: List[FlatJSDependency])
+    extends DependencyException(
       ConflictingMinifiedJSException.mkMsg(participants))
 
 private object ConflictingMinifiedJSException {

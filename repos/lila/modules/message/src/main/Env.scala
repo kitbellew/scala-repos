@@ -40,11 +40,12 @@ final class Env(
     new MessageSecurity(follows = follows, blocks = blocks, getPref = getPref)
 
   system.actorOf(
-    Props(new Actor {
-      def receive = {
-        case thread: LichessThread => api.lichessThread(thread)
-      }
-    }),
+    Props(
+      new Actor {
+        def receive = {
+          case thread: LichessThread => api.lichessThread(thread)
+        }
+      }),
     name = ActorName)
 }
 

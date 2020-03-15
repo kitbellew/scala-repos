@@ -100,10 +100,12 @@ with AbstractTestConfigurationProducer {
       .getInstance(location.getProject)
       .createRunConfiguration(
         StringUtil.getShortName(testClassPath) +
-          (if (testName != null)
-             "\\" + testName
-           else
-             ""),
+          (
+            if (testName != null)
+              "\\" + testName
+            else
+              ""
+          ),
         confFactory)
     val runConfiguration = settings.getConfiguration
       .asInstanceOf[UTestRunConfiguration]
@@ -261,8 +263,7 @@ with AbstractTestConfigurationProducer {
         TestNodeProvider
           .getUTestLeftHandTestDefinition(element)
           .flatMap(getTestSuiteName)
-          .orNull
-      )
+          .orNull)
     (containingObject, testName)
   }
 }

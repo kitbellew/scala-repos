@@ -119,9 +119,13 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
     }
 
     def needCorrecrWiki(element: PsiElement) =
-      (element.getNode.getElementType.isInstanceOf[ScaladocSyntaxElementType]
-        || element.getText == "{{{") && (element.getParent.getLastChild != element ||
-        element.getText == "'''" && element.getPrevSibling != null && element.getPrevSibling.getText == "'")
+      (
+        element.getNode.getElementType.isInstanceOf[ScaladocSyntaxElementType]
+          || element.getText == "{{{"
+      ) && (
+        element.getParent.getLastChild != element ||
+          element.getText == "'''" && element.getPrevSibling != null && element.getPrevSibling.getText == "'"
+      )
   }
 
   /*

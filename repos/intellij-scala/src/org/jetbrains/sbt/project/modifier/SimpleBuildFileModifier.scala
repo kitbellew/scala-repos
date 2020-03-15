@@ -75,8 +75,7 @@ class SimpleBuildFileModifier(
                   elementType,
                   buildFileEntry.file,
                   SimpleBuildFileModifier.newLine(module.getProject),
-                  _)
-              ))
+                  _)))
             .find(_.isDefined)
             .flatten))
       .map(opt => opt.flatten.flatten)

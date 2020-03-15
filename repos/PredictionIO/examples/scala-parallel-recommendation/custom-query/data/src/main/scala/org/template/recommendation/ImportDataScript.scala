@@ -41,17 +41,19 @@ object ImportDataScript extends App {
   def importRateEvents(implicit client: EventClient): Iterator[_] =
     readCSV("data/u.data", "\t").flatMap { event =>
       val eventObj = event.lift
-      (for {
-        entityId ← eventObj(0)
-        targetEntityId ← eventObj(1)
-        rating ← eventObj(2)
-      } yield new Event()
-        .event("rate")
-        .entityId(entityId)
-        .entityType("user")
-        .properties(javaMap("rating" → new java.lang.Double(rating)))
-        .targetEntityId(targetEntityId)
-        .targetEntityType("movie")).map(client.createEvent)
+      (
+        for {
+          entityId ← eventObj(0)
+          targetEntityId ← eventObj(1)
+          rating ← eventObj(2)
+        } yield new Event()
+          .event("rate")
+          .entityId(entityId)
+          .entityType("user")
+          .properties(javaMap("rating" → new java.lang.Double(rating)))
+          .targetEntityId(targetEntityId)
+          .targetEntityType("movie")
+      ).map(client.createEvent)
     }
 
   def importUsers(implicit ec: EventClient): Iterator[_] =

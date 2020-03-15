@@ -120,10 +120,12 @@ class DotProcess(settings: doc.Settings) {
       case exc: Throwable =>
         errorBuffer.append(
           "  Main thread in " + templateName + ": " +
-            (if (exc.isInstanceOf[NoSuchElementException])
-               "Timeout"
-             else
-               "Exception: " + exc))
+            (
+              if (exc.isInstanceOf[NoSuchElementException])
+                "Timeout"
+              else
+                "Exception: " + exc
+            ))
         error = true
         return null
     }

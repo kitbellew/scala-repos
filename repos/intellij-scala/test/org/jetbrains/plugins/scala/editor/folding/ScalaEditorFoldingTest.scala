@@ -79,8 +79,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
           if (i2 == -1)
             fileText.substring(i2Old + FOLD_MARKER_LENGTH)
           else
-            fileText.substring(i2Old + FOLD_MARKER_LENGTH, i2)
-        )
+            fileText.substring(i2Old + FOLD_MARKER_LENGTH, i2))
       } else
         assert(assertion = false, "Unbalanced fold markers #2")
     }

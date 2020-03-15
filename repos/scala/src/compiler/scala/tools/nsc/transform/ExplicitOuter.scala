@@ -87,10 +87,12 @@ abstract class ExplicitOuter
       findOrElse(clazz.info.decls)(_.outerSource == clazz)(NoSymbol)
   }
   def newOuterAccessor(clazz: Symbol) = {
-    val accFlags = SYNTHETIC | ARTIFACT | STABLE | (if (clazz.isTrait)
-                                                      DEFERRED
-                                                    else
-                                                      0)
+    val accFlags = SYNTHETIC | ARTIFACT | STABLE | (
+      if (clazz.isTrait)
+        DEFERRED
+      else
+        0
+    )
     val sym = clazz.newMethod(nme.OUTER, clazz.pos, accFlags)
     val restpe =
       if (clazz.isTrait)
@@ -103,11 +105,12 @@ abstract class ExplicitOuter
     sym setInfo MethodType(Nil, restpe)
   }
   def newOuterField(clazz: Symbol) = {
-    val accFlags =
-      SYNTHETIC | ARTIFACT | PARAMACCESSOR | (if (clazz.isEffectivelyFinal)
-                                                PrivateLocal
-                                              else
-                                                PROTECTED)
+    val accFlags = SYNTHETIC | ARTIFACT | PARAMACCESSOR | (
+      if (clazz.isEffectivelyFinal)
+        PrivateLocal
+      else
+        PROTECTED
+    )
     val sym = clazz.newValue(nme.OUTER_LOCAL, clazz.pos, accFlags)
 
     sym setInfo clazz.outerClass.thisType
@@ -441,14 +444,12 @@ abstract class ExplicitOuter
           .map(_.defString)}")
       // I added the mixinPrefix.typeArgs.nonEmpty condition to address the
       // crash in SI-4970.  I feel quite sure this can be improved.
-      val path = (
-        if (mixinClass.owner.isTerm)
-          gen.mkAttributedThis(mixinClass.owner.enclClass)
-        else if (mixinPrefix.typeArgs.nonEmpty)
-          gen.mkAttributedThis(mixinPrefix.typeSymbol)
-        else
-          gen.mkAttributedQualifier(mixinPrefix)
-      )
+      val path = (if (mixinClass.owner.isTerm)
+                    gen.mkAttributedThis(mixinClass.owner.enclClass)
+                  else if (mixinPrefix.typeArgs.nonEmpty)
+                    gen.mkAttributedThis(mixinPrefix.typeSymbol)
+                  else
+                    gen.mkAttributedQualifier(mixinPrefix))
       // Need to cast for nested outer refs in presence of self-types. See ticket #3274.
       localTyper typed DefDef(
         outerAcc,
@@ -487,8 +488,7 @@ abstract class ExplicitOuter
               if (newDefs.isEmpty)
                 decls
               else
-                decls ::: newDefs.toList)
-          )
+                decls ::: newDefs.toList))
         case DefDef(_, _, _, vparamss, _, rhs) =>
           if (sym.isClassConstructor) {
             rhs match {
@@ -507,8 +507,9 @@ abstract class ExplicitOuter
                       sym.newValueParameter(
                         nme.OUTER,
                         sym.pos) setInfo clazz.outerClass.thisType
-                    ((ValDef(
-                      outerParam) setType NoType) :: vparamss.head) :: vparamss.tail
+                    (
+                      (ValDef(outerParam) setType NoType) :: vparamss.head
+                    ) :: vparamss.tail
                   } else
                     vparamss
                 super.transform(copyDefDef(tree)(vparamss = vparamss1))
@@ -534,30 +535,37 @@ abstract class ExplicitOuter
             closestEnclMethod(currentOwner) hasAnnotation ScalaInlineClass
           // SI-8710 The extension method condition reflects our knowledge that a call to `new Meter(12).privateMethod`
           //         with later be rewritten (in erasure) to `Meter.privateMethod$extension(12)`.
-          if ((currentClass != sym.owner || enclMethodIsInline) && !sym.isMethodWithExtension)
+          if ((
+                currentClass != sym.owner || enclMethodIsInline
+              ) && !sym.isMethodWithExtension)
             sym.makeNotPrivate(sym.owner)
 
           val qsym = qual.tpe.widen.typeSymbol
           if (sym.isProtected && //(4)
-              (qsym.isTrait || !(qual
-                .isInstanceOf[Super] || (qsym isSubClass currentClass))))
+              (
+                qsym.isTrait || !(
+                  qual.isInstanceOf[Super] || (qsym isSubClass currentClass)
+                )
+              ))
             sym setFlag notPROTECTED
           super.transform(tree)
 
         case Apply(sel @ Select(qual, nme.CONSTRUCTOR), args)
             if isInner(sel.symbol.owner) =>
           val outerVal =
-            atPos(tree.pos)(qual match {
-              // it's a call between constructors of same class
-              case _: This =>
-                assert(outerParam != NoSymbol, tree)
-                outerValue
-              case _ =>
-                gen.mkAttributedQualifier(qual.tpe.prefix match {
-                  case NoPrefix => sym.owner.outerClass.thisType
-                  case x        => x
-                })
-            })
+            atPos(tree.pos)(
+              qual match {
+                // it's a call between constructors of same class
+                case _: This =>
+                  assert(outerParam != NoSymbol, tree)
+                  outerValue
+                case _ =>
+                  gen.mkAttributedQualifier(
+                    qual.tpe.prefix match {
+                      case NoPrefix => sym.owner.outerClass.thisType
+                      case x        => x
+                    })
+              })
           super.transform(treeCopy.Apply(tree, sel, outerVal :: args))
 
         // for the new pattern matcher

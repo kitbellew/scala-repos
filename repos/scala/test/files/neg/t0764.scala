@@ -10,11 +10,14 @@ trait Node { outer =>
     }
 }
 
-class Main[NextType <: Node](value: Node {
-  type T = NextType
-}) extends Top[Node {
+class Main[NextType <: Node](
+    value: Node {
       type T = NextType
-    }] {
+    })
+    extends Top[
+      Node {
+        type T = NextType
+      }] {
 
   new Main[AType]((value: AType).prepend)
 }

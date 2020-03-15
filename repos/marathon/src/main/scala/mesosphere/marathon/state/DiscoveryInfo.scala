@@ -16,9 +16,7 @@ object DiscoveryInfo {
   def empty: DiscoveryInfo = DiscoveryInfo()
 
   def fromProto(proto: Protos.DiscoveryInfo): DiscoveryInfo = {
-    DiscoveryInfo(
-      proto.getPortsList.asScala.map(Port.fromProto).toList
-    )
+    DiscoveryInfo(proto.getPortsList.asScala.map(Port.fromProto).toList)
   }
 
   case class Port(number: Int, name: String, protocol: String) {
@@ -42,8 +40,7 @@ object DiscoveryInfo {
       Port(
         number = proto.getNumber,
         name = proto.getName,
-        protocol = proto.getProtocol
-      )
+        protocol = proto.getProtocol)
     }
   }
 }

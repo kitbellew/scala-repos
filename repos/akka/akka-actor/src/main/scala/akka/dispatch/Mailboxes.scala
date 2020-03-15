@@ -43,19 +43,21 @@ private[akka] class Mailboxes(
   import Mailboxes._
 
   val deadLetterMailbox: Mailbox =
-    new Mailbox(new MessageQueue {
-      def enqueue(receiver: ActorRef, envelope: Envelope): Unit =
-        envelope.message match {
-          case _: DeadLetter ⇒ // actor subscribing to DeadLetter, drop it
-          case msg ⇒
-            deadLetters
-              .tell(DeadLetter(msg, envelope.sender, receiver), envelope.sender)
-        }
-      def dequeue() = null
-      def hasMessages = false
-      def numberOfMessages = 0
-      def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = ()
-    }) {
+    new Mailbox(
+      new MessageQueue {
+        def enqueue(receiver: ActorRef, envelope: Envelope): Unit =
+          envelope.message match {
+            case _: DeadLetter ⇒ // actor subscribing to DeadLetter, drop it
+            case msg ⇒
+              deadLetters.tell(
+                DeadLetter(msg, envelope.sender, receiver),
+                envelope.sender)
+          }
+        def dequeue() = null
+        def hasMessages = false
+        def numberOfMessages = 0
+        def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = ()
+      }) {
       becomeClosed()
       def systemEnqueue(receiver: ActorRef, handle: SystemMessage): Unit =
         deadLetters ! DeadLetter(handle, receiver, receiver)

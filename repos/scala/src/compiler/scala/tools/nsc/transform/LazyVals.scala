@@ -67,15 +67,16 @@ abstract class LazyVals
 
     import symtab.Flags._
     private def flattenThickets(stats: List[Tree]): List[Tree] =
-      stats.flatMap(_ match {
-        case b @ Block(
-              List(d1 @ DefDef(_, n1, _, _, _, _)),
-              d2 @ DefDef(_, n2, _, _, _, _))
-            if b.tpe == null && n1.endsWith(nme.LAZY_SLOW_SUFFIX) =>
-          List(d1, d2)
-        case stat =>
-          List(stat)
-      })
+      stats.flatMap(
+        _ match {
+          case b @ Block(
+                List(d1 @ DefDef(_, n1, _, _, _, _)),
+                d2 @ DefDef(_, n2, _, _, _, _))
+              if b.tpe == null && n1.endsWith(nme.LAZY_SLOW_SUFFIX) =>
+            List(d1, d2)
+          case stat =>
+            List(stat)
+        })
 
     /** Perform the following transformations:
       *  - for a lazy accessor inside a method, make it check the initialization bitmap
@@ -135,10 +136,12 @@ abstract class LazyVals
                   idx,
                   sym)
                 sym.resetFlag(
-                  (if (lazyUnit(sym))
-                     0
-                   else
-                     LAZY) | ACCESSOR)
+                  (
+                    if (lazyUnit(sym))
+                      0
+                    else
+                      LAZY
+                  ) | ACCESSOR)
                 (rhs1, sDef)
               } else if (sym.hasAllFlags(
                            MODULE | METHOD) && !sym.owner.isTrait) {
@@ -400,12 +403,14 @@ abstract class LazyVals
         Nil,
         res)
       (
-        atPos(tree.pos)(localTyper.typed {
-          lazyDefs._1
-        }),
-        atPos(tree.pos)(localTyper.typed {
-          lazyDefs._2
-        }))
+        atPos(tree.pos)(
+          localTyper.typed {
+            lazyDefs._1
+          }),
+        atPos(tree.pos)(
+          localTyper.typed {
+            lazyDefs._2
+          }))
     }
 
     private def mkSetFlag(bmp: Symbol, mask: Tree, bmpRef: Tree): Tree =

@@ -154,8 +154,10 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
       case b: ScBlockExpr =>
       case _ =>
         if (option == CommonCodeStyleSettings.FORCE_BRACES_ALWAYS ||
-            (option == CommonCodeStyleSettings.FORCE_BRACES_IF_MULTILINE &&
-            PostFormatProcessorHelper.isMultiline(stmt))) {
+            (
+              option == CommonCodeStyleSettings.FORCE_BRACES_IF_MULTILINE &&
+              PostFormatProcessorHelper.isMultiline(stmt)
+            )) {
           replaceExprWithBlock(expr)
         }
     }

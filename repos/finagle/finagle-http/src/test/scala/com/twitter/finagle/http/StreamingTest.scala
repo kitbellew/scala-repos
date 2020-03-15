@@ -80,53 +80,57 @@ class StreamingTest extends FunSuite with Eventually {
     }
   }
 
-  test("client: request stream fails on write")(new ClientCtx {
-    // Simulate network failure by closing the transport.
-    fail.setDone()
+  test("client: request stream fails on write")(
+    new ClientCtx {
+      // Simulate network failure by closing the transport.
+      fail.setDone()
 
-    intercept[Reader.ReaderDiscarded] {
-      await(writeLots(req.writer, buf))
-    }
-    // We call read for the collating function to notice transport failure.
-    intercept[ChannelClosedException] {
-      await(res.reader.read(1))
-    }
+      intercept[Reader.ReaderDiscarded] {
+        await(writeLots(req.writer, buf))
+      }
+      // We call read for the collating function to notice transport failure.
+      intercept[ChannelClosedException] {
+        await(res.reader.read(1))
+      }
 
-    assertSecondRequestOk()
-  })
+      assertSecondRequestOk()
+    })
 
-  test("client: response stream fails on read")(new ClientCtx {
-    // Reader should be suspended in a reading state.
-    val f = res.reader.read(1)
-    assert(!f.isDefined)
+  test("client: response stream fails on read")(
+    new ClientCtx {
+      // Reader should be suspended in a reading state.
+      val f = res.reader.read(1)
+      assert(!f.isDefined)
 
-    // Simulate network failure by closing the transport.
-    fail.setDone()
+      // Simulate network failure by closing the transport.
+      fail.setDone()
 
-    // Assert reading state suspension is interrupted by transport closure.
-    intercept[ChannelClosedException] {
-      await(f)
-    }
-    intercept[Reader.ReaderDiscarded] {
-      await(writeLots(req.writer, buf))
-    }
+      // Assert reading state suspension is interrupted by transport closure.
+      intercept[ChannelClosedException] {
+        await(f)
+      }
+      intercept[Reader.ReaderDiscarded] {
+        await(writeLots(req.writer, buf))
+      }
 
-    assertSecondRequestOk()
-  })
+      assertSecondRequestOk()
+    })
 
-  test("client: fail request writer")(new ClientCtx {
-    val exc = new Exception
-    req.writer.fail(exc)
-    assert(!res2.isDefined)
-    res.reader.discard()
+  test("client: fail request writer")(
+    new ClientCtx {
+      val exc = new Exception
+      req.writer.fail(exc)
+      assert(!res2.isDefined)
+      res.reader.discard()
 
-    assertSecondRequestOk()
-  })
+      assertSecondRequestOk()
+    })
 
-  test("client: discard respond reader")(new ClientCtx {
-    res.reader.discard()
-    assertSecondRequestOk()
-  })
+  test("client: discard respond reader")(
+    new ClientCtx {
+      res.reader.discard()
+      assertSecondRequestOk()
+    })
 
   test("server: request stream fails read") {
     val buf = Buf.Utf8(".")
@@ -415,8 +419,8 @@ object StreamingTest {
           codec.newClientDispatcher(cmod(transport), params)
         override def newServerDispatcher(
             transport: Transport[Any, Any],
-            service: Service[Request, Response]
-        ) = codec.newServerDispatcher(smod(transport), service)
+            service: Service[Request, Response]) =
+          codec.newServerDispatcher(smod(transport), service)
       }
 
     val factory = Http().streaming(true)

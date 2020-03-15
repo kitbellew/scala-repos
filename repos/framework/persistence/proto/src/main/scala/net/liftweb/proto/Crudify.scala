@@ -165,8 +165,10 @@ trait Crudify {
           "List " + Prefix,
           listPath,
           showAllMenuName,
-          addlMenuLocParams ::: (locSnippets :: Loc.Template(showAllTemplate) ::
-            showAllMenuLocParams))))
+          addlMenuLocParams ::: (
+            locSnippets :: Loc.Template(showAllTemplate) ::
+              showAllMenuLocParams
+          ))))
 
   /**
     * Override to include new Params for the show all menu
@@ -183,8 +185,12 @@ trait Crudify {
           "Create " + Prefix,
           createPath,
           createMenuName,
-          (addlMenuLocParams ::: (locSnippets :: Loc.Template(createTemplate) ::
-            createMenuLocParams)))))
+          (
+            addlMenuLocParams ::: (
+              locSnippets :: Loc.Template(createTemplate) ::
+                createMenuLocParams
+            )
+          ))))
 
   /**
     * Override to include new Params for the create menu
@@ -225,43 +231,46 @@ trait Crudify {
     * The menu item for viewing an item (make this "Empty" to disable)
     */
   def viewMenuLoc: Box[Menu] =
-    Full(Menu(new Loc[TheCrudType] {
-      // the name of the page
-      def name = "View " + Prefix
+    Full(
+      Menu(
+        new Loc[TheCrudType] {
+          // the name of the page
+          def name = "View " + Prefix
 
-      override val snippets: SnippetTest = {
-        case ("crud.view", Full(wp)) =>
-          displayRecord(wp.asInstanceOf[TheCrudType])
-      }
+          override val snippets: SnippetTest = {
+            case ("crud.view", Full(wp)) =>
+              displayRecord(wp.asInstanceOf[TheCrudType])
+          }
 
-      def defaultValue = Empty
+          def defaultValue = Empty
 
-      lazy val params = addlMenuLocParams ::: viewMenuLocParams
+          lazy val params = addlMenuLocParams ::: viewMenuLocParams
 
-      /**
-        * What's the text of the link?
-        */
-      val text = new Loc.LinkText(calcLinkText _)
+          /**
+            * What's the text of the link?
+            */
+          val text = new Loc.LinkText(calcLinkText _)
 
-      def calcLinkText(in: TheCrudType): NodeSeq =
-        Text(S.?("crudify.menu.view.displayName", displayName))
+          def calcLinkText(in: TheCrudType): NodeSeq =
+            Text(S.?("crudify.menu.view.displayName", displayName))
 
-      /**
-        * Rewrite the request and emit the type-safe parameter
-        */
-      override val rewrite: LocRewrite = Full(NamedPF(name) {
-        case RewriteRequest(pp, _, _) if hasParamFor(pp, viewPath) =>
-          (RewriteResponse(viewPath), findForParam(pp.wholePath.last))
-      })
+          /**
+            * Rewrite the request and emit the type-safe parameter
+            */
+          override val rewrite: LocRewrite = Full(
+            NamedPF(name) {
+              case RewriteRequest(pp, _, _) if hasParamFor(pp, viewPath) =>
+                (RewriteResponse(viewPath), findForParam(pp.wholePath.last))
+            })
 
-      override def calcTemplate = Full(viewTemplate)
+          override def calcTemplate = Full(viewTemplate)
 
-      val link =
-        new Loc.Link[TheCrudType](viewPath, false) {
-          override def createLink(in: TheCrudType) =
-            Full(Text(viewPathString + "/" + obscurePrimaryKey(in)))
-        }
-    }))
+          val link =
+            new Loc.Link[TheCrudType](viewPath, false) {
+              override def createLink(in: TheCrudType) =
+                Full(Text(viewPathString + "/" + obscurePrimaryKey(in)))
+            }
+        }))
 
   /**
     * Override to include new Params for the view menu
@@ -272,43 +281,46 @@ trait Crudify {
     * The menu item for editing an item (make this "Empty" to disable)
     */
   def editMenuLoc: Box[Menu] = {
-    Full(Menu(new Loc[TheCrudType] {
-      // the name of the page
-      def name = "Edit " + Prefix
+    Full(
+      Menu(
+        new Loc[TheCrudType] {
+          // the name of the page
+          def name = "Edit " + Prefix
 
-      override val snippets: SnippetTest = {
-        case ("crud.edit", Full(wp)) =>
-          crudDoForm(wp.asInstanceOf[TheCrudType], S.?("Save"))
-      }
+          override val snippets: SnippetTest = {
+            case ("crud.edit", Full(wp)) =>
+              crudDoForm(wp.asInstanceOf[TheCrudType], S.?("Save"))
+          }
 
-      def defaultValue = Empty
+          def defaultValue = Empty
 
-      lazy val params = addlMenuLocParams ::: editMenuLocParams
+          lazy val params = addlMenuLocParams ::: editMenuLocParams
 
-      /**
-        * What's the text of the link?
-        */
-      val text = new Loc.LinkText(calcLinkText _)
+          /**
+            * What's the text of the link?
+            */
+          val text = new Loc.LinkText(calcLinkText _)
 
-      def calcLinkText(in: TheCrudType): NodeSeq =
-        Text(S.?("crudify.menu.edit.displayName", displayName))
+          def calcLinkText(in: TheCrudType): NodeSeq =
+            Text(S.?("crudify.menu.edit.displayName", displayName))
 
-      /**
-        * Rewrite the request and emit the type-safe parameter
-        */
-      override val rewrite: LocRewrite = Full(NamedPF(name) {
-        case RewriteRequest(pp, _, _) if hasParamFor(pp, editPath) =>
-          (RewriteResponse(editPath), findForParam(pp.wholePath.last))
-      })
+          /**
+            * Rewrite the request and emit the type-safe parameter
+            */
+          override val rewrite: LocRewrite = Full(
+            NamedPF(name) {
+              case RewriteRequest(pp, _, _) if hasParamFor(pp, editPath) =>
+                (RewriteResponse(editPath), findForParam(pp.wholePath.last))
+            })
 
-      override def calcTemplate = Full(editTemplate)
+          override def calcTemplate = Full(editTemplate)
 
-      val link =
-        new Loc.Link[TheCrudType](editPath, false) {
-          override def createLink(in: TheCrudType) =
-            Full(Text(editPathString + "/" + obscurePrimaryKey(in)))
-        }
-    }))
+          val link =
+            new Loc.Link[TheCrudType](editPath, false) {
+              override def createLink(in: TheCrudType) =
+                Full(Text(editPathString + "/" + obscurePrimaryKey(in)))
+            }
+        }))
   }
 
   /**
@@ -398,43 +410,46 @@ trait Crudify {
     * The menu item for deleting an item (make this "Empty" to disable)
     */
   def deleteMenuLoc: Box[Menu] = {
-    Full(Menu(new Loc[TheCrudType] {
-      // the name of the page
-      def name = "Delete " + Prefix
+    Full(
+      Menu(
+        new Loc[TheCrudType] {
+          // the name of the page
+          def name = "Delete " + Prefix
 
-      override val snippets: SnippetTest = {
-        case ("crud.delete", Full(wp)) =>
-          crudyDelete(wp.asInstanceOf[TheCrudType])
-      }
+          override val snippets: SnippetTest = {
+            case ("crud.delete", Full(wp)) =>
+              crudyDelete(wp.asInstanceOf[TheCrudType])
+          }
 
-      def defaultValue = Empty
+          def defaultValue = Empty
 
-      lazy val params = addlMenuLocParams ::: deleteMenuLocParams
+          lazy val params = addlMenuLocParams ::: deleteMenuLocParams
 
-      /**
-        * What's the text of the link?
-        */
-      val text = new Loc.LinkText(calcLinkText _)
+          /**
+            * What's the text of the link?
+            */
+          val text = new Loc.LinkText(calcLinkText _)
 
-      def calcLinkText(in: TheCrudType): NodeSeq =
-        Text(S.?("crudify.menu.delete.displayName", displayName))
+          def calcLinkText(in: TheCrudType): NodeSeq =
+            Text(S.?("crudify.menu.delete.displayName", displayName))
 
-      /**
-        * Rewrite the request and emit the type-safe parameter
-        */
-      override val rewrite: LocRewrite = Full(NamedPF(name) {
-        case RewriteRequest(pp, _, _) if hasParamFor(pp, deletePath) =>
-          (RewriteResponse(deletePath), findForParam(pp.wholePath.last))
-      })
+          /**
+            * Rewrite the request and emit the type-safe parameter
+            */
+          override val rewrite: LocRewrite = Full(
+            NamedPF(name) {
+              case RewriteRequest(pp, _, _) if hasParamFor(pp, deletePath) =>
+                (RewriteResponse(deletePath), findForParam(pp.wholePath.last))
+            })
 
-      override def calcTemplate = Full(deleteTemplate)
+          override def calcTemplate = Full(deleteTemplate)
 
-      val link =
-        new Loc.Link[TheCrudType](deletePath, false) {
-          override def createLink(in: TheCrudType) =
-            Full(Text(deletePathString + "/" + obscurePrimaryKey(in)))
-        }
-    }))
+          val link =
+            new Loc.Link[TheCrudType](deletePath, false) {
+              override def createLink(in: TheCrudType) =
+                Full(Text(deletePathString + "/" + obscurePrimaryKey(in)))
+            }
+        }))
   }
 
   private def hasParamFor(pp: ParsePath, toTest: List[String]): Boolean = {
@@ -719,8 +734,12 @@ trait Crudify {
       "^ <*>" #>
         <a href={
           listPathString +
-            "?first=" + (0L max (first -
-            rowsPerPage.toLong))
+            "?first=" + (
+            0L max (
+              first -
+                rowsPerPage.toLong
+            )
+          )
         }></a>
     }
   }
@@ -736,8 +755,10 @@ trait Crudify {
     } else {
       "^ <*>" #>
         <a href={
-          listPathString + "?first=" + (first +
-            rowsPerPage.toLong)
+          listPathString + "?first=" + (
+            first +
+              rowsPerPage.toLong
+          )
         }></a>
     }
   }

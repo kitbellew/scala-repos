@@ -48,8 +48,9 @@ trait ResultConverterDomain {
 }
 
 /** An efficient (albeit boxed) ResultConverter for Product/Tuple values. */
-final case class ProductResultConverter[M <: ResultConverterDomain,
-T <: Product](elementConverters: ResultConverter[M, _]*)
+final case class ProductResultConverter[
+    M <: ResultConverterDomain, T <: Product](
+    elementConverters: ResultConverter[M, _]*)
     extends ResultConverter[M, T] {
   private[this] val cha = elementConverters.to[Array]
   private[this] val len = cha.length
@@ -151,10 +152,12 @@ final class GetOrElseResultConverter[M <: ResultConverterDomain, T](
   def width = child.width
   override def getDumpInfo =
     super.getDumpInfo.copy(
-      mainInfo = (try default().toString
-      catch {
-        case e: Throwable => "[" + e.getClass.getName + "]"
-      }),
+      mainInfo = (
+        try default().toString
+        catch {
+          case e: Throwable => "[" + e.getClass.getName + "]"
+        }
+      ),
       children = Vector(("child", child)))
 }
 

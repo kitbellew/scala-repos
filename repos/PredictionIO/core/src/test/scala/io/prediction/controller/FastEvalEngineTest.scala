@@ -16,10 +16,7 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
       new FastEvalEngine(
         Map("" -> classOf[PDataSource2]),
         Map("" -> classOf[PPreparator1]),
-        Map(
-          "PAlgo2" -> classOf[PAlgo2],
-          "PAlgo3" -> classOf[PAlgo3]
-        ),
+        Map("PAlgo2" -> classOf[PAlgo2], "PAlgo3" -> classOf[PAlgo3]),
         Map("" -> classOf[LServing1]))
 
     val qn = 10
@@ -31,8 +28,7 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
       algorithmParamsList = Seq(
         ("PAlgo2", PAlgo2.Params(20)),
         ("PAlgo2", PAlgo2.Params(21)),
-        ("PAlgo3", PAlgo3.Params(22))
-      ),
+        ("PAlgo3", PAlgo3.Params(22))),
       servingParams = LServing1.Params(3)
     )
 
@@ -73,8 +69,7 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
                 pPs shouldBe Seq(
                   Prediction(id = 20, q = q, models = Some(model0)),
                   Prediction(id = 21, q = q, models = Some(model1)),
-                  Prediction(id = 22, q = q, models = Some(model2))
-                )
+                  Prediction(id = 22, q = q, models = Some(model2)))
               }
             }
         }
@@ -101,10 +96,10 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     )
 
     val ep0 = baseEngineParams
-    val ep1 = baseEngineParams.copy(
-      algorithmParamsList = Seq(("", PAlgo2.Params(2))))
-    val ep2 = baseEngineParams.copy(
-      algorithmParamsList = Seq(("", PAlgo2.Params(20))))
+    val ep1 = baseEngineParams
+      .copy(algorithmParamsList = Seq(("", PAlgo2.Params(2))))
+    val ep2 = baseEngineParams
+      .copy(algorithmParamsList = Seq(("", PAlgo2.Params(20))))
 
     val engineEvalDataSet = engine.batchEval(
       sc,
@@ -161,8 +156,8 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     )
 
     val ep0 = baseEngineParams
-    val ep1 = baseEngineParams.copy(
-      algorithmParamsList = Seq(("", PAlgo2.Params(3))))
+    val ep1 = baseEngineParams
+      .copy(algorithmParamsList = Seq(("", PAlgo2.Params(3))))
     // ep2.dataSource is different from ep0.
     val ep2 = baseEngineParams.copy(
       dataSourceParams =

@@ -99,11 +99,13 @@ class ExecutionTest extends WordSpec with Matchers {
         .toMap shouldBe Map("a" -> 1L, "b" -> 2L, "c" -> 3L, "d" -> 4L)
     }
     "run with zip" in {
-      (ExecutionTestJobs
-        .zipped(TypedPipe.from(0 until 100), TypedPipe.from(100 until 200))
-        .shouldSucceed() match {
-        case (it1, it2) => (it1.head, it2.head)
-      }) shouldBe ((0 until 100).sum, (100 until 200).sum)
+      (
+        ExecutionTestJobs
+          .zipped(TypedPipe.from(0 until 100), TypedPipe.from(100 until 200))
+          .shouldSucceed() match {
+          case (it1, it2) => (it1.head, it2.head)
+        }
+      ) shouldBe ((0 until 100).sum, (100 until 200).sum)
     }
     "lift to try" in {
       val res = ExecutionTestJobs
@@ -150,9 +152,10 @@ class ExecutionTest extends WordSpec with Matchers {
 
       Execution
         .failed(new Exception("oh no"))
-        .zip(Execution.fromFuture { _ =>
-          neverHappens
-        })
+        .zip(
+          Execution.fromFuture { _ =>
+            neverHappens
+          })
         .shouldFail()
       // If both are good, we succeed:
       Execution
@@ -239,10 +242,9 @@ class ExecutionTest extends WordSpec with Matchers {
       val sink = TypedTsv[Int](sinkF)
       val src = TypedTsv[Int](srcF)
       val operationTP =
-        (TypedPipe.from(src) ++ TypedPipe.from((1 until 100).toList))
-          .writeExecution(sink)
-          .getCounters
-          .map(_._2.toMap)
+        (
+          TypedPipe.from(src) ++ TypedPipe.from((1 until 100).toList)
+        ).writeExecution(sink).getCounters.map(_._2.toMap)
 
       def addOption(cfg: Config) = cfg.+("test.cfg.variable", "dummyValue")
 
@@ -475,9 +477,10 @@ class ExecutionTest extends WordSpec with Matchers {
     "Ability to do isolated caches so we don't exhaust memory" in {
 
       def memoryWastingExecutionGenerator(id: Int): Execution[Array[Long]] =
-        Execution.withNewCache(Execution.from(id).flatMap { idx =>
-          Execution.from(Array.fill(4000000)(idx.toLong))
-        })
+        Execution.withNewCache(
+          Execution.from(id).flatMap { idx =>
+            Execution.from(Array.fill(4000000)(idx.toLong))
+          })
 
       def writeAll(numExecutions: Int): Execution[Unit] = {
         if (numExecutions > 0) {

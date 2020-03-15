@@ -41,10 +41,7 @@ class MultipartTest extends FunSuite {
     assert(
       req.multipart == Some(
         Multipart(
-          Map(
-            "abc" -> Seq("foo", "bar"),
-            "def" -> Seq("123")
-          ),
+          Map("abc" -> Seq("foo", "bar"), "def" -> Seq("123")),
           Map.empty[String, Seq[Multipart.FileUpload]])))
   }
 

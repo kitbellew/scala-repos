@@ -22,8 +22,8 @@ object Echo extends Client[String, String] with Server[String, String] {
   //#client
   case class Client(
       stack: Stack[ServiceFactory[String, String]] = StackClient.newStack,
-      params: Stack.Params = StackClient.defaultParams
-  ) extends StdStackClient[String, String, Client] {
+      params: Stack.Params = StackClient.defaultParams)
+      extends StdStackClient[String, String, Client] {
     protected type In = String
     protected type Out = String
 
@@ -53,15 +53,14 @@ object Echo extends Client[String, String] with Server[String, String] {
   //#server
   case class Server(
       stack: Stack[ServiceFactory[String, String]] = StackServer.newStack,
-      params: Stack.Params = StackServer.defaultParams
-  ) extends StdStackServer[String, String, Server] {
+      params: Stack.Params = StackServer.defaultParams)
+      extends StdStackServer[String, String, Server] {
     protected type In = String
     protected type Out = String
 
     protected def copy1(
         stack: Stack[ServiceFactory[String, String]] = this.stack,
-        params: Stack.Params = this.params
-    ): Server = copy(stack, params)
+        params: Stack.Params = this.params): Server = copy(stack, params)
 
     //#serverlistener
     protected def newListener(): Listener[String, String] =
@@ -155,14 +154,12 @@ object Filters {
   val retry =
     new RetryExceptionsFilter[String, String](
       retryPolicy = RetryPolicy.tries(3),
-      timer = DefaultTimer.twitter
-    )
+      timer = DefaultTimer.twitter)
 
   val timeout =
     new TimeoutFilter[String, String](
       timeout = 3.seconds,
-      timer = DefaultTimer.twitter
-    )
+      timer = DefaultTimer.twitter)
 
   val maskCancel = new MaskCancelFilter[String, String]
   //#filters

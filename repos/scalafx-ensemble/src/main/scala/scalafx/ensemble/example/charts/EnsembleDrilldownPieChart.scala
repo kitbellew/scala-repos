@@ -54,8 +54,7 @@ class EnsembleDrilldownPieChart extends EnsembleExample {
       PieChart.Data("A", 20),
       PieChart.Data("B", 30),
       PieChart.Data("C", 10),
-      PieChart.Data("D", 40)
-    )
+      PieChart.Data("D", 40))
     val pieChart =
       new PieChart {
         data = pieChartData

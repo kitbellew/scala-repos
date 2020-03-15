@@ -51,16 +51,14 @@ class Kalman(N: Int) {
       if (n < N)
         mbuf take n.toInt
       else
-        mbuf
-    )
+        mbuf)
 
   private[this] def evar =
     variance(
       if (n < N)
         ebuf take n.toInt
       else
-        ebuf
-    )
+        ebuf)
 
   def estimate = est
 
@@ -71,9 +69,11 @@ class Kalman(N: Int) {
     val sum = samples.sum
     val mean = sum / samples.length
     val diff =
-      (samples map { x =>
-        (x - mean) * (x - mean)
-      }).sum
+      (
+        samples map { x =>
+          (x - mean) * (x - mean)
+        }
+      ).sum
     diff / (samples.length - 1)
   }
 
@@ -106,14 +106,17 @@ class KalmanGaussianError(N: Int, range: Double)
   */
 class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
     extends Estimator[Double] {
-  require(windows forall {
-    case (_, i) => i <= N
-  })
+  require(
+    windows forall {
+      case (_, i) => i <= N
+    })
   private[this] val normalized = {
     val sum =
-      (windows map {
-        case (w, _) => w
-      }).sum
+      (
+        windows map {
+          case (w, _) => w
+        }
+      ).sum
     windows map {
       case (w, i) => (w.toDouble / sum, i)
     }

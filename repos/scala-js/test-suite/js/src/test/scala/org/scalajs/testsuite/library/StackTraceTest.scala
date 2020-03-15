@@ -27,16 +27,19 @@ class StackTraceTest {
       case e: IllegalArgumentException =>
         val trace = e.getStackTrace()
         for ((className, methodName) <- places) {
-          assertTrue(trace exists { elem =>
-            /* We use startsWith for class name because some VMs will add
-             * additional information at the end of the class name, for some
-             * reason + there can be a '$class' suffix for methods in impl
-             * classes (when default methods are not used by scalac).
-             */
-            val prefix = "org.scalajs.testsuite.library.StackTraceTest$"
-            (elem.getClassName.startsWith(prefix + className) &&
-            elem.getMethodName == methodName)
-          })
+          assertTrue(
+            trace exists { elem =>
+              /* We use startsWith for class name because some VMs will add
+               * additional information at the end of the class name, for some
+               * reason + there can be a '$class' suffix for methods in impl
+               * classes (when default methods are not used by scalac).
+               */
+              val prefix = "org.scalajs.testsuite.library.StackTraceTest$"
+              (
+                elem.getClassName.startsWith(prefix + className) &&
+                elem.getMethodName == methodName
+              )
+            })
         }
     }
   }

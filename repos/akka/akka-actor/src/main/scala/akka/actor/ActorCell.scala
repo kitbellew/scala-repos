@@ -359,8 +359,9 @@ private[akka] object ActorCell {
   final val emptyActorRefSet: Set[ActorRef] = immutable.HashSet.empty
 
   final val terminatedProps: Props = Props(
-    (throw new IllegalActorStateException(
-      "This Actor has been terminated")): Actor)
+    (
+      throw new IllegalActorStateException("This Actor has been terminated")
+    ): Actor)
 
   final val undefinedUid = 0
 
@@ -585,10 +586,12 @@ private[akka] class ActorCell(
     }
 
   def become(behavior: Actor.Receive, discardOld: Boolean = true): Unit =
-    behaviorStack = behavior :: (if (discardOld && behaviorStack.nonEmpty)
-                                   behaviorStack.tail
-                                 else
-                                   behaviorStack)
+    behaviorStack = behavior :: (
+      if (discardOld && behaviorStack.nonEmpty)
+        behaviorStack.tail
+      else
+        behaviorStack
+    )
 
   def become(behavior: Procedure[Any]): Unit =
     become(behavior, discardOld = true)

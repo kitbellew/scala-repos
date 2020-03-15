@@ -532,9 +532,11 @@ class PlatformTest
         .sink(typedRealOutput) {
           _.map { f: Float =>
             (f * 10).toInt
-          }.toList shouldBe (outputData.map { f: Float =>
-            (f * 10).toInt
-          }.toList)
+          }.toList shouldBe (
+            outputData.map { f: Float =>
+              (f * 10).toInt
+            }.toList
+          )
         }
         .run
     }

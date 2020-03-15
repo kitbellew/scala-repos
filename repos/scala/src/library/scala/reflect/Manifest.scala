@@ -60,7 +60,9 @@ trait Manifest[T] extends ClassManifest[T] with Equals {
   override def equals(that: Any): Boolean =
     that match {
       case m: Manifest[_] =>
-        (m canEqual this) && (this.runtimeClass == m.runtimeClass) && (this <:< m) && (m <:< this)
+        (m canEqual this) && (this.runtimeClass == m.runtimeClass) && (
+          this <:< m
+        ) && (m <:< this)
       case _ => false
     }
   override def hashCode = this.runtimeClass.##
@@ -298,14 +300,18 @@ object ManifestFactory {
       override val typeArguments: List[Manifest[_]])
       extends Manifest[T] {
     override def toString =
-      (if (prefix.isEmpty)
-         ""
-       else
-         prefix.get.toString + "#") +
-        (if (runtimeClass.isArray)
-           "Array"
-         else
-           runtimeClass.getName) +
+      (
+        if (prefix.isEmpty)
+          ""
+        else
+          prefix.get.toString + "#"
+      ) +
+        (
+          if (runtimeClass.isArray)
+            "Array"
+          else
+            runtimeClass.getName
+        ) +
         argString
   }
 
@@ -335,14 +341,18 @@ object ManifestFactory {
       def runtimeClass = upperBound.runtimeClass
       override def toString =
         "_" +
-          (if (lowerBound eq Nothing)
-             ""
-           else
-             " >: " + lowerBound) +
-          (if (upperBound eq Nothing)
-             ""
-           else
-             " <: " + upperBound)
+          (
+            if (lowerBound eq Nothing)
+              ""
+            else
+              " >: " + lowerBound
+          ) +
+          (
+            if (upperBound eq Nothing)
+              ""
+            else
+              " <: " + upperBound
+          )
     }
 
   /** Manifest for the intersection type `parents_0 with ... with parents_n`. */

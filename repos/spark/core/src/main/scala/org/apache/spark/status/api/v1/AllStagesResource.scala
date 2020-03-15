@@ -86,28 +86,29 @@ private[v1] object AllStagesResource {
 
     val taskData =
       if (includeDetails) {
-        Some(stageUiData.taskData.map {
-          case (k, v) => k -> convertTaskData(v)
-        })
+        Some(
+          stageUiData.taskData.map {
+            case (k, v) => k -> convertTaskData(v)
+          })
       } else {
         None
       }
     val executorSummary =
       if (includeDetails) {
-        Some(stageUiData.executorSummary.map {
-          case (k, summary) =>
-            k -> new ExecutorStageSummary(
-              taskTime = summary.taskTime,
-              failedTasks = summary.failedTasks,
-              succeededTasks = summary.succeededTasks,
-              inputBytes = summary.inputBytes,
-              outputBytes = summary.outputBytes,
-              shuffleRead = summary.shuffleRead,
-              shuffleWrite = summary.shuffleWrite,
-              memoryBytesSpilled = summary.memoryBytesSpilled,
-              diskBytesSpilled = summary.diskBytesSpilled
-            )
-        })
+        Some(
+          stageUiData.executorSummary.map {
+            case (k, summary) =>
+              k -> new ExecutorStageSummary(
+                taskTime = summary.taskTime,
+                failedTasks = summary.failedTasks,
+                succeededTasks = summary.succeededTasks,
+                inputBytes = summary.inputBytes,
+                outputBytes = summary.outputBytes,
+                shuffleRead = summary.shuffleRead,
+                shuffleWrite = summary.shuffleWrite,
+                memoryBytesSpilled = summary.memoryBytesSpilled,
+                diskBytesSpilled = summary.diskBytesSpilled)
+          })
       } else {
         None
       }
@@ -143,8 +144,7 @@ private[v1] object AllStagesResource {
       details = stageInfo.details,
       accumulatorUpdates = accumulableInfo,
       tasks = taskData,
-      executorSummary = executorSummary
-    )
+      executorSummary = executorSummary)
   }
 
   def stagesAndStatus(ui: SparkUI): Seq[(StageStatus, Seq[StageInfo])] = {
@@ -175,8 +175,7 @@ private[v1] object AllStagesResource {
       errorMessage = uiData.errorMessage,
       taskMetrics = uiData.taskMetrics.map {
         convertUiTaskMetrics
-      }
-    )
+      })
   }
 
   def taskMetricDistributions(
@@ -189,9 +188,10 @@ private[v1] object AllStagesResource {
       }.toSeq
 
     def metricQuantiles(f: InternalTaskMetrics => Double): IndexedSeq[Double] =
-      Distribution(rawMetrics.map { d =>
-        f(d)
-      }).get.getQuantiles(quantiles)
+      Distribution(
+        rawMetrics.map { d =>
+          f(d)
+        }).get.getQuantiles(quantiles)
 
     // We need to do a lot of similar munging to nested metrics here.  For each one,
     // we want (a) extract the values for nested metrics (b) make a distribution for each metric
@@ -212,8 +212,7 @@ private[v1] object AllStagesResource {
         def build: InputMetricDistributions =
           new InputMetricDistributions(
             bytesRead = submetricQuantiles(_.bytesRead),
-            recordsRead = submetricQuantiles(_.recordsRead)
-          )
+            recordsRead = submetricQuantiles(_.recordsRead))
       }.metricOption
 
     val outputMetrics: Option[OutputMetricDistributions] =
@@ -227,8 +226,7 @@ private[v1] object AllStagesResource {
         def build: OutputMetricDistributions =
           new OutputMetricDistributions(
             bytesWritten = submetricQuantiles(_.bytesWritten),
-            recordsWritten = submetricQuantiles(_.recordsWritten)
-          )
+            recordsWritten = submetricQuantiles(_.recordsWritten))
       }.metricOption
 
     val shuffleReadMetrics: Option[ShuffleReadMetricDistributions] =
@@ -247,8 +245,7 @@ private[v1] object AllStagesResource {
             remoteBlocksFetched = submetricQuantiles(_.remoteBlocksFetched),
             localBlocksFetched = submetricQuantiles(_.localBlocksFetched),
             totalBlocksFetched = submetricQuantiles(_.totalBlocksFetched),
-            fetchWaitTime = submetricQuantiles(_.fetchWaitTime)
-          )
+            fetchWaitTime = submetricQuantiles(_.fetchWaitTime))
       }.metricOption
 
     val shuffleWriteMetrics: Option[ShuffleWriteMetricDistributions] =
@@ -263,8 +260,7 @@ private[v1] object AllStagesResource {
           new ShuffleWriteMetricDistributions(
             writeBytes = submetricQuantiles(_.bytesWritten),
             writeRecords = submetricQuantiles(_.recordsWritten),
-            writeTime = submetricQuantiles(_.writeTime)
-          )
+            writeTime = submetricQuantiles(_.writeTime))
       }.metricOption
 
     new TaskMetricDistributions(
@@ -279,8 +275,7 @@ private[v1] object AllStagesResource {
       inputMetrics = inputMetrics,
       outputMetrics = outputMetrics,
       shuffleReadMetrics = shuffleReadMetrics,
-      shuffleWriteMetrics = shuffleWriteMetrics
-    )
+      shuffleWriteMetrics = shuffleWriteMetrics)
   }
 
   def convertAccumulableInfo(acc: InternalAccumulableInfo): AccumulableInfo = {
@@ -311,22 +306,19 @@ private[v1] object AllStagesResource {
       },
       shuffleWriteMetrics = internal.shuffleWriteMetrics.map {
         convertShuffleWriteMetrics
-      }
-    )
+      })
   }
 
   def convertInputMetrics(internal: InternalInputMetrics): InputMetrics = {
     new InputMetrics(
       bytesRead = internal.bytesRead,
-      recordsRead = internal.recordsRead
-    )
+      recordsRead = internal.recordsRead)
   }
 
   def convertOutputMetrics(internal: InternalOutputMetrics): OutputMetrics = {
     new OutputMetrics(
       bytesWritten = internal.bytesWritten,
-      recordsWritten = internal.recordsWritten
-    )
+      recordsWritten = internal.recordsWritten)
   }
 
   def convertShuffleReadMetrics(
@@ -337,8 +329,7 @@ private[v1] object AllStagesResource {
       fetchWaitTime = internal.fetchWaitTime,
       remoteBytesRead = internal.remoteBytesRead,
       totalBlocksFetched = internal.totalBlocksFetched,
-      recordsRead = internal.recordsRead
-    )
+      recordsRead = internal.recordsRead)
   }
 
   def convertShuffleWriteMetrics(
@@ -346,8 +337,7 @@ private[v1] object AllStagesResource {
     new ShuffleWriteMetrics(
       bytesWritten = internal.bytesWritten,
       writeTime = internal.writeTime,
-      recordsWritten = internal.recordsWritten
-    )
+      recordsWritten = internal.recordsWritten)
   }
 }
 
@@ -369,9 +359,10 @@ private[v1] abstract class MetricHelper[I, O](
 
   /** applies the given function to all input metrics, and returns the quantiles */
   def submetricQuantiles(f: I => Double): IndexedSeq[Double] = {
-    Distribution(data.map { d =>
-      f(d)
-    }).get.getQuantiles(quantiles)
+    Distribution(
+      data.map { d =>
+        f(d)
+      }).get.getQuantiles(quantiles)
   }
 
   def metricOption: Option[O] = {

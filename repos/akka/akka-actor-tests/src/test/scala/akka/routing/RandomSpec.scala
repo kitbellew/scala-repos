@@ -20,15 +20,17 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       val stopLatch = new TestLatch(7)
 
       val actor = system.actorOf(
-        RandomPool(7).props(Props(new Actor {
-          def receive = {
-            case "hello" ⇒ sender() ! "world"
-          }
+        RandomPool(7).props(
+          Props(
+            new Actor {
+              def receive = {
+                case "hello" ⇒ sender() ! "world"
+              }
 
-          override def postStop() {
-            stopLatch.countDown()
-          }
-        })),
+              override def postStop() {
+                stopLatch.countDown()
+              }
+            })),
         "random-shutdown")
 
       actor ! "hello"
@@ -58,13 +60,14 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       }
 
       val actor = system.actorOf(
-        RandomPool(connectionCount).props(routeeProps = Props(new Actor {
-          lazy val id = counter.getAndIncrement()
-          def receive = {
-            case "hit" ⇒ sender() ! id
-            case "end" ⇒ doneLatch.countDown()
-          }
-        })),
+        RandomPool(connectionCount).props(routeeProps = Props(
+          new Actor {
+            lazy val id = counter.getAndIncrement()
+            def receive = {
+              case "hit" ⇒ sender() ! id
+              case "end" ⇒ doneLatch.countDown()
+            }
+          })),
         name = "random"
       )
 
@@ -91,15 +94,16 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       val stopLatch = new TestLatch(6)
 
       val actor = system.actorOf(
-        RandomPool(6).props(routeeProps = Props(new Actor {
-          def receive = {
-            case "hello" ⇒ helloLatch.countDown()
-          }
+        RandomPool(6).props(routeeProps = Props(
+          new Actor {
+            def receive = {
+              case "hello" ⇒ helloLatch.countDown()
+            }
 
-          override def postStop() {
-            stopLatch.countDown()
-          }
-        })),
+            override def postStop() {
+              stopLatch.countDown()
+            }
+          })),
         "random-broadcast"
       )
 

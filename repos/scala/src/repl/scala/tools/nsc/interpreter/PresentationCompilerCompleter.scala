@@ -118,12 +118,10 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
               val memberCompletions =
                 camelMatches.map(_.symNameDropLocal.decoded).distinct.sorted
               def allowCompletion =
-                (
-                  (memberCompletions.size == 1)
-                    || CompletionResult.camelMatch(r.name)(
-                      r.name.newName(
-                        StringOps.longestCommonPrefix(memberCompletions)))
-                )
+                ((memberCompletions.size == 1)
+                  || CompletionResult.camelMatch(r.name)(
+                    r.name.newName(
+                      StringOps.longestCommonPrefix(memberCompletions))))
               if (memberCompletions.isEmpty)
                 Completion.NoCandidates
               else if (allowCompletion)

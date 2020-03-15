@@ -157,9 +157,11 @@ object JDBCPlatformSpecEngine extends Logging {
                 val schema =
                   rows.foldLeft(Set[(String, String)]()) {
                     case (acc, properties) =>
-                      acc ++ (properties.map {
-                        case (p, (t, _)) => (p, t)
-                      }).toSet
+                      acc ++ (
+                        properties.map {
+                          case (p, (t, _)) => (p, t)
+                        }
+                      ).toSet
                   }
 
                 val ddlCreate = "CREATE TABLE %s (%s);".format(

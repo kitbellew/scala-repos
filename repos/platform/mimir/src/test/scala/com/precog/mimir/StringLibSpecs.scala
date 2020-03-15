@@ -1060,14 +1060,7 @@ trait StringLibSpecs[M[+_]]
         case (_, SString(s)) => s
       }
 
-      ss must contain(
-        "4",
-        "3",
-        "4",
-        "4",
-        "3",
-        "4"
-      ).only
+      ss must contain("4", "3", "4", "4", "3", "4").only
     }
 
     "trim the trailing '.0' in round double conversion" in {
@@ -1098,9 +1091,10 @@ trait StringLibSpecs[M[+_]]
           case (Vector(n), SArray(elems)) => (n, elems)
         }
         .sorted(o)
-        .map(_._2.map {
-          case SString(s) => s
-        })
+        .map(
+          _._2.map {
+            case SString(s) => s
+          })
 
     def mktree(f: Op2, path: String, sep: String) =
       Join(

@@ -264,8 +264,9 @@ trait IntroduceTypeAlias {
         val currentScope = currentDataObject.currentScope
 
         //need open modal dialog in inplace mode
-        if ((StartMarkAction.canStart(
-              project) != null) && (currentScope != null)) {
+        if ((StartMarkAction.canStart(project) != null) && (
+              currentScope != null
+            )) {
           currentDataObject.isCallModalDialogInProgress = true
           val templateState: TemplateState = TemplateManagerImpl
             .getTemplateState(InjectedLanguageUtil.getTopLevelEditor(editor))
@@ -592,14 +593,15 @@ trait IntroduceTypeAlias {
         }
       }
     )
-    list.addListSelectionListener(new ListSelectionListener {
-      def valueChanged(e: ListSelectionEvent) {
-        highlighter.dropHighlight()
-        val index: Int = list.getSelectedIndex
-        if (index < 0)
-          return
-      }
-    })
+    list.addListSelectionListener(
+      new ListSelectionListener {
+        def valueChanged(e: ListSelectionEvent) {
+          highlighter.dropHighlight()
+          val index: Int = list.getSelectedIndex
+          if (index < 0)
+            return
+        }
+      })
 
     JBPopupFactory.getInstance
       .createListPopupBuilder(list)
@@ -607,21 +609,23 @@ trait IntroduceTypeAlias {
       .setMovable(false)
       .setResizable(false)
       .setRequestFocus(true)
-      .setItemChoosenCallback(new Runnable {
-        def run() {
-          pass(list.getSelectedValue.asInstanceOf[T])
-        }
-      })
-      .addListener(new JBPopupAdapter {
-        override def beforeShown(event: LightweightWindowEvent): Unit = {
-          selection.addHighlighter()
-        }
+      .setItemChoosenCallback(
+        new Runnable {
+          def run() {
+            pass(list.getSelectedValue.asInstanceOf[T])
+          }
+        })
+      .addListener(
+        new JBPopupAdapter {
+          override def beforeShown(event: LightweightWindowEvent): Unit = {
+            selection.addHighlighter()
+          }
 
-        override def onClosed(event: LightweightWindowEvent) {
-          highlighter.dropHighlight()
-          selection.removeHighlighter()
-        }
-      })
+          override def onClosed(event: LightweightWindowEvent) {
+            highlighter.dropHighlight()
+            selection.removeHighlighter()
+          }
+        })
       .createPopup
       .showInBestPositionFor(editor)
   }

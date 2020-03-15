@@ -19,21 +19,22 @@ class Netty3AssumptionsTest extends FunSuite {
   def makeServer() = {
     val bootstrap =
       new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor))
-    bootstrap.setPipelineFactory(new ChannelPipelineFactory {
-      def getPipeline = {
-        val pipeline = Channels.pipeline()
-        pipeline.addLast(
-          "stfu",
-          new SimpleChannelUpstreamHandler {
-            override def messageReceived(
-                ctx: ChannelHandlerContext,
-                e: MessageEvent) {
-              /* nothing */
-            }
-          })
-        pipeline
-      }
-    })
+    bootstrap.setPipelineFactory(
+      new ChannelPipelineFactory {
+        def getPipeline = {
+          val pipeline = Channels.pipeline()
+          pipeline.addLast(
+            "stfu",
+            new SimpleChannelUpstreamHandler {
+              override def messageReceived(
+                  ctx: ChannelHandlerContext,
+                  e: MessageEvent) {
+                /* nothing */
+              }
+            })
+          pipeline
+        }
+      })
     bootstrap.bind(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
   }
 
@@ -62,18 +63,19 @@ class Netty3AssumptionsTest extends FunSuite {
 
     bootstrap
       .connect(addr)
-      .addListener(new ChannelFutureListener {
-        override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess) {
-            val channel = f.getChannel
-            assert(channel.isOpen)
-            Channels.close(channel)
-            assert(!channel.isOpen)
-            latch.countDown()
-          } else {
-            throw new Exception("connect attempt failed: " + f)
-          }
-      })
+      .addListener(
+        new ChannelFutureListener {
+          override def operationComplete(f: ChannelFuture): Unit =
+            if (f.isSuccess) {
+              val channel = f.getChannel
+              assert(channel.isOpen)
+              Channels.close(channel)
+              assert(!channel.isOpen)
+              latch.countDown()
+            } else {
+              throw new Exception("connect attempt failed: " + f)
+            }
+        })
 
     assert(latch.await(1.second))
 

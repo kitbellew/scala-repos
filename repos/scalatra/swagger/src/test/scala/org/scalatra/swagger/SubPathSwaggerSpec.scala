@@ -93,34 +93,36 @@ class ApiController()(implicit val swagger: Swagger)
   val createHacker = (apiOperation[Hacker]("createHacker")
     summary "Create a new hacker"
     notes "firstname, lastname, motto, and year of birth are required"
-    parameters (Parameter(
-      "firstname",
-      DataType.String,
-      Some("The hacker's first name"),
-      None,
-      ParamType.Body,
-      required = true),
-    Parameter(
-      "lastname",
-      DataType.String,
-      Some("The hacker's last name"),
-      None,
-      ParamType.Body,
-      required = true),
-    Parameter(
-      "motto",
-      DataType.String,
-      Some("A phrase associated with this hacker"),
-      None,
-      ParamType.Body,
-      required = true),
-    Parameter(
-      "birthyear",
-      DataType.Int,
-      Some("A four-digit number, the year that the user was born in"),
-      Some("A four-digit number"),
-      ParamType.Body,
-      required = true)))
+    parameters (
+      Parameter(
+        "firstname",
+        DataType.String,
+        Some("The hacker's first name"),
+        None,
+        ParamType.Body,
+        required = true),
+      Parameter(
+        "lastname",
+        DataType.String,
+        Some("The hacker's last name"),
+        None,
+        ParamType.Body,
+        required = true),
+      Parameter(
+        "motto",
+        DataType.String,
+        Some("A phrase associated with this hacker"),
+        None,
+        ParamType.Body,
+        required = true),
+      Parameter(
+        "birthyear",
+        DataType.Int,
+        Some("A four-digit number, the year that the user was born in"),
+        Some("A four-digit number"),
+        ParamType.Body,
+        required = true)
+  ))
 
   /**
     * Create a new hacker in the database.

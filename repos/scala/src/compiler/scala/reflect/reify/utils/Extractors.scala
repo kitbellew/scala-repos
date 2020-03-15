@@ -120,9 +120,12 @@ trait Extractors {
             List(List()),
             TypeTree(),
             Block(
-              List(Apply(
-                Select(Super(This(tpnme.EMPTY), tpnme.EMPTY), nme.CONSTRUCTOR),
-                List())),
+              List(
+                Apply(
+                  Select(
+                    Super(This(tpnme.EMPTY), tpnme.EMPTY),
+                    nme.CONSTRUCTOR),
+                  List())),
               Literal(Constant(())))
           ),
           DefDef(
@@ -174,12 +177,10 @@ trait Extractors {
   // if we're reifying a MethodType, we can't use it as a type argument for TypeTag ctor
   // http://groups.google.com/group/scala-internals/browse_thread/thread/2d7bb85bfcdb2e2
   private def mkTarg(tpe: Type): Tree =
-    (
-      if ((tpe eq null) || !isUseableAsTypeArg(tpe))
-        TypeTree(AnyTpe)
-      else
-        TypeTree(tpe)
-    )
+    (if ((tpe eq null) || !isUseableAsTypeArg(tpe))
+       TypeTree(AnyTpe)
+     else
+       TypeTree(tpe))
 
   object ReifiedTree {
     def apply(
@@ -476,8 +477,10 @@ trait Extractors {
         case Apply(
               Select(Select(uref @ Ident(_), typeRef), apply),
               List(Select(_, noSymbol), Ident(freeType: TermName), nil))
-            if (uref.name == nme.UNIVERSE_SHORT && typeRef == nme.TypeRef && noSymbol == nme.NoSymbol && freeType
-              .startsWith(nme.REIFY_FREE_PREFIX)) =>
+            if (
+              uref.name == nme.UNIVERSE_SHORT && typeRef == nme.TypeRef && noSymbol == nme.NoSymbol && freeType
+                .startsWith(nme.REIFY_FREE_PREFIX)
+            ) =>
           Some(freeType)
         case _ =>
           None

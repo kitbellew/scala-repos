@@ -286,10 +286,8 @@ object KetamaClientStress extends App {
             keyValueSet.map {
               case (k, v) => replicationClient.set(k, v)()
             }
-            val casMap: scala.collection.mutable.Map[
-              String,
-              ReplicationStatus[Option[(Buf, ReplicaCasUnique)]]] =
-              scala.collection.mutable.Map()
+            val casMap: scala.collection.mutable.Map[String, ReplicationStatus[
+              Option[(Buf, ReplicaCasUnique)]]] = scala.collection.mutable.Map()
 
             () => {
               val (key, value) = nextKeyValue
@@ -354,8 +352,9 @@ object KetamaClientStress extends App {
       }
 
       // quit the loop when all load is drained
-      if (howmuch_load >= config.cap() && (config
-            .loadrate() == 0 || howmuch_throughput >= howmuch_load)) {
+      if (howmuch_load >= config.cap() && (
+            config.loadrate() == 0 || howmuch_throughput >= howmuch_load
+          )) {
         sys.exit()
       }
     }

@@ -48,20 +48,22 @@ class ContentTypeTestServlet(system: ActorSystem) extends ScalatraServlet {
 
   implicit val timeout: Timeout = 5 seconds
 
-  val conductor = system.actorOf(Props(new Actor {
+  val conductor = system.actorOf(
+    Props(
+      new Actor {
 
-    var firstSender: ActorRef = _
+        var firstSender: ActorRef = _
 
-    def receive = {
-      case 1 =>
-        firstSender = sender
-        context.become(secondReceive)
-    }
+        def receive = {
+          case 1 =>
+            firstSender = sender
+            context.become(secondReceive)
+        }
 
-    def secondReceive: Receive = {
-      case 2 => firstSender ! 1
-    }
-  }))
+        def secondReceive: Receive = {
+          case 2 => firstSender ! 1
+        }
+      }))
 
   get("/concurrent/1") {
     contentType = "1"
@@ -176,7 +178,9 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
     post(
       "/echo",
       headers = Map(
-        "Content-Type" -> ("application/x-www-form-urlencoded; charset=" + charset)),
+        "Content-Type" -> (
+          "application/x-www-form-urlencoded; charset=" + charset
+        )),
       body = ("echo=" + message.urlEncode(Charset.forName(charset)))
     ) {
       body should equal(message)

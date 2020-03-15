@@ -78,9 +78,9 @@ object StateTTest extends SpecLite {
   "monadPlus.plus (List)" in {
     val a = StateT[List, Int, Boolean](s => List((s, false)))
     val b = StateT[List, Int, Boolean](s => List((s, true)))
-    instances.monadPlus[Int, List].plus(a, b).run(0) must_=== (List(
-      (0, false),
-      (0, true)))
+    instances.monadPlus[Int, List].plus(a, b).run(0) must_=== (
+      List((0, false), (0, true))
+    )
   }
 
   "StateT can be trampolined without stack overflow" in {

@@ -105,8 +105,9 @@ private[sql] class DefaultSource
               codecName.toLowerCase)) {
           val availableCodecs = shortParquetCompressionCodecNames.keys.map(
             _.toLowerCase)
-          throw new IllegalArgumentException(s"Codec [$codecName] " +
-            s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
+          throw new IllegalArgumentException(
+            s"Codec [$codecName] " +
+              s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
         }
         codecName.toLowerCase
       }
@@ -264,8 +265,9 @@ private[sql] class DefaultSource
     val leaves = allFiles
       .filter { f =>
         isSummaryFile(f.getPath) ||
-        !(f.getPath.getName.startsWith("_") || f.getPath.getName.startsWith(
-          "."))
+        !(
+          f.getPath.getName.startsWith("_") || f.getPath.getName.startsWith(".")
+        )
       }
       .toArray
       .sortBy(_.getPath.toString)
@@ -576,27 +578,26 @@ private[sql] object ParquetRelation extends Logging {
 
         // Don't throw even if we failed to parse the serialized Spark schema. Just fallback to
         // whatever is available.
-        Some(Try(DataType.fromJson(serializedSchema.get))
-          .recover {
-            case _: Throwable =>
-              logInfo(
-                s"Serialized Spark schema in Parquet key-value metadata is not in JSON format, " +
-                  "falling back to the deprecated DataType.fromCaseClassString parser.")
-              LegacyTypeStringParser.parse(serializedSchema.get)
-          }
-          .recover {
-            case cause: Throwable =>
-              logWarning(
-                s"""Failed to parse serialized Spark schema in Parquet key-value metadata:
+        Some(
+          Try(DataType.fromJson(serializedSchema.get))
+            .recover {
+              case _: Throwable =>
+                logInfo(
+                  s"Serialized Spark schema in Parquet key-value metadata is not in JSON format, " +
+                    "falling back to the deprecated DataType.fromCaseClassString parser.")
+                LegacyTypeStringParser.parse(serializedSchema.get)
+            }
+            .recover {
+              case cause: Throwable =>
+                logWarning(s"""Failed to parse serialized Spark schema in Parquet key-value metadata:
                  |\t$serializedSchema
-               """.stripMargin,
-                cause)
-          }
-          .map(_.asInstanceOf[StructType])
-          .getOrElse {
-            // Falls back to Parquet schema if Spark SQL schema can't be parsed.
-            parseParquetSchema(metadata.getSchema)
-          })
+               """.stripMargin, cause)
+            }
+            .map(_.asInstanceOf[StructType])
+            .getOrElse {
+              // Falls back to Parquet schema if Spark SQL schema can't be parsed.
+              parseParquetSchema(metadata.getSchema)
+            })
       } else {
         None
       }
@@ -649,14 +650,15 @@ private[sql] object ParquetRelation extends Logging {
     val reorderedParquetSchema = mergedParquetSchema.sortBy(f =>
       ordinalMap.getOrElse(f.name.toLowerCase, metastoreSchema.size + 1))
 
-    StructType(metastoreSchema.zip(reorderedParquetSchema).map {
-      // Uses Parquet field names but retains Metastore data types.
-      case (mSchema, pSchema)
-          if mSchema.name.toLowerCase == pSchema.name.toLowerCase =>
-        mSchema.copy(name = pSchema.name)
-      case _ =>
-        throw new SparkException(schemaConflictMessage)
-    })
+    StructType(
+      metastoreSchema.zip(reorderedParquetSchema).map {
+        // Uses Parquet field names but retains Metastore data types.
+        case (mSchema, pSchema)
+            if mSchema.name.toLowerCase == pSchema.name.toLowerCase =>
+          mSchema.copy(name = pSchema.name)
+        case _ =>
+          throw new SparkException(schemaConflictMessage)
+      })
   }
 
   /**

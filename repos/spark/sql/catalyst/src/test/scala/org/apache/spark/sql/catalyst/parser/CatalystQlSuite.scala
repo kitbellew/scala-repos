@@ -38,9 +38,7 @@ class CatalystQlSuite extends PlanTest {
   test("test NOT operator with comparison operations") {
     val parsed = parser.parsePlan("SELECT NOT TRUE > TRUE")
     val expected = Project(
-      UnresolvedAlias(
-        Not(GreaterThan(Literal(true), Literal(true)))
-      ) :: Nil,
+      UnresolvedAlias(Not(GreaterThan(Literal(true), Literal(true)))) :: Nil,
       OneRowRelation)
     comparePlans(parsed, expected)
   }
@@ -91,9 +89,7 @@ class CatalystQlSuite extends PlanTest {
     def checkInterval(sql: String, result: CalendarInterval): Unit = {
       val parsed = parser.parsePlan(sql)
       val expected = Project(
-        UnresolvedAlias(
-          Literal(result)
-        ) :: Nil,
+        UnresolvedAlias(Literal(result)) :: Nil,
         OneRowRelation)
       comparePlans(parsed, expected)
     }
@@ -142,9 +138,7 @@ class CatalystQlSuite extends PlanTest {
     def assertRight(input: String, output: Double): Unit = {
       val parsed = parser.parsePlan("SELECT " + input)
       val expected = Project(
-        UnresolvedAlias(
-          Literal(output)
-        ) :: Nil,
+        UnresolvedAlias(Literal(output)) :: Nil,
         OneRowRelation)
       comparePlans(parsed, expected)
     }
@@ -276,8 +270,9 @@ class CatalystQlSuite extends PlanTest {
       parser.parsePlan("select * from t1 join t2 using (t1.c1)"))
     assert(error.message.contains("mismatched input '.'"))
     error = intercept[AnalysisException](
-      parser.parsePlan("select * from t1" +
-        " join t2 using (c1) on t1.c1 = t2.c1"))
+      parser.parsePlan(
+        "select * from t1" +
+          " join t2 using (c1) on t1.c1 = t2.c1"))
     assert(error.message.contains("missing EOF at 'on' near ')'"))
   }
 }

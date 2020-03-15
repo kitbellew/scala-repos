@@ -41,19 +41,20 @@ class ZookeeperServerSetCluster(
   private[zookeeper] val thread: Thread =
     new Thread("ServerSetMonitorInit") {
       override def run {
-        serverSet.watch(new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
-          def onChange(serverSet: ImmutableSet[ServiceInstance]) = {
-            val lastValue = queuedChange.getAndSet(serverSet)
-            val firstToChange = lastValue eq null
-            if (firstToChange) {
-              var mostRecentValue: ImmutableSet[ServiceInstance] = null
-              do {
-                mostRecentValue = queuedChange.get
-                performChange(mostRecentValue)
-              } while (!queuedChange.compareAndSet(mostRecentValue, null))
+        serverSet.watch(
+          new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
+            def onChange(serverSet: ImmutableSet[ServiceInstance]) = {
+              val lastValue = queuedChange.getAndSet(serverSet)
+              val firstToChange = lastValue eq null
+              if (firstToChange) {
+                var mostRecentValue: ImmutableSet[ServiceInstance] = null
+                do {
+                  mostRecentValue = queuedChange.get
+                  performChange(mostRecentValue)
+                } while (!queuedChange.compareAndSet(mostRecentValue, null))
+              }
             }
-          }
-        })
+          })
       }
     }
   thread.setDaemon(true)
@@ -100,8 +101,7 @@ class ZookeeperServerSetCluster(
       address: SocketAddress,
       endpoints: Map[String, InetSocketAddress] = Map[
         String,
-        InetSocketAddress]()
-  ): EndpointStatus = {
+        InetSocketAddress]()): EndpointStatus = {
     require(address.isInstanceOf[InetSocketAddress])
 
     serverSet.join(address.asInstanceOf[InetSocketAddress], endpoints, ALIVE)
@@ -111,8 +111,7 @@ class ZookeeperServerSetCluster(
       address: SocketAddress,
       endpoints: Map[String, InetSocketAddress] = Map[
         String,
-        InetSocketAddress]()
-  ): Unit = joinServerSet(address, endpoints)
+        InetSocketAddress]()): Unit = joinServerSet(address, endpoints)
 
   def snap: (Seq[SocketAddress], Future[Spool[Cluster.Change[SocketAddress]]]) =
     synchronized {

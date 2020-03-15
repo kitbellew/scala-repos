@@ -238,8 +238,7 @@ class AccessControlSpec extends Specification {
 
       val readReduceOther = Set[Permission](
         ReadPermission(Path("/other"), WrittenByAccount(otherAccountId)),
-        ReducePermission(Path("/other"), WrittenByAccount(otherAccountId))
-      )
+        ReducePermission(Path("/other"), WrittenByAccount(otherAccountId)))
 
       apiKeyManager
         .deriveAndAddGrant(None, None, otherAPIKey, readReduceOther, userAPIKey)

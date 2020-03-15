@@ -213,12 +213,14 @@ object Runner extends Logging {
       None,
       "CLASSPATH" -> "",
       "SPARK_YARN_USER_ENV" -> pioEnvVars).run()
-    Runtime.getRuntime.addShutdownHook(new Thread(new Runnable {
-      def run(): Unit = {
-        cleanup(fs, ca.common.scratchUri)
-        proc.destroy()
-      }
-    }))
+    Runtime.getRuntime.addShutdownHook(
+      new Thread(
+        new Runnable {
+          def run(): Unit = {
+            cleanup(fs, ca.common.scratchUri)
+            proc.destroy()
+          }
+        }))
     cleanup(fs, ca.common.scratchUri)
     proc.exitValue()
   }

@@ -67,8 +67,7 @@ object GameFilterMenu {
         if (!info.user.hasGames && info.nbImported > 0)
           Imported
         else
-          All
-      )
+          All)
       .name
 
     val current = currentOf(filters, currentName)

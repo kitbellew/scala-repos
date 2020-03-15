@@ -89,8 +89,8 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("chi squared pearson matrix independence") {
-    val data = Array(40.0, 24.0, 29.0, 56.0, 32.0, 42.0, 31.0, 10.0, 0.0, 30.0,
-      15.0, 12.0)
+    val data = Array(
+      40.0, 24.0, 29.0, 56.0, 32.0, 42.0, 31.0, 10.0, 0.0, 30.0, 15.0, 12.0)
     // [[40.0, 56.0, 31.0, 30.0],
     //  [24.0, 32.0, 10.0, 15.0],
     //  [29.0, 42.0, 0.0,  12.0]]
@@ -275,9 +275,7 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
         -0.555540910137444, -0.0201353678515895, -0.150382224136063,
         -0.628126755843964, 1.32322085193283, -1.52135057001199,
         -0.437427868856691, 0.970577579543399, 0.0282226444247749,
-        -0.0857821886527593, 0.389214404984942
-      )
-    )
+        -0.0857821886527593, 0.389214404984942))
     val rCompResult = Statistics.kolmogorovSmirnovTest(rData, "norm", 0, 1)
     assert(rCompResult.statistic ~== rKSStat relTol 1e-4)
     assert(rCompResult.pValue ~== rKSPVal relTol 1e-4)

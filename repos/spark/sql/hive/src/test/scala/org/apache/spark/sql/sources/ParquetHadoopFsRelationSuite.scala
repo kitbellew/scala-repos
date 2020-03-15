@@ -51,8 +51,9 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
            p2 <- Seq("foo", "bar")) {
         val partitionDir = new Path(qualifiedBasePath, s"p1=$p1/p2=$p2")
         sparkContext
-          .parallelize(for (i <- 1 to 3)
-            yield (i, s"val_$i", p1))
+          .parallelize(
+            for (i <- 1 to 3)
+              yield (i, s"val_$i", p1))
           .toDF("a", "b", "p1")
           .write
           .parquet(partitionDir.toString)
@@ -167,12 +168,14 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
       val df = sqlContext.read.parquet(path).filter('a === 0).select('b)
       val physicalPlan = df.queryExecution.sparkPlan
 
-      assert(physicalPlan.collect {
-        case p: execution.Project => p
-      }.length === 1)
-      assert(physicalPlan.collect {
-        case p: execution.Filter => p
-      }.length === 1)
+      assert(
+        physicalPlan.collect {
+          case p: execution.Project => p
+        }.length === 1)
+      assert(
+        physicalPlan.collect {
+          case p: execution.Filter => p
+        }.length === 1)
     }
   }
 

@@ -59,8 +59,7 @@ class ScriptRunner extends HasCompileSocket {
       if (scriptFile endsWith ".jar")
         scriptFile
       else
-        scriptFile.stripSuffix(".scala") + ".jar"
-    )
+        scriptFile.stripSuffix(".scala") + ".jar")
 
   /** Compile a script using the fsc compilation daemon.
     */

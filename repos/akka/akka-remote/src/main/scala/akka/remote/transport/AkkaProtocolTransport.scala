@@ -42,7 +42,9 @@ private[remote] class AkkaProtocolSettings(config: Config) {
     TransportFailureDetectorConfig.getString("implementation-class")
   val TransportHeartBeatInterval: FiniteDuration = {
     TransportFailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  } requiring (_ > Duration.Zero, "transport-failure-detector.heartbeat-interval must be > 0")
+  } requiring (
+    _ > Duration.Zero, "transport-failure-detector.heartbeat-interval must be > 0"
+  )
 
   val RequireCookie: Boolean = getBoolean("akka.remote.require-cookie")
 
@@ -641,8 +643,11 @@ private[transport] class ProtocolStateActor(
     } else {
       // send disassociate just to be sure
       sendDisassociate(wrappedHandle, Unknown)
-      stop(FSM.Failure(TimeoutReason(s"No response from remote. " +
-        s"Transport failure detector triggered. (internal state was $stateName)")))
+      stop(
+        FSM.Failure(
+          TimeoutReason(
+            s"No response from remote. " +
+              s"Transport failure detector triggered. (internal state was $stateName)")))
     }
   }
 
@@ -662,29 +667,31 @@ private[transport] class ProtocolStateActor(
           reason,
           _,
           OutboundUnassociated(remoteAddress, statusPromise, transport)) ⇒
-      statusPromise.tryFailure(reason match {
-        case FSM.Failure(info: DisassociateInfo) ⇒ disassociateException(info)
-        case _ ⇒
-          new AkkaProtocolException(
-            "Transport disassociated before handshake finished")
-      })
+      statusPromise.tryFailure(
+        reason match {
+          case FSM.Failure(info: DisassociateInfo) ⇒ disassociateException(info)
+          case _ ⇒
+            new AkkaProtocolException(
+              "Transport disassociated before handshake finished")
+        })
 
     case StopEvent(
           reason,
           _,
           OutboundUnderlyingAssociated(statusPromise, wrappedHandle)) ⇒
-      statusPromise.tryFailure(reason match {
-        case FSM.Failure(TimeoutReason(errorMessage)) ⇒
-          new AkkaProtocolException(errorMessage)
-        case FSM.Failure(info: DisassociateInfo) ⇒
-          disassociateException(info)
-        case FSM.Failure(ForbiddenUidReason) ⇒
-          InvalidAssociationException(
-            "The remote system has a UID that has been quarantined. Association aborted.")
-        case _ ⇒
-          new AkkaProtocolException(
-            "Transport disassociated before handshake finished")
-      })
+      statusPromise.tryFailure(
+        reason match {
+          case FSM.Failure(TimeoutReason(errorMessage)) ⇒
+            new AkkaProtocolException(errorMessage)
+          case FSM.Failure(info: DisassociateInfo) ⇒
+            disassociateException(info)
+          case FSM.Failure(ForbiddenUidReason) ⇒
+            InvalidAssociationException(
+              "The remote system has a UID that has been quarantined. Association aborted.")
+          case _ ⇒
+            new AkkaProtocolException(
+              "Transport disassociated before handshake finished")
+        })
       wrappedHandle.disassociate()
 
     case StopEvent(

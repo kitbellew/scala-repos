@@ -79,8 +79,7 @@ object ScalaWebSockets extends PlaySpecification {
           WebSocket.acceptWithActor[String, String](req =>
             out => Props(new MyActor)),
           Source.empty,
-          0
-        ) must beRight[List[Message]]
+          0) must beRight[List[Message]]
         await(closed.future) must_== ()
       }
 
@@ -99,8 +98,7 @@ object ScalaWebSockets extends PlaySpecification {
           WebSocket.acceptWithActor[String, String](req =>
             out => Props(new MyActor)),
           Source.maybe,
-          0
-        ) must beRight[List[Message]]
+          0) must beRight[List[Message]]
       }
 
       "allow rejecting the WebSocket" in new WithApplication() {
@@ -123,12 +121,15 @@ object ScalaWebSockets extends PlaySpecification {
       "allow creating a higher level object actor" in new WithApplication() {
         runWebSocket(
           Samples.Controller5.socket,
-          Source.single(TextMessage(
-            Json.stringify(Json.toJson(Samples.Controller5.InEvent("blah"))))),
-          1
-        ) must beRight.which { out =>
-          out must_== List(TextMessage(
-            Json.stringify(Json.toJson(Samples.Controller5.OutEvent("blah")))))
+          Source.single(
+            TextMessage(
+              Json.stringify(
+                Json.toJson(Samples.Controller5.InEvent("blah"))))),
+          1) must beRight.which { out =>
+          out must_== List(
+            TextMessage(
+              Json.stringify(
+                Json.toJson(Samples.Controller5.OutEvent("blah")))))
         }
       }
 
@@ -214,10 +215,11 @@ object Samples {
 
     def socket =
       WebSocket.tryAcceptWithActor[String, String] { request =>
-        Future.successful(request.session.get("user") match {
-          case None    => Left(Forbidden)
-          case Some(_) => Right(MyWebSocketActor.props)
-        })
+        Future.successful(
+          request.session.get("user") match {
+            case None    => Left(Forbidden)
+            case Some(_) => Right(MyWebSocketActor.props)
+          })
       }
     //#actor-try-accept
   }

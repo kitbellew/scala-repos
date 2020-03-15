@@ -270,10 +270,9 @@ object RichPipeEx extends java.io.Serializable {
   implicit def pipeToRichPipeEx(pipe: Pipe): RichPipeEx = new RichPipeEx(pipe)
   implicit def typedPipeToRichPipeEx[K: Ordering, V: Monoid](
       pipe: TypedPipe[(K, V)]) = new TypedRichPipeEx(pipe)
-  implicit def keyedListLikeToRichPipeEx[
-      K: Ordering,
-      V: Monoid,
-      T[K, +V] <: KeyedListLike[K, V, T]](kll: KeyedListLike[K, V, T]) =
+  implicit def keyedListLikeToRichPipeEx[K: Ordering, V: Monoid, T[
+      K,
+      +V] <: KeyedListLike[K, V, T]](kll: KeyedListLike[K, V, T]) =
     typedPipeToRichPipeEx(kll.toTypedPipe)
 }
 

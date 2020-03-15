@@ -60,8 +60,7 @@ class InsertIntoHiveTableSuite
     // Make sure the table has also been updated.
     checkAnswer(
       sql("SELECT * FROM createAndInsertTest"),
-      testData.collect().toSeq
-    )
+      testData.collect().toSeq)
 
     // Add more data.
     testData.write.mode(SaveMode.Append).insertInto("createAndInsertTest")
@@ -69,8 +68,7 @@ class InsertIntoHiveTableSuite
     // Make sure the table has been updated.
     checkAnswer(
       sql("SELECT * FROM createAndInsertTest"),
-      testData.toDF().collect().toSeq ++ testData.toDF().collect().toSeq
-    )
+      testData.toDF().collect().toSeq ++ testData.toDF().collect().toSeq)
 
     // Now overwrite.
     testData.write.mode(SaveMode.Overwrite).insertInto("createAndInsertTest")
@@ -78,8 +76,7 @@ class InsertIntoHiveTableSuite
     // Make sure the registered table has also been updated.
     checkAnswer(
       sql("SELECT * FROM createAndInsertTest"),
-      testData.collect().toSeq
-    )
+      testData.collect().toSeq)
   }
 
   test("Double create fails when allowExisting = false") {
@@ -99,8 +96,9 @@ class InsertIntoHiveTableSuite
   test("SPARK-4052: scala.collection.Map as value type of MapType") {
     val schema = StructType(
       StructField("m", MapType(StringType, StringType), true) :: Nil)
-    val rowRDD = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
-      Row(scala.collection.mutable.HashMap(s"key$i" -> s"value$i"))))
+    val rowRDD = hiveContext.sparkContext.parallelize(
+      (1 to 100).map(i =>
+        Row(scala.collection.mutable.HashMap(s"key$i" -> s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithMapValue")
     sql("CREATE TABLE hiveTableWithMapValue(m MAP <STRING, STRING>)")
@@ -109,8 +107,7 @@ class InsertIntoHiveTableSuite
 
     checkAnswer(
       sql("SELECT * FROM hiveTableWithMapValue"),
-      rowRDD.collect().toSeq
-    )
+      rowRDD.collect().toSeq)
 
     sql("DROP TABLE hiveTableWithMapValue")
   }
@@ -173,8 +170,8 @@ class InsertIntoHiveTableSuite
   test("Insert ArrayType.containsNull == false") {
     val schema = StructType(
       Seq(StructField("a", ArrayType(StringType, containsNull = false))))
-    val rowRDD = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
-      Row(Seq(s"value$i"))))
+    val rowRDD = hiveContext.sparkContext.parallelize(
+      (1 to 100).map(i => Row(Seq(s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithArrayValue")
     sql("CREATE TABLE hiveTableWithArrayValue(a Array <STRING>)")
@@ -194,8 +191,8 @@ class InsertIntoHiveTableSuite
         StructField(
           "m",
           MapType(StringType, StringType, valueContainsNull = false))))
-    val rowRDD = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
-      Row(Map(s"key$i" -> s"value$i"))))
+    val rowRDD = hiveContext.sparkContext.parallelize(
+      (1 to 100).map(i => Row(Map(s"key$i" -> s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithMapValue")
     sql("CREATE TABLE hiveTableWithMapValue(m Map <STRING, STRING>)")
@@ -215,8 +212,8 @@ class InsertIntoHiveTableSuite
         StructField(
           "s",
           StructType(Seq(StructField("f", StringType, nullable = false))))))
-    val rowRDD = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
-      Row(Row(s"value$i"))))
+    val rowRDD = hiveContext.sparkContext.parallelize(
+      (1 to 100).map(i => Row(Row(s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithStructValue")
     sql("CREATE TABLE hiveTableWithStructValue(s Struct <f: STRING>)")

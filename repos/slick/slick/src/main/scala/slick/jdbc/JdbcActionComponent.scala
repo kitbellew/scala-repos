@@ -112,8 +112,7 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
               Commit
             else
               Rollback)(DBIO.sameThreadExecutionContext)
-          .asInstanceOf[DBIOAction[R, S, E with Effect.Transactional]]
-      )
+          .asInstanceOf[DBIOAction[R, S, E with Effect.Transactional]])
 
     /** Run this Action with the specified transaction isolation level. This should be used around
       * the outermost `transactionally` Action. The semantics of using it inside a transaction are
@@ -150,13 +149,15 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         rsHoldability: ResultSetHoldability = null,
         statementInit: Statement => Unit = null,
         fetchSize: Int = 0): DBIOAction[R, S, E] =
-      (new PushStatementParameters(
-        JdbcBackend.StatementParameters(
-          rsType,
-          rsConcurrency,
-          rsHoldability,
-          statementInit,
-          fetchSize))).andThen(a).andFinally(PopStatementParameters)
+      (
+        new PushStatementParameters(
+          JdbcBackend.StatementParameters(
+            rsType,
+            rsConcurrency,
+            rsHoldability,
+            statementInit,
+            fetchSize))
+      ).andThen(a).andFinally(PopStatementParameters)
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,11 +185,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       sql: String,
       param: Any,
       sendEndMarker: Boolean)
-      extends SynchronousDatabaseAction[
-        Nothing,
-        Streaming[ResultSetMutator[T]],
-        Backend,
-        Effect]
+      extends SynchronousDatabaseAction[Nothing, Streaming[
+        ResultSetMutator[T]], Backend, Effect]
       with ProfileAction[Nothing, Streaming[ResultSetMutator[T]], Effect] {
     streamingAction =>
     class Mutator(
@@ -327,29 +325,33 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
                 .map(_._2)
                 .getOrElse(default))
         }
-      (tree match {
-        case (rsm @ ResultSetMapping(
-              _,
-              compiled,
-              CompiledMapping(_, elemType))) :@ (ct: CollectionType) =>
-          val sql = findSql(compiled)
-          new StreamingInvokerAction[R, Any, Effect] { streamingAction =>
-            protected[this] def createInvoker(sql: Iterable[String]) =
-              createQueryInvoker(rsm, param, sql.head)
-            protected[this] def createBuilder =
-              ct.cons
-                .createBuilder(ct.elementType.classTag)
-                .asInstanceOf[Builder[Any, R]]
-            def statements = List(sql)
-            override def getDumpInfo = super.getDumpInfo.copy(name = "result")
-          }
-        case First(rsm @ ResultSetMapping(_, compiled, _)) =>
-          val sql = findSql(compiled)
-          new SimpleJdbcProfileAction[R]("result", Vector(sql)) {
-            def run(ctx: Backend#Context, sql: Vector[String]): R =
-              createQueryInvoker[R](rsm, param, sql.head).first(ctx.session)
-          }
-      }).asInstanceOf[ProfileAction[R, S, Effect.Read]]
+      (
+        tree match {
+          case (
+                rsm @ ResultSetMapping(
+                  _,
+                  compiled,
+                  CompiledMapping(_, elemType))
+              ) :@ (ct: CollectionType) =>
+            val sql = findSql(compiled)
+            new StreamingInvokerAction[R, Any, Effect] { streamingAction =>
+              protected[this] def createInvoker(sql: Iterable[String]) =
+                createQueryInvoker(rsm, param, sql.head)
+              protected[this] def createBuilder =
+                ct.cons
+                  .createBuilder(ct.elementType.classTag)
+                  .asInstanceOf[Builder[Any, R]]
+              def statements = List(sql)
+              override def getDumpInfo = super.getDumpInfo.copy(name = "result")
+            }
+          case First(rsm @ ResultSetMapping(_, compiled, _)) =>
+            val sql = findSql(compiled)
+            new SimpleJdbcProfileAction[R]("result", Vector(sql)) {
+              def run(ctx: Backend#Context, sql: Vector[String]): R =
+                createQueryInvoker[R](rsm, param, sql.head).first(ctx.session)
+            }
+        }
+      ).asInstanceOf[ProfileAction[R, S, Effect.Read]]
     }
   }
 
@@ -360,10 +362,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       super.result.asInstanceOf[StreamingProfileAction[R, T, Effect.Read]]
 
     /** Same as `mutate(sendEndMarker = false)`. */
-    def mutate: ProfileAction[
-      Nothing,
-      Streaming[ResultSetMutator[T]],
-      Effect.Read with Effect.Write] = mutate(false)
+    def mutate: ProfileAction[Nothing, Streaming[
+      ResultSetMutator[T]], Effect.Read with Effect.Write] = mutate(false)
 
     /** Create an Action that can be streamed in order to modify a mutable result set. All stream
       * elements will be the same [[slick.jdbc.ResultSetMutator]] object but it is in a different state each
@@ -374,10 +374,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       *                      set, poviding you with a chance to insert additional rows after
       *                      seeing all results. Only `end` (to check for this special event) and
       *                      `insert` may be called in the ResultSetMutator in this case. */
-    def mutate(sendEndMarker: Boolean = false): ProfileAction[
-      Nothing,
-      Streaming[ResultSetMutator[T]],
-      Effect.Read with Effect.Write] = {
+    def mutate(
+        sendEndMarker: Boolean = false): ProfileAction[Nothing, Streaming[
+      ResultSetMutator[T]], Effect.Read with Effect.Write] = {
       val sql =
         tree
           .findNode(_.isInstanceOf[CompiledStatement])
@@ -386,10 +385,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           .extra
           .asInstanceOf[SQLBuilder.Result]
           .sql
-      val (rsm @ ResultSetMapping(
-        _,
-        _,
-        CompiledMapping(_, elemType))) :@ (ct: CollectionType) = tree
+      val (rsm @ ResultSetMapping(_, _, CompiledMapping(_, elemType))) :@ (
+        ct: CollectionType
+      ) = tree
       new MutatingResultAction[T](rsm, elemType, ct, sql, param, sendEndMarker)
     }
   }
@@ -742,10 +740,11 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           Vector(a.sql)) {
       def run(ctx: Backend#Context, sql: Vector[String]) = {
         val sql1 = sql.head
-        if (!useBatchUpdates(ctx.session) || (values
-              .isInstanceOf[IndexedSeq[_]] && values
-              .asInstanceOf[IndexedSeq[_]]
-              .length < 2))
+        if (!useBatchUpdates(ctx.session) || (
+              values.isInstanceOf[IndexedSeq[_]] && values
+                .asInstanceOf[IndexedSeq[_]]
+                .length < 2
+            ))
           retMany(
             values,
             values.map { v =>

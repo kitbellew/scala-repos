@@ -21,7 +21,8 @@ object Conneg {
     def entry: Parser[Option[T]]
 
     val Separators: Set[Char] = {
-      Set('(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?',
+      Set(
+        '(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?',
         '=', '{', '}', ' ', '\t')
     }
 
@@ -80,7 +81,9 @@ object Conneg {
     /** Parser for the content-negotiation `q` parameter. */
     def qValue: Parser[Float] = {
       opt(
-        paramSep ~> ("q" ~ valueSep) ~> """[0-1](\.[0-9]{1,3})?""".r ^^ (_.toFloat)) ^^ {
+        paramSep ~> (
+          "q" ~ valueSep
+        ) ~> """[0-1](\.[0-9]{1,3})?""".r ^^ (_.toFloat)) ^^ {
         case Some(q) => q
         case _       => 1.0f
       }
@@ -127,12 +130,13 @@ object Conneg {
     if (all.isEmpty)
       None
     else
-      Some(all.reduce { (a, b) =>
-        if (a.q < b.q)
-          b
-        else
-          a
-      }.value)
+      Some(
+        all.reduce { (a, b) =>
+          if (a.q < b.q)
+            b
+          else
+            a
+        }.value)
   }
 
   // - Encoding --------------------------------------------------------------------------------------------------------

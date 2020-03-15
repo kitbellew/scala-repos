@@ -98,8 +98,8 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     AccountPlan.Free)
 
   def dropStreamToFuture =
-    implicitly[Hoist[StreamT]]
-      .hoist[TestFuture, Future](new (TestFuture ~> Future) {
+    implicitly[Hoist[StreamT]].hoist[TestFuture, Future](
+      new (TestFuture ~> Future) {
         def apply[A](fa: TestFuture[A]): Future[A] = fa.value
       })
 
@@ -182,19 +182,23 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     import JobState._
 
     "start in the start state" in {
-      (for {
-        (jobId, _, _) <- execute(5)
-        job <- jobManager.findJob(jobId)
-      } yield job).copoint must beLike {
+      (
+        for {
+          (jobId, _, _) <- execute(5)
+          job <- jobManager.findJob(jobId)
+        } yield job
+      ).copoint must beLike {
         case Some(Job(_, _, _, _, _, Started(_, NotStarted))) => ok
       }
     }
 
     "be in a finished state if it completes successfully" in {
-      (for {
-        (jobId, _, _) <- execute(1)
-        job <- waitForJobCompletion(jobId)
-      } yield job).copoint must beLike {
+      (
+        for {
+          (jobId, _, _) <- execute(1)
+          job <- waitForJobCompletion(jobId)
+        } yield job
+      ).copoint must beLike {
         case Job(_, _, _, _, _, Finished(_, _)) => ok
       }
     }
@@ -257,11 +261,13 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     }
 
     "expired queries are put in an expired state" in {
-      (for {
-        (jobId, _, _) <- execute(10, Some(2))
-        _ <- waitFor(5)
-        job <- jobManager.findJob(jobId)
-      } yield job).copoint must beLike {
+      (
+        for {
+          (jobId, _, _) <- execute(10, Some(2))
+          _ <- waitFor(5)
+          job <- jobManager.findJob(jobId)
+        } yield job
+      ).copoint must beLike {
         case Some(Job(_, _, _, _, _, Expired(_, _))) => ok
       }
     }
@@ -304,10 +310,9 @@ trait TestManagedQueryModule
     val clock = self.clock
   }
 
-  def executorFor(apiKey: APIKey): EitherT[
+  def executorFor(apiKey: APIKey): EitherT[TestFuture, String, QueryExecutor[
     TestFuture,
-    String,
-    QueryExecutor[TestFuture, StreamT[TestFuture, CharBuffer]]] = {
+    StreamT[TestFuture, CharBuffer]]] = {
     EitherT.right {
       Applicative[TestFuture] point {
         new QueryExecutor[TestFuture, StreamT[TestFuture, CharBuffer]] {
@@ -324,10 +329,9 @@ trait TestManagedQueryModule
               opts.sortOrder)
             val numTicks = query.toInt
 
-            EitherT.right[
+            EitherT.right[TestFuture, EvaluationError, StreamT[
               TestFuture,
-              EvaluationError,
-              StreamT[TestFuture, CharBuffer]] {
+              CharBuffer]] {
               WriterT {
                 createQueryJob(
                   ctx.apiKey,

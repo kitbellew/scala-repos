@@ -23,9 +23,11 @@ object Test {
     override def equals(other: Any) =
       other match {
         case that: BorderedColoredShape =>
-          (super.equals(that) &&
-            super[Bordered].equals(that) &&
-            super[Colored].equals(that))
+          (
+            super.equals(that) &&
+              super[Bordered].equals(that) &&
+              super[Colored].equals(that)
+          )
         case _ => false
       }
   }

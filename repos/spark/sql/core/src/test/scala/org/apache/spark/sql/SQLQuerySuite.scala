@@ -103,11 +103,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-6743: no columns from cache") {
-    Seq(
-      (83, 0, 38),
-      (26, 0, 79),
-      (43, 81, 24)
-    ).toDF("a", "b", "c").registerTempTable("cachedData")
+    Seq((83, 0, 38), (26, 0, 79), (43, 81, 24))
+      .toDF("a", "b", "c")
+      .registerTempTable("cachedData")
 
     sqlContext.cacheTable("cachedData")
     checkAnswer(
@@ -179,8 +177,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-4625 support SORT BY in SimpleSQLParser & DSL") {
     checkAnswer(
       sql("SELECT a FROM testData2 SORT BY a"),
-      Seq(1, 1, 2, 2, 3, 3).map(Row(_))
-    )
+      Seq(1, 1, 2, 2, 3, 3).map(Row(_)))
   }
 
   test("SPARK-7158 collect and take return different results") {
@@ -211,8 +208,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("grouping on nested fields") {
     sqlContext.read
-      .json(sparkContext.parallelize(
-        """{"nested": {"attribute": 1}, "value": 2}""" :: Nil))
+      .json(
+        sparkContext.parallelize(
+          """{"nested": {"attribute": 1}, "value": 2}""" :: Nil))
       .registerTempTable("rows")
 
     checkAnswer(
@@ -230,8 +228,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-6201 IN type conversion") {
     sqlContext.read
-      .json(sparkContext.parallelize(
-        Seq("{\"a\": \"1\"}}", "{\"a\": \"2\"}}", "{\"a\": \"3\"}}")))
+      .json(
+        sparkContext.parallelize(
+          Seq("{\"a\": \"1\"}}", "{\"a\": \"2\"}}", "{\"a\": \"3\"}}")))
       .registerTempTable("d")
 
     checkAnswer(
@@ -241,8 +240,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-11226 Skip empty line in json file") {
     sqlContext.read
-      .json(sparkContext.parallelize(
-        Seq("{\"a\": \"1\"}}", "{\"a\": \"2\"}}", "{\"a\": \"3\"}}", "")))
+      .json(
+        sparkContext.parallelize(
+          Seq("{\"a\": \"1\"}}", "{\"a\": \"2\"}}", "{\"a\": \"3\"}}", "")))
       .registerTempTable("d")
 
     checkAnswer(sql("select count(1) from d"), Seq(Row(3)))
@@ -251,8 +251,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-8828 sum should return null if all input values are null") {
     checkAnswer(
       sql("select sum(a), avg(a) from allNulls"),
-      Seq(Row(null, null))
-    )
+      Seq(Row(null, null)))
   }
 
   private def testCodeGen(sqlText: String, expectedResults: Seq[Row]): Unit = {
@@ -362,15 +361,13 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SQRT") {
     checkAnswer(
       sql("SELECT SQRT(key) FROM testData"),
-      (1 to 100).map(x => Row(math.sqrt(x.toDouble))).toSeq
-    )
+      (1 to 100).map(x => Row(math.sqrt(x.toDouble))).toSeq)
   }
 
   test("SQRT with automatic string casts") {
     checkAnswer(
       sql("SELECT SQRT(CAST(key AS STRING)) FROM testData"),
-      (1 to 100).map(x => Row(math.sqrt(x.toDouble))).toSeq
-    )
+      (1 to 100).map(x => Row(math.sqrt(x.toDouble))).toSeq)
   }
 
   test("SPARK-2407 Added Parser of SQL SUBSTR()") {
@@ -438,22 +435,19 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       sql(
         "SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.a >= y.a + 2"),
-      Seq(Row(3, 1), Row(3, 2))
-    )
+      Seq(Row(3, 1), Row(3, 2)))
   }
 
   test("left semi greater than predicate and equal operator") {
     checkAnswer(
       sql(
         "SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.b = y.b and x.a >= y.a + 2"),
-      Seq(Row(3, 1), Row(3, 2))
-    )
+      Seq(Row(3, 1), Row(3, 2)))
 
     checkAnswer(
       sql(
         "SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.b = y.a and x.a >= y.b + 1"),
-      Seq(Row(2, 1), Row(2, 2), Row(3, 1), Row(3, 2))
-    )
+      Seq(Row(2, 1), Row(2, 2), Row(3, 1), Row(3, 2)))
   }
 
   test("index into array of arrays") {
@@ -501,8 +495,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       sql(
         "SELECT SKEWNESS(a), KURTOSIS(a), MIN(a), MAX(a)," +
           "AVG(a), VARIANCE(a), STDDEV(a), SUM(a), COUNT(a) FROM nullInts"),
-      Row(0, -1.5, 1, 3, 2, 1.0, 1, 6, 3)
-    )
+      Row(0, -1.5, 1, 3, 2, 1.0, 1, 6, 3))
   }
 
   test("select *") {
@@ -600,12 +593,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("from follow multiple brackets") {
-    checkAnswer(
-      sql("""
+    checkAnswer(sql("""
         |select key from ((select * from testData)
         |  union all (select * from testData)) x limit 1
-      """.stripMargin),
-      Row(1))
+      """.stripMargin), Row(1))
 
     checkAnswer(
       sql("select key from (select * from testData) x limit 1"),
@@ -980,28 +971,18 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     // "set key=val"
     sql(s"SET $testKey=$testVal")
-    checkAnswer(
-      sql("SET"),
-      overrideConfs ++ Seq(Row(testKey, testVal))
-    )
+    checkAnswer(sql("SET"), overrideConfs ++ Seq(Row(testKey, testVal)))
 
     sql(s"SET ${testKey + testKey}=${testVal + testVal}")
     checkAnswer(
       sql("set"),
       overrideConfs ++ Seq(
         Row(testKey, testVal),
-        Row(testKey + testKey, testVal + testVal))
-    )
+        Row(testKey + testKey, testVal + testVal)))
 
     // "set key"
-    checkAnswer(
-      sql(s"SET $testKey"),
-      Row(testKey, testVal)
-    )
-    checkAnswer(
-      sql(s"SET $nonexistentKey"),
-      Row(nonexistentKey, "<undefined>")
-    )
+    checkAnswer(sql(s"SET $testKey"), Row(testKey, testVal))
+    checkAnswer(sql(s"SET $nonexistentKey"), Row(nonexistentKey, "<undefined>"))
     sqlContext.conf.clear()
   }
 
@@ -1051,8 +1032,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val schema2 = StructType(
       StructField(
         "f1",
-        StructType(StructField("f11", IntegerType, false) ::
-          StructField("f12", BooleanType, false) :: Nil),
+        StructType(
+          StructField("f11", IntegerType, false) ::
+            StructField("f12", BooleanType, false) :: Nil),
         false) ::
         StructField("f2", MapType(StringType, IntegerType, true), false) :: Nil)
 
@@ -1110,18 +1092,15 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-3423 BETWEEN") {
     checkAnswer(
       sql("SELECT key, value FROM testData WHERE key BETWEEN 5 and 7"),
-      Seq(Row(5, "5"), Row(6, "6"), Row(7, "7"))
-    )
+      Seq(Row(5, "5"), Row(6, "6"), Row(7, "7")))
 
     checkAnswer(
       sql("SELECT key, value FROM testData WHERE key BETWEEN 7 and 7"),
-      Row(7, "7")
-    )
+      Row(7, "7"))
 
     checkAnswer(
       sql("SELECT key, value FROM testData WHERE key BETWEEN 9 and 7"),
-      Nil
-    )
+      Nil)
   }
 
   test("cast boolean to string") {
@@ -1215,160 +1194,78 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("Test to check we can use Long.MinValue") {
     checkAnswer(
       sql(s"SELECT ${Long.MinValue} FROM testData ORDER BY key LIMIT 1"),
-      Row(Long.MinValue)
-    )
+      Row(Long.MinValue))
 
     checkAnswer(
       sql(s"SELECT key FROM testData WHERE key > ${Long.MinValue}"),
-      (1 to 100).map(Row(_)).toSeq
-    )
+      (1 to 100).map(Row(_)).toSeq)
   }
 
   test("Floating point number format") {
-    checkAnswer(
-      sql("SELECT 0.3"),
-      Row(BigDecimal(0.3))
-    )
+    checkAnswer(sql("SELECT 0.3"), Row(BigDecimal(0.3)))
 
-    checkAnswer(
-      sql("SELECT -0.8"),
-      Row(BigDecimal(-0.8))
-    )
+    checkAnswer(sql("SELECT -0.8"), Row(BigDecimal(-0.8)))
 
-    checkAnswer(
-      sql("SELECT .5"),
-      Row(BigDecimal(0.5))
-    )
+    checkAnswer(sql("SELECT .5"), Row(BigDecimal(0.5)))
 
-    checkAnswer(
-      sql("SELECT -.18"),
-      Row(BigDecimal(-0.18))
-    )
+    checkAnswer(sql("SELECT -.18"), Row(BigDecimal(-0.18)))
   }
 
   test("Auto cast integer type") {
-    checkAnswer(
-      sql(s"SELECT ${Int.MaxValue + 1L}"),
-      Row(Int.MaxValue + 1L)
-    )
+    checkAnswer(sql(s"SELECT ${Int.MaxValue + 1L}"), Row(Int.MaxValue + 1L))
 
-    checkAnswer(
-      sql(s"SELECT ${Int.MinValue - 1L}"),
-      Row(Int.MinValue - 1L)
-    )
+    checkAnswer(sql(s"SELECT ${Int.MinValue - 1L}"), Row(Int.MinValue - 1L))
 
     checkAnswer(
       sql("SELECT 9223372036854775808"),
-      Row(new java.math.BigDecimal("9223372036854775808"))
-    )
+      Row(new java.math.BigDecimal("9223372036854775808")))
 
     checkAnswer(
       sql("SELECT -9223372036854775809"),
-      Row(new java.math.BigDecimal("-9223372036854775809"))
-    )
+      Row(new java.math.BigDecimal("-9223372036854775809")))
   }
 
   test("Test to check we can apply sign to expression") {
 
-    checkAnswer(
-      sql("SELECT -100"),
-      Row(-100)
-    )
+    checkAnswer(sql("SELECT -100"), Row(-100))
 
-    checkAnswer(
-      sql("SELECT +230"),
-      Row(230)
-    )
+    checkAnswer(sql("SELECT +230"), Row(230))
 
-    checkAnswer(
-      sql("SELECT -5.2"),
-      Row(BigDecimal(-5.2))
-    )
+    checkAnswer(sql("SELECT -5.2"), Row(BigDecimal(-5.2)))
 
-    checkAnswer(
-      sql("SELECT +6.8e0"),
-      Row(6.8d)
-    )
+    checkAnswer(sql("SELECT +6.8e0"), Row(6.8d))
 
-    checkAnswer(
-      sql("SELECT -key FROM testData WHERE key = 2"),
-      Row(-2)
-    )
+    checkAnswer(sql("SELECT -key FROM testData WHERE key = 2"), Row(-2))
 
-    checkAnswer(
-      sql("SELECT +key FROM testData WHERE key = 3"),
-      Row(3)
-    )
+    checkAnswer(sql("SELECT +key FROM testData WHERE key = 3"), Row(3))
 
-    checkAnswer(
-      sql("SELECT -(key + 1) FROM testData WHERE key = 1"),
-      Row(-2)
-    )
+    checkAnswer(sql("SELECT -(key + 1) FROM testData WHERE key = 1"), Row(-2))
 
-    checkAnswer(
-      sql("SELECT - key + 1 FROM testData WHERE key = 10"),
-      Row(-9)
-    )
+    checkAnswer(sql("SELECT - key + 1 FROM testData WHERE key = 10"), Row(-9))
 
-    checkAnswer(
-      sql("SELECT +(key + 5) FROM testData WHERE key = 5"),
-      Row(10)
-    )
+    checkAnswer(sql("SELECT +(key + 5) FROM testData WHERE key = 5"), Row(10))
 
-    checkAnswer(
-      sql("SELECT -MAX(key) FROM testData"),
-      Row(-100)
-    )
+    checkAnswer(sql("SELECT -MAX(key) FROM testData"), Row(-100))
 
-    checkAnswer(
-      sql("SELECT +MAX(key) FROM testData"),
-      Row(100)
-    )
+    checkAnswer(sql("SELECT +MAX(key) FROM testData"), Row(100))
 
-    checkAnswer(
-      sql("SELECT - (-10)"),
-      Row(10)
-    )
+    checkAnswer(sql("SELECT - (-10)"), Row(10))
 
-    checkAnswer(
-      sql("SELECT + (-key) FROM testData WHERE key = 32"),
-      Row(-32)
-    )
+    checkAnswer(sql("SELECT + (-key) FROM testData WHERE key = 32"), Row(-32))
 
-    checkAnswer(
-      sql("SELECT - (+Max(key)) FROM testData"),
-      Row(-100)
-    )
+    checkAnswer(sql("SELECT - (+Max(key)) FROM testData"), Row(-100))
 
-    checkAnswer(
-      sql("SELECT - - 3"),
-      Row(3)
-    )
+    checkAnswer(sql("SELECT - - 3"), Row(3))
 
-    checkAnswer(
-      sql("SELECT - + 20"),
-      Row(-20)
-    )
+    checkAnswer(sql("SELECT - + 20"), Row(-20))
 
-    checkAnswer(
-      sql("SELEcT - + 45"),
-      Row(-45)
-    )
+    checkAnswer(sql("SELEcT - + 45"), Row(-45))
 
-    checkAnswer(
-      sql("SELECT + + 100"),
-      Row(100)
-    )
+    checkAnswer(sql("SELECT + + 100"), Row(100))
 
-    checkAnswer(
-      sql("SELECT - - Max(key) FROM testData"),
-      Row(100)
-    )
+    checkAnswer(sql("SELECT - - Max(key) FROM testData"), Row(100))
 
-    checkAnswer(
-      sql("SELECT + - key FROM testData WHERE key = 33"),
-      Row(-33)
-    )
+    checkAnswer(sql("SELECT + - key FROM testData WHERE key = 33"), Row(-33))
   }
 
   test("Multiple join") {
@@ -1448,15 +1345,13 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     "SPARK-4432 Fix attribute reference resolution error when using ORDER BY") {
     checkAnswer(
       sql("SELECT a + b FROM testData2 ORDER BY a"),
-      Seq(2, 3, 3, 4, 4, 5).map(Row(_))
-    )
+      Seq(2, 3, 3, 4, 4, 5).map(Row(_)))
   }
 
   test("oder by asc by default when not specify ascending and descending") {
     checkAnswer(
       sql("SELECT a, b FROM testData2 ORDER BY a desc, b"),
-      Seq(Row(3, 1), Row(3, 2), Row(2, 1), Row(2, 2), Row(1, 1), Row(1, 2))
-    )
+      Seq(Row(3, 1), Row(3, 2), Row(2, 1), Row(2, 2), Row(1, 1), Row(1, 2)))
   }
 
   test("Supporting relational operator '<=>' in Spark SQL") {
@@ -1493,8 +1388,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-6145: ORDER BY test for nested fields") {
     sqlContext.read
-      .json(sparkContext.makeRDD(
-        """{"a": {"b": 1, "a": {"a": 1}}, "c": [{"d": 1}]}""" :: Nil))
+      .json(
+        sparkContext.makeRDD(
+          """{"a": {"b": 1, "a": {"a": 1}}, "c": [{"d": 1}]}""" :: Nil))
       .registerTempTable("nestedOrder")
 
     checkAnswer(sql("SELECT 1 FROM nestedOrder ORDER BY a.b"), Row(1))
@@ -1507,8 +1403,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-6145: special cases") {
     sqlContext.read
-      .json(sparkContext.makeRDD(
-        """{"a": {"b": [1]}, "b": [{"a": 1}], "_c0": {"a": 1}}""" :: Nil))
+      .json(
+        sparkContext.makeRDD(
+          """{"a": {"b": [1]}, "b": [{"a": 1}], "_c0": {"a": 1}}""" :: Nil))
       .registerTempTable("t")
     checkAnswer(sql("SELECT a.b[0] FROM t ORDER BY _c0.a"), Row(1))
     checkAnswer(sql("SELECT b[0].a FROM t ORDER BY _c0.a"), Row(1))
@@ -1516,8 +1413,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-6898: complete support for special chars in column names") {
     sqlContext.read
-      .json(sparkContext.makeRDD(
-        """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
+      .json(
+        sparkContext.makeRDD(
+          """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
       .registerTempTable("t")
 
     checkAnswer(
@@ -1632,8 +1530,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-7067: order by queries for complex ExtractValue chain") {
     withTempTable("t") {
       sqlContext.read
-        .json(sparkContext.makeRDD(
-          """{"a": {"b": [{"c": 1}]}, "b": [{"d": 1}]}""" :: Nil))
+        .json(
+          sparkContext.makeRDD(
+            """{"a": {"b": [{"c": 1}]}, "b": [{"d": 1}]}""" :: Nil))
         .registerTempTable("t")
       checkAnswer(sql("SELECT a.b FROM t ORDER BY b[0].d"), Row(Seq(Row(1))))
     }
@@ -2364,8 +2263,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       df.registerTempTable("tbl")
       checkAnswer(
         df.select(hash($"i", $"j")),
-        sql("SELECT hash(i, j) from tbl")
-      )
+        sql("SELECT hash(i, j) from tbl"))
     }
   }
 

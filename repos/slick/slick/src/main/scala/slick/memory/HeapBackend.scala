@@ -80,10 +80,11 @@ trait HeapBackend extends RelationalBackend with Logging {
   def createEmptyDatabase: Database = {
     def err =
       throw new SlickException("Unsupported operation for empty heap database")
-    new DatabaseDef(new ExecutionContext {
-      def reportFailure(t: Throwable) = err
-      def execute(runnable: Runnable) = err
-    }) {
+    new DatabaseDef(
+      new ExecutionContext {
+        def reportFailure(t: Throwable) = err
+        def execute(runnable: Runnable) = err
+      }) {
       override def createTable(
           name: String,
           columns: IndexedSeq[HeapBackend.Column],

@@ -80,8 +80,7 @@ trait PredicatePullupSpecs[M[+_]]
                       Cross(None),
                       load,
                       Const(CString("time"))(loc))(loc),
-                    Const(CLong(1329643873628L))(loc))(loc)
-                ),
+                    Const(CLong(1329643873628L))(loc))(loc)),
                 Extra(
                   Join(
                     instructions.GtEq,
@@ -91,8 +90,7 @@ trait PredicatePullupSpecs[M[+_]]
                       Cross(None),
                       load,
                       Const(CString("time"))(loc))(loc),
-                    Const(CLong(1328779873610L))(loc))(loc)
-                )
+                    Const(CLong(1328779873610L))(loc))(loc))
               ),
               UnfixedSolution(
                 1,
@@ -227,8 +225,7 @@ trait PredicatePullupSpecs[M[+_]]
                         Cross(None),
                         load,
                         Const(CString("time"))(loc))(loc),
-                      Const(CLong(1329643873628L))(loc))(loc)
-                  ),
+                      Const(CLong(1329643873628L))(loc))(loc)),
                   Extra(
                     Join(
                       instructions.GtEq,
@@ -238,8 +235,7 @@ trait PredicatePullupSpecs[M[+_]]
                         Cross(None),
                         load,
                         Const(CString("time"))(loc))(loc),
-                      Const(CLong(1328779873610L))(loc))(loc)
-                  )
+                      Const(CLong(1328779873610L))(loc))(loc))
                 ),
                 UnfixedSolution(
                   1,
@@ -397,8 +393,7 @@ trait PredicatePullupSpecs[M[+_]]
                     Cross(None),
                     load,
                     Const(CString("Edition"))(loc))(loc),
-                  Const(CLong(2000))(loc))(loc)
-              )
+                  Const(CLong(2000))(loc))(loc))
             )
           ),
           innerSplit,
@@ -450,8 +445,7 @@ trait PredicatePullupSpecs[M[+_]]
                 filteredLoad,
                 Const(CString("Gender"))(loc))(loc))),
           expectedInner,
-          id1
-        )(loc)
+          id1)(loc)
 
       lazy val expectedInner =
         Split(
@@ -512,8 +506,7 @@ trait PredicatePullupSpecs[M[+_]]
                     Cross(None),
                     load,
                     Const(CString("Edition"))(loc))(loc),
-                  Const(CLong(2000))(loc))(loc)
-              )
+                  Const(CLong(2000))(loc))(loc))
             )
           ),
           Join(

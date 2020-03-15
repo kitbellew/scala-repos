@@ -177,28 +177,30 @@ object PairingSystem extends AbstractPairingSystem {
             }
         }
 
-      val preps = (players match {
-        case x if x.size < 2 => Nil
-        case List(p1, p2) if onlyTwoActivePlayers =>
-          List(p1.player -> p2.player)
-        case List(p1, p2)
-            if justPlayedTogether(p1.player.userId, p2.player.userId) =>
-          Nil
-        case List(p1, p2) => List(p1.player -> p2.player)
-        case ps =>
-          findBetter(Nil, Int.MaxValue) match {
-            case Found(best) =>
-              best map {
-                case (rp0, rp1) => rp0.player -> rp1.player
-              }
-            case _ =>
-              pairingLogger.warn(
-                "Could not make smart pairings for arena tournament")
-              players map (_.player) grouped 2 collect {
-                case List(p1, p2) => (p1, p2)
-              } toList
-          }
-      }) map {
+      val preps = (
+        players match {
+          case x if x.size < 2 => Nil
+          case List(p1, p2) if onlyTwoActivePlayers =>
+            List(p1.player -> p2.player)
+          case List(p1, p2)
+              if justPlayedTogether(p1.player.userId, p2.player.userId) =>
+            Nil
+          case List(p1, p2) => List(p1.player -> p2.player)
+          case ps =>
+            findBetter(Nil, Int.MaxValue) match {
+              case Found(best) =>
+                best map {
+                  case (rp0, rp1) => rp0.player -> rp1.player
+                }
+              case _ =>
+                pairingLogger.warn(
+                  "Could not make smart pairings for arena tournament")
+                players map (_.player) grouped 2 collect {
+                  case List(p1, p2) => (p1, p2)
+                } toList
+            }
+        }
+      ) map {
         Pairing.prep(tour, _)
       }
       if (!continue)
