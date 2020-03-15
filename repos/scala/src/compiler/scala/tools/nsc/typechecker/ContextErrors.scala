@@ -171,10 +171,11 @@ trait ContextErrors {
       val paramName = param.name
       val paramTp = param.tpe
       def evOrParam =
-        (if (paramName startsWith nme.EVIDENCE_PARAM_PREFIX)
-           "evidence parameter of type"
-         else
-           s"parameter $paramName:")
+        (
+          if (paramName startsWith nme.EVIDENCE_PARAM_PREFIX)
+            "evidence parameter of type"
+          else
+            s"parameter $paramName:")
       paramTp.typeSymbolDirect match {
         case ImplicitNotFoundMsg(msg) => msg.format(paramName, paramTp)
         case _                        => s"could not find implicit value for $evOrParam $paramTp"
@@ -197,10 +198,8 @@ trait ContextErrors {
         }
         issueNormalTypeError(
           tree,
-          "stable identifier required, but " + tree + " found." + (if (treeInfo.hasVolatileType(
-                                                                         tree))
-                                                                     addendum
-                                                                   else ""))
+          "stable identifier required, but " + tree + " found." + (
+            if (treeInfo.hasVolatileType(tree)) addendum else ""))
         setError(tree)
       }
 

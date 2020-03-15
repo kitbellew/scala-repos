@@ -233,9 +233,9 @@ object Team extends LilaController {
   private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(
       implicit ctx: Context): Fu[Result] =
     api.hasCreatedRecently(me) flatMap { did =>
-      (did && !Granter.superAdmin(me)) fold (Forbidden(
-        views.html.team.createLimit()).fuccess,
-      a)
+      (did && !Granter.superAdmin(me)) fold (
+        Forbidden(views.html.team.createLimit()).fuccess,
+        a)
     }
 
   private def Owner(team: TeamModel)(a: => Fu[Result])(

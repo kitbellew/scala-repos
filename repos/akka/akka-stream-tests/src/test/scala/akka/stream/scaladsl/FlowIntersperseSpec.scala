@@ -49,9 +49,9 @@ class FlowIntersperseSpec extends AkkaSpec {
     }
 
     "demonstrate how to prepend only" in {
-      val probe =
-        (Source.single(">> ") ++ Source(List("1", "2", "3")).intersperse(","))
-          .runWith(TestSink.probe)
+      val probe = (
+        Source.single(">> ") ++ Source(List("1", "2", "3")).intersperse(","))
+        .runWith(TestSink.probe)
 
       probe.toStrict(1.second).mkString("") should ===(
         List(1, 2, 3).mkString(">> ", ",", ""))

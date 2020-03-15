@@ -165,8 +165,9 @@ trait Crudify {
           "List " + Prefix,
           listPath,
           showAllMenuName,
-          addlMenuLocParams ::: (locSnippets :: Loc.Template(showAllTemplate) ::
-            showAllMenuLocParams))))
+          addlMenuLocParams ::: (
+            locSnippets :: Loc.Template(showAllTemplate) ::
+              showAllMenuLocParams))))
 
   /**
     * Override to include new Params for the show all menu
@@ -183,8 +184,9 @@ trait Crudify {
           "Create " + Prefix,
           createPath,
           createMenuName,
-          (addlMenuLocParams ::: (locSnippets :: Loc.Template(createTemplate) ::
-            createMenuLocParams)))))
+          (addlMenuLocParams ::: (
+            locSnippets :: Loc.Template(createTemplate) ::
+              createMenuLocParams)))))
 
   /**
     * Override to include new Params for the create menu

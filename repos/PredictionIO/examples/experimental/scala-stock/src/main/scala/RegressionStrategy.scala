@@ -39,8 +39,9 @@ class RegressionStrategy(params: RegressionStrategyParams)
   private def regress(
       calculatedData: Seq[Series[DateTime, Double]],
       retF1d: Series[DateTime, Double]) = {
-    val array = (calculatedData.map(_.toVec.contents).reduce(_ ++ _) ++
-      Array.fill(retF1d.length)(1.0)).toArray[Double]
+    val array = (
+      calculatedData.map(_.toVec.contents).reduce(_ ++ _) ++
+        Array.fill(retF1d.length)(1.0)).toArray[Double]
     val target = DenseVector[Double](retF1d.toVec.contents)
     val m = DenseMatrix.create[Double](
       retF1d.length,

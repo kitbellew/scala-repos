@@ -168,23 +168,24 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         // Return one query for each insert clause.
         val queries = insertClauses.map {
           case Token("TOK_INSERT", singleInsert) =>
-            val (intoClause ::
-              destClause ::
-              selectClause ::
-              selectDistinctClause ::
-              whereClause ::
-              groupByClause ::
-              rollupGroupByClause ::
-              cubeGroupByClause ::
-              groupingSetsClause ::
-              orderByClause ::
-              havingClause ::
-              sortByClause ::
-              clusterByClause ::
-              distributeByClause ::
-              limitClause ::
-              lateralViewClause ::
-              windowClause :: Nil) = {
+            val (
+              intoClause ::
+                destClause ::
+                selectClause ::
+                selectDistinctClause ::
+                whereClause ::
+                groupByClause ::
+                rollupGroupByClause ::
+                cubeGroupByClause ::
+                groupingSetsClause ::
+                orderByClause ::
+                havingClause ::
+                sortByClause ::
+                clusterByClause ::
+                distributeByClause ::
+                limitClause ::
+                lateralViewClause ::
+                windowClause :: Nil) = {
               getClauses(
                 Seq(
                   "TOK_INSERT_INTO",

@@ -318,9 +318,10 @@ abstract class GenJSCode
         (fullName.startsWith("scala.collection.mutable.ArrayOps$of"))
       }
 
-      val shouldMarkInline = (sym.hasAnnotation(InlineAnnotationClass) ||
-        (sym.isAnonymousFunction && !sym.isSubClass(PartialFunctionClass)) ||
-        isStdLibClassWithAdHocInlineAnnot(sym))
+      val shouldMarkInline = (
+        sym.hasAnnotation(InlineAnnotationClass) ||
+          (sym.isAnonymousFunction && !sym.isSubClass(PartialFunctionClass)) ||
+          isStdLibClassWithAdHocInlineAnnot(sym))
 
       val optimizerHints =
         OptimizerHints.empty
@@ -1374,8 +1375,9 @@ abstract class GenJSCode
             // To be called from within withScopedVars
             def genInnerBody() = {
               js.Block(
-                otherStats.map(genStat) :+ (if (bodyIsStat) genStat(rhs)
-                                            else genExpr(rhs)))
+                otherStats.map(genStat) :+ (
+                  if (bodyIsStat) genStat(rhs)
+                  else genExpr(rhs)))
             }
 
             initialThis match {

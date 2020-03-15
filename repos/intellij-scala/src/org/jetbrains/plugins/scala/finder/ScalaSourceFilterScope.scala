@@ -30,13 +30,14 @@ class ScalaSourceFilterScope(myDelegate: GlobalSearchScope, project: Project)
   }
 
   def contains(file: VirtualFile): Boolean = {
-    (null == myDelegate || myDelegate.contains(file)) && ((FileTypeManager
-      .getInstance()
-      .isFileOfType(file, ScalaFileType.SCALA_FILE_TYPE) ||
-    ScalaLanguageDerivative.hasDerivativeForFileType(
-      file.getFileType)) && myIndex.isInSourceContent(file) ||
-    StdFileTypes.CLASS.getDefaultExtension == file.getExtension && myIndex
-      .isInLibraryClasses(file))
+    (null == myDelegate || myDelegate.contains(file)) && (
+      (FileTypeManager
+        .getInstance()
+        .isFileOfType(file, ScalaFileType.SCALA_FILE_TYPE) ||
+      ScalaLanguageDerivative.hasDerivativeForFileType(
+        file.getFileType)) && myIndex.isInSourceContent(file) ||
+      StdFileTypes.CLASS.getDefaultExtension == file.getExtension && myIndex
+        .isInLibraryClasses(file))
   }
 }
 

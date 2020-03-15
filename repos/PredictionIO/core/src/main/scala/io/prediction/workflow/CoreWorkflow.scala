@@ -82,8 +82,8 @@ object CoreWorkflow {
 
       logger.info("Training completed successfully.")
     } catch {
-      case e @ (_: StopAfterReadInterruption |
-          _: StopAfterPrepareInterruption) => {
+      case e @ (
+            _: StopAfterReadInterruption | _: StopAfterPrepareInterruption) => {
         logger.info(s"Training interrupted by $e.")
       }
     } finally {

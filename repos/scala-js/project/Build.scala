@@ -680,9 +680,10 @@ object Build extends sbt.Build {
   ).dependsOn(tools, jsEnvs, testAdapter)
 
   lazy val delambdafySetting = {
-    scalacOptions ++= (if (isGeneratingEclipse) Seq()
-                       else if (scalaBinaryVersion.value == "2.10") Seq()
-                       else Seq("-Ydelambdafy:method"))
+    scalacOptions ++= (
+      if (isGeneratingEclipse) Seq()
+      else if (scalaBinaryVersion.value == "2.10") Seq()
+      else Seq("-Ydelambdafy:method"))
   }
 
   private def serializeHardcodedIR(
@@ -931,9 +932,10 @@ object Build extends sbt.Build {
           val javalibFilteredMappings = javalibMappings.filter(
             _._2.replace('\\', '/') != "java/lang/MathJDK8Bridge$.sjsir")
 
-          val otherProducts = ((products in javalanglib).value ++
-            (products in scalalib).value ++
-            (products in libraryAux).value)
+          val otherProducts = (
+            (products in javalanglib).value ++
+              (products in scalalib).value ++
+              (products in libraryAux).value)
           val otherMappings =
             otherProducts.flatMap(base => Path.selectSubpaths(base, filter))
 
@@ -1388,9 +1390,10 @@ object Build extends sbt.Build {
               "org/scalajs/jsenv")
 
             val scalaFilter: FileFilter = "*.scala"
-            val files = ((jsenvBase * scalaFilter) +++
-              (jsenvBase / "nodejs" ** scalaFilter) +++
-              (jsenvBase / "rhino" ** scalaFilter))
+            val files = (
+              (jsenvBase * scalaFilter) +++
+                (jsenvBase / "nodejs" ** scalaFilter) +++
+                (jsenvBase / "rhino" ** scalaFilter))
 
             files.get
           }

@@ -583,22 +583,19 @@ object ScalaPsiUtil {
         ResolvableReferenceExpression.getDynamicNameForMethodInvocation(call)
       else if (isUpdate) "update"
       else "apply"
-    val args: Seq[ScExpression] =
-      call.argumentExpressions ++ (if (isUpdate)
-                                     call.getContext
-                                       .asInstanceOf[ScAssignStmt]
-                                       .getRExpression match {
-                                       case Some(x) => Seq[ScExpression](x)
-                                       case None =>
-                                         Seq[ScExpression](
-                                           ScalaPsiElementFactory
-                                             .createExpressionFromText(
-                                               "{val x: Nothing = null; x}",
-                                               call.getManager
-                                             )
-                                         ) //we can't to not add something => add Nothing expression
-                                     }
-                                   else Seq.empty)
+    val args: Seq[ScExpression] = call.argumentExpressions ++ (
+      if (isUpdate)
+        call.getContext.asInstanceOf[ScAssignStmt].getRExpression match {
+          case Some(x) => Seq[ScExpression](x)
+          case None =>
+            Seq[ScExpression](
+              ScalaPsiElementFactory.createExpressionFromText(
+                "{val x: Nothing = null; x}",
+                call.getManager
+              )
+            ) //we can't to not add something => add Nothing expression
+        }
+      else Seq.empty)
     val (expr, exprTp, typeArgs: Seq[ScTypeElement]) =
       call.getEffectiveInvokedExpr match {
         case gen: ScGenericCall =>

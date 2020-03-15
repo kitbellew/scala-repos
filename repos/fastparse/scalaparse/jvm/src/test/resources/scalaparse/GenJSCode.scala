@@ -299,9 +299,10 @@ abstract class GenJSCode
         (fullName.startsWith("scala.collection.mutable.ArrayOps$of"))
       }
 
-      val shouldMarkInline = (sym.hasAnnotation(InlineAnnotationClass) ||
-        (sym.isAnonymousFunction && !sym.isSubClass(PartialFunctionClass)) ||
-        isStdLibClassWithAdHocInlineAnnot(sym))
+      val shouldMarkInline = (
+        sym.hasAnnotation(InlineAnnotationClass) ||
+          (sym.isAnonymousFunction && !sym.isSubClass(PartialFunctionClass)) ||
+          isStdLibClassWithAdHocInlineAnnot(sym))
 
       val optimizerHints =
         OptimizerHints.empty
@@ -597,12 +598,13 @@ abstract class GenJSCode
         } else if (sym.isDeferred || sym.owner.isInterface) {
           val infoBuilder = createInfoBuilder().setIsAbstract(true)
           Some(
-            (js.MethodDef(
-              static = false,
-              methodIdent,
-              jsParams,
-              currentClassType,
-              js.EmptyTree)(OptimizerHints.empty, None)),
+            (
+              js.MethodDef(
+                static = false,
+                methodIdent,
+                jsParams,
+                currentClassType,
+                js.EmptyTree)(OptimizerHints.empty, None)),
             infoBuilder)
         } else if (isRawJSCtorDefaultParam(sym)) {
           None
@@ -943,8 +945,9 @@ abstract class GenJSCode
             }): _*
           ) {
             val innerBody = js.Block(
-              otherStats.map(genStat) :+ (if (bodyIsStat) genStat(rhs)
-                                          else genExpr(rhs)))
+              otherStats.map(genStat) :+ (
+                if (bodyIsStat) genStat(rhs)
+                else genExpr(rhs)))
 
             if (methodTailJumpThisSym.get == NoSymbol) {
               innerBody

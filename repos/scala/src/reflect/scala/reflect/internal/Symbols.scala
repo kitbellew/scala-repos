@@ -2033,12 +2033,13 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
           // todo: what about public references to private symbols?
           if (sym.isPublic && !sym.isConstructor) {
             oldsymbuf += sym
-            newsymbuf += (if (sym.isClass)
-                            tp.typeSymbol
-                              .newAbstractType(sym.name.toTypeName, sym.pos)
-                              .setInfo(sym.existentialBound)
-                          else
-                            sym.cloneSymbol(tp.typeSymbol))
+            newsymbuf += (
+              if (sym.isClass)
+                tp.typeSymbol
+                  .newAbstractType(sym.name.toTypeName, sym.pos)
+                  .setInfo(sym.existentialBound)
+              else
+                sym.cloneSymbol(tp.typeSymbol))
           }
         }
         val oldsyms = oldsymbuf.toList

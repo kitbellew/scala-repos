@@ -1964,9 +1964,10 @@ abstract class RDD[T: ClassTag](
       val partitionStr = "(" + rdd.partitions.length + ")"
       val leftOffset = (partitionStr.length - 1) / 2
       val thisPrefix = prefix.replaceAll("\\|\\s+$", "")
-      val nextPrefix = (thisPrefix
-        + (if (isLastChild) "  " else "| ")
-        + (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset)))
+      val nextPrefix = (
+        thisPrefix
+          + (if (isLastChild) "  " else "| ")
+          + (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset)))
 
       debugSelf(rdd).zipWithIndex.map {
         case (desc: String, 0) => s"$thisPrefix+-$partitionStr $desc"

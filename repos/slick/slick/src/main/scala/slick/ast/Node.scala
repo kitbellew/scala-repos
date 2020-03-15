@@ -461,16 +461,17 @@ final case class GroupBy(
     val by2 = by.infer(scope + (fromGen -> from2Type.elementType), typeChildren)
     val this2 =
       if ((from2 eq from) && (by2 eq by)) this else copy(from = from2, by = by2)
-    this2 :@ (if (!hasType)
-                CollectionType(
-                  from2Type.cons,
-                  ProductType(
-                    ConstArray(
-                      NominalType(identity, by2.nodeType),
-                      CollectionType(
-                        TypedCollectionTypeConstructor.seq,
-                        from2Type.elementType))))
-              else nodeType)
+    this2 :@ (
+      if (!hasType)
+        CollectionType(
+          from2Type.cons,
+          ProductType(
+            ConstArray(
+              NominalType(identity, by2.nodeType),
+              CollectionType(
+                TypedCollectionTypeConstructor.seq,
+                from2Type.elementType))))
+      else nodeType)
   }
 }
 
@@ -554,13 +555,12 @@ final case class Join(
         (OptionType(left2Type.elementType), OptionType(right2Type.elementType))
       case _ => (left2Type.elementType, right2Type.elementType)
     }
-    withChildren(ConstArray[Node](left2, right2, on2)) :@ (if (!hasType)
-                                                             CollectionType(
-                                                               left2Type.cons,
-                                                               ProductType(ConstArray(
-                                                                 joinedLeftType,
-                                                                 joinedRightType)))
-                                                           else nodeType)
+    withChildren(ConstArray[Node](left2, right2, on2)) :@ (
+      if (!hasType)
+        CollectionType(
+          left2Type.cons,
+          ProductType(ConstArray(joinedLeftType, joinedRightType)))
+      else nodeType)
   }
 }
 
@@ -601,11 +601,12 @@ final case class Bind(generator: TermSymbol, from: Node, select: Node)
     val withCh =
       if ((from2 eq from) && (select2 eq select)) this
       else rebuild(from2, select2)
-    withCh :@ (if (!hasType)
-                 CollectionType(
-                   from2Type.cons,
-                   select2.nodeType.asCollectionType.elementType)
-               else nodeType)
+    withCh :@ (
+      if (!hasType)
+        CollectionType(
+          from2Type.cons,
+          select2.nodeType.asCollectionType.elementType)
+      else nodeType)
   }
 }
 

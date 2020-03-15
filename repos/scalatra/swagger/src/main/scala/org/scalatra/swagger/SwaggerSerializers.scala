@@ -585,8 +585,9 @@ object SwaggerSerializers {
                   (("url" -> tokenRequest.url) ~
                     ("clientIdName" -> tokenRequest.clientIdName) ~
                     ("clientSecretName" -> tokenRequest.clientSecretName))) ~
-                ("tokenEndpoint" -> (("url" -> tokenEndpoint.url) ~
-                  ("tokenName" -> tokenEndpoint.tokenName)))
+                ("tokenEndpoint" -> (
+                  ("url" -> tokenEndpoint.url) ~
+                    ("tokenName" -> tokenEndpoint.tokenName)))
           }))
 
   class AuthorizationTypeSerializer

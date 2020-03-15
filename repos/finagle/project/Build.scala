@@ -46,10 +46,10 @@ object Finagle extends Build {
     thriftLibs ++ Seq("com.twitter" %% "scrooge-core" % scroogeVersion)
 
   def util(which: String) =
-    "com.twitter" %% ("util-" + which) % utilVersion excludeAll (ExclusionRule(
-      organization = "junit"),
-    ExclusionRule(organization = "org.scala-tools.testing"),
-    ExclusionRule(organization = "org.mockito"))
+    "com.twitter" %% ("util-" + which) % utilVersion excludeAll (
+      ExclusionRule(organization = "junit"),
+      ExclusionRule(organization = "org.scala-tools.testing"),
+      ExclusionRule(organization = "org.mockito"))
 
   def scalacOptionsVersion(sv: String): Seq[String] = {
     Seq(

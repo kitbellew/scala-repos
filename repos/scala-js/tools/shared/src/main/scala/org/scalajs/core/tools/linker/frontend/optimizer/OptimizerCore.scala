@@ -1309,10 +1309,11 @@ private[optimizer] abstract class OptimizerCore(
                   targs,
                   isStat,
                   usePreTransform)(cont)
-              } else if (target.inlineable && (target.shouldInline ||
-                         shouldInlineBecauseOfArgs(
-                           target,
-                           treceiver :: targs))) {
+              } else if (target.inlineable && (
+                           target.shouldInline ||
+                           shouldInlineBecauseOfArgs(
+                             target,
+                             treceiver :: targs))) {
                 inline(
                   allocationSites,
                   Some(treceiver),
@@ -1444,8 +1445,9 @@ private[optimizer] abstract class OptimizerCore(
               isStat,
               usePreTransform)(cont)
           } else {
-            val shouldInline = target.inlineable && (target.shouldInline ||
-              shouldInlineBecauseOfArgs(target, treceiver :: targs))
+            val shouldInline = target.inlineable && (
+              target.shouldInline ||
+                shouldInlineBecauseOfArgs(target, treceiver :: targs))
             val allocationSites =
               (treceiver :: targs).map(_.tpe.allocationSite)
             val beingInlined =
@@ -1501,10 +1503,8 @@ private[optimizer] abstract class OptimizerCore(
           callIntrinsic(intrinsicCode, None, targs, isStat, usePreTransform)(
             cont)
         } else {
-          val shouldInline =
-            target.inlineable && (target.shouldInline || shouldInlineBecauseOfArgs(
-              target,
-              targs))
+          val shouldInline = target.inlineable && (
+            target.shouldInline || shouldInlineBecauseOfArgs(target, targs))
           val allocationSites = targs.map(_.tpe.allocationSite)
           val beingInlined =
             scope.implsBeingInlined((allocationSites, target))

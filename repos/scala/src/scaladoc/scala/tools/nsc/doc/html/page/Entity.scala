@@ -655,11 +655,12 @@ trait EntityPage extends HtmlPage {
         if (cmtedPrs.isEmpty && comment.result.isEmpty) NodeSeq.Empty
         else {
           <dl class="paramcmts block">{
-            paramCommentToHtml(cmtedPrs, comment) ++ (comment.result match {
-              case None => NodeSeq.Empty
-              case Some(cmt) =>
-                <dt>returns</dt><dd class="cmt">{bodyToHtml(cmt)}</dd>
-            })
+            paramCommentToHtml(cmtedPrs, comment) ++ (
+              comment.result match {
+                case None => NodeSeq.Empty
+                case Some(cmt) =>
+                  <dt>returns</dt><dd class="cmt">{bodyToHtml(cmt)}</dd>
+              })
           }</dl>
         }
       }

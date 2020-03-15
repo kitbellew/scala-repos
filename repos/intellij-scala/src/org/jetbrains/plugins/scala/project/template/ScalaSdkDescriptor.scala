@@ -131,10 +131,9 @@ trait SdkDescriptorCompanion {
 
     val requiredBinaryArtifacts = Set(
       Artifact.ScalaLibrary,
-      Artifact.ScalaCompiler) ++ requiredBinaries ++ (if (reflectRequired)
-                                                        Set(
-                                                          Artifact.ScalaReflect)
-                                                      else Set())
+      Artifact.ScalaCompiler) ++ requiredBinaries ++ (
+      if (reflectRequired) Set(Artifact.ScalaReflect)
+      else Set())
 
     val existingBinaryArtifacts = binaryComponents.map(_.artifact).toSet
 

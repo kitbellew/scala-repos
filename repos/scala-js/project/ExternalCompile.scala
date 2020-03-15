@@ -47,7 +47,8 @@ object ExternalCompile {
         FilesInfo.exists) {
         dependencies =>
           logger.info(
-            "Compiling %d Scala sources to %s..." format (sources.size, classesDirectory))
+            "Compiling %d Scala sources to %s..." format (
+              sources.size, classesDirectory))
 
           if (classesDirectory.exists)
             IO.delete(classesDirectory)

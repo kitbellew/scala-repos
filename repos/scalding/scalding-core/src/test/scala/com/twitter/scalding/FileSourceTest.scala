@@ -291,8 +291,9 @@ class FileSourceTest extends WordSpec with Matchers {
       TestInvalidFileSource.createHdfsReadTap shouldBe a[InvalidSourceTap]
     }
     "Throw in toIterator because no data is present" in {
-      an[InvalidSourceException] should be thrownBy (TestInvalidFileSource
-        .toIterator(Config.default, Hdfs(true, new JobConf())))
+      an[InvalidSourceException] should be thrownBy (
+        TestInvalidFileSource
+          .toIterator(Config.default, Hdfs(true, new JobConf())))
     }
   }
 }

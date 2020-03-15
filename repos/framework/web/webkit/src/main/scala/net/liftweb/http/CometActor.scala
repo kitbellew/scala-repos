@@ -1522,12 +1522,14 @@ private[http] class XmlOrJsCmd(
         case (Full(xml), Full(js), true) =>
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
-            (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(
-              Text("")))) & JsCmds.JsTry(js, false)
+            (
+              spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(
+                Text("")))) & JsCmds.JsTry(js, false)
         case (Full(xml), _, true) =>
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
-            (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text(""))))
+            (
+              spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text(""))))
         case (_, Full(js), _) => js
         case _                => JsCmds.Noop
       }

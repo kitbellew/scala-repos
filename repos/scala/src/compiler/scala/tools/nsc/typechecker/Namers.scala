@@ -479,8 +479,9 @@ trait Namers extends MethodSynthesis {
       if (fails) {
         reporter.error(
           tree.pos,
-          (s"Companions '$clazz' and '$module' must be defined in same file:\n"
-            + s"  Found in ${clazz.sourceFile.canonicalPath} and ${module.sourceFile.canonicalPath}")
+          (
+            s"Companions '$clazz' and '$module' must be defined in same file:\n"
+              + s"  Found in ${clazz.sourceFile.canonicalPath} and ${module.sourceFile.canonicalPath}")
         )
       }
     }
@@ -1300,15 +1301,17 @@ trait Namers extends MethodSynthesis {
       }
 
       val res = thisMethodType({
-        val rt = (if (!tpt.isEmpty) {
-                    methResTp
-                  } else {
-                    // return type is inferred, we don't just use resTpFromOverride. Here, C.f has type String:
-                    //   trait T { def f: Object }; class C <: T { def f = "" }
-                    // using resTpFromOverride as expected type allows for the following (C.f has type A):
-                    //   trait T { def f: A }; class C <: T { implicit def b2a(t: B): A = ???; def f = new B }
-                    assignTypeToTree(ddef, typer, resTpFromOverride)
-                  })
+        val rt =
+          (
+            if (!tpt.isEmpty) {
+              methResTp
+            } else {
+              // return type is inferred, we don't just use resTpFromOverride. Here, C.f has type String:
+              //   trait T { def f: Object }; class C <: T { def f = "" }
+              // using resTpFromOverride as expected type allows for the following (C.f has type A):
+              //   trait T { def f: A }; class C <: T { implicit def b2a(t: B): A = ???; def f = new B }
+              assignTypeToTree(ddef, typer, resTpFromOverride)
+            })
         // #2382: return type of default getters are always @uncheckedVariance
         if (meth.hasDefault)
           rt.withAnnotation(

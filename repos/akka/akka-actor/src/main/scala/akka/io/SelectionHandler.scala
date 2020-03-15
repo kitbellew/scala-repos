@@ -33,8 +33,9 @@ abstract class SelectionHandlerSettings(config: Config) {
       getInt(
         "max-channels") requiring (_ > 0, "max-channels must be > 0 or 'unlimited'")
   }
-  val SelectorAssociationRetries: Int = getInt(
-    "selector-association-retries") requiring (_ >= 0, "selector-association-retries must be >= 0")
+  val SelectorAssociationRetries: Int =
+    getInt("selector-association-retries") requiring (
+      _ >= 0, "selector-association-retries must be >= 0")
 
   val SelectorDispatcher: String = getString("selector-dispatcher")
   val WorkerDispatcher: String = getString("worker-dispatcher")

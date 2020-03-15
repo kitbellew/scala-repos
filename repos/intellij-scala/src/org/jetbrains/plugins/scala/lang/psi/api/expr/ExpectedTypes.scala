@@ -191,11 +191,11 @@ private[expr] object ExpectedTypes {
             null: ScExpression) == expr.getSameElementInContext =>
         a.getLExpression match {
           case ref: ScReferenceExpression
-              if (!a.getContext
-                .isInstanceOf[ScArgumentExprList] && !(a.getContext
-                .isInstanceOf[ScInfixArgumentExpression] && a.getContext
-                .asInstanceOf[ScInfixArgumentExpression]
-                .isCall)) ||
+              if (!a.getContext.isInstanceOf[ScArgumentExprList] && !(
+                a.getContext
+                  .isInstanceOf[ScInfixArgumentExpression] && a.getContext
+                  .asInstanceOf[ScInfixArgumentExpression]
+                  .isCall)) ||
                 ref.qualifier.isDefined ||
                 ScUnderScoreSectionUtil.isUnderscore(
                   expr

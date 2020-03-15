@@ -142,8 +142,8 @@ class NettyTransportSettings(config: Config) {
     "receive-buffer-size") requiring (s ⇒
     s.isDefined || TransportMode != Udp, "receive-buffer-size must be specified for UDP")
 
-  val MaxFrameSize: Int =
-    getBytes("maximum-frame-size").toInt requiring (_ >= 32000,
+  val MaxFrameSize: Int = getBytes("maximum-frame-size").toInt requiring (
+    _ >= 32000,
     s"Setting 'maximum-frame-size' must be at least 32000 bytes")
 
   val Backlog: Int = getInt("backlog")

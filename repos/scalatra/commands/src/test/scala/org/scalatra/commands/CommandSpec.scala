@@ -42,11 +42,12 @@ class MixAndMatchCommand extends ParamsOnlyCommand {
   import org.scalatra.commands.ValueSource._
   val name: Field[String] = asString("name").notBlank
   val age: Field[Int] = "age"
-  val token: Field[String] = (asString("API-TOKEN").notBlank
-    sourcedFrom Header
-    description "The API token for this request"
-    notes "Invalid data kills kittens"
-    allowableValues "123")
+  val token: Field[String] = (
+    asString("API-TOKEN").notBlank
+      sourcedFrom Header
+      description "The API token for this request"
+      notes "Invalid data kills kittens"
+      allowableValues "123")
   val skip: Field[Int] = asInt("skip")
     .sourcedFrom(Query)
     .description("The offset for this collection index")

@@ -113,9 +113,10 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
       gen(cd.impl)
 
-      val shouldAddLambdaDeserialize = (settings.target.value == "jvm-1.8"
-        && settings.Ydelambdafy.value == "method"
-        && indyLambdaHosts.contains(cnode.name))
+      val shouldAddLambdaDeserialize = (
+        settings.target.value == "jvm-1.8"
+          && settings.Ydelambdafy.value == "method"
+          && indyLambdaHosts.contains(cnode.name))
 
       if (shouldAddLambdaDeserialize)
         backendUtils.addLambdaDeserialize(cnode)
@@ -658,11 +659,11 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
               ()
             case EmptyTree =>
               globalError(
-                "Concrete method has no definition: " + dd + (if (settings.debug)
-                                                                "(found: " + methSymbol.owner.info.decls.toList
-                                                                  .mkString(
-                                                                    ", ") + ")"
-                                                              else ""))
+                "Concrete method has no definition: " + dd + (
+                  if (settings.debug)
+                    "(found: " + methSymbol.owner.info.decls.toList
+                      .mkString(", ") + ")"
+                  else ""))
             case _ =>
               bc emitRETURN returnType
           }

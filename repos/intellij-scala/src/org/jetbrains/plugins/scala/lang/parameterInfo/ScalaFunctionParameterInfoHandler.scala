@@ -310,10 +310,8 @@ class ScalaFunctionParameterInfoHandler
                       false,
                       false,
                       paramIndex),
-                    t._1 + ": " + ScType
-                      .presentableText(t._2) + (if (t._3 != null)
-                                                  " = " + t._3.getText
-                                                else ""))
+                    t._1 + ": " + ScType.presentableText(t._2) + (
+                      if (t._3 != null) " = " + t._3.getText else ""))
               }
               applyToParameters(
                 paramsSeq,

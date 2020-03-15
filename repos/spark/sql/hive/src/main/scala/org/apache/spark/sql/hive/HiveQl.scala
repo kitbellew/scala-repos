@@ -357,12 +357,13 @@ private[hive] class HiveQl(conf: ParserConf)
             case t @ Token("TOK_QUERY", _) => t
           }.nonEmpty =>
         // Reference: https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL
-        val (Some(tableNameParts) ::
-          _ /* likeTable */ ::
-          externalTable ::
-          Some(query) ::
-          allowExisting +:
-          _) =
+        val (
+          Some(tableNameParts) ::
+            _ /* likeTable */ ::
+            externalTable ::
+            Some(query) ::
+            allowExisting +:
+            _) =
           getClauses(
             Seq(
               "TOK_TABNAME",

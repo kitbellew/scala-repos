@@ -213,7 +213,8 @@ object ScalatraBuild extends Build {
         """.stripMargin,
       description := "Data binding and validation with scalaz for Scalatra"
     )
-  ) dependsOn (scalatraJson % "compile;test->test;provided->provided")
+  ) dependsOn (
+    scalatraJson % "compile;test->test;provided->provided")
 
   lazy val scalatraJetty = Project(
     id = "scalatra-jetty",

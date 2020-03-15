@@ -374,9 +374,10 @@ class ScaloidCodeGenerator(
       }
 
   def paramedType(tpe: ScalaType, define: Boolean = false): String =
-    tpe.name + (if (define || !tpe.isVar)
-                  " <: " + tpe.bounds.map(genType).mkString(" with ")
-                else "")
+    tpe.name + (
+      if (define || !tpe.isVar)
+        " <: " + tpe.bounds.map(genType).mkString(" with ")
+      else "")
 
   def paramedTypes(pTypes: List[ScalaType], define: Boolean = false) =
     if (pTypes.isEmpty) ""

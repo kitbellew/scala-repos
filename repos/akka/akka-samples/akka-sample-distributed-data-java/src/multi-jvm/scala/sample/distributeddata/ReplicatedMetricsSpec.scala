@@ -91,7 +91,8 @@ class ReplicatedMetricsSpec
           .expectMsgType[UsedHeap]
           .percentPerNode
           .asScala
-          .toMap should not contain (nodeKey(node3Address))
+          .toMap should not contain (
+          nodeKey(node3Address))
       }
       enterBarrier("after-3")
     }

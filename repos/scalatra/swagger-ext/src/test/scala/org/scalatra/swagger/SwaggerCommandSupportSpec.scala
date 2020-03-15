@@ -21,11 +21,12 @@ object SwaggerCommandSupportSpec {
 
     val name: Field[String] = asString("name").notBlank.position(1)
     val age: Field[Int] = bind[Int]("age").withDefaultValue(0)
-    val token: Field[String] = (asString("API-TOKEN").notBlank
-      sourcedFrom Header
-      description "The API token for this request"
-      notes "Invalid data kills kittens"
-      allowableValues "123")
+    val token: Field[String] = (
+      asString("API-TOKEN").notBlank
+        sourcedFrom Header
+        description "The API token for this request"
+        notes "Invalid data kills kittens"
+        allowableValues "123")
     val skip: Field[Int] = asInt("skip")
       .withDefaultValue(0)
       .sourcedFrom(Query)

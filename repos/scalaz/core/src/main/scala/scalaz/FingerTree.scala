@@ -1139,8 +1139,9 @@ sealed abstract class FingerTreeInstances {
       implicit m: Reducer[A, V]): Reducer[Node[V, A], V] = {
     implicit val vm = m.monoid
     UnitReducer((a: Node[V, A]) =>
-      a fold ((v, _, _) => v,
-      (v, _, _, _) => v))
+      a fold (
+        (v, _, _) => v,
+        (v, _, _, _) => v))
   }
 
   implicit def fingerTreeMeasure[A, V](

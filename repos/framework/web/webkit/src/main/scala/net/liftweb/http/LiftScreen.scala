@@ -1970,9 +1970,9 @@ trait LiftScreen
   protected def doFinish(): JsCmd = {
     val fMap: Map[String, () => JsCmd] = LocalActions.get.get
     if (!LocalAction.get.isEmpty)
-      fMap.get(
-        LocalAction.get) map (_()) getOrElse (throw new IllegalArgumentException(
-        "No local action available with that binding"))
+      fMap.get(LocalAction.get) map (_()) getOrElse (
+        throw new IllegalArgumentException(
+          "No local action available with that binding"))
     else {
       validate match {
         case Nil =>

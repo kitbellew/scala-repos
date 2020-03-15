@@ -1365,7 +1365,8 @@ trait SHtml extends Loggable {
         case null => ""
         case s    => s
       }),
-      Null) % (if (ignoreBlur) Null else buildOnBlur(ajaxTest))
+      Null) % (
+      if (ignoreBlur) Null else buildOnBlur(ajaxTest))
 
   def text_*(
       value: String,

@@ -214,9 +214,10 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `challenge-or-credentials`: Rule2[String, Seq[(String, String)]] =
     rule {
-      `auth-scheme` ~ (oneOrMore(`auth-param` ~> (_ -> _)).separatedBy(listSep)
-        | `token68` ~> (x ⇒ ("" -> x) :: Nil)
-        | push(Nil))
+      `auth-scheme` ~ (
+        oneOrMore(`auth-param` ~> (_ -> _)).separatedBy(listSep)
+          | `token68` ~> (x ⇒ ("" -> x) :: Nil)
+          | push(Nil))
     }
 
   // ******************************************************************************************

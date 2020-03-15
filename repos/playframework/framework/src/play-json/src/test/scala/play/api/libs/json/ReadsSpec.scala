@@ -65,16 +65,14 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       }
 
       "from '2011-12-03T10:15:30+01:00' (with TZ offset)" in {
-        reads(
-          JsString(
-            "2011-12-03T10:15:30+01:00")) aka "read date" must_== (JsSuccess(
-          dateTime("2011-12-03T10:15:30+01:00")))
+        reads(JsString("2011-12-03T10:15:30+01:00")) aka "read date" must_== (
+          JsSuccess(dateTime("2011-12-03T10:15:30+01:00")))
       }
 
       "from '2011-12-03T10:15:30+01:00[Europe/Paris]' (with time zone)" in {
         reads(JsString("2011-12-03T10:15:30+01:00[Europe/Paris]"))
-          .aka("read date") must_== (JsSuccess(
-          dateTime("2011-12-03T10:15:30+01:00[Europe/Paris]")))
+          .aka("read date") must_== (
+          JsSuccess(dateTime("2011-12-03T10:15:30+01:00[Europe/Paris]")))
       }
     }
 
@@ -264,16 +262,14 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     "be successfully read with default implicit" >> {
       "from '2011-12-03T10:15:30+01:00' (with TZ offset)" in {
-        reads(
-          JsString(
-            "2011-12-03T10:15:30+01:00")) aka "read date" must_== (JsSuccess(
-          dateTime("2011-12-03T10:15:30+01:00")))
+        reads(JsString("2011-12-03T10:15:30+01:00")) aka "read date" must_== (
+          JsSuccess(dateTime("2011-12-03T10:15:30+01:00")))
       }
 
       "from '2011-12-03T10:15:30+01:00[Europe/Paris]' (with time zone)" in {
         reads(JsString("2011-12-03T10:15:30+01:00[Europe/Paris]"))
-          .aka("read date") must_== (JsSuccess(
-          dateTime("2011-12-03T10:15:30+01:00[Europe/Paris]")))
+          .aka("read date") must_== (
+          JsSuccess(dateTime("2011-12-03T10:15:30+01:00[Europe/Paris]")))
       }
     }
 

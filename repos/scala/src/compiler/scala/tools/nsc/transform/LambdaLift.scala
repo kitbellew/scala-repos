@@ -271,9 +271,9 @@ abstract class LambdaLift extends InfoTransform {
 
       afterOwnPhase {
         for ((owner, freeValues) <- free.toList) {
-          val newFlags =
-            SYNTHETIC | (if (owner.isClass) PARAMACCESSOR | PrivateLocal
-                         else PARAM)
+          val newFlags = SYNTHETIC | (
+            if (owner.isClass) PARAMACCESSOR | PrivateLocal
+            else PARAM)
 
           proxies(owner) =
             for (fv <- freeValues.toList) yield {
