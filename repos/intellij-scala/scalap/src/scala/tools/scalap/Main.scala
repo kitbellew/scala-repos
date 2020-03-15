@@ -136,10 +136,9 @@ object Main {
           elements
             .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE)
             .get
-        val bytes =
-          ((bytesElem.elementValue match {
-            case ConstValueIndex(index) => constantWrapped(index)
-          }).asInstanceOf[StringBytesPair].bytes)
+        val bytes = ((bytesElem.elementValue match {
+          case ConstValueIndex(index) => constantWrapped(index)
+        }).asInstanceOf[StringBytesPair].bytes)
         val length = ByteCodecs.decode(bytes)
         val scalaSig = ScalaSigAttributeParsers.parse(
           ByteCode(bytes.take(length)))

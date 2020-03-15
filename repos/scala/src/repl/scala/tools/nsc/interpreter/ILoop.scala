@@ -480,13 +480,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   private val crashRecovery: PartialFunction[Throwable, Boolean] = {
     case ex: Throwable =>
-      val (err, explain) =
-        (
-          if (intp.isInitializeComplete)
-            (intp.global.throwableAsString(ex), "")
-          else
-            (ex.getMessage, "The compiler did not initialize.\n")
-        )
+      val (err, explain) = (
+        if (intp.isInitializeComplete)
+          (intp.global.throwableAsString(ex), "")
+        else
+          (ex.getMessage, "The compiler did not initialize.\n")
+      )
       echo(err)
 
       ex match {

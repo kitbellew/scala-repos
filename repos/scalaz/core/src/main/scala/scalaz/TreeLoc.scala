@@ -190,12 +190,11 @@ final case class TreeLoc[A](
     val lft = (_: TreeLoc[A]).left
     val rgt = (_: TreeLoc[A]).right
     def dwn[A](tz: TreeLoc[A]): (TreeLoc[A], () => Stream[TreeLoc[A]]) = {
-      val f =
-        () =>
-          std.stream.unfold(tz.firstChild) { (o: Option[TreeLoc[A]]) =>
-            for (c <- o)
-              yield (c, c.right)
-          }
+      val f = () =>
+        std.stream.unfold(tz.firstChild) { (o: Option[TreeLoc[A]]) =>
+          for (c <- o)
+            yield (c, c.right)
+        }
       (tz, f)
     }
     def uf[A](

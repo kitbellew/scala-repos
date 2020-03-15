@@ -108,10 +108,9 @@ private[streaming] object MasterFailureTest extends Logging {
 
     val operation =
       (st: DStream[String]) => {
-        val updateFunc =
-          (values: Seq[Long], state: Option[Long]) => {
-            Some(values.foldLeft(0L)(_ + _) + state.getOrElse(0L))
-          }
+        val updateFunc = (values: Seq[Long], state: Option[Long]) => {
+          Some(values.foldLeft(0L)(_ + _) + state.getOrElse(0L))
+        }
         st.flatMap(_.split(" "))
           .map(x => (x, 1L))
           .updateStateByKey[Long](updateFunc)

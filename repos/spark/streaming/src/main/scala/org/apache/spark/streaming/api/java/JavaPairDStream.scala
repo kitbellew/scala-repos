@@ -521,16 +521,15 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   private def convertUpdateStateFunction[S](
       in: JFunction2[JList[V], Optional[S], Optional[S]])
       : (Seq[V], Option[S]) => Option[S] = {
-    val scalaFunc: (Seq[V], Option[S]) => Option[S] =
-      (values, state) => {
-        val list: JList[V] = values.asJava
-        val scalaState: Optional[S] = JavaUtils.optionToOptional(state)
-        val result: Optional[S] = in.apply(list, scalaState)
-        result.isPresent match {
-          case true => Some(result.get())
-          case _    => None
-        }
+    val scalaFunc: (Seq[V], Option[S]) => Option[S] = (values, state) => {
+      val list: JList[V] = values.asJava
+      val scalaState: Optional[S] = JavaUtils.optionToOptional(state)
+      val result: Optional[S] = in.apply(list, scalaState)
+      result.isPresent match {
+        case true => Some(result.get())
+        case _    => None
       }
+    }
     scalaFunc
   }
 

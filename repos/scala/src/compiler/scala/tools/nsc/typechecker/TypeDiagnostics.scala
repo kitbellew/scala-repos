@@ -77,15 +77,14 @@ trait TypeDiagnostics {
     (_: String) + addendums.getOrElse(pos, () => "")()
 
   def decodeWithKind(name: Name, owner: Symbol): String = {
-    val prefix =
-      (
-        if (name.isTypeName)
-          "type "
-        else if (owner.isPackageClass)
-          "object "
-        else
-          "value "
-      )
+    val prefix = (
+      if (name.isTypeName)
+        "type "
+      else if (owner.isPackageClass)
+        "object "
+      else
+        "value "
+    )
     prefix + name.decode
   }
 
@@ -656,42 +655,40 @@ trait TypeDiagnostics {
         val unused = p.unusedTerms
         unused foreach { defn: DefTree =>
           val sym = defn.symbol
-          val pos =
-            (
-              if (defn.pos.isDefined)
-                defn.pos
-              else if (sym.pos.isDefined)
-                sym.pos
-              else
-                sym match {
-                  case sym: TermSymbol => sym.referenced.pos
-                  case _               => NoPosition
-                }
-            )
+          val pos = (
+            if (defn.pos.isDefined)
+              defn.pos
+            else if (sym.pos.isDefined)
+              sym.pos
+            else
+              sym match {
+                case sym: TermSymbol => sym.referenced.pos
+                case _               => NoPosition
+              }
+          )
           val why =
             if (sym.isPrivate)
               "private"
             else
               "local"
-          val what =
-            (
-              if (sym.isDefaultGetter)
-                "default argument"
-              else if (sym.isConstructor)
-                "constructor"
-              else if (sym.isVar || sym.isGetter && sym.accessed.isVar)
-                "var"
-              else if (sym.isVal || sym.isGetter && sym.accessed.isVal || sym.isLazy)
-                "val"
-              else if (sym.isSetter)
-                "setter"
-              else if (sym.isMethod)
-                "method"
-              else if (sym.isModule)
-                "object"
-              else
-                "term"
-            )
+          val what = (
+            if (sym.isDefaultGetter)
+              "default argument"
+            else if (sym.isConstructor)
+              "constructor"
+            else if (sym.isVar || sym.isGetter && sym.accessed.isVar)
+              "var"
+            else if (sym.isVal || sym.isGetter && sym.accessed.isVal || sym.isLazy)
+              "val"
+            else if (sym.isSetter)
+              "setter"
+            else if (sym.isMethod)
+              "method"
+            else if (sym.isModule)
+              "object"
+            else
+              "term"
+          )
           reporter.warning(pos, s"$why $what in ${sym.owner} is never used")
         }
         p.unsetVars foreach { v =>

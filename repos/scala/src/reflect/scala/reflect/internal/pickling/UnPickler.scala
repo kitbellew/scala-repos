@@ -362,16 +362,15 @@ abstract class UnPickler {
 
         markFlagsCompleted(sym)(mask = AllFlags)
         sym.privateWithin = privateWithin
-        sym.info =
-          (
-            if (atEnd) {
-              assert(!sym.isSuperAccessor, sym)
-              newLazyTypeRef(inforef)
-            } else {
-              assert(sym.isSuperAccessor || sym.isParamAccessor, sym)
-              newLazyTypeRefAndAlias(inforef, readNat())
-            }
-          )
+        sym.info = (
+          if (atEnd) {
+            assert(!sym.isSuperAccessor, sym)
+            newLazyTypeRef(inforef)
+          } else {
+            assert(sym.isSuperAccessor || sym.isParamAccessor, sym)
+            newLazyTypeRefAndAlias(inforef, readNat())
+          }
+        )
         if (shouldEnterInOwnerScope)
           symScope(sym.owner) enter sym
 
@@ -382,16 +381,15 @@ abstract class UnPickler {
         case TYPEsym | ALIASsym =>
           owner.newNonClassSymbol(name.toTypeName, NoPosition, pflags)
         case CLASSsym =>
-          val sym =
-            (
-              if (isClassRoot) {
-                if (isModuleFlag)
-                  moduleRoot.moduleClass setFlag pflags
-                else
-                  classRoot setFlag pflags
-              } else
-                owner.newClassSymbol(name.toTypeName, NoPosition, pflags)
-            )
+          val sym = (
+            if (isClassRoot) {
+              if (isModuleFlag)
+                moduleRoot.moduleClass setFlag pflags
+              else
+                classRoot setFlag pflags
+            } else
+              owner.newClassSymbol(name.toTypeName, NoPosition, pflags)
+          )
           if (!atEnd)
             sym.typeOfThis = newLazyTypeRef(readNat())
 

@@ -513,9 +513,8 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
 
     val buf = new StringBuilder()
 
-    val maxf =
-      (a: List[Int], b: List[String]) =>
-        (a zip b).map(v => v._1.max(v._2.length))
+    val maxf = (a: List[Int], b: List[String]) =>
+      (a zip b).map(v => v._1.max(v._2.length))
 
     val varr = toArray
     val sm = scalarTag

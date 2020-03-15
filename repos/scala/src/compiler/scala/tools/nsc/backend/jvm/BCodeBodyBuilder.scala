@@ -1147,19 +1147,18 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
     }
 
     def genLoadModule(tree: Tree): BType = {
-      val module =
-        (
-          if (!tree.symbol.isPackageClass)
-            tree.symbol
-          else
-            tree.symbol.info.packageObject match {
-              case NoSymbol =>
-                abort(s"SI-5604: Cannot use package as value: $tree")
-              case s =>
-                abort(
-                  s"SI-5604: found package class where package object expected: $tree")
-            }
-        )
+      val module = (
+        if (!tree.symbol.isPackageClass)
+          tree.symbol
+        else
+          tree.symbol.info.packageObject match {
+            case NoSymbol =>
+              abort(s"SI-5604: Cannot use package as value: $tree")
+            case s =>
+              abort(
+                s"SI-5604: found package class where package object expected: $tree")
+          }
+      )
       lineNumber(tree)
       genLoadModule(module)
       symInfoTK(module)

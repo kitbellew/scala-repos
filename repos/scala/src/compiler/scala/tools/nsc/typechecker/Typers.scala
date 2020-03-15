@@ -1416,17 +1416,16 @@ trait Typers
             // -- are we sure we want to expand aliases this early?
             // -- what caused this change in behaviour??
             val tparams1 = cloneSymbols(tparams)
-            val tree1 =
-              (
-                if (tree.isType)
-                  tree
-                else
-                  TypeApply(
-                    tree,
-                    tparams1 map (tparam =>
-                      TypeTree(
-                        tparam.tpeHK) setPos tree.pos.focus)) setPos tree.pos
-              )
+            val tree1 = (
+              if (tree.isType)
+                tree
+              else
+                TypeApply(
+                  tree,
+                  tparams1 map (tparam =>
+                    TypeTree(
+                      tparam.tpeHK) setPos tree.pos.focus)) setPos tree.pos
+            )
             context.undetparams ++= tparams1
             notifyUndetparamsAdded(tparams1)
             adapt(
@@ -2361,13 +2360,12 @@ trait Typers
       if (self1.name != nme.WILDCARD)
         context.scope enter self1.symbol
 
-      val selfType =
-        (
-          if (clazz.isAnonymousClass && !phase.erasedTypes)
-            intersectionType(clazz.info.parents, clazz.owner)
-          else
-            clazz.typeOfThis
-        )
+      val selfType = (
+        if (clazz.isAnonymousClass && !phase.erasedTypes)
+          intersectionType(clazz.info.parents, clazz.owner)
+        else
+          clazz.typeOfThis
+      )
       // the following is necessary for templates generated later
       assert(clazz.info.decls != EmptyScope, clazz)
       val body1 = pluginsEnterStats(this, templ.body)
@@ -4383,16 +4381,12 @@ trait Typers
                   !phase.erasedTypes && fun.symbol.isLabel && treeInfo
                     .isSynthCaseSymbol(fun.symbol)
 
-                val args1 =
-                  (
-                    if (noExpectedType)
-                      typedArgs(args, forArgMode(fun, mode))
-                    else
-                      typedArgsForFormals(
-                        args,
-                        paramTypes,
-                        forArgMode(fun, mode))
-                  )
+                val args1 = (
+                  if (noExpectedType)
+                    typedArgs(args, forArgMode(fun, mode))
+                  else
+                    typedArgsForFormals(args, paramTypes, forArgMode(fun, mode))
+                )
 
                 // instantiate dependent method types, must preserve singleton types where possible (stableTypeFor) -- example use case:
                 // val foo = "foo"; def precise(x: String)(y: x.type): x.type = {...}; val bar : foo.type = precise(foo)(foo)
@@ -4633,18 +4627,17 @@ trait Typers
       if (fun0.isErroneous)
         return finish(ErroneousAnnotation)
       val typedFun0 = typed(fun0, mode.forFunMode)
-      val typedFunPart =
-        (
-          // If there are dummy type arguments in typeFun part, it suggests we
-          // must type the actual constructor call, not only the select. The value
-          // arguments are how the type arguments will be inferred.
-          if (targs.isEmpty && typedFun0.exists(t =>
-                t.tpe != null && isDummyAppliedType(t.tpe)))
-            logResult(s"Retyped $typedFun0 to find type args")(
-              typed(argss.foldLeft(fun0)(Apply(_, _))))
-          else
-            typedFun0
-        )
+      val typedFunPart = (
+        // If there are dummy type arguments in typeFun part, it suggests we
+        // must type the actual constructor call, not only the select. The value
+        // arguments are how the type arguments will be inferred.
+        if (targs.isEmpty && typedFun0.exists(t =>
+              t.tpe != null && isDummyAppliedType(t.tpe)))
+          logResult(s"Retyped $typedFun0 to find type args")(
+            typed(argss.foldLeft(fun0)(Apply(_, _))))
+        else
+          typedFun0
+      )
       val treeInfo.Applied(typedFun @ Select(New(annTpt), _), _, _) =
         typedFunPart
       val annType = annTpt.tpe
@@ -5982,15 +5975,14 @@ trait Typers
           }
         }
 
-        val owntype =
-          (
-            if (!mix.isEmpty)
-              findMixinSuper(clazz.tpe)
-            else if (context.inSuperInit)
-              clazz.info.firstParent
-            else
-              intersectionType(clazz.info.parents)
-          )
+        val owntype = (
+          if (!mix.isEmpty)
+            findMixinSuper(clazz.tpe)
+          else if (context.inSuperInit)
+            clazz.info.firstParent
+          else
+            intersectionType(clazz.info.parents)
+        )
         treeCopy.Super(tree, qual1, mix) setType SuperType(
           clazz.thisType,
           owntype)
@@ -6195,14 +6187,13 @@ trait Typers
             if (Statistics.canEnable)
               Statistics.incCounter(typedSelectCount)
             val qualTyped = checkDead(typedQualifier(qual, mode))
-            val qualStableOrError =
-              (
-                if (qualTyped.isErrorTyped || !name.isTypeName || treeInfo
-                      .admitsTypeSelection(qualTyped))
-                  qualTyped
-                else
-                  UnstableTreeError(qualTyped)
-              )
+            val qualStableOrError = (
+              if (qualTyped.isErrorTyped || !name.isTypeName || treeInfo
+                    .admitsTypeSelection(qualTyped))
+                qualTyped
+              else
+                UnstableTreeError(qualTyped)
+            )
             val tree1 =
               name match {
                 case nme.withFilter if !settings.future =>

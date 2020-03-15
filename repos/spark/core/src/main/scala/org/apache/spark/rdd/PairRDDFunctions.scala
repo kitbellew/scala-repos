@@ -448,20 +448,19 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
             Iterator(map)
           }: Iterator[JHashMap[K, V]]
 
-      val mergeMaps =
-        (m1: JHashMap[K, V], m2: JHashMap[K, V]) =>
-          {
-            m2.asScala.foreach { pair =>
-              val old = m1.get(pair._1)
-              m1.put(
-                pair._1,
-                if (old == null)
-                  pair._2
-                else
-                  cleanedF(old, pair._2))
-            }
-            m1
-          }: JHashMap[K, V]
+      val mergeMaps = (m1: JHashMap[K, V], m2: JHashMap[K, V]) =>
+        {
+          m2.asScala.foreach { pair =>
+            val old = m1.get(pair._1)
+            m1.put(
+              pair._1,
+              if (old == null)
+                pair._2
+              else
+                cleanedF(old, pair._2))
+          }
+          m1
+        }: JHashMap[K, V]
 
       self.mapPartitions(reducePartition).reduce(mergeMaps).asScala
     }
@@ -521,16 +520,14 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
           hll.offer(v)
           hll
         }
-      val mergeValueHLL =
-        (hll: HyperLogLogPlus, v: V) => {
-          hll.offer(v)
-          hll
-        }
-      val mergeHLL =
-        (h1: HyperLogLogPlus, h2: HyperLogLogPlus) => {
-          h1.addAll(h2)
-          h1
-        }
+      val mergeValueHLL = (hll: HyperLogLogPlus, v: V) => {
+        hll.offer(v)
+        hll
+      }
+      val mergeHLL = (h1: HyperLogLogPlus, h2: HyperLogLogPlus) => {
+        h1.addAll(h2)
+        h1
+      }
 
       combineByKeyWithClassTag(createHLL, mergeValueHLL, mergeHLL, partitioner)
         .mapValues(_.cardinality())
@@ -1341,58 +1338,57 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         jobFormat.checkOutputSpecs(job)
       }
 
-      val writeShard =
-        (context: TaskContext, iter: Iterator[(K, V)]) =>
-          {
-            val config = wrappedConf.value
-            /* "reduce task" <split #> <attempt # = spark task #> */
-            val attemptId =
-              new TaskAttemptID(
-                jobtrackerID,
-                stageId,
-                TaskType.REDUCE,
-                context.partitionId,
-                context.attemptNumber)
-            val hadoopContext = new TaskAttemptContextImpl(config, attemptId)
-            val format = outfmt.newInstance
-            format match {
-              case c: Configurable => c.setConf(config)
-              case _               => ()
-            }
-            val committer = format.getOutputCommitter(hadoopContext)
-            committer.setupTask(hadoopContext)
+      val writeShard = (context: TaskContext, iter: Iterator[(K, V)]) =>
+        {
+          val config = wrappedConf.value
+          /* "reduce task" <split #> <attempt # = spark task #> */
+          val attemptId =
+            new TaskAttemptID(
+              jobtrackerID,
+              stageId,
+              TaskType.REDUCE,
+              context.partitionId,
+              context.attemptNumber)
+          val hadoopContext = new TaskAttemptContextImpl(config, attemptId)
+          val format = outfmt.newInstance
+          format match {
+            case c: Configurable => c.setConf(config)
+            case _               => ()
+          }
+          val committer = format.getOutputCommitter(hadoopContext)
+          committer.setupTask(hadoopContext)
 
-            val outputMetricsAndBytesWrittenCallback
-                : Option[(OutputMetrics, () => Long)] = initHadoopOutputMetrics(
-              context)
+          val outputMetricsAndBytesWrittenCallback
+              : Option[(OutputMetrics, () => Long)] = initHadoopOutputMetrics(
+            context)
 
-            val writer = format
-              .getRecordWriter(hadoopContext)
-              .asInstanceOf[NewRecordWriter[K, V]]
-            require(writer != null, "Unable to obtain RecordWriter")
-            var recordsWritten = 0L
-            Utils.tryWithSafeFinallyAndFailureCallbacks {
-              while (iter.hasNext) {
-                val pair = iter.next()
-                writer.write(pair._1, pair._2)
+          val writer = format
+            .getRecordWriter(hadoopContext)
+            .asInstanceOf[NewRecordWriter[K, V]]
+          require(writer != null, "Unable to obtain RecordWriter")
+          var recordsWritten = 0L
+          Utils.tryWithSafeFinallyAndFailureCallbacks {
+            while (iter.hasNext) {
+              val pair = iter.next()
+              writer.write(pair._1, pair._2)
 
-                // Update bytes written metric every few records
-                maybeUpdateOutputMetrics(
-                  outputMetricsAndBytesWrittenCallback,
-                  recordsWritten)
-                recordsWritten += 1
-              }
-            } {
-              writer.close(hadoopContext)
+              // Update bytes written metric every few records
+              maybeUpdateOutputMetrics(
+                outputMetricsAndBytesWrittenCallback,
+                recordsWritten)
+              recordsWritten += 1
             }
-            committer.commitTask(hadoopContext)
-            outputMetricsAndBytesWrittenCallback.foreach {
-              case (om, callback) =>
-                om.setBytesWritten(callback())
-                om.setRecordsWritten(recordsWritten)
-            }
-            1
-          }: Int
+          } {
+            writer.close(hadoopContext)
+          }
+          committer.commitTask(hadoopContext)
+          outputMetricsAndBytesWrittenCallback.foreach {
+            case (om, callback) =>
+              om.setBytesWritten(callback())
+              om.setRecordsWritten(recordsWritten)
+          }
+          1
+        }: Int
 
       val jobAttemptId =
         new TaskAttemptID(jobtrackerID, stageId, TaskType.MAP, 0, 0)
@@ -1455,43 +1451,42 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       val writer = new SparkHadoopWriter(hadoopConf)
       writer.preSetup()
 
-      val writeToFile =
-        (context: TaskContext, iter: Iterator[(K, V)]) => {
-          // Hadoop wants a 32-bit task attempt ID, so if ours is bigger than Int.MaxValue, roll it
-          // around by taking a mod. We expect that no task will be attempted 2 billion times.
-          val taskAttemptId = (context.taskAttemptId % Int.MaxValue).toInt
+      val writeToFile = (context: TaskContext, iter: Iterator[(K, V)]) => {
+        // Hadoop wants a 32-bit task attempt ID, so if ours is bigger than Int.MaxValue, roll it
+        // around by taking a mod. We expect that no task will be attempted 2 billion times.
+        val taskAttemptId = (context.taskAttemptId % Int.MaxValue).toInt
 
-          val outputMetricsAndBytesWrittenCallback
-              : Option[(OutputMetrics, () => Long)] = initHadoopOutputMetrics(
-            context)
+        val outputMetricsAndBytesWrittenCallback
+            : Option[(OutputMetrics, () => Long)] = initHadoopOutputMetrics(
+          context)
 
-          writer.setup(context.stageId, context.partitionId, taskAttemptId)
-          writer.open()
-          var recordsWritten = 0L
+        writer.setup(context.stageId, context.partitionId, taskAttemptId)
+        writer.open()
+        var recordsWritten = 0L
 
-          Utils.tryWithSafeFinallyAndFailureCallbacks {
-            while (iter.hasNext) {
-              val record = iter.next()
-              writer.write(
-                record._1.asInstanceOf[AnyRef],
-                record._2.asInstanceOf[AnyRef])
+        Utils.tryWithSafeFinallyAndFailureCallbacks {
+          while (iter.hasNext) {
+            val record = iter.next()
+            writer.write(
+              record._1.asInstanceOf[AnyRef],
+              record._2.asInstanceOf[AnyRef])
 
-              // Update bytes written metric every few records
-              maybeUpdateOutputMetrics(
-                outputMetricsAndBytesWrittenCallback,
-                recordsWritten)
-              recordsWritten += 1
-            }
-          } {
-            writer.close()
+            // Update bytes written metric every few records
+            maybeUpdateOutputMetrics(
+              outputMetricsAndBytesWrittenCallback,
+              recordsWritten)
+            recordsWritten += 1
           }
-          writer.commit()
-          outputMetricsAndBytesWrittenCallback.foreach {
-            case (om, callback) =>
-              om.setBytesWritten(callback())
-              om.setRecordsWritten(recordsWritten)
-          }
+        } {
+          writer.close()
         }
+        writer.commit()
+        outputMetricsAndBytesWrittenCallback.foreach {
+          case (om, callback) =>
+            om.setBytesWritten(callback())
+            om.setRecordsWritten(recordsWritten)
+        }
+      }
 
       self.context.runJob(self, writeToFile)
       writer.commitJob()

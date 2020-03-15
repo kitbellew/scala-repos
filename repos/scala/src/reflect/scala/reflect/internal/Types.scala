@@ -1651,40 +1651,39 @@ trait Types
   protected def computeBaseClasses(tpe: Type): List[Symbol] = {
     val parents =
       tpe.parents // adriaan says tpe.parents does work sometimes, so call it only once
-    val baseTail =
-      (
-        if (parents.isEmpty || parents.head.isInstanceOf[PackageTypeRef])
-          Nil
-        else {
-          //Console.println("computing base classes of " + typeSymbol + " at phase " + phase);//DEBUG
-          // optimized, since this seems to be performance critical
-          val superclazz = parents.head // parents.isEmpty was already excluded
-          var mixins = parents.tail
-          val sbcs = superclazz.baseClasses
-          var bcs = sbcs
-          def isNew(clazz: Symbol): Boolean =
-            (
-              superclazz.baseTypeIndex(clazz) < 0 && {
-                var p = bcs
-                while ((p ne sbcs) && (p.head != clazz))
-                  p = p.tail
-                p eq sbcs
-              }
-            )
-          while (!mixins.isEmpty) {
-            def addMixinBaseClasses(mbcs: List[Symbol]): List[Symbol] =
-              if (mbcs.isEmpty)
-                bcs
-              else if (isNew(mbcs.head))
-                mbcs.head :: addMixinBaseClasses(mbcs.tail)
-              else
-                addMixinBaseClasses(mbcs.tail)
-            bcs = addMixinBaseClasses(mixins.head.baseClasses)
-            mixins = mixins.tail
-          }
-          bcs
+    val baseTail = (
+      if (parents.isEmpty || parents.head.isInstanceOf[PackageTypeRef])
+        Nil
+      else {
+        //Console.println("computing base classes of " + typeSymbol + " at phase " + phase);//DEBUG
+        // optimized, since this seems to be performance critical
+        val superclazz = parents.head // parents.isEmpty was already excluded
+        var mixins = parents.tail
+        val sbcs = superclazz.baseClasses
+        var bcs = sbcs
+        def isNew(clazz: Symbol): Boolean =
+          (
+            superclazz.baseTypeIndex(clazz) < 0 && {
+              var p = bcs
+              while ((p ne sbcs) && (p.head != clazz))
+                p = p.tail
+              p eq sbcs
+            }
+          )
+        while (!mixins.isEmpty) {
+          def addMixinBaseClasses(mbcs: List[Symbol]): List[Symbol] =
+            if (mbcs.isEmpty)
+              bcs
+            else if (isNew(mbcs.head))
+              mbcs.head :: addMixinBaseClasses(mbcs.tail)
+            else
+              addMixinBaseClasses(mbcs.tail)
+          bcs = addMixinBaseClasses(mixins.head.baseClasses)
+          mixins = mixins.tail
         }
-      )
+        bcs
+      }
+    )
     tpe.typeSymbol :: baseTail
   }
 
@@ -3415,33 +3414,27 @@ trait Types
         args: List[Type],
         params: List[Symbol],
         untouchable: Boolean): TypeVar = {
-      val tv =
-        (
-          if (args.isEmpty && params.isEmpty) {
-            if (untouchable)
-              new TypeVar(origin, constr) with UntouchableTypeVar
-            else
-              new TypeVar(origin, constr) {}
-          } else if (args.size == params.size) {
-            if (untouchable)
-              new AppliedTypeVar(origin, constr, params zip args)
-                with UntouchableTypeVar
-            else
-              new AppliedTypeVar(origin, constr, params zip args)
-          } else if (args.isEmpty) {
-            if (untouchable)
-              new HKTypeVar(origin, constr, params) with UntouchableTypeVar
-            else
-              new HKTypeVar(origin, constr, params)
-          } else
-            throw new Error(
-              "Invalid TypeVar construction: " + (
-                (
-                  origin,
-                  constr,
-                  args,
-                  params)))
-        )
+      val tv = (
+        if (args.isEmpty && params.isEmpty) {
+          if (untouchable)
+            new TypeVar(origin, constr) with UntouchableTypeVar
+          else
+            new TypeVar(origin, constr) {}
+        } else if (args.size == params.size) {
+          if (untouchable)
+            new AppliedTypeVar(origin, constr, params zip args)
+              with UntouchableTypeVar
+          else
+            new AppliedTypeVar(origin, constr, params zip args)
+        } else if (args.isEmpty) {
+          if (untouchable)
+            new HKTypeVar(origin, constr, params) with UntouchableTypeVar
+          else
+            new HKTypeVar(origin, constr, params)
+        } else
+          throw new Error(
+            "Invalid TypeVar construction: " + ((origin, constr, args, params)))
+      )
 
       trace("create", "In " + tv.originLocation)(tv)
     }
@@ -5594,8 +5587,8 @@ trait Types
   private[scala] val symTpe = (sym: Symbol) => sym.tpe
   private[scala] val symInfo = (sym: Symbol) => sym.info
   private[scala] val typeHasAnnotations = (tp: Type) => tp.annotations ne Nil
-  private[scala] val boundsContainType =
-    (bounds: TypeBounds, tp: Type) => bounds containsType tp
+  private[scala] val boundsContainType = (bounds: TypeBounds, tp: Type) =>
+    bounds containsType tp
   private[scala] val typeListIsEmpty = (ts: List[Type]) => ts.isEmpty
   private[scala] val typeIsSubTypeOfSerializable =
     (tp: Type) => tp <:< SerializableTpe

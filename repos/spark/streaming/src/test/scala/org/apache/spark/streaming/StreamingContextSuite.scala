@@ -182,10 +182,9 @@ class StreamingContextSuite
   test("start failure should stop internal components") {
     ssc = new StreamingContext(conf, batchDuration)
     val inputStream = addInputStream(ssc)
-    val updateFunc =
-      (values: Seq[Int], state: Option[Int]) => {
-        Some(values.sum + state.getOrElse(0))
-      }
+    val updateFunc = (values: Seq[Int], state: Option[Int]) => {
+      Some(values.sum + state.getOrElse(0))
+    }
     inputStream.map(x => (x, 1)).updateStateByKey[Int](updateFunc)
     // Require that the start fails because checkpoint directory was not set
     intercept[Exception] {

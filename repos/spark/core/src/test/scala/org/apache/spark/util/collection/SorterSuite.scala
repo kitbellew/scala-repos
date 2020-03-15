@@ -137,10 +137,9 @@ class SorterSuite extends SparkFunSuite with Logging {
       }
 
     val kvTupleArray = new Array[AnyRef](numElements)
-    val prepareKvTupleArray =
-      () => {
-        System.arraycopy(kvTuples, 0, kvTupleArray, 0, numElements)
-      }
+    val prepareKvTupleArray = () => {
+      System.arraycopy(kvTuples, 0, kvTupleArray, 0, numElements)
+    }
     runExperiment("Tuple-sort using Arrays.sort()")(
       {
         Arrays.sort(
@@ -169,10 +168,9 @@ class SorterSuite extends SparkFunSuite with Logging {
     }
 
     val keyValueArray = new Array[AnyRef](numElements * 2)
-    val prepareKeyValueArray =
-      () => {
-        System.arraycopy(keyValues, 0, keyValueArray, 0, numElements * 2)
-      }
+    val prepareKeyValueArray = () => {
+      System.arraycopy(keyValues, 0, keyValueArray, 0, numElements * 2)
+    }
 
     val sorter = new Sorter(new KVArraySortDataFormat[JFloat, AnyRef])
     runExperiment("KV-sort using Sorter")(
@@ -213,10 +211,9 @@ class SorterSuite extends SparkFunSuite with Logging {
     }
 
     val intObjectArray = new Array[JInteger](numElements)
-    val prepareIntObjectArray =
-      () => {
-        System.arraycopy(intObjects, 0, intObjectArray, 0, numElements)
-      }
+    val prepareIntObjectArray = () => {
+      System.arraycopy(intObjects, 0, intObjectArray, 0, numElements)
+    }
 
     runExperiment("Java Arrays.sort() on non-primitive int array")(
       {
@@ -229,10 +226,9 @@ class SorterSuite extends SparkFunSuite with Logging {
       prepareIntObjectArray)
 
     val intPrimitiveArray = new Array[Int](numElements)
-    val prepareIntPrimitiveArray =
-      () => {
-        System.arraycopy(ints, 0, intPrimitiveArray, 0, numElements)
-      }
+    val prepareIntPrimitiveArray = () => {
+      System.arraycopy(ints, 0, intPrimitiveArray, 0, numElements)
+    }
 
     runExperiment("Java Arrays.sort() on primitive int array")(
       {

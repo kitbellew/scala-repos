@@ -216,18 +216,17 @@ final class EMLDAOptimizer extends LDAOptimizer {
     // TODO: Add zero/seqOp/combOp option to aggregateMessages. (SPARK-5438)
     val mergeMsg: ((Boolean, TopicCounts), (Boolean, TopicCounts)) => (
         Boolean,
-        TopicCounts) =
-      (m0, m1) => {
-        val sum =
-          if (m0._1) {
-            m0._2 += m1._2
-          } else if (m1._1) {
-            m1._2 += m0._2
-          } else {
-            m0._2 + m1._2
-          }
-        (true, sum)
-      }
+        TopicCounts) = (m0, m1) => {
+      val sum =
+        if (m0._1) {
+          m0._2 += m1._2
+        } else if (m1._1) {
+          m1._2 += m0._2
+        } else {
+          m0._2 + m1._2
+        }
+      (true, sum)
+    }
     // M-STEP: Aggregation computes new N_{kj}, N_{wk} counts.
     val docTopicDistributions: VertexRDD[TopicCounts] = graph
       .aggregateMessages[(Boolean, TopicCounts)](sendMsg, mergeMsg)

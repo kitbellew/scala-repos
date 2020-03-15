@@ -52,13 +52,12 @@ abstract class XMapTest[
       val (m1, m2) = (fromSeq(kvs: _*), fromSeq(kvs2: _*))
       ((m1.size == kvs.size) && (m2.size == kvs2.size)) ==> {
         val l: Boolean = O.lessThan(m1, m2)
-        val r: Boolean =
-          (if (m1.size < m2.size)
-             true
-           else if (m1.size > m2.size)
-             false
-           else
-             O2.lt(kvs.sortBy(_._1), kvs2.sortBy(_._1)))
+        val r: Boolean = (if (m1.size < m2.size)
+                            true
+                          else if (m1.size > m2.size)
+                            false
+                          else
+                            O2.lt(kvs.sortBy(_._1), kvs2.sortBy(_._1)))
         l == r
       }
     }

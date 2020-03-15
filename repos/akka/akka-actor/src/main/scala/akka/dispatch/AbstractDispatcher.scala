@@ -231,10 +231,9 @@ abstract class MessageDispatcher(
     }
   }
 
-  private final val taskCleanup: () ⇒ Unit =
-    () ⇒
-      if (addInhabitants(-1) == 0)
-        ifSensibleToDoSoThenScheduleShutdown()
+  private final val taskCleanup: () ⇒ Unit = () ⇒
+    if (addInhabitants(-1) == 0)
+      ifSensibleToDoSoThenScheduleShutdown()
 
   /**
     * If you override it, you must call it. But only ever once. See "attach" for only invocation.

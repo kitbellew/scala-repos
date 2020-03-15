@@ -507,11 +507,10 @@ class FutureTest
         class TraverseTestSpy() {
           var goWasCalled = false
           var promise = Promise[Int]()
-          val go =
-            () => {
-              goWasCalled = true
-              promise
-            }
+          val go = () => {
+            goWasCalled = true
+            promise
+          }
         }
 
         "execute futures in order" in {

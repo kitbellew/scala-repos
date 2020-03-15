@@ -774,16 +774,15 @@ trait Namers extends MethodSynthesis {
       // its flags are set differently.  The implicit flag is reset because otherwise
       // a local implicit "lazy val x" will create an ambiguity with itself
       // via "x$lzy" as can be seen in test #3927.
-      val sym =
-        (
-          if (owner.isClass)
-            createFieldSymbol(tree)
-          else
-            owner.newValue(
-              tree.name append nme.LAZY_LOCAL,
-              tree.pos,
-              (tree.mods.flags | ARTIFACT) & ~IMPLICIT)
-        )
+      val sym = (
+        if (owner.isClass)
+          createFieldSymbol(tree)
+        else
+          owner.newValue(
+            tree.name append nme.LAZY_LOCAL,
+            tree.pos,
+            (tree.mods.flags | ARTIFACT) & ~IMPLICIT)
+      )
       enterValSymbol(tree, sym setFlag MUTABLE setLazyAccessor lazyAccessor)
     }
     def enterStrictVal(tree: ValDef): TermSymbol = {
@@ -1041,28 +1040,27 @@ trait Namers extends MethodSynthesis {
       if (!hasType)
         tpt defineType NoType
 
-      val sym =
-        (
-          if (hasType || hasName) {
-            owner.typeOfThis =
-              if (hasType)
-                selfTypeCompleter(tpt)
-              else
-                owner.tpe_*
-            val selfSym = owner.thisSym setPos self.pos
-            if (hasName)
-              selfSym setName name
+      val sym = (
+        if (hasType || hasName) {
+          owner.typeOfThis =
+            if (hasType)
+              selfTypeCompleter(tpt)
             else
-              selfSym
-          } else {
-            val symName =
-              if (name != nme.WILDCARD)
-                name
-              else
-                nme.this_
-            owner.newThisSym(symName, owner.pos) setInfo owner.tpe
-          }
-        )
+              owner.tpe_*
+          val selfSym = owner.thisSym setPos self.pos
+          if (hasName)
+            selfSym setName name
+          else
+            selfSym
+        } else {
+          val symName =
+            if (name != nme.WILDCARD)
+              name
+            else
+              nme.this_
+          owner.newThisSym(symName, owner.pos) setInfo owner.tpe
+        }
+      )
       self.symbol = context.scope enter sym
     }
 
@@ -1213,21 +1211,18 @@ trait Namers extends MethodSynthesis {
           checkDependencies check vparamSymss
         }
 
-        val makeMethodType =
-          (vparams: List[Symbol], restpe: Type) => {
-            // TODODEPMET: check that we actually don't need to do anything here
-            // new dependent method types: probably OK already, since 'enterValueParams' above
-            // enters them in scope, and all have a lazy type. so they may depend on other params. but: need to
-            // check that params only depend on ones in earlier sections, not the same. (done by checkDependencies,
-            // so re-use / adapt that)
-            if (meth.isJavaDefined)
-              // TODODEPMET necessary?? new dependent types: replace symbols in restpe with the ones in vparams
-              JavaMethodType(
-                vparams map (p => p setInfo objToAny(p.tpe)),
-                restpe)
-            else
-              MethodType(vparams, restpe)
-          }
+        val makeMethodType = (vparams: List[Symbol], restpe: Type) => {
+          // TODODEPMET: check that we actually don't need to do anything here
+          // new dependent method types: probably OK already, since 'enterValueParams' above
+          // enters them in scope, and all have a lazy type. so they may depend on other params. but: need to
+          // check that params only depend on ones in earlier sections, not the same. (done by checkDependencies,
+          // so re-use / adapt that)
+          if (meth.isJavaDefined)
+            // TODODEPMET necessary?? new dependent types: replace symbols in restpe with the ones in vparams
+            JavaMethodType(vparams map (p => p setInfo objToAny(p.tpe)), restpe)
+          else
+            MethodType(vparams, restpe)
+        }
 
         val res = GenPolyType(
           tparamSyms, // deSkolemized symbols  -- TODO: check that their infos don't refer to method args?
@@ -1392,16 +1387,15 @@ trait Namers extends MethodSynthesis {
       }
 
       val res = thisMethodType({
-        val rt =
-          (if (!tpt.isEmpty) {
-             methResTp
-           } else {
-             // return type is inferred, we don't just use resTpFromOverride. Here, C.f has type String:
-             //   trait T { def f: Object }; class C <: T { def f = "" }
-             // using resTpFromOverride as expected type allows for the following (C.f has type A):
-             //   trait T { def f: A }; class C <: T { implicit def b2a(t: B): A = ???; def f = new B }
-             assignTypeToTree(ddef, typer, resTpFromOverride)
-           })
+        val rt = (if (!tpt.isEmpty) {
+                    methResTp
+                  } else {
+                    // return type is inferred, we don't just use resTpFromOverride. Here, C.f has type String:
+                    //   trait T { def f: Object }; class C <: T { def f = "" }
+                    // using resTpFromOverride as expected type allows for the following (C.f has type A):
+                    //   trait T { def f: A }; class C <: T { implicit def b2a(t: B): A = ???; def f = new B }
+                    assignTypeToTree(ddef, typer, resTpFromOverride)
+                  })
         // #2382: return type of default getters are always @uncheckedVariance
         if (meth.hasDefault)
           rt.withAnnotation(

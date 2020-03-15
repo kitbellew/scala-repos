@@ -202,15 +202,14 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
        */
       def getPrimitiveReplacementForStructuralCall(
           name: Name): Option[(Symbol, Tree => Tree)] = {
-        val methodName =
-          (
-            if (params.isEmpty)
-              nme.primitivePostfixMethodName(name)
-            else if (params.tail.isEmpty)
-              nme.primitiveInfixMethodName(name)
-            else
-              nme.NO_NAME
-          )
+        val methodName = (
+          if (params.isEmpty)
+            nme.primitivePostfixMethodName(name)
+          else if (params.tail.isEmpty)
+            nme.primitiveInfixMethodName(name)
+          else
+            nme.NO_NAME
+        )
         getDeclIfDefined(BoxesRunTimeClass, methodName) match {
           case NoSymbol => None
           case sym =>

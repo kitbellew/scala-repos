@@ -59,8 +59,8 @@ class ScSubstitutor(
   }
 
   //todo: this is excluded from constructor, can cause lots of bugs, probably it should be rewritten in more appropriate way
-  private var myDependentMethodTypesFun: () => Map[Parameter, ScType] =
-    () => Map.empty
+  private var myDependentMethodTypesFun: () => Map[Parameter, ScType] = () =>
+    Map.empty
   private var myDependentMethodTypesFunDefined: Boolean = false
   private var myDependentMethodTypes: Map[Parameter, ScType] = null
   private def getDependentMethodTypes: Map[Parameter, ScType] = {

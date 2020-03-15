@@ -922,15 +922,14 @@ abstract class Erasure
       import pair._
 
       if (!pair.isErroneous) {
-        val what =
-          (
-            if (low.owner == high.owner)
-              "double definition"
-            else if (low.owner == base)
-              "name clash between defined and inherited member"
-            else
-              "name clash between inherited members"
-          )
+        val what = (
+          if (low.owner == high.owner)
+            "double definition"
+          else if (low.owner == base)
+            "name clash between defined and inherited member"
+          else
+            "name clash between inherited members"
+        )
         val when =
           if (exitingRefchecks(lowType matches highType))
             ""

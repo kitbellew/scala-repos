@@ -726,16 +726,15 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     val shouldCheckpoint: Int => Boolean =
       (iter) =>
         sc.checkpointDir.isDefined && checkpointInterval != -1 && (iter % checkpointInterval == 0)
-    val deletePreviousCheckpointFile: () => Unit =
-      () =>
-        previousCheckpointFile.foreach { file =>
-          try {
-            FileSystem.get(sc.hadoopConfiguration).delete(new Path(file), true)
-          } catch {
-            case e: IOException =>
-              logWarning(s"Cannot delete checkpoint file $file:", e)
-          }
+    val deletePreviousCheckpointFile: () => Unit = () =>
+      previousCheckpointFile.foreach { file =>
+        try {
+          FileSystem.get(sc.hadoopConfiguration).delete(new Path(file), true)
+        } catch {
+          case e: IOException =>
+            logWarning(s"Cannot delete checkpoint file $file:", e)
         }
+      }
     if (implicitPrefs) {
       for (iter <- 1 to maxIter) {
         userFactors

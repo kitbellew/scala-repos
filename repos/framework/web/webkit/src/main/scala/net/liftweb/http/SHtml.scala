@@ -857,9 +857,8 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): Elem = {
     val value = (Box !! valuePreNull).openOr("")
 
-    val raw =
-      (funcName: String, value: String) =>
-        JsRaw("'" + funcName + "=' + encodeURIComponent(" + value + ".value)")
+    val raw = (funcName: String, value: String) =>
+      JsRaw("'" + funcName + "=' + encodeURIComponent(" + value + ".value)")
     val key = formFuncName
 
     fmapFunc((func)) { funcName =>
@@ -933,9 +932,8 @@ trait SHtml extends Loggable {
       jsFunc: Box[Call],
       func: AFuncHolder,
       attrs: ElemAttr*): Elem = {
-    val raw =
-      (funcName: String, value: String) =>
-        JsRaw("'" + funcName + "=' + encodeURIComponent(" + value + ".value)")
+    val raw = (funcName: String, value: String) =>
+      JsRaw("'" + funcName + "=' + encodeURIComponent(" + value + ".value)")
     val key = formFuncName
 
     fmapFunc((func)) { funcName =>
@@ -1090,9 +1088,8 @@ trait SHtml extends Loggable {
       jsFunc: Box[Call],
       func: AFuncHolder,
       attrs: ElemAttr*): Elem = {
-    val raw =
-      (funcName: String, value: String) =>
-        JsRaw("'" + funcName + "=' + " + value + ".checked")
+    val raw = (funcName: String, value: String) =>
+      JsRaw("'" + funcName + "=' + " + value + ".checked")
     val key = formFuncName
 
     fmapFunc((func)) { funcName =>
@@ -1321,10 +1318,9 @@ trait SHtml extends Loggable {
       jsFunc: Box[Call],
       func: AFuncHolder,
       attrs: ElemAttr*): Elem = {
-    val raw =
-      (funcName: String, value: String) =>
-        JsRaw(
-          "'" + funcName + "=' + encodeURIComponent(" + value + ".options[" + value + ".selectedIndex].value)")
+    val raw = (funcName: String, value: String) =>
+      JsRaw(
+        "'" + funcName + "=' + encodeURIComponent(" + value + ".options[" + value + ".selectedIndex].value)")
     val key = formFuncName
 
     val vals = opts.map(_.value)
@@ -2590,10 +2586,9 @@ trait SHtml extends Loggable {
       jsFunc: Box[Call],
       func: AFuncHolder,
       attrs: (String, String)*): Elem = {
-    val raw =
-      (funcName: String, value: String) =>
-        JsRaw(
-          "'" + funcName + "=' + this.options[" + value + ".selectedIndex].value")
+    val raw = (funcName: String, value: String) =>
+      JsRaw(
+        "'" + funcName + "=' + this.options[" + value + ".selectedIndex].value")
     val key = formFuncName
 
     val vals = opts.map(_.value)

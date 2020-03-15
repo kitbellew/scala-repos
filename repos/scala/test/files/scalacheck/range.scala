@@ -293,19 +293,17 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       myGen suchThat (r => expectedSize(r).toInt == expectedSize(r)),
       arbInt.arbitrary) { (r, x) =>
 //    println("takeWhile "+str(r))
-      val t =
-        (if (r.step > 0)
-           r takeWhile (_ <= x)
-         else
-           r takeWhile (_ >= x))
+      val t = (if (r.step > 0)
+                 r takeWhile (_ <= x)
+               else
+                 r takeWhile (_ >= x))
       if (r.size == 0) {
         (t.size == 0) :| str(r) + " / " + str(t) + ": " + x
       } else {
-        val t2 =
-          (if (r.step > 0)
-             Range(r.start, x min r.last, r.step).inclusive
-           else
-             Range(r.start, x max r.last, r.step).inclusive)
+        val t2 = (if (r.step > 0)
+                    Range(r.start, x min r.last, r.step).inclusive
+                  else
+                    Range(r.start, x max r.last, r.step).inclusive)
         (t.start == r.start && t.size == t2.size && t.step == r.step) :| str(
           r) + " / " + str(t) + " / " + str(t2) + ": " + x
       }

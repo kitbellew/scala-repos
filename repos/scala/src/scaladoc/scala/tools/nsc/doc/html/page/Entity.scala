@@ -300,11 +300,10 @@ trait EntityPage extends HtmlPage {
     tpl.abstractTypes ++ tpl.aliasTypes ++ tpl.templates.filter(x =>
       x.isTrait || x.isClass) sorted (implicitly[Ordering[MemberEntity]])
 
-  val constructors =
-    (tpl match {
-      case cls: Class => (cls.constructors: List[MemberEntity]).sorted
-      case _          => Nil
-    })
+  val constructors = (tpl match {
+    case cls: Class => (cls.constructors: List[MemberEntity]).sorted
+    case _          => Nil
+  })
 
   /* for body, there is a special case for AnyRef, otherwise AnyRef appears
    * like a package/object this problem should be fixed, this implementation
@@ -1182,11 +1181,10 @@ trait EntityPage extends HtmlPage {
             orEmpty(comment.todo) {
               <dt>To do</dt>
             <dd>{
-                val todoXml: List[NodeSeq] =
-                  (for (todo <- comment.todo)
-                    yield <span class="cmt">{
-                      bodyToHtml(todo)
-                    }</span>)
+                val todoXml: List[NodeSeq] = (for (todo <- comment.todo)
+                  yield <span class="cmt">{
+                    bodyToHtml(todo)
+                  }</span>)
                 todoXml.reduceLeft(_ ++ _)
               }</dd>
             }

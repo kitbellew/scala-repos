@@ -181,12 +181,11 @@ class MapWithStateSuite
     )
 
     // state maintains running count, and updated count is returned
-    val mappingFunc =
-      (key: String, value: Option[Int], state: State[Int]) => {
-        val sum = value.getOrElse(0) + state.getOption.getOrElse(0)
-        state.update(sum)
-        sum
-      }
+    val mappingFunc = (key: String, value: Option[Int], state: State[Int]) => {
+      val sum = value.getOrElse(0) + state.getOption.getOrElse(0)
+      state.update(sum)
+      sum
+    }
 
     testOperation[String, Int, Int](
       inputData,

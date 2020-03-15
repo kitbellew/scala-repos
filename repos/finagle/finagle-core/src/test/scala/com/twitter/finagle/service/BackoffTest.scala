@@ -148,10 +148,9 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("from function") {
     forAll { seed: Long =>
       val fRng, rng = Rng(seed)
-      val f: () => Duration =
-        () => {
-          Duration.fromNanoseconds(fRng.nextLong(10))
-        }
+      val f: () => Duration = () => {
+        Duration.fromNanoseconds(fRng.nextLong(10))
+      }
       val backoffs = Backoff
         .fromFunction(f)
         .take(10)

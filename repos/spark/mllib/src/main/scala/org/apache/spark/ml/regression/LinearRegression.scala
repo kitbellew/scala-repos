@@ -247,19 +247,17 @@ class LinearRegression @Since("1.3.0") (
       instances.persist(StorageLevel.MEMORY_AND_DISK)
 
     val (featuresSummarizer, ySummarizer) = {
-      val seqOp =
+      val seqOp = (
+          c: (MultivariateOnlineSummarizer, MultivariateOnlineSummarizer),
+          instance: Instance) =>
         (
-            c: (MultivariateOnlineSummarizer, MultivariateOnlineSummarizer),
-            instance: Instance) =>
-          (
-            c._1.add(instance.features, instance.weight),
-            c._2.add(Vectors.dense(instance.label), instance.weight))
+          c._1.add(instance.features, instance.weight),
+          c._2.add(Vectors.dense(instance.label), instance.weight))
 
-      val combOp =
-        (
-            c1: (MultivariateOnlineSummarizer, MultivariateOnlineSummarizer),
-            c2: (MultivariateOnlineSummarizer, MultivariateOnlineSummarizer)) =>
-          (c1._1.merge(c2._1), c1._2.merge(c2._2))
+      val combOp = (
+          c1: (MultivariateOnlineSummarizer, MultivariateOnlineSummarizer),
+          c2: (MultivariateOnlineSummarizer, MultivariateOnlineSummarizer)) =>
+        (c1._1.merge(c2._1), c1._2.merge(c2._2))
 
       instances.treeAggregate(
         new MultivariateOnlineSummarizer,
@@ -1084,10 +1082,10 @@ private class LeastSquaresCostFun(
     val coeffs = Vectors.fromBreeze(coefficients)
 
     val leastSquaresAggregator = {
-      val seqOp =
-        (c: LeastSquaresAggregator, instance: Instance) => c.add(instance)
-      val combOp =
-        (c1: LeastSquaresAggregator, c2: LeastSquaresAggregator) => c1.merge(c2)
+      val seqOp = (c: LeastSquaresAggregator, instance: Instance) =>
+        c.add(instance)
+      val combOp = (c1: LeastSquaresAggregator, c2: LeastSquaresAggregator) =>
+        c1.merge(c2)
 
       instances.treeAggregate(
         new LeastSquaresAggregator(

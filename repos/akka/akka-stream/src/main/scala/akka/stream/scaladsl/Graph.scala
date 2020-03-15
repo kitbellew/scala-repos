@@ -222,14 +222,13 @@ final class MergePreferred[T] private (
             tryPull(preferred)
           }
 
-          val emitted =
-            () ⇒ {
-              preferredEmitting -= 1
-              if (isAvailable(preferred))
-                emitPreferred()
-              else if (preferredEmitting == 0)
-                emitSecondary()
-            }
+          val emitted = () ⇒ {
+            preferredEmitting -= 1
+            if (isAvailable(preferred))
+              emitPreferred()
+            else if (preferredEmitting == 0)
+              emitSecondary()
+          }
 
           def emitSecondary(): Unit = {
             var i = 0
@@ -421,24 +420,22 @@ final class MergeSorted[T: Ordering] extends GraphStage[FanInShape2[T, T, T]] {
 
       val dispatchR = dispatch(other, _: T)
       val dispatchL = dispatch(_: T, other)
-      val passR =
-        () ⇒
-          emit(
-            out,
-            other,
-            () ⇒ {
-              nullOut();
-              passAlong(right, out, doPull = true)
-            })
-      val passL =
-        () ⇒
-          emit(
-            out,
-            other,
-            () ⇒ {
-              nullOut();
-              passAlong(left, out, doPull = true)
-            })
+      val passR = () ⇒
+        emit(
+          out,
+          other,
+          () ⇒ {
+            nullOut();
+            passAlong(right, out, doPull = true)
+          })
+      val passL = () ⇒
+        emit(
+          out,
+          other,
+          () ⇒ {
+            nullOut();
+            passAlong(left, out, doPull = true)
+          })
       val readR = () ⇒ read(right)(dispatchR, passL)
       val readL = () ⇒ read(left)(dispatchL, passR)
 

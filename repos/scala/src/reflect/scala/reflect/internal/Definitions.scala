@@ -1355,15 +1355,14 @@ trait Definitions extends api.StandardDefinitions {
         val eparams = typeParamsToExistentials(
           ClassClass,
           ClassClass.typeParams)
-        val upperBound =
-          (
-            if (isPhantomClass(sym))
-              AnyTpe
-            else if (sym.isLocalClass)
-              erasure.intersectionDominator(tp.parents)
-            else
-              tp.widen
-          )
+        val upperBound = (
+          if (isPhantomClass(sym))
+            AnyTpe
+          else if (sym.isLocalClass)
+            erasure.intersectionDominator(tp.parents)
+          else
+            tp.widen
+        )
 
         existentialAbstraction(
           eparams,

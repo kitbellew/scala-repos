@@ -662,17 +662,16 @@ private[scala] trait JavaMirrors
         var i = 0
         while (i < args1.length) {
           val arg = args(i)
-          args1(i) =
-            (
-              if (i >= paramCount)
-                arg // don't transform varargs
-              else if (isByName(i))() =>
-                arg // don't transform by-name value class params
-              else if (isDerivedValueClass(i))
-                paramUnboxers(i).invoke(arg) // do get the underlying value
-              else
-                arg // don't molest anything else
-            )
+          args1(i) = (
+            if (i >= paramCount)
+              arg // don't transform varargs
+            else if (isByName(i))() =>
+              arg // don't transform by-name value class params
+            else if (isDerivedValueClass(i))
+              paramUnboxers(i).invoke(arg) // do get the underlying value
+            else
+              arg // don't molest anything else
+          )
           i += 1
         }
         jinvoke(args1)
@@ -1502,9 +1501,8 @@ private[scala] trait JavaMirrors
     private def jclassAsScala1(jclazz: jClass[_]): ClassSymbol = {
       val owner = sOwner(jclazz)
       val name = scalaSimpleName(jclazz)
-      val completer =
-        (clazz: Symbol, module: Symbol) =>
-          new FromJavaClassCompleter(clazz, module, jclazz)
+      val completer = (clazz: Symbol, module: Symbol) =>
+        new FromJavaClassCompleter(clazz, module, jclazz)
 
       initAndEnterClassAndModule(owner, name, completer)._1
     }

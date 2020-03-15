@@ -358,14 +358,13 @@ case class Netty3Listener[In, Out](
 
       val closer = new Closer(timer)
 
-      val newBridge =
-        () =>
-          new ServerBridge(
-            serveTransport,
-            logger,
-            scopedStatsReceiver,
-            closer.activeChannels
-          )
+      val newBridge = () =>
+        new ServerBridge(
+          serveTransport,
+          logger,
+          scopedStatsReceiver,
+          closer.activeChannels
+        )
       val bootstrap = new ServerBootstrap(channelFactory)
       bootstrap.setOptions(bootstrapOptions.asJava)
       bootstrap.setPipelineFactory(

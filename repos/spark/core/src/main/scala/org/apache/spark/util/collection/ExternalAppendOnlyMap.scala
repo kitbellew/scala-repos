@@ -155,13 +155,12 @@ class ExternalAppendOnlyMap[K, V, C](
     // An update function for the map that we reuse across entries to avoid allocating
     // a new closure each time
     var curEntry: Product2[K, V] = null
-    val update: (Boolean, C) => C =
-      (hadVal, oldVal) => {
-        if (hadVal)
-          mergeValue(oldVal, curEntry._2)
-        else
-          createCombiner(curEntry._2)
-      }
+    val update: (Boolean, C) => C = (hadVal, oldVal) => {
+      if (hadVal)
+        mergeValue(oldVal, curEntry._2)
+      else
+        createCombiner(curEntry._2)
+    }
 
     while (entries.hasNext) {
       curEntry = entries.next()

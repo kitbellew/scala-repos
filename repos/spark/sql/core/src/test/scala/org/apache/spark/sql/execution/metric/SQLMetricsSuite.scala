@@ -38,11 +38,10 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
 
   test("LongSQLMetric should not box Long") {
     val l = SQLMetrics.createLongMetric(sparkContext, "long")
-    val f =
-      () => {
-        l += 1L
-        l.add(1L)
-      }
+    val f = () => {
+      l += 1L
+      l.add(1L)
+    }
     val cl = BoxingFinder.getClassReader(f.getClass)
     val boxingFinder = new BoxingFinder()
     cl.accept(boxingFinder, 0)
@@ -54,10 +53,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   test("Normal accumulator should do boxing") {
     // We need this test to make sure BoxingFinder works.
     val l = sparkContext.accumulator(0L)
-    val f =
-      () => {
-        l += 1L
-      }
+    val f = () => {
+      l += 1L
+    }
     val cl = BoxingFinder.getClassReader(f.getClass)
     val boxingFinder = new BoxingFinder()
     cl.accept(boxingFinder, 0)

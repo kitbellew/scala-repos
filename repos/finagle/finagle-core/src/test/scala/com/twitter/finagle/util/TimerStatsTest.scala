@@ -60,14 +60,13 @@ class TimerStatsTest
     // kick off the task to do the monitoring.
     // have the monitoring task to run quickly the first time and only once.
     var count = 0
-    val nextRunAt =
-      () => {
-        count += 1
-        if (count == 1)
-          1.millisecond
-        else
-          5.minutes
-      }
+    val nextRunAt = () => {
+      count += 1
+      if (count == 1)
+        1.millisecond
+      else
+        5.minutes
+    }
     TimerStats.hashedWheelTimerInternals(hwt, nextRunAt, sr)
 
     eventually {

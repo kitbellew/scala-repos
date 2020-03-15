@@ -474,17 +474,16 @@ abstract class RDD[T: ClassTag](
       if (shuffle) {
 
         /** Distributes elements evenly across output partitions, starting from a random partition. */
-        val distributePartition =
-          (index: Int, items: Iterator[T]) =>
-            {
-              var position = (new Random(index)).nextInt(numPartitions)
-              items.map { t =>
-                // Note that the hash code of the key will just be the key itself. The HashPartitioner
-                // will mod it with the number of total partitions.
-                position = position + 1
-                (position, t)
-              }
-            }: Iterator[(Int, T)]
+        val distributePartition = (index: Int, items: Iterator[T]) =>
+          {
+            var position = (new Random(index)).nextInt(numPartitions)
+            items.map { t =>
+              // Note that the hash code of the key will just be the key itself. The HashPartitioner
+              // will mod it with the number of total partitions.
+              position = position + 1
+              (position, t)
+            }
+          }: Iterator[(Int, T)]
 
         // include a shuffle step so that our upstream tasks are still distributed
         new CoalescedRDD(
@@ -1118,15 +1117,14 @@ abstract class RDD[T: ClassTag](
           }
         }
       var jobResult: Option[T] = None
-      val mergeResult =
-        (index: Int, taskResult: Option[T]) => {
-          if (taskResult.isDefined) {
-            jobResult = jobResult match {
-              case Some(value) => Some(f(value, taskResult.get))
-              case None        => taskResult
-            }
+      val mergeResult = (index: Int, taskResult: Option[T]) => {
+        if (taskResult.isDefined) {
+          jobResult = jobResult match {
+            case Some(value) => Some(f(value, taskResult.get))
+            case None        => taskResult
           }
         }
+      }
       sc.runJob(this, reducePartition, mergeResult)
       // Get the final result out of our Option, or throw an exception if the RDD was empty
       jobResult.getOrElse(
@@ -1154,18 +1152,17 @@ abstract class RDD[T: ClassTag](
           }
         }
       val partiallyReduced = mapPartitions(it => Iterator(reducePartition(it)))
-      val op: (Option[T], Option[T]) => Option[T] =
-        (c, x) => {
-          if (c.isDefined && x.isDefined) {
-            Some(cleanF(c.get, x.get))
-          } else if (c.isDefined) {
-            c
-          } else if (x.isDefined) {
-            x
-          } else {
-            None
-          }
+      val op: (Option[T], Option[T]) => Option[T] = (c, x) => {
+        if (c.isDefined && x.isDefined) {
+          Some(cleanF(c.get, x.get))
+        } else if (c.isDefined) {
+          c
+        } else if (x.isDefined) {
+          x
+        } else {
+          None
         }
+      }
       partiallyReduced
         .treeAggregate(Option.empty[T])(op, op, depth)
         .getOrElse(throw new UnsupportedOperationException("empty collection"))

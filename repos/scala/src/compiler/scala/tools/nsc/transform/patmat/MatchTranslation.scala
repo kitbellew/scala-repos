@@ -150,14 +150,13 @@ trait MatchTranslation {
 
         // paramType = the type expected by the unapply
         // TODO: paramType may contain unbound type params (run/t2800, run/t3530)
-        val makers =
-          (
-            // Statically conforms to paramType
-            if (this ensureConformsTo paramType)
-              treeMaker(binder, false, pos) :: Nil
-            else
-              typeTest :: extraction :: Nil
-          )
+        val makers = (
+          // Statically conforms to paramType
+          if (this ensureConformsTo paramType)
+            treeMaker(binder, false, pos) :: Nil
+          else
+            typeTest :: extraction :: Nil
+        )
         step(makers: _*)(extractor.subBoundTrees: _*)
       }
 
@@ -657,24 +656,23 @@ trait MatchTranslation {
             case Some(x) => definitions.isRepeated(x)
             case _       => false
           }
-        val mutableBinders =
-          (
-            if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
-                (paramAccessors exists (x =>
-                  x.isMutable || definitions.isRepeated(x)))) {
+        val mutableBinders = (
+          if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
+              (paramAccessors exists (x =>
+                x.isMutable || definitions.isRepeated(x)))) {
 
-              subPatBinders.zipWithIndex.flatMap {
-                case (binder, idx) =>
-                  val param = paramAccessorAt(idx)
-                  if (param.isMutable || (definitions.isRepeated(
-                        param) && !aligner.isStar))
-                    binder :: Nil
-                  else
-                    Nil
-              }
-            } else
-              Nil
-          )
+            subPatBinders.zipWithIndex.flatMap {
+              case (binder, idx) =>
+                val param = paramAccessorAt(idx)
+                if (param.isMutable || (definitions.isRepeated(
+                      param) && !aligner.isStar))
+                  binder :: Nil
+                else
+                  Nil
+            }
+          } else
+            Nil
+        )
 
         // checks binder ne null before chaining to the next extractor
         ProductExtractorTreeMaker(binder, lengthGuard(binder))(

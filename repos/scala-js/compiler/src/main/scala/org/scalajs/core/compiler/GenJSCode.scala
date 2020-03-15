@@ -1937,31 +1937,29 @@ abstract class GenJSCode
               val CaseDef(pat, _, body) = caseDef
 
               // Extract exception type and variable
-              val (tpe, boundVar) =
-                (pat match {
-                  case Typed(Ident(nme.WILDCARD), tpt) =>
-                    (tpt.tpe, None)
-                  case Ident(nme.WILDCARD) =>
-                    (ThrowableClass.tpe, None)
-                  case Bind(_, _) =>
-                    (pat.symbol.tpe, Some(encodeLocalSym(pat.symbol)))
-                })
+              val (tpe, boundVar) = (pat match {
+                case Typed(Ident(nme.WILDCARD), tpt) =>
+                  (tpt.tpe, None)
+                case Ident(nme.WILDCARD) =>
+                  (ThrowableClass.tpe, None)
+                case Bind(_, _) =>
+                  (pat.symbol.tpe, Some(encodeLocalSym(pat.symbol)))
+              })
 
               // Generate the body that must be executed if the exception matches
-              val bodyWithBoundVar =
-                (boundVar match {
-                  case None =>
-                    genStatOrExpr(body, isStat)
-                  case Some(bv) =>
-                    val castException = genAsInstanceOf(exceptVar, tpe)
-                    js.Block(
-                      js.VarDef(
-                        bv,
-                        toIRType(tpe),
-                        mutable = false,
-                        castException),
-                      genStatOrExpr(body, isStat))
-                })
+              val bodyWithBoundVar = (boundVar match {
+                case None =>
+                  genStatOrExpr(body, isStat)
+                case Some(bv) =>
+                  val castException = genAsInstanceOf(exceptVar, tpe)
+                  js.Block(
+                    js.VarDef(
+                      bv,
+                      toIRType(tpe),
+                      mutable = false,
+                      castException),
+                    genStatOrExpr(body, isStat))
+              })
 
               // Generate the test
               if (tpe == ThrowableClass.tpe) {

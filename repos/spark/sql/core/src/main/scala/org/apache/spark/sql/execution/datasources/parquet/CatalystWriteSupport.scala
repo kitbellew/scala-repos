@@ -210,19 +210,17 @@ private[parquet] class CatalystWriteSupport
 
     val numBytes = minBytesForPrecision(precision)
 
-    val int32Writer =
-      (row: SpecializedGetters, ordinal: Int) => {
-        val unscaledLong =
-          row.getDecimal(ordinal, precision, scale).toUnscaledLong
-        recordConsumer.addInteger(unscaledLong.toInt)
-      }
+    val int32Writer = (row: SpecializedGetters, ordinal: Int) => {
+      val unscaledLong =
+        row.getDecimal(ordinal, precision, scale).toUnscaledLong
+      recordConsumer.addInteger(unscaledLong.toInt)
+    }
 
-    val int64Writer =
-      (row: SpecializedGetters, ordinal: Int) => {
-        val unscaledLong =
-          row.getDecimal(ordinal, precision, scale).toUnscaledLong
-        recordConsumer.addLong(unscaledLong)
-      }
+    val int64Writer = (row: SpecializedGetters, ordinal: Int) => {
+      val unscaledLong =
+        row.getDecimal(ordinal, precision, scale).toUnscaledLong
+      recordConsumer.addLong(unscaledLong)
+    }
 
     val binaryWriterUsingUnscaledLong =
       (row: SpecializedGetters, ordinal: Int) => {

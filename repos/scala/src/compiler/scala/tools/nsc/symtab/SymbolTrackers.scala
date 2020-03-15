@@ -131,15 +131,14 @@ trait SymbolTrackers {
             val all = masked | oldFlags
             val strs = 0 to 63 map { bit =>
               val flag = 1L << bit
-              val prefix =
-                (
-                  if ((added & flag) != 0L)
-                    "+"
-                  else if ((removed & flag) != 0L)
-                    "-"
-                  else
-                    ""
-                )
+              val prefix = (
+                if ((added & flag) != 0L)
+                  "+"
+                else if ((removed & flag) != 0L)
+                  "-"
+                else
+                  ""
+              )
               if ((all & flag) == 0L)
                 ""
               else

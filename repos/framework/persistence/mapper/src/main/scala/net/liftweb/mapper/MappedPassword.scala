@@ -330,11 +330,10 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.salt_i() =
-              (if (v == null)
-                 null
-               else
-                 v.toString);
+            tv.salt_i() = (if (v == null)
+                             null
+                           else
+                             v.toString);
             tv.resetDirty
           }
         }
@@ -347,11 +346,10 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.password() =
-              (if (v == null)
-                 null
-               else
-                 v.toString);
+            tv.password() = (if (v == null)
+                               null
+                             else
+                               v.toString);
             tv.resetDirty
           }
         }

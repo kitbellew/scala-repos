@@ -1650,9 +1650,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
       val rhalf = nrows / 2
 
-      val maxf =
-        (a: List[Int], b: List[String]) =>
-          (a zip b).map(v => math.max(v._1, v._2.length))
+      val maxf = (a: List[Int], b: List[String]) =>
+        (a zip b).map(v => math.max(v._1, v._2.length))
 
       // calc row index width
       val rsca = rowIx.scalarTag

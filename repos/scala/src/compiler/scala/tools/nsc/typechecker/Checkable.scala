@@ -182,24 +182,23 @@ trait Checkable {
       |[P4] $P4%-6s None of the above  // !(P1 || P2 || P3)
     """.stripMargin.trim
 
-    val result =
-      (
-        if (X.isErroneous || P.isErroneous)
-          CheckabilityError
-        else if (P1)
-          StaticallyTrue
-        else if (P2)
-          StaticallyFalse
-        else if (P3)
-          RuntimeCheckable
-        else if (uncheckableType == NoType) {
-          // Avoid warning (except ourselves) if we can't pinpoint the uncheckable type
-          debuglog(
-            "Checkability checker says 'Uncheckable', but uncheckable type cannot be found:\n" + summaryString)
-          CheckabilityError
-        } else
-          Uncheckable
-      )
+    val result = (
+      if (X.isErroneous || P.isErroneous)
+        CheckabilityError
+      else if (P1)
+        StaticallyTrue
+      else if (P2)
+        StaticallyFalse
+      else if (P3)
+        RuntimeCheckable
+      else if (uncheckableType == NoType) {
+        // Avoid warning (except ourselves) if we can't pinpoint the uncheckable type
+        debuglog(
+          "Checkability checker says 'Uncheckable', but uncheckable type cannot be found:\n" + summaryString)
+        CheckabilityError
+      } else
+        Uncheckable
+    )
     lazy val uncheckableType =
       if (Psym.isAbstractType)
         P
@@ -408,13 +407,12 @@ trait Checkable {
               tree.pos,
               s"fruitless type test: a value of type $X cannot also be a $PString$addendum")
           } else if (checker.isUncheckable) {
-            val msg =
-              (
-                if (checker.uncheckableType =:= P)
-                  s"abstract type $where$PString"
-                else
-                  s"${checker.uncheckableMessage} in type $where$PString"
-              )
+            val msg = (
+              if (checker.uncheckableType =:= P)
+                s"abstract type $where$PString"
+              else
+                s"${checker.uncheckableMessage} in type $where$PString"
+            )
             reporter.warning(
               tree.pos,
               s"$msg is unchecked since it is eliminated by erasure")

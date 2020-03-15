@@ -677,13 +677,12 @@ trait MethodSynthesis {
       val hasBoolBP = mods hasAnnotationNamed tpnme.BooleanBeanPropertyAnnot
 
       if (hasBP || hasBoolBP) {
-        val getter =
-          (
-            if (hasBP)
-              new BeanGetter(tree) with NoSymbolBeanGetter
-            else
-              new BooleanBeanGetter(tree) with NoSymbolBeanGetter
-          )
+        val getter = (
+          if (hasBP)
+            new BeanGetter(tree) with NoSymbolBeanGetter
+          else
+            new BooleanBeanGetter(tree) with NoSymbolBeanGetter
+        )
         getter :: {
           if (mods.isMutable)
             List(BeanSetter(tree))

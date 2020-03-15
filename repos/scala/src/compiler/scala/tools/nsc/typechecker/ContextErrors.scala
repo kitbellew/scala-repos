@@ -444,20 +444,18 @@ trait ContextErrors {
               } else
                 ""
             }
-            val semicolon =
-              (
-                if (linePrecedes(qual, sel))
-                  "\npossible cause: maybe a semicolon is missing before `" + nameString + "'?"
-                else
-                  ""
-              )
-            val notAnyRef =
-              (
-                if (ObjectClass.info.member(name).exists)
-                  notAnyRefMessage(target)
-                else
-                  ""
-              )
+            val semicolon = (
+              if (linePrecedes(qual, sel))
+                "\npossible cause: maybe a semicolon is missing before `" + nameString + "'?"
+              else
+                ""
+            )
+            val notAnyRef = (
+              if (ObjectClass.info.member(name).exists)
+                notAnyRefMessage(target)
+              else
+                ""
+            )
             companion + notAnyRef + semicolon
           }
           def targetStr = targetKindString + target.directObjectString
@@ -1120,13 +1118,12 @@ trait ContextErrors {
             s"Macro expansion contains free $kind variable %s. Have you forgotten to use %s? "
               + s"If you have troubles tracking free $kind variables, consider using -Xlog-free-${kind}s"
           )
-        val forgotten =
-          (
-            if (sym.isTerm)
-              "splice when splicing this variable into a reifee"
-            else
-              "c.WeakTypeTag annotation for this type parameter"
-          )
+        val forgotten = (
+          if (sym.isTerm)
+            "splice when splicing this variable into a reifee"
+          else
+            "c.WeakTypeTag annotation for this type parameter"
+        )
         macroExpansionError(
           expandee,
           template(sym.name.nameKind)

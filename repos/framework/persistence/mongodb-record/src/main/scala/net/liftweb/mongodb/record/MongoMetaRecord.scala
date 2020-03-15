@@ -370,10 +370,9 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     * Update a record with a DBObject query
     */
   def update(obj: BaseRecord, update: DBObject): Unit = {
-    val query =
-      (BasicDBObjectBuilder.start
-        .add("_id", idValue(obj))
-        .get)
+    val query = (BasicDBObjectBuilder.start
+      .add("_id", idValue(obj))
+      .get)
     this.update(query, update)
   }
 

@@ -3677,18 +3677,17 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         constrMods: Modifiers,
         vparamss: List[List[ValDef]],
         tstart: Offset): Template = {
-      val (parents, self, body) =
-        (
-          if (in.token == EXTENDS || in.token == SUBTYPE && mods.isTrait) {
-            in.nextToken()
-            template()
-          } else {
-            newLineOptWhenFollowedBy(LBRACE)
-            val (self, body) = templateBodyOpt(parenMeansSyntaxError =
-              mods.isTrait || name.isTermName)
-            (List(), self, body)
-          }
-        )
+      val (parents, self, body) = (
+        if (in.token == EXTENDS || in.token == SUBTYPE && mods.isTrait) {
+          in.nextToken()
+          template()
+        } else {
+          newLineOptWhenFollowedBy(LBRACE)
+          val (self, body) = templateBodyOpt(parenMeansSyntaxError =
+            mods.isTrait || name.isTermName)
+          (List(), self, body)
+        }
+      )
       def anyvalConstructor() =
         (
           // Not a well-formed constructor, has to be finished later - see note

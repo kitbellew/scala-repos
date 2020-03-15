@@ -315,19 +315,17 @@ class LogisticRegression @Since("1.2.0") (
       instances.persist(StorageLevel.MEMORY_AND_DISK)
 
     val (summarizer, labelSummarizer) = {
-      val seqOp =
+      val seqOp = (
+          c: (MultivariateOnlineSummarizer, MultiClassSummarizer),
+          instance: Instance) =>
         (
-            c: (MultivariateOnlineSummarizer, MultiClassSummarizer),
-            instance: Instance) =>
-          (
-            c._1.add(instance.features, instance.weight),
-            c._2.add(instance.label, instance.weight))
+          c._1.add(instance.features, instance.weight),
+          c._2.add(instance.label, instance.weight))
 
-      val combOp =
-        (
-            c1: (MultivariateOnlineSummarizer, MultiClassSummarizer),
-            c2: (MultivariateOnlineSummarizer, MultiClassSummarizer)) =>
-          (c1._1.merge(c2._1), c1._2.merge(c2._2))
+      val combOp = (
+          c1: (MultivariateOnlineSummarizer, MultiClassSummarizer),
+          c2: (MultivariateOnlineSummarizer, MultiClassSummarizer)) =>
+        (c1._1.merge(c2._1), c1._2.merge(c2._2))
 
       instances.treeAggregate(
         new MultivariateOnlineSummarizer,
@@ -1243,8 +1241,8 @@ private class LogisticCostFun(
 
     val logisticAggregator = {
       val seqOp = (c: LogisticAggregator, instance: Instance) => c.add(instance)
-      val combOp =
-        (c1: LogisticAggregator, c2: LogisticAggregator) => c1.merge(c2)
+      val combOp = (c1: LogisticAggregator, c2: LogisticAggregator) =>
+        c1.merge(c2)
 
       instances.treeAggregate(
         new LogisticAggregator(

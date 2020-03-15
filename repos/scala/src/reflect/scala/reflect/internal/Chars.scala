@@ -28,17 +28,16 @@ trait Chars {
     *  -1 if no success
     */
   def digit2int(ch: Char, base: Int): Int = {
-    val num =
-      (
-        if (ch <= '9')
-          ch - '0'
-        else if ('a' <= ch && ch <= 'z')
-          ch - 'a' + 10
-        else if ('A' <= ch && ch <= 'Z')
-          ch - 'A' + 10
-        else
-          -1
-      )
+    val num = (
+      if (ch <= '9')
+        ch - '0'
+      else if ('a' <= ch && ch <= 'z')
+        ch - 'a' + 10
+      else if ('A' <= ch && ch <= 'Z')
+        ch - 'A' + 10
+      else
+        -1
+    )
     if (0 <= num && num < base)
       num
     else

@@ -27,13 +27,12 @@ trait Tabulator {
     import scala.tools.nsc.interpreter.SimpleMath._
     val longest = (items map (_.length)).max
     val columnWidth = longest + marginSize
-    val maxcols =
-      (
-        if (columnWidth >= width)
-          1
-        else
-          1 max (width / columnWidth) // make sure it doesn't divide to 0
-      )
+    val maxcols = (
+      if (columnWidth >= width)
+        1
+      else
+        1 max (width / columnWidth) // make sure it doesn't divide to 0
+    )
     val nrows = items.size /% maxcols
     val ncols = items.size /% nrows
     val groupSize = ncols

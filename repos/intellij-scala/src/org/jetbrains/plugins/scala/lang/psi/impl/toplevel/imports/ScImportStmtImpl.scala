@@ -145,21 +145,20 @@ class ScImportStmtImpl private (
           }
 
         //todo: making lazy next two definitions leads to compiler failure
-        val poOpt =
-          () =>
-            exprQual.bind() match {
-              case Some(ScalaResolveResult(p: PsiPackage, _)) =>
-                Option(ScalaShortNamesCacheManager
+        val poOpt = () =>
+          exprQual.bind() match {
+            case Some(ScalaResolveResult(p: PsiPackage, _)) =>
+              Option(
+                ScalaShortNamesCacheManager
                   .getInstance(getProject)
                   .getPackageObjectByName(p.getQualifiedName, getResolveScope))
-              case _ => None
-            }
+            case _ => None
+          }
 
-        val exprQualRefType =
-          () =>
-            ScSimpleTypeElementImpl.calculateReferenceType(
-              exprQual,
-              shapesOnly = false)
+        val exprQualRefType = () =>
+          ScSimpleTypeElementImpl.calculateReferenceType(
+            exprQual,
+            shapesOnly = false)
 
         def checkResolve(resolve: ResolveResult): Boolean = {
           resolve match {

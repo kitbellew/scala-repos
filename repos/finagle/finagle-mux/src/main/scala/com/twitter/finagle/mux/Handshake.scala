@@ -27,10 +27,9 @@ private[finagle] object Handshake {
     * than mux `Message` types to more easily allow for features that need to
     * operate on the raw byte frame (e.g. compression, checksums, etc).
     */
-  type Negotiator =
-    (
-        Headers,
-        Transport[ChannelBuffer, ChannelBuffer]) => Transport[Message, Message]
+  type Negotiator = (
+      Headers,
+      Transport[ChannelBuffer, ChannelBuffer]) => Transport[Message, Message]
 
   /**
     * Returns Some(value) if `key` exists in `headers`, otherwise None.
@@ -64,10 +63,9 @@ private[finagle] object Handshake {
     * A noop negotiator returns a transport that ignores the headers and
     * encodes / decodes mux messages.
     */
-  val NoopNegotiator: Negotiator =
-    (_, trans) => {
-      trans.map(Message.encode, Message.decode)
-    }
+  val NoopNegotiator: Negotiator = (_, trans) => {
+    trans.map(Message.encode, Message.decode)
+  }
 
   /**
     * In order to simplify the rollout of handshakes, we need to make

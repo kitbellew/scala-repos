@@ -1421,13 +1421,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         val setting = new ss.PhasesSetting("fake", "fake")
         for (p <- specs.flatten.to[Set]) {
           setting.value = List(p)
-          val count =
-            (
-              if (including)
-                first.iterator count (setting containsPhase _)
-              else
-                phaseDescriptors count (setting contains _.phaseName)
-            )
+          val count = (
+            if (including)
+              first.iterator count (setting containsPhase _)
+            else
+              phaseDescriptors count (setting contains _.phaseName)
+          )
           if (count == 0)
             warning(s"'$p' specifies no phase")
           if (count > 1 && !isSpecial(p))

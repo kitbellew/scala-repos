@@ -183,11 +183,10 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
       val srclen = src.length
       while (i < srclen) {
         val in = src(i)
-        src(i) =
-          (if (in == 0x7f)
-             0.toByte
-           else
-             (in + 1).toByte)
+        src(i) = (if (in == 0x7f)
+                    0.toByte
+                  else
+                    (in + 1).toByte)
         i += 1
       }
       src

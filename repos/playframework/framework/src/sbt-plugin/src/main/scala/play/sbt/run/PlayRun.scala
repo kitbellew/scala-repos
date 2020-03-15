@@ -69,21 +69,20 @@ object PlayRun {
       val scope = resolvedScoped.value.scope
       val interaction = playInteractionMode.value
 
-      val reloadCompile =
-        () =>
-          PlayReload.compile(
-            () => Project.runTask(playReload in scope, state).map(_._2).get,
-            () =>
-              Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
-            () =>
-              Project
-                .runTask(streamsManager in scope, state)
-                .map(_._2)
-                .get
-                .toEither
-                .right
-                .toOption
-          )
+      val reloadCompile = () =>
+        PlayReload.compile(
+          () => Project.runTask(playReload in scope, state).map(_._2).get,
+          () =>
+            Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
+          () =>
+            Project
+              .runTask(streamsManager in scope, state)
+              .map(_._2)
+              .get
+              .toEither
+              .right
+              .toOption
+        )
 
       val runSbtTask: String => AnyRef =
         (task: String) => {

@@ -354,13 +354,12 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     *    scala> trait T { def foo[A] = 0}; object O extends T { override def foo[B] = 0 }
     */
   private def specializedName(sym: Symbol, env: TypeEnv): TermName = {
-    val tvars =
-      (
-        if (sym.isClass)
-          env.keySet
-        else
-          specializedTypeVars(sym).intersect(env.keySet)
-      )
+    val tvars = (
+      if (sym.isClass)
+        env.keySet
+      else
+        specializedTypeVars(sym).intersect(env.keySet)
+    )
     specializedName(sym.name, tvars, env)
   }
 
@@ -2297,12 +2296,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
               hasSpecializedFields = true
             if (m.isClassConstructor) {
               val origParams = parameters(info(m).target)
-              val vparams =
-                (map2(m.info.paramTypes, origParams)((tp, sym) =>
-                  m.newValue(
-                    specializedName(sym, typeEnv(sClass)),
-                    sym.pos,
-                    sym.flags) setInfo tp))
+              val vparams = (map2(m.info.paramTypes, origParams)((tp, sym) =>
+                m.newValue(
+                  specializedName(sym, typeEnv(sClass)),
+                  sym.pos,
+                  sym.flags) setInfo tp))
               // param accessors for private members (the others are inherited from the generic class)
               if (m.isPrimaryConstructor) {
                 for (param <- vparams;

@@ -82,12 +82,11 @@ private[finagle] case class Netty4Listener[In, Out](
       serveTransport: Transport[In, Out] => Unit): ListeningServer =
     new ListeningServer with CloseAwaitably {
 
-      val newBridge =
-        () =>
-          new ServerBridge(
-            transportFactory,
-            serveTransport
-          )
+      val newBridge = () =>
+        new ServerBridge(
+          transportFactory,
+          serveTransport
+        )
 
       val bossLoop: EventLoopGroup =
         new NioEventLoopGroup(

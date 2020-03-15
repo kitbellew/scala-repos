@@ -265,11 +265,10 @@ package scala.collection.immutable.redblacktree {
         case (tree, parm, newTree) =>
           val from = parm._1 flatMap (nodeAt(tree, _) map (_._1))
           val to = parm._2 flatMap (nodeAt(tree, _) map (_._1))
-          val filteredTree =
-            (keysIterator(tree)
-              .filter(key => from forall (key >=))
-              .filter(key => to forall (key <))
-              .toList)
+          val filteredTree = (keysIterator(tree)
+            .filter(key => from forall (key >=))
+            .filter(key => to forall (key <))
+            .toList)
           filteredTree == keysIterator(newTree).toList
       }
   }

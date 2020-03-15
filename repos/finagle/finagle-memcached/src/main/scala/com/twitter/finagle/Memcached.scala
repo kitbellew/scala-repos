@@ -201,9 +201,8 @@ object Memcached
 
     private[Memcached] val ProtocolLibraryName = "memcached"
 
-    private[this] val defaultFailureAccrualPolicy =
-      () =>
-        FailureAccrualPolicy.consecutiveFailures(100, Backoff.const(1.second))
+    private[this] val defaultFailureAccrualPolicy = () =>
+      FailureAccrualPolicy.consecutiveFailures(100, Backoff.const(1.second))
 
     /**
       * Default stack parameters used for memcached client. We change the

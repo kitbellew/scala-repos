@@ -129,13 +129,12 @@ private[internal] trait TypeMaps {
       tp match {
         case tr @ TypeRef(pre, sym, args) =>
           val pre1 = this(pre)
-          val args1 =
-            (
-              if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
-                mapOverArgs(args, sym.typeParams)
-              else
-                args mapConserve this
-            )
+          val args1 = (
+            if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
+              mapOverArgs(args, sym.typeParams)
+            else
+              args mapConserve this
+          )
           if ((pre1 eq pre) && (args1 eq args))
             tp
           else

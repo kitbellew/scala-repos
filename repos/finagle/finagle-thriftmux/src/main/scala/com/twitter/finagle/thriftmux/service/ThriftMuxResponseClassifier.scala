@@ -62,8 +62,8 @@ object ThriftMuxResponseClassifier {
   private[this] val NoDeserializeCtx: DeserializeCtx[Nothing] =
     new DeserializeCtx[Nothing](null, null)
 
-  private[this] val NoDeserializerFn: () => DeserializeCtx[_] =
-    () => NoDeserializeCtx
+  private[this] val NoDeserializerFn: () => DeserializeCtx[_] = () =>
+    NoDeserializeCtx
 
   /**
     * [[mux.Response mux Responses]] need to be deserialized from

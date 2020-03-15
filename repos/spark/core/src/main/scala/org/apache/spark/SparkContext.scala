@@ -2049,8 +2049,8 @@ class SparkContext(config: SparkConf)
       rdd: RDD[T],
       processPartition: Iterator[T] => U,
       resultHandler: (Int, U) => Unit) {
-    val processFunc =
-      (context: TaskContext, iter: Iterator[T]) => processPartition(iter)
+    val processFunc = (context: TaskContext, iter: Iterator[T]) =>
+      processPartition(iter)
     runJob[T, U](rdd, processFunc, 0 until rdd.partitions.length, resultHandler)
   }
 

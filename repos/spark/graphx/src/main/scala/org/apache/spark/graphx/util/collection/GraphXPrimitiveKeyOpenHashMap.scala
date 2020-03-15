@@ -151,8 +151,7 @@ private[graphx] class GraphXPrimitiveKeyOpenHashMap[
       _values = new Array[V](newCapacity)
     }
 
-  protected var move =
-    (oldPos: Int, newPos: Int) => {
-      _values(newPos) = _oldValues(oldPos)
-    }
+  protected var move = (oldPos: Int, newPos: Int) => {
+    _values(newPos) = _oldValues(oldPos)
+  }
 }

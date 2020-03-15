@@ -56,39 +56,38 @@ object LAScheduler extends LAScheduler with Loggable {
   @volatile var blockingQueueSize: Box[Int] = Full(200000)
 
   @volatile
-  var createExecutor: () => ILAExecute =
-    () => {
-      new ILAExecute {
-        import java.util.concurrent._
+  var createExecutor: () => ILAExecute = () => {
+    new ILAExecute {
+      import java.util.concurrent._
 
-        private val es = // Executors.newFixedThreadPool(threadPoolSize)
-          new ThreadPoolExecutor(
-            threadPoolSize,
-            maxThreadPoolSize,
-            60,
-            TimeUnit.SECONDS,
-            blockingQueueSize match {
-              case Full(x) =>
-                new ArrayBlockingQueue(x)
-              case _ => new LinkedBlockingQueue
-            })
-
-        def execute(f: () => Unit): Unit =
-          es.execute(new Runnable {
-            def run() {
-              try {
-                f()
-              } catch {
-                case e: Exception => logger.error("Lift Actor Scheduler", e)
-              }
-            }
+      private val es = // Executors.newFixedThreadPool(threadPoolSize)
+        new ThreadPoolExecutor(
+          threadPoolSize,
+          maxThreadPoolSize,
+          60,
+          TimeUnit.SECONDS,
+          blockingQueueSize match {
+            case Full(x) =>
+              new ArrayBlockingQueue(x)
+            case _ => new LinkedBlockingQueue
           })
 
-        def shutdown(): Unit = {
-          es.shutdown()
-        }
+      def execute(f: () => Unit): Unit =
+        es.execute(new Runnable {
+          def run() {
+            try {
+              f()
+            } catch {
+              case e: Exception => logger.error("Lift Actor Scheduler", e)
+            }
+          }
+        })
+
+      def shutdown(): Unit = {
+        es.shutdown()
       }
     }
+  }
 
   @volatile
   var exec: ILAExecute = _

@@ -394,23 +394,21 @@ private[http] object OutgoingConnectionBlueprint {
 
         setHandler(out, eagerTerminateOutput)
 
-        val getNextMethod =
-          () ⇒ {
-            waitingForMethod = true
-            if (isClosed(bypassInput))
-              completeStage()
-            else
-              pull(bypassInput)
-          }
+        val getNextMethod = () ⇒ {
+          waitingForMethod = true
+          if (isClosed(bypassInput))
+            completeStage()
+          else
+            pull(bypassInput)
+        }
 
-        val getNextData =
-          () ⇒ {
-            waitingForMethod = false
-            if (isClosed(dataInput))
-              completeStage()
-            else
-              pull(dataInput)
-          }
+        val getNextData = () ⇒ {
+          waitingForMethod = false
+          if (isClosed(dataInput))
+            completeStage()
+          else
+            pull(dataInput)
+        }
 
         @tailrec def drainParser(
             current: ResponseOutput,

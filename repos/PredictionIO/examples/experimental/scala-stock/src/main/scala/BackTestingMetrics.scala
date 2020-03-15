@@ -168,14 +168,13 @@ class BacktestingEvaluator(val params: BacktestingParams)
       // Book keeping
       val nav = cash + positions.values.sum
 
-      val ret =
-        (if (dailyStats.isEmpty)
-           0
-         else {
-           val yestStats = dailyStats.last
-           val yestNav = yestStats.nav
-           (nav - yestNav) / nav - 1
-         })
+      val ret = (if (dailyStats.isEmpty)
+                   0
+                 else {
+                   val yestStats = dailyStats.last
+                   val yestNav = yestStats.nav
+                   (nav - yestNav) / nav - 1
+                 })
 
       dailyStats.append(
         DailyStat(

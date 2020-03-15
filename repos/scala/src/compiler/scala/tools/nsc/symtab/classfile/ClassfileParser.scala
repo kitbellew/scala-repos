@@ -1377,13 +1377,12 @@ abstract class ClassfileParser {
     private def innerSymbol(entry: InnerClassEntry): Symbol = {
       val name = entry.originalName.toTypeName
       val enclosing = entry.enclosing
-      val member =
-        (
-          if (enclosing == clazz)
-            entry.scope lookup name
-          else
-            lookupMemberAtTyperPhaseIfPossible(enclosing, name)
-        )
+      val member = (
+        if (enclosing == clazz)
+          entry.scope lookup name
+        else
+          lookupMemberAtTyperPhaseIfPossible(enclosing, name)
+      )
       def newStub =
         enclosing.newStubSymbol(
           name,

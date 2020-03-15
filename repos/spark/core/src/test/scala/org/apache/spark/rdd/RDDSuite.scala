@@ -203,18 +203,16 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       new StringMap {
         override def default(key: String): Int = 0
       }
-    val mergeElement: (StringMap, (String, Int)) => StringMap =
-      (map, pair) => {
-        map(pair._1) += pair._2
-        map
+    val mergeElement: (StringMap, (String, Int)) => StringMap = (map, pair) => {
+      map(pair._1) += pair._2
+      map
+    }
+    val mergeMaps: (StringMap, StringMap) => StringMap = (map1, map2) => {
+      for ((key, value) <- map2) {
+        map1(key) += value
       }
-    val mergeMaps: (StringMap, StringMap) => StringMap =
-      (map1, map2) => {
-        for ((key, value) <- map2) {
-          map1(key) += value
-        }
-        map1
-      }
+      map1
+    }
     val result = pairs.aggregate(emptyMap)(mergeElement, mergeMaps)
     assert(result.toSet === Set(("a", 6), ("b", 2), ("c", 5)))
   }

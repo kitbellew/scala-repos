@@ -96,15 +96,14 @@ object MapperRules extends Factory {
     * default, a table row ( &lt;tr&gt; ) is presented, but
     * you can change the function to display something else.
     */
-  var formatFormElement: (NodeSeq, NodeSeq) => NodeSeq =
-    (name, form) =>
-      <xml:group><tr>
+  var formatFormElement: (NodeSeq, NodeSeq) => NodeSeq = (name, form) =>
+    <xml:group><tr>
       <td>{
-        name
-      }</td>
+      name
+    }</td>
       <td>{
-        form
-      }</td>
+      form
+    }</td>
              </tr></xml:group>
 
   /**
@@ -155,8 +154,8 @@ object MapperRules extends Factory {
     *
     *  MapperRules.columnName =  (_,name) => StringHelpers.snakify(name)
     */
-  var columnName: (ConnectionIdentifier, String) => String =
-    (_, name) => name.toLowerCase
+  var columnName: (ConnectionIdentifier, String) => String = (_, name) =>
+    name.toLowerCase
 
   /**
     * Calculate the name of a table based on the name
@@ -167,8 +166,8 @@ object MapperRules extends Factory {
     *
     *  MapperRules.tableName =  (_,name) => StringHelpers.snakify(name)
     */
-  var tableName: (ConnectionIdentifier, String) => String =
-    (_, name) => name.toLowerCase
+  var tableName: (ConnectionIdentifier, String) => String = (_, name) =>
+    name.toLowerCase
 }
 
 trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {

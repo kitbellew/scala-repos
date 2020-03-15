@@ -1502,11 +1502,10 @@ trait Iterator[+A] extends TraversableOnce[A] {
       replaced: Int): Iterator[B] =
     new AbstractIterator[B] {
       private var origElems = self
-      private var i =
-        (if (from > 0)
-           from
-         else
-           0) // Counts down, switch to patch on 0, -1 means use patch first
+      private var i = (if (from > 0)
+                         from
+                       else
+                         0) // Counts down, switch to patch on 0, -1 means use patch first
       def hasNext: Boolean = {
         if (i == 0) {
           origElems = origElems drop replaced

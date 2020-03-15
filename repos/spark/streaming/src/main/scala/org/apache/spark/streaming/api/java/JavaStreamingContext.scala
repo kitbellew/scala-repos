@@ -496,11 +496,10 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
   ): JavaDStream[T] = {
     implicit val cmt: ClassTag[T] = implicitly[ClassTag[AnyRef]]
       .asInstanceOf[ClassTag[T]]
-    val scalaTransformFunc =
-      (rdds: Seq[RDD[_]], time: Time) => {
-        val jrdds = rdds.map(JavaRDD.fromRDD(_)).asJava
-        transformFunc.call(jrdds, time).rdd
-      }
+    val scalaTransformFunc = (rdds: Seq[RDD[_]], time: Time) => {
+      val jrdds = rdds.map(JavaRDD.fromRDD(_)).asJava
+      transformFunc.call(jrdds, time).rdd
+    }
     ssc.transform(dstreams.asScala.map(_.dstream).toSeq, scalaTransformFunc)
   }
 
@@ -521,11 +520,10 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       .asInstanceOf[ClassTag[K]]
     implicit val cmv: ClassTag[V] = implicitly[ClassTag[AnyRef]]
       .asInstanceOf[ClassTag[V]]
-    val scalaTransformFunc =
-      (rdds: Seq[RDD[_]], time: Time) => {
-        val jrdds = rdds.map(JavaRDD.fromRDD(_)).asJava
-        transformFunc.call(jrdds, time).rdd
-      }
+    val scalaTransformFunc = (rdds: Seq[RDD[_]], time: Time) => {
+      val jrdds = rdds.map(JavaRDD.fromRDD(_)).asJava
+      transformFunc.call(jrdds, time).rdd
+    }
     ssc.transform(dstreams.asScala.map(_.dstream).toSeq, scalaTransformFunc)
   }
 

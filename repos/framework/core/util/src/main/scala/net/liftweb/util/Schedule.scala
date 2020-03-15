@@ -56,18 +56,17 @@ sealed trait Schedule extends Loggable {
     */
   @volatile var blockingQueueSize: Box[Int] = Full(200000)
 
-  @volatile var buildExecutor: () => ThreadPoolExecutor =
-    () =>
-      new ThreadPoolExecutor(
-        threadPoolSize,
-        maxThreadPoolSize,
-        60,
-        TimeUnit.SECONDS,
-        blockingQueueSize match {
-          case Full(x) =>
-            new ArrayBlockingQueue(x)
-          case _ => new LinkedBlockingQueue
-        })
+  @volatile var buildExecutor: () => ThreadPoolExecutor = () =>
+    new ThreadPoolExecutor(
+      threadPoolSize,
+      maxThreadPoolSize,
+      60,
+      TimeUnit.SECONDS,
+      blockingQueueSize match {
+        case Full(x) =>
+          new ArrayBlockingQueue(x)
+        case _ => new LinkedBlockingQueue
+      })
 
   /** The underlying <code>java.util.concurrent.ScheduledExecutor</code> */
   private var service: ScheduledExecutorService = Executors

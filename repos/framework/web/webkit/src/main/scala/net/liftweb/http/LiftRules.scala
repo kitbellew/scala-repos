@@ -67,8 +67,8 @@ object LiftRulesMocker {
     * will be used, otherwise the global instance in LiftRules.prodInstance
     * will be used.
     */
-  @volatile var calcLiftRulesInstance: () => LiftRules =
-    () => devTestLiftRulesInstance.box.openOr(LiftRules.prodInstance)
+  @volatile var calcLiftRulesInstance: () => LiftRules = () =>
+    devTestLiftRulesInstance.box.openOr(LiftRules.prodInstance)
 }
 
 /**
@@ -765,55 +765,54 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     * @see net.liftweb.builtin.snippet.Msgs
     */
-  @volatile var noticesToJsCmd: () => JsCmd =
-    () => {
-      import builtin.snippet.{
-        Msg,
-        Msgs,
-        MsgErrorMeta,
-        MsgNoticeMeta,
-        MsgWarningMeta
-      }
-
-      // A "wrapper" that simply returns the javascript
-      val passJs = (in: JsCmd) => in
-
-      // Delegate to Msgs for fadeout and effects
-      def noticesFadeOut(noticeType: NoticeType.Value): JsCmd =
-        Msgs.noticesFadeOut(noticeType, Noop, passJs)
-
-      def groupEffects(noticeType: NoticeType.Value): JsCmd =
-        Msgs.effects(Full(noticeType), noticeType.id, Noop, passJs)
-
-      def idEffects(id: String): JsCmd = Msgs.effects(Empty, id, Noop, passJs)
-
-      // Compute the global notices first
-      val groupMessages =
-        Msgs.renderNotices() match {
-          case NodeSeq.Empty => JsCmds.Noop
-          case xml =>
-            LiftRules.jsArtifacts.setHtml(LiftRules.noticesContainerId, xml) &
-              noticesFadeOut(NoticeType.Notice) &
-              noticesFadeOut(NoticeType.Warning) &
-              noticesFadeOut(NoticeType.Error) &
-              groupEffects(NoticeType.Notice) &
-              groupEffects(NoticeType.Warning) &
-              groupEffects(NoticeType.Error)
-        }
-
-      // We need to determine the full set of IDs that need messages rendered.
-      val idSet =
-        (S.idMessages((S.errors)) ++
-          S.idMessages((S.warnings)) ++
-          S.idMessages((S.notices))).map(_._1).distinct
-
-      // Merge each Id's messages and effects into the JsCmd chain
-      idSet.foldLeft(groupMessages) { (chain, id) =>
-        chain &
-          LiftRules.jsArtifacts.setHtml(id, Msg.renderIdMsgs(id)) &
-          idEffects(id)
-      }
+  @volatile var noticesToJsCmd: () => JsCmd = () => {
+    import builtin.snippet.{
+      Msg,
+      Msgs,
+      MsgErrorMeta,
+      MsgNoticeMeta,
+      MsgWarningMeta
     }
+
+    // A "wrapper" that simply returns the javascript
+    val passJs = (in: JsCmd) => in
+
+    // Delegate to Msgs for fadeout and effects
+    def noticesFadeOut(noticeType: NoticeType.Value): JsCmd =
+      Msgs.noticesFadeOut(noticeType, Noop, passJs)
+
+    def groupEffects(noticeType: NoticeType.Value): JsCmd =
+      Msgs.effects(Full(noticeType), noticeType.id, Noop, passJs)
+
+    def idEffects(id: String): JsCmd = Msgs.effects(Empty, id, Noop, passJs)
+
+    // Compute the global notices first
+    val groupMessages =
+      Msgs.renderNotices() match {
+        case NodeSeq.Empty => JsCmds.Noop
+        case xml =>
+          LiftRules.jsArtifacts.setHtml(LiftRules.noticesContainerId, xml) &
+            noticesFadeOut(NoticeType.Notice) &
+            noticesFadeOut(NoticeType.Warning) &
+            noticesFadeOut(NoticeType.Error) &
+            groupEffects(NoticeType.Notice) &
+            groupEffects(NoticeType.Warning) &
+            groupEffects(NoticeType.Error)
+      }
+
+    // We need to determine the full set of IDs that need messages rendered.
+    val idSet =
+      (S.idMessages((S.errors)) ++
+        S.idMessages((S.warnings)) ++
+        S.idMessages((S.notices))).map(_._1).distinct
+
+    // Merge each Id's messages and effects into the JsCmd chain
+    idSet.foldLeft(groupMessages) { (chain, id) =>
+      chain &
+        LiftRules.jsArtifacts.setHtml(id, Msg.renderIdMsgs(id)) &
+        idEffects(id)
+    }
+  }
 
   /**
     * The base name of the resource bundle of the lift core code
@@ -973,11 +972,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * The function that calculates if the response should be rendered in
     * IE6/7/8 compatibility mode
     */
-  @volatile var calcIEMode: () => Boolean =
-    () =>
-      (for (r <- S.request)
-        yield r.isIE6 || r.isIE7 ||
-          r.isIE8) openOr true
+  @volatile var calcIEMode: () => Boolean = () =>
+    (for (r <- S.request)
+      yield r.isIE6 || r.isIE7 ||
+        r.isIE8) openOr true
 
   /**
     * The JavaScript to execute to log a message on the client side when
@@ -1971,8 +1969,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     Empty
   }
 
-  @volatile var calcIE6ForResponse: () => Boolean =
-    () => S.request.map(_.isIE6) openOr false
+  @volatile var calcIE6ForResponse: () => Boolean = () =>
+    S.request.map(_.isIE6) openOr false
 
   @volatile var flipDocTypeForIE6 = true
 

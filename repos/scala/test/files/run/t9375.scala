@@ -83,13 +83,12 @@ class A extends S {
     O
   }
 
-  val f: () => SE =
-    () => {
-      object O extends SE {
-        def outer = A.this
-      }
-      O
+  val f: () => SE = () => {
+    object O extends SE {
+      def outer = A.this
     }
+    O
+  }
 
   trait GetObj {
     def O: SE;
@@ -162,13 +161,12 @@ trait T extends S {
     O
   }
 
-  val f: () => SE =
-    () => {
-      object O extends SE {
-        def outer = T.this
-      }
-      O
+  val f: () => SE = () => {
+    object O extends SE {
+      def outer = T.this
     }
+    O
+  }
 
   trait GetObj {
     def O: SE;
@@ -309,11 +307,10 @@ object M extends S {
     O
   }
 
-  val f: () => S =
-    () => {
-      object O extends S
-      O
-    }
+  val f: () => S = () => {
+    object O extends S
+    O
+  }
 }
 
 object SerializingStaticModules {

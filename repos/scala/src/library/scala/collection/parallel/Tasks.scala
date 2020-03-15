@@ -544,10 +544,9 @@ private[parallel] final class FutureTasks(executor: ExecutionContext)
 
   def execute[R, Tp](task: Task[R, Tp]): () => R = {
     val future = exec(task)
-    val callback =
-      () => {
-        Await.result(future, scala.concurrent.duration.Duration.Inf)
-      }
+    val callback = () => {
+      Await.result(future, scala.concurrent.duration.Duration.Inf)
+    }
     callback
   }
 

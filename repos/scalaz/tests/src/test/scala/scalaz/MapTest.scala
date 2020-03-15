@@ -396,9 +396,8 @@ object MapTest extends SpecLite {
     }
 
     "unionWithKey" in {
-      val f =
-        (key: Int, left: String, right: String) =>
-          key.toString + ":" + left + "|" + right
+      val f = (key: Int, left: String, right: String) =>
+        key.toString + ":" + left + "|" + right
       val r =
         fromList(List(5 -> "a", 3 -> "b"))
           .unionWithKey(fromList(List(5 -> "A", 7 -> "C")))(f)
@@ -445,24 +444,22 @@ object MapTest extends SpecLite {
     }
 
     "differenceWith" in {
-      val f =
-        (al: String, ar: String) =>
-          if (al == "b")
-            Some(al + ":" + ar)
-          else
-            None
+      val f = (al: String, ar: String) =>
+        if (al == "b")
+          Some(al + ":" + ar)
+        else
+          None
       fromList(List(5 -> "a", 3 -> "b")).differenceWith(
         fromList(List(5 -> "A", 3 -> "B", 7 -> "C")),
         f) must_=== (singleton(3, "b:B"))
     }
 
     "differenceWithKey" in {
-      val f =
-        (k: Int, al: String, ar: String) =>
-          if (al == "b")
-            Some(k.toString + ":" + al + "|" + ar)
-          else
-            None
+      val f = (k: Int, al: String, ar: String) =>
+        if (al == "b")
+          Some(k.toString + ":" + al + "|" + ar)
+        else
+          None
       fromList(List(5 -> "a", 3 -> "b")).differenceWithKey(
         fromList(List(5 -> "A", 3 -> "B", 10 -> "C")),
         f) must_=== (singleton(3, "3:b|B"))
@@ -558,12 +555,11 @@ object MapTest extends SpecLite {
     }
 
     "updateWithKey" in {
-      val f =
-        (k: Int, x: String) =>
-          if (x == "a")
-            Some(k.toString + ":new a")
-          else
-            None
+      val f = (k: Int, x: String) =>
+        if (x == "a")
+          Some(k.toString + ":new a")
+        else
+          None
 
       fromList(List(5 -> "a", 3 -> "b")).updateWithKey(5, f) must_=== (fromList(
         List(3 -> "b", 5 -> "5:new a")))
@@ -575,12 +571,11 @@ object MapTest extends SpecLite {
 
     "updateLookupWithKey" in {
       import std.tuple._
-      val f =
-        (k: Int, x: String) =>
-          if (x == "a")
-            Some(k.toString + ":new a")
-          else
-            None
+      val f = (k: Int, x: String) =>
+        if (x == "a")
+          Some(k.toString + ":new a")
+        else
+          None
 
       fromList(List(5 -> "a", 3 -> "b")).updateLookupWithKey(5, f) must_=== (
         (
@@ -719,9 +714,8 @@ object MapTest extends SpecLite {
     }
 
     "mapAccumWithKey" in {
-      val f =
-        (a: String, k: Int, b: String) =>
-          (a + " " + k.toString + "-" + b, b + "X")
+      val f = (a: String, k: Int, b: String) =>
+        (a + " " + k.toString + "-" + b, b + "X")
       fromList(List(5 -> "a", 3 -> "b")).mapAccumWithKey("Everything:")(
         f) must_=== ("Everything: 3-b 5-a", fromList(
         List(3 -> "bX", 5 -> "aX")))
@@ -765,12 +759,11 @@ object MapTest extends SpecLite {
     }
 
     "mapOptionWithKey" in {
-      val f =
-        (k: Int, _: String) =>
-          if (k < 5)
-            Some("key : " + k.toString)
-          else
-            None
+      val f = (k: Int, _: String) =>
+        if (k < 5)
+          Some("key : " + k.toString)
+        else
+          None
       fromList(List(5 -> "a", 3 -> "b"))
         .mapOptionWithKey(f) must_=== (singleton(3, "key : 3"))
     }
@@ -795,12 +788,11 @@ object MapTest extends SpecLite {
     }
 
     "mapEitherWithKey" in {
-      val f =
-        (k: Int, a: String) =>
-          if (k < 5)
-            \/.left(k * 2)
-          else
-            \/.right(a + a)
+      val f = (k: Int, a: String) =>
+        if (k < 5)
+          \/.left(k * 2)
+        else
+          \/.right(a + a)
       val lst = fromList(List(5 -> "a", 3 -> "b", 1 -> "x", 7 -> "z"))
 
       lst.mapEitherWithKey(f) must_=== (fromList(
@@ -819,9 +811,8 @@ object MapTest extends SpecLite {
     }
 
     "foldrWithKey" in {
-      val f =
-        (k: Int, a: String, result: String) =>
-          result + "(" + k.toString + ":" + a + ")"
+      val f = (k: Int, a: String, result: String) =>
+        result + "(" + k.toString + ":" + a + ")"
       fromList(List(5 -> "a", 3 -> "b"))
         .foldrWithKey("Map: ")(f) must_== "Map: (5:a)(3:b)"
     }

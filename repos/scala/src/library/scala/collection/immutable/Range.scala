@@ -526,15 +526,14 @@ object Range {
     if (step == 0)
       throw new IllegalArgumentException("step cannot be 0.")
 
-    val isEmpty =
-      (
-        if (start == end)
-          !isInclusive
-        else if (start < end)
-          step < 0
-        else
-          step > 0
-      )
+    val isEmpty = (
+      if (start == end)
+        !isInclusive
+      else if (start < end)
+        step < 0
+      else
+        step > 0
+    )
     if (isEmpty)
       0
     else {

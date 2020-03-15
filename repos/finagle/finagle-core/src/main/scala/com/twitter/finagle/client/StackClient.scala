@@ -530,15 +530,14 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
             case Address.Inet(ia, _) =>
               val endpointClient = copy1(params = prms)
               val transporter = endpointClient.newTransporter()
-              val mkFutureSvc: () => Future[Service[Req, Rep]] =
-                () =>
-                  transporter(ia).map { trans =>
-                    // we do not want to capture and request specific Locals
-                    // that would live for the life of the session.
-                    Contexts.letClear {
-                      endpointClient.newDispatcher(trans)
-                    }
+              val mkFutureSvc: () => Future[Service[Req, Rep]] = () =>
+                transporter(ia).map { trans =>
+                  // we do not want to capture and request specific Locals
+                  // that would live for the life of the session.
+                  Contexts.letClear {
+                    endpointClient.newDispatcher(trans)
                   }
+                }
               ServiceFactory(mkFutureSvc)
           }
         Stack.Leaf(this, factory)

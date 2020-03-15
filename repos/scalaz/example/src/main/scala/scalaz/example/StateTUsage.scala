@@ -177,9 +177,8 @@ object LaunchburyInterpreter extends App {
           freshendE <- freshen(e3)
         } yield freshendE
       case Let(bs, e2) => {
-        val heapAdd =
-          ((binding: (String, Expr)) =>
-            modify((s: ReduceState) => s.copy(heap = s.heap + binding)))
+        val heapAdd = ((binding: (String, Expr)) =>
+          modify((s: ReduceState) => s.copy(heap = s.heap + binding)))
         bs.toList.traverseS(heapAdd) >> reduce(e2)
       }
     }

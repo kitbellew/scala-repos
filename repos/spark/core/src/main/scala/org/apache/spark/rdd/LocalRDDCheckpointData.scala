@@ -50,9 +50,8 @@ private[spark] class LocalRDDCheckpointData[T: ClassTag](
 
     // Not all actions compute all partitions of the RDD (e.g. take). For correctness, we
     // must cache any missing partitions. TODO: avoid running another job here (SPARK-8582).
-    val action =
-      (tc: TaskContext, iterator: Iterator[T]) =>
-        Utils.getIteratorSize(iterator)
+    val action = (tc: TaskContext, iterator: Iterator[T]) =>
+      Utils.getIteratorSize(iterator)
     val missingPartitionIndices = rdd.partitions.map(_.index).filter { i =>
       !SparkEnv.get.blockManager.master.contains(RDDBlockId(rdd.id, i))
     }

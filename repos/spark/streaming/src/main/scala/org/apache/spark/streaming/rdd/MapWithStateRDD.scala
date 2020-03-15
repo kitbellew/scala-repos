@@ -231,8 +231,8 @@ private[streaming] object MapWithStateRDD {
       .emptyRDD[(K, V)]
       .partitionBy(partitioner)
 
-    val noOpFunc =
-      (time: Time, key: K, value: Option[V], state: State[S]) => None
+    val noOpFunc = (time: Time, key: K, value: Option[V], state: State[S]) =>
+      None
 
     new MapWithStateRDD[K, V, S, E](
       stateRDD,
@@ -268,8 +268,8 @@ private[streaming] object MapWithStateRDD {
       .emptyRDD[(K, V)]
       .partitionBy(partitioner)
 
-    val noOpFunc =
-      (time: Time, key: K, value: Option[V], state: State[S]) => None
+    val noOpFunc = (time: Time, key: K, value: Option[V], state: State[S]) =>
+      None
 
     new MapWithStateRDD[K, V, S, E](
       stateRDD,

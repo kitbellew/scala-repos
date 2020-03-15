@@ -1578,32 +1578,31 @@ trait Implicits {
         }
       }
 
-      val prefix =
-        (
-          // ClassTags are not path-dependent, so their materializer doesn't care about prefixes
-          if (tagClass eq ClassTagClass)
-            EmptyTree
-          else
-            pre match {
-              case SingleType(prePre, preSym) =>
-                gen.mkAttributedRef(prePre, preSym) setType pre
-              // necessary only to compile typetags used inside the Universe cake
-              case ThisType(thisSym) =>
-                gen.mkAttributedThis(thisSym)
-              case _ =>
-                // if `pre` is not a PDT, e.g. if someone wrote
-                //   implicitly[scala.reflect.macros.blackbox.Context#TypeTag[Int]]
-                // then we need to fail, because we don't know the prefix to use during type reification
-                // upd. we also need to fail silently, because this is a very common situation
-                // e.g. quite often we're searching for BaseUniverse#TypeTag, e.g. for a type tag in any universe
-                // so that if we find one, we could convert it to whatever universe we need by the means of the `in` method
-                // if no tag is found in scope, we end up here, where we ask someone to materialize the tag for us
-                // however, since the original search was about a tag with no particular prefix, we cannot proceed
-                // this situation happens very often, so emitting an error message here (even if only for -Xlog-implicits) would be too much
-                //return failure(tp, "tag error: unsupported prefix type %s (%s)".format(pre, pre.kind))
-                return SearchFailure
-            }
-        )
+      val prefix = (
+        // ClassTags are not path-dependent, so their materializer doesn't care about prefixes
+        if (tagClass eq ClassTagClass)
+          EmptyTree
+        else
+          pre match {
+            case SingleType(prePre, preSym) =>
+              gen.mkAttributedRef(prePre, preSym) setType pre
+            // necessary only to compile typetags used inside the Universe cake
+            case ThisType(thisSym) =>
+              gen.mkAttributedThis(thisSym)
+            case _ =>
+              // if `pre` is not a PDT, e.g. if someone wrote
+              //   implicitly[scala.reflect.macros.blackbox.Context#TypeTag[Int]]
+              // then we need to fail, because we don't know the prefix to use during type reification
+              // upd. we also need to fail silently, because this is a very common situation
+              // e.g. quite often we're searching for BaseUniverse#TypeTag, e.g. for a type tag in any universe
+              // so that if we find one, we could convert it to whatever universe we need by the means of the `in` method
+              // if no tag is found in scope, we end up here, where we ask someone to materialize the tag for us
+              // however, since the original search was about a tag with no particular prefix, we cannot proceed
+              // this situation happens very often, so emitting an error message here (even if only for -Xlog-implicits) would be too much
+              //return failure(tp, "tag error: unsupported prefix type %s (%s)".format(pre, pre.kind))
+              return SearchFailure
+          }
+      )
       // todo. migrate hardcoded materialization in Implicits to corresponding implicit macros
       val materializer =
         atPos(pos.focus)(

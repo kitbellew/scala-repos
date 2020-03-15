@@ -1104,9 +1104,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       : (Future[SyncGroupCallbackParams], SyncGroupCallback) = {
     val responsePromise = Promise[SyncGroupCallbackParams]
     val responseFuture = responsePromise.future
-    val responseCallback: SyncGroupCallback =
-      (assignment, errorCode) =>
-        responsePromise.success((assignment, errorCode))
+    val responseCallback: SyncGroupCallback = (assignment, errorCode) =>
+      responsePromise.success((assignment, errorCode))
     (responseFuture, responseCallback)
   }
 

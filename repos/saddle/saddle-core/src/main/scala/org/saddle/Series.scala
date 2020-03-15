@@ -912,9 +912,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     else {
       buf.append("[%d x 1]\n" format length)
 
-      val maxf =
-        (a: List[Int], b: List[String]) =>
-          (a zip b).map(v => v._1.max(v._2.length))
+      val maxf = (a: List[Int], b: List[String]) =>
+        (a zip b).map(v => v._1.max(v._2.length))
 
       val isca = index.scalarTag
       val vidx = index.toVec

@@ -97,11 +97,10 @@ class FileMessageSet private[kafka] (
         initFileSize,
         preallocate),
       start = 0,
-      end =
-        (if (!fileAlreadyExists && preallocate)
-           0
-         else
-           Int.MaxValue),
+      end = (if (!fileAlreadyExists && preallocate)
+               0
+             else
+               Int.MaxValue),
       isSlice = false)
 
   /**

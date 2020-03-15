@@ -108,15 +108,14 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
             index.tailMap(idKey)
           }
           .getOrElse(index)
-        val iteratorSetup =
-          () => {
-            val rawIterator = constrainedMap.entrySet.iterator.asScala
-            // Since our key to retrieve after was the last key we retrieved, we know it exists,
-            // so we can safely discard it
-            if (id.isDefined && rawIterator.hasNext)
-              rawIterator.next();
-            rawIterator
-          }
+        val iteratorSetup = () => {
+          val rawIterator = constrainedMap.entrySet.iterator.asScala
+          // Since our key to retrieve after was the last key we retrieved, we know it exists,
+          // so we can safely discard it
+          if (id.isDefined && rawIterator.hasNext)
+            rawIterator.next();
+          rawIterator
+        }
 
         // FIXME: this is brokenness in JDBM somewhere
         val iterator = {

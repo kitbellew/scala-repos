@@ -69,22 +69,20 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       }
     }
 
-    val modelFactory =
-      (
-        new {
-          override val global: compiler.type = compiler
-        } with model.ModelFactory(compiler, settings)
-          with model.ModelFactoryImplicitSupport
-        with model.ModelFactoryTypeSupport with model.diagram.DiagramFactory
-        with model.CommentFactory with model.TreeFactory
-        with model.MemberLookup {
-          override def templateShouldDocument(
-              sym: compiler.Symbol,
-              inTpl: DocTemplateImpl) =
-            extraTemplatesToDocument(sym) || super
-              .templateShouldDocument(sym, inTpl)
-        }
-      )
+    val modelFactory = (
+      new {
+        override val global: compiler.type = compiler
+      } with model.ModelFactory(compiler, settings)
+        with model.ModelFactoryImplicitSupport
+      with model.ModelFactoryTypeSupport with model.diagram.DiagramFactory
+      with model.CommentFactory with model.TreeFactory with model.MemberLookup {
+        override def templateShouldDocument(
+            sym: compiler.Symbol,
+            inTpl: DocTemplateImpl) =
+          extraTemplatesToDocument(sym) || super
+            .templateShouldDocument(sym, inTpl)
+      }
+    )
 
     modelFactory.makeModel match {
       case Some(madeModel) =>

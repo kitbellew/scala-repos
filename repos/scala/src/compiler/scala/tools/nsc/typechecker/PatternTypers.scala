@@ -218,15 +218,14 @@ trait PatternTypers {
       def apply(tp: Type): Type =
         mapOver(tp) match {
           case tp @ TypeRef(NoPrefix, tpSym, Nil) if eligible(tpSym) =>
-            val bounds =
-              (
-                if (variance.isInvariant)
-                  tpSym.tpeHK.bounds
-                else if (variance.isPositive)
-                  TypeBounds.upper(tpSym.tpeHK)
-                else
-                  TypeBounds.lower(tpSym.tpeHK)
-              )
+            val bounds = (
+              if (variance.isInvariant)
+                tpSym.tpeHK.bounds
+              else if (variance.isPositive)
+                TypeBounds.upper(tpSym.tpeHK)
+              else
+                TypeBounds.lower(tpSym.tpeHK)
+            )
             // origin must be the type param so we can deskolemize
             val skolem = context.owner.newGADTSkolem(
               unit.freshTypeName("?" + tpSym.name),

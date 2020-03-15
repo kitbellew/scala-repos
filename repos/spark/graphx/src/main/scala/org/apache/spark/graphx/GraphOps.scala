@@ -246,13 +246,12 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     */
   def joinVertices[U: ClassTag](table: RDD[(VertexId, U)])(
       mapFunc: (VertexId, VD, U) => VD): Graph[VD, ED] = {
-    val uf =
-      (id: VertexId, data: VD, o: Option[U]) => {
-        o match {
-          case Some(u) => mapFunc(id, data, u)
-          case None    => data
-        }
+    val uf = (id: VertexId, data: VD, o: Option[U]) => {
+      o match {
+        case Some(u) => mapFunc(id, data, u)
+        case None    => data
       }
+    }
     graph.outerJoinVertices(table)(uf)
   }
 

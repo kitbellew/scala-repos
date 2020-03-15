@@ -459,9 +459,8 @@ object TaskMacro {
     val it = Ident(util.singleton(InputTask))
     val isParserWrapper = InitParserConvert.asPredicate(c)
     val isTaskWrapper = FullConvert.asPredicate(c)
-    val isAnyWrapper =
-      (n: String, tpe: Type, tr: Tree) =>
-        isParserWrapper(n, tpe, tr) || isTaskWrapper(n, tpe, tr)
+    val isAnyWrapper = (n: String, tpe: Type, tr: Tree) =>
+      isParserWrapper(n, tpe, tr) || isTaskWrapper(n, tpe, tr)
     val ttree = t.tree
     val defs = util.collectDefs(ttree, isAnyWrapper)
     val checkQual = util.checkReferences(defs, isAnyWrapper)

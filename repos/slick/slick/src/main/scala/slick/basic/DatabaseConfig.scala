@@ -75,11 +75,10 @@ object DatabaseConfig {
       config: Config = ConfigFactory.load(),
       classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
       : DatabaseConfig[P] = {
-    val basePath =
-      (if (path.isEmpty)
-         ""
-       else
-         path + ".")
+    val basePath = (if (path.isEmpty)
+                      ""
+                    else
+                      path + ".")
     val n = config.getStringOpt(basePath + "profile").getOrElse {
       val nOld = config.getStringOpt(basePath + "driver").map {
         case "slick.driver.DerbyDriver$"    => "slick.jdbc.DerbyProfile$"

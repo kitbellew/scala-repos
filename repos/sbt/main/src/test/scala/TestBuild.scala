@@ -63,8 +63,8 @@ object TestBuild {
       scopeStrings.toSeq.sorted.map(t => t._1 + t._2).mkString("\n\t")
     }
     val extra: BuildUtil[Proj] = {
-      val getp =
-        (build: URI, project: String) => env.buildMap(build).projectMap(project)
+      val getp = (build: URI, project: String) =>
+        env.buildMap(build).projectMap(project)
       new BuildUtil(
         keyIndex,
         data,

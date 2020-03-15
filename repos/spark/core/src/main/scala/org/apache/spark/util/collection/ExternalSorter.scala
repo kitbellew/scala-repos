@@ -204,13 +204,12 @@ private[spark] class ExternalSorter[K, V, C](
       val mergeValue = aggregator.get.mergeValue
       val createCombiner = aggregator.get.createCombiner
       var kv: Product2[K, V] = null
-      val update =
-        (hadValue: Boolean, oldValue: C) => {
-          if (hadValue)
-            mergeValue(oldValue, kv._2)
-          else
-            createCombiner(kv._2)
-        }
+      val update = (hadValue: Boolean, oldValue: C) => {
+        if (hadValue)
+          mergeValue(oldValue, kv._2)
+        else
+          createCombiner(kv._2)
+      }
       while (records.hasNext) {
         addElementsRead()
         kv = records.next()

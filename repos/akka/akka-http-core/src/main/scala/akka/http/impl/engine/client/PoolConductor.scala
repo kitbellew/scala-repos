@@ -185,10 +185,9 @@ private object PoolConductor {
 
         setHandler(out, eagerTerminateOutput)
 
-        val tryPullCtx =
-          () ⇒
-            if (nextSlot != -1 && !hasBeenPulled(ctxIn))
-              pull(ctxIn)
+        val tryPullCtx = () ⇒
+          if (nextSlot != -1 && !hasBeenPulled(ctxIn))
+            pull(ctxIn)
 
         override def preStart(): Unit = {
           pull(ctxIn)

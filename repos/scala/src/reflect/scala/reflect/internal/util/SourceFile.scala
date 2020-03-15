@@ -137,13 +137,12 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   // token cannot be used as an index into the char array.
   // The least painful way to address this was to add a
   // newline to the array.
-  val content =
-    (
-      if (content0.length == 0 || !content0.last.isWhitespace)
-        content0 :+ '\n'
-      else
-        content0
-    )
+  val content = (
+    if (content0.length == 0 || !content0.last.isWhitespace)
+      content0 :+ '\n'
+    else
+      content0
+  )
   val length = content.length
   def start = 0
   def isSelfContained = true

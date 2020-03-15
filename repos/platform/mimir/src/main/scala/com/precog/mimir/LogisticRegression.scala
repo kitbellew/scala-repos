@@ -325,12 +325,11 @@ trait LogisticRegressionLibModule[M[+_]]
                 samples zip jtypes
               }
 
-            val tableReducer: (Table, JType) => M[Table] =
-              (table, jtype) =>
-                table
-                  .toArray[Double]
-                  .reduce(reducer)
-                  .map(res => extract(res, jtype))
+            val tableReducer: (Table, JType) => M[Table] = (table, jtype) =>
+              table
+                .toArray[Double]
+                .reduce(reducer)
+                .map(res => extract(res, jtype))
 
             val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
               _.map {

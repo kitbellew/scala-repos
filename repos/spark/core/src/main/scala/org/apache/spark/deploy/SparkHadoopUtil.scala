@@ -151,9 +151,8 @@ class SparkHadoopUtil extends Logging {
       val threadStats = getFileSystemThreadStatistics()
       val getBytesReadMethod = getFileSystemThreadStatisticsMethod(
         "getBytesRead")
-      val f =
-        () =>
-          threadStats.map(getBytesReadMethod.invoke(_).asInstanceOf[Long]).sum
+      val f = () =>
+        threadStats.map(getBytesReadMethod.invoke(_).asInstanceOf[Long]).sum
       val baselineBytesRead = f()
       Some(() => f() - baselineBytesRead)
     } catch {
@@ -178,11 +177,8 @@ class SparkHadoopUtil extends Logging {
       val threadStats = getFileSystemThreadStatistics()
       val getBytesWrittenMethod = getFileSystemThreadStatisticsMethod(
         "getBytesWritten")
-      val f =
-        () =>
-          threadStats
-            .map(getBytesWrittenMethod.invoke(_).asInstanceOf[Long])
-            .sum
+      val f = () =>
+        threadStats.map(getBytesWrittenMethod.invoke(_).asInstanceOf[Long]).sum
       val baselineBytesWritten = f()
       Some(() => f() - baselineBytesWritten)
     } catch {

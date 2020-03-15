@@ -156,101 +156,90 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     meta.getColumnType(index) match {
       case BIT | BOOLEAN =>
         val column = ArrayBoolColumn.empty
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getBoolean(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getBoolean(index))
+          }
         SingleDBColumn(ColumnRef(selector, CBoolean), column, update)
 
       case CHAR | LONGNVARCHAR | LONGVARCHAR | NCHAR | NVARCHAR | VARCHAR =>
         val column = ArrayStrColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getString(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getString(index))
+          }
         SingleDBColumn(ColumnRef(selector, CString), column, update)
 
       case TINYINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getByte(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getByte(index))
+          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case SMALLINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getShort(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getShort(index))
+          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case INTEGER =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getInt(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getInt(index))
+          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case BIGINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getLong(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getLong(index))
+          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case REAL =>
         val column = ArrayDoubleColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getFloat(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getFloat(index))
+          }
         SingleDBColumn(ColumnRef(selector, CDouble), column, update)
 
       case DOUBLE | FLOAT =>
         val column = ArrayDoubleColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getDouble(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getDouble(index))
+          }
         SingleDBColumn(ColumnRef(selector, CDouble), column, update)
 
       case DECIMAL | NUMERIC =>
         val column = ArrayNumColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, rs.getBigDecimal(index))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getBigDecimal(index))
+          }
         SingleDBColumn(ColumnRef(selector, CNum), column, update)
 
       case DATE =>
         val column = ArrayDateColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, new DateTime(rs.getDate(index).getTime))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, new DateTime(rs.getDate(index).getTime))
+          }
         SingleDBColumn(ColumnRef(selector, CDate), column, update)
 
       case TIMESTAMP =>
         val column = ArrayDateColumn.empty(yggConfig.maxSliceSize)
-        val update =
-          (rs: ResultSet, rowId: Int) =>
-            if (notNull(rs, index)) {
-              column.update(rowId, new DateTime(rs.getTimestamp(index).getTime))
-            }
+        val update = (rs: ResultSet, rowId: Int) =>
+          if (notNull(rs, index)) {
+            column.update(rowId, new DateTime(rs.getTimestamp(index).getTime))
+          }
         SingleDBColumn(ColumnRef(selector, CDate), column, update)
 
       case OTHER =>

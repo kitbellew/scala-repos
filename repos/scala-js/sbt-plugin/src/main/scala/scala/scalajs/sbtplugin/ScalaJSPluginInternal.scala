@@ -134,31 +134,30 @@ object ScalaJSPluginInternal {
     */
   def scalaJSPatchIncOptions(incOptions: IncOptions): IncOptions = {
     val inheritedNewClassfileManager = incOptions.newClassfileManager
-    val newClassfileManager =
-      () =>
-        new ClassfileManager {
-          private[this] val inherited = inheritedNewClassfileManager()
+    val newClassfileManager = () =>
+      new ClassfileManager {
+        private[this] val inherited = inheritedNewClassfileManager()
 
-          def delete(classes: Iterable[File]): Unit = {
-            inherited.delete(classes flatMap { classFile =>
-              val scalaJSFiles =
-                if (classFile.getPath endsWith ".class") {
-                  val f = FileVirtualFile
-                    .withExtension(classFile, ".class", ".sjsir")
-                  if (f.exists)
-                    List(f)
-                  else
-                    Nil
-                } else
+        def delete(classes: Iterable[File]): Unit = {
+          inherited.delete(classes flatMap { classFile =>
+            val scalaJSFiles =
+              if (classFile.getPath endsWith ".class") {
+                val f = FileVirtualFile
+                  .withExtension(classFile, ".class", ".sjsir")
+                if (f.exists)
+                  List(f)
+                else
                   Nil
-              classFile :: scalaJSFiles
-            })
-          }
-
-          def generated(classes: Iterable[File]): Unit =
-            inherited.generated(classes)
-          def complete(success: Boolean): Unit = inherited.complete(success)
+              } else
+                Nil
+            classFile :: scalaJSFiles
+          })
         }
+
+        def generated(classes: Iterable[File]): Unit =
+          inherited.generated(classes)
+        def complete(success: Boolean): Unit = inherited.complete(success)
+      }
     incOptions.withNewClassfileManager(newClassfileManager)
   }
 

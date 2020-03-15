@@ -360,14 +360,13 @@ trait Infer extends Checkable {
                 sym.cookJavaRawInfo()
               else
                 sym // xform java rawtypes into existentials
-            val owntype =
-              (
-                try pre memberType sym1
-                catch {
-                  case ex: MalformedType =>
-                    malformed(ex, pre memberType underlyingSymbol(sym))
-                }
-              )
+            val owntype = (
+              try pre memberType sym1
+              catch {
+                case ex: MalformedType =>
+                  malformed(ex, pre memberType underlyingSymbol(sym))
+              }
+            )
             tree setSymbol sym1 setType (
               pre match {
                 case _: SuperType =>

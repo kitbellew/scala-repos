@@ -101,10 +101,9 @@ trait ScalatraServlet extends HttpServlet with ServletBase with Initializable {
     *
     * This action can be overridden by a notFound block.
     */
-  protected var doNotFound: Action =
-    () => {
-      serveStaticResource() getOrElse resourceNotFound()
-    }
+  protected var doNotFound: Action = () => {
+    serveStaticResource() getOrElse resourceNotFound()
+  }
 
   /**
     * Attempts to find a static resource matching the request path.  Override

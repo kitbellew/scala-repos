@@ -122,8 +122,8 @@ object Reloader {
 
   def urls(cp: Classpath): Array[URL] = cp.map(_.toURI.toURL).toArray
 
-  val createURLClassLoader: ClassLoaderCreator =
-    (name, urls, parent) => new NamedURLClassLoader(name, urls, parent)
+  val createURLClassLoader: ClassLoaderCreator = (name, urls, parent) =>
+    new NamedURLClassLoader(name, urls, parent)
 
   val createDelegatedResourcesClassLoader: ClassLoaderCreator =
     (name, urls, parent) =>

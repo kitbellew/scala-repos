@@ -201,8 +201,8 @@ private[testutil] trait AbstractComparator extends Assertions {
       m.getReturnType) + " " + m.getName + "(" + strParameters + ")"
   }
 
-  private val nameComparator: (Method, Method) => Boolean =
-    (m1, m2) => m1.getName < m2.getName
+  private val nameComparator: (Method, Method) => Boolean = (m1, m2) =>
+    m1.getName < m2.getName
 
   /**
     * Returns a List with public methods (static or not) of a class.
@@ -216,10 +216,9 @@ private[testutil] trait AbstractComparator extends Assertions {
       if (useStatic)(b => b)
       else
         (b => !b)
-    val isAcceptable: Method => Boolean =
-      (m =>
-        isPublicMethod(m) && staticIndicator(
-          Modifier.isStatic(m.getModifiers)) && !isSpecialMethodName(m.getName))
+    val isAcceptable: Method => Boolean = (m =>
+      isPublicMethod(m) && staticIndicator(
+        Modifier.isStatic(m.getModifiers)) && !isSpecialMethodName(m.getName))
 
     cls.getDeclaredMethods
       .filter(isAcceptable)

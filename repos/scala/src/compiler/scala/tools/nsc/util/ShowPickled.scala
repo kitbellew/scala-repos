@@ -162,14 +162,13 @@ object ShowPickled extends Names {
       printSymbolRef()
       val pflags = buf.readLongNat()
       def printFlags(privateWithin: Option[Int]) = {
-        val accessBoundary =
-          (
-            for (idx <- privateWithin)
-              yield {
-                val s = entryList nameAt idx
-                idx + "(" + s + ")"
-              }
-          )
+        val accessBoundary = (
+          for (idx <- privateWithin)
+            yield {
+              val s = entryList nameAt idx
+              idx + "(" + s + ")"
+            }
+        )
         val flagString = {
           val arg1 = Flags.pickledToRawFlags(pflags)
           accessBoundary match {

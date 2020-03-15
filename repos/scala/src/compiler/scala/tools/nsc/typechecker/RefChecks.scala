@@ -859,25 +859,24 @@ abstract class RefChecks
                               c1.fullLocationString,
                               c2.fullLocationString)
                           )
-                      val addendum =
-                        (
-                          if (abstractSym == concreteSym) {
-                            // TODO: what is the optimal way to test for a raw type at this point?
-                            // Compilation has already failed so we shouldn't have to worry overmuch
-                            // about forcing types.
-                            if (underlying.isJavaDefined && pa.typeArgs.isEmpty && abstractSym.typeParams.nonEmpty)
-                              ". To implement a raw type, use %s[_]".format(pa)
-                            else if (pa.prefix =:= pc.prefix)
-                              ": their type parameters differ"
-                            else
-                              ": their prefixes (i.e. enclosing instances) differ"
-                          } else if (abstractSym isSubClass concreteSym)
-                            subclassMsg(abstractSym, concreteSym)
-                          else if (concreteSym isSubClass abstractSym)
-                            subclassMsg(concreteSym, abstractSym)
+                      val addendum = (
+                        if (abstractSym == concreteSym) {
+                          // TODO: what is the optimal way to test for a raw type at this point?
+                          // Compilation has already failed so we shouldn't have to worry overmuch
+                          // about forcing types.
+                          if (underlying.isJavaDefined && pa.typeArgs.isEmpty && abstractSym.typeParams.nonEmpty)
+                            ". To implement a raw type, use %s[_]".format(pa)
+                          else if (pa.prefix =:= pc.prefix)
+                            ": their type parameters differ"
                           else
-                            ""
-                        )
+                            ": their prefixes (i.e. enclosing instances) differ"
+                        } else if (abstractSym isSubClass concreteSym)
+                          subclassMsg(abstractSym, concreteSym)
+                        else if (concreteSym isSubClass abstractSym)
+                          subclassMsg(concreteSym, abstractSym)
+                        else
+                          ""
+                      )
 
                       undefined(
                         "\n(Note that %s does not match %s%s)"

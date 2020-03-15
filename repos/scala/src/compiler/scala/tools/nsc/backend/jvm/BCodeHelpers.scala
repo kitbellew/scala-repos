@@ -770,11 +770,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       var offset = 0
       var encLength = 0
       while (offset < bSeven.length) {
-        val deltaEncLength =
-          (if (bSeven(offset) == 0)
-             2
-           else
-             1)
+        val deltaEncLength = (if (bSeven(offset) == 0)
+                                2
+                              else
+                                1)
         val newEncLength = encLength.toLong + deltaEncLength
         if (newEncLength >= 65535) {
           val ba = bSeven.slice(prevOffset, offset)

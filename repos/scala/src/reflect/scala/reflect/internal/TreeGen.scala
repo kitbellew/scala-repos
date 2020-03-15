@@ -237,15 +237,14 @@ abstract class TreeGen {
       // foo.bar.name if name is in the package object.
       // TODO - factor out the common logic between this and
       // the Typers method "isInPackageObject", used in typedIdent.
-      val qualsym =
-        (
-          if (qual.tpe ne null)
-            qual.tpe.typeSymbol
-          else if (qual.symbol ne null)
-            qual.symbol
-          else
-            NoSymbol
-        )
+      val qualsym = (
+        if (qual.tpe ne null)
+          qual.tpe.typeSymbol
+        else if (qual.symbol ne null)
+          qual.symbol
+        else
+          NoSymbol
+      )
       val needsPackageQualifier = (
         (sym ne null)
           && qualsym.hasPackageFlag

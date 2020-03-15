@@ -759,12 +759,11 @@ class DistributedLDAModel private[clustering] (
       }
     val mergeMsg: ((Array[Int], Array[Int]), (Array[Int], Array[Int])) => (
         Array[Int],
-        Array[Int]) =
-      (terms_topics0, terms_topics1) => {
-        (
-          terms_topics0._1 ++ terms_topics1._1,
-          terms_topics0._2 ++ terms_topics1._2)
-      }
+        Array[Int]) = (terms_topics0, terms_topics1) => {
+      (
+        terms_topics0._1 ++ terms_topics1._1,
+        terms_topics0._2 ++ terms_topics1._2)
+    }
     // M-STEP: Aggregation computes new N_{kj}, N_{wk} counts.
     val perDocAssignments = graph
       .aggregateMessages[(Array[Int], Array[Int])](sendMsg, mergeMsg)
