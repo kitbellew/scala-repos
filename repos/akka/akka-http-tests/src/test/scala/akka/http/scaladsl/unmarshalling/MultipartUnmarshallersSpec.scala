@@ -464,7 +464,8 @@ class MultipartUnmarshallersSpec
             List(
               RawHeader("Content-Transfer-Encoding", "binary"),
               RawHeader("Content-Additional-1", "anything"),
-              RawHeader("Content-Additional-2", "really-anything"))
+              RawHeader("Content-Additional-2", "really-anything")
+            )
           )
         ) // verifies order of headers is preserved
       }

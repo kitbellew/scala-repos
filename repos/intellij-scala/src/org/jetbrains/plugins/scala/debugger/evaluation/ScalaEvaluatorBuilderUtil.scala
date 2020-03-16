@@ -1312,7 +1312,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
                 Some(
                   m.copy(
                     _methodName = m.methodName + "_$eq",
-                    argumentEvaluators = Seq(rightEvaluator))
+                    argumentEvaluators = Seq(rightEvaluator)
+                  )
                 ) //todo: signature?
               case ScalaDuplexEvaluator(first, second) =>
                 createAssignEvaluator(first) orElse createAssignEvaluator(

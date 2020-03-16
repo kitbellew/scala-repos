@@ -559,7 +559,8 @@ private[akka] class LocalActorRefProvider private[akka] (
         causeOfTermination.trySuccess(
           Terminated(provider.rootGuardian)(
             existenceConfirmed = true,
-            addressTerminated = true)
+            addressTerminated = true
+          )
         ) //Idempotent
         terminationPromise.tryCompleteWith(
           causeOfTermination.future

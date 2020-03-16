@@ -130,7 +130,8 @@ class SettingsTest {
         s => s.warnMissingInterpolator && s.warnAdaptedArgs))
     assertThrows[IllegalArgumentException](
       check("-Xlint", "adapted-args", "-missing-interpolator")(
-        _.warnAdaptedArgs)
+        _.warnAdaptedArgs
+      )
     ) // non-colonated: cannot provide negative args
   }
 

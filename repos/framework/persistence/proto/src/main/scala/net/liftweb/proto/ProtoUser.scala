@@ -452,7 +452,9 @@ trait ProtoUser {
           "LostPassword" + menuNameSuffix,
           lostPasswordPath,
           S.?("lost.password"),
-          lostPasswordMenuLocParams ::: globalUserLocParams))
+          lostPasswordMenuLocParams ::: globalUserLocParams
+        )
+      )
     ) // not logged in
 
   /**
@@ -474,7 +476,9 @@ trait ProtoUser {
           "ResetPassword" + menuNameSuffix,
           (passwordResetPath, true),
           S.?("reset.password"),
-          resetPasswordMenuLocParams ::: globalUserLocParams))
+          resetPasswordMenuLocParams ::: globalUserLocParams
+        )
+      )
     ) //not Logged in
 
   /**

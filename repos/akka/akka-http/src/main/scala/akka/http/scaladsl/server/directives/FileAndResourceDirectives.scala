@@ -115,7 +115,8 @@ trait FileAndResourceDirectives {
                           .fromInputStream(() ⇒ url.openStream())
                           .withAttributes(
                             ActorAttributes
-                              .dispatcher(settings.fileIODispatcher))
+                              .dispatcher(settings.fileIODispatcher)
+                          )
                       ) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
                     }
                 }

@@ -37,8 +37,7 @@ class SparkContext(config: SparkConf)
 class RDD[T: ClassTag](
     @transient private var sc: SparkContext,
     @transient private var deps: Seq[
-      Dependency[_]
-    ]) /*extends Serializable with Logging*/ {
+      Dependency[_]]) /*extends Serializable with Logging*/ {
 
   /** Construct an RDD with just a one-to-one dependency on one parent */
   def this(@transient oneParent: RDD[_]) =

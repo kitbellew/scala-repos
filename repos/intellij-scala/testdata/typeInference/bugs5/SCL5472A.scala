@@ -22,7 +22,8 @@ class SCL5472A {
     foo(
       new C {
         type T = D
-      })
+      }
+    )
   ) /*end*/
 }
 //(String, Int)

@@ -741,7 +741,8 @@ class ScUndefinedSubstitutor(
                             }",
                             Nil,
                             lower,
-                            absUpper)
+                            absUpper
+                          )
                         ) //todo: why this is right?
                     }
                   case ScSkolemizedType(_, _, lower, skoUpper) =>

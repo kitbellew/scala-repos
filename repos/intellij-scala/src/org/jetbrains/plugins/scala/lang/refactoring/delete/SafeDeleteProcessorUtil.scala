@@ -100,14 +100,16 @@ object SafeDeleteProcessorUtil {
                     new SafeDeleteReferenceJavaDeleteUsageInfo(
                       element,
                       psiClass,
-                      true)
+                      true
+                    )
                   ) // delete without review
                 else
                   Seq(
                     new SafeDeleteReferenceJavaDeleteUsageInfo(
                       element,
                       psiClass,
-                      false)
+                      false
+                    )
                   ) // delete with review
               } else
                 Seq() // don't delete

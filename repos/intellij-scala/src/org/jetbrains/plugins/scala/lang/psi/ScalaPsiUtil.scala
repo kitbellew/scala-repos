@@ -628,7 +628,8 @@ object ScalaPsiUtil {
             Seq[ScExpression](
               ScalaPsiElementFactory.createExpressionFromText(
                 "{val x: Nothing = null; x}",
-                call.getManager)
+                call.getManager
+              )
             ) //we can't to not add something => add Nothing expression
         }
       else

@@ -197,7 +197,9 @@ class CaseClassPickling(
                           Nil,
                           tpe,
                           Some(x),
-                          allowReflection))
+                          allowReflection
+                        )
+                      )
                     ) // TODO - This should be `allow runtime pickler lookup`.
                   case x => x
                 }
@@ -226,7 +228,9 @@ class CaseClassPickling(
                           Nil,
                           tpe,
                           Some(x),
-                          allowReflection))
+                          allowReflection
+                        )
+                      )
                     ) // TODO - This should be `allow runtime pickler lookup`.
                   case x => x
                 }
