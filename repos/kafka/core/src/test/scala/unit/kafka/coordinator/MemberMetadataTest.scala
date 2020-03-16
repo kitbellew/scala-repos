@@ -28,6 +28,7 @@ class MemberMetadataTest extends JUnitSuite {
   val clientHost = "clientHost"
   val memberId = "memberId"
   val sessionTimeoutMs = 10000
+
   @Test
   def testMatchesSupportedProtocols {
     val protocols = List(("range", Array.empty[Byte]))

@@ -23,6 +23,7 @@ import org.scalacheck._
 import org.junit.runner.RunWith
 
 import breeze.numerics._
+
 @RunWith(classOf[JUnitRunner])
 class BernoulliTest
     extends FunSuite

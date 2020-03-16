@@ -406,6 +406,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       }
     }
   }
+
   @expand
   @expand.valify
   implicit def csc_dm_OpAdd[@expand.args(Int, Double, Float, Long) T]
@@ -912,6 +913,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       : Op.InPlaceImpl2[CSCMatrix[T], CSCMatrix[T]] =
     updateFromPure(
       implicitly[Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]]])
+
   @expand
   @expand.valify
   implicit def axpyCSC_DM_DM[@expand.args(Int, Float, Double, Long) T]

@@ -13,6 +13,7 @@ import org.scalatest.FunSuite
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
+
 @RunWith(classOf[JUnitRunner])
 class HandlerEventTest extends FunSuite with MockitoSugar {
 

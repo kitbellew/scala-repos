@@ -100,6 +100,7 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
 
     assertTrue(messages.equals(moreMessages))
   }
+
   @Test
   def testIterator() {
     val messageList = List(

@@ -99,6 +99,7 @@ class LowPriorityMacros(val c: whitebox.Context)
     }
 
 }
+
 @macrocompat.bundle
 trait LowPriorityTypes {
   val c: whitebox.Context

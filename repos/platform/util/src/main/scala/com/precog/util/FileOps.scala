@@ -77,4 +77,5 @@ object FilesystemFileOps extends FileOps {
       dir.mkdirs()
     }
 }
+
 // vim: set ts=4 sw=4 et:

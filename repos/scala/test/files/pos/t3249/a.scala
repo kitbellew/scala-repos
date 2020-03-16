@@ -3,6 +3,7 @@ class A[U] {
     class X extends A[T]
   }
 }
+
 /*
 $ scalac a.scala
 $ javac -cp .:$SCALA_HOME/lib/scala-library.jar  -Xprint 'A$X$1'

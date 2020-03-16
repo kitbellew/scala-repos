@@ -26,6 +26,7 @@ import org.scalatest.junit.JUnitRunner
 import com.twitter.conversions.storage._
 import com.twitter.conversions.time._
 import com.twitter.util.{TempFolder, Time}
+
 @RunWith(classOf[JUnitRunner])
 class FileHandlerTest extends WordSpec with TempFolder {
   def reader(filename: String) = {

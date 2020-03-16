@@ -243,6 +243,7 @@ class StringTest {
       assertEquals(e, i.toInt)
     }
   }
+
   @Test def concat(): Unit = {
     assertEquals("asdffdsa", "asdf".concat("fdsa"))
   }

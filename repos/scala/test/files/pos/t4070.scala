@@ -23,6 +23,7 @@ package b {
       }
   }
 }
+
 /*
 // With crash below the classes:
 % scalac -Dscalac.debug.tvar ./a.scala

@@ -246,6 +246,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       case _ => false
     }
   }
+
   @tailrec
   final def annotationOwnerFor(
       child: ScExpression): Option[PsiAnnotationOwner with PsiElement] =

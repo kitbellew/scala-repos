@@ -240,6 +240,7 @@ object HashVector
   }
 
   import breeze.math.PowImplicits._
+
   @expand
   implicit def dv_hv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
@@ -291,6 +292,7 @@ object HashVector
     DenseVector.pureFromUpdate(
       implicitly[Op.InPlaceImpl2[DenseVector[T], HashVector[T]]])
   }
+
   @noinline
   private def init() = {}
 }

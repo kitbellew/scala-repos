@@ -224,6 +224,7 @@ object EventJson4sSupport {
   class APISerializer
       extends CustomSerializer[Event](format => (readJson, writeJson))
 }
+
 @DeveloperApi
 object BatchEventsJson4sSupport {
   implicit val formats = DefaultFormats

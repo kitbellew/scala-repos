@@ -91,6 +91,7 @@ object GaussMixtureTransform {
     val exped = exp(sum1)
     val sum2 = sum(exped)
     sum2
+
 //    sum(exp(sum(diff :*= diff, Axis._1) *= (-gamma)))
   }
 
@@ -104,6 +105,7 @@ object GaussMixtureTransform {
     val exped = exp(sum1)
     val sum2 = sum(exped)
     sum2
+
     //    sum(exp(sum(diff :*= diff, Axis._1) *= (-gamma)))
   }
 }

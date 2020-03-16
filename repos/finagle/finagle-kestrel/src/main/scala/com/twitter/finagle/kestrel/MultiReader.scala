@@ -409,6 +409,7 @@ object MultiReader {
   @deprecated("Use Var[Addr]-based `apply` method", "6.8.2")
   def apply(handles: ju.Iterator[ReadHandle]): ReadHandle =
     MultiReaderHelper.merge(Var.value(Return(handles.toSet)))
+
   @deprecated("Use Var[Addr]-based `apply` method", "6.8.2")
   def apply(handles: Seq[ReadHandle]): ReadHandle =
     MultiReaderHelper.merge(Var.value(Return(handles.toSet)))

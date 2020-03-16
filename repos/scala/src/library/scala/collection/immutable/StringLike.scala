@@ -287,6 +287,7 @@ trait StringLike[+Repr]
     * @param separator the character used as a delimiter
     */
   def split(separator: Char): Array[String] = toString.split(escape(separator))
+
   @throws(classOf[java.util.regex.PatternSyntaxException])
   def split(separators: Array[Char]): Array[String] = {
     val re = separators.foldLeft("[")(_ + escape(_)) + "]"

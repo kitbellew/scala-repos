@@ -98,6 +98,7 @@ class ConsoleConsumerTest extends JUnitSuite {
     assertEquals("test", config.topicArg)
     assertEquals(true, config.fromBeginning)
   }
+
   @Test
   def shouldParseConfigsFromFile() {
     val propsFile = TestUtils.tempFile()

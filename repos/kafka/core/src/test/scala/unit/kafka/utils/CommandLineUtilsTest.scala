@@ -26,6 +26,7 @@ class CommandLineUtilsTest {
     val argArray = Array("my.empty.property=")
     CommandLineUtils.parseKeyValueArgs(argArray, false)
   }
+
   @Test
   def testParseEmptyArgAsValid() {
     val argArray = Array("my.empty.property=")

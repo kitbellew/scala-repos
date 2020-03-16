@@ -224,6 +224,7 @@ trait ScParameter
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   def isDefaultParam: Boolean = calcIsDefaultParam(this, HashSet.empty)
+
   @tailrec
   private def calcIsDefaultParam(
       param: ScParameter,

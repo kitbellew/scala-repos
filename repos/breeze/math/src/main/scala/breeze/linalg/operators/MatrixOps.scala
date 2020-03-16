@@ -329,6 +329,7 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
 
       }
     }
+
   @expand
   @expand.valify
   @expand.exclude(Complex, OpMod)
@@ -563,6 +564,7 @@ trait MatrixMultOps extends MatrixOps with MatrixOpsLowPrio {
         res
       }
     }
+
   @expand
   @expand.valify
   implicit def op_M_M[@expand.args(Int, Long, Float, Double, BigInt, Complex) T]

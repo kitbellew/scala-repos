@@ -124,6 +124,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
       }
     }
   }
+
   @expand
   @expand.valify
   implicit def canSet[@expand.args(Double, Long, Float, Int) T]
@@ -170,6 +171,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
       op,
       canCopyBuilder[V])
   }
+
   @expand
   @expand.valify
   implicit def canAxpy[@expand.args(Double, Long, Float, Int) T]

@@ -21,6 +21,7 @@ import org.scalatest.prop._
 import org.scalacheck._
 import org.junit.runner.RunWith
 import breeze.linalg._
+
 @RunWith(classOf[JUnitRunner])
 class StochasticGradientDescentTest extends OptimizeTestBase {
 

@@ -160,6 +160,7 @@ object VonMises extends ExponentialFamily[VonMises, Double] {
 
       }
     }
+
   /*
 
   /**

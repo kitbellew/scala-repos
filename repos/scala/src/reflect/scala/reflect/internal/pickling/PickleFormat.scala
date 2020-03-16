@@ -216,6 +216,7 @@ object PickleFormat {
   final val firstSymTag = NONEsym
   final val lastSymTag = VALsym
   final val lastExtSymTag = EXTMODCLASSref
+
   //The following two are no longer accurate, because ANNOTATEDtpe,
   //SUPERtpe, ... are not in the same range as the other types
   //final val firstTypeTag = NOtpe

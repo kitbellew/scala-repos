@@ -358,6 +358,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
 
 trait VectorOps { this: Vector.type =>
   import breeze.math.PowImplicits._
+
   @expand.valify
   @expand
   implicit def v_v_Idempotent_Op[
@@ -427,6 +428,7 @@ trait VectorOps { this: Vector.type =>
         builder.toVector
       }
     }
+
   @expand
   @expand.valify
   implicit def v_v_Op[
@@ -605,6 +607,7 @@ trait VectorOps { this: Vector.type =>
         result
       }
     }
+
   @expand
   @expand.valify
   implicit def v_v_UpdateOp[
@@ -778,6 +781,7 @@ trait VectorOps { this: Vector.type =>
         }
       }
     }
+
   @expand
   @expand.valify
   implicit def canDot_V_V[@expand.args(Int, Long, Float, Double) T](implicit
@@ -819,6 +823,7 @@ trait VectorOps { this: Vector.type =>
       }
     }
   }
+
   @expand
   @expand.valify
   implicit def axpy[@expand.args(Int, Double, Float, Long) V]

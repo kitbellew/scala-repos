@@ -35,6 +35,7 @@ trait LoadServiceMultipleImpls
 class LoadServiceMultipleImpls1 extends LoadServiceMultipleImpls
 class LoadServiceMultipleImpls2 extends LoadServiceMultipleImpls
 class LoadServiceMultipleImpls3 extends LoadServiceMultipleImpls
+
 @RunWith(classOf[JUnitRunner])
 class LoadServiceTest extends FunSuite with MockitoSugar {
   test("LoadService should apply[T] and return a set of instances of T") {

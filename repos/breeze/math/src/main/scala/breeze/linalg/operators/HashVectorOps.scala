@@ -13,6 +13,7 @@ import scala.reflect.ClassTag
 
 trait DenseVector_HashVector_Ops { this: HashVector.type =>
   import breeze.math.PowImplicits._
+
   @expand
   implicit def dv_hv_Update_Zero_Idempotent[
       @expand.args(Int, Double, Float, Long) T,
@@ -41,6 +42,7 @@ trait DenseVector_HashVector_Ops { this: HashVector.type =>
         }
       }
     }
+
   @expand
   implicit def canDot_DV_HV[@expand.args(Int, Double, Float, Long) T](
       implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
@@ -75,6 +77,7 @@ trait DenseVector_HashVector_Ops { this: HashVector.type =>
 trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
   this: HashVector.type =>
   import breeze.math.PowImplicits._
+
   @expand
   implicit def hv_dv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
@@ -115,6 +118,7 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
         }
       }
     }
+
   @expand
   implicit def hv_dv_op[
       @expand.args(Int, Double, Float, Long) T,
@@ -179,6 +183,7 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
 
 trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   import breeze.math.PowImplicits._
+
   @expand
   implicit def hv_hv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,
@@ -201,6 +206,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         result
       }
     }
+
   @expand
   implicit def hv_hv_nilpotent_Op[@expand.args(Int, Double, Float, Long) T](
       implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
@@ -217,6 +223,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         builder.toHashVector
       }
     }
+
   @expand
   implicit def hv_hv_Op[
       @expand.args(Int, Double, Float, Long) T,
@@ -338,6 +345,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         result
       }
     }
+
   @expand
   implicit def hv_hv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
@@ -423,6 +431,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         }
       }
     }
+
   @expand
   implicit def canDot_HV_HV[@expand.args(Int, Long, Double, Float) T](
       implicit @expand.sequence[T](0, 0L, 0.0, 0f) zero: T)
@@ -529,6 +538,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
 trait HashVector_SparseVector_Ops extends HashVectorOps {
   this: HashVector.type =>
   import breeze.math.PowImplicits._
+
   @expand
   implicit def hv_sv_Op[
       @expand.args(Int, Double, Float, Long) T,
@@ -559,6 +569,7 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
         builder.toHashVector
       }
     }
+
   @expand
   implicit def hv_sv_nilpotent_Op[@expand.args(Int, Double, Float, Long) T](
       implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
@@ -575,6 +586,7 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
         builder.toHashVector
       }
     }
+
   @expand
   implicit def hv_sv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,
@@ -602,6 +614,7 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
         result
       }
     }
+
   @expand
   implicit def canDot_HV_SV[@expand.args(Int, Long, Float, Double) T](
       implicit @expand.sequence[T](0, 0L, 0f, 0.0) zero: T)
@@ -656,6 +669,7 @@ trait SparseVector_HashVector_Ops
     extends HashVectorOps
     with HashVector_SparseVector_Ops { this: HashVector.type =>
   import breeze.math.PowImplicits._
+
   @expand
   implicit def sv_hv_Op[
       @expand.args(Int, Double, Float, Long) T,
@@ -703,6 +717,7 @@ trait SparseVector_HashVector_Ops
         builder.toSparseVector(true, true)
       }
     }
+
   @expand
   implicit def sv_hv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,

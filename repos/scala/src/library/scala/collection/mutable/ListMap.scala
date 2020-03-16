@@ -79,6 +79,7 @@ class ListMap[A, B]
     } else
       remove(key, elems.tail, elems.head :: acc)
   }
+
   @deprecatedOverriding(
     "No sensible way to override as this functionality relies upon access to private methods.",
     "2.11.0")

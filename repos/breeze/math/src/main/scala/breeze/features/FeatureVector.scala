@@ -77,6 +77,7 @@ object FeatureVector {
       }
     }
   }
+
   @expand
   @expand.valify
   implicit def FVScaleAddIntoDV[@expand.args(Int, Float, Double) T]
@@ -166,6 +167,7 @@ object FeatureVector {
       }
     }
   }
+
   @expand
   @expand.valify
   implicit def DotProductFVDV[@expand.args(Int, Float, Double) T]

@@ -891,6 +891,7 @@ object ScalaDocumentationProvider {
     }
     buffer.toString()
   }
+
   @tailrec
   private def parseDocComment(
       elem: PsiDocCommentOwner,

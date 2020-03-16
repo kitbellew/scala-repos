@@ -131,6 +131,7 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
     }
 
   }
+
   @expand
   @expand.valify
   implicit def implOps_SVT_DVT_eq_DVT[
@@ -192,6 +193,7 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
       implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
         .register(this)
     }
+
   @expand
   @expand.valify
   implicit def implOpMulInner_SVT_DVT_eq_T[
@@ -212,6 +214,7 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
 
 trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
   import breeze.math.PowImplicits._
+
   @expand
   @expand.valify
   implicit def implOps_DVT_SVT_InPlace[
@@ -372,6 +375,7 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
         .register(this)
       //      implicitly[BinaryRegistry[DenseVector[T], Vector[T], OpMulInner.type, T]].register(this)
     }
+
   @expand
   @expand.valify
   implicit def implZipValues_DVT_SVT_eq_ZVTT[
@@ -422,6 +426,7 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
         T], zipValues.type, ZippedValues[T, T]]]
 
     }
+
   @expand
   @expand.valify
   implicit def implScaleAdd_DVT_T_SVT_InPlace[
@@ -766,6 +771,7 @@ trait SparseVectorOps { this: SparseVector.type =>
         BinaryRegistry[Vector[T], Vector[T], OpMulScalar.type, Vector[T]]]
         .register(this)
     }
+
   @expand
   @expand.valify
   implicit def implOps_SVT_SVT_eq_SVT[
@@ -797,6 +803,7 @@ trait SparseVectorOps { this: SparseVector.type =>
       implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
         .register(this)
     }
+
   @expand
   @expand.valify
   implicit def implOps_SVT_VT_eq_SVT[
@@ -955,6 +962,7 @@ trait SparseVectorOps { this: SparseVector.type =>
       implicitly[BinaryRegistry[Vector[T], T, Op.type, Vector[T]]]
         .register(this)
     }
+
   @expand
   @expand.valify
   implicit def implOps_SVT_T_eq_SVT[
@@ -1043,6 +1051,7 @@ trait SparseVectorOps { this: SparseVector.type =>
       implicitly[Op.Impl2[SparseVector[T], T, SparseVector[T]]])
     uop
   }
+
   @expand
   @expand.valify
   implicit def implOps_SVT_T_InPlace[
@@ -1225,6 +1234,7 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
       }
     }
+
   @expand
   @expand.valify
   implicit def implScaleAdd_SVT_T_SVT_InPlace[

@@ -22,6 +22,7 @@ class ImageUtilsIT {
       ImageUtils
         .storeImageToLocalFile(httpClient, "abc", imgSrc, new Configuration))
   }
+
   @Test
   def imageDimensions() {
     val tmpFile = "/tmp/goose/abc_5dd5d54ec1e9742a09cbe9fdf7c8a4ef"

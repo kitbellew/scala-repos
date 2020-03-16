@@ -23,6 +23,7 @@ import org.scalacheck._;
 import org.junit.runner.RunWith
 import breeze.linalg.{softmax, DenseVector, SparseVector}
 import math.{abs, exp}
+
 @RunWith(classOf[JUnitRunner])
 class DirichletTest extends FunSuite with Checkers {
 
