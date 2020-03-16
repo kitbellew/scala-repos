@@ -13,6 +13,7 @@ package scalaguide.cache {
   import play.api.libs.json.Json
   import scala.concurrent.Future
   import org.specs2.execute.AsResult
+
   @RunWith(classOf[JUnitRunner])
   class ScalaCacheSpec extends PlaySpecification with Controller {
 

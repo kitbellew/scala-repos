@@ -51,6 +51,7 @@ object Compatibility {
       this(tp)
       this.place = place
     }
+
     @CachedMappedWithRecursionGuard(
       place,
       (Success(typez, None), Set.empty),

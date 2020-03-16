@@ -708,6 +708,7 @@ class OpticTests {
     typed[Bar](bar2)
     assertEquals(Bar(7, true), bar2)
   }
+
   @Test
   def testUnapply {
     val t1: Tree[Int] = Node(Node(Leaf(1), Leaf(2)), Leaf(3))

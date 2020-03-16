@@ -174,6 +174,7 @@ private class ApertureTest extends FunSuite with ApertureTesting {
     assert(counts.nonzero == Set(goodkey))
   }
 }
+
 @RunWith(classOf[JUnitRunner])
 private class LoadBandTest extends FunSuite with ApertureTesting {
 

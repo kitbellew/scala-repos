@@ -23,6 +23,7 @@ import grizzled.slf4j.Logger
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
+
 @Experimental
 private[prediction] class FakeEngine
     extends BaseEngine[EmptyParams, EmptyParams, EmptyParams, EmptyParams] {

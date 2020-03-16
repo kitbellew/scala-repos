@@ -102,111 +102,111 @@ package pos {
 
     def gb1[A](x: C[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb2[A](x: C[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb3[A](x: C[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb4[A](x: C[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb5[A](x: C[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb6[A](x: C[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
 
     def gc1[A](x: C[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc2[A](x: C[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc3[A](x: C[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc4[A](x: C[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc5[A](x: C[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc6[A](x: C[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
 
     def gd1[A, B <: C[A]](x: B) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gd2[A, B <: C[A]](x: B) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gd3[A, B <: C[A]](x: B) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gd4[A, B <: C[A]](x: B) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gd5[A, B <: C[A]](x: B) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gd6[A, B <: C[A]](x: B) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
@@ -217,111 +217,111 @@ package neg {
   object Fail {
     def gb1[A](x: C00[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb2[A](x: C10[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb3[A](x: C20[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb4[A](x: C01[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb5[A](x: C11[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
     def gb6[A](x: C21[A]) =
       x match {
-        case E00()              => ???; case E10(x) => x; case E20(x, y) => x;
+        case E00()              => ???; case E10(x)              => x; case E20(x, y) => x;
         case E01(xs @ _*)       => xs.head; case E11(x, ys @ _*) => x;
         case E21(x, y, zs @ _*) => x
       }
 
     def gc1[A](x: C00[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc2[A](x: C10[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc3[A](x: C20[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc4[A](x: C01[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc5[A](x: C11[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
     def gc6[A](x: C21[A]) =
       x match {
-        case F00()              => ???; case F10(x) => x; case F20(x, y) => x;
+        case F00()              => ???; case F10(x)              => x; case F20(x, y) => x;
         case F01(xs @ _*)       => xs.head; case F11(x, ys @ _*) => x;
         case F21(x, y, zs @ _*) => x
       }
 
     def gd1[A](x: C00[A]) =
       x match {
-        case G00()              => ???; case G10(x) => x; case G20(x, y) => x;
+        case G00()              => ???; case G10(x)              => x; case G20(x, y) => x;
         case G01(xs @ _*)       => xs.head; case G11(x, ys @ _*) => x;
         case G21(x, y, zs @ _*) => x
       }
     def gd2[A](x: C10[A]) =
       x match {
-        case G00()              => ???; case G10(x) => x; case G20(x, y) => x;
+        case G00()              => ???; case G10(x)              => x; case G20(x, y) => x;
         case G01(xs @ _*)       => xs.head; case G11(x, ys @ _*) => x;
         case G21(x, y, zs @ _*) => x
       }
     def gd3[A](x: C20[A]) =
       x match {
-        case G00()              => ???; case G10(x) => x; case G20(x, y) => x;
+        case G00()              => ???; case G10(x)              => x; case G20(x, y) => x;
         case G01(xs @ _*)       => xs.head; case G11(x, ys @ _*) => x;
         case G21(x, y, zs @ _*) => x
       }
     def gd4[A](x: C01[A]) =
       x match {
-        case G00()              => ???; case G10(x) => x; case G20(x, y) => x;
+        case G00()              => ???; case G10(x)              => x; case G20(x, y) => x;
         case G01(xs @ _*)       => xs.head; case G11(x, ys @ _*) => x;
         case G21(x, y, zs @ _*) => x
       }
     def gd5[A](x: C11[A]) =
       x match {
-        case G00()              => ???; case G10(x) => x; case G20(x, y) => x;
+        case G00()              => ???; case G10(x)              => x; case G20(x, y) => x;
         case G01(xs @ _*)       => xs.head; case G11(x, ys @ _*) => x;
         case G21(x, y, zs @ _*) => x
       }
     def gd6[A](x: C21[A]) =
       x match {
-        case G00()              => ???; case G10(x) => x; case G20(x, y) => x;
+        case G00()              => ???; case G10(x)              => x; case G20(x, y) => x;
         case G01(xs @ _*)       => xs.head; case G11(x, ys @ _*) => x;
         case G21(x, y, zs @ _*) => x
       }

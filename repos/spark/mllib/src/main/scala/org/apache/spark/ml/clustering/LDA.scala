@@ -540,6 +540,7 @@ class LocalLDAModel private[ml] (
   @Since("1.6.0")
   override def write: MLWriter = new LocalLDAModel.LocalLDAModelWriter(this)
 }
+
 @Since("1.6.0")
 object LocalLDAModel extends MLReadable[LocalLDAModel] {
 
@@ -693,6 +694,7 @@ class DistributedLDAModel private[ml] (
   @Since("1.6.0")
   override def write: MLWriter = new DistributedLDAModel.DistributedWriter(this)
 }
+
 @Since("1.6.0")
 object DistributedLDAModel extends MLReadable[DistributedLDAModel] {
 

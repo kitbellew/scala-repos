@@ -196,6 +196,7 @@ final class Board {
     }
     a
   }
+
   /*
 // Printing all the board cells and their neighbours
 // helps check that they are connected properly

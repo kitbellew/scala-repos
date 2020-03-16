@@ -24,6 +24,7 @@ class ReflectionToolBoxTest extends ScalaOsgiHelper {
 
   @Configuration
   def config(): Array[exam.Option] = standardOptions
+
   @Test
   def basicMirrorThroughOsgi(): Unit = {
     // Note - this tries to make sure when pulling a toolbox, we get the compiler.

@@ -176,6 +176,7 @@ class SyncProducerTest extends KafkaServerTestHarness {
       response2.status(TopicAndPartition("test", 0)).error)
     assertEquals(0, response2.status(TopicAndPartition("test", 0)).offset)
   }
+
   @Test
   def testMessageSizeTooLargeWithAckZero() {
     val server = servers.head

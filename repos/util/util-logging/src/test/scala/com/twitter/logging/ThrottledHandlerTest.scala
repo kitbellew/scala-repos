@@ -22,6 +22,7 @@ import org.scalatest.{BeforeAndAfter, WordSpec}
 
 import com.twitter.conversions.time._
 import com.twitter.util.{TempFolder, Time}
+
 @RunWith(classOf[JUnitRunner])
 class ThrottledHandlerTest
     extends WordSpec

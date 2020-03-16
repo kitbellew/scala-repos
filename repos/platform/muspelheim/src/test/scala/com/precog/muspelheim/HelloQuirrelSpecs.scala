@@ -193,6 +193,7 @@ trait HelloQuirrelSpecs extends EvalStackSpecs {
         eval("count((//obnoxious).v)") mustEqual Set(SDecimal(100000))
       }
     }
+
     // FIXME: This is no longer proper syntax.
 //      "handle chained characteristic functions" in {
 //        val input = """

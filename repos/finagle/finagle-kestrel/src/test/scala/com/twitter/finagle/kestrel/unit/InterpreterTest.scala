@@ -13,6 +13,7 @@ import com.twitter.finagle.kestrel.protocol._
 import com.twitter.io.Buf
 import com.twitter.util.StateMachine.InvalidStateTransition
 import com.twitter.util.Time
+
 @RunWith(classOf[JUnitRunner])
 class InterpreterTest extends FunSuite {
   trait InterpreterHelper {

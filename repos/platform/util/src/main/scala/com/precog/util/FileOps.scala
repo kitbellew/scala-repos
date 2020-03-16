@@ -68,4 +68,5 @@ object FilesystemFileOps extends FileOps {
 
   def mkdir(dir: File): IO[Boolean] = IO { dir.mkdirs() }
 }
+
 // vim: set ts=4 sw=4 et:

@@ -825,6 +825,7 @@ object ScalaDocumentationProvider {
     for (ann <- elem.annotations) { buffer.append(parseAnnotation(ann) + sep) }
     buffer.toString()
   }
+
   @tailrec
   private def parseDocComment(
       elem: PsiDocCommentOwner,

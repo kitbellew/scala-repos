@@ -92,6 +92,7 @@ object EventSeq {
   implicit def eventSeqToList(es: EventSeq): List[Event] = es.events
   implicit def listToEventSeq(l: List[Event]): EventSeq = new EventSeq(l)
 }
+
 @deprecated("Use LEvents instead.", "0.9.2")
 class EventSeq(val events: List[Event]) {
   def filter(
@@ -119,6 +120,7 @@ class EventSeq(val events: List[Event]) {
   }
 
 }
+
 @deprecated("Use LEventStore instead.", "0.9.2")
 class LBatchView(
     val appId: Int,

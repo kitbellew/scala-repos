@@ -18,6 +18,7 @@ package net.liftweb
 package sitemap
 
 import scala.xml.NodeSeq
+
 /**
   * The beginning of an experiment to provide a capability to define
   * the sitemap menu in xml. Currently pretty limited.

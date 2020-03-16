@@ -249,6 +249,7 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
 
     }
   }
+
   @Test
   def testSendWithDeadBroker() {
     val props = new Properties()

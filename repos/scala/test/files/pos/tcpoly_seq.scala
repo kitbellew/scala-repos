@@ -137,6 +137,7 @@ trait HOSeq {
       throw new NoSuchElementException("tail of empty list")
   }
 }
+
 // misc signatures collected from mailing list / library code:
 /*override def flatMap[B](f: A => Iterable[B]): Set[B]
     final override def flatMap[b](f: Any => Iterable[b]): Array[b]

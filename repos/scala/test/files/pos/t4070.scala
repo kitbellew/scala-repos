@@ -17,6 +17,7 @@ package b {
     def crash(x: Dingus[_]): Unit = x match { case m: Bippy[tv] => () }
   }
 }
+
 /*
 // With crash below the classes:
 % scalac -Dscalac.debug.tvar ./a.scala

@@ -242,4 +242,5 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
     }
   }
 }
+
 // vim: set ts=4 sw=4 et:

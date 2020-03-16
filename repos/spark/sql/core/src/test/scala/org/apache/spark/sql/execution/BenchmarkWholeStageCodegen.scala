@@ -96,6 +96,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     runBenchmark("kurtosis", N) {
       sqlContext.range(N).groupBy().agg("id" -> "kurtosis").collect()
     }
+
     /**
       Using ImperativeAggregate (as implemented in Spark 1.6):
 

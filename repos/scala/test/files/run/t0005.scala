@@ -19,6 +19,7 @@ object Test {
     println(res)
   }
 }
+
 /*
 compiler crash:
 

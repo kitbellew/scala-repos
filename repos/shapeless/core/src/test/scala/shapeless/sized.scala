@@ -283,6 +283,7 @@ class SizedTests {
     m2iExist,
     m2iExist,
     m2dExist)
+
   @Test
   def testToHList {
     def equalInferredTypes[A, B](a: A, b: B)(implicit eq: A =:= B) {}

@@ -7,6 +7,7 @@ import scala.collection.mutable
 import org.junit.runner.RunWith
 import org.scalatest.WordSpec
 import org.scalatest.junit.JUnitRunner
+
 @RunWith(classOf[JUnitRunner])
 class KetamaDistributorTest extends WordSpec {
   "KetamaDistributor" should {

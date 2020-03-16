@@ -36,6 +36,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 import scalafx.Includes._
 import scalafx.testutil.RunOnApplicationThread
+
 @RunWith(classOf[JUnitRunner])
 class PlatformSpec extends FlatSpec with Matchers with RunOnApplicationThread {
 

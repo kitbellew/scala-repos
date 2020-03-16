@@ -241,6 +241,7 @@ class StringTest {
 
     for ((i, e) <- trg zip exp) { assertEquals(e, i.toInt) }
   }
+
   @Test def concat(): Unit = { assertEquals("asdffdsa", "asdf".concat("fdsa")) }
 
   @Test def constructors(): Unit = {

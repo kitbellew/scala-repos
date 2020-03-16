@@ -9264,6 +9264,7 @@ object Test {
     // *//*    */ test("MixZIfeFooXIfwBarY_f", new MixZIfeFooXIfwBarY_f[C], 3, "mix");
     // *//*    */ test("MixZIfeFooXIfwBarYI_", new MixZIfeFooXIfwBarYI_[C], 3, "mix");
     // *//*    */ test("MixZIfeFooXIfwBarYIf", new MixZIfeFooXIfwBarYIf[C], 3, "mix");
+
     // */abstract test("Mix___wFoo___       ", new Mix___wFoo___          , 2, null );
     // */abstract test("Mix___wFoo___wBar___", new Mix___wFoo___wBar___   , 3, null );
     // */abstract test("Mix___wFoo___wBar__f", new Mix___wFoo___wBar__f   , 3, "bar");

@@ -35,6 +35,7 @@ import kafka.consumer.SimpleConsumer
 import kafka.message.Message
 import kafka.zk.ZooKeeperTestHarness
 import kafka.utils.{CoreUtils, TestUtils}
+
 @RunWith(value = classOf[Parameterized])
 class ProducerCompressionTest(compression: String)
     extends ZooKeeperTestHarness {

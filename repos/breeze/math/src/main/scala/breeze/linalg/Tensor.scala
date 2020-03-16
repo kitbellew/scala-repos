@@ -45,6 +45,7 @@ trait QuasiTensor[@spec(Int) K, @spec(Double, Int, Float, Long) V] {
   def argmin(implicit ord: Ordering[V]) = keysIterator.minBy(apply _)
   @deprecated("Use sum(t) instead of t.sum", "0.6")
   def sum(implicit num: Numeric[V]) = activeValuesIterator.sum
+
   @deprecated("Use argsort(t) instead of t.argsort", "0.6")
   def argsort(implicit ord: Ordering[V]): IndexedSeq[K] =
     keysIterator.toIndexedSeq.sorted(ord.on[K](apply _))

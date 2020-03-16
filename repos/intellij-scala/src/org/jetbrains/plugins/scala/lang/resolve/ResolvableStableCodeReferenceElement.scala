@@ -396,6 +396,7 @@ trait ResolvableStableCodeReferenceElement
     ProgressManager.checkCanceled()
     resolveAllConstructorsImpl()
   }
+
   @CachedWithRecursionGuard[ResolvableStableCodeReferenceElement](
     this,
     EMPTY_ARRAY,
@@ -408,6 +409,7 @@ trait ResolvableStableCodeReferenceElement
 
     shapeResolveImpl()
   }
+
   @CachedWithRecursionGuard[ResolvableStableCodeReferenceElement](
     this,
     EMPTY_ARRAY,

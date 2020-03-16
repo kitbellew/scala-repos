@@ -89,6 +89,7 @@ private[v1] class ApiRootResource extends UIRootFromServletContext {
       new ExecutorListResource(ui)
     }
   }
+
   @Path("applications/{appId}/stages")
   def getStages(@PathParam("appId") appId: String): AllStagesResource = {
     uiRoot.withSparkUI(appId, None) { ui => new AllStagesResource(ui) }

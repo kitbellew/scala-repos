@@ -1019,6 +1019,7 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
         BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
         .register(this)
     }
+
   @expand
   @expand.valify
   implicit def op_DM_M[@expand.args(Int, Long, Float, Double) T]
@@ -1498,6 +1499,7 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
         result
       }
     }
+
   @expand
   implicit def dm_s_CompOp[
       @expand.args(Int, Double, Float, Long) T,

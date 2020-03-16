@@ -110,6 +110,7 @@ class CounterTest extends FunSuite with Checkers {
     assert(x === Counter(1 -> log(1.0), 2 -> log(2.0)))
   }
 }
+
 @RunWith(classOf[JUnitRunner])
 class CounterOps_IntTest
     extends TensorSpaceTestBase[Counter[Int, Int], Int, Int] {

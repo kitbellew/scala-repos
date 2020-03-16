@@ -39,6 +39,7 @@ class Polya[T, @specialized(Int) I](params: T)(implicit
 
   def probabilityOf(x: I) =
     math.exp(lbeta(sum(params), 1.0) - lbeta(params(x), 1.0))
+
 //  def probabilityOf(x: T) = math.exp(logProbabilityOf(x))
 //  def logProbabilityOf(x: T) = {
 //    math.exp(unnormalizedLogProbabilityOf(x) + logNormalizer)

@@ -11,6 +11,7 @@ import org.mockito.Mockito.when
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
+
 @RunWith(classOf[JUnitRunner])
 class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
