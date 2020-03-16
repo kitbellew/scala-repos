@@ -431,7 +431,8 @@ object Test extends Properties("HtmlFactory") {
            [use case] The usecase explanation
            [use case] The usecase explanation
            Definition Classes SI_5287 SI_5287_B SI_5287_A""",
-        true)
+        true
+      )
     ) // the explanation appears twice, as small comment and full comment
 
   property("Comment inheritance: Correct comment inheritance for overriding") =

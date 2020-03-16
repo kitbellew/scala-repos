@@ -314,8 +314,7 @@ case class AttributeInfo(
     typeRef: Type,
     value: Option[Any],
     values: Seq[
-      String ~ Any
-    ]) // sym_Ref info_Ref {constant_Ref} {nameRef constantRef}
+      String ~ Any]) // sym_Ref info_Ref {constant_Ref} {nameRef constantRef}
 case class Children(symbolRefs: Seq[Int]) //sym_Ref {sym_Ref}
 
 case class AnnotInfo(refs: Seq[Int]) // attarg_Ref {constant_Ref attarg_Ref}
