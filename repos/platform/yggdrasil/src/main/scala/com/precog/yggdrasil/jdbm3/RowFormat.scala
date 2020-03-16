@@ -1001,6 +1001,7 @@ trait IdentitiesRowFormat extends RowFormat {
 
   def decode(bytes: Array[Byte], offset: Int): List[CValue] = {
     val longs = new Array[Long](identities)
+
     @inline @tailrec
     def loop(offset: Int, shift: Int, n: Long, i: Int) {
       val lo = bytes(offset)

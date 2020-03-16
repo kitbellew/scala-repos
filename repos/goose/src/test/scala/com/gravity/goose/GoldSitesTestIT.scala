@@ -48,6 +48,7 @@ class GoldSitesTestIT {
       expectedStart = content)
     TestUtils.printReport()
   }
+
   @Test
   def cnn() {
     implicit val config = TestUtils.DEFAULT_CONFIG
@@ -99,6 +100,7 @@ class GoldSitesTestIT {
       expectedStart = content,
       expectedImage = image)
   }
+
   @Test
   def businessWeek2() {
     implicit val config = TestUtils.DEFAULT_CONFIG
@@ -193,6 +195,7 @@ class GoldSitesTestIT {
       expectedStart = content,
       expectedImage = image)
   }
+
   @Test
   def laTimes() {
     implicit val config = TestUtils.DEFAULT_CONFIG
@@ -287,6 +290,7 @@ class GoldSitesTestIT {
     )
     TestUtils.printReport()
   }
+
   @Test
   def espn() {
     implicit val config = TestUtils.DEFAULT_CONFIG
@@ -396,6 +400,7 @@ class GoldSitesTestIT {
         "Opposition to a proposal to remove certain personal data")
 
   }
+
   @Test
   def cnet() {
     implicit val config = TestUtils.DEFAULT_CONFIG
@@ -455,6 +460,7 @@ class GoldSitesTestIT {
     )
     TestUtils.printReport()
   }
+
   @Test
   def yahoo() {
     implicit val config = TestUtils.DEFAULT_CONFIG
@@ -541,6 +547,7 @@ class GoldSitesTestIT {
     )
     TestUtils.printReport()
   }
+
   @Test
   def huffpoBusiness2() {
     implicit val config = TestUtils.DEFAULT_CONFIG
@@ -587,6 +594,7 @@ class GoldSitesTestIT {
     )
     TestUtils.printReport()
   }
+
   @Test
   def gooseRequestParameters() {
     implicit val config = TestUtils.DEFAULT_CONFIG
@@ -596,6 +604,7 @@ class GoldSitesTestIT {
     println(article.rawHtml)
 
   }
+
   @Test
   def cnbc() {
     implicit val config = TestUtils.NO_IMAGE_CONFIG
@@ -654,6 +663,7 @@ class GoldSitesTestIT {
     )
     TestUtils.printReport()
   }
+
   @Test
   def time3() {
     val url = "http://www.time.com/time/magazine/article/0,9171,804054,00.html"
@@ -666,6 +676,7 @@ class GoldSitesTestIT {
       expectedImage = null)
     TestUtils.printReport()
   }
+
   @Test
   def yahooFinance2() {
     val url =
@@ -709,6 +720,7 @@ class GoldSitesTestIT {
     )
     TestUtils.printReport()
   }
+
   @Test
   def politico() {
     implicit val config = TestUtils.DEFAULT_CONFIG

@@ -1378,6 +1378,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     */
   @volatile var calculateContextPath: () => Box[String] = () => Empty
+
   @volatile private var _context: HTTPContext = _
 
   /**

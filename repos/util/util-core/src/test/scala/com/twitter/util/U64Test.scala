@@ -5,6 +5,7 @@ import scala.util.Random
 import org.junit.runner.RunWith
 import org.scalatest.WordSpec
 import org.scalatest.junit.JUnitRunner
+
 @RunWith(classOf[JUnitRunner])
 class U64Test extends WordSpec {
   import U64._

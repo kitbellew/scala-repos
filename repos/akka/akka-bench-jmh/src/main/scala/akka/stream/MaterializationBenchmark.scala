@@ -100,10 +100,13 @@ class MaterializationBenchmark {
 
   @Benchmark
   def flow_with_map(): Unit = flowWithMap.run()
+
   @Benchmark
   def graph_with_junctions(): Unit = graphWithJunctions.run()
+
   @Benchmark
   def graph_with_nested_imports(): Unit = graphWithNestedImports.run()
+
   @Benchmark
   def graph_with_imported_flow(): Unit = graphWithImportedFlow.run()
 }

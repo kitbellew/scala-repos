@@ -928,6 +928,7 @@ class DistributedLDAModel private[clustering] (
       gammaShape)
   }
 }
+
 @Experimental
 @Since("1.5.0")
 object DistributedLDAModel extends Loader[DistributedLDAModel] {

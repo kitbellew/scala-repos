@@ -42,6 +42,7 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
       oldMap + (kv._1 -> newV)
     }
   }
+
   @inline private final def add[K, V](
       x: Map[K, V],
       y: Map[K, V],

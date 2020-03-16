@@ -49,4 +49,5 @@ object AccountFinder {
       def findAccountDetailsById(accountId: AccountId) = None.point[M]
     }
 }
+
 // vim: set ts=4 sw=4 et:

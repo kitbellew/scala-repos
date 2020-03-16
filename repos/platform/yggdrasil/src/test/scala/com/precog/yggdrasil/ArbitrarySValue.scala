@@ -277,4 +277,5 @@ trait ArbitraryBigDecimal {
         exponent
     } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
 }
+
 // vim: set ts=4 sw=4 et:

@@ -21,6 +21,7 @@ import org.scalatest.junit._
 import org.scalatest.prop._
 import org.scalacheck._
 import org.junit.runner.RunWith
+
 @RunWith(classOf[JUnitRunner])
 class LogNormalTest
     extends FunSuite

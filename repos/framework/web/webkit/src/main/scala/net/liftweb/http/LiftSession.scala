@@ -105,6 +105,7 @@ object LiftSession {
     * Holds user's functions that will be called when a stateful request has been processed
     */
   var onEndServicing: List[(LiftSession, Req, Box[LiftResponse]) => Unit] = Nil
+
   @volatile private var constructorCache
       : Map[(Class[_], Box[Class[_]]), Box[ConstructorType]] = Map()
 

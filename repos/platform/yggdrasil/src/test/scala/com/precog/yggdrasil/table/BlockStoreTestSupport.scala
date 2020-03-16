@@ -192,4 +192,5 @@ trait BlockStoreTestSupport[M[+_]] { self =>
 
   def emptyTestModule = BlockStoreTestModule.empty[M]
 }
+
 // vim: set ts=4 sw=4 et:

@@ -42,4 +42,5 @@ trait YIdInstances {
 
 @deprecated("use scalaz.Need instead.", "2.7.0")
 object YId extends YIdInstances
+
 // vim: set ts=4 sw=4 et:

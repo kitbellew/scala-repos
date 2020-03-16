@@ -133,6 +133,7 @@ class BufBenchmark extends StdBenchAnnotations {
   @Benchmark
   def asByteArrayConcatBuf(): Array[Byte] =
     asByteArray(concatBuf)
+
   @Benchmark
   def stringToUtf8Buf(): Buf =
     Buf.Utf8(string)

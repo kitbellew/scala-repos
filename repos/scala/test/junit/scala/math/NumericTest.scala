@@ -6,6 +6,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 import scala.math.Numeric.FloatAsIfIntegral
+
 @RunWith(classOf[JUnit4])
 class NumericTest {
 

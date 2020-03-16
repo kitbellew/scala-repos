@@ -34,6 +34,7 @@ import org.scalatest.junit.JUnitRunner
 
 import scalafx.Includes._
 import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
+
 @RunWith(classOf[JUnitRunner])
 class MenuButtonSpec
     extends SimpleSFXDelegateSpec[jfxsc.MenuButton, MenuButton](

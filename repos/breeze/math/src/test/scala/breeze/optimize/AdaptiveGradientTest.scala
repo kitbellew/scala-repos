@@ -23,6 +23,7 @@ import org.scalacheck._
 import org.junit.runner.RunWith
 
 import breeze.linalg._
+
 @RunWith(classOf[JUnitRunner])
 class AdaptiveGradientTest extends OptimizeTestBase {
 

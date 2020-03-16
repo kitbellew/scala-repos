@@ -33,6 +33,7 @@ class CumulativeGaugeBenchmark extends StdBenchAnnotations {
   @TearDown(Level.Iteration)
   def teardown(): Unit =
     gauges.foreach(_.remove())
+
   @Benchmark
   def getValue: Float =
     theGauge()

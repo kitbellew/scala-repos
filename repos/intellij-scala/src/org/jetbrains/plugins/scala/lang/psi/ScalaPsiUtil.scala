@@ -209,6 +209,7 @@ object ScalaPsiUtil {
       s.hasAnnotation("scala.beans.BeanProperty").isDefined
     }
   }
+
   @tailrec
   def withEtaExpansion(expr: ScExpression): Boolean = {
     expr.getContext match {

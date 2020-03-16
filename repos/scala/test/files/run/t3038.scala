@@ -2,6 +2,7 @@ class A {
   private lazy val a1 = "a1"
   object B
   private lazy val a2 = "a2"
+
   @transient lazy val a3 = "a3"
   @transient private lazy val a4 = "a4"
   @transient lazy val a5 = "a5"

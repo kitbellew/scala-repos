@@ -24,6 +24,7 @@ import org.junit.runner.RunWith
 import breeze.numerics._
 import breeze.linalg._
 import breeze.stats._
+
 @RunWith(classOf[JUnitRunner])
 class MultivariateGaussianTest extends FunSuite with Checkers {
   import Arbitrary.arbitrary

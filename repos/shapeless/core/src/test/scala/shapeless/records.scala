@@ -187,6 +187,7 @@ class RecordTests {
     assert(rec(stringField1) == "Blarr")
     assert(rec(doubleField1) == 5.0)
   }
+
   @Test
   def testAtLiterals {
     val r1 =
@@ -731,6 +732,7 @@ class RecordTests {
     typed[FieldType[fooType.T, Int]](r1)
     assertEquals(24, r1)
   }
+
   @Test
   def testFieldPolyOnRecord {
     import poly._

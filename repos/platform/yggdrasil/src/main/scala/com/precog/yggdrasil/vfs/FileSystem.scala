@@ -130,4 +130,5 @@ case class Read(path: Path, version: Version) extends PathOp
 case class FindChildren(path: Path) extends PathOp
 case class FindPathMetadata(path: Path) extends PathOp
 case class CurrentVersion(path: Path) extends PathOp
+
 /* class FileSystem */

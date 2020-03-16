@@ -168,4 +168,5 @@ trait ColumnarTableModuleTestSupport[M[+_]]
     lib(name)
   }
 }
+
 // vim: set ts=4 sw=4 et:

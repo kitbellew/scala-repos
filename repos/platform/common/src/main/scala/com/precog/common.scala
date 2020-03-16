@@ -29,4 +29,5 @@ package object common {
 
   implicit def stringExtensions(s: String) = new StringExtensions(s)
 }
+
 // vim: set ts=4 sw=4 et:

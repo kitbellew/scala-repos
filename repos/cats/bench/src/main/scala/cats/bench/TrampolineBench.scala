@@ -21,6 +21,7 @@ class TrampolineBench {
         x <- Eval.defer(evalFib(n - 1))
         y <- Eval.defer(evalFib(n - 2))
       } yield x + y
+
   @Benchmark
   def trampoline(): Int = trampolineFib(N).run
 

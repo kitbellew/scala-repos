@@ -33,4 +33,5 @@ trait ZippedStreamSerialization extends StreamSerialization {
   def oStream(file: File) =
     new DataOutputStream(new GZIPOutputStream(new FileOutputStream(file)))
 }
+
 // vim: set ts=4 sw=4 et:
