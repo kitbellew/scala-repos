@@ -716,8 +716,9 @@ class TreeTableView[S](
         })
   }
   def columnResizePolicy_=(
-      p: jfxu.Callback[jfxsc.TreeTableView.ResizeFeatures[
-        _], java.lang.Boolean]): Unit = {
+      p: jfxu.Callback[
+        jfxsc.TreeTableView.ResizeFeatures[_],
+        java.lang.Boolean]): Unit = {
     delegate.columnResizePolicyProperty().setValue(p)
   }
 

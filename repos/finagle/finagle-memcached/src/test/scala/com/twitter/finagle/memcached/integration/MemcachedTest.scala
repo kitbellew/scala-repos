@@ -88,7 +88,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
         "foos" -> (
           (
             "xyz",
-            "1")
+            "1"
+          )
         ), // the "cas unique" values are predictable from a fresh memcached
         "bazs" -> (("zyx", "3")))
       assert(result == expected)

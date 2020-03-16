@@ -681,7 +681,8 @@ class ScUndefinedSubstitutor(
                         s"_$$${ index += 1; index }",
                         Nil,
                         lower,
-                        absUpper)
+                        absUpper
+                      )
                     ) //todo: why this is right?
                 }
               case ScSkolemizedType(_, _, lower, skoUpper) =>

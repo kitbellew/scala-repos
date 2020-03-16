@@ -356,7 +356,8 @@ object ScCompoundType {
                   1,
                   subst,
                   e),
-                psi.types.Unit)
+                psi.types.Unit
+              )
             ) //setter
           }
         case valDecl: ScValue =>

@@ -53,7 +53,8 @@ class ScGenericCallImpl(node: ASTNode)
                 Seq[ScExpression](
                   ScalaPsiElementFactory.createExpressionFromText(
                     "{val x: Nothing = null; x}",
-                    getManager)
+                    getManager
+                  )
                 ) //we can't to not add something => add Nothing expression
             }
           else Seq.empty

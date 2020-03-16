@@ -26,8 +26,9 @@ package object compiler {
 
             vmExecutable.right.flatMap { executable =>
               val tools =
-                new File(jdkType.getToolsPath(
-                  sdk)) // TODO properly handle JDK 6 on Mac OS
+                new File(
+                  jdkType.getToolsPath(sdk)
+                ) // TODO properly handle JDK 6 on Mac OS
               val toolsPresent = true //tools.exists()
               Either.cond(
                 toolsPresent,

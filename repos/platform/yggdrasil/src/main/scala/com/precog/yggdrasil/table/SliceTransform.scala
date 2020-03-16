@@ -352,10 +352,9 @@ trait SliceTransforms[M[+_]]
                 }
 
                 Map(
-                  ColumnRef(CPath.Identity, CBoolean) -> (if (invert)
-                                                            complement(
-                                                              aggregate)
-                                                          else aggregate))
+                  ColumnRef(CPath.Identity, CBoolean) -> (
+                    if (invert) complement(aggregate) else aggregate
+                  ))
               }
             }
           }

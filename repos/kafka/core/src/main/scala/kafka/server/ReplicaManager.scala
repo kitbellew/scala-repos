@@ -421,7 +421,8 @@ class ReplicaManager(
               new PartitionResponse(
                 result.errorCode,
                 result.info.firstOffset,
-                result.info.timestamp)
+                result.info.timestamp
+              )
             ) // response status
       }
 

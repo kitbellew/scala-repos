@@ -475,9 +475,10 @@ object IterateesSpec
       mustExecute(5) { implicit foldEC =>
         val it = delayed(cont(input1 =>
           delayed(cont(input2 =>
-            delayed(
-              cont(input3 => delayed(error(input1 + input2 + input3))))))))
-          .recover { case t: Throwable => expected }
+            delayed(cont(input3 =>
+              delayed(error(input1 + input2 + input3)))))))).recover {
+          case t: Throwable => expected
+        }
         val actual = await(
           Enumerator(unexpected, unexpected, unexpected) |>>> it)
         actual must equalTo(expected)
