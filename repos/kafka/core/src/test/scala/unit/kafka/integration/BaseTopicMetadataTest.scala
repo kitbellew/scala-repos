@@ -414,6 +414,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
     checkMetadata(adHocServers, numConfigs)
     adHocServers.map(p => p.shutdown())
   }
+
   @Test
   def testAliveBrokersListWithNoTopicsAfterABrokerShutdown {
     val adHocServers = adHocConfigs.map(p => createServer(p))

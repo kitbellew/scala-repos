@@ -211,6 +211,7 @@ object CanConvolve extends SerializableLogging {
       canCorrelateNoOverhang: CanCorrelateNoOverhang[Input, KernelType, Output])
       : Output =
     canCorrelateNoOverhang(data, kernel, range)
+
   @expand
   @expand.valify
   implicit def correlateLoopNoOverhangRangeT[@expand.args(
@@ -317,6 +318,7 @@ object CanConvolve extends SerializableLogging {
     }
 
 }
+
 //  /**FFT-based FIR filtering using overlap-add method.
 //    *
 //    * @param filter

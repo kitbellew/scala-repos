@@ -136,4 +136,5 @@ object EnumeratorTTest extends SpecLite {
     def monoid[E, F[_]: Monad] = Monoid[EnumeratorT[E, F]]
   }
 }
+
 // vim: set ts=4 sw=4 et:

@@ -8,6 +8,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 import org.mockito.Mockito._
+
 @RunWith(classOf[JUnitRunner])
 case class RejectFailterSpec() extends FlatSpec with MustMatchers {
   behavior of "RejectFailters"

@@ -135,6 +135,7 @@ class ExtractionsTest {
       "MONTGOMERY, Ala. -- Alabama's strict new immigration law may be backfiring."
     TestUtils.runArticleAssertions(article = article, expectedStart = content)
   }
+
   @Test
   def testHuffingtonPost() {
     implicit val config = TestUtils.NO_IMAGE_CONFIG
@@ -184,6 +185,7 @@ class ExtractionsTest {
         expectedTags.contains(actualTag))
     }
   }
+
   @Test
   def wallStreetJournal() {
     implicit val config = TestUtils.NO_IMAGE_CONFIG
@@ -262,6 +264,7 @@ class ExtractionsTest {
       expectedStart =
         "If you believe what college football coaches have said about sports")
   }
+
   @Test
   def engadget() {
     implicit val config = TestUtils.NO_IMAGE_CONFIG
@@ -303,6 +306,7 @@ class ExtractionsTest {
       article.publishDate)
     System.out.println("Publish Date Extracted: " + article.publishDate)
   }
+
   @Test
   def time() {
     implicit val config = TestUtils.NO_IMAGE_CONFIG
@@ -367,6 +371,7 @@ class ExtractionsTest {
       expectedStart =
         "If the newest Census Bureau estimates stay close to form")
   }
+
   @Test
   def businessinsider1() {
     val url =

@@ -10,6 +10,7 @@ import org.mockito.Matchers._
 import org.scalatest.{OneInstancePerTest, FunSuite}
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
+
 @RunWith(classOf[JUnitRunner])
 class ThriftRichClientTest
     extends FunSuite

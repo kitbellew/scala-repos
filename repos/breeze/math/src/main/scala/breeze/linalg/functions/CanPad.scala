@@ -179,6 +179,7 @@ object CanPadRight {
       }
 
     }
+
   // </editor-fold>
 
 }
@@ -350,6 +351,7 @@ object CanPadLeft {
       }
 
     }
+
   // </editor-fold>
 
 }

@@ -91,6 +91,7 @@ trait BitVectorOps {
         !(a :!= b)
       }
     }
+
   @expand
   implicit def axpy[@expand.args(Int, Double, Float, Long) V, Vec](implicit
       ev: Vec <:< Vector[V]): scaleAdd.InPlaceImpl3[Vec, V, BitVector] = {
@@ -134,6 +135,7 @@ trait BitVectorOps {
       }
     }
   }
+
   @expand
   @expand.valify
   implicit def canDot_BV_DenseVector[@expand.args(Double, Float, Int, Long) T](

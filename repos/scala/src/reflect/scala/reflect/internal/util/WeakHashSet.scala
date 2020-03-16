@@ -255,6 +255,7 @@ final class WeakHashSet[A <: AnyRef](
       case _ => {
         removeStaleEntries()
         val bucket = bucketFor(elem.hashCode)
+
         @tailrec
         def linkedListLoop(prevEntry: Entry[A], entry: Entry[A]): Unit =
           entry match {

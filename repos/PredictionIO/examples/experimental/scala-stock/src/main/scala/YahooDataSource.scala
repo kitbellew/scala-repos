@@ -368,6 +368,7 @@ object YahooDataSource {
     override def toString(): String =
       s"YDS.Intermediate($ticker, size=${dailyMap.size})"
   }
+
   /*
   def main(args: Array[String]) {
     val params = Params(

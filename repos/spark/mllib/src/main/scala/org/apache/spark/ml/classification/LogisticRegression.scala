@@ -704,6 +704,7 @@ class LogisticRegressionModel private[spark] (
   override def write: MLWriter =
     new LogisticRegressionModel.LogisticRegressionModelWriter(this)
 }
+
 @Since("1.6.0")
 object LogisticRegressionModel extends MLReadable[LogisticRegressionModel] {
 

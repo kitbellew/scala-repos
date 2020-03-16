@@ -83,6 +83,7 @@ object NullSafetyTest {
 
       assert(dict == null)
     }
+
     @Test def testPropertyWrapping(): Unit = {
       val nullJProps: ju.Properties = null
       val props: mutable.Map[String, String] = nullJProps

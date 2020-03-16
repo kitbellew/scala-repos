@@ -945,6 +945,7 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
       }
     }
   }
+
   @expand
   implicit def pureFromUpdate[
       @expand.args(Int, Double, Float, Long) T,

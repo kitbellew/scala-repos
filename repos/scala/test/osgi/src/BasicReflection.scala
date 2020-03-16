@@ -32,6 +32,7 @@ class C {
   override def toString = "an instance of C"
 }
 object M
+
 @RunWith(classOf[PaxExam])
 @ExamReactorStrategy(Array(classOf[PerMethod]))
 class BasicReflectionTest extends ScalaOsgiHelper {

@@ -91,6 +91,7 @@ private[pickling] object PicklingAlgorithm {
         }
     }
 }
+
 // TODO - Java Serializable Serializer
 // TODO - Java Bean serializer
 // TODO - Crazy-Kryo-like-serializer

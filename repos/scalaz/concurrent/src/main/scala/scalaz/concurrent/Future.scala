@@ -90,6 +90,7 @@ sealed abstract class Future[+A] {
       case BindAsync(onFinish, g) =>
         onFinish(x => Trampoline.delay(g(x)) map (_ unsafePerformListen cb))
     }
+
   @deprecated("use unsafePerformListen", "7.2")
   def listen(cb: A => Trampoline[Unit]): Unit =
     unsafePerformListen(cb)
@@ -299,6 +300,7 @@ sealed abstract class Future[+A] {
   def timed(timeoutInMillis: Long)(
       implicit scheduler: ScheduledExecutorService): Future[Throwable \/ A] =
     unsafePerformTimed(timeoutInMillis)
+
   @deprecated("use unsafePerformTimed", "7.2")
   def timed(timeout: Duration)(implicit
       scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)

@@ -16,6 +16,7 @@ trait Expecting {
   final val expect = new Expecty
  */
 }
+
 @RunWith(classOf[JUnit4])
 class StackTraceTest extends Expecting {
   // formerly an enum

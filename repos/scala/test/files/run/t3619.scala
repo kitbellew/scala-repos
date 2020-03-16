@@ -20,6 +20,7 @@ object Test extends App {
 
   new Meh
 }
+
 /*
   {
     def this(a: String, b: Int) {

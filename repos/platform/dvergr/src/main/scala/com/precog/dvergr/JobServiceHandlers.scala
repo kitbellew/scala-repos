@@ -583,4 +583,5 @@ class GetResultHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
     DescriptionMetadata("Get a job's result.")
   )
 }
+
 // type JobServiceHandlers

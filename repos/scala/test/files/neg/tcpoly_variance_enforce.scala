@@ -36,4 +36,5 @@ object test {
   def x: coll[FooInvar] = sys.error("foo") // error
   def y: coll[FooContra] = sys.error("foo") // error
 }
+
 // TODO: need test for rank N with N >: 2

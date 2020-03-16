@@ -74,6 +74,7 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
       case _ => ""
     }
   }
+
   @NotNull
   override def getDescriptiveName(element: PsiElement): String = {
     val name = element match {

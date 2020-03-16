@@ -218,4 +218,5 @@ object SampleData extends CValueGenerators {
     Arbitrary(gen)
   }
 }
+
 // vim: set ts=4 sw=4 et:
