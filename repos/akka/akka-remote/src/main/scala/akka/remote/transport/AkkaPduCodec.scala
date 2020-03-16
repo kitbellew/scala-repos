@@ -247,8 +247,7 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
                   localAddress))
             else None,
           seqOption =
-            if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq))
-            else None
+            if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq)) else None
         ))
     } else None
 
