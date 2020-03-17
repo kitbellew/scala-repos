@@ -260,8 +260,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
 
   }
 
-  implicit def canAddInto_VV_V[V, Vec](implicit
-      ev: Vec <:< Vector[V]): OpAdd.InPlaceImpl2[VectorBuilder[V], Vec] = {
+  implicit def canAddInto_VV_V[V, Vec](implicit ev: Vec <:< Vector[V])
+      : OpAdd.InPlaceImpl2[VectorBuilder[V], Vec] = {
     new OpAdd.InPlaceImpl2[VectorBuilder[V], Vec] {
       def apply(a: VectorBuilder[V], b: Vec) {
         require(a.length < 0 || a.length == b.length, "Dimension mismatch!")

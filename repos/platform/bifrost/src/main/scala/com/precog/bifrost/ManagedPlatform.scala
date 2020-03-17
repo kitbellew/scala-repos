@@ -220,8 +220,8 @@ trait ManagedExecution
 
     def complete(
         resultE: EitherT[Future, EvaluationError, StreamT[JobQueryTF, Slice]],
-        outputType: MimeType)(implicit
-        M: JobQueryTFMonad): EitherT[Future, EvaluationError, JobId] = {
+        outputType: MimeType)(implicit M: JobQueryTFMonad)
+        : EitherT[Future, EvaluationError, JobId] = {
       M.jobId map { jobId =>
         resultE map { result =>
           val derefed = result.map(_.deref(TransSpecModule.paths.Value))

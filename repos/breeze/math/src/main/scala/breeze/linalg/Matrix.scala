@@ -34,9 +34,9 @@ import breeze.stats.distributions.Rand
 trait MatrixLike[@spec(Double, Int, Float, Long) V, +Self <: Matrix[V]]
     extends Tensor[(Int, Int), V]
     with TensorLike[(Int, Int), V, Self] {
-  def map[V2, That](fn: V => V2)(implicit
-      canMapValues: CanMapValues[Self @uncheckedVariance, V, V2, That]): That =
-    values map fn
+  def map[V2, That](fn: V => V2)(
+      implicit canMapValues: CanMapValues[Self @uncheckedVariance, V, V2, That])
+      : That = values map fn
 
 }
 

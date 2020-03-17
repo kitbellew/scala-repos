@@ -30,8 +30,8 @@ trait Bifoldable[F[_, _]] { self =>
   }
 
   /**The composition of Bifoldables `F` and `G`, `[x,y]F[G[x,y],G[x,y]]`, is a Bifoldable */
-  def compose[G[_, _]](implicit
-      G0: Bifoldable[G]): Bifoldable[λ[(α, β) => F[G[α, β], G[α, β]]]] =
+  def compose[G[_, _]](implicit G0: Bifoldable[G])
+      : Bifoldable[λ[(α, β) => F[G[α, β], G[α, β]]]] =
     new CompositionBifoldable[F, G] {
       implicit def F = self
       implicit def G = G0

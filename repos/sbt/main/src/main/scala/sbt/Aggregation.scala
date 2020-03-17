@@ -66,8 +66,8 @@ final object Aggregation {
       structure: BuildStructure,
       ts: Values[Task[T]],
       extra: DummyTaskMap,
-      show: ShowConfig)(implicit
-      display: Show[ScopedKey[_]]): (State, Result[Seq[KeyValue[T]]]) = {
+      show: ShowConfig)(implicit display: Show[ScopedKey[_]])
+      : (State, Result[Seq[KeyValue[T]]]) = {
     val complete = timedRun[T](s, ts, extra)
     showRun(complete, show)
     (complete.state, complete.results)

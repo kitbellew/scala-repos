@@ -38,8 +38,8 @@ private[akkahttp] class ModelConversion(
       requestId: Long,
       remoteAddress: InetSocketAddress,
       secureProtocol: Boolean,
-      request: HttpRequest)(implicit
-      fm: Materializer): (RequestHeader, Option[Source[ByteString, Any]]) = {
+      request: HttpRequest)(implicit fm: Materializer)
+      : (RequestHeader, Option[Source[ByteString, Any]]) = {
     (
       convertRequestHeader(requestId, remoteAddress, secureProtocol, request),
       convertRequestBody(request)

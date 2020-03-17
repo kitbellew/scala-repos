@@ -1537,8 +1537,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a5: F[A5]): F[Z] =
     divide5(a1, a2, a3, a4, a5)(f)
 
-  def deriving6[A1, A2, A3, A4, A5, A6, Z](f: Z => (A1, A2, A3, A4, A5, A6))(
-      implicit
+  def deriving6[A1, A2, A3, A4, A5, A6, Z](
+      f: Z => (A1, A2, A3, A4, A5, A6))(implicit
       a1: F[A1],
       a2: F[A2],
       a3: F[A3],

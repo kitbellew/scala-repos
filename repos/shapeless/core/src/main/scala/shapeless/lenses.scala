@@ -58,9 +58,12 @@ trait Lens[S, A] extends LPLens[S, A] { outer =>
       implicit mkLens: MkFieldLens[A, k.T]): Lens[S, mkLens.Elem] =
     mkLens() compose this
 
-  def selectDynamic(k: String)(implicit
-      mkLens: MkSelectDynamicOptic[Lens[S, A], A, Symbol @@ k.type, Nothing])
-      : mkLens.Out = mkLens(this)
+  def selectDynamic(k: String)(
+      implicit mkLens: MkSelectDynamicOptic[
+        Lens[S, A],
+        A,
+        Symbol @@ k.type,
+        Nothing]): mkLens.Out = mkLens(this)
 
   def apply[B](implicit mkPrism: MkCtorPrism[A, B]): Prism[S, B] =
     mkPrism() compose this
@@ -104,9 +107,12 @@ trait Prism[S, A] extends LPPrism[S, A] { outer =>
       def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
     }
 
-  def selectDynamic(k: String)(implicit
-      mkPrism: MkSelectDynamicOptic[Prism[S, A], A, Symbol @@ k.type, Nothing])
-      : mkPrism.Out = mkPrism(this)
+  def selectDynamic(k: String)(
+      implicit mkPrism: MkSelectDynamicOptic[
+        Prism[S, A],
+        A,
+        Symbol @@ k.type,
+        Nothing]): mkPrism.Out = mkPrism(this)
 
   def apply[B](implicit mkPrism: MkCtorPrism[A, B]): Prism[S, B] =
     mkPrism() compose this

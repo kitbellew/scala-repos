@@ -662,8 +662,9 @@ object Future {
     *  @param executor  the execution context on which the future is run
     *  @return          the `Future` holding the result of the computation
     */
-  def apply[T](body: => T)(implicit
-      @deprecatedName('execctx) executor: ExecutionContext): Future[T] =
+  def apply[T](body: => T)(
+      implicit @deprecatedName('execctx) executor: ExecutionContext)
+      : Future[T] =
     unit.map(_ => body)
 
   /** Simple version of `Future.traverse`. Asynchronously and non-blockingly transforms a `TraversableOnce[Future[A]]`
@@ -872,8 +873,8 @@ object Future {
     * @param fn        the function to apply to the `TraversableOnce` of Futures to produce the results
     * @return          the `Future` of the `TraversableOnce` of results
     */
-  def traverse[A, B, M[X] <: TraversableOnce[X]](in: M[A])(fn: A => Future[B])(
-      implicit
+  def traverse[A, B, M[X] <: TraversableOnce[X]](in: M[A])(
+      fn: A => Future[B])(implicit
       cbf: CanBuildFrom[M[A], B, M[B]],
       executor: ExecutionContext): Future[M[B]] =
     in.foldLeft(successful(cbf(in))) { (fr, a) =>

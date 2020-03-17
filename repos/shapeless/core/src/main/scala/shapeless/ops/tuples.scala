@@ -383,9 +383,8 @@ object tuple {
   trait ModifierAt[T, N <: Nat, U, V] extends DepFn2[T, U => V]
 
   object ModifierAt {
-    def apply[T, N <: Nat, U, V](implicit
-        modifier: ModifierAt[T, N, U, V]): Aux[T, N, U, V, modifier.Out] =
-      modifier
+    def apply[T, N <: Nat, U, V](implicit modifier: ModifierAt[T, N, U, V])
+        : Aux[T, N, U, V, modifier.Out] = modifier
 
     type Aux[T, N <: Nat, U, V, Out0] = ModifierAt[T, N, U, V] {
       type Out = Out0
@@ -1068,14 +1067,14 @@ object tuple {
   }
 
   object ToTraversable {
-    def apply[T, M[_]](implicit
-        toTraversable: ToTraversable[T, M]): Aux[T, M, toTraversable.Lub] =
-      toTraversable
+    def apply[T, M[_]](implicit toTraversable: ToTraversable[T, M])
+        : Aux[T, M, toTraversable.Lub] = toTraversable
 
     type Aux[T, M[_], Lub0] = ToTraversable[T, M] { type Lub = Lub0 }
 
-    implicit def toTraversableNothing[M[_]](implicit
-        tt: hl.ToTraversable.Aux[HNil, M, Nothing]): Aux[Unit, M, Nothing] =
+    implicit def toTraversableNothing[M[_]](
+        implicit tt: hl.ToTraversable.Aux[HNil, M, Nothing])
+        : Aux[Unit, M, Nothing] =
       new ToTraversable[Unit, M] {
         type Lub = Nothing
         def apply(t: Unit) = tt(HNil)
@@ -1488,9 +1487,9 @@ object tuple {
       with Serializable
 
   object PaddedGrouper {
-    def apply[T, N <: Nat, Step <: Nat, Pad](implicit
-        grouper: PaddedGrouper[T, N, Step, Pad]
-    ): Aux[T, N, Step, Pad, grouper.Out] = grouper
+    def apply[T, N <: Nat, Step <: Nat, Pad](
+        implicit grouper: PaddedGrouper[T, N, Step, Pad])
+        : Aux[T, N, Step, Pad, grouper.Out] = grouper
 
     type Aux[T, N <: Nat, Step <: Nat, Pad, Out0] =
       PaddedGrouper[T, N, Step, Pad] { type Out = Out0 }

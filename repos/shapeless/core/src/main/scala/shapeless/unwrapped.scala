@@ -57,9 +57,9 @@ trait UnwrappedInstances extends LowPriorityUnwrappedInstances {
     }
   }
 
-  implicit def newtypeUnwrapped[UI, Ops, UF](implicit
-      chain: Strict[Unwrapped.Aux[UI, UF]]
-  ) = chain.value.asInstanceOf[Unwrapped.Aux[Newtype[UI, Ops], UF]]
+  implicit def newtypeUnwrapped[UI, Ops, UF](
+      implicit chain: Strict[Unwrapped.Aux[UI, UF]]) =
+    chain.value.asInstanceOf[Unwrapped.Aux[Newtype[UI, Ops], UF]]
 
 }
 

@@ -74,8 +74,8 @@ object traversable {
     */
   object ToSizedHList {
 
-    def apply[CC[T] <: GenTraversable[T], A, N <: Nat](implicit
-        ev: ToSizedHList[CC, A, N]
+    def apply[CC[T] <: GenTraversable[T], A, N <: Nat](
+        implicit ev: ToSizedHList[CC, A, N]
     ): ToSizedHList.Aux[CC, A, N, ev.Out] =
       ev
 

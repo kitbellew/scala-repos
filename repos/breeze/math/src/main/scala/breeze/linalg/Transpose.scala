@@ -25,8 +25,9 @@ object Transpose extends TransposeLowPrio {
 
   }
 
-  implicit def transTimesNormalFromDot[T, U, R](implicit
-      dot: OpMulInner.Impl2[T, U, R]): OpMulMatrix.Impl2[Transpose[T], U, R] = {
+  implicit def transTimesNormalFromDot[T, U, R](
+      implicit dot: OpMulInner.Impl2[T, U, R])
+      : OpMulMatrix.Impl2[Transpose[T], U, R] = {
     new OpMulMatrix.Impl2[Transpose[T], U, R] {
       def apply(v: Transpose[T], v2: U): R = {
         dot(v.inner, v2)
@@ -93,8 +94,8 @@ trait TransposeLowPrio {
     }
   }
 
-  implicit def liftInPlace[Op, T, U](implicit
-      op: UFunc.InPlaceImpl[Op, T]): UFunc.InPlaceImpl[Op, Transpose[T]] = {
+  implicit def liftInPlace[Op, T, U](implicit op: UFunc.InPlaceImpl[Op, T])
+      : UFunc.InPlaceImpl[Op, Transpose[T]] = {
     new UFunc.InPlaceImpl[Op, Transpose[T]] {
       override def apply(v: Transpose[T]) = op(v.inner)
     }

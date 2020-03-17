@@ -74,8 +74,8 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
 
   override def getBlockAfter(
       id: Option[Array[Byte]],
-      columns: Option[Set[ColumnRef]])(implicit
-      M: Monad[M]): M[Option[BlockProjectionData[Array[Byte], Slice]]] =
+      columns: Option[Set[ColumnRef]])(implicit M: Monad[M])
+      : M[Option[BlockProjectionData[Array[Byte], Slice]]] =
     M.point {
       // TODO: Make this far, far less ugly
       if (columns.nonEmpty) {

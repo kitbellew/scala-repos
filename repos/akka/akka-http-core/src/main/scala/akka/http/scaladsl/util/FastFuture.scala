@@ -146,8 +146,8 @@ object FastFuture {
       failed(new NoSuchElementException("reduce attempted on empty collection"))
     else sequence(futures).fast.map(_ reduceLeft op)
 
-  def traverse[A, B, M[_] <: TraversableOnce[_]](in: M[A])(fn: A ⇒ Future[B])(
-      implicit
+  def traverse[A, B, M[_] <: TraversableOnce[_]](in: M[A])(
+      fn: A ⇒ Future[B])(implicit
       cbf: CanBuildFrom[M[A], B, M[B]],
       executor: ExecutionContext): Future[M[B]] =
     in.foldLeft(successful(cbf(in))) { (fr, a) ⇒

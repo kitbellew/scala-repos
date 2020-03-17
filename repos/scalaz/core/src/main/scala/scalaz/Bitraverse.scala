@@ -17,8 +17,8 @@ trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] { self =>
   // derived functions
 
   /**The composition of Bitraverses `F` and `G`, `[x,y]F[G[x,y],G[x,y]]`, is a Bitraverse */
-  def compose[G[_, _]](implicit
-      G0: Bitraverse[G]): Bitraverse[λ[(α, β) => F[G[α, β], G[α, β]]]] =
+  def compose[G[_, _]](implicit G0: Bitraverse[G])
+      : Bitraverse[λ[(α, β) => F[G[α, β], G[α, β]]]] =
     new CompositionBitraverse[F, G] {
       implicit def F = self
       implicit def G = G0

@@ -81,8 +81,8 @@ object IndexedReaderWriterStateT
 trait ReaderWriterStateTFunctions {}
 
 sealed abstract class IndexedReaderWriterStateTInstances1 {
-  implicit def irwstFunctor[F[_], R, W, S1, S2](implicit
-      F0: Functor[F]): Functor[IndexedReaderWriterStateT[F, R, W, S1, S2, ?]] =
+  implicit def irwstFunctor[F[_], R, W, S1, S2](implicit F0: Functor[F])
+      : Functor[IndexedReaderWriterStateT[F, R, W, S1, S2, ?]] =
     new IndexedReaderWriterStateTFunctor[F, R, W, S1, S2] {
       implicit def F = F0
     }
@@ -101,8 +101,8 @@ sealed abstract class IndexedReaderWriterStateTInstances0
 
 sealed abstract class IndexedReaderWriterStateTInstances
     extends IndexedReaderWriterStateTInstances0 {
-  implicit def irwstPlus[F[_], R, W, S1, S2](implicit
-      F0: Plus[F]): Plus[IndexedReaderWriterStateT[F, R, W, S1, S2, ?]] =
+  implicit def irwstPlus[F[_], R, W, S1, S2](implicit F0: Plus[F])
+      : Plus[IndexedReaderWriterStateT[F, R, W, S1, S2, ?]] =
     new IndexedReaderWriterStateTPlus[F, R, W, S1, S2] {
       override def F = F0
     }
@@ -147,8 +147,8 @@ abstract class ReaderWriterStateTInstances
       override def W = W0
     }
 
-  implicit def rwstHoist[R, W, S](implicit
-      W0: Monoid[W]): Hoist[λ[(α[_], β) => ReaderWriterStateT[α, R, W, S, β]]] =
+  implicit def rwstHoist[R, W, S](implicit W0: Monoid[W])
+      : Hoist[λ[(α[_], β) => ReaderWriterStateT[α, R, W, S, β]]] =
     new ReaderWriterStateTHoist[R, W, S] {
       implicit def W = W0
     }

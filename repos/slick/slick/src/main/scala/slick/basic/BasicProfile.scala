@@ -54,8 +54,9 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
     @deprecated("User `slickProfile` instead of `slickDriver`", "3.2")
     val slickDriver: self.type = slickProfile
 
-    implicit final def anyToShapedValue[T, U](value: T)(implicit
-        shape: Shape[_ <: FlatShapeLevel, T, U, _]): ShapedValue[T, U] =
+    implicit final def anyToShapedValue[T, U](value: T)(
+        implicit shape: Shape[_ <: FlatShapeLevel, T, U, _])
+        : ShapedValue[T, U] =
       new ShapedValue[T, U](value, shape)
 
     implicit def repQueryActionExtensionMethods[U](

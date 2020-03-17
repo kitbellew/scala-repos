@@ -206,8 +206,9 @@ trait EnumeratorTFunctions {
           })
     }
 
-  def enumReader[F[_]](r: => java.io.Reader)(implicit
-      MO: MonadPartialOrder[F, IO]): EnumeratorT[IoExceptionOr[Char], F] = {
+  def enumReader[F[_]](r: => java.io.Reader)(
+      implicit MO: MonadPartialOrder[F, IO])
+      : EnumeratorT[IoExceptionOr[Char], F] = {
     lazy val src = r
     enumIoSource(
       get = () => IoExceptionOr(src.read),
@@ -215,8 +216,9 @@ trait EnumeratorTFunctions {
       render = ((n: Int) => n.toChar))
   }
 
-  def enumInputStream[F[_]](is: => java.io.InputStream)(implicit
-      MO: MonadPartialOrder[F, IO]): EnumeratorT[IoExceptionOr[Byte], F] = {
+  def enumInputStream[F[_]](is: => java.io.InputStream)(
+      implicit MO: MonadPartialOrder[F, IO])
+      : EnumeratorT[IoExceptionOr[Byte], F] = {
     lazy val src = is
     enumIoSource(
       get = () => IoExceptionOr(src.read),

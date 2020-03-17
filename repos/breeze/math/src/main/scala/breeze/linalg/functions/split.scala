@@ -92,8 +92,8 @@ object hsplit extends UFunc {
         hsplit(v, n)
     }
 
-  implicit def implIntMat[T: ClassTag](implicit
-      zero: Zero[T]): Impl2[DenseMatrix[T], Int, IndexedSeq[DenseMatrix[T]]] =
+  implicit def implIntMat[T: ClassTag](implicit zero: Zero[T])
+      : Impl2[DenseMatrix[T], Int, IndexedSeq[DenseMatrix[T]]] =
     new Impl2[DenseMatrix[T], Int, IndexedSeq[DenseMatrix[T]]] { //for matrices
       def apply(v: DenseMatrix[T], n: Int): IndexedSeq[DenseMatrix[T]] = {
         require(n >= 0)
@@ -118,8 +118,8 @@ object hsplit extends UFunc {
 }
 
 object vsplit extends UFunc {
-  implicit def implIntMat[T: ClassTag](implicit
-      zero: Zero[T]): Impl2[DenseMatrix[T], Int, IndexedSeq[DenseMatrix[T]]] =
+  implicit def implIntMat[T: ClassTag](implicit zero: Zero[T])
+      : Impl2[DenseMatrix[T], Int, IndexedSeq[DenseMatrix[T]]] =
     new Impl2[DenseMatrix[T], Int, IndexedSeq[DenseMatrix[T]]] { //for matrices
       def apply(v: DenseMatrix[T], n: Int): IndexedSeq[DenseMatrix[T]] = {
         require(n >= 0)

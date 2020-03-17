@@ -187,8 +187,8 @@ trait TraitView[This <: android.view.View]
 
   // TODO: Make the return type as Option[TraitViewGroup[_]]
   protected def parentViewGroupIfExists[LP <: ViewGroupLayoutParams[_, _]](
-      implicit
-      defaultLayoutParam: This => LP = (v: This) => null): TraitViewGroup[_] = {
+      implicit defaultLayoutParam: This => LP = (v: This) => null)
+      : TraitViewGroup[_] = {
     val lp = defaultLayoutParam(basis)
     if (lp == null) null else lp.parent
   }

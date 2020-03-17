@@ -85,8 +85,8 @@ object Delta extends Delta0 {
         (before, after)
     }
 
-  implicit def optionDelta[T](implicit
-      deltaT: Lazy[Delta[T]]
+  implicit def optionDelta[T](
+      implicit deltaT: Lazy[Delta[T]]
   ): Delta.Aux[Option[T], Option[deltaT.value.Out] :+: T :+: T :+: CNil] =
     new Delta[Option[T]] {
       type Out = Option[deltaT.value.Out] :+: T :+: T :+: CNil

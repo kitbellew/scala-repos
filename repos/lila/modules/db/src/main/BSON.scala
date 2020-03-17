@@ -35,8 +35,8 @@ object BSON {
 
   object MapDocument {
 
-    implicit def MapReader[V](implicit
-        vr: BSONDocumentReader[V]): BSONDocumentReader[Map[String, V]] =
+    implicit def MapReader[V](implicit vr: BSONDocumentReader[V])
+        : BSONDocumentReader[Map[String, V]] =
       new BSONDocumentReader[Map[String, V]] {
         def read(bson: BSONDocument): Map[String, V] = {
           // mutable optimized implementation
@@ -48,8 +48,8 @@ object BSON {
         }
       }
 
-    implicit def MapWriter[V](implicit
-        vw: BSONDocumentWriter[V]): BSONDocumentWriter[Map[String, V]] =
+    implicit def MapWriter[V](implicit vw: BSONDocumentWriter[V])
+        : BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
         def write(map: Map[String, V]): BSONDocument =
           BSONDocument {
@@ -70,8 +70,8 @@ object BSON {
 
   object MapValue {
 
-    implicit def MapReader[V](implicit
-        vr: BSONReader[_ <: BSONValue, V]): BSONDocumentReader[Map[String, V]] =
+    implicit def MapReader[V](implicit vr: BSONReader[_ <: BSONValue, V])
+        : BSONDocumentReader[Map[String, V]] =
       new BSONDocumentReader[Map[String, V]] {
         def read(bson: BSONDocument): Map[String, V] = {
           val valueReader = vr.asInstanceOf[BSONReader[BSONValue, V]]
@@ -83,8 +83,8 @@ object BSON {
         }
       }
 
-    implicit def MapWriter[V](implicit
-        vw: BSONWriter[V, _ <: BSONValue]): BSONDocumentWriter[Map[String, V]] =
+    implicit def MapWriter[V](implicit vw: BSONWriter[V, _ <: BSONValue])
+        : BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
         def write(map: Map[String, V]): BSONDocument =
           BSONDocument {

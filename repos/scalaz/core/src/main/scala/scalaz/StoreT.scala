@@ -64,8 +64,8 @@ final case class IndexedStoreT[F[_], +I, A, B](run: (F[A => B], I)) {
   def map[C](f: B => C)(implicit ftr: Functor[F]): IndexedStoreT[F, I, A, C] =
     indexedStoreT(mapRunT(k => f compose k))
 
-  def duplicate[J](implicit
-      F: Comonad[F]): IndexedStoreT[F, I, J, IndexedStoreT[F, J, A, B]] =
+  def duplicate[J](implicit F: Comonad[F])
+      : IndexedStoreT[F, I, J, IndexedStoreT[F, J, A, B]] =
     indexedStoreT(
       (F.cobind(run._1)(ff => (a: J) => indexedStoreT((ff, a))), pos))
 

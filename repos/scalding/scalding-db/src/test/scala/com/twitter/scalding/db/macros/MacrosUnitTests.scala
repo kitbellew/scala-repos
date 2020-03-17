@@ -95,15 +95,16 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     override val resultSetExtractor = null
   }
 
-  def isColumnDefinitionAvailable[T](implicit
-      proof: ColumnDefinitionProvider[T] =
+  def isColumnDefinitionAvailable[T](
+      implicit proof: ColumnDefinitionProvider[T] =
         dummy.asInstanceOf[ColumnDefinitionProvider[T]]) {
     proof shouldBe a[MacroGenerated]
     proof.columns.isEmpty shouldBe false
   }
 
-  def isJDBCTypeInfoAvailable[T](implicit
-      proof: DBTypeDescriptor[T] = dummy.asInstanceOf[DBTypeDescriptor[T]]) {
+  def isJDBCTypeInfoAvailable[T](
+      implicit proof: DBTypeDescriptor[T] =
+        dummy.asInstanceOf[DBTypeDescriptor[T]]) {
     proof shouldBe a[MacroGenerated]
     proof.columnDefn.columns.isEmpty shouldBe false
   }

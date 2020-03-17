@@ -2240,8 +2240,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       pos: Position): js.Tree =
     envField("c", className)
 
-  private[emitter] def genRawJSClassConstructor(linkedClass: LinkedClass)(
-      implicit
+  private[emitter] def genRawJSClassConstructor(
+      linkedClass: LinkedClass)(implicit
       outputMode: OutputMode,
       pos: Position): js.Tree = {
     if (linkedClass.kind == ClassKind.JSClass) {

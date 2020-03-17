@@ -11,9 +11,23 @@ trait Tuples {
       import value._;
       f(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15)
     }
-    def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple15[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
-        : IndexedSeq[Z] = {
+    def toIndexedSeq[Z](
+        implicit ev: value.type <:< Tuple15[
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z]): IndexedSeq[Z] = {
       val zs = ev(value); import zs._;
       IndexedSeq(
         _1,
@@ -81,9 +95,24 @@ trait Tuples {
       import value._;
       f(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16)
     }
-    def toIndexedSeq[Z](implicit
-    ev: value.type <:< Tuple16[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
-        : IndexedSeq[Z] = {
+    def toIndexedSeq[Z](
+        implicit ev: value.type <:< Tuple16[
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z,
+          Z]): IndexedSeq[Z] = {
       val zs = ev(value); import zs._;
       IndexedSeq(
         _1,
@@ -187,8 +216,8 @@ trait Tuples {
         _16,
         _17)
     }
-    def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple17[
+    def toIndexedSeq[Z](
+        implicit ev: value.type <:< Tuple17[
           Z,
           Z,
           Z,
@@ -315,8 +344,8 @@ trait Tuples {
         _17,
         _18)
     }
-    def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple18[
+    def toIndexedSeq[Z](
+        implicit ev: value.type <:< Tuple18[
           Z,
           Z,
           Z,
@@ -466,8 +495,8 @@ trait Tuples {
         _18,
         _19)
     }
-    def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple19[
+    def toIndexedSeq[Z](
+        implicit ev: value.type <:< Tuple19[
           Z,
           Z,
           Z,
@@ -642,8 +671,8 @@ trait Tuples {
         _19,
         _20)
     }
-    def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple20[
+    def toIndexedSeq[Z](
+        implicit ev: value.type <:< Tuple20[
           Z,
           Z,
           Z,
@@ -866,8 +895,8 @@ trait Tuples {
         _20,
         _21)
     }
-    def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple21[
+    def toIndexedSeq[Z](
+        implicit ev: value.type <:< Tuple21[
           Z,
           Z,
           Z,
@@ -1122,8 +1151,8 @@ trait Tuples {
         _21,
         _22)
     }
-    def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple22[
+    def toIndexedSeq[Z](
+        implicit ev: value.type <:< Tuple22[
           Z,
           Z,
           Z,

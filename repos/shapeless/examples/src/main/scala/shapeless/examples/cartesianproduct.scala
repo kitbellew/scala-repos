@@ -92,8 +92,7 @@ object CartesianProductExample extends App {
     * lifted to work on two HLists.
     */
   def liftA2[HF, X <: HList, Y <: HList, Out <: HList](hf: HF)(x: X, y: Y)(
-      implicit lift: LiftA2[HF, X, Y, Out]
-  ) = lift(x, y)
+      implicit lift: LiftA2[HF, X, Y, Out]) = lift(x, y)
 
   /**
     * A polymorphic binary function that pairs its arguments.

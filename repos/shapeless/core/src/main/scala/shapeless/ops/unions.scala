@@ -193,9 +193,8 @@ object union {
     implicit val cnilToMapAnyNothing: Aux[CNil, Any, Nothing] =
       cnilToMap[Any, Nothing]
 
-    implicit def csingleToMap[K, V](implicit
-        wk: Witness.Aux[K]
-    ): Aux[FieldType[K, V] :+: CNil, K, V] =
+    implicit def csingleToMap[K, V](
+        implicit wk: Witness.Aux[K]): Aux[FieldType[K, V] :+: CNil, K, V] =
       new ToMap[FieldType[K, V] :+: CNil] {
         type Key = K
         type Value = V

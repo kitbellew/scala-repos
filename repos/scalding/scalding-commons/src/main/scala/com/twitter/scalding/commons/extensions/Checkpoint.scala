@@ -78,8 +78,8 @@ object Checkpoint {
     *   conv:    provided by com.twitter.scalding.TupleConversions
     *   setter:  provided by com.twitter.scalding.TupleConversions
     */
-  def apply[A](checkpointName: String, resultFields: Fields)(flow: => Pipe)(
-      implicit
+  def apply[A](checkpointName: String, resultFields: Fields)(
+      flow: => Pipe)(implicit
       args: Args,
       mode: Mode,
       flowDef: FlowDef,

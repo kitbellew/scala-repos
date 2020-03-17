@@ -150,8 +150,8 @@ class LocalKafkaEventStore(
 }
 
 object LocalKafkaEventStore {
-  def apply(config: Configuration)(implicit
-      executor: ExecutionContext): Option[(EventStore[Future], Stoppable)] = {
+  def apply(config: Configuration)(implicit executor: ExecutionContext)
+      : Option[(EventStore[Future], Stoppable)] = {
     val localTopic = config[String]("topic")
     val maxMessageSize = config[Int]("broker.max_message_size", 1000000)
     val messagePadding = config[Int]("message_padding", 100)

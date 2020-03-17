@@ -1793,9 +1793,9 @@ trait FlowOps[+Out, +Mat] {
       implicit ord: Ordering[U]): Repr[U] =
     via(mergeSortedGraph(that))
 
-  protected def mergeSortedGraph[U >: Out, M](
-      that: Graph[SourceShape[U], M])(implicit
-      ord: Ordering[U]): Graph[FlowShape[Out @uncheckedVariance, U], M] =
+  protected def mergeSortedGraph[U >: Out, M](that: Graph[SourceShape[U], M])(
+      implicit ord: Ordering[U])
+      : Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.create(that) { implicit b ⇒ r ⇒
       val merge = b.add(new MergeSorted[U])
       r ~> merge.in1

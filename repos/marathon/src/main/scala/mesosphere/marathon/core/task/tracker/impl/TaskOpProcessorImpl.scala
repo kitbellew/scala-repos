@@ -140,8 +140,8 @@ private[tracker] class TaskOpProcessorImpl(
     * which are only triggered for a certain combination of fields.
     */
   private[this] def tryToRecover(op: Operation)(
-      expectedTaskState: Option[Task])(implicit
-      ec: ExecutionContext): PartialFunction[Throwable, Future[Unit]] = {
+      expectedTaskState: Option[Task])(implicit ec: ExecutionContext)
+      : PartialFunction[Throwable, Future[Unit]] = {
 
     case NonFatal(cause) =>
       def ack(actualTaskState: Option[MarathonTask]): TaskTrackerActor.Ack = {

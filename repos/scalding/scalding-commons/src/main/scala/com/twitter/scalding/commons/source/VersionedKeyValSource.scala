@@ -105,8 +105,10 @@ class VersionedKeyValSource[K, V](
       path: String,
       sourceVersion: Option[Long],
       sinkVersion: Option[Long],
-      maxFailures: Int)(implicit
-      @transient codec: Injection[(K, V), (Array[Byte], Array[Byte])]) =
+      maxFailures: Int)(
+      implicit @transient codec: Injection[
+        (K, V),
+        (Array[Byte], Array[Byte])]) =
     this(
       path,
       sourceVersion,

@@ -89,8 +89,8 @@ object coproduct {
           }
       }
 
-    implicit def coproductAtN[H, T <: Coproduct, N <: Nat](implicit
-        att: At[T, N]
+    implicit def coproductAtN[H, T <: Coproduct, N <: Nat](
+        implicit att: At[T, N]
     ): Aux[H :+: T, Succ[N], att.A] =
       new At[H :+: T, Succ[N]] {
         type A = att.A
@@ -136,8 +136,8 @@ object coproduct {
         H,
         T <: Coproduct,
         TPrefix <: Coproduct,
-        TSuffix <: Coproduct](implicit
-        partition: Aux[T, H, TPrefix, TSuffix]
+        TSuffix <: Coproduct](
+        implicit partition: Aux[T, H, TPrefix, TSuffix]
     ): Aux[H :+: T, H, H :+: TPrefix, TSuffix] =
       new Partition[H :+: T, H] {
         type Prefix = H :+: TPrefix
@@ -195,8 +195,8 @@ object coproduct {
         C <: Coproduct,
         U,
         CPrefix <: Coproduct,
-        CSuffix <: Coproduct](implicit
-        partition: Partition.Aux[C, U, CPrefix, CSuffix]
+        CSuffix <: Coproduct](
+        implicit partition: Partition.Aux[C, U, CPrefix, CSuffix]
     ): Aux[C, U, CPrefix] =
       new Filter[C, U] {
         type A = CPrefix
@@ -222,8 +222,8 @@ object coproduct {
         C <: Coproduct,
         U,
         CPrefix <: Coproduct,
-        CSuffix <: Coproduct](implicit
-        partition: Partition.Aux[C, U, CPrefix, CSuffix]
+        CSuffix <: Coproduct](
+        implicit partition: Partition.Aux[C, U, CPrefix, CSuffix]
     ): Aux[C, U, CSuffix] =
       new FilterNot[C, U] {
         type A = CSuffix
@@ -252,9 +252,9 @@ object coproduct {
     // Must be given a lower priority than removeHead, so that:
     // - the two don't collide for coproducts with repeated types
     // - the first element of type I in C is removed
-    implicit def removeTail[H, T <: Coproduct, U](implicit
-        tailRemove: Remove[T, U]
-    ): Aux[H :+: T, U, H :+: tailRemove.Rest] =
+    implicit def removeTail[H, T <: Coproduct, U](
+        implicit tailRemove: Remove[T, U])
+        : Aux[H :+: T, U, H :+: tailRemove.Rest] =
       new Remove[H :+: T, U] {
         type Rest = H :+: tailRemove.Rest
 
@@ -338,9 +338,9 @@ object coproduct {
         implicit removeLast: RemoveLast[C, I]): Aux[C, I, removeLast.Rest] =
       removeLast
 
-    implicit def removeLastTail[H, T <: Coproduct, I](implicit
-        tailRemoveLast: RemoveLast[T, I]
-    ): Aux[H :+: T, I, H :+: tailRemoveLast.Rest] =
+    implicit def removeLastTail[H, T <: Coproduct, I](
+        implicit tailRemoveLast: RemoveLast[T, I])
+        : Aux[H :+: T, I, H :+: tailRemoveLast.Rest] =
       fromRemove(Remove.removeTail(toRemove(tailRemoveLast)))
   }
 
@@ -762,9 +762,9 @@ object coproduct {
   }
 
   object ExtendLeftBy {
-    def apply[L <: Coproduct, R <: Coproduct](implicit
-        extendLeftBy: ExtendLeftBy[L, R]): Aux[L, R, extendLeftBy.Out] =
-      extendLeftBy
+    def apply[L <: Coproduct, R <: Coproduct](
+        implicit extendLeftBy: ExtendLeftBy[L, R])
+        : Aux[L, R, extendLeftBy.Out] = extendLeftBy
 
     type Aux[L <: Coproduct, R <: Coproduct, Out0 <: Coproduct] =
       ExtendLeftBy[L, R] { type Out = Out0 }
@@ -817,9 +817,9 @@ object coproduct {
   }
 
   object ExtendRightBy {
-    def apply[L <: Coproduct, R <: Coproduct](implicit
-        extendRightBy: ExtendRightBy[L, R]): Aux[L, R, extendRightBy.Out] =
-      extendRightBy
+    def apply[L <: Coproduct, R <: Coproduct](
+        implicit extendRightBy: ExtendRightBy[L, R])
+        : Aux[L, R, extendRightBy.Out] = extendRightBy
 
     type Aux[L <: Coproduct, R <: Coproduct, Out0 <: Coproduct] =
       ExtendRightBy[L, R] { type Out = Out0 }
@@ -1105,8 +1105,9 @@ object coproduct {
         def apply(c: C) = Right(c)
       }
 
-    implicit def splitSucc[H, T <: Coproduct, N <: Nat](implicit
-        tail: Split[T, N]): Aux[H :+: T, Succ[N], H :+: tail.Left, tail.Right] =
+    implicit def splitSucc[H, T <: Coproduct, N <: Nat](
+        implicit tail: Split[T, N])
+        : Aux[H :+: T, Succ[N], H :+: tail.Left, tail.Right] =
       new Split[H :+: T, Succ[N]] {
         type Left = H :+: tail.Left
         type Right = tail.Right

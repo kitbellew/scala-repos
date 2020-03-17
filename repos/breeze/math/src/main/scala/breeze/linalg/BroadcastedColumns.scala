@@ -35,8 +35,9 @@ case class BroadcastedColumns[T, ColType](underlying: T)
       implicit canIterateAxis: CanIterateAxis[T, Axis._0.type, ColType]) =
     canIterateAxis(underlying, Axis._0)
 
-  def foldLeft[B](z: B)(f: (B, ColType) => B)(implicit
-      canTraverseAxis: CanTraverseAxis[T, Axis._0.type, ColType]): B = {
+  def foldLeft[B](z: B)(f: (B, ColType) => B)(
+      implicit canTraverseAxis: CanTraverseAxis[T, Axis._0.type, ColType])
+      : B = {
     var acc = z
     canTraverseAxis(underlying, Axis._0) { c => acc = f(acc, c) }
     acc
@@ -52,13 +53,17 @@ object BroadcastedColumns {
       new BroadcastedDMColsISeq(bc.underlying)
   }
 
-  implicit def canMapValues[T, ColumnType, ResultColumn, Result](implicit
-      cc: CanCollapseAxis[T, Axis._0.type, ColumnType, ResultColumn, Result])
-      : CanMapValues[
-        BroadcastedColumns[T, ColumnType],
+  implicit def canMapValues[T, ColumnType, ResultColumn, Result](
+      implicit cc: CanCollapseAxis[
+        T,
+        Axis._0.type,
         ColumnType,
         ResultColumn,
-        Result] = {
+        Result]): CanMapValues[
+    BroadcastedColumns[T, ColumnType],
+    ColumnType,
+    ResultColumn,
+    Result] = {
     new CanMapValues[
       BroadcastedColumns[T, ColumnType],
       ColumnType,

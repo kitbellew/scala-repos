@@ -273,8 +273,8 @@ sealed abstract class LazyEitherTInstances0 extends LazyEitherTInstances1 {
       implicit def F = F0
     }
 
-  implicit def lazyEitherTLeftProjectionBifunctor[F[_]](implicit
-      F0: Functor[F]): Bifunctor[LazyEitherT.LeftProjectionT[F, ?, ?]] =
+  implicit def lazyEitherTLeftProjectionBifunctor[F[_]](implicit F0: Functor[F])
+      : Bifunctor[LazyEitherT.LeftProjectionT[F, ?, ?]] =
     new IsomorphismBifunctor[
       LazyEitherT.LeftProjectionT[F, ?, ?],
       LazyEitherT[F, ?, ?]] {
@@ -305,8 +305,9 @@ sealed abstract class LazyEitherTInstances0 extends LazyEitherTInstances1 {
       implicit def F = F0
     }
 
-  implicit def lazyEitherTLeftProjectionFoldable[F[_], L](implicit
-      F0: Foldable[F]): Foldable[LazyEitherT.LeftProjectionT[F, L, ?]] =
+  implicit def lazyEitherTLeftProjectionFoldable[F[_], L](
+      implicit F0: Foldable[F])
+      : Foldable[LazyEitherT.LeftProjectionT[F, L, ?]] =
     new IsomorphismFoldable[
       LazyEitherT.LeftProjectionT[F, L, ?],
       LazyEitherT[F, L, ?]] {
@@ -324,8 +325,9 @@ sealed abstract class LazyEitherTInstances extends LazyEitherTInstances0 {
       implicit def F = F0
     }
 
-  implicit def lazyEitherTLeftProjectionBitraverse[F[_]](implicit
-      F0: Traverse[F]): Bitraverse[LazyEitherT.LeftProjectionT[F, ?, ?]] =
+  implicit def lazyEitherTLeftProjectionBitraverse[F[_]](
+      implicit F0: Traverse[F])
+      : Bitraverse[LazyEitherT.LeftProjectionT[F, ?, ?]] =
     new IsomorphismBitraverse[
       LazyEitherT.LeftProjectionT[F, ?, ?],
       LazyEitherT[F, ?, ?]] {
@@ -340,8 +342,9 @@ sealed abstract class LazyEitherTInstances extends LazyEitherTInstances0 {
       implicit def F = F0
     }
 
-  implicit def lazyEitherTLeftProjectionTraverse[F[_], L](implicit
-      F0: Traverse[F]): Traverse[LazyEitherT.LeftProjectionT[F, L, ?]] =
+  implicit def lazyEitherTLeftProjectionTraverse[F[_], L](
+      implicit F0: Traverse[F])
+      : Traverse[LazyEitherT.LeftProjectionT[F, L, ?]] =
     new IsomorphismTraverse[
       LazyEitherT.LeftProjectionT[F, L, ?],
       LazyEitherT[F, L, ?]] {

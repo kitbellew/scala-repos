@@ -127,8 +127,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
     new ColVector[RowT, ValT]('row, 'val, vecPipe)
   }
 
-  def mapToColVector[T, RowT, ValT](fields: Fields)(mapfn: T => (RowT, ValT))(
-      implicit
+  def mapToColVector[T, RowT, ValT](fields: Fields)(
+      mapfn: T => (RowT, ValT))(implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ValT)]) = {
     val vecPipe =
@@ -153,8 +153,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
     new RowVector[ColT, ValT]('col, 'val, vecPipe)
   }
 
-  def mapToRowVector[T, ColT, ValT](fields: Fields)(mapfn: T => (ColT, ValT))(
-      implicit
+  def mapToRowVector[T, ColT, ValT](fields: Fields)(
+      mapfn: T => (ColT, ValT))(implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(ColT, ValT)]) = {
     val vecPipe =
@@ -198,9 +198,9 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
       : BlockMatrix[Group, Row, Col, Val] =
     mapToBlockMatrix { _.asInstanceOf[(Group, Row, Col, Val)] }
 
-  def mapToBlockMatrix[Group, Row, Col, Val](
-      fn: (T) => (Group, Row, Col, Val))(implicit
-      ord: Ordering[(Group, Row)]): BlockMatrix[Group, Row, Col, Val] = {
+  def mapToBlockMatrix[Group, Row, Col, Val](fn: (T) => (Group, Row, Col, Val))(
+      implicit ord: Ordering[(Group, Row)])
+      : BlockMatrix[Group, Row, Col, Val] = {
     val matPipe = TypedPipe
       .from(mappable)
       .map(fn)
@@ -587,8 +587,9 @@ class Matrix[RowT, ColT, ValT](
     this.transpose.rowSizeAveStdev
   }
 
-  def *[That, Res](that: That)(implicit
-      prod: MatrixProduct[Matrix[RowT, ColT, ValT], That, Res]): Res = {
+  def *[That, Res](that: That)(
+      implicit prod: MatrixProduct[Matrix[RowT, ColT, ValT], That, Res])
+      : Res = {
     prod(this, that)
   }
 
@@ -770,8 +771,9 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Zip the given row with all the rows of the matrix
-  def zip[ValU](that: ColVector[RowT, ValU])(implicit
-      pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
+  def zip[ValU](that: ColVector[RowT, ValU])(
+      implicit pairMonoid: Monoid[(ValT, ValU)])
+      : Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, (that.rowS, that.valS), that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -796,8 +798,9 @@ class Matrix[RowT, ColT, ValT](
       sizeHint + that.sizeH)
   }
   // Zip the given row with all the rows of the matrix
-  def zip[ValU](that: RowVector[ColT, ValU])(implicit
-      pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
+  def zip[ValU](that: RowVector[ColT, ValU])(
+      implicit pairMonoid: Monoid[(ValT, ValU)])
+      : Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, (that.colS, that.valS), that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -823,8 +826,9 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // This creates the matrix with pairs for the entries
-  def zip[ValU](that: Matrix[RowT, ColT, ValU])(implicit
-      pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
+  def zip[ValU](that: Matrix[RowT, ColT, ValU])(
+      implicit pairMonoid: Monoid[(ValT, ValU)])
+      : Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, that.rowColValSymbols, that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -1021,10 +1025,9 @@ class DiagonalMatrix[IdxT, ValT](
     extends WrappedPipe
     with java.io.Serializable {
 
-  def *[That, Res](that: That)(implicit
-      prod: MatrixProduct[DiagonalMatrix[IdxT, ValT], That, Res]): Res = {
-    prod(this, that)
-  }
+  def *[That, Res](that: That)(
+      implicit prod: MatrixProduct[DiagonalMatrix[IdxT, ValT], That, Res])
+      : Res = { prod(this, that) }
 
   def pipe = inPipe
   def fields = (idxSym, valSym)

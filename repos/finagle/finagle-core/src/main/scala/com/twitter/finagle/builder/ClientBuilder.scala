@@ -977,8 +977,8 @@ class ClientBuilder[
     * Construct a ServiceFactory. This is useful for stateful protocols
     * (e.g., those that support transactions or authentication).
     */
-  def buildFactory()(implicit
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ClientConfigEvidence[
+  def buildFactory()(
+      implicit THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ClientConfigEvidence[
         HasCluster,
         HasCodec,
         HasHostConnectionLimit]
@@ -998,8 +998,8 @@ class ClientBuilder[
   /**
     * Construct a Service.
     */
-  def build()(implicit
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ClientConfigEvidence[
+  def build()(
+      implicit THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ClientConfigEvidence[
         HasCluster,
         HasCodec,
         HasHostConnectionLimit]

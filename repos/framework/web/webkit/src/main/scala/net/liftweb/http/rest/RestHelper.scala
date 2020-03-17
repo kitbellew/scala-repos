@@ -343,8 +343,9 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected def serveType[T, SelectType](
       selection: Req => BoxOrRaw[SelectType])(
-      pf: PartialFunction[Req, BoxOrRaw[T]])(implicit
-      cvt: PartialFunction[(SelectType, T, Req), LiftResponse]): Unit = {
+      pf: PartialFunction[Req, BoxOrRaw[T]])(
+      implicit cvt: PartialFunction[(SelectType, T, Req), LiftResponse])
+      : Unit = {
     serve(new PartialFunction[Req, () => Box[LiftResponse]] {
       def isDefinedAt(r: Req): Boolean =
         selection(r).isDefined && pf.isDefinedAt(r)

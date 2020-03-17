@@ -1294,8 +1294,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       sizePercentile: => Float = 1.0f
   )(
       f: Seq[In] => Future[Seq[Out]]
-  )(implicit
-      timer: Timer
+  )(
+      implicit timer: Timer
   ): Batcher[In, Out] = {
     new Batcher[In, Out](
       new BatchExecutor[In, Out](

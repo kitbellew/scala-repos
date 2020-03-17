@@ -207,9 +207,11 @@ object CanConvolve extends SerializableLogging {
   def correlateLoopNoOverhang[Input, KernelType, Output](
       data: Input,
       kernel: KernelType,
-      range: Range)(implicit
-      canCorrelateNoOverhang: CanCorrelateNoOverhang[Input, KernelType, Output])
-      : Output =
+      range: Range)(
+      implicit canCorrelateNoOverhang: CanCorrelateNoOverhang[
+        Input,
+        KernelType,
+        Output]): Output =
     canCorrelateNoOverhang(data, kernel, range)
   @expand
   @expand.valify

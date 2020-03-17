@@ -70,8 +70,8 @@ trait StreamOperations[+Self <: StreamOperations[Self]]
       s.dropWhile(te => fn(conv(te))).map { _.getTuple }
     }(TupleConverter.TupleEntryConverter, TupleSetter.CTupleSetter)
   }
-  def scanLeft[X, T](fieldDef: (Fields, Fields))(init: X)(fn: (X, T) => X)(
-      implicit
+  def scanLeft[X, T](fieldDef: (Fields, Fields))(init: X)(
+      fn: (X, T) => X)(implicit
       setter: TupleSetter[X],
       conv: TupleConverter[T]): Self = {
     mapStream[T, X](fieldDef) { s =>

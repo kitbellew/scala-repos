@@ -1044,8 +1044,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       })
   }
 
-  private def traverseFinger[F[_], A, B, V2](digit: Finger[V, A])(f: A => F[B])(
-      implicit
+  private def traverseFinger[F[_], A, B, V2](digit: Finger[V, A])(
+      f: A => F[B])(implicit
       ms: Reducer[B, V2],
       F: Applicative[F]): F[Finger[V2, B]] = {
     def mkTwo(x: B)(y: B): Finger[V2, B] = two(x, y)

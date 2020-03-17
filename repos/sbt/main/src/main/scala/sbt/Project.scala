@@ -800,8 +800,9 @@ object Project extends ProjectExtra {
     val keyToString = display.apply _
     DotGraph.generateGraph(file, graphName, rel, keyToString, keyToString)
   }
-  def relation(structure: BuildStructure, actual: Boolean)(implicit
-      display: Show[ScopedKey[_]]): Relation[ScopedKey[_], ScopedKey[_]] =
+  def relation(structure: BuildStructure, actual: Boolean)(
+      implicit display: Show[ScopedKey[_]])
+      : Relation[ScopedKey[_], ScopedKey[_]] =
     relation(structure.settings, actual)(
       structure.delegates,
       structure.scopeLocal,

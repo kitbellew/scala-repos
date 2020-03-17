@@ -185,8 +185,8 @@ object FormFieldDirectives extends FormFieldDirectives {
         sfu: SFU,
         fu: FSFFU[T]): FieldDefAux[NameReceptacle[T], Directive1[T]] =
       extractField[NameReceptacle[T], T] { nr ⇒ filter(nr.name, fu) }
-    implicit def forNUR[T](implicit
-        sfu: SFU): FieldDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
+    implicit def forNUR[T](implicit sfu: SFU)
+        : FieldDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
       extractField[NameUnmarshallerReceptacle[T], T] { nr ⇒
         filter(nr.name, StrictForm.Field.unmarshallerFromFSU(nr.um))
       }
@@ -273,9 +273,11 @@ object FormFieldDirectives extends FormFieldDirectives {
     import akka.http.scaladsl.server.util.BinaryPolyFunc
     import akka.http.scaladsl.server.util.TupleOps._
 
-    implicit def forTuple[T](implicit
-        fold: FoldLeft[Directive0, T, ConvertFieldDefAndConcatenate.type])
-        : FieldDefAux[T, fold.Out] =
+    implicit def forTuple[T](
+        implicit fold: FoldLeft[
+          Directive0,
+          T,
+          ConvertFieldDefAndConcatenate.type]): FieldDefAux[T, fold.Out] =
       fieldDef[T, fold.Out](fold(pass, _))
 
     object ConvertFieldDefAndConcatenate extends BinaryPolyFunc {

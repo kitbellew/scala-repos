@@ -59,8 +59,8 @@ object DataSet {
   protected def fromLines[CC[_], F, K](
       lines: List[List[String]],
       variables: List[Variable[F]],
-      out: Output[K])(implicit
-      cbf: CanBuildFrom[Nothing, F, CC[F]]): (Int, List[(CC[F], K)]) = {
+      out: Output[K])(implicit cbf: CanBuildFrom[Nothing, F, CC[F]])
+      : (Int, List[(CC[F], K)]) = {
 
     // Perform our first pass, building the conversion functions.
     val builders = variables map (_.apply())

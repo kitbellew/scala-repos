@@ -69,8 +69,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   /////////////////////////////////////////
 
   /** Pretty much a synonym for mapReduceMap with the methods collected into a trait. */
-  def aggregate[A, B, C](fieldDef: (Fields, Fields))(ag: Aggregator[A, B, C])(
-      implicit
+  def aggregate[A, B, C](fieldDef: (Fields, Fields))(
+      ag: Aggregator[A, B, C])(implicit
       startConv: TupleConverter[A],
       middleSetter: TupleSetter[B],
       middleConv: TupleConverter[B],

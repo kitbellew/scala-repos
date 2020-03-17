@@ -107,8 +107,8 @@ case class SourceBuilder[T: Manifest] private (
       newFlatMapper: FlatMapper[T, U]): SourceBuilder[U] =
     flatMap(newFlatMapper(_))
 
-  def write[U](sink: CompoundSink[U])(conversion: T => TraversableOnce[U])(
-      implicit
+  def write[U](sink: CompoundSink[U])(
+      conversion: T => TraversableOnce[U])(implicit
       batcher: Batcher,
       mf: Manifest[U]): SourceBuilder[T] = {
     val newNode =
@@ -139,8 +139,8 @@ case class SourceBuilder[T: Manifest] private (
       )
     )
 
-  def leftJoin[K, V, JoinedValue](service: CompoundService[K, JoinedValue])(
-      implicit
+  def leftJoin[K, V, JoinedValue](
+      service: CompoundService[K, JoinedValue])(implicit
       ev: T <:< (K, V),
       keyMf: Manifest[K],
       valMf: Manifest[V],

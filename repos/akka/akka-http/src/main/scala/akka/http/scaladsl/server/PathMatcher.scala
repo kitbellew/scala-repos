@@ -222,8 +222,8 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
         def apply(value: Unit) = value
         def apply(value: Unit, more: Out) = value
       }
-    implicit def liftSingleElement[A, M[+_]](implicit
-        mops: MOps[M]): Lift[Tuple1[A], M] { type Out = Tuple1[M[A]] } =
+    implicit def liftSingleElement[A, M[+_]](implicit mops: MOps[M])
+        : Lift[Tuple1[A], M] { type Out = Tuple1[M[A]] } =
       new Lift[Tuple1[A], M] {
         type Out = Tuple1[M[A]]
         def OutIsTuple = implicitly[Tuple[Out]]

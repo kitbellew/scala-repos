@@ -212,8 +212,8 @@ sealed abstract class IterateeTInstances0 {
 
   implicit def IterateeMonad[E]: Monad[Iteratee[E, ?]] = IterateeTMonad[E, Id]
 
-  implicit def IterateeTMonadTransT[E, H[_[_], _]](implicit
-      T0: MonadTrans[H]): MonadTrans[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
+  implicit def IterateeTMonadTransT[E, H[_[_], _]](implicit T0: MonadTrans[H])
+      : MonadTrans[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
     new IterateeTMonadTransT[E, H] {
       implicit def T = T0
     }

@@ -122,9 +122,8 @@ object product {
   }
 
   object ToTraversable {
-    def apply[P, M[_]](implicit
-        toTraversable: ToTraversable[P, M]): Aux[P, M, toTraversable.Lub] =
-      toTraversable
+    def apply[P, M[_]](implicit toTraversable: ToTraversable[P, M])
+        : Aux[P, M, toTraversable.Lub] = toTraversable
 
     type Aux[P, M[_], Lub0] = ToTraversable[P, M] { type Lub = Lub0 }
 

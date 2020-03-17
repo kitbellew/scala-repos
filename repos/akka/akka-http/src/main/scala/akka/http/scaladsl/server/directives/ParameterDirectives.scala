@@ -142,8 +142,8 @@ object ParameterDirectives extends ParameterDirectives {
       extractParameter[NameOptionReceptacle[T], Option[T]] { nr ⇒
         filter[Option[T]](nr.name, fsou)
       }
-    implicit def forNDR[T](implicit
-        fsou: FSOU[T]): ParamDefAux[NameDefaultReceptacle[T], Directive1[T]] =
+    implicit def forNDR[T](implicit fsou: FSOU[T])
+        : ParamDefAux[NameDefaultReceptacle[T], Directive1[T]] =
       extractParameter[NameDefaultReceptacle[T], T] { nr ⇒
         filter[T](nr.name, fsou withDefaultValue nr.default)
       }
@@ -173,8 +173,8 @@ object ParameterDirectives extends ParameterDirectives {
           case _ ⇒ reject
         }
       }
-    implicit def forRVR[T](implicit
-        fsu: FSU[T]): ParamDefAux[RequiredValueReceptacle[T], Directive0] =
+    implicit def forRVR[T](implicit fsu: FSU[T])
+        : ParamDefAux[RequiredValueReceptacle[T], Directive0] =
       paramDef[RequiredValueReceptacle[T], Directive0] { rvr ⇒
         requiredFilter(rvr.name, fsu, rvr.requiredValue)
       }
@@ -214,9 +214,11 @@ object ParameterDirectives extends ParameterDirectives {
     import akka.http.scaladsl.server.util.TupleOps._
     import akka.http.scaladsl.server.util.BinaryPolyFunc
 
-    implicit def forTuple[T](implicit
-        fold: FoldLeft[Directive0, T, ConvertParamDefAndConcatenate.type])
-        : ParamDefAux[T, fold.Out] =
+    implicit def forTuple[T](
+        implicit fold: FoldLeft[
+          Directive0,
+          T,
+          ConvertParamDefAndConcatenate.type]): ParamDefAux[T, fold.Out] =
       paramDef[T, fold.Out](fold(BasicDirectives.pass, _))
 
     object ConvertParamDefAndConcatenate extends BinaryPolyFunc {

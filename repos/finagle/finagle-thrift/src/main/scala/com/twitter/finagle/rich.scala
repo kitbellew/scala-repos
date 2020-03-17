@@ -445,8 +445,8 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
     * @param dest Address of the service to connect to, in the format accepted by [[Resolver.eval]].
     * @param label Assign a label for scoped stats.
     */
-  def newServiceIface[ServiceIface](dest: String, label: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
+  def newServiceIface[ServiceIface](dest: String, label: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]
   ): ServiceIface = {
     val thriftService = newService(dest, label)
     val statsLabel = if (label.isEmpty) defaultClientName else label
@@ -454,8 +454,8 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
     builder.newServiceIface(thriftService, protocolFactory, scopedStats)
   }
 
-  def newServiceIface[ServiceIface](dest: Name, label: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
+  def newServiceIface[ServiceIface](dest: Name, label: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]
   ): ServiceIface = {
     val thriftService = newService(dest, label)
     val statsLabel = if (label.isEmpty) defaultClientName else label
@@ -464,13 +464,13 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
   }
 
   @deprecated("Must provide service label", "2015-10-26")
-  def newServiceIface[ServiceIface](dest: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
+  def newServiceIface[ServiceIface](dest: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]
   ): ServiceIface = newServiceIface(dest, "")
 
   @deprecated("Must provide service label", "2015-10-26")
-  def newServiceIface[ServiceIface](dest: Name)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
+  def newServiceIface[ServiceIface](dest: Name)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]
   ): ServiceIface = newServiceIface(dest, "")
 
   def newMethodIface[ServiceIface, FutureIface](serviceIface: ServiceIface)(

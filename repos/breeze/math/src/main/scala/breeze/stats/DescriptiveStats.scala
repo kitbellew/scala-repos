@@ -157,8 +157,9 @@ trait DescriptiveStats {
     * The method just calls meanAndVariance and returns the second result.
     */
   object variance extends UFunc {
-    implicit def reduceDouble[T](implicit
-        mv: meanAndVariance.Impl[T, MeanAndVariance]): Impl[T, Double] =
+    implicit def reduceDouble[T](
+        implicit mv: meanAndVariance.Impl[T, MeanAndVariance])
+        : Impl[T, Double] =
       new Impl[T, Double] {
         def apply(v: T): Double = mv(v).variance
       }
@@ -471,8 +472,8 @@ trait DescriptiveStats {
           }
         }
 
-      implicit def reduce[T](implicit
-          iter: CanTraverseValues[T, Int]): Impl[T, SparseVector[Int]] =
+      implicit def reduce[T](implicit iter: CanTraverseValues[T, Int])
+          : Impl[T, SparseVector[Int]] =
         new Impl[T, SparseVector[Int]] {
           def apply(x: T): SparseVector[Int] = {
             require(min(x) >= 0)

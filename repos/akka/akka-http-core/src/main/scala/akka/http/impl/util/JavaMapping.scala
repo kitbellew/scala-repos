@@ -34,9 +34,8 @@ private[http] trait J2SMapping[J] {
 
 /** INTERNAL API */
 private[http] object J2SMapping {
-  implicit def fromJavaMapping[J](implicit
-      mapping: JavaMapping[J, _]): J2SMapping[J] { type S = mapping.S } =
-    mapping
+  implicit def fromJavaMapping[J](implicit mapping: JavaMapping[J, _])
+      : J2SMapping[J] { type S = mapping.S } = mapping
 
   implicit def fromJavaSeqMapping[J](implicit mapping: J2SMapping[J])
       : J2SMapping[Seq[J]] { type S = immutable.Seq[mapping.S] } =
@@ -55,9 +54,8 @@ private[http] trait S2JMapping[S] {
 
 /** INTERNAL API */
 private[http] object S2JMapping {
-  implicit def fromScalaMapping[S](implicit
-      mapping: JavaMapping[_, S]): S2JMapping[S] { type J = mapping.J } =
-    mapping
+  implicit def fromScalaMapping[S](implicit mapping: JavaMapping[_, S])
+      : S2JMapping[S] { type J = mapping.J } = mapping
 }
 
 /** INTERNAL API */
@@ -129,8 +127,8 @@ private[http] object JavaMapping {
       def toJava(scalaObject: immutable.Map[K, V]): ju.Map[K, V] =
         scalaObject.asJava
     }
-  implicit def option[_J, _S](implicit
-      mapping: JavaMapping[_J, _S]): JavaMapping[Optional[_J], Option[_S]] =
+  implicit def option[_J, _S](implicit mapping: JavaMapping[_J, _S])
+      : JavaMapping[Optional[_J], Option[_S]] =
     new JavaMapping[Optional[_J], Option[_S]] {
       def toScala(javaObject: Optional[_J]): Option[_S] =
         javaObject.asScala.map(mapping.toScala)

@@ -1063,8 +1063,9 @@ object CanBind extends CssBindImplicits {
         List(Text(info(ns)))
     }
 
-  implicit def stringIterFuncTransform[T[_]](implicit
-      f: T[String] => Iterable[String]): CanBind[NodeSeq => T[String]] =
+  implicit def stringIterFuncTransform[T[_]](
+      implicit f: T[String] => Iterable[String])
+      : CanBind[NodeSeq => T[String]] =
     new CanBind[NodeSeq => T[String]] {
       def apply(info: => NodeSeq => T[String])(ns: NodeSeq): Seq[NodeSeq] =
         f(info(ns)).toSeq.map(Text(_))

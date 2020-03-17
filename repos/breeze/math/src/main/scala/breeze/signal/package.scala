@@ -332,8 +332,9 @@ package object signal {
       multiplier: Double = 1d,
       optDesignMethod: OptDesignMethod = OptDesignMethod.Firwin,
       optWindow: OptWindowFunction = OptWindowFunction.Hamming(),
-      optFilterOrder: OptFilterTaps = OptFilterTaps.Automatic)(implicit
-      canDesignFilterDecimation: CanDesignFilterDecimation[Output]): Output =
+      optFilterOrder: OptFilterTaps = OptFilterTaps.Automatic)(
+      implicit canDesignFilterDecimation: CanDesignFilterDecimation[Output])
+      : Output =
     canDesignFilterDecimation(
       factor,
       multiplier,

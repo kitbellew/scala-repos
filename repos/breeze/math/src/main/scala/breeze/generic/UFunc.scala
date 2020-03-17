@@ -314,8 +314,8 @@ object WrappedUFunc extends UFunc with WrappedUFuncLowPrio {
     }
   }
 
-  implicit def apply1[V, A1, R, V2](implicit
-      cmv: CanMapValues[V, A1, R, V2]): Impl2[WrappedUFunc1[A1, R], V, V2] = {
+  implicit def apply1[V, A1, R, V2](implicit cmv: CanMapValues[V, A1, R, V2])
+      : Impl2[WrappedUFunc1[A1, R], V, V2] = {
     new Impl2[WrappedUFunc1[A1, R], V, V2] {
       override def apply(v: WrappedUFunc1[A1, R], v2: V): V2 = cmv(v2, v.f)
     }

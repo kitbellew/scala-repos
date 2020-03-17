@@ -382,8 +382,9 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       case Right(b) => LazyEither.lazyRight(b)
     }
 
-  implicit def lazyEitherTArb[F[_], A, B](implicit
-      A: Arbitrary[F[LazyEither[A, B]]]): Arbitrary[LazyEitherT[F, A, B]] =
+  implicit def lazyEitherTArb[F[_], A, B](
+      implicit A: Arbitrary[F[LazyEither[A, B]]])
+      : Arbitrary[LazyEitherT[F, A, B]] =
     Functor[Arbitrary].map(A)(LazyEitherT[F, A, B](_))
 
   // backwards compatibility
@@ -438,8 +439,9 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       implicit A: Arbitrary[(F[A => B], A)]): Arbitrary[StoreT[F, A, B]] =
     indexedStoreTArb[F, A, A, B](A)
 
-  implicit def indexedStoreTArb[F[_], I, A, B](implicit
-      A: Arbitrary[(F[A => B], I)]): Arbitrary[IndexedStoreT[F, I, A, B]] =
+  implicit def indexedStoreTArb[F[_], I, A, B](
+      implicit A: Arbitrary[(F[A => B], I)])
+      : Arbitrary[IndexedStoreT[F, I, A, B]] =
     Functor[Arbitrary].map(A)(IndexedStoreT[F, I, A, B](_))
 
   implicit def listTArb[F[_], A](implicit

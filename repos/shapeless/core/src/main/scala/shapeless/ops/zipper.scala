@@ -390,8 +390,9 @@ object zipper {
 
     type Aux[Z, Out0] = Reify[Z] { type Out = Out0 }
 
-    implicit def hlistReify[LR <: HList, L <: HList, R <: HList, P](implicit
-        rp: ReversePrepend.Aux[L, R, LR]): Aux[Zipper[LR, L, R, P], LR] =
+    implicit def hlistReify[LR <: HList, L <: HList, R <: HList, P](
+        implicit rp: ReversePrepend.Aux[L, R, LR])
+        : Aux[Zipper[LR, L, R, P], LR] =
       new Reify[Zipper[LR, L, R, P]] {
         type Out = LR
         def apply(z: Zipper[LR, L, R, P]) = z.prefix reverse_::: z.suffix

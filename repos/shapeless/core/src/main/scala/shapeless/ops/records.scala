@@ -230,9 +230,8 @@ package record {
   }
 
   object Modifier {
-    def apply[L <: HList, F, A, B](implicit
-        modifier: Modifier[L, F, A, B]): Aux[L, F, A, B, modifier.Out] =
-      modifier
+    def apply[L <: HList, F, A, B](implicit modifier: Modifier[L, F, A, B])
+        : Aux[L, F, A, B, modifier.Out] = modifier
 
     type Aux[L <: HList, F, A, B, Out0 <: HList] = Modifier[L, F, A, B] {
       type Out = Out0
@@ -576,9 +575,8 @@ package record {
     implicit def hnilToMapAnyNothing[L <: HNil]: Aux[L, Any, Nothing] =
       hnilToMap[Any, Nothing, L]
 
-    implicit def hsingleToMap[K, V](implicit
-        wk: Witness.Aux[K]
-    ): Aux[FieldType[K, V] :: HNil, K, V] =
+    implicit def hsingleToMap[K, V](
+        implicit wk: Witness.Aux[K]): Aux[FieldType[K, V] :: HNil, K, V] =
       new ToMap[FieldType[K, V] :: HNil] {
         type Key = K
         type Value = V

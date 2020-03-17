@@ -17,8 +17,8 @@ object Traversable {
     * A partially-applied function returned by the `head` method.
     */
   trait Head[E] {
-    def apply[A](implicit
-        p: E => scala.collection.TraversableLike[A, E]): Iteratee[E, Option[A]]
+    def apply[A](implicit p: E => scala.collection.TraversableLike[A, E])
+        : Iteratee[E, Option[A]]
   }
 
   def head[E] =
@@ -37,8 +37,9 @@ object Traversable {
       }
     }
 
-  def takeUpTo[M](count: Long)(implicit
-      p: M => scala.collection.TraversableLike[_, M]): Enumeratee[M, M] =
+  def takeUpTo[M](count: Long)(
+      implicit p: M => scala.collection.TraversableLike[_, M])
+      : Enumeratee[M, M] =
     new Enumeratee[M, M] {
 
       def applyOn[A](it: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {
@@ -71,8 +72,9 @@ object Traversable {
       }
     }
 
-  def take[M](count: Int)(implicit
-      p: M => scala.collection.TraversableLike[_, M]): Enumeratee[M, M] =
+  def take[M](count: Int)(
+      implicit p: M => scala.collection.TraversableLike[_, M])
+      : Enumeratee[M, M] =
     new Enumeratee[M, M] {
 
       def applyOn[A](it: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {
@@ -153,8 +155,9 @@ object Traversable {
 
     }
 
-  def drop[M](count: Int)(implicit
-      p: M => scala.collection.TraversableLike[_, M]): Enumeratee[M, M] =
+  def drop[M](count: Int)(
+      implicit p: M => scala.collection.TraversableLike[_, M])
+      : Enumeratee[M, M] =
     new Enumeratee[M, M] {
 
       def applyOn[A](inner: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {

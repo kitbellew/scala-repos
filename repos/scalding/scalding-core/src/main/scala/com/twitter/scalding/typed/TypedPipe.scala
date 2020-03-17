@@ -751,8 +751,9 @@ trait TypedPipe[+T] extends Serializable {
     hashCogroup[K, V, W, (V, W)](smaller)(Joiner.hashInner2)
 
   /** Do an leftjoin without shuffling this TypedPipe, but replicating argument to all tasks */
-  def hashLeftJoin[K, V, W](smaller: HashJoinable[K, W])(implicit
-      ev: TypedPipe[T] <:< TypedPipe[(K, V)]): TypedPipe[(K, (V, Option[W]))] =
+  def hashLeftJoin[K, V, W](smaller: HashJoinable[K, W])(
+      implicit ev: TypedPipe[T] <:< TypedPipe[(K, V)])
+      : TypedPipe[(K, (V, Option[W]))] =
     hashCogroup[K, V, W, (V, Option[W])](smaller)(Joiner.hashLeft2)
 
   /**
@@ -852,8 +853,9 @@ final case object EmptyTypedPipe extends TypedPipe[Nothing] {
       sg: Semigroup[V]) = this
 
   override def hashCogroup[K, V, W, R](smaller: HashJoinable[K, W])(
-      joiner: (K, V, Iterable[W]) => Iterator[R])(implicit
-      ev: TypedPipe[Nothing] <:< TypedPipe[(K, V)]): TypedPipe[(K, R)] =
+      joiner: (K, V, Iterable[W]) => Iterator[R])(
+      implicit ev: TypedPipe[Nothing] <:< TypedPipe[(K, V)])
+      : TypedPipe[(K, R)] =
     this
 }
 

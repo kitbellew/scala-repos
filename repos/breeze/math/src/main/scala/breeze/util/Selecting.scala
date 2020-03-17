@@ -14,8 +14,9 @@ object quickSelect extends UFunc {
 
 //  /** Quickselect from an array of T. */
 
-  implicit def implFromQSInPlace[T](implicit
-      op: quickSelect.InPlaceImpl2[Array[T], Int]): Impl2[Array[T], Int, T] = {
+  implicit def implFromQSInPlace[T](
+      implicit op: quickSelect.InPlaceImpl2[Array[T], Int])
+      : Impl2[Array[T], Int, T] = {
     new Impl2[Array[T], Int, T] {
       def apply(a: Array[T], position: Int): T = {
         val quickselected: Array[T] = a.clone()

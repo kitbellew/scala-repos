@@ -331,8 +331,9 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
 object Query {
 
   /** Lift a scalar value to a Query. */
-  def apply[E, U, R](value: E)(implicit
-      unpack: Shape[_ <: FlatShapeLevel, E, U, R]): Query[R, U, Seq] = {
+  def apply[E, U, R](value: E)(
+      implicit unpack: Shape[_ <: FlatShapeLevel, E, U, R])
+      : Query[R, U, Seq] = {
     val shaped = ShapedValue(value, unpack).packedValue
     new WrappingQuery[R, U, Seq](Pure(shaped.toNode), shaped)
   }

@@ -162,8 +162,8 @@ package Generic1TestsAux {
           Inl(pf.value.point(a))
       }
 
-    implicit def isCPointedSingle[F[_]](implicit
-        pf: Lazy[Pointed[F]]
+    implicit def isCPointedSingle[F[_]](
+        implicit pf: Lazy[Pointed[F]]
     ): Pointed[({ type λ[A] = F[A] :+: Const[CNil]#λ[A] })#λ] =
       new Pointed[({ type λ[A] = F[A] :+: Const[CNil]#λ[A] })#λ] {
         def point[A](a: A): F[A] :+: Const[CNil]#λ[A] = Inl(pf.value.point(a))
@@ -560,26 +560,36 @@ class Generic1Tests {
   }
 
   def testPartiallyApplied3 {
-    def materialize1[F[_]](implicit
-        gen: Generic1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit = ()
-    def materialize2[F[_]](implicit
-        gen: Generic1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit = ()
+    def materialize1[F[_]](
+        implicit gen: Generic1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ])
+        : Unit = ()
+    def materialize2[F[_]](
+        implicit gen: Generic1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ])
+        : Unit = ()
 
     materialize1[List]
     materialize2[List]
 
-    def materialize3[F[_]](implicit
-    ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
-      ()
-    def materialize4[F[_]](implicit
-    ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
-      ()
-    def materialize5[F[_]](implicit
-    ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
-      ()
-    def materialize6[F[_]](implicit
-    ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
-      ()
+    def materialize3[F[_]](
+        implicit ihc: IsHCons1[
+          F,
+          Trivial1,
+          ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit = ()
+    def materialize4[F[_]](
+        implicit ihc: IsHCons1[
+          F,
+          Trivial1,
+          ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit = ()
+    def materialize5[F[_]](
+        implicit ihc: IsHCons1[
+          F,
+          ({ type λ[r[_]] = TC3[r, Option] })#λ,
+          Trivial1]): Unit = ()
+    def materialize6[F[_]](
+        implicit ihc: IsHCons1[
+          F,
+          ({ type λ[r[_]] = TC3[Option, r] })#λ,
+          Trivial1]): Unit = ()
 
     type H[t] = t :: scala.collection.immutable.List[t] :: HNil
 
@@ -588,18 +598,26 @@ class Generic1Tests {
     materialize5[H]
     materialize6[H]
 
-    def materialize7[F[_]](implicit
-    ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
-      ()
-    def materialize8[F[_]](implicit
-    ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
-      ()
-    def materialize9[F[_]](implicit
-    ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
-      ()
-    def materialize10[F[_]](implicit
-    ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
-      ()
+    def materialize7[F[_]](
+        implicit ihc: IsCCons1[
+          F,
+          Trivial1,
+          ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit = ()
+    def materialize8[F[_]](
+        implicit ihc: IsCCons1[
+          F,
+          Trivial1,
+          ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit = ()
+    def materialize9[F[_]](
+        implicit ihc: IsCCons1[
+          F,
+          ({ type λ[r[_]] = TC3[r, Option] })#λ,
+          Trivial1]): Unit = ()
+    def materialize10[F[_]](
+        implicit ihc: IsCCons1[
+          F,
+          ({ type λ[r[_]] = TC3[Option, r] })#λ,
+          Trivial1]): Unit = ()
 
     type C[t] = scala.collection.immutable.::[t] :+: Nil.type :+: CNil
 
@@ -608,18 +626,26 @@ class Generic1Tests {
     materialize9[C]
     materialize10[C]
 
-    def materialize11[F[_]](implicit
-        ihc: Split1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
-      ()
-    def materialize12[F[_]](implicit
-        ihc: Split1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
-      ()
-    def materialize13[F[_]](implicit
-        ihc: Split1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
-      ()
-    def materialize14[F[_]](implicit
-        ihc: Split1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
-      ()
+    def materialize11[F[_]](
+        implicit ihc: Split1[
+          F,
+          Trivial1,
+          ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit = ()
+    def materialize12[F[_]](
+        implicit ihc: Split1[
+          F,
+          Trivial1,
+          ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit = ()
+    def materialize13[F[_]](
+        implicit ihc: Split1[
+          F,
+          ({ type λ[r[_]] = TC3[r, Option] })#λ,
+          Trivial1]): Unit = ()
+    def materialize14[F[_]](
+        implicit ihc: Split1[
+          F,
+          ({ type λ[r[_]] = TC3[Option, r] })#λ,
+          Trivial1]): Unit = ()
 
     type S[t] = List[Option[t]]
 

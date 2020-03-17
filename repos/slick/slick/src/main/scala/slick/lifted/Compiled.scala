@@ -217,7 +217,7 @@ final class Parameters[PU, PP](pshape: Shape[ColumnsShapeLevel, PU, PU, _]) {
 }
 
 object Parameters {
-  @inline def apply[U](implicit
-      pshape: Shape[ColumnsShapeLevel, U, U, _]): Parameters[U, pshape.Packed] =
+  @inline def apply[U](implicit pshape: Shape[ColumnsShapeLevel, U, U, _])
+      : Parameters[U, pshape.Packed] =
     new Parameters[U, pshape.Packed](pshape)
 }

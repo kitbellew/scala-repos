@@ -76,8 +76,8 @@ object SerializationBugs extends Specification {
     class UUIDFormat extends Serializer[UUID] {
       val UUIDClass = classOf[UUID]
 
-      def deserialize(implicit
-          format: Formats): PartialFunction[(TypeInfo, JValue), UUID] = {
+      def deserialize(implicit format: Formats)
+          : PartialFunction[(TypeInfo, JValue), UUID] = {
         case (TypeInfo(UUIDClass, _), JString(x)) => UUID.fromString(x)
       }
 

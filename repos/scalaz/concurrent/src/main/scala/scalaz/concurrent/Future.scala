@@ -290,9 +290,9 @@ sealed abstract class Future[+A] {
         cancel)
     }
 
-  def unsafePerformTimed(timeout: Duration)(implicit
-      scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Future[Throwable \/ A] =
+  def unsafePerformTimed(timeout: Duration)(
+      implicit scheduler: ScheduledExecutorService =
+        Strategy.DefaultTimeoutScheduler): Future[Throwable \/ A] =
     unsafePerformTimed(timeout.toMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")
@@ -300,9 +300,9 @@ sealed abstract class Future[+A] {
       implicit scheduler: ScheduledExecutorService): Future[Throwable \/ A] =
     unsafePerformTimed(timeoutInMillis)
   @deprecated("use unsafePerformTimed", "7.2")
-  def timed(timeout: Duration)(implicit
-      scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Future[Throwable \/ A] =
+  def timed(timeout: Duration)(
+      implicit scheduler: ScheduledExecutorService =
+        Strategy.DefaultTimeoutScheduler): Future[Throwable \/ A] =
     unsafePerformTimed(timeout)
 
   /**
@@ -459,8 +459,9 @@ object Future {
     * the given `ExecutorService`. Note that this forking is only described
     * by the returned `Future`--nothing occurs until the `Future` is run.
     */
-  def fork[A](a: => Future[A])(implicit
-      pool: ExecutorService = Strategy.DefaultExecutorService): Future[A] =
+  def fork[A](a: => Future[A])(
+      implicit pool: ExecutorService = Strategy.DefaultExecutorService)
+      : Future[A] =
     Future(a).join
 
   /**
@@ -481,14 +482,15 @@ object Future {
     Async((cb: A => Trampoline[Unit]) => listen { a => cb(a).run })
 
   /** Create a `Future` that will evaluate `a` using the given `ExecutorService`. */
-  def apply[A](a: => A)(implicit
-      pool: ExecutorService = Strategy.DefaultExecutorService): Future[A] =
+  def apply[A](a: => A)(
+      implicit pool: ExecutorService = Strategy.DefaultExecutorService)
+      : Future[A] =
     Async { cb => pool.submit { new Callable[Unit] { def call = cb(a).run } } }
 
   /** Create a `Future` that will evaluate `a` after at least the given delay. */
-  def schedule[A](a: => A, delay: Duration)(implicit
-      pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Future[A] =
+  def schedule[A](a: => A, delay: Duration)(
+      implicit pool: ScheduledExecutorService =
+        Strategy.DefaultTimeoutScheduler): Future[A] =
     Async { cb =>
       pool.schedule(
         new Callable[Unit] {

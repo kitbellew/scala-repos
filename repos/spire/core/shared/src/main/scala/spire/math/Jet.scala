@@ -151,9 +151,10 @@ object Jet extends JetInstances {
     new Jet(real, Array.fill[T](d.dimension)(s.zero))
 
   // From real, to compute k-th partial derivative.
-  def apply[@sp(Float, Double) T](
-      a: T,
-      k: Int)(implicit c: ClassTag[T], d: JetDim, r: Rig[T]): Jet[T] = {
+  def apply[@sp(Float, Double) T](a: T, k: Int)(implicit
+      c: ClassTag[T],
+      d: JetDim,
+      r: Rig[T]): Jet[T] = {
     val v = Array.fill[T](d.dimension)(r.zero)
     v(k) = r.one
     new Jet(a, v)
@@ -367,9 +368,11 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   }
 
   // spire.math. does not define this pow generically, so there it is
-  private def powScalarToScalar(
-      b: T,
-      e: T)(implicit f: Field[T], eq: Eq[T], r: IsReal[T], t: Trig[T]): T = {
+  private def powScalarToScalar(b: T, e: T)(implicit
+      f: Field[T],
+      eq: Eq[T],
+      r: IsReal[T],
+      t: Trig[T]): T = {
     if (e === f.zero) {
       f.one
     } else if (b === f.zero) {

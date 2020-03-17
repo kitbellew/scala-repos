@@ -200,12 +200,12 @@ trait BindingImplicits
     extends DefaultImplicitConversions
     with BindingValidatorImplicits {
 
-  implicit def stringToDateTime(implicit
-      df: DateParser = JodaDateFormats.Web): TypeConverter[String, DateTime] =
+  implicit def stringToDateTime(implicit df: DateParser = JodaDateFormats.Web)
+      : TypeConverter[String, DateTime] =
     safeOption(df.parse)
 
-  implicit def stringToDate(implicit
-      df: DateParser = JodaDateFormats.Web): TypeConverter[String, Date] =
+  implicit def stringToDate(implicit df: DateParser = JodaDateFormats.Web)
+      : TypeConverter[String, Date] =
     safeOption(df.parse(_).map(_.toDate))
 
   implicit def stringToSeqDateTime(
@@ -213,8 +213,8 @@ trait BindingImplicits
       : TypeConverter[String, Seq[DateTime]] =
     stringToSeq(stringToDateTime)
 
-  implicit def stringToSeqDate(implicit
-      df: DateParser = JodaDateFormats.Web): TypeConverter[String, Seq[Date]] =
+  implicit def stringToSeqDate(implicit df: DateParser = JodaDateFormats.Web)
+      : TypeConverter[String, Seq[Date]] =
     stringToSeq(stringToDate)
 
 }
