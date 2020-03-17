@@ -88,8 +88,8 @@ class AsyncRDDActions[T: ClassTag](self: RDD[T])
       This implementation is non-blocking, asynchronously handling the
       results of each job and triggering the next job using callbacks on futures.
        */
-      def continue(partsScanned: Int)(
-          implicit jobSubmitter: JobSubmitter): Future[Seq[T]] =
+      def continue(partsScanned: Int)(implicit
+          jobSubmitter: JobSubmitter): Future[Seq[T]] =
         if (results.size >= num || partsScanned >= totalParts) {
           Future.successful(results.toSeq)
         } else {

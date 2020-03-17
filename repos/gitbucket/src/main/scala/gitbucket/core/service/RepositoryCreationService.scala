@@ -85,8 +85,8 @@ trait RepositoryCreationService {
     recordCreateRepositoryActivity(owner, name, loginUserName)
   }
 
-  def insertDefaultLabels(userName: String, repositoryName: String)(
-      implicit s: Session): Unit = {
+  def insertDefaultLabels(userName: String, repositoryName: String)(implicit
+      s: Session): Unit = {
     createLabel(userName, repositoryName, "bug", "fc2929")
     createLabel(userName, repositoryName, "duplicate", "cccccc")
     createLabel(userName, repositoryName, "enhancement", "84b6eb")

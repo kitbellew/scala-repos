@@ -45,8 +45,8 @@ import android.view._
 import org.scaloid.common.{ViewOnClickListener, RichIntent}
 import language.implicitConversions
 
-private[scaloid] class UnitConversion(val ext: Double)(
-    implicit context: Context) {
+private[scaloid] class UnitConversion(val ext: Double)(implicit
+    context: Context) {
   @inline private def m = context.getResources.getDisplayMetrics
   @inline def dip: Int = (ext * m.density).toInt
   @inline def sp: Int = (ext * m.scaledDensity).toInt
@@ -54,8 +54,8 @@ private[scaloid] class UnitConversion(val ext: Double)(
   @inline def px2sp: Double = ext / m.scaledDensity
 }
 
-private[scaloid] class ResourceConversion(val id: Int)(
-    implicit context: Context) {
+private[scaloid] class ResourceConversion(val id: Int)(implicit
+    context: Context) {
   @inline def r2Text: CharSequence = context.getText(id)
   @inline def r2TextArray: Array[CharSequence] =
     context.getResources.getTextArray(id)
@@ -79,47 +79,42 @@ private[scaloid] class ResourceConversion(val id: Int)(
   }
 }
 
-private[scaloid] class StringConversion(val str: String)(
-    implicit context: Context) {
+private[scaloid] class StringConversion(val str: String)(implicit
+    context: Context) {
   @inline def toUri: Uri = Uri.parse(str)
   @inline def toIntentFilter: IntentFilter = new IntentFilter(str)
 }
 
 trait ConversionImplicits {
-  @inline implicit def Double2unitConversion(ext: Double)(
-      implicit context: Context): UnitConversion =
-    new UnitConversion(ext)(context)
-  @inline implicit def Long2unitConversion(ext: Long)(
-      implicit context: Context): UnitConversion =
-    new UnitConversion(ext)(context)
-  @inline implicit def Int2unitConversion(ext: Int)(
-      implicit context: Context): UnitConversion =
-    new UnitConversion(ext)(context)
+  @inline implicit def Double2unitConversion(ext: Double)(implicit
+      context: Context): UnitConversion = new UnitConversion(ext)(context)
+  @inline implicit def Long2unitConversion(ext: Long)(implicit
+      context: Context): UnitConversion = new UnitConversion(ext)(context)
+  @inline implicit def Int2unitConversion(ext: Int)(implicit
+      context: Context): UnitConversion = new UnitConversion(ext)(context)
 
-  @inline implicit def Int2resource(ext: Int)(
-      implicit context: Context): ResourceConversion =
+  @inline implicit def Int2resource(ext: Int)(implicit
+      context: Context): ResourceConversion =
     new ResourceConversion(ext)(context)
 
   // r2String is not provided because it is ambiguous with r2Text
-  @inline implicit def r2Text(id: Int)(
-      implicit context: Context): CharSequence = context.getText(id)
-  @inline implicit def r2TextArray(id: Int)(
-      implicit context: Context): Array[CharSequence] =
+  @inline implicit def r2Text(id: Int)(implicit
+      context: Context): CharSequence = context.getText(id)
+  @inline implicit def r2TextArray(id: Int)(implicit
+      context: Context): Array[CharSequence] =
     context.getResources.getTextArray(id)
-  @inline implicit def r2StringArray(id: Int)(
-      implicit context: Context): Array[String] =
-    context.getResources.getStringArray(id)
-  @inline implicit def r2Drawable(id: Int)(
-      implicit context: Context): Drawable =
-    context.getResources.getDrawable(id)
+  @inline implicit def r2StringArray(id: Int)(implicit
+      context: Context): Array[String] = context.getResources.getStringArray(id)
+  @inline implicit def r2Drawable(id: Int)(implicit
+      context: Context): Drawable = context.getResources.getDrawable(id)
   @inline implicit def r2Movie(id: Int)(implicit context: Context): Movie =
     context.getResources.getMovie(id)
 
   @inline implicit def string2Uri(str: String): Uri = Uri.parse(str)
   @inline implicit def string2IntentFilter(str: String): IntentFilter =
     new IntentFilter(str)
-  @inline implicit def string2StringConversion(str: String)(
-      implicit context: Context): StringConversion = new StringConversion(str)
+  @inline implicit def string2StringConversion(str: String)(implicit
+      context: Context): StringConversion = new StringConversion(str)
 }
 object ConversionImplicits extends ConversionImplicits
 

@@ -312,8 +312,8 @@ trait TypedField[ThisType] extends BaseField {
   def setFromAny(in: Any): Box[MyType]
 
   /** Generic implementation of setFromAny that implements exactly what the doc for setFromAny specifies, using a Manifest to check types */
-  protected final def genericSetFromAny(in: Any)(
-      implicit m: Manifest[MyType]): Box[MyType] =
+  protected final def genericSetFromAny(in: Any)(implicit
+      m: Manifest[MyType]): Box[MyType] =
     in match {
       case value if m.runtimeClass.isInstance(value) =>
         setBox(Full(value.asInstanceOf[MyType]))

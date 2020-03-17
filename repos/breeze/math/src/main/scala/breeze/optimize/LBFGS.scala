@@ -37,13 +37,13 @@ import breeze.util.SerializableLogging
   *
   * @param m: The memory of the search. 3 to 7 is usually sufficient.
   */
-class LBFGS[T](convergenceCheck: ConvergenceCheck[T], m: Int)(
-    implicit space: MutableInnerProductModule[T, Double])
+class LBFGS[T](convergenceCheck: ConvergenceCheck[T], m: Int)(implicit
+    space: MutableInnerProductModule[T, Double])
     extends FirstOrderMinimizer[T, DiffFunction[T]](convergenceCheck)
     with SerializableLogging {
 
-  def this(maxIter: Int = -1, m: Int = 7, tolerance: Double = 1e-9)(
-      implicit space: MutableInnerProductModule[T, Double]) =
+  def this(maxIter: Int = -1, m: Int = 7, tolerance: Double = 1e-9)(implicit
+      space: MutableInnerProductModule[T, Double]) =
     this(FirstOrderMinimizer.defaultConvergenceCheck(maxIter, tolerance), m)
   import space._
   require(m > 0)
@@ -156,8 +156,8 @@ object LBFGS {
     }
   }
 
-  implicit def multiplyInverseHessian[T](
-      implicit vspace: MutableInnerProductModule[T, Double])
+  implicit def multiplyInverseHessian[T](implicit
+      vspace: MutableInnerProductModule[T, Double])
       : OpMulMatrix.Impl2[ApproximateInverseHessian[T], T, T] = {
     new OpMulMatrix.Impl2[ApproximateInverseHessian[T], T, T] {
       def apply(a: ApproximateInverseHessian[T], b: T): T = a * b

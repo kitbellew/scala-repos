@@ -261,8 +261,8 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   def transformString(pName: PropertyName)(implicit parentPos: Position): Node =
     setNodePosition(Node.newString(pName.name), pName.pos orElse parentPos)
 
-  def transformStringKey(pName: PropertyName)(
-      implicit parentPos: Position): Node = {
+  def transformStringKey(pName: PropertyName)(implicit
+      parentPos: Position): Node = {
     val node = Node.newString(Token.STRING_KEY, pName.name)
 
     if (pName.isInstanceOf[StringLiteral])
@@ -322,8 +322,8 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   }
 
   @inline
-  private def wrapTransform(tree: Tree)(body: Tree => Node)(
-      implicit pos: Position): Node = {
+  private def wrapTransform(tree: Tree)(body: Tree => Node)(implicit
+      pos: Position): Node = {
     try {
       setNodePosition(body(tree), pos)
     } catch {

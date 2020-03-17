@@ -59,13 +59,13 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
     }
   }
 
-  def bulkAdd[K, V](x: Map[K, V], y: Map[K, V])(
-      implicit semigroup: Semigroup[V]): Map[K, V] = {
+  def bulkAdd[K, V](x: Map[K, V], y: Map[K, V])(implicit
+      semigroup: Semigroup[V]): Map[K, V] = {
     if (x.size < y.size) add(y, x, true) else add(x, y, false)
   }
 
-  def spireAdd[K, V](x: Map[K, V], y: Map[K, V])(
-      implicit rng: Rng[Map[K, V]]): Map[K, V] = rng.plus(x, y)
+  def spireAdd[K, V](x: Map[K, V], y: Map[K, V])(implicit
+      rng: Rng[Map[K, V]]): Map[K, V] = rng.plus(x, y)
 
   val numMaps = 1000
 

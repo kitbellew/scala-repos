@@ -156,8 +156,8 @@ trait LowPriorityOrderingImplicits {
     new Ordering[A] {
       def compare(x: A, y: A): Int = x compareTo y
     }
-  implicit def comparatorToOrdering[A](
-      implicit cmp: Comparator[A]): Ordering[A] =
+  implicit def comparatorToOrdering[A](implicit
+      cmp: Comparator[A]): Ordering[A] =
     new Ordering[A] {
       def compare(x: A, y: A) = cmp.compare(x, y)
     }
@@ -200,8 +200,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       * def lessThan[T: Ordering](x: T, y: T) = x < y
       * }}}
       */
-    implicit def infixOrderingOps[T](x: T)(
-        implicit ord: Ordering[T]): Ordering[T]#Ops = new ord.Ops(x)
+    implicit def infixOrderingOps[T](x: T)(implicit
+        ord: Ordering[T]): Ordering[T]#Ops = new ord.Ops(x)
   }
 
   /** An object containing implicits which are not in the default scope. */

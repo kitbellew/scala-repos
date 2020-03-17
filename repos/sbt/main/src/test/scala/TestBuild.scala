@@ -241,8 +241,8 @@ object TestBuild {
     envGen(buildGen(uriGen, pGen), tGen)
   }
 
-  implicit def maskGen(
-      implicit arbBoolean: Arbitrary[Boolean]): Gen[ScopeMask] = {
+  implicit def maskGen(implicit
+      arbBoolean: Arbitrary[Boolean]): Gen[ScopeMask] = {
     val b = arbBoolean.arbitrary
     for (p <- b; c <- b; t <- b; x <- b)
       yield ScopeMask(project = p, config = c, task = t, extra = x)

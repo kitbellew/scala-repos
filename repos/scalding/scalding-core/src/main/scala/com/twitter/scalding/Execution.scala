@@ -159,8 +159,8 @@ sealed trait Execution[+T] extends java.io.Serializable {
     *
     * Seriously: pro-style is for this to be called only once in a program.
     */
-  final def run(conf: Config, mode: Mode)(
-      implicit cec: ConcurrentExecutionContext): Future[T] = {
+  final def run(conf: Config, mode: Mode)(implicit
+      cec: ConcurrentExecutionContext): Future[T] = {
     val ec = new EvalCache
     val confWithId =
       conf.setScaldingExecutionId(java.util.UUID.randomUUID.toString)
@@ -179,8 +179,8 @@ sealed trait Execution[+T] extends java.io.Serializable {
     * completes, and a future of the result, counters and cache after the future
     * is complete
     */
-  protected def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-      implicit cec: ConcurrentExecutionContext): Future[(T, ExecutionCounters)]
+  protected def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+      cec: ConcurrentExecutionContext): Future[(T, ExecutionCounters)]
 
   /**
     * This is convenience for when we don't care about the result.
@@ -431,8 +431,8 @@ object Execution {
   private case class FutureConst[T](
       get: ConcurrentExecutionContext => Future[T])
       extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this,
@@ -446,8 +446,8 @@ object Execution {
   }
   private case class FlatMapped[S, T](prev: Execution[S], fn: S => Execution[T])
       extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this,
@@ -461,8 +461,8 @@ object Execution {
 
   private case class Mapped[S, T](prev: Execution[S], fn: S => T)
       extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this,
@@ -472,16 +472,16 @@ object Execution {
   }
   private case class GetCounters[T](prev: Execution[T])
       extends Execution[(T, ExecutionCounters)] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this,
         prev.runStats(conf, mode, cache).map { case tc @ (t, c) => (tc, c) })
   }
   private case class ResetCounters[T](prev: Execution[T]) extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this,
@@ -494,8 +494,8 @@ object Execution {
       prev: Execution[T],
       fn: Config => Config)
       extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) = {
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) = {
       val mutatedConfig = fn(conf)
       cache.getOrElseInsert(
         mutatedConfig,
@@ -517,8 +517,8 @@ object Execution {
     * This is so we can share the singleton thread for scheduling jobs against Cascading.
     */
   private case class WithNewCache[T](prev: Execution[T]) extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) = {
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) = {
       // Share the runner thread, but have own cache
       val ec = cache.cleanCache
 
@@ -529,8 +529,8 @@ object Execution {
 
   private case class OnComplete[T](prev: Execution[T], fn: Try[T] => Unit)
       extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this, {
@@ -557,8 +557,8 @@ object Execution {
       prev: Execution[T],
       fn: PartialFunction[Throwable, Execution[T]])
       extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this,
@@ -570,8 +570,8 @@ object Execution {
   /**
     * Use our internal faster failing zip function rather than the standard one due to waiting
     */
-  def failFastSequence[T](t: Iterable[Future[T]])(
-      implicit cec: ConcurrentExecutionContext): Future[List[T]] = {
+  def failFastSequence[T](t: Iterable[Future[T]])(implicit
+      cec: ConcurrentExecutionContext): Future[List[T]] = {
     t.foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
         failFastZip(f, i).map { case (tail, h) => h :: tail }
       }
@@ -581,8 +581,8 @@ object Execution {
   /**
     * Standard scala zip waits forever on the left side, even if the right side fails
     */
-  def failFastZip[T, U](ft: Future[T], fu: Future[U])(
-      implicit cec: ConcurrentExecutionContext): Future[(T, U)] = {
+  def failFastZip[T, U](ft: Future[T], fu: Future[U])(implicit
+      cec: ConcurrentExecutionContext): Future[(T, U)] = {
     type State = Either[(T, Promise[U]), (U, Promise[T])]
     val middleState = Promise[State]()
 
@@ -643,8 +643,8 @@ object Execution {
 
   private case class Zipped[S, T](one: Execution[S], two: Execution[T])
       extends Execution[(S, T)] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this, {
@@ -657,8 +657,8 @@ object Execution {
   }
   private case class UniqueIdExecution[T](fn: UniqueID => Execution[T])
       extends Execution[T] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this, {
@@ -671,8 +671,8 @@ object Execution {
    */
   private case class FlowDefExecution(result: (Config, Mode) => FlowDef)
       extends Execution[Unit] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this,
@@ -738,8 +738,8 @@ object Execution {
         mode: Mode,
         cache: EvalCache,
         head: ToWrite,
-        tail: List[ToWrite])(
-        implicit cec: ConcurrentExecutionContext): Future[ExecutionCounters] = {
+        tail: List[ToWrite])(implicit
+        cec: ConcurrentExecutionContext): Future[ExecutionCounters] = {
       for {
         flowDef <- toFuture(Try {
           val fd = new FlowDef; (head :: tail).foreach(_.write(conf, fd, mode));
@@ -766,8 +766,8 @@ object Execution {
     // We look up to see if any of our ToWrite elements have already been ran
     // if so we remove them from the cache.
     // Anything not already ran we run as part of a single flow def, using their combined counters for the others
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       cache.getOrElseInsert(
         conf,
         this, {
@@ -832,8 +832,8 @@ object Execution {
     * This is called Reader, because it just returns its input to run as the output
     */
   private case object ReaderExecution extends Execution[(Config, Mode)] {
-    def runStats(conf: Config, mode: Mode, cache: EvalCache)(
-        implicit cec: ConcurrentExecutionContext) =
+    def runStats(conf: Config, mode: Mode, cache: EvalCache)(implicit
+        cec: ConcurrentExecutionContext) =
       Future.successful(((conf, mode), ExecutionCounters.empty))
   }
 

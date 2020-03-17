@@ -148,7 +148,6 @@ object IterableConst {
   implicit def optionBindablePromotable(it: Option[Bindable]): IterableConst =
     SeqBindableIterableConst(it.toList)
 
-  implicit def optionStringPromotable[T](o: Option[T])(
-      implicit view: T => StringPromotable) =
-    optionString(o.map(view(_).toString))
+  implicit def optionStringPromotable[T](o: Option[T])(implicit
+      view: T => StringPromotable) = optionString(o.map(view(_).toString))
 }

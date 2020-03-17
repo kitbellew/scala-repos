@@ -43,8 +43,8 @@ trait OptionInstances extends OptionInstances0 {
         }
       def bind[A, B](fa: Option[A])(f: A => Option[B]) = fa flatMap f
       override def map[A, B](fa: Option[A])(f: A => B) = fa map f
-      def traverseImpl[F[_], A, B](fa: Option[A])(f: A => F[B])(
-          implicit F: Applicative[F]) =
+      def traverseImpl[F[_], A, B](fa: Option[A])(f: A => F[B])(implicit
+          F: Applicative[F]) =
         fa map (a => F.map(f(a))(Some(_): Option[B])) getOrElse F.point(None)
       def empty[A]: Option[A] = None
       def plus[A](a: Option[A], b: => Option[A]) = a orElse b
@@ -289,8 +289,8 @@ trait OptionFunctions {
   /**
     * Returns the given value if None, otherwise lifts the Some value and passes it to the given function.
     */
-  final def foldLift[F[_], A, B](oa: Option[A])(b: => B, k: F[A] => B)(
-      implicit p: Applicative[F]): B =
+  final def foldLift[F[_], A, B](oa: Option[A])(b: => B, k: F[A] => B)(implicit
+      p: Applicative[F]): B =
     oa match {
       case None    => b
       case Some(a) => k(Applicative[F].point(a))

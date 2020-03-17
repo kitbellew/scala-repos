@@ -30,8 +30,8 @@ sealed abstract class ImmutableArray[+A] {
 
 sealed abstract class ImmutableArrayInstances {
 
-  implicit def immutableArrayEqual[A](
-      implicit A: Equal[A]): Equal[ImmutableArray[A]] =
+  implicit def immutableArrayEqual[A](implicit
+      A: Equal[A]): Equal[ImmutableArray[A]] =
     Equal.equal { (a, b) =>
       (a.length == b.length) && (0 until a.length).forall(i =>
         A.equal(a(i), b(i)))
@@ -42,8 +42,8 @@ sealed abstract class ImmutableArrayInstances {
     new Foldable[ImmutableArray] with Zip[ImmutableArray] {
       override def foldLeft[A, B](fa: ImmutableArray[A], z: B)(f: (B, A) => B) =
         fa.foldLeft(z)(f)
-      def foldMap[A, B](fa: ImmutableArray[A])(f: A => B)(
-          implicit F: Monoid[B]): B = {
+      def foldMap[A, B](fa: ImmutableArray[A])(f: A => B)(implicit
+          F: Monoid[B]): B = {
         var i = 0
         var b = F.zero
         while (i < fa.length) {
@@ -132,8 +132,8 @@ object ImmutableArray extends ImmutableArrayInstances {
   /** Wrap the characters in `str` in an `ImmutableArray` */
   def fromString(str: String): ImmutableArray[Char] = new StringArray(str)
 
-  def newBuilder[A](
-      implicit elemTag: ClassTag[A]): Builder[A, ImmutableArray[A]] =
+  def newBuilder[A](implicit
+      elemTag: ClassTag[A]): Builder[A, ImmutableArray[A]] =
     ArrayBuilder.make[A]()(elemTag).mapResult(make(_))
 
   def newStringArrayBuilder: Builder[Char, ImmutableArray[Char]] =

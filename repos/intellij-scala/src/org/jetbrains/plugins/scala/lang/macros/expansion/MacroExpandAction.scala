@@ -79,8 +79,8 @@ class MacroExpandAction extends AnAction {
       .getOrElse(expandAllMacroInCurrentFile(resolved))
   }
 
-  def expandMacroUnderCursor(expansion: ResolvedMacroExpansion)(
-      implicit e: AnActionEvent) = {
+  def expandMacroUnderCursor(expansion: ResolvedMacroExpansion)(implicit
+      e: AnActionEvent) = {
     inWriteCommandAction(e.getProject) {
       try {
         applyExpansion(expansion)
@@ -116,8 +116,8 @@ class MacroExpandAction extends AnAction {
   }
 
   @throws[UnresolvedExpansion]
-  def applyExpansion(resolved: ResolvedMacroExpansion)(
-      implicit e: AnActionEvent): Unit = {
+  def applyExpansion(resolved: ResolvedMacroExpansion)(implicit
+      e: AnActionEvent): Unit = {
     if (resolved.psiElement.isEmpty)
       throw new UnresolvedExpansion
     if (resolved.expansion.body.isEmpty) {
@@ -176,8 +176,8 @@ class MacroExpandAction extends AnAction {
     }
   }
 
-  def expandAnnotation(place: ScAnnotation, expansion: MacroExpansion)(
-      implicit e: AnActionEvent) = {
+  def expandAnnotation(place: ScAnnotation, expansion: MacroExpansion)(implicit
+      e: AnActionEvent) = {
     // we can only macro-annotate scala code
     place.getParent.getParent match {
       case holder: ScAnnotationsHolder =>
@@ -215,8 +215,8 @@ class MacroExpandAction extends AnAction {
     }
   }
 
-  def expandMacroCall(call: ScMethodCall, expansion: MacroExpansion)(
-      implicit e: AnActionEvent) = {
+  def expandMacroCall(call: ScMethodCall, expansion: MacroExpansion)(implicit
+      e: AnActionEvent) = {
     val blockImpl =
       ScalaPsiElementFactory.createBlockExpressionWithoutBracesFromText(
         expansion.body,
@@ -231,20 +231,20 @@ class MacroExpandAction extends AnAction {
     reformatCode(element)
   }
 
-  def tryResolveExpansionPlace(expansion: MacroExpansion)(
-      implicit e: AnActionEvent): ResolvedMacroExpansion = {
+  def tryResolveExpansionPlace(expansion: MacroExpansion)(implicit
+      e: AnActionEvent): ResolvedMacroExpansion = {
     ResolvedMacroExpansion(
       expansion,
       getRealOwner(expansion).map(new IdentitySmartPointer[PsiElement](_)))
   }
 
-  def tryResolveExpansionPlaces(expansions: Seq[MacroExpansion])(
-      implicit e: AnActionEvent): Seq[ResolvedMacroExpansion] = {
+  def tryResolveExpansionPlaces(expansions: Seq[MacroExpansion])(implicit
+      e: AnActionEvent): Seq[ResolvedMacroExpansion] = {
     expansions.map(tryResolveExpansionPlace)
   }
 
-  def getRealOwner(expansion: MacroExpansion)(
-      implicit e: AnActionEvent): Option[PsiElement] = {
+  def getRealOwner(expansion: MacroExpansion)(implicit
+      e: AnActionEvent): Option[PsiElement] = {
     val virtualFile = VirtualFileManager
       .getInstance()
       .findFileByUrl("file://" + expansion.place.sourceFile)
@@ -282,8 +282,8 @@ class MacroExpandAction extends AnAction {
     }
   }
 
-  def isMacroAnnotation(expansion: MacroExpansion)(
-      implicit e: AnActionEvent): Boolean = {
+  def isMacroAnnotation(expansion: MacroExpansion)(implicit
+      e: AnActionEvent): Boolean = {
     getRealOwner(expansion) match {
       case Some(_: ScAnnotation) => true
       case Some(_: ScMethodCall) => false
@@ -318,8 +318,8 @@ class MacroExpandAction extends AnAction {
     applyRules(rules)
   }
 
-  def deserializeExpansions(
-      implicit event: AnActionEvent): Seq[MacroExpansion] = {
+  def deserializeExpansions(implicit
+      event: AnActionEvent): Seq[MacroExpansion] = {
     val file = new File(
       PathManager.getSystemPath + s"/expansion-${event.getProject.getName}")
     if (!file.exists()) return Seq.empty

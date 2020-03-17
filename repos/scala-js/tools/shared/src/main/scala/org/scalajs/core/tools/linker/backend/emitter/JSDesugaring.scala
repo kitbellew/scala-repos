@@ -196,8 +196,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     // Record names
 
-    def makeRecordFieldIdent(recIdent: Ident, fieldIdent: Ident)(
-        implicit pos: Position): Ident =
+    def makeRecordFieldIdent(recIdent: Ident, fieldIdent: Ident)(implicit
+        pos: Position): Ident =
       makeRecordFieldIdent(
         recIdent.name,
         recIdent.originalName,
@@ -268,8 +268,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       js.Function(newParams, js.Block(extractRestParam, newBody))
     }
 
-    private def makeExtractRestParam(params: List[ParamDef])(
-        implicit pos: Position): js.Tree = {
+    private def makeExtractRestParam(params: List[ParamDef])(implicit
+        pos: Position): js.Tree = {
       val offset = params.size - 1
       val restParamDef = params.last
 
@@ -572,8 +572,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       }
     }
 
-    def transformBlockStats(trees: List[Tree])(
-        implicit env: Env): (List[js.Tree], Env) = {
+    def transformBlockStats(trees: List[Tree])(implicit
+        env: Env): (List[js.Tree], Env) = {
 
       @tailrec
       def transformLoop(
@@ -773,8 +773,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     }
 
     /** Same as above, for a single argument */
-    def unnest(arg: Tree)(makeStat: (Tree, Env) => js.Tree)(
-        implicit env: Env): js.Tree = {
+    def unnest(arg: Tree)(makeStat: (Tree, Env) => js.Tree)(implicit
+        env: Env): js.Tree = {
       unnest(List(arg)) {
         case (List(newArg), env) => makeStat(newArg, env)
       }
@@ -790,8 +790,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     /** Same as above, for one head argument and a list of arguments */
     def unnest(arg0: Tree, args: List[Tree])(
-        makeStat: (Tree, List[Tree], Env) => js.Tree)(
-        implicit env: Env): js.Tree = {
+        makeStat: (Tree, List[Tree], Env) => js.Tree)(implicit
+        env: Env): js.Tree = {
       unnest(arg0 :: args) { (newArgs, env) =>
         makeStat(newArgs.head, newArgs.tail, env)
       }
@@ -931,8 +931,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     def isPureExpression(tree: Tree)(implicit env: Env): Boolean =
       isExpressionInternal(tree, allowUnpure = false, allowSideEffects = false)
 
-    def doVarDef(ident: Ident, tpe: Type, mutable: Boolean, rhs: Tree)(
-        implicit env: Env): js.Tree = {
+    def doVarDef(ident: Ident, tpe: Type, mutable: Boolean, rhs: Tree)(implicit
+        env: Env): js.Tree = {
       implicit val pos = rhs.pos
       tpe match {
         case RecordType(fields) =>
@@ -2069,8 +2069,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       }
     }
 
-    private def getSuperClassOfJSClass(linkedClass: LinkedClass)(
-        implicit pos: Position): LinkedClass = {
+    private def getSuperClassOfJSClass(linkedClass: LinkedClass)(implicit
+        pos: Position): LinkedClass = {
       require(linkedClass.kind.isJSClass)
       assert(linkedClass.superClass.isDefined, linkedClass.encodedName)
       classEmitter.linkedClassByName(linkedClass.superClass.get.name)
@@ -2080,8 +2080,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       genCallHelper("fround", arg)
     }
 
-    private def genNewLong(ctor: String, args: js.Tree*)(
-        implicit pos: Position): js.Tree = {
+    private def genNewLong(ctor: String, args: js.Tree*)(implicit
+        pos: Position): js.Tree = {
       import TreeDSL._
       js.Apply(
         js.New(encodeClassVar(LongImpl.RuntimeLongClass), Nil) DOT ctor,
@@ -2096,16 +2096,16 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       js.Apply(receiver DOT methodName, args.toList)
     }
 
-    private def genLongModuleApply(methodName: String, args: js.Tree*)(
-        implicit pos: Position): js.Tree = {
+    private def genLongModuleApply(methodName: String, args: js.Tree*)(implicit
+        pos: Position): js.Tree = {
       import TreeDSL._
       js.Apply(
         genLoadModule(LongImpl.RuntimeLongModuleClass) DOT methodName,
         args.toList)
     }
 
-    private def genLoadModule(moduleClass: String)(
-        implicit pos: Position): js.Tree = {
+    private def genLoadModule(moduleClass: String)(implicit
+        pos: Position): js.Tree = {
       import TreeDSL._
       js.Apply(envField("m", moduleClass), Nil)
     }
@@ -2240,8 +2240,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       pos: Position): js.Tree =
     envField("c", className)
 
-  private[emitter] def genRawJSClassConstructor(linkedClass: LinkedClass)(
-      implicit
+  private[emitter] def genRawJSClassConstructor(
+      linkedClass: LinkedClass)(implicit
       outputMode: OutputMode,
       pos: Position): js.Tree = {
     if (linkedClass.kind == ClassKind.JSClass) {
@@ -2343,8 +2343,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     }
   }
 
-  private[emitter] def genBracketSelect(qual: js.Tree, item: js.Tree)(
-      implicit pos: Position): js.Tree = {
+  private[emitter] def genBracketSelect(qual: js.Tree, item: js.Tree)(implicit
+      pos: Position): js.Tree = {
     item match {
       case js.StringLiteral(name)
           if internalOptions.optimizeBracketSelects &&

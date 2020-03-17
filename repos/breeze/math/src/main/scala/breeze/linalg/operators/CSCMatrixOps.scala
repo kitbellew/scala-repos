@@ -225,8 +225,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
   @expand
   @expand.valify
-  implicit def csc_csc_OpAdd[@expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+  implicit def csc_csc_OpAdd[@expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : OpAdd.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
     new OpAdd.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: CSCMatrix[T]): CSCMatrix[T] = {
@@ -530,8 +530,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
   @expand
   @expand.valify
-  implicit def csc_csc_OpSub[@expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+  implicit def csc_csc_OpSub[@expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : OpSub.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
     new OpSub.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: CSCMatrix[T]): CSCMatrix[T] = {
@@ -594,8 +594,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   @expand.valify
   implicit def implOps_CSCT_T_eq_CSCT[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpMulScalar, OpMulMatrix) Op <: OpType](
-      implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+      @expand.args(OpMulScalar, OpMulMatrix) Op <: OpType](implicit
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] = {
     new Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: T): CSCMatrix[T] = {
@@ -857,8 +857,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
 
   // Update Ops
-  protected def updateFromPure[T, Op <: OpType, Other](
-      implicit op: UFunc.UImpl2[Op, CSCMatrix[T], Other, CSCMatrix[T]])
+  protected def updateFromPure[T, Op <: OpType, Other](implicit
+      op: UFunc.UImpl2[Op, CSCMatrix[T], Other, CSCMatrix[T]])
       : UFunc.InPlaceImpl2[Op, CSCMatrix[T], Other] = {
     new UFunc.InPlaceImpl2[Op, CSCMatrix[T], Other] {
       def apply(a: CSCMatrix[T], b: Other) {
@@ -1691,8 +1691,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
     }
   }
 
-  protected def updateFromPure_CSC_T[T, Op <: OpType, Other](
-      implicit op: UFunc.UImpl2[Op, CSCMatrix[T], Other, CSCMatrix[T]])
+  protected def updateFromPure_CSC_T[T, Op <: OpType, Other](implicit
+      op: UFunc.UImpl2[Op, CSCMatrix[T], Other, CSCMatrix[T]])
       : UFunc.InPlaceImpl2[Op, CSCMatrix[T], Other] = {
     new UFunc.InPlaceImpl2[Op, CSCMatrix[T], Other] {
       def apply(a: CSCMatrix[T], b: Other) {
@@ -1701,8 +1701,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
       }
     }
   }
-  protected def updateFromPure_CSC_CSC[T, Op <: OpType](
-      implicit op: UFunc.UImpl2[Op, CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]])
+  protected def updateFromPure_CSC_CSC[T, Op <: OpType](implicit
+      op: UFunc.UImpl2[Op, CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]])
       : UFunc.InPlaceImpl2[Op, CSCMatrix[T], CSCMatrix[T]] = {
     new UFunc.InPlaceImpl2[Op, CSCMatrix[T], CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: CSCMatrix[T]) {

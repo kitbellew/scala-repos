@@ -28,18 +28,18 @@ import com.twitter.bijection.macros.impl.IsCaseClassImpl
   * a separate compilation unit, which makes it easier to provide helper methods interfacing with macros.
   */
 object TupleConverterImpl {
-  def caseClassTupleConverterImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[TupleConverter[T]] =
+  def caseClassTupleConverterImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[TupleConverter[T]] =
     caseClassTupleConverterCommonImpl(c, false)
 
-  def caseClassTupleConverterWithUnknownImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[TupleConverter[T]] =
+  def caseClassTupleConverterWithUnknownImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[TupleConverter[T]] =
     caseClassTupleConverterCommonImpl(c, true)
 
   def caseClassTupleConverterCommonImpl[T](
       c: Context,
-      allowUnknownTypes: Boolean)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[TupleConverter[T]] = {
+      allowUnknownTypes: Boolean)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[TupleConverter[T]] = {
     import c.universe._
 
     import TypeDescriptorProviderImpl.{optionInner, evidentColumn}

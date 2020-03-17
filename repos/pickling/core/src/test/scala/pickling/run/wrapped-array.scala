@@ -9,8 +9,8 @@ import scala.collection.mutable.WrappedArray
 case class Rating(x: Int)
 
 class WrappedArrayTest extends FunSuite {
-  def mkAnyRefWrappedArrayPickler(
-      implicit pf: PickleFormat): Pickler[WrappedArray.ofRef[AnyRef]]
+  def mkAnyRefWrappedArrayPickler(implicit
+      pf: PickleFormat): Pickler[WrappedArray.ofRef[AnyRef]]
     with Unpickler[WrappedArray.ofRef[AnyRef]] =
     new Pickler[WrappedArray.ofRef[AnyRef]]
       with Unpickler[WrappedArray.ofRef[AnyRef]] {

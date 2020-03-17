@@ -89,8 +89,8 @@ class BehaviorSpec extends TypedSpec {
         setup.inbox.receiveAll() should ===(command.expectedResponse(setup.ctx))
         setup
       }
-      def check[T](command: Command, aux: T*)(
-          implicit inbox: Inbox.SyncInbox[T]): Setup = {
+      def check[T](command: Command, aux: T*)(implicit
+          inbox: Inbox.SyncInbox[T]): Setup = {
         setup.ctx.run(command)
         setup.inbox.receiveAll() should ===(command.expectedResponse(setup.ctx))
         inbox.receiveAll() should ===(aux)
@@ -102,8 +102,8 @@ class BehaviorSpec extends TypedSpec {
         setup.inbox.receiveAll() should ===(expected ++ expected)
         setup
       }
-      def check2[T](command: Command, aux: T*)(
-          implicit inbox: Inbox.SyncInbox[T]): Setup = {
+      def check2[T](command: Command, aux: T*)(implicit
+          inbox: Inbox.SyncInbox[T]): Setup = {
         setup.ctx.run(command)
         val expected = command.expectedResponse(setup.ctx)
         setup.inbox.receiveAll() should ===(expected ++ expected)

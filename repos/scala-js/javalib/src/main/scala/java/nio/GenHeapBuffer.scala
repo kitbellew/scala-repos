@@ -57,8 +57,8 @@ private[nio] final class GenHeapBuffer[B <: Buffer](val self: B)
   }
 
   @inline
-  def generic_duplicate()(
-      implicit newHeapBuffer: NewThisHeapBuffer): BufferType = {
+  def generic_duplicate()(implicit
+      newHeapBuffer: NewThisHeapBuffer): BufferType = {
     val result =
       newHeapBuffer(capacity, _array, _arrayOffset, position, limit, isReadOnly)
     result._mark = _mark
@@ -66,8 +66,8 @@ private[nio] final class GenHeapBuffer[B <: Buffer](val self: B)
   }
 
   @inline
-  def generic_asReadOnlyBuffer()(
-      implicit newHeapBuffer: NewThisHeapBuffer): BufferType = {
+  def generic_asReadOnlyBuffer()(implicit
+      newHeapBuffer: NewThisHeapBuffer): BufferType = {
     val result =
       newHeapBuffer(capacity, _array, _arrayOffset, position, limit, true)
     result._mark = _mark

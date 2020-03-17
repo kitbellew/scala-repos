@@ -5,8 +5,8 @@ import com.twitter.bijection.macros.impl.IsCaseClassImpl
 import scala.reflect.macros.Context
 
 object ParquetSchemaProvider {
-  def toParquetSchemaImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[String] = {
+  def toParquetSchemaImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[String] = {
     import c.universe._
 
     if (!IsCaseClassImpl.isCaseClassType(c)(T.tpe))

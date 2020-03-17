@@ -36,8 +36,8 @@ import akka.stream.scaladsl.Sink
   *
   * @param config a client configuration object
   */
-case class AhcWSClient(config: AsyncHttpClientConfig)(
-    implicit materializer: Materializer)
+case class AhcWSClient(config: AsyncHttpClientConfig)(implicit
+    materializer: Materializer)
     extends WSClient {
 
   private val asyncHttpClient = new DefaultAsyncHttpClient(config)
@@ -87,8 +87,8 @@ object AhcWSClient {
     *
     * @param config configuration settings
     */
-  def apply(config: AhcWSClientConfig = AhcWSClientConfig())(
-      implicit materializer: Materializer): AhcWSClient = {
+  def apply(config: AhcWSClientConfig = AhcWSClientConfig())(implicit
+      materializer: Materializer): AhcWSClient = {
     val client = new AhcWSClient(new AhcConfigBuilder(config).build())
     new SystemConfiguration().configure(config.wsClientConfig)
     client

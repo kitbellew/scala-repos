@@ -35,12 +35,10 @@ sealed class Biject[A](a: A) {
 
 trait Bijections {
   implicit def biject[A](a: A): Biject[A] = new Biject(a)
-  implicit def forwardEither[A, B](
-      implicit a: Bijection[A, B]): Either[Bijection[A, B], Bijection[B, A]] =
-    Left(a)
-  implicit def reverseEither[A, B](
-      implicit b: Bijection[B, A]): Either[Bijection[A, B], Bijection[B, A]] =
-    Right(b)
+  implicit def forwardEither[A, B](implicit
+      a: Bijection[A, B]): Either[Bijection[A, B], Bijection[B, A]] = Left(a)
+  implicit def reverseEither[A, B](implicit
+      b: Bijection[B, A]): Either[Bijection[A, B], Bijection[B, A]] = Right(b)
 }
 
 object Bijection extends Bijections

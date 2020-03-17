@@ -78,6 +78,6 @@ trait ApplicativeError[F[_], E] extends Applicative[F] {
 }
 
 object ApplicativeError {
-  def apply[F[_], E](
-      implicit F: ApplicativeError[F, E]): ApplicativeError[F, E] = F
+  def apply[F[_], E](implicit
+      F: ApplicativeError[F, E]): ApplicativeError[F, E] = F
 }

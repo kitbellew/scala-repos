@@ -163,8 +163,8 @@ object ForkRun {
     else s"http://$host:${address.getPort}"
   }
 
-  def askForReload(actor: ActorRef)(
-      implicit timeout: Timeout): () => CompileResult =
+  def askForReload(actor: ActorRef)(implicit
+      timeout: Timeout): () => CompileResult =
     () => {
       val future = (actor ? ForkRun.Reload).mapTo[CompileResult]
       Await.result(future, timeout.duration)

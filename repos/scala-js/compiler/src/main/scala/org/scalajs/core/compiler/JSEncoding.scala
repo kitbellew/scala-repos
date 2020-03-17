@@ -111,8 +111,8 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     js.Ident(mangleJSName(encodedName), Some(sym.unexpandedName.decoded))
   }
 
-  def encodeMethodSym(sym: Symbol, reflProxy: Boolean = false)(
-      implicit pos: Position): js.Ident = {
+  def encodeMethodSym(sym: Symbol, reflProxy: Boolean = false)(implicit
+      pos: Position): js.Ident = {
     val (encodedName, paramsString) = encodeMethodNameInternal(sym, reflProxy)
     js.Ident(
       encodedName + paramsString,
@@ -129,8 +129,8 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     *  This basically means adding an initial parameter of type
     *  java.lang.String, which is the `this` parameter.
     */
-  def encodeRTStringMethodSym(sym: Symbol)(
-      implicit pos: Position): (Symbol, js.Ident) = {
+  def encodeRTStringMethodSym(sym: Symbol)(implicit
+      pos: Position): (Symbol, js.Ident) = {
     require(
       sym.isMethod,
       "encodeMethodSym called with non-method symbol: " + sym)
@@ -213,8 +213,8 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     }
   }
 
-  def encodeClassFullNameIdent(sym: Symbol)(
-      implicit pos: Position): js.Ident = {
+  def encodeClassFullNameIdent(sym: Symbol)(implicit
+      pos: Position): js.Ident = {
     js.Ident(encodeClassFullName(sym), Some(sym.fullName))
   }
 

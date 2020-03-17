@@ -45,8 +45,8 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
   def >=[P2, R](e: Rep[P2])(implicit om: o#arg[B1, P2]#to[Boolean, R]) =
     om.column(Library.>=, n, e.toNode)
 
-  def in[P2, R, C[_]](e: Query[Rep[P2], _, C])(
-      implicit om: o#arg[B1, P2]#to[Boolean, R]) =
+  def in[P2, R, C[_]](e: Query[Rep[P2], _, C])(implicit
+      om: o#arg[B1, P2]#to[Boolean, R]) =
     om.column(Library.In, n, e.toNode)
   def inSet[R](seq: Traversable[B1])(implicit om: o#to[Boolean, R]) =
     if (seq.isEmpty) om(LiteralColumn(false))
@@ -66,11 +66,11 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
         ProductNode(ConstArray.from(seq.map(v =>
           LiteralNode(implicitly[TypedType[B1]], v, vol = true)))))
 
-  def between[P2, P3, R](start: Rep[P2], end: Rep[P3])(
-      implicit om: o#arg[B1, P2]#arg[B1, P3]#to[Boolean, R]) =
+  def between[P2, P3, R](start: Rep[P2], end: Rep[P3])(implicit
+      om: o#arg[B1, P2]#arg[B1, P3]#to[Boolean, R]) =
     om.column(Library.Between, n, start.toNode, end.toNode)
-  def ifNull[B2, P2, R](e: Rep[P2])(
-      implicit om: o#arg[B2, P2]#to[Boolean, R]): Rep[P2] =
+  def ifNull[B2, P2, R](e: Rep[P2])(implicit
+      om: o#arg[B2, P2]#to[Boolean, R]): Rep[P2] =
     Library.IfNull.column[P2](n, e.toNode)(tpe(e))
 }
 
@@ -159,8 +159,8 @@ final class StringColumnExtensionMethods[P1](val c: Rep[P1])
 
   def length[R](implicit om: o#to[Int, R]) =
     om.column(Library.Length, n)
-  def like[P2, R](e: Rep[P2], esc: Char = '\u0000')(
-      implicit om: o#arg[String, P2]#to[Boolean, R]) =
+  def like[P2, R](e: Rep[P2], esc: Char = '\u0000')(implicit
+      om: o#arg[String, P2]#to[Boolean, R]) =
     if (esc == '\u0000') om.column(Library.Like, n, e.toNode)
     else om.column(Library.Like, n, e.toNode, LiteralNode(esc))
   def ++[P2, R](e: Rep[P2])(implicit om: o#arg[String, P2]#to[String, R]) =
@@ -175,19 +175,19 @@ final class StringColumnExtensionMethods[P1](val c: Rep[P1])
   def rtrim = Library.RTrim.column[P1](n)
   def trim = Library.Trim.column[P1](n)
   def reverseString = Library.Reverse.column[P1](n)
-  def substring[P2, P3, R](start: Rep[P2], end: Rep[P3])(
-      implicit om: o#arg[Int, P2]#arg[Int, P3]#to[String, R]) =
+  def substring[P2, P3, R](start: Rep[P2], end: Rep[P3])(implicit
+      om: o#arg[Int, P2]#arg[Int, P3]#to[String, R]) =
     om.column(Library.Substring, n, start.toNode, end.toNode)
-  def substring[P2, R](start: Rep[P2])(
-      implicit om: o#arg[Int, P2]#to[String, R]) =
+  def substring[P2, R](start: Rep[P2])(implicit
+      om: o#arg[Int, P2]#to[String, R]) =
     om.column(Library.Substring, n, start.toNode)
-  def take[P2, R](num: Rep[P2])(
-      implicit om: o#arg[Int, Int]#arg[Int, P2]#to[String, R]) =
+  def take[P2, R](num: Rep[P2])(implicit
+      om: o#arg[Int, Int]#arg[Int, P2]#to[String, R]) =
     substring[Int, P2, R](LiteralColumn(0), num)
   def drop[P2, R](num: Rep[P2])(implicit om: o#arg[Int, P2]#to[String, R]) =
     substring[P2, R](num)
-  def replace[P2, P3, R](target: Rep[P2], replacement: Rep[P3])(
-      implicit om: o#arg[String, P2]#arg[String, P3]#to[String, R]) =
+  def replace[P2, P3, R](target: Rep[P2], replacement: Rep[P3])(implicit
+      om: o#arg[String, P2]#arg[String, P3]#to[String, R]) =
     om.column(Library.Replace, n, target.toNode, replacement.toNode)
   def indexOf[P2, R](str: Rep[P2])(implicit om: o#arg[String, P2]#to[Int, R]) =
     om.column(Library.IndexOf, n, str.toNode)
@@ -233,8 +233,8 @@ final class SingleColumnQueryExtensionMethods[B1, P1, C[_]](
 final class AnyOptionExtensionMethods[O <: Rep[_], P](val r: O) extends AnyVal {
 
   /** Apply `f` to the value inside this Option, if it is non-empty, otherwise return `ifEmpty`. */
-  def fold[B, BP](ifEmpty: B)(f: P => B)(
-      implicit shape: Shape[FlatShapeLevel, B, _, BP]): BP = {
+  def fold[B, BP](ifEmpty: B)(f: P => B)(implicit
+      shape: Shape[FlatShapeLevel, B, _, BP]): BP = {
     val gen = new AnonSymbol
     val mapv = f(OptionLift.baseValue[P, O](r, Ref(gen)))
     val n = OptionFold(r.toNode, shape.toNode(ifEmpty), shape.toNode(mapv), gen)
@@ -252,8 +252,8 @@ final class AnyOptionExtensionMethods[O <: Rep[_], P](val r: O) extends AnyVal {
   }
 
   /** Transform the value inside this Option */
-  def map[Q, QO](f: P => Q)(
-      implicit ol: OptionLift[Q, Rep[Option[QO]]]): Rep[Option[QO]] =
+  def map[Q, QO](f: P => Q)(implicit
+      ol: OptionLift[Q, Rep[Option[QO]]]): Rep[Option[QO]] =
     flatMap[QO](p => Rep.Some(f(p)))
 
   /** Flatten a nested Option. */
@@ -341,8 +341,8 @@ trait ExtensionMethodConversions {
       : SingleColumnQueryExtensionMethods[B1, Option[B1], C] =
     new SingleColumnQueryExtensionMethods[B1, Option[B1], C](q)
 
-  implicit def anyOptionExtensionMethods[T, P](v: Rep[Option[T]])(
-      implicit ol: OptionLift[P, Rep[Option[T]]])
+  implicit def anyOptionExtensionMethods[T, P](v: Rep[Option[T]])(implicit
+      ol: OptionLift[P, Rep[Option[T]]])
       : AnyOptionExtensionMethods[Rep[Option[T]], P] =
     new AnyOptionExtensionMethods[Rep[Option[T]], P](v)
 }

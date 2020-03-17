@@ -110,8 +110,8 @@ object Join {
         Acc <: HList,
         Out0 <: HList,
         H,
-        T <: HList](
-        implicit x: Aux[I, T, L2, Rule[I2, O2], H :: Acc, In0, Out0])
+        T <: HList](implicit
+        x: Aux[I, T, L2, Rule[I2, O2], H :: Acc, In0, Out0])
         : Aux[I, H :: T, L2, Rule[I2, O2], HNil, In0, Out0] = `n/a`
 
     // if R <: Rule and L1 empty and Acc non-empty move head of Acc to L2
@@ -123,8 +123,8 @@ object Join {
         In0 <: HList,
         Out0 <: HList,
         H,
-        T <: HList](
-        implicit x: Aux[I, HNil, H :: L2, Rule[I2, O2], T, In0, Out0])
+        T <: HList](implicit
+        x: Aux[I, HNil, H :: L2, Rule[I2, O2], T, In0, Out0])
         : Aux[I, HNil, L2, Rule[I2, O2], H :: T, In0, Out0] = `n/a`
 
     // if R <: Rule and L1 and Acc empty set In and Out to tailswitches result

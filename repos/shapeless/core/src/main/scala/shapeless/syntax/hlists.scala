@@ -78,8 +78,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   /**
     * Prepend the reverse of the argument `HList` to this `HList`.
     */
-  def reverse_:::[P <: HList](prefix: P)(
-      implicit prepend: ReversePrepend[P, L]): prepend.Out = prepend(prefix, l)
+  def reverse_:::[P <: HList](prefix: P)(implicit
+      prepend: ReversePrepend[P, L]): prepend.Out = prepend(prefix, l)
 
   /**
     * Returns the ''nth'' element of this `HList`. An explicit type argument must be provided. Available only if there is
@@ -127,8 +127,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * evidence that this `HList` contains all elements specified in `Ids`.
     */
   case class SelectManyAux[L <: HList](l: L) extends NatProductArgs {
-    def applyNatProduct[Ids <: HList](
-        implicit sel: SelectMany[L, Ids]): sel.Out = sel(l)
+    def applyNatProduct[Ids <: HList](implicit
+        sel: SelectMany[L, Ids]): sel.Out = sel(l)
   }
 
   def selectManyType[Ids <: HList](implicit sel: SelectMany[L, Ids]): sel.Out =
@@ -140,11 +140,11 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * Returns the elements of this `HList` specified by the range of ids in [A,B[
     * Available only if there is evidence that this `HList` contains all elements in that range
     */
-  def selectRange[A <: Nat, B <: Nat](
-      implicit sel: SelectRange[L, A, B]): sel.Out = sel(l)
+  def selectRange[A <: Nat, B <: Nat](implicit
+      sel: SelectRange[L, A, B]): sel.Out = sel(l)
 
-  def selectRange(a: Nat, b: Nat)(
-      implicit sel: SelectRange[L, a.N, b.N]): sel.Out = sel(l)
+  def selectRange(a: Nat, b: Nat)(implicit
+      sel: SelectRange[L, a.N, b.N]): sel.Out = sel(l)
 
   /**
     * Returns all elements of type `U` of this `HList`. An explicit type argument must be provided.
@@ -179,8 +179,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * type argument must be provided. Available only if there is evidence that this `HList` contains elements with
     * types in `SL`.
     */
-  def removeAll[SL <: HList](
-      implicit removeAll: RemoveAll[L, SL]): removeAll.Out = removeAll(l)
+  def removeAll[SL <: HList](implicit
+      removeAll: RemoveAll[L, SL]): removeAll.Out = removeAll(l)
 
   /**
     * Returns the union between this `HList` and another `HList`. In case of duplicate types, this operation is a
@@ -197,9 +197,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * contains the first m elements of type `T` in this `HList`.
     * Also available if `M` contains types absent in this `HList`.
     */
-  def intersect[M <: HList](
-      implicit intersection: Intersection[L, M]): intersection.Out =
-    intersection(l)
+  def intersect[M <: HList](implicit
+      intersection: Intersection[L, M]): intersection.Out = intersection(l)
 
   /**
     * Returns the difference between this `HList` and another `HList`. In case of duplicate types, this operation is a
@@ -225,8 +224,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   def reinsertAll[O <: HList] = new ReinsertAllAux[O]
 
   class ReinsertAllAux[O <: HList] {
-    def apply[SL <: HList](sl: SL)(
-        implicit removeAll: RemoveAll.Aux[O, SL, (SL, L)]): O =
+    def apply[SL <: HList](sl: SL)(implicit
+        removeAll: RemoveAll.Aux[O, SL, (SL, L)]): O =
       removeAll.reinsert((sl, l))
   }
 
@@ -257,17 +256,15 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * The `Elem` suffix is here to avoid creating an ambiguity with RecordOps#updated and should be removed if
     * SI-5414 is resolved in a way which eliminates the ambiguity.
     */
-  def updatedElem[U, Out <: HList](u: U)(
-      implicit replacer: Replacer.Aux[L, U, U, (U, Out)]): Out =
-    replacer(l, u)._2
+  def updatedElem[U, Out <: HList](u: U)(implicit
+      replacer: Replacer.Aux[L, U, U, (U, Out)]): Out = replacer(l, u)._2
 
   /**
     * Replaces the first element of type `U` of this `HList` with the result of its transformation to a `V` via the
     * supplied function. Available only if there is evidence that this `HList` has an element of type `U`.
     */
-  def updateWith[U, V, Out <: HList](f: U => V)(
-      implicit replacer: Modifier.Aux[L, U, V, (U, Out)]): Out =
-    replacer.apply(l, f)._2
+  def updateWith[U, V, Out <: HList](f: U => V)(implicit
+      replacer: Modifier.Aux[L, U, V, (U, Out)]): Out = replacer.apply(l, f)._2
 
   /**
     * Replaces the `N`th element of this `HList` with the result of calling the supplied function on it.
@@ -276,13 +273,12 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * @author Andreas Koestler
     */
   def updateAtWith[V](n: NatWith[({ type λ[n <: Nat] = At[L, n] })#λ])(
-      f: n.instance.Out => V)(
-      implicit upd: ModifierAt[L, n.N, n.instance.Out, V]): upd.Out = upd(l, f)
+      f: n.instance.Out => V)(implicit
+      upd: ModifierAt[L, n.N, n.instance.Out, V]): upd.Out = upd(l, f)
 
   class UpdatedTypeAux[U] {
-    def apply[V, Out <: HList](v: V)(
-        implicit replacer: Replacer.Aux[L, U, V, (U, Out)]): Out =
-      replacer(l, v)._2
+    def apply[V, Out <: HList](v: V)(implicit
+        replacer: Replacer.Aux[L, U, V, (U, Out)]): Out = replacer(l, v)._2
   }
 
   /**
@@ -293,9 +289,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   def updatedType[U] = new UpdatedTypeAux[U]
 
   class UpdatedAtAux[N <: Nat] {
-    def apply[U, V, Out <: HList](u: U)(
-        implicit replacer: ReplaceAt.Aux[L, N, U, (V, Out)]): Out =
-      replacer(l, u)._2
+    def apply[U, V, Out <: HList](u: U)(implicit
+        replacer: ReplaceAt.Aux[L, N, U, (V, Out)]): Out = replacer(l, u)._2
   }
 
   /**
@@ -308,9 +303,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * Replaces the ''nth' element of this `HList` with the supplied value of type `U`. Available only if there is
     * evidence that this `HList` has at least ''n'' elements.
     */
-  def updatedAt[U, V, Out <: HList](n: Nat, u: U)(
-      implicit replacer: ReplaceAt.Aux[L, n.N, U, (V, Out)]): Out =
-    replacer(l, u)._2
+  def updatedAt[U, V, Out <: HList](n: Nat, u: U)(implicit
+      replacer: ReplaceAt.Aux[L, n.N, U, (V, Out)]): Out = replacer(l, u)._2
 
   /**
     * Returns the first ''n'' elements of this `HList`. An explicit type argument must be provided. Available only if
@@ -340,29 +334,28 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * Splits this `HList` at the ''nth'' element, returning the prefix and suffix as a pair. An explicit type argument
     * must be provided. Available only if there is evidence that this `HList` has at least ''n'' elements.
     */
-  def split[N <: Nat](
-      implicit split: Split[L, N]): (split.Prefix, split.Suffix) = split(l)
-  def splitP[N <: Nat](
-      implicit split: Split[L, N]): split.Prefix :: split.Suffix :: HNil =
+  def split[N <: Nat](implicit
+      split: Split[L, N]): (split.Prefix, split.Suffix) = split(l)
+  def splitP[N <: Nat](implicit
+      split: Split[L, N]): split.Prefix :: split.Suffix :: HNil =
     split.product(l)
 
   /**
     * Splits this `HList` at the ''nth'' element, returning the prefix and suffix as a pair. Available only if there is
     * evidence that this `HList` has at least ''n'' elements.
     */
-  def split(n: Nat)(
-      implicit split: Split[L, n.N]): (split.Prefix, split.Suffix) = split(l)
-  def splitP(n: Nat)(
-      implicit split: Split[L, n.N]): split.Prefix :: split.Suffix :: HNil =
+  def split(n: Nat)(implicit
+      split: Split[L, n.N]): (split.Prefix, split.Suffix) = split(l)
+  def splitP(n: Nat)(implicit
+      split: Split[L, n.N]): split.Prefix :: split.Suffix :: HNil =
     split.product(l)
 
   /**
     * Splits this `HList` at the ''nth'' element, returning the reverse of the prefix and suffix as a pair. An explicit
     * type argument must be provided. Available only if there is evidence that this `HList` has at least ''n'' elements.
     */
-  def reverse_split[N <: Nat](
-      implicit split: ReverseSplit[L, N]): (split.Prefix, split.Suffix) =
-    split(l)
+  def reverse_split[N <: Nat](implicit
+      split: ReverseSplit[L, N]): (split.Prefix, split.Suffix) = split(l)
 
   def reverse_splitP[N <: Nat](implicit
       split: ReverseSplit[L, N]): split.Prefix :: split.Suffix :: HNil =
@@ -372,9 +365,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * Splits this `HList` at the ''nth'' element, returning the reverse of the prefix and suffix as a pair. Available
     * only if there is evidence that this `HList` has at least ''n'' elements.
     */
-  def reverse_split(n: Nat)(
-      implicit split: ReverseSplit[L, n.N]): (split.Prefix, split.Suffix) =
-    split(l)
+  def reverse_split(n: Nat)(implicit
+      split: ReverseSplit[L, n.N]): (split.Prefix, split.Suffix) = split(l)
 
   def reverse_splitP(n: Nat)(implicit
       split: ReverseSplit[L, n.N]): split.Prefix :: split.Suffix :: HNil =
@@ -385,10 +377,10 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * An explicit type argument must be provided. Available only if there is evidence that this `HList` has an element
     * of type `U`.
     */
-  def splitLeft[U](
-      implicit split: SplitLeft[L, U]): (split.Prefix, split.Suffix) = split(l)
-  def splitLeftP[U](
-      implicit split: SplitLeft[L, U]): split.Prefix :: split.Suffix :: HNil =
+  def splitLeft[U](implicit
+      split: SplitLeft[L, U]): (split.Prefix, split.Suffix) = split(l)
+  def splitLeftP[U](implicit
+      split: SplitLeft[L, U]): split.Prefix :: split.Suffix :: HNil =
     split.product(l)
 
   /**
@@ -396,9 +388,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * as a pair. An explicit type argument must be provided. Available only if there is evidence that this `HList` has
     * an element of type `U`.
     */
-  def reverse_splitLeft[U](
-      implicit split: ReverseSplitLeft[L, U]): (split.Prefix, split.Suffix) =
-    split(l)
+  def reverse_splitLeft[U](implicit
+      split: ReverseSplitLeft[L, U]): (split.Prefix, split.Suffix) = split(l)
 
   def reverse_splitLeftP[U](implicit
       split: ReverseSplitLeft[L, U]): split.Prefix :: split.Suffix :: HNil =
@@ -409,10 +400,10 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * An explicit type argument must be provided. Available only if there is evidence that this `HList` has an element
     * of type `U`.
     */
-  def splitRight[U](
-      implicit split: SplitRight[L, U]): (split.Prefix, split.Suffix) = split(l)
-  def splitRightP[U](
-      implicit split: SplitRight[L, U]): split.Prefix :: split.Suffix :: HNil =
+  def splitRight[U](implicit
+      split: SplitRight[L, U]): (split.Prefix, split.Suffix) = split(l)
+  def splitRightP[U](implicit
+      split: SplitRight[L, U]): split.Prefix :: split.Suffix :: HNil =
     split.product(l)
 
   /**
@@ -420,9 +411,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * as a pair. An explicit type argument must be provided. Available only if there is evidence that this `HList` has
     * an element of type `U`.
     */
-  def reverse_splitRight[U](
-      implicit split: ReverseSplitRight[L, U]): (split.Prefix, split.Suffix) =
-    split(l)
+  def reverse_splitRight[U](implicit
+      split: ReverseSplitRight[L, U]): (split.Prefix, split.Suffix) = split(l)
 
   def reverse_splitRightP[U](implicit
       split: ReverseSplitRight[L, U]): split.Prefix :: split.Suffix :: HNil =
@@ -479,38 +469,38 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * `op`. Available only if there is evidence that the result type of `f` at each element conforms to the argument
     * type of ''op''.
     */
-  def foldMap[R](z: R)(f: Poly)(op: (R, R) => R)(
-      implicit folder: MapFolder[L, R, f.type]): R = folder(l, z, op)
+  def foldMap[R](z: R)(f: Poly)(op: (R, R) => R)(implicit
+      folder: MapFolder[L, R, f.type]): R = folder(l, z, op)
 
   /**
     * Computes a left fold over this `HList` using the polymorphic binary combining operator `op`. Available only if
     * there is evidence `op` can consume/produce all the partial results of the appropriate types.
     */
-  def foldLeft[R](z: R)(op: Poly)(
-      implicit folder: LeftFolder[L, R, op.type]): folder.Out = folder(l, z)
+  def foldLeft[R](z: R)(op: Poly)(implicit
+      folder: LeftFolder[L, R, op.type]): folder.Out = folder(l, z)
 
   /**
     * Computes a right fold over this `HList` using the polymorphic binary combining operator `op`. Available only if
     * there is evidence `op` can consume/produce all the partial results of the appropriate types.
     */
-  def foldRight[R](z: R)(op: Poly)(
-      implicit folder: RightFolder[L, R, op.type]): folder.Out = folder(l, z)
+  def foldRight[R](z: R)(op: Poly)(implicit
+      folder: RightFolder[L, R, op.type]): folder.Out = folder(l, z)
 
   /**
     * Computes a left reduce over this `HList` using the polymorphic binary combining operator `op`. Available only if
     * there is evidence that this `HList` has at least one element and that `op` can consume/produce all the partial
     * results of the appropriate types.
     */
-  def reduceLeft(op: Poly)(
-      implicit reducer: LeftReducer[L, op.type]): reducer.Out = reducer(l)
+  def reduceLeft(op: Poly)(implicit
+      reducer: LeftReducer[L, op.type]): reducer.Out = reducer(l)
 
   /**
     * Computes a right reduce over this `HList` using the polymorphic binary combining operator `op`. Available only if
     * there is evidence that this `HList` has at least one element and that `op` can consume/produce all the partial
     * results of the appropriate types.
     */
-  def reduceRight(op: Poly)(
-      implicit reducer: RightReducer[L, op.type]): reducer.Out = reducer(l)
+  def reduceRight(op: Poly)(implicit
+      reducer: RightReducer[L, op.type]): reducer.Out = reducer(l)
 
   /**
     * Zips this `HList` with its argument `HList` returning an `HList` of pairs.
@@ -571,8 +561,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * Doesn't require this to be the same length as its 'HList' argument, but does require evidence that its
     * 'Poly2' argument is defined at their intersection.
     */
-  def zipWith[R <: HList, P <: Poly2](r: R)(p: P)(
-      implicit zipWith: ZipWith[L, R, P]): zipWith.Out =
+  def zipWith[R <: HList, P <: Poly2](r: R)(p: P)(implicit
+      zipWith: ZipWith[L, R, P]): zipWith.Out =
     zipWith(l, r)
 
   /**
@@ -597,8 +587,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   /**
     * Returns an `HList` with all elements that are subtypes of `B` typed as `B`.
     */
-  def unifySubtypes[B](
-      implicit subtypeUnifier: SubtypeUnifier[L, B]): subtypeUnifier.Out =
+  def unifySubtypes[B](implicit
+      subtypeUnifier: SubtypeUnifier[L, B]): subtypeUnifier.Out =
     subtypeUnifier(l)
 
   /**
@@ -680,8 +670,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     *
     * Note that the `M` container must extend `Traversable`, which means that `Array` cannot be used.
     */
-  def toCoproduct[M[_] <: Traversable[_]](
-      implicit toCoproductTraversable: ToCoproductTraversable[L, M])
+  def toCoproduct[M[_] <: Traversable[_]](implicit
+      toCoproductTraversable: ToCoproductTraversable[L, M])
       : toCoproductTraversable.Out = toCoproductTraversable(l)
 
   /**
@@ -693,21 +683,21 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   /**
     * Displays all elements of this hlist in a string using start, end, and separator strings.
     */
-  def mkString(start: String, sep: String, end: String)(
-      implicit toTraversable: ToTraversable.Aux[L, List, Any]): String =
+  def mkString(start: String, sep: String, end: String)(implicit
+      toTraversable: ToTraversable.Aux[L, List, Any]): String =
     this.toList.mkString(start, sep, end)
 
   /**
     * Converts this `HList` of values into a record with the provided keys.
     */
-  def zipWithKeys[K <: HList](keys: K)(
-      implicit withKeys: ZipWithKeys[K, L]): withKeys.Out = withKeys(l)
+  def zipWithKeys[K <: HList](keys: K)(implicit
+      withKeys: ZipWithKeys[K, L]): withKeys.Out = withKeys(l)
 
   /**
     * Converts this `HList` of values into a record with given keys. A type argument must be provided.
     */
-  def zipWithKeys[K <: HList](
-      implicit withKeys: ZipWithKeys[K, L]): withKeys.Out = withKeys(l)
+  def zipWithKeys[K <: HList](implicit
+      withKeys: ZipWithKeys[K, L]): withKeys.Out = withKeys(l)
 
   /**
     * Returns all permutations of this 'HList'
@@ -718,49 +708,48 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   /**
     * Rotate this 'HList' left by N. An explicit type argument must be provided.
     */
-  def rotateLeft[N <: Nat](
-      implicit rotateLeft: RotateLeft[L, N]): rotateLeft.Out = rotateLeft(l)
+  def rotateLeft[N <: Nat](implicit
+      rotateLeft: RotateLeft[L, N]): rotateLeft.Out = rotateLeft(l)
 
   /**
     * Rotate this 'HList' left by N
     */
-  def rotateLeft(n: Nat)(
-      implicit rotateLeft: RotateLeft[L, n.N]): rotateLeft.Out = rotateLeft(l)
+  def rotateLeft(n: Nat)(implicit
+      rotateLeft: RotateLeft[L, n.N]): rotateLeft.Out = rotateLeft(l)
 
   /**
     * Rotate this 'HList' right by N. An explicit type argument must be provided.
     */
-  def rotateRight[N <: Nat](
-      implicit rotateRight: RotateRight[L, N]): rotateRight.Out = rotateRight(l)
+  def rotateRight[N <: Nat](implicit
+      rotateRight: RotateRight[L, N]): rotateRight.Out = rotateRight(l)
 
   /**
     * Rotate this 'HList' right by N
     */
-  def rotateRight(n: Nat)(
-      implicit rotateRight: RotateRight[L, n.N]): rotateRight.Out =
-    rotateRight(l)
+  def rotateRight(n: Nat)(implicit
+      rotateRight: RotateRight[L, n.N]): rotateRight.Out = rotateRight(l)
 
   /**
     * Computes a left scan over this `HList` using the polymorphic binary combining operator `op`. Available only if
     * there is evidence `op` can consume/produce all the results of the appropriate types.
     */
-  def scanLeft[A, P <: Poly](z: A)(op: Poly)(
-      implicit scanL: LeftScanner[L, A, op.type]): scanL.Out = scanL(l, z)
+  def scanLeft[A, P <: Poly](z: A)(op: Poly)(implicit
+      scanL: LeftScanner[L, A, op.type]): scanL.Out = scanL(l, z)
 
   /**
     * Computes a right scan over this `HList` using the polymorphic binary combining operator `op`. Available only if
     * there is evidence `op` can consume/produce all the results of the appropriate types.
     */
-  def scanRight[A, P <: Poly](z: A)(op: Poly)(
-      implicit scanR: RightScanner[L, A, op.type]): scanR.Out = scanR(l, z)
+  def scanRight[A, P <: Poly](z: A)(op: Poly)(implicit
+      scanR: RightScanner[L, A, op.type]): scanR.Out = scanR(l, z)
 
   /**
     *
     * Produces a new `HList` where a slice of this `HList` is replaced by another. Available only if there are at least
     * ``n`` plus ``m`` elements.
     */
-  def patch[In <: HList](n: Nat, in: In, m: Nat)(
-      implicit patcher: Patcher[n.N, m.N, L, In]): patcher.Out = patcher(l, in)
+  def patch[In <: HList](n: Nat, in: In, m: Nat)(implicit
+      patcher: Patcher[n.N, m.N, L, In]): patcher.Out = patcher(l, in)
 
   /**
     * Produces a new `HList` where a slice of this `HList` is replaced by another. Two explicit type arguments must be
@@ -769,8 +758,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   def patch[N <: Nat, M <: Nat] = new PatchAux[N, M]
 
   class PatchAux[N <: Nat, M <: Nat] {
-    def apply[In <: HList](in: In)(
-        implicit patcher: Patcher[N, M, L, In]): patcher.Out = patcher(l, in)
+    def apply[In <: HList](in: In)(implicit
+        patcher: Patcher[N, M, L, In]): patcher.Out = patcher(l, in)
   }
 
   /**
@@ -781,24 +770,24 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   /**
     * Finds the first element of the HList for which the given Poly is defined, and applies the Poly to it.
     */
-  def collectFirst[P <: Poly](p: P)(
-      implicit collect: CollectFirst[L, p.type]): collect.Out = collect(l)
+  def collectFirst[P <: Poly](p: P)(implicit
+      collect: CollectFirst[L, p.type]): collect.Out = collect(l)
 
   /**
     * Groups the elements of this `HList` into tuples of `n` elements, offset by `step`
     *
     * @author Andreas Koestler
     */
-  def group(n: Nat, step: Nat)(
-      implicit grouper: Grouper[L, n.N, step.N]): grouper.Out = grouper(l)
+  def group(n: Nat, step: Nat)(implicit
+      grouper: Grouper[L, n.N, step.N]): grouper.Out = grouper(l)
 
   /**
     * Groups the elements of this `HList` into tuples of `n` elements, offset by `step`
     * Use elements in `pad` as necessary to complete last group up to `n` items.
     * @author Andreas Koestler
     */
-  def group[Pad <: HList](n: Nat, step: Nat, pad: Pad)(
-      implicit grouper: PaddedGrouper[L, n.N, step.N, Pad]): grouper.Out =
+  def group[Pad <: HList](n: Nat, step: Nat, pad: Pad)(implicit
+      grouper: PaddedGrouper[L, n.N, step.N, Pad]): grouper.Out =
     grouper(l, pad)
 
   /**
@@ -810,6 +799,6 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   /**
     * Slices beginning at index `from` and afterwards, up until index `until`
     */
-  def slice(from: Nat, until: Nat)(
-      implicit slice: Slice[from.N, until.N, L]): slice.Out = slice(l)
+  def slice(from: Nat, until: Nat)(implicit
+      slice: Slice[from.N, until.N, L]): slice.Out = slice(l)
 }

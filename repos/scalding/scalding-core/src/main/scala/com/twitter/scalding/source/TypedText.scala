@@ -155,8 +155,8 @@ class MostRecentTypedText[T](sep: TypedSep, path: String)(implicit
   protected override def separator = sep
 }
 
-class FixedTypedText[T](sep: TypedSep, path: String*)(
-    implicit td: TypeDescriptor[T])
+class FixedTypedText[T](sep: TypedSep, path: String*)(implicit
+    td: TypeDescriptor[T])
     extends FixedPathSource(path: _*)
     with TypedTextDelimited[T] {
   override def typeDescriptor = td

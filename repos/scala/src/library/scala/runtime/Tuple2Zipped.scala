@@ -55,8 +55,8 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     b.result()
   }
 
-  def flatMap[B, To](f: (El1, El2) => TraversableOnce[B])(
-      implicit cbf: CBF[Repr1, B, To]): To = {
+  def flatMap[B, To](f: (El1, El2) => TraversableOnce[B])(implicit
+      cbf: CBF[Repr1, B, To]): To = {
     val b = cbf(colls._1.repr)
     val elems2 = colls._2.iterator
 

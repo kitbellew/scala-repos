@@ -13,8 +13,8 @@ trait ActivityService {
     } getOrElse 0
   }
 
-  def getActivitiesByUser(activityUserName: String, isPublic: Boolean)(
-      implicit s: Session): List[Activity] =
+  def getActivitiesByUser(activityUserName: String, isPublic: Boolean)(implicit
+      s: Session): List[Activity] =
     Activities
       .innerJoin(Repositories)
       .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName))
@@ -41,8 +41,8 @@ trait ActivityService {
       .take(30)
       .list
 
-  def getRecentActivitiesByOwners(owners: Set[String])(
-      implicit s: Session): List[Activity] =
+  def getRecentActivitiesByOwners(owners: Set[String])(implicit
+      s: Session): List[Activity] =
     Activities
       .innerJoin(Repositories)
       .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName))

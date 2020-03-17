@@ -165,8 +165,8 @@ object SerializationTestDefns {
       }
 
     // Induction step for products
-    implicit def hcons[F[_]](
-        implicit ihc: IsHCons1[F, Functor, Functor]): Functor[F] =
+    implicit def hcons[F[_]](implicit
+        ihc: IsHCons1[F, Functor, Functor]): Functor[F] =
       new Functor[F] {
         def map[A, B](fa: F[A])(f: A => B): F[B] = {
           val (hd, tl) = ihc.unpack(fa)
@@ -175,8 +175,8 @@ object SerializationTestDefns {
       }
 
     // Induction step for coproducts
-    implicit def ccons[F[_]](
-        implicit icc: IsCCons1[F, Functor, Functor]): Functor[F] =
+    implicit def ccons[F[_]](implicit
+        icc: IsCCons1[F, Functor, Functor]): Functor[F] =
       new Functor[F] {
         def map[A, B](fa: F[A])(f: A => B): F[B] =
           icc.pack(

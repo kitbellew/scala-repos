@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Semigroup` */
-final class SemigroupOps[F] private[syntax] (val self: F)(
-    implicit val F: Semigroup[F])
+final class SemigroupOps[F] private[syntax] (val self: F)(implicit
+    val F: Semigroup[F])
     extends Ops[F] {
   ////
   final def |+|(other: => F): F = F.append(self, other)

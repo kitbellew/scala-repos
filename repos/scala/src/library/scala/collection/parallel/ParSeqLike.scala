@@ -179,8 +179,8 @@ trait ParSeqLike[
       })
   }
 
-  def reverseMap[S, That](f: T => S)(
-      implicit bf: CanBuildFrom[Repr, S, That]): That =
+  def reverseMap[S, That](f: T => S)(implicit
+      bf: CanBuildFrom[Repr, S, That]): That =
     if (bf(repr).isCombiner) {
       tasksupport.executeAndWaitResult(
         new ReverseMap[S, That](
@@ -246,8 +246,8 @@ trait ParSeqLike[
       }
     } otherwise seq.endsWith(that)
 
-  def patch[U >: T, That](from: Int, patch: GenSeq[U], replaced: Int)(
-      implicit bf: CanBuildFrom[Repr, U, That]): That = {
+  def patch[U >: T, That](from: Int, patch: GenSeq[U], replaced: Int)(implicit
+      bf: CanBuildFrom[Repr, U, That]): That = {
     val realreplaced = replaced min (length - from)
     if (patch.isParSeq && bf(
           repr).isCombiner && (size - realreplaced + patch.size) > MIN_FOR_COPY) {
@@ -286,8 +286,8 @@ trait ParSeqLike[
     setTaskSupport(b.result(), tasksupport)
   }
 
-  def updated[U >: T, That](index: Int, elem: U)(
-      implicit bf: CanBuildFrom[Repr, U, That]): That =
+  def updated[U >: T, That](index: Int, elem: U)(implicit
+      bf: CanBuildFrom[Repr, U, That]): That =
     if (bf(repr).isCombiner) {
       tasksupport.executeAndWaitResult(
         new Updated(
@@ -303,24 +303,24 @@ trait ParSeqLike[
     tasksupport.executeAndWaitResult(new Updated(index, elem, pbf, splitter) mapResult { _.result })
   } otherwise seq.updated(index, elem)(bf2seq(bf))*/
 
-  def +:[U >: T, That](elem: U)(
-      implicit bf: CanBuildFrom[Repr, U, That]): That = {
+  def +:[U >: T, That](elem: U)(implicit
+      bf: CanBuildFrom[Repr, U, That]): That = {
     patch(0, mutable.ParArray(elem), 0)
   }
 
-  def :+[U >: T, That](elem: U)(
-      implicit bf: CanBuildFrom[Repr, U, That]): That = {
+  def :+[U >: T, That](elem: U)(implicit
+      bf: CanBuildFrom[Repr, U, That]): That = {
     patch(length, mutable.ParArray(elem), 0)
   }
 
-  def padTo[U >: T, That](len: Int, elem: U)(
-      implicit bf: CanBuildFrom[Repr, U, That]): That =
+  def padTo[U >: T, That](len: Int, elem: U)(implicit
+      bf: CanBuildFrom[Repr, U, That]): That =
     if (length < len) {
       patch(length, new immutable.Repetition(elem, len - length), 0)
     } else patch(length, Nil, 0)
 
-  override def zip[U >: T, S, That](that: GenIterable[S])(
-      implicit bf: CanBuildFrom[Repr, (U, S), That]): That =
+  override def zip[U >: T, S, That](that: GenIterable[S])(implicit
+      bf: CanBuildFrom[Repr, (U, S), That]): That =
     if (bf(repr).isCombiner && that.isParSeq) {
       val thatseq = that.asParSeq
       tasksupport.executeAndWaitResult(

@@ -688,8 +688,8 @@ trait Scalar2[V] extends Serializable {
           .asInstanceOf[Matrix2[R, C, V]]
     }
 
-  def divMatrix[R, C](that: Matrix2[R, C, V])(
-      implicit f: Field[V]): MatrixLiteral[R, C, V] =
+  def divMatrix[R, C](that: Matrix2[R, C, V])(implicit
+      f: Field[V]): MatrixLiteral[R, C, V] =
     MatrixLiteral(
       that.toTypedPipe
         .mapWithValue(value) {
@@ -698,8 +698,8 @@ trait Scalar2[V] extends Serializable {
         },
       that.sizeHint)(that.rowOrd, that.colOrd)
 
-  def timesLiteral[R, C](that: Matrix2[R, C, V])(
-      implicit ring: Ring[V]): MatrixLiteral[R, C, V] =
+  def timesLiteral[R, C](that: Matrix2[R, C, V])(implicit
+      ring: Ring[V]): MatrixLiteral[R, C, V] =
     MatrixLiteral(
       that.toTypedPipe
         .mapWithValue(value) {

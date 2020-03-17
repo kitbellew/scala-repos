@@ -144,27 +144,27 @@ object PlayRunners {
 }
 
 trait Writeables {
-  implicit def writeableOf_AnyContentAsJson(
-      implicit codec: Codec): Writeable[AnyContentAsJson] =
+  implicit def writeableOf_AnyContentAsJson(implicit
+      codec: Codec): Writeable[AnyContentAsJson] =
     Writeable.writeableOf_JsValue.map(c => c.json)
 
-  implicit def writeableOf_AnyContentAsXml(
-      implicit codec: Codec): Writeable[AnyContentAsXml] =
+  implicit def writeableOf_AnyContentAsXml(implicit
+      codec: Codec): Writeable[AnyContentAsXml] =
     Writeable.writeableOf_NodeSeq.map(c => c.xml)
 
-  implicit def writeableOf_AnyContentAsFormUrlEncoded(
-      implicit code: Codec): Writeable[AnyContentAsFormUrlEncoded] =
+  implicit def writeableOf_AnyContentAsFormUrlEncoded(implicit
+      code: Codec): Writeable[AnyContentAsFormUrlEncoded] =
     Writeable.writeableOf_urlEncodedForm.map(c => c.data)
 
   implicit def writeableOf_AnyContentAsRaw: Writeable[AnyContentAsRaw] =
     Writeable.wBytes.map(c => c.raw.initialData)
 
-  implicit def writeableOf_AnyContentAsText(
-      implicit code: Codec): Writeable[AnyContentAsText] =
+  implicit def writeableOf_AnyContentAsText(implicit
+      code: Codec): Writeable[AnyContentAsText] =
     Writeable.wString.map(c => c.txt)
 
-  implicit def writeableOf_AnyContentAsEmpty(
-      implicit code: Codec): Writeable[AnyContentAsEmpty.type] =
+  implicit def writeableOf_AnyContentAsEmpty(implicit
+      code: Codec): Writeable[AnyContentAsEmpty.type] =
     Writeable(_ => ByteString.empty, None)
 }
 
@@ -263,8 +263,8 @@ trait RouteInvokers extends EssentialActionCaller {
     *
     * The body is serialised using the implicit writable, so that the action body parser can deserialise it.
     */
-  def route[T](app: Application, rh: RequestHeader, body: T)(
-      implicit w: Writeable[T]): Option[Future[Result]] = {
+  def route[T](app: Application, rh: RequestHeader, body: T)(implicit
+      w: Writeable[T]): Option[Future[Result]] = {
     val (taggedRh, handler) = app.requestHandler.handlerForRequest(rh)
     import app.materializer
     handler match {
@@ -282,18 +282,16 @@ trait RouteInvokers extends EssentialActionCaller {
     * @deprecated Use the version that takes an application, since 2.5.0
     */
   @deprecated("Use the version that takes an application", "2.5.0")
-  def route[T](rh: RequestHeader, body: T)(
-      implicit w: Writeable[T]): Option[Future[Result]] =
-    route(Play.current, rh, body)
+  def route[T](rh: RequestHeader, body: T)(implicit
+      w: Writeable[T]): Option[Future[Result]] = route(Play.current, rh, body)
 
   /**
     * Use the HttpRequestHandler to determine the Action to call for this request and execute it.
     *
     * The body is serialised using the implicit writable, so that the action body parser can deserialise it.
     */
-  def route[T](app: Application, req: Request[T])(
-      implicit w: Writeable[T]): Option[Future[Result]] =
-    route(app, req, req.body)
+  def route[T](app: Application, req: Request[T])(implicit
+      w: Writeable[T]): Option[Future[Result]] = route(app, req, req.body)
 
   /**
     * Use the HttpRequestHandler to determine the Action to call for this request and execute it.
@@ -303,9 +301,8 @@ trait RouteInvokers extends EssentialActionCaller {
     * @deprecated Use the version that takes an application, since 2.5.0
     */
   @deprecated("Use the version that takes an application", "2.5.0")
-  def route[T](req: Request[T])(
-      implicit w: Writeable[T]): Option[Future[Result]] =
-    route(Play.current, req)
+  def route[T](req: Request[T])(implicit
+      w: Writeable[T]): Option[Future[Result]] = route(Play.current, req)
 }
 
 trait ResultExtractors {
@@ -337,8 +334,8 @@ trait ResultExtractors {
   /**
     * Extracts the Content-Type of this Result value.
     */
-  def contentType(of: Future[Result])(
-      implicit timeout: Timeout): Option[String] = {
+  def contentType(of: Future[Result])(implicit
+      timeout: Timeout): Option[String] = {
     Await
       .result(of, timeout.duration)
       .body
@@ -411,8 +408,8 @@ trait ResultExtractors {
   /**
     * Extracts the Location header of this Result value if this Result is a Redirect.
     */
-  def redirectLocation(of: Future[Result])(
-      implicit timeout: Timeout): Option[String] =
+  def redirectLocation(of: Future[Result])(implicit
+      timeout: Timeout): Option[String] =
     Await.result(of, timeout.duration).header match {
       case ResponseHeader(FOUND, headers, _)     => headers.get(LOCATION)
       case ResponseHeader(SEE_OTHER, headers, _) => headers.get(LOCATION)
@@ -426,14 +423,14 @@ trait ResultExtractors {
   /**
     * Extracts an Header value of this Result value.
     */
-  def header(header: String, of: Future[Result])(
-      implicit timeout: Timeout): Option[String] = headers(of).get(header)
+  def header(header: String, of: Future[Result])(implicit
+      timeout: Timeout): Option[String] = headers(of).get(header)
 
   /**
     * Extracts all Headers of this Result value.
     */
-  def headers(of: Future[Result])(
-      implicit timeout: Timeout): Map[String, String] =
+  def headers(of: Future[Result])(implicit
+      timeout: Timeout): Map[String, String] =
     Await.result(of, timeout.duration).header.headers
 }
 

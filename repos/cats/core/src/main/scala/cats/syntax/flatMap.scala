@@ -2,8 +2,8 @@ package cats
 package syntax
 
 trait FlatMapSyntax1 {
-  implicit def flatMapSyntaxU[FA](fa: FA)(
-      implicit U: Unapply[FlatMap, FA]): FlatMapOps[U.M, U.A] =
+  implicit def flatMapSyntaxU[FA](fa: FA)(implicit
+      U: Unapply[FlatMap, FA]): FlatMapOps[U.M, U.A] =
     new FlatMapOps[U.M, U.A](U.subst(fa))(U.TC)
 }
 

@@ -286,8 +286,8 @@ trait SeqLike[+A, +Repr]
     b.result()
   }
 
-  def reverseMap[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[Repr, B, That]): That = {
+  def reverseMap[B, That](f: A => B)(implicit
+      bf: CanBuildFrom[Repr, B, That]): That = {
     var xs: List[A] = List()
     for (x <- this)
       xs = x :: xs
@@ -445,8 +445,8 @@ trait SeqLike[+A, +Repr]
     *    @return       a new $coll which contains all elements of this $coll
     *                  followed by all elements of `that`.
     */
-  override def union[B >: A, That](that: GenSeq[B])(
-      implicit bf: CanBuildFrom[Repr, B, That]): That =
+  override def union[B >: A, That](that: GenSeq[B])(implicit
+      bf: CanBuildFrom[Repr, B, That]): That =
     this ++ that
 
   /** Computes the multiset difference between this $coll and another sequence.
@@ -536,8 +536,8 @@ trait SeqLike[+A, +Repr]
     b.result()
   }
 
-  def patch[B >: A, That](from: Int, patch: GenSeq[B], replaced: Int)(
-      implicit bf: CanBuildFrom[Repr, B, That]): That = {
+  def patch[B >: A, That](from: Int, patch: GenSeq[B], replaced: Int)(implicit
+      bf: CanBuildFrom[Repr, B, That]): That = {
     val b = bf(repr)
     var i = 0
     val it = this.iterator
@@ -555,8 +555,8 @@ trait SeqLike[+A, +Repr]
     b.result()
   }
 
-  def updated[B >: A, That](index: Int, elem: B)(
-      implicit bf: CanBuildFrom[Repr, B, That]): That = {
+  def updated[B >: A, That](index: Int, elem: B)(implicit
+      bf: CanBuildFrom[Repr, B, That]): That = {
     if (index < 0) throw new IndexOutOfBoundsException(index.toString)
     val b = bf(repr)
     var i = 0
@@ -572,24 +572,24 @@ trait SeqLike[+A, +Repr]
     b.result()
   }
 
-  def +:[B >: A, That](elem: B)(
-      implicit bf: CanBuildFrom[Repr, B, That]): That = {
+  def +:[B >: A, That](elem: B)(implicit
+      bf: CanBuildFrom[Repr, B, That]): That = {
     val b = bf(repr)
     b += elem
     b ++= thisCollection
     b.result()
   }
 
-  def :+[B >: A, That](elem: B)(
-      implicit bf: CanBuildFrom[Repr, B, That]): That = {
+  def :+[B >: A, That](elem: B)(implicit
+      bf: CanBuildFrom[Repr, B, That]): That = {
     val b = bf(repr)
     b ++= thisCollection
     b += elem
     b.result()
   }
 
-  def padTo[B >: A, That](len: Int, elem: B)(
-      implicit bf: CanBuildFrom[Repr, B, That]): That = {
+  def padTo[B >: A, That](len: Int, elem: B)(implicit
+      bf: CanBuildFrom[Repr, B, That]): That = {
     val b = bf(repr)
     val L = length
     b.sizeHint(math.max(L, len))

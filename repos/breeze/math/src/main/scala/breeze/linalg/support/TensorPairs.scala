@@ -8,8 +8,8 @@ package support
 class TensorPairs[K, V, +This](
     private val tensor: This,
     active: Boolean,
-    f: ((K, V)) => Boolean = { (x: (K, V)) => true })(
-    implicit ev: This <:< Tensor[K, V]) {
+    f: ((K, V)) => Boolean = { (x: (K, V)) => true })(implicit
+    ev: This <:< Tensor[K, V]) {
   def size = tensor.size
 
   def iterator = { if (active) tensor.activeIterator else tensor.iterator }
@@ -33,8 +33,8 @@ class TensorPairs[K, V, +This](
       case _ => false
     }
 
-  def map[TT >: This, O, That](fn: ((K, V)) => O)(
-      implicit bf: CanMapKeyValuePairs[TT, K, V, O, That]): That =
+  def map[TT >: This, O, That](fn: ((K, V)) => O)(implicit
+      bf: CanMapKeyValuePairs[TT, K, V, O, That]): That =
     tensor.mapPairs((k, v) => fn((k, v)))(
       bf.asInstanceOf[CanMapKeyValuePairs[Tensor[K, V], K, V, O, That]])
 

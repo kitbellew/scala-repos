@@ -101,8 +101,8 @@ trait OptionInstances extends OptionInstances1 {
 }
 
 private[std] sealed trait OptionInstances1 extends OptionInstances2 {
-  implicit def partialOrderOption[A](
-      implicit ev: PartialOrder[A]): PartialOrder[Option[A]] =
+  implicit def partialOrderOption[A](implicit
+      ev: PartialOrder[A]): PartialOrder[Option[A]] =
     new PartialOrder[Option[A]] {
       def partialCompare(x: Option[A], y: Option[A]): Double =
         x.fold(if (y.isDefined) -1.0 else 0.0)(a =>

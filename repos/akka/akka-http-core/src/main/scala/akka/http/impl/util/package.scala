@@ -26,8 +26,8 @@ package object util {
 
   private[http] val EmptyByteArray = Array.empty[Byte]
 
-  private[http] def actorSystem(
-      implicit refFactory: ActorRefFactory): ExtendedActorSystem =
+  private[http] def actorSystem(implicit
+      refFactory: ActorRefFactory): ExtendedActorSystem =
     refFactory match {
       case x: ActorContext ⇒ actorSystem(x.system)
       case x: ExtendedActorSystem ⇒ x
@@ -79,8 +79,8 @@ package object util {
       })
 
   private[this] var eventStreamLogger: ActorRef = _
-  private[http] def installEventStreamLoggerFor(channel: Class[_])(
-      implicit system: ActorSystem): Unit = {
+  private[http] def installEventStreamLoggerFor(channel: Class[_])(implicit
+      system: ActorSystem): Unit = {
     synchronized {
       if (eventStreamLogger == null)
         eventStreamLogger = system.actorOf(

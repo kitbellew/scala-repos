@@ -25,8 +25,8 @@ import org.apache.spark.streaming.dstream.InputDStream
 /**
   * A Java-friendly interface to [[org.apache.spark.streaming.dstream.InputDStream]].
   */
-class JavaInputDStream[T](val inputDStream: InputDStream[T])(
-    implicit override val classTag: ClassTag[T])
+class JavaInputDStream[T](val inputDStream: InputDStream[T])(implicit
+    override val classTag: ClassTag[T])
     extends JavaDStream[T](inputDStream) {}
 
 object JavaInputDStream {

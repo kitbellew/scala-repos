@@ -7,8 +7,8 @@ import spire.implicits.cforRange
   * Computes the determinant of the given real matrix.
   */
 object det extends UFunc {
-  implicit def canDetUsingLU[T](
-      implicit luImpl: LU.Impl[T, (DenseMatrix[Double], Array[Int])])
+  implicit def canDetUsingLU[T](implicit
+      luImpl: LU.Impl[T, (DenseMatrix[Double], Array[Int])])
       : Impl[T, Double] = {
     new Impl[T, Double] {
       def apply(X: T): Double = {

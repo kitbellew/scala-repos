@@ -86,8 +86,8 @@ object OrderedSerializationProviderImpl {
       }
   }
 
-  def apply[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[OrderedSerialization[T]] = {
+  def apply[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[OrderedSerialization[T]] = {
     import c.universe._
 
     val b: TreeOrderedBuf[c.type] = dispatcher(c)(T.tpe)

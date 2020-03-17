@@ -291,16 +291,16 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
 
   import spire.math.{Sorting, Selection}
 
-  protected[this] def fromArray(arr: Array[A])(
-      implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
+  protected[this] def fromArray(arr: Array[A])(implicit
+      cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val b = cbf(as)
     b.sizeHint(arr.length)
     cfor(0)(_ < arr.length, _ + 1) { i => b += arr(i) }
     b.result
   }
 
-  protected[this] def fromSizeAndArray(size: Int, arr: Array[A])(
-      implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
+  protected[this] def fromSizeAndArray(size: Int, arr: Array[A])(implicit
+      cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val b = cbf(as)
     b.sizeHint(size)
     cfor(0)(_ < size, _ + 1) { i => b += arr(i) }

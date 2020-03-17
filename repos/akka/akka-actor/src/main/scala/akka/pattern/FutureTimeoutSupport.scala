@@ -39,8 +39,8 @@ trait FutureTimeoutSupport {
     * after the specified duration.
     */
   def afterCompletionStage[T](duration: FiniteDuration, using: Scheduler)(
-      value: ⇒ CompletionStage[T])(
-      implicit ec: ExecutionContext): CompletionStage[T] =
+      value: ⇒ CompletionStage[T])(implicit
+      ec: ExecutionContext): CompletionStage[T] =
     if (duration.isFinite() && duration.length < 1) {
       try value
       catch { case NonFatal(t) ⇒ Futures.failedCompletionStage(t) }

@@ -43,8 +43,8 @@ trait JsonTypeConverterFactories extends JsonBindingImplicits {
     }
 }
 
-class JsonTypeConverterFactoriesImports(
-    implicit protected val jsonFormats: Formats)
+class JsonTypeConverterFactoriesImports(implicit
+    protected val jsonFormats: Formats)
     extends JsonTypeConverterFactories
 
 trait JsonCommand extends Command with JsonTypeConverterFactories {

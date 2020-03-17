@@ -73,8 +73,8 @@ final class UnionOps[C <: Coproduct](val c: C)
   /**
     * Maps a higher rank function across the values of this union.
     */
-  def mapValues(f: Poly)(
-      implicit mapValues: MapValues[f.type, C]): mapValues.Out = mapValues(c)
+  def mapValues(f: Poly)(implicit
+      mapValues: MapValues[f.type, C]): mapValues.Out = mapValues(c)
 
   /**
     * Returns a wrapped version of this union that provides `selectDynamic` access to fields.
@@ -93,7 +93,6 @@ final case class DynamicUnionOps[C <: Coproduct](c: C) extends Dynamic {
   /**
     * Allows dynamic-style access to fields of the union whose keys are Symbols.
     */
-  def selectDynamic(key: String)(
-      implicit selector: Selector[C, Symbol @@ key.type]): selector.Out =
-    selector(c)
+  def selectDynamic(key: String)(implicit
+      selector: Selector[C, Symbol @@ key.type]): selector.Out = selector(c)
 }

@@ -106,9 +106,8 @@ trait Annotations[A, T] extends DepFn0 with Serializable {
 }
 
 object Annotations {
-  def apply[A, T](
-      implicit annotations: Annotations[A, T]): Aux[A, T, annotations.Out] =
-    annotations
+  def apply[A, T](implicit
+      annotations: Annotations[A, T]): Aux[A, T, annotations.Out] = annotations
 
   type Aux[A, T, Out0 <: HList] = Annotations[A, T] { type Out = Out0 }
 

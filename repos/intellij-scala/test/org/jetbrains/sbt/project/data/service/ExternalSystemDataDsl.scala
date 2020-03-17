@@ -136,8 +136,8 @@ object ExternalSystemDataDsl {
         attribute: Attribute[T] with ProjectAttribute): AttributeDef[T] =
       new AttributeDef(attribute, attributes)
     protected implicit def defineAttributeSeq[T](
-        attribute: Attribute[Seq[T]] with ProjectAttribute)(
-        implicit m: Manifest[Seq[T]]): AttributeSeqDef[T] =
+        attribute: Attribute[Seq[T]] with ProjectAttribute)(implicit
+        m: Manifest[Seq[T]]): AttributeSeqDef[T] =
       new AttributeSeqDef(attribute, attributes)
   }
 
@@ -174,8 +174,8 @@ object ExternalSystemDataDsl {
         attribute: Attribute[T] with ModuleAttribute): AttributeDef[T] =
       new AttributeDef(attribute, attributes)
     protected implicit def defineAttributeSeq[T](
-        attribute: Attribute[Seq[T]] with ModuleAttribute)(
-        implicit m: Manifest[Seq[T]]): AttributeSeqDef[T] =
+        attribute: Attribute[Seq[T]] with ModuleAttribute)(implicit
+        m: Manifest[Seq[T]]): AttributeSeqDef[T] =
       new AttributeSeqDef(attribute, attributes)
   }
 
@@ -196,8 +196,8 @@ object ExternalSystemDataDsl {
         attribute: Attribute[T] with LibraryAttribute): AttributeDef[T] =
       new AttributeDef(attribute, attributes)
     protected implicit def defineAttributeSeq[T](
-        attribute: Attribute[Seq[T]] with LibraryAttribute)(
-        implicit m: Manifest[Seq[T]]): AttributeSeqDef[T] =
+        attribute: Attribute[Seq[T]] with LibraryAttribute)(implicit
+        m: Manifest[Seq[T]]): AttributeSeqDef[T] =
       new AttributeSeqDef(attribute, attributes)
   }
 }

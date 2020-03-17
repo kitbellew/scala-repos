@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicReference
   */
 final case class Actor[A](
     handler: A => Unit,
-    onError: Throwable => Unit = ActorUtils.rethrowError)(
-    implicit val strategy: Strategy) {
+    onError: Throwable => Unit = ActorUtils.rethrowError)(implicit
+    val strategy: Strategy) {
   private val head = new AtomicReference[Node[A]]
 
   val toEffect: Run[A] = Run[A](a => this ! a)
@@ -89,8 +89,8 @@ sealed abstract class ActorInstances {
 trait ActorFunctions {
   def actor[A](
       handler: A => Unit,
-      onError: Throwable => Unit = ActorUtils.rethrowError)(
-      implicit s: Strategy): Actor[A] = new Actor[A](handler, onError)(s)
+      onError: Throwable => Unit = ActorUtils.rethrowError)(implicit
+      s: Strategy): Actor[A] = new Actor[A](handler, onError)(s)
 
   implicit def ToFunctionFromActor[A](a: Actor[A]): A => Unit = a ! _
 }

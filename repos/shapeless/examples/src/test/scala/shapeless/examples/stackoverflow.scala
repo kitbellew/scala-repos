@@ -34,14 +34,14 @@ class StackOverflow1 {
       def apply(l: H :: HNil, f: H => Out) = f(l.head)
     }
 
-  implicit def foldCurry2[H, T <: HList, FT, Out](
-      implicit fct: FoldCurry[T, FT, Out]) =
+  implicit def foldCurry2[H, T <: HList, FT, Out](implicit
+      fct: FoldCurry[T, FT, Out]) =
     new FoldCurry[H :: T, H => FT, Out] {
       def apply(l: H :: T, f: H => FT) = fct(l.tail, f(l.head))
     }
 
-  def foldCurry[L <: HList, F, Out](l: L, f: F)(
-      implicit fc: FoldCurry[L, F, Out]): Out = fc(l, f)
+  def foldCurry[L <: HList, F, Out](l: L, f: F)(implicit
+      fc: FoldCurry[L, F, Out]): Out = fc(l, f)
 
   @Test
   def testFoldCurry {

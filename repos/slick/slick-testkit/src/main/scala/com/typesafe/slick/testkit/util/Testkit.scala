@@ -134,8 +134,8 @@ case class TestMethod(
   }
 }
 
-sealed abstract class GenericTest[TDB >: Null <: TestDB](
-    implicit TdbClass: ClassTag[TDB]) {
+sealed abstract class GenericTest[TDB >: Null <: TestDB](implicit
+    TdbClass: ClassTag[TDB]) {
   protected[this] var _tdb: TDB = null
   private[testkit] def setTestDB(tdb: TestDB): Boolean = {
     tdb match {
@@ -223,8 +223,8 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
 }
 
 @deprecated("Use AsyncTest instead of TestkitTest", "3.1")
-abstract class TestkitTest[TDB >: Null <: TestDB](
-    implicit TdbClass: ClassTag[TDB])
+abstract class TestkitTest[TDB >: Null <: TestDB](implicit
+    TdbClass: ClassTag[TDB])
     extends GenericTest[TDB] {
   protected implicit def implicitSession: tdb.profile.Backend#Session = {
     db
@@ -253,8 +253,8 @@ abstract class TestkitTest[TDB >: Null <: TestDB](
     }
 }
 
-abstract class AsyncTest[TDB >: Null <: TestDB](
-    implicit TdbClass: ClassTag[TDB])
+abstract class AsyncTest[TDB >: Null <: TestDB](implicit
+    TdbClass: ClassTag[TDB])
     extends GenericTest[TDB] {
   final override val reuseInstance = true
 

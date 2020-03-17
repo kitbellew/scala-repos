@@ -9,8 +9,8 @@ import akka.http.impl.engine.rendering.BodyPartRenderer
 import akka.http.scaladsl.model._
 
 trait MultipartMarshallers {
-  implicit def multipartMarshaller[T <: Multipart](
-      implicit log: LoggingAdapter = NoLogging): ToEntityMarshaller[T] =
+  implicit def multipartMarshaller[T <: Multipart](implicit
+      log: LoggingAdapter = NoLogging): ToEntityMarshaller[T] =
     Marshaller strict { value ⇒
       val boundary = randomBoundary()
       val mediaType = value.mediaType withBoundary boundary

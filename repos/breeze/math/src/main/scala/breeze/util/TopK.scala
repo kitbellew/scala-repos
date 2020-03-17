@@ -43,15 +43,15 @@ class TopK[T](k: Int)(implicit ord: Ordering[T]) extends Iterable[T] {
 }
 
 object TopK {
-  def apply[T](k: Int, items: TraversableOnce[T])(
-      implicit ord: Ordering[T]): TopK[T] = {
+  def apply[T](k: Int, items: TraversableOnce[T])(implicit
+      ord: Ordering[T]): TopK[T] = {
     val topk = new TopK[T](k)(ord);
     items.foreach(topk += _);
     topk;
   }
 
-  def apply[T, U](k: Int, items: TraversableOnce[T], scoreFn: (T => U))(
-      implicit uord: Ordering[U]): TopK[T] = {
+  def apply[T, U](k: Int, items: TraversableOnce[T], scoreFn: (T => U))(implicit
+      uord: Ordering[U]): TopK[T] = {
     implicit val ord = new Ordering[T] {
       override def compare(x: T, y: T) = uord.compare(scoreFn(x), scoreFn(y));
     };

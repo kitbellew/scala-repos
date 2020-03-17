@@ -60,8 +60,8 @@ object Data extends Data1 {
   /**
     * Data type class instance for `List`s.
     */
-  implicit def listData[P, T, R](
-      implicit qt: Lazy[Case1.Aux[P, T, R]]): Data[P, List[T], R] =
+  implicit def listData[P, T, R](implicit
+      qt: Lazy[Case1.Aux[P, T, R]]): Data[P, List[T], R] =
     new Data[P, List[T], R] {
       def gmapQ(t: List[T]) = t.map(qt.value(_))
     }
@@ -135,8 +135,8 @@ object DataT extends DataT1 {
   /**
     * DataT type class instance for `List`s.
     */
-  implicit def listDataT[F <: Poly, T, U](
-      implicit ft: Lazy[Case1.Aux[F, T, U]]): Aux[F, List[T], List[U]] =
+  implicit def listDataT[F <: Poly, T, U](implicit
+      ft: Lazy[Case1.Aux[F, T, U]]): Aux[F, List[T], List[U]] =
     new DataT[F, List[T]] {
       type Out = List[U]
       def gmapT(t: List[T]) = t.map(ft.value)

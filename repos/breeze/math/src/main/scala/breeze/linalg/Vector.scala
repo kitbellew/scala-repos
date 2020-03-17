@@ -145,15 +145,15 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
 
   /** See [[scala.collection.mutable.ArrayOps.scanLeft]].
     */
-  def scanLeft[B >: V](z: B)(op: (B, V) => B)(
-      implicit cm1: ClassTag[B]): Vector[B] = {
+  def scanLeft[B >: V](z: B)(op: (B, V) => B)(implicit
+      cm1: ClassTag[B]): Vector[B] = {
     Vector[B](valuesIterator.scanLeft(z)(op).toArray)
   }
 
   /** See [[scala.collection.mutable.ArrayOps.scanRight]].
     */
-  def scanRight[B >: V](z: B)(op: (V, B) => B)(
-      implicit cm1: ClassTag[B]): Vector[B] =
+  def scanRight[B >: V](z: B)(op: (V, B) => B)(implicit
+      cm1: ClassTag[B]): Vector[B] =
     Vector[B](valuesIterator.scanRight(z)(op).toArray)
 
   // </editor-fold>
@@ -696,8 +696,8 @@ trait VectorOps { this: Vector.type =>
     }
   @expand
   @expand.valify
-  implicit def canDot_V_V[@expand.args(Int, Long, Float, Double) T](
-      implicit @expand.sequence[T](0, 0L, 0.0f, 0.0) zero: T): BinaryRegistry[
+  implicit def canDot_V_V[@expand.args(Int, Long, Float, Double) T](implicit
+      @expand.sequence[T](0, 0L, 0.0f, 0.0) zero: T): BinaryRegistry[
     Vector[T],
     Vector[T],
     breeze.linalg.operators.OpMulInner.type,

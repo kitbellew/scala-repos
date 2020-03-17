@@ -5,8 +5,8 @@ import slick.ast._
 import slick.util._
 
 /** Base class for SimpleFunction/BinaryOperator/Expression implementations. */
-private[lifted] abstract class SimpleFeatureNode[T](
-    implicit val buildType: TypedType[T])
+private[lifted] abstract class SimpleFeatureNode[T](implicit
+    val buildType: TypedType[T])
     extends SimplyTypedNode {
   type Self = SimpleFeatureNode[T]
 }

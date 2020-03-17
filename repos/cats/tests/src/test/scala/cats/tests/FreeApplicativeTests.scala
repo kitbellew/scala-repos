@@ -22,8 +22,8 @@ class FreeApplicativeTests extends CatsSuite {
         A.arbitrary.map(FreeApplicative.pure[F, A]),
         F.arbitrary.map(FreeApplicative.lift[F, A])))
 
-  implicit def freeApplicativeEq[S[_]: Applicative, A](
-      implicit SA: Eq[S[A]]): Eq[FreeApplicative[S, A]] =
+  implicit def freeApplicativeEq[S[_]: Applicative, A](implicit
+      SA: Eq[S[A]]): Eq[FreeApplicative[S, A]] =
     new Eq[FreeApplicative[S, A]] {
       def eqv(a: FreeApplicative[S, A], b: FreeApplicative[S, A]): Boolean = {
         val nt = NaturalTransformation.id[S]

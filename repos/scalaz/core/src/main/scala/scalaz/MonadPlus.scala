@@ -21,8 +21,8 @@ trait MonadPlus[F[_]] extends Monad[F] with ApplicativePlus[F] { self =>
     bind(value)((ta) => T.foldMap(ta)(a => point(a))(monoid[A]))
 
   /** Generalized version of Haskell's `partitionEithers` */
-  def separate[G[_, _], A, B](value: F[G[A, B]])(
-      implicit G: Bifoldable[G]): (F[A], F[B]) = {
+  def separate[G[_, _], A, B](value: F[G[A, B]])(implicit
+      G: Bifoldable[G]): (F[A], F[B]) = {
     val lefts =
       bind(value)((aa) => G.leftFoldable.foldMap(aa)(a => point(a))(monoid[A]))
     val rights =
@@ -35,8 +35,8 @@ trait MonadPlus[F[_]] extends Monad[F] with ApplicativePlus[F] { self =>
     unite(T.leibniz.subst(value))(T.TC)
 
   /**The product of MonadPlus `F` and `G`, `[x](F[x], G[x]])`, is a MonadPlus */
-  def product[G[_]](
-      implicit G0: MonadPlus[G]): MonadPlus[λ[α => (F[α], G[α])]] =
+  def product[G[_]](implicit
+      G0: MonadPlus[G]): MonadPlus[λ[α => (F[α], G[α])]] =
     new ProductMonadPlus[F, G] {
       def F = self
       def G = G0

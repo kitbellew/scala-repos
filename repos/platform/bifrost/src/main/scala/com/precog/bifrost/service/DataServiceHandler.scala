@@ -48,8 +48,8 @@ import scalaz.effect.IO
 
 // having access to the whole platform is a bit of overkill, but whatever
 class DataServiceHandler[A](
-    platform: Platform[Future, Slice, StreamT[Future, Slice]])(
-    implicit M: Monad[Future])
+    platform: Platform[Future, Slice, StreamT[Future, Slice]])(implicit
+    M: Monad[Future])
     extends CustomHttpService[
       A,
       (APIKey, Path) => Future[HttpResponse[ByteChunk]]]

@@ -18,8 +18,8 @@ final case class Const[A, B](getConst: A) {
   def combine(that: Const[A, B])(implicit A: Semigroup[A]): Const[A, B] =
     Const(A.combine(getConst, that.getConst))
 
-  def traverse[F[_], C](f: B => F[C])(
-      implicit F: Applicative[F]): F[Const[A, C]] =
+  def traverse[F[_], C](f: B => F[C])(implicit
+      F: Applicative[F]): F[Const[A, C]] =
     F.pure(retag[C])
 
   def ===(that: Const[A, B])(implicit A: Eq[A]): Boolean =

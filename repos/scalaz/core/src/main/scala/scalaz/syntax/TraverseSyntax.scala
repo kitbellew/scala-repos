@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Traverse` */
-final class TraverseOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: Traverse[F])
+final class TraverseOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: Traverse[F])
     extends Ops[F[A]] {
   ////
 
@@ -12,13 +12,13 @@ final class TraverseOps[F[_], A] private[syntax] (val self: F[A])(
   final def tmap[B](f: A => B) =
     F.map(self)(f)
 
-  final def traverse[G[_], B](f: A => G[B])(
-      implicit G: Applicative[G]): G[F[B]] =
+  final def traverse[G[_], B](f: A => G[B])(implicit
+      G: Applicative[G]): G[F[B]] =
     G.traverse(self)(f)
 
   /** A version of `traverse` that infers the type constructor `G` */
-  final def traverseU[GB](f: A => GB)(
-      implicit G: Unapply[Applicative, GB]): G.M[F[G.A]] /*G[F[B]]*/ =
+  final def traverseU[GB](f: A => GB)(implicit
+      G: Unapply[Applicative, GB]): G.M[F[G.A]] /*G[F[B]]*/ =
     F.traverseU[A, GB](self)(f)(G)
 
   /** A version of `traverse` where a subsequent monadic join is applied to the inner result. */
@@ -35,8 +35,8 @@ final class TraverseOps[F[_], A] private[syntax] (val self: F[A])(
   }
 
   /** A version of `sequence` that infers the nested type constructor */
-  final def sequenceU(
-      implicit G: Unapply[Applicative, A]): G.M[F[G.A]] /*G[F[A]] */ = {
+  final def sequenceU(implicit
+      G: Unapply[Applicative, A]): G.M[F[G.A]] /*G[F[A]] */ = {
     G.TC.traverse(self)(x => G.apply(x))
   }
 
@@ -82,8 +82,8 @@ final class TraverseOps[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToTraverseOps0 {
-  implicit def ToTraverseOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[Traverse, FA]) =
+  implicit def ToTraverseOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[Traverse, FA]) =
     new TraverseOps[F0.M, F0.A](F0(v))(F0.TC)
 
 }

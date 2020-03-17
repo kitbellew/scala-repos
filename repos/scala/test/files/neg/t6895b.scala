@@ -5,8 +5,8 @@ trait Or[A, B]
 
 class Test {
   implicit def orFoo[A]: Foo[({ type L[X] = Or[A, X] })#L] = ???
-  implicit def barFoo[F[_]](
-      implicit f: Foo[F]): Foo[({ type L[X] = Bar[F, X] })#L] = ???
+  implicit def barFoo[F[_]](implicit
+      f: Foo[F]): Foo[({ type L[X] = Bar[F, X] })#L] = ???
 
   // Now we can define a couple of type aliases:
   type StringOr[X] = Or[String, X]

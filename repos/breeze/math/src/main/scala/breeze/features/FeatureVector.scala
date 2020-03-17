@@ -184,8 +184,8 @@ object FeatureVector {
     }
   }
 
-  implicit def dotProductVxFVfromFVxV[V, T](
-      implicit op: OpMulInner.Impl2[FeatureVector, V, T])
+  implicit def dotProductVxFVfromFVxV[V, T](implicit
+      op: OpMulInner.Impl2[FeatureVector, V, T])
       : OpMulInner.Impl2[V, FeatureVector, T] = {
     new OpMulInner.Impl2[V, FeatureVector, T] {
       def apply(b: V, a: FeatureVector): T = op(a, b)

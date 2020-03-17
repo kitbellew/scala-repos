@@ -128,8 +128,8 @@ class MostRecentLzoTypedText[T](sep: TypedSep, path: String)(implicit
   protected override def separator = sep
 }
 
-class FixedLzoTypedText[T](sep: TypedSep, path: String*)(
-    implicit td: TypeDescriptor[T])
+class FixedLzoTypedText[T](sep: TypedSep, path: String*)(implicit
+    td: TypeDescriptor[T])
     extends FixedPathSource(path: _*)
     with LzoTypedTextDelimited[T] {
   override def typeDescriptor = td

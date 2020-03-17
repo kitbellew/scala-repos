@@ -30,11 +30,11 @@ object ScalaCsrf extends PlaySpecification {
   //#csrf-controller
 
   // used to make sure CSRFController gets the proper things injected
-  implicit def addToken[A](action: Action[A])(
-      implicit app: Application): Action[A] =
+  implicit def addToken[A](action: Action[A])(implicit
+      app: Application): Action[A] =
     app.injector.instanceOf(classOf[CSRFAddToken])(action)
-  implicit def checkToken[A](action: Action[A])(
-      implicit app: Application): Action[A] =
+  implicit def checkToken[A](action: Action[A])(implicit
+      app: Application): Action[A] =
     app.injector.instanceOf(classOf[CSRFCheck])(action)
 
   "Play's CSRF protection" should {

@@ -654,8 +654,8 @@ private final class Analyzer(
       }
     }
 
-    def callMethod(methodName: String, statically: Boolean = false)(
-        implicit from: From): Unit = {
+    def callMethod(methodName: String, statically: Boolean = false)(implicit
+        from: From): Unit = {
       if (isConstructorName(methodName)) {
         // constructors must always be called statically
         assert(
@@ -677,8 +677,8 @@ private final class Analyzer(
       }
     }
 
-    private def delayedCallMethod(methodName: String)(
-        implicit from: From): Unit = {
+    private def delayedCallMethod(methodName: String)(implicit
+        from: From): Unit = {
       if (isReflProxyName(methodName)) {
         tryLookupReflProxyMethod(methodName).foreach(_.reach(this))
       } else {

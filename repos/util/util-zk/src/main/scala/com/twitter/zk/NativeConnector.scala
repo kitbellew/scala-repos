@@ -85,8 +85,8 @@ case class NativeConnector(
 }
 
 object NativeConnector {
-  def apply(connectString: String, sessionTimeout: Duration)(
-      implicit timer: Timer): NativeConnector = {
+  def apply(connectString: String, sessionTimeout: Duration)(implicit
+      timer: Timer): NativeConnector = {
     NativeConnector(connectString, None, sessionTimeout, timer)
   }
 
@@ -101,8 +101,8 @@ object NativeConnector {
       connectString: String,
       connectTimeout: Duration,
       sessionTimeout: Duration,
-      authenticate: Option[AuthInfo])(
-      implicit timer: Timer): NativeConnector = {
+      authenticate: Option[AuthInfo])(implicit
+      timer: Timer): NativeConnector = {
     NativeConnector(
       connectString,
       Some(connectTimeout),

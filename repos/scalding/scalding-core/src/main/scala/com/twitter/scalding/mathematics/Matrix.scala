@@ -127,8 +127,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
     new ColVector[RowT, ValT]('row, 'val, vecPipe)
   }
 
-  def mapToColVector[T, RowT, ValT](fields: Fields)(mapfn: T => (RowT, ValT))(
-      implicit
+  def mapToColVector[T, RowT, ValT](fields: Fields)(
+      mapfn: T => (RowT, ValT))(implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ValT)]) = {
     val vecPipe =
@@ -153,8 +153,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
     new RowVector[ColT, ValT]('col, 'val, vecPipe)
   }
 
-  def mapToRowVector[T, ColT, ValT](fields: Fields)(mapfn: T => (ColT, ValT))(
-      implicit
+  def mapToRowVector[T, ColT, ValT](fields: Fields)(
+      mapfn: T => (ColT, ValT))(implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(ColT, ValT)]) = {
     val vecPipe =
@@ -184,8 +184,8 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
       setter: TupleSetter[(Row, Col, Val)]): Matrix[Row, Col, Val] =
     mapToMatrix { _.asInstanceOf[(Row, Col, Val)] }
 
-  def mapToMatrix[Row, Col, Val](fn: (T) => (Row, Col, Val))(
-      implicit setter: TupleSetter[(Row, Col, Val)]): Matrix[Row, Col, Val] = {
+  def mapToMatrix[Row, Col, Val](fn: (T) => (Row, Col, Val))(implicit
+      setter: TupleSetter[(Row, Col, Val)]): Matrix[Row, Col, Val] = {
     val fields = ('row, 'col, 'val)
     val matPipe = mappable.mapTo(fields)(fn)
     new Matrix[Row, Col, Val]('row, 'col, 'val, matPipe)
@@ -231,8 +231,8 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
       setter: TupleSetter[(Col, Val)]): ColVector[Col, Val] =
     mapToCol { _.asInstanceOf[(Col, Val)] }
 
-  def mapToCol[Col, Val](fn: (T) => (Col, Val))(
-      implicit setter: TupleSetter[(Col, Val)]): ColVector[Col, Val] = {
+  def mapToCol[Col, Val](fn: (T) => (Col, Val))(implicit
+      setter: TupleSetter[(Col, Val)]): ColVector[Col, Val] = {
     val fields = ('col, 'val)
     val colPipe = mappable.mapTo(fields)(fn)
     new ColVector[Col, Val]('col, 'val, colPipe)
@@ -322,8 +322,8 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Value operations
-  def mapValues[ValU](fn: (ValT) => ValU)(
-      implicit mon: Monoid[ValU]): Matrix[RowT, ColT, ValU] = {
+  def mapValues[ValU](fn: (ValT) => ValU)(implicit
+      mon: Monoid[ValU]): Matrix[RowT, ColT, ValU] = {
     val newPipe = pipe.flatMap(valSym -> valSym) {
       imp: Tuple1[ValT] => //Ensure an arity of 1
         //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
@@ -341,8 +341,8 @@ class Matrix[RowT, ColT, ValT](
     * like zipWithIndex.map but ONLY CHANGES THE VALUE not the index.
     * Note you will only see non-zero elements on the matrix. This does not enumerate the zeros
     */
-  def mapWithIndex[ValNew](fn: (ValT, RowT, ColT) => ValNew)(
-      implicit mon: Monoid[ValNew]): Matrix[RowT, ColT, ValNew] = {
+  def mapWithIndex[ValNew](fn: (ValT, RowT, ColT) => ValNew)(implicit
+      mon: Monoid[ValNew]): Matrix[RowT, ColT, ValNew] = {
     val newPipe = pipe.flatMap(fields -> fields) { imp: (RowT, ColT, ValT) =>
       mon.nonZeroOption(fn(imp._3, imp._1, imp._2)).map { (imp._1, imp._2, _) }
     }
@@ -385,8 +385,8 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Reduce all rows to a single row (zeros or ignored)
-  def reduceRowVectors(fn: (ValT, ValT) => ValT)(
-      implicit mon: Monoid[ValT]): RowVector[ColT, ValT] = {
+  def reduceRowVectors(fn: (ValT, ValT) => ValT)(implicit
+      mon: Monoid[ValT]): RowVector[ColT, ValT] = {
     val newPipe = filterOutZeros(valSym, mon) {
       pipe.groupBy(colSym) {
         _.reduce(valSym) { (x: Tuple1[ValT], y: Tuple1[ValT]) =>
@@ -411,8 +411,8 @@ class Matrix[RowT, ColT, ValT](
   // Maps rows using a per-row mapping function
   // Use this for non-decomposable vector processing functions
   // and with vectors that can fit in one-single machine memory
-  def mapRows(fn: Iterable[(ColT, ValT)] => Iterable[(ColT, ValT)])(
-      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
+  def mapRows(fn: Iterable[(ColT, ValT)] => Iterable[(ColT, ValT)])(implicit
+      mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
     val newListSym = Symbol(colSym.name + "_" + valSym.name + "_list")
     // TODO, I think we can count the rows/cols for free here
     val newPipe = filterOutZeros(valSym, mon) {
@@ -431,8 +431,8 @@ class Matrix[RowT, ColT, ValT](
     new Matrix[RowT, ColT, ValT](rowSym, colSym, valSym, newPipe, sizeHint)
   }
 
-  def topRowElems(k: Int)(
-      implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
+  def topRowElems(k: Int)(implicit
+      ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
     if (k < 1000) {
       topRowWithTiny(k)
     } else {
@@ -451,8 +451,8 @@ class Matrix[RowT, ColT, ValT](
     }
   }
 
-  protected def topRowWithTiny(k: Int)(
-      implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
+  protected def topRowWithTiny(k: Int)(implicit
+      ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
     val topSym = Symbol(colSym.name + "_topK")
     val newPipe = pipe
       .groupBy(rowSym) {
@@ -478,8 +478,8 @@ class Matrix[RowT, ColT, ValT](
     (matD.mapValues { x => 1.0 }.sumColVectors.diag.inverse) * matD
   }
 
-  def rowL0Normalize(
-      implicit ev: =:=[ValT, Double]): Matrix[RowT, ColT, Double] = rowL0Norm
+  def rowL0Normalize(implicit
+      ev: =:=[ValT, Double]): Matrix[RowT, ColT, Double] = rowL0Norm
 
   protected lazy val rowL1Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
@@ -488,8 +488,8 @@ class Matrix[RowT, ColT, ValT](
 
   // Row L1 normalization, only makes sense for Doubles
   // At the end of L1 normalization, sum of row values is one
-  def rowL1Normalize(
-      implicit ev: =:=[ValT, Double]): Matrix[RowT, ColT, Double] = rowL1Norm
+  def rowL1Normalize(implicit
+      ev: =:=[ValT, Double]): Matrix[RowT, ColT, Double] = rowL1Norm
 
   protected lazy val rowL2Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
@@ -503,8 +503,8 @@ class Matrix[RowT, ColT, ValT](
   }
   // Row L2 normalization (can only be called for Double)
   // After this operation, the sum(|x|^2) along each row will be 1.
-  def rowL2Normalize(
-      implicit ev: =:=[ValT, Double]): Matrix[RowT, ColT, Double] = rowL2Norm
+  def rowL2Normalize(implicit
+      ev: =:=[ValT, Double]): Matrix[RowT, ColT, Double] = rowL2Norm
 
   // Remove the mean of each row from each value in a row.
   // Double ValT only (only over the observed values, not dividing by the unobserved ones)
@@ -548,8 +548,8 @@ class Matrix[RowT, ColT, ValT](
     this.transpose.getRow(index).transpose
   }
 
-  def reduceColVectors(fn: (ValT, ValT) => ValT)(
-      implicit mon: Monoid[ValT]): ColVector[RowT, ValT] = {
+  def reduceColVectors(fn: (ValT, ValT) => ValT)(implicit
+      mon: Monoid[ValT]): ColVector[RowT, ValT] = {
     this.transpose.reduceRowVectors(fn)(mon).transpose
   }
 
@@ -557,13 +557,13 @@ class Matrix[RowT, ColT, ValT](
     this.transpose.sumRowVectors(mon).transpose
   }
 
-  def mapCols(fn: Iterable[(RowT, ValT)] => Iterable[(RowT, ValT)])(
-      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
+  def mapCols(fn: Iterable[(RowT, ValT)] => Iterable[(RowT, ValT)])(implicit
+      mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
     this.transpose.mapRows(fn)(mon).transpose
   }
 
-  def topColElems(k: Int)(
-      implicit ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
+  def topColElems(k: Int)(implicit
+      ord: Ordering[ValT]): Matrix[RowT, ColT, ValT] = {
     this.transpose.topRowElems(k)(ord).transpose
   }
 
@@ -617,8 +617,8 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Matrix summation
-  def +(that: Matrix[RowT, ColT, ValT])(
-      implicit mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
+  def +(that: Matrix[RowT, ColT, ValT])(implicit
+      mon: Monoid[ValT]): Matrix[RowT, ColT, ValT] = {
     if (equals(that)) {
       // No need to do any groupBy operation
       mapValues { v => mon.plus(v, v) }(mon)
@@ -628,15 +628,15 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Matrix difference
-  def -(that: Matrix[RowT, ColT, ValT])(
-      implicit grp: Group[ValT]): Matrix[RowT, ColT, ValT] = {
+  def -(that: Matrix[RowT, ColT, ValT])(implicit
+      grp: Group[ValT]): Matrix[RowT, ColT, ValT] = {
     elemWiseOp(that)((x, y) => grp.minus(x, y))(grp)
   }
 
   // Matrix elementwise product / Hadamard product
   // see http://en.wikipedia.org/wiki/Hadamard_product_(matrices)
-  def hProd(mat: Matrix[RowT, ColT, ValT])(
-      implicit ring: Ring[ValT]): Matrix[RowT, ColT, ValT] = {
+  def hProd(mat: Matrix[RowT, ColT, ValT])(implicit
+      ring: Ring[ValT]): Matrix[RowT, ColT, ValT] = {
     elemWiseOp(mat)((x, y) => ring.times(x, y))(ring)
   }
 
@@ -985,8 +985,8 @@ class Matrix[RowT, ColT, ValT](
 }
 
 class LiteralScalar[ValT](val value: ValT) extends java.io.Serializable {
-  def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[LiteralScalar[ValT], That, Res]): Res = {
+  def *[That, Res](that: That)(implicit
+      prod: MatrixProduct[LiteralScalar[ValT], That, Res]): Res = {
     prod(this, that)
   }
 }
@@ -996,10 +996,8 @@ class Scalar[ValT](val valSym: Symbol, inPipe: Pipe)
     with java.io.Serializable {
   def pipe = inPipe
   def fields = valSym
-  def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[Scalar[ValT], That, Res]): Res = {
-    prod(this, that)
-  }
+  def *[That, Res](that: That)(implicit
+      prod: MatrixProduct[Scalar[ValT], That, Res]): Res = { prod(this, that) }
 
   /**
     * Write the Scalar, optionally renaming val fields to the given fields
@@ -1053,8 +1051,8 @@ class DiagonalMatrix[IdxT, ValT](
   }
 
   // Value operations
-  def mapValues[ValU](fn: (ValT) => ValU)(
-      implicit mon: Monoid[ValU]): DiagonalMatrix[IdxT, ValU] = {
+  def mapValues[ValU](fn: (ValT) => ValU)(implicit
+      mon: Monoid[ValU]): DiagonalMatrix[IdxT, ValU] = {
     val newPipe = pipe.flatMap(valSym -> valSym) {
       imp: Tuple1[ValT] => // Ensure an arity of 1
         //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
@@ -1086,8 +1084,8 @@ class RowVector[ColT, ValT](
   def pipe = inPipe.project(colS, valS)
   def fields = (colS, valS)
 
-  def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[RowVector[ColT, ValT], That, Res]): Res = {
+  def *[That, Res](that: That)(implicit
+      prod: MatrixProduct[RowVector[ColT, ValT], That, Res]): Res = {
     prod(this, that)
   }
 
@@ -1097,8 +1095,8 @@ class RowVector[ColT, ValT](
   def -(that: RowVector[ColT, ValT])(implicit group: Group[ValT]) =
     (this.toMatrix(true) - that.toMatrix(true)).getRow(true)
 
-  def hProd(that: RowVector[ColT, ValT])(
-      implicit ring: Ring[ValT]): RowVector[ColT, ValT] =
+  def hProd(that: RowVector[ColT, ValT])(implicit
+      ring: Ring[ValT]): RowVector[ColT, ValT] =
     (this.transpose hProd that.transpose).transpose
 
   def transpose: ColVector[ColT, ValT] = {
@@ -1114,8 +1112,8 @@ class RowVector[ColT, ValT](
     * like zipWithIndex.map but ONLY CHANGES THE VALUE not the index.
     * Note you will only see non-zero elements on the vector. This does not enumerate the zeros
     */
-  def mapWithIndex[ValNew](fn: (ValT, ColT) => ValNew)(
-      implicit mon: Monoid[ValNew]): RowVector[ColT, ValNew] = {
+  def mapWithIndex[ValNew](fn: (ValT, ColT) => ValNew)(implicit
+      mon: Monoid[ValNew]): RowVector[ColT, ValNew] = {
     val newPipe = pipe
       .mapTo((valS, colS) -> (valS, colS)) { tup: (ValT, ColT) =>
         (fn(tup._1, tup._2), tup._2)
@@ -1125,8 +1123,8 @@ class RowVector[ColT, ValT](
   }
 
   // Value operations
-  def mapValues[ValU](fn: (ValT) => ValU)(
-      implicit mon: Monoid[ValU]): RowVector[ColT, ValU] = {
+  def mapValues[ValU](fn: (ValT) => ValU)(implicit
+      mon: Monoid[ValU]): RowVector[ColT, ValU] = {
     val newPipe = pipe.flatMap(valS -> valS) {
       imp: Tuple1[ValT] => // Ensure an arity of 1
         //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
@@ -1138,8 +1136,8 @@ class RowVector[ColT, ValT](
   /**
     * Do a right-propogation of a row, transpose of Matrix.propagate
     */
-  def propagate[MatColT](mat: Matrix[ColT, MatColT, Boolean])(
-      implicit monT: Monoid[ValT]): RowVector[MatColT, ValT] = {
+  def propagate[MatColT](mat: Matrix[ColT, MatColT, Boolean])(implicit
+      monT: Monoid[ValT]): RowVector[MatColT, ValT] = {
     mat.transpose.propagate(this.transpose).transpose
   }
 
@@ -1190,8 +1188,8 @@ class RowVector[ColT, ValT](
     }
   }
 
-  protected def topWithTiny(k: Int)(
-      implicit ord: Ordering[ValT]): RowVector[ColT, ValT] = {
+  protected def topWithTiny(k: Int)(implicit
+      ord: Ordering[ValT]): RowVector[ColT, ValT] = {
     val topSym = Symbol(colS.name + "_topK")
     val newPipe = pipe
       .groupAll {
@@ -1243,8 +1241,8 @@ class ColVector[RowT, ValT](
   def pipe = inPipe.project(rowS, valS)
   def fields = (rowS, valS)
 
-  def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[ColVector[RowT, ValT], That, Res]): Res = {
+  def *[That, Res](that: That)(implicit
+      prod: MatrixProduct[ColVector[RowT, ValT], That, Res]): Res = {
     prod(this, that)
   }
 
@@ -1254,8 +1252,8 @@ class ColVector[RowT, ValT](
   def -(that: ColVector[RowT, ValT])(implicit group: Group[ValT]) =
     (this.toMatrix(true) - that.toMatrix(true)).getCol(true)
 
-  def hProd(that: ColVector[RowT, ValT])(
-      implicit ring: Ring[ValT]): ColVector[RowT, ValT] =
+  def hProd(that: ColVector[RowT, ValT])(implicit
+      ring: Ring[ValT]): ColVector[RowT, ValT] =
     (this.toMatrix(true) hProd that.toMatrix(true)).getCol(true)
 
   def transpose: RowVector[RowT, ValT] = {
@@ -1271,13 +1269,13 @@ class ColVector[RowT, ValT](
     * like zipWithIndex.map but ONLY CHANGES THE VALUE not the index.
     * Note you will only see non-zero elements on the vector. This does not enumerate the zeros
     */
-  def mapWithIndex[ValNew](fn: (ValT, RowT) => ValNew)(
-      implicit mon: Monoid[ValNew]): ColVector[RowT, ValNew] =
+  def mapWithIndex[ValNew](fn: (ValT, RowT) => ValNew)(implicit
+      mon: Monoid[ValNew]): ColVector[RowT, ValNew] =
     transpose.mapWithIndex(fn).transpose
 
   // Value operations
-  def mapValues[ValU](fn: (ValT) => ValU)(
-      implicit mon: Monoid[ValU]): ColVector[RowT, ValU] = {
+  def mapValues[ValU](fn: (ValT) => ValU)(implicit
+      mon: Monoid[ValU]): ColVector[RowT, ValU] = {
     val newPipe = pipe.flatMap(valS -> valS) {
       imp: Tuple1[ValT] => // Ensure an arity of 1
         //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
@@ -1328,8 +1326,8 @@ class ColVector[RowT, ValT](
     }
   }
 
-  protected def topWithTiny(k: Int)(
-      implicit ord: Ordering[ValT]): ColVector[RowT, ValT] = {
+  protected def topWithTiny(k: Int)(implicit
+      ord: Ordering[ValT]): ColVector[RowT, ValT] = {
     val topSym = Symbol(rowS.name + "_topK")
     val newPipe = pipe
       .groupAll {

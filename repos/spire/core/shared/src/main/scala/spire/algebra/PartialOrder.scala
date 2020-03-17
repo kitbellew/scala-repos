@@ -98,16 +98,16 @@ private[algebra] class ReversedPartialOrder[@sp A](
 object PartialOrder {
   @inline final def apply[A](implicit po: PartialOrder[A]): PartialOrder[A] = po
 
-  def by[@sp A, @sp B](f: A => B)(
-      implicit po: PartialOrder[B]): PartialOrder[A] = po.on(f)
+  def by[@sp A, @sp B](f: A => B)(implicit
+      po: PartialOrder[B]): PartialOrder[A] = po.on(f)
 
   def from[@sp A](f: (A, A) => Double): PartialOrder[A] =
     new PartialOrder[A] {
       def partialCompare(x: A, y: A): Double = f(x, y)
     }
 
-  implicit def partialOrdering[A](
-      implicit po: PartialOrder[A]): PartialOrdering[A] =
+  implicit def partialOrdering[A](implicit
+      po: PartialOrder[A]): PartialOrdering[A] =
     new PartialOrdering[A] {
       def tryCompare(x: A, y: A): Option[Int] = po.tryCompare(x, y)
       def lteq(x: A, y: A): Boolean = po.lteqv(x, y)

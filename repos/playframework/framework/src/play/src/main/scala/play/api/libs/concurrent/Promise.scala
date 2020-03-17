@@ -45,8 +45,8 @@ object Promise {
   def timeout[A](
       message: => A,
       duration: Long,
-      unit: TimeUnit = TimeUnit.MILLISECONDS)(
-      implicit ec: ExecutionContext): Future[A] = {
+      unit: TimeUnit = TimeUnit.MILLISECONDS)(implicit
+      ec: ExecutionContext): Future[A] = {
     val p = SPromise[A]()
     val app = play.api.Play.privateMaybeApplication.get
     app.actorSystem.scheduler.scheduleOnce(FiniteDuration(duration, unit)) {

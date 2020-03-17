@@ -31,8 +31,8 @@ trait RuleDSLCombinators {
     *   Rule[I, O]        if r == Rule[I, O <: I] // so called "reduction", which leaves the value stack unchanged on a type level
     */
   @compileTimeOnly("Calls to `optional` must be inside `rule` macro")
-  def optional[I <: HList, O <: HList](r: Rule[I, O])(
-      implicit l: Lifter[Option, I, O]): Rule[l.In, l.OptionalOut] = `n/a`
+  def optional[I <: HList, O <: HList](r: Rule[I, O])(implicit
+      l: Lifter[Option, I, O]): Rule[l.In, l.OptionalOut] = `n/a`
 
   /**
     * Runs its inner rule until it fails, always succeeds.

@@ -5,8 +5,8 @@ package effect
 import scalaz.effect.MonadControlIO
 
 /** Wraps a value `self` and provides methods related to `MonadControlIO` */
-final class MonadControlIOOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: MonadControlIO[F])
+final class MonadControlIOOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: MonadControlIO[F])
     extends Ops[F[A]] {
   ////
 
@@ -14,8 +14,8 @@ final class MonadControlIOOps[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToMonadControlIOOps0 {
-  implicit def ToMonadControlIOOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[MonadControlIO, FA]) =
+  implicit def ToMonadControlIOOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[MonadControlIO, FA]) =
     new MonadControlIOOps[F0.M, F0.A](F0(v))(F0.TC)
 
 }
@@ -24,8 +24,8 @@ trait ToMonadControlIOOps
     extends ToMonadControlIOOps0
     with ToLiftControlIOOps
     with ToMonadOps {
-  implicit def ToMonadControlIOOps[F[_], A](v: F[A])(
-      implicit F0: MonadControlIO[F]) =
+  implicit def ToMonadControlIOOps[F[_], A](v: F[A])(implicit
+      F0: MonadControlIO[F]) =
     new MonadControlIOOps[F, A](v)
 
   ////

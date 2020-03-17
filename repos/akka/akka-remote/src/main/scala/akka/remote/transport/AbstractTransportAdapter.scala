@@ -82,8 +82,8 @@ trait SchemeAugmenter {
   * An adapter that wraps a transport and provides interception
   */
 abstract class AbstractTransportAdapter(
-    protected val wrappedTransport: Transport)(
-    implicit val ec: ExecutionContext)
+    protected val wrappedTransport: Transport)(implicit
+    val ec: ExecutionContext)
     extends Transport
     with SchemeAugmenter {
 

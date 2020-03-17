@@ -129,8 +129,8 @@ class VecDouble(values: Array[Double]) extends Vec[Double] { self =>
     }
   }
 
-  private[saddle] override def toDoubleArray(
-      implicit na: NUM[Double]): Array[Double] = toArray
+  private[saddle] override def toDoubleArray(implicit
+      na: NUM[Double]): Array[Double] = toArray
 
   private[saddle] override def toArray: Array[Double] = {
     // need to check if we're a view on an array

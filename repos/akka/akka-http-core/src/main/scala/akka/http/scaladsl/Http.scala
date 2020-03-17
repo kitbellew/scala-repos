@@ -137,8 +137,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       port: Int = DefaultPortForProtocol,
       connectionContext: ConnectionContext = defaultServerHttpContext,
       settings: ServerSettings = ServerSettings(system),
-      log: LoggingAdapter = system.log)(
-      implicit fm: Materializer): Future[ServerBinding] = {
+      log: LoggingAdapter = system.log)(implicit
+      fm: Materializer): Future[ServerBinding] = {
     def handleOneConnection(
         incomingConnection: IncomingConnection): Future[Unit] =
       try incomingConnection.flow
@@ -184,8 +184,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       port: Int = DefaultPortForProtocol,
       connectionContext: ConnectionContext = defaultServerHttpContext,
       settings: ServerSettings = ServerSettings(system),
-      log: LoggingAdapter = system.log)(
-      implicit fm: Materializer): Future[ServerBinding] =
+      log: LoggingAdapter = system.log)(implicit
+      fm: Materializer): Future[ServerBinding] =
     bindAndHandle(
       Flow[HttpRequest].map(handler),
       interface,
@@ -211,8 +211,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       connectionContext: ConnectionContext = defaultServerHttpContext,
       settings: ServerSettings = ServerSettings(system),
       parallelism: Int = 1,
-      log: LoggingAdapter = system.log)(
-      implicit fm: Materializer): Future[ServerBinding] =
+      log: LoggingAdapter = system.log)(implicit
+      fm: Materializer): Future[ServerBinding] =
     bindAndHandle(
       Flow[HttpRequest].mapAsync(parallelism)(handler),
       interface,
@@ -240,8 +240,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
   def serverLayer(
       settings: ServerSettings,
       remoteAddress: Option[InetSocketAddress] = None,
-      log: LoggingAdapter = system.log)(
-      implicit mat: Materializer): ServerLayer =
+      log: LoggingAdapter = system.log)(implicit
+      mat: Materializer): ServerLayer =
     HttpServerBluePrint(settings, remoteAddress, log)
 
   // ** CLIENT ** //
@@ -545,8 +545,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       request: HttpRequest,
       connectionContext: HttpsConnectionContext = defaultClientHttpsContext,
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
-      log: LoggingAdapter = system.log)(
-      implicit fm: Materializer): Future[HttpResponse] =
+      log: LoggingAdapter = system.log)(implicit
+      fm: Materializer): Future[HttpResponse] =
     try {
       val gatewayFuture =
         cachedGateway(request, settings, connectionContext, log)
@@ -619,8 +619,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       connectionContext: ConnectionContext = defaultClientHttpsContext,
       localAddress: Option[InetSocketAddress] = None,
       settings: ClientConnectionSettings = ClientConnectionSettings(system),
-      log: LoggingAdapter = system.log)(
-      implicit mat: Materializer): (Future[WebSocketUpgradeResponse], T) =
+      log: LoggingAdapter = system.log)(implicit
+      mat: Materializer): (Future[WebSocketUpgradeResponse], T) =
     webSocketClientFlow(request, connectionContext, localAddress, settings, log)
       .joinMat(clientFlow)(Keep.both)
       .run()
@@ -709,8 +709,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     }
 
   /** INTERNAL API */
-  private[http] def cachedGateway(setup: HostConnectionPoolSetup)(
-      implicit fm: Materializer): Future[PoolGateway] = {
+  private[http] def cachedGateway(setup: HostConnectionPoolSetup)(implicit
+      fm: Materializer): Future[PoolGateway] = {
     val gatewayPromise = Promise[PoolGateway]()
     hostPoolCache.putIfAbsent(setup, gatewayPromise.future) match {
       case null ⇒ // only one thread can get here at a time
@@ -865,15 +865,15 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
       * Handles the connection with the given flow, which is materialized exactly once
       * and the respective materialization result returned.
       */
-    def handleWith[Mat](handler: Flow[HttpRequest, HttpResponse, Mat])(
-        implicit fm: Materializer): Mat =
+    def handleWith[Mat](handler: Flow[HttpRequest, HttpResponse, Mat])(implicit
+        fm: Materializer): Mat =
       flow.joinMat(handler)(Keep.right).run()
 
     /**
       * Handles the connection with the given handler function.
       */
-    def handleWithSyncHandler(handler: HttpRequest ⇒ HttpResponse)(
-        implicit fm: Materializer): Unit =
+    def handleWithSyncHandler(handler: HttpRequest ⇒ HttpResponse)(implicit
+        fm: Materializer): Unit =
       handleWith(Flow[HttpRequest].map(handler))
 
     /**

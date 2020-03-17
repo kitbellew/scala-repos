@@ -2,8 +2,8 @@ import collection.mutable._
 import reflect._
 
 object Test extends App {
-  def runTest[T, U](col: T)(clone: T => U)(mod: T => Unit)(
-      implicit ct: ClassTag[T]): Unit = {
+  def runTest[T, U](col: T)(clone: T => U)(mod: T => Unit)(implicit
+      ct: ClassTag[T]): Unit = {
     val cloned = clone(col)
     assert(
       cloned == col,

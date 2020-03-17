@@ -33,8 +33,8 @@ object Group {
   @inline final def apply[A](implicit ev: Group[A]): Group[A] = ev
   @inline final def additive[A](implicit A: AdditiveGroup[A]): Group[A] =
     A.additive
-  @inline final def multiplicative[A](
-      implicit A: MultiplicativeGroup[A]): Group[A] = A.multiplicative
+  @inline final def multiplicative[A](implicit
+      A: MultiplicativeGroup[A]): Group[A] = A.multiplicative
 }
 
 /**
@@ -49,6 +49,6 @@ object AbGroup {
   @inline final def apply[A](implicit ev: AbGroup[A]): AbGroup[A] = ev
   @inline final def additive[A](implicit A: AdditiveAbGroup[A]): AbGroup[A] =
     A.additive
-  @inline final def multiplicative[A](
-      implicit A: MultiplicativeAbGroup[A]): AbGroup[A] = A.multiplicative
+  @inline final def multiplicative[A](implicit
+      A: MultiplicativeAbGroup[A]): AbGroup[A] = A.multiplicative
 }

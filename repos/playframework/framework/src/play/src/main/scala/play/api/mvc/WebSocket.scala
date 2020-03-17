@@ -235,8 +235,8 @@ object WebSocket {
     * Accepts a WebSocket using the given inbound/outbound channels.
     */
   @deprecated("Use accept with an Akka streams flow instead", "2.5.0")
-  def using[A](f: RequestHeader => (Iteratee[A, _], Enumerator[A]))(
-      implicit frameFormatter: MessageFlowTransformer[A, A]): WebSocket = {
+  def using[A](f: RequestHeader => (Iteratee[A, _], Enumerator[A]))(implicit
+      frameFormatter: MessageFlowTransformer[A, A]): WebSocket = {
     tryAccept[A](f.andThen(handler => Future.successful(Right(handler))))
   }
 
@@ -244,8 +244,8 @@ object WebSocket {
     * Creates a WebSocket that will adapt the incoming stream and send it back out.
     */
   @deprecated("Use accept with an Akka streams flow instead", "2.5.0")
-  def adapter[A](f: RequestHeader => Enumeratee[A, A])(
-      implicit transformer: MessageFlowTransformer[A, A]): WebSocket = {
+  def adapter[A](f: RequestHeader => Enumeratee[A, A])(implicit
+      transformer: MessageFlowTransformer[A, A]): WebSocket = {
     using(f.andThen { enumeratee =>
       val (iteratee, enumerator) = Concurrent.joined[A]
       (enumeratee &> iteratee, enumerator)
@@ -259,8 +259,8 @@ object WebSocket {
   @deprecated("Use acceptOrResult with an Akka streams flow instead", "2.5.0")
   def tryAccept[A](
       f: RequestHeader => Future[
-        Either[Result, (Iteratee[A, _], Enumerator[A])]])(
-      implicit transformer: MessageFlowTransformer[A, A]): WebSocket = {
+        Either[Result, (Iteratee[A, _], Enumerator[A])]])(implicit
+      transformer: MessageFlowTransformer[A, A]): WebSocket = {
     acceptOrResult[A, A](f.andThen(_.map(_.right.map {
       case (iteratee, enumerator) =>
         // Play 2.4 and earlier only closed the WebSocket if the enumerator specifically fed EOF. So, you could
@@ -284,8 +284,8 @@ object WebSocket {
   /**
     * Accepts a WebSocket using the given flow.
     */
-  def accept[In, Out](f: RequestHeader => Flow[In, Out, _])(
-      implicit transformer: MessageFlowTransformer[In, Out]): WebSocket = {
+  def accept[In, Out](f: RequestHeader => Flow[In, Out, _])(implicit
+      transformer: MessageFlowTransformer[In, Out]): WebSocket = {
     acceptOrResult(f.andThen(flow => Future.successful(Right(flow))))
   }
 
@@ -294,8 +294,8 @@ object WebSocket {
     * return a result to reject the Websocket.
     */
   def acceptOrResult[In, Out](
-      f: RequestHeader => Future[Either[Result, Flow[In, Out, _]]])(
-      implicit transformer: MessageFlowTransformer[In, Out]): WebSocket = {
+      f: RequestHeader => Future[Either[Result, Flow[In, Out, _]]])(implicit
+      transformer: MessageFlowTransformer[In, Out]): WebSocket = {
     WebSocket { request => f(request).map(_.right.map(transformer.transform)) }
   }
 
@@ -379,8 +379,8 @@ object WebSocket {
 
       def wrap[A](i: Iteratee[E, A]): Iteratee[E, A] =
         new Iteratee[E, A] {
-          def fold[B](folder: (Step[E, A]) => Future[B])(
-              implicit ec: ExecutionContext) =
+          def fold[B](folder: (Step[E, A]) => Future[B])(implicit
+              ec: ExecutionContext) =
             i.fold {
               case Step.Cont(k) =>
                 folder(Step.Cont {
