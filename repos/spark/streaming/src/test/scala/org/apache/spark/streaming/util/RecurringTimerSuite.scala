@@ -71,7 +71,8 @@ class RecurringTimerSuite extends SparkFunSuite with PrivateMethodTester {
     eventually(timeout(10.seconds), interval(10.millis)) {
       assert(results.asScala.toSeq === Seq(0L))
     }
-    @volatile var lastTime = -1L
+    @volatile
+    var lastTime = -1L
     // Now RecurringTimer is waiting for the next interval
     val thread =
       new Thread {

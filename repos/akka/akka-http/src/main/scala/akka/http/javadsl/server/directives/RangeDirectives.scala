@@ -25,8 +25,7 @@ abstract class RangeDirectives extends PathDirectives {
     *
     * For more information, see: https://tools.ietf.org/html/rfc7233
     */
-  @varargs def withRangeSupport(
-      innerRoute: Route,
-      moreInnerRoutes: Route*): Route =
+  @varargs
+  def withRangeSupport(innerRoute: Route, moreInnerRoutes: Route*): Route =
     RangeSupport()(innerRoute, moreInnerRoutes.toList)
 }

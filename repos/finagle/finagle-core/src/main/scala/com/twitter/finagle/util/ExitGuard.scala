@@ -5,7 +5,8 @@ package com.twitter.finagle.util
   * nondaemon thread whenever there is at least one guarder.
   */
 object ExitGuard {
-  @volatile private[util] var guards: Option[(Thread, List[Guard])] = None
+  @volatile
+  private[util] var guards: Option[(Thread, List[Guard])] = None
 
   private[finagle] case class Guard(reason: String) {
     def unguard() {

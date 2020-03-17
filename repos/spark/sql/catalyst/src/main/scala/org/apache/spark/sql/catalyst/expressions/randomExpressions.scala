@@ -43,7 +43,8 @@ abstract class RDG extends LeafExpression with Nondeterministic {
     * Record ID within each partition. By being transient, the Random Number Generator is
     * reset every time we serialize and deserialize and initialize it.
     */
-  @transient protected var rng: XORShiftRandom = _
+  @transient
+  protected var rng: XORShiftRandom = _
 
   override protected def initInternal(): Unit = {
     rng = new XORShiftRandom(seed + TaskContext.getPartitionId)

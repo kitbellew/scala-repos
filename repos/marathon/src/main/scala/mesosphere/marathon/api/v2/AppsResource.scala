@@ -59,7 +59,8 @@ class AppsResource @Inject() (
       @QueryParam("id") id: String,
       @QueryParam("label") label: String,
       @QueryParam("embed") embed: java.util.Set[String],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val selector = selectAuthorized(
         search(Option(cmd), Option(id), Option(label)))
@@ -74,8 +75,10 @@ class AppsResource @Inject() (
   @Timed
   def create(
       body: Array[Byte],
-      @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @DefaultValue("false")
+      @QueryParam("force") force: Boolean,
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[AppDefinition].withCanonizedIds()) {
         appDef =>
@@ -115,7 +118,8 @@ class AppsResource @Inject() (
   def show(
       @PathParam("id") id: String,
       @QueryParam("embed") embed: java.util.Set[String],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val resolvedEmbed =
         InfoEmbedResolver.resolveApp(embed.asScala.toSet) ++ Set(
@@ -160,8 +164,10 @@ class AppsResource @Inject() (
   def replace(
       @PathParam("id") id: String,
       body: Array[Byte],
-      @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @DefaultValue("false")
+      @QueryParam("force") force: Boolean,
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val appId = id.toRootPath
       val now = clock.now()
@@ -187,9 +193,11 @@ class AppsResource @Inject() (
   @PUT
   @Timed
   def replaceMultiple(
-      @DefaultValue("false") @QueryParam("force") force: Boolean,
+      @DefaultValue("false")
+      @QueryParam("force") force: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[Seq[AppUpdate]].map(_.withCanonizedIds())) {
         updates =>
@@ -217,9 +225,11 @@ class AppsResource @Inject() (
   @Path("""{id:.+}""")
   @Timed
   def delete(
-      @DefaultValue("true") @QueryParam("force") force: Boolean,
+      @DefaultValue("true")
+      @QueryParam("force") force: Boolean,
       @PathParam("id") id: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val appId = id.toRootPath
 
@@ -252,8 +262,10 @@ class AppsResource @Inject() (
   @Path("{id:.+}/restart")
   def restart(
       @PathParam("id") id: String,
-      @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @DefaultValue("false")
+      @QueryParam("force") force: Boolean,
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val appId = id.toRootPath
 

@@ -15,7 +15,8 @@ import scala.tools.nsc.reporters.Reporter
   *  @author  Martin Odersky
   *  @version 1.0
   */
-trait Contexts { self: Analyzer =>
+trait Contexts {
+  self: Analyzer =>
   import global._
   import definitions.{
     JavaLangPackage,
@@ -227,7 +228,8 @@ trait Contexts { self: Analyzer =>
     /** The next outer context whose tree is a template or package definition */
     var enclClass: Context = _
 
-    @inline private def savingEnclClass[A](c: Context)(a: => A): A = {
+    @inline
+    private def savingEnclClass[A](c: Context)(a: => A): A = {
       val saved = enclClass
       enclClass = c
       try a
@@ -452,7 +454,8 @@ trait Contexts { self: Analyzer =>
     // Temporary mode adjustment
     //
 
-    @inline final def withMode[T](
+    @inline
+    final def withMode[T](
         enabled: ContextMode = NOmode,
         disabled: ContextMode = NOmode)(op: => T): T = {
       val saved = contextMode
@@ -461,46 +464,59 @@ trait Contexts { self: Analyzer =>
       finally contextMode = saved
     }
 
-    @inline final def withImplicitsEnabled[T](op: => T): T =
+    @inline
+    final def withImplicitsEnabled[T](op: => T): T =
       withMode(enabled = ImplicitsEnabled)(op)
-    @inline final def withImplicitsDisabled[T](op: => T): T =
+    @inline
+    final def withImplicitsDisabled[T](op: => T): T =
       withMode(disabled = ImplicitsEnabled | EnrichmentEnabled)(op)
-    @inline final def withImplicitsDisabledAllowEnrichment[T](op: => T): T =
+    @inline
+    final def withImplicitsDisabledAllowEnrichment[T](op: => T): T =
       withMode(enabled = EnrichmentEnabled, disabled = ImplicitsEnabled)(op)
-    @inline final def withMacrosEnabled[T](op: => T): T =
+    @inline
+    final def withMacrosEnabled[T](op: => T): T =
       withMode(enabled = MacrosEnabled)(op)
-    @inline final def withMacrosDisabled[T](op: => T): T =
+    @inline
+    final def withMacrosDisabled[T](op: => T): T =
       withMode(disabled = MacrosEnabled)(op)
-    @inline final def withinStarPatterns[T](op: => T): T =
+    @inline
+    final def withinStarPatterns[T](op: => T): T =
       withMode(enabled = StarPatterns)(op)
-    @inline final def withinSuperInit[T](op: => T): T =
+    @inline
+    final def withinSuperInit[T](op: => T): T =
       withMode(enabled = SuperInit)(op)
-    @inline final def withinSecondTry[T](op: => T): T =
+    @inline
+    final def withinSecondTry[T](op: => T): T =
       withMode(enabled = SecondTry)(op)
-    @inline final def withinPatAlternative[T](op: => T): T =
+    @inline
+    final def withinPatAlternative[T](op: => T): T =
       withMode(enabled = PatternAlternative)(op)
 
     /** TypeConstructorAllowed is enabled when we are typing a higher-kinded type.
       *  adapt should then check kind-arity based on the prototypical type's kind
       *  arity. Type arguments should not be inferred.
       */
-    @inline final def withinTypeConstructorAllowed[T](op: => T): T =
+    @inline
+    final def withinTypeConstructorAllowed[T](op: => T): T =
       withMode(enabled = TypeConstructorAllowed)(op)
 
     /* TODO - consolidate returnsSeen (which seems only to be used by checkDead)
      * and ReturnExpr.
      */
-    @inline final def withinReturnExpr[T](op: => T): T = {
+    @inline
+    final def withinReturnExpr[T](op: => T): T = {
       enclMethod.returnsSeen = true
       withMode(enabled = ReturnExpr)(op)
     }
 
     // See comment on FormerNonStickyModes.
-    @inline final def withOnlyStickyModes[T](op: => T): T =
+    @inline
+    final def withOnlyStickyModes[T](op: => T): T =
       withMode(disabled = FormerNonStickyModes)(op)
 
     // inliner note: this has to be a simple method for inlining to work -- moved the `&& !reporter.hasErrors` out
-    @inline final def inSilentMode(expr: => Boolean): Boolean = {
+    @inline
+    final def inSilentMode(expr: => Boolean): Boolean = {
       val savedContextMode = contextMode
       val savedReporter = reporter
 
@@ -847,7 +863,8 @@ trait Contexts { self: Analyzer =>
         if (sym.isJavaDefined) {
           // is `o` or one of its transitive owners equal to `ab`?
           // stops at first package, since further owners can only be surrounding packages
-          @tailrec def abEnclosesStopAtPkg(o: Symbol): Boolean =
+          @tailrec
+          def abEnclosesStopAtPkg(o: Symbol): Boolean =
             (o eq ab) || (
               !o.isPackageClass && (o ne NoSymbol) && abEnclosesStopAtPkg(
                 o.owner)
@@ -1514,7 +1531,8 @@ trait Contexts { self: Analyzer =>
       else
         handleSuppressedAmbiguous(err)
 
-    @inline final def withFreshErrorBuffer[T](expr: => T): T = {
+    @inline
+    final def withFreshErrorBuffer[T](expr: => T): T = {
       val previousBuffer = _errorBuffer
       _errorBuffer = newBuffer
       val res = expr // expr will read _errorBuffer
@@ -1522,8 +1540,8 @@ trait Contexts { self: Analyzer =>
       res
     }
 
-    @inline final def propagatingErrorsTo[T](target: ContextReporter)(
-        expr: => T): T = {
+    @inline
+    final def propagatingErrorsTo[T](target: ContextReporter)(expr: => T): T = {
       val res =
         expr // TODO: make sure we're okay skipping the try/finally overhead
       if ((this ne target) && hasErrors) { // `this eq target` in e.g., test/files/neg/divergent-implicit.scala

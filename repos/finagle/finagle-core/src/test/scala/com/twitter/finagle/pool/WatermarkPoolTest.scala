@@ -360,7 +360,8 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
       new WatermarkPoolLowOneHighFive {
         val slowService =
           new Promise[Service[Int, Int]] {
-            @volatile var interrupted: Option[Throwable] = None
+            @volatile
+            var interrupted: Option[Throwable] = None
             setInterruptHandler {
               case exc => interrupted = Some(exc)
             }

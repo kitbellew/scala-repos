@@ -21,7 +21,8 @@ import spire.syntax.nroot._
 sealed abstract class Rational
     extends ScalaNumber
     with ScalaNumericConversions
-    with Ordered[Rational] { lhs =>
+    with Ordered[Rational] {
+  lhs =>
 
   def numerator: SafeLong
   def denominator: SafeLong

@@ -7,7 +7,8 @@ import slick.ast.{FieldSymbol, BaseTypedType}
   * Implicit JdbcTypes for the standard types are provided by the profile. */
 trait JdbcType[
     @specialized(Byte, Short, Int, Long, Char, Float, Double, Boolean) T]
-    extends BaseTypedType[T] { self =>
+    extends BaseTypedType[T] {
+  self =>
 
   /** The constant from java.sql.Types that is used for setting parameters of the type to NULL. */
   def sqlType: Int

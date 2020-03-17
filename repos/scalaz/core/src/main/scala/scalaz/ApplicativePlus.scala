@@ -5,7 +5,8 @@ package scalaz
   * [[scalaz.Applicative]] combined with [[scalaz.PlusEmpty]].
   */
 ////
-trait ApplicativePlus[F[_]] extends Applicative[F] with PlusEmpty[F] { self =>
+trait ApplicativePlus[F[_]] extends Applicative[F] with PlusEmpty[F] {
+  self =>
   ////
 
   /**The composition of ApplicativePlus `F` and Applicative `G`, `[x]F[G[x]]`, is a ApplicativePlus */
@@ -48,8 +49,8 @@ trait ApplicativePlus[F[_]] extends Applicative[F] with PlusEmpty[F] { self =>
 }
 
 object ApplicativePlus {
-  @inline def apply[F[_]](implicit F: ApplicativePlus[F]): ApplicativePlus[F] =
-    F
+  @inline
+  def apply[F[_]](implicit F: ApplicativePlus[F]): ApplicativePlus[F] = F
 
   ////
 

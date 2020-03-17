@@ -10,7 +10,8 @@ import org.eclipse.jetty.util.log
 
 private[phantomjs] final class JettyWebsocketManager(
     wsListener: WebsocketListener)
-    extends WebsocketManager { thisMgr =>
+    extends WebsocketManager {
+  thisMgr =>
 
   private[this] var webSocketConn: WebSocket.Connection = null
   private[this] var closed = false

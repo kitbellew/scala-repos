@@ -30,7 +30,9 @@ object BijectedSourceSink {
 }
 
 class BijectedSourceSink[T, U](parent: BijectedSourceSink.SourceSink[T])(
-    implicit @transient transformer: ImplicitBijection[T, U])
+    implicit
+    @transient
+    transformer: ImplicitBijection[T, U])
     extends TypedSource[U]
     with TypedSink[U] {
 

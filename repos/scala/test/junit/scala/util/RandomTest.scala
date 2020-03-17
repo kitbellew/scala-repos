@@ -4,7 +4,8 @@ import org.junit.{Assert, Test}
 
 class RandomTest {
   // Test for SI-9059
-  @Test def testAlphanumeric: Unit = {
+  @Test
+  def testAlphanumeric: Unit = {
     def isAlphaNum(c: Char) =
       (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
 

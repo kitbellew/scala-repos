@@ -30,7 +30,8 @@ object LEventStore {
 
   private val defaultTimeout = Duration(60, "seconds")
 
-  @transient lazy private val eventsDb = Storage.getLEvents()
+  @transient
+  lazy private val eventsDb = Storage.getLEvents()
 
   /** Reads events of the specified entity. May use this in Algorithm's predict()
     * or Serving logic to have fast event store access.

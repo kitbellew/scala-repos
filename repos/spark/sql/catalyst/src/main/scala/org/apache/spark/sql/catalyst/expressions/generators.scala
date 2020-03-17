@@ -75,8 +75,10 @@ case class UserDefinedGenerator(
     extends Generator
     with CodegenFallback {
 
-  @transient private[this] var inputRow: InterpretedProjection = _
-  @transient private[this] var convertToScala: (InternalRow) => Row = _
+  @transient
+  private[this] var inputRow: InterpretedProjection = _
+  @transient
+  private[this] var convertToScala: (InternalRow) => Row = _
 
   private def initializeConverters(): Unit = {
     inputRow = new InterpretedProjection(children)

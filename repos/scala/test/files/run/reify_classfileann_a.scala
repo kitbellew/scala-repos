@@ -10,7 +10,8 @@ object Test extends App {
   // test 1: reify
   val tree =
     reify {
-      @ann(bar = "1", quux = Array("2", "3"), baz = new ann(bar = "4")) class C
+      @ann(bar = "1", quux = Array("2", "3"), baz = new ann(bar = "4"))
+      class C
     }.tree
   println(tree.toString)
 

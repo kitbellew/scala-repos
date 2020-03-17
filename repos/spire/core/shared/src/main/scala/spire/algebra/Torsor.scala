@@ -29,7 +29,8 @@ trait Torsor[V, @sp(Int, Long, Float, Double) R] extends Any with Action[V, R] {
 
 trait AdditiveTorsor[V, @sp(Int, Long, Float, Double) R]
     extends Any
-    with AdditiveAction[V, R] { self =>
+    with AdditiveAction[V, R] {
+  self =>
   implicit def scalar: AdditiveAbGroup[R]
 
   def pminus(v: V, w: V): R
@@ -45,7 +46,8 @@ trait AdditiveTorsor[V, @sp(Int, Long, Float, Double) R]
 
 trait MultiplicativeTorsor[V, @sp(Int, Long, Float, Double) R]
     extends Any
-    with MultiplicativeAction[V, R] { self =>
+    with MultiplicativeAction[V, R] {
+  self =>
   implicit def scalar: MultiplicativeAbGroup[R]
 
   def pdiv(v: V, w: V): R
@@ -60,16 +62,19 @@ trait MultiplicativeTorsor[V, @sp(Int, Long, Float, Double) R]
 }
 
 object Torsor {
-  @inline final def apply[V, @sp(Int, Long, Float, Double) R](implicit
+  @inline
+  final def apply[V, @sp(Int, Long, Float, Double) R](implicit
       V: Torsor[V, R]): Torsor[V, R] = V
 }
 
 object AdditiveTorsor {
-  @inline final def apply[V, @sp(Int, Long, Float, Double) R](implicit
+  @inline
+  final def apply[V, @sp(Int, Long, Float, Double) R](implicit
       V: AdditiveTorsor[V, R]): AdditiveTorsor[V, R] = V
 }
 
 object MultiplicativeTorsor {
-  @inline final def apply[V, @sp(Int, Long, Float, Double) R](implicit
+  @inline
+  final def apply[V, @sp(Int, Long, Float, Double) R](implicit
       V: MultiplicativeTorsor[V, R]): MultiplicativeTorsor[V, R] = V
 }

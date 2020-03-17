@@ -14,7 +14,8 @@ private[sbt] sealed abstract class ExceptionCategory {
 }
 private[sbt] object ExceptionCategory {
 
-  @tailrec def apply(t: Throwable): ExceptionCategory =
+  @tailrec
+  def apply(t: Throwable): ExceptionCategory =
     t match {
       case _: AlreadyHandledException | _: UnprintableException =>
         AlreadyHandled

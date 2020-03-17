@@ -255,7 +255,8 @@ object Plugins extends PluginsFunctions {
       ns: List[AutoPlugin],
       log: Logger): List[AutoPlugin] = {
     log.debug(s"sorting: ns: ${ns.toString}")
-    @tailrec def doSort(
+    @tailrec
+    def doSort(
         found0: List[AutoPlugin],
         notFound0: List[AutoPlugin],
         limit0: Int): List[AutoPlugin] = {

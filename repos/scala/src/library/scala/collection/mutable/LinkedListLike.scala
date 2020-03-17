@@ -59,7 +59,8 @@ import scala.annotation.tailrec
   "Low-level linked lists are deprecated due to idiosyncrasies in interface and incomplete features.",
   "2.11.0")
 trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
-    extends SeqLike[A, This] { self =>
+    extends SeqLike[A, This] {
+  self =>
 
   var elem: A = _
   var next: This = _
@@ -71,7 +72,8 @@ trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
     */
   override def length: Int = length0(repr, 0)
 
-  @tailrec private def length0(elem: This, acc: Int): Int =
+  @tailrec
+  private def length0(elem: This, acc: Int): Int =
     if (elem.isEmpty)
       acc
     else

@@ -247,7 +247,8 @@ object TestSubscriber {
 
     private val probe = TestProbe()
 
-    @volatile private var _subscription: Subscription = _
+    @volatile
+    private var _subscription: Subscription = _
 
     private val self = this.asInstanceOf[Self]
 
@@ -610,7 +611,8 @@ object TestSubscriber {
       val deadline = Deadline.now + atMost
       val b = immutable.Seq.newBuilder[I]
 
-      @tailrec def drain(): immutable.Seq[I] =
+      @tailrec
+      def drain(): immutable.Seq[I] =
         self.expectEvent(deadline.timeLeft) match {
           case OnError(ex) ⇒
             throw new AssertionError(

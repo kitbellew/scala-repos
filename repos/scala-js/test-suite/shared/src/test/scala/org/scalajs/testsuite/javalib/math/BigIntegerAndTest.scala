@@ -14,7 +14,8 @@ import org.junit.Assert._
 
 class BigIntegerAndTest {
 
-  @Test def testNegNegFirstLonger(): Unit = {
+  @Test
+  def testNegNegFirstLonger(): Unit = {
     val aBytes = Array[Byte](
       -128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117, 23, 87, -25,
       -75)
@@ -36,7 +37,8 @@ class BigIntegerAndTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testNegNegFirstShorter(): Unit = {
+  @Test
+  def testNegNegFirstShorter(): Unit = {
     val aBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val bBytes = Array[Byte](
@@ -58,7 +60,8 @@ class BigIntegerAndTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testNegNegSameLength(): Unit = {
+  @Test
+  def testNegNegSameLength(): Unit = {
     val aBytes = Array[Byte](
       -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
     val bBytes = Array[Byte](
@@ -78,7 +81,8 @@ class BigIntegerAndTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testNegPos(): Unit = {
+  @Test
+  def testNegPos(): Unit = {
     val aBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val bBytes = Array[Byte](0)
@@ -96,7 +100,8 @@ class BigIntegerAndTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testNegPosFirstLonger(): Unit = {
+  @Test
+  def testNegPosFirstLonger(): Unit = {
     val aBytes = Array[Byte](
       -128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117, 23, 87, -25,
       -75)
@@ -116,7 +121,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testNegPosFirstShorter(): Unit = {
+  @Test
+  def testNegPosFirstShorter(): Unit = {
     val aBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val bBytes = Array[Byte](
@@ -138,7 +144,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testNegPosSameLength(): Unit = {
+  @Test
+  def testNegPosSameLength(): Unit = {
     val aBytes = Array[Byte](
       -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
     val bBytes = Array[Byte](
@@ -158,7 +165,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testOneOne(): Unit = {
+  @Test
+  def testOneOne(): Unit = {
     val aNumber = BigInteger.ONE
     val bNumber = BigInteger.ONE
     val result = aNumber.and(bNumber)
@@ -166,7 +174,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testPosNegFirstLonger(): Unit = {
+  @Test
+  def testPosNegFirstLonger(): Unit = {
     val aBytes = Array[Byte](
       -128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117, 23, 87, -25,
       -75)
@@ -188,7 +197,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testPosNegFirstShorter(): Unit = {
+  @Test
+  def testPosNegFirstShorter(): Unit = {
     val aBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val bBytes = Array[Byte](
@@ -208,7 +218,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testPosNegSameLength(): Unit = {
+  @Test
+  def testPosNegSameLength(): Unit = {
     val aBytes = Array[Byte](
       -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
     val bBytes = Array[Byte](
@@ -227,7 +238,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testPosPosFirstLonger(): Unit = {
+  @Test
+  def testPosPosFirstLonger(): Unit = {
     val aBytes = Array[Byte](
       -128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117, 23, 87, -25,
       -75)
@@ -248,7 +260,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testPosPosFirstShorter(): Unit = {
+  @Test
+  def testPosPosFirstShorter(): Unit = {
     val aBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val bBytes = Array[Byte](
@@ -269,7 +282,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testPosPosSameLength(): Unit = {
+  @Test
+  def testPosPosSameLength(): Unit = {
     val aBytes = Array[Byte](
       -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
     val bBytes = Array[Byte](
@@ -289,7 +303,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testPosZero(): Unit = {
+  @Test
+  def testPosZero(): Unit = {
     val aBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val bBytes = Array[Byte](0)
@@ -307,7 +322,8 @@ class BigIntegerAndTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testSpecialCase1(): Unit = {
+  @Test
+  def testSpecialCase1(): Unit = {
     val aBytes = Array[Byte](-1, -1, -1, -1)
     val bBytes = Array[Byte](5, -4, -3, -2)
     val aSign = -1
@@ -324,7 +340,8 @@ class BigIntegerAndTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testSpecialCase2(): Unit = {
+  @Test
+  def testSpecialCase2(): Unit = {
     val aBytes = Array[Byte](-51)
     val bBytes = Array[Byte](-52, -51, -50, -49, -48)
     val aSign = -1
@@ -341,7 +358,8 @@ class BigIntegerAndTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testZeroNeg(): Unit = {
+  @Test
+  def testZeroNeg(): Unit = {
     val aBytes = Array[Byte](0)
     val bBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
@@ -359,7 +377,8 @@ class BigIntegerAndTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testZeroOne(): Unit = {
+  @Test
+  def testZeroOne(): Unit = {
     val aNumber = BigInteger.ZERO
     val bNumber = BigInteger.ONE
     val result = aNumber.and(bNumber)
@@ -367,7 +386,8 @@ class BigIntegerAndTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testZeroPos(): Unit = {
+  @Test
+  def testZeroPos(): Unit = {
     val aBytes = Array[Byte](0)
     val bBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
@@ -385,7 +405,8 @@ class BigIntegerAndTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testZeroZero(): Unit = {
+  @Test
+  def testZeroZero(): Unit = {
     val aBytes = Array[Byte](0)
     val bBytes = Array[Byte](0)
     val aSign = 0

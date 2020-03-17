@@ -85,7 +85,8 @@ object ProdServerStartSpec extends Specification {
     def applicationProvider = context.appProvider
     def mode = config.mode
     def mainAddress = ???
-    @volatile var stopCallCount = 0
+    @volatile
+    var stopCallCount = 0
     override def stop() = {
       stopCallCount += 1
       super.stop()

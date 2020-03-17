@@ -83,7 +83,8 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     }
   }
 
-  @Test def min_on_comparables(): Unit = {
+  @Test
+  def min_on_comparables(): Unit = {
     def test[T <: AnyRef with Comparable[T]: ClassTag](toElem: Int => T): Unit =
       testMinMax1(factory, toElem, true)
 
@@ -92,7 +93,8 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     test[jl.Double](_.toDouble)
   }
 
-  @Test def min_with_comparator(): Unit = {
+  @Test
+  def min_with_comparator(): Unit = {
     def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit = {
       testMinMax2(
         factory,
@@ -108,7 +110,8 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     test[jl.Double](_.toDouble, (x: jl.Double, y: jl.Double) => x.compareTo(y))
   }
 
-  @Test def max_on_comparables(): Unit = {
+  @Test
+  def max_on_comparables(): Unit = {
     def test[T <: AnyRef with Comparable[T]: ClassTag](toElem: Int => T): Unit =
       testMinMax1(factory, toElem, false)
 
@@ -117,7 +120,8 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     test[jl.Double](_.toDouble)
   }
 
-  @Test def max_with_comparator(): Unit = {
+  @Test
+  def max_with_comparator(): Unit = {
     def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit = {
       testMinMax2(
         factory,
@@ -133,7 +137,8 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     test[jl.Double](_.toDouble, (x: jl.Double, y: jl.Double) => x.compareTo(y))
   }
 
-  @Test def frequency(): Unit = {
+  @Test
+  def frequency(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val coll = factory.empty[E]
 
@@ -159,7 +164,8 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     test[String](_.toString)
   }
 
-  @Test def addAll(): Unit = {
+  @Test
+  def addAll(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val coll = factory.empty[E]
       assertFalse(ju.Collections.addAll(coll))
@@ -174,7 +180,8 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     test[jl.Double](_.toDouble)
   }
 
-  @Test def unmodifiableCollection(): Unit = {
+  @Test
+  def unmodifiableCollection(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val coll = factory.empty[E]
       testCollectionUnmodifiability(

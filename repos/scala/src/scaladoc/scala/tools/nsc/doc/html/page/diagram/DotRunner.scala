@@ -78,7 +78,8 @@ class DotRunner(settings: doc.Settings) {
 
 class DotProcess(settings: doc.Settings) {
 
-  @volatile var error: Boolean = false // signal an error
+  @volatile
+  var error: Boolean = false // signal an error
   val inputString = new SyncVar[String] // used for the dot process input
   val outputString = new SyncVar[String] // used for the dot process output
   val errorBuffer: StringBuffer =

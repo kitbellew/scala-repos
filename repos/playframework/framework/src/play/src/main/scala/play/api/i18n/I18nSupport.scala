@@ -64,7 +64,8 @@ trait I18nSupport extends I18NSupportLowPriorityImplicits {
 
 }
 
-trait I18NSupportLowPriorityImplicits { this: I18nSupport =>
+trait I18NSupportLowPriorityImplicits {
+  this: I18nSupport =>
 
   /**
     * @return A [[Messages]] value that uses the [[Lang]] found in the implicit scope

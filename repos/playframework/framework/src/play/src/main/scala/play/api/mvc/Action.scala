@@ -38,7 +38,8 @@ trait RequestTaggingHandler extends Handler {
   */
 trait EssentialAction
     extends (RequestHeader => Accumulator[ByteString, Result])
-    with Handler { self =>
+    with Handler {
+  self =>
 
   /**
     * Returns itself, for better support in the routes file.

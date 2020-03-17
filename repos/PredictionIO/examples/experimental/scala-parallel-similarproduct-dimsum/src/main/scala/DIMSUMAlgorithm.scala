@@ -28,7 +28,8 @@ class DIMSUMModel(
     val items: Map[Int, Item])
     extends IPersistentModel[DIMSUMAlgorithmParams] {
 
-  @transient lazy val itemIntStringMap = itemStringIntMap.inverse
+  @transient
+  lazy val itemIntStringMap = itemStringIntMap.inverse
 
   def save(
       id: String,
@@ -73,7 +74,8 @@ object DIMSUMModel
 class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
     extends PAlgorithm[PreparedData, DIMSUMModel, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(data: PreparedData): DIMSUMModel = {
 

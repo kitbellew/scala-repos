@@ -130,13 +130,14 @@ private[graphx] class EdgePartition[
       activeSet)
   }
 
-  @inline private def srcIds(pos: Int): VertexId =
-    local2global(localSrcIds(pos))
+  @inline
+  private def srcIds(pos: Int): VertexId = local2global(localSrcIds(pos))
 
-  @inline private def dstIds(pos: Int): VertexId =
-    local2global(localDstIds(pos))
+  @inline
+  private def dstIds(pos: Int): VertexId = local2global(localDstIds(pos))
 
-  @inline private def attrs(pos: Int): ED = data(pos)
+  @inline
+  private def attrs(pos: Int): ED = data(pos)
 
   /** Look up vid in activeSet, throwing an exception if it is None. */
   def isActive(vid: VertexId): Boolean = {
@@ -640,7 +641,8 @@ private class AggregatingEdgeContext[VD, ED, A](
     send(_localDstId, msg)
   }
 
-  @inline private def send(localId: Int, msg: A) {
+  @inline
+  private def send(localId: Int, msg: A) {
     if (bitset.get(localId)) {
       aggregates(localId) = mergeMsg(aggregates(localId), msg)
     } else {

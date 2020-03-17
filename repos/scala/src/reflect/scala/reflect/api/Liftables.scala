@@ -2,7 +2,8 @@ package scala
 package reflect
 package api
 
-trait Liftables { self: Universe =>
+trait Liftables {
+  self: Universe =>
 
   /** A type class that defines a representation of `T` as a `Tree`.
     *

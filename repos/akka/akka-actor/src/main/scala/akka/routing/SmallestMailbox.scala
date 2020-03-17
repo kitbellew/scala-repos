@@ -49,7 +49,8 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
   // 4. An ActorRef with unknown mailbox size that isn't processing anything
   // 5. An ActorRef with a known mailbox size
   // 6. An ActorRef without any messages
-  @tailrec private def selectNext(
+  @tailrec
+  private def selectNext(
       targets: immutable.IndexedSeq[Routee],
       proposedTarget: Routee = NoRoutee,
       currentScore: Long = Long.MaxValue,

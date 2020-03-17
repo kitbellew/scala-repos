@@ -32,7 +32,8 @@ import scala.reflect.ClassTag
   */
 @DeveloperApi
 trait PEvents extends Serializable {
-  @transient protected lazy val logger = Logger[this.type]
+  @transient
+  protected lazy val logger = Logger[this.type]
   @deprecated("Use PEventStore.find() instead.", "0.9.2")
   def getByAppIdAndTimeAndEntity(
       appId: Int,

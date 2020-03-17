@@ -33,7 +33,8 @@ class AppVersionsResource(
   @Timed
   def index(
       @PathParam("appId") appId: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val id = appId.toRootPath
       withAuthorization(ViewApp, result(groupManager.app(id)), unknownApp(id)) {
@@ -47,7 +48,8 @@ class AppVersionsResource(
   def show(
       @PathParam("appId") appId: String,
       @PathParam("version") version: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val id = appId.toRootPath
       val timestamp = Timestamp(version)

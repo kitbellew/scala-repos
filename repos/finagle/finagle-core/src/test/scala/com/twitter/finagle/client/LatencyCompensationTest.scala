@@ -73,7 +73,8 @@ class LatencyCompensationTest
     val timer = new MockTimer()
 
     class TestPromise[T] extends Promise[T] {
-      @volatile var interrupted: Option[Throwable] = None
+      @volatile
+      var interrupted: Option[Throwable] = None
       setInterruptHandler {
         case exc =>
           interrupted = Some(exc)

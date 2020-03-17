@@ -5,7 +5,8 @@ import simulacrum.typeclass
 /**
   * The combination of a Monad with a MonoidK
   */
-@typeclass trait MonadCombine[F[_]] extends MonadFilter[F] with Alternative[F] {
+@typeclass
+trait MonadCombine[F[_]] extends MonadFilter[F] with Alternative[F] {
 
   /**
     * Fold over the inner structure to combine all of the values with

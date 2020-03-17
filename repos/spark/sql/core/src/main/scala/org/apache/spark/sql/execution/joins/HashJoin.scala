@@ -123,7 +123,8 @@ trait HashJoin {
   protected def streamSideKeyGenerator: Projection =
     UnsafeProjection.create(rewriteKeyExpr(streamedKeys), streamedPlan.output)
 
-  @transient private[this] lazy val boundCondition =
+  @transient
+  private[this] lazy val boundCondition =
     if (condition.isDefined) {
       newPredicate(
         condition.getOrElse(Literal(true)),
@@ -206,11 +207,14 @@ trait HashJoin {
     }
   }
 
-  @transient protected[this] lazy val EMPTY_LIST = CompactBuffer[InternalRow]()
+  @transient
+  protected[this] lazy val EMPTY_LIST = CompactBuffer[InternalRow]()
 
-  @transient private[this] lazy val leftNullRow =
+  @transient
+  private[this] lazy val leftNullRow =
     new GenericInternalRow(left.output.length)
-  @transient private[this] lazy val rightNullRow =
+  @transient
+  private[this] lazy val rightNullRow =
     new GenericInternalRow(right.output.length)
 
   protected[this] def leftOuterIterator(

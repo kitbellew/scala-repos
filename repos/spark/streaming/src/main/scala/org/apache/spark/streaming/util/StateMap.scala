@@ -88,14 +88,17 @@ private[streaming] class EmptyStateMap[K, S] extends StateMap[K, S] {
 
 /** Implementation of StateMap based on Spark's [[org.apache.spark.util.collection.OpenHashMap]] */
 private[streaming] class OpenHashMapBasedStateMap[K, S](
-    @transient @volatile var parentStateMap: StateMap[K, S],
+    @transient
+    @volatile
+    var parentStateMap: StateMap[K, S],
     private var initialCapacity: Int = DEFAULT_INITIAL_CAPACITY,
     private var deltaChainThreshold: Int = DELTA_CHAIN_LENGTH_THRESHOLD)(
     implicit
     private var keyClassTag: ClassTag[K],
     private var stateClassTag: ClassTag[S])
     extends StateMap[K, S]
-    with KryoSerializable { self =>
+    with KryoSerializable {
+  self =>
 
   def this(initialCapacity: Int, deltaChainThreshold: Int)(implicit
       keyClassTag: ClassTag[K],
@@ -119,8 +122,9 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   require(initialCapacity >= 1, "Invalid initial capacity")
   require(deltaChainThreshold >= 1, "Invalid delta chain threshold")
 
-  @transient @volatile private var deltaMap =
-    new OpenHashMap[K, StateInfo[S]](initialCapacity)
+  @transient
+  @volatile
+  private var deltaMap = new OpenHashMap[K, StateInfo[S]](initialCapacity)
 
   /** Get the session data if it exists */
   override def get(key: K): Option[S] = {

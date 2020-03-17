@@ -11,7 +11,8 @@ trait Exponential[@sp(Float, Double) A] extends Any {
 }
 
 object Exponential extends ExponentialInstances {
-  @inline final def apply[@sp(Float, Double) A](implicit
+  @inline
+  final def apply[@sp(Float, Double) A](implicit
       e: Exponential[A]): Exponential[A] = e
 
   def apply[@sp(Float, Double) A](rate: A)(implicit

@@ -15,7 +15,8 @@ class ALSModel(
     extends IPersistentModel[ALSAlgorithmParams]
     with Serializable {
 
-  @transient lazy val itemIntStringMap = itemStringIntMap.inverse
+  @transient
+  lazy val itemIntStringMap = itemStringIntMap.inverse
 
   def save(
       id: String,

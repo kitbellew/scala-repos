@@ -5,7 +5,8 @@ package scalaz
   * An [[scalaz.Order]]able with discrete values.
   */
 ////
-trait Enum[F] extends Order[F] { self =>
+trait Enum[F] extends Order[F] {
+  self =>
   ////
 
   def succ(a: F): F
@@ -235,7 +236,8 @@ trait Enum[F] extends Order[F] { self =>
 }
 
 object Enum {
-  @inline def apply[F](implicit F: Enum[F]): Enum[F] = F
+  @inline
+  def apply[F](implicit F: Enum[F]): Enum[F] = F
 
   ////
   def succn[F](n: Int, a: F)(implicit F: Enum[F]): F = {

@@ -205,7 +205,8 @@ case class InSet(child: Expression, hset: Set[Any])
   override def toString: String =
     s"$child INSET ${hset.mkString("(", ",", ")")}"
 
-  @transient private[this] lazy val hasNull: Boolean = hset.contains(null)
+  @transient
+  private[this] lazy val hasNull: Boolean = hset.contains(null)
 
   override def nullable: Boolean = child.nullable || hasNull
 

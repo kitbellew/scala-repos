@@ -54,7 +54,8 @@ abstract class ReplTest extends DirectTest {
 }
 
 /** Retain and normalize the welcome message. */
-trait Welcoming { this: ReplTest =>
+trait Welcoming {
+  this: ReplTest =>
   override def welcoming = true
 }
 

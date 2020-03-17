@@ -1405,7 +1405,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("Call add jar in a different thread (SPARK-8306)") {
-    @volatile var error: Option[Throwable] = None
+    @volatile
+    var error: Option[Throwable] = None
     val thread =
       new Thread {
         override def run() {

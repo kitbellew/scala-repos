@@ -365,7 +365,8 @@ class WrappedLogger(l: SLF4JLogger) extends Logger {
   * `val` that will be a `[[Logger]]` instance.
   */
 trait Loggable {
-  @transient protected val logger = Logger(this.getClass)
+  @transient
+  protected val logger = Logger(this.getClass)
 }
 
 /**
@@ -376,7 +377,8 @@ trait Loggable {
   * thus Logging is not yet configured).
   */
 trait LazyLoggable {
-  @transient protected lazy val logger = Logger(this.getClass)
+  @transient
+  protected lazy val logger = Logger(this.getClass)
 }
 
 /**

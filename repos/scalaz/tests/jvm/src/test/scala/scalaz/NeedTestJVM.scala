@@ -4,7 +4,8 @@ object NeedTestJVM extends SpecLite {
 
   "Need" should {
     "clear the Function0 reference" in {
-      @volatile var flag = false
+      @volatile
+      var flag = false
       val method = Need.getClass.getMethod("apply", classOf[Function0[_]])
       val need = method
         .invoke(

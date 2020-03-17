@@ -59,10 +59,14 @@ private[finagle] class ClockedDrainer(
   private[this] val requestCount = new AtomicInteger(0)
   private[this] val narrival = new AtomicInteger(0)
 
-  @volatile private[this] var openFor = Stopwatch.start()
-  @volatile private[this] var closedFor = NilStopwatch.start()
-  @volatile private[this] var forcedGc = 0L
-  @volatile private[this] var genDrained, genOpen = 0L
+  @volatile
+  private[this] var openFor = Stopwatch.start()
+  @volatile
+  private[this] var closedFor = NilStopwatch.start()
+  @volatile
+  private[this] var forcedGc = 0L
+  @volatile
+  private[this] var genDrained, genOpen = 0L
 
   private[this] def calculateMaxWait: Duration = {
     val rate = coord.counter.rate

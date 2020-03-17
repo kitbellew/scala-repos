@@ -45,7 +45,8 @@ class AppTasksResource @Inject() (
   @Timed
   def indexJson(
       @PathParam("appId") id: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val taskMap = taskTracker.tasksByAppSync
 
@@ -81,7 +82,8 @@ class AppTasksResource @Inject() (
   @Timed
   def indexTxt(
       @PathParam("appId") appId: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val id = appId.toRootPath
       withAuthorization(ViewApp, result(groupManager.app(id)), unknownApp(id)) {
@@ -95,9 +97,12 @@ class AppTasksResource @Inject() (
   def deleteMany(
       @PathParam("appId") appId: String,
       @QueryParam("host") host: String,
-      @QueryParam("scale") @DefaultValue("false") scale: Boolean = false,
-      @QueryParam("force") @DefaultValue("false") force: Boolean = false,
-      @Context req: HttpServletRequest): Response =
+      @QueryParam("scale")
+      @DefaultValue("false") scale: Boolean = false,
+      @QueryParam("force")
+      @DefaultValue("false") force: Boolean = false,
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val pathId = appId.toRootPath
 
@@ -123,9 +128,12 @@ class AppTasksResource @Inject() (
   def deleteOne(
       @PathParam("appId") appId: String,
       @PathParam("taskId") id: String,
-      @QueryParam("scale") @DefaultValue("false") scale: Boolean = false,
-      @QueryParam("force") @DefaultValue("false") force: Boolean = false,
-      @Context req: HttpServletRequest): Response =
+      @QueryParam("scale")
+      @DefaultValue("false") scale: Boolean = false,
+      @QueryParam("force")
+      @DefaultValue("false") force: Boolean = false,
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val pathId = appId.toRootPath
       def findToKill(appTasks: Iterable[Task]): Iterable[Task] =

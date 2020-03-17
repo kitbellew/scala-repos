@@ -235,7 +235,8 @@ trait JDBCPlatformSpecs
     extends ParseEvalStackSpecs[Future]
     with JDBCColumnarTableModule
     with Logging
-    with StringIdMemoryDatasetConsumer[Future] { self =>
+    with StringIdMemoryDatasetConsumer[Future] {
+  self =>
 
   class YggConfig
       extends ParseEvalStackSpecConfig

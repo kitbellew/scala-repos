@@ -278,7 +278,8 @@ object Coroner { // FIXME: remove once going back to project dependencies
 trait WatchedByCoroner {
   self: TestKit ⇒
 
-  @volatile private var coronerWatch: Coroner.WatchHandle = _
+  @volatile
+  private var coronerWatch: Coroner.WatchHandle = _
 
   final def startCoroner() {
     coronerWatch = Coroner.watch(

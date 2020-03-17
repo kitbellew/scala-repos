@@ -14,7 +14,8 @@ import org.junit.Assert._
 
 class BigIntegerSubtractTest {
 
-  @Test def testCase1(): Unit = {
+  @Test
+  def testCase1(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3)
     val aSign = 1
@@ -31,7 +32,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase10(): Unit = {
+  @Test
+  def testCase10(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7)
     val aSign = 1
@@ -49,7 +51,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase11(): Unit = {
+  @Test
+  def testCase11(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = 1
@@ -66,7 +69,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase12(): Unit = {
+  @Test
+  def testCase12(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7)
     val aSign = 1
@@ -83,7 +87,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase13(): Unit = {
+  @Test
+  def testCase13(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = -1
@@ -101,7 +106,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase14(): Unit = {
+  @Test
+  def testCase14(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = -1
@@ -119,7 +125,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase15(): Unit = {
+  @Test
+  def testCase15(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = -1
@@ -137,7 +144,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase16(): Unit = {
+  @Test
+  def testCase16(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7)
     val aSign = -1
@@ -155,7 +163,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase17(): Unit = {
+  @Test
+  def testCase17(): Unit = {
     val aBytes = Array[Byte](-120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
     val bBytes = Array[Byte](-120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
     val rBytes = Array[Byte](0)
@@ -172,7 +181,8 @@ class BigIntegerSubtractTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase18(): Unit = {
+  @Test
+  def testCase18(): Unit = {
     val aBytes = Array[Byte](120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
     val bBytes = Array[Byte](0)
     val rBytes = Array[Byte](120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
@@ -189,7 +199,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase19(): Unit = {
+  @Test
+  def testCase19(): Unit = {
     val aBytes = Array[Byte](0)
     val bBytes = Array[Byte](120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
     val rBytes = Array[Byte](120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
@@ -206,7 +217,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase2(): Unit = {
+  @Test
+  def testCase2(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = 1
@@ -223,7 +235,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase20(): Unit = {
+  @Test
+  def testCase20(): Unit = {
     val aBytes = Array[Byte](0)
     val bBytes = Array[Byte](0)
     val rBytes = Array[Byte](0)
@@ -240,7 +253,8 @@ class BigIntegerSubtractTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase21(): Unit = {
+  @Test
+  def testCase21(): Unit = {
     val aBytes = Array[Byte](120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
     val rBytes = Array[Byte](120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
     val aSign = 1
@@ -255,7 +269,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase22(): Unit = {
+  @Test
+  def testCase22(): Unit = {
     val bBytes = Array[Byte](120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
     val rBytes = Array[Byte](120, 34, 78, -23, -111, 45, 127, 23, 45, -3)
     val bSign = -1
@@ -270,7 +285,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase23(): Unit = {
+  @Test
+  def testCase23(): Unit = {
     val rBytes = Array[Byte](0)
     val aNumber = BigInteger.ZERO
     val bNumber = BigInteger.ZERO
@@ -283,7 +299,8 @@ class BigIntegerSubtractTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase24(): Unit = {
+  @Test
+  def testCase24(): Unit = {
     val rBytes = Array[Byte](0)
     val aNumber = BigInteger.ONE
     val bNumber = BigInteger.ONE
@@ -296,7 +313,8 @@ class BigIntegerSubtractTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase25(): Unit = {
+  @Test
+  def testCase25(): Unit = {
     val aBytes = Array[Byte](-1, -1, -1, -1, -1, -1, -1, -1)
     val bBytes = Array[Byte](
       -128, -128, -128, -128, -128, -128, -128, -128, -128)
@@ -314,7 +332,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase3(): Unit = {
+  @Test
+  def testCase3(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3)
     val aSign = 1
@@ -331,7 +350,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase4(): Unit = {
+  @Test
+  def testCase4(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = 1
@@ -348,7 +368,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase5(): Unit = {
+  @Test
+  def testCase5(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3)
     val aSign = -1
@@ -365,7 +386,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase6(): Unit = {
+  @Test
+  def testCase6(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = -1
@@ -382,7 +404,8 @@ class BigIntegerSubtractTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase7(): Unit = {
+  @Test
+  def testCase7(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3)
     val aSign = -1
@@ -399,7 +422,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase8(): Unit = {
+  @Test
+  def testCase8(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = -1
@@ -416,7 +440,8 @@ class BigIntegerSubtractTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase9(): Unit = {
+  @Test
+  def testCase9(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val aSign = 1

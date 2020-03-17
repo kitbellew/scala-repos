@@ -28,7 +28,8 @@ import scala.collection.generic._
   */
 class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
     extends Iterable[T]
-    with IterableLike[T, Beam[T]] { outer =>
+    with IterableLike[T, Beam[T]] {
+  outer =>
   assert(maxSize >= 0)
   val heap = trim(BinomialHeap(xs: _*))
 

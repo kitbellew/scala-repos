@@ -44,7 +44,8 @@ package org.ensime.core
 //
 // See scala/src/scaladoc/scala/tools/nsc/doc/base/MemberLookupBase.scala for
 // details related to link construction.
-trait DocFinding { self: RichPresentationCompiler =>
+trait DocFinding {
+  self: RichPresentationCompiler =>
 
   private def isRoot(s: Symbol) =
     (

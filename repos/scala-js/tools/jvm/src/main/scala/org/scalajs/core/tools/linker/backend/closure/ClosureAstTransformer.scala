@@ -289,7 +289,8 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   }
 
   def transformBlock(stats: List[Tree], blockPos: Position): Node = {
-    @inline def ctorDoc(node: Node) = {
+    @inline
+    def ctorDoc(node: Node) = {
       val b = new JSDocInfoBuilder(false)
       b.recordConstructor()
       b.build(node)

@@ -171,7 +171,8 @@ private[spark] class ExecutorAllocationManager(
   // set to false when:
   //   (1) a stage is submitted, or
   //   (2) an executor idle timeout has elapsed.
-  @volatile private var initializing: Boolean = true
+  @volatile
+  private var initializing: Boolean = true
 
   // Number of locality aware tasks, used for executor placement.
   private var localityAwareTasks = 0

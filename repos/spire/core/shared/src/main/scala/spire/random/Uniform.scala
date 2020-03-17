@@ -3,7 +3,8 @@ package random
 
 import spire.math.{Rational, UInt, ULong}
 
-trait Uniform[@sp A] extends Any { self =>
+trait Uniform[@sp A] extends Any {
+  self =>
 
   /**
     * Return an `A` that is uniformly distributed between `min` and `max` inclusive.
@@ -12,7 +13,8 @@ trait Uniform[@sp A] extends Any { self =>
 }
 
 object Uniform {
-  @inline final def apply[@sp A](implicit u: Uniform[A]): Uniform[A] = u
+  @inline
+  final def apply[@sp A](implicit u: Uniform[A]): Uniform[A] = u
 
   def apply[@sp A](min: A, max: A)(implicit u: Uniform[A]): Dist[A] =
     u(min, max)

@@ -23,7 +23,8 @@ object NameInterpreter extends NameInterpreter {
     *
     * Can be modified to provide a different mechanism for name resolution.
     */
-  @volatile var global: NameInterpreter = DefaultInterpreter
+  @volatile
+  var global: NameInterpreter = DefaultInterpreter
 
   /** Java API for setting the interpreter */
   def setGlobal(nameInterpreter: NameInterpreter) = {

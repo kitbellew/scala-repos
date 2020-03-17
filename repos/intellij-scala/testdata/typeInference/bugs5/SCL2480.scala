@@ -1,5 +1,6 @@
 object SCL2480 {
-  trait Bug[Repr] { self: Repr =>
+  trait Bug[Repr] {
+    self: Repr =>
     def foo(k: KB[Repr]) {
       /*start*/
       k(self) /*end*/

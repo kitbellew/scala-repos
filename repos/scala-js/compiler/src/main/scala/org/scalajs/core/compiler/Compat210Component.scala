@@ -35,11 +35,13 @@ trait Compat210Component {
 
   // enteringPhase/exitingPhase replace beforePhase/afterPhase
 
-  @inline final def enteringPhase[T](ph: Phase)(op: => T): T = {
+  @inline
+  final def enteringPhase[T](ph: Phase)(op: => T): T = {
     global.enteringPhase(ph)(op)
   }
 
-  @inline final def exitingPhase[T](ph: Phase)(op: => T): T = {
+  @inline
+  final def exitingPhase[T](ph: Phase)(op: => T): T = {
     global.exitingPhase(ph)(op)
   }
 
@@ -177,7 +179,8 @@ trait Compat210Component {
 
   // repeatedToSingle
 
-  @inline final def repeatedToSingle(t: Type): Type =
+  @inline
+  final def repeatedToSingle(t: Type): Type =
     global.definitions.repeatedToSingle(t)
 
   private implicit final class DefinitionsCompat(

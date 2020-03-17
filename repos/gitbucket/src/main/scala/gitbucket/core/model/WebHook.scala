@@ -1,6 +1,7 @@
 package gitbucket.core.model
 
-trait WebHookComponent extends TemplateComponent { self: Profile =>
+trait WebHookComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
 
   lazy val WebHooks = TableQuery[WebHooks]

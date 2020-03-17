@@ -35,7 +35,8 @@ object TcpConnectionSpec {
 class TcpConnectionSpec extends AkkaSpec("""
     akka.io.tcp.register-timeout = 500ms
     akka.actor.serialize-creators = on
-    """) { thisSpecs ⇒
+    """) {
+  thisSpecs ⇒
   import TcpConnectionSpec._
 
   // Helper to avoid Windows localization specific differences
@@ -910,7 +911,8 @@ class TcpConnectionSpec extends AkkaSpec("""
 
   def acceptServerSideConnection(
       localServer: ServerSocketChannel): SocketChannel = {
-    @volatile var serverSideChannel: SocketChannel = null
+    @volatile
+    var serverSideChannel: SocketChannel = null
     awaitCond {
       serverSideChannel = localServer.accept()
       serverSideChannel != null
@@ -993,7 +995,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         })
   }
 
-  trait SmallRcvBuffer { _: LocalServerTest ⇒
+  trait SmallRcvBuffer {
+    _: LocalServerTest ⇒
     override def setServerSocketOptions(): Unit =
       localServerChannel.socket.setReceiveBufferSize(1024)
   }
@@ -1122,7 +1125,8 @@ class TcpConnectionSpec extends AkkaSpec("""
     /**
       * Tries to simultaneously act on client and server side to read from the server all pending data from the client.
       */
-    @tailrec final def pullFromServerSide(
+    @tailrec
+    final def pullFromServerSide(
         remaining: Int,
         remainingTries: Int = 1000,
         into: ByteBuffer = defaultbuffer): Unit =
@@ -1161,7 +1165,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         pullFromServerSide(remaining - read, remainingTries - 1, into)
       }
 
-    @tailrec final def expectReceivedString(data: String): Unit = {
+    @tailrec
+    final def expectReceivedString(data: String): Unit = {
       data.length should be > 0
 
       selector.send(connectionActor, ChannelReadable)

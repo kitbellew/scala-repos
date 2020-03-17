@@ -220,8 +220,10 @@ class MockServletOutputStream(os: ByteArrayOutputStream)
   * @author Steve Jenson (stevej@pobox.com)
   */
 class MockHttpSession extends HttpSession {
-  @volatile protected var values: Map[String, Object] = Map()
-  @volatile protected var attr: Map[String, Object] = Map()
+  @volatile
+  protected var values: Map[String, Object] = Map()
+  @volatile
+  protected var attr: Map[String, Object] = Map()
 
   import scala.collection.JavaConversions._
 

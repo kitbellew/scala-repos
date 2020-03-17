@@ -42,7 +42,8 @@ import org.jboss.netty.channel.Channel
   * A rich client with a *very* basic URL fetcher. (It does not handle
   * redirects, does not have a cookie jar, etc.)
   */
-trait HttpRichClient { self: Client[Request, Response] =>
+trait HttpRichClient {
+  self: Client[Request, Response] =>
   def fetchUrl(url: String): Future[Response] = fetchUrl(new java.net.URL(url))
   def fetchUrl(url: java.net.URL): Future[Response] = {
     val addr = {

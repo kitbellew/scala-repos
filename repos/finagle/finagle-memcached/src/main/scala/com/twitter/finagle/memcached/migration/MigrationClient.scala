@@ -60,7 +60,8 @@ class MigrationClient(
     override def proxyClient = client
   }
 
-  @volatile var proxyClient = new FrontendClient(oldClient)
+  @volatile
+  var proxyClient = new FrontendClient(oldClient)
 
   override def applyZKData(data: Array[Byte]): Unit =
     synchronized {
@@ -146,7 +147,8 @@ trait DarkRead extends Client {
   * before returning frontend result, use frontend result to warm up backend missed key;
   * backend warming up is not not blocking or exposed.
   */
-trait ReadWarmup { self: DarkRead =>
+trait ReadWarmup {
+  self: DarkRead =>
   override protected def chooseGetResult(
       frontResult: Future[GetResult],
       backResult: Future[GetResult]): Future[GetResult] = {
@@ -315,7 +317,8 @@ trait FallbackRead extends Client {
   * before combining frontend and backend result, use backend result to repair frontend missed key;
   * frontend repairing is not not blocking or exposed.
   */
-trait ReadRepair { self: FallbackRead =>
+trait ReadRepair {
+  self: FallbackRead =>
   override def combineGetResult(
       frontR: GetResult,
       backR: GetResult): GetResult = {

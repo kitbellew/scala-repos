@@ -6,7 +6,8 @@ package data
   *
   * See: [[https://www.cs.ox.ac.uk/jeremy.gibbons/publications/iterator.pdf The Essence of the Iterator Pattern]]
   */
-sealed abstract class Func[F[_], A, B] { self =>
+sealed abstract class Func[F[_], A, B] {
+  self =>
   def run: A => F[B]
   def map[C](f: B => C)(implicit FF: Functor[F]): Func[F, A, C] =
     Func.func(a => FF.map(self.run(a))(f))
@@ -85,7 +86,8 @@ sealed trait FuncApplicative[F[_], C]
 /**
   * An implementation of [[Func]] that's specialized to [[Applicative]].
   */
-sealed abstract class AppFunc[F[_], A, B] extends Func[F, A, B] { self =>
+sealed abstract class AppFunc[F[_], A, B] extends Func[F, A, B] {
+  self =>
   def F: Applicative[F]
 
   def product[G[_]](

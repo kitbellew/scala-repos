@@ -2362,7 +2362,8 @@ object NotNullRef {
 }
 
 trait LongKeyedMetaMapper[A <: LongKeyedMapper[A]]
-    extends KeyedMetaMapper[Long, A] { self: A =>
+    extends KeyedMetaMapper[Long, A] {
+  self: A =>
 }
 
 trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]

@@ -6,7 +6,8 @@ import org.junit.Assert._
 class MultiCompilationSecondUnitTest extends MultiCompilationTest
 
 class MultiCompilationSecondUnitTestCheck {
-  @Test def testInDifferentCompilationUnits(): Unit = {
+  @Test
+  def testInDifferentCompilationUnits(): Unit = {
     // Test for issue #2112
     val boot = JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.MultiCompilationSecondUnitTest")

@@ -543,7 +543,8 @@ final case class TestAssociationHandle(
     inbound: Boolean)
     extends AssociationHandle {
 
-  @volatile var writable = true
+  @volatile
+  var writable = true
 
   override val readHandlerPromise: Promise[HandleEventListener] = Promise()
 

@@ -5,7 +5,8 @@ package scalaz
   * Universally quantified [[scalaz.Monoid]].
   */
 ////
-trait PlusEmpty[F[_]] extends Plus[F] { self =>
+trait PlusEmpty[F[_]] extends Plus[F] {
+  self =>
   ////
   def empty[A]: F[A]
 
@@ -49,7 +50,8 @@ trait PlusEmpty[F[_]] extends Plus[F] { self =>
 }
 
 object PlusEmpty {
-  @inline def apply[F[_]](implicit F: PlusEmpty[F]): PlusEmpty[F] = F
+  @inline
+  def apply[F[_]](implicit F: PlusEmpty[F]): PlusEmpty[F] = F
 
   ////
   implicit def liftPlusEmpty[M[_], N[_]](implicit

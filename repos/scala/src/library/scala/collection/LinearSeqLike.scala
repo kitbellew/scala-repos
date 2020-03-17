@@ -71,7 +71,8 @@ trait LinearSeqLike[+A, +Repr <: LinearSeqLike[A, Repr]]
       }
     }
 
-  @tailrec override final def corresponds[B](that: GenSeq[B])(
+  @tailrec
+  override final def corresponds[B](that: GenSeq[B])(
       p: (A, B) => Boolean): Boolean = {
     if (this.isEmpty)
       that.isEmpty

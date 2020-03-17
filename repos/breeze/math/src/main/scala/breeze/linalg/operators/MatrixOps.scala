@@ -14,7 +14,8 @@ import breeze.macros.expand
 import scala.math.BigInt
 import breeze.linalg._
 
-trait MatrixGenericOps { this: Matrix.type =>
+trait MatrixGenericOps {
+  this: Matrix.type =>
   class SetMMOp[@specialized(Double, Int, Float, Long) V, MM](implicit
       subtype: MM <:< Matrix[V])
       extends OpSet.InPlaceImpl2[Matrix[V], MM] {
@@ -136,7 +137,8 @@ trait MatrixGenericOps { this: Matrix.type =>
   }
 }
 
-trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
+trait MatrixOps extends MatrixGenericOps {
+  this: Matrix.type =>
 
   import breeze.math.PowImplicits._
 
@@ -170,8 +172,7 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type] =
     new BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type] {
       override def bindingMissing(a: Matrix[T], b: Matrix[T]): Unit = {
@@ -268,8 +269,7 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Matrix[T], T, Op.type] =
+        }) op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Matrix[T], T, Op.type] =
     new BinaryUpdateRegistry[Matrix[T], T, Op.type] {
       override def bindingMissing(a: Matrix[T], b: T): Unit = {
         var c = 0

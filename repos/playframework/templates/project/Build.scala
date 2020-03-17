@@ -158,7 +158,8 @@ object Templates {
           IO.delete(templateDir)
           IO.copyDirectory(template, templateDir)
           streams.value.log.info("Testing template: " + template.getName)
-          @volatile var out = List.empty[String]
+          @volatile
+          var out = List.empty[String]
           val rc = Process("sbt test", templateDir).!(
             StdOutLogger { s =>
               out = s :: out

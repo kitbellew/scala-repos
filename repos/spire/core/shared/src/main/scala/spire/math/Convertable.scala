@@ -295,8 +295,8 @@ private[math] trait ConvertableToNatural extends ConvertableTo[Natural] {
 }
 
 object ConvertableTo {
-  @inline final def apply[A](implicit ev: ConvertableTo[A]): ConvertableTo[A] =
-    ev
+  @inline
+  final def apply[A](implicit ev: ConvertableTo[A]): ConvertableTo[A] = ev
 
   implicit final val ConvertableToByte = new ConvertableToByte {}
   implicit final val ConvertableToShort = new ConvertableToShort {}
@@ -607,8 +607,8 @@ private[math] trait ConvertableFromNatural extends ConvertableFrom[Natural] {
 }
 
 object ConvertableFrom {
-  @inline final def apply[A](implicit
-      ev: ConvertableFrom[A]): ConvertableFrom[A] = ev
+  @inline
+  final def apply[A](implicit ev: ConvertableFrom[A]): ConvertableFrom[A] = ev
 
   implicit final val ConvertableFromByte = new ConvertableFromByte {}
   implicit final val ConvertableFromShort = new ConvertableFromShort {}

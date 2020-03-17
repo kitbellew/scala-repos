@@ -198,7 +198,8 @@ object Filter {
     * TypeAgnostic filters are like SimpleFilters but they leave the Rep and Req types unspecified
     * until `toFilter` is called.
     */
-  trait TypeAgnostic { self =>
+  trait TypeAgnostic {
+    self =>
     def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep]
 
     def andThen(next: TypeAgnostic): TypeAgnostic =

@@ -4,7 +4,8 @@ package rng
 
 import java.io._
 
-class Device(f: File) extends Generator { self =>
+class Device(f: File) extends Generator {
+  self =>
   if (!f.canRead)
     throw new IllegalArgumentException("can't read %s" format f)
 
@@ -29,7 +30,8 @@ object Device {
   def urandom: Device = new Device(new File("/dev/urandom"))
 }
 
-class CycledFile(f: File) extends Generator { self =>
+class CycledFile(f: File) extends Generator {
+  self =>
   private var dis: DataInputStream = null
 
   if (!f.canRead)

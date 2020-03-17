@@ -16,8 +16,10 @@ class ScalaPackageUsagesSearcher
       true) {
 
   def processQuery(
-      @NotNull parameters: ReferencesSearch.SearchParameters,
-      @NotNull consumer: Processor[PsiReference]) {
+      @NotNull
+      parameters: ReferencesSearch.SearchParameters,
+      @NotNull
+      consumer: Processor[PsiReference]) {
     val target: PsiElement = parameters.getElementToSearch
     val scPack =
       target match {
@@ -42,7 +44,8 @@ class ScalaPackageUsagesSearcher
 
   private class MyProcessor(
       myTarget: PsiElement,
-      @Nullable prefix: String,
+      @Nullable
+      prefix: String,
       mySession: SearchSession)
       extends RequestResultProcessor(myTarget, prefix) {
     def processTextOccurrence(

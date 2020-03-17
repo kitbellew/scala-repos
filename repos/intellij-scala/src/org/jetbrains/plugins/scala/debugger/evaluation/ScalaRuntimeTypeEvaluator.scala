@@ -40,7 +40,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType.ExtractClass
   * 8/8/13
   */
 abstract class ScalaRuntimeTypeEvaluator(
-    @Nullable editor: Editor,
+    @Nullable
+    editor: Editor,
     expression: PsiElement,
     context: DebuggerContextImpl,
     indicator: ProgressIndicator)

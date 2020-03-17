@@ -301,7 +301,8 @@ object ScalaElementTypes {
       new ScBlockExprImpl(text)
     }
 
-    @NotNull def createCompositeNode: ASTNode = {
+    @NotNull
+    def createCompositeNode: ASTNode = {
       new ScBlockExprImpl(null)
     }
 

@@ -390,14 +390,17 @@ object CachesUtil {
 
   def incrementModCountForFunsWithModifiedReturn(): Unit = {
     def checkFuns(): Unit = {
-      @inline def nextElement =
+      @inline
+      def nextElement =
         doQueueWithLock(queue =>
           if (queue.nonEmpty)
             queue.dequeue()
           else
             null)
-      @inline def checkSize = doQueueWithLock(queue => queue.size > 1)
-      @inline def clearQueue() = doQueueWithLock(queue => queue.clear())
+      @inline
+      def checkSize = doQueueWithLock(queue => queue.size > 1)
+      @inline
+      def clearQueue() = doQueueWithLock(queue => queue.clear())
 
       var cur = nextElement
 

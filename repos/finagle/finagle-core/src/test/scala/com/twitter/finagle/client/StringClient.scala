@@ -43,7 +43,8 @@ private[finagle] trait StringClient {
     def ping(): Future[String] = underlying("ping")
   }
 
-  trait StringRichClient { self: com.twitter.finagle.Client[String, String] =>
+  trait StringRichClient {
+    self: com.twitter.finagle.Client[String, String] =>
     def newRichClient(dest: Name, label: String): RichClient =
       RichClient(newService(dest, label))
   }

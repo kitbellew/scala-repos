@@ -57,7 +57,8 @@ package scalaguide.akka {
 
       "allow binding actors" in new WithApplication(
         _.bindings(new modules.MyModule)
-          .configure("my.config" -> "foo")) { _ =>
+          .configure("my.config" -> "foo")) {
+        _ =>
         import injection._
         val controller = app.injector.instanceOf[Application]
         contentAsString(controller.getConfig(FakeRequest())) must_== "foo"
@@ -65,7 +66,8 @@ package scalaguide.akka {
 
       "allow binding actor factories" in new WithApplication(
         _.bindings(new factorymodules.MyModule)
-          .configure("my.config" -> "foo")) { _ =>
+          .configure("my.config" -> "foo")) {
+        _ =>
         import play.api.inject.bind
         import akka.actor._
         import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -258,7 +260,8 @@ package scalaguide.akka {
 
     class ConfiguredChildActor @Inject() (
         configuration: Configuration,
-        @Assisted key: String)
+        @Assisted
+        key: String)
         extends Actor {
       import ConfiguredChildActor._
 

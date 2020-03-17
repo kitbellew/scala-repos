@@ -1,7 +1,8 @@
 class Test {
   def newComponent(u: Universe): u.Component = ???
 
-  class Universe { self =>
+  class Universe {
+    self =>
     class Component
 
     newComponent(

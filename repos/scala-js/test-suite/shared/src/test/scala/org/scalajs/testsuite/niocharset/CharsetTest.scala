@@ -17,11 +17,13 @@ import org.scalajs.testsuite.utils.Platform.executingInJVM
 
 class CharsetTest {
 
-  @Test def defaultCharset(): Unit = {
+  @Test
+  def defaultCharset(): Unit = {
     assertSame("UTF-8", Charset.defaultCharset().name())
   }
 
-  @Test def forName(): Unit = {
+  @Test
+  def forName(): Unit = {
     assertEquals("ISO-8859-1", Charset.forName("ISO-8859-1").name())
     assertEquals("ISO-8859-1", Charset.forName("Iso8859-1").name())
     assertEquals("ISO-8859-1", Charset.forName("iso_8859_1").name())
@@ -56,7 +58,8 @@ class CharsetTest {
       Charset.forName("this-charset-does-not-exist"))
   }
 
-  @Test def isSupported(): Unit = {
+  @Test
+  def isSupported(): Unit = {
     assertTrue(Charset.isSupported("ISO-8859-1"))
     assertTrue(Charset.isSupported("US-ASCII"))
     assertTrue(Charset.isSupported("Default"))

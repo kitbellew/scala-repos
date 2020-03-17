@@ -25,7 +25,8 @@ package shapeless.examples
 object RouterExample extends App {
   import shapeless._, ops.adjoin._
 
-  trait Router[A] { self =>
+  trait Router[A] {
+    self =>
     def apply(path: String): Option[A]
 
     def map[B](f: A => B): Router[B] =

@@ -162,7 +162,8 @@ sealed abstract class Future[+A] {
     */
   def unsafeStart: Future[A] = {
     val latch = new java.util.concurrent.CountDownLatch(1)
-    @volatile var result: Option[A] = None
+    @volatile
+    var result: Option[A] = None
     unsafePerformAsync { a =>
       result = Some(a);
       latch.countDown
@@ -209,7 +210,8 @@ sealed abstract class Future[+A] {
       case Now(a) => a
       case _ => {
         val latch = new java.util.concurrent.CountDownLatch(1)
-        @volatile var result: Option[A] = None
+        @volatile
+        var result: Option[A] = None
         unsafePerformAsync { a =>
           result = Some(a);
           latch.countDown

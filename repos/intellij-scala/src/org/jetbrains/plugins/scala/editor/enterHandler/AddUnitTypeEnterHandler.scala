@@ -34,7 +34,8 @@ class AddUnitTypeEnterHandler extends EnterHandlerDelegateAdapter {
     if (element == null)
       return Result.Continue
 
-    @inline def checkBlock2(block: ScBlockExpr) = {
+    @inline
+    def checkBlock2(block: ScBlockExpr) = {
       val children: Array[PsiElement] = block.getChildren
       children.length == 3 && children
         .apply(1)

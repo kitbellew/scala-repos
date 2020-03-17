@@ -33,10 +33,12 @@ import scala.language.existentials
   * training and evaluation.
   */
 object CoreWorkflow {
-  @transient lazy val logger = Logger[this.type]
-  @transient lazy val engineInstances = Storage.getMetaDataEngineInstances
-  @transient lazy val evaluationInstances = Storage
-    .getMetaDataEvaluationInstances()
+  @transient
+  lazy val logger = Logger[this.type]
+  @transient
+  lazy val engineInstances = Storage.getMetaDataEngineInstances
+  @transient
+  lazy val evaluationInstances = Storage.getMetaDataEvaluationInstances()
 
   def runTrain[EI, Q, P, A](
       engine: BaseEngine[EI, Q, P, A],

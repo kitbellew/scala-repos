@@ -69,7 +69,8 @@ trait DAG extends Instructions {
         splits: List[OpenSplit],
         stream: Vector[Instruction])
         : Trampoline[Either[StackError, DepGraph]] = {
-      @inline def continue(
+      @inline
+      def continue(
           f: List[Either[BucketSpec, DepGraph]] => Either[StackError, List[
             Either[BucketSpec, DepGraph]]])
           : Trampoline[Either[StackError, DepGraph]] = {

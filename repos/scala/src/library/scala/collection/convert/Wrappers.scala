@@ -139,7 +139,8 @@ private[collection] trait Wrappers {
   @SerialVersionUID(1L)
   class SetWrapper[A](underlying: Set[A])
       extends ju.AbstractSet[A]
-      with Serializable { self =>
+      with Serializable {
+    self =>
     // Note various overrides to avoid performance gotchas.
     override def contains(o: Object): Boolean = {
       try {
@@ -226,7 +227,8 @@ private[collection] trait Wrappers {
   @SerialVersionUID(1L)
   class MapWrapper[A, B](underlying: Map[A, B])
       extends ju.AbstractMap[A, B]
-      with Serializable { self =>
+      with Serializable {
+    self =>
     override def size = underlying.size
 
     override def get(key: AnyRef): B =

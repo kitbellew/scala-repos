@@ -969,7 +969,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         case that: HashSetCollision1[A] =>
           // we remove the elements using removed0 so we can use the fact that we know the hash of all elements
           // to be removed
-          @tailrec def removeAll(s: HashSet[A], r: ListSet[A]): HashSet[A] =
+          @tailrec
+          def removeAll(s: HashSet[A], r: ListSet[A]): HashSet[A] =
             if (r.isEmpty || (s eq null))
               s
             else
@@ -1147,13 +1148,15 @@ object HashSet extends ImmutableSetFactory[HashSet] {
     * @param size the maximum size of the collection to be generated
     * @return the maximum buffer size
     */
-  @inline private def bufferSize(size: Int): Int = (size + 6) min (32 * 7)
+  @inline
+  private def bufferSize(size: Int): Int = (size + 6) min (32 * 7)
 
   /**
     * In many internal operations the empty set is represented as null for performance reasons. This method converts
     * null to the empty set for use in public methods
     */
-  @inline private def nullToEmpty[A](s: HashSet[A]): HashSet[A] =
+  @inline
+  private def nullToEmpty[A](s: HashSet[A]): HashSet[A] =
     if (s eq null)
       empty[A]
     else
@@ -1191,11 +1194,14 @@ object HashSet extends ImmutableSetFactory[HashSet] {
   }
 
   // unsigned comparison
-  @inline private[this] def unsignedCompare(i: Int, j: Int) =
+  @inline
+  private[this] def unsignedCompare(i: Int, j: Int) =
     (i < j) ^ (i < 0) ^ (j < 0)
 
-  @SerialVersionUID(2L) private class SerializationProxy[A, B](
-      @transient private var orig: HashSet[A])
+  @SerialVersionUID(2L)
+  private class SerializationProxy[A, B](
+      @transient
+      private var orig: HashSet[A])
       extends Serializable {
     private def writeObject(out: java.io.ObjectOutputStream) {
       val s = orig.size

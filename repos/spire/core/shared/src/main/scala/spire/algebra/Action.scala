@@ -14,7 +14,8 @@ trait LeftAction[@sp(Int) P, G] extends Any {
 }
 
 object LeftAction {
-  @inline def apply[P, G](G: LeftAction[P, G]): LeftAction[P, G] = G
+  @inline
+  def apply[P, G](G: LeftAction[P, G]): LeftAction[P, G] = G
 }
 
 /**
@@ -30,7 +31,8 @@ trait RightAction[@sp(Int) P, G] extends Any {
 }
 
 object RightAction {
-  @inline def apply[P, G](G: RightAction[P, G]): RightAction[P, G] = G
+  @inline
+  def apply[P, G](G: RightAction[P, G]): RightAction[P, G] = G
 }
 
 /**
@@ -59,13 +61,17 @@ trait Action[@sp(Int) P, G]
     with RightAction[P, G]
 
 object Action {
-  @inline def apply[P, G](G: Action[P, G]): Action[P, G] = G
-  @inline def additive[P, G](G: AdditiveAction[P, G]): Action[P, G] = G.additive
-  @inline def multiplicative[P, G](
-      G: MultiplicativeAction[P, G]): Action[P, G] = G.multiplicative
+  @inline
+  def apply[P, G](G: Action[P, G]): Action[P, G] = G
+  @inline
+  def additive[P, G](G: AdditiveAction[P, G]): Action[P, G] = G.additive
+  @inline
+  def multiplicative[P, G](G: MultiplicativeAction[P, G]): Action[P, G] =
+    G.multiplicative
 }
 
-trait AdditiveAction[@sp(Int) P, G] extends Any { self =>
+trait AdditiveAction[@sp(Int) P, G] extends Any {
+  self =>
   def additive: Action[P, G] =
     new Action[P, G] {
       def actl(g: G, p: P): P = self.gplusl(g, p)
@@ -76,7 +82,8 @@ trait AdditiveAction[@sp(Int) P, G] extends Any { self =>
   def gplusr(p: P, g: G): P
 }
 
-trait MultiplicativeAction[@sp(Int) P, G] extends Any { self =>
+trait MultiplicativeAction[@sp(Int) P, G] extends Any {
+  self =>
   def multiplicative: Action[P, G] =
     new Action[P, G] {
       def actl(g: G, p: P): P = self.gtimesl(g, p)

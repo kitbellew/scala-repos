@@ -449,7 +449,8 @@ trait ParSeqLike[
       from: Int,
       protected[this] val pit: SeqSplitter[T])
       extends Accessor[(Int, Boolean), SegmentLength] {
-    @volatile var result: (Int, Boolean) = null
+    @volatile
+    var result: (Int, Boolean) = null
     def leaf(prev: Option[(Int, Boolean)]) =
       if (from < pit.indexFlag) {
         val itsize = pit.remaining
@@ -477,7 +478,8 @@ trait ParSeqLike[
       from: Int,
       protected[this] val pit: SeqSplitter[T])
       extends Accessor[Int, IndexWhere] {
-    @volatile var result: Int = -1
+    @volatile
+    var result: Int = -1
     def leaf(prev: Option[Int]) =
       if (from < pit.indexFlag) {
         val r = pit.indexWhere(pred)
@@ -511,7 +513,8 @@ trait ParSeqLike[
       pos: Int,
       protected[this] val pit: SeqSplitter[T])
       extends Accessor[Int, LastIndexWhere] {
-    @volatile var result: Int = -1
+    @volatile
+    var result: Int = -1
     def leaf(prev: Option[Int]) =
       if (pos > pit.indexFlag) {
         val r = pit.lastIndexWhere(pred)
@@ -544,7 +547,8 @@ trait ParSeqLike[
       cbf: () => Combiner[U, This],
       protected[this] val pit: SeqSplitter[T])
       extends Transformer[Combiner[U, This], Reverse[U, This]] {
-    @volatile var result: Combiner[U, This] = null
+    @volatile
+    var result: Combiner[U, This] = null
     def leaf(prev: Option[Combiner[U, This]]) =
       result = pit.reverse2combiner(reuse(prev, cbf()))
     protected[this] def newSubtask(p: SuperParIterator) =
@@ -558,7 +562,8 @@ trait ParSeqLike[
       pbf: () => Combiner[S, That],
       protected[this] val pit: SeqSplitter[T])
       extends Transformer[Combiner[S, That], ReverseMap[S, That]] {
-    @volatile var result: Combiner[S, That] = null
+    @volatile
+    var result: Combiner[S, That] = null
     def leaf(prev: Option[Combiner[S, That]]) =
       result = pit.reverseMap2combiner(f, pbf())
     protected[this] def newSubtask(p: SuperParIterator) =
@@ -571,7 +576,8 @@ trait ParSeqLike[
       protected[this] val pit: SeqSplitter[T],
       val otherpit: SeqSplitter[U])
       extends Accessor[Boolean, SameElements[U]] {
-    @volatile var result: Boolean = true
+    @volatile
+    var result: Boolean = true
     def leaf(prev: Option[Boolean]) =
       if (!pit.isAborted) {
         result = pit.sameElements(otherpit)
@@ -597,7 +603,8 @@ trait ParSeqLike[
       pbf: CombinerFactory[U, That],
       protected[this] val pit: SeqSplitter[T])
       extends Transformer[Combiner[U, That], Updated[U, That]] {
-    @volatile var result: Combiner[U, That] = null
+    @volatile
+    var result: Combiner[U, That] = null
     def leaf(prev: Option[Combiner[U, That]]) =
       result = pit.updated2combiner(pos, elem, pbf())
     protected[this] def newSubtask(p: SuperParIterator) =
@@ -618,7 +625,8 @@ trait ParSeqLike[
       protected[this] val pit: SeqSplitter[T],
       val otherpit: SeqSplitter[S])
       extends Transformer[Combiner[(U, S), That], Zip[U, S, That]] {
-    @volatile var result: Result = null
+    @volatile
+    var result: Result = null
     def leaf(prev: Option[Result]) =
       result = pit.zip2combiner[U, S, That](otherpit, cf())
     protected[this] def newSubtask(p: SuperParIterator) =
@@ -641,7 +649,8 @@ trait ParSeqLike[
       protected[this] val pit: SeqSplitter[T],
       val otherpit: SeqSplitter[S])
       extends Accessor[Boolean, Corresponds[S]] {
-    @volatile var result: Boolean = true
+    @volatile
+    var result: Boolean = true
     def leaf(prev: Option[Boolean]) =
       if (!pit.isAborted) {
         result = pit.corresponds(corr)(otherpit)

@@ -33,7 +33,8 @@ object MainLoop {
   }
 
   /** Run loop that evaluates remaining commands and manages changes to global logging configuration.*/
-  @tailrec def runLoggedLoop(
+  @tailrec
+  def runLoggedLoop(
       state: State,
       logBacking: GlobalLogBacking): xsbti.MainResult =
     runAndClearLast(state, logBacking) match {
@@ -97,7 +98,8 @@ object MainLoop {
   final class Return(val result: xsbti.MainResult) extends RunNext
 
   /** Runs the next sequence of commands that doesn't require global logging changes.*/
-  @tailrec def run(state: State): RunNext =
+  @tailrec
+  def run(state: State): RunNext =
     state.next match {
       case State.Continue       => run(next(state))
       case State.ClearGlobalLog => new ClearGlobalLog(state.continue)

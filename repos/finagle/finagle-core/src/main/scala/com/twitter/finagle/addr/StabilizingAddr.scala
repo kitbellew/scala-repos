@@ -47,8 +47,10 @@ private[finagle] object StabilizingAddr {
 
       implicit val injectTimer = timer
 
-      @volatile var nq = 0
-      @volatile var healthStat = Healthy.id
+      @volatile
+      var nq = 0
+      @volatile
+      var healthStat = Healthy.id
 
       val health =
         statsReceiver.addGauge("health") {

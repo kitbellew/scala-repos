@@ -8,7 +8,8 @@ import slick.util.ConstArray
 /**
   * An operation which is expected to be run on the client side.
   */
-trait ClientSideOp { this: Node =>
+trait ClientSideOp {
+  this: Node =>
   def nodeMapServerSide(keepType: Boolean, r: Node => Node): Self
 }
 

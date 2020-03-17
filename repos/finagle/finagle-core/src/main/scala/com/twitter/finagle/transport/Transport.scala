@@ -25,7 +25,8 @@ import java.security.cert.Certificate
   * to some endpoint, typically via a channel pipeline that performs
   * encoding and decoding.
   */
-trait Transport[In, Out] extends Closable { self =>
+trait Transport[In, Out] extends Closable {
+  self =>
 
   /**
     * Write {{req}} to this transport; the returned future

@@ -52,7 +52,8 @@ private[akka] class ActorPublisher[T](val impl: ActorRef) extends Publisher[T] {
 
   override def subscribe(subscriber: Subscriber[_ >: T]): Unit = {
     requireNonNullSubscriber(subscriber)
-    @tailrec def doSubscribe(): Unit = {
+    @tailrec
+    def doSubscribe(): Unit = {
       val current = pendingSubscribers.get
       if (current eq null)
         reportSubscribeFailure(subscriber)
@@ -83,7 +84,8 @@ private[akka] class ActorPublisher[T](val impl: ActorRef) extends Publisher[T] {
     }
   }
 
-  @volatile private var shutdownReason: Option[Throwable] = None
+  @volatile
+  private var shutdownReason: Option[Throwable] = None
 
   private def reportSubscribeFailure(subscriber: Subscriber[_ >: T]): Unit =
     try shutdownReason match {
@@ -124,7 +126,8 @@ private[akka] class ActorSubscriptionWithCursor[T](
 /**
   * INTERNAL API
   */
-private[akka] trait SoftShutdown { this: Actor ⇒
+private[akka] trait SoftShutdown {
+  this: Actor ⇒
   def softShutdown(): Unit = {
     val children = context.children
     if (children.isEmpty) {

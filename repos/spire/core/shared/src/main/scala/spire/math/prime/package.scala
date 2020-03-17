@@ -140,9 +140,11 @@ package object prime {
 
     def rho(n: SafeLong, c: SafeLong): SafeLong = {
 
-      @inline def f(x: SafeLong): SafeLong = ((x * x) % n + c) % n
+      @inline
+      def f(x: SafeLong): SafeLong = ((x * x) % n + c) % n
 
-      @tailrec def fastRho(
+      @tailrec
+      def fastRho(
           x: SafeLong,
           q0: SafeLong,
           r: SafeLong,
@@ -176,7 +178,8 @@ package object prime {
           g
       }
 
-      @tailrec def slowRho(x: SafeLong, ys: SafeLong): SafeLong = {
+      @tailrec
+      def slowRho(x: SafeLong, ys: SafeLong): SafeLong = {
         val yys = f(ys)
         val g = n gcd (x - yys).abs
         if (g == 1)

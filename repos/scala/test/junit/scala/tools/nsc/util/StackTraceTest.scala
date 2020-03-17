@@ -94,7 +94,8 @@ class StackTraceTest extends Expecting {
     }
   }
 
-  @Test def showsAllTrace() {
+  @Test
+  def showsAllTrace() {
     probe(sampler)(_ => true) { s =>
       val res = s.lines.toList
       /*
@@ -108,7 +109,8 @@ class StackTraceTest extends Expecting {
       assert(res.length > 5)
     }
   }
-  @Test def showsOnlyPrefix() =
+  @Test
+  def showsOnlyPrefix() =
     probe(sample)(_.getMethodName == "sample") { s =>
       val res = s.lines.toList
       /*
@@ -118,7 +120,8 @@ class StackTraceTest extends Expecting {
        */
       assert(res.length == 3)
     }
-  @Test def showsCause() =
+  @Test
+  def showsCause() =
     probe(resampler)(_.getMethodName != "resampler") { s =>
       val res = s.lines.toList
       /*
@@ -130,7 +133,8 @@ class StackTraceTest extends Expecting {
       assert(res.length == 6)
       assert(res exists (_ startsWith CausedBy.toString))
     }
-  @Test def showsWrappedExceptions() =
+  @Test
+  def showsWrappedExceptions() =
     probe(rewrapperer)(_.getMethodName != "rewrapperer") { s =>
       val res = s.lines.toList
       /*
@@ -151,7 +155,8 @@ class StackTraceTest extends Expecting {
           }
         ).size == 2)
     }
-  @Test def dontBlowOnCycle() =
+  @Test
+  def dontBlowOnCycle() =
     probe(insaner)(_.getMethodName != "insaner") { s =>
       val res = s.lines.toList
       /*
@@ -174,7 +179,8 @@ java.lang.RuntimeException: My problem
     at scala.tools.nsc.util.StackTraceTest.repressed(StackTraceTest.scala:54)
     ... 27 more
     */
-  @Test def showsSuppressed() =
+  @Test
+  def showsSuppressed() =
     probe(represser)(_.getMethodName != "represser") { s =>
       val res = s.lines.toList
       if (suppressable) {

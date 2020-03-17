@@ -34,7 +34,8 @@ private[spark] abstract class LauncherBackend {
   private var clientThread: Thread = _
   private var connection: BackendConnection = _
   private var lastState: SparkAppHandle.State = _
-  @volatile private var _isConnected = false
+  @volatile
+  private var _isConnected = false
 
   def connect(): Unit = {
     val port = sys.env.get(LauncherProtocol.ENV_LAUNCHER_PORT).map(_.toInt)

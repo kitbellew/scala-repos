@@ -13,7 +13,8 @@ import scala.reflect.internal.util.{
   *  A principled solution to splicing into Scala syntax would be a parser that natively supports holes.
   *  Unfortunately, that's outside of our reach in Scala 2.11, so we have to emulate.
   */
-trait Parsers { self: Quasiquotes =>
+trait Parsers {
+  self: Quasiquotes =>
   import global.{Try => _, _}
   import build.implodePatDefs
 
@@ -72,7 +73,8 @@ trait Parsers { self: Quasiquotes =>
     def entryPoint: QuasiquoteParser => Tree
 
     class QuasiquoteParser(source0: SourceFile)
-        extends SourceFileParser(source0) { parser =>
+        extends SourceFileParser(source0) {
+      parser =>
       def isHole: Boolean = isIdent && isHole(in.name)
 
       def isHole(name: Name): Boolean = holeMap.contains(name)

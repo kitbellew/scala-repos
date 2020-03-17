@@ -64,8 +64,10 @@ object ScalaMoveUtil {
   }
 
   def doMoveClass(
-      @NotNull aClass: PsiClass,
-      @NotNull moveDestination: PsiDirectory,
+      @NotNull
+      aClass: PsiClass,
+      @NotNull
+      moveDestination: PsiDirectory,
       withCompanion: Boolean): PsiClass = {
     var fileWasDeleted: Boolean = false
     def deleteClass(aClass: PsiClass) = {
@@ -143,7 +145,10 @@ object ScalaMoveUtil {
     moveClassInner(aClass, moveDestination)
   }
 
-  def collectAssociations(@NotNull aClass: PsiClass, withCompanion: Boolean) {
+  def collectAssociations(
+      @NotNull
+      aClass: PsiClass,
+      withCompanion: Boolean) {
     def collectData(clazz: PsiClass, file: ScalaFile) {
       val range: TextRange = clazz.getTextRange
       val associations = PROCESSOR.collectTransferableData(
@@ -171,7 +176,10 @@ object ScalaMoveUtil {
     }
   }
 
-  def restoreAssociations(@NotNull aClass: PsiClass, withCompanion: Boolean) {
+  def restoreAssociations(
+      @NotNull
+      aClass: PsiClass,
+      withCompanion: Boolean) {
     def restoreInner(clazz: PsiClass) {
       val associations: Associations = clazz.getCopyableUserData(
         ASSOCIATIONS_KEY)
@@ -201,7 +209,8 @@ object ScalaMoveUtil {
   }
 
   def saveMoveDestination(
-      @NotNull element: PsiElement,
+      @NotNull
+      element: PsiElement,
       moveDestination: PsiDirectory) = {
     val classes =
       element match {
@@ -219,6 +228,8 @@ object ScalaMoveUtil {
       .foreach(_.putUserData(MOVE_DESTINATION, moveDestination))
   }
 
-  def getMoveDestination(@NotNull element: PsiElement): PsiDirectory =
+  def getMoveDestination(
+      @NotNull
+      element: PsiElement): PsiDirectory =
     element.getUserData[PsiDirectory](MOVE_DESTINATION)
 }

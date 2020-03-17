@@ -20,7 +20,8 @@ import scala.util.{Try, Failure}
 import java.util.TimeZone
 import java.text.DateFormat
 
-trait DateParser extends java.io.Serializable { self =>
+trait DateParser extends java.io.Serializable {
+  self =>
   def parse(s: String)(implicit tz: TimeZone): Try[RichDate]
 
   // Map the input before parsing (name from functional programming: contravariant map)

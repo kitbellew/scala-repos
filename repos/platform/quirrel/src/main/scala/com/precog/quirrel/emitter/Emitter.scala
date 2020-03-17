@@ -47,7 +47,8 @@ trait Emitter
   private def notImpl[A](expr: Expr): A =
     throw EmitterError(Some(expr), "Not implemented for expression type")
 
-  private case class Mark(index: Int, offset: Int) { self =>
+  private case class Mark(index: Int, offset: Int) {
+    self =>
     def insert(insertIdx: Int, length: Int): Mark =
       copy(index = self.index + (
         if (insertIdx < index)

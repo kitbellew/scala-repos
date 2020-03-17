@@ -4,5 +4,6 @@ class C[E <: Exception] {
   @throws[E1]
   def f[E1 <: Exception] = 1
 
-  @throws(classOf[E]) def g: E = ??? // neg test: classOf requires class type
+  @throws(classOf[E])
+  def g: E = ??? // neg test: classOf requires class type
 }

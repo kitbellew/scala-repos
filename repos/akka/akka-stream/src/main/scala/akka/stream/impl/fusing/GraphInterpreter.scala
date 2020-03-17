@@ -232,7 +232,8 @@ private[akka] object GraphInterpreter {
         outlets: immutable.Seq[Outlet[_]],
         stages: GraphStageWithMaterializedValue[Shape, _]*): GraphAssembly = {
       // add the contents of an iterator to an array starting at idx
-      @tailrec def add[T](i: Iterator[T], a: Array[T], idx: Int): Array[T] =
+      @tailrec
+      def add[T](i: Iterator[T], a: Array[T], idx: Int): Array[T] =
         if (i.hasNext) {
           a(idx) = i.next()
           add(i, a, idx + 1)

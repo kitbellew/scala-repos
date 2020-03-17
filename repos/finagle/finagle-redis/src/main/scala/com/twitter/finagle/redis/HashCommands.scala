@@ -6,7 +6,8 @@ import com.twitter.finagle.redis.util.ReplyFormat
 import com.twitter.util.Future
 import org.jboss.netty.buffer.ChannelBuffer
 
-trait Hashes { self: BaseClient =>
+trait Hashes {
+  self: BaseClient =>
 
   /**
     * Deletes fields from given hash

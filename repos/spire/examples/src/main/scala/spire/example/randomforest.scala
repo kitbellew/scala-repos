@@ -465,7 +465,8 @@ object RandomForest {
   */
 sealed trait DecisionTree[V, F, K] {
   def apply(v: V)(implicit V: CoordinateSpace[V, F], F: Order[F]): K = {
-    @tailrec def loop(tree: DecisionTree[V, F, K]): K =
+    @tailrec
+    def loop(tree: DecisionTree[V, F, K]): K =
       tree match {
         case Split(i, boundary, left, right) =>
           if (v.coord(i) <= boundary)

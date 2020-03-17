@@ -47,7 +47,8 @@ case class FlowState(
   */
 object FlowStateMap {
   // Make sure we don't hold FlowState after the FlowDef is gone
-  @transient private val flowMap = new WeakHashMap[FlowDef, FlowState]()
+  @transient
+  private val flowMap = new WeakHashMap[FlowDef, FlowState]()
 
   /**
     * Function to update a state.

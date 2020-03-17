@@ -44,7 +44,8 @@ object Decoder {
 }
 
 /** A decoder that is implemented in terms of a [[Stage]] */
-trait StreamDecoder extends Decoder { outer ⇒
+trait StreamDecoder extends Decoder {
+  outer ⇒
   protected def newDecompressorStage(
       maxBytesPerChunk: Int): () ⇒ GraphStage[FlowShape[ByteString, ByteString]]
 

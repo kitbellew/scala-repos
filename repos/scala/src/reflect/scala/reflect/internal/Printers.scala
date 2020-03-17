@@ -13,7 +13,8 @@ import java.io.{OutputStream, PrintWriter, Writer}
 import Flags._
 import scala.compat.Platform.EOL
 
-trait Printers extends api.Printers { self: SymbolTable =>
+trait Printers extends api.Printers {
+  self: SymbolTable =>
 
   //nsc import treeInfo.{ IsTrue, IsFalse }
 

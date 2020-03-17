@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait Comonad[F[_]] extends Cobind[F] { self =>
+trait Comonad[F[_]] extends Cobind[F] {
+  self =>
   ////
   /** Also known as `extract` / `copure` */
   def copoint[A](p: F[A]): A
@@ -32,7 +33,8 @@ trait Comonad[F[_]] extends Cobind[F] { self =>
 }
 
 object Comonad {
-  @inline def apply[F[_]](implicit F: Comonad[F]): Comonad[F] = F
+  @inline
+  def apply[F[_]](implicit F: Comonad[F]): Comonad[F] = F
 
   ////
 

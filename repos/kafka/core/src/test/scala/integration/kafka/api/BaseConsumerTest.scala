@@ -450,10 +450,12 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       consumer: Consumer[Array[Byte], Array[Byte]],
       topicsToSubscribe: List[String])
       extends ShutdownableThread("daemon-consumer-assignment", false) {
-    @volatile private var partitionAssignment: Set[TopicPartition] = Set
+    @volatile
+    private var partitionAssignment: Set[TopicPartition] = Set
       .empty[TopicPartition]
     private var topicsSubscription = topicsToSubscribe
-    @volatile private var subscriptionChanged = false
+    @volatile
+    private var subscriptionChanged = false
 
     val rebalanceListener =
       new ConsumerRebalanceListener {

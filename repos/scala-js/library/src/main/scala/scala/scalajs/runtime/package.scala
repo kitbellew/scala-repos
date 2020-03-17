@@ -32,7 +32,8 @@ package object runtime {
     result
   }
 
-  @inline final def genTraversableOnce2jsArray[A](
+  @inline
+  final def genTraversableOnce2jsArray[A](
       col: GenTraversableOnce[A]): js.Array[A] = {
     col match {
       case col: js.ArrayOps[A]     => col.result()
@@ -135,7 +136,8 @@ package object runtime {
     *
     *  See [[EnvironmentInfo]] for details.
     */
-  @inline def environmentInfo: EnvironmentInfo = linkingInfo.envInfo
+  @inline
+  def environmentInfo: EnvironmentInfo = linkingInfo.envInfo
 
   /** Information known at link-time, given the output configuration.
     *

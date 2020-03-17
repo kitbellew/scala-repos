@@ -3,7 +3,8 @@ package scalate
 
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
-trait ScalateRenderSupport { self: ScalatraBase with ScalateSupport =>
+trait ScalateRenderSupport {
+  self: ScalatraBase with ScalateSupport =>
 
   val templateBaseDirectory = "/WEB-INF/scalate/templates"
   val scalateExtension = "ssp"

@@ -71,7 +71,8 @@ class FileJobManagerSpec extends Specification {
     } ^ fs
 }
 
-class WebJobManagerSpec extends TestJobService { self =>
+class WebJobManagerSpec extends TestJobService {
+  self =>
   include(
     new JobManagerSpec[Future] {
       val validAPIKey = self.validAPIKey

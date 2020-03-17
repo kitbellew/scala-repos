@@ -11,13 +11,17 @@ import scala.language.existentials
   * given.
   */
 class ThriftCall[A <: TBase[_, _], R <: TBase[_, _]](
-    @BeanProperty val method: String,
+    @BeanProperty
+    val method: String,
     args: A,
     replyClass: Class[R],
     var seqid: Int) {
   // Constructor without seqno for Java
-  def this(@BeanProperty method: String, args: A, replyClass: Class[R]) =
-    this(method, args, replyClass, -1)
+  def this(
+      @BeanProperty
+      method: String,
+      args: A,
+      replyClass: Class[R]) = this(method, args, replyClass, -1)
 
   private[thrift] def readRequestArgs(p: TProtocol) {
     args.read(p)

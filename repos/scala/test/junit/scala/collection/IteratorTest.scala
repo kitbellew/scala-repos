@@ -12,7 +12,8 @@ import Seq.empty
 @RunWith(classOf[JUnit4])
 class IteratorTest {
 
-  @Test def groupedIteratorShouldNotAskForUnneededElement(): Unit = {
+  @Test
+  def groupedIteratorShouldNotAskForUnneededElement(): Unit = {
     var counter = 0
     val it =
       new Iterator[Int] {
@@ -34,7 +35,8 @@ class IteratorTest {
       counter)
   }
 
-  @Test def groupedIteratorIsLazyWhenPadded(): Unit = {
+  @Test
+  def groupedIteratorIsLazyWhenPadded(): Unit = {
     var counter = 0
     def it =
       new Iterator[Int] {
@@ -56,7 +58,8 @@ class IteratorTest {
       counter)
   }
 
-  @Test def dropDoesNotGrowStack(): Unit = {
+  @Test
+  def dropDoesNotGrowStack(): Unit = {
     def it =
       new Iterator[Throwable] {
         def hasNext = true;
@@ -68,7 +71,8 @@ class IteratorTest {
       it.drop(1).drop(1).next.getStackTrace.length)
   }
 
-  @Test def dropIsChainable(): Unit = {
+  @Test
+  def dropIsChainable(): Unit = {
     assertSameElements(1 to 4, Iterator from 0 take 5 drop 1)
     assertSameElements(3 to 4, Iterator from 0 take 5 drop 3)
     assertSameElements(empty, Iterator from 0 take 5 drop 5)
@@ -81,7 +85,8 @@ class IteratorTest {
     assertSameElements(3 to 4, Iterator from 0 take 5 drop 2 drop 1)
   }
 
-  @Test def sliceIsChainable(): Unit = {
+  @Test
+  def sliceIsChainable(): Unit = {
     assertSameElements(3 to 6, Iterator from 0 slice (3, 7))
     assertSameElements(empty, Iterator from 0 slice (3, 3))
     assertSameElements(0 to 2, Iterator from 0 slice (-1, 3))
@@ -95,7 +100,8 @@ class IteratorTest {
   }
 
   // test/files/run/iterator-concat.scala
-  @Test def concatIsStackFriendly(): Unit = {
+  @Test
+  def concatIsStackFriendly(): Unit = {
     // Create `size` Function0s, each of which evaluates to an Iterator
     // which produces 1. Then fold them over ++ to get a single iterator,
     // which should sum to "size".
@@ -112,13 +118,15 @@ class IteratorTest {
     assertEquals(100000, mk(100000).sum)
   }
 
-  @Test def from(): Unit = {
+  @Test
+  def from(): Unit = {
     val it1 = Iterator.from(-1)
     val it2 = Iterator.from(0, -1)
     assertEquals(-1, it1.next())
     assertEquals(0, it2.next())
   }
-  @Test def range(): Unit = {
+  @Test
+  def range(): Unit = {
     assertEquals(5, Iterator.range(0, 10, 2).size)
     assertEquals(0, Iterator.range(0, 10, -2).size)
     assertEquals(5, Iterator.range(10, 0, -2).size)
@@ -127,7 +135,8 @@ class IteratorTest {
     assertEquals(10, Iterator.range(0, 10, 1).size)
     assertEquals(10, Iterator.range(10, 0, -1).size)
   }
-  @Test def range3(): Unit = {
+  @Test
+  def range3(): Unit = {
     val r1 = Iterator.range(0, 10)
     assertTrue(r1 contains 5)
     assertTrue(r1 contains 6)
@@ -140,10 +149,12 @@ class IteratorTest {
     assertFalse(r3 contains 5)
     assertTrue(r3.isEmpty)
   }
-  @Test def take(): Unit = {
+  @Test
+  def take(): Unit = {
     assertEquals(10, (Iterator from 0 take 10).size)
   }
-  @Test def foreach(): Unit = {
+  @Test
+  def foreach(): Unit = {
     val it1 = Iterator.from(0) take 20
     var n = 0
     it1 foreach {
@@ -152,7 +163,8 @@ class IteratorTest {
     assertEquals(190, n)
   }
   // ticket #429
-  @Test def fromArray(): Unit = {
+  @Test
+  def fromArray(): Unit = {
     val a = List(1, 2, 3, 4).toArray
     var xs0 = a.iterator.toList;
     var xs1 = a.slice(0, 1).iterator
@@ -161,14 +173,17 @@ class IteratorTest {
     var xs4 = a.slice(0, 4).iterator
     assertEquals(14, xs0.size + xs1.size + xs2.size + xs3.size + xs4.size)
   }
-  @Test def toSeq(): Unit = {
+  @Test
+  def toSeq(): Unit = {
     assertEquals("1x2x3x4x5", List(1, 2, 3, 4, 5).iterator.mkString("x"))
   }
-  @Test def indexOf(): Unit = {
+  @Test
+  def indexOf(): Unit = {
     assertEquals(3, List(1, 2, 3, 4, 5).iterator.indexOf(4))
     assertEquals(-1, List(1, 2, 3, 4, 5).iterator.indexOf(16))
   }
-  @Test def indexWhere(): Unit = {
+  @Test
+  def indexWhere(): Unit = {
     assertEquals(
       3,
       List(1, 2, 3, 4, 5).iterator.indexWhere { x: Int =>
@@ -180,14 +195,16 @@ class IteratorTest {
         x >= 16
       })
   }
-  @Test def indexOfFrom(): Unit = {
+  @Test
+  def indexOfFrom(): Unit = {
     assertEquals(1, List(1, 2, 3, 4, 5).iterator.indexOf(2, 0))
     assertEquals(1, List(1, 2, 3, 4, 5).iterator.indexOf(2, 1))
     assertEquals(-1, List(1, 2, 3, 4, 5).iterator.indexOf(2, 2))
     assertEquals(4, List(1, 2, 3, 2, 1).iterator.indexOf(1, 1))
     assertEquals(1, List(1, 2, 3, 2, 1).iterator.indexOf(2, 1))
   }
-  @Test def indexWhereFrom(): Unit = {
+  @Test
+  def indexWhereFrom(): Unit = {
     assertEquals(1, List(1, 2, 3, 4, 5).iterator.indexWhere(_ == 2, 0))
     assertEquals(1, List(1, 2, 3, 4, 5).iterator.indexWhere(_ == 2, 1))
     assertEquals(-1, List(1, 2, 3, 4, 5).iterator.indexWhere(_ == 2, 2))
@@ -196,7 +213,8 @@ class IteratorTest {
   }
   // iterator-iterate-lazy.scala
   // was java.lang.UnsupportedOperationException: tail of empty list
-  @Test def iterateIsSufficientlyLazy(): Unit = {
+  @Test
+  def iterateIsSufficientlyLazy(): Unit = {
     //Iterator.iterate((1 to 5).toList)(_.tail).takeWhile(_.nonEmpty).toList  // suffices
     Iterator
       .iterate((1 to 5).toList)(_.tail)
@@ -205,7 +223,8 @@ class IteratorTest {
       .toList
   }
   // SI-3516
-  @Test def toStreamIsSufficientlyLazy(): Unit = {
+  @Test
+  def toStreamIsSufficientlyLazy(): Unit = {
     val results = collection.mutable.ListBuffer.empty[Int]
     def mkIterator =
       (1 to 5).iterator map (x => {
@@ -228,7 +247,8 @@ class IteratorTest {
     assertSameElements(List(1, 1, 21), results)
   }
   // SI-8552
-  @Test def indexOfShouldWorkForTwoParams(): Unit = {
+  @Test
+  def indexOfShouldWorkForTwoParams(): Unit = {
     assertEquals(1, List(1, 2, 3).iterator.indexOf(2, 0))
     assertEquals(-1, List(5 -> 0).iterator.indexOf(5, 0))
     assertEquals(0, List(5 -> 0).iterator.indexOf((5, 0)))
@@ -236,7 +256,8 @@ class IteratorTest {
     assertEquals(1, List(5 -> 0, 9 -> 2, 0 -> 3).iterator.indexOf(9 -> 2))
   }
   // SI-9332
-  @Test def spanExhaustsLeadingIterator(): Unit = {
+  @Test
+  def spanExhaustsLeadingIterator(): Unit = {
     def it = Iterator.iterate(0)(_ + 1).take(6)
     val (x, y) = it.span(_ != 1)
     val z = x.toList
@@ -246,7 +267,8 @@ class IteratorTest {
     assertFalse(x.hasNext) // was true, after advancing underlying iterator
   }
   // SI-9623
-  @Test def noExcessiveHasNextInJoinIterator: Unit = {
+  @Test
+  def noExcessiveHasNextInJoinIterator: Unit = {
     var counter = 0
     val exp = List(1, 2, 3, 1, 2, 3)
     def it: Iterator[Int] =

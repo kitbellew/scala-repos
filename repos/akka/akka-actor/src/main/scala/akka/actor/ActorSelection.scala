@@ -195,7 +195,8 @@ object ActorSelection {
 
       val iter = sel.elements.iterator
 
-      @tailrec def rec(ref: InternalActorRef): Unit = {
+      @tailrec
+      def rec(ref: InternalActorRef): Unit = {
         ref match {
           case refWithCell: ActorRefWithCell ⇒
             def emptyRef =

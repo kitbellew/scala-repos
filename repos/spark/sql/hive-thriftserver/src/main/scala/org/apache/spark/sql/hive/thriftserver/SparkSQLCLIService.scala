@@ -80,7 +80,8 @@ private[hive] class SparkSQLCLIService(
   }
 }
 
-private[thriftserver] trait ReflectedCompositeService { this: AbstractService =>
+private[thriftserver] trait ReflectedCompositeService {
+  this: AbstractService =>
   def initCompositeService(hiveConf: HiveConf) {
     // Emulating `CompositeService.init(hiveConf)`
     val serviceList = getAncestorField[JList[Service]](this, 2, "serviceList")

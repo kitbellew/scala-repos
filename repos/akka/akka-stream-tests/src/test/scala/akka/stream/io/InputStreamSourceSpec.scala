@@ -41,7 +41,8 @@ class InputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       val f = StreamConverters
         .fromInputStream(() ⇒
           new InputStream {
-            @volatile var buf = List("a", "b", "c").map(_.charAt(0).toInt)
+            @volatile
+            var buf = List("a", "b", "c").map(_.charAt(0).toInt)
             override def read(): Int = {
               buf match {
                 case head :: tail ⇒
@@ -64,7 +65,8 @@ class InputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
         .fromInputStream(
           () ⇒
             new InputStream {
-              @volatile var emitted = false
+              @volatile
+              var emitted = false
               override def read(): Int = {
                 if (!emitted) {
                   emitted = true

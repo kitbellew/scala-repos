@@ -94,7 +94,8 @@ case class MockitoSigarProvider(
   *
   * TODO change factory after https://github.com/akka/akka/issues/16369
   */
-trait MetricsCollectorFactory { this: AkkaSpec ⇒
+trait MetricsCollectorFactory {
+  this: AkkaSpec ⇒
   import MetricsConfig._
   import org.hyperic.sigar.Sigar
 

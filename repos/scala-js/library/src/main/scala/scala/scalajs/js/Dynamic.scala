@@ -76,7 +76,8 @@ sealed trait Dynamic extends Any with scala.Dynamic {
 object Dynamic {
 
   /** Dynamic view of the global scope. */
-  @inline def global: Dynamic = scala.scalajs.runtime.environmentInfo.global
+  @inline
+  def global: Dynamic = scala.scalajs.runtime.environmentInfo.global
 
   /** Instantiates a new object of a JavaScript class. */
   def newInstance(clazz: Dynamic)(args: Any*): Object with Dynamic =

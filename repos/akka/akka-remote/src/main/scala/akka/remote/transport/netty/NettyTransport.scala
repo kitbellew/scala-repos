@@ -409,9 +409,12 @@ class NettyTransport(
 
   private final val isDatagram = TransportMode == Udp
 
-  @volatile private var localAddress: Address = _
-  @volatile private var boundTo: Address = _
-  @volatile private var serverChannel: Channel = _
+  @volatile
+  private var localAddress: Address = _
+  @volatile
+  private var boundTo: Address = _
+  @volatile
+  private var serverChannel: Channel = _
 
   private val log = Logging(system, this.getClass)
 

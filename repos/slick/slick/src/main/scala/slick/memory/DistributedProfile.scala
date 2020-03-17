@@ -15,7 +15,8 @@ import slick.util.{DumpInfo, RefId, ??}
 
 /** A profile for distributed queries. */
 class DistributedProfile(val profiles: RelationalProfile*)
-    extends MemoryQueryingProfile { self: DistributedProfile =>
+    extends MemoryQueryingProfile {
+  self: DistributedProfile =>
 
   @deprecated(
     "Use the Profile object directly instead of calling `.profile` on it",

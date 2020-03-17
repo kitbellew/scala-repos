@@ -859,7 +859,8 @@ trait ColumnarTableModule[M[+_]]
 
   abstract class ColumnarTable(slices0: StreamT[M, Slice], val size: TableSize)
       extends TableLike
-      with SamplableColumnarTable { self: Table =>
+      with SamplableColumnarTable {
+    self: Table =>
     import SliceTransform._
 
     private final val readStarts = new java.util.concurrent.atomic.AtomicInteger
@@ -1091,21 +1092,24 @@ trait ColumnarTableModule[M[+_]]
         val leqbuf = new ArrayIntList(lInitialSize max rInitialSize)
         val reqbuf = new ArrayIntList(lInitialSize max rInitialSize)
 
-        @inline def advanceLeft(lpos: Int): Unit = {
+        @inline
+        def advanceLeft(lpos: Int): Unit = {
           lbuf.add(lpos)
           rbuf.add(-1)
           leqbuf.add(-1)
           reqbuf.add(-1)
         }
 
-        @inline def advanceRight(rpos: Int): Unit = {
+        @inline
+        def advanceRight(rpos: Int): Unit = {
           lbuf.add(-1)
           rbuf.add(rpos)
           leqbuf.add(-1)
           reqbuf.add(-1)
         }
 
-        @inline def advanceBoth(lpos: Int, rpos: Int): Unit = {
+        @inline
+        def advanceBoth(lpos: Int, rpos: Int): Unit = {
           //println("advanceBoth: lpos = %d, rpos = %d" format (lpos, rpos))
           lbuf.add(-1)
           rbuf.add(-1)
@@ -1250,7 +1254,9 @@ trait ColumnarTableModule[M[+_]]
             // a pair of slices. Any operation that must cross slice boundaries
             // must exit this inner loop and recur through the outer monadic loop
             // xrstart is an int with sentinel value for effieiency, but is Option at the slice level.
-            @inline @tailrec def buildRemappings(
+            @inline
+            @tailrec
+            def buildRemappings(
                 lpos: Int,
                 rpos: Int,
                 rightStart: Option[SlicePosition[RK]],
@@ -2048,10 +2054,8 @@ trait ColumnarTableModule[M[+_]]
     def partitionMerge(partitionBy: TransSpec1)(
         f: Table => M[Table]): M[Table] = {
       // Find the first element that compares LT
-      @tailrec def findEnd(
-          compare: Int => Ordering,
-          imin: Int,
-          imax: Int): Int = {
+      @tailrec
+      def findEnd(compare: Int => Ordering, imin: Int, imax: Int): Int = {
         val minOrd = compare(imin)
         if (minOrd eq EQ) {
           val maxOrd = compare(imax)
@@ -2198,7 +2202,8 @@ trait ColumnarTableModule[M[+_]]
       }
 
       def isZero(x: Array[Int]): Boolean = {
-        @tailrec def loop(i: Int): Boolean =
+        @tailrec
+        def loop(i: Int): Boolean =
           if (i < 0) {
             true
           } else if (x(i) != 0) {
@@ -2281,9 +2286,8 @@ trait ColumnarTableModule[M[+_]]
           import java.util.Arrays.copyOf
           val mask = RawBitSet.create(cols.length)
 
-          @tailrec def build0(
-              row: Int,
-              masks: List[Array[Int]]): List[Array[Int]] = {
+          @tailrec
+          def build0(row: Int, masks: List[Array[Int]]): List[Array[Int]] = {
             if (row < sliceSize) {
               RawBitSet.clear(mask)
 

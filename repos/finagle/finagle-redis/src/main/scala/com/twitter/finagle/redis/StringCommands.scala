@@ -5,7 +5,8 @@ import com.twitter.finagle.redis.protocol._
 import com.twitter.util.Future
 import org.jboss.netty.buffer.ChannelBuffer
 
-trait Strings { self: BaseClient =>
+trait Strings {
+  self: BaseClient =>
 
   /**
     * Appends value at the given key. If key doesn't exist,

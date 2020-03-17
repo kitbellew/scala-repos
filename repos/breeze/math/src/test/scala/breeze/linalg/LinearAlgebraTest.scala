@@ -36,7 +36,6 @@ import breeze.{math => bmath}
   *
   * @author dlwh
   */
-
 @RunWith(classOf[JUnitRunner])
 class LinearAlgebraTest
     extends FunSuite

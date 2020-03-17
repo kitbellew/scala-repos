@@ -14,7 +14,8 @@ import scala.annotation.unchecked.uncheckedVariance
   * It is also used in the Java DSL for “untyped Inlets” as a work-around
   * for otherwise unreasonable existential types.
   */
-sealed abstract class InPort { self: Inlet[_] ⇒
+sealed abstract class InPort {
+  self: Inlet[_] ⇒
   final override def hashCode: Int = super.hashCode
   final override def equals(that: Any): Boolean =
     this eq that.asInstanceOf[AnyRef]
@@ -36,7 +37,8 @@ sealed abstract class InPort { self: Inlet[_] ⇒
   * It is also used in the Java DSL for “untyped Outlets” as a work-around
   * for otherwise unreasonable existential types.
   */
-sealed abstract class OutPort { self: Outlet[_] ⇒
+sealed abstract class OutPort {
+  self: Outlet[_] ⇒
   final override def hashCode: Int = super.hashCode
   final override def equals(that: Any): Boolean =
     this eq that.asInstanceOf[AnyRef]

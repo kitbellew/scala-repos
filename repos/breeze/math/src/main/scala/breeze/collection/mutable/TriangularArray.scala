@@ -29,7 +29,8 @@ import scala.reflect.ClassTag
   */
 @SerialVersionUID(1L)
 final class TriangularArray[T: ClassTag](val dimension: Int)
-    extends Serializable { outer =>
+    extends Serializable {
+  outer =>
   import TriangularArray._
 
   private def numElems = dimension * (dimension + 1) / 2

@@ -50,7 +50,8 @@ final case class AdaptiveLoadBalancingRoutingLogic(
         Set[NodeMetrics],
         Option[WeightedRoutees])]((Vector.empty, Set.empty, None))
 
-  @tailrec final def metricsChanged(event: ClusterMetricsChanged): Unit = {
+  @tailrec
+  final def metricsChanged(event: ClusterMetricsChanged): Unit = {
     val oldValue = weightedRouteesRef.get
     val (routees, _, _) = oldValue
     val weightedRoutees = Some(

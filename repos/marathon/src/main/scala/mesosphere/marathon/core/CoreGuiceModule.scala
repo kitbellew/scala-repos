@@ -56,73 +56,90 @@ import mesosphere.util.{CapConcurrentExecutionsMetrics, CapConcurrentExecutions}
 class CoreGuiceModule extends AbstractModule {
 
   // Export classes used outside of core to guice
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def leadershipModule(coreModule: CoreModule): LeadershipModule =
     coreModule.leadershipModule
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def taskTracker(coreModule: CoreModule): TaskTracker =
     coreModule.taskTrackerModule.taskTracker
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def taskCreationHandler(coreModule: CoreModule): TaskCreationHandler =
     coreModule.taskTrackerModule.taskCreationHandler
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def taskUpdater(coreModule: CoreModule): TaskUpdater =
     coreModule.taskTrackerModule.taskUpdater
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def leadershipCoordinator(
       leadershipModule: LeadershipModule,
       makeSureToInitializeThisBeforeCreatingCoordinator: TaskStatusUpdateProcessor)
       : LeadershipCoordinator = leadershipModule.coordinator()
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def offerProcessor(coreModule: CoreModule): OfferProcessor =
     coreModule.launcherModule.offerProcessor
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def taskStatusEmitter(coreModule: CoreModule): TaskStatusEmitter =
     coreModule.taskBusModule.taskStatusEmitter
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def taskStatusObservable(coreModule: CoreModule): TaskStatusObservables =
     coreModule.taskBusModule.taskStatusObservables
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def taskJobsModule(coreModule: CoreModule): TaskJobsModule =
     coreModule.taskJobsModule
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   final def taskQueue(coreModule: CoreModule): LaunchQueue =
     coreModule.appOfferMatcherModule.taskQueue
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   final def appInfoService(appInfoModule: AppInfoModule): AppInfoService =
     appInfoModule.appInfoService
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   final def groupInfoService(appInfoModule: AppInfoModule): GroupInfoService =
     appInfoModule.groupInfoService
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def pluginManager(coreModule: CoreModule): PluginManager =
     coreModule.pluginModule.pluginManager
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def pluginDefinitions(coreModule: CoreModule): PluginDefinitions =
     coreModule.pluginModule.pluginManager.definitions
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def authorizer(coreModule: CoreModule): Authorizer =
     coreModule.authModule.authorizer
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def authenticator(coreModule: CoreModule): Authenticator =
     coreModule.authModule.authenticator
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def taskStatusUpdateSteps(
       notifyHealthCheckManagerStepImpl: NotifyHealthCheckManagerStepImpl,
       notifyRateLimiterStepImpl: NotifyRateLimiterStepImpl,
@@ -157,7 +174,8 @@ class CoreGuiceModule extends AbstractModule {
     )
   }
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   def pluginHttpRequestHandler(
       coreModule: CoreModule): Seq[HttpRequestHandler] = {
     coreModule.pluginModule.httpRequestHandler
@@ -181,7 +199,9 @@ class CoreGuiceModule extends AbstractModule {
     bind(classOf[AppInfoModule]).asEagerSingleton()
   }
 
-  @Provides @Singleton @Named(ThrottlingTaskStatusUpdateProcessor.dependencyTag)
+  @Provides
+  @Singleton
+  @Named(ThrottlingTaskStatusUpdateProcessor.dependencyTag)
   def throttlingTaskStatusUpdateProcessorSerializer(
       metrics: Metrics,
       config: MarathonConf,

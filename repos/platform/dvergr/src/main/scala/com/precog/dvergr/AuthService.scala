@@ -42,7 +42,8 @@ import scalaz._
 
 import WebJobManager._
 
-trait AuthService[M[+_]] { self =>
+trait AuthService[M[+_]] {
+  self =>
   def isValid(apiKey: APIKey): M[Boolean]
 
   def withM[N[+_]](implicit t: M ~> N) =

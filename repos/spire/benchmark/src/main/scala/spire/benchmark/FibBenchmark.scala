@@ -131,7 +131,8 @@ class FibBenchmarks extends MyBenchmark {
     }
 
   def scalaGenFib[@sp(Int, Long) A](n: Int)(implicit r: Rig[A]): A = {
-    @tailrec def loop(n: Int, a: A, b: A): A =
+    @tailrec
+    def loop(n: Int, a: A, b: A): A =
       if (n == 0)
         a
       else
@@ -140,7 +141,8 @@ class FibBenchmarks extends MyBenchmark {
   }
 
   def scalaIntFib(n: Int) = {
-    @tailrec def loop(n: Int, a: Int, b: Int): Int =
+    @tailrec
+    def loop(n: Int, a: Int, b: Int): Int =
       if (n == 0)
         a
       else
@@ -149,7 +151,8 @@ class FibBenchmarks extends MyBenchmark {
   }
 
   def scalaLongFib(n: Int) = {
-    @tailrec def loop(n: Int, a: Long, b: Long): Long =
+    @tailrec
+    def loop(n: Int, a: Long, b: Long): Long =
       if (n == 0)
         a
       else
@@ -158,7 +161,8 @@ class FibBenchmarks extends MyBenchmark {
   }
 
   def scalaBigFib(n: Int) = {
-    @tailrec def loop(n: Int, a: BigInt, b: BigInt): BigInt =
+    @tailrec
+    def loop(n: Int, a: BigInt, b: BigInt): BigInt =
       if (n == 0)
         a
       else

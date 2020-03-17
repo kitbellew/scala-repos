@@ -205,9 +205,12 @@ case class RawBuffer(
 
   import play.api.libs.Files._
 
-  @volatile private var inMemory: ByteString = initialData
-  @volatile private var backedByTemporaryFile: TemporaryFile = _
-  @volatile private var outStream: OutputStream = _
+  @volatile
+  private var inMemory: ByteString = initialData
+  @volatile
+  private var backedByTemporaryFile: TemporaryFile = _
+  @volatile
+  private var outStream: OutputStream = _
 
   private[play] def push(chunk: ByteString) {
     if (inMemory != null) {

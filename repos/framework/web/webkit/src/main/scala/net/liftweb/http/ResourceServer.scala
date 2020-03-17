@@ -51,7 +51,8 @@ object ResourceServer {
         LiftRules.jsArtifacts.pathRewriter(in)
     }
 
-  @volatile var pathRewriter: PartialFunction[List[String], List[String]] =
+  @volatile
+  var pathRewriter: PartialFunction[List[String], List[String]] =
     rewriter orElse {
       case "lift.js" :: Nil  => List("lift-min.js")
       case "json.js" :: Nil  => List("json2-min.js")

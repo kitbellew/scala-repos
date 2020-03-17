@@ -279,7 +279,8 @@ object Scoped {
     def map[T](f: S => T): Initialize[Task[T]] = init(s => mktask(f(s)))
     def flatMap[T](f: S => Task[T]): Initialize[Task[T]] = init(f)
   }
-  sealed trait DefinableTask[S] { self: TaskKey[S] =>
+  sealed trait DefinableTask[S] {
+    self: TaskKey[S] =>
 
     private[sbt] def :==(app: S): Setting[Task[S]] =
       macro std.TaskMacro.taskAssignPositionPure[S]

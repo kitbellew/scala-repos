@@ -48,7 +48,8 @@ private[spark] class ShuffleMapTask(
     stageAttemptId: Int,
     taskBinary: Broadcast[Array[Byte]],
     partition: Partition,
-    @transient private var locs: Seq[TaskLocation],
+    @transient
+    private var locs: Seq[TaskLocation],
     _initialAccums: Seq[Accumulator[_]])
     extends Task[MapStatus](
       stageId,
@@ -70,7 +71,8 @@ private[spark] class ShuffleMapTask(
       null)
   }
 
-  @transient private val preferredLocs: Seq[TaskLocation] = {
+  @transient
+  private val preferredLocs: Seq[TaskLocation] = {
     if (locs == null)
       Nil
     else

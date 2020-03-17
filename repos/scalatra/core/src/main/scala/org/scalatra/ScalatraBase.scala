@@ -457,7 +457,8 @@ trait ScalatraBase
     * @see #renderPipeline
     */
   protected def renderResponseBody(actionResult: Any): Unit = {
-    @tailrec def loop(ar: Any): Any =
+    @tailrec
+    def loop(ar: Any): Any =
       ar match {
         case _: Unit | Unit => runRenderCallbacks(Success(actionResult))
         case a              => loop(renderPipeline.lift(a).getOrElse(()))

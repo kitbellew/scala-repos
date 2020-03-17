@@ -211,7 +211,8 @@ trait HeapBackend extends RelationalBackend with Logging {
   /** A Verifier is called before and after data is updated in a table. It
     * ensures that no constraints are violated before the update and updates
     * the indices afterwards. */
-  trait Verifier { self =>
+  trait Verifier {
+    self =>
     def verify(row: Row): Unit
     def inserted(row: Row): Unit
 

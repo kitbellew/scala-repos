@@ -52,9 +52,11 @@ trait ScalaFixer {
   protected def placeInWholeBlock(
       block: ScBlockExpr,
       editor: Editor): OperationPerformed = {
-    @inline def move2start(psi: PsiElement) =
+    @inline
+    def move2start(psi: PsiElement) =
       editor.getCaretModel.moveToOffset(psi.getTextRange.getStartOffset)
-    @inline def move2end(psi: PsiElement) =
+    @inline
+    def move2end(psi: PsiElement) =
       editor.getCaretModel.moveToOffset(psi.getTextRange.getEndOffset)
 
     if (block.exprs.nonEmpty) {

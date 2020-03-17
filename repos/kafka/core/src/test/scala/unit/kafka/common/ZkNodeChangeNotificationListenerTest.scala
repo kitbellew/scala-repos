@@ -28,8 +28,10 @@ class ZkNodeChangeNotificationListenerTest extends KafkaServerTestHarness {
 
   @Test
   def testProcessNotification() {
-    @volatile var notification: String = null
-    @volatile var invocationCount = 0
+    @volatile
+    var notification: String = null
+    @volatile
+    var invocationCount = 0
     val notificationHandler =
       new NotificationHandler {
         override def processNotification(notificationMessage: String): Unit = {

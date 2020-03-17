@@ -46,7 +46,8 @@ import scala.reflect.runtime.universe
 
 /** Collection of reusable workflow related utilities. */
 object WorkflowUtils extends Logging {
-  @transient private lazy val gson = new Gson
+  @transient
+  private lazy val gson = new Gson
 
   /** Obtains an Engine object in Scala, or instantiate an Engine in Java.
     *

@@ -120,7 +120,8 @@ class MetricsCollectorSpec
 /**
   * Used when testing metrics without full cluster
   */
-trait MetricsCollectorFactory { this: AkkaSpec ⇒
+trait MetricsCollectorFactory {
+  this: AkkaSpec ⇒
 
   private def extendedActorSystem = system.asInstanceOf[ExtendedActorSystem]
 

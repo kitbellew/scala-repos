@@ -10,13 +10,19 @@ final class Double private () extends Number with Comparable[Double] {
   def this(value: scala.Double) = this()
   def this(s: String) = this()
 
-  @inline def doubleValue(): scala.Double = this.asInstanceOf[scala.Double]
+  @inline
+  def doubleValue(): scala.Double = this.asInstanceOf[scala.Double]
 
-  @inline override def byteValue(): scala.Byte = doubleValue.toByte
-  @inline override def shortValue(): scala.Short = doubleValue.toShort
-  @inline def intValue(): scala.Int = doubleValue.toInt
-  @inline def longValue(): scala.Long = doubleValue.toLong
-  @inline def floatValue(): scala.Float = doubleValue.toFloat
+  @inline
+  override def byteValue(): scala.Byte = doubleValue.toByte
+  @inline
+  override def shortValue(): scala.Short = doubleValue.toShort
+  @inline
+  def intValue(): scala.Int = doubleValue.toInt
+  @inline
+  def longValue(): scala.Long = doubleValue.toLong
+  @inline
+  def floatValue(): scala.Float = doubleValue.toFloat
 
   override def equals(that: Any): scala.Boolean =
     that match {
@@ -28,17 +34,22 @@ final class Double private () extends Number with Comparable[Double] {
         false
     }
 
-  @inline override def hashCode(): Int =
+  @inline
+  override def hashCode(): Int =
     scala.scalajs.runtime.Bits.numberHashCode(doubleValue)
 
-  @inline override def compareTo(that: Double): Int =
+  @inline
+  override def compareTo(that: Double): Int =
     Double.compare(doubleValue, that.doubleValue)
 
-  @inline override def toString(): String = Double.toString(doubleValue)
+  @inline
+  override def toString(): String = Double.toString(doubleValue)
 
-  @inline def isNaN(): scala.Boolean = Double.isNaN(doubleValue)
+  @inline
+  def isNaN(): scala.Boolean = Double.isNaN(doubleValue)
 
-  @inline def isInfinite(): scala.Boolean = Double.isInfinite(doubleValue)
+  @inline
+  def isInfinite(): scala.Boolean = Double.isInfinite(doubleValue)
 
 }
 
@@ -53,10 +64,11 @@ object Double {
   final val MIN_EXPONENT = -1022
   final val SIZE = 64
 
-  @inline def valueOf(doubleValue: scala.Double): Double =
-    new Double(doubleValue)
+  @inline
+  def valueOf(doubleValue: scala.Double): Double = new Double(doubleValue)
 
-  @inline def valueOf(s: String): Double = valueOf(parseDouble(s))
+  @inline
+  def valueOf(s: String): Double = valueOf(parseDouble(s))
 
   private[this] lazy val doubleStrPat =
     new js.RegExp(
@@ -78,7 +90,8 @@ object Double {
       throw new NumberFormatException(s"""For input string: "$s"""")
   }
 
-  @inline def toString(d: scala.Double): String = "" + d
+  @inline
+  def toString(d: scala.Double): String = "" + d
 
   def compare(a: scala.Double, b: scala.Double): scala.Int = {
     // NaN must equal itself, and be greater than anything else
@@ -112,14 +125,18 @@ object Double {
     }
   }
 
-  @inline def isNaN(v: scala.Double): scala.Boolean = v != v
+  @inline
+  def isNaN(v: scala.Double): scala.Boolean = v != v
 
-  @inline def isInfinite(v: scala.Double): scala.Boolean =
+  @inline
+  def isInfinite(v: scala.Double): scala.Boolean =
     v == POSITIVE_INFINITY || v == NEGATIVE_INFINITY
 
-  @inline def longBitsToDouble(bits: scala.Long): scala.Double =
+  @inline
+  def longBitsToDouble(bits: scala.Long): scala.Double =
     scala.scalajs.runtime.Bits.longBitsToDouble(bits)
 
-  @inline def doubleToLongBits(value: scala.Double): scala.Long =
+  @inline
+  def doubleToLongBits(value: scala.Double): scala.Long =
     scala.scalajs.runtime.Bits.doubleToLongBits(value)
 }

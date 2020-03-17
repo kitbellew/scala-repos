@@ -63,7 +63,8 @@ private[sql] case class InsertIntoHadoopFsRelation(
     fileFormat: FileFormat,
     refreshFunction: () => Unit,
     options: Map[String, String],
-    @transient query: LogicalPlan,
+    @transient
+    query: LogicalPlan,
     mode: SaveMode)
     extends RunnableCommand {
 

@@ -10,7 +10,8 @@ trait ForallM[P[_[_]]] {
   def apply[F[_]: Monad]: P[F]
 }
 
-abstract class EnumeratorP[E, F[_]] { self =>
+abstract class EnumeratorP[E, F[_]] {
+  self =>
   def apply[G[_]](implicit MO: MonadPartialOrder[G, F]): EnumeratorT[E, G]
 
   def map[B](f: E => B): EnumeratorP[B, F] =
@@ -146,7 +147,8 @@ trait EnumeratorPFunctions {
 
   def mergeAll[E: Order, F[_]: Monad](
       enumerators: EnumeratorP[E, F]*): EnumeratorP[E, F] = {
-    @tailrec def mergeOne(
+    @tailrec
+    def mergeOne(
         e: EnumeratorP[E, F],
         es: List[EnumeratorP[E, F]]): EnumeratorP[E, F] =
       es match {

@@ -72,7 +72,8 @@ trait DB extends Loggable {
     * Use S.queryLog to get the list of (statement, duration) entries or set an analyzer function using
     * S.addAnalyzer
     */
-  @volatile var queryCollector: LogFunc = {
+  @volatile
+  var queryCollector: LogFunc = {
     case (query: DBLog, time) =>
   }
 
@@ -845,8 +846,8 @@ trait DB extends Loggable {
     *  If you need to change some of the reserved word, you can supply your own set in Boot.scala:
     * DB.userReservedWords = Full(Set("foo", "bar"))
     */
-  @volatile var userReservedWords: Box[scala.collection.immutable.Set[String]] =
-    Empty
+  @volatile
+  var userReservedWords: Box[scala.collection.immutable.Set[String]] = Empty
 
   /**
     * The default reserved words.

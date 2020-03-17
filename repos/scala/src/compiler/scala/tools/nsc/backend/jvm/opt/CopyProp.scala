@@ -329,7 +329,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
       def handleInputs(prod: AbstractInsnNode, numArgs: Int): Unit = {
         val frame = prodCons.frameAt(prod)
         val pops = mutable.ListBuffer.empty[InsnNode]
-        @tailrec def handle(stackOffset: Int): Unit = {
+        @tailrec
+        def handle(stackOffset: Int): Unit = {
           if (stackOffset >= 0) {
             val prods = producersIfSingleConsumer(
               prod,
@@ -644,13 +645,15 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
       *   - otherwise, empty the stack and mark the local variables in it live
       */
     def tryToPairInstruction(insn: AbstractInsnNode): Unit = {
-      @tailrec def emptyStack(): Unit =
+      @tailrec
+      def emptyStack(): Unit =
         if (pairStartStack.nonEmpty) {
           registerLiveVarsLabels(pairStartStack.pop()._1)
           emptyStack()
         }
 
-      @tailrec def tryPairing(): Unit = {
+      @tailrec
+      def tryPairing(): Unit = {
         if (completesStackTop(insn)) {
           val (store: VarInsnNode, depends) = pairStartStack.pop()
           addDepends(mkRemovePair(store, insn, depends.toList))
@@ -691,7 +694,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
 
     var insn = method.instructions.getFirst
 
-    @tailrec def advanceToNextExecutableOrLabel(): Unit = {
+    @tailrec
+    def advanceToNextExecutableOrLabel(): Unit = {
       insn = insn.getNext
       if (insn != null && !isExecutable(insn) && !insn.isInstanceOf[LabelNode])
         advanceToNextExecutableOrLabel()

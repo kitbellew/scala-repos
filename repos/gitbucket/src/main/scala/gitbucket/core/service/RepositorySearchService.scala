@@ -12,7 +12,8 @@ import org.eclipse.jgit.api.Git
 import gitbucket.core.model.Profile._
 import profile.simple._
 
-trait RepositorySearchService { self: IssuesService =>
+trait RepositorySearchService {
+  self: IssuesService =>
   import RepositorySearchService._
 
   def countIssues(owner: String, repository: String, query: String)(implicit

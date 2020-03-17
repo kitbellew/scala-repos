@@ -23,7 +23,8 @@ import org.scalatest.{BeforeAndAfter, WordSpec}
 /**
   * Specify logging during unit tests via system property, defaulting to FATAL only.
   */
-trait TestLogging extends BeforeAndAfter { self: WordSpec =>
+trait TestLogging extends BeforeAndAfter {
+  self: WordSpec =>
   val logLevel = Logger.levelNames(
     Option[String](System.getenv("log")).getOrElse("FATAL").toUpperCase)
 

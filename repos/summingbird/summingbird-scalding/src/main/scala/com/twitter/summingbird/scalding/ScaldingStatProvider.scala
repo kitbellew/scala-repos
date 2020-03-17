@@ -19,8 +19,8 @@ private[summingbird] case class ScaldingCounterIncrementor(
 }
 
 private[summingbird] object ScaldingStatProvider extends PlatformStatProvider {
-  @transient private val logger = LoggerFactory.getLogger(
-    ScaldingStatProvider.getClass)
+  @transient
+  private val logger = LoggerFactory.getLogger(ScaldingStatProvider.getClass)
 
   private def pullInScaldingRuntimeForJobID(
       jobID: JobId): Option[FlowProcess[_]] =

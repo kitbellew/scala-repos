@@ -105,7 +105,6 @@ class PageRank(args: Args) extends Job(args) {
     * the nodeset rows have the old page-rank, the edge rows are reversed, so we can get
     * the incoming page-rank from the nodes that point to each destination.
     */
-
   @tailrec
   final def doPageRank(steps: Int)(pagerank: RichPipe): RichPipe = {
     if (steps <= 0) {

@@ -41,7 +41,8 @@ class BoundedBlockingQueue[E <: AnyRef](
       throw new NullPointerException
     lock.lockInterruptibly()
     try {
-      @tailrec def putElement() {
+      @tailrec
+      def putElement() {
         if (backing.size() < maxCapacity) {
           require(backing.offer(e))
           notEmpty.signal()
@@ -57,7 +58,8 @@ class BoundedBlockingQueue[E <: AnyRef](
   def take(): E = { //Blocks until not empty
     lock.lockInterruptibly()
     try {
-      @tailrec def takeElement(): E = {
+      @tailrec
+      def takeElement(): E = {
         if (!backing.isEmpty()) {
           val e = backing.poll()
           require(e ne null)
@@ -97,7 +99,8 @@ class BoundedBlockingQueue[E <: AnyRef](
       throw new NullPointerException
     lock.lockInterruptibly()
     try {
-      @tailrec def offerElement(remainingNanos: Long): Boolean = {
+      @tailrec
+      def offerElement(remainingNanos: Long): Boolean = {
         if (backing.size() < maxCapacity) {
           require(backing.offer(e)) //Should never fail
           notEmpty.signal()
@@ -117,7 +120,8 @@ class BoundedBlockingQueue[E <: AnyRef](
       : E = { //Tries to do it within the timeout, returns null if fail
     lock.lockInterruptibly()
     try {
-      @tailrec def pollElement(remainingNanos: Long): E = {
+      @tailrec
+      def pollElement(remainingNanos: Long): E = {
         backing.poll() match {
           case null if remainingNanos <= 0 ⇒ null.asInstanceOf[E]
           case null ⇒ pollElement(notEmpty.awaitNanos(remainingNanos))
@@ -207,7 +211,8 @@ class BoundedBlockingQueue[E <: AnyRef](
     else {
       lock.lock()
       try {
-        @tailrec def drainOne(n: Int = 0): Int = {
+        @tailrec
+        def drainOne(n: Int = 0): Int = {
           if (n < maxElements) {
             backing.poll() match {
               case null ⇒ n
@@ -287,8 +292,8 @@ class BoundedBlockingQueue[E <: AnyRef](
           last = -1 //To avoid 2 subsequent removes without a next in between
           lock.lock()
           try {
-            @tailrec def removeTarget(
-                i: Iterator[E] = backing.iterator()): Unit =
+            @tailrec
+            def removeTarget(i: Iterator[E] = backing.iterator()): Unit =
               if (i.hasNext) {
                 if (i.next eq target) {
                   i.remove()

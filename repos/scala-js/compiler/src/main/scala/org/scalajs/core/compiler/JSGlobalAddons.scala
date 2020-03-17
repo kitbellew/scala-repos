@@ -100,7 +100,8 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
 
     def isJSProperty(sym: Symbol): Boolean = isJSGetter(sym) || isJSSetter(sym)
 
-    @inline private def enteringUncurryIfAtPhaseAfter[A](op: => A): A = {
+    @inline
+    private def enteringUncurryIfAtPhaseAfter[A](op: => A): A = {
       if (currentRun.uncurryPhase != NoPhase &&
           isAtPhaseAfter(currentRun.uncurryPhase)) {
         enteringPhase(currentRun.uncurryPhase)(op)

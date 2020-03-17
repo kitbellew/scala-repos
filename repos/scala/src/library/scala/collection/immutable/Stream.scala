@@ -204,7 +204,8 @@ abstract class Stream[+A]
     with LinearSeq[A]
     with GenericTraversableTemplate[A, Stream]
     with LinearSeqOptimized[A, Stream[A]]
-    with Serializable { self =>
+    with Serializable {
+  self =>
 
   override def companion: GenericCompanion[Stream] = Stream
 
@@ -325,11 +326,12 @@ abstract class Stream[+A]
 
   // It's an imperfect world, but at least we can bottle up the
   // imperfection in a capsule.
-  @inline private def asThat[That](x: AnyRef): That = x.asInstanceOf[That]
-  @inline private def asStream[B](x: AnyRef): Stream[B] =
-    x.asInstanceOf[Stream[B]]
-  @inline private def isStreamBuilder[B, That](
-      bf: CanBuildFrom[Stream[A], B, That]) =
+  @inline
+  private def asThat[That](x: AnyRef): That = x.asInstanceOf[That]
+  @inline
+  private def asStream[B](x: AnyRef): Stream[B] = x.asInstanceOf[Stream[B]]
+  @inline
+  private def isStreamBuilder[B, That](bf: CanBuildFrom[Stream[A], B, That]) =
     bf(repr).isInstanceOf[Stream.StreamBuilder[_]]
 
   // Overridden methods from Traversable
@@ -862,7 +864,8 @@ abstract class Stream[+A]
       else
         cons(head, tail take n - 1))
 
-  @tailrec final override def drop(n: Int): Stream[A] =
+  @tailrec
+  final override def drop(n: Int): Stream[A] =
     if (n <= 0 || isEmpty)
       this
     else
@@ -1264,8 +1267,10 @@ object Stream extends SeqFactory[Stream] {
   final class Cons[+A](hd: A, tl: => Stream[A]) extends Stream[A] {
     override def isEmpty = false
     override def head = hd
-    @volatile private[this] var tlVal: Stream[A] = _
-    @volatile private[this] var tlGen = tl _
+    @volatile
+    private[this] var tlVal: Stream[A] = _
+    @volatile
+    private[this] var tlGen = tl _
     def tailDefined: Boolean = tlGen eq null
     override def tail: Stream[A] = {
       if (!tailDefined)

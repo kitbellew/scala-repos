@@ -4,5 +4,6 @@ trait ActorRef {
   def stop(): Unit = {}
 }
 
-trait ScalaActorRef { self: ActorRef =>
+trait ScalaActorRef {
+  self: ActorRef =>
 }

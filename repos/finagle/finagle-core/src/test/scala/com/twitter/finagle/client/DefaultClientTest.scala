@@ -54,7 +54,8 @@ class DefaultClientTest
     }
   }
 
-  trait ServiceHelper { self: QueueTransportHelper with DispatcherHelper =>
+  trait ServiceHelper {
+    self: QueueTransportHelper with DispatcherHelper =>
     val endPointer = Bridge[Int, Int, Int, Int](transporter, dispatcher)
     val name = "name"
     val socket = new InetSocketAddress(0)
@@ -201,7 +202,8 @@ class DefaultClientTest
 
   test("Bound Vars should be closable") {
     new DefaultClientHelper {
-      @volatile var closed = false
+      @volatile
+      var closed = false
 
       val dest = Name.Bound.singleton(
         Var.async(Addr.Bound(Seq.empty[Address]: _*)) { _ =>

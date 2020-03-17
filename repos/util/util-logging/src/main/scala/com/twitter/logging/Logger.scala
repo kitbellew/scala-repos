@@ -277,7 +277,8 @@ object Logger extends Iterable[Logger] {
     new ConcurrentHashMap[String, Logger](128, 0.75f, 2)
 
   // A cache of LoggerFactory functions passed into Logger.configure.
-  @volatile private[this] var loggerFactoryCache = List[() => Logger]()
+  @volatile
+  private[this] var loggerFactoryCache = List[() => Logger]()
 
   private[logging] val root: Logger = get("")
 

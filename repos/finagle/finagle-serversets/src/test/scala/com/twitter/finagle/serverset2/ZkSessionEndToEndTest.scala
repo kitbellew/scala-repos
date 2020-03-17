@@ -18,7 +18,8 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
   val zkTimeout = 100.milliseconds
   val retryStream = new RetryStream(Backoff.const(zkTimeout))
 
-  @volatile var inst: ZkInstance = _
+  @volatile
+  var inst: ZkInstance = _
 
   def toSpan(d: Duration): Span = Span(d.inNanoseconds, Nanoseconds)
 
@@ -60,7 +61,8 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
             inst.zookeeperConnectString,
             statsReceiver = NullStatsReceiver))
 
-      @volatile var states = Seq.empty[SessionState]
+      @volatile
+      var states = Seq.empty[SessionState]
       val state = session1 flatMap { session1 =>
         session1.state
       }
@@ -117,7 +119,8 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
         _.state
       }
 
-      @volatile var zkStates = Seq[(SessionState, Duration)]()
+      @volatile
+      var zkStates = Seq[(SessionState, Duration)]()
       varZkState.changes.register(
         Witness({ ws =>
           ws match {
@@ -127,7 +130,8 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
           }
         }))
 
-      @volatile var sessions = Seq[ZkSession]()
+      @volatile
+      var sessions = Seq[ZkSession]()
       varZkSession.changes.register(
         Witness({ s =>
           sessions = s +: sessions

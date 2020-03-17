@@ -29,7 +29,8 @@ private[finagle] class CachingPool[Req, Rep](
     extends ServiceFactory[Req, Rep] {
   private[this] val cache =
     new Cache[Service[Req, Rep]](cacheSize, ttl, timer, Some(_.close()))
-  @volatile private[this] var isOpen = true
+  @volatile
+  private[this] var isOpen = true
   private[this] val sizeGauge =
     statsReceiver.addGauge("pool_cached") {
       cache.size

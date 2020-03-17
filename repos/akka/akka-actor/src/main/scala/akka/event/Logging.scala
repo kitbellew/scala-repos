@@ -36,7 +36,8 @@ trait LoggingBus extends ActorEventBus {
 
   private val guard = new ReentrantGuard
   private var loggers = Seq.empty[ActorRef]
-  @volatile private var _logLevel: LogLevel = _
+  @volatile
+  private var _logLevel: LogLevel = _
 
   /**
     * Query currently set log level. See object Logging for more information.
@@ -282,8 +283,8 @@ trait LoggingBus extends ActorEventBus {
   * The default implementation of the second variant will just call the first.
   */
 @implicitNotFound(
-  "Cannot find LogSource for ${T} please see ScalaDoc for LogSource for how to obtain or construct one.") trait LogSource[
-    -T] {
+  "Cannot find LogSource for ${T} please see ScalaDoc for LogSource for how to obtain or construct one.")
+trait LogSource[-T] {
   def genString(t: T): String
   def genString(t: T, system: ActorSystem): String = genString(t)
   def getClazz(t: T): Class[_] = t.getClass
@@ -472,10 +473,14 @@ object Logging {
     * Marker trait for annotating LogLevel, which must be Int after erasure.
     */
   final case class LogLevel(asInt: Int) extends AnyVal {
-    @inline final def >=(other: LogLevel): Boolean = asInt >= other.asInt
-    @inline final def <=(other: LogLevel): Boolean = asInt <= other.asInt
-    @inline final def >(other: LogLevel): Boolean = asInt > other.asInt
-    @inline final def <(other: LogLevel): Boolean = asInt < other.asInt
+    @inline
+    final def >=(other: LogLevel): Boolean = asInt >= other.asInt
+    @inline
+    final def <=(other: LogLevel): Boolean = asInt <= other.asInt
+    @inline
+    final def >(other: LogLevel): Boolean = asInt > other.asInt
+    @inline
+    final def <(other: LogLevel): Boolean = asInt < other.asInt
   }
 
   /**
@@ -960,8 +965,8 @@ object Logging {
   /**
     * INTERNAL API
     */
-  @SerialVersionUID(1L) private[akka] class SerializedStandardOutLogger
-      extends Serializable {
+  @SerialVersionUID(1L)
+  private[akka] class SerializedStandardOutLogger extends Serializable {
     @throws(classOf[java.io.ObjectStreamException])
     private def readResolve(): AnyRef = Logging.StandardOutLogger
   }

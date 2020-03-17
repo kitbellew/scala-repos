@@ -191,7 +191,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   /**
     * Find GCD.
     */
-  @tailrec final def gcdDirect(a: Int, b: Int): Int =
+  @tailrec
+  final def gcdDirect(a: Int, b: Int): Int =
     if (a % b == 0)
       b
     else
@@ -207,7 +208,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   }
 
   import scala.math.{Integral => ScalaI}
-  @tailrec final def gcdGeneric[A](a: A, b: A)(implicit ev: ScalaI[A]): A = {
+  @tailrec
+  final def gcdGeneric[A](a: A, b: A)(implicit ev: ScalaI[A]): A = {
     import ScalaI.Implicits._
     if (a % b == ev.zero)
       b
@@ -224,7 +226,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     }
   }
 
-  @tailrec final def gcdSpire[@sp(Int) A](a: A, b: A)(implicit
+  @tailrec
+  final def gcdSpire[@sp(Int) A](a: A, b: A)(implicit
       ev1: EuclideanRing[A],
       ev2: Eq[A]): A = {
     import spire.implicits._

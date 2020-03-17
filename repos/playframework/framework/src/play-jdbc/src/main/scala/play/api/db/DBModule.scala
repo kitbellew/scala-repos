@@ -104,6 +104,7 @@ class DBApiProvider @Inject() (
   * Inject provider for named databases.
   */
 class NamedDatabaseProvider(name: String) extends Provider[Database] {
-  @Inject private var dbApi: DBApi = _
+  @Inject
+  private var dbApi: DBApi = _
   lazy val get: Database = dbApi.database(name)
 }

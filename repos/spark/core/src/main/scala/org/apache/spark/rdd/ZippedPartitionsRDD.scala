@@ -31,8 +31,10 @@ import org.apache.spark.util.Utils
 
 private[spark] class ZippedPartitionsPartition(
     idx: Int,
-    @transient private val rdds: Seq[RDD[_]],
-    @transient val preferredLocations: Seq[String])
+    @transient
+    private val rdds: Seq[RDD[_]],
+    @transient
+    val preferredLocations: Seq[String])
     extends Partition {
 
   override val index: Int = idx

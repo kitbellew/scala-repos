@@ -24,7 +24,8 @@ case class ConstMesosLeaderInfo(currentLeaderUrl: Option[String])
 
 class MutableMesosLeaderInfo extends MesosLeaderInfo {
 
-  @volatile private[this] var leaderUrl: Option[String] = None
+  @volatile
+  private[this] var leaderUrl: Option[String] = None
 
   override def currentLeaderUrl: Option[String] = {
     leaderUrl

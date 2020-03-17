@@ -50,7 +50,8 @@ abstract class Serializer {
     * Default ClassLoader to use in deserialization. Implementations of [[Serializer]] should
     * make sure it is using this when set.
     */
-  @volatile protected var defaultClassLoader: Option[ClassLoader] = None
+  @volatile
+  protected var defaultClassLoader: Option[ClassLoader] = None
 
   /**
     * Sets a class loader for the serializer to use in deserialization.

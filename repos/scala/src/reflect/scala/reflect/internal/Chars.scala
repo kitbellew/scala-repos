@@ -47,7 +47,8 @@ trait Chars {
 
   /** Convert a character to a backslash-u escape */
   def char2uescape(c: Char): String = {
-    @inline def hexChar(ch: Int): Char =
+    @inline
+    def hexChar(ch: Int): Char =
       (
         if (ch < 10)
           '0'

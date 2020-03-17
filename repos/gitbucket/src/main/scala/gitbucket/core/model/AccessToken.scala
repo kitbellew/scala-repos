@@ -1,6 +1,7 @@
 package gitbucket.core.model
 
-trait AccessTokenComponent { self: Profile =>
+trait AccessTokenComponent {
+  self: Profile =>
   import profile.simple._
   lazy val AccessTokens = TableQuery[AccessTokens]
 

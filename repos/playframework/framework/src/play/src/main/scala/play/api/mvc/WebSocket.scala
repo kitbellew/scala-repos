@@ -53,7 +53,8 @@ object WebSocket {
     * The transformation may be more than just converting from one message to another, it may also produce messages, such
     * as close messages with an appropriate error code if the message can't be consumed.
     */
-  trait MessageFlowTransformer[+In, -Out] { self =>
+  trait MessageFlowTransformer[+In, -Out] {
+    self =>
 
     /**
       * Transform the flow of In/Out messages into a flow of WebSocket messages.

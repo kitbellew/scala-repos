@@ -22,7 +22,8 @@ class ALSModel(
     val similarUsers: Map[Int, User])
     extends Serializable {
 
-  @transient lazy val similarUserIntStringMap = similarUserStringIntMap.inverse
+  @transient
+  lazy val similarUserIntStringMap = similarUserStringIntMap.inverse
 
   override def toString = {
     s" similarUserFeatures: [${similarUserFeatures.size}]" +
@@ -40,7 +41,8 @@ class ALSModel(
 class ALSAlgorithm(val ap: ALSAlgorithmParams)
     extends P2LAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(sc: SparkContext, data: PreparedData): ALSModel = {
     require(

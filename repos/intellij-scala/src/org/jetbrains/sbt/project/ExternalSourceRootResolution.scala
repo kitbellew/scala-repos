@@ -17,7 +17,8 @@ import org.jetbrains.sbt.{structure => sbtStructure}
 /**
   * @author Pavel Fatin
   */
-trait ExternalSourceRootResolution { self: SbtProjectResolver =>
+trait ExternalSourceRootResolution {
+  self: SbtProjectResolver =>
   def createSharedSourceModules(
       projectToModuleNode: Map[sbtStructure.ProjectData, ModuleNode],
       libraryNodes: Seq[LibraryNode],

@@ -68,7 +68,8 @@ private[python] trait PythonTransformFunctionSerializer {
   * deserialized by Java.
   */
 private[python] class TransformFunction(
-    @transient var pfunc: PythonTransformFunction)
+    @transient
+    var pfunc: PythonTransformFunction)
     extends function.Function2[JList[JavaRDD[_]], Time, JavaRDD[Array[Byte]]] {
 
   def apply(rdd: Option[RDD[_]], time: Time): Option[RDD[Array[Byte]]] = {
@@ -303,7 +304,8 @@ private[python] class PythonStateDStream(
 private[python] class PythonReducedWindowedDStream(
     parent: DStream[Array[Byte]],
     preduceFunc: PythonTransformFunction,
-    @transient private val pinvReduceFunc: PythonTransformFunction,
+    @transient
+    private val pinvReduceFunc: PythonTransformFunction,
     _windowDuration: Duration,
     _slideDuration: Duration)
     extends PythonDStream(parent, preduceFunc) {

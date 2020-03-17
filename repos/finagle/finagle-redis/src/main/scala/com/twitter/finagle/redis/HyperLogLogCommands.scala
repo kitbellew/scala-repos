@@ -11,7 +11,8 @@ import com.twitter.finagle.redis.protocol.{
 import com.twitter.util.Future
 import org.jboss.netty.buffer.ChannelBuffer
 
-trait HyperLogLogs { self: BaseClient =>
+trait HyperLogLogs {
+  self: BaseClient =>
 
   /**
     * Adds elements to a HyperLogLog data structure.

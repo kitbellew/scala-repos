@@ -49,14 +49,17 @@ import scala.deprecated
 
 trait TraitActivity[+This <: Activity] {
 
-  @inline def contentView_=(p: View) = {
+  @inline
+  def contentView_=(p: View) = {
     basis.setContentView(p)
     basis
   }
 
-  @inline def contentView(p: View) = contentView_=(p)
+  @inline
+  def contentView(p: View) = contentView_=(p)
 
-  @inline def contentView(implicit no: NoGetterForThisProperty): Nothing =
+  @inline
+  def contentView(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'contentView'")
 
   def intent = Some[Intent](basis.getIntent)
@@ -292,7 +295,8 @@ class AlertDialogBuilder(
   if (_message != null)
     setMessage(_message)
 
-  @inline def positiveButton(
+  @inline
+  def positiveButton(
       name: CharSequence = android.R.string.yes,
       onClick: => Unit = {}): AlertDialogBuilder =
     positiveButton(
@@ -301,14 +305,16 @@ class AlertDialogBuilder(
         onClick
       })
 
-  @inline def positiveButton(
+  @inline
+  def positiveButton(
       name: CharSequence,
       onClick: (DialogInterface, Int) => Unit): AlertDialogBuilder = {
     setPositiveButton(name, func2DialogOnClickListener(onClick))
     this
   }
 
-  @inline def neutralButton(
+  @inline
+  def neutralButton(
       name: CharSequence = android.R.string.ok,
       onClick: => Unit = {}): AlertDialogBuilder =
     neutralButton(
@@ -317,23 +323,24 @@ class AlertDialogBuilder(
         onClick
       })
 
-  @inline def neutralButton(
+  @inline
+  def neutralButton(
       name: CharSequence,
       onClick: (DialogInterface, Int) => Unit): AlertDialogBuilder = {
     setNeutralButton(name, func2DialogOnClickListener(onClick))
     this
   }
 
-  @inline def negativeButton(
-      name: CharSequence,
-      onClick: => Unit): AlertDialogBuilder =
+  @inline
+  def negativeButton(name: CharSequence, onClick: => Unit): AlertDialogBuilder =
     negativeButton(
       name,
       (_, _) => {
         onClick
       })
 
-  @inline def negativeButton(
+  @inline
+  def negativeButton(
       name: CharSequence = android.R.string.no,
       onClick: (DialogInterface, Int) => Unit = (d, _) => {
         d.cancel()
@@ -344,21 +351,25 @@ class AlertDialogBuilder(
 
   var tit: CharSequence = null
 
-  @inline def title_=(str: CharSequence) = {
+  @inline
+  def title_=(str: CharSequence) = {
     tit = str
     setTitle(str)
   }
 
-  @inline def title = tit
+  @inline
+  def title = tit
 
   var msg: CharSequence = null
 
-  @inline def message_=(str: CharSequence) = {
+  @inline
+  def message_=(str: CharSequence) = {
     msg = str
     setMessage(str)
   }
 
-  @inline def message = msg
+  @inline
+  def message = msg
 
   /**
     * Shows the dialog that is currently building.

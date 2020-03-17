@@ -229,7 +229,8 @@ final case class GuiceApplicationBuilder(
 
 private class AdditionalRouterProvider(additional: Router)
     extends Provider[Router] {
-  @Inject private var fallback: RoutesProvider = _
+  @Inject
+  private var fallback: RoutesProvider = _
   lazy val get = Router.from(additional.routes.orElse(fallback.get.routes))
 }
 

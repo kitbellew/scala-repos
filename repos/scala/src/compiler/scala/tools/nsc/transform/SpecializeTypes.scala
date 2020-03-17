@@ -491,7 +491,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       }
     )
   def specializedTypeVars(tpes: List[Type]): immutable.Set[Symbol] = {
-    @tailrec def loop(
+    @tailrec
+    def loop(
         result: immutable.Set[Symbol],
         xs: List[Type]): immutable.Set[Symbol] = {
       if (xs.isEmpty)

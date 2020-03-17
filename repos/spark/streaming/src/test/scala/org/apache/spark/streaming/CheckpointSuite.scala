@@ -80,7 +80,8 @@ private[streaming] class CheckpointInputDStream(_ssc: StreamingContext)
   * DStream checkpointing. Note that the implementations of this trait has to implement
   * the `setupCheckpointOperation`
   */
-trait DStreamCheckpointTester { self: SparkFunSuite =>
+trait DStreamCheckpointTester {
+  self: SparkFunSuite =>
 
   /**
     * Tests a streaming operation under checkpointing, by restarting the operation
@@ -1001,8 +1002,10 @@ class CheckpointSuite
     val updateFunc = (values: Seq[Int], state: Option[Int]) => {
       Some(values.sum + state.getOrElse(0))
     }
-    @volatile var shouldCheckpointAllMarkedRDDs = false
-    @volatile var rddsCheckpointed = false
+    @volatile
+    var shouldCheckpointAllMarkedRDDs = false
+    @volatile
+    var rddsCheckpointed = false
     inputDStream
       .map(i => (i, i))
       .updateStateByKey(updateFunc)

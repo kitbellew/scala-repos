@@ -12,7 +12,8 @@ import gitbucket.core.model.Profile._
 import gitbucket.core.util.JGitUtil
 import profile.simple._
 
-trait PullRequestService { self: IssuesService =>
+trait PullRequestService {
+  self: IssuesService =>
   import PullRequestService._
 
   def getPullRequest(owner: String, repository: String, issueId: Int)(implicit

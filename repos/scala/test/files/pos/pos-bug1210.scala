@@ -3,7 +3,8 @@ object Test {
     Nil
   }
 
-  abstract class M { self =>
+  abstract class M {
+    self =>
     type Settings
     type selfType =
       M {
@@ -13,7 +14,8 @@ object Test {
     val v: List[selfType] = f[selfType]((x: selfType) => x.v)
   }
 
-  abstract class M2 { self =>
+  abstract class M2 {
+    self =>
     type Settings
     type selfType =
       M2 {

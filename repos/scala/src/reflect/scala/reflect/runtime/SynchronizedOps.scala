@@ -6,7 +6,8 @@ package runtime
 private[reflect] trait SynchronizedOps
     extends internal.SymbolTable
     with SynchronizedSymbols
-    with SynchronizedTypes { self: SymbolTable =>
+    with SynchronizedTypes {
+  self: SymbolTable =>
 
 // Names
 

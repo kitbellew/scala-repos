@@ -869,7 +869,8 @@ private[remote] class EndpointWriter(
           true
       }
 
-    @tailrec def writeLoop(count: Int): Boolean =
+    @tailrec
+    def writeLoop(count: Int): Boolean =
       if (count > 0 && !buffer.isEmpty)
         if (delegate(buffer.peek)) {
           buffer.removeFirst()
@@ -880,7 +881,8 @@ private[remote] class EndpointWriter(
       else
         true
 
-    @tailrec def writePrioLoop(): Boolean =
+    @tailrec
+    def writePrioLoop(): Boolean =
       if (prioBuffer.isEmpty)
         true
       else
@@ -941,7 +943,8 @@ private[remote] class EndpointWriter(
       val s = self
       val backoffDeadlinelineNanoTime = System.nanoTime + adaptiveBackoffNanos
       Future {
-        @tailrec def backoff(): Unit = {
+        @tailrec
+        def backoff(): Unit = {
           val backoffNanos = backoffDeadlinelineNanoTime - System.nanoTime
           if (backoffNanos > 0) {
             LockSupport.parkNanos(backoffNanos)

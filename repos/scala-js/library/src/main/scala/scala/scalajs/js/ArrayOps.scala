@@ -26,9 +26,12 @@ final class ArrayOps[A](private[this] val array: Array[A])
 
   // Implementation of ArrayLike
 
-  @inline def apply(index: Int): A = array(index)
-  @inline def length: Int = array.length
-  @inline def update(index: Int, element: A): Unit = array(index) = element
+  @inline
+  def apply(index: Int): A = array(index)
+  @inline
+  def length: Int = array.length
+  @inline
+  def update(index: Int, element: A): Unit = array(index) = element
 
   def seq: IndexedSeq[A] = new WrappedArray(array)
 
@@ -43,18 +46,22 @@ final class ArrayOps[A](private[this] val array: Array[A])
 
   // Implementation of Builder
 
-  @inline def +=(elem: A): this.type = {
+  @inline
+  def +=(elem: A): this.type = {
     array.push(elem)
     this
   }
 
-  @inline def clear(): Unit = array.length = 0
+  @inline
+  def clear(): Unit = array.length = 0
 
-  @inline def result(): Array[A] = array
+  @inline
+  def result(): Array[A] = array
 
   // Scala notation for a fast concat()
 
-  @inline def ++[B >: A](that: Array[_ <: B]): Array[B] = concat(array, that)
+  @inline
+  def ++[B >: A](that: Array[_ <: B]): Array[B] = concat(array, that)
 
   // Methods whose inherited implementations do not play nice with the optimizer
 

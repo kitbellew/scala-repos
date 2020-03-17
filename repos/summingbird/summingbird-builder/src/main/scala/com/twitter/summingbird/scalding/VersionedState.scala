@@ -49,7 +49,8 @@ private[scalding] class VersionedState(
     meta: HDFSMetadata,
     startDate: Option[Timestamp],
     maxBatches: Int)(implicit batcher: Batcher)
-    extends WaitingState[Interval[Timestamp]] { outer =>
+    extends WaitingState[Interval[Timestamp]] {
+  outer =>
 
   private val logger = LoggerFactory.getLogger(classOf[VersionedState])
 

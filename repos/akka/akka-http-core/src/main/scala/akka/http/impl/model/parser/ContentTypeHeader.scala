@@ -17,7 +17,8 @@ private[parser] trait ContentTypeHeader {
         headers.`Content-Type`(contentType(main, sub, params)))
     }
 
-  @tailrec private def contentType(
+  @tailrec
+  private def contentType(
       main: String,
       sub: String,
       params: Seq[(String, String)],

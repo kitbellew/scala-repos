@@ -132,7 +132,8 @@ class SerialServerDispatcherTest extends FunSuite with MockitoSugar {
     when(service.close(any[Time])).thenReturn(Future.Done)
     val replyp =
       new Promise[String] {
-        @volatile var interrupted: Option[Throwable] = None
+        @volatile
+        var interrupted: Option[Throwable] = None
         setInterruptHandler {
           case exc => interrupted = Some(exc)
         }

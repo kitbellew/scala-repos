@@ -943,14 +943,15 @@ trait Definitions extends api.StandardDefinitions {
       getMemberValue(z, nme.productAccessorName(j))
 
     /** if tpe <: ProductN[T1,...,TN], returns List(T1,...,TN) else Nil */
-    @deprecated("No longer used", "2.11.0") def getProductArgs(
-        tpe: Type): List[Type] =
+    @deprecated("No longer used", "2.11.0")
+    def getProductArgs(tpe: Type): List[Type] =
       tpe.baseClasses find isProductNSymbol match {
         case Some(x) => tpe.baseType(x).typeArgs
         case _       => Nil
       }
 
-    @deprecated("No longer used", "2.11.0") def unapplyUnwrap(tpe: Type) =
+    @deprecated("No longer used", "2.11.0")
+    def unapplyUnwrap(tpe: Type) =
       tpe.finalResultType.dealiasWiden match {
         case RefinedType(p :: _, _) => p.dealiasWiden
         case tp                     => tp

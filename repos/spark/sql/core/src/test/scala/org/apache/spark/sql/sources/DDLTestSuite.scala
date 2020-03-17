@@ -36,7 +36,8 @@ class DDLScanSource extends RelationProvider {
 }
 
 case class SimpleDDLScan(from: Int, to: Int, table: String)(
-    @transient val sqlContext: SQLContext)
+    @transient
+    val sqlContext: SQLContext)
     extends BaseRelation
     with TableScan {
 

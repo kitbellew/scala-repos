@@ -7,7 +7,8 @@ import breeze.util.Isomorphism
   * across consecutive invocations.
   * @author dlwh
   */
-trait StochasticDiffFunction[T] extends (T => Double) { outer =>
+trait StochasticDiffFunction[T] extends (T => Double) {
+  outer =>
 
   /** calculates the gradient at a point */
   def gradientAt(x: T): T = calculate(x)._2

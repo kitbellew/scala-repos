@@ -32,25 +32,32 @@ package rng
 private[random] object Well44497abIndexCache {
 
   // Number of bits in the pool.
-  @inline private final val K: Int = 44497
+  @inline
+  private final val K: Int = 44497
 
   // Length of the pool in ints.
-  @inline private final val R: Int = (K + 31) / 32
+  @inline
+  private final val R: Int = (K + 31) / 32
 
   // Length of the pool in ints -1.
-  @inline private final val R_1: Int = R - 1
+  @inline
+  private final val R_1: Int = R - 1
 
   // Length of the pool in ints -2.
-  @inline private final val R_2: Int = R - 2
+  @inline
+  private final val R_2: Int = R - 2
 
   // First parameter of the algorithm.
-  @inline private final val M1: Int = 23
+  @inline
+  private final val M1: Int = 23
 
   // Second parameter of the algorithm.
-  @inline private final val M2: Int = 481
+  @inline
+  private final val M2: Int = 481
 
   // Third parameter of the algorithm.
-  @inline private final val M3: Int = 229
+  @inline
+  private final val M3: Int = 229
 
   val vm1 = Array.tabulate(R)(i => (i + M1) % R)
   val vm2 = Array.tabulate(R)(i => (i + M2) % R)

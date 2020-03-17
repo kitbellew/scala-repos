@@ -2621,7 +2621,8 @@ object Forms {
       strict: Boolean = false): Mapping[Byte] =
     numberMapping[Byte](Byte.MinValue, Byte.MaxValue, min, max, strict)
 
-  @inline private def numberMapping[N: Numeric: Formatter](
+  @inline
+  private def numberMapping[N: Numeric: Formatter](
       typeMin: N,
       typeMax: N,
       min: N,

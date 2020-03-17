@@ -13,7 +13,8 @@ import java.net.InetSocketAddress
   * external processes, for example lookups through DNS or to ZooKeeper,
   * and thus lookup results are represented by a [[com.twitter.util.Activity Activity]].
   */
-trait Namer { self =>
+trait Namer {
+  self =>
 
   /**
     * Translate a [[com.twitter.finagle.Path Path]] into a

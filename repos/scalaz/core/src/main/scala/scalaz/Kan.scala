@@ -1,7 +1,8 @@
 package scalaz
 
 /** The right Kan extension of `H` along `G` */
-trait Ran[G[_], H[_], A] { ran =>
+trait Ran[G[_], H[_], A] {
+  ran =>
   def apply[B](f: A => G[B]): H[B]
 
   def map[B](f: A => B): Ran[G, H, B] =
@@ -60,7 +61,8 @@ object Ran {
 }
 
 /** The left Kan extension of `H` along `G` */
-trait Lan[G[_], H[_], A] { lan =>
+trait Lan[G[_], H[_], A] {
+  lan =>
   type I
   def v: H[I]
   def f(gi: G[I]): A

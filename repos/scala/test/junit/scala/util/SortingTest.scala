@@ -136,7 +136,8 @@ class SortingTest {
       })
   }
 
-  @Test def testSortConsistency: Unit = {
+  @Test
+  def testSortConsistency: Unit = {
     for {
       size <- sizes
       v <- variety

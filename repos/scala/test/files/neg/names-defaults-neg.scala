@@ -99,7 +99,9 @@ object Test extends App {
 
   def deprNam4(@deprecatedName('deprNam4Arg) deprNam4Arg: String) = 0
   deprNam4(deprNam4Arg = null)
-  def deprNam5(@deprecatedName deprNam5Arg: String) = 0
+  def deprNam5(
+      @deprecatedName
+      deprNam5Arg: String) = 0
   deprNam5(deprNam5Arg = null)
 
   // t3818

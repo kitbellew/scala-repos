@@ -85,8 +85,10 @@ class HiveContext private[hive] (
     sc: SparkContext,
     cacheManager: CacheManager,
     listener: SQLListener,
-    @transient private val execHive: HiveClientImpl,
-    @transient private val metaHive: HiveClient,
+    @transient
+    private val execHive: HiveClientImpl,
+    @transient
+    private val metaHive: HiveClient,
     isRootContext: Boolean)
     extends SQLContext(sc, cacheManager, listener, isRootContext)
     with Logging {

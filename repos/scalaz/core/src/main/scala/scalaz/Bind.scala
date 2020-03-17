@@ -9,7 +9,8 @@ package scalaz
   * @see [[scalaz.Bind.BindLaw]]
   */
 ////
-trait Bind[F[_]] extends Apply[F] { self =>
+trait Bind[F[_]] extends Apply[F] {
+  self =>
   ////
 
   /** Equivalent to `join(map(fa)(f))`. */
@@ -78,7 +79,8 @@ trait Bind[F[_]] extends Apply[F] { self =>
 }
 
 object Bind {
-  @inline def apply[F[_]](implicit F: Bind[F]): Bind[F] = F
+  @inline
+  def apply[F[_]](implicit F: Bind[F]): Bind[F] = F
 
   ////
 

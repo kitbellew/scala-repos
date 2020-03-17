@@ -131,7 +131,8 @@ class LightArrayRevolverScheduler(
         )
       )
 
-      @tailrec private def swap(c: Cancellable): Unit = {
+      @tailrec
+      private def swap(c: Cancellable): Unit = {
         get match {
           case null ⇒
             if (c != null)
@@ -142,7 +143,8 @@ class LightArrayRevolverScheduler(
         }
       }
 
-      @tailrec final def cancel(): Boolean = {
+      @tailrec
+      final def cancel(): Boolean = {
         get match {
           case null ⇒ false
           case c ⇒
@@ -230,16 +232,16 @@ class LightArrayRevolverScheduler(
       Future.successful(Nil)
   }
 
-  @volatile private var timerThread: Thread = threadFactory.newThread(
+  @volatile
+  private var timerThread: Thread = threadFactory.newThread(
     new Runnable {
 
       var tick = 0
       val wheel = Array.fill(WheelSize)(new TaskQueue)
 
       private def clearAll(): immutable.Seq[TimerTask] = {
-        @tailrec def collect(
-            q: TaskQueue,
-            acc: Vector[TimerTask]): Vector[TimerTask] = {
+        @tailrec
+        def collect(q: TaskQueue, acc: Vector[TimerTask]): Vector[TimerTask] = {
           q.poll() match {
             case null ⇒ acc
             case x ⇒ collect(q, acc :+ x)
@@ -304,7 +306,8 @@ class LightArrayRevolverScheduler(
             throw t
         }
 
-      @tailrec final def nextTick(): Unit = {
+      @tailrec
+      final def nextTick(): Unit = {
         val time = clock()
         val sleepTime = start + (tick * tickNanos) - time
 
@@ -317,7 +320,8 @@ class LightArrayRevolverScheduler(
           val tasks = wheel(bucket)
           val putBack = new TaskQueue
 
-          @tailrec def executeBucket(): Unit =
+          @tailrec
+          def executeBucket(): Unit =
             tasks.pollNode() match {
               case null ⇒ ()
               case node ⇒
@@ -365,7 +369,8 @@ object LightArrayRevolverScheduler {
     * INTERNAL API
     */
   protected[actor] class TaskHolder(
-      @volatile var task: Runnable,
+      @volatile
+      var task: Runnable,
       var ticks: Int,
       executionContext: ExecutionContext)
       extends TimerTask {

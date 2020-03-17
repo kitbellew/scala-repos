@@ -18,7 +18,8 @@ trait RelationalProfile
     with RelationalTableComponent
     with RelationalSequenceComponent
     with RelationalTypesComponent
-    with RelationalActionComponent { self: RelationalProfile =>
+    with RelationalActionComponent {
+  self: RelationalProfile =>
 
   @deprecated(
     "Use the Profile object directly instead of calling `.profile` on it",
@@ -154,7 +155,8 @@ object RelationalProfile {
   }
 }
 
-trait RelationalTableComponent { self: RelationalProfile =>
+trait RelationalTableComponent {
+  self: RelationalProfile =>
 
   def buildTableSchemaDescription(table: Table[_]): SchemaDescription
 
@@ -172,7 +174,8 @@ trait RelationalTableComponent { self: RelationalProfile =>
       _tableTag: Tag,
       _schemaName: Option[String],
       _tableName: String)
-      extends AbstractTable[T](_tableTag, _schemaName, _tableName) { table =>
+      extends AbstractTable[T](_tableTag, _schemaName, _tableName) {
+    table =>
     final type TableElementType = T
 
     def this(_tableTag: Tag, _tableName: String) =
@@ -218,7 +221,8 @@ trait RelationalTableComponent { self: RelationalProfile =>
   }
 }
 
-trait RelationalSequenceComponent { self: RelationalProfile =>
+trait RelationalSequenceComponent {
+  self: RelationalProfile =>
 
   def buildSequenceSchemaDescription(seq: Sequence[_]): SchemaDescription
 
@@ -230,7 +234,8 @@ trait RelationalSequenceComponent { self: RelationalProfile =>
       val _start: Option[T],
       val _cycle: Boolean)(implicit
       val tpe: TypedType[T],
-      val integral: Integral[T]) { seq =>
+      val integral: Integral[T]) {
+    seq =>
 
     def min(v: T) =
       new Sequence[T](name, Some(v), _maxValue, _increment, _start, _cycle)
@@ -258,7 +263,8 @@ trait RelationalSequenceComponent { self: RelationalProfile =>
   }
 }
 
-trait RelationalTypesComponent { self: RelationalProfile =>
+trait RelationalTypesComponent {
+  self: RelationalProfile =>
   type ColumnType[T] <: TypedType[T]
   type BaseColumnType[T] <: ColumnType[T] with BaseTypedType[T]
 

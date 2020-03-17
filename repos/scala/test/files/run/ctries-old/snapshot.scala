@@ -57,7 +57,8 @@ object SnapshotSpec extends Spec {
         readonly: Map[Wrap, Int],
         sz: Int,
         N: Int) {
-      @volatile var e: Exception = null
+      @volatile
+      var e: Exception = null
 
       // reads possible entries once and stores them
       // then reads all these N more times to check if the
@@ -192,7 +193,8 @@ object SnapshotSpec extends Spec {
         trie: TrieMap[Wrap, Int],
         sz: Int,
         N: Int) {
-      @volatile var e: Exception = null
+      @volatile
+      var e: Exception = null
 
       // reads possible entries once and stores them
       // then reads all these N more times to check if the

@@ -128,8 +128,10 @@ object TestPurgatoryPerformance {
     val rand = new Random()
     val keys = (0 until numKeys).map(i =>
       "fakeKey%d".format(rand.nextInt(numPossibleKeys)))
-    @volatile var requestArrivalTime = start
-    @volatile var end = 0L
+    @volatile
+    var requestArrivalTime = start
+    @volatile
+    var end = 0L
     val generator =
       new Runnable {
         def run(): Unit = {

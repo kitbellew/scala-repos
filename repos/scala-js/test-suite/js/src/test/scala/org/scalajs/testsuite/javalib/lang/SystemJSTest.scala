@@ -20,7 +20,8 @@ import org.junit.Assert._
 
 class SystemJSTest {
 
-  @Test def identityHashCode_should_survive_if_an_object_is_sealed(): Unit = {
+  @Test
+  def identityHashCode_should_survive_if_an_object_is_sealed(): Unit = {
     /* This is mostly forward-checking that, should we have an implementation
      * that seals Scala.js objects, identityHashCode() survives.
      */
@@ -39,7 +40,8 @@ class SystemJSTest {
     assertEquals(x2FirstHash, x2.hashCode())
   }
 
-  @Test def identityHashCode_for_JS_objects(): Unit = {
+  @Test
+  def identityHashCode_for_JS_objects(): Unit = {
     if (assumingES6 || !js.isUndefined(js.Dynamic.global.WeakMap)) {
       /* This test is more restrictive than the spec, but we know our
        * implementation will always pass the test.
@@ -61,7 +63,8 @@ class SystemJSTest {
     }
   }
 
-  @Test def systemProperties(): Unit = {
+  @Test
+  def systemProperties(): Unit = {
     def get(key: String): String = java.lang.System.getProperty(key)
 
     // Defined in System.scala

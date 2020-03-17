@@ -26,7 +26,8 @@ import org.apache.spark.SparkContext
 import scala.language.existentials
 
 object EvaluationWorkflow {
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
   def runEvaluation[EI, Q, P, A, R <: BaseEvaluatorResult](
       sc: SparkContext,
       evaluation: Evaluation,

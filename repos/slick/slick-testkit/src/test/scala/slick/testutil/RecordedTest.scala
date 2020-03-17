@@ -18,7 +18,8 @@ abstract class RecordedTest {
 
   def mask(line: String): String = line
 
-  @Test def test() {
+  @Test
+  def test() {
     val logData = {
       val log = new ByteArrayOutputStream()
       val logP = new PrintStream(log)

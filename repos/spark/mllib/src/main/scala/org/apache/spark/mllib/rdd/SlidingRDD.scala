@@ -50,7 +50,8 @@ private[mllib] class SlidingRDDPartition[T](
   * @see [[scala.collection.IterableLike.sliding(Int, Int)*]]
   */
 private[mllib] class SlidingRDD[T: ClassTag](
-    @transient val parent: RDD[T],
+    @transient
+    val parent: RDD[T],
     val windowSize: Int,
     val step: Int)
     extends RDD[Array[T]](parent) {

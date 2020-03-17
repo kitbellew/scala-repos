@@ -63,7 +63,8 @@ private[algebra] class ReversedOrder[@sp A](order: Order[A]) extends Order[A] {
 }
 
 object Order {
-  @inline final def apply[A](implicit o: Order[A]): Order[A] = o
+  @inline
+  final def apply[A](implicit o: Order[A]): Order[A] = o
 
   def by[@sp A, @sp B](f: A => B)(implicit o: Order[B]): Order[A] = o.on(f)
 

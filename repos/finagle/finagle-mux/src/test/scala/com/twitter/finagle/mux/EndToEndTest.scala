@@ -49,7 +49,8 @@ class EndToEndTest
   }
 
   test("Discard request properly sent") {
-    @volatile var handled = false
+    @volatile
+    var handled = false
     val p = Promise[Response]()
     p.setInterruptHandler {
       case t: Throwable =>

@@ -2,7 +2,8 @@ trait Analyzer extends Typers {
   val global: Global
 
 }
-trait Definitions { self: SymbolTable =>
+trait Definitions {
+  self: SymbolTable =>
   object definitions extends DefinitionsClass
 
   def memb: TermSymbol = null
@@ -20,7 +21,8 @@ trait Definitions { self: SymbolTable =>
 
 abstract class SymbolTable extends Symbols with Definitions {}
 
-trait Symbols { self: SymbolTable =>
+trait Symbols {
+  self: SymbolTable =>
   class TermSymbol
 }
 

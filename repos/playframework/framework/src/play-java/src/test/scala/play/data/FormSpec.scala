@@ -508,9 +508,15 @@ object FormSpec extends Specification {
 
 }
 
-class JavaForm(@BeanProperty var foo: java.util.List[JavaSubForm]) {
+class JavaForm(
+    @BeanProperty
+    var foo: java.util.List[JavaSubForm]) {
   def this() = this(null)
 }
-class JavaSubForm(@BeanProperty var a: String, @BeanProperty var b: String) {
+class JavaSubForm(
+    @BeanProperty
+    var a: String,
+    @BeanProperty
+    var b: String) {
   def this() = this(null, null)
 }

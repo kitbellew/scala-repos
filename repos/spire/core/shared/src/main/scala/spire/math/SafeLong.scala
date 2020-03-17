@@ -22,7 +22,8 @@ import spire.std.bigInteger._
 sealed abstract class SafeLong
     extends ScalaNumber
     with ScalaNumericConversions
-    with Ordered[SafeLong] { lhs =>
+    with Ordered[SafeLong] {
+  lhs =>
 
   def isZero: Boolean
 
@@ -147,7 +148,8 @@ sealed abstract class SafeLong
     if (k < 0)
       throw new IllegalArgumentException(s"negative exponent: $k")
 
-    @tailrec def loop(total: SafeLong, base: SafeLong, exp: Int): SafeLong = {
+    @tailrec
+    def loop(total: SafeLong, base: SafeLong, exp: Int): SafeLong = {
       if (exp == 0)
         total
       else if ((exp & 1) == 1)
@@ -163,7 +165,8 @@ sealed abstract class SafeLong
     if (k < 0)
       throw new IllegalArgumentException(s"negative exponent: $k")
 
-    @tailrec def loop(
+    @tailrec
+    def loop(
         total: SafeLong,
         base: SafeLong,
         k: Int,

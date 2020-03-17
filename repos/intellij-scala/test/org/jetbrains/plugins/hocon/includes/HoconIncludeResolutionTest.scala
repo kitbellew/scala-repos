@@ -49,8 +49,8 @@ trait HoconIncludeResolutionTest {
             .toVector
 
         val references = it.getFileReferences
-        @inline def parentText =
-          it.parent.map(_.getText).getOrElse("[No parent]")
+        @inline
+        def parentText = it.parent.map(_.getText).getOrElse("[No parent]")
 
         if (prevComments.nonEmpty) {
           assertTrue("No references in " + parentText, references.nonEmpty)

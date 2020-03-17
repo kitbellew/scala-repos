@@ -89,7 +89,8 @@ private class BalancerTest
 
       override def status = _status
 
-      @volatile var ncloses = 0
+      @volatile
+      var ncloses = 0
 
       def close(deadline: Time) = {
         synchronized {
@@ -200,7 +201,8 @@ private class BalancerTest
       val bal =
         new TestBalancer {
           val beat = new AtomicInteger(1)
-          @volatile var updateThreads: Set[Long] = Set.empty
+          @volatile
+          var updateThreads: Set[Long] = Set.empty
 
           override def rebuildDistributor() {
             synchronized {
@@ -212,7 +214,8 @@ private class BalancerTest
         }
       val f1, f2, f3 = newFac()
 
-      @volatile var thread1Id: Long = -1
+      @volatile
+      var thread1Id: Long = -1
 
       thread("updater1") {
         thread1Id = Thread.currentThread.getId()

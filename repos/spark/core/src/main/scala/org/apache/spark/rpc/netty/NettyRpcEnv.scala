@@ -87,7 +87,8 @@ private[netty] class NettyRpcEnv(
     * It also allows for different configuration of certain properties, such as the number of
     * connections per peer.
     */
-  @volatile private var fileDownloadFactory: TransportClientFactory = _
+  @volatile
+  private var fileDownloadFactory: TransportClientFactory = _
 
   val timeoutScheduler = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
     "netty-rpc-env-timeout")
@@ -100,7 +101,8 @@ private[netty] class NettyRpcEnv(
       "netty-rpc-connection",
       conf.getInt("spark.rpc.connect.threads", 64))
 
-  @volatile private var server: TransportServer = _
+  @volatile
+  private var server: TransportServer = _
 
   private val stopped = new AtomicBoolean(false)
 
@@ -411,7 +413,8 @@ private[netty] class NettyRpcEnv(
   private class FileDownloadChannel(source: ReadableByteChannel)
       extends ReadableByteChannel {
 
-    @volatile private var error: Throwable = _
+    @volatile
+    private var error: Throwable = _
 
     def setError(e: Throwable): Unit = {
       error = e
@@ -543,14 +546,19 @@ private[rpc] class NettyRpcEnvFactory extends RpcEnvFactory with Logging {
   * @param nettyEnv The RpcEnv associated with this ref.
   */
 private[netty] class NettyRpcEndpointRef(
-    @transient private val conf: SparkConf,
+    @transient
+    private val conf: SparkConf,
     endpointAddress: RpcEndpointAddress,
-    @transient @volatile private var nettyEnv: NettyRpcEnv)
+    @transient
+    @volatile
+    private var nettyEnv: NettyRpcEnv)
     extends RpcEndpointRef(conf)
     with Serializable
     with Logging {
 
-  @transient @volatile var client: TransportClient = _
+  @transient
+  @volatile
+  var client: TransportClient = _
 
   private val _address =
     if (endpointAddress.rpcAddress != null)

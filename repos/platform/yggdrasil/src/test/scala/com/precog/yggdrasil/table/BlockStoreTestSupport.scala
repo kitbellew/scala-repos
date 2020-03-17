@@ -105,9 +105,8 @@ trait BaseBlockStoreTestModule[M[+_]]
     def getBlockAfter(id: Option[JArray], colSelection: Option[Set[ColumnRef]])(
         implicit M: Monad[M]) =
       M.point {
-        @tailrec def findBlockAfter(
-            id: JArray,
-            blocks: Stream[Slice]): Option[Slice] = {
+        @tailrec
+        def findBlockAfter(id: JArray, blocks: Stream[Slice]): Option[Slice] = {
           blocks.filterNot(_.isEmpty) match {
             case x #:: xs =>
               if ((x.toJson(x.size - 1).getOrElse(JUndefined) \ "key") > id)
@@ -194,7 +193,8 @@ object BlockStoreTestModule {
     }
 }
 
-trait BlockStoreTestSupport[M[+_]] { self =>
+trait BlockStoreTestSupport[M[+_]] {
+  self =>
   implicit def M: Monad[M] with Comonad[M]
 
   def emptyTestModule = BlockStoreTestModule.empty[M]

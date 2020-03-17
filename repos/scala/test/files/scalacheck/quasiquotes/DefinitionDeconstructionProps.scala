@@ -13,7 +13,8 @@ object DefinitionDeconstructionProps
     with PackageDeconstruction
     with ImportDeconstruction
 
-trait TraitDeconstruction { self: QuasiquoteProperties =>
+trait TraitDeconstruction {
+  self: QuasiquoteProperties =>
   property("exhaustive trait matcher") = test {
     def matches(line: String) {
       val q"""$mods trait $name[..$targs]
@@ -31,7 +32,8 @@ trait TraitDeconstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait ObjectDeconstruction { self: QuasiquoteProperties =>
+trait ObjectDeconstruction {
+  self: QuasiquoteProperties =>
   property("exhaustive object matcher") = test {
     def matches(line: String) = {
       val q"""$mods object $name extends { ..$early } with ..$parents { $self => ..$body }""" =
@@ -45,7 +47,8 @@ trait ObjectDeconstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait ClassDeconstruction { self: QuasiquoteProperties =>
+trait ClassDeconstruction {
+  self: QuasiquoteProperties =>
   property("class without params") = test {
     val q"class $name { ..$body }" = q"class Foo { def bar = 3 }"
     assert(body ≈ List(q"def bar = 3"))
@@ -143,7 +146,8 @@ trait ClassDeconstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait ModsDeconstruction { self: QuasiquoteProperties =>
+trait ModsDeconstruction {
+  self: QuasiquoteProperties =>
   property("deconstruct mods") = test {
     val mods = Modifiers(IMPLICIT | PRIVATE, TermName("foobar"), Nil)
     val q"$mods0 def foo" = q"$mods def foo"
@@ -187,7 +191,8 @@ trait ModsDeconstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait ValVarDeconstruction { self: QuasiquoteProperties =>
+trait ValVarDeconstruction {
+  self: QuasiquoteProperties =>
   property("exhaustive val matcher") = test {
     def matches(line: String) {
       val q"$mods val $name: $tpt = $rhs" = parse(line)
@@ -214,7 +219,8 @@ trait ValVarDeconstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait PackageDeconstruction { self: QuasiquoteProperties =>
+trait PackageDeconstruction {
+  self: QuasiquoteProperties =>
   property("exhaustive package matcher") = test {
     def matches(line: String) {
       val q"package $name { ..$body }" = parse(line)
@@ -242,7 +248,8 @@ trait PackageDeconstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait DefDeconstruction { self: QuasiquoteProperties =>
+trait DefDeconstruction {
+  self: QuasiquoteProperties =>
   property("exhaustive def matcher") = test {
     def matches(line: String) = {
       val t = parse(line)
@@ -278,7 +285,8 @@ trait DefDeconstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait ImportDeconstruction { self: QuasiquoteProperties =>
+trait ImportDeconstruction {
+  self: QuasiquoteProperties =>
   property("exhaustive import matcher") = test {
     def matches(line: String) = {
       val q"import $ref.{..$sels}" = parse(line)

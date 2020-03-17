@@ -48,7 +48,8 @@ trait OutputFormatter {
     * @param topNode the top most node to format
     * @return the prepared Element
     */
-  @Deprecated def getFormattedElement(topNode: Element): Element = {
+  @Deprecated
+  def getFormattedElement(topNode: Element): Element = {
     removeNodesWithNegativeScores(topNode)
     convertLinksToText(topNode)
     replaceTagsWithText(topNode)

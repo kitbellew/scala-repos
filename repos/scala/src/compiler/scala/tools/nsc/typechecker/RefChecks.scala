@@ -134,7 +134,8 @@ abstract class RefChecks
     var localTyper: analyzer.Typer = typer
     var currentApplication: Tree = EmptyTree
     var inPattern: Boolean = false
-    @inline final def savingInPattern[A](body: => A): A = {
+    @inline
+    final def savingInPattern[A](body: => A): A = {
       val saved = inPattern
       try body
       finally inPattern = saved

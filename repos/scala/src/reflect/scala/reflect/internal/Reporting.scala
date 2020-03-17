@@ -14,7 +14,8 @@ package internal
   *  Eventually, this interface should be reduced to one method: `reporter`,
   *  and clients should indirect themselves (reduce duplication of forwarders).
   */
-trait Reporting { self: Positions =>
+trait Reporting {
+  self: Positions =>
   def reporter: Reporter
   def currentRun: RunReporting
 

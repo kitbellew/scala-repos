@@ -45,7 +45,8 @@ private[collection] object RedBlackTree {
 
   object Node {
 
-    @inline def apply[A, B](
+    @inline
+    def apply[A, B](
         key: A,
         value: B,
         red: Boolean,
@@ -54,7 +55,8 @@ private[collection] object RedBlackTree {
         parent: Node[A, B]): Node[A, B] =
       new Node(key, value, red, left, right, parent)
 
-    @inline def leaf[A, B](
+    @inline
+    def leaf[A, B](
         key: A,
         value: B,
         red: Boolean,
@@ -92,7 +94,8 @@ private[collection] object RedBlackTree {
       case node => Some(node.value)
     }
 
-  @tailrec private[this] def getNode[A, B](node: Node[A, B], key: A)(implicit
+  @tailrec
+  private[this] def getNode[A, B](node: Node[A, B], key: A)(implicit
       ord: Ordering[A]): Node[A, B] =
     if (node eq null)
       null
@@ -127,7 +130,8 @@ private[collection] object RedBlackTree {
     else
       minNodeNonNull(node)
 
-  @tailrec def minNodeNonNull[A, B](node: Node[A, B]): Node[A, B] =
+  @tailrec
+  def minNodeNonNull[A, B](node: Node[A, B]): Node[A, B] =
     if (node.left eq null)
       node
     else
@@ -151,7 +155,8 @@ private[collection] object RedBlackTree {
     else
       maxNodeNonNull(node)
 
-  @tailrec def maxNodeNonNull[A, B](node: Node[A, B]): Node[A, B] =
+  @tailrec
+  def maxNodeNonNull[A, B](node: Node[A, B]): Node[A, B] =
     if (node.right eq null)
       node
     else

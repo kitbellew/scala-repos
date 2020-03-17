@@ -525,7 +525,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       element: PsiElement,
       offset: Int) {
-    @inline def replaceElement(replaceWith: String) {
+    @inline
+    def replaceElement(replaceWith: String) {
       extensions.inWriteAction {
         document.replaceString(
           element.getTextRange.getStartOffset,

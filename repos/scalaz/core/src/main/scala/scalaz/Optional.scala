@@ -8,7 +8,8 @@ package scalaz
   * @see [[syntax.OptionalOps]]
   */
 ////
-trait Optional[F[_]] { self =>
+trait Optional[F[_]] {
+  self =>
   ////
 
   /** If `fa` has an `a`, return it; otherwise it must be universally
@@ -60,7 +61,8 @@ trait Optional[F[_]] { self =>
 }
 
 object Optional {
-  @inline def apply[F[_]](implicit F: Optional[F]): Optional[F] = F
+  @inline
+  def apply[F[_]](implicit F: Optional[F]): Optional[F] = F
 
   ////
 

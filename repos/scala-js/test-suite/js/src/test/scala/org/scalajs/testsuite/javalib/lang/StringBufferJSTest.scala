@@ -16,10 +16,12 @@ class StringBufferJSTest {
 
   def newBuf: java.lang.StringBuffer = new java.lang.StringBuffer
 
-  @Test def append(): Unit =
+  @Test
+  def append(): Unit =
     assertEquals("undefined", newBuf.append(js.undefined).toString)
 
-  @Test def insert(): Unit =
+  @Test
+  def insert(): Unit =
     assertEquals("undefined", newBuf.insert(0, js.undefined).toString)
 }
 
@@ -27,13 +29,16 @@ class StringBuilderJSTest {
 
   def newBuilder: java.lang.StringBuilder = new java.lang.StringBuilder
 
-  @Test def append(): Unit = {
+  @Test
+  def append(): Unit = {
     assertEquals("undefined", newBuilder.append(js.undefined).toString)
   }
 
-  @Test def insert(): Unit =
+  @Test
+  def insert(): Unit =
     assertEquals("undefined", newBuilder.insert(0, js.undefined).toString)
 
-  @Test def should_allow_string_interpolation_to_survive_null_and_undefined()
-      : Unit = assertEquals("undefined", s"${js.undefined}")
+  @Test
+  def should_allow_string_interpolation_to_survive_null_and_undefined(): Unit =
+    assertEquals("undefined", s"${js.undefined}")
 }

@@ -93,15 +93,23 @@ private[spark] class ApplicationMaster(
       .getOrElse(defaultMaxNumExecutorFailures)
   }
 
-  @volatile private var exitCode = 0
-  @volatile private var unregistered = false
-  @volatile private var finished = false
-  @volatile private var finalStatus = getDefaultFinalStatus
-  @volatile private var finalMsg: String = ""
-  @volatile private var userClassThread: Thread = _
+  @volatile
+  private var exitCode = 0
+  @volatile
+  private var unregistered = false
+  @volatile
+  private var finished = false
+  @volatile
+  private var finalStatus = getDefaultFinalStatus
+  @volatile
+  private var finalMsg: String = ""
+  @volatile
+  private var userClassThread: Thread = _
 
-  @volatile private var reporterThread: Thread = _
-  @volatile private var allocator: YarnAllocator = _
+  @volatile
+  private var reporterThread: Thread = _
+  @volatile
+  private var allocator: YarnAllocator = _
 
   // Lock for controlling the allocator (heartbeat) thread.
   private val allocatorLock = new Object()

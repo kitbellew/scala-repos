@@ -42,7 +42,8 @@ object DefinitionConstructionProps
   }
 }
 
-trait ClassConstruction { self: QuasiquoteProperties =>
+trait ClassConstruction {
+  self: QuasiquoteProperties =>
   val anyRef = ScalaDot(TypeName("AnyRef"))
   val emtpyConstructor = DefDef(
     Modifiers(),
@@ -154,7 +155,8 @@ trait ClassConstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait TraitConstruction { self: QuasiquoteProperties =>
+trait TraitConstruction {
+  self: QuasiquoteProperties =>
   property("unquote name into trait def") = test {
     val Foo = TypeName("Foo")
     assert(q"trait $Foo" ≈ q"trait Foo")
@@ -203,7 +205,8 @@ trait TraitConstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait TypeDefConstruction { self: QuasiquoteProperties =>
+trait TypeDefConstruction {
+  self: QuasiquoteProperties =>
   property("unquote type name into typedef") = forAll {
     (name1: TypeName, name2: TypeName) =>
       q"type $name1 = $name2" ≈ TypeDef(
@@ -324,7 +327,8 @@ trait TypeDefConstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait ValDefConstruction { self: QuasiquoteProperties =>
+trait ValDefConstruction {
+  self: QuasiquoteProperties =>
   property("unquote into val") = forAll {
     (name: TermName, tpt: Tree, rhs: Tree) =>
       q"val $name: $tpt = $rhs" ≈ ValDef(Modifiers(), name, tpt, rhs)
@@ -341,7 +345,8 @@ trait ValDefConstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait PatDefConstruction { self: QuasiquoteProperties =>
+trait PatDefConstruction {
+  self: QuasiquoteProperties =>
   property("unquote pattern into pat def") = test {
     val pat = pq"(a, b)"
     assertEqAst(q"val $pat = (1, 2)", "val (a, b) = (1, 2)")
@@ -386,7 +391,8 @@ trait PatDefConstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait MethodConstruction { self: QuasiquoteProperties =>
+trait MethodConstruction {
+  self: QuasiquoteProperties =>
   property("unquote paramss into defdef") = test {
     val paramss = List(q"val x: Int") :: List(q"val y: Int = 1") :: Nil
     assert(q"def foo(...$paramss)" ≈ parse("def foo(x: Int)(y: Int = 1)"))
@@ -496,7 +502,8 @@ trait MethodConstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait PackageConstruction { self: QuasiquoteProperties =>
+trait PackageConstruction {
+  self: QuasiquoteProperties =>
   property("unquote select into package name") = test {
     val name = q"foo.bar"
     assertEqAst(q"package $name { }", "package foo.bar { }")
@@ -556,7 +563,8 @@ trait PackageConstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait DefConstruction { self: QuasiquoteProperties =>
+trait DefConstruction {
+  self: QuasiquoteProperties =>
   property("construct implicit args (1)") = test {
     val x = q"val x: Int"
     assertEqAst(q"def foo(implicit $x) = x", "def foo(implicit x: Int) = x")
@@ -570,7 +578,8 @@ trait DefConstruction { self: QuasiquoteProperties =>
   }
 }
 
-trait ImportConstruction { self: QuasiquoteProperties =>
+trait ImportConstruction {
+  self: QuasiquoteProperties =>
   property("construct wildcard import") = test {
     val sel = pq"_"
     assert(q"import foo.$sel" ≈ q"import foo._")

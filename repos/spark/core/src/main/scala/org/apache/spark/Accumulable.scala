@@ -58,7 +58,8 @@ import org.apache.spark.util.Utils
 class Accumulable[R, T] private (
     val id: Long,
     // SI-8813: This must explicitly be a private val, or else scala 2.11 doesn't compile
-    @transient private val initialValue: R,
+    @transient
+    private val initialValue: R,
     param: AccumulableParam[R, T],
     val name: Option[String],
     internal: Boolean,
@@ -97,8 +98,9 @@ class Accumulable[R, T] private (
   def this(initialValue: R, param: AccumulableParam[R, T]) =
     this(initialValue, param, None)
 
-  @volatile @transient private var value_ : R =
-    initialValue // Current value on driver
+  @volatile
+  @transient
+  private var value_ : R = initialValue // Current value on driver
   val zero = param.zero(initialValue) // Zero value to be passed to executors
   private var deserialized = false
 

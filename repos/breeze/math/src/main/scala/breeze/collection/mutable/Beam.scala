@@ -29,7 +29,8 @@ import scala.collection.generic._
 class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
     extends Iterable[T]
     with IterableLike[T, Beam[T]]
-    with Growable[T] { outer =>
+    with Growable[T] {
+  outer =>
   assert(maxSize >= 0)
   protected val queue = new PriorityQueue[T]()(o.reverse)
   xs foreach (cat(queue, _))

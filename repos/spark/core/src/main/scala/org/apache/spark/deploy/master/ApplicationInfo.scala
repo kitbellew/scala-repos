@@ -35,20 +35,30 @@ private[spark] class ApplicationInfo(
     defaultCores: Int)
     extends Serializable {
 
-  @transient var state: ApplicationState.Value = _
-  @transient var executors: mutable.HashMap[Int, ExecutorDesc] = _
-  @transient var removedExecutors: ArrayBuffer[ExecutorDesc] = _
-  @transient var coresGranted: Int = _
-  @transient var endTime: Long = _
-  @transient var appSource: ApplicationSource = _
-  @transient @volatile var appUIUrlAtHistoryServer: Option[String] = None
+  @transient
+  var state: ApplicationState.Value = _
+  @transient
+  var executors: mutable.HashMap[Int, ExecutorDesc] = _
+  @transient
+  var removedExecutors: ArrayBuffer[ExecutorDesc] = _
+  @transient
+  var coresGranted: Int = _
+  @transient
+  var endTime: Long = _
+  @transient
+  var appSource: ApplicationSource = _
+  @transient
+  @volatile
+  var appUIUrlAtHistoryServer: Option[String] = None
 
   // A cap on the number of executors this application can have at any given time.
   // By default, this is infinite. Only after the first allocation request is issued by the
   // application will this be set to a finite value. This is used for dynamic allocation.
-  @transient private[master] var executorLimit: Int = _
+  @transient
+  private[master] var executorLimit: Int = _
 
-  @transient private var nextExecutorId: Int = _
+  @transient
+  private var nextExecutorId: Int = _
 
   init()
 

@@ -845,7 +845,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   *
   * @since 1.2
   */
-trait LoggingFSM[S, D] extends FSM[S, D] { this: Actor ⇒
+trait LoggingFSM[S, D] extends FSM[S, D] {
+  this: Actor ⇒
 
   import FSM._
 

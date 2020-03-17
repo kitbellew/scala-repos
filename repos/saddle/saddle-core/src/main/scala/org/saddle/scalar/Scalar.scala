@@ -27,19 +27,22 @@ sealed abstract class Scalar[+T] {
   def isNA: Boolean
   def get: T
 
-  @inline final def map[B: ST](f: T => B): Scalar[B] =
+  @inline
+  final def map[B: ST](f: T => B): Scalar[B] =
     if (isNA)
       NA
     else
       Value(f(get))
 
-  @inline final def flatMap[B](f: T => Scalar[B]): Scalar[B] =
+  @inline
+  final def flatMap[B](f: T => Scalar[B]): Scalar[B] =
     if (isNA)
       NA
     else
       f(this.get)
 
-  @inline final def foreach[U](f: T => U) {
+  @inline
+  final def foreach[U](f: T => U) {
     if (!isNA)
       f(this.get)
   }

@@ -5,7 +5,8 @@ package scalaz
   * Profunctors are covariant on the right and contravariant on the left.
   */
 ////
-trait Profunctor[=>:[_, _]] { self =>
+trait Profunctor[=>:[_, _]] {
+  self =>
   ////
   /** Contramap on `A`. */
   def mapfst[A, B, C](fab: (A =>: B))(f: C => A): (C =>: B)
@@ -42,7 +43,8 @@ trait Profunctor[=>:[_, _]] { self =>
 }
 
 object Profunctor {
-  @inline def apply[F[_, _]](implicit F: Profunctor[F]): Profunctor[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Profunctor[F]): Profunctor[F] = F
 
   ////
   sealed trait UpStarF

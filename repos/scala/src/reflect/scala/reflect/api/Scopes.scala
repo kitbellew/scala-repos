@@ -21,7 +21,8 @@ package api
   *
   * @group ReflectionAPI
   */
-trait Scopes { self: Universe =>
+trait Scopes {
+  self: Universe =>
 
   /** The base type of all scopes.
     *  @template

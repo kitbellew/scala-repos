@@ -41,7 +41,8 @@ object JobManager {
   }
 }
 
-trait JobManager[M[+_]] { self =>
+trait JobManager[M[+_]] {
+  self =>
   import Message._
 
   /**
@@ -252,7 +253,8 @@ trait JobManager[M[+_]] { self =>
   * Given a method that can transition a Job between states, this provides
   * default implementations of the explicit state transition methods.
   */
-trait JobStateManager[M[+_]] { self: JobManager[M] =>
+trait JobStateManager[M[+_]] {
+  self: JobManager[M] =>
   import JobState._
 
   protected def transition(job: JobId)(
@@ -313,7 +315,8 @@ trait JobStateManager[M[+_]] { self: JobManager[M] =>
     }
 }
 
-trait JobResultManager[M[+_]] { self: JobManager[M] =>
+trait JobResultManager[M[+_]] {
+  self: JobManager[M] =>
   import scalaz.syntax.monad._
 
   implicit def M: Monad[M]

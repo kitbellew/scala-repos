@@ -60,7 +60,8 @@ object Test extends App {
       def execute(p: String) {
         val prog = p.replaceAll("[^\\+\\-\\[\\]\\.\\,\\>\\<]", "")
 
-        @tailrec def braceMatcher(
+        @tailrec
+        def braceMatcher(
             pos: Int,
             stack: List[Int],
             o2c: Map[Int, Int]): Map[Int, Int] =
@@ -77,7 +78,8 @@ object Test extends App {
         val open2close = braceMatcher(0, Nil, Map())
         val close2open = open2close.map(_.swap)
 
-        @tailrec def ex(pos: Int, tape: Tape[T]): Unit =
+        @tailrec
+        def ex(pos: Int, tape: Tape[T]): Unit =
           if (pos < prog.length)
             ex(
               (prog(pos): @switch) match {

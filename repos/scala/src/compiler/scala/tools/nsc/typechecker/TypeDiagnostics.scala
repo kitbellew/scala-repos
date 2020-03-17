@@ -728,7 +728,8 @@ trait TypeDiagnostics {
         tree.tpe != null && tree.tpe.typeSymbol == NothingClass && !isLabelDef
       }
 
-      @inline def updateExpr[A](fn: Tree)(f: => A) = {
+      @inline
+      def updateExpr[A](fn: Tree)(f: => A) = {
         if (fn.symbol != null && fn.symbol.isMethod && !fn.symbol.isConstructor) {
           exprStack push fn.symbol
           try f

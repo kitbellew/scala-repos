@@ -11,7 +11,8 @@ object MandelbrotDemo {
     * circle after 'limit' iterations.
     */
   def mandelbrot(c: Complex[Double], limit: Int): Int = {
-    @tailrec def loop(z: Complex[Double], n: Int): Int =
+    @tailrec
+    def loop(z: Complex[Double], n: Int): Int =
       if (n >= limit)
         n
       else if (z.abs > 2.0)

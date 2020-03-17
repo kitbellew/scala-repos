@@ -9,7 +9,8 @@ import lila.user.UserContext
 import org.apache.commons.lang3.StringEscapeUtils.escapeHtml4
 import play.twirl.api.Html
 
-trait StringHelper { self: NumberHelper =>
+trait StringHelper {
+  self: NumberHelper =>
 
   def netDomain: String
 

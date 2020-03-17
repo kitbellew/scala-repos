@@ -33,7 +33,8 @@ import java.io.ObjectStreamException
   *
   * @group ReflectionAPI
   */
-trait Exprs { self: Universe =>
+trait Exprs {
+  self: Universe =>
 
   /** Expr wraps an abstract syntax tree and tags it with its type.
     *  The main source of information about exprs is the [[scala.reflect.api.Exprs]] page.

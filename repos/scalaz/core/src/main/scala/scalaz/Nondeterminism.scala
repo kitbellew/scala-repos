@@ -12,7 +12,8 @@ package scalaz
   * TODO - laws
   */
 ////
-trait Nondeterminism[F[_]] extends Monad[F] { self =>
+trait Nondeterminism[F[_]] extends Monad[F] {
+  self =>
   ////
 
   import scalaz.Tags.Parallel
@@ -233,7 +234,8 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
 }
 
 object Nondeterminism {
-  @inline def apply[F[_]](implicit F: Nondeterminism[F]): Nondeterminism[F] = F
+  @inline
+  def apply[F[_]](implicit F: Nondeterminism[F]): Nondeterminism[F] = F
 
   ////
 

@@ -19,7 +19,8 @@ class LinkedHashSetTest extends HashSetTest {
 
   override def factory: LinkedHashSetFactory = new LinkedHashSetFactory
 
-  @Test def should_iterate_over_elements_in_an_ordered_manner(): Unit = {
+  @Test
+  def should_iterate_over_elements_in_an_ordered_manner(): Unit = {
     val hs = factory.empty[String]
 
     val l1 = List[String]("ONE", "TWO", (null: String))

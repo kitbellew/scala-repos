@@ -35,7 +35,8 @@ class PrunedScanSource extends RelationProvider {
 }
 
 case class SimplePrunedScan(from: Int, to: Int)(
-    @transient val sqlContext: SQLContext)
+    @transient
+    val sqlContext: SQLContext)
     extends BaseRelation
     with PrunedScan {
 

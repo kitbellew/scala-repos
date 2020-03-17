@@ -39,7 +39,8 @@ import scala.annotation.tailrec
 
 import java.util.concurrent.ConcurrentHashMap
 
-trait QueryLogger[M[+_], -P] { self =>
+trait QueryLogger[M[+_], -P] {
+  self =>
   def contramap[P0](f: P0 => P): QueryLogger[M, P0] =
     new QueryLogger[M, P0] {
       def die(): M[Unit] = self.die()

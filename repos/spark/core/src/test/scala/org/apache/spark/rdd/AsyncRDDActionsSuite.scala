@@ -34,7 +34,8 @@ class AsyncRDDActionsSuite
     with BeforeAndAfterAll
     with Timeouts {
 
-  @transient private var sc: SparkContext = _
+  @transient
+  private var sc: SparkContext = _
 
   override def beforeAll() {
     super.beforeAll()

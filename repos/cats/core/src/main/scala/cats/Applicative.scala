@@ -13,7 +13,9 @@ import cats.std.list._
   *
   * Must obey the laws defined in cats.laws.ApplicativeLaws.
   */
-@typeclass trait Applicative[F[_]] extends Apply[F] { self =>
+@typeclass
+trait Applicative[F[_]] extends Apply[F] {
+  self =>
 
   /**
     * `pure` lifts any value into the Applicative Functor.

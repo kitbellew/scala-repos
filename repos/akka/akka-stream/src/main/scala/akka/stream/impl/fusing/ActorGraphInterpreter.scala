@@ -706,7 +706,8 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
    * Avoid performing the initialization (which start the first runBatch())
    * within registerShell in order to avoid unbounded recursion.
    */
-  @tailrec private def finishShellRegistration(): Unit =
+  @tailrec
+  private def finishShellRegistration(): Unit =
     newShells match {
       case Nil ⇒
         if (activeInterpreters.isEmpty)

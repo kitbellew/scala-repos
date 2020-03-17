@@ -53,7 +53,8 @@ private[spark] class ResultTask[T, U](
     extends Task[U](stageId, stageAttemptId, partition.index, _initialAccums)
     with Serializable {
 
-  @transient private[this] val preferredLocs: Seq[TaskLocation] = {
+  @transient
+  private[this] val preferredLocs: Seq[TaskLocation] = {
     if (locs == null)
       Nil
     else

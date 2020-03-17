@@ -79,9 +79,10 @@ class SparkILoop(
 
   private[repl] var intp: SparkIMain = _
 
-  @deprecated("Use `intp` instead.", "2.9.0") def interpreter = intp
-  @deprecated("Use `intp` instead.", "2.9.0") def interpreter_=(
-      i: SparkIMain): Unit = intp = i
+  @deprecated("Use `intp` instead.", "2.9.0")
+  def interpreter = intp
+  @deprecated("Use `intp` instead.", "2.9.0")
+  def interpreter_=(i: SparkIMain): Unit = intp = i
 
   /** Having inherited the difficult "var-ness" of the repl instance,
     *  I'm trying to work around it by moving operations into a class from

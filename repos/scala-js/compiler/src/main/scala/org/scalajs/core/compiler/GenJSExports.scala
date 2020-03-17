@@ -22,14 +22,16 @@ import ScopedVar.withScopedVars
   *
   *  @author Sébastien Doeraene
   */
-trait GenJSExports extends SubComponent { self: GenJSCode =>
+trait GenJSExports extends SubComponent {
+  self: GenJSCode =>
   import global._
   import jsAddons._
   import definitions._
   import jsDefinitions._
   import jsInterop.jsNameOf
 
-  trait JSExportsPhase { this: JSCodePhase =>
+  trait JSExportsPhase {
+    this: JSCodePhase =>
 
     /**
       * Generate exporter methods for a class

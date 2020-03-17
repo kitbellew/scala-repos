@@ -58,7 +58,8 @@ import SampleData._
 trait IndicesSpec[M[+_]]
     extends ColumnarTableModuleTestSupport[M]
     with TableModuleSpec[M]
-    with IndicesModule[M] { spec =>
+    with IndicesModule[M] {
+  spec =>
 
   type GroupId = Int
   import trans._

@@ -14,7 +14,8 @@ import scala.collection.mutable
  *  @author  Martin Odersky
  *  @version 1.0
  */
-trait DocComments { self: Global =>
+trait DocComments {
+  self: Global =>
 
   val cookedDocComments = mutable.HashMap[Symbol, String]()
 

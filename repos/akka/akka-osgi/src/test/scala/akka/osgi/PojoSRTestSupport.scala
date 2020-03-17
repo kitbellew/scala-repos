@@ -93,7 +93,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
       serviceType: Class[T],
       wait: FiniteDuration): ServiceReference[T] = {
 
-    @tailrec def poll(step: Duration, deadline: Deadline): ServiceReference[T] =
+    @tailrec
+    def poll(step: Duration, deadline: Deadline): ServiceReference[T] =
       context.getServiceReference(serviceType.getName) match {
         case null ⇒
           if (deadline.isOverdue())

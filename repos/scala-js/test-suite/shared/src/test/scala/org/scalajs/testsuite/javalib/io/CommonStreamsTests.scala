@@ -22,7 +22,8 @@ trait CommonStreamsTests {
     val length = 50
     def newStream = mkStream(1 to length)
 
-    @Test def should_provide_read()(): Unit = {
+    @Test
+    def should_provide_read()(): Unit = {
       val stream = newStream
 
       for (i <- 1 to length)
@@ -32,7 +33,8 @@ trait CommonStreamsTests {
         assertEquals(-1, stream.read())
     }
 
-    @Test def should_provide_read_from_buf(): Unit = {
+    @Test
+    def should_provide_read_from_buf(): Unit = {
       val stream = newStream
       val buf = new Array[Byte](10)
 
@@ -48,7 +50,8 @@ trait CommonStreamsTests {
       assertEquals(-1, stream.read())
     }
 
-    @Test def should_provide_full_argument_read(): Unit = {
+    @Test
+    def should_provide_full_argument_read(): Unit = {
       val stream = newStream
       val buf = new Array[Byte](20)
 
@@ -78,7 +81,8 @@ trait CommonStreamsTests {
 
     }
 
-    @Test def should_provide_available(): Unit = {
+    @Test
+    def should_provide_available(): Unit = {
       val stream = newStream
 
       def mySkip(n: Int) =
@@ -97,7 +101,8 @@ trait CommonStreamsTests {
       check(0)
     }
 
-    @Test def should_provide_skip(): Unit = {
+    @Test
+    def should_provide_skip(): Unit = {
       val stream = newStream
 
       assertEquals(7, stream.skip(7))
@@ -114,11 +119,13 @@ trait CommonStreamsTests {
       assertEquals(0, stream.skip(30))
     }
 
-    @Test def should_return_true_from_markSupported(): Unit = {
+    @Test
+    def should_return_true_from_markSupported(): Unit = {
       assertTrue(newStream.markSupported)
     }
 
-    @Test def should_provide_no_op_close(): Unit = {
+    @Test
+    def should_provide_no_op_close(): Unit = {
       val stream = newStream
 
       for (i <- 1 to length) {
@@ -127,7 +134,8 @@ trait CommonStreamsTests {
       }
     }
 
-    @Test def should_provide_mark_and_reset(): Unit = {
+    @Test
+    def should_provide_mark_and_reset(): Unit = {
       val stream = newStream
 
       def read(range: Range) =
@@ -155,7 +163,8 @@ trait CommonStreamsTests {
       assertEquals(-1, stream.read())
     }
 
-    @Test def should_return_positive_integers_when_calling_read(): Unit = {
+    @Test
+    def should_return_positive_integers_when_calling_read(): Unit = {
       val stream = mkStream(Seq(-1, -2, -3))
       assertEquals(255, stream.read())
       assertEquals(254, stream.read())

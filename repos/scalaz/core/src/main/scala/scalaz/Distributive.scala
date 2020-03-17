@@ -5,7 +5,8 @@ package scalaz
   * `Functor[F]` and `Distributive[G]`, which permits greater sharing
   * and nonstrictness.
   */
-trait Distributive[F[_]] extends Functor[F] { self =>
+trait Distributive[F[_]] extends Functor[F] {
+  self =>
   def distributeImpl[G[_]: Functor, A, B](fa: G[A])(f: A => F[B]): F[G[B]]
 
   /**The composition of Distributives `F` and `G`, `[x]F[G[x]]`, is a Distributive */
@@ -39,7 +40,8 @@ trait Distributive[F[_]] extends Functor[F] { self =>
 }
 
 object Distributive {
-  @inline def apply[F[_]](implicit F: Distributive[F]): Distributive[F] = F
+  @inline
+  def apply[F[_]](implicit F: Distributive[F]): Distributive[F] = F
 
   // Distributive is the dual of Traverse.
   type Cotraverse[F[_]] = Distributive[F]

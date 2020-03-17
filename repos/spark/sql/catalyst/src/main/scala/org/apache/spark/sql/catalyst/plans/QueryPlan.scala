@@ -161,7 +161,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
       rule: PartialFunction[Expression, Expression]): this.type = {
     var changed = false
 
-    @inline def transformExpressionDown(e: Expression): Expression = {
+    @inline
+    def transformExpressionDown(e: Expression): Expression = {
       val newE = e.transformDown(rule)
       if (newE.fastEquals(e)) {
         e
@@ -200,7 +201,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
       rule: PartialFunction[Expression, Expression]): this.type = {
     var changed = false
 
-    @inline def transformExpressionUp(e: Expression): Expression = {
+    @inline
+    def transformExpressionUp(e: Expression): Expression = {
       val newE = e.transformUp(rule)
       if (newE.fastEquals(e)) {
         e

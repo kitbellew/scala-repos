@@ -127,7 +127,8 @@ package object util {
   /**
     * Computes the current source file and line number.
     */
-  @noinline def LOCATION = {
+  @noinline
+  def LOCATION = {
     val e = new Exception().getStackTrace()(1)
     e.getFileName() + ":" + e.getLineNumber()
   }
@@ -136,7 +137,8 @@ package object util {
     * Computes the source file location of the nth parent.
     * 0 is equivalent to LOCATION
     */
-  @noinline def CALLER(nth: Int) = {
+  @noinline
+  def CALLER(nth: Int) = {
     val e = new Exception().getStackTrace()(nth + 1)
     e.getFileName() + ":" + e.getLineNumber()
   }

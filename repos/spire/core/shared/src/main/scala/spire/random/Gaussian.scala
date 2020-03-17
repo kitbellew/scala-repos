@@ -15,8 +15,9 @@ trait Gaussian[@sp(Float, Double) A] extends Any {
 }
 
 object Gaussian extends GaussianInstances {
-  @inline final def apply[@sp(Float, Double) A](implicit
-      g: Gaussian[A]): Gaussian[A] = g
+  @inline
+  final def apply[@sp(Float, Double) A](implicit g: Gaussian[A]): Gaussian[A] =
+    g
 
   def apply[@sp A](mean: A, stdDev: A)(implicit g: Gaussian[A]): Dist[A] =
     g(mean, stdDev)
@@ -58,7 +59,8 @@ final class MarsagliaGaussian[
 
   def apply(mean: A, stdDev: A): Dist[A] = {
     new DistFromGen[A]({ gen =>
-      @tailrec def loop(): A = {
+      @tailrec
+      def loop(): A = {
         val x = u(gen)
         val y = u(gen)
         val s = x * x + y * y

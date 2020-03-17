@@ -151,8 +151,8 @@ object UniqueID {
   * Wrapper around a FlowProcess useful, for e.g. incrementing counters.
   */
 object RuntimeStats extends java.io.Serializable {
-  @transient private lazy val logger: Logger = LoggerFactory.getLogger(
-    this.getClass)
+  @transient
+  private lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   private val flowMappingStore
       : mutable.Map[String, WeakReference[FlowProcess[_]]] = {

@@ -1,7 +1,8 @@
 object Test {
   abstract class Settings {}
 
-  abstract class Grist { self =>
+  abstract class Grist {
+    self =>
     type settingsType <: Settings
     type moduleType <: Module {
       type settingsType = self.settingsType
@@ -9,7 +10,8 @@ object Test {
     val module: moduleType
   }
 
-  abstract class Tool { self =>
+  abstract class Tool {
+    self =>
     type settingsType <: Settings
     type moduleType =
       Module {
@@ -24,7 +26,8 @@ object Test {
     def inputGrist: List[gristType]
   }
 
-  abstract class Module { self =>
+  abstract class Module {
+    self =>
     type settingsType <: Settings
     final type commonModuleType =
       Module {

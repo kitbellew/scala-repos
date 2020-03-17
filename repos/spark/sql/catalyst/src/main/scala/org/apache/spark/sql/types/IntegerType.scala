@@ -33,7 +33,8 @@ class IntegerType private () extends IntegralType {
   // this type. Otherwise, the companion object would be of type "IntegerType$" in byte code.
   // Defined with a private constructor so the companion object is the only possible instantiation.
   private[sql] type InternalType = Int
-  @transient private[sql] lazy val tag = ScalaReflectionLock.synchronized {
+  @transient
+  private[sql] lazy val tag = ScalaReflectionLock.synchronized {
     typeTag[InternalType]
   }
   private[sql] val numeric = implicitly[Numeric[Int]]

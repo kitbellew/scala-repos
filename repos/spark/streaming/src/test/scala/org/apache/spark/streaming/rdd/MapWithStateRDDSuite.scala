@@ -82,7 +82,8 @@ class MapWithStateRDDSuite
     val initialTime = 1000L
     val updatedTime = 2000L
     val thresholdTime = 1500L
-    @volatile var functionCalled = false
+    @volatile
+    var functionCalled = false
 
     /**
       * Assert that applying given data on a prior record generates correct updated record, with

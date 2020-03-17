@@ -35,7 +35,8 @@ abstract class RelationalPublisherTest[P <: RelationalProfile](
 
   def createDB: Database
 
-  @BeforeClass def setUpDB: Unit = {
+  @BeforeClass
+  def setUpDB: Unit = {
     db = createDB
     Await.result(
       db.run(
@@ -43,7 +44,8 @@ abstract class RelationalPublisherTest[P <: RelationalProfile](
       Duration.Inf)
   }
 
-  @AfterClass def tearDownDB: Unit = db.close()
+  @AfterClass
+  def tearDownDB: Unit = db.close()
 
   def createPublisher(elements: Long) =
     db.stream(data.filter(_.id <= elements.toInt).sortBy(_.id).result)

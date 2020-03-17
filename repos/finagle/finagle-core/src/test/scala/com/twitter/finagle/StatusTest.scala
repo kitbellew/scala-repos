@@ -63,7 +63,8 @@ class StatusTest
   }
 
   test("Status.whenOpen - opens") {
-    @volatile var status: Status = Status.Busy
+    @volatile
+    var status: Status = Status.Busy
     val open = Status.whenOpen(status)
 
     assert(!open.isDone)
@@ -76,7 +77,8 @@ class StatusTest
   }
 
   test("Status.whenOpen - closes") {
-    @volatile var status: Status = Status.Busy
+    @volatile
+    var status: Status = Status.Busy
     val open = Status.whenOpen(status)
 
     assert(!open.isDone)

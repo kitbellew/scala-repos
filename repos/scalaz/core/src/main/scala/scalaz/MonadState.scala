@@ -6,7 +6,8 @@ package scalaz
   *
   */
 ////
-trait MonadState[F[_], S] extends Monad[F] { self =>
+trait MonadState[F[_], S] extends Monad[F] {
+  self =>
   ////
 
   def state[A](a: A): F[A] = bind(init)(s => point(a))
@@ -22,7 +23,8 @@ trait MonadState[F[_], S] extends Monad[F] { self =>
 }
 
 object MonadState {
-  @inline def apply[F[_], S](implicit F: MonadState[F, S]): MonadState[F, S] = F
+  @inline
+  def apply[F[_], S](implicit F: MonadState[F, S]): MonadState[F, S] = F
 
   ////
 

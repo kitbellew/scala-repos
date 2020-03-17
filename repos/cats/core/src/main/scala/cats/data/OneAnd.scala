@@ -153,7 +153,8 @@ trait OneAndLowPriority0 {
     new Comonad[OneAnd[List, ?]] {
       def coflatMap[A, B](fa: OneAnd[List, A])(
           f: OneAnd[List, A] => B): OneAnd[List, B] = {
-        @tailrec def consume(as: List[A], buf: ListBuffer[B]): List[B] =
+        @tailrec
+        def consume(as: List[A], buf: ListBuffer[B]): List[B] =
           as match {
             case Nil     => buf.toList
             case a :: as => consume(as, buf += f(OneAnd(a, as)))

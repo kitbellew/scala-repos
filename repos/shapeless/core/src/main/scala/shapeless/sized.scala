@@ -43,7 +43,8 @@ class SizedOps[A0, Repr: AdditiveCollection, L <: Nat](
     s: Sized[Repr, L],
     itl: IsTraversableLike[Repr] {
       type A = A0
-    }) { outer =>
+    }) {
+  outer =>
   import nat._
   import ops.nat._
   import LT._

@@ -20,7 +20,8 @@ object Fractional {
   implicit final val NumberIsFractional = new NumberIsFractional
   implicit final val RationalIsFractional = new RationalIsFractional
 
-  @inline final def apply[A](implicit ev: Fractional[A]): Fractional[A] = ev
+  @inline
+  final def apply[A](implicit ev: Fractional[A]): Fractional[A] = ev
 }
 
 @SerialVersionUID(0L)

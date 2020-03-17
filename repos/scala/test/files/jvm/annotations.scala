@@ -102,18 +102,23 @@ object Test4 {
     import scala.beans.BeanProperty
     @(SourceAnnotation @getter)("http://apple.com")
     val x = 0
-    @BeanProperty @(SourceAnnotation @beanSetter)("http://uppla.com")
+    @BeanProperty
+    @(SourceAnnotation @beanSetter)("http://uppla.com")
     var y = 0
 
     type myAnn = SourceAnnotation @beanGetter @field
-    @BeanProperty @myAnn("http://eppli.com") var z = 0
+    @BeanProperty
+    @myAnn("http://eppli.com")
+    var z = 0
 
     type myAnn2[T] = SourceAnnotation @beanGetter @field
-    @BeanProperty @myAnn2[String]("http://eppli.com")
+    @BeanProperty
+    @myAnn2[String]("http://eppli.com")
     var z2 = 0
 
     type myAnn3[CC[_]] = SourceAnnotation @beanGetter @field
-    @BeanProperty @myAnn3[List]("http://eppli.com")
+    @BeanProperty
+    @myAnn3[List]("http://eppli.com")
     var z3 = 0
   }
   class Foo10(@SourceAnnotation("on param 1") val name: String)
@@ -213,9 +218,14 @@ object Test5 {
 object Test6 {
   import scala.beans.BeanProperty
   import scala.beans.BooleanBeanProperty
-  class C(@BeanProperty var text: String)
-  class D(@BooleanBeanProperty var prop: Boolean) {
-    @BeanProperty val m: Int =
+  class C(
+      @BeanProperty
+      var text: String)
+  class D(
+      @BooleanBeanProperty
+      var prop: Boolean) {
+    @BeanProperty
+    val m: Int =
       if (prop)
         1
       else
@@ -235,7 +245,9 @@ object Test6 {
 }
 
 // #3345
-class A3345(@volatile private var i: Int)
+class A3345(
+    @volatile
+    private var i: Int)
 
 object Test {
   def main(args: Array[String]) {

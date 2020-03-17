@@ -16,8 +16,10 @@ class A1 {
 }
 
 class A2 {
-  @BAnn((1, 2, 3)) val b1 = null
-  @BAnn((1, 2)) val b2 = null
+  @BAnn((1, 2, 3))
+  val b1 = null
+  @BAnn((1, 2))
+  val b2 = null
   @BAnn[Int]((1, 2, 3))
   val b3 = null
   @BAnn[Int]((1, 2))
@@ -25,8 +27,10 @@ class A2 {
 }
 
 class A3 {
-  @CAnn(classOf[Int]) val b1 = null
-  @CAnn((1, 2)) val b2 = null
+  @CAnn(classOf[Int])
+  val b1 = null
+  @CAnn((1, 2))
+  val b2 = null
   @CAnn[Int](classOf[Int])
   val b3 = null
   @CAnn[Int]((1, 2))

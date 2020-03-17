@@ -141,7 +141,8 @@ private[spark] class CoarseMesosSchedulerBackend(
 
   var nextMesosTaskId = 0
 
-  @volatile var appId: String = _
+  @volatile
+  var appId: String = _
 
   def newMesosTaskId(): String = {
     val id = nextMesosTaskId

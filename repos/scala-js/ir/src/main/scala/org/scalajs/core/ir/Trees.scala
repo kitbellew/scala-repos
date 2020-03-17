@@ -58,7 +58,8 @@ object Trees {
     !isKeyword(name)
   }
 
-  @inline final def requireValidIdent(name: String): Unit = {
+  @inline
+  final def requireValidIdent(name: String): Unit = {
     require(isValidIdentifier(name), s"${name} is not a valid identifier")
   }
 

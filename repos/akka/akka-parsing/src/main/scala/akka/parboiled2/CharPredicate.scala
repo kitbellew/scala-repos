@@ -54,7 +54,8 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
     }
 
   def matchesAny(string: String): Boolean = {
-    @tailrec def rec(ix: Int): Boolean =
+    @tailrec
+    def rec(ix: Int): Boolean =
       if (ix == string.length)
         false
       else if (this(string charAt ix))
@@ -65,7 +66,8 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
   }
 
   def matchesAll(string: String): Boolean = {
-    @tailrec def rec(ix: Int): Boolean =
+    @tailrec
+    def rec(ix: Int): Boolean =
       if (ix == string.length)
         true
       else if (!this(string charAt ix))
@@ -76,7 +78,8 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
   }
 
   def indexOfFirstMatch(string: String): Int = {
-    @tailrec def rec(ix: Int): Int =
+    @tailrec
+    def rec(ix: Int): Int =
       if (ix == string.length)
         -1
       else if (this(string charAt ix))
@@ -87,7 +90,8 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
   }
 
   def indexOfFirstMismatch(string: String): Int = {
-    @tailrec def rec(ix: Int): Int =
+    @tailrec
+    def rec(ix: Int): Int =
       if (ix == string.length)
         -1
       else if (this(string charAt ix))
@@ -166,7 +170,8 @@ object CharPredicate {
     implicit def fromChars(chars: Seq[Char]): ApplyMagnet =
       chars match {
         case _ if chars.size < 128 & !chars.exists(unmaskable) ⇒
-          @tailrec def rec(ix: Int, result: CharPredicate): CharPredicate =
+          @tailrec
+          def rec(ix: Int, result: CharPredicate): CharPredicate =
             if (ix == chars.length)
               result
             else
@@ -252,7 +257,8 @@ object CharPredicate {
     }
 
     def getChars(array: Array[Char], startIx: Int): Unit = {
-      @tailrec def rec(mask: Long, offset: Int, bit: Int, ix: Int): Int =
+      @tailrec
+      def rec(mask: Long, offset: Int, bit: Int, ix: Int): Int =
         if (bit < 64 && ix < array.length) {
           if ((mask & (1L << bit)) > 0) {
             array(ix) = (offset + bit).toChar

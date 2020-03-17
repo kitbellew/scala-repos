@@ -16,24 +16,26 @@ import scala.collection.immutable
 abstract class Effect
 
 object Effect {
-  @SerialVersionUID(1L) final case class Spawned(childName: String)
-      extends Effect
-  @SerialVersionUID(1L) final case class Stopped(childName: String)
-      extends Effect
-  @SerialVersionUID(1L) final case class Watched[T](other: ActorRef[T])
-      extends Effect
-  @SerialVersionUID(1L) final case class Unwatched[T](other: ActorRef[T])
-      extends Effect
-  @SerialVersionUID(1L) final case class ReceiveTimeoutSet(d: Duration)
-      extends Effect
-  @SerialVersionUID(1L) final case class Messaged[U](other: ActorRef[U], msg: U)
-      extends Effect
-  @SerialVersionUID(1L) final case class Scheduled[U](
+  @SerialVersionUID(1L)
+  final case class Spawned(childName: String) extends Effect
+  @SerialVersionUID(1L)
+  final case class Stopped(childName: String) extends Effect
+  @SerialVersionUID(1L)
+  final case class Watched[T](other: ActorRef[T]) extends Effect
+  @SerialVersionUID(1L)
+  final case class Unwatched[T](other: ActorRef[T]) extends Effect
+  @SerialVersionUID(1L)
+  final case class ReceiveTimeoutSet(d: Duration) extends Effect
+  @SerialVersionUID(1L)
+  final case class Messaged[U](other: ActorRef[U], msg: U) extends Effect
+  @SerialVersionUID(1L)
+  final case class Scheduled[U](
       delay: FiniteDuration,
       target: ActorRef[U],
       msg: U)
       extends Effect
-  @SerialVersionUID(1L) case object EmptyEffect extends Effect
+  @SerialVersionUID(1L)
+  case object EmptyEffect extends Effect
 }
 
 /**
@@ -57,7 +59,8 @@ class EffectfulActorContext[T](
       case x ⇒ x
     }
   def getAllEffects(): immutable.Seq[Effect] = {
-    @tailrec def rec(acc: List[Effect]): List[Effect] =
+    @tailrec
+    def rec(acc: List[Effect]): List[Effect] =
       effectQueue.poll() match {
         case null ⇒ acc.reverse
         case x ⇒ rec(x :: acc)

@@ -112,7 +112,8 @@ class SimpleFutureAction[T] private[spark] (
     resultFunc: => T)
     extends FutureAction[T] {
 
-  @volatile private var _cancelled: Boolean = false
+  @volatile
+  private var _cancelled: Boolean = false
 
   override def cancel() {
     _cancelled = true
@@ -178,11 +179,14 @@ trait JobSubmitter {
   */
 @DeveloperApi
 class ComplexFutureAction[T](run: JobSubmitter => Future[T])
-    extends FutureAction[T] { self =>
+    extends FutureAction[T] {
+  self =>
 
-  @volatile private var _cancelled = false
+  @volatile
+  private var _cancelled = false
 
-  @volatile private var subActions: List[FutureAction[_]] = Nil
+  @volatile
+  private var subActions: List[FutureAction[_]] = Nil
 
   // A promise used to signal the future.
   private val p = Promise[T]().tryCompleteWith(run(jobSubmitter))

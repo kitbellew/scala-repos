@@ -277,7 +277,8 @@ final class MarshalledContext extends Context {
     */
   case class Translucent(next: Env, marshalId: Buf, marshalled: Buf)
       extends Env {
-    @volatile private var cachedEnv: Env = null
+    @volatile
+    private var cachedEnv: Env = null
 
     private def env[A](key: Key[A]): Env = {
       if (cachedEnv != null)

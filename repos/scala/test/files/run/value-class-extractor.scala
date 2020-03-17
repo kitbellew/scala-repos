@@ -7,7 +7,8 @@ final class NonNullChar(val get: Char) extends AnyVal {
       s"'$get'"
 }
 object NonNullChar {
-  @inline final val None = new NonNullChar(0.toChar)
+  @inline
+  final val None = new NonNullChar(0.toChar)
 }
 
 final class SomeProduct extends Product3[String, Int, List[String]] {

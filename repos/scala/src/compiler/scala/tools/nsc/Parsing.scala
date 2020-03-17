@@ -10,7 +10,8 @@ import scala.reflect.internal.Positions
 
 /** Similar to Reporting: gather global functionality specific to parsing.
   */
-trait Parsing { self: Positions with Reporting =>
+trait Parsing {
+  self: Positions with Reporting =>
   def currentRun: RunParsing
 
   trait RunParsing {

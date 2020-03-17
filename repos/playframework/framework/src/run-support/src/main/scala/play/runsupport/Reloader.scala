@@ -399,19 +399,23 @@ class Reloader(
     extends BuildLink {
 
   // The current classloader for the application
-  @volatile private var currentApplicationClassLoader: Option[ClassLoader] =
-    None
+  @volatile
+  private var currentApplicationClassLoader: Option[ClassLoader] = None
   // Flag to force a reload on the next request.
   // This is set if a compile error occurs, and also by the forceReload method on BuildLink, which is called for
   // example when evolutions have been applied.
-  @volatile private var forceReloadNextTime = false
+  @volatile
+  private var forceReloadNextTime = false
   // Whether any source files have changed since the last request.
-  @volatile private var changed = false
+  @volatile
+  private var changed = false
   // The last successful compile results. Used for rendering nice errors.
-  @volatile private var currentSourceMap = Option.empty[SourceMap]
+  @volatile
+  private var currentSourceMap = Option.empty[SourceMap]
   // A watch state for the classpath. Used to determine whether anything on the classpath has changed as a result
   // of compilation, and therefore a new classloader is needed and the app needs to be reloaded.
-  @volatile private var watchState: WatchState = WatchState.empty
+  @volatile
+  private var watchState: WatchState = WatchState.empty
 
   // Create the watcher, updates the changed boolean when a file has changed.
   private val watcher = fileWatchService.watch(

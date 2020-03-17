@@ -11,7 +11,8 @@ import spire.std.bigDecimal._
   * A trait that can be used to retreive the (possibly approximated) real
   * roots of the polynomial `poly`.
   */
-trait Roots[A] extends Iterable[A] { self =>
+trait Roots[A] extends Iterable[A] {
+  self =>
 
   /** The polynomial the roots belong to. */
   def poly: Polynomial[A]

@@ -33,7 +33,8 @@ class AtomicLong(private[this] var value: Long)
 
   final def getAndDecrement(): Long = getAndAdd(-1L)
 
-  @inline final def getAndAdd(delta: Long): Long = {
+  @inline
+  final def getAndAdd(delta: Long): Long = {
     val old = value
     value = old + delta
     old
@@ -43,7 +44,8 @@ class AtomicLong(private[this] var value: Long)
 
   final def decrementAndGet(): Long = addAndGet(-1L)
 
-  @inline final def addAndGet(delta: Long): Long = {
+  @inline
+  final def addAndGet(delta: Long): Long = {
     val newValue = value + delta
     value = newValue
     newValue

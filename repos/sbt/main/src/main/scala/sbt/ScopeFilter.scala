@@ -266,7 +266,8 @@ object ScopeFilter {
     }
 
   /** Base functionality for filters on values of type `In` that need access to build data.*/
-  sealed abstract class Base[In] { self =>
+  sealed abstract class Base[In] {
+    self =>
 
     /** Implements this filter. */
     private[sbt] def apply(data: Data): In => Boolean

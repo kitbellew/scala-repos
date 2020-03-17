@@ -50,7 +50,8 @@ private class ResultDeletingTaskResultGetter(
     extends TaskResultGetter(sparkEnv, scheduler) {
   var removedResult = false
 
-  @volatile var removeBlockSuccessfully = false
+  @volatile
+  var removeBlockSuccessfully = false
 
   override def enqueueSuccessfulTask(
       taskSetManager: TaskSetManager,

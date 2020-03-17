@@ -219,8 +219,10 @@ class ActorRefProvider[T <: Actor: ClassTag](
     props: Props => Props)
     extends Provider[ActorRef] {
 
-  @Inject private var actorSystem: ActorSystem = _
-  @Inject private var injector: Injector = _
+  @Inject
+  private var actorSystem: ActorSystem = _
+  @Inject
+  private var injector: Injector = _
   lazy val get = {
     val creation = Props(injector.instanceOf[T])
     actorSystem.actorOf(props(creation), name)

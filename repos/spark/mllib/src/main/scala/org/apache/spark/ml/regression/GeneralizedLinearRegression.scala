@@ -907,7 +907,9 @@ object GeneralizedLinearRegressionModel
 @Since("2.0.0")
 @Experimental
 class GeneralizedLinearRegressionSummary private[regression] (
-    @Since("2.0.0") @transient val predictions: DataFrame,
+    @Since("2.0.0")
+    @transient
+    val predictions: DataFrame,
     @Since("2.0.0") val predictionCol: String,
     @Since("2.0.0") val model: GeneralizedLinearRegressionModel,
     private val diagInvAtWA: Array[Double],

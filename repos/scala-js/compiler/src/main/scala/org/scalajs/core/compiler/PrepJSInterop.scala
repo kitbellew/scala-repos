@@ -92,7 +92,8 @@ abstract class PrepJSInterop
 
     /** Nicer syntax for `allEnclosingOwners isnt kind`. */
     private object noEnclosingOwner { // scalastyle:ignore
-      @inline def is(kind: OwnerKind): Boolean = allEnclosingOwners isnt kind
+      @inline
+      def is(kind: OwnerKind): Boolean = allEnclosingOwners isnt kind
     }
 
     private def enterOwner[A](kind: OwnerKind)(body: => A): A = {
@@ -1159,17 +1160,20 @@ object PrepJSInterop {
   private final class OwnerKind(val baseKinds: Int) extends AnyVal {
     import OwnerKind._
 
-    @inline def isBaseKind: Boolean =
+    @inline
+    def isBaseKind: Boolean =
       Integer.lowestOneBit(
         baseKinds) == baseKinds && baseKinds != 0 // exactly 1 bit on
 
-    @inline def |(that: OwnerKind): OwnerKind =
+    @inline
+    def |(that: OwnerKind): OwnerKind =
       new OwnerKind(this.baseKinds | that.baseKinds)
 
-    @inline def is(that: OwnerKind): Boolean =
-      (this.baseKinds & that.baseKinds) != 0
+    @inline
+    def is(that: OwnerKind): Boolean = (this.baseKinds & that.baseKinds) != 0
 
-    @inline def isnt(that: OwnerKind): Boolean = !this.is(that)
+    @inline
+    def isnt(that: OwnerKind): Boolean = !this.is(that)
   }
 
   private object OwnerKind {

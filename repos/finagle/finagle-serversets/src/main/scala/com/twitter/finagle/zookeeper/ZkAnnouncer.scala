@@ -26,7 +26,8 @@ class ZkAnnouncerException(msg: String) extends Exception(msg)
   * process is similar: leave the path, then remove either the additional endpoint
   * or the main endpoint, re-join only if the main endpoint exists.
   */
-class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
+class ZkAnnouncer(factory: ZkClientFactory) extends Announcer {
+  self =>
   val scheme = "zk"
 
   def this() = this(DefaultZkClientFactory)

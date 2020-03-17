@@ -1,4 +1,5 @@
-trait LazyExp[+This <: LazyExp[This]] { this: This =>
+trait LazyExp[+This <: LazyExp[This]] {
+  this: This =>
   type OpSemExp <: LazyExp[OpSemExp] with This
   type Val
 }

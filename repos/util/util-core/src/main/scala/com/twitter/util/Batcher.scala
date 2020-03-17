@@ -3,7 +3,8 @@ package com.twitter.util
 /** Provides an interface for working with a batched [[com.twitter.util.Future]] */
 class Batcher[In, Out] private[util] (executor: BatchExecutor[In, Out])(implicit
     timer: Timer)
-    extends (In => Future[Out]) { batcher =>
+    extends (In => Future[Out]) {
+  batcher =>
 
   /**
     * Enqueues requests for a batched [[com.twitter.util.Future]]

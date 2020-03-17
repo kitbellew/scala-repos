@@ -50,26 +50,28 @@ private[akka] object Shard {
   /**
     * `State` change for starting an entity in this `Shard`
     */
-  @SerialVersionUID(1L) final case class EntityStarted(entityId: EntityId)
-      extends StateChange
+  @SerialVersionUID(1L)
+  final case class EntityStarted(entityId: EntityId) extends StateChange
 
   /**
     * `State` change for an entity which has terminated.
     */
-  @SerialVersionUID(1L) final case class EntityStopped(entityId: EntityId)
-      extends StateChange
+  @SerialVersionUID(1L)
+  final case class EntityStopped(entityId: EntityId) extends StateChange
 
-  @SerialVersionUID(1L) case object GetCurrentShardState extends ShardQuery
+  @SerialVersionUID(1L)
+  case object GetCurrentShardState extends ShardQuery
 
-  @SerialVersionUID(1L) final case class CurrentShardState(
+  @SerialVersionUID(1L)
+  final case class CurrentShardState(
       shardId: ShardRegion.ShardId,
       entityIds: Set[EntityId])
 
-  @SerialVersionUID(1L) case object GetShardStats extends ShardQuery
+  @SerialVersionUID(1L)
+  case object GetShardStats extends ShardQuery
 
-  @SerialVersionUID(1L) final case class ShardStats(
-      shardId: ShardRegion.ShardId,
-      entityCount: Int)
+  @SerialVersionUID(1L)
+  final case class ShardStats(shardId: ShardRegion.ShardId, entityCount: Int)
 
   object State {
     val Empty = State()
@@ -78,8 +80,8 @@ private[akka] object Shard {
   /**
     * Persistent state of the Shard.
     */
-  @SerialVersionUID(1L) final case class State private[akka] (
-      entities: Set[EntityId] = Set.empty)
+  @SerialVersionUID(1L)
+  final case class State private[akka] (entities: Set[EntityId] = Set.empty)
       extends ClusterShardingSerializable
 
   /**

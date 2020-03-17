@@ -660,14 +660,16 @@ class LinearRegressionTrainingSummary private[regression] (
 @Since("1.5.0")
 @Experimental
 class LinearRegressionSummary private[regression] (
-    @transient val predictions: DataFrame,
+    @transient
+    val predictions: DataFrame,
     val predictionCol: String,
     val labelCol: String,
     val model: LinearRegressionModel,
     private val diagInvAtWA: Array[Double])
     extends Serializable {
 
-  @transient private val metrics =
+  @transient
+  private val metrics =
     new RegressionMetrics(
       predictions
         .select(predictionCol, labelCol)
@@ -730,7 +732,8 @@ class LinearRegressionSummary private[regression] (
 
   /** Residuals (label - predicted value) */
   @Since("1.5.0")
-  @transient lazy val residuals: DataFrame = {
+  @transient
+  lazy val residuals: DataFrame = {
     val t = udf { (pred: Double, label: Double) =>
       label - pred
     }

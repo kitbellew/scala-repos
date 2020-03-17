@@ -1,6 +1,7 @@
 package gitbucket.core.model
 
-trait MilestoneComponent extends TemplateComponent { self: Profile =>
+trait MilestoneComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
   import self._
 

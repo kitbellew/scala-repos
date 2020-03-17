@@ -31,7 +31,8 @@ import org.apache.spark.sql.execution.datasources.{
   * Most of these map directly to Jackson's internal options, specified in [[JsonParser.Feature]].
   */
 private[sql] class JSONOptions(
-    @transient private val parameters: Map[String, String])
+    @transient
+    private val parameters: Map[String, String])
     extends Logging
     with Serializable {
 

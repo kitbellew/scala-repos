@@ -89,7 +89,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
 
   implicit def elemInABox(in: Elem): Box[Elem] = Full(in)
 
-  @volatile private[this] var _screenList: List[Screen] = Nil
+  @volatile
+  private[this] var _screenList: List[Screen] = Nil
 
   private object ScreenVars
       extends TransientRequestVar[Map[String, (NonCleanAnyVar[_], Any)]](

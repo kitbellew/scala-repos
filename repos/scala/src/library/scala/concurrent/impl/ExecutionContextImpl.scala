@@ -56,7 +56,8 @@ private[concurrent] object ExecutionContextImpl {
 
     private final val currentNumberOfThreads = new AtomicInteger(0)
 
-    @tailrec private final def reserveThread(): Boolean =
+    @tailrec
+    private final def reserveThread(): Boolean =
       currentNumberOfThreads.get() match {
         case `maxThreads` | Int.`MaxValue` => false
         case other =>
@@ -65,7 +66,8 @@ private[concurrent] object ExecutionContextImpl {
             other + 1) || reserveThread()
       }
 
-    @tailrec private final def deregisterThread(): Boolean =
+    @tailrec
+    private final def deregisterThread(): Boolean =
       currentNumberOfThreads.get() match {
         case 0 => false
         case other =>
@@ -107,7 +109,8 @@ private[concurrent] object ExecutionContextImpl {
               var result: T = null.asInstanceOf[T]
               ForkJoinPool.managedBlock(
                 new ForkJoinPool.ManagedBlocker {
-                  @volatile var isdone = false
+                  @volatile
+                  var isdone = false
                   override def block(): Boolean = {
                     result =
                       try {

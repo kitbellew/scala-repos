@@ -67,16 +67,21 @@ private[lease] class WindowedByteCounter private[lease] (
     allocs.reduce(_ + _)
   }
 
-  @volatile private[this] var count = info.generation()
-  @volatile private[this] var idx = 0
+  @volatile
+  private[this] var count = info.generation()
+  @volatile
+  private[this] var idx = 0
 
   // possible range of gc
   /** The timestamp of the last gc, precise to within period P. */
-  @volatile var lastGc: Time = Time.now
-  @volatile private[this] var running = true
+  @volatile
+  var lastGc: Time = Time.now
+  @volatile
+  private[this] var running = true
 
   // used to unflaky our tests--DO NOT USE
-  @volatile private[lease] var passCount: Int = 0
+  @volatile
+  private[lease] var passCount: Int = 0
 
   /** @return allocation rate in bytes per millisecond. */
   def rate(): Double = sum().inBytes / W.inMilliseconds

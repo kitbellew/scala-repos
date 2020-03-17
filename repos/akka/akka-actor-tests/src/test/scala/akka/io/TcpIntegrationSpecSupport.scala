@@ -11,7 +11,8 @@ import akka.io.Inet.SocketOption
 import akka.testkit.SocketUtil._
 import Tcp._
 
-trait TcpIntegrationSpecSupport { _: AkkaSpec ⇒
+trait TcpIntegrationSpecSupport {
+  _: AkkaSpec ⇒
 
   class TestSetup(shouldBindServer: Boolean = true) {
     val bindHandler = TestProbe()
@@ -51,9 +52,8 @@ trait TcpIntegrationSpecSupport { _: AkkaSpec ⇒
         bindHandler.sender())
     }
 
-    @tailrec final def expectReceivedData(
-        handler: TestProbe,
-        remaining: Int): Unit =
+    @tailrec
+    final def expectReceivedData(handler: TestProbe, remaining: Int): Unit =
       if (remaining > 0) {
         val recv = handler.expectMsgType[Received]
         expectReceivedData(handler, remaining - recv.data.size)

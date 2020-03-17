@@ -34,11 +34,16 @@ class NormalizerSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  @transient var data: Array[Vector] = _
-  @transient var dataFrame: DataFrame = _
-  @transient var normalizer: Normalizer = _
-  @transient var l1Normalized: Array[Vector] = _
-  @transient var l2Normalized: Array[Vector] = _
+  @transient
+  var data: Array[Vector] = _
+  @transient
+  var dataFrame: DataFrame = _
+  @transient
+  var normalizer: Normalizer = _
+  @transient
+  var l1Normalized: Array[Vector] = _
+  @transient
+  var l2Normalized: Array[Vector] = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

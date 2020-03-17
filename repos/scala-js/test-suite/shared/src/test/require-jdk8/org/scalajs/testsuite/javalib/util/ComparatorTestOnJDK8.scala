@@ -14,7 +14,8 @@ import java.{util => ju}
 
 class ComparatorTestOnJDK8 {
 
-  @Test def reversed(): Unit = {
+  @Test
+  def reversed(): Unit = {
     class IntComparator extends ju.Comparator[Int] {
       def compare(a: Int, b: Int): Int = {
         /* Using Int.MinValue makes sure that Comparator.reversed() does not

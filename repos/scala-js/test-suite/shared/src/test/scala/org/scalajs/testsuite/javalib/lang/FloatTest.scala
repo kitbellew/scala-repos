@@ -19,14 +19,16 @@ import org.scalajs.testsuite.utils.Platform.executingInJVM
 
 class FloatTest {
 
-  @Test def proper_equals(): Unit = {
+  @Test
+  def proper_equals(): Unit = {
     assertTrue(0.0f.equals(0.0f))
     assertTrue((-0.0f).equals(-0.0f))
     assertFalse(0.0f.equals(-0.0f))
     assertTrue(Float.NaN.equals(Float.NaN))
   }
 
-  @Test def hashCodeTest(): Unit = {
+  @Test
+  def hashCodeTest(): Unit = {
     def hashCodeNotInlined(x: Any): Int = {
       var y = x // do not inline
       y.hashCode
@@ -54,7 +56,8 @@ class FloatTest {
     }
   }
 
-  @Test def toString_with_integer_values_when_an_integer(): Unit = {
+  @Test
+  def toString_with_integer_values_when_an_integer(): Unit = {
     if (executingInJVM) {
       assertEquals("0.0", 0.0f.toString)
       assertEquals("-0.0", (-0.0f).toString)
@@ -79,7 +82,8 @@ class FloatTest {
     assertEquals("1.2", 1.2f.toString.substring(0, 3))
   }
 
-  @Test def should_parse_strings(): Unit = {
+  @Test
+  def should_parse_strings(): Unit = {
     assertEquals(0.0f, "0.0".toFloat, 0.0f)
     assertTrue("NaN".toFloat.isNaN)
     assertTrue(Try("asdf".toFloat).isFailure)
@@ -105,7 +109,8 @@ class FloatTest {
     test("+.3f", 0.3f)
   }
 
-  @Test def should_reject_invalid_strings_when_parsing(): Unit = {
+  @Test
+  def should_reject_invalid_strings_when_parsing(): Unit = {
     def test(s: String): Unit =
       expectThrows(classOf[NumberFormatException], JFloat.parseFloat(s))
 
@@ -116,7 +121,8 @@ class FloatTest {
     test("4E-3.2")
   }
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
     def compare(x: Float, y: Float): Int =
       new JFloat(x).compareTo(new JFloat(y))
 
@@ -133,7 +139,8 @@ class FloatTest {
     assertTrue(compare(0.0f, -0.0f) > 0)
   }
 
-  @Test def should_be_a_Comparable(): Unit = {
+  @Test
+  def should_be_a_Comparable(): Unit = {
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
@@ -150,7 +157,8 @@ class FloatTest {
     assertTrue(compare(0.0f, -0.0f) > 0)
   }
 
-  @Test def `isInfinite_- #515`(): Unit = {
+  @Test
+  def `isInfinite_- #515`(): Unit = {
     assertTrue(Float.PositiveInfinity.isInfinite)
     assertTrue(Float.NegativeInfinity.isInfinite)
     assertTrue((1f / 0).isInfinite)
@@ -158,7 +166,8 @@ class FloatTest {
     assertFalse(0f.isInfinite)
   }
 
-  @Test def isNaNTest(): Unit = {
+  @Test
+  def isNaNTest(): Unit = {
     def f(v: Float): Boolean = {
       var v2 = v // do not inline
       v2.isNaN
@@ -175,7 +184,8 @@ class FloatTest {
     assertFalse(f(-1.5f))
   }
 
-  @Test def intBitsToFloat(): Unit = {
+  @Test
+  def intBitsToFloat(): Unit = {
     def isZero(v: Float, neg: Boolean): Boolean = {
       (v == 0.0f) && (
         1 / v == (
@@ -261,7 +271,8 @@ class FloatTest {
     ) // an arbitrary neg subnormal form
   }
 
-  @Test def floatToIntBits(): Unit = {
+  @Test
+  def floatToIntBits(): Unit = {
     import JFloat.{floatToIntBits => f}
 
     // Specials

@@ -12,7 +12,8 @@ import scala.collection.immutable.ListMap
 import scala.language.postfixOps
 
 /** AnnotationInfo and its helpers */
-trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
+trait AnnotationInfos extends api.Annotations {
+  self: SymbolTable =>
   import definitions._
 
   // Common annotation code between Symbol and Type.
@@ -70,7 +71,8 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     final def withAnnotation(annot: AnnotationInfo): Self =
       withAnnotations(List(annot))
 
-    @tailrec private def dropOtherAnnotations(
+    @tailrec
+    private def dropOtherAnnotations(
         anns: List[AnnotationInfo],
         cls: Symbol): List[AnnotationInfo] =
       anns match {

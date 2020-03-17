@@ -20,7 +20,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @RunWith(classOf[PaxExam])
 @ExamReactorStrategy(Array(classOf[AllConfinedStagedReactorFactory]))
 class BasicTest extends SlickOsgiHelper {
-  @Configuration def config() = standardOptions
+  @Configuration
+  def config() = standardOptions
 
   @Test
   def testPlainSQL: Unit =

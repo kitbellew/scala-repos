@@ -175,7 +175,8 @@ object TypedActor
         case i: InvocationTargetException ⇒ throw i.getTargetException
       }
 
-    @throws(classOf[ObjectStreamException]) private def writeReplace(): AnyRef =
+    @throws(classOf[ObjectStreamException])
+    private def writeReplace(): AnyRef =
       parameters match {
         case null ⇒
           SerializedMethodCall(
@@ -230,8 +231,8 @@ object TypedActor
 
     //TODO implement writeObject and readObject to serialize
     //TODO Possible optimization is to special encode the parameter-types to conserve space
-    @throws(classOf[ObjectStreamException]) private def readResolve()
-        : AnyRef = {
+    @throws(classOf[ObjectStreamException])
+    private def readResolve(): AnyRef = {
       val system = akka.serialization.JavaSerializer.currentSystem.value
       if (system eq null)
         throw new IllegalStateException(
@@ -499,9 +500,12 @@ object TypedActor
     * INTERNAL API
     */
   private[akka] class TypedActorInvocationHandler(
-      @transient val extension: TypedActorExtension,
-      @transient val actorVar: AtomVar[ActorRef],
-      @transient val timeout: Timeout)
+      @transient
+      val extension: TypedActorExtension,
+      @transient
+      val actorVar: AtomVar[ActorRef],
+      @transient
+      val timeout: Timeout)
       extends InvocationHandler
       with Serializable {
 
@@ -553,7 +557,8 @@ object TypedActor
               }
           }
       }
-    @throws(classOf[ObjectStreamException]) private def writeReplace(): AnyRef =
+    @throws(classOf[ObjectStreamException])
+    private def writeReplace(): AnyRef =
       SerializedTypedActorInvocationHandler(actor, timeout.duration)
   }
 
@@ -563,7 +568,8 @@ object TypedActor
   private[akka] final case class SerializedTypedActorInvocationHandler(
       val actor: ActorRef,
       val timeout: FiniteDuration) {
-    @throws(classOf[ObjectStreamException]) private def readResolve(): AnyRef =
+    @throws(classOf[ObjectStreamException])
+    private def readResolve(): AnyRef =
       JavaSerializer.currentSystem.value match {
         case null ⇒
           throw new IllegalStateException(

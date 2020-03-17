@@ -413,7 +413,8 @@ trait RecordTypeMode extends PrimitiveTypeMode {
 /**
   * Record-Specific extensions to numerical Squeryl Expressions.
   */
-trait SquerylRecordNumericalExpression[T] { this: NumericalExpression[T] =>
+trait SquerylRecordNumericalExpression[T] {
+  this: NumericalExpression[T] =>
 
   /**
     * Can be used instead of the often conflicting "is" function.

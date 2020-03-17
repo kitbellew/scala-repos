@@ -48,7 +48,8 @@ package object math {
     if (n - k > k)
       return choose(n, n - k)
 
-    @tailrec def loop(lo: Long, hi: Long, prod: BigInt): BigInt =
+    @tailrec
+    def loop(lo: Long, hi: Long, prod: BigInt): BigInt =
       if (lo > hi)
         prod
       else
@@ -64,7 +65,8 @@ package object math {
     * factorial
     */
   def fact(n: Long): BigInt = {
-    @tailrec def loop(lo: Long, hi: Long, prod: BigInt): BigInt =
+    @tailrec
+    def loop(lo: Long, hi: Long, prod: BigInt): BigInt =
       if (lo > hi)
         prod
       else
@@ -88,7 +90,8 @@ package object math {
     var i = 63
     while (((n >>> i) & 1) == 0 && i >= 0)
       i -= 1
-    @tailrec def loop(a: BigInt, b: BigInt, i: Int): BigInt = {
+    @tailrec
+    def loop(a: BigInt, b: BigInt, i: Int): BigInt = {
       val c = a + b
       if (i < 0)
         b
@@ -218,7 +221,8 @@ package object math {
       val scale2 = scale + 1
       val limit = BigDecimal(5) * BigDecimal(10).pow(-scale2)
 
-      @tailrec def loop(x: BigDecimal): BigDecimal = {
+      @tailrec
+      def loop(x: BigDecimal): BigDecimal = {
         val xp = exp(x)
         val term = (xp - n) / xp
         if (term > limit)
@@ -233,7 +237,8 @@ package object math {
     if (n.signum < 1)
       throw new IllegalArgumentException("argument <= 0")
 
-    @tailrec def rescale(x: BigDecimal, n: Int): (BigDecimal, Int) =
+    @tailrec
+    def rescale(x: BigDecimal, n: Int): (BigDecimal, Int) =
       if (x < 64)
         (x, n)
       else
@@ -263,7 +268,8 @@ package object math {
       exp(log(base) * exponent)
 
   final def pow(base: BigInt, ex: BigInt): BigInt = {
-    @tailrec def bigIntPow(t: BigInt, b: BigInt, e: BigInt): BigInt =
+    @tailrec
+    def bigIntPow(t: BigInt, b: BigInt, e: BigInt): BigInt =
       if (e.signum == 0)
         t
       else if (e.testBit(0))
@@ -297,7 +303,8 @@ package object math {
     * Math.pow which will return +/- Infinity).
     */
   final def pow(base: Long, exponent: Long): Long = {
-    @tailrec def longPow(t: Long, b: Long, e: Long): Long =
+    @tailrec
+    def longPow(t: Long, b: Long, e: Long): Long =
       if (e == 0L)
         t
       else if ((e & 1) == 1)

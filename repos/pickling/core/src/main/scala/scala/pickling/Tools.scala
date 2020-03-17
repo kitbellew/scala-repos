@@ -382,7 +382,8 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
   }
 }
 
-abstract class Macro extends RichTypes { self =>
+abstract class Macro extends RichTypes {
+  self =>
   type MyUniverse = scala.reflect.macros.Universe
 
   val c: Context

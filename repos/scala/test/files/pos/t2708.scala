@@ -1,1 +1,3 @@
-class Foo(@volatile var v: Int)
+class Foo(
+    @volatile
+    var v: Int)

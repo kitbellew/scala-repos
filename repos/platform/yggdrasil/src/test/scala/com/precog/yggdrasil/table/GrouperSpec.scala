@@ -72,7 +72,8 @@ solve 'a, 'b
 trait GrouperSpec[M[+_]]
     extends BlockStoreTestSupport[M]
     with Specification
-    with ScalaCheck { self =>
+    with ScalaCheck {
+  self =>
   def tic_a = CPathField("tic_a")
   def tic_b = CPathField("tic_b")
 

@@ -37,26 +37,31 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
   // However, I'm afraid it's too late now for such breaking change.
   import HashTable._
 
-  @transient protected var _loadFactor = defaultLoadFactor
+  @transient
+  protected var _loadFactor = defaultLoadFactor
 
   /** The actual hash table.
     */
-  @transient protected var table: Array[HashEntry[A, Entry]] =
-    new Array(initialCapacity)
+  @transient
+  protected var table: Array[HashEntry[A, Entry]] = new Array(initialCapacity)
 
   /** The number of mappings contained in this hash table.
     */
-  @transient protected var tableSize: Int = 0
+  @transient
+  protected var tableSize: Int = 0
 
   /** The next size value at which to resize (capacity * load factor).
     */
-  @transient protected var threshold: Int = initialThreshold(_loadFactor)
+  @transient
+  protected var threshold: Int = initialThreshold(_loadFactor)
 
   /** The array keeping track of the number of elements in 32 element blocks.
     */
-  @transient protected var sizemap: Array[Int] = null
+  @transient
+  protected var sizemap: Array[Int] = null
 
-  @transient protected var seedvalue: Int = tableSizeSeed
+  @transient
+  protected var seedvalue: Int = tableSizeSeed
 
   protected def tableSizeSeed = Integer.bitCount(table.length - 1)
 

@@ -35,7 +35,8 @@ class ZigguratBenchmarks extends MyBenchmark with BenchmarkData {
   val mg = new spire.random.MarsagliaGaussian[Double]
   val gaussDist = mg(0d, 1d)
 
-  @inline final def nextLen = 10000000
+  @inline
+  final def nextLen = 10000000
 
   def timePolarRNORGenerator(reps: Int) =
     run(reps) {

@@ -28,7 +28,8 @@ import scalaz.Ordering
 import scalaz.Ordering._
 import scalaz.syntax.std.boolean._
 
-sealed trait CPath { self =>
+sealed trait CPath {
+  self =>
   def nodes: List[CPathNode]
 
   def parent: Option[CPath] =

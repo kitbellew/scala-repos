@@ -25,7 +25,8 @@ object Promise {
     * A template trait for [[com.twitter.util.Promise Promises]] that are derived
     * and capable of being detached from other Promises.
     */
-  trait Detachable { _: Promise[_] =>
+  trait Detachable {
+    _: Promise[_] =>
 
     /**
       * Returns true if successfully detached, will return true at most once.
@@ -175,7 +176,8 @@ object Promise {
     classOf[Promise[_]].getDeclaredField("state"))
   private val AlwaysUnit: Any => Unit = scala.Function.const(()) _
 
-  sealed trait Responder[A] { this: Future[A] =>
+  sealed trait Responder[A] {
+    this: Future[A] =>
     protected[util] def depth: Short
     protected def parent: Promise[A]
     protected[util] def continue(k: K[A])
@@ -343,7 +345,8 @@ class Promise[A]
   protected[util] final def depth = 0
   protected final def parent = this
 
-  @volatile private[this] var state: Promise.State[A] = initState
+  @volatile
+  private[this] var state: Promise.State[A] = initState
   private def theState(): Promise.State[A] = state
 
   def this(handleInterrupt: PartialFunction[Throwable, Unit]) {
@@ -358,9 +361,8 @@ class Promise[A]
 
   override def toString = "Promise@%s(state=%s)".format(hashCode, state)
 
-  @inline private[this] def cas(
-      oldState: State[A],
-      newState: State[A]): Boolean =
+  @inline
+  private[this] def cas(oldState: State[A], newState: State[A]): Boolean =
     unsafe.compareAndSwapObject(this, stateOff, oldState, newState)
 
   private[this] def runq(first: K[A], rest: List[K[A]], result: Try[A]) =
@@ -503,7 +505,8 @@ class Promise[A]
     *
     * @param other the Future to which interrupts are forwarded.
     */
-  @tailrec final def forwardInterruptsTo(other: Future[_]): Unit = {
+  @tailrec
+  final def forwardInterruptsTo(other: Future[_]): Unit = {
     // This reduces allocations in the common case.
     if (other.isDefined)
       return
@@ -534,7 +537,8 @@ class Promise[A]
     }
   }
 
-  @tailrec final def raise(intr: Throwable): Unit =
+  @tailrec
+  final def raise(intr: Throwable): Unit =
     state match {
       case Linked(p) => p.raise(intr)
       case s @ Interruptible(waitq, handler) =>
@@ -567,7 +571,8 @@ class Promise[A]
       case Done(_) =>
     }
 
-  @tailrec protected[Promise] final def detach(k: K[A]): Boolean = {
+  @tailrec
+  protected[Promise] final def detach(k: K[A]): Boolean = {
     state match {
       case Linked(p) =>
         p.detach(k)

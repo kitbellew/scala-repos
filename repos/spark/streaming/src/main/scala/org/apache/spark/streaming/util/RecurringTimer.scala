@@ -35,9 +35,12 @@ private[streaming] class RecurringTimer(
       }
     }
 
-  @volatile private var prevTime = -1L
-  @volatile private var nextTime = -1L
-  @volatile private var stopped = false
+  @volatile
+  private var prevTime = -1L
+  @volatile
+  private var nextTime = -1L
+  @volatile
+  private var stopped = false
 
   /**
     * Get the time when this timer will fire if it is started right now.

@@ -15,7 +15,8 @@ import org.jboss.netty.handler.codec.http.{HttpClientCodec, HttpServerCodec}
 private[stream] class DelayedReleaseService[Req](
     self: Service[Req, StreamResponse])
     extends ServiceProxy[Req, StreamResponse](self) {
-  @volatile private[this] var done: Future[Unit] = Future.Done
+  @volatile
+  private[this] var done: Future[Unit] = Future.Done
 
   override def apply(req: Req) = {
     if (!done.isDefined)

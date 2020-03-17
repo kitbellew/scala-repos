@@ -26,7 +26,8 @@ import org.apache.spark.{Accumulator, SparkContext}
   */
 private[spark] abstract class Stopwatch extends Serializable {
 
-  @transient private var running: Boolean = false
+  @transient
+  private var running: Boolean = false
   private var startTime: Long = _
 
   /**
@@ -119,7 +120,9 @@ private[spark] class DistributedStopwatch(
   * A multiple stopwatch that contains local and distributed stopwatches.
   * @param sc SparkContext
   */
-private[spark] class MultiStopwatch(@transient private val sc: SparkContext)
+private[spark] class MultiStopwatch(
+    @transient
+    private val sc: SparkContext)
     extends Serializable {
 
   private val stopwatches: mutable.Map[String, Stopwatch] = mutable.Map.empty

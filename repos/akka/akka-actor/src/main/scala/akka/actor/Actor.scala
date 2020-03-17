@@ -100,9 +100,13 @@ final case class ActorIdentity(correlationId: Any, ref: Option[ActorRef]) {
   *   that the remote node hosting the watched actor was detected as unreachable
   */
 @SerialVersionUID(1L)
-final case class Terminated private[akka] (@BeanProperty actor: ActorRef)(
-    @BeanProperty val existenceConfirmed: Boolean,
-    @BeanProperty val addressTerminated: Boolean)
+final case class Terminated private[akka] (
+    @BeanProperty
+    actor: ActorRef)(
+    @BeanProperty
+    val existenceConfirmed: Boolean,
+    @BeanProperty
+    val addressTerminated: Boolean)
     extends AutoReceivedMessage
     with PossiblyHarmful
     with DeadLetterSuppression
@@ -265,7 +269,8 @@ final case class PostRestartException private[akka] (
 @SerialVersionUID(1L)
 object OriginalRestartException {
   def unapply(ex: PostRestartException): Option[Throwable] = {
-    @tailrec def rec(ex: PostRestartException): Option[Throwable] =
+    @tailrec
+    def rec(ex: PostRestartException): Option[Throwable] =
       ex match {
         case PostRestartException(_, _, e: PostRestartException) ⇒ rec(e)
         case PostRestartException(_, _, e) ⇒ Some(e)
@@ -304,9 +309,12 @@ class ActorInterruptedException private[akka] (cause: Throwable)
   */
 @SerialVersionUID(1L)
 final case class UnhandledMessage(
-    @BeanProperty message: Any,
-    @BeanProperty sender: ActorRef,
-    @BeanProperty recipient: ActorRef)
+    @BeanProperty
+    message: Any,
+    @BeanProperty
+    sender: ActorRef,
+    @BeanProperty
+    recipient: ActorRef)
 
 /**
   * Classes for passing status back to the sender.
@@ -341,7 +349,8 @@ object Status {
   * }
   * }}}
   */
-trait ActorLogging { this: Actor ⇒
+trait ActorLogging {
+  this: Actor ⇒
   private var _log: LoggingAdapter = _
 
   def log: LoggingAdapter = {

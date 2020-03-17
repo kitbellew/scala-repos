@@ -281,7 +281,8 @@ case class WeekOfYear(child: Expression)
 
   override def dataType: DataType = IntegerType
 
-  @transient private lazy val c = {
+  @transient
+  private lazy val c = {
     val c = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
     c.setFirstDayOfWeek(Calendar.MONDAY)
     c.setMinimalDaysInFirstWeek(4)

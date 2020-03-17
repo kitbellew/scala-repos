@@ -5,7 +5,8 @@ package scalaz
   * Strength on a coproduct.
   */
 ////
-trait ProChoice[=>:[_, _]] extends Profunctor[=>:] { self =>
+trait ProChoice[=>:[_, _]] extends Profunctor[=>:] {
+  self =>
   ////
   def left[A, B, C](fa: A =>: B): (A \/ C) =>: (B \/ C)
 
@@ -19,7 +20,8 @@ trait ProChoice[=>:[_, _]] extends Profunctor[=>:] { self =>
 }
 
 object ProChoice {
-  @inline def apply[F[_, _]](implicit F: ProChoice[F]): ProChoice[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: ProChoice[F]): ProChoice[F] = F
 
   ////
 

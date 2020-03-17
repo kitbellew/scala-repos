@@ -105,7 +105,8 @@ object TellOnlyBenchmark {
   }
 
   class DroppingMessageQueue extends UnboundedMailbox.MessageQueue {
-    @volatile var dropping = false
+    @volatile
+    var dropping = false
 
     override def enqueue(receiver: ActorRef, handle: Envelope): Unit = {
       if (handle.message == flipDrop)

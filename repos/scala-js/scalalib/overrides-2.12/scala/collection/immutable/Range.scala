@@ -194,7 +194,8 @@ class Range(val start: Int, val end: Int, val step: Int)
       start + (step * idx)
   }
 
-  @inline final override def foreach[@specialized(Unit) U](f: Int => U) {
+  @inline
+  final override def foreach[@specialized(Unit) U](f: Int => U) {
     validateMaxLength()
     val isCommonCase = (start != Int.MinValue || end != Int.MinValue)
     var i = start

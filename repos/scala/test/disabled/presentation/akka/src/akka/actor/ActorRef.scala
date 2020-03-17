@@ -1472,7 +1472,8 @@ trait ActorRefShared {
   * There are implicit conversions in ../actor/Implicits.scala
   * from ActorRef -> ScalaActorRef and back
   */
-trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
+trait ScalaActorRef extends ActorRefShared {
+  ref: ActorRef =>
 
   /**
     * Identifier for actor, does not have to be a unique one. Default is the 'uuid'.

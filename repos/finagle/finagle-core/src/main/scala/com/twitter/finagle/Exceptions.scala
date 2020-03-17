@@ -98,7 +98,8 @@ class RequestException(message: String, cause: Throwable)
   * its error message (e.g. the source and timeout value), and is only used
   * within the confines of Finagle.
   */
-trait TimeoutException extends SourcedException { self: Exception =>
+trait TimeoutException extends SourcedException {
+  self: Exception =>
   protected val timeout: Duration
   protected def explanation: String
 

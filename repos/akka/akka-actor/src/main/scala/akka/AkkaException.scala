@@ -17,7 +17,8 @@ class AkkaException(message: String, cause: Throwable)
   * Mix in this trait to suppress the StackTrace for the instance of the exception but not the cause,
   * scala.util.control.NoStackTrace suppresses all the StackTraces.
   */
-trait OnlyCauseStackTrace { self: Throwable ⇒
+trait OnlyCauseStackTrace {
+  self: Throwable ⇒
   override def fillInStackTrace(): Throwable = {
     setStackTrace(
       getCause match {

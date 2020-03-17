@@ -16,7 +16,8 @@ class InputStreamReader private[io] (
     with Closable
     with CloseAwaitably {
   private[this] val mutex = new AsyncMutex()
-  @volatile private[this] var discarded = false
+  @volatile
+  private[this] var discarded = false
 
   def this(inputStream: InputStream, maxBufferSize: Int) =
     this(inputStream, maxBufferSize, FuturePool.interruptibleUnboundedPool)

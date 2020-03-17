@@ -22,8 +22,10 @@ class TimerBenchmark extends StdBenchAnnotations {
   private[this] val wayLater = Time.now + 20.minutes
 
   private[this] val baseline = Timer.Nil
-  @volatile private[this] var javaUtil: JavaTimer = _
-  @volatile private[this] var executor: ScheduledThreadPoolTimer = _
+  @volatile
+  private[this] var javaUtil: JavaTimer = _
+  @volatile
+  private[this] var executor: ScheduledThreadPoolTimer = _
 
   @Setup(Level.Iteration)
   def setup(): Unit = {

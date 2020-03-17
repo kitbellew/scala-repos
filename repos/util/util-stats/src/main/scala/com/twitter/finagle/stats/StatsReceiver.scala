@@ -54,7 +54,8 @@ object StatsReceivers {
   *
   * @see [[StatsReceivers]] for a Java-friendly API.
   */
-trait StatsReceiver { self =>
+trait StatsReceiver {
+  self =>
 
   /**
     * Specifies the representative receiver.  This is in order to

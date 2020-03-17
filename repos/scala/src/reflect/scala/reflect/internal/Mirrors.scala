@@ -22,7 +22,8 @@ trait Mirrors extends api.Mirrors {
   }
 
   abstract class RootsBase(rootOwner: Symbol)
-      extends scala.reflect.api.Mirror[Mirrors.this.type] { thisMirror =>
+      extends scala.reflect.api.Mirror[Mirrors.this.type] {
+    thisMirror =>
     private[this] var initialized = false
     def isMirrorInitialized = initialized
 
@@ -226,8 +227,8 @@ trait Mirrors extends api.Mirrors {
     def getPackageIfDefined(fullname: TermName): Symbol =
       wrapMissing(getPackage(fullname))
 
-    @deprecated("Use getPackage", "2.11.0") def getRequiredPackage(
-        fullname: String): ModuleSymbol =
+    @deprecated("Use getPackage", "2.11.0")
+    def getRequiredPackage(fullname: String): ModuleSymbol =
       getPackage(newTermNameCached(fullname))
 
     def getPackageObject(fullname: String): ModuleSymbol =
@@ -268,7 +269,8 @@ trait Mirrors extends api.Mirrors {
       erasureString(classTag[T].runtimeClass)
     }
 
-    @inline final def wrapMissing(body: => Symbol): Symbol =
+    @inline
+    final def wrapMissing(body: => Symbol): Symbol =
       try body
       catch {
         case _: MissingRequirementError => NoSymbol

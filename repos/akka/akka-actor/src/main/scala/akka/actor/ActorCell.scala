@@ -365,7 +365,8 @@ private[akka] object ActorCell {
 
   final val undefinedUid = 0
 
-  @tailrec final def newUid(): Int = {
+  @tailrec
+  final def newUid(): Int = {
     // Note that this uid is also used as hashCode in ActorRef, so be careful
     // to not break hashing if you change the way uid is generated
     val uid = ThreadLocalRandom.current.nextInt()
@@ -463,8 +464,8 @@ private[akka] class ActorCell(
       else
         DefaultState
 
-    @tailrec def sendAllToDeadLetters(
-        messages: EarliestFirstSystemMessageList): Unit =
+    @tailrec
+    def sendAllToDeadLetters(messages: EarliestFirstSystemMessageList): Unit =
       if (messages.nonEmpty) {
         val tail = messages.tail
         val msg = messages.head

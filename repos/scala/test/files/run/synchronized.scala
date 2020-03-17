@@ -39,7 +39,8 @@ class C1 {
     synchronized {
       checkLocks(this)(this.getClass)
     }
-  @inline final def fi =
+  @inline
+  final def fi =
     synchronized {
       checkLocks(this)(this.getClass)
     }
@@ -67,7 +68,8 @@ class C1 {
     }
 
   def g1 = checkLocks()(this, this.getClass)
-  @inline final def gi = checkLocks()(this, this.getClass)
+  @inline
+  final def gi = checkLocks()(this, this.getClass)
   val gv: () => Boolean = () =>
     checkLocks()(this, this.getClass, gv, gv.getClass)
   def gf = {
@@ -85,7 +87,8 @@ class C1 {
       synchronized {
         checkLocks(this)(this.getClass, C1.this, C1.this.getClass)
       }
-    @inline final def fi =
+    @inline
+    final def fi =
       synchronized {
         checkLocks(this)(this.getClass, C1.this, C1.this.getClass)
       }
@@ -132,8 +135,8 @@ class C1 {
       }
 
     def g1 = checkLocks()(this, this.getClass, C1.this, C1.this.getClass)
-    @inline final def gi =
-      checkLocks()(this, this.getClass, C1.this, C1.this.getClass)
+    @inline
+    final def gi = checkLocks()(this, this.getClass, C1.this, C1.this.getClass)
     val gv: () => Boolean = () =>
       checkLocks()(
         this,
@@ -167,7 +170,8 @@ class C1 {
       synchronized {
         checkLocks(this)(this.getClass, C1.this, C1.this.getClass)
       }
-    @inline final def fi =
+    @inline
+    final def fi =
       synchronized {
         checkLocks(this)(this.getClass, C1.this, C1.this.getClass)
       }
@@ -214,8 +218,8 @@ class C1 {
       }
 
     def g1 = checkLocks()(this, this.getClass, C1.this, C1.this.getClass)
-    @inline final def gi =
-      checkLocks()(this, this.getClass, C1.this, C1.this.getClass)
+    @inline
+    final def gi = checkLocks()(this, this.getClass, C1.this, C1.this.getClass)
     val gv: () => Boolean = () =>
       checkLocks()(
         this,
@@ -253,7 +257,8 @@ object O1 {
     synchronized {
       checkLocks(this)(this.getClass)
     }
-  @inline final def fi =
+  @inline
+  final def fi =
     synchronized {
       checkLocks(this)(this.getClass)
     }
@@ -281,7 +286,8 @@ object O1 {
     }
 
   def g1 = checkLocks()(this, this.getClass)
-  @inline final def gi = checkLocks()(this, this.getClass)
+  @inline
+  final def gi = checkLocks()(this, this.getClass)
   val gv: () => Boolean = () =>
     checkLocks()(this, this.getClass, gv, gv.getClass)
   def gf = {
@@ -299,7 +305,8 @@ object O1 {
       synchronized {
         checkLocks(this)(this.getClass, O1, O1.getClass)
       }
-    @inline final def fi =
+    @inline
+    final def fi =
       synchronized {
         checkLocks(this)(this.getClass, O1, O1.getClass)
       }
@@ -331,7 +338,8 @@ object O1 {
       }
 
     def g1 = checkLocks()(this, this.getClass, O1, O1.getClass)
-    @inline final def gi = checkLocks()(this, this.getClass, O1, O1.getClass)
+    @inline
+    final def gi = checkLocks()(this, this.getClass, O1, O1.getClass)
     val gv: () => Boolean = () =>
       checkLocks()(this, this.getClass, O1, O1.getClass, gv, gv.getClass)
     def gf = {
@@ -352,7 +360,8 @@ object O1 {
       synchronized {
         checkLocks(this)(this.getClass, O1, O1.getClass)
       }
-    @inline final def fi =
+    @inline
+    final def fi =
       synchronized {
         checkLocks(this)(this.getClass, O1, O1.getClass)
       }
@@ -384,7 +393,8 @@ object O1 {
       }
 
     def g1 = checkLocks()(this, this.getClass, O1, O1.getClass)
-    @inline final def gi = checkLocks()(this, this.getClass, O1, O1.getClass)
+    @inline
+    final def gi = checkLocks()(this, this.getClass, O1, O1.getClass)
     val gv: () => Boolean = () =>
       checkLocks()(this, this.getClass, gv, gv.getClass, O1, O1.getClass)
     def gf = {
@@ -409,7 +419,8 @@ trait T {
     synchronized {
       checkLocks(this)(this.getClass, classOf[T], classOf[C2], O2.getClass)
     }
-  @inline final def fi =
+  @inline
+  final def fi =
     synchronized {
       checkLocks(this)(this.getClass, classOf[T], classOf[C2], O2.getClass)
     }
@@ -456,7 +467,8 @@ trait T {
 
   def g1 =
     checkLocks()(this, this.getClass, classOf[T], classOf[C2], O2, O2.getClass)
-  @inline final def gi =
+  @inline
+  final def gi =
     checkLocks()(this, this.getClass, classOf[T], classOf[C2], O2, O2.getClass)
   val gv: () => Boolean = () =>
     checkLocks()(
@@ -500,7 +512,8 @@ trait T {
           O2,
           O2.getClass)
       }
-    @inline final def fi =
+    @inline
+    final def fi =
       synchronized {
         checkLocks(this)(
           this.getClass,
@@ -588,7 +601,8 @@ trait T {
         classOf[C2],
         O2,
         O2.getClass)
-    @inline final def gi =
+    @inline
+    final def gi =
       checkLocks()(
         this,
         this.getClass,
@@ -654,7 +668,8 @@ trait T {
           O2,
           O2.getClass)
       }
-    @inline final def fi =
+    @inline
+    final def fi =
       synchronized {
         checkLocks(this)(
           this.getClass,
@@ -742,7 +757,8 @@ trait T {
         classOf[C2],
         O2,
         O2.getClass)
-    @inline final def gi =
+    @inline
+    final def gi =
       checkLocks()(
         this,
         this.getClass,

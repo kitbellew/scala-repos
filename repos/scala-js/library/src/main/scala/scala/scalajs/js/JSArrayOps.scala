@@ -275,6 +275,7 @@ trait JSArrayOps[A] extends Object {
 }
 
 object JSArrayOps {
-  @inline implicit def jsArrayOps[A](array: Array[A]): JSArrayOps[A] =
+  @inline
+  implicit def jsArrayOps[A](array: Array[A]): JSArrayOps[A] =
     array.asInstanceOf[JSArrayOps[A]]
 }

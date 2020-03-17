@@ -17,7 +17,8 @@ class JavaUniverse
     extends InternalSymbolTable
     with JavaUniverseForce
     with ReflectSetup
-    with RuntimeSymbolTable { self =>
+    with RuntimeSymbolTable {
+  self =>
   def picklerPhase = SomePhase
   def erasurePhase = SomePhase
   lazy val settings = new Settings

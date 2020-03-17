@@ -238,8 +238,10 @@ private[recommendation] trait ALSParams
 class ALSModel private[ml] (
     @Since("1.4.0") override val uid: String,
     @Since("1.4.0") val rank: Int,
-    @transient val userFactors: DataFrame,
-    @transient val itemFactors: DataFrame)
+    @transient
+    val userFactors: DataFrame,
+    @transient
+    val itemFactors: DataFrame)
     extends Model[ALSModel]
     with ALSModelParams
     with MLWritable {

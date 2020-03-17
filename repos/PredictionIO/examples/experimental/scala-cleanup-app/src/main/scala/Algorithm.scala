@@ -15,7 +15,8 @@ import grizzled.slf4j.Logger
 class Algorithm
     extends P2LAlgorithm[TrainingData, Model, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(sc: SparkContext, data: TrainingData): Model = {
     new Model

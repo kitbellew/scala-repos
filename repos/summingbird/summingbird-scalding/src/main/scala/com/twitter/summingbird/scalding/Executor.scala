@@ -40,7 +40,8 @@ trait ScaldingExecutionConfig extends ChillExecutionConfig[Scalding] {
 }
 
 object Executor {
-  @transient private val logger = LoggerFactory.getLogger(Executor.getClass)
+  @transient
+  private val logger = LoggerFactory.getLogger(Executor.getClass)
 
   def buildHadoopConf(inArgs: Array[String]): (Configuration, Args) = {
     val baseConfig = new Configuration

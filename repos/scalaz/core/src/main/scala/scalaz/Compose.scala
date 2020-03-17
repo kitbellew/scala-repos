@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait Compose[=>:[_, _]] { self =>
+trait Compose[=>:[_, _]] {
+  self =>
   ////
 
   /** Associative `=>:` binary operator. */
@@ -45,7 +46,8 @@ trait Compose[=>:[_, _]] { self =>
 }
 
 object Compose {
-  @inline def apply[F[_, _]](implicit F: Compose[F]): Compose[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Compose[F]): Compose[F] = F
 
   ////
   ////

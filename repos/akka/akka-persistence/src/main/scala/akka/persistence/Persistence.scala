@@ -307,7 +307,8 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     pluginHolderFor(configPath, snapshotStoreFallbackConfigPath).actor
   }
 
-  @tailrec private def pluginHolderFor(
+  @tailrec
+  private def pluginHolderFor(
       configPath: String,
       fallbackPath: String): PluginHolder = {
     val extensionIdMap = pluginExtensionId.get

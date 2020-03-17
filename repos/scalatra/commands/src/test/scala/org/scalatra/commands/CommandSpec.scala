@@ -11,7 +11,8 @@ import scalaz.Scalaz._
 
 //import org.scalatra.validation.ValidationSupport
 
-trait BindingTemplate { self: Command with TypeConverterFactories =>
+trait BindingTemplate {
+  self: Command with TypeConverterFactories =>
 
   val upperCaseName: Field[String] = bind[String]("name")
     .transform(_.toUpperCase)

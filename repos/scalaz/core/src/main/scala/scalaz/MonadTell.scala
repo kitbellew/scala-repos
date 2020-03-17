@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait MonadTell[F[_], S] extends Monad[F] { self =>
+trait MonadTell[F[_], S] extends Monad[F] {
+  self =>
   ////
   def writer[A](w: S, v: A): F[A]
 
@@ -19,7 +20,8 @@ trait MonadTell[F[_], S] extends Monad[F] { self =>
 }
 
 object MonadTell {
-  @inline def apply[F[_], S](implicit F: MonadTell[F, S]): MonadTell[F, S] = F
+  @inline
+  def apply[F[_], S](implicit F: MonadTell[F, S]): MonadTell[F, S] = F
 
   ////
 

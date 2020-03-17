@@ -351,7 +351,8 @@ object PersistentFSM {
     /**
       * Specify domain events to be applied when transitioning to the new state.
       */
-    @varargs def applying(events: E*): State[S, D, E] = {
+    @varargs
+    def applying(events: E*): State[S, D, E] = {
       copy(domainEvents = domainEvents ++ events)
     }
 

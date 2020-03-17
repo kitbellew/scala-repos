@@ -80,7 +80,8 @@ private[http] class HttpResponseParser(
     if (byteChar(input, cursor + 3) == ' ') {
       parseStatusCode()
       val startIdx = cursor + 4
-      @tailrec def skipReason(idx: Int): Int =
+      @tailrec
+      def skipReason(idx: Int): Int =
         if (idx - startIdx <= maxResponseReasonLength)
           if (byteChar(input, idx) == '\r' && byteChar(input, idx + 1) == '\n')
             idx + 2

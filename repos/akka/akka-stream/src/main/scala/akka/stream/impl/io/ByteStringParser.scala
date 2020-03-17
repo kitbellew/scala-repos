@@ -34,7 +34,8 @@ private[akka] abstract class ByteStringParser[T]
 
     final protected def startWith(step: ParseStep[T]): Unit = current = step
 
-    @tailrec private def doParse(): Unit =
+    @tailrec
+    private def doParse(): Unit =
       if (buffer.nonEmpty) {
         val reader = new ByteReader(buffer)
         val cont =

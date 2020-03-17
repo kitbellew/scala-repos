@@ -61,7 +61,9 @@ private[hive] case class ScriptTransformation(
     script: String,
     output: Seq[Attribute],
     child: SparkPlan,
-    ioschema: HiveScriptIOSchema)(@transient private val sc: HiveContext)
+    ioschema: HiveScriptIOSchema)(
+    @transient
+    private val sc: HiveContext)
     extends UnaryNode {
 
   override protected def otherCopyArgs: Seq[HiveContext] = sc :: Nil
@@ -96,7 +98,8 @@ private[hive] case class ScriptTransformation(
 
       // This nullability is a performance optimization in order to avoid an Option.foreach() call
       // inside of a loop
-      @Nullable val (inputSerde, inputSoi) = ioschema
+      @Nullable
+      val (inputSerde, inputSoi) = ioschema
         .initInputSerDe(input)
         .getOrElse((null, null))
 
@@ -118,7 +121,8 @@ private[hive] case class ScriptTransformation(
 
       // This nullability is a performance optimization in order to avoid an Option.foreach() call
       // inside of a loop
-      @Nullable val (outputSerde, outputSoi) = {
+      @Nullable
+      val (outputSerde, outputSoi) = {
         ioschema.initOutputSerDe(output).getOrElse((null, null))
       }
 
@@ -130,7 +134,8 @@ private[hive] case class ScriptTransformation(
           var curLine: String = null
           val scriptOutputStream = new DataInputStream(inputStream)
 
-          @Nullable val scriptOutputReader =
+          @Nullable
+          val scriptOutputReader =
             ioschema.recordReader(scriptOutputStream, localHiveConf).orNull
 
           var scriptOutputWritable: Writable = null
@@ -247,8 +252,10 @@ private class ScriptTransformationWriterThread(
     iter: Iterator[InternalRow],
     inputSchema: Seq[DataType],
     outputProjection: Projection,
-    @Nullable inputSerde: AbstractSerDe,
-    @Nullable inputSoi: ObjectInspector,
+    @Nullable
+    inputSerde: AbstractSerDe,
+    @Nullable
+    inputSoi: ObjectInspector,
     ioschema: HiveScriptIOSchema,
     outputStream: OutputStream,
     proc: Process,
@@ -260,7 +267,8 @@ private class ScriptTransformationWriterThread(
 
   setDaemon(true)
 
-  @volatile private var _exception: Throwable = null
+  @volatile
+  private var _exception: Throwable = null
 
   /** Contains the exception thrown while writing the parent iterator to the external process. */
   def exception: Option[Throwable] = Option(_exception)
@@ -270,7 +278,8 @@ private class ScriptTransformationWriterThread(
       TaskContext.setTaskContext(taskContext)
 
       val dataOutputStream = new DataOutputStream(outputStream)
-      @Nullable val scriptInputWriter =
+      @Nullable
+      val scriptInputWriter =
         ioschema.recordWriter(dataOutputStream, conf).orNull
 
       // We can't use Utils.tryWithSafeFinally here because we also need a `catch` block, so

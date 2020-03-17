@@ -51,11 +51,16 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
   private var jID: SerializableWritable[JobID] = null
   private var taID: SerializableWritable[TaskAttemptID] = null
 
-  @transient private var writer: RecordWriter[AnyRef, AnyRef] = null
-  @transient private var format: OutputFormat[AnyRef, AnyRef] = null
-  @transient private var committer: OutputCommitter = null
-  @transient private var jobContext: JobContext = null
-  @transient private var taskContext: TaskAttemptContext = null
+  @transient
+  private var writer: RecordWriter[AnyRef, AnyRef] = null
+  @transient
+  private var format: OutputFormat[AnyRef, AnyRef] = null
+  @transient
+  private var committer: OutputCommitter = null
+  @transient
+  private var jobContext: JobContext = null
+  @transient
+  private var taskContext: TaskAttemptContext = null
 
   def preSetup() {
     setIDs(0, 0, 0)

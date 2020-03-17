@@ -8,7 +8,8 @@ import org.slf4j.LoggerFactory
   * @author dlwh
  **/
 trait SerializableLogging extends Serializable {
-  @transient @volatile
+  @transient
+  @volatile
   private var _the_logger: LazyLogger = null
 
   protected def logger: LazyLogger = {

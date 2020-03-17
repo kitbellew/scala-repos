@@ -21,7 +21,8 @@ class PrintStreamTest {
     (ps, bos)
   }
 
-  @Test def flush(): Unit = {
+  @Test
+  def flush(): Unit = {
     val (ps, bos) = newPrintStream()
     ps.print("hello")
     assertFalse(bos.flushed)
@@ -29,7 +30,8 @@ class PrintStreamTest {
     assertTrue(bos.flushed)
   }
 
-  @Test def close(): Unit = {
+  @Test
+  def close(): Unit = {
     val (ps, bos) = newPrintStream()
     ps.write(Array[Byte](1))
     assertFalse(bos.flushed)
@@ -60,7 +62,8 @@ class PrintStreamTest {
     assertArrayEquals(Array[Byte](1), bos.toByteArray)
   }
 
-  @Test def write_pass_the_bytes_through(): Unit = {
+  @Test
+  def write_pass_the_bytes_through(): Unit = {
     def test(
         body: PrintStream => Unit,
         expected: Array[Int],
@@ -85,7 +88,8 @@ class PrintStreamTest {
     test(_.write(Array[Byte]('é'.toByte, 'à'.toByte)), Array('é', 'à'))
   }
 
-  @Test def print(): Unit = {
+  @Test
+  def print(): Unit = {
     def test(
         body: PrintStream => Unit,
         expected: String,
@@ -112,7 +116,8 @@ class PrintStreamTest {
     test(_.print(null: AnyRef), "null")
   }
 
-  @Test def print_encodes_in_UTF_8(): Unit = {
+  @Test
+  def print_encodes_in_UTF_8(): Unit = {
     def test(body: PrintStream => Unit, expected: Array[Int]): Unit = {
       val (ps, bos) = newPrintStream(autoFlush = false)
       body(ps)
@@ -186,7 +191,8 @@ class PrintStreamTest {
       Array('a', 'b', '?'))
   }
 
-  @Test def println_forwards_and_flushes_when_autoFlush_is_true(): Unit = {
+  @Test
+  def println_forwards_and_flushes_when_autoFlush_is_true(): Unit = {
     testPrintlnForwards(_.println(), "\n", autoFlush = true)
     testPrintlnForwards(_.println(true), "true\n", autoFlush = true)
     testPrintlnForwards(_.println('Z'), "Z\n", autoFlush = true)
@@ -208,7 +214,8 @@ class PrintStreamTest {
     testPrintlnForwards(_.println(null: AnyRef), "null\n", autoFlush = true)
   }
 
-  @Test def println_forwards_does_not_flush_when_autoFlush_is_false(): Unit = {
+  @Test
+  def println_forwards_does_not_flush_when_autoFlush_is_false(): Unit = {
     testPrintlnForwards(_.println(), "\n", autoFlush = false)
     testPrintlnForwards(_.println(true), "true\n", autoFlush = false)
     testPrintlnForwards(_.println('Z'), "Z\n", autoFlush = false)
@@ -244,14 +251,16 @@ class PrintStreamTest {
     assertEquals(expected, bos.toString())
   }
 
-  @Test def printf_format_which_flushes_when_autoFlush_is_true(): Unit = {
+  @Test
+  def printf_format_which_flushes_when_autoFlush_is_true(): Unit = {
     testPrintfFormat(_.printf("%04d", Int.box(5)), "0005", autoFlush = true)
     testPrintfFormat(
       _.format("%.5f", Double.box(Math.PI)),
       "3.14159",
       autoFlush = true)
   }
-  @Test def printf_format_which_flushes_when_autoFlush_is_false(): Unit = {
+  @Test
+  def printf_format_which_flushes_when_autoFlush_is_false(): Unit = {
     testPrintfFormat(_.printf("%04d", Int.box(5)), "0005", autoFlush = false)
     testPrintfFormat(
       _.format("%.5f", Double.box(Math.PI)),
@@ -273,7 +282,8 @@ class PrintStreamTest {
     assertEquals(expected, bos.toString())
   }
 
-  @Test def append(): Unit = {
+  @Test
+  def append(): Unit = {
     def test(
         body: PrintStream => Unit,
         expected: String,
@@ -294,7 +304,8 @@ class PrintStreamTest {
     test(_.append('\n'), "\n", testFlushed = true)
   }
 
-  @Test def traps_all_IOException_and_updates_checkError(): Unit = {
+  @Test
+  def traps_all_IOException_and_updates_checkError(): Unit = {
     def test(body: PrintStream => Unit): Unit = {
       val (ps, bos) = newPrintStream()
       bos.throwing = true
@@ -344,7 +355,8 @@ class PrintStreamTest {
     test(_.append('\n'))
   }
 
-  @Test def write_short_circuits_pending_high_surrogates_in_print(): Unit = {
+  @Test
+  def write_short_circuits_pending_high_surrogates_in_print(): Unit = {
     val (ps, bos) = newPrintStream()
     ps.print('A')
     assertArrayEquals(Array[Byte]('A'), bos.toByteArray)

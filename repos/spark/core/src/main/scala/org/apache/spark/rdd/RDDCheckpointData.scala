@@ -37,7 +37,8 @@ private[spark] object CheckpointState extends Enumeration {
   * iterator and preferred locations of the checkpointed RDD.
   */
 private[spark] abstract class RDDCheckpointData[T: ClassTag](
-    @transient private val rdd: RDD[T])
+    @transient
+    private val rdd: RDD[T])
     extends Serializable {
 
   import CheckpointState._

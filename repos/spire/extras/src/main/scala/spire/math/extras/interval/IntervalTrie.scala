@@ -443,7 +443,8 @@ object IntervalTrie {
 
   private final case class IntervalTrieImpl[T](belowAll: Boolean, tree: Tree)(
       implicit ise: Element[T])
-      extends IntervalTrie[T] { lhs =>
+      extends IntervalTrie[T] {
+    lhs =>
 
     import Tree._
     import ise.order

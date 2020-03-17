@@ -37,11 +37,14 @@ class VecTime(
     val tzone: DateTimeZone = ISO_CHRONO.getZone)
     extends Vec[DateTime] {
 
-  @transient lazy val scalarTag = ScalarTagTime
+  @transient
+  lazy val scalarTag = ScalarTagTime
 
-  @transient lazy val chrono = ISO_CHRONO.withZone(tzone)
+  @transient
+  lazy val chrono = ISO_CHRONO.withZone(tzone)
 
-  @transient lazy private val lmf = scalar.ScalarTagLong
+  @transient
+  lazy private val lmf = scalar.ScalarTagLong
 
   private def l2t(l: Long) =
     if (lmf.isMissing(l))
@@ -132,8 +135,10 @@ class VecTime(
 }
 
 object VecTime {
-  @transient lazy private val sm = ScalarTagTime
-  @transient lazy private val sl = ScalarTagLong
+  @transient
+  lazy private val sm = ScalarTagTime
+  @transient
+  lazy private val sl = ScalarTagLong
 
   /**
     * Create a new VecTime from an array of times

@@ -180,7 +180,8 @@ abstract class ActorRef
   * There are implicit conversions in ../actor/Implicits.scala
   * from ActorRef -&gt; ScalaActorRef and back
   */
-trait ScalaActorRef { ref: ActorRef ⇒
+trait ScalaActorRef {
+  ref: ActorRef ⇒
 
   /**
     * Sends a one-way asynchronous message. E.g. fire-and-forget semantics.
@@ -235,7 +236,8 @@ private[akka] trait RepointableRef extends ActorRefScope {
   */
 private[akka] abstract class InternalActorRef
     extends ActorRef
-    with ScalaActorRef { this: ActorRefScope ⇒
+    with ScalaActorRef {
+  this: ActorRefScope ⇒
   /*
    * Actor life-cycle management, invoked only internally (in response to user requests via ActorContext).
    */
@@ -310,8 +312,8 @@ private[akka] case object Nobody extends MinimalActorRef {
 /**
   * INTERNAL API
   */
-@SerialVersionUID(1L) private[akka] class SerializedNobody
-    extends Serializable {
+@SerialVersionUID(1L)
+private[akka] class SerializedNobody extends Serializable {
   @throws(classOf[java.io.ObjectStreamException])
   private def readResolve(): AnyRef = Nobody
 }
@@ -887,7 +889,8 @@ private[akka] final class FunctionRef(
 
   override def stop(): Unit = sendTerminated()
 
-  @tailrec private def addWatcher(watchee: ActorRef, watcher: ActorRef): Unit =
+  @tailrec
+  private def addWatcher(watchee: ActorRef, watcher: ActorRef): Unit =
     _watchedBy.get() match {
       case null ⇒
         sendTerminated(ifLocal = true)(watcher)
@@ -916,9 +919,8 @@ private[akka] final class FunctionRef(
         }
     }
 
-  @tailrec private def remWatcher(
-      watchee: ActorRef,
-      watcher: ActorRef): Unit = {
+  @tailrec
+  private def remWatcher(watchee: ActorRef, watcher: ActorRef): Unit = {
     _watchedBy.get() match {
       case null ⇒ // do nothing...
       case watchedBy ⇒

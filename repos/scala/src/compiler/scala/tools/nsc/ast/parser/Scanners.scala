@@ -120,7 +120,8 @@ trait Scanners extends ScannersCommon {
     private var openComments = 0
     protected def putCommentChar(): Unit = nextChar()
 
-    @tailrec private def skipLineComment(): Unit =
+    @tailrec
+    private def skipLineComment(): Unit =
       ch match {
         case SU | CR | LF =>
         case _ =>
@@ -142,7 +143,8 @@ trait Scanners extends ScannersCommon {
         openComments == 0
       }
     }
-    @tailrec final def skipNestedComments(): Unit =
+    @tailrec
+    final def skipNestedComments(): Unit =
       ch match {
         case '/' =>
           maybeOpen();
@@ -768,7 +770,8 @@ trait Scanners extends ScannersCommon {
     private def unclosedStringLit(): Unit =
       syntaxError("unclosed string literal")
 
-    @tailrec private def getRawStringLit(): Unit = {
+    @tailrec
+    private def getRawStringLit(): Unit = {
       if (ch == '\"') {
         nextRawChar()
         if (isTripleQuote()) {
@@ -785,7 +788,8 @@ trait Scanners extends ScannersCommon {
       }
     }
 
-    @tailrec private def getStringPart(multiLine: Boolean): Unit = {
+    @tailrec
+    private def getStringPart(multiLine: Boolean): Unit = {
       def finishStringPart() = {
         setStrVal()
         token = STRINGPART
@@ -1026,7 +1030,8 @@ trait Scanners extends ScannersCommon {
               Long.MaxValue
             else
               Int.MaxValue
-          @tailrec def convert(value: Long, i: Int): Long =
+          @tailrec
+          def convert(value: Long, i: Int): Long =
             if (i >= len)
               value
             else {

@@ -87,7 +87,8 @@ abstract class SymbolTable
   def throwableAsString(t: Throwable, maxFrames: Int): String =
     t.getStackTrace take maxFrames mkString "\n  at "
 
-  @inline final def devWarningDumpStack(msg: => String, maxFrames: Int): Unit =
+  @inline
+  final def devWarningDumpStack(msg: => String, maxFrames: Int): Unit =
     devWarning(msg + "\n" + throwableAsString(new Throwable, maxFrames))
 
   /** Prints a stack trace if -Ydebug or equivalent was given, otherwise does nothing. */
@@ -140,7 +141,8 @@ abstract class SymbolTable
     result
   }
 
-  @inline final def findSymbol(xs: TraversableOnce[Symbol])(
+  @inline
+  final def findSymbol(xs: TraversableOnce[Symbol])(
       p: Symbol => Boolean): Symbol = {
     xs find p getOrElse NoSymbol
   }
@@ -254,7 +256,8 @@ abstract class SymbolTable
   final def isAtPhaseAfter(p: Phase) = p != NoPhase && phase.id > p.id
 
   /** Perform given operation at given phase. */
-  @inline final def enteringPhase[T](ph: Phase)(op: => T): T = {
+  @inline
+  final def enteringPhase[T](ph: Phase)(op: => T): T = {
     val saved = pushPhase(ph)
     try op
     finally popPhase(saved)
@@ -282,12 +285,13 @@ abstract class SymbolTable
       op
   }
 
-  @inline final def exitingPhase[T](ph: Phase)(op: => T): T =
-    enteringPhase(ph.next)(op)
-  @inline final def enteringPrevPhase[T](op: => T): T =
-    enteringPhase(phase.prev)(op)
+  @inline
+  final def exitingPhase[T](ph: Phase)(op: => T): T = enteringPhase(ph.next)(op)
+  @inline
+  final def enteringPrevPhase[T](op: => T): T = enteringPhase(phase.prev)(op)
 
-  @inline final def enteringPhaseNotLaterThan[T](target: Phase)(op: => T): T =
+  @inline
+  final def enteringPhaseNotLaterThan[T](target: Phase)(op: => T): T =
     if (isAtPhaseAfter(target))
       enteringPhase(target)(op)
     else
@@ -456,7 +460,8 @@ abstract class SymbolTable
   def isCompilerUniverse = false
 
   @deprecated("Use enteringPhase", "2.10.0") // Used in SBT 0.12.4
-  @inline final def atPhase[T](ph: Phase)(op: => T): T = enteringPhase(ph)(op)
+  @inline
+  final def atPhase[T](ph: Phase)(op: => T): T = enteringPhase(ph)(op)
 
   /**
     * Adds the `sm` String interpolator to a [[scala.StringContext]].

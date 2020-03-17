@@ -51,7 +51,8 @@ class EncodeHandlerTest extends FunSuite with MockitoSugar {
   }
 
   test("EncodeHandler fires an exception event on encoding failure") {
-    @volatile var exnSeen: Throwable = null
+    @volatile
+    var exnSeen: Throwable = null
     val exnSnooper =
       new ChannelInboundHandlerAdapter {
         override def exceptionCaught(

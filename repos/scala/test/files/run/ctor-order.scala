@@ -13,7 +13,8 @@ class Outer {
     val outer = Outer.this
   } with AnyRef with M1
 
-  trait M1 { self: X =>
+  trait M1 {
+    self: X =>
     Console.println(global.x);
     Console.println(outer.global.x);
   }

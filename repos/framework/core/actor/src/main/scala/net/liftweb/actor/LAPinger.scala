@@ -31,7 +31,8 @@ object ThreadPoolRules {
     * but it you set it to true, Tomcat complains less about stuff.
     * Must be set in the first line of Boot.scala
     */
-  @volatile var nullContextClassLoader: Boolean = false
+  @volatile
+  var nullContextClassLoader: Boolean = false
 }
 
 /**

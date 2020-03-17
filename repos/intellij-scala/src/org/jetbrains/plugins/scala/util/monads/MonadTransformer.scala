@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author ilyas
   */
-trait MonadTransformer { self: PsiElement =>
+trait MonadTransformer {
+  self: PsiElement =>
 
   class MonadLike[+T](opt: Option[T])(implicit msg: String) {
     def flatMap[U <: ScType](f: T => TypeResult[U]): TypeResult[U] =

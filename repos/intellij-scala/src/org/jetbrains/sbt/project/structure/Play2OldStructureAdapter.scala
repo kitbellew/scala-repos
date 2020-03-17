@@ -59,6 +59,7 @@ object Play2OldStructureAdapter {
     })
   }
 
-  @inline private def avoidSL7005Bug[K, V](m: Map[K, V]): Map[K, V] =
+  @inline
+  private def avoidSL7005Bug[K, V](m: Map[K, V]): Map[K, V] =
     HashMap(m.toSeq: _*)
 }

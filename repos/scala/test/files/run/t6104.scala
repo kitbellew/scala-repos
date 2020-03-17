@@ -1,4 +1,5 @@
-class A { Self =>
+class A {
+  Self =>
   val ok = "ok"
   this match {
     case me @ Self => println(me.ok)

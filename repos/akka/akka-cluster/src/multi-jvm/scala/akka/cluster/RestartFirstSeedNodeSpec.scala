@@ -41,7 +41,8 @@ abstract class RestartFirstSeedNodeSpec
 
   import RestartFirstSeedNodeMultiJvmSpec._
 
-  @volatile var seedNode1Address: Address = _
+  @volatile
+  var seedNode1Address: Address = _
 
   // use a separate ActorSystem, to be able to simulate restart
   lazy val seed1System = ActorSystem(system.name, system.settings.config)

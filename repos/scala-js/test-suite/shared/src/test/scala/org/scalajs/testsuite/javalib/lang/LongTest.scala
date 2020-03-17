@@ -19,11 +19,13 @@ import org.scalajs.testsuite.utils.AssertThrows._
   */
 class LongTest {
 
-  @Test def reverseBytes(): Unit = {
+  @Test
+  def reverseBytes(): Unit = {
     assertEquals(0x14FF01D49C68ABF5L, JLong.reverseBytes(0xF5AB689CD401FF14L))
   }
 
-  @Test def rotateLeft(): Unit = {
+  @Test
+  def rotateLeft(): Unit = {
     assertEquals(0xF5AB689CD401FF14L, JLong.rotateLeft(0xF5AB689CD401FF14L, 0))
     assertEquals(0xEB56D139A803FE29L, JLong.rotateLeft(0xF5AB689CD401FF14L, 1))
     assertEquals(0xAB689CD401FF14F5L, JLong.rotateLeft(0xF5AB689CD401FF14L, 8))
@@ -40,7 +42,8 @@ class LongTest {
       JLong.rotateLeft(0xF5AB689CD401FF14L, -70))
   }
 
-  @Test def rotateRight(): Unit = {
+  @Test
+  def rotateRight(): Unit = {
     assertEquals(0xF5AB689CD401FF14L, JLong.rotateRight(0xF5AB689CD401FF14L, 0))
     assertEquals(0x7AD5B44E6A00FF8AL, JLong.rotateRight(0xF5AB689CD401FF14L, 1))
     assertEquals(0x14F5AB689CD401FFL, JLong.rotateRight(0xF5AB689CD401FF14L, 8))
@@ -67,13 +70,15 @@ class LongTest {
       JLong.rotateRight(0xF5AB689CD401FF14L, -70))
   }
 
-  @Test def bitCount(): Unit = {
+  @Test
+  def bitCount(): Unit = {
     assertEquals(0, JLong.bitCount(0L))
     assertEquals(26, JLong.bitCount(35763829229342837L))
     assertEquals(32, JLong.bitCount(-350003829229342837L))
   }
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
     def compare(x: Long, y: Long): Int = new JLong(x).compareTo(new JLong(y))
 
     assertTrue(compare(0L, 5L) < 0)
@@ -82,7 +87,8 @@ class LongTest {
     assertEquals(0, compare(3L, 3L))
   }
 
-  @Test def should_be_a_Comparable(): Unit = {
+  @Test
+  def should_be_a_Comparable(): Unit = {
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
@@ -92,7 +98,8 @@ class LongTest {
     assertEquals(0, compare(3L, 3L))
   }
 
-  @Test def should_parse_strings(): Unit = {
+  @Test
+  def should_parse_strings(): Unit = {
     def test(s: String, v: Long): Unit = {
       assertEquals(v, JLong.parseLong(s))
       assertEquals(v, JLong.valueOf(s).longValue())
@@ -111,7 +118,8 @@ class LongTest {
     test("-18014398509482040", -18014398509482040L)
   }
 
-  @Test def should_reject_invalid_strings_when_parsing(): Unit = {
+  @Test
+  def should_reject_invalid_strings_when_parsing(): Unit = {
     def test(s: String): Unit =
       expectThrows(classOf[NumberFormatException], JLong.parseLong(s))
 
@@ -120,7 +128,8 @@ class LongTest {
     test("")
   }
 
-  @Test def should_parse_strings_in_base_16(): Unit = {
+  @Test
+  def should_parse_strings_in_base_16(): Unit = {
     def test(s: String, v: Long): Unit = {
       assertEquals(v, JLong.parseLong(s, 16))
       assertEquals(v, JLong.valueOf(s, 16).longValue())
@@ -136,7 +145,8 @@ class LongTest {
     test("bfc949733", 51482236723L)
   }
 
-  @Test def should_parse_strings_in_bases_2_to_36(): Unit = {
+  @Test
+  def should_parse_strings_in_bases_2_to_36(): Unit = {
     def test(radix: Int, s: String, v: Long): Unit = {
       assertEquals(v, JLong.parseLong(s, radix))
       assertEquals(v, JLong.valueOf(s, radix).longValue())
@@ -159,7 +169,8 @@ class LongTest {
     }
   }
 
-  @Test def should_reject_parsing_strings_when_base_less_than_2_or_base_larger_than_36()
+  @Test
+  def should_reject_parsing_strings_when_base_less_than_2_or_base_larger_than_36()
       : Unit = {
     def test(s: String, radix: Int): Unit = {
       expectThrows(classOf[NumberFormatException], JLong.parseLong(s, radix))
@@ -171,7 +182,8 @@ class LongTest {
     List[Int](-10, -5, 0, 1, 37, 38, 50, 100).foreach(test("5", _))
   }
 
-  @Test def toString_without_radix(): Unit = {
+  @Test
+  def toString_without_radix(): Unit = {
     assertEquals("2147483647", Int.MaxValue.toLong.toString)
     assertEquals("-50", (-50L).toString)
     assertEquals("-1000000000", (-1000000000L).toString)
@@ -194,7 +206,8 @@ class LongTest {
     assertEquals("9223372036854775807", JLong.toString(JLong.MAX_VALUE))
   }
 
-  @Test def toString_with_radix(): Unit = {
+  @Test
+  def toString_with_radix(): Unit = {
     /* Ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/JLongTest.java
      */
@@ -212,7 +225,8 @@ class LongTest {
     assertEquals("7fffffffffffffff", JLong.toString(0x7FFFFFFFFFFFFFFFL, 16))
   }
 
-  @Test def highestOneBit(): Unit = {
+  @Test
+  def highestOneBit(): Unit = {
     assertEquals(0L, JLong.highestOneBit(0L))
     assertEquals(Long.MinValue, JLong.highestOneBit(-1L))
     assertEquals(Long.MinValue, JLong.highestOneBit(-256L))
@@ -223,7 +237,8 @@ class LongTest {
     assertEquals(0x20000000000L, JLong.highestOneBit(0x32100012300L))
   }
 
-  @Test def lowestOneBit(): Unit = {
+  @Test
+  def lowestOneBit(): Unit = {
     assertEquals(0L, JLong.lowestOneBit(0L))
     assertEquals(1L, JLong.lowestOneBit(-1L))
     assertEquals(256L, JLong.lowestOneBit(-256L))
@@ -234,7 +249,8 @@ class LongTest {
     assertEquals(0x100L, JLong.lowestOneBit(0x32100012300L))
   }
 
-  @Test def toBinaryString(): Unit = {
+  @Test
+  def toBinaryString(): Unit = {
     assertEquals("0", JLong.toBinaryString(0L))
     assertEquals(
       "1111111111111111111111111111111111111111111111111111111111111111",
@@ -259,7 +275,8 @@ class LongTest {
       JLong.toBinaryString(Long.MaxValue))
   }
 
-  @Test def toHexString(): Unit = {
+  @Test
+  def toHexString(): Unit = {
     assertEquals("0", JLong.toHexString(0L))
     assertEquals("ffffffffffffffff", JLong.toHexString(-1L))
     assertEquals("1b32f566", JLong.toHexString(456324454L))
@@ -270,7 +287,8 @@ class LongTest {
     assertEquals("7fffffffffffffff", JLong.toHexString(Long.MaxValue))
   }
 
-  @Test def toOctalString(): Unit = {
+  @Test
+  def toOctalString(): Unit = {
     assertEquals("0", JLong.toOctalString(0L))
     assertEquals("1777777777777777777777", JLong.toOctalString(-1L))
     assertEquals("3314572546", JLong.toOctalString(456324454L))
@@ -283,7 +301,8 @@ class LongTest {
     assertEquals("777777777777777777777", JLong.toOctalString(Long.MaxValue))
   }
 
-  @Test def numberOfLeadingZeros(): Unit = {
+  @Test
+  def numberOfLeadingZeros(): Unit = {
     assertEquals(0, JLong.numberOfLeadingZeros(0x9876543210ABCDEFL))
     assertEquals(6, JLong.numberOfLeadingZeros(0x272D130652A160FL))
     assertEquals(61, JLong.numberOfLeadingZeros(0x4L))
@@ -307,7 +326,8 @@ class LongTest {
     assertEquals(39, JLong.numberOfLeadingZeros(0x10630C7L))
   }
 
-  @Test def numberOfTrailingZeros(): Unit = {
+  @Test
+  def numberOfTrailingZeros(): Unit = {
     assertEquals(52, JLong.numberOfTrailingZeros(0xFF10000000000000L))
     assertEquals(53, JLong.numberOfTrailingZeros(0xFF20000000000000L))
     assertEquals(54, JLong.numberOfTrailingZeros(0xFF40000000000000L))
@@ -324,7 +344,8 @@ class LongTest {
     assertEquals(19, JLong.numberOfTrailingZeros(0x0000000000080000L))
   }
 
-  @Test def signum(): Unit = {
+  @Test
+  def signum(): Unit = {
     //check a few ints
     assertEquals(-1, JLong.signum(-11))
     assertEquals(-1, JLong.signum(-1))

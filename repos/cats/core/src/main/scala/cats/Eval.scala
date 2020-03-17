@@ -33,7 +33,8 @@ import cats.syntax.all._
   * Eval instance -- this can defeat the trampolining and lead to stack
   * overflows.
   */
-sealed abstract class Eval[A] extends Serializable { self =>
+sealed abstract class Eval[A] extends Serializable {
+  self =>
 
   /**
     * Evaluate the computation and return an A value.
@@ -226,7 +227,8 @@ object Eval extends EvalInstances {
   object Call {
 
     /** Collapse the call stack for eager evaluations */
-    @tailrec private def loop[A](fa: Eval[A]): Eval[A] =
+    @tailrec
+    private def loop[A](fa: Eval[A]): Eval[A] =
       fa match {
         case call: Eval.Call[A] =>
           loop(call.thunk())
@@ -269,7 +271,8 @@ object Eval extends EvalInstances {
     def value: A = {
       type L = Eval[Any]
       type C = Any => Eval[Any]
-      @tailrec def loop(curr: L, fs: List[C]): Any =
+      @tailrec
+      def loop(curr: L, fs: List[C]): Any =
         curr match {
           case c: Compute[_] =>
             c.start() match {

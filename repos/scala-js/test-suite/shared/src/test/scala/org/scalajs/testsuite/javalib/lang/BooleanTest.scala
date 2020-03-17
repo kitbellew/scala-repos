@@ -18,13 +18,15 @@ import org.scalajs.testsuite.utils.AssertThrows._
   */
 class BooleanTest {
 
-  @Test def booleanValue(): Unit = {
+  @Test
+  def booleanValue(): Unit = {
     assertEquals(true, JBoolean.TRUE.booleanValue())
     assertEquals(false, JBoolean.FALSE.booleanValue())
     expectThrows(classOf[Exception], (null: JBoolean).booleanValue())
   }
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
     def compare(x: Boolean, y: Boolean): Int =
       new JBoolean(x).compareTo(new JBoolean(y))
 
@@ -34,7 +36,8 @@ class BooleanTest {
     assertEquals(0, compare(true, true))
   }
 
-  @Test def should_be_a_Comparable(): Unit = {
+  @Test
+  def should_be_a_Comparable(): Unit = {
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
@@ -44,7 +47,8 @@ class BooleanTest {
     assertEquals(0, compare(true, true))
   }
 
-  @Test def should_parse_strings(): Unit = {
+  @Test
+  def should_parse_strings(): Unit = {
     def test(s: String, v: Boolean): Unit = {
       assertEquals(v, JBoolean.parseBoolean(s))
       assertEquals(v, JBoolean.valueOf(s).booleanValue())

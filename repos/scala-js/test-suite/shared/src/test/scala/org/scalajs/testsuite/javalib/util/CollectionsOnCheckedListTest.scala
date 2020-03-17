@@ -44,7 +44,8 @@ trait CollectionsCheckedListTest extends CollectionsOnListTest {
     }
   }
 
-  @Test def testCheckedList(): Unit = {
+  @Test
+  def testCheckedList(): Unit = {
     superList().add(0, new C)
     assertTrue(superList().addAll(0, Seq(new C)))
     testOnFirstPositionOfIterator[ju.ListIterator[A]](
@@ -57,7 +58,8 @@ trait CollectionsCheckedListTest extends CollectionsOnListTest {
       None)
   }
 
-  @Test def testCheckedListBadInputs(): Unit = {
+  @Test
+  def testCheckedListBadInputs(): Unit = {
     assumeTrue("Needs compliant asInstanceOf", hasCompliantAsInstanceOfs)
 
     expectThrows(classOf[ClassCastException], superList().add(0, new A))

@@ -31,9 +31,10 @@ private[spark] class FileAppender(
     file: File,
     bufferSize: Int = 8192)
     extends Logging {
-  @volatile private var outputStream: FileOutputStream = null
-  @volatile private var markedForStop =
-    false // has the appender been asked to stopped
+  @volatile
+  private var outputStream: FileOutputStream = null
+  @volatile
+  private var markedForStop = false // has the appender been asked to stopped
 
   // Thread that reads the input stream and writes to file
   private val writingThread =

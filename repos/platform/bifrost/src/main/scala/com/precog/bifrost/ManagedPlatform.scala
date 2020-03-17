@@ -62,7 +62,8 @@ trait ManagedPlatform
   */
 trait ManagedExecution
     extends Execution[Future, StreamT[Future, Slice]]
-    with ManagedQueryModule { self =>
+    with ManagedQueryModule {
+  self =>
   type AsyncExecution[M[+_]] = Execution[M, JobId]
   type SyncExecution[M[+_]] = Execution[
     M,

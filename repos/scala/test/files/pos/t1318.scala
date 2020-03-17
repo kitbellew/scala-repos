@@ -2,7 +2,8 @@ abstract class F {
   type mType <: M
 }
 
-abstract class M { self =>
+abstract class M {
+  self =>
 
   type mType <: M
 

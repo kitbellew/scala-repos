@@ -24,7 +24,8 @@ trait Ring[@sp(Byte, Short, Int, Long, Float, Double) A]
 }
 
 object Ring {
-  @inline final def apply[A](implicit r: Ring[A]): Ring[A] = r
+  @inline
+  final def apply[A](implicit r: Ring[A]): Ring[A] = r
 }
 
 /**
@@ -36,5 +37,6 @@ trait CRing[@sp(Byte, Short, Int, Long, Float, Double) A]
     with MultiplicativeCMonoid[A]
 
 object CRing {
-  @inline final def apply[A](implicit r: CRing[A]): CRing[A] = r
+  @inline
+  final def apply[A](implicit r: CRing[A]): CRing[A] = r
 }

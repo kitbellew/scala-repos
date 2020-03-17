@@ -76,8 +76,11 @@ abstract class Enumeration(initial: Int) extends Serializable {
   private val vmap: mutable.Map[Int, Value] = new mutable.HashMap
 
   /** The cache listing all values of this enumeration. */
-  @transient private var vset: ValueSet = null
-  @transient @volatile private var vsetDefined = false
+  @transient
+  private var vset: ValueSet = null
+  @transient
+  @volatile
+  private var vsetDefined = false
 
   /** The mapping from the integer used to identify values to their
     * names. */

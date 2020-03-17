@@ -27,7 +27,8 @@ import org.apache.spark.ml.param._
 import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.sql.DataFrame
 
-trait DefaultReadWriteTest extends TempDirectory { self: Suite =>
+trait DefaultReadWriteTest extends TempDirectory {
+  self: Suite =>
 
   /**
     * Checks "overwrite" option and params.

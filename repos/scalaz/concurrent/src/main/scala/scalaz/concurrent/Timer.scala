@@ -21,8 +21,10 @@ case class Timer(
       5
   private[this] val futureNondeterminism = Nondeterminism[Future]
   private[this] val taskNondeterminism = Nondeterminism[Task]
-  @volatile private[this] var continueRunning: Boolean = true
-  @volatile private[this] var lastNow: Long = alignTimeResolution(
+  @volatile
+  private[this] var continueRunning: Boolean = true
+  @volatile
+  private[this] var lastNow: Long = alignTimeResolution(
     System.currentTimeMillis)
   private[this] val lock = new ReentrantReadWriteLock()
   private[this] var futures: SortedMap[Long, List[() => Unit]] = SortedMap()

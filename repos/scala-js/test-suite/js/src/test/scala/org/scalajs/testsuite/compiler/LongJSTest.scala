@@ -22,12 +22,14 @@ import org.scalajs.testsuite.utils.Platform._
   *  for a test of the implementation itself
   */
 class LongJSTest {
-  @Test def `should_convert_to_js.Any`(): Unit = {
+  @Test
+  def `should_convert_to_js.Any`(): Unit = {
     val x = 5: js.Any
     assertEquals(x, 5L: js.Any)
   }
 
-  @Test def should_correctly_implement_asInstanceOf_Longs_negative(): Unit = {
+  @Test
+  def should_correctly_implement_asInstanceOf_Longs_negative(): Unit = {
     assumeTrue(hasCompliantAsInstanceOfs)
 
     val dyn: Any = 5L

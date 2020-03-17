@@ -749,7 +749,8 @@ trait Implicits {
         fast: Boolean,
         tp0: Type,
         pt0: Type): Boolean = {
-      @tailrec def loop(tp: Type, pt: Type): Boolean =
+      @tailrec
+      def loop(tp: Type, pt: Type): Boolean =
         tp match {
           case mt @ MethodType(params, restpe) =>
             if (mt.isImplicit)
@@ -1246,7 +1247,8 @@ trait Implicits {
         *   - find the most likely one
         *   - if it matches, forget about all others it improves upon
         */
-      @tailrec private def rankImplicits(
+      @tailrec
+      private def rankImplicits(
           pending: Infos,
           acc: List[(SearchResult, ImplicitInfo)])
           : List[(SearchResult, ImplicitInfo)] =

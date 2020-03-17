@@ -63,11 +63,12 @@ package scala.scalajs
 package object js {
 
   /** The undefined value. */
-  @inline def undefined: js.UndefOr[Nothing] =
-    ().asInstanceOf[js.UndefOr[Nothing]]
+  @inline
+  def undefined: js.UndefOr[Nothing] = ().asInstanceOf[js.UndefOr[Nothing]]
 
   /** Tests whether the given value is undefined. */
-  @inline def isUndefined(v: scala.Any): Boolean =
+  @inline
+  def isUndefined(v: scala.Any): Boolean =
     v.asInstanceOf[scala.AnyRef] eq undefined
 
   /** Returns the type of `x` as identified by `typeof x` in JavaScript. */
@@ -98,7 +99,8 @@ package object js {
   def debugger(): Unit = sys.error("stub")
 
   /** Evaluates JavaScript code and returns the result. */
-  @inline def eval(x: String): Any = js.Dynamic.global.eval(x)
+  @inline
+  def eval(x: String): Any = js.Dynamic.global.eval(x)
 
   /** Marks the annotated class, trait or object as a native JS entity.
     *

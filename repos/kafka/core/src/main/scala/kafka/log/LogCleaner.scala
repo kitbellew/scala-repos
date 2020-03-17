@@ -227,7 +227,8 @@ class LogCleaner(
         time = time,
         checkDone = checkDone)
 
-    @volatile var lastStats: CleanerStats = new CleanerStats()
+    @volatile
+    var lastStats: CleanerStats = new CleanerStats()
     private val backOffWaitLatch = new CountDownLatch(1)
 
     private def checkDone(topicAndPartition: TopicAndPartition) {

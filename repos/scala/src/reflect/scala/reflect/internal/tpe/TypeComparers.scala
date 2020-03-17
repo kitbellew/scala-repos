@@ -162,7 +162,8 @@ trait TypeComparers {
     // dealiasAndFollowUnderlyingAsLongAsTheTypeIsEquivalent. This method is only
     // called after a surface comparison has failed, so if chaseDealiasedUnderlying
     // does not produce a type other than tp1 and tp2, return false.
-    @tailrec def chaseDealiasedUnderlying(tp: Type): Type =
+    @tailrec
+    def chaseDealiasedUnderlying(tp: Type): Type =
       tp.underlying.dealias match {
         case next: SingletonType if tp ne next => chaseDealiasedUnderlying(next)
         case _                                 => tp
@@ -742,7 +743,8 @@ trait TypeComparers {
     *  the symbol of that class. Otherwise, NoSymbol.
     */
   private def primitiveBaseClass(tp: Type): Symbol = {
-    @tailrec def loop(bases: List[Symbol]): Symbol =
+    @tailrec
+    def loop(bases: List[Symbol]): Symbol =
       bases match {
         case Nil => NoSymbol
         case x :: xs =>

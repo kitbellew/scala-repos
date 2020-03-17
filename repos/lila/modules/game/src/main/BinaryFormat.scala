@@ -284,7 +284,8 @@ object BinaryFormat {
       }
   }
 
-  @inline private def toInt(b: Byte): Int = b & 0xff
+  @inline
+  private def toInt(b: Byte): Int = b & 0xff
 
   def writeInt8(int: Int) = math.min(255, int)
 

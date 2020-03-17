@@ -14,7 +14,8 @@ import breeze.generic.UFunc.{UImpl2, UImpl}
 import scala.{specialized => spec}
 import scalaxy.debug._
 
-trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
+trait SparseVector_DenseVector_Ops {
+  this: SparseVector.type =>
   import breeze.math.PowImplicits._
 
   @expand
@@ -212,7 +213,8 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
 
 }
 
-trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
+trait DenseVector_SparseVector_Ops {
+  this: SparseVector.type =>
   import breeze.math.PowImplicits._
 
   @expand
@@ -470,7 +472,8 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
   }
 }
 
-trait SparseVectorOps { this: SparseVector.type =>
+trait SparseVectorOps {
+  this: SparseVector.type =>
   import breeze.math.PowImplicits._
 
   implicit def liftCSCOpToSVTransposeOp[Tag, V, LHS, R](implicit
@@ -968,8 +971,8 @@ trait SparseVectorOps { this: SparseVector.type =>
   implicit def implOps_SVT_T_eq_SVT[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpMulMatrix) Op <: OpType](implicit
-      @expand.sequence[T](0, 0.0, 0.0f, 0L)
-      zero: T): Op.Impl2[SparseVector[T], T, SparseVector[T]] =
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+      : Op.Impl2[SparseVector[T], T, SparseVector[T]] =
     new Op.Impl2[SparseVector[T], T, SparseVector[T]] {
       def apply(a: SparseVector[T], b: T): SparseVector[T] = {
         val result: VectorBuilder[T] = new VectorBuilder[T](a.length)
@@ -1584,7 +1587,8 @@ trait SparseVectorOps { this: SparseVector.type =>
 
 }
 
-trait SparseVector_DenseMatrixOps { this: SparseVector.type =>
+trait SparseVector_DenseMatrixOps {
+  this: SparseVector.type =>
   @expand
   @expand.valify
   implicit def implOpMulMatrix_DM_SV_eq_DV[

@@ -20,7 +20,8 @@ class HashedWheelTimerTest extends FunSuite with MockitoSugar {
   test("HashedWheelTimer should Support cancelling recurring tasks") {
     val timer = mock[nu.Timer]
     val nstop = new AtomicInteger(0)
-    @volatile var running = true
+    @volatile
+    var running = true
     when(timer.stop()) thenAnswer {
       new Answer[java.util.Set[Nothing]] {
         override def answer(

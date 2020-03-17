@@ -14,7 +14,8 @@ import scala.scalajs.js
 
 class ClassJSTest {
 
-  @Test def getComponentType(): Unit = {
+  @Test
+  def getComponentType(): Unit = {
     @noinline
     def testNoInline(clazz: Class[_], componentType: Class[_]): Unit =
       assertEquals(componentType, clazz.getComponentType)

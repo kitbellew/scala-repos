@@ -29,7 +29,8 @@ import org.apache.spark.storage._
 
 // Dummy class that creates a broadcast variable but doesn't use it
 class DummyBroadcastClass(rdd: RDD[Int]) extends Serializable {
-  @transient val list = List(1, 2, 3, 4)
+  @transient
+  val list = List(1, 2, 3, 4)
   val broadcast = rdd.context.broadcast(list)
   val bid = broadcast.id
 

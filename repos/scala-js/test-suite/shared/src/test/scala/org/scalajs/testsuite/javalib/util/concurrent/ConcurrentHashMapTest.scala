@@ -22,7 +22,8 @@ class ConcurrentHashMapTest extends MapTest {
 
   def factory: ConcurrentHashMapFactory = new ConcurrentHashMapFactory
 
-  @Test def `should give proper Enumerator over elements`(): Unit = {
+  @Test
+  def `should give proper Enumerator over elements`(): Unit = {
     val chm = factory.empty[String, String]
 
     chm.put("ONE", "one")
@@ -32,7 +33,8 @@ class ConcurrentHashMapTest extends MapTest {
     assertFalse(elements.hasNext)
   }
 
-  @Test def `should replace contained items`(): Unit = {
+  @Test
+  def `should replace contained items`(): Unit = {
     val chm = factory.empty[String, String]
 
     chm.put("ONE", "one")

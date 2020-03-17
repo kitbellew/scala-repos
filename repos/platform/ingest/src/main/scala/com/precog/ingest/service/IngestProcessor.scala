@@ -74,7 +74,8 @@ object IngestProcessing {
   val CSV = text / csv
 
   /** Chain of responsibility element used to determine a IngestProcessing strategy */
-  @tailrec final def select(
+  @tailrec
+  final def select(
       from: List[IngestProcessingSelector],
       partialData: Array[Byte],
       request: HttpRequest[_]): Option[IngestProcessing] = {

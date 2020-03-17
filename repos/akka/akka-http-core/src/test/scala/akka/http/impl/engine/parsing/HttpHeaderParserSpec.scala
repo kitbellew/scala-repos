@@ -335,14 +335,16 @@ class HttpHeaderParserSpec
     private[this] val random = new Random(42)
     def nextRandomPrintableChar(): Char = random.nextPrintableChar()
     def nextRandomInt(min: Int, max: Int) = random.nextInt(max - min) + min
-    @tailrec final def nextRandomAlphaNumChar(): Char = {
+    @tailrec
+    final def nextRandomAlphaNumChar(): Char = {
       val c = nextRandomPrintableChar()
       if (CharacterClasses.ALPHANUM(c))
         c
       else
         nextRandomAlphaNumChar()
     }
-    @tailrec final def nextRandomString(
+    @tailrec
+    final def nextRandomString(
         charGen: () ⇒ Char,
         len: Int,
         sb: JStringBuilder = new JStringBuilder): String =

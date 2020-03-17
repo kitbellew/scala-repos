@@ -9,7 +9,8 @@ import com.twitter.util.{Future, Promise}
   * asynchronous barrier.
   */
 private class Latch {
-  @volatile private[this] var p = new Promise[Unit]
+  @volatile
+  private[this] var p = new Promise[Unit]
 
   def get: Future[Unit] = p
 

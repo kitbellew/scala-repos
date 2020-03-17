@@ -121,7 +121,8 @@ private[finagle] object MemcachedTraceInitializer {
   * Argument `label` is used to assign a label to this client.
   * The label is used to scope stats, etc.
   */
-trait MemcachedRichClient { self: finagle.Client[Command, Response] =>
+trait MemcachedRichClient {
+  self: finagle.Client[Command, Response] =>
 
   /** $partitioned $label */
   def newRichClient(dest: Name, label: String): memcached.Client =

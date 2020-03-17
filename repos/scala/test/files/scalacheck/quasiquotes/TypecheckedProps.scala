@@ -147,7 +147,8 @@ object TypecheckedProps
   }
 }
 
-trait TypecheckedTypes { self: QuasiquoteProperties =>
+trait TypecheckedTypes {
+  self: QuasiquoteProperties =>
   property("type ident") = test {
     val q"$_; type $_ = $tpt" = typecheck(q"class C; type T = C")
     val tq"C" = tpt

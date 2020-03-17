@@ -524,10 +524,14 @@ object ShuffleSuite {
 
   def runAndReturnMetrics(sc: SparkContext)(
       job: => Unit): AggregatedShuffleMetrics = {
-    @volatile var recordsWritten: Long = 0
-    @volatile var recordsRead: Long = 0
-    @volatile var bytesWritten: Long = 0
-    @volatile var bytesRead: Long = 0
+    @volatile
+    var recordsWritten: Long = 0
+    @volatile
+    var recordsRead: Long = 0
+    @volatile
+    var bytesWritten: Long = 0
+    @volatile
+    var bytesRead: Long = 0
     val listener =
       new SparkListener {
         override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {

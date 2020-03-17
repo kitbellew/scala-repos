@@ -108,7 +108,8 @@ class LocalKafkaEventStore(
   private implicit val M = new blueeyes.bkka.FutureMonad(executor)
 
   def save(event: Event, timeout: Timeout) = {
-    @tailrec def encodeAll(
+    @tailrec
+    def encodeAll(
         toEncode: List[Event],
         messages: Vector[Message]): StoreFailure \/ Vector[Message] = {
       toEncode match {

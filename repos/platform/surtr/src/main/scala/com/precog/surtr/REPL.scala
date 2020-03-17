@@ -323,7 +323,8 @@ object Console extends App {
       replConfig <- loadConfig(args.headOption)
     } yield {
       scalaz.Success[blueeyes.json.serialization.Extractor.Error, Lifecycle] {
-        new REPL with Lifecycle { self =>
+        new REPL with Lifecycle {
+          self =>
           val storageTimeout = yggConfig.storageTimeout
 
           implicit val actorSystem = ActorSystem("replActorSystem")

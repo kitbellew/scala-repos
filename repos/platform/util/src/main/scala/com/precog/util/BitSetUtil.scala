@@ -169,12 +169,15 @@ object BitSetUtil {
     bs
   }
 
-  @inline final def filteredRange(r: Range)(pred: Int => Boolean): BitSet =
+  @inline
+  final def filteredRange(r: Range)(pred: Int => Boolean): BitSet =
     filteredRange(r.start, r.end)(pred)
 
   def filteredList[A](as: List[A])(pred: A => Boolean): BitSet = {
     val bs = new BitSet
-    @inline @tailrec def loop(lst: List[A], i: Int): Unit =
+    @inline
+    @tailrec
+    def loop(lst: List[A], i: Int): Unit =
       lst match {
         case h :: t =>
           if (pred(h))
@@ -188,7 +191,9 @@ object BitSetUtil {
 
   def filteredSeq[A](as: List[A])(pred: A => Boolean): BitSet = {
     val bs = new BitSet
-    @inline @tailrec def loop(lst: List[A], i: Int): Unit =
+    @inline
+    @tailrec
+    def loop(lst: List[A], i: Int): Unit =
       lst match {
         case h :: t =>
           if (pred(h))

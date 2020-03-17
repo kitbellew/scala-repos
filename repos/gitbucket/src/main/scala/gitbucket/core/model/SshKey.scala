@@ -1,6 +1,7 @@
 package gitbucket.core.model
 
-trait SshKeyComponent { self: Profile =>
+trait SshKeyComponent {
+  self: Profile =>
   import profile.simple._
 
   lazy val SshKeys = TableQuery[SshKeys]

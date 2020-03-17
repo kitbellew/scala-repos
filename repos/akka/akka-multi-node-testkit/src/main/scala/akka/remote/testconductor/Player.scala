@@ -38,7 +38,8 @@ import akka.dispatch.{UnboundedMessageQueueSemantics, RequiresMessageQueue}
   * the [[akka.remote.testconductor.Conductor]]’s [[akka.remote.testconductor.Controller]]
   * in order to participate in barriers and enable network failure injection.
   */
-trait Player { this: TestConductorExt ⇒
+trait Player {
+  this: TestConductorExt ⇒
 
   private var _client: ActorRef = _
   private def client =

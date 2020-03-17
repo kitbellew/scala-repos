@@ -207,7 +207,8 @@ object ScalazProperties {
       }
   }
 
-  object apply { self =>
+  object apply {
+    self =>
     def composition[F[_], X, Y, Z](implicit
         ap: Apply[F],
         afx: Arbitrary[F[X]],

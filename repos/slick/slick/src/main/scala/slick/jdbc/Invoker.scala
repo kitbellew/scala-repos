@@ -7,7 +7,8 @@ import scala.collection.generic.CanBuildFrom
 import slick.util.CloseableIterator
 
 /** Base trait for all statement invokers of result element type R. */
-trait Invoker[+R] { self =>
+trait Invoker[+R] {
+  self =>
 
   /** Execute the statement and return a CloseableIterator of the converted
     * results. The iterator must either be fully read or closed explicitly.

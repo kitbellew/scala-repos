@@ -122,22 +122,32 @@ final class MersenneTwister64 protected[random] (
 object MersenneTwister64
     extends GeneratorCompanion[MersenneTwister64, (Array[Long], Int)] {
 
-  @inline private val UpperMask =
+  @inline
+  private val UpperMask =
     0xFFFFFFFF80000000L // = 0xFFFFFFFFFFFFFFFFL ^ Int.MinValue
-  @inline private val LowerMask = 0x7FFFFFFFL // = Int.MinValue
+  @inline
+  private val LowerMask = 0x7FFFFFFFL // = Int.MinValue
 
-  @inline private val N = 312
-  @inline private val M = 156
+  @inline
+  private val N = 312
+  @inline
+  private val M = 156
 
-  @inline private val N_M = N - M
-  @inline private val N_1 = N - 1
+  @inline
+  private val N_M = N - M
+  @inline
+  private val N_1 = N - 1
 
-  @inline private val M_N = M - N
-  @inline private val M_1 = M - 1
+  @inline
+  private val M_N = M - N
+  @inline
+  private val M_1 = M - 1
 
-  @inline private val BYTES = N * 8 + 4
+  @inline
+  private val BYTES = N * 8 + 4
 
-  @inline private def mag01(x: Long) =
+  @inline
+  private def mag01(x: Long) =
     if ((x & 1) == 0)
       0L
     else

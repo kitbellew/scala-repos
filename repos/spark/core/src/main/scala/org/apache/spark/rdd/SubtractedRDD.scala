@@ -48,8 +48,10 @@ import org.apache.spark.TaskContext
   * out of memory because of the size of `rdd2`.
   */
 private[spark] class SubtractedRDD[K: ClassTag, V: ClassTag, W: ClassTag](
-    @transient var rdd1: RDD[_ <: Product2[K, V]],
-    @transient var rdd2: RDD[_ <: Product2[K, W]],
+    @transient
+    var rdd1: RDD[_ <: Product2[K, V]],
+    @transient
+    var rdd2: RDD[_ <: Product2[K, W]],
     part: Partitioner)
     extends RDD[(K, V)](rdd1.context, Nil) {
 

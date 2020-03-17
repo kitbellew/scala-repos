@@ -16,7 +16,8 @@ object UidClashTest {
         "Received Terminated for actor that was not actually watched")
       with NoStackTrace
 
-  @volatile var oldActor: ActorRef = _
+  @volatile
+  var oldActor: ActorRef = _
 
   private[akka] class EvilCollidingActorRef(
       override val provider: ActorRefProvider,

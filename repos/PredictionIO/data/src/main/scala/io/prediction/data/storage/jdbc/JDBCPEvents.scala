@@ -30,7 +30,8 @@ class JDBCPEvents(
     config: StorageClientConfig,
     namespace: String)
     extends PEvents {
-  @transient private implicit lazy val formats = org.json4s.DefaultFormats
+  @transient
+  private implicit lazy val formats = org.json4s.DefaultFormats
   def find(
       appId: Int,
       channelId: Option[Int] = None,

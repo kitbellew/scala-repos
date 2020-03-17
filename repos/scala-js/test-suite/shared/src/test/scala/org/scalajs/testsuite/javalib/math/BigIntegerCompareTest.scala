@@ -14,7 +14,8 @@ import org.junit.Assert._
 
 class BigIntegerCompareTest {
 
-  @Test def testAbsNegative(): Unit = {
+  @Test
+  def testAbsNegative(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7)
     val aSign = -1
     val rBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7)
@@ -28,7 +29,8 @@ class BigIntegerCompareTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testAbsPositive(): Unit = {
+  @Test
+  def testAbsPositive(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7)
     val aSign = 1
     val rBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7)
@@ -42,7 +44,8 @@ class BigIntegerCompareTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCompareNegNeg2(): Unit = {
+  @Test
+  def testCompareNegNeg2(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
@@ -54,7 +57,8 @@ class BigIntegerCompareTest {
     assertEquals(1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToDiffSigns1(): Unit = {
+  @Test
+  def testCompareToDiffSigns1(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
@@ -65,7 +69,8 @@ class BigIntegerCompareTest {
     assertEquals(1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToDiffSigns2(): Unit = {
+  @Test
+  def testCompareToDiffSigns2(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
@@ -76,7 +81,8 @@ class BigIntegerCompareTest {
     assertEquals(-1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToEqualNeg(): Unit = {
+  @Test
+  def testCompareToEqualNeg(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](
@@ -88,7 +94,8 @@ class BigIntegerCompareTest {
     assertEquals(0, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToEqualPos(): Unit = {
+  @Test
+  def testCompareToEqualPos(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](
@@ -100,7 +107,8 @@ class BigIntegerCompareTest {
     assertEquals(0, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToNegNeg1(): Unit = {
+  @Test
+  def testCompareToNegNeg1(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
@@ -111,7 +119,8 @@ class BigIntegerCompareTest {
     assertEquals(-1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToNegZero(): Unit = {
+  @Test
+  def testCompareToNegZero(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = -1
@@ -120,7 +129,8 @@ class BigIntegerCompareTest {
     assertEquals(-1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToPosPos1(): Unit = {
+  @Test
+  def testCompareToPosPos1(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
@@ -131,7 +141,8 @@ class BigIntegerCompareTest {
     assertEquals(1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToPosPos2(): Unit = {
+  @Test
+  def testCompareToPosPos2(): Unit = {
     val aBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70, 10, 20, 30)
     val bBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
@@ -142,7 +153,8 @@ class BigIntegerCompareTest {
     assertEquals(-1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToPosZero(): Unit = {
+  @Test
+  def testCompareToPosZero(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
@@ -151,7 +163,8 @@ class BigIntegerCompareTest {
     assertEquals(1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToZeroNeg(): Unit = {
+  @Test
+  def testCompareToZeroNeg(): Unit = {
     val bBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bSign = -1
@@ -160,7 +173,8 @@ class BigIntegerCompareTest {
     assertEquals(1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToZeroPos(): Unit = {
+  @Test
+  def testCompareToZeroPos(): Unit = {
     val bBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bSign = 1
@@ -169,13 +183,15 @@ class BigIntegerCompareTest {
     assertEquals(-1, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareToZeroZero(): Unit = {
+  @Test
+  def testCompareToZeroZero(): Unit = {
     val aNumber = BigInteger.ZERO
     val bNumber = BigInteger.ZERO
     assertEquals(0, aNumber.compareTo(bNumber))
   }
 
-  @Test def testEqualsBigIntegerFalse(): Unit = {
+  @Test
+  def testEqualsBigIntegerFalse(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
@@ -186,7 +202,8 @@ class BigIntegerCompareTest {
     assertFalse(aNumber == bNumber)
   }
 
-  @Test def testEqualsBigIntegerTrue(): Unit = {
+  @Test
+  def testEqualsBigIntegerTrue(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](
@@ -198,7 +215,8 @@ class BigIntegerCompareTest {
     assertTrue(aNumber == bNumber)
   }
 
-  @Test def testEqualsNull(): Unit = {
+  @Test
+  def testEqualsNull(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
@@ -206,7 +224,8 @@ class BigIntegerCompareTest {
     assertFalse(aNumber == null)
   }
 
-  @Test def testEqualsObject(): Unit = {
+  @Test
+  def testEqualsObject(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
@@ -215,7 +234,8 @@ class BigIntegerCompareTest {
     assertFalse(aNumber == obj)
   }
 
-  @Test def testMaxEqual(): Unit = {
+  @Test
+  def testMaxEqual(): Unit = {
     val aBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
@@ -232,7 +252,8 @@ class BigIntegerCompareTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testMaxGreater(): Unit = {
+  @Test
+  def testMaxGreater(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
@@ -253,7 +274,8 @@ class BigIntegerCompareTest {
     assertTrue(aNumber == result)
   }
 
-  @Test def testMaxLess(): Unit = {
+  @Test
+  def testMaxLess(): Unit = {
     val aBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
@@ -272,7 +294,8 @@ class BigIntegerCompareTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testMaxNegZero(): Unit = {
+  @Test
+  def testMaxNegZero(): Unit = {
     val aBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = -1
     val rBytes = Array[Byte](0)
@@ -287,7 +310,8 @@ class BigIntegerCompareTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testMinEqual(): Unit = {
+  @Test
+  def testMinEqual(): Unit = {
     val aBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
@@ -304,7 +328,8 @@ class BigIntegerCompareTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testMinGreater(): Unit = {
+  @Test
+  def testMinGreater(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
@@ -322,7 +347,8 @@ class BigIntegerCompareTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testMinLess(): Unit = {
+  @Test
+  def testMinLess(): Unit = {
     val aBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
     val bBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
@@ -340,7 +366,8 @@ class BigIntegerCompareTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testMinPosZero(): Unit = {
+  @Test
+  def testMinPosZero(): Unit = {
     val aBytes = Array[Byte](45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
     val rBytes = Array[Byte](0)
@@ -355,7 +382,8 @@ class BigIntegerCompareTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testNegateNegative(): Unit = {
+  @Test
+  def testNegateNegative(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = -1
@@ -374,7 +402,8 @@ class BigIntegerCompareTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testNegatePositive(): Unit = {
+  @Test
+  def testNegatePositive(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
@@ -390,7 +419,8 @@ class BigIntegerCompareTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testNegateZero(): Unit = {
+  @Test
+  def testNegateZero(): Unit = {
     val rBytes = Array[Byte](0)
     val aNumber = BigInteger.ZERO
     val result = aNumber.negate()
@@ -402,7 +432,8 @@ class BigIntegerCompareTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def tassestSignumNegative(): Unit = {
+  @Test
+  def tassestSignumNegative(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = -1
@@ -410,7 +441,8 @@ class BigIntegerCompareTest {
     assertEquals(-1, aNumber.signum())
   }
 
-  @Test def testSignumPositive(): Unit = {
+  @Test
+  def testSignumPositive(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
@@ -418,7 +450,8 @@ class BigIntegerCompareTest {
     assertEquals(1, aNumber.signum())
   }
 
-  @Test def testSignumZero(): Unit = {
+  @Test
+  def testSignumZero(): Unit = {
     val aNumber = BigInteger.ZERO
     assertEquals(0, aNumber.signum())
   }

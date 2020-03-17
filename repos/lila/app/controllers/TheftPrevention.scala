@@ -9,7 +9,8 @@ import play.api.mvc._
 import play.api.mvc.Results._
 import views._
 
-private[controllers] trait TheftPrevention { self: LilaController =>
+private[controllers] trait TheftPrevention {
+  self: LilaController =>
 
   protected def PreventTheft(pov: Pov)(ok: => Fu[Result])(implicit
       ctx: Context): Fu[Result] =

@@ -232,7 +232,10 @@ trait TestMode extends Mode {
     fileSet.contains(filename)
 }
 
-case class Hdfs(strict: Boolean, @transient conf: Configuration)
+case class Hdfs(
+    strict: Boolean,
+    @transient
+    conf: Configuration)
     extends HadoopMode {
   override def jobConf = conf
   override def fileExists(filename: String): Boolean = {
@@ -242,8 +245,10 @@ case class Hdfs(strict: Boolean, @transient conf: Configuration)
 }
 
 case class HadoopTest(
-    @transient conf: Configuration,
-    @transient buffers: Source => Option[Buffer[Tuple]])
+    @transient
+    conf: Configuration,
+    @transient
+    buffers: Source => Option[Buffer[Tuple]])
     extends HadoopMode
     with TestMode {
 

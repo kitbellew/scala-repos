@@ -210,7 +210,8 @@ object Jet extends JetInstances {
 final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     extends ScalaNumber
     with ScalaNumericConversions
-    with Serializable { lhs =>
+    with Serializable {
+  lhs =>
 
   import spire.syntax.order._
 
@@ -677,7 +678,8 @@ private[math] trait JetIsEuclideanRing[@sp(Float, Double) T]
   def mod(a: Jet[T], b: Jet[T]): Jet[T] = a % b
   override def quotmod(a: Jet[T], b: Jet[T]): (Jet[T], Jet[T]) = a /% b
   def gcd(a: Jet[T], b: Jet[T]): Jet[T] = {
-    @tailrec def _gcd(a: Jet[T], b: Jet[T]): Jet[T] =
+    @tailrec
+    def _gcd(a: Jet[T], b: Jet[T]): Jet[T] =
       if (b.isZero)
         a
       else

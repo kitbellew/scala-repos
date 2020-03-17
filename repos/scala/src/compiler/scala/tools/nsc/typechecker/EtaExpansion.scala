@@ -14,7 +14,8 @@ import symtab.Flags._
   *  @author  Martin Odersky
   *  @version 1.0
   */
-trait EtaExpansion { self: Analyzer =>
+trait EtaExpansion {
+  self: Analyzer =>
 
   import global._
 

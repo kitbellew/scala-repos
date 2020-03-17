@@ -163,8 +163,11 @@ private[sql] object Dataset {
   * @since 1.6.0
   */
 class Dataset[T] private[sql] (
-    @transient override val sqlContext: SQLContext,
-    @DeveloperApi @transient override val queryExecution: QueryExecution,
+    @transient
+    override val sqlContext: SQLContext,
+    @DeveloperApi
+    @transient
+    override val queryExecution: QueryExecution,
     encoder: Encoder[T])
     extends Queryable
     with Serializable {
@@ -181,7 +184,8 @@ class Dataset[T] private[sql] (
     this(sqlContext, sqlContext.executePlan(logicalPlan), encoder)
   }
 
-  @transient protected[sql] val logicalPlan: LogicalPlan = {
+  @transient
+  protected[sql] val logicalPlan: LogicalPlan = {
     def hasSideEffects(plan: LogicalPlan): Boolean =
       plan match {
         case _: Command | _: InsertIntoTable | _: CreateTableUsingAsSelect =>
@@ -2515,12 +2519,14 @@ class Dataset[T] private[sql] (
   }
 
   /** A convenient function to wrap a logical plan and produce a DataFrame. */
-  @inline private def withPlan(logicalPlan: => LogicalPlan): DataFrame = {
+  @inline
+  private def withPlan(logicalPlan: => LogicalPlan): DataFrame = {
     Dataset.newDataFrame(sqlContext, logicalPlan)
   }
 
   /** A convenient function to wrap a logical plan and produce a Dataset. */
-  @inline private def withTypedPlan(logicalPlan: => LogicalPlan): Dataset[T] = {
+  @inline
+  private def withTypedPlan(logicalPlan: => LogicalPlan): Dataset[T] = {
     new Dataset[T](sqlContext, logicalPlan, encoder)
   }
 

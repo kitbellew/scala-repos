@@ -108,7 +108,8 @@ trait BigDecimalIsNRoot extends NRoot[BigDecimal] {
           Math.sqrt(Double.MaxValue),
           x.mc)
 
-    @tailrec def loop(x: BigDecimal, y: BigDecimal): BigDecimal =
+    @tailrec
+    def loop(x: BigDecimal, y: BigDecimal): BigDecimal =
       if (x == y)
         y
       else

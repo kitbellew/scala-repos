@@ -10,7 +10,8 @@ import org.scalatra.util.RicherString._
 
 import scala.io.Codec
 
-trait RemoteAddress { self: ScentryStrategy[_] =>
+trait RemoteAddress {
+  self: ScentryStrategy[_] =>
 
   import org.scalatra.auth.strategy.BasicAuthStrategy._
 

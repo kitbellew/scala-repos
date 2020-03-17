@@ -25,7 +25,6 @@ import org.scalacheck.{Arbitrary, Prop}
   *
   * @author dlwh
   */
-
 @RunWith(classOf[JUnitRunner])
 class OpenAddressHashArrayTest extends FunSuite with Checkers {
   test("add stuff, make sure it and only it is there") {

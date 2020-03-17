@@ -16,7 +16,8 @@ private[finagle] abstract class CumulativeGauge {
     def remove(): Unit = removeGauge(this)
   }
 
-  @volatile private[this] var underlying = IndexedSeq
+  @volatile
+  private[this] var underlying = IndexedSeq
     .empty[WeakReference[UnderlyingGauge]]
 
   /**
@@ -88,7 +89,8 @@ private[finagle] abstract class CumulativeGauge {
   def deregister(): Unit
 }
 
-trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
+trait StatsReceiverWithCumulativeGauges extends StatsReceiver {
+  self =>
 
   private[this] val gauges =
     new ConcurrentHashMap[Seq[String], CumulativeGauge]()

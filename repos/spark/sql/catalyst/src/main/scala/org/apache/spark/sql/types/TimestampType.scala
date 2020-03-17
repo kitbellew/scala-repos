@@ -35,7 +35,8 @@ class TimestampType private () extends AtomicType {
   // Defined with a private constructor so the companion object is the only possible instantiation.
   private[sql] type InternalType = Long
 
-  @transient private[sql] lazy val tag = ScalaReflectionLock.synchronized {
+  @transient
+  private[sql] lazy val tag = ScalaReflectionLock.synchronized {
     typeTag[InternalType]
   }
 

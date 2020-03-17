@@ -41,7 +41,10 @@ class ScalaLocalInplaceRenamer(
   private val elementRange = editor.getDocument.createRangeMarker(
     elementToRename.getTextRange)
 
-  def this(@NotNull elementToRename: PsiNamedElement, editor: Editor) =
+  def this(
+      @NotNull
+      elementToRename: PsiNamedElement,
+      editor: Editor) =
     this(
       elementToRename,
       editor,

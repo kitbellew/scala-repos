@@ -243,8 +243,8 @@ case class FakeApplication(
       .build
 
   override def mode: Mode.Mode = app.mode
-  @deprecated("Use dependency injection", "2.5.0") override def global
-      : GlobalSettings = app.global
+  @deprecated("Use dependency injection", "2.5.0")
+  override def global: GlobalSettings = app.global
   override def configuration: Configuration = app.configuration
   override def actorSystem: ActorSystem = app.actorSystem
   override implicit def materializer: Materializer = app.materializer

@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait MonadError[F[_], S] extends Monad[F] { self =>
+trait MonadError[F[_], S] extends Monad[F] {
+  self =>
   ////
 
   def raiseError[A](e: S): F[A]
@@ -31,7 +32,8 @@ trait MonadError[F[_], S] extends Monad[F] { self =>
 }
 
 object MonadError {
-  @inline def apply[F[_], S](implicit F: MonadError[F, S]): MonadError[F, S] = F
+  @inline
+  def apply[F[_], S](implicit F: MonadError[F, S]): MonadError[F, S] = F
 
   ////
 

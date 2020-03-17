@@ -17,7 +17,8 @@ import scala.util.Random
 
 class EngineSuite extends FunSuite with Inside with SharedSparkContext {
   import io.prediction.controller.Engine0._
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   test("Engine.train") {
     val engine =
@@ -406,7 +407,8 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
 class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
   import io.prediction.controller.Engine0._
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   test("Simple Parallel DS/P/A/S") {
     val en = 2

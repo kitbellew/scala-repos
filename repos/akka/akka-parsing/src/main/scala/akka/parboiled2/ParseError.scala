@@ -58,7 +58,8 @@ case class Position(index: Int, line: Int, column: Int)
 
 object Position {
   def apply(index: Int, input: ParserInput): Position = {
-    @tailrec def rec(ix: Int, line: Int, col: Int): Position =
+    @tailrec
+    def rec(ix: Int, line: Int, col: Int): Position =
       if (ix >= index)
         Position(index, line, col)
       else if (ix >= input.length || input.charAt(ix) != '\n')
@@ -80,7 +81,8 @@ case class RuleTrace(
     * If this is wrapped in one or more [[RuleTrace.NonTerminal.Named]] the outermost of these is returned instead.
     */
   def dropUnreportedPrefix: RuleTrace = {
-    @tailrec def rec(
+    @tailrec
+    def rec(
         current: List[NonTerminal],
         named: List[NonTerminal]): List[NonTerminal] =
       current match {
@@ -142,7 +144,8 @@ object RuleTrace {
           case `elem` :: _ ⇒ true
           case _ ⇒ false
         }
-      @tailrec def rec(current: List[NonTerminal], namedIx: Int, ix: Int): Int =
+      @tailrec
+      def rec(current: List[NonTerminal], namedIx: Int, ix: Int): Int =
         current match {
           case head :: tail if tracesTail forall hasElem(ix, head) ⇒
             head.key match {

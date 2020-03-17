@@ -15,7 +15,9 @@ import simulacrum.typeclass
   *  - `reduceLeftTo(fa)(f)(g)` eagerly reduces with an additional mapping function
   *  - `reduceRightTo(fa)(f)(g)` lazily reduces with an additional mapping function
   */
-@typeclass trait Reducible[F[_]] extends Foldable[F] { self =>
+@typeclass
+trait Reducible[F[_]] extends Foldable[F] {
+  self =>
 
   /**
     * Left-associative reduction on `F` using the function `f`.

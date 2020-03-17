@@ -37,7 +37,8 @@ trait AbstractScreen extends Factory with Loggable {
 
   protected type Errors = List[FieldError]
 
-  @volatile private[this] var _fieldList: List[() => FieldContainer] = Nil
+  @volatile
+  private[this] var _fieldList: List[() => FieldContainer] = Nil
 
   /**
     * Any additional parameters that need to be put on the form (e.g., mime type)

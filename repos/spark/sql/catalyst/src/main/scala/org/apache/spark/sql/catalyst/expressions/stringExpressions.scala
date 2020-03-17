@@ -304,9 +304,12 @@ case class StringTranslate(
     extends TernaryExpression
     with ImplicitCastInputTypes {
 
-  @transient private var lastMatching: UTF8String = _
-  @transient private var lastReplace: UTF8String = _
-  @transient private var dict: JMap[Character, Character] = _
+  @transient
+  private var lastMatching: UTF8String = _
+  @transient
+  private var lastReplace: UTF8String = _
+  @transient
+  private var dict: JMap[Character, Character] = _
 
   override def nullSafeEval(
       srcEval: Any,

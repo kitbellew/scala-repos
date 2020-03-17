@@ -22,7 +22,8 @@ import scala.collection.mutable.ListBuffer
   *   If the node has a TransparentPosition, the solid descendants of all its children
   *   Otherwise, the singleton consisting of the node itself.
   */
-trait Positions extends api.Positions { self: SymbolTable =>
+trait Positions extends api.Positions {
+  self: SymbolTable =>
   type Position = scala.reflect.internal.util.Position
   val NoPosition = scala.reflect.internal.util.NoPosition
   implicit val PositionTag = ClassTag[Position](classOf[Position])

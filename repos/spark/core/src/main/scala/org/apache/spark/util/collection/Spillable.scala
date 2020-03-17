@@ -128,7 +128,8 @@ private[spark] trait Spillable[C] extends Logging {
     *
     * @param size number of bytes spilled
     */
-  @inline private def logSpillage(size: Long) {
+  @inline
+  private def logSpillage(size: Long) {
     val threadId = Thread.currentThread().getId
     logInfo(
       "Thread %d spilling in-memory map of %s to disk (%d time%s so far)"

@@ -8,7 +8,8 @@ package scalaz
   */
 abstract class Adjunction[F[_], G[_]](implicit
     val F: Functor[F],
-    val G: Functor[G]) { self =>
+    val G: Functor[G]) {
+  self =>
 
   /** Puts a value into the monad. */
   def unit[A](a: => A): G[F[A]] = leftAdjunct(a)(x => x)

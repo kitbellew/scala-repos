@@ -65,7 +65,8 @@ class WorksheetEditorPrinter(
   private var totalCount = 0
   private var insertedToOriginal = 0
   private var prefix = ""
-  @volatile private var terminated = false
+  @volatile
+  private var terminated = false
 
   private var inited = false
   private var cutoffPrinted = false
@@ -79,7 +80,8 @@ class WorksheetEditorPrinter(
       project,
       worksheetViewer.getUserData(WorksheetEditorPrinter.DIFF_SPLITTER_KEY))
 
-  @volatile private var buffed = 0
+  @volatile
+  private var buffed = 0
 
   originalEditor.asInstanceOf[EditorImpl].setScrollToCaret(false)
   worksheetViewer.asInstanceOf[EditorImpl].setScrollToCaret(false)
@@ -180,7 +182,8 @@ class WorksheetEditorPrinter(
     }
 
     if (file != null) {
-      @inline def checkFlag(psi: PsiElement) =
+      @inline
+      def checkFlag(psi: PsiElement) =
         psi != null && psi.getCopyableUserData(
           WorksheetSourceProcessor.WORKSHEET_PRE_CLASS_KEY) != null
 
@@ -618,7 +621,8 @@ object WorksheetEditorPrinter {
 
       worksheetViewer.putUserData(DIFF_SPLITTER_KEY, diffPane)
 
-      @inline def preserveFocus(body: => Unit) {
+      @inline
+      def preserveFocus(body: => Unit) {
         val hadFocus = editorContentComponent.hasFocus
 
         body
@@ -627,7 +631,8 @@ object WorksheetEditorPrinter {
           editorContentComponent.requestFocusInWindow()
       }
 
-      @inline def patchEditor(): Unit =
+      @inline
+      def patchEditor(): Unit =
         preserveFocus {
           (parent, child) match {
             case (parentPane: JLayeredPane, _) =>

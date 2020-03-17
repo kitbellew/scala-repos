@@ -59,8 +59,10 @@ private[repl] trait SparkILoopInit {
     finally initLock.unlock()
   }
   // a condition used to ensure serial access to the compiler.
-  @volatile private var initIsComplete = false
-  @volatile private var initError: String = null
+  @volatile
+  private var initIsComplete = false
+  @volatile
+  private var initError: String = null
   private def elapsed() =
     "%.3f".format((System.nanoTime - initStart).toDouble / 1000000000L)
 

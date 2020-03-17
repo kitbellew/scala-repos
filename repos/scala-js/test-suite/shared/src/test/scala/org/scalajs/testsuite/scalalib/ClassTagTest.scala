@@ -16,7 +16,8 @@ import org.junit.Assert._
 
 class ClassTagTest {
 
-  @Test def apply_should_get_the_existing_instances_for_predefined_ClassTags()
+  @Test
+  def apply_should_get_the_existing_instances_for_predefined_ClassTags()
       : Unit = {
     assertSame(ClassTag.Byte, ClassTag(classOf[Byte]))
     assertSame(ClassTag.Short, ClassTag(classOf[Short]))
@@ -48,7 +49,8 @@ class ClassTagTest {
     assertSame(ClassTag.Null, classTag[Null])
   }
 
-  @Test def runtimeClass(): Unit = {
+  @Test
+  def runtimeClass(): Unit = {
     assertSame(classOf[Byte], ClassTag.Byte.runtimeClass)
     assertSame(classOf[Short], ClassTag.Short.runtimeClass)
     assertSame(classOf[Char], ClassTag.Char.runtimeClass)

@@ -711,7 +711,8 @@ private[kafka] class ZookeeperConsumerConnector(
     private val lock = new ReentrantLock
     private val cond = lock.newCondition()
 
-    @volatile private var allTopicsOwnedPartitionsCount = 0
+    @volatile
+    private var allTopicsOwnedPartitionsCount = 0
     newGauge(
       "OwnedPartitionsCount",
       new Gauge[Int] {

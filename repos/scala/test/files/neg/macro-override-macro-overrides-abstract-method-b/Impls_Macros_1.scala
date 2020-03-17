@@ -11,6 +11,7 @@ trait A {
 object Macro {
   def t(c: Context)(): c.Expr[Unit] = c.universe.reify(())
 }
-trait C extends T { self: A =>
+trait C extends T {
+  self: A =>
   override def t(): Unit = macro Macro.t
 }

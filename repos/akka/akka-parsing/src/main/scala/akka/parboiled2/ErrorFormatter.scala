@@ -149,7 +149,8 @@ class ErrorFormatter(
   def formatExpectedAsString(
       sb: JStringBuilder,
       error: ParseError): JStringBuilder = {
-    @tailrec def rec(remaining: List[String]): JStringBuilder =
+    @tailrec
+    def rec(remaining: List[String]): JStringBuilder =
       remaining match {
         case Nil ⇒ sb.append("???")
         case head :: Nil ⇒ sb.append(head)
@@ -210,7 +211,8 @@ class ErrorFormatter(
     */
   def expandErrorLineTabs(line: String, errorColumn: Int): (Int, String) = {
     val sb = new StringBuilder
-    @tailrec def rec(inCol: Int, errorCol: Int): Int =
+    @tailrec
+    def rec(inCol: Int, errorCol: Int): Int =
       if (inCol < line.length) {
         val ec =
           if (inCol == errorColumn - 1)
@@ -265,7 +267,8 @@ class ErrorFormatter(
         names.reverse.mkString("", ":", sep)
       else
         ""
-    @tailrec def rec(
+    @tailrec
+    def rec(
         remainingPrefix: List[RuleTrace.NonTerminal],
         names: List[String],
         sep: String ⇒ JStringBuilder): JStringBuilder =

@@ -34,7 +34,8 @@ trait ArrayBufferInputStreamTest {
 
   private def newStream: InputStream = mkStream(1 to length)
 
-  @Test def read(): Unit = {
+  @Test
+  def read(): Unit = {
     val stream = newStream
 
     for (i <- 1 to length)
@@ -44,7 +45,8 @@ trait ArrayBufferInputStreamTest {
       assertEquals(-1, stream.read())
   }
 
-  @Test def read_buf(): Unit = {
+  @Test
+  def read_buf(): Unit = {
     val stream = newStream
     val buf = new Array[Byte](10)
 
@@ -60,7 +62,8 @@ trait ArrayBufferInputStreamTest {
     assertEquals(-1, stream.read())
   }
 
-  @Test def read_full_argument(): Unit = {
+  @Test
+  def read_full_argument(): Unit = {
     val stream = newStream
     val buf = new Array[Byte](20)
 
@@ -91,7 +94,8 @@ trait ArrayBufferInputStreamTest {
     assertArrayEquals(byteArray((46 to 50) ++ (11 to 25)), buf)
   }
 
-  @Test def available(): Unit = {
+  @Test
+  def available(): Unit = {
     val stream = newStream
 
     def mySkip(n: Int) =
@@ -110,7 +114,8 @@ trait ArrayBufferInputStreamTest {
     check(0)
   }
 
-  @Test def skip(): Unit = {
+  @Test
+  def skip(): Unit = {
     val stream = newStream
 
     assertEquals(7L, stream.skip(7))
@@ -127,11 +132,13 @@ trait ArrayBufferInputStreamTest {
     assertEquals(0L, stream.skip(30))
   }
 
-  @Test def markSupported(): Unit = {
+  @Test
+  def markSupported(): Unit = {
     assertTrue(newStream.markSupported)
   }
 
-  @Test def close(): Unit = {
+  @Test
+  def close(): Unit = {
     val stream = newStream
 
     for (i <- 1 to length) {
@@ -140,7 +147,8 @@ trait ArrayBufferInputStreamTest {
     }
   }
 
-  @Test def mark_reset(): Unit = {
+  @Test
+  def mark_reset(): Unit = {
     val stream = newStream
 
     def read(range: Range) =
@@ -168,7 +176,8 @@ trait ArrayBufferInputStreamTest {
     assertEquals(-1, stream.read())
   }
 
-  @Test def should_return_positive_integers_when_calling_read(): Unit = {
+  @Test
+  def should_return_positive_integers_when_calling_read(): Unit = {
     val stream = mkStream(Seq(-1, -2, -3))
     assertEquals(255, stream.read())
     assertEquals(254, stream.read())

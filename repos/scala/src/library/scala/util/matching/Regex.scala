@@ -805,7 +805,8 @@ object Regex {
       val groupNames: Seq[String])
       extends AbstractIterator[String]
       with Iterator[String]
-      with MatchData { self =>
+      with MatchData {
+    self =>
 
     protected[Regex] val matcher = regex.pattern.matcher(source)
     private var nextSeen = false

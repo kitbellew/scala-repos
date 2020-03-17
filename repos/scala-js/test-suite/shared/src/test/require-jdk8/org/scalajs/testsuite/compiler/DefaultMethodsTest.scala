@@ -14,7 +14,8 @@ import java.{util => ju}
 
 class DefaultMethodsTest {
 
-  @Test def canOverrideDefaultMethod(): Unit = {
+  @Test
+  def canOverrideDefaultMethod(): Unit = {
     var counter = 0
 
     class SpecialIntComparator extends ju.Comparator[Int] {

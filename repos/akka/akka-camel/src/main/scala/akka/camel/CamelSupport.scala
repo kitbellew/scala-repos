@@ -5,7 +5,8 @@ package akka.camel
 
 import akka.actor.Actor
 
-private[camel] trait CamelSupport { this: Actor ⇒
+private[camel] trait CamelSupport {
+  this: Actor ⇒
 
   /**
     * INTERNAL API

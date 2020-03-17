@@ -58,10 +58,12 @@ trait ModelFactoryImplicitSupport {
   // debugging:
   val DEBUG: Boolean = settings.docImplicitsDebug.value
   val ERROR: Boolean = true // currently we show all errors
-  @inline final def debug(msg: => String) =
+  @inline
+  final def debug(msg: => String) =
     if (DEBUG)
       settings.printMsg(msg)
-  @inline final def error(msg: => String) =
+  @inline
+  final def error(msg: => String) =
     if (ERROR)
       settings.printMsg(msg)
 

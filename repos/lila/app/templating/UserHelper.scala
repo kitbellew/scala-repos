@@ -10,7 +10,8 @@ import lila.common.LightUser
 import lila.rating.{PerfType, Perf}
 import lila.user.{User, UserContext, Perfs}
 
-trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
+trait UserHelper {
+  self: I18nHelper with StringHelper with NumberHelper =>
 
   def showProgress(progress: Int, withTitle: Boolean = true) =
     Html {

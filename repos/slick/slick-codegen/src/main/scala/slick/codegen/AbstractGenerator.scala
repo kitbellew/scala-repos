@@ -15,7 +15,8 @@ import slick.relational.RelationalProfile
   * @see http://lampwww.epfl.ch/~odersky/papers/ScalableComponent.html
   */
 abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
-    extends GeneratorHelpers[Code, TermName, TypeName] { codegen =>
+    extends GeneratorHelpers[Code, TermName, TypeName] {
+  codegen =>
   model.assertConsistency
 
   /** Enables DDL Generation. */

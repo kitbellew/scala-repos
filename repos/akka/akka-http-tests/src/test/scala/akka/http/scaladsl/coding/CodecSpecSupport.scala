@@ -11,7 +11,8 @@ import akka.stream.ActorMaterializer
 import akka.util.ByteString
 import scala.concurrent.Await
 
-trait CodecSpecSupport extends Matchers with BeforeAndAfterAll { self: Suite ⇒
+trait CodecSpecSupport extends Matchers with BeforeAndAfterAll {
+  self: Suite ⇒
 
   def readAs(string: String, charset: String = "UTF8") =
     equal(string).matcher[String] compose {

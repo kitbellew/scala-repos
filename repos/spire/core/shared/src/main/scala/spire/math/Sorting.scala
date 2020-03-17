@@ -44,8 +44,10 @@ object InsertionSort extends Sort {
   * small arrays.
   */
 object MergeSort extends Sort {
-  @inline final def startWidth: Int = 8
-  @inline final def startStep: Int = 16
+  @inline
+  final def startWidth: Int = 8
+  @inline
+  final def startStep: Int = 16
 
   final def sort[@sp A: Order: ClassTag](data: Array[A]): Unit = {
     val len = data.length
@@ -96,7 +98,8 @@ object MergeSort extends Sort {
     * left and right ranges of the input to merge, as well as the area of the
     * ouput to write to.
     */
-  @inline final def merge[@sp A](
+  @inline
+  final def merge[@sp A](
       in: Array[A],
       out: Array[A],
       start: Int,
@@ -125,7 +128,8 @@ object MergeSort extends Sort {
   * sorting very small arrays.
   */
 object QuickSort {
-  @inline final def limit: Int = 16
+  @inline
+  final def limit: Int = 16
 
   final def sort[@sp A: Order: ClassTag](data: Array[A]): Unit =
     qsort(data, 0, data.length - 1)

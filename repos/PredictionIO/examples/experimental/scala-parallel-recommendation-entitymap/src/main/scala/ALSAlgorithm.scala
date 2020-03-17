@@ -18,7 +18,8 @@ case class ALSAlgorithmParams(rank: Int, numIterations: Int, lambda: Double)
 class ALSAlgorithm(val ap: ALSAlgorithmParams)
     extends PAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(data: PreparedData): ALSModel = {
     // Convert user and item String IDs to Int index for MLlib

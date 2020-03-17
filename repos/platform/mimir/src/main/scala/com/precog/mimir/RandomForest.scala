@@ -71,7 +71,8 @@ import MissingSpireOps._
   */
 sealed trait DecisionTree[ /*@specialized(Double) */ A] {
   def apply(v: Array[Double]): A = {
-    @tailrec def loop(tree: DecisionTree[A]): A =
+    @tailrec
+    def loop(tree: DecisionTree[A]): A =
       tree match {
         case Split(i, boundary, left, right) =>
           if (v(i) <= boundary)

@@ -36,7 +36,8 @@ import scalaz.std.boolean._
 import scalaz.std.option._
 import scalaz.std.vector._
 
-trait QuirrelCache extends AST { parser: Parser =>
+trait QuirrelCache extends AST {
+  parser: Parser =>
   import ast._
 
   private sealed abstract class Rule(val re: Regex)

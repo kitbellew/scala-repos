@@ -20,7 +20,8 @@ package p1 {
       Node {
         type T = A
       }
-    trait Node { outer =>
+    trait Node {
+      outer =>
       type T <: Node
       def prepend: Node {
         type T = outer.type
@@ -60,7 +61,8 @@ package p2 {
       Node {
         type T = A
       }
-    trait Node { outer =>
+    trait Node {
+      outer =>
       type T <: Node
       def prepend: NodeAlias[outer.type] = ???
     }

@@ -52,17 +52,20 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#getAdapter() getAdapter()]]`
     */
-  @inline def adapter = basis.getAdapter
+  @inline
+  def adapter = basis.getAdapter
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setAdapter(android.support.v4.view.PagerAdapter) setAdapter(android.support.v4.view.PagerAdapter)]]`
     */
-  @inline def adapter(p: android.support.v4.view.PagerAdapter) = adapter_=(p)
+  @inline
+  def adapter(p: android.support.v4.view.PagerAdapter) = adapter_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setAdapter(android.support.v4.view.PagerAdapter) setAdapter(android.support.v4.view.PagerAdapter)]]`
     */
-  @inline def adapter_=(p: android.support.v4.view.PagerAdapter) = {
+  @inline
+  def adapter_=(p: android.support.v4.view.PagerAdapter) = {
     basis.setAdapter(p);
     basis
   }
@@ -70,17 +73,20 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#getCurrentItem() getCurrentItem()]]`
     */
-  @inline def currentItem = basis.getCurrentItem
+  @inline
+  def currentItem = basis.getCurrentItem
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setCurrentItem(int) setCurrentItem(int)]]`
     */
-  @inline def currentItem(p: Int) = currentItem_=(p)
+  @inline
+  def currentItem(p: Int) = currentItem_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setCurrentItem(int) setCurrentItem(int)]]`
     */
-  @inline def currentItem_=(p: Int) = {
+  @inline
+  def currentItem_=(p: Int) = {
     basis.setCurrentItem(p);
     basis
   }
@@ -88,37 +94,42 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#getOffscreenPageLimit() getOffscreenPageLimit()]]`
     */
-  @inline def offscreenPageLimit = basis.getOffscreenPageLimit
+  @inline
+  def offscreenPageLimit = basis.getOffscreenPageLimit
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setOffscreenPageLimit(int) setOffscreenPageLimit(int)]]`
     */
-  @inline def offscreenPageLimit(p: Int) = offscreenPageLimit_=(p)
+  @inline
+  def offscreenPageLimit(p: Int) = offscreenPageLimit_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setOffscreenPageLimit(int) setOffscreenPageLimit(int)]]`
     */
-  @inline def offscreenPageLimit_=(p: Int) = {
+  @inline
+  def offscreenPageLimit_=(p: Int) = {
     basis.setOffscreenPageLimit(p);
     basis
   }
 
-  @inline def onPageChangeListener(implicit
-      no: NoGetterForThisProperty): Nothing =
+  @inline
+  def onPageChangeListener(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onPageChangeListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setOnPageChangeListener(android.support.v4.view.ViewPager.OnPageChangeListener) setOnPageChangeListener(android.support.v4.view.ViewPager.OnPageChangeListener)]]`
     */
-  @inline def onPageChangeListener(
+  @inline
+  def onPageChangeListener(
       p: android.support.v4.view.ViewPager.OnPageChangeListener) =
     onPageChangeListener_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setOnPageChangeListener(android.support.v4.view.ViewPager.OnPageChangeListener) setOnPageChangeListener(android.support.v4.view.ViewPager.OnPageChangeListener)]]`
     */
-  @inline def onPageChangeListener_=(
+  @inline
+  def onPageChangeListener_=(
       p: android.support.v4.view.ViewPager.OnPageChangeListener) = {
     basis.setOnPageChangeListener(p);
     basis
@@ -127,35 +138,40 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#getPageMargin() getPageMargin()]]`
     */
-  @inline def pageMargin = basis.getPageMargin
+  @inline
+  def pageMargin = basis.getPageMargin
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMargin(int) setPageMargin(int)]]`
     */
-  @inline def pageMargin(p: Int) = pageMargin_=(p)
+  @inline
+  def pageMargin(p: Int) = pageMargin_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMargin(int) setPageMargin(int)]]`
     */
-  @inline def pageMargin_=(p: Int) = {
+  @inline
+  def pageMargin_=(p: Int) = {
     basis.setPageMargin(p);
     basis
   }
 
-  @inline def pageMarginDrawable(implicit
-      no: NoGetterForThisProperty): Nothing =
+  @inline
+  def pageMarginDrawable(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'pageMarginDrawable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMarginDrawable(int) setPageMarginDrawable(int)]]`
     */
-  @inline def pageMarginDrawable(p: Int) = pageMarginDrawable_=(p)
+  @inline
+  def pageMarginDrawable(p: Int) = pageMarginDrawable_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMarginDrawable(int) setPageMarginDrawable(int)]]`
     */
-  @inline def pageMarginDrawable_=(p: Int) = {
+  @inline
+  def pageMarginDrawable_=(p: Int) = {
     basis.setPageMarginDrawable(p);
     basis
   }
@@ -163,18 +179,21 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMarginDrawable(android.graphics.drawable.Drawable) setPageMarginDrawable(android.graphics.drawable.Drawable)]]`
     */
-  @inline def pageMarginDrawable(p: android.graphics.drawable.Drawable) =
+  @inline
+  def pageMarginDrawable(p: android.graphics.drawable.Drawable) =
     pageMarginDrawable_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMarginDrawable(android.graphics.drawable.Drawable) setPageMarginDrawable(android.graphics.drawable.Drawable)]]`
     */
-  @inline def pageMarginDrawable_=(p: android.graphics.drawable.Drawable) = {
+  @inline
+  def pageMarginDrawable_=(p: android.graphics.drawable.Drawable) = {
     basis.setPageMarginDrawable(p);
     basis
   }
 
-  @inline def onPageScrollStateChanged[U](f: Int => U): This = {
+  @inline
+  def onPageScrollStateChanged[U](f: Int => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {
@@ -186,7 +205,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis
   }
 
-  @inline def onPageScrollStateChanged[U](f: => U): This = {
+  @inline
+  def onPageScrollStateChanged[U](f: => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {
@@ -198,7 +218,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis
   }
 
-  @inline def onPageScrolled[U](f: (Int, Float, Int) => U): This = {
+  @inline
+  def onPageScrolled[U](f: (Int, Float, Int) => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
@@ -210,7 +231,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis
   }
 
-  @inline def onPageScrolled[U](f: => U): This = {
+  @inline
+  def onPageScrolled[U](f: => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
@@ -222,7 +244,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis
   }
 
-  @inline def onPageSelected[U](f: Int => U): This = {
+  @inline
+  def onPageSelected[U](f: Int => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
@@ -234,7 +257,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis
   }
 
-  @inline def onPageSelected[U](f: => U): This = {
+  @inline
+  def onPageSelected[U](f: => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
@@ -290,16 +314,18 @@ trait TraitPagerAdapter[This <: android.support.v4.view.PagerAdapter] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/PagerAdapter.html#getCount() getCount()]]`
     */
-  @inline def count = basis.getCount
+  @inline
+  def count = basis.getCount
 
 }
 
 trait ViewImplicits {
   import scala.language.implicitConversions
-  @inline implicit def viewPager2RichViewPager[
-      V <: android.support.v4.view.ViewPager](viewPager: V) =
-    new RichViewPager[V](viewPager)
-  @inline implicit def pagerAdapter2RichPagerAdapter[
+  @inline
+  implicit def viewPager2RichViewPager[V <: android.support.v4.view.ViewPager](
+      viewPager: V) = new RichViewPager[V](viewPager)
+  @inline
+  implicit def pagerAdapter2RichPagerAdapter[
       V <: android.support.v4.view.PagerAdapter](pagerAdapter: V) =
     new RichPagerAdapter[V](pagerAdapter)
 }

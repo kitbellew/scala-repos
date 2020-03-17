@@ -205,7 +205,8 @@ object Bits {
     (hi.toLong << 32) | (lo.toLong & 0xFFFFFFFFL)
   }
 
-  @inline private def decodeIEEE754(
+  @inline
+  private def decodeIEEE754(
       ebits: Int,
       fbits: Int,
       s: Boolean,
@@ -247,7 +248,8 @@ object Bits {
     }
   }
 
-  @inline private def encodeIEEE754(
+  @inline
+  private def encodeIEEE754(
       ebits: Int,
       fbits: Int,
       v: Double): (Boolean, Int, Double) = {
@@ -299,10 +301,12 @@ object Bits {
     }
   }
 
-  @inline private def rawToInt(x: Double): Int =
+  @inline
+  private def rawToInt(x: Double): Int =
     (x.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic]).asInstanceOf[Int]
 
-  @inline private[runtime] def roundToEven(n: Double): Double = {
+  @inline
+  private[runtime] def roundToEven(n: Double): Double = {
     val w = Math.floor(n)
     val f = n - w
     if (f < 0.5)

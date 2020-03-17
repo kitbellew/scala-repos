@@ -463,7 +463,8 @@ class TimeTest extends {
         assert(Time.now == t1)
         tc.set(t0)
         assert(Time.now == t0)
-        @volatile var threadTime: Option[Time] = None
+        @volatile
+        var threadTime: Option[Time] = None
         val thread =
           new Thread {
             override def run() {
@@ -521,7 +522,8 @@ class TimeTest extends {
               Time.sleep(5.seconds)
             }
           }
-        @volatile var x = 0
+        @volatile
+        var x = 0
         val t = new Thread(r)
         t.start()
         assert(t.isAlive == true)

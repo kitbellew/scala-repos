@@ -6,7 +6,8 @@ package effect
   *
   */
 ////
-trait MonadIO[F[_]] extends LiftIO[F] with Monad[F] { self =>
+trait MonadIO[F[_]] extends LiftIO[F] with Monad[F] {
+  self =>
   ////
 
   // derived functions
@@ -19,7 +20,8 @@ trait MonadIO[F[_]] extends LiftIO[F] with Monad[F] { self =>
 }
 
 object MonadIO {
-  @inline def apply[F[_]](implicit F: MonadIO[F]): MonadIO[F] = F
+  @inline
+  def apply[F[_]](implicit F: MonadIO[F]): MonadIO[F] = F
 
   ////
 

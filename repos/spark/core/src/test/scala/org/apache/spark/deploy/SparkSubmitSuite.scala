@@ -68,7 +68,8 @@ class SparkSubmitSuite
     val printStream = new BufferPrintStream()
     SparkSubmit.printStream = printStream
 
-    @volatile var exitedCleanly = false
+    @volatile
+    var exitedCleanly = false
     SparkSubmit.exitFn = (_) => exitedCleanly = true
 
     val thread =

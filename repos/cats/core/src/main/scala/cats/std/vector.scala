@@ -27,7 +27,8 @@ trait VectorInstances {
           f: (A, B) => Z): Vector[Z] = fa.flatMap(a => fb.map(b => f(a, b)))
 
       def coflatMap[A, B](fa: Vector[A])(f: Vector[A] => B): Vector[B] = {
-        @tailrec def loop(builder: VectorBuilder[B], as: Vector[A]): Vector[B] =
+        @tailrec
+        def loop(builder: VectorBuilder[B], as: Vector[A]): Vector[B] =
           as match {
             case _ +: rest => loop(builder += f(as), rest)
             case _         => builder.result()
@@ -71,7 +72,8 @@ trait VectorInstances {
   implicit def eqVector[A](implicit ev: Eq[A]): Eq[Vector[A]] =
     new Eq[Vector[A]] {
       def eqv(x: Vector[A], y: Vector[A]): Boolean = {
-        @tailrec def loop(to: Int): Boolean =
+        @tailrec
+        def loop(to: Int): Boolean =
           if (to == -1)
             true
           else

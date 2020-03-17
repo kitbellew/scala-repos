@@ -41,7 +41,8 @@ class HttpEventStreamServlet @Inject() (
 
   override def newEventSource(request: HttpServletRequest): EventSource =
     new EventSource {
-      @volatile private var handler: Option[HttpEventSSEHandle] = None
+      @volatile
+      private var handler: Option[HttpEventSSEHandle] = None
 
       override def onOpen(emitter: Emitter): Unit = {
         val handle = new HttpEventSSEHandle(request, emitter)

@@ -1,6 +1,7 @@
 package gitbucket.core.model
 
-trait PullRequestComponent extends TemplateComponent { self: Profile =>
+trait PullRequestComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
 
   lazy val PullRequests = TableQuery[PullRequests]

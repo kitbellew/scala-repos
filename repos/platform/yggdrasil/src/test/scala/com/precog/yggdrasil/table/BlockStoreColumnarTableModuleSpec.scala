@@ -55,7 +55,8 @@ trait BlockStoreColumnarTableModuleSpec[M[+_]]
     extends TableModuleSpec[M]
     with BlockLoadSpec[M]
     with BlockSortSpec[M]
-    with BlockAlignSpec[M] { self =>
+    with BlockAlignSpec[M] {
+  self =>
 
   type MemoId = Int
 

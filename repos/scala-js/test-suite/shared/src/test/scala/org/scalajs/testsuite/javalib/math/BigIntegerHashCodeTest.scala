@@ -14,7 +14,8 @@ import org.junit.Assert._
 
 class BigIntegerHashCodeTest {
 
-  @Test def testEqualObjects(): Unit = {
+  @Test
+  def testEqualObjects(): Unit = {
     val value1 = "12378246728727834290276457386374882976782849"
     val value2 = "12378246728727834290276457386374882976782849"
     val aNumber1 = new BigInteger(value1)
@@ -26,7 +27,8 @@ class BigIntegerHashCodeTest {
     }
   }
 
-  @Test def hashCodeIssue2159(): Unit = {
+  @Test
+  def hashCodeIssue2159(): Unit = {
     val a = 936417286865811553L
     val b = 1136802186495971562L
     val c = BigInteger.valueOf(a).add(BigInteger.valueOf(b))
@@ -35,7 +37,8 @@ class BigIntegerHashCodeTest {
     assertEquals(c.hashCode, d.hashCode)
   }
 
-  @Test def testSameObject(): Unit = {
+  @Test
+  def testSameObject(): Unit = {
     val value1 = "12378246728727834290276457386374882976782849"
     val value2 = "-5634562095872038262928728727834290276457386374882976782849"
     val aNumber1 = new BigInteger(value1)
@@ -50,7 +53,8 @@ class BigIntegerHashCodeTest {
     assertEquals(code2, code1)
   }
 
-  @Test def testUnequalObjectsUnequal(): Unit = {
+  @Test
+  def testUnequalObjectsUnequal(): Unit = {
     val value1 = "12378246728727834290276457386374882976782849"
     val value2 = "-5634562095872038262928728727834290276457386374882976782849"
     val aNumber1 = new BigInteger(value1)

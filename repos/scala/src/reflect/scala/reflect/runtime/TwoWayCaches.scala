@@ -11,7 +11,8 @@ import java.lang.ref.WeakReference
   *  so that neither Java artifacts prevent Scala artifacts from being garbage collected,
   *  nor the other way around.
   */
-private[runtime] trait TwoWayCaches { self: SymbolTable =>
+private[runtime] trait TwoWayCaches {
+  self: SymbolTable =>
   class TwoWayCache[J, S] {
 
     private val toScalaMap = new WeakHashMap[J, WeakReference[S]]

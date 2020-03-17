@@ -225,7 +225,8 @@ final case class ClusterRouterPool(
     local.resizer.isEmpty,
     "Resizer can't be used together with cluster router")
 
-  @transient private val childNameCounter = new AtomicInteger
+  @transient
+  private val childNameCounter = new AtomicInteger
 
   /**
     * INTERNAL API
@@ -441,7 +442,8 @@ private[akka] class ClusterRouterGroupActor(
   * The router actor, subscribes to cluster events and
   * adjusts the routees.
   */
-private[akka] trait ClusterRouterActor { this: RouterActor ⇒
+private[akka] trait ClusterRouterActor {
+  this: RouterActor ⇒
 
   def settings: ClusterRouterSettingsBase
 

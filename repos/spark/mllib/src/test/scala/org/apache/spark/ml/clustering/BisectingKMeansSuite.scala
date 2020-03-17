@@ -24,7 +24,8 @@ import org.apache.spark.sql.DataFrame
 class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   final val k = 5
-  @transient var dataset: DataFrame = _
+  @transient
+  var dataset: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

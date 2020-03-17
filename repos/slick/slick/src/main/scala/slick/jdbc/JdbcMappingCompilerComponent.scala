@@ -10,7 +10,8 @@ import slick.relational._
 import slick.util.SQLBuilder
 
 /** JDBC profile component which contains the mapping compiler and insert compiler */
-trait JdbcMappingCompilerComponent { self: JdbcProfile =>
+trait JdbcMappingCompilerComponent {
+  self: JdbcProfile =>
 
   /** The `MappingCompiler` for this profile. */
   val mappingCompiler: MappingCompiler = new MappingCompiler

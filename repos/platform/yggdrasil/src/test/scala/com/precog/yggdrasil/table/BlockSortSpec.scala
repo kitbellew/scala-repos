@@ -54,7 +54,8 @@ import PrecogJValueOrder._
 trait BlockSortSpec[M[+_]]
     extends BlockStoreTestSupport[M]
     with Specification
-    with ScalaCheck { self =>
+    with ScalaCheck {
+  self =>
   def testSortDense(
       sample: SampleData,
       sortOrder: DesiredSortOrder,

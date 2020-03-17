@@ -5,7 +5,8 @@ import effect._
 import Iteratee._
 import Id._
 
-trait EnumeratorT[E, F[_]] { self =>
+trait EnumeratorT[E, F[_]] {
+  self =>
   def apply[A]: StepT[E, F, A] => IterateeT[E, F, A]
 
   def mapE[I](et: EnumerateeT[E, I, F])(implicit

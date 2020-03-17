@@ -153,7 +153,8 @@ class ThrottledHandler(
         case r: LazyLogRecordUnformatted => r.preformatted
         case _                           => record.getMessage
       }
-    @tailrec def tryPublish() {
+    @tailrec
+    def tryPublish() {
       val throttle = synchronized {
         throttleMap.getOrElseUpdate(
           key,

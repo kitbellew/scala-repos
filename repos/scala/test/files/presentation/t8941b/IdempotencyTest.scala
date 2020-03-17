@@ -10,7 +10,8 @@ import scala.reflect.internal.util.SourceFile
   * `MagicInterruptionMarker` is typechecked, and then performs a targeted
   * typecheck of the tree at the special comment marker marker
   */
-abstract class IdempotencyTest { self =>
+abstract class IdempotencyTest {
+  self =>
   private val settings = new Settings
   settings.usejavacp.value = true
 

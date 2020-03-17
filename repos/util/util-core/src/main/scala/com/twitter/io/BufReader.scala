@@ -6,7 +6,8 @@ import com.twitter.util.{Future, Return, Try, Throw}
   * Construct a Reader from a Buf.
   */
 private[io] class BufReader(buf: Buf) extends Reader {
-  @volatile private[this] var state: Try[Buf] = Return(buf)
+  @volatile
+  private[this] var state: Try[Buf] = Return(buf)
 
   def read(n: Int) =
     synchronized {

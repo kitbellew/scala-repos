@@ -77,7 +77,8 @@ final class Well512a protected[random] (state: Array[Int], i0: Int)
 
   def nextInt(): Int = {
 
-    @inline def map(r: Int) = (i + r) & R_1
+    @inline
+    def map(r: Int) = (i + r) & R_1
 
     val z0: Int = state(map(R_1))
     val z1: Int = mat0neg(-16, state(i)) ^ mat0neg(-15, state(map(M1)))
@@ -104,31 +105,40 @@ final class Well512a protected[random] (state: Array[Int], i0: Int)
 object Well512a extends GeneratorCompanion[Well512a, (Array[Int], Int)] {
 
   // Number of bits in the pool.
-  @inline private final val K: Int = 512
+  @inline
+  private final val K: Int = 512
 
   // Length of the pool in ints.
-  @inline private final val R: Int = K / 32
+  @inline
+  private final val R: Int = K / 32
 
   // Length of the pool in ints -1.
-  @inline private final val R_1: Int = R - 1
+  @inline
+  private final val R_1: Int = R - 1
 
   // Length of the pool and index in bytes
-  @inline private final val BYTES = R * 4 + 4
+  @inline
+  private final val BYTES = R * 4 + 4
 
   // First parameter of the algorithm.
-  @inline private final val M1: Int = 13
+  @inline
+  private final val M1: Int = 13
 
   // Second parameter of the algorithm.
-  @inline private final val M2: Int = 9
+  @inline
+  private final val M2: Int = 9
 
   // Third parameter of the algorithm.
   // @inline private final val M3 : Int = 5
 
-  @inline private final def mat0pos(t: Int, v: Int) = v ^ (v >>> t)
-  @inline private final def mat0neg(t: Int, v: Int) = v ^ (v << -t)
-  @inline private final def mat3neg(t: Int, v: Int) = v << -t
-  @inline private final def mat4neg(t: Int, b: Int, v: Int) =
-    v ^ ((v << -t) & b)
+  @inline
+  private final def mat0pos(t: Int, v: Int) = v ^ (v >>> t)
+  @inline
+  private final def mat0neg(t: Int, v: Int) = v ^ (v << -t)
+  @inline
+  private final def mat3neg(t: Int, v: Int) = v << -t
+  @inline
+  private final def mat4neg(t: Int, b: Int, v: Int) = v ^ ((v << -t) & b)
 
   def randomSeed(): (Array[Int], Int) =
     (Utils.seedFromInt(R, Utils.intFromTime()), 0)

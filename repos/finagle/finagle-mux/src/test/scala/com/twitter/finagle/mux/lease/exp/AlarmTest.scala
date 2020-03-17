@@ -76,7 +76,8 @@ class AlarmTest extends FunSuite with LocalConductors {
       val conductor = new Conductor
       import conductor._
 
-      @volatile var ctr = 0
+      @volatile
+      var ctr = 0
 
       Time.withCurrentTimeFrozen { ctl =>
         localThread(conductor) {
@@ -142,7 +143,8 @@ class AlarmTest extends FunSuite with LocalConductors {
     import conductor._
 
     Time.withCurrentTimeFrozen { ctl =>
-      @volatile var bool = false
+      @volatile
+      var bool = false
 
       localThread(conductor) {
         Alarm.arm({ () =>
@@ -176,7 +178,8 @@ class AlarmTest extends FunSuite with LocalConductors {
 
     Time.withCurrentTimeFrozen { ctl =>
       val ctr = new FakeByteCounter(1000, Time.now, nfo)
-      @volatile var bool = false
+      @volatile
+      var bool = false
 
       val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
       fakePool.setSnapshot(usage)

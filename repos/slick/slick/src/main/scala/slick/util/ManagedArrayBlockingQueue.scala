@@ -12,7 +12,8 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
     capacity: Int,
     fair: Boolean = false)
     extends AbstractQueue[E]
-    with BlockingQueue[E] { self =>
+    with BlockingQueue[E] {
+  self =>
 
   /** Determine if the item should be accepted at the current time. */
   protected[this] def accept(item: E, size: Int): Boolean
@@ -312,13 +313,15 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
       def remove: Unit = throw new UnsupportedOperationException
     }
 
-  @inline private[this] def locked[T](f: => T) = {
+  @inline
+  private[this] def locked[T](f: => T) = {
     lock.lock
     try f
     finally lock.unlock
   }
 
-  @inline private[this] def lockedInterruptibly[T](f: => T) = {
+  @inline
+  private[this] def lockedInterruptibly[T](f: => T) = {
     lock.lockInterruptibly
     try f
     finally lock.unlock

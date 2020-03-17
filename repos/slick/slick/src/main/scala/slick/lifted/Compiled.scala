@@ -40,12 +40,14 @@ sealed trait Compiled[T] {
 object Compiled {
 
   /** Create a new `Compiled` value for a raw value that is `Compilable`. */
-  @inline def apply[V, C <: Compiled[V]](
+  @inline
+  def apply[V, C <: Compiled[V]](
       raw: V)(implicit compilable: Compilable[V, C], profile: BasicProfile): C =
     compilable.compiled(raw, profile)
 }
 
-trait CompilersMixin { this: Compiled[_] =>
+trait CompilersMixin {
+  this: Compiled[_] =>
   def toNode: Node
   lazy val compiledQuery = profile.queryCompiler.run(toNode).tree
   lazy val compiledUpdate = profile.updateCompiler.run(toNode).tree
@@ -122,15 +124,18 @@ trait Executable[T, TU] {
 }
 
 object Executable {
-  @inline implicit def queryIsExecutable[B, BU, C[_]] =
+  @inline
+  implicit def queryIsExecutable[B, BU, C[_]] =
     StreamingExecutable[Query[B, BU, C], C[BU], BU]
-  @inline implicit def tableQueryIsExecutable[B <: AbstractTable[_], BU, C[_]] =
+  @inline
+  implicit def tableQueryIsExecutable[B <: AbstractTable[_], BU, C[_]] =
     StreamingExecutable[Query[B, BU, C] with TableQuery[B], C[BU], BU]
-  @inline implicit def baseJoinQueryIsExecutable[B1, B2, BU1, BU2, C[
-      _], Ba1, Ba2] =
+  @inline
+  implicit def baseJoinQueryIsExecutable[B1, B2, BU1, BU2, C[_], Ba1, Ba2] =
     StreamingExecutable[BaseJoinQuery[B1, B2, BU1, BU2, C, Ba1, Ba2], C[
       (BU1, BU2)], (BU1, BU2)]
-  @inline implicit def scalarIsExecutable[R, U](implicit
+  @inline
+  implicit def scalarIsExecutable[R, U](implicit
       shape: Shape[_ <: FlatShapeLevel, R, U, _]): Executable[R, U] =
     new Executable[R, U] {
       def toNode(value: R) = shape.toNode(value)
@@ -206,11 +211,13 @@ final class Parameters[PU, PP](pshape: Shape[ColumnsShapeLevel, PU, PU, _]) {
       pshape.asInstanceOf[Shape[ColumnsShapeLevel, PU, PU, PP]],
       profile)
 
-  @inline def withFilter(f: PP => Boolean): Parameters[PU, PP] = this
+  @inline
+  def withFilter(f: PP => Boolean): Parameters[PU, PP] = this
 }
 
 object Parameters {
-  @inline def apply[U](implicit
+  @inline
+  def apply[U](implicit
       pshape: Shape[ColumnsShapeLevel, U, U, _]): Parameters[U, pshape.Packed] =
     new Parameters[U, pshape.Packed](pshape)
 }

@@ -2,9 +2,11 @@ class C[E <: Exception] {
   @throws[E]
   def f = 1
 
-  @throws(classOf[Exception]) def g: E = ???
+  @throws(classOf[Exception])
+  def g: E = ???
 
-  @throws[E] @throws[Exception]
+  @throws[E]
+  @throws[Exception]
   def h = 1
 }
 

@@ -17,7 +17,8 @@ class DefaultPoolTest extends FunSuite {
   }
 
   class MockService extends Service[Unit, Unit] {
-    @volatile var closed = false
+    @volatile
+    var closed = false
 
     override def apply(unit: Unit): Future[Unit] =
       if (closed)

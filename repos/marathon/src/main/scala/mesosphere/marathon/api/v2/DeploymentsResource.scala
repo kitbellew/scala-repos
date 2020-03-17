@@ -29,7 +29,9 @@ class DeploymentsResource @Inject() (
     with Logging {
 
   @GET
-  def running(@Context req: HttpServletRequest): Response =
+  def running(
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val infos = result(service.listRunningDeployments())
         .filter(_.plan.affectedApplications.exists(isAuthorized(ViewApp, _)))
@@ -43,8 +45,10 @@ class DeploymentsResource @Inject() (
   @Path("{id}")
   def cancel(
       @PathParam("id") id: String,
-      @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @DefaultValue("false")
+      @QueryParam("force") force: Boolean,
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val plan = result(service.listRunningDeployments())
         .find(_.plan.id == id)

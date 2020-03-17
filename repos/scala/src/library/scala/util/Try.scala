@@ -127,7 +127,8 @@ sealed abstract class Try[+T] extends Product with Serializable {
     *             All these operations apply to those elements of this Try
     *             which satisfy the predicate `p`.
     */
-  @inline final def withFilter(p: T => Boolean): WithFilter = new WithFilter(p)
+  @inline
+  final def withFilter(p: T => Boolean): WithFilter = new WithFilter(p)
 
   /** We need a whole WithFilter class to honor the "doesn't create a new
     *  collection" contract even though it seems unlikely to matter much in a

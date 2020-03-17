@@ -265,9 +265,8 @@ private[io] abstract class TcpConnection(
 
   def doRead(info: ConnectionInfo, closeCommander: Option[ActorRef]): Unit =
     if (!readingSuspended) {
-      @tailrec def innerRead(
-          buffer: ByteBuffer,
-          remainingLimit: Int): ReadResult =
+      @tailrec
+      def innerRead(buffer: ByteBuffer, remainingLimit: Int): ReadResult =
         if (remainingLimit > 0) {
           // never read more than the configured limit
           buffer.clear()
@@ -389,7 +388,8 @@ private[io] abstract class TcpConnection(
       case _: SocketException ⇒ false
     }
 
-  @tailrec private[this] def extractMsg(t: Throwable): String =
+  @tailrec
+  private[this] def extractMsg(t: Throwable): String =
     if (t == null)
       "unknown"
     else {
@@ -440,7 +440,8 @@ private[io] abstract class TcpConnection(
       "Restarting not supported for connection actors.")
 
   def PendingWrite(commander: ActorRef, write: WriteCommand): PendingWrite = {
-    @tailrec def create(
+    @tailrec
+    def create(
         head: WriteCommand,
         tail: WriteCommand = Write.empty): PendingWrite =
       head match {
@@ -491,7 +492,8 @@ private[io] abstract class TcpConnection(
       extends PendingWrite {
 
     def doWrite(info: ConnectionInfo): PendingWrite = {
-      @tailrec def writeToChannel(data: ByteString): PendingWrite = {
+      @tailrec
+      def writeToChannel(data: ByteString): PendingWrite = {
         val writtenBytes = channel.write(
           buffer
         ) // at first we try to drain the remaining bytes from the buffer

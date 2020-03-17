@@ -9,7 +9,8 @@ class RegressionTests extends CatsSuite {
 
   // toy state class
   // not stack safe, very minimal, not for actual use
-  case class State[S, A](run: S => (A, S)) { self =>
+  case class State[S, A](run: S => (A, S)) {
+    self =>
     def map[B](f: A => B): State[S, B] =
       State({ s =>
         val (a, s2) = self.run(s);

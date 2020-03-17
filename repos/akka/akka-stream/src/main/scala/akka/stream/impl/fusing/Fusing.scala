@@ -271,7 +271,8 @@ private[stream] object Fusing {
       matValIDs)
   }
 
-  @tailrec private def copyToArray[T](
+  @tailrec
+  private def copyToArray[T](
       it: ju.Iterator[T],
       array: Array[T],
       idx: Int): Int =

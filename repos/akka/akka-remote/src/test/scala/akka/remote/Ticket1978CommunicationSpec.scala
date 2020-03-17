@@ -163,7 +163,8 @@ class Ticket1978AES256CounterInetRNGSpec
       getCipherConfig("AES256CounterInetRNG", "TLS_RSA_WITH_AES_256_CBC_SHA"))
     with InetRNGSpec
 
-trait InetRNGSpec { this: Ticket1978CommunicationSpec ⇒
+trait InetRNGSpec {
+  this: Ticket1978CommunicationSpec ⇒
   override def preCondition =
     try {
       (new RandomDotOrgSeedGenerator).generateSeed(128)

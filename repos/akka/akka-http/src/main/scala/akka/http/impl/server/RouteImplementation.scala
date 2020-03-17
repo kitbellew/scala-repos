@@ -299,7 +299,8 @@ private[http] object RouteImplementation
     transformExtractionMap(_.set(key, value))
 
   def transformExtractionMap(f: ExtractionMap ⇒ ExtractionMap): Directive0 = {
-    @tailrec def updateExtractionMap(
+    @tailrec
+    def updateExtractionMap(
         headers: immutable.Seq[HttpHeader],
         prefix: Vector[HttpHeader] = Vector.empty): immutable.Seq[HttpHeader] =
       headers match {

@@ -163,7 +163,8 @@ final case class SimpleList[T](underlying: List[T]) extends JavaList[T] {
 
     import scala.annotation._
 
-    @tailrec def check(): Boolean =
+    @tailrec
+    def check(): Boolean =
       it.hasNext() match {
         case false => true
         case _ =>
@@ -317,7 +318,8 @@ final case class SimpleVector[T](underlying: Vector[T]) extends JavaList[T] {
 
     import scala.annotation._
 
-    @tailrec def check(): Boolean =
+    @tailrec
+    def check(): Boolean =
       it.hasNext() match {
         case false => true
         case _ =>

@@ -49,15 +49,19 @@ object OptionMapper2 {
       override def toString = "OptionMapper2.option"
     }
 
-  @inline implicit def getOptionMapper2TT[B1, B2: BaseTypedType, BR] =
+  @inline
+  implicit def getOptionMapper2TT[B1, B2: BaseTypedType, BR] =
     OptionMapper2.plain.asInstanceOf[OptionMapper2[B1, B2, BR, B1, B2, BR]]
-  @inline implicit def getOptionMapper2TO[B1, B2: BaseTypedType, BR] =
+  @inline
+  implicit def getOptionMapper2TO[B1, B2: BaseTypedType, BR] =
     OptionMapper2.option
       .asInstanceOf[OptionMapper2[B1, B2, BR, B1, Option[B2], Option[BR]]]
-  @inline implicit def getOptionMapper2OT[B1, B2: BaseTypedType, BR] =
+  @inline
+  implicit def getOptionMapper2OT[B1, B2: BaseTypedType, BR] =
     OptionMapper2.option
       .asInstanceOf[OptionMapper2[B1, B2, BR, Option[B1], B2, Option[BR]]]
-  @inline implicit def getOptionMapper2OO[B1, B2: BaseTypedType, BR] =
+  @inline
+  implicit def getOptionMapper2OO[B1, B2: BaseTypedType, BR] =
     OptionMapper2.option.asInstanceOf[OptionMapper2[B1, B2, BR, Option[
       B1], Option[B2], Option[BR]]]
 }
@@ -83,14 +87,16 @@ object OptionMapper3 {
       override def toString = "OptionMapper3.option"
     }
 
-  @inline implicit def getOptionMapper3TTT[
+  @inline
+  implicit def getOptionMapper3TTT[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
     OptionMapper3.plain
       .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, B2, B3, BR]]
-  @inline implicit def getOptionMapper3TTO[
+  @inline
+  implicit def getOptionMapper3TTO[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
@@ -98,42 +104,48 @@ object OptionMapper3 {
     OptionMapper3.option
       .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, B2, Option[B3], Option[
         BR]]]
-  @inline implicit def getOptionMapper3TOT[
+  @inline
+  implicit def getOptionMapper3TOT[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
     OptionMapper3.option.asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, Option[
       B2], B3, Option[BR]]]
-  @inline implicit def getOptionMapper3TOO[
+  @inline
+  implicit def getOptionMapper3TOO[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
     OptionMapper3.option.asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, Option[
       B2], Option[B3], Option[BR]]]
-  @inline implicit def getOptionMapper3OTT[
+  @inline
+  implicit def getOptionMapper3OTT[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
     OptionMapper3.option.asInstanceOf[OptionMapper3[B1, B2, B3, BR, Option[
       B1], B2, B3, Option[BR]]]
-  @inline implicit def getOptionMapper3OTO[
+  @inline
+  implicit def getOptionMapper3OTO[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
     OptionMapper3.option.asInstanceOf[OptionMapper3[B1, B2, B3, BR, Option[
       B1], B2, Option[B3], Option[BR]]]
-  @inline implicit def getOptionMapper3OOT[
+  @inline
+  implicit def getOptionMapper3OOT[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
     OptionMapper3.option.asInstanceOf[OptionMapper3[B1, B2, B3, BR, Option[
       B1], Option[B2], B3, Option[BR]]]
-  @inline implicit def getOptionMapper3OOO[
+  @inline
+  implicit def getOptionMapper3OOO[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,

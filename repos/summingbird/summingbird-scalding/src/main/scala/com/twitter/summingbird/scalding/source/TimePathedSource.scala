@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory
 // https://github.com/twitter/scalding/issues/529
 object TimePathedSource extends java.io.Serializable {
 
-  @transient private val logger = LoggerFactory.getLogger(
-    TimePathedSource.getClass)
+  @transient
+  private val logger = LoggerFactory.getLogger(TimePathedSource.getClass)
 
   // Assumes linear expanders
   private def unexpander(

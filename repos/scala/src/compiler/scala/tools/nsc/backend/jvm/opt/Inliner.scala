@@ -264,7 +264,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     def breakInlineCycles: List[InlineRequest] = {
       // is there a path of inline requests from start to goal?
       def isReachable(start: MethodNode, goal: MethodNode): Boolean = {
-        @tailrec def reachableImpl(
+        @tailrec
+        def reachableImpl(
             check: List[MethodNode],
             visited: Set[MethodNode]): Boolean =
           check match {
@@ -1075,7 +1076,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       }
 
     val it = instructions.iterator.asScala
-    @tailrec def find: Option[(AbstractInsnNode, Option[OptimizerWarning])] = {
+    @tailrec
+    def find: Option[(AbstractInsnNode, Option[OptimizerWarning])] = {
       if (!it.hasNext)
         None // all instructions are legal
       else {

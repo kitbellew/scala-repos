@@ -6,7 +6,8 @@ trait U {
   type ValDef <: ValOrDefDef with ValDefApi {
     type T
   }
-  trait ValDefApi extends ValOrDefDefApi { this: ValDef =>
+  trait ValDefApi extends ValOrDefDefApi {
+    this: ValDef =>
   }
   val emptyValDef: ValDef // the result type is volatile
 }

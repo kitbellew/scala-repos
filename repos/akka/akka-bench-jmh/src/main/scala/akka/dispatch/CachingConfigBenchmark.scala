@@ -21,7 +21,9 @@ class CachingConfigBenchmark {
   val deepConfig = ConfigFactory.parseString(deepConfigString)
   val deepCaching = new CachingConfig(deepConfig)
 
-  @Benchmark def deep_config = deepConfig.hasPath(deepKey)
-  @Benchmark def deep_caching = deepCaching.hasPath(deepKey)
+  @Benchmark
+  def deep_config = deepConfig.hasPath(deepKey)
+  @Benchmark
+  def deep_caching = deepCaching.hasPath(deepKey)
 
 }

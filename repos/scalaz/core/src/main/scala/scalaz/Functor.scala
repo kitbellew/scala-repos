@@ -13,7 +13,8 @@ package scalaz
   * @see [[scalaz.Functor.FunctorLaw]]
   */
 ////
-trait Functor[F[_]] extends InvariantFunctor[F] { self =>
+trait Functor[F[_]] extends InvariantFunctor[F] {
+  self =>
   ////
   import Liskov.<~<
 
@@ -117,7 +118,8 @@ trait Functor[F[_]] extends InvariantFunctor[F] { self =>
 }
 
 object Functor {
-  @inline def apply[F[_]](implicit F: Functor[F]): Functor[F] = F
+  @inline
+  def apply[F[_]](implicit F: Functor[F]): Functor[F] = F
 
   ////
 

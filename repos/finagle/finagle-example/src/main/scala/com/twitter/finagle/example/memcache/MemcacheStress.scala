@@ -18,8 +18,8 @@ import scala.language.reflectiveCalls
 
 class PersistentService[Req, Rep](factory: ServiceFactory[Req, Rep])
     extends Service[Req, Rep] {
-  @volatile private[this] var currentService: Future[Service[Req, Rep]] =
-    factory()
+  @volatile
+  private[this] var currentService: Future[Service[Req, Rep]] = factory()
 
   def apply(req: Req) =
     currentService flatMap { service =>

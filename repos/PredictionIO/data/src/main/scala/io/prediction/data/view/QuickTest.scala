@@ -28,7 +28,8 @@ import org.joda.time.DateTime
 import scala.language.implicitConversions
 
 class TestHBLEvents() {
-  @transient lazy val eventsDb = Storage.getLEvents()
+  @transient
+  lazy val eventsDb = Storage.getLEvents()
 
   def run(): Unit = {
     val r =
@@ -45,8 +46,10 @@ class TestHBLEvents() {
 }
 
 class TestSource(val appId: Int) {
-  @transient lazy val logger = Logger[this.type]
-  @transient lazy val batchView = new LBatchView(appId, None, None)
+  @transient
+  lazy val logger = Logger[this.type]
+  @transient
+  lazy val batchView = new LBatchView(appId, None, None)
 
   def run(): Unit = {
     println(batchView.events)
@@ -65,7 +68,8 @@ object QuickTest {
 }
 
 object TestEventTime {
-  @transient lazy val batchView = new LBatchView(9, None, None)
+  @transient
+  lazy val batchView = new LBatchView(9, None, None)
 
   // implicit def back2list(es: EventSeq) = es.events
 

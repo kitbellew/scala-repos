@@ -32,7 +32,8 @@ private[spark] class TaskContextImpl(
     override val taskAttemptId: Long,
     override val attemptNumber: Int,
     override val taskMemoryManager: TaskMemoryManager,
-    @transient private val metricsSystem: MetricsSystem,
+    @transient
+    private val metricsSystem: MetricsSystem,
     initialAccumulators: Seq[Accumulator[_]] = InternalAccumulator.createAll())
     extends TaskContext
     with Logging {
@@ -43,21 +44,24 @@ private[spark] class TaskContextImpl(
   override val taskMetrics: TaskMetrics = new TaskMetrics(initialAccumulators)
 
   /** List of callback functions to execute when the task completes. */
-  @transient private val onCompleteCallbacks =
-    new ArrayBuffer[TaskCompletionListener]
+  @transient
+  private val onCompleteCallbacks = new ArrayBuffer[TaskCompletionListener]
 
   /** List of callback functions to execute when the task fails. */
-  @transient private val onFailureCallbacks =
-    new ArrayBuffer[TaskFailureListener]
+  @transient
+  private val onFailureCallbacks = new ArrayBuffer[TaskFailureListener]
 
   // Whether the corresponding task has been killed.
-  @volatile private var interrupted: Boolean = false
+  @volatile
+  private var interrupted: Boolean = false
 
   // Whether the task has completed.
-  @volatile private var completed: Boolean = false
+  @volatile
+  private var completed: Boolean = false
 
   // Whether the task has failed.
-  @volatile private var failed: Boolean = false
+  @volatile
+  private var failed: Boolean = false
 
   override def addTaskCompletionListener(
       listener: TaskCompletionListener): this.type = {

@@ -60,7 +60,8 @@ object JSDependencyManifest {
 
   implicit object JSDepManJSONSerializer
       extends JSONSerializer[JSDependencyManifest] {
-    @inline def optList[T](x: List[T]): Option[List[T]] =
+    @inline
+    def optList[T](x: List[T]): Option[List[T]] =
       if (x.nonEmpty)
         Some(x)
       else

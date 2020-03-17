@@ -10,7 +10,8 @@ object Throwables {
     * classname strings.
     */
   def mkString(ex: Throwable): Seq[String] = {
-    @tailrec def rec(ex: Throwable, buf: ArrayBuffer[String]): Seq[String] = {
+    @tailrec
+    def rec(ex: Throwable, buf: ArrayBuffer[String]): Seq[String] = {
       if (ex eq null)
         buf.result
       else

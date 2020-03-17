@@ -18,7 +18,8 @@ import scalaxy.debug._
   *
   * @author dlwh
  **/
-trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
+trait CSCMatrixOps extends CSCMatrixOps_Ring {
+  this: CSCMatrix.type =>
   // don't remove
   import breeze.math.PowImplicits._
 

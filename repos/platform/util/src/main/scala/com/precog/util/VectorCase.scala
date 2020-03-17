@@ -81,7 +81,8 @@ private[precog] object VectorCase {
   def empty[A]: VectorCase[A] = Vector0
 
   def newBuilder[A]: Builder[A, VectorCase[A]] =
-    new Builder[A, VectorCase[A]] { this: Builder[A, VectorCase[A]] =>
+    new Builder[A, VectorCase[A]] {
+      this: Builder[A, VectorCase[A]] =>
       val small = new ArrayBuffer[A](4)
       var builder: VectorBuilder[A] = _
 

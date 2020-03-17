@@ -3,7 +3,8 @@ package gitbucket.core.model
 import scala.slick.lifted.MappedTo
 import scala.slick.jdbc._
 
-trait CommitStatusComponent extends TemplateComponent { self: Profile =>
+trait CommitStatusComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
   import self._
 

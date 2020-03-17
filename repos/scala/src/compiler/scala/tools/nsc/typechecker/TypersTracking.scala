@@ -97,7 +97,8 @@ trait TypersTracking {
       else
         currentIndent + s.replaceAll("\n", "\n" + currentIndent)
 
-    @inline final def runWith[T](t: Tree)(body: => T): T = {
+    @inline
+    final def runWith[T](t: Tree)(body: => T): T = {
       push(t)
       try body
       finally pop(t)
@@ -180,11 +181,13 @@ trait TypersTracking {
            showPop(body)
          })
 
-    @inline final def printTyping(tree: Tree, s: => String) = {
+    @inline
+    final def printTyping(tree: Tree, s: => String) = {
       if (printTypings && !noPrintTyping(tree))
         show(indented(s))
     }
-    @inline final def printTyping(s: => String) = {
+    @inline
+    final def printTyping(s: => String) = {
       if (printTypings)
         show(indented(s))
     }

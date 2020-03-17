@@ -40,7 +40,8 @@ trait SamplableTableModule[M[+_]] extends TableModule[M] {
 
   type Table <: SamplableTable
 
-  trait SamplableTable extends TableLike { self: Table =>
+  trait SamplableTable extends TableLike {
+    self: Table =>
     import trans._
     def sample(sampleSize: Int, specs: Seq[TransSpec1]): M[Seq[Table]]
   }
@@ -55,7 +56,8 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
 
   type Table <: ColumnarTable with SamplableTable
 
-  trait SamplableColumnarTable extends SamplableTable { self: Table =>
+  trait SamplableColumnarTable extends SamplableTable {
+    self: Table =>
 
     /**
       * A one-pass algorithm for sampling. This runs in time O(H_n*m^2 + n) =

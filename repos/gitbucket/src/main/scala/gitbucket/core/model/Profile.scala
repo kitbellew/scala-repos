@@ -30,7 +30,8 @@ trait Profile {
 
 }
 
-trait ProfileProvider { self: Profile =>
+trait ProfileProvider {
+  self: Profile =>
   val profile = slick.driver.H2Driver
 }
 

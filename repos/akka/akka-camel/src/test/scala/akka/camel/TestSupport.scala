@@ -64,7 +64,8 @@ private[camel] object TestSupport {
     def routes = camel.context.getRoutes
   }
 
-  trait SharedCamelSystem extends BeforeAndAfterAll { this: Suite ⇒
+  trait SharedCamelSystem extends BeforeAndAfterAll {
+    this: Suite ⇒
     implicit lazy val system = ActorSystem("test", AkkaSpec.testConf)
     implicit lazy val camel = CamelExtension(system)
 
@@ -74,7 +75,8 @@ private[camel] object TestSupport {
     }
   }
 
-  trait NonSharedCamelSystem extends BeforeAndAfterEach { this: Suite ⇒
+  trait NonSharedCamelSystem extends BeforeAndAfterEach {
+    this: Suite ⇒
     implicit var system: ActorSystem = _
     implicit var camel: Camel = _
 

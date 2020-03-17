@@ -24,7 +24,8 @@ trait Variances {
     // A flag for when we're in a refinement, meaning method parameter types
     // need to be checked.
     private var inRefinement = false
-    @inline private def withinRefinement(body: => Type): Type = {
+    @inline
+    private def withinRefinement(body: => Type): Type = {
       val saved = inRefinement
       inRefinement = true
       try body
@@ -36,7 +37,8 @@ trait Variances {
       *  escaped locals.
       *  @pre  sym.isLocalToThis
       */
-    @tailrec final def checkForEscape(sym: Symbol, site: Symbol) {
+    @tailrec
+    final def checkForEscape(sym: Symbol, site: Symbol) {
       if (site == sym.owner || site == sym.owner.moduleClass || site.hasPackageFlag)
         () // done
       else if (site.isTerm || site.isPrivateLocal)

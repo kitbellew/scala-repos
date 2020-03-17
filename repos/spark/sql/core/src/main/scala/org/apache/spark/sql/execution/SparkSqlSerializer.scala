@@ -66,7 +66,8 @@ private[execution] class KryoResourcePool(size: Int)
 }
 
 private[sql] object SparkSqlSerializer {
-  @transient lazy val resourcePool = new KryoResourcePool(30)
+  @transient
+  lazy val resourcePool = new KryoResourcePool(30)
 
   private[this] def acquireRelease[O](fn: SerializerInstance => O): O = {
     val kryo = resourcePool.borrow

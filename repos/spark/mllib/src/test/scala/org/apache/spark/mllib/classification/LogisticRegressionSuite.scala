@@ -203,7 +203,8 @@ class LogisticRegressionSuite
     with MLlibTestSparkContext
     with Matchers {
 
-  @transient var binaryDataset: RDD[LabeledPoint] = _
+  @transient
+  var binaryDataset: RDD[LabeledPoint] = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

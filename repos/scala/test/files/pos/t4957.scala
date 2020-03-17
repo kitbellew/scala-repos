@@ -69,8 +69,10 @@ object Vector {
     type C = Double.type
     def companion = Double
 
-    @inline override def xd = x
-    @inline override def yd = y
+    @inline
+    override def xd = x
+    @inline
+    override def yd = y
   }
 
   object Int extends Companion[int] {

@@ -3,7 +3,8 @@ object Test {
   import java.io._
 
   trait IMyMessage extends Serializable {
-    @transient var message: String = null
+    @transient
+    var message: String = null
     var message2: String = null
   }
 

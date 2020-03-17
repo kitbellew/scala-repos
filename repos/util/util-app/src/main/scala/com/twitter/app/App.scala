@@ -101,7 +101,8 @@ trait App extends Closable with CloseAwaitably {
   /**
     * The actual close grace period.
     */
-  @volatile private[this] var closeDeadline = Time.Top
+  @volatile
+  private[this] var closeDeadline = Time.Top
 
   /**
     * Close `closable` when shutdown is requested. Closables are closed in parallel.

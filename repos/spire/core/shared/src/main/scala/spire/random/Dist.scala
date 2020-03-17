@@ -19,7 +19,8 @@ import scala.collection.mutable.ArrayBuffer
 import scala.collection.SeqLike
 import scala.collection.generic.CanBuildFrom
 
-trait Dist[@sp A] extends Any { self =>
+trait Dist[@sp A] extends Any {
+  self =>
 
   def apply(gen: Generator): A
 
@@ -38,7 +39,8 @@ trait Dist[@sp A] extends Any { self =>
 
   final def filter(pred: A => Boolean): Dist[A] =
     new Dist[A] {
-      @tailrec final def apply(gen: Generator): A = {
+      @tailrec
+      final def apply(gen: Generator): A = {
         val a = self(gen)
         if (pred(a))
           a
@@ -50,7 +52,8 @@ trait Dist[@sp A] extends Any { self =>
   final def given(pred: A => Boolean): Dist[A] = filter(pred)
 
   def until(pred: A => Boolean): Dist[Seq[A]] = {
-    @tailrec def loop(gen: Generator, a: A, buf: ArrayBuffer[A]): Seq[A] = {
+    @tailrec
+    def loop(gen: Generator, a: A, buf: ArrayBuffer[A]): Seq[A] = {
       buf.append(a)
       if (pred(a))
         buf
@@ -61,7 +64,8 @@ trait Dist[@sp A] extends Any { self =>
   }
 
   def foldn[B](init: B, n: Int)(f: (B, A) => B): Dist[B] = {
-    @tailrec def loop(gen: Generator, i: Int, b: B): B =
+    @tailrec
+    def loop(gen: Generator, i: Int, b: B): B =
       if (i == 0)
         b
       else
@@ -70,7 +74,8 @@ trait Dist[@sp A] extends Any { self =>
   }
 
   def unfold[B](init: B)(f: (B, A) => B)(pred: B => Boolean): Dist[B] = {
-    @tailrec def loop(gen: Generator, b: B): B =
+    @tailrec
+    def loop(gen: Generator, b: B): B =
       if (pred(b))
         b
       else
@@ -114,7 +119,8 @@ trait Dist[@sp A] extends Any { self =>
 
   def iterateUntil(pred: A => Boolean, f: A => Dist[A]): Dist[A] =
     new Dist[A] {
-      @tailrec def loop(gen: Generator, a: A): A =
+      @tailrec
+      def loop(gen: Generator, a: A): A =
         if (pred(a))
           a
         else
@@ -150,7 +156,8 @@ trait Dist[@sp A] extends Any { self =>
   }
 
   final def count(pred: A => Boolean, n: Int)(implicit gen: Generator): Int = {
-    @tailrec def loop(num: Int, i: Int): Int =
+    @tailrec
+    def loop(num: Int, i: Int): Int =
       if (i == 0)
         num
       else
@@ -169,7 +176,8 @@ trait Dist[@sp A] extends Any { self =>
     1.0 * count(pred, n) / n
 
   def sum(n: Int)(implicit gen: Generator, alg: Rig[A]): A = {
-    @tailrec def loop(total: A, i: Int): A =
+    @tailrec
+    def loop(total: A, i: Int): A =
       if (i == 0)
         total
       else
@@ -284,7 +292,8 @@ trait DistInnerProductSpace[V, K]
 }
 
 object Dist extends DistInstances8 {
-  @inline final def apply[A](implicit na: Dist[A]): Dist[A] = na
+  @inline
+  final def apply[A](implicit na: Dist[A]): Dist[A] = na
 
   final def apply[A, B](f: A => B)(implicit na: Dist[A]): Dist[B] = na.map(f)
 

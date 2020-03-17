@@ -24,7 +24,8 @@ import util.Concat.Promoter
 /**
   * Vec of Any
   */
-class VecAny[T: ST](values: Array[T]) extends Vec[T] { self =>
+class VecAny[T: ST](values: Array[T]) extends Vec[T] {
+  self =>
   def length = values.length
 
   def scalarTag = implicitly[ST[T]]

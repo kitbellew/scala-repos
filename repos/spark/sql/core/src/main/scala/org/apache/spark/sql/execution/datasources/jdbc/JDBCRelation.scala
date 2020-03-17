@@ -99,7 +99,8 @@ private[sql] case class JDBCRelation(
     table: String,
     parts: Array[Partition],
     properties: Properties = new Properties())(
-    @transient val sqlContext: SQLContext)
+    @transient
+    val sqlContext: SQLContext)
     extends BaseRelation
     with PrunedFilteredScan
     with InsertableRelation {

@@ -707,7 +707,8 @@ private[http] object HttpHeaderParser {
     }
   }
 
-  @tailrec private def scanHeaderNameAndReturnIndexOfColon(
+  @tailrec
+  private def scanHeaderNameAndReturnIndexOfColon(
       input: ByteString,
       start: Int,
       limit: Int)(ix: Int): Int =
@@ -722,7 +723,8 @@ private[http] object HttpHeaderParser {
       fail(
         s"HTTP header name exceeds the configured limit of ${limit - start - 1} characters")
 
-  @tailrec private def scanHeaderValue(
+  @tailrec
+  private def scanHeaderValue(
       hhp: HttpHeaderParser,
       input: ByteString,
       start: Int,

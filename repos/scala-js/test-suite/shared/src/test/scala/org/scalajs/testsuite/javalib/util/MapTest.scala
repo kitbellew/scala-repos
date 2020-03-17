@@ -46,7 +46,8 @@ trait MapTest {
     keySet_should_side_effect_clear_remove_retain_on_the_related_map()
   }
 
-  @Test def should_store_strings(): Unit = {
+  @Test
+  def should_store_strings(): Unit = {
     val mp = factory.empty[String, String]
 
     assertEquals(0, mp.size())
@@ -58,7 +59,8 @@ trait MapTest {
     assertEquals("two", mp.get("TWO"))
   }
 
-  @Test def should_store_integers(): Unit = {
+  @Test
+  def should_store_integers(): Unit = {
     val mp = factory.empty[Int, Int]
 
     mp.put(100, 12345)
@@ -67,7 +69,8 @@ trait MapTest {
     assertEquals(12345, one)
   }
 
-  @Test def should_store_doubles_also_in_corner_cases(): Unit = {
+  @Test
+  def should_store_doubles_also_in_corner_cases(): Unit = {
     val mp = factory.empty[Double, Double]
 
     mp.put(1.2345, 11111.0)
@@ -91,7 +94,8 @@ trait MapTest {
     assertEquals(44444.0, four, 0.0)
   }
 
-  @Test def should_store_custom_objects(): Unit = {
+  @Test
+  def should_store_custom_objects(): Unit = {
     case class TestObj(num: Int)
 
     val mp = factory.empty[TestObj, TestObj]
@@ -102,7 +106,8 @@ trait MapTest {
     assertEquals(12345, one.num)
   }
 
-  @Test def should_remove_stored_elements(): Unit = {
+  @Test
+  def should_remove_stored_elements(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -112,7 +117,8 @@ trait MapTest {
     assertNull(mp.get("ONE"))
   }
 
-  @Test def should_remove_stored_elements_on_double_corner_cases(): Unit = {
+  @Test
+  def should_remove_stored_elements_on_double_corner_cases(): Unit = {
     val mp = factory.empty[Double, String]
 
     mp.put(1.2345, "11111.0")
@@ -145,7 +151,8 @@ trait MapTest {
     assertTrue(mp.isEmpty)
   }
 
-  @Test def should_put_or_fail_on_null_keys(): Unit = {
+  @Test
+  def should_put_or_fail_on_null_keys(): Unit = {
     if (factory.allowsNullKeys) {
       val mp = factory.empty[String, String]
       mp.put(null, "one")
@@ -156,7 +163,8 @@ trait MapTest {
     }
   }
 
-  @Test def should_put_or_fail_on_null_values(): Unit = {
+  @Test
+  def should_put_or_fail_on_null_values(): Unit = {
     if (factory.allowsNullValues) {
       val mp = factory.empty[String, String]
       mp.put("one", null)
@@ -167,7 +175,8 @@ trait MapTest {
     }
   }
 
-  @Test def should_be_cleared_with_one_operation(): Unit = {
+  @Test
+  def should_be_cleared_with_one_operation(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -177,7 +186,8 @@ trait MapTest {
     assertEquals(0, mp.size())
   }
 
-  @Test def should_check_contained_key_presence(): Unit = {
+  @Test
+  def should_check_contained_key_presence(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -189,7 +199,8 @@ trait MapTest {
       expectThrows(classOf[Throwable], mp.containsKey(null))
   }
 
-  @Test def should_check_contained_value_presence(): Unit = {
+  @Test
+  def should_check_contained_value_presence(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -201,7 +212,8 @@ trait MapTest {
       expectThrows(classOf[Throwable], mp.containsValue(null))
   }
 
-  @Test def should_give_proper_Collection_over_values(): Unit = {
+  @Test
+  def should_give_proper_Collection_over_values(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -213,7 +225,8 @@ trait MapTest {
     assertFalse(iter.hasNext)
   }
 
-  @Test def should_give_proper_EntrySet_over_key_values_pairs(): Unit = {
+  @Test
+  def should_give_proper_EntrySet_over_key_values_pairs(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -229,7 +242,8 @@ trait MapTest {
     assertEquals("one", next.getValue)
   }
 
-  @Test def should_give_proper_KeySet_over_keys(): Unit = {
+  @Test
+  def should_give_proper_KeySet_over_keys(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -243,7 +257,8 @@ trait MapTest {
     assertFalse(iter.hasNext)
   }
 
-  @Test def should_put_a_whole_map_into(): Unit = {
+  @Test
+  def should_put_a_whole_map_into(): Unit = {
     val mp = factory.empty[String, String]
 
     val m = mu.Map[String, String]("X" -> "y")
@@ -274,7 +289,8 @@ trait MapTest {
     }
   }
 
-  @Test def values_should_mirror_the_related_map_size(): Unit = {
+  @Test
+  def values_should_mirror_the_related_map_size(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -310,7 +326,8 @@ trait MapTest {
     assertEquals(2, new SimpleQueryableMap(hm4).values.size)
   }
 
-  @Test def values_should_check_single_and_multiple_objects_presence(): Unit = {
+  @Test
+  def values_should_check_single_and_multiple_objects_presence(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -369,7 +386,8 @@ trait MapTest {
     assertTrue(new SimpleQueryableMap(hm3).values.contains(null))
   }
 
-  @Test def values_should_side_effect_clear_remove_retain_on_the_related_map()
+  @Test
+  def values_should_side_effect_clear_remove_retain_on_the_related_map()
       : Unit = {
     val mp = factory.empty[String, String]
 
@@ -422,7 +440,8 @@ trait MapTest {
     assertFalse(mp.containsKey("THREE"))
   }
 
-  @Test def keySet_should_mirror_the_related_map_size(): Unit = {
+  @Test
+  def keySet_should_mirror_the_related_map_size(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -458,7 +477,8 @@ trait MapTest {
     assertEquals(2, new SimpleQueryableMap(hm4).keySet.size)
   }
 
-  @Test def keySet_should_check_single_and_multiple_objects_presence(): Unit = {
+  @Test
+  def keySet_should_check_single_and_multiple_objects_presence(): Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -517,7 +537,8 @@ trait MapTest {
     assertTrue(new SimpleQueryableMap(hm3).keySet.contains(null))
   }
 
-  @Test def keySet_should_side_effect_clear_remove_retain_on_the_related_map()
+  @Test
+  def keySet_should_side_effect_clear_remove_retain_on_the_related_map()
       : Unit = {
     val mp = factory.empty[String, String]
 

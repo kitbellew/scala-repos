@@ -206,7 +206,8 @@ package api
   *  @contentDiagram hideNodes "*Api"
   *  @group ReflectionAPI
   */
-trait Mirrors { self: Universe =>
+trait Mirrors {
+  self: Universe =>
 
   /** The base type of all mirrors of this universe.
     *
@@ -488,7 +489,8 @@ trait Mirrors { self: Universe =>
     *  See [[scala.reflect.api.package the overview page]] for details on how to use runtime reflection.
     *  @group Mirrors
     */
-  trait RuntimeMirror extends ReflectiveMirror { self =>
+  trait RuntimeMirror extends ReflectiveMirror {
+    self =>
 
     /** Maps a Scala type to the corresponding Java class object */
     def runtimeClass(tpe: Type): RuntimeClass

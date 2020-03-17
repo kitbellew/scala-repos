@@ -50,5 +50,6 @@ trait Field[@sp(Byte, Short, Int, Long, Float, Double) A]
 }
 
 object Field {
-  @inline final def apply[A](implicit f: Field[A]): Field[A] = f
+  @inline
+  final def apply[A](implicit f: Field[A]): Field[A] = f
 }

@@ -6,7 +6,8 @@ object SCL5029 {
     }
     type @@[T, U] = T with Tagged[U] with Object
 
-    @inline def apply[A, T](a: A): A @@ T = a.asInstanceOf[A @@ T]
+    @inline
+    def apply[A, T](a: A): A @@ T = a.asInstanceOf[A @@ T]
   }
 
   class Foo

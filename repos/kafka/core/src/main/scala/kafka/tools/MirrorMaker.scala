@@ -91,7 +91,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
   private var messageHandler: MirrorMakerMessageHandler = null
   private var offsetCommitIntervalMs = 0
   private var abortOnSendFailure: Boolean = true
-  @volatile private var exitingOnSendFailure: Boolean = false
+  @volatile
+  private var exitingOnSendFailure: Boolean = false
 
   // If a message send failed after retries are exhausted. The offset of the messages will also be removed from
   // the unacked offset list to avoid offset commit being stuck on that offset. In this case, the offset of that
@@ -506,7 +507,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     private val threadName = "mirrormaker-thread-" + threadId
     private val shutdownLatch: CountDownLatch = new CountDownLatch(1)
     private var lastOffsetCommitMs = System.currentTimeMillis()
-    @volatile private var shuttingDown: Boolean = false
+    @volatile
+    private var shuttingDown: Boolean = false
     this.logIdent = "[%s] ".format(threadName)
 
     setName(threadName)

@@ -7,7 +7,8 @@ import spire.syntax.field._
 import spire.syntax.eq._
 
 // Univariate polynomial term
-case class Term[@sp(Float, Double) C](coeff: C, exp: Int) { lhs =>
+case class Term[@sp(Float, Double) C](coeff: C, exp: Int) {
+  lhs =>
 
   def unary_-(implicit r: Rng[C]): Term[C] = Term(-coeff, exp)
 

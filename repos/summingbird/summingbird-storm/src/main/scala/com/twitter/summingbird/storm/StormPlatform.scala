@@ -147,7 +147,8 @@ abstract class Storm(
     transformConfig: SummingbirdConfig => SummingbirdConfig,
     passedRegistrars: List[IKryoRegistrar])
     extends Platform[Storm] {
-  @transient private val logger = LoggerFactory.getLogger(classOf[Storm])
+  @transient
+  private val logger = LoggerFactory.getLogger(classOf[Storm])
 
   type Source[+T] = StormSource[T]
   type Store[-K, V] = MergeableStoreFactory[(K, BatchID), V]

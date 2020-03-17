@@ -50,7 +50,8 @@ private[summingbird] case class KeyValueShards(get: Int) {
 }
 
 class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
-    @transient flatMapOp: FlatMapOperation[Event, (Key, Value)],
+    @transient
+    flatMapOp: FlatMapOperation[Event, (Key, Value)],
     summerBuilder: SummerBuilder,
     maxWaitingFutures: MaxWaitingFutures,
     maxWaitingTime: MaxFutureWaitTime,
@@ -77,7 +78,8 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
     implicitly[Semigroup[(Seq[S], Value)]])
 
   // Lazy transient as const futures are not serializable
-  @transient private[this] lazy val noData = List((List(), Future.value(Nil)))
+  @transient
+  private[this] lazy val noData = List((List(), Future.value(Nil)))
 
   private def formatResult(outData: Map[Key, (Seq[S], Value)])
       : TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])] = {

@@ -172,19 +172,23 @@ private[akka] class RemoteActorRefProvider(
   override def tempPath(): ActorPath = local.tempPath()
   override def tempContainer: VirtualPathContainer = local.tempContainer
 
-  @volatile private var _internals: Internals = _
+  @volatile
+  private var _internals: Internals = _
 
   def transport: RemoteTransport = _internals.transport
   def serialization: Serialization = _internals.serialization
   def remoteDaemon: InternalActorRef = _internals.remoteDaemon
 
   // This actor ensures the ordering of shutdown between remoteDaemon and the transport
-  @volatile private var remotingTerminator: ActorRef = _
+  @volatile
+  private var remotingTerminator: ActorRef = _
 
-  @volatile private var _remoteWatcher: ActorRef = _
+  @volatile
+  private var _remoteWatcher: ActorRef = _
   private[akka] def remoteWatcher = _remoteWatcher
 
-  @volatile private var remoteDeploymentWatcher: ActorRef = _
+  @volatile
+  private var remoteDeploymentWatcher: ActorRef = _
 
   def init(system: ActorSystemImpl): Unit = {
     local.init(system)

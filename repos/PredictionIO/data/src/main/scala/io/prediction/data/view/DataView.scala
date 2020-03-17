@@ -64,7 +64,8 @@ object DataView {
       name: String = "",
       version: String = "")(sqlContext: SQLContext): DataFrame = {
 
-    @transient lazy val logger = Logger[this.type]
+    @transient
+    lazy val logger = Logger[this.type]
 
     val sc = sqlContext.sparkContext
 

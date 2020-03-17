@@ -6,7 +6,8 @@ import org.junit.Assert._
 /** Test case for the SQL schema support in table definitions */
 class SchemaSupportTest {
 
-  @Test def testSchemaSupport {
+  @Test
+  def testSchemaSupport {
     import slick.jdbc.H2Profile.api._
 
     class T(tag: Tag) extends Table[Int](tag, Some("myschema"), "mytable") {

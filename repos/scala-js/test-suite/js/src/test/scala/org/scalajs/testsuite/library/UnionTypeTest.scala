@@ -25,7 +25,8 @@ class UnionTypeTest {
 
   // js.| (postive)
 
-  @Test def left_and_right(): Unit = {
+  @Test
+  def left_and_right(): Unit = {
     val x1: Int | String = 4
     assertEquals(4, x1)
 
@@ -33,7 +34,8 @@ class UnionTypeTest {
     assertEquals("hello", x2)
   }
 
-  @Test def left_and_right_with_subtyping(): Unit = {
+  @Test
+  def left_and_right_with_subtyping(): Unit = {
     val list = List(1, 2, 3)
 
     val x1: Seq[Int] | CharSequence = list
@@ -44,7 +46,8 @@ class UnionTypeTest {
     assertEquals("hello", x2)
   }
 
-  @Test def three_types(): Unit = {
+  @Test
+  def three_types(): Unit = {
     val x1: Int | String | Boolean = 3
     assertEquals(3, x1)
 
@@ -55,24 +58,28 @@ class UnionTypeTest {
     assertEquals(false, x3)
   }
 
-  @Test def upcast(): Unit = {
+  @Test
+  def upcast(): Unit = {
     val x1: List[Int] | String = "hello"
     val x2: Seq[Int] | CharSequence = x1
     assertEquals("hello", x2)
   }
 
-  @Test def int_as_Double(): Unit = {
+  @Test
+  def int_as_Double(): Unit = {
     val x1: Double | String = 3
     assertEquals(3, x1)
   }
 
-  @Test def swap_base_types(): Unit = {
+  @Test
+  def swap_base_types(): Unit = {
     val x1: Int | String = 3
     val x2: String | Int = x1
     assertEquals(3, x2)
   }
 
-  @Test def permutations_for_3_base_types(): Unit = {
+  @Test
+  def permutations_for_3_base_types(): Unit = {
     val x: Int | String | Boolean = 3
 
     val x1: Int | Boolean | String = x
@@ -88,7 +95,8 @@ class UnionTypeTest {
     assertEquals(3, x5)
   }
 
-  @Test def permutations_of_2_base_types_to_3_base_types(): Unit = {
+  @Test
+  def permutations_of_2_base_types_to_3_base_types(): Unit = {
     val x1: Int | String = 3
     val x2: Int | Boolean = false
     val x3: Boolean | String = "hello"
@@ -102,7 +110,8 @@ class UnionTypeTest {
     assertEquals("hello", y3)
   }
 
-  @Test def partial_upper_bound(): Unit = {
+  @Test
+  def partial_upper_bound(): Unit = {
     val x: Int | String | Boolean = "hello"
 
     val x1: AnyVal | String = x
@@ -116,7 +125,8 @@ class UnionTypeTest {
    */
   }
 
-  @Test def merge(): Unit = {
+  @Test
+  def merge(): Unit = {
     val x1: Int | Boolean = 4
     val y1: AnyVal = x1.merge
     assertEquals(4, y1.asInstanceOf[js.Any])
@@ -134,7 +144,8 @@ class UnionTypeTest {
     assertEquals(Seq(3, 5), y4)
   }
 
-  @Test def js_UndefOr_A_or_B_inference(): Unit = {
+  @Test
+  def js_UndefOr_A_or_B_inference(): Unit = {
     val a: String = "hello"
 
     assertEquals(a, a: Int | String)
@@ -190,28 +201,34 @@ class UnionTypeTest {
    * not test them.
    */
 
-  @Test def neither_left_nor_right(): Unit = {
+  @Test
+  def neither_left_nor_right(): Unit = {
     typeError("3: Boolean | String")
   }
 
-  @Test def none_of_three_types(): Unit = {
+  @Test
+  def none_of_three_types(): Unit = {
     typeError("3: Boolean | String | List[Int]")
   }
 
-  @Test def wrong_type_parameter_on_left_or_right(): Unit = {
+  @Test
+  def wrong_type_parameter_on_left_or_right(): Unit = {
     typeError("List(1, 2): List[String] | String")
     typeError("List(1, 2): String | List[String]")
   }
 
-  @Test def left_of_OR_type_is_not_a_subtype_of_rhs(): Unit = {
+  @Test
+  def left_of_OR_type_is_not_a_subtype_of_rhs(): Unit = {
     typeError("(1: Int | List[String]): String | List[String]")
   }
 
-  @Test def right_of_OR_type_is_not_a_subtype_of_rhs(): Unit = {
+  @Test
+  def right_of_OR_type_is_not_a_subtype_of_rhs(): Unit = {
     typeError("(1: Int | List[String]): String | Int")
   }
 
-  @Test def merge_with_an_incorrect_subtype(): Unit = {
+  @Test
+  def merge_with_an_incorrect_subtype(): Unit = {
     typeError("(List(1, 2): List[Int] | Set[Int]).merge: Seq[Int]")
   }
 }

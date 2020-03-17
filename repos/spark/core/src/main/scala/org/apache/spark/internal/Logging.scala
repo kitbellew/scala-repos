@@ -32,7 +32,8 @@ private[spark] trait Logging {
 
   // Make the log field transient so that objects with Logging can
   // be serialized and used on another machine
-  @transient private var log_ : Logger = null
+  @transient
+  private var log_ : Logger = null
 
   // Method to get the logger name for this object
   protected def logName = {
@@ -163,7 +164,8 @@ private[spark] trait Logging {
 }
 
 private object Logging {
-  @volatile private var initialized = false
+  @volatile
+  private var initialized = false
   val initLock = new Object()
   try {
     // We use reflection here to handle the case where users remove the

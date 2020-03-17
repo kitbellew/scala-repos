@@ -48,7 +48,8 @@ abstract class RefactoringEnvironment(file: String, start: Int, end: Int) {
   }
 }
 
-trait RefactoringHandler { self: Analyzer =>
+trait RefactoringHandler {
+  self: Analyzer =>
 
   private var effects = Map.empty[Int, RefactorEffect]
 
@@ -146,7 +147,8 @@ trait RefactoringHandler { self: Analyzer =>
 
 }
 
-trait RefactoringControl { self: RichCompilerControl with RefactoringImpl =>
+trait RefactoringControl {
+  self: RichCompilerControl with RefactoringImpl =>
 
   def askPrepareRefactor(
       procId: Int,
@@ -173,7 +175,8 @@ trait RefactoringControl { self: RichCompilerControl with RefactoringImpl =>
 
 }
 
-trait RefactoringImpl { self: RichPresentationCompiler =>
+trait RefactoringImpl {
+  self: RichPresentationCompiler =>
 
   import org.ensime.util.FileUtils._
 

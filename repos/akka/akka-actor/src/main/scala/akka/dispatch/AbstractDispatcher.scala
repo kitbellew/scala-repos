@@ -57,7 +57,8 @@ final case class TaskInvocation(
 /**
   * INTERNAL API
   */
-private[akka] trait LoadMetrics { self: Executor ⇒
+private[akka] trait LoadMetrics {
+  self: Executor ⇒
   def atFullThrottle(): Boolean
 }
 
@@ -118,9 +119,10 @@ abstract class MessageDispatcher(
   val mailboxes = prerequisites.mailboxes
   val eventStream = prerequisites.eventStream
 
-  @volatile private[this] var _inhabitantsDoNotCallMeDirectly: Long =
-    _ // DO NOT TOUCH!
-  @volatile private[this] var _shutdownScheduleDoNotCallMeDirectly: Int =
+  @volatile
+  private[this] var _inhabitantsDoNotCallMeDirectly: Long = _ // DO NOT TOUCH!
+  @volatile
+  private[this] var _shutdownScheduleDoNotCallMeDirectly: Int =
     _ // DO NOT TOUCH!
 
   private final def addInhabitants(add: Long): Long = {
@@ -349,7 +351,8 @@ abstract class MessageDispatcher(
   /**
     * INTERNAL API
     */
-  @inline protected[akka] final val isThroughputDeadlineTimeDefined =
+  @inline
+  protected[akka] final val isThroughputDeadlineTimeDefined =
     throughputDeadlineTime.toMillis > 0
 
   /**

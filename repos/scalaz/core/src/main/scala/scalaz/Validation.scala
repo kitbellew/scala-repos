@@ -419,7 +419,8 @@ object Validation extends ValidationInstances {
 
   /** Import this if you wish to use `flatMap` */
   object FlatMap {
-    @inline implicit def ValidationFlatMapRequested[E, A](
+    @inline
+    implicit def ValidationFlatMapRequested[E, A](
         d: Validation[E, A]): ValidationFlatMap[E, A] = new ValidationFlatMap(d)
   }
 

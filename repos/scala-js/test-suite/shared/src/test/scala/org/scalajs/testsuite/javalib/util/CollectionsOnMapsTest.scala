@@ -11,7 +11,8 @@ trait CollectionsOnMapsTest extends CollectionsTestBase {
 
   def factory: MapFactory
 
-  @Test def unmodifiableMap(): Unit = {
+  @Test
+  def unmodifiableMap(): Unit = {
     def test[K: ClassTag, V: ClassTag](
         toKey: Int => K,
         toValue: Int => V): Unit = {
@@ -38,7 +39,8 @@ trait CollectionsOnMapsTest extends CollectionsTestBase {
 trait CollectionsOnSortedMapsTest extends CollectionsOnMapsTest {
   def factory: SortedMapFactory
 
-  @Test def unmodifiableSortedMap(): Unit = {
+  @Test
+  def unmodifiableSortedMap(): Unit = {
     def test[K: ClassTag, V: ClassTag](
         toKey: Int => K,
         toValue: Int => V): Unit = {

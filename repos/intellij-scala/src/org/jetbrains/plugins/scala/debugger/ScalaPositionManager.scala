@@ -76,7 +76,9 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
   ScalaPositionManager.cacheInstance(this)
 
   @Nullable
-  def getSourcePosition(@Nullable location: Location): SourcePosition = {
+  def getSourcePosition(
+      @Nullable
+      location: Location): SourcePosition = {
     if (shouldSkip(location))
       return null
 
@@ -101,7 +103,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
 
   @NotNull
   def getAllClasses(
-      @NotNull position: SourcePosition): util.List[ReferenceType] = {
+      @NotNull
+      position: SourcePosition): util.List[ReferenceType] = {
 
     val file = position.getFile
     throwIfNotScalaFile(file)
@@ -180,8 +183,10 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
 
   @NotNull
   def locationsOfLine(
-      @NotNull refType: ReferenceType,
-      @NotNull position: SourcePosition): util.List[Location] = {
+      @NotNull
+      refType: ReferenceType,
+      @NotNull
+      position: SourcePosition): util.List[Location] = {
 
     throwIfNotScalaFile(position.getFile)
     checkForIndyLambdas(refType)
@@ -195,8 +200,10 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
   }
 
   def createPrepareRequest(
-      @NotNull requestor: ClassPrepareRequestor,
-      @NotNull position: SourcePosition): ClassPrepareRequest = {
+      @NotNull
+      requestor: ClassPrepareRequestor,
+      @NotNull
+      position: SourcePosition): ClassPrepareRequest = {
     throw new IllegalStateException(
       "This class implements MultiRequestPositionManager, corresponding createPrepareRequests version should be used")
   }
@@ -308,13 +315,15 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
 
   @Nullable
   private def findReferenceTypeSourceImage(
-      @NotNull position: SourcePosition): PsiElement = {
+      @NotNull
+      position: SourcePosition): PsiElement = {
     val element = nonWhitespaceElement(position)
     findGeneratingClassOrMethodParent(element)
   }
 
   protected def nonWhitespaceElement(
-      @NotNull position: SourcePosition): PsiElement = {
+      @NotNull
+      position: SourcePosition): PsiElement = {
     val file = position.getFile
     @tailrec
     def nonWhitespaceInner(

@@ -408,7 +408,8 @@ class FailureReasonsCollector extends StreamingListener {
   */
 class StreamingContextStoppingCollector(val ssc: StreamingContext)
     extends StreamingListener {
-  @volatile var sparkExSeen = false
+  @volatile
+  var sparkExSeen = false
 
   private var isFirstBatch = true
 

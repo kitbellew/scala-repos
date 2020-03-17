@@ -7,7 +7,8 @@ import com.twitter.util.Future
 import org.jboss.netty.buffer.ChannelBuffer
 import util.ReplyFormat
 
-trait BtreeSortedSetCommands { self: BaseClient =>
+trait BtreeSortedSetCommands {
+  self: BaseClient =>
 
   /**
     * Deletes fields from the given btree sorted set key

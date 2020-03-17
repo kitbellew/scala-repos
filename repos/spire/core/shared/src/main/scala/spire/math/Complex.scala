@@ -120,7 +120,8 @@ object Complex extends ComplexInstances {
 final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     extends ScalaNumber
     with ScalaNumericConversions
-    with Serializable { lhs =>
+    with Serializable {
+  lhs =>
 
   import spire.syntax.order._
 
@@ -574,16 +575,20 @@ object FastComplex {
     encode(real.toFloat, imag.toFloat)
 
   // encode a float as some bits
-  @inline final def bits(n: Float): Int = java.lang.Float.floatToIntBits(n)
+  @inline
+  final def bits(n: Float): Int = java.lang.Float.floatToIntBits(n)
 
   // decode some bits into a float
-  @inline final def bits(n: Int): Float = java.lang.Float.intBitsToFloat(n)
+  @inline
+  final def bits(n: Int): Float = java.lang.Float.intBitsToFloat(n)
 
   // get the real part of the complex number
-  @inline final def real(d: Long): Float = bits((d & 0xffffffff).toInt)
+  @inline
+  final def real(d: Long): Float = bits((d & 0xffffffff).toInt)
 
   // get the imaginary part of the complex number
-  @inline final def imag(d: Long): Float = bits((d >>> 32).toInt)
+  @inline
+  final def imag(d: Long): Float = bits((d >>> 32).toInt)
 
   // define some handy constants
   final val i: Long = encode(0.0f, 1.0f)
@@ -591,11 +596,13 @@ object FastComplex {
   final val zero: Long = encode(0.0f, 0.0f)
 
   // encode two floats representing a complex number
-  @inline final def encode(real: Float, imag: Float): Long =
+  @inline
+  final def encode(real: Float, imag: Float): Long =
     (bits(real) & 0xFFFFFFFFL) | ((bits(imag) & 0xFFFFFFFFL) << 32)
 
   // encode two floats representing a complex number in polar form
-  @inline final def polar(magnitude: Float, angle: Float): Long =
+  @inline
+  final def polar(magnitude: Float, angle: Float): Long =
     encode(magnitude * cos(angle).toFloat, magnitude * sin(angle).toFloat)
 
   // decode should be avoided in fast code because it allocates a Tuple2.
@@ -760,7 +767,8 @@ private[math] trait ComplexIsField[@sp(Float, Double) A]
   override def quotmod(a: Complex[A], b: Complex[A]): (Complex[A], Complex[A]) =
     a /% b
   def gcd(a: Complex[A], b: Complex[A]): Complex[A] = {
-    @tailrec def _gcd(a: Complex[A], b: Complex[A]): Complex[A] =
+    @tailrec
+    def _gcd(a: Complex[A], b: Complex[A]): Complex[A] =
       if (b.isZero)
         a
       else

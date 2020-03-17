@@ -31,7 +31,8 @@ object AsyncExecutor extends Logging {
       // Before init: 0, during init: 1, after init: 2, during/after shutdown: 3
       private[this] val state = new AtomicInteger(0)
 
-      @volatile private[this] var executor: ThreadPoolExecutor = _
+      @volatile
+      private[this] var executor: ThreadPoolExecutor = _
 
       lazy val executionContext = {
         if (!state.compareAndSet(0, 1))

@@ -112,7 +112,8 @@ trait LowPriorityImplicitConversions extends LowestPriorityImplicitConversions {
 
 }
 
-trait BigDecimalImplicitConversions { self: DefaultImplicitConversions =>
+trait BigDecimalImplicitConversions {
+  self: DefaultImplicitConversions =>
   implicit val stringToBigDecimal: TypeConverter[String, BigDecimal] = safe(
     BigDecimal(_))
   implicit val stringToSeqBigDecimal: TypeConverter[String, Seq[BigDecimal]] =

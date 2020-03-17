@@ -95,7 +95,8 @@ object WorksheetSourceProcessor {
     val importStmts = mutable.ArrayBuffer[String]()
     val importsProcessed = mutable.HashSet[ScImportStmt]()
 
-    @inline def withCompilerVersion[T](if210: => T, if211: => T, dflt: => T) =
+    @inline
+    def withCompilerVersion[T](if210: => T, if211: => T, dflt: => T) =
       Option(RunWorksheetAction getModuleFor srcFile) flatMap {
         case module =>
           module.scalaSdk.flatMap(_.compilerVersion).collect {
@@ -132,9 +133,11 @@ object WorksheetSourceProcessor {
     val eraseClassName = ".replace(\"" + instanceName + ".\", \"\")"
     val erasePrefixName = ".stripPrefix(\"" + name + "$" + name + "$\")"
 
-    @inline def countNls(str: String) = str.count(_ == '\n')
+    @inline
+    def countNls(str: String) = str.count(_ == '\n')
 
-    @inline def insertNlsFromWs(psi: PsiElement) =
+    @inline
+    def insertNlsFromWs(psi: PsiElement) =
       psi.getNextSibling match {
         case ws: PsiWhiteSpace =>
           val c = countNls(ws.getText)
@@ -145,7 +148,8 @@ object WorksheetSourceProcessor {
         case _ => ";"
       }
 
-    @inline def psiToLineNumbers(psi: PsiElement): Option[String] =
+    @inline
+    def psiToLineNumbers(psi: PsiElement): Option[String] =
       ifDocument map {
         case document =>
           var actualPsi = psi
@@ -178,15 +182,15 @@ object WorksheetSourceProcessor {
           s"${document getLineNumber start}|${document getLineNumber end}"
       }
 
-    @inline def appendPsiLineInfo(
-        psi: PsiElement,
-        numberStr: Option[String] = None) {
+    @inline
+    def appendPsiLineInfo(psi: PsiElement, numberStr: Option[String] = None) {
       val lineNumbers = numberStr getOrElse psiToLineNumbers(psi)
 
       objectRes append printMethodName append "(\"" append END_TOKEN_MARKER append lineNumbers append "\")\n"
     }
 
-    @inline def appendDeclaration(psi: ScalaPsiElement) {
+    @inline
+    def appendDeclaration(psi: ScalaPsiElement) {
       val txt =
         psi match {
           case valDef: ScPatternDefinition
@@ -198,7 +202,8 @@ object WorksheetSourceProcessor {
       classRes append txt append insertNlsFromWs(psi)
     }
 
-    @inline def appendPsiComment(comment: PsiComment) {
+    @inline
+    def appendPsiComment(comment: PsiComment) {
       val range = comment.getTextRange
       val backOffset =
         comment.getPrevSibling match {
@@ -237,29 +242,32 @@ object WorksheetSourceProcessor {
       classRes append insertNlsFromWs(comment).stripPrefix("\n")
     }
 
-    @inline def appendPsiWhitespace(ws: PsiWhiteSpace) {
+    @inline
+    def appendPsiWhitespace(ws: PsiWhiteSpace) {
       val count = countNls(ws.getText)
       for (_ <- 1 until count)
         objectRes append printMethodName append "()\n"
     }
 
-    @inline def appendAll(
-        psi: ScalaPsiElement,
-        numberStr: Option[String] = None) {
+    @inline
+    def appendAll(psi: ScalaPsiElement, numberStr: Option[String] = None) {
       appendDeclaration(psi)
       appendPsiLineInfo(psi, numberStr)
     }
 
-    @inline def withPrint(text: String) =
+    @inline
+    def withPrint(text: String) =
       printMethodName + "(\"" + startText + text + "\")\n"
 
-    @inline def withPrecomputeLines(psi: ScalaPsiElement, body: => Unit) {
+    @inline
+    def withPrecomputeLines(psi: ScalaPsiElement, body: => Unit) {
       val lineNum = psiToLineNumbers(psi)
       body
       appendAll(psi, lineNum)
     }
 
-    @inline def processImport(imp: ScImportStmt): Unit = {
+    @inline
+    def processImport(imp: ScImportStmt): Unit = {
       if (importsProcessed contains imp)
         return
 
@@ -273,7 +281,8 @@ object WorksheetSourceProcessor {
       importsProcessed += imp
     }
 
-    @inline def variableInstanceName(name: String) =
+    @inline
+    def variableInstanceName(name: String) =
       if (name startsWith "`")
         s"`get$$$$instance$$$$${name.stripPrefix("`")}"
       else

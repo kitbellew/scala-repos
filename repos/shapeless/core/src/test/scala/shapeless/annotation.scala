@@ -30,16 +30,21 @@ object AnnotationTestsDefinitions {
 
   case class Unused() extends saAnnotation
 
-  @Other case class CC(
-      @First i: Int,
+  @Other
+  case class CC(
+      @First
+      i: Int,
       s: String,
       @Second(2, "b") ob: Option[Boolean])
 
-  @Last(true) trait Something
+  @Last(true)
+  trait Something
 
   sealed trait Base
-  @First case class BaseI(i: Int) extends Base
-  @Second(3, "e") case class BaseS(s: String) extends Base
+  @First
+  case class BaseI(i: Int) extends Base
+  @Second(3, "e")
+  case class BaseS(s: String) extends Base
 
   trait Dummy
 

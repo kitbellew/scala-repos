@@ -382,10 +382,14 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
   */
 class FakeReceiver(sendData: Boolean = false)
     extends Receiver[Int](StorageLevel.MEMORY_ONLY) {
-  @volatile var otherThread: Thread = null
-  @volatile var receiving = false
-  @volatile var onStartCalled = false
-  @volatile var onStopCalled = false
+  @volatile
+  var otherThread: Thread = null
+  @volatile
+  var receiving = false
+  @volatile
+  var onStartCalled = false
+  @volatile
+  var onStopCalled = false
 
   def onStart() {
     otherThread = new Thread() {

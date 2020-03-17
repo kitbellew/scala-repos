@@ -4,7 +4,8 @@ package internal
 
 import scala.language.implicitConversions
 
-trait FlagSets extends api.FlagSets { self: SymbolTable =>
+trait FlagSets extends api.FlagSets {
+  self: SymbolTable =>
 
   type FlagSet = Long
   implicit val FlagSetTag = ClassTag[FlagSet](classOf[FlagSet])

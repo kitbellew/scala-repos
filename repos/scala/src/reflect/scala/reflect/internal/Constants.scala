@@ -224,7 +224,8 @@ trait Constants extends api.Constants {
       else
         value.toString()
 
-    @switch def escapedChar(ch: Char): String =
+    @switch
+    def escapedChar(ch: Char): String =
       ch match {
         case '\b' => "\\b"
         case '\t' => "\\t"

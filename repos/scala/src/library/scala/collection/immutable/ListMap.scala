@@ -167,7 +167,8 @@ class ListMap[A, +B]
     override def size: Int = size0(this, 0)
 
     // to allow tail recursion and prevent stack overflows
-    @tailrec private def size0(cur: ListMap[A, B1], acc: Int): Int =
+    @tailrec
+    private def size0(cur: ListMap[A, B1], acc: Int): Int =
       if (cur.isEmpty)
         acc
       else
@@ -188,7 +189,8 @@ class ListMap[A, +B]
       */
     override def apply(k: A): B1 = apply0(this, k)
 
-    @tailrec private def apply0(cur: ListMap[A, B1], k: A): B1 =
+    @tailrec
+    private def apply0(cur: ListMap[A, B1], k: A): B1 =
       if (cur.isEmpty)
         throw new NoSuchElementException("key not found: " + k)
       else if (k == cur.key)
@@ -204,7 +206,8 @@ class ListMap[A, +B]
       */
     override def get(k: A): Option[B1] = get0(this, k)
 
-    @tailrec private def get0(cur: ListMap[A, B1], k: A): Option[B1] =
+    @tailrec
+    private def get0(cur: ListMap[A, B1], k: A): Option[B1] =
       if (k == cur.key)
         Some(cur.value)
       else if (cur.next.nonEmpty)
@@ -214,7 +217,8 @@ class ListMap[A, +B]
 
     override def contains(key: A): Boolean = contains0(this, key)
 
-    @tailrec private def contains0(cur: ListMap[A, B1], k: A): Boolean =
+    @tailrec
+    private def contains0(cur: ListMap[A, B1], k: A): Boolean =
       if (k == cur.key)
         true
       else if (cur.next.nonEmpty)
@@ -237,7 +241,8 @@ class ListMap[A, +B]
       */
     override def -(k: A): ListMap[A, B1] = remove0(k, this, Nil)
 
-    @tailrec private def remove0(
+    @tailrec
+    private def remove0(
         k: A,
         cur: ListMap[A, B1],
         acc: List[ListMap[A, B1]]): ListMap[A, B1] =

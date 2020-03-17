@@ -4,7 +4,8 @@ package iteratee
 import Iteratee._
 import Ordering._
 
-trait EnumerateeT[O, I, F[_]] { self =>
+trait EnumerateeT[O, I, F[_]] {
+  self =>
   def apply[A]: StepT[I, F, A] => IterateeT[O, F, StepT[I, F, A]]
 
   def run(enum: EnumeratorT[O, F])(implicit M: Monad[F]): EnumeratorT[I, F] = {

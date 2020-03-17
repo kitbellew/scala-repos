@@ -45,5 +45,6 @@ trait GroupoidLowPriority {
 }
 
 object Groupoid extends GroupoidLowPriority {
-  @inline final def apply[A](implicit g: Groupoid[A]): Groupoid[A] = g
+  @inline
+  final def apply[A](implicit g: Groupoid[A]): Groupoid[A] = g
 }

@@ -56,7 +56,8 @@ import scalaz.std.iterable._
 
 import java.nio.CharBuffer
 
-trait Slice { source =>
+trait Slice {
+  source =>
   import Slice._
   import TableModule._
 
@@ -1893,7 +1894,8 @@ trait Slice { source =>
   }
 
   def toJsonElements: Vector[JValue] = {
-    @tailrec def rec(i: Int, acc: Vector[JValue]): Vector[JValue] = {
+    @tailrec
+    def rec(i: Int, acc: Vector[JValue]): Vector[JValue] = {
       if (i < source.size) {
         toJValue(i) match {
           case JUndefined => rec(i + 1, acc)
@@ -2054,7 +2056,8 @@ object Slice {
   def fromRValues(values: Stream[RValue]): Slice = {
     val sliceSize = values.size
 
-    @tailrec def buildColArrays(
+    @tailrec
+    def buildColArrays(
         from: Stream[RValue],
         into: Map[ColumnRef, ArrayColumn[_]],
         sliceIndex: Int): (Map[ColumnRef, ArrayColumn[_]], Int) = {

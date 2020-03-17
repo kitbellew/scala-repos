@@ -18,8 +18,8 @@ import scala.language.implicitConversions
   *  of making mistakes.
   */
 object DynamicImplicits {
-  @inline implicit def truthValue(x: Dynamic): Boolean =
-    (!(!x)).asInstanceOf[Boolean]
+  @inline
+  implicit def truthValue(x: Dynamic): Boolean = (!(!x)).asInstanceOf[Boolean]
 
   // Useful for Scala 2.10
   implicit def number2dynamic(x: Int): Dynamic = x.asInstanceOf[Dynamic]

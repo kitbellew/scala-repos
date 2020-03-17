@@ -7,7 +7,8 @@ import org.junit.runners.JUnit4
 
 @RunWith(classOf[JUnit4])
 class MirrorsTest {
-  @Test def rootCompanionsAreConnected(): Unit = {
+  @Test
+  def rootCompanionsAreConnected(): Unit = {
     val cm = scala.reflect.runtime.currentMirror
     import cm._
     assertEquals(

@@ -34,8 +34,10 @@ import org.apache.spark.util.Utils
   * CoGroupPartition, if rdd and splitIndex aren't transient, they'll be included twice in the
   * task closure. */
 private[spark] case class NarrowCoGroupSplitDep(
-    @transient rdd: RDD[_],
-    @transient splitIndex: Int,
+    @transient
+    rdd: RDD[_],
+    @transient
+    splitIndex: Int,
     var split: Partition)
     extends Serializable {
 
@@ -78,7 +80,8 @@ private[spark] class CoGroupPartition(
   */
 @DeveloperApi
 class CoGroupedRDD[K: ClassTag](
-    @transient var rdds: Seq[RDD[_ <: Product2[K, _]]],
+    @transient
+    var rdds: Seq[RDD[_ <: Product2[K, _]]],
     part: Partitioner)
     extends RDD[(K, Array[Iterable[_]])](rdds.head.context, Nil) {
 

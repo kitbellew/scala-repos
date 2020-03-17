@@ -12,7 +12,8 @@ class DatabaseUrlDataSource extends DriverDataSource(null) {
     "^mysql://([a-zA-Z0-9_]+):([^@]+)@([^/]+)/([^\\s]+)$".r
   private val MysqlCustomProperties = ".*\\?(.*)".r
 
-  @volatile private[this] var initialized = false
+  @volatile
+  private[this] var initialized = false
 
   override def init: Unit =
     if (!initialized) {

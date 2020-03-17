@@ -5,7 +5,8 @@ package scalaz
   * Universally quantified [[scalaz.Semigroup]].
   */
 ////
-trait Plus[F[_]] { self =>
+trait Plus[F[_]] {
+  self =>
   ////
 
   /**The composition of Plus `F` and `G`, `[x]F[G[x]]`, is a Plus */
@@ -42,7 +43,8 @@ trait Plus[F[_]] { self =>
 }
 
 object Plus {
-  @inline def apply[F[_]](implicit F: Plus[F]): Plus[F] = F
+  @inline
+  def apply[F[_]](implicit F: Plus[F]): Plus[F] = F
 
   ////
 

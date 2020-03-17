@@ -18,7 +18,8 @@ import scala.language.higherKinds
   *
   * Note: There is a Java-friendly API for this trait: [[com.twitter.util.AbstractEvent]].
   */
-trait Event[+T] { self =>
+trait Event[+T] {
+  self =>
 
   /**
     * Register the given [[com.twitter.util.Witness Witness]] to
@@ -115,7 +116,8 @@ trait Event[+T] { self =>
   def mergeMap[U](f: T => Event[U]): Event[U] =
     new Event[U] {
       def register(s: Witness[U]): Closable = {
-        @volatile var inners = Nil: List[Closable]
+        @volatile
+        var inners = Nil: List[Closable]
         val outer = self.respond { el =>
           inners.synchronized {
             inners ::= f(el).register(s)
@@ -442,7 +444,8 @@ object Event {
   *
   * Note: There is a Java-friendly API for this trait: [[com.twitter.util.AbstractWitness]].
   */
-trait Witness[-N] { self =>
+trait Witness[-N] {
+  self =>
 
   /**
     * Notify this Witness with the given note.

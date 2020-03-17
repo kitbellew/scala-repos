@@ -198,7 +198,8 @@ object ConcurrentRestrictions {
           "Invalid restriction: adding a node to an idle system must be allowed.")
 
       /** Submits pending tasks that are now allowed to executed. */
-      @tailrec private[this] def submitValid(tried: Queue[Enqueue]): Unit =
+      @tailrec
+      private[this] def submitValid(tried: Queue[Enqueue]): Unit =
         if (pending.isEmpty) {
           if (!tried.isEmpty) {
             if (running == 0)

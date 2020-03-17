@@ -25,8 +25,10 @@ abstract class DBTest {
 
   def runBlocking[T](a: DBIO[T]): Unit = Await.result(db.run(a), Duration.Inf)
 
-  @Before def beforeDBTest = tdb.cleanUpBefore()
-  @After def afterDBTest = {
+  @Before
+  def beforeDBTest = tdb.cleanUpBefore()
+  @After
+  def afterDBTest = {
     if (dbInitialized)
       db.close()
     tdb.cleanUpAfter()
@@ -38,6 +40,7 @@ abstract class DBTestObject(dbs: TestDB*) {
     val s = getClass.getName
     s.substring(0, s.length - 1)
   }
-  @Parameters def parameters =
+  @Parameters
+  def parameters =
     JavaConversions.seqAsJavaList(dbs.filter(_.isEnabled).map(to => Array(to)))
 }

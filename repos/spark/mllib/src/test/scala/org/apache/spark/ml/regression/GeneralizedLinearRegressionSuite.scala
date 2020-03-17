@@ -38,16 +38,26 @@ class GeneralizedLinearRegressionSuite
     with DefaultReadWriteTest {
 
   private val seed: Int = 42
-  @transient var datasetGaussianIdentity: DataFrame = _
-  @transient var datasetGaussianLog: DataFrame = _
-  @transient var datasetGaussianInverse: DataFrame = _
-  @transient var datasetBinomial: DataFrame = _
-  @transient var datasetPoissonLog: DataFrame = _
-  @transient var datasetPoissonIdentity: DataFrame = _
-  @transient var datasetPoissonSqrt: DataFrame = _
-  @transient var datasetGammaInverse: DataFrame = _
-  @transient var datasetGammaIdentity: DataFrame = _
-  @transient var datasetGammaLog: DataFrame = _
+  @transient
+  var datasetGaussianIdentity: DataFrame = _
+  @transient
+  var datasetGaussianLog: DataFrame = _
+  @transient
+  var datasetGaussianInverse: DataFrame = _
+  @transient
+  var datasetBinomial: DataFrame = _
+  @transient
+  var datasetPoissonLog: DataFrame = _
+  @transient
+  var datasetPoissonIdentity: DataFrame = _
+  @transient
+  var datasetPoissonSqrt: DataFrame = _
+  @transient
+  var datasetGammaInverse: DataFrame = _
+  @transient
+  var datasetGammaIdentity: DataFrame = _
+  @transient
+  var datasetGammaLog: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

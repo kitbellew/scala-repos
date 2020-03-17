@@ -66,11 +66,16 @@ class InputOutputMetricsSuite
     with SharedSparkContext
     with BeforeAndAfter {
 
-  @transient var tmpDir: File = _
-  @transient var tmpFile: File = _
-  @transient var tmpFilePath: String = _
-  @transient val numRecords: Int = 100000
-  @transient val numBuckets: Int = 10
+  @transient
+  var tmpDir: File = _
+  @transient
+  var tmpFile: File = _
+  @transient
+  var tmpFilePath: String = _
+  @transient
+  val numRecords: Int = 100000
+  @transient
+  val numBuckets: Int = 10
 
   before {
     tmpDir = Utils.createTempDir()

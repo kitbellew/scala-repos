@@ -105,7 +105,8 @@ private[algebra] class ReversedPartialOrder[@sp A](
 }
 
 object PartialOrder {
-  @inline final def apply[A](implicit po: PartialOrder[A]): PartialOrder[A] = po
+  @inline
+  final def apply[A](implicit po: PartialOrder[A]): PartialOrder[A] = po
 
   def by[@sp A, @sp B](f: A => B)(implicit
       po: PartialOrder[B]): PartialOrder[A] = po.on(f)

@@ -59,7 +59,8 @@ import DefaultBijections._
 trait TestAPIKeyService
     extends BlueEyesServiceSpecification
     with SecurityService
-    with AkkaDefaults { self =>
+    with AkkaDefaults {
+  self =>
 
   val asyncContext = defaultFutureDispatch
   implicit val executionContext = defaultFutureDispatch

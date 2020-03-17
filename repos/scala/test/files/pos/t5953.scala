@@ -1,8 +1,8 @@
 import scala.collection.{mutable, immutable, generic, GenTraversableOnce}
 
 package object foo {
-  @inline implicit class TravOps[A, CC[A] <: GenTraversableOnce[A]](
-      val coll: CC[A])
+  @inline
+  implicit class TravOps[A, CC[A] <: GenTraversableOnce[A]](val coll: CC[A])
       extends AnyVal {
     def build[CC2[X]](implicit
         cbf: generic.CanBuildFrom[Nothing, A, CC2[A]]): CC2[A] = {

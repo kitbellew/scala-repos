@@ -741,7 +741,8 @@ object LocalOptImpls {
   def removeUnusedLocalVariableNodes(method: MethodNode)(
       firstLocalIndex: Int = parametersSize(method),
       renumber: Int => Int = identity): Boolean = {
-    @tailrec def variableIsUsed(
+    @tailrec
+    def variableIsUsed(
         start: AbstractInsnNode,
         end: LabelNode,
         varIndex: Int): Boolean = {

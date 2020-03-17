@@ -7,7 +7,8 @@ import scala.ref.WeakReference
 import scala.reflect.internal.Flags._
 
 // SI-6241: move importers to a mirror
-trait Importers { to: SymbolTable =>
+trait Importers {
+  to: SymbolTable =>
 
   override def mkImporter(from0: api.Universe): Importer {
     val from: from0.type

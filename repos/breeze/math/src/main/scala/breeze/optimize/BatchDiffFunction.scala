@@ -10,7 +10,8 @@ import breeze.linalg.support.CanCopy
   */
 trait BatchDiffFunction[T]
     extends DiffFunction[T]
-    with ((T, IndexedSeq[Int]) => Double) { outer =>
+    with ((T, IndexedSeq[Int]) => Double) {
+  outer =>
 
   /**
     * Calculates the gradient of the function on a subset of the data

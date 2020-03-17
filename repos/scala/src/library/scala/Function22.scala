@@ -36,7 +36,8 @@ trait Function22[
     -T21,
     -T22,
     +R]
-    extends AnyRef { self =>
+    extends AnyRef {
+  self =>
 
   /** Apply the body of this function to the arguments.
     *  @return   the result of function application.
@@ -126,7 +127,6 @@ trait Function22[
     *
     *  @return   a function `f` such that `f((x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22)) == f(Tuple22(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22)) == apply(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22)`
     */
-
   @annotation.unspecialized
   def tupled: Tuple22[
     T1,

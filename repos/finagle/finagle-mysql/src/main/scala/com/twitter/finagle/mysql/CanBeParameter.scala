@@ -2,7 +2,8 @@ package com.twitter.finagle.exp.mysql
 
 import com.twitter.finagle.exp.mysql.transport.{Buffer, BufferWriter}
 
-trait CanBeParameter[-A] { outer =>
+trait CanBeParameter[-A] {
+  outer =>
 
   /**
     * Returns the size of the given parameter in its MySQL binary representation.

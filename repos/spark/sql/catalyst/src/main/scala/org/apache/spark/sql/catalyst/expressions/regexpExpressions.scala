@@ -232,14 +232,19 @@ case class RegExpReplace(
     with ImplicitCastInputTypes {
 
   // last regex in string, we will update the pattern iff regexp value changed.
-  @transient private var lastRegex: UTF8String = _
+  @transient
+  private var lastRegex: UTF8String = _
   // last regex pattern, we cache it for performance concern
-  @transient private var pattern: Pattern = _
+  @transient
+  private var pattern: Pattern = _
   // last replacement string, we don't want to convert a UTF8String => java.langString every time.
-  @transient private var lastReplacement: String = _
-  @transient private var lastReplacementInUTF8: UTF8String = _
+  @transient
+  private var lastReplacement: String = _
+  @transient
+  private var lastReplacementInUTF8: UTF8String = _
   // result buffer write by Matcher
-  @transient private val result: StringBuffer = new StringBuffer
+  @transient
+  private val result: StringBuffer = new StringBuffer
 
   override def nullSafeEval(s: Any, p: Any, r: Any): Any = {
     if (!p.equals(lastRegex)) {
@@ -346,9 +351,11 @@ case class RegExpExtract(
   def this(s: Expression, r: Expression) = this(s, r, Literal(1))
 
   // last regex in string, we will update the pattern iff regexp value changed.
-  @transient private var lastRegex: UTF8String = _
+  @transient
+  private var lastRegex: UTF8String = _
   // last regex pattern, we cache it for performance concern
-  @transient private var pattern: Pattern = _
+  @transient
+  private var pattern: Pattern = _
 
   override def nullSafeEval(s: Any, p: Any, r: Any): Any = {
     if (!p.equals(lastRegex)) {

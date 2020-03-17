@@ -15,7 +15,8 @@ import org.junit.Test
 import org.junit.Assert._
 
 class ByteArrayOutputStreamTest extends CommonStreamsTests {
-  @Test def should_support_simple_write_int(): Unit = {
+  @Test
+  def should_support_simple_write_int(): Unit = {
     val out = new ByteArrayOutputStream()
 
     for (i <- 0 to 9)
@@ -26,7 +27,8 @@ class ByteArrayOutputStreamTest extends CommonStreamsTests {
       out.toByteArray)
   }
 
-  @Test def should_support_simple_write_byte_array(): Unit = {
+  @Test
+  def should_support_simple_write_byte_array(): Unit = {
     val out = new ByteArrayOutputStream()
     val arr = Array[Byte](0, 1, 2, 3, 4, 5)
 
@@ -38,7 +40,8 @@ class ByteArrayOutputStreamTest extends CommonStreamsTests {
       out.toByteArray)
   }
 
-  @Test def should_support_write_byte_array_with_buffer_resize(): Unit = {
+  @Test
+  def should_support_write_byte_array_with_buffer_resize(): Unit = {
     val out = new ByteArrayOutputStream(16)
     val arr = Array[Byte](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
@@ -48,7 +51,8 @@ class ByteArrayOutputStreamTest extends CommonStreamsTests {
     assertArrayEquals(arr ++ arr, out.toByteArray)
   }
 
-  @Test def should_support_toString_with_UTF8(): Unit = {
+  @Test
+  def should_support_toString_with_UTF8(): Unit = {
     val buf = Array[Byte](
       72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 46, -29, -127, -109,
       -29, -126, -109, -29, -127, -85, -29, -127, -95, -29, -127, -81, -26,
@@ -62,7 +66,8 @@ class ByteArrayOutputStreamTest extends CommonStreamsTests {
     assertEquals("Hello World.こんにちは日本語を読めますか。", out.toString)
   }
 
-  @Test def should_support_reset(): Unit = {
+  @Test
+  def should_support_reset(): Unit = {
     val out = new ByteArrayOutputStream()
     for (i <- 0 to 9)
       out.write(i)

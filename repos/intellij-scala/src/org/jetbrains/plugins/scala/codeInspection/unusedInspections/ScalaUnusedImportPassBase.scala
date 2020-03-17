@@ -32,7 +32,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.imports.{
   * User: Dmitry Naydanov
   * Date: 3/2/13
   */
-trait ScalaUnusedImportPassBase { self: TextEditorHighlightingPass =>
+trait ScalaUnusedImportPassBase {
+  self: TextEditorHighlightingPass =>
   def file: PsiFile
   def document: Document
 

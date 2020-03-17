@@ -6,7 +6,8 @@ import com.twitter.finagle.redis.util.ReplyFormat
 import com.twitter.util.{Future, Time}
 import org.jboss.netty.buffer.ChannelBuffer
 
-trait Keys { self: BaseClient =>
+trait Keys {
+  self: BaseClient =>
 
   /**
     * Removes keys

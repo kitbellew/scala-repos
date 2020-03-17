@@ -55,7 +55,8 @@ object CommandLineParser {
     }
 
   // parse a list of whitespace-separated arguments (ignoring whitespace in quoted arguments)
-  @tailrec private def commandLine(
+  @tailrec
+  private def commandLine(
       in: String,
       accum: List[String] = Nil): Either[String, (List[String], String)] = {
     val trimmed = in.trim

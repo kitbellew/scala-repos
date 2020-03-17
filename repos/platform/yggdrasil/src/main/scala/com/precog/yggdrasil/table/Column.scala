@@ -70,7 +70,8 @@ private[yggdrasil] trait ExtensibleColumn
 
 trait HomogeneousArrayColumn[@spec(Boolean, Long, Double) A]
     extends Column
-    with (Int => Array[A]) { self =>
+    with (Int => Array[A]) {
+  self =>
   def apply(row: Int): Array[A]
 
   def rowEq(row1: Int, row2: Int): Boolean = {
@@ -100,7 +101,8 @@ trait HomogeneousArrayColumn[@spec(Boolean, Long, Double) A]
   val tpe: CArrayType[A]
 
   def leafTpe: CValueType[_] = {
-    @tailrec def loop(a: CValueType[_]): CValueType[_] =
+    @tailrec
+    def loop(a: CValueType[_]): CValueType[_] =
       a match {
         case CArrayType(elemType) => loop(elemType)
         case vType                => vType
@@ -416,7 +418,8 @@ object Column {
           !col.isDefinedAt(j)
       }
     }
-  @inline def const(cv: CValue): Column =
+  @inline
+  def const(cv: CValue): Column =
     cv match {
       case CBoolean(v)                         => const(v)
       case CLong(v)                            => const(v)
@@ -431,7 +434,8 @@ object Column {
       case CUndefined                          => UndefinedColumn.raw
     }
 
-  @inline def uniformDistribution(init: MmixPrng): (Column, MmixPrng) = {
+  @inline
+  def uniformDistribution(init: MmixPrng): (Column, MmixPrng) = {
     val col =
       new InfiniteColumn with DoubleColumn {
         var memo = scala.collection.mutable.ArrayBuffer.empty[Double]
@@ -458,42 +462,50 @@ object Column {
     (col, init)
   }
 
-  @inline def const(v: Boolean) =
+  @inline
+  def const(v: Boolean) =
     new InfiniteColumn with BoolColumn {
       def apply(row: Int) = v
     }
 
-  @inline def const(v: Long) =
+  @inline
+  def const(v: Long) =
     new InfiniteColumn with LongColumn {
       def apply(row: Int) = v
     }
 
-  @inline def const(v: Double) =
+  @inline
+  def const(v: Double) =
     new InfiniteColumn with DoubleColumn {
       def apply(row: Int) = v
     }
 
-  @inline def const(v: BigDecimal) =
+  @inline
+  def const(v: BigDecimal) =
     new InfiniteColumn with NumColumn {
       def apply(row: Int) = v
     }
 
-  @inline def const(v: String) =
+  @inline
+  def const(v: String) =
     new InfiniteColumn with StrColumn {
       def apply(row: Int) = v
     }
 
-  @inline def const(v: DateTime) =
+  @inline
+  def const(v: DateTime) =
     new InfiniteColumn with DateColumn {
       def apply(row: Int) = v
     }
 
-  @inline def const(v: Period) =
+  @inline
+  def const(v: Period) =
     new InfiniteColumn with PeriodColumn {
       def apply(row: Int) = v
     }
 
-  @inline def const[@spec(Boolean, Long, Double) A: CValueType](v: Array[A]) =
+  @inline
+  def const[@spec(Boolean, Long, Double) A: CValueType](v: Array[A]) =
     new InfiniteColumn with HomogeneousArrayColumn[A] {
       val tpe = CArrayType(CValueType[A])
       def apply(row: Int) = v

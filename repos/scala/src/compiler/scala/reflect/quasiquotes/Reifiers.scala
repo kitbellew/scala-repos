@@ -5,7 +5,8 @@ import java.lang.UnsupportedOperationException
 import scala.reflect.reify.{Reifier => ReflectReifier}
 import scala.reflect.internal.Flags._
 
-trait Reifiers { self: Quasiquotes =>
+trait Reifiers {
+  self: Quasiquotes =>
   import global._
   import global.build._
   import global.definitions._

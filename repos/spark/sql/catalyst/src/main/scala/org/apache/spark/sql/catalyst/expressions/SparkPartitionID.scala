@@ -39,7 +39,8 @@ private[sql] case class SparkPartitionID()
 
   override def dataType: DataType = IntegerType
 
-  @transient private[this] var partitionId: Int = _
+  @transient
+  private[this] var partitionId: Int = _
 
   override val prettyName = "SPARK_PARTITION_ID"
 

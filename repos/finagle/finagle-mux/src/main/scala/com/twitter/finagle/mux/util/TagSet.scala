@@ -31,7 +31,8 @@ private[mux] object TagSet {
 
   /** Constructs a space-efficient TagSet for the given range */
   def apply(_range: Range): TagSet =
-    new TagSet { self =>
+    new TagSet {
+      self =>
       val range = _range
       // We could easily stripe the bitsets here, since we don't
       // require contiguous tag assignment.

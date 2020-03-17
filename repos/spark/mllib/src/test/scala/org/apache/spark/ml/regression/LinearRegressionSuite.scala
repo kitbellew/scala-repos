@@ -35,12 +35,18 @@ class LinearRegressionSuite
     with DefaultReadWriteTest {
 
   private val seed: Int = 42
-  @transient var datasetWithDenseFeature: DataFrame = _
-  @transient var datasetWithDenseFeatureWithoutIntercept: DataFrame = _
-  @transient var datasetWithSparseFeature: DataFrame = _
-  @transient var datasetWithWeight: DataFrame = _
-  @transient var datasetWithWeightConstantLabel: DataFrame = _
-  @transient var datasetWithWeightZeroLabel: DataFrame = _
+  @transient
+  var datasetWithDenseFeature: DataFrame = _
+  @transient
+  var datasetWithDenseFeatureWithoutIntercept: DataFrame = _
+  @transient
+  var datasetWithSparseFeature: DataFrame = _
+  @transient
+  var datasetWithWeight: DataFrame = _
+  @transient
+  var datasetWithWeightConstantLabel: DataFrame = _
+  @transient
+  var datasetWithWeightZeroLabel: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

@@ -508,7 +508,8 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
    */
   protected def concurrentExecutionContext: scEC = scEC.global
 
-  @transient private[this] val resultPromise: Promise[T] = Promise[T]()
+  @transient
+  private[this] val resultPromise: Promise[T] = Promise[T]()
   def result: Future[T] = resultPromise.future
 
   override def buildFlow: Flow[_] =

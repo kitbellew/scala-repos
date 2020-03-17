@@ -22,7 +22,8 @@ final case class WithListeners(f: (ActorRef) ⇒ Unit) extends ListenerMessage
   * <p/>
   * Send <code>WithListeners(fun)</code> to traverse the current listeners.
   */
-trait Listeners { self: Actor ⇒
+trait Listeners {
+  self: Actor ⇒
   protected val listeners: Set[ActorRef] = new TreeSet[ActorRef]
 
   /**

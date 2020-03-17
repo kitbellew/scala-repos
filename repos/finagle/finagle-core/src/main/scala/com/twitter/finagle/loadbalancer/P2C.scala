@@ -13,7 +13,8 @@ import com.twitter.finagle.util.Rng
   * Randomized Load Balancing. IEEE Trans. Parallel Distrib. Syst. 12,
   * 10 (October 2001), 1094-1104.
   */
-private trait P2C[Req, Rep] { self: Balancer[Req, Rep] =>
+private trait P2C[Req, Rep] {
+  self: Balancer[Req, Rep] =>
 
   /**
     * Our sturdy coin flipper.
@@ -25,7 +26,8 @@ private trait P2C[Req, Rep] { self: Balancer[Req, Rep] =>
     type This = Distributor
 
     // Indicates if we've seen any down nodes during pick which we expected to be available
-    @volatile private[this] var sawDown = false
+    @volatile
+    private[this] var sawDown = false
 
     private[this] val nodeUp: Node => Boolean = { node =>
       node.status == Status.Open

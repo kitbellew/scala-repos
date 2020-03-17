@@ -23,7 +23,8 @@ class FileUploadDirectivesSpec extends RoutingSpec {
           HttpEntity(ContentTypes.`text/xml(UTF-8)`, xml),
           Map("filename" -> "age.xml")))
 
-      @volatile var file: Option[File] = None
+      @volatile
+      var file: Option[File] = None
 
       try {
         Post("/", simpleMultipartUpload) ~> {

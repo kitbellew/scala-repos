@@ -15,7 +15,8 @@ import grizzled.slf4j.Logger
 // like and dislike events
 class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
 
-  @transient lazy override val logger = Logger[this.type]
+  @transient
+  lazy override val logger = Logger[this.type]
 
   override def train(sc: SparkContext, data: PreparedData): ALSModel = {
     require(

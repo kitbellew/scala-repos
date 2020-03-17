@@ -62,7 +62,8 @@ abstract class Broadcast[T: ClassTag](val id: Long)
     * Flag signifying whether the broadcast variable is valid
     * (that is, not already destroyed) or not.
     */
-  @volatile private var _isValid = true
+  @volatile
+  private var _isValid = true
 
   private var _destroySite = ""
 

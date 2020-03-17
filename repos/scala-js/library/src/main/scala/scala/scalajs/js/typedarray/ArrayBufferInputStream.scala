@@ -44,8 +44,10 @@ class ArrayBufferInputStream(
     *
     *  Use [[skip]] to update (protects from overrun and moving backwards).
     */
-  @inline def pos: Int = _pos
-  @inline protected def pos_=(x: Int): Unit = _pos = x
+  @inline
+  def pos: Int = _pos
+  @inline
+  protected def pos_=(x: Int): Unit = _pos = x
   private[this] var _pos: Int = 0
 
   override def available(): Int = length - pos

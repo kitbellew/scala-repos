@@ -440,7 +440,8 @@ trait Parser[+T] extends ParserResults[T] with Precedence {
 /**
   * Convenience methods to be used internally inside [[Parser]]s
   */
-trait ParserResults[+T] { this: Parser[T] =>
+trait ParserResults[+T] {
+  this: Parser[T] =>
   def mergeTrace(
       traceIndex: Int,
       lhs: Set[Parser[_]],

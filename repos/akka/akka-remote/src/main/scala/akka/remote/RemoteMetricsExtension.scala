@@ -81,7 +81,8 @@ private[akka] class RemoteMetricsOn(system: ExtendedActorSystem)
       // 10% threshold until next log
       def newMax = (payloadBytes * 1.1).toInt
 
-      @tailrec def check(): Unit = {
+      @tailrec
+      def check(): Unit = {
         val max = maxPayloadBytes.get(clazz)
         if (max eq null) {
           if (maxPayloadBytes.putIfAbsent(clazz, newMax) eq null)

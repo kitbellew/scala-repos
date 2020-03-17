@@ -9,7 +9,8 @@ import simulacrum.typeclass
   * us since it allows us to add a `filter` method to a Monad, which is
   * used when pattern matching or using guards in for comprehensions.
   */
-@typeclass trait MonadFilter[F[_]] extends Monad[F] {
+@typeclass
+trait MonadFilter[F[_]] extends Monad[F] {
 
   def empty[A]: F[A]
 

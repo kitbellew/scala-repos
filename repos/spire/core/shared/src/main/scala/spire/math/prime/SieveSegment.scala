@@ -133,7 +133,8 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
     }
   }
 
-  @tailrec private def initFromQueue(limit: SafeLong, q: FactorHeap): Unit = {
+  @tailrec
+  private def initFromQueue(limit: SafeLong, q: FactorHeap): Unit = {
     if (q.isEmpty)
       return ()
 

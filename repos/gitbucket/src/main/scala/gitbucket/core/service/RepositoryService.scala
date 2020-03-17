@@ -6,7 +6,8 @@ import gitbucket.core.model.Profile._
 import gitbucket.core.util.JGitUtil
 import profile.simple._
 
-trait RepositoryService { self: AccountService =>
+trait RepositoryService {
+  self: AccountService =>
   import RepositoryService._
 
   /**

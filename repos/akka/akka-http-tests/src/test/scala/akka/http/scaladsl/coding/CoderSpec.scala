@@ -201,7 +201,8 @@ abstract class CoderSpec
     val input = newDecodedInputStream(new ByteArrayInputStream(bytes.toArray))
 
     val buffer = new Array[Byte](500)
-    @tailrec def copy(from: InputStream, to: OutputStream): Unit = {
+    @tailrec
+    def copy(from: InputStream, to: OutputStream): Unit = {
       val read = from.read(buffer)
       if (read >= 0) {
         to.write(buffer, 0, read)

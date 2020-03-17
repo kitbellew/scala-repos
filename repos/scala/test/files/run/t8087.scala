@@ -1,6 +1,8 @@
 trait Foo {
-  @volatile private[this] var x: String = ""
-  @volatile private var y: String = ""
+  @volatile
+  private[this] var x: String = ""
+  @volatile
+  private var y: String = ""
 }
 
 class Bar extends Foo

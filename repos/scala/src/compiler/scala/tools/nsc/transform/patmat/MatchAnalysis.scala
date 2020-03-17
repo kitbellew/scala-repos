@@ -482,7 +482,8 @@ trait MatchApproximation
       val fullRewrite = (irrefutableExtractor orElse rewriteListPattern)
       val refutableRewrite = irrefutableExtractor
 
-      @inline def onUnknown(handler: TreeMaker => Prop) =
+      @inline
+      def onUnknown(handler: TreeMaker => Prop) =
         new TreeMakerToProp {
           def handleUnknown(tm: TreeMaker) = handler(tm)
         }

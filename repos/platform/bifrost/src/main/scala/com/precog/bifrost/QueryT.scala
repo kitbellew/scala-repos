@@ -145,7 +145,8 @@ trait QueryTHoist[Q[+_]]
     extends Hoist[
       ({
         type λ[m[+_], α] = QueryT[Q, m, α]
-      })#λ] { self =>
+      })#λ] {
+  self =>
   implicit def Q: SwappableMonad[Q]
 
   def liftM[M[+_], A](ma: M[A])(implicit M: Monad[M]): QueryT[Q, M, A] =

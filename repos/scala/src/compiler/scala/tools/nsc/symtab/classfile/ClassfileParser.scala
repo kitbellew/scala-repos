@@ -135,7 +135,8 @@ abstract class ClassfileParser {
     case e: MissingRequirementError => handleMissing(e)
     case e: RuntimeException        => handleError(e)
   }
-  @inline private def pushBusy[T](sym: Symbol)(body: => T): T = {
+  @inline
+  private def pushBusy[T](sym: Symbol)(body: => T): T = {
     if (busy eq sym)
       throw new IOException(s"unsatisfiable cyclic dependency in '$sym'")
     else if ((busy ne null) && (busy ne NoSymbol))
@@ -147,7 +148,8 @@ abstract class ClassfileParser {
     catch parseErrorHandler
     finally busy = NoSymbol
   }
-  @inline private def raiseLoaderLevel[T](body: => T): T = {
+  @inline
+  private def raiseLoaderLevel[T](body: => T): T = {
     loaders.parentsLevel += 1
     try body
     finally loaders.parentsLevel -= 1

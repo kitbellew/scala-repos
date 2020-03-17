@@ -33,15 +33,18 @@ private[twitter] class WindowedAdder private[WindowedAdder] (
     N: Int,
     now: () => Long) {
   private[this] val writer = new LongAdder()
-  @volatile private[this] var gen = 0
+  @volatile
+  private[this] var gen = 0
   private[this] val expiredGen = new AtomicInteger(gen)
 
   // Since we only write into the head bucket, we simply maintain
   // counts in an array; these are written to rarely, but are read
   // often.
   private[this] val buf = new Array[Long](N)
-  @volatile private[this] var i = 0
-  @volatile private[this] var old = now()
+  @volatile
+  private[this] var i = 0
+  @volatile
+  private[this] var old = now()
 
   private[this] def expired(): Unit = {
     if (!expiredGen.compareAndSet(gen, gen + 1))

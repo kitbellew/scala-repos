@@ -27,7 +27,8 @@ import org.json4s._
 @DeveloperApi
 object DateTimeJson4sSupport {
 
-  @transient lazy implicit val formats = DefaultFormats
+  @transient
+  lazy implicit val formats = DefaultFormats
 
   /** Serialize DateTime to JValue */
   def serializeToJValue: PartialFunction[Any, JValue] = {

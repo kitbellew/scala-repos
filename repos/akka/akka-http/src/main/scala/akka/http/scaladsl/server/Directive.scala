@@ -108,7 +108,8 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
       recovery: immutable.Seq[Rejection] ⇒ Directive[R]): Directive[R] =
     Directive[R] { inner ⇒ ctx ⇒
       import ctx.executionContext
-      @volatile var rejectedFromInnerRoute = false
+      @volatile
+      var rejectedFromInnerRoute = false
       tapply({ list ⇒ c ⇒
         rejectedFromInnerRoute = true;
         inner(list)(c)

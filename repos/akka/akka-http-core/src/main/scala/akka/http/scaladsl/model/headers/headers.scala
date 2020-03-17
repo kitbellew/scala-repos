@@ -116,7 +116,8 @@ abstract class ModeledCustomHeaderCompanion[H <: ModeledCustomHeader[H]] {
   * the other way around as well.
   */
 abstract class ModeledCustomHeader[H <: ModeledCustomHeader[H]]
-    extends CustomHeader { this: H ⇒
+    extends CustomHeader {
+  this: H ⇒
   def companion: ModeledCustomHeaderCompanion[H]
 
   final override def name = companion.name
@@ -423,7 +424,8 @@ final case class Connection(tokens: immutable.Seq[String])
   def hasKeepAlive = has("keep-alive")
   def hasUpgrade = has("upgrade")
   def append(tokens: immutable.Seq[String]) = Connection(this.tokens ++ tokens)
-  @tailrec private def has(item: String, ix: Int = 0): Boolean =
+  @tailrec
+  private def has(item: String, ix: Int = 0): Boolean =
     if (ix < tokens.length)
       if (tokens(ix) equalsIgnoreCase item)
         true

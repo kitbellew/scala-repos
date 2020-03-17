@@ -60,7 +60,10 @@ class SbtProjectSettingsControl(
   private val resolveSbtClassifiersCheckBox =
     new JCheckBox(SbtBundle("sbt.settings.resolveSbtClassifiers"))
 
-  def fillExtraControls(@NotNull content: PaintAwarePanel, indentLevel: Int) {
+  def fillExtraControls(
+      @NotNull
+      content: PaintAwarePanel,
+      indentLevel: Int) {
     val downloadPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0))
     downloadPanel.add(resolveClassifiersCheckBox)
     downloadPanel.add(resolveJavadocsCheckBox)

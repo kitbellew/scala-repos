@@ -74,7 +74,8 @@ private[akka] class RemoteSystemDaemon(
 
   private val parent2children = new ConcurrentHashMap[ActorRef, Set[ActorRef]]
 
-  @tailrec private def addChildParentNeedsWatch(
+  @tailrec
+  private def addChildParentNeedsWatch(
       parent: ActorRef,
       child: ActorRef): Boolean =
     parent2children.get(parent) match {
@@ -90,7 +91,8 @@ private[akka] class RemoteSystemDaemon(
           addChildParentNeedsWatch(parent, child)
     }
 
-  @tailrec private def removeChildParentNeedsUnwatch(
+  @tailrec
+  private def removeChildParentNeedsUnwatch(
       parent: ActorRef,
       child: ActorRef): Boolean = {
     parent2children.get(parent) match {
@@ -231,7 +233,8 @@ private[akka] class RemoteSystemDaemon(
           val iter = sel.elements.iterator
           // find child elements, and the message to send, which is a remaining ActorSelectionMessage
           // in case of SelectChildPattern, otherwise the actual message of the selection
-          @tailrec def rec(acc: List[String]): (List[String], Any) =
+          @tailrec
+          def rec(acc: List[String]): (List[String], Any) =
             if (iter.isEmpty)
               (acc.reverse, sel.msg)
             else {

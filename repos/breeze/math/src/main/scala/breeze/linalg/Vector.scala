@@ -356,7 +356,8 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
   }
 }
 
-trait VectorOps { this: Vector.type =>
+trait VectorOps {
+  this: Vector.type =>
   import breeze.math.PowImplicits._
 
   @expand.valify
@@ -369,8 +370,7 @@ trait VectorOps { this: Vector.type =>
           _ + _
         }, {
           _ - _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]] =
     new BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Vector[T] = {
@@ -444,8 +444,7 @@ trait VectorOps { this: Vector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]] =
     new BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Vector[T] = {
@@ -501,10 +500,9 @@ trait VectorOps { this: Vector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T],
-      @expand.sequence[T](0, 0.0, 0.0f, 0L)
-      zero: T): BinaryRegistry[Vector[T], T, Op.type, Vector[T]] =
+        }) op: Op.Impl2[T, T, T],
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+      : BinaryRegistry[Vector[T], T, Op.type, Vector[T]] =
     new BinaryRegistry[Vector[T], T, Op.type, Vector[T]] {
       override def bindingMissing(a: Vector[T], b: T): Vector[T] = {
         val result = Vector.zeros[T](a.length)
@@ -549,10 +547,9 @@ trait VectorOps { this: Vector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T],
-      @expand.sequence[T](0, 0.0, 0.0f, 0L)
-      zero: T): BinaryRegistry[T, Vector[T], Op.type, Vector[T]] =
+        }) op: Op.Impl2[T, T, T],
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+      : BinaryRegistry[T, Vector[T], Op.type, Vector[T]] =
     new BinaryRegistry[T, Vector[T], Op.type, Vector[T]] {
       override def bindingMissing(b: T, a: Vector[T]): Vector[T] = {
         val result = Vector.zeros[T](a.length)
@@ -626,8 +623,7 @@ trait VectorOps { this: Vector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Unit = {
@@ -650,8 +646,7 @@ trait VectorOps { this: Vector.type =>
           _ + _
         }, {
           _ - _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Unit = {
@@ -727,8 +722,7 @@ trait VectorOps { this: Vector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
+        }) op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
     new BinaryUpdateRegistry[Vector[T], T, Op.type] {
       override def bindingMissing(a: Vector[T], b: T): Unit = {
         var i = 0
@@ -769,8 +763,7 @@ trait VectorOps { this: Vector.type =>
           f.%(_, _)
         }, {
           f.pow(_, _)
-        })
-      op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
+        }) op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
     new BinaryUpdateRegistry[Vector[T], T, Op.type] {
       val f = implicitly[Field[T]]
       override def bindingMissing(a: Vector[T], b: T): Unit = {

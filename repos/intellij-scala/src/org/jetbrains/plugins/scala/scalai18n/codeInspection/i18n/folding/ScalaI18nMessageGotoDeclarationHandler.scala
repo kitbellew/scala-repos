@@ -68,7 +68,8 @@ class ScalaI18nMessageGotoDeclarationHandler
     null
   }
 
-  @Nullable private def resolve(element: PsiElement): PsiElement = {
+  @Nullable
+  private def resolve(element: PsiElement): PsiElement = {
     if (element == null)
       return null
     val references: Array[PsiReference] = element.getReferences

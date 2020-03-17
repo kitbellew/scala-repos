@@ -137,7 +137,8 @@ private[play] class PollingFileWatchService(val pollDelayMillis: Int)
 
   def watch(filesToWatch: Seq[File], onChange: () => Unit) = {
 
-    @volatile var stopped = false
+    @volatile
+    var stopped = false
 
     val thread =
       new Thread(
@@ -233,7 +234,8 @@ private object JNotifyFileWatchService {
   }
 
   // Tri state - null means no attempt to load yet, None means failed load, Some means successful load
-  @volatile var watchService: Option[Try[JNotifyFileWatchService]] = None
+  @volatile
+  var watchService: Option[Try[JNotifyFileWatchService]] = None
 
   def apply(targetDirectory: File): Try[FileWatchService] = {
 

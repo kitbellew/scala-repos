@@ -30,7 +30,8 @@ trait Function16[
     -T15,
     -T16,
     +R]
-    extends AnyRef { self =>
+    extends AnyRef {
+  self =>
 
   /** Apply the body of this function to the arguments.
     *  @return   the result of function application.
@@ -102,7 +103,6 @@ trait Function16[
     *
     *  @return   a function `f` such that `f((x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16)) == f(Tuple16(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16)) == apply(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16)`
     */
-
   @annotation.unspecialized
   def tupled: Tuple16[
     T1,

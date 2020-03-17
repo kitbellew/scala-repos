@@ -1,4 +1,5 @@
-class Module { self =>
+class Module {
+  self =>
   type settingsType <: Any
   final type commonModuleType =
     Module {

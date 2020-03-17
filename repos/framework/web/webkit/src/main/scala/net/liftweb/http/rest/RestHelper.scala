@@ -549,7 +549,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     def unapply[A, B](s: (A, B)): Option[(A, B)] = Some(s._1 -> s._2)
   }
 
-  @volatile private var _dispatch: List[LiftRules.DispatchPF] = Nil
+  @volatile
+  private var _dispatch: List[LiftRules.DispatchPF] = Nil
 
   private lazy val nonDevDispatch = _dispatch.reverse
 

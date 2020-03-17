@@ -89,7 +89,8 @@ trait StandaloneQueryExecutorConfig
 trait StandaloneQueryExecutor
     extends ManagedPlatform
     with ShardQueryExecutorPlatform[Future]
-    with Logging { platform =>
+    with Logging {
+  platform =>
 
   type YggConfig <: StandaloneQueryExecutorConfig
 

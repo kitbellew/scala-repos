@@ -35,10 +35,12 @@ class HakkerStatusTest
     with Matchers
     with AssertionsForJUnit {
 
-  @Inject @Filter(timeout = 30000)
+  @Inject
+  @Filter(timeout = 30000)
   var actorSystem: ActorSystem = _
 
-  @Inject @Filter(timeout = 30000)
+  @Inject
+  @Filter(timeout = 30000)
   var service: DiningHakkersService = _
 
   var testProbe: TestProbe = _

@@ -29,7 +29,8 @@ object StackTrace {
     *  The state is stored as a magic field of the throwable, and will be used
     *  by `extract()` to create an Array[StackTraceElement].
     */
-  @inline def captureState(throwable: Throwable): Unit = {
+  @inline
+  def captureState(throwable: Throwable): Unit = {
     if (js.isUndefined(js.constructorOf[js.Error].captureStackTrace)) {
       captureState(throwable, createException())
     } else {
@@ -47,7 +48,8 @@ object StackTrace {
   }
 
   /** Creates a JS Error with the current stack trace state. */
-  @inline private def createException(): Any = {
+  @inline
+  private def createException(): Any = {
     try {
       // Intentionally throw a JavaScript error
       new js.Object().asInstanceOf[js.Dynamic].undef()
@@ -60,7 +62,8 @@ object StackTrace {
     *  The state is stored as a magic field of the throwable, and will be used
     *  by `extract()` to create an Array[StackTraceElement].
     */
-  @inline def captureState(throwable: Throwable, e: Any): Unit =
+  @inline
+  def captureState(throwable: Throwable, e: Any): Unit =
     throwable.asInstanceOf[js.Dynamic].stackdata = e.asInstanceOf[js.Any]
 
   /** Tests whether we're running under Rhino. */
@@ -344,14 +347,22 @@ object StackTrace {
      * So we define inlineable defs for the fields we're interested in.
      * This way we make the compiler happy
      */
-    @inline def arguments = e.arguments
-    @inline def stack = e.stack
-    @inline def sourceURL = e.sourceURL
-    @inline def number = e.number
-    @inline def fileName = e.fileName
-    @inline def message = e.message
-    @inline def `opera#sourceloc` = e.`opera#sourceloc`
-    @inline def stacktrace = e.stacktrace
+    @inline
+    def arguments = e.arguments
+    @inline
+    def stack = e.stack
+    @inline
+    def sourceURL = e.sourceURL
+    @inline
+    def number = e.number
+    @inline
+    def fileName = e.fileName
+    @inline
+    def message = e.message
+    @inline
+    def `opera#sourceloc` = e.`opera#sourceloc`
+    @inline
+    def stacktrace = e.stacktrace
 
     if (!e) {
       js.Array[String]()
@@ -369,7 +380,8 @@ object StackTrace {
       // e.message.indexOf("Backtrace:") > -1 -> opera9
       // 'opera#sourceloc' in e -> opera9, opera10a
       // !e.stacktrace -> opera9
-      @inline def messageIsLongerThanStacktrace =
+      @inline
+      def messageIsLongerThanStacktrace =
         message.split("\n").length > stacktrace.split("\n").length
       if (!stacktrace) {
         extractOpera9(e) // use e.message

@@ -15,7 +15,8 @@ import scala.annotation.tailrec
 import scala.reflect.io.{AbstractFile, NoAbstractFile}
 import Variance._
 
-trait Symbols extends api.Symbols { self: SymbolTable =>
+trait Symbols extends api.Symbols {
+  self: SymbolTable =>
   import definitions._
   import SymbolsStats._
 
@@ -1535,8 +1536,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
 // ------ name attribute --------------------------------------------------------------
 
-    @deprecated("Use unexpandedName", "2.11.0") def originalName: Name =
-      unexpandedName
+    @deprecated("Use unexpandedName", "2.11.0")
+    def originalName: Name = unexpandedName
 
     /** If this symbol has an expanded name, its original (unexpanded) name,
       *  otherwise the name itself.
@@ -2604,7 +2605,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     /** All directly or indirectly inherited classes. */
     def ancestors: List[Symbol] = info.baseClasses drop 1
 
-    @inline final def enclosingSuchThat(p: Symbol => Boolean): Symbol = {
+    @inline
+    final def enclosingSuchThat(p: Symbol => Boolean): Symbol = {
       var sym = this
       while (sym != NoSymbol && !p(sym))
         sym = sym.owner
@@ -2877,7 +2879,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     /** Equivalent to allOverriddenSymbols.head (or NoSymbol if no overrides) but more efficient. */
     def nextOverriddenSymbol: Symbol = {
-      @tailrec def loop(bases: List[Symbol]): Symbol =
+      @tailrec
+      def loop(bases: List[Symbol]): Symbol =
         bases match {
           case Nil => NoSymbol
           case base :: rest =>
@@ -3052,22 +3055,26 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       else
         children.flatMap(_.sealedDescendants) + this
 
-    @inline final def orElse(alt: => Symbol): Symbol =
+    @inline
+    final def orElse(alt: => Symbol): Symbol =
       if (this ne NoSymbol)
         this
       else
         alt
-    @inline final def andAlso(f: Symbol => Unit): Symbol = {
+    @inline
+    final def andAlso(f: Symbol => Unit): Symbol = {
       if (this ne NoSymbol)
         f(this);
       this
     }
-    @inline final def fold[T](none: => T)(f: Symbol => T): T =
+    @inline
+    final def fold[T](none: => T)(f: Symbol => T): T =
       if (this ne NoSymbol)
         f(this)
       else
         none
-    @inline final def map(f: Symbol => Symbol): Symbol =
+    @inline
+    final def map(f: Symbol => Symbol): Symbol =
       if (this eq NoSymbol)
         this
       else
@@ -4535,7 +4542,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
   private[scala] final val symbolIsPossibleInRefinement =
     (sym: Symbol) => sym.isPossibleInRefinement
 
-  @tailrec private[scala] final def allSymbolsHaveOwner(
+  @tailrec
+  private[scala] final def allSymbolsHaveOwner(
       syms: List[Symbol],
       owner: Symbol): Boolean =
     syms match {

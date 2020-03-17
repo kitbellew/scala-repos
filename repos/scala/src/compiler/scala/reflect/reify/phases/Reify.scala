@@ -21,7 +21,8 @@ trait Reify
     def currents: List[Any] = state.reifyStack
     def currents_=(value: List[Any]): Unit = state.reifyStack = value
 
-    @inline final def push[T](reifee: Any)(body: => T): T = {
+    @inline
+    final def push[T](reifee: Any)(body: => T): T = {
       currents ::= reifee
       try body
       finally currents = currents.tail

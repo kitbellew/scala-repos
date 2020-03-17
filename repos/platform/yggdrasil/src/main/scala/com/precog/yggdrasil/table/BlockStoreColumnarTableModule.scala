@@ -65,7 +65,8 @@ trait BlockStoreColumnarTableModuleConfig {
 
 trait BlockStoreColumnarTableModule[M[+_]]
     extends ColumnarTableModule[M]
-    with YggConfigComponent { self =>
+    with YggConfigComponent {
+  self =>
 
   protected lazy val blockModuleLogger = LoggerFactory.getLogger(
     "com.precog.yggdrasil.table.BlockStoreColumnarTableModule")
@@ -162,7 +163,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
       }
     }
 
-    sealed trait CellMatrix { self =>
+    sealed trait CellMatrix {
+      self =>
       def cells: Iterable[Cell]
       def compare(cl: Cell, cr: Cell): Ordering
 
@@ -193,7 +195,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           comparatorMatrix
         }
 
-        new CellMatrix { self =>
+        new CellMatrix {
+          self =>
           private[this] val allCells: mutable.Map[Int, Cell] =
             initialCells.map(c => (c.index, c))(collection.breakOut)
           private[this] val comparatorMatrix = fillMatrix(initialCells)
@@ -214,7 +217,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
         keyf: Slice => Iterable[CPath]): StreamT[M, Slice] = {
 
       // dequeues all equal elements from the head of the queue
-      @inline @tailrec def dequeueEqual(
+      @inline
+      @tailrec
+      def dequeueEqual(
           queue: mutable.PriorityQueue[Cell],
           cellMatrix: CellMatrix,
           cells: List[Cell]): List[Cell] =
@@ -229,7 +234,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
         }
 
       // consume as many records as possible
-      @inline @tailrec def consumeToBoundary(
+      @inline
+      @tailrec
+      def consumeToBoundary(
           queue: mutable.PriorityQueue[Cell],
           cellMatrix: CellMatrix,
           idx: Int): (Int, List[Cell]) = {
@@ -529,7 +536,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
             leftWriteState: JDBMState,
             rightWriteState: JDBMState): M[(JDBMState, JDBMState)] = {
 
-          @tailrec def buildFilters(
+          @tailrec
+          def buildFilters(
               comparator: RowComparator,
               lidx: Int,
               lsize: Int,
@@ -1227,7 +1235,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           val keyColumns = kslice.columns.toList.sortBy(_._1).map(_._2)
           val kEncoder = keyRowFormat.ColumnEncoder(keyColumns)
 
-          @tailrec def storeRow(row: Int, insertCount: Long): Long = {
+          @tailrec
+          def storeRow(row: Int, insertCount: Long): Long = {
             if (row < vslice.size) {
               if (vslice.isDefinedAt(row) && kslice.isDefinedAt(row)) {
                 storage.put(
@@ -1464,7 +1473,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
                     val rowMap = hashed.mapRowsFrom(headKey)
 
-                    @tailrec def loop(row: Int): Unit =
+                    @tailrec
+                    def loop(row: Int): Unit =
                       if (row < head.size) {
                         rowMap(row) { indexRow =>
                           headBuf.add(row)

@@ -26,7 +26,8 @@ import org.apache.spark.util.Utils
 /**
   * Trait that creates a temporary directory before all tests and deletes it after all.
   */
-trait TempDirectory extends BeforeAndAfterAll { self: Suite =>
+trait TempDirectory extends BeforeAndAfterAll {
+  self: Suite =>
 
   private var _tempDir: File = _
 

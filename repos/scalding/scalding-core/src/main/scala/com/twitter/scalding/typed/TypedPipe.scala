@@ -1040,7 +1040,8 @@ object TypedPipeFactory {
   * to the FlowDef and Mode until toPipe is called
   */
 class TypedPipeFactory[T] private (
-    @transient val next: NoStackAndThen[(FlowDef, Mode), TypedPipe[T]])
+    @transient
+    val next: NoStackAndThen[(FlowDef, Mode), TypedPipe[T]])
     extends TypedPipe[T] {
   private[this] def andThen[U](fn: TypedPipe[T] => TypedPipe[U]): TypedPipe[U] =
     new TypedPipeFactory(next.andThen(fn))
@@ -1098,10 +1099,13 @@ class TypedPipeFactory[T] private (
   * This is an instance of a TypedPipe that wraps a cascading Pipe
   */
 class TypedPipeInst[T] private[scalding] (
-    @transient inpipe: Pipe,
+    @transient
+    inpipe: Pipe,
     fields: Fields,
-    @transient localFlowDef: FlowDef,
-    @transient val mode: Mode,
+    @transient
+    localFlowDef: FlowDef,
+    @transient
+    val mode: Mode,
     flatMapFn: FlatMapFn[T])
     extends TypedPipe[T] {
 

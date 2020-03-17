@@ -9,7 +9,8 @@ import org.specs2.specification.{ExecutedSpecification, ExecutingSpecification}
   * @author Ksenia.Sautina
   * @since 9/11/12
   */
-class MyNotifierRunner(notifier: Notifier) { outer =>
+class MyNotifierRunner(notifier: Notifier) {
+  outer =>
 
   def classRunner =
     new ClassRunner {

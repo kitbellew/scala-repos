@@ -122,23 +122,33 @@ final class MersenneTwister32 protected[random] (
 object MersenneTwister32
     extends GeneratorCompanion[MersenneTwister32, (Array[Int], Int)] {
 
-  @inline private val UpperMask =
+  @inline
+  private val UpperMask =
     0x80000000 // = Int.MinValue = 0xFFFFFFFF ^ Int.MaxValue
-  @inline private val LowerMask =
+  @inline
+  private val LowerMask =
     0x7FFFFFFF // = Int.MaxValue = 0xFFFFFFFF ^ Int.MinValue
 
-  @inline private val N = 624
-  @inline private val M = 397
+  @inline
+  private val N = 624
+  @inline
+  private val M = 397
 
-  @inline private val N_M = N - M
-  @inline private val N_1 = N - 1
+  @inline
+  private val N_M = N - M
+  @inline
+  private val N_1 = N - 1
 
-  @inline private val M_N = M - N
-  @inline private val M_1 = M - 1
+  @inline
+  private val M_N = M - N
+  @inline
+  private val M_1 = M - 1
 
-  @inline private val BYTES = N * 4 + 4
+  @inline
+  private val BYTES = N * 4 + 4
 
-  @inline private def mag01(x: Int) =
+  @inline
+  private def mag01(x: Int) =
     if ((x & 1) == 0)
       0
     else

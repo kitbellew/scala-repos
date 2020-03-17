@@ -190,7 +190,8 @@ object Dtab {
     * every request in this process. It is generally set at process
     * startup, and not changed thereafter.
     */
-  @volatile var base: Dtab = empty
+  @volatile
+  var base: Dtab = empty
 
   /**
     * Java API for `base_=`

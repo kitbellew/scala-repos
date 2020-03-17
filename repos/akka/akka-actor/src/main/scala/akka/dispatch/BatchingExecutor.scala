@@ -51,7 +51,8 @@ private[akka] trait BatchingExecutor extends Executor {
   private[this] abstract class AbstractBatch
       extends ArrayDeque[Runnable](4)
       with Runnable {
-    @tailrec final def processBatch(batch: AbstractBatch): Unit =
+    @tailrec
+    final def processBatch(batch: AbstractBatch): Unit =
       if ((batch eq this) && !batch.isEmpty) {
         batch.poll().run()
         processBatch(

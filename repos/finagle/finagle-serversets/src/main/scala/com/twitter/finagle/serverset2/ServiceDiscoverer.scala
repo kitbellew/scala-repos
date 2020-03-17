@@ -92,7 +92,8 @@ private[serverset2] class ServiceDiscoverer(
     */
   private[serverset2] val rawHealth: Var[ClientHealth] =
     Var.async[ClientHealth](ClientHealth.Healthy) { u =>
-      @volatile var stateListener = Closable.nop
+      @volatile
+      var stateListener = Closable.nop
 
       val sessionChanges = varZkSession.changes.dedup.respond { zk =>
         // When the zk session changes, we need to stop observing changes
@@ -153,11 +154,13 @@ private[serverset2] class ServiceDiscoverer(
       readStat: Stat): Activity[Seq[Entity]] =
     Activity(
       Var.async[Activity.State[Seq[Entity]]](Activity.Pending) { u =>
-        @volatile var closed = false
+        @volatile
+        var closed = false
 
         def loop(): Future[Unit] = {
           if (!closed) {
-            @volatile var seenFailures = false
+            @volatile
+            var seenFailures = false
             Stat.timeFuture(readStat) {
               Future
                 .collectToTry(

@@ -93,7 +93,8 @@ case class DefaultClient[Req, Rep](
     loadBalancer: LoadBalancerFactory = DefaultBalancerFactory,
     newTraceInitializer: Stackable[ServiceFactory[Req, Rep]] =
       TraceInitializerFilter.clientModule[Req, Rep])
-    extends Client[Req, Rep] { outer =>
+    extends Client[Req, Rep] {
+  outer =>
 
   private[this] def transform(stack: Stack[ServiceFactory[Req, Rep]]) = {
     val failureAccrualTransform: Transformer[Req, Rep] =

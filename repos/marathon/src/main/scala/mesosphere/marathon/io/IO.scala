@@ -102,7 +102,8 @@ object IO {
       continue: => Boolean = true) {
     try {
       val buffer = new Array[Byte](BufferSize)
-      @tailrec def read() {
+      @tailrec
+      def read() {
         val byteCount = in.read(buffer)
         if (byteCount >= 0 && continue) {
           out.write(buffer, 0, byteCount)

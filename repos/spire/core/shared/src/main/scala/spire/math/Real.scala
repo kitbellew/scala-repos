@@ -6,7 +6,8 @@ import scala.math.{ScalaNumber, ScalaNumericConversions}
 import spire.algebra.{Order, Trig, Signed}
 import spire.syntax.nroot._
 
-sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
+sealed trait Real extends ScalaNumber with ScalaNumericConversions {
+  x =>
 
   import Real.{roundUp, Exact, Inexact}
 
@@ -626,7 +627,8 @@ object Real extends RealInstances {
   }
 
   case class Inexact(f: Int => SafeLong) extends Real {
-    @volatile private[spire] var memo: Option[(Int, SafeLong)] = None
+    @volatile
+    private[spire] var memo: Option[(Int, SafeLong)] = None
 
     def apply(p: Int): SafeLong =
       memo match {

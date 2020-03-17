@@ -25,7 +25,8 @@ import org.apache.spark.sql.{DataFrame, SQLContext, SQLImplicits}
 /**
   * A collection of sample data used in SQL tests.
   */
-private[sql] trait SQLTestData { self =>
+private[sql] trait SQLTestData {
+  self =>
   protected def sqlContext: SQLContext
 
   // Helper object to import SQL implicits without a concrete SQLContext

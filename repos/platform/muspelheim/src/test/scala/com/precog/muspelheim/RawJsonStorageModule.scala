@@ -55,7 +55,8 @@ import scala.collection.immutable.TreeMap
 
 import TableModule._
 
-trait RawJsonStorageModule[M[+_]] { self =>
+trait RawJsonStorageModule[M[+_]] {
+  self =>
   implicit def M: Monad[M]
 
   protected def projectionData(path: Path) = {

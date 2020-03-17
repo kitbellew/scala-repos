@@ -65,7 +65,8 @@ trait Trees extends api.Trees {
 
     private[this] var rawtpe: Type = _
     final def tpe = rawtpe
-    @deprecated("Use setType", "2.11.0") def tpe_=(t: Type): Unit = setType(t)
+    @deprecated("Use setType", "2.11.0")
+    def tpe_=(t: Type): Unit = setType(t)
 
     def clearType(): this.type = this setType null
     def setType(tp: Type): this.type = {
@@ -85,7 +86,8 @@ trait Trees extends api.Trees {
       this
     }
     def hasSymbolField = false
-    @deprecated("Use hasSymbolField", "2.11.0") def hasSymbol = hasSymbolField
+    @deprecated("Use hasSymbolField", "2.11.0")
+    def hasSymbol = hasSymbolField
 
     def isDef = false
 
@@ -133,7 +135,8 @@ trait Trees extends api.Trees {
       (duplicator transform this).asInstanceOf[this.type]
   }
 
-  abstract class TreeContextApiImpl extends TreeApi { this: Tree =>
+  abstract class TreeContextApiImpl extends TreeApi {
+    this: Tree =>
 
     override def orElse(alt: => Tree) =
       if (!isEmpty)
@@ -1398,8 +1401,8 @@ trait Trees extends api.Trees {
         List())
       with CannotHaveAttrs
 
-  @deprecated("Use `noSelfType` instead", "2.11.0") lazy val emptyValDef =
-    noSelfType
+  @deprecated("Use `noSelfType` instead", "2.11.0")
+  lazy val emptyValDef = noSelfType
 
   def newValDef(sym: Symbol, rhs: Tree)(
       mods: Modifiers = Modifiers(sym.flags),

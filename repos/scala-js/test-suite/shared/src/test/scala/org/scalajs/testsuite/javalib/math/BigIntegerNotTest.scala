@@ -14,7 +14,8 @@ import org.junit.Assert._
 
 class BigIntegerNotTest {
 
-  @Test def testAndNotNegNegFirstLonger(): Unit = {
+  @Test
+  def testAndNotNegNegFirstLonger(): Unit = {
     val aBytes = Array[Byte](
       -128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117, 23, 87, -25,
       -75)
@@ -34,7 +35,8 @@ class BigIntegerNotTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testAndNotPosPosFirstLonger(): Unit = {
+  @Test
+  def testAndNotPosPosFirstLonger(): Unit = {
     val aBytes = Array[Byte](
       -128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117, 23, 87, -25,
       -75)
@@ -56,7 +58,8 @@ class BigIntegerNotTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testAndNotPosPosFirstShorter(): Unit = {
+  @Test
+  def testAndNotPosPosFirstShorter(): Unit = {
     val aBytes = Array[Byte](
       -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val bBytes = Array[Byte](
@@ -76,7 +79,8 @@ class BigIntegerNotTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testNegPosFirstLonger(): Unit = {
+  @Test
+  def testNegPosFirstLonger(): Unit = {
     val aBytes = Array[Byte](
       -128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117, 23, 87, -25,
       -75)
@@ -98,7 +102,8 @@ class BigIntegerNotTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testNotNeg(): Unit = {
+  @Test
+  def testNotNeg(): Unit = {
     val aBytes = Array[Byte](
       -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
     val aSign = -1
@@ -114,7 +119,8 @@ class BigIntegerNotTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testNotOne(): Unit = {
+  @Test
+  def testNotOne(): Unit = {
     val rBytes = Array[Byte](-2)
     val aNumber = BigInteger.ONE
     val result = aNumber.not()
@@ -126,7 +132,8 @@ class BigIntegerNotTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testNotPos(): Unit = {
+  @Test
+  def testNotPos(): Unit = {
     val aBytes = Array[Byte](
       -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
     val aSign = 1
@@ -142,7 +149,8 @@ class BigIntegerNotTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testNotSpecialCase(): Unit = {
+  @Test
+  def testNotSpecialCase(): Unit = {
     val aBytes = Array[Byte](-1, -1, -1, -1)
     val aSign = 1
     val rBytes = Array[Byte](-1, 0, 0, 0, 0)
@@ -156,7 +164,8 @@ class BigIntegerNotTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testNotZero(): Unit = {
+  @Test
+  def testNotZero(): Unit = {
     val rBytes = Array[Byte](-1)
     val aNumber = BigInteger.ZERO
     val result = aNumber.not()

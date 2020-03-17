@@ -7,7 +7,8 @@ package scalaz
   * @see [[scalaz.Category.CategoryLaw]]
   */
 ////
-trait Category[=>:[_, _]] extends Compose[=>:] { self =>
+trait Category[=>:[_, _]] extends Compose[=>:] {
+  self =>
   ////
   // TODO GeneralizedCategory, GeneralizedFunctor, et al, from Scalaz6 ?
 
@@ -55,7 +56,8 @@ trait Category[=>:[_, _]] extends Compose[=>:] { self =>
 }
 
 object Category {
-  @inline def apply[F[_, _]](implicit F: Category[F]): Category[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Category[F]): Category[F] = F
 
   ////
   ////

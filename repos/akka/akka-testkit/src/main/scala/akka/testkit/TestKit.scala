@@ -1000,11 +1000,13 @@ object TestProbe {
     new TestProbe(system, name)
 }
 
-trait ImplicitSender { this: TestKitBase ⇒
+trait ImplicitSender {
+  this: TestKitBase ⇒
   implicit def self = testActor
 }
 
-trait DefaultTimeout { this: TestKitBase ⇒
+trait DefaultTimeout {
+  this: TestKitBase ⇒
   implicit val timeout: Timeout = testKitSettings.DefaultTimeout
 }
 

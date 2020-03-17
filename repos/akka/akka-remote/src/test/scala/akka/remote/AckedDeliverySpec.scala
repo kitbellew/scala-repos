@@ -272,7 +272,8 @@ class AckedDeliverySpec extends AkkaSpec {
 
     def happened(p: Double) = ThreadLocalRandom.current().nextDouble() < p
 
-    @tailrec def geom(p: Double, limit: Int = 5, acc: Int = 0): Int =
+    @tailrec
+    def geom(p: Double, limit: Int = 5, acc: Int = 0): Int =
       if (acc == limit)
         acc
       else if (happened(p))

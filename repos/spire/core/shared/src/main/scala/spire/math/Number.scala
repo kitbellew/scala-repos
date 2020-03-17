@@ -143,7 +143,8 @@ sealed trait Number extends ScalaNumericConversions with Serializable {
 /**
   * Number with an underlying Long representation.
   */
-private[math] case class IntNumber(n: SafeLong) extends Number { lhs =>
+private[math] case class IntNumber(n: SafeLong) extends Number {
+  lhs =>
 
   override def toString(): String = n.toString
 
@@ -329,7 +330,8 @@ private[math] case class IntNumber(n: SafeLong) extends Number { lhs =>
   def round: Number = this
 }
 
-private[math] case class FloatNumber(n: Double) extends Number { lhs =>
+private[math] case class FloatNumber(n: Double) extends Number {
+  lhs =>
 
   override def toString(): String = n.toString
 
@@ -513,7 +515,8 @@ private[math] case class FloatNumber(n: Double) extends Number { lhs =>
   def round: Number = Number(Math.round(n))
 }
 
-private[math] case class DecimalNumber(n: BigDecimal) extends Number { lhs =>
+private[math] case class DecimalNumber(n: BigDecimal) extends Number {
+  lhs =>
 
   override def toString(): String = n.toString
 
@@ -600,7 +603,8 @@ private[math] case class DecimalNumber(n: BigDecimal) extends Number { lhs =>
   def round: Number = Number(n.round())
 }
 
-private[math] case class RationalNumber(n: Rational) extends Number { lhs =>
+private[math] case class RationalNumber(n: Rational) extends Number {
+  lhs =>
 
   override def toString(): String = n.toString
 

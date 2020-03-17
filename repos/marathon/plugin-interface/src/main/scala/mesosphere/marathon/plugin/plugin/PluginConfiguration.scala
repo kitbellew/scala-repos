@@ -5,7 +5,8 @@ import play.api.libs.json.JsObject
 /**
   * Plugin can be extended to receive configuration from plugin descriptor.
   */
-trait PluginConfiguration { self: Plugin =>
+trait PluginConfiguration {
+  self: Plugin =>
 
   /**
     * If a plugin implements this trait, it gets initialized with a configuration

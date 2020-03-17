@@ -19,9 +19,12 @@ import grizzled.slf4j.Logger
 
 private[prediction] object Common {
 
-  @transient lazy val logger = Logger[this.type]
-  @transient lazy private val appsDb = Storage.getMetaDataApps()
-  @transient lazy private val channelsDb = Storage.getMetaDataChannels()
+  @transient
+  lazy val logger = Logger[this.type]
+  @transient
+  lazy private val appsDb = Storage.getMetaDataApps()
+  @transient
+  lazy private val channelsDb = Storage.getMetaDataChannels()
 
   /* throw exception if invalid app name or channel name */
   def appNameToId(

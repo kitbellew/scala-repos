@@ -4,7 +4,8 @@ import java.security.MessageDigest
 
 /** Type-class for generic hashing
   */
-trait Hashable[-T, +R] extends (T => R) { self =>
+trait Hashable[-T, +R] extends (T => R) {
+  self =>
   override def andThen[A](fn: (R) => A): Hashable[T, A] =
     new Hashable[T, A] {
       override def apply(t: T) = fn(self.apply(t))

@@ -242,7 +242,8 @@ private[http] object Handshake {
            the WebSocket Connection_.
        */
 
-      trait Expectation extends (HttpResponse ⇒ Option[String]) { outer ⇒
+      trait Expectation extends (HttpResponse ⇒ Option[String]) {
+        outer ⇒
         def &&(other: HttpResponse ⇒ Option[String]): Expectation =
           new Expectation {
             def apply(v1: HttpResponse): Option[String] =

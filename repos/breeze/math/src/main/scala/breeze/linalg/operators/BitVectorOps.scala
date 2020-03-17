@@ -38,8 +38,7 @@ trait BitVectorOps {
         { (a, b) =>
           a.clear();
           a.or(b)
-        })
-      op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
+        }) op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
       : Op.InPlaceImpl2[BitVector, BitVector] =
     new Op.InPlaceImpl2[BitVector, BitVector] {
       def apply(a: BitVector, b: BitVector) {
@@ -60,8 +59,7 @@ trait BitVectorOps {
           _ or _
         }, {
           _ xor _
-        })
-      op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
+        }) op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
       : Op.Impl2[BitVector, BitVector, BitVector] =
     new Op.Impl2[BitVector, BitVector, BitVector] {
       def apply(a: BitVector, b: BitVector) = {

@@ -30,7 +30,10 @@ import com.twitter.chill.{
   KryoInstantiator
 }
 
-class KryoHadoop(@transient config: Config) extends KryoInstantiator {
+class KryoHadoop(
+    @transient
+    config: Config)
+    extends KryoInstantiator {
   // keeping track of references is costly for memory, and often triggers OOM on Hadoop
   val useRefs = config.getBoolean("scalding.kryo.setreferences", false)
 

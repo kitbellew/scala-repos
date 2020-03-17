@@ -44,7 +44,8 @@ class RuntimeLongTest {
 
   // scala.scalajs.runtime.RuntimeLong
 
-  @Test def sanity_of_equality_tests(): Unit = {
+  @Test
+  def sanity_of_equality_tests(): Unit = {
     assertEquals(123L + (456L << 32), lg(123, 456).toLong)
     assertEquals(lg(123, 456), lg(123, 456))
     assertEquals(lg(456, 123), lg(456, 123))
@@ -56,7 +57,8 @@ class RuntimeLongTest {
     assertNotEquals(123L, lg(123, 456).toLong)
   }
 
-  @Test def equals_Any(): Unit = {
+  @Test
+  def equals_Any(): Unit = {
     assertFalse(lg(0, 0).equals(0: Any))
     assertFalse(lg(0, 0).equals(null: Any))
 
@@ -71,7 +73,8 @@ class RuntimeLongTest {
     assertFalse(lg(-123, -456).equals(lg(-123, 456): Any))
   }
 
-  @Test def hashCode_as_specified_in_j_l_toFloat_strict(): Unit = {
+  @Test
+  def hashCode_as_specified_in_j_l_toFloat_strict(): Unit = {
     assertEquals(0, lg(0).hashCode())
     assertEquals(0, lg(-1).hashCode())
     assertEquals(55, lg(55).hashCode())
@@ -181,7 +184,8 @@ class RuntimeLongTest {
     assertEquals(512144461, lg(-615008378, -976157749).hashCode())
   }
 
-  @Test def toString()(): Unit = {
+  @Test
+  def toString()(): Unit = {
     assertEquals("0", lg(0).toString())
     assertEquals("1", lg(1).toString())
     assertEquals("-1", lg(-1).toString())
@@ -298,7 +302,8 @@ class RuntimeLongTest {
     assertEquals("-168776672025670194", lg(-779514418, -39296382).toString())
   }
 
-  @Test def toByte(): Unit = {
+  @Test
+  def toByte(): Unit = {
     assertEquals(0, lg(0).toByte)
     assertEquals(-1, lg(-1).toByte)
     assertEquals(0x98.toByte, lg(0xfedcba98, 0x76543210).toByte)
@@ -325,7 +330,8 @@ class RuntimeLongTest {
     assertEquals(64, lg(-766959552, -326327606).toByte)
   }
 
-  @Test def toShort(): Unit = {
+  @Test
+  def toShort(): Unit = {
     assertEquals(0, lg(0).toShort)
     assertEquals(-1, lg(-1).toShort)
     assertEquals(0xba98.toShort, lg(0xfedcba98, 0x76543210).toShort)
@@ -352,7 +358,8 @@ class RuntimeLongTest {
     assertEquals(-16878, lg(-1363821038, -1952481751).toShort)
   }
 
-  @Test def toInt(): Unit = {
+  @Test
+  def toInt(): Unit = {
     assertEquals(0, lg(0).toInt)
     assertEquals(-1, lg(-1).toInt)
     assertEquals(0xfedcba98, lg(0xfedcba98, 0x76543210).toInt)
@@ -379,7 +386,8 @@ class RuntimeLongTest {
     assertEquals(-1703892744, lg(-1703892744, 240186844).toInt)
   }
 
-  @Test def toLong(): Unit = {
+  @Test
+  def toLong(): Unit = {
     assertEquals(0L, lg(0).toLong)
     assertEquals(-1L, lg(-1).toLong)
     assertEquals(0x76543210FEDCBA98L, lg(0xfedcba98, 0x76543210).toLong)
@@ -406,7 +414,8 @@ class RuntimeLongTest {
     assertEquals(8801656334077465992L, lg(2076251528, 2049295309).toLong)
   }
 
-  @Test def toFloat_strict(): Unit = {
+  @Test
+  def toFloat_strict(): Unit = {
     assumeTrue(hasStrictFloats)
     assertEquals(0, lg(0).toFloat)
     assertEquals(-1, lg(-1).toFloat)
@@ -442,7 +451,8 @@ class RuntimeLongTest {
     assertEquals(3.81415059e18f, lg(-618946450, 888051141).toFloat)
   }
 
-  @Test def toDouble(): Unit = {
+  @Test
+  def toDouble(): Unit = {
     assertEquals(0, lg(0).toDouble)
     assertEquals(-1, lg(-1).toDouble)
 
@@ -477,7 +487,8 @@ class RuntimeLongTest {
     assertEquals(-1.71264450938175027e18, lg(-2016996893, -398756124).toDouble)
   }
 
-  @Test def comparisons(): Unit = {
+  @Test
+  def comparisons(): Unit = {
     def test(x: RuntimeLong, y: RuntimeLong, expected: Int): Unit = {
       assertEquals(expected, x.compareTo(y).signum)
       assertEquals(expected, x.compareTo(y.toLong: java.lang.Long).signum)
@@ -566,7 +577,8 @@ class RuntimeLongTest {
     test(lg(1839280888, -168388422), lg(-1645740821, -1967920957), 1)
   }
 
-  @Test def bitwise_not_~(): Unit = {
+  @Test
+  def bitwise_not_~(): Unit = {
     assertEquals(lg(1664374422, 327449892), ~lg(-1664374423, -327449893))
     assertEquals(lg(-2033180390, -1179462631), ~lg(2033180389, 1179462630))
     assertEquals(lg(-1134559214, 581653069), ~lg(1134559213, -581653070))
@@ -619,7 +631,8 @@ class RuntimeLongTest {
     assertEquals(lg(1382443514, -56307753), ~lg(-1382443515, 56307752))
   }
 
-  @Test def bitwise_or_|(): Unit = {
+  @Test
+  def bitwise_or_|(): Unit = {
     assertEquals(
       lg(1467334397, -608514),
       lg(1198889513, -170491266) | lg(356560637, 1244673694))
@@ -772,7 +785,8 @@ class RuntimeLongTest {
       lg(-402624124, -505696678) | lg(-688199800, 2110291577))
   }
 
-  @Test def bitwise_and_&(): Unit = {
+  @Test
+  def bitwise_and_&(): Unit = {
     assertEquals(
       lg(-2012982272, 17896961),
       lg(-1973652216, 353474049) & lg(-576365513, -1546420349))
@@ -925,7 +939,8 @@ class RuntimeLongTest {
       lg(844761371, 1022505085) & lg(1930384912, 688275291))
   }
 
-  @Test def bitwise_xor_^(): Unit = {
+  @Test
+  def bitwise_xor_^(): Unit = {
     assertEquals(
       lg(1342248740, -313223199),
       lg(690404572, -1279287229) ^ lg(2032643064, 1592473506))
@@ -1078,7 +1093,8 @@ class RuntimeLongTest {
       lg(-1493347776, 1187436882) ^ lg(-1779986703, 550293355))
   }
 
-  @Test def shift_left_<<(): Unit = {
+  @Test
+  def shift_left_<<(): Unit = {
     assertEquals(
       lg(1065353216, -691528727),
       lg(-1875389825, 1268606893) << -73329513)
@@ -1179,7 +1195,8 @@ class RuntimeLongTest {
       lg(-874710629, -1242845989) << 484063041)
   }
 
-  @Test def shift_logical_right_>>>(): Unit = {
+  @Test
+  def shift_logical_right_>>>(): Unit = {
     assertEquals(lg(1982185809, 4856), lg(88517143, 1273092247) >>> 2099569298)
     assertEquals(lg(40, 0), lg(-1987462914, 1361836721) >>> -2053535175)
     assertEquals(lg(258, 0), lg(1513792977, 1085974656) >>> -303705162)
@@ -1262,7 +1279,8 @@ class RuntimeLongTest {
     assertEquals(lg(-5828381, 10), lg(-954198224, 369053217) >>> 768150041)
   }
 
-  @Test def shift_arithmetic_right_>>(): Unit = {
+  @Test
+  def shift_arithmetic_right_>>(): Unit = {
     assertEquals(
       lg(144041519, 2813487),
       lg(-1780076655, 720252680) >> -1316031160)
@@ -1339,7 +1357,8 @@ class RuntimeLongTest {
     assertEquals(lg(-104838948, -3), lg(-904956287, -543423347) >> -617227620)
   }
 
-  @Test def negate_-(): Unit = {
+  @Test
+  def negate_-(): Unit = {
     assertEquals(lg(0), -lg(0))
     assertEquals(lg(1), -lg(-1))
     assertEquals(lg(-1), -lg(1))
@@ -1399,7 +1418,8 @@ class RuntimeLongTest {
     assertEquals(lg(2066446588, 688546120), -lg(-2066446588, -688546121))
   }
 
-  @Test def plus_+(): Unit = {
+  @Test
+  def plus_+(): Unit = {
     assertEquals(
       lg(802149732, -566689627),
       lg(-202981355, -566689628) + lg(1005131087, 0))
@@ -1552,7 +1572,8 @@ class RuntimeLongTest {
       lg(88305723, 1362535803) + lg(-1481307045, -1))
   }
 
-  @Test def minus_-(): Unit = {
+  @Test
+  def minus_-(): Unit = {
     // Workaround for https://code.google.com/p/v8/issues/detail?id=3304
     assertEquals(lg(-1), lg(0) - lg(1))
 
@@ -1708,7 +1729,8 @@ class RuntimeLongTest {
       lg(883147297, 967789979) - lg(474187246, 0))
   }
 
-  @Test def times_*(): Unit = {
+  @Test
+  def times_*(): Unit = {
     assertEquals(
       lg(-1056314208, 1039912134),
       lg(-1436299491, 1172705251) * lg(1721031968, 0))
@@ -1861,7 +1883,8 @@ class RuntimeLongTest {
       lg(406538265, -107036516) * lg(2077087683, 0))
   }
 
-  @Test def divide_/(): Unit = {
+  @Test
+  def divide_/(): Unit = {
     expectThrows(classOf[ArithmeticException], lg(0) / lg(0))
     expectThrows(classOf[ArithmeticException], lg(5, 0) / lg(0))
     expectThrows(classOf[ArithmeticException], lg(0, 5) / lg(0))
@@ -2400,7 +2423,8 @@ class RuntimeLongTest {
     assertEquals(lg(8, 0), lg(1810734914, 124115952) / lg(1149563530, 15197570))
   }
 
-  @Test def modulo_%(): Unit = {
+  @Test
+  def modulo_%(): Unit = {
     expectThrows(classOf[ArithmeticException], lg(0) % lg(0))
     expectThrows(classOf[ArithmeticException], lg(5, 0) % lg(0))
     expectThrows(classOf[ArithmeticException], lg(0, 5) % lg(0))
@@ -3276,13 +3300,15 @@ class RuntimeLongOldTest {
   val minus15 = new RuntimeLong(4194289, 4194303, 1048575)
   val minus16 = new RuntimeLong(4194288, 4194303, 1048575)
 
-  @Test def should_correctly_implement_negation(): Unit = {
+  @Test
+  def should_correctly_implement_negation(): Unit = {
     assertHexEquals("fffffffffffffffb", -fromInt(5))
     assertHexEquals("0", -fromInt(0))
     assertHexEquals("80000000", -minInt)
   }
 
-  @Test def should_correctly_implement_comparison(): Unit = {
+  @Test
+  def should_correctly_implement_comparison(): Unit = {
     assertEquals(true, fromInt(7) < fromInt(15))
     assertEquals(false, fromInt(15) < fromInt(15))
     assertEquals(true, fromInt(15) <= fromInt(15))
@@ -3295,25 +3321,29 @@ class RuntimeLongOldTest {
     assertEquals(true, fromInt(16) >= fromInt(15))
   }
 
-  @Test def should_correctly_implement_addition(): Unit = {
+  @Test
+  def should_correctly_implement_addition(): Unit = {
     assertHexEquals("16", fromInt(7) + fromInt(15))
     assertHexEquals("fffffffe", maxInt + maxInt)
     assertHexEquals("80000000", maxInt + one)
   }
 
-  @Test def should_correctly_implement_subtraction(): Unit = {
+  @Test
+  def should_correctly_implement_subtraction(): Unit = {
     assertHexEquals("fffffffffffffff8", fromInt(7) - fromInt(15))
     assertHexEquals("0", maxInt - maxInt)
   }
 
-  @Test def should_correctly_implement_multiplication(): Unit = {
+  @Test
+  def should_correctly_implement_multiplication(): Unit = {
     assertHexEquals("69", fromInt(7) * fromInt(15))
     assertHexEquals("ffffffffffffff97", fromInt(-7) * fromInt(15))
     assertHexEquals("3fffffff00000001", maxInt * maxInt)
     assertHexEquals("ffbfffffffffffc8", `4503599627370510L` * fromInt(-4))
   }
 
-  @Test def should_correctly_implement_division(): Unit = {
+  @Test
+  def should_correctly_implement_division(): Unit = {
     assertHexEquals("0", fromInt(7) / fromInt(15))
     assertHexEquals("4", fromInt(24) / fromInt(5))
     assertHexEquals("fffffffffffffffc", fromInt(24) / fromInt(-5))
@@ -3338,7 +3368,8 @@ class RuntimeLongOldTest {
     assertHexEquals("f961529ec0d5811c", `7632147899696541255L` / minus16)
   }
 
-  @Test def should_correctly_implement_modulus(): Unit = {
+  @Test
+  def should_correctly_implement_modulus(): Unit = {
     assertHexEquals("7", fromInt(7) % fromInt(15))
     assertHexEquals("4", fromInt(24) % fromInt(5))
     assertHexEquals("4", fromInt(24) % fromInt(-5))
@@ -3363,7 +3394,8 @@ class RuntimeLongOldTest {
     assertHexEquals("7", `7632147899696541255L` % minus16)
   }
 
-  @Test def should_correctly_implement_toString(): Unit = {
+  @Test
+  def should_correctly_implement_toString(): Unit = {
     assertEquals("2147483647", maxInt.toString)
     assertEquals("-50", fromInt(-50).toString)
     assertEquals("-1000000000", fromInt(-1000000000).toString)
@@ -3371,24 +3403,28 @@ class RuntimeLongOldTest {
     assertEquals("-2147483648", minInt.toString)
   }
 
-  @Test def should_correctly_implement_fromDouble(): Unit = {
+  @Test
+  def should_correctly_implement_fromDouble(): Unit = {
     assertHexEquals("4", fromDouble(4.5))
     assertHexEquals("fffffffffffffffc", fromDouble(-4.5))
   }
 
-  @Test def should_correctly_implement_toDouble(): Unit = {
+  @Test
+  def should_correctly_implement_toDouble(): Unit = {
     assertEquals(5.0, fromInt(5).toDouble)
     assertEquals(2147483648.0, (maxInt + one).toDouble)
   }
 
-  @Test def should_correctly_implement_numberOfLeadingZeros(): Unit = {
+  @Test
+  def should_correctly_implement_numberOfLeadingZeros(): Unit = {
     assertEquals(64, fromInt(0).numberOfLeadingZeros)
     assertEquals(63, fromInt(1).numberOfLeadingZeros)
     assertEquals(0, fromInt(-1).numberOfLeadingZeros)
     assertEquals(62, fromInt(2).numberOfLeadingZeros)
   }
 
-  @Test def should_implement_hashCode_according_to_spec_in_j_l_Long(): Unit = {
+  @Test
+  def should_implement_hashCode_according_to_spec_in_j_l_Long(): Unit = {
     assertEquals(0, fromInt(0).hashCode())
     assertEquals(55, fromInt(55).hashCode())
     assertEquals(11, fromInt(-12).hashCode())

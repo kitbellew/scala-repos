@@ -114,7 +114,8 @@ object IdleSignalling extends DefaultSignalling
   * A mixin trait that implements abort flag behaviour using volatile variables.
   */
 trait VolatileAbort extends Signalling {
-  @volatile private var abortflag = false
+  @volatile
+  private var abortflag = false
   override def isAborted = abortflag
   override def abort() = abortflag = true
 }

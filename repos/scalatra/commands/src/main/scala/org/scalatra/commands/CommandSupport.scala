@@ -88,6 +88,7 @@ trait CommandSupport extends ParamsValueReaderProperties with CommandExecutors {
 
 }
 
-trait ParamsOnlyCommandSupport extends CommandSupport { this: ScalatraBase =>
+trait ParamsOnlyCommandSupport extends CommandSupport {
+  this: ScalatraBase =>
   type CommandType = ParamsOnlyCommand
 }

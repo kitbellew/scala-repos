@@ -30,19 +30,31 @@ class ClassTagTest {
       case _       => false
     }
 
-  @Test def checkMisc = assertTrue(checkNotString[Misc](new Misc))
-  @Test def checkString = assertTrue(checkNotInt[String]("woele"))
-  @Test def checkByte = assertTrue(checkNotInt[Byte](0.toByte))
-  @Test def checkShort = assertTrue(checkNotInt[Short](0.toShort))
-  @Test def checkChar = assertTrue(checkNotInt[Char](0.toChar))
-  @Test def checkInt = assertTrue(checkNotLong[Int](0.toInt))
-  @Test def checkLong = assertTrue(checkNotInt[Long](0.toLong))
-  @Test def checkFloat = assertTrue(checkNotInt[Float](0.toFloat))
-  @Test def checkDouble = assertTrue(checkNotInt[Double](0.toDouble))
-  @Test def checkBoolean = assertTrue(checkNotInt[Boolean](false))
-  @Test def checkUnit = assertTrue(checkNotInt[Unit]({}))
+  @Test
+  def checkMisc = assertTrue(checkNotString[Misc](new Misc))
+  @Test
+  def checkString = assertTrue(checkNotInt[String]("woele"))
+  @Test
+  def checkByte = assertTrue(checkNotInt[Byte](0.toByte))
+  @Test
+  def checkShort = assertTrue(checkNotInt[Short](0.toShort))
+  @Test
+  def checkChar = assertTrue(checkNotInt[Char](0.toChar))
+  @Test
+  def checkInt = assertTrue(checkNotLong[Int](0.toInt))
+  @Test
+  def checkLong = assertTrue(checkNotInt[Long](0.toLong))
+  @Test
+  def checkFloat = assertTrue(checkNotInt[Float](0.toFloat))
+  @Test
+  def checkDouble = assertTrue(checkNotInt[Double](0.toDouble))
+  @Test
+  def checkBoolean = assertTrue(checkNotInt[Boolean](false))
+  @Test
+  def checkUnit = assertTrue(checkNotInt[Unit]({}))
 
-  @Test def t9534: Unit = {
+  @Test
+  def t9534: Unit = {
     val ct = implicitly[scala.reflect.ClassTag[Unit]]
     val a1 = ct.newArray(1)
     a1(0) = ()

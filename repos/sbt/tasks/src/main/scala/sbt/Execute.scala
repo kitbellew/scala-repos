@@ -100,7 +100,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   }
 
   def processAll()(implicit strategy: Strategy): Unit = {
-    @tailrec def next(): Unit = {
+    @tailrec
+    def next(): Unit = {
       pre {
         assert(reverse.nonEmpty, "Nothing to process.")
         if (!state.values.exists(_ == Running)) {

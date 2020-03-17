@@ -48,12 +48,22 @@ import org.apache.spark.mllib.tree.loss.{LogLoss, Loss, SquaredError}
 @Since("1.2.0")
 case class BoostingStrategy @Since("1.4.0") (
     // Required boosting parameters
-    @Since("1.2.0") @BeanProperty var treeStrategy: Strategy,
-    @Since("1.2.0") @BeanProperty var loss: Loss,
+    @Since("1.2.0")
+    @BeanProperty
+    var treeStrategy: Strategy,
+    @Since("1.2.0")
+    @BeanProperty
+    var loss: Loss,
     // Optional boosting parameters
-    @Since("1.2.0") @BeanProperty var numIterations: Int = 100,
-    @Since("1.2.0") @BeanProperty var learningRate: Double = 0.1,
-    @Since("1.4.0") @BeanProperty var validationTol: Double = 0.001)
+    @Since("1.2.0")
+    @BeanProperty
+    var numIterations: Int = 100,
+    @Since("1.2.0")
+    @BeanProperty
+    var learningRate: Double = 0.1,
+    @Since("1.4.0")
+    @BeanProperty
+    var validationTol: Double = 0.001)
     extends Serializable {
 
   /**

@@ -87,7 +87,8 @@ abstract class UnPickler {
 
     //println("unpickled " + classRoot + ":" + classRoot.rawInfo + ", " + moduleRoot + ":" + moduleRoot.rawInfo);//debug
 
-    @inline private def runAtIndex[T](i: Int)(body: => T): T = {
+    @inline
+    private def runAtIndex[T](i: Int)(body: => T): T = {
       val saved = readIndex
       readIndex = index(i)
       try body
@@ -419,7 +420,8 @@ abstract class UnPickler {
     protected def readType(forceProperType: Boolean = false): Type = {
       val tag = readByte()
       val end = readEnd()
-      @inline def all[T](body: => T): List[T] = until(end, () => body)
+      @inline
+      def all[T](body: => T): List[T] = until(end, () => body)
 
       def readTypes() = all(readTypeRef)
       def readSymbols() = all(readSymbolRef)
@@ -592,8 +594,10 @@ abstract class UnPickler {
     }
 
     private def readNonEmptyTree(tag: Int, end: Int): Tree = {
-      @inline def all[T](body: => T): List[T] = until(end, () => body)
-      @inline def rep[T](body: => T): List[T] = times(readNat(), () => body)
+      @inline
+      def all[T](body: => T): List[T] = until(end, () => body)
+      @inline
+      def rep[T](body: => T): List[T] = times(readNat(), () => body)
 
       // !!! What is this doing here?
       def fixApply(tree: Apply, tpe: Type): Apply = {

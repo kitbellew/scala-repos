@@ -240,7 +240,8 @@ class SerializableClassWithWriteObject(val objectField: Object)
 }
 
 class SerializableClassWithWriteReplace(
-    @(transient @param) replacementFieldObject: Object)
+    @(transient @param)
+    replacementFieldObject: Object)
     extends Serializable {
   private def writeReplace(): Object = {
     replacementFieldObject

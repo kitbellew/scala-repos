@@ -83,7 +83,8 @@ abstract class AbstractList[E] protected ()
           }
         }
       case _ =>
-        new AbstractListView(self, fromIndex, toIndex) { selfView =>
+        new AbstractListView(self, fromIndex, toIndex) {
+          selfView =>
           override def listIterator(index: Int): ListIterator[E] = {
             checkIndexOnBounds(index)
             // Iterator that accesses the original list using it's iterator

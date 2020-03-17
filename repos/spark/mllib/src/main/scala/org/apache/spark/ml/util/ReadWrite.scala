@@ -138,7 +138,8 @@ trait MLWritable {
   def save(path: String): Unit = write.save(path)
 }
 
-private[ml] trait DefaultParamsWritable extends MLWritable { self: Params =>
+private[ml] trait DefaultParamsWritable extends MLWritable {
+  self: Params =>
 
   override def write: MLWriter = new DefaultParamsWriter(this)
 }

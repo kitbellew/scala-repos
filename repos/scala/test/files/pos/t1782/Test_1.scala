@@ -5,7 +5,8 @@ trait Service {
 
 class Provider extends Service {
   // test enumeration java annotations
-  @Ann(Days.Friday) def someMethod() = ()
+  @Ann(Days.Friday)
+  def someMethod() = ()
 
   // #2103
   @scala.beans.BeanProperty

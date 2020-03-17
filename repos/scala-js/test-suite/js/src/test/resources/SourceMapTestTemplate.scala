@@ -33,14 +33,16 @@ case class TestException(lineNo: Int) extends Exception
   * (in a single line) up to the number of /n-star/s in the file.
   */
 object SourceMapTest {
-  @BeforeClass def beforeClass(): Unit = {
+  @BeforeClass
+  def beforeClass(): Unit = {
     assumeTrue("source-maps", sourceMaps)
   }
 }
 
 class SourceMapTest {
 
-  @Test def workTest(): Unit = sys.error("stubs")
+  @Test
+  def workTest(): Unit = sys.error("stubs")
 
   def test(i: Int): Unit = {
     TC.testNum = i

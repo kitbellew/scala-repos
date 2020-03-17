@@ -44,7 +44,8 @@ trait Mapper[A <: Mapper[A]]
   private var was_deleted_? = false
   private var dbConnectionIdentifier: Box[ConnectionIdentifier] = Empty
   private[mapper] var addedPostCommit = false
-  @volatile private[mapper] var persisted_? = false
+  @volatile
+  private[mapper] var persisted_? = false
 
   def getSingleton: MetaMapper[A];
   final def safe_? : Boolean = {

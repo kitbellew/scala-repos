@@ -49,7 +49,8 @@ abstract class InteractiveTest
     with AskLoadedTyped
     with PresentationCompilerInstance
     with CoreTestDefs
-    with InteractiveTestSettings { self =>
+    with InteractiveTestSettings {
+  self =>
 
   protected val runRandomTests = false
 

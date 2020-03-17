@@ -41,8 +41,10 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     sc = new SparkContext("local", "test")
     val nums = sc.parallelize(1 to 10, 2)
     val sem = new Semaphore(0)
-    @volatile var answer1: Int = 0
-    @volatile var answer2: Int = 0
+    @volatile
+    var answer1: Int = 0
+    @volatile
+    var answer2: Int = 0
     new Thread {
       override def run() {
         answer1 = nums.reduce(_ + _)
@@ -59,7 +61,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     sc = new SparkContext("local", "test")
     val nums = sc.parallelize(1 to 10, 2)
     val sem = new Semaphore(0)
-    @volatile var ok = true
+    @volatile
+    var ok = true
     for (i <- 0 until 10) {
       new Thread {
         override def run() {
@@ -88,7 +91,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     sc = new SparkContext("local[4]", "test")
     val nums = sc.parallelize(1 to 10, 2)
     val sem = new Semaphore(0)
-    @volatile var ok = true
+    @volatile
+    var ok = true
     for (i <- 0 until 10) {
       new Thread {
         override def run() {

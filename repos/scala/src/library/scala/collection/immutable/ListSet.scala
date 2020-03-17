@@ -81,7 +81,8 @@ class ListSet[A]
     with Set[A]
     with GenericSetTemplate[A, ListSet]
     with SetLike[A, ListSet[A]]
-    with Serializable { self =>
+    with Serializable {
+  self =>
   override def companion: GenericCompanion[ListSet] = ListSet
 
   /** Returns the number of elements in this set.
@@ -165,7 +166,8 @@ class ListSet[A]
       *  @return number of set elements.
       */
     override def size = sizeInternal(this, 0)
-    @tailrec private def sizeInternal(n: ListSet[A], acc: Int): Int =
+    @tailrec
+    private def sizeInternal(n: ListSet[A], acc: Int): Int =
       if (n.isEmpty)
         acc
       else
@@ -183,7 +185,8 @@ class ListSet[A]
       *  @return `'''true'''`, iff `elem` is contained in this set.
       */
     override def contains(e: A) = containsInternal(this, e)
-    @tailrec private def containsInternal(n: ListSet[A], e: A): Boolean =
+    @tailrec
+    private def containsInternal(n: ListSet[A], e: A): Boolean =
       !n.isEmpty && (n.head == e || containsInternal(n.unchecked_outer, e))
 
     /** This method creates a new set with an additional element.

@@ -68,7 +68,8 @@ trait SerializationSupport {
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
-    @tailrec def readChunk(): Unit =
+    @tailrec
+    def readChunk(): Unit =
       in.read(buffer) match {
         case -1 ⇒ ()
         case n ⇒

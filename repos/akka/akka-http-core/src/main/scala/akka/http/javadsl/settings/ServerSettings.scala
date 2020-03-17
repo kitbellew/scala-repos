@@ -19,7 +19,8 @@ import scala.concurrent.duration.{Duration, FiniteDuration}
 /**
   * Public API but not intended for subclassing
   */
-abstract class ServerSettings { self: ServerSettingsImpl ⇒
+abstract class ServerSettings {
+  self: ServerSettingsImpl ⇒
   def getServerHeader: Optional[Server]
   def getTimeouts: ServerSettings.Timeouts
   def getMaxConnections: Int

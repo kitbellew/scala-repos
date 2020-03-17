@@ -251,7 +251,8 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
       log: LoggingAdapter,
       separator: Char = File.separatorChar): String = {
     import java.lang.StringBuilder
-    @tailrec def rec(
+    @tailrec
+    def rec(
         p: Uri.Path,
         result: StringBuilder = new StringBuilder(base)): String =
       p match {

@@ -330,7 +330,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
         CacheNode(addr.getHostName, addr.getPort, 1)
     }
 
-  @volatile private[this] var underlyingSize = 0
+  @volatile
+  private[this] var underlyingSize = 0
   zkServerSetCluster.snap match {
     case (current, changes) =>
       underlyingSize = current.size
@@ -437,7 +438,8 @@ class ZookeeperCacheNodeGroup(
 
   protected[finagle] val set = Var(Set[CacheNode]())
 
-  @volatile private var detectKeyRemapping = false
+  @volatile
+  private var detectKeyRemapping = false
 
   private val zkGroup =
     new ZkGroup(new ServerSetImpl(zkClient, zkPath), zkPath) collect {

@@ -62,7 +62,8 @@ final class NIHDBPerfTestRunner[T](
     with ActorVFSModule
     with VFSColumnarTableModule
     with XLightWebHttpClientModule[Future]
-    with NIHDBIngestSupport { self =>
+    with NIHDBIngestSupport {
+  self =>
   // with StandaloneActorProjectionSystem
   // with SliceColumnarTableModule[Future, Array[Byte]] { self =>
 

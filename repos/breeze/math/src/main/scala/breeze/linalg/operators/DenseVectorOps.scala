@@ -14,7 +14,8 @@ import spire.syntax.cfor._
 import scala.reflect.ClassTag
 import scalaxy.debug._
 
-trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
+trait DenseVectorOps extends DenseVector_GenericOps {
+  this: DenseVector.type =>
 
   @expand
   @expand.valify
@@ -44,8 +45,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : BinaryRegistry[DenseVector[T], Vector[T], Op.type, DenseVector[T]] =
     new BinaryRegistry[DenseVector[T], Vector[T], Op.type, DenseVector[T]] {
 
@@ -87,8 +87,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type] {
 
@@ -119,8 +118,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           _ + _
         }, {
           _ - _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type] {
 
@@ -169,8 +167,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T]): Op.Impl2[DenseVector[T], T, DenseVector[T]] =
+        }) op: Op.Impl2[T, T, T]): Op.Impl2[DenseVector[T], T, DenseVector[T]] =
     new Op.Impl2[DenseVector[T], T, DenseVector[T]] {
       def apply(a: DenseVector[T], b: T): DenseVector[T] = {
         val ad = a.data
@@ -237,8 +234,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T]): Op.Impl2[T, DenseVector[T], DenseVector[T]] =
+        }) op: Op.Impl2[T, T, T]): Op.Impl2[T, DenseVector[T], DenseVector[T]] =
     new Op.Impl2[T, DenseVector[T], DenseVector[T]] {
       def apply(a: T, b: DenseVector[T]): DenseVector[T] = {
         val bd = b.data
@@ -286,8 +282,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : Op.Impl2[DenseVector[T], DenseVector[T], DenseVector[T]] = {
     new Op.Impl2[DenseVector[T], DenseVector[T], DenseVector[T]] {
       def apply(a: DenseVector[T], b: DenseVector[T]): DenseVector[T] = {
@@ -350,8 +345,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], DenseVector[T]] =
+        }) op: Op.Impl2[T, T, T])
+      : Op.InPlaceImpl2[DenseVector[T], DenseVector[T]] =
     new Op.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       def apply(a: DenseVector[T], b: DenseVector[T]): Unit = {
         require(a.length == b.length, "Lengths must match!")
@@ -411,8 +406,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           b
         }, {
           _ % _
-        })
-      op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], T] =
+        }) op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], T] =
     new Op.InPlaceImpl2[DenseVector[T], T] {
       def apply(a: DenseVector[T], b: T): Unit = {
         val ad = a.data
@@ -791,7 +785,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   *
   * @author dlwh
  **/
-trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
+trait DenseVector_SpecialOps extends DenseVectorOps {
+  this: DenseVector.type =>
 
   implicit val canAddIntoF
       : OpAdd.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] = {
@@ -918,7 +913,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
   *
   * @author dlwh
  **/
-trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
+trait DenseVector_OrderingOps extends DenseVectorOps {
+  this: DenseVector.type =>
 
   @expand
   implicit def dv_dv_Op[
@@ -937,8 +933,7 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
           _ == _
         }, {
           _ != _
-        })
-      op: Op.Impl2[T, T, T])
+        }) op: Op.Impl2[T, T, T])
       : Op.Impl2[DenseVector[T], DenseVector[T], BitVector] =
     new Op.Impl2[DenseVector[T], DenseVector[T], BitVector] {
       def apply(a: DenseVector[T], b: DenseVector[T]): BitVector = {
@@ -979,8 +974,7 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
           _ == _
         }, {
           _ != _
-        })
-      op: Op.Impl2[T, T, Boolean])
+        }) op: Op.Impl2[T, T, Boolean])
       : Op.Impl2[DenseVector[T], Vector[T], BitVector] =
     new Op.Impl2[DenseVector[T], Vector[T], BitVector] {
       def apply(a: DenseVector[T], b: Vector[T]): BitVector = {
@@ -1015,8 +1009,8 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
           _ == _
         }, {
           _ != _
-        })
-      op: Op.Impl2[T, T, Boolean]): Op.Impl2[DenseVector[T], T, BitVector] =
+        }) op: Op.Impl2[T, T, Boolean])
+      : Op.Impl2[DenseVector[T], T, BitVector] =
     new Op.Impl2[DenseVector[T], T, BitVector] {
       def apply(a: DenseVector[T], b: T): BitVector = {
         val ad = a.data
@@ -1040,7 +1034,8 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
   *
   * @author dlwh
  **/
-trait DenseVector_GenericOps { this: DenseVector.type =>
+trait DenseVector_GenericOps {
+  this: DenseVector.type =>
 
   def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
       copy: CanCopy[DenseVector[V]],

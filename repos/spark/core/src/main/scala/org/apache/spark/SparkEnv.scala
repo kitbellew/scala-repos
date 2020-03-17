@@ -159,7 +159,8 @@ class SparkEnv(
 }
 
 object SparkEnv extends Logging {
-  @volatile private var env: SparkEnv = _
+  @volatile
+  private var env: SparkEnv = _
 
   private[spark] val driverSystemName = "sparkDriver"
   private[spark] val executorSystemName = "sparkExecutor"

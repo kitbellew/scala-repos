@@ -115,7 +115,8 @@ class CreateScalaDocStubAction
       }
     }
 
-    @inline def convertToParamMap[T <: ScNamedElement](params: Seq[T]) =
+    @inline
+    def convertToParamMap[T <: ScNamedElement](params: Seq[T]) =
       mutable.HashMap(params map (p => (p.getName, p)): _*)
 
     def processParams[T <: ScNamedElement](

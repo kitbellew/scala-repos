@@ -27,7 +27,8 @@ object ClassHelpers extends ClassHelpers with ControlHelpers
 /**
   * ClassHelpers provide several functions to instantiate a Class object given the class name and one or more package names
   */
-trait ClassHelpers { self: ControlHelpers =>
+trait ClassHelpers {
+  self: ControlHelpers =>
 
   private val nameModifiers = List[String => String](
     StringHelpers.camelify _,

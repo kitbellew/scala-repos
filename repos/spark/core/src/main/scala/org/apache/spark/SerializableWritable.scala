@@ -27,7 +27,9 @@ import org.apache.spark.annotation.DeveloperApi
 import org.apache.spark.util.Utils
 
 @DeveloperApi
-class SerializableWritable[T <: Writable](@transient var t: T)
+class SerializableWritable[T <: Writable](
+    @transient
+    var t: T)
     extends Serializable {
 
   def value: T = t

@@ -56,7 +56,8 @@ private[math] trait QuaternionAlgebra[A]
   def quot(a: Quaternion[A], b: Quaternion[A]): Quaternion[A] = a /~ b
   def mod(a: Quaternion[A], b: Quaternion[A]): Quaternion[A] = a % b
   def gcd(a: Quaternion[A], b: Quaternion[A]): Quaternion[A] = {
-    @tailrec def _gcd(a: Quaternion[A], b: Quaternion[A]): Quaternion[A] =
+    @tailrec
+    def _gcd(a: Quaternion[A], b: Quaternion[A]): Quaternion[A] =
       if (b.isZero)
         a
       else
@@ -90,7 +91,8 @@ trait QuaternionInstances {
 final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
     extends ScalaNumber
     with ScalaNumericConversions
-    with Serializable { lhs =>
+    with Serializable {
+  lhs =>
 
   // junky ScalaNumber stuff
   override def byteValue: Byte = longValue.toByte
@@ -273,10 +275,8 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
     lhs * rhs.reciprocal
 
   def pow(k: Int)(implicit s: Ring[A]): Quaternion[A] = {
-    @tailrec def loop(
-        p: Quaternion[A],
-        b: Quaternion[A],
-        e: Int): Quaternion[A] =
+    @tailrec
+    def loop(p: Quaternion[A], b: Quaternion[A], e: Int): Quaternion[A] =
       if (e == 0)
         p
       else if ((e & 1) == 1)

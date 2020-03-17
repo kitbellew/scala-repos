@@ -5,7 +5,8 @@ trait Global {
   }
 }
 
-trait IMain { self: MemberHandlers =>
+trait IMain {
+  self: MemberHandlers =>
   val global: Global
   def handlers: List[MemberHandler]
 }

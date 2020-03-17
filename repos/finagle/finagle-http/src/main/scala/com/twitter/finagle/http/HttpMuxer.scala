@@ -102,7 +102,8 @@ class HttpMuxer(
   * @see [[HttpMuxers]] for Java compatibility APIs.
   */
 object HttpMuxer extends Service[Request, Response] {
-  @volatile private[this] var underlying = new HttpMuxer()
+  @volatile
+  private[this] var underlying = new HttpMuxer()
 
   override def apply(request: Request): Future[Response] = underlying(request)
 

@@ -79,7 +79,8 @@ object Disposable {
   * together, are created by the use of `flatMap`, ensuring proper construction and
   * teardown of the comprised resources.
   */
-trait Managed[+T] { selfT =>
+trait Managed[+T] {
+  selfT =>
 
   /**
     * Create a new T, and pass it to the given operation (f).

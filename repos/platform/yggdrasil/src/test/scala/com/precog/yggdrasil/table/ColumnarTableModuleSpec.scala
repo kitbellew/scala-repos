@@ -113,7 +113,8 @@ trait ColumnarTableModuleSpec[M[+_]]
     //with CrossAllSpec[M]
     //with GroupingGraphSpec[M]
     with DistinctSpec[M]
-    with SchemasSpec[M] { spec =>
+    with SchemasSpec[M] {
+  spec =>
 
   import trans._
   import constants._

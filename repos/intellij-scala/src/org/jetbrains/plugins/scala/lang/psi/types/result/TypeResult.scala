@@ -77,7 +77,8 @@ object TypeResult {
 }
 
 case class Success[+T](result: T, elem: Option[PsiElement])
-    extends TypeResult[T] { self =>
+    extends TypeResult[T] {
+  self =>
   def flatMap[U](f: (T) => TypeResult[U]) = f(result)
   def map[U](f: T => U) = Success(f(result), elem)
   def filter(f: T => Boolean) =

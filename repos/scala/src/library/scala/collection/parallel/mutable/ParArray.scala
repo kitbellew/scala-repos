@@ -56,8 +56,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
     with Serializable {
   self =>
 
-  @transient private var array: Array[Any] = arrayseq.array
-    .asInstanceOf[Array[Any]]
+  @transient
+  private var array: Array[Any] = arrayseq.array.asInstanceOf[Array[Any]]
 
   override def companion
       : GenericCompanion[ParArray] with GenericParCompanion[ParArray] = ParArray

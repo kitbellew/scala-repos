@@ -48,8 +48,8 @@ case class NativeConnector(
    * since both of these operations may read and write to this variable.  This helps to ensure that
    * at most one connection is active.
    */
-  @volatile private[this] var connection: Option[NativeConnector.Connection] =
-    None
+  @volatile
+  private[this] var connection: Option[NativeConnector.Connection] = None
 
   /**
     * Get the connection if one already exists or obtain a new one.
@@ -133,7 +133,8 @@ object NativeConnector {
       timer: Timer,
       log: Logger) {
 
-    @volatile protected[this] var zookeeper: Option[ZooKeeper] = None
+    @volatile
+    protected[this] var zookeeper: Option[ZooKeeper] = None
 
     protected[this] val connectPromise = new Promise[ZooKeeper]
 

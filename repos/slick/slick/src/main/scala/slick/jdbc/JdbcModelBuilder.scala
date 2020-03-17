@@ -195,7 +195,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       val mColumns: Seq[MColumn],
       val mPrimaryKeys: Seq[MPrimaryKey],
       val mForeignKeys: Seq[Seq[MForeignKey]],
-      val mIndices: Seq[Seq[MIndexInfo]]) { table =>
+      val mIndices: Seq[Seq[MIndexInfo]]) {
+    table =>
 
     // models
     def buildModel(builders: Builders) =

@@ -98,7 +98,8 @@ class SparkListenerSuite
   }
 
   test("bus.stop() waits for the event queue to completely drain") {
-    @volatile var drained = false
+    @volatile
+    var drained = false
 
     // When Listener has started
     val listenerStarted = new Semaphore(0)
@@ -557,7 +558,8 @@ private class BasicJobCounter extends SparkListener {
   */
 private class SparkContextStoppingListener(val sc: SparkContext)
     extends SparkListener {
-  @volatile var sparkExSeen = false
+  @volatile
+  var sparkExSeen = false
   override def onJobEnd(job: SparkListenerJobEnd): Unit = {
     try {
       sc.stop()

@@ -25,7 +25,8 @@ import java.util.{Date, TimeZone}
   * implicit val formats = net.liftweb.json.DefaultFormats
   * </pre>
   */
-trait Formats { self: Formats =>
+trait Formats {
+  self: Formats =>
   val dateFormat: DateFormat
   val typeHints: TypeHints = NoTypeHints
   val customSerializers: List[Serializer[_]] = Nil

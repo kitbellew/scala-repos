@@ -120,7 +120,8 @@ object pinv extends UFunc with pinvLowPrio {
 
 }
 
-trait pinvLowPrio { this: pinv.type =>
+trait pinvLowPrio {
+  this: pinv.type =>
 
   /**
     * pinv for anything that can be transposed, multiplied with that transposed, and then solved.

@@ -34,8 +34,10 @@ class WindowedByteCounterTest
         assert(counter.getState == Thread.State.TIMED_WAITING)
       }
 
-      @volatile var closed = false
-      @volatile var prev = 0
+      @volatile
+      var closed = false
+      @volatile
+      var prev = 0
       val nextPeriod = { () =>
         eventually {
           assert(counter.getState == Thread.State.TIMED_WAITING)

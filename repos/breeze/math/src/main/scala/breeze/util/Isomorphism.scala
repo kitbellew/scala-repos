@@ -6,7 +6,8 @@ package breeze.util
   * @author dlwh
   */
 @SerialVersionUID(1)
-trait Isomorphism[T, U] extends Serializable { outer =>
+trait Isomorphism[T, U] extends Serializable {
+  outer =>
   def forward(t: T): U
   def backward(u: U): T
 

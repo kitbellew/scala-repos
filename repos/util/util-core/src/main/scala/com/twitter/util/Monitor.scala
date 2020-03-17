@@ -19,7 +19,8 @@ case class MonitorException(handlingExc: Throwable, monitorExc: Throwable)
   * not recover values from a failed computations: It handles only true
   * exceptions that may require cleanup.
   */
-trait Monitor { self =>
+trait Monitor {
+  self =>
 
   /**
     * Attempt to handle the exception `exc`.

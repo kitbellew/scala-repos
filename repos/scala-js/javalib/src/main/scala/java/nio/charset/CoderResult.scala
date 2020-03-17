@@ -9,14 +9,20 @@ import java.nio._
 class CoderResult private (kind: Int, _length: Int) {
   import CoderResult._
 
-  @inline def isUnderflow(): Boolean = kind == Underflow
-  @inline def isOverflow(): Boolean = kind == Overflow
-  @inline def isMalformed(): Boolean = kind == Malformed
-  @inline def isUnmappable(): Boolean = kind == Unmappable
+  @inline
+  def isUnderflow(): Boolean = kind == Underflow
+  @inline
+  def isOverflow(): Boolean = kind == Overflow
+  @inline
+  def isMalformed(): Boolean = kind == Malformed
+  @inline
+  def isUnmappable(): Boolean = kind == Unmappable
 
-  @inline def isError(): Boolean = isMalformed || isUnmappable
+  @inline
+  def isError(): Boolean = isMalformed || isUnmappable
 
-  @inline def length(): Int = {
+  @inline
+  def length(): Int = {
     val l = _length
     if (l < 0)
       throw new UnsupportedOperationException
@@ -55,7 +61,8 @@ object CoderResult {
 
   private val uniqueUnmappable = mutable.Map.empty[Int, CoderResult]
 
-  @inline def malformedForLength(length: Int): CoderResult =
+  @inline
+  def malformedForLength(length: Int): CoderResult =
     (length: @switch) match {
       case 1 => Malformed1
       case 2 => Malformed2
@@ -67,7 +74,8 @@ object CoderResult {
   private def malformedForLengthImpl(length: Int): CoderResult =
     uniqueMalformed.getOrElseUpdate(length, new CoderResult(Malformed, length))
 
-  @inline def unmappableForLength(length: Int): CoderResult =
+  @inline
+  def unmappableForLength(length: Int): CoderResult =
     (length: @switch) match {
       case 1 => Unmappable1
       case 2 => Unmappable2

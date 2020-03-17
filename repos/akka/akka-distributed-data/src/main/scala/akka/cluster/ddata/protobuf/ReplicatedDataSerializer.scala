@@ -504,7 +504,8 @@ object OtherMessageComparator extends Comparator[dm.OtherMessage] {
     if (aSize == bSize) {
       val aIter = aByteString.iterator
       val bIter = bByteString.iterator
-      @tailrec def findDiff(): Int = {
+      @tailrec
+      def findDiff(): Int = {
         if (aIter.hasNext) {
           val aByte = aIter.nextByte()
           val bByte = bIter.nextByte()

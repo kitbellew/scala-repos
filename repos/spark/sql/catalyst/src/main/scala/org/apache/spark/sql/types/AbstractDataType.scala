@@ -138,7 +138,8 @@ protected[sql] abstract class AtomicType extends DataType {
   private[sql] val tag: TypeTag[InternalType]
   private[sql] val ordering: Ordering[InternalType]
 
-  @transient private[sql] val classTag = ScalaReflectionLock.synchronized {
+  @transient
+  private[sql] val classTag = ScalaReflectionLock.synchronized {
     val mirror = runtimeMirror(Utils.getSparkClassLoader)
     ClassTag[InternalType](mirror.runtimeClass(tag.tpe))
   }

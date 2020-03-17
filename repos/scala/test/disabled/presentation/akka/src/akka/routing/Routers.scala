@@ -8,7 +8,8 @@ import akka.actor.{UntypedActor, Actor, ActorRef}
 /**
   * A Dispatcher is a trait whose purpose is to route incoming messages to actors.
   */
-trait Dispatcher { this: Actor =>
+trait Dispatcher {
+  this: Actor =>
 
   protected def transform(msg: Any): Any = msg
 
@@ -65,7 +66,8 @@ abstract class UntypedDispatcher extends UntypedActor {
   * A LoadBalancer is a specialized kind of Dispatcher, that is supplied an InfiniteIterator of targets
   * to dispatch incoming messages to.
   */
-trait LoadBalancer extends Dispatcher { self: Actor =>
+trait LoadBalancer extends Dispatcher {
+  self: Actor =>
   protected def seq: InfiniteIterator[ActorRef]
 
   protected def routes = {

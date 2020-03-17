@@ -201,7 +201,8 @@ abstract class ActorTransportAdapter(
   protected def managerName: String
   protected def managerProps: Props
   // Write once variable initialized when Listen is called.
-  @volatile protected var manager: ActorRef = _
+  @volatile
+  protected var manager: ActorRef = _
 
   private def registerManager(): Future[ActorRef] =
     (

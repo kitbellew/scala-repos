@@ -35,7 +35,8 @@ import reflect.ClassTag
   */
 @implicitNotFound(
   "No Json deserializer found for type ${A}. Try to implement an implicit Reads or Format for this type.")
-trait Reads[A] { self =>
+trait Reads[A] {
+  self =>
 
   /**
     * Convert the JsValue into a A
@@ -546,7 +547,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
                   Seq(ValidationError("error.expected.date"))))
         }
 
-      @inline def epoch(millis: Long): LocalDateTime =
+      @inline
+      def epoch(millis: Long): LocalDateTime =
         LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC)
     }
 
@@ -654,7 +656,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
                   Seq(ValidationError("error.expected.date"))))
         }
 
-      @inline def epoch(millis: Long): ZonedDateTime =
+      @inline
+      def epoch(millis: Long): ZonedDateTime =
         ZonedDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC)
     }
 
@@ -706,7 +709,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
                   Seq(ValidationError("error.expected.date"))))
         }
 
-      @inline def epoch(millis: Long): LocalDate =
+      @inline
+      def epoch(millis: Long): LocalDate =
         LocalDate.now(Clock.fixed(Instant.ofEpochMilli(millis), ZoneOffset.UTC))
     }
 

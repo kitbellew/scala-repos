@@ -16,11 +16,13 @@ abstract class FormatInterpolator {
   import definitions._
   import treeInfo.Applied
 
-  @inline private def truly(body: => Unit): Boolean = {
+  @inline
+  private def truly(body: => Unit): Boolean = {
     body;
     true
   }
-  @inline private def falsely(body: => Unit): Boolean = {
+  @inline
+  private def falsely(body: => Unit): Boolean = {
     body;
     false
   }

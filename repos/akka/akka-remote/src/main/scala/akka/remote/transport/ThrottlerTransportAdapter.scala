@@ -677,7 +677,8 @@ private[transport] final case class ThrottlerHandle(
   override def write(payload: ByteString): Boolean = {
     val tokens = payload.length
 
-    @tailrec def tryConsume(currentBucket: ThrottleMode): Boolean = {
+    @tailrec
+    def tryConsume(currentBucket: ThrottleMode): Boolean = {
       val timeOfSend = System.nanoTime()
       val (newBucket, allow) = currentBucket.tryConsumeTokens(
         timeOfSend,

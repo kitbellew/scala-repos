@@ -88,7 +88,8 @@ private class P2CBalancerPeakEwma[Req, Rep](
 
 }
 
-private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
+private trait PeakEwma[Req, Rep] {
+  self: Balancer[Req, Rep] =>
 
   protected def rng: Rng
 

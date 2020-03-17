@@ -7,7 +7,8 @@ import play.twirl.api.Html
 
 import lila.api.Context
 
-trait AnalysisHelper { self: I18nHelper with SecurityHelper =>
+trait AnalysisHelper {
+  self: I18nHelper with SecurityHelper =>
 
   def nagName(nag: Nag)(implicit ctx: Context) =
     nag match {

@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait Unzip[F[_]] { self =>
+trait Unzip[F[_]] {
+  self =>
   ////
   def unzip[A, B](a: F[(A, B)]): (F[A], F[B])
 
@@ -72,7 +73,8 @@ trait Unzip[F[_]] { self =>
 }
 
 object Unzip {
-  @inline def apply[F[_]](implicit F: Unzip[F]): Unzip[F] = F
+  @inline
+  def apply[F[_]](implicit F: Unzip[F]): Unzip[F] = F
 
   ////
   ////

@@ -90,7 +90,8 @@ object RowFormat {
       extends ValueRowFormat
       with RowFormatCodecs {
     // This is really stupid, but required to work w/ JDBM.
-    @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
+    @transient
+    lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
     }
 
@@ -101,7 +102,8 @@ object RowFormat {
   case class SortingKeyRowFormatV1(_columnRefs: Seq[ColumnRef])
       extends RowFormatCodecs
       with SortingRowFormat {
-    @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
+    @transient
+    lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
     }
 
@@ -110,13 +112,15 @@ object RowFormat {
 
   case class IdentitiesRowFormatV1(_columnRefs: Seq[ColumnRef])
       extends IdentitiesRowFormat {
-    @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
+    @transient
+    lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
     }
   }
 }
 
-trait RowFormatSupport { self: StdCodecs =>
+trait RowFormatSupport {
+  self: StdCodecs =>
   import ByteBufferPool._
 
   protected trait ColumnValueEncoder {
@@ -347,7 +351,8 @@ trait RowFormatSupport { self: StdCodecs =>
     var buffer = init
     var filled: ListBuffer[ByteBuffer] = null
 
-    @inline @tailrec
+    @inline
+    @tailrec
     def encodeAll(i: Int): Unit =
       if (i < encoders.length) {
         if (!RawBitSet.get(undefined, i)) {
@@ -412,7 +417,9 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
       def encodeFromRow(row: Int) = {
         val undefined = RawBitSet.create(colsArray.length)
 
-        @inline @tailrec def definedCols(i: Int): Unit =
+        @inline
+        @tailrec
+        def definedCols(i: Int): Unit =
           if (i >= 0) {
             if (!colsArray(i).isDefinedAt(row))
               RawBitSet.set(undefined, i)
@@ -441,7 +448,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
       def decodeToRow(row: Int, src: Array[Byte], offset: Int = 0) {
         val buf = ByteBuffer.wrap(src, offset, src.length - offset)
         val undefined = Codec[RawBitSet].read(buf)
-        @tailrec def helper(i: Int, decs: List[ColumnValueDecoder]) {
+        @tailrec
+        def helper(i: Int, decs: List[ColumnValueDecoder]) {
           decs match {
             case h :: t =>
               if (!RawBitSet.get(undefined, i))
@@ -459,21 +467,23 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     import Codec.{StatefulCodec, wrappedWriteInit}
 
     // @transient lazy val bitSetCodec = Codec[BitSet]
-    @transient lazy val rawBitSetCodec = Codec[RawBitSet]
+    @transient
+    lazy val rawBitSetCodec = Codec[RawBitSet]
 
-    @transient private lazy val codecs: List[Codec[_ <: CValue]] =
-      columnRefs.toList map {
-        case ColumnRef(_, cType: CValueType[_]) =>
-          Codec.CValueCodec(cType)(codecForCValueType(cType))
-        case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
-      }
+    @transient
+    private lazy val codecs: List[Codec[_ <: CValue]] = columnRefs.toList map {
+      case ColumnRef(_, cType: CValueType[_]) =>
+        Codec.CValueCodec(cType)(codecForCValueType(cType))
+      case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
+    }
 
     type S = (Either[rawBitSetCodec.S, StatefulCodec#State], List[CValue])
 
     private def undefineds(xs: List[CValue]): RawBitSet = {
       val bits = RawBitSet.create(xs.size)
 
-      @inline @tailrec
+      @inline
+      @tailrec
       def rec(i: Int, xs: List[CValue]): Unit =
         xs match {
           case CUndefined :: xs =>
@@ -588,7 +598,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       bd => (bd.toDouble, bd),
       (_, bd) => bd)
 
-  @transient lazy val selectors: List[(CPath, List[CType])] = {
+  @transient
+  lazy val selectors: List[(CPath, List[CType])] = {
     val refs: Map[CPath, Seq[ColumnRef]] = columnRefs.groupBy(_.selector)
     (columnRefs map (_.selector)).distinct.map(selector =>
       (selector, refs(selector).map(_.ctype).toList))(collection.breakOut)
@@ -948,7 +959,8 @@ trait IdentitiesRowFormat extends RowFormat {
 
   private final def packedSize(n: Long): Int = {
 
-    @inline @tailrec
+    @inline
+    @tailrec
     def loop(size: Int, n: Long): Int = {
       val m = n >>> 7
       if (m == 0)
@@ -964,7 +976,8 @@ trait IdentitiesRowFormat extends RowFormat {
   // position in bytes to store a Long.
   private final def packLong(n: Long, bytes: Array[Byte], offset: Int): Int = {
 
-    @tailrec @inline
+    @tailrec
+    @inline
     def loop(i: Int, n: Long): Int = {
       val m = n >>> 7
       val b = n & 0x7FL
@@ -980,14 +993,17 @@ trait IdentitiesRowFormat extends RowFormat {
     loop(offset, n)
   }
 
-  @inline private final def shiftIn(b: Byte, shift: Int, n: Long): Long =
+  @inline
+  private final def shiftIn(b: Byte, shift: Int, n: Long): Long =
     n | ((b.toLong & 0x7FL) << shift)
 
-  @inline private final def more(b: Byte): Boolean = (b & 0x80) != 0
+  @inline
+  private final def more(b: Byte): Boolean = (b & 0x80) != 0
 
   def encodeIdentities(xs: Array[Long]) = {
 
-    @inline @tailrec
+    @inline
+    @tailrec
     def sumPackedSize(xs: Array[Long], i: Int, len: Int): Int =
       if (i < xs.length) {
         sumPackedSize(xs, i + 1, len + packedSize(xs(i)))
@@ -997,7 +1013,8 @@ trait IdentitiesRowFormat extends RowFormat {
 
     val bytes = new Array[Byte](sumPackedSize(xs, 0, 0))
 
-    @inline @tailrec
+    @inline
+    @tailrec
     def packAll(xs: Array[Long], i: Int, offset: Int) {
       if (i < xs.length)
         packAll(xs, i + 1, packLong(xs(i), bytes, offset))
@@ -1008,7 +1025,8 @@ trait IdentitiesRowFormat extends RowFormat {
   }
 
   def encode(cValues: List[CValue]): Array[Byte] = {
-    @inline @tailrec
+    @inline
+    @tailrec
     def sumPackedSize(cvals: List[CValue], len: Int): Int =
       cvals match {
         case CLong(n) :: cvals => sumPackedSize(cvals, len + packedSize(n))
@@ -1018,7 +1036,8 @@ trait IdentitiesRowFormat extends RowFormat {
 
     val bytes = new Array[Byte](sumPackedSize(cValues, 0))
 
-    @inline @tailrec
+    @inline
+    @tailrec
     def packAll(xs: List[CValue], offset: Int): Unit =
       xs match {
         case CLong(n) :: xs => packAll(xs, packLong(n, bytes, offset))
@@ -1032,7 +1051,8 @@ trait IdentitiesRowFormat extends RowFormat {
   def decode(bytes: Array[Byte], offset: Int): List[CValue] = {
     val longs = new Array[Long](identities)
 
-    @inline @tailrec
+    @inline
+    @tailrec
     def loop(offset: Int, shift: Int, n: Long, i: Int) {
       val lo = bytes(offset)
       val m = shiftIn(lo, shift, n)
@@ -1063,7 +1083,8 @@ trait IdentitiesRowFormat extends RowFormat {
     new ColumnEncoder {
       def encodeFromRow(row: Int): Array[Byte] = {
 
-        @inline @tailrec
+        @inline
+        @tailrec
         def sumPackedSize(i: Int, len: Int): Int =
           if (i < longCols.length) {
             sumPackedSize(i + 1, len + packedSize(longCols(i)(row)))
@@ -1072,7 +1093,8 @@ trait IdentitiesRowFormat extends RowFormat {
 
         val bytes = new Array[Byte](sumPackedSize(0, 0))
 
-        @inline @tailrec
+        @inline
+        @tailrec
         def packAll(i: Int, offset: Int): Unit =
           if (i < longCols.length) {
             packAll(i + 1, packLong(longCols(i)(row), bytes, offset))
@@ -1095,7 +1117,8 @@ trait IdentitiesRowFormat extends RowFormat {
     new ColumnDecoder {
       def decodeToRow(row: Int, src: Array[Byte], offset: Int = 0) {
 
-        @inline @tailrec
+        @inline
+        @tailrec
         def loop(offset: Int, shift: Int, n: Long, col: Int) {
           val b = src(offset)
           val m = shiftIn(b, shift, n)
@@ -1117,7 +1140,8 @@ trait IdentitiesRowFormat extends RowFormat {
 
   override def compare(a: Array[Byte], b: Array[Byte]): Int = {
 
-    @inline @tailrec
+    @inline
+    @tailrec
     def loop(offset: Int, shift: Int, n: Long, m: Long): Int = {
       val b1 = a(offset)
       val b2 = b(offset)

@@ -41,8 +41,10 @@ private[mllib] class RandomRDD[T: ClassTag](
     sc: SparkContext,
     size: Long,
     numPartitions: Int,
-    @transient private val rng: RandomDataGenerator[T],
-    @transient private val seed: Long = Utils.random.nextLong)
+    @transient
+    private val rng: RandomDataGenerator[T],
+    @transient
+    private val seed: Long = Utils.random.nextLong)
     extends RDD[T](sc, Nil) {
 
   require(size > 0, "Positive RDD size required.")
@@ -68,8 +70,10 @@ private[mllib] class RandomVectorRDD(
     size: Long,
     vectorSize: Int,
     numPartitions: Int,
-    @transient private val rng: RandomDataGenerator[Double],
-    @transient private val seed: Long = Utils.random.nextLong)
+    @transient
+    private val rng: RandomDataGenerator[Double],
+    @transient
+    private val seed: Long = Utils.random.nextLong)
     extends RDD[Vector](sc, Nil) {
 
   require(size > 0, "Positive RDD size required.")

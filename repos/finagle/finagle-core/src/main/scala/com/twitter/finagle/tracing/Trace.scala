@@ -109,7 +109,8 @@ object Trace {
     SpanId(rng.nextLong()),
     None,
     Flags())
-  @volatile private[this] var tracingEnabled = true
+  @volatile
+  private[this] var tracingEnabled = true
 
   private[this] val EmptyTraceCtxFn = () => TraceCtx.empty
 

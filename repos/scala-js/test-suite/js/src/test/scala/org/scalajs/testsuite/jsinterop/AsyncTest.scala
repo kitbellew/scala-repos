@@ -78,7 +78,8 @@ class AsyncTest {
       res.toArray)
   }
 
-  @Test def scala_scalajs_concurrent_JSExecutionContext_queue(): Unit = {
+  @Test
+  def scala_scalajs_concurrent_JSExecutionContext_queue(): Unit = {
     assumeTrue(js.isUndefined(js.Dynamic.global.Promise))
     TimeoutMock.withMockedTimeout { tick =>
       queueExecOrderTests { () =>
@@ -87,7 +88,8 @@ class AsyncTest {
     }
   }
 
-  @Test def scala_scalajs_concurrent_JSExecutionContext_runNow(): Unit = {
+  @Test
+  def scala_scalajs_concurrent_JSExecutionContext_runNow(): Unit = {
     val res = asyncTest(JSExecutionContext.runNow)
 
     assertArrayEquals(
@@ -102,7 +104,8 @@ class AsyncTest {
       res.toArray)
   }
 
-  @Test def scala_scala_concurrent_ExecutionContext_global(): Unit = {
+  @Test
+  def scala_scala_concurrent_ExecutionContext_global(): Unit = {
     assumeTrue(js.isUndefined(js.Dynamic.global.Promise))
     TimeoutMock.withMockedTimeout { tick =>
       queueExecOrderTests { () =>
@@ -113,7 +116,8 @@ class AsyncTest {
     }
   }
 
-  @Test def scala_scalajs_concurrent_QueueExecutionContext(): Unit = {
+  @Test
+  def scala_scalajs_concurrent_QueueExecutionContext(): Unit = {
     TimeoutMock.withMockedTimeout { tick =>
       PromiseMock.withMockedPromiseIfExists { optProcessQueue =>
         implicit val executor = QueueExecutionContext()
@@ -125,7 +129,8 @@ class AsyncTest {
     }
   }
 
-  @Test def scala_scalajs_concurrent_QueueExecutionContext_timeouts(): Unit = {
+  @Test
+  def scala_scalajs_concurrent_QueueExecutionContext_timeouts(): Unit = {
     TimeoutMock.withMockedTimeout { tick =>
       implicit val executor = QueueExecutionContext.timeouts()
       queueExecOrderTests { () =>
@@ -134,7 +139,8 @@ class AsyncTest {
     }
   }
 
-  @Test def scala_scalajs_concurrent_QueueExecutionContext_promises(): Unit = {
+  @Test
+  def scala_scalajs_concurrent_QueueExecutionContext_promises(): Unit = {
     PromiseMock.withMockedPromise { processQueue =>
       implicit val executor = QueueExecutionContext.promises()
       queueExecOrderTests { () =>
@@ -143,25 +149,29 @@ class AsyncTest {
     }
   }
 
-  @Test def scala_concurrent_future_should_support_map(): Unit = {
+  @Test
+  def scala_concurrent_future_should_support_map(): Unit = {
     implicit val ec = JSExecutionContext.runNow
     val f = Future(3).map(x => x * 2)
     assertEquals(6, f.value.get.get)
   }
 
-  @Test def scala_concurrent_future_should_support_flatMap(): Unit = {
+  @Test
+  def scala_concurrent_future_should_support_flatMap(): Unit = {
     implicit val ec = JSExecutionContext.runNow
     val f = Future(Future(3)).flatMap(x => x)
     assertEquals(3, f.value.get.get)
   }
 
-  @Test def scala_concurrent_future_should_support_sequence(): Unit = {
+  @Test
+  def scala_concurrent_future_should_support_sequence(): Unit = {
     implicit val ec = JSExecutionContext.runNow
     val f = Future.sequence(Seq(Future(3), Future(5)))
     assertEquals(Seq(3, 5), f.value.get.get)
   }
 
-  @Test def JSPromiseToFuture_basic_case(): Unit = {
+  @Test
+  def JSPromiseToFuture_basic_case(): Unit = {
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 
@@ -188,7 +198,8 @@ class AsyncTest {
     }
   }
 
-  @Test def scala_concurrent_FutureToJSPromise_basic_case(): Unit = {
+  @Test
+  def scala_concurrent_FutureToJSPromise_basic_case(): Unit = {
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 
@@ -212,7 +223,8 @@ class AsyncTest {
     }
   }
 
-  @Test def scala_concurrent_FutureToJSPromise_thenable_case(): Unit = {
+  @Test
+  def scala_concurrent_FutureToJSPromise_thenable_case(): Unit = {
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 

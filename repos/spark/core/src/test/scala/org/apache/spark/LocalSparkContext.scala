@@ -29,7 +29,8 @@ import org.scalatest.Suite
 trait LocalSparkContext extends BeforeAndAfterEach with BeforeAndAfterAll {
   self: Suite =>
 
-  @transient var sc: SparkContext = _
+  @transient
+  var sc: SparkContext = _
 
   override def beforeAll() {
     super.beforeAll()

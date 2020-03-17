@@ -28,7 +28,8 @@ sealed abstract class Natural
   def digit: UInt
 
   def foldDigitsLeft[@sp A](a: A)(f: (A, UInt) => A): A = {
-    @tailrec def recur(next: Natural, sofar: A): A =
+    @tailrec
+    def recur(next: Natural, sofar: A): A =
       next match {
         case End(d)         => f(a, d)
         case Digit(d, tail) => recur(tail, f(a, d))
@@ -145,7 +146,8 @@ sealed abstract class Natural
 
   // calculate 9 digits at a time using /%
   override def toString: String = {
-    @tailrec def recur(next: Natural, s: String): String = {
+    @tailrec
+    def recur(next: Natural, s: String): String = {
       next match {
         case End(d) =>
           d.toLong.toString + s
@@ -409,7 +411,8 @@ sealed abstract class Natural
     }
 
   def pow(rhs: Natural): Natural = {
-    @tailrec def _pow(t: Natural, b: Natural, e: Natural): Natural = {
+    @tailrec
+    def _pow(t: Natural, b: Natural, e: Natural): Natural = {
       if (e.isZero)
         t
       else if (e.isOdd)
@@ -421,7 +424,8 @@ sealed abstract class Natural
   }
 
   def pow(rhs: UInt): Natural = {
-    @tailrec def _pow(t: Natural, b: Natural, e: UInt): Natural = {
+    @tailrec
+    def _pow(t: Natural, b: Natural, e: UInt): Natural = {
       if (e == UInt(0))
         t
       else if ((e & UInt(1)) == UInt(1))
@@ -547,7 +551,8 @@ sealed abstract class Natural
   }
 
   def chop(n: Int): Natural = {
-    @tailrec def recur(next: Natural, n: Int): Natural =
+    @tailrec
+    def recur(next: Natural, n: Int): Natural =
       if (n <= 0) {
         next
       } else {

@@ -27,7 +27,8 @@ private[engine] class TokenSourceActor[T](token: T) extends ActorPublisher[T] {
       context.stop(self)
   }
 
-  @tailrec private def tryDispatch(): Unit =
+  @tailrec
+  private def tryDispatch(): Unit =
     if (triggered > 0 && totalDemand > 0) {
       onNext(token)
       triggered -= 1

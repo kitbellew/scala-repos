@@ -136,7 +136,8 @@ class ScalaMoveClassesOrPackagesHandler
 
   @NotNull
   protected override def createMoveClassesOrPackagesToNewDirectoryDialog(
-      @NotNull directory: PsiDirectory,
+      @NotNull
+      directory: PsiDirectory,
       elementsToMove: Array[PsiElement],
       moveCallback: MoveCallback): DialogWrapper = {
     new MoveClassesOrPackagesToNewDirectoryDialog(
@@ -167,7 +168,8 @@ class ScalaMoveClassesOrPackagesHandler
   }
 
   private def addMoveCompanionChb(
-      @Nullable panel: JComponent,
+      @Nullable
+      panel: JComponent,
       elements: Iterable[PsiElement]): JComponent = {
     val companions =
       for {

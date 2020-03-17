@@ -436,7 +436,8 @@ private[http] object HttpServerBluePrint {
       materializer: Materializer)
       extends AtomicReference[Future[TimeoutSetup]]
       with TimeoutAccess
-      with (HttpRequest ⇒ HttpResponse) { self ⇒
+      with (HttpRequest ⇒ HttpResponse) {
+    self ⇒
     import materializer.executionContext
 
     set {

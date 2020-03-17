@@ -19,7 +19,8 @@ import org.scalatest.{BeforeAndAfterAll, Suite}
 
 trait SharedSparkContext extends BeforeAndAfterAll {
   self: Suite =>
-  @transient private var _sc: SparkContext = _
+  @transient
+  private var _sc: SparkContext = _
 
   def sc: SparkContext = _sc
 

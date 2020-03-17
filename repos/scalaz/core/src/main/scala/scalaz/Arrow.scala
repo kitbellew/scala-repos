@@ -73,7 +73,8 @@ trait Arrow[=>:[_, _]] extends Split[=>:] with Strong[=>:] with Category[=>:] {
 }
 
 object Arrow {
-  @inline def apply[F[_, _]](implicit F: Arrow[F]): Arrow[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Arrow[F]): Arrow[F] = F
 
   ////
 

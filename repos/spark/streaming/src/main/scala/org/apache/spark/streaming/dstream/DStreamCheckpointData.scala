@@ -34,13 +34,15 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
   protected val data = new HashMap[Time, AnyRef]()
 
   // Mapping of the batch time to the checkpointed RDD file of that time
-  @transient private var timeToCheckpointFile = new HashMap[Time, String]
+  @transient
+  private var timeToCheckpointFile = new HashMap[Time, String]
   // Mapping of the batch time to the time of the oldest checkpointed RDD
   // in that batch's checkpoint data
-  @transient private var timeToOldestCheckpointFileTime =
-    new HashMap[Time, Time]
+  @transient
+  private var timeToOldestCheckpointFileTime = new HashMap[Time, Time]
 
-  @transient private var fileSystem: FileSystem = null
+  @transient
+  private var fileSystem: FileSystem = null
   protected[streaming] def currentCheckpointFiles =
     data.asInstanceOf[HashMap[Time, String]]
 

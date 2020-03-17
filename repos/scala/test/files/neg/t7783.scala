@@ -1,6 +1,7 @@
 object O {
   class C;
-  @deprecated("", "") type D = C;
+  @deprecated("", "")
+  type D = C;
   def foo: Seq[D] = Nil
 }
 

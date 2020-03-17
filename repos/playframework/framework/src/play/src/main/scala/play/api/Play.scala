@@ -102,7 +102,8 @@ object Play {
     privateMaybeApplication.getOrElse(
       sys.error("There is no started application"))
 
-  @volatile private[play] var _currentApp: Application = _
+  @volatile
+  private[play] var _currentApp: Application = _
 
   /**
     * Starts this application.

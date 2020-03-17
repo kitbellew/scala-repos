@@ -65,7 +65,8 @@ class LDASuite
 
   val k: Int = 5
   val vocabSize: Int = 30
-  @transient var dataset: DataFrame = _
+  @transient
+  var dataset: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

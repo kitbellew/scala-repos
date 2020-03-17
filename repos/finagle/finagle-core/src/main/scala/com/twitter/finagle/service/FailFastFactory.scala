@@ -162,7 +162,8 @@ private[finagle] class FailFastFactory[Req, Rep](
       (ms + ms * (rng.nextFloat() * 0.10)).toInt.milliseconds
     }
 
-  @volatile private[this] var state: State = Ok
+  @volatile
+  private[this] var state: State = Ok
 
   private[this] val update =
     new Updater[Observation.t] {

@@ -18,7 +18,8 @@ import org.scalajs.testsuite.utils.Platform._
 
 class ThreadLocalRandomTest {
 
-  @Test def should_throw_exception_on_setSeed(): Unit = {
+  @Test
+  def should_throw_exception_on_setSeed(): Unit = {
     val tlr = ThreadLocalRandom.current()
 
     assertThrows(classOf[UnsupportedOperationException], tlr.setSeed(1))
@@ -39,7 +40,8 @@ class ThreadLocalRandomTest {
     }
   }
 
-  @Test def should_return_nextInt_that_fits_bounds(): Unit = {
+  @Test
+  def should_return_nextInt_that_fits_bounds(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkIntBounds(Int.MinValue, Int.MaxValue)
@@ -155,7 +157,8 @@ class ThreadLocalRandomTest {
     assertTrue(next < bound)
   }
 
-  @Test def should_return_nextLong_under_a_bound(): Unit = {
+  @Test
+  def should_return_nextLong_under_a_bound(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkLongUpperBound(Long.MaxValue)
@@ -280,7 +283,8 @@ class ThreadLocalRandomTest {
     }
   }
 
-  @Test def should_return_nextLong_that_fits_bounds(): Unit = {
+  @Test
+  def should_return_nextLong_that_fits_bounds(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkLongBounds(Long.MinValue, Long.MaxValue)
@@ -398,7 +402,8 @@ class ThreadLocalRandomTest {
     assertTrue(next < bound)
   }
 
-  @Test def should_return_nextDouble_under_a_bound(): Unit = {
+  @Test
+  def should_return_nextDouble_under_a_bound(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkDoubleUpperBound(Double.MaxValue)
@@ -525,7 +530,8 @@ class ThreadLocalRandomTest {
     }
   }
 
-  @Test def should_return_nextDouble_that_fits_bounds(): Unit = {
+  @Test
+  def should_return_nextDouble_that_fits_bounds(): Unit = {
     implicit val tlr = ThreadLocalRandom.current()
 
     checkDoubleBounds(Double.MinValue, Double.MaxValue)

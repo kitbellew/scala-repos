@@ -3,7 +3,8 @@ package arrow
 
 import cats.functor.Strong
 
-trait Arrow[F[_, _]] extends Split[F] with Strong[F] with Category[F] { self =>
+trait Arrow[F[_, _]] extends Split[F] with Strong[F] with Category[F] {
+  self =>
 
   /**
     * Lift a function into the context of an Arrow

@@ -136,8 +136,8 @@ class ReplicaManager(
     extends Logging
     with KafkaMetricsGroup {
   /* epoch of the controller that last changed the leader */
-  @volatile var controllerEpoch: Int =
-    KafkaController.InitialControllerEpoch - 1
+  @volatile
+  var controllerEpoch: Int = KafkaController.InitialControllerEpoch - 1
   private val localBrokerId = config.brokerId
   private val allPartitions = new Pool[(String, Int), Partition]
   private val replicaStateChangeLock = new Object

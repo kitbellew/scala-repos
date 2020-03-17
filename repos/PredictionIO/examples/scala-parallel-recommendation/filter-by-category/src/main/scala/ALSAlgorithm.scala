@@ -23,7 +23,8 @@ case class ALSAlgorithmParams(
 class ALSAlgorithm(val ap: ALSAlgorithmParams)
     extends PAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(sc: SparkContext, data: PreparedData): ALSModel = {
     // MLLib ALS cannot handle empty training data.

@@ -78,7 +78,8 @@ class VersionedKeyValSource[K, V](
     val sinkVersion: Option[Long],
     val maxFailures: Int,
     val versionsToKeep: Int)(implicit
-    @transient codec: Injection[(K, V), (Array[Byte], Array[Byte])])
+    @transient
+    codec: Injection[(K, V), (Array[Byte], Array[Byte])])
     extends Source
     with Mappable[(K, V)]
     with TypedSink[(K, V)] {
@@ -106,7 +107,8 @@ class VersionedKeyValSource[K, V](
       sourceVersion: Option[Long],
       sinkVersion: Option[Long],
       maxFailures: Int)(implicit
-      @transient codec: Injection[(K, V), (Array[Byte], Array[Byte])]) =
+      @transient
+      codec: Injection[(K, V), (Array[Byte], Array[Byte])]) =
     this(
       path,
       sourceVersion,

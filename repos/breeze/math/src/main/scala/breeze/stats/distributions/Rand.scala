@@ -29,7 +29,8 @@ import spire.implicits.cfor
   * A trait for monadic distributions. Provides support for use in for-comprehensions
   * @author dlwh
   */
-trait Rand[@specialized(Int, Double) +T] { outer =>
+trait Rand[@specialized(Int, Double) +T] {
+  outer =>
 
   /**
     * Gets one sample from the distribution. Equivalent to sample()

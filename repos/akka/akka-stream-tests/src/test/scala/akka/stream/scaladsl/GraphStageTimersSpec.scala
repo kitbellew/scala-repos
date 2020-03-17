@@ -30,8 +30,10 @@ object GraphStageTimersSpec {
   case class Tick(n: Int)
 
   class SideChannel {
-    @volatile var asyncCallback: AsyncCallback[Any] = _
-    @volatile var stopPromise: Promise[Option[Nothing]] = _
+    @volatile
+    var asyncCallback: AsyncCallback[Any] = _
+    @volatile
+    var stopPromise: Promise[Option[Nothing]] = _
 
     def isReady: Boolean = asyncCallback ne null
     def !(msg: Any) = asyncCallback.invoke(msg)

@@ -31,7 +31,8 @@ package scalabip
   *    println(anonfun1(0))
   *  }</pre>
   */
-trait Function1[@specialized -T1, @specialized +R] extends AnyRef { self =>
+trait Function1[@specialized -T1, @specialized +R] extends AnyRef {
+  self =>
   def apply(v1: T1): R
   override def toString() = "<function>"
 

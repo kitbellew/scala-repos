@@ -154,7 +154,8 @@ object SafeDeleteProcessorUtil {
     }
   }
 
-  @Nullable def findMethodUsages(
+  @Nullable
+  def findMethodUsages(
       psiMethod: PsiMethod,
       allElementsToDelete: Array[PsiElement],
       usages: util.List[UsageInfo]): Condition[PsiElement] = {
@@ -234,7 +235,8 @@ object SafeDeleteProcessorUtil {
     list.toArray(new Array[PsiMethod](list.size))
   }
 
-  @Nullable def findConstructorUsages(
+  @Nullable
+  def findConstructorUsages(
       constructor: PsiMethod,
       originalReferences: util.Collection[PsiReference],
       usages: util.List[UsageInfo],
@@ -393,8 +395,8 @@ object SafeDeleteProcessorUtil {
     false
   }
 
-  @Nullable def getOverridingConstructorOfSuperCall(
-      element: PsiElement): PsiMethod = {
+  @Nullable
+  def getOverridingConstructorOfSuperCall(element: PsiElement): PsiMethod = {
     if (element.isInstanceOf[PsiReferenceExpression] && "super".equals(
           element.getText)) {
       var parent: PsiElement = element.getParent
@@ -543,7 +545,8 @@ object SafeDeleteProcessorUtil {
             element match {
               case methodOrFieldRef: PsiDocMethodOrFieldRef =>
                 if (methodOrFieldRef.getSignature != null) {
-                  @NonNls val newText: StringBuffer = new StringBuffer
+                  @NonNls
+                  val newText: StringBuffer = new StringBuffer
                   newText.append("/** @see #").append(method.name).append('(')
                   val parameters: java.util.List[PsiParameter] =
                     new util.ArrayList[PsiParameter](

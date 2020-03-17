@@ -28,7 +28,8 @@ class HttpServerSpec
     extends AkkaSpec("""akka.loggers = []
      akka.loglevel = OFF
      akka.http.server.request-timeout = infinite""")
-    with Inside { spec ⇒
+    with Inside {
+  spec ⇒
   implicit val materializer = ActorMaterializer()
 
   "The server implementation" should {
@@ -725,7 +726,8 @@ class HttpServerSpec
           |""")
 
       val random = new Random()
-      @tailrec def rec(bytesLeft: Int): Unit =
+      @tailrec
+      def rec(bytesLeft: Int): Unit =
         if (bytesLeft > 0) {
           val count = math.min(random.nextInt(1000) + 1, bytesLeft)
           val data = random.alphanumeric.take(count).mkString

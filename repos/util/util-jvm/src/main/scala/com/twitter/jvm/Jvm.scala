@@ -143,8 +143,10 @@ trait Jvm {
   def foreachGc(f: Gc => Unit) {
     val Period = 1.second
     val LogPeriod = 30.minutes
-    @volatile var missedCollections = 0L
-    @volatile var lastLog = Time.epoch
+    @volatile
+    var missedCollections = 0L
+    @volatile
+    var lastLog = Time.epoch
 
     val lastByName = new ConcurrentHashMap[String, java.lang.Long](16, 0.75f, 1)
     def sample(): Unit = {
@@ -189,7 +191,8 @@ trait Jvm {
     */
   def monitorGcs(bufferFor: Duration): Time => Seq[Gc] = {
     require(bufferFor > 0.seconds)
-    @volatile var buffer = Nil: List[Gc]
+    @volatile
+    var buffer = Nil: List[Gc]
 
     // We assume that timestamps from foreachGc are monotonic.
     foreachGc {

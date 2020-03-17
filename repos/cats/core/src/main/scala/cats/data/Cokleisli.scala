@@ -8,7 +8,8 @@ import cats.{CoflatMap, Comonad, Functor, Monad}
 /**
   * Represents a function `F[A] => B`.
   */
-final case class Cokleisli[F[_], A, B](run: F[A] => B) { self =>
+final case class Cokleisli[F[_], A, B](run: F[A] => B) {
+  self =>
 
   def dimap[C, D](f: C => A)(g: B => D)(implicit
       F: Functor[F]): Cokleisli[F, C, D] = Cokleisli(fc => g(run(F.map(fc)(f))))

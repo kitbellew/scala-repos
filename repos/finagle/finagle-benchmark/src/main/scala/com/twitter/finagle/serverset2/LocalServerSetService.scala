@@ -52,8 +52,10 @@ private[serverset2] object LocalServerSetService extends App {
   private var zkClient: CuratorFramework = null
   private val serversets = createServerSetPaths(numberOfServersets())
   private val membersets = new Array[Seq[String]](numberOfServersets())
-  @volatile private var nextServerSetToChurn = 0
-  @volatile private var nextMemberId = 0
+  @volatile
+  private var nextServerSetToChurn = 0
+  @volatile
+  private var nextMemberId = 0
 
   def createServerSetPaths(num: Int): Seq[String] =
     (1 to num).map { id =>

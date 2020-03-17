@@ -95,8 +95,8 @@ private[akka] final class FilePublisher(
         self ! Continue
     }
 
-  @tailrec private def signalOnNexts(
-      chunks: Vector[ByteString]): Vector[ByteString] =
+  @tailrec
+  private def signalOnNexts(chunks: Vector[ByteString]): Vector[ByteString] =
     if (chunks.nonEmpty && totalDemand > 0) {
       onNext(chunks.head)
       signalOnNexts(chunks.tail)
@@ -107,7 +107,8 @@ private[akka] final class FilePublisher(
     }
 
   /** BLOCKING I/O READ */
-  @tailrec def readAhead(
+  @tailrec
+  def readAhead(
       maxChunks: Int,
       chunks: Vector[ByteString]): Vector[ByteString] =
     if (chunks.size <= maxChunks && isActive && !eofEncountered) {

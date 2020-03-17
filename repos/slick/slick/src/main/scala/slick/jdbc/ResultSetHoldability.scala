@@ -3,7 +3,8 @@ package slick.jdbc
 import java.sql.ResultSet
 
 /** Represents a result set holdability mode .*/
-sealed abstract class ResultSetHoldability(val intValue: Int) { self =>
+sealed abstract class ResultSetHoldability(val intValue: Int) {
+  self =>
 
   /** Return this `ResultSetHoldability`, unless it is `Auto` in which case
     * the specified holdability mode is returned instead. */

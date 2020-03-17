@@ -83,7 +83,8 @@ case class PastClock(duration: org.joda.time.Duration) extends Clock {
 trait TestShardService
     extends BlueEyesServiceSpecification
     with ShardService
-    with AkkaDefaults { self =>
+    with AkkaDefaults {
+  self =>
 
   val config = """
     security {
@@ -620,7 +621,8 @@ class ShardServiceSpec extends TestShardService {
   }
 }
 
-trait TestPlatform extends ManagedPlatform { self =>
+trait TestPlatform extends ManagedPlatform {
+  self =>
   import scalaz.syntax.monad._
   import scalaz.syntax.traverse._
 

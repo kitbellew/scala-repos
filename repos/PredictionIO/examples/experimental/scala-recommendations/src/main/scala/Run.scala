@@ -123,7 +123,8 @@ class ALSAlgorithm(val ap: AlgorithmParams)
     model.predict(feature._1, feature._2)
   }
 
-  @transient override lazy val querySerializer =
+  @transient
+  override lazy val querySerializer =
     Utils.json4sDefaultFormats + new Tuple2IntSerializer
 }
 

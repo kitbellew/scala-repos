@@ -122,13 +122,15 @@ sealed abstract class State[S] {
   /**
     * Get the state as an [[scala.Option]]. It will be `Some(state)` if it exists, otherwise `None`.
     */
-  @inline final def getOption(): Option[S] =
+  @inline
+  final def getOption(): Option[S] =
     if (exists)
       Some(get())
     else
       None
 
-  @inline final override def toString(): String = {
+  @inline
+  final override def toString(): String = {
     getOption
       .map {
         _.toString

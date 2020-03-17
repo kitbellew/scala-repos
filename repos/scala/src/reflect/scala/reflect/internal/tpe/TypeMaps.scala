@@ -253,7 +253,8 @@ private[internal] trait TypeMaps {
       try body
       finally variance = saved
     }
-    @inline final def flipped[T](body: => T): T = {
+    @inline
+    final def flipped[T](body: => T): T = {
       if (trackVariance)
         variance = variance.flip
       try body
@@ -283,7 +284,8 @@ private[internal] trait TypeMaps {
       *  be returned, or whether they must be cloned.
       */
     protected def noChangeToSymbols(origSyms: List[Symbol]): Boolean = {
-      @tailrec def loop(syms: List[Symbol]): Boolean =
+      @tailrec
+      def loop(syms: List[Symbol]): Boolean =
         syms match {
           case Nil     => true
           case x :: xs => (x.info eq applyToSymbolInfo(x)) && loop(xs)
@@ -853,7 +855,8 @@ private[internal] trait TypeMaps {
           tp
       }
 
-    @tailrec private def subst(
+    @tailrec
+    private def subst(
         tp: Type,
         sym: Symbol,
         from: List[Symbol],
@@ -924,7 +927,8 @@ private[internal] trait TypeMaps {
         case TypeRef(pre, _, args) => copyTypeRef(fromtp, pre, sym, args)
         case SingleType(pre, _)    => singleType(pre, sym)
       }
-    @tailrec private def subst(
+    @tailrec
+    private def subst(
         sym: Symbol,
         from: List[Symbol],
         to: List[Symbol]): Symbol =

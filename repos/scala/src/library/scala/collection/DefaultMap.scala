@@ -23,7 +23,8 @@ package collection
   *
   *  @since 2.8
   */
-trait DefaultMap[A, +B] extends Map[A, B] { self =>
+trait DefaultMap[A, +B] extends Map[A, B] {
+  self =>
 
   /** A default implementation which creates a new immutable map.
     */

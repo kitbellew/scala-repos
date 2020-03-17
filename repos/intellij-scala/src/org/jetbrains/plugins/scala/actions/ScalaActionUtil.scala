@@ -29,9 +29,11 @@ object ScalaActionUtil {
   def enableAndShowIfInScalaFile(e: AnActionEvent) {
     val presentation = e.getPresentation
 
-    @inline def enable(): Unit = enablePresentation(presentation)
+    @inline
+    def enable(): Unit = enablePresentation(presentation)
 
-    @inline def disable(): Unit = disablePresentation(presentation)
+    @inline
+    def disable(): Unit = disablePresentation(presentation)
 
     try {
       val dataContext = e.getDataContext

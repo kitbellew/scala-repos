@@ -11,7 +11,8 @@ import simulacrum.typeclass
 trait Apply[F[_]]
     extends Functor[F]
     with Cartesian[F]
-    with ApplyArityFunctions[F] { self =>
+    with ApplyArityFunctions[F] {
+  self =>
 
   /**
     * Given a value and a function in the Apply context, applies the

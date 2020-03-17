@@ -10,7 +10,8 @@ import scala.xml.NodeSeq
 /**
   * Responsible for passing a JValue further in the render pipeline.
   */
-trait JValueResult extends ScalatraBase { self: JsonSupport[_] =>
+trait JValueResult extends ScalatraBase {
+  self: JsonSupport[_] =>
 
   implicit protected def jsonFormats: Formats
 

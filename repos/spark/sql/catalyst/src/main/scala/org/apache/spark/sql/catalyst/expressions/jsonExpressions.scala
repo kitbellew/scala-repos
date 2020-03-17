@@ -125,8 +125,8 @@ case class GetJsonObject(json: Expression, path: Expression)
   override def nullable: Boolean = true
   override def prettyName: String = "get_json_object"
 
-  @transient private lazy val parsedPath = parsePath(
-    path.eval().asInstanceOf[UTF8String])
+  @transient
+  private lazy val parsedPath = parsePath(path.eval().asInstanceOf[UTF8String])
 
   override def eval(input: InternalRow): Any = {
     val jsonStr = json.eval(input).asInstanceOf[UTF8String]
@@ -350,17 +350,21 @@ case class JsonTuple(children: Seq[Expression])
   }
 
   // if processing fails this shared value will be returned
-  @transient private lazy val nullRow: Seq[InternalRow] =
+  @transient
+  private lazy val nullRow: Seq[InternalRow] =
     new GenericInternalRow(Array.ofDim[Any](fieldExpressions.length)) :: Nil
 
   // the json body is the first child
-  @transient private lazy val jsonExpr: Expression = children.head
+  @transient
+  private lazy val jsonExpr: Expression = children.head
 
   // the fields to query are the remaining children
-  @transient private lazy val fieldExpressions: Seq[Expression] = children.tail
+  @transient
+  private lazy val fieldExpressions: Seq[Expression] = children.tail
 
   // eagerly evaluate any foldable the field names
-  @transient private lazy val foldableFieldNames: IndexedSeq[String] = {
+  @transient
+  private lazy val foldableFieldNames: IndexedSeq[String] = {
     fieldExpressions.map {
       case expr if expr.foldable =>
         expr.eval().asInstanceOf[UTF8String].toString
@@ -369,8 +373,8 @@ case class JsonTuple(children: Seq[Expression])
   }
 
   // and count the number of foldable fields, we'll use this later to optimize evaluation
-  @transient private lazy val constantFields: Int = foldableFieldNames.count(
-    _ != null)
+  @transient
+  private lazy val constantFields: Int = foldableFieldNames.count(_ != null)
 
   override def elementTypes: Seq[(DataType, Boolean, String)] =
     fieldExpressions.zipWithIndex.map {

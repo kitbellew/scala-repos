@@ -35,7 +35,9 @@ class QueueResource @Inject() (
   @GET
   @Timed
   @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
-  def index(@Context req: HttpServletRequest): Response =
+  def index(
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       import Formats._
 
@@ -60,7 +62,8 @@ class QueueResource @Inject() (
   @Path("""{appId:.+}/delay""")
   def resetDelay(
       @PathParam("appId") id: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val appId = id.toRootPath
       val maybeApp = launchQueue.list.find(_.app.id == appId).map(_.app)

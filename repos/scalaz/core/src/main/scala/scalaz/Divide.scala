@@ -6,7 +6,8 @@ package scalaz
   * @see [[https://github.com/ekmett/contravariant/issues/18]]
   */
 ////
-trait Divide[F[_]] extends Contravariant[F] { self =>
+trait Divide[F[_]] extends Contravariant[F] {
+  self =>
   ////
   def divide[A, B, C](fa: F[A], fb: F[B])(f: C => (A, B)): F[C]
 
@@ -2301,7 +2302,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
 }
 
 object Divide {
-  @inline def apply[F[_]](implicit F: Divide[F]): Divide[F] = F
+  @inline
+  def apply[F[_]](implicit F: Divide[F]): Divide[F] = F
 
   ////
 

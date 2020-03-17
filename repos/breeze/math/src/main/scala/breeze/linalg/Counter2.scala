@@ -43,7 +43,8 @@ trait Counter2Like[
     +M1[VV] <: Curried[scala.collection.mutable.Map, K1]#Result[VV],
     +T <: Counter[K2, V],
     +This <: Counter2[K1, K2, V]]
-    extends TensorLike[(K1, K2), V, This] { self =>
+    extends TensorLike[(K1, K2), V, This] {
+  self =>
 
   def data: M1[_ <: T]
 

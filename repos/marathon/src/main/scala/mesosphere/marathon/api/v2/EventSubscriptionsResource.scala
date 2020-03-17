@@ -23,11 +23,14 @@ class EventSubscriptionsResource @Inject() (val config: MarathonConf)
 
   //scalastyle:off null
 
-  @Inject(optional = true) val service: HttpCallbackSubscriptionService = null
+  @Inject(optional = true)
+  val service: HttpCallbackSubscriptionService = null
 
   @GET
   @Timed
-  def listSubscribers(@Context req: HttpServletRequest): Response = {
+  def listSubscribers(
+      @Context
+      req: HttpServletRequest): Response = {
     validateSubscriptionService()
     ok(jsonString(result(service.getSubscribers)))
   }
@@ -35,7 +38,8 @@ class EventSubscriptionsResource @Inject() (val config: MarathonConf)
   @POST
   @Timed
   def subscribe(
-      @Context req: HttpServletRequest,
+      @Context
+      req: HttpServletRequest,
       @QueryParam("callbackUrl") callbackUrl: String): Response = {
     validateSubscriptionService()
     val future: Future[MarathonEvent] = service.handleSubscriptionEvent(
@@ -46,7 +50,8 @@ class EventSubscriptionsResource @Inject() (val config: MarathonConf)
   @DELETE
   @Timed
   def unsubscribe(
-      @Context req: HttpServletRequest,
+      @Context
+      req: HttpServletRequest,
       @QueryParam("callbackUrl") callbackUrl: String): Response = {
     validateSubscriptionService()
     val future = service.handleSubscriptionEvent(

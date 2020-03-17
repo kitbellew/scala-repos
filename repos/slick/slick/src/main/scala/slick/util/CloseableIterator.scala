@@ -7,7 +7,8 @@ import scala.util.control.NonFatal
   * An Iterator with a `close` method to close the underlying data source.
   * Implementers must close the data source when `hasNext` returns `false`.
   */
-trait CloseableIterator[+T] extends Iterator[T] with Closeable { self =>
+trait CloseableIterator[+T] extends Iterator[T] with Closeable {
+  self =>
 
   /**
     * Close the underlying data source. The behaviour of any methods of this

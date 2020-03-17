@@ -48,7 +48,8 @@ private[spark] class CoarseGrainedExecutorBackend(
 
   private[this] val stopping = new AtomicBoolean(false)
   var executor: Executor = null
-  @volatile var driver: Option[RpcEndpointRef] = None
+  @volatile
+  var driver: Option[RpcEndpointRef] = None
 
   // If this CoarseGrainedExecutorBackend is changed to support multiple threads, then this may need
   // to be changed so that we don't share the serializer instance across threads

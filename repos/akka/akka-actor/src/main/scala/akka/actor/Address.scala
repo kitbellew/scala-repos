@@ -47,7 +47,8 @@ final case class Address private (
   def hasGlobalScope: Boolean = host.isDefined
 
   // store hashCode
-  @transient override lazy val hashCode: Int = scala.util.hashing.MurmurHash3
+  @transient
+  override lazy val hashCode: Int = scala.util.hashing.MurmurHash3
     .productHash(this)
 
   /**

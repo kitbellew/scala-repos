@@ -422,7 +422,8 @@ object Keywords {
   }
 }
 
-trait Completion { self: RichPresentationCompiler =>
+trait Completion {
+  self: RichPresentationCompiler =>
 
   def completePackageMember(
       path: String,

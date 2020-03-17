@@ -13,7 +13,8 @@ package scala
   *
   */
 trait Function9[-T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, +R]
-    extends AnyRef { self =>
+    extends AnyRef {
+  self =>
 
   /** Apply the body of this function to the arguments.
     *  @return   the result of function application.
@@ -53,7 +54,6 @@ trait Function9[-T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, +R]
     *
     *  @return   a function `f` such that `f((x1, x2, x3, x4, x5, x6, x7, x8, x9)) == f(Tuple9(x1, x2, x3, x4, x5, x6, x7, x8, x9)) == apply(x1, x2, x3, x4, x5, x6, x7, x8, x9)`
     */
-
   @annotation.unspecialized
   def tupled: Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9] => R = {
     case Tuple9(x1, x2, x3, x4, x5, x6, x7, x8, x9) =>

@@ -345,7 +345,8 @@ trait JdbcBackend extends RelationalBackend {
     }
   }
 
-  trait SessionDef extends super.SessionDef { self =>
+  trait SessionDef extends super.SessionDef {
+    self =>
 
     def database: Database
     def conn: Connection

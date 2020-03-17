@@ -59,7 +59,8 @@ class TasksResource @Inject() (
   def indexJson(
       @QueryParam("status") status: String,
       @QueryParam("status[]") statuses: util.List[String],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       Option(status).map(statuses.add)
       val statusSet = statuses.asScala.flatMap(toTaskState).toSet
@@ -106,7 +107,9 @@ class TasksResource @Inject() (
   @GET
   @Produces(Array(MediaType.TEXT_PLAIN))
   @Timed
-  def indexTxt(@Context req: HttpServletRequest): Response =
+  def indexTxt(
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       ok(
         EndpointsHelper.appsToEndpointString(
@@ -122,10 +125,13 @@ class TasksResource @Inject() (
   @Timed
   @Path("delete")
   def killTasks(
-      @QueryParam("scale") @DefaultValue("false") scale: Boolean,
-      @QueryParam("force") @DefaultValue("false") force: Boolean,
+      @QueryParam("scale")
+      @DefaultValue("false") scale: Boolean,
+      @QueryParam("force")
+      @DefaultValue("false") force: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val taskIds = (Json.parse(body) \ "ids").as[Set[String]]
       val tasksToAppId =

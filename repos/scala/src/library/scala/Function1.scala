@@ -38,7 +38,8 @@ trait Function1[
       scala.Float,
       scala.Long,
       scala.Double) +R]
-    extends AnyRef { self =>
+    extends AnyRef {
+  self =>
 
   /** Apply the body of this function to the argument.
     *  @return   the result of function application.

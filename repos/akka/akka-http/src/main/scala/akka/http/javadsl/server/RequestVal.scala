@@ -7,7 +7,8 @@ package akka.http.javadsl.server
 /**
   * Represents a value that can be extracted from a request.
   */
-trait RequestVal[T] { outer ⇒
+trait RequestVal[T] {
+  outer ⇒
 
   /**
     * An accessor for the value given the [[RequestContext]].

@@ -43,7 +43,8 @@ import java.math.MathContext
   * given to a `writeMore` method so it can finish the writing. It may take
   * several calls to `writeMore` before it all is finally written.
   */
-trait Codec[@spec(Boolean, Long, Double) A] { self =>
+trait Codec[@spec(Boolean, Long, Double) A] {
+  self =>
   type S
 
   /** Returns the exact encoded size of `a`. */
@@ -104,9 +105,9 @@ trait Codec[@spec(Boolean, Long, Double) A] { self =>
   def writeAll(a: A)(
       acquire: () => ByteBuffer,
       used: List[ByteBuffer] = Nil): List[ByteBuffer] = {
-    @inline @tailrec def loop(
-        s: Option[S],
-        buffers: List[ByteBuffer]): List[ByteBuffer] =
+    @inline
+    @tailrec
+    def loop(s: Option[S], buffers: List[ByteBuffer]): List[ByteBuffer] =
       s match {
         case None => buffers
         case Some(s) =>
@@ -161,7 +162,8 @@ trait Codec[@spec(Boolean, Long, Double) A] { self =>
 
 object Codec {
 
-  @inline final def apply[A](implicit codec: Codec[A]): Codec[A] = codec
+  @inline
+  final def apply[A](implicit codec: Codec[A]): Codec[A] = codec
 
   private val byteBufferPool = new ByteBufferPool()
 
@@ -193,7 +195,8 @@ object Codec {
     }
 
   def readPackedInt(buf: ByteBuffer): Int = {
-    @tailrec def loop(n: Int, offset: Int): Int = {
+    @tailrec
+    def loop(n: Int, offset: Int): Int = {
       val b = buf.get()
       if ((b & 0x80) != 0) {
         loop(n | ((b & 0x7F) << offset), offset + 7)
@@ -333,7 +336,8 @@ object Codec {
     override def minSize(n: Long) = 10
 
     def encodedSize(sn: Long) = {
-      @tailrec def loop(size: Int, n: Long): Int = {
+      @tailrec
+      def loop(size: Int, n: Long): Int = {
         if ((n & ~0x7FL) != 0)
           loop(size + 1, n >> 7)
         else
@@ -364,7 +368,8 @@ object Codec {
 
     def writeUnsafe(sn: Long, buf: ByteBuffer) {
 
-      @inline @tailrec
+      @inline
+      @tailrec
       def loop(n: Long): Unit =
         if (n != 0) {
           buf.put(
@@ -393,7 +398,9 @@ object Codec {
     }
 
     def read(buf: ByteBuffer): Long = {
-      @inline @tailrec def loop(offset: Int, n: Long): Long = {
+      @inline
+      @tailrec
+      def loop(offset: Int, n: Long): Long = {
         val lo = buf.get().toLong
         val nn = n | ((lo & 0x7FL) << offset)
         if ((lo & 0x80L) != 0)
@@ -843,7 +850,8 @@ object Codec {
 
     def readBitSet(src: ByteBuffer): BitSet = {
       val pos = src.position()
-      @inline def get(offset: Int): Boolean =
+      @inline
+      def get(offset: Int): Boolean =
         (src.get(pos + (offset >>> 3)) & (1 << (offset & 7))) != 0
 
       val bits = new BitSet
@@ -1003,7 +1011,8 @@ object Codec {
 
     def readBitSet(src: ByteBuffer): RawBitSet = {
       val pos = src.position()
-      @inline def get(offset: Int): Boolean =
+      @inline
+      def get(offset: Int): Boolean =
         (src.get(pos + (offset >>> 3)) & (1 << (offset & 7))) != 0
 
       val bits = RawBitSet.create(size)

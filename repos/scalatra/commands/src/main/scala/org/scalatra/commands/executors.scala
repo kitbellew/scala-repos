@@ -54,7 +54,8 @@ abstract class CommandExecutor[T <: Command, S](handler: T => S) {
 abstract class BlockingExecutor[T <: Command, S](
     handle: T => ModelValidation[S])
     extends CommandExecutor[T, ModelValidation[S]](handle) {
-  @transient private[this] val logger = Logger(getClass)
+  @transient
+  private[this] val logger = Logger(getClass)
 
   def execute(cmd: T): ModelValidation[S] = {
     logger.debug(s"Executing [${cmd.getClass.getName}].\n$cmd")
@@ -131,7 +132,8 @@ abstract class AsyncExecutor[T <: Command, S](
     handle: T => Future[ModelValidation[S]])(implicit
     executionContext: ExecutionContext)
     extends CommandExecutor[T, Future[ModelValidation[S]]](handle) {
-  @transient private[this] val logger = Logger(getClass)
+  @transient
+  private[this] val logger = Logger(getClass)
   def execute(cmd: T): Future[ModelValidation[S]] = {
     logger.debug(s"Executing [${cmd.getClass.getName}].\n$cmd")
     if (cmd.isValid) {

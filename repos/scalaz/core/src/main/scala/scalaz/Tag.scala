@@ -8,10 +8,12 @@ object Tag {
     *
     * @todo According to Miles, @specialized doesn't help here. Maybe manually specialize.
     */
-  @inline def apply[@specialized A, T](a: A): A @@ T = a.asInstanceOf[A @@ T]
+  @inline
+  def apply[@specialized A, T](a: A): A @@ T = a.asInstanceOf[A @@ T]
 
   /** `unsubst` specialized to `Id`. */
-  @inline def unwrap[@specialized A, T](a: A @@ T): A = unsubst[A, Id, T](a)
+  @inline
+  def unwrap[@specialized A, T](a: A @@ T): A = unsubst[A, Id, T](a)
 
   /** Add a tag `T` to `A`.
     *

@@ -81,7 +81,8 @@ trait MethodImpl[A, +R] {
 
 trait Multimethod2[Method[AA, BB, RR] <: Function2[AA, BB, RR], A, B, R]
     extends ((A, B) => R)
-    with MMRegistry2[Method[_ <: A, _ <: B, _ <: R]] { this: Method[A, B, R] =>
+    with MMRegistry2[Method[_ <: A, _ <: B, _ <: R]] {
+  this: Method[A, B, R] =>
   protected def bindingMissing(a: A, b: B): R =
     throw new UnsupportedOperationException(
       "Types not found!" + a + b + " " + ops)
@@ -143,7 +144,8 @@ trait Multimethod2[Method[AA, BB, RR] <: Function2[AA, BB, RR], A, B, R]
   */
 trait Multiproc2[Method[AA, BB] <: (AA, BB) => Unit, A <: AnyRef, B]
     extends ((A, B) => Unit)
-    with MMRegistry2[Method[_ <: A, _ <: B]] { this: Method[A, B] =>
+    with MMRegistry2[Method[_ <: A, _ <: B]] {
+  this: Method[A, B] =>
   protected def bindingMissing(a: A, b: B): Unit =
     throw new UnsupportedOperationException("Types not found!")
   protected def multipleOptions(

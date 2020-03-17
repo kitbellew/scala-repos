@@ -73,7 +73,8 @@ private[spark] class MesosSchedulerBackend(
   private val rejectOfferDurationForUnmetConstraints =
     getRejectOfferDurationForUnmetConstraints(sc)
 
-  @volatile var appId: String = _
+  @volatile
+  var appId: String = _
 
   override def start() {
     classLoader = Thread.currentThread.getContextClassLoader

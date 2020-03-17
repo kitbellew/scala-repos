@@ -126,7 +126,8 @@ trait NIHDBQueryExecutorComponent {
       with ShardQueryExecutorPlatform[Future]
       with VFSColumnarTableModule
       with KafkaIngestActorProjectionSystem
-      with GracefulStopSupport { platform =>
+      with GracefulStopSupport {
+      platform =>
 
       type YggConfig = NIHDBQueryExecutorConfig
       val yggConfig =

@@ -66,7 +66,8 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
 
   test("EventLoop: onError") {
     val e = new RuntimeException("Oops")
-    @volatile var receivedError: Throwable = null
+    @volatile
+    var receivedError: Throwable = null
     val eventLoop =
       new EventLoop[Int]("test") {
 
@@ -89,7 +90,8 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
   test(
     "EventLoop: error thrown from onError should not crash the event thread") {
     val e = new RuntimeException("Oops")
-    @volatile var receivedError: Throwable = null
+    @volatile
+    var receivedError: Throwable = null
     val eventLoop =
       new EventLoop[Int]("test") {
 
@@ -135,7 +137,8 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
   }
 
   test("EventLoop: post event in multiple threads") {
-    @volatile var receivedEventsCount = 0
+    @volatile
+    var receivedEventsCount = 0
     val eventLoop =
       new EventLoop[Int]("test") {
 
@@ -210,7 +213,8 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
   }
 
   test("EventLoop: stop() in onStart should call onStop") {
-    @volatile var onStopCalled: Boolean = false
+    @volatile
+    var onStopCalled: Boolean = false
     val eventLoop =
       new EventLoop[Int]("test") {
 
@@ -234,7 +238,8 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
   }
 
   test("EventLoop: stop() in onReceive should call onStop") {
-    @volatile var onStopCalled: Boolean = false
+    @volatile
+    var onStopCalled: Boolean = false
     val eventLoop =
       new EventLoop[Int]("test") {
 
@@ -257,7 +262,8 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
   }
 
   test("EventLoop: stop() in onError should call onStop") {
-    @volatile var onStopCalled: Boolean = false
+    @volatile
+    var onStopCalled: Boolean = false
     val eventLoop =
       new EventLoop[Int]("test") {
 

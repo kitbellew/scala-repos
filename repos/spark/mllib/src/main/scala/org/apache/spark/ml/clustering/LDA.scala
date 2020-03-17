@@ -380,7 +380,9 @@ private[clustering] trait LDAParams
 sealed abstract class LDAModel private[ml] (
     @Since("1.6.0") override val uid: String,
     @Since("1.6.0") val vocabSize: Int,
-    @Since("1.6.0") @transient protected val sqlContext: SQLContext)
+    @Since("1.6.0")
+    @transient
+    protected val sqlContext: SQLContext)
     extends Model[LDAModel]
     with LDAParams
     with Logging

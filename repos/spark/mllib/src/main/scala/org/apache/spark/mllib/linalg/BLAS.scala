@@ -27,8 +27,10 @@ import org.apache.spark.internal.Logging
   */
 private[spark] object BLAS extends Serializable with Logging {
 
-  @transient private var _f2jBLAS: NetlibBLAS = _
-  @transient private var _nativeBLAS: NetlibBLAS = _
+  @transient
+  private var _f2jBLAS: NetlibBLAS = _
+  @transient
+  private var _nativeBLAS: NetlibBLAS = _
 
   // For level-1 routines, we use Java implementation.
   private def f2jBLAS: NetlibBLAS = {

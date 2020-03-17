@@ -70,7 +70,8 @@ object Ziggurat {
     var hz = hza
     var iz = iza
 
-    @tailrec def loop(): Double = {
+    @tailrec
+    def loop(): Double = {
       x = hz * wn(iz)
 
       if (iz == 0) {
@@ -103,7 +104,8 @@ object Ziggurat {
     var jz = jza
     var iz = iza
 
-    @tailrec def loop(): Double = {
+    @tailrec
+    def loop(): Double = {
       if (iz == 0)
         return 7.697117470131487 - log(g.nextDouble())
       val x = jz * we(iz)

@@ -106,7 +106,8 @@ sealed abstract class Free[S[_], A] extends Product with Serializable {
     * from its suspension functor.
     */
   final def go(f: S[Free[S, A]] => Free[S, A])(implicit S: Functor[S]): A = {
-    @tailrec def loop(t: Free[S, A]): A =
+    @tailrec
+    def loop(t: Free[S, A]): A =
       t.resume match {
         case Left(s)  => loop(f(s))
         case Right(r) => r

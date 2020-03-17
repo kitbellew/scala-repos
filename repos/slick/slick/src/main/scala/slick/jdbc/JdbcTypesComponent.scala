@@ -17,7 +17,8 @@ import slick.SlickException
 import slick.ast._
 import slick.relational.{RelationalProfile, RelationalTypesComponent}
 
-trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
+trait JdbcTypesComponent extends RelationalTypesComponent {
+  self: JdbcProfile =>
 
   abstract class MappedJdbcType[T, U](implicit
       val tmd: JdbcType[U],

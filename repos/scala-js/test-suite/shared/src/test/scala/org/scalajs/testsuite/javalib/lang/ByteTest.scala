@@ -18,7 +18,8 @@ import org.scalajs.testsuite.utils.AssertThrows._
   */
 class ByteTest {
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
     def compare(x: Byte, y: Byte): Int = new JByte(x).compareTo(new JByte(y))
 
     assertTrue(compare(0.toByte, 5.toByte) < 0)
@@ -27,7 +28,8 @@ class ByteTest {
     assertEquals(0, compare(3.toByte, 3.toByte))
   }
 
-  @Test def should_be_a_Comparable(): Unit = {
+  @Test
+  def should_be_a_Comparable(): Unit = {
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
@@ -37,7 +39,8 @@ class ByteTest {
     assertEquals(0, compare(3.toByte, 3.toByte))
   }
 
-  @Test def should_parse_strings(): Unit = {
+  @Test
+  def should_parse_strings(): Unit = {
     def test(s: String, v: Byte): Unit = {
       assertEquals(v, JByte.parseByte(s))
       assertEquals(v, JByte.valueOf(s).byteValue())
@@ -50,7 +53,8 @@ class ByteTest {
     test("-100", -100)
   }
 
-  @Test def should_reject_invalid_strings_when_parsing(): Unit = {
+  @Test
+  def should_reject_invalid_strings_when_parsing(): Unit = {
     def test(s: String): Unit =
       expectThrows(classOf[NumberFormatException], JByte.parseByte(s))
 

@@ -58,7 +58,8 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () ⇒ FailureDetector)
     }
   }
 
-  @tailrec final override def remove(resource: A): Unit = {
+  @tailrec
+  final override def remove(resource: A): Unit = {
 
     val oldTable = resourceToFailureDetector.get
 
@@ -71,7 +72,8 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () ⇒ FailureDetector)
     }
   }
 
-  @tailrec final override def reset(): Unit = {
+  @tailrec
+  final override def reset(): Unit = {
 
     val oldTable = resourceToFailureDetector.get
     // if we won the race then update else try again

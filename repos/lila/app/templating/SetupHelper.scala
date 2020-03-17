@@ -9,7 +9,8 @@ import lila.report.Reason
 import lila.setup.TimeMode
 import lila.tournament.System
 
-trait SetupHelper { self: I18nHelper =>
+trait SetupHelper {
+  self: I18nHelper =>
 
   def translatedTimeModeChoices(implicit ctx: Context) =
     List(

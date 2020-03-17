@@ -58,7 +58,8 @@ private trait ApertureTesting {
         })
     }
 
-    @volatile var _status: Status = Status.Open
+    @volatile
+    var _status: Status = Status.Open
 
     override def status = _status
     def status_=(v: Status) {

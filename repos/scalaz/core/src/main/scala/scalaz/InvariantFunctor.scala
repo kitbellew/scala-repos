@@ -17,7 +17,8 @@ package scalaz
   * @see [[scalaz.InvariantFunctor.InvariantFunctorLaw]]
   */
 ////
-trait InvariantFunctor[F[_]] { self =>
+trait InvariantFunctor[F[_]] {
+  self =>
   ////
 
   import BijectionT.Bijection
@@ -57,8 +58,8 @@ trait InvariantFunctor[F[_]] { self =>
 }
 
 object InvariantFunctor {
-  @inline def apply[F[_]](implicit
-      F: InvariantFunctor[F]): InvariantFunctor[F] = F
+  @inline
+  def apply[F[_]](implicit F: InvariantFunctor[F]): InvariantFunctor[F] = F
 
   ////
   ////

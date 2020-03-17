@@ -3,7 +3,8 @@ package com.twitter.finagle.stream
 import com.twitter.concurrent.Offer
 import com.twitter.io.Buf
 
-trait StreamResponse { self =>
+trait StreamResponse {
+  self =>
 
   /**
     * This represents the actual HTTP reply (response headers) for this

@@ -52,7 +52,8 @@ object StabilizingGroup {
 
     private[this] val newSet = new Broker[Set[T]]()
 
-    @volatile private[this] var healthStat = Healthy.id
+    @volatile
+    private[this] var healthStat = Healthy.id
     private[this] val health =
       statsReceiver.addGauge("health") {
         healthStat

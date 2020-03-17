@@ -113,7 +113,8 @@ class Netty4ClientChannelInitializerTest
   }
 
   test("Netty4ClientChannelInitializer pipelines enforce read timeouts") {
-    @volatile var observedExn: Throwable = null
+    @volatile
+    var observedExn: Throwable = null
     val exnSnooper =
       new ChannelInboundHandlerAdapter {
         override def exceptionCaught(
@@ -141,7 +142,8 @@ class Netty4ClientChannelInitializerTest
   }
 
   test("Netty4ClientChannelInitializer pipelines enforce write timeouts") {
-    @volatile var observedExn: Throwable = null
+    @volatile
+    var observedExn: Throwable = null
     val exnSnooper =
       new ChannelInboundHandlerAdapter {
         override def exceptionCaught(

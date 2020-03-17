@@ -94,7 +94,8 @@ class JDBCQueryExecutor(
     val M: Monad[Future])
     extends StandaloneQueryExecutor
     with JDBCColumnarTableModule
-    with Logging { platform =>
+    with Logging {
+  platform =>
   type YggConfig = JDBCQueryExecutorConfig
 
   trait TableCompanion extends JDBCColumnarTableCompanion

@@ -194,7 +194,8 @@ object Word2Vec extends DefaultParamsReadable[Word2Vec] {
 @Experimental
 class Word2VecModel private[ml] (
     override val uid: String,
-    @transient private val wordVectors: feature.Word2VecModel)
+    @transient
+    private val wordVectors: feature.Word2VecModel)
     extends Model[Word2VecModel]
     with Word2VecBase
     with MLWritable {
@@ -205,7 +206,8 @@ class Word2VecModel private[ml] (
     * Returns a dataframe with two fields, "word" and "vector", with "word" being a String and
     * and the vector the DenseVector that it is mapped to.
     */
-  @transient lazy val getVectors: DataFrame = {
+  @transient
+  lazy val getVectors: DataFrame = {
     val sc = SparkContext.getOrCreate()
     val sqlContext = SQLContext.getOrCreate(sc)
     import sqlContext.implicits._

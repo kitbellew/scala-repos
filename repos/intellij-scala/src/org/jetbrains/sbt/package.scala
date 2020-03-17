@@ -149,7 +149,8 @@ package object sbt {
 
   implicit class RichOption[T](val opt: Option[T]) extends AnyVal {
     // Use for safely checking for null in chained calls
-    @inline def safeMap[A](f: T => A): Option[A] =
+    @inline
+    def safeMap[A](f: T => A): Option[A] =
       if (opt.isEmpty)
         None
       else

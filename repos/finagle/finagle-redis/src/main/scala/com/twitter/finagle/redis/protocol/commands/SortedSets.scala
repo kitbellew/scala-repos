@@ -620,7 +620,8 @@ sealed trait ScoreCommand extends Command {
 }
 sealed trait StrictScoreCommand extends ScoreCommand {}
 
-trait ZScoredRange extends KeyCommand { self =>
+trait ZScoredRange extends KeyCommand {
+  self =>
   val key: ChannelBuffer
   val min: ZInterval
   val max: ZInterval
@@ -642,7 +643,8 @@ trait ZScoredRange extends KeyCommand { self =>
     RequireClientProtocol(max != null, "max must not be null")
   }
 }
-trait ZScoredRangeCompanion { self =>
+trait ZScoredRangeCompanion {
+  self =>
   def get(
       key: ChannelBuffer,
       min: ZInterval,

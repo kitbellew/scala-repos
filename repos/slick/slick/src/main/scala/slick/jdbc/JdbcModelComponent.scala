@@ -5,7 +5,8 @@ import slick.dbio.DBIO
 import slick.jdbc.meta.MTable
 import slick.model.Model
 
-trait JdbcModelComponent { self: JdbcProfile =>
+trait JdbcModelComponent {
+  self: JdbcProfile =>
 
   /** Jdbc meta data for all tables included in the Slick model by default */
   def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] =

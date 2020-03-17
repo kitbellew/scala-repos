@@ -105,7 +105,8 @@ private[sql] case class LogicalRDD(
 
   override def producedAttributes: AttributeSet = outputSet
 
-  @transient override lazy val statistics: Statistics = Statistics(
+  @transient
+  override lazy val statistics: Statistics = Statistics(
     // TODO: Instead of returning a default value here, find a way to return a meaningful size
     // estimate for RDDs. See PR 1238 for more discussions.
     sizeInBytes = BigInt(sqlContext.conf.defaultSizeInBytes))
@@ -142,7 +143,8 @@ private[sql] case class PhysicalRDD(
 private[sql] case class DataSourceScan(
     output: Seq[Attribute],
     rdd: RDD[InternalRow],
-    @transient relation: BaseRelation,
+    @transient
+    relation: BaseRelation,
     override val metadata: Map[String, String] = Map.empty)
     extends LeafNode
     with CodegenSupport {

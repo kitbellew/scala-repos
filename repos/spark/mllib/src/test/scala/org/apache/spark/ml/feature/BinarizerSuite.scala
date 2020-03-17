@@ -29,7 +29,8 @@ class BinarizerSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  @transient var data: Array[Double] = _
+  @transient
+  var data: Array[Double] = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

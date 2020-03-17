@@ -94,7 +94,8 @@ private[cluster] final case class Gossip(
           format seenButNotMember.mkString(", "))
   }
 
-  @transient private lazy val membersMap: Map[UniqueAddress, Member] =
+  @transient
+  private lazy val membersMap: Map[UniqueAddress, Member] =
     members.map(m ⇒ m.uniqueAddress -> m)(collection.breakOut)
 
   /**
@@ -308,9 +309,12 @@ object GossipEnvelope {
 private[cluster] class GossipEnvelope private (
     val from: UniqueAddress,
     val to: UniqueAddress,
-    @volatile var g: Gossip,
+    @volatile
+    var g: Gossip,
     serDeadline: Deadline,
-    @transient @volatile var ser: () ⇒ Gossip)
+    @transient
+    @volatile
+    var ser: () ⇒ Gossip)
     extends ClusterMessage {
 
   def gossip: Gossip = {

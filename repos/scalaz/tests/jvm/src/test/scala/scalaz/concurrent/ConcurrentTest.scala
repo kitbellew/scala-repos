@@ -60,7 +60,8 @@ object ConcurrentTest extends SpecLite {
   final class WithTimeout(timeout: Long) {
     def apply[A](test: => A): A = {
       val latch = new CountDownLatch(1)
-      @volatile var result: A = null.asInstanceOf[A]
+      @volatile
+      var result: A = null.asInstanceOf[A]
       fork {
         result = test
         latch.countDown

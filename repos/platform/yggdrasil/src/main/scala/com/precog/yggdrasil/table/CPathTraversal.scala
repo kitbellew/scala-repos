@@ -32,7 +32,8 @@ import scala.annotation.tailrec
   * Represents a way to traverse a list of CPaths in sorted order. This takes
   * into account mixes of homogeneous and heterogeneous arrays.
   */
-sealed trait CPathTraversal { self =>
+sealed trait CPathTraversal {
+  self =>
   import MaybeOrdering._
   import CPathTraversal._
 
@@ -78,7 +79,8 @@ sealed trait CPathTraversal { self =>
             )(collection.breakOut)
 
           // Return the first column in the array defined at the row, or -1 if none are defined for that row
-          @inline def firstDefinedIndexFor(
+          @inline
+          def firstDefinedIndexFor(
               columns: Array[(CPath, Column)],
               row: Int): Int = {
             var i = 0

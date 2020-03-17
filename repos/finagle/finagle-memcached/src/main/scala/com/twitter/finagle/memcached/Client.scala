@@ -1058,8 +1058,10 @@ private[finagle] class KetamaPartitionedClient(
       key -> KetamaNode(key.identifier, node.weight, underlying)
   }
 
-  @volatile private[this] var ketamaNodeSnap = ketamaNodeGrp()
-  @volatile private[this] var nodes = mutable.Map[KetamaClientKey, Node]() ++ {
+  @volatile
+  private[this] var ketamaNodeSnap = ketamaNodeGrp()
+  @volatile
+  private[this] var nodes = mutable.Map[KetamaClientKey, Node]() ++ {
     ketamaNodeSnap.toMap.mapValues { kn: KetamaNode[Client] =>
       Node(kn, NodeState.Live)
     }
@@ -1072,7 +1074,8 @@ private[finagle] class KetamaPartitionedClient(
 
   private[this] val pristineDistributor = buildDistributor(
     nodes.values.map(_.node).toSeq)
-  @volatile private[this] var currentDistributor: Distributor[Client] =
+  @volatile
+  private[this] var currentDistributor: Distributor[Client] =
     pristineDistributor
 
   private[this] val liveNodeGauge =

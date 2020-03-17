@@ -3,7 +3,8 @@ package slick.jdbc
 import java.sql.ResultSet
 
 /** Represents a result set concurrency mode. */
-sealed abstract class ResultSetConcurrency(val intValue: Int) { self =>
+sealed abstract class ResultSetConcurrency(val intValue: Int) {
+  self =>
 
   /** Return this `ResultSetConcurrency`, unless it is `Auto` in which case
     * the specified concurrency mode is returned instead. */

@@ -26,7 +26,8 @@ object ScalaDirectoryService {
     "#org.jetbrains.plugins.scala.lang.refactoring.move.ScalaDirectoryService")
 
   def createClassFromTemplate(
-      @NotNull dir: PsiDirectory,
+      @NotNull
+      dir: PsiDirectory,
       name: String,
       templateName: String,
       askToDefineVariables: Boolean): PsiClass = {

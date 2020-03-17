@@ -10,7 +10,8 @@ import lila.api.{Context, TokenBucket}
 import lila.app._
 import lila.common.HTTPRequest
 
-trait LilaSocket { self: LilaController =>
+trait LilaSocket {
+  self: LilaController =>
 
   private type AcceptType[A] =
     Context => Fu[Either[Result, (Iteratee[A, _], Enumerator[A])]]

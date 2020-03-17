@@ -100,7 +100,8 @@ final class Formatter(private val dest: Appendable)
             val conversion = matchResult(5).get.charAt(0)
 
             // Avoid using conversion.isUpper not to depend on the Unicode database
-            @inline def isConversionUpperCase: scala.Boolean = conversion <= 'Z'
+            @inline
+            def isConversionUpperCase: scala.Boolean = conversion <= 'Z'
 
             def intArg: Int =
               (arg: Any) match {
@@ -341,7 +342,8 @@ final class Formatter(private val dest: Appendable)
 
   override def toString(): String = out().toString()
 
-  @inline private def ifNotClosed[T](body: => T): T =
+  @inline
+  private def ifNotClosed[T](body: => T): T =
     if (closed)
       throwClosedException()
     else

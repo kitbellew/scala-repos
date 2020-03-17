@@ -51,7 +51,8 @@ trait MVCHelper extends LiftRules.DispatchPF {
     _dispatch ::= pf
   }
 
-  @volatile private var _dispatch: List[MVCMatch] = Nil
+  @volatile
+  private var _dispatch: List[MVCMatch] = Nil
 
   private lazy val nonDevDispatch = _dispatch.reverse
 

@@ -36,9 +36,12 @@ import org.apache.spark.util.Utils
 
 private[streaming] object MasterFailureTest extends Logging {
 
-  @volatile var killed = false
-  @volatile var killCount = 0
-  @volatile var setupCalled = false
+  @volatile
+  var killed = false
+  @volatile
+  var killCount = 0
+  @volatile
+  var setupCalled = false
 
   def main(args: Array[String]) {
     // scalastyle:off println

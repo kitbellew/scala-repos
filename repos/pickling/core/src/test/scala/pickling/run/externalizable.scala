@@ -9,7 +9,8 @@ class StorageLevel private (
     private var useDisk_ : Boolean,
     private var useMemory_ : Boolean,
     private var deserialized_ : Boolean,
-    @transient private var buf: ByteBuffer,
+    @transient
+    private var buf: ByteBuffer,
     private var replication_ : Int)
     extends Externalizable {
 

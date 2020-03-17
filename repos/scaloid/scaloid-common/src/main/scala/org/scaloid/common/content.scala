@@ -130,92 +130,110 @@ trait TraitContext[This <: android.content.Context] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getApplicationContext() getApplicationContext()]]`
     */
-  @inline def applicationContext = basis.getApplicationContext
+  @inline
+  def applicationContext = basis.getApplicationContext
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getApplicationInfo() getApplicationInfo()]]`
     */
-  @inline def applicationInfo = basis.getApplicationInfo
+  @inline
+  def applicationInfo = basis.getApplicationInfo
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getAssets() getAssets()]]`
     */
-  @inline def assets = basis.getAssets
+  @inline
+  def assets = basis.getAssets
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getCacheDir() getCacheDir()]]`
     */
-  @inline def cacheDir = basis.getCacheDir
+  @inline
+  def cacheDir = basis.getCacheDir
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getClassLoader() getClassLoader()]]`
     */
-  @inline def classLoader = basis.getClassLoader
+  @inline
+  def classLoader = basis.getClassLoader
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getContentResolver() getContentResolver()]]`
     */
-  @inline def contentResolver = basis.getContentResolver
+  @inline
+  def contentResolver = basis.getContentResolver
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getExternalCacheDir() getExternalCacheDir()]]`
     */
-  @inline def externalCacheDir = basis.getExternalCacheDir
+  @inline
+  def externalCacheDir = basis.getExternalCacheDir
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getFilesDir() getFilesDir()]]`
     */
-  @inline def filesDir = basis.getFilesDir
+  @inline
+  def filesDir = basis.getFilesDir
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getMainLooper() getMainLooper()]]`
     */
-  @inline def mainLooper = basis.getMainLooper
+  @inline
+  def mainLooper = basis.getMainLooper
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getObbDir() getObbDir()]]`
     */
-  @inline def obbDir = basis.getObbDir
+  @inline
+  def obbDir = basis.getObbDir
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getPackageCodePath() getPackageCodePath()]]`
     */
-  @inline def packageCodePath = basis.getPackageCodePath
+  @inline
+  def packageCodePath = basis.getPackageCodePath
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getPackageManager() getPackageManager()]]`
     */
-  @inline def packageManager = basis.getPackageManager
+  @inline
+  def packageManager = basis.getPackageManager
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getPackageName() getPackageName()]]`
     */
-  @inline def packageName = basis.getPackageName
+  @inline
+  def packageName = basis.getPackageName
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getPackageResourcePath() getPackageResourcePath()]]`
     */
-  @inline def packageResourcePath = basis.getPackageResourcePath
+  @inline
+  def packageResourcePath = basis.getPackageResourcePath
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getResources() getResources()]]`
     */
-  @inline def resources = basis.getResources
+  @inline
+  def resources = basis.getResources
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getTheme() getTheme()]]`
     */
-  @inline def theme = basis.getTheme
+  @inline
+  def theme = basis.getTheme
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setTheme(int) setTheme(int)]]`
     */
-  @inline def theme(p: Int) = theme_=(p)
+  @inline
+  def theme(p: Int) = theme_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setTheme(int) setTheme(int)]]`
     */
-  @inline def theme_=(p: Int) = {
+  @inline
+  def theme_=(p: Int) = {
     basis.setTheme(p);
     basis
   }
@@ -223,18 +241,23 @@ trait TraitContext[This <: android.content.Context] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getWallpaper() getWallpaper()]]`
     */
-  @deprecated("", "") @inline def wallpaper = basis.getWallpaper
+  @deprecated("", "")
+  @inline
+  def wallpaper = basis.getWallpaper
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setWallpaper(android.graphics.Bitmap) setWallpaper(android.graphics.Bitmap)]]`
     */
-  @deprecated("", "") @inline def wallpaper(p: android.graphics.Bitmap) =
-    wallpaper_=(p)
+  @deprecated("", "")
+  @inline
+  def wallpaper(p: android.graphics.Bitmap) = wallpaper_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setWallpaper(android.graphics.Bitmap) setWallpaper(android.graphics.Bitmap)]]`
     */
-  @deprecated("", "") @inline def wallpaper_=(p: android.graphics.Bitmap) = {
+  @deprecated("", "")
+  @inline
+  def wallpaper_=(p: android.graphics.Bitmap) = {
     basis.setWallpaper(p);
     basis
   }
@@ -242,13 +265,16 @@ trait TraitContext[This <: android.content.Context] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setWallpaper(java.io.InputStream) setWallpaper(java.io.InputStream)]]`
     */
-  @deprecated("", "") @inline def wallpaper(p: java.io.InputStream) =
-    wallpaper_=(p)
+  @deprecated("", "")
+  @inline
+  def wallpaper(p: java.io.InputStream) = wallpaper_=(p)
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setWallpaper(java.io.InputStream) setWallpaper(java.io.InputStream)]]`
     */
-  @deprecated("", "") @inline def wallpaper_=(p: java.io.InputStream) = {
+  @deprecated("", "")
+  @inline
+  def wallpaper_=(p: java.io.InputStream) = {
     basis.setWallpaper(p);
     basis
   }
@@ -256,33 +282,40 @@ trait TraitContext[This <: android.content.Context] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getWallpaperDesiredMinimumHeight() getWallpaperDesiredMinimumHeight()]]`
     */
-  @deprecated("", "") @inline def wallpaperDesiredMinimumHeight =
-    basis.getWallpaperDesiredMinimumHeight
+  @deprecated("", "")
+  @inline
+  def wallpaperDesiredMinimumHeight = basis.getWallpaperDesiredMinimumHeight
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getWallpaperDesiredMinimumWidth() getWallpaperDesiredMinimumWidth()]]`
     */
-  @deprecated("", "") @inline def wallpaperDesiredMinimumWidth =
-    basis.getWallpaperDesiredMinimumWidth
+  @deprecated("", "")
+  @inline
+  def wallpaperDesiredMinimumWidth = basis.getWallpaperDesiredMinimumWidth
 
-  @inline def bindService[T: ClassTag](
-      p1: android.content.ServiceConnection,
-      p2: Int)(implicit context: Context): Boolean =
+  @inline
+  def bindService[T: ClassTag](p1: android.content.ServiceConnection, p2: Int)(
+      implicit context: Context): Boolean =
     basis.bindService(SIntent[T], p1, p2)
 
-  @inline def removeStickyBroadcast[T: ClassTag](implicit
-      context: Context): Unit = basis.removeStickyBroadcast(SIntent[T])
+  @inline
+  def removeStickyBroadcast[T: ClassTag](implicit context: Context): Unit =
+    basis.removeStickyBroadcast(SIntent[T])
 
-  @inline def sendBroadcast[T: ClassTag](implicit context: Context): Unit =
+  @inline
+  def sendBroadcast[T: ClassTag](implicit context: Context): Unit =
     basis.sendBroadcast(SIntent[T])
 
-  @inline def sendBroadcast[T: ClassTag](p: java.lang.String)(implicit
+  @inline
+  def sendBroadcast[T: ClassTag](p: java.lang.String)(implicit
       context: Context): Unit = basis.sendBroadcast(SIntent[T], p)
 
-  @inline def sendOrderedBroadcast[T: ClassTag](p: java.lang.String)(implicit
+  @inline
+  def sendOrderedBroadcast[T: ClassTag](p: java.lang.String)(implicit
       context: Context): Unit = basis.sendOrderedBroadcast(SIntent[T], p)
 
-  @inline def sendOrderedBroadcast[T: ClassTag](
+  @inline
+  def sendOrderedBroadcast[T: ClassTag](
       p1: java.lang.String,
       p2: android.content.BroadcastReceiver,
       p3: android.os.Handler,
@@ -291,10 +324,12 @@ trait TraitContext[This <: android.content.Context] {
       p6: android.os.Bundle)(implicit context: Context): Unit =
     basis.sendOrderedBroadcast(SIntent[T], p1, p2, p3, p4, p5, p6)
 
-  @inline def sendStickyBroadcast[T: ClassTag](implicit
-      context: Context): Unit = basis.sendStickyBroadcast(SIntent[T])
+  @inline
+  def sendStickyBroadcast[T: ClassTag](implicit context: Context): Unit =
+    basis.sendStickyBroadcast(SIntent[T])
 
-  @inline def sendStickyOrderedBroadcast[T: ClassTag](
+  @inline
+  def sendStickyOrderedBroadcast[T: ClassTag](
       p1: android.content.BroadcastReceiver,
       p2: android.os.Handler,
       p3: Int,
@@ -302,17 +337,21 @@ trait TraitContext[This <: android.content.Context] {
       p5: android.os.Bundle)(implicit context: Context): Unit =
     basis.sendStickyOrderedBroadcast(SIntent[T], p1, p2, p3, p4, p5)
 
-  @inline def startActivity[T: ClassTag](implicit context: Context): Unit =
+  @inline
+  def startActivity[T: ClassTag](implicit context: Context): Unit =
     basis.startActivity(SIntent[T])
 
-  @inline def startActivity[T: ClassTag](p: android.os.Bundle)(implicit
+  @inline
+  def startActivity[T: ClassTag](p: android.os.Bundle)(implicit
       context: Context): Unit = basis.startActivity(SIntent[T], p)
 
-  @inline def startService[T: ClassTag](implicit
+  @inline
+  def startService[T: ClassTag](implicit
       context: Context): android.content.ComponentName =
     basis.startService(SIntent[T])
 
-  @inline def stopService[T: ClassTag](implicit context: Context): Boolean =
+  @inline
+  def stopService[T: ClassTag](implicit context: Context): Boolean =
     basis.stopService(SIntent[T])
 }
 
@@ -344,7 +383,8 @@ trait TraitContextWrapper[This <: android.content.ContextWrapper]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/ContextWrapper.html#getBaseContext() getBaseContext()]]`
     */
-  @inline def baseContext = basis.getBaseContext
+  @inline
+  def baseContext = basis.getBaseContext
 
 }
 
@@ -417,18 +457,19 @@ trait UnregisterReceiver extends ContextWrapper with Destroyable {
   *
   */
 object SIntent {
-  @inline def apply[T](implicit context: Context, mt: ClassTag[T]) =
+  @inline
+  def apply[T](implicit context: Context, mt: ClassTag[T]) =
     new Intent(context, mt.runtimeClass)
 
-  @inline def apply[T](
+  @inline
+  def apply[T](
       action: String)(implicit context: Context, mt: ClassTag[T]): Intent =
     SIntent[T].setAction(action)
 }
 
 class RichIntent(val intent: Intent) {
-  @inline def start[T <: Activity](implicit
-      context: Context,
-      mt: ClassTag[T]) = {
+  @inline
+  def start[T <: Activity](implicit context: Context, mt: ClassTag[T]) = {
     val clazz = mt.runtimeClass
     intent.setClass(context, clazz)
     clazz match {

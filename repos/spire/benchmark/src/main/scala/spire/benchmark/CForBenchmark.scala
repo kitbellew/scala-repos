@@ -24,7 +24,8 @@ class CForBenchmarks extends MyBenchmark {
     arr = init(size)(scala.math.abs(nextInt - 1).toInt + 1)
   }
 
-  @tailrec final def gcd(a: Long, b: Long): Long =
+  @tailrec
+  final def gcd(a: Long, b: Long): Long =
     if (a % b == 0)
       b
     else
@@ -147,7 +148,8 @@ class CForBenchmarks extends MyBenchmark {
   def doTailrecOr(): Unit = {
     var t: Long = 0L
     val len = size - 1
-    @tailrec def loop1(i: Int): Unit = {
+    @tailrec
+    def loop1(i: Int): Unit = {
       if (i < len) {
         t = t ^ or(arr(i), arr(i + 1));
         loop1(i + 1)
@@ -156,7 +158,8 @@ class CForBenchmarks extends MyBenchmark {
     loop1(0)
 
     val len2 = size / 2
-    @tailrec def loop2(i: Int): Unit = {
+    @tailrec
+    def loop2(i: Int): Unit = {
       if (i < len2) {
         t = t ^ or(arr(i + 3), arr(i + 2));
         loop2(i + 1)
@@ -165,7 +168,8 @@ class CForBenchmarks extends MyBenchmark {
     loop2(0)
 
     val len3 = size / 3
-    @tailrec def loop3(i: Int): Unit = {
+    @tailrec
+    def loop3(i: Int): Unit = {
       if (i < len2) {
         t = t ^ or(arr(i + 1), arr(i + 2));
         loop3(i + 1)
@@ -177,7 +181,8 @@ class CForBenchmarks extends MyBenchmark {
   def doTailrecMin(): Unit = {
     var t: Long = 0L
     val len = size - 1
-    @tailrec def loop1(i: Int): Unit = {
+    @tailrec
+    def loop1(i: Int): Unit = {
       if (i < len) {
         t = t ^ min(arr(i), arr(i + 1));
         loop1(i + 1)
@@ -186,7 +191,8 @@ class CForBenchmarks extends MyBenchmark {
     loop1(0)
 
     val len2 = size / 2
-    @tailrec def loop2(i: Int): Unit = {
+    @tailrec
+    def loop2(i: Int): Unit = {
       if (i < len2) {
         t = t ^ min(arr(i + 3), arr(i + 2));
         loop2(i + 1)
@@ -195,7 +201,8 @@ class CForBenchmarks extends MyBenchmark {
     loop2(0)
 
     val len3 = size / 3
-    @tailrec def loop3(i: Int): Unit = {
+    @tailrec
+    def loop3(i: Int): Unit = {
       if (i < len2) {
         t = t ^ min(arr(i + 1), arr(i + 2));
         loop3(i + 1)
@@ -207,7 +214,8 @@ class CForBenchmarks extends MyBenchmark {
   def doTailrecGcd(): Unit = {
     var t: Long = 0L
     val len = size - 1
-    @tailrec def loop1(i: Int): Unit = {
+    @tailrec
+    def loop1(i: Int): Unit = {
       if (i < len) {
         t = t ^ gcd(arr(i), arr(i + 1));
         loop1(i + 1)
@@ -216,7 +224,8 @@ class CForBenchmarks extends MyBenchmark {
     loop1(0)
 
     val len2 = size / 2
-    @tailrec def loop2(i: Int): Unit = {
+    @tailrec
+    def loop2(i: Int): Unit = {
       if (i < len2) {
         t = t ^ gcd(arr(i + 3), arr(i + 2));
         loop2(i + 1)
@@ -225,7 +234,8 @@ class CForBenchmarks extends MyBenchmark {
     loop2(0)
 
     val len3 = size / 3
-    @tailrec def loop3(i: Int): Unit = {
+    @tailrec
+    def loop3(i: Int): Unit = {
       if (i < len2) {
         t = t ^ gcd(arr(i + 1), arr(i + 2));
         loop3(i + 1)
@@ -237,7 +247,8 @@ class CForBenchmarks extends MyBenchmark {
   def doTailrecIntArrayMultiply(): Unit = {
     val arr2 = arr.clone
     val len = size
-    @tailrec def loop(i: Int): Unit = {
+    @tailrec
+    def loop(i: Int): Unit = {
       if (i < len) {
         val value = arr2(i)
         arr2(i) = value * 2

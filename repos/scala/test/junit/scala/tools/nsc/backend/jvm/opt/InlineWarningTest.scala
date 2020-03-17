@@ -84,7 +84,8 @@ class InlineWarningTest extends ClearAfterClass {
   }
 
   // TODO SD-85: no more impl classes. this test (and the warning it tests!) can be removed
-  @org.junit.Ignore @Test
+  @org.junit.Ignore
+  @Test
   def traitMissingImplClass(): Unit = {
     val codeA = "trait T { @inline final def f = 1 }"
     val codeB = "class C { def t1(t: T) = t.f }"

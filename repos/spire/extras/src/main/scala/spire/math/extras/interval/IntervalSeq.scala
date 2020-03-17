@@ -15,7 +15,8 @@ final class IntervalSeq[T] private (
     private val values: Array[T],
     private val kinds: Array[Byte],
     private implicit val order: Order[T])
-    extends IntervalSet[T, IntervalSeq[T]] { lhs =>
+    extends IntervalSet[T, IntervalSeq[T]] {
+  lhs =>
 
   import IntervalSeq._
 

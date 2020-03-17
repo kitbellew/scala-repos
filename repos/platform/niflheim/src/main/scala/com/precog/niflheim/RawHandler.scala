@@ -53,8 +53,10 @@ object RawHandler {
 class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
     extends StorageReader {
   // TODO: weakrefs?
-  @volatile protected[this] var rows = mutable.ArrayBuffer.empty[JValue] ++ rs
-  @volatile protected[this] var segments = Segments.empty(id)
+  @volatile
+  protected[this] var rows = mutable.ArrayBuffer.empty[JValue] ++ rs
+  @volatile
+  protected[this] var segments = Segments.empty(id)
   protected[this] var count = rows.length
 
   protected[this] val rowLock = new Object

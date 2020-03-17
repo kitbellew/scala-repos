@@ -77,7 +77,8 @@ object Future {
 
   // Exception used to raise on Futures.
   private[this] val RaiseException = new Exception with NoStacktrace
-  @inline private final def raiseException = RaiseException
+  @inline
+  private final def raiseException = RaiseException
 
   /**
     * Creates a satisfied `Future` from a [[Try]].

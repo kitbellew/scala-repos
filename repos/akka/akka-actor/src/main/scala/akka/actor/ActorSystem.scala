@@ -597,7 +597,8 @@ private[akka] class ActorSystemImpl(
 
   import ActorSystem._
 
-  @volatile private var logDeadLetterListener: Option[ActorRef] = None
+  @volatile
+  private var logDeadLetterListener: Option[ActorRef] = None
   final val settings: Settings =
     new Settings(classLoader, applicationConfig, name)
 
@@ -816,7 +817,8 @@ private[akka] class ActorSystemImpl(
     whenTerminated
   }
 
-  @volatile var aborting = false
+  @volatile
+  var aborting = false
 
   /**
     * This kind of shutdown attempts to bring the system down and release its
@@ -1044,7 +1046,8 @@ private[akka] class ActorSystemImpl(
       * Throws RejectedExecutionException if called after ActorSystem has been terminated.
       */
     final def add(r: Runnable): Unit = {
-      @tailrec def addRec(r: Runnable, p: Promise[T]): Unit =
+      @tailrec
+      def addRec(r: Runnable, p: Promise[T]): Unit =
         ref.get match {
           case null ⇒
             throw new RejectedExecutionException(

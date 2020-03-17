@@ -38,7 +38,8 @@ private class DynNameFactory[Req, Rep](
       case Failed(_) | Closed() => Status.Closed
     }
 
-  @volatile private[this] var state: State = Pending(immutable.Queue.empty)
+  @volatile
+  private[this] var state: State = Pending(immutable.Queue.empty)
 
   private[this] val sub = name.run.changes respond {
     case Activity.Ok(name) =>

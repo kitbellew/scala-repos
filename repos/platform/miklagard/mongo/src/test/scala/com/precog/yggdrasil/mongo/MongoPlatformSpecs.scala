@@ -171,7 +171,8 @@ trait MongoPlatformSpecs
     extends ParseEvalStackSpecs[Future]
     with MongoColumnarTableModule
     with Logging
-    with StringIdMemoryDatasetConsumer[Future] { self =>
+    with StringIdMemoryDatasetConsumer[Future] {
+  self =>
 
   class YggConfig
       extends ParseEvalStackSpecConfig

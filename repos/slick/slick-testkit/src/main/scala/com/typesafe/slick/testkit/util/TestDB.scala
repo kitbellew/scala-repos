@@ -271,7 +271,8 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
 }
 
 abstract class InternalJdbcTestDB(confName: String)
-    extends JdbcTestDB(confName) { self =>
+    extends JdbcTestDB(confName) {
+  self =>
   val url: String
   def createDB(): profile.Backend#Database =
     database.forURL(url, driver = jdbcDriver)

@@ -52,7 +52,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
   def makeModel: Option[Universe] = {
     val universe =
-      new Universe { thisUniverse =>
+      new Universe {
+        thisUniverse =>
         thisFactory.universe = thisUniverse
         val settings = thisFactory.settings
         val rootPackage = modelCreation.createRootPackage

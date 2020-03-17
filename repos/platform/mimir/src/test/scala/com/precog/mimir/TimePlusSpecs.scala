@@ -35,7 +35,8 @@ import org.joda.time.format._
 trait TimePlusSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
-    with LongIdMemoryDatasetConsumer[M] { self =>
+    with LongIdMemoryDatasetConsumer[M] {
+  self =>
 
   import Function._
 

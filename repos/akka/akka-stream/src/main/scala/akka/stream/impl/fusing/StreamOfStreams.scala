@@ -516,7 +516,8 @@ final class SubSink[T](
       override def onUpstreamFailure(ex: Throwable): Unit =
         externalCallback(ActorSubscriberMessage.OnError(ex))
 
-      @tailrec private def setCB(cb: AsyncCallback[Command]): Unit = {
+      @tailrec
+      private def setCB(cb: AsyncCallback[Command]): Unit = {
         status.get match {
           case null ⇒
             if (!status.compareAndSet(null, cb))
@@ -631,8 +632,8 @@ final class SubSource[T](
     new GraphStageLogic(shape) with OutHandler {
       setHandler(out, this)
 
-      @tailrec private def setCB(
-          cb: AsyncCallback[ActorSubscriberMessage]): Unit = {
+      @tailrec
+      private def setCB(cb: AsyncCallback[ActorSubscriberMessage]): Unit = {
         status.get match {
           case null ⇒
             if (!status.compareAndSet(null, cb))

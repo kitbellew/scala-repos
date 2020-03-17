@@ -48,9 +48,12 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     hasTargetElements(file, editor)
 
   override def invoke(
-      @NotNull project: Project,
-      @NotNull editor: Editor,
-      @NotNull file: PsiFile) {
+      @NotNull
+      project: Project,
+      @NotNull
+      editor: Editor,
+      @NotNull
+      file: PsiFile) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor))
       return
     if (!FileDocumentManager.getInstance.requestWriting(

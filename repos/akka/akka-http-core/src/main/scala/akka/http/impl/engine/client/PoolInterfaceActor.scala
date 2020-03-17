@@ -184,7 +184,8 @@ private class PoolInterfaceActor(
       }
   }
 
-  @tailrec private def dispatchRequests(): Unit =
+  @tailrec
+  private def dispatchRequests(): Unit =
     if (totalDemand > 0 && !inputBuffer.isEmpty) {
       dispatchRequest(inputBuffer.dequeue())
       dispatchRequests()

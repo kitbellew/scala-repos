@@ -155,7 +155,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
     */
   private[akka] def nameOrDefault(
       default: String = "unknown-operation"): String = {
-    @tailrec def concatNames(
+    @tailrec
+    def concatNames(
         i: Iterator[Attribute],
         first: String,
         buf: StringBuilder): String =

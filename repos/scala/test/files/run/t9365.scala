@@ -1,5 +1,6 @@
 class Test(x: => Object) extends Serializable {
-  @transient lazy val foo = x
+  @transient
+  lazy val foo = x
 }
 
 object Test {

@@ -36,7 +36,8 @@ class Context {
   object addrs {
     val broker = new Broker[Addr]
     val offer = broker.recv
-    @volatile var set = Set.empty[Address]
+    @volatile
+    var set = Set.empty[Address]
 
     def apply() = set
     def update(newSet: Set[Address]) {
@@ -59,7 +60,8 @@ class Context {
     statsRecv.scope("testGroup"),
     timer)
 
-  @volatile var stabilized: Addr = Addr.Pending
+  @volatile
+  var stabilized: Addr = Addr.Pending
   for (addr <- stabilizedAddr)
     stabilized = addr
 

@@ -302,14 +302,15 @@ case object FromConfig extends FromConfig {
     * Java API: get the singleton instance
     */
   def getInstance = this
-  @inline final def apply(
+  @inline
+  final def apply(
       resizer: Option[Resizer] = None,
       supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
       routerDispatcher: String = Dispatchers.DefaultDispatcherId) =
     new FromConfig(resizer, supervisorStrategy, routerDispatcher)
 
-  @inline final def unapply(fc: FromConfig): Option[String] =
-    Some(fc.routerDispatcher)
+  @inline
+  final def unapply(fc: FromConfig): Option[String] = Some(fc.routerDispatcher)
 }
 
 /**
@@ -407,16 +408,19 @@ case object NoRouter extends NoRouter {
 /**
   * INTERNAL API
   */
-@SerialVersionUID(1L) private[akka] trait RouterManagementMesssage
+@SerialVersionUID(1L)
+private[akka] trait RouterManagementMesssage
 
 /**
   * Sending this message to a router will make it send back its currently used routees.
   * A [[Routees]] message is sent asynchronously to the "requester" containing information
   * about what routees the router is routing over.
   */
-@SerialVersionUID(1L) abstract class GetRoutees extends RouterManagementMesssage
+@SerialVersionUID(1L)
+abstract class GetRoutees extends RouterManagementMesssage
 
-@SerialVersionUID(1L) case object GetRoutees extends GetRoutees {
+@SerialVersionUID(1L)
+case object GetRoutees extends GetRoutees {
 
   /**
     * Java API: get the singleton instance

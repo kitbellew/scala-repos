@@ -63,7 +63,8 @@ private[util] class BatchedWriteAheadLog(
   private val walWriteQueue = new LinkedBlockingQueue[Record]()
 
   // Whether the writer thread is active
-  @volatile private var active: Boolean = true
+  @volatile
+  private var active: Boolean = true
   private val buffer = new ArrayBuffer[Record]()
 
   private val batchedWriterThread = startBatchedWriterThread()

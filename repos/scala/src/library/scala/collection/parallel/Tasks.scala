@@ -43,7 +43,8 @@ trait Task[R, +Tp] {
   private[parallel] def merge(that: Tp @uncheckedVariance) {}
 
   // exception handling mechanism
-  @volatile var throwable: Throwable = null
+  @volatile
+  var throwable: Throwable = null
   def forwardThrowable() =
     if (throwable != null)
       throw throwable
@@ -153,8 +154,10 @@ trait Tasks {
 trait AdaptiveWorkStealingTasks extends Tasks {
 
   trait WrappedTask[R, Tp] extends super.WrappedTask[R, Tp] {
-    @volatile var next: WrappedTask[R, Tp] = null
-    @volatile var shouldWaitFor = true
+    @volatile
+    var next: WrappedTask[R, Tp] = null
+    @volatile
+    var shouldWaitFor = true
 
     def split: Seq[WrappedTask[R, Tp]]
 
@@ -232,8 +235,10 @@ trait ThreadPoolTasks extends Tasks {
     // initially, this is null
     // once the task is started, this future is set and used for `sync`
     // utb: var future: Future[_] = null
-    @volatile var owned = false
-    @volatile var completed = false
+    @volatile
+    var owned = false
+    @volatile
+    var completed = false
 
     def start() =
       synchronized {
@@ -301,7 +306,8 @@ trait ThreadPoolTasks extends Tasks {
   val environment: ThreadPoolExecutor
   def executor = environment.asInstanceOf[ThreadPoolExecutor]
   def queue = executor.getQueue.asInstanceOf[LinkedBlockingQueue[Runnable]]
-  @volatile var totaltasks = 0
+  @volatile
+  var totaltasks = 0
 
   private def incrTasks() =
     synchronized {

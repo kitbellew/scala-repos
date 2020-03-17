@@ -21,7 +21,8 @@ trait Semigroup[@sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
       combinenAboveOne(a, n)
 
   protected def combinenAboveOne(a: A, n: Int): A = {
-    @tailrec def loop(b: A, k: Int, extra: A): A =
+    @tailrec
+    def loop(b: A, k: Int, extra: A): A =
       if (k == 1) {
         op(b, extra)
       } else {
@@ -44,20 +45,23 @@ trait Semigroup[@sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
 }
 
 object Semigroup {
-  @inline final def apply[A](implicit s: Semigroup[A]): Semigroup[A] = s
+  @inline
+  final def apply[A](implicit s: Semigroup[A]): Semigroup[A] = s
 
   /**
     * If there exists an implicit `AdditiveSemigroup[A]`, this returns a
     * `Semigroup[A]` using `plus` for `op`.
     */
-  @inline final def additive[A](implicit
-      A: AdditiveSemigroup[A]): Semigroup[A] = A.additive
+  @inline
+  final def additive[A](implicit A: AdditiveSemigroup[A]): Semigroup[A] =
+    A.additive
 
   /**
     * If there exists an implicit `MultiplicativeSemigroup[A]`, this returns a
     * `Semigroup[A]` using `times` for `op`.
     */
-  @inline final def multiplicative[A](implicit
+  @inline
+  final def multiplicative[A](implicit
       A: MultiplicativeSemigroup[A]): Semigroup[A] = A.multiplicative
 }
 
@@ -71,9 +75,12 @@ trait CSemigroup[@sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
     with Semigroup[A]
 
 object CSemigroup {
-  @inline final def apply[A](implicit ev: CSemigroup[A]): CSemigroup[A] = ev
-  @inline final def additive[A](implicit
-      A: AdditiveCSemigroup[A]): CSemigroup[A] = A.additive
-  @inline final def multiplicative[A](implicit
+  @inline
+  final def apply[A](implicit ev: CSemigroup[A]): CSemigroup[A] = ev
+  @inline
+  final def additive[A](implicit A: AdditiveCSemigroup[A]): CSemigroup[A] =
+    A.additive
+  @inline
+  final def multiplicative[A](implicit
       A: MultiplicativeCSemigroup[A]): CSemigroup[A] = A.multiplicative
 }

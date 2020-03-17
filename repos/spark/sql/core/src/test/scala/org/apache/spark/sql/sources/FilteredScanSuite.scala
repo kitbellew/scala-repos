@@ -38,7 +38,8 @@ class FilteredScanSource extends RelationProvider {
 }
 
 case class SimpleFilteredScan(from: Int, to: Int)(
-    @transient val sqlContext: SQLContext)
+    @transient
+    val sqlContext: SQLContext)
     extends BaseRelation
     with PrunedFilteredScan {
 

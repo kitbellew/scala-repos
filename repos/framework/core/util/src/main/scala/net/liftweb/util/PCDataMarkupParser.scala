@@ -312,7 +312,8 @@ object HtmlEntities {
   * Extends the Markup Parser to do the right thing (tm) with PCData blocks
   */
 trait PCDataMarkupParser[PCM <: MarkupParser with MarkupHandler]
-    extends MarkupParser { self: PCM =>
+    extends MarkupParser {
+  self: PCM =>
 
   /** '&lt;! CharData ::= [CDATA[ ( {char} - {char}"]]&gt;"{char} ) ']]&gt;'
     *

@@ -246,8 +246,8 @@ object Sink {
         d.out(0) ~> first
         d.out(1) ~> second
 
-        @tailrec def combineRest(idx: Int, i: Iterator[Sink[U, _]])
-            : SinkShape[T] =
+        @tailrec
+        def combineRest(idx: Int, i: Iterator[Sink[U, _]]): SinkShape[T] =
           if (i.hasNext) {
             d.out(idx) ~> i.next()
             combineRest(idx + 1, i)

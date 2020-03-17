@@ -312,9 +312,8 @@ object ScalaDSL {
       _behavior = canonicalize(ctx, b, _behavior)
 
     // FIXME should we protect against infinite loops?
-    @tailrec private def run(
-        ctx: ActorContext[T],
-        next: Behavior[T]): Behavior[T] = {
+    @tailrec
+    private def run(ctx: ActorContext[T], next: Behavior[T]): Behavior[T] = {
       setBehavior(ctx, next)
       if (inbox.hasMessages)
         run(ctx, behavior.message(ctx, inbox.receiveMsg()))

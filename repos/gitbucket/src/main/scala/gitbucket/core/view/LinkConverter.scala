@@ -4,7 +4,8 @@ import gitbucket.core.controller.Context
 import gitbucket.core.service.{RepositoryService, RequestCache}
 import gitbucket.core.util.Implicits.RichString
 
-trait LinkConverter { self: RequestCache =>
+trait LinkConverter {
+  self: RequestCache =>
 
   /**
     * Creates a link to the issue or the pull request from the issue id.

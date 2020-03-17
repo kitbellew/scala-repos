@@ -36,7 +36,8 @@ private[http] class HttpResponseRendererFactory(
     }
 
   // as an optimization we cache the Date header of the last second here
-  @volatile private[this] var cachedDateHeader: (Long, Array[Byte]) = (0L, null)
+  @volatile
+  private[this] var cachedDateHeader: (Long, Array[Byte]) = (0L, null)
 
   private def dateHeader: Array[Byte] = {
     var (cachedSeconds, cachedBytes) = cachedDateHeader
@@ -154,7 +155,8 @@ private[http] class HttpResponseRendererFactory(
               !entity.isKnownEmpty || ctx.requestMethod == HttpMethods.HEAD
             ) && (ctx.requestProtocol == `HTTP/1.1`)
 
-          @tailrec def renderHeaders(
+          @tailrec
+          def renderHeaders(
               remaining: List[HttpHeader],
               alwaysClose: Boolean = false,
               connHeader: Connection = null,

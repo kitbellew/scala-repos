@@ -32,7 +32,8 @@ class ThreadUtilsSuite extends SparkFunSuite {
   test("newDaemonSingleThreadExecutor") {
     val executor = ThreadUtils.newDaemonSingleThreadExecutor(
       "this-is-a-thread-name")
-    @volatile var threadName = ""
+    @volatile
+    var threadName = ""
     executor.submit(
       new Runnable {
         override def run(): Unit = {
@@ -49,7 +50,8 @@ class ThreadUtilsSuite extends SparkFunSuite {
       "this-is-a-thread-name")
     try {
       val latch = new CountDownLatch(1)
-      @volatile var threadName = ""
+      @volatile
+      var threadName = ""
       executor.schedule(
         new Runnable {
           override def run(): Unit = {

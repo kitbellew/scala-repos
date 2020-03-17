@@ -34,13 +34,15 @@ trait BaseQuerySerializer {
     * [[io.prediction.controller.Utils.json4sDefaultFormats]]
     */
   @DeveloperApi
-  @transient lazy val querySerializer = Utils.json4sDefaultFormats
+  @transient
+  lazy val querySerializer = Utils.json4sDefaultFormats
 
   /** :: DeveloperApi ::
     * Serializer for Java query classes using Gson
     */
   @DeveloperApi
-  @transient lazy val gsonTypeAdapterFactories = Seq.empty[TypeAdapterFactory]
+  @transient
+  lazy val gsonTypeAdapterFactories = Seq.empty[TypeAdapterFactory]
 }
 
 /** :: DeveloperApi ::

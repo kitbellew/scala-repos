@@ -47,7 +47,8 @@ trait TestCodeGenerator {
       val objectName: String,
       val tdb: JdbcTestDB,
       tdbName: String,
-      initScripts: Seq[String]) { self =>
+      initScripts: Seq[String]) {
+    self =>
     def useSingleLineStatements = false
 
     def slickProfile = tdb.profile.getClass.getName.replaceAll("\\$", "")
@@ -155,7 +156,8 @@ class TestCodeRunner(tests: TestCodeRunner.AllTests) {
       println("- Test database is disabled")
   }
 
-  @Test def allTests = tests.clns.foreach(run)
+  @Test
+  def allTests = tests.clns.foreach(run)
 }
 
 object TestCodeRunner {

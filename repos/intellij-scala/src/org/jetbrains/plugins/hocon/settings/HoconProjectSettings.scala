@@ -25,8 +25,10 @@ class HoconProjectSettings
   def getExportFiles =
     Array(PathManager.getOptionsFile("hocon_project_settings"))
 
-  @BeanProperty var classReferencesOnUnquotedStrings = true
-  @BeanProperty var classReferencesOnQuotedStrings = true
+  @BeanProperty
+  var classReferencesOnUnquotedStrings = true
+  @BeanProperty
+  var classReferencesOnQuotedStrings = true
 }
 
 object HoconProjectSettings {

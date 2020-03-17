@@ -51,7 +51,8 @@ object MailerSpec extends Specification {
 
   val myMailer =
     new Mailer with MailerForTesting {
-      @volatile var lastMessage: Box[MimeMessage] = Empty
+      @volatile
+      var lastMessage: Box[MimeMessage] = Empty
 
       testModeSend.default.set((msg: MimeMessage) => {
         lastMessage = Full(msg)

@@ -327,8 +327,10 @@ class EndToEndTest
 
   test(
     "thriftmux server + Finagle thrift client: traceId should be passed from client to server") {
-    @volatile var cltTraceId: Option[TraceId] = None
-    @volatile var srvTraceId: Option[TraceId] = None
+    @volatile
+    var cltTraceId: Option[TraceId] = None
+    @volatile
+    var srvTraceId: Option[TraceId] = None
     val tracer =
       new Tracer {
         def record(record: Record) {
@@ -720,7 +722,8 @@ class EndToEndTest
     val requestReceived = Array.fill(nreqs)(new Promise[String])
     val testService =
       new TestService.FutureIface {
-        @volatile var nReqReceived = 0
+        @volatile
+        var nReqReceived = 0
         def query(x: String) =
           synchronized {
             nReqReceived += 1
@@ -994,7 +997,8 @@ class EndToEndTest
   }
 
   test("gracefully reject sessions") {
-    @volatile var n = 0
+    @volatile
+    var n = 0
     val server = ThriftMux.serve(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new ServiceFactory {

@@ -135,7 +135,8 @@ private[streaming] class ReceiverTracker(
   import TrackerState._
 
   /** State of the tracker. Protected by "trackerStateLock" */
-  @volatile private var trackerState = Initialized
+  @volatile
+  private var trackerState = Initialized
 
   // endpoint is created when generator starts.
   // This not being null means the tracker has been started and not stopped
@@ -526,7 +527,8 @@ private[streaming] class ReceiverTracker(
     private val walBatchingThreadPool = ExecutionContext.fromExecutorService(
       ThreadUtils.newDaemonCachedThreadPool("wal-batching-thread-pool"))
 
-    @volatile private var active: Boolean = true
+    @volatile
+    private var active: Boolean = true
 
     override def receive: PartialFunction[Any, Unit] = {
       // Local messages

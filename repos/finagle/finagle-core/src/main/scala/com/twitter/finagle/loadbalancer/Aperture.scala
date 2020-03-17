@@ -91,7 +91,8 @@ object Aperture {
   * harmless to adjust apertures frequently, since underlying nodes
   * are typically backed by pools, and will be warm on average.
   */
-private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
+private trait Aperture[Req, Rep] {
+  self: Balancer[Req, Rep] =>
   import Aperture._
 
   protected def rng: Rng
@@ -115,7 +116,8 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
     type This = Distributor
 
     // Indicates if we've seen any down nodes during pick which we expected to be available
-    @volatile private[this] var sawDown = false
+    @volatile
+    private[this] var sawDown = false
 
     private[this] val (up, down) =
       vector.partition(nodeUp) match {
@@ -138,7 +140,8 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
       Aperture.this.minAperture,
       maxAperture)
 
-    @volatile private[Aperture] var aperture = initAperture
+    @volatile
+    private[Aperture] var aperture = initAperture
 
     // Make sure the aperture is within bounds [1, maxAperture].
     adjust(0)

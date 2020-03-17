@@ -1,13 +1,16 @@
 trait Trait1 {
-  @inline final def foo2(n: Int) = n * n
+  @inline
+  final def foo2(n: Int) = n * n
 }
 
 trait Trait2 {
-  @inline final def foo3(n: Int) = 1
+  @inline
+  final def foo3(n: Int) = 1
 }
 
 class Base extends Trait1 {
-  @inline final def foo(n: Int) = n
+  @inline
+  final def foo(n: Int) = n
 }
 
 object Test extends Base with Trait2 {

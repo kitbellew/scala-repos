@@ -20,7 +20,8 @@ package macros
   *  for macro writers, providing a way to coordinate multiple macros operating on the same code. Therefore the `attachments`
   *  field is only declared in trees and symbols belonging to [[scala.reflect.macros.Universe]].
   */
-abstract class Attachments { self =>
+abstract class Attachments {
+  self =>
 
   /** The position type of this attachment */
   type Pos >: Null

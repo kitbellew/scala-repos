@@ -14,7 +14,8 @@ object LoadedStatsReceiver extends {
     * [[StatsReceiver]], updates to those metrics may not be reflected in the
     * [[StatsReceiver]] that replaces it.
     */
-  @volatile var self: StatsReceiver = {
+  @volatile
+  var self: StatsReceiver = {
     val receivers = LoadService[StatsReceiver]()
     BroadcastStatsReceiver(receivers)
   }
@@ -44,8 +45,8 @@ private[finagle] object FinagleStatsReceiver extends {
   * are prefixed with the string "clnt" by default.
   */
 object ClientStatsReceiver extends StatsReceiverProxy {
-  @volatile private[this] var _self: StatsReceiver = LoadedStatsReceiver.scope(
-    "clnt")
+  @volatile
+  private[this] var _self: StatsReceiver = LoadedStatsReceiver.scope("clnt")
   def self: StatsReceiver = _self
   def setRootScope(rootScope: String) {
     _self = LoadedStatsReceiver.scope(rootScope)
@@ -57,8 +58,8 @@ object ClientStatsReceiver extends StatsReceiverProxy {
   * are prefixed with the string "srv" by default.
   */
 object ServerStatsReceiver extends StatsReceiverProxy {
-  @volatile private[this] var _self: StatsReceiver = LoadedStatsReceiver.scope(
-    "srv")
+  @volatile
+  private[this] var _self: StatsReceiver = LoadedStatsReceiver.scope("srv")
   def self: StatsReceiver = _self
   def setRootScope(rootScope: String) {
     _self = LoadedStatsReceiver.scope(rootScope)
@@ -70,7 +71,8 @@ object ServerStatsReceiver extends StatsReceiverProxy {
   * all service-loadable receivers and broadcasts stats to them.
   */
 object LoadedHostStatsReceiver extends HostStatsReceiver {
-  @volatile var _self: StatsReceiver = {
+  @volatile
+  var _self: StatsReceiver = {
     val receivers = LoadService[HostStatsReceiver]()
     BroadcastStatsReceiver(receivers)
   }

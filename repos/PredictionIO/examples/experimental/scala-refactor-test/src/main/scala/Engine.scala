@@ -24,7 +24,8 @@ object VanillaEngine extends IEngineFactory {
 }
 
 object Runner {
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def main(args: Array[String]) {
     val engine = VanillaEngine()

@@ -43,7 +43,8 @@ abstract class RestartNodeSpec
 
   import RestartNodeMultiJvmSpec._
 
-  @volatile var secondUniqueAddress: UniqueAddress = _
+  @volatile
+  var secondUniqueAddress: UniqueAddress = _
 
   // use a separate ActorSystem, to be able to simulate restart
   lazy val secondSystem = ActorSystem(system.name, system.settings.config)

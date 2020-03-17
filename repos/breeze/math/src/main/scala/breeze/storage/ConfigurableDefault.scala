@@ -22,7 +22,8 @@ import scala.reflect.ClassTag
   * @author dlwh
   */
 @SerialVersionUID(1L)
-trait ConfigurableDefault[@specialized V] extends Serializable { outer =>
+trait ConfigurableDefault[@specialized V] extends Serializable {
+  outer =>
   def value(implicit zero: Zero[V]): V
 
   def fillArray(arr: Array[V], v: V) =

@@ -23,8 +23,10 @@ object MinimumThroughput {
     // we rely on the `reader.read` and `writer.write` contract that only
     // one read or write can ever be outstanding, so volatile provides
     // us thread-safety.
-    @volatile protected[this] var bytes = 0L
-    @volatile protected[this] var elapsed = Duration.Zero
+    @volatile
+    protected[this] var bytes = 0L
+    @volatile
+    protected[this] var elapsed = Duration.Zero
 
     /** Calculate and return the current bps */
     def bps: Double = {

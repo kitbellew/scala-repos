@@ -116,7 +116,8 @@ trait JsObj extends JsExp {
       case jsObj: JsObj => {
         import scala.annotation.tailrec
 
-        @tailrec def test(
+        @tailrec
+        def test(
             me: Map[String, JsExp],
             them: List[(String, JsExp)]): Boolean = {
           them match {
@@ -1149,12 +1150,14 @@ object JsRules {
     * messages.
     */
   //@deprecated
-  @volatile var prefadeDuration: Helpers.TimeSpan = 5.seconds
+  @volatile
+  var prefadeDuration: Helpers.TimeSpan = 5.seconds
 
   /**
     * The default fade time for fading FadeOut and FadeIn
     * messages.
     */
   //@deprecated
-  @volatile var fadeTime: Helpers.TimeSpan = 1.second
+  @volatile
+  var fadeTime: Helpers.TimeSpan = 1.second
 }

@@ -85,7 +85,8 @@ object JsError {
   }
 }
 
-sealed trait JsResult[+A] { self =>
+sealed trait JsResult[+A] {
+  self =>
 
   def isSuccess: Boolean = this.isInstanceOf[JsSuccess[_]]
   def isError: Boolean = this.isInstanceOf[JsError]

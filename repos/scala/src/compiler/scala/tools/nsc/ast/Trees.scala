@@ -9,7 +9,8 @@ package ast
 import scala.reflect.ClassTag
 import scala.compat.Platform.EOL
 
-trait Trees extends scala.reflect.internal.Trees { self: Global =>
+trait Trees extends scala.reflect.internal.Trees {
+  self: Global =>
   // --- additional cases --------------------------------------------------------
   /** Only used during parsing */
   case class Parens(args: List[Tree]) extends Tree

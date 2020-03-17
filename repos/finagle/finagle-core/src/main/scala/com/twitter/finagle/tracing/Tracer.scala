@@ -152,7 +152,8 @@ object DefaultTracer extends Tracer with Proxy {
   }
 
   // Note, `self` can be null during part of app initialization
-  @volatile var self: Tracer = BroadcastTracer(tracers)
+  @volatile
+  var self: Tracer = BroadcastTracer(tracers)
 
   def record(record: Record): Unit =
     if (self == null)

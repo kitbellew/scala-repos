@@ -710,7 +710,8 @@ private[stream] final class VirtualProcessor[T]
   import ReactiveStreamsCompliance._
 
   override def subscribe(s: Subscriber[_ >: T]): Unit = {
-    @tailrec def rec(sub: Subscriber[Any]): Unit =
+    @tailrec
+    def rec(sub: Subscriber[Any]): Unit =
       get() match {
         case null =>
           if (!compareAndSet(null, s))
@@ -738,7 +739,8 @@ private[stream] final class VirtualProcessor[T]
   }
 
   override final def onSubscribe(s: Subscription): Unit = {
-    @tailrec def rec(obj: AnyRef): Unit =
+    @tailrec
+    def rec(obj: AnyRef): Unit =
       get() match {
         case null =>
           if (!compareAndSet(null, obj))
@@ -789,7 +791,8 @@ private[stream] final class VirtualProcessor[T]
      * but if `t` was `null` then the spec requires us to throw an NPE (which `ex`
      * will be in this case).
      */
-    @tailrec def rec(ex: Throwable): Unit =
+    @tailrec
+    def rec(ex: Throwable): Unit =
       get() match {
         case null =>
           if (!compareAndSet(
@@ -824,7 +827,8 @@ private[stream] final class VirtualProcessor[T]
     rec(ex)
   }
 
-  @tailrec override final def onComplete(): Unit =
+  @tailrec
+  override final def onComplete(): Unit =
     get() match {
       case null =>
         if (!compareAndSet(null, EmptyPublisher))
@@ -844,7 +848,8 @@ private[stream] final class VirtualProcessor[T]
   override def onNext(t: T): Unit =
     if (t == null) {
       val ex = elementMustNotBeNullException
-      @tailrec def rec(): Unit =
+      @tailrec
+      def rec(): Unit =
         get() match {
           case x @ (null | _: Subscription) =>
             if (!compareAndSet(
@@ -866,7 +871,8 @@ private[stream] final class VirtualProcessor[T]
       rec()
       throw ex // must throw NPE, rule 2:13
     } else {
-      @tailrec def rec(): Unit =
+      @tailrec
+      def rec(): Unit =
         get() match {
           case Both(s) =>
             try s.onNext(t)
@@ -946,7 +952,8 @@ private[impl] class VirtualPublisher[T]
 
   override def subscribe(subscriber: Subscriber[_ >: T]): Unit = {
     requireNonNullSubscriber(subscriber)
-    @tailrec def rec(): Unit = {
+    @tailrec
+    def rec(): Unit = {
       get() match {
         case null =>
           if (!compareAndSet(null, subscriber))
@@ -965,7 +972,8 @@ private[impl] class VirtualPublisher[T]
     rec() // return value is boolean only to make the expressions above compile
   }
 
-  @tailrec final def registerPublisher(pub: Publisher[_]): Unit =
+  @tailrec
+  final def registerPublisher(pub: Publisher[_]): Unit =
     get() match {
       case null =>
         if (!compareAndSet(null, pub))

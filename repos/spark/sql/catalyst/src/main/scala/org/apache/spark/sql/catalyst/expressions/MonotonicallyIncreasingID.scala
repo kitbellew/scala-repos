@@ -51,9 +51,11 @@ private[sql] case class MonotonicallyIncreasingID()
     * Record ID within each partition. By being transient, count's value is reset to 0 every time
     * we serialize and deserialize and initialize it.
     */
-  @transient private[this] var count: Long = _
+  @transient
+  private[this] var count: Long = _
 
-  @transient private[this] var partitionMask: Long = _
+  @transient
+  private[this] var partitionMask: Long = _
 
   override protected def initInternal(): Unit = {
     count = 0L

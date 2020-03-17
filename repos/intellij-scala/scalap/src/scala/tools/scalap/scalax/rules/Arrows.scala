@@ -19,7 +19,8 @@ trait Arrows extends UnitFunctors {
       b
     }
 
-  trait Arrow[-A, +B] extends Functor[B] { this: Arr[A, B] =>
+  trait Arrow[-A, +B] extends Functor[B] {
+    this: Arr[A, B] =>
 
     def map[C](f: B => C) = comp(arrow(f))
     def comp[C](bc: => Arr[B, C]): Arr[A, C]
@@ -32,7 +33,8 @@ trait ApplicativeArrows extends Arrows {
 
   def app[A, B]: Arr[(Arr[A, B], A), B]
 
-  trait ApplicativeArrow[-A, +B] extends Arrow[A, B] { self: Arr[A, B] =>
+  trait ApplicativeArrow[-A, +B] extends Arrow[A, B] {
+    self: Arr[A, B] =>
     def flatMap[SubA <: A, C](f: B => Arr[SubA, C]): Arr[SubA, C] =
       diag[SubA].comp(map(f).fst[SubA]).comp(app[SubA, C])
   }

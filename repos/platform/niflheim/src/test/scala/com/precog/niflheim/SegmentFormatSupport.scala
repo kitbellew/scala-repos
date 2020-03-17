@@ -154,7 +154,8 @@ trait SegmentFormatSupport {
   def genSegmentId: Gen[SegmentId] = genSegment(0) map (_.id)
 }
 
-trait SegmentFormatMatchers { self: Specification with ScalaCheck =>
+trait SegmentFormatMatchers {
+  self: Specification with ScalaCheck =>
   def areEqual(x0: Segment, y0: Segment) = {
     x0.id must_== y0.id
     x0.defined must_== y0.defined

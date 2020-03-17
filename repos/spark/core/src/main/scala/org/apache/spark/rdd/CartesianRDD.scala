@@ -26,8 +26,10 @@ import org.apache.spark.util.Utils
 
 private[spark] class CartesianPartition(
     idx: Int,
-    @transient private val rdd1: RDD[_],
-    @transient private val rdd2: RDD[_],
+    @transient
+    private val rdd1: RDD[_],
+    @transient
+    private val rdd2: RDD[_],
     s1Index: Int,
     s2Index: Int)
     extends Partition {

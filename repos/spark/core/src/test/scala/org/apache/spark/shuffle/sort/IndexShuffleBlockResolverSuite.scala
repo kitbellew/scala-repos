@@ -36,9 +36,10 @@ class IndexShuffleBlockResolverSuite
     extends SparkFunSuite
     with BeforeAndAfterEach {
 
-  @Mock(answer = RETURNS_SMART_NULLS) private var blockManager: BlockManager = _
-  @Mock(answer = RETURNS_SMART_NULLS) private var diskBlockManager
-      : DiskBlockManager = _
+  @Mock(answer = RETURNS_SMART_NULLS)
+  private var blockManager: BlockManager = _
+  @Mock(answer = RETURNS_SMART_NULLS)
+  private var diskBlockManager: DiskBlockManager = _
 
   private var tempDir: File = _
   private val conf: SparkConf = new SparkConf(loadDefaults = false)

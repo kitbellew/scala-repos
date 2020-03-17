@@ -41,10 +41,12 @@ final case class RemoteRouterConfig(local: Pool, nodes: Iterable[Address])
     this(local, nodes: Iterable[Address])
 
   // need this iterator as instance variable since Resizer may call createRoutees several times
-  @transient private val nodeAddressIter: Iterator[Address] =
+  @transient
+  private val nodeAddressIter: Iterator[Address] =
     Stream.continually(nodes).flatten.iterator
   // need this counter as instance variable since Resizer may call createRoutees several times
-  @transient private val childNameCounter = new AtomicInteger
+  @transient
+  private val childNameCounter = new AtomicInteger
 
   override def createRouter(system: ActorSystem): Router =
     local.createRouter(system)

@@ -63,7 +63,8 @@ object JsonExporter {
 }
 
 class JsonExporter(registry: Metrics, timer: Timer)
-    extends Service[Request, Response] { self =>
+    extends Service[Request, Response] {
+  self =>
 
   import JsonExporter._
 

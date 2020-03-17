@@ -21,6 +21,7 @@ class AllConf(args: Seq[String] = Nil)
 
 object AllConf {
   //Set if main is initialized. Allow test to override this value.
-  @volatile private[marathon] var SuppliedOptionNames: Set[String] = Set.empty
+  @volatile
+  private[marathon] var SuppliedOptionNames: Set[String] = Set.empty
   def suppliedOptionNames: Set[String] = SuppliedOptionNames
 }

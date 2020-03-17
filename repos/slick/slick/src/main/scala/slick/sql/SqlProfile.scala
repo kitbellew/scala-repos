@@ -34,7 +34,8 @@ trait SqlProfile
 
   type SchemaDescription = DDL
 
-  trait DDL extends SchemaDescriptionDef { self =>
+  trait DDL extends SchemaDescriptionDef {
+    self =>
 
     /** Statements to execute first for create(), e.g. creating tables and indexes. */
     protected def createPhase1: Iterable[String]
@@ -130,7 +131,8 @@ object SqlProfile {
   }
 }
 
-trait SqlUtilsComponent { self: SqlProfile =>
+trait SqlUtilsComponent {
+  self: SqlProfile =>
 
   /** quotes identifiers to avoid collisions with SQL keywords and other syntax issues */
   def quoteIdentifier(id: String): String = {
@@ -165,7 +167,8 @@ trait SqlUtilsComponent { self: SqlProfile =>
   }
 }
 
-trait SqlTableComponent extends RelationalTableComponent { this: SqlProfile =>
+trait SqlTableComponent extends RelationalTableComponent {
+  this: SqlProfile =>
 
   trait ColumnOptions extends super.ColumnOptions {
     def SqlType(typeName: String) = SqlProfile.ColumnOption.SqlType(typeName)
@@ -174,7 +177,8 @@ trait SqlTableComponent extends RelationalTableComponent { this: SqlProfile =>
   override val columnOptions: ColumnOptions = new ColumnOptions {}
 }
 
-trait SqlActionComponent extends RelationalActionComponent { this: SqlProfile =>
+trait SqlActionComponent extends RelationalActionComponent {
+  this: SqlProfile =>
 
   type ProfileAction[+R, +S <: NoStream, -E <: Effect] <: SqlAction[R, S, E]
   type StreamingProfileAction[+R, +T, -E <: Effect] <: SqlStreamingAction[

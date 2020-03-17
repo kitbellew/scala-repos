@@ -237,7 +237,8 @@ final class Emitter private (
     classCaches.getOrElseUpdate(ancestors, new ClassCache)
 
   private def emitLines(str: String, builder: JSFileBuilder): Unit = {
-    @tailrec def emitNextLine(index: Int): Unit = {
+    @tailrec
+    def emitNextLine(index: Int): Unit = {
       val endOfLine = str.indexOf('\n', index)
       if (endOfLine != -1) {
         builder.addLine(str.substring(index, endOfLine))

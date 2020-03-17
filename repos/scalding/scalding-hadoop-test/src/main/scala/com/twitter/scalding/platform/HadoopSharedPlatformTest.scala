@@ -17,7 +17,8 @@ package com.twitter.scalding.platform
 
 import org.scalatest.{BeforeAndAfterAll, Suite}
 
-trait HadoopSharedPlatformTest extends BeforeAndAfterAll { this: Suite =>
+trait HadoopSharedPlatformTest extends BeforeAndAfterAll {
+  this: Suite =>
   org.apache.log4j.Logger
     .getLogger("org.apache.hadoop")
     .setLevel(org.apache.log4j.Level.ERROR)

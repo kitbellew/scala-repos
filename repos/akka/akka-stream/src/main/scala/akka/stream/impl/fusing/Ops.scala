@@ -778,7 +778,8 @@ private[akka] final case class MapAsync[In, Out](
       override def preStart(): Unit =
         buffer = BufferImpl(parallelism, materializer)
 
-      @tailrec private def pushOne(): Unit =
+      @tailrec
+      private def pushOne(): Unit =
         if (buffer.isEmpty) {
           if (isClosed(in))
             completeStage()

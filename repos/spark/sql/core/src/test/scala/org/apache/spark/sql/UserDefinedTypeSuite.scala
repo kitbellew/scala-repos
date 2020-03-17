@@ -39,8 +39,10 @@ private[sql] class MyDenseVector(val data: Array[Double]) extends Serializable {
 
 @BeanInfo
 private[sql] case class MyLabeledPoint(
-    @BeanProperty label: Double,
-    @BeanProperty features: MyDenseVector)
+    @BeanProperty
+    label: Double,
+    @BeanProperty
+    features: MyDenseVector)
 
 private[sql] class MyDenseVectorUDT extends UserDefinedType[MyDenseVector] {
 

@@ -84,7 +84,8 @@ trait TestStackLike[M[+_]]
     with EchoHttpClientModule[M]
     with MemoryDatasetConsumer[M]
     with IdSourceScannerModule
-    with EvalStackLike { self =>
+    with EvalStackLike {
+  self =>
   import TestStack._
 
   protected lazy val parseEvalLogger = LoggerFactory.getLogger(

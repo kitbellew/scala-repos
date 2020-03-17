@@ -59,7 +59,8 @@ class Interner[T] extends (T => T) with Serializable {
     }
   }
 
-  @transient private var inner = new WeakHashMap[T, WeakReference[T]];
+  @transient
+  private var inner = new WeakHashMap[T, WeakReference[T]];
 
   @throws(classOf[java.io.IOException])
   private def writeObject(oos: ObjectOutputStream) {

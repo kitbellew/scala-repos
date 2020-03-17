@@ -23,7 +23,8 @@ import scala.util.control.Exception._
 import scala.util.control.NonFatal
 import akka.actor.ActorRefScope
 
-private[akka] trait FaultHandling { this: ActorCell ⇒
+private[akka] trait FaultHandling {
+  this: ActorCell ⇒
 
   /* =================
    * T H E   R U L E S

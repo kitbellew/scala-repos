@@ -4,7 +4,8 @@ import scala.tools.reflect.WrappedProperties.AccessControl._
 import java.util.concurrent.CyclicBarrier
 
 object Test extends App {
-  @volatile var done = false
+  @volatile
+  var done = false
   val barrier = new CyclicBarrier(2)
 
   val probe = Future {
