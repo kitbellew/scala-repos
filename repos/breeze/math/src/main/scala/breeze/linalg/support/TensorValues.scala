@@ -52,8 +52,8 @@ class TensorValues[K, V, +This](
       case _ => false
     }
 
-  def map[TT >: This, O, That](fn: (V) => O)(
-      implicit bf: CanMapValues[TT, V, O, That]): That = {
+  def map[TT >: This, O, That](fn: (V) => O)(implicit
+      bf: CanMapValues[TT, V, O, That]): That = {
     tensor.mapValues(fn)(
       bf.asInstanceOf[CanMapValues[Tensor[K, V], V, O, That]])
   }

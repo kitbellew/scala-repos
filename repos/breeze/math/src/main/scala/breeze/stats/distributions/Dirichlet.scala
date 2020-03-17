@@ -117,8 +117,8 @@ object Dirichlet {
   def apply(arr: Array[Double]): Dirichlet[DenseVector[Double], Int] =
     Dirichlet(new DenseVector[Double](arr))
 
-  class ExpFam[T, I](exemplar: T)(
-      implicit space: MutableFiniteCoordinateField[T, I, Double])
+  class ExpFam[T, I](exemplar: T)(implicit
+      space: MutableFiniteCoordinateField[T, I, Double])
       extends ExponentialFamily[Dirichlet[T, I], T] {
     import space._
     type Parameter = T

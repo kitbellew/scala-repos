@@ -41,8 +41,8 @@ object union {
         type V = V0
       }
 
-    implicit def tlSelector[H, T <: Coproduct, K](
-        implicit st: Selector[T, K]): Aux[H :+: T, K, st.V] =
+    implicit def tlSelector[H, T <: Coproduct, K](implicit
+        st: Selector[T, K]): Aux[H :+: T, K, st.V] =
       new Selector[H :+: T, K] {
         type V = st.V
         def apply(u: H :+: T): Out =
@@ -58,8 +58,8 @@ object union {
   }
 
   object Selector extends LowPrioritySelector {
-    def apply[C <: Coproduct, K](
-        implicit selector: Selector[C, K]): Aux[C, K, selector.V] = selector
+    def apply[C <: Coproduct, K](implicit
+        selector: Selector[C, K]): Aux[C, K, selector.V] = selector
 
     implicit def hdSelector[K, V0, T <: Coproduct]
         : Aux[FieldType[K, V0] :+: T, K, V0] =
@@ -129,8 +129,8 @@ object union {
         def apply(u: U): Out = u
       }
 
-    implicit def coproductValues[K, V, T <: Coproduct](
-        implicit vt: Values[T]): Aux[FieldType[K, V] :+: T, V :+: vt.Out] =
+    implicit def coproductValues[K, V, T <: Coproduct](implicit
+        vt: Values[T]): Aux[FieldType[K, V] :+: T, V :+: vt.Out] =
       new Values[FieldType[K, V] :+: T] {
         type Out = V :+: vt.Out
         def apply(l: FieldType[K, V] :+: T): Out =
@@ -192,8 +192,8 @@ object union {
   }
 
   object ToMap {
-    def apply[U <: Coproduct](
-        implicit toMap: ToMap[U]): Aux[U, toMap.Key, toMap.Value] = toMap
+    def apply[U <: Coproduct](implicit
+        toMap: ToMap[U]): Aux[U, toMap.Key, toMap.Value] = toMap
 
     type Aux[U <: Coproduct, Key0, Value0] =
       ToMap[U] {
@@ -211,8 +211,8 @@ object union {
     implicit val cnilToMapAnyNothing
         : Aux[CNil, Any, Nothing] = cnilToMap[Any, Nothing]
 
-    implicit def csingleToMap[K, V](
-        implicit wk: Witness.Aux[K]): Aux[FieldType[K, V] :+: CNil, K, V] =
+    implicit def csingleToMap[K, V](implicit
+        wk: Witness.Aux[K]): Aux[FieldType[K, V] :+: CNil, K, V] =
       new ToMap[FieldType[K, V] :+: CNil] {
         type Key = K
         type Value = V
@@ -252,9 +252,8 @@ object union {
   }
 
   object MapValues {
-    def apply[HF, U <: Coproduct](
-        implicit mapValues: MapValues[HF, U]): Aux[HF, U, mapValues.Out] =
-      mapValues
+    def apply[HF, U <: Coproduct](implicit
+        mapValues: MapValues[HF, U]): Aux[HF, U, mapValues.Out] = mapValues
 
     type Aux[HF, U <: Coproduct, Out0 <: Coproduct] =
       MapValues[HF, U] {

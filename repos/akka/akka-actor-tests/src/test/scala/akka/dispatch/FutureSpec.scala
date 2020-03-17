@@ -89,8 +89,8 @@ object FutureSpec {
     def /:(that: Future[Int]): Future[Int] = that map action.apply
   }
 
-  final case class FlatMapAction(action: IntAction)(
-      implicit ec: ExecutionContext)
+  final case class FlatMapAction(action: IntAction)(implicit
+      ec: ExecutionContext)
       extends FutureAction {
     def /:(that: Try[Int]): Try[Int] = that map action.apply
     def /:(that: Future[Int]): Future[Int] =

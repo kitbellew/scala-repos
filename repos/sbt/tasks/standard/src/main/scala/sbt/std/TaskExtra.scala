@@ -128,8 +128,8 @@ trait TaskExtra {
         type l[L[x]] = (L[A], L[B])
       })#l](in)(AList.tuple2[A, B])
 
-  final implicit def multInputTask[K[L[X]]](tasks: K[Task])(
-      implicit a: AList[K]): MultiInTask[K] =
+  final implicit def multInputTask[K[L[X]]](tasks: K[Task])(implicit
+      a: AList[K]): MultiInTask[K] =
     new MultiInTask[K] {
       def flatMapR[T](f: K[Result] => Task[T]): Task[T] =
         Task(Info(), new FlatMapped[T, K](tasks, f, a))
@@ -261,8 +261,8 @@ trait TaskExtra {
           IO.readLines(s.readText(key(in), sid))
         }
     }
-  implicit def processToTask(p: ProcessBuilder)(
-      implicit streams: Task[TaskStreams[_]]): Task[Int] =
+  implicit def processToTask(p: ProcessBuilder)(implicit
+      streams: Task[TaskStreams[_]]): Task[Int] =
     streams map { s =>
       val pio = TaskExtra.processIO(s)
       (p run pio).exitValue

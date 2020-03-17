@@ -206,8 +206,8 @@ object MarkovChain {
       * @param proposal the <b>symmetric</b> proposal distribution generator
       *
       */
-    def metropolis[T](proposal: T => Rand[T])(logMeasure: T => Double)(
-        implicit rand: RandBasis = Rand) = { t: T =>
+    def metropolis[T](proposal: T => Rand[T])(logMeasure: T => Double)(implicit
+        rand: RandBasis = Rand) = { t: T =>
       for (next <- proposal(t);
            newLL = logMeasure(next);
            oldLL = logMeasure(t);
@@ -248,8 +248,8 @@ object MarkovChain {
       * @param init guess
       * @return a slice sampler
       */
-    def slice(logMeasure: Double => Double, valid: Double => Boolean)(
-        implicit rand: RandBasis = Rand) = {
+    def slice(logMeasure: Double => Double, valid: Double => Boolean)(implicit
+        rand: RandBasis = Rand) = {
       val WINDOW = 2;
       val M = 10;
       (last: Double) => {

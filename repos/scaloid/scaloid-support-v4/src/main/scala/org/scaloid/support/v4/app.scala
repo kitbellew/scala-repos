@@ -223,9 +223,8 @@ trait TraitFragment[This <: android.support.v4.app.Fragment] {
   @inline def startActivity[T: ClassTag](implicit context: Context): Unit =
     basis.startActivity(SIntent[T])
 
-  @inline def startActivityForResult[T: ClassTag](p: Int)(
-      implicit context: Context): Unit =
-    basis.startActivityForResult(SIntent[T], p)
+  @inline def startActivityForResult[T: ClassTag](p: Int)(implicit
+      context: Context): Unit = basis.startActivityForResult(SIntent[T], p)
 }
 
 /**
@@ -347,8 +346,8 @@ trait TraitFragmentTransaction[
 
   def basis: This
 
-  @inline def breadCrumbShortTitle(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def breadCrumbShortTitle(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'breadCrumbShortTitle'")
 
@@ -505,8 +504,8 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
     basis
   }
 
-  @inline def listShownNoAnimation(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def listShownNoAnimation(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'listShownNoAnimation'")
 

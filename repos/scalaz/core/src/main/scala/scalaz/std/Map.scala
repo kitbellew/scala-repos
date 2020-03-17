@@ -110,8 +110,8 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
         fa.map {
           case (k, v) => (k, f(v))
         }
-      def traverseImpl[G[_], A, B](m: XMap[K, A])(f: A => G[B])(
-          implicit G: Applicative[G]): G[XMap[K, B]] =
+      def traverseImpl[G[_], A, B](m: XMap[K, A])(f: A => G[B])(implicit
+          G: Applicative[G]): G[XMap[K, B]] =
         G.map(
           list.listInstance.traverseImpl(m.toList)({
             case (k, v) => G.map(f(v))(k -> _)

@@ -37,8 +37,8 @@ trait WebHookService {
   private val logger = LoggerFactory.getLogger(classOf[WebHookService])
 
   /** get All WebHook informations of repository */
-  def getWebHooks(owner: String, repository: String)(
-      implicit s: Session): List[(WebHook, Set[WebHook.Event])] =
+  def getWebHooks(owner: String, repository: String)(implicit
+      s: Session): List[(WebHook, Set[WebHook.Event])] =
     WebHooks
       .filter(_.byRepository(owner, repository))
       .innerJoin(WebHookEvents)
@@ -75,8 +75,8 @@ trait WebHookService {
       .distinct
 
   /** get All WebHook information from repository to url */
-  def getWebHook(owner: String, repository: String, url: String)(
-      implicit s: Session): Option[(WebHook, Set[WebHook.Event])] =
+  def getWebHook(owner: String, repository: String, url: String)(implicit
+      s: Session): Option[(WebHook, Set[WebHook.Event])] =
     WebHooks
       .filter(_.byPrimaryKey(owner, repository, url))
       .innerJoin(WebHookEvents)
@@ -119,8 +119,8 @@ trait WebHookService {
     }
   }
 
-  def deleteWebHook(owner: String, repository: String, url: String)(
-      implicit s: Session): Unit =
+  def deleteWebHook(owner: String, repository: String, url: String)(implicit
+      s: Session): Unit =
     WebHooks.filter(_.byPrimaryKey(owner, repository, url)).delete
 
   def callWebHookOf(owner: String, repository: String, event: WebHook.Event)(

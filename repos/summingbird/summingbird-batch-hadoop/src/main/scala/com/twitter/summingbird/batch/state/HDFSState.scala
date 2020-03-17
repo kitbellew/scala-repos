@@ -60,8 +60,8 @@ class HDFSState(val config: HDFSState.Config)(implicit val batcher: Batcher)
   override val checkpointStore = new HDFSCheckpointStore(config)
 }
 
-class HDFSCheckpointStore(val config: HDFSState.Config)(
-    implicit val batcher: Batcher)
+class HDFSCheckpointStore(val config: HDFSState.Config)(implicit
+    val batcher: Batcher)
     extends CheckpointStore[Iterable[BatchID]] {
 
   @transient private val logger = LoggerFactory.getLogger(classOf[HDFSState])

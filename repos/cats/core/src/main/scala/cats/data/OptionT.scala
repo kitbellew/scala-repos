@@ -35,8 +35,8 @@ final case class OptionT[F[_], A](value: F[Option[A]]) {
         case None    => F.pure(None)
       })
 
-  def transform[B](f: Option[A] => Option[B])(
-      implicit F: Functor[F]): OptionT[F, B] = OptionT(F.map(value)(f))
+  def transform[B](f: Option[A] => Option[B])(implicit
+      F: Functor[F]): OptionT[F, B] = OptionT(F.map(value)(f))
 
   def subflatMap[B](f: A => Option[B])(implicit F: Functor[F]): OptionT[F, B] =
     transform(_.flatMap(f))
@@ -50,9 +50,8 @@ final case class OptionT[F[_], A](value: F[Option[A]]) {
       case None    => default
     }
 
-  def collect[B](f: PartialFunction[A, B])(
-      implicit F: Functor[F]): OptionT[F, B] =
-    OptionT(F.map(value)(_.collect(f)))
+  def collect[B](f: PartialFunction[A, B])(implicit
+      F: Functor[F]): OptionT[F, B] = OptionT(F.map(value)(_.collect(f)))
 
   def exists(f: A => Boolean)(implicit F: Functor[F]): F[Boolean] =
     F.map(value)(_.exists(f))
@@ -149,10 +148,10 @@ private[data] sealed trait OptionTInstances extends OptionTInstances1 {
         fa.map(f)
     }
 
-  implicit def optionTEq[F[_], A](
-      implicit FA: Eq[F[Option[A]]]): Eq[OptionT[F, A]] = FA.on(_.value)
+  implicit def optionTEq[F[_], A](implicit
+      FA: Eq[F[Option[A]]]): Eq[OptionT[F, A]] = FA.on(_.value)
 
-  implicit def optionTShow[F[_], A](
-      implicit F: Show[F[Option[A]]]): Show[OptionT[F, A]] =
+  implicit def optionTShow[F[_], A](implicit
+      F: Show[F[Option[A]]]): Show[OptionT[F, A]] =
     functor.Contravariant[Show].contramap(F)(_.value)
 }

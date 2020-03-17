@@ -2,13 +2,13 @@ package scalaz
 package std
 
 sealed trait FunctionInstances1 {
-  implicit def function1Semigroup[A, R](
-      implicit R0: Semigroup[R]): Semigroup[A => R] =
+  implicit def function1Semigroup[A, R](implicit
+      R0: Semigroup[R]): Semigroup[A => R] =
     new Function1Semigroup[A, R] {
       implicit def R = R0
     }
-  implicit def function1Cobind[A, R](
-      implicit A0: Semigroup[A]): Cobind[A => ?] =
+  implicit def function1Cobind[A, R](implicit
+      A0: Semigroup[A]): Cobind[A => ?] =
     new Function1Cobind[A, R] {
       implicit def M = A0
     }
@@ -92,8 +92,8 @@ trait FunctionInstances extends FunctionInstances0 {
       override def foldRight[A, B](fa: () => A, z: => B)(f: (A, => B) => B) =
         f(fa(), z)
 
-      def distributeImpl[G[_], A, B](fa: G[A])(f: A => () => B)(
-          implicit G: Functor[G]): () => G[B] = () => G.map(fa)(a => f(a)())
+      def distributeImpl[G[_], A, B](fa: G[A])(f: A => () => B)(implicit
+          G: Functor[G]): () => G[B] = () => G.map(fa)(a => f(a)())
 
       def tailrecM[A, B](f: A => () => A \/ B)(a: A): () => B =
         () => {

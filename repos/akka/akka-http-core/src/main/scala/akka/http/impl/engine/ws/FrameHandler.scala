@@ -31,8 +31,8 @@ private[http] object FrameHandler {
     override def toString: String = s"HandlerStage(server=$server)"
 
     private object Idle extends StateWithControlFrameHandling {
-      def handleRegularFrameStart(start: FrameStart)(
-          implicit ctx: Ctx): SyncDirective =
+      def handleRegularFrameStart(start: FrameStart)(implicit
+          ctx: Ctx): SyncDirective =
         (start.header.opcode, start.isFullMessage) match {
           case (Opcode.Binary, true) ⇒
             publishMessagePart(BinaryMessagePart(start.data, last = true))
@@ -63,8 +63,8 @@ private[http] object FrameHandler {
       var finSeen = false
       def createMessagePart(data: ByteString, last: Boolean): MessageDataPart
 
-      def handleRegularFrameStart(start: FrameStart)(
-          implicit ctx: Ctx): SyncDirective = {
+      def handleRegularFrameStart(start: FrameStart)(implicit
+          ctx: Ctx): SyncDirective = {
         if ((
               expectFirstHeader && start.header.opcode == expectedOpcode
             ) // first opcode must be the expected
@@ -77,8 +77,8 @@ private[http] object FrameHandler {
         } else
           protocolError()
       }
-      override def handleFrameData(data: FrameData)(
-          implicit ctx: Ctx): SyncDirective = publish(data)
+      override def handleFrameData(data: FrameData)(implicit
+          ctx: Ctx): SyncDirective = publish(data)
 
       private def publish(part: FrameEvent)(implicit ctx: Ctx): SyncDirective =
         try publishMessagePart(
@@ -104,15 +104,15 @@ private[http] object FrameHandler {
       }
     }
 
-    private def becomeAndHandleWith(newState: State, part: FrameEvent)(
-        implicit ctx: Ctx): SyncDirective = {
+    private def becomeAndHandleWith(newState: State, part: FrameEvent)(implicit
+        ctx: Ctx): SyncDirective = {
       become(newState)
       current.onPush(part, ctx)
     }
 
     /** Returns a SyncDirective if it handled the message */
-    private def validateHeader(header: FrameHeader)(
-        implicit ctx: Ctx): Option[SyncDirective] =
+    private def validateHeader(header: FrameHeader)(implicit
+        ctx: Ctx): Option[SyncDirective] =
       header match {
         case h: FrameHeader if h.mask.isDefined && !server ⇒
           Some(protocolError())
@@ -155,17 +155,17 @@ private[http] object FrameHandler {
       ctx.pull()
     }
 
-    private def publishMessagePart(part: MessageDataPart)(
-        implicit ctx: Ctx): SyncDirective =
+    private def publishMessagePart(part: MessageDataPart)(implicit
+        ctx: Ctx): SyncDirective =
       if (part.last)
         emit(Iterator(part, MessageEnd), ctx, Idle)
       else
         ctx.push(part)
-    private def publishDirectResponse(frame: FrameStart)(
-        implicit ctx: Ctx): SyncDirective = ctx.push(DirectAnswer(frame))
+    private def publishDirectResponse(frame: FrameStart)(implicit
+        ctx: Ctx): SyncDirective = ctx.push(DirectAnswer(frame))
 
-    private def protocolError(reason: String = "")(
-        implicit ctx: Ctx): SyncDirective =
+    private def protocolError(reason: String = "")(implicit
+        ctx: Ctx): SyncDirective =
       closeWithCode(Protocol.CloseCodes.ProtocolError, reason)
 
     private def closeWithCode(
@@ -194,11 +194,11 @@ private[http] object FrameHandler {
 
     private abstract class StateWithControlFrameHandling
         extends BetweenFrameState {
-      def handleRegularFrameStart(start: FrameStart)(
-          implicit ctx: Ctx): SyncDirective
+      def handleRegularFrameStart(start: FrameStart)(implicit
+          ctx: Ctx): SyncDirective
 
-      def handleFrameStart(start: FrameStart)(
-          implicit ctx: Ctx): SyncDirective =
+      def handleFrameStart(start: FrameStart)(implicit
+          ctx: Ctx): SyncDirective =
         validateHeader(start.header).getOrElse {
           if (start.header.opcode.isControl)
             if (start.isFullMessage)
@@ -214,8 +214,8 @@ private[http] object FrameHandler {
         throw new IllegalStateException("Expected FrameStart")
     }
     private abstract class InFrameState extends ImplicitContextState {
-      def handleFrameStart(start: FrameStart)(
-          implicit ctx: Ctx): SyncDirective =
+      def handleFrameStart(start: FrameStart)(implicit
+          ctx: Ctx): SyncDirective =
         throw new IllegalStateException("Expected FrameData")
     }
     private abstract class ImplicitContextState extends State {

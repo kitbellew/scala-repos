@@ -47,8 +47,8 @@ object VersionedKeyValSource {
       path: String,
       sourceVersion: Option[Long] = None,
       sinkVersion: Option[Long] = None,
-      maxFailures: Int = 0)(
-      implicit codec: Injection[(K, V), (Array[Byte], Array[Byte])]) = {
+      maxFailures: Int = 0)(implicit
+      codec: Injection[(K, V), (Array[Byte], Array[Byte])]) = {
     new VersionedKeyValSource[K, V](
       path,
       sourceVersion,
@@ -62,8 +62,8 @@ object VersionedKeyValSource {
       sourceVersion: Option[Long],
       sinkVersion: Option[Long],
       maxFailures: Int,
-      versionsToKeep: Int)(
-      implicit codec: Injection[(K, V), (Array[Byte], Array[Byte])]) =
+      versionsToKeep: Int)(implicit
+      codec: Injection[(K, V), (Array[Byte], Array[Byte])]) =
     new VersionedKeyValSource[K, V](
       path,
       sourceVersion,
@@ -77,8 +77,8 @@ class VersionedKeyValSource[K, V](
     val sourceVersion: Option[Long],
     val sinkVersion: Option[Long],
     val maxFailures: Int,
-    val versionsToKeep: Int)(
-    implicit @transient codec: Injection[(K, V), (Array[Byte], Array[Byte])])
+    val versionsToKeep: Int)(implicit
+    @transient codec: Injection[(K, V), (Array[Byte], Array[Byte])])
     extends Source
     with Mappable[(K, V)]
     with TypedSink[(K, V)] {
@@ -193,8 +193,8 @@ class VersionedKeyValSource[K, V](
       case None => false
     }
 
-  override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+  override def createTap(readOrWrite: AccessMode)(implicit
+      mode: Mode): Tap[_, _, _] = {
     import com.twitter.scalding.CastHfsTap
     mode match {
       case Hdfs(_strict, _config) =>

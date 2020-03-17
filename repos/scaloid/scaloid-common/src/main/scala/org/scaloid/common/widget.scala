@@ -80,8 +80,8 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
     */
   @inline def background = basis.getBackground
 
-  @inline def backgroundDrawable(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def backgroundDrawable(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'backgroundDrawable'")
 
@@ -383,8 +383,8 @@ trait TraitArrayAdapter[This <: android.widget.ArrayAdapter[_]]
     */
   @inline def context = basis.getContext
 
-  @inline def dropDownViewResource(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def dropDownViewResource(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'dropDownViewResource'")
 
@@ -429,8 +429,8 @@ trait TraitArrayAdapter[This <: android.widget.ArrayAdapter[_]]
   */
 class SArrayAdapter[V <: android.view.View, T <: AnyRef](
     items: java.util.List[T],
-    textViewResourceId: Int = android.R.layout.simple_spinner_item)(
-    implicit context: android.content.Context)
+    textViewResourceId: Int = android.R.layout.simple_spinner_item)(implicit
+    context: android.content.Context)
     extends android.widget.ArrayAdapter[T](context, textViewResourceId, items)
     with TraitArrayAdapter[SArrayAdapter[V, T]] {
 
@@ -483,26 +483,26 @@ class SArrayAdapter[V <: android.view.View, T <: AnyRef](
 
 object SArrayAdapter {
 
-  def apply[T <: AnyRef: Manifest](items: T*)(
-      implicit context: Context): SArrayAdapter[TextView, T] =
+  def apply[T <: AnyRef: Manifest](items: T*)(implicit
+      context: Context): SArrayAdapter[TextView, T] =
     new SArrayAdapter[TextView, T](java.util.Arrays.asList[T](items: _*))
 
-  def apply[T <: AnyRef: Manifest](textViewResourceId: Int, items: T*)(
-      implicit context: Context): SArrayAdapter[TextView, T] =
+  def apply[T <: AnyRef: Manifest](textViewResourceId: Int, items: T*)(implicit
+      context: Context): SArrayAdapter[TextView, T] =
     new SArrayAdapter[TextView, T](
       java.util.Arrays.asList(items: _*),
       textViewResourceId)
 
-  def apply[T <: AnyRef](items: Array[T])(
-      implicit context: Context): SArrayAdapter[TextView, T] =
+  def apply[T <: AnyRef](items: Array[T])(implicit
+      context: Context): SArrayAdapter[TextView, T] =
     new SArrayAdapter[TextView, T](java.util.Arrays.asList(items: _*))
 
-  def apply[T <: AnyRef](items: java.util.List[T])(
-      implicit context: Context): SArrayAdapter[TextView, T] =
+  def apply[T <: AnyRef](items: java.util.List[T])(implicit
+      context: Context): SArrayAdapter[TextView, T] =
     new SArrayAdapter[TextView, T](items)
 
-  def apply[T <: AnyRef](textViewResourceId: Int, items: Array[T])(
-      implicit context: Context): SArrayAdapter[TextView, T] =
+  def apply[T <: AnyRef](textViewResourceId: Int, items: Array[T])(implicit
+      context: Context): SArrayAdapter[TextView, T] =
     new SArrayAdapter[TextView, T](
       java.util.Arrays.asList(items: _*),
       textViewResourceId)
@@ -587,8 +587,8 @@ class SImageButton()(implicit
   def basis = this
   override val parentViewGroup = parentVGroup
 
-  def this(imageResource: android.graphics.drawable.Drawable)(
-      implicit context: Context) = {
+  def this(imageResource: android.graphics.drawable.Drawable)(implicit
+      context: Context) = {
     this()
     this.imageDrawable = imageResource
   }
@@ -702,8 +702,8 @@ trait TraitListView[This <: android.widget.ListView]
     basis
   }
 
-  @inline def footerDividersEnabled(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def footerDividersEnabled(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'footerDividersEnabled'")
 
@@ -734,8 +734,8 @@ trait TraitListView[This <: android.widget.ListView]
     */
   @inline def footerViewsCount = basis.getFooterViewsCount
 
-  @inline def headerDividersEnabled(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def headerDividersEnabled(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'headerDividersEnabled'")
 
@@ -920,8 +920,8 @@ class SEditText()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -1251,8 +1251,8 @@ class SImageView()(implicit
   def basis = this
   override val parentViewGroup = parentVGroup
 
-  def this(imageResource: android.graphics.drawable.Drawable)(
-      implicit context: Context) = {
+  def this(imageResource: android.graphics.drawable.Drawable)(implicit
+      context: Context) = {
     this()
     this.imageDrawable = imageResource
   }
@@ -1395,8 +1395,8 @@ class SMultiAutoCompleteTextView()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -1868,8 +1868,8 @@ trait TraitTabHost[This <: android.widget.TabHost]
     */
   @inline def currentView = basis.getCurrentView
 
-  @inline def onTabChangedListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onTabChangedListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onTabChangedListener'")
 
@@ -2154,8 +2154,8 @@ trait TraitRadioGroup[This <: android.widget.RadioGroup]
     */
   @inline def checkedRadioButtonId = basis.getCheckedRadioButtonId
 
-  @inline def onCheckedChangeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onCheckedChangeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onCheckedChangeListener'")
 
@@ -2522,8 +2522,8 @@ trait TraitSpinner[This <: android.widget.Spinner]
     */
   @inline def popupBackground = basis.getPopupBackground
 
-  @inline def popupBackgroundDrawable(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def popupBackgroundDrawable(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'popupBackgroundDrawable'")
 
@@ -2542,8 +2542,8 @@ trait TraitSpinner[This <: android.widget.Spinner]
     basis
   }
 
-  @inline def popupBackgroundResource(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def popupBackgroundResource(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'popupBackgroundResource'")
 
@@ -3134,8 +3134,8 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
     basis
   }
 
-  @inline def onLongPressUpdateInterval(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onLongPressUpdateInterval(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onLongPressUpdateInterval'")
 
@@ -3172,8 +3172,8 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
     basis
   }
 
-  @inline def onValueChangedListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onValueChangedListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onValueChangedListener'")
 
@@ -3426,8 +3426,8 @@ class SChronometer()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -3561,8 +3561,8 @@ class SCheckedTextView()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -3709,8 +3709,8 @@ class RichShareActionProvider[This <: android.widget.ShareActionProvider](
 trait TraitShareActionProvider[This <: android.widget.ShareActionProvider]
     extends TraitActionProvider[This] {
 
-  @inline def onShareTargetSelectedListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onShareTargetSelectedListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onShareTargetSelectedListener'")
 
@@ -3730,8 +3730,8 @@ trait TraitShareActionProvider[This <: android.widget.ShareActionProvider]
     basis
   }
 
-  @inline def shareHistoryFileName(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def shareHistoryFileName(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'shareHistoryFileName'")
 
@@ -3807,8 +3807,8 @@ class SShareActionProvider()(implicit context: android.content.Context)
 }
 
 object SShareActionProvider {
-  def apply()(
-      implicit context: android.content.Context): SShareActionProvider = {
+  def apply()(implicit
+      context: android.content.Context): SShareActionProvider = {
     val v = new SShareActionProvider
 
     v
@@ -3965,8 +3965,8 @@ trait TraitTimePicker[This <: android.widget.TimePicker]
     basis
   }
 
-  @inline def onTimeChangedListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onTimeChangedListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onTimeChangedListener'")
 
@@ -4118,8 +4118,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
     basis
   }
 
-  @inline def onChildClickListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onChildClickListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onChildClickListener'")
 
@@ -4139,8 +4139,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
     basis
   }
 
-  @inline def onGroupClickListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onGroupClickListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onGroupClickListener'")
 
@@ -4160,8 +4160,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
     basis
   }
 
-  @inline def onGroupCollapseListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onGroupCollapseListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onGroupCollapseListener'")
 
@@ -4181,8 +4181,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
     basis
   }
 
-  @inline def onGroupExpandListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onGroupExpandListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onGroupExpandListener'")
 
@@ -4559,8 +4559,8 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
     */
   @inline def listPaddingTop = basis.getListPaddingTop
 
-  @inline def multiChoiceModeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def multiChoiceModeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'multiChoiceModeListener'")
 
@@ -4618,8 +4618,8 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
     basis
   }
 
-  @inline def remoteViewsAdapter(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def remoteViewsAdapter(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'remoteViewsAdapter'")
 
@@ -4883,8 +4883,8 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
       })
     basis
   }
-  @inline def setRemoteViewsAdapter[T: ClassTag](
-      implicit context: Context): Unit = basis.setRemoteViewsAdapter(SIntent[T])
+  @inline def setRemoteViewsAdapter[T: ClassTag](implicit
+      context: Context): Unit = basis.setRemoteViewsAdapter(SIntent[T])
 }
 
 /**
@@ -4931,8 +4931,8 @@ class RichSeekBar[This <: android.widget.SeekBar](val basis: This)
 trait TraitSeekBar[This <: android.widget.SeekBar]
     extends TraitAbsSeekBar[This] {
 
-  @inline def onSeekBarChangeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onSeekBarChangeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onSeekBarChangeListener'")
 
@@ -5470,8 +5470,8 @@ class RichResourceCursorAdapter[This <: android.widget.ResourceCursorAdapter](
 trait TraitResourceCursorAdapter[This <: android.widget.ResourceCursorAdapter]
     extends TraitCursorAdapter[This] {
 
-  @inline def dropDownViewResource(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def dropDownViewResource(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'dropDownViewResource'")
 
@@ -5743,8 +5743,8 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
     basis
   }
 
-  @inline def onDateChangeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onDateChangeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onDateChangeListener'")
 
@@ -6002,8 +6002,8 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
     */
   @inline def handle = basis.getHandle
 
-  @inline def onDrawerCloseListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onDrawerCloseListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onDrawerCloseListener'")
 
@@ -6023,8 +6023,8 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
     basis
   }
 
-  @inline def onDrawerOpenListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onDrawerOpenListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onDrawerOpenListener'")
 
@@ -6044,8 +6044,8 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
     basis
   }
 
-  @inline def onDrawerScrollListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onDrawerScrollListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onDrawerScrollListener'")
 
@@ -6180,8 +6180,8 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
     */
   @inline def background = basis.getBackground
 
-  @inline def backgroundDrawable(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def backgroundDrawable(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'backgroundDrawable'")
 
@@ -6328,8 +6328,8 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
     basis
   }
 
-  @inline def onItemClickListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onItemClickListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onItemClickListener'")
 
@@ -6349,8 +6349,8 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
     basis
   }
 
-  @inline def onItemSelectedListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onItemSelectedListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onItemSelectedListener'")
 
@@ -7032,8 +7032,8 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
     basis
   }
 
-  @inline def onZoomInClickListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onZoomInClickListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onZoomInClickListener'")
 
@@ -7051,8 +7051,8 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
     basis
   }
 
-  @inline def onZoomOutClickListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onZoomOutClickListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onZoomOutClickListener'")
 
@@ -7316,8 +7316,8 @@ class SRadioButton()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -7394,8 +7394,8 @@ class SQuickContactBadge()(implicit
   def basis = this
   override val parentViewGroup = parentVGroup
 
-  def this(imageResource: android.graphics.drawable.Drawable)(
-      implicit context: Context) = {
+  def this(imageResource: android.graphics.drawable.Drawable)(implicit
+      context: Context) = {
     this()
     this.imageDrawable = imageResource
   }
@@ -7477,8 +7477,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
     basis
   }
 
-  @inline def iconifiedByDefault(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def iconifiedByDefault(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'iconifiedByDefault'")
 
@@ -7567,8 +7567,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
     basis
   }
 
-  @inline def onQueryTextFocusChangeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onQueryTextFocusChangeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onQueryTextFocusChangeListener'")
 
@@ -7588,8 +7588,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
     basis
   }
 
-  @inline def onQueryTextListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onQueryTextListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onQueryTextListener'")
 
@@ -7609,8 +7609,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
     basis
   }
 
-  @inline def onSearchClickListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onSearchClickListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onSearchClickListener'")
 
@@ -7628,8 +7628,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
     basis
   }
 
-  @inline def onSuggestionListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onSuggestionListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onSuggestionListener'")
 
@@ -7883,8 +7883,8 @@ class SDigitalClock()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -7983,8 +7983,8 @@ class SToggleButton()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -8044,8 +8044,8 @@ class SButton()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -8106,8 +8106,8 @@ class SCheckBox()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -8336,8 +8336,8 @@ trait TraitTabWidget[This <: android.widget.TabWidget]
     basis
   }
 
-  @inline def rightStripDrawable(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def rightStripDrawable(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'rightStripDrawable'")
 
@@ -8471,8 +8471,8 @@ trait TraitVideoView[This <: android.widget.VideoView]
     basis
   }
 
-  @inline def onCompletionListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onCompletionListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onCompletionListener'")
 
@@ -8510,8 +8510,8 @@ trait TraitVideoView[This <: android.widget.VideoView]
     basis
   }
 
-  @inline def onPreparedListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onPreparedListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onPreparedListener'")
 
@@ -9688,8 +9688,8 @@ class SZoomButton()(implicit
   def basis = this
   override val parentViewGroup = parentVGroup
 
-  def this(imageResource: android.graphics.drawable.Drawable)(
-      implicit context: Context) = {
+  def this(imageResource: android.graphics.drawable.Drawable)(implicit
+      context: Context) = {
     this()
     this.imageDrawable = imageResource
   }
@@ -9760,8 +9760,8 @@ object SZoomButton extends ImageViewCompanion[SZoomButton] {
     basis
   }
 
-  @inline def callbackDuringFling(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def callbackDuringFling(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'callbackDuringFling'")
 
@@ -9911,8 +9911,8 @@ trait TraitPopupMenu[This <: android.widget.PopupMenu] {
     basis
   }
 
-  @inline def onMenuItemClickListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onMenuItemClickListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onMenuItemClickListener'")
 
@@ -10034,8 +10034,8 @@ trait TraitCompoundButton[This <: android.widget.CompoundButton]
     basis
   }
 
-  @inline def onCheckedChangeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onCheckedChangeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onCheckedChangeListener'")
 
@@ -10173,8 +10173,8 @@ trait TraitAdapterViewAnimator[This <: android.widget.AdapterViewAnimator]
     basis
   }
 
-  @inline def remoteViewsAdapter(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def remoteViewsAdapter(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'remoteViewsAdapter'")
 
@@ -10192,8 +10192,8 @@ trait TraitAdapterViewAnimator[This <: android.widget.AdapterViewAnimator]
     basis
   }
 
-  @inline def setRemoteViewsAdapter[T: ClassTag](
-      implicit context: Context): Unit = basis.setRemoteViewsAdapter(SIntent[T])
+  @inline def setRemoteViewsAdapter[T: ClassTag](implicit
+      context: Context): Unit = basis.setRemoteViewsAdapter(SIntent[T])
 }
 
 /**
@@ -10804,8 +10804,8 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
     */
   @inline def hintTextColors = basis.getHintTextColors
 
-  @inline def horizontallyScrolling(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def horizontallyScrolling(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'horizontallyScrolling'")
 
@@ -11195,8 +11195,8 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
     basis
   }
 
-  @inline def onEditorActionListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onEditorActionListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onEditorActionListener'")
 
@@ -11745,8 +11745,8 @@ class STextView()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -12052,8 +12052,8 @@ class RichSimpleAdapter[This <: android.widget.SimpleAdapter](val basis: This)
 trait TraitSimpleAdapter[This <: android.widget.SimpleAdapter]
     extends TraitBaseAdapter[This] {
 
-  @inline def dropDownViewResource(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def dropDownViewResource(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'dropDownViewResource'")
 
@@ -12171,8 +12171,8 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
     */
   @inline def dropDownBackground = basis.getDropDownBackground
 
-  @inline def dropDownBackgroundDrawable(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def dropDownBackgroundDrawable(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'dropDownBackgroundDrawable'")
 
@@ -12191,8 +12191,8 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
     basis
   }
 
-  @inline def dropDownBackgroundResource(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def dropDownBackgroundResource(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'dropDownBackgroundResource'")
 
@@ -12516,8 +12516,8 @@ class SAutoCompleteTextView()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -12783,8 +12783,8 @@ class SSwitch()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -12983,8 +12983,8 @@ class SExtractEditText()(implicit
       onPressAndHold(interval, onClickListener.func(this))
   }
 
-  def this(text: CharSequence, onClickListener: ViewOnClickListener)(
-      implicit context: Context) = this(text, onClickListener, -1)
+  def this(text: CharSequence, onClickListener: ViewOnClickListener)(implicit
+      context: Context) = this(text, onClickListener, -1)
 
 }
 
@@ -13033,8 +13033,8 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
     basis
   }
 
-  @inline def onKeyboardActionListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onKeyboardActionListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onKeyboardActionListener'")
 
@@ -13143,8 +13143,8 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
     basis
   }
 
-  @inline def verticalCorrection(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def verticalCorrection(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'verticalCorrection'")
 
@@ -13411,8 +13411,8 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
     basis
   }
 
-  @inline def EGLContextClientVersion(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def EGLContextClientVersion(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'EGLContextClientVersion'")
 
@@ -13449,8 +13449,8 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
     basis
   }
 
-  @inline def EGLWindowSurfaceFactory(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def EGLWindowSurfaceFactory(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'EGLWindowSurfaceFactory'")
 
@@ -14287,8 +14287,8 @@ trait TraitWebView[This <: android.webkit.WebView]
     */
   @inline def hitTestResult = basis.getHitTestResult
 
-  @inline def horizontalScrollbarOverlay(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def horizontalScrollbarOverlay(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'horizontalScrollbarOverlay'")
 
@@ -14322,8 +14322,8 @@ trait TraitWebView[This <: android.webkit.WebView]
     basis
   }
 
-  @inline def mapTrackballToArrowKeys(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def mapTrackballToArrowKeys(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'mapTrackballToArrowKeys'")
 
@@ -14405,8 +14405,8 @@ trait TraitWebView[This <: android.webkit.WebView]
     */
   @inline def url = basis.getUrl
 
-  @inline def verticalScrollbarOverlay(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def verticalScrollbarOverlay(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'verticalScrollbarOverlay'")
 

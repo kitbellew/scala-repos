@@ -52,8 +52,8 @@ object StrictForm {
         value: Multipart.FormData.BodyPart.Strict)
         extends Field
 
-    implicit def unmarshaller[T](
-        implicit um: FieldUnmarshaller[T]): FromStrictFormFieldUnmarshaller[T] =
+    implicit def unmarshaller[T](implicit
+        um: FieldUnmarshaller[T]): FromStrictFormFieldUnmarshaller[T] =
       Unmarshaller.withMaterializer(implicit ec ⇒
         implicit mat ⇒ {
           case FromString(value) ⇒ um.unmarshalString(value)
@@ -100,8 +100,8 @@ object StrictForm {
         }
     }
     sealed abstract class LowPrioImplicits {
-      implicit def fromFSU[T](
-          implicit fsu: FromStringUnmarshaller[T]): FieldUnmarshaller[T] =
+      implicit def fromFSU[T](implicit
+          fsu: FromStringUnmarshaller[T]): FieldUnmarshaller[T] =
         new FieldUnmarshaller[T] {
           def unmarshalString(
               value: String)(implicit ec: ExecutionContext, mat: Materializer) =
@@ -118,8 +118,8 @@ object StrictForm {
             fsu(value.entity.data.decodeString(charsetName))
           }
         }
-      implicit def fromFEU[T](
-          implicit feu: FromEntityUnmarshaller[T]): FieldUnmarshaller[T] =
+      implicit def fromFEU[T](implicit
+          feu: FromEntityUnmarshaller[T]): FieldUnmarshaller[T] =
         new FieldUnmarshaller[T] {
           def unmarshalString(
               value: String)(implicit ec: ExecutionContext, mat: Materializer) =

@@ -26,16 +26,16 @@ trait Zip[F[_]] { self =>
       implicit def G = G0
     }
 
-  def zipWith[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C)(
-      implicit F: Functor[F]): F[C] =
+  def zipWith[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C)(implicit
+      F: Functor[F]): F[C] =
     F.map(zip(fa, fb)) {
       case (a, b) => f(a, b)
     }
 
   def apzip[A, B](f: => F[A] => F[B], a: => F[A]): F[(A, B)] = zip(a, f(a))
 
-  def apzipPL[A, B](f: => F[A] @?> F[B], a: => F[A])(
-      implicit M: Monoid[F[B]]): F[(A, B)] = apzip(f.getOrZ(_), a)
+  def apzipPL[A, B](f: => F[A] @?> F[B], a: => F[A])(implicit
+      M: Monoid[F[B]]): F[(A, B)] = apzip(f.getOrZ(_), a)
 
   def ap(implicit F: Functor[F]): Apply[F] =
     new Apply[F] {
@@ -75,7 +75,7 @@ object Zip {
 
   ////
 
-  def fzip[F[_], A, B](t: LazyTuple2[F[A], F[B]])(
-      implicit F: Zip[F]): F[(A, B)] = F.zip(t._1, t._2)
+  def fzip[F[_], A, B](t: LazyTuple2[F[A], F[B]])(implicit
+      F: Zip[F]): F[(A, B)] = F.zip(t._1, t._2)
   ////
 }

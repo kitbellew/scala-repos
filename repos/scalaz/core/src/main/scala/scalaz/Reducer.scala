@@ -73,8 +73,8 @@ object Reducer extends ReducerInstances {
   /** Reducer derived from `unit`, `cons`, and `snoc`.  Permits more
     * sharing than `UnitReducer.apply`.
     */
-  def apply[C, M](u: C => M, cs: C => M => M, sc: M => C => M)(
-      implicit mm: Monoid[M]): Reducer[C, M] = reducer(u, cs, sc)
+  def apply[C, M](u: C => M, cs: C => M => M, sc: M => C => M)(implicit
+      mm: Monoid[M]): Reducer[C, M] = reducer(u, cs, sc)
 }
 
 sealed abstract class ReducerInstances {
@@ -162,8 +162,8 @@ sealed abstract class ReducerInstances {
     unitReducer(o => Tag[Option[A], Last](o))
 
   /** Alias for [[scalaz.Reducer]]`.apply`. */
-  def reducer[C, M](u: C => M, cs: C => M => M, sc: M => C => M)(
-      implicit mm: Monoid[M]): Reducer[C, M] =
+  def reducer[C, M](u: C => M, cs: C => M => M, sc: M => C => M)(implicit
+      mm: Monoid[M]): Reducer[C, M] =
     new Reducer[C, M] {
       val monoid = mm
 
@@ -185,8 +185,8 @@ sealed abstract class ReducerInstances {
       def unit(c: C) = u(c)
     }
 
-  def unitConsReducer[C, M](u: C => M, cs: C => M => M)(
-      implicit mm: Monoid[M]): Reducer[C, M] =
+  def unitConsReducer[C, M](u: C => M, cs: C => M => M)(implicit
+      mm: Monoid[M]): Reducer[C, M] =
     new Reducer[C, M] {
       val monoid = mm
 

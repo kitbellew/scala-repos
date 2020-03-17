@@ -68,16 +68,14 @@ object TestPublisher {
   /**
     * Probe that implements [[org.reactivestreams.Publisher]] interface.
     */
-  def manualProbe[T](autoOnSubscribe: Boolean = true)(
-      implicit system: ActorSystem): ManualProbe[T] =
-    new ManualProbe(autoOnSubscribe)
+  def manualProbe[T](autoOnSubscribe: Boolean = true)(implicit
+      system: ActorSystem): ManualProbe[T] = new ManualProbe(autoOnSubscribe)
 
   /**
     * Probe that implements [[org.reactivestreams.Publisher]] interface and tracks demand.
     */
-  def probe[T](initialPendingRequests: Long = 0)(
-      implicit system: ActorSystem): Probe[T] =
-    new Probe(initialPendingRequests)
+  def probe[T](initialPendingRequests: Long = 0)(implicit
+      system: ActorSystem): Probe[T] = new Probe(initialPendingRequests)
 
   /**
     * Implementation of [[org.reactivestreams.Publisher]] that allows various assertions.
@@ -158,8 +156,8 @@ object TestPublisher {
   /**
     * Single subscription and demand tracking for [[TestPublisher.ManualProbe]].
     */
-  class Probe[T] private[TestPublisher] (initialPendingRequests: Long)(
-      implicit system: ActorSystem)
+  class Probe[T] private[TestPublisher] (initialPendingRequests: Long)(implicit
+      system: ActorSystem)
       extends ManualProbe[T] {
 
     type Self = Probe[T]

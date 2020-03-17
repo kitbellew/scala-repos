@@ -88,8 +88,8 @@ object OneAndTest extends SpecLite {
       )
   }
 
-  implicit def OneAndNelEqual[A](
-      implicit E: Equal[IList[A]]): Equal[NonEmptyList[OneAndNel[A]]] =
+  implicit def OneAndNelEqual[A](implicit
+      E: Equal[IList[A]]): Equal[NonEmptyList[OneAndNel[A]]] =
     new Equal[NonEmptyList[OneAndNel[A]]] {
       override def equal(
           a: NonEmptyList[OneAndNel[A]],

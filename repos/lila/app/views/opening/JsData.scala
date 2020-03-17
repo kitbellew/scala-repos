@@ -17,8 +17,8 @@ object JsData extends lila.Steroids {
       play: Boolean,
       attempt: Option[Attempt],
       win: Option[Boolean],
-      animationDuration: scala.concurrent.duration.Duration)(
-      implicit ctx: Context) =
+      animationDuration: scala.concurrent.duration.Duration)(implicit
+      ctx: Context) =
     Html(
       Json.stringify(
         Json.obj(

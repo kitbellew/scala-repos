@@ -51,9 +51,10 @@ object Complex extends ComplexInstances {
   def apply[@sp(Float, Double) T: Semiring](real: T): Complex[T] =
     new Complex(real, Semiring[T].zero)
 
-  def rootOfUnity[@sp(Float, Double) T](
-      n: Int,
-      x: Int)(implicit f: Field[T], t: Trig[T], r: IsReal[T]): Complex[T] = {
+  def rootOfUnity[@sp(Float, Double) T](n: Int, x: Int)(implicit
+      f: Field[T],
+      t: Trig[T],
+      r: IsReal[T]): Complex[T] = {
     if (x == 0)
       return one[T]
 

@@ -10,8 +10,8 @@ object isClose extends UFunc {
 
   val DEFAULT_TOLERANCE = 1e-8
 
-  implicit def defaultTolImpl[A, B](
-      implicit impl3: Impl3[A, B, Double, Boolean]): Impl2[A, B, Boolean] = {
+  implicit def defaultTolImpl[A, B](implicit
+      impl3: Impl3[A, B, Double, Boolean]): Impl2[A, B, Boolean] = {
     new Impl2[A, B, Boolean] {
       override def apply(v: A, v2: B): Boolean = impl3(v, v2, DEFAULT_TOLERANCE)
     }

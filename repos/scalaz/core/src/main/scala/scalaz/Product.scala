@@ -110,9 +110,8 @@ private trait ProductFoldable[F[_], G[_]]
   override def foldRight[A, B](fa: (F[A], G[A]), z: => B)(
       f: (A, => B) => B): B = F.foldRight(fa._1, G.foldRight(fa._2, z)(f))(f)
 
-  override def foldMap[A, B](fa: (F[A], G[A]))(f: A => B)(
-      implicit M: Monoid[B]): B =
-    M.append(F.foldMap(fa._1)(f), G.foldMap(fa._2)(f))
+  override def foldMap[A, B](fa: (F[A], G[A]))(f: A => B)(implicit
+      M: Monoid[B]): B = M.append(F.foldMap(fa._1)(f), G.foldMap(fa._2)(f))
 
   override def foldLeft[A, B](fa: (F[A], G[A]), z: B)(f: (B, A) => B): B =
     G.foldLeft(fa._2, F.foldLeft(fa._1, z)(f))(f)
@@ -129,8 +128,8 @@ private trait ProductFoldable1L[F[_], G[_]]
       F.foldRight(fa._1, _)(f),
       F.foldMapRight1(fa._1)(z)(f))
 
-  override def foldMap1[A, B](fa: (F[A], G[A]))(f: A => B)(
-      implicit S: Semigroup[B]): B = {
+  override def foldMap1[A, B](fa: (F[A], G[A]))(f: A => B)(implicit
+      S: Semigroup[B]): B = {
     val resume = F.foldMap1(fa._1)(f)
     cata(G.foldMap1Opt(fa._2)(f))(S.append(resume, _), resume)
   }
@@ -148,8 +147,8 @@ private trait ProductFoldable1R[F[_], G[_]]
       f: (A, => B) => B): B =
     F.foldRight(fa._1, G.foldMapRight1(fa._2)(z)(f))(f)
 
-  override def foldMap1[A, B](fa: (F[A], G[A]))(f: A => B)(
-      implicit S: Semigroup[B]): B = {
+  override def foldMap1[A, B](fa: (F[A], G[A]))(f: A => B)(implicit
+      S: Semigroup[B]): B = {
     def resume = G.foldMap1(fa._2)(f)
     cata(F.foldMap1Opt(fa._1)(f))(S.append(_, resume), resume)
   }
@@ -172,9 +171,8 @@ private trait ProductFoldable1[F[_], G[_]]
       f: (A, => B) => B): B =
     F.foldRight(fa._1, G.foldMapRight1(fa._2)(z)(f))(f)
 
-  override def foldMap1[A, B](fa: (F[A], G[A]))(f: A => B)(
-      implicit S: Semigroup[B]): B =
-    S.append(F.foldMap1(fa._1)(f), G.foldMap1(fa._2)(f))
+  override def foldMap1[A, B](fa: (F[A], G[A]))(f: A => B)(implicit
+      S: Semigroup[B]): B = S.append(F.foldMap1(fa._1)(f), G.foldMap1(fa._2)(f))
 
   override def foldMapLeft1[A, B](fa: (F[A], G[A]))(z: A => B)(
       f: (B, A) => B): B = G.foldLeft(fa._2, F.foldMapLeft1(fa._1)(z)(f))(f)
@@ -199,8 +197,8 @@ private trait ProductTraverse1L[F[_], G[_]]
     with ProductTraverse[F, G] {
   implicit def F: Traverse1[F]
 
-  def traverse1Impl[X[_], A, B](a: (F[A], G[A]))(f: A => X[B])(
-      implicit X0: Apply[X]): X[(F[B], G[B])] = {
+  def traverse1Impl[X[_], A, B](a: (F[A], G[A]))(f: A => X[B])(implicit
+      X0: Apply[X]): X[(F[B], G[B])] = {
     def resume = F.traverse1(a._1)(f)
     X0.applyApplicative
       .traverse(a._2)(f andThen \/.left)(G)
@@ -217,8 +215,8 @@ private trait ProductTraverse1R[F[_], G[_]]
     with ProductTraverse[F, G] {
   implicit def G: Traverse1[G]
 
-  def traverse1Impl[X[_], A, B](a: (F[A], G[A]))(f: A => X[B])(
-      implicit X0: Apply[X]): X[(F[B], G[B])] = {
+  def traverse1Impl[X[_], A, B](a: (F[A], G[A]))(f: A => X[B])(implicit
+      X0: Apply[X]): X[(F[B], G[B])] = {
     def resume = G.traverse1(a._2)(f)
     X0.applyApplicative
       .traverse(a._1)(f andThen \/.left)(F)

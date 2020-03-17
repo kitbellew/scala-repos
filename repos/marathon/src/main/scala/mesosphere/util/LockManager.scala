@@ -18,8 +18,8 @@ trait LockManager {
     * @tparam T the resulting type of the future.
     * @return A new future, that gets executed, once the lock is available.
     */
-  def executeSequentially[T](key: String)(future: => Future[T])(
-      implicit ec: ExecutionContext): Future[T]
+  def executeSequentially[T](key: String)(future: => Future[T])(implicit
+      ec: ExecutionContext): Future[T]
 }
 
 object LockManager {

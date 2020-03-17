@@ -20,8 +20,8 @@ object Puzzle extends LilaController {
 
   private def env = Env.puzzle
 
-  private def renderShow(puzzle: PuzzleModel, mode: String)(
-      implicit ctx: Context) =
+  private def renderShow(puzzle: PuzzleModel, mode: String)(implicit
+      ctx: Context) =
     env userInfos ctx.me map { infos =>
       views.html.puzzle.show(
         puzzle,

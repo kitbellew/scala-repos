@@ -94,16 +94,15 @@ sealed abstract class TracedTInstances0 extends TracedTInstances1 {
         a.lower
     }
 
-  implicit final def tracedTEqual[W[_], A, B](
-      implicit W: Equal[W[A => B]]): Equal[TracedT[W, A, B]] =
-    W.contramap(_.run)
+  implicit final def tracedTEqual[W[_], A, B](implicit
+      W: Equal[W[A => B]]): Equal[TracedT[W, A, B]] = W.contramap(_.run)
 
 }
 
 sealed abstract class TracedTInstances extends TracedTInstances0 {
 
-  implicit final def tracedTComonadStore[W[_], S, C: Monoid](
-      implicit W0: ComonadStore[W, S]): ComonadStore[TracedT[W, C, ?], S] =
+  implicit final def tracedTComonadStore[W[_], S, C: Monoid](implicit
+      W0: ComonadStore[W, S]): ComonadStore[TracedT[W, C, ?], S] =
     new ComonadStore[TracedT[W, C, ?], S] with TracedTComonad[W, C] {
       def W = W0
       def C = implicitly

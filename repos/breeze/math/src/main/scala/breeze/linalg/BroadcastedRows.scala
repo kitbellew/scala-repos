@@ -13,8 +13,8 @@ case class BroadcastedRows[T, RowType](underlying: T)
     extends BroadcastedLike[T, RowType, BroadcastedRows[T, RowType]] {
   def repr = this
 
-  def iterator(
-      implicit canIterateAxis: CanIterateAxis[T, Axis._1.type, RowType]) =
+  def iterator(implicit
+      canIterateAxis: CanIterateAxis[T, Axis._1.type, RowType]) =
     canIterateAxis(underlying, Axis._1)
 
   def foldLeft[B](z: B)(f: (B, RowType) => B)(implicit
@@ -35,8 +35,8 @@ object BroadcastedRows {
       new BroadcastedDMRowsISeq(bc.underlying)
   }
 
-  implicit def canMapValues[T, RowType, ResultRow, Result](
-      implicit cc: CanCollapseAxis[T, Axis._1.type, RowType, ResultRow, Result])
+  implicit def canMapValues[T, RowType, ResultRow, Result](implicit
+      cc: CanCollapseAxis[T, Axis._1.type, RowType, ResultRow, Result])
       : CanMapValues[
         BroadcastedRows[T, RowType],
         RowType,
@@ -112,8 +112,8 @@ object BroadcastedRows {
     }
   }
 
-  implicit def canForeachRows[T, RowType, ResultRow, Result](
-      implicit iter: CanTraverseAxis[T, Axis._1.type, RowType])
+  implicit def canForeachRows[T, RowType, ResultRow, Result](implicit
+      iter: CanTraverseAxis[T, Axis._1.type, RowType])
       : CanForeachValues[BroadcastedRows[T, RowType], RowType] = {
     new CanForeachValues[BroadcastedRows[T, RowType], RowType] {
 

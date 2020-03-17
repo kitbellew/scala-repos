@@ -89,8 +89,8 @@ object Multipart {
     */
   def multipartParser[A](
       maxMemoryBufferSize: Int,
-      filePartHandler: FilePartHandler[A])(
-      implicit mat: Materializer): BodyParser[MultipartFormData[A]] =
+      filePartHandler: FilePartHandler[A])(implicit
+      mat: Materializer): BodyParser[MultipartFormData[A]] =
     BodyParser { request =>
       partParser(maxMemoryBufferSize) {
         val handleFileParts =

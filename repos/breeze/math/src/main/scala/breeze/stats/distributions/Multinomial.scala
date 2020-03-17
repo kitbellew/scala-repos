@@ -149,8 +149,8 @@ case class AliasTable[I](
   */
 object Multinomial {
 
-  class ExpFam[T, I](exemplar: T)(
-      implicit space: MutableFiniteCoordinateField[T, I, Double])
+  class ExpFam[T, I](exemplar: T)(implicit
+      space: MutableFiniteCoordinateField[T, I, Double])
       extends ExponentialFamily[Multinomial[T, I], I]
       with HasConjugatePrior[Multinomial[T, I], I] {
 

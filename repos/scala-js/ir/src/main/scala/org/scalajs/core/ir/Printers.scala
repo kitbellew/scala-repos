@@ -922,8 +922,8 @@ object Printers {
 
     protected def print(c: Int): Unit = out.write(c)
 
-    protected def print(optimizerHints: OptimizerHints)(
-        implicit dummy: DummyImplicit): Unit = {
+    protected def print(optimizerHints: OptimizerHints)(implicit
+        dummy: DummyImplicit): Unit = {
       if (optimizerHints != OptimizerHints.empty) {
         print("@hints(")
         print(optimizerHints.bits.toString)

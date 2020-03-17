@@ -185,8 +185,8 @@ object WS {
     * @param url the URL to request
     * @param client the client to use to make the request.
     */
-  def clientUrl(url: String)(
-      implicit client: WSClient): play.api.libs.ws.WSRequest = client.url(url)
+  def clientUrl(url: String)(implicit
+      client: WSClient): play.api.libs.ws.WSRequest = client.url(url)
 }
 
 /**
@@ -474,8 +474,8 @@ trait WSRequest {
     * @param consumer that's handling the response
     */
   @deprecated("2.5.0", """Use WS.withMethod("GET").stream()""")
-  def get[A](consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(
-      implicit ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
+  def get[A](consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
+      ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
     getStream().flatMap {
       case (response, enumerator) =>
         enumerator(consumer(response))

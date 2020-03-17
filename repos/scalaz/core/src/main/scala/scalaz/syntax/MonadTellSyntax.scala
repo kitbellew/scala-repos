@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `MonadTell` */
-final class MonadTellOps[F[_], S, A] private[syntax] (self: F[A])(
-    implicit val F: MonadTell[F, S]) {
+final class MonadTellOps[F[_], S, A] private[syntax] (self: F[A])(implicit
+    val F: MonadTell[F, S]) {
   ////
 
   final def :++>(w: => S): F[A] = F.bind(self)(a => F.map(F.tell(w))(_ => a))
@@ -15,8 +15,8 @@ final class MonadTellOps[F[_], S, A] private[syntax] (self: F[A])(
 }
 
 trait ToMonadTellOps extends ToMonadOps {
-  implicit def ToMonadTellOps[F[_], S, A](v: F[A])(
-      implicit F0: MonadTell[F, S]) = new MonadTellOps[F, S, A](v)
+  implicit def ToMonadTellOps[F[_], S, A](v: F[A])(implicit
+      F0: MonadTell[F, S]) = new MonadTellOps[F, S, A](v)
 
   ////
 

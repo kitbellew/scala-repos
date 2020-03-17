@@ -17,8 +17,8 @@ object LilaCookie {
   def makeSessionId(implicit req: RequestHeader) =
     session(sessionId, Random nextStringUppercase 8)
 
-  def session(name: String, value: String)(
-      implicit req: RequestHeader): Cookie =
+  def session(name: String, value: String)(implicit
+      req: RequestHeader): Cookie =
     withSession { s =>
       s + (name -> value)
     }

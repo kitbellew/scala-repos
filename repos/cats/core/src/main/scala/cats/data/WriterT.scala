@@ -34,19 +34,17 @@ final case class WriterT[F[_], L, V](run: F[(L, V)]) {
       }
     }
 
-  def mapBoth[M, U](f: (L, V) => (M, U))(
-      implicit functorF: Functor[F]): WriterT[F, M, U] =
+  def mapBoth[M, U](f: (L, V) => (M, U))(implicit
+      functorF: Functor[F]): WriterT[F, M, U] =
     WriterT {
       functorF.map(run)(f.tupled)
     }
 
-  def bimap[M, U](f: L => M, g: V => U)(
-      implicit functorF: Functor[F]): WriterT[F, M, U] =
-    mapBoth((l, v) => (f(l), g(v)))
+  def bimap[M, U](f: L => M, g: V => U)(implicit
+      functorF: Functor[F]): WriterT[F, M, U] = mapBoth((l, v) => (f(l), g(v)))
 
-  def mapWritten[M](f: L => M)(
-      implicit functorF: Functor[F]): WriterT[F, M, V] =
-    mapBoth((l, v) => (f(l), v))
+  def mapWritten[M](f: L => M)(implicit
+      functorF: Functor[F]): WriterT[F, M, V] = mapBoth((l, v) => (f(l), v))
 
   def swap(implicit functorF: Functor[F]): WriterT[F, V, L] =
     mapBoth((l, v) => (v, l))
@@ -66,8 +64,8 @@ private[data] sealed abstract class WriterTInstances extends WriterTInstances0 {
 
   // The Eq[(L, V)] can be derived from an Eq[L] and Eq[V], but we are waiting
   // on an algebra release that includes https://github.com/non/algebra/pull/82
-  implicit def writerTIdEq[L, V](
-      implicit E: Eq[(L, V)]): Eq[WriterT[Id, L, V]] = writerTEq[Id, L, V]
+  implicit def writerTIdEq[L, V](implicit
+      E: Eq[(L, V)]): Eq[WriterT[Id, L, V]] = writerTEq[Id, L, V]
 
   implicit def writerTBifunctor[F[_]: Functor]: Bifunctor[WriterT[F, ?, ?]] =
     new Bifunctor[WriterT[F, ?, ?]] {
@@ -92,8 +90,8 @@ private[data] sealed abstract class WriterTInstances extends WriterTInstances0 {
         WriterT(M.map(ma)((W.empty, _)))
     }
 
-  implicit def writerTShow[F[_], L, V](
-      implicit F: Show[F[(L, V)]]): Show[WriterT[F, L, V]] =
+  implicit def writerTShow[F[_], L, V](implicit
+      F: Show[F[(L, V)]]): Show[WriterT[F, L, V]] =
     new Show[WriterT[F, L, V]] {
       override def show(f: WriterT[F, L, V]): String = f.show
     }
@@ -115,8 +113,8 @@ private[data] sealed abstract class WriterTInstances0
   implicit def writerTIdFlatMap[L: Semigroup]: FlatMap[WriterT[Id, L, ?]] =
     writerTFlatMap[Id, L]
 
-  implicit def writerTEq[F[_], L, V](
-      implicit F: Eq[F[(L, V)]]): Eq[WriterT[F, L, V]] = F.on(_.run)
+  implicit def writerTEq[F[_], L, V](implicit
+      F: Eq[F[(L, V)]]): Eq[WriterT[F, L, V]] = F.on(_.run)
 }
 
 private[data] sealed abstract class WriterTInstances1
@@ -161,8 +159,8 @@ private[data] sealed abstract class WriterTInstances4
       implicit val L0: Monoid[L] = L
     }
 
-  implicit def writerTMonoidK[F[_], L](
-      implicit F: MonoidK[F]): MonoidK[WriterT[F, L, ?]] =
+  implicit def writerTMonoidK[F[_], L](implicit
+      F: MonoidK[F]): MonoidK[WriterT[F, L, ?]] =
     new WriterTMonoidK[F, L] {
       implicit val F0: MonoidK[F] = F
     }
@@ -178,8 +176,8 @@ private[data] sealed abstract class WriterTInstances5
       implicit val L0: Semigroup[L] = L
     }
 
-  implicit def writerTSemigroupK[F[_], L](
-      implicit F: SemigroupK[F]): SemigroupK[WriterT[F, L, ?]] =
+  implicit def writerTSemigroupK[F[_], L](implicit
+      F: SemigroupK[F]): SemigroupK[WriterT[F, L, ?]] =
     new WriterTSemigroupK[F, L] {
       implicit val F0: SemigroupK[F] = F
     }
@@ -197,8 +195,8 @@ private[data] sealed abstract class WriterTInstances6
 }
 
 private[data] sealed abstract class WriterTInstances7 {
-  implicit def writerTFunctor[F[_], L](
-      implicit F: Functor[F]): Functor[WriterT[F, L, ?]] =
+  implicit def writerTFunctor[F[_], L](implicit
+      F: Functor[F]): Functor[WriterT[F, L, ?]] =
     new WriterTFunctor[F, L] {
       implicit val F0: Functor[F] = F
     }
@@ -296,16 +294,16 @@ private[data] sealed trait WriterTMonadCombine[F[_], L]
 }
 
 trait WriterTFunctions {
-  def putT[F[_], L, V](vf: F[V])(l: L)(
-      implicit functorF: Functor[F]): WriterT[F, L, V] =
+  def putT[F[_], L, V](vf: F[V])(l: L)(implicit
+      functorF: Functor[F]): WriterT[F, L, V] =
     WriterT(functorF.map(vf)(v => (l, v)))
 
-  def put[F[_], L, V](v: V)(l: L)(
-      implicit applicativeF: Applicative[F]): WriterT[F, L, V] =
+  def put[F[_], L, V](v: V)(l: L)(implicit
+      applicativeF: Applicative[F]): WriterT[F, L, V] =
     WriterT.putT[F, L, V](applicativeF.pure(v))(l)
 
-  def tell[F[_], L](l: L)(
-      implicit applicativeF: Applicative[F]): WriterT[F, L, Unit] =
+  def tell[F[_], L](l: L)(implicit
+      applicativeF: Applicative[F]): WriterT[F, L, Unit] =
     WriterT.put[F, L, Unit](())(l)
 
   def value[F[_], L, V](v: V)(implicit

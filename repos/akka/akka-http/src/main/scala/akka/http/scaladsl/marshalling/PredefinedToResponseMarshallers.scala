@@ -17,8 +17,8 @@ trait PredefinedToResponseMarshallers
 
   def fromToEntityMarshaller[T](
       status: StatusCode = StatusCodes.OK,
-      headers: immutable.Seq[HttpHeader] = Nil)(
-      implicit m: ToEntityMarshaller[T]): ToResponseMarshaller[T] =
+      headers: immutable.Seq[HttpHeader] = Nil)(implicit
+      m: ToEntityMarshaller[T]): ToResponseMarshaller[T] =
     fromStatusCodeAndHeadersAndValue compose (t ⇒ (status, headers, t))
 
   implicit val fromResponse: TRM[HttpResponse] = Marshaller.opaque(
@@ -47,8 +47,8 @@ trait PredefinedToResponseMarshallers
       case (status, headers, value) ⇒ (sConv(status), headers, value)
     }
 
-  implicit def fromStatusCodeAndHeadersAndValue[T](
-      implicit mt: ToEntityMarshaller[T])
+  implicit def fromStatusCodeAndHeadersAndValue[T](implicit
+      mt: ToEntityMarshaller[T])
       : TRM[(StatusCode, immutable.Seq[HttpHeader], T)] =
     Marshaller(implicit ec ⇒ {
       case (status, headers, value) ⇒
@@ -59,8 +59,8 @@ trait PredefinedToResponseMarshallers
 trait LowPriorityToResponseMarshallerImplicits {
   implicit def liftMarshallerConversion[T](
       m: ToEntityMarshaller[T]): ToResponseMarshaller[T] = liftMarshaller(m)
-  implicit def liftMarshaller[T](
-      implicit m: ToEntityMarshaller[T]): ToResponseMarshaller[T] =
+  implicit def liftMarshaller[T](implicit
+      m: ToEntityMarshaller[T]): ToResponseMarshaller[T] =
     PredefinedToResponseMarshallers.fromToEntityMarshaller()
 }
 

@@ -284,8 +284,8 @@ private[optimizer] abstract class OptimizerCore(
   }
 
   /** Transforms a tree. */
-  private def transform(tree: Tree, isStat: Boolean)(
-      implicit scope: Scope): Tree = {
+  private def transform(tree: Tree, isStat: Boolean)(implicit
+      scope: Scope): Tree = {
 
     @inline implicit def pos = tree.pos
     val result =
@@ -718,8 +718,8 @@ private[optimizer] abstract class OptimizerCore(
     Closure(newCaptureParams, newParams, newBody, newCaptureValues)
   }
 
-  private def transformBlock(tree: Block, isStat: Boolean)(
-      implicit scope: Scope): Tree = {
+  private def transformBlock(tree: Block, isStat: Boolean)(implicit
+      scope: Scope): Tree = {
     def transformList(stats: List[Tree])(implicit scope: Scope): Tree =
       stats match {
         case last :: Nil =>
@@ -753,8 +753,8 @@ private[optimizer] abstract class OptimizerCore(
     *  This is a convenience method to use pretransformExpr on a list.
     */
   private def pretransformExprs(trees: List[Tree])(
-      cont: List[PreTransform] => TailRec[Tree])(
-      implicit scope: Scope): TailRec[Tree] = {
+      cont: List[PreTransform] => TailRec[Tree])(implicit
+      scope: Scope): TailRec[Tree] = {
     trees match {
       case first :: rest =>
         pretransformExpr(first) { tfirst =>
@@ -772,8 +772,8 @@ private[optimizer] abstract class OptimizerCore(
     *  This is a convenience method to use pretransformExpr on two trees.
     */
   private def pretransformExprs(tree1: Tree, tree2: Tree)(
-      cont: (PreTransform, PreTransform) => TailRec[Tree])(
-      implicit scope: Scope): TailRec[Tree] = {
+      cont: (PreTransform, PreTransform) => TailRec[Tree])(implicit
+      scope: Scope): TailRec[Tree] = {
     pretransformExpr(tree1) { ttree1 =>
       pretransformExpr(tree2) { ttree2 =>
         cont(ttree1, ttree2)
@@ -785,8 +785,8 @@ private[optimizer] abstract class OptimizerCore(
     *  This is a convenience method to use pretransformExpr.
     */
   private def pretransformExprs(first: Tree, rest: List[Tree])(
-      cont: (PreTransform, List[PreTransform]) => TailRec[Tree])(
-      implicit scope: Scope): TailRec[Tree] = {
+      cont: (PreTransform, List[PreTransform]) => TailRec[Tree])(implicit
+      scope: Scope): TailRec[Tree] = {
     pretransformExpr(first) { tfirst =>
       pretransformExprs(rest) { trest =>
         cont(tfirst, trest)
@@ -797,8 +797,8 @@ private[optimizer] abstract class OptimizerCore(
   /** Pretransforms a tree to get a refined type while avoiding to force
     *  things we might be able to optimize by folding and aliasing.
     */
-  private def pretransformExpr(tree: Tree)(cont: PreTransCont)(
-      implicit scope: Scope): TailRec[Tree] =
+  private def pretransformExpr(tree: Tree)(cont: PreTransCont)(implicit
+      scope: Scope): TailRec[Tree] =
     tailcall {
       @inline implicit def pos = tree.pos
 
@@ -1022,10 +1022,10 @@ private[optimizer] abstract class OptimizerCore(
       }
     }
 
-  private def pretransformBlock(tree: Block)(cont: PreTransCont)(
-      implicit scope: Scope): TailRec[Tree] = {
-    def pretransformList(stats: List[Tree])(cont: PreTransCont)(
-        implicit scope: Scope): TailRec[Tree] =
+  private def pretransformBlock(tree: Block)(cont: PreTransCont)(implicit
+      scope: Scope): TailRec[Tree] = {
+    def pretransformList(stats: List[Tree])(cont: PreTransCont)(implicit
+        scope: Scope): TailRec[Tree] =
       stats match {
         case last :: Nil =>
           pretransformExpr(last)(cont)
@@ -1220,8 +1220,8 @@ private[optimizer] abstract class OptimizerCore(
 
   /** Combines pretransformExpr and resolveLocalDef in one convenience method. */
   private def pretransformNoLocalDef(tree: Tree)(
-      cont: PreTransGenTree => TailRec[Tree])(
-      implicit scope: Scope): TailRec[Tree] = {
+      cont: PreTransGenTree => TailRec[Tree])(implicit
+      scope: Scope): TailRec[Tree] = {
     pretransformExpr(tree) { ttree =>
       cont(resolveLocalDef(ttree))
     }
@@ -1314,8 +1314,8 @@ private[optimizer] abstract class OptimizerCore(
   private def pretransformApply(
       tree: Apply,
       isStat: Boolean,
-      usePreTransform: Boolean)(cont: PreTransCont)(
-      implicit scope: Scope): TailRec[Tree] = {
+      usePreTransform: Boolean)(cont: PreTransCont)(implicit
+      scope: Scope): TailRec[Tree] = {
     val Apply(receiver, methodIdent @ Ident(methodName, _), args) = tree
     implicit val pos = tree.pos
 
@@ -1463,8 +1463,8 @@ private[optimizer] abstract class OptimizerCore(
   private def pretransformStaticApply(
       tree: ApplyStatically,
       isStat: Boolean,
-      usePreTransform: Boolean)(cont: PreTransCont)(
-      implicit scope: Scope): TailRec[Tree] = {
+      usePreTransform: Boolean)(cont: PreTransCont)(implicit
+      scope: Scope): TailRec[Tree] = {
     val ApplyStatically(
       receiver,
       clsType @ ClassType(cls),
@@ -1537,8 +1537,8 @@ private[optimizer] abstract class OptimizerCore(
   private def pretransformApplyStatic(
       tree: ApplyStatic,
       isStat: Boolean,
-      usePreTransform: Boolean)(cont: PreTransCont)(
-      implicit scope: Scope): TailRec[Tree] = {
+      usePreTransform: Boolean)(cont: PreTransCont)(implicit
+      scope: Scope): TailRec[Tree] = {
     val ApplyStatic(
       classType @ ClassType(cls),
       methodIdent @ Ident(methodName, _),
@@ -2358,8 +2358,8 @@ private[optimizer] abstract class OptimizerCore(
     }
   }
 
-  private def foldIf(cond: Tree, thenp: Tree, elsep: Tree)(tpe: Type)(
-      implicit pos: Position): Tree = {
+  private def foldIf(cond: Tree, thenp: Tree, elsep: Tree)(tpe: Type)(implicit
+      pos: Position): Tree = {
     import BinaryOp._
 
     @inline def default = If(cond, thenp, elsep)(tpe)
@@ -2567,8 +2567,8 @@ private[optimizer] abstract class OptimizerCore(
         finishTransformExpr(targ)
     }
 
-  private def foldUnaryOp(op: UnaryOp.Code, arg: Tree)(
-      implicit pos: Position): Tree = {
+  private def foldUnaryOp(op: UnaryOp.Code, arg: Tree)(implicit
+      pos: Position): Tree = {
     import UnaryOp._
     @inline def default = UnaryOp(op, arg)
     (op: @switch) match {
@@ -2729,8 +2729,8 @@ private[optimizer] abstract class OptimizerCore(
   }
 
   /** Translate literals to their Scala.js String representation. */
-  private def foldToStringForString_+(tree: Tree)(
-      implicit pos: Position): Tree =
+  private def foldToStringForString_+(tree: Tree)(implicit
+      pos: Position): Tree =
     tree match {
       case FloatLiteral(value) =>
         foldToStringForString_+(DoubleLiteral(value.toDouble))
@@ -2763,8 +2763,8 @@ private[optimizer] abstract class OptimizerCore(
     }
   }
 
-  private def foldBinaryOp(op: BinaryOp.Code, lhs: Tree, rhs: Tree)(
-      implicit pos: Position): Tree = {
+  private def foldBinaryOp(op: BinaryOp.Code, lhs: Tree, rhs: Tree)(implicit
+      pos: Position): Tree = {
     import BinaryOp._
     @inline def default = BinaryOp(op, lhs, rhs)
     (op: @switch) match {
@@ -3517,8 +3517,8 @@ private[optimizer] abstract class OptimizerCore(
     }
   }
 
-  private def foldJSBracketSelect(qualifier: Tree, item: Tree)(
-      implicit pos: Position): Tree = {
+  private def foldJSBracketSelect(qualifier: Tree, item: Tree)(implicit
+      pos: Position): Tree = {
     // !!! Must be in sync with scala.scalajs.runtime.LinkingInfo
 
     @inline def default = JSBracketSelect(qualifier, item)
@@ -4341,8 +4341,8 @@ private[optimizer] object OptimizerCore {
 
   private sealed abstract class PreTransNoBlock extends PreTransform
 
-  private final case class PreTransLocalDef(localDef: LocalDef)(
-      implicit val pos: Position)
+  private final case class PreTransLocalDef(localDef: LocalDef)(implicit
+      val pos: Position)
       extends PreTransNoBlock {
     val tpe: RefinedType = localDef.tpe
   }

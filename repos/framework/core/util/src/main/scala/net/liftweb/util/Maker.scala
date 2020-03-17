@@ -250,5 +250,5 @@ object Vendor {
   implicit def funcToVendor[T](f: () => T): Vendor[T] = apply(f)
 }
 
-case class FormBuilderLocator[T](func: (T, T => Unit) => NodeSeq)(
-    implicit val manifest: Manifest[T])
+case class FormBuilderLocator[T](func: (T, T => Unit) => NodeSeq)(implicit
+    val manifest: Manifest[T])

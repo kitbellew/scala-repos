@@ -131,8 +131,8 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
     * Most of our scalacheck tests use (Int => Int). This generator includes non-constant
     * functions (id, inc), to have a better chance at catching bugs.
     */
-  implicit def Function1IntInt[A](
-      implicit A: Arbitrary[Int]): Arbitrary[Int => Int] =
+  implicit def Function1IntInt[A](implicit
+      A: Arbitrary[Int]): Arbitrary[Int => Int] =
     Arbitrary(
       Gen.frequency[Int => Int](
         (1, Gen.const((x: Int) => x)),

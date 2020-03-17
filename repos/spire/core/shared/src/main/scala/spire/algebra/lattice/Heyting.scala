@@ -16,6 +16,6 @@ trait Heyting[@sp(Boolean, Byte, Short, Int, Long) A]
 }
 
 object Heyting {
-  @inline final def apply[@sp(Boolean, Byte, Short, Int, Long) A](
-      implicit ev: Heyting[A]): Heyting[A] = ev
+  @inline final def apply[@sp(Boolean, Byte, Short, Int, Long) A](implicit
+      ev: Heyting[A]): Heyting[A] = ev
 }

@@ -23,9 +23,8 @@ object Pair {
 
   implicit def findFirst[T1, T2 <: Pair]: Cons[T1, T2] => T1 =
     (p: Cons[T1, T2]) => p._1
-  implicit def findSecond[T, T1, T2 <: Pair](
-      implicit finder: T2 => T): Cons[T1, T2] => T =
-    (p: Cons[T1, T2]) => finder(p._2)
+  implicit def findSecond[T, T1, T2 <: Pair](implicit
+      finder: T2 => T): Cons[T1, T2] => T = (p: Cons[T1, T2]) => finder(p._2)
 
   val p: Cons[Int, Cons[Boolean, End]] = 10 :: false :: End
 // val x : Boolean = p.find[Boolean](findSecond(findFirst))

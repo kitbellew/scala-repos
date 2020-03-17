@@ -34,8 +34,8 @@ sealed abstract class InjectInstances {
 }
 
 object Inject extends InjectInstances {
-  def inject[F[_], G[_], A](ga: G[Free[F, A]])(
-      implicit I: Inject[G, F]): Free[F, A] = Free[F, A](I.inj(ga))
+  def inject[F[_], G[_], A](ga: G[Free[F, A]])(implicit
+      I: Inject[G, F]): Free[F, A] = Free[F, A](I.inj(ga))
 
   def match_[F[_], G[_], A](fa: Free[F, A])(implicit
       F: Functor[F],

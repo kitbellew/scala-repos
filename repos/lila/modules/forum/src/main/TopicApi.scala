@@ -45,8 +45,8 @@ private[forum] final class TopicApi(
       }
     } yield res
 
-  def makeTopic(categ: Categ, data: DataForm.TopicData)(
-      implicit ctx: UserContext): Fu[Topic] =
+  def makeTopic(categ: Categ, data: DataForm.TopicData)(implicit
+      ctx: UserContext): Fu[Topic] =
     TopicRepo.nextSlug(categ, data.name) zip detectLanguage(
       data.post.text) flatMap {
       case (slug, lang) =>

@@ -289,8 +289,8 @@ object JavascriptLiteral {
   /**
     * Convert a Scala Option to Javascript literal (use null for None)
     */
-  implicit def literalOption[T](
-      implicit jsl: JavascriptLiteral[T]): JavascriptLiteral[Option[T]] =
+  implicit def literalOption[T](implicit
+      jsl: JavascriptLiteral[T]): JavascriptLiteral[Option[T]] =
     new JavascriptLiteral[Option[T]] {
       def to(value: Option[T]) = value.map(jsl.to(_)).getOrElse("null")
     }
@@ -298,8 +298,8 @@ object JavascriptLiteral {
   /**
     * Convert a Java Optional to Javascript literal (use "null" for an empty Optional)
     */
-  implicit def literalJavaOption[T](
-      implicit jsl: JavascriptLiteral[T]): JavascriptLiteral[Optional[T]] =
+  implicit def literalJavaOption[T](implicit
+      jsl: JavascriptLiteral[T]): JavascriptLiteral[Optional[T]] =
     new JavascriptLiteral[Optional[T]] {
       def to(value: Optional[T]) =
         value.asScala.map(jsl.to(_)).getOrElse("null")
@@ -791,8 +791,8 @@ object PathBindable {
   /**
     * Path binder for Java PathBindable
     */
-  implicit def javaPathBindable[T <: play.mvc.PathBindable[T]](
-      implicit ct: ClassTag[T]): PathBindable[T] =
+  implicit def javaPathBindable[T <: play.mvc.PathBindable[T]](implicit
+      ct: ClassTag[T]): PathBindable[T] =
     new PathBindable[T] {
       def bind(key: String, value: String) = {
         try {

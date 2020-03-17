@@ -205,8 +205,8 @@ trait BaseReplState {
   /*
    * Starts the Execution, but does not wait for the result
    */
-  def asyncExecute[T](execution: Execution[T])(
-      implicit ec: ConcurrentExecutionContext): Future[T] =
+  def asyncExecute[T](execution: Execution[T])(implicit
+      ec: ConcurrentExecutionContext): Future[T] =
     execution.run(executionConfig, mode)
 
   /*
@@ -308,16 +308,16 @@ object ReplImplicits extends FieldConversions {
     * Enrich TypedPipe for the shell
     * (e.g. allows .snapshot to be called on it)
     */
-  implicit def typedPipeToShellTypedPipe[T](pipe: TypedPipe[T])(
-      implicit state: BaseReplState): ShellTypedPipe[T] =
+  implicit def typedPipeToShellTypedPipe[T](pipe: TypedPipe[T])(implicit
+      state: BaseReplState): ShellTypedPipe[T] =
     new ShellTypedPipe[T](pipe)(state)
 
   /**
     * Enrich ValuePipe for the shell
     * (e.g. allows .toOption to be called on it)
     */
-  implicit def valuePipeToShellValuePipe[T](pipe: ValuePipe[T])(
-      implicit state: BaseReplState): ShellValuePipe[T] =
+  implicit def valuePipeToShellValuePipe[T](pipe: ValuePipe[T])(implicit
+      state: BaseReplState): ShellValuePipe[T] =
     new ShellValuePipe[T](pipe)(state)
 
 }

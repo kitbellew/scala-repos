@@ -134,8 +134,8 @@ trait PerfTestRunner[M[+_], T] {
   }
 }
 
-class MockPerfTestRunner[M[+_]](evalTime: => Int)(
-    implicit val M: Monad[M] with Comonad[M])
+class MockPerfTestRunner[M[+_]](evalTime: => Int)(implicit
+    val M: Monad[M] with Comonad[M])
     extends PerfTestRunner[M, Long] {
   import scalaz.syntax.monad._
 

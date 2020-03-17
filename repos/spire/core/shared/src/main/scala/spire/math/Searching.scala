@@ -63,8 +63,8 @@ object Searching {
     * With n is the size of the poset and w <= n its width, the algorithm requires
     * O(w) space and O(w*n) time.
     */
-  final def minimalElements[A](as: Iterable[A])(
-      implicit ev: PartialOrder[A]): Seq[A] = {
+  final def minimalElements[A](as: Iterable[A])(implicit
+      ev: PartialOrder[A]): Seq[A] = {
     import scala.collection.mutable.ArrayBuffer
     // the minimal elements for the first elements of as
     var candidates = ArrayBuffer.empty[A]

@@ -418,8 +418,8 @@ trait SquerylRecordNumericalExpression[T] { this: NumericalExpression[T] =>
   /**
     * Can be used instead of the often conflicting "is" function.
     */
-  def defineAs(columnAttributes: AttributeValidOnNumericalColumn*)(
-      implicit restrictUsageWithinSchema: Schema) = {
+  def defineAs(columnAttributes: AttributeValidOnNumericalColumn*)(implicit
+      restrictUsageWithinSchema: Schema) = {
     is(columnAttributes: _*)(restrictUsageWithinSchema)
   }
 }
@@ -433,8 +433,8 @@ trait SquerylRecordNonNumericalExpression[T] {
   /**
     * Can be used instead of the often conflicting "is" function.
     */
-  def defineAs(columnAttributes: AttributeValidOnNonNumericalColumn*)(
-      implicit restrictUsageWithinSchema: Schema) = {
+  def defineAs(columnAttributes: AttributeValidOnNonNumericalColumn*)(implicit
+      restrictUsageWithinSchema: Schema) = {
     is(columnAttributes: _*)(restrictUsageWithinSchema)
   }
 }

@@ -33,9 +33,8 @@ object AsyncMeter {
     *
     * This is equivalent to `AsyncMeter.newMeter(permits, 1.second, maxWaiters)`.
     */
-  def perSecond(permits: Int, maxWaiters: Int)(
-      implicit timer: Timer): AsyncMeter =
-    new AsyncMeter(permits, 1.second, maxWaiters)
+  def perSecond(permits: Int, maxWaiters: Int)(implicit
+      timer: Timer): AsyncMeter = new AsyncMeter(permits, 1.second, maxWaiters)
 
   /**
     * Creates an [[AsyncMeter]] that has a maximum burst size of `burstSize` over

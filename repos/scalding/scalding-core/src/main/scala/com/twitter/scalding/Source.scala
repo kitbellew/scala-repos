@@ -307,8 +307,8 @@ class NullTap[Config, Input, Output, SourceContext, SinkContext]
 }
 
 trait BaseNullSource extends Source {
-  override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+  override def createTap(readOrWrite: AccessMode)(implicit
+      mode: Mode): Tap[_, _, _] = {
     readOrWrite match {
       case Read => throw new Exception("not supported, reading from null")
       case Write =>

@@ -31,8 +31,8 @@ object | { // scalastyle:ignore
   abstract sealed class EvidenceLowestPrioImplicits {
 
     /** If `A <: B2`, then `A <: B1 | B2`. */
-    implicit def right[A, B1, B2](
-        implicit ev: Evidence[A, B2]): Evidence[A, B1 | B2] =
+    implicit def right[A, B1, B2](implicit
+        ev: Evidence[A, B2]): Evidence[A, B1 | B2] =
       ReusableEvidence.asInstanceOf[Evidence[A, B1 | B2]]
   }
 
@@ -44,13 +44,13 @@ object | { // scalastyle:ignore
       ReusableEvidence.asInstanceOf[Evidence[Int, Double]]
 
     /** If `A <: B1`, then `A <: B1 | B2`. */
-    implicit def left[A, B1, B2](
-        implicit ev: Evidence[A, B1]): Evidence[A, B1 | B2] =
+    implicit def left[A, B1, B2](implicit
+        ev: Evidence[A, B1]): Evidence[A, B1 | B2] =
       ReusableEvidence.asInstanceOf[Evidence[A, B1 | B2]]
 
     /** If `A <: B`, then `A <: js.UndefOr[B]`. */
-    implicit def undefOr[A, B](
-        implicit ev: Evidence[A, B]): Evidence[A, UndefOr[B]] =
+    implicit def undefOr[A, B](implicit
+        ev: Evidence[A, B]): Evidence[A, UndefOr[B]] =
       ReusableEvidence.asInstanceOf[Evidence[A, UndefOr[B]]]
   }
 
@@ -71,8 +71,8 @@ object | { // scalastyle:ignore
     *
     *  This needs evidence that `A <: B1 | B2`.
     */
-  implicit def from[A, B1, B2](a: A)(
-      implicit ev: Evidence[A, B1 | B2]): B1 | B2 = a.asInstanceOf[B1 | B2]
+  implicit def from[A, B1, B2](a: A)(implicit
+      ev: Evidence[A, B1 | B2]): B1 | B2 = a.asInstanceOf[B1 | B2]
 
   /** Operations on union types. */
   implicit class UnionOps[A <: _ | _](val self: A) extends AnyVal {

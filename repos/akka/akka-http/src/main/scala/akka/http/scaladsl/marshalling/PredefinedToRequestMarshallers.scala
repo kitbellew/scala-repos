@@ -17,14 +17,14 @@ trait PredefinedToRequestMarshallers {
       Marshalling.Opaque(() ⇒ HttpRequest(uri = uri))
     }
 
-  implicit def fromMethodAndUriAndValue[S, T](
-      implicit mt: ToEntityMarshaller[T]): TRM[(HttpMethod, Uri, T)] =
+  implicit def fromMethodAndUriAndValue[S, T](implicit
+      mt: ToEntityMarshaller[T]): TRM[(HttpMethod, Uri, T)] =
     fromMethodAndUriAndHeadersAndValue[T] compose {
       case (m, u, v) ⇒ (m, u, Nil, v)
     }
 
-  implicit def fromMethodAndUriAndHeadersAndValue[T](
-      implicit mt: ToEntityMarshaller[T])
+  implicit def fromMethodAndUriAndHeadersAndValue[T](implicit
+      mt: ToEntityMarshaller[T])
       : TRM[(HttpMethod, Uri, immutable.Seq[HttpHeader], T)] =
     Marshaller(implicit ec ⇒ {
       case (m, u, h, v) ⇒

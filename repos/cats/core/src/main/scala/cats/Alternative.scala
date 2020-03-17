@@ -8,8 +8,8 @@ import simulacrum.typeclass
   /**
     * Compose this `Alternative` instance with an [[Applicative]] instance.
     */
-  override def compose[G[_]](
-      implicit GG: Applicative[G]): Alternative[λ[α => F[G[α]]]] =
+  override def compose[G[_]](implicit
+      GG: Applicative[G]): Alternative[λ[α => F[G[α]]]] =
     new CompositeAlternative[F, G] {
       implicit def F: Alternative[F] = self
       implicit def G: Applicative[G] = GG

@@ -89,8 +89,8 @@ package Generic1TestsAux {
       }
 
     // Induction step for products
-    implicit def hcons[F[_]](
-        implicit ihc: IsHCons1[F, Functor, Functor]): Functor[F] =
+    implicit def hcons[F[_]](implicit
+        ihc: IsHCons1[F, Functor, Functor]): Functor[F] =
       new Functor[F] {
         def map[A, B](fa: F[A])(f: A => B): F[B] = {
           val (hd, tl) = ihc.unpack(fa)
@@ -99,8 +99,8 @@ package Generic1TestsAux {
       }
 
     // Induction step for coproducts
-    implicit def ccons[F[_]](
-        implicit icc: IsCCons1[F, Functor, Functor]): Functor[F] =
+    implicit def ccons[F[_]](implicit
+        icc: IsCCons1[F, Functor, Functor]): Functor[F] =
       new Functor[F] {
         def map[A, B](fa: F[A])(f: A => B): F[B] =
           icc.pack(
@@ -149,8 +149,8 @@ package Generic1TestsAux {
       }
 
     // Pointed can be built for Singleton types
-    implicit def constSingletonPointed[T](
-        implicit w: Witness.Aux[T]): Pointed[Const[T]#λ] =
+    implicit def constSingletonPointed[T](implicit
+        w: Witness.Aux[T]): Pointed[Const[T]#λ] =
       new Pointed[Const[T]#λ] {
         def point[A](a: A): T = w.value
       }
@@ -184,16 +184,16 @@ package Generic1TestsAux {
 
   trait Pointed0 extends Pointed1 {
 
-    implicit def hcons[F[_]](
-        implicit ihc: IsHCons1[F, Pointed, Pointed]): Pointed[F] =
+    implicit def hcons[F[_]](implicit
+        ihc: IsHCons1[F, Pointed, Pointed]): Pointed[F] =
       new Pointed[F] {
         def point[A](a: A): F[A] = {
           ihc.pack(ihc.fh.point(a), ihc.ft.point(a))
         }
       }
 
-    implicit def ccons[F[_]](
-        implicit ihc: IsCCons1[F, Pointed, Pointed]): Pointed[F] =
+    implicit def ccons[F[_]](implicit
+        ihc: IsCCons1[F, Pointed, Pointed]): Pointed[F] =
       new Pointed[F] {
         def point[A](a: A): F[A] = {
           ihc.pack(Left(ihc.fh.point(a)))

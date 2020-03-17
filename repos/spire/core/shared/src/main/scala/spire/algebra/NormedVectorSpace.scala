@@ -30,8 +30,8 @@ trait NormedVectorSpace[V, @sp(Int, Long, Float, Double) F]
 object NormedVectorSpace
     extends NormedVectorSpace0
     with NormedVectorSpaceFunctions {
-  @inline final def apply[V, @sp(Int, Long, Float, Double) R](
-      implicit V: NormedVectorSpace[V, R]): NormedVectorSpace[V, R] = V
+  @inline final def apply[V, @sp(Int, Long, Float, Double) R](implicit
+      V: NormedVectorSpace[V, R]): NormedVectorSpace[V, R] = V
 }
 
 private[algebra] trait NormedVectorSpace0 {

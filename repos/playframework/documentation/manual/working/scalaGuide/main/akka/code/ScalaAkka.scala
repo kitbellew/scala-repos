@@ -153,8 +153,8 @@ package scalaguide.akka {
 
     @Singleton
     class Application @Inject() (
-        @Named("configured-actor") configuredActor: ActorRef)(
-        implicit ec: ExecutionContext)
+        @Named("configured-actor") configuredActor: ActorRef)(implicit
+        ec: ExecutionContext)
         extends Controller {
 
       implicit val timeout: Timeout = 5.seconds

@@ -161,8 +161,8 @@ trait ManagedExecution
 
     def complete(
         results: EitherT[Future, EvaluationError, StreamT[JobQueryTF, Slice]],
-        outputType: MimeType)(
-        implicit M: JobQueryTFMonad): EitherT[Future, EvaluationError, A]
+        outputType: MimeType)(implicit
+        M: JobQueryTFMonad): EitherT[Future, EvaluationError, A]
 
     def execute(
         query: String,
@@ -213,8 +213,8 @@ trait ManagedExecution
     //FIXME: replace with VFSModule.bufferOutput?
     private def encodeCharStream(
         stream: StreamT[Future, CharBuffer],
-        charset: Charset)(
-        implicit M: Monad[Future]): StreamT[Future, Array[Byte]] = {
+        charset: Charset)(implicit
+        M: Monad[Future]): StreamT[Future, Array[Byte]] = {
       val encoder = charset.newEncoder
       stream map { chars =>
         val buffer = encoder.encode(chars)

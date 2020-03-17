@@ -48,8 +48,8 @@ class CommandClient(
     val accessKeyClient: AccessKeys,
     val eventClient: LEvents) {
 
-  def futureAppNew(req: AppRequest)(
-      implicit ec: ExecutionContext): Future[BaseResponse] =
+  def futureAppNew(req: AppRequest)(implicit
+      ec: ExecutionContext): Future[BaseResponse] =
     Future {
       val response = appClient.getByName(req.name) map { app =>
         GeneralResponse(0, s"App ${req.name} already exists. Aborting.")
@@ -107,8 +107,8 @@ class CommandClient(
       new AppListResponse(1, "Successful retrieved app list.", appsRes)
     }
 
-  def futureAppDataDelete(appName: String)(
-      implicit ec: ExecutionContext): Future[GeneralResponse] =
+  def futureAppDataDelete(appName: String)(implicit
+      ec: ExecutionContext): Future[GeneralResponse] =
     Future {
       val response = appClient.getByName(appName) map { app =>
         val data =
@@ -141,8 +141,8 @@ class CommandClient(
       response
     }
 
-  def futureAppDelete(appName: String)(
-      implicit ec: ExecutionContext): Future[GeneralResponse] =
+  def futureAppDelete(appName: String)(implicit
+      ec: ExecutionContext): Future[GeneralResponse] =
     Future {
 
       val response = appClient.getByName(appName) map { app =>
@@ -162,8 +162,8 @@ class CommandClient(
       response
     }
 
-  def futureTrain(req: TrainRequest)(
-      implicit ec: ExecutionContext): Future[GeneralResponse] =
+  def futureTrain(req: TrainRequest)(implicit
+      ec: ExecutionContext): Future[GeneralResponse] =
     Future {
       null
     }

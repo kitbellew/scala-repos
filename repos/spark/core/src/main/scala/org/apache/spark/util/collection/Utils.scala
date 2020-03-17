@@ -30,8 +30,8 @@ private[spark] object Utils {
     * Returns the first K elements from the input as defined by the specified implicit Ordering[T]
     * and maintains the ordering.
     */
-  def takeOrdered[T](input: Iterator[T], num: Int)(
-      implicit ord: Ordering[T]): Iterator[T] = {
+  def takeOrdered[T](input: Iterator[T], num: Int)(implicit
+      ord: Ordering[T]): Iterator[T] = {
     val ordering =
       new GuavaOrdering[T] {
         override def compare(l: T, r: T): Int = ord.compare(l, r)

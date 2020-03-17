@@ -270,18 +270,17 @@ trait TraitContext[This <: android.content.Context] {
       p2: Int)(implicit context: Context): Boolean =
     basis.bindService(SIntent[T], p1, p2)
 
-  @inline def removeStickyBroadcast[T: ClassTag](
-      implicit context: Context): Unit = basis.removeStickyBroadcast(SIntent[T])
+  @inline def removeStickyBroadcast[T: ClassTag](implicit
+      context: Context): Unit = basis.removeStickyBroadcast(SIntent[T])
 
   @inline def sendBroadcast[T: ClassTag](implicit context: Context): Unit =
     basis.sendBroadcast(SIntent[T])
 
-  @inline def sendBroadcast[T: ClassTag](p: java.lang.String)(
-      implicit context: Context): Unit = basis.sendBroadcast(SIntent[T], p)
+  @inline def sendBroadcast[T: ClassTag](p: java.lang.String)(implicit
+      context: Context): Unit = basis.sendBroadcast(SIntent[T], p)
 
-  @inline def sendOrderedBroadcast[T: ClassTag](p: java.lang.String)(
-      implicit context: Context): Unit =
-    basis.sendOrderedBroadcast(SIntent[T], p)
+  @inline def sendOrderedBroadcast[T: ClassTag](p: java.lang.String)(implicit
+      context: Context): Unit = basis.sendOrderedBroadcast(SIntent[T], p)
 
   @inline def sendOrderedBroadcast[T: ClassTag](
       p1: java.lang.String,
@@ -292,8 +291,8 @@ trait TraitContext[This <: android.content.Context] {
       p6: android.os.Bundle)(implicit context: Context): Unit =
     basis.sendOrderedBroadcast(SIntent[T], p1, p2, p3, p4, p5, p6)
 
-  @inline def sendStickyBroadcast[T: ClassTag](
-      implicit context: Context): Unit = basis.sendStickyBroadcast(SIntent[T])
+  @inline def sendStickyBroadcast[T: ClassTag](implicit
+      context: Context): Unit = basis.sendStickyBroadcast(SIntent[T])
 
   @inline def sendStickyOrderedBroadcast[T: ClassTag](
       p1: android.content.BroadcastReceiver,
@@ -306,11 +305,11 @@ trait TraitContext[This <: android.content.Context] {
   @inline def startActivity[T: ClassTag](implicit context: Context): Unit =
     basis.startActivity(SIntent[T])
 
-  @inline def startActivity[T: ClassTag](p: android.os.Bundle)(
-      implicit context: Context): Unit = basis.startActivity(SIntent[T], p)
+  @inline def startActivity[T: ClassTag](p: android.os.Bundle)(implicit
+      context: Context): Unit = basis.startActivity(SIntent[T], p)
 
-  @inline def startService[T: ClassTag](
-      implicit context: Context): android.content.ComponentName =
+  @inline def startService[T: ClassTag](implicit
+      context: Context): android.content.ComponentName =
     basis.startService(SIntent[T])
 
   @inline def stopService[T: ClassTag](implicit context: Context): Boolean =

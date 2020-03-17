@@ -112,8 +112,8 @@ object openCopySyntax {
         type BaseFields = BaseFields0
       }) {
     object copy extends RecordArgs {
-      def applyRecord[R <: HList](r: R)(
-          implicit update: UpdateRepr[BaseFields0, R]): T =
+      def applyRecord[R <: HList](r: R)(implicit
+          update: UpdateRepr[BaseFields0, R]): T =
         t.baseCopy(update(t.baseFields, r))
     }
   }
@@ -135,8 +135,8 @@ trait UpdateRepr[T, R <: HList] {
 object UpdateRepr {
   import ops.record._
 
-  implicit def mergeUpdateRepr[T <: HList, R <: HList](
-      implicit merger: Merger.Aux[T, R, T]): UpdateRepr[T, R] =
+  implicit def mergeUpdateRepr[T <: HList, R <: HList](implicit
+      merger: Merger.Aux[T, R, T]): UpdateRepr[T, R] =
     new UpdateRepr[T, R] {
       def apply(t: T, r: R): T = merger(t, r)
     }

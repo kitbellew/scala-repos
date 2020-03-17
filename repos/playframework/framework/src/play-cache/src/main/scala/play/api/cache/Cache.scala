@@ -80,8 +80,8 @@ object Cache {
     * @param expiration Expiration time as a [[scala.concurrent.duration.Duration]].
     */
   @deprecated("Inject CacheApi into your component", "2.5.0")
-  def set(key: String, value: Any, expiration: Duration = Duration.Inf)(
-      implicit app: Application): Unit = {
+  def set(key: String, value: Any, expiration: Duration = Duration.Inf)(implicit
+      app: Application): Unit = {
     cacheApi.set(key, value, expiration)
   }
 
@@ -93,8 +93,8 @@ object Cache {
     * @param expiration Expiration time in seconds (0 second means eternity).
     */
   @deprecated("Inject CacheApi into your component", "2.5.0")
-  def set(key: String, value: Any, expiration: Int)(
-      implicit app: Application): Unit = {
+  def set(key: String, value: Any, expiration: Int)(implicit
+      app: Application): Unit = {
     set(key, value, intToDuration(expiration))
   }
 

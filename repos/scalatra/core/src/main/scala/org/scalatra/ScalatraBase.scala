@@ -43,54 +43,52 @@ object ScalatraBase {
   def onSuccess(fn: Any => Unit)(implicit request: HttpServletRequest): Unit =
     addCallback(_.foreach(fn))
 
-  def onFailure(fn: Throwable => Unit)(
-      implicit request: HttpServletRequest): Unit =
-    addCallback(_.failed.foreach(fn))
+  def onFailure(fn: Throwable => Unit)(implicit
+      request: HttpServletRequest): Unit = addCallback(_.failed.foreach(fn))
 
-  def onCompleted(fn: Try[Any] => Unit)(
-      implicit request: HttpServletRequest): Unit = addCallback(fn)
+  def onCompleted(fn: Try[Any] => Unit)(implicit
+      request: HttpServletRequest): Unit = addCallback(fn)
 
-  def onRenderedSuccess(fn: Any => Unit)(
-      implicit request: HttpServletRequest): Unit =
-    addRenderCallback(_.foreach(fn))
+  def onRenderedSuccess(fn: Any => Unit)(implicit
+      request: HttpServletRequest): Unit = addRenderCallback(_.foreach(fn))
 
-  def onRenderedFailure(fn: Throwable => Unit)(
-      implicit request: HttpServletRequest): Unit =
+  def onRenderedFailure(fn: Throwable => Unit)(implicit
+      request: HttpServletRequest): Unit =
     addRenderCallback(_.failed.foreach(fn))
 
-  def onRenderedCompleted(fn: Try[Any] => Unit)(
-      implicit request: HttpServletRequest): Unit = addRenderCallback(fn)
+  def onRenderedCompleted(fn: Try[Any] => Unit)(implicit
+      request: HttpServletRequest): Unit = addRenderCallback(fn)
 
-  def callbacks(
-      implicit request: HttpServletRequest): List[(Try[Any]) => Unit] =
+  def callbacks(implicit
+      request: HttpServletRequest): List[(Try[Any]) => Unit] =
     request
       .getOrElse(Callbacks, List.empty[Try[Any] => Unit])
       .asInstanceOf[List[Try[Any] => Unit]]
 
-  def addCallback(callback: Try[Any] => Unit)(
-      implicit request: HttpServletRequest): Unit = {
+  def addCallback(callback: Try[Any] => Unit)(implicit
+      request: HttpServletRequest): Unit = {
     request(Callbacks) = callback :: callbacks
   }
 
-  def runCallbacks(data: Try[Any])(
-      implicit request: HttpServletRequest): Unit = {
+  def runCallbacks(data: Try[Any])(implicit
+      request: HttpServletRequest): Unit = {
     callbacks.reverse foreach (_(data))
   }
 
-  def renderCallbacks(
-      implicit request: HttpServletRequest): List[(Try[Any]) => Unit] = {
+  def renderCallbacks(implicit
+      request: HttpServletRequest): List[(Try[Any]) => Unit] = {
     request
       .getOrElse(RenderCallbacks, List.empty[Try[Any] => Unit])
       .asInstanceOf[List[Try[Any] => Unit]]
   }
 
-  def addRenderCallback(callback: Try[Any] => Unit)(
-      implicit request: HttpServletRequest): Unit = {
+  def addRenderCallback(callback: Try[Any] => Unit)(implicit
+      request: HttpServletRequest): Unit = {
     request(RenderCallbacks) = callback :: renderCallbacks
   }
 
-  def runRenderCallbacks(data: Try[Any])(
-      implicit request: HttpServletRequest): Unit = {
+  def runRenderCallbacks(data: Try[Any])(implicit
+      request: HttpServletRequest): Unit = {
     renderCallbacks.reverse foreach (_(data))
   }
 
@@ -296,8 +294,8 @@ trait ScalatraBase
     matchedRoute
   }
 
-  private[scalatra] def matchedRoute(
-      implicit request: HttpServletRequest): Option[MatchedRoute] = {
+  private[scalatra] def matchedRoute(implicit
+      request: HttpServletRequest): Option[MatchedRoute] = {
     request.get("org.scalatra.MatchedRoute").map(_.asInstanceOf[MatchedRoute])
   }
 
@@ -389,8 +387,8 @@ trait ScalatraBase
   }
 
   protected[scalatra] def withRouteMultiParams[S](
-      matchedRoute: Option[MatchedRoute])(thunk: => S)(
-      implicit request: HttpServletRequest): S = {
+      matchedRoute: Option[MatchedRoute])(thunk: => S)(implicit
+      request: HttpServletRequest): S = {
     val originalParams = multiParams
     setMultiparams(matchedRoute, originalParams)
     try {
@@ -402,8 +400,8 @@ trait ScalatraBase
 
   protected def setMultiparams[S](
       matchedRoute: Option[MatchedRoute],
-      originalParams: MultiParams)(
-      implicit request: HttpServletRequest): Unit = {
+      originalParams: MultiParams)(implicit
+      request: HttpServletRequest): Unit = {
     val routeParams = matchedRoute.map(_.multiParams).getOrElse(Map.empty).map {
       case (key, values) =>
         key -> values.map(s =>
@@ -771,13 +769,13 @@ trait ScalatraBase
       newPath + queryString
   }
 
-  private[this] def ensureContextPathsStripped(path: String)(
-      implicit request: HttpServletRequest): String = {
+  private[this] def ensureContextPathsStripped(path: String)(implicit
+      request: HttpServletRequest): String = {
     ((ensureContextPathStripped _) andThen (ensureServletPathStripped _))(path)
   }
 
-  private[this] def ensureServletPathStripped(path: String)(
-      implicit request: HttpServletRequest): String = {
+  private[this] def ensureServletPathStripped(path: String)(implicit
+      request: HttpServletRequest): String = {
     val sp = ensureSlash(request.getServletPath.blankOption getOrElse "")
     val np =
       if (path.startsWith(sp + "/"))
@@ -869,8 +867,8 @@ trait ScalatraBase
     }
   }
 
-  private[this] def buildBaseUrl(
-      implicit request: HttpServletRequest): String = {
+  private[this] def buildBaseUrl(implicit
+      request: HttpServletRequest): String = {
     "%s://%s".format(
       if (needsHttps || isHttps)
         "https"
@@ -879,8 +877,8 @@ trait ScalatraBase
       serverAuthority)
   }
 
-  private[this] def serverAuthority(
-      implicit request: HttpServletRequest): String = {
+  private[this] def serverAuthority(implicit
+      request: HttpServletRequest): String = {
     val p = serverPort
     val h = serverHost
     if (p == 80 || p == 443)
@@ -933,12 +931,11 @@ trait ScalatraBase
     */
   def requestPath(implicit request: HttpServletRequest): String
 
-  protected def addSessionId(uri: String)(
-      implicit response: HttpServletResponse): String = response.encodeURL(uri)
+  protected def addSessionId(uri: String)(implicit
+      response: HttpServletResponse): String = response.encodeURL(uri)
 
-  def multiParams(key: String)(
-      implicit request: HttpServletRequest): Seq[String] =
-    multiParams(request)(key)
+  def multiParams(key: String)(implicit
+      request: HttpServletRequest): Seq[String] = multiParams(request)(key)
 
   /**
     * The current multiparams.  Multiparams are a result of merging the

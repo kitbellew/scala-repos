@@ -373,8 +373,8 @@ class SyncQueryServiceHandler(
   }
 }
 
-class AsyncQueryServiceHandler(val execution: Execution[Future, JobId])(
-    implicit M: Monad[Future])
+class AsyncQueryServiceHandler(val execution: Execution[Future, JobId])(implicit
+    M: Monad[Future])
     extends QueryServiceHandler[JobId] {
   def extractResponse(
       request: HttpRequest[_],

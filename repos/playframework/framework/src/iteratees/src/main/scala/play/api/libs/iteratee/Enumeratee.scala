@@ -221,8 +221,8 @@ object Enumeratee {
       * @param f Used to transform each input element.
       * $paramEcSingle
       */
-    def apply[To](f: Input[From] => Input[To])(
-        implicit ec: ExecutionContext): Enumeratee[From, To]
+    def apply[To](f: Input[From] => Input[To])(implicit
+        ec: ExecutionContext): Enumeratee[From, To]
   }
 
   /**
@@ -233,8 +233,8 @@ object Enumeratee {
     */
   def mapInput[From] =
     new MapInput[From] {
-      def apply[To](f: Input[From] => Input[To])(
-          implicit ec: ExecutionContext) =
+      def apply[To](f: Input[From] => Input[To])(implicit
+          ec: ExecutionContext) =
         new CheckDone[From, To] {
           val pec = ec.prepare()
 
@@ -262,8 +262,8 @@ object Enumeratee {
       * @param f Used to transform each input element into a sequence of inputs.
       * $paramEcSingle
       */
-    def apply[To](f: From => Seq[Input[To]])(
-        implicit ec: ExecutionContext): Enumeratee[From, To]
+    def apply[To](f: From => Seq[Input[To]])(implicit
+        ec: ExecutionContext): Enumeratee[From, To]
   }
 
   /**
@@ -286,8 +286,8 @@ object Enumeratee {
       * @param f Used to transform each input element into a sequence of input elements.
       * $paramEcSingle
       */
-    def apply[To](f: From => Seq[To])(
-        implicit ec: ExecutionContext): Enumeratee[From, To]
+    def apply[To](f: From => Seq[To])(implicit
+        ec: ExecutionContext): Enumeratee[From, To]
   }
 
   /**
@@ -310,8 +310,8 @@ object Enumeratee {
       * @param f Used to transform each input element into an Enumerator.
       * $paramEcSingle
       */
-    def apply[To](f: From => Enumerator[To])(
-        implicit ec: ExecutionContext): Enumeratee[From, To]
+    def apply[To](f: From => Enumerator[To])(implicit
+        ec: ExecutionContext): Enumeratee[From, To]
   }
 
   /**
@@ -353,8 +353,8 @@ object Enumeratee {
       * @param f Used to transform each input into an Enumerator.
       * $paramEcSingle
       */
-    def apply[To](f: Input[From] => Enumerator[To])(
-        implicit ec: ExecutionContext): Enumeratee[From, To]
+    def apply[To](f: Input[From] => Enumerator[To])(implicit
+        ec: ExecutionContext): Enumeratee[From, To]
   }
 
   /**
@@ -362,8 +362,8 @@ object Enumeratee {
     */
   def mapInputFlatten[From] =
     new MapInputFlatten[From] {
-      def apply[To](f: Input[From] => Enumerator[To])(
-          implicit ec: ExecutionContext) =
+      def apply[To](f: Input[From] => Enumerator[To])(implicit
+          ec: ExecutionContext) =
         new CheckDone[From, To] {
           val pec = ec.prepare()
 
@@ -390,8 +390,8 @@ object Enumeratee {
       * @param f Used to transform each input.
       * $paramEcSingle
       */
-    def apply[To](f: Input[From] => Future[Input[To]])(
-        implicit ec: ExecutionContext): Enumeratee[From, To]
+    def apply[To](f: Input[From] => Future[Input[To]])(implicit
+        ec: ExecutionContext): Enumeratee[From, To]
   }
 
   /**
@@ -399,8 +399,8 @@ object Enumeratee {
     */
   def mapInputM[From] =
     new MapInputM[From] {
-      def apply[To](f: Input[From] => Future[Input[To]])(
-          implicit ec: ExecutionContext) =
+      def apply[To](f: Input[From] => Future[Input[To]])(implicit
+          ec: ExecutionContext) =
         new CheckDone[From, To] {
           val pec = ec.prepare()
 
@@ -428,8 +428,8 @@ object Enumeratee {
       * @param f Used to transform each input element.
       * $paramEcSingle
       */
-    def apply[NE](f: E => Future[NE])(
-        implicit ec: ExecutionContext): Enumeratee[E, NE]
+    def apply[NE](f: E => Future[NE])(implicit
+        ec: ExecutionContext): Enumeratee[E, NE]
   }
 
   /**
@@ -437,8 +437,8 @@ object Enumeratee {
     */
   def mapM[E] =
     new MapM[E] {
-      def apply[NE](f: E => Future[NE])(
-          implicit ec: ExecutionContext): Enumeratee[E, NE] =
+      def apply[NE](f: E => Future[NE])(implicit
+          ec: ExecutionContext): Enumeratee[E, NE] =
         mapInputM[E] {
           case Input.Empty => Future.successful(Input.Empty)
           case Input.EOF   => Future.successful(Input.EOF)
@@ -465,8 +465,8 @@ object Enumeratee {
     */
   def map[E] =
     new Map[E] {
-      def apply[NE](f: E => NE)(
-          implicit ec: ExecutionContext): Enumeratee[E, NE] =
+      def apply[NE](f: E => NE)(implicit
+          ec: ExecutionContext): Enumeratee[E, NE] =
         mapInput[E](in => in.map(f))(ec)
     }
 
@@ -608,8 +608,8 @@ object Enumeratee {
     * @param predicate A function to filter the input elements.
     * $paramEcSingle
     */
-  def filter[E](predicate: E => Boolean)(
-      implicit ec: ExecutionContext): Enumeratee[E, E] =
+  def filter[E](predicate: E => Boolean)(implicit
+      ec: ExecutionContext): Enumeratee[E, E] =
     new CheckDone[E, E] {
       val pec = ec.prepare()
 
@@ -647,8 +647,8 @@ object Enumeratee {
     * @param predicate A function to filter the input elements.
     * $paramEcSingle
     */
-  def filterNot[E](predicate: E => Boolean)(
-      implicit ec: ExecutionContext): Enumeratee[E, E] =
+  def filterNot[E](predicate: E => Boolean)(implicit
+      ec: ExecutionContext): Enumeratee[E, E] =
     filter[E](e => !predicate(e))(ec)
 
   /**
@@ -662,8 +662,8 @@ object Enumeratee {
       * @param transformer A function to transform and filter the input elements with.
       * $paramEcSingle
       */
-    def apply[To](transformer: PartialFunction[From, To])(
-        implicit ec: ExecutionContext): Enumeratee[From, To]
+    def apply[To](transformer: PartialFunction[From, To])(implicit
+        ec: ExecutionContext): Enumeratee[From, To]
   }
 
   /**
@@ -672,8 +672,8 @@ object Enumeratee {
     */
   def collect[From] =
     new Collect[From] {
-      def apply[To](transformer: PartialFunction[From, To])(
-          implicit ec: ExecutionContext): Enumeratee[From, To] =
+      def apply[To](transformer: PartialFunction[From, To])(implicit
+          ec: ExecutionContext): Enumeratee[From, To] =
         new CheckDone[From, To] {
           val pec = ec.prepare()
 
@@ -732,8 +732,8 @@ object Enumeratee {
     * @param p A predicate to test the input with.
     * $paramEcSingle
     */
-  def dropWhile[E](p: E => Boolean)(
-      implicit ec: ExecutionContext): Enumeratee[E, E] = {
+  def dropWhile[E](p: E => Boolean)(implicit
+      ec: ExecutionContext): Enumeratee[E, E] = {
     val pec = ec.prepare()
     new CheckDone[E, E] {
 
@@ -766,8 +766,8 @@ object Enumeratee {
     * @param p A predicate to test the input with.
     * $paramEcSingle
     */
-  def takeWhile[E](p: E => Boolean)(
-      implicit ec: ExecutionContext): Enumeratee[E, E] = {
+  def takeWhile[E](p: E => Boolean)(implicit
+      ec: ExecutionContext): Enumeratee[E, E] = {
     val pec = ec.prepare()
     new CheckDone[E, E] {
 
@@ -889,8 +889,8 @@ object Enumeratee {
     * @param action The action to perform.
     * $paramEcSingle
     */
-  def onIterateeDone[E](action: () => Unit)(
-      implicit ec: ExecutionContext): Enumeratee[E, E] =
+  def onIterateeDone[E](action: () => Unit)(implicit
+      ec: ExecutionContext): Enumeratee[E, E] =
     new Enumeratee[E, E] {
       val pec = ec.prepare()
 
@@ -909,8 +909,8 @@ object Enumeratee {
     * @param action The action to perform.
     * $paramEcSingle
     */
-  def onEOF[E](action: () => Unit)(
-      implicit ec: ExecutionContext): Enumeratee[E, E] =
+  def onEOF[E](action: () => Unit)(implicit
+      ec: ExecutionContext): Enumeratee[E, E] =
     new CheckDone[E, E] {
       val pec = ec.prepare()
 

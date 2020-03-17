@@ -63,14 +63,14 @@ trait LatticeLaws[A] extends Laws {
       "meet.identity" → forAll((x: A) =>
         (x meet A.one) === x && (A.one meet x) === x))
 
-  def boundedBelowLattice(
-      implicit A: Lattice[A] with BoundedJoinSemilattice[A]) =
+  def boundedBelowLattice(implicit
+      A: Lattice[A] with BoundedJoinSemilattice[A]) =
     new LatticeProperties(
       name = "boundedBelowLattice",
       parents = Seq(boundedJoinSemilattice, lattice))
 
-  def boundedAboveLattice(
-      implicit A: Lattice[A] with BoundedMeetSemilattice[A]) =
+  def boundedAboveLattice(implicit
+      A: Lattice[A] with BoundedMeetSemilattice[A]) =
     new LatticeProperties(
       name = "boundedAboveLattice",
       parents = Seq(boundedMeetSemilattice, lattice))

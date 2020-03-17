@@ -332,8 +332,8 @@ private[serverset2] object ZkSession {
     * reconnects upon session expiry. Reconnect attempts cease when any
     * observation of the returned `Var[ZkSession]` is closed.
     */
-  def retrying(backoff: RetryStream, newZkSession: () => ZkSession)(
-      implicit timer: Timer): Var[ZkSession] = {
+  def retrying(backoff: RetryStream, newZkSession: () => ZkSession)(implicit
+      timer: Timer): Var[ZkSession] = {
     val v = Var(ZkSession.nil)
 
     @volatile var closing = false

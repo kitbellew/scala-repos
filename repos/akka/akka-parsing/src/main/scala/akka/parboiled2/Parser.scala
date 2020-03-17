@@ -147,8 +147,8 @@ abstract class Parser(
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
-  def __run[L <: HList](rule: ⇒ RuleN[L])(
-      implicit scheme: Parser.DeliveryScheme[L]): scheme.Result = {
+  def __run[L <: HList](rule: ⇒ RuleN[L])(implicit
+      scheme: Parser.DeliveryScheme[L]): scheme.Result = {
     def runRule(): Boolean = {
       _cursor = -1
       __advance()

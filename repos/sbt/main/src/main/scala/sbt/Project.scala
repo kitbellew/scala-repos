@@ -629,8 +629,8 @@ object Project extends ProjectExtra {
   def makeSettings(
       settings: Seq[Def.Setting[_]],
       delegates: Scope => Seq[Scope],
-      scopeLocal: ScopedKey[_] => Seq[Def.Setting[_]])(
-      implicit display: Show[ScopedKey[_]]) =
+      scopeLocal: ScopedKey[_] => Seq[Def.Setting[_]])(implicit
+      display: Show[ScopedKey[_]]) =
     Def.make(settings)(delegates, scopeLocal, display)
 
   private[sbt] def checkTargets(data: Settings[Scope]): Option[String] = {
@@ -821,11 +821,11 @@ object Project extends ProjectExtra {
   def settingGraph(
       structure: BuildStructure,
       basedir: File,
-      scoped: ScopedKey[_])(
-      implicit display: Show[ScopedKey[_]]): SettingGraph =
+      scoped: ScopedKey[_])(implicit
+      display: Show[ScopedKey[_]]): SettingGraph =
     SettingGraph(structure, basedir, scoped, 0)
-  def graphSettings(structure: BuildStructure, basedir: File)(
-      implicit display: Show[ScopedKey[_]]): Unit = {
+  def graphSettings(structure: BuildStructure, basedir: File)(implicit
+      display: Show[ScopedKey[_]]): Unit = {
     def graph(actual: Boolean, name: String) =
       graphSettings(structure, actual, name, new File(basedir, name + ".dot"))
     graph(true, "actual_dependencies")
@@ -860,13 +860,13 @@ object Project extends ProjectExtra {
     }
   }
 
-  def showDefinitions(key: AttributeKey[_], defs: Seq[Scope])(
-      implicit display: Show[ScopedKey[_]]): String =
+  def showDefinitions(key: AttributeKey[_], defs: Seq[Scope])(implicit
+      display: Show[ScopedKey[_]]): String =
     showKeys(defs.map(scope => ScopedKey(scope, key)))
-  def showUses(defs: Seq[ScopedKey[_]])(
-      implicit display: Show[ScopedKey[_]]): String = showKeys(defs)
-  private[this] def showKeys(s: Seq[ScopedKey[_]])(
-      implicit display: Show[ScopedKey[_]]): String =
+  def showUses(defs: Seq[ScopedKey[_]])(implicit
+      display: Show[ScopedKey[_]]): String = showKeys(defs)
+  private[this] def showKeys(s: Seq[ScopedKey[_]])(implicit
+      display: Show[ScopedKey[_]]): String =
     s.map(display.apply).sorted.mkString("\n\t", "\n\t", "\n\n")
 
   def definitions(
@@ -1015,8 +1015,8 @@ object Project extends ProjectExtra {
 
     def updateState(f: (State, S) => State): Def.Initialize[Task[S]] =
       i(t => tx(t, f))
-    def storeAs(key: TaskKey[S])(
-        implicit f: sbinary.Format[S]): Def.Initialize[Task[S]] =
+    def storeAs(key: TaskKey[S])(implicit
+        f: sbinary.Format[S]): Def.Initialize[Task[S]] =
       (Keys.resolvedScoped, i) { (scoped, task) =>
         tx(
           task,

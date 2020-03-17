@@ -78,8 +78,8 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
   final def map[D](f: B => D): A Ior D = bimap(identity, f)
   final def leftMap[C](f: A => C): C Ior B = bimap(f, identity)
 
-  final def flatMap[AA >: A, D](f: B => AA Ior D)(
-      implicit AA: Semigroup[AA]): AA Ior D =
+  final def flatMap[AA >: A, D](f: B => AA Ior D)(implicit
+      AA: Semigroup[AA]): AA Ior D =
     this match {
       case l @ Ior.Left(_) => l
       case Ior.Right(b)    => f(b)
@@ -96,8 +96,8 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
     ()
   }
 
-  final def traverse[F[_], AA >: A, D](g: B => F[D])(
-      implicit F: Applicative[F]): F[AA Ior D] =
+  final def traverse[F[_], AA >: A, D](g: B => F[D])(implicit
+      F: Applicative[F]): F[AA Ior D] =
     this match {
       case Ior.Left(a)    => F.pure(Ior.left(a))
       case Ior.Right(b)   => F.map(g(b))(Ior.right)

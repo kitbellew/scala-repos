@@ -123,8 +123,8 @@ class FrameStats[RX, CX, T: ST](frame: Frame[RX, CX, T]) {
     * any NA values.
     * @param winSz Size of the rolling window
     */
-  def rollingCount(winSz: Int)(
-      implicit ev: V2RollingStats): Frame[RX, CX, Int] =
+  def rollingCount(winSz: Int)(implicit
+      ev: V2RollingStats): Frame[RX, CX, Int] =
     frame.mapVec(_.rollingCount(winSz))
 
   /**
@@ -140,8 +140,8 @@ class FrameStats[RX, CX, T: ST](frame: Frame[RX, CX, T]) {
     * values.
     * @param winSz Size of the sliding window
     */
-  def rollingMean(winSz: Int)(
-      implicit ev: V2RollingStats): Frame[RX, CX, Double] =
+  def rollingMean(winSz: Int)(implicit
+      ev: V2RollingStats): Frame[RX, CX, Double] =
     frame.mapVec(_.rollingMean(winSz))
 
   /**
@@ -149,8 +149,8 @@ class FrameStats[RX, CX, T: ST](frame: Frame[RX, CX, T]) {
     * values.
     * @param winSz Size of the sliding window
     */
-  def rollingMedian(winSz: Int)(
-      implicit ev: V2RollingStats): Frame[RX, CX, Double] =
+  def rollingMedian(winSz: Int)(implicit
+      ev: V2RollingStats): Frame[RX, CX, Double] =
     frame.mapVec(_.rollingMedian(winSz))
 
   private type V2ExpandingStats = Vec[T] => VecExpandingStats[T]

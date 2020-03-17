@@ -56,8 +56,8 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
     with Subscription
     with Iteratee[T, Unit] { self =>
 
-  def fold[B](folder: (Step[T, Unit]) => Future[B])(
-      implicit ec: ExecutionContext): Future[B] = {
+  def fold[B](folder: (Step[T, Unit]) => Future[B])(implicit
+      ec: ExecutionContext): Future[B] = {
     val promise = Promise[B]()
     val pec = ec.prepare()
     exclusive {

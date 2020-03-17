@@ -155,8 +155,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
         override def schedule(
             initialDelay: FiniteDuration,
             interval: FiniteDuration,
-            runnable: Runnable)(
-            implicit executor: ExecutionContext): Cancellable =
+            runnable: Runnable)(implicit
+            executor: ExecutionContext): Cancellable =
           systemScheduler.schedule(initialDelay, interval, runnable)
 
         override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(

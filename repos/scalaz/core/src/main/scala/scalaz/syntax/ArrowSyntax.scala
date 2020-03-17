@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Arrow` */
-final class ArrowOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
-    implicit val F: Arrow[F])
+final class ArrowOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(implicit
+    val F: Arrow[F])
     extends Ops[F[A, B]] {
   ////
   final def ***[C, D](k: F[C, D]): F[(A, C), (B, D)] = F.splitA(self, k)

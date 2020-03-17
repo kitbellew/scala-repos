@@ -46,8 +46,8 @@ class DontLeakActorsOnFailingConnectionSpecs
   val log = Logging(system, getClass)
 
   // TODO DUPLICATED
-  def assertAllStagesStopped[T](name: String)(block: ⇒ T)(
-      implicit materializer: Materializer): T =
+  def assertAllStagesStopped[T](name: String)(block: ⇒ T)(implicit
+      materializer: Materializer): T =
     materializer match {
       case impl: ActorMaterializerImpl ⇒
         val probe = TestProbe()(impl.system)

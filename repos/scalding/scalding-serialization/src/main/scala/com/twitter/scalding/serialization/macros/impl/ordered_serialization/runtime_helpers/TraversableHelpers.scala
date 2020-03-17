@@ -88,8 +88,8 @@ object TraversableHelpers {
     * the complexity should be O(N + M) rather than O(N log N + M log M) for the full
     * sort case
     */
-  final def sortedCompare[T](travA: Iterable[T], travB: Iterable[T])(
-      implicit ord: Ordering[T]): Int = {
+  final def sortedCompare[T](travA: Iterable[T], travB: Iterable[T])(implicit
+      ord: Ordering[T]): Int = {
     def compare(
         startA: Int,
         endA: Int,

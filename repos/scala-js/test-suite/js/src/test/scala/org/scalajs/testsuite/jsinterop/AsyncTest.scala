@@ -55,8 +55,8 @@ class AsyncTest {
     steps
   }
 
-  def queueExecOrderTests(processQueue: () => Unit)(
-      implicit executor: ExecutionContext): Unit = {
+  def queueExecOrderTests(processQueue: () => Unit)(implicit
+      executor: ExecutionContext): Unit = {
 
     val res = asyncTest
 

@@ -126,8 +126,8 @@ sealed abstract class DListInstances {
       def empty[A] = DList()
       def isEmpty[A](fa: DList[A]) = fa.isEmpty
       def zip[A, B](a: => DList[A], b: => DList[B]): DList[(A, B)] = a zip b
-      def traverseImpl[F[_], A, B](fa: DList[A])(f: A => F[B])(
-          implicit F: Applicative[F]): F[DList[B]] =
+      def traverseImpl[F[_], A, B](fa: DList[A])(f: A => F[B])(implicit
+          F: Applicative[F]): F[DList[B]] =
         fa.foldr(F.point(DList[B]()))((a, fbs) => F.apply2(f(a), fbs)(_ +: _))
 
       def tailrecM[A, B](f: A => DList[A \/ B])(a: A): DList[B] =

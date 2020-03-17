@@ -278,8 +278,8 @@ object Group {
       }
     }
 
-  def validGroupWithConfig(maxApps: Option[Int])(
-      implicit validator: Validator[Group]): Validator[Group] = {
+  def validGroupWithConfig(maxApps: Option[Int])(implicit
+      validator: Validator[Group]): Validator[Group] = {
     new Validator[Group] {
       override def apply(group: Group): Result = {
         maxApps.filter(group.transitiveApps.size > _).map { num =>

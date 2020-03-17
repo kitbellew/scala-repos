@@ -46,8 +46,8 @@ class TensorPairs[K, V, +This](
       case _ => false
     }
 
-  def map[TT >: This, O, That](fn: ((K, V)) => O)(
-      implicit bf: CanMapKeyValuePairs[TT, K, V, O, That]): That =
+  def map[TT >: This, O, That](fn: ((K, V)) => O)(implicit
+      bf: CanMapKeyValuePairs[TT, K, V, O, That]): That =
     tensor.mapPairs((k, v) => fn((k, v)))(
       bf.asInstanceOf[CanMapKeyValuePairs[Tensor[K, V], K, V, O, That]])
 

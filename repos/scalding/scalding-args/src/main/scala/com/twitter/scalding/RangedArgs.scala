@@ -46,8 +46,8 @@ case class Range[T](lower: T, upper: T)(implicit ord: Ordering[T]) {
 }
 
 class RangedArgs(args: Args) {
-  def range[T](argName: String)(cnv: String => T)(
-      implicit ord: Ordering[T]): Range[T] =
+  def range[T](argName: String)(cnv: String => T)(implicit
+      ord: Ordering[T]): Range[T] =
     args.list(argName) match {
       case List(v) =>
         Range(cnv(v), cnv(v))

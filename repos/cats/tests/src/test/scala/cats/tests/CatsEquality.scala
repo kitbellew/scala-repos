@@ -25,8 +25,8 @@ trait StrictCatsEquality extends LowPriorityStrictCatsConstraints {
     super.convertToEqualizer[T](left)
   implicit override def convertToCheckingEqualizer[T](
       left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
-  override def unconstrainedEquality[A, B](
-      implicit equalityOfA: Equality[A]): CanEqual[A, B] =
+  override def unconstrainedEquality[A, B](implicit
+      equalityOfA: Equality[A]): CanEqual[A, B] =
     super.unconstrainedEquality[A, B]
   implicit def catsCanEqual[A, B](implicit
       A: Eq[A],

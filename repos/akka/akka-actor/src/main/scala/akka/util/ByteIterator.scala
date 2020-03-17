@@ -160,32 +160,32 @@ object ByteIterator {
     private def wrappedByteBuffer: ByteBuffer =
       ByteBuffer.wrap(array, from, len).asReadOnlyBuffer
 
-    def getShorts(xs: Array[Short], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type = {
+    def getShorts(xs: Array[Short], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type = {
       wrappedByteBuffer.order(byteOrder).asShortBuffer.get(xs, offset, n);
       drop(2 * n)
     }
 
-    def getInts(xs: Array[Int], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type = {
+    def getInts(xs: Array[Int], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type = {
       wrappedByteBuffer.order(byteOrder).asIntBuffer.get(xs, offset, n);
       drop(4 * n)
     }
 
-    def getLongs(xs: Array[Long], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type = {
+    def getLongs(xs: Array[Long], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type = {
       wrappedByteBuffer.order(byteOrder).asLongBuffer.get(xs, offset, n);
       drop(8 * n)
     }
 
-    def getFloats(xs: Array[Float], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type = {
+    def getFloats(xs: Array[Float], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type = {
       wrappedByteBuffer.order(byteOrder).asFloatBuffer.get(xs, offset, n);
       drop(4 * n)
     }
 
-    def getDoubles(xs: Array[Double], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type = {
+    def getDoubles(xs: Array[Double], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type = {
       wrappedByteBuffer.order(byteOrder).asDoubleBuffer.get(xs, offset, n);
       drop(8 * n)
     }
@@ -445,40 +445,40 @@ object ByteIterator {
         current.getBytes(_, _, _)
       }
 
-    def getShorts(xs: Array[Short], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type =
+    def getShorts(xs: Array[Short], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type =
       getToArray(xs, offset, n, 2) {
         getShort(byteOrder)
       } {
         current.getShorts(_, _, _)(byteOrder)
       }
 
-    def getInts(xs: Array[Int], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type =
+    def getInts(xs: Array[Int], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type =
       getToArray(xs, offset, n, 4) {
         getInt(byteOrder)
       } {
         current.getInts(_, _, _)(byteOrder)
       }
 
-    def getLongs(xs: Array[Long], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type =
+    def getLongs(xs: Array[Long], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type =
       getToArray(xs, offset, n, 8) {
         getLong(byteOrder)
       } {
         current.getLongs(_, _, _)(byteOrder)
       }
 
-    def getFloats(xs: Array[Float], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type =
+    def getFloats(xs: Array[Float], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type =
       getToArray(xs, offset, n, 8) {
         getFloat(byteOrder)
       } {
         current.getFloats(_, _, _)(byteOrder)
       }
 
-    def getDoubles(xs: Array[Double], offset: Int, n: Int)(
-        implicit byteOrder: ByteOrder): this.type =
+    def getDoubles(xs: Array[Double], offset: Int, n: Int)(implicit
+        byteOrder: ByteOrder): this.type =
       getToArray(xs, offset, n, 8) {
         getDouble(byteOrder)
       } {
@@ -782,8 +782,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   /**
     * Get a number of Shorts from this iterator.
     */
-  def getShorts(xs: Array[Short], offset: Int, n: Int)(
-      implicit byteOrder: ByteOrder): this.type
+  def getShorts(xs: Array[Short], offset: Int, n: Int)(implicit
+      byteOrder: ByteOrder): this.type
 
   /**
     * Get a number of Ints from this iterator.
@@ -794,8 +794,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   /**
     * Get a number of Ints from this iterator.
     */
-  def getInts(xs: Array[Int], offset: Int, n: Int)(
-      implicit byteOrder: ByteOrder): this.type
+  def getInts(xs: Array[Int], offset: Int, n: Int)(implicit
+      byteOrder: ByteOrder): this.type
 
   /**
     * Get a number of Longs from this iterator.
@@ -806,8 +806,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   /**
     * Get a number of Longs from this iterator.
     */
-  def getLongs(xs: Array[Long], offset: Int, n: Int)(
-      implicit byteOrder: ByteOrder): this.type
+  def getLongs(xs: Array[Long], offset: Int, n: Int)(implicit
+      byteOrder: ByteOrder): this.type
 
   /**
     * Get a number of Floats from this iterator.
@@ -818,8 +818,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   /**
     * Get a number of Floats from this iterator.
     */
-  def getFloats(xs: Array[Float], offset: Int, n: Int)(
-      implicit byteOrder: ByteOrder): this.type
+  def getFloats(xs: Array[Float], offset: Int, n: Int)(implicit
+      byteOrder: ByteOrder): this.type
 
   /**
     * Get a number of Doubles from this iterator.
@@ -830,8 +830,8 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   /**
     * Get a number of Doubles from this iterator.
     */
-  def getDoubles(xs: Array[Double], offset: Int, n: Int)(
-      implicit byteOrder: ByteOrder): this.type
+  def getDoubles(xs: Array[Double], offset: Int, n: Int)(implicit
+      byteOrder: ByteOrder): this.type
 
   /**
     * Copy as many bytes as possible to a ByteBuffer, starting from it's

@@ -74,8 +74,8 @@ trait APIKeyFinder[M[+_]] extends AccessControl[M] with Logging { self =>
     }
 }
 
-class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(
-    implicit val M: Monad[M])
+class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit
+    val M: Monad[M])
     extends APIKeyFinder[M]
     with Logging {
   val grantDetails: Grant => v1.GrantDetails = {

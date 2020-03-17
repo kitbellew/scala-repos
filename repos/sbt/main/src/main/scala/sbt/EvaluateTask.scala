@@ -475,8 +475,8 @@ object EvaluateTask {
         Some(RED)
       else
         None)
-  def suppressedMessage(key: ScopedKey[_])(
-      implicit display: Show[ScopedKey[_]]): String =
+  def suppressedMessage(key: ScopedKey[_])(implicit
+      display: Show[ScopedKey[_]]): String =
     "Stack trace suppressed.  Run 'last %s' for the full log.".format(
       display(key))
 
@@ -519,8 +519,8 @@ object EvaluateTask {
       state: State,
       streams: Streams,
       triggers: Triggers[Task],
-      config: EvaluateConfig)(
-      implicit taskToNode: NodeView[Task]): (State, Result[T]) = {
+      config: EvaluateConfig)(implicit
+      taskToNode: NodeView[Task]): (State, Result[T]) = {
     val newConfig = EvaluateTaskConfig(config)
     runTask(root, state, streams, triggers, newConfig)(taskToNode)
   }
@@ -529,8 +529,8 @@ object EvaluateTask {
       state: State,
       streams: Streams,
       triggers: Triggers[Task],
-      config: EvaluateTaskConfig)(
-      implicit taskToNode: NodeView[Task]): (State, Result[T]) = {
+      config: EvaluateTaskConfig)(implicit
+      taskToNode: NodeView[Task]): (State, Result[T]) = {
     import ConcurrentRestrictions.{
       completionService,
       TagMap,

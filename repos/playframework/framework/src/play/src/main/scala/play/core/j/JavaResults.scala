@@ -36,8 +36,8 @@ object JavaResults
     extends Results
     with DefaultWriteables
     with DefaultContentTypeOfs {
-  def writeContent(mimeType: String)(
-      implicit codec: Codec): Writeable[Content] =
+  def writeContent(mimeType: String)(implicit
+      codec: Codec): Writeable[Content] =
     Writeable(
       (content: Content) => codec.encode(contentBody(content)),
       Some(ContentTypes.withCharset(mimeType)))

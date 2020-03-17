@@ -60,8 +60,8 @@ object Coroner {
         startAndStopDuration.unit)
     }
 
-    override def ready(atMost: Duration)(
-        implicit permit: CanAwait): this.type = {
+    override def ready(atMost: Duration)(implicit
+        permit: CanAwait): this.type = {
       result(atMost)
       this
     }

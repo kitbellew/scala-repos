@@ -138,8 +138,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       replicatedVertexView.reverse())
   }
 
-  override def mapVertices[VD2: ClassTag](f: (VertexId, VD) => VD2)(
-      implicit eq: VD =:= VD2 = null): Graph[VD2, ED] = {
+  override def mapVertices[VD2: ClassTag](f: (VertexId, VD) => VD2)(implicit
+      eq: VD =:= VD2 = null): Graph[VD2, ED] = {
     // The implicit parameter eq will be populated by the compiler if VD and VD2 are equal, and left
     // null if not
     if (eq != null) {

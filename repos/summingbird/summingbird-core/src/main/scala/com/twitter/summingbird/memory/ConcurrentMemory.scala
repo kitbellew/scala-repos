@@ -158,8 +158,8 @@ object PhysicalNode {
   }
 }
 
-class ConcurrentMemory(
-    implicit jobID: JobId = JobId("default.concurrent.memory.jobId"))
+class ConcurrentMemory(implicit
+    jobID: JobId = JobId("default.concurrent.memory.jobId"))
     extends Platform[ConcurrentMemory]
     with DagOptimizer[ConcurrentMemory] {
 

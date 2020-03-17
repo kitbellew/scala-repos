@@ -116,8 +116,8 @@ private[play] object WebSocketActor {
         requestId: Long,
         enumerator: Enumerator[In],
         iteratee: Iteratee[Out, Unit],
-        createHandler: ActorRef => Props)(
-        implicit val messageType: ClassTag[Out])
+        createHandler: ActorRef => Props)(implicit
+        val messageType: ClassTag[Out])
   }
 
   /**

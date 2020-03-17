@@ -33,8 +33,8 @@ object MergeableStoreFactory {
     }
   }
 
-  def from[K, V](store: => Mergeable[(K, BatchID), V])(
-      implicit batcher: Batcher): MergeableStoreFactory[(K, BatchID), V] =
+  def from[K, V](store: => Mergeable[(K, BatchID), V])(implicit
+      batcher: Batcher): MergeableStoreFactory[(K, BatchID), V] =
     apply(
       { () =>
         store

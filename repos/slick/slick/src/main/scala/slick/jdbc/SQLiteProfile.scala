@@ -141,8 +141,8 @@ trait SQLiteProfile extends JdbcProfile {
 
   override def createModelBuilder(
       tables: Seq[MTable],
-      ignoreInvalidDefaults: Boolean)(
-      implicit ec: ExecutionContext): JdbcModelBuilder =
+      ignoreInvalidDefaults: Boolean)(implicit
+      ec: ExecutionContext): JdbcModelBuilder =
     new ModelBuilder(tables, ignoreInvalidDefaults)
 
   override def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] =

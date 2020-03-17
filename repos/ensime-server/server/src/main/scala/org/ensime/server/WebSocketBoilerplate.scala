@@ -65,8 +65,8 @@ object WebSocketBoilerplate {
     * @return the actor represented as a `Flow`, suitable for use in akka-stream
     *         with caution.
     */
-  def actorRefAsFlow[Incoming, Outgoing](actor: ActorRef => ActorRef)(
-      implicit mat: Materializer): Flow[Incoming, Outgoing, Unit] = {
+  def actorRefAsFlow[Incoming, Outgoing](actor: ActorRef => ActorRef)(implicit
+      mat: Materializer): Flow[Incoming, Outgoing, Unit] = {
     val (target, pub) = Source
       .actorRef[Outgoing](0, OverflowStrategy.fail)
       .toMat(Sink.publisher)(Keep.both)

@@ -35,12 +35,12 @@ trait GenericMarshallers extends LowPriorityToResponseMarshallerImplicits {
       }
     }
 
-  implicit def futureMarshaller[A, B](
-      implicit m: Marshaller[A, B]): Marshaller[Future[A], B] =
+  implicit def futureMarshaller[A, B](implicit
+      m: Marshaller[A, B]): Marshaller[Future[A], B] =
     Marshaller(implicit ec ⇒ _.fast.flatMap(m(_)))
 
-  implicit def tryMarshaller[A, B](
-      implicit m: Marshaller[A, B]): Marshaller[Try[A], B] =
+  implicit def tryMarshaller[A, B](implicit
+      m: Marshaller[A, B]): Marshaller[Try[A], B] =
     Marshaller { implicit ec ⇒
       {
         case Success(value) ⇒ m(value)

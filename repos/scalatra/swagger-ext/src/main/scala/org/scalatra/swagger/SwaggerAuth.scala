@@ -71,8 +71,8 @@ object SwaggerAuthSerializers {
     writeDataType
   }
 
-  def authFormats[T <: AnyRef](userOption: Option[T])(
-      implicit mf: Manifest[T]): SwaggerFormats =
+  def authFormats[T <: AnyRef](userOption: Option[T])(implicit
+      mf: Manifest[T]): SwaggerFormats =
     SwaggerSerializers.formats ++ Seq(
       new AuthOperationSerializer[T](userOption),
       new AuthEndpointSerializer[T],

@@ -27,8 +27,8 @@ trait TransformerPipelineSupport {
 
   implicit class WithTransformerConcatenation[A, B](f: A ⇒ B) extends (A ⇒ B) {
     def apply(input: A) = f(input)
-    def ~>[AA, BB, R](g: AA ⇒ BB)(
-        implicit aux: TransformerAux[A, B, AA, BB, R]) =
+    def ~>[AA, BB, R](g: AA ⇒ BB)(implicit
+        aux: TransformerAux[A, B, AA, BB, R]) =
       new WithTransformerConcatenation[A, R](aux(f, g))
   }
 }

@@ -14,8 +14,8 @@ import slick.ast.{
 trait OptionMapper[BR, R] extends (Rep[BR] => Rep[R]) {
   def lift: Boolean
 
-  def column(fs: FunctionSymbol, ch: Node*)(
-      implicit bt: TypedType[BR]): Rep[R] = {
+  def column(fs: FunctionSymbol, ch: Node*)(implicit
+      bt: TypedType[BR]): Rep[R] = {
     implicit val tt = liftedType
     Rep.forNode[R](fs.typed(tt, ch: _*))
   }
@@ -160,8 +160,8 @@ sealed trait OptionLift[M, O] {
 }
 
 object OptionLift extends OptionLiftLowPriority {
-  final implicit def repOptionLift[M <: Rep[_], P](
-      implicit shape: Shape[_ <: FlatShapeLevel, M, _, Rep[P]])
+  final implicit def repOptionLift[M <: Rep[_], P](implicit
+      shape: Shape[_ <: FlatShapeLevel, M, _, Rep[P]])
       : OptionLift[M, Rep[Option[P]]] =
     new OptionLift[M, Rep[Option[P]]] {
       def lift(v: M): Rep[Option[P]] = {
@@ -180,8 +180,8 @@ object OptionLift extends OptionLiftLowPriority {
 }
 
 sealed trait OptionLiftLowPriority {
-  final implicit def anyOptionLift[M, P](
-      implicit shape: Shape[_ <: FlatShapeLevel, M, _, P])
+  final implicit def anyOptionLift[M, P](implicit
+      shape: Shape[_ <: FlatShapeLevel, M, _, P])
       : OptionLift[M, Rep[Option[P]]] =
     new OptionLift[M, Rep[Option[P]]] {
       def lift(v: M): Rep[Option[P]] =

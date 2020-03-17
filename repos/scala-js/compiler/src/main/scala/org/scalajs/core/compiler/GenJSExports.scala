@@ -156,8 +156,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         genNamedExporterBody(trgSym, inArg.ref))(OptimizerHints.empty, None)
     }
 
-    private def genNamedExporterBody(trgSym: Symbol, inArg: js.Tree)(
-        implicit pos: Position) = {
+    private def genNamedExporterBody(trgSym: Symbol, inArg: js.Tree)(implicit
+        pos: Position) = {
 
       if (hasRepeatedParam(trgSym)) {
         reporter.error(
@@ -720,8 +720,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     /** Generate the necessary JavaScript code to prepare the arguments of an
       *  exported method (unboxing and default parameter handling)
       */
-    private def genPrepareArgs(jsArgs: List[js.Tree], sym: Symbol)(
-        implicit pos: Position): List[js.VarDef] = {
+    private def genPrepareArgs(jsArgs: List[js.Tree], sym: Symbol)(implicit
+        pos: Position): List[js.VarDef] = {
 
       val result = new mutable.ListBuffer[js.VarDef]
 
@@ -818,8 +818,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       *  Attention: This method casts the arguments to the right type. The IR
       *  checker will not detect if you pass in a wrongly typed argument.
       */
-    private def genResult(sym: Symbol, args: List[js.Tree])(
-        implicit pos: Position) = {
+    private def genResult(sym: Symbol, args: List[js.Tree])(implicit
+        pos: Position) = {
       val thisType =
         if (sym.owner == ObjectClass)
           jstpe.ClassType(ir.Definitions.ObjectClass)
@@ -1010,13 +1010,13 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     m.toList
   }
 
-  private def genThrowTypeError(msg: String = "No matching overload")(
-      implicit pos: Position): js.Tree = {
+  private def genThrowTypeError(msg: String = "No matching overload")(implicit
+      pos: Position): js.Tree = {
     js.Throw(js.StringLiteral(msg))
   }
 
-  private def genFormalArgs(minArgc: Int, needsRestParam: Boolean)(
-      implicit pos: Position): List[js.ParamDef] = {
+  private def genFormalArgs(minArgc: Int, needsRestParam: Boolean)(implicit
+      pos: Position): List[js.ParamDef] = {
     val fixedParams = (1 to minArgc map genFormalArg).toList
     if (needsRestParam)
       fixedParams :+ genRestFormalArg()
@@ -1040,16 +1040,16 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       rest = true)
   }
 
-  private def genFormalArgRef(index: Int, minArgc: Int)(
-      implicit pos: Position): js.Tree = {
+  private def genFormalArgRef(index: Int, minArgc: Int)(implicit
+      pos: Position): js.Tree = {
     if (index <= minArgc)
       js.VarRef(js.Ident("arg$" + index))(jstpe.AnyType)
     else
       js.JSBracketSelect(genRestArgRef(), js.IntLiteral(index - 1 - minArgc))
   }
 
-  private def genVarargRef(fixedParamCount: Int, minArgc: Int)(
-      implicit pos: Position): js.Tree = {
+  private def genVarargRef(fixedParamCount: Int, minArgc: Int)(implicit
+      pos: Position): js.Tree = {
     val restParam = genRestArgRef()
     assert(fixedParamCount >= minArgc)
     if (fixedParamCount == minArgc)

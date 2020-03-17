@@ -46,8 +46,8 @@ object Auth extends LilaController {
     )
   }
 
-  private def authRecovery(
-      implicit ctx: Context): PartialFunction[Throwable, Fu[Result]] = {
+  private def authRecovery(implicit
+      ctx: Context): PartialFunction[Throwable, Fu[Result]] = {
     case lila.security.Api.AuthFromTorExitNode => noTorResponse
     case lila.security.Api.MustConfirmEmail(userId) =>
       UserRepo byId userId map {
@@ -108,8 +108,8 @@ object Auth extends LilaController {
   private def doSignup(
       username: String,
       password: String,
-      rawEmail: Option[String])(
-      implicit ctx: Context): Fu[(UserModel, Option[String])] = {
+      rawEmail: Option[String])(implicit
+      ctx: Context): Fu[(UserModel, Option[String])] = {
     val email = rawEmail.map(e =>
       env.emailAddress.validate(e) err s"Invalid email $e")
     UserRepo

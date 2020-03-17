@@ -57,8 +57,8 @@ trait InvariantFunctor[F[_]] { self =>
 }
 
 object InvariantFunctor {
-  @inline def apply[F[_]](
-      implicit F: InvariantFunctor[F]): InvariantFunctor[F] = F
+  @inline def apply[F[_]](implicit
+      F: InvariantFunctor[F]): InvariantFunctor[F] = F
 
   ////
   ////

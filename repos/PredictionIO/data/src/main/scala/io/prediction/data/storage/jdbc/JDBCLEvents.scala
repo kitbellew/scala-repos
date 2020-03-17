@@ -103,8 +103,8 @@ class JDBCLEvents(
 
   def close(): Unit = ConnectionPool.closeAll()
 
-  def futureInsert(event: Event, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[String] =
+  def futureInsert(event: Event, appId: Int, channelId: Option[Int])(implicit
+      ec: ExecutionContext): Future[String] =
     Future {
       DB localTx { implicit session =>
         val id = event.eventId.getOrElse(JDBCUtils.generateId)
@@ -134,8 +134,8 @@ class JDBCLEvents(
       }
     }
 
-  def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Option[Event]] =
+  def futureGet(eventId: String, appId: Int, channelId: Option[Int])(implicit
+      ec: ExecutionContext): Future[Option[Event]] =
     Future {
       DB readOnly { implicit session =>
         val tableName = sqls.createUnsafely(
@@ -161,8 +161,8 @@ class JDBCLEvents(
       }
     }
 
-  def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Boolean] =
+  def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(implicit
+      ec: ExecutionContext): Future[Boolean] =
     Future {
       DB localTx { implicit session =>
         val tableName = sqls.createUnsafely(
@@ -185,8 +185,8 @@ class JDBCLEvents(
       targetEntityType: Option[Option[String]] = None,
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
-      reversed: Option[Boolean] = None)(
-      implicit ec: ExecutionContext): Future[Iterator[Event]] =
+      reversed: Option[Boolean] = None)(implicit
+      ec: ExecutionContext): Future[Iterator[Event]] =
     Future {
       DB readOnly { implicit session =>
         val tableName = sqls.createUnsafely(

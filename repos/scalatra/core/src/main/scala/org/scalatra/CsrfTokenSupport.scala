@@ -95,8 +95,8 @@ trait CsrfTokenSupport { this: ScalatraBase =>
   /**
     * Returns the token from the session.
     */
-  protected[scalatra] def csrfToken(
-      implicit request: HttpServletRequest): String =
+  protected[scalatra] def csrfToken(implicit
+      request: HttpServletRequest): String =
     request.getSession.getAttribute(csrfKey).asInstanceOf[String]
 
 }

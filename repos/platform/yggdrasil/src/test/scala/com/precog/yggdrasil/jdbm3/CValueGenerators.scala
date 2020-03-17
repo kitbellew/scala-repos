@@ -38,8 +38,8 @@ trait CValueGenerators {
   def genColumn(size: Int, values: Gen[Array[CValue]]): Gen[List[Seq[CValue]]] =
     containerOfN[List, Seq[CValue]](size, values.map(_.toSeq))
 
-  private def containerOfAtMostN[C[_], T](maxSize: Int, g: Gen[T])(
-      implicit b: org.scalacheck.util.Buildable[T, C]): Gen[C[T]] =
+  private def containerOfAtMostN[C[_], T](maxSize: Int, g: Gen[T])(implicit
+      b: org.scalacheck.util.Buildable[T, C]): Gen[C[T]] =
     Gen.sized(size =>
       for (n <- choose(0, size min maxSize);
            c <- containerOfN[C, T](n, g))

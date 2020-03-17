@@ -19,8 +19,8 @@ import org.specs2.specification._
 
 import scala.concurrent.duration._
 
-class AtmosphereSpecServlet(
-    implicit override protected val scalatraActorSystem: ActorSystem)
+class AtmosphereSpecServlet(implicit
+    override protected val scalatraActorSystem: ActorSystem)
     extends ScalatraServlet
     with JacksonJsonSupport
     with SessionSupport

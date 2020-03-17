@@ -60,8 +60,8 @@ object ServerResultUtils {
     *
     * Returns the validated result, which may be an error result if validation failed.
     */
-  def validateResult(request: RequestHeader, result: Result)(
-      implicit mat: Materializer): Result = {
+  def validateResult(request: RequestHeader, result: Result)(implicit
+      mat: Materializer): Result = {
     if (request.version == HttpProtocol.HTTP_1_0 && result.body
           .isInstanceOf[HttpEntity.Chunked]) {
       cancelEntity(result.body)

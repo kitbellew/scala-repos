@@ -132,8 +132,8 @@ package object extensions {
       b.result()
     }
 
-    def mapWithIndex[B](f: (A, Int) => B)(
-        implicit cbf: CanBuildTo[B, CC]): CC[B] = {
+    def mapWithIndex[B](f: (A, Int) => B)(implicit
+        cbf: CanBuildTo[B, CC]): CC[B] = {
       val b = cbf()
       var i = 0
       for (x <- value) {
@@ -156,8 +156,8 @@ package object extensions {
       extends AnyVal {
     private type CanBuildTo[Elem, C[X]] = CanBuildFrom[Nothing, Elem, C[Elem]]
 
-    def zipMapped[B](f: A => B)(
-        implicit cbf: CanBuildTo[(A, B), CC]): CC[(A, B)] = {
+    def zipMapped[B](f: A => B)(implicit
+        cbf: CanBuildTo[(A, B), CC]): CC[(A, B)] = {
       val b = cbf()
       val it = value.iterator
       while (it.hasNext) {

@@ -65,8 +65,8 @@ object Tag {
       subst(U(fa))
 
     /** One variant of `subst` with different inference. */
-    def onContra[FA](fa: FA)(
-        implicit U: Unapply[Contravariant, FA]): U.M[U.A @@ T] = subst(U(fa))
+    def onContra[FA](fa: FA)(implicit
+        U: Unapply[Contravariant, FA]): U.M[U.A @@ T] = subst(U(fa))
 
     /** Like `Tag.unsubst`, but specify only the `T`. */
     def unsubst[F[_], A](fa: F[A @@ T]): F[A] = Tag.unsubst(fa)

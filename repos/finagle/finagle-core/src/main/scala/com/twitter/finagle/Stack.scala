@@ -69,8 +69,8 @@ sealed trait Stack[T] {
     * unmodified stack is returned.  `insertion` must conform to
     * typeclass [[CanStackFrom]].
     */
-  def insertBefore[U](target: Role, insertion: U)(
-      implicit csf: CanStackFrom[U, T]): Stack[T] =
+  def insertBefore[U](target: Role, insertion: U)(implicit
+      csf: CanStackFrom[U, T]): Stack[T] =
     insertBefore(target, csf.toStackable(target, insertion))
 
   /**
@@ -91,8 +91,8 @@ sealed trait Stack[T] {
     * unmodified stack is returned.  `insertion` must conform to
     * typeclass [[CanStackFrom]].
     */
-  def insertAfter[U](target: Role, insertion: U)(
-      implicit csf: CanStackFrom[U, T]): Stack[T] =
+  def insertAfter[U](target: Role, insertion: U)(implicit
+      csf: CanStackFrom[U, T]): Stack[T] =
     insertAfter(target, csf.toStackable(target, insertion))
 
   /**
@@ -127,8 +127,8 @@ sealed trait Stack[T] {
     * unmodified stack is returned. `replacement` must conform to
     * typeclass [[CanStackFrom]].
     */
-  def replace[U](target: Role, replacement: U)(
-      implicit csf: CanStackFrom[U, T]): Stack[T] =
+  def replace[U](target: Role, replacement: U)(implicit
+      csf: CanStackFrom[U, T]): Stack[T] =
     replace(target, csf.toStackable(target, replacement))
 
   /**
@@ -635,8 +635,8 @@ class StackBuilder[T](init: Stack[T]) {
     * Push the stack element `el` onto the stack; el must conform to
     * typeclass [[CanStackFrom]].
     */
-  def push[U](role: Stack.Role, el: U)(
-      implicit csf: CanStackFrom[U, T]): this.type = {
+  def push[U](role: Stack.Role, el: U)(implicit
+      csf: CanStackFrom[U, T]): this.type = {
     stack = csf.toStackable(role, el) +: stack
     this
   }

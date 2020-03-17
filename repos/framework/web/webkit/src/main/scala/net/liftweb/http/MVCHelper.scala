@@ -179,14 +179,14 @@ trait MVCHelper extends LiftRules.DispatchPF {
         val toResponse: Box[LiftResponse] = Full(resp)
       }
 
-    implicit def boxThinginy[T](box: Box[T])(
-        implicit f: T => MVCResponse): MVCResponse =
+    implicit def boxThinginy[T](box: Box[T])(implicit
+        f: T => MVCResponse): MVCResponse =
       new MVCResponse {
         val toResponse: Box[LiftResponse] = boxToResp(box)(f)
       }
 
-    implicit def optionThinginy[T](box: Option[T])(
-        implicit f: T => MVCResponse): MVCResponse =
+    implicit def optionThinginy[T](box: Option[T])(implicit
+        f: T => MVCResponse): MVCResponse =
       new MVCResponse {
         val toResponse: Box[LiftResponse] = boxToResp(box)(f)
       }
@@ -198,8 +198,8 @@ trait MVCHelper extends LiftRules.DispatchPF {
     * messages from Failure() and return codes and messages
     * from ParamFailure[Int[(msg, _, _, code)
     */
-  protected implicit def boxToResp[T](in: Box[T])(
-      implicit c: T => MVCResponse): Box[LiftResponse] =
+  protected implicit def boxToResp[T](in: Box[T])(implicit
+      c: T => MVCResponse): Box[LiftResponse] =
     in match {
       case Full(v)     => c(v).toResponse
       case e: EmptyBox => emptyToResp(e)

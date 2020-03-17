@@ -213,11 +213,11 @@ sealed abstract class MaybeInstances {
         Tag(Tag.unwrap(fa1).orElse(Tag.unwrap(fa2)))
     }
 
-  implicit def maybeFirstShow[A](
-      implicit A: Show[Maybe[A]]): Show[FirstMaybe[A]] = Tag.subst(A)
+  implicit def maybeFirstShow[A](implicit
+      A: Show[Maybe[A]]): Show[FirstMaybe[A]] = Tag.subst(A)
 
-  implicit def maybeFirstOrder[A](
-      implicit A: Order[Maybe[A]]): Order[FirstMaybe[A]] = Tag.subst(A)
+  implicit def maybeFirstOrder[A](implicit
+      A: Order[Maybe[A]]): Order[FirstMaybe[A]] = Tag.subst(A)
 
   implicit def maybeFirstMonad: Monad[FirstMaybe] =
     Tags.First.subst1[Monad, Maybe](Monad[Maybe])
@@ -230,11 +230,11 @@ sealed abstract class MaybeInstances {
         Tag(Tag.unwrap(fa2).orElse(Tag.unwrap(fa1)))
     }
 
-  implicit def maybeLastShow[A](
-      implicit A: Show[Maybe[A]]): Show[LastMaybe[A]] = Tag.subst(A)
+  implicit def maybeLastShow[A](implicit
+      A: Show[Maybe[A]]): Show[LastMaybe[A]] = Tag.subst(A)
 
-  implicit def maybeLastOrder[A](
-      implicit A: Order[Maybe[A]]): Order[LastMaybe[A]] = Tag.subst(A)
+  implicit def maybeLastOrder[A](implicit
+      A: Order[Maybe[A]]): Order[LastMaybe[A]] = Tag.subst(A)
 
   implicit def maybeLastMonad: Monad[LastMaybe] =
     Tags.Last.subst1[Monad, Maybe](Monad[Maybe])
@@ -323,9 +323,8 @@ sealed abstract class MaybeInstances {
 
       override def map[A, B](fa: Maybe[A])(f: A => B) = fa map f
 
-      def traverseImpl[F[_], A, B](fa: Maybe[A])(f: A => F[B])(
-          implicit F: Applicative[F]) =
-        fa.cata(a => F.map(f(a))(just), F.point(empty))
+      def traverseImpl[F[_], A, B](fa: Maybe[A])(f: A => F[B])(implicit
+          F: Applicative[F]) = fa.cata(a => F.map(f(a))(just), F.point(empty))
 
       def empty[A]: Maybe[A] = Maybe.empty
 

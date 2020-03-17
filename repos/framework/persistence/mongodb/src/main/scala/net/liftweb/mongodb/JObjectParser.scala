@@ -83,8 +83,8 @@ object JObjectParser extends SimpleInjector {
       parseObject(jo.obj)(formats)
     }
 
-    private def parseArray(arr: List[JValue])(
-        implicit formats: Formats): BasicDBList = {
+    private def parseArray(arr: List[JValue])(implicit
+        formats: Formats): BasicDBList = {
       val dbl = new BasicDBList
       trimArr(arr).foreach { a =>
         a match {
@@ -100,8 +100,8 @@ object JObjectParser extends SimpleInjector {
       dbl
     }
 
-    private def parseObject(obj: List[JField])(
-        implicit formats: Formats): BasicDBObject = {
+    private def parseObject(obj: List[JField])(implicit
+        formats: Formats): BasicDBObject = {
       val dbo = new BasicDBObject
       trimObj(obj).foreach { jf =>
         jf.value match {

@@ -50,8 +50,8 @@ trait AuthResource extends RestResource {
   def withAuthorization[A, B >: A](
       action: AuthorizedAction[B],
       maybeResource: Option[A],
-      ifNotExists: Response)(fn: A => Response)(
-      implicit identity: Identity): Response = {
+      ifNotExists: Response)(fn: A => Response)(implicit
+      identity: Identity): Response = {
     maybeResource match {
       case Some(resource) =>
         checkAuthorization(action, resource)
@@ -68,8 +68,8 @@ trait AuthResource extends RestResource {
       throw AccessDeniedException()
   }
 
-  def isAuthorized[T](action: AuthorizedAction[T], resource: T)(
-      implicit identity: Identity): Boolean = {
+  def isAuthorized[T](action: AuthorizedAction[T], resource: T)(implicit
+      identity: Identity): Boolean = {
     authorizer.isAuthorized(identity, action, resource)
   }
 

@@ -34,8 +34,8 @@ trait LowPriorityDeepHLister {
       type Out = Out0
     }
 
-  implicit def headNotCaseClassDeepHLister[H, T <: HList](
-      implicit dht: Lazy[DeepHLister[T]]): Aux[H :: T, H :: dht.value.Out] =
+  implicit def headNotCaseClassDeepHLister[H, T <: HList](implicit
+      dht: Lazy[DeepHLister[T]]): Aux[H :: T, H :: dht.value.Out] =
     new DeepHLister[H :: T] {
       type Out = H :: dht.value.Out
       def apply(r: H :: T) = r.head :: dht.value(r.tail)

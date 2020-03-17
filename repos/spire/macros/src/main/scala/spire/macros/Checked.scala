@@ -122,8 +122,8 @@ private[macros] case class CheckedRewriter[C <: Context](c: C) {
     }
   }
 
-  class Rewriter[A](val minValue: Tree, val fallback: TermName)(
-      implicit typeTag: c.WeakTypeTag[A]) {
+  class Rewriter[A](val minValue: Tree, val fallback: TermName)(implicit
+      typeTag: c.WeakTypeTag[A]) {
     val tpe: Type = typeTag.tpe
 
     // unops

@@ -91,8 +91,8 @@ trait Dist[@sp A] extends Any { self =>
       }
     }
 
-  def repeat[CC[X] <: Seq[X]](n: Int)(
-      implicit cbf: CanBuildFrom[Nothing, A, CC[A]]): Dist[CC[A]] =
+  def repeat[CC[X] <: Seq[X]](n: Int)(implicit
+      cbf: CanBuildFrom[Nothing, A, CC[A]]): Dist[CC[A]] =
     new Dist[CC[A]] {
       def apply(gen: Generator): CC[A] = {
         val builder = cbf()
@@ -521,8 +521,8 @@ trait DistInstances2 extends DistInstances1 {
 }
 
 trait DistInstances3 extends DistInstances2 {
-  implicit def euclideanRing[A](
-      implicit ev: EuclideanRing[A]): EuclideanRing[Dist[A]] =
+  implicit def euclideanRing[A](implicit
+      ev: EuclideanRing[A]): EuclideanRing[Dist[A]] =
     new DistEuclideanRing[A] {
       def alg = ev
     }
@@ -536,16 +536,16 @@ trait DistInstances4 extends DistInstances3 {
 }
 
 trait DistInstances5 extends DistInstances4 {
-  implicit def module[V, K](
-      implicit ev: Module[V, K]): Module[Dist[V], Dist[K]] =
+  implicit def module[V, K](implicit
+      ev: Module[V, K]): Module[Dist[V], Dist[K]] =
     new DistModule[V, K] {
       def alg = ev
     }
 }
 
 trait DistInstances6 extends DistInstances5 {
-  implicit def vectorSpace[V, K](
-      implicit ev: VectorSpace[V, K]): VectorSpace[Dist[V], Dist[K]] =
+  implicit def vectorSpace[V, K](implicit
+      ev: VectorSpace[V, K]): VectorSpace[Dist[V], Dist[K]] =
     new DistVectorSpace[V, K] {
       def alg = ev
     }

@@ -108,8 +108,8 @@ sealed trait mapValuesLowPrio { this: mapValues.type =>
 
 object mapActiveValues extends UFunc {
 
-  implicit def implFromCanMapValues[T, V, V2, R](
-      implicit cmv: CanMapValues[T, V, V2, R]): Impl2[T, V => V2, R] =
+  implicit def implFromCanMapValues[T, V, V2, R](implicit
+      cmv: CanMapValues[T, V, V2, R]): Impl2[T, V => V2, R] =
     new Impl2[T, V => V2, R] {
       override def apply(v: T, v2: (V) => V2): R = cmv(v, v2)
     }

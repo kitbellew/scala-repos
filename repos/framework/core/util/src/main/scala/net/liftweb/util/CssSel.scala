@@ -1000,8 +1000,8 @@ object CanBind extends CssBindImplicits {
   implicit def toNodeSeqTransform[T](implicit f: T => NodeSeq): CanBind[T] =
     new CanBindNodeSeqTransform[T](f)
 
-  implicit def nodeSeqFuncTransform[A](
-      implicit view: A => NodeSeq => NodeSeq): CanBind[A] =
+  implicit def nodeSeqFuncTransform[A](implicit
+      view: A => NodeSeq => NodeSeq): CanBind[A] =
     new CanBind[A] {
       def apply(func: => A)(ns: NodeSeq): Seq[NodeSeq] = List(view(func)(ns))
     }
@@ -1018,8 +1018,8 @@ object CanBind extends CssBindImplicits {
         List(func(ns))
     }
 
-  implicit def iterableNodeTransform[NST](
-      implicit f2: NST => NodeSeq): CanBind[Iterable[NST]] =
+  implicit def iterableNodeTransform[NST](implicit
+      f2: NST => NodeSeq): CanBind[Iterable[NST]] =
     new CanBind[Iterable[NST]] {
       def apply(info: => Iterable[NST])(ns: NodeSeq): Seq[NodeSeq] = {
         val i = info
@@ -1030,29 +1030,29 @@ object CanBind extends CssBindImplicits {
       }
     }
 
-  implicit def boxNodeTransform[NST](
-      implicit f2: NST => NodeSeq): CanBind[Box[NST]] =
+  implicit def boxNodeTransform[NST](implicit
+      f2: NST => NodeSeq): CanBind[Box[NST]] =
     new CanBind[Box[NST]] {
       def apply(info: => Box[NST])(ns: NodeSeq): Seq[NodeSeq] =
         info.toList.map(f2)
     }
 
-  implicit def optionNodeTransform[NST](
-      implicit f2: NST => NodeSeq): CanBind[Option[NST]] =
+  implicit def optionNodeTransform[NST](implicit
+      f2: NST => NodeSeq): CanBind[Option[NST]] =
     new CanBind[Option[NST]] {
       def apply(info: => Option[NST])(ns: NodeSeq): Seq[NodeSeq] =
         info.toList.map(f2)
     }
 
-  implicit def iterableStringTransform[T[_]](
-      implicit f: T[String] => Iterable[String]): CanBind[T[String]] =
+  implicit def iterableStringTransform[T[_]](implicit
+      f: T[String] => Iterable[String]): CanBind[T[String]] =
     new CanBind[T[String]] {
       def apply(info: => T[String])(ns: NodeSeq): Seq[NodeSeq] =
         f(info).toSeq.map(a => Text(a))
     }
 
-  implicit def iterableNumberTransform[T[_], N <: java.lang.Number](
-      implicit f: T[N] => Iterable[N]): CanBind[T[N]] =
+  implicit def iterableNumberTransform[T[_], N <: java.lang.Number](implicit
+      f: T[N] => Iterable[N]): CanBind[T[N]] =
     new CanBind[T[N]] {
       def apply(info: => T[N])(ns: NodeSeq): Seq[NodeSeq] =
         f(info).toSeq.flatMap(a =>
@@ -1062,8 +1062,8 @@ object CanBind extends CssBindImplicits {
             List(Text(a.toString)))
     }
 
-  implicit def iterableDouble[T[Double]](
-      implicit f: T[Double] => Iterable[Double]): CanBind[T[Double]] =
+  implicit def iterableDouble[T[Double]](implicit
+      f: T[Double] => Iterable[Double]): CanBind[T[Double]] =
     new CanBind[T[Double]] {
       def apply(info: => T[Double])(ns: NodeSeq): Seq[NodeSeq] =
         f(info).toSeq.flatMap(a =>
@@ -1073,8 +1073,8 @@ object CanBind extends CssBindImplicits {
             List(Text(a.toString)))
     }
 
-  implicit def iterableBindableTransform[T[_]](
-      implicit f: T[Bindable] => Iterable[Bindable]): CanBind[T[Bindable]] =
+  implicit def iterableBindableTransform[T[_]](implicit
+      f: T[Bindable] => Iterable[Bindable]): CanBind[T[Bindable]] =
     new CanBind[T[Bindable]] {
       def apply(info: => T[Bindable])(ns: NodeSeq): Seq[NodeSeq] =
         Helpers.ensureUniqueId(f(info).toSeq.map(_.asHtml))
@@ -1088,15 +1088,15 @@ object CanBind extends CssBindImplicits {
         f(info).toSeq.map(a => Text(prom(a).toString))
     }
 
-  implicit def iterableNodeFuncTransform[T[_], F <: NodeSeq => NodeSeq](
-      implicit f: T[F] => Iterable[F]): CanBind[T[F]] =
+  implicit def iterableNodeFuncTransform[T[_], F <: NodeSeq => NodeSeq](implicit
+      f: T[F] => Iterable[F]): CanBind[T[F]] =
     new CanBind[T[F]] {
       def apply(info: => T[F])(ns: NodeSeq): Seq[NodeSeq] =
         Helpers.ensureUniqueId(f(info).toSeq.map(_.apply(ns)))
     }
 
-  implicit def funcIterableTransform[T[_], F <: NodeSeq](
-      implicit f: T[F] => Iterable[F]): CanBind[NodeSeq => T[F]] =
+  implicit def funcIterableTransform[T[_], F <: NodeSeq](implicit
+      f: T[F] => Iterable[F]): CanBind[NodeSeq => T[F]] =
     new CanBind[NodeSeq => T[F]] {
       def apply(info: => NodeSeq => T[F])(ns: NodeSeq): Seq[NodeSeq] =
         Helpers.ensureUniqueId(f(info(ns)).toSeq)

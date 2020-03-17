@@ -442,8 +442,8 @@ abstract class RDD[T: ClassTag](
     * If you are decreasing the number of partitions in this RDD, consider using `coalesce`,
     * which can avoid performing a shuffle.
     */
-  def repartition(numPartitions: Int)(
-      implicit ord: Ordering[T] = null): RDD[T] =
+  def repartition(numPartitions: Int)(implicit
+      ord: Ordering[T] = null): RDD[T] =
     withScope {
       coalesce(numPartitions, shuffle = true)
     }
@@ -468,8 +468,8 @@ abstract class RDD[T: ClassTag](
     * coalesce(1000, shuffle = true) will result in 1000 partitions with the
     * data distributed using a hash partitioner.
     */
-  def coalesce(numPartitions: Int, shuffle: Boolean = false)(
-      implicit ord: Ordering[T] = null): RDD[T] =
+  def coalesce(numPartitions: Int, shuffle: Boolean = false)(implicit
+      ord: Ordering[T] = null): RDD[T] =
     withScope {
       if (shuffle) {
 
@@ -693,8 +693,8 @@ abstract class RDD[T: ClassTag](
     *
     * @param partitioner Partitioner to use for the resulting RDD
     */
-  def intersection(other: RDD[T], partitioner: Partitioner)(
-      implicit ord: Ordering[T] = null): RDD[T] =
+  def intersection(other: RDD[T], partitioner: Partitioner)(implicit
+      ord: Ordering[T] = null): RDD[T] =
     withScope {
       this
         .map(v => (v, null))
@@ -761,8 +761,8 @@ abstract class RDD[T: ClassTag](
     * aggregation (such as a sum or average) over each key, using [[PairRDDFunctions.aggregateByKey]]
     * or [[PairRDDFunctions.reduceByKey]] will provide much better performance.
     */
-  def groupBy[K](f: T => K, numPartitions: Int)(
-      implicit kt: ClassTag[K]): RDD[(K, Iterable[T])] =
+  def groupBy[K](f: T => K, numPartitions: Int)(implicit
+      kt: ClassTag[K]): RDD[(K, Iterable[T])] =
     withScope {
       groupBy(f, new HashPartitioner(numPartitions))
     }
@@ -1079,8 +1079,8 @@ abstract class RDD[T: ClassTag](
   /**
     * Return an RDD with the elements from `this` that are not in `other`.
     */
-  def subtract(other: RDD[T], p: Partitioner)(
-      implicit ord: Ordering[T] = null): RDD[T] =
+  def subtract(other: RDD[T], p: Partitioner)(implicit
+      ord: Ordering[T] = null): RDD[T] =
     withScope {
       if (partitioner == Some(p)) {
         // Our partitioner knows how to handle T (which, since we have a partitioner, is
@@ -1319,8 +1319,8 @@ abstract class RDD[T: ClassTag](
   /**
     * Approximate version of countByValue().
     */
-  def countByValueApprox(timeout: Long, confidence: Double = 0.95)(
-      implicit ord: Ordering[T] = null): PartialResult[Map[T, BoundedDouble]] =
+  def countByValueApprox(timeout: Long, confidence: Double = 0.95)(implicit
+      ord: Ordering[T] = null): PartialResult[Map[T, BoundedDouble]] =
     withScope {
       if (elementClassTag.runtimeClass.isArray) {
         throw new SparkException("countByValueApprox() does not support arrays")
@@ -2081,8 +2081,8 @@ object RDD {
     new DoubleRDDFunctions(rdd)
   }
 
-  implicit def numericRDDToDoubleRDDFunctions[T](rdd: RDD[T])(
-      implicit num: Numeric[T]): DoubleRDDFunctions = {
+  implicit def numericRDDToDoubleRDDFunctions[T](rdd: RDD[T])(implicit
+      num: Numeric[T]): DoubleRDDFunctions = {
     new DoubleRDDFunctions(rdd.map(x => num.toDouble(x)))
   }
 }

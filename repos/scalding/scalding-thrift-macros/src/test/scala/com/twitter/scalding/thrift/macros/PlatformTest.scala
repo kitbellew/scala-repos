@@ -66,8 +66,8 @@ class PlatformTest
       def g(idx: Int) = ScroogeGenerators.dataProvider[T](idx)
     }
 
-  def runCompareTest[T: OrderedSerialization](
-      implicit iprov: InstanceProvider[T]) {
+  def runCompareTest[T: OrderedSerialization](implicit
+      iprov: InstanceProvider[T]) {
     val input = (0 until 10000).map { idx =>
       iprov.g(idx % 50)
     }

@@ -6,12 +6,12 @@ package scalaz
   */
 final case class Endomorphic[=>:[_, _], A](run: A =>: A) {
 
-  final def compose(that: Endomorphic[=>:, A])(
-      implicit F: Compose[=>:]): Endomorphic[=>:, A] =
+  final def compose(that: Endomorphic[=>:, A])(implicit
+      F: Compose[=>:]): Endomorphic[=>:, A] =
     Endomorphic[=>:, A](F.compose(run, that.run))
 
-  final def andThen(that: Endomorphic[=>:, A])(
-      implicit F: Compose[=>:]): Endomorphic[=>:, A] = that.compose(this)
+  final def andThen(that: Endomorphic[=>:, A])(implicit
+      F: Compose[=>:]): Endomorphic[=>:, A] = that.compose(this)
 
 }
 
@@ -25,8 +25,8 @@ object Endomorphic extends EndomorphicInstances {
 
 sealed abstract class EndomorphicInstances extends EndomorphicInstances0 {
 
-  implicit def endomorphicMonoid[=>:[_, _], A](
-      implicit G: Category[=>:]): Monoid[Endomorphic[=>:, A]] =
+  implicit def endomorphicMonoid[=>:[_, _], A](implicit
+      G: Category[=>:]): Monoid[Endomorphic[=>:, A]] =
     new Monoid[Endomorphic[=>:, A]] with EndomorphicSemigroup[=>:, A] {
       val F = G
       def zero: Endomorphic[=>:, A] = Endomorphic(G.id)
@@ -43,8 +43,8 @@ sealed abstract class EndomorphicInstances extends EndomorphicInstances0 {
 
 sealed abstract class EndomorphicInstances0 {
 
-  implicit def endomorphicSemigroup[=>:[_, _], A](
-      implicit G: Compose[=>:]): Semigroup[Endomorphic[=>:, A]] =
+  implicit def endomorphicSemigroup[=>:[_, _], A](implicit
+      G: Compose[=>:]): Semigroup[Endomorphic[=>:, A]] =
     new EndomorphicSemigroup[=>:, A] {
       val F = G
     }

@@ -40,8 +40,8 @@ object ActivitySource {
     * An ActivitySource for observing file contents. Once observed,
     * each file will be polled once per period.
     */
-  def forFiles(period: Duration = 1.minute)(
-      implicit timer: Timer): ActivitySource[Buf] =
+  def forFiles(period: Duration = 1.minute)(implicit
+      timer: Timer): ActivitySource[Buf] =
     new CachingActivitySource(new FilePollingActivitySource(period)(timer))
 
   /**

@@ -8,8 +8,8 @@ import Id._
 trait EnumeratorT[E, F[_]] { self =>
   def apply[A]: StepT[E, F, A] => IterateeT[E, F, A]
 
-  def mapE[I](et: EnumerateeT[E, I, F])(
-      implicit M: Monad[F]): EnumeratorT[I, F] = et run self
+  def mapE[I](et: EnumerateeT[E, I, F])(implicit
+      M: Monad[F]): EnumeratorT[I, F] = et run self
 
   def map[B](f: E => B)(implicit ev: Monad[F]): EnumeratorT[B, F] =
     EnumerateeT.map[E, B, F](f) run self
@@ -48,8 +48,8 @@ trait EnumeratorT[E, F[_]] { self =>
     (iter &= self.map(f)).run
   }
 
-  def collect[B](pf: PartialFunction[E, B])(
-      implicit monad: Monad[F]): EnumeratorT[B, F] =
+  def collect[B](pf: PartialFunction[E, B])(implicit
+      monad: Monad[F]): EnumeratorT[B, F] =
     EnumerateeT.collect[E, B, F](pf) run self
 
   def uniq(implicit ord: Order[E], M: Monad[F]): EnumeratorT[E, F] =
@@ -63,8 +63,8 @@ trait EnumeratorT[E, F[_]] { self =>
       P: PlusEmpty[M],
       Z: Applicative[M]): F[M[E]] = (IterateeT.consume[E, F, M] &= self).run
 
-  def reduced[B](b: B)(f: (B, E) => B)(
-      implicit M: Monad[F]): EnumeratorT[B, F] =
+  def reduced[B](b: B)(f: (B, E) => B)(implicit
+      M: Monad[F]): EnumeratorT[B, F] =
     new EnumeratorT[B, F] {
       def apply[A] =
         (step: StepT[B, F, A]) => {
@@ -83,28 +83,28 @@ trait EnumeratorT[E, F[_]] { self =>
         }
     }
 
-  def cross[E2](e2: EnumeratorT[E2, F])(
-      implicit M: Monad[F]): EnumeratorT[(E, E2), F] =
+  def cross[E2](e2: EnumeratorT[E2, F])(implicit
+      M: Monad[F]): EnumeratorT[(E, E2), F] =
     EnumerateeT.cross[E, E2, F](e2) run self
 }
 
 trait EnumeratorTInstances0 {
-  implicit def enumeratorTSemigroup[E, F[_]](
-      implicit F0: Bind[F]): Semigroup[EnumeratorT[E, F]] =
+  implicit def enumeratorTSemigroup[E, F[_]](implicit
+      F0: Bind[F]): Semigroup[EnumeratorT[E, F]] =
     new EnumeratorTSemigroup[E, F] {
       implicit def F = F0
     }
 }
 
 trait EnumeratorTInstances extends EnumeratorTInstances0 {
-  implicit def enumeratorTMonoid[E, F[_]](
-      implicit F0: Monad[F]): Monoid[EnumeratorT[E, F]] =
+  implicit def enumeratorTMonoid[E, F[_]](implicit
+      F0: Monad[F]): Monoid[EnumeratorT[E, F]] =
     new EnumeratorTMonoid[E, F] {
       implicit def F = F0
     }
 
-  implicit def enumeratorTMonad[F[_]](
-      implicit M0: Monad[F]): Monad[EnumeratorT[?, F]] =
+  implicit def enumeratorTMonad[F[_]](implicit
+      M0: Monad[F]): Monad[EnumeratorT[?, F]] =
     new EnumeratorTMonad[F] {
       implicit def M = M0
     }
@@ -183,8 +183,8 @@ trait EnumeratorTFunctions {
           }
     }
 
-  def enumIterator[E, F[_]](x: => Iterator[E])(
-      implicit MO: MonadPartialOrder[F, IO]): EnumeratorT[E, F] =
+  def enumIterator[E, F[_]](x: => Iterator[E])(implicit
+      MO: MonadPartialOrder[F, IO]): EnumeratorT[E, F] =
     new EnumeratorT[E, F] {
       import MO._
       def apply[A] = {
@@ -204,8 +204,8 @@ trait EnumeratorTFunctions {
   def enumIoSource[T, E, F[_]](
       get: () => IoExceptionOr[T],
       gotdata: IoExceptionOr[T] => Boolean,
-      render: T => E)(
-      implicit MO: MonadPartialOrder[F, IO]): EnumeratorT[IoExceptionOr[E], F] =
+      render: T => E)(implicit
+      MO: MonadPartialOrder[F, IO]): EnumeratorT[IoExceptionOr[E], F] =
     new EnumeratorT[IoExceptionOr[E], F] {
       import MO._
       def apply[A] =

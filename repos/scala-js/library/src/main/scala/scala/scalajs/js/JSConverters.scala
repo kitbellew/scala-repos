@@ -51,8 +51,8 @@ object JSConverters extends JSConvertersLowPrioImplicits {
   }
 
   @inline
-  implicit def genTravConvertible2JSRichGenTrav[T, C](coll: C)(
-      implicit ev: C => GenTraversableOnce[T]): JSRichGenTraversableOnce[T] =
+  implicit def genTravConvertible2JSRichGenTrav[T, C](coll: C)(implicit
+      ev: C => GenTraversableOnce[T]): JSRichGenTraversableOnce[T] =
     new JSRichGenTraversableOnce(coll)
 
   /** Special case for scala.Array of [[genTravConvertible2JSRichGenTrav]].

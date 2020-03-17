@@ -66,8 +66,8 @@ class SourcePositionSpec
     "jar:" + scalatest + "!/org/scalatest/FunSpec.scala"
   }
 
-  def lookup(uri: String, line: Option[Int] = None)(
-      implicit config: EnsimeConfig) = {
+  def lookup(uri: String, line: Option[Int] = None)(implicit
+      config: EnsimeConfig) = {
     withVFS { implicit vfs: EnsimeVFS =>
       val sym = FqnSymbol(
         None,

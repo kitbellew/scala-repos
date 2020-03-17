@@ -5,8 +5,8 @@ import cascading.tuple.TupleEntry
 
 trait GeneratedTupleConverters extends LowPriorityTupleConverters {
 
-  implicit def tuple1Converter[A](
-      implicit gA: TupleGetter[A]): TupleConverter[Tuple1[A]] =
+  implicit def tuple1Converter[A](implicit
+      gA: TupleGetter[A]): TupleConverter[Tuple1[A]] =
     new TupleConverter[Tuple1[A]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple

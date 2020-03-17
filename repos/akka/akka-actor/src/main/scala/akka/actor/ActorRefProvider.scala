@@ -572,8 +572,8 @@ private[akka] class LocalActorRefProvider private[akka] (
         "2.2")
       override private[akka] def isTerminated: Boolean = !isWalking
 
-      override def !(message: Any)(
-          implicit sender: ActorRef = Actor.noSender): Unit =
+      override def !(message: Any)(implicit
+          sender: ActorRef = Actor.noSender): Unit =
         if (isWalking)
           message match {
             case null ⇒ throw new InvalidMessageException("Message is null")

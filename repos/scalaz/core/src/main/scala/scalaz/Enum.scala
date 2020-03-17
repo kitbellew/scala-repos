@@ -53,8 +53,8 @@ trait Enum[F] extends Order[F] { self =>
     * @param k The binding function.
     * @param m The implementation of the zero function from which to start.
     */
-  def succStateZeroM[X, Y](f: F => X, k: X => State[F, Y])(
-      implicit m: Monoid[F]): Y = (succState(f) flatMap k) eval m.zero
+  def succStateZeroM[X, Y](f: F => X, k: X => State[F, Y])(implicit
+      m: Monoid[F]): Y = (succState(f) flatMap k) eval m.zero
 
   /**
     * Produce a value that starts at zero (`Monoid.zero`) and increments through a state value with the given mapping function. This is useful to implement incremental looping.
@@ -98,8 +98,8 @@ trait Enum[F] extends Order[F] { self =>
     * @param k The binding function.
     * @param m The implementation of the zero function from which to start.
     */
-  def predStateZeroM[X, Y](f: F => X, k: X => State[F, Y])(
-      implicit m: Monoid[F]): Y = (predState(f) flatMap k) eval m.zero
+  def predStateZeroM[X, Y](f: F => X, k: X => State[F, Y])(implicit
+      m: Monoid[F]): Y = (predState(f) flatMap k) eval m.zero
 
   /**
     * Produce a value that starts at zero (`Monoid.zero`) and decrements through a state value with the given mapping function. This is useful to implement decremental looping.

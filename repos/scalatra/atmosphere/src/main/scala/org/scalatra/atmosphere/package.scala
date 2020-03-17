@@ -47,8 +47,8 @@ package object atmosphere {
     }
 
   private[atmosphere] implicit def jucFuture2akkaFuture[T](
-      javaFuture: java.util.concurrent.Future[T])(
-      implicit system: ActorSystem): Future[T] = {
+      javaFuture: java.util.concurrent.Future[T])(implicit
+      system: ActorSystem): Future[T] = {
     implicit val execContext = system.dispatcher
     val promise = Promise[T]()
     pollJavaFutureUntilDoneOrCancelled(javaFuture, promise)

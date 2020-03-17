@@ -29,8 +29,8 @@ class CommonConnector(
 object CommonConnector {
   def apply(
       underlying: ZooKeeperClient,
-      connectTimeout: Duration = COMMON_FOREVER)(
-      implicit pool: FuturePool): CommonConnector = {
+      connectTimeout: Duration = COMMON_FOREVER)(implicit
+      pool: FuturePool): CommonConnector = {
     new CommonConnector(underlying, connectTimeout)(pool)
   }
 

@@ -169,9 +169,8 @@ object product {
   }
 
   object ToSized {
-    def apply[P, M[_]](
-        implicit toSized: ToSized[P, M]): Aux[P, M, toSized.Lub, toSized.N] =
-      toSized
+    def apply[P, M[_]](implicit
+        toSized: ToSized[P, M]): Aux[P, M, toSized.Lub, toSized.N] = toSized
 
     type Aux[P, M[_], Lub0, N0 <: Nat] =
       ToSized[P, M] {

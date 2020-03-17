@@ -16,8 +16,8 @@ class TupleOps[T](val tuple: T) extends AnyVal {
   /**
     * Left-Folds over the tuple using the given binary poly-function.
     */
-  def foldLeft[In](zero: In)(op: BinaryPolyFunc)(
-      implicit fold: FoldLeft[In, T, op.type]): fold.Out = fold(zero, tuple)
+  def foldLeft[In](zero: In)(op: BinaryPolyFunc)(implicit
+      fold: FoldLeft[In, T, op.type]): fold.Out = fold(zero, tuple)
 
   /**
     * Appends the given tuple to the underlying tuple producing a tuple of arity n + m.

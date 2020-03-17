@@ -156,8 +156,8 @@ object Play {
     * @deprecated inject the [[play.api.Environment]] instead
     */
   @deprecated("inject the play.api.Environment instead", "2.5.0")
-  def resourceAsStream(name: String)(
-      implicit app: Application): Option[InputStream] = {
+  def resourceAsStream(name: String)(implicit
+      app: Application): Option[InputStream] = {
     app.resourceAsStream(name)
   }
 
@@ -165,8 +165,8 @@ object Play {
     * @deprecated inject the [[play.api.Environment]] instead
     */
   @deprecated("inject the play.api.Environment instead", "2.5.0")
-  def resource(name: String)(
-      implicit app: Application): Option[java.net.URL] = {
+  def resource(name: String)(implicit
+      app: Application): Option[java.net.URL] = {
     app.resource(name)
   }
 
@@ -182,8 +182,8 @@ object Play {
     * @deprecated inject the [[play.api.Environment]] instead
     */
   @deprecated("inject the play.api.Environment instead", "2.5.0")
-  def getExistingFile(relativePath: String)(
-      implicit app: Application): Option[File] = {
+  def getExistingFile(relativePath: String)(implicit
+      app: Application): Option[File] = {
     app.getExistingFile(relativePath)
   }
 

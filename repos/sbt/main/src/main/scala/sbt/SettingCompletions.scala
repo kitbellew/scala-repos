@@ -100,8 +100,8 @@ private[sbt] object SettingCompletions {
   private[this] def setResult(
       session: SessionSettings,
       r: Relation[ScopedKey[_], ScopedKey[_]],
-      redefined: Seq[Setting[_]])(
-      implicit show: Show[ScopedKey[_]]): SetResult = {
+      redefined: Seq[Setting[_]])(implicit
+      show: Show[ScopedKey[_]]): SetResult = {
     val redefinedKeys = redefined.map(_.key).toSet
     val affectedKeys = redefinedKeys.flatMap(r.reverse)
     def summary(verbose: Boolean): String =

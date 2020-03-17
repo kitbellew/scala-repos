@@ -10,8 +10,8 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   /** alias for `off` */
   def unary_- : UnwriterT[F, W, A] = UnwriterT(run)
 
-  def mapValue[X, B](f: ((W, A)) => (X, B))(
-      implicit F: Functor[F]): WriterT[F, X, B] = writerT(F.map(run)(f))
+  def mapValue[X, B](f: ((W, A)) => (X, B))(implicit
+      F: Functor[F]): WriterT[F, X, B] = writerT(F.map(run)(f))
 
   def mapWritten[X](f: W => X)(implicit F: Functor[F]): WriterT[F, X, A] =
     mapValue(wa => (f(wa._1), wa._2))
@@ -117,16 +117,16 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
 object WriterT extends WriterTInstances with WriterTFunctions
 
 sealed abstract class WriterTInstances15 {
-  implicit def writerTMonoid[F[_], W, A](
-      implicit M: Monoid[F[(W, A)]]): Monoid[WriterT[F, W, A]] =
+  implicit def writerTMonoid[F[_], W, A](implicit
+      M: Monoid[F[(W, A)]]): Monoid[WriterT[F, W, A]] =
     new Monoid[WriterT[F, W, A]] {
       def zero = WriterT(M.zero)
       def append(a: WriterT[F, W, A], b: => WriterT[F, W, A]) =
         WriterT(M.append(a.run, b.run))
     }
 
-  implicit def writerTPlus[F[_], W](
-      implicit F0: Plus[F]): Plus[WriterT[F, W, ?]] =
+  implicit def writerTPlus[F[_], W](implicit
+      F0: Plus[F]): Plus[WriterT[F, W, ?]] =
     new WriterTPlus[F, W] {
       def F = F0
     }
@@ -138,15 +138,15 @@ sealed abstract class WriterTInstances14 extends WriterTInstances15 {
       implicit def F = idInstance
     }
 
-  implicit def writerTPlusEmpty[F[_], W](
-      implicit F0: PlusEmpty[F]): PlusEmpty[WriterT[F, W, ?]] =
+  implicit def writerTPlusEmpty[F[_], W](implicit
+      F0: PlusEmpty[F]): PlusEmpty[WriterT[F, W, ?]] =
     new WriterTPlusEmpty[F, W] {
       def F = F0
     }
 }
 sealed abstract class WriterTInstances13 extends WriterTInstances14 {
-  implicit def writerTFunctor[F[_], W](
-      implicit F0: Functor[F]): Functor[WriterT[F, W, ?]] =
+  implicit def writerTFunctor[F[_], W](implicit
+      F0: Functor[F]): Functor[WriterT[F, W, ?]] =
     new WriterTFunctor[F, W] {
       implicit def F = F0
     }
@@ -161,8 +161,8 @@ sealed abstract class WriterTInstances12 extends WriterTInstances13 {
 }
 
 sealed abstract class WriterTInstances11 extends WriterTInstances12 {
-  implicit def writerBindRec[W](
-      implicit W0: Semigroup[W]): BindRec[Writer[W, ?]] =
+  implicit def writerBindRec[W](implicit
+      W0: Semigroup[W]): BindRec[Writer[W, ?]] =
     new WriterTBindRec[Id, W] {
       implicit def F = idInstance
       implicit def A = idInstance
@@ -235,8 +235,8 @@ sealed abstract class WriterTInstances4 extends WriterTInstance5 {
     new WriterTFoldable[Id, W] {
       implicit def F = idInstance
     }
-  implicit def writerEqual[W, A](
-      implicit E: Equal[(W, A)]): Equal[Writer[W, A]] =
+  implicit def writerEqual[W, A](implicit
+      E: Equal[(W, A)]): Equal[Writer[W, A]] =
     E.contramap((_: Writer[W, A]).run)
 
   implicit def writerTMonadError[F[_], E, W](implicit
@@ -249,18 +249,18 @@ sealed abstract class WriterTInstances4 extends WriterTInstance5 {
 }
 
 sealed abstract class WriterTInstances3 extends WriterTInstances4 {
-  implicit def writerTBifunctor[F[_]](
-      implicit F0: Functor[F]): Bifunctor[WriterT[F, ?, ?]] =
+  implicit def writerTBifunctor[F[_]](implicit
+      F0: Functor[F]): Bifunctor[WriterT[F, ?, ?]] =
     new WriterTBifunctor[F] {
       implicit def F = F0
     }
-  implicit def writerTFoldable[F[_], W](
-      implicit F0: Foldable[F]): Foldable[WriterT[F, W, ?]] =
+  implicit def writerTFoldable[F[_], W](implicit
+      F0: Foldable[F]): Foldable[WriterT[F, W, ?]] =
     new WriterTFoldable[F, W] {
       implicit def F = F0
     }
-  implicit def writerTEqual[F[_], W, A](
-      implicit E: Equal[F[(W, A)]]): Equal[WriterT[F, W, A]] =
+  implicit def writerTEqual[F[_], W, A](implicit
+      E: Equal[F[(W, A)]]): Equal[WriterT[F, W, A]] =
     E.contramap((_: WriterT[F, W, A]).run)
 
   implicit def writerTMonadPlus[F[_], W](implicit
@@ -291,13 +291,13 @@ sealed abstract class WriterTInstances1 extends WriterTInstances2 {
 }
 
 sealed abstract class WriterTInstances0 extends WriterTInstances1 {
-  implicit def writerTBitraverse[F[_]](
-      implicit F0: Traverse[F]): Bitraverse[WriterT[F, ?, ?]] =
+  implicit def writerTBitraverse[F[_]](implicit
+      F0: Traverse[F]): Bitraverse[WriterT[F, ?, ?]] =
     new WriterTBitraverse[F] {
       implicit def F = F0
     }
-  implicit def writerTTraverse[F[_], W](
-      implicit F0: Traverse[F]): Traverse[WriterT[F, W, ?]] =
+  implicit def writerTTraverse[F[_], W](implicit
+      F0: Traverse[F]): Traverse[WriterT[F, W, ?]] =
     new WriterTTraverse[F, W] {
       implicit def F = F0
     }
@@ -312,14 +312,14 @@ sealed abstract class WriterTInstances extends WriterTInstances0 {
       implicit def W = W0
     }
 
-  implicit def writerTHoist[W](
-      implicit W0: Monoid[W]): Hoist[λ[(α[_], β) => WriterT[α, W, β]]] =
+  implicit def writerTHoist[W](implicit
+      W0: Monoid[W]): Hoist[λ[(α[_], β) => WriterT[α, W, β]]] =
     new WriterTHoist[W] {
       implicit def W = W0
     }
 
-  implicit def writerTShow[F[_], W, A](
-      implicit F0: Show[F[(W, A)]]): Show[WriterT[F, W, A]] =
+  implicit def writerTShow[F[_], W, A](implicit
+      F0: Show[F[(W, A)]]): Show[WriterT[F, W, A]] =
     Contravariant[Show].contramap(F0)(_.run)
 }
 
@@ -341,14 +341,12 @@ trait WriterTFunctions {
 
   def tell[W](w: W): Writer[W, Unit] = writer((w, ()))
 
-  def put[F[_], W, A](value: F[A])(w: W)(
-      implicit F: Functor[F]): WriterT[F, W, A] =
-    WriterT(F.map(value)(a => (w, a)))
+  def put[F[_], W, A](value: F[A])(w: W)(implicit
+      F: Functor[F]): WriterT[F, W, A] = WriterT(F.map(value)(a => (w, a)))
 
   /** Puts the written value that is produced by applying the given function into a writer transformer and associates with `value` */
-  def putWith[F[_], W, A](value: F[A])(w: A => W)(
-      implicit F: Functor[F]): WriterT[F, W, A] =
-    WriterT(F.map(value)(a => (w(a), a)))
+  def putWith[F[_], W, A](value: F[A])(w: A => W)(implicit
+      F: Functor[F]): WriterT[F, W, A] = WriterT(F.map(value)(a => (w(a), a)))
 
 }
 

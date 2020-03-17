@@ -248,8 +248,8 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
       executor)
   }
   final def blockingRunOnSession[R](
-      f: ExecutionContext => DBIOAction[R, NoStream, Nothing])(
-      implicit session: profile.Backend#Session): R = {
+      f: ExecutionContext => DBIOAction[R, NoStream, Nothing])(implicit
+      session: profile.Backend#Session): R = {
     val ec =
       new ExecutionContext {
         def execute(runnable: Runnable): Unit = runnable.run()

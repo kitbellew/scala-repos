@@ -55,8 +55,8 @@ object Monoid {
     * If an implicit `MultiplicativeMonoid[A]` exists, then it is converted to a
     * plain `Monoid[A]`.
     */
-  @inline final def multiplicative[A](
-      implicit A: MultiplicativeMonoid[A]): Monoid[A] = A.multiplicative
+  @inline final def multiplicative[A](implicit
+      A: MultiplicativeMonoid[A]): Monoid[A] = A.multiplicative
 
 }
 
@@ -74,6 +74,6 @@ object CMonoid {
   @inline final def apply[A](implicit ev: CMonoid[A]): CMonoid[A] = ev
   @inline final def additive[A](implicit A: AdditiveCMonoid[A]): CMonoid[A] =
     A.additive
-  @inline final def multiplicative[A](
-      implicit A: MultiplicativeCMonoid[A]): CMonoid[A] = A.multiplicative
+  @inline final def multiplicative[A](implicit
+      A: MultiplicativeCMonoid[A]): CMonoid[A] = A.multiplicative
 }

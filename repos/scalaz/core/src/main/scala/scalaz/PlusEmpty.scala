@@ -16,8 +16,8 @@ trait PlusEmpty[F[_]] extends Plus[F] { self =>
     }
 
   /**The product of PlusEmpty `F` and `G`, `[x](F[x], G[x]])`, is a PlusEmpty */
-  def product[G[_]](
-      implicit G0: PlusEmpty[G]): PlusEmpty[λ[α => (F[α], G[α])]] =
+  def product[G[_]](implicit
+      G0: PlusEmpty[G]): PlusEmpty[λ[α => (F[α], G[α])]] =
     new ProductPlusEmpty[F, G] {
       implicit def F = self
       implicit def G = G0

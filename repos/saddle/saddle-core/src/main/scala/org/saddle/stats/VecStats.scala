@@ -268,8 +268,8 @@ trait VecStats[@spec(Int, Long, Double) A] {
   protected def _median(r: Vec[A])(implicit n: NUM[A]): Double = {
     val sd = ScalarTagDouble
 
-    def _arrCopyToDblArr(r: Vec[A])(
-        implicit n: NUM[A]): (Int, Array[Double]) = {
+    def _arrCopyToDblArr(r: Vec[A])(implicit
+        n: NUM[A]): (Int, Array[Double]) = {
       val arr = Array.ofDim[Double](r.length)
       val sa = r.scalarTag
       var i = 0

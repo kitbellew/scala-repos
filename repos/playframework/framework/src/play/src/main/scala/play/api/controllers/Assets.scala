@@ -56,8 +56,8 @@ import javax.inject.{Inject, Singleton}
 private class SelfPopulatingMap[K, V] {
   private val store = TrieMap[K, Future[Option[V]]]()
 
-  def putIfAbsent(k: K)(pf: K => Option[V])(
-      implicit ec: ExecutionContext): Future[Option[V]] = {
+  def putIfAbsent(k: K)(pf: K => Option[V])(implicit
+      ec: ExecutionContext): Future[Option[V]] = {
     lazy val p = Promise[Option[V]]()
     store.putIfAbsent(k, p.future) match {
       case Some(f) => f

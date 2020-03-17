@@ -18,8 +18,8 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
       ev: A =:= IndexedContsT[W, M, O, E, B],
       W: Cobind[W]): IndexedContsT[W, M, R, E, B] = flatMap(ev)
 
-  def flatMap[E, B](f: A => IndexedContsT[W, M, O, E, B])(
-      implicit W: Cobind[W]): IndexedContsT[W, M, R, E, B] =
+  def flatMap[E, B](f: A => IndexedContsT[W, M, O, E, B])(implicit
+      W: Cobind[W]): IndexedContsT[W, M, R, E, B] =
     IndexedContsT { wbme =>
       run(
         W.cobind(wbme) {
@@ -95,8 +95,8 @@ object IndexedContsT
 }
 
 trait IndexedContsTFunctions {
-  def point[W[_], M[_], R, A](a: => A)(
-      implicit W: Comonad[W]): ContsT[W, M, R, A] =
+  def point[W[_], M[_], R, A](a: => A)(implicit
+      W: Comonad[W]): ContsT[W, M, R, A] =
     ContsT { k =>
       W.copoint(k)(a)
     }
@@ -107,8 +107,8 @@ trait IndexedContsTFunctions {
       M.bind(a)(W.copoint(k))
     }
 
-  def xhoist[W[_], M[_], N[_], R, O](f: M ~> N, g: N ~> M)(
-      implicit W: Functor[W])
+  def xhoist[W[_], M[_], N[_], R, O](f: M ~> N, g: N ~> M)(implicit
+      W: Functor[W])
       : IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[W, N, R, O, ?] =
     new (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[W, N, R, O, ?]) {
       def apply[A](
@@ -174,24 +174,24 @@ trait IndexedContsTFunctions {
 }
 
 sealed abstract class IndexedContsTInstances1 {
-  implicit def IndexedContsTFunctorRight[W[_], M[_], R, O](
-      implicit W0: Functor[W]): Functor[IndexedContsT[W, M, R, O, ?]] =
+  implicit def IndexedContsTFunctorRight[W[_], M[_], R, O](implicit
+      W0: Functor[W]): Functor[IndexedContsT[W, M, R, O, ?]] =
     new IndexedContsTFunctorRight[W, M, R, O] {
       implicit val W: Functor[W] = W0
     }
 }
 
 sealed abstract class IndexedContsTInstances0 extends IndexedContsTInstances1 {
-  implicit def ContsTBind[W[_], M[_], R](
-      implicit W0: Cobind[W]): Bind[ContsT[W, M, R, ?]] =
+  implicit def ContsTBind[W[_], M[_], R](implicit
+      W0: Cobind[W]): Bind[ContsT[W, M, R, ?]] =
     new ContsTBind[W, M, R] {
       val W = W0
     }
 }
 
 abstract class IndexedContsTInstances extends IndexedContsTInstances0 {
-  implicit def IndexedContsTFunctorLeft[W[_], M[_], O, A](
-      implicit M0: Functor[M]): Functor[IndexedContsT[W, M, ?, O, A]] =
+  implicit def IndexedContsTFunctorLeft[W[_], M[_], O, A](implicit
+      M0: Functor[M]): Functor[IndexedContsT[W, M, ?, O, A]] =
     new IndexedContsTFunctorLeft[W, M, O, A] {
       implicit val M: Functor[M] = M0
     }
@@ -212,8 +212,8 @@ abstract class IndexedContsTInstances extends IndexedContsTInstances0 {
       implicit val M: Functor[M] = M0
     }
 
-  implicit def ContsTMonad[W[_], M[_], R](
-      implicit W0: Comonad[W]): Monad[ContsT[W, M, R, ?]] =
+  implicit def ContsTMonad[W[_], M[_], R](implicit
+      W0: Comonad[W]): Monad[ContsT[W, M, R, ?]] =
     new ContsTMonad[W, M, R] {
       implicit val W: Comonad[W] = W0
     }

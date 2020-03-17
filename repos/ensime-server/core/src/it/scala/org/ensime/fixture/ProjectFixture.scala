@@ -56,8 +56,8 @@ trait ProjectFixture {
 }
 
 trait IsolatedProjectFixture extends ProjectFixture {
-  override def withProject(testCode: (TestActorRef[Project], TestProbe) => Any)(
-      implicit
+  override def withProject(
+      testCode: (TestActorRef[Project], TestProbe) => Any)(implicit
       testkit: TestKitFix,
       config: EnsimeConfig): Any = {
     val (project, probe) = ProjectFixture.startup
@@ -82,8 +82,8 @@ trait SharedProjectFixture
     _probe = probe
   }
 
-  override def withProject(testCode: (TestActorRef[Project], TestProbe) => Any)(
-      implicit
+  override def withProject(
+      testCode: (TestActorRef[Project], TestProbe) => Any)(implicit
       testkit: TestKitFix,
       config: EnsimeConfig): Any = testCode(_project, _probe)
 }

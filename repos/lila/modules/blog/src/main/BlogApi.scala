@@ -25,8 +25,8 @@ final class BlogApi(prismicUrl: String, collection: String) {
       .submit() map (_.results.headOption)
 
   // -- Build a Prismic context
-  def context(ref: Option[String])(
-      implicit linkResolver: (Api, Option[String]) => DocumentLinkResolver) =
+  def context(ref: Option[String])(implicit
+      linkResolver: (Api, Option[String]) => DocumentLinkResolver) =
     prismicApi map { api =>
       BlogApi.Context(
         api,

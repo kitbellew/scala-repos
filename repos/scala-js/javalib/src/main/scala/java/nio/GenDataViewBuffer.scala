@@ -20,8 +20,8 @@ private[nio] object GenDataViewBuffer {
 
   @inline
   def generic_fromTypedArrayByteBuffer[BufferType <: Buffer](
-      byteBuffer: TypedArrayByteBuffer)(
-      implicit newDataViewBuffer: NewDataViewBuffer[BufferType]): BufferType = {
+      byteBuffer: TypedArrayByteBuffer)(implicit
+      newDataViewBuffer: NewDataViewBuffer[BufferType]): BufferType = {
     val byteArray = byteBuffer._typedArray
     val byteBufferPos = byteBuffer.position
     val byteBufferLimit = byteBuffer.limit
@@ -66,8 +66,8 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
   type NewThisDataViewBuffer = GenDataViewBuffer.NewDataViewBuffer[BufferType]
 
   @inline
-  def generic_slice()(
-      implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
+  def generic_slice()(implicit
+      newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
     val bytesPerElem = newDataViewBuffer.bytesPerElem
     val dataView = _dataView
     val pos = position
@@ -80,8 +80,8 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
   }
 
   @inline
-  def generic_duplicate()(
-      implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
+  def generic_duplicate()(implicit
+      newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
     val result = newDataViewBuffer(
       _dataView,
       position,
@@ -93,8 +93,8 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
   }
 
   @inline
-  def generic_asReadOnlyBuffer()(
-      implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
+  def generic_asReadOnlyBuffer()(implicit
+      newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
     val result = newDataViewBuffer(
       _dataView,
       position,
@@ -106,8 +106,8 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
   }
 
   @inline
-  def generic_compact()(
-      implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
+  def generic_compact()(implicit
+      newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
     if (isReadOnly)
       throw new ReadOnlyBufferException
 

@@ -64,16 +64,16 @@ trait StreamOperations[+Self <: StreamOperations[Self]]
   /**
     * Drop while the predicate is true, starting at the first false, output all
     */
-  def dropWhile[T](f: Fields)(fn: (T) => Boolean)(
-      implicit conv: TupleConverter[T]): Self = {
+  def dropWhile[T](f: Fields)(fn: (T) => Boolean)(implicit
+      conv: TupleConverter[T]): Self = {
     mapStream[TupleEntry, CTuple](f -> Fields.ARGS) { s =>
       s.dropWhile(te => fn(conv(te))).map {
         _.getTuple
       }
     }(TupleConverter.TupleEntryConverter, TupleSetter.CTupleSetter)
   }
-  def scanLeft[X, T](fieldDef: (Fields, Fields))(init: X)(fn: (X, T) => X)(
-      implicit
+  def scanLeft[X, T](fieldDef: (Fields, Fields))(init: X)(
+      fn: (X, T) => X)(implicit
       setter: TupleSetter[X],
       conv: TupleConverter[T]): Self = {
     mapStream[T, X](fieldDef) { s =>
@@ -95,8 +95,8 @@ trait StreamOperations[+Self <: StreamOperations[Self]]
     * Take while the predicate is true, stopping at the
     * first false. Output all taken elements.
     */
-  def takeWhile[T](f: Fields)(fn: (T) => Boolean)(
-      implicit conv: TupleConverter[T]): Self = {
+  def takeWhile[T](f: Fields)(fn: (T) => Boolean)(implicit
+      conv: TupleConverter[T]): Self = {
     mapStream[TupleEntry, CTuple](f -> Fields.ARGS) { s =>
       s.takeWhile(te => fn(conv(te))).map {
         _.getTuple

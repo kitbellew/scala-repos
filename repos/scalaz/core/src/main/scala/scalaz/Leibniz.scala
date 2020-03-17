@@ -30,8 +30,8 @@ sealed abstract class Leibniz[-L, +H >: L, A >: L <: H, B >: L <: H] {
   def onF[X](fa: X => A): X => B = subst[X => ?](fa)
   def onCov[FA](fa: FA)(implicit U: Unapply.AuxA[Functor, FA, A]): U.M[B] =
     subst(U(fa))
-  def onContra[FA](fa: FA)(
-      implicit U: Unapply.AuxA[Contravariant, FA, A]): U.M[B] = subst(U(fa))
+  def onContra[FA](fa: FA)(implicit
+      U: Unapply.AuxA[Contravariant, FA, A]): U.M[B] = subst(U(fa))
 }
 
 sealed abstract class LeibnizInstances {

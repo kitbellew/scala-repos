@@ -8,8 +8,8 @@ object LazyEitherTTest extends SpecLite {
 
   import LazyEitherTest.LazyEitherEqual
 
-  implicit def lazyEitherTEqual[F[_], A, B](
-      implicit F0: Equal[F[LazyEither[A, B]]]): Equal[LazyEitherT[F, A, B]] =
+  implicit def lazyEitherTEqual[F[_], A, B](implicit
+      F0: Equal[F[LazyEither[A, B]]]): Equal[LazyEitherT[F, A, B]] =
     F0.contramap((_: LazyEitherT[F, A, B]).run)
 
   type LazyEitherTList[A, B] = LazyEitherT[List, A, B]

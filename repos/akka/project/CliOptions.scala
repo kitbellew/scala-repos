@@ -8,8 +8,8 @@ case class CliOption[T](private val value: T) {
 }
 
 object CliOption {
-  def apply[T](path: String, default: T)(
-      implicit ev: CliOptionParser[T]): CliOption[T] = ev.parse(path, default)
+  def apply[T](path: String, default: T)(implicit
+      ev: CliOptionParser[T]): CliOption[T] = ev.parse(path, default)
 
   implicit class BooleanCliOption(cliOption: CliOption[Boolean]) {
     def ifTrue[A](a: => A): Option[A] =

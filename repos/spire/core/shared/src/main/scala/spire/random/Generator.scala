@@ -341,8 +341,8 @@ abstract class Generator {
   def chooseFromIterable[A](as: Iterable[A])(implicit gen: Generator): A =
     as.iterator.drop(gen.nextInt(as.size)).next()
 
-  def sampleFromArray[@sp A: ClassTag](as: Array[A], size: Int)(
-      implicit gen: Generator): Array[A] = {
+  def sampleFromArray[@sp A: ClassTag](as: Array[A], size: Int)(implicit
+      gen: Generator): Array[A] = {
     val chosen: Array[A] = new Array[A](size)
     if (size < 1) {
       throw new IllegalArgumentException("illegal sample size (%d)" format size)

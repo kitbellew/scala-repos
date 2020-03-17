@@ -35,16 +35,16 @@ sealed abstract class IdTInstances3 extends IdTInstances4 {
 }
 
 sealed abstract class IdTInstances2 extends IdTInstances3 {
-  implicit def idTApplicative[F[_]](
-      implicit F0: Applicative[F]): Applicative[IdT[F, ?]] =
+  implicit def idTApplicative[F[_]](implicit
+      F0: Applicative[F]): Applicative[IdT[F, ?]] =
     new IdTApplicative[F] {
       implicit def F: Applicative[F] = F0
     }
 }
 
 sealed abstract class IdTInstances1 extends IdTInstances2 {
-  implicit def idTFoldable[F[_]](
-      implicit F0: Foldable[F]): Foldable[IdT[F, ?]] =
+  implicit def idTFoldable[F[_]](implicit
+      F0: Foldable[F]): Foldable[IdT[F, ?]] =
     new IdTFoldable[F] {
       implicit def F: Foldable[F] = F0
     }
@@ -67,8 +67,8 @@ sealed abstract class IdTInstances0 extends IdTInstances1 {
 sealed abstract class IdTInstances extends IdTInstances0 {
   implicit val idTHoist: Hoist[IdT] = IdTHoist
 
-  implicit def idTTraverse[F[_]](
-      implicit F0: Traverse[F]): Traverse[IdT[F, ?]] =
+  implicit def idTTraverse[F[_]](implicit
+      F0: Traverse[F]): Traverse[IdT[F, ?]] =
     new IdTTraverse[F] {
       implicit def F: Traverse[F] = F0
     }

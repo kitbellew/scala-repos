@@ -1312,8 +1312,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
   def batched[In, Out](
       sizeThreshold: Int,
       timeThreshold: Duration = Duration.Top,
-      sizePercentile: => Float = 1.0f)(f: Seq[In] => Future[Seq[Out]])(
-      implicit timer: Timer): Batcher[In, Out] = {
+      sizePercentile: => Float = 1.0f)(f: Seq[In] => Future[Seq[Out]])(implicit
+      timer: Timer): Batcher[In, Out] = {
     new Batcher[In, Out](
       new BatchExecutor[In, Out](
         sizeThreshold,
@@ -1556,8 +1556,8 @@ abstract class Future[+A] extends Awaitable[A] {
     *
     * ''Note'': On timeout, the underlying future is interrupted.
     */
-  def raiseWithin(timeout: Duration, exc: Throwable)(
-      implicit timer: Timer): Future[A] = raiseWithin(timer, timeout, exc)
+  def raiseWithin(timeout: Duration, exc: Throwable)(implicit
+      timer: Timer): Future[A] = raiseWithin(timer, timeout, exc)
 
   /**
     * Returns a new Future that will error if this Future does not return in time.
@@ -1671,8 +1671,8 @@ abstract class Future[+A] extends Awaitable[A] {
     * discards the result of `this`. Note that this applies only
     * `Unit`-valued  Futures — i.e. side-effects.
     */
-  def before[B](f: => Future[B])(
-      implicit ev: this.type <:< Future[Unit]): Future[B] =
+  def before[B](f: => Future[B])(implicit
+      ev: this.type <:< Future[Unit]): Future[B] =
     transform {
       case Return(_)   => f
       case t: Throw[_] => Future.const[B](t.cast[B])
@@ -2977,14 +2977,14 @@ class NoFuture extends Future[Nothing] {
 
   @throws(classOf[TimeoutException])
   @throws(classOf[InterruptedException])
-  def ready(timeout: Duration)(
-      implicit permit: Awaitable.CanAwait): this.type = {
+  def ready(timeout: Duration)(implicit
+      permit: Awaitable.CanAwait): this.type = {
     throw sleepThenTimeout(timeout)
   }
 
   @throws(classOf[Exception])
-  def result(timeout: Duration)(
-      implicit permit: Awaitable.CanAwait): Nothing = {
+  def result(timeout: Duration)(implicit
+      permit: Awaitable.CanAwait): Nothing = {
     throw sleepThenTimeout(timeout)
   }
 

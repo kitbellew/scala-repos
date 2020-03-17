@@ -13,8 +13,8 @@ trait HealthChecksSupport
 
   def healthCheckName(name: String) = MetricName(name)
 
-  def checkHealth[T](name: String)(checker: => T)(
-      implicit toMagnet: ToMagnet[T]) =
+  def checkHealth[T](name: String)(checker: => T)(implicit
+      toMagnet: ToMagnet[T]) =
     healthCheck(name) {
       checker
     }

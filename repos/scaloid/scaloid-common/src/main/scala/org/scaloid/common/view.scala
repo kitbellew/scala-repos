@@ -125,8 +125,8 @@ trait TraitView[This <: android.view.View]
     * }
     * }}}
     */
-  @inline def here[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP) = {
+  @inline def here[LP <: ViewGroupLayoutParams[_, _]](implicit
+      defaultLayoutParam: This => LP) = {
     val parent = parentViewGroupIfExists
     if (parent != null)
       parent += basis
@@ -145,8 +145,8 @@ trait TraitView[This <: android.view.View]
     * }
     * }}}
     */
-  @inline def hereWithoutStyle[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP) = {
+  @inline def hereWithoutStyle[LP <: ViewGroupLayoutParams[_, _]](implicit
+      defaultLayoutParam: This => LP) = {
     val parent = parentViewGroupIfExists
     if (parent != null)(
       parent.basis.asInstanceOf[ViewGroup]
@@ -158,32 +158,32 @@ trait TraitView[This <: android.view.View]
   val MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT
   val WRAP_CONTENT = ViewGroup.LayoutParams.WRAP_CONTENT
 
-  @inline def fill[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP) = {
+  @inline def fill[LP <: ViewGroupLayoutParams[_, _]](implicit
+      defaultLayoutParam: This => LP) = {
     <<.fill
     basis
   }
 
-  @inline def wrap[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP) = {
+  @inline def wrap[LP <: ViewGroupLayoutParams[_, _]](implicit
+      defaultLayoutParam: This => LP) = {
     <<.wrap
     basis
   }
 
-  @inline def wf[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP) = {
+  @inline def wf[LP <: ViewGroupLayoutParams[_, _]](implicit
+      defaultLayoutParam: This => LP) = {
     <<.wf
     basis
   }
 
-  @inline def fw[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP) = {
+  @inline def fw[LP <: ViewGroupLayoutParams[_, _]](implicit
+      defaultLayoutParam: This => LP) = {
     <<.fw
     basis
   }
 
-  def <<[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP): LP = defaultLayoutParam(basis)
+  def <<[LP <: ViewGroupLayoutParams[_, _]](implicit
+      defaultLayoutParam: This => LP): LP = defaultLayoutParam(basis)
 
   // TODO: Make the return type as Option[TraitViewGroup[_]]
   protected def parentViewGroupIfExists[LP <: ViewGroupLayoutParams[_, _]](
@@ -196,8 +196,8 @@ trait TraitView[This <: android.view.View]
       lp.parent
   }
 
-  def <<[LP <: ViewGroupLayoutParams[_, _]](width: Int, height: Int)(
-      implicit defaultLayoutParam: This => LP): LP = {
+  def <<[LP <: ViewGroupLayoutParams[_, _]](width: Int, height: Int)(implicit
+      defaultLayoutParam: This => LP): LP = {
     val lp = defaultLayoutParam(basis)
     lp.height = height
     lp.width = width
@@ -234,8 +234,8 @@ trait TraitView[This <: android.view.View]
     basis
   } // to avoid compatibility issue on API Level < 16, calls setBackgroundDrawable() although it is deprecated.
 
-  @inline def accessibilityDelegate(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def accessibilityDelegate(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'accessibilityDelegate'")
 
@@ -339,8 +339,8 @@ trait TraitView[This <: android.view.View]
     basis
   }
 
-  @inline def backgroundDrawable(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def backgroundDrawable(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'backgroundDrawable'")
 
@@ -359,8 +359,8 @@ trait TraitView[This <: android.view.View]
     basis
   }
 
-  @inline def backgroundResource(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def backgroundResource(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'backgroundResource'")
 
@@ -1105,8 +1105,8 @@ trait TraitView[This <: android.view.View]
     basis
   }
 
-  @inline def onCreateContextMenuListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onCreateContextMenuListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onCreateContextMenuListener'")
 
@@ -1163,8 +1163,8 @@ trait TraitView[This <: android.view.View]
     basis
   }
 
-  @inline def onGenericMotionListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onGenericMotionListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onGenericMotionListener'")
 
@@ -1218,8 +1218,8 @@ trait TraitView[This <: android.view.View]
     basis
   }
 
-  @inline def onLongClickListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onLongClickListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onLongClickListener'")
 
@@ -1238,8 +1238,8 @@ trait TraitView[This <: android.view.View]
     basis
   }
 
-  @inline def onSystemUiVisibilityChangeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onSystemUiVisibilityChangeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onSystemUiVisibilityChangeListener'")
 
@@ -2660,8 +2660,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     basis
   }
 
-  @inline def onHierarchyChangeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onHierarchyChangeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onHierarchyChangeListener'")
 
@@ -3071,8 +3071,8 @@ trait TraitSurfaceView[This <: android.view.SurfaceView]
     */
   @inline def holder = basis.getHolder
 
-  @inline def zOrderMediaOverlay(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def zOrderMediaOverlay(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'zOrderMediaOverlay'")
 
@@ -3257,8 +3257,8 @@ trait TraitActionProvider[This <: android.view.ActionProvider] {
 
   def basis: This
 
-  @inline def visibilityListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def visibilityListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'visibilityListener'")
 

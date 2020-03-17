@@ -21,8 +21,8 @@ trait PicklerRegistry {
     * @param mirror  The scala mirror (classloader/symbolloader) we use to generate the unpickler.
     * @param tagKey The full tag of the type, which may or may not include type parameters.
     */
-  def genUnpickler(mirror: Mirror, tagKey: String)(
-      implicit share: refs.Share): Unpickler[_]
+  def genUnpickler(mirror: Mirror, tagKey: String)(implicit
+      share: refs.Share): Unpickler[_]
 
   /** Looks up a Pickler for the given tag.  If none is found, then we attempt to generate one.
     *

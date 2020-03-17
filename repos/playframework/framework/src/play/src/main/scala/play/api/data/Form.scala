@@ -257,8 +257,8 @@ case class Form[T](
   /**
     * Returns the form errors serialized as Json.
     */
-  def errorsAsJson(
-      implicit messages: play.api.i18n.Messages): play.api.libs.json.JsValue = {
+  def errorsAsJson(implicit
+      messages: play.api.i18n.Messages): play.api.libs.json.JsValue = {
 
     import play.api.libs.json._
 
@@ -270,8 +270,8 @@ case class Form[T](
 
   }
 
-  private def translateMsgArg(msgArg: Any)(
-      implicit messages: play.api.i18n.Messages) =
+  private def translateMsgArg(msgArg: Any)(implicit
+      messages: play.api.i18n.Messages) =
     msgArg match {
       case key: String       => messages(key)
       case keys: Seq[String] => keys.map(key => messages(key))
@@ -981,8 +981,8 @@ case class OptionalMapping[T](
   */
 case class FieldMapping[T](
     val key: String = "",
-    val constraints: Seq[Constraint[T]] = Nil)(
-    implicit val binder: Formatter[T])
+    val constraints: Seq[Constraint[T]] = Nil)(implicit
+    val binder: Formatter[T])
     extends Mapping[T] {
 
   /**

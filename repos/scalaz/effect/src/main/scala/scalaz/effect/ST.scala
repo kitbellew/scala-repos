@@ -200,8 +200,8 @@ object ST extends STInstances {
 }
 
 sealed abstract class STInstance0 {
-  implicit def stSemigroup[S, A](
-      implicit A: Semigroup[A]): Semigroup[ST[S, A]] =
+  implicit def stSemigroup[S, A](implicit
+      A: Semigroup[A]): Semigroup[ST[S, A]] =
     Semigroup.liftSemigroup[ST[S, ?], A](ST.stMonad[S], A)
 }
 

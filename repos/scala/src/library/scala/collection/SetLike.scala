@@ -101,8 +101,8 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
   @migration(
     "Set.map now returns a Set, so it will discard duplicate values.",
     "2.8.0")
-  override def map[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[This, B, That]): That = super.map(f)(bf)
+  override def map[B, That](f: A => B)(implicit
+      bf: CanBuildFrom[This, B, That]): That = super.map(f)(bf)
 
   /** Tests if some element is contained in this set.
     *

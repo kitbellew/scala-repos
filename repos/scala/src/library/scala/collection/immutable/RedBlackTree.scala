@@ -35,8 +35,8 @@ private[collection] object RedBlackTree {
     }
 
   @tailrec
-  def lookup[A, B](tree: Tree[A, B], x: A)(
-      implicit ordering: Ordering[A]): Tree[A, B] =
+  def lookup[A, B](tree: Tree[A, B], x: A)(implicit
+      ordering: Ordering[A]): Tree[A, B] =
     if (tree eq null)
       null
     else {
@@ -59,8 +59,8 @@ private[collection] object RedBlackTree {
     * Count all the nodes with keys greater than or equal to the lower bound and less than the upper bound.
     * The two bounds are optional.
     */
-  def countInRange[A](tree: Tree[A, _], from: Option[A], to: Option[A])(
-      implicit ordering: Ordering[A]): Int =
+  def countInRange[A](tree: Tree[A, _], from: Option[A], to: Option[A])(implicit
+      ordering: Ordering[A]): Int =
     if (tree eq null)
       0
     else
@@ -308,8 +308,8 @@ private[collection] object RedBlackTree {
   /* Based on Stefan Kahrs' Haskell version of Okasaki's Red&Black Trees
    * Constructing Red-Black Trees, Ralf Hinze: http://www.cs.ox.ac.uk/ralf.hinze/publications/WAAAPL99b.ps.gz
    * Red-Black Trees in a Functional Setting, Chris Okasaki: https://wiki.rice.edu/confluence/download/attachments/2761212/Okasaki-Red-Black.pdf */
-  private[this] def del[A, B](tree: Tree[A, B], k: A)(
-      implicit ordering: Ordering[A]): Tree[A, B] =
+  private[this] def del[A, B](tree: Tree[A, B], k: A)(implicit
+      ordering: Ordering[A]): Tree[A, B] =
     if (tree eq null)
       null
     else {
@@ -447,8 +447,8 @@ private[collection] object RedBlackTree {
         append(tree.left, tree.right)
     }
 
-  private[this] def doFrom[A, B](tree: Tree[A, B], from: A)(
-      implicit ordering: Ordering[A]): Tree[A, B] = {
+  private[this] def doFrom[A, B](tree: Tree[A, B], from: A)(implicit
+      ordering: Ordering[A]): Tree[A, B] = {
     if (tree eq null)
       return null
     if (ordering.lt(tree.key, from))
@@ -461,8 +461,8 @@ private[collection] object RedBlackTree {
     else
       rebalance(tree, newLeft, tree.right)
   }
-  private[this] def doTo[A, B](tree: Tree[A, B], to: A)(
-      implicit ordering: Ordering[A]): Tree[A, B] = {
+  private[this] def doTo[A, B](tree: Tree[A, B], to: A)(implicit
+      ordering: Ordering[A]): Tree[A, B] = {
     if (tree eq null)
       return null
     if (ordering.lt(to, tree.key))
@@ -475,8 +475,8 @@ private[collection] object RedBlackTree {
     else
       rebalance(tree, tree.left, newRight)
   }
-  private[this] def doUntil[A, B](tree: Tree[A, B], until: A)(
-      implicit ordering: Ordering[A]): Tree[A, B] = {
+  private[this] def doUntil[A, B](tree: Tree[A, B], until: A)(implicit
+      ordering: Ordering[A]): Tree[A, B] = {
     if (tree eq null)
       return null
     if (ordering.lteq(until, tree.key))
@@ -489,8 +489,8 @@ private[collection] object RedBlackTree {
     else
       rebalance(tree, tree.left, newRight)
   }
-  private[this] def doRange[A, B](tree: Tree[A, B], from: A, until: A)(
-      implicit ordering: Ordering[A]): Tree[A, B] = {
+  private[this] def doRange[A, B](tree: Tree[A, B], from: A, until: A)(implicit
+      ordering: Ordering[A]): Tree[A, B] = {
     if (tree eq null)
       return null
     if (ordering.lt(tree.key, from))

@@ -31,15 +31,15 @@ trait Category[=>:[_, _]] extends Compose[=>:] { self =>
   trait CategoryLaw extends ComposeLaw {
 
     /** `_ <<< id` is vacuous. */
-    def leftIdentity[A, B](ab: (A =>: B))(
-        implicit E: Equal[A =>: B]): Boolean = {
+    def leftIdentity[A, B](ab: (A =>: B))(implicit
+        E: Equal[A =>: B]): Boolean = {
       val ab1 = compose(ab, id[A])
       E.equal(ab, ab1)
     }
 
     /** `id <<< _` is vacuous. */
-    def rightIdentity[A, B](ab: (A =>: B))(
-        implicit E: Equal[A =>: B]): Boolean = {
+    def rightIdentity[A, B](ab: (A =>: B))(implicit
+        E: Equal[A =>: B]): Boolean = {
       val ab1 = compose(id[B], ab)
       E.equal(ab, ab1)
     }

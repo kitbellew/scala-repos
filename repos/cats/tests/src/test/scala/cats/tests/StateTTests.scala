@@ -143,8 +143,8 @@ object StateTTests extends StateTTestsInstances {
 }
 
 sealed trait StateTTestsInstances {
-  implicit def stateTArbitrary[F[_]: Applicative, S, A](
-      implicit F: Arbitrary[S => F[(S, A)]]): Arbitrary[StateT[F, S, A]] =
+  implicit def stateTArbitrary[F[_]: Applicative, S, A](implicit
+      F: Arbitrary[S => F[(S, A)]]): Arbitrary[StateT[F, S, A]] =
     Arbitrary(F.arbitrary.map(f => StateT(f)))
 
   implicit def stateTEq[F[_], S, A](implicit

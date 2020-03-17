@@ -24,8 +24,8 @@ sealed trait Compiled[T] {
     * be `Compilable`. The resulting `Compiled` instance will be recompiled when
     * needed. It does not benefit from this instance already containing the
     * compiled state. */
-  def map[U, C <: Compiled[U]](f: T => U)(
-      implicit ucompilable: Compilable[U, C]): C =
+  def map[U, C <: Compiled[U]](f: T => U)(implicit
+      ucompilable: Compilable[U, C]): C =
     ucompilable.compiled(f(extract), profile)
 
   /** Perform a transformation of the underlying value. The computed `Compiled`
@@ -130,8 +130,8 @@ object Executable {
       _], Ba1, Ba2] =
     StreamingExecutable[BaseJoinQuery[B1, B2, BU1, BU2, C, Ba1, Ba2], C[
       (BU1, BU2)], (BU1, BU2)]
-  @inline implicit def scalarIsExecutable[R, U](
-      implicit shape: Shape[_ <: FlatShapeLevel, R, U, _]): Executable[R, U] =
+  @inline implicit def scalarIsExecutable[R, U](implicit
+      shape: Shape[_ <: FlatShapeLevel, R, U, _]): Executable[R, U] =
     new Executable[R, U] {
       def toNode(value: R) = shape.toNode(value)
     }
@@ -174,8 +174,8 @@ object Compilable extends CompilableFunctions {
           pshape.asInstanceOf[Shape[ColumnsShapeLevel, P, P, A]],
           profile)
     }
-  implicit def streamingExecutableIsCompilable[T, U, EU](
-      implicit e: StreamingExecutable[T, U, EU])
+  implicit def streamingExecutableIsCompilable[T, U, EU](implicit
+      e: StreamingExecutable[T, U, EU])
       : Compilable[T, CompiledStreamingExecutable[T, U, EU]] =
     new Compilable[T, CompiledStreamingExecutable[T, U, EU]] {
       def compiled(raw: T, profile: BasicProfile) =
@@ -186,8 +186,8 @@ object Compilable extends CompilableFunctions {
 }
 
 trait CompilableLowPriority {
-  implicit def executableIsCompilable[T, U](
-      implicit e: Executable[T, U]): Compilable[T, CompiledExecutable[T, U]] =
+  implicit def executableIsCompilable[T, U](implicit
+      e: Executable[T, U]): Compilable[T, CompiledExecutable[T, U]] =
     new Compilable[T, CompiledExecutable[T, U]] {
       def compiled(raw: T, profile: BasicProfile) =
         new CompiledExecutable[T, U](raw, profile) {

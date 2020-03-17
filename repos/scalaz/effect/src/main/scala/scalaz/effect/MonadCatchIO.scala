@@ -12,8 +12,8 @@ object MonadCatchIO extends MonadCatchIOFunctions {
 }
 
 sealed abstract class MonadCatchIOFunctions {
-  def except[M[_], A](ma: M[A])(handler: Throwable => M[A])(
-      implicit M: MonadCatchIO[M]): M[A] = M.except(ma)(handler)
+  def except[M[_], A](ma: M[A])(handler: Throwable => M[A])(implicit
+      M: MonadCatchIO[M]): M[A] = M.except(ma)(handler)
 
   import scalaz.syntax.monad._
 
@@ -82,8 +82,8 @@ sealed abstract class MonadCatchIOFunctions {
       f: A => M[B])(implicit M: MonadCatchIO[M], resource: Resource[A]) =
     bracket(ma)(resource.close(_).liftIO[M])(f)
 
-  implicit def KleisliMonadCatchIO[F[_], R](
-      implicit F: MonadCatchIO[F]): MonadCatchIO[Kleisli[F, R, ?]] =
+  implicit def KleisliMonadCatchIO[F[_], R](implicit
+      F: MonadCatchIO[F]): MonadCatchIO[Kleisli[F, R, ?]] =
     new MonadCatchIO[Kleisli[F, R, ?]]
       with MonadIO.FromLiftIO[Kleisli[F, R, ?]] {
       def FM = MonadIO.kleisliMonadIO[F, R]

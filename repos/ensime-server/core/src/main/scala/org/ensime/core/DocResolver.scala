@@ -206,7 +206,7 @@ class DocResolver(
 
 }
 object DocResolver {
-  def apply(prefix: String = "docs", java: Option[String] = None)(
-      implicit config: EnsimeConfig): Props =
+  def apply(prefix: String = "docs", java: Option[String] = None)(implicit
+      config: EnsimeConfig): Props =
     Props(classOf[DocResolver], prefix, java, config)
 }

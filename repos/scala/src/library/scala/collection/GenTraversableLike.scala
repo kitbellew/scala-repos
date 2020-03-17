@@ -122,8 +122,8 @@ trait GenTraversableLike[+A, +Repr]
     *
     *  @return           a new $coll containing the prefix scan of the elements in this $coll
     */
-  def scan[B >: A, That](z: B)(op: (B, B) => B)(
-      implicit cbf: CanBuildFrom[Repr, B, That]): That
+  def scan[B >: A, That](z: B)(op: (B, B) => B)(implicit
+      cbf: CanBuildFrom[Repr, B, That]): That
 
   /** Produces a collection containing cumulative results of applying the
     *  operator going left to right.
@@ -138,8 +138,8 @@ trait GenTraversableLike[+A, +Repr]
     *  @param bf      $bfinfo
     *  @return        collection with intermediate results
     */
-  def scanLeft[B, That](z: B)(op: (B, A) => B)(
-      implicit bf: CanBuildFrom[Repr, B, That]): That
+  def scanLeft[B, That](z: B)(op: (B, A) => B)(implicit
+      bf: CanBuildFrom[Repr, B, That]): That
 
   /** Produces a collection containing cumulative results of applying the operator going right to left.
     *  The head of the collection is the last cumulative result.
@@ -161,8 +161,8 @@ trait GenTraversableLike[+A, +Repr]
   @migration(
     "The behavior of `scanRight` has changed. The previous behavior can be reproduced with scanRight.reverse.",
     "2.9.0")
-  def scanRight[B, That](z: B)(op: (A, B) => B)(
-      implicit bf: CanBuildFrom[Repr, B, That]): That
+  def scanRight[B, That](z: B)(op: (A, B) => B)(implicit
+      bf: CanBuildFrom[Repr, B, That]): That
 
   def foreach[U](f: A => U): Unit
 
@@ -202,8 +202,8 @@ trait GenTraversableLike[+A, +Repr]
     *                  `pf` to each element on which it is defined and collecting the results.
     *                  The order of the elements is preserved.
     */
-  def collect[B, That](pf: PartialFunction[A, B])(
-      implicit bf: CanBuildFrom[Repr, B, That]): That
+  def collect[B, That](pf: PartialFunction[A, B])(implicit
+      bf: CanBuildFrom[Repr, B, That]): That
 
   /** Builds a new collection by applying a function to all elements of this $coll
     *  and using the elements of the resulting collections.
@@ -244,8 +244,8 @@ trait GenTraversableLike[+A, +Repr]
     *    @return       a new $coll resulting from applying the given collection-valued function
     *                  `f` to each element of this $coll and concatenating the results.
     */
-  def flatMap[B, That](f: A => GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[Repr, B, That]): That
+  def flatMap[B, That](f: A => GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[Repr, B, That]): That
 
   /** Returns a new $coll containing the elements from the left hand operand followed by the elements from the
     *  right hand operand. The element type of the $coll is the most specific superclass encompassing
@@ -282,8 +282,8 @@ trait GenTraversableLike[+A, +Repr]
     *    @return       a new $coll which contains all elements of this $coll
     *                  followed by all elements of `that`.
     */
-  def ++[B >: A, That](that: GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[Repr, B, That]): That
+  def ++[B >: A, That](that: GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[Repr, B, That]): That
 
   /** Selects all elements of this $coll which satisfy a predicate.
     *

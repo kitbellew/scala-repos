@@ -99,8 +99,8 @@ case class PartitionedTextLine[P](
     PartitionUtil.toFields(0, valueSetter.arity + partitionSetter.arity)
 
   /** Creates the taps for local and hdfs mode.*/
-  override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] =
+  override def createTap(readOrWrite: AccessMode)(implicit
+      mode: Mode): Tap[_, _, _] =
     mode match {
       case Local(_) => {
         val fileTap = new FileTap(localScheme, path, SinkMode.REPLACE)

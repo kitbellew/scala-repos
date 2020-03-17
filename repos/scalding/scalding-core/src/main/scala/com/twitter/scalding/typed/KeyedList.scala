@@ -226,9 +226,8 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     * Take the largest k things according to the implicit ordering.
     * Useful for top-k without having to call ord.reverse
     */
-  def sortedReverseTake(k: Int)(
-      implicit ord: Ordering[_ >: T]): This[K, Seq[T]] =
-    sortedTake(k)(ord.reverse)
+  def sortedReverseTake(k: Int)(implicit
+      ord: Ordering[_ >: T]): This[K, Seq[T]] = sortedTake(k)(ord.reverse)
 
   /**
     * This implements bottom-k (smallest k items) on each mapper for each key, then

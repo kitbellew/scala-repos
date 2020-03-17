@@ -61,8 +61,8 @@ object Coroner { // FIXME: remove once going back to project dependencies
         startAndStopDuration.unit)
     }
 
-    override def ready(atMost: Duration)(
-        implicit permit: CanAwait): this.type = {
+    override def ready(atMost: Duration)(implicit
+        permit: CanAwait): this.type = {
       result(atMost)
       this
     }

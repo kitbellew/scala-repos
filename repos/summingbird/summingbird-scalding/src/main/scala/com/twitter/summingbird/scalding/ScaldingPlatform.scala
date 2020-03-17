@@ -208,8 +208,8 @@ object Scalding {
     * If you don't want this behavior, then use pipeFactoryExact which
     * either produces all the DateRange or the whole job fails.
     */
-  def pipeFactory[T](factory: (DateRange) => Mappable[T])(
-      implicit timeOf: TimeExtractor[T]): PipeFactory[T] =
+  def pipeFactory[T](factory: (DateRange) => Mappable[T])(implicit
+      timeOf: TimeExtractor[T]): PipeFactory[T] =
     optionMappedPipeFactory(factory)(t => Some(t))
 
   /**
@@ -259,8 +259,8 @@ object Scalding {
       }
     }
 
-  def pipeFactoryExact[T](factory: (DateRange) => Mappable[T])(
-      implicit timeOf: TimeExtractor[T]): PipeFactory[T] =
+  def pipeFactoryExact[T](factory: (DateRange) => Mappable[T])(implicit
+      timeOf: TimeExtractor[T]): PipeFactory[T] =
     StateWithError[(Interval[Timestamp], Mode), List[FailureReason], FlowToPipe[
       T]] { (timeMode: (Interval[Timestamp], Mode)) =>
       {

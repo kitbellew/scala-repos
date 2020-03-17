@@ -92,8 +92,8 @@ object Grouped {
   val valueField: Fields = new Fields("value")
   val kvFields: Fields = new Fields("key", "value")
 
-  def apply[K, V](pipe: TypedPipe[(K, V)])(
-      implicit ordering: Ordering[K]): Grouped[K, V] =
+  def apply[K, V](pipe: TypedPipe[(K, V)])(implicit
+      ordering: Ordering[K]): Grouped[K, V] =
     IdentityReduce(ordering, pipe, None, Nil)
 
   def valueSorting[V](ord: Ordering[V]): Fields =

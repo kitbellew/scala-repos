@@ -52,15 +52,15 @@ object FizzBuzzExample {
   }
 
   sealed trait NatToFizzBuzInstances0 extends NatToFizzBuzzInstances1 {
-    implicit def fizz[N <: Nat](
-        implicit ev: Mod.Aux[N, _3, _0]): Aux[N, Fizz.type] =
+    implicit def fizz[N <: Nat](implicit
+        ev: Mod.Aux[N, _3, _0]): Aux[N, Fizz.type] =
       new NatToFizzBuzz[N] {
         type Out = Fizz.type
         def apply = Fizz
       }
 
-    implicit def buzz[N <: Nat](
-        implicit ev: Mod.Aux[N, _5, _0]): Aux[N, Buzz.type] =
+    implicit def buzz[N <: Nat](implicit
+        ev: Mod.Aux[N, _5, _0]): Aux[N, Buzz.type] =
       new NatToFizzBuzz[N] {
         type Out = Buzz.type
         def apply = Buzz

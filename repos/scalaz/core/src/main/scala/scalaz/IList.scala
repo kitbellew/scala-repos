@@ -610,8 +610,8 @@ sealed abstract class IListInstances extends IListInstance0 {
       override def cojoin[A](a: IList[A]) =
         a.uncons(empty, (_, t) => a :: cojoin(t))
 
-      def traverseImpl[F[_], A, B](fa: IList[A])(f: A => F[B])(
-          implicit F: Applicative[F]): F[IList[B]] =
+      def traverseImpl[F[_], A, B](fa: IList[A])(f: A => F[B])(implicit
+          F: Applicative[F]): F[IList[B]] =
         fa.foldRight(F.point(IList.empty[B]))((a, fbs) =>
           F.apply2(f(a), fbs)(_ :: _))
 
@@ -643,12 +643,11 @@ sealed abstract class IListInstances extends IListInstance0 {
       override def foldMapRight1Opt[A, B](fa: IList[A])(z: A => B)(
           f: (A, => B) => B) = foldMapLeft1Opt(fa.reverse)(z)((b, a) => f(a, b))
 
-      override def foldMap[A, B](fa: IList[A])(f: A => B)(
-          implicit M: Monoid[B]) =
-        fa.foldLeft(M.zero)((b, a) => M.append(b, f(a)))
+      override def foldMap[A, B](fa: IList[A])(f: A => B)(implicit
+          M: Monoid[B]) = fa.foldLeft(M.zero)((b, a) => M.append(b, f(a)))
 
-      override def foldMap1Opt[A, B](fa: IList[A])(f: A => B)(
-          implicit M: Semigroup[B]) =
+      override def foldMap1Opt[A, B](fa: IList[A])(f: A => B)(implicit
+          M: Semigroup[B]) =
         fa match {
           case ICons(h, t) =>
             Some(t.foldLeft(f(h))((b, a) => M.append(b, f(a))))

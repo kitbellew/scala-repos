@@ -168,13 +168,13 @@ object FormFieldDirectives extends FormFieldDirectives {
 
     private def fieldOfForm[T](
         fieldName: String,
-        fu: Unmarshaller[Option[StrictForm.Field], T])(
-        implicit sfu: SFU): RequestContext ⇒ Future[T] = { ctx ⇒
+        fu: Unmarshaller[Option[StrictForm.Field], T])(implicit
+        sfu: SFU): RequestContext ⇒ Future[T] = { ctx ⇒
       import ctx.{executionContext, materializer}
       sfu(ctx.request.entity).fast.flatMap(form ⇒ fu(form field fieldName))
     }
-    private def filter[T](fieldName: String, fu: FSFFOU[T])(
-        implicit sfu: SFU): Directive1[T] =
+    private def filter[T](fieldName: String, fu: FSFFOU[T])(implicit
+        sfu: SFU): Directive1[T] =
       extract(fieldOfForm(fieldName, fu)).flatMap(r ⇒
         handleFieldResult(fieldName, r))
     implicit def forString(implicit
@@ -211,9 +211,9 @@ object FormFieldDirectives extends FormFieldDirectives {
       extractField[NameDefaultReceptacle[T], T] { nr ⇒
         filter(nr.name, fu withDefaultValue nr.default)
       }
-    implicit def forNOUR[T](
-        implicit sfu: SFU): FieldDefAux[NameOptionUnmarshallerReceptacle[
-      T], Directive1[Option[T]]] =
+    implicit def forNOUR[T](implicit
+        sfu: SFU): FieldDefAux[NameOptionUnmarshallerReceptacle[T], Directive1[
+      Option[T]]] =
       extractField[NameOptionUnmarshallerReceptacle[T], Option[T]] { nr ⇒
         filter[Option[T]](
           nr.name,
@@ -258,8 +258,8 @@ object FormFieldDirectives extends FormFieldDirectives {
 
     //////////////////// repeated formField support ////////////////////
 
-    private def repeatedFilter[T](fieldName: String, fu: FSFFU[T])(
-        implicit sfu: SFU): Directive1[Iterable[T]] =
+    private def repeatedFilter[T](fieldName: String, fu: FSFFU[T])(implicit
+        sfu: SFU): Directive1[Iterable[T]] =
       extract { ctx ⇒
         import ctx.{executionContext, materializer}
         sfu(ctx.request.entity).fast.flatMap(form ⇒
@@ -275,8 +275,8 @@ object FormFieldDirectives extends FormFieldDirectives {
       extractField[RepeatedValueReceptacle[T], Iterable[T]] { rvr ⇒
         repeatedFilter(rvr.name, fu)
       }
-    implicit def forRepVDR[T](
-        implicit sfu: SFU): FieldDefAux[RepeatedValueUnmarshallerReceptacle[
+    implicit def forRepVDR[T](implicit
+        sfu: SFU): FieldDefAux[RepeatedValueUnmarshallerReceptacle[
       T], Directive1[Iterable[T]]] =
       extractField[RepeatedValueUnmarshallerReceptacle[T], Iterable[T]] { rvr ⇒
         repeatedFilter(rvr.name, StrictForm.Field.unmarshallerFromFSU(rvr.um))

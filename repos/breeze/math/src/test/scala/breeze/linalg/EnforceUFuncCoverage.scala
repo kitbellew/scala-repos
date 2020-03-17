@@ -8,8 +8,8 @@ object EnforceUFuncCoverage {
   sealed trait Witness[F, L, T]
   sealed trait One
 
-  def vectors1[F <: UFunc](f: F)(
-      implicit w: Witness[F, One, Vector.type]): Unit = ()
+  def vectors1[F <: UFunc](f: F)(implicit
+      w: Witness[F, One, Vector.type]): Unit = ()
   implicit def wVectors1[F <: UFunc](implicit
       opV: UFunc.UImpl[F, Vector[Double], Any],
       opDV: UFunc.UImpl[F, DenseVector[Double], Any],
@@ -18,8 +18,8 @@ object EnforceUFuncCoverage {
       opSlV: UFunc.UImpl[F, SliceVector[Int, Double], Any])
       : Witness[F, One, Vector.type] = null
 
-  implicit def matrices1[F <: UFunc](f: F)(
-      implicit w: Witness[F, One, Matrix.type]): Unit = ()
+  implicit def matrices1[F <: UFunc](f: F)(implicit
+      w: Witness[F, One, Matrix.type]): Unit = ()
   implicit def wMatrices1[F <: UFunc](implicit
       opV: UFunc.UImpl[F, Matrix[Double], Any],
       opDV: UFunc.UImpl[F, DenseMatrix[Double], Any],
@@ -27,8 +27,8 @@ object EnforceUFuncCoverage {
       opSlV: UFunc.UImpl[F, SliceMatrix[Int, Int, Double], Any])
       : Witness[F, One, Matrix.type] = null
 
-  implicit def counters1[F <: UFunc](f: F)(
-      implicit w: Witness[F, One, Counter.type]): Unit = ()
+  implicit def counters1[F <: UFunc](f: F)(implicit
+      w: Witness[F, One, Counter.type]): Unit = ()
   implicit def wCounters1[F <: UFunc](implicit
       opC: UFunc.UImpl[F, Counter[String, Double], Any],
       opC2: UFunc.UImpl[F, Counter2[String, Long, Double], Any])

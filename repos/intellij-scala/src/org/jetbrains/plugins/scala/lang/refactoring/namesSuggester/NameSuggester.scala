@@ -108,8 +108,8 @@ object NameSuggester {
   private def namesByType(
       tpe: ScType,
       withPlurals: Boolean = true,
-      shortVersion: Boolean = true)(
-      implicit validator: NameValidator): ArrayBuffer[String] = {
+      shortVersion: Boolean = true)(implicit
+      validator: NameValidator): ArrayBuffer[String] = {
     val names = ArrayBuffer[String]()
     generateNamesByType(tpe, shortVersion)(names, validator, withPlurals)
     names

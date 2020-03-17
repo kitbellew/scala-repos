@@ -95,8 +95,8 @@ object DataSet {
       res: String,
       sep: Char,
       variables: List[Variable[F]],
-      out: Output[K])(cs: Int => CoordinateSpace[CC[F], F])(
-      implicit cbf: CanBuildFrom[Nothing, F, CC[F]]): DataSet[CC[F], F, K] = {
+      out: Output[K])(cs: Int => CoordinateSpace[CC[F], F])(implicit
+      cbf: CanBuildFrom[Nothing, F, CC[F]]): DataSet[CC[F], F, K] = {
 
     val lines = readDataSet(res)
     val (dimensions, data) =

@@ -69,8 +69,8 @@ object SpecialPolynomials {
     hornerScheme(Polynomial.one[C], Polynomial.x[C], legendreFn[C]).take(num)
 
   // Laguerre polynomials
-  def laguerres[C: Eq: ClassTag](num: Int)(
-      implicit f: Field[C]): Stream[Polynomial[C]] =
+  def laguerres[C: Eq: ClassTag](num: Int)(implicit
+      f: Field[C]): Stream[Polynomial[C]] =
     hornerScheme(
       Polynomial.one[C],
       Polynomial(Map((0, f.one), (1, -f.one))),

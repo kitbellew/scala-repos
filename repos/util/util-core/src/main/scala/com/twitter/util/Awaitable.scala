@@ -168,8 +168,8 @@ private[util] trait CloseAwaitably0[U <: Unit] extends Awaitable[U] {
     onClose
   }
 
-  def ready(timeout: Duration)(
-      implicit permit: Awaitable.CanAwait): this.type = {
+  def ready(timeout: Duration)(implicit
+      permit: Awaitable.CanAwait): this.type = {
     onClose.ready(timeout)
     this
   }

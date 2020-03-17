@@ -60,8 +60,8 @@ object GraphOperations extends Serializable {
       .values
 
   // Returns all Vertices with non-zero in-degree
-  def withInDegree[N, E](g: TypedPipe[Edge[N, E]])(
-      implicit ord: Ordering[N]): TypedPipe[Edge[N, (E, InDegree)]] =
+  def withInDegree[N, E](g: TypedPipe[Edge[N, E]])(implicit
+      ord: Ordering[N]): TypedPipe[Edge[N, (E, InDegree)]] =
     joinAggregate(
       g.groupBy {
         _.to
@@ -70,8 +70,8 @@ object GraphOperations extends Serializable {
     }
 
   // Returns all Vertices with non-zero out-degree
-  def withOutDegree[N, E](g: TypedPipe[Edge[N, E]])(
-      implicit ord: Ordering[N]): TypedPipe[Edge[N, (E, OutDegree)]] =
+  def withOutDegree[N, E](g: TypedPipe[Edge[N, E]])(implicit
+      ord: Ordering[N]): TypedPipe[Edge[N, (E, OutDegree)]] =
     joinAggregate(
       g.groupBy {
         _.from
@@ -80,8 +80,8 @@ object GraphOperations extends Serializable {
     }
 
   // Returns all Vertices with weights and non-zero norms
-  def withInNorm[N, E](g: TypedPipe[Edge[N, Weight]])(
-      implicit ord: Ordering[N]): TypedPipe[Edge[N, (Weight, L2Norm)]] =
+  def withInNorm[N, E](g: TypedPipe[Edge[N, Weight]])(implicit
+      ord: Ordering[N]): TypedPipe[Edge[N, (Weight, L2Norm)]] =
     joinAggregate(
       g.groupBy {
         _.to
@@ -273,8 +273,8 @@ object TypedSimilarity extends Serializable {
   * This algothm is just matrix multiplication done by hand to make it
   * clearer when we do the sampling implementation
   */
-class ExactInCosine[N](reducers: Int = -1)(
-    implicit override val nodeOrdering: Ordering[N])
+class ExactInCosine[N](reducers: Int = -1)(implicit
+    override val nodeOrdering: Ordering[N])
     extends TypedSimilarity[N, InDegree, Double] {
 
   def apply(

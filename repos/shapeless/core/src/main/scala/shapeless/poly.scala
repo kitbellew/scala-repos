@@ -259,8 +259,8 @@ trait Poly extends PolyApply with Serializable {
 
   object CaseBuilder extends LowPriorityCaseBuilder {
     import ops.function.FnToProduct
-    implicit def fnCaseBuilder[F, H, T <: HList, Result](
-        implicit fntp: FnToProduct.Aux[F, ((H :: T) => Result)])
+    implicit def fnCaseBuilder[F, H, T <: HList, Result](implicit
+        fntp: FnToProduct.Aux[F, ((H :: T) => Result)])
         : CaseBuilder[F, H :: T, Result] =
       new CaseBuilder[F, H :: T, Result] {
         def apply(f: F) = ProductCase((l: H :: T) => fntp(f)(l))

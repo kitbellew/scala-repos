@@ -263,8 +263,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @param request Current request
     * @return A copy of this result with `values` added to its session scope.
     */
-  def addingToSession(values: (String, String)*)(
-      implicit request: RequestHeader): Result =
+  def addingToSession(values: (String, String)*)(implicit
+      request: RequestHeader): Result =
     withSession(new Session(session.data ++ values.toMap))
 
   /**
@@ -276,8 +276,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @param request Current request
     * @return A copy of this result with `keys` removed from its session scope.
     */
-  def removingFromSession(keys: String*)(
-      implicit request: RequestHeader): Result =
+  def removingFromSession(keys: String*)(implicit
+      request: RequestHeader): Result =
     withSession(new Session(session.data -- keys))
 
   override def toString = {
@@ -353,8 +353,8 @@ trait LegacyI18nSupport {
     *
     * This class exists only for backward compatibility.
     */
-  implicit class ResultWithLang(result: Result)(
-      implicit messagesApi: MessagesApi) {
+  implicit class ResultWithLang(result: Result)(implicit
+      messagesApi: MessagesApi) {
 
     /**
       * Sets the user's language permanently for future requests by storing it in a cookie.
@@ -514,8 +514,8 @@ trait Results {
       *
       * @param content Source providing the content to stream.
       */
-    def chunked[C](content: Source[C, _])(
-        implicit writeable: Writeable[C]): Result = {
+    def chunked[C](content: Source[C, _])(implicit
+        writeable: Writeable[C]): Result = {
       Result(
         header = header,
         body = HttpEntity.Chunked(
@@ -535,8 +535,8 @@ trait Results {
       * @param content Enumerator providing the content to stream.
       */
     @deprecated("Use chunked with an Akka streams Source instead", "2.5.0")
-    def chunked[C](content: Enumerator[C])(
-        implicit writeable: Writeable[C]): Result = {
+    def chunked[C](content: Enumerator[C])(implicit
+        writeable: Writeable[C]): Result = {
       chunked(Source.fromPublisher(Streams.enumeratorToPublisher(content)))
     }
 
@@ -546,8 +546,8 @@ trait Results {
       * @param content Enumerator providing the content to stream.
       */
     @deprecated("Use sendEntity with a Streamed entity instead", "2.5.0")
-    def feed[C](content: Enumerator[C])(
-        implicit writeable: Writeable[C]): Result = {
+    def feed[C](content: Enumerator[C])(implicit
+        writeable: Writeable[C]): Result = {
       Result(
         header = header,
         body = HttpEntity.Streamed(

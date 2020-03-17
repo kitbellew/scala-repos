@@ -246,8 +246,8 @@ trait InjectedActorSupport {
   def injectedChild(
       create: => Actor,
       name: String,
-      props: Props => Props = identity)(
-      implicit context: ActorContext): ActorRef = {
+      props: Props => Props = identity)(implicit
+      context: ActorContext): ActorRef = {
     context.actorOf(props(Props(create)), name)
   }
 }

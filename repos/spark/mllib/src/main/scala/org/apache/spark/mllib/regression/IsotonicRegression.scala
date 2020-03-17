@@ -76,8 +76,8 @@ class IsotonicRegressionModel @Since("1.3.0") (
   }
 
   /** Asserts the input array is monotone with the given ordering. */
-  private def assertOrdered(xs: Array[Double])(
-      implicit ord: Ordering[Double]): Unit = {
+  private def assertOrdered(xs: Array[Double])(implicit
+      ord: Ordering[Double]): Unit = {
     var i = 1
     val len = xs.length
     while (i < len) {

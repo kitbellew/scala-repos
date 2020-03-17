@@ -43,8 +43,8 @@ trait ApplicativeErrorLaws[F[_], E] extends ApplicativeLaws[F] {
 }
 
 object ApplicativeErrorLaws {
-  def apply[F[_], E](
-      implicit ev: ApplicativeError[F, E]): ApplicativeErrorLaws[F, E] =
+  def apply[F[_], E](implicit
+      ev: ApplicativeError[F, E]): ApplicativeErrorLaws[F, E] =
     new ApplicativeErrorLaws[F, E] {
       def F: ApplicativeError[F, E] = ev
     }

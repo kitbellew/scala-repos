@@ -579,8 +579,8 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
       })
   }
 
-  final def build[C[_], R](gr: GetResult[R])(
-      implicit canBuildFrom: CanBuildFrom[Nothing, R, C[R]]): C[R] = {
+  final def build[C[_], R](gr: GetResult[R])(implicit
+      canBuildFrom: CanBuildFrom[Nothing, R, C[R]]): C[R] = {
     val b = canBuildFrom()
     while (nextRow)
       b += gr(this)

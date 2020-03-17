@@ -151,12 +151,11 @@ object BSON {
 
     def get[A](k: String)(implicit reader: BSONReader[_ <: BSONValue, A]): A =
       reader.asInstanceOf[BSONReader[BSONValue, A]] read map(k)
-    def getO[A](k: String)(
-        implicit reader: BSONReader[_ <: BSONValue, A]): Option[A] =
+    def getO[A](k: String)(implicit
+        reader: BSONReader[_ <: BSONValue, A]): Option[A] =
       map get k flatMap reader.asInstanceOf[BSONReader[BSONValue, A]].readOpt
-    def getD[A](k: String, default: A)(
-        implicit reader: BSONReader[_ <: BSONValue, A]): A =
-      getO[A](k) getOrElse default
+    def getD[A](k: String, default: A)(implicit
+        reader: BSONReader[_ <: BSONValue, A]): A = getO[A](k) getOrElse default
 
     def str(k: String) = get[String](k)
     def strO(k: String) = getO[String](k)
@@ -240,8 +239,8 @@ object BSON {
         Some(BSONArray(l map BSONInteger.apply))
 
     import scalaz.Functor
-    def map[M[_]: Functor, A, B <: BSONValue](a: M[A])(
-        implicit writer: BSONWriter[A, B]): M[B] = a map writer.write
+    def map[M[_]: Functor, A, B <: BSONValue](a: M[A])(implicit
+        writer: BSONWriter[A, B]): M[B] = a map writer.write
   }
 
   val writer = new Writer

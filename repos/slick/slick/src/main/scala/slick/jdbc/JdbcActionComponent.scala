@@ -565,8 +565,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
     type QueryInsertResult
 
     /** Get the SQL statement for inserting a single row from a scalar expression */
-    def forceInsertStatementFor[TT](c: TT)(
-        implicit shape: Shape[_ <: FlatShapeLevel, TT, U, _]): String
+    def forceInsertStatementFor[TT](c: TT)(implicit
+        shape: Shape[_ <: FlatShapeLevel, TT, U, _]): String
 
     /** Get the SQL statement for inserting data produced by another query */
     def forceInsertStatementFor[TT, C[_]](query: Query[TT, U, C]): String
@@ -577,8 +577,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         : String
 
     /** Insert a single row from a scalar expression */
-    def forceInsertExpr[TT](c: TT)(
-        implicit shape: Shape[_ <: FlatShapeLevel, TT, U, _])
+    def forceInsertExpr[TT](c: TT)(implicit
+        shape: Shape[_ <: FlatShapeLevel, TT, U, _])
         : ProfileAction[QueryInsertResult, NoStream, Effect.Write]
 
     /** Insert data produced by another query */
@@ -661,8 +661,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         : ProfileAction[SingleInsertOrUpdateResult, NoStream, Effect.Write] =
       new InsertOrUpdateAction(value)
 
-    def forceInsertStatementFor[TT](c: TT)(
-        implicit shape: Shape[_ <: FlatShapeLevel, TT, U, _]) =
+    def forceInsertStatementFor[TT](c: TT)(implicit
+        shape: Shape[_ <: FlatShapeLevel, TT, U, _]) =
       buildQueryBasedInsert(Query(c)(shape)).sql
 
     def forceInsertStatementFor[TT, C[_]](query: Query[TT, U, C]) =
@@ -672,8 +672,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         compiledQuery: CompiledStreamingExecutable[Query[TT, U, C], _, _]) =
       buildQueryBasedInsert(compiledQuery).sql
 
-    def forceInsertExpr[TT](c: TT)(
-        implicit shape: Shape[_ <: FlatShapeLevel, TT, U, _])
+    def forceInsertExpr[TT](c: TT)(implicit
+        shape: Shape[_ <: FlatShapeLevel, TT, U, _])
         : ProfileAction[QueryInsertResult, NoStream, Effect.Write] =
       new InsertQueryAction(buildQueryBasedInsert((Query(c)(shape))), null)
 
@@ -802,8 +802,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           f
       }
 
-      protected def nativeUpsert(value: U, sql: String)(
-          implicit session: Backend#Session): SingleInsertOrUpdateResult =
+      protected def nativeUpsert(value: U, sql: String)(implicit
+          session: Backend#Session): SingleInsertOrUpdateResult =
         preparedInsert(sql, session) { st =>
           st.clearParameters()
           compiled.upsert.converter.set(value, st)
@@ -815,8 +815,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           value: U,
           checkSql: String,
           updateSql: String,
-          insertSql: String)(
-          implicit session: Backend#Session): SingleInsertOrUpdateResult = {
+          insertSql: String)(implicit
+          session: Backend#Session): SingleInsertOrUpdateResult = {
         val found =
           preparedOther(checkSql, session) { st =>
             st.clearParameters()

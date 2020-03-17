@@ -42,8 +42,8 @@ object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
       *
       * Convenience shortcut for: `flow.join(handler).run()`.
       */
-    def handleWith[Mat](handler: Flow[ByteString, ByteString, Mat])(
-        implicit materializer: Materializer): Mat =
+    def handleWith[Mat](handler: Flow[ByteString, ByteString, Mat])(implicit
+        materializer: Materializer): Mat =
       flow.joinMat(handler)(Keep.right).run()
 
   }
@@ -140,8 +140,8 @@ final class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       backlog: Int = 100,
       options: immutable.Traversable[SocketOption] = Nil,
       halfClose: Boolean = false,
-      idleTimeout: Duration = Duration.Inf)(
-      implicit m: Materializer): Future[ServerBinding] = {
+      idleTimeout: Duration = Duration.Inf)(implicit
+      m: Materializer): Future[ServerBinding] = {
     bind(interface, port, backlog, options, halfClose, idleTimeout)
       .to(
         Sink.foreach { conn: IncomingConnection ⇒

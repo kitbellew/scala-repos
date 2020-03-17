@@ -133,8 +133,8 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
 
 class BrowseServiceHandler[A](
     vfs0: VFSMetadata[Future],
-    legacy: Boolean = false /* Enterprise software! */ )(
-    implicit M: Monad[Future])
+    legacy: Boolean = false /* Enterprise software! */ )(implicit
+    M: Monad[Future])
     extends BrowseSupport[Future](vfs0)
     with CustomHttpService[A, (APIKey, Path) => Future[HttpResponse[JValue]]]
     with Logging {

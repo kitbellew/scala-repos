@@ -80,8 +80,8 @@ private[std] sealed trait Function1Instances extends Function1Instances0 {
 }
 
 private[std] sealed trait Function1Instances0 {
-  implicit def function1Semigroup[A, B](
-      implicit S: Semigroup[B]): Semigroup[A => B] =
+  implicit def function1Semigroup[A, B](implicit
+      S: Semigroup[B]): Semigroup[A => B] =
     new Function1Semigroup[A, B] {
       def B: Semigroup[B] = S
     }

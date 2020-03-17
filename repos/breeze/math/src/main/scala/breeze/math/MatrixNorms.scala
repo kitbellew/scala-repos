@@ -15,14 +15,14 @@ import breeze.numerics.{pow, sqrt}
   * of norms that do not require CanTraverseValues.
   */
 trait MatrixNorms[M, S] {
-  implicit def canNorm_Int(
-      implicit iter: CanTraverseValues[M, Int]): norm.Impl2[M, Int, Double]
-  implicit def canNorm_Float(
-      implicit iter: CanTraverseValues[M, Float]): norm.Impl2[M, Float, Double]
+  implicit def canNorm_Int(implicit
+      iter: CanTraverseValues[M, Int]): norm.Impl2[M, Int, Double]
+  implicit def canNorm_Float(implicit
+      iter: CanTraverseValues[M, Float]): norm.Impl2[M, Float, Double]
   implicit def canNorm_Double(implicit
       iter: CanTraverseValues[M, Double]): norm.Impl2[M, Double, Double]
-  implicit def canNorm_Field(
-      implicit field: Field[S]): norm.Impl2[M, Double, Double]
+  implicit def canNorm_Field(implicit
+      field: Field[S]): norm.Impl2[M, Double, Double]
 }
 
 trait MatrixInnerProduct[M, S] extends MatrixNorms[M, S] {
@@ -204,8 +204,8 @@ object EntrywiseMatrixNorms {
           }
         }
 
-      override implicit def canNorm_Field(
-          implicit field: Field[S]): norm.Impl2[M, Double, Double] =
+      override implicit def canNorm_Field(implicit
+          field: Field[S]): norm.Impl2[M, Double, Double] =
         new norm.Impl2[M, Double, Double] {
           def apply(v: M, n: Double): Double = {
 

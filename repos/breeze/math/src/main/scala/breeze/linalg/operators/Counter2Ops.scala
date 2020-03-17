@@ -123,11 +123,11 @@ trait Counter2Ops {
       }
     }
 
-  implicit def canMulVV[K1, K2, V](
-      implicit semiring: Semiring[V]): OpMulScalar.Impl2[Counter2[
+  implicit def canMulVV[K1, K2, V](implicit
+      semiring: Semiring[V]): OpMulScalar.Impl2[Counter2[K1, K2, V], Counter2[
     K1,
     K2,
-    V], Counter2[K1, K2, V], Counter2[K1, K2, V]] = {
+    V], Counter2[K1, K2, V]] = {
     new OpMulScalar.Impl2[Counter2[K1, K2, V], Counter2[K1, K2, V], Counter2[
       K1,
       K2,
@@ -329,11 +329,11 @@ trait Counter2Ops {
     }
   }
 
-  implicit def canMultiplyC2C2[K1, K2, K3, V](
-      implicit semiring: Semiring[V]): OpMulMatrix.Impl2[Counter2[
-    K1,
+  implicit def canMultiplyC2C2[K1, K2, K3, V](implicit
+      semiring: Semiring[V]): OpMulMatrix.Impl2[Counter2[K1, K2, V], Counter2[
     K2,
-    V], Counter2[K2, K3, V], Counter2[K1, K3, V]] = {
+    K3,
+    V], Counter2[K1, K3, V]] = {
     new OpMulMatrix.Impl2[Counter2[K1, K2, V], Counter2[K2, K3, V], Counter2[
       K1,
       K3,

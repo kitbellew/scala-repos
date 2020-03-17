@@ -5,8 +5,8 @@ trait EitherInstances extends EitherInstances1 {
   implicit val eitherBitraverse: Bitraverse[Either] =
     new Bitraverse[Either] {
       def bitraverse[G[_], A, B, C, D](
-          fab: Either[A, B])(f: A => G[C], g: B => G[D])(
-          implicit G: Applicative[G]): G[Either[C, D]] =
+          fab: Either[A, B])(f: A => G[C], g: B => G[D])(implicit
+          G: Applicative[G]): G[Either[C, D]] =
         fab match {
           case Left(a)  => G.map(f(a))(Left(_))
           case Right(b) => G.map(g(b))(Right(_))
@@ -40,8 +40,8 @@ trait EitherInstances extends EitherInstances1 {
       override def map[B, C](fa: Either[A, B])(f: B => C): Either[A, C] =
         fa.right.map(f)
 
-      def traverse[F[_], B, C](fa: Either[A, B])(f: B => F[C])(
-          implicit F: Applicative[F]): F[Either[A, C]] =
+      def traverse[F[_], B, C](fa: Either[A, B])(f: B => F[C])(implicit
+          F: Applicative[F]): F[Either[A, C]] =
         fa.fold(a => F.pure(Left(a)), b => F.map(f(b))(Right(_)))
 
       def foldLeft[B, C](fa: Either[A, B], c: C)(f: (C, B) => C): C =

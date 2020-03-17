@@ -24,8 +24,8 @@ final class Api(
         authenticateUser)(_.map(u => (u.username, "")))
         .verifying("Invalid username or password", _.isDefined))
 
-  def saveAuthentication(userId: String, apiVersion: Option[Int])(
-      implicit req: RequestHeader): Fu[String] =
+  def saveAuthentication(userId: String, apiVersion: Option[Int])(implicit
+      req: RequestHeader): Fu[String] =
     if (tor isExitNode req.remoteAddress)
       fufail(Api.AuthFromTorExitNode)
     else

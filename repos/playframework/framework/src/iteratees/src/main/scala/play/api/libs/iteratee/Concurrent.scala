@@ -337,8 +337,8 @@ object Concurrent {
     * @param length A function that computes the length of an input item
     * $paramEcSingle
     */
-  def buffer[E](maxBuffer: Int, length: Input[E] => Int)(
-      implicit ec: ExecutionContext): Enumeratee[E, E] =
+  def buffer[E](maxBuffer: Int, length: Input[E] => Int)(implicit
+      ec: ExecutionContext): Enumeratee[E, E] =
     new Enumeratee[E, E] {
       val pec = ec.prepare()
 
@@ -636,8 +636,8 @@ object Concurrent {
     */
   def broadcast[E](
       e: Enumerator[E],
-      interestIsDownToZero: Broadcaster => Unit = _ => ())(
-      implicit ec: ExecutionContext): (Enumerator[E], Broadcaster) = {
+      interestIsDownToZero: Broadcaster => Unit = _ => ())(implicit
+      ec: ExecutionContext): (Enumerator[E], Broadcaster) = {
     val pec = ec.prepare()
     lazy val h: Hub[E] = hub(e, () => interestIsDownToZero(h))(pec)
     (h.getPatchCord(), h)
@@ -673,8 +673,8 @@ object Concurrent {
 
   private def hub[E](
       e: Enumerator[E],
-      interestIsDownToZero: () => Unit = () => ())(
-      implicit ec: ExecutionContext): Hub[E] = {
+      interestIsDownToZero: () => Unit = () => ())(implicit
+      ec: ExecutionContext): Hub[E] = {
     val pec = ec.prepare()
 
     import scala.concurrent.stm._
@@ -851,8 +851,8 @@ object Concurrent {
     * @param patcher A function that passes a patch panel whenever the enumerator is applied to an iteratee.
     * $paramEcSingle
     */
-  def patchPanel[E](patcher: PatchPanel[E] => Unit)(
-      implicit ec: ExecutionContext): Enumerator[E] =
+  def patchPanel[E](patcher: PatchPanel[E] => Unit)(implicit
+      ec: ExecutionContext): Enumerator[E] =
     new Enumerator[E] {
       val pec = ec.prepare()
 
@@ -964,8 +964,8 @@ object Concurrent {
           // Equivalent to map, but allows us to handle failures
           def wrap(delegate: Iteratee[A, B]): Iteratee[A, B] =
             new Iteratee[A, B] {
-              def fold[C](folder: (Step[A, B]) => Future[C])(
-                  implicit ec: ExecutionContext) = {
+              def fold[C](folder: (Step[A, B]) => Future[C])(implicit
+                  ec: ExecutionContext) = {
                 val toReturn =
                   delegate.fold {
                     case done @ Step.Done(a, in) => {

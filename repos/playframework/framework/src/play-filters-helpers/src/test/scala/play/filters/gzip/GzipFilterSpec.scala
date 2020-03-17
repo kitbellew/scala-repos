@@ -196,8 +196,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       "gzip")
   }
 
-  def checkGzippedBody(result: Future[Result], body: String)(
-      implicit mat: Materializer) = {
+  def checkGzippedBody(result: Future[Result], body: String)(implicit
+      mat: Materializer) = {
     checkGzipped(result)
     val resultBody = contentAsBytes(result)
     await(result).body.contentLength.foreach { cl =>
@@ -206,8 +206,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
     gunzip(resultBody) must_== body
   }
 
-  def checkNotGzipped(result: Future[Result], body: String)(
-      implicit mat: Materializer) = {
+  def checkNotGzipped(result: Future[Result], body: String)(implicit
+      mat: Materializer) = {
     header(CONTENT_ENCODING, result) must beNone
     contentAsString(result) must_== body
   }

@@ -34,8 +34,8 @@ import org.bson.types.ObjectId
 import scalaz._
 import scalaz.syntax.monad._
 
-class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
-    implicit val M: Monad[M])
+class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(implicit
+    val M: Monad[M])
     extends AccountManager[M] {
   val accounts = new mutable.HashMap[AccountId, Account]
   val resetTokens = new mutable.HashMap[ResetTokenId, ResetToken]

@@ -283,12 +283,12 @@ class MacroOrderingProperties
       }
     }
 
-  def serialize[T](t: T)(
-      implicit orderedBuffer: OrderedSerialization[T]): InputStream =
+  def serialize[T](t: T)(implicit
+      orderedBuffer: OrderedSerialization[T]): InputStream =
     serializeSeq(List(t))
 
-  def serializeSeq[T](t: Seq[T])(
-      implicit orderedBuffer: OrderedSerialization[T]): InputStream = {
+  def serializeSeq[T](t: Seq[T])(implicit
+      orderedBuffer: OrderedSerialization[T]): InputStream = {
     import JavaStreamEnrichments._
 
     val baos = new ByteArrayOutputStream
@@ -306,8 +306,8 @@ class MacroOrderingProperties
   def rawCompare[T](a: T, b: T)(implicit obuf: OrderedSerialization[T]): Int =
     obuf.compareBinary(serialize(a), serialize(b)).unsafeToInt
 
-  def checkManyExplicit[T](i: List[(T, T)])(
-      implicit obuf: OrderedSerialization[T]) = {
+  def checkManyExplicit[T](i: List[(T, T)])(implicit
+      obuf: OrderedSerialization[T]) = {
     val serializedA = serializeSeq(i.map(_._1))
     val serializedB = serializeSeq(i.map(_._2))
     i.foreach {

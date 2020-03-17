@@ -49,8 +49,8 @@ object FieldSpec extends Specification {
       mandatory: MandatoryTypedField[A],
       legacyOptional: MandatoryTypedField[A],
       optional: OptionalTypedField[A],
-      canCheckDefaultValues: Boolean = true)(
-      implicit m: scala.reflect.Manifest[A]) = {
+      canCheckDefaultValues: Boolean = true)(implicit
+      m: scala.reflect.Manifest[A]) = {
     def commonBehaviorsForMandatory(in: MandatoryTypedField[A]): Unit = {
 
       if (canCheckDefaultValues) {

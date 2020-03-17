@@ -946,8 +946,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       } finally localServerChannel.close()
     }
 
-    def register(channel: SelectableChannel, initialOps: Int)(
-        implicit channelActor: ActorRef): Unit =
+    def register(channel: SelectableChannel, initialOps: Int)(implicit
+        channelActor: ActorRef): Unit =
       registerCallReceiver.ref
         .tell(Registration(channel, initialOps), channelActor)
 

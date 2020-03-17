@@ -342,8 +342,8 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
   @expand
   @expand.valify
   implicit def implOpMulInner_DVT_SVT_eq_T[
-      @expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+      @expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : OpMulInner.Impl2[DenseVector[T], SparseVector[T], T] =
     new OpMulInner.Impl2[DenseVector[T], SparseVector[T], T] {
       def apply(a: DenseVector[T], b: SparseVector[T]): T = {
@@ -379,8 +379,8 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
   @expand
   @expand.valify
   implicit def implZipValues_DVT_SVT_eq_ZVTT[
-      @expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+      @expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : zipValues.Impl2[DenseVector[T], SparseVector[T], ZippedValues[T, T]] =
     new zipValues.Impl2[DenseVector[T], SparseVector[T], ZippedValues[T, T]] {
 
@@ -430,8 +430,8 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
   @expand
   @expand.valify
   implicit def implScaleAdd_DVT_T_SVT_InPlace[
-      @expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
+      @expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
       : scaleAdd.InPlaceImpl3[DenseVector[T], T, SparseVector[T]] =
     new scaleAdd.InPlaceImpl3[DenseVector[T], T, SparseVector[T]] {
       def apply(y: DenseVector[T], a: T, x: SparseVector[T]): Unit = {
@@ -690,8 +690,8 @@ trait SparseVectorOps { this: SparseVector.type =>
   @expand
   @expand.valify
   implicit def implOpMulScalar_SVT_SVT_eq_SVT[
-      @expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
+      @expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
       : OpMulScalar.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] =
     new OpMulScalar.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] {
       def apply(a: SparseVector[T], b: SparseVector[T]): SparseVector[T] = {
@@ -985,8 +985,8 @@ trait SparseVectorOps { this: SparseVector.type =>
         .register(this)
     }
 
-  protected def updateFromPure[T, Op <: OpType, Other](
-      implicit op: UFunc.UImpl2[Op, SparseVector[T], Other, SparseVector[T]])
+  protected def updateFromPure[T, Op <: OpType, Other](implicit
+      op: UFunc.UImpl2[Op, SparseVector[T], Other, SparseVector[T]])
       : UFunc.InPlaceImpl2[Op, SparseVector[T], Other] = {
     new UFunc.InPlaceImpl2[Op, SparseVector[T], Other] {
       def apply(a: SparseVector[T], b: Other) {
@@ -1072,8 +1072,8 @@ trait SparseVectorOps { this: SparseVector.type =>
   @expand
   @expand.valify
   implicit def implOpMulInner_SVT_SVT_eq_T[
-      @expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
+      @expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
       : OpMulInner.Impl2[SparseVector[T], SparseVector[T], T] =
     new OpMulInner.Impl2[SparseVector[T], SparseVector[T], T] {
       def apply(a: SparseVector[T], b: SparseVector[T]): T = {
@@ -1238,8 +1238,8 @@ trait SparseVectorOps { this: SparseVector.type =>
   @expand
   @expand.valify
   implicit def implScaleAdd_SVT_T_SVT_InPlace[
-      @expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
+      @expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
       : scaleAdd.InPlaceImpl3[SparseVector[T], T, SparseVector[T]] =
     new scaleAdd.InPlaceImpl3[SparseVector[T], T, SparseVector[T]] {
       def apply(y: SparseVector[T], a: T, x: SparseVector[T]): Unit = {
@@ -1365,8 +1365,8 @@ trait SparseVectorOps { this: SparseVector.type =>
       }
     }
 
-  implicit def implNorm_SVT_Field_eq_D[T](
-      implicit f: Field[T]): norm.Impl2[SparseVector[T], Double, Double] =
+  implicit def implNorm_SVT_Field_eq_D[T](implicit
+      f: Field[T]): norm.Impl2[SparseVector[T], Double, Double] =
     new norm.Impl2[SparseVector[T], Double, Double] {
       def apply(v: SparseVector[T], n: Double): Double = {
         import v._

@@ -3,8 +3,8 @@ import scala.reflect.runtime.universe._
 class ImaginaryCanBuildFrom[-From, -Elem, +To]
 class CompletelyIndependentList[+A] {
   type Repr <: CompletelyIndependentList[A]
-  def map[B, That](f: A => B)(
-      implicit cbf: ImaginaryCanBuildFrom[Repr, B, That]): That = ???
+  def map[B, That](f: A => B)(implicit
+      cbf: ImaginaryCanBuildFrom[Repr, B, That]): That = ???
   def distinct(): CompletelyIndependentList[A] = ???
 }
 

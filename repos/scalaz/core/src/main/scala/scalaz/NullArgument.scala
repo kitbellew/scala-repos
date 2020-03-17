@@ -98,8 +98,8 @@ object NullArgument extends NullArgumentInstances {
 
 sealed abstract class NullArgumentInstances0 {
 
-  implicit def nullArgumentSemigroup[A, B](
-      implicit M0: Semigroup[B]): Semigroup[NullArgument[A, B]] =
+  implicit def nullArgumentSemigroup[A, B](implicit
+      M0: Semigroup[B]): Semigroup[NullArgument[A, B]] =
     new NullArgumentSemigroup[A, B] {
       implicit val M = M0
     }
@@ -116,8 +116,8 @@ sealed abstract class NullArgumentInstances0 {
 
 sealed abstract class NullArgumentInstances extends NullArgumentInstances0 {
 
-  implicit def nullArgumentMonoid[A, B](
-      implicit M0: Monoid[B]): Monoid[NullArgument[A, B]] =
+  implicit def nullArgumentMonoid[A, B](implicit
+      M0: Monoid[B]): Monoid[NullArgument[A, B]] =
     new NullArgumentMonoid[A, B] {
       implicit val M = M0
     }

@@ -58,8 +58,8 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
     this(new SparseArray(index, data, activeSize, length, value.zero))
 
   /** This auxiliary constructor assumes that the index array is already sorted. */
-  def this(index: Array[Int], data: Array[V], length: Int)(
-      implicit value: Zero[V]) = this(index, data, index.length, length)
+  def this(index: Array[Int], data: Array[V], length: Int)(implicit
+      value: Zero[V]) = this(index, data, index.length, length)
 
   // Don't delete
   SparseVector.init()

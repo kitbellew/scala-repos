@@ -62,8 +62,8 @@ object ArrayHomogeneousArrayColumn {
       values: Array[Array[A]]) =
     new ArrayHomogeneousArrayColumn(defined.copy, values)(
       CArrayType(CValueType[A]))
-  def empty[@spec(Boolean, Long, Double) A](size: Int)(
-      implicit elemType: CValueType[A]): ArrayHomogeneousArrayColumn[A] = {
+  def empty[@spec(Boolean, Long, Double) A](size: Int)(implicit
+      elemType: CValueType[A]): ArrayHomogeneousArrayColumn[A] = {
     implicit val m: Manifest[A] = elemType.manifest
 
     new ArrayHomogeneousArrayColumn(new BitSet, new Array[Array[A]](size))(

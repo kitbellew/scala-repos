@@ -21,8 +21,8 @@ trait StreamInstances {
       override def cojoin[A](a: Stream[A]) = a.tails.toStream.init
       def cobind[A, B](fa: Stream[A])(f: Stream[A] => B): Stream[B] =
         map(cojoin(fa))(f)
-      def traverseImpl[G[_], A, B](fa: Stream[A])(f: A => G[B])(
-          implicit G: Applicative[G]): G[Stream[B]] = {
+      def traverseImpl[G[_], A, B](fa: Stream[A])(f: A => G[B])(implicit
+          G: Applicative[G]): G[Stream[B]] = {
         val seed: G[Stream[B]] = G.point(Stream[B]())
 
         foldRight(fa, seed) { (x, ys) =>
@@ -48,8 +48,8 @@ trait StreamInstances {
       override def foldLeft[A, B](fa: Stream[A], z: B)(f: (B, A) => B): B =
         fa.foldLeft(z)(f)
 
-      override def foldMap[A, B](fa: Stream[A])(f: A => B)(
-          implicit M: Monoid[B]) =
+      override def foldMap[A, B](fa: Stream[A])(f: A => B)(implicit
+          M: Monoid[B]) =
         this.foldRight(fa, M.zero)((a, b) => M.append(f(a), b))
 
       override def foldRight[A, B](fa: Stream[A], z: => B)(

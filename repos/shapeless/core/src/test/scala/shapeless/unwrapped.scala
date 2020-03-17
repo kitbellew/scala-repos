@@ -37,8 +37,8 @@ class UnwrappedTests {
       Pass[T] {
         type U = U0
       }
-    implicit def unwrappedPasses[W, U0](
-        implicit uw: Unwrapped.Aux[W, U0]): Pass.Aux[W, U0] =
+    implicit def unwrappedPasses[W, U0](implicit
+        uw: Unwrapped.Aux[W, U0]): Pass.Aux[W, U0] =
       new Pass[W] {
         type U = U0
         def actual(w: W): W = w
@@ -96,8 +96,8 @@ class UnwrappedTests {
     }
     def value[T](t: Tagged[T, _]): T = t.asInstanceOf[T]
 
-    implicit def taggedUnwrapped[UI, T, UF](
-        implicit chain: Lazy[Unwrapped.Aux[UI, UF]]) =
+    implicit def taggedUnwrapped[UI, T, UF](implicit
+        chain: Lazy[Unwrapped.Aux[UI, UF]]) =
       new Unwrapped[UI @@ T] {
         type U = UF
         def unwrap(w: UI @@ T) = chain.value.unwrap(value(w))

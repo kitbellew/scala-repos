@@ -229,8 +229,8 @@ class PolyTests {
     typed[Int :: Int :: Int :: Int :: Int :: Int :: HNil](l9)
     assertEquals(1 :: 3 :: 4 :: 4 :: 4 :: 1 :: HNil, l9)
 
-    def hlistMap(f: Poly)(
-        implicit mapper: Mapper[f.type, Int :: String :: HNil]) =
+    def hlistMap(f: Poly)(implicit
+        mapper: Mapper[f.type, Int :: String :: HNil]) =
       (23 :: "foo" :: HNil) map f
 
     val hm1 = hlistMap(singleton)

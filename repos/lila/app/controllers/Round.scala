@@ -117,8 +117,8 @@ object Round extends LilaController with TheftPrevention {
       }
     }
 
-  private def getNext(currentGame: GameModel)(povs: List[Pov])(
-      implicit ctx: Context) =
+  private def getNext(currentGame: GameModel)(povs: List[Pov])(implicit
+      ctx: Context) =
     povs find { pov =>
       pov.isMyTurn && (pov.game.hasClock || !currentGame.hasClock)
     }
@@ -174,8 +174,8 @@ object Round extends LilaController with TheftPrevention {
       }
     }
 
-  def watch(pov: Pov, userTv: Option[UserModel] = None)(
-      implicit ctx: Context): Fu[Result] =
+  def watch(pov: Pov, userTv: Option[UserModel] = None)(implicit
+      ctx: Context): Fu[Result] =
     playablePovForReq(pov.game) match {
       case Some(player) if userTv.isEmpty =>
         renderPlayer(pov withColor player.color)
@@ -221,8 +221,8 @@ object Round extends LilaController with TheftPrevention {
         ) map NoCache
     }
 
-  private def myTour(tourId: Option[String], withStanding: Boolean)(
-      implicit ctx: Context): Fu[Option[MiniStanding]] =
+  private def myTour(tourId: Option[String], withStanding: Boolean)(implicit
+      ctx: Context): Fu[Option[MiniStanding]] =
     tourId ?? { tid =>
       Env.tournament.api.miniStanding(tid, ctx.userId, withStanding)
     }

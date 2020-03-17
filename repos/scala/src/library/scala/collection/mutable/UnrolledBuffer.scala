@@ -216,8 +216,8 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
 object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
 
   /** $genericCanBuildFromInfo */
-  implicit def canBuildFrom[T](
-      implicit t: ClassTag[T]): CanBuildFrom[Coll, T, UnrolledBuffer[T]] =
+  implicit def canBuildFrom[T](implicit
+      t: ClassTag[T]): CanBuildFrom[Coll, T, UnrolledBuffer[T]] =
     new GenericCanBuildFrom[T]
   def newBuilder[T](implicit t: ClassTag[T]): Builder[T, UnrolledBuffer[T]] =
     new UnrolledBuffer[T]

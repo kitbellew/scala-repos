@@ -187,8 +187,8 @@ trait BodyParser[+A]
     * @see [[map]]
     * @see [[play.api.libs.streams.Accumulator.mapFuture]]
     */
-  def mapM[B](f: A => Future[B])(
-      implicit ec: ExecutionContext): BodyParser[B] = {
+  def mapM[B](f: A => Future[B])(implicit
+      ec: ExecutionContext): BodyParser[B] = {
     // prepare execution context as body parser object may cross thread boundary
     implicit val pec = ec.prepare()
     new BodyParser[B] {
@@ -223,8 +223,8 @@ trait BodyParser[+A]
     *        The context is prepared on the calling thread.
     * @return the transformed body parser
     */
-  def validate[B](f: A => Either[Result, B])(
-      implicit ec: ExecutionContext): BodyParser[B] = {
+  def validate[B](f: A => Either[Result, B])(implicit
+      ec: ExecutionContext): BodyParser[B] = {
     // prepare execution context as body parser object may cross thread boundary
     implicit val pec = ec.prepare()
     new BodyParser[B] {
@@ -246,8 +246,8 @@ trait BodyParser[+A]
     * @return the transformed body parser
     * @see [[validate]]
     */
-  def validateM[B](f: A => Future[Either[Result, B]])(
-      implicit ec: ExecutionContext): BodyParser[B] = {
+  def validateM[B](f: A => Future[Either[Result, B]])(implicit
+      ec: ExecutionContext): BodyParser[B] = {
     // prepare execution context as body parser object may cross thread boundary
     implicit val pec = ec.prepare()
     new BodyParser[B] {

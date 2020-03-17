@@ -784,8 +784,8 @@ object Loc {
       * Build a Loc.Snippet instance out of a name and a DispatchSnippet (or StatefulSnippet, LiftScreen or Wizard).
       * The "render" method will be invoked on the Dispatch snippet
       */
-    def apply(name: String, snippet: => DispatchSnippet)(
-        implicit disambiguate: DummyImplicit): Snippet =
+    def apply(name: String, snippet: => DispatchSnippet)(implicit
+        disambiguate: DummyImplicit): Snippet =
       new Snippet(name, ns => snippet.dispatch("render")(ns)) // Issue #919
 
     /**

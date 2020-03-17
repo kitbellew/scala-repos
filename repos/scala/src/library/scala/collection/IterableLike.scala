@@ -268,8 +268,8 @@ trait IterableLike[+A, +Repr]
     }
   }
 
-  def zip[A1 >: A, B, That](that: GenIterable[B])(
-      implicit bf: CanBuildFrom[Repr, (A1, B), That]): That = {
+  def zip[A1 >: A, B, That](that: GenIterable[B])(implicit
+      bf: CanBuildFrom[Repr, (A1, B), That]): That = {
     val b = bf(repr)
     val these = this.iterator
     val those = that.iterator
@@ -292,8 +292,8 @@ trait IterableLike[+A, +Repr]
     b.result()
   }
 
-  def zipWithIndex[A1 >: A, That](
-      implicit bf: CanBuildFrom[Repr, (A1, Int), That]): That = {
+  def zipWithIndex[A1 >: A, That](implicit
+      bf: CanBuildFrom[Repr, (A1, Int), That]): That = {
     val b = bf(repr)
     var i = 0
     for (x <- this) {

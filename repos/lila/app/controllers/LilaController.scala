@@ -39,8 +39,8 @@ private[controllers] trait LilaController
 
   protected implicit def LilaHtmlToResult(content: Html): Result = Ok(content)
 
-  protected implicit def LilaFunitToResult(funit: Funit)(
-      implicit ctx: Context): Fu[Result] =
+  protected implicit def LilaFunitToResult(funit: Funit)(implicit
+      ctx: Context): Fu[Result] =
     negotiate(
       html = fuccess(Ok("ok")),
       api = _ => fuccess(Ok(Json.obj("ok" -> true)) as JSON))
@@ -152,8 +152,8 @@ private[controllers] trait LilaController
       f: BodyContext[_] => UserModel => Fu[Result]): Action[AnyContent] =
     SecureBody(BodyParsers.parse.anyContent)(perm(Permission))(f)
 
-  protected def Firewall[A <: Result](a: => Fu[A])(
-      implicit ctx: Context): Fu[Result] =
+  protected def Firewall[A <: Result](a: => Fu[A])(implicit
+      ctx: Context): Fu[Result] =
     Env.security.firewall.accepts(ctx.req) flatMap {
       _ fold (
         a, {
@@ -164,16 +164,16 @@ private[controllers] trait LilaController
       )
     }
 
-  protected def NoEngine[A <: Result](a: => Fu[A])(
-      implicit ctx: Context): Fu[Result] =
+  protected def NoEngine[A <: Result](a: => Fu[A])(implicit
+      ctx: Context): Fu[Result] =
     ctx.me.??(_.engine).fold(Forbidden(views.html.site.noEngine()).fuccess, a)
 
-  protected def NoBooster[A <: Result](a: => Fu[A])(
-      implicit ctx: Context): Fu[Result] =
+  protected def NoBooster[A <: Result](a: => Fu[A])(implicit
+      ctx: Context): Fu[Result] =
     ctx.me.??(_.booster).fold(Forbidden(views.html.site.noBooster()).fuccess, a)
 
-  protected def NoLame[A <: Result](a: => Fu[A])(
-      implicit ctx: Context): Fu[Result] = NoEngine(NoBooster(a))
+  protected def NoLame[A <: Result](a: => Fu[A])(implicit
+      ctx: Context): Fu[Result] = NoEngine(NoBooster(a))
 
   protected def NoPlayban(a: => Fu[Result])(implicit ctx: Context): Fu[Result] =
     ctx.userId.??(Env.playban.api.currentBan) flatMap {
@@ -190,8 +190,8 @@ private[controllers] trait LilaController
       }
     }
 
-  protected def NoCurrentGame(a: => Fu[Result])(
-      implicit ctx: Context): Fu[Result] =
+  protected def NoCurrentGame(a: => Fu[Result])(implicit
+      ctx: Context): Fu[Result] =
     ctx.me.??(mashup.Preload.currentGame(Env.user.lightUser)) flatMap {
       _.fold(a) { current =>
         negotiate(
@@ -205,16 +205,16 @@ private[controllers] trait LilaController
       }
     }
 
-  protected def NoPlaybanOrCurrent(a: => Fu[Result])(
-      implicit ctx: Context): Fu[Result] = NoPlayban(NoCurrentGame(a))
+  protected def NoPlaybanOrCurrent(a: => Fu[Result])(implicit
+      ctx: Context): Fu[Result] = NoPlayban(NoCurrentGame(a))
 
   protected def JsonOk[A: Writes](fua: Fu[A]) =
     fua map { a =>
       Ok(Json toJson a) as JSON
     }
 
-  protected def JsonOptionOk[A: Writes](fua: Fu[Option[A]])(
-      implicit ctx: Context) =
+  protected def JsonOptionOk[A: Writes](fua: Fu[Option[A]])(implicit
+      ctx: Context) =
     fua flatMap {
       _.fold(notFound(ctx))(a => fuccess(Ok(Json toJson a) as JSON))
     }
@@ -233,8 +233,8 @@ private[controllers] trait LilaController
       Ok(a) as JAVASCRIPT withHeaders (headers: _*)
     }
 
-  protected def FormResult[A](form: Form[A])(op: A => Fu[Result])(
-      implicit req: Request[_]): Fu[Result] =
+  protected def FormResult[A](form: Form[A])(op: A => Fu[Result])(implicit
+      req: Request[_]): Fu[Result] =
     form.bindFromRequest
       .fold(form => fuccess(BadRequest(form.errors mkString "\n")), op)
 
@@ -285,8 +285,8 @@ private[controllers] trait LilaController
         })
     }
 
-  protected def OptionResult[A](fua: Fu[Option[A]])(op: A => Result)(
-      implicit ctx: Context) =
+  protected def OptionResult[A](fua: Fu[Option[A]])(op: A => Result)(implicit
+      ctx: Context) =
     OptionFuResult(fua) { a =>
       fuccess(op(a))
     }
@@ -321,11 +321,11 @@ private[controllers] trait LilaController
       permission: Permission.type => Permission,
       user: UserModel): Boolean = Granter(permission(Permission))(user)
 
-  protected def isGranted(permission: Permission.type => Permission)(
-      implicit ctx: Context): Boolean = isGranted(permission(Permission))
+  protected def isGranted(permission: Permission.type => Permission)(implicit
+      ctx: Context): Boolean = isGranted(permission(Permission))
 
-  protected def isGranted(permission: Permission)(
-      implicit ctx: Context): Boolean = ctx.me ?? Granter(permission)
+  protected def isGranted(permission: Permission)(implicit
+      ctx: Context): Boolean = ctx.me ?? Granter(permission)
 
   protected def authenticationFailed(implicit ctx: Context): Fu[Result] =
     negotiate(
@@ -348,8 +348,8 @@ private[controllers] trait LilaController
       .contains(LilaCookie.sessionId)
       .fold(res, res withCookies LilaCookie.makeSessionId(req))
 
-  protected def negotiate(html: => Fu[Result], api: Int => Fu[Result])(
-      implicit ctx: Context): Fu[Result] =
+  protected def negotiate(html: => Fu[Result], api: Int => Fu[Result])(implicit
+      ctx: Context): Fu[Result] =
     (
       lila.api.Mobile.Api.requestVersion(ctx.req) match {
         case Some(1) => api(1) map (_ as JSON)
@@ -435,7 +435,6 @@ private[controllers] trait LilaController
     else
       f
 
-  protected def errorsAsJson(form: play.api.data.Form[_])(
-      implicit lang: play.api.i18n.Messages) =
-    lila.common.Form errorsAsJson form
+  protected def errorsAsJson(form: play.api.data.Form[_])(implicit
+      lang: play.api.i18n.Messages) = lila.common.Form errorsAsJson form
 }

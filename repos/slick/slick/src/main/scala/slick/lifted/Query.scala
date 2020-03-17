@@ -37,13 +37,13 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   }
 
   /** Build a new query by applying a function to all elements of this query. */
-  def map[F, G, T](f: E => F)(
-      implicit shape: Shape[_ <: FlatShapeLevel, F, T, G]): Query[G, T, C] =
+  def map[F, G, T](f: E => F)(implicit
+      shape: Shape[_ <: FlatShapeLevel, F, T, G]): Query[G, T, C] =
     flatMap(v => Query[F, T, G](f(v)))
 
   /** Select all elements of this query which satisfy a predicate. */
-  private def filterHelper[T](f: E => T, wrapExpr: Node => Node)(
-      implicit wt: CanBeQueryCondition[T]): Query[E, U, C] = {
+  private def filterHelper[T](f: E => T, wrapExpr: Node => Node)(implicit
+      wt: CanBeQueryCondition[T]): Query[E, U, C] = {
     val generator = new AnonSymbol
     val aliased = shaped.encodeRef(Ref(generator))
     val fv = f(aliased.value)
@@ -55,10 +55,10 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   /** Select all elements of this query which satisfy a predicate. Unlike
     * `withFilter, this method only allows `Rep`-valued predicates, so it
     * guards against the accidental use use plain Booleans. */
-  def filter[T <: Rep[_]](f: E => T)(
-      implicit wt: CanBeQueryCondition[T]): Query[E, U, C] = withFilter(f)
-  def filterNot[T <: Rep[_]](f: E => T)(
-      implicit wt: CanBeQueryCondition[T]): Query[E, U, C] =
+  def filter[T <: Rep[_]](f: E => T)(implicit
+      wt: CanBeQueryCondition[T]): Query[E, U, C] = withFilter(f)
+  def filterNot[T <: Rep[_]](f: E => T)(implicit
+      wt: CanBeQueryCondition[T]): Query[E, U, C] =
     filterHelper(f, node => Library.Not.typed(node.nodeType, node))
 
   /** Select all elements of this query which satisfy a predicate. This method
@@ -265,8 +265,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   /** Test whether this query is non-empty. */
   def exists = Library.Exists.column[Boolean](toNode)
 
-  def pack[R](
-      implicit packing: Shape[_ <: FlatShapeLevel, E, _, R]): Query[R, U, C] =
+  def pack[R](implicit
+      packing: Shape[_ <: FlatShapeLevel, E, _, R]): Query[R, U, C] =
     new Query[R, U, C] {
       val shaped: ShapedValue[_ <: R, U] = self.shaped.packedValue(packing)
       def toNode = self.toNode
@@ -300,8 +300,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
 
   /** Remove duplicate elements which are the same in the given projection. When used on an
     * ordered Query, there is no guarantee in which order duplicates are removed. */
-  def distinctOn[F, T](f: E => F)(
-      implicit shape: Shape[_ <: FlatShapeLevel, F, T, _]): Query[E, U, C] = {
+  def distinctOn[F, T](f: E => F)(implicit
+      shape: Shape[_ <: FlatShapeLevel, F, T, _]): Query[E, U, C] = {
     val generator = new AnonSymbol
     val aliased = shaped.encodeRef(Ref(generator)).value
     val fv = f(aliased)
@@ -311,8 +311,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   }
 
   /** Change the collection type to build when executing the query. */
-  def to[D[_]](
-      implicit ctc: TypedCollectionTypeConstructor[D]): Query[E, U, D] =
+  def to[D[_]](implicit
+      ctc: TypedCollectionTypeConstructor[D]): Query[E, U, D] =
     new Query[E, U, D] {
       val shaped = self.shaped
       def toNode = CollectionCast(self.toNode, ctc)
@@ -393,8 +393,8 @@ final class BaseJoinQuery[+E1, +E2, U1, U2, C[_], +B1, +B2](
       base) {
 
   /** Add a join condition to a join operation. */
-  def on[T <: Rep[_]](pred: (B1, B2) => T)(
-      implicit wt: CanBeQueryCondition[T]): Query[(E1, E2), (U1, U2), C] =
+  def on[T <: Rep[_]](pred: (B1, B2) => T)(implicit
+      wt: CanBeQueryCondition[T]): Query[(E1, E2), (U1, U2), C] =
     new WrappingQuery[(E1, E2), (U1, U2), C](
       AJoin(leftGen, rightGen, left, right, jt, wt(pred(b1, b2)).toNode),
       base)
@@ -438,8 +438,8 @@ object TableQuery {
 
 object TableQueryMacroImpl {
 
-  def apply[E <: AbstractTable[_]](c: Context)(
-      implicit e: c.WeakTypeTag[E]): c.Expr[TableQuery[E]] = {
+  def apply[E <: AbstractTable[_]](c: Context)(implicit
+      e: c.WeakTypeTag[E]): c.Expr[TableQuery[E]] = {
     import c.universe._
     val cons = c.Expr[Tag => E](
       Function(

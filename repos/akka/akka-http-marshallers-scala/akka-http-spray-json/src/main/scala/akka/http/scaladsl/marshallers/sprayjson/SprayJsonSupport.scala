@@ -18,8 +18,8 @@ trait SprayJsonSupport {
   implicit def sprayJsonUnmarshallerConverter[T](
       reader: RootJsonReader[T]): FromEntityUnmarshaller[T] =
     sprayJsonUnmarshaller(reader)
-  implicit def sprayJsonUnmarshaller[T](
-      implicit reader: RootJsonReader[T]): FromEntityUnmarshaller[T] =
+  implicit def sprayJsonUnmarshaller[T](implicit
+      reader: RootJsonReader[T]): FromEntityUnmarshaller[T] =
     sprayJsValueUnmarshaller.map(jsonReader[T].read)
   implicit def sprayJsValueUnmarshaller: FromEntityUnmarshaller[JsValue] =
     Unmarshaller.byteStringUnmarshaller

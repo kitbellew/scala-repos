@@ -26,8 +26,8 @@ private[server] object WebSocketHandler {
     */
   def messageFlowToFrameProcessor(
       flow: Flow[Message, Message, _],
-      bufferLimit: Int)(
-      implicit mat: Materializer): Processor[WebSocketFrame, WebSocketFrame] = {
+      bufferLimit: Int)(implicit
+      mat: Materializer): Processor[WebSocketFrame, WebSocketFrame] = {
 
     // The reason we use a processor is that we *must* release the buffers synchronously, since Akka streams drops
     // messages, which will mean we can't release the ByteBufs in the messages.

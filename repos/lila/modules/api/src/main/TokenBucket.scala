@@ -81,9 +81,8 @@ object TokenBucket {
 
   final class Consumer(actor: ActorRef) {
 
-    def apply(key: Any)(
-        implicit timeout: Timeout = defaultTimeout): Future[Int] =
-      consume(actor, key)
+    def apply(key: Any)(implicit
+        timeout: Timeout = defaultTimeout): Future[Int] = consume(actor, key)
   }
 
   /**
@@ -116,7 +115,7 @@ object TokenBucket {
     * @param timeout akka timeout
     * @return (remainingTokens - 1), if negative no tokens are consumed.
     */
-  def consume(actor: ActorRef, key: Any)(
-      implicit timeout: Timeout = defaultTimeout): Future[Int] =
+  def consume(actor: ActorRef, key: Any)(implicit
+      timeout: Timeout = defaultTimeout): Future[Int] =
     (actor ? TokenRequest(key)).mapTo[Int]
 }

@@ -26,8 +26,8 @@ import play.core.Execution.Implicits.internalContext
 object JavaWebSocket extends JavaHelpers {
 
   def webSocketWrapper[A](
-      retrieveWebSocket: => CompletionStage[LegacyWebSocket[A]])(
-      implicit transformer: MessageFlowTransformer[A, A]): WebSocket =
+      retrieveWebSocket: => CompletionStage[LegacyWebSocket[A]])(implicit
+      transformer: MessageFlowTransformer[A, A]): WebSocket =
     WebSocket { request =>
       val javaContext = createJavaContext(request)
 

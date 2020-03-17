@@ -6,15 +6,15 @@ import cats.implicits._
 trait FoldableLaws[F[_]] {
   implicit def F: Foldable[F]
 
-  def leftFoldConsistentWithFoldMap[A, B](fa: F[A], f: A => B)(
-      implicit M: Monoid[B]): IsEq[B] = {
+  def leftFoldConsistentWithFoldMap[A, B](fa: F[A], f: A => B)(implicit
+      M: Monoid[B]): IsEq[B] = {
     fa.foldMap(f) <-> fa.foldLeft(M.empty) { (b, a) =>
       b |+| f(a)
     }
   }
 
-  def rightFoldConsistentWithFoldMap[A, B](fa: F[A], f: A => B)(
-      implicit M: Monoid[B]): IsEq[B] = {
+  def rightFoldConsistentWithFoldMap[A, B](fa: F[A], f: A => B)(implicit
+      M: Monoid[B]): IsEq[B] = {
     fa.foldMap(f) <-> fa
       .foldRight(Later(M.empty))((a, lb) => lb.map(f(a) |+| _))
       .value

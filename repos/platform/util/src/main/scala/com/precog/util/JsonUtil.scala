@@ -39,8 +39,8 @@ import akka.dispatch.{Future, Await, ExecutionContext}
   * shared interface with scala collections.
   */
 object JsonUtil {
-  def parseSingleFromByteChunk(bc: ByteChunk)(
-      implicit M: Monad[Future]): Future[Validation[Seq[Throwable], JValue]] =
+  def parseSingleFromByteChunk(bc: ByteChunk)(implicit
+      M: Monad[Future]): Future[Validation[Seq[Throwable], JValue]] =
     parseSingleFromStream[Future](bc.fold(_ :: StreamT.empty, identity))
 
   def parseSingleFromStream[M[+_]: Monad](stream: StreamT[M, Array[Byte]])
@@ -72,8 +72,8 @@ object JsonUtil {
     rec(stream, AsyncParser.json())
   }
 
-  def parseManyFromByteChunk(bc: ByteChunk)(
-      implicit M: Monad[Future]): StreamT[Future, AsyncParse] =
+  def parseManyFromByteChunk(bc: ByteChunk)(implicit
+      M: Monad[Future]): StreamT[Future, AsyncParse] =
     parseManyFromStream[Future](bc.fold(_ :: StreamT.empty, identity))
 
   def parseManyFromStream[M[+_]: Monad](

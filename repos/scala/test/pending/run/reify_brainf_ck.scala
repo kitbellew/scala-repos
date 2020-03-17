@@ -23,8 +23,8 @@ object Test extends App {
       }
     }
 
-    case class Tape[T](left: List[T], cell: T, right: List[T])(
-        implicit func: Func[T]) {
+    case class Tape[T](left: List[T], cell: T, right: List[T])(implicit
+        func: Func[T]) {
       private def headOf(list: List[T]) =
         if (list.isEmpty)
           func.zero

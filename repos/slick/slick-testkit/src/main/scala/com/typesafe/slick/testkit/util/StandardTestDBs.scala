@@ -47,8 +47,8 @@ object StandardTestDBs {
       val url = "jdbc:h2:" + TestkitConfig.testDBPath + "/" + dbName
       override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
       // Recreating the DB is faster than dropping everything individually
-      override def dropUserArtifacts(
-          implicit session: profile.Backend#Session) = {
+      override def dropUserArtifacts(implicit
+          session: profile.Backend#Session) = {
         session.close()
         cleanUpBefore()
       }
@@ -68,8 +68,8 @@ object StandardTestDBs {
         "jdbc:hsqldb:file:" + TestkitConfig.testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
       override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
       // Recreating the DB is faster than dropping everything individually
-      override def dropUserArtifacts(
-          implicit session: profile.Backend#Session) = {
+      override def dropUserArtifacts(implicit
+          session: profile.Backend#Session) = {
         session.close()
         cleanUpBefore()
       }
@@ -132,14 +132,14 @@ object StandardTestDBs {
   lazy val Postgres =
     new ExternalJdbcTestDB("postgres") {
       val profile = PostgresProfile
-      override def localTables(
-          implicit ec: ExecutionContext): DBIO[Vector[String]] =
+      override def localTables(implicit
+          ec: ExecutionContext): DBIO[Vector[String]] =
         ResultSetAction[(String, String, String, String)](
           _.conn.getMetaData().getTables("", "public", null, null)).map { ts =>
           ts.filter(_._4.toUpperCase == "TABLE").map(_._3).sorted
         }
-      override def localSequences(
-          implicit ec: ExecutionContext): DBIO[Vector[String]] =
+      override def localSequences(implicit
+          ec: ExecutionContext): DBIO[Vector[String]] =
         ResultSetAction[(String, String, String, String)](
           _.conn.getMetaData().getTables("", "public", null, null)).map { ts =>
           ts.filter(_._4.toUpperCase == "SEQUENCE").map(_._3).sorted
@@ -152,8 +152,8 @@ object StandardTestDBs {
     new ExternalJdbcTestDB("mysql") {
       val profile = MySQLProfile
       // Recreating the DB is faster than dropping everything individually
-      override def dropUserArtifacts(
-          implicit session: profile.Backend#Session) = {
+      override def dropUserArtifacts(implicit
+          session: profile.Backend#Session) = {
         session.close()
         cleanUpBefore()
       }
@@ -225,8 +225,8 @@ object StandardTestDBs {
       override def cleanUpAfter(): Unit =
         await(databaseFor("adminConn").run(dropSchema))
 
-      override def dropUserArtifacts(
-          implicit session: profile.Backend#Session) = {
+      override def dropUserArtifacts(implicit
+          session: profile.Backend#Session) = {
         session.close()
         cleanUpBefore()
       }
@@ -238,8 +238,8 @@ object StandardTestDBs {
 
     val defaultSchema = config.getString("defaultSchema")
 
-    override def localTables(
-        implicit ec: ExecutionContext): DBIO[Vector[String]] =
+    override def localTables(implicit
+        ec: ExecutionContext): DBIO[Vector[String]] =
       ResultSetAction[(String, String, String, String)](
         _.conn.getMetaData().getTables(testDB, defaultSchema, null, null)).map {
         ts => ts.map(_._3).sorted
@@ -286,8 +286,8 @@ object StandardTestDBs {
 
       /* Only drop and recreate the user. This is much faster than dropping
        * the tablespace. */
-      override def dropUserArtifacts(
-          implicit session: profile.Backend#Session) = {
+      override def dropUserArtifacts(implicit
+          session: profile.Backend#Session) = {
         session.close()
         val a = DBIO.sequence(
           Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
@@ -312,8 +312,8 @@ class SQLiteTestDB(dburl: String, confName: String)
   val profile = SQLiteProfile
   val url = dburl
   val jdbcDriver = "org.sqlite.JDBC"
-  override def localTables(
-      implicit ec: ExecutionContext): DBIO[Vector[String]] =
+  override def localTables(implicit
+      ec: ExecutionContext): DBIO[Vector[String]] =
     super.localTables.map(_.filter(s => !s.toLowerCase.contains("sqlite_")))
   override def dropUserArtifacts(implicit session: profile.Backend#Session) =
     blockingRunOnSession { implicit ec =>
@@ -339,8 +339,8 @@ abstract class DerbyDB(confName: String) extends InternalJdbcTestDB(confName) {
     "derby.stream.error.method",
     classOf[DerbyDB].getName + ".DEV_NULL")
   val jdbcDriver = "org.apache.derby.jdbc.EmbeddedDriver"
-  override def localTables(
-      implicit ec: ExecutionContext): DBIO[Vector[String]] =
+  override def localTables(implicit
+      ec: ExecutionContext): DBIO[Vector[String]] =
     ResultSetAction[(String, String, String, String)](
       _.conn.getMetaData().getTables(null, "APP", null, null)).map { ts =>
       ts.map(_._3).sorted
@@ -390,8 +390,8 @@ object DerbyDB {
 abstract class HsqlDB(confName: String) extends InternalJdbcTestDB(confName) {
   val profile = HsqldbProfile
   val jdbcDriver = "org.hsqldb.jdbcDriver"
-  override def localTables(
-      implicit ec: ExecutionContext): DBIO[Vector[String]] =
+  override def localTables(implicit
+      ec: ExecutionContext): DBIO[Vector[String]] =
     ResultSetAction[(String, String, String, String)](
       _.conn.getMetaData().getTables(null, "PUBLIC", null, null)).map { ts =>
       ts.map(_._3).sorted

@@ -27,8 +27,8 @@ object UidClashTest {
     //Ignore everything
     override def isTerminated: Boolean = true
     override def sendSystemMessage(message: SystemMessage): Unit = ()
-    override def !(message: Any)(
-        implicit sender: ActorRef = Actor.noSender): Unit = ()
+    override def !(message: Any)(implicit
+        sender: ActorRef = Actor.noSender): Unit = ()
   }
 
   def createCollidingRef(system: ActorSystem): ActorRef =

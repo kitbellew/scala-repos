@@ -258,8 +258,8 @@ trait ShardServiceCombinators
             AccountDetails,
             Path,
             Query,
-            QueryOptions) => Future[HttpResponse[B]]])(
-      implicit executor: ExecutionContext)
+            QueryOptions) => Future[HttpResponse[B]]])(implicit
+      executor: ExecutionContext)
       : HttpService[ByteChunk, ((APIKey, AccountDetails), Path) => Future[
         HttpResponse[B]]] = {
     new DelegatingService[ByteChunk, ((APIKey, AccountDetails), Path) => Future[
@@ -328,8 +328,8 @@ trait ShardServiceCombinators
             AccountDetails,
             Path,
             Query,
-            QueryOptions) => Future[HttpResponse[B]]])(
-      implicit executor: ExecutionContext)
+            QueryOptions) => Future[HttpResponse[B]]])(implicit
+      executor: ExecutionContext)
       : HttpService[ByteChunk, ((APIKey, AccountDetails)) => Future[
         HttpResponse[B]]] = {
     new DelegatingService[ByteChunk, ((APIKey, AccountDetails)) => Future[
@@ -373,8 +373,8 @@ trait ShardServiceCombinators
 final class FindAccountService[A, B](accountFinder: AccountFinder[Future])(
     val delegate: HttpService[
       A,
-      Validation[String, (APIKey, AccountDetails)] => Future[B]])(
-    implicit M: Monad[Future])
+      Validation[String, (APIKey, AccountDetails)] => Future[B]])(implicit
+    M: Monad[Future])
     extends DelegatingService[
       A,
       APIKey => Future[B],

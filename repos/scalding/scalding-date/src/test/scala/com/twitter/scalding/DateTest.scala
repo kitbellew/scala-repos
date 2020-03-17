@@ -396,8 +396,8 @@ class DateTest extends WordSpec {
     def globMatchesDate(glob: String)(date: String) = {
       java.util.regex.Pattern.matches(glob.replaceAll("\\*", "[0-9]*"), date)
     }
-    def bruteForce(pattern: String, dr: DateRange, dur: Duration)(
-        implicit tz: java.util.TimeZone) = {
+    def bruteForce(pattern: String, dr: DateRange, dur: Duration)(implicit
+        tz: java.util.TimeZone) = {
       dr.each(dur)
         .map { (dr: DateRange) =>
           String.format(pattern, dr.start.toCalendar(tz))

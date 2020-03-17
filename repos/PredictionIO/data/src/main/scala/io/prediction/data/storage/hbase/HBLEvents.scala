@@ -132,8 +132,8 @@ class HBLEvents(
   override def futureDelete(
       eventId: String,
       appId: Int,
-      channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Boolean] = {
+      channelId: Option[Int])(implicit
+      ec: ExecutionContext): Future[Boolean] = {
     Future {
       val table = getTable(appId, channelId)
       val rowKey = RowKey(eventId)
@@ -155,8 +155,8 @@ class HBLEvents(
       targetEntityType: Option[Option[String]] = None,
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
-      reversed: Option[Boolean] = None)(
-      implicit ec: ExecutionContext): Future[Iterator[Event]] = {
+      reversed: Option[Boolean] = None)(implicit
+      ec: ExecutionContext): Future[Iterator[Event]] = {
     Future {
 
       require(

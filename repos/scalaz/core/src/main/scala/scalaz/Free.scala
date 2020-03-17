@@ -26,13 +26,12 @@ object Free extends FreeInstances {
     liftF(value).flatMap(x => x)
 
   /** Suspend a computation in a pure step of the applicative functor `S` */
-  def suspend[S[_], A](value: => Free[S, A])(
-      implicit S: Applicative[S]): Free[S, A] =
-    liftF(S.pure(())).flatMap(_ => value)
+  def suspend[S[_], A](value: => Free[S, A])(implicit
+      S: Applicative[S]): Free[S, A] = liftF(S.pure(())).flatMap(_ => value)
 
   /** A version of `liftF` that infers the nested type constructor. */
-  def liftFU[MA](value: => MA)(
-      implicit MA: Unapply[Functor, MA]): Free[MA.M, MA.A] = liftF(MA(value))
+  def liftFU[MA](value: => MA)(implicit
+      MA: Unapply[Functor, MA]): Free[MA.M, MA.A] = liftF(MA(value))
 
   /** Monadic join for the higher-order monad `Free` */
   def joinF[S[_], A](value: Free[Free[S, ?], A]): Free[S, A] =
@@ -105,8 +104,8 @@ sealed abstract class Free[S[_], A] {
   final def flatMap[B](f: A => Free[S, B]): Free[S, B] = gosub(this)(f)
 
   /** Catamorphism. Run the first given function if Return, otherwise, the second given function. */
-  final def fold[B](r: A => B, s: S[Free[S, A]] => B)(
-      implicit S: Functor[S]): B = resume.fold(s, r)
+  final def fold[B](r: A => B, s: S[Free[S, A]] => B)(implicit
+      S: Functor[S]): B = resume.fold(s, r)
 
   /** Evaluates a single layer of the free monad **/
   @tailrec final def resume(implicit S: Functor[S]): (S[Free[S, A]] \/ A) =
@@ -158,8 +157,8 @@ sealed abstract class Free[S[_], A] {
     zapWith(fs)((a, f) => f(a))
 
   /** Runs a single step, using a function that extracts the resumption from its suspension functor. */
-  final def bounce(f: S[Free[S, A]] => Free[S, A])(
-      implicit S: Functor[S]): Free[S, A] =
+  final def bounce(f: S[Free[S, A]] => Free[S, A])(implicit
+      S: Functor[S]): Free[S, A] =
     resume match {
       case -\/(s) => f(s)
       case \/-(r) => Return(r)
@@ -256,16 +255,16 @@ sealed abstract class Free[S[_], A] {
   /**
     * Folds this free recursion to the right using the given natural transformations.
     */
-  final def foldRight[G[_]](z: Id ~> G)(f: λ[α => S[G[α]]] ~> G)(
-      implicit S: Functor[S]): G[A] =
+  final def foldRight[G[_]](z: Id ~> G)(f: λ[α => S[G[α]]] ~> G)(implicit
+      S: Functor[S]): G[A] =
     this.resume match {
       case -\/(s) => f(S.map(s)(_.foldRight(z)(f)))
       case \/-(r) => z(r)
     }
 
   /** Runs to completion, allowing the resumption function to thread an arbitrary state of type `B`. */
-  final def foldRun[B](b: B)(f: (B, S[Free[S, A]]) => (B, Free[S, A]))(
-      implicit S: Functor[S]): (B, A) = {
+  final def foldRun[B](b: B)(f: (B, S[Free[S, A]]) => (B, Free[S, A]))(implicit
+      S: Functor[S]): (B, A) = {
     @tailrec def foldRun2(t: Free[S, A], z: B): (B, A) =
       t.resume match {
         case -\/(s) =>
@@ -308,8 +307,8 @@ sealed abstract class Free[S[_], A] {
   }
 
   /** Drive this `Source` with the given Sink. */
-  def drive[E, B](sink: Sink[Option[E], B])(
-      implicit ev: Free[S, A] =:= Source[E, A]): (A, B) = {
+  def drive[E, B](sink: Sink[Option[E], B])(implicit
+      ev: Free[S, A] =:= Source[E, A]): (A, B) = {
     @tailrec def go(src: Source[E, A], snk: Sink[Option[E], B]): (A, B) =
       (src.resume, snk.resume) match {
         case (-\/((e, c)), -\/(f)) => go(c, f(Some(e)))
@@ -332,8 +331,8 @@ sealed abstract class Free[S[_], A] {
   }
 
   /** Feed the given source to this `Sink`. */
-  def drain[E, B](source: Source[E, B])(
-      implicit ev: Free[S, A] =:= Sink[E, A]): (A, B) = {
+  def drain[E, B](source: Source[E, B])(implicit
+      ev: Free[S, A] =:= Sink[E, A]): (A, B) = {
     @tailrec def go(src: Source[E, B], snk: Sink[E, A]): (A, B) =
       (src.resume, snk.resume) match {
         case (-\/((e, c)), -\/(f)) => go(c, f(e))

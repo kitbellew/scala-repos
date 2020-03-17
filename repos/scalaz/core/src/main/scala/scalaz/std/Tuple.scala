@@ -46,8 +46,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
         (f._1._1, (f._1._2, f._2))
     }
 
-  implicit def tuple1Semigroup[A1](
-      implicit A1: Semigroup[A1]): Semigroup[Tuple1[A1]] =
+  implicit def tuple1Semigroup[A1](implicit
+      A1: Semigroup[A1]): Semigroup[Tuple1[A1]] =
     new Tuple1Semigroup[A1] {
       implicit def _1: Semigroup[A1] = A1
     }
@@ -838,8 +838,8 @@ private trait Tuple8Semigroup[A1, A2, A3, A4, A5, A6, A7, A8]
 }
 private trait Tuple1Functor extends Traverse[Tuple1] {
   override def map[A, B](fa: Tuple1[A])(f: A => B) = Tuple1(f(fa._1))
-  def traverseImpl[G[_], A, B](fa: Tuple1[A])(f: A => G[B])(
-      implicit G: Applicative[G]) = G.map(f(fa._1))(Tuple1.apply)
+  def traverseImpl[G[_], A, B](fa: Tuple1[A])(f: A => G[B])(implicit
+      G: Applicative[G]) = G.map(f(fa._1))(Tuple1.apply)
 }
 
 private trait Tuple1Cozip extends Cozip[Tuple1] {

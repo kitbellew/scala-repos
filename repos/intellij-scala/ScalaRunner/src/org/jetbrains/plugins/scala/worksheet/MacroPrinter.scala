@@ -29,8 +29,8 @@ object MacroPrinter {
     q"${toPrint.tree.tpe.toString}"
   }
 
-  def printTypeInfoImpl[T](c: blackbox.Context)(
-      implicit ev: c.WeakTypeTag[T]): c.universe.Tree = {
+  def printTypeInfoImpl[T](c: blackbox.Context)(implicit
+      ev: c.WeakTypeTag[T]): c.universe.Tree = {
     import c.universe._
 
     q"${ev.tpe.toString}"

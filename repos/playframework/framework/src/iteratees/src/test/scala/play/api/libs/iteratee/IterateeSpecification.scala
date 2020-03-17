@@ -74,14 +74,14 @@ trait IterateeSpecification {
     */
   def delayed(
       it: => Iteratee[String, String],
-      delay: Duration = Duration(5, MILLISECONDS))(
-      implicit ec: ExecutionContext): Iteratee[String, String] = {
+      delay: Duration = Duration(5, MILLISECONDS))(implicit
+      ec: ExecutionContext): Iteratee[String, String] = {
     Iteratee.flatten(timeout(it, delay))
   }
 
   val timer = new java.util.Timer(true)
-  def timeout[A](a: => A, d: Duration)(
-      implicit e: ExecutionContext): Future[A] = {
+  def timeout[A](a: => A, d: Duration)(implicit
+      e: ExecutionContext): Future[A] = {
     val p = Promise[A]()
     timer.schedule(
       new java.util.TimerTask {

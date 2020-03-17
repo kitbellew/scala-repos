@@ -7,8 +7,8 @@ import scala.reflect.macros.Context
 
 object WriteSupportProvider {
 
-  def toWriteSupportImpl[T](ctx: Context)(
-      implicit T: ctx.WeakTypeTag[T]): ctx.Expr[ParquetWriteSupport[T]] = {
+  def toWriteSupportImpl[T](ctx: Context)(implicit
+      T: ctx.WeakTypeTag[T]): ctx.Expr[ParquetWriteSupport[T]] = {
     import ctx.universe._
 
     if (!IsCaseClassImpl.isCaseClassType(ctx)(T.tpe))

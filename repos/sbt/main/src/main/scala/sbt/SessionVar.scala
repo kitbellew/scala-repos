@@ -18,14 +18,14 @@ object SessionVar {
   }
   def emptyMap = Map(IMap.empty)
 
-  def persistAndSet[T](key: ScopedKey[Task[T]], state: State, value: T)(
-      implicit f: sbinary.Format[T]): State = {
+  def persistAndSet[T](key: ScopedKey[Task[T]], state: State, value: T)(implicit
+      f: sbinary.Format[T]): State = {
     persist(key, state, value)(f)
     set(key, state, value)
   }
 
-  def persist[T](key: ScopedKey[Task[T]], state: State, value: T)(
-      implicit f: sbinary.Format[T]): Unit =
+  def persist[T](key: ScopedKey[Task[T]], state: State, value: T)(implicit
+      f: sbinary.Format[T]): Unit =
     Project
       .structure(state)
       .streams(state)
@@ -59,8 +59,8 @@ object SessionVar {
     ScopedKey(scope, key.key)
   }
 
-  def read[T](key: ScopedKey[Task[T]], state: State)(
-      implicit f: Format[T]): Option[T] =
+  def read[T](key: ScopedKey[Task[T]], state: State)(implicit
+      f: Format[T]): Option[T] =
     Project.structure(state).streams(state).use(key) { s =>
       try {
         Some(Operations.read(s.readBinary(key, DefaultDataID)))
@@ -69,9 +69,8 @@ object SessionVar {
       }
     }
 
-  def load[T](key: ScopedKey[Task[T]], state: State)(
-      implicit f: Format[T]): Option[T] =
-    get(key, state) orElse read(key, state)(f)
+  def load[T](key: ScopedKey[Task[T]], state: State)(implicit
+      f: Format[T]): Option[T] = get(key, state) orElse read(key, state)(f)
 
   def loadAndSet[T](
       key: ScopedKey[Task[T]],

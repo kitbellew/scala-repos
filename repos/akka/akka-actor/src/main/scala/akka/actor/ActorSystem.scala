@@ -1027,8 +1027,8 @@ private[akka] class ActorSystemImpl(
     printNode(lookupRoot, "")
   }
 
-  final class TerminationCallbacks[T](upStreamTerminated: Future[T])(
-      implicit ec: ExecutionContext) {
+  final class TerminationCallbacks[T](upStreamTerminated: Future[T])(implicit
+      ec: ExecutionContext) {
     private[this] final val done = Promise[T]()
     private[this] final val ref = new AtomicReference(done)
 

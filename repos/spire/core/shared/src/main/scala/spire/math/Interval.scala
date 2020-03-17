@@ -269,8 +269,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
   def splitAtZero(implicit ev: AdditiveMonoid[A]): (Interval[A], Interval[A]) =
     split(ev.zero)
 
-  def mapAroundZero[B](f: Interval[A] => B)(
-      implicit ev: AdditiveMonoid[A]): (B, B) =
+  def mapAroundZero[B](f: Interval[A] => B)(implicit
+      ev: AdditiveMonoid[A]): (B, B) =
     splitAtZero match {
       case (a, b) => (f(a), f(b))
     }

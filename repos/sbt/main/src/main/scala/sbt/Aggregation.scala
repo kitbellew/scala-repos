@@ -33,8 +33,8 @@ final object Aggregation {
       taskValues = showTasks,
       s => state.log.info(s),
       success = true)
-  def printSettings(xs: Seq[KeyValue[_]], print: String => Unit)(
-      implicit display: Show[ScopedKey[_]]) =
+  def printSettings(xs: Seq[KeyValue[_]], print: String => Unit)(implicit
+      display: Show[ScopedKey[_]]) =
     xs match {
       case KeyValue(_, x) :: Nil => print(x.toString)
       case _ =>
@@ -55,8 +55,8 @@ final object Aggregation {
       s: State,
       structure: BuildStructure,
       ps: Values[Parser[Task[T]]],
-      show: ShowConfig)(
-      implicit display: Show[ScopedKey[_]]): Parser[() => State] =
+      show: ShowConfig)(implicit
+      display: Show[ScopedKey[_]]): Parser[() => State] =
     Command.applyEffect(seqParser(ps)) { ts =>
       runTasks(s, structure, ts, DummyTaskMap(Nil), show)
     }
@@ -75,8 +75,8 @@ final object Aggregation {
     showRun(complete, show)
     (complete.state, complete.results)
   }
-  def showRun[T](complete: Complete[T], show: ShowConfig)(
-      implicit display: Show[ScopedKey[_]]): Unit = {
+  def showRun[T](complete: Complete[T], show: ShowConfig)(implicit
+      display: Show[ScopedKey[_]]): Unit = {
     import complete._
     val log = state.log
     val extracted = Project extract state
@@ -189,8 +189,8 @@ final object Aggregation {
       s: State,
       structure: BuildStructure,
       inputs: Values[InputTask[I]],
-      show: ShowConfig)(
-      implicit display: Show[ScopedKey[_]]): Parser[() => State] = {
+      show: ShowConfig)(implicit
+      display: Show[ScopedKey[_]]): Parser[() => State] = {
     val parsers =
       for (KeyValue(k, it) <- inputs)
         yield it.parser(s).map(v => KeyValue(k, v))
@@ -201,8 +201,8 @@ final object Aggregation {
   }
 
   def evaluatingParser(s: State, structure: BuildStructure, show: ShowConfig)(
-      keys: Seq[KeyValue[_]])(
-      implicit display: Show[ScopedKey[_]]): Parser[() => State] = {
+      keys: Seq[KeyValue[_]])(implicit
+      display: Show[ScopedKey[_]]): Parser[() => State] = {
     // to make the call sites clearer
     def separate[L](in: Seq[KeyValue[_]])(
         f: KeyValue[_] => Either[KeyValue[L], KeyValue[_]])

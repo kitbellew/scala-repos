@@ -34,13 +34,13 @@ private[http] trait J2SMapping[J] {
 
 /** INTERNAL API */
 private[http] object J2SMapping {
-  implicit def fromJavaMapping[J](
-      implicit mapping: JavaMapping[J, _]): J2SMapping[J] {
+  implicit def fromJavaMapping[J](implicit
+      mapping: JavaMapping[J, _]): J2SMapping[J] {
     type S = mapping.S
   } = mapping
 
-  implicit def fromJavaSeqMapping[J](
-      implicit mapping: J2SMapping[J]): J2SMapping[Seq[J]] {
+  implicit def fromJavaSeqMapping[J](implicit
+      mapping: J2SMapping[J]): J2SMapping[Seq[J]] {
     type S = immutable.Seq[mapping.S]
   } =
     new J2SMapping[Seq[J]] {
@@ -58,8 +58,8 @@ private[http] trait S2JMapping[S] {
 
 /** INTERNAL API */
 private[http] object S2JMapping {
-  implicit def fromScalaMapping[S](
-      implicit mapping: JavaMapping[_, S]): S2JMapping[S] {
+  implicit def fromScalaMapping[S](implicit
+      mapping: JavaMapping[_, S]): S2JMapping[S] {
     type J = mapping.J
   } = mapping
 }
@@ -89,19 +89,19 @@ private[http] object JavaMapping {
   object Implicits {
     import scala.language.implicitConversions
 
-    implicit def convertToScala[J](j: J)(
-        implicit mapping: J2SMapping[J]): mapping.S = mapping.toScala(j)
-    implicit def convertSeqToScala[J](j: Seq[J])(
-        implicit mapping: J2SMapping[J]): immutable.Seq[mapping.S] =
+    implicit def convertToScala[J](j: J)(implicit
+        mapping: J2SMapping[J]): mapping.S = mapping.toScala(j)
+    implicit def convertSeqToScala[J](j: Seq[J])(implicit
+        mapping: J2SMapping[J]): immutable.Seq[mapping.S] =
       j.map(mapping.toScala(_)).toList
 
-    implicit def AddAsScala[J](javaObject: J)(
-        implicit mapping: J2SMapping[J]): AsScala[mapping.S] =
+    implicit def AddAsScala[J](javaObject: J)(implicit
+        mapping: J2SMapping[J]): AsScala[mapping.S] =
       new AsScala[mapping.S] {
         def asScala = convertToScala(javaObject)
       }
-    implicit def AddAsJava[S](scalaObject: S)(
-        implicit mapping: S2JMapping[S]): AsJava[mapping.J] =
+    implicit def AddAsJava[S](scalaObject: S)(implicit
+        mapping: S2JMapping[S]): AsJava[mapping.J] =
       new AsJava[mapping.J] {
         def asJava = mapping.toJava(scalaObject)
       }
@@ -187,11 +187,11 @@ private[http] object JavaMapping {
         }
     }
 
-  def scalaToJavaAdapterFlow[J, S](
-      implicit mapping: JavaMapping[J, S]): scaladsl.Flow[S, J, NotUsed] =
+  def scalaToJavaAdapterFlow[J, S](implicit
+      mapping: JavaMapping[J, S]): scaladsl.Flow[S, J, NotUsed] =
     scaladsl.Flow[S].map(mapping.toJava)
-  def javaToScalaAdapterFlow[J, S](
-      implicit mapping: JavaMapping[J, S]): scaladsl.Flow[J, S, NotUsed] =
+  def javaToScalaAdapterFlow[J, S](implicit
+      mapping: JavaMapping[J, S]): scaladsl.Flow[J, S, NotUsed] =
     scaladsl.Flow[J].map(mapping.toScala)
   def adapterBidiFlow[JIn, SIn, SOut, JOut](implicit
       inMapping: JavaMapping[JIn, SIn],
@@ -212,8 +212,8 @@ private[http] object JavaMapping {
           _1Mapping.toScala(javaObject.first),
           _2Mapping.toScala(javaObject.second))
     }
-  implicit def tryMapping[_J, _S](
-      implicit mapping: JavaMapping[_J, _S]): JavaMapping[Try[_J], Try[_S]] =
+  implicit def tryMapping[_J, _S](implicit
+      mapping: JavaMapping[_J, _S]): JavaMapping[Try[_J], Try[_S]] =
     new JavaMapping[Try[_J], Try[_S]] {
       def toScala(javaObject: Try[_J]): S = javaObject.map(mapping.toScala)
       def toJava(scalaObject: Try[_S]): J = scalaObject.map(mapping.toJava)

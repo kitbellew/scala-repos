@@ -383,8 +383,8 @@ abstract class Stream[+A]
     * @return A new collection containing the result of concatenating `this` with
     * `that`.
     */
-  override def ++[B >: A, That](that: GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That =
+  override def ++[B >: A, That](that: GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[Stream[A], B, That]): That =
     // we assume there is no other builder factory on streams and therefore know that That = Stream[A]
     if (isStreamBuilder(bf))
       asThat(
@@ -395,8 +395,8 @@ abstract class Stream[+A]
     else
       super.++(that)(bf)
 
-  override def +:[B >: A, That](elem: B)(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That =
+  override def +:[B >: A, That](elem: B)(implicit
+      bf: CanBuildFrom[Stream[A], B, That]): That =
     if (isStreamBuilder(bf))
       asThat(cons(elem, this))
     else
@@ -416,8 +416,8 @@ abstract class Stream[+A]
     * @return A new collection containing the modifications from the application
     * of `op`.
     */
-  override final def scanLeft[B, That](z: B)(op: (B, A) => B)(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That =
+  override final def scanLeft[B, That](z: B)(op: (B, A) => B)(implicit
+      bf: CanBuildFrom[Stream[A], B, That]): That =
     if (isStreamBuilder(bf))
       asThat(
         if (isEmpty)
@@ -441,8 +441,8 @@ abstract class Stream[+A]
     * @param f function to apply to each element.
     * @return  `f(a,,0,,), ..., f(a,,n,,)` if this sequence is `a,,0,,, ..., a,,n,,`.
     */
-  override final def map[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
+  override final def map[B, That](f: A => B)(implicit
+      bf: CanBuildFrom[Stream[A], B, That]): That = {
     if (isStreamBuilder(bf))
       asThat(
         if (isEmpty)
@@ -453,8 +453,8 @@ abstract class Stream[+A]
       super.map(f)(bf)
   }
 
-  override final def collect[B, That](pf: PartialFunction[A, B])(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
+  override final def collect[B, That](pf: PartialFunction[A, B])(implicit
+      bf: CanBuildFrom[Stream[A], B, That]): That = {
     if (!isStreamBuilder(bf))
       super.collect(pf)(bf)
     else {
@@ -515,8 +515,8 @@ abstract class Stream[+A]
     * @return  `f(a,,0,,) ::: ... ::: f(a,,n,,)` if
     *           this stream is `[a,,0,,, ..., a,,n,,]`.
     */
-  override final def flatMap[B, That](f: A => GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That =
+  override final def flatMap[B, That](f: A => GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[Stream[A], B, That]): That =
     // we assume there is no other builder factory on streams and therefore know that That = Stream[B]
     // optimisations are not for speed, but for functionality
     // see tickets #153, #498, #2147, and corresponding tests in run/ (as well as run/stream_flatmap_odds.scala)
@@ -674,8 +674,8 @@ abstract class Stream[+A]
     * }}}
     */
   override final def zip[A1 >: A, B, That](
-      that: scala.collection.GenIterable[B])(
-      implicit bf: CanBuildFrom[Stream[A], (A1, B), That]): That =
+      that: scala.collection.GenIterable[B])(implicit
+      bf: CanBuildFrom[Stream[A], (A1, B), That]): That =
     // we assume there is no other builder factory on streams and therefore know that That = Stream[(A1, B)]
     if (isStreamBuilder(bf))
       asThat(
@@ -710,8 +710,8 @@ abstract class Stream[+A]
     * // (5,4)
     * }}}
     */
-  override def zipWithIndex[A1 >: A, That](
-      implicit bf: CanBuildFrom[Stream[A], (A1, Int), That]): That =
+  override def zipWithIndex[A1 >: A, That](implicit
+      bf: CanBuildFrom[Stream[A], (A1, Int), That]): That =
     this.zip[A1, Int, That](Stream.from(0))
 
   /** Write all defined elements of this iterable into given string builder.
@@ -1043,8 +1043,8 @@ abstract class Stream[+A]
     * // 0
     * }}}
     */
-  override def padTo[B >: A, That](len: Int, elem: B)(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
+  override def padTo[B >: A, That](len: Int, elem: B)(implicit
+      bf: CanBuildFrom[Stream[A], B, That]): That = {
     def loop(len: Int, these: Stream[A]): Stream[B] =
       if (these.isEmpty)
         Stream.fill(len)(elem)
@@ -1381,8 +1381,8 @@ object Stream extends SeqFactory[Stream] {
       f
     } // don't set to null if throw during filter
 
-    def map[B, That](f: A => B)(
-        implicit bf: CanBuildFrom[Stream[A], B, That]): That = filtered map f
+    def map[B, That](f: A => B)(implicit
+        bf: CanBuildFrom[Stream[A], B, That]): That = filtered map f
 
     def flatMap[B, That](f: A => scala.collection.GenTraversableOnce[B])(
         implicit bf: CanBuildFrom[Stream[A], B, That]): That =

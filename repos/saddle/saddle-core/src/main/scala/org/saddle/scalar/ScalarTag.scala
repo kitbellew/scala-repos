@@ -163,6 +163,6 @@ trait SpecializedFactory[@spec(Boolean, Int, Long, Float, Double) T] {
     * Can override this default construction methodology to avoid the toArray call if you
     * don't want to extract elements that way.
     */
-  protected def altMatConstructor(r: Int, c: Int, arr: Array[Vec[T]])(
-      implicit st: ST[T]): Mat[T] = makeMat(c, r, st.concat(arr).toArray).T
+  protected def altMatConstructor(r: Int, c: Int, arr: Array[Vec[T]])(implicit
+      st: ST[T]): Mat[T] = makeMat(c, r, st.concat(arr).toArray).T
 }
