@@ -30,10 +30,11 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
     }
   }
 
-  def bufToString(buf: Buf): String = buf match {
-    case Buf.Utf8(s) => s
-    case _ => ""
-  }
+  def bufToString(buf: Buf): String =
+    buf match {
+      case Buf.Utf8(s) => s
+      case _           => ""
+    }
 
   before {
     writeToTempFile("foo bar")
@@ -53,7 +54,8 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
 
   test("CachingActivitySource") {
     val cache = new CachingActivitySource[String](new ActivitySource[String] {
-      def get(varName: String) = Activity.value(Random.alphanumeric.take(10).mkString)
+      def get(varName: String) =
+        Activity.value(Random.alphanumeric.take(10).mkString)
     })
 
     val a = cache.get("a")
@@ -64,7 +66,8 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
     Time.withCurrentTimeFrozen { timeControl =>
       import com.twitter.conversions.time._
       implicit val timer = new MockTimer
-      val file = new FilePollingActivitySource(1.microsecond, FuturePool.immediatePool)
+      val file =
+        new FilePollingActivitySource(1.microsecond, FuturePool.immediatePool)
       val buf = file.get(tempFile)
 
       var content: Option[String] = None
@@ -96,7 +99,8 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
         new ByteArrayInputStream(name.getBytes("UTF-8"))
     }
 
-    val loader = new ClassLoaderActivitySource(classLoader, FuturePool.immediatePool)
+    val loader =
+      new ClassLoaderActivitySource(classLoader, FuturePool.immediatePool)
     val bufAct = loader.get("bar baz")
 
     assert("bar baz" == bufToString(bufAct.sample()))

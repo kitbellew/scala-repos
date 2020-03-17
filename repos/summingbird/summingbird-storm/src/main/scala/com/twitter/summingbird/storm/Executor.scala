@@ -20,11 +20,9 @@ import com.twitter.summingbird.chill.ChillExecutionConfig
 import com.twitter.scalding.Args
 
 /**
- * @author Ian O Connell
- */
-
-trait StormExecutionConfig extends ChillExecutionConfig[Storm] {
-}
+  * @author Ian O Connell
+  */
+trait StormExecutionConfig extends ChillExecutionConfig[Storm] {}
 
 object Executor {
   def apply(inargs: Array[String], generator: Args => StormExecutionConfig) {

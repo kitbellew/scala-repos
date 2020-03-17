@@ -5,13 +5,13 @@ package api
 package base
 package types
 
-/** 
-* @author Alexander Podkhalyuzin
-* Date: 22.02.2008
-*/
-
+/**
+  * @author Alexander Podkhalyuzin
+  * Date: 22.02.2008
+  */
 trait ScInfixTypeElement extends ScTypeElement {
-  def lOp : ScTypeElement = findChildByClassScala(classOf[ScTypeElement])
-  def rOp : Option[ScTypeElement] 
-  def ref : ScStableCodeReferenceElement = findChildByClassScala(classOf[ScStableCodeReferenceElement])
+  def lOp: ScTypeElement = findChildByClassScala(classOf[ScTypeElement])
+  def rOp: Option[ScTypeElement]
+  def ref: ScStableCodeReferenceElement =
+    findChildByClassScala(classOf[ScStableCodeReferenceElement])
 }

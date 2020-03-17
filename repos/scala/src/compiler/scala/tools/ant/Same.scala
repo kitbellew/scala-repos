@@ -17,24 +17,24 @@ import org.apache.tools.ant.util.{FileNameMapper, IdentityMapper}
 import org.apache.tools.ant.types.Mapper
 
 /** An Ant task that, for a set of files, tests them for byte-to-byte
- *  equality with one or more other files.
- *
- *  This task supports the following parameters as attributes:
- *  - `dir`
- *  - `todir`
- *  - `resultproperty` (a property to be set when all tested files pairs are
- *    equal, if not set, the task will fail instead),
- *  - `failing` (whether to stop if all files are not equal).
- *
- *  It also support the following nested elements:
- *  - `mapper` (a mapper from original files to test files).
- *
- *  This task itself defines a fileset that represents the set of original files.
- *
- * @author  Gilles Dubochet
- * @version 1.0 */
+  *  equality with one or more other files.
+  *
+  *  This task supports the following parameters as attributes:
+  *  - `dir`
+  *  - `todir`
+  *  - `resultproperty` (a property to be set when all tested files pairs are
+  *    equal, if not set, the task will fail instead),
+  *  - `failing` (whether to stop if all files are not equal).
+  *
+  *  It also support the following nested elements:
+  *  - `mapper` (a mapper from original files to test files).
+  *
+  *  This task itself defines a fileset that represents the set of original files.
+  *
+  * @author  Gilles Dubochet
+  * @version 1.0 */
 @deprecated("Use diff", "2.11.0") class Same extends ScalaMatchingTask {
-/*============================================================================*\
+  /*============================================================================*\
 **                             Ant user-properties                            **
 \*============================================================================*/
 
@@ -46,7 +46,7 @@ import org.apache.tools.ant.types.Mapper
 
   private var mapperElement: Option[Mapper] = None
 
-/*============================================================================*\
+  /*============================================================================*\
 **                             Properties setters                             **
 \*============================================================================*/
 
@@ -67,24 +67,27 @@ import org.apache.tools.ant.types.Mapper
       val mapper = new Mapper(getProject)
       mapperElement = Some(mapper)
       mapper
-    }
-    else throw new BuildException("Cannot define more than one mapper", getLocation)
+    } else
+      throw new BuildException(
+        "Cannot define more than one mapper",
+        getLocation)
 
   def add(fileNameMapper: FileNameMapper) =
     createMapper().add(fileNameMapper)
 
-/*============================================================================*\
+  /*============================================================================*\
 **                             Properties getters                             **
 \*============================================================================*/
 
-  private def getMapper: FileNameMapper = mapperElement match {
-    case None =>
-      new IdentityMapper()
-    case Some(me) =>
-      me.getImplementation
-  }
+  private def getMapper: FileNameMapper =
+    mapperElement match {
+      case None =>
+        new IdentityMapper()
+      case Some(me) =>
+        me.getImplementation
+    }
 
-/*============================================================================*\
+  /*============================================================================*\
 **                               Support methods                              **
 \*============================================================================*/
 
@@ -93,7 +96,8 @@ import org.apache.tools.ant.types.Mapper
   /** Tests if all mandatory attributes are set and valid. */
   private def validateAttributes() = {
     if (origin.isEmpty) sys.error("Mandatory attribute 'dir' is not set.")
-    if (destination.isEmpty) sys.error("Mandatory attribute 'todir' is not set.")
+    if (destination.isEmpty)
+      sys.error("Mandatory attribute 'todir' is not set.")
   }
 
   private def reportDiff(f1: File, f2: File) = {
@@ -106,7 +110,7 @@ import org.apache.tools.ant.types.Mapper
     log("File '" + f1 + "' has no correspondant.")
   }
 
-/*============================================================================*\
+  /*============================================================================*\
 **                           The big execute method                           **
 \*============================================================================*/
 
@@ -114,14 +118,13 @@ import org.apache.tools.ant.types.Mapper
     validateAttributes()
     val mapper = getMapper
     allEqualNow = true
-    val originNames: Array[String] = getDirectoryScanner(origin.get).getIncludedFiles
+    val originNames: Array[String] = getDirectoryScanner(
+      origin.get).getIncludedFiles
     val bufferSize = 1024
     val originBuffer = new Array[Byte](bufferSize)
     val destBuffer = new Array[Byte](bufferSize)
-    for (
-      originName: String <- originNames;
-      destName: String <- mapper.mapFileName(originName)
-    ) {
+    for (originName: String <- originNames;
+         destName: String <- mapper.mapFileName(originName)) {
       //println("originName="+originName)
       //println("destName  ="+destName)
       var equalNow = true
@@ -147,18 +150,21 @@ import org.apache.tools.ant.types.Mapper
           reportDiff(originFile, destFile)
         originStream.close
         destStream.close
-      }
-      else reportMissing(originFile)
+      } else reportMissing(originFile)
     }
     if (!allEqualNow)
       if (failing)
-        sys.error("There were differences between '" + origin.get + "' and '" + destination.get + "'")
+        sys.error(
+          "There were differences between '" + origin.get + "' and '" + destination.get + "'")
       else
-        log("There were differences between '" + origin.get + "' and '" + destination.get + "'")
+        log(
+          "There were differences between '" + origin.get + "' and '" + destination.get + "'")
     else {
       if (!resultProperty.isEmpty)
         getProject.setProperty(resultProperty.get, "yes")
-      log("All files in '" + origin.get + "' and '" + destination.get + "' are equal", Project.MSG_VERBOSE)
+      log(
+        "All files in '" + origin.get + "' and '" + destination.get + "' are equal",
+        Project.MSG_VERBOSE)
     }
   }
 

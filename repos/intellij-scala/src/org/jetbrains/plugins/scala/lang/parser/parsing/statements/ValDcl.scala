@@ -10,10 +10,9 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 import org.jetbrains.plugins.scala.lang.parser.parsing.types.Type
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 11.02.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 11.02.2008
+  */
 /*
  * ValDcl ::= ids ':' Type
  */
@@ -38,8 +37,7 @@ object ValDcl {
             builder.advanceLexer //Ate :
             if (Type.parse(builder)) {
               returnMarker.drop
-            }
-            else {
+            } else {
               builder error ErrMsg("wrong.type")
               returnMarker.drop
             }

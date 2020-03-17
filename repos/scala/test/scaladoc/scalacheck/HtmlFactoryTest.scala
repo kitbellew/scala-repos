@@ -11,11 +11,11 @@ object XMLUtil {
   def stripGroup(seq: Node): Node = {
     seq match {
       case group: Group => {
-        <div class="group">{ group.nodes.map(stripGroup _) }</div>
+        <div class="group">{group.nodes.map(stripGroup _)}</div>
       }
       case e: Elem => {
         val child = e.child.map(stripGroup _)
-        Elem(e.prefix, e.label, e.attributes, e.scope, child : _*)
+        Elem(e.prefix, e.label, e.attributes, e.scope, child: _*)
       }
       case _ => seq
     }
@@ -36,13 +36,14 @@ object Test extends Properties("HtmlFactory") {
     // does partest actually guarantee this? to quote Leonard Nimoy: The answer, of course, is no.
     // this test _will_ fail again some time in the future.
     // Footnote: java.lang.ClassCastException: org.apache.tools.ant.loader.AntClassLoader5 cannot be cast to java.net.URLClassLoader
-    val loader = Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader]
+    val loader =
+      Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader]
     val paths = loader.getURLs.map(u => URLDecoder.decode(u.getPath))
     paths mkString java.io.File.pathSeparator
   }
 
   def createFactory = {
-    val settings = new Settings({Console.err.println(_)})
+    val settings = new Settings({ Console.err.println(_) })
     settings.scaladocQuietRun = true
     settings.nowarn.value = true
     settings.classpath.value = getClasspath
@@ -55,11 +56,12 @@ object Test extends Properties("HtmlFactory") {
   def createTemplates(basename: String): collection.Map[String, NodeSeq] = {
     val result = mutable.Map[String, NodeSeq]()
 
-    createFactory.makeUniverse(Left(List(RESOURCES+basename))) match {
+    createFactory.makeUniverse(Left(List(RESOURCES + basename))) match {
       case Some(universe) => {
-        new HtmlFactory(universe, new ScalaDocReporter(universe.settings)).writeTemplates((page) => {
-          result += (page.absoluteLinkTo(page.path) -> page.body)
-        })
+        new HtmlFactory(universe, new ScalaDocReporter(universe.settings))
+          .writeTemplates((page) => {
+            result += (page.absoluteLinkTo(page.path) -> page.body)
+          })
       }
       case _ =>
     }
@@ -73,27 +75,28 @@ object Test extends Properties("HtmlFactory") {
   }
 
   /**
-   * This tests the text without the markup - ex:
-   *
-   * <h4 class="signature">
-   *  <span class="modifier_kind">
-   *    <span class="modifier">implicit</span>
-   *    <span class="kind">def</span>
-   *  </span>
-   *  <span class="symbol">
-   *    <span class="name">test</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
-   *  </span>
-   *  </h4>
-   *
-   * becomes:
-   *
-   *  implicit def test(): Int
-   *
-   * and is required to contain the text in the given checks
-   *
-   * NOTE: Comparison is done ignoring all whitespace
-   */
-  def checkText(scalaFile: String, debug: Boolean = true)(checks: (Option[String], String, Boolean)*): Boolean = {
+    * This tests the text without the markup - ex:
+    *
+    * <h4 class="signature">
+    *  <span class="modifier_kind">
+    *    <span class="modifier">implicit</span>
+    *    <span class="kind">def</span>
+    *  </span>
+    *  <span class="symbol">
+    *    <span class="name">test</span><span class="params">()</span><span class="result">: <span name="scala.Int" class="extype">Int</span></span>
+    *  </span>
+    *  </h4>
+    *
+    * becomes:
+    *
+    *  implicit def test(): Int
+    *
+    * and is required to contain the text in the given checks
+    *
+    * NOTE: Comparison is done ignoring all whitespace
+    */
+  def checkText(scalaFile: String, debug: Boolean = true)(
+      checks: (Option[String], String, Boolean)*): Boolean = {
     val htmlFile = scalaFile.stripSuffix(".scala") + ".html"
     val htmlAllFiles = createTemplates(scalaFile)
     var result = true
@@ -109,19 +112,22 @@ object Test extends Properties("HtmlFactory") {
         case None =>
           htmlFile
       }
-      val fileTextPretty = htmlAllFiles(fileName).text.replace('→',' ').replaceAll("\\s+"," ")
+      val fileTextPretty =
+        htmlAllFiles(fileName).text.replace('→', ' ').replaceAll("\\s+", " ")
       val fileText = fileTextPretty.replaceAll(" ", "")
 
-      val checkTextPretty = check.replace('→',' ').replaceAll("\\s+"," ")
+      val checkTextPretty = check.replace('→', ' ').replaceAll("\\s+", " ")
       val checkText = checkTextPretty.replaceAll(" ", "")
 
       val checkValue = fileText.contains(checkText) == expected
       if (debug && (!checkValue)) {
         Console.err.println("")
-        Console.err.println("HTML Check failed for resource file " + scalaFile + ":")
+        Console.err.println(
+          "HTML Check failed for resource file " + scalaFile + ":")
         Console.err.println("Could not match: \n" + checkTextPretty)
         Console.err.println("In the extracted HTML text: \n" + fileTextPretty)
-        Console.err.println("NOTE: The whitespaces are eliminated before matching!")
+        Console.err.println(
+          "NOTE: The whitespaces are eliminated before matching!")
         Console.err.println("")
       }
       result &&= checkValue
@@ -148,7 +154,7 @@ object Test extends Properties("HtmlFactory") {
         val comments = shortComments(node)
 
         comments.exists { _.toString.contains(">A lazy String\n</p>") } &&
-          comments.exists { _.toString.contains(">A non-lazy String\n</p>") }
+        comments.exists { _.toString.contains(">A non-lazy String\n</p>") }
       }
       case _ => false
     }
@@ -162,10 +168,12 @@ object Test extends Properties("HtmlFactory") {
   property("Trac #4366") = {
     createTemplate("Trac4366.scala") match {
       case node: scala.xml.Node => {
-        shortComments(node).exists { n => {
-          val str = n.toString
-          str.contains("<code>foo</code>") && str.contains("</strong>")
-        } }
+        shortComments(node).exists { n =>
+          {
+            val str = n.toString
+            str.contains("<code>foo</code>") && str.contains("</strong>")
+          }
+        }
       }
       case _ => false
     }
@@ -174,7 +182,7 @@ object Test extends Properties("HtmlFactory") {
   property("Trac #4358") = {
     createTemplate("Trac4358.scala") match {
       case node: scala.xml.Node =>
-        ! shortComments(node).exists {
+        !shortComments(node).exists {
           _.toString.contains("<em>i.</em>")
         }
       case _ => false
@@ -189,9 +197,12 @@ object Test extends Properties("HtmlFactory") {
     createTemplate("Trac4372.scala") match {
       case node: scala.xml.Node => {
         val html = node.toString
-        html.contains("<span title=\"gt4s: $plus$colon\" class=\"name\">+:</span>") &&
-          html.contains("<span title=\"gt4s: $minus$colon\" class=\"name\">-:</span>") &&
-            html.contains("""<span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>""")
+        html.contains(
+          "<span title=\"gt4s: $plus$colon\" class=\"name\">+:</span>") &&
+        html.contains(
+          "<span title=\"gt4s: $minus$colon\" class=\"name\">-:</span>") &&
+        html.contains(
+          """<span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>""")
       }
       case _ => false
     }
@@ -203,7 +214,7 @@ object Test extends Properties("HtmlFactory") {
       case node: scala.xml.Node => {
         val s = node.toString
         s.contains("""href="WithPublic$.html"""") &&
-          files.get("WithPublic$.html") != None
+        files.get("WithPublic$.html") != None
       }
       case _ => false
     }
@@ -214,8 +225,8 @@ object Test extends Properties("HtmlFactory") {
     files("WithPrivate.html") match {
       case node: scala.xml.Node => {
         val s = node.toString
-        ! s.contains("""href="WithPrivate$.html"""") &&
-          files.get("WithPrivate$.html") == None
+        !s.contains("""href="WithPrivate$.html"""") &&
+        files.get("WithPrivate$.html") == None
       }
       case _ => false
     }
@@ -225,9 +236,9 @@ object Test extends Properties("HtmlFactory") {
     val files = createTemplates("Trac4325.scala")
 
     files.get("WithSynthetic.html") != None &&
-      files.get("WithSynthetic$.html") == None &&
-        files.get("WithObject.html") != None &&
-          files.get("WithObject$.html") != None
+    files.get("WithSynthetic$.html") == None &&
+    files.get("WithObject.html") != None &&
+    files.get("WithObject$.html") != None
   }
 
   property("Trac #4325 - Don't link to syntetic companion") = {
@@ -236,7 +247,7 @@ object Test extends Properties("HtmlFactory") {
     files("WithSynthetic.html") match {
       case node: scala.xml.Node => {
         val s = node.toString
-        ! s.contains("""href="WithSynthetic$.html"""")
+        !s.contains("""href="WithSynthetic$.html"""")
       }
       case _ => false
     }
@@ -303,7 +314,7 @@ object Test extends Properties("HtmlFactory") {
   property("Trac #4409") = {
     createTemplate("Trac4409.scala") match {
       case node: scala.xml.Node => {
-        ! node.toString.contains("""<div class="block"><ol>since""")
+        !node.toString.contains("""<div class="block"><ol>since""")
       }
       case _ => false
     }
@@ -312,7 +323,7 @@ object Test extends Properties("HtmlFactory") {
   property("Trac #4452") = {
     createTemplate("Trac4452.scala") match {
       case node: scala.xml.Node =>
-        ! node.toString.contains(">*")
+        !node.toString.contains(">*")
       case _ => false
     }
   }
@@ -332,7 +343,7 @@ object Test extends Properties("HtmlFactory") {
       case node: scala.xml.Node => {
         val html = node.toString
         html.contains(">x0123456789: <") &&
-          html.contains(">x012345678901234567890123456789: <")
+        html.contains(">x012345678901234567890123456789: <")
       }
       case _ => false
     }
@@ -362,7 +373,8 @@ object Test extends Properties("HtmlFactory") {
   property("SI-4507: Default arguments of synthesized constructor") = {
     createTemplate("SI_4507.scala") match {
       case node: scala.xml.Node =>
-        ! node.toString.contains("<li>returns silently when evaluating true and true</li>")
+        !node.toString.contains(
+          "<li>returns silently when evaluating true and true</li>")
       case _ => false
     }
   }
@@ -373,133 +385,169 @@ object Test extends Properties("HtmlFactory") {
   }
 
   property("SI-5054: Use cases should override their original members") =
-     checkText("SI_5054_q1.scala")(
-       (None,"""def test(): Int""", true)
-       //Disabled because the full signature is now displayed
-       //(None, """def test(implicit lost: Int): Int""", false)
-     )
+    checkText("SI_5054_q1.scala")(
+      (None, """def test(): Int""", true)
+      //Disabled because the full signature is now displayed
+      //(None, """def test(implicit lost: Int): Int""", false)
+    )
 
-  property("SI-5054: Use cases should keep their flags - final should not be lost") =
+  property(
+    "SI-5054: Use cases should keep their flags - final should not be lost") =
     checkText("SI_5054_q2.scala")((None, """final def test(): Int""", true))
 
-  property("SI-5054: Use cases should keep their flags - implicit should not be lost") =
+  property(
+    "SI-5054: Use cases should keep their flags - implicit should not be lost") =
     checkText("SI_5054_q3.scala")((None, """implicit def test(): Int""", true))
 
-  property("SI-5054: Use cases should keep their flags - real abstract should not be lost") =
+  property(
+    "SI-5054: Use cases should keep their flags - real abstract should not be lost") =
     checkText("SI_5054_q4.scala")((None, """abstract def test(): Int""", true))
 
-  property("SI-5054: Use cases should keep their flags - traits should not be affected") =
+  property(
+    "SI-5054: Use cases should keep their flags - traits should not be affected") =
     checkText("SI_5054_q5.scala")((None, """def test(): Int""", true))
 
-  property("SI-5054: Use cases should keep their flags - traits should not be affected") =
+  property(
+    "SI-5054: Use cases should keep their flags - traits should not be affected") =
     checkText("SI_5054_q6.scala")((None, """abstract def test(): Int""", true))
 
   property("SI-5054: Use case individual signature test") =
     checkText("SI_5054_q7.scala")(
-      (None, """abstract def test2(explicit: Int): Int [use case] This takes the explicit value passed.""", true),
-      (None, """abstract def test1(): Int [use case] This takes the implicit value in scope.""", true)
+      (
+        None,
+        """abstract def test2(explicit: Int): Int [use case] This takes the explicit value passed.""",
+        true),
+      (
+        None,
+        """abstract def test1(): Int [use case] This takes the implicit value in scope.""",
+        true)
     )
 
   property("SI-5287: Display correct \"Definition classes\"") =
     checkText("SI_5287.scala")(
-      (None,
-          """def method(): Int
+      (
+        None,
+        """def method(): Int
            [use case] The usecase explanation
            [use case] The usecase explanation
-           Definition Classes SI_5287 SI_5287_B SI_5287_A""", true)
-    )      // the explanation appears twice, as small comment and full comment
+           Definition Classes SI_5287 SI_5287_B SI_5287_A""",
+        true)
+    ) // the explanation appears twice, as small comment and full comment
 
   property("Comment inheritance: Correct comment inheritance for overriding") =
     checkText("implicit-inheritance-override.scala")(
-      (Some("Base"),
-       """def function[T](arg1: T, arg2: String): Double
+      (
+        Some("Base"),
+        """def function[T](arg1: T, arg2: String): Double
           The base comment.
           The base comment. And another sentence...
           T the type of the first argument
           arg1 The T term comment
           arg2 The string comment
           returns The return comment
-          """, true),
-      (Some("DerivedA"),
-       """def function[T](arg1: T, arg2: String): Double
+          """,
+        true),
+      (
+        Some("DerivedA"),
+        """def function[T](arg1: T, arg2: String): Double
           Overriding the comment, the params and returns comments should stay the same.
           Overriding the comment, the params and returns comments should stay the same.
           T the type of the first argument
           arg1 The T term comment
           arg2 The string comment
           returns The return comment
-          """, true),
-      (Some("DerivedB"),
-       """def function[T](arg1: T, arg2: String): Double
+          """,
+        true),
+      (
+        Some("DerivedB"),
+        """def function[T](arg1: T, arg2: String): Double
           T the type of the first argument
           arg1 The overridden T term comment
           arg2 The overridden string comment
           returns The return comment
-          """, true),
-      (Some("DerivedC"),
-       """def function[T](arg1: T, arg2: String): Double
+          """,
+        true),
+      (
+        Some("DerivedC"),
+        """def function[T](arg1: T, arg2: String): Double
           T the type of the first argument
           arg1 The T term comment
           arg2 The string comment
           returns The overridden return comment
-          """, true),
-      (Some("DerivedD"),
-       """def function[T](arg1: T, arg2: String): Double
+          """,
+        true),
+      (
+        Some("DerivedD"),
+        """def function[T](arg1: T, arg2: String): Double
           T The overridden type parameter comment
           arg1 The T term comment
           arg2 The string comment
           returns The return comment
-          """, true)
+          """,
+        true)
     )
 
-  for (useCaseFile <- List("UseCaseInheritance", "UseCaseOverrideInheritance")) {
+  for (useCaseFile <- List(
+         "UseCaseInheritance",
+         "UseCaseOverrideInheritance")) {
     property("Comment inheritance: Correct comment inheritance for usecases") =
       checkText("implicit-inheritance-usecase.scala")(
-        (Some(useCaseFile),
-         """def missing_arg[T](arg1: T): Double
+        (
+          Some(useCaseFile),
+          """def missing_arg[T](arg1: T): Double
             [use case]
             [use case]
             T The type parameter
             arg1 The T term comment
             returns The return comment
-            """, true),
-        (Some(useCaseFile),
-         """def missing_targ(arg1: Int, arg2: String): Double
+            """,
+          true),
+        (
+          Some(useCaseFile),
+          """def missing_targ(arg1: Int, arg2: String): Double
             [use case]
             [use case]
             arg1 The T term comment
             arg2 The string comment
             returns The return comment
-            """, true),
-        (Some(useCaseFile),
-         """def overridden_arg1[T](implicit arg1: T, arg2: String): Double
+            """,
+          true),
+        (
+          Some(useCaseFile),
+          """def overridden_arg1[T](implicit arg1: T, arg2: String): Double
             [use case]
             [use case]
             T The type parameter
             arg1 The overridden T term comment
             arg2 The string comment
             returns The return comment
-            """, true),
-        (Some(useCaseFile),
-         """def overridden_targ[T](implicit arg1: T, arg2: String): Double
+            """,
+          true),
+        (
+          Some(useCaseFile),
+          """def overridden_targ[T](implicit arg1: T, arg2: String): Double
             [use case]
             [use case]
             T The overridden type parameter comment
             arg1 The T term comment
             arg2 The string comment
             returns The return comment
-            """, true),
-        (Some(useCaseFile),
-         """def overridden_return[T](implicit arg1: T, arg2: String): Double
+            """,
+          true),
+        (
+          Some(useCaseFile),
+          """def overridden_return[T](implicit arg1: T, arg2: String): Double
             [use case]
             [use case]
             T The type parameter
             arg1 The T term comment
             arg2 The string comment
             returns The overridden return comment
-            """, true),
-        (Some(useCaseFile),
-         """def added_arg[T](implicit arg1: T, arg2: String, arg3: Float): Double
+            """,
+          true),
+        (
+          Some(useCaseFile),
+          """def added_arg[T](implicit arg1: T, arg2: String, arg3: Float): Double
             [use case]
             [use case]
             T The type parameter
@@ -507,23 +555,27 @@ object Test extends Properties("HtmlFactory") {
             arg2 The string comment
             arg3 The added float comment
             returns The return comment
-            """, true),
-        (Some(useCaseFile),
-         """def overridden_comment[T](implicit arg1: T, arg2: String): Double
+            """,
+          true),
+        (
+          Some(useCaseFile),
+          """def overridden_comment[T](implicit arg1: T, arg2: String): Double
             [use case] The overridden comment.
             [use case] The overridden comment.
             T The type parameter
             arg1 The T term comment
             arg2 The string comment
             returns The return comment
-            """, true)
+            """,
+          true)
       )
   }
 
   property("Comment inheritance: Correct explicit inheritance for override") =
-  checkText("explicit-inheritance-override.scala")(
-    (Some("InheritDocDerived"),
-     """def function[T](arg1: T, arg2: String): Double
+    checkText("explicit-inheritance-override.scala")(
+      (
+        Some("InheritDocDerived"),
+        """def function[T](arg1: T, arg2: String): Double
         Starting line
         Starting line
         The base comment. And another sentence...
@@ -533,9 +585,11 @@ object Test extends Properties("HtmlFactory") {
           T       StartT the type of the first argument EndT
           arg1    Start1 The T term comment End1
           arg2    Start2 The string comment End2
-          returns StartRet The return comment EndRet""", true),
-    (Some("InheritDocDerived"),
-     """Definition Classes InheritDocDerived → InheritDocBase
+          returns StartRet The return comment EndRet""",
+        true),
+      (
+        Some("InheritDocDerived"),
+        """Definition Classes InheritDocDerived → InheritDocBase
         Example:   StartExample function[Int](3, "something") EndExample
         Version    StartVer 0.0.2 EndVer
         Since      StartSince 0.0.1 EndSince
@@ -545,12 +599,15 @@ object Test extends Properties("HtmlFactory") {
         To do      StartTodo Call mom. And dad! EndTodo
         Note       StartNote Be careful! EndNote
         See also   StartSee The Manual EndSee
-     """, true))
+     """,
+        true)
+    )
 
   property("Comment inheritance: Correct explicit inheritance for usecase") =
-  checkText("explicit-inheritance-usecase.scala")(
-    (Some("UseCaseInheritDoc"),
-     """def function[T](arg1: T, arg2: String): Double
+    checkText("explicit-inheritance-usecase.scala")(
+      (
+        Some("UseCaseInheritDoc"),
+        """def function[T](arg1: T, arg2: String): Double
         [use case] Starting line
         [use case] Starting line
         The base comment. And another sentence...
@@ -560,9 +617,11 @@ object Test extends Properties("HtmlFactory") {
           T       StartT the type of the first argument EndT
           arg1    Start1 The T term comment End1
           arg2    Start2 The string comment End2
-          returns StartRet The return comment EndRet""", true),
-    (Some("UseCaseInheritDoc"),
-     """Example:   StartExample function[Int](3,"something") EndExample
+          returns StartRet The return comment EndRet""",
+        true),
+      (
+        Some("UseCaseInheritDoc"),
+        """Example:   StartExample function[Int](3,"something") EndExample
         Version    StartVer 0.0.2 EndVer
         Since      StartSince 0.0.1 EndSince
         Exceptions thrown
@@ -571,40 +630,53 @@ object Test extends Properties("HtmlFactory") {
         To do      StartTodo Call mom. And dad! EndTodo
         Note       StartNote Be careful! EndNote
         See also   StartSee The Manual EndSee
-     """, true))
+     """,
+        true)
+    )
 
-  property("Comment inheritance: Correct explicit inheritance in corner cases") =
+  property(
+    "Comment inheritance: Correct explicit inheritance in corner cases") =
     checkText("inheritdoc-corner-cases.scala")(
-      (Some("D"),
-       """def hello1: Int
+      (
+        Some("D"),
+        """def hello1: Int
           Inherited: Hello 1 comment
           Inherited: Hello 1 comment
           Definition Classes D → A
-       """, true),
-      (Some("D"),
-       """def hello2: Int
+       """,
+        true),
+      (
+        Some("D"),
+        """def hello2: Int
           Inherited: Hello 2 comment
           Inherited: Hello 2 comment
           Definition Classes D → B
-       """, true),
-      (Some("G"),
-       """def hello1: Int
+       """,
+        true),
+      (
+        Some("G"),
+        """def hello1: Int
           Inherited: Hello 1 comment
           Inherited: Hello 1 comment
           Definition Classes G → D → A
-       """, true),
-      (Some("G"),
-       """def hello2: Int
+       """,
+        true),
+      (
+        Some("G"),
+        """def hello2: Int
           Inherited: Hello 2 comment
           Inherited: Hello 2 comment
           Definition Classes G → D → B
-       """, true),
-      (Some("I"),
-       """def hello1(i: Int): Unit
+       """,
+        true),
+      (
+        Some("I"),
+        """def hello1(i: Int): Unit
           [use case] Inherited: Hello 1 comment
           [use case] Inherited: Hello 1 comment
           Definition Classes I → G → D → A
-       """, true)
+       """,
+        true)
       // traits E, F and H shouldn't crash scaladoc but we don't need to check the output
     )
 
@@ -614,11 +686,13 @@ object Test extends Properties("HtmlFactory") {
     files("C.html") match {
       case node: scala.xml.Node => {
         val s = node.toString
-        s.contains("<pre>a typicial indented\ncomment on multiple\ncomment lines</pre>") &&
+        s.contains(
+          "<pre>a typicial indented\ncomment on multiple\ncomment lines</pre>") &&
         s.contains("<pre>one liner</pre>") &&
         s.contains("<pre>two lines, one useful</pre>") &&
         s.contains("<pre>line1\nline2\nline3\nline4</pre>") &&
-        s.contains("<pre>a ragged example\na (condition)\n  the t h e n branch\nan alternative\n  the e l s e branch</pre>") &&
+        s.contains(
+          "<pre>a ragged example\na (condition)\n  the t h e n branch\nan alternative\n  the e l s e branch</pre>") &&
         s.contains("<pre>Trait example {\n  Val x = a\n  Val y = b\n}</pre>") &&
         s.contains("<pre>l1\n\nl2\n\nl3\n\nl4\n\nl5</pre>")
       }
@@ -632,7 +706,7 @@ object Test extends Properties("HtmlFactory") {
     noAuthors match {
       case node: scala.xml.Node => {
         val s = node.toString
-        ! s.contains("Author")
+        !s.contains("Author")
       }
       case _ => false
     }
@@ -693,27 +767,30 @@ object Test extends Properties("HtmlFactory") {
 
     property("lower bound") = files("com/example/p1/LowerBound.html") match {
       case node: scala.xml.Node => true
-      case _ => false
+      case _                    => false
     }
 
     property("upper bound") = files("com/example/p1/UpperBound.html") match {
       case node: scala.xml.Node => true
-      case _ => false
+      case _                    => false
     }
 
-    property("SI-8514: No inconsistencies") =
-      checkText("SI-8514.scala")(
-        (Some("a/index"),
-         """class A extends AnyRef
+    property("SI-8514: No inconsistencies") = checkText("SI-8514.scala")(
+      (
+        Some("a/index"),
+        """class A extends AnyRef
             Some doc here
             Some doc here
             Annotations @DeveloperApi()
-         """, true),
-        (Some("a/index"),
-         """class B extends AnyRef
+         """,
+        true),
+      (
+        Some("a/index"),
+        """class B extends AnyRef
             Annotations @DeveloperApi()
-         """, true)
-      )
+         """,
+        true)
+    )
   }
 
   // SI-8144
@@ -730,17 +807,21 @@ object Test extends Properties("HtmlFactory") {
     implicit class AssertionAwareNode(node: scala.xml.NodeSeq) {
 
       def assertTypeLink(expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq = node \\ "div" \@ ("id", "definition") \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq =
+          node \\ "div" \@ ("id", "definition") \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
-      def assertMemberLink(group: String)(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq = node \\ "div" \@ ("id", group) \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
+      def assertMemberLink(
+          group: String)(memberName: String, expectedUrl: String): Boolean = {
+        val linkElement: NodeSeq =
+          node \\ "div" \@ ("id", group) \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertValuesLink(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq = node \\ "div" \@ ("class", "values members") \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq =
+          node \\ "div" \@ ("class", "values members") \\ "li" \@ ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
@@ -748,37 +829,56 @@ object Test extends Properties("HtmlFactory") {
 
     val files = createTemplates("SI-8144.scala")
 
-    def check(pagePath: String)(f: NodeSeq => org.scalacheck.Prop): org.scalacheck.Prop =
+    def check(pagePath: String)(
+        f: NodeSeq => org.scalacheck.Prop): org.scalacheck.Prop =
       files(pagePath) match {
         case node: scala.xml.Node => f(XMLUtil.stripGroup(node))
-        case _ => false
+        case _                    => false
       }
 
-    property("SI-8144: Members' permalink - inner package") = check("some/pack/index.html") { node =>
-      ("type link" |: node.assertTypeLink("../../some/pack/index.html")) &&
-        ("member: SomeType (object)" |: node.assertValuesLink("some.pack.SomeType", "../../some/pack/index.html#SomeType")) &&
-        ("member: SomeType (class)" |: node.assertMemberLink("types")("some.pack.SomeType", "../../some/pack/index.html#SomeTypeextendsAnyRef"))
-    }
+    property("SI-8144: Members' permalink - inner package") =
+      check("some/pack/index.html") { node =>
+        ("type link" |: node.assertTypeLink("../../some/pack/index.html")) &&
+        ("member: SomeType (object)" |: node.assertValuesLink(
+          "some.pack.SomeType",
+          "../../some/pack/index.html#SomeType")) &&
+        ("member: SomeType (class)" |: node.assertMemberLink("types")(
+          "some.pack.SomeType",
+          "../../some/pack/index.html#SomeTypeextendsAnyRef"))
+      }
 
-    property("SI-8144: Members' permalink - companion object") = check("some/pack/SomeType$.html") { node =>
-      ("type link" |: node.assertTypeLink("../../some/pack/SomeType$.html")) &&
-        ("member: someVal" |: node.assertMemberLink("allMembers")("some.pack.SomeType#someVal", "../../some/pack/SomeType$.html#someVal:String"))
-    }
+    property("SI-8144: Members' permalink - companion object") =
+      check("some/pack/SomeType$.html") { node =>
+        ("type link" |: node.assertTypeLink(
+          "../../some/pack/SomeType$.html")) &&
+        ("member: someVal" |: node.assertMemberLink("allMembers")(
+          "some.pack.SomeType#someVal",
+          "../../some/pack/SomeType$.html#someVal:String"))
+      }
 
-    property("SI-8144: Members' permalink - class") = check("some/pack/SomeType.html") { node =>
-      ("type link" |: node.assertTypeLink("../../some/pack/SomeType.html")) &&
-      ("constructor " |: node.assertMemberLink("constructors")("some.pack.SomeType#<init>", "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")) &&
-        ( "member: type TypeAlias" |: node.assertMemberLink("types")("some.pack.SomeType.TypeAlias", "../../some/pack/SomeType.html#TypeAlias=String")) &&
-        ( "member: def >#<():Int " |: node.assertValuesLink("some.pack.SomeType#>#<", "../../some/pack/SomeType.html#>#<():Int")) &&
-        ( "member: def >@<():TypeAlias " |: node.assertValuesLink("some.pack.SomeType#>@<", "../../some/pack/SomeType.html#>@<():SomeType.this.TypeAlias"))
-    }
+    property("SI-8144: Members' permalink - class") =
+      check("some/pack/SomeType.html") { node =>
+        ("type link" |: node.assertTypeLink("../../some/pack/SomeType.html")) &&
+        ("constructor " |: node.assertMemberLink("constructors")(
+          "some.pack.SomeType#<init>",
+          "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")) &&
+        ("member: type TypeAlias" |: node.assertMemberLink("types")(
+          "some.pack.SomeType.TypeAlias",
+          "../../some/pack/SomeType.html#TypeAlias=String")) &&
+        ("member: def >#<():Int " |: node.assertValuesLink(
+          "some.pack.SomeType#>#<",
+          "../../some/pack/SomeType.html#>#<():Int")) &&
+        ("member: def >@<():TypeAlias " |: node.assertValuesLink(
+          "some.pack.SomeType#>@<",
+          "../../some/pack/SomeType.html#>@<():SomeType.this.TypeAlias"))
+      }
 
   }
 
   property("SI-9599 Multiple @todo formatted with comma on separate line") = {
     createTemplates("SI-9599.scala")("X.html") match {
       case node: scala.xml.Node => node.text.contains("todo3todo2todo1")
-      case _ => false
+      case _                    => false
     }
   }
 }

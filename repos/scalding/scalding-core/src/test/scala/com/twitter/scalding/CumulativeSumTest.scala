@@ -5,7 +5,8 @@ import org.scalatest.WordSpec
 import com.twitter.scalding.typed.CumulativeSum._
 
 class AddRankingWithCumulativeSum(args: Args) extends Job(args) {
-  TypedPipe.from(TypedTsv[(String, Double)]("input1"))
+  TypedPipe
+    .from(TypedTsv[(String, Double)]("input1"))
     .map {
       case (gender, height) =>
         (gender, (height, 1L))
@@ -19,7 +20,8 @@ class AddRankingWithCumulativeSum(args: Args) extends Job(args) {
 }
 
 class AddRankingWithPartitionedCumulativeSum(args: Args) extends Job(args) {
-  TypedPipe.from(TypedTsv[(String, Double)]("input1"))
+  TypedPipe
+    .from(TypedTsv[(String, Double)]("input1"))
     .map {
       case (gender, height) =>
         (gender, (height, 1L))
@@ -45,7 +47,8 @@ class CumulativeSumTest1 extends WordSpec {
     ("female", "272.2"),
     ("male", "284.1"),
     ("male", "225.4"),
-    ("female", "228.6"))
+    ("female", "228.6")
+  )
 
   // Each group sorted and ranking added highest person to shortest
   val expectedOutput1 = Set(
@@ -58,12 +61,14 @@ class CumulativeSumTest1 extends WordSpec {
     ("male", 265.2, 5),
     ("male", 225.4, 4),
     ("female", 272.2, 4),
-    ("female", 228.6, 3))
+    ("female", 228.6, 3)
+  )
 
   "A simple ranking cumulative sum job" should {
     JobTest("com.twitter.scalding.AddRankingWithCumulativeSum")
       .source(TypedTsv[(String, Double)]("input1"), sampleInput1)
-      .sink[(String, Double, Long)](TypedTsv[(String, Double, Long)]("result1")) { outBuf1 =>
+      .sink[(String, Double, Long)](
+        TypedTsv[(String, Double, Long)]("result1")) { outBuf1 =>
         "produce correct number of records when filtering out null values" in {
           assert(outBuf1.size === 10)
         }
@@ -78,7 +83,8 @@ class CumulativeSumTest1 extends WordSpec {
   "A partitioned ranking cumulative sum job" should {
     JobTest("com.twitter.scalding.AddRankingWithPartitionedCumulativeSum")
       .source(TypedTsv[(String, Double)]("input1"), sampleInput1)
-      .sink[(String, Double, Long)](TypedTsv[(String, Double, Long)]("result1")) { outBuf1 =>
+      .sink[(String, Double, Long)](
+        TypedTsv[(String, Double, Long)]("result1")) { outBuf1 =>
         "produce correct number of records when filtering out null values" in {
           assert(outBuf1.size === 10)
         }

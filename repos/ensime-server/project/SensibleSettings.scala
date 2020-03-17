@@ -1,23 +1,23 @@
 // Copyright 2016 Sam Halliday
 // Licence: http://www.apache.org/licenses/LICENSE-2.0
-import scala.util.{ Properties, Try }
+import scala.util.{Properties, Try}
 import sbt._
 import Keys._
 import com.typesafe.sbt.SbtScalariform._
 
 /**
- * A bunch of sensible defaults that fommil typically uses.
- *
- * TODO: integrate / contribute to the typelevel sbt plugin.
- */
+  * A bunch of sensible defaults that fommil typically uses.
+  *
+  * TODO: integrate / contribute to the typelevel sbt plugin.
+  */
 object Sensible {
 
   lazy val settings = Seq(
     ivyLoggingLevel := UpdateLogging.Quiet,
     conflictManager := ConflictManager.strict,
-
     scalacOptions in Compile ++= Seq(
-      "-encoding", "UTF-8",
+      "-encoding",
+      "UTF-8",
       "-target:jvm-1.6",
       "-feature",
       "-deprecation",
@@ -31,30 +31,33 @@ object Sensible {
       //"-Ywarn-value-discard", // will require a lot of work
       "-Xfuture"
     ) ++ {
-        if (scalaVersion.value.startsWith("2.11")) Seq("-Ywarn-unused-import")
-        else Nil
-      } ++ {
-        // fatal warnings can get in the way during the DEV cycle
-        if (sys.env.contains("CI")) Seq("-Xfatal-warnings")
-        else Nil
-      },
+      if (scalaVersion.value.startsWith("2.11")) Seq("-Ywarn-unused-import")
+      else Nil
+    } ++ {
+      // fatal warnings can get in the way during the DEV cycle
+      if (sys.env.contains("CI")) Seq("-Xfatal-warnings")
+      else Nil
+    },
     javacOptions in (Compile, compile) ++= Seq(
-      "-source", "1.6", "-target", "1.6", "-Xlint:all", "-Werror",
-      "-Xlint:-options", "-Xlint:-path", "-Xlint:-processing"
+      "-source",
+      "1.6",
+      "-target",
+      "1.6",
+      "-Xlint:all",
+      "-Werror",
+      "-Xlint:-options",
+      "-Xlint:-path",
+      "-Xlint:-processing"
     ),
     javacOptions in doc ++= Seq("-source", "1.6"),
-
     javaOptions := Seq("-Xss2m", "-XX:MaxPermSize=256m", "-Xms1g", "-Xmx1g"),
     javaOptions += "-Dfile.encoding=UTF8",
     javaOptions ++= Seq("-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode"),
     javaOptions in run ++= yourkitAgent,
-
     maxErrors := 1,
     fork := true,
-
     // 4 x 1GB = 4GB
     concurrentRestrictions in Global := Seq(Tags.limitAll(4)),
-
     dependencyOverrides ++= Set(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value,
       "org.scala-lang" % "scala-library" % scalaVersion.value,
@@ -68,21 +71,21 @@ object Sensible {
   ) ++ inConfig(Test)(testSettings) ++ scalariformSettings
 
   // TODO: scalariformSettingsWithIt generalised
-  def testSettings = Seq(
-    parallelExecution := true,
-
-    // one JVM per test suite
-    fork := true,
-    testForkedParallel := true,
-    testGrouping <<= (
-      definedTests,
-      baseDirectory,
-      javaOptions,
-      outputStrategy,
-      envVars,
-      javaHome,
-      connectInput
-    ).map { (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
+  def testSettings =
+    Seq(
+      parallelExecution := true,
+      // one JVM per test suite
+      fork := true,
+      testForkedParallel := true,
+      testGrouping <<= (
+        definedTests,
+        baseDirectory,
+        javaOptions,
+        outputStrategy,
+        envVars,
+        javaHome,
+        connectInput
+      ).map { (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
         val opts = ForkOptions(
           bootJars = Nil,
           javaHome = javaHomeDir,
@@ -96,10 +99,9 @@ object Sensible {
           Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
         }
       },
-
-    testOptions ++= noColorIfEmacs,
-    testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
-  )
+      testOptions ++= noColorIfEmacs,
+      testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
+    )
 
   val scalaModulesVersion = "1.0.4"
   val akkaVersion = "2.3.14"
@@ -110,7 +112,8 @@ object Sensible {
   val guavaVersion = "18.0"
 
   val macroParadise = Seq(
-    compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
+    compilerPlugin(
+      "org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   )
   def shapeless(scalaVersion: String) = {
     if (scalaVersion.startsWith("2.10.")) macroParadise
@@ -128,20 +131,26 @@ object Sensible {
   )
 
   // TODO: automate testLibs as part of the testSettings
-  def testLibs(config: String = "test") = Seq(
-    "org.scalatest" %% "scalatest" % scalatestVersion % config,
-    "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % config,
-    "org.scalacheck" %% "scalacheck" % "1.12.5" % config,
-    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % config,
-    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % config
-  ) ++ logback.map(_ % config)
+  def testLibs(config: String = "test") =
+    Seq(
+      "org.scalatest" %% "scalatest" % scalatestVersion % config,
+      "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % config,
+      "org.scalacheck" %% "scalacheck" % "1.12.5" % config,
+      "com.typesafe.akka" %% "akka-testkit" % akkaVersion % config,
+      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % config
+    ) ++ logback.map(_ % config)
 
   // e.g. YOURKIT_AGENT=/opt/yourkit/bin/linux-x86-64/libyjpagent.so
-  val yourkitAgent = Properties.envOrNone("YOURKIT_AGENT").map { name =>
-    val agent = file(name)
-    require(agent.exists(), s"Yourkit agent specified ($agent) does not exist")
-    Seq(s"-agentpath:${agent.getCanonicalPath}")
-  }.getOrElse(Nil)
+  val yourkitAgent = Properties
+    .envOrNone("YOURKIT_AGENT")
+    .map { name =>
+      val agent = file(name)
+      require(
+        agent.exists(),
+        s"Yourkit agent specified ($agent) does not exist")
+      Seq(s"-agentpath:${agent.getCanonicalPath}")
+    }
+    .getOrElse(Nil)
 
   // WORKAROUND: https://github.com/scalatest/scalatest/issues/511
   def noColorIfEmacs =

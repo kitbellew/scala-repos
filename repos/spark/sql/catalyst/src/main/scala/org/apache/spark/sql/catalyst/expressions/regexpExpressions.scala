@@ -26,7 +26,6 @@ import org.apache.spark.sql.catalyst.util.{GenericArrayData, StringUtils}
 import org.apache.spark.sql.types._
 import org.apache.spark.unsafe.types.UTF8String
 
-
 trait StringRegexExpression extends ImplicitCastInputTypes {
   self: BinaryExpression =>
 
@@ -39,54 +38,62 @@ trait StringRegexExpression extends ImplicitCastInputTypes {
   // try cache the pattern for Literal
   private lazy val cache: Pattern = right match {
     case x @ Literal(value: String, StringType) => compile(value)
-    case _ => null
+    case _                                      => null
   }
 
-  protected def compile(str: String): Pattern = if (str == null) {
-    null
-  } else {
-    // Let it raise exception if couldn't compile the regex string
-    Pattern.compile(escape(str))
-  }
+  protected def compile(str: String): Pattern =
+    if (str == null) {
+      null
+    } else {
+      // Let it raise exception if couldn't compile the regex string
+      Pattern.compile(escape(str))
+    }
 
-  protected def pattern(str: String) = if (cache == null) compile(str) else cache
+  protected def pattern(str: String) =
+    if (cache == null) compile(str) else cache
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     val regex = pattern(input2.asInstanceOf[UTF8String].toString)
-    if(regex == null) {
+    if (regex == null) {
       null
     } else {
       matches(regex, input1.asInstanceOf[UTF8String].toString)
     }
   }
 
-  override def sql: String = s"${left.sql} ${prettyName.toUpperCase} ${right.sql}"
+  override def sql: String =
+    s"${left.sql} ${prettyName.toUpperCase} ${right.sql}"
 }
 
-
 /**
- * Simple RegEx pattern matching function
- */
+  * Simple RegEx pattern matching function
+  */
 case class Like(left: Expression, right: Expression)
-  extends BinaryExpression with StringRegexExpression {
+    extends BinaryExpression
+    with StringRegexExpression {
 
   override def escape(v: String): String = StringUtils.escapeLikeRegex(v)
 
-  override def matches(regex: Pattern, str: String): Boolean = regex.matcher(str).matches()
+  override def matches(regex: Pattern, str: String): Boolean =
+    regex.matcher(str).matches()
 
   override def toString: String = s"$left LIKE $right"
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val patternClass = classOf[Pattern].getName
-    val escapeFunc = StringUtils.getClass.getName.stripSuffix("$") + ".escapeLikeRegex"
+    val escapeFunc =
+      StringUtils.getClass.getName.stripSuffix("$") + ".escapeLikeRegex"
     val pattern = ctx.freshName("pattern")
 
     if (right.foldable) {
       val rVal = right.eval()
       if (rVal != null) {
         val regexStr =
-          StringEscapeUtils.escapeJava(escape(rVal.asInstanceOf[UTF8String].toString()))
-        ctx.addMutableState(patternClass, pattern,
+          StringEscapeUtils.escapeJava(
+            escape(rVal.asInstanceOf[UTF8String].toString()))
+        ctx.addMutableState(
+          patternClass,
+          pattern,
           s"""$pattern = ${patternClass}.compile("$regexStr");""")
 
         // We don't use nullSafeCodeGen here because we don't want to re-evaluate right again.
@@ -106,23 +113,28 @@ case class Like(left: Expression, right: Expression)
         """
       }
     } else {
-      nullSafeCodeGen(ctx, ev, (eval1, eval2) => {
-        s"""
+      nullSafeCodeGen(
+        ctx,
+        ev,
+        (eval1, eval2) => {
+          s"""
           String rightStr = ${eval2}.toString();
           ${patternClass} $pattern = ${patternClass}.compile($escapeFunc(rightStr));
           ${ev.value} = $pattern.matcher(${eval1}.toString()).matches();
         """
-      })
+        }
+      )
     }
   }
 }
 
-
 case class RLike(left: Expression, right: Expression)
-  extends BinaryExpression with StringRegexExpression {
+    extends BinaryExpression
+    with StringRegexExpression {
 
   override def escape(v: String): String = v
-  override def matches(regex: Pattern, str: String): Boolean = regex.matcher(str).find(0)
+  override def matches(regex: Pattern, str: String): Boolean =
+    regex.matcher(str).find(0)
   override def toString: String = s"$left RLIKE $right"
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -134,7 +146,9 @@ case class RLike(left: Expression, right: Expression)
       if (rVal != null) {
         val regexStr =
           StringEscapeUtils.escapeJava(rVal.asInstanceOf[UTF8String].toString())
-        ctx.addMutableState(patternClass, pattern,
+        ctx.addMutableState(
+          patternClass,
+          pattern,
           s"""$pattern = ${patternClass}.compile("$regexStr");""")
 
         // We don't use nullSafeCodeGen here because we don't want to re-evaluate right again.
@@ -154,23 +168,27 @@ case class RLike(left: Expression, right: Expression)
         """
       }
     } else {
-      nullSafeCodeGen(ctx, ev, (eval1, eval2) => {
-        s"""
+      nullSafeCodeGen(
+        ctx,
+        ev,
+        (eval1, eval2) => {
+          s"""
           String rightStr = ${eval2}.toString();
           ${patternClass} $pattern = ${patternClass}.compile(rightStr);
           ${ev.value} = $pattern.matcher(${eval1}.toString()).find(0);
         """
-      })
+        }
+      )
     }
   }
 }
 
-
 /**
- * Splits str around pat (pattern is a regular expression).
- */
+  * Splits str around pat (pattern is a regular expression).
+  */
 case class StringSplit(str: Expression, pattern: Expression)
-  extends BinaryExpression with ImplicitCastInputTypes {
+    extends BinaryExpression
+    with ImplicitCastInputTypes {
 
   override def left: Expression = str
   override def right: Expression = pattern
@@ -178,28 +196,36 @@ case class StringSplit(str: Expression, pattern: Expression)
   override def inputTypes: Seq[DataType] = Seq(StringType, StringType)
 
   override def nullSafeEval(string: Any, regex: Any): Any = {
-    val strings = string.asInstanceOf[UTF8String].split(regex.asInstanceOf[UTF8String], -1)
+    val strings =
+      string.asInstanceOf[UTF8String].split(regex.asInstanceOf[UTF8String], -1)
     new GenericArrayData(strings.asInstanceOf[Array[Any]])
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val arrayClass = classOf[GenericArrayData].getName
-    nullSafeCodeGen(ctx, ev, (str, pattern) =>
-      // Array in java is covariant, so we don't need to cast UTF8String[] to Object[].
-      s"""${ev.value} = new $arrayClass($str.split($pattern, -1));""")
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (str, pattern) =>
+        // Array in java is covariant, so we don't need to cast UTF8String[] to Object[].
+        s"""${ev.value} = new $arrayClass($str.split($pattern, -1));"""
+    )
   }
 
   override def prettyName: String = "split"
 }
 
-
 /**
- * Replace all substrings of str that match regexp with rep.
- *
- * NOTE: this expression is not THREAD-SAFE, as it has some internal mutable status.
- */
-case class RegExpReplace(subject: Expression, regexp: Expression, rep: Expression)
-  extends TernaryExpression with ImplicitCastInputTypes {
+  * Replace all substrings of str that match regexp with rep.
+  *
+  * NOTE: this expression is not THREAD-SAFE, as it has some internal mutable status.
+  */
+case class RegExpReplace(
+    subject: Expression,
+    regexp: Expression,
+    rep: Expression)
+    extends TernaryExpression
+    with ImplicitCastInputTypes {
 
   // last regex in string, we will update the pattern iff regexp value changed.
   @transient private var lastRegex: UTF8String = _
@@ -234,7 +260,8 @@ case class RegExpReplace(subject: Expression, regexp: Expression, rep: Expressio
   }
 
   override def dataType: DataType = StringType
-  override def inputTypes: Seq[AbstractDataType] = Seq(StringType, StringType, StringType)
+  override def inputTypes: Seq[AbstractDataType] =
+    Seq(StringType, StringType, StringType)
   override def children: Seq[Expression] = subject :: regexp :: rep :: Nil
   override def prettyName: String = "regexp_replace"
 
@@ -250,16 +277,32 @@ case class RegExpReplace(subject: Expression, regexp: Expression, rep: Expressio
     val classNamePattern = classOf[Pattern].getCanonicalName
     val classNameStringBuffer = classOf[java.lang.StringBuffer].getCanonicalName
 
-    ctx.addMutableState("UTF8String", termLastRegex, s"${termLastRegex} = null;")
-    ctx.addMutableState(classNamePattern, termPattern, s"${termPattern} = null;")
-    ctx.addMutableState("String", termLastReplacement, s"${termLastReplacement} = null;")
-    ctx.addMutableState("UTF8String",
-      termLastReplacementInUTF8, s"${termLastReplacementInUTF8} = null;")
-    ctx.addMutableState(classNameStringBuffer,
-      termResult, s"${termResult} = new $classNameStringBuffer();")
+    ctx.addMutableState(
+      "UTF8String",
+      termLastRegex,
+      s"${termLastRegex} = null;")
+    ctx.addMutableState(
+      classNamePattern,
+      termPattern,
+      s"${termPattern} = null;")
+    ctx.addMutableState(
+      "String",
+      termLastReplacement,
+      s"${termLastReplacement} = null;")
+    ctx.addMutableState(
+      "UTF8String",
+      termLastReplacementInUTF8,
+      s"${termLastReplacementInUTF8} = null;")
+    ctx.addMutableState(
+      classNameStringBuffer,
+      termResult,
+      s"${termResult} = new $classNameStringBuffer();")
 
-    nullSafeCodeGen(ctx, ev, (subject, regexp, rep) => {
-    s"""
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (subject, regexp, rep) => {
+        s"""
       if (!$regexp.equals(${termLastRegex})) {
         // regex value changed
         ${termLastRegex} = $regexp.clone();
@@ -280,17 +323,22 @@ case class RegExpReplace(subject: Expression, regexp: Expression, rep: Expressio
       ${ev.value} = UTF8String.fromString(${termResult}.toString());
       ${ev.isNull} = false;
     """
-    })
+      }
+    )
   }
 }
 
 /**
- * Extract a specific(idx) group identified by a Java regex.
- *
- * NOTE: this expression is not THREAD-SAFE, as it has some internal mutable status.
- */
-case class RegExpExtract(subject: Expression, regexp: Expression, idx: Expression)
-  extends TernaryExpression with ImplicitCastInputTypes {
+  * Extract a specific(idx) group identified by a Java regex.
+  *
+  * NOTE: this expression is not THREAD-SAFE, as it has some internal mutable status.
+  */
+case class RegExpExtract(
+    subject: Expression,
+    regexp: Expression,
+    idx: Expression)
+    extends TernaryExpression
+    with ImplicitCastInputTypes {
   def this(s: Expression, r: Expression) = this(s, r, Literal(1))
 
   // last regex in string, we will update the pattern iff regexp value changed.
@@ -314,7 +362,8 @@ case class RegExpExtract(subject: Expression, regexp: Expression, idx: Expressio
   }
 
   override def dataType: DataType = StringType
-  override def inputTypes: Seq[AbstractDataType] = Seq(StringType, StringType, IntegerType)
+  override def inputTypes: Seq[AbstractDataType] =
+    Seq(StringType, StringType, IntegerType)
   override def children: Seq[Expression] = subject :: regexp :: idx :: Nil
   override def prettyName: String = "regexp_extract"
 
@@ -323,11 +372,20 @@ case class RegExpExtract(subject: Expression, regexp: Expression, idx: Expressio
     val termPattern = ctx.freshName("pattern")
     val classNamePattern = classOf[Pattern].getCanonicalName
 
-    ctx.addMutableState("UTF8String", termLastRegex, s"${termLastRegex} = null;")
-    ctx.addMutableState(classNamePattern, termPattern, s"${termPattern} = null;")
+    ctx.addMutableState(
+      "UTF8String",
+      termLastRegex,
+      s"${termLastRegex} = null;")
+    ctx.addMutableState(
+      classNamePattern,
+      termPattern,
+      s"${termPattern} = null;")
 
-    nullSafeCodeGen(ctx, ev, (subject, regexp, idx) => {
-      s"""
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (subject, regexp, idx) => {
+        s"""
       if (!$regexp.equals(${termLastRegex})) {
         // regex value changed
         ${termLastRegex} = $regexp.clone();
@@ -343,6 +401,7 @@ case class RegExpExtract(subject: Expression, regexp: Expression, idx: Expressio
         ${ev.value} = UTF8String.EMPTY_UTF8;
         ${ev.isNull} = false;
       }"""
-    })
+      }
+    )
   }
 }

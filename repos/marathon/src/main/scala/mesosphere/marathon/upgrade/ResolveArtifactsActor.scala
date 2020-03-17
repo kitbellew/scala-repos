@@ -8,17 +8,17 @@ import akka.pattern.pipe
 
 import mesosphere.marathon.ResolveArtifactsCanceledException
 import mesosphere.marathon.io.storage.StorageProvider
-import mesosphere.marathon.io.{ CancelableDownload, PathFun }
+import mesosphere.marathon.io.{CancelableDownload, PathFun}
 import mesosphere.marathon.state.AppDefinition
 import mesosphere.util.Logging
 
 import scala.concurrent.Promise
 
 class ResolveArtifactsActor(
-  app: AppDefinition,
-  url2Path: Map[URL, String],
-  promise: Promise[Boolean],
-  storage: StorageProvider)
+    app: AppDefinition,
+    url2Path: Map[URL, String],
+    promise: Promise[Boolean],
+    storage: StorageProvider)
     extends Actor
     with PathFun
     with Logging {
@@ -26,7 +26,9 @@ class ResolveArtifactsActor(
   import mesosphere.marathon.upgrade.ResolveArtifactsActor.DownloadFinished
 
   // all downloads that have to be performed by this actor
-  var downloads = url2Path.map { case (url, path) => new CancelableDownload(url, storage, path) }
+  var downloads = url2Path.map {
+    case (url, path) => new CancelableDownload(url, storage, path)
+  }
 
   override def preStart(): Unit = {
     import context.dispatcher
@@ -37,7 +39,9 @@ class ResolveArtifactsActor(
   override def postStop(): Unit = {
     downloads.foreach(_.cancel()) // clean up not finished artifacts
     if (!promise.isCompleted)
-      promise.tryFailure(new ResolveArtifactsCanceledException("Artifact Resolving has been cancelled"))
+      promise.tryFailure(
+        new ResolveArtifactsCanceledException(
+          "Artifact Resolving has been cancelled"))
   }
 
   override def receive: Receive = {

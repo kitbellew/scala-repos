@@ -30,34 +30,34 @@ final class MasterRunner(
     val done = doneCount.get
 
     if (slaves > 0) {
-      throw new IllegalStateException(
-          s"There are still $slaves slaves running")
+      throw new IllegalStateException(s"There are still $slaves slaves running")
     }
 
     if (registered != done)
       throw new IllegalStateException(
-          s"$registered task(s) were registered, $done were executed")
+        s"$registered task(s) were registered, $done were executed")
     else
       s"Dummy Test Framework processed $done task(s)"
   }
 
   private[framework] def taskDone(): Unit = doneCount.incrementAndGet()
 
-  def receiveMessage(msg: String): Option[String] = msg(0) match {
-    case 's' =>
-      slaveCount.incrementAndGet()
-      // Send Hello message back
-      Some("Hello")
-    case 't' =>
-      // Slave notifies us of registration of tasks
-      registeredCount.addAndGet(msg.tail.toInt)
-      None
-    case 'd' =>
-      // Slave notifies us of completion of tasks
-      val count = msg.tail.toInt
-      doneCount.addAndGet(count)
-      slaveCount.decrementAndGet()
-      None
-  }
+  def receiveMessage(msg: String): Option[String] =
+    msg(0) match {
+      case 's' =>
+        slaveCount.incrementAndGet()
+        // Send Hello message back
+        Some("Hello")
+      case 't' =>
+        // Slave notifies us of registration of tasks
+        registeredCount.addAndGet(msg.tail.toInt)
+        None
+      case 'd' =>
+        // Slave notifies us of completion of tasks
+        val count = msg.tail.toInt
+        doneCount.addAndGet(count)
+        slaveCount.decrementAndGet()
+        None
+    }
 
 }

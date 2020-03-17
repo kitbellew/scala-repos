@@ -21,7 +21,8 @@ import slick.driver.H2Driver.api._
 class DatabaseService(dir: File) extends SLF4JLogging {
   lazy val (datasource, db) = {
     // MVCC plus connection pooling speeds up the tests ~10%
-    val backend = sys.env.get("ENSIME_EXPERIMENTAL_H2").getOrElse("jdbc:h2:file:")
+    val backend =
+      sys.env.get("ENSIME_EXPERIMENTAL_H2").getOrElse("jdbc:h2:file:")
     val url = backend + dir.getAbsolutePath + "/db;MVCC=TRUE"
     val driver = "org.h2.Driver"
 
@@ -34,13 +35,14 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     (ds, Database.forDataSource(ds, executor = executor))
   }
 
-  def shutdown()(implicit ec: ExecutionContext): Future[Unit] = for {
-    // call directly - using slick withSession barfs as it runs a how many rows were updated
-    // after shutdown is executed.
-    _ <- db.run(sqlu"shutdown")
-    _ <- db.shutdown
-    _ = datasource.close()
-  } yield ()
+  def shutdown()(implicit ec: ExecutionContext): Future[Unit] =
+    for {
+      // call directly - using slick withSession barfs as it runs a how many rows were updated
+      // after shutdown is executed.
+      _ <- db.run(sqlu"shutdown")
+      _ <- db.shutdown
+      _ = datasource.close()
+    } yield ()
 
   if (!dir.exists) {
     log.info("creating the search database...")
@@ -60,18 +62,21 @@ class DatabaseService(dir: File) extends SLF4JLogging {
   // file with last modified time
   def knownFiles(): Future[Seq[FileCheck]] = db.run(fileChecks.result)
 
-  def removeFiles(files: List[FileObject])(implicit ec: ExecutionContext): Future[Int] =
+  def removeFiles(files: List[FileObject])(
+      implicit ec: ExecutionContext): Future[Int] =
     db.run {
       val restrict = files.map(_.getName.getURI)
       // Deletion from fqnSymbols relies on fk cascade delete action
       fileChecks.filter(_.filename inSetBind restrict).delete
     }
 
-  private val timestampsQuery = Compiled {
-    filename: Rep[String] => fileChecks.filter(_.filename === filename).take(1)
+  private val timestampsQuery = Compiled { filename: Rep[String] =>
+    fileChecks.filter(_.filename === filename).take(1)
   }
 
-  def outOfDate(f: FileObject)(implicit vfs: EnsimeVFS, ec: ExecutionContext): Future[Boolean] = {
+  def outOfDate(f: FileObject)(implicit
+      vfs: EnsimeVFS,
+      ec: ExecutionContext): Future[Boolean] = {
     val uri = f.getName.getURI
     val modified = f.getContent.getLastModifiedTime
 
@@ -82,36 +87,44 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     )
   }
 
-  def persist(check: FileCheck, symbols: Seq[FqnSymbol])(implicit ec: ExecutionContext): Future[Option[Int]] =
+  def persist(check: FileCheck, symbols: Seq[FqnSymbol])(
+      implicit ec: ExecutionContext): Future[Option[Int]] =
     db.run(
       (fileChecksCompiled += check) andThen (fqnSymbolsCompiled ++= symbols)
     )
 
-  private val findCompiled = Compiled {
-    fqn: Rep[String] => fqnSymbols.filter(_.fqn === fqn).take(1)
+  private val findCompiled = Compiled { fqn: Rep[String] =>
+    fqnSymbols.filter(_.fqn === fqn).take(1)
   }
 
-  def find(fqn: String): Future[Option[FqnSymbol]] = db.run(
-    findCompiled(fqn).result.headOption
-  )
+  def find(fqn: String): Future[Option[FqnSymbol]] =
+    db.run(
+      findCompiled(fqn).result.headOption
+    )
 
   import org.ensime.indexer.IndexService._
-  def find(fqns: List[FqnIndex])(implicit ec: ExecutionContext): Future[List[FqnSymbol]] = {
+  def find(fqns: List[FqnIndex])(
+      implicit ec: ExecutionContext): Future[List[FqnSymbol]] = {
     val restrict = fqns.map(_.fqn)
     db.run(
-      fqnSymbols.filter(_.fqn inSet restrict).result
-    ).map { results =>
-      val grouped = results.groupBy(_.fqn)
-      restrict.flatMap(grouped.get(_).map(_.head))
-    }
+        fqnSymbols.filter(_.fqn inSet restrict).result
+      )
+      .map { results =>
+        val grouped = results.groupBy(_.fqn)
+        restrict.flatMap(grouped.get(_).map(_.head))
+      }
   }
 }
 
 object DatabaseService {
-  case class FileCheck(id: Option[Int], filename: String, timestamp: Timestamp) {
+  case class FileCheck(
+      id: Option[Int],
+      filename: String,
+      timestamp: Timestamp) {
     def file(implicit vfs: EnsimeVFS) = vfs.vfile(filename)
     def lastModified = timestamp.getTime
-    def changed(implicit vfs: EnsimeVFS) = file.getContent.getLastModifiedTime != lastModified
+    def changed(implicit vfs: EnsimeVFS) =
+      file.getContent.getLastModifiedTime != lastModified
   }
   object FileCheck extends ((Option[Int], String, Timestamp) => FileCheck) {
     def apply(f: FileObject): FileCheck = {
@@ -120,7 +133,8 @@ object DatabaseService {
       FileCheck(None, name, ts)
     }
   }
-  private class FileChecks(tag: Tag) extends Table[FileCheck](tag, "FILECHECKS") {
+  private class FileChecks(tag: Tag)
+      extends Table[FileCheck](tag, "FILECHECKS") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def filename = column[String]("filename")
     def timestamp = column[Timestamp]("timestamp")
@@ -140,7 +154,7 @@ object DatabaseService {
       source: Option[String], // VFS
       line: Option[Int],
       offset: Option[Int] = None // future features:
-  //    type: ??? --- better than descriptor/internal
+      //    type: ??? --- better than descriptor/internal
   ) {
     // this is just as a helper until we can use more sensible
     // domain objects with slick
@@ -152,7 +166,8 @@ object DatabaseService {
       else if (internal.isDefined) DeclaredAs.Field
       else DeclaredAs.Class
   }
-  private class FqnSymbols(tag: Tag) extends Table[FqnSymbol](tag, "FQN_SYMBOLS") {
+  private class FqnSymbols(tag: Tag)
+      extends Table[FqnSymbol](tag, "FQN_SYMBOLS") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def file = column[String]("file")
     def path = column[String]("path")
@@ -162,10 +177,24 @@ object DatabaseService {
     def source = column[Option[String]]("source handle")
     def line = column[Option[Int]]("line in source")
     def offset = column[Option[Int]]("offset in source")
-    def * = (id.?, file, path, fqn, descriptor, internal, source, line, offset) <> (FqnSymbol.tupled, FqnSymbol.unapply)
-    def fqnIdx = index("idx_fqn", fqn, unique = false) // fqns are unique by type and sig
+    def * =
+      (
+        id.?,
+        file,
+        path,
+        fqn,
+        descriptor,
+        internal,
+        source,
+        line,
+        offset) <> (FqnSymbol.tupled, FqnSymbol.unapply)
+    def fqnIdx =
+      index("idx_fqn", fqn, unique = false) // fqns are unique by type and sig
     def uniq = index("idx_uniq", (fqn, descriptor, internal), unique = true)
-    def filename = foreignKey("filename_fk", file, fileChecks)(_.filename, onDelete = ForeignKeyAction.Cascade)
+    def filename =
+      foreignKey("filename_fk", file, fileChecks)(
+        _.filename,
+        onDelete = ForeignKeyAction.Cascade)
   }
   private val fqnSymbols = TableQuery[FqnSymbols]
   private val fqnSymbolsCompiled = Compiled { TableQuery[FqnSymbols] }

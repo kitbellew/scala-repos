@@ -5,11 +5,10 @@ import java.util.concurrent.locks.ReentrantLock
 
 import org.junit.Assert
 
-
 /**
- * Author: Svyatoslav Ilinskiy
- * Date: 9/17/15.
- */
+  * Author: Svyatoslav Ilinskiy
+  * Date: 9/17/15.
+  */
 class CachedTest extends CachedTestBase {
   def testNoParametersSingleThread(): Unit = {
     class Foo extends Managed {
@@ -65,10 +64,11 @@ class CachedTest extends CachedTestBase {
       })
 
       val eh = new UncaughtExceptionHandler {
-        override def uncaughtException(t: Thread, e: Throwable): Unit = e match {
-          case _: AssertionError => Foo.assertsFailed += 1
-          case _ =>
-        }
+        override def uncaughtException(t: Thread, e: Throwable): Unit =
+          e match {
+            case _: AssertionError => Foo.assertsFailed += 1
+            case _                 =>
+          }
       }
       thread1.setUncaughtExceptionHandler(eh)
       thread2.setUncaughtExceptionHandler(eh)
@@ -93,7 +93,10 @@ class CachedTest extends CachedTestBase {
 
   def testModificationTrackers(): Unit = {
     object Foo extends Managed {
-      @Cached(synchronized = false, modificationCount = ModCount.getModificationCount, this)
+      @Cached(
+        synchronized = false,
+        modificationCount = ModCount.getModificationCount,
+        this)
       def currentTime: Long = System.currentTimeMillis()
 
       def getProject = myFixture.getProject

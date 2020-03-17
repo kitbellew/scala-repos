@@ -1,6 +1,6 @@
 package mesosphere.marathon.state
 
-import org.apache.mesos.{ Protos => mesos }
+import org.apache.mesos.{Protos => mesos}
 
 object TaskFailureTestHelper {
   lazy val taskFailure = TaskFailure(

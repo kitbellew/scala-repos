@@ -1,9 +1,20 @@
 package com.twitter.finagle.http.service
 
 import com.twitter.conversions.time._
-import com.twitter.finagle.{ChannelClosedException, ClientConnection, Http, ServiceFactory}
+import com.twitter.finagle.{
+  ChannelClosedException,
+  ClientConnection,
+  Http,
+  ServiceFactory
+}
 import com.twitter.finagle.builder.ClientBuilder
-import com.twitter.finagle.http.{Http => HttpCodec, Request, Response, Version, Method}
+import com.twitter.finagle.http.{
+  Http => HttpCodec,
+  Request,
+  Response,
+  Version,
+  Method
+}
 import com.twitter.finagle.service.FailingFactory
 import com.twitter.util.{Await, Throw, Try}
 import java.net.InetSocketAddress
@@ -14,7 +25,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ClientTest extends FunSuite {
   def withServer(factory: ServiceFactory[Request, Response])(
-    spec: ClientBuilder.Complete[Request, Response] => Unit
+      spec: ClientBuilder.Complete[Request, Response] => Unit
   ): Unit = {
     val server = Http.serve(new InetSocketAddress(0), factory)
     val serverAddress = server.boundAddress.asInstanceOf[InetSocketAddress]
@@ -25,7 +36,8 @@ class ClientTest extends FunSuite {
         .hostConnectionLimit(1)
         .codec(HttpCodec())
 
-    try spec(builder) finally {
+    try spec(builder)
+    finally {
       Await.result(server.close())
     }
   }
@@ -56,7 +68,8 @@ class ClientTest extends FunSuite {
     }
   }
 
-  test("report a closed connection when the server doesn't reply, without retrying") {
+  test(
+    "report a closed connection when the server doesn't reply, without retrying") {
     withServer(failingFactory) { clientBuilder =>
       counter = 0
       val client = clientBuilder

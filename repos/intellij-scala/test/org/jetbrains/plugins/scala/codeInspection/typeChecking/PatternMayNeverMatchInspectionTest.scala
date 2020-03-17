@@ -7,10 +7,13 @@ import org.jetbrains.plugins.scala.codeInspection.ScalaLightInspectionFixtureTes
   * Author: Svyatoslav Ilinskiy
   * Date: 21.12.15.
   */
-class PatternMayNeverMatchInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
-  override protected def classOfInspection: Class[_ <: LocalInspectionTool] = classOf[PatternMayNeverMatchInspection]
+class PatternMayNeverMatchInspectionTest
+    extends ScalaLightInspectionFixtureTestAdapter {
+  override protected def classOfInspection: Class[_ <: LocalInspectionTool] =
+    classOf[PatternMayNeverMatchInspection]
 
-  override protected def annotation: String = PatternMayNeverMatchInspection.inspectionName
+  override protected def annotation: String =
+    PatternMayNeverMatchInspection.inspectionName
 
   def testSCL9668(): Unit = {
     val code =
@@ -31,4 +34,3 @@ class PatternMayNeverMatchInspectionTest extends ScalaLightInspectionFixtureTest
     checkTextHasError(code)
   }
 }
-

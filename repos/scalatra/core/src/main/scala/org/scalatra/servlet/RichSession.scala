@@ -4,8 +4,8 @@ package servlet
 import javax.servlet.http.HttpSession
 
 /**
- * Extension methods to the standard HttpSession.
- */
+  * Extension methods to the standard HttpSession.
+  */
 case class RichSession(session: HttpSession) extends AttributesMap {
 
   def id: String = session.getId

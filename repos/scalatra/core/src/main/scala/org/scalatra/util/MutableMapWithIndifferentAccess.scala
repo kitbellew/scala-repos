@@ -3,8 +3,8 @@ package org.scalatra.util
 import scala.collection.mutable.Map
 
 /**
- * @see MapWithIndifferentAccess
- */
+  * @see MapWithIndifferentAccess
+  */
 trait MutableMapWithIndifferentAccess[B]
     extends MapWithIndifferentAccess[B]
     with Map[String, B] {

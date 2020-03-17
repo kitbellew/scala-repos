@@ -1,10 +1,10 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.impl.io
 
-import java.io.{ IOException, InputStream }
-import java.util.concurrent.{ BlockingQueue, LinkedBlockingDeque, TimeUnit }
+import java.io.{IOException, InputStream}
+import java.util.concurrent.{BlockingQueue, LinkedBlockingDeque, TimeUnit}
 import akka.stream.Attributes.InputBuffer
 import akka.stream.impl.Stages.DefaultAttributes
 import akka.stream.impl.io.InputStreamSinkStage._
@@ -12,7 +12,7 @@ import akka.stream.stage._
 import akka.util.ByteString
 import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
-import akka.stream.{ Inlet, SinkShape, Attributes }
+import akka.stream.{Inlet, SinkShape, Attributes}
 
 private[stream] object InputStreamSinkStage {
 
@@ -32,29 +32,37 @@ private[stream] object InputStreamSinkStage {
 }
 
 /**
- * INTERNAL API
- */
-final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration) extends GraphStageWithMaterializedValue[SinkShape[ByteString], InputStream] {
+  * INTERNAL API
+  */
+final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration)
+    extends GraphStageWithMaterializedValue[
+      SinkShape[ByteString],
+      InputStream] {
 
   val in = Inlet[ByteString]("InputStreamSink.in")
   override def initialAttributes: Attributes = DefaultAttributes.inputStreamSink
   override val shape: SinkShape[ByteString] = SinkShape.of(in)
 
-  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, InputStream) = {
-    val maxBuffer = inheritedAttributes.getAttribute(classOf[InputBuffer], InputBuffer(16, 16)).max
+  override def createLogicAndMaterializedValue(
+      inheritedAttributes: Attributes): (GraphStageLogic, InputStream) = {
+    val maxBuffer = inheritedAttributes
+      .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
+      .max
     require(maxBuffer > 0, "Buffer size must be greater than 0")
 
-    val dataQueue = new LinkedBlockingDeque[StreamToAdapterMessage](maxBuffer + 2)
+    val dataQueue =
+      new LinkedBlockingDeque[StreamToAdapterMessage](maxBuffer + 2)
 
     val logic = new GraphStageLogic(shape) with StageWithCallback {
 
       private val callback: AsyncCallback[AdapterToStageMessage] =
         getAsyncCallback {
           case ReadElementAcknowledgement ⇒ sendPullIfAllowed()
-          case Close                      ⇒ completeStage()
+          case Close ⇒ completeStage()
         }
 
-      override def wakeUp(msg: AdapterToStageMessage): Unit = callback.invoke(msg)
+      override def wakeUp(msg: AdapterToStageMessage): Unit =
+        callback.invoke(msg)
 
       private def sendPullIfAllowed(): Unit =
         if (dataQueue.remainingCapacity() > 1 && !hasBeenPulled(in))
@@ -65,40 +73,45 @@ final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration) ex
         pull(in)
       }
 
-      setHandler(in, new InHandler {
-        override def onPush(): Unit = {
-          //1 is buffer for Finished or Failed callback
-          require(dataQueue.remainingCapacity() > 1)
-          dataQueue.add(Data(grab(in)))
-          if (dataQueue.remainingCapacity() > 1) sendPullIfAllowed()
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = {
+            //1 is buffer for Finished or Failed callback
+            require(dataQueue.remainingCapacity() > 1)
+            dataQueue.add(Data(grab(in)))
+            if (dataQueue.remainingCapacity() > 1) sendPullIfAllowed()
+          }
+          override def onUpstreamFinish(): Unit = {
+            dataQueue.add(Finished)
+            completeStage()
+          }
+          override def onUpstreamFailure(ex: Throwable): Unit = {
+            dataQueue.add(Failed(ex))
+            failStage(ex)
+          }
         }
-        override def onUpstreamFinish(): Unit = {
-          dataQueue.add(Finished)
-          completeStage()
-        }
-        override def onUpstreamFailure(ex: Throwable): Unit = {
-          dataQueue.add(Failed(ex))
-          failStage(ex)
-        }
-      })
+      )
     }
     (logic, new InputStreamAdapter(dataQueue, logic.wakeUp, readTimeout))
   }
 }
 
 /**
- * INTERNAL API
- * InputStreamAdapter that interacts with InputStreamSinkStage
- */
-private[akka] class InputStreamAdapter(sharedBuffer: BlockingQueue[StreamToAdapterMessage],
-                                       sendToStage: (AdapterToStageMessage) ⇒ Unit,
-                                       readTimeout: FiniteDuration)
-  extends InputStream {
+  * INTERNAL API
+  * InputStreamAdapter that interacts with InputStreamSinkStage
+  */
+private[akka] class InputStreamAdapter(
+    sharedBuffer: BlockingQueue[StreamToAdapterMessage],
+    sendToStage: (AdapterToStageMessage) ⇒ Unit,
+    readTimeout: FiniteDuration)
+    extends InputStream {
 
   var isInitialized = false
   var isActive = true
   var isStageAlive = true
-  val subscriberClosedException = new IOException("Reactive stream is terminated, no reads are possible")
+  val subscriberClosedException = new IOException(
+    "Reactive stream is terminated, no reads are possible")
   var detachedChunk: Option[ByteString] = None
 
   @scala.throws(classOf[IOException])
@@ -123,14 +136,17 @@ private[akka] class InputStreamAdapter(sharedBuffer: BlockingQueue[StreamToAdapt
     require(a.length > 0, "array size must be >= 0")
     require(begin >= 0, "begin must be >= 0")
     require(length > 0, "length must be > 0")
-    require(begin + length <= a.length, "begin + length must be smaller or equal to the array length")
+    require(
+      begin + length <= a.length,
+      "begin + length must be smaller or equal to the array length")
 
     executeIfNotClosed(() ⇒
       if (isStageAlive) {
         detachedChunk match {
           case None ⇒
             try {
-              sharedBuffer.poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
+              sharedBuffer
+                .poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
                 case Data(data) ⇒
                   detachedChunk = Some(data)
                   readBytes(a, begin, length)
@@ -140,8 +156,11 @@ private[akka] class InputStreamAdapter(sharedBuffer: BlockingQueue[StreamToAdapt
                 case Failed(ex) ⇒
                   isStageAlive = false
                   throw new IOException(ex)
-                case null        ⇒ throw new IOException("Timeout on waiting for new data")
-                case Initialized ⇒ throw new IllegalStateException("message 'Initialized' must come first")
+                case null ⇒
+                  throw new IOException("Timeout on waiting for new data")
+                case Initialized ⇒
+                  throw new IllegalStateException(
+                    "message 'Initialized' must come first")
               }
             } catch {
               case ex: InterruptedException ⇒ throw new IOException(ex)
@@ -170,8 +189,11 @@ private[akka] class InputStreamAdapter(sharedBuffer: BlockingQueue[StreamToAdapt
   }
 
   @tailrec
-  private[this] def getData(arr: Array[Byte], begin: Int, length: Int,
-                            gotBytes: Int): Int = {
+  private[this] def getData(
+      arr: Array[Byte],
+      begin: Int,
+      length: Int,
+      gotBytes: Int): Int = {
     grabDataChunk() match {
       case Some(data) ⇒
         val size = data.size
@@ -195,7 +217,8 @@ private[akka] class InputStreamAdapter(sharedBuffer: BlockingQueue[StreamToAdapt
     if (!isInitialized) {
       sharedBuffer.poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
         case Initialized ⇒ isInitialized = true
-        case _           ⇒ require(false, "First message must be Initialized notification")
+        case _ ⇒
+          require(false, "First message must be Initialized notification")
       }
     }
   }

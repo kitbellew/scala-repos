@@ -9,7 +9,8 @@ import org.eclipse.jetty.util.component.{LifeCycle, AbstractLifeCycle}
 import org.eclipse.jetty.util.log
 
 private[phantomjs] final class JettyWebsocketManager(
-    wsListener: WebsocketListener) extends WebsocketManager { thisMgr =>
+    wsListener: WebsocketListener)
+    extends WebsocketManager { thisMgr =>
 
   private[this] var webSocketConn: WebSocket.Connection = null
   private[this] var closed = false
@@ -31,7 +32,8 @@ private[phantomjs] final class JettyWebsocketManager(
     getWebSocketFactory().setMinVersion(-1)
 
     override def doWebSocketConnect(
-        request: HttpServletRequest, protocol: String): WebSocket =
+        request: HttpServletRequest,
+        protocol: String): WebSocket =
       new ComWebSocketListener
   })
 
@@ -62,7 +64,8 @@ private[phantomjs] final class JettyWebsocketManager(
       server.stop()
 
       if (statusCode != 1000) {
-        throw new Exception("Abnormal closing of connection. " +
+        throw new Exception(
+          "Abnormal closing of connection. " +
             s"Code: $statusCode, Reason: $reason")
       }
     }
@@ -119,9 +122,10 @@ private[phantomjs] final class JettyWebsocketManager(
 
   def localPort: Int = connector.getLocalPort()
 
-  def sendMessage(msg: String): Unit = synchronized {
-    if (webSocketConn != null)
-      webSocketConn.sendMessage(msg)
-  }
+  def sendMessage(msg: String): Unit =
+    synchronized {
+      if (webSocketConn != null)
+        webSocketConn.sendMessage(msg)
+    }
 
 }

@@ -24,10 +24,13 @@ import org.scalatest.time.{Millis, Span}
 import org.apache.spark.storage.{RDDBlockId, StorageLevel}
 
 class NotSerializableClass
-class NotSerializableExn(val notSer: NotSerializableClass) extends Throwable() {}
+class NotSerializableExn(val notSer: NotSerializableClass)
+    extends Throwable() {}
 
-
-class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContext {
+class DistributedSuite
+    extends SparkFunSuite
+    with Matchers
+    with LocalSparkContext {
 
   val clusterUrl = "local-cluster[2,1,1024]"
 
@@ -41,8 +44,9 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
     val numPartitions = 10
 
     sc = new SparkContext("local-cluster[%s,1,1024]".format(numSlaves), "test")
-    val data = sc.parallelize(1 to 100, numPartitions).
-      map(x => throw new NotSerializableExn(new NotSerializableClass))
+    val data = sc
+      .parallelize(1 to 100, numPartitions)
+      .map(x => throw new NotSerializableExn(new NotSerializableClass))
     intercept[SparkException] {
       data.count()
     }
@@ -80,7 +84,8 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
     sc = new SparkContext(clusterUrl, "test", conf)
     // This data should be around 20 MB, so even with 4 mappers and 2 reducers, each map output
     // file should be about 2.5 MB
-    val pairs = sc.parallelize(1 to 2000, 4).map(x => (x % 16, new Array[Byte](10000)))
+    val pairs =
+      sc.parallelize(1 to 2000, 4).map(x => (x % 16, new Array[Byte](10000)))
     val groups = pairs.groupByKey(2).map(x => (x._1, x._2.size)).collect()
     assert(groups.length === 16)
     assert(groups.map(_._2).sum === 2000)
@@ -97,7 +102,7 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
     sc = new SparkContext(clusterUrl, "test")
     val array = new Array[Int](100)
     val bv = sc.broadcast(array)
-    array(2) = 3     // Change the array -- this should not be seen on workers
+    array(2) = 3 // Change the array -- this should not be seen on workers
     val rdd = sc.parallelize(1 to 10, 10)
     val sum = rdd.map(x => bv.value.sum).reduce(_ + _)
     assert(sum === 0)
@@ -157,7 +162,8 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
 
   test("caching in memory, serialized, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data = sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_ONLY_SER_2)
+    val data =
+      sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_ONLY_SER_2)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
@@ -173,7 +179,8 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
 
   test("caching in memory and disk, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data = sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_AND_DISK_2)
+    val data =
+      sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_AND_DISK_2)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
@@ -181,7 +188,8 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
 
   test("caching in memory and disk, serialized, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data = sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_AND_DISK_SER_2)
+    val data =
+      sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_AND_DISK_SER_2)
 
     assert(data.count() === 1000)
     assert(data.count() === 1000)
@@ -189,15 +197,18 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
 
     // Get all the locations of the first partition and try to fetch the partitions
     // from those locations.
-    val blockIds = data.partitions.indices.map(index => RDDBlockId(data.id, index)).toArray
+    val blockIds =
+      data.partitions.indices.map(index => RDDBlockId(data.id, index)).toArray
     val blockId = blockIds(0)
     val blockManager = SparkEnv.get.blockManager
     val blockTransfer = SparkEnv.get.blockTransferService
     blockManager.master.getLocations(blockId).foreach { cmId =>
-      val bytes = blockTransfer.fetchBlockSync(cmId.host, cmId.port, cmId.executorId,
-        blockId.toString)
-      val deserialized = blockManager.dataDeserialize(blockId, bytes.nioByteBuffer())
-        .asInstanceOf[Iterator[Int]].toList
+      val bytes = blockTransfer
+        .fetchBlockSync(cmId.host, cmId.port, cmId.executorId, blockId.toString)
+      val deserialized = blockManager
+        .dataDeserialize(blockId, bytes.nioByteBuffer())
+        .asInstanceOf[Iterator[Int]]
+        .toList
       assert(deserialized === (1 to 100).toList)
     }
   }
@@ -213,8 +224,11 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
     assert(data.count() === size)
     assert(data.count() === size)
     // ensure only a subset of partitions were cached
-    val rddBlocks = sc.env.blockManager.master.getMatchingBlockIds(_.isRDD, askSlaves = true)
-    assert(rddBlocks.size === 0, s"expected no RDD blocks, found ${rddBlocks.size}")
+    val rddBlocks =
+      sc.env.blockManager.master.getMatchingBlockIds(_.isRDD, askSlaves = true)
+    assert(
+      rddBlocks.size === 0,
+      s"expected no RDD blocks, found ${rddBlocks.size}")
   }
 
   test("compute when only some partitions fit in memory") {
@@ -224,19 +238,29 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
       .set("spark.storage.unrollMemoryThreshold", "1024")
       .set("spark.testing.memory", (size * numPartitions).toString)
     sc = new SparkContext(clusterUrl, "test", conf)
-    val data = sc.parallelize(1 to size, numPartitions).persist(StorageLevel.MEMORY_ONLY)
+    val data =
+      sc.parallelize(1 to size, numPartitions).persist(StorageLevel.MEMORY_ONLY)
     assert(data.count() === size)
     assert(data.count() === size)
     assert(data.count() === size)
     // ensure only a subset of partitions were cached
-    val rddBlocks = sc.env.blockManager.master.getMatchingBlockIds(_.isRDD, askSlaves = true)
+    val rddBlocks =
+      sc.env.blockManager.master.getMatchingBlockIds(_.isRDD, askSlaves = true)
     assert(rddBlocks.size > 0, "no RDD blocks found")
-    assert(rddBlocks.size < numPartitions, s"too many RDD blocks found, expected <$numPartitions")
+    assert(
+      rddBlocks.size < numPartitions,
+      s"too many RDD blocks found, expected <$numPartitions")
   }
 
   test("passing environment variables to cluster") {
-    sc = new SparkContext(clusterUrl, "test", null, Nil, Map("TEST_VAR" -> "TEST_VALUE"))
-    val values = sc.parallelize(1 to 2, 2).map(x => System.getenv("TEST_VAR")).collect()
+    sc = new SparkContext(
+      clusterUrl,
+      "test",
+      null,
+      Nil,
+      Map("TEST_VAR" -> "TEST_VALUE"))
+    val values =
+      sc.parallelize(1 to 2, 2).map(x => System.getenv("TEST_VAR")).collect()
     assert(values.toSeq === Seq("TEST_VALUE", "TEST_VALUE"))
   }
 
@@ -258,7 +282,8 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
       val data = sc.parallelize(Seq(true, false), 2)
       assert(data.count === 2)
       assert(data.map(markNodeIfIdentity).collect.size === 2)
-      assert(data.map(failOnMarkedIdentity).map(x => x -> x).groupByKey.count === 2)
+      assert(
+        data.map(failOnMarkedIdentity).map(x => x -> x).groupByKey.count === 2)
     }
   }
 
@@ -272,11 +297,13 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
       assert(data.map(markNodeIfIdentity).collect.size === 2)
       // This relies on mergeCombiners being used to perform the actual reduce for this
       // test to actually be testing what it claims.
-      val grouped = data.map(x => x -> x).combineByKey(
-                      x => x,
-                      (x: Boolean, y: Boolean) => x,
-                      (x: Boolean, y: Boolean) => failOnMarkedIdentity(x)
-                    )
+      val grouped = data
+        .map(x => x -> x)
+        .combineByKey(
+          x => x,
+          (x: Boolean, y: Boolean) => x,
+          (x: Boolean, y: Boolean) => failOnMarkedIdentity(x)
+        )
       assert(grouped.collect.size === 1)
     }
   }
@@ -297,7 +324,8 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
 
       // Create a new replicated RDD to make sure that cached peer information doesn't cause
       // problems.
-      val data2 = sc.parallelize(Seq(true, true), 2).persist(StorageLevel.MEMORY_ONLY_2)
+      val data2 =
+        sc.parallelize(Seq(true, true), 2).persist(StorageLevel.MEMORY_ONLY_2)
       assert(data2.count === 2)
     }
   }
@@ -314,13 +342,13 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
 
     failAfter(Span(3000, Millis)) {
       try {
-        while (! sc.getRDDStorageInfo.isEmpty) {
+        while (!sc.getRDDStorageInfo.isEmpty) {
           Thread.sleep(200)
         }
       } catch {
         case _: Throwable => { Thread.sleep(10) }
-          // Do nothing. We might see exceptions because block manager
-          // is racing this thread to remove entries from the driver.
+        // Do nothing. We might see exceptions because block manager
+        // is racing this thread to remove entries from the driver.
       }
     }
   }

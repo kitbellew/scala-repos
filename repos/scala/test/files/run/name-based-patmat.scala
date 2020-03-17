@@ -29,7 +29,9 @@ package p0 {
 }
 
 package p1 {
-  class Triple(val x: Any) extends AnyRef with Product3[String, String, String] {
+  class Triple(val x: Any)
+      extends AnyRef
+      with Product3[String, String, String] {
     private def s = "" + x
     override def canEqual(x: Any) = this eq x.asInstanceOf[AnyRef]
     def isEmpty = false
@@ -66,13 +68,14 @@ package p3 {
   case class Foo(x: Int, y: Int, zs: Int*)
 
   object Bar {
-    def f(x: Foo) = x match {
-      case Foo(5, 10, 15, 20, _*) => 1
-      case Foo(5, 10, 15, _*)     => 2
-      case Foo(5, 10, _*)         => 3
-      case Foo(5, 10)             => 4 // should warn unreachable
-      case _                      => 5
-    }
+    def f(x: Foo) =
+      x match {
+        case Foo(5, 10, 15, 20, _*) => 1
+        case Foo(5, 10, 15, _*)     => 2
+        case Foo(5, 10, _*)         => 3
+        case Foo(5, 10)             => 4 // should warn unreachable
+        case _                      => 5
+      }
   }
 }
 

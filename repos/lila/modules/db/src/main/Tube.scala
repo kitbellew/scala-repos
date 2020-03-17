@@ -1,6 +1,6 @@
 package lila.db
 
-import scala.util.{ Try, Success, Failure }
+import scala.util.{Try, Success, Failure}
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -14,14 +14,18 @@ trait InColl[A] { implicit def coll: Types.Coll }
 
 trait Tube[Doc] extends BSONDocumentReader[Option[Doc]]
 
-case class BsTube[Doc](handler: BSONHandler[BSONDocument, Doc]) extends Tube[Doc] {
+case class BsTube[Doc](handler: BSONHandler[BSONDocument, Doc])
+    extends Tube[Doc] {
 
-  def read(bson: BSONDocument): Option[Doc] = handler readTry bson match {
-    case Success(doc) => Some(doc)
-    case Failure(err) =>
-      logger.error(s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n", err)
-      None
-  }
+  def read(bson: BSONDocument): Option[Doc] =
+    handler readTry bson match {
+      case Success(doc) => Some(doc)
+      case Failure(err) =>
+        logger.error(
+          s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n",
+          err)
+        None
+    }
 
   def write(doc: Doc): BSONDocument = handler write doc
 
@@ -30,9 +34,9 @@ case class BsTube[Doc](handler: BSONHandler[BSONDocument, Doc]) extends Tube[Doc
 }
 
 case class JsTube[Doc](
-  reader: Reads[Doc],
-  writer: Writes[Doc],
-  flags: Seq[JsTube.Flag.type => JsTube.Flag] = Seq.empty)
+    reader: Reads[Doc],
+    writer: Writes[Doc],
+    flags: Seq[JsTube.Flag.type => JsTube.Flag] = Seq.empty)
     extends Tube[Doc]
     with Reads[Doc]
     with Writes[Doc] {
@@ -54,22 +58,25 @@ case class JsTube[Doc](
 
   def read(js: JsObject): JsResult[Doc] = reads(js)
 
-  def write(doc: Doc): JsResult[JsObject] = writes(doc) match {
-    case obj: JsObject => JsSuccess(obj)
-    case something =>
-      logger.error(s"[tube] Cannot write $doc\ngot $something")
-      JsError()
-  }
+  def write(doc: Doc): JsResult[JsObject] =
+    writes(doc) match {
+      case obj: JsObject => JsSuccess(obj)
+      case something =>
+        logger.error(s"[tube] Cannot write $doc\ngot $something")
+        JsError()
+    }
 
-  def toMongo(doc: Doc): JsResult[JsObject] = flag(_.NoId)(
-    write(doc),
-    write(doc) flatMap JsTube.toMongoId
-  )
+  def toMongo(doc: Doc): JsResult[JsObject] =
+    flag(_.NoId)(
+      write(doc),
+      write(doc) flatMap JsTube.toMongoId
+    )
 
-  def fromMongo(js: JsObject): JsResult[Doc] = flag(_.NoId)(
-    read(js),
-    JsTube.depath(JsTube fromMongoId js) flatMap read
-  )
+  def fromMongo(js: JsObject): JsResult[Doc] =
+    flag(_.NoId)(
+      read(js),
+      JsTube.depath(JsTube fromMongoId js) flatMap read
+    )
 
   def inColl(c: Coll): JsTubeInColl[Doc] =
     new JsTube[Doc](reader, writer, flags) with InColl[Doc] { def coll = c }
@@ -107,15 +114,18 @@ object JsTube {
       def andThen(transformer: Reads[JsObject]): Writes[A] =
         writes.transform(Writes[JsValue] { origin =>
           origin transform transformer match {
-            case err: JsError     => throw LilaException("[tube] Cannot transform %s\n%s".format(origin, err))
+            case err: JsError =>
+              throw LilaException(
+                "[tube] Cannot transform %s\n%s".format(origin, err))
             case JsSuccess(js, _) => js
           }
         })
     }
 
-    def rename(from: Symbol, to: Symbol) = __.json update (
-      (__ \ to).json copyFrom (__ \ from).json.pick
-    ) andThen (__ \ from).json.prune
+    def rename(from: Symbol, to: Symbol) =
+      __.json update (
+        (__ \ to).json copyFrom (__ \ from).json.pick
+      ) andThen (__ \ from).json.prune
 
     def readDate(field: Symbol) =
       (__ \ field).json.update(of[JsObject] map { o =>
@@ -124,13 +134,15 @@ object JsTube {
 
     def readDateOpt(field: Symbol) = readDate(field) orElse json.reader
 
-    def writeDate(field: Symbol) = (__ \ field).json.update(of[JsNumber] map {
-      millis => Json.obj("$date" -> millis)
-    })
+    def writeDate(field: Symbol) =
+      (__ \ field).json.update(of[JsNumber] map { millis =>
+        Json.obj("$date" -> millis)
+      })
 
-    def writeDateOpt(field: Symbol) = (__ \ field).json.update(of[JsNumber] map {
-      millis => Json.obj("$date" -> millis)
-    }) orElse json.reader
+    def writeDateOpt(field: Symbol) =
+      (__ \ field).json.update(of[JsNumber] map { millis =>
+        Json.obj("$date" -> millis)
+      }) orElse json.reader
 
     def merge(obj: JsObject) = __.read[JsObject] map (obj ++)
   }

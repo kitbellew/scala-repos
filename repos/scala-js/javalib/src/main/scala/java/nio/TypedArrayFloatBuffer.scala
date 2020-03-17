@@ -4,7 +4,9 @@ import scala.scalajs.js.typedarray._
 
 private[nio] final class TypedArrayFloatBuffer private (
     override private[nio] val _typedArray: Float32Array,
-    _initialPosition: Int, _initialLimit: Int, _readOnly: Boolean)
+    _initialPosition: Int,
+    _initialLimit: Int,
+    _readOnly: Boolean)
     extends FloatBuffer(_typedArray.length, null, -1) {
 
   position(_initialPosition)
@@ -83,13 +85,19 @@ private[nio] final class TypedArrayFloatBuffer private (
     _typedArray(index) = elem
 
   @inline
-  override private[nio] def load(startIndex: Int,
-      dst: Array[Float], offset: Int, length: Int): Unit =
+  override private[nio] def load(
+      startIndex: Int,
+      dst: Array[Float],
+      offset: Int,
+      length: Int): Unit =
     GenBuffer(this).generic_load(startIndex, dst, offset, length)
 
   @inline
-  override private[nio] def store(startIndex: Int,
-      src: Array[Float], offset: Int, length: Int): Unit =
+  override private[nio] def store(
+      startIndex: Int,
+      src: Array[Float],
+      offset: Int,
+      length: Int): Unit =
     GenBuffer(this).generic_store(startIndex, src, offset, length)
 }
 
@@ -98,16 +106,23 @@ private[nio] object TypedArrayFloatBuffer {
       extends GenTypedArrayBuffer.NewTypedArrayBuffer[FloatBuffer] {
     def bytesPerElem: Int = 4
 
-    def apply(typedArray: Float32Array,
-        initialPosition: Int, initialLimit: Int,
+    def apply(
+        typedArray: Float32Array,
+        initialPosition: Int,
+        initialLimit: Int,
         readOnly: Boolean): TypedArrayFloatBuffer = {
-      new TypedArrayFloatBuffer(typedArray,
-          initialPosition, initialLimit, readOnly)
+      new TypedArrayFloatBuffer(
+        typedArray,
+        initialPosition,
+        initialLimit,
+        readOnly)
     }
 
     @inline
-    def newTypedArray(buffer: ArrayBuffer,
-        byteOffset: Int, length: Int): Float32Array = {
+    def newTypedArray(
+        buffer: ArrayBuffer,
+        byteOffset: Int,
+        length: Int): Float32Array = {
       new Float32Array(buffer, byteOffset, length)
     }
   }

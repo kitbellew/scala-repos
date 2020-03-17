@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence
 
 import scala.concurrent.duration._
@@ -37,7 +37,8 @@ object PerformanceSpec {
     }
   }
 
-  abstract class PerformanceTestPersistentActor(name: String) extends NamedPersistentActor(name) {
+  abstract class PerformanceTestPersistentActor(name: String)
+      extends NamedPersistentActor(name) {
     var failAt: Long = -1
 
     override val receiveRecover: Receive = {
@@ -45,36 +46,41 @@ object PerformanceSpec {
     }
 
     val controlBehavior: Receive = {
-      case StopMeasure        ⇒ deferAsync(StopMeasure)(_ ⇒ sender() ! StopMeasure)
+      case StopMeasure ⇒ deferAsync(StopMeasure)(_ ⇒ sender() ! StopMeasure)
       case FailAt(sequenceNr) ⇒ failAt = sequenceNr
     }
 
   }
 
-  class CommandsourcedTestPersistentActor(name: String) extends PerformanceTestPersistentActor(name) {
+  class CommandsourcedTestPersistentActor(name: String)
+      extends PerformanceTestPersistentActor(name) {
 
     override val receiveCommand: Receive = controlBehavior orElse {
-      case cmd ⇒ persistAsync(cmd) { _ ⇒
-        if (lastSequenceNr % 1000 == 0) print(".")
-        if (lastSequenceNr == failAt) throw new TestException("boom")
-      }
+      case cmd ⇒
+        persistAsync(cmd) { _ ⇒
+          if (lastSequenceNr % 1000 == 0) print(".")
+          if (lastSequenceNr == failAt) throw new TestException("boom")
+        }
     }
   }
 
-  class EventsourcedTestPersistentActor(name: String) extends PerformanceTestPersistentActor(name) {
+  class EventsourcedTestPersistentActor(name: String)
+      extends PerformanceTestPersistentActor(name) {
 
     override val receiveCommand: Receive = controlBehavior orElse {
-      case cmd ⇒ persist(cmd) { _ ⇒
-        if (lastSequenceNr % 1000 == 0) print(".")
-        if (lastSequenceNr == failAt) throw new TestException("boom")
-      }
+      case cmd ⇒
+        persist(cmd) { _ ⇒
+          if (lastSequenceNr % 1000 == 0) print(".")
+          if (lastSequenceNr == failAt) throw new TestException("boom")
+        }
     }
   }
 
   /**
-   * `persist` every 10th message, otherwise `persistAsync`
-   */
-  class MixedTestPersistentActor(name: String) extends PerformanceTestPersistentActor(name) {
+    * `persist` every 10th message, otherwise `persistAsync`
+    */
+  class MixedTestPersistentActor(name: String)
+      extends PerformanceTestPersistentActor(name) {
     var counter = 0
 
     val handler: Any ⇒ Unit = { evt ⇒
@@ -90,16 +96,18 @@ object PerformanceSpec {
     }
   }
 
-  class StashingEventsourcedTestPersistentActor(name: String) extends PerformanceTestPersistentActor(name) {
+  class StashingEventsourcedTestPersistentActor(name: String)
+      extends PerformanceTestPersistentActor(name) {
 
     val printProgress: PartialFunction[Any, Any] = {
       case m ⇒ if (lastSequenceNr % 1000 == 0) print("."); m
     }
 
-    val receiveCommand: Receive = printProgress andThen (controlBehavior orElse {
-      case "a" ⇒ persist("a")(_ ⇒ context.become(processC))
-      case "b" ⇒ persist("b")(_ ⇒ ())
-    })
+    val receiveCommand: Receive =
+      printProgress andThen (controlBehavior orElse {
+        case "a" ⇒ persist("a")(_ ⇒ context.become(processC))
+        case "b" ⇒ persist("b")(_ ⇒ ())
+      })
 
     val processC: Receive = printProgress andThen {
       case "c" ⇒
@@ -110,12 +118,21 @@ object PerformanceSpec {
   }
 }
 
-class PerformanceSpec extends PersistenceSpec(PersistenceSpec.config("leveldb", "PerformanceSpec", serialization = "off").withFallback(ConfigFactory.parseString(PerformanceSpec.config))) with ImplicitSender {
+class PerformanceSpec
+    extends PersistenceSpec(
+      PersistenceSpec
+        .config("leveldb", "PerformanceSpec", serialization = "off")
+        .withFallback(ConfigFactory.parseString(PerformanceSpec.config)))
+    with ImplicitSender {
   import PerformanceSpec._
 
-  val loadCycles = system.settings.config.getInt("akka.persistence.performance.cycles.load")
+  val loadCycles =
+    system.settings.config.getInt("akka.persistence.performance.cycles.load")
 
-  def stressPersistentActor(persistentActor: ActorRef, failAt: Option[Long], description: String): Unit = {
+  def stressPersistentActor(
+      persistentActor: ActorRef,
+      failAt: Option[Long],
+      description: String): Unit = {
     failAt foreach { persistentActor ! FailAt(_) }
     val m = new Measure(loadCycles)
     m.startMeasure()
@@ -126,7 +143,8 @@ class PerformanceSpec extends PersistenceSpec(PersistenceSpec.config("leveldb", 
   }
 
   def stressCommandsourcedPersistentActor(failAt: Option[Long]): Unit = {
-    val persistentActor = namedPersistentActor[CommandsourcedTestPersistentActor]
+    val persistentActor =
+      namedPersistentActor[CommandsourcedTestPersistentActor]
     stressPersistentActor(persistentActor, failAt, "persistent commands")
   }
 
@@ -137,18 +155,23 @@ class PerformanceSpec extends PersistenceSpec(PersistenceSpec.config("leveldb", 
 
   def stressMixedPersistentActor(failAt: Option[Long]): Unit = {
     val persistentActor = namedPersistentActor[MixedTestPersistentActor]
-    stressPersistentActor(persistentActor, failAt, "persistent events & commands")
+    stressPersistentActor(
+      persistentActor,
+      failAt,
+      "persistent events & commands")
   }
 
   def stressStashingPersistentActor(): Unit = {
-    val persistentActor = namedPersistentActor[StashingEventsourcedTestPersistentActor]
+    val persistentActor =
+      namedPersistentActor[StashingEventsourcedTestPersistentActor]
     val m = new Measure(loadCycles)
     m.startMeasure()
     val cmds = 1 to (loadCycles / 3) flatMap (_ ⇒ List("a", "b", "c"))
     cmds foreach (persistentActor ! _)
     persistentActor ! StopMeasure
     expectMsg(100.seconds, StopMeasure)
-    println(f"\nthroughput = ${m.stopMeasure()}%.2f persistent events per second")
+    println(
+      f"\nthroughput = ${m.stopMeasure()}%.2f persistent events per second")
   }
 
   "Warmup persistent actor" should {

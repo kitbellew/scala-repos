@@ -4,22 +4,27 @@ import com.intellij.psi.PsiElement
 import org.jetbrains.plugins.scala.base.SimpleTestCase
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaRecursiveElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScClassParameter
-import org.jetbrains.plugins.scala.lang.psi.api.statements.{ScFunction, ScTypeAlias, ScValue, ScVariable}
+import org.jetbrains.plugins.scala.lang.psi.api.statements.{
+  ScFunction,
+  ScTypeAlias,
+  ScValue,
+  ScVariable
+}
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScEarlyDefinitions
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScTemplateBody
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinition
 
 /**
- * User: Alexander Podkhalyuzin
- * Date: 30.01.12
- */
-
+  * User: Alexander Podkhalyuzin
+  * Date: 30.01.12
+  */
 class OverridingAnnotatorTest extends SimpleTestCase {
   final val Header = "\n"
 
   def testSyntheticUnapply(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(
+      messages(
+        """
         |trait Test {
         |  trait Tree
         |  trait Name
@@ -40,10 +45,9 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       case Nil =>
     }
   }
-  
+
   def testPrivateVal(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(messages("""
         |object ppp {
         |class Base {
         |  private val something = 5
@@ -59,8 +63,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
   }
 
   def testClassParameter(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(messages("""
         |object ppp {
         |class A(x: Int)
         |class B(val x: Int) extends A(x)
@@ -72,8 +75,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
   }
 
   def testVal(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(messages("""
         |object ppp {
         |class Base {
         |  val something = 5
@@ -84,13 +86,13 @@ class OverridingAnnotatorTest extends SimpleTestCase {
         |}
         |}
       """.stripMargin)) {
-      case List(Error("something", "Value 'something' needs override modifier")) =>
+      case List(
+            Error("something", "Value 'something' needs override modifier")) =>
     }
   }
 
   def testNotConcreteMember(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(messages("""
         |object ppp {
         |class Base {
         |  def foo() = 1
@@ -106,8 +108,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
   }
 
   def testOverrideFinalMethod(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(messages("""
         |object ppp {
         | class Base {
         |   final def foo() = 1
@@ -123,8 +124,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
   }
 
   def testOverrideFinalVal(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(messages("""
         |object ppp {
         | class Base {
         |   final val foo = 1
@@ -140,8 +140,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
   }
 
   def testOverrideFinalVar(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(messages("""
         |object ppp {
         | class Base {
         |   final var foo = 1
@@ -157,8 +156,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
   }
 
   def testOverrideFinalAlias(): Unit = {
-    assertMatches(messages(
-      """
+    assertMatches(messages("""
         |object ppp {
         | class Base {
         |   final type foo = Int
@@ -196,7 +194,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
   //SCL-4036
   def testDefOverrideValVar(): Unit = {
     val code =
-    """
+      """
       |object ppp {
       |class A(val oof = 42, var rab = 24) {
       |  val foo = 42
@@ -212,10 +210,11 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       |}
     """.stripMargin
     assertMatches(messages(code)) {
-      case List(Error("foo", "method foo needs to be a stable, immutable value"),
-                Error("bar", "method bar cannot override a mutable variable"),
-                Error("oof", "method oof needs to be a stable, immutable value"),
-                Error("rab", "method rab cannot override a mutable variable")) =>
+      case List(
+            Error("foo", "method foo needs to be a stable, immutable value"),
+            Error("bar", "method bar cannot override a mutable variable"),
+            Error("oof", "method oof needs to be a stable, immutable value"),
+            Error("rab", "method rab cannot override a mutable variable")) =>
     }
   }
 
@@ -249,7 +248,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
       override def visitVariable(varr: ScVariable): Unit = {
         if (varr.getParent.isInstanceOf[ScTemplateBody] ||
-          varr.getParent.isInstanceOf[ScEarlyDefinitions]) {
+            varr.getParent.isInstanceOf[ScEarlyDefinitions]) {
           annotator.checkOverrideVars(varr, mock, isInSources = false)
         }
         super.visitVariable(varr)
@@ -257,7 +256,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
       override def visitValue(v: ScValue): Unit = {
         if (v.getParent.isInstanceOf[ScTemplateBody] ||
-          v.getParent.isInstanceOf[ScEarlyDefinitions]) {
+            v.getParent.isInstanceOf[ScEarlyDefinitions]) {
           annotator.checkOverrideVals(v, mock, isInSources = false)
         }
         super.visitValue(v)

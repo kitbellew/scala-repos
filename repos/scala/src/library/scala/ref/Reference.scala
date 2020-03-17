@@ -9,12 +9,14 @@
 package scala.ref
 
 /**
- * @see `java.lang.ref.Reference`
- * @author Sean McDirmid
- */
+  * @see `java.lang.ref.Reference`
+  * @author Sean McDirmid
+  */
 trait Reference[+T <: AnyRef] extends Function0[T] {
+
   /** return the underlying value */
   def apply(): T
+
   /** return `Some` underlying if it hasn't been collected, otherwise `None` */
   def get: Option[T]
   override def toString = get.map(_.toString).getOrElse("<deleted>")

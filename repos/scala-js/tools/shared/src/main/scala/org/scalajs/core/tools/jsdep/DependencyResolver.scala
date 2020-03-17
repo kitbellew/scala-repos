@@ -11,10 +11,10 @@ object DependencyResolver {
     Traversable[FlatJSDependency] => Traversable[FlatJSDependency]
 
   /** Constructs an ordered list of JS libraries to include. Fails if:
-   *  - Resource names do not identify a unique resource on the classpath
-   *  - Dependencies have cycles
-   *  - Not all dependencies are available
-   */
+    *  - Resource names do not identify a unique resource on the classpath
+    *  - Dependencies have cycles
+    *  - Not all dependencies are available
+    */
   def resolveDependencies(
       manifests: Traversable[JSDependencyManifest],
       availableLibs: Map[String, VirtualJSFile],
@@ -29,28 +29,31 @@ object DependencyResolver {
       dep <- manifest.libDeps
     } yield {
       new FlatJSDependency(
-          manifest.origin,
-          resolvedJSLibs(dep.resourceName),
-          dep.dependencies.map(resolvedJSLibs),
-          dep.commonJSName,
-          dep.minifiedResourceName.map(resolvedJSLibs))
+        manifest.origin,
+        resolvedJSLibs(dep.resourceName),
+        dep.dependencies.map(resolvedJSLibs),
+        dep.commonJSName,
+        dep.minifiedResourceName.map(resolvedJSLibs))
     }
 
     val flatDeps = dependencyFilter(allFlatDeps)
     val includeList = createIncludeList(flatDeps)
 
     for (info <- includeList) yield {
-      new ResolvedJSDependency(availableLibs(info.relPath),
-          info.relPathMinified.map(availableLibs), info)
+      new ResolvedJSDependency(
+        availableLibs(info.relPath),
+        info.relPathMinified.map(availableLibs),
+        info)
     }
   }
 
   /** Collects all the resource names mentioned in the manifests.
-   *  @param manifests to collect from
-   *  @return Map from resource name to the list of origins mentioning them
-   */
+    *  @param manifests to collect from
+    *  @return Map from resource name to the list of origins mentioning them
+    */
   private def collectAllResourceNames(
-      manifests: Traversable[JSDependencyManifest]): Map[String, List[Origin]] = {
+      manifests: Traversable[JSDependencyManifest])
+      : Map[String, List[Origin]] = {
 
     def allResources(dep: JSDependency) =
       dep.resourceName :: dep.dependencies ::: dep.minifiedResourceName.toList
@@ -65,9 +68,9 @@ object DependencyResolver {
   }
 
   /** Resolves all the resource names wrt to the current classpath.
-   *  @throws JSLibResolveException if any of the resource names cannot be resolved
-   *  @return Map from resource name to relative path
-   */
+    *  @throws JSLibResolveException if any of the resource names cannot be resolved
+    *  @return Map from resource name to relative path
+    */
   private def resolveAllResourceNames(
       allResourceNames: Map[String, List[Origin]],
       relPaths: Traversable[String]): Map[String, String] = {
@@ -75,9 +78,8 @@ object DependencyResolver {
     val resolvedLibs = Map.newBuilder[String, String]
 
     for ((resourceName, origins) <- allResourceNames) {
-      resolveResourceName(resourceName, origins, relPaths).fold[Unit](
-          problems += _,
-          resolvedLibs += resourceName -> _)
+      resolveResourceName(resourceName, origins, relPaths)
+        .fold[Unit](problems += _, resolvedLibs += resourceName -> _)
     }
 
     if (problems.nonEmpty)
@@ -87,7 +89,9 @@ object DependencyResolver {
   }
 
   /** Resolves one resource name wrt to the current classpath. */
-  private def resolveResourceName(resourceName: String, origins: List[Origin],
+  private def resolveResourceName(
+      resourceName: String,
+      origins: List[Origin],
       relPaths: Traversable[String]): Either[Problem, String] = {
     val candidates = (relPaths collect {
       case relPath if ("/" + relPath).endsWith("/" + resourceName) =>
@@ -119,8 +123,9 @@ object DependencyResolver {
     // Very simple O(n²) topological sort for elements assumed to be distinct
     // Copied :( from GenJSExports (but different exception)
     @scala.annotation.tailrec
-    def loop(coll: List[ResolutionInfo],
-      acc: List[ResolutionInfo]): List[ResolutionInfo] = {
+    def loop(
+        coll: List[ResolutionInfo],
+        acc: List[ResolutionInfo]): List[ResolutionInfo] = {
 
       if (coll.isEmpty) acc
       else if (coll.tail.isEmpty) coll.head :: acc
@@ -140,8 +145,8 @@ object DependencyResolver {
   }
 
   /** Merges multiple JSDependencyManifests into a map of map:
-   *  resourceName -> ResolutionInfo
-   */
+    *  resourceName -> ResolutionInfo
+    */
   private def mergeManifests(flatDeps: Traversable[FlatJSDependency]) = {
     checkCommonJSNameConflicts(flatDeps)
 
@@ -160,13 +165,15 @@ object DependencyResolver {
     }
   }
 
-  private def checkCommonJSNameConflicts(flatDeps: Traversable[FlatJSDependency]) = {
+  private def checkCommonJSNameConflicts(
+      flatDeps: Traversable[FlatJSDependency]) = {
     @inline
-    def hasConflict(x: FlatJSDependency, y: FlatJSDependency) = (
+    def hasConflict(x: FlatJSDependency, y: FlatJSDependency) =
+      (
         x.commonJSName.isDefined &&
-        y.commonJSName.isDefined &&
-        (x.relPath == y.relPath ^ x.commonJSName == y.commonJSName)
-    )
+          y.commonJSName.isDefined &&
+          (x.relPath == y.relPath ^ x.commonJSName == y.commonJSName)
+      )
 
     val conflicts = for {
       dep <- flatDeps
@@ -181,11 +188,12 @@ object DependencyResolver {
       byRelPath: Map[String, Traversable[FlatJSDependency]]) = {
 
     @inline
-    def hasConflict(x: FlatJSDependency, y: FlatJSDependency) = (
+    def hasConflict(x: FlatJSDependency, y: FlatJSDependency) =
+      (
         x.relPathMinified.isDefined &&
-        y.relPathMinified.isDefined &&
-        x.relPathMinified != y.relPathMinified
-    )
+          y.relPathMinified.isDefined &&
+          x.relPathMinified != y.relPathMinified
+      )
 
     val conflicts = for {
       (_, deps) <- byRelPath

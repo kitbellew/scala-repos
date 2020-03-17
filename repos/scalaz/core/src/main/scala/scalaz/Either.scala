@@ -5,25 +5,25 @@ import scala.reflect.ClassTag
 import Liskov.<~<
 
 /** Represents a disjunction: a result that is either an `A` or a `B`.
- *
- * An instance of `A` [[\/]] B is either a [[-\/]]`[A]` (aka a "left") or a [[\/-]]`[B]` (aka a "right").
- *
- * A common use of a disjunction is to explicitly represent the possibility of failure in a result as opposed to
- * throwing an exception. By convention, the left is used for errors and the right is reserved for successes.
- * For example, a function that attempts to parse an integer from a string may have a return type of
- * `NumberFormatException` [[\/]] `Int`. However, since there is no need to actually throw an exception, the type (`A`)
- * chosen for the "left" could be any type representing an error and has no need to actually extend `Exception`.
- *
- * `A` [[\/]] `B` is isomorphic to `scala.Either[A, B]`, but [[\/]] is right-biased, so methods such as `map` and
- * `flatMap` apply only in the context of the "right" case. This right bias makes [[\/]] more convenient to use
- * than `scala.Either` in a monadic context. Methods such as `swap`, `swapped`, and `leftMap` provide functionality
- * that `scala.Either` exposes through left projections.
- *
- * `A` [[\/]] `B` is also isomorphic to [[Validation]]`[A, B]`. The subtle but important difference is that [[Applicative]]
- * instances for [[Validation]] accumulates errors ("lefts") while [[Applicative]] instances for [[\/]] fail fast on the
- * first "left" they evaluate. This fail-fast behavior allows [[\/]] to have lawful [[Monad]] instances that are consistent
- * with their [[Applicative]] instances, while [[Validation]] cannot.
- */
+  *
+  * An instance of `A` [[\/]] B is either a [[-\/]]`[A]` (aka a "left") or a [[\/-]]`[B]` (aka a "right").
+  *
+  * A common use of a disjunction is to explicitly represent the possibility of failure in a result as opposed to
+  * throwing an exception. By convention, the left is used for errors and the right is reserved for successes.
+  * For example, a function that attempts to parse an integer from a string may have a return type of
+  * `NumberFormatException` [[\/]] `Int`. However, since there is no need to actually throw an exception, the type (`A`)
+  * chosen for the "left" could be any type representing an error and has no need to actually extend `Exception`.
+  *
+  * `A` [[\/]] `B` is isomorphic to `scala.Either[A, B]`, but [[\/]] is right-biased, so methods such as `map` and
+  * `flatMap` apply only in the context of the "right" case. This right bias makes [[\/]] more convenient to use
+  * than `scala.Either` in a monadic context. Methods such as `swap`, `swapped`, and `leftMap` provide functionality
+  * that `scala.Either` exposes through left projections.
+  *
+  * `A` [[\/]] `B` is also isomorphic to [[Validation]]`[A, B]`. The subtle but important difference is that [[Applicative]]
+  * instances for [[Validation]] accumulates errors ("lefts") while [[Applicative]] instances for [[\/]] fail fast on the
+  * first "left" they evaluate. This fail-fast behavior allows [[\/]] to have lawful [[Monad]] instances that are consistent
+  * with their [[Applicative]] instances, while [[Validation]] cannot.
+  */
 sealed abstract class \/[+A, +B] extends Product with Serializable {
   final class SwitchingDisjunction[X](r: => X) {
     def <<?:(left: => X): X =
@@ -59,11 +59,15 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Spin in tail-position on the right value of this disjunction. */
-  def loopr[AA >: A, BB >: B, X](left: AA => X, right: BB => X \/ (AA \/ BB)): X =
+  def loopr[AA >: A, BB >: B, X](
+      left: AA => X,
+      right: BB => X \/ (AA \/ BB)): X =
     \/.loopRight(this, left, right)
 
   /** Spin in tail-position on the left value of this disjunction. */
-  def loopl[AA >: A, BB >: B, X](left: AA => X \/ (AA \/ BB), right: BB => X): X =
+  def loopl[AA >: A, BB >: B, X](
+      left: AA => X \/ (AA \/ BB),
+      right: BB => X): X =
     \/.loopLeft(this, left, right)
 
   /** Flip the left/right values in this disjunction. Alias for `unary_~` */
@@ -95,7 +99,7 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   /** Run the given function on the left value. */
   def leftMap[C](f: A => C): (C \/ B) =
     this match {
-      case -\/(a) => -\/(f(a))
+      case -\/(a)     => -\/(f(a))
       case b @ \/-(_) => b
     }
 
@@ -117,7 +121,7 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   def traverse[F[_]: Applicative, AA >: A, D](g: B => F[D]): F[AA \/ D] =
     this match {
       case a @ -\/(_) => Applicative[F].point(a)
-      case \/-(b) => Functor[F].map(g(b))(\/.right)
+      case \/-(b)     => Functor[F].map(g(b))(\/.right)
     }
 
   /** Run the side-effect on the right of this disjunction. */
@@ -132,7 +136,7 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   def flatMap[AA >: A, D](g: B => (AA \/ D)): (AA \/ D) =
     this match {
       case a @ -\/(_) => a
-      case \/-(b) => g(b)
+      case \/-(b)     => g(b)
     }
 
   /** Fold on the right of this disjunction. */
@@ -146,7 +150,7 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   def filter[AA >: A](p: B => Boolean)(implicit M: Monoid[AA]): (AA \/ B) =
     this match {
       case -\/(_) => this
-      case \/-(b) => if(p(b)) this else -\/(M.zero)
+      case \/-(b) => if (p(b)) this else -\/(M.zero)
     }
 
   /** Return `true` if this disjunction is a right value satisfying the given predicate. */
@@ -219,8 +223,8 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   /** Return this if it is a right, otherwise, return the given value. Alias for `|||` */
   def orElse[C, BB >: B](x: => C \/ BB): C \/ BB =
     this match {
-      case -\/(_) => x
-      case right@ \/-(_) => right
+      case -\/(_)         => x
+      case right @ \/-(_) => right
     }
 
   /** Return this if it is a right, otherwise, return the given value. Alias for `orElse` */
@@ -228,68 +232,81 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     orElse(x)
 
   /**
-   * Sums up values inside disjunction, if both are left or right. Returns first left otherwise.
-   * {{{
-   * \/-(v1) +++ \/-(v2) → \/-(v1 + v2)
-   * \/-(v1) +++ -\/(v2) → -\/(v2)
-   * -\/(v1) +++ \/-(v2) → -\/(v1)
-   * -\/(v1) +++ -\/(v2) → -\/(v1 + v2)
-   * }}}
-   */
-  def +++[AA >: A, BB >: B](x: => AA \/ BB)(implicit M1: Semigroup[BB], M2: Semigroup[AA]): AA \/ BB =
+    * Sums up values inside disjunction, if both are left or right. Returns first left otherwise.
+    * {{{
+    * \/-(v1) +++ \/-(v2) → \/-(v1 + v2)
+    * \/-(v1) +++ -\/(v2) → -\/(v2)
+    * -\/(v1) +++ \/-(v2) → -\/(v1)
+    * -\/(v1) +++ -\/(v2) → -\/(v1 + v2)
+    * }}}
+    */
+  def +++[AA >: A, BB >: B](
+      x: => AA \/ BB)(implicit M1: Semigroup[BB], M2: Semigroup[AA]): AA \/ BB =
     this match {
-      case -\/(a1) => x match {
-        case -\/(a2) => -\/(M2.append(a1, a2))
-        case \/-(_) => this
-      }
-      case \/-(b1) => x match {
-        case b2 @ -\/(_) => b2
-        case \/-(b2) => \/-(M1.append(b1, b2))
-      }
+      case -\/(a1) =>
+        x match {
+          case -\/(a2) => -\/(M2.append(a1, a2))
+          case \/-(_)  => this
+        }
+      case \/-(b1) =>
+        x match {
+          case b2 @ -\/(_) => b2
+          case \/-(b2)     => \/-(M1.append(b1, b2))
+        }
     }
 
   /** Ensures that the right value of this disjunction satisfies the given predicate, or returns left with the given value. */
-  def ensure[AA >: A](onLeft: => AA)(f: B => Boolean): (AA \/ B) = this match {
-    case \/-(b) => if (f(b)) this else -\/(onLeft)
-    case -\/(_) => this
-  }
+  def ensure[AA >: A](onLeft: => AA)(f: B => Boolean): (AA \/ B) =
+    this match {
+      case \/-(b) => if (f(b)) this else -\/(onLeft)
+      case -\/(_) => this
+    }
 
   /** Run the given function on the left and return right with the result. */
-  def recover[BB >: B](pf: PartialFunction[A, BB]): (A \/ BB) = this match {
-    case -\/(a) if (pf isDefinedAt a) => \/-(pf(a))
-    case _ => this
-  }
+  def recover[BB >: B](pf: PartialFunction[A, BB]): (A \/ BB) =
+    this match {
+      case -\/(a) if (pf isDefinedAt a) => \/-(pf(a))
+      case _                            => this
+    }
 
   /** Run the given function on the left and return the result. */
-  def recoverWith[AA >: A, BB >: B](pf: PartialFunction[AA, AA \/ BB]): (AA \/ BB) = this match {
-    case -\/(a) if (pf isDefinedAt a) => pf(a)
-    case _ => this
-  }
+  def recoverWith[AA >: A, BB >: B](
+      pf: PartialFunction[AA, AA \/ BB]): (AA \/ BB) =
+    this match {
+      case -\/(a) if (pf isDefinedAt a) => pf(a)
+      case _                            => this
+    }
 
   /** Compare two disjunction values for equality. */
-  def ===[AA >: A, BB >: B](x: AA \/ BB)(implicit EA: Equal[AA], EB: Equal[BB]): Boolean =
+  def ===[AA >: A, BB >: B](
+      x: AA \/ BB)(implicit EA: Equal[AA], EB: Equal[BB]): Boolean =
     this match {
-      case -\/(a1) => x match {
-        case -\/(a2) => Equal[AA].equal(a1, a2)
-        case \/-(_) => false
-      }
-      case \/-(b1) => x match {
-        case \/-(b2) => Equal[BB].equal(b1, b2)
-        case -\/(_) => false
-      }
+      case -\/(a1) =>
+        x match {
+          case -\/(a2) => Equal[AA].equal(a1, a2)
+          case \/-(_)  => false
+        }
+      case \/-(b1) =>
+        x match {
+          case \/-(b2) => Equal[BB].equal(b1, b2)
+          case -\/(_)  => false
+        }
     }
 
   /** Compare two disjunction values for ordering. */
-  def compare[AA >: A, BB >: B](x: AA \/ BB)(implicit EA: Order[AA], EB: Order[BB]): Ordering =
+  def compare[AA >: A, BB >: B](
+      x: AA \/ BB)(implicit EA: Order[AA], EB: Order[BB]): Ordering =
     this match {
-      case -\/(a1) => x match {
-        case -\/(a2) => Order[AA].apply(a1, a2)
-        case \/-(_) => Ordering.LT
-      }
-      case \/-(b1) => x match {
-        case \/-(b2) => Order[BB].apply(b1, b2)
-        case -\/(_) => Ordering.GT
-      }
+      case -\/(a1) =>
+        x match {
+          case -\/(a2) => Order[AA].apply(a1, a2)
+          case \/-(_)  => Ordering.LT
+        }
+      case \/-(b1) =>
+        x match {
+          case \/-(b2) => Order[BB].apply(b1, b2)
+          case -\/(_)  => Ordering.GT
+        }
     }
 
   /** Show for a disjunction value. */
@@ -305,16 +322,17 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
       case -\/(a) => Failure(a)
       case \/-(b) => Success(b)
     }
-  
+
   /** Convert to a ValidationNel. */
-  def validationNel[AA>:A] : ValidationNel[AA,B] = 
+  def validationNel[AA >: A]: ValidationNel[AA, B] =
     this match {
       case -\/(a) => Failure(NonEmptyList(a))
       case \/-(b) => Success(b)
     }
 
   /** Run a validation function and back to disjunction again. Alias for `@\?/` */
-  def validationed[AA, BB](k: Validation[A, B] => Validation[AA, BB]): AA \/ BB =
+  def validationed[AA, BB](
+      k: Validation[A, B] => Validation[AA, BB]): AA \/ BB =
     k(validation).disjunction
 
   /** Run a validation function and back to disjunction again. Alias for `validationed` */
@@ -338,15 +356,15 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
 }
 
 /** A left disjunction
- *
- * Often used to represent the failure case of a result
- */
+  *
+  * Often used to represent the failure case of a result
+  */
 final case class -\/[+A](a: A) extends (A \/ Nothing)
 
 /** A right disjunction
- *
- * Often used to represent the success case of a result
- */
+  *
+  * Often used to represent the success case of a result
+  */
 final case class \/-[+B](b: B) extends (Nothing \/ B)
 
 object \/ extends DisjunctionInstances {
@@ -363,37 +381,48 @@ object \/ extends DisjunctionInstances {
   def fromEither[A, B](e: Either[A, B]): A \/ B =
     e fold (left, right)
 
-  def fromTryCatchThrowable[T, E <: Throwable](a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): E \/ T = try {
-    \/-(a)
-  } catch {
-    case e if ex.runtimeClass.isInstance(e) => -\/(e.asInstanceOf[E])
-  }
+  def fromTryCatchThrowable[T, E <: Throwable](
+      a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): E \/ T =
+    try {
+      \/-(a)
+    } catch {
+      case e if ex.runtimeClass.isInstance(e) => -\/(e.asInstanceOf[E])
+    }
 
-  def fromTryCatchNonFatal[T](a: => T): Throwable \/ T = try {
-    \/-(a)
-  } catch {
-    case NonFatal(t) => -\/(t)
-  }
+  def fromTryCatchNonFatal[T](a: => T): Throwable \/ T =
+    try {
+      \/-(a)
+    } catch {
+      case NonFatal(t) => -\/(t)
+    }
 
   /** Spin in tail-position on the right value of the given disjunction. */
   @annotation.tailrec
-  final def loopRight[A, B, X](d: A \/ B, left: A => X, right: B => X \/ (A \/ B)): X =
+  final def loopRight[A, B, X](
+      d: A \/ B,
+      left: A => X,
+      right: B => X \/ (A \/ B)): X =
     d match {
       case -\/(a) => left(a)
-      case \/-(b) => right(b) match {
-        case -\/(x) => x
-        case \/-(q) => loopRight(q, left, right)
-      }
+      case \/-(b) =>
+        right(b) match {
+          case -\/(x) => x
+          case \/-(q) => loopRight(q, left, right)
+        }
     }
 
   /** Spin in tail-position on the left value of the given disjunction. */
   @annotation.tailrec
-  final def loopLeft[A, B, X](d: A \/ B, left: A => X \/ (A \/ B), right: B => X): X =
+  final def loopLeft[A, B, X](
+      d: A \/ B,
+      left: A => X \/ (A \/ B),
+      right: B => X): X =
     d match {
-      case -\/(a) => left(a) match {
-        case -\/(x) => x
-        case \/-(q) => loopLeft(q, left, right)
-      }
+      case -\/(a) =>
+        left(a) match {
+          case -\/(x) => x
+          case \/-(q) => loopLeft(q, left, right)
+        }
       case \/-(b) => right(b)
     }
 
@@ -427,7 +456,8 @@ sealed abstract class DisjunctionInstances0 extends DisjunctionInstances1 {
   implicit def DisjunctionShow[A: Show, B: Show]: Show[A \/ B] =
     Show.show(_.show)
 
-  implicit def DisjunctionSemigroup[A: Semigroup, B: Semigroup]: Semigroup[A \/ B] =
+  implicit def DisjunctionSemigroup[A: Semigroup, B: Semigroup]
+      : Semigroup[A \/ B] =
     new Semigroup[A \/ B] {
       def append(a1: A \/ B, a2: => A \/ B) =
         a1 +++ a2
@@ -435,16 +465,28 @@ sealed abstract class DisjunctionInstances0 extends DisjunctionInstances1 {
 }
 
 sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
-  implicit def DisjunctionInstances1[L]: Traverse[L \/ ?] with Monad[L \/ ?] with BindRec[L \/ ?] with Cozip[L \/ ?] with Plus[L \/ ?] with Optional[L \/ ?] with MonadError[L \/ ?, L] =
-    new Traverse[L \/ ?] with Monad[L \/ ?] with BindRec[L \/ ?] with Cozip[L \/ ?] with Plus[L \/ ?] with Optional[L \/ ?] with MonadError[L \/ ?, L] {
+  implicit def DisjunctionInstances1[L]: Traverse[L \/ ?]
+    with Monad[L \/ ?]
+    with BindRec[L \/ ?]
+    with Cozip[L \/ ?]
+    with Plus[L \/ ?]
+    with Optional[L \/ ?]
+    with MonadError[L \/ ?, L] =
+    new Traverse[L \/ ?]
+      with Monad[L \/ ?]
+      with BindRec[L \/ ?]
+      with Cozip[L \/ ?]
+      with Plus[L \/ ?]
+      with Optional[L \/ ?]
+      with MonadError[L \/ ?, L] {
       override def map[A, B](fa: L \/ A)(f: A => B) =
         fa map f
 
       @scala.annotation.tailrec
       def tailrecM[A, B](f: A => L \/ (A \/ B))(a: A): L \/ B =
         f(a) match {
-          case l @ -\/(_) => l
-          case \/-(-\/(a0)) => tailrecM(f)(a0)
+          case l @ -\/(_)       => l
+          case \/-(-\/(a0))     => tailrecM(f)(a0)
           case \/-(rb @ \/-(_)) => rb
         }
 
@@ -454,7 +496,7 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
       def point[A](a: => A) =
         \/-(a)
 
-      def traverseImpl[G[_] : Applicative, A, B](fa: L \/ A)(f: A => G[B]) =
+      def traverseImpl[G[_]: Applicative, A, B](fa: L \/ A)(f: A => G[B]) =
         fa.traverse(f)
 
       override def foldRight[A, B](fa: L \/ A, z: => B)(f: (A, => B) => B) =
@@ -463,37 +505,40 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
       def cozip[A, B](x: L \/ (A \/ B)) =
         x match {
           case l @ -\/(_) => -\/(l)
-          case \/-(e) => e match {
-            case -\/(a) => -\/(\/-(a))
-            case b @ \/-(_) => \/-(b)
-          }
+          case \/-(e) =>
+            e match {
+              case -\/(a)     => -\/(\/-(a))
+              case b @ \/-(_) => \/-(b)
+            }
         }
 
       def plus[A](a: L \/ A, b: => L \/ A) =
         a orElse b
 
-      def pextract[B, A](fa: L \/ A): (L \/ B) \/ A = fa match {
-        case l@ -\/(_) => -\/(l)
-        case r@ \/-(_) => r
-      }
+      def pextract[B, A](fa: L \/ A): (L \/ B) \/ A =
+        fa match {
+          case l @ -\/(_) => -\/(l)
+          case r @ \/-(_) => r
+        }
 
       def raiseError[A](e: L): L \/ A =
         -\/(e)
 
-      def handleError[A](fa: L \/ A)(f: L => L \/ A): L \/ A = fa match {
-        case -\/(e) => f(e)
-        case r => r
-      }
+      def handleError[A](fa: L \/ A)(f: L => L \/ A): L \/ A =
+        fa match {
+          case -\/(e) => f(e)
+          case r      => r
+        }
     }
 }
 
 sealed abstract class DisjunctionInstances2 {
-  implicit val DisjunctionInstances2 : Bitraverse[\/] = new Bitraverse[\/] {
-    override def bimap[A, B, C, D](fab: A \/ B)
-                                  (f: A => C, g: B => D) = fab bimap (f, g)
+  implicit val DisjunctionInstances2: Bitraverse[\/] = new Bitraverse[\/] {
+    override def bimap[A, B, C, D](fab: A \/ B)(f: A => C, g: B => D) =
+      fab bimap (f, g)
 
-    def bitraverseImpl[G[_] : Applicative, A, B, C, D](fab: A \/ B)
-                                                  (f: A => G[C], g: B => G[D]) =
+    def bitraverseImpl[G[_]: Applicative, A, B, C, D](
+        fab: A \/ B)(f: A => G[C], g: B => G[D]) =
       fab.bitraverse(f, g)
   }
 

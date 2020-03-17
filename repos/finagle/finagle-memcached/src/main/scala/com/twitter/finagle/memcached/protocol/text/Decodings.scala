@@ -8,6 +8,6 @@ case class TokensWithData(
     tokens: Seq[Buf],
     data: Buf,
     casUnique: Option[Buf] = None)
-  extends Decoding
+    extends Decoding
 case class ValueLines(lines: Seq[TokensWithData]) extends Decoding
 case class StatLines(lines: Seq[Tokens]) extends Decoding

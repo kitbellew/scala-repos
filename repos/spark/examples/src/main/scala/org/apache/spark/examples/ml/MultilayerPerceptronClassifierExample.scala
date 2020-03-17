@@ -26,18 +26,20 @@ import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
 import org.apache.spark.sql.SQLContext
 
 /**
- * An example for Multilayer Perceptron Classification.
- */
+  * An example for Multilayer Perceptron Classification.
+  */
 object MultilayerPerceptronClassifierExample {
 
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf().setAppName("MultilayerPerceptronClassifierExample")
+    val conf =
+      new SparkConf().setAppName("MultilayerPerceptronClassifierExample")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read.format("libsvm")
+    val data = sqlContext.read
+      .format("libsvm")
       .load("data/mllib/sample_multiclass_classification_data.txt")
     // Split the data into train and test
     val splits = data.randomSplit(Array(0.6, 0.4), seed = 1234L)

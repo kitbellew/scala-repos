@@ -28,14 +28,14 @@ import org.apache.spark.annotation.DeveloperApi
 import org.apache.spark.util.Utils
 
 /**
- * :: DeveloperApi ::
- * CompressionCodec allows the customization of choosing different compression implementations
- * to be used in block storage.
- *
- * Note: The wire protocol for a codec is not guaranteed compatible across versions of Spark.
- *       This is intended for use as an internal compression utility within a single
- *       Spark application.
- */
+  * :: DeveloperApi ::
+  * CompressionCodec allows the customization of choosing different compression implementations
+  * to be used in block storage.
+  *
+  * Note: The wire protocol for a codec is not guaranteed compatible across versions of Spark.
+  *       This is intended for use as an internal compression utility within a single
+  *       Spark application.
+  */
 @DeveloperApi
 trait CompressionCodec {
 
@@ -48,9 +48,11 @@ private[spark] object CompressionCodec {
 
   private val configKey = "spark.io.compression.codec"
 
-  private[spark] def supportsConcatenationOfSerializedStreams(codec: CompressionCodec): Boolean = {
-    (codec.isInstanceOf[SnappyCompressionCodec] || codec.isInstanceOf[LZFCompressionCodec]
-      || codec.isInstanceOf[LZ4CompressionCodec])
+  private[spark] def supportsConcatenationOfSerializedStreams(
+      codec: CompressionCodec): Boolean = {
+    (codec.isInstanceOf[SnappyCompressionCodec] || codec
+      .isInstanceOf[LZFCompressionCodec]
+    || codec.isInstanceOf[LZ4CompressionCodec])
   }
 
   private val shortCompressionCodecNames = Map(
@@ -67,29 +69,37 @@ private[spark] object CompressionCodec {
   }
 
   def createCodec(conf: SparkConf, codecName: String): CompressionCodec = {
-    val codecClass = shortCompressionCodecNames.getOrElse(codecName.toLowerCase, codecName)
-    val codec = try {
-      val ctor = Utils.classForName(codecClass).getConstructor(classOf[SparkConf])
-      Some(ctor.newInstance(conf).asInstanceOf[CompressionCodec])
-    } catch {
-      case e: ClassNotFoundException => None
-      case e: IllegalArgumentException => None
-    }
-    codec.getOrElse(throw new IllegalArgumentException(s"Codec [$codecName] is not available. " +
-      s"Consider setting $configKey=$FALLBACK_COMPRESSION_CODEC"))
+    val codecClass =
+      shortCompressionCodecNames.getOrElse(codecName.toLowerCase, codecName)
+    val codec =
+      try {
+        val ctor =
+          Utils.classForName(codecClass).getConstructor(classOf[SparkConf])
+        Some(ctor.newInstance(conf).asInstanceOf[CompressionCodec])
+      } catch {
+        case e: ClassNotFoundException   => None
+        case e: IllegalArgumentException => None
+      }
+    codec.getOrElse(
+      throw new IllegalArgumentException(
+        s"Codec [$codecName] is not available. " +
+          s"Consider setting $configKey=$FALLBACK_COMPRESSION_CODEC"))
   }
 
   /**
-   * Return the short version of the given codec name.
-   * If it is already a short name, just return it.
-   */
+    * Return the short version of the given codec name.
+    * If it is already a short name, just return it.
+    */
   def getShortName(codecName: String): String = {
     if (shortCompressionCodecNames.contains(codecName)) {
       codecName
     } else {
       shortCompressionCodecNames
         .collectFirst { case (k, v) if v == codecName => k }
-        .getOrElse { throw new IllegalArgumentException(s"No short name for codec $codecName.") }
+        .getOrElse {
+          throw new IllegalArgumentException(
+            s"No short name for codec $codecName.")
+        }
     }
   }
 
@@ -99,34 +109,35 @@ private[spark] object CompressionCodec {
 }
 
 /**
- * :: DeveloperApi ::
- * LZ4 implementation of [[org.apache.spark.io.CompressionCodec]].
- * Block size can be configured by `spark.io.compression.lz4.blockSize`.
- *
- * Note: The wire protocol for this codec is not guaranteed to be compatible across versions
- *       of Spark. This is intended for use as an internal compression utility within a single Spark
- *       application.
- */
+  * :: DeveloperApi ::
+  * LZ4 implementation of [[org.apache.spark.io.CompressionCodec]].
+  * Block size can be configured by `spark.io.compression.lz4.blockSize`.
+  *
+  * Note: The wire protocol for this codec is not guaranteed to be compatible across versions
+  *       of Spark. This is intended for use as an internal compression utility within a single Spark
+  *       application.
+  */
 @DeveloperApi
 class LZ4CompressionCodec(conf: SparkConf) extends CompressionCodec {
 
   override def compressedOutputStream(s: OutputStream): OutputStream = {
-    val blockSize = conf.getSizeAsBytes("spark.io.compression.lz4.blockSize", "32k").toInt
+    val blockSize =
+      conf.getSizeAsBytes("spark.io.compression.lz4.blockSize", "32k").toInt
     new LZ4BlockOutputStream(s, blockSize)
   }
 
-  override def compressedInputStream(s: InputStream): InputStream = new LZ4BlockInputStream(s)
+  override def compressedInputStream(s: InputStream): InputStream =
+    new LZ4BlockInputStream(s)
 }
 
-
 /**
- * :: DeveloperApi ::
- * LZF implementation of [[org.apache.spark.io.CompressionCodec]].
- *
- * Note: The wire protocol for this codec is not guaranteed to be compatible across versions
- *       of Spark. This is intended for use as an internal compression utility within a single Spark
- *       application.
- */
+  * :: DeveloperApi ::
+  * LZF implementation of [[org.apache.spark.io.CompressionCodec]].
+  *
+  * Note: The wire protocol for this codec is not guaranteed to be compatible across versions
+  *       of Spark. This is intended for use as an internal compression utility within a single Spark
+  *       application.
+  */
 @DeveloperApi
 class LZFCompressionCodec(conf: SparkConf) extends CompressionCodec {
 
@@ -134,50 +145,54 @@ class LZFCompressionCodec(conf: SparkConf) extends CompressionCodec {
     new LZFOutputStream(s).setFinishBlockOnFlush(true)
   }
 
-  override def compressedInputStream(s: InputStream): InputStream = new LZFInputStream(s)
+  override def compressedInputStream(s: InputStream): InputStream =
+    new LZFInputStream(s)
 }
 
-
 /**
- * :: DeveloperApi ::
- * Snappy implementation of [[org.apache.spark.io.CompressionCodec]].
- * Block size can be configured by `spark.io.compression.snappy.blockSize`.
- *
- * Note: The wire protocol for this codec is not guaranteed to be compatible across versions
- *       of Spark. This is intended for use as an internal compression utility within a single Spark
- *       application.
- */
+  * :: DeveloperApi ::
+  * Snappy implementation of [[org.apache.spark.io.CompressionCodec]].
+  * Block size can be configured by `spark.io.compression.snappy.blockSize`.
+  *
+  * Note: The wire protocol for this codec is not guaranteed to be compatible across versions
+  *       of Spark. This is intended for use as an internal compression utility within a single Spark
+  *       application.
+  */
 @DeveloperApi
 class SnappyCompressionCodec(conf: SparkConf) extends CompressionCodec {
   val version = SnappyCompressionCodec.version
 
   override def compressedOutputStream(s: OutputStream): OutputStream = {
-    val blockSize = conf.getSizeAsBytes("spark.io.compression.snappy.blockSize", "32k").toInt
+    val blockSize =
+      conf.getSizeAsBytes("spark.io.compression.snappy.blockSize", "32k").toInt
     new SnappyOutputStreamWrapper(new SnappyOutputStream(s, blockSize))
   }
 
-  override def compressedInputStream(s: InputStream): InputStream = new SnappyInputStream(s)
+  override def compressedInputStream(s: InputStream): InputStream =
+    new SnappyInputStream(s)
 }
 
 /**
- * Object guards against memory leak bug in snappy-java library:
- * (https://github.com/xerial/snappy-java/issues/131).
- * Before a new version of the library, we only call the method once and cache the result.
- */
+  * Object guards against memory leak bug in snappy-java library:
+  * (https://github.com/xerial/snappy-java/issues/131).
+  * Before a new version of the library, we only call the method once and cache the result.
+  */
 private final object SnappyCompressionCodec {
-  private lazy val version: String = try {
-    Snappy.getNativeLibraryVersion
-  } catch {
-    case e: Error => throw new IllegalArgumentException(e)
-  }
+  private lazy val version: String =
+    try {
+      Snappy.getNativeLibraryVersion
+    } catch {
+      case e: Error => throw new IllegalArgumentException(e)
+    }
 }
 
 /**
- * Wrapper over [[SnappyOutputStream]] which guards against write-after-close and double-close
- * issues. See SPARK-7660 for more details. This wrapping can be removed if we upgrade to a version
- * of snappy-java that contains the fix for https://github.com/xerial/snappy-java/issues/107.
- */
-private final class SnappyOutputStreamWrapper(os: SnappyOutputStream) extends OutputStream {
+  * Wrapper over [[SnappyOutputStream]] which guards against write-after-close and double-close
+  * issues. See SPARK-7660 for more details. This wrapping can be removed if we upgrade to a version
+  * of snappy-java that contains the fix for https://github.com/xerial/snappy-java/issues/107.
+  */
+private final class SnappyOutputStreamWrapper(os: SnappyOutputStream)
+    extends OutputStream {
 
   private[this] var closed: Boolean = false
 

@@ -3,9 +3,9 @@ import sbt._
 object ScalaJSEnvGenerator {
 
   /** Generate a *.scala file that contains the scalajsenv as literal string
-   *
-   *  We need this so the tools don't rely on I/O and/or resources.
-   */
+    *
+    *  We need this so the tools don't rely on I/O and/or resources.
+    */
   def generateEnvHolder(baseDir: File, sourceDir: File): Seq[File] = {
     val trg = sourceDir / "ScalaJSEnvHolder.scala"
     val env = baseDir / "scalajsenv.js"

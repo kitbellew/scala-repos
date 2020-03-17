@@ -3,8 +3,8 @@ package mesosphere.marathon.api.validation
 import mesosphere.marathon.MarathonSpec
 import com.wix.accord.validate
 import mesosphere.marathon.api.v2.json.AppUpdate
-import mesosphere.marathon.state.{ Container, PathId }
-import org.apache.mesos.{ Protos => mesos }
+import mesosphere.marathon.state.{Container, PathId}
+import org.apache.mesos.{Protos => mesos}
 import org.scalatest.Matchers
 
 class AppUpdateValidatorTest extends MarathonSpec with Matchers {
@@ -18,11 +18,12 @@ class AppUpdateValidatorTest extends MarathonSpec with Matchers {
   }
 
   class Fixture {
-    def invalidDockerContainer: Container = Container(
-      `type` = mesos.ContainerInfo.Type.DOCKER,
-      volumes = Nil,
-      docker = None
-    )
+    def invalidDockerContainer: Container =
+      Container(
+        `type` = mesos.ContainerInfo.Type.DOCKER,
+        volumes = Nil,
+        docker = None
+      )
   }
 
 }

@@ -72,7 +72,7 @@ class ServerAdmissionControlTest extends FunSuite with MockitoSugar {
 
     val factory = stack.make(
       StackServer.defaultParams +
-      ServerAdmissionControl.Param(false))
+        ServerAdmissionControl.Param(false))
     val svc = Await.result(factory(), 5.seconds)
     assert(Await.result(svc(1), 5.seconds) == 1)
     assert(a.get == 1)
@@ -83,7 +83,7 @@ class ServerAdmissionControlTest extends FunSuite with MockitoSugar {
     import ctx._
 
     ServerAdmissionControl.unregister(Addition2Filter.name)
-    
+
     val factory = stack.make(StackServer.defaultParams)
     val svc = Await.result(factory(), 5.seconds)
 
@@ -121,5 +121,3 @@ class ServerAdmissionControlTest extends FunSuite with MockitoSugar {
     assert(a.get == 3)
   }
 }
-
-

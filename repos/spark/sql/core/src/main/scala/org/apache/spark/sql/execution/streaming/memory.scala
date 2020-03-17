@@ -33,17 +33,18 @@ object MemoryStream {
   protected val currentBlockId = new AtomicInteger(0)
   protected val memoryStreamId = new AtomicInteger(0)
 
-  def apply[A : Encoder](implicit sqlContext: SQLContext): MemoryStream[A] =
+  def apply[A: Encoder](implicit sqlContext: SQLContext): MemoryStream[A] =
     new MemoryStream[A](memoryStreamId.getAndIncrement(), sqlContext)
 }
 
 /**
- * A [[Source]] that produces value stored in memory as they are added by the user.  This [[Source]]
- * is primarily intended for use in unit tests as it can only replay data when the object is still
- * available.
- */
-case class MemoryStream[A : Encoder](id: Int, sqlContext: SQLContext)
-    extends Source with Logging {
+  * A [[Source]] that produces value stored in memory as they are added by the user.  This [[Source]]
+  * is primarily intended for use in unit tests as it can only replay data when the object is still
+  * available.
+  */
+case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
+    extends Source
+    with Logging {
   protected val encoder = encoderFor[A]
   protected val logicalPlan = StreamingRelation(this)
   protected val output = logicalPlan.output
@@ -78,72 +79,88 @@ case class MemoryStream[A : Encoder](id: Int, sqlContext: SQLContext)
     }
   }
 
-  override def getNextBatch(start: Option[Offset]): Option[Batch] = synchronized {
-    val newBlocks =
-      batches.drop(
-        start.map(_.asInstanceOf[LongOffset]).getOrElse(LongOffset(-1)).offset.toInt + 1)
+  override def getNextBatch(start: Option[Offset]): Option[Batch] =
+    synchronized {
+      val newBlocks =
+        batches.drop(
+          start
+            .map(_.asInstanceOf[LongOffset])
+            .getOrElse(LongOffset(-1))
+            .offset
+            .toInt + 1)
 
-    if (newBlocks.nonEmpty) {
-      logDebug(s"Running [$start, $currentOffset] on blocks ${newBlocks.mkString(", ")}")
-      val df = newBlocks
+      if (newBlocks.nonEmpty) {
+        logDebug(
+          s"Running [$start, $currentOffset] on blocks ${newBlocks.mkString(", ")}")
+        val df = newBlocks
           .map(_.toDF())
           .reduceOption(_ unionAll _)
           .getOrElse(sqlContext.emptyDataFrame)
 
-      Some(new Batch(currentOffset, df))
-    } else {
-      None
+        Some(new Batch(currentOffset, df))
+      } else {
+        None
+      }
     }
-  }
 
   override def toString: String = s"MemoryStream[${output.mkString(",")}]"
 }
 
 /**
- * A sink that stores the results in memory. This [[Sink]] is primarily intended for use in unit
- * tests and does not provide durability.
- */
+  * A sink that stores the results in memory. This [[Sink]] is primarily intended for use in unit
+  * tests and does not provide durability.
+  */
 class MemorySink(schema: StructType) extends Sink with Logging {
+
   /** An order list of batches that have been written to this [[Sink]]. */
   private var batches = new ArrayBuffer[Batch]()
 
   /** Used to convert an [[InternalRow]] to an external [[Row]] for comparison in testing. */
   private val externalRowConverter = RowEncoder(schema)
 
-  override def currentOffset: Option[Offset] = synchronized {
-    batches.lastOption.map(_.end)
-  }
+  override def currentOffset: Option[Offset] =
+    synchronized {
+      batches.lastOption.map(_.end)
+    }
 
-  override def addBatch(nextBatch: Batch): Unit = synchronized {
-    nextBatch.data.collect()  // 'compute' the batch's data and record the batch
-    batches.append(nextBatch)
-  }
+  override def addBatch(nextBatch: Batch): Unit =
+    synchronized {
+      nextBatch.data
+        .collect() // 'compute' the batch's data and record the batch
+      batches.append(nextBatch)
+    }
 
   /** Returns all rows that are stored in this [[Sink]]. */
-  def allData: Seq[Row] = synchronized {
-    batches
+  def allData: Seq[Row] =
+    synchronized {
+      batches
         .map(_.data)
         .reduceOption(_ unionAll _)
         .map(_.collect().toSeq)
         .getOrElse(Seq.empty)
-  }
+    }
 
   /**
-   * Atomically drops the most recent `num` batches and resets the [[StreamProgress]] to the
-   * corresponding point in the input. This function can be used when testing to simulate data
-   * that has been lost due to buffering.
-   */
-  def dropBatches(num: Int): Unit = synchronized {
-    batches.dropRight(num)
-  }
+    * Atomically drops the most recent `num` batches and resets the [[StreamProgress]] to the
+    * corresponding point in the input. This function can be used when testing to simulate data
+    * that has been lost due to buffering.
+    */
+  def dropBatches(num: Int): Unit =
+    synchronized {
+      batches.dropRight(num)
+    }
 
-  def toDebugString: String = synchronized {
-    batches.map { b =>
-      val dataStr = try b.data.collect().mkString(" ") catch {
-        case NonFatal(e) => "[Error converting to string]"
-      }
-      s"${b.end}: $dataStr"
-    }.mkString("\n")
-  }
+  def toDebugString: String =
+    synchronized {
+      batches
+        .map { b =>
+          val dataStr =
+            try b.data.collect().mkString(" ")
+            catch {
+              case NonFatal(e) => "[Error converting to string]"
+            }
+          s"${b.end}: $dataStr"
+        }
+        .mkString("\n")
+    }
 }
-

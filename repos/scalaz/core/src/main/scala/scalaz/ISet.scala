@@ -5,9 +5,9 @@ import Ordering._
 import std.option._
 
 /**
- * @see [[http://hackage.haskell.org/package/containers-0.5.7.1/docs/Data-Set.html]]
- * @see [[https://github.com/haskell/containers/blob/v0.5.7.1/Data/Set/Base.hs]]
- */
+  * @see [[http://hackage.haskell.org/package/containers-0.5.7.1/docs/Data-Set.html]]
+  * @see [[https://github.com/haskell/containers/blob/v0.5.7.1/Data/Set/Base.hs]]
+  */
 sealed abstract class ISet[A] {
   import ISet._
 
@@ -16,7 +16,7 @@ sealed abstract class ISet[A] {
   // -- * Query
   final def isEmpty =
     this match {
-      case Tip() => true
+      case Tip()        => true
       case Bin(_, _, _) => false
     }
 
@@ -47,7 +47,8 @@ sealed abstract class ISet[A] {
         case Tip() =>
           some(best)
         case Bin(y, l, r) =>
-          if (o.lessThanOrEqual(x, y)) withBest(x, best, l) else withBest(x, y, r)
+          if (o.lessThanOrEqual(x, y)) withBest(x, best, l)
+          else withBest(x, y, r)
       }
 
     this match {
@@ -153,7 +154,7 @@ sealed abstract class ISet[A] {
       case (_, Tip()) =>
         false
       case (Bin(x, l, r), t) =>
-        val (lt,found,gt) = t.splitMember(x)
+        val (lt, found, gt) = t.splitMember(x)
         found && l.isSubsetOfX(lt) && r.isSubsetOfX(gt)
     }
 
@@ -189,7 +190,8 @@ sealed abstract class ISet[A] {
 
   // -- * Combine
   final def union(other: ISet[A])(implicit o: Order[A]): ISet[A] = {
-    def hedgeUnion(blo: Option[A], bhi: Option[A], t1: ISet[A], t2: ISet[A])(implicit o: Order[A]): ISet[A] =
+    def hedgeUnion(blo: Option[A], bhi: Option[A], t1: ISet[A], t2: ISet[A])(
+        implicit o: Order[A]): ISet[A] =
       (t1, t2) match {
         case (t1, Tip()) =>
           t1
@@ -199,7 +201,10 @@ sealed abstract class ISet[A] {
           t1.insertR(x)
         case (Bin(x, l, r), _) =>
           val bmi = some(x)
-          join(x, hedgeUnion(blo, bmi, l, t2.trim(blo, bmi)), hedgeUnion(bmi, bhi, r, t2.trim(bmi, bhi)))
+          join(
+            x,
+            hedgeUnion(blo, bmi, l, t2.trim(blo, bmi)),
+            hedgeUnion(bmi, bhi, r, t2.trim(bmi, bhi)))
       }
 
     (this, other) match {
@@ -228,7 +233,11 @@ sealed abstract class ISet[A] {
     }
 
   final def difference(other: ISet[A])(implicit o: Order[A]): ISet[A] = {
-    def hedgeDiff(blo: Option[A], bhi: Option[A], t1: ISet[A], t2: ISet[A]): ISet[A] =
+    def hedgeDiff(
+        blo: Option[A],
+        bhi: Option[A],
+        t1: ISet[A],
+        t2: ISet[A]): ISet[A] =
       (t1, t2) match {
         case (Tip(), _) =>
           Tip()
@@ -236,7 +245,11 @@ sealed abstract class ISet[A] {
           join(x, l.filterGt(blo), r.filterLt(bhi))
         case (t, Bin(x, l, r)) =>
           val bmi = some(x)
-          hedgeDiff(blo, bmi, t.trim(blo, bmi), l) merge hedgeDiff(bmi, bhi, t.trim(bmi, bhi), r)
+          hedgeDiff(blo, bmi, t.trim(blo, bmi), l) merge hedgeDiff(
+            bmi,
+            bhi,
+            t.trim(bmi, bhi),
+            r)
       }
 
     (this, other) match {
@@ -250,11 +263,15 @@ sealed abstract class ISet[A] {
   }
 
   // -- * Operators
-  final def \\ (other: ISet[A])(implicit o: Order[A]) =
+  final def \\(other: ISet[A])(implicit o: Order[A]) =
     difference(other)
 
   final def intersection(other: ISet[A])(implicit o: Order[A]) = {
-    def hedgeInt(blo: Option[A], bhi: Option[A], t1: ISet[A], t2: ISet[A]): ISet[A] =
+    def hedgeInt(
+        blo: Option[A],
+        bhi: Option[A],
+        t1: ISet[A],
+        t2: ISet[A]): ISet[A] =
       (t1, t2) match {
         case (_, Tip()) =>
           t2
@@ -282,7 +299,8 @@ sealed abstract class ISet[A] {
     this match {
       case Tip() => this
       case Bin(x, l, r) =>
-        if (p(x)) join(x, l.filter(p), r.filter(p)) else l.filter(p) merge r.filter(p)
+        if (p(x)) join(x, l.filter(p), r.filter(p))
+        else l.filter(p) merge r.filter(p)
     }
 
   final def partition(p: A => Boolean): (ISet[A], ISet[A]) =
@@ -292,7 +310,8 @@ sealed abstract class ISet[A] {
       case Bin(x, l, r) =>
         val (l1, l2) = l.partition(p)
         val (r1, r2) = r.partition(p)
-        if (p(x)) (join(x, l1, r1), l2 merge r2) else (l1 merge r1, join(x, l2, r2))
+        if (p(x)) (join(x, l1, r1), l2 merge r2)
+        else (l1 merge r1, join(x, l2, r2))
     }
 
   final def split(x: A)(implicit o: Order[A]): (ISet[A], ISet[A]) =
@@ -312,7 +331,8 @@ sealed abstract class ISet[A] {
         }
     }
 
-  final def splitMember(x: A)(implicit o: Order[A]): (ISet[A], Boolean, ISet[A]) =
+  final def splitMember(x: A)(
+      implicit o: Order[A]): (ISet[A], Boolean, ISet[A]) =
     this match {
       case Tip() =>
         (this, false, this)
@@ -401,8 +421,8 @@ sealed abstract class ISet[A] {
   // -- * Folds
   final def foldRight[B](z: B)(f: (A, B) => B): B =
     this match {
-      case Tip() => z
-      case Bin(x, l ,r) => l.foldRight(f(x, r.foldRight(z)(f)))(f)
+      case Tip()        => z
+      case Bin(x, l, r) => l.foldRight(f(x, r.foldRight(z)(f)))(f)
     }
 
   final def foldr[B](z: B)(f: (A, B) => B): B =
@@ -422,31 +442,31 @@ sealed abstract class ISet[A] {
   @tailrec
   final def findMin: Option[A] =
     this match {
-      case Tip() => none
+      case Tip()            => none
       case Bin(x, Tip(), _) => some(x)
-      case Bin(_, l, _) => l.findMin
+      case Bin(_, l, _)     => l.findMin
     }
 
   @tailrec
   final def findMax: Option[A] =
     this match {
-      case Tip() => none
+      case Tip()            => none
       case Bin(x, _, Tip()) => some(x)
-      case Bin(_, _, r) => r.findMax
+      case Bin(_, _, r)     => r.findMax
     }
 
   final def deleteMin: ISet[A] =
     this match {
       case Bin(_, Tip(), r) => r
-      case Bin(x, l, r) => balanceR(x, l.deleteMin, r)
-      case Tip() => Tip()
+      case Bin(x, l, r)     => balanceR(x, l.deleteMin, r)
+      case Tip()            => Tip()
     }
 
   final def deleteMax: ISet[A] =
     this match {
       case Bin(_, l, Tip()) => l
-      case Bin(x, l, r) => balanceL(x, l, r.deleteMax)
-      case Tip() => Tip()
+      case Bin(x, l, r)     => balanceL(x, l, r.deleteMax)
+      case Tip()            => Tip()
     }
 
   // TODO: Can we make this total? or should this remain unsafe, preferring minView instead?
@@ -472,13 +492,13 @@ sealed abstract class ISet[A] {
   final def minView: Option[(A, ISet[A])] =
     this match {
       case Tip() => none
-      case x => some(x.deleteFindMin)
+      case x     => some(x.deleteFindMin)
     }
 
   final def maxView: Option[(A, ISet[A])] =
     this match {
       case Tip() => none
-      case x => some(x.deleteFindMax)
+      case x     => some(x.deleteFindMax)
     }
 
   // -- ** List
@@ -514,8 +534,8 @@ sealed abstract class ISet[A] {
       case (Tip(), r) => r.insertMin(x)
       case (l, Tip()) => l.insertMax(x)
       case (Bin(y, ly, ry), Bin(z, lz, rz)) =>
-        if (delta*l.size < r.size) balanceL(z, join(x, l, lz), rz)
-        else if (delta*r.size < l.size) balanceR(y, ly, join(x, ry, r))
+        if (delta * l.size < r.size) balanceL(z, join(x, l, lz), rz)
+        else if (delta * r.size < l.size) balanceR(y, ly, join(x, ry, r))
         else Bin(x, l, r)
     }
 
@@ -539,9 +559,9 @@ sealed abstract class ISet[A] {
     (this, other) match {
       case (Tip(), r) => r
       case (l, Tip()) => l
-      case (l@Bin(x, lx, rx), r@Bin(y, ly, ry)) =>
-        if (delta*l.size < r.size) balanceL(y, l merge ly, ry)
-        else if (delta*r.size < l.size) balanceR(x, lx, rx merge r)
+      case (l @ Bin(x, lx, rx), r @ Bin(y, ly, ry)) =>
+        if (delta * l.size < r.size) balanceL(y, l merge ly, ry)
+        else if (delta * r.size < l.size) balanceR(x, lx, rx merge r)
         else glue(l, r)
     }
 
@@ -552,14 +572,16 @@ sealed abstract class ISet[A] {
       case (Some(lx), None) =>
         def greater(lo: A, t: ISet[A]): ISet[A] =
           t match {
-            case Bin(x, _, r) => if (o.lessThanOrEqual(x, lo)) greater(lo, r) else t
+            case Bin(x, _, r) =>
+              if (o.lessThanOrEqual(x, lo)) greater(lo, r) else t
             case _ => t
           }
         greater(lx, this)
       case (None, Some(hx)) =>
         def lesser(hi: A, t: ISet[A]): ISet[A] =
           t match {
-            case Bin(x, l, _) => if (o.greaterThanOrEqual(x, hi)) lesser(hi, l) else t
+            case Bin(x, l, _) =>
+              if (o.greaterThanOrEqual(x, hi)) lesser(hi, l) else t
             case _ => t
           }
         lesser(hx, this)
@@ -576,26 +598,32 @@ sealed abstract class ISet[A] {
     }
 
   final def filterGt(a: Option[A])(implicit o: Order[A]): ISet[A] =
-    cata(a)(s => this match {
-      case Tip() => ISet.empty
-      case Bin(x, l, r) =>
-        o.order(s, x) match {
-          case LT => join(x, l.filterGt(a), r)
-          case EQ => r
-          case GT => r.filterGt(a)
-        }
-    }, this)
+    cata(a)(
+      s =>
+        this match {
+          case Tip() => ISet.empty
+          case Bin(x, l, r) =>
+            o.order(s, x) match {
+              case LT => join(x, l.filterGt(a), r)
+              case EQ => r
+              case GT => r.filterGt(a)
+            }
+        },
+      this)
 
   final def filterLt(a: Option[A])(implicit o: Order[A]): ISet[A] =
-    cata(a)(s => this match {
-      case Tip() => ISet.empty
-      case Bin(x, l, r) =>
-        o.order(x, s) match {
-          case LT => join(x, l, r.filterLt(a))
-          case EQ => l
-          case GT => l.filterLt(a)
-        }
-    }, this)
+    cata(a)(
+      s =>
+        this match {
+          case Tip() => ISet.empty
+          case Bin(x, l, r) =>
+            o.order(x, s) match {
+              case LT => join(x, l, r.filterLt(a))
+              case EQ => l
+              case GT => l.filterLt(a)
+            }
+        },
+      this)
 
   override final def equals(other: Any): Boolean =
     other match {
@@ -612,30 +640,34 @@ sealed abstract class ISet[A] {
 sealed abstract class ISetInstances {
   import ISet._
 
-  implicit def setEqual[A: Equal]: Equal[ISet[A]] = new ISetEqual[A] {
-    def A = implicitly
-  }
+  implicit def setEqual[A: Equal]: Equal[ISet[A]] =
+    new ISetEqual[A] {
+      def A = implicitly
+    }
 
-  implicit def setOrder[A: Order]: Order[ISet[A]] = new Order[ISet[A]] with ISetEqual[A] {
-    import std.list._
-    def A = implicitly
+  implicit def setOrder[A: Order]: Order[ISet[A]] =
+    new Order[ISet[A]] with ISetEqual[A] {
+      import std.list._
+      def A = implicitly
 
-    def order(x: ISet[A], y: ISet[A]) =
-      Order[List[A]].order(x.toAscList, y.toAscList)
-  }
+      def order(x: ISet[A], y: ISet[A]) =
+        Order[List[A]].order(x.toAscList, y.toAscList)
+    }
 
-  implicit def setShow[A: Show]: Show[ISet[A]] = new Show[ISet[A]] {
-    override def shows(f: ISet[A]) =
-      f.toAscList.mkString("ISet(", ",", ")")
-  }
+  implicit def setShow[A: Show]: Show[ISet[A]] =
+    new Show[ISet[A]] {
+      override def shows(f: ISet[A]) =
+        f.toAscList.mkString("ISet(", ",", ")")
+    }
 
-  implicit def setMonoid[A: Order]: Monoid[ISet[A]] = new Monoid[ISet[A]] {
-    def zero: ISet[A] =
-      empty[A]
+  implicit def setMonoid[A: Order]: Monoid[ISet[A]] =
+    new Monoid[ISet[A]] {
+      def zero: ISet[A] =
+        empty[A]
 
-    def append(a: ISet[A], b: => ISet[A]): ISet[A] =
-      a union b
-  }
+      def append(a: ISet[A], b: => ISet[A]): ISet[A] =
+        a union b
+    }
 
   implicit val setFoldable: Foldable[ISet] = new Foldable[ISet] {
     override def findLeft[A](fa: ISet[A])(f: A => Boolean) =
@@ -645,7 +677,7 @@ sealed abstract class ISetInstances {
             case a @ Some(_) =>
               a
             case None =>
-              if(f(x))
+              if (f(x))
                 Some(x)
               else
                 findLeft(r)(f)
@@ -661,7 +693,7 @@ sealed abstract class ISetInstances {
             case a @ Some(_) =>
               a
             case None =>
-              if(f(x))
+              if (f(x))
                 Some(x)
               else
                 findRight(l)(f)
@@ -751,7 +783,8 @@ object ISet extends ISetInstances {
   final def fromList[A](xs: List[A])(implicit o: Order[A]): ISet[A] =
     xs.foldLeft(empty[A])((a, b) => a insert b)
 
-  final def fromFoldable[F[_], A](xs: F[A])(implicit F: Foldable[F], o: Order[A]): ISet[A] =
+  final def fromFoldable[F[_], A](
+      xs: F[A])(implicit F: Foldable[F], o: Order[A]): ISet[A] =
     F.foldLeft(xs, empty[A])((a, b) => a insert b)
 
   final def unions[A](xs: List[ISet[A]])(implicit o: Order[A]): ISet[A] =
@@ -770,10 +803,10 @@ object ISet extends ISetInstances {
             Bin(x, l, Tip())
           case Bin(lx, Tip(), Bin(lrx, _, _)) =>
             Bin(lrx, singleton(lx), singleton(x))
-          case Bin(lx, ll@Bin(_, _, _), Tip()) =>
+          case Bin(lx, ll @ Bin(_, _, _), Tip()) =>
             Bin(lx, ll, singleton(x))
-          case Bin(lx, ll@Bin(_, _, _), lr@Bin(lrx, lrl, lrr)) =>
-            if (lr.size < ratio*ll.size) Bin(lx, ll, Bin(x, lr, Tip()))
+          case Bin(lx, ll @ Bin(_, _, _), lr @ Bin(lrx, lrl, lrr)) =>
+            if (lr.size < ratio * ll.size) Bin(lx, ll, Bin(x, lr, Tip()))
             else Bin(lrx, Bin(lx, ll, lrl), Bin(x, lrr, Tip()))
         }
       case Bin(_, _, _) =>
@@ -781,10 +814,10 @@ object ISet extends ISetInstances {
           case Tip() =>
             Bin(x, Tip(), r)
           case Bin(lx, ll, lr) =>
-            if (l.size > delta*r.size) {
+            if (l.size > delta * r.size) {
               (ll, lr) match {
                 case (Bin(_, _, _), Bin(lrx, lrl, lrr)) =>
-                  if (lr.size < ratio*ll.size) Bin(lx, ll, Bin(x, lr, r))
+                  if (lr.size < ratio * ll.size) Bin(lx, ll, Bin(x, lr, r))
                   else Bin(lrx, Bin(lx, ll, lrl), Bin(x, lrr, r))
                 case _ => sys.error("Failure in ISet.balanceL")
               }
@@ -800,12 +833,12 @@ object ISet extends ISetInstances {
             singleton(x)
           case Bin(_, Tip(), Tip()) =>
             Bin(x, Tip(), r)
-          case Bin(rx, Tip(), rr@Bin(_, _, _)) =>
+          case Bin(rx, Tip(), rr @ Bin(_, _, _)) =>
             Bin(rx, singleton(x), rr)
           case Bin(rx, Bin(rlx, _, _), Tip()) =>
             Bin(rlx, singleton(x), singleton(rx))
-          case Bin(rx, rl@Bin(rlx, rll, rlr), rr@Bin(_, _, _)) =>
-            if (rl.size < ratio*rr.size) Bin(rx, Bin(x, Tip(), rl), rr)
+          case Bin(rx, rl @ Bin(rlx, rll, rlr), rr @ Bin(_, _, _)) =>
+            if (rl.size < ratio * rr.size) Bin(rx, Bin(x, Tip(), rl), rr)
             else Bin(rlx, Bin(x, Tip(), rll), Bin(rx, rlr, rr))
         }
       case Bin(_, _, _) =>
@@ -813,10 +846,10 @@ object ISet extends ISetInstances {
           case Tip() =>
             Bin(x, l, Tip())
           case Bin(rx, rl, rr) =>
-            if (r.size > delta*l.size) {
+            if (r.size > delta * l.size) {
               (rl, rr) match {
                 case (Bin(rlx, rll, rlr), Bin(_, _, _)) =>
-                  if (rl.size < ratio*rr.size) Bin(rx, Bin(x, l, rl), rr)
+                  if (rl.size < ratio * rr.size) Bin(rx, Bin(x, l, rl), rr)
                   else Bin(rlx, Bin(x, l, rll), Bin(rx, rlr, rr))
                 case _ => sys.error("Failure in ISet.balanceR")
               }
@@ -824,14 +857,15 @@ object ISet extends ISetInstances {
         }
     }
 
-  private[scalaz] abstract case class Tip[A] private() extends ISet[A] {
+  private[scalaz] abstract case class Tip[A] private () extends ISet[A] {
     val size = 0
   }
   private[scalaz] object Tip extends Tip[Nothing] {
     def apply[A](): ISet[A] = this.asInstanceOf[ISet[A]]
   }
 
-  private[scalaz] final case class Bin[A](a: A, l: ISet[A], r: ISet[A]) extends ISet[A] {
+  private[scalaz] final case class Bin[A](a: A, l: ISet[A], r: ISet[A])
+      extends ISet[A] {
     val size = l.size + r.size + 1
   }
 }

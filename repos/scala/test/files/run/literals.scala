@@ -18,7 +18,7 @@ object Test {
     val res: Option[String] =
       try {
         val actual: A = closure
-        if (actual == expected) None  //print(" was successful")
+        if (actual == expected) None //print(" was successful")
         else Some(s" failed: expected $expected, found $actual")
       } catch {
         case exception: Throwable => Some(s" raised exception $exception")
@@ -33,8 +33,10 @@ object Test {
     check_success("65.asInstanceOf[Char] == 'A'", 65.asInstanceOf[Char], 'A')
     check_success("\"\\141\\142\" == \"ab\"", "\141\142", "ab")
     //check_success("\"\\0x61\\0x62\".trim() == \"x61\\0x62\"", "\0x61\0x62".substring(1), "x61\0x62")
-    check_success(""""\0x61\0x62".getBytes == Array(0, 120, ...)""",
-      "\0x61\0x62".getBytes(io.Codec.UTF8.charSet) sameElements Array[Byte](0, 120, 54, 49, 0, 120, 54, 50),
+    check_success(
+      """"\0x61\0x62".getBytes == Array(0, 120, ...)""",
+      "\0x61\0x62".getBytes(io.Codec.UTF8.charSet) sameElements Array[Byte](0,
+        120, 54, 49, 0, 120, 54, 50),
       true)
 
     // boolean
@@ -62,16 +64,19 @@ object Test {
     check_success("0xffffffff == -1", 0xffffffff, -1)
 
     // long
-    check_success("1l == 1L", 1l, 1L)
-    check_success("1L == 1l", 1L, 1l)
-    check_success("1.asInstanceOf[Long] == 1l", 1.asInstanceOf[Long], 1l)
+    check_success("1l == 1L", 1L, 1L)
+    check_success("1L == 1l", 1L, 1L)
+    check_success("1.asInstanceOf[Long] == 1l", 1.asInstanceOf[Long], 1L)
 
-    check_success("0x7fffffffffffffffL == 9223372036854775807L",
-      0x7fffffffffffffffL, 9223372036854775807L)
-    check_success("0x8000000000000000L == -9223372036854775808L",
-      0x8000000000000000L, -9223372036854775808L)
-    check_success("0xffffffffffffffffL == -1L",
-      0xffffffffffffffffL, -1L)
+    check_success(
+      "0x7fffffffffffffffL == 9223372036854775807L",
+      0x7FFFFFFFFFFFFFFFL,
+      9223372036854775807L)
+    check_success(
+      "0x8000000000000000L == -9223372036854775808L",
+      0x8000000000000000L,
+      -9223372036854775808L)
+    check_success("0xffffffffffffffffL == -1L", 0xFFFFFFFFFFFFFFFFL, -1L)
 
     // see JLS at address:
     // http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#230798
@@ -85,7 +90,7 @@ object Test {
     check_success("6.022e23f == 6.022e23f", 6.022e23f, 6.022e23f)
     check_success("09f == 9.0f", 09f, 9.0f)
     check_success("1.asInstanceOf[Float] == 1.0", 1.asInstanceOf[Float], 1.0f)
-    check_success("1l.asInstanceOf[Float] == 1.0", 1l.asInstanceOf[Float], 1.0f)
+    check_success("1l.asInstanceOf[Float] == 1.0", 1L.asInstanceOf[Float], 1.0f)
 
     // double
     check_success("1e1 == 10.0", 1e1, 10.0)
@@ -98,7 +103,10 @@ object Test {
     check_success("1e-9d == 1.0e-9", 1e-9d, 1.0e-9)
     check_success("1e137 == 1.0e137", 1e137, 1.0e137)
     check_success("1.asInstanceOf[Double] == 1.0", 1.asInstanceOf[Double], 1.0)
-    check_success("1l.asInstanceOf[Double] == 1.0", 1l.asInstanceOf[Double], 1.0)
+    check_success(
+      "1l.asInstanceOf[Double] == 1.0",
+      1L.asInstanceOf[Double],
+      1.0)
 
     check_success("\"\".length()", "\u001a".length(), 1)
 

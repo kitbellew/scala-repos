@@ -6,18 +6,16 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
 
 /** Class for the linked hash map entry, used internally.
- *  @since 2.8
- */
+  *  @since 2.8
+  */
 final class LinkedEntry[A, B](val key: A, var value: B)
-      extends HashEntry[A, LinkedEntry[A, B]] with Serializable {
+    extends HashEntry[A, LinkedEntry[A, B]]
+    with Serializable {
   var earlier: LinkedEntry[A, B] = null
   var later: LinkedEntry[A, B] = null
 }
-

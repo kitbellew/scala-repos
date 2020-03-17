@@ -20,23 +20,30 @@ package org.apache.spark.sql.catalyst.plans
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 
 object JoinType {
-  def apply(typ: String): JoinType = typ.toLowerCase.replace("_", "") match {
-    case "inner" => Inner
-    case "outer" | "full" | "fullouter" => FullOuter
-    case "leftouter" | "left" => LeftOuter
-    case "rightouter" | "right" => RightOuter
-    case "leftsemi" => LeftSemi
-    case _ =>
-      val supported = Seq(
-        "inner",
-        "outer", "full", "fullouter",
-        "leftouter", "left",
-        "rightouter", "right",
-        "leftsemi")
+  def apply(typ: String): JoinType =
+    typ.toLowerCase.replace("_", "") match {
+      case "inner"                        => Inner
+      case "outer" | "full" | "fullouter" => FullOuter
+      case "leftouter" | "left"           => LeftOuter
+      case "rightouter" | "right"         => RightOuter
+      case "leftsemi"                     => LeftSemi
+      case _ =>
+        val supported = Seq(
+          "inner",
+          "outer",
+          "full",
+          "fullouter",
+          "leftouter",
+          "left",
+          "rightouter",
+          "right",
+          "leftsemi")
 
-      throw new IllegalArgumentException(s"Unsupported join type '$typ'. " +
-        "Supported join types include: " + supported.mkString("'", "', '", "'") + ".")
-  }
+        throw new IllegalArgumentException(
+          s"Unsupported join type '$typ'. " +
+            "Supported join types include: " + supported
+            .mkString("'", "', '", "'") + ".")
+    }
 }
 
 sealed abstract class JoinType {
@@ -64,13 +71,16 @@ case object LeftSemi extends JoinType {
 }
 
 case class NaturalJoin(tpe: JoinType) extends JoinType {
-  require(Seq(Inner, LeftOuter, RightOuter, FullOuter).contains(tpe),
+  require(
+    Seq(Inner, LeftOuter, RightOuter, FullOuter).contains(tpe),
     "Unsupported natural join type " + tpe)
   override def sql: String = "NATURAL " + tpe.sql
 }
 
-case class UsingJoin(tpe: JoinType, usingColumns: Seq[UnresolvedAttribute]) extends JoinType {
-  require(Seq(Inner, LeftOuter, LeftSemi, RightOuter, FullOuter).contains(tpe),
+case class UsingJoin(tpe: JoinType, usingColumns: Seq[UnresolvedAttribute])
+    extends JoinType {
+  require(
+    Seq(Inner, LeftOuter, LeftSemi, RightOuter, FullOuter).contains(tpe),
     "Unsupported using join type " + tpe)
   override def sql: String = "USING " + tpe.sql
 }

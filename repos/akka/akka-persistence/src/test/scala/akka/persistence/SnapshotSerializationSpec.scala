@@ -1,12 +1,11 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence
 
-import akka.actor.{ Props, ActorRef }
+import akka.actor.{Props, ActorRef}
 import akka.serialization.Serializer
-import akka.testkit.{ ImplicitSender }
+import akka.testkit.{ImplicitSender}
 import java.io._
 
 object SnapshotSerializationSpec {
@@ -16,10 +15,11 @@ object SnapshotSerializationSpec {
   // is bigger than 255 bytes (this happens to be 269)
   object XXXXXXXXXXXXXXXXXXXX {
     class MySnapshot(val id: String) extends SerializationMarker {
-      override def equals(obj: scala.Any) = obj match {
-        case s: MySnapshot ⇒ s.id.equals(id)
-        case _             ⇒ false
-      }
+      override def equals(obj: scala.Any) =
+        obj match {
+          case s: MySnapshot ⇒ s.id.equals(id)
+          case _ ⇒ false
+        }
     }
   }
 
@@ -34,7 +34,7 @@ object SnapshotSerializationSpec {
       val pStream = new PrintStream(bStream)
       val msg: String = obj match {
         case s: MySnapshot ⇒ s.id
-        case _             ⇒ "unknown"
+        case _ ⇒ "unknown"
       }
       pStream.println(msg)
       bStream.toByteArray
@@ -47,25 +47,32 @@ object SnapshotSerializationSpec {
     }
   }
 
-  class TestPersistentActor(name: String, probe: ActorRef) extends NamedPersistentActor(name) {
+  class TestPersistentActor(name: String, probe: ActorRef)
+      extends NamedPersistentActor(name) {
 
     override def receiveRecover: Receive = {
       case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
-      case RecoveryCompleted    ⇒ // ignore
-      case other                ⇒ probe ! other
+      case RecoveryCompleted ⇒ // ignore
+      case other ⇒ probe ! other
     }
 
     override def receiveCommand = {
-      case s: String               ⇒ saveSnapshot(new MySnapshot(s))
+      case s: String ⇒ saveSnapshot(new MySnapshot(s))
       case SaveSnapshotSuccess(md) ⇒ probe ! md.sequenceNr
-      case other                   ⇒ probe ! other
+      case other ⇒ probe ! other
     }
   }
 
 }
 
-class SnapshotSerializationSpec extends PersistenceSpec(PersistenceSpec.config("leveldb", "SnapshotSerializationSpec", serialization = "off", extraConfig = Some(
-  """
+class SnapshotSerializationSpec
+    extends PersistenceSpec(
+      PersistenceSpec.config(
+        "leveldb",
+        "SnapshotSerializationSpec",
+        serialization = "off",
+        extraConfig = Some(
+          """
     akka.actor {
       serializers {
         my-snapshot = "akka.persistence.SnapshotSerializationSpec$MySerializer"
@@ -74,19 +81,23 @@ class SnapshotSerializationSpec extends PersistenceSpec(PersistenceSpec.config("
         "akka.persistence.SnapshotSerializationSpec$SerializationMarker" = my-snapshot
       }
     }
-  """))) with ImplicitSender {
+  """)
+      ))
+    with ImplicitSender {
 
   import SnapshotSerializationSpec._
   import SnapshotSerializationSpec.XXXXXXXXXXXXXXXXXXXX._
 
   "A PersistentActor with custom Serializer" must {
     "be able to handle serialization header of more than 255 bytes" in {
-      val sPersistentActor = system.actorOf(Props(classOf[TestPersistentActor], name, testActor))
+      val sPersistentActor =
+        system.actorOf(Props(classOf[TestPersistentActor], name, testActor))
       val persistenceId = name
 
       sPersistentActor ! "blahonga"
       expectMsg(0)
-      val lPersistentActor = system.actorOf(Props(classOf[TestPersistentActor], name, testActor))
+      val lPersistentActor =
+        system.actorOf(Props(classOf[TestPersistentActor], name, testActor))
       expectMsgPF() {
         case (SnapshotMetadata(`persistenceId`, 0, timestamp), state) ⇒
           state should ===(new MySnapshot("blahonga"))

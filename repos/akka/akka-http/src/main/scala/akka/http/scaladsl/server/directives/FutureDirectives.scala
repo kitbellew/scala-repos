@@ -6,7 +6,7 @@ package akka.http.scaladsl.server
 package directives
 
 import scala.concurrent.Future
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 import akka.http.scaladsl.marshalling.ToResponseMarshaller
 import akka.http.scaladsl.server.util.Tupler
 import akka.http.scaladsl.util.FastFuture._

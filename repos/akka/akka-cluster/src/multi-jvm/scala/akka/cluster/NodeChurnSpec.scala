@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster
 
 import scala.collection.immutable
@@ -24,16 +24,20 @@ object NodeChurnMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(debugConfig(on = false).
-    withFallback(ConfigFactory.parseString("""
+  commonConfig(
+    debugConfig(on = false)
+      .withFallback(
+        ConfigFactory.parseString("""
       akka.cluster.auto-down-unreachable-after = 1s
       akka.remote.log-frame-size-exceeding = 2000b
-      """)).
-    withFallback(MultiNodeClusterSpec.clusterConfig))
+      """))
+      .withFallback(MultiNodeClusterSpec.clusterConfig))
 
   class LogListener(testActor: ActorRef) extends Actor {
     def receive = {
-      case Info(_, _, msg: String) if msg.startsWith("New maximum payload size for [akka.cluster.GossipEnvelope]") ⇒
+      case Info(_, _, msg: String)
+          if msg.startsWith(
+            "New maximum payload size for [akka.cluster.GossipEnvelope]") ⇒
         testActor ! msg
       case _ ⇒
     }
@@ -45,8 +49,9 @@ class NodeChurnMultiJvmNode2 extends NodeChurnSpec
 class NodeChurnMultiJvmNode3 extends NodeChurnSpec
 
 abstract class NodeChurnSpec
-  extends MultiNodeSpec(NodeChurnMultiJvmSpec)
-  with MultiNodeClusterSpec with ImplicitSender {
+    extends MultiNodeSpec(NodeChurnMultiJvmSpec)
+    with MultiNodeClusterSpec
+    with ImplicitSender {
 
   import NodeChurnMultiJvmSpec._
 
@@ -75,15 +80,14 @@ abstract class NodeChurnSpec
   def awaitRemoved(additionaSystems: Vector[ActorSystem]): Unit = {
     awaitMembersUp(roles.size, timeout = 40.seconds)
     awaitAssert {
-      additionaSystems.foreach { s ⇒
-        Cluster(s).isTerminated should be(true)
-      }
+      additionaSystems.foreach { s ⇒ Cluster(s).isTerminated should be(true) }
     }
   }
 
   "Cluster with short lived members" must {
     "setup stable nodes" taggedAs LongRunningTest in within(15.seconds) {
-      val logListener = system.actorOf(Props(classOf[LogListener], testActor), "logListener")
+      val logListener =
+        system.actorOf(Props(classOf[LogListener], testActor), "logListener")
       system.eventStream.subscribe(logListener, classOf[Info])
       cluster.joinSeedNodes(seedNodes)
       awaitMembersUp(roles.size)
@@ -95,7 +99,8 @@ abstract class NodeChurnSpec
       // It will fail after a while if vector clock entries of removed nodes are not pruned.
       for (n ← 1 to rounds) {
         log.info("round-" + n)
-        val systems = Vector.fill(5)(ActorSystem(system.name, system.settings.config))
+        val systems =
+          Vector.fill(5)(ActorSystem(system.name, system.settings.config))
         systems.foreach { s ⇒
           muteDeadLetters()(s)
           Cluster(s).joinSeedNodes(seedNodes)

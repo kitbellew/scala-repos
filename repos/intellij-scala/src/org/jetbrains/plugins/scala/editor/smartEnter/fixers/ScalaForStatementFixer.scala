@@ -5,23 +5,29 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi._
 import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.plugins.scala.editor.smartEnter.ScalaSmartEnterProcessor
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScBlockExpr, ScForStatement}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{
+  ScBlockExpr,
+  ScForStatement
+}
 
 /**
- * @author Dmitry.Naydanov
- * @author Ksenia.Sautina
- * @since 1/29/13
- */
+  * @author Dmitry.Naydanov
+  * @author Ksenia.Sautina
+  * @since 1/29/13
+  */
 @SuppressWarnings(Array("HardCodedStringLiteral"))
 class ScalaForStatementFixer extends ScalaFixer {
-  def apply(editor: Editor, processor: ScalaSmartEnterProcessor, psiElement: PsiElement): OperationPerformed = {
-    val forStatement = PsiTreeUtil.getParentOfType(psiElement, classOf[ScForStatement], false)
+  def apply(
+      editor: Editor,
+      processor: ScalaSmartEnterProcessor,
+      psiElement: PsiElement): OperationPerformed = {
+    val forStatement =
+      PsiTreeUtil.getParentOfType(psiElement, classOf[ScForStatement], false)
     if (forStatement == null) return NoOperation
 
     val doc = editor.getDocument
     val leftParenthesis = forStatement.getLeftParenthesis.orNull
     val rightParenthesis = forStatement.getRightParenthesis.orNull
-
 
     forStatement.enumerators match {
       case None if leftParenthesis == null && rightParenthesis == null =>
@@ -42,10 +48,13 @@ class ScalaForStatementFixer extends ScalaFixer {
       case Some(cond) if rightParenthesis == null =>
         doc.insertString(cond.getTextRange.getEndOffset, ")")
         WithReformat(0)
-      case Some(cond) if rightParenthesis != null && forStatement.body.exists(_.isInstanceOf[ScBlockExpr]) =>
-        placeInWholeBlock(forStatement.body.get.asInstanceOf[ScBlockExpr], editor)
+      case Some(cond)
+          if rightParenthesis != null && forStatement.body.exists(
+            _.isInstanceOf[ScBlockExpr]) =>
+        placeInWholeBlock(
+          forStatement.body.get.asInstanceOf[ScBlockExpr],
+          editor)
       case _ => NoOperation
     }
   }
 }
-

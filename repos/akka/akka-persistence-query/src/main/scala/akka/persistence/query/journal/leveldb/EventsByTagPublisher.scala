@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence.query.journal.leveldb
 
 import scala.concurrent.duration._
@@ -18,37 +18,58 @@ import akka.persistence.journal.leveldb.LeveldbJournal.ReplayTaggedMessages
 import akka.persistence.journal.leveldb.LeveldbJournal.ReplayedTaggedMessage
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[akka] object EventsByTagPublisher {
-  def props(tag: String, fromOffset: Long, toOffset: Long, refreshInterval: Option[FiniteDuration],
-            maxBufSize: Int, writeJournalPluginId: String): Props = {
+  def props(
+      tag: String,
+      fromOffset: Long,
+      toOffset: Long,
+      refreshInterval: Option[FiniteDuration],
+      maxBufSize: Int,
+      writeJournalPluginId: String): Props = {
     refreshInterval match {
       case Some(interval) ⇒
-        Props(new LiveEventsByTagPublisher(tag, fromOffset, toOffset, interval,
-          maxBufSize, writeJournalPluginId))
+        Props(
+          new LiveEventsByTagPublisher(
+            tag,
+            fromOffset,
+            toOffset,
+            interval,
+            maxBufSize,
+            writeJournalPluginId))
       case None ⇒
-        Props(new CurrentEventsByTagPublisher(tag, fromOffset, toOffset,
-          maxBufSize, writeJournalPluginId))
+        Props(
+          new CurrentEventsByTagPublisher(
+            tag,
+            fromOffset,
+            toOffset,
+            maxBufSize,
+            writeJournalPluginId))
     }
   }
 
   /**
-   * INTERNAL API
-   */
+    * INTERNAL API
+    */
   private[akka] case object Continue
 }
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[akka] abstract class AbstractEventsByTagPublisher(
-  val tag: String, val fromOffset: Long,
-  val maxBufSize: Int, val writeJournalPluginId: String)
-  extends ActorPublisher[EventEnvelope] with DeliveryBuffer[EventEnvelope] with ActorLogging {
+    val tag: String,
+    val fromOffset: Long,
+    val maxBufSize: Int,
+    val writeJournalPluginId: String)
+    extends ActorPublisher[EventEnvelope]
+    with DeliveryBuffer[EventEnvelope]
+    with ActorLogging {
   import EventsByTagPublisher._
 
-  val journal: ActorRef = Persistence(context.system).journalFor(writeJournalPluginId)
+  val journal: ActorRef =
+    Persistence(context.system).journalFor(writeJournalPluginId)
 
   var currOffset = fromOffset
 
@@ -58,8 +79,8 @@ private[akka] abstract class AbstractEventsByTagPublisher(
 
   def init: Receive = {
     case _: Request ⇒ receiveInitialRequest()
-    case Continue   ⇒ // skip, wait for first Request
-    case Cancel     ⇒ context.stop(self)
+    case Continue ⇒ // skip, wait for first Request
+    case Cancel ⇒ context.stop(self)
   }
 
   def receiveInitialRequest(): Unit
@@ -83,7 +104,12 @@ private[akka] abstract class AbstractEventsByTagPublisher(
 
   def replay(): Unit = {
     val limit = maxBufSize - buf.size
-    log.debug("request replay for tag [{}] from [{}] to [{}] limit [{}]", tag, currOffset, toOffset, limit)
+    log.debug(
+      "request replay for tag [{}] from [{}] to [{}] limit [{}]",
+      tag,
+      currOffset,
+      toOffset,
+      limit)
     journal ! ReplayTaggedMessages(currOffset, toOffset, limit, tag, self)
     context.become(replaying(limit))
   }
@@ -99,11 +125,17 @@ private[akka] abstract class AbstractEventsByTagPublisher(
       deliverBuf()
 
     case RecoverySuccess(highestSeqNr) ⇒
-      log.debug("replay completed for tag [{}], currOffset [{}]", tag, currOffset)
+      log.debug(
+        "replay completed for tag [{}], currOffset [{}]",
+        tag,
+        currOffset)
       receiveRecoverySuccess(highestSeqNr)
 
     case ReplayMessagesFailure(cause) ⇒
-      log.debug("replay failed for tag [{}], due to [{}]", tag, cause.getMessage)
+      log.debug(
+        "replay failed for tag [{}], due to [{}]",
+        tag,
+        cause.getMessage)
       deliverBuf()
       onErrorThenStop(cause)
 
@@ -120,18 +152,28 @@ private[akka] abstract class AbstractEventsByTagPublisher(
 }
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[akka] class LiveEventsByTagPublisher(
-  tag: String, fromOffset: Long, override val toOffset: Long,
-  refreshInterval: FiniteDuration,
-  maxBufSize: Int, writeJournalPluginId: String)
-  extends AbstractEventsByTagPublisher(
-    tag, fromOffset, maxBufSize, writeJournalPluginId) {
+    tag: String,
+    fromOffset: Long,
+    override val toOffset: Long,
+    refreshInterval: FiniteDuration,
+    maxBufSize: Int,
+    writeJournalPluginId: String)
+    extends AbstractEventsByTagPublisher(
+      tag,
+      fromOffset,
+      maxBufSize,
+      writeJournalPluginId) {
   import EventsByTagPublisher._
 
   val tickTask =
-    context.system.scheduler.schedule(refreshInterval, refreshInterval, self, Continue)(context.dispatcher)
+    context.system.scheduler.schedule(
+      refreshInterval,
+      refreshInterval,
+      self,
+      Continue)(context.dispatcher)
 
   override def postStop(): Unit =
     tickTask.cancel()
@@ -157,13 +199,19 @@ private[akka] class LiveEventsByTagPublisher(
 }
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[akka] class CurrentEventsByTagPublisher(
-  tag: String, fromOffset: Long, var _toOffset: Long,
-  maxBufSize: Int, writeJournalPluginId: String)
-  extends AbstractEventsByTagPublisher(
-    tag, fromOffset, maxBufSize, writeJournalPluginId) {
+    tag: String,
+    fromOffset: Long,
+    var _toOffset: Long,
+    maxBufSize: Int,
+    writeJournalPluginId: String)
+    extends AbstractEventsByTagPublisher(
+      tag,
+      fromOffset,
+      maxBufSize,
+      writeJournalPluginId) {
   import EventsByTagPublisher._
 
   override def toOffset: Long = _toOffset

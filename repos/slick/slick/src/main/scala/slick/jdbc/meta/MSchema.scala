@@ -4,7 +4,8 @@ import slick.jdbc.ResultSetAction
 
 /** A wrapper for a row in the ResultSet returned by DatabaseMetaData.getSchemas(). */
 case class MSchema(schema: String, catalog: Option[String]) {
-  override def toString = "MSchema(" + catalog.map(_ + ".").getOrElse("") + schema + ")"
+  override def toString =
+    "MSchema(" + catalog.map(_ + ".").getOrElse("") + schema + ")"
 }
 
 object MSchema {
@@ -15,5 +16,8 @@ object MSchema {
     } { r => MSchema(r.<<, r.<<?) }
   }
 
-  def getSchemas = ResultSetAction[MSchema](_.metaData.getSchemas()) { r => MSchema(r.<<, r.<<?) }
+  def getSchemas =
+    ResultSetAction[MSchema](_.metaData.getSchemas()) { r =>
+      MSchema(r.<<, r.<<?)
+    }
 }

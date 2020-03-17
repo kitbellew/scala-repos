@@ -18,7 +18,8 @@ import org.scalacheck.Arbitrary.arbitrary
 // https://issues.scala-lang.org/browse/SI-7934
 @deprecated("", "")
 class DeprecatedForwarder {
-  implicit def runNow = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+  implicit def runNow =
+    scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 }
 object DeprecatedForwarder extends DeprecatedForwarder
 import DeprecatedForwarder.runNow
@@ -46,6 +47,8 @@ class FutureTests extends CatsSuite {
   implicit val nonFatalArbitrary: Arbitrary[Throwable] =
     Arbitrary(arbitrary[Exception].map(identity))
 
-  checkAll("Future[Int]", MonadErrorTests[Future, Throwable].monadError[Int, Int, Int])
+  checkAll(
+    "Future[Int]",
+    MonadErrorTests[Future, Throwable].monadError[Int, Int, Int])
   checkAll("Future[Int]", ComonadTests[Future].comonad[Int, Int, Int])
 }

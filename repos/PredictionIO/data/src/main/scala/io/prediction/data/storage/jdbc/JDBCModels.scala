@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.jdbc
 
 import grizzled.slf4j.Logging
@@ -23,7 +22,9 @@ import scalikejdbc._
 
 /** JDBC implementation of [[Models]] */
 class JDBCModels(client: String, config: StorageClientConfig, prefix: String)
-  extends Models with Logging {
+    extends Models
+    with Logging {
+
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "models")
 
@@ -36,17 +37,21 @@ class JDBCModels(client: String, config: StorageClientConfig, prefix: String)
       models $binaryColumnType not null)""".execute().apply()
   }
 
-  def insert(i: Model): Unit = DB localTx { implicit session =>
-    sql"insert into $tableName values(${i.id}, ${i.models})".update().apply()
-  }
+  def insert(i: Model): Unit =
+    DB localTx { implicit session =>
+      sql"insert into $tableName values(${i.id}, ${i.models})".update().apply()
+    }
 
-  def get(id: String): Option[Model] = DB readOnly { implicit session =>
-    sql"select id, models from $tableName where id = $id".map { r =>
-      Model(id = r.string("id"), models = r.bytes("models"))
-    }.single().apply()
-  }
+  def get(id: String): Option[Model] =
+    DB readOnly { implicit session =>
+      sql"select id, models from $tableName where id = $id"
+        .map { r => Model(id = r.string("id"), models = r.bytes("models")) }
+        .single()
+        .apply()
+    }
 
-  def delete(id: String): Unit = DB localTx { implicit session =>
-    sql"delete from $tableName where id = $id".execute().apply()
-  }
+  def delete(id: String): Unit =
+    DB localTx { implicit session =>
+      sql"delete from $tableName where id = $id".execute().apply()
+    }
 }

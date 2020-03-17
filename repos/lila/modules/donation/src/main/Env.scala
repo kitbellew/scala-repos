@@ -4,10 +4,7 @@ import com.typesafe.config.Config
 import lila.common.PimpedConfig._
 import scala.collection.JavaConversions._
 
-final class Env(
-    config: Config,
-    db: lila.db.Env,
-    bus: lila.common.Bus) {
+final class Env(config: Config, db: lila.db.Env, bus: lila.common.Bus) {
 
   private val CollectionDonation = config getString "collection.donation"
   private val WeeklyGoal = config getInt "weekly_goal"
@@ -31,4 +28,3 @@ object Env {
     db = lila.db.Env.current,
     bus = lila.common.PlayApp.system.lilaBus)
 }
-

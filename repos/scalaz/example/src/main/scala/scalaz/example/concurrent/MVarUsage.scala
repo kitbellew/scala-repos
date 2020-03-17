@@ -11,7 +11,8 @@ import std.anyVal._
 import syntax.equal._
 
 object MVarUsage extends App {
-  def forkIO(f: => IO[Unit])(implicit s: Strategy): IO[Unit] = IO { s(f.unsafePerformIO); () }
+  def forkIO(f: => IO[Unit])(implicit s: Strategy): IO[Unit] =
+    IO { s(f.unsafePerformIO); () }
 
   def out() {
     def calc(mvar: MVar[Int]): IO[Unit] = mvar.put(42)
@@ -21,12 +22,12 @@ object MVarUsage extends App {
         mvar <- newEmptyMVar[Int]
         _ <- forkIO(calc(mvar))
         a <- mvar.take
-      } yield a 
+      } yield a
     assert(io.unsafePerformIO === 42)
   }
 
   def inout() {
-    def calc(in: MVar[Int], out: MVar[Int]): IO[Unit] = 
+    def calc(in: MVar[Int], out: MVar[Int]): IO[Unit] =
       for {
         a <- in.take
         b <- in.take
@@ -35,11 +36,11 @@ object MVarUsage extends App {
 
     val io =
       for {
-        in  <- newMVar(6)
+        in <- newMVar(6)
         out <- newEmptyMVar[Int]
-        _   <- forkIO(calc(in, out))
-        _   <- in.put(7)
-        a   <- out.take
+        _ <- forkIO(calc(in, out))
+        _ <- in.put(7)
+        a <- out.take
       } yield a
     assert(io.unsafePerformIO === 42)
   }
@@ -53,7 +54,7 @@ object MVarUsage extends App {
         _ <- p.put("pong")
       } yield ()
 
-    def io = 
+    def io =
       for {
         c <- newMVar("ping")
         p <- newEmptyMVar[String]

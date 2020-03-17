@@ -11,15 +11,17 @@ package object runtime {
   def assumingES6: Boolean =
     scala.scalajs.LinkingInfo.assumingES6
 
-  def wrapJavaScriptException(e: Any): Throwable = e match {
-    case e: Throwable => e
-    case _            => js.JavaScriptException(e)
-  }
+  def wrapJavaScriptException(e: Any): Throwable =
+    e match {
+      case e: Throwable => e
+      case _            => js.JavaScriptException(e)
+    }
 
-  def unwrapJavaScriptException(th: Throwable): Any = th match {
-    case js.JavaScriptException(e) => e
-    case _                         => th
-  }
+  def unwrapJavaScriptException(th: Throwable): Any =
+    th match {
+      case js.JavaScriptException(e) => e
+      case _                         => th
+    }
 
   def cloneObject(from: js.Object): js.Object = {
     val fromDyn = from.asInstanceOf[js.Dynamic]
@@ -52,40 +54,41 @@ package object runtime {
   }
 
   /** Instantiates a JS object with variadic arguments to the constructor.
-   *
-   *  This method was needed by the codegen of 0.6.0 through 0.6.2. It is not
-   *  needed anymore, and should not be used directly.
-   *
-   *  It is kept for backward binary compatibility with 0.6.{0,1,2}, but will
-   *  be removed in the next major version.
-   */
+    *
+    *  This method was needed by the codegen of 0.6.0 through 0.6.2. It is not
+    *  needed anymore, and should not be used directly.
+    *
+    *  It is kept for backward binary compatibility with 0.6.{0,1,2}, but will
+    *  be removed in the next major version.
+    */
   @deprecated("Use js.Dynamic.newInstance instead.", "0.6.3")
   @inline
   def newJSObjectWithVarargs(ctor: js.Dynamic, args: js.Array[_]): js.Any =
     js.Dynamic.newInstance(ctor)(args.asInstanceOf[js.Array[js.Any]]: _*)
 
   /** Dummy method used to preserve the type parameter of
-   *  `js.constructorOf[T]` through erasure.
-   *
-   *  An early phase of the compiler reroutes calls to `js.constructorOf[T]`
-   *  into `runtime.constructorOf(classOf[T])`.
-   *
-   *  The `clazz` parameter must be a literal `classOf[T]` constant such that
-   *  `T` represents a class extending `js.Any` (not a trait nor an object).
-   */
+    *  `js.constructorOf[T]` through erasure.
+    *
+    *  An early phase of the compiler reroutes calls to `js.constructorOf[T]`
+    *  into `runtime.constructorOf(classOf[T])`.
+    *
+    *  The `clazz` parameter must be a literal `classOf[T]` constant such that
+    *  `T` represents a class extending `js.Any` (not a trait nor an object).
+    */
   def constructorOf(clazz: Class[_ <: js.Any]): js.Dynamic = sys.error("stub")
 
   /** Public access to `new ConstructorTag` for the codegen of
-   *  `js.ConstructorTag.materialize`.
-   */
-  def newConstructorTag[T <: js.Any](constructor: js.Dynamic): js.ConstructorTag[T] =
+    *  `js.ConstructorTag.materialize`.
+    */
+  def newConstructorTag[T <: js.Any](
+      constructor: js.Dynamic): js.ConstructorTag[T] =
     new js.ConstructorTag[T](constructor)
 
   /** Returns an array of the enumerable properties in an object's prototype
-   *  chain.
-   *
-   *  This is the implementation of [[js.Object.properties]].
-   */
+    *  chain.
+    *
+    *  This is the implementation of [[js.Object.properties]].
+    */
   def propertiesOf(obj: js.Any): js.Array[String] = {
     // See http://stackoverflow.com/questions/26445248/
     if (obj == null || js.isUndefined(obj)) {
@@ -130,25 +133,25 @@ package object runtime {
   }
 
   /** Information about the environment Scala.js runs in
-   *
-   *  See [[EnvironmentInfo]] for details.
-   */
+    *
+    *  See [[EnvironmentInfo]] for details.
+    */
   @inline def environmentInfo: EnvironmentInfo =
     linkingInfo.envInfo
 
   /** Information known at link-time, given the output configuration.
-   *
-   *  See [[LinkingInfo]] for details.
-   */
+    *
+    *  See [[LinkingInfo]] for details.
+    */
   def linkingInfo: LinkingInfo = sys.error("stub")
 
   /** Polyfill for fround in case we use strict Floats and even Typed Arrays
-   *  are not available.
-   *  Note: this method returns a Double, even though the value is meant
-   *  to be a Float. It cannot return a Float because that would require to
-   *  do `x.toFloat` somewhere in here, which would itself, in turn, call this
-   *  method.
-   */
+    *  are not available.
+    *  Note: this method returns a Double, even though the value is meant
+    *  to be a Float. It cannot return a Float because that would require to
+    *  do `x.toFloat` somewhere in here, which would itself, in turn, call this
+    *  method.
+    */
   def froundPolyfill(v: Double): Double = {
     /* Originally inspired by the Typed Array polyfills written by Joshua Bell:
      * https://github.com/inexorabletash/polyfill/blob/a682f42c1092280bb01907c245979fb07219513d/typedarray.js#L150-L255
@@ -166,9 +169,9 @@ package object runtime {
       val LN2 = 0.6931471805599453
       val ebits = 8
       val fbits = 23
-      val bias = (1 << (ebits-1)) - 1
+      val bias = (1 << (ebits - 1)) - 1
       val twoPowFbits = (1 << fbits).toDouble
-      val SubnormalThreshold = 1.1754943508222875E-38 // pow(2, 1-bias)
+      val SubnormalThreshold = 1.1754943508222875e-38 // pow(2, 1-bias)
 
       val isNegative = v < 0
       val av = if (isNegative) -v else v
@@ -185,12 +188,12 @@ package object runtime {
           if (f0 / twoPowFbits >= 2) {
             //val e = e0 + 1.0 // not used
             val f = 1.0
-            if (e0 > bias-1) { // === (e > bias) because e0 is whole
+            if (e0 > bias - 1) { // === (e > bias) because e0 is whole
               // Overflow
               Double.PositiveInfinity
             } else {
               // Normalized case 1
-              val twoPowE = 2*twoPowE0
+              val twoPowE = 2 * twoPowE0
               twoPowE * (1.0 + (f - twoPowFbits) / twoPowFbits)
             }
           } else {

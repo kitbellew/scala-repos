@@ -6,11 +6,10 @@ package expr
 
 import com.intellij.psi.PsiElement
 
-/** 
-* @author Alexander Podkhalyuzin
-* Date: 06.03.2008
-*/
-
+/**
+  * @author Alexander Podkhalyuzin
+  * Date: 06.03.2008
+  */
 trait ScMethodCall extends ScExpression with MethodInvocation {
   def deepestInvokedExpr: ScExpression = {
     getEffectiveInvokedExpr match {
@@ -20,27 +19,29 @@ trait ScMethodCall extends ScExpression with MethodInvocation {
     }
   }
 
-  def args: ScArgumentExprList = findChildByClassScala(classOf[ScArgumentExprList])
+  def args: ScArgumentExprList =
+    findChildByClassScala(classOf[ScArgumentExprList])
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitMethodCallExpression(this)
   }
 
-  override def isUpdateCall: Boolean = getContext.isInstanceOf[ScAssignStmt] &&
-                      getContext.asInstanceOf[ScAssignStmt].getLExpression == this
+  override def isUpdateCall: Boolean =
+    getContext.isInstanceOf[ScAssignStmt] &&
+      getContext.asInstanceOf[ScAssignStmt].getLExpression == this
 
   def updateExpression(): Option[ScExpression] = {
     getContext match {
       case a: ScAssignStmt if a.getLExpression == this => a.getRExpression
-      case _ => None
+      case _                                           => None
     }
   }
 
   def argsElement: PsiElement = args
 
   /**
-   * If named parameters enabled for this method even if it is from java; needed for Play 2 support  
-   */
+    * If named parameters enabled for this method even if it is from java; needed for Play 2 support
+    */
   def isNamedParametersEnabledEverywhere: Boolean = false
 }
 

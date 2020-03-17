@@ -13,14 +13,15 @@ import generic._
 import scala.annotation.tailrec
 
 /** A template trait for indexed sequences of type `IndexedSeq[A]` which optimizes
- *  the implementation of several methods under the assumption of fast random access.
- *
- *  $indexedSeqInfo
- *
- *  @define willNotTerminateInf
- *  @define mayNotTerminateInf
- */
-trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { self =>
+  *  the implementation of several methods under the assumption of fast random access.
+  *
+  *  $indexedSeqInfo
+  *
+  *  @define willNotTerminateInf
+  *  @define mayNotTerminateInf
+  */
+trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
+  self =>
 
   override /*IterableLike*/
   def isEmpty: Boolean = { length == 0 }
@@ -39,10 +40,12 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
   }
 
   override /*IterableLike*/
-  def forall(p: A => Boolean): Boolean = prefixLengthImpl(p, expectTrue = true) == length
+  def forall(p: A => Boolean): Boolean =
+    prefixLengthImpl(p, expectTrue = true) == length
 
   override /*IterableLike*/
-  def exists(p: A => Boolean): Boolean = prefixLengthImpl(p, expectTrue = false) != length
+  def exists(p: A => Boolean): Boolean =
+    prefixLengthImpl(p, expectTrue = false) != length
 
   override /*IterableLike*/
   def find(p: A => Boolean): Option[A] = {
@@ -74,26 +77,30 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
 
   override /*IterableLike*/
   def reduceRight[B >: A](op: (A, B) => B): B =
-    if (length > 0) foldr(0, length - 1, this(length - 1), op) else super.reduceRight(op)
+    if (length > 0) foldr(0, length - 1, this(length - 1), op)
+    else super.reduceRight(op)
 
   override /*IterableLike*/
-  def zip[A1 >: A, B, That](that: GenIterable[B])(implicit bf: CanBuildFrom[Repr, (A1, B), That]): That = that match {
-    case that: IndexedSeq[_] =>
-      val b = bf(repr)
-      var i = 0
-      val len = this.length min that.length
-      b.sizeHint(len)
-      while (i < len) {
-        b += ((this(i), that(i).asInstanceOf[B]))
-        i += 1
-      }
-      b.result()
-    case _ =>
-      super.zip[A1, B, That](that)(bf)
-  }
+  def zip[A1 >: A, B, That](that: GenIterable[B])(
+      implicit bf: CanBuildFrom[Repr, (A1, B), That]): That =
+    that match {
+      case that: IndexedSeq[_] =>
+        val b = bf(repr)
+        var i = 0
+        val len = this.length min that.length
+        b.sizeHint(len)
+        while (i < len) {
+          b += ((this(i), that(i).asInstanceOf[B]))
+          i += 1
+        }
+        b.result()
+      case _ =>
+        super.zip[A1, B, That](that)(bf)
+    }
 
   override /*IterableLike*/
-  def zipWithIndex[A1 >: A, That](implicit bf: CanBuildFrom[Repr, (A1, Int), That]): That = {
+  def zipWithIndex[A1 >: A, That](
+      implicit bf: CanBuildFrom[Repr, (A1, Int), That]): That = {
     val b = bf(repr)
     val len = length
     b.sizeHint(len)
@@ -107,10 +114,10 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
 
   override /*IterableLike*/
   def slice(from: Int, until: Int): Repr = {
-    val lo    = math.max(from, 0)
-    val hi    = math.min(math.max(until, 0), length)
+    val lo = math.max(from, 0)
+    val hi = math.min(math.max(until, 0), length)
     val elems = math.max(hi - lo, 0)
-    val b     = newBuilder
+    val b = newBuilder
     b.sizeHint(elems)
 
     var i = lo
@@ -158,17 +165,18 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
   def span(p: A => Boolean): (Repr, Repr) = splitAt(prefixLength(p))
 
   override /*IterableLike*/
-  def sameElements[B >: A](that: GenIterable[B]): Boolean = that match {
-    case that: IndexedSeq[_] =>
-      val len = length
-      len == that.length && {
-        var i = 0
-        while (i < len && this(i) == that(i)) i += 1
-        i == len
-      }
-    case _ =>
-      super.sameElements(that)
-  }
+  def sameElements[B >: A](that: GenIterable[B]): Boolean =
+    that match {
+      case that: IndexedSeq[_] =>
+        val len = length
+        len == that.length && {
+          var i = 0
+          while (i < len && this(i) == that(i)) i += 1
+          i == len
+        }
+      case _ =>
+        super.sameElements(that)
+    }
 
   override /*IterableLike*/
   def copyToArray[B >: A](xs: Array[B], start: Int, len: Int) {
@@ -223,58 +231,60 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
   }
 
   override /*SeqLike*/
-  def reverseIterator: Iterator[A] = new AbstractIterator[A] {
-    private var i = self.length
-    def hasNext: Boolean = 0 < i
-    def next(): A =
-      if (0 < i) {
-        i -= 1
-        self(i)
-      } else Iterator.empty.next()
-  }
-
-  override /*SeqLike*/
-  def startsWith[B](that: GenSeq[B], offset: Int): Boolean = that match {
-    case that: IndexedSeq[_] =>
-      var i = offset
-      var j = 0
-      val thisLen = length
-      val thatLen = that.length
-      while (i < thisLen && j < thatLen && this(i) == that(j)) {
-        i += 1
-        j += 1
-      }
-      j == thatLen
-    case _ =>
-      var i = offset
-      val thisLen = length
-      val thatElems = that.iterator
-      while (i < thisLen && thatElems.hasNext) {
-        if (this(i) != thatElems.next())
-          return false
-
-        i += 1
-      }
-      !thatElems.hasNext
-  }
-
-  override /*SeqLike*/
-  def endsWith[B](that: GenSeq[B]): Boolean = that match {
-    case that: IndexedSeq[_] =>
-      var i = length - 1
-      var j = that.length - 1
-
-      (j <= i) && {
-        while (j >= 0) {
-          if (this(i) != that(j))
-            return false
+  def reverseIterator: Iterator[A] =
+    new AbstractIterator[A] {
+      private var i = self.length
+      def hasNext: Boolean = 0 < i
+      def next(): A =
+        if (0 < i) {
           i -= 1
-          j -= 1
-        }
-        true
-      }
-    case _ =>
-      super.endsWith(that)
-  }
-}
+          self(i)
+        } else Iterator.empty.next()
+    }
 
+  override /*SeqLike*/
+  def startsWith[B](that: GenSeq[B], offset: Int): Boolean =
+    that match {
+      case that: IndexedSeq[_] =>
+        var i = offset
+        var j = 0
+        val thisLen = length
+        val thatLen = that.length
+        while (i < thisLen && j < thatLen && this(i) == that(j)) {
+          i += 1
+          j += 1
+        }
+        j == thatLen
+      case _ =>
+        var i = offset
+        val thisLen = length
+        val thatElems = that.iterator
+        while (i < thisLen && thatElems.hasNext) {
+          if (this(i) != thatElems.next())
+            return false
+
+          i += 1
+        }
+        !thatElems.hasNext
+    }
+
+  override /*SeqLike*/
+  def endsWith[B](that: GenSeq[B]): Boolean =
+    that match {
+      case that: IndexedSeq[_] =>
+        var i = length - 1
+        var j = that.length - 1
+
+        (j <= i) && {
+          while (j >= 0) {
+            if (this(i) != that(j))
+              return false
+            i -= 1
+            j -= 1
+          }
+          true
+        }
+      case _ =>
+        super.endsWith(that)
+    }
+}

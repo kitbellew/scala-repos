@@ -5,7 +5,8 @@ object SubList {
     def isSubListOf(y: List[A]) = {
       x match {
         case Nil => true
-        case h :: t => y.contains(h) && (t.isSubListOf(y.drop(y.indexOf(h) + 1)))
+        case h :: t =>
+          y.contains(h) && (t.isSubListOf(y.drop(y.indexOf(h) + 1)))
       }
     }
   }

@@ -36,18 +36,17 @@ import org.jetbrains.plugins.scala.format.{Injection, Span, _}
   "value: %s".format(123) // call format
 
   // Interpolated strings ...
- */
-
+  */
 /**
- * Pavel Fatin
- */
-
+  * Pavel Fatin
+  */
 class ScalaMalformedFormatStringInspection extends AbstractInspection {
   def actionFor(holder: ProblemsHolder) = {
     case element =>
-      val representation = FormattedStringParser.parse(element)
-              .orElse(PrintStringParser.parse(element))
-              .orElse(InterpolatedStringParser.parse(element))
+      val representation = FormattedStringParser
+        .parse(element)
+        .orElse(PrintStringParser.parse(element))
+        .orElse(InterpolatedStringParser.parse(element))
 
       for (parts <- representation; part <- parts)
         inspect(part, holder)
@@ -55,32 +54,48 @@ class ScalaMalformedFormatStringInspection extends AbstractInspection {
 
   private def inspect(part: StringPart, holder: ProblemsHolder) {
     part match {
-      case injection @ Injection(exp, Some(Specifier(Span(element, start, end), format))) =>
+      case injection @ Injection(
+            exp,
+            Some(Specifier(Span(element, start, end), format))) =>
         injection.problem match {
           case Some(Inapplicable) =>
             for (argumentType <- injection.expressionType) {
-              holder.registerProblem(element, new TextRange(start, end),
-                "Format specifier %s cannot be used for an argument %s (%s)".format(
-                  format, exp.getText, argumentType.presentableText))
-              holder.registerProblem(exp,
-                "Argument %s (%s) cannot be used for a format specifier %s".format(
-                  exp.getText, argumentType.presentableText, format))
+              holder.registerProblem(
+                element,
+                new TextRange(start, end),
+                "Format specifier %s cannot be used for an argument %s (%s)"
+                  .format(format, exp.getText, argumentType.presentableText))
+              holder.registerProblem(
+                exp,
+                "Argument %s (%s) cannot be used for a format specifier %s"
+                  .format(exp.getText, argumentType.presentableText, format))
             }
           case Some(Malformed) =>
-            holder.registerProblem(element, new TextRange(start, end), "Malformed format specifier")
+            holder.registerProblem(
+              element,
+              new TextRange(start, end),
+              "Malformed format specifier")
           case _ =>
         }
 
       case UnboundSpecifier(Specifier(Span(element, start, end), format)) =>
-        holder.registerProblem(element, new TextRange(start, end),
+        holder.registerProblem(
+          element,
+          new TextRange(start, end),
           "No argument for a format specifier %s".format(format))
 
-      case UnboundPositionalSpecifier(Specifier(Span(element, start, end), format), position) =>
-        holder.registerProblem(element, new TextRange(start, end),
+      case UnboundPositionalSpecifier(
+            Specifier(Span(element, start, end), format),
+            position) =>
+        holder.registerProblem(
+          element,
+          new TextRange(start, end),
           "No argument at position %d".format(position))
 
       case UnboundExpression(argument) =>
-        holder.registerProblem(argument, "No format specifer for an argument %s".format(argument.getText),
+        holder.registerProblem(
+          argument,
+          "No format specifer for an argument %s".format(argument.getText),
           ProblemHighlightType.LIKE_UNUSED_SYMBOL)
 
       case _ =>

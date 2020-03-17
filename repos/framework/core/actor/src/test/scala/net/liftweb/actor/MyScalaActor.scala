@@ -17,10 +17,9 @@
 package net.liftweb
 package actor
 
-
 /**
- * Scala implementation of LiftActor for test.
- */
+  * Scala implementation of LiftActor for test.
+  */
 class MyScalaActor extends LiftActor {
   private var value = 0
 

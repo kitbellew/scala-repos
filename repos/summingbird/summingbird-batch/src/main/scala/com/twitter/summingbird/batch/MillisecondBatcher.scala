@@ -12,19 +12,18 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.batch
 
 /**
- * Batcher implementation based on a fixed-width batch of
- * milliseconds.
- *
- * @author Oscar Boykin
- * @author Sam Ritchie
- * @author Ashu Singhal
- */
-
+  * Batcher implementation based on a fixed-width batch of
+  * milliseconds.
+  *
+  * @author Oscar Boykin
+  * @author Sam Ritchie
+  * @author Ashu Singhal
+  */
 class MillisecondBatcher(val durationMillis: Long) extends AbstractBatcher {
   require(durationMillis > 0, "a batch must have a non-zero size")
   def batchOf(t: Timestamp) = {

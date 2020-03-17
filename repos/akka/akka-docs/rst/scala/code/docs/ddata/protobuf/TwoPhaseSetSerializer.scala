@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.ddata.protobuf
 
 //#serializer
@@ -15,23 +15,29 @@ import docs.ddata.TwoPhaseSet
 import docs.ddata.protobuf.msg.TwoPhaseSetMessages
 
 class TwoPhaseSetSerializer(val system: ExtendedActorSystem)
-  extends Serializer with SerializationSupport {
+    extends Serializer
+    with SerializationSupport {
 
   override def includeManifest: Boolean = false
 
   override def identifier = 99999
 
-  override def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case m: TwoPhaseSet ⇒ twoPhaseSetToProto(m).toByteArray
-    case _ ⇒ throw new IllegalArgumentException(
-      s"Can't serialize object of type ${obj.getClass}")
-  }
+  override def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case m: TwoPhaseSet ⇒ twoPhaseSetToProto(m).toByteArray
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass}")
+    }
 
-  override def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+  override def fromBinary(
+      bytes: Array[Byte],
+      clazz: Option[Class[_]]): AnyRef = {
     twoPhaseSetFromBinary(bytes)
   }
 
-  def twoPhaseSetToProto(twoPhaseSet: TwoPhaseSet): TwoPhaseSetMessages.TwoPhaseSet = {
+  def twoPhaseSetToProto(
+      twoPhaseSet: TwoPhaseSet): TwoPhaseSetMessages.TwoPhaseSet = {
     val b = TwoPhaseSetMessages.TwoPhaseSet.newBuilder()
     // using java collections and sorting for performance (avoid conversions)
     val adds = new ArrayList[String]
@@ -59,17 +65,20 @@ class TwoPhaseSetSerializer(val system: ExtendedActorSystem)
 //#serializer
 
 class TwoPhaseSetSerializerWithCompression(system: ExtendedActorSystem)
-  extends TwoPhaseSetSerializer(system) {
+    extends TwoPhaseSetSerializer(system) {
   //#compression
-  override def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case m: TwoPhaseSet ⇒ compress(twoPhaseSetToProto(m))
-    case _ ⇒ throw new IllegalArgumentException(
-      s"Can't serialize object of type ${obj.getClass}")
-  }
+  override def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case m: TwoPhaseSet ⇒ compress(twoPhaseSetToProto(m))
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass}")
+    }
 
-  override def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
+  override def fromBinary(
+      bytes: Array[Byte],
+      clazz: Option[Class[_]]): AnyRef = {
     twoPhaseSetFromBinary(decompress(bytes))
   }
   //#compression
 }
-

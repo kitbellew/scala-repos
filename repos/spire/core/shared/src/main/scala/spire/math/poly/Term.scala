@@ -13,7 +13,8 @@ case class Term[@sp(Float, Double) C](coeff: C, exp: Int) { lhs =>
 
   def +(rhs: Term[C])(implicit r: Semiring[C]): Term[C] = {
     if (lhs.exp != rhs.exp)
-      throw new IllegalArgumentException(s"can't add terms of degree $exp and ${rhs.exp}")
+      throw new IllegalArgumentException(
+        s"can't add terms of degree $exp and ${rhs.exp}")
     Term(lhs.coeff + rhs.coeff, lhs.exp)
   }
 
@@ -43,35 +44,39 @@ case class Term[@sp(Float, Double) C](coeff: C, exp: Int) { lhs =>
   override def toString: String = {
     import Term._
 
-    def expString = exp match {
-      case 0 => ""
-      case 1 => "x"
-      case _ => "x" + exp.toString.map(superscript)
-    }
+    def expString =
+      exp match {
+        case 0 => ""
+        case 1 => "x"
+        case _ => "x" + exp.toString.map(superscript)
+      }
 
-    def simpleCoeff: Option[String] = coeff match {
-      case 0 => Some("")
-      case 1 if exp == 0 => Some(s" + $coeff")
-      case 1 => Some(s" + $expString")
-      case -1 if exp != 0 => Some(s" - $expString")
-      case _ => None
-    }
+    def simpleCoeff: Option[String] =
+      coeff match {
+        case 0              => Some("")
+        case 1 if exp == 0  => Some(s" + $coeff")
+        case 1              => Some(s" + $expString")
+        case -1 if exp != 0 => Some(s" - $expString")
+        case _              => None
+      }
 
-    def stringCoeff: Option[String] = coeff.toString match {
-      case IsZero() => Some("")
-      case IsNegative(posPart) if exp == 0 => Some(s" - $posPart")
-      case IsNegative(posPart) => Some(s" - $posPart$expString")
-      case _ => None
-    }
+    def stringCoeff: Option[String] =
+      coeff.toString match {
+        case IsZero()                        => Some("")
+        case IsNegative(posPart) if exp == 0 => Some(s" - $posPart")
+        case IsNegative(posPart)             => Some(s" - $posPart$expString")
+        case _                               => None
+      }
 
     simpleCoeff orElse stringCoeff getOrElse s" + $coeff$expString"
   }
 }
 
 object Term {
-  implicit def ordering[C]: Order[Term[C]] = new Order[Term[C]] {
-    def compare(x: Term[C], y: Term[C]): Int = x.exp compare y.exp
-  }
+  implicit def ordering[C]: Order[Term[C]] =
+    new Order[Term[C]] {
+      def compare(x: Term[C], y: Term[C]): Int = x.exp compare y.exp
+    }
 
   def fromTuple[@sp(Float, Double) C](tpl: (Int, C)): Term[C] =
     Term(tpl._2, tpl._1)
@@ -103,12 +108,14 @@ object Term {
   // call Regex constructor directly to get rid of compiler warning
   // replace with "".r once SI-6723 is fixed
   private val superscriptRegex =
-    new scala.util.matching.Regex("[\\u2070\\u2071\\u2072\\u2073\\u2074\\u2075\\u2076\\u2077\\u2078\\u2079\\u207B\\u00B9\\u00B2\\u00B3]+")
+    new scala.util.matching.Regex(
+      "[\\u2070\\u2071\\u2072\\u2073\\u2074\\u2075\\u2076\\u2077\\u2078\\u2079\\u207B\\u00B9\\u00B2\\u00B3]+")
 
   private[spire] def removeSuperscript(text: String): String =
     superscriptRegex.replaceAllIn(text, "^" + _.group(0).map(removeSuperscript))
 
-  private val superscript : (Char => Char) = Map(digitToSuperscript:_*)
+  private val superscript: (Char => Char) = Map(digitToSuperscript: _*)
 
-  private val removeSuperscript : (Char => Char) = Map(digitToSuperscript.map(_.swap):_*)
+  private val removeSuperscript: (Char => Char) = Map(
+    digitToSuperscript.map(_.swap): _*)
 }

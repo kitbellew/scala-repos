@@ -1,14 +1,16 @@
 /**
- * 2014 Matt Seddon
- * This code is donated in full to the scala-js project.
- */
-
+  * 2014 Matt Seddon
+  * This code is donated in full to the scala-js project.
+  */
 package java.util
 
 import scalajs.js
 
-class Date private (private val date: js.Date) extends Object
-    with Serializable with Cloneable with Comparable[Date] {
+class Date private (private val date: js.Date)
+    extends Object
+    with Serializable
+    with Cloneable
+    with Comparable[Date] {
 
   import Date._
 
@@ -43,10 +45,11 @@ class Date private (private val date: js.Date) extends Object
   override def compareTo(anotherDate: Date): Int =
     date.getTime().compareTo(anotherDate.date.getTime())
 
-  override def equals(obj: Any): Boolean = obj match {
-    case d: Date => d.date.getTime() == date.getTime()
-    case _       => false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case d: Date => d.date.getTime() == date.getTime()
+      case _       => false
+    }
 
   override def hashCode(): Int = date.getTime().hashCode()
 
@@ -101,7 +104,7 @@ class Date private (private val date: js.Date) extends Object
     date.getUTCDate() + " " + Months(date.getUTCMonth()) + " " +
       date.getUTCFullYear() + " " + pad0(date.getUTCHours()) + ":" +
       pad0(date.getUTCMinutes()) + ":" +
-      pad0(date.getUTCSeconds()) +" GMT"
+      pad0(date.getUTCSeconds()) + " GMT"
   }
 
   @Deprecated
@@ -116,7 +119,7 @@ class Date private (private val date: js.Date) extends Object
     val sign = if (offset < 0) "-" else "+"
     val hours = pad0(Math.abs(offset) / 60)
     val mins = pad0(Math.abs(offset) % 60)
-    Days(date.getDay()) + " "+ Months(date.getMonth()) + " " +
+    Days(date.getDay()) + " " + Months(date.getMonth()) + " " +
       pad0(date.getHours()) + ":" + pad0(date.getMinutes()) + ":" +
       pad0(date.getSeconds()) + " GMT" + sign + hours + mins + " " +
       date.getFullYear()
@@ -124,12 +127,21 @@ class Date private (private val date: js.Date) extends Object
 }
 
 object Date {
-  private val Days = Array(
-      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+  private val Days = Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
   private val Months = Array(
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec")
 
   private def pad0(i: Int): String = {
     val str = "" + i
@@ -137,8 +149,13 @@ object Date {
   }
 
   @Deprecated
-  def UTC(year: Int, month: Int, date: Int,
-      hrs: Int, min: Int, sec: Int): Long =
+  def UTC(
+      year: Int,
+      month: Int,
+      date: Int,
+      hrs: Int,
+      min: Int,
+      sec: Int): Long =
     js.Date.UTC(year + 1900, month, date, hrs, min, sec).toLong
 
   @Deprecated

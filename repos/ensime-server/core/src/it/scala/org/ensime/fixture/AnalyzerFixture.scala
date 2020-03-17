@@ -15,7 +15,10 @@ trait AnalyzerFixture {
 }
 
 object AnalyzerFixture {
-  private[fixture] def create(search: SearchService)(implicit system: ActorSystem, config: EnsimeConfig, vfs: EnsimeVFS): TestActorRef[Analyzer] = {
+  private[fixture] def create(search: SearchService)(implicit
+      system: ActorSystem,
+      config: EnsimeConfig,
+      vfs: EnsimeVFS): TestActorRef[Analyzer] = {
     val indexer = TestProbe()
     val projectActor = TestProbe()
     TestActorRef(Analyzer(projectActor.ref, indexer.ref, search))
@@ -28,7 +31,8 @@ trait IsolatedAnalyzerFixture
     with IsolatedSearchServiceFixture
     with IsolatedTestKitFixture {
 
-  override def withAnalyzer(testCode: (EnsimeConfig, TestActorRef[Analyzer]) => Any): Any = {
+  override def withAnalyzer(
+      testCode: (EnsimeConfig, TestActorRef[Analyzer]) => Any): Any = {
     withVFS { implicit vfs =>
       withTestKit { testkit =>
         import testkit._
@@ -57,5 +61,7 @@ trait SharedAnalyzerFixture
     analyzer = AnalyzerFixture.create(_search)
   }
 
-  override def withAnalyzer(testCode: (EnsimeConfig, TestActorRef[Analyzer]) => Any): Any = testCode(_config, analyzer)
+  override def withAnalyzer(
+      testCode: (EnsimeConfig, TestActorRef[Analyzer]) => Any): Any =
+    testCode(_config, analyzer)
 }

@@ -3,10 +3,11 @@ import scala.reflect.macros.blackbox.Context
 object Macros {
   def impl(c: Context) = {
     import c.universe._
-    def chain(sym: Symbol): List[Symbol] = sym.owner match {
-      case NoSymbol => sym :: Nil
-      case owner => sym :: chain(owner)
-    }
+    def chain(sym: Symbol): List[Symbol] =
+      sym.owner match {
+        case NoSymbol => sym :: Nil
+        case owner    => sym :: chain(owner)
+      }
     q"""
       println("enclosingPackage = " + ${c.enclosingPackage.toString})
       println("enclosingClass = " + ${c.enclosingClass.toString})

@@ -14,11 +14,11 @@ import mutable.Builder
 import scala.language.higherKinds
 
 /** This class represents companions of classes which require the ordered trait
- *  for their element types.
- *
- *  @author Aleksandar Prokopec
- *  @since 2.8
- */
+  *  for their element types.
+  *
+  *  @author Aleksandar Prokopec
+  *  @since 2.8
+  */
 abstract class GenericOrderedCompanion[+CC[X] <: Traversable[X]] {
   protected[this] type Coll = CC[_]
 
@@ -32,4 +32,3 @@ abstract class GenericOrderedCompanion[+CC[X] <: Traversable[X]] {
     b.result()
   }
 }
-

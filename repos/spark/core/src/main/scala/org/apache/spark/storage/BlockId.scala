@@ -22,30 +22,33 @@ import java.util.UUID
 import org.apache.spark.annotation.DeveloperApi
 
 /**
- * :: DeveloperApi ::
- * Identifies a particular Block of data, usually associated with a single file.
- * A Block can be uniquely identified by its filename, but each type of Block has a different
- * set of keys which produce its unique name.
- *
- * If your BlockId should be serializable, be sure to add it to the BlockId.apply() method.
- */
+  * :: DeveloperApi ::
+  * Identifies a particular Block of data, usually associated with a single file.
+  * A Block can be uniquely identified by its filename, but each type of Block has a different
+  * set of keys which produce its unique name.
+  *
+  * If your BlockId should be serializable, be sure to add it to the BlockId.apply() method.
+  */
 @DeveloperApi
 sealed abstract class BlockId {
+
   /** A globally unique identifier for this Block. Can be used for ser/de. */
   def name: String
 
   // convenience methods
-  def asRDDId: Option[RDDBlockId] = if (isRDD) Some(asInstanceOf[RDDBlockId]) else None
+  def asRDDId: Option[RDDBlockId] =
+    if (isRDD) Some(asInstanceOf[RDDBlockId]) else None
   def isRDD: Boolean = isInstanceOf[RDDBlockId]
   def isShuffle: Boolean = isInstanceOf[ShuffleBlockId]
   def isBroadcast: Boolean = isInstanceOf[BroadcastBlockId]
 
   override def toString: String = name
   override def hashCode: Int = name.hashCode
-  override def equals(other: Any): Boolean = other match {
-    case o: BlockId => getClass == o.getClass && name.equals(o.name)
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case o: BlockId => getClass == o.getClass && name.equals(o.name)
+      case _          => false
+    }
 }
 
 @DeveloperApi
@@ -56,23 +59,31 @@ case class RDDBlockId(rddId: Int, splitIndex: Int) extends BlockId {
 // Format of the shuffle block ids (including data and index) should be kept in sync with
 // org.apache.spark.network.shuffle.ExternalShuffleBlockResolver#getBlockData().
 @DeveloperApi
-case class ShuffleBlockId(shuffleId: Int, mapId: Int, reduceId: Int) extends BlockId {
-  override def name: String = "shuffle_" + shuffleId + "_" + mapId + "_" + reduceId
+case class ShuffleBlockId(shuffleId: Int, mapId: Int, reduceId: Int)
+    extends BlockId {
+  override def name: String =
+    "shuffle_" + shuffleId + "_" + mapId + "_" + reduceId
 }
 
 @DeveloperApi
-case class ShuffleDataBlockId(shuffleId: Int, mapId: Int, reduceId: Int) extends BlockId {
-  override def name: String = "shuffle_" + shuffleId + "_" + mapId + "_" + reduceId + ".data"
+case class ShuffleDataBlockId(shuffleId: Int, mapId: Int, reduceId: Int)
+    extends BlockId {
+  override def name: String =
+    "shuffle_" + shuffleId + "_" + mapId + "_" + reduceId + ".data"
 }
 
 @DeveloperApi
-case class ShuffleIndexBlockId(shuffleId: Int, mapId: Int, reduceId: Int) extends BlockId {
-  override def name: String = "shuffle_" + shuffleId + "_" + mapId + "_" + reduceId + ".index"
+case class ShuffleIndexBlockId(shuffleId: Int, mapId: Int, reduceId: Int)
+    extends BlockId {
+  override def name: String =
+    "shuffle_" + shuffleId + "_" + mapId + "_" + reduceId + ".index"
 }
 
 @DeveloperApi
-case class BroadcastBlockId(broadcastId: Long, field: String = "") extends BlockId {
-  override def name: String = "broadcast_" + broadcastId + (if (field == "") "" else "_" + field)
+case class BroadcastBlockId(broadcastId: Long, field: String = "")
+    extends BlockId {
+  override def name: String =
+    "broadcast_" + broadcastId + (if (field == "") "" else "_" + field)
 }
 
 @DeveloperApi
@@ -112,24 +123,25 @@ object BlockId {
   val TEST = "test_(.*)".r
 
   /** Converts a BlockId "name" String back into a BlockId. */
-  def apply(id: String): BlockId = id match {
-    case RDD(rddId, splitIndex) =>
-      RDDBlockId(rddId.toInt, splitIndex.toInt)
-    case SHUFFLE(shuffleId, mapId, reduceId) =>
-      ShuffleBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
-    case SHUFFLE_DATA(shuffleId, mapId, reduceId) =>
-      ShuffleDataBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
-    case SHUFFLE_INDEX(shuffleId, mapId, reduceId) =>
-      ShuffleIndexBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
-    case BROADCAST(broadcastId, field) =>
-      BroadcastBlockId(broadcastId.toLong, field.stripPrefix("_"))
-    case TASKRESULT(taskId) =>
-      TaskResultBlockId(taskId.toLong)
-    case STREAM(streamId, uniqueId) =>
-      StreamBlockId(streamId.toInt, uniqueId.toLong)
-    case TEST(value) =>
-      TestBlockId(value)
-    case _ =>
-      throw new IllegalStateException("Unrecognized BlockId: " + id)
-  }
+  def apply(id: String): BlockId =
+    id match {
+      case RDD(rddId, splitIndex) =>
+        RDDBlockId(rddId.toInt, splitIndex.toInt)
+      case SHUFFLE(shuffleId, mapId, reduceId) =>
+        ShuffleBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
+      case SHUFFLE_DATA(shuffleId, mapId, reduceId) =>
+        ShuffleDataBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
+      case SHUFFLE_INDEX(shuffleId, mapId, reduceId) =>
+        ShuffleIndexBlockId(shuffleId.toInt, mapId.toInt, reduceId.toInt)
+      case BROADCAST(broadcastId, field) =>
+        BroadcastBlockId(broadcastId.toLong, field.stripPrefix("_"))
+      case TASKRESULT(taskId) =>
+        TaskResultBlockId(taskId.toLong)
+      case STREAM(streamId, uniqueId) =>
+        StreamBlockId(streamId.toInt, uniqueId.toLong)
+      case TEST(value) =>
+        TestBlockId(value)
+      case _ =>
+        throw new IllegalStateException("Unrecognized BlockId: " + id)
+    }
 }

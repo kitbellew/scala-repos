@@ -4,9 +4,9 @@ package actor
 import akka.actor._
 import play.twirl.api.Html
 
-import lila.game.{ GameRepo, Pov }
+import lila.game.{GameRepo, Pov}
 import lila.user.UserRepo
-import views.{ html => V }
+import views.{html => V}
 
 private[app] final class Renderer extends Actor {
 
@@ -39,7 +39,8 @@ private[app] final class Renderer extends Actor {
   }
 
   private val spaceRegex = """\s{2,}""".r
-  private def spaceless(html: Html) = Html {
-    spaceRegex.replaceAllIn(html.body.replace("\\n", " "), " ")
-  }
+  private def spaceless(html: Html) =
+    Html {
+      spaceRegex.replaceAllIn(html.body.replace("\\n", " "), " ")
+    }
 }

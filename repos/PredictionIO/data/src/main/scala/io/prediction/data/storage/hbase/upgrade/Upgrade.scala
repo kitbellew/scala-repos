@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.hbase.upgrade
 
 import io.prediction.annotation.Experimental
@@ -38,10 +37,10 @@ object Upgrade {
 
   /* For upgrade from 0.8.0 or 0.8.1 to 0.8.2 only */
   def upgrade(
-    fromAppId: Int,
-    toAppId: Int,
-    batchSize: Int,
-    fromNamespace: String) {
+      fromAppId: Int,
+      toAppId: Int,
+      batchSize: Int,
+      fromNamespace: String) {
 
     val events = Storage.getLEvents().asInstanceOf[HBLEvents]
 
@@ -50,14 +49,15 @@ object Upgrade {
     val newTable = events.getTable(toAppId)
 
     val newTableName = newTable.getName().getNameAsString()
-    println(s"Copying data from ${fromNamespace}:events for app ID ${fromAppId}"
-      + s" to new HBase table ${newTableName}...")
+    println(
+      s"Copying data from ${fromNamespace}:events for app ID ${fromAppId}"
+        + s" to new HBase table ${newTableName}...")
 
-    HB_0_8_0.getByAppId(
-      events.client.connection,
-      fromNamespace,
-      fromAppId).grouped(batchSize).foreach { eventGroup =>
-        val puts = eventGroup.map{ e =>
+    HB_0_8_0
+      .getByAppId(events.client.connection, fromNamespace, fromAppId)
+      .grouped(batchSize)
+      .foreach { eventGroup =>
+        val puts = eventGroup.map { e =>
           val (put, rowkey) = HBEventsUtil.eventToPut(e, toAppId)
           put
         }

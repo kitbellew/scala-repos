@@ -20,20 +20,22 @@ package org.apache.spark.streaming.kafka
 import org.apache.spark.annotation.Experimental
 
 /**
- * Represents the host and port info for a Kafka broker.
- * Differs from the Kafka project's internal kafka.cluster.Broker, which contains a server ID.
- */
-final class Broker private(
+  * Represents the host and port info for a Kafka broker.
+  * Differs from the Kafka project's internal kafka.cluster.Broker, which contains a server ID.
+  */
+final class Broker private (
     /** Broker's hostname */
     val host: String,
     /** Broker's port */
-    val port: Int) extends Serializable {
-  override def equals(obj: Any): Boolean = obj match {
-    case that: Broker =>
-      this.host == that.host &&
-      this.port == that.port
-    case _ => false
-  }
+    val port: Int)
+    extends Serializable {
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case that: Broker =>
+        this.host == that.host &&
+          this.port == that.port
+      case _ => false
+    }
 
   override def hashCode: Int = {
     41 * (41 + host.hashCode) + port
@@ -45,9 +47,9 @@ final class Broker private(
 }
 
 /**
- * :: Experimental ::
- * Companion object that provides methods to create instances of [[Broker]].
- */
+  * :: Experimental ::
+  * Companion object that provides methods to create instances of [[Broker]].
+  */
 @Experimental
 object Broker {
   def create(host: String, port: Int): Broker =

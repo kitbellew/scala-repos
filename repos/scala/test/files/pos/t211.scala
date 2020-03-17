@@ -5,4 +5,3 @@ object Test extends App {
   new Foo();
   Console.println("t211 completed");
 }
-

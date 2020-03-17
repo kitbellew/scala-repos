@@ -22,8 +22,7 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
   class Helper(
       ejectFailedHost: Boolean,
       serviceRep: Future[Int] = Future.exception(new Exception),
-      underlyingStatus: Status = Status.Open)
-  {
+      underlyingStatus: Status = Status.Open) {
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn underlyingStatus
@@ -41,13 +40,21 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val label = "test"
     val factory =
       new KetamaFailureAccrualFactory[Int, Int](
-        underlying, FailureAccrualPolicy.consecutiveFailures(3, Backoff.const(10.seconds)), timer, key, broker, ejectFailedHost, label, NullStatsReceiver)
+        underlying,
+        FailureAccrualPolicy.consecutiveFailures(3, Backoff.const(10.seconds)),
+        timer,
+        key,
+        broker,
+        ejectFailedHost,
+        label,
+        NullStatsReceiver)
 
     val service = Await.result(factory())
     verify(underlying)()
   }
 
-  test("fail immediately after consecutive failures, revive after markDeadFor duration") {
+  test(
+    "fail immediately after consecutive failures, revive after markDeadFor duration") {
     val h = new Helper(false)
     import h._
 
@@ -99,7 +106,8 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("busy state of the underlying serviceFactory does not trigger FailureAccrualException") {
+  test(
+    "busy state of the underlying serviceFactory does not trigger FailureAccrualException") {
     val h = new Helper(false, Future.exception(new Exception), Status.Busy)
     import h._
 
@@ -180,8 +188,12 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
         Future.value(123),
         Future.exception(new CancelledRequestException(new Exception)),
         Future.exception(new CancelledConnectionException(new Exception)),
-        Future.exception(ChannelWriteException(new CancelledRequestException(new Exception))),
-        Future.exception(ChannelWriteException(new CancelledConnectionException(new Exception))))
+        Future.exception(
+          ChannelWriteException(new CancelledRequestException(new Exception))),
+        Future.exception(
+          ChannelWriteException(
+            new CancelledConnectionException(new Exception)))
+      )
 
     successes.foreach { rep =>
       val h = new Helper(false, rep)

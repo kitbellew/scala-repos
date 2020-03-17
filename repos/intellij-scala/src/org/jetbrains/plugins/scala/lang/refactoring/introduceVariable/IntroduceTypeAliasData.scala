@@ -6,9 +6,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.plugins.scala.lang.psi.api.statements.ScTypeAlias
 
 /**
- * Created by Kate Ustyuzhanina
- * on 9/7/15
- */
+  * Created by Kate Ustyuzhanina
+  * on 9/7/15
+  */
 class IntroduceTypeAliasData {
   var currentScope: ScopeItem = null
   var initialTypeElement: TextRange = null
@@ -49,8 +49,11 @@ class IntroduceTypeAliasData {
   }
 
   def getNamedElement: ScTypeAlias = {
-    val element = PsiTreeUtil.findElementOfClassAtOffset(typeAliasInfo._1,
-      typeAliasInfo._2.getStartOffset, classOf[ScTypeAlias], false)
+    val element = PsiTreeUtil.findElementOfClassAtOffset(
+      typeAliasInfo._1,
+      typeAliasInfo._2.getStartOffset,
+      classOf[ScTypeAlias],
+      false)
 
     element match {
       case typeAlias: ScTypeAlias =>

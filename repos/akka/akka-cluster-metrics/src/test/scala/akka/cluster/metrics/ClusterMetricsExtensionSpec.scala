@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.metrics
 
 import scala.language.postfixOps
@@ -12,8 +11,10 @@ import akka.cluster.metrics.StandardMetrics._
 import akka.cluster.Cluster
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class MetricsExtensionSpec extends AkkaSpec(MetricsConfig.clusterSigarMock)
-  with ImplicitSender with RedirectLogging {
+class MetricsExtensionSpec
+    extends AkkaSpec(MetricsConfig.clusterSigarMock)
+    with ImplicitSender
+    with RedirectLogging {
 
   val cluster = Cluster(system)
 
@@ -68,15 +69,17 @@ class MetricsExtensionSpec extends AkkaSpec(MetricsConfig.clusterSigarMock)
         (0.700, 0.266, 0.106),
         (0.700, 0.309, 0.123),
         (0.700, 0.343, 0.137),
-        (0.700, 0.372, 0.148))
+        (0.700, 0.372, 0.148)
+      )
 
       expected.size should ===(sampleCount)
 
       history.zip(expected) foreach {
         case (mockMetrics, expectedData) ⇒
           (mockMetrics, expectedData) match {
-            case (Cpu(_, _, loadAverageMock, cpuCombinedMock, cpuStolenMock, _),
-              (loadAverageEwma, cpuCombinedEwma, cpuStolenEwma)) ⇒
+            case (
+                  Cpu(_, _, loadAverageMock, cpuCombinedMock, cpuStolenMock, _),
+                  (loadAverageEwma, cpuCombinedEwma, cpuStolenEwma)) ⇒
               loadAverageMock.get should ===(loadAverageEwma +- epsilon)
               cpuCombinedMock.get should ===(cpuCombinedEwma +- epsilon)
               cpuStolenMock.get should ===(cpuStolenEwma +- epsilon)

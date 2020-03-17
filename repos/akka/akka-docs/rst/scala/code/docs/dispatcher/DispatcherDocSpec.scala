@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.dispatcher
 
 import language.postfixOps
 
-import org.scalatest.{ BeforeAndAfterAll, WordSpec }
+import org.scalatest.{BeforeAndAfterAll, WordSpec}
 import org.scalatest.Matchers
 import akka.testkit.AkkaSpec
 import akka.event.Logging
@@ -15,7 +15,8 @@ import docs.dispatcher.DispatcherDocSpec.MyBoundedActor
 import akka.dispatch.RequiresMessageQueue
 
 object DispatcherDocSpec {
-  val javaConfig = """
+  val javaConfig =
+    """
      //#prio-dispatcher-config-java
      prio-dispatcher {
        mailbox-type = "docs.dispatcher.DispatcherDocTest$MyPrioMailbox"
@@ -203,21 +204,21 @@ object DispatcherDocSpec {
   // We inherit, in this case, from UnboundedStablePriorityMailbox
   // and seed it with the priority generator
   class MyPrioMailbox(settings: ActorSystem.Settings, config: Config)
-    extends UnboundedStablePriorityMailbox(
-      // Create a new PriorityGenerator, lower prio means more important
-      PriorityGenerator {
-        // 'highpriority messages should be treated first if possible
-        case 'highpriority => 0
+      extends UnboundedStablePriorityMailbox(
+        // Create a new PriorityGenerator, lower prio means more important
+        PriorityGenerator {
+          // 'highpriority messages should be treated first if possible
+          case 'highpriority => 0
 
-        // 'lowpriority messages should be treated last if possible
-        case 'lowpriority  => 2
+          // 'lowpriority messages should be treated last if possible
+          case 'lowpriority => 2
 
-        // PoisonPill when no other left
-        case PoisonPill    => 3
+          // PoisonPill when no other left
+          case PoisonPill => 3
 
-        // We default to 1, which is in between high and low
-        case otherwise     => 1
-      })
+          // We default to 1, which is in between high and low
+          case otherwise => 1
+        })
   //#prio-mailbox
 
   //#control-aware-mailbox-messages
@@ -236,13 +237,15 @@ object DispatcherDocSpec {
   import akka.dispatch.RequiresMessageQueue
   import akka.dispatch.BoundedMessageQueueSemantics
 
-  class MyBoundedActor extends MyActor
-    with RequiresMessageQueue[BoundedMessageQueueSemantics]
+  class MyBoundedActor
+      extends MyActor
+      with RequiresMessageQueue[BoundedMessageQueueSemantics]
   //#required-mailbox-class
 
   //#require-mailbox-on-actor
-  class MySpecialActor extends Actor
-    with RequiresMessageQueue[MyUnboundedMessageQueueSemantics] {
+  class MySpecialActor
+      extends Actor
+      with RequiresMessageQueue[MyUnboundedMessageQueueSemantics] {
     //#require-mailbox-on-actor
     def receive = {
       case _ =>
@@ -270,7 +273,9 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
     //#defining-dispatcher-in-code
     import akka.actor.Props
     val myActor =
-      context.actorOf(Props[MyActor].withDispatcher("my-dispatcher"), "myactor1")
+      context.actorOf(
+        Props[MyActor].withDispatcher("my-dispatcher"),
+        "myactor1")
     //#defining-dispatcher-in-code
   }
 
@@ -282,7 +287,9 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
     val context = system
     //#defining-fixed-pool-size-dispatcher
     val myActor =
-      context.actorOf(Props[MyActor].withDispatcher("blocking-io-dispatcher"), "myactor2")
+      context.actorOf(
+        Props[MyActor].withDispatcher("blocking-io-dispatcher"),
+        "myactor2")
     //#defining-fixed-pool-size-dispatcher
   }
 
@@ -290,7 +297,9 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
     val context = system
     //#defining-pinned-dispatcher
     val myActor =
-      context.actorOf(Props[MyActor].withDispatcher("my-pinned-dispatcher"), "myactor3")
+      context.actorOf(
+        Props[MyActor].withDispatcher("my-pinned-dispatcher"),
+        "myactor3")
     //#defining-pinned-dispatcher
   }
 
@@ -343,8 +352,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
           case x => log.info(x.toString)
         }
       }
-      val a = system.actorOf(Props(classOf[Logger], this).withDispatcher(
-        "prio-dispatcher"))
+      val a = system.actorOf(
+        Props(classOf[Logger], this).withDispatcher("prio-dispatcher"))
 
       /*
        * Logs:
@@ -380,8 +389,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
           case x => log.info(x.toString)
         }
       }
-      val a = system.actorOf(Props(classOf[Logger], this).withDispatcher(
-        "control-aware-dispatcher"))
+      val a = system.actorOf(
+        Props(classOf[Logger], this).withDispatcher("control-aware-dispatcher"))
 
       /*
        * Logs:
@@ -397,8 +406,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
   }
 
   "require custom mailbox on dispatcher" in {
-    val myActor = system.actorOf(Props[MyActor].withDispatcher(
-      "custom-dispatcher"))
+    val myActor =
+      system.actorOf(Props[MyActor].withDispatcher("custom-dispatcher"))
   }
 
   "require custom mailbox on actor" in {

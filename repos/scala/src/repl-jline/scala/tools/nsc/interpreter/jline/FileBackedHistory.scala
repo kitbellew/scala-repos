@@ -8,8 +8,8 @@ package scala.tools.nsc.interpreter.jline
 import _root_.jline.console.history.PersistentHistory
 
 import scala.tools.nsc.interpreter
-import scala.reflect.io.{ File, Path }
-import scala.tools.nsc.Properties.{ propOrNone, userHome }
+import scala.reflect.io.{File, Path}
+import scala.tools.nsc.Properties.{propOrNone, userHome}
 
 /** TODO: file locking.
   */
@@ -70,7 +70,8 @@ trait FileBackedHistory extends JLineHistory with PersistentHistory {
     withoutSaving(lines takeRight maxSize foreach add)
     // truncate the history file if it's too big.
     if (lines.size > maxSize) {
-      interpreter.repldbg("File exceeds maximum size: truncating to " + maxSize + " entries.")
+      interpreter.repldbg(
+        "File exceeds maximum size: truncating to " + maxSize + " entries.")
       sync()
     }
     moveToEnd()
@@ -87,7 +88,9 @@ object FileBackedHistory {
 
   final val defaultFileName = ".scala_history"
 
-  def defaultFile: File = File(
-    propOrNone("scala.shell.histfile") map (Path.apply) getOrElse (Path(userHome) / defaultFileName)
-  )
+  def defaultFile: File =
+    File(
+      propOrNone("scala.shell.histfile") map (Path.apply) getOrElse (Path(
+        userHome) / defaultFileName)
+    )
 }

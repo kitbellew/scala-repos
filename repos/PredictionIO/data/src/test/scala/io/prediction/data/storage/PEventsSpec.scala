@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import org.specs2._
@@ -32,25 +31,29 @@ class PEventsSpec extends Specification with TestEvents {
   val channelId = 6
   val dbName = "test_pio_storage_events_" + hashCode
 
-  def hbLocal = Storage.getDataObject[LEvents](
-    StorageTestUtils.hbaseSourceName,
-    dbName
-  )
+  def hbLocal =
+    Storage.getDataObject[LEvents](
+      StorageTestUtils.hbaseSourceName,
+      dbName
+    )
 
-  def hbPar = Storage.getDataObject[PEvents](
-    StorageTestUtils.hbaseSourceName,
-    dbName
-  )
+  def hbPar =
+    Storage.getDataObject[PEvents](
+      StorageTestUtils.hbaseSourceName,
+      dbName
+    )
 
-  def jdbcLocal = Storage.getDataObject[LEvents](
-    StorageTestUtils.jdbcSourceName,
-    dbName
-  )
+  def jdbcLocal =
+    Storage.getDataObject[LEvents](
+      StorageTestUtils.jdbcSourceName,
+      dbName
+    )
 
-  def jdbcPar = Storage.getDataObject[PEvents](
-    StorageTestUtils.jdbcSourceName,
-    dbName
-  )
+  def jdbcPar =
+    Storage.getDataObject[PEvents](
+      StorageTestUtils.jdbcSourceName,
+      dbName
+    )
 
   def stopSpark = {
     sc.stop()
@@ -75,23 +78,29 @@ class PEventsSpec extends Specification with TestEvents {
 
   """
 
-  def jdbcPEvents = sequential ^ s2"""
+  def jdbcPEvents =
+    sequential ^ s2"""
 
     JDBCPEvents should
     - behave like any PEvents implementation ${events(jdbcLocal, jdbcPar)}
-    - (table cleanup) ${Step(StorageTestUtils.dropJDBCTable(s"${dbName}_$appId"))}
-    - (table cleanup) ${Step(StorageTestUtils.dropJDBCTable(s"${dbName}_${appId}_$channelId"))}
+    - (table cleanup) ${Step(
+      StorageTestUtils.dropJDBCTable(s"${dbName}_$appId"))}
+    - (table cleanup) ${Step(
+      StorageTestUtils.dropJDBCTable(s"${dbName}_${appId}_$channelId"))}
 
   """
 
-  def events(localEventClient: LEvents, parEventClient: PEvents) = sequential ^ s2"""
+  def events(localEventClient: LEvents, parEventClient: PEvents) =
+    sequential ^ s2"""
 
     - (init test) ${initTest(localEventClient)}
     - (insert test events) ${insertTestEvents(localEventClient)}
     find in default ${find(parEventClient)}
     find in channel ${findChannel(parEventClient)}
-    aggregate user properties in default ${aggregateUserProperties(parEventClient)}
-    aggregate user properties in channel ${aggregateUserPropertiesChannel(parEventClient)}
+    aggregate user properties in default ${aggregateUserProperties(
+      parEventClient)}
+    aggregate user properties in channel ${aggregateUserPropertiesChannel(
+      parEventClient)}
     write to default ${write(parEventClient)}
     write to channel ${writeChannel(parEventClient)}
 
@@ -100,7 +109,8 @@ class PEventsSpec extends Specification with TestEvents {
   /* setup */
 
   // events from TestEvents trait
-  val listOfEvents = List(u1e5, u2e2, u1e3, u1e1, u2e3, u2e1, u1e4, u1e2, r1, r2)
+  val listOfEvents =
+    List(u1e5, u2e2, u1e3, u1e1, u2e3, u2e1, u1e4, u1e2, r1, r2)
   val listOfEventsChannel = List(u3e1, u3e2, u3e3, r3, r4)
 
   def initTest(localEventClient: LEvents) = {
@@ -109,9 +119,9 @@ class PEventsSpec extends Specification with TestEvents {
   }
 
   def insertTestEvents(localEventClient: LEvents) = {
-    listOfEvents.map( localEventClient.insert(_, appId) )
+    listOfEvents.map(localEventClient.insert(_, appId))
     // insert to channel
-    listOfEventsChannel.map( localEventClient.insert(_, appId, Some(channelId)) )
+    listOfEventsChannel.map(localEventClient.insert(_, appId, Some(channelId)))
     success
   }
 
@@ -123,7 +133,7 @@ class PEventsSpec extends Specification with TestEvents {
     )(sc)
 
     val results = resultRDD.collect.toList
-      .map {_.copy(eventId = None)} // ignore eventId
+      .map { _.copy(eventId = None) } // ignore eventId
 
     results must containTheSameElementsAs(listOfEvents)
   }
@@ -135,16 +145,17 @@ class PEventsSpec extends Specification with TestEvents {
     )(sc)
 
     val results = resultRDD.collect.toList
-      .map {_.copy(eventId = None)} // ignore eventId
+      .map { _.copy(eventId = None) } // ignore eventId
 
     results must containTheSameElementsAs(listOfEventsChannel)
   }
 
   def aggregateUserProperties(parEventClient: PEvents) = {
-    val resultRDD: RDD[(String, PropertyMap)] = parEventClient.aggregateProperties(
-      appId = appId,
-      entityType = "user"
-    )(sc)
+    val resultRDD: RDD[(String, PropertyMap)] =
+      parEventClient.aggregateProperties(
+        appId = appId,
+        entityType = "user"
+      )(sc)
     val result: Map[String, PropertyMap] = resultRDD.collectAsMap.toMap
 
     val expected = Map(
@@ -156,11 +167,12 @@ class PEventsSpec extends Specification with TestEvents {
   }
 
   def aggregateUserPropertiesChannel(parEventClient: PEvents) = {
-    val resultRDD: RDD[(String, PropertyMap)] = parEventClient.aggregateProperties(
-      appId = appId,
-      channelId = Some(channelId),
-      entityType = "user"
-    )(sc)
+    val resultRDD: RDD[(String, PropertyMap)] =
+      parEventClient.aggregateProperties(
+        appId = appId,
+        channelId = Some(channelId),
+        entityType = "user"
+      )(sc)
     val result: Map[String, PropertyMap] = resultRDD.collectAsMap.toMap
 
     val expected = Map(
@@ -181,7 +193,7 @@ class PEventsSpec extends Specification with TestEvents {
     )(sc)
 
     val results = resultRDD.collect.toList
-      .map { _.copy(eventId = None)} // ignore eventId
+      .map { _.copy(eventId = None) } // ignore eventId
 
     val expected = listOfEvents ++ written
 
@@ -200,7 +212,7 @@ class PEventsSpec extends Specification with TestEvents {
     )(sc)
 
     val results = resultRDD.collect.toList
-      .map { _.copy(eventId = None)} // ignore eventId
+      .map { _.copy(eventId = None) } // ignore eventId
 
     val expected = listOfEventsChannel ++ written
 

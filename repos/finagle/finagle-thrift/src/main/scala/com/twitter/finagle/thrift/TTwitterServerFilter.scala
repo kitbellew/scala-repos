@@ -9,8 +9,8 @@ import com.twitter.util.Future
 import org.apache.thrift.protocol.{TMessage, TMessageType, TProtocolFactory}
 
 private[finagle] class TTwitterServerFilter(
-  serviceName: String,
-  protocolFactory: TProtocolFactory
+    serviceName: String,
+    protocolFactory: TProtocolFactory
 ) extends SimpleFilter[Array[Byte], Array[Byte]] {
   // Concurrency is not an issue here since we have an instance per
   // channel, and receive only one request at a time (thrift does no
@@ -33,8 +33,8 @@ private[finagle] class TTwitterServerFilter(
   }
 
   def apply(
-    request: Array[Byte],
-    service: Service[Array[Byte], Array[Byte]]
+      request: Array[Byte],
+      service: Service[Array[Byte], Array[Byte]]
   ): Future[Array[Byte]] = {
     // What to do on exceptions here?
     if (isUpgraded) {
@@ -56,19 +56,24 @@ private[finagle] class TTwitterServerFilter(
           while (iter.hasNext) {
             val c = iter.next()
             env = Contexts.broadcast.Translucent(
-              env, Buf.ByteArray.Owned(c.getKey()), Buf.ByteArray.Owned(c.getValue()))
+              env,
+              Buf.ByteArray.Owned(c.getKey()),
+              Buf.ByteArray.Owned(c.getValue()))
           }
         }
 
         Trace.recordRpc({
-          val msg = new InputBuffer(request_, protocolFactory)().readMessageBegin()
+          val msg =
+            new InputBuffer(request_, protocolFactory)().readMessageBegin()
           msg.name
         })
 
         // If `header.client_id` field is non-null, then allow it to take
         // precedence over the id provided by ClientIdContext.
         ClientId.let(richHeader.clientId) {
-          Trace.recordBinary("srv/thrift/clientId", ClientId.current.getOrElse("None"))
+          Trace.recordBinary(
+            "srv/thrift/clientId",
+            ClientId.current.getOrElse("None"))
 
           Contexts.broadcast.let(env) {
             service(request_) map {

@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,7 +30,7 @@ import org.specs2.specification.{Fragments, Step}
 import org.scalacheck.Gen._
 
 import akka.actor.ActorSystem
-import akka.dispatch.{ Future, ExecutionContext, Await }
+import akka.dispatch.{Future, ExecutionContext, Await}
 import akka.util.Duration
 
 import org.joda.time._
@@ -58,7 +58,7 @@ import blueeyes.core.http.MimeTypes
 import blueeyes.core.http.MimeTypes._
 
 import blueeyes.json._
-import blueeyes.json.serialization.{ Extractor, Decomposer }
+import blueeyes.json.serialization.{Extractor, Decomposer}
 import blueeyes.json.serialization.DefaultSerialization._
 import blueeyes.json.serialization.Extractor._
 
@@ -71,10 +71,14 @@ import org.apache.commons.codec.binary.Base64
 import scalaz._
 import scalaz.syntax.comonad._
 
-trait TestAccountService extends BlueEyesServiceSpecification with AccountService with AkkaDefaults {
+trait TestAccountService
+    extends BlueEyesServiceSpecification
+    with AccountService
+    with AkkaDefaults {
 
   implicit def executionContext = defaultFutureDispatch
-  implicit def M: Monad[Future] with Comonad[Future] = new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
+  implicit def M: Monad[Future] with Comonad[Future] =
+    new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
 
   val config = """
     security {
@@ -95,29 +99,43 @@ trait TestAccountService extends BlueEyesServiceSpecification with AccountServic
   val accountManager = new InMemoryAccountManager()(M)
   def AccountManager(config: Configuration) = (accountManager, Stoppable.Noop)
   val apiKeyManager = new InMemoryAPIKeyManager(blueeyes.util.Clock.System)(M)
-  def APIKeyFinder(config: Configuration) = new DirectAPIKeyFinder(apiKeyManager)
+  def APIKeyFinder(config: Configuration) =
+    new DirectAPIKeyFinder(apiKeyManager)
   def RootKey(config: Configuration) = M.copoint(apiKeyManager.rootAPIKey)
   def Emailer(config: Configuration) = {
     // Empty properties to force use of javamail-mock
-    new ClassLoaderTemplateEmailer(Map("servicehost" -> "test.precog.com"), Some(new java.util.Properties))
+    new ClassLoaderTemplateEmailer(
+      Map("servicehost" -> "test.precog.com"),
+      Some(new java.util.Properties))
   }
 
   val clock = Clock.System
 
-  override implicit val defaultFutureTimeouts: FutureTimeouts = FutureTimeouts(0, Duration(1, "second"))
+  override implicit val defaultFutureTimeouts: FutureTimeouts =
+    FutureTimeouts(0, Duration(1, "second"))
 
   val shortFutureTimeouts = FutureTimeouts(5, Duration(50, "millis"))
 
   val rootUser = "root@precog.com"
   val rootPass = "root"
 
-  override def map(fs: => Fragments) = Step {
-    accountManager.setAccount("0000000001", rootUser, rootPass, new DateTime, AccountPlan.Root, None)
-  } ^ super.map(fs)
+  override def map(fs: => Fragments) =
+    Step {
+      accountManager.setAccount(
+        "0000000001",
+        rootUser,
+        rootPass,
+        new DateTime,
+        AccountPlan.Root,
+        None)
+    } ^ super.map(fs)
 }
 
 class AccountServiceSpec extends TestAccountService with Tags {
-  def accounts = client.contentType[JValue](application/(MimeTypes.json)).path("/accounts/v1/accounts/")
+  def accounts =
+    client
+      .contentType[JValue](application / (MimeTypes.json))
+      .path("/accounts/v1/accounts/")
 
   def auth(user: String, pass: String): HttpHeader = {
     val raw = (user + ":" + pass).getBytes("utf-8")
@@ -129,7 +147,10 @@ class AccountServiceSpec extends TestAccountService with Tags {
     accounts.query("", "").post("")(request)
 
   def createAccount(email: String, password: String) = {
-    val request: JValue = JObject(JField("email", JString(email)) :: JField("password", JString(password)) :: Nil)
+    val request: JValue = JObject(
+      JField("email", JString(email)) :: JField(
+        "password",
+        JString(password)) :: Nil)
     accounts.post("")(request)
   }
 
@@ -145,7 +166,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
   def deleteAccount(accountId: String, user: String, pass: String) =
     accounts.header(auth(user, pass)).delete(accountId)
 
-  def changePassword(accountId: String, user: String, oldPass: String, newPass: String) = {
+  def changePassword(
+      accountId: String,
+      user: String,
+      oldPass: String,
+      newPass: String) = {
     val request: JValue = JObject(JField("password", JString(newPass)) :: Nil)
     accounts.header(auth(user, oldPass)).put(accountId + "/password")(request)
   }
@@ -155,18 +180,25 @@ class AccountServiceSpec extends TestAccountService with Tags {
     accounts.post(accountId + "/password/reset")(request)
   }
 
-  def resetPassword(accountId: AccountId, tokenId: ResetTokenId, newPass: String) = {
+  def resetPassword(
+      accountId: AccountId,
+      tokenId: ResetTokenId,
+      newPass: String) = {
     val request: JValue = JObject(JField("password", JString(newPass)) :: Nil)
     accounts.post(accountId + "/password/reset/" + tokenId)(request)
   }
 
-  def addGrantToAccount(accountId: String,request: JValue) =
-    accounts.query("accountId",accountId).post(accountId + "/grants/")(request)
+  def addGrantToAccount(accountId: String, request: JValue) =
+    accounts.query("accountId", accountId).post(accountId + "/grants/")(request)
 
   def getAccountPlan(accountId: String, user: String, pass: String) =
     accounts.header(auth(user, pass)).get(accountId + "/plan")
 
-  def putAccountPlan(accountId: String, user: String, pass: String, planType: String) = {
+  def putAccountPlan(
+      accountId: String,
+      user: String,
+      pass: String,
+      planType: String) = {
     val request: JValue = JObject(JField("type", JString(planType)) :: Nil)
     accounts.header(auth(user, pass)).put(accountId + "/plan")(request)
   }
@@ -180,8 +212,9 @@ class AccountServiceSpec extends TestAccountService with Tags {
         val JString(id) = jv \ "accountId"
         id
 
-      case error => 
-        sys.error("Invalid response from server when creating account: " + error)
+      case error =>
+        sys.error(
+          "Invalid response from server when creating account: " + error)
     }
   }
 
@@ -195,8 +228,14 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
     "not create duplicate accounts" in {
       val msgFuture = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(jv1), _) <- createAccount("test0002@email.com", "password1")
-        HttpResponse(HttpStatus(Conflict, _), _, Some(errorMessage), _) <- createAccount("test0002@email.com", "password2")
+        HttpResponse(HttpStatus(OK, _), _, Some(jv1), _) <- createAccount(
+          "test0002@email.com",
+          "password1")
+        HttpResponse(
+          HttpStatus(Conflict, _),
+          _,
+          Some(errorMessage),
+          _) <- createAccount("test0002@email.com", "password2")
       } yield errorMessage
 
       msgFuture.copoint must beLike {
@@ -222,7 +261,9 @@ class AccountServiceSpec extends TestAccountService with Tags {
         res0 <- deleteAccount(id, user, pass)
         res1 <- getAccount(id, user, pass)
       } yield ((res0, res1))).copoint must beLike {
-        case (HttpResponse(HttpStatus(NoContent, _), _, _, _), HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) =>
+        case (
+              HttpResponse(HttpStatus(NoContent, _), _, _, _),
+              HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) =>
           ok
       }
     }
@@ -236,7 +277,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
         res1 <- getAccount(id, user, oldPass)
         res2 <- getAccount(id, user, newPass)
       } yield ((res0, res1, res2))).copoint must beLike {
-        case (HttpResponse(HttpStatus(OK, _), _, _, _),
+        case (
+              HttpResponse(HttpStatus(OK, _), _, _, _),
               HttpResponse(HttpStatus(Unauthorized, _), _, _, _),
               HttpResponse(HttpStatus(OK, _), _, _, _)) =>
           ok
@@ -261,7 +303,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
         res0 <- putAccountPlan(id, user, pass, "Root")
         res1 <- getAccountPlan(id, user, pass)
       } yield ((res0, res1))).copoint must beLike {
-        case (HttpResponse(HttpStatus(OK, _), _, _, _),
+        case (
+              HttpResponse(HttpStatus(OK, _), _, _, _),
               HttpResponse(HttpStatus(OK, _), _, Some(jv), _)) =>
           jv \ "type" must_== JString("Root")
       }
@@ -287,14 +330,18 @@ class AccountServiceSpec extends TestAccountService with Tags {
       val accountId = createAccountAndGetId(user, pass).copoint
 
       val JString(apiKey) = getAccount(accountId, user, pass).map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) => jvalue \ "apiKey"
+        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
+          jvalue \ "apiKey"
         case badResponse => failure("Invalid response: " + badResponse)
       }.copoint
 
-      val subkey = apiKeyManager.createAPIKey(Some("subkey"), None, apiKey, Set.empty).copoint
+      val subkey = apiKeyManager
+        .createAPIKey(Some("subkey"), None, apiKey, Set.empty)
+        .copoint
 
       getAccountByAPIKey(subkey.apiKey, rootUser, rootPass).map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) => jvalue \ "accountId"
+        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
+          jvalue \ "accountId"
         case badResponse => failure("Invalid response: " + badResponse)
       }.copoint mustEqual JString(accountId)
     }
@@ -337,10 +384,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
         newAuthResult <- getAccount(accountId, user, newPass)
       } yield (genToken, resetResult, newAuthResult)).copoint must beLike {
         case (
-          HttpResponse(HttpStatus(OK, _), _, _, _),
-          HttpResponse(HttpStatus(OK, _), _, _, _),
-          HttpResponse(HttpStatus(OK, _), _, _, _)
-        ) => ok
+              HttpResponse(HttpStatus(OK, _), _, _, _),
+              HttpResponse(HttpStatus(OK, _), _, _, _),
+              HttpResponse(HttpStatus(OK, _), _, _, _)
+            ) =>
+          ok
       }
     }
 

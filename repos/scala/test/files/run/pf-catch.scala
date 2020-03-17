@@ -1,12 +1,11 @@
-
-import scala.language.{ postfixOps }
+import scala.language.{postfixOps}
 object Test {
   def shortName(x: AnyRef) = x.getClass.getName split '.' last
   type Handler[+T] = PartialFunction[Throwable, T]
 
   val standardHandler: Handler[String] = {
-    case x: java.util.NoSuchElementException    => shortName(x)
-    case x: java.lang.IllegalArgumentException  => shortName(x)
+    case x: java.util.NoSuchElementException   => shortName(x)
+    case x: java.lang.IllegalArgumentException => shortName(x)
   }
 
   def fn[T: Handler](body: => T): T = {

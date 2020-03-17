@@ -23,11 +23,12 @@ final class Env(
   def apply(text: String, page: Int, staff: Boolean, troll: Boolean) =
     paginatorBuilder(Query(text, staff, troll), page)
 
-  def cli = new lila.common.Cli {
-    def process = {
-      case "forum" :: "search" :: "reset" :: Nil => api.reset inject "done"
+  def cli =
+    new lila.common.Cli {
+      def process = {
+        case "forum" :: "search" :: "reset" :: Nil => api.reset inject "done"
+      }
     }
-  }
 
   import Query.jsonWriter
 
@@ -35,14 +36,17 @@ final class Env(
     searchApi = api,
     maxPerPage = PaginatorMaxPerPage)
 
-  system.actorOf(Props(new Actor {
-    import lila.forum.actorApi._
-    def receive = {
-      case InsertPost(post) => api store post
-      case RemovePost(id)   => client deleteById Id(id)
-      case RemovePosts(ids) => client deleteByIds ids.map(Id.apply)
-    }
-  }), name = ActorName)
+  system.actorOf(
+    Props(new Actor {
+      import lila.forum.actorApi._
+      def receive = {
+        case InsertPost(post) => api store post
+        case RemovePost(id)   => client deleteById Id(id)
+        case RemovePosts(ids) => client deleteByIds ids.map(Id.apply)
+      }
+    }),
+    name = ActorName
+  )
 }
 
 object Env {

@@ -1,10 +1,9 @@
 package org.jetbrains.plugins.scala.refactoring.rename2
 
 /**
- * User: Alefas
- * Date: 04.10.11
- */
-
+  * User: Alefas
+  * Date: 04.10.11
+  */
 class ScalaRenameTest extends ScalaRenameTestBase {
   def testRenameBeanProperty() {
     val fileText =
@@ -121,7 +120,7 @@ class ScalaRenameTest extends ScalaRenameTestBase {
 
     myFixture.checkResult(resultText)
   }
-  
+
   def testRenameNamingParameter() {
     val fileText =
       """
@@ -195,7 +194,7 @@ class ScalaRenameTest extends ScalaRenameTestBase {
 
     myFixture.checkResult(resultText)
   }
-  
+
   def testRenameInterpolatedStringPrefix() {
     val fileText =
       """
@@ -209,7 +208,7 @@ class ScalaRenameTest extends ScalaRenameTestBase {
         |
         |  val a = aaa"blah blah"
         |}""".replace("\r", "").stripMargin
-    
+
     val resultText =
       """
         |object AAA {
@@ -222,7 +221,7 @@ class ScalaRenameTest extends ScalaRenameTestBase {
         |
         |  val a = bbb"blah blah"
         |}""".replace("\r", "").stripMargin
-    
+
     myFixture.configureByText("dummy.scala", fileText)
     myFixture.renameElementAtCaret("bbb")
     myFixture.checkResult(resultText)

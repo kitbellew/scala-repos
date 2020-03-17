@@ -12,59 +12,67 @@ import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.routing.SimpleRouter
 import play.api.routing.Router.Routes
 import play.api.routing.sird._
-import play.api.{ ApplicationLoader, BuiltInComponentsFromContext, Environment }
+import play.api.{ApplicationLoader, BuiltInComponentsFromContext, Environment}
 import play.api.mvc._
 import play.api.mvc.Results._
-import play.api.libs.json.{ JsObject, _ }
+import play.api.libs.json.{JsObject, _}
 import play.filters.gzip.GzipFilter
 
 /**
- * This is a reimplementation of the excellent httpbin.org service
- * by Kenneth Reitz
- *
- * Motivation: We couldn't use httpbin.org directly for our CI.
- */
+  * This is a reimplementation of the excellent httpbin.org service
+  * by Kenneth Reitz
+  *
+  * Motivation: We couldn't use httpbin.org directly for our CI.
+  */
 object HttpBinApplication {
 
   private val requestHeaderWriter = new Writes[RequestHeader] {
-    def writes(r: RequestHeader): JsValue = Json.obj(
-      "origin" -> r.remoteAddress,
-      "url" -> "",
-      "args" -> r.queryString.mapValues(_.head),
-      "headers" -> r.headers.toSimpleMap
-    )
+    def writes(r: RequestHeader): JsValue =
+      Json.obj(
+        "origin" -> r.remoteAddress,
+        "url" -> "",
+        "args" -> r.queryString.mapValues(_.head),
+        "headers" -> r.headers.toSimpleMap
+      )
   }
 
-  private def requestWriter[A] = new Writes[Request[A]] {
-    def writes(r: Request[A]): JsValue =
-      requestHeaderWriter.writes(r).as[JsObject] ++
-        Json.obj(
-          "json" -> JsNull,
-          "data" -> "",
-          "form" -> JsObject(Nil)
-        ) ++ (r.body match {
-            // Json Body
-            case e: JsValue =>
-              Json.obj("json" -> e)
-            // X-WWW-Form-Encoded
-            case f: Map[String, Seq[String]] @unchecked =>
-              Json.obj("form" -> JsObject(f.mapValues(x => JsString(x.mkString(", "))).toSeq))
-            // Anything else
-            case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
-              Json.obj(
-                "form" -> m.mdf.dataParts.map { case (k, v) => k -> JsString(v.mkString) },
-                "file" -> JsString(m.mdf.file("upload").map(v => FileUtils.readFileToString(v.ref.file)).getOrElse(""))
-              )
-            case b =>
-              Json.obj("data" -> JsString(b.toString))
-          })
-  }
+  private def requestWriter[A] =
+    new Writes[Request[A]] {
+      def writes(r: Request[A]): JsValue =
+        requestHeaderWriter.writes(r).as[JsObject] ++
+          Json.obj(
+            "json" -> JsNull,
+            "data" -> "",
+            "form" -> JsObject(Nil)
+          ) ++ (r.body match {
+          // Json Body
+          case e: JsValue =>
+            Json.obj("json" -> e)
+          // X-WWW-Form-Encoded
+          case f: Map[String, Seq[String]] @unchecked =>
+            Json.obj(
+              "form" -> JsObject(
+                f.mapValues(x => JsString(x.mkString(", "))).toSeq))
+          // Anything else
+          case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
+            Json.obj(
+              "form" -> m.mdf.dataParts.map {
+                case (k, v) => k -> JsString(v.mkString)
+              },
+              "file" -> JsString(
+                m.mdf
+                  .file("upload")
+                  .map(v => FileUtils.readFileToString(v.ref.file))
+                  .getOrElse(""))
+            )
+          case b =>
+            Json.obj("data" -> JsString(b.toString))
+        })
+    }
 
   val getIp: Routes = {
     case GET(p"/ip") =>
-      Action { request =>
-        Ok(Json.obj("origin" -> request.remoteAddress))
-      }
+      Action { request => Ok(Json.obj("origin" -> request.remoteAddress)) }
   }
 
   val getUserAgent: Routes = {
@@ -83,50 +91,44 @@ object HttpBinApplication {
 
   val get: Routes = {
     case GET(p"/get") =>
-      Action { request =>
-        Ok(requestHeaderWriter.writes(request))
-      }
+      Action { request => Ok(requestHeaderWriter.writes(request)) }
   }
 
   val patch: Routes = {
     case PATCH(p"/patch") =>
-      Action { request =>
-        Ok(requestWriter.writes(request))
-      }
+      Action { request => Ok(requestWriter.writes(request)) }
   }
 
   val post: Routes = {
     case POST(p"/post") =>
-      Action { request =>
-        Ok(requestWriter.writes(request))
-      }
+      Action { request => Ok(requestWriter.writes(request)) }
   }
 
   val put: Routes = {
     case PUT(p"/put") =>
-      Action { request =>
-        Ok(requestWriter.writes(request))
-      }
+      Action { request => Ok(requestWriter.writes(request)) }
   }
 
   val delete: Routes = {
     case DELETE(p"/delete") =>
-      Action { request =>
-        Ok(requestHeaderWriter.writes(request))
-      }
+      Action { request => Ok(requestHeaderWriter.writes(request)) }
   }
 
   private def gzipFilter(mat: Materializer) = new GzipFilter()(mat)
 
-  def gzip(implicit mat: Materializer) = Seq("GET", "PATCH", "POST", "PUT", "DELETE").map { method =>
-    val route: Routes = {
-      case r @ p"/gzip" if r.method == method =>
-        gzipFilter(mat)(Action { request =>
-          Ok(requestHeaderWriter.writes(request).as[JsObject] ++ Json.obj("gzipped" -> true, "method" -> method))
-        })
-    }
-    route
-  }.reduceLeft((a, b) => a.orElse(b))
+  def gzip(implicit mat: Materializer) =
+    Seq("GET", "PATCH", "POST", "PUT", "DELETE")
+      .map { method =>
+        val route: Routes = {
+          case r @ p"/gzip" if r.method == method =>
+            gzipFilter(mat)(Action { request =>
+              Ok(requestHeaderWriter.writes(request).as[JsObject] ++ Json
+                .obj("gzipped" -> true, "method" -> method))
+            })
+        }
+        route
+      }
+      .reduceLeft((a, b) => a.orElse(b))
 
   val status: Routes = {
     case GET(p"/status/$status<[0-9]+>") =>
@@ -139,7 +141,8 @@ object HttpBinApplication {
   val responseHeaders: Routes = {
     case GET(p"/response-header") =>
       Action { request =>
-        Ok("").withHeaders(request.queryString.mapValues(_.mkString(",")).toSeq: _*)
+        Ok("").withHeaders(
+          request.queryString.mapValues(_.mkString(",")).toSeq: _*)
       }
   }
 
@@ -157,9 +160,7 @@ object HttpBinApplication {
   val redirectTo: Routes = {
     case GET(p"/redirect-to") =>
       Action { request =>
-        request.queryString.get("url").map { u =>
-          Redirect(u.head)
-        }.getOrElse {
+        request.queryString.get("url").map { u => Redirect(u.head) }.getOrElse {
           BadRequest("")
         }
       }
@@ -168,39 +169,52 @@ object HttpBinApplication {
   val cookies: Routes = {
     case GET(p"/cookies") =>
       Action { request =>
-        Ok(Json.obj("cookies" -> JsObject(request.cookies.toSeq.map(x => x.name -> JsString(x.value)))))
+        Ok(Json.obj("cookies" -> JsObject(request.cookies.toSeq.map(x =>
+          x.name -> JsString(x.value)))))
       }
   }
 
   val cookiesSet: Routes = {
     case GET(p"/cookies/set") =>
       Action { request =>
-        Redirect("/cookies").withCookies(request.queryString.mapValues(_.head).toSeq.map {
-          case (k, v) => Cookie(k, v)
-        }: _*)
+        Redirect("/cookies").withCookies(
+          request.queryString.mapValues(_.head).toSeq.map {
+            case (k, v) => Cookie(k, v)
+          }: _*)
       }
   }
 
   val cookiesDelete: Routes = {
     case GET(p"/cookies/delete") =>
       Action { request =>
-        Redirect("/cookies").discardingCookies(request.queryString.keys.toSeq.map(DiscardingCookie(_)): _*)
+        Redirect("/cookies").discardingCookies(
+          request.queryString.keys.toSeq.map(DiscardingCookie(_)): _*)
       }
   }
 
   val basicAuth: Routes = {
     case GET(p"/basic-auth/$username/$password") =>
       Action { request =>
-        request.headers.get("Authorization").flatMap { authorization =>
-          authorization.split(" ").drop(1).headOption.filter { encoded =>
-            new String(org.apache.commons.codec.binary.Base64.decodeBase64(encoded.getBytes)).split(":").toList match {
-              case u :: p :: Nil if u == username && password == p => true
-              case _ => false
-            }
-          }.map(_ => Ok(Json.obj("authenticated" -> true)))
-        }.getOrElse {
-          Unauthorized.withHeaders("WWW-Authenticate" -> """Basic realm="Secured"""")
-        }
+        request.headers
+          .get("Authorization")
+          .flatMap { authorization =>
+            authorization
+              .split(" ")
+              .drop(1)
+              .headOption
+              .filter { encoded =>
+                new String(org.apache.commons.codec.binary.Base64.decodeBase64(
+                  encoded.getBytes)).split(":").toList match {
+                  case u :: p :: Nil if u == username && password == p => true
+                  case _                                               => false
+                }
+              }
+              .map(_ => Ok(Json.obj("authenticated" -> true)))
+          }
+          .getOrElse {
+            Unauthorized.withHeaders(
+              "WWW-Authenticate" -> """Basic realm="Secured"""")
+          }
       }
   }
 
@@ -209,9 +223,8 @@ object HttpBinApplication {
       Action { request =>
         val body = requestHeaderWriter.writes(request).as[JsObject]
 
-        val content = 0.to(param.toInt).map { index =>
-          body ++ Json.obj("id" -> index)
-        }
+        val content =
+          0.to(param.toInt).map { index => body ++ Json.obj("id" -> index) }
 
         Ok.chunked(Source(content)).as("application/json")
       }
@@ -326,33 +339,35 @@ object HttpBinApplication {
   }
 
   def app = {
-    new BuiltInComponentsFromContext(ApplicationLoader.createContext(Environment.simple())) with AhcWSComponents {
-      def router = SimpleRouter(
-        PartialFunction.empty
-          .orElse(getIp)
-          .orElse(getUserAgent)
-          .orElse(getHeaders)
-          .orElse(get)
-          .orElse(patch)
-          .orElse(post)
-          .orElse(put)
-          .orElse(delete)
-          .orElse(gzip)
-          .orElse(status)
-          .orElse(responseHeaders)
-          .orElse(redirect)
-          .orElse(redirectTo)
-          .orElse(cookies)
-          .orElse(cookiesSet)
-          .orElse(cookiesDelete)
-          .orElse(basicAuth)
-          .orElse(stream)
-          .orElse(delay)
-          .orElse(html)
-          .orElse(robots)
-      )
+    new BuiltInComponentsFromContext(
+      ApplicationLoader.createContext(Environment.simple()))
+      with AhcWSComponents {
+      def router =
+        SimpleRouter(
+          PartialFunction.empty
+            .orElse(getIp)
+            .orElse(getUserAgent)
+            .orElse(getHeaders)
+            .orElse(get)
+            .orElse(patch)
+            .orElse(post)
+            .orElse(put)
+            .orElse(delete)
+            .orElse(gzip)
+            .orElse(status)
+            .orElse(responseHeaders)
+            .orElse(redirect)
+            .orElse(redirectTo)
+            .orElse(cookies)
+            .orElse(cookiesSet)
+            .orElse(cookiesDelete)
+            .orElse(basicAuth)
+            .orElse(stream)
+            .orElse(delay)
+            .orElse(html)
+            .orElse(robots)
+        )
     }.application
   }
 
 }
-

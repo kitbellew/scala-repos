@@ -9,14 +9,16 @@ import org.jetbrains.plugins.scala.project.settings.ScalaCompilerConfiguration
 import org.junit.Assert
 
 /**
- * Author: Svyatoslav Ilinskiy
- * Date: 6/15/15
- */
-class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
+  * Author: Svyatoslav Ilinskiy
+  * Date: 6/15/15
+  */
+class SingleAbstractMethodTest
+    extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   protected override def setUp() {
     super.setUp()
 
-    val defaultProfile = ScalaCompilerConfiguration.instanceIn(getProjectAdapter).defaultProfile
+    val defaultProfile =
+      ScalaCompilerConfiguration.instanceIn(getProjectAdapter).defaultProfile
     val newSettings = defaultProfile.getSettings
     newSettings.experimental = true
     defaultProfile.setSettings(newSettings)
@@ -62,7 +64,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
         |val y: Runnable = z()
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("z()", typeMismatch()) :: Error("z()", doesNotConform()):: Nil =>
+      case Error("z()", typeMismatch()) :: Error(
+            "z()",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -137,8 +141,10 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
         |}
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("((j: Int) => j)", typeMismatch()) :: Error("((j: Int) => j)", doesNotConform()) ::
-        Error("j", doesNotConform()) :: Nil =>
+      case Error("((j: Int) => j)", typeMismatch()) :: Error(
+            "((j: Int) => j)",
+            doesNotConform()) ::
+          Error("j", doesNotConform()) :: Nil =>
     }
   }
 
@@ -151,7 +157,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
         |}
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("((i: Int) => \"aaa\")", typeMismatch()) :: Error("((i: Int) => \"aaa\")", doesNotConform()) :: Nil =>
+      case Error("((i: Int) => \"aaa\")", typeMismatch()) :: Error(
+            "((i: Int) => \"aaa\")",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -164,7 +172,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
         |}
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("((i: Int, j: Int) => \"aaa\")", typeMismatch()) :: Error("((i: Int, j: Int) => \"aaa\")", doesNotConform()) :: Nil =>
+      case Error("((i: Int, j: Int) => \"aaa\")", typeMismatch()) :: Error(
+            "((i: Int, j: Int) => \"aaa\")",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -177,7 +187,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
         |}
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("(j => j)", typeMismatch()) :: Error("(j => j)", doesNotConform()) :: Error("j", doesNotConform()) :: Nil =>
+      case Error("(j => j)", typeMismatch()) :: Error(
+            "(j => j)",
+            doesNotConform()) :: Error("j", doesNotConform()) :: Nil =>
     }
   }
 
@@ -214,7 +226,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
         |
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("() => 3", typeMismatch()) :: Error("wantString", cannotResolveReference()) :: Nil =>
+      case Error("() => 3", typeMismatch()) :: Error(
+            "wantString",
+            cannotResolveReference()) :: Nil =>
     }
   }
 
@@ -376,7 +390,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
   def testSAMEtaExpansion2(): Unit = {
     val code = etaExpansionPrefix + "val a2: Runnable = a()"
     assertMatches(messages(code)) {
-      case Error("a()", typeMismatch()) :: Error("a()", doesNotConform()) :: Nil =>
+      case Error("a()", typeMismatch()) :: Error(
+            "a()",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -388,7 +404,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
   def testSAMEtaExpansion4(): Unit = {
     val code = etaExpansionPrefix + "val b2: Runnable = b()"
     assertMatches(messages(code)) {
-      case Error("b()", typeMismatch()) :: Error("b()", doesNotConform()) :: Nil =>
+      case Error("b()", typeMismatch()) :: Error(
+            "b()",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -414,7 +432,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
   def testSAMEtaExpansion8(): Unit = {
     val code = etaExpansionPrefix + "val d2: Runnable = d()"
     assertMatches(messages(code)) {
-      case Error("d()", typeMismatch()) :: Error("d()", doesNotConform()) :: Nil =>
+      case Error("d()", typeMismatch()) :: Error(
+            "d()",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -428,7 +448,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
   def testSAMEtaExpansion10(): Unit = {
     val code = etaExpansionPrefix + "val e2: Runnable = e()"
     assertMatches(messages(code)) {
-      case Error("e()", typeMismatch()) :: Error("e()", doesNotConform()) :: Nil =>
+      case Error("e()", typeMismatch()) :: Error(
+            "e()",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -440,7 +462,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
   def testSAMEtaExpansion12(): Unit = {
     val code = etaExpansionPrefix + "val f2: Runnable = f()"
     assertMatches(messages(code)) {
-      case Error("f()", typeMismatch()) :: Error("f()", doesNotConform()) :: Nil =>
+      case Error("f()", typeMismatch()) :: Error(
+            "f()",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -452,7 +476,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
   def testSAMEtaExpansion14(): Unit = {
     val code = etaExpansionPrefix + "val g2: Runnable = g()"
     assertMatches(messages(code)) {
-      case Error("g()", typeMismatch()) :: Error("g()", doesNotConform()) :: Nil =>
+      case Error("g()", typeMismatch()) :: Error(
+            "g()",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -464,7 +490,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
   def testSAMEtaExpansion16(): Unit = {
     val code = etaExpansionPrefix + "val h2: Runnable = h()"
     assertMatches(messages(code)) {
-      case Error("h()", typeMismatch()) :: Error("h()", doesNotConform()) :: Nil =>
+      case Error("h()", typeMismatch()) :: Error(
+            "h()",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -499,7 +527,9 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
         |val s: S = ss
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("ss", typeMismatch()) :: Error("ss", doesNotConform()) :: Nil =>
+      case Error("ss", typeMismatch()) :: Error(
+            "ss",
+            doesNotConform()) :: Nil =>
     }
   }
 
@@ -612,10 +642,12 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
     }
   }
 
-  def messages(@Language("Scala") scalaCode: String, javaCode: Option[String] = None): List[Message] = {
+  def messages(
+      @Language("Scala") scalaCode: String,
+      javaCode: Option[String] = None): List[Message] = {
     javaCode match {
       case Some(s) => configureFromFileTextAdapter("dummy.java", s)
-      case _ =>
+      case _       =>
     }
 
     val annotator = new ScalaAnnotator() {}
@@ -627,7 +659,7 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
 
     mock.errorAnnotations.filter {
       case Error(_, null) => false
-      case _ => true
+      case _              => true
     }
   }
 
@@ -636,8 +668,12 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
   }
 
   def parseText(@Language("Scala") s: String): ScalaFile = {
-    PsiFileFactory.getInstance(getProjectAdapter)
-      .createFileFromText("foo" + ScalaFileType.DEFAULT_EXTENSION, ScalaFileType.SCALA_FILE_TYPE, s)
+    PsiFileFactory
+      .getInstance(getProjectAdapter)
+      .createFileFromText(
+        "foo" + ScalaFileType.DEFAULT_EXTENSION,
+        ScalaFileType.SCALA_FILE_TYPE,
+        s)
       .asInstanceOf[ScalaFile]
   }
 
@@ -651,4 +687,3 @@ class SingleAbstractMethodTest extends ScalaLightPlatformCodeInsightTestCaseAdap
     def unapply(s: String) = s.contains(fr)
   }
 }
-

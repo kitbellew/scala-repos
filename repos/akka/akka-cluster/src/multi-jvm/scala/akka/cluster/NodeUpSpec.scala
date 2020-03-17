@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster
 
 import com.typesafe.config.ConfigFactory
@@ -18,15 +18,17 @@ object NodeUpMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
 
-  commonConfig(debugConfig(on = false).withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+  commonConfig(
+    debugConfig(on = false).withFallback(
+      MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 class NodeUpMultiJvmNode1 extends NodeUpSpec
 class NodeUpMultiJvmNode2 extends NodeUpSpec
 
 abstract class NodeUpSpec
-  extends MultiNodeSpec(NodeUpMultiJvmSpec)
-  with MultiNodeClusterSpec {
+    extends MultiNodeSpec(NodeUpMultiJvmSpec)
+    with MultiNodeClusterSpec {
 
   import NodeUpMultiJvmSpec._
   import ClusterEvent._
@@ -53,13 +55,16 @@ abstract class NodeUpSpec
     "be unaffected when joining again" in {
 
       val unexpected = new AtomicReference[SortedSet[Member]](SortedSet.empty)
-      cluster.subscribe(system.actorOf(Props(new Actor {
-        def receive = {
-          case event: MemberEvent ⇒
-            unexpected.set(unexpected.get + event.member)
-          case _: CurrentClusterState ⇒ // ignore
-        }
-      })), classOf[MemberEvent])
+      cluster.subscribe(
+        system.actorOf(Props(new Actor {
+          def receive = {
+            case event: MemberEvent ⇒
+              unexpected.set(unexpected.get + event.member)
+            case _: CurrentClusterState ⇒ // ignore
+          }
+        })),
+        classOf[MemberEvent]
+      )
       enterBarrier("listener-registered")
 
       runOn(second) {

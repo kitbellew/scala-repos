@@ -28,35 +28,37 @@ import Helpers._
 
 class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
   private var _status = 0;
- 
-  def addCookies(cookies: List[HTTPCookie]) = cookies.foreach {
-    case c =>
-      val cookie = new javax.servlet.http.Cookie(c.name, c.value openOr null)
-      c.domain map (cookie.setDomain(_))
-      c.path map (cookie.setPath(_))
-      c.maxAge map (cookie.setMaxAge(_))
-      c.version map (cookie.setVersion(_))
-      c.secure_? map (cookie.setSecure(_))
-      c.httpOnly.foreach { bv =>
-        import scala.language.reflectiveCalls
 
-        try {
-          val cook30 = cookie.asInstanceOf[{def setHttpOnly(b: Boolean): Unit}]
-          cook30.setHttpOnly(bv)
-        } catch {
-          case e: Exception => // swallow.. the exception will be thrown for Servlet 2.5 containers but work for servlet
-          // 3.0 containers
+  def addCookies(cookies: List[HTTPCookie]) =
+    cookies.foreach {
+      case c =>
+        val cookie = new javax.servlet.http.Cookie(c.name, c.value openOr null)
+        c.domain map (cookie.setDomain(_))
+        c.path map (cookie.setPath(_))
+        c.maxAge map (cookie.setMaxAge(_))
+        c.version map (cookie.setVersion(_))
+        c.secure_? map (cookie.setSecure(_))
+        c.httpOnly.foreach { bv =>
+          import scala.language.reflectiveCalls
+
+          try {
+            val cook30 =
+              cookie.asInstanceOf[{ def setHttpOnly(b: Boolean): Unit }]
+            cook30.setHttpOnly(bv)
+          } catch {
+            case e: Exception => // swallow.. the exception will be thrown for Servlet 2.5 containers but work for servlet
+            // 3.0 containers
+          }
         }
-      }
-      resp.addCookie(cookie)
-  }
+        resp.addCookie(cookie)
+    }
 
   private val shouldEncodeUrl = LiftRules.encodeJSessionIdInUrl_?
 
   /**
-   * Encode the JSESSIONID in the URL if specified by LiftRules
-   */
-  def encodeUrl(url: String): String = 
+    * Encode the JSESSIONID in the URL if specified by LiftRules
+    */
+  def encodeUrl(url: String): String =
     if (shouldEncodeUrl) {
       resp encodeURL url
     } else {
@@ -64,7 +66,8 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
     }
 
   def addHeaders(headers: List[HTTPParam]) {
-    val appearOnce = Set(LiftRules.overwrittenReponseHeaders.vend.map(_.toLowerCase): _*)
+    val appearOnce = Set(
+      LiftRules.overwrittenReponseHeaders.vend.map(_.toLowerCase): _*)
     for (h <- headers;
          value <- h.values) {
       if (appearOnce.contains(h.name.toLowerCase)) resp.setHeader(h.name, value)
@@ -79,12 +82,11 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
   }
 
   def getStatus = _status
- 
+
   def setStatusWithReason(status: Int, reason: String) = {
     _status = status
-    resp sendError  (status, reason)
+    resp sendError (status, reason)
   }
 
   def outputStream: OutputStream = resp.getOutputStream
 }
-

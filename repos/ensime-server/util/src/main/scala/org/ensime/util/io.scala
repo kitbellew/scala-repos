@@ -12,10 +12,11 @@ package object io {
   }
 
   implicit class RichOutputStream(val os: OutputStream) extends AnyVal {
+
     /**
-     * Copy the input stream to the output stream, making best
-     * endeavours to close everything afterward (even on failure).
-     */
+      * Copy the input stream to the output stream, making best
+      * endeavours to close everything afterward (even on failure).
+      */
     def drain(in: InputStream): Unit =
       try ByteStreams.copy(in, os)
       finally {

@@ -23,8 +23,8 @@ import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 import org.apache.spark.internal.Logging
 
 /**
- * Holds state shared across task threads in some ThreadingSuite tests.
- */
+  * Holds state shared across task threads in some ThreadingSuite tests.
+  */
 object ThreadingSuiteState {
   val runningThreads = new AtomicInteger
   val failed = new AtomicBoolean
@@ -46,7 +46,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     new Thread {
       override def run() {
         answer1 = nums.reduce(_ + _)
-        answer2 = nums.first()    // This will run "locally" in the current thread
+        answer2 = nums.first() // This will run "locally" in the current thread
         sem.release()
       }
     }.start()
@@ -68,7 +68,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
             printf("In thread %d: answer1 was %d\n", i, answer1)
             ok = false
           }
-          val answer2 = nums.first()    // This will run "locally" in the current thread
+          val answer2 =
+            nums.first() // This will run "locally" in the current thread
           if (answer2 != 1) {
             printf("In thread %d: answer2 was %d\n", i, answer2)
             ok = false
@@ -96,7 +97,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
             printf("In thread %d: answer1 was %d\n", i, answer1)
             ok = false
           }
-          val answer2 = nums.first()    // This will run "locally" in the current thread
+          val answer2 =
+            nums.first() // This will run "locally" in the current thread
           if (answer2 != 1) {
             printf("In thread %d: answer2 was %d\n", i, answer2)
             ok = false
@@ -123,18 +125,21 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
       new Thread {
         override def run() {
           try {
-            val ans = nums.map(number => {
-              val running = ThreadingSuiteState.runningThreads
-              running.getAndIncrement()
-              val time = System.currentTimeMillis()
-              while (running.get() != 4 && System.currentTimeMillis() < time + 1000) {
-                Thread.sleep(100)
-              }
-              if (running.get() != 4) {
-                ThreadingSuiteState.failed.set(true)
-              }
-              number
-            }).collect()
+            val ans = nums
+              .map(number => {
+                val running = ThreadingSuiteState.runningThreads
+                running.getAndIncrement()
+                val time = System.currentTimeMillis()
+                while (running.get() != 4 && System
+                         .currentTimeMillis() < time + 1000) {
+                  Thread.sleep(100)
+                }
+                if (running.get() != 4) {
+                  ThreadingSuiteState.failed.set(true)
+                }
+                number
+              })
+              .collect()
             assert(ans.toList === List(1, 2))
           } catch {
             case t: Throwable =>
@@ -148,8 +153,9 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     sem.acquire(2)
     throwable.foreach { t => throw improveStackTrace(t) }
     if (ThreadingSuiteState.failed.get()) {
-      logError("Waited 1 second without seeing runningThreads = 4 (it was " +
-                ThreadingSuiteState.runningThreads.get() + "); failing test")
+      logError(
+        "Waited 1 second without seeing runningThreads = 4 (it was " +
+          ThreadingSuiteState.runningThreads.get() + "); failing test")
       fail("One or more threads didn't see runningThreads = 4")
     }
   }
@@ -211,7 +217,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     assert(sc.getLocalProperty("Foo") === null)
   }
 
-  test("mutation in parent local property does not affect child (SPARK-10563)") {
+  test(
+    "mutation in parent local property does not affect child (SPARK-10563)") {
     sc = new SparkContext("local", "test")
     val originalTestValue: String = "original-value"
     var threadTestValue: String = null
@@ -235,9 +242,9 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
   }
 
   /**
-   * Improve the stack trace of an error thrown from within a thread.
-   * Otherwise it's difficult to tell which line in the test the error came from.
-   */
+    * Improve the stack trace of an error thrown from within a thread.
+    * Otherwise it's difficult to tell which line in the test the error came from.
+    */
   private def improveStackTrace(t: Throwable): Throwable = {
     t.setStackTrace(t.getStackTrace ++ Thread.currentThread.getStackTrace)
     t

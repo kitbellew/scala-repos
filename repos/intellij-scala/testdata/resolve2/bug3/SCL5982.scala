@@ -1,15 +1,14 @@
-
 trait X[T] {
-  def testMethod(x:Int)
+  def testMethod(x: Int)
 }
 
 trait Y[T] {
   def z: T = sys.exit()
-  def anotherTestMethod(x:Int)
+  def anotherTestMethod(x: Int)
 }
 
 trait Z {
-  def zTest(x:Int)
+  def zTest(x: Int)
 }
 trait SelfHighlightingBug1 {
   self: X[_] with Y[_] =>
@@ -17,14 +16,17 @@ trait SelfHighlightingBug1 {
   def test {
     val x: Y[_] = null
 
-    val g = /* */z
-    val u = x./* */z
-    /* */testMethod(0)
-    /* */anotherTestMethod(0)
+    val g = /* */ z
+    val u = x. /* */ z
+    /* */
+    testMethod(0)
+    /* */
+    anotherTestMethod(0)
   }
 }
 
 trait SelfHighlightingBug2 {
   self: Z with X[_] =>
-  /* */testMethod(0)
+  /* */
+  testMethod(0)
 }

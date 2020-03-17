@@ -44,7 +44,7 @@ object FunctorDemo extends App {
   val foo = Foo("Three", List("French", "Hens"))
 
   val f0 = transform(foo)(_.length)
-  val f1 = foo.map(_.length)           // they also have Functor syntax ...
+  val f1 = foo.map(_.length) // they also have Functor syntax ...
 
   val expectedFoo = Foo(5, List(6, 4))
   assert(f0 == expectedFoo)
@@ -61,7 +61,7 @@ object FunctorDemo extends App {
     )
 
   val t0 = transform(tree)(_.length)
-  val t1 = tree.map(_.length)          // they also have Functor syntax ...
+  val t1 = tree.map(_.length) // they also have Functor syntax ...
 
   val expectedTree =
     Node(
@@ -76,8 +76,8 @@ object FunctorDemo extends App {
 }
 
 /**
- * Illustrative subset of the Cats Functor type class
- */
+  * Illustrative subset of the Cats Functor type class
+  */
 trait Functor[F[_]] {
   def map[A, B](fa: F[A])(f: A => B): F[B]
 }
@@ -91,7 +91,8 @@ object Functor extends Functor0 {
     }
 
   // Induction step for products
-  implicit def hcons[F[_]](implicit ihc: IsHCons1[F, Functor, Functor]): Functor[F] =
+  implicit def hcons[F[_]](
+      implicit ihc: IsHCons1[F, Functor, Functor]): Functor[F] =
     new Functor[F] {
       def map[A, B](fa: F[A])(f: A => B): F[B] = {
         val (hd, tl) = ihc.unpack(fa)
@@ -100,10 +101,13 @@ object Functor extends Functor0 {
     }
 
   // Induction step for coproducts
-  implicit def ccons[F[_]](implicit icc: IsCCons1[F, Functor, Functor]): Functor[F] =
+  implicit def ccons[F[_]](
+      implicit icc: IsCCons1[F, Functor, Functor]): Functor[F] =
     new Functor[F] {
       def map[A, B](fa: F[A])(f: A => B): F[B] =
-        icc.pack(icc.unpack(fa).fold(hd => Left(icc.fh.map(hd)(f)), tl => Right(icc.ft.map(tl)(f))))
+        icc.pack(icc
+          .unpack(fa)
+          .fold(hd => Left(icc.fh.map(hd)(f)), tl => Right(icc.ft.map(tl)(f))))
     }
 
   implicit def generic[F[_]](implicit gen: Generic1[F, Functor]): Functor[F] =

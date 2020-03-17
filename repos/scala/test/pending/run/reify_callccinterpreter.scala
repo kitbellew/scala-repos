@@ -6,11 +6,11 @@ object Test extends App {
     type Answer = Value;
 
     /**
-     * A continuation monad.
-     */
+      * A continuation monad.
+      */
     case class M[A](in: (A => Answer) => Answer) {
-      def bind[B](k: A => M[B])          = M[B](c => in (a => k(a) in c))
-      def map[B](f: A => B): M[B]        = bind(x => unitM(f(x)))
+      def bind[B](k: A => M[B]) = M[B](c => in(a => k(a) in c))
+      def map[B](f: A => B): M[B] = bind(x => unitM(f(x)))
       def flatMap[B](f: A => M[B]): M[B] = bind(f)
     }
 
@@ -34,7 +34,7 @@ object Test extends App {
 
     trait Value
     case object Wrong extends Value {
-     override def toString() = "wrong"
+      override def toString() = "wrong"
     }
     case class Num(n: Int) extends Value {
       override def toString() = n.toString()
@@ -45,35 +45,41 @@ object Test extends App {
 
     type Environment = List[Tuple2[Name, Value]];
 
-    def lookup(x: Name, e: Environment): M[Value] = e match {
-      case List() => unitM(Wrong)
-      case (y, b) :: e1 => if (x == y) unitM(b) else lookup(x, e1)
-    }
+    def lookup(x: Name, e: Environment): M[Value] =
+      e match {
+        case List()       => unitM(Wrong)
+        case (y, b) :: e1 => if (x == y) unitM(b) else lookup(x, e1)
+      }
 
-    def add(a: Value, b: Value): M[Value] = (a, b) match {
-      case (Num(m), Num(n)) => unitM(Num(m + n))
-      case _ => unitM(Wrong)
-    }
+    def add(a: Value, b: Value): M[Value] =
+      (a, b) match {
+        case (Num(m), Num(n)) => unitM(Num(m + n))
+        case _                => unitM(Wrong)
+      }
 
-    def apply(a: Value, b: Value): M[Value] = a match {
-      case Fun(k) => k(b)
-      case _ => unitM(Wrong)
-    }
+    def apply(a: Value, b: Value): M[Value] =
+      a match {
+        case Fun(k) => k(b)
+        case _      => unitM(Wrong)
+      }
 
-    def interp(t: Term, e: Environment): M[Value] = t match {
-      case Var(x) => lookup(x, e)
-      case Con(n) => unitM(Num(n))
-      case Add(l, r) => for (a <- interp(l, e);
-           b <- interp(r, e);
-           c <- add(a, b))
-                        yield c
-      case Lam(x, t) => unitM(Fun(a => interp(t, (x, a) :: e)))
-      case App(f, t) => for (a <- interp(f, e);
-           b <- interp(t, e);
-           c <- apply(a, b))
+    def interp(t: Term, e: Environment): M[Value] =
+      t match {
+        case Var(x) => lookup(x, e)
+        case Con(n) => unitM(Num(n))
+        case Add(l, r) =>
+          for (a <- interp(l, e);
+               b <- interp(r, e);
+               c <- add(a, b))
             yield c
-      case Ccc(x, t) => callCC(k => interp(t, (x, Fun(k)) :: e))
-    }
+        case Lam(x, t) => unitM(Fun(a => interp(t, (x, a) :: e)))
+        case App(f, t) =>
+          for (a <- interp(f, e);
+               b <- interp(t, e);
+               c <- apply(a, b))
+            yield c
+        case Ccc(x, t) => callCC(k => interp(t, (x, Fun(k)) :: e))
+      }
 
     def test(t: Term): String = showM(interp(t, List()))
 

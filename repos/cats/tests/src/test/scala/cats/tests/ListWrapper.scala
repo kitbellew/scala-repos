@@ -33,22 +33,24 @@ import org.scalacheck.Arbitrary.arbitrary
   * }
   * }}}
   */
-
 final case class ListWrapper[A](list: List[A]) extends AnyVal
 
 object ListWrapper {
-  def order[A:Order]: Order[ListWrapper[A]] = Order[List[A]].on[ListWrapper[A]](_.list)
+  def order[A: Order]: Order[ListWrapper[A]] =
+    Order[List[A]].on[ListWrapper[A]](_.list)
 
-  def partialOrder[A:PartialOrder]: PartialOrder[ListWrapper[A]] = PartialOrder[List[A]].on[ListWrapper[A]](_.list)
+  def partialOrder[A: PartialOrder]: PartialOrder[ListWrapper[A]] =
+    PartialOrder[List[A]].on[ListWrapper[A]](_.list)
 
-  def eqv[A : Eq]: Eq[ListWrapper[A]] = Eq[List[A]].on[ListWrapper[A]](_.list)
+  def eqv[A: Eq]: Eq[ListWrapper[A]] = Eq[List[A]].on[ListWrapper[A]](_.list)
 
   val foldable: Foldable[ListWrapper] =
     new Foldable[ListWrapper] {
       def foldLeft[A, B](fa: ListWrapper[A], b: B)(f: (B, A) => B): B =
         Foldable[List].foldLeft(fa.list, b)(f)
 
-      def foldRight[A, B](fa: ListWrapper[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      def foldRight[A, B](fa: ListWrapper[A], lb: Eval[B])(
+          f: (A, Eval[B]) => Eval[B]): Eval[B] =
         Foldable[List].foldRight(fa.list, lb)(f)
     }
 
@@ -72,7 +74,8 @@ object ListWrapper {
     new MonadCombine[ListWrapper] {
       def pure[A](x: A): ListWrapper[A] = ListWrapper(M.pure(x))
 
-      def flatMap[A, B](fa: ListWrapper[A])(f: A => ListWrapper[B]): ListWrapper[B] =
+      def flatMap[A, B](fa: ListWrapper[A])(
+          f: A => ListWrapper[B]): ListWrapper[B] =
         ListWrapper(M.flatMap(fa.list)(a => f(a).list))
 
       def empty[A]: ListWrapper[A] = ListWrapper(M.empty[A])

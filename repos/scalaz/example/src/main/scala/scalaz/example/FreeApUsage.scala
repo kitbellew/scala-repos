@@ -1,6 +1,6 @@
 package scalaz.example
 
-import scalaz.{ FreeAp, ~> , ValidationNel }
+import scalaz.{FreeAp, ~>, ValidationNel}
 import scalaz.std.option._
 import scalaz.syntax.applicative._
 import scalaz.syntax.std.option._
@@ -27,33 +27,42 @@ object FreeApUsage extends App {
   def parseOpt[A: ClassTag](a: Any): Option[A] =
     a match {
       case a: A => Some(a)
-      case _ => None
+      case _    => None
     }
 
   // Natural transformation to Option[A]
   def toOption(input: Map[String, Any]): ParseOp ~> Option =
     new (ParseOp ~> Option) {
-      def apply[A](fa: ParseOp[A]) = fa match {
-        case ParseInt(key) =>
-          input.get(key).flatMap(parseOpt[java.lang.Integer](_).map(x => (x: Int)))
-        case ParseString(key) => input.get(key).flatMap(parseOpt[String])
-        case ParseBool(key) =>
-          input.get(key).flatMap(parseOpt[java.lang.Boolean](_).map(x => (x: Boolean)))
-      }
+      def apply[A](fa: ParseOp[A]) =
+        fa match {
+          case ParseInt(key) =>
+            input
+              .get(key)
+              .flatMap(parseOpt[java.lang.Integer](_).map(x => (x: Int)))
+          case ParseString(key) => input.get(key).flatMap(parseOpt[String])
+          case ParseBool(key) =>
+            input
+              .get(key)
+              .flatMap(parseOpt[java.lang.Boolean](_).map(x => (x: Boolean)))
+        }
     }
 
   // Natural transformation to ValidationNel[String, A]
   type ValidatedParse[A] = ValidationNel[String, A]
   def toValidation(input: Map[String, Any]): ParseOp ~> ValidatedParse =
     new (ParseOp ~> ValidatedParse) {
-      def apply[A](fa: ParseOp[A]) = fa match {
-        case s@ParseInt(_) => toOption(input)(s)
-                                   .toSuccessNel(s"${s.key} not found with type Int")
-        case s@ParseString(_) => toOption(input)(s)
-                                   .toSuccessNel(s"${s.key} not found with type String")
-        case i@ParseBool(_) => toOption(input)(i)
-                                .toSuccessNel(s"${i.key} not found with type Boolean")
-      }
+      def apply[A](fa: ParseOp[A]) =
+        fa match {
+          case s @ ParseInt(_) =>
+            toOption(input)(s)
+              .toSuccessNel(s"${s.key} not found with type Int")
+          case s @ ParseString(_) =>
+            toOption(input)(s)
+              .toSuccessNel(s"${s.key} not found with type String")
+          case i @ ParseBool(_) =>
+            toOption(input)(i)
+              .toSuccessNel(s"${i.key} not found with type Boolean")
+        }
     }
 
   // An example that returns a tuple of (String, Int, Boolean) parsed from Map[String, Any]
@@ -62,7 +71,8 @@ object FreeApUsage extends App {
 
   // An example that returns a tuple of (Boolean, String, Int) parsed from Map[String, Any]
   val failedProg: Parse[(Boolean, String, Int)] =
-    (parseBool("string") |@| parseString("list") |@| parseInt("bool"))((_, _, _))
+    (parseBool("string") |@| parseString("list") |@| parseInt("bool"))(
+      (_, _, _))
 
   // Test input for programs
   val testInput: Map[String, Any] =

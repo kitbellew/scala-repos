@@ -5,11 +5,12 @@ object E {
 }
 
 object Bug {
-  def bug[A](e: Either[W[_], A]) = e match {
-    case Left(E(x)) => 1
-    case Right(x)   => 2
-    case _          => 3
-  }
+  def bug[A](e: Either[W[_], A]) =
+    e match {
+      case Left(E(x)) => 1
+      case Right(x)   => 2
+      case _          => 3
+    }
 }
 
 object Test {
@@ -18,4 +19,3 @@ object Test {
     println(Bug.bug(Right(5)))
   }
 }
-

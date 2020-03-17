@@ -52,7 +52,8 @@ private[testadapter] object ComUtils {
 
     def badResponse(cause: Throwable = null) = {
       throw new AssertionError(
-          s"JS test interface sent bad reply: $resp", cause)
+        s"JS test interface sent bad reply: $resp",
+        cause)
     }
 
     val pos = resp.indexOf(':')
@@ -70,15 +71,17 @@ private[testadapter] object ComUtils {
       }
     }
 
-    def onFail = status match {
-      case "fail" =>
-        throw throwable
-      case "bad" =>
-        throw new AssertionError(
-            s"JS test interface rejected command.", throwable)
-      case _ =>
-        badResponse()
-    }
+    def onFail =
+      status match {
+        case "fail" =>
+          throw throwable
+        case "bad" =>
+          throw new AssertionError(
+            s"JS test interface rejected command.",
+            throwable)
+        case _ =>
+          badResponse()
+      }
 
     val result = {
       try handler.lift((status, data))

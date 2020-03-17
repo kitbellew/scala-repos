@@ -11,23 +11,25 @@ object Baz2 {
   def unapply(x: Bar2): Some[Int] = Some(2)
 }
 
-
 object Test {
   // warning: missing Bar3
-  def f1(x: Foo) = x match {
-    case _: Bar1 => 1
-    case _: Bar2 => 2
-  }
+  def f1(x: Foo) =
+    x match {
+      case _: Bar1 => 1
+      case _: Bar2 => 2
+    }
 
   // warning: missing Bar3
-  def f2(x: Foo) = x match {
-    case _: Bar1 => 1
-    case Baz2(x) => x
-  }
+  def f2(x: Foo) =
+    x match {
+      case _: Bar1 => 1
+      case Baz2(x) => x
+    }
 
   // warning: missing Bar3
-  def f3(x: Foo) = x match {
-    case Baz1(x) => x
-    case Baz2(x) => x
-  }
+  def f3(x: Foo) =
+    x match {
+      case Baz1(x) => x
+      case Baz2(x) => x
+    }
 }

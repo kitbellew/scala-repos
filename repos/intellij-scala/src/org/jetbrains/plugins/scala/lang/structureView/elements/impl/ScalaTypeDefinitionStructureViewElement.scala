@@ -14,11 +14,11 @@ import org.jetbrains.plugins.scala.lang.structureView.itemsPresentations.impl._
 import _root_.scala.collection.mutable._
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 04.05.2008
-*/
-
-class ScalaTypeDefinitionStructureViewElement(val element: ScTypeDefinition) extends ScalaStructureViewElement(element, false) {
+  * @author Alexander Podkhalyuzin
+  * Date: 04.05.2008
+  */
+class ScalaTypeDefinitionStructureViewElement(val element: ScTypeDefinition)
+    extends ScalaStructureViewElement(element, false) {
 
   def getPresentation: ItemPresentation = {
     new ScalaTypeDefinitionItemPresentation(element)

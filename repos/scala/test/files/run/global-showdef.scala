@@ -2,7 +2,8 @@ import scala.tools.partest.DirectTest
 import scala.tools.nsc.util.stringFromStream
 
 object Test extends DirectTest {
-  override def extraSettings: String = "-usejavacp -Yshow:typer -Ystop-after:typer"
+  override def extraSettings: String =
+    "-usejavacp -Yshow:typer -Ystop-after:typer"
 
   override def code = """
 package foo.bar
@@ -34,12 +35,19 @@ object Bippy {
   """
 
   override def show(): Unit = {
-    val classes = List("Bippy", "Bippy#BippyType", "Bippy.BippyType", "Bippy#Boppity", "Bippy#Boppity#Boo")
+    val classes = List(
+      "Bippy",
+      "Bippy#BippyType",
+      "Bippy.BippyType",
+      "Bippy#Boppity",
+      "Bippy#Boppity#Boo")
     val objects = List("Bippy", "Bippy#Boppity#Boo")
 
-    def interesting(line: String) = (line contains "def showdefTestMember") || (line startsWith "<<-- ")
+    def interesting(line: String) =
+      (line contains "def showdefTestMember") || (line startsWith "<<-- ")
 
-    def run(args: String*) = slurp(args: _*).lines filter interesting foreach println
+    def run(args: String*) =
+      slurp(args: _*).lines filter interesting foreach println
 
     classes.zipAll(objects, "", "") foreach {
       case (c, "") => run("-Xshow-class", c)
@@ -48,11 +56,12 @@ object Bippy {
   }
 
   // slurp the compilation result
-  def slurp(args: String*): String = stringFromStream { stream =>
-    Console.withOut(stream) {
-      Console.withErr(stream) {
-        compile(args: _*)
+  def slurp(args: String*): String =
+    stringFromStream { stream =>
+      Console.withOut(stream) {
+        Console.withErr(stream) {
+          compile(args: _*)
+        }
       }
     }
-  }
 }

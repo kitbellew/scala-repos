@@ -2,15 +2,20 @@
 // Licence: http://www.gnu.org/licenses/gpl-3.0.en.html
 package org.ensime.indexer
 
-import java.io.{ File, FileNotFoundException }
+import java.io.{File, FileNotFoundException}
 
 import akka.event.slf4j.SLF4JLogging
 import org.apache.commons.vfs2.FileObject
 import org.apache.lucene.document.Field.Store
-import org.apache.lucene.document.{ Document, TextField }
+import org.apache.lucene.document.{Document, TextField}
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause.Occur
-import org.apache.lucene.search.{ BooleanQuery, DisjunctionMaxQuery, PrefixQuery, TermQuery }
+import org.apache.lucene.search.{
+  BooleanQuery,
+  DisjunctionMaxQuery,
+  PrefixQuery,
+  TermQuery
+}
 import org.ensime.indexer.DatabaseService._
 import org.ensime.indexer.lucene._
 
@@ -52,25 +57,32 @@ object IndexService extends SLF4JLogging {
     }
     def toEntity(d: Document): T = cons(d.get("fqn"), None)
   }
-  implicit object ClassIndexS extends AFqnIndexS(classOf[ClassIndex], ClassIndex)
-  implicit object MethodIndexS extends AFqnIndexS(classOf[MethodIndex], MethodIndex)
-  implicit object FieldIndexS extends AFqnIndexS(classOf[FieldIndex], FieldIndex)
+  implicit object ClassIndexS
+      extends AFqnIndexS(classOf[ClassIndex], ClassIndex)
+  implicit object MethodIndexS
+      extends AFqnIndexS(classOf[MethodIndex], MethodIndex)
+  implicit object FieldIndexS
+      extends AFqnIndexS(classOf[FieldIndex], FieldIndex)
   implicit object FqnIndexS extends DocumentRecovery[FqnIndex] {
-    def toEntity(d: Document) = d.get("TYPE") match {
-      case "ClassIndex" => ClassIndexS.toEntity(d)
-      case "MethodIndex" => MethodIndexS.toEntity(d)
-      case "FieldIndex" => FieldIndexS.toEntity(d)
-      case o => throw new IllegalStateException(o)
-    }
+    def toEntity(d: Document) =
+      d.get("TYPE") match {
+        case "ClassIndex"  => ClassIndexS.toEntity(d)
+        case "MethodIndex" => MethodIndexS.toEntity(d)
+        case "FieldIndex"  => FieldIndexS.toEntity(d)
+        case o             => throw new IllegalStateException(o)
+      }
   }
-  private val ClassIndexT = new TermQuery(new Term("TYPE", classOf[ClassIndex].getSimpleName))
-  private val MethodIndexT = new TermQuery(new Term("TYPE", classOf[MethodIndex].getSimpleName))
-  private val FieldIndexT = new TermQuery(new Term("TYPE", classOf[FieldIndex].getSimpleName))
+  private val ClassIndexT = new TermQuery(
+    new Term("TYPE", classOf[ClassIndex].getSimpleName))
+  private val MethodIndexT = new TermQuery(
+    new Term("TYPE", classOf[MethodIndex].getSimpleName))
+  private val FieldIndexT = new TermQuery(
+    new Term("TYPE", classOf[FieldIndex].getSimpleName))
 
   /**
-   * Like `PrefixQuery` but gives a higher value to exact matches.
-   * [Stack Overflow](http://stackoverflow.com/questions/17723025)
-   */
+    * Like `PrefixQuery` but gives a higher value to exact matches.
+    * [Stack Overflow](http://stackoverflow.com/questions/17723025)
+    */
   class BoostedPrefixQuery(t: Term) extends BooleanQuery {
     add(new PrefixQuery(t), Occur.SHOULD)
     add(new TermQuery(t), Occur.SHOULD)
@@ -84,12 +96,18 @@ class IndexService(path: File) {
 
   private val lucene = new SimpleLucene(path, analyzers)
 
-  def persist(check: FileCheck, symbols: List[FqnSymbol], commit: Boolean): Unit = {
+  def persist(
+      check: FileCheck,
+      symbols: List[FqnSymbol],
+      commit: Boolean): Unit = {
     val f = Some(check)
     val fqns: List[Document] = symbols.map {
-      case FqnSymbol(_, _, _, fqn, Some(_), _, _, _, _) => MethodIndex(fqn, f).toDocument
-      case FqnSymbol(_, _, _, fqn, _, Some(_), _, _, _) => FieldIndex(fqn, f).toDocument
-      case FqnSymbol(_, _, _, fqn, _, _, _, _, _) => ClassIndex(fqn, f).toDocument
+      case FqnSymbol(_, _, _, fqn, Some(_), _, _, _, _) =>
+        MethodIndex(fqn, f).toDocument
+      case FqnSymbol(_, _, _, fqn, _, Some(_), _, _, _) =>
+        FieldIndex(fqn, f).toDocument
+      case FqnSymbol(_, _, _, fqn, _, _, _, _, _) =>
+        ClassIndex(fqn, f).toDocument
     }
     lucene.create(fqns, commit)
   }
@@ -106,7 +124,9 @@ class IndexService(path: File) {
   }
 
   def remove(fs: List[FileObject]): Unit = {
-    val terms = fs.map { f => new TermQuery(new Term("file", f.getName.getURI)) }
+    val terms = fs.map { f =>
+      new TermQuery(new Term("file", f.getName.getURI))
+    }
     lucene.delete(terms, commit = false) // don't commit yet
   }
 
@@ -120,7 +140,8 @@ class IndexService(path: File) {
 
   def searchClassesMethods(terms: List[String], max: Int): List[FqnIndex] = {
     val query = new DisjunctionMaxQuery(
-      terms.map(buildTermClassMethodQuery), 0f
+      terms.map(buildTermClassMethodQuery),
+      0f
     )
     lucene.search(query, max).map(_.toEntity[ClassIndex]).distinct
   }
@@ -128,11 +149,13 @@ class IndexService(path: File) {
   def buildTermClassMethodQuery(query: String): BooleanQuery = {
     new BooleanQuery {
       add(new BoostedPrefixQuery(new Term("fqn", query)), Occur.MUST)
-      add(new BooleanQuery {
-        add(ClassIndexT, Occur.SHOULD)
-        add(FieldIndexT, Occur.MUST_NOT)
-        add(MethodIndexT, Occur.SHOULD)
-      }, Occur.MUST)
+      add(
+        new BooleanQuery {
+          add(ClassIndexT, Occur.SHOULD)
+          add(FieldIndexT, Occur.MUST_NOT)
+          add(MethodIndexT, Occur.SHOULD)
+        },
+        Occur.MUST)
     }
   }
 }

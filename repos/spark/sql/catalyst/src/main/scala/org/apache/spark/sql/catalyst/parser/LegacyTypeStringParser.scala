@@ -22,13 +22,13 @@ import scala.util.parsing.combinator.RegexParsers
 import org.apache.spark.sql.types._
 
 /**
- * Parser that turns case class strings into datatypes. This is only here to maintain compatibility
- * with Parquet files written by Spark 1.1 and below.
- */
+  * Parser that turns case class strings into datatypes. This is only here to maintain compatibility
+  * with Parquet files written by Spark 1.1 and below.
+  */
 object LegacyTypeStringParser extends RegexParsers {
 
   protected lazy val primitiveType: Parser[DataType] =
-    ( "StringType" ^^^ StringType
+    ("StringType" ^^^ StringType
       | "FloatType" ^^^ FloatType
       | "IntegerType" ^^^ IntegerType
       | "ByteType" ^^^ ByteType
@@ -40,8 +40,7 @@ object LegacyTypeStringParser extends RegexParsers {
       | "DateType" ^^^ DateType
       | "DecimalType()" ^^^ DecimalType.USER_DEFAULT
       | fixedDecimalType
-      | "TimestampType" ^^^ TimestampType
-      )
+      | "TimestampType" ^^^ TimestampType)
 
   protected lazy val fixedDecimalType: Parser[DataType] =
     ("DecimalType(" ~> "[0-9]+".r) ~ ("," ~> "[0-9]+".r <~ ")") ^^ {
@@ -55,7 +54,8 @@ object LegacyTypeStringParser extends RegexParsers {
 
   protected lazy val mapType: Parser[DataType] =
     "MapType" ~> "(" ~> dataType ~ "," ~ dataType ~ "," ~ boolVal <~ ")" ^^ {
-      case t1 ~ _ ~ t2 ~ _ ~ valueContainsNull => MapType(t1, t2, valueContainsNull)
+      case t1 ~ _ ~ t2 ~ _ ~ valueContainsNull =>
+        MapType(t1, t2, valueContainsNull)
     }
 
   protected lazy val structField: Parser[StructField] =
@@ -65,9 +65,8 @@ object LegacyTypeStringParser extends RegexParsers {
     }
 
   protected lazy val boolVal: Parser[Boolean] =
-    ( "true" ^^^ true
-      | "false" ^^^ false
-      )
+    ("true" ^^^ true
+      | "false" ^^^ false)
 
   protected lazy val structType: Parser[DataType] =
     "StructType\\([A-zA-z]*\\(".r ~> repsep(structField, ",") <~ "))" ^^ {
@@ -75,18 +74,19 @@ object LegacyTypeStringParser extends RegexParsers {
     }
 
   protected lazy val dataType: Parser[DataType] =
-    ( arrayType
+    (arrayType
       | mapType
       | structType
-      | primitiveType
-      )
+      | primitiveType)
 
   /**
-   * Parses a string representation of a DataType.
-   */
-  def parse(asString: String): DataType = parseAll(dataType, asString) match {
-    case Success(result, _) => result
-    case failure: NoSuccess =>
-      throw new IllegalArgumentException(s"Unsupported dataType: $asString, $failure")
-  }
+    * Parses a string representation of a DataType.
+    */
+  def parse(asString: String): DataType =
+    parseAll(dataType, asString) match {
+      case Success(result, _) => result
+      case failure: NoSuccess =>
+        throw new IllegalArgumentException(
+          s"Unsupported dataType: $asString, $failure")
+    }
 }

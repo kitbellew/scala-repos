@@ -6,23 +6,23 @@ import cats.syntax.AllSyntax
 import cats.functor.{Invariant, Contravariant}
 
 /**
- * Test that our syntax implicits are working.
- *
- * Each method should correspond to one type class worth of syntax.
- * Ideally, we should be testing every operator or method that we
- * expect to add to generic parameters. This file is a safeguard
- * against accidentally breaking (or removing) syntax which was
- * otherwise untested.
- *
- * The strategy here is to create "mock" values of particular types,
- * and then ensure that the syntax we want is available. We never plan
- * to run any of these methods, so we don't need real values. All
- * values in the methods should be generic -- we rely on parametricity
- * to guarantee that the syntax will be available for any type with
- * the proper type class instance(s).
- *
- * None of these tests should ever run, or do any runtime checks.
- */
+  * Test that our syntax implicits are working.
+  *
+  * Each method should correspond to one type class worth of syntax.
+  * Ideally, we should be testing every operator or method that we
+  * expect to add to generic parameters. This file is a safeguard
+  * against accidentally breaking (or removing) syntax which was
+  * otherwise untested.
+  *
+  * The strategy here is to create "mock" values of particular types,
+  * and then ensure that the syntax we want is available. We never plan
+  * to run any of these methods, so we don't need real values. All
+  * values in the methods should be generic -- we rely on parametricity
+  * to guarantee that the syntax will be available for any type with
+  * the proper type class instance(s).
+  *
+  * None of these tests should ever run, or do any runtime checks.
+  */
 class SyntaxTests extends AllInstances with AllSyntax {
 
   // pretend we have a value of type A
@@ -81,7 +81,8 @@ class SyntaxTests extends AllInstances with AllSyntax {
     val fb: F[B] = fa.contramap(f)
   }
 
-  def testFoldable[F[_]: Foldable, G[_]: Applicative: MonoidK, A: Monoid, B, Z]: Unit = {
+  def testFoldable[F[_]: Foldable, G[_]: Applicative: MonoidK, A: Monoid, B, Z]
+      : Unit = {
     val fa = mock[F[A]]
     val b = mock[B]
     val f1 = mock[(B, A) => B]
@@ -115,7 +116,12 @@ class SyntaxTests extends AllInstances with AllSyntax {
     val gunit: G[F[A]] = fga.sequence
   }
 
-  def testReducible[F[_]: Reducible, G[_]: Apply: SemigroupK, A: Semigroup, B, Z]: Unit = {
+  def testReducible[
+      F[_]: Reducible,
+      G[_]: Apply: SemigroupK,
+      A: Semigroup,
+      B,
+      Z]: Unit = {
     val fa = mock[F[A]]
     val f1 = mock[(A, A) => A]
     val a1: A = fa.reduceLeft(f1)
@@ -196,7 +202,8 @@ class SyntaxTests extends AllInstances with AllSyntax {
     val d0 = fab.bifoldMap(f2, g2)
   }
 
-  def testBitraverse[F[_, _]: Bitraverse, G[_]: Applicative, A, B, C, D]: Unit = {
+  def testBitraverse[F[_, _]: Bitraverse, G[_]: Applicative, A, B, C, D]
+      : Unit = {
     val f = mock[A => G[C]]
     val g = mock[B => G[D]]
 

@@ -8,8 +8,8 @@ package tools
 package nsc
 
 /**
- * Symbol loaders implementation that wires dependencies using Global.
- */
+  * Symbol loaders implementation that wires dependencies using Global.
+  */
 abstract class GlobalSymbolLoaders extends symtab.SymbolLoaders {
   val global: Global
   val symbolTable: global.type = global

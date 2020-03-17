@@ -41,7 +41,9 @@ object TransformationSampleSpecConfig extends MultiNodeConfig {
 
   // this configuration will be used for all nodes
   // note that no fixed host names and ports are used
-  commonConfig(ConfigFactory.parseString("""
+  commonConfig(
+    ConfigFactory.parseString(
+      """
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.remote.log-remote-lifecycle-events = off
     """))
@@ -60,8 +62,12 @@ class TransformationSampleSpecMultiJvmNode3 extends TransformationSampleSpec
 class TransformationSampleSpecMultiJvmNode4 extends TransformationSampleSpec
 class TransformationSampleSpecMultiJvmNode5 extends TransformationSampleSpec
 
-abstract class TransformationSampleSpec extends MultiNodeSpec(TransformationSampleSpecConfig)
-  with WordSpecLike with Matchers with BeforeAndAfterAll with ImplicitSender {
+abstract class TransformationSampleSpec
+    extends MultiNodeSpec(TransformationSampleSpecConfig)
+    with WordSpecLike
+    with Matchers
+    with BeforeAndAfterAll
+    with ImplicitSender {
 
   import TransformationSampleSpecConfig._
 
@@ -76,7 +82,8 @@ abstract class TransformationSampleSpec extends MultiNodeSpec(TransformationSamp
       runOn(frontend1) {
         // this will only run on the 'first' node
         Cluster(system) join node(frontend1).address
-        val transformationFrontend = system.actorOf(Props[TransformationFrontend], name = "frontend")
+        val transformationFrontend =
+          system.actorOf(Props[TransformationFrontend], name = "frontend")
         transformationFrontend ! TransformationJob("hello")
         expectMsgPF() {
           // no backends yet, service unavailable
@@ -128,7 +135,8 @@ abstract class TransformationSampleSpec extends MultiNodeSpec(TransformationSamp
   }
 
   def assertServiceOk(): Unit = {
-    val transformationFrontend = system.actorSelection("akka://" + system.name + "/user/frontend")
+    val transformationFrontend =
+      system.actorSelection("akka://" + system.name + "/user/frontend")
     // eventually the service should be ok,
     // backends might not have registered initially
     awaitAssert {

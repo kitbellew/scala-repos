@@ -14,7 +14,8 @@ trait SetInstances extends algebra.std.SetInstances {
       def foldLeft[A, B](fa: Set[A], b: B)(f: (B, A) => B): B =
         fa.foldLeft(b)(f)
 
-      def foldRight[A, B](fa: Set[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      def foldRight[A, B](fa: Set[A], lb: Eval[B])(
+          f: (A, Eval[B]) => Eval[B]): Eval[B] =
         Foldable.iterateRight(fa.iterator, lb)(f)
 
       override def exists[A](fa: Set[A])(p: A => Boolean): Boolean =
@@ -26,10 +27,11 @@ trait SetInstances extends algebra.std.SetInstances {
       override def isEmpty[A](fa: Set[A]): Boolean = fa.isEmpty
     }
 
-    implicit def setMonoid[A]: Monoid[Set[A]] = MonoidK[Set].algebra[A]
+  implicit def setMonoid[A]: Monoid[Set[A]] = MonoidK[Set].algebra[A]
 
-  implicit def setShow[A:Show]: Show[Set[A]] = new Show[Set[A]] {
-    def show(fa: Set[A]): String =
-      fa.toIterator.map(_.show).mkString("Set(", ", ", ")")
-  }
+  implicit def setShow[A: Show]: Show[Set[A]] =
+    new Show[Set[A]] {
+      def show(fa: Set[A]): String =
+        fa.toIterator.map(_.show).mkString("Set(", ", ", ")")
+    }
 }

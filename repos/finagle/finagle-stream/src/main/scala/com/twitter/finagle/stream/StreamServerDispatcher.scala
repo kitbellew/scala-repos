@@ -8,8 +8,8 @@ import com.twitter.util.{Future, Promise}
 import org.jboss.netty.handler.codec.http._
 
 /**
- * Stream StreamResponse messages into HTTP chunks.
- */
+  * Stream StreamResponse messages into HTTP chunks.
+  */
 private[twitter] class StreamServerDispatcher[Req: RequestType](
     trans: Transport[Any, Any],
     service: Service[Req, StreamResponse]
@@ -32,37 +32,44 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
     }
   }
 
-  protected def dispatch(req: Any, eos: Promise[Unit]) = req match {
-    case httpReq: HttpRequest =>
-      service(RT.specialize(from(httpReq))) ensure eos.setDone()
-    case invalid =>
-      eos.setDone()
-      Future.exception(new IllegalArgumentException(s"Invalid message: $invalid"))
-  }
+  protected def dispatch(req: Any, eos: Promise[Unit]) =
+    req match {
+      case httpReq: HttpRequest =>
+        service(RT.specialize(from(httpReq))) ensure eos.setDone()
+      case invalid =>
+        eos.setDone()
+        Future.exception(
+          new IllegalArgumentException(s"Invalid message: $invalid"))
+    }
 
   protected def handle(rep: StreamResponse) = {
     val httpRes: HttpResponse = from(rep.info)
 
     httpRes.setChunked(
       httpRes.getProtocolVersion == HttpVersion.HTTP_1_1 &&
-      httpRes.headers.get(HttpHeaders.Names.CONTENT_LENGTH) == null)
+        httpRes.headers.get(HttpHeaders.Names.CONTENT_LENGTH) == null)
 
     if (httpRes.isChunked) {
       HttpHeaders.setHeader(
-        httpRes, HttpHeaders.Names.TRANSFER_ENCODING,
+        httpRes,
+        HttpHeaders.Names.TRANSFER_ENCODING,
         HttpHeaders.Values.CHUNKED)
     } else {
       HttpHeaders.setHeader(
-        httpRes, HttpHeaders.Names.CONNECTION,
+        httpRes,
+        HttpHeaders.Names.CONNECTION,
         HttpHeaders.Values.CLOSE)
     }
 
-    val f = trans.write(httpRes).before {
-      writeChunks(rep)
-    }.ensure {
-      rep.release()
-      trans.close()
-    }
+    val f = trans
+      .write(httpRes)
+      .before {
+        writeChunks(rep)
+      }
+      .ensure {
+        rep.release()
+        trans.close()
+      }
 
     val p = new Promise[Unit]()
     f.proxyTo(p)

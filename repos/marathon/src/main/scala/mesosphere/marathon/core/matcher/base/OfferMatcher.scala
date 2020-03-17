@@ -2,8 +2,8 @@ package mesosphere.marathon.core.matcher.base
 
 import mesosphere.marathon.core.launcher.TaskOp
 import mesosphere.marathon.core.task.Task
-import mesosphere.marathon.state.{ PathId, Timestamp }
-import org.apache.mesos.{ Protos => Mesos }
+import mesosphere.marathon.state.{PathId, Timestamp}
+import org.apache.mesos.{Protos => Mesos}
 
 import scala.concurrent.Future
 
@@ -50,13 +50,16 @@ object OfferMatcher {
     def ops: Iterable[TaskOp] = opsWithSource.view.map(_.op)
 
     /** All TaskInfos of launched tasks. */
-    def launchedTaskInfos: Iterable[Mesos.TaskInfo] = ops.view.collect {
-      case TaskOp.Launch(taskInfo, _, _, _) => taskInfo
-    }
+    def launchedTaskInfos: Iterable[Mesos.TaskInfo] =
+      ops.view.collect {
+        case TaskOp.Launch(taskInfo, _, _, _) => taskInfo
+      }
   }
 
   object MatchedTaskOps {
-    def noMatch(offerId: Mesos.OfferID, resendThisOffer: Boolean = false): MatchedTaskOps =
+    def noMatch(
+        offerId: Mesos.OfferID,
+        resendThisOffer: Boolean = false): MatchedTaskOps =
       new MatchedTaskOps(offerId, Seq.empty, resendThisOffer = resendThisOffer)
   }
 
@@ -70,13 +73,16 @@ object OfferMatcher {
   * Tries to match offers with given tasks.
   */
 trait OfferMatcher {
+
   /**
     * Process offer and return the ops that this matcher wants to execute on this offer.
     *
     * The offer matcher can expect either a taskOpAccepted or a taskOpRejected call
     * for every returned `org.apache.mesos.Protos.TaskInfo`.
     */
-  def matchOffer(deadline: Timestamp, offer: Mesos.Offer): Future[OfferMatcher.MatchedTaskOps]
+  def matchOffer(
+      deadline: Timestamp,
+      offer: Mesos.Offer): Future[OfferMatcher.MatchedTaskOps]
 
   /**
     * We can optimize the offer routing for different offer matcher in case there are reserved resources.

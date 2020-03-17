@@ -1,6 +1,6 @@
 package mesosphere.marathon.integration.facades
 
-import org.scalatest.{ Matchers, GivenWhenThen, FunSuite }
+import org.scalatest.{Matchers, GivenWhenThen, FunSuite}
 import play.api.libs.json.Json
 
 class MesosFormatsTest extends FunSuite with Matchers with GivenWhenThen {
@@ -25,13 +25,13 @@ class MesosFormatsTest extends FunSuite with Matchers with GivenWhenThen {
     And("resources of that agent are correct")
 
     /*
-      * "resources": {
+     * "resources": {
           "cpus": 8.0,
           "disk": 52830.0,
           "mem": 5078.0,
           "ports": "[31000-32000]"
         },
-      */
+     */
     agent.resources should equal(
       ITResources(
         "cpus" -> 8.0,
@@ -95,7 +95,7 @@ class MesosFormatsTest extends FunSuite with Matchers with GivenWhenThen {
         "mem": 4934.0,
         "ports": "[31000-31902, 31904-32000]"
       },
-    */
+     */
     agent.unreservedResources should equal(
       ITResources(
         "cpus" -> 6.9,

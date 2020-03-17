@@ -9,10 +9,11 @@ object Apply {
 }
 
 object TestUnit {
-  def goo : Apply[Option[Int]] = Apply { i =>
-    val p = i match {
-      case 1 => Success(Some(1))
-      case _ => Success(None)
+  def goo: Apply[Option[Int]] =
+    Apply { i =>
+      val p = i match {
+        case 1 => Success(Some(1))
+        case _ => Success(None)
+      }
     }
-  }
 }

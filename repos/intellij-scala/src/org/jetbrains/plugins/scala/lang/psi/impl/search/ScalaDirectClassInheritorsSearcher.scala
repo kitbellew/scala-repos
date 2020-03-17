@@ -4,7 +4,6 @@ package psi
 package impl
 package search
 
-
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.text.StringUtil
@@ -15,35 +14,44 @@ import com.intellij.psi.util.PsiUtil
 import com.intellij.util.{Processor, QueryExecutor}
 import org.jetbrains.plugins.scala.extensions.{PsiElementExt, inReadAction}
 import org.jetbrains.plugins.scala.lang.psi.api.expr.ScNewTemplateDefinition
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScObject, ScTemplateDefinition, ScTypeDefinition}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScObject,
+  ScTemplateDefinition,
+  ScTypeDefinition
+}
 import org.jetbrains.plugins.scala.lang.psi.stubs.util.ScalaStubsUtil
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * User: Alexander Podkhalyuzin
- * Date: 24.10.2008
- */
-
-class ScalaDirectClassInheritorsSearcher extends QueryExecutor[PsiClass, DirectClassInheritorsSearch.SearchParameters] {
-  def execute(queryParameters: DirectClassInheritorsSearch.SearchParameters, consumer: Processor[PsiClass]): Boolean = {
+  * User: Alexander Podkhalyuzin
+  * Date: 24.10.2008
+  */
+class ScalaDirectClassInheritorsSearcher
+    extends QueryExecutor[
+      PsiClass,
+      DirectClassInheritorsSearch.SearchParameters] {
+  def execute(
+      queryParameters: DirectClassInheritorsSearch.SearchParameters,
+      consumer: Processor[PsiClass]): Boolean = {
     val clazz = queryParameters.getClassToProcess
 
     val scope = inReadAction {
       val useScope = clazz.getUseScope match {
         case _: LocalSearchScope =>
           clazz.containingScalaFile match {
-            case Some(f) if f.getVirtualFile != null => clazz.containingScalaFile.map(GlobalSearchScope.fileScope)
+            case Some(f) if f.getVirtualFile != null =>
+              clazz.containingScalaFile.map(GlobalSearchScope.fileScope)
             case Some(f) => Some(GlobalSearchScope.allScope(f.getProject))
-            case None => None
+            case None    => None
           }
         case global: GlobalSearchScope => Some(global)
-        case _ => None
+        case _                         => None
       }
       ScalaPsiUtil.intersectScopes(queryParameters.getScope, useScope) match {
         case x: GlobalSearchScope => x
-        case _ => return true
+        case _                    => return true
       }
     }
 
@@ -52,7 +60,7 @@ class ScalaDirectClassInheritorsSearcher extends QueryExecutor[PsiClass, DirectC
     def add(clazz: PsiClass): Unit = {
       val id = inReadAction {
         clazz match {
-          case o: ScObject => s"object:${o.qualifiedName}"
+          case o: ScObject         => s"object:${o.qualifiedName}"
           case c: ScTypeDefinition => s"class:${c.qualifiedName}"
           case n: ScNewTemplateDefinition =>
             anonymousClasses += n
@@ -76,11 +84,13 @@ class ScalaDirectClassInheritorsSearcher extends QueryExecutor[PsiClass, DirectC
 
     for (candidate <- candidates if candidate.showAsInheritor) {
       ProgressManager.checkCanceled()
-      if (inReadAction { candidate.isInheritor(clazz, deep = false) }) add(candidate)
+      if (inReadAction { candidate.isInheritor(clazz, deep = false) })
+        add(candidate)
     }
 
     if (map.nonEmpty) {
-      def getJarFile(clazz: PsiClass) = inReadAction { PsiUtil.getJarFile(clazz) }
+      def getJarFile(clazz: PsiClass) =
+        inReadAction { PsiUtil.getJarFile(clazz) }
 
       val clazzJar = getJarFile(clazz)
       for ((_, sameNameInheritors) <- map) {
@@ -99,7 +109,10 @@ class ScalaDirectClassInheritorsSearcher extends QueryExecutor[PsiClass, DirectC
             val closestClass = sameNameInheritors.maxBy { inheritor =>
               val jarFile = getJarFile(inheritor)
               if (jarFile == null) 0
-              else StringUtil.commonPrefixLength(jarFile.getCanonicalPath, clazzJar.getCanonicalPath)
+              else
+                StringUtil.commonPrefixLength(
+                  jarFile.getCanonicalPath,
+                  clazzJar.getCanonicalPath)
             }
             if (!consumer.process(closestClass)) return false
         }

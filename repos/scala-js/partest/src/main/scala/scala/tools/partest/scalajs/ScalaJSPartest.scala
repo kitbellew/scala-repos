@@ -9,32 +9,37 @@ package scalajs
 import nest._
 import Path._
 
-import scala.tools.nsc.{ Global, Settings }
-import scala.tools.nsc.reporters.{ Reporter }
+import scala.tools.nsc.{Global, Settings}
+import scala.tools.nsc.reporters.{Reporter}
 import scala.tools.nsc.plugins.Plugin
 
 import org.scalajs.core.compiler.ScalaJSPlugin
 
 import scala.io.Source
 
-import sbt.testing.{ EventHandler, Logger, Fingerprint }
+import sbt.testing.{EventHandler, Logger, Fingerprint}
 import java.io.File
 import java.net.URLClassLoader
 
 trait ScalaJSDirectCompiler extends DirectCompiler {
-  override def newGlobal(settings: Settings, reporter: Reporter): PartestGlobal = {
+  override def newGlobal(
+      settings: Settings,
+      reporter: Reporter): PartestGlobal = {
     new PartestGlobal(settings, reporter) {
       override protected def loadRoughPluginsList(): List[Plugin] = {
         (super.loadRoughPluginsList() :+
-            Plugin.instantiate(classOf[ScalaJSPlugin], this))
+          Plugin.instantiate(classOf[ScalaJSPlugin], this))
       }
     }
   }
 }
 
-class ScalaJSRunner(testFile: File, suiteRunner: SuiteRunner,
+class ScalaJSRunner(
+    testFile: File,
+    suiteRunner: SuiteRunner,
     scalaJSOverridePath: String,
-    options: ScalaJSPartestOptions) extends nest.Runner(testFile, suiteRunner) {
+    options: ScalaJSPartestOptions)
+    extends nest.Runner(testFile, suiteRunner) {
 
   private val compliantSems: List[String] = {
     scalaJSConfigFile("sem").fold(List.empty[String]) { file =>
@@ -58,8 +63,8 @@ class ScalaJSRunner(testFile: File, suiteRunner: SuiteRunner,
   override def newCompiler = new DirectCompiler(this) with ScalaJSDirectCompiler
   override def extraJavaOptions = {
     super.extraJavaOptions ++ Seq(
-        s"-Dscalajs.partest.optMode=${options.optMode.id}",
-        s"-Dscalajs.partest.compliantSems=${compliantSems.mkString(",")}"
+      s"-Dscalajs.partest.optMode=${options.optMode.id}",
+      s"-Dscalajs.partest.compliantSems=${compliantSems.mkString(",")}"
     )
   }
 }
@@ -76,7 +81,7 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
   // Stuff we provide
 
   override def banner: String = {
-    import org.scalajs.core.ir.ScalaJSVersions.{ current => currentVersion }
+    import org.scalajs.core.ir.ScalaJSVersions.{current => currentVersion}
 
     super.banner.trim + s"""
     |Scala.js version is: $currentVersion
@@ -99,7 +104,8 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
         val (state, elapsed) =
           try timed(runner.run())
           catch {
-            case t: Throwable => throw new RuntimeException(s"Error running $testFile", t)
+            case t: Throwable =>
+              throw new RuntimeException(s"Error running $testFile", t)
           }
         NestUI.reportTest(state)
         runner.cleanup()
@@ -108,7 +114,8 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
     onFinishTest(testFile, state)
   }
 
-  override def runTestsForFiles(kindFiles: Array[File],
+  override def runTestsForFiles(
+      kindFiles: Array[File],
       kind: String): Array[TestState] = {
     super.runTestsForFiles(kindFiles.filter(shouldUseTest), kind)
   }
@@ -178,9 +185,16 @@ class ScalaJSSBTRunner(
     val options: ScalaJSPartestOptions,
     val scalaVersion: String
 ) extends SBTRunner(
-    partestFingerprint, eventHandler, loggers, "test/files", testClassLoader,
-    javaCmd, javacCmd, scalacArgs
-) with ScalaJSSuiteRunner {
+      partestFingerprint,
+      eventHandler,
+      loggers,
+      "test/files",
+      testClassLoader,
+      javaCmd,
+      javacCmd,
+      scalacArgs
+    )
+    with ScalaJSSuiteRunner {
 
   // The test root for partest is read out through the system properties,
   // not passed as an argument

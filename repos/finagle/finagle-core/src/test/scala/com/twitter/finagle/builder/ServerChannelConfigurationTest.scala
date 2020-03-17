@@ -8,47 +8,61 @@ import com.twitter.io.Charsets
 import com.twitter.util.{Await, Future}
 import java.net.{InetAddress, InetSocketAddress}
 import org.jboss.netty.channel.{Channels, ChannelPipelineFactory}
-import org.jboss.netty.handler.codec.frame.{Delimiters, DelimiterBasedFrameDecoder}
+import org.jboss.netty.handler.codec.frame.{
+  Delimiters,
+  DelimiterBasedFrameDecoder
+}
 import org.jboss.netty.handler.codec.string.{StringEncoder, StringDecoder}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
 /**
- * This Codec is a newline (\n) delimited line-based protocol. Here we re-use existing
- * encoders/decoders as provided by Netty. This codec allows us to make requests which
- * are incomplete due to missing newline (\n)
- */
+  * This Codec is a newline (\n) delimited line-based protocol. Here we re-use existing
+  * encoders/decoders as provided by Netty. This codec allows us to make requests which
+  * are incomplete due to missing newline (\n)
+  */
 object ServerChannelConfigCodec extends ServerChannelConfigCodec
 
 class ServerChannelConfigCodec extends CodecFactory[String, String] {
-  def server = Function.const {
-    new Codec[String, String] {
-      def pipelineFactory = new ChannelPipelineFactory {
-        def getPipeline = {
-          val pipeline = Channels.pipeline()
-          pipeline.addLast("line",
-            new DelimiterBasedFrameDecoder(100, Delimiters.lineDelimiter: _*))
-          pipeline.addLast("stringDecoder", new StringDecoder(Charsets.Utf8))
-          pipeline.addLast("stringEncoder", new StringEncoder(Charsets.Utf8))
-          pipeline
-        }
+  def server =
+    Function.const {
+      new Codec[String, String] {
+        def pipelineFactory =
+          new ChannelPipelineFactory {
+            def getPipeline = {
+              val pipeline = Channels.pipeline()
+              pipeline.addLast(
+                "line",
+                new DelimiterBasedFrameDecoder(
+                  100,
+                  Delimiters.lineDelimiter: _*))
+              pipeline.addLast(
+                "stringDecoder",
+                new StringDecoder(Charsets.Utf8))
+              pipeline.addLast(
+                "stringEncoder",
+                new StringEncoder(Charsets.Utf8))
+              pipeline
+            }
+          }
       }
     }
-  }
 
-  def client = Function.const {
-    new Codec[String, String] {
-      def pipelineFactory = new ChannelPipelineFactory {
-        def getPipeline = {
-          val pipeline = Channels.pipeline()
-          pipeline.addLast("stringEncode", new StringEncoder(Charsets.Utf8))
-          pipeline.addLast("stringDecode", new StringDecoder(Charsets.Utf8))
-          pipeline
-        }
+  def client =
+    Function.const {
+      new Codec[String, String] {
+        def pipelineFactory =
+          new ChannelPipelineFactory {
+            def getPipeline = {
+              val pipeline = Channels.pipeline()
+              pipeline.addLast("stringEncode", new StringEncoder(Charsets.Utf8))
+              pipeline.addLast("stringDecode", new StringDecoder(Charsets.Utf8))
+              pipeline
+            }
+          }
       }
     }
-  }
 }
 
 @RunWith(classOf[JUnitRunner])

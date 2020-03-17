@@ -4,17 +4,17 @@ package lang.xml
 import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
 
 /**
- * User: Dmitry Naydanov
- * Date: 3/3/12
- */
+  * User: Dmitry Naydanov
+  * Date: 3/3/12
+  */
+class XmlClosingTagAutoCompletionTest
+    extends ScalaLightCodeInsightFixtureTestAdapter {
 
-class XmlClosingTagAutoCompletionTest extends ScalaLightCodeInsightFixtureTestAdapter {
-  
-  private def checkGeneratedTextGt(text: String,  assumedStub: String) {
+  private def checkGeneratedTextGt(text: String, assumedStub: String) {
     checkGeneratedTextAfterTyping(text, assumedStub, '>')
   }
 
-  private def checkGeneratedTextSlash(text: String,  assumedStub: String) {
+  private def checkGeneratedTextSlash(text: String, assumedStub: String) {
     checkGeneratedTextAfterTyping(text, assumedStub, '/')
   }
 
@@ -33,14 +33,16 @@ class XmlClosingTagAutoCompletionTest extends ScalaLightCodeInsightFixtureTestAd
   }
 
   def testComplicatedTag() {
-    val text = "class A { val xml = <a>blah blah <blah/> <b" + CARET_MARKER + "</a> }"
+    val text =
+      "class A { val xml = <a>blah blah <blah/> <b" + CARET_MARKER + "</a> }"
     val assumedStub = "class A { val xml = <a>blah blah <blah/> <b></b></a> }"
 
     checkGeneratedTextGt(text, assumedStub)
   }
 
   def testComplicatedEmptyTag() {
-    val text = "class A { val xml = <a>blah blah <blah/> <abc" + CARET_MARKER + "</a> }"
+    val text =
+      "class A { val xml = <a>blah blah <blah/> <abc" + CARET_MARKER + "</a> }"
     val assumedStub = "class A { val xml = <a>blah blah <blah/> <abc/></a> }"
 
     checkGeneratedTextSlash(text, assumedStub)
@@ -114,7 +116,6 @@ class XmlClosingTagAutoCompletionTest extends ScalaLightCodeInsightFixtureTestAd
       |  </div>
       |</lift:TD.list>
       """.stripMargin.replace("\r", "")
-
 
     checkGeneratedTextGt(text, assumedStub)
   }
@@ -202,14 +203,14 @@ class XmlClosingTagAutoCompletionTest extends ScalaLightCodeInsightFixtureTestAd
   }
 
   def testSwallowGtAfterEmptyTagEndInXmlPattern() {
-    val header = 
+    val header =
       """
         |val xml = <aaa attr="<aaa//>" />
         |xml match { 
-        |   case <aaa/""".stripMargin.replace("\r", "") 
-    
+        |   case <aaa/""".stripMargin.replace("\r", "")
+
     val text = header + CARET_MARKER + ">  => 1  }"
-    
+
     val stub = header + ">" + CARET_MARKER + "  => 1  }"
 
     checkGeneratedTextGt(text, stub)

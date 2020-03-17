@@ -10,7 +10,8 @@ import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
 class MemorySpaceTest extends FunSuite with MockitoSugar {
-  test("MemorySpace#left should find the number of bytes left before we hit minDiscount") {
+  test(
+    "MemorySpace#left should find the number of bytes left before we hit minDiscount") {
     val nfo = mock[JvmInfo]
     when(nfo.remaining()).thenReturn(10.megabytes)
     val range = StorageUnit.zero
@@ -31,7 +32,13 @@ class MemorySpaceTest extends FunSuite with MockitoSugar {
     val rnd = mock[GenerationalRandom]
     when(rnd.apply()).thenReturn(107.megabytes.inBytes.toInt)
     val space =
-      new MemorySpace(nfo, minDiscount, maxDiscount, rSnooper, NullLogsReceiver, rnd)
+      new MemorySpace(
+        nfo,
+        minDiscount,
+        maxDiscount,
+        rSnooper,
+        NullLogsReceiver,
+        rnd)
     assert(space.discount() == 7.megabytes)
     verify(rnd).apply()
     verify(rSnooper).handleBytes()
@@ -45,7 +52,13 @@ class MemorySpaceTest extends FunSuite with MockitoSugar {
     when(rSnooper.handleBytes()).thenReturn(9.megabytes)
     val rnd = mock[GenerationalRandom]
     val space =
-      new MemorySpace(nfo, minDiscount, maxDiscount, rSnooper, NullLogsReceiver, rnd)
+      new MemorySpace(
+        nfo,
+        minDiscount,
+        maxDiscount,
+        rSnooper,
+        NullLogsReceiver,
+        rnd)
     assert(space.discount() == 8.megabytes)
   }
 }

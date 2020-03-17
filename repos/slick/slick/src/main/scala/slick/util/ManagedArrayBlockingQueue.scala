@@ -8,7 +8,11 @@ import java.util._
   * temporarily rejecting elements based on the current size. All features of the original
   * ArrayBlockingQueue have been ported, except the mutation methods of the iterator. See
   * `java.util.concurrent.ArrayBlockingQueue` for documentation. */
-abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](capacity: Int, fair: Boolean = false) extends AbstractQueue[E] with BlockingQueue[E] { self =>
+abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
+    capacity: Int,
+    fair: Boolean = false)
+    extends AbstractQueue[E]
+    with BlockingQueue[E] { self =>
 
   /** Determine if the item should be accepted at the current time. */
   protected[this] def accept(item: E, size: Int): Boolean
@@ -19,11 +23,12 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](capacity: Int, fai
   private[this] val notFull = lock.newCondition
   private[this] var takeIndex, putIndex, count = 0
 
-  private[this] def checkNotNull(v: AnyRef): Unit = if (v == null) throw new NullPointerException
+  private[this] def checkNotNull(v: AnyRef): Unit =
+    if (v == null) throw new NullPointerException
 
-  private[this] def inc(i: Int): Int = if(i+1 == items.length) 0 else i+1
+  private[this] def inc(i: Int): Int = if (i + 1 == items.length) 0 else i + 1
 
-  private[this] def dec(i: Int): Int = (if(i == 0) items.length else i) - 1
+  private[this] def dec(i: Int): Int = (if (i == 0) items.length else i) - 1
 
   private[this] def itemAt(i: Int): E = items(i).asInstanceOf[E]
 
@@ -50,16 +55,14 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](capacity: Int, fai
     if (i == takeIndex) {
       items(takeIndex) = null
       takeIndex = inc(takeIndex)
-    }
-    else {
+    } else {
       var cond = true
       while (cond) {
         val nexti: Int = inc(i)
         if (nexti != putIndex) {
           items(i) = items(nexti)
           i = nexti
-        }
-        else {
+        } else {
           items(i) = null
           putIndex = i
           cond = false
@@ -101,10 +104,11 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](capacity: Int, fai
 
   def poll: E = locked(if ((count == 0)) null else extract)
 
-  def take: E = lockedInterruptibly {
-    while (count == 0) notEmpty.await
-    extract
-  }
+  def take: E =
+    lockedInterruptibly {
+      while (count == 0) notEmpty.await
+      extract
+    }
 
   def poll(timeout: Long, unit: TimeUnit): E = {
     var nanos: Long = unit.toNanos(timeout)
@@ -117,28 +121,30 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](capacity: Int, fai
     }
   }
 
-  def peek: E = locked((if(count == 0) null else itemAt(takeIndex)))
+  def peek: E = locked((if (count == 0) null else itemAt(takeIndex)))
 
   def size: Int = locked(count)
 
   def remainingCapacity: Int = locked(items.length - count)
 
-  override def remove(o: AnyRef): Boolean = if (o eq null) false else {
-    val items = this.items
-    locked {
-      var i: Int = takeIndex
-      var k: Int = count
-      while (k > 0) {
-        if (o == items(i)) {
-          removeAt(i)
-          return true
+  override def remove(o: AnyRef): Boolean =
+    if (o eq null) false
+    else {
+      val items = this.items
+      locked {
+        var i: Int = takeIndex
+        var k: Int = count
+        while (k > 0) {
+          if (o == items(i)) {
+            removeAt(i)
+            return true
+          }
+          i = inc(i)
+          k -= 1
         }
-        i = inc(i)
-        k -= 1
+        false
       }
-      false
     }
-  }
 
   override def contains(o: AnyRef): Boolean = {
     if (o == null) return false
@@ -220,48 +226,53 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](capacity: Int, fai
     }
   }
 
-  def iterator: Iterator[E] = new Iterator[E] {
-    private var remaining: Int = _
-    private var nextIndex: Int = _
-    private var nextItem: E = _
-    private var lastItem: E = _
-    private var lastRet: Int = -1
+  def iterator: Iterator[E] =
+    new Iterator[E] {
+      private var remaining: Int = _
+      private var nextIndex: Int = _
+      private var nextItem: E = _
+      private var lastItem: E = _
+      private var lastRet: Int = -1
 
-    locked {
-      remaining = count
-      if(remaining > 0) {
-        nextIndex = takeIndex
-        nextItem = itemAt(nextIndex)
-      }
-    }
-
-    def hasNext: Boolean = remaining > 0
-
-    def next: E = {
       locked {
-        if (remaining <= 0) throw new NoSuchElementException
-        lastRet = nextIndex
-        var x: E = itemAt(nextIndex)
-        if (x == null) {
-          x = nextItem
-          lastItem = null
+        remaining = count
+        if (remaining > 0) {
+          nextIndex = takeIndex
+          nextItem = itemAt(nextIndex)
         }
-        else lastItem = x
-        while ({ remaining -= 1; remaining > 0 } && { nextIndex = inc(nextIndex); nextItem = itemAt(nextIndex); nextItem == null }) ()
-        x
       }
-    }
 
-    def remove: Unit = throw new UnsupportedOperationException
-  }
+      def hasNext: Boolean = remaining > 0
+
+      def next: E = {
+        locked {
+          if (remaining <= 0) throw new NoSuchElementException
+          lastRet = nextIndex
+          var x: E = itemAt(nextIndex)
+          if (x == null) {
+            x = nextItem
+            lastItem = null
+          } else lastItem = x
+          while ({ remaining -= 1; remaining > 0 } && {
+            nextIndex = inc(nextIndex); nextItem = itemAt(nextIndex);
+            nextItem == null
+          }) ()
+          x
+        }
+      }
+
+      def remove: Unit = throw new UnsupportedOperationException
+    }
 
   @inline private[this] def locked[T](f: => T) = {
     lock.lock
-    try f finally lock.unlock
+    try f
+    finally lock.unlock
   }
 
   @inline private[this] def lockedInterruptibly[T](f: => T) = {
     lock.lockInterruptibly
-    try f finally lock.unlock
+    try f
+    finally lock.unlock
   }
 }

@@ -35,9 +35,9 @@ import org.apache.spark.sql.test.ProcessTestUtils.ProcessOutputCapturer
 import org.apache.spark.util.Utils
 
 /**
- * A test suite for the `spark-sql` CLI tool.  Note that all test cases share the same temporary
- * Hive metastore and warehouse.
- */
+  * A test suite for the `spark-sql` CLI tool.  Note that all test cases share the same temporary
+  * Hive metastore and warehouse.
+  */
 class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
   val warehousePath = Utils.createTempDir()
   val metastorePath = Utils.createTempDir()
@@ -61,16 +61,16 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
   }
 
   /**
-   * Run a CLI operation and expect all the queries and expected answers to be returned.
-   * @param timeout maximum time for the commands to complete
-   * @param extraArgs any extra arguments
-   * @param errorResponses a sequence of strings whose presence in the stdout of the forked process
-   *                       is taken as an immediate error condition. That is: if a line containing
-   *                       with one of these strings is found, fail the test immediately.
-   *                       The default value is `Seq("Error:")`
-   *
-   * @param queriesAndExpectedAnswers one or more tuples of query + answer
-   */
+    * Run a CLI operation and expect all the queries and expected answers to be returned.
+    * @param timeout maximum time for the commands to complete
+    * @param extraArgs any extra arguments
+    * @param errorResponses a sequence of strings whose presence in the stdout of the forked process
+    *                       is taken as an immediate error condition. That is: if a line containing
+    *                       with one of these strings is found, fail the test immediately.
+    *                       The default value is `Seq("Error:")`
+    *
+    * @param queriesAndExpectedAnswers one or more tuples of query + answer
+    */
   def runCliWithin(
       timeout: FiniteDuration,
       extraArgs: Seq[String] = Seq.empty,
@@ -99,43 +99,49 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
     val buffer = new ArrayBuffer[String]()
     val lock = new Object
 
-    def captureOutput(source: String)(line: String): Unit = lock.synchronized {
-      // This test suite sometimes gets extremely slow out of unknown reason on Jenkins.  Here we
-      // add a timestamp to provide more diagnosis information.
-      buffer += s"${new Timestamp(new Date().getTime)} - $source> $line"
+    def captureOutput(source: String)(line: String): Unit =
+      lock.synchronized {
+        // This test suite sometimes gets extremely slow out of unknown reason on Jenkins.  Here we
+        // add a timestamp to provide more diagnosis information.
+        buffer += s"${new Timestamp(new Date().getTime)} - $source> $line"
 
-      // If we haven't found all expected answers and another expected answer comes up...
-      if (next < expectedAnswers.size && line.contains(expectedAnswers(next))) {
-        next += 1
-        // If all expected answers have been found...
-        if (next == expectedAnswers.size) {
-          foundAllExpectedAnswers.trySuccess(())
-        }
-      } else {
-        errorResponses.foreach { r =>
-          if (line.contains(r)) {
-            foundAllExpectedAnswers.tryFailure(
-              new RuntimeException(s"Failed with error line '$line'"))
+        // If we haven't found all expected answers and another expected answer comes up...
+        if (next < expectedAnswers.size && line.contains(
+              expectedAnswers(next))) {
+          next += 1
+          // If all expected answers have been found...
+          if (next == expectedAnswers.size) {
+            foundAllExpectedAnswers.trySuccess(())
+          }
+        } else {
+          errorResponses.foreach { r =>
+            if (line.contains(r)) {
+              foundAllExpectedAnswers.tryFailure(
+                new RuntimeException(s"Failed with error line '$line'"))
+            }
           }
         }
       }
-    }
 
     val process = new ProcessBuilder(command: _*).start()
 
-    val stdinWriter = new OutputStreamWriter(process.getOutputStream, StandardCharsets.UTF_8)
+    val stdinWriter =
+      new OutputStreamWriter(process.getOutputStream, StandardCharsets.UTF_8)
     stdinWriter.write(queriesString)
     stdinWriter.flush()
     stdinWriter.close()
 
-    new ProcessOutputCapturer(process.getInputStream, captureOutput("stdout")).start()
-    new ProcessOutputCapturer(process.getErrorStream, captureOutput("stderr")).start()
+    new ProcessOutputCapturer(process.getInputStream, captureOutput("stdout"))
+      .start()
+    new ProcessOutputCapturer(process.getErrorStream, captureOutput("stderr"))
+      .start()
 
     try {
       Await.result(foundAllExpectedAnswers.future, timeout)
-    } catch { case cause: Throwable =>
-      val message =
-        s"""
+    } catch {
+      case cause: Throwable =>
+        val message =
+          s"""
            |=======================
            |CliSuite failure output
            |=======================
@@ -149,8 +155,8 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
            |End CliSuite failure output
            |===========================
          """.stripMargin
-      logError(message, cause)
-      fail(message, cause)
+        logError(message, cause)
+        fail(message, cause)
     } finally {
       process.destroy()
     }
@@ -158,7 +164,10 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
 
   test("Simple commands") {
     val dataFilePath =
-      Thread.currentThread().getContextClassLoader.getResource("data/files/small_kv.txt")
+      Thread
+        .currentThread()
+        .getContextClassLoader
+        .getResource("data/files/small_kv.txt")
 
     runCliWithin(3.minute)(
       "CREATE TABLE hive_test(key INT, val STRING);"
@@ -192,7 +201,9 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
         -> "hive_test"
     )
 
-    runCliWithin(2.minute, Seq("--database", "hive_test_db", "-e", "SHOW TABLES;"))(
+    runCliWithin(
+      2.minute,
+      Seq("--database", "hive_test_db", "-e", "SHOW TABLES;"))(
       ""
         -> "OK",
       ""
@@ -207,7 +218,10 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
         .mkString(File.separator)
 
     val dataFilePath =
-      Thread.currentThread().getContextClassLoader.getResource("data/files/small_kv.txt")
+      Thread
+        .currentThread()
+        .getContextClassLoader
+        .getResource("data/files/small_kv.txt")
 
     runCliWithin(3.minute, Seq("--jars", s"$jarFile"))(
       """CREATE TABLE t1(key string, val string)
@@ -230,15 +244,16 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
   }
 
   test("SPARK-11188 Analysis error reporting") {
-    runCliWithin(timeout = 2.minute,
-      errorResponses = Seq("AnalysisException"))(
+    runCliWithin(timeout = 2.minute, errorResponses = Seq("AnalysisException"))(
       "select * from nonexistent_table;"
         -> "Error in query: Table not found: nonexistent_table;"
     )
   }
 
   test("SPARK-11624 Spark SQL CLI should set sessionState only once") {
-    runCliWithin(2.minute, Seq("-e", "!echo \"This is a test for Spark-11624\";"))(
+    runCliWithin(
+      2.minute,
+      Seq("-e", "!echo \"This is a test for Spark-11624\";"))(
       "" -> "This is a test for Spark-11624")
   }
 }

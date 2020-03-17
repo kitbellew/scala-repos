@@ -30,9 +30,11 @@ object LongOverflowArith {
       mul(b, a)
     } else if (a < 0L) {
       if (b < 0L) {
-        if (a < Long.MaxValue / b) throw new LongOverflowException(a + " * " + b)
+        if (a < Long.MaxValue / b)
+          throw new LongOverflowException(a + " * " + b)
       } else if (b > 0L) {
-        if (Long.MinValue / b > a) throw new LongOverflowException(a + " * " + b)
+        if (Long.MinValue / b > a)
+          throw new LongOverflowException(a + " * " + b)
       }
     } else if (a > 0L) {
       // and b > 0L

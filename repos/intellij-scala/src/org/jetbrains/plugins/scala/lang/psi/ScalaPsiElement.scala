@@ -9,15 +9,19 @@ import org.jetbrains.plugins.scala.extensions.implementation.PsiElementExtTrait
 import org.jetbrains.plugins.scala.lang.psi.api.{ScalaElementVisitor, ScalaFile}
 import org.jetbrains.plugins.scala.util.monads.MonadTransformer
 
-trait ScalaPsiElement extends PsiElement with PsiElementExtTrait with MonadTransformer {
+trait ScalaPsiElement
+    extends PsiElement
+    with PsiElementExtTrait
+    with MonadTransformer {
   protected override def repr = this
   protected var context: PsiElement = null
   protected var child: PsiElement = null
 
-  def isInCompiledFile = getContainingFile match {
-    case file: ScalaFile => file.isCompiled
-    case _ => false
-  }
+  def isInCompiledFile =
+    getContainingFile match {
+      case file: ScalaFile => file.isCompiled
+      case _               => false
+    }
 
   def setContext(element: PsiElement, child: PsiElement) {
     context = element
@@ -27,34 +31,38 @@ trait ScalaPsiElement extends PsiElement with PsiElementExtTrait with MonadTrans
   def getSameElementInContext: PsiElement = {
     child match {
       case null => this
-      case _ => child
+      case _    => child
     }
   }
 
   def getDeepSameElementInContext: PsiElement = {
     child match {
-      case null => this
-      case _ if child == context => this
+      case null                   => this
+      case _ if child == context  => this
       case child: ScalaPsiElement => child.getDeepSameElementInContext
-      case _ => child
+      case _                      => child
     }
   }
 
   def startOffsetInParent: Int = {
     child match {
       case s: ScalaPsiElement => s.startOffsetInParent
-      case _ => getStartOffsetInParent
+      case _                  => getStartOffsetInParent
     }
   }
 
-  protected def findChildByClassScala[T >: Null <: ScalaPsiElement](clazz: Class[T]): T
+  protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
+      clazz: Class[T]): T
 
-  protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](clazz: Class[T]): Array[T]
+  protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
+      clazz: Class[T]): Array[T]
 
-  protected def findChild[T >: Null <: ScalaPsiElement](clazz: Class[T]): Option[T] = findChildByClassScala(clazz) match {
-    case null => None
-    case e => Some(e)
-  }
+  protected def findChild[T >: Null <: ScalaPsiElement](
+      clazz: Class[T]): Option[T] =
+    findChildByClassScala(clazz) match {
+      case null => None
+      case e    => Some(e)
+    }
 
   def findLastChildByType[T <: PsiElement](t: IElementType): T = {
     var node = getNode.getLastChildNode
@@ -91,7 +99,8 @@ trait ScalaPsiElement extends PsiElement with PsiElementExtTrait with MonadTrans
     if (node == null) null else node.getPsi
   }
 
-  protected def findLastChild[T >: Null <: ScalaPsiElement](clazz: Class[T]): Option[T] = {
+  protected def findLastChild[T >: Null <: ScalaPsiElement](
+      clazz: Class[T]): Option[T] = {
     var child = getLastChild
     while (child != null && !clazz.isInstance(child)) {
       child = child.getPrevSibling
@@ -102,16 +111,15 @@ trait ScalaPsiElement extends PsiElement with PsiElementExtTrait with MonadTrans
   protected def lock(handler: => Unit): Unit = {}
 
   /**
-   * Override in inheritors
-   */
+    * Override in inheritors
+    */
   def accept(visitor: ScalaElementVisitor) {
     visitor.visitElement(this)
   }
 
   /**
-   * Override in inheritors
-   */
-
+    * Override in inheritors
+    */
   def acceptChildren(visitor: ScalaElementVisitor) {
     for (c <- getChildren; if c.isInstanceOf[ScalaPsiElement]) {
       c.asInstanceOf[ScalaPsiElement].accept(visitor)
@@ -119,9 +127,14 @@ trait ScalaPsiElement extends PsiElement with PsiElementExtTrait with MonadTrans
   }
 
   abstract override def getUseScope: SearchScope = {
-    ScalaPsiUtil.intersectScopes(super.getUseScope, containingFile match {
-      case Some(file: ScalaFile) if file.isWorksheetFile || file.isScriptFile() => Some(new LocalSearchScope(file))
-      case _ => None
-    })
+    ScalaPsiUtil.intersectScopes(
+      super.getUseScope,
+      containingFile match {
+        case Some(file: ScalaFile)
+            if file.isWorksheetFile || file.isScriptFile() =>
+          Some(new LocalSearchScope(file))
+        case _ => None
+      }
+    )
   }
 }

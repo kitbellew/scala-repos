@@ -26,9 +26,8 @@ private[tournament] case class WaitingUsers(
     else all
   }
 
-  def waitSecondsOf(userId: String) = hash get userId map { d =>
-    nowSeconds - d.getSeconds
-  }
+  def waitSecondsOf(userId: String) =
+    hash get userId map { d => nowSeconds - d.getSeconds }
 
   def waiting = {
     val since = date minusSeconds waitSeconds
@@ -49,7 +48,8 @@ private[tournament] case class WaitingUsers(
 
   def intersect(us: Seq[String]) = copy(hash = hash filterKeys us.contains)
 
-  def diff(us: Set[String]) = copy(hash = hash filterKeys { k => !us.contains(k) })
+  def diff(us: Set[String]) =
+    copy(hash = hash filterKeys { k => !us.contains(k) })
 
   override def toString = all.toString
 }

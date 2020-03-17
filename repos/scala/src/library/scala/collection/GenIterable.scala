@@ -9,29 +9,25 @@
 package scala
 package collection
 
-
 import generic._
 
-
 /** A trait for all iterable collections which may possibly
- *  have their operations implemented in parallel.
- *
- *  @author Martin Odersky
- *  @author Aleksandar Prokopec
- *  @since 2.9
- */
+  *  have their operations implemented in parallel.
+  *
+  *  @author Martin Odersky
+  *  @author Aleksandar Prokopec
+  *  @since 2.9
+  */
 trait GenIterable[+A]
-extends GenIterableLike[A, GenIterable[A]]
-   with GenTraversable[A]
-   with GenericTraversableTemplate[A, GenIterable]
-{
+    extends GenIterableLike[A, GenIterable[A]]
+    with GenTraversable[A]
+    with GenericTraversableTemplate[A, GenIterable] {
   def seq: Iterable[A]
   override def companion: GenericCompanion[GenIterable] = GenIterable
 }
 
-
 object GenIterable extends GenTraversableFactory[GenIterable] {
-  implicit def canBuildFrom[A] = ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
+  implicit def canBuildFrom[A] =
+    ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
   def newBuilder[A] = Iterable.newBuilder
 }
-

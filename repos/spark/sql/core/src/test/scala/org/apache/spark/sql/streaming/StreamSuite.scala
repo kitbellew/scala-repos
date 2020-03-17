@@ -41,11 +41,13 @@ class StreamSuite extends StreamTest with SharedSQLContext {
 
   test("join") {
     // Make a table and ensure it will be broadcast.
-    val smallTable = Seq((1, "one"), (2, "two"), (4, "four")).toDF("number", "word")
+    val smallTable =
+      Seq((1, "one"), (2, "two"), (4, "four")).toDF("number", "word")
 
     // Join the input stream with a table.
     val inputData = MemoryStream[Int]
-    val joined = inputData.toDS().toDF().join(smallTable, $"value" === $"number")
+    val joined =
+      inputData.toDS().toDF().join(smallTable, $"value" === $"number")
 
     testStream(joined)(
       AddData(inputData, 1, 2, 3),
@@ -69,7 +71,8 @@ class StreamSuite extends StreamTest with SharedSQLContext {
       AddData(inputData1, 7),
       StartStream,
       AddData(inputData2, 8),
-      CheckAnswer(1, 2, 3, 4, 5, 6, 7, 8))
+      CheckAnswer(1, 2, 3, 4, 5, 6, 7, 8)
+    )
   }
 
   test("sql queries") {
@@ -77,8 +80,6 @@ class StreamSuite extends StreamTest with SharedSQLContext {
     inputData.toDF().registerTempTable("stream")
     val evens = sql("SELECT * FROM stream WHERE value % 2 = 0")
 
-    testStream(evens)(
-      AddData(inputData, 1, 2, 3, 4),
-      CheckAnswer(2, 4))
+    testStream(evens)(AddData(inputData, 1, 2, 3, 4), CheckAnswer(2, 4))
   }
 }

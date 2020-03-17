@@ -1,7 +1,8 @@
 trait Rep[a] {
-  def rep[m[x]]: m[a] // typedTypeApply must use asSeenFrom to adapt the return type
-   // since rep is called on x: Rep[t]
-   // a must become t
+  def rep[m[x]]
+      : m[a] // typedTypeApply must use asSeenFrom to adapt the return type
+  // since rep is called on x: Rep[t]
+  // a must become t
 }
 
 case class ShowBin[b](app: b => String)

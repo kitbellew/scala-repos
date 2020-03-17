@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import org.scalajs.core.tools.io._
@@ -40,8 +39,8 @@ final class ScalaJSRunner private[testadapter] (
   private[this] val slaves = TrieMap.empty[Long, ComJSRunner]
 
   /** An object used as lock for the loggers. Ensures output does not get
-   *  interleaved.
-   */
+    *  interleaved.
+    */
   private[testadapter] val loggerLock = new Object
 
   // Constructor body
@@ -50,66 +49,70 @@ final class ScalaJSRunner private[testadapter] (
 
   // Public API
 
-  def tasks(taskDefs: Array[TaskDef]): Array[Task] = synchronized {
-    ensureNotDone()
+  def tasks(taskDefs: Array[TaskDef]): Array[Task] =
+    synchronized {
+      ensureNotDone()
 
-    val outData = taskDefs.toList.toJSON
-    master.send("tasks:" + jsonToString(outData))
+      val outData = taskDefs.toList.toJSON
+      master.send("tasks:" + jsonToString(outData))
 
-    val taskInfos = ComUtils.receiveResponse(master) {
-      case ("ok", data) => fromJSON[List[TaskInfo]](readJSON(data))
-    }
-
-    taskInfos.map(ScalaJSTask.fromInfo(this, _)).toArray
-  }
-
-  def done(): String = synchronized {
-    ensureNotDone()
-
-    /* Whatever happens in here, we must close and eventually terminate all
-     * VMs. So we capture all exceptions in Try's, and we'll rethrow one of
-     * them (if any) at the end.
-     */
-
-    // First we run the stopping sequence of the slaves
-    val slavesDeadline = VMTermTimeout.fromNow
-    val slavesClosing = stopSlaves(slavesDeadline)
-
-    /* Once all slaves are closing, we can schedule termination of the master.
-     * We need a fresh deadline for the master, since we can only start its
-     * scheduling when the slaves are closing.
-     * If we used the same deadline, and a slave timed out during its stopping
-     * sequence, the master would have 0 ms to stop, which is not fair.
-     */
-    val masterDeadline = VMTermTimeout.fromNow
-    val summaryTry = Try {
-      master.send("runnerDone")
-      val summary = ComUtils.receiveResponse(master, masterDeadline.timeLeft) {
-        case ("ok", summary) => summary
+      val taskInfos = ComUtils.receiveResponse(master) {
+        case ("ok", data) => fromJSON[List[TaskInfo]](readJSON(data))
       }
-      master.close()
-      summary
+
+      taskInfos.map(ScalaJSTask.fromInfo(this, _)).toArray
     }
 
-    // Now we wait for everyone to be completely stopped
-    val slavesStopped =
-      slaves.values.toList.map(s => Try(s.awaitOrStop(slavesDeadline.timeLeft)))
-    val masterStopped = Try(master.awaitOrStop(masterDeadline.timeLeft))
+  def done(): String =
+    synchronized {
+      ensureNotDone()
 
-    // Cleanup
-    master = null
-    slaves.clear()
+      /* Whatever happens in here, we must close and eventually terminate all
+       * VMs. So we capture all exceptions in Try's, and we'll rethrow one of
+       * them (if any) at the end.
+       */
 
-    framework.runDone()
+      // First we run the stopping sequence of the slaves
+      val slavesDeadline = VMTermTimeout.fromNow
+      val slavesClosing = stopSlaves(slavesDeadline)
 
-    // At this point, rethrow any exception we captured on the way with Try's
-    slavesClosing.get
-    slavesStopped.foreach(_.get)
-    masterStopped.get
+      /* Once all slaves are closing, we can schedule termination of the master.
+       * We need a fresh deadline for the master, since we can only start its
+       * scheduling when the slaves are closing.
+       * If we used the same deadline, and a slave timed out during its stopping
+       * sequence, the master would have 0 ms to stop, which is not fair.
+       */
+      val masterDeadline = VMTermTimeout.fromNow
+      val summaryTry = Try {
+        master.send("runnerDone")
+        val summary =
+          ComUtils.receiveResponse(master, masterDeadline.timeLeft) {
+            case ("ok", summary) => summary
+          }
+        master.close()
+        summary
+      }
 
-    // And finally, if all went well, return the summary
-    summaryTry.get
-  }
+      // Now we wait for everyone to be completely stopped
+      val slavesStopped =
+        slaves.values.toList.map(s =>
+          Try(s.awaitOrStop(slavesDeadline.timeLeft)))
+      val masterStopped = Try(master.awaitOrStop(masterDeadline.timeLeft))
+
+      // Cleanup
+      master = null
+      slaves.clear()
+
+      framework.runDone()
+
+      // At this point, rethrow any exception we captured on the way with Try's
+      slavesClosing.get
+      slavesStopped.foreach(_.get)
+      masterStopped.get
+
+      // And finally, if all went well, return the summary
+      summaryTry.get
+    }
 
   // Runner Messaging
 
@@ -149,8 +152,8 @@ final class ScalaJSRunner private[testadapter] (
   }
 
   /** Starts the stopping sequence of all slaves.
-   *  The returned future will be completed when all slaves are closing.
-   */
+    *  The returned future will be completed when all slaves are closing.
+    */
   private def stopSlaves(deadline: Deadline): Try[Unit] = {
     val slaves = this.slaves.values.toList // .toList to make it strict
 
@@ -162,7 +165,7 @@ final class ScalaJSRunner private[testadapter] (
     // Then process all their messages and close them
     val slavesClosed = for (slave <- slaves) yield Try {
       ComUtils.receiveLoop(slave, deadline)(
-          msgHandler(slave) orElse ComUtils.doneHandler)
+        msgHandler(slave) orElse ComUtils.doneHandler)
       slave.close()
     }
 
@@ -208,10 +211,11 @@ final class ScalaJSRunner private[testadapter] (
     new MemVirtualJSFile(s"testMaster.js").withContent(code)
   }
 
-  private def ensureNotDone(): Unit = synchronized {
-    if (master == null)
-      throw new IllegalStateException("Runner is already done")
-  }
+  private def ensureNotDone(): Unit =
+    synchronized {
+      if (master == null)
+        throw new IllegalStateException("Runner is already done")
+    }
 
   private def createRemoteRunner(): Unit = {
     assert(master == null)

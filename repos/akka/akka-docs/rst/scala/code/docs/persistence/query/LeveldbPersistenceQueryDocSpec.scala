@@ -4,7 +4,7 @@
 package docs.persistence.query
 
 import akka.NotUsed
-import akka.persistence.journal.{ EventAdapter, EventSeq }
+import akka.persistence.journal.{EventAdapter, EventSeq}
 import akka.testkit.AkkaSpec
 import akka.persistence.query.PersistenceQuery
 import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
@@ -21,15 +21,16 @@ object LeveldbPersistenceQueryDocSpec {
 
   class MyTaggingEventAdapter extends WriteEventAdapter {
     val colors = Set("green", "black", "blue")
-    override def toJournal(event: Any): Any = event match {
-      case s: String ⇒
-        var tags = colors.foldLeft(Set.empty[String]) { (acc, c) ⇒
-          if (s.contains(c)) acc + c else acc
-        }
-        if (tags.isEmpty) event
-        else Tagged(event, tags)
-      case _ ⇒ event
-    }
+    override def toJournal(event: Any): Any =
+      event match {
+        case s: String ⇒
+          var tags = colors.foldLeft(Set.empty[String]) { (acc, c) ⇒
+            if (s.contains(c)) acc + c else acc
+          }
+          if (tags.isEmpty) event
+          else Tagged(event, tags)
+        case _ ⇒ event
+      }
 
     override def manifest(event: Any): String = ""
   }
@@ -46,16 +47,16 @@ class LeveldbPersistenceQueryDocSpec(config: String) extends AkkaSpec(config) {
       import akka.persistence.query.PersistenceQuery
       import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 
-      val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](
-        LeveldbReadJournal.Identifier)
+      val queries = PersistenceQuery(system)
+        .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
       //#get-read-journal
     }
 
     "demonstrate EventsByPersistenceId" in {
       //#EventsByPersistenceId
       implicit val mat = ActorMaterializer()(system)
-      val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](
-        LeveldbReadJournal.Identifier)
+      val queries = PersistenceQuery(system)
+        .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
 
       val src: Source[EventEnvelope, NotUsed] =
         queries.eventsByPersistenceId("some-persistence-id", 0L, Long.MaxValue)
@@ -67,8 +68,8 @@ class LeveldbPersistenceQueryDocSpec(config: String) extends AkkaSpec(config) {
     "demonstrate AllPersistenceIds" in {
       //#AllPersistenceIds
       implicit val mat = ActorMaterializer()(system)
-      val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](
-        LeveldbReadJournal.Identifier)
+      val queries = PersistenceQuery(system)
+        .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
 
       val src: Source[String, NotUsed] = queries.allPersistenceIds()
       //#AllPersistenceIds
@@ -77,8 +78,8 @@ class LeveldbPersistenceQueryDocSpec(config: String) extends AkkaSpec(config) {
     "demonstrate EventsByTag" in {
       //#EventsByTag
       implicit val mat = ActorMaterializer()(system)
-      val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](
-        LeveldbReadJournal.Identifier)
+      val queries = PersistenceQuery(system)
+        .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
 
       val src: Source[EventEnvelope, NotUsed] =
         queries.eventsByTag(tag = "green", offset = 0L)

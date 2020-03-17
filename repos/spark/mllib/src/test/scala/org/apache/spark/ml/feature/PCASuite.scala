@@ -26,11 +26,15 @@ import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.mllib.util.TestingUtils._
 import org.apache.spark.sql.Row
 
-class PCASuite extends SparkFunSuite with MLlibTestSparkContext with DefaultReadWriteTest {
+class PCASuite
+    extends SparkFunSuite
+    with MLlibTestSparkContext
+    with DefaultReadWriteTest {
 
   test("params") {
     ParamsSuite.checkParams(new PCA)
-    val mat = Matrices.dense(2, 2, Array(0.0, 1.0, 2.0, 3.0)).asInstanceOf[DenseMatrix]
+    val mat =
+      Matrices.dense(2, 2, Array(0.0, 1.0, 2.0, 3.0)).asInstanceOf[DenseMatrix]
     val explainedVariance = Vectors.dense(0.5, 0.5).asInstanceOf[DenseVector]
     val model = new PCAModel("pca", mat, explainedVariance)
     ParamsSuite.checkParams(model)
@@ -49,7 +53,9 @@ class PCASuite extends SparkFunSuite with MLlibTestSparkContext with DefaultRead
     val pc = mat.computePrincipalComponents(3)
     val expected = mat.multiply(pc).rows
 
-    val df = sqlContext.createDataFrame(dataRDD.zip(expected)).toDF("features", "expected")
+    val df = sqlContext
+      .createDataFrame(dataRDD.zip(expected))
+      .toDF("features", "expected")
 
     val pca = new PCA()
       .setInputCol("features")
@@ -62,7 +68,9 @@ class PCASuite extends SparkFunSuite with MLlibTestSparkContext with DefaultRead
 
     pca.transform(df).select("pca_features", "expected").collect().foreach {
       case Row(x: Vector, y: Vector) =>
-        assert(x ~== y absTol 1e-5, "Transformed vector is different with expected vector.")
+        assert(
+          x ~== y absTol 1e-5,
+          "Transformed vector is different with expected vector.")
     }
   }
 
@@ -75,7 +83,8 @@ class PCASuite extends SparkFunSuite with MLlibTestSparkContext with DefaultRead
   }
 
   test("PCAModel read/write") {
-    val instance = new PCAModel("myPCAModel",
+    val instance = new PCAModel(
+      "myPCAModel",
       Matrices.dense(2, 2, Array(0.0, 1.0, 2.0, 3.0)).asInstanceOf[DenseMatrix],
       Vectors.dense(0.5, 0.5).asInstanceOf[DenseVector])
     val newInstance = testDefaultReadWrite(instance)

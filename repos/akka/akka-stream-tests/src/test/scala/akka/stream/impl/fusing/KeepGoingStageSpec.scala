@@ -1,16 +1,21 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.impl.fusing
 
-import akka.actor.{ NoSerializationVerificationNeeded, ActorRef }
-import akka.stream.scaladsl.{ Keep, Source }
-import akka.stream.{ Attributes, Inlet, SinkShape, ActorMaterializer }
-import akka.stream.stage.{ InHandler, AsyncCallback, GraphStageLogic, GraphStageWithMaterializedValue }
+import akka.actor.{NoSerializationVerificationNeeded, ActorRef}
+import akka.stream.scaladsl.{Keep, Source}
+import akka.stream.{Attributes, Inlet, SinkShape, ActorMaterializer}
+import akka.stream.stage.{
+  InHandler,
+  AsyncCallback,
+  GraphStageLogic,
+  GraphStageWithMaterializedValue
+}
 import akka.testkit.AkkaSpec
 import akka.stream.testkit.Utils._
 
-import scala.concurrent.{ Await, Promise, Future }
+import scala.concurrent.{Await, Promise, Future}
 import scala.concurrent.duration._
 
 class KeepGoingStageSpec extends AkkaSpec {
@@ -38,10 +43,12 @@ class KeepGoingStageSpec extends AkkaSpec {
     def throwEx(): Unit = cb.invoke(Throw)
   }
 
-  class PingableSink(keepAlive: Boolean) extends GraphStageWithMaterializedValue[SinkShape[Int], Future[PingRef]] {
+  class PingableSink(keepAlive: Boolean)
+      extends GraphStageWithMaterializedValue[SinkShape[Int], Future[PingRef]] {
     val shape = SinkShape[Int](Inlet("ping.in"))
 
-    override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Future[PingRef]) = {
+    override def createLogicAndMaterializedValue(
+        inheritedAttributes: Attributes): (GraphStageLogic, Future[PingRef]) = {
       val promise = Promise[PingRef]()
 
       val logic = new GraphStageLogic(shape) {
@@ -52,27 +59,32 @@ class KeepGoingStageSpec extends AkkaSpec {
           promise.trySuccess(PingRef(getAsyncCallback(onCommand)))
         }
 
-        private def onCommand(cmd: PingCmd): Unit = cmd match {
-          case Register(probe) ⇒ listener = Some(probe)
-          case Ping            ⇒ listener.foreach(_ ! Pong)
-          case CompleteStage ⇒
-            completeStage()
-            listener.foreach(_ ! EndOfEventHandler)
-          case FailStage ⇒
-            failStage(TE("test"))
-            listener.foreach(_ ! EndOfEventHandler)
-          case Throw ⇒
-            try {
-              throw TE("test")
-            } finally listener.foreach(_ ! EndOfEventHandler)
-        }
+        private def onCommand(cmd: PingCmd): Unit =
+          cmd match {
+            case Register(probe) ⇒ listener = Some(probe)
+            case Ping ⇒ listener.foreach(_ ! Pong)
+            case CompleteStage ⇒
+              completeStage()
+              listener.foreach(_ ! EndOfEventHandler)
+            case FailStage ⇒
+              failStage(TE("test"))
+              listener.foreach(_ ! EndOfEventHandler)
+            case Throw ⇒
+              try {
+                throw TE("test")
+              } finally listener.foreach(_ ! EndOfEventHandler)
+          }
 
-        setHandler(shape.in, new InHandler {
-          override def onPush(): Unit = pull(shape.in)
+        setHandler(
+          shape.in,
+          new InHandler {
+            override def onPush(): Unit = pull(shape.in)
 
-          // Ignore finish
-          override def onUpstreamFinish(): Unit = listener.foreach(_ ! UpstreamCompleted)
-        })
+            // Ignore finish
+            override def onUpstreamFinish(): Unit =
+              listener.foreach(_ ! UpstreamCompleted)
+          }
+        )
 
         override def postStop(): Unit = listener.foreach(_ ! PostStop)
       }
@@ -84,7 +96,10 @@ class KeepGoingStageSpec extends AkkaSpec {
   "A stage with keep-going" must {
 
     "still be alive after all ports have been closed until explicitly closed" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source.maybe[Int].toMat(new PingableSink(keepAlive = true))(Keep.both).run()
+      val (maybePromise, pingerFuture) = Source
+        .maybe[Int]
+        .toMat(new PingableSink(keepAlive = true))(Keep.both)
+        .run()
       val pinger = Await.result(pingerFuture, 3.seconds)
 
       pinger.register(testActor)
@@ -115,7 +130,10 @@ class KeepGoingStageSpec extends AkkaSpec {
     }
 
     "still be alive after all ports have been closed until explicitly failed" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source.maybe[Int].toMat(new PingableSink(keepAlive = true))(Keep.both).run()
+      val (maybePromise, pingerFuture) = Source
+        .maybe[Int]
+        .toMat(new PingableSink(keepAlive = true))(Keep.both)
+        .run()
       val pinger = Await.result(pingerFuture, 3.seconds)
 
       pinger.register(testActor)
@@ -146,7 +164,10 @@ class KeepGoingStageSpec extends AkkaSpec {
     }
 
     "still be alive after all ports have been closed until implicitly failed (via exception)" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source.maybe[Int].toMat(new PingableSink(keepAlive = true))(Keep.both).run()
+      val (maybePromise, pingerFuture) = Source
+        .maybe[Int]
+        .toMat(new PingableSink(keepAlive = true))(Keep.both)
+        .run()
       val pinger = Await.result(pingerFuture, 3.seconds)
 
       pinger.register(testActor)
@@ -177,7 +198,10 @@ class KeepGoingStageSpec extends AkkaSpec {
     }
 
     "close down early if keepAlive is not requested" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source.maybe[Int].toMat(new PingableSink(keepAlive = false))(Keep.both).run()
+      val (maybePromise, pingerFuture) = Source
+        .maybe[Int]
+        .toMat(new PingableSink(keepAlive = false))(Keep.both)
+        .run()
       val pinger = Await.result(pingerFuture, 3.seconds)
 
       pinger.register(testActor)

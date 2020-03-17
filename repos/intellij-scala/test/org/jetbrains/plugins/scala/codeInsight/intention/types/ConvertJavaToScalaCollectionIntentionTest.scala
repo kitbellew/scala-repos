@@ -5,7 +5,6 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 class ConvertJavaToScalaCollectionIntentionTest extends ScalaIntentionTestBase {
   def familyName: String = ConvertJavaToScalaCollectionIntention.getFamilyName
 
-
   def testIntentionIsAvailable() {
     checkIntentionIsAvailable(
       """

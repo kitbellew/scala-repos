@@ -16,15 +16,16 @@ final class JSDependencyManifest(
 
   import JSDependencyManifest._
 
-  override def equals(that: Any): Boolean = that match {
-    case that: JSDependencyManifest =>
-      this.origin == that.origin &&
-      this.libDeps == that.libDeps &&
-      this.requiresDOM == that.requiresDOM &&
-      this.compliantSemantics == that.compliantSemantics
-    case _ =>
-      false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: JSDependencyManifest =>
+        this.origin == that.origin &&
+          this.libDeps == that.libDeps &&
+          this.requiresDOM == that.requiresDOM &&
+          this.compliantSemantics == that.compliantSemantics
+      case _ =>
+        false
+    }
 
   override def hashCode(): Int = {
     import scala.util.hashing.MurmurHash3._
@@ -57,13 +58,14 @@ object JSDependencyManifest {
 
   final val ManifestFileName = "JS_DEPENDENCIES"
 
-  implicit object JSDepManJSONSerializer extends JSONSerializer[JSDependencyManifest] {
+  implicit object JSDepManJSONSerializer
+      extends JSONSerializer[JSDependencyManifest] {
     @inline def optList[T](x: List[T]): Option[List[T]] =
       if (x.nonEmpty) Some(x) else None
 
     def serialize(x: JSDependencyManifest): JSON = {
       new JSONObjBuilder()
-        .fld("origin",  x.origin)
+        .fld("origin", x.origin)
         .opt("libDeps", optList(x.libDeps))
         .opt("requiresDOM", if (x.requiresDOM) Some(true) else None)
         .opt("compliantSemantics", optList(x.compliantSemantics))
@@ -71,18 +73,21 @@ object JSDependencyManifest {
     }
   }
 
-  implicit object JSDepManJSONDeserializer extends JSONDeserializer[JSDependencyManifest] {
+  implicit object JSDepManJSONDeserializer
+      extends JSONDeserializer[JSDependencyManifest] {
     def deserialize(x: JSON): JSDependencyManifest = {
       val obj = new JSONObjExtractor(x)
       new JSDependencyManifest(
-          obj.fld[Origin]            ("origin"),
-          obj.opt[List[JSDependency]]("libDeps").getOrElse(Nil),
-          obj.opt[Boolean]           ("requiresDOM").getOrElse(false),
-          obj.opt[List[String]]      ("compliantSemantics").getOrElse(Nil))
+        obj.fld[Origin]("origin"),
+        obj.opt[List[JSDependency]]("libDeps").getOrElse(Nil),
+        obj.opt[Boolean]("requiresDOM").getOrElse(false),
+        obj.opt[List[String]]("compliantSemantics").getOrElse(Nil))
     }
   }
 
-  def write(dep: JSDependencyManifest, output: WritableVirtualTextFile): Unit = {
+  def write(
+      dep: JSDependencyManifest,
+      output: WritableVirtualTextFile): Unit = {
     val writer = output.contentWriter
     try write(dep, writer)
     finally writer.close()

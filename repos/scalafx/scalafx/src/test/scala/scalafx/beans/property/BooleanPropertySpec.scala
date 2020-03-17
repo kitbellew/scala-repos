@@ -37,10 +37,10 @@ import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 import scalafx.Includes._
 
 /**
- * BooleanProperty Spec tests.
- *
- *
- */
+  * BooleanProperty Spec tests.
+  *
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class BooleanPropertySpec extends FlatSpec with BeforeAndAfterEach {
   val bean = new Object()

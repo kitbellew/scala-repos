@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.remote
 
 import akka.testkit.AkkaSpec
@@ -9,7 +9,8 @@ import java.util.concurrent.ThreadLocalRandom
 
 object AckedDeliverySpec {
 
-  final case class Sequenced(seq: SeqNo, body: String) extends HasSequenceNumber {
+  final case class Sequenced(seq: SeqNo, body: String)
+      extends HasSequenceNumber {
     override def toString = s"MSG[${seq.rawValue}]"
   }
 
@@ -91,7 +92,11 @@ class AckedDeliverySpec extends AkkaSpec {
     }
 
     "refuse buffering new messages if capacity reached" in {
-      val buffer = new AckedSendBuffer[Sequenced](4).buffer(msg(0)).buffer(msg(1)).buffer(msg(2)).buffer(msg(3))
+      val buffer = new AckedSendBuffer[Sequenced](4)
+        .buffer(msg(0))
+        .buffer(msg(1))
+        .buffer(msg(2))
+        .buffer(msg(3))
 
       intercept[ResendBufferCapacityReachedException] {
         buffer buffer msg(4)
@@ -231,7 +236,8 @@ class AckedDeliverySpec extends AkkaSpec {
         .receive(msg2)
         .extractDeliverable
 
-      val buf3 = buf2.receive(msg0)
+      val buf3 = buf2
+        .receive(msg0)
         .receive(msg1)
         .receive(msg2)
 
@@ -250,8 +256,10 @@ class AckedDeliverySpec extends AkkaSpec {
       val msg2 = msg(2)
       val msg3 = msg(3)
 
-      val buf = buf1.receive(msg1a).receive(msg2).mergeFrom(
-        buf2.receive(msg1b).receive(msg3))
+      val buf = buf1
+        .receive(msg1a)
+        .receive(msg2)
+        .mergeFrom(buf2.receive(msg1b).receive(msg3))
 
       val (_, deliver, ack) = buf.receive(msg0).extractDeliverable
       deliver should ===(Vector(msg0, msg1a, msg2, msg3))
@@ -271,7 +279,9 @@ class AckedDeliverySpec extends AkkaSpec {
     "correctly cooperate with each other" in {
       val MsgCount = 1000
       val DeliveryProbability = 0.5
-      val referenceList: Seq[Sequenced] = (0 until MsgCount).toSeq map { i ⇒ msg(i.toLong) }
+      val referenceList: Seq[Sequenced] = (0 until MsgCount).toSeq map { i ⇒
+        msg(i.toLong)
+      }
 
       var toSend = referenceList
       var received = Seq.empty[Sequenced]
@@ -294,7 +304,8 @@ class AckedDeliverySpec extends AkkaSpec {
         (resends ++ sends) foreach { msg ⇒
           if (sends.contains(msg)) sndBuf = sndBuf.buffer(msg)
           if (happened(p)) {
-            val (updatedRcvBuf, delivers, ack) = rcvBuf.receive(msg).extractDeliverable
+            val (updatedRcvBuf, delivers, ack) =
+              rcvBuf.receive(msg).extractDeliverable
             rcvBuf = updatedRcvBuf
             dbgLog(s"$sndBuf -- $msg --> $rcvBuf")
             lastAck = ack
@@ -312,7 +323,8 @@ class AckedDeliverySpec extends AkkaSpec {
       }
 
       // Dropping phase
-      info(s"Starting unreliable delivery for $MsgCount messages, with delivery probability P = $DeliveryProbability")
+      info(
+        s"Starting unreliable delivery for $MsgCount messages, with delivery probability P = $DeliveryProbability")
       var steps = MsgCount * 2
       while (steps > 0) {
         val s = geom(0.3, limit = 5)

@@ -6,13 +6,13 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv
 
 import org.scalajs.core.tools.io.VirtualJSFile
 import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 
 trait JSEnv {
+
   /** Human-readable name for this [[JSEnv]] */
   def name: String
 
@@ -20,22 +20,22 @@ trait JSEnv {
   def jsRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner
 
   /** Prepare a runner without any libraries.
-   *
-   *  Strictly equivalent to:
-   *  {{{
-   *  this.jsRunner(Nil, code)
-   *  }}}
-   */
+    *
+    *  Strictly equivalent to:
+    *  {{{
+    *  this.jsRunner(Nil, code)
+    *  }}}
+    */
   final def jsRunner(code: VirtualJSFile): JSRunner = jsRunner(Nil, code)
 
   /** Return this [[JSEnv]] with the given libraries already loaded.
-   *
-   *  The following two are equivalent:
-   *  {{{
-   *  jsEnv.loadLibs(a).jsRunner(b, c)
-   *  jsEnv.jsRunner(a ++ b, c)
-   *  }}}
-   */
+    *
+    *  The following two are equivalent:
+    *  {{{
+    *  jsEnv.loadLibs(a).jsRunner(b, c)
+    *  jsEnv.jsRunner(a ++ b, c)
+    *  }}}
+    */
   def loadLibs(libs: Seq[ResolvedJSDependency]): JSEnv =
     new LoadedLibs { val loadedLibs = libs }
 
@@ -44,7 +44,9 @@ trait JSEnv {
 
     def name: String = JSEnv.this.name
 
-    def jsRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner =
+    def jsRunner(
+        libs: Seq[ResolvedJSDependency],
+        code: VirtualJSFile): JSRunner =
       JSEnv.this.jsRunner(loadedLibs ++ libs, code)
   }
 }

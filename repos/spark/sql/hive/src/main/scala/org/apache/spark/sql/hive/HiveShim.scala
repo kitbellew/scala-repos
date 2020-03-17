@@ -34,7 +34,10 @@ import org.apache.hadoop.hive.ql.exec.{UDF, Utilities}
 import org.apache.hadoop.hive.ql.plan.{FileSinkDesc, TableDesc}
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFMacro
 import org.apache.hadoop.hive.serde2.ColumnProjectionUtils
-import org.apache.hadoop.hive.serde2.avro.{AvroGenericRecordWritable, AvroSerdeUtils}
+import org.apache.hadoop.hive.serde2.avro.{
+  AvroGenericRecordWritable,
+  AvroSerdeUtils
+}
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.HiveDecimalObjectInspector
 import org.apache.hadoop.io.Writable
 
@@ -47,13 +50,15 @@ private[hive] object HiveShim {
   // scale Hive 0.13 infers for BigDecimals from sources that don't specify them (e.g. UDFs)
   val UNLIMITED_DECIMAL_PRECISION = 38
   val UNLIMITED_DECIMAL_SCALE = 18
-  val HIVE_GENERIC_UDF_MACRO_CLS = "org.apache.hadoop.hive.ql.udf.generic.GenericUDFMacro"
+  val HIVE_GENERIC_UDF_MACRO_CLS =
+    "org.apache.hadoop.hive.ql.udf.generic.GenericUDFMacro"
 
   /*
    * This function in hive-0.13 become private, but we have to do this to walkaround hive bug
    */
   private def appendReadColumnNames(conf: Configuration, cols: Seq[String]) {
-    val old: String = conf.get(ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR, "")
+    val old: String =
+      conf.get(ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR, "")
     val result: StringBuilder = new StringBuilder(old)
     var first: Boolean = old.isEmpty
 
@@ -71,7 +76,10 @@ private[hive] object HiveShim {
   /*
    * Cannot use ColumnProjectionUtils.appendReadColumns directly, if ids is null or empty
    */
-  def appendReadColumns(conf: Configuration, ids: Seq[Integer], names: Seq[String]) {
+  def appendReadColumns(
+      conf: Configuration,
+      ids: Seq[Integer],
+      names: Seq[String]) {
     if (ids != null && ids.nonEmpty) {
       ColumnProjectionUtils.appendReadColumns(conf, ids.asJava)
     }
@@ -84,7 +92,9 @@ private[hive] object HiveShim {
    * Bug introduced in hive-0.13. AvroGenericRecordWritable has a member recordReaderID that
    * is needed to initialize before serialization.
    */
-  def prepareWritable(w: Writable, serDeProps: Seq[(String, String)]): Writable = {
+  def prepareWritable(
+      w: Writable,
+      serDeProps: Seq[(String, String)]): Writable = {
     w match {
       case w: AvroGenericRecordWritable =>
         w.setRecordReaderID(new UID())
@@ -92,59 +102,72 @@ private[hive] object HiveShim {
         // be thrown.
         if (w.getFileSchema() == null) {
           serDeProps
-            .find(_._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL.getPropName())
-            .foreach { kv =>
-              w.setFileSchema(new Schema.Parser().parse(kv._2))
-            }
+            .find(
+              _._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL
+                .getPropName())
+            .foreach { kv => w.setFileSchema(new Schema.Parser().parse(kv._2)) }
         }
       case _ =>
     }
     w
   }
 
-  def toCatalystDecimal(hdoi: HiveDecimalObjectInspector, data: Any): Decimal = {
+  def toCatalystDecimal(
+      hdoi: HiveDecimalObjectInspector,
+      data: Any): Decimal = {
     if (hdoi.preferWritable()) {
-      Decimal(hdoi.getPrimitiveWritableObject(data).getHiveDecimal().bigDecimalValue,
-        hdoi.precision(), hdoi.scale())
+      Decimal(
+        hdoi.getPrimitiveWritableObject(data).getHiveDecimal().bigDecimalValue,
+        hdoi.precision(),
+        hdoi.scale())
     } else {
-      Decimal(hdoi.getPrimitiveJavaObject(data).bigDecimalValue(), hdoi.precision(), hdoi.scale())
+      Decimal(
+        hdoi.getPrimitiveJavaObject(data).bigDecimalValue(),
+        hdoi.precision(),
+        hdoi.scale())
     }
   }
 
   /**
-   * This class provides the UDF creation and also the UDF instance serialization and
-   * de-serialization cross process boundary.
-   *
-   * Detail discussion can be found at https://github.com/apache/spark/pull/3640
-   *
-   * @param functionClassName UDF class name
-   * @param instance optional UDF instance which contains additional information (for macro)
-   */
-  private[hive] case class HiveFunctionWrapper(var functionClassName: String,
-    private var instance: AnyRef = null) extends java.io.Externalizable {
+    * This class provides the UDF creation and also the UDF instance serialization and
+    * de-serialization cross process boundary.
+    *
+    * Detail discussion can be found at https://github.com/apache/spark/pull/3640
+    *
+    * @param functionClassName UDF class name
+    * @param instance optional UDF instance which contains additional information (for macro)
+    */
+  private[hive] case class HiveFunctionWrapper(
+      var functionClassName: String,
+      private var instance: AnyRef = null)
+      extends java.io.Externalizable {
 
     // for Serialization
     def this() = this(null)
 
     override def hashCode(): Int = {
       if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
-        Objects.hashCode(functionClassName, instance.asInstanceOf[GenericUDFMacro].getBody())
+        Objects.hashCode(
+          functionClassName,
+          instance.asInstanceOf[GenericUDFMacro].getBody())
       } else {
         functionClassName.hashCode()
       }
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case a: HiveFunctionWrapper if functionClassName == a.functionClassName =>
-        // In case of udf macro, check to make sure they point to the same underlying UDF
-        if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
-          a.instance.asInstanceOf[GenericUDFMacro].getBody() ==
-            instance.asInstanceOf[GenericUDFMacro].getBody()
-        } else {
-          true
-        }
-      case _ => false
-    }
+    override def equals(other: Any): Boolean =
+      other match {
+        case a: HiveFunctionWrapper
+            if functionClassName == a.functionClassName =>
+          // In case of udf macro, check to make sure they point to the same underlying UDF
+          if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
+            a.instance.asInstanceOf[GenericUDFMacro].getBody() ==
+              instance.asInstanceOf[GenericUDFMacro].getBody()
+          } else {
+            true
+          }
+        case _ => false
+      }
 
     @transient
     def deserializeObjectByKryo[T: ClassTag](
@@ -158,22 +181,27 @@ private[hive] object HiveShim {
     }
 
     @transient
-    def serializeObjectByKryo(
-        kryo: Kryo,
-        plan: Object,
-        out: OutputStream) {
+    def serializeObjectByKryo(kryo: Kryo, plan: Object, out: OutputStream) {
       val output: Output = new Output(out)
       kryo.writeObject(output, plan)
       output.close()
     }
 
-    def deserializePlan[UDFType](is: java.io.InputStream, clazz: Class[_]): UDFType = {
-      deserializeObjectByKryo(Utilities.runtimeSerializationKryo.get(), is, clazz)
+    def deserializePlan[UDFType](
+        is: java.io.InputStream,
+        clazz: Class[_]): UDFType = {
+      deserializeObjectByKryo(
+        Utilities.runtimeSerializationKryo.get(),
+        is,
+        clazz)
         .asInstanceOf[UDFType]
     }
 
     def serializePlan(function: AnyRef, out: java.io.OutputStream): Unit = {
-      serializeObjectByKryo(Utilities.runtimeSerializationKryo.get(), function, out)
+      serializeObjectByKryo(
+        Utilities.runtimeSerializationKryo.get(),
+        function,
+        out)
     }
 
     def writeExternal(out: java.io.ObjectOutput) {
@@ -207,7 +235,8 @@ private[hive] object HiveShim {
         in.readFully(functionInBytes)
 
         // deserialize the function object via Hive Utilities
-        instance = deserializePlan[AnyRef](new java.io.ByteArrayInputStream(functionInBytes),
+        instance = deserializePlan[AnyRef](
+          new java.io.ByteArrayInputStream(functionInBytes),
           Utils.getContextOrSparkClassLoader.loadClass(functionClassName))
       }
     }
@@ -217,7 +246,9 @@ private[hive] object HiveShim {
         instance.asInstanceOf[UDFType]
       } else {
         val func = Utils.getContextOrSparkClassLoader
-          .loadClass(functionClassName).newInstance.asInstanceOf[UDFType]
+          .loadClass(functionClassName)
+          .newInstance
+          .asInstanceOf[UDFType]
         if (!func.isInstanceOf[UDF]) {
           // We cache the function if it's no the Simple UDF,
           // as we always have to create new instance for Simple UDF
@@ -249,7 +280,8 @@ private[hive] object HiveShim {
       var dir: String,
       var tableInfo: TableDesc,
       var compressed: Boolean)
-    extends Serializable with Logging {
+      extends Serializable
+      with Logging {
     var compressCodec: String = _
     var compressType: String = _
     var destTableId: Int = _

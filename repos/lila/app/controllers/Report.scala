@@ -6,25 +6,25 @@ import views._
 
 import lila.app._
 import lila.security.Granter
-import lila.user.{ User => UserModel, UserRepo }
+import lila.user.{User => UserModel, UserRepo}
 
 object Report extends LilaController {
 
   private def forms = Env.report.forms
   private def api = Env.report.api
 
-  def list = Secure(_.SeeReport) { implicit ctx =>
-    _ => api unprocessedAndRecent 50 map { reports =>
-      html.report.list(reports)
+  def list =
+    Secure(_.SeeReport) { implicit ctx => _ =>
+      api unprocessedAndRecent 50 map { reports => html.report.list(reports) }
     }
-  }
 
-  def process(id: String) = Secure(_.SeeReport) { implicit ctx =>
-    me => api.process(id, me) inject Redirect(routes.Report.list)
-  }
+  def process(id: String) =
+    Secure(_.SeeReport) { implicit ctx => me =>
+      api.process(id, me) inject Redirect(routes.Report.list)
+    }
 
-  def form = Auth { implicit ctx =>
-    implicit me =>
+  def form =
+    Auth { implicit ctx => implicit me =>
       NotForKids {
         get("username") ?? UserRepo.named flatMap { user =>
           forms.createWithCaptcha map {
@@ -32,26 +32,29 @@ object Report extends LilaController {
           }
         }
       }
-  }
+    }
 
-  def create = AuthBody { implicit ctx =>
-    implicit me =>
+  def create =
+    AuthBody { implicit ctx => implicit me =>
       implicit val req = ctx.body
       forms.create.bindFromRequest.fold(
-        err => get("username") ?? UserRepo.named flatMap { user =>
-          forms.anyCaptcha map { captcha =>
-            BadRequest(html.report.form(err, user, captcha))
+        err =>
+          get("username") ?? UserRepo.named flatMap { user =>
+            forms.anyCaptcha map { captcha =>
+              BadRequest(html.report.form(err, user, captcha))
+            }
+          },
+        data =>
+          api.create(data, me) map { report =>
+            Redirect(routes.Report.thanks(data.user.username))
           }
-        },
-        data => api.create(data, me) map { report =>
-          Redirect(routes.Report.thanks(data.user.username))
-        })
-  }
+      )
+    }
 
-  def thanks(reported: String) = Auth { implicit ctx =>
-    implicit me =>
+  def thanks(reported: String) =
+    Auth { implicit ctx => implicit me =>
       Env.relation.api.fetchBlocks(me.id, reported) map { blocked =>
         html.report.thanks(reported, blocked)
       }
-  }
+    }
 }

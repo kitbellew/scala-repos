@@ -3,8 +3,13 @@ package java.lang
 import scala.scalajs.js
 import js.annotation.JSExport
 
-final class StackTraceElement(declaringClass: String, methodName: String,
-    fileName: String, lineNumber: Int) extends AnyRef with java.io.Serializable {
+final class StackTraceElement(
+    declaringClass: String,
+    methodName: String,
+    fileName: String,
+    lineNumber: Int)
+    extends AnyRef
+    with java.io.Serializable {
 
   private[this] var columnNumber: Int = -1
 
@@ -21,15 +26,16 @@ final class StackTraceElement(declaringClass: String, methodName: String,
   def setColumnNumber(columnNumber: Int): Unit =
     this.columnNumber = columnNumber
 
-  override def equals(that: Any): scala.Boolean = that match {
-    case that: StackTraceElement =>
-      (getFileName == that.getFileName) &&
-      (getLineNumber == that.getLineNumber) &&
-      (getClassName == that.getClassName) &&
-      (getMethodName == that.getMethodName)
-    case _ =>
-      false
-  }
+  override def equals(that: Any): scala.Boolean =
+    that match {
+      case that: StackTraceElement =>
+        (getFileName == that.getFileName) &&
+          (getLineNumber == that.getLineNumber) &&
+          (getClassName == that.getClassName) &&
+          (getMethodName == that.getMethodName)
+      case _ =>
+        false
+    }
 
   override def toString(): String = {
     var result = ""

@@ -6,26 +6,26 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala.concurrent
 
 /** This class ...
- *
- *  @author  Martin Odersky
- *  @version 1.0, 10/03/2003
- */
+  *
+  *  @author  Martin Odersky
+  *  @version 1.0, 10/03/2003
+  */
 @deprecated("Use java.util.concurrent.locks.Lock", "2.11.2")
 class Lock {
   var available = true
 
-  def acquire() = synchronized {
-    while (!available) wait()
-    available = false
-  }
+  def acquire() =
+    synchronized {
+      while (!available) wait()
+      available = false
+    }
 
-  def release() = synchronized {
-    available = true
-    notify()
-  }
+  def release() =
+    synchronized {
+      available = true
+      notify()
+    }
 }

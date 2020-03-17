@@ -7,14 +7,19 @@ package akka.http.scaladsl.server.directives
 import akka.util.ByteString
 
 import akka.stream.OverflowStrategy
-import akka.stream.scaladsl.{ Source, Sink, Flow }
+import akka.stream.scaladsl.{Source, Sink, Flow}
 
 import akka.http.scaladsl.testkit.WSProbe
 
 import akka.http.scaladsl.model.headers.`Sec-WebSocket-Protocol`
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.ws._
-import akka.http.scaladsl.server.{ UnsupportedWebSocketSubprotocolRejection, ExpectedWebSocketRequestRejection, Route, RoutingSpec }
+import akka.http.scaladsl.server.{
+  UnsupportedWebSocketSubprotocolRejection,
+  ExpectedWebSocketRequestRejection,
+  Route,
+  RoutingSpec
+}
 
 class WebSocketDirectivesSpec extends RoutingSpec {
   "the handleWebSocketMessages directive" should {
@@ -40,7 +45,10 @@ class WebSocketDirectivesSpec extends RoutingSpec {
     "choose subprotocol from offered ones" in {
       val wsClient = WSProbe()
 
-      WS("http://localhost/", wsClient.flow, List("other", "echo", "greeter")) ~> websocketMultipleProtocolRoute ~>
+      WS(
+        "http://localhost/",
+        wsClient.flow,
+        List("other", "echo", "greeter")) ~> websocketMultipleProtocolRoute ~>
         check {
           expectWebSocketUpgradeWithProtocol { protocol ⇒
             protocol shouldEqual "echo"
@@ -60,16 +68,22 @@ class WebSocketDirectivesSpec extends RoutingSpec {
         }
     }
     "reject websocket requests if no subprotocol matches" in {
-      WS("http://localhost/", Flow[Message], List("other")) ~> websocketMultipleProtocolRoute ~> check {
+      WS(
+        "http://localhost/",
+        Flow[Message],
+        List("other")) ~> websocketMultipleProtocolRoute ~> check {
         rejections.collect {
           case UnsupportedWebSocketSubprotocolRejection(p) ⇒ p
         }.toSet shouldEqual Set("greeter", "echo")
       }
 
-      WS("http://localhost/", Flow[Message], List("other")) ~> Route.seal(websocketMultipleProtocolRoute) ~> check {
+      WS("http://localhost/", Flow[Message], List("other")) ~> Route.seal(
+        websocketMultipleProtocolRoute) ~> check {
         status shouldEqual StatusCodes.BadRequest
         responseAs[String] shouldEqual "None of the websocket subprotocols offered in the request are supported. Supported are 'echo','greeter'."
-        header[`Sec-WebSocket-Protocol`].get.protocols.toSet shouldEqual Set("greeter", "echo")
+        header[`Sec-WebSocket-Protocol`].get.protocols.toSet shouldEqual Set(
+          "greeter",
+          "echo")
       }
     }
     "reject non-websocket requests" in {
@@ -91,7 +105,9 @@ class WebSocketDirectivesSpec extends RoutingSpec {
 
   def greeter: Flow[Message, Message, Any] =
     Flow[Message].mapConcat {
-      case tm: TextMessage ⇒ TextMessage(Source.single("Hello ") ++ tm.textStream ++ Source.single("!")) :: Nil
+      case tm: TextMessage ⇒
+        TextMessage(
+          Source.single("Hello ") ++ tm.textStream ++ Source.single("!")) :: Nil
       case bm: BinaryMessage ⇒ // ignore binary messages
         bm.dataStream.runWith(Sink.ignore)
         Nil
@@ -99,5 +115,8 @@ class WebSocketDirectivesSpec extends RoutingSpec {
 
   def echo: Flow[Message, Message, Any] =
     Flow[Message]
-      .buffer(1, OverflowStrategy.backpressure) // needed because a noop flow hasn't any buffer that would start processing
+      .buffer(
+        1,
+        OverflowStrategy.backpressure
+      ) // needed because a noop flow hasn't any buffer that would start processing
 }

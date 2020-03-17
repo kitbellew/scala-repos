@@ -4,30 +4,40 @@ package lang.scaladoc
 import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
 
 /**
- * User: Dmitry Naydanov
- * Date: 2/27/12
- */
+  * User: Dmitry Naydanov
+  * Date: 2/27/12
+  */
+class WikiPairedTagBackspaceTest
+    extends ScalaLightCodeInsightFixtureTestAdapter {
 
-class WikiPairedTagBackspaceTest extends ScalaLightCodeInsightFixtureTestAdapter {
-  
   def testDeleteUnderlinedTag() {
-    checkGeneratedTextAfterBackspace("/** __" + CARET_MARKER + "blah blah__ */", "/** _blah blah */")
+    checkGeneratedTextAfterBackspace(
+      "/** __" + CARET_MARKER + "blah blah__ */",
+      "/** _blah blah */")
   }
 
   def testDeleteMonospaceTag() {
-    checkGeneratedTextAfterBackspace("/** `" + CARET_MARKER + "blahblah` */", "/** blahblah */")
+    checkGeneratedTextAfterBackspace(
+      "/** `" + CARET_MARKER + "blahblah` */",
+      "/** blahblah */")
   }
 
   def testDeleteItalicTag() {
-    checkGeneratedTextAfterBackspace("/** ''" + CARET_MARKER + "blah blah'' */", "/** 'blah blah */")
+    checkGeneratedTextAfterBackspace(
+      "/** ''" + CARET_MARKER + "blah blah'' */",
+      "/** 'blah blah */")
   }
 
   def testDeleteBoldTag() {
-    checkGeneratedTextAfterBackspace("/** '''" + CARET_MARKER + "blah blah''' */", "/** ''blah blah'' */")
+    checkGeneratedTextAfterBackspace(
+      "/** '''" + CARET_MARKER + "blah blah''' */",
+      "/** ''blah blah'' */")
   }
 
   def testDeleteSubscriptTag() {
-    checkGeneratedTextAfterBackspace("/** ,," + CARET_MARKER + "blah blah,, */", "/** ,blah blah */")
+    checkGeneratedTextAfterBackspace(
+      "/** ,," + CARET_MARKER + "blah blah,, */",
+      "/** ,blah blah */")
   }
 
   def testScl6717() {
@@ -71,10 +81,14 @@ class WikiPairedTagBackspaceTest extends ScalaLightCodeInsightFixtureTestAdapter
   }
 
   def testDeleteCodeLinkTag() {
-    checkGeneratedTextAfterBackspace("/** [[" + CARET_MARKER + "java.lang.String]] */", "/** [java.lang.String */")
+    checkGeneratedTextAfterBackspace(
+      "/** [[" + CARET_MARKER + "java.lang.String]] */",
+      "/** [java.lang.String */")
   }
 
   def testDeleteEmptyItalicTag() {
-    checkGeneratedTextAfterBackspace("/** ''" + CARET_MARKER + "'' */", "/** ' */")
+    checkGeneratedTextAfterBackspace(
+      "/** ''" + CARET_MARKER + "'' */",
+      "/** ' */")
   }
 }

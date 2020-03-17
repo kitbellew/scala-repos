@@ -6,19 +6,18 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.sbtplugin
 
 import OptimizerOptions._
 
 /** Various options for the Scala.js optimizer tool chain
- *
- *  This is not a case class and does have a private constructor so that we
- *  can add fields in a binary-compatible manner.
- *
- *  Use [[OptimizerOptions.apply]] and the `with` methods to create a configured
- *  instance.
- */
+  *
+  *  This is not a case class and does have a private constructor so that we
+  *  can add fields in a binary-compatible manner.
+  *
+  *  Use [[OptimizerOptions.apply]] and the `with` methods to create a configured
+  *  instance.
+  */
 final class OptimizerOptions private (
     /** Whether to only warn if the linker has errors */
     val bypassLinkingErrors: Boolean = false,
@@ -37,8 +36,8 @@ final class OptimizerOptions private (
 ) {
 
   @deprecated(
-      "Bypassing linking errors will not be possible in the next major version.",
-      "0.6.6")
+    "Bypassing linking errors will not be possible in the next major version.",
+    "0.6.6")
   def withBypassLinkingErrors(bypassLinkingErrors: Boolean): OptimizerOptions =
     copy(bypassLinkingErrors = bypassLinkingErrors)
 
@@ -51,7 +50,8 @@ final class OptimizerOptions private (
   def withDisableOptimizer(disableOptimizer: Boolean): OptimizerOptions =
     copy(disableOptimizer = disableOptimizer)
 
-  def withPrettyPrintFullOptJS(prettyPrintFullOptJS: Boolean): OptimizerOptions =
+  def withPrettyPrintFullOptJS(
+      prettyPrintFullOptJS: Boolean): OptimizerOptions =
     copy(prettyPrintFullOptJS = prettyPrintFullOptJS)
 
   def withCheckScalaJSIR(checkScalaJSIR: Boolean): OptimizerOptions =
@@ -60,15 +60,22 @@ final class OptimizerOptions private (
   def withUseClosureCompiler(useClosureCompiler: Boolean): OptimizerOptions =
     copy(useClosureCompiler = useClosureCompiler)
 
-  private def copy(bypassLinkingErrors: Boolean = bypassLinkingErrors,
-      parallel: Boolean = parallel, batchMode: Boolean = batchMode,
+  private def copy(
+      bypassLinkingErrors: Boolean = bypassLinkingErrors,
+      parallel: Boolean = parallel,
+      batchMode: Boolean = batchMode,
       disableOptimizer: Boolean = disableOptimizer,
       prettyPrintFullOptJS: Boolean = prettyPrintFullOptJS,
       checkScalaJSIR: Boolean = checkScalaJSIR,
       useClosureCompiler: Boolean = useClosureCompiler) = {
-    new OptimizerOptions(bypassLinkingErrors, parallel, batchMode,
-        disableOptimizer, prettyPrintFullOptJS, checkScalaJSIR,
-        useClosureCompiler)
+    new OptimizerOptions(
+      bypassLinkingErrors,
+      parallel,
+      batchMode,
+      disableOptimizer,
+      prettyPrintFullOptJS,
+      checkScalaJSIR,
+      useClosureCompiler)
   }
 
   override def toString: String = {

@@ -12,7 +12,8 @@ private final class MoveDB {
 
   def add(move: Move): Unit = if (coll.size < maxSize) coll += (move.id -> move)
 
-  def update(move: Move): Unit = if (coll contains move.id) coll += (move.id -> move)
+  def update(move: Move): Unit =
+    if (coll contains move.id) coll += (move.id -> move)
 
   def delete(move: Move): Unit = coll -= move.id
 
@@ -26,20 +27,18 @@ private final class MoveDB {
 
   def size = coll.size
 
-  def oldestNonAcquired = coll.foldLeft(none[Move]) {
-    case (acc, (_, m)) =>
-      if (m.nonAcquired) Some {
-        acc.fold(m) { a =>
-          if (m.createdAt isBefore a.createdAt) m else a
+  def oldestNonAcquired =
+    coll.foldLeft(none[Move]) {
+      case (acc, (_, m)) =>
+        if (m.nonAcquired) Some {
+          acc.fold(m) { a => if (m.createdAt isBefore a.createdAt) m else a }
         }
-      }
-      else acc
-  }
+        else acc
+    }
 
   def updateOrGiveUp(move: Move) =
     if (move.isOutOfTries) {
       logger.warn(s"Give up on move $move")
       delete(move)
-    }
-    else update(move)
+    } else update(move)
 }

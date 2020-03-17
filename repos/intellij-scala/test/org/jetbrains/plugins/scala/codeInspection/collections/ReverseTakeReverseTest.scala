@@ -3,12 +3,14 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class ReverseTakeReverseTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[ReverseTakeReverseInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[ReverseTakeReverseInspection]
 
-  override def hint: String = InspectionBundle.message("replace.reverse.take.reverse.with.takeRight")
+  override def hint: String =
+    InspectionBundle.message("replace.reverse.take.reverse.with.takeRight")
 
   def test1(): Unit = {
     doTest(

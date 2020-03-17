@@ -25,7 +25,9 @@ case class ASTNode(
     startIndex: Int,
     stopIndex: Int,
     children: List[ASTNode],
-    stream: TokenRewriteStream) extends TreeNode[ASTNode] {
+    stream: TokenRewriteStream)
+    extends TreeNode[ASTNode] {
+
   /** Cache the number of children. */
   val numChildren: Int = children.size
 
@@ -71,11 +73,11 @@ case class ASTNode(
   def tokenType: Int = token.getType
 
   /**
-   * Checks if this node is equal to another node.
-   *
-   * Right now this function only checks the name, type, text and children of the node
-   * for equality.
-   */
+    * Checks if this node is equal to another node.
+    *
+    * Right now this function only checks the name, type, text and children of the node
+    * for equality.
+    */
   def treeEquals(other: ASTNode): Boolean = {
     def check(f: ASTNode => Any): Boolean = {
       val l = f(this)
@@ -85,8 +87,8 @@ case class ASTNode(
     if (other == null) {
       false
     } else if (!check(_.token.getType)
-      || !check(_.token.getText)
-      || !check(_.numChildren)) {
+               || !check(_.token.getText)
+               || !check(_.numChildren)) {
       false
     } else {
       children.zip(other.children).forall {
@@ -95,5 +97,6 @@ case class ASTNode(
     }
   }
 
-  override def simpleString: String = s"$text $line, $startIndex, $stopIndex, $positionInLine "
+  override def simpleString: String =
+    s"$text $line, $startIndex, $stopIndex, $positionInLine "
 }

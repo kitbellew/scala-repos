@@ -5,7 +5,7 @@ package play.api.libs.streams.impl
 
 import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
-import play.api.libs.iteratee.{ Step, Iteratee, Enumerator }
+import play.api.libs.iteratee.{Step, Iteratee, Enumerator}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -97,7 +97,8 @@ object SubscriberIterateeSpec extends Specification {
     }
 
     "become done when the stream is cancelled" in new TestEnv {
-      val result = Enumerator(10, 20, 30) |>>> iteratee.flatMap(_ => Iteratee.getChunks[Int])
+      val result = Enumerator(10, 20, 30) |>>> iteratee.flatMap(_ =>
+        Iteratee.getChunks[Int])
       next() must beLike {
         case OnSubscribe(sub) =>
           sub.request(1)

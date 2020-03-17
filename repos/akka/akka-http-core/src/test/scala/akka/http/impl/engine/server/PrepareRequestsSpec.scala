@@ -4,13 +4,18 @@
 package akka.http.impl.engine.server
 
 import akka.http.impl.engine.parsing.ParserOutput
-import akka.http.impl.engine.parsing.ParserOutput.{ StrictEntityCreator, EntityStreamError, EntityChunk, StreamedEntityCreator }
+import akka.http.impl.engine.parsing.ParserOutput.{
+  StrictEntityCreator,
+  EntityStreamError,
+  EntityChunk,
+  StreamedEntityCreator
+}
 import akka.http.impl.engine.server.HttpServerBluePrint.PrepareRequests
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.settings.ServerSettings
-import akka.stream.{ Attributes, ActorMaterializer }
-import akka.stream.scaladsl.{ Sink, Source, Flow }
-import akka.stream.testkit.{ TestSubscriber, TestPublisher }
+import akka.stream.{Attributes, ActorMaterializer}
+import akka.stream.scaladsl.{Sink, Source, Flow}
+import akka.stream.testkit.{TestSubscriber, TestPublisher}
 import akka.testkit.AkkaSpec
 import akka.util.ByteString
 import scala.concurrent.duration._
@@ -25,13 +30,16 @@ class PrepareRequestsSpec extends AkkaSpec {
       List(),
       StreamedEntityCreator[ParserOutput, RequestEntity] { entityChunks ⇒
         val chunks = entityChunks.collect {
-          case EntityChunk(chunk)      ⇒ chunk
+          case EntityChunk(chunk) ⇒ chunk
           case EntityStreamError(info) ⇒ throw EntityStreamException(info)
         }
-        HttpEntity.Chunked(ContentTypes.`application/octet-stream`, HttpEntity.limitableChunkSource(chunks))
+        HttpEntity.Chunked(
+          ContentTypes.`application/octet-stream`,
+          HttpEntity.limitableChunkSource(chunks))
       },
       expect100Continue = true,
-      closeRequested = false)
+      closeRequested = false
+    )
 
   val chunkPart =
     ParserOutput.EntityChunk(HttpEntity.ChunkStreamPart(ByteString("abc")))
@@ -45,9 +53,12 @@ class PrepareRequestsSpec extends AkkaSpec {
       Uri("http://example.com/"),
       HttpProtocols.`HTTP/1.1`,
       List(),
-      StrictEntityCreator(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString("body"))),
+      StrictEntityCreator(
+        HttpEntity
+          .Strict(ContentTypes.`application/octet-stream`, ByteString("body"))),
       true,
-      false)
+      false
+    )
 
   "The PrepareRequest stage" should {
 
@@ -60,7 +71,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -78,7 +90,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
+      request.entity.dataBytes
+        .to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
 
@@ -95,7 +108,8 @@ class PrepareRequestsSpec extends AkkaSpec {
       // bug would fail stream here with exception
       upstreamProbe.expectNoMsg(100.millis)
 
-      inSub.sendNext(ParserOutput.EntityChunk(HttpEntity.ChunkStreamPart(ByteString("abc"))))
+      inSub.sendNext(
+        ParserOutput.EntityChunk(HttpEntity.ChunkStreamPart(ByteString("abc"))))
       entityProbe.expectNext()
       entitySub.request(1)
       inSub.sendNext(ParserOutput.MessageEnd)
@@ -119,7 +133,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -137,7 +152,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
+      request.entity.dataBytes
+        .to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
 
@@ -170,7 +186,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -188,7 +205,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
+      request.entity.dataBytes
+        .to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
 
@@ -211,7 +229,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source.fromPublisher(inProbe)
+      Source
+        .fromPublisher(inProbe)
         .via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
@@ -229,7 +248,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
+      request.entity.dataBytes
+        .to(Sink.fromSubscriber(entityProbe))
         .withAttributes(Attributes.inputBuffer(1, 1))
         .run()
 

@@ -4,7 +4,7 @@ import akka.actor._
 import com.typesafe.config.Config
 
 import lila.common.PimpedConfig._
-import lila.memo.{ ExpireSetMemo, MongoCache }
+import lila.memo.{ExpireSetMemo, MongoCache}
 
 final class Env(
     config: Config,
@@ -35,7 +35,8 @@ final class Env(
 
   lazy val trophyApi = new TrophyApi(db(CollectionTrophy))
 
-  lazy val rankingApi = new RankingApi(db(CollectionRanking), mongoCache, lightUser)
+  lazy val rankingApi =
+    new RankingApi(db(CollectionRanking), mongoCache, lightUser)
 
   lazy val jsonView = new JsonView(isOnline)
 
@@ -47,17 +48,19 @@ final class Env(
 
   def countEnabled = cached.countEnabled
 
-  def cli = new lila.common.Cli {
-    import tube.userTube
-    def process = {
-      case "user" :: "email" :: userId :: email :: Nil =>
-        UserRepo.email(User normalize userId, email) inject "done"
+  def cli =
+    new lila.common.Cli {
+      import tube.userTube
+      def process = {
+        case "user" :: "email" :: userId :: email :: Nil =>
+          UserRepo.email(User normalize userId, email) inject "done"
+      }
     }
-  }
 
   system.actorOf(Props(new Actor {
     override def preStart() {
-      system.lilaBus.subscribe(self, 'adjustCheater, 'adjustBooster, 'userActive)
+      system.lilaBus
+        .subscribe(self, 'adjustCheater, 'adjustBooster, 'userActive)
     }
     def receive = {
       case lila.hub.actorApi.mod.MarkCheater(userId) => rankingApi remove userId

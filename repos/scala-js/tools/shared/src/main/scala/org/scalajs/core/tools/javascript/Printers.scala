@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.javascript
 
 import scala.annotation.switch
@@ -38,7 +37,7 @@ object Printers {
     def printTopLevelTree(tree: Tree) {
       tree match {
         case Skip() =>
-          // do not print anything
+        // do not print anything
         case tree: Block =>
           var rest = tree.stats
           while (rest.nonEmpty) {
@@ -53,10 +52,11 @@ object Printers {
       }
     }
 
-    protected def shouldPrintSepAfterTree(tree: Tree): Boolean = tree match {
-      case _:DocComment | _:FunctionDef | _:ClassDef => false
-      case _                                         => true
-    }
+    protected def shouldPrintSepAfterTree(tree: Tree): Boolean =
+      tree match {
+        case _: DocComment | _: FunctionDef | _: ClassDef => false
+        case _                                            => true
+      }
 
     protected def printRow(ts: List[Tree], start: Char, end: Char): Unit = {
       print(start)
@@ -293,13 +293,14 @@ object Printers {
         // Expressions
 
         case New(ctor, args) =>
-          def containsOnlySelectsFromAtom(tree: Tree): Boolean = tree match {
-            case DotSelect(qual, _)     => containsOnlySelectsFromAtom(qual)
-            case BracketSelect(qual, _) => containsOnlySelectsFromAtom(qual)
-            case VarRef(_)              => true
-            case This()                 => true
-            case _                      => false // in particular, Apply
-          }
+          def containsOnlySelectsFromAtom(tree: Tree): Boolean =
+            tree match {
+              case DotSelect(qual, _)     => containsOnlySelectsFromAtom(qual)
+              case BracketSelect(qual, _) => containsOnlySelectsFromAtom(qual)
+              case VarRef(_)              => true
+              case This()                 => true
+              case _                      => false // in particular, Apply
+            }
           if (containsOnlySelectsFromAtom(ctor)) {
             print("new ")
             print(ctor)
@@ -312,7 +313,7 @@ object Printers {
 
         case DotSelect(qualifier, item) =>
           qualifier match {
-            case _:IntLiteral | _:DoubleLiteral =>
+            case _: IntLiteral | _: DoubleLiteral =>
               print("(")
               print(qualifier)
               print(")")
@@ -347,10 +348,10 @@ object Printers {
             print("typeof ")
           } else {
             (op: @switch) match {
-              case + => print('+')
-              case - => print('-')
-              case ~ => print('~')
-              case ! => print('!')
+              case +        => print('+')
+              case -        => print('-')
+              case ~        => print('~')
+              case !        => print('!')
               case `typeof` => print("typeof ")
             }
           }
@@ -543,10 +544,11 @@ object Printers {
     protected def print(ident: Ident): Unit =
       printEscapeJS(ident.name, out)
 
-    private final def print(propName: PropertyName): Unit = propName match {
-      case lit: StringLiteral => print(lit: Tree)
-      case ident: Ident       => print(ident)
-    }
+    private final def print(propName: PropertyName): Unit =
+      propName match {
+        case lit: StringLiteral => print(lit: Tree)
+        case ident: Ident       => print(ident)
+      }
 
     protected def print(s: String): Unit =
       out.write(s)
@@ -560,8 +562,8 @@ object Printers {
     def complete(): Unit = ()
   }
 
-  class JSTreePrinterWithSourceMap(_out: Writer,
-      sourceMap: SourceMapWriter) extends JSTreePrinter(_out) {
+  class JSTreePrinterWithSourceMap(_out: Writer, sourceMap: SourceMapWriter)
+      extends JSTreePrinter(_out) {
 
     private var column = 0
 
@@ -609,21 +611,22 @@ object Printers {
   }
 
   /** Prints a tree to find original locations based on line numbers.
-   *  @param untilLine last 0-based line the positions should be recorded for
-   */
+    *  @param untilLine last 0-based line the positions should be recorded for
+    */
   class ReverseSourceMapPrinter(untilLine: Int)
       extends JSTreePrinter(ReverseSourceMapPrinter.NullWriter) {
 
-    private val positions = Array.fill(untilLine+1)(NoPosition)
+    private val positions = Array.fill(untilLine + 1)(NoPosition)
     private var curLine = 0
 
     private val doneBreak = new Breaks
 
     def apply(x: Int): Position = positions(x)
 
-    def reverseSourceMap(tree: Tree): Unit = doneBreak.breakable {
-      printTopLevelTree(tree)
-    }
+    def reverseSourceMap(tree: Tree): Unit =
+      doneBreak.breakable {
+        printTopLevelTree(tree)
+      }
 
     override def printTree(tree: Tree, isStat: Boolean): Unit = {
       if (positions(curLine).isEmpty)

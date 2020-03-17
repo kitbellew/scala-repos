@@ -88,7 +88,10 @@ class ConcurrentSkipListSet[E] private (inner: TreeSet[E])
   def last(): E =
     inner.last
 
-  def subSet(fromElement: E, fromInclusive: Boolean, toElement: E,
+  def subSet(
+      fromElement: E,
+      fromInclusive: Boolean,
+      toElement: E,
       toInclusive: Boolean): NavigableSet[E] =
     inner.subSet(fromElement, fromInclusive, toElement, toInclusive)
 

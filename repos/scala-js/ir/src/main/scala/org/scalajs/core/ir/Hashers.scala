@@ -27,25 +27,27 @@ object Hashers {
       val hash = hasher.finalizeHash()
 
       MethodDef(static, name, args, resultType, body)(
-          methodDef.optimizerHints, Some(hash))(methodDef.pos)
+        methodDef.optimizerHints,
+        Some(hash))(methodDef.pos)
     }
   }
 
   /** Hash definitions from a ClassDef where applicable */
-  def hashDefs(defs: List[Tree]): List[Tree] = defs map {
-    case methodDef: MethodDef => hashMethodDef(methodDef)
-    case otherDef             => otherDef
-  }
+  def hashDefs(defs: List[Tree]): List[Tree] =
+    defs map {
+      case methodDef: MethodDef => hashMethodDef(methodDef)
+      case otherDef             => otherDef
+    }
 
   /** Hash the definitions in a ClassDef (where applicable) */
   def hashClassDef(classDef: ClassDef): ClassDef = {
-    classDef.copy(defs = hashDefs(classDef.defs))(
-        classDef.optimizerHints)(classDef.pos)
+    classDef.copy(defs = hashDefs(classDef.defs))(classDef.optimizerHints)(
+      classDef.pos)
   }
 
   def hashesEqual(x: TreeHash, y: TreeHash, considerPos: Boolean): Boolean = {
     Arrays.equals(x.treeHash, y.treeHash) &&
-      (!considerPos || Arrays.equals(x.posHash, y.posHash))
+    (!considerPos || Arrays.equals(x.posHash, y.posHash))
   }
 
   def hashAsVersion(hash: TreeHash, considerPos: Boolean): String = {
@@ -173,9 +175,10 @@ object Hashers {
         case Match(selector, cases, default) =>
           mixTag(TagMatch)
           mixTree(selector)
-          cases foreach { case (patterns, body) =>
-            mixTrees(patterns)
-            mixTree(body)
+          cases foreach {
+            case (patterns, body) =>
+              mixTrees(patterns)
+              mixTree(body)
           }
           mixTree(default)
           mixType(tree.tpe)
@@ -369,9 +372,10 @@ object Hashers {
 
         case JSObjectConstr(fields) =>
           mixTag(TagJSObjectConstr)
-          fields foreach { case (pn, value) =>
-            mixPropertyName(pn)
-            mixTree(value)
+          fields foreach {
+            case (pn, value) =>
+              mixPropertyName(pn)
+              mixTree(value)
           }
 
         case JSLinkingInfo() =>
@@ -443,37 +447,38 @@ object Hashers {
     def mixRefType(tpe: ReferenceType): Unit =
       mixType(tpe.asInstanceOf[Type])
 
-    def mixType(tpe: Type): Unit = tpe match {
-      case AnyType     => mixTag(TagAnyType)
-      case NothingType => mixTag(TagNothingType)
-      case UndefType   => mixTag(TagUndefType)
-      case BooleanType => mixTag(TagBooleanType)
-      case IntType     => mixTag(TagIntType)
-      case LongType    => mixTag(TagLongType)
-      case FloatType   => mixTag(TagFloatType)
-      case DoubleType  => mixTag(TagDoubleType)
-      case StringType  => mixTag(TagStringType)
-      case NullType    => mixTag(TagNullType)
-      case NoType      => mixTag(TagNoType)
+    def mixType(tpe: Type): Unit =
+      tpe match {
+        case AnyType     => mixTag(TagAnyType)
+        case NothingType => mixTag(TagNothingType)
+        case UndefType   => mixTag(TagUndefType)
+        case BooleanType => mixTag(TagBooleanType)
+        case IntType     => mixTag(TagIntType)
+        case LongType    => mixTag(TagLongType)
+        case FloatType   => mixTag(TagFloatType)
+        case DoubleType  => mixTag(TagDoubleType)
+        case StringType  => mixTag(TagStringType)
+        case NullType    => mixTag(TagNullType)
+        case NoType      => mixTag(TagNoType)
 
-      case tpe: ClassType =>
-        mixTag(TagClassType)
-        mixString(tpe.className)
+        case tpe: ClassType =>
+          mixTag(TagClassType)
+          mixString(tpe.className)
 
-      case tpe: ArrayType =>
-        mixTag(TagArrayType)
-        mixString(tpe.baseClassName)
-        mixInt(tpe.dimensions)
+        case tpe: ArrayType =>
+          mixTag(TagArrayType)
+          mixString(tpe.baseClassName)
+          mixInt(tpe.dimensions)
 
-      case RecordType(fields) =>
-        mixTag(TagRecordType)
-        for (RecordType.Field(name, originalName, tpe, mutable) <- fields) {
-          mixString(name)
-          originalName.foreach(mixString)
-          mixType(tpe)
-          mixBoolean(mutable)
-        }
-    }
+        case RecordType(fields) =>
+          mixTag(TagRecordType)
+          for (RecordType.Field(name, originalName, tpe, mutable) <- fields) {
+            mixString(name)
+            originalName.foreach(mixString)
+            mixType(tpe)
+            mixBoolean(mutable)
+          }
+      }
 
     def mixIdent(ident: Ident): Unit = {
       mixPos(ident.pos)
@@ -483,10 +488,11 @@ object Hashers {
 
     def mixOptIdent(optIdent: Option[Ident]): Unit = optIdent.foreach(mixIdent)
 
-    def mixPropertyName(name: PropertyName): Unit = name match {
-      case name: Ident         => mixIdent(name)
-      case name: StringLiteral => mixTree(name)
-    }
+    def mixPropertyName(name: PropertyName): Unit =
+      name match {
+        case name: Ident         => mixIdent(name)
+        case name: StringLiteral => mixTree(name)
+      }
 
     def mixPos(pos: Position): Unit = {
       posStream.writeUTF(pos.source.toString)

@@ -15,23 +15,24 @@ import io.netty.handler.ssl.SslHandler
 import io.netty.handler.timeout._
 
 /**
- *
- * @param pipelineInit Initializes a pipeline for encoding input
- *                     messages and decoding output messages on
- *                     accepted channels.
- * @param params [[Stack.Params]] to configure the channel.
- * @param newBridge A [[io.netty.channel.ChannelHandler]] to bridge the
- *                  netty message pipeline to a [[Transport]].
- */
+  *
+  * @param pipelineInit Initializes a pipeline for encoding input
+  *                     messages and decoding output messages on
+  *                     accepted channels.
+  * @param params [[Stack.Params]] to configure the channel.
+  * @param newBridge A [[io.netty.channel.ChannelHandler]] to bridge the
+  *                  netty message pipeline to a [[Transport]].
+  */
 private[netty4] class Netty4ChannelInitializer(
     pipelineInit: ChannelPipeline => Unit,
     params: Stack.Params,
     newBridge: () => ChannelHandler)
-  extends ChannelInitializer[SocketChannel] {
+    extends ChannelInitializer[SocketChannel] {
 
   val Logger(logger) = params[Logger]
   val Label(label) = params[Label]
-  val Transport.Liveness(readTimeout, writeTimeout, _) = params[Transport.Liveness]
+  val Transport.Liveness(readTimeout, writeTimeout, _) =
+    params[Transport.Liveness]
   val Timer(timer) = params[Timer]
   val Stats(stats) = params[Stats]
 
@@ -43,7 +44,9 @@ private[netty4] class Netty4ChannelInitializer(
 
   val (channelRequestStatsHandler, channelStatsHandler) =
     if (!stats.isNull)
-      (Some(new ChannelRequestStatsHandler(stats)), Some(new ChannelStatsHandler(stats)))
+      (
+        Some(new ChannelRequestStatsHandler(stats)),
+        Some(new ChannelStatsHandler(stats)))
     else
       (None, None)
 
@@ -58,8 +61,10 @@ private[netty4] class Netty4ChannelInitializer(
 
   val exceptionHandler = new ChannelExceptionHandler(stats, logger)
 
-  def initChannelTls(config: Netty4ListenerTLSConfig, ch: SocketChannel): Unit = {
-    for (Netty4ListenerTLSConfig(newEngine) <- tlsConfig){
+  def initChannelTls(
+      config: Netty4ListenerTLSConfig,
+      ch: SocketChannel): Unit = {
+    for (Netty4ListenerTLSConfig(newEngine) <- tlsConfig) {
       val engine = newEngine()
       engine.self.setUseClientMode(false)
       engine.self.setEnableSessionCreation(true)
@@ -80,16 +85,20 @@ private[netty4] class Netty4ChannelInitializer(
 
     channelSnooper.foreach(pipeline.addFirst("channelLogger", _))
     channelStatsHandler.foreach(pipeline.addFirst("channelStatsHandler", _))
-    writeCompletionTimeoutHandler.foreach(pipeline.addLast("writeCompletionTimeout", _))
+    writeCompletionTimeoutHandler.foreach(
+      pipeline.addLast("writeCompletionTimeout", _))
 
     if (readTimeout.isFinite) {
       val (timeoutValue, timeoutUnit) = readTimeout.inTimeUnit
-      pipeline.addLast("readTimeout", new ReadTimeoutHandler(timeoutValue, timeoutUnit))
+      pipeline.addLast(
+        "readTimeout",
+        new ReadTimeoutHandler(timeoutValue, timeoutUnit))
     }
 
     tlsConfig.foreach(initChannelTls(_, ch))
 
-    channelRequestStatsHandler.foreach(pipeline.addLast("channelRequestStatsHandler", _))
+    channelRequestStatsHandler.foreach(
+      pipeline.addLast("channelRequestStatsHandler", _))
 
     pipeline.addLast("exceptionHandler", exceptionHandler)
     // The bridge handler must be last in the pipeline to ensure
@@ -100,16 +109,17 @@ private[netty4] class Netty4ChannelInitializer(
 }
 
 /**
- * Bridges a channel onto a transport.
- */
+  * Bridges a channel onto a transport.
+  */
 @Sharable
 private[netty4] class ServerBridge[In, Out](
     transportFac: SocketChannel => Transport[In, Out],
     serveTransport: Transport[In, Out] => Unit)
-  extends ChannelInboundHandlerAdapter {
+    extends ChannelInboundHandlerAdapter {
 
   override def channelActive(ctx: ChannelHandlerContext): Unit = {
-    val transport: Transport[In, Out] = transportFac(ctx.channel.asInstanceOf[SocketChannel])
+    val transport: Transport[In, Out] = transportFac(
+      ctx.channel.asInstanceOf[SocketChannel])
     serveTransport(transport)
     super.channelActive(ctx)
   }
@@ -124,43 +134,47 @@ private[netty4] object ChannelExceptionHandler {
     "")
 }
 
-
 /**
- * Logs channel exceptions
- */
+  * Logs channel exceptions
+  */
 @Sharable
 private[netty4] class ChannelExceptionHandler(
     stats: StatsReceiver,
     log: java.util.logging.Logger)
-  extends ChannelInboundHandlerAdapter {
+    extends ChannelInboundHandlerAdapter {
   import ChannelExceptionHandler.FinestIOExceptionMessages
 
   private[this] val readTimeoutCounter = stats.counter("read_timeout")
   private[this] val writeTimeoutCounter = stats.counter("write_timeout")
 
-  private[this] def severity(exc: Throwable): Level = exc match {
-    case e: Failure => e.logLevel
-    case
-      _: java.nio.channels.ClosedChannelException
-      | _: javax.net.ssl.SSLException
-      | _: ReadTimeoutException
-      | _: WriteTimedOutException
-      | _: javax.net.ssl.SSLException => Level.FINEST
-    case e: java.io.IOException if FinestIOExceptionMessages.contains(e.getMessage) =>
-      Level.FINEST
-    case _ => Level.WARNING
-  }
+  private[this] def severity(exc: Throwable): Level =
+    exc match {
+      case e: Failure => e.logLevel
+      case _: java.nio.channels.ClosedChannelException |
+          _: javax.net.ssl.SSLException | _: ReadTimeoutException |
+          _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
+        Level.FINEST
+      case e: java.io.IOException
+          if FinestIOExceptionMessages.contains(e.getMessage) =>
+        Level.FINEST
+      case _ => Level.WARNING
+    }
 
-  override def exceptionCaught(ctx: ChannelHandlerContext, t: Throwable): Unit = {
+  override def exceptionCaught(
+      ctx: ChannelHandlerContext,
+      t: Throwable): Unit = {
     t match {
-      case e: ReadTimeoutException => readTimeoutCounter.incr()
+      case e: ReadTimeoutException   => readTimeoutCounter.incr()
       case e: WriteTimedOutException => writeTimeoutCounter.incr()
-      case _ =>
+      case _                         =>
     }
 
     val remoteAddr =
-      Option(ctx.channel.remoteAddress).map(_.toString).getOrElse("unknown remote address")
-    val msg = s"Unhandled exception in connection with $remoteAddr, shutting down connection"
+      Option(ctx.channel.remoteAddress)
+        .map(_.toString)
+        .getOrElse("unknown remote address")
+    val msg =
+      s"Unhandled exception in connection with $remoteAddr, shutting down connection"
 
     log.log(severity(t), msg, t)
 

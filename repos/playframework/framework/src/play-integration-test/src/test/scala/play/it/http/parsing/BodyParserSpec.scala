@@ -4,20 +4,23 @@
 package play.it.http.parsing
 
 import akka.actor.ActorSystem
-import akka.stream.{ ActorMaterializer, Materializer }
+import akka.stream.{ActorMaterializer, Materializer}
 import akka.stream.scaladsl.Source
 import play.api.libs.streams.Accumulator
 
 import scala.concurrent.Future
 
 import play.api.libs.iteratee.ExecutionSpecification
-import play.api.mvc.{ BodyParser, Results, Result }
-import play.api.test.{ FakeRequest, PlaySpecification }
+import play.api.mvc.{BodyParser, Results, Result}
+import play.api.test.{FakeRequest, PlaySpecification}
 
 import org.specs2.ScalaCheck
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{Arbitrary, Gen}
 
-object BodyParserSpec extends PlaySpecification with ExecutionSpecification with ScalaCheck {
+object BodyParserSpec
+    extends PlaySpecification
+    with ExecutionSpecification
+    with ScalaCheck {
 
   def run[A](bodyParser: BodyParser[A]) = {
     import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,20 +40,17 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
   }
 
   def constant[A](a: A): BodyParser[A] =
-    BodyParser("constant") { request =>
-      Accumulator.done(Right(a))
-    }
+    BodyParser("constant") { request => Accumulator.done(Right(a)) }
 
   def simpleResult(s: Result): BodyParser[Any] =
-    BodyParser("simple result") { request =>
-      Accumulator.done(Left(s))
-    }
+    BodyParser("simple result") { request => Accumulator.done(Left(s)) }
 
   implicit val arbResult: Arbitrary[Result] =
     Arbitrary {
       Gen.oneOf(
         Results.Ok,
-        Results.BadRequest, Results.NotFound,
+        Results.BadRequest,
+        Results.NotFound,
         Results.InternalServerError
       )
     }
@@ -83,7 +83,8 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
       val dbl = (i: Int) => i * 2
       mustExecute(3) { implicit ec => // three executions from `map`
         run {
-          constant(x).map(inc)
+          constant(x)
+            .map(inc)
             .map(dbl)
         } must_== run {
           constant(x).map(inc andThen dbl)
@@ -119,12 +120,11 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
          * and one from `Future.flatMapM`
          */
         run {
-          constant(x).mapM(inc)(mapMEC)
+          constant(x)
+            .mapM(inc)(mapMEC)
             .mapM(dbl)(mapMEC)
         } must_== run {
-          constant(x).mapM { y =>
-            inc(y).flatMap(dbl)(flatMapPEC)
-          }(mapMEC)
+          constant(x).mapM { y => inc(y).flatMap(dbl)(flatMapPEC) }(mapMEC)
         }
       }
     }
@@ -154,12 +154,11 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
       val dbl = (i: Int) => Right(i * 2)
       mustExecute(3) { implicit ec => // three executions from `validate`
         run {
-          constant(x).validate(inc)
+          constant(x)
+            .validate(inc)
             .validate(dbl)
         } must_== run {
-          constant(x).validate { y =>
-            inc(y).right.flatMap(dbl)
-          }
+          constant(x).validate { y => inc(y).right.flatMap(dbl) }
         }
       }
     }
@@ -207,9 +206,7 @@ object BodyParserSpec extends PlaySpecification with ExecutionSpecification with
         run {
           constant(x).validateM(inc).validateM(dbl)
         } must_== run {
-          constant(x).validateM { y =>
-            Future.successful(Right((y + 1) * 2))
-          }
+          constant(x).validateM { y => Future.successful(Right((y + 1) * 2)) }
         }
       }
     }

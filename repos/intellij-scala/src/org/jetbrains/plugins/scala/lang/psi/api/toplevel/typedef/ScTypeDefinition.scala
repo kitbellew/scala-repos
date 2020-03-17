@@ -18,12 +18,18 @@ import org.jetbrains.plugins.scala.macroAnnotations.{Cached, ModCount}
 import scala.collection.Seq
 
 /**
- * @author AlexanderPodkhalyuzin
- */
-
-trait ScTypeDefinition extends ScTemplateDefinition with ScMember
-    with NavigationItem with PsiClass with ScTypeParametersOwner with Iconable with ScDocCommentOwner
-    with ScAnnotationsHolder with ScCommentOwner {
+  * @author AlexanderPodkhalyuzin
+  */
+trait ScTypeDefinition
+    extends ScTemplateDefinition
+    with ScMember
+    with NavigationItem
+    with PsiClass
+    with ScTypeParametersOwner
+    with Iconable
+    with ScDocCommentOwner
+    with ScAnnotationsHolder
+    with ScCommentOwner {
   private var synthNavElement: Option[PsiElement] = None
   var syntheticContainingClass: Option[ScTypeDefinition] = None
   def setSynthetic(navElement: PsiElement) {
@@ -46,8 +52,8 @@ trait ScTypeDefinition extends ScTemplateDefinition with ScMember
   def getQualifiedNameForDebugger: String
 
   /**
-   * Qualified name stops on outer Class level.
-   */
+    * Qualified name stops on outer Class level.
+    */
   def getTruncedQualifiedName: String
 
   def signaturesByName(name: String): Seq[PhysicalSignature]
@@ -66,20 +72,25 @@ trait ScTypeDefinition extends ScTemplateDefinition with ScMember
     PsiClassImplUtil.isClassEquivalentTo(this, another)
   }
 
-  def allInnerTypeDefinitions: Seq[ScTypeDefinition] = members.collect {
-    case td: ScTypeDefinition => td
-  }
+  def allInnerTypeDefinitions: Seq[ScTypeDefinition] =
+    members.collect {
+      case td: ScTypeDefinition => td
+    }
 
-  override def syntheticTypeDefinitionsImpl: Seq[ScTypeDefinition] = SyntheticMembersInjector.injectInners(this)
+  override def syntheticTypeDefinitionsImpl: Seq[ScTypeDefinition] =
+    SyntheticMembersInjector.injectInners(this)
 
-  override protected def syntheticMethodsWithOverrideImpl: scala.Seq[PsiMethod] = SyntheticMembersInjector.inject(this, withOverride = true)
+  override protected def syntheticMethodsWithOverrideImpl
+      : scala.Seq[PsiMethod] =
+    SyntheticMembersInjector.inject(this, withOverride = true)
 
   def fakeCompanionModule: Option[ScObject] = {
     if (this.isInstanceOf[ScObject]) return None
     val baseCompanion = ScalaPsiUtil.getBaseCompanionModule(this)
     baseCompanion match {
       case Some(td: ScObject) => return None
-      case _ if !isCase && !SyntheticMembersInjector.needsCompanion(this) => return None
+      case _ if !isCase && !SyntheticMembersInjector.needsCompanion(this) =>
+        return None
       case _ =>
     }
 
@@ -88,7 +99,8 @@ trait ScTypeDefinition extends ScTemplateDefinition with ScMember
 
   @Cached(synchronized = true, ModCount.getBlockModificationCount, this)
   def calcFakeCompanionModule(): Option[ScObject] = {
-    val accessModifier = getModifierList.accessModifier.fold("")(_.modifierFormattedText + " ")
+    val accessModifier =
+      getModifierList.accessModifier.fold("")(_.modifierFormattedText + " ")
     val objText = this match {
       case clazz: ScClass if clazz.isCase =>
         val texts = clazz.getSyntheticMethodsText
@@ -97,15 +109,21 @@ trait ScTypeDefinition extends ScTemplateDefinition with ScMember
           try {
             if (typeParameters.isEmpty && clazz.constructor.get.effectiveParameterClauses.length == 1) {
               val typeElementText =
-                clazz.constructor.get.effectiveParameterClauses.map {
-                  clause =>
-                    clause.effectiveParameters.map(parameter => {
-                      val parameterText = parameter.typeElement.fold("_root_.scala.Nothing")(_.getText)
-                      if (parameter.isRepeatedParameter) s"_root_.scala.Seq[$parameterText]"
-                      else parameterText
-                    }).mkString("(", ", ", ")")
-                }.mkString("(", " => ", s" => $name)")
-              val typeElement = ScalaPsiElementFactory.createTypeElementFromText(typeElementText, getManager)
+                clazz.constructor.get.effectiveParameterClauses
+                  .map { clause =>
+                    clause.effectiveParameters
+                      .map(parameter => {
+                        val parameterText = parameter.typeElement.fold(
+                          "_root_.scala.Nothing")(_.getText)
+                        if (parameter.isRepeatedParameter)
+                          s"_root_.scala.Seq[$parameterText]"
+                        else parameterText
+                      })
+                      .mkString("(", ", ", ")")
+                  }
+                  .mkString("(", " => ", s" => $name)")
+              val typeElement = ScalaPsiElementFactory
+                .createTypeElementFromText(typeElementText, getManager)
               s" extends ${typeElement.getText}"
             } else {
               ""
@@ -124,17 +142,21 @@ trait ScTypeDefinition extends ScTemplateDefinition with ScMember
            |}""".stripMargin
     }
 
-
     val next = ScalaPsiUtil.getNextStubOrPsiElement(this)
     val obj: ScObject =
-      ScalaPsiElementFactory.createObjectWithContext(objText, getContext, if (next != null) next else this)
+      ScalaPsiElementFactory.createObjectWithContext(
+        objText,
+        getContext,
+        if (next != null) next else this)
     import org.jetbrains.plugins.scala.extensions._
     val objOption: Option[ScObject] = obj.toOption
     objOption.foreach { (obj: ScObject) =>
       obj.setSyntheticObject()
       obj.members.foreach {
         case s: ScFunctionDefinition =>
-          s.setSynthetic(this) // So we find the `apply` method in ScalaPsiUtil.syntheticParamForParam
+          s.setSynthetic(
+            this
+          ) // So we find the `apply` method in ScalaPsiUtil.syntheticParamForParam
           this match {
             case clazz: ScClass if clazz.isCase =>
               s.syntheticCaseClass = Some(clazz)

@@ -18,21 +18,32 @@ sealed trait ResolvedReference extends Reference
 
 /** Identifies a build. */
 sealed trait BuildReference extends Reference
+
 /** Identifies the build for the current context. */
 final case object ThisBuild extends BuildReference
+
 /** Uniquely identifies a build by a URI. */
-final case class BuildRef(build: URI) extends BuildReference with ResolvedReference
+final case class BuildRef(build: URI)
+    extends BuildReference
+    with ResolvedReference
 
 /** Identifies a project. */
 sealed trait ProjectReference extends Reference
+
 /** Uniquely references a project by a URI and a project identifier String. */
-final case class ProjectRef(build: URI, project: String) extends ProjectReference with ResolvedReference
+final case class ProjectRef(build: URI, project: String)
+    extends ProjectReference
+    with ResolvedReference
+
 /** Identifies a project in the current build context. */
 final case class LocalProject(project: String) extends ProjectReference
+
 /** Identifies the root project in the specified build. */
 final case class RootProject(build: URI) extends ProjectReference
+
 /** Identifies the root project in the current build context. */
 final case object LocalRootProject extends ProjectReference
+
 /** Identifies the project for the current context. */
 final case object ThisProject extends ProjectReference
 
@@ -40,28 +51,33 @@ object ProjectRef {
   def apply(base: File, id: String): ProjectRef = ProjectRef(IO toURI base, id)
 }
 object RootProject {
+
   /** Reference to the root project at 'base'.*/
   def apply(base: File): RootProject = RootProject(IO toURI base)
 }
 object Reference {
-  implicit val resolvedReferenceOrdering: Ordering[ResolvedReference] = new Ordering[ResolvedReference] {
-    def compare(a: ResolvedReference, b: ResolvedReference): Int = (a, b) match {
-      case (ba: BuildRef, bb: BuildRef)     => buildRefOrdering.compare(ba, bb)
-      case (pa: ProjectRef, pb: ProjectRef) => projectRefOrdering.compare(pa, pb)
-      case (_: BuildRef, _: ProjectRef)     => -1
-      case (_: ProjectRef, _: BuildRef)     => 1
+  implicit val resolvedReferenceOrdering: Ordering[ResolvedReference] =
+    new Ordering[ResolvedReference] {
+      def compare(a: ResolvedReference, b: ResolvedReference): Int =
+        (a, b) match {
+          case (ba: BuildRef, bb: BuildRef) => buildRefOrdering.compare(ba, bb)
+          case (pa: ProjectRef, pb: ProjectRef) =>
+            projectRefOrdering.compare(pa, pb)
+          case (_: BuildRef, _: ProjectRef) => -1
+          case (_: ProjectRef, _: BuildRef) => 1
+        }
     }
-  }
   implicit val buildRefOrdering: Ordering[BuildRef] = new Ordering[BuildRef] {
     def compare(a: BuildRef, b: BuildRef): Int = a.build compareTo b.build
   }
 
-  implicit val projectRefOrdering: Ordering[ProjectRef] = new Ordering[ProjectRef] {
-    def compare(a: ProjectRef, b: ProjectRef): Int = {
-      val bc = a.build compareTo b.build
-      if (bc == 0) a.project compareTo b.project else bc
+  implicit val projectRefOrdering: Ordering[ProjectRef] =
+    new Ordering[ProjectRef] {
+      def compare(a: ProjectRef, b: ProjectRef): Int = {
+        val bc = a.build compareTo b.build
+        if (bc == 0) a.project compareTo b.project else bc
+      }
     }
-  }
 
   def display(ref: Reference): String =
     ref match {
@@ -83,17 +99,20 @@ object Reference {
       case ProjectRef(uri, id) => "{" + uri + "}" + id
     }
 
-  def buildURI(ref: ResolvedReference): URI = ref match {
-    case BuildRef(b)      => b
-    case ProjectRef(b, _) => b
-  }
+  def buildURI(ref: ResolvedReference): URI =
+    ref match {
+      case BuildRef(b)      => b
+      case ProjectRef(b, _) => b
+    }
+
   /** Extracts the build URI from a Reference if one has been explicitly defined.*/
-  def uri(ref: Reference): Option[URI] = ref match {
-    case RootProject(b)   => Some(b)
-    case ProjectRef(b, _) => Some(b)
-    case BuildRef(b)      => Some(b)
-    case _                => None
-  }
+  def uri(ref: Reference): Option[URI] =
+    ref match {
+      case RootProject(b)   => Some(b)
+      case ProjectRef(b, _) => Some(b)
+      case BuildRef(b)      => Some(b)
+      case _                => None
+    }
 
   @deprecated("Explicitly wrap the URI in a call to RootProject.", "0.13.0")
   implicit def uriToRef(u: URI): ProjectReference = RootProject(u)

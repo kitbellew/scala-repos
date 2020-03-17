@@ -11,8 +11,8 @@ private[finagle] object SingletonPool {
   val role = StackClient.Role.pool
 
   /**
-   * Creates a [[com.twitter.finagle.Stackable]] [[com.twitter.finagle.pool.SingletonPool]].
-   */
+    * Creates a [[com.twitter.finagle.Stackable]] [[com.twitter.finagle.pool.SingletonPool]].
+    */
   def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =
     new Stack.Module1[param.Stats, ServiceFactory[Req, Rep]] {
       val role = SingletonPool.role
@@ -24,15 +24,15 @@ private[finagle] object SingletonPool {
     }
 
   /**
-   * A wrapper service to maintain a reference count. The count is
-   * set to 1 on construction; the count is decreased for each
-   * 'close'. Additional references are attained by calling 'open'.
-   * When the count reaches 0, the underlying service is closed.
-   *
-   * @note This implementation doesn't prevent the reference count
-   * from crossing the 0 boundary multiple times -- it may thus call
-   * 'close' on the underlying service multiple times.
-   */
+    * A wrapper service to maintain a reference count. The count is
+    * set to 1 on construction; the count is decreased for each
+    * 'close'. Additional references are attained by calling 'open'.
+    * When the count reaches 0, the underlying service is closed.
+    *
+    * @note This implementation doesn't prevent the reference count
+    * from crossing the 0 boundary multiple times -- it may thus call
+    * 'close' on the underlying service multiple times.
+    */
   class RefcountedService[Req, Rep](underlying: Service[Req, Rep])
       extends ServiceProxy[Req, Rep](underlying) {
     private[this] val count = new AtomicInteger(1)
@@ -45,7 +45,7 @@ private[finagle] object SingletonPool {
 
     override def close(deadline: Time): Future[Unit] =
       count.decrementAndGet() match {
-        case 0 => underlying.close(deadline)
+        case 0          => underlying.close(deadline)
         case n if n < 0 =>
           // This is technically an API usage error.
           count.incrementAndGet()
@@ -59,19 +59,20 @@ private[finagle] object SingletonPool {
   case object Idle extends State[Any, Nothing]
   case object Closed extends State[Any, Nothing]
   case class Awaiting(done: Future[Unit]) extends State[Any, Nothing]
-  case class Open[Req, Rep](service: RefcountedService[Req, Rep]) extends State[Req, Rep]
+  case class Open[Req, Rep](service: RefcountedService[Req, Rep])
+      extends State[Req, Rep]
 }
 
 /**
- * A pool that maintains at most one service from the underlying
- * ServiceFactory -- concurrent leases share the same, cached
- * service. A new Service is established whenever the service factory
- * fails or the current service has become unavailable.
- */
+  * A pool that maintains at most one service from the underlying
+  * ServiceFactory -- concurrent leases share the same, cached
+  * service. A new Service is established whenever the service factory
+  * fails or the current service has become unavailable.
+  */
 class SingletonPool[Req, Rep](
-  underlying: ServiceFactory[Req, Rep],
-  statsReceiver: StatsReceiver)
-extends ServiceFactory[Req, Rep] {
+    underlying: ServiceFactory[Req, Rep],
+    statsReceiver: StatsReceiver)
+    extends ServiceFactory[Req, Rep] {
   import SingletonPool._
 
   private[this] val scoped = statsReceiver.scope("connects")
@@ -81,16 +82,17 @@ extends ServiceFactory[Req, Rep] {
   private[this] val state = new AtomicReference(Idle: State[Req, Rep])
 
   /**
-   * Attempt to connect with the underlying factory and CAS the
-   * state Awaiting(done) => Open()|Idle depending on the outcome.
-   * Connect satisfies passed-in promise when the process is
-   * complete.
-   */
+    * Attempt to connect with the underlying factory and CAS the
+    * state Awaiting(done) => Open()|Idle depending on the outcome.
+    * Connect satisfies passed-in promise when the process is
+    * complete.
+    */
   private[this] def connect(done: Promise[Unit], conn: ClientConnection) {
-    def complete(newState: State[Req, Rep]) = state.get match {
-      case s@Awaiting(d) if d == done => state.compareAndSet(s, newState)
-      case Idle | Closed | Awaiting(_) | Open(_) => false
-    }
+    def complete(newState: State[Req, Rep]) =
+      state.get match {
+        case s @ Awaiting(d) if d == done          => state.compareAndSet(s, newState)
+        case Idle | Closed | Awaiting(_) | Open(_) => false
+      }
 
     done.become(underlying(conn) transform {
       case Throw(exc) =>
@@ -125,51 +127,52 @@ extends ServiceFactory[Req, Rep] {
     done before apply(conn)
 
   @tailrec
-  final def apply(conn: ClientConnection): Future[Service[Req, Rep]] = state.get match {
-    case Open(svc) if svc.status != Status.Closed =>
-      // It is possible that the pool's state has changed by the time
-      // we can return the service, so svc is possibly stale. We don't
-      // attempt to resolve this race; rather, we let the lower layers deal
-      // with it.
-      svc.open()
+  final def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
+    state.get match {
+      case Open(svc) if svc.status != Status.Closed =>
+        // It is possible that the pool's state has changed by the time
+        // we can return the service, so svc is possibly stale. We don't
+        // attempt to resolve this race; rather, we let the lower layers deal
+        // with it.
+        svc.open()
 
-    case s@Open(svc) => // service died; try to reconnect.
-      if (state.compareAndSet(s, Idle))
-        svc.close()
-      apply(conn)
-
-    case Idle =>
-      val done = new Promise[Unit]
-      if (state.compareAndSet(Idle, Awaiting(done))) {
-        connect(done, conn)
-        awaitApply(done, conn)
-      } else {
+      case s @ Open(svc) => // service died; try to reconnect.
+        if (state.compareAndSet(s, Idle))
+          svc.close()
         apply(conn)
-      }
 
-    case Awaiting(done) =>
-      awaitApply(done, conn)
+      case Idle =>
+        val done = new Promise[Unit]
+        if (state.compareAndSet(Idle, Awaiting(done))) {
+          connect(done, conn)
+          awaitApply(done, conn)
+        } else {
+          apply(conn)
+        }
 
-    case Closed =>
-      Future.exception(Failure(new ServiceClosedException))
-  }
+      case Awaiting(done) =>
+        awaitApply(done, conn)
+
+      case Closed =>
+        Future.exception(Failure(new ServiceClosedException))
+    }
 
   /**
-   * @inheritdoc
-   *
-   * The status of a [[SingletonPool]] is the worse of the 
-   * the underlying status and the status of the currently
-   * cached service, if any.
-   */
+    * @inheritdoc
+    *
+    * The status of a [[SingletonPool]] is the worse of the
+    * the underlying status and the status of the currently
+    * cached service, if any.
+    */
   override def status: Status =
     state.get match {
-      case Closed => Status.Closed
+      case Closed    => Status.Closed
       case Open(svc) =>
         // We don't account for closed services as these will
         // be reestablished on the next request.
         svc.status match {
           case Status.Closed => underlying.status
-          case status => Status.worst(status, underlying.status)
+          case status        => Status.worst(status, underlying.status)
         }
       case Idle | Awaiting(_) =>
         // This could also be Status.worst(underlying.status, Status.Busy(p));
@@ -179,31 +182,32 @@ extends ServiceFactory[Req, Rep] {
     }
 
   /**
-   * @inheritdoc
-   *
-   * SingletonPool closes asynchronously; the underlying connection is
-   * closed once all references are returned.
-   */
+    * @inheritdoc
+    *
+    * SingletonPool closes asynchronously; the underlying connection is
+    * closed once all references are returned.
+    */
   final def close(deadline: Time): Future[Unit] =
     closeService(deadline) before underlying.close(deadline)
 
   @tailrec
-  private[this] def closeService(deadline: Time): Future[Unit] = 
+  private[this] def closeService(deadline: Time): Future[Unit] =
     state.get match {
       case Idle =>
         if (!state.compareAndSet(Idle, Closed)) closeService(deadline)
         else Future.Done
-  
-      case s@Open(svc) =>
+
+      case s @ Open(svc) =>
         if (!state.compareAndSet(s, Closed)) closeService(deadline)
         else svc.close(deadline)
-  
-      case s@Awaiting(done) =>
-        if (!state.compareAndSet(s, Closed)) closeService(deadline) else {
+
+      case s @ Awaiting(done) =>
+        if (!state.compareAndSet(s, Closed)) closeService(deadline)
+        else {
           done.raise(new ServiceClosedException)
           Future.Done
         }
-  
+
       case Closed =>
         Future.Done
     }

@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import io.prediction.data.storage.hbase.HBLEvents
@@ -23,7 +22,8 @@ object StorageTestUtils {
   val jdbcSourceName = "PGSQL"
 
   def dropHBaseNamespace(namespace: String): Unit = {
-    val eventDb = Storage.getDataObject[LEvents](hbaseSourceName, namespace)
+    val eventDb = Storage
+      .getDataObject[LEvents](hbaseSourceName, namespace)
       .asInstanceOf[HBLEvents]
     val admin = eventDb.client.admin
     val tableNames = admin.listTableNamesByNamespace(namespace)
@@ -36,7 +36,6 @@ object StorageTestUtils {
     admin.deleteNamespace(namespace)
   }
 
-  def dropJDBCTable(table: String): Unit = DB autoCommit { implicit s =>
-    SQL(s"drop table $table").execute().apply()
-  }
+  def dropJDBCTable(table: String): Unit =
+    DB autoCommit { implicit s => SQL(s"drop table $table").execute().apply() }
 }

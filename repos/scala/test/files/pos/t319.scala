@@ -11,7 +11,8 @@ object test {
       new B { type T = arg.T; };
   }
 
-  val a = new  A { type T = String };
+  val a = new A { type T = String };
+
   /** val b: B { type T = String } = functor(a) */
   val b: B { type T = String } = {
     val tmp = new functor() { val arg = a };

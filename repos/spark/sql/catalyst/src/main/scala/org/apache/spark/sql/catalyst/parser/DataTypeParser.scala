@@ -24,35 +24,36 @@ import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 import org.apache.spark.sql.types._
 
 /**
- * This is a data type parser that can be used to parse string representations of data types
- * provided in SQL queries. This parser is mixed in with DDLParser and SqlParser.
- */
+  * This is a data type parser that can be used to parse string representations of data types
+  * provided in SQL queries. This parser is mixed in with DDLParser and SqlParser.
+  */
 private[sql] trait DataTypeParser extends StandardTokenParsers {
 
   // This is used to create a parser from a regex. We are using regexes for data type strings
   // since these strings can be also used as column names or field names.
   import lexical.Identifier
-  implicit def regexToParser(regex: Regex): Parser[String] = acceptMatch(
-    s"identifier matching regex ${regex}",
-    { case Identifier(str) if regex.unapplySeq(str).isDefined => str }
-  )
+  implicit def regexToParser(regex: Regex): Parser[String] =
+    acceptMatch(
+      s"identifier matching regex ${regex}",
+      { case Identifier(str) if regex.unapplySeq(str).isDefined => str }
+    )
 
   protected lazy val primitiveType: Parser[DataType] =
     "(?i)string".r ^^^ StringType |
-    "(?i)float".r ^^^ FloatType |
-    "(?i)(?:int|integer)".r ^^^ IntegerType |
-    "(?i)tinyint".r ^^^ ByteType |
-    "(?i)smallint".r ^^^ ShortType |
-    "(?i)double".r ^^^ DoubleType |
-    "(?i)(?:bigint|long)".r ^^^ LongType |
-    "(?i)binary".r ^^^ BinaryType |
-    "(?i)boolean".r ^^^ BooleanType |
-    fixedDecimalType |
-    "(?i)decimal".r ^^^ DecimalType.USER_DEFAULT |
-    "(?i)date".r ^^^ DateType |
-    "(?i)timestamp".r ^^^ TimestampType |
-    varchar |
-    char
+      "(?i)float".r ^^^ FloatType |
+      "(?i)(?:int|integer)".r ^^^ IntegerType |
+      "(?i)tinyint".r ^^^ ByteType |
+      "(?i)smallint".r ^^^ ShortType |
+      "(?i)double".r ^^^ DoubleType |
+      "(?i)(?:bigint|long)".r ^^^ LongType |
+      "(?i)binary".r ^^^ BinaryType |
+      "(?i)boolean".r ^^^ BooleanType |
+      fixedDecimalType |
+      "(?i)decimal".r ^^^ DecimalType.USER_DEFAULT |
+      "(?i)date".r ^^^ DateType |
+      "(?i)timestamp".r ^^^ TimestampType |
+      varchar |
+      char
 
   protected lazy val fixedDecimalType: Parser[DataType] =
     ("(?i)decimal".r ~> "(" ~> numericLit) ~ ("," ~> numericLit <~ ")") ^^ {
@@ -82,23 +83,25 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
     }
 
   protected lazy val structType: Parser[DataType] =
-    ("(?i)struct".r ~> "<" ~> repsep(structField, ",") <~ ">"  ^^ {
+    ("(?i)struct".r ~> "<" ~> repsep(structField, ",") <~ ">" ^^ {
       case fields => new StructType(fields.toArray)
     }) |
-    ("(?i)struct".r ~ "<>" ^^^ StructType(Nil))
+      ("(?i)struct".r ~ "<>" ^^^ StructType(Nil))
 
   protected lazy val dataType: Parser[DataType] =
     arrayType |
-    mapType |
-    structType |
-    primitiveType
+      mapType |
+      structType |
+      primitiveType
 
-  def toDataType(dataTypeString: String): DataType = synchronized {
-    phrase(dataType)(new lexical.Scanner(dataTypeString)) match {
-      case Success(result, _) => result
-      case failure: NoSuccess => throw new DataTypeException(failMessage(dataTypeString))
+  def toDataType(dataTypeString: String): DataType =
+    synchronized {
+      phrase(dataType)(new lexical.Scanner(dataTypeString)) match {
+        case Success(result, _) => result
+        case failure: NoSuccess =>
+          throw new DataTypeException(failMessage(dataTypeString))
+      }
     }
-  }
 
   private def failMessage(dataTypeString: String): String = {
     s"Unsupported dataType: $dataTypeString. If you have a struct and a field name of it has " +
@@ -112,7 +115,8 @@ private[sql] object DataTypeParser {
     override val lexical = new SqlLexical
   }
 
-  def parse(dataTypeString: String): DataType = dataTypeParser.toDataType(dataTypeString)
+  def parse(dataTypeString: String): DataType =
+    dataTypeParser.toDataType(dataTypeString)
 }
 
 /** The exception thrown from the [[DataTypeParser]]. */

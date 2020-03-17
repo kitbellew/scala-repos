@@ -3,11 +3,9 @@
 **  __\ \/ /__/ __ |/ /__/ __ |/ ___/    (c) 2003-2010, LAMP/EPFL
 ** /____/\___/_/ |_/____/_/ |_/_/        http://scala-lang.org/
 **
-*/
-
+ */
 
 package scala.tools.scalap
-
 
 object Classfiles {
   final val JAVA_MAGIC = 0xCAFEBABE
@@ -26,7 +24,7 @@ object Classfiles {
   final val CONSTANT_METHODREF = 10
   final val CONSTANT_INTFMETHODREF = 11
   final val CONSTANT_NAMEANDTYPE = 12
-  
+
   final val constantTagToString = Map(
     CONSTANT_UTF8 -> "UTF8",
     CONSTANT_UNICODE -> "Unicode",
@@ -68,4 +66,3 @@ object Classfiles {
   final val SCALA_N = "ScalaSignature"
   final val CONSTR_N = "<init>"
 }
-

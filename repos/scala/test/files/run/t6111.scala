@@ -4,9 +4,11 @@
 // along with the real fix: an extractor pattern with 1 sub-pattern should type check for all extractors
 // that return Option[T], whatever T (even if it's a tuple)
 object Foo {
-  def unapply[S, T](scrutinee: S)(implicit witness: FooHasType[S, T]): Option[T] = scrutinee match {
-    case i: Int => Some((i, i).asInstanceOf[T])
-  }
+  def unapply[S, T](scrutinee: S)(
+      implicit witness: FooHasType[S, T]): Option[T] =
+    scrutinee match {
+      case i: Int => Some((i, i).asInstanceOf[T])
+    }
 }
 
 class FooHasType[S, T]
@@ -15,7 +17,9 @@ object FooHasType {
 }
 
 // resurrected from neg/t997
-object Foo997 { def unapply(x : String): Option[(String, String)] = Some((x, x)) }
+object Foo997 {
+  def unapply(x: String): Option[(String, String)] = Some((x, x))
+}
 
 object Test extends App {
   val x = 8

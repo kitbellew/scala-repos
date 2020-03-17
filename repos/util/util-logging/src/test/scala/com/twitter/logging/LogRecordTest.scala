@@ -38,7 +38,8 @@ abstract class LogRecordTestHelper(formats: JRecord => String) {
   logger.addHandler(handler)
 }
 
-class Foo extends LogRecordTestHelper({ r: JRecord => r.getSourceClassName() }) {
+class Foo
+    extends LogRecordTestHelper({ r: JRecord => r.getSourceClassName() }) {
   def makingLogRecord() {
     logger.log(Level.INFO, "OK")
   }

@@ -12,12 +12,14 @@ final class Share(
 
   def grant(insighted: User, to: Option[User]): Fu[Boolean] =
     if (to ?? Granter(_.SeeInsight)) fuccess(true)
-    else getPref(insighted.id) flatMap { pref =>
-      pref.insightShare match {
-        case _ if to.contains(insighted) => fuccess(true)
-        case Pref.InsightShare.EVERYBODY => fuccess(true)
-        case Pref.InsightShare.FRIENDS   => to ?? { t => areFriends(insighted.id, t.id) }
-        case Pref.InsightShare.NOBODY    => fuccess(false)
+    else
+      getPref(insighted.id) flatMap { pref =>
+        pref.insightShare match {
+          case _ if to.contains(insighted) => fuccess(true)
+          case Pref.InsightShare.EVERYBODY => fuccess(true)
+          case Pref.InsightShare.FRIENDS =>
+            to ?? { t => areFriends(insighted.id, t.id) }
+          case Pref.InsightShare.NOBODY => fuccess(false)
+        }
       }
-    }
 }

@@ -2,7 +2,10 @@ package org.jetbrains.plugins.hocon.highlight
 
 import com.intellij.lexer.{LayeredLexer, StringLiteralLexer}
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.fileTypes.{SyntaxHighlighter, SyntaxHighlighterFactory}
+import com.intellij.openapi.fileTypes.{
+  SyntaxHighlighter,
+  SyntaxHighlighterFactory
+}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.StringEscapesTokenTypes
@@ -39,15 +42,22 @@ object HoconSyntaxHighlighter extends SyntaxHighlighter {
     QMark -> Array(HHC.OptionalSubstitutionSign),
     UnquotedChars -> Array(HHC.UnquotedString),
     Period -> Array(HHC.UnquotedString),
-    StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN -> Array(HHC.ValidStringEscape),
-    StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN -> Array(HHC.InvalidStringEscape),
-    StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN -> Array(HHC.InvalidStringEscape)
+    StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN -> Array(
+      HHC.ValidStringEscape),
+    StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN -> Array(
+      HHC.InvalidStringEscape),
+    StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN -> Array(
+      HHC.InvalidStringEscape)
   )
 
   def getTokenHighlights(tokenType: IElementType) =
     tokenHighlights.getOrElse(tokenType, Array.empty)
 
-  def getHighlightingLexer = new LayeredLexer(new HoconLexer) {
-    registerSelfStoppingLayer(new StringLiteralLexer('\"', QuotedString), Array(QuotedString), IElementType.EMPTY_ARRAY)
-  }
+  def getHighlightingLexer =
+    new LayeredLexer(new HoconLexer) {
+      registerSelfStoppingLayer(
+        new StringLiteralLexer('\"', QuotedString),
+        Array(QuotedString),
+        IElementType.EMPTY_ARRAY)
+    }
 }

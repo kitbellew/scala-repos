@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.liftweb 
-package record 
-package field 
+package net.liftweb
+package record
+package field
 
 import scala.xml._
 import net.liftweb.util._
@@ -26,33 +26,40 @@ import S._
 import Helpers._
 
 trait TextareaTypedField extends StringTypedField {
-  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))){
-    funcName => <textarea name={funcName}
+  private def elem =
+    S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
+      <textarea name={funcName}
       rows={textareaRows.toString}
       cols={textareaCols.toString}
       tabindex={tabIndex.toString}>{valueBox openOr ""}</textarea>
-  }
+    }
 
   override def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) =>  Full(elem % ("id" -> id))
-      case _ => Full(elem)
+      case Full(id) => Full(elem % ("id" -> id))
+      case _        => Full(elem)
     }
 
+  override def toString =
+    valueBox match {
+      case Full(s) if s.length >= 100 =>
+        s.substring(0, 40) + " ... " + s.substring(s.length - 40)
+      case _ => super.toString
+    }
 
-  override def toString = valueBox match {
-    case Full(s) if s.length >= 100 => s.substring(0,40) + " ... " + s.substring(s.length - 40)
-    case _ => super.toString
-  }
-
-  def textareaRows  = 8
+  def textareaRows = 8
 
   def textareaCols = 20
 }
 
-class TextareaField[OwnerType <: Record[OwnerType]](rec: OwnerType, maxLength: Int)
-  extends StringField(rec, maxLength) with TextareaTypedField
+class TextareaField[OwnerType <: Record[OwnerType]](
+    rec: OwnerType,
+    maxLength: Int)
+    extends StringField(rec, maxLength)
+    with TextareaTypedField
 
-class OptionalTextareaField[OwnerType <: Record[OwnerType]](rec: OwnerType, maxLength: Int)
-  extends OptionalStringField(rec, maxLength) with TextareaTypedField
-
+class OptionalTextareaField[OwnerType <: Record[OwnerType]](
+    rec: OwnerType,
+    maxLength: Int)
+    extends OptionalStringField(rec, maxLength)
+    with TextareaTypedField

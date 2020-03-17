@@ -11,11 +11,12 @@ import org.junit.experimental.categories.Category
 @Category(Array(classOf[SlowTests]))
 class ProjectImportingTest extends ImportingTestCase with InexactMatch {
 
-  def testSimple() = runTest(
-    new project("simple") {
-      lazy val scalaLibrary = new library("SBT: org.scala-lang:scala-library:2.11.6:jar") {
-        classes += (IvyCacheDir / "org.scala-lang" / "scala-library" / "jars" / "scala-library-2.11.6.jar").getAbsolutePath
-      }
+  def testSimple() =
+    runTest(new project("simple") {
+      lazy val scalaLibrary =
+        new library("SBT: org.scala-lang:scala-library:2.11.6:jar") {
+          classes += (IvyCacheDir / "org.scala-lang" / "scala-library" / "jars" / "scala-library-2.11.6.jar").getAbsolutePath
+        }
 
       libraries += scalaLibrary
 
@@ -35,59 +36,62 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
       }
     })
 
-  def testMultiModule() = runTest(
-    new project("multiModule") {
+  def testMultiModule() =
+    runTest(new project("multiModule") {
       lazy val foo = new module("foo") {
         moduleDependencies += new dependency(bar) {
           isExported := true
         }
       }
 
-      lazy val bar  = new module("bar")
+      lazy val bar = new module("bar")
       lazy val root = new module("multiModule")
 
       modules := Seq(root, foo, bar)
     })
 
-  def testUnmanagedDependency() = runTest(
-    new project("unmanagedDependency") {
-      modules += new module("unmanagedDependency") {
-        lazy val unmanagedLibrary = new library("SBT: unmanaged-jars") {
-          classes += (testProjectDir / "lib" / "unmanaged.jar").getAbsolutePath
+  def testUnmanagedDependency() =
+    runTest(
+      new project("unmanagedDependency") {
+        modules += new module("unmanagedDependency") {
+          lazy val unmanagedLibrary = new library("SBT: unmanaged-jars") {
+            classes += (testProjectDir / "lib" / "unmanaged.jar").getAbsolutePath
+          }
+          libraries += unmanagedLibrary
+          libraryDependencies += unmanagedLibrary
         }
-        libraries += unmanagedLibrary
-        libraryDependencies += unmanagedLibrary
       }
-    }
-  )
+    )
 
-  def testSharedSources() = runTest(
-    new project("sharedSources") {
-      lazy val sharedSourcesModule = new module("sharedSources-sources") {
-        contentRoots += getProjectPath + "/shared"
-        ProjectStructureDsl.sources += "src/main/scala"
+  def testSharedSources() =
+    runTest(
+      new project("sharedSources") {
+        lazy val sharedSourcesModule = new module("sharedSources-sources") {
+          contentRoots += getProjectPath + "/shared"
+          ProjectStructureDsl.sources += "src/main/scala"
+        }
+
+        lazy val foo = new module("foo") {
+          moduleDependencies += sharedSourcesModule
+        }
+
+        lazy val bar = new module("bar") {
+          moduleDependencies += sharedSourcesModule
+        }
+
+        modules := Seq(foo, bar, sharedSourcesModule)
       }
+    )
 
-      lazy val foo = new module("foo") {
-        moduleDependencies += sharedSourcesModule
+  def testExcludedDirectories() =
+    runTest(
+      new project("root") {
+        modules += new module("root") {
+          excluded := Seq(
+            "directory-to-exclude-1",
+            "directory/to/exclude/2"
+          )
+        }
       }
-
-      lazy val bar = new module("bar") {
-        moduleDependencies += sharedSourcesModule
-      }
-
-      modules := Seq(foo, bar, sharedSourcesModule)
-    }
-  )
-
-  def testExcludedDirectories() = runTest(
-    new project("root") {
-      modules += new module("root") {
-        excluded := Seq(
-          "directory-to-exclude-1",
-          "directory/to/exclude/2"
-        )
-      }
-    }
-  )
+    )
 }

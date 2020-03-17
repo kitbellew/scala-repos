@@ -6,13 +6,15 @@ package akka.persistence.query
 
 import akka.NotUsed
 import akka.stream.scaladsl.Source
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.typesafe.config.{Config, ConfigFactory}
 
 /**
- * Use for tests only!
- * Emits infinite stream of strings (representing queried for events).
- */
-class DummyReadJournal extends scaladsl.ReadJournal with scaladsl.AllPersistenceIdsQuery {
+  * Use for tests only!
+  * Emits infinite stream of strings (representing queried for events).
+  */
+class DummyReadJournal
+    extends scaladsl.ReadJournal
+    with scaladsl.AllPersistenceIdsQuery {
   override def allPersistenceIds(): Source[String, NotUsed] =
     Source.fromIterator(() ⇒ Iterator.from(0)).map(_.toString)
 }
@@ -21,14 +23,16 @@ object DummyReadJournal {
   final val Identifier = "akka.persistence.query.journal.dummy"
 }
 
-class DummyReadJournalForJava(readJournal: DummyReadJournal) extends javadsl.ReadJournal with javadsl.AllPersistenceIdsQuery {
-  override def allPersistenceIds(): akka.stream.javadsl.Source[String, NotUsed] =
+class DummyReadJournalForJava(readJournal: DummyReadJournal)
+    extends javadsl.ReadJournal
+    with javadsl.AllPersistenceIdsQuery {
+  override def allPersistenceIds()
+      : akka.stream.javadsl.Source[String, NotUsed] =
     readJournal.allPersistenceIds().asJava
 }
 
 object DummyReadJournalProvider {
-  final val config: Config = ConfigFactory.parseString(
-    s"""
+  final val config: Config = ConfigFactory.parseString(s"""
       |${DummyReadJournal.Identifier} {
       |  class = "${classOf[DummyReadJournalProvider].getCanonicalName}"
       |}

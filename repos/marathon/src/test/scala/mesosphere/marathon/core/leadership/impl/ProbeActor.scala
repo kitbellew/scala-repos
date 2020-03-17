@@ -1,6 +1,6 @@
 package mesosphere.marathon.core.leadership.impl
 
-import akka.actor.{ ActorRef, Props, Actor }
+import akka.actor.{ActorRef, Props, Actor}
 import akka.event.LoggingReceive
 import akka.testkit.TestProbe
 
@@ -21,8 +21,9 @@ class ProbeActor(testProbe: TestProbe) extends Actor {
     testProbe.ref ! ProbeActor.PostStop(self)
   }
 
-  override def receive: Receive = LoggingReceive {
-    case any: Any =>
-      testProbe.ref.forward(any)
-  }
+  override def receive: Receive =
+    LoggingReceive {
+      case any: Any =>
+        testProbe.ref.forward(any)
+    }
 }

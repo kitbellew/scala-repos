@@ -9,10 +9,23 @@ import com.twitter.finagle.context.Contexts
 import com.twitter.finagle.http.service.HttpResponseClassifier
 import com.twitter.finagle.param.Stats
 import com.twitter.finagle.service.{ResponseClass, FailureAccrualFactory}
-import com.twitter.finagle.stats.{NullStatsReceiver, InMemoryStatsReceiver, StatsReceiver}
+import com.twitter.finagle.stats.{
+  NullStatsReceiver,
+  InMemoryStatsReceiver,
+  StatsReceiver
+}
 import com.twitter.finagle.tracing.Trace
 import com.twitter.io.{Buf, Reader, Writer}
-import com.twitter.util.{Await, Closable, Future, JavaTimer, Promise, Return, Throw, Time}
+import com.twitter.util.{
+  Await,
+  Closable,
+  Future,
+  JavaTimer,
+  Promise,
+  Return,
+  Throw,
+  Time
+}
 import java.io.{PrintWriter, StringWriter}
 import java.net.{InetAddress, InetSocketAddress}
 import org.junit.runner.RunWith
@@ -43,17 +56,18 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
   def buf(msg: String): Buf = Buf.Utf8(msg)
 
   /**
-   * Read `n` number of bytes from the bytestream represented by `r`.
-   */
+    * Read `n` number of bytes from the bytestream represented by `r`.
+    */
   def readNBytes(n: Int, r: Reader): Future[Buf] = {
-    def loop(left: Buf): Future[Buf] = (n - left.length) match {
-      case x if x > 0 =>
-        r.read(x) flatMap {
-          case Some(right) => loop(left concat right)
-          case None => Future.value(left)
-        }
-      case _ => Future.value(left)
-    }
+    def loop(left: Buf): Future[Buf] =
+      (n - left.length) match {
+        case x if x > 0 =>
+          r.read(x) flatMap {
+            case Some(right) => loop(left concat right)
+            case None        => Future.value(left)
+          }
+        case _ => Future.value(left)
+      }
 
     loop(Buf.Empty)
   }
@@ -68,11 +82,13 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     }
   }
 
-  def run(name: String)(tests: HttpTest*)(connect: HttpService => HttpService): Unit = {
+  def run(name: String)(tests: HttpTest*)(
+      connect: HttpService => HttpService): Unit = {
     tests.foreach(t => t(name)(connect))
   }
 
-  def standardErrors(name: String)(connect: HttpService => HttpService): Unit = {
+  def standardErrors(name: String)(
+      connect: HttpService => HttpService): Unit = {
     test(name + ": request uri too long") {
       val service = new HttpService {
         def apply(request: Request) = Future.value(Response())
@@ -138,7 +154,8 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
 
     test(name + ": unhandled exceptions are converted into 500s") {
       val service = new HttpService {
-        def apply(request: Request) = Future.exception(new IllegalArgumentException("bad news"))
+        def apply(request: Request) =
+          Future.exception(new IllegalArgumentException("bad news"))
       }
 
       val client = connect(service)
@@ -159,7 +176,8 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       val justRight = Request("/")
       justRight.content = Buf.ByteArray.Owned(Array[Byte](100))
 
-      assert(Await.result(client(tooBig)).status == Status.RequestEntityTooLarge)
+      assert(
+        Await.result(client(tooBig)).status == Status.RequestEntityTooLarge)
       assert(Await.result(client(justRight)).status == Status.Ok)
       client.close()
     }
@@ -284,16 +302,17 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     }
 
     test(name + ": stream") {
-      def service(r: Reader) = new HttpService {
-        def apply(request: Request) = {
-          val response = Response()
-          response.setChunked(true)
-          response.writer.write(buf("hello")) before
-          response.writer.write(buf("world")) before
-          response.close()
-          Future.value(response)
+      def service(r: Reader) =
+        new HttpService {
+          def apply(request: Request) = {
+            val response = Response()
+            response.setChunked(true)
+            response.writer.write(buf("hello")) before
+              response.writer.write(buf("world")) before
+              response.close()
+            Future.value(response)
+          }
         }
-      }
 
       val writer = Reader.writable()
       val client = connect(service(writer))
@@ -316,7 +335,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
         intercept[CancelledRequestException] {
           promise.isInterrupted match {
             case Some(intr) => throw intr
-            case _ =>
+            case _          =>
           }
         }
       })
@@ -346,16 +365,17 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
   }
 
   def streaming(name: String)(connect: HttpService => HttpService) {
-    def service(r: Reader) = new HttpService {
-      def apply(request: Request) = {
-        val response = new Response {
-          final val httpResponse = request.response.httpResponse
-          override def reader = r
+    def service(r: Reader) =
+      new HttpService {
+        def apply(request: Request) = {
+          val response = new Response {
+            final val httpResponse = request.response.httpResponse
+            override def reader = r
+          }
+          response.setChunked(true)
+          Future.value(response)
         }
-        response.setChunked(true)
-        Future.value(response)
       }
-    }
 
     test(name + ": symmetric reader and getContent") {
       val s = Service.mk[Request, Response] { req =>
@@ -409,18 +429,21 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       req.setChunked(true)
       client(req)
       client.close()
-      intercept[Reader.ReaderDiscarded] { Await.result(drip(req.writer), 5.seconds) }
+      intercept[Reader.ReaderDiscarded] {
+        Await.result(drip(req.writer), 5.seconds)
+      }
     }
 
     test(name + ": request discard terminates remote stream producer") {
       val s = Service.mk[Request, Response] { req =>
         val res = Response()
         res.setChunked(true)
-        def go = for {
-          Some(c) <- req.reader.read(Int.MaxValue)
-          _  <- res.writer.write(c)
-          _  <- res.close()
-        } yield ()
+        def go =
+          for {
+            Some(c) <- req.reader.read(Int.MaxValue)
+            _ <- res.writer.write(c)
+            _ <- res.close()
+          } yield ()
         // discard the reader, which should terminate the drip.
         go ensure req.reader.discard()
 
@@ -441,7 +464,8 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       intercept[Reader.ReaderDiscarded] { Await.result(drip(req.writer)) }
     }
 
-    test(name + ": client discard terminates stream and frees up the connection") {
+    test(
+      name + ": client discard terminates stream and frees up the connection") {
       val s = new Service[Request, Response] {
         var rep: Response = null
 
@@ -477,7 +501,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       client.close()
     }
 
-    test(name +": does not measure payload size") {
+    test(name + ": does not measure payload size") {
       val svc = Service.mk[Request, Response] { _ => Future.value(Response()) }
       val client = connect(svc)
       Await.result(client(Request()))
@@ -519,101 +543,100 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
         response.contentString.split('.').toSeq
       assert(innerTrace == outerTrace, "traceId")
       assert(outerSpan == innerParent, "outer span vs inner parent")
-      assert(innerSpan != outerSpan, "inner (%s) vs outer (%s) spanId".format(innerSpan, outerSpan))
+      assert(
+        innerSpan != outerSpan,
+        "inner (%s) vs outer (%s) spanId".format(innerSpan, outerSpan))
 
       outer.close()
       inner.close()
     }
   }
 
-  run("ClientBuilder")(standardErrors, standardBehaviour) {
-    service =>
-      val server = ServerBuilder()
-        .codec(Http().maxRequestSize(100.bytes))
-        .reportTo(statsRecv)
-        .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .name("server")
-        .build(service)
+  run("ClientBuilder")(standardErrors, standardBehaviour) { service =>
+    val server = ServerBuilder()
+      .codec(Http().maxRequestSize(100.bytes))
+      .reportTo(statsRecv)
+      .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+      .name("server")
+      .build(service)
 
-      val client = ClientBuilder()
-        .codec(Http())
-        .reportTo(statsRecv)
-        .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
-        .hostConnectionLimit(1)
-        .name("client")
-        .build()
+    val client = ClientBuilder()
+      .codec(Http())
+      .reportTo(statsRecv)
+      .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
+      .hostConnectionLimit(1)
+      .name("client")
+      .build()
 
-      new ServiceProxy(client) {
-        override def close(deadline: Time) =
-          Closable.all(client, server).close(deadline)
-      }
+    new ServiceProxy(client) {
+      override def close(deadline: Time) =
+        Closable.all(client, server).close(deadline)
+    }
   }
 
-  run("Client/Server")(standardErrors, standardBehaviour, tracing) {
-    service =>
-      val server = finagle.Http.server
-        .withLabel("server")
-        .configured(Stats(statsRecv))
-        .withMaxRequestSize(100.bytes)
-        .serve("localhost:*", service)
-      val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
-      val client = finagle.Http.client
-        .configured(Stats(statsRecv))
-        .newService("%s:%d".format(addr.getHostName, addr.getPort), "client")
+  run("Client/Server")(standardErrors, standardBehaviour, tracing) { service =>
+    val server = finagle.Http.server
+      .withLabel("server")
+      .configured(Stats(statsRecv))
+      .withMaxRequestSize(100.bytes)
+      .serve("localhost:*", service)
+    val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
+    val client = finagle.Http.client
+      .configured(Stats(statsRecv))
+      .newService("%s:%d".format(addr.getHostName, addr.getPort), "client")
 
-      new ServiceProxy(client) {
-        override def close(deadline: Time) =
-          Closable.all(client, server).close(deadline)
-      }
+    new ServiceProxy(client) {
+      override def close(deadline: Time) =
+        Closable.all(client, server).close(deadline)
+    }
   }
 
-  run("ClientBuilder (streaming)")(streaming) {
-    service =>
-      val server = ServerBuilder()
-        .codec(Http().streaming(true))
-        .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .name("server")
-        .build(service)
+  run("ClientBuilder (streaming)")(streaming) { service =>
+    val server = ServerBuilder()
+      .codec(Http().streaming(true))
+      .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+      .name("server")
+      .build(service)
 
-      val client = ClientBuilder()
-        .codec(Http().streaming(true))
-        .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
-        .hostConnectionLimit(1)
-        .name("client")
-        .build()
+    val client = ClientBuilder()
+      .codec(Http().streaming(true))
+      .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
+      .hostConnectionLimit(1)
+      .name("client")
+      .build()
 
-      new ServiceProxy(client) {
-        override def close(deadline: Time) =
-          Closable.all(client, server).close(deadline)
-      }
+    new ServiceProxy(client) {
+      override def close(deadline: Time) =
+        Closable.all(client, server).close(deadline)
+    }
   }
 
-  run("ClientBuilder (tracing)")(tracing) {
-    service =>
-      val server = ServerBuilder()
-        .codec(Http().enableTracing(true))
-        .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .name("server")
-        .build(service)
+  run("ClientBuilder (tracing)")(tracing) { service =>
+    val server = ServerBuilder()
+      .codec(Http().enableTracing(true))
+      .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+      .name("server")
+      .build(service)
 
-      val client = ClientBuilder()
-        .codec(Http().enableTracing(true))
-        .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
-        .hostConnectionLimit(1)
-        .name("client")
-        .build()
+    val client = ClientBuilder()
+      .codec(Http().enableTracing(true))
+      .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
+      .hostConnectionLimit(1)
+      .name("client")
+      .build()
 
-      new ServiceProxy(client) {
-        override def close(deadline: Time) =
-          Closable.all(client, server).close(deadline)
-      }
+    new ServiceProxy(client) {
+      override def close(deadline: Time) =
+        Closable.all(client, server).close(deadline)
+    }
   }
 
   // use 1 less than the requeue limit so that we trigger failure accrual
   // before we run into the requeue limit.
   private val failureAccrualFailures = 19
 
-  def status(name: String)(connect: (HttpService, StatsReceiver, String) => (HttpService)): Unit = {
+  def status(name: String)(
+      connect: (HttpService, StatsReceiver, String) => (HttpService)): Unit = {
     test(name + ": Status.busy propagates along the Stack") {
       val st = new InMemoryStatsReceiver
       val clientName = "http"
@@ -626,47 +649,53 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       intercept[Exception](Await.result(client(Request())))
 
       assert(st.counters(Seq(clientName, "failure_accrual", "removals")) == 1)
-      assert(st.counters(Seq(clientName, "retries", "requeues")) == failureAccrualFailures - 1)
-      assert(st.counters(Seq(clientName, "failures", "restartable")) == failureAccrualFailures)
+      assert(
+        st.counters(
+          Seq(clientName, "retries", "requeues")) == failureAccrualFailures - 1)
+      assert(
+        st.counters(
+          Seq(clientName, "failures", "restartable")) == failureAccrualFailures)
       client.close()
     }
   }
 
-  status("ClientBuilder") {
-    (service, st, name) =>
-      val server = ServerBuilder()
-        .codec(Http())
-        .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .name("server")
-        .build(service)
+  status("ClientBuilder") { (service, st, name) =>
+    val server = ServerBuilder()
+      .codec(Http())
+      .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+      .name("server")
+      .build(service)
 
-      val client = ClientBuilder()
-        .codec(Http())
-        .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
-        .hostConnectionLimit(1)
-        .name(name)
-        .failureAccrualParams((failureAccrualFailures, 1.minute))
-        .reportTo(st)
-        .build()
+    val client = ClientBuilder()
+      .codec(Http())
+      .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
+      .hostConnectionLimit(1)
+      .name(name)
+      .failureAccrualParams((failureAccrualFailures, 1.minute))
+      .reportTo(st)
+      .build()
 
-      new ServiceProxy(client) {
-        override def close(deadline: Time) =
-          Closable.all(client, server).close(deadline)
-      }
+    new ServiceProxy(client) {
+      override def close(deadline: Time) =
+        Closable.all(client, server).close(deadline)
+    }
   }
 
-  status("Client/Server") {
-    (service, st, name) =>
-      val server = finagle.Http.serve(new InetSocketAddress(0), service)
-      val client = finagle.Http.client
-        .configured(Stats(st))
-        .configured(FailureAccrualFactory.Param(failureAccrualFailures, () => 1.minute))
-        .newService(Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])), name)
+  status("Client/Server") { (service, st, name) =>
+    val server = finagle.Http.serve(new InetSocketAddress(0), service)
+    val client = finagle.Http.client
+      .configured(Stats(st))
+      .configured(
+        FailureAccrualFactory.Param(failureAccrualFailures, () => 1.minute))
+      .newService(
+        Name.bound(
+          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        name)
 
-      new ServiceProxy(client) {
-        override def close(deadline: Time) =
-          Closable.all(client, server).close(deadline)
-      }
+    new ServiceProxy(client) {
+      override def close(deadline: Time) =
+        Closable.all(client, server).close(deadline)
+    }
   }
 
   test("Client-side ResponseClassifier based on status code") {

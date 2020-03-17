@@ -1,8 +1,6 @@
 package scala.collection.parallel
 package mutable
 
-
-
 import org.scalacheck._
 import org.scalacheck.Gen
 import org.scalacheck.Gen._
@@ -13,8 +11,8 @@ import org.scalacheck.Arbitrary._
 import scala.collection._
 import scala.collection.parallel.ops._
 
-
-abstract class ParallelHashSetCheck[T](tp: String) extends ParallelSetCheck[T]("mutable.ParHashSet[" + tp + "]") {
+abstract class ParallelHashSetCheck[T](tp: String)
+    extends ParallelSetCheck[T]("mutable.ParHashSet[" + tp + "]") {
   // ForkJoinTasks.defaultForkJoinPool.setMaximumPoolSize(Runtime.getRuntime.availableProcessors * 2)
   // ForkJoinTasks.defaultForkJoinPool.setParallelism(Runtime.getRuntime.availableProcessors * 2)
 
@@ -46,52 +44,44 @@ abstract class ParallelHashSetCheck[T](tp: String) extends ParallelSetCheck[T]("
 
 }
 
+class IntParallelHashSetCheck(val tasksupport: TaskSupport)
+    extends ParallelHashSetCheck[Int]("Int")
+    with IntOperators
+    with IntValues {
+  override def printDataStructureDebugInfo(ds: AnyRef) =
+    ds match {
+      case pm: ParHashSet[t] =>
+        println("Mutable parallel hash set")
+      case _ =>
+        println("could not match data structure type: " + ds.getClass)
+    }
 
-class IntParallelHashSetCheck(val tasksupport: TaskSupport) extends ParallelHashSetCheck[Int]("Int")
-with IntOperators
-with IntValues
-{
-  override def printDataStructureDebugInfo(ds: AnyRef) = ds match {
-    case pm: ParHashSet[t] =>
-      println("Mutable parallel hash set")
-    case _ =>
-      println("could not match data structure type: " + ds.getClass)
-  }
+  override def checkDataStructureInvariants(
+      orig: Traversable[Int],
+      ds: AnyRef) =
+    ds match {
+      // case pm: ParHashSet[t] if 1 == 0 =>
+      //   // for an example of how not to write code proceed below
+      //   val invs = pm.brokenInvariants
 
-  override def checkDataStructureInvariants(orig: Traversable[Int], ds: AnyRef) = ds match {
-    // case pm: ParHashSet[t] if 1 == 0 =>
-    //   // for an example of how not to write code proceed below
-    //   val invs = pm.brokenInvariants
+      //   val containsall = (for (elem <- orig) yield {
+      //     if (pm.asInstanceOf[ParHashSet[Int]](elem) == true) true
+      //     else {
+      //       println("Does not contain original element: " + elem)
+      //       println(pm.hashTableContents.table.find(_ == elem))
+      //       println(pm.hashTableContents.table.indexOf(elem))
+      //       false
+      //     }
+      //   }).foldLeft(true)(_ && _)
 
-    //   val containsall = (for (elem <- orig) yield {
-    //     if (pm.asInstanceOf[ParHashSet[Int]](elem) == true) true
-    //     else {
-    //       println("Does not contain original element: " + elem)
-    //       println(pm.hashTableContents.table.find(_ == elem))
-    //       println(pm.hashTableContents.table.indexOf(elem))
-    //       false
-    //     }
-    //   }).foldLeft(true)(_ && _)
-
-
-    //   if (invs.isEmpty) {
-    //     if (!containsall) println(pm.debugInformation)
-    //     containsall
-    //   } else {
-    //     println("Invariants broken:\n" + invs.mkString("\n"))
-    //     false
-    //   }
-    case _ => true
-  }
+      //   if (invs.isEmpty) {
+      //     if (!containsall) println(pm.debugInformation)
+      //     containsall
+      //   } else {
+      //     println("Invariants broken:\n" + invs.mkString("\n"))
+      //     false
+      //   }
+      case _ => true
+    }
 
 }
-
-
-
-
-
-
-
-
-
-

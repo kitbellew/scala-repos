@@ -6,9 +6,9 @@ import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * A module which allows clients to limit the number of pending
- * requests per connection.
- */
+  * A module which allows clients to limit the number of pending
+  * requests per connection.
+  */
 object PendingRequestFilter {
 
   val role = Stack.Role("PendingRequestLimit")
@@ -27,12 +27,13 @@ object PendingRequestFilter {
       // n.b. we can't simply compose the `PendingRequestFilter` onto the `next`
       // service factory since we need a distinct filter instance to provide
       // distinct state per-session.
-      def make(_param: Param, next: ServiceFactory[Req, Rep]) = _param match {
-        case Param(Some(limit)) =>
-          next.map(new PendingRequestFilter[Req, Rep](limit).andThen(_))
+      def make(_param: Param, next: ServiceFactory[Req, Rep]) =
+        _param match {
+          case Param(Some(limit)) =>
+            next.map(new PendingRequestFilter[Req, Rep](limit).andThen(_))
 
-        case Param(None) => next
-      }
+          case Param(None) => next
+        }
     }
 
   val PendingRequestsLimitExceeded =
@@ -40,13 +41,15 @@ object PendingRequestFilter {
 }
 
 /**
- * A filter which limits the number of pending requests to a service.
- */
-private[finagle] class PendingRequestFilter[Req, Rep](limit: Int) extends SimpleFilter[Req, Rep] {
+  * A filter which limits the number of pending requests to a service.
+  */
+private[finagle] class PendingRequestFilter[Req, Rep](limit: Int)
+    extends SimpleFilter[Req, Rep] {
   import PendingRequestFilter._
 
   if (limit < 1)
-    throw new IllegalArgumentException(s"request limit must be greater than zero, saw $limit")
+    throw new IllegalArgumentException(
+      s"request limit must be greater than zero, saw $limit")
 
   private[this] val pending = new AtomicInteger(0)
   private[this] val decFn: Any => Unit = { _: Any => pending.decrementAndGet() }

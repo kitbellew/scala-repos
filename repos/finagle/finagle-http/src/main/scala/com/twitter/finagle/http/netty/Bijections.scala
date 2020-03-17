@@ -3,7 +3,11 @@ package com.twitter.finagle.http.netty
 import com.twitter.finagle.http.{Status, Version, Method, Request, Response}
 import java.net.InetSocketAddress
 import org.jboss.netty.handler.codec.http.{
-  HttpVersion, HttpResponseStatus, HttpMethod, HttpRequest, HttpResponse
+  HttpVersion,
+  HttpResponseStatus,
+  HttpMethod,
+  HttpRequest,
+  HttpResponse
 }
 
 // TODO Use bijection-core when bijection.Conversion is contravariant in A.
@@ -19,10 +23,11 @@ object Bijections {
   // Version
 
   implicit val versionToNetty = new Injection[Version, HttpVersion] {
-    def apply(v: Version) = v match {
-      case Version.Http11 => HttpVersion.HTTP_1_1
-      case Version.Http10 => HttpVersion.HTTP_1_0
-    }
+    def apply(v: Version) =
+      v match {
+        case Version.Http11 => HttpVersion.HTTP_1_1
+        case Version.Http10 => HttpVersion.HTTP_1_0
+      }
   }
 
   // Note: netty 3's HttpVersion allows arbitrary protocol names so the bijection
@@ -30,11 +35,12 @@ object Bijections {
   // However, netty 3 only decodes HTTP/1.0 and HTTP/1.1 messages so whatever came over
   // the wire at least looks like HTTP/1.x, so we take a guess in the base case.
   implicit val versionFromNetty = new Injection[HttpVersion, Version] {
-    def apply(v: HttpVersion) = v match {
-      case HttpVersion.HTTP_1_1 => Version.Http11
-      case HttpVersion.HTTP_1_0 => Version.Http10
-      case _ => Version.Http11
-    }
+    def apply(v: HttpVersion) =
+      v match {
+        case HttpVersion.HTTP_1_1 => Version.Http11
+        case HttpVersion.HTTP_1_0 => Version.Http10
+        case _                    => Version.Http11
+      }
   }
 
   // Method
@@ -70,10 +76,11 @@ object Bijections {
   }
 
   implicit val requestFromNetty = new Injection[HttpRequest, Request] {
-    def apply(r: HttpRequest): Request = new Request {
-      val httpRequest = r
-      lazy val remoteSocketAddress = new InetSocketAddress(0)
-    }
+    def apply(r: HttpRequest): Request =
+      new Request {
+        val httpRequest = r
+        lazy val remoteSocketAddress = new InetSocketAddress(0)
+      }
   }
 
   // Response

@@ -1,16 +1,16 @@
-object Texts{
+object Texts {
   def textL[T](list: List[T]) = {
-    list match{
-      case List() => "Empty"
-      case List(_) => "One"
+    list match {
+      case List()   => "Empty"
+      case List(_)  => "One"
       case List(_*) => "Many"
     }
   }
 
   def textA[T](array: Array[T]) = {
-    array match{
-      case Array() => "Empty"
-      case Array(_) => "One"
+    array match {
+      case Array()   => "Empty"
+      case Array(_)  => "One"
       case Array(_*) => "Many"
     }
   }

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.ddata.protobuf
 
 import java.io.ByteArrayInputStream
@@ -12,7 +12,7 @@ import akka.actor.ActorRef
 import akka.actor.Address
 import akka.actor.ExtendedActorSystem
 import akka.cluster.UniqueAddress
-import akka.cluster.ddata.protobuf.msg.{ ReplicatorMessages ⇒ dm }
+import akka.cluster.ddata.protobuf.msg.{ReplicatorMessages ⇒ dm}
 import akka.serialization.JSerializer
 import akka.serialization.Serialization
 import akka.serialization.SerializationExtension
@@ -21,8 +21,8 @@ import akka.protobuf.MessageLite
 import akka.serialization.SerializerWithStringManifest
 
 /**
- * Some useful serialization helper methods.
- */
+  * Some useful serialization helper methods.
+  */
 trait SerializationSupport {
 
   private final val BufferSize = 1024 * 4
@@ -66,32 +66,42 @@ trait SerializationSupport {
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 ⇒ ()
-      case n ⇒
-        out.write(buffer, 0, n)
-        readChunk()
-    }
+    @tailrec def readChunk(): Unit =
+      in.read(buffer) match {
+        case -1 ⇒ ()
+        case n ⇒
+          out.write(buffer, 0, n)
+          readChunk()
+      }
 
     try readChunk()
     finally in.close()
     out.toByteArray
   }
 
-  def addressToProto(address: Address): dm.Address.Builder = address match {
-    case Address(_, _, Some(host), Some(port)) ⇒
-      dm.Address.newBuilder().setHostname(host).setPort(port)
-    case _ ⇒ throw new IllegalArgumentException(s"Address [${address}] could not be serialized: host or port missing.")
-  }
+  def addressToProto(address: Address): dm.Address.Builder =
+    address match {
+      case Address(_, _, Some(host), Some(port)) ⇒
+        dm.Address.newBuilder().setHostname(host).setPort(port)
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Address [${address}] could not be serialized: host or port missing.")
+    }
 
   def addressFromProto(address: dm.Address): Address =
     Address(addressProtocol, system.name, address.getHostname, address.getPort)
 
-  def uniqueAddressToProto(uniqueAddress: UniqueAddress): dm.UniqueAddress.Builder =
-    dm.UniqueAddress.newBuilder().setAddress(addressToProto(uniqueAddress.address)).setUid(uniqueAddress.uid)
+  def uniqueAddressToProto(
+      uniqueAddress: UniqueAddress): dm.UniqueAddress.Builder =
+    dm.UniqueAddress
+      .newBuilder()
+      .setAddress(addressToProto(uniqueAddress.address))
+      .setUid(uniqueAddress.uid)
 
   def uniqueAddressFromProto(uniqueAddress: dm.UniqueAddress): UniqueAddress =
-    UniqueAddress(addressFromProto(uniqueAddress.getAddress), uniqueAddress.getUid)
+    UniqueAddress(
+      addressFromProto(uniqueAddress.getAddress),
+      uniqueAddress.getUid)
 
   def resolveActorRef(path: String): ActorRef =
     system.provider.resolveActorRef(path)
@@ -100,8 +110,9 @@ trait SerializationSupport {
     def buildOther(): dm.OtherMessage = {
       val m = msg.asInstanceOf[AnyRef]
       val msgSerializer = serialization.findSerializerFor(m)
-      val builder = dm.OtherMessage.newBuilder().
-        setEnclosedMessage(ByteString.copyFrom(msgSerializer.toBinary(m)))
+      val builder = dm.OtherMessage
+        .newBuilder()
+        .setEnclosedMessage(ByteString.copyFrom(msgSerializer.toBinary(m)))
         .setSerializerId(msgSerializer.identifier)
 
       msgSerializer match {
@@ -111,7 +122,8 @@ trait SerializationSupport {
             builder.setMessageManifest(ByteString.copyFromUtf8(manifest))
         case _ ⇒
           if (msgSerializer.includeManifest)
-            builder.setMessageManifest(ByteString.copyFromUtf8(m.getClass.getName))
+            builder.setMessageManifest(
+              ByteString.copyFromUtf8(m.getClass.getName))
       }
 
       builder.build()
@@ -121,7 +133,8 @@ trait SerializationSupport {
     // When sending remote messages currentTransportInformation is already set,
     // but when serializing for digests it must be set here.
     if (Serialization.currentTransportInformation.value == null)
-      Serialization.currentTransportInformation.withValue(transportInformation) { buildOther() }
+      Serialization.currentTransportInformation.withValue(
+        transportInformation) { buildOther() }
     else
       buildOther()
   }
@@ -130,16 +143,22 @@ trait SerializationSupport {
     otherMessageFromProto(dm.OtherMessage.parseFrom(bytes))
 
   def otherMessageFromProto(other: dm.OtherMessage): AnyRef = {
-    val manifest = if (other.hasMessageManifest) other.getMessageManifest.toStringUtf8 else ""
-    serialization.deserialize(
-      other.getEnclosedMessage.toByteArray,
-      other.getSerializerId,
-      manifest).get
+    val manifest =
+      if (other.hasMessageManifest) other.getMessageManifest.toStringUtf8
+      else ""
+    serialization
+      .deserialize(
+        other.getEnclosedMessage.toByteArray,
+        other.getSerializerId,
+        manifest)
+      .get
   }
 
 }
 
 /**
- * Java API
- */
-abstract class AbstractSerializationSupport extends JSerializer with SerializationSupport
+  * Java API
+  */
+abstract class AbstractSerializationSupport
+    extends JSerializer
+    with SerializationSupport

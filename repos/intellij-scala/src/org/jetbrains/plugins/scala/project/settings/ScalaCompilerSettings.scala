@@ -4,8 +4,8 @@ import org.jetbrains.jps.incremental.scala.data.SbtIncrementalOptions
 import org.jetbrains.plugins.scala.project.{CompileOrder, DebuggingInfoLevel}
 
 /**
- * @author Pavel Fatin
- */
+  * @author Pavel Fatin
+  */
 class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
   def this() {
     this(new ScalaCompilerSettingsState())
@@ -42,30 +42,39 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
   var additionalCompilerOptions: Seq[String] = _
   var plugins: Seq[String] = _
 
-  private val ToggleOptions: Seq[(String, () => Boolean, Boolean => Unit)] = Seq(
-    ("-language:dynamics", () => dynamics, dynamics = _),
-    ("-language:postfixOps", () => postfixOps, postfixOps = _),
-    ("-language:reflectiveCalls", () => reflectiveCalls, reflectiveCalls = _),
-    ("-language:implicitConversions", () => implicitConversions, implicitConversions = _),
-    ("-language:higherKinds", () => higherKinds, higherKinds = _),
-    ("-language:existentials", () => existentials, existentials = _),
-    ("-language:experimental.macros", () => macros, macros = _),
-    ("-Xexperimental", () => experimental, experimental = _),
-    ("-nowarn", () => !warnings, (b: Boolean) => warnings = !b),
-    ("-deprecation", () => deprecationWarnings, deprecationWarnings = _),
-    ("-unchecked", () => uncheckedWarnings, uncheckedWarnings = _),
-    ("-feature", () => featureWarnings, featureWarnings = _),
-    ("-optimise", () => optimiseBytecode, optimiseBytecode = _),
-    ("-explaintypes", () => explainTypeErrors, explainTypeErrors = _),
-    ("-no-specialization", () => !specialization, (b: Boolean) => specialization = !b),
-    ("-P:continuations:enable", () => continuations, continuations = _))
+  private val ToggleOptions: Seq[(String, () => Boolean, Boolean => Unit)] =
+    Seq(
+      ("-language:dynamics", () => dynamics, dynamics = _),
+      ("-language:postfixOps", () => postfixOps, postfixOps = _),
+      ("-language:reflectiveCalls", () => reflectiveCalls, reflectiveCalls = _),
+      (
+        "-language:implicitConversions",
+        () => implicitConversions,
+        implicitConversions = _),
+      ("-language:higherKinds", () => higherKinds, higherKinds = _),
+      ("-language:existentials", () => existentials, existentials = _),
+      ("-language:experimental.macros", () => macros, macros = _),
+      ("-Xexperimental", () => experimental, experimental = _),
+      ("-nowarn", () => !warnings, (b: Boolean) => warnings = !b),
+      ("-deprecation", () => deprecationWarnings, deprecationWarnings = _),
+      ("-unchecked", () => uncheckedWarnings, uncheckedWarnings = _),
+      ("-feature", () => featureWarnings, featureWarnings = _),
+      ("-optimise", () => optimiseBytecode, optimiseBytecode = _),
+      ("-explaintypes", () => explainTypeErrors, explainTypeErrors = _),
+      (
+        "-no-specialization",
+        () => !specialization,
+        (b: Boolean) => specialization = !b),
+      ("-P:continuations:enable", () => continuations, continuations = _)
+    )
 
   private val DebuggingOptions: Map[String, DebuggingInfoLevel] = Map(
     "-g:none" -> DebuggingInfoLevel.None,
     "-g:source" -> DebuggingInfoLevel.Source,
     "-g:line" -> DebuggingInfoLevel.Line,
     "-g:vars" -> DebuggingInfoLevel.Vars,
-    "-g:notailcalls" -> DebuggingInfoLevel.Notailcalls)
+    "-g:notailcalls" -> DebuggingInfoLevel.Notailcalls
+  )
 
   private val PluginOptionPattern = "-Xplugin:(.+)".r
 
@@ -87,7 +96,12 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
     initFrom0(normalized(options))
   }
 
-  def sbtIncOptions = SbtIncrementalOptions(nameHashing, recompileOnMacroDef, transitiveStep, recompileAllFraction)
+  def sbtIncOptions =
+    SbtIncrementalOptions(
+      nameHashing,
+      recompileOnMacroDef,
+      transitiveStep,
+      recompileAllFraction)
 
   private def initFrom0(options: Seq[String]) {
     val optionToSetter = ToggleOptions.map(it => (it._1, it._3)).toMap
@@ -96,7 +110,10 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
       case (option, setter) => setter(options.contains(option))
     }
 
-    debuggingInfoLevel = DebuggingOptions.find(p => options.contains(p._1)).map(_._2).getOrElse(DebuggingInfoLevel.Vars)
+    debuggingInfoLevel = DebuggingOptions
+      .find(p => options.contains(p._1))
+      .map(_._2)
+      .getOrElse(DebuggingInfoLevel.Vars)
 
     plugins = options collect {
       case PluginOptionPattern(path) => path
@@ -104,20 +121,21 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
 
     additionalCompilerOptions = options.filterNot { option =>
       optionToSetter.keySet.contains(option) ||
-              DebuggingOptions.keySet.contains(option) ||
-              PluginOptionPattern.findFirstIn(option).isDefined
+      DebuggingOptions.keySet.contains(option) ||
+      PluginOptionPattern.findFirstIn(option).isDefined
     }
   }
 
-  private def normalized(options: Seq[String]): Seq[String] = options.flatMap {
-    case "-language:macros" =>
-      Seq("-language:experimental.macros")
-    case option =>
-      if (option.startsWith("-language:"))
-        option.substring(10).split(",").map("-language:" + _)
-      else
-        Seq(option)
-  }
+  private def normalized(options: Seq[String]): Seq[String] =
+    options.flatMap {
+      case "-language:macros" =>
+        Seq("-language:experimental.macros")
+      case option =>
+        if (option.startsWith("-language:"))
+          option.substring(10).split(",").map("-language:" + _)
+        else
+          Seq(option)
+    }
 
   def loadState(state: ScalaCompilerSettingsState) {
     compileOrder = state.compileOrder

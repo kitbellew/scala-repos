@@ -26,8 +26,10 @@ import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.mllib.util.TestingUtils._
 import org.apache.spark.sql.{Row, SQLContext}
 
-class ChiSqSelectorSuite extends SparkFunSuite with MLlibTestSparkContext
-  with DefaultReadWriteTest {
+class ChiSqSelectorSuite
+    extends SparkFunSuite
+    with MLlibTestSparkContext
+    with DefaultReadWriteTest {
 
   test("Test Chi-Square selector") {
     val sqlContext = SQLContext.getOrCreate(sc)
@@ -47,7 +49,8 @@ class ChiSqSelectorSuite extends SparkFunSuite with MLlibTestSparkContext
       Vectors.dense(5.0)
     )
 
-    val df = sc.parallelize(data.zip(preFilteredData))
+    val df = sc
+      .parallelize(data.zip(preFilteredData))
       .map(x => (x._1.label, x._1.features, x._2))
       .toDF("label", "data", "preFilteredData")
 
@@ -57,10 +60,15 @@ class ChiSqSelectorSuite extends SparkFunSuite with MLlibTestSparkContext
       .setLabelCol("label")
       .setOutputCol("filtered")
 
-    model.fit(df).transform(df).select("filtered", "preFilteredData").collect().foreach {
-      case Row(vec1: Vector, vec2: Vector) =>
-        assert(vec1 ~== vec2 absTol 1e-1)
-    }
+    model
+      .fit(df)
+      .transform(df)
+      .select("filtered", "preFilteredData")
+      .collect()
+      .foreach {
+        case Row(vec1: Vector, vec2: Vector) =>
+          assert(vec1 ~== vec2 absTol 1e-1)
+      }
   }
 
   test("ChiSqSelector read/write") {

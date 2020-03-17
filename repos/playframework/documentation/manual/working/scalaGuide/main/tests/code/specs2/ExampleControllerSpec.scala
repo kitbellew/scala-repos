@@ -23,8 +23,9 @@ object ExampleControllerSpec extends PlaySpecification with Results {
 
 // #scalatest-examplecontroller
 class ExampleController extends Controller {
-  def index() = Action {
-    Ok("ok")
-  }
+  def index() =
+    Action {
+      Ok("ok")
+    }
 }
 // #scalatest-examplecontroller

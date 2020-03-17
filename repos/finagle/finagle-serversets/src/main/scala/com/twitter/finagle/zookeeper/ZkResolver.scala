@@ -17,16 +17,15 @@ import scala.collection.mutable
 import java.util.logging.{Level, Logger}
 
 /**
- * Indicates that a failure occurred while attempting to resolve a cluster
- * using a [[com.twitter.finagle.zookeeper.ZkAnnouncer]].
- */
+  * Indicates that a failure occurred while attempting to resolve a cluster
+  * using a [[com.twitter.finagle.zookeeper.ZkAnnouncer]].
+  */
 class ZkResolverException(msg: String) extends Exception(msg)
 
 // Note: this is still used by finagle-memcached.
 private[finagle] class ZkGroup(serverSet: ServerSet, path: String)
     extends Thread("ZkGroup(%s)".format(path))
-    with Group[ServiceInstance]
-{
+    with Group[ServiceInstance] {
   setDaemon(true)
   start()
 
@@ -34,16 +33,17 @@ private[finagle] class ZkGroup(serverSet: ServerSet, path: String)
 
   override def run() {
     serverSet.watch(new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
-      def onChange(newSet: ImmutableSet[ServiceInstance]) = synchronized {
-        set() = newSet.asScala.toSet
-      }
+      def onChange(newSet: ImmutableSet[ServiceInstance]) =
+        synchronized {
+          set() = newSet.asScala.toSet
+        }
     })
   }
 }
 
-
 private class ZkOffer(serverSet: ServerSet, path: String)
-    extends Thread("ZkOffer(%s)".format(path)) with Offer[Set[ServiceInstance]] {
+    extends Thread("ZkOffer(%s)".format(path))
+    with Offer[Set[ServiceInstance]] {
   setDaemon(true)
   start()
 
@@ -62,8 +62,11 @@ private class ZkOffer(serverSet: ServerSet, path: String)
         // There are certain path permission checks in the serverset library
         // that can cause exceptions here. We'll send an empty set (which
         // becomes a negative resolution).
-        log.log(Level.WARNING, "Exception when trying to watch a ServerSet! " +
-          "Returning negative resolution.", exc)
+        log.log(
+          Level.WARNING,
+          "Exception when trying to watch a ServerSet! " +
+            "Returning negative resolution.",
+          exc)
         inbound !! Set.empty
     }
   }
@@ -71,14 +74,14 @@ private class ZkOffer(serverSet: ServerSet, path: String)
   def prepare() = inbound.recv.prepare()
 }
 
-
 class ZkResolver(factory: ZkClientFactory) extends Resolver {
   val scheme = "zk"
 
   // With the current serverset client, instances are maintained
   // forever; additional resource leaks aren't created by caching
   // instances here.
-  private type CacheKey = (Set[InetSocketAddress], String, Option[String], Option[Int])
+  private type CacheKey =
+    (Set[InetSocketAddress], String, Option[String], Option[Int])
   private val cache = new mutable.HashMap[CacheKey, Var[Addr]]
 
   def this() = this(DefaultZkClientFactory)
@@ -96,22 +99,24 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
 
   private def newToAddresses(endpoint: Option[String], shardId: Option[Int]) = {
 
-    val getEndpoint: PartialFunction[ServiceInstance, Endpoint] = endpoint match {
-      case Some(epname) => {
-        case inst if inst.getAdditionalEndpoints.containsKey(epname) =>
-          inst.getAdditionalEndpoints.get(epname)
+    val getEndpoint: PartialFunction[ServiceInstance, Endpoint] =
+      endpoint match {
+        case Some(epname) => {
+          case inst if inst.getAdditionalEndpoints.containsKey(epname) =>
+            inst.getAdditionalEndpoints.get(epname)
+        }
+        case None => {
+          case inst: ServiceInstance => inst.getServiceEndpoint()
+        }
       }
-      case None => {
-        case inst: ServiceInstance => inst.getServiceEndpoint()
-      }
-    }
 
-    val filterShardId: PartialFunction[ServiceInstance, ServiceInstance] = shardId match {
-      case Some(id) => {
-        case inst if inst.isSetShard && inst.shard == id => inst
+    val filterShardId: PartialFunction[ServiceInstance, ServiceInstance] =
+      shardId match {
+        case Some(id) => {
+          case inst if inst.isSetShard && inst.shard == id => inst
+        }
+        case None => { case x => x }
       }
-      case None => { case x => x }
-    }
 
     val toAddress: Endpoint => Address = (ep: Endpoint) =>
       Address(ep.getHost, ep.getPort)
@@ -122,7 +127,8 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
 
   private def newVar(
       zkHosts: Set[InetSocketAddress],
-      path: String, toAddresses: Set[ServiceInstance] => Set[Address]) = {
+      path: String,
+      toAddresses: Set[ServiceInstance] => Set[Address]) = {
 
     val (zkClient, zkHealthHandler) = factory.get(zkHosts)
     val zkOffer = new ZkOffer(new ServerSetImpl(zkClient, path), path)
@@ -139,9 +145,7 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
       DefaultStatsReceiver.scope("zkGroup"))
 
     val v = Var[Addr](Addr.Pending)
-    stable foreach { newAddr =>
-      v() = newAddr
-    }
+    stable foreach { newAddr => v() = newAddr }
 
     v
   }
@@ -155,16 +159,17 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
     zkHosts
   }
 
-  def bind(arg: String) = arg.split("!") match {
-    // zk!host:2181!/path
-    case Array(hosts, path) =>
-      resolve(zkHosts(hosts), path, None)
+  def bind(arg: String) =
+    arg.split("!") match {
+      // zk!host:2181!/path
+      case Array(hosts, path) =>
+        resolve(zkHosts(hosts), path, None)
 
-    // zk!host:2181!/path!endpoint
-    case Array(hosts, path, endpoint) =>
-      resolve(zkHosts(hosts), path, Some(endpoint))
+      // zk!host:2181!/path!endpoint
+      case Array(hosts, path, endpoint) =>
+        resolve(zkHosts(hosts), path, Some(endpoint))
 
-    case _ =>
-      throw new ZkResolverException("Invalid address \"%s\"".format(arg))
-  }
+      case _ =>
+        throw new ZkResolverException("Invalid address \"%s\"".format(arg))
+    }
 }

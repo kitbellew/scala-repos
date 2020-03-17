@@ -4,7 +4,7 @@
 
 package akka.http.scaladsl.server.directives
 
-import akka.http.scaladsl.model.{ StatusCodes, HttpMethods }
+import akka.http.scaladsl.model.{StatusCodes, HttpMethods}
 import akka.http.scaladsl.server._
 
 class MethodDirectivesSpec extends RoutingSpec {

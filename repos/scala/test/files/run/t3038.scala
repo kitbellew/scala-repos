@@ -2,8 +2,6 @@ class A {
   private lazy val a1 = "a1"
   object B
   private lazy val a2 = "a2"
-
-
   @transient lazy val a3 = "a3"
   @transient private lazy val a4 = "a4"
   @transient lazy val a5 = "a5"
@@ -12,9 +10,6 @@ class A {
   final val a7 = "a7"
   private final val a8 = "a8"
   @transient final val a9 = "a9"
-
-
-
 
   def run = {
     println(a1)
@@ -45,8 +40,6 @@ class C extends A {
   final val c9 = "c9"
   private final val c10 = "c10"
 
-
-
   override def run = {
     super.run
     println(c1)
@@ -65,4 +58,3 @@ class C extends A {
 object Test extends App {
   (new C).run
 }
-

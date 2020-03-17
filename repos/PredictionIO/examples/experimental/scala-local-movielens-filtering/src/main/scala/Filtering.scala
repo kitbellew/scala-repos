@@ -8,10 +8,11 @@ import scala.io.Source
 
 case class TempFilterParams(val filepath: String) extends Params
 
-class TempFilter(val params: TempFilterParams) 
+class TempFilter(val params: TempFilterParams)
     extends LServing[TempFilterParams, Query, Prediction] {
   override def serve(query: Query, predictions: Seq[Prediction]): Prediction = {
-    val disabledIids: Set[String] = Source.fromFile(params.filepath)
+    val disabledIids: Set[String] = Source
+      .fromFile(params.filepath)
       .getLines()
       .toSet
 

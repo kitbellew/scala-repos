@@ -57,4 +57,3 @@ class DashboardPage(dashPart: String = "dashboard") extends DisplayablePage {
     }
   }
 }
-

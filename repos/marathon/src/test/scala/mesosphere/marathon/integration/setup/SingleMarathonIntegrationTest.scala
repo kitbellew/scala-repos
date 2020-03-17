@@ -3,17 +3,27 @@ package mesosphere.marathon.integration.setup
 import java.io.File
 
 import mesosphere.marathon.health.HealthCheck
-import mesosphere.marathon.integration.facades.{ MesosFacade, ITEnrichedTask, ITDeploymentResult, MarathonFacade }
-import mesosphere.marathon.state.{ DockerVolume, AppDefinition, Container, PathId }
+import mesosphere.marathon.integration.facades.{
+  MesosFacade,
+  ITEnrichedTask,
+  ITDeploymentResult,
+  MarathonFacade
+}
+import mesosphere.marathon.state.{
+  DockerVolume,
+  AppDefinition,
+  Container,
+  PathId
+}
 import org.apache.commons.io.FileUtils
 import org.apache.mesos.Protos
-import org.apache.zookeeper.{ WatchedEvent, Watcher, ZooKeeper }
-import org.scalatest.{ BeforeAndAfterAllConfigMap, ConfigMap, Suite }
+import org.apache.zookeeper.{WatchedEvent, Watcher, ZooKeeper}
+import org.scalatest.{BeforeAndAfterAllConfigMap, ConfigMap, Suite}
 import org.slf4j.LoggerFactory
 import play.api.libs.json.Json
 
 import scala.collection.JavaConverters._
-import scala.concurrent.duration.{ FiniteDuration, _ }
+import scala.concurrent.duration.{FiniteDuration, _}
 import scala.util.Try
 
 // scalastyle:off magic.number
@@ -35,7 +45,8 @@ object SingleMarathonIntegrationTest {
   */
 trait SingleMarathonIntegrationTest
     extends ExternalMarathonIntegrationTest
-    with BeforeAndAfterAllConfigMap with MarathonCallbackTestSupport { self: Suite =>
+    with BeforeAndAfterAllConfigMap
+    with MarathonCallbackTestSupport { self: Suite =>
 
   import SingleMarathonIntegrationTest.log
 
@@ -48,14 +59,22 @@ trait SingleMarathonIntegrationTest
   lazy val appMock: AppMockFacade = new AppMockFacade()
 
   val testBasePath: PathId = PathId("/marathonintegrationtest")
-  override lazy val marathon: MarathonFacade = new MarathonFacade(config.marathonUrl, testBasePath)
+  override lazy val marathon: MarathonFacade =
+    new MarathonFacade(config.marathonUrl, testBasePath)
   lazy val mesos: MesosFacade = new MesosFacade(s"http://${config.master}")
 
   def extraMarathonParameters: List[String] = List.empty[String]
 
   lazy val marathonProxy = {
-    startMarathon(config.marathonBasePort + 1, "--master", config.master, "--event_subscriber", "http_callback")
-    new MarathonFacade(config.copy(marathonBasePort = config.marathonBasePort + 1).marathonUrl, testBasePath)
+    startMarathon(
+      config.marathonBasePort + 1,
+      "--master",
+      config.master,
+      "--event_subscriber",
+      "http_callback")
+    new MarathonFacade(
+      config.copy(marathonBasePort = config.marathonBasePort + 1).marathonUrl,
+      testBasePath)
   }
 
   implicit class PathIdTestHelper(path: String) {
@@ -63,9 +82,10 @@ trait SingleMarathonIntegrationTest
     def toTestPath: PathId = testBasePath.append(path)
   }
 
-  protected def startZooKeeperProcess(port: Int = config.zkPort,
-                                      path: String = "/tmp/foo/single",
-                                      wipeWorkDir: Boolean = true): Unit = {
+  protected def startZooKeeperProcess(
+      port: Int = config.zkPort,
+      path: String = "/tmp/foo/single",
+      wipeWorkDir: Boolean = true): Unit = {
     ProcessKeeper.startZooKeeper(port, path, wipeWorkDir)
   }
 
@@ -84,18 +104,22 @@ trait SingleMarathonIntegrationTest
       cleanMarathonState()
 
       val parameters = List(
-        "--master", config.master,
-        "--event_subscriber", "http_callback",
-        "--access_control_allow_origin", "*",
-        "--reconciliation_initial_delay", "600000",
-        "--min_revive_offers_interval", "100"
+        "--master",
+        config.master,
+        "--event_subscriber",
+        "http_callback",
+        "--access_control_allow_origin",
+        "*",
+        "--reconciliation_initial_delay",
+        "600000",
+        "--min_revive_offers_interval",
+        "100"
       ) ++ extraMarathonParameters
       startMarathon(config.marathonBasePort, parameters: _*)
 
       waitForCleanSlateInMesos()
       log.info("Setting up local mesos/marathon infrastructure: done.")
-    }
-    else {
+    } else {
       log.info("Using already running Marathon at {}", config.marathonUrl)
     }
 
@@ -109,14 +133,17 @@ trait SingleMarathonIntegrationTest
     log.info("Cleaning up local mesos/marathon structure...")
     ExternalMarathonIntegrationTest.healthChecks.clear()
     ProcessKeeper.shutdown()
-    ProcessKeeper.stopJavaProcesses("mesosphere.marathon.integration.setup.AppMock")
+    ProcessKeeper.stopJavaProcesses(
+      "mesosphere.marathon.integration.setup.AppMock")
     system.shutdown()
     system.awaitTermination()
     log.info("Cleaning up local mesos/marathon structure: done.")
   }
 
   def cleanMarathonState() {
-    val watcher = new Watcher { override def process(event: WatchedEvent): Unit = println(event) }
+    val watcher = new Watcher {
+      override def process(event: WatchedEvent): Unit = println(event)
+    }
     val zooKeeper = new ZooKeeper(config.zkHostAndPort, 30 * 1000, watcher)
     def deletePath(path: String) {
       if (zooKeeper.exists(path, false) != null) {
@@ -129,21 +156,34 @@ trait SingleMarathonIntegrationTest
     zooKeeper.close()
   }
 
-  def waitForTasks(appId: PathId, num: Int, maxWait: FiniteDuration = 30.seconds): List[ITEnrichedTask] = {
+  def waitForTasks(
+      appId: PathId,
+      num: Int,
+      maxWait: FiniteDuration = 30.seconds): List[ITEnrichedTask] = {
     def checkTasks: Option[List[ITEnrichedTask]] = {
-      val tasks = Try(marathon.tasks(appId)).map(_.value).getOrElse(Nil).filter(_.launched)
+      val tasks = Try(marathon.tasks(appId))
+        .map(_.value)
+        .getOrElse(Nil)
+        .filter(_.launched)
       if (tasks.size == num) Some(tasks) else None
     }
     WaitTestSupport.waitFor(s"$num tasks to launch", maxWait)(checkTasks)
   }
 
-  def waitForHealthCheck(check: IntegrationHealthCheck, maxWait: FiniteDuration = 30.seconds) = {
-    WaitTestSupport.waitUntil("Health check to get queried", maxWait) { check.pinged }
+  def waitForHealthCheck(
+      check: IntegrationHealthCheck,
+      maxWait: FiniteDuration = 30.seconds) = {
+    WaitTestSupport.waitUntil("Health check to get queried", maxWait) {
+      check.pinged
+    }
   }
 
   private def appProxyMainInvocationImpl: String = {
-    val javaExecutable = sys.props.get("java.home").fold("java")(_ + "/bin/java")
-    val classPath = sys.props.getOrElse("java.class.path", "target/classes").replaceAll(" ", "")
+    val javaExecutable =
+      sys.props.get("java.home").fold("java")(_ + "/bin/java")
+    val classPath = sys.props
+      .getOrElse("java.class.path", "target/classes")
+      .replaceAll(" ", "")
     val main = classOf[AppMock].getName
     s"""$javaExecutable -Xmx64m -classpath $classPath $main"""
   }
@@ -156,7 +196,8 @@ trait SingleMarathonIntegrationTest
     val file = File.createTempFile("appProxy", ".sh")
     file.deleteOnExit()
 
-    FileUtils.write(file,
+    FileUtils.write(
+      file,
       s"""#!/bin/sh
           |set -x
           |exec $appProxyMainInvocationImpl $$*""".stripMargin)
@@ -166,39 +207,72 @@ trait SingleMarathonIntegrationTest
   }
 
   private lazy val appProxyHealthChecks = Set(
-    HealthCheck(gracePeriod = 20.second, interval = 1.second, maxConsecutiveFailures = 10))
+    HealthCheck(
+      gracePeriod = 20.second,
+      interval = 1.second,
+      maxConsecutiveFailures = 10))
 
-  def dockerAppProxy(appId: PathId, versionId: String, instances: Int, withHealth: Boolean = true, dependencies: Set[PathId] = Set.empty): AppDefinition = {
+  def dockerAppProxy(
+      appId: PathId,
+      versionId: String,
+      instances: Int,
+      withHealth: Boolean = true,
+      dependencies: Set[PathId] = Set.empty): AppDefinition = {
     val targetDirs = sys.env.getOrElse("TARGET_DIRS", "/marathon")
-    val cmd = Some(s"""bash -c 'echo APP PROXY $$MESOS_TASK_ID RUNNING; $appProxyMainInvocationImpl $appId $versionId http://$$HOST:${config.httpPort}/health$appId/$versionId'""")
+    val cmd = Some(
+      s"""bash -c 'echo APP PROXY $$MESOS_TASK_ID RUNNING; $appProxyMainInvocationImpl $appId $versionId http://$$HOST:${config.httpPort}/health$appId/$versionId'""")
     AppDefinition(
       id = appId,
       cmd = cmd,
       container = Some(
         new Container(
-          docker = Some(new mesosphere.marathon.state.Container.Docker(
-            image = s"""marathon-buildbase:${sys.env.getOrElse("BUILD_ID", "test")}""",
-            network = Some(Protos.ContainerInfo.DockerInfo.Network.HOST)
-          )),
+          docker = Some(
+            new mesosphere.marathon.state.Container.Docker(
+              image = s"""marathon-buildbase:${sys.env
+                .getOrElse("BUILD_ID", "test")}""",
+              network = Some(Protos.ContainerInfo.DockerInfo.Network.HOST)
+            )),
           volumes = collection.immutable.Seq(
-            new DockerVolume(hostPath = env.getOrElse("IVY2_DIR", "/root/.ivy2"), containerPath = "/root/.ivy2", mode = Protos.Volume.Mode.RO),
-            new DockerVolume(hostPath = env.getOrElse("SBT_DIR", "/root/.sbt"), containerPath = "/root/.sbt", mode = Protos.Volume.Mode.RO),
-            new DockerVolume(hostPath = env.getOrElse("SBT_DIR", "/root/.sbt"), containerPath = "/root/.sbt", mode = Protos.Volume.Mode.RO),
-            new DockerVolume(hostPath = s"""$targetDirs/main""", containerPath = "/marathon/target", mode = Protos.Volume.Mode.RO),
-            new DockerVolume(hostPath = s"""$targetDirs/project""", containerPath = "/marathon/project/target", mode = Protos.Volume.Mode.RO)
+            new DockerVolume(
+              hostPath = env.getOrElse("IVY2_DIR", "/root/.ivy2"),
+              containerPath = "/root/.ivy2",
+              mode = Protos.Volume.Mode.RO),
+            new DockerVolume(
+              hostPath = env.getOrElse("SBT_DIR", "/root/.sbt"),
+              containerPath = "/root/.sbt",
+              mode = Protos.Volume.Mode.RO),
+            new DockerVolume(
+              hostPath = env.getOrElse("SBT_DIR", "/root/.sbt"),
+              containerPath = "/root/.sbt",
+              mode = Protos.Volume.Mode.RO),
+            new DockerVolume(
+              hostPath = s"""$targetDirs/main""",
+              containerPath = "/marathon/target",
+              mode = Protos.Volume.Mode.RO),
+            new DockerVolume(
+              hostPath = s"""$targetDirs/project""",
+              containerPath = "/marathon/project/target",
+              mode = Protos.Volume.Mode.RO)
           )
         )
       ),
       instances = instances,
       cpus = 0.5,
       mem = 128.0,
-      healthChecks = if (withHealth) appProxyHealthChecks else Set.empty[HealthCheck],
+      healthChecks =
+        if (withHealth) appProxyHealthChecks else Set.empty[HealthCheck],
       dependencies = dependencies
     )
   }
 
-  def appProxy(appId: PathId, versionId: String, instances: Int, withHealth: Boolean = true, dependencies: Set[PathId] = Set.empty): AppDefinition = {
-    val cmd = Some(s"""echo APP PROXY $$MESOS_TASK_ID RUNNING; $appProxyMainInvocation $appId $versionId http://localhost:${config.httpPort}/health$appId/$versionId""")
+  def appProxy(
+      appId: PathId,
+      versionId: String,
+      instances: Int,
+      withHealth: Boolean = true,
+      dependencies: Set[PathId] = Set.empty): AppDefinition = {
+    val cmd = Some(
+      s"""echo APP PROXY $$MESOS_TASK_ID RUNNING; $appProxyMainInvocation $appId $versionId http://localhost:${config.httpPort}/health$appId/$versionId""")
     AppDefinition(
       id = appId,
       cmd = cmd,
@@ -206,12 +280,16 @@ trait SingleMarathonIntegrationTest
       instances = instances,
       cpus = 0.5,
       mem = 128.0,
-      healthChecks = if (withHealth) appProxyHealthChecks else Set.empty[HealthCheck],
+      healthChecks =
+        if (withHealth) appProxyHealthChecks else Set.empty[HealthCheck],
       dependencies = dependencies
     )
   }
 
-  def appProxyCheck(appId: PathId, versionId: String, state: Boolean): IntegrationHealthCheck = {
+  def appProxyCheck(
+      appId: PathId,
+      versionId: String,
+      state: Boolean): IntegrationHealthCheck = {
     //this is used for all instances, as long as there is no specific instance check
     //the specific instance check has also a specific port, which is assigned by mesos
     val check = new IntegrationHealthCheck(appId, versionId, 0, state)
@@ -222,23 +300,33 @@ trait SingleMarathonIntegrationTest
     check
   }
 
-  def taskProxyChecks(appId: PathId, versionId: String, state: Boolean): Seq[IntegrationHealthCheck] = {
-    marathon.tasks(appId).value.flatMap(_.ports).flatMap(_.map { port =>
-      val check = new IntegrationHealthCheck(appId, versionId, port, state)
-      ExternalMarathonIntegrationTest.healthChecks
-        .filter(c => c.appId == appId && c.versionId == versionId)
-        .foreach(ExternalMarathonIntegrationTest.healthChecks -= _)
-      ExternalMarathonIntegrationTest.healthChecks += check
-      check
-    })
+  def taskProxyChecks(
+      appId: PathId,
+      versionId: String,
+      state: Boolean): Seq[IntegrationHealthCheck] = {
+    marathon
+      .tasks(appId)
+      .value
+      .flatMap(_.ports)
+      .flatMap(_.map { port =>
+        val check = new IntegrationHealthCheck(appId, versionId, port, state)
+        ExternalMarathonIntegrationTest.healthChecks
+          .filter(c => c.appId == appId && c.versionId == versionId)
+          .foreach(ExternalMarathonIntegrationTest.healthChecks -= _)
+        ExternalMarathonIntegrationTest.healthChecks += check
+        check
+      })
   }
 
-  def cleanUp(withSubscribers: Boolean = false, maxWait: FiniteDuration = 30.seconds) {
+  def cleanUp(
+      withSubscribers: Boolean = false,
+      maxWait: FiniteDuration = 30.seconds) {
     log.info("Starting to CLEAN UP !!!!!!!!!!")
     events.clear()
     ExternalMarathonIntegrationTest.healthChecks.clear()
 
-    val deleteResult: RestResult[ITDeploymentResult] = marathon.deleteGroup(testBasePath, force = true)
+    val deleteResult: RestResult[ITDeploymentResult] =
+      marathon.deleteGroup(testBasePath, force = true)
     if (deleteResult.code != 404) {
       waitForChange(deleteResult)
     }
@@ -246,12 +334,18 @@ trait SingleMarathonIntegrationTest
     waitForCleanSlateInMesos()
 
     val apps = marathon.listAppsInBaseGroup
-    require(apps.value.isEmpty, s"apps weren't empty: ${apps.entityPrettyJsonString}")
+    require(
+      apps.value.isEmpty,
+      s"apps weren't empty: ${apps.entityPrettyJsonString}")
     val groups = marathon.listGroupsInBaseGroup
-    require(groups.value.isEmpty, s"groups weren't empty: ${groups.entityPrettyJsonString}")
-    ProcessKeeper.stopJavaProcesses("mesosphere.marathon.integration.setup.AppMock")
+    require(
+      groups.value.isEmpty,
+      s"groups weren't empty: ${groups.entityPrettyJsonString}")
+    ProcessKeeper.stopJavaProcesses(
+      "mesosphere.marathon.integration.setup.AppMock")
 
-    if (withSubscribers) marathon.listSubscribers.value.urls.foreach(marathon.unsubscribe)
+    if (withSubscribers)
+      marathon.listSubscribers.value.urls.foreach(marathon.unsubscribe)
     events.clear()
     ExternalMarathonIntegrationTest.healthChecks.clear()
     log.info("CLEAN UP finished !!!!!!!!!")
@@ -261,12 +355,14 @@ trait SingleMarathonIntegrationTest
     require(mesos.state.value.agents.size == 1, "one agent expected")
     WaitTestSupport.waitUntil("clean slate in Mesos", 30.seconds) {
       val agent = mesos.state.value.agents.head
-      val empty = agent.usedResources.isEmpty && agent.reservedResourcesByRole.isEmpty
+      val empty =
+        agent.usedResources.isEmpty && agent.reservedResourcesByRole.isEmpty
       if (!empty) {
         import mesosphere.marathon.integration.facades.MesosFormats._
         log.info(
           "Waiting for blank slate Mesos...\n \"used_resources\": "
-            + Json.prettyPrint(Json.toJson(agent.usedResources)) + "\n \"reserved_resources\": "
+            + Json.prettyPrint(
+              Json.toJson(agent.usedResources)) + "\n \"reserved_resources\": "
             + Json.prettyPrint(Json.toJson(agent.reservedResourcesByRole))
         )
       }

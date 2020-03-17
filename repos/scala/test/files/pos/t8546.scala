@@ -7,11 +7,12 @@ class F1() {
   private case object C extends T
 
   // No warnings here
-  private def foo(t: T) = t match {
-    case A(m) => println("A:" + m)
-    case B() => println("B")
-    case C => println("C")
-  }
+  private def foo(t: T) =
+    t match {
+      case A(m) => println("A:" + m)
+      case B()  => println("B")
+      case C    => println("C")
+    }
 
   def test(m: Int): Unit = {
     foo(A(m))
@@ -27,11 +28,12 @@ class F2[M]() {
   private case object C extends T
 
   // match may not be exhaustive. It would fail on the following input: C
-  private def foo(t: T) = t match {
-    case A(m) => println("A:" + m)
-    case B() => println("B")
-    case C => println("C")
-  }
+  private def foo(t: T) =
+    t match {
+      case A(m) => println("A:" + m)
+      case B()  => println("B")
+      case C    => println("C")
+    }
 
   def test(m: M): Unit = {
     foo(A(m))

@@ -12,9 +12,9 @@ import org.jetbrains.plugins.scala.extensions.inReadAction
 import scala.collection.JavaConverters._
 
 /**
- * @author Nikolay Obedin
- * @since 7/14/15.
- */
+  * @author Nikolay Obedin
+  * @since 7/14/15.
+  */
 sealed trait Sdk
 
 final case class JdkByName(name: String) extends Sdk
@@ -22,19 +22,25 @@ final case class JdkByHome(home: File) extends Sdk
 final case class Android(version: String) extends Sdk
 
 object SdkUtils {
-  def findProjectSdk(sdk: Sdk): Option[projectRoots.Sdk] = sdk match {
-    case Android(version) => findAndroidJdkByVersion(version)
-    case JdkByName(version) => allJdks.find(_.getName.contains(version))
-    case JdkByHome(homeFile) => findJdkByHome(homeFile)
-  }
+  def findProjectSdk(sdk: Sdk): Option[projectRoots.Sdk] =
+    sdk match {
+      case Android(version)    => findAndroidJdkByVersion(version)
+      case JdkByName(version)  => allJdks.find(_.getName.contains(version))
+      case JdkByHome(homeFile) => findJdkByHome(homeFile)
+    }
 
   def allAndroidSdks: Seq[projectRoots.Sdk] =
-    inReadAction(ProjectJdkTable.getInstance().getSdksOfType(AndroidSdkType.getInstance()).asScala)
+    inReadAction(
+      ProjectJdkTable
+        .getInstance()
+        .getSdksOfType(AndroidSdkType.getInstance())
+        .asScala)
 
   def allJdks: Seq[projectRoots.Sdk] =
     inReadAction(ProjectJdkTable.getInstance.getAllJdks.toSeq)
 
-  def defaultJavaLanguageLevelIn(jdk: projectRoots.Sdk): Option[LanguageLevel] = {
+  def defaultJavaLanguageLevelIn(
+      jdk: projectRoots.Sdk): Option[LanguageLevel] = {
     val JavaLanguageLevels = Map(
       "1.3" -> LanguageLevel.JDK_1_3,
       "1.4" -> LanguageLevel.JDK_1_4,
@@ -42,7 +48,8 @@ object SdkUtils {
       "1.6" -> LanguageLevel.JDK_1_6,
       "1.7" -> LanguageLevel.JDK_1_7,
       "1.8" -> LanguageLevel.JDK_1_8,
-      "1.9" -> LanguageLevel.JDK_1_9)
+      "1.9" -> LanguageLevel.JDK_1_9
+    )
     val jdkVersion = Option(jdk.getVersionString).getOrElse(jdk.getName)
 
     JavaLanguageLevels.collectFirst {
@@ -50,7 +57,8 @@ object SdkUtils {
     }
   }
 
-  def javaLanguageLevelFrom(javacOptions: Seq[String]): Option[LanguageLevel] = {
+  def javaLanguageLevelFrom(
+      javacOptions: Seq[String]): Option[LanguageLevel] = {
     for {
       sourcePos <- Option(javacOptions.indexOf("-source")).filterNot(_ == -1)
       sourceValue <- javacOptions.lift(sourcePos + 1)
@@ -58,7 +66,8 @@ object SdkUtils {
     } yield languageLevel
   }
 
-  private def findAndroidJdkByVersion(version: String): Option[projectRoots.Sdk] = {
+  private def findAndroidJdkByVersion(
+      version: String): Option[projectRoots.Sdk] = {
     def isGEQAsInt(fst: String, snd: String): Boolean =
       try {
         val fstInt = fst.toInt
@@ -70,12 +79,14 @@ object SdkUtils {
 
     val matchingSdks = for {
       sdk <- allAndroidSdks
-      platformVersion <- Option(AndroidPlatform.getInstance(sdk)).map(_.getApiLevel.toString)
+      platformVersion <- Option(AndroidPlatform.getInstance(sdk))
+        .map(_.getApiLevel.toString)
       if isGEQAsInt(platformVersion, version)
     } yield sdk
     matchingSdks.headOption
   }
 
   private def findJdkByHome(homeFile: File): Option[projectRoots.Sdk] =
-    allJdks.find(jdk => FileUtil.comparePaths(homeFile.getCanonicalPath, jdk.getHomePath) == 0)
+    allJdks.find(jdk =>
+      FileUtil.comparePaths(homeFile.getCanonicalPath, jdk.getHomePath) == 0)
 }

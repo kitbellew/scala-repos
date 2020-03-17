@@ -7,10 +7,10 @@ import com.twitter.util.{Future, Promise, Return, Throw, Time}
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * Delay release of the connection until all chunks have been received.
- */
+  * Delay release of the connection until all chunks have been received.
+  */
 private[finagle] class DelayedReleaseService[-Req <: Request](
-  service: Service[Req, Response]
+    service: Service[Req, Response]
 ) extends ServiceProxy[Req, Response](service) {
 
   protected[this] val counter = new AsyncLatch
@@ -26,11 +26,12 @@ private[finagle] class DelayedReleaseService[-Req <: Request](
     Response(
       in.httpResponse,
       new Reader {
-        def read(n: Int) = in.reader.read(n) respond {
-          case Return(None) => done()
-          case Throw(_) => done()
-          case _ =>
-        }
+        def read(n: Int) =
+          in.reader.read(n) respond {
+            case Return(None) => done()
+            case Throw(_)     => done()
+            case _            =>
+          }
 
         def discard() = {
           // Note: Discarding the underlying reader terminates the session and

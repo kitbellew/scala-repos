@@ -43,13 +43,27 @@ trait StructureViewBuilder {
       tree match {
         case x: DefTree if x.symbol.isSynthetic =>
         case x: ImplDef =>
-          val df = DefsBuilder(x.keyword, x.name.toString, pos(x.symbol), new ListBuffer())
+          val df = DefsBuilder(
+            x.keyword,
+            x.name.toString,
+            pos(x.symbol),
+            new ListBuffer())
           parent.members.append(df)
           x.impl.body.foreach(traverse(_, df))
         case x: DefDef if shouldShow(x) =>
-          parent.members.append(DefsBuilder(x.keyword, x.name.toString, pos(x.symbol), new ListBuffer()))
+          parent.members.append(
+            DefsBuilder(
+              x.keyword,
+              x.name.toString,
+              pos(x.symbol),
+              new ListBuffer()))
         case x: TypeDef =>
-          parent.members.append(DefsBuilder(x.keyword, x.name.toString, pos(x.symbol), new ListBuffer()))
+          parent.members.append(
+            DefsBuilder(
+              x.keyword,
+              x.name.toString,
+              pos(x.symbol),
+              new ListBuffer()))
         case _ =>
           tree.children.foreach(traverse(_, parent))
       }

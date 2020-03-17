@@ -35,22 +35,26 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
- * Skinnable Spec tests.
- *
- */
+  * Skinnable Spec tests.
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class SkinnableSpec
-  extends SimpleSFXDelegateSpec[jfxsc.Skinnable, Skinnable](classOf[jfxsc.Skinnable], classOf[Skinnable]) {
+    extends SimpleSFXDelegateSpec[jfxsc.Skinnable, Skinnable](
+      classOf[jfxsc.Skinnable],
+      classOf[Skinnable]) {
 
-  override protected def getScalaClassInstance = new Skinnable {
-    override val delegate = getJavaClassInstance
-  }
+  override protected def getScalaClassInstance =
+    new Skinnable {
+      override val delegate = getJavaClassInstance
+    }
 
   // How Skinnable is a abstract class, it is done a basic implementation
-  override protected def getJavaClassInstance = new jfxsc.Skinnable {
-    def skinProperty = null
-    def getSkin = null
-    def setSkin(s: jfxsc.Skin[_]) {}
-  }
+  override protected def getJavaClassInstance =
+    new jfxsc.Skinnable {
+      def skinProperty = null
+      def getSkin = null
+      def setSkin(s: jfxsc.Skin[_]) {}
+    }
 
 }

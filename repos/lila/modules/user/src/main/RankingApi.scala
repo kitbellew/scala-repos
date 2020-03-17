@@ -2,14 +2,21 @@ package lila.user
 
 import org.joda.time.DateTime
 import play.api.libs.iteratee._
-import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework.{ Match, Project, Group, GroupField, SumField, SumValue }
+import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework.{
+  Match,
+  Project,
+  Group,
+  GroupField,
+  SumField,
+  SumValue
+}
 import reactivemongo.bson._
 import scala.concurrent.duration._
 
 import lila.db.BSON._
 import lila.db.BSON.MapValue.MapHandler
-import lila.memo.{ AsyncCache, MongoCache }
-import lila.rating.{ Perf, PerfType }
+import lila.memo.{AsyncCache, MongoCache}
+import lila.rating.{Perf, PerfType}
 
 final class RankingApi(
     coll: lila.db.Types.Coll,
@@ -17,52 +24,60 @@ final class RankingApi(
     lightUser: String => Option[lila.common.LightUser]) {
 
   import RankingApi._
-  private implicit val rankingBSONHandler = reactivemongo.bson.Macros.handler[Ranking]
+  private implicit val rankingBSONHandler =
+    reactivemongo.bson.Macros.handler[Ranking]
 
   def save(userId: User.ID, perfType: Option[PerfType], perfs: Perfs): Funit =
-    perfType ?? { pt =>
-      save(userId, pt, perfs(pt))
-    }
+    perfType ?? { pt => save(userId, pt, perfs(pt)) }
 
   def save(userId: User.ID, perfType: PerfType, perf: Perf): Funit =
-    (perf.nb >= 2) ?? coll.update(BSONDocument(
-      "_id" -> s"$userId:${perfType.id}"
-    ), BSONDocument(
-      "user" -> userId,
-      "perf" -> perfType.id,
-      "rating" -> perf.intRating,
-      "prog" -> perf.progress,
-      "stable" -> perf.established,
-      "expiresAt" -> DateTime.now.plusDays(7)),
-      upsert = true).void
+    (perf.nb >= 2) ?? coll
+      .update(
+        BSONDocument(
+          "_id" -> s"$userId:${perfType.id}"
+        ),
+        BSONDocument(
+          "user" -> userId,
+          "perf" -> perfType.id,
+          "rating" -> perf.intRating,
+          "prog" -> perf.progress,
+          "stable" -> perf.established,
+          "expiresAt" -> DateTime.now.plusDays(7)),
+        upsert = true
+      )
+      .void
 
-  def remove(userId: User.ID): Funit = UserRepo byId userId flatMap {
-    _ ?? { user =>
-      coll.remove(BSONDocument(
-        "_id" -> BSONDocument("$in" -> PerfType.leaderboardable.filter { pt =>
-          user.perfs(pt).nonEmpty
-        }.map { pt =>
-          s"${user.id}:${pt.id}"
-        })
-      )).void
+  def remove(userId: User.ID): Funit =
+    UserRepo byId userId flatMap {
+      _ ?? { user =>
+        coll
+          .remove(
+            BSONDocument(
+              "_id" -> BSONDocument("$in" -> PerfType.leaderboardable
+                .filter { pt => user.perfs(pt).nonEmpty }
+                .map { pt => s"${user.id}:${pt.id}" })
+            ))
+          .void
+      }
     }
-  }
 
   def topPerf(perfId: Perf.ID, nb: Int): Fu[List[User.LightPerf]] =
     PerfType.id2key(perfId) ?? { perfKey =>
-      coll.find(BSONDocument("perf" -> perfId, "stable" -> true))
+      coll
+        .find(BSONDocument("perf" -> perfId, "stable" -> true))
         .sort(BSONDocument("rating" -> -1))
-        .cursor[Ranking]().collect[List](nb) map {
-          _.flatMap { r =>
-            lightUser(r.user).map { light =>
-              User.LightPerf(
-                user = light,
-                perfKey = perfKey,
-                rating = r.rating,
-                progress = ~r.prog)
-            }
+        .cursor[Ranking]()
+        .collect[List](nb) map {
+        _.flatMap { r =>
+          lightUser(r.user).map { light =>
+            User.LightPerf(
+              user = light,
+              perfKey = perfKey,
+              rating = r.rating,
+              progress = ~r.prog)
           }
         }
+      }
     }
 
   object weeklyStableRanking {
@@ -70,8 +85,8 @@ final class RankingApi(
     private type Rank = Int
 
     def of(userId: User.ID): Fu[Map[Perf.Key, Int]] =
-      lila.common.Future.traverseSequentially(PerfType.leaderboardable) { perf =>
-        cache(perf.id) map { _ get userId map (perf.key -> _) }
+      lila.common.Future.traverseSequentially(PerfType.leaderboardable) {
+        perf => cache(perf.id) map { _ get userId map (perf.key -> _) }
       } map (_.flatten.toMap)
 
     private val cache = AsyncCache[Perf.ID, Map[User.ID, Rank]](
@@ -79,10 +94,14 @@ final class RankingApi(
       timeToLive = 15 minutes)
 
     private def compute(perfId: Perf.ID): Fu[Map[User.ID, Rank]] = {
-      val enumerator = coll.find(
-        BSONDocument("perf" -> perfId, "stable" -> true),
-        BSONDocument("user" -> true, "_id" -> false)
-      ).sort(BSONDocument("rating" -> -1)).cursor[BSONDocument]().enumerate()
+      val enumerator = coll
+        .find(
+          BSONDocument("perf" -> perfId, "stable" -> true),
+          BSONDocument("user" -> true, "_id" -> false)
+        )
+        .sort(BSONDocument("rating" -> -1))
+        .cursor[BSONDocument]()
+        .enumerate()
       var rank = 1
       val b = Map.newBuilder[User.ID, Rank]
       val mapBuilder: Iteratee[BSONDocument, Unit] = Iteratee.foreach { doc =>
@@ -108,29 +127,34 @@ final class RankingApi(
 
     // from 800 to 2500 by Stat.group
     private def compute(perfId: Perf.ID): Fu[List[NbUsers]] =
-      lila.rating.PerfType(perfId).exists(lila.rating.PerfType.leaderboardable.contains) ?? {
-        coll.aggregate(
-          Match(BSONDocument("perf" -> perfId)),
-          List(Project(BSONDocument(
-            "_id" -> false,
-            "r" -> BSONDocument(
-              "$subtract" -> BSONArray(
-                "$rating",
-                BSONDocument("$mod" -> BSONArray("$rating", Stat.group))
-              )
+      lila.rating
+        .PerfType(perfId)
+        .exists(lila.rating.PerfType.leaderboardable.contains) ?? {
+        coll
+          .aggregate(
+            Match(BSONDocument("perf" -> perfId)),
+            List(
+              Project(
+                BSONDocument(
+                  "_id" -> false,
+                  "r" -> BSONDocument(
+                    "$subtract" -> BSONArray(
+                      "$rating",
+                      BSONDocument("$mod" -> BSONArray("$rating", Stat.group))
+                    )
+                  )
+                )),
+              GroupField("r")("nb" -> SumValue(1))
             )
-          )),
-            GroupField("r")("nb" -> SumValue(1))
-          )).map { res =>
+          )
+          .map { res =>
             val hash = res.documents.flatMap { obj =>
               for {
                 rating <- obj.getAs[Int]("_id")
                 nb <- obj.getAs[NbUsers]("nb")
               } yield rating -> nb
             }.toMap
-            (800 to 2800 by Stat.group).map { r =>
-              hash.getOrElse(r, 0)
-            }.toList
+            (800 to 2800 by Stat.group).map { r => hash.getOrElse(r, 0) }.toList
           }
       }
   }

@@ -7,9 +7,8 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.stubs.StringStubIndexExtension
 
 /**
- * @author ilyas
- */
-
+  * @author ilyas
+  */
 class ScShortClassNameIndex extends StringStubIndexExtension[PsiClass] {
   def getKey = ScShortClassNameIndex.KEY
 }
@@ -18,7 +17,8 @@ object ScShortClassNameIndex {
   val KEY = ScalaIndexKeys.SHORT_NAME_KEY
 }
 
-class ScNotVisibleInJavaShortClassNameIndex extends StringStubIndexExtension[PsiClass] {
+class ScNotVisibleInJavaShortClassNameIndex
+    extends StringStubIndexExtension[PsiClass] {
   def getKey = ScNotVisibleInJavaShortClassNameIndex.KEY
 }
 

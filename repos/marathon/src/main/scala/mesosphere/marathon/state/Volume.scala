@@ -5,7 +5,7 @@ import com.wix.accord.dsl._
 import mesosphere.marathon.api.v2.Validation._
 import mesosphere.marathon.Protos
 import org.apache.mesos.Protos.Volume.Mode
-import org.apache.mesos.{ Protos => Mesos }
+import org.apache.mesos.{Protos => Mesos}
 
 sealed trait Volume {
   def containerPath: String
@@ -14,10 +14,10 @@ sealed trait Volume {
 
 object Volume {
   def apply(
-    containerPath: String,
-    hostPath: Option[String],
-    mode: Mesos.Volume.Mode,
-    persistent: Option[PersistentVolumeInfo]): Volume =
+      containerPath: String,
+      hostPath: Option[String],
+      mode: Mesos.Volume.Mode,
+      persistent: Option[PersistentVolumeInfo]): Volume =
     persistent match {
       case Some(persistentVolumeInfo) =>
         PersistentVolume(
@@ -35,7 +35,9 @@ object Volume {
 
   def apply(proto: Protos.Volume): Volume = {
     val persistent: Option[PersistentVolumeInfo] =
-      if (proto.hasPersistent) Some(PersistentVolumeInfo(proto.getPersistent.getSize)) else None
+      if (proto.hasPersistent)
+        Some(PersistentVolumeInfo(proto.getPersistent.getSize))
+      else None
 
     persistent match {
       case Some(persistentVolumeInfo) =>
@@ -60,19 +62,32 @@ object Volume {
       mode = proto.getMode
     )
 
-  def unapply(volume: Volume): Option[(String, Option[String], Mesos.Volume.Mode, Option[PersistentVolumeInfo])] =
+  def unapply(volume: Volume): Option[
+    (String, Option[String], Mesos.Volume.Mode, Option[PersistentVolumeInfo])] =
     volume match {
       case persistentVolume: PersistentVolume =>
-        Some((persistentVolume.containerPath, None, persistentVolume.mode, Some(persistentVolume.persistent)))
+        Some(
+          (
+            persistentVolume.containerPath,
+            None,
+            persistentVolume.mode,
+            Some(persistentVolume.persistent)))
       case dockerVolume: DockerVolume =>
-        Some((dockerVolume.containerPath, Some(dockerVolume.hostPath), dockerVolume.mode, None))
+        Some(
+          (
+            dockerVolume.containerPath,
+            Some(dockerVolume.hostPath),
+            dockerVolume.mode,
+            None))
     }
 
   implicit val validVolume: Validator[Volume] = new Validator[Volume] {
-    override def apply(volume: Volume): Result = volume match {
-      case pv: PersistentVolume => validate(pv)(PersistentVolume.validPersistentVolume)
-      case dv: DockerVolume     => validate(dv)(DockerVolume.validDockerVolume)
-    }
+    override def apply(volume: Volume): Result =
+      volume match {
+        case pv: PersistentVolume =>
+          validate(pv)(PersistentVolume.validPersistentVolume)
+        case dv: DockerVolume => validate(dv)(DockerVolume.validDockerVolume)
+      }
   }
 }
 
@@ -82,9 +97,9 @@ object Volume {
   * absolute.
   */
 case class DockerVolume(
-  containerPath: String,
-  hostPath: String,
-  mode: Mesos.Volume.Mode)
+    containerPath: String,
+    hostPath: String,
+    mode: Mesos.Volume.Mode)
     extends Volume
 
 object DockerVolume {
@@ -99,15 +114,15 @@ object DockerVolume {
 case class PersistentVolumeInfo(size: Long)
 
 object PersistentVolumeInfo {
-  implicit val validPersistentVolumeInfo = validator[PersistentVolumeInfo] { info =>
-    info.size should be > 0L
+  implicit val validPersistentVolumeInfo = validator[PersistentVolumeInfo] {
+    info => info.size should be > 0L
   }
 }
 
 case class PersistentVolume(
-  containerPath: String,
-  persistent: PersistentVolumeInfo,
-  mode: Mesos.Volume.Mode)
+    containerPath: String,
+    persistent: PersistentVolumeInfo,
+    mode: Mesos.Volume.Mode)
     extends Volume
 
 object PersistentVolume {
@@ -117,6 +132,9 @@ object PersistentVolume {
     vol.persistent is valid
     vol.mode is equalTo(Mode.RW)
     //persistent volumes require those CLI parameters provided
-    vol is configValueSet("mesos_authentication_principal", "mesos_role", "mesos_authentication_secret_file")
+    vol is configValueSet(
+      "mesos_authentication_principal",
+      "mesos_role",
+      "mesos_authentication_secret_file")
   }
 }

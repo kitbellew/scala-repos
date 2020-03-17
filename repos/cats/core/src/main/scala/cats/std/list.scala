@@ -11,7 +11,8 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 
 trait ListInstances extends ListInstances1 {
-  implicit val listInstance: Traverse[List] with MonadCombine[List] with CoflatMap[List] =
+  implicit val listInstance
+      : Traverse[List] with MonadCombine[List] with CoflatMap[List] =
     new Traverse[List] with MonadCombine[List] with CoflatMap[List] {
 
       def empty[A]: List[A] = Nil
@@ -26,13 +27,14 @@ trait ListInstances extends ListInstances1 {
       def flatMap[A, B](fa: List[A])(f: A => List[B]): List[B] =
         fa.flatMap(f)
 
-      override def map2[A, B, Z](fa: List[A], fb: List[B])(f: (A, B) => Z): List[Z] =
+      override def map2[A, B, Z](fa: List[A], fb: List[B])(
+          f: (A, B) => Z): List[Z] =
         fa.flatMap(a => fb.map(b => f(a, b)))
 
       def coflatMap[A, B](fa: List[A])(f: List[A] => B): List[B] = {
         @tailrec def loop(buf: ListBuffer[B], as: List[A]): List[B] =
           as match {
-            case Nil => buf.toList
+            case Nil       => buf.toList
             case _ :: rest => loop(buf += f(as), rest)
           }
         loop(ListBuffer.empty[B], fa)
@@ -41,16 +43,18 @@ trait ListInstances extends ListInstances1 {
       def foldLeft[A, B](fa: List[A], b: B)(f: (B, A) => B): B =
         fa.foldLeft(b)(f)
 
-      def foldRight[A, B](fa: List[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] = {
+      def foldRight[A, B](fa: List[A], lb: Eval[B])(
+          f: (A, Eval[B]) => Eval[B]): Eval[B] = {
         def loop(as: List[A]): Eval[B] =
           as match {
-            case Nil => lb
+            case Nil    => lb
             case h :: t => f(h, Eval.defer(loop(t)))
           }
         Eval.defer(loop(fa))
       }
 
-      def traverse[G[_], A, B](fa: List[A])(f: A => G[B])(implicit G: Applicative[G]): G[List[B]] = {
+      def traverse[G[_], A, B](fa: List[A])(f: A => G[B])(
+          implicit G: Applicative[G]): G[List[B]] = {
         val gba = G.pure(Vector.empty[B])
         val gbb = fa.foldLeft(gba)((buf, a) => G.map2(buf, f(a))(_ :+ _))
         G.map(gbb)(_.toList)
@@ -68,9 +72,10 @@ trait ListInstances extends ListInstances1 {
   implicit def listAlgebra[A]: Monoid[List[A]] = new ListMonoid[A]
   implicit def listOrder[A: Order]: Order[List[A]] = new ListOrder[A]
 
-  implicit def listShow[A:Show]: Show[List[A]] =
+  implicit def listShow[A: Show]: Show[List[A]] =
     new Show[List[A]] {
-      def show(fa: List[A]): String = fa.map(_.show).mkString("List(", ", ", ")")
+      def show(fa: List[A]): String =
+        fa.map(_.show).mkString("List(", ", ", ")")
     }
 }
 

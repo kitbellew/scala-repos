@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger
 import org.openjdk.jmh.annotations.{Benchmark, Scope, State}
 
 /**
- * This test is used for allocation more so than performance.
- *
- * In other words, it's best run with "-prof gc".
- */
+  * This test is used for allocation more so than performance.
+  *
+  * In other words, it's best run with "-prof gc".
+  */
 @State(Scope.Benchmark)
 class BackupRequestFilterBenchmark extends StdBenchAnnotations {
 

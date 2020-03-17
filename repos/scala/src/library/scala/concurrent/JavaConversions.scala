@@ -12,21 +12,22 @@ import java.util.concurrent.{ExecutorService, Executor}
 import scala.language.implicitConversions
 
 /** The `JavaConversions` object provides implicit conversions supporting
- *  interoperability between Scala and Java concurrency classes.
- *
- *  @author Philipp Haller
- */
+  *  interoperability between Scala and Java concurrency classes.
+  *
+  *  @author Philipp Haller
+  */
 object JavaConversions {
 
   /**
-   * Creates a new `ExecutionContext` which uses the provided `ExecutorService`.
-   */
-  implicit def asExecutionContext(exec: ExecutorService): ExecutionContextExecutorService =
+    * Creates a new `ExecutionContext` which uses the provided `ExecutorService`.
+    */
+  implicit def asExecutionContext(
+      exec: ExecutorService): ExecutionContextExecutorService =
     ExecutionContext.fromExecutorService(exec)
 
   /**
-   * Creates a new `ExecutionContext` which uses the provided `Executor`.
-   */
+    * Creates a new `ExecutionContext` which uses the provided `Executor`.
+    */
   implicit def asExecutionContext(exec: Executor): ExecutionContextExecutor =
     ExecutionContext.fromExecutor(exec)
 

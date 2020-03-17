@@ -49,14 +49,15 @@ package enumfieldspecs {
       def defaultValue = JsonObj(WeekDay.Mon)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case that: EnumRec =>
-        this.id.get == that.id.get &&
-        this.dow.value == that.dow.value &&
-        this.dowOptional.valueBox == that.dowOptional.valueBox &&
-        this.jsonobj.value == that.jsonobj.value
-      case _ => false
-    }
+    override def equals(other: Any): Boolean =
+      other match {
+        case that: EnumRec =>
+          this.id.get == that.id.get &&
+            this.dow.value == that.dow.value &&
+            this.dowOptional.valueBox == that.dowOptional.valueBox &&
+            this.jsonobj.value == that.jsonobj.value
+        case _ => false
+      }
   }
   object EnumRec extends EnumRec with MongoMetaRecord[EnumRec] {
     override def collectionName = "enumrecs"
@@ -64,11 +65,10 @@ package enumfieldspecs {
   }
 }
 
-
 /**
- * Systems under specification for EnumField.
- */
-class EnumFieldSpec extends Specification  with MongoTestKit {
+  * Systems under specification for EnumField.
+  */
+class EnumFieldSpec extends Specification with MongoTestKit {
   "EnumField Specification".title
 
   import enumfieldspecs._

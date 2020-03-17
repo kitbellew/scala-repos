@@ -1,14 +1,17 @@
 package org.jetbrains.plugins.scala.lang.completion3
 
 import com.intellij.codeInsight.completion.CompletionType
-import com.intellij.codeInsight.lookup.{LookupElement, LookupElementPresentation}
+import com.intellij.codeInsight.lookup.{
+  LookupElement,
+  LookupElementPresentation
+}
 import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
 import org.jetbrains.plugins.scala.lang.completion3.ScalaAotCompletionTest._
 import org.junit.Assert
 
 /**
- * @author Pavel Fatin
- */
+  * @author Pavel Fatin
+  */
 class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
   def testParameterName() {
     val before =
@@ -119,21 +122,27 @@ class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   private def test(before: String, after: String)(actions: => Unit) {
-    configureFromFileTextAdapter("dummy.scala", before.stripMargin('|').replaceAll("\r", "").trim())
+    configureFromFileTextAdapter(
+      "dummy.scala",
+      before.stripMargin('|').replaceAll("\r", "").trim())
     actions
     checkResultByText(after.stripMargin('|').replaceAll("\r", "").trim())
   }
 }
 
 object ScalaAotCompletionTest {
-  def findByText(elements: Array[LookupElement], text: String): LookupElement = {
+  def findByText(
+      elements: Array[LookupElement],
+      text: String): LookupElement = {
     findByText0(elements, text).getOrElse {
       Assert.fail("No such element: " + text)
       null // unreachable
     }
   }
 
-  def findByText0(elements: Array[LookupElement], text: String): Option[LookupElement] = {
+  def findByText0(
+      elements: Array[LookupElement],
+      text: String): Option[LookupElement] = {
     elements.find { element =>
       val presentation = new LookupElementPresentation()
       element.renderElement(presentation)

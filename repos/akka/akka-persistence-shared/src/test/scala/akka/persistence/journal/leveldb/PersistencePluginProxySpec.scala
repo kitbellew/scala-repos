@@ -1,13 +1,12 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence.journal.leveldb
 
 import akka.actor._
 import akka.persistence._
 import akka.persistence.journal.PersistencePluginProxy
-import akka.testkit.{ TestProbe, AkkaSpec }
+import akka.testkit.{TestProbe, AkkaSpec}
 import com.typesafe.config.ConfigFactory
 
 object PersistencePluginProxySpec {
@@ -51,15 +50,22 @@ object PersistencePluginProxySpec {
       |}
     """.stripMargin)
 
-  def targetAddressConfig(system: ActorSystem) = ConfigFactory.parseString(
-    s"""
+  def targetAddressConfig(system: ActorSystem) =
+    ConfigFactory.parseString(s"""
       |akka.extensions = ["akka.persistence.Persistence"]
       |akka.persistence.journal.auto-start-journals = [""]
-      |akka.persistence.journal.proxy.target-journal-address = "${system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress}"
-      |akka.persistence.snapshot-store.proxy.target-snapshot-store-address = "${system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress}"
+      |akka.persistence.journal.proxy.target-journal-address = "${system
+                                   .asInstanceOf[ExtendedActorSystem]
+                                   .provider
+                                   .getDefaultAddress}"
+      |akka.persistence.snapshot-store.proxy.target-snapshot-store-address = "${system
+                                   .asInstanceOf[ExtendedActorSystem]
+                                   .provider
+                                   .getDefaultAddress}"
     """.stripMargin)
 
-  class ExamplePersistentActor(probe: ActorRef, name: String) extends NamedPersistentActor(name) {
+  class ExamplePersistentActor(probe: ActorRef, name: String)
+      extends NamedPersistentActor(name) {
     override def receiveRecover = {
       case RecoveryCompleted ⇒ // ignore
       case payload ⇒
@@ -67,14 +73,13 @@ object PersistencePluginProxySpec {
     }
     override def receiveCommand = {
       case payload ⇒
-        persist(payload) { _ ⇒
-          probe ! payload
-        }
+        persist(payload) { _ ⇒ probe ! payload }
     }
   }
 
   class ExampleApp(probe: ActorRef) extends Actor {
-    val p = context.actorOf(Props(classOf[ExamplePersistentActor], probe, context.system.name))
+    val p = context.actorOf(
+      Props(classOf[ExamplePersistentActor], probe, context.system.name))
 
     def receive = {
       case m ⇒ p forward m
@@ -83,11 +88,16 @@ object PersistencePluginProxySpec {
   }
 }
 
-class PersistencePluginProxySpec extends AkkaSpec(PersistencePluginProxySpec.startTargetConfig withFallback PersistencePluginProxySpec.config) with Cleanup {
+class PersistencePluginProxySpec
+    extends AkkaSpec(
+      PersistencePluginProxySpec.startTargetConfig withFallback PersistencePluginProxySpec.config)
+    with Cleanup {
   import PersistencePluginProxySpec._
 
   val systemA = ActorSystem("SysA", config)
-  val systemB = ActorSystem("SysB", targetAddressConfig(system) withFallback PersistencePluginProxySpec.config)
+  val systemB = ActorSystem(
+    "SysB",
+    targetAddressConfig(system) withFallback PersistencePluginProxySpec.config)
 
   override protected def afterTermination() {
     shutdown(systemA)
@@ -98,7 +108,8 @@ class PersistencePluginProxySpec extends AkkaSpec(PersistencePluginProxySpec.sta
   "A persistence proxy" can {
     "be shared by multiple actor systems" in {
 
-      val address = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+      val address =
+        system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 
       val probeA = new TestProbe(systemA)
       val probeB = new TestProbe(systemB)
@@ -114,8 +125,10 @@ class PersistencePluginProxySpec extends AkkaSpec(PersistencePluginProxySpec.sta
       probeA.expectMsg("a1")
       probeB.expectMsg("b1")
 
-      val recoveredAppA = systemA.actorOf(Props(classOf[ExampleApp], probeA.ref))
-      val recoveredAppB = systemB.actorOf(Props(classOf[ExampleApp], probeB.ref))
+      val recoveredAppA =
+        systemA.actorOf(Props(classOf[ExampleApp], probeA.ref))
+      val recoveredAppB =
+        systemB.actorOf(Props(classOf[ExampleApp], probeB.ref))
 
       recoveredAppA ! "a2"
       recoveredAppB ! "b2"

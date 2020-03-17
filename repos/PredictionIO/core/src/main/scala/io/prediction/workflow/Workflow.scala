@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.workflow
 
 import io.prediction.annotation.Experimental
@@ -75,7 +74,7 @@ object Workflow {
       env = env,
       params = params)
   }
-  */
+   */
 
   def runEvaluation(
       evaluation: Evaluation,
@@ -95,7 +94,15 @@ object Workflow {
   }
 
   def runEvaluationTypeless[
-      EI, Q, P, A, EEI, EQ, EP, EA, ER <: BaseEvaluatorResult](
+      EI,
+      Q,
+      P,
+      A,
+      EEI,
+      EQ,
+      EP,
+      EA,
+      ER <: BaseEvaluatorResult](
       evaluation: Evaluation,
       engine: BaseEngine[EI, Q, P, A],
       engineParamsList: Seq[EngineParams],
@@ -110,7 +117,8 @@ object Workflow {
       evaluationInstance = evaluationInstance,
       evaluator = evaluator.asInstanceOf[BaseEvaluator[EI, Q, P, A, ER]],
       env = env,
-      params = params)
+      params = params
+    )
   }
 
   /** :: Experimental :: */

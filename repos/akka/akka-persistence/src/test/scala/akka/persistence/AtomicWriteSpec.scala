@@ -4,7 +4,7 @@
 
 package akka.persistence
 
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 class AtomicWriteSpec extends WordSpec with Matchers {
 

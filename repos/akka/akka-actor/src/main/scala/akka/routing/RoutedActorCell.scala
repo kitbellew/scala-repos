@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.routing
 
 import akka.actor.Actor
@@ -21,10 +21,11 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[akka] object RoutedActorCell {
-  class RouterActorCreator(routerConfig: RouterConfig) extends IndirectActorProducer {
+  class RouterActorCreator(routerConfig: RouterConfig)
+      extends IndirectActorProducer {
     override def actorClass = classOf[RouterActor]
     override def produce() = routerConfig.createRouterActor()
   }
@@ -32,29 +33,35 @@ private[akka] object RoutedActorCell {
 }
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[akka] class RoutedActorCell(
-  _system: ActorSystemImpl,
-  _ref: InternalActorRef,
-  _routerProps: Props,
-  _routerDispatcher: MessageDispatcher,
-  val routeeProps: Props,
-  _supervisor: InternalActorRef)
-  extends ActorCell(_system, _ref, _routerProps, _routerDispatcher, _supervisor) {
+    _system: ActorSystemImpl,
+    _ref: InternalActorRef,
+    _routerProps: Props,
+    _routerDispatcher: MessageDispatcher,
+    val routeeProps: Props,
+    _supervisor: InternalActorRef)
+    extends ActorCell(
+      _system,
+      _ref,
+      _routerProps,
+      _routerDispatcher,
+      _supervisor) {
 
   private[akka] val routerConfig = _routerProps.routerConfig
 
   @volatile
-  private var _router: Router = null // initialized in start, and then only updated from the actor
+  private var _router: Router =
+    null // initialized in start, and then only updated from the actor
   def router: Router = _router
 
   def addRoutee(routee: Routee): Unit = addRoutees(List(routee))
 
   /**
-   * Add routees to the `Router`. Messages in flight may still be routed to
-   * the old `Router` instance containing the old routees.
-   */
+    * Add routees to the `Router`. Messages in flight may still be routed to
+    * the old `Router` instance containing the old routees.
+    */
   def addRoutees(routees: immutable.Iterable[Routee]): Unit = {
     routees foreach watch
     val r = _router
@@ -65,37 +72,46 @@ private[akka] class RoutedActorCell(
     removeRoutees(List(routee), stopChild)
 
   /**
-   * Remove routees from the `Router`. Messages in flight may still be routed to
-   * the old `Router` instance containing the old routees.
-   */
-  def removeRoutees(routees: immutable.Iterable[Routee], stopChild: Boolean): Unit = {
+    * Remove routees from the `Router`. Messages in flight may still be routed to
+    * the old `Router` instance containing the old routees.
+    */
+  def removeRoutees(
+      routees: immutable.Iterable[Routee],
+      stopChild: Boolean): Unit = {
     val r = _router
-    val newRoutees = routees.foldLeft(r.routees) { (xs, x) ⇒ unwatch(x); xs.filterNot(_ == x) }
+    val newRoutees = routees.foldLeft(r.routees) { (xs, x) ⇒
+      unwatch(x); xs.filterNot(_ == x)
+    }
     _router = r.withRoutees(newRoutees)
     if (stopChild) routees foreach stopIfChild
   }
 
-  private def watch(routee: Routee): Unit = routee match {
-    case ActorRefRoutee(ref) ⇒ watch(ref)
-    case _                   ⇒
-  }
-
-  private def unwatch(routee: Routee): Unit = routee match {
-    case ActorRefRoutee(ref) ⇒ unwatch(ref)
-    case _                   ⇒
-  }
-
-  private def stopIfChild(routee: Routee): Unit = routee match {
-    case ActorRefRoutee(ref) ⇒ child(ref.path.name) match {
-      case Some(`ref`) ⇒
-        // The reason for the delay is to give concurrent
-        // messages a chance to be placed in mailbox before sending PoisonPill,
-        // best effort.
-        system.scheduler.scheduleOnce(100.milliseconds, ref, PoisonPill)(dispatcher)
+  private def watch(routee: Routee): Unit =
+    routee match {
+      case ActorRefRoutee(ref) ⇒ watch(ref)
       case _ ⇒
     }
-    case _ ⇒
-  }
+
+  private def unwatch(routee: Routee): Unit =
+    routee match {
+      case ActorRefRoutee(ref) ⇒ unwatch(ref)
+      case _ ⇒
+    }
+
+  private def stopIfChild(routee: Routee): Unit =
+    routee match {
+      case ActorRefRoutee(ref) ⇒
+        child(ref.path.name) match {
+          case Some(`ref`) ⇒
+            // The reason for the delay is to give concurrent
+            // messages a chance to be placed in mailbox before sending PoisonPill,
+            // best effort.
+            system.scheduler.scheduleOnce(100.milliseconds, ref, PoisonPill)(
+              dispatcher)
+          case _ ⇒
+        }
+      case _ ⇒
+    }
 
   override def start(): this.type = {
     // create the initial routees before scheduling the Router actor
@@ -105,16 +121,21 @@ private[akka] class RoutedActorCell(
         // must not use pool.nrOfInstances(system) for old (not re-compiled) custom routers
         // for binary backwards compatibility reasons
         val deprecatedNrOfInstances = pool.nrOfInstances
-        val nrOfRoutees = if (deprecatedNrOfInstances < 0) pool.nrOfInstances(system) else deprecatedNrOfInstances
+        val nrOfRoutees =
+          if (deprecatedNrOfInstances < 0) pool.nrOfInstances(system)
+          else deprecatedNrOfInstances
         if (nrOfRoutees > 0)
-          addRoutees(Vector.fill(nrOfRoutees)(pool.newRoutee(routeeProps, this)))
+          addRoutees(
+            Vector.fill(nrOfRoutees)(pool.newRoutee(routeeProps, this)))
       case group: Group ⇒
         // must not use group.paths(system) for old (not re-compiled) custom routers
         // for binary backwards compatibility reasons
         val deprecatedPaths = group.paths
-        val paths = if (deprecatedPaths == null) group.paths(system) else deprecatedPaths
+        val paths =
+          if (deprecatedPaths == null) group.paths(system) else deprecatedPaths
         if (paths.nonEmpty)
-          addRoutees(paths.map(p ⇒ group.routeeFor(p, this))(collection.breakOut))
+          addRoutees(
+            paths.map(p ⇒ group.routeeFor(p, this))(collection.breakOut))
       case _ ⇒
     }
     preSuperStart()
@@ -122,9 +143,9 @@ private[akka] class RoutedActorCell(
   }
 
   /**
-   * Called when `router` is initialized but before `super.start()` to
-   * be able to do extra initialization in subclass.
-   */
+    * Called when `router` is initialized but before `super.start()` to
+    * be able to do extra initialization in subclass.
+    */
   protected def preSuperStart(): Unit = ()
 
   /*
@@ -132,8 +153,8 @@ private[akka] class RoutedActorCell(
    */
 
   /**
-   * Route the message via the router to the selected destination.
-   */
+    * Route the message via the router to the selected destination.
+    */
   override def sendMessage(envelope: Envelope): Unit = {
     if (routerConfig.isManagementMessage(envelope.message))
       super.sendMessage(envelope)
@@ -144,18 +165,22 @@ private[akka] class RoutedActorCell(
 }
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[akka] class RouterActor extends Actor {
   val cell = context match {
     case x: RoutedActorCell ⇒ x
     case _ ⇒
-      throw ActorInitializationException("Router actor can only be used in RoutedActorRef, not in " + context.getClass)
+      throw ActorInitializationException(
+        "Router actor can only be used in RoutedActorRef, not in " + context.getClass)
   }
 
-  val routingLogicController: Option[ActorRef] = cell.routerConfig.routingLogicController(
-    cell.router.logic).map(props ⇒ context.actorOf(props.withDispatcher(context.props.dispatcher),
-      name = "routingLogicController"))
+  val routingLogicController: Option[ActorRef] = cell.routerConfig
+    .routingLogicController(cell.router.logic)
+    .map(props ⇒
+      context.actorOf(
+        props.withDispatcher(context.props.dispatcher),
+        name = "routingLogicController"))
 
   def receive = {
     case GetRoutees ⇒
@@ -182,27 +207,31 @@ private[akka] class RouterActor extends Actor {
 }
 
 /**
- * INTERNAL API
- */
-private[akka] class RouterPoolActor(override val supervisorStrategy: SupervisorStrategy) extends RouterActor {
+  * INTERNAL API
+  */
+private[akka] class RouterPoolActor(
+    override val supervisorStrategy: SupervisorStrategy)
+    extends RouterActor {
 
   val pool = cell.routerConfig match {
     case x: Pool ⇒ x
     case other ⇒
-      throw ActorInitializationException("RouterPoolActor can only be used with Pool, not " + other.getClass)
+      throw ActorInitializationException(
+        "RouterPoolActor can only be used with Pool, not " + other.getClass)
   }
 
-  override def receive = ({
-    case AdjustPoolSize(change: Int) ⇒
-      if (change > 0) {
-        val newRoutees = Vector.fill(change)(pool.newRoutee(cell.routeeProps, context))
-        cell.addRoutees(newRoutees)
-      } else if (change < 0) {
-        val currentRoutees = cell.router.routees
-        val abandon = currentRoutees.drop(currentRoutees.length + change)
-        cell.removeRoutees(abandon, stopChild = true)
-      }
-  }: Actor.Receive) orElse super.receive
+  override def receive =
+    ({
+      case AdjustPoolSize(change: Int) ⇒
+        if (change > 0) {
+          val newRoutees =
+            Vector.fill(change)(pool.newRoutee(cell.routeeProps, context))
+          cell.addRoutees(newRoutees)
+        } else if (change < 0) {
+          val currentRoutees = cell.router.routees
+          val abandon = currentRoutees.drop(currentRoutees.length + change)
+          cell.removeRoutees(abandon, stopChild = true)
+        }
+    }: Actor.Receive) orElse super.receive
 
 }
-

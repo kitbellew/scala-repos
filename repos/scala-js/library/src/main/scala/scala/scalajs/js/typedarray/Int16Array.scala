@@ -3,8 +3,8 @@ package scala.scalajs.js.typedarray
 import scala.scalajs.js
 
 /** <span class="badge badge-ecma6" style="float: right;">ECMAScript 6</span>
- *  A [[TypedArray]] of signed 16-bit integers
- */
+  *  A [[TypedArray]] of signed 16-bit integers
+  */
 @js.native
 class Int16Array private extends TypedArray[Short, Int16Array] {
 
@@ -12,9 +12,9 @@ class Int16Array private extends TypedArray[Short, Int16Array] {
   def this(length: Int) = this()
 
   /** Creates a new Int16Array with the same elements than the given TypedArray
-   *
-   *  The elements are converted before being stored in the new Int8Array.
-   */
+    *
+    *  The elements are converted before being stored in the new Int8Array.
+    */
   def this(typedArray: TypedArray[_, _]) = this()
 
   /** Creates a new Int16Array with the elements in the given array */
@@ -26,7 +26,7 @@ class Int16Array private extends TypedArray[Short, Int16Array] {
 }
 
 /** <span class="badge badge-ecma6" style="float: right;">ECMAScript 6</span>
- *  [[Int16Array]] companion
- */
+  *  [[Int16Array]] companion
+  */
 @js.native
 object Int16Array extends TypedArrayStatic

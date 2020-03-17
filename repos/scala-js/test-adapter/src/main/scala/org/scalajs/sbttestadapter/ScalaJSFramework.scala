@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import org.scalajs.core.tools.io._
@@ -32,18 +31,21 @@ final class ScalaJSFramework(
 
   def fingerprints: Array[Fingerprint] = frameworkInfo.fingerprints.toArray
 
-  def runner(args: Array[String], remoteArgs: Array[String],
-      testClassLoader: ClassLoader): Runner = synchronized {
+  def runner(
+      args: Array[String],
+      remoteArgs: Array[String],
+      testClassLoader: ClassLoader): Runner =
+    synchronized {
 
-    if (_isRunning) {
-      throw new IllegalStateException(
-        "Scala.js test frameworks do not support concurrent runs")
+      if (_isRunning) {
+        throw new IllegalStateException(
+          "Scala.js test frameworks do not support concurrent runs")
+      }
+
+      _isRunning = true
+
+      new ScalaJSRunner(this, args, remoteArgs)
     }
-
-    _isRunning = true
-
-    new ScalaJSRunner(this, args, remoteArgs)
-  }
 
   private[testadapter] def runDone(): Unit = synchronized(_isRunning = false)
 

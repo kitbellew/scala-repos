@@ -15,7 +15,10 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
-class MonitorFilterTest extends FunSuite with MockitoSugar with IntegrationBase {
+class MonitorFilterTest
+    extends FunSuite
+    with MockitoSugar
+    with IntegrationBase {
 
   class MockMonitor extends Monitor {
     def handle(cause: Throwable) = false
@@ -55,7 +58,8 @@ class MonitorFilterTest extends FunSuite with MockitoSugar with IntegrationBase 
   }
 
   class MockSourcedException(underlying: Throwable, name: String)
-    extends RuntimeException(underlying) with SourcedException {
+      extends RuntimeException(underlying)
+      with SourcedException {
     def this(name: String) = this(null, name)
     serviceName = name
   }
@@ -63,7 +67,8 @@ class MonitorFilterTest extends FunSuite with MockitoSugar with IntegrationBase 
   class Helper {
     val monitor = Mockito.spy(new MockMonitor)
     val inner = new MockSourcedException("FakeService1")
-    val outer = new MockSourcedException(inner, SourcedException.UnspecifiedServiceName)
+    val outer =
+      new MockSourcedException(inner, SourcedException.UnspecifiedServiceName)
 
     val mockLogger = Mockito.spy(Logger.getLogger("MockServer"))
     // add handler to redirect and mute output, so that it doesn't show up in the console during a test run.
@@ -71,7 +76,8 @@ class MonitorFilterTest extends FunSuite with MockitoSugar with IntegrationBase 
     mockLogger.addHandler(new StreamHandler())
   }
 
-  test("MonitorFilter should when attached to a server, report source for sourced exceptions") {
+  test(
+    "MonitorFilter should when attached to a server, report source for sourced exceptions") {
     val h = new Helper
     import h._
 
@@ -94,8 +100,8 @@ class MonitorFilterTest extends FunSuite with MockitoSugar with IntegrationBase 
       .hostConnectionLimit(1)
       .build()
 
-    when(service(any[String])) thenThrow outer // make server service throw the mock exception
-
+    when(
+      service(any[String])) thenThrow outer // make server service throw the mock exception
 
     try {
       val f = Await.result(client("123"))
@@ -107,11 +113,13 @@ class MonitorFilterTest extends FunSuite with MockitoSugar with IntegrationBase 
     verify(monitor).handle(outer)
     verify(mockLogger).log(
       Matchers.eq(Level.SEVERE),
-      Matchers.eq("The 'FakeService2' service FakeService2 on behalf of FakeService1 threw an exception"),
+      Matchers.eq(
+        "The 'FakeService2' service FakeService2 on behalf of FakeService1 threw an exception"),
       Matchers.eq(outer))
   }
 
-  test("MonitorFilter should when attached to a client, report source for sourced exceptions") {
+  test(
+    "MonitorFilter should when attached to a client, report source for sourced exceptions") {
     val h = new Helper
     import h._
 
@@ -122,10 +130,13 @@ class MonitorFilterTest extends FunSuite with MockitoSugar with IntegrationBase 
     when(preparedFactory.close(any[Time])) thenReturn Future.Done
     when(preparedFactory.map(Matchers.any())) thenReturn
       preparedFactory.asInstanceOf[ServiceFactory[Any, Nothing]]
-    when(preparedFactory.status) thenReturn(Status.Open)
+    when(preparedFactory.status) thenReturn (Status.Open)
 
     val m = new MockChannel
-    when(m.codec.prepareConnFactory(any[ServiceFactory[String, String]], any[Stack.Params])) thenReturn preparedFactory
+    when(
+      m.codec.prepareConnFactory(
+        any[ServiceFactory[String, String]],
+        any[Stack.Params])) thenReturn preparedFactory
 
     val client = m.clientBuilder
       .monitor(_ => monitor)
@@ -145,6 +156,5 @@ class MonitorFilterTest extends FunSuite with MockitoSugar with IntegrationBase 
     verify(monitor, times(0)).handle(inner)
     verify(monitor).handle(outer)
   }
-
 
 }

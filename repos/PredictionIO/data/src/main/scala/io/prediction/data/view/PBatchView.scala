@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.view
 
 import io.prediction.data.storage.hbase.HBPEvents
@@ -29,16 +28,17 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 
-
 // each JValue data associated with the time it is set
-private[prediction] case class PropTime(val d: JValue, val t: Long) extends Serializable
+private[prediction] case class PropTime(val d: JValue, val t: Long)
+    extends Serializable
 
-private[prediction] case class SetProp (
-  val fields: Map[String, PropTime],
-  // last set time. Note: fields could be empty with valid set time
-  val t: Long) extends Serializable {
+private[prediction] case class SetProp(
+    val fields: Map[String, PropTime],
+    // last set time. Note: fields could be empty with valid set time
+    val t: Long)
+    extends Serializable {
 
-  def ++ (that: SetProp): SetProp = {
+  def ++(that: SetProp): SetProp = {
     val commonKeys = fields.keySet.intersect(that.fields.keySet)
 
     val common: Map[String, PropTime] = commonKeys.map { k =>
@@ -62,8 +62,9 @@ private[prediction] case class SetProp (
   }
 }
 
-private[prediction] case class UnsetProp (fields: Map[String, Long]) extends Serializable {
-  def ++ (that: UnsetProp): UnsetProp = {
+private[prediction] case class UnsetProp(fields: Map[String, Long])
+    extends Serializable {
+  def ++(that: UnsetProp): UnsetProp = {
     val commonKeys = fields.keySet.intersect(that.fields.keySet)
 
     val common: Map[String, Long] = commonKeys.map { k =>
@@ -83,19 +84,19 @@ private[prediction] case class UnsetProp (fields: Map[String, Long]) extends Ser
   }
 }
 
-private[prediction] case class DeleteEntity (t: Long) extends Serializable {
-  def ++ (that: DeleteEntity): DeleteEntity = {
+private[prediction] case class DeleteEntity(t: Long) extends Serializable {
+  def ++(that: DeleteEntity): DeleteEntity = {
     if (this.t > that.t) this else that
   }
 }
 
-private[prediction] case class EventOp (
-  val setProp: Option[SetProp] = None,
-  val unsetProp: Option[UnsetProp] = None,
-  val deleteEntity: Option[DeleteEntity] = None
+private[prediction] case class EventOp(
+    val setProp: Option[SetProp] = None,
+    val unsetProp: Option[UnsetProp] = None,
+    val deleteEntity: Option[DeleteEntity] = None
 ) extends Serializable {
 
-  def ++ (that: EventOp): EventOp = {
+  def ++(that: EventOp): EventOp = {
     EventOp(
       setProp = (setProp ++ that.setProp).reduceOption(_ ++ _),
       unsetProp = (unsetProp ++ that.unsetProp).reduceOption(_ ++ _),
@@ -105,24 +106,26 @@ private[prediction] case class EventOp (
 
   def toDataMap(): Option[DataMap] = {
     setProp.flatMap { set =>
+      val unsetKeys: Set[String] = unsetProp
+        .map(unset =>
+          unset.fields.filter { case (k, v) => (v >= set.fields(k).t) }.keySet)
+        .getOrElse(Set())
 
-      val unsetKeys: Set[String] = unsetProp.map( unset =>
-        unset.fields.filter{ case (k, v) => (v >= set.fields(k).t) }.keySet
-      ).getOrElse(Set())
-
-      val combinedFields = deleteEntity.map { delete =>
-        if (delete.t >= set.t) {
-          None
-        } else {
-          val deleteKeys: Set[String] = set.fields
-            .filter { case (k, PropTime(kv, t)) =>
-              (delete.t >= t)
+      val combinedFields = deleteEntity
+        .map { delete =>
+          if (delete.t >= set.t) {
+            None
+          } else {
+            val deleteKeys: Set[String] = set.fields.filter {
+              case (k, PropTime(kv, t)) =>
+                (delete.t >= t)
             }.keySet
-          Some(set.fields -- unsetKeys -- deleteKeys)
+            Some(set.fields -- unsetKeys -- deleteKeys)
+          }
         }
-      }.getOrElse{
-        Some(set.fields -- unsetKeys)
-      }
+        .getOrElse {
+          Some(set.fields -- unsetKeys)
+        }
 
       // Note: mapValues() doesn't return concrete Map and causes
       // NotSerializableException issue. Use map(identity) to work around this.
@@ -138,9 +141,8 @@ private[prediction] object EventOp {
     val t = e.eventTime.getMillis
     e.event match {
       case "$set" => {
-        val fields = e.properties.fields.mapValues(jv =>
-          PropTime(jv, t)
-        ).map(identity)
+        val fields =
+          e.properties.fields.mapValues(jv => PropTime(jv, t)).map(identity)
 
         EventOp(
           setProp = Some(SetProp(fields = fields, t = t))
@@ -166,10 +168,10 @@ private[prediction] object EventOp {
 
 @deprecated("Use PEvents or PEventStore instead.", "0.9.2")
 class PBatchView(
-  val appId: Int,
-  val startTime: Option[DateTime],
-  val untilTime: Option[DateTime],
-  val sc: SparkContext) {
+    val appId: Int,
+    val startTime: Option[DateTime],
+    val untilTime: Option[DateTime],
+    val sc: SparkContext) {
 
   // NOTE: parallel Events DB interface
   @transient lazy val eventsDb = Storage.getPEvents()
@@ -186,15 +188,16 @@ class PBatchView(
   @transient lazy val events: RDD[Event] = _events
 
   def aggregateProperties(
-    entityType: String,
-    startTimeOpt: Option[DateTime] = None,
-    untilTimeOpt: Option[DateTime] = None
+      entityType: String,
+      startTimeOpt: Option[DateTime] = None,
+      untilTimeOpt: Option[DateTime] = None
   ): RDD[(String, DataMap)] = {
 
     _events
-      .filter( e => ((e.entityType == entityType) &&
-        (EventValidation.isSpecialEvents(e.event))) )
-      .map( e => (e.entityId, EventOp(e) ))
+      .filter(e =>
+        ((e.entityType == entityType) &&
+          (EventValidation.isSpecialEvents(e.event))))
+      .map(e => (e.entityId, EventOp(e)))
       .aggregateByKey[EventOp](EventOp())(
         // within same partition
         seqOp = { case (u, v) => u ++ v },
@@ -202,8 +205,8 @@ class PBatchView(
         combOp = { case (accu, u) => accu ++ u }
       )
       .mapValues(_.toDataMap)
-      .filter{ case (k, v) => v.isDefined }
-      .map{ case (k, v) => (k, v.get) }
+      .filter { case (k, v) => v.isDefined }
+      .map { case (k, v) => (k, v.get) }
   }
 
 }

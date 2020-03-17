@@ -10,12 +10,12 @@ trait Chan[-T] {
 }
 
 /**
- * A Proc is a process that can receive messages. Procs guarantee
- * that exactly one message is delivered at a time, and that they are
- * delivered in the order received.
- *
- * They can be thought of as featherweight actors.
- */
+  * A Proc is a process that can receive messages. Procs guarantee
+  * that exactly one message is delivered at a time, and that they are
+  * delivered in the order received.
+  *
+  * They can be thought of as featherweight actors.
+  */
 trait Proc[-T] extends Chan[T] {
   private[this] val q = new ConcurrentLinkedQueue[T]
   private[this] val nq = new AtomicInteger(0)
@@ -31,10 +31,13 @@ trait Proc[-T] extends Chan[T] {
         // Swallow exceptions as these would cause
         // unbounded queue growth.
         if (!closed) {
-          try receiver(elem) catch {
-             case exc: Throwable =>
-               Logger.getLogger("").log(Level.WARNING, "Exception thrown in proc", exc)
-           }
+          try receiver(elem)
+          catch {
+            case exc: Throwable =>
+              Logger
+                .getLogger("")
+                .log(Level.WARNING, "Exception thrown in proc", exc)
+          }
         }
       } while (nq.decrementAndGet() > 0)
   }
@@ -44,9 +47,10 @@ trait Proc[-T] extends Chan[T] {
 }
 
 object Proc {
-  def apply[T](iteratee: T => Unit): Proc[T] = new Proc[T] {
-    def receive = iteratee
-  }
+  def apply[T](iteratee: T => Unit): Proc[T] =
+    new Proc[T] {
+      def receive = iteratee
+    }
 
   val nil: Proc[Any] = new Proc[Any] { def receive = Function.const(()) }
 }

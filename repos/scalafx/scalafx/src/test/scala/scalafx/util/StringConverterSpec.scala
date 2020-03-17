@@ -26,8 +26,8 @@
  */
 
 /**
- *
- */
+  *
+  */
 package scalafx.util
 
 import java.text.{DecimalFormatSymbols, ParseException}
@@ -43,9 +43,9 @@ import scalafx.Includes._
 import scalafx.util.StringConverter._
 
 /**
- * StringConverter Spec tests.
- *
- */
+  * StringConverter Spec tests.
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class StringConverterSpec extends FlatSpec {
 
@@ -53,21 +53,27 @@ class StringConverterSpec extends FlatSpec {
   object TFBooleanConverter extends StringConverter[Boolean] {
     def toString(b: Boolean) = if (b) "t" else "f"
 
-    def fromString(s: String) = s match {
-      case "t" => true
-      case "f" => false
-      case _   => throw new java.text.ParseException("'%s' can not be converted to a boolean".format(s), 0)
-    }
+    def fromString(s: String) =
+      s match {
+        case "t" => true
+        case "f" => false
+        case _ =>
+          throw new java.text.ParseException(
+            "'%s' can not be converted to a boolean".format(s),
+            0)
+      }
   }
 
-  // Getting decimal and group separator from current Locale 
+  // Getting decimal and group separator from current Locale
   private val symbols = DecimalFormatSymbols.getInstance()
   val decimalSeparator = symbols.getDecimalSeparator
   val groupSeparator = symbols.getGroupingSeparator
 
   // HELPER METHODS - BEGIN
 
-  private def testIrregularStringConversion[T](converter: StringConverter[T], isNumberFormat: Boolean) {
+  private def testIrregularStringConversion[T](
+      converter: StringConverter[T],
+      isNumberFormat: Boolean) {
     it should "not convert a Irregular String" in {
       if (isNumberFormat) {
         intercept[NumberFormatException] {
@@ -81,7 +87,9 @@ class StringConverterSpec extends FlatSpec {
     }
   }
 
-  private def testNullStringConversion[T](converter: StringConverter[T], isNumberFormat: Boolean) {
+  private def testNullStringConversion[T](
+      converter: StringConverter[T],
+      isNumberFormat: Boolean) {
     it should "not convert a Null String" in {
       if (isNumberFormat) {
         intercept[NumberFormatException] {
@@ -95,8 +103,15 @@ class StringConverterSpec extends FlatSpec {
     }
   }
 
-  private def testConversion[T](converter: StringConverter[T], string: String, value: T, converterName: String, typeName: String) {
-    converterName should "convert '%s' in a %s and vice-versa".format(string, typeName) in {
+  private def testConversion[T](
+      converter: StringConverter[T],
+      string: String,
+      value: T,
+      converterName: String,
+      typeName: String) {
+    converterName should "convert '%s' in a %s and vice-versa".format(
+      string,
+      typeName) in {
       val numericValue = converter.fromString(string)
       numericValue should equal(value)
       converter.toString(numericValue) should equal(string)

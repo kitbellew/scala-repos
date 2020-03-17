@@ -27,10 +27,14 @@ object CharBuffer {
 }
 
 abstract class CharBuffer private[nio] (
-    _capacity: Int, private[nio] val _array: Array[Char],
+    _capacity: Int,
+    private[nio] val _array: Array[Char],
     private[nio] val _arrayOffset: Int)
-    extends Buffer(_capacity) with Comparable[CharBuffer]
-                              with CharSequence with Appendable with Readable {
+    extends Buffer(_capacity)
+    with Comparable[CharBuffer]
+    with CharSequence
+    with Appendable
+    with Readable {
 
   private[nio] type ElementType = Char
   private[nio] type BufferType = CharBuffer
@@ -108,10 +112,11 @@ abstract class CharBuffer private[nio] (
   override def hashCode(): Int =
     GenBuffer(this).generic_hashCode(CharBuffer.HashSeed)
 
-  override def equals(that: Any): Boolean = that match {
-    case that: CharBuffer => compareTo(that) == 0
-    case _                => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: CharBuffer => compareTo(that) == 0
+      case _                => false
+    }
 
   @noinline
   def compareTo(that: CharBuffer): Int =
@@ -153,12 +158,18 @@ abstract class CharBuffer private[nio] (
   private[nio] def store(index: Int, elem: Char): Unit
 
   @inline
-  private[nio] def load(startIndex: Int,
-      dst: Array[Char], offset: Int, length: Int): Unit =
+  private[nio] def load(
+      startIndex: Int,
+      dst: Array[Char],
+      offset: Int,
+      length: Int): Unit =
     GenBuffer(this).generic_load(startIndex, dst, offset, length)
 
   @inline
-  private[nio] def store(startIndex: Int,
-      src: Array[Char], offset: Int, length: Int): Unit =
+  private[nio] def store(
+      startIndex: Int,
+      src: Array[Char],
+      offset: Int,
+      length: Int): Unit =
     GenBuffer(this).generic_store(startIndex, src, offset, length)
 }

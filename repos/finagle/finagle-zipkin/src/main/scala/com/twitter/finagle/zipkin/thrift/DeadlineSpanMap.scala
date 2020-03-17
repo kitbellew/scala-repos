@@ -9,29 +9,28 @@ import java.util.concurrent.ConcurrentHashMap
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Takes care of storing the spans in a thread safe fashion. If a span
- * is not removed from the map it will expire after the deadline is reached
- * and sent off to scribe despite being incomplete.
- */
+  * Takes care of storing the spans in a thread safe fashion. If a span
+  * is not removed from the map it will expire after the deadline is reached
+  * and sent off to scribe despite being incomplete.
+  */
 private class DeadlineSpanMap(
     logSpans: Seq[Span] => Future[Unit],
     ttl: Duration,
     statsReceiver: StatsReceiver,
-    timer: Timer)
-{
+    timer: Timer) {
 
   private[this] val spanMap = new ConcurrentHashMap[TraceId, MutableSpan](64)
 
   private[this] val timerTask = timer.schedule(ttl / 2) { flush(ttl.ago) }
 
   /**
-   * Update the mutable span.
-   *
-   * This will create a new MutableSpan if one does not exist otherwise the existing
-   * span will be provided.
-   *
-   * If the span is deemed complete it will be removed from the map and sent to `logSpans`
-   */
+    * Update the mutable span.
+    *
+    * This will create a new MutableSpan if one does not exist otherwise the existing
+    * span will be provided.
+    *
+    * If the span is deemed complete it will be removed from the map and sent to `logSpans`
+    */
   def update(traceId: TraceId)(f: MutableSpan => Unit): Unit = {
     val span: MutableSpan = {
       val span = spanMap.get(traceId)
@@ -53,10 +52,10 @@ private class DeadlineSpanMap(
   }
 
   /**
-   * Flush spans created earlier than `now`
-   *
-   * @return Future indicating completion.
-   */
+    * Flush spans created earlier than `now`
+    *
+    * @return Future indicating completion.
+    */
   def flush(deadline: Time): Future[Unit] = {
     val ss = new ArrayBuffer[Span](spanMap.size)
 
@@ -66,7 +65,8 @@ private class DeadlineSpanMap(
       val span = kv.getValue
       if (span.started <= deadline) {
         spanMap.remove(kv.getKey, span)
-        span.addAnnotation(ZipkinAnnotation(deadline, "finagle.flush", span.endpoint))
+        span.addAnnotation(
+          ZipkinAnnotation(deadline, "finagle.flush", span.endpoint))
         ss.append(span.toSpan)
       }
     }
@@ -76,10 +76,10 @@ private class DeadlineSpanMap(
   }
 
   /**
-   * Flush all currently tracked spans.
-   *
-   * @return Future indicating completion.
-   */
+    * Flush all currently tracked spans.
+    *
+    * @return Future indicating completion.
+    */
   def flush(): Future[Unit] =
     flush(Time.Top)
 }
@@ -95,46 +95,53 @@ private final class MutableSpan(val traceId: TraceId, val started: Time) {
 
   def endpoint: Endpoint = synchronized { _endpoint }
 
-  def setName(n: String): MutableSpan = synchronized {
-    _name = Some(n)
-    this
-  }
-
-  def setServiceName(n: String): MutableSpan = synchronized {
-    _service = Some(n)
-    this
-  }
-
-  def addAnnotation(ann: ZipkinAnnotation): MutableSpan = synchronized {
-    if (!_isComplete && (
-      ann.value.equals(Constants.CLIENT_RECV) ||
-      ann.value.equals(Constants.SERVER_SEND) ||
-      ann.value.equals(TimeoutFilter.TimeoutAnnotation)
-    )) _isComplete = true
-
-    annotations.append(ann)
-    this
-  }
-
-  def addBinaryAnnotation(ann: BinaryAnnotation): MutableSpan = synchronized {
-    binaryAnnotations.append(ann)
-    this
-  }
-
-  def setEndpoint(ep: Endpoint): MutableSpan = synchronized {
-    _endpoint = ep
-    var idx = 0
-    while (idx < annotations.size) {
-      val a = annotations(idx)
-      if (a.endpoint == Endpoint.Unknown) annotations(idx) = a.copy(endpoint = ep)
-      idx += 1
+  def setName(n: String): MutableSpan =
+    synchronized {
+      _name = Some(n)
+      this
     }
-    this
-  }
 
-  def toSpan: Span = synchronized {
-    Span(traceId, _service, _name, annotations, binaryAnnotations, _endpoint)
-  }
+  def setServiceName(n: String): MutableSpan =
+    synchronized {
+      _service = Some(n)
+      this
+    }
+
+  def addAnnotation(ann: ZipkinAnnotation): MutableSpan =
+    synchronized {
+      if (!_isComplete && (
+            ann.value.equals(Constants.CLIENT_RECV) ||
+            ann.value.equals(Constants.SERVER_SEND) ||
+            ann.value.equals(TimeoutFilter.TimeoutAnnotation)
+          )) _isComplete = true
+
+      annotations.append(ann)
+      this
+    }
+
+  def addBinaryAnnotation(ann: BinaryAnnotation): MutableSpan =
+    synchronized {
+      binaryAnnotations.append(ann)
+      this
+    }
+
+  def setEndpoint(ep: Endpoint): MutableSpan =
+    synchronized {
+      _endpoint = ep
+      var idx = 0
+      while (idx < annotations.size) {
+        val a = annotations(idx)
+        if (a.endpoint == Endpoint.Unknown)
+          annotations(idx) = a.copy(endpoint = ep)
+        idx += 1
+      }
+      this
+    }
+
+  def toSpan: Span =
+    synchronized {
+      Span(traceId, _service, _name, annotations, binaryAnnotations, _endpoint)
+    }
 
   def isComplete: Boolean = synchronized { _isComplete }
 }

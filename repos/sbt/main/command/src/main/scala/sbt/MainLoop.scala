@@ -4,14 +4,15 @@
 package sbt
 
 import scala.annotation.tailrec
-import java.io.{ File, PrintWriter }
+import java.io.{File, PrintWriter}
 import jline.TerminalFactory
 
 import sbt.internal.io.Using
-import sbt.internal.util.{ ErrorHandling, GlobalLogBacking, GlobalLogging }
-import sbt.util.{ AbstractLogger, Logger }
+import sbt.internal.util.{ErrorHandling, GlobalLogBacking, GlobalLogging}
+import sbt.util.{AbstractLogger, Logger}
 
 object MainLoop {
+
   /** Entry point to run the remaining commands in State with managed global logging.*/
   def runLogged(state: State): xsbti.MainResult = {
     // We've disabled jline shutdown hooks to prevent classloader leaks, and have been careful to always restore
@@ -30,7 +31,9 @@ object MainLoop {
   }
 
   /** Run loop that evaluates remaining commands and manages changes to global logging configuration.*/
-  @tailrec def runLoggedLoop(state: State, logBacking: GlobalLogBacking): xsbti.MainResult =
+  @tailrec def runLoggedLoop(
+      state: State,
+      logBacking: GlobalLogBacking): xsbti.MainResult =
     runAndClearLast(state, logBacking) match {
       case ret: Return => // delete current and last log files when exiting normally
         logBacking.file.delete()
@@ -46,14 +49,14 @@ object MainLoop {
 
   /** Runs the next sequence of commands, cleaning up global logging after any exceptions. */
   def runAndClearLast(state: State, logBacking: GlobalLogBacking): RunNext =
-    try
-      runWithNewLog(state, logBacking)
+    try runWithNewLog(state, logBacking)
     catch {
       case e: xsbti.FullReload =>
         deleteLastLog(logBacking)
         throw e // pass along a reboot request
       case e: Throwable =>
-        System.err.println("sbt appears to be exiting abnormally.\n  The log file for this session is at " + logBacking.file)
+        System.err.println(
+          "sbt appears to be exiting abnormally.\n  The log file for this session is at " + logBacking.file)
         deleteLastLog(logBacking)
         throw e
     }
@@ -69,15 +72,19 @@ object MainLoop {
       val newLogging = state.globalLogging.newLogger(out, logBacking)
       transferLevels(state, newLogging)
       val loggedState = state.copy(globalLogging = newLogging)
-      try run(loggedState) finally out.close()
+      try run(loggedState)
+      finally out.close()
     }
 
   /** Transfers logging and trace levels from the old global loggers to the new ones. */
-  private[this] def transferLevels(state: State, logging: GlobalLogging): Unit = {
+  private[this] def transferLevels(
+      state: State,
+      logging: GlobalLogging): Unit = {
     val old = state.globalLogging
     Logger.transferLevels(old.backed, logging.backed)
     (old.full, logging.full) match { // well, this is a hack
-      case (oldLog: AbstractLogger, newLog: AbstractLogger) => Logger.transferLevels(oldLog, newLog)
+      case (oldLog: AbstractLogger, newLog: AbstractLogger) =>
+        Logger.transferLevels(oldLog, newLog)
       case _ => ()
     }
   }
@@ -107,7 +114,9 @@ object MainLoop {
   def handleException(e: Throwable, s: State): State = s.handleError(e)
 
   @deprecated("Use State.handleError", "0.13.0")
-  def handleException(t: Throwable, s: State, log: Logger): State = State.handleException(t, s, log)
+  def handleException(t: Throwable, s: State, log: Logger): State =
+    State.handleException(t, s, log)
 
-  def logFullException(e: Throwable, log: Logger): Unit = State.logFullException(e, log)
+  def logFullException(e: Throwable, log: Logger): Unit =
+    State.logFullException(e, log)
 }

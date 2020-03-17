@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker
 
 import org.scalajs.core.tools.logging.Logger
@@ -17,13 +16,13 @@ import org.scalajs.core.tools.javascript.ESLevel
 import org.scalajs.core.tools.linker.analyzer.SymbolRequirement
 
 /** A box around a [[GenLinker]] to support clearing.
- *
- *  This further supports:
- *  - batch mode (clearing after every operation)
- *  - clearing if linker throws
- *
- *  This class is not thread-safe.
- */
+  *
+  *  This further supports:
+  *  - batch mode (clearing after every operation)
+  *  - clearing if linker throws
+  *
+  *  This class is not thread-safe.
+  */
 final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
     extends GenLinker {
 
@@ -41,13 +40,17 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
     _esLevel
   }
 
-  def linkUnit(irFiles: Seq[VirtualScalaJSIRFile],
-      symbolRequirements: SymbolRequirement, logger: Logger): LinkingUnit = {
+  def linkUnit(
+      irFiles: Seq[VirtualScalaJSIRFile],
+      symbolRequirements: SymbolRequirement,
+      logger: Logger): LinkingUnit = {
     linkerOp(_.linkUnit(irFiles, symbolRequirements, logger))
   }
 
-  def link(irFiles: Seq[VirtualScalaJSIRFile],
-      output: WritableVirtualJSFile, logger: Logger): Unit = {
+  def link(
+      irFiles: Seq[VirtualScalaJSIRFile],
+      output: WritableVirtualJSFile,
+      logger: Logger): Unit = {
     linkerOp(_.link(irFiles, output, logger))
   }
 

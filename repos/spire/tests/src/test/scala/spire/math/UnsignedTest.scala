@@ -8,7 +8,10 @@ import prop._
 
 import spire.laws.arb.{ubyte, ushort, uint, ulong}
 
-class ULongTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class ULongTest
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
 
   val zero = ULong(0L)
   val one = ULong(1L)
@@ -31,13 +34,14 @@ class ULongTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
 
   property("n / 0 -> ArithmeticException") {
     forAll { (n: ULong) =>
-      val error = try {
-        n / zero
-        false
-      } catch {
-        case _: ArithmeticException => true
-        case _: Exception => false
-      }
+      val error =
+        try {
+          n / zero
+          false
+        } catch {
+          case _: ArithmeticException => true
+          case _: Exception           => false
+        }
       error shouldBe true
     }
   }
@@ -51,7 +55,7 @@ class ULongTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
 
   property("(n / d) * d + (n % d) == n") {
     forAll { (n: ULong, d: ULong) =>
-      whenever (d != zero) {
+      whenever(d != zero) {
         val q = n / d
         val r = n % d
         q * d + r shouldBe n
@@ -61,7 +65,7 @@ class ULongTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
 
   property("n / d <= n") {
     forAll { (n: ULong, d: ULong) =>
-      whenever (d != zero) {
+      whenever(d != zero) {
         n / d <= n shouldBe true
       }
     }
@@ -69,7 +73,7 @@ class ULongTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
 
   property("n % d < d") {
     forAll { (n: ULong, d: ULong) =>
-      whenever (d != zero) {
+      whenever(d != zero) {
         n % d < d shouldBe true
       }
     }
@@ -77,7 +81,7 @@ class ULongTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
 
   property("n + 1 > n") {
     forAll { (n: ULong) =>
-      whenever (n != ULong.MaxValue) {
+      whenever(n != ULong.MaxValue) {
         n + one > n shouldBe true
       }
     }
@@ -104,15 +108,11 @@ class ULongTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
   }
 
   property("a.toString = a.toBigInt.toString") {
-    forAll { (n: ULong) =>
-      n.toString shouldBe n.toBigInt.toString
-    }
+    forAll { (n: ULong) => n.toString shouldBe n.toBigInt.toString }
   }
 
   property("toFloat") {
-    forAll { (n: ULong) =>
-      n.toFloat shouldBe n.toBigInt.toFloat
-    }
+    forAll { (n: ULong) => n.toFloat shouldBe n.toBigInt.toFloat }
   }
 
   property("toDouble") {
@@ -124,15 +124,16 @@ class ULongTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
   }
 }
 
-class UIntTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class UIntTest
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
 
   val zero = UInt(0)
   val one = UInt(1)
 
   property("n >= 0") {
-    forAll { (n: UInt) =>
-      n >= zero shouldBe true
-    }
+    forAll { (n: UInt) => n >= zero shouldBe true }
   }
 
   property("a + b == b + a") {
@@ -149,13 +150,14 @@ class UIntTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks
 
   property("n / 0 -> ArithmeticException") {
     forAll { (n: UInt) =>
-      val error = try {
-        n / zero
-        false
-      } catch {
-        case _: ArithmeticException => true
-        case _: Exception => false
-      }
+      val error =
+        try {
+          n / zero
+          false
+        } catch {
+          case _: ArithmeticException => true
+          case _: Exception           => false
+        }
       error shouldBe true
     }
   }
@@ -169,7 +171,7 @@ class UIntTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks
 
   property("(n / d) * d + (n % d) == n") {
     forAll { (n: UInt, d: UInt) =>
-      whenever (d != zero) {
+      whenever(d != zero) {
         val q = n / d
         val r = n % d
         q * d + r shouldBe n
@@ -179,19 +181,19 @@ class UIntTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks
 
   property("n / d <= n") {
     forAll { (n: UInt, d: UInt) =>
-      whenever (d != zero) { n / d <= n shouldBe true }
+      whenever(d != zero) { n / d <= n shouldBe true }
     }
   }
 
   property("n % d < d") {
     forAll { (n: UInt, d: UInt) =>
-      whenever (d != zero) { n % d < d shouldBe true }
+      whenever(d != zero) { n % d < d shouldBe true }
     }
   }
 
   property("n + 1 > n") {
     forAll { (n: UInt) =>
-      whenever (n != UInt.MaxValue) { n + one > n shouldBe true }
+      whenever(n != UInt.MaxValue) { n + one > n shouldBe true }
     }
   }
 
@@ -216,15 +218,16 @@ class UIntTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks
   }
 }
 
-class UShortTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class UShortTest
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
 
   val zero = UShort(0)
   val one = UShort(1)
 
   property("n >= 0") {
-    forAll { (n: UShort) =>
-      n >= zero shouldBe true
-    }
+    forAll { (n: UShort) => n >= zero shouldBe true }
   }
 
   property("a + b == b + a") {
@@ -241,13 +244,14 @@ class UShortTest extends PropSpec with Matchers with GeneratorDrivenPropertyChec
 
   property("n / 0 -> ArithmeticException") {
     forAll { (n: UShort) =>
-      val error = try {
-        n / zero
-        false
-      } catch {
-        case _: ArithmeticException => true
-        case _: Exception => false
-      }
+      val error =
+        try {
+          n / zero
+          false
+        } catch {
+          case _: ArithmeticException => true
+          case _: Exception           => false
+        }
       error shouldBe true
     }
   }
@@ -261,7 +265,7 @@ class UShortTest extends PropSpec with Matchers with GeneratorDrivenPropertyChec
 
   property("(n / d) * d + (n % d) == n") {
     forAll { (n: UShort, d: UShort) =>
-      whenever (d != zero) {
+      whenever(d != zero) {
         val q = n / d
         val r = n % d
         q * d + r shouldBe n
@@ -271,19 +275,19 @@ class UShortTest extends PropSpec with Matchers with GeneratorDrivenPropertyChec
 
   property("n / d <= n") {
     forAll { (n: UShort, d: UShort) =>
-      whenever (d != zero) { n / d <= n shouldBe true }
+      whenever(d != zero) { n / d <= n shouldBe true }
     }
   }
 
   property("n % d < d") {
     forAll { (n: UShort, d: UShort) =>
-      whenever (d != zero) { n % d < d shouldBe true }
+      whenever(d != zero) { n % d < d shouldBe true }
     }
   }
 
   property("n + 1 > n") {
     forAll { (n: UShort) =>
-      whenever (n != UShort.MaxValue) { n + one > n shouldBe true }
+      whenever(n != UShort.MaxValue) { n + one > n shouldBe true }
     }
   }
 
@@ -308,15 +312,16 @@ class UShortTest extends PropSpec with Matchers with GeneratorDrivenPropertyChec
   }
 }
 
-class UByteTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class UByteTest
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
 
   val zero = UByte(0)
   val one = UByte(1)
 
   property("n >= 0") {
-    forAll { (n: UByte) =>
-      n >= zero shouldBe true
-    }
+    forAll { (n: UByte) => n >= zero shouldBe true }
   }
 
   property("a + b == b + a") {
@@ -333,13 +338,14 @@ class UByteTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
 
   property("n / 0 -> ArithmeticException") {
     forAll { (n: UByte) =>
-      val error = try {
-        n / zero
-        false
-      } catch {
-        case _: ArithmeticException => true
-        case _: Exception => false
-      }
+      val error =
+        try {
+          n / zero
+          false
+        } catch {
+          case _: ArithmeticException => true
+          case _: Exception           => false
+        }
       error shouldBe true
     }
   }
@@ -353,7 +359,7 @@ class UByteTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
 
   property("(n / d) * d + (n % d) == n") {
     forAll { (n: UByte, d: UByte) =>
-      whenever (d != zero) {
+      whenever(d != zero) {
         val q = n / d
         val r = n % d
         q * d + r shouldBe n
@@ -363,19 +369,19 @@ class UByteTest extends PropSpec with Matchers with GeneratorDrivenPropertyCheck
 
   property("n / d <= n") {
     forAll { (n: UByte, d: UByte) =>
-      whenever (d != zero) { n / d <= n shouldBe true }
+      whenever(d != zero) { n / d <= n shouldBe true }
     }
   }
 
   property("n % d < d") {
     forAll { (n: UByte, d: UByte) =>
-      whenever (d != zero) { n % d < d shouldBe true }
+      whenever(d != zero) { n % d < d shouldBe true }
     }
   }
 
   property("n + 1 > n") {
     forAll { (n: UByte) =>
-      whenever (n != UByte.MaxValue) { n + one > n shouldBe true }
+      whenever(n != UByte.MaxValue) { n + one > n shouldBe true }
     }
   }
 

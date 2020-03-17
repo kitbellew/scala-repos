@@ -1,11 +1,10 @@
 /**
- * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
- *
- * Based on Configgy by Robey Pointer.
- *   Copyright 2009 Robey Pointer <robeypointer@gmail.com>
- *   http://www.apache.org/licenses/LICENSE-2.0
- */
-
+  * Copyright (C) 2009-2011 Scalable Solutions AB <http://scalablesolutions.se>
+  *
+  * Based on Configgy by Robey Pointer.
+  *   Copyright 2009 Robey Pointer <robeypointer@gmail.com>
+  *   http://www.apache.org/licenses/LICENSE-2.0
+  */
 package akka.config
 
 import java.io.File
@@ -14,7 +13,9 @@ object Configuration {
   val DefaultPath = new File(".").getCanonicalPath
   val DefaultImporter = new FilesystemImporter(DefaultPath)
 
-  def load(data: String, importer: Importer = DefaultImporter): Configuration = {
+  def load(
+      data: String,
+      importer: Importer = DefaultImporter): Configuration = {
     val parser = new ConfigParser(importer = importer)
     new Configuration(parser parse data)
   }
@@ -41,7 +42,9 @@ object Configuration {
     fromResource(filename, ClassLoader.getSystemClassLoader)
   }
 
-  def fromResource(filename: String, classLoader: ClassLoader): Configuration = {
+  def fromResource(
+      filename: String,
+      classLoader: ClassLoader): Configuration = {
     val importer = new ResourceImporter(classLoader)
     fromFile(filename, importer)
   }
@@ -71,7 +74,8 @@ class Configuration(val map: Map[String, Any]) {
     }
   }
 
-  def getAny(key: String, defaultValue: Any): Any = getAny(key).getOrElse(defaultValue)
+  def getAny(key: String, defaultValue: Any): Any =
+    getAny(key).getOrElse(defaultValue)
 
   def getSeqAny(key: String): Seq[Any] = {
     try {
@@ -83,7 +87,8 @@ class Configuration(val map: Map[String, Any]) {
 
   def getString(key: String): Option[String] = map.get(key).map(_.toString)
 
-  def getString(key: String, defaultValue: String): String = getString(key).getOrElse(defaultValue)
+  def getString(key: String, defaultValue: String): String =
+    getString(key).getOrElse(defaultValue)
 
   def getList(key: String): Seq[String] = {
     try {
@@ -101,7 +106,8 @@ class Configuration(val map: Map[String, Any]) {
     }
   }
 
-  def getInt(key: String, defaultValue: Int): Int = getInt(key).getOrElse(defaultValue)
+  def getInt(key: String, defaultValue: Int): Int =
+    getInt(key).getOrElse(defaultValue)
 
   def getLong(key: String): Option[Long] = {
     try {
@@ -111,7 +117,8 @@ class Configuration(val map: Map[String, Any]) {
     }
   }
 
-  def getLong(key: String, defaultValue: Long): Long = getLong(key).getOrElse(defaultValue)
+  def getLong(key: String, defaultValue: Long): Long =
+    getLong(key).getOrElse(defaultValue)
 
   def getFloat(key: String): Option[Float] = {
     try {
@@ -121,7 +128,8 @@ class Configuration(val map: Map[String, Any]) {
     }
   }
 
-  def getFloat(key: String, defaultValue: Float): Float = getFloat(key).getOrElse(defaultValue)
+  def getFloat(key: String, defaultValue: Float): Float =
+    getFloat(key).getOrElse(defaultValue)
 
   def getDouble(key: String): Option[Double] = {
     try {
@@ -131,7 +139,8 @@ class Configuration(val map: Map[String, Any]) {
     }
   }
 
-  def getDouble(key: String, defaultValue: Double): Double = getDouble(key).getOrElse(defaultValue)
+  def getDouble(key: String, defaultValue: Double): Double =
+    getDouble(key).getOrElse(defaultValue)
 
   def getBoolean(key: String): Option[Boolean] = {
     getString(key) flatMap { s =>
@@ -141,16 +150,19 @@ class Configuration(val map: Map[String, Any]) {
     }
   }
 
-  def getBoolean(key: String, defaultValue: Boolean): Boolean = getBool(key).getOrElse(defaultValue)
+  def getBoolean(key: String, defaultValue: Boolean): Boolean =
+    getBool(key).getOrElse(defaultValue)
 
   def getBool(key: String): Option[Boolean] = getBoolean(key)
 
-  def getBool(key: String, defaultValue: Boolean): Boolean = getBoolean(key, defaultValue)
+  def getBool(key: String, defaultValue: Boolean): Boolean =
+    getBoolean(key, defaultValue)
 
-  def apply(key: String): String = getString(key) match {
-    case None    => throw new ConfigurationException("undefined config: " + key)
-    case Some(v) => v
-  }
+  def apply(key: String): String =
+    getString(key) match {
+      case None    => throw new ConfigurationException("undefined config: " + key)
+      case Some(v) => v
+    }
 
   def apply(key: String, defaultValue: String) = getString(key, defaultValue)
   def apply(key: String, defaultValue: Int) = getInt(key, defaultValue)
@@ -159,7 +171,9 @@ class Configuration(val map: Map[String, Any]) {
 
   def getSection(name: String): Option[Configuration] = {
     val l = name.length + 1
-    val m = map.collect { case (k, v) if k.startsWith(name) => (k.substring(l), v) }
+    val m = map.collect {
+      case (k, v) if k.startsWith(name) => (k.substring(l), v)
+    }
     if (m.isEmpty) None
     else Some(new Configuration(m))
   }

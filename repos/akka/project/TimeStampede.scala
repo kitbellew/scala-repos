@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka
 
 import sbt._
@@ -16,13 +16,15 @@ object TimeStampede extends AutoPlugin {
 
   final val Snapshot = "-SNAPSHOT"
 
-  def stampVersion = Command.command("stampVersion") { state =>
-    val extracted = Project.extract(state)
-    extracted.append(List(version in ThisBuild ~= stamp), state)
-  }
+  def stampVersion =
+    Command.command("stampVersion") { state =>
+      val extracted = Project.extract(state)
+      extracted.append(List(version in ThisBuild ~= stamp), state)
+    }
 
   def stamp(version: String): String = {
-    if (version endsWith Snapshot) (version stripSuffix Snapshot) + "-" + timestamp(System.currentTimeMillis)
+    if (version endsWith Snapshot)
+      (version stripSuffix Snapshot) + "-" + timestamp(System.currentTimeMillis)
     else version
   }
 

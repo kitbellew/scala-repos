@@ -11,24 +11,30 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 
 /**
- * Nikolay.Tropin
- * 2014-09-18
- */
+  * Nikolay.Tropin
+  * 2014-09-18
+  */
 class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
   override def isValidFor(editor: Editor, file: PsiFile): Boolean = {
     def isOnVar: Boolean = {
-      GenerationUtil.elementOfTypeAtCaret(editor, file, classOf[ScVariableDefinition]) match {
+      GenerationUtil.elementOfTypeAtCaret(
+        editor,
+        file,
+        classOf[ScVariableDefinition]) match {
         case Some(v) if v.isSimple && v.containingClass != null => true
-        case _ => false
+        case _                                                  => false
       }
     }
     file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType && isOnVar
   }
 
   override def invoke(project: Project, editor: Editor, file: PsiFile): Unit = {
-    val varDef = GenerationUtil.elementOfTypeAtCaret(editor, file, classOf[ScVariableDefinition]) match {
+    val varDef = GenerationUtil.elementOfTypeAtCaret(
+      editor,
+      file,
+      classOf[ScVariableDefinition]) match {
       case Some(x) if x.isSimple && x.containingClass != null => x
-      case _ => return
+      case _                                                  => return
     }
 
     addPropertyMembers(varDef)
@@ -42,7 +48,10 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
     val modifiers = varDef.getModifierList.getText
 
     def createDefinition(text: String) =
-      ScalaPsiElementFactory.createDefinitionWithContext(text, varDef.getContext, varDef)
+      ScalaPsiElementFactory.createDefinitionWithContext(
+        text,
+        varDef.getContext,
+        varDef)
 
     val backingVarText = s"private[this] var _$name: $typeText = $defaultValue"
     val backingVar_0 = createDefinition(backingVarText)
@@ -58,7 +67,9 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
 
     val parent = varDef.getParent
     val added = Seq(backingVar_0, getter_0, setter_0).map { elem =>
-      parent.addBefore(ScalaPsiElementFactory.createNewLine(varDef.getManager), varDef)
+      parent.addBefore(
+        ScalaPsiElementFactory.createNewLine(varDef.getManager),
+        varDef)
       parent.addBefore(elem, varDef)
     }
     TypeAdjuster.adjustFor(added)

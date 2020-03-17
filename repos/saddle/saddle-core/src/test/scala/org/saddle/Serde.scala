@@ -1,10 +1,15 @@
 package org.saddle
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
+import java.io.{
+  ByteArrayInputStream,
+  ByteArrayOutputStream,
+  ObjectInputStream,
+  ObjectOutputStream
+}
 
 /**
- * utility methods for tests
- */
+  * utility methods for tests
+  */
 object Serde {
 
   /** provides a deep copy of this input object by serializing and deserializing it*/

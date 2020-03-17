@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence
 
 import akka.actor._
@@ -11,7 +11,8 @@ import akka.persistence.JournalProtocol._
 
 object PersistentActorJournalProtocolSpec {
 
-  val config = ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString(
+    """
 puppet {
   class = "akka.persistence.JournalPuppet"
   max-message-batch-size = 10
@@ -38,22 +39,25 @@ akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
     def persistenceId = self.path.name
 
     override def preStart(): Unit = monitor ! PreStart(persistenceId)
-    override def preRestart(reason: Throwable, msg: Option[Any]): Unit = monitor ! PreRestart(persistenceId)
-    override def postRestart(reason: Throwable): Unit = monitor ! PostRestart(persistenceId)
+    override def preRestart(reason: Throwable, msg: Option[Any]): Unit =
+      monitor ! PreRestart(persistenceId)
+    override def postRestart(reason: Throwable): Unit =
+      monitor ! PostRestart(persistenceId)
     override def postStop(): Unit = monitor ! PostStop(persistenceId)
 
     def receiveRecover = {
       case x ⇒ monitor ! x
     }
-    def receiveCommand = behavior orElse {
-      case m: Multi ⇒ m.cmd.foreach(behavior)
-    }
+    def receiveCommand =
+      behavior orElse {
+        case m: Multi ⇒ m.cmd.foreach(behavior)
+      }
 
     val behavior: Receive = {
-      case p: Persist      ⇒ P(p)
+      case p: Persist ⇒ P(p)
       case p: PersistAsync ⇒ PA(p)
-      case Echo(id)        ⇒ sender() ! Done(id, 0)
-      case Fail(ex)        ⇒ throw ex
+      case Echo(id) ⇒ sender() ! Done(id, 0)
+      case Fail(ex) ⇒ throw ex
     }
     val doNothing = (_: Any) ⇒ ()
 
@@ -75,7 +79,8 @@ akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
 }
 
 object JournalPuppet extends ExtensionKey[JournalProbe]
-class JournalProbe(implicit private val system: ExtendedActorSystem) extends Extension {
+class JournalProbe(implicit private val system: ExtendedActorSystem)
+    extends Extension {
   val probe = TestProbe()
   val ref = probe.ref
 }
@@ -89,7 +94,9 @@ class JournalPuppet extends Actor {
 
 import PersistentActorJournalProtocolSpec._
 
-class PersistentActorJournalProtocolSpec extends AkkaSpec(config) with ImplicitSender {
+class PersistentActorJournalProtocolSpec
+    extends AkkaSpec(config)
+    with ImplicitSender {
 
   val journal = JournalPuppet(system).probe
 
@@ -118,7 +125,8 @@ class PersistentActorJournalProtocolSpec extends AkkaSpec(config) with ImplicitS
     w.messages.foreach {
       case AtomicWrite(msgs) ⇒
         msgs.foreach(msg ⇒
-          w.persistentActor.tell(WriteMessageSuccess(msg, w.actorInstanceId), msg.sender))
+          w.persistentActor
+            .tell(WriteMessageSuccess(msg, w.actorInstanceId), msg.sender))
       case NonPersistentRepr(msg, sender) ⇒ w.persistentActor.tell(msg, sender)
     }
   }
@@ -193,7 +201,8 @@ class PersistentActorJournalProtocolSpec extends AkkaSpec(config) with ImplicitS
       "using large number of persist() calls" in {
         val subject = startActor("test-4")
         subject ! Multi(Vector.tabulate(30)(i ⇒ Persist(i, s"a-$i")): _*)
-        val w1 = expectWrite(subject, Vector.tabulate(30)(i ⇒ Msgs(s"a-$i")): _*)
+        val w1 =
+          expectWrite(subject, Vector.tabulate(30)(i ⇒ Msgs(s"a-$i")): _*)
         confirm(w1)
         for (i ← 0 until 30) expectMsg(Done(i, 1))
         subject ! PoisonPill
@@ -202,9 +211,12 @@ class PersistentActorJournalProtocolSpec extends AkkaSpec(config) with ImplicitS
       }
 
       "using large number of persistAsync() calls" in {
-        def msgs(start: Int, end: Int) = (start until end).map(i ⇒ Msgs(s"a-$i-1", s"a-$i-2"))
-        def commands(start: Int, end: Int) = (start until end).map(i ⇒ PersistAsync(i, s"a-$i-1", s"a-$i-2"))
-        def expectDone(start: Int, end: Int) = for (i ← start until end; j ← 1 to 2) expectMsg(Done(i, j))
+        def msgs(start: Int, end: Int) =
+          (start until end).map(i ⇒ Msgs(s"a-$i-1", s"a-$i-2"))
+        def commands(start: Int, end: Int) =
+          (start until end).map(i ⇒ PersistAsync(i, s"a-$i-1", s"a-$i-2"))
+        def expectDone(start: Int, end: Int) =
+          for (i ← start until end; j ← 1 to 2) expectMsg(Done(i, j))
 
         val subject = startActor("test-5")
         subject ! PersistAsync(-1, "a" +: commands(20, 30): _*)

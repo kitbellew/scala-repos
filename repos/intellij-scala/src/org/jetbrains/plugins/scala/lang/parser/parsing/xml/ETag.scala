@@ -9,10 +9,9 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaXmlTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 18.04.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 18.04.2008
+  */
 /*
  * ETag ::= </ Name [S] >
  */
@@ -34,7 +33,7 @@ object ETag {
     }
     builder.getTokenType match {
       case XmlTokenType.XML_WHITE_SPACE => builder.advanceLexer()
-      case _ =>
+      case _                            =>
     }
     builder.getTokenType match {
       case ScalaXmlTokenTypes.XML_TAG_END =>

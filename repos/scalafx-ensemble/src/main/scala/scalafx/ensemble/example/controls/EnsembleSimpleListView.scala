@@ -36,14 +36,34 @@ import scalafx.scene.layout.StackPane
 
 class EnsembleSimpleListView extends EnsembleExample {
 
-  def getContent = new StackPane {
-    padding = Insets(20)
-    children = new ListView[String] {
-      maxWidth = 200
-      items = ObservableBuffer("Row 1", "Row 2", "Long Row 3", "Row 4", "Row 5", "Row 6",
-        "Row 7", "Row 8", "Row 9", "Row 10", "Row 11", "Row 12", "Row 13",
-        "Row 14", "Row 15", "Row 16", "Row 17", "Row 18", "Row 19", "Row 20")
-      selectionModel().selectionMode = SelectionMode.MULTIPLE
+  def getContent =
+    new StackPane {
+      padding = Insets(20)
+      children = new ListView[String] {
+        maxWidth = 200
+        items = ObservableBuffer(
+          "Row 1",
+          "Row 2",
+          "Long Row 3",
+          "Row 4",
+          "Row 5",
+          "Row 6",
+          "Row 7",
+          "Row 8",
+          "Row 9",
+          "Row 10",
+          "Row 11",
+          "Row 12",
+          "Row 13",
+          "Row 14",
+          "Row 15",
+          "Row 16",
+          "Row 17",
+          "Row 18",
+          "Row 19",
+          "Row 20"
+        )
+        selectionModel().selectionMode = SelectionMode.MULTIPLE
+      }
     }
-  }
 }

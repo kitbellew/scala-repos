@@ -8,9 +8,10 @@ import scala.ref.{WeakReference => sWeakRef}
 import scala.reflect.internal.Depth
 
 /** This trait overrides methods in reflect.internal, bracketing
- *  them in synchronized { ... } to make them thread-safe
- */
-private[reflect] trait SynchronizedTypes extends internal.Types { self: SymbolTable =>
+  *  them in synchronized { ... } to make them thread-safe
+  */
+private[reflect] trait SynchronizedTypes extends internal.Types {
+  self: SymbolTable =>
 
   // No sharing of map objects:
   override protected def commonOwnerMap = new CommonOwnerMap
@@ -19,26 +20,27 @@ private[reflect] trait SynchronizedTypes extends internal.Types { self: SymbolTa
   // and, in particular, doesn't call any reflection APIs which makes deadlocks impossible
   private lazy val uniqueLock = new Object
   private val uniques = mutable.WeakHashMap[Type, jWeakRef[Type]]()
-  override def unique[T <: Type](tp: T): T = uniqueLock.synchronized {
-    // we need to have weak uniques for runtime reflection
-    // because unlike the normal compiler universe, reflective universe isn't organized in runs
-    // therefore perRunCaches can grow infinitely large
-    //
-    // despite that toolbox universes are decorated, toolboxes are compilers,
-    // i.e. they have their caches cleaned up automatically on per-run basis,
-    // therefore they should use vanilla uniques, which are faster
-    if (!isCompilerUniverse) {
-      val inCache = uniques get tp
-      val result = if (inCache.isDefined) inCache.get.get else null
-      if (result ne null) result.asInstanceOf[T]
-      else {
-        uniques(tp) = new jWeakRef(tp)
-        tp
+  override def unique[T <: Type](tp: T): T =
+    uniqueLock.synchronized {
+      // we need to have weak uniques for runtime reflection
+      // because unlike the normal compiler universe, reflective universe isn't organized in runs
+      // therefore perRunCaches can grow infinitely large
+      //
+      // despite that toolbox universes are decorated, toolboxes are compilers,
+      // i.e. they have their caches cleaned up automatically on per-run basis,
+      // therefore they should use vanilla uniques, which are faster
+      if (!isCompilerUniverse) {
+        val inCache = uniques get tp
+        val result = if (inCache.isDefined) inCache.get.get else null
+        if (result ne null) result.asInstanceOf[T]
+        else {
+          uniques(tp) = new jWeakRef(tp)
+          tp
+        }
+      } else {
+        super.unique(tp)
       }
-    } else {
-      super.unique(tp)
     }
-  }
 
   private lazy val _skolemizationLevel = mkThreadLocalStorage(0)
   override def skolemizationLevel = _skolemizationLevel.get
@@ -47,27 +49,33 @@ private[reflect] trait SynchronizedTypes extends internal.Types { self: SymbolTa
   private lazy val _undoLog = mkThreadLocalStorage(new UndoLog)
   override def undoLog = _undoLog.get
 
-  private lazy val _intersectionWitness = mkThreadLocalStorage(perRunCaches.newWeakMap[List[Type], sWeakRef[Type]]())
+  private lazy val _intersectionWitness = mkThreadLocalStorage(
+    perRunCaches.newWeakMap[List[Type], sWeakRef[Type]]())
   override def intersectionWitness = _intersectionWitness.get
 
   private lazy val _subsametypeRecursions = mkThreadLocalStorage(0)
   override def subsametypeRecursions = _subsametypeRecursions.get
-  override def subsametypeRecursions_=(value: Int) = _subsametypeRecursions.set(value)
+  override def subsametypeRecursions_=(value: Int) =
+    _subsametypeRecursions.set(value)
 
-  private lazy val _pendingSubTypes = mkThreadLocalStorage(new mutable.HashSet[SubTypePair])
+  private lazy val _pendingSubTypes = mkThreadLocalStorage(
+    new mutable.HashSet[SubTypePair])
   override def pendingSubTypes = _pendingSubTypes.get
 
   private lazy val _basetypeRecursions = mkThreadLocalStorage(0)
   override def basetypeRecursions = _basetypeRecursions.get
   override def basetypeRecursions_=(value: Int) = _basetypeRecursions.set(value)
 
-  private lazy val _pendingBaseTypes = mkThreadLocalStorage(new mutable.HashSet[Type])
+  private lazy val _pendingBaseTypes = mkThreadLocalStorage(
+    new mutable.HashSet[Type])
   override def pendingBaseTypes = _pendingBaseTypes.get
 
-  private lazy val _lubResults = mkThreadLocalStorage(new mutable.HashMap[(Depth, List[Type]), Type])
+  private lazy val _lubResults = mkThreadLocalStorage(
+    new mutable.HashMap[(Depth, List[Type]), Type])
   override def lubResults = _lubResults.get
 
-  private lazy val _glbResults = mkThreadLocalStorage(new mutable.HashMap[(Depth, List[Type]), Type])
+  private lazy val _glbResults = mkThreadLocalStorage(
+    new mutable.HashMap[(Depth, List[Type]), Type])
   override def glbResults = _glbResults.get
 
   private lazy val _indent = mkThreadLocalStorage("")
@@ -78,7 +86,8 @@ private[reflect] trait SynchronizedTypes extends internal.Types { self: SymbolTa
   override def toStringRecursions = _toStringRecursions.get
   override def toStringRecursions_=(value: Int) = _toStringRecursions.set(value)
 
-  private lazy val _toStringSubjects = mkThreadLocalStorage(new mutable.HashSet[Type])
+  private lazy val _toStringSubjects = mkThreadLocalStorage(
+    new mutable.HashSet[Type])
   override def toStringSubjects = _toStringSubjects.get
 
   /* The idea of caches is as follows.

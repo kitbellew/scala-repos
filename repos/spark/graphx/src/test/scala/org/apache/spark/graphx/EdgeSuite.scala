@@ -20,7 +20,7 @@ package org.apache.spark.graphx
 import org.apache.spark.SparkFunSuite
 
 class EdgeSuite extends SparkFunSuite {
-  test ("compare") {
+  test("compare") {
     // descending order
     val testEdges: Array[Edge[Int]] = Array(
       Edge(0x7FEDCBA987654321L, -0x7FEDCBA987654321L, 1),

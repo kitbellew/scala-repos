@@ -1,9 +1,9 @@
 class LazyInput {
   def foo {
     lazy val x = 44
-/*start*/
+    /*start*/
     x + 77
-/*end*/
+    /*end*/
   }
 }
 /*
@@ -19,4 +19,4 @@ class LazyInput {
     x + 77
   }
 }
-*/
+ */

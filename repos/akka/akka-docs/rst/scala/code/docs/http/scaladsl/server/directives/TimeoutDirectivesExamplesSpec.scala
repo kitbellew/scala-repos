@@ -4,12 +4,12 @@
 
 package docs.http.scaladsl.server.directives
 
-import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.RoutingSpec
 import docs.CompileOnlySpec
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.{Future, Promise}
 
 class TimeoutDirectivesExamplesSpec extends RoutingSpec with CompileOnlySpec {
 
@@ -39,8 +39,10 @@ class TimeoutDirectivesExamplesSpec extends RoutingSpec with CompileOnlySpec {
 
     "allow mapping the response while setting the timeout" in compileOnlySpec {
       //#withRequestTimeout-with-handler
-      val timeoutResponse = HttpResponse(StatusCodes.EnhanceYourCalm,
-        entity = "Unable to serve response within time limit, please enchance your calm.")
+      val timeoutResponse = HttpResponse(
+        StatusCodes.EnhanceYourCalm,
+        entity =
+          "Unable to serve response within time limit, please enchance your calm.")
 
       val route =
         path("timeout") {
@@ -57,8 +59,10 @@ class TimeoutDirectivesExamplesSpec extends RoutingSpec with CompileOnlySpec {
       pending // compile only spec since requires actuall Http server to be run
 
       //#withRequestTimeoutResponse
-      val timeoutResponse = HttpResponse(StatusCodes.EnhanceYourCalm,
-        entity = "Unable to serve response within time limit, please enchance your calm.")
+      val timeoutResponse = HttpResponse(
+        StatusCodes.EnhanceYourCalm,
+        entity =
+          "Unable to serve response within time limit, please enchance your calm.")
 
       val route =
         path("timeout") {

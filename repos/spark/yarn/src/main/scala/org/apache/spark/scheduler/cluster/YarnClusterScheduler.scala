@@ -21,10 +21,11 @@ import org.apache.spark._
 import org.apache.spark.deploy.yarn.ApplicationMaster
 
 /**
- * This is a simple extension to ClusterScheduler - to ensure that appropriate initialization of
- * ApplicationMaster, etc is done
- */
-private[spark] class YarnClusterScheduler(sc: SparkContext) extends YarnScheduler(sc) {
+  * This is a simple extension to ClusterScheduler - to ensure that appropriate initialization of
+  * ApplicationMaster, etc is done
+  */
+private[spark] class YarnClusterScheduler(sc: SparkContext)
+    extends YarnScheduler(sc) {
 
   logInfo("Created YarnClusterScheduler")
 

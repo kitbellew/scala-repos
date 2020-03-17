@@ -2,9 +2,9 @@ package org.jetbrains.plugins.scala
 package refactoring.extractTrait
 
 /**
- * Nikolay.Tropin
- * 2014-06-25
- */
+  * Nikolay.Tropin
+  * 2014-06-25
+  */
 class ExtractTraitTestTypeParameters extends ExtractTraitTestBase {
 
   def testSimpleParameterizedClass() {
@@ -38,7 +38,6 @@ class ExtractTraitTestTypeParameters extends ExtractTraitTestBase {
         |  def foo(p: T)
         |}
       """.stripMargin
-
 
     checkResult(text, result2, onlyDeclarations = true)
   }

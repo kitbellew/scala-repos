@@ -14,7 +14,7 @@ package breeze.math
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-*/
+ */
 
 import org.scalatest._;
 import org.scalatest.junit._;
@@ -38,49 +38,44 @@ class LogDoubleTest extends FunSuite with Checkers {
     d
   });
 
-  implicit def ae(x: Double) = new {
-    def =~=(y: Double) = math.abs(x - y) / x < 1E-6;
-  }
+  implicit def ae(x: Double) =
+    new {
+      def =~=(y: Double) = math.abs(x - y) / x < 1e-6;
+    }
 
   test("addition") {
     check {
-      Prop.forAll {
-        (d: Double, e: Double) =>
-          (d.toLogDouble + e.toLogDouble).value =~= d + e
+      Prop.forAll { (d: Double, e: Double) =>
+        (d.toLogDouble + e.toLogDouble).value =~= d + e
       }
     }
     check {
-      Prop.forAll {
-        (d: Double, e: Double) =>
-          e <= 0 || (d.toLogDouble + e).value =~= d + e
+      Prop.forAll { (d: Double, e: Double) =>
+        e <= 0 || (d.toLogDouble + e).value =~= d + e
       }
     }
   }
   test("multiplication") {
     check {
-      Prop.forAll {
-        (d: Double, e: Double) =>
-          (d.toLogDouble * e.toLogDouble).value =~= d * e
+      Prop.forAll { (d: Double, e: Double) =>
+        (d.toLogDouble * e.toLogDouble).value =~= d * e
       }
     }
     check {
-      Prop.forAll {
-        (d: Double, e: Double) =>
-          e <= 0 || (d.toLogDouble * e).value =~= d * e
+      Prop.forAll { (d: Double, e: Double) =>
+        e <= 0 || (d.toLogDouble * e).value =~= d * e
       }
     }
   }
   test("division") {
     check {
-      Prop.forAll {
-        (d: Double, e: Double) =>
-          (d.toLogDouble / e.toLogDouble).value =~= d / e
+      Prop.forAll { (d: Double, e: Double) =>
+        (d.toLogDouble / e.toLogDouble).value =~= d / e
       }
     }
     check {
-      Prop.forAll {
-        (d: Double, e: Double) =>
-          e <= 0 || (d.toLogDouble / e).value =~= d / e
+      Prop.forAll { (d: Double, e: Double) =>
+        e <= 0 || (d.toLogDouble / e).value =~= d / e
       }
     }
   }

@@ -19,7 +19,13 @@ package org.apache.spark.sql.execution.datasources
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.SequenceFile.CompressionType
-import org.apache.hadoop.io.compress.{BZip2Codec, DeflateCodec, GzipCodec, Lz4Codec, SnappyCodec}
+import org.apache.hadoop.io.compress.{
+  BZip2Codec,
+  DeflateCodec,
+  GzipCodec,
+  Lz4Codec,
+  SnappyCodec
+}
 
 import org.apache.spark.util.Utils
 
@@ -31,12 +37,13 @@ private[datasources] object CompressionCodecs {
     "deflate" -> classOf[DeflateCodec].getName,
     "gzip" -> classOf[GzipCodec].getName,
     "lz4" -> classOf[Lz4Codec].getName,
-    "snappy" -> classOf[SnappyCodec].getName)
+    "snappy" -> classOf[SnappyCodec].getName
+  )
 
   /**
-   * Return the full version of the given codec class.
-   * If it is already a class name, just return it.
-   */
+    * Return the full version of the given codec class.
+    * If it is already a class name, just return it.
+    */
   def getCodecClassName(name: String): String = {
     val codecName = shortCompressionCodecNames.getOrElse(name.toLowerCase, name)
     try {
@@ -48,18 +55,21 @@ private[datasources] object CompressionCodecs {
     } catch {
       case e: ClassNotFoundException =>
         throw new IllegalArgumentException(s"Codec [$codecName] " +
-          s"is not available. Known codecs are ${shortCompressionCodecNames.keys.mkString(", ")}.")
+          s"is not available. Known codecs are ${shortCompressionCodecNames.keys
+            .mkString(", ")}.")
     }
   }
 
   /**
-   * Set compression configurations to Hadoop `Configuration`.
-   * `codec` should be a full class path
-   */
+    * Set compression configurations to Hadoop `Configuration`.
+    * `codec` should be a full class path
+    */
   def setCodecConfiguration(conf: Configuration, codec: String): Unit = {
     if (codec != null) {
       conf.set("mapreduce.output.fileoutputformat.compress", "true")
-      conf.set("mapreduce.output.fileoutputformat.compress.type", CompressionType.BLOCK.toString)
+      conf.set(
+        "mapreduce.output.fileoutputformat.compress.type",
+        CompressionType.BLOCK.toString)
       conf.set("mapreduce.output.fileoutputformat.compress.codec", codec)
       conf.set("mapreduce.map.output.compress", "true")
       conf.set("mapreduce.map.output.compress.codec", codec)

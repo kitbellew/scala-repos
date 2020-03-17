@@ -11,21 +11,26 @@ import org.scalatest.mock.MockitoSugar
 import scala.util.Random
 
 @RunWith(classOf[JUnitRunner])
-class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
-  class LoadedFactory(which: String) extends ServiceFactory[Unit, LoadedFactory] {
+class HeapBalancerTest
+    extends FunSuite
+    with MockitoSugar
+    with AssertionsForJUnit {
+  class LoadedFactory(which: String)
+      extends ServiceFactory[Unit, LoadedFactory] {
     var load = 0
     var _status: Status = Status.Open
     var _closed = false
 
     def setStatus(x: Status) { _status = x }
 
-    def apply(conn: ClientConnection) = Future.value {
-      load += 1
-      new Service[Unit, LoadedFactory] {
-        def apply(req: Unit) = Future.value(LoadedFactory.this)
-        override def close(deadline: Time) = { load -= 1; Future.Done }
+    def apply(conn: ClientConnection) =
+      Future.value {
+        load += 1
+        new Service[Unit, LoadedFactory] {
+          def apply(req: Unit) = Future.value(LoadedFactory.this)
+          override def close(deadline: Time) = { load -= 1; Future.Done }
+        }
       }
-    }
 
     override def status = _status
     def isClosed = _closed
@@ -39,9 +44,10 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
   class Ctx {
     val N = 10
     val statsReceiver = new InMemoryStatsReceiver
-    val half1, half2 = 0 until N/2 map { i => new LoadedFactory(i.toString) }
+    val half1, half2 = 0 until N / 2 map { i => new LoadedFactory(i.toString) }
     val factories = half1 ++ half2
-    val group = Group.mutable[ServiceFactory[Unit, LoadedFactory]](factories:_*)
+    val group =
+      Group.mutable[ServiceFactory[Unit, LoadedFactory]](factories: _*)
     val nonRng = new Random {
       private[this] val i = new AtomicInteger(0)
       override def nextInt(n: Int) = i.incrementAndGet() % n
@@ -50,7 +56,7 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
     val exc = new NoBrokersAvailableException
 
     val b = new HeapBalancer[Unit, LoadedFactory](
-      Activity(group.set map(Activity.Ok(_))),
+      Activity(group.set map (Activity.Ok(_))),
       statsReceiver,
       exc,
       nonRng)
@@ -73,7 +79,7 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
     assert(b.status == Status.Closed)
   }
 
-  for(status <- Seq(Status.Closed, Status.Busy, Status.Open)) {
+  for (status <- Seq(Status.Closed, Status.Busy, Status.Open)) {
     test(s"balancer with entirely $status cluster has $status status") {
       val node = new LoadedFactory("1")
       node._status = status
@@ -118,7 +124,7 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
     factories(0).setStatus(Status.Closed)
     factories(1).setStatus(Status.Closed)
 
-    for (_ <- 0 until 2*(N-2)) b()
+    for (_ <- 0 until 2 * (N - 2)) b()
 
     assert(factories(0).load == 1)
     assert(factories(1).load == 1)
@@ -131,7 +137,7 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
     import ctx._
 
     // initially N factories, load them twice
-    val made = Seq.fill(N*2) { Await.result(b()) }
+    val made = Seq.fill(N * 2) { Await.result(b()) }
     for (f <- factories) assert(f.load == 2)
 
     // add newFactory to the heap balancer. Initially it has
@@ -229,7 +235,7 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
     for (_ <- 0 until N) b()
     for (f <- factories)
       f.setStatus(Status.Closed)
-    for (_ <- 0 until 100*N) b()
+    for (_ <- 0 until 100 * N) b()
     for (f <- factories)
       assert(f.load == 101)
   }
@@ -243,11 +249,12 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
     // Sequentially issue requests to the 2 nodes.
     // Requests should end up getting serviced by more than just one
     // of the nodes.
-    val results = (0 until N).foldLeft(Map.empty[LoadedFactory, Int]) { case (map, i) =>
-      val sequentialRequest = Await.result(b())
-      val chosenNode = factories.filter(_.load == 1).head
-      sequentialRequest.close()
-      map + (chosenNode -> (map.getOrElse(chosenNode, 0) + 1))
+    val results = (0 until N).foldLeft(Map.empty[LoadedFactory, Int]) {
+      case (map, i) =>
+        val sequentialRequest = Await.result(b())
+        val chosenNode = factories.filter(_.load == 1).head
+        sequentialRequest.close()
+        map + (chosenNode -> (map.getOrElse(chosenNode, 0) + 1))
     }
 
     // Assert that all two nodes were chosen
@@ -265,10 +272,11 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
     for (_ <- 0 until N) b()
     for (f <- factories)
       f.setStatus(Status.Closed)
-    for (_ <- 0 until 100*N) b()
+    for (_ <- 0 until 100 * N) b()
     val f0 = factories(0)
     f0.setStatus(Status.Open)
-    for (_ <- 0 until 100) assert(Await.result(Await.result(b()).apply(())) == f0)
+    for (_ <- 0 until 100)
+      assert(Await.result(Await.result(b()).apply(())) == f0)
 
     assert(f0.load == 201)
     for (f <- factories drop 1) assert(f.load == 101)
@@ -319,11 +327,11 @@ class HeapBalancerTest extends FunSuite with MockitoSugar with AssertionsForJUni
     import ctx._
 
     val factories = Seq(new LoadedFactory("left"), new LoadedFactory("right"))
-    val group = Group.mutable[ServiceFactory[Unit, LoadedFactory]](
-      factories:_*)
+    val group =
+      Group.mutable[ServiceFactory[Unit, LoadedFactory]](factories: _*)
 
     val b = new HeapBalancer[Unit, LoadedFactory](
-      Activity(group.set map(Activity.Ok(_))),
+      Activity(group.set map (Activity.Ok(_))),
       statsReceiver,
       new NoBrokersAvailableException,
       new Random

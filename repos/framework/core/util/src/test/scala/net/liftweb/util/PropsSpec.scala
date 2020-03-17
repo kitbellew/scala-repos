@@ -44,7 +44,11 @@ object PropsSpec extends Specification {
         wasCalled = true
 
         List(
-          ("test propsters", () => Full(new ByteArrayInputStream("test.prop=value".getBytes("UTF-8"))))
+          (
+            "test propsters",
+            () =>
+              Full(
+                new ByteArrayInputStream("test.prop=value".getBytes("UTF-8"))))
         )
       }
 
@@ -148,7 +152,8 @@ object PropsSpec extends Specification {
     "Interpolate multiple values in a string from the given interpolator" in {
       val testProps = TestProps()
 
-      testProps.appendInterpolationValues(Map("DB_HOST" -> "localhost", "DB_PORT" -> "3306"))
+      testProps.appendInterpolationValues(
+        Map("DB_HOST" -> "localhost", "DB_PORT" -> "3306"))
       val url = testProps.get("db.url")
 
       url must_== Full("jdbc:mysql://localhost:3306/MYDB")

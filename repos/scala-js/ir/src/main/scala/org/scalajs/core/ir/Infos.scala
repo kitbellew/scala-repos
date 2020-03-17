@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 import scala.collection.mutable
@@ -34,8 +33,13 @@ object Infos {
         superClass: Option[String] = None,
         interfaces: List[String] = Nil,
         methods: List[MethodInfo] = Nil): ClassInfo = {
-      new ClassInfo(encodedName, isExported, kind, superClass,
-          interfaces, methods)
+      new ClassInfo(
+        encodedName,
+        isExported,
+        kind,
+        superClass,
+        interfaces,
+        methods)
     }
   }
 
@@ -48,8 +52,8 @@ object Infos {
       val methodsCalledStatically: Map[String, List[String]],
       val staticMethodsCalled: Map[String, List[String]],
       /** For a Scala class, it is instantiated with a `New`; for a JS class,
-       *  its constructor is accessed with a `JSLoadConstructor`.
-       */
+        *  its constructor is accessed with a `JSLoadConstructor`.
+        */
       val instantiatedClasses: List[String],
       val accessedModules: List[String],
       val usedInstanceTests: List[String],
@@ -69,10 +73,18 @@ object Infos {
         accessedModules: List[String] = Nil,
         usedInstanceTests: List[String] = Nil,
         accessedClassData: List[String] = Nil): MethodInfo = {
-      new MethodInfo(encodedName, isStatic, isAbstract, isExported,
-          methodsCalled, methodsCalledStatically, staticMethodsCalled,
-          instantiatedClasses, accessedModules, usedInstanceTests,
-          accessedClassData)
+      new MethodInfo(
+        encodedName,
+        isStatic,
+        isAbstract,
+        isExported,
+        methodsCalled,
+        methodsCalledStatically,
+        staticMethodsCalled,
+        instantiatedClasses,
+        accessedModules,
+        usedInstanceTests,
+        accessedClassData)
     }
   }
 
@@ -120,8 +132,13 @@ object Infos {
     }
 
     def result(): ClassInfo = {
-      ClassInfo(encodedName, isExported, kind, superClass,
-          interfaces.toList, methods.toList)
+      ClassInfo(
+        encodedName,
+        isExported,
+        kind,
+        superClass,
+        interfaces.toList,
+        methods.toList)
     }
   }
 
@@ -132,8 +149,10 @@ object Infos {
     private var isExported: Boolean = false
 
     private val methodsCalled = mutable.Map.empty[String, mutable.Set[String]]
-    private val methodsCalledStatically = mutable.Map.empty[String, mutable.Set[String]]
-    private val staticMethodsCalled = mutable.Map.empty[String, mutable.Set[String]]
+    private val methodsCalledStatically =
+      mutable.Map.empty[String, mutable.Set[String]]
+    private val staticMethodsCalled =
+      mutable.Map.empty[String, mutable.Set[String]]
     private val instantiatedClasses = mutable.Set.empty[String]
     private val accessedModules = mutable.Set.empty[String]
     private val usedInstanceTests = mutable.Set.empty[String]
@@ -173,11 +192,11 @@ object Infos {
         case ArrayType(_, _) => addMethodCalled(PseudoArrayClass, method)
 
         case NullType | NothingType =>
-          // Nothing to do
+        // Nothing to do
 
         case NoType | RecordType(_) =>
           throw new IllegalArgumentException(
-              s"Illegal receiver type: $receiverTpe")
+            s"Illegal receiver type: $receiverTpe")
       }
 
       this
@@ -227,24 +246,26 @@ object Infos {
       this
     }
 
-    private def baseNameOf(tpe: ReferenceType): String = tpe match {
-      case ClassType(name)    => name
-      case ArrayType(base, _) => base
-    }
+    private def baseNameOf(tpe: ReferenceType): String =
+      tpe match {
+        case ClassType(name)    => name
+        case ArrayType(base, _) => base
+      }
 
     def result(): MethodInfo = {
       MethodInfo(
-          encodedName = encodedName,
-          isStatic = isStatic,
-          isAbstract = isAbstract,
-          isExported = isExported,
-          methodsCalled = methodsCalled.toMap.mapValues(_.toList),
-          methodsCalledStatically = methodsCalledStatically.toMap.mapValues(_.toList),
-          staticMethodsCalled = staticMethodsCalled.toMap.mapValues(_.toList),
-          instantiatedClasses = instantiatedClasses.toList,
-          accessedModules = accessedModules.toList,
-          usedInstanceTests = usedInstanceTests.toList,
-          accessedClassData = accessedClassData.toList
+        encodedName = encodedName,
+        isStatic = isStatic,
+        isAbstract = isAbstract,
+        isExported = isExported,
+        methodsCalled = methodsCalled.toMap.mapValues(_.toList),
+        methodsCalledStatically =
+          methodsCalledStatically.toMap.mapValues(_.toList),
+        staticMethodsCalled = staticMethodsCalled.toMap.mapValues(_.toList),
+        instantiatedClasses = instantiatedClasses.toList,
+        accessedModules = accessedModules.toList,
+        usedInstanceTests = usedInstanceTests.toList,
+        accessedClassData = accessedClassData.toList
       )
     }
   }
@@ -267,7 +288,7 @@ object Infos {
       case constructorDef: ConstructorExportDef =>
         builder.setIsExported(true)
         exportedConstructors ::= constructorDef
-      case _:JSClassExportDef | _:ModuleExportDef =>
+      case _: JSClassExportDef | _: ModuleExportDef =>
         builder.setIsExported(true)
       case _ =>
     }

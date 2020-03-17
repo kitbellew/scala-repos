@@ -54,19 +54,22 @@ final class Env(
   lazy val forms = new DataForm(hub.actor.captcher)
   lazy val recent = new Recent(postApi, RecentTtl, RecentNb, PublicCategIds)
 
-  def cli = new lila.common.Cli {
-    import tube._
-    def process = {
-      case "forum" :: "denormalize" :: Nil =>
-        topicApi.denormalize >> categApi.denormalize inject "Forum denormalized"
+  def cli =
+    new lila.common.Cli {
+      import tube._
+      def process = {
+        case "forum" :: "denormalize" :: Nil =>
+          topicApi.denormalize >> categApi.denormalize inject "Forum denormalized"
+      }
     }
-  }
 
-  system.actorOf(Props(new Actor {
-    def receive = {
-      case MakeTeam(id, name) => categApi.makeTeam(id, name)
-    }
-  }), name = ActorName)
+  system.actorOf(
+    Props(new Actor {
+      def receive = {
+        case MakeTeam(id, name) => categApi.makeTeam(id, name)
+      }
+    }),
+    name = ActorName)
 
   private[forum] lazy val categColl = db(CollectionCateg)
   private[forum] lazy val topicColl = db(CollectionTopic)
@@ -83,6 +86,7 @@ object Env {
     modLog = lila.mod.Env.current.logApi,
     shutup = lila.hub.Env.current.actor.shutup,
     hub = lila.hub.Env.current,
-    detectLanguage = DetectLanguage(lila.common.PlayApp loadConfig "detectlanguage"),
+    detectLanguage =
+      DetectLanguage(lila.common.PlayApp loadConfig "detectlanguage"),
     system = lila.common.PlayApp.system)
 }

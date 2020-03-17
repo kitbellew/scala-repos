@@ -3,11 +3,11 @@ package reflect
 package macros
 
 /**
- * <span class="badge badge-red" style="float: right;">EXPERIMENTAL</span>
- *
- * A slice of [[scala.reflect.macros.blackbox.Context the Scala macros context]] that defines shorthands for the
- *  most common `Expr`-creating functions.
- */
+  * <span class="badge badge-red" style="float: right;">EXPERIMENTAL</span>
+  *
+  * A slice of [[scala.reflect.macros.blackbox.Context the Scala macros context]] that defines shorthands for the
+  *  most common `Expr`-creating functions.
+  */
 trait ExprUtils {
   self: blackbox.Context =>
 

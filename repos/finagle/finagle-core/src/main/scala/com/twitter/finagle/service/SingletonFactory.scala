@@ -5,26 +5,26 @@ import com.twitter.finagle.{Service, ServiceFactory, ClientConnection}
 import com.twitter.util.{Future, Promise, Time}
 
 /**
- * A [[com.twitter.finagle.ServiceFactory]] that produces
- * [[com.twitter.finagle.Service Services]] identical to the argument `service`.
- *
- * Note that this factory builds new [[com.twitter.finagle.Service Services]],
- * so the "singleton" `service` argument is not shared by reference. This
- * differs from [[com.twitter.finagle.ServiceFactory#const]] in that `const`
- * proxies all requests to the same `service` rather than creating new objects.
- */
+  * A [[com.twitter.finagle.ServiceFactory]] that produces
+  * [[com.twitter.finagle.Service Services]] identical to the argument `service`.
+  *
+  * Note that this factory builds new [[com.twitter.finagle.Service Services]],
+  * so the "singleton" `service` argument is not shared by reference. This
+  * differs from [[com.twitter.finagle.ServiceFactory#const]] in that `const`
+  * proxies all requests to the same `service` rather than creating new objects.
+  */
 class SingletonFactory[Req, Rep](service: Service[Req, Rep])
-  extends ServiceFactory[Req, Rep]
-{
+    extends ServiceFactory[Req, Rep] {
   private[this] var latch = new AsyncLatch
 
-  def apply(conn: ClientConnection) = Future {
-    latch.incr()
-    new Service[Req, Rep] {
-      def apply(request: Req) = service(request)
-      override def close(deadline: Time) = { latch.decr(); Future.Done }
+  def apply(conn: ClientConnection) =
+    Future {
+      latch.incr()
+      new Service[Req, Rep] {
+        def apply(request: Req) = service(request)
+        override def close(deadline: Time) = { latch.decr(); Future.Done }
+      }
     }
-  }
 
   def close(deadline: Time) = {
     val p = new Promise[Unit]

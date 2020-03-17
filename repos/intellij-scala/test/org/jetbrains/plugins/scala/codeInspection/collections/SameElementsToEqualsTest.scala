@@ -3,12 +3,14 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class SameElementsToEqualsTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[SameElementsToEqualsInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[SameElementsToEqualsInspection]
 
-  override def hint: String = InspectionBundle.message("replace.sameElements.with.equals")
+  override def hint: String =
+    InspectionBundle.message("replace.sameElements.with.equals")
 
   def testSeqs(): Unit = {
     doTest(
@@ -39,19 +41,23 @@ class SameElementsToEqualsTest extends OperationsOnCollectionInspectionTest {
   }
 
   def testSortedSets(): Unit = {
-    checkTextHasNoErrors("scala.collection.immutable.BitSet(1) sameElements scala.collection.mutable.SortedSet(1)")
+    checkTextHasNoErrors(
+      "scala.collection.immutable.BitSet(1) sameElements scala.collection.mutable.SortedSet(1)")
   }
 
   def testSortedMaps(): Unit = {
-    checkTextHasNoErrors("scala.collection.immutable.TreeMap(1 -> 1) sameElements scala.collection.immutable.TreeMap(1 -> 1)")
+    checkTextHasNoErrors(
+      "scala.collection.immutable.TreeMap(1 -> 1) sameElements scala.collection.immutable.TreeMap(1 -> 1)")
   }
 
 }
 
 class CorrespondsToEqualsTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[SameElementsToEqualsInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[SameElementsToEqualsInspection]
 
-  override def hint: String = InspectionBundle.message("replace.corresponds.with.equals")
+  override def hint: String =
+    InspectionBundle.message("replace.corresponds.with.equals")
 
   def test1(): Unit = {
     doTest(

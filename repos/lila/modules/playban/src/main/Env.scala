@@ -1,15 +1,12 @@
 package lila.playban
 
-import akka.actor.{ ActorSelection, ActorSystem }
+import akka.actor.{ActorSelection, ActorSystem}
 import com.typesafe.config.Config
 import scala.concurrent.duration._
 
 import lila.common.PimpedConfig._
 
-final class Env(
-    config: Config,
-    isRematch: String => Boolean,
-    db: lila.db.Env) {
+final class Env(config: Config, isRematch: String => Boolean, db: lila.db.Env) {
 
   private val settings = new {
     val CollectionPlayban = config getString "collection.playban"

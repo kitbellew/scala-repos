@@ -9,12 +9,12 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.PredefinedFromStringUnmarshallers
 import docs.http.scaladsl.server.RoutingSpec
 
-class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStringUnmarshallers {
+class ParameterDirectivesExamplesSpec
+    extends RoutingSpec
+    with PredefinedFromStringUnmarshallers {
   "example-1" in {
     val route =
-      parameter('color) { color =>
-        complete(s"The color is '$color'")
-      }
+      parameter('color) { color => complete(s"The color is '$color'") }
 
     // tests:
     Get("/?color=blue") ~> route ~> check {
@@ -29,12 +29,14 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   "required-1" in {
     val route =
       parameters('color, 'backgroundColor) { (color, backgroundColor) =>
-        complete(s"The color is '$color' and the background is '$backgroundColor'")
+        complete(
+          s"The color is '$color' and the background is '$backgroundColor'")
       }
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the background is 'red'"
+      responseAs[
+        String] shouldEqual "The color is 'blue' and the background is 'red'"
     }
     Get("/?color=blue") ~> Route.seal(route) ~> check {
       status shouldEqual StatusCodes.NotFound
@@ -45,12 +47,14 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
     val route =
       parameters('color, 'backgroundColor.?) { (color, backgroundColor) =>
         val backgroundStr = backgroundColor.getOrElse("<undefined>")
-        complete(s"The color is '$color' and the background is '$backgroundStr'")
+        complete(
+          s"The color is '$color' and the background is '$backgroundStr'")
       }
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the background is 'red'"
+      responseAs[
+        String] shouldEqual "The color is 'blue' and the background is 'red'"
     }
     Get("/?color=blue") ~> route ~> check {
       responseAs[String] shouldEqual "The color is 'blue' and the background is '<undefined>'"
@@ -58,16 +62,20 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   }
   "optional-with-default" in {
     val route =
-      parameters('color, 'backgroundColor ? "white") { (color, backgroundColor) =>
-        complete(s"The color is '$color' and the background is '$backgroundColor'")
+      parameters('color, 'backgroundColor ? "white") {
+        (color, backgroundColor) =>
+          complete(
+            s"The color is '$color' and the background is '$backgroundColor'")
       }
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the background is 'red'"
+      responseAs[
+        String] shouldEqual "The color is 'blue' and the background is 'red'"
     }
     Get("/?color=blue") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the background is 'white'"
+      responseAs[
+        String] shouldEqual "The color is 'blue' and the background is 'white'"
     }
   }
   "required-value" in {
@@ -83,7 +91,8 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
 
     Get("/?color=blue&action=false") ~> Route.seal(route) ~> check {
       status shouldEqual StatusCodes.NotFound
-      responseAs[String] shouldEqual "The requested resource could not be found."
+      responseAs[
+        String] shouldEqual "The requested resource could not be found."
     }
   }
   "mapped-value" in {
@@ -94,7 +103,8 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and you have 42 of it."
+      responseAs[
+        String] shouldEqual "The color is 'blue' and you have 42 of it."
     }
 
     Get("/?color=blue&count=blub") ~> Route.seal(route) ~> check {
@@ -106,9 +116,13 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
     val route =
       parameters('color, 'city.*) { (color, cities) =>
         cities.toList match {
-          case Nil         => complete(s"The color is '$color' and there are no cities.")
-          case city :: Nil => complete(s"The color is '$color' and the city is $city.")
-          case multiple    => complete(s"The color is '$color' and the cities are ${multiple.mkString(", ")}.")
+          case Nil =>
+            complete(s"The color is '$color' and there are no cities.")
+          case city :: Nil =>
+            complete(s"The color is '$color' and the city is $city.")
+          case multiple =>
+            complete(
+              s"The color is '$color' and the cities are ${multiple.mkString(", ")}.")
         }
       }
 
@@ -122,16 +136,21 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
     }
 
     Get("/?color=blue&city=Chicago&city=Boston") ~> Route.seal(route) ~> check {
-      responseAs[String] === "The color is 'blue' and the cities are Chicago, Boston."
+      responseAs[
+        String] === "The color is 'blue' and the cities are Chicago, Boston."
     }
   }
   "mapped-repeated" in {
     val route =
       parameters('color, 'distance.as[Int].*) { (color, cities) =>
         cities.toList match {
-          case Nil             => complete(s"The color is '$color' and there are no distances.")
-          case distance :: Nil => complete(s"The color is '$color' and the distance is $distance.")
-          case multiple        => complete(s"The color is '$color' and the distances are ${multiple.mkString(", ")}.")
+          case Nil =>
+            complete(s"The color is '$color' and there are no distances.")
+          case distance :: Nil =>
+            complete(s"The color is '$color' and the distance is $distance.")
+          case multiple =>
+            complete(
+              s"The color is '$color' and the distances are ${multiple.mkString(", ")}.")
         }
       }
 
@@ -151,13 +170,16 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   "parameterMap" in {
     val route =
       parameterMap { params =>
-        def paramString(param: (String, String)): String = s"""${param._1} = '${param._2}'"""
-        complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
+        def paramString(param: (String, String)): String =
+          s"""${param._1} = '${param._2}'"""
+        complete(
+          s"The parameters are ${params.map(paramString).mkString(", ")}")
       }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
-      responseAs[String] shouldEqual "The parameters are color = 'blue', count = '42'"
+      responseAs[
+        String] shouldEqual "The parameters are color = 'blue', count = '42'"
     }
     Get("/?x=1&x=2") ~> route ~> check {
       responseAs[String] shouldEqual "The parameters are x = '2'"
@@ -166,12 +188,14 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   "parameterMultiMap" in {
     val route =
       parameterMultiMap { params =>
-        complete(s"There are parameters ${params.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
+        complete(
+          s"There are parameters ${params.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
       }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
-      responseAs[String] shouldEqual "There are parameters color -> 1, count -> 1"
+      responseAs[
+        String] shouldEqual "There are parameters color -> 1, count -> 1"
     }
     Get("/?x=23&x=42") ~> route ~> check {
       responseAs[String] shouldEqual "There are parameters x -> 2"
@@ -180,13 +204,16 @@ class ParameterDirectivesExamplesSpec extends RoutingSpec with PredefinedFromStr
   "parameterSeq" in {
     val route =
       parameterSeq { params =>
-        def paramString(param: (String, String)): String = s"""${param._1} = '${param._2}'"""
-        complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
+        def paramString(param: (String, String)): String =
+          s"""${param._1} = '${param._2}'"""
+        complete(
+          s"The parameters are ${params.map(paramString).mkString(", ")}")
       }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
-      responseAs[String] shouldEqual "The parameters are color = 'blue', count = '42'"
+      responseAs[
+        String] shouldEqual "The parameters are color = 'blue', count = '42'"
     }
     Get("/?x=1&x=2") ~> route ~> check {
       responseAs[String] shouldEqual "The parameters are x = '1', x = '2'"

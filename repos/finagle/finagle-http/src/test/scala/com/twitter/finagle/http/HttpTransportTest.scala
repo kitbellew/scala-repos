@@ -13,9 +13,11 @@ class HttpTransportTest extends FunSuite {
   test("exceptions in connection manager stay within Future context") {
     val exc = new IllegalArgumentException("boo")
     val noop = new QueueTransport(new AsyncQueue[Any], new AsyncQueue[Any])
-    val trans = new HttpTransport(noop, new ConnectionManager {
-      override def observeMessage(message: Any) = throw exc
-    })
+    val trans = new HttpTransport(
+      noop,
+      new ConnectionManager {
+        override def observeMessage(message: Any) = throw exc
+      })
 
     val f = trans.write(Unit)
     assert(f.isDefined)

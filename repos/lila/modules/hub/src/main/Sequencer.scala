@@ -9,7 +9,8 @@ import akka.actor._
 final class Sequencer(
     receiveTimeout: Option[FiniteDuration],
     executionTimeout: Option[FiniteDuration] = None,
-    logger: lila.log.Logger) extends Actor {
+    logger: lila.log.Logger)
+    extends Actor {
 
   receiveTimeout.foreach(context.setReceiveTimeout)
 
@@ -22,10 +23,11 @@ final class Sequencer(
 
   private def busy: Receive = {
 
-    case Done => dequeue match {
-      case None       => context become idle
-      case Some(work) => processThenDone(work)
-    }
+    case Done =>
+      dequeue match {
+        case None       => context become idle
+        case Some(work) => processThenDone(work)
+      }
 
     case msg => queue enqueue msg
   }
@@ -41,11 +43,13 @@ final class Sequencer(
     work match {
       case ReceiveTimeout => self ! PoisonPill
       case Sequencer.Work(run, promiseOption, timeoutOption) =>
-        val future = timeoutOption.orElse(executionTimeout).fold(run()) { timeout =>
-          run().withTimeout(
-            duration = timeout,
-            error = lila.common.LilaException(s"Sequencer timed out after $timeout")
-          )(context.system)
+        val future = timeoutOption.orElse(executionTimeout).fold(run()) {
+          timeout =>
+            run().withTimeout(
+              duration = timeout,
+              error =
+                lila.common.LilaException(s"Sequencer timed out after $timeout")
+            )(context.system)
         } andThenAnyway {
           self ! Done
         }
@@ -58,12 +62,13 @@ final class Sequencer(
 object Sequencer {
 
   case class Work(
-    run: () => Funit,
-    promise: Option[Promise[Unit]] = None,
-    timeout: Option[FiniteDuration] = None)
+      run: () => Funit,
+      promise: Option[Promise[Unit]] = None,
+      timeout: Option[FiniteDuration] = None)
 
   def work(
-    run: => Funit,
-    promise: Option[Promise[Unit]] = None,
-    timeout: Option[FiniteDuration] = None): Work = Work(() => run, promise, timeout)
+      run: => Funit,
+      promise: Option[Promise[Unit]] = None,
+      timeout: Option[FiniteDuration] = None): Work =
+    Work(() => run, promise, timeout)
 }

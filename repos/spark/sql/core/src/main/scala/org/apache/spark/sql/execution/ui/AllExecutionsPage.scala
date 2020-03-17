@@ -27,7 +27,9 @@ import org.apache.commons.lang3.StringEscapeUtils
 import org.apache.spark.internal.Logging
 import org.apache.spark.ui.{UIUtils, WebUIPage}
 
-private[ui] class AllExecutionsPage(parent: SQLTab) extends WebUIPage("") with Logging {
+private[ui] class AllExecutionsPage(parent: SQLTab)
+    extends WebUIPage("")
+    with Logging {
 
   private val listener = parent.listener
 
@@ -38,20 +40,32 @@ private[ui] class AllExecutionsPage(parent: SQLTab) extends WebUIPage("") with L
       if (listener.getRunningExecutions.nonEmpty) {
         _content ++=
           new RunningExecutionTable(
-            parent, "Running Queries", currentTime,
-            listener.getRunningExecutions.sortBy(_.submissionTime).reverse).toNodeSeq
+            parent,
+            "Running Queries",
+            currentTime,
+            listener.getRunningExecutions
+              .sortBy(_.submissionTime)
+              .reverse).toNodeSeq
       }
       if (listener.getCompletedExecutions.nonEmpty) {
         _content ++=
           new CompletedExecutionTable(
-            parent, "Completed Queries", currentTime,
-            listener.getCompletedExecutions.sortBy(_.submissionTime).reverse).toNodeSeq
+            parent,
+            "Completed Queries",
+            currentTime,
+            listener.getCompletedExecutions
+              .sortBy(_.submissionTime)
+              .reverse).toNodeSeq
       }
       if (listener.getFailedExecutions.nonEmpty) {
         _content ++=
           new FailedExecutionTable(
-            parent, "Failed Queries", currentTime,
-            listener.getFailedExecutions.sortBy(_.submissionTime).reverse).toNodeSeq
+            parent,
+            "Failed Queries",
+            currentTime,
+            listener.getFailedExecutions
+              .sortBy(_.submissionTime)
+              .reverse).toNodeSeq
       }
       _content
     }
@@ -69,17 +83,17 @@ private[ui] abstract class ExecutionTable(
     showSucceededJobs: Boolean,
     showFailedJobs: Boolean) {
 
-  protected def baseHeader: Seq[String] = Seq(
-    "ID",
-    "Description",
-    "Submitted",
-    "Duration")
+  protected def baseHeader: Seq[String] =
+    Seq("ID", "Description", "Submitted", "Duration")
 
   protected def header: Seq[String]
 
-  protected def row(currentTime: Long, executionUIData: SQLExecutionUIData): Seq[Node] = {
+  protected def row(
+      currentTime: Long,
+      executionUIData: SQLExecutionUIData): Seq[Node] = {
     val submissionTime = executionUIData.submissionTime
-    val duration = executionUIData.completionTime.getOrElse(currentTime) - submissionTime
+    val duration =
+      executionUIData.completionTime.getOrElse(currentTime) - submissionTime
 
     val runningJobs = executionUIData.runningJobs.map { jobId =>
       <a href={jobURL(jobId)}>{jobId.toString}</a><br/>
@@ -103,21 +117,27 @@ private[ui] abstract class ExecutionTable(
       <td sorttable_customkey={duration.toString}>
         {UIUtils.formatDuration(duration)}
       </td>
-      {if (showRunningJobs) {
+      {
+      if (showRunningJobs) {
         <td>
           {runningJobs}
         </td>
-      }}
-      {if (showSucceededJobs) {
+      }
+    }
+      {
+      if (showSucceededJobs) {
         <td>
           {succeededJobs}
         </td>
-      }}
-      {if (showFailedJobs) {
+      }
+    }
+      {
+      if (showFailedJobs) {
         <td>
           {failedJobs}
         </td>
-      }}
+      }
+    }
       {detailCell(executionUIData.physicalPlanDescription)}
     </tr>
   }
@@ -128,7 +148,7 @@ private[ui] abstract class ExecutionTable(
             class="expand-details">
         +details
       </span> ++
-      <div class="stage-details collapsed">
+        <div class="stage-details collapsed">
         <pre>{execution.details}</pre>
       </div>
     } else {
@@ -144,12 +164,11 @@ private[ui] abstract class ExecutionTable(
 
   private def detailCell(physicalPlan: String): Seq[Node] = {
     val isMultiline = physicalPlan.indexOf('\n') >= 0
-    val summary = StringEscapeUtils.escapeHtml4(
-      if (isMultiline) {
-        physicalPlan.substring(0, physicalPlan.indexOf('\n'))
-      } else {
-        physicalPlan
-      })
+    val summary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
+      physicalPlan.substring(0, physicalPlan.indexOf('\n'))
+    } else {
+      physicalPlan
+    })
     val details = if (isMultiline) {
       // scalastyle:off
       <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
@@ -169,8 +188,13 @@ private[ui] abstract class ExecutionTable(
   def toNodeSeq: Seq[Node] = {
     <div>
       <h4>{tableName}</h4>
-      {UIUtils.listingTable[SQLExecutionUIData](
-        header, row(currentTime, _), executionUIDatas, id = Some(tableId))}
+      {
+      UIUtils.listingTable[SQLExecutionUIData](
+        header,
+        row(currentTime, _),
+        executionUIDatas,
+        id = Some(tableId))
+    }
     </div>
   }
 
@@ -186,15 +210,15 @@ private[ui] class RunningExecutionTable(
     tableName: String,
     currentTime: Long,
     executionUIDatas: Seq[SQLExecutionUIData])
-  extends ExecutionTable(
-    parent,
-    "running-execution-table",
-    tableName,
-    currentTime,
-    executionUIDatas,
-    showRunningJobs = true,
-    showSucceededJobs = true,
-    showFailedJobs = true) {
+    extends ExecutionTable(
+      parent,
+      "running-execution-table",
+      tableName,
+      currentTime,
+      executionUIDatas,
+      showRunningJobs = true,
+      showSucceededJobs = true,
+      showFailedJobs = true) {
 
   override protected def header: Seq[String] =
     baseHeader ++ Seq("Running Jobs", "Succeeded Jobs", "Failed Jobs", "Detail")
@@ -205,17 +229,18 @@ private[ui] class CompletedExecutionTable(
     tableName: String,
     currentTime: Long,
     executionUIDatas: Seq[SQLExecutionUIData])
-  extends ExecutionTable(
-    parent,
-    "completed-execution-table",
-    tableName,
-    currentTime,
-    executionUIDatas,
-    showRunningJobs = false,
-    showSucceededJobs = true,
-    showFailedJobs = false) {
+    extends ExecutionTable(
+      parent,
+      "completed-execution-table",
+      tableName,
+      currentTime,
+      executionUIDatas,
+      showRunningJobs = false,
+      showSucceededJobs = true,
+      showFailedJobs = false) {
 
-  override protected def header: Seq[String] = baseHeader ++ Seq("Jobs", "Detail")
+  override protected def header: Seq[String] =
+    baseHeader ++ Seq("Jobs", "Detail")
 }
 
 private[ui] class FailedExecutionTable(
@@ -223,15 +248,15 @@ private[ui] class FailedExecutionTable(
     tableName: String,
     currentTime: Long,
     executionUIDatas: Seq[SQLExecutionUIData])
-  extends ExecutionTable(
-    parent,
-    "failed-execution-table",
-    tableName,
-    currentTime,
-    executionUIDatas,
-    showRunningJobs = false,
-    showSucceededJobs = true,
-    showFailedJobs = true) {
+    extends ExecutionTable(
+      parent,
+      "failed-execution-table",
+      tableName,
+      currentTime,
+      executionUIDatas,
+      showRunningJobs = false,
+      showSucceededJobs = true,
+      showFailedJobs = true) {
 
   override protected def header: Seq[String] =
     baseHeader ++ Seq("Succeeded Jobs", "Failed Jobs", "Detail")

@@ -3,8 +3,12 @@ package commands
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-import org.joda.time.format.{ DateTimeFormat, DateTimeFormatter, ISODateTimeFormat }
-import org.joda.time.{ DateTime, DateTimeZone }
+import org.joda.time.format.{
+  DateTimeFormat,
+  DateTimeFormatter,
+  ISODateTimeFormat
+}
+import org.joda.time.{DateTime, DateTimeZone}
 import org.scalatra.util.RicherString._
 
 import scala.util.control.Exception._
@@ -21,9 +25,13 @@ object JodaDateFormats extends DateParser {
 
   def parse(s: String) = Web.parse(s)
 
-  def apply(f: DateFormat*): DateParser = new DateParser {
-    def parse(s: String) = f.toList.foldLeft(None: Option[DateTime]) { (r, f) ⇒ if (!r.isDefined) f.parse(s) else r }
-  }
+  def apply(f: DateFormat*): DateParser =
+    new DateParser {
+      def parse(s: String) =
+        f.toList.foldLeft(None: Option[DateTime]) { (r, f) ⇒
+          if (!r.isDefined) f.parse(s) else r
+        }
+    }
 
   trait DateFormat extends DateParser {
     def dateTimeFormat: DateTimeFormatter
@@ -42,7 +50,8 @@ object JodaDateFormats extends DateParser {
   }
 
   object Iso8601NoMillis extends DateFormat {
-    val dateTimeFormat = ISODateTimeFormat.dateTimeNoMillis.withZone(DateTimeZone.UTC)
+    val dateTimeFormat =
+      ISODateTimeFormat.dateTimeNoMillis.withZone(DateTimeZone.UTC)
   }
 
   object HttpDate extends DateFormat {
@@ -72,4 +81,3 @@ object JodaDateFormats extends DateParser {
   }
 
 }
-

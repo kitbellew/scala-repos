@@ -16,14 +16,14 @@ import util.ScopedVar
 import ScopedVar.withScopedVars
 
 /** Encoding of symbol names for JavaScript
- *
- *  Some issues that this encoding solves:
- *  * Overloading: encode the full signature in the JS name
- *  * Same scope for fields and methods of a class
- *  * Global access to classes and modules (by their full name)
- *
- *  @author Sébastien Doeraene
- */
+  *
+  *  Some issues that this encoding solves:
+  *  * Overloading: encode the full signature in the JS name
+  *  * Same scope for fields and methods of a class
+  *  * Global access to classes and modules (by their full name)
+  *
+  *  @author Sébastien Doeraene
+  */
 trait JSEncoding extends SubComponent { self: GenJSCode =>
   import global._
   import jsAddons._
@@ -49,8 +49,8 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
 
   def withNewLocalNameScope[A](body: => A): A =
     withScopedVars(
-        usedLocalNames := mutable.Set.empty,
-        localSymbolNames := mutable.Map.empty
+      usedLocalNames := mutable.Set.empty,
+      localSymbolNames := mutable.Map.empty
     )(body)
 
   private def freshName(base: String = "x"): String = {
@@ -58,7 +58,7 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     var longName = base
     while (usedLocalNames(longName) || isReserved(longName)) {
       suffix += 1
-      longName = base+"$"+suffix
+      longName = base + "$" + suffix
     }
     usedLocalNames += longName
     mangleJSName(longName)
@@ -83,17 +83,18 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
   private lazy val allRefClasses: Set[Symbol] = {
     import definitions._
     (Set(ObjectRefClass, VolatileObjectRefClass) ++
-        refClass.values ++ volatileRefClass.values)
+      refClass.values ++ volatileRefClass.values)
   }
 
   def encodeFieldSym(sym: Symbol)(implicit pos: Position): js.Ident = {
-    require(sym.owner.isClass && sym.isTerm && !sym.isMethod && !sym.isModule,
-        "encodeFieldSym called with non-field symbol: " + sym)
+    require(
+      sym.owner.isClass && sym.isTerm && !sym.isMethod && !sym.isModule,
+      "encodeFieldSym called with non-field symbol: " + sym)
 
     val name0 = encodeMemberNameInternal(sym)
     val name =
-      if (name0.charAt(name0.length()-1) != ' ') name0
-      else name0.substring(0, name0.length()-1)
+      if (name0.charAt(name0.length() - 1) != ' ') name0
+      else name0.substring(0, name0.length() - 1)
 
     /* We have to special-case fields of Ref types (IntRef, ObjectRef, etc.)
      * because they are emitted as private by our .scala source files, but
@@ -110,11 +111,12 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     js.Ident(mangleJSName(encodedName), Some(sym.unexpandedName.decoded))
   }
 
-  def encodeMethodSym(sym: Symbol, reflProxy: Boolean = false)
-                     (implicit pos: Position): js.Ident = {
+  def encodeMethodSym(sym: Symbol, reflProxy: Boolean = false)(
+      implicit pos: Position): js.Ident = {
     val (encodedName, paramsString) = encodeMethodNameInternal(sym, reflProxy)
-    js.Ident(encodedName + paramsString,
-        Some(sym.unexpandedName.decoded + paramsString))
+    js.Ident(
+      encodedName + paramsString,
+      Some(sym.unexpandedName.decoded + paramsString))
   }
 
   def encodeMethodName(sym: Symbol, reflProxy: Boolean = false): String = {
@@ -123,33 +125,40 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
   }
 
   /** Encodes a method symbol of java.lang.String for use in RuntimeString.
-   *
-   *  This basically means adding an initial parameter of type
-   *  java.lang.String, which is the `this` parameter.
-   */
+    *
+    *  This basically means adding an initial parameter of type
+    *  java.lang.String, which is the `this` parameter.
+    */
   def encodeRTStringMethodSym(sym: Symbol)(
       implicit pos: Position): (Symbol, js.Ident) = {
-    require(sym.isMethod, "encodeMethodSym called with non-method symbol: " + sym)
+    require(
+      sym.isMethod,
+      "encodeMethodSym called with non-method symbol: " + sym)
     require(sym.owner == definitions.StringClass)
     require(!sym.isClassConstructor && !sym.isPrivate)
 
     val (encodedName, paramsString) =
       encodeMethodNameInternal(sym, inRTClass = true)
-    val methodIdent = js.Ident(encodedName + paramsString,
-        Some(sym.unexpandedName.decoded + paramsString))
+    val methodIdent = js.Ident(
+      encodedName + paramsString,
+      Some(sym.unexpandedName.decoded + paramsString))
 
     (jsDefinitions.RuntimeStringModuleClass, methodIdent)
   }
 
-  private def encodeMethodNameInternal(sym: Symbol,
+  private def encodeMethodNameInternal(
+      sym: Symbol,
       reflProxy: Boolean = false,
       inRTClass: Boolean = false): (String, String) = {
-    require(sym.isMethod, "encodeMethodSym called with non-method symbol: " + sym)
+    require(
+      sym.isMethod,
+      "encodeMethodSym called with non-method symbol: " + sym)
 
     def name = encodeMemberNameInternal(sym)
 
     def privateSuffix(owner: Symbol): String =
-      if (owner.isTraitOrInterface && !owner.isImplClass) encodeClassFullName(owner)
+      if (owner.isTraitOrInterface && !owner.isImplClass)
+        encodeClassFullName(owner)
       else owner.ancestors.count(!_.isTraitOrInterface).toString
 
     val encodedName = {
@@ -167,12 +176,13 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
   }
 
   def encodeStaticMemberSym(sym: Symbol)(implicit pos: Position): js.Ident = {
-    require(sym.isStaticMember,
-        "encodeStaticMemberSym called with non-static symbol: " + sym)
+    require(
+      sym.isStaticMember,
+      "encodeStaticMemberSym called with non-static symbol: " + sym)
     js.Ident(
-        mangleJSName(encodeMemberNameInternal(sym)) +
+      mangleJSName(encodeMemberNameInternal(sym)) +
         makeParamsString(List(internalName(sym.tpe))),
-        Some(sym.unexpandedName.decoded))
+      Some(sym.unexpandedName.decoded))
   }
 
   def encodeLocalSym(sym: Symbol)(implicit pos: Position): js.Ident = {
@@ -182,9 +192,10 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
      * Go figure ...
      * See #1440
      */
-    require(sym.isValueParameter ||
+    require(
+      sym.isValueParameter ||
         (!sym.owner.isClass && sym.isTerm && !sym.isMethod && !sym.isModule),
-        "encodeLocalSym called with non-local symbol: " + sym)
+      "encodeLocalSym called with non-local symbol: " + sym)
     js.Ident(localSymbolName(sym), Some(sym.unexpandedName.decoded))
   }
 
@@ -195,19 +206,21 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     if (sym == definitions.ObjectClass) jstpe.AnyType
     else if (isRawJSType(sym.toTypeConstructor)) jstpe.AnyType
     else {
-      assert(sym != definitions.ArrayClass,
-          "encodeClassType() cannot be called with ArrayClass")
+      assert(
+        sym != definitions.ArrayClass,
+        "encodeClassType() cannot be called with ArrayClass")
       jstpe.ClassType(encodeClassFullName(sym))
     }
   }
 
-  def encodeClassFullNameIdent(sym: Symbol)(implicit pos: Position): js.Ident = {
+  def encodeClassFullNameIdent(sym: Symbol)(
+      implicit pos: Position): js.Ident = {
     js.Ident(encodeClassFullName(sym), Some(sym.fullName))
   }
 
   def encodeClassFullName(sym: Symbol): String = {
     ir.Definitions.encodeClassName(
-        sym.fullName + (if (needsModuleClassSuffix(sym)) "$" else ""))
+      sym.fullName + (if (needsModuleClassSuffix(sym)) "$" else ""))
   }
 
   def needsModuleClassSuffix(sym: Symbol): Boolean =
@@ -218,7 +231,9 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
 
   // Encoding of method signatures
 
-  private def makeParamsString(sym: Symbol, reflProxy: Boolean,
+  private def makeParamsString(
+      sym: Symbol,
+      reflProxy: Boolean,
       inRTClass: Boolean): String = {
     val tpe = sym.tpe
 
@@ -247,18 +262,19 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
   /** Computes the internal name for a type. */
   private def internalName(tpe: Type): String = internalName(toTypeKind(tpe))
 
-  private def internalName(kind: TypeKind): String = kind match {
-    case VOID                => "V"
-    case kind: ValueTypeKind => kind.primitiveCharCode.toString()
-    case NOTHING             => ir.Definitions.RuntimeNothingClass
-    case NULL                => ir.Definitions.RuntimeNullClass
-    case REFERENCE(cls)      => encodeClassFullName(cls)
-    case ARRAY(elem)         => "A"+internalName(elem)
-  }
+  private def internalName(kind: TypeKind): String =
+    kind match {
+      case VOID                => "V"
+      case kind: ValueTypeKind => kind.primitiveCharCode.toString()
+      case NOTHING             => ir.Definitions.RuntimeNothingClass
+      case NULL                => ir.Definitions.RuntimeNullClass
+      case REFERENCE(cls)      => encodeClassFullName(cls)
+      case ARRAY(elem)         => "A" + internalName(elem)
+    }
 
   /** mangles names that are illegal in JavaScript by prepending a $
-   *  also mangles names that would collide with these mangled names
-   */
+    *  also mangles names that would collide with these mangled names
+    */
   private def mangleJSName(name: String) =
     if (js.isKeyword(name) || name(0).isDigit || name(0) == '$')
       "$" + name

@@ -11,7 +11,7 @@ object Test extends Application {
 }
 
 // This code prints 1. If we remove comment, then it will print 4.
-// Moreover following code prints 3 (which is most strange thing): 
+// Moreover following code prints 3 (which is most strange thing):
 
 object Test2 extends Application {
   class A
@@ -19,9 +19,10 @@ object Test2 extends Application {
   def foo(x: A, y: B) = print(1)
   val foo = new {
     def apply(x: B, y: A) = print(3)
-    def apply = new {
-      def apply = (x: B, z: B) => print(4)
-    }
+    def apply =
+      new {
+        def apply = (x: B, z: B) => print(4)
+      }
   }
 
   foo(new B, new B)

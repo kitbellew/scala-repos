@@ -56,7 +56,8 @@ object TooltipDemo extends JFXApp {
     alignment = Pos.Center
     alignmentInParent = Pos.TopCenter
     hgrow = Priority.Always
-    children = List(new TooltipControls(myTooltip), new PopupControlControls(myTooltip))
+    children =
+      List(new TooltipControls(myTooltip), new PopupControlControls(myTooltip))
   }
 
   val mainPane = new VBox {
@@ -77,16 +78,24 @@ object TooltipDemo extends JFXApp {
 
 }
 
-class TooltipControls(target: Tooltip) extends PropertiesNodes[Tooltip](target, "Tooltip Properties") {
+class TooltipControls(target: Tooltip)
+    extends PropertiesNodes[Tooltip](target, "Tooltip Properties") {
 
   val lblActivated = new Label {
     text <== when(target.activated) choose "Activated" otherwise "Deactivated"
   }
 
   val originalContentDisplay = target.contentDisplay()
-  val chbContentDisplay      = new ChoiceBox[jfxsc.ContentDisplay] {
-    items = ObservableBuffer(ContentDisplay.Bottom, ContentDisplay.Center, ContentDisplay.GraphicOnly, ContentDisplay.Left, ContentDisplay.Right,
-      ContentDisplay.TextOnly, ContentDisplay.Top)
+  val chbContentDisplay = new ChoiceBox[jfxsc.ContentDisplay] {
+    items = ObservableBuffer(
+      ContentDisplay.Bottom,
+      ContentDisplay.Center,
+      ContentDisplay.GraphicOnly,
+      ContentDisplay.Left,
+      ContentDisplay.Right,
+      ContentDisplay.TextOnly,
+      ContentDisplay.Top
+    )
     value <==> target.contentDisplay
   }
 
@@ -97,14 +106,25 @@ class TooltipControls(target: Tooltip) extends PropertiesNodes[Tooltip](target, 
 
   val originalTextAlignment = target.textAlignment()
   val chbTextAlignment = new ChoiceBox[jfxst.TextAlignment] {
-    items = ObservableBuffer(TextAlignment.Center, TextAlignment.Justify, TextAlignment.Left, TextAlignment.Right)
+    items = ObservableBuffer(
+      TextAlignment.Center,
+      TextAlignment.Justify,
+      TextAlignment.Left,
+      TextAlignment.Right)
     value <==> target.textAlignment
   }
 
   val originalTextOverrun = target.textOverrun()
   val chbTextOverrun = new ChoiceBox[jfxsc.OverrunStyle] {
-    items = ObservableBuffer(OverrunStyle.CenterEllipsis, OverrunStyle.CenterWordEllipsis, OverrunStyle.Clip, OverrunStyle.Ellipsis,
-      OverrunStyle.LeadingEllipsis, OverrunStyle.LeadingWordEllipsis, OverrunStyle.WordEllipsis)
+    items = ObservableBuffer(
+      OverrunStyle.CenterEllipsis,
+      OverrunStyle.CenterWordEllipsis,
+      OverrunStyle.Clip,
+      OverrunStyle.Ellipsis,
+      OverrunStyle.LeadingEllipsis,
+      OverrunStyle.LeadingWordEllipsis,
+      OverrunStyle.WordEllipsis
+    )
     value <==> target.textOverrun
   }
 
@@ -136,4 +156,4 @@ class TooltipControls(target: Tooltip) extends PropertiesNodes[Tooltip](target, 
 def font_=(v: Font) {
 def graphic_=(v: Node) {
 def graphicTextGap_=(v: Double) {
-*/
+ */

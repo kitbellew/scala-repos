@@ -1,7 +1,13 @@
 package com.twitter.finagle.http.codec
 
 import com.twitter.finagle.http.{
-  HttpTransport, Request, Version, Method, Response, Fields, Status
+  HttpTransport,
+  Request,
+  Version,
+  Method,
+  Response,
+  Fields,
+  Status
 }
 import com.twitter.finagle.transport.Transport
 import com.twitter.util.{Promise, Return, Future, Time}
@@ -30,16 +36,18 @@ class ConnectionManagerTest extends FunSuite with MockitoSugar {
 
   def makeRequest(version: Version, headers: (String, String)*) = {
     val request = Request(version, Method.Get, "/")
-    headers foreach { case (k, v) =>
-      request.headers.set(k, v)
+    headers foreach {
+      case (k, v) =>
+        request.headers.set(k, v)
     }
     request
   }
 
   def makeResponse(version: Version, headers: (String, String)*) = {
     val response = Response(version, Status.Ok)
-    headers foreach { case (k, v) =>
-      response.headers.set(k, v)
+    headers foreach {
+      case (k, v) =>
+        response.headers.set(k, v)
     }
     response
   }

@@ -26,8 +26,8 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.util.Utils
 
 /**
- * Inherits some default implementation for Java from `Ordering[Row]`
- */
+  * Inherits some default implementation for Java from `Ordering[Row]`
+  */
 class BaseOrdering extends Ordering[InternalRow] {
   def compare(a: InternalRow, b: InternalRow): Int = {
     throw new UnsupportedOperationException
@@ -35,48 +35,57 @@ class BaseOrdering extends Ordering[InternalRow] {
 }
 
 /**
- * Generates bytecode for an [[Ordering]] of rows for a given set of expressions.
- */
-object GenerateOrdering extends CodeGenerator[Seq[SortOrder], Ordering[InternalRow]] with Logging {
+  * Generates bytecode for an [[Ordering]] of rows for a given set of expressions.
+  */
+object GenerateOrdering
+    extends CodeGenerator[Seq[SortOrder], Ordering[InternalRow]]
+    with Logging {
 
   protected def canonicalize(in: Seq[SortOrder]): Seq[SortOrder] =
     in.map(ExpressionCanonicalizer.execute(_).asInstanceOf[SortOrder])
 
-  protected def bind(in: Seq[SortOrder], inputSchema: Seq[Attribute]): Seq[SortOrder] =
+  protected def bind(
+      in: Seq[SortOrder],
+      inputSchema: Seq[Attribute]): Seq[SortOrder] =
     in.map(BindReferences.bindReference(_, inputSchema))
 
   /**
-   * Creates a code gen ordering for sorting this schema, in ascending order.
-   */
+    * Creates a code gen ordering for sorting this schema, in ascending order.
+    */
   def create(schema: StructType): BaseOrdering = {
-    create(schema.zipWithIndex.map { case (field, ordinal) =>
-      SortOrder(BoundReference(ordinal, field.dataType, nullable = true), Ascending)
+    create(schema.zipWithIndex.map {
+      case (field, ordinal) =>
+        SortOrder(
+          BoundReference(ordinal, field.dataType, nullable = true),
+          Ascending)
     })
   }
 
   /**
-   * Generates the code for comparing a struct type according to its natural ordering
-   * (i.e. ascending order by field 1, then field 2, ..., then field n.
-   */
+    * Generates the code for comparing a struct type according to its natural ordering
+    * (i.e. ascending order by field 1, then field 2, ..., then field n.
+    */
   def genComparisons(ctx: CodegenContext, schema: StructType): String = {
     val ordering = schema.fields.map(_.dataType).zipWithIndex.map {
-      case(dt, index) => new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
+      case (dt, index) =>
+        new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
     }
     genComparisons(ctx, ordering)
   }
 
   /**
-   * Generates the code for ordering based on the given order.
-   */
+    * Generates the code for ordering based on the given order.
+    */
   def genComparisons(ctx: CodegenContext, ordering: Seq[SortOrder]): String = {
-    val comparisons = ordering.map { order =>
-      val eval = order.child.gen(ctx)
-      val asc = order.direction == Ascending
-      val isNullA = ctx.freshName("isNullA")
-      val primitiveA = ctx.freshName("primitiveA")
-      val isNullB = ctx.freshName("isNullB")
-      val primitiveB = ctx.freshName("primitiveB")
-      s"""
+    val comparisons = ordering
+      .map { order =>
+        val eval = order.child.gen(ctx)
+        val asc = order.direction == Ascending
+        val isNullA = ctx.freshName("isNullA")
+        val primitiveA = ctx.freshName("primitiveA")
+        val isNullB = ctx.freshName("isNullB")
+        val primitiveB = ctx.freshName("primitiveB")
+        s"""
           ${ctx.INPUT_ROW} = a;
           boolean $isNullA;
           ${ctx.javaType(order.child.dataType)} $primitiveA;
@@ -100,13 +109,17 @@ object GenerateOrdering extends CodeGenerator[Seq[SortOrder], Ordering[InternalR
           } else if ($isNullB) {
             return ${if (order.direction == Ascending) "1" else "-1"};
           } else {
-            int comp = ${ctx.genComp(order.child.dataType, primitiveA, primitiveB)};
+            int comp = ${ctx.genComp(
+          order.child.dataType,
+          primitiveA,
+          primitiveB)};
             if (comp != 0) {
               return ${if (asc) "comp" else "-comp"};
             }
           }
       """
-    }.mkString("\n")
+      }
+      .mkString("\n")
     comparisons
   }
 
@@ -138,14 +151,18 @@ object GenerateOrdering extends CodeGenerator[Seq[SortOrder], Ordering[InternalR
 
     logDebug(s"Generated Ordering: ${CodeFormatter.format(code)}")
 
-    CodeGenerator.compile(code).generate(ctx.references.toArray).asInstanceOf[BaseOrdering]
+    CodeGenerator
+      .compile(code)
+      .generate(ctx.references.toArray)
+      .asInstanceOf[BaseOrdering]
   }
 }
 
 /**
- * A lazily generated row ordering comparator.
- */
-class LazilyGeneratedOrdering(val ordering: Seq[SortOrder]) extends Ordering[InternalRow] {
+  * A lazily generated row ordering comparator.
+  */
+class LazilyGeneratedOrdering(val ordering: Seq[SortOrder])
+    extends Ordering[InternalRow] {
 
   def this(ordering: Seq[SortOrder], inputSchema: Seq[Attribute]) =
     this(ordering.map(BindReferences.bindReference(_, inputSchema)))
@@ -157,21 +174,24 @@ class LazilyGeneratedOrdering(val ordering: Seq[SortOrder]) extends Ordering[Int
     generatedOrdering.compare(a, b)
   }
 
-  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
-    in.defaultReadObject()
-    generatedOrdering = GenerateOrdering.generate(ordering)
-  }
+  private def readObject(in: ObjectInputStream): Unit =
+    Utils.tryOrIOException {
+      in.defaultReadObject()
+      generatedOrdering = GenerateOrdering.generate(ordering)
+    }
 }
 
 object LazilyGeneratedOrdering {
 
   /**
-   * Creates a [[LazilyGeneratedOrdering]] for the given schema, in natural ascending order.
-   */
+    * Creates a [[LazilyGeneratedOrdering]] for the given schema, in natural ascending order.
+    */
   def forSchema(schema: StructType): LazilyGeneratedOrdering = {
     new LazilyGeneratedOrdering(schema.zipWithIndex.map {
       case (field, ordinal) =>
-        SortOrder(BoundReference(ordinal, field.dataType, nullable = true), Ascending)
+        SortOrder(
+          BoundReference(ordinal, field.dataType, nullable = true),
+          Ascending)
     })
   }
 }

@@ -35,13 +35,18 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
   private val DEFAULT_METRICS_CONF_FILENAME = "metrics.properties"
 
   private[metrics] val properties = new Properties()
-  private[metrics] var propertyCategories: mutable.HashMap[String, Properties] = null
+  private[metrics] var propertyCategories: mutable.HashMap[String, Properties] =
+    null
 
   private def setDefaultProperties(prop: Properties) {
-    prop.setProperty("*.sink.servlet.class", "org.apache.spark.metrics.sink.MetricsServlet")
+    prop.setProperty(
+      "*.sink.servlet.class",
+      "org.apache.spark.metrics.sink.MetricsServlet")
     prop.setProperty("*.sink.servlet.path", "/metrics/json")
     prop.setProperty("master.sink.servlet.path", "/metrics/master/json")
-    prop.setProperty("applications.sink.servlet.path", "/metrics/applications/json")
+    prop.setProperty(
+      "applications.sink.servlet.path",
+      "/metrics/applications/json")
   }
 
   def initialize() {
@@ -61,19 +66,23 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
     propertyCategories = subProperties(properties, INSTANCE_REGEX)
     if (propertyCategories.contains(DEFAULT_PREFIX)) {
       val defaultProperty = propertyCategories(DEFAULT_PREFIX).asScala
-      for((inst, prop) <- propertyCategories if (inst != DEFAULT_PREFIX);
-          (k, v) <- defaultProperty if (prop.get(k) == null)) {
+      for ((inst, prop) <- propertyCategories if (inst != DEFAULT_PREFIX);
+           (k, v) <- defaultProperty if (prop.get(k) == null)) {
         prop.put(k, v)
       }
     }
   }
 
-  def subProperties(prop: Properties, regex: Regex): mutable.HashMap[String, Properties] = {
+  def subProperties(
+      prop: Properties,
+      regex: Regex): mutable.HashMap[String, Properties] = {
     val subProperties = new mutable.HashMap[String, Properties]
     prop.asScala.foreach { kv =>
       if (regex.findPrefixOf(kv._1.toString).isDefined) {
         val regex(prefix, suffix) = kv._1.toString
-        subProperties.getOrElseUpdate(prefix, new Properties).setProperty(suffix, kv._2.toString)
+        subProperties
+          .getOrElseUpdate(prefix, new Properties)
+          .setProperty(suffix, kv._2.toString)
       }
     }
     subProperties
@@ -82,20 +91,22 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
   def getInstance(inst: String): Properties = {
     propertyCategories.get(inst) match {
       case Some(s) => s
-      case None => propertyCategories.getOrElse(DEFAULT_PREFIX, new Properties)
+      case None    => propertyCategories.getOrElse(DEFAULT_PREFIX, new Properties)
     }
   }
 
   /**
-   * Loads configuration from a config file. If no config file is provided, try to get file
-   * in class path.
-   */
+    * Loads configuration from a config file. If no config file is provided, try to get file
+    * in class path.
+    */
   private[this] def loadPropertiesFromFile(path: Option[String]): Unit = {
     var is: InputStream = null
     try {
       is = path match {
         case Some(f) => new FileInputStream(f)
-        case None => Utils.getSparkClassLoader.getResourceAsStream(DEFAULT_METRICS_CONF_FILENAME)
+        case None =>
+          Utils.getSparkClassLoader.getResourceAsStream(
+            DEFAULT_METRICS_CONF_FILENAME)
       }
 
       if (is != null) {

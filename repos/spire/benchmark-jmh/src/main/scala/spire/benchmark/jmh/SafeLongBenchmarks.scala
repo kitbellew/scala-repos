@@ -9,7 +9,8 @@ import spire.math.SafeLong
 import SafeLongUtil._
 
 object SafeLongUtil {
-  private def isBig(x: SafeLong) = x.getClass.getSimpleName.endsWith("BigInteger")
+  private def isBig(x: SafeLong) =
+    x.getClass.getSimpleName.endsWith("BigInteger")
 
   def classify(a: SafeLong): String =
     if (isBig(a)) "b" else "l"
@@ -27,7 +28,9 @@ object SafeLongUtil {
     }
   }
 
-  def check(cases: Map[String, (SafeLong, SafeLong)], op: (SafeLong, SafeLong) ⇒ SafeLong): Unit = {
+  def check(
+      cases: Map[String, (SafeLong, SafeLong)],
+      op: (SafeLong, SafeLong) ⇒ SafeLong): Unit = {
     for ((kind, (a, b)) ← cases) {
       val c = classify(a, b, op(a, b))
       require(kind.startsWith(c), s"Unexpected class $c for case $kind")
@@ -92,7 +95,16 @@ class SafeLongAddSubtractBenchmark {
   check(pairs, _ + _)
   check(pairs, _ - -_)
 
-  @Param(Array("l_l_l", "l_l_b", "l_b_l", "l_b_b", "b_l_l", "b_l_b", "b_b_l", "b_b_b"))
+  @Param(
+    Array(
+      "l_l_l",
+      "l_l_b",
+      "l_b_l",
+      "l_b_b",
+      "b_l_l",
+      "b_l_b",
+      "b_b_l",
+      "b_b_b"))
   var kind: String = ""
   var a: SafeLong = 0L
   var b: SafeLong = 0L
@@ -100,7 +112,6 @@ class SafeLongAddSubtractBenchmark {
 
   @Setup
   def setup(): Unit = {
-
 
     val (a0, b0) = pairs(kind)
     a = a0
@@ -136,7 +147,6 @@ class SafeLongCompareBenchmark {
 
   @Setup
   def setup(): Unit = {
-
 
     val (a0, b0) = pairs(kind)
     a = a0

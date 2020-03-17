@@ -34,7 +34,8 @@ object Hashing {
 
   implicit def default[T] = new Default[T]
 
-  def fromFunction[T](f: T => Int) = new Hashing[T] {
-    def hash(x: T) = f(x)
-  }
+  def fromFunction[T](f: T => Int) =
+    new Hashing[T] {
+      def hash(x: T) = f(x)
+    }
 }

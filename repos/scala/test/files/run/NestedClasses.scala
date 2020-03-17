@@ -5,12 +5,12 @@
 // The following set of classes tests nasty references to "outer"
 // values.
 
-class A(pa : Int) {
+class A(pa: Int) {
   def a1 = pa;
-  class B(pb : Int) {
-    def b1 = pa+pb+a1;
-    class C(pc : Int) extends A(b1) {
-      def c1 = pc+pb+pa
+  class B(pb: Int) {
+    def b1 = pa + pb + a1;
+    class C(pc: Int) extends A(b1) {
+      def c1 = pc + pb + pa
     }
     val c1 = new C(13)
   }
@@ -20,11 +20,11 @@ trait M {
   def m1 = 1
 }
 
-class A1(x : Int) extends A(x) with M {
+class A1(x: Int) extends A(x) with M {
   class D extends B(14) {
     val c2 = new C(15);
     class E extends C(16) {
-      def e1 = c1+b1+a1+m1;
+      def e1 = c1 + b1 + a1 + m1;
       def e2 = new D();
     }
   }
@@ -64,7 +64,7 @@ class AAA1 extends AAA {
   class BBB3 extends BBB {
     override def f = super.f;
   }
-  class BBB4 extends BBB { }
+  class BBB4 extends BBB {}
 }
 
 object Test {

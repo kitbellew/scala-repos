@@ -3,6 +3,7 @@ import scala.tools.reflect.Eval
 
 object Test extends App {
   reify {
+
     /** A mutable property whose getter and setter may be customized. */
     case class Property[T](init: T) {
       private var value: T = init
@@ -34,10 +35,10 @@ object Test extends App {
       val lastname = Property("<noname>")
 
       /** Scala provides syntactic sugar for calling 'apply'. Simply
-       *  adding a list of arguments between parenthesis (in this case,
-       *  an empty list) is translated to a call to 'apply' with those
-       *  arguments.
-       */
+        *  adding a list of arguments between parenthesis (in this case,
+        *  an empty list) is translated to a call to 'apply' with those
+        *  arguments.
+        */
       override def toString() = firstname() + " " + lastname()
     }
 

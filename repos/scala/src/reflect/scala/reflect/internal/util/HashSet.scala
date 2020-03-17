@@ -8,12 +8,17 @@ package reflect
 package internal.util
 
 object HashSet {
-  def apply[T >: Null <: AnyRef](initialCapacity: Int): HashSet[T] = this("No Label", initialCapacity)
-  def apply[T >: Null <: AnyRef](label: String, initialCapacity: Int): HashSet[T] =
+  def apply[T >: Null <: AnyRef](initialCapacity: Int): HashSet[T] =
+    this("No Label", initialCapacity)
+  def apply[T >: Null <: AnyRef](
+      label: String,
+      initialCapacity: Int): HashSet[T] =
     new HashSet[T](label, initialCapacity)
 }
 
-class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int) extends Set[T] with scala.collection.generic.Clearable {
+class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)
+    extends Set[T]
+    with scala.collection.generic.Clearable {
   private var used = 0
   private var table = new Array[AnyRef](initialCapacity)
   private def index(x: Int): Int = math.abs(x % table.length)
@@ -66,16 +71,17 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int) exte
     xs foreach addEntry
   }
 
-  def iterator = new Iterator[T] {
-    private var i = 0
-    def hasNext: Boolean = {
-      while (i < table.length && (table(i) eq null)) i += 1
-      i < table.length
+  def iterator =
+    new Iterator[T] {
+      private var i = 0
+      def hasNext: Boolean = {
+        while (i < table.length && (table(i) eq null)) i += 1
+        i < table.length
+      }
+      def next(): T =
+        if (hasNext) { i += 1; table(i - 1).asInstanceOf[T] }
+        else null
     }
-    def next(): T =
-      if (hasNext) { i += 1; table(i - 1).asInstanceOf[T] }
-      else null
-  }
 
   private def addOldEntry(x: T) {
     var h = index(x.##)
@@ -102,5 +108,6 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int) exte
       i += 1
     }
   }
-  override def toString() = "HashSet %s(%d / %d)".format(label, used, table.length)
+  override def toString() =
+    "HashSet %s(%d / %d)".format(label, used, table.length)
 }

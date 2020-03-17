@@ -1,14 +1,13 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.persistence
 
 import akka.actor._
-import akka.pattern.{ Backoff, BackoffSupervisor }
+import akka.pattern.{Backoff, BackoffSupervisor}
 import akka.persistence._
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{ Source, Sink, Flow }
+import akka.stream.scaladsl.{Source, Sink, Flow}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -51,7 +50,7 @@ object PersistenceDocSpec {
         case RecoveryCompleted =>
         // perform init after recovery, before any other messages
         //...
-        case evt               => //...
+        case evt => //...
       }
 
       override def receiveCommand: Receive = {
@@ -71,7 +70,9 @@ object PersistenceDocSpec {
       def recoveryFinished: Boolean
       //#recovery-status
     }
-    class MyPersistentActor1 extends PersistentActor with PersistentActorMethods {
+    class MyPersistentActor1
+        extends PersistentActor
+        with PersistentActorMethods {
       //#persistence-id-override
       override def persistenceId = "my-stable-persistence-id"
       //#persistence-id-override
@@ -105,7 +106,7 @@ object PersistenceDocSpec {
 
   object AtLeastOnce {
     //#at-least-once-example
-    import akka.actor.{ Actor, ActorSelection }
+    import akka.actor.{Actor, ActorSelection}
     import akka.persistence.AtLeastOnceDelivery
 
     case class Msg(deliveryId: Long, s: String)
@@ -116,25 +117,28 @@ object PersistenceDocSpec {
     case class MsgConfirmed(deliveryId: Long) extends Evt
 
     class MyPersistentActor(destination: ActorSelection)
-      extends PersistentActor with AtLeastOnceDelivery {
+        extends PersistentActor
+        with AtLeastOnceDelivery {
 
       override def persistenceId: String = "persistence-id"
 
       override def receiveCommand: Receive = {
-        case s: String           => persist(MsgSent(s))(updateState)
-        case Confirm(deliveryId) => persist(MsgConfirmed(deliveryId))(updateState)
+        case s: String => persist(MsgSent(s))(updateState)
+        case Confirm(deliveryId) =>
+          persist(MsgConfirmed(deliveryId))(updateState)
       }
 
       override def receiveRecover: Receive = {
         case evt: Evt => updateState(evt)
       }
 
-      def updateState(evt: Evt): Unit = evt match {
-        case MsgSent(s) =>
-          deliver(destination)(deliveryId => Msg(deliveryId, s))
+      def updateState(evt: Evt): Unit =
+        evt match {
+          case MsgSent(s) =>
+            deliver(destination)(deliveryId => Msg(deliveryId, s))
 
-        case MsgConfirmed(deliveryId) => confirmDelivery(deliveryId)
-      }
+          case MsgConfirmed(deliveryId) => confirmDelivery(deliveryId)
+        }
     }
 
     class MyDestination extends Actor {
@@ -171,9 +175,10 @@ object PersistenceDocSpec {
       override def persistenceId = "my-stable-persistence-id"
 
       //#snapshot-criteria
-      override def recovery = Recovery(fromSnapshot = SnapshotSelectionCriteria(
-        maxSequenceNr = 457L,
-        maxTimestamp = System.currentTimeMillis))
+      override def recovery =
+        Recovery(fromSnapshot = SnapshotSelectionCriteria(
+          maxSequenceNr = 457L,
+          maxTimestamp = System.currentTimeMillis))
       //#snapshot-criteria
 
       //#snapshot-offer
@@ -281,16 +286,12 @@ object PersistenceDocSpec {
 
           persist(s"$c-1-outer") { outer1 =>
             sender() ! outer1
-            persist(s"$c-1-inner") { inner1 =>
-              sender() ! inner1
-            }
+            persist(s"$c-1-inner") { inner1 => sender() ! inner1 }
           }
 
           persist(s"$c-2-outer") { outer2 =>
             sender() ! outer2
-            persist(s"$c-2-inner") { inner2 =>
-              sender() ! inner2
-            }
+            persist(s"$c-2-inner") { inner2 => sender() ! inner2 }
           }
       }
       //#nested-persist-persist
@@ -429,7 +430,7 @@ object PersistenceDocSpec {
       def receive: Receive = {
         case payload if isPersistent =>
         // handle message from journal...
-        case payload                 =>
+        case payload =>
         // handle message from user-land...
       }
     }

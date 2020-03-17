@@ -18,10 +18,11 @@ class ClientIdEndToEndTest extends FunSuite with ThriftTest {
     def add_one(a: Int, b: Int) = Future.Void
     def multiply(a: Int, b: Int) = Future { a * b }
     // Re-purpose `complex_return` to return the serversize ClientId.
-    def complex_return(someString: String) = Future {
-      val clientIdStr = ClientId.current map { _.name } getOrElse("")
-      new SomeStruct(123, clientIdStr)
-    }
+    def complex_return(someString: String) =
+      Future {
+        val clientIdStr = ClientId.current map { _.name } getOrElse ("")
+        new SomeStruct(123, clientIdStr)
+      }
     def someway() = Future.Void
     def show_me_your_dtab() = Future.value("")
     def show_me_your_dtab_size() = Future.value(0)
@@ -32,10 +33,11 @@ class ClientIdEndToEndTest extends FunSuite with ThriftTest {
 
   val clientId = "test.devel"
 
-  testThrift("end-to-end ClientId propagation", Some(ClientId(clientId))) { (client, _) =>
-    // arg_two repurposed to be the serverside ClientId.
-    val result = Await.result(client.complex_return("")).arg_two
-    assert(result == clientId)
+  testThrift("end-to-end ClientId propagation", Some(ClientId(clientId))) {
+    (client, _) =>
+      // arg_two repurposed to be the serverside ClientId.
+      val result = Await.result(client.complex_return("")).arg_two
+      assert(result == clientId)
   }
 
   testThrift("end-to-end empty ClientId propagation", None) { (client, _) =>

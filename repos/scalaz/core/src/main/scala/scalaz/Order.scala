@@ -4,15 +4,15 @@ package scalaz
 import scala.math.{Ordering => SOrdering}
 
 /**
- * Safer version of [[scala.math.Ordering]].
- */
+  * Safer version of [[scala.math.Ordering]].
+  */
 ////
 trait Order[F] extends Equal[F] { self =>
   ////
   def apply(x: F, y: F): Ordering = order(x, y)
 
-  def order(x: F, y: F): Ordering 
-  
+  def order(x: F, y: F): Ordering
+
   def equal(x: F, y: F): Boolean = order(x, y) == Ordering.EQ
 
   // derived functions
@@ -30,23 +30,26 @@ trait Order[F] extends Equal[F] { self =>
 
   def sort(x: F, y: F) = if (lessThanOrEqual(x, y)) (x, y) else (y, x)
 
-  override def contramap[B](f: B => F): Order[B] = new Order[B] {
-    def order(b1: B, b2: B): Ordering = self.order(f(b1), f(b2))
-    override def equal(b1: B, b2: B) = self.equal(f(b1), f(b2))
-  }
+  override def contramap[B](f: B => F): Order[B] =
+    new Order[B] {
+      def order(b1: B, b2: B): Ordering = self.order(f(b1), f(b2))
+      override def equal(b1: B, b2: B) = self.equal(f(b1), f(b2))
+    }
 
   /** @note `Order.fromScalaOrdering(toScalaOrdering).order(x, y)`
             = `this.order(x, y)` */
-  def toScalaOrdering: SOrdering[F] = new SOrdering[F] {
-    def compare(x: F, y: F) = self.order(x, y).toInt
-  }
+  def toScalaOrdering: SOrdering[F] =
+    new SOrdering[F] {
+      def compare(x: F, y: F) = self.order(x, y).toInt
+    }
 
-  def reverseOrder: Order[F] = new Order[F] {
-    def order(x: F, y: F): Ordering = self.order(y, x)
-    override def equal(x: F, y: F) = self.equal(x, y)
-    override def equalIsNatural = self.equalIsNatural
-    override def reverseOrder = self
-  }
+  def reverseOrder: Order[F] =
+    new Order[F] {
+      def order(x: F, y: F): Ordering = self.order(y, x)
+      override def equal(x: F, y: F) = self.equal(x, y)
+      override def equalIsNatural = self.equalIsNatural
+      override def reverseOrder = self
+    }
 
   trait OrderLaw extends EqualLaw {
     import std.boolean.conditional
@@ -83,36 +86,43 @@ object Order {
     override def conquer[A] = order((_, _) => Ordering.EQ)
 
     override def divide[A, B, C](fa: Order[A], fb: Order[B])(f: C => (A, B)) =
-      order[C]{ (c1, c2) =>
+      order[C] { (c1, c2) =>
         val (a1, b1) = f(c1)
         val (a2, b2) = f(c2)
         fa.order(a1, a2) match {
           case Ordering.EQ => fb.order(b1, b2)
-          case o => o
+          case o           => o
         }
       }
   }
 
-  def fromScalaOrdering[A](implicit O: SOrdering[A]): Order[A] = new Order[A] {
-    def order(a1: A, a2: A) = std.anyVal.intInstance.order(O.compare(a1, a2), 0)
-  }
+  def fromScalaOrdering[A](implicit O: SOrdering[A]): Order[A] =
+    new Order[A] {
+      def order(a1: A, a2: A) =
+        std.anyVal.intInstance.order(O.compare(a1, a2), 0)
+    }
 
   /** Alias for `Order[B] contramap f`, with inferred `B`. */
   def orderBy[A, B: Order](f: A => B): Order[A] = Order[B] contramap f
 
   /** Derive from an `order` function. */
-  def order[A](f: (A, A) => Ordering): Order[A] = new Order[A] {
-    def order(a1: A, a2: A) = f(a1, a2)
-  }
+  def order[A](f: (A, A) => Ordering): Order[A] =
+    new Order[A] {
+      def order(a1: A, a2: A) = f(a1, a2)
+    }
 
-  implicit def orderMonoid[A] = new Monoid[Order[A]] {
-    def zero: Order[A] = new Order[A] {
-      def order(x: A, y: A): Ordering = Monoid[Ordering].zero
+  implicit def orderMonoid[A] =
+    new Monoid[Order[A]] {
+      def zero: Order[A] =
+        new Order[A] {
+          def order(x: A, y: A): Ordering = Monoid[Ordering].zero
+        }
+      def append(f1: Order[A], f2: => Order[A]): Order[A] =
+        new Order[A] {
+          def order(x: A, y: A): Ordering =
+            Semigroup[Ordering].append(f1.order(x, y), f2.order(x, y))
+        }
     }
-    def append(f1: Order[A], f2: => Order[A]): Order[A] = new Order[A] {
-      def order(x: A, y: A): Ordering = Semigroup[Ordering].append(f1.order(x, y), f2.order(x, y))
-    }
-  }
 
   ////
 }

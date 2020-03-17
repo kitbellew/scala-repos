@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.sem
 
 import scala.collection.immutable.Traversable
@@ -34,24 +33,27 @@ final class Semantics private (
   def withProductionMode(productionMode: Boolean): Semantics =
     copy(productionMode = productionMode)
 
-  def withRuntimeClassName(runtimeClassName: RuntimeClassNameFunction): Semantics =
+  def withRuntimeClassName(
+      runtimeClassName: RuntimeClassNameFunction): Semantics =
     copy(runtimeClassName = runtimeClassName)
 
   def optimized: Semantics = {
-    copy(asInstanceOfs = this.asInstanceOfs.optimized,
-        moduleInit = this.moduleInit.optimized,
-        productionMode = true)
+    copy(
+      asInstanceOfs = this.asInstanceOfs.optimized,
+      moduleInit = this.moduleInit.optimized,
+      productionMode = true)
   }
 
-  override def equals(that: Any): Boolean = that match {
-    case that: Semantics =>
-      this.asInstanceOfs  == that.asInstanceOfs &&
-      this.moduleInit     == that.moduleInit &&
-      this.strictFloats   == that.strictFloats &&
-      this.productionMode == that.productionMode
-    case _ =>
-      false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: Semantics =>
+        this.asInstanceOfs == that.asInstanceOfs &&
+          this.moduleInit == that.moduleInit &&
+          this.strictFloats == that.strictFloats &&
+          this.productionMode == that.productionMode
+      case _ =>
+        false
+    }
 
   override def hashCode(): Int = {
     import scala.util.hashing.MurmurHash3._
@@ -73,20 +75,21 @@ final class Semantics private (
   }
 
   /** Checks whether the given semantics setting is Java compliant */
-  def isCompliant(name: String): Boolean = name match {
-    case "asInstanceOfs" => asInstanceOfs == CheckedBehavior.Compliant
-    case "moduleInit"    => moduleInit == CheckedBehavior.Compliant
-    case "strictFloats"  => strictFloats
-    case _               => false
-  }
+  def isCompliant(name: String): Boolean =
+    name match {
+      case "asInstanceOfs" => asInstanceOfs == CheckedBehavior.Compliant
+      case "moduleInit"    => moduleInit == CheckedBehavior.Compliant
+      case "strictFloats"  => strictFloats
+      case _               => false
+    }
 
   /** Retrieve a list of semantics which are set to compliant */
   def compliants: List[String] = {
     def cl(name: String, cond: Boolean) = if (cond) List(name) else Nil
 
     cl("asInstanceOfs", asInstanceOfs == CheckedBehavior.Compliant) ++
-    cl("moduleInit",    moduleInit == CheckedBehavior.Compliant) ++
-    cl("strictFloats",  strictFloats)
+      cl("moduleInit", moduleInit == CheckedBehavior.Compliant) ++
+      cl("strictFloats", strictFloats)
   }
 
   private def copy(
@@ -94,13 +97,14 @@ final class Semantics private (
       moduleInit: CheckedBehavior = this.moduleInit,
       strictFloats: Boolean = this.strictFloats,
       productionMode: Boolean = this.productionMode,
-      runtimeClassName: RuntimeClassNameFunction = this.runtimeClassName): Semantics = {
+      runtimeClassName: RuntimeClassNameFunction = this.runtimeClassName)
+      : Semantics = {
     new Semantics(
-        asInstanceOfs    = asInstanceOfs,
-        moduleInit       = moduleInit,
-        strictFloats     = strictFloats,
-        productionMode   = productionMode,
-        runtimeClassName = runtimeClassName)
+      asInstanceOfs = asInstanceOfs,
+      moduleInit = moduleInit,
+      strictFloats = strictFloats,
+      productionMode = productionMode,
+      runtimeClassName = runtimeClassName)
   }
 }
 
@@ -111,11 +115,11 @@ object Semantics {
   type RuntimeClassNameFunction = LinkedClass => String
 
   val Defaults: Semantics = new Semantics(
-      asInstanceOfs    = CheckedBehavior.Fatal,
-      moduleInit       = CheckedBehavior.Unchecked,
-      strictFloats     = false,
-      productionMode   = false,
-      runtimeClassName = _.fullName)
+    asInstanceOfs = CheckedBehavior.Fatal,
+    moduleInit = CheckedBehavior.Unchecked,
+    strictFloats = false,
+    productionMode = false,
+    runtimeClassName = _.fullName)
 
   def compliantTo(semantics: Traversable[String]): Semantics = {
     import Defaults._
@@ -127,10 +131,10 @@ object Semantics {
       if (semsSet.contains(name)) compliant else default
 
     new Semantics(
-        asInstanceOfs    = sw("asInstanceOfs", Compliant, asInstanceOfs),
-        moduleInit       = sw("moduleInit",    Compliant, moduleInit),
-        strictFloats     = sw("strictFloats",  true,      strictFloats),
-        productionMode   = false,
-        runtimeClassName = Defaults.runtimeClassName)
+      asInstanceOfs = sw("asInstanceOfs", Compliant, asInstanceOfs),
+      moduleInit = sw("moduleInit", Compliant, moduleInit),
+      strictFloats = sw("strictFloats", true, strictFloats),
+      productionMode = false,
+      runtimeClassName = Defaults.runtimeClassName)
   }
 }

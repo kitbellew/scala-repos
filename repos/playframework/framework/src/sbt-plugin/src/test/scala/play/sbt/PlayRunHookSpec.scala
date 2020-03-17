@@ -13,7 +13,8 @@ object PlayRunHookSpec extends Specification {
 
     "provide implicit `run` which passes every hook to a provided function" in {
       val hooks = Seq.fill(3)(new PlayRunHook {})
-      val executedHooks: HashMap[play.runsupport.RunHook, Boolean] = HashMap.empty
+      val executedHooks: HashMap[play.runsupport.RunHook, Boolean] =
+        HashMap.empty
 
       hooks.run(hook => executedHooks += ((hook, true)))
 
@@ -21,7 +22,8 @@ object PlayRunHookSpec extends Specification {
     }
 
     "re-throw an exception on single hook failure" in {
-      val executedHooks: HashMap[play.runsupport.RunHook, Boolean] = HashMap.empty
+      val executedHooks: HashMap[play.runsupport.RunHook, Boolean] =
+        HashMap.empty
       class HookMockException extends Throwable
 
       val hooks = Seq.fill(3)(new PlayRunHook {
@@ -36,13 +38,15 @@ object PlayRunHookSpec extends Specification {
     }
 
     "combine several thrown exceptions into a RunHookCompositeThrowable" in {
-      val executedHooks: HashMap[play.runsupport.RunHook, Boolean] = HashMap.empty
+      val executedHooks: HashMap[play.runsupport.RunHook, Boolean] =
+        HashMap.empty
       class HookFirstMockException extends Throwable
       class HookSecondMockException extends Throwable
 
-      def createDummyHooks = new PlayRunHook {
-        executedHooks += ((this, true))
-      }
+      def createDummyHooks =
+        new PlayRunHook {
+          executedHooks += ((this, true))
+        }
 
       val dummyHooks = Seq.fill(3)(createDummyHooks)
 
@@ -56,7 +60,8 @@ object PlayRunHookSpec extends Specification {
 
       val hooks = firstFailure +: dummyHooks :+ lastFailure
 
-      hooks.run(_.beforeStarted()) must throwA[play.runsupport.RunHookCompositeThrowable].like {
+      hooks.run(_.beforeStarted()) must throwA[
+        play.runsupport.RunHookCompositeThrowable].like {
         case e: Throwable =>
           e.getMessage must contain("HookFirstMockException")
           e.getMessage must contain("HookSecondMockException")

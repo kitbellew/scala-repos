@@ -13,16 +13,18 @@ final class Env(config: Config, db: lila.db.Env) {
 
   lazy val api = new Api
 
-  private lazy val fetcher = new Fetch(gitUrl = GitUrl, markdownPath = MarkdownPath)(pageColl)
+  private lazy val fetcher =
+    new Fetch(gitUrl = GitUrl, markdownPath = MarkdownPath)(pageColl)
 
   private[wiki] lazy val pageColl = db(CollectionPage)
 
-  def cli = new lila.common.Cli {
-    def process = {
-      case "wiki" :: "fetch" :: Nil =>
-        fetcher.apply inject "Fetched wiki from github"
+  def cli =
+    new lila.common.Cli {
+      def process = {
+        case "wiki" :: "fetch" :: Nil =>
+          fetcher.apply inject "Fetched wiki from github"
+      }
     }
-  }
 }
 
 object Env {

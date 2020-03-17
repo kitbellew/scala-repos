@@ -12,7 +12,8 @@ object ScalaAsyncSpec extends PlaySpecification {
 
   "scala async" should {
     "allow returning a future" in new WithApplication() {
-      contentAsString(ScalaAsyncSamples.futureResult) must startWith("PI value computed: 3.14")
+      contentAsString(ScalaAsyncSamples.futureResult) must startWith(
+        "PI value computed: 3.14")
     }
 
     "allow dispatching an intensive computation" in new WithApplication() {
@@ -20,11 +21,14 @@ object ScalaAsyncSpec extends PlaySpecification {
     }
 
     "allow returning an async result" in new WithApplication() {
-      contentAsString(ScalaAsyncSamples.asyncResult()(FakeRequest())) must_== "Got result: 10"
+      contentAsString(
+        ScalaAsyncSamples.asyncResult()(FakeRequest())) must_== "Got result: 10"
     }
 
     "allow timing out a future" in new WithApplication() {
-      status(ScalaAsyncSamples.timeout(1200)(FakeRequest())) must_== INTERNAL_SERVER_ERROR
+      status(
+        ScalaAsyncSamples.timeout(1200)(
+          FakeRequest())) must_== INTERNAL_SERVER_ERROR
       status(ScalaAsyncSamples.timeout(10)(FakeRequest())) must_== OK
     }
   }
@@ -65,10 +69,11 @@ object ScalaAsyncSamples extends Controller {
     //#async-result
     import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-    def index = Action.async {
-      val futureInt = scala.concurrent.Future { intensiveComputation() }
-      futureInt.map(i => Ok("Got result: " + i))
-    }
+    def index =
+      Action.async {
+        val futureInt = scala.concurrent.Future { intensiveComputation() }
+        futureInt.map(i => Ok("Got result: " + i))
+      }
     //#async-result
 
     index
@@ -83,14 +88,16 @@ object ScalaAsyncSamples extends Controller {
     import play.api.libs.concurrent.Execution.Implicits.defaultContext
     import scala.concurrent.duration._
 
-    def index = Action.async {
-      val futureInt = scala.concurrent.Future { intensiveComputation() }
-      val timeoutFuture = play.api.libs.concurrent.Promise.timeout("Oops", 1.second)
-      Future.firstCompletedOf(Seq(futureInt, timeoutFuture)).map {
-        case i: Int => Ok("Got result: " + i)
-        case t: String => InternalServerError(t)
+    def index =
+      Action.async {
+        val futureInt = scala.concurrent.Future { intensiveComputation() }
+        val timeoutFuture =
+          play.api.libs.concurrent.Promise.timeout("Oops", 1.second)
+        Future.firstCompletedOf(Seq(futureInt, timeoutFuture)).map {
+          case i: Int    => Ok("Got result: " + i)
+          case t: String => InternalServerError(t)
+        }
       }
-    }
     //#timeout
     index
   }

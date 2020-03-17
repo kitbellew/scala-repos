@@ -10,19 +10,22 @@ import org.apache.spark.mllib.linalg.Vectors
 
 // CHANGED
 case class RandomForestAlgorithmParams(
-  numClasses: Int,
-  numTrees: Int,
-  featureSubsetStrategy: String,
-  impurity: String,
-  maxDepth: Int,
-  maxBins: Int
+    numClasses: Int,
+    numTrees: Int,
+    featureSubsetStrategy: String,
+    impurity: String,
+    maxDepth: Int,
+    maxBins: Int
 ) extends Params
 
 // extends P2LAlgorithm because the MLlib's RandomForestModel doesn't
 // contain RDD.
 class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
-  extends P2LAlgorithm[PreparedData, RandomForestModel, // CHANGED
-  Query, PredictedResult] {
+    extends P2LAlgorithm[
+      PreparedData,
+      RandomForestModel, // CHANGED
+      Query,
+      PredictedResult] {
 
   // CHANGED
   def train(sc: SparkContext, data: PreparedData): RandomForestModel = {
@@ -41,8 +44,8 @@ class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
   }
 
   def predict(
-    model: RandomForestModel, // CHANGED
-    query: Query): PredictedResult = {
+      model: RandomForestModel, // CHANGED
+      query: Query): PredictedResult = {
 
     val label = model.predict(Vectors.dense(query.features))
     new PredictedResult(label)

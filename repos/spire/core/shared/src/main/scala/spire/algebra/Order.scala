@@ -34,18 +34,19 @@ trait Order[@sp A] extends Any with PartialOrder[A] {
   def compare(x: A, y: A): Int
 
   /**
-   * Defines an order on `B` by mapping `B` to `A` using `f` and using `A`s
-   * order to order `B`.
-   */
+    * Defines an order on `B` by mapping `B` to `A` using `f` and using `A`s
+    * order to order `B`.
+    */
   override def on[@sp B](f: B => A): Order[B] = new MappedOrder(this)(f)
 
   /**
-   * Defines an ordering on `A` where all arrows switch direction.
-   */
+    * Defines an ordering on `A` where all arrows switch direction.
+    */
   override def reverse: Order[A] = new ReversedOrder(this)
 }
 
-private[algebra] class MappedOrder[@sp A, @sp B](order: Order[B])(f: A => B) extends Order[A] {
+private[algebra] class MappedOrder[@sp A, @sp B](order: Order[B])(f: A => B)
+    extends Order[A] {
   def compare(x: A, y: A): Int = order.compare(f(x), f(y))
 }
 
@@ -58,11 +59,13 @@ object Order {
 
   def by[@sp A, @sp B](f: A => B)(implicit o: Order[B]): Order[A] = o.on(f)
 
-  def from[@sp A](f: (A, A) => Int): Order[A] = new Order[A] {
-    def compare(x: A, y: A): Int = f(x, y)
-  }
+  def from[@sp A](f: (A, A) => Int): Order[A] =
+    new Order[A] {
+      def compare(x: A, y: A): Int = f(x, y)
+    }
 
-  implicit def ordering[A](implicit o: Order[A]): Ordering[A] = new Ordering[A] {
-    def compare(x: A, y: A): Int = o.compare(x, y)
-  }
+  implicit def ordering[A](implicit o: Order[A]): Ordering[A] =
+    new Ordering[A] {
+      def compare(x: A, y: A): Int = o.compare(x, y)
+    }
 }

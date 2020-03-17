@@ -1,14 +1,13 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.actor
 
 import language.postfixOps
 
 import akka.testkit._
 import scala.concurrent.duration._
-import akka.pattern.{ ask, pipe }
+import akka.pattern.{ask, pipe}
 
 object ForwardActorSpec {
   val ExpectedMessage = "FOO"
@@ -18,8 +17,8 @@ object ForwardActorSpec {
       def receive = { case x ⇒ sender() ! x }
     }))
 
-    def mkforwarder(forwardTo: ActorRef) = system.actorOf(Props(
-      new Actor {
+    def mkforwarder(forwardTo: ActorRef) =
+      system.actorOf(Props(new Actor {
         def receive = { case x ⇒ forwardTo forward x }
       }))
 
@@ -34,7 +33,9 @@ class ForwardActorSpec extends AkkaSpec {
   "A Forward Actor" must {
 
     "forward actor reference when invoking forward on tell" in {
-      val replyTo = system.actorOf(Props(new Actor { def receive = { case ExpectedMessage ⇒ testActor ! ExpectedMessage } }))
+      val replyTo = system.actorOf(Props(new Actor {
+        def receive = { case ExpectedMessage ⇒ testActor ! ExpectedMessage }
+      }))
 
       val chain = createForwardingChain(system)
 

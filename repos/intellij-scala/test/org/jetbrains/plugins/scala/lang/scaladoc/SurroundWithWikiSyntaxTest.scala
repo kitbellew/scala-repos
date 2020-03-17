@@ -6,11 +6,11 @@ import org.jetbrains.plugins.scala.lang.surroundWith.surrounders.scaladoc._
 import org.jetbrains.plugins.scala.util.ScalaToolsFactory
 
 /**
- * User: Dmitry Naydanov
- * Date: 3/12/12
- */
-
-class SurroundWithWikiSyntaxTest extends ScalaLightCodeInsightFixtureTestAdapter {
+  * User: Dmitry Naydanov
+  * Date: 3/12/12
+  */
+class SurroundWithWikiSyntaxTest
+    extends ScalaLightCodeInsightFixtureTestAdapter {
   import org.jetbrains.plugins.scala.lang.scaladoc.SurroundWithWikiSyntaxTest._
   val s = ScalaLightCodeInsightFixtureTestAdapter.SELECTION_START
   val e = ScalaLightCodeInsightFixtureTestAdapter.SELECTION_END
@@ -22,8 +22,13 @@ class SurroundWithWikiSyntaxTest extends ScalaLightCodeInsightFixtureTestAdapter
     val actualText = text.stripMargin.replace("\r", "")
 
     for (surrounder <- surrounders) {
-      checkAfterSurroundWith(actualText, getAssumedText(actualText,
-        surrounder.asInstanceOf[ScalaDocWithSyntaxSurrounder].getSyntaxTag), surrounder, canSurround = true)
+      checkAfterSurroundWith(
+        actualText,
+        getAssumedText(
+          actualText,
+          surrounder.asInstanceOf[ScalaDocWithSyntaxSurrounder].getSyntaxTag),
+        surrounder,
+        canSurround = true)
     }
   }
 
@@ -183,5 +188,9 @@ class SurroundWithWikiSyntaxTest extends ScalaLightCodeInsightFixtureTestAdapter
 }
 
 object SurroundWithWikiSyntaxTest {
-  val surrounders = ScalaToolsFactory.getInstance().createSurroundDescriptors().getSurroundDescriptors()(1).getSurrounders
+  val surrounders = ScalaToolsFactory
+    .getInstance()
+    .createSurroundDescriptors()
+    .getSurroundDescriptors()(1)
+    .getSurrounders
 }

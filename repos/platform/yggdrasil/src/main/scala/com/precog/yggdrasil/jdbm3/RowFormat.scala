@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -33,9 +33,8 @@ import java.nio.ByteBuffer
 import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import scala.{ specialized => spec }
+import scala.{specialized => spec}
 import scalaz._
-
 
 trait ColumnEncoder {
   def encodeFromRow(row: Int): Array[Byte]
@@ -51,7 +50,7 @@ trait RowFormat {
 
   def ColumnEncoder(cols: Seq[Column]): ColumnEncoder
   def ColumnDecoder(cols: Seq[ArrayColumn[_]]): ColumnDecoder
-  
+
   def encode(cValues: List[CValue]): Array[Byte]
   def decode(bytes: Array[Byte], offset: Int = 0): List[CValue]
 
@@ -64,9 +63,9 @@ trait RowFormat {
       val a = aVals(cPath) find (_._2 != CUndefined)
       val b = bVals(cPath) find (_._2 != CUndefined)
       (a, b) match {
-        case (None, None) => 0
-        case (None, _) => -1
-        case (_, None) => 1
+        case (None, None)                 => 0
+        case (None, _)                    => -1
+        case (_, None)                    => 1
         case (Some((_, a)), Some((_, b))) => CValue.compareValues(a, b)
       }
     } find (_ != 0) getOrElse 0
@@ -75,17 +74,21 @@ trait RowFormat {
   }
 }
 
-
 object RowFormat {
   val byteBufferPool = new ByteBufferPool()
 
-  def forSortingKey(columnRefs: Seq[ColumnRef]): RowFormat = SortingKeyRowFormatV1(columnRefs)
+  def forSortingKey(columnRefs: Seq[ColumnRef]): RowFormat =
+    SortingKeyRowFormatV1(columnRefs)
 
-  def forValues(columnRefs: Seq[ColumnRef]): RowFormat = ValueRowFormatV1(columnRefs)
+  def forValues(columnRefs: Seq[ColumnRef]): RowFormat =
+    ValueRowFormatV1(columnRefs)
 
-  def forIdentities(columnRefs: Seq[ColumnRef]): RowFormat = IdentitiesRowFormatV1(columnRefs)
+  def forIdentities(columnRefs: Seq[ColumnRef]): RowFormat =
+    IdentitiesRowFormatV1(columnRefs)
 
-  case class ValueRowFormatV1(_columnRefs: Seq[ColumnRef]) extends ValueRowFormat with RowFormatCodecs {
+  case class ValueRowFormatV1(_columnRefs: Seq[ColumnRef])
+      extends ValueRowFormat
+      with RowFormatCodecs {
     // This is really stupid, but required to work w/ JDBM.
     @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
@@ -95,7 +98,9 @@ object RowFormat {
     def pool = byteBufferPool
   }
 
-  case class SortingKeyRowFormatV1(_columnRefs: Seq[ColumnRef]) extends RowFormatCodecs with SortingRowFormat {
+  case class SortingKeyRowFormatV1(_columnRefs: Seq[ColumnRef])
+      extends RowFormatCodecs
+      with SortingRowFormat {
     @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
     }
@@ -103,195 +108,258 @@ object RowFormat {
     def pool = byteBufferPool
   }
 
-  case class IdentitiesRowFormatV1(_columnRefs: Seq[ColumnRef]) extends IdentitiesRowFormat {
+  case class IdentitiesRowFormatV1(_columnRefs: Seq[ColumnRef])
+      extends IdentitiesRowFormat {
     @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
     }
   }
 }
 
-
 trait RowFormatSupport { self: StdCodecs =>
   import ByteBufferPool._
 
   protected trait ColumnValueEncoder {
-    def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]]
+    def encode(
+        row: Int,
+        buffer: ByteBuffer,
+        pool: ByteBufferPool): Option[List[ByteBuffer]]
   }
 
   protected trait SimpleColumnValueEncoder[A] extends ColumnValueEncoder {
     val codec: Codec[A]
 
     @tailrec
-    protected final def writeMore(s: codec.S, pool: ByteBufferPool, buffers: List[ByteBuffer]): List[ByteBuffer] = {
+    protected final def writeMore(
+        s: codec.S,
+        pool: ByteBufferPool,
+        buffers: List[ByteBuffer]): List[ByteBuffer] = {
       val buffer = pool.acquire
       codec.writeMore(s, buffer) match {
         case Some(s) => writeMore(s, pool, buffer :: buffers)
-        case None => (buffer :: buffers).reverse
+        case None    => (buffer :: buffers).reverse
       }
     }
   }
 
-  def getColumnEncoder(cType: CType, col: Column): ColumnValueEncoder = (cType, col) match {
-    case (CLong, col: LongColumn) =>
-      new SimpleColumnValueEncoder[Long] {
-        val codec = Codec[Long]
+  def getColumnEncoder(cType: CType, col: Column): ColumnValueEncoder =
+    (cType, col) match {
+      case (CLong, col: LongColumn) =>
+        new SimpleColumnValueEncoder[Long] {
+          val codec = Codec[Long]
 
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-          codec.writeInit(col(row), buffer) match {
-            case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-            case None => None
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+            codec.writeInit(col(row), buffer) match {
+              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
+              case None    => None
+            }
           }
         }
-      }
 
-    case (CDouble, col: DoubleColumn) =>
-      new SimpleColumnValueEncoder[Double] {
-        val codec = Codec[Double]
+      case (CDouble, col: DoubleColumn) =>
+        new SimpleColumnValueEncoder[Double] {
+          val codec = Codec[Double]
 
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-          codec.writeInit(col(row), buffer) match {
-            case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-            case None => None
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+            codec.writeInit(col(row), buffer) match {
+              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
+              case None    => None
+            }
           }
         }
-      }
 
-    case (CNum, col: NumColumn) =>
-      new SimpleColumnValueEncoder[BigDecimal] {
-        val codec = Codec[BigDecimal]
+      case (CNum, col: NumColumn) =>
+        new SimpleColumnValueEncoder[BigDecimal] {
+          val codec = Codec[BigDecimal]
 
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-          codec.writeInit(col(row), buffer) match {
-            case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-            case None => None
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+            codec.writeInit(col(row), buffer) match {
+              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
+              case None    => None
+            }
           }
         }
-      }
 
-    case (CBoolean, col: BoolColumn) =>
-      new SimpleColumnValueEncoder[Boolean] {
-        val codec = Codec[Boolean]
+      case (CBoolean, col: BoolColumn) =>
+        new SimpleColumnValueEncoder[Boolean] {
+          val codec = Codec[Boolean]
 
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-          codec.writeInit(col(row), buffer) match {
-            case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-            case None => None
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+            codec.writeInit(col(row), buffer) match {
+              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
+              case None    => None
+            }
           }
         }
-      }
 
-    case (CString, col: StrColumn) =>
-      new SimpleColumnValueEncoder[String] {
-        val codec = Codec[String]
+      case (CString, col: StrColumn) =>
+        new SimpleColumnValueEncoder[String] {
+          val codec = Codec[String]
 
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-          codec.writeInit(col(row), buffer) match {
-            case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-            case None => None
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+            codec.writeInit(col(row), buffer) match {
+              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
+              case None    => None
+            }
           }
         }
-      }
 
-    case (CDate, col: DateColumn) =>
-      new SimpleColumnValueEncoder[DateTime] {
-        val codec = Codec[DateTime]
+      case (CDate, col: DateColumn) =>
+        new SimpleColumnValueEncoder[DateTime] {
+          val codec = Codec[DateTime]
 
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-          codec.writeInit(col(row), buffer) match {
-            case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-            case None => None
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+            codec.writeInit(col(row), buffer) match {
+              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
+              case None    => None
+            }
           }
         }
-      }
 
-    case (CPeriod, col: PeriodColumn) =>
-      new SimpleColumnValueEncoder[Period] {
-        val codec = Codec[Period]
+      case (CPeriod, col: PeriodColumn) =>
+        new SimpleColumnValueEncoder[Period] {
+          val codec = Codec[Period]
 
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-          codec.writeInit(col(row), buffer) match {
-            case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-            case None => None
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+            codec.writeInit(col(row), buffer) match {
+              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
+              case None    => None
+            }
           }
         }
-      }
 
-    case (CEmptyObject, col: EmptyObjectColumn) =>
-      new ColumnValueEncoder {
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = None
-      }
+      case (CEmptyObject, col: EmptyObjectColumn) =>
+        new ColumnValueEncoder {
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = None
+        }
 
-    case (CEmptyArray, col: EmptyArrayColumn) =>
-      new ColumnValueEncoder {
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = None
-      }
+      case (CEmptyArray, col: EmptyArrayColumn) =>
+        new ColumnValueEncoder {
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = None
+        }
 
-    case (CNull, col: NullColumn) =>
-      new ColumnValueEncoder {
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = None
-      }
+      case (CNull, col: NullColumn) =>
+        new ColumnValueEncoder {
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = None
+        }
 
-    case (cType, col) => sys.error(
-      "Cannot create column encoder, columns of wrong type (expected %s, found %s)." format (cType, col.tpe))
-  }
+      case (cType, col) =>
+        sys.error(
+          "Cannot create column encoder, columns of wrong type (expected %s, found %s)." format (cType, col.tpe))
+    }
 
   protected trait ColumnValueDecoder {
-    def decode(row: Int, buf: ByteBuffer): Unit 
+    def decode(row: Int, buf: ByteBuffer): Unit
   }
 
-  def getColumnDecoder(cType: CType, col: ArrayColumn[_]): ColumnValueDecoder = (cType, col) match {
-    case (CLong, col: ArrayLongColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, Codec[Long].read(buf))
+  def getColumnDecoder(cType: CType, col: ArrayColumn[_]): ColumnValueDecoder =
+    (cType, col) match {
+      case (CLong, col: ArrayLongColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) =
+            col.update(row, Codec[Long].read(buf))
+        }
+      case (CDouble, col: ArrayDoubleColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) =
+            col.update(row, Codec[Double].read(buf))
+        }
+      case (CNum, col: ArrayNumColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) =
+            col.update(row, Codec[BigDecimal].read(buf))
+        }
+      case (CBoolean, col: ArrayBoolColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) =
+            col.update(row, Codec[Boolean].read(buf))
+        }
+      case (CString, col: ArrayStrColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) =
+            col.update(row, Codec[String].read(buf))
+        }
+      case (CDate, col: ArrayDateColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) =
+            col.update(row, Codec[DateTime].read(buf))
+        }
+      case (CPeriod, col: ArrayPeriodColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) =
+            col.update(row, Codec[Period].read(buf))
+        }
+      case (CEmptyObject, col: MutableEmptyObjectColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) = col.update(row, true)
+        }
+      case (CEmptyArray, col: MutableEmptyArrayColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) = col.update(row, true)
+        }
+      case (CNull, col: MutableNullColumn) =>
+        new ColumnValueDecoder {
+          def decode(row: Int, buf: ByteBuffer) = col.update(row, true)
+        }
+      case _ =>
+        sys.error("Cannot create column decoder, columns of wrong type.")
     }
-    case (CDouble, col: ArrayDoubleColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, Codec[Double].read(buf))
-    }
-    case (CNum, col: ArrayNumColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, Codec[BigDecimal].read(buf))
-    }
-    case (CBoolean, col: ArrayBoolColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, Codec[Boolean].read(buf))
-    }
-    case (CString, col: ArrayStrColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, Codec[String].read(buf))
-    }
-    case (CDate, col: ArrayDateColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, Codec[DateTime].read(buf))
-    }
-    case (CPeriod, col: ArrayPeriodColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, Codec[Period].read(buf))
-    }
-    case (CEmptyObject, col: MutableEmptyObjectColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, true)
-    }
-    case (CEmptyArray, col: MutableEmptyArrayColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, true)
-    }
-    case (CNull, col: MutableNullColumn) => new ColumnValueDecoder {
-      def decode(row: Int, buf: ByteBuffer) = col.update(row, true)
-    }
-    case _ => sys.error("Cannot create column decoder, columns of wrong type.")
-  }
 
-  protected def encodeRow(row: Int, undefined: RawBitSet, encoders: Array[ColumnValueEncoder], init: ByteBuffer, pool: ByteBufferPool): Array[Byte] = {
+  protected def encodeRow(
+      row: Int,
+      undefined: RawBitSet,
+      encoders: Array[ColumnValueEncoder],
+      init: ByteBuffer,
+      pool: ByteBufferPool): Array[Byte] = {
 
     var buffer = init
     var filled: ListBuffer[ByteBuffer] = null
 
     @inline @tailrec
-    def encodeAll(i: Int): Unit = if (i < encoders.length) {
-      if (!RawBitSet.get(undefined, i)) {
-        encoders(i).encode(row, buffer, pool) match {
-          case Some(buffers) =>
-            if (filled == null)
-              filled = new ListBuffer[ByteBuffer]()
-            filled ++= buffers
-            buffer = pool.acquire
-          case None =>
+    def encodeAll(i: Int): Unit =
+      if (i < encoders.length) {
+        if (!RawBitSet.get(undefined, i)) {
+          encoders(i).encode(row, buffer, pool) match {
+            case Some(buffers) =>
+              if (filled == null)
+                filled = new ListBuffer[ByteBuffer]()
+              filled ++= buffers
+              buffer = pool.acquire
+            case None =>
+          }
         }
+        encodeAll(i + 1)
       }
-      encodeAll(i + 1)
-    }
 
     encodeAll(0)
 
@@ -301,7 +369,7 @@ trait RowFormatSupport { self: StdCodecs =>
       val bytes = ByteBufferPool.getBytesFrom(filled.toList)
       all foreach { pool.release(_) }
       bytes
-      
+
     } else {
       buffer.flip()
       val len = buffer.remaining()
@@ -313,13 +381,14 @@ trait RowFormatSupport { self: StdCodecs =>
   }
 }
 
-
-trait ValueRowFormat extends RowFormat with RowFormatSupport { self: StdCodecs =>
+trait ValueRowFormat extends RowFormat with RowFormatSupport {
+  self: StdCodecs =>
   import ByteBufferPool._
 
   def pool: ByteBufferPool
 
-  def encode(cValues: List[CValue]) = getBytesFrom(RowCodec.writeAll(cValues)(pool.acquire _).reverse)
+  def encode(cValues: List[CValue]) =
+    getBytesFrom(RowCodec.writeAll(cValues)(pool.acquire _).reverse)
 
   def decode(bytes: Array[Byte], offset: Int): List[CValue] =
     RowCodec.read(ByteBuffer.wrap(bytes, offset, bytes.length - offset))
@@ -328,8 +397,9 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport { self: StdCodecs =
     require(columnRefs.size == cols.size)
 
     val colValueEncoders: Array[ColumnValueEncoder] = {
-      (columnRefs zip cols).map({ case (ColumnRef(_, cType), col) =>
-        getColumnEncoder(cType, col)
+      (columnRefs zip cols).map({
+        case (ColumnRef(_, cType), col) =>
+          getColumnEncoder(cType, col)
       })(collection.breakOut)
     }
 
@@ -337,11 +407,12 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport { self: StdCodecs =
       val colsArray = cols.toArray
       def encodeFromRow(row: Int) = {
         val undefined = RawBitSet.create(colsArray.length)
-        
-        @inline @tailrec def definedCols(i: Int): Unit = if (i >= 0) {
-          if (!colsArray(i).isDefinedAt(row)) RawBitSet.set(undefined, i)
-          definedCols(i - 1)
-        }
+
+        @inline @tailrec def definedCols(i: Int): Unit =
+          if (i >= 0) {
+            if (!colsArray(i).isDefinedAt(row)) RawBitSet.set(undefined, i)
+            definedCols(i - 1)
+          }
         definedCols(colsArray.length - 1)
 
         val init = pool.acquire
@@ -379,15 +450,17 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport { self: StdCodecs =
   }
 
   case object RowCodec extends Codec[List[CValue]] {
-    import Codec.{ StatefulCodec, wrappedWriteInit }
+    import Codec.{StatefulCodec, wrappedWriteInit}
 
     // @transient lazy val bitSetCodec = Codec[BitSet]
     @transient lazy val rawBitSetCodec = Codec[RawBitSet]
 
-    @transient private lazy val codecs: List[Codec[_ <: CValue]] = columnRefs.toList map {
-      case ColumnRef(_, cType: CValueType[_]) => Codec.CValueCodec(cType)(codecForCValueType(cType))
-      case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
-    }
+    @transient private lazy val codecs: List[Codec[_ <: CValue]] =
+      columnRefs.toList map {
+        case ColumnRef(_, cType: CValueType[_]) =>
+          Codec.CValueCodec(cType)(codecForCValueType(cType))
+        case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
+      }
 
     type S = (Either[rawBitSetCodec.S, StatefulCodec#State], List[CValue])
 
@@ -395,85 +468,97 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport { self: StdCodecs =
       val bits = RawBitSet.create(xs.size)
 
       @inline @tailrec
-      def rec(i: Int, xs: List[CValue]): Unit = xs match {
-        case CUndefined :: xs => RawBitSet.set(bits, i); rec(i + 1, xs)
-        case _ :: xs => rec(i + 1, xs)
-        case Nil =>
-      }
+      def rec(i: Int, xs: List[CValue]): Unit =
+        xs match {
+          case CUndefined :: xs => RawBitSet.set(bits, i); rec(i + 1, xs)
+          case _ :: xs          => rec(i + 1, xs)
+          case Nil              =>
+        }
       rec(0, xs)
 
       bits
     }
 
-    def encodedSize(xs: List[CValue]) = xs.foldLeft(rawBitSetCodec.encodedSize(undefineds(xs))) {
-      (acc, x) => acc + (x match {
-        case x: CWrappedValue[_] => codecForCValueType(x.cType).encodedSize(x.value)
-        case _ => 0
-      })
-    }
+    def encodedSize(xs: List[CValue]) =
+      xs.foldLeft(rawBitSetCodec.encodedSize(undefineds(xs))) { (acc, x) =>
+        acc + (x match {
+          case x: CWrappedValue[_] =>
+            codecForCValueType(x.cType).encodedSize(x.value)
+          case _ => 0
+        })
+      }
 
-    override def maxSize(xs: List[CValue]) = xs.foldLeft(rawBitSetCodec.maxSize(undefineds(xs))) {
-      (acc, x) => acc + (x match {
-        case x: CWrappedValue[_] => codecForCValueType(x.cType).maxSize(x.value)
-        case _ => 0
-      })
-    }
+    override def maxSize(xs: List[CValue]) =
+      xs.foldLeft(rawBitSetCodec.maxSize(undefineds(xs))) { (acc, x) =>
+        acc + (x match {
+          case x: CWrappedValue[_] =>
+            codecForCValueType(x.cType).maxSize(x.value)
+          case _ => 0
+        })
+      }
 
     def writeUnsafe(xs: List[CValue], sink: ByteBuffer) {
       rawBitSetCodec.writeUnsafe(undefineds(xs), sink)
       xs foreach {
-        case x: CWrappedValue[_] => codecForCValueType(x.cType).writeUnsafe(x.value, sink)
+        case x: CWrappedValue[_] =>
+          codecForCValueType(x.cType).writeUnsafe(x.value, sink)
         case _ =>
       }
     }
 
     @tailrec
-    private def writeCValues(xs: List[CValue], sink: ByteBuffer): Option[S] = xs match {
-      case x :: xs => (x match {
-        case CBoolean(x) => wrappedWriteInit[Boolean](x, sink)
-        case CString(x) => wrappedWriteInit[String](x, sink)
-        case CDate(x) => wrappedWriteInit[DateTime](x, sink)
-        case CPeriod(x) => wrappedWriteInit[Period](x, sink)
-        case CLong(x) => wrappedWriteInit[Long](x, sink)
-        case CDouble(x) => wrappedWriteInit[Double](x, sink)
-        case CNum(x) => wrappedWriteInit[BigDecimal](x, sink)
-        case CArray(x, cType) => wrappedWriteInit(x, sink)(codecForCValueType(cType))
-        case _: CNullType => None
-      }) match {
-        case None => writeCValues(xs, sink)
-        case Some(s) => Some((Right(s), xs))
-      }
+    private def writeCValues(xs: List[CValue], sink: ByteBuffer): Option[S] =
+      xs match {
+        case x :: xs =>
+          (x match {
+            case CBoolean(x) => wrappedWriteInit[Boolean](x, sink)
+            case CString(x)  => wrappedWriteInit[String](x, sink)
+            case CDate(x)    => wrappedWriteInit[DateTime](x, sink)
+            case CPeriod(x)  => wrappedWriteInit[Period](x, sink)
+            case CLong(x)    => wrappedWriteInit[Long](x, sink)
+            case CDouble(x)  => wrappedWriteInit[Double](x, sink)
+            case CNum(x)     => wrappedWriteInit[BigDecimal](x, sink)
+            case CArray(x, cType) =>
+              wrappedWriteInit(x, sink)(codecForCValueType(cType))
+            case _: CNullType => None
+          }) match {
+            case None    => writeCValues(xs, sink)
+            case Some(s) => Some((Right(s), xs))
+          }
 
-      case Nil => None
-    }
+        case Nil => None
+      }
 
     def writeInit(xs: List[CValue], sink: ByteBuffer) = {
       rawBitSetCodec.writeInit(undefineds(xs), sink) match {
         case Some(s) => Some((Left(s), xs))
-        case None => writeCValues(xs, sink)
+        case None    => writeCValues(xs, sink)
       }
     }
 
-    def writeMore(more: S, sink: ByteBuffer) = more match {
-      case (Left(s), xs) => rawBitSetCodec.writeMore(s, sink) map (s => (Left(s), xs)) orElse writeCValues(xs, sink)
-      case (Right(s), xs) => s.more(sink) map (s => (Right(s), xs)) orElse writeCValues(xs, sink)
-    }
-    
+    def writeMore(more: S, sink: ByteBuffer) =
+      more match {
+        case (Left(s), xs) =>
+          rawBitSetCodec.writeMore(s, sink) map (s =>
+            (Left(s), xs)) orElse writeCValues(xs, sink)
+        case (Right(s), xs) =>
+          s.more(sink) map (s => (Right(s), xs)) orElse writeCValues(xs, sink)
+      }
+
     def read(src: ByteBuffer): List[CValue] = {
       val undefined = rawBitSetCodec.read(src)
       codecs.zipWithIndex collect {
         case (codec, i) if RawBitSet.get(undefined, i) => CUndefined
-        case (codec, _) => codec.read(src)
+        case (codec, _)                                => codec.read(src)
       }
     }
   }
 }
 
-
 /**
- * This is a row format that is optimized for quickly comparing 2 encoded rows
- * (ie. byte arrays).
- */
+  * This is a row format that is optimized for quickly comparing 2 encoded rows
+  * (ie. byte arrays).
+  */
 trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
   import SortingRowFormat._
 
@@ -483,21 +568,31 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
 
   @transient
   abstract override implicit lazy val BigDecimalCodec: Codec[BigDecimal] =
-    Codec.CompositeCodec[Double, BigDecimal, BigDecimal](Codec[Double], super.BigDecimalCodec, bd => (bd.toDouble, bd), (_, bd) => bd)
+    Codec.CompositeCodec[Double, BigDecimal, BigDecimal](
+      Codec[Double],
+      super.BigDecimalCodec,
+      bd => (bd.toDouble, bd),
+      (_, bd) => bd)
 
   @transient lazy val selectors: List[(CPath, List[CType])] = {
     val refs: Map[CPath, Seq[ColumnRef]] = columnRefs.groupBy(_.selector)
-    (columnRefs map (_.selector)).distinct.map(selector => (selector, refs(selector).map(_.ctype).toList))(collection.breakOut)
+    (columnRefs map (_.selector)).distinct.map(selector =>
+      (selector, refs(selector).map(_.ctype).toList))(collection.breakOut)
   }
 
-  private def zipWithSelectors[A](xs: Seq[A]): List[(CPath, Seq[(A, CType)])] = {
+  private def zipWithSelectors[A](
+      xs: Seq[A]): List[(CPath, Seq[(A, CType)])] = {
     @tailrec
-    def zip(zipped: List[(CPath, Seq[(A, CType)])], right: Seq[A], sels: List[(CPath, List[CType])]): List[(CPath, Seq[(A, CType)])] = sels match {
-      case Nil => zipped.reverse
-      case (path, cTypes) :: sels =>
-        val (head, tail) = right splitAt cTypes.size
-        zip((path, head zip cTypes) :: zipped, tail, sels)
-    }
+    def zip(
+        zipped: List[(CPath, Seq[(A, CType)])],
+        right: Seq[A],
+        sels: List[(CPath, List[CType])]): List[(CPath, Seq[(A, CType)])] =
+      sels match {
+        case Nil => zipped.reverse
+        case (path, cTypes) :: sels =>
+          val (head, tail) = right splitAt cTypes.size
+          zip((path, head zip cTypes) :: zipped, tail, sels)
+      }
 
     zip(Nil, xs, selectors)
   }
@@ -505,46 +600,55 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
   def ColumnEncoder(cols: Seq[Column]) = {
     import ByteBufferPool._
 
-    val colValueEncoders: Array[ColumnValueEncoder] = zipWithSelectors(cols).map({ case (_, colsAndTypes) =>
-      val writers: Seq[ColumnValueEncoder] = colsAndTypes map {
-        case (col, cType) =>
-          val writer = getColumnEncoder(cType, col)
+    val colValueEncoders: Array[ColumnValueEncoder] =
+      zipWithSelectors(cols).map({
+        case (_, colsAndTypes) =>
+          val writers: Seq[ColumnValueEncoder] = colsAndTypes map {
+            case (col, cType) =>
+              val writer = getColumnEncoder(cType, col)
+              new ColumnValueEncoder {
+                def encode(
+                    row: Int,
+                    buffer: ByteBuffer,
+                    pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+                  val flag = SortingRowFormat.flagForCType(cType)
+                  if (buffer.remaining() > 0) {
+                    buffer.put(flag)
+                    writer.encode(row, buffer, pool)
+                  } else {
+                    val nextBuffer = pool.acquire
+                    nextBuffer.put(flag)
+                    writer.encode(row, nextBuffer, pool) match {
+                      case Some(buffers) => Some(buffer :: buffers)
+                      case None          => Some(buffer :: nextBuffer :: Nil)
+                    }
+                  }
+                }
+              }
+          }
+
+          val selCols: Seq[Column] = colsAndTypes map (_._1)
+
           new ColumnValueEncoder {
-            def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-              val flag = SortingRowFormat.flagForCType(cType)
-              if (buffer.remaining() > 0) {
-                buffer.put(flag)
-                writer.encode(row, buffer, pool)
-              } else {
-                val nextBuffer = pool.acquire
-                nextBuffer.put(flag)
-                writer.encode(row, nextBuffer, pool) match {
-                  case Some(buffers) => Some(buffer :: buffers)
-                  case None => Some(buffer :: nextBuffer :: Nil)
+            def encode(
+                row: Int,
+                buffer: ByteBuffer,
+                pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+              (writers zip selCols) find (_._2.isDefinedAt(row)) map (_._1
+                .encode(row, buffer, pool)) getOrElse {
+                val flag = SortingRowFormat.flagForCType(CUndefined)
+                if (buffer.remaining() > 0) {
+                  buffer.put(flag)
+                  None
+                } else {
+                  val nextBuffer = pool.acquire
+                  nextBuffer.put(flag)
+                  Some(buffer :: nextBuffer :: Nil)
                 }
               }
             }
           }
-      }
-
-      val selCols: Seq[Column] = colsAndTypes map (_._1)
-
-      new ColumnValueEncoder {
-        def encode(row: Int, buffer: ByteBuffer, pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-          (writers zip selCols) find (_._2.isDefinedAt(row)) map (_._1.encode(row, buffer, pool)) getOrElse {
-            val flag = SortingRowFormat.flagForCType(CUndefined)
-            if (buffer.remaining() > 0) {
-              buffer.put(flag)
-              None
-            } else {
-              val nextBuffer = pool.acquire
-              nextBuffer.put(flag)
-              Some(buffer :: nextBuffer :: Nil)
-            }
-          }
-        }
-      }
-    })(collection.breakOut)
+      })(collection.breakOut)
 
     new ColumnEncoder {
       val undefined = RawBitSet.create(0)
@@ -553,16 +657,16 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
     }
   }
 
-
-  def ColumnDecoder(cols: Seq[ArrayColumn[_]])= {
+  def ColumnDecoder(cols: Seq[ArrayColumn[_]]) = {
     val decoders: List[Map[Byte, ColumnValueDecoder]] =
-      zipWithSelectors(cols) map { case (_, colsWithTypes) =>
-        val decoders: Map[Byte, ColumnValueDecoder] =
-          (for ((col, cType) <- colsWithTypes) yield {
-            (flagForCType(cType), getColumnDecoder(cType, col))
-          })(collection.breakOut)
+      zipWithSelectors(cols) map {
+        case (_, colsWithTypes) =>
+          val decoders: Map[Byte, ColumnValueDecoder] =
+            (for ((col, cType) <- colsWithTypes) yield {
+              (flagForCType(cType), getColumnDecoder(cType, col))
+            })(collection.breakOut)
 
-        decoders
+          decoders
       }
 
     new ColumnDecoder {
@@ -570,16 +674,17 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
         val buf = ByteBuffer.wrap(src, offset, src.length - offset)
 
         @tailrec
-        def decode(decoders: List[Map[Byte, ColumnValueDecoder]]): Unit = decoders match {
-          case selDecoder :: decoders =>
-            val flag = buf.get()
-            if (flag != FUndefined) {
-              selDecoder(flag).decode(row, buf)
-            }
-            decode(decoders)
-          case Nil =>
+        def decode(decoders: List[Map[Byte, ColumnValueDecoder]]): Unit =
+          decoders match {
+            case selDecoder :: decoders =>
+              val flag = buf.get()
+              if (flag != FUndefined) {
+                selDecoder(flag).decode(row, buf)
+              }
+              decode(decoders)
+            case Nil =>
             // Do nothing.
-        }
+          }
 
         decode(decoders)
       }
@@ -589,7 +694,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
   def encode(cValues: List[CValue]): Array[Byte] = {
 
     val cvals: List[CValue] = zipWithSelectors(cValues) map {
-      case (_, cvals) => cvals map (_._1) find (_ != CUndefined) getOrElse CUndefined
+      case (_, cvals) =>
+        cvals map (_._1) find (_ != CUndefined) getOrElse CUndefined
     }
 
     import ByteBufferPool._
@@ -607,7 +713,6 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
           _ <- codecForCValueType(v.cType).write(v.value)
         } yield ()
     }.sequence
-
 
     pool.run(for {
       _ <- writes
@@ -630,12 +735,13 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       val cType = cValue.cType
       cTypes map {
         case `cType` => cValue
-        case _ => CUndefined
+        case _       => CUndefined
       }
     }
 
-    selectors.map { case (_, cTypes) =>
-      readForSelector(cTypes)
+    selectors.map {
+      case (_, cTypes) =>
+        readForSelector(cTypes)
     }.flatten
   }
 
@@ -717,7 +823,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                     val b = Codec[Double].read(bbuf)
                     NumericComparisons.approxCompare(a, b) match {
                       case 0 =>
-                        super.BigDecimalCodec.read(abuf) compare super.BigDecimalCodec.read(bbuf)
+                        super.BigDecimalCodec
+                          .read(abuf) compare super.BigDecimalCodec.read(bbuf)
                       case cmp =>
                         super.BigDecimalCodec.skip(abuf)
                         super.BigDecimalCodec.skip(bbuf)
@@ -726,8 +833,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                 }
             }
           case FEmptyObject => 0
-          case FEmptyArray => 0
-          case FNull => 0
+          case FEmptyArray  => 0
+          case FNull        => 0
           case FDate =>
             math.signum(Codec[Long].read(abuf) - Codec[Long].read(bbuf)).toInt
           case FPeriod =>
@@ -740,16 +847,18 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
     }
 
     @tailrec
-    def compare(cmp: Int): Int = if (cmp == 0) {
-      if (abuf.remaining() > 0) compare(compareNext()) else 0
-    } else cmp
+    def compare(cmp: Int): Int =
+      if (cmp == 0) {
+        if (abuf.remaining() > 0) compare(compareNext()) else 0
+      } else cmp
 
     compare(0)
   }
 }
 
 object SortingRowFormat {
-  def writeFlagFor[M[+_]](cType: CType)(implicit M: ByteBufferMonad[M]): M[Unit] = {
+  def writeFlagFor[M[+_]](cType: CType)(
+      implicit M: ByteBufferMonad[M]): M[Unit] = {
     import scalaz.syntax.monad._
 
     val flag = flagForCType(cType)
@@ -759,33 +868,35 @@ object SortingRowFormat {
     }
   }
 
-  def flagForCType(cType: CType): Byte = cType match {
-    case CBoolean => FBoolean
-    case CString => FString
-    case CLong => FLong
-    case CDouble => FDouble
-    case CNum => FBigDecimal
-    case CDate => FDate
-    case CPeriod => FPeriod
-    case CEmptyObject => FEmptyObject
-    case CEmptyArray => FEmptyArray
-    case CNull => FNull
-    case CUndefined => FUndefined
-  }
+  def flagForCType(cType: CType): Byte =
+    cType match {
+      case CBoolean     => FBoolean
+      case CString      => FString
+      case CLong        => FLong
+      case CDouble      => FDouble
+      case CNum         => FBigDecimal
+      case CDate        => FDate
+      case CPeriod      => FPeriod
+      case CEmptyObject => FEmptyObject
+      case CEmptyArray  => FEmptyArray
+      case CNull        => FNull
+      case CUndefined   => FUndefined
+    }
 
-  def cTypeForFlag(flag: Byte): CType = flag match {
-    case FBoolean => CBoolean
-    case FString => CString
-    case FLong => CLong
-    case FDouble => CDouble
-    case FBigDecimal => CNum
-    case FDate => CDate
-    case FPeriod => CPeriod
-    case FEmptyObject => CEmptyObject
-    case FEmptyArray => CEmptyArray
-    case FNull => CNull
-    case FUndefined => CUndefined
-  }
+  def cTypeForFlag(flag: Byte): CType =
+    flag match {
+      case FBoolean     => CBoolean
+      case FString      => CString
+      case FLong        => CLong
+      case FDouble      => CDouble
+      case FBigDecimal  => CNum
+      case FDate        => CDate
+      case FPeriod      => CPeriod
+      case FEmptyObject => CEmptyObject
+      case FEmptyArray  => CEmptyArray
+      case FNull        => CNull
+      case FUndefined   => CUndefined
+    }
 
   private val FUndefined: Byte = 0x0.toByte
   private val FBoolean: Byte = 0x10.toByte
@@ -840,18 +951,20 @@ trait IdentitiesRowFormat extends RowFormat {
     loop(offset, n)
   }
 
-  @inline private final def shiftIn(b: Byte, shift: Int, n: Long): Long = n | ((b.toLong & 0x7FL) << shift)
+  @inline private final def shiftIn(b: Byte, shift: Int, n: Long): Long =
+    n | ((b.toLong & 0x7FL) << shift)
 
   @inline private final def more(b: Byte): Boolean = (b & 0x80) != 0
 
   def encodeIdentities(xs: Array[Long]) = {
 
     @inline @tailrec
-    def sumPackedSize(xs: Array[Long], i: Int, len: Int): Int = if (i < xs.length) {
-      sumPackedSize(xs, i + 1, len + packedSize(xs(i)))
-    } else {
-      len
-    }
+    def sumPackedSize(xs: Array[Long], i: Int, len: Int): Int =
+      if (i < xs.length) {
+        sumPackedSize(xs, i + 1, len + packedSize(xs(i)))
+      } else {
+        len
+      }
 
     val bytes = new Array[Byte](sumPackedSize(xs, 0, 0))
 
@@ -866,19 +979,21 @@ trait IdentitiesRowFormat extends RowFormat {
 
   def encode(cValues: List[CValue]): Array[Byte] = {
     @inline @tailrec
-    def sumPackedSize(cvals: List[CValue], len: Int): Int = cvals match {
-      case CLong(n) :: cvals => sumPackedSize(cvals, len + packedSize(n))
-      case cv :: _ => sys.error("Expecting CLong, but found: " + cv)
-      case Nil => len
-    }
+    def sumPackedSize(cvals: List[CValue], len: Int): Int =
+      cvals match {
+        case CLong(n) :: cvals => sumPackedSize(cvals, len + packedSize(n))
+        case cv :: _           => sys.error("Expecting CLong, but found: " + cv)
+        case Nil               => len
+      }
 
     val bytes = new Array[Byte](sumPackedSize(cValues, 0))
 
     @inline @tailrec
-    def packAll(xs: List[CValue], offset: Int): Unit = xs match {
-      case CLong(n) :: xs => packAll(xs, packLong(n, bytes, offset))
-      case _ =>
-    }
+    def packAll(xs: List[CValue], offset: Int): Unit =
+      xs match {
+        case CLong(n) :: xs => packAll(xs, packLong(n, bytes, offset))
+        case _              =>
+      }
 
     packAll(cValues, 0)
     bytes
@@ -886,14 +1001,13 @@ trait IdentitiesRowFormat extends RowFormat {
 
   def decode(bytes: Array[Byte], offset: Int): List[CValue] = {
     val longs = new Array[Long](identities)
-
-
     @inline @tailrec
     def loop(offset: Int, shift: Int, n: Long, i: Int) {
       val lo = bytes(offset)
       val m = shiftIn(lo, shift, n)
       val nOffset = offset + 1
-      if (more(lo)) loop(nOffset, shift + 7, m, i) else {
+      if (more(lo)) loop(nOffset, shift + 7, m, i)
+      else {
         longs(i) = m
         if (nOffset < bytes.length)
           loop(nOffset, 0, 0L, i + 1)
@@ -910,23 +1024,25 @@ trait IdentitiesRowFormat extends RowFormat {
 
     val longCols: Array[LongColumn] = cols.map({
       case col: LongColumn => col
-      case col => sys.error("Expecing LongColumn, but found: " + col)
+      case col             => sys.error("Expecing LongColumn, but found: " + col)
     })(collection.breakOut)
 
     new ColumnEncoder {
       def encodeFromRow(row: Int): Array[Byte] = {
 
         @inline @tailrec
-        def sumPackedSize(i: Int, len: Int): Int = if (i < longCols.length) {
-          sumPackedSize(i + 1, len + packedSize(longCols(i)(row)))
-        } else len
+        def sumPackedSize(i: Int, len: Int): Int =
+          if (i < longCols.length) {
+            sumPackedSize(i + 1, len + packedSize(longCols(i)(row)))
+          } else len
 
         val bytes = new Array[Byte](sumPackedSize(0, 0))
 
         @inline @tailrec
-        def packAll(i: Int, offset: Int): Unit = if (i < longCols.length) {
-          packAll(i + 1, packLong(longCols(i)(row), bytes, offset))
-        }
+        def packAll(i: Int, offset: Int): Unit =
+          if (i < longCols.length) {
+            packAll(i + 1, packLong(longCols(i)(row), bytes, offset))
+          }
 
         packAll(0, 0)
         bytes
@@ -938,7 +1054,7 @@ trait IdentitiesRowFormat extends RowFormat {
 
     val longCols: Array[ArrayLongColumn] = cols.map({
       case col: ArrayLongColumn => col
-      case col => sys.error("Expecing ArrayLongColumn, but found: " + col)
+      case col                  => sys.error("Expecing ArrayLongColumn, but found: " + col)
     })(collection.breakOut)
 
     new ColumnDecoder {
@@ -949,7 +1065,8 @@ trait IdentitiesRowFormat extends RowFormat {
           val b = src(offset)
           val m = shiftIn(b, shift, n)
           val nOffset = offset + 1
-          if (more(b)) loop(nOffset, shift + 7, m, col) else {
+          if (more(b)) loop(nOffset, shift + 7, m, col)
+          else {
             longCols(col).update(row, m)
             if (nOffset < src.length)
               loop(nOffset, 0, 0L, col + 1)
@@ -993,4 +1110,3 @@ trait IdentitiesRowFormat extends RowFormat {
     if (identities == 0) 0 else loop(0, 0, 0L, 0L)
   }
 }
-

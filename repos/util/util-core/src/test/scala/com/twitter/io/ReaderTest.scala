@@ -10,21 +10,25 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{FunSuite, Matchers}
 
 @RunWith(classOf[JUnitRunner])
-class ReaderTest extends FunSuite with GeneratorDrivenPropertyChecks with Matchers {
+class ReaderTest
+    extends FunSuite
+    with GeneratorDrivenPropertyChecks
+    with Matchers {
 
   def arr(i: Int, j: Int) = Array.range(i, j).map(_.toByte)
   def buf(i: Int, j: Int) = Buf.ByteArray.Owned(arr(i, j))
 
-  def toSeq(b: Option[Buf]) = b match {
-    case None => fail("Expected full buffer")
-    case Some(buf) =>
-      val a = new Array[Byte](buf.length)
-      buf.write(a, 0)
-      a.toSeq
-  }
+  def toSeq(b: Option[Buf]) =
+    b match {
+      case None => fail("Expected full buffer")
+      case Some(buf) =>
+        val a = new Array[Byte](buf.length)
+        buf.write(a, 0)
+        a.toSeq
+    }
 
   def assertRead(r: Reader, i: Int, j: Int) {
-    val n = j-i
+    val n = j - i
     val f = r.read(n)
     assertRead(f, i, j)
   }
@@ -99,7 +103,7 @@ class ReaderTest extends FunSuite with GeneratorDrivenPropertyChecks with Matche
       val g =
         rw.write(Buf.ByteArray.Owned(p)) before
           rw.write(Buf.ByteArray.Owned(q)) before
-            rw.write(Buf.ByteArray.Owned(r)) before rw.close()
+          rw.write(Buf.ByteArray.Owned(r)) before rw.close()
 
       Await.result(Future.join(f, g))
 
@@ -127,7 +131,7 @@ class ReaderTest extends FunSuite with GeneratorDrivenPropertyChecks with Matche
 
   test("Writer.fromOutputStream - error") {
     val os = new OutputStream {
-      def write(b: Int) { }
+      def write(b: Int) {}
       override def write(b: Array[Byte], n: Int, m: Int) { throw new Exception }
     }
     val f = Writer.fromOutputStream(os).write(Buf.Utf8("."))
@@ -138,7 +142,7 @@ class ReaderTest extends FunSuite with GeneratorDrivenPropertyChecks with Matche
     val closep = new Promise[Unit]
     val writep = new Promise[Array[Byte]]
     val os = new OutputStream {
-      def write(b: Int) { }
+      def write(b: Int) {}
       override def write(b: Array[Byte], n: Int, m: Int) { writep.setValue(b) }
       override def close() { closep.setDone() }
     }
@@ -266,7 +270,6 @@ class ReaderTest extends FunSuite with GeneratorDrivenPropertyChecks with Matche
     assert(!rw.close().isDone)
     assertReadEofAndClosed(rw)
   }
-
 
   test("Reader.writable - write after fail") {
     val rw = Reader.writable()
@@ -513,7 +516,7 @@ class ReaderTest extends FunSuite with GeneratorDrivenPropertyChecks with Matche
   test("Reader.concat - lazy tail") {
     val head = new Reader {
       def read(n: Int) = Future.exception(new Exception)
-      def discard() { }
+      def discard() {}
     }
     val p = new Promise[Unit]
     def tail: AsyncStream[Reader] = {

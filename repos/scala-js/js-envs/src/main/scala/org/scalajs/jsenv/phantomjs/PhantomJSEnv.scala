@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jsenv.phantomjs
 
 import org.scalajs.jsenv._
@@ -18,7 +17,7 @@ import org.scalajs.core.tools.io._
 import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 import org.scalajs.core.tools.logging._
 
-import java.io.{ Console => _, _ }
+import java.io.{Console => _, _}
 import java.net._
 
 import scala.io.Source
@@ -34,60 +33,74 @@ class PhantomJSEnv(
     addEnv: Map[String, String] = Map.empty,
     val autoExit: Boolean = true,
     jettyClassLoader: ClassLoader = null
-) extends ExternalJSEnv(addArgs, addEnv) with ComJSEnv {
+) extends ExternalJSEnv(addArgs, addEnv)
+    with ComJSEnv {
 
   import PhantomJSEnv._
 
   protected def vmName: String = "PhantomJS"
   protected def executable: String = phantomjsPath
 
-  override def jsRunner(libs: Seq[ResolvedJSDependency],
+  override def jsRunner(
+      libs: Seq[ResolvedJSDependency],
       code: VirtualJSFile): JSRunner = {
     new PhantomRunner(libs, code)
   }
 
-  override def asyncRunner(libs: Seq[ResolvedJSDependency],
+  override def asyncRunner(
+      libs: Seq[ResolvedJSDependency],
       code: VirtualJSFile): AsyncJSRunner = {
     new AsyncPhantomRunner(libs, code)
   }
 
-  override def comRunner(libs: Seq[ResolvedJSDependency],
+  override def comRunner(
+      libs: Seq[ResolvedJSDependency],
       code: VirtualJSFile): ComJSRunner = {
     new ComPhantomRunner(libs, code)
   }
 
-  protected class PhantomRunner(libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile) extends ExtRunner(libs, code)
+  protected class PhantomRunner(
+      libs: Seq[ResolvedJSDependency],
+      code: VirtualJSFile)
+      extends ExtRunner(libs, code)
       with AbstractPhantomRunner
 
-  protected class AsyncPhantomRunner(libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile) extends AsyncExtRunner(libs, code)
+  protected class AsyncPhantomRunner(
+      libs: Seq[ResolvedJSDependency],
+      code: VirtualJSFile)
+      extends AsyncExtRunner(libs, code)
       with AbstractPhantomRunner
 
-  protected class ComPhantomRunner(libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile) extends AsyncPhantomRunner(libs, code)
+  protected class ComPhantomRunner(
+      libs: Seq[ResolvedJSDependency],
+      code: VirtualJSFile)
+      extends AsyncPhantomRunner(libs, code)
       with ComJSRunner {
 
     private var mgrIsRunning: Boolean = false
 
     private object websocketListener extends WebsocketListener { // scalastyle:ignore
-      def onRunning(): Unit = ComPhantomRunner.this.synchronized {
-        mgrIsRunning = true
-        ComPhantomRunner.this.notifyAll()
-      }
+      def onRunning(): Unit =
+        ComPhantomRunner.this.synchronized {
+          mgrIsRunning = true
+          ComPhantomRunner.this.notifyAll()
+        }
 
-      def onOpen(): Unit = ComPhantomRunner.this.synchronized {
-        ComPhantomRunner.this.notifyAll()
-      }
+      def onOpen(): Unit =
+        ComPhantomRunner.this.synchronized {
+          ComPhantomRunner.this.notifyAll()
+        }
 
-      def onClose(): Unit = ComPhantomRunner.this.synchronized {
-        ComPhantomRunner.this.notifyAll()
-      }
+      def onClose(): Unit =
+        ComPhantomRunner.this.synchronized {
+          ComPhantomRunner.this.notifyAll()
+        }
 
-      def onMessage(msg: String): Unit = ComPhantomRunner.this.synchronized {
-        recvBuf.enqueue(msg)
-        ComPhantomRunner.this.notifyAll()
-      }
+      def onMessage(msg: String): Unit =
+        ComPhantomRunner.this.synchronized {
+          recvBuf.enqueue(msg)
+          ComPhantomRunner.this.notifyAll()
+        }
 
       def log(msg: String): Unit = logger.debug(s"PhantomJS WS Jetty: $msg")
     }
@@ -97,8 +110,8 @@ class PhantomJSEnv(
         if (jettyClassLoader != null) jettyClassLoader
         else getClass().getClassLoader()
 
-      val clazz = loader.loadClass(
-          "org.scalajs.jsenv.phantomjs.JettyWebsocketManager")
+      val clazz =
+        loader.loadClass("org.scalajs.jsenv.phantomjs.JettyWebsocketManager")
 
       val ctors = clazz.getConstructors()
       assert(ctors.length == 1, "JettyWebsocketManager may only have one ctor")
@@ -131,12 +144,13 @@ class PhantomJSEnv(
           wait(10000)
         if (!mgrIsRunning)
           throw new TimeoutException(
-              "The PhantomJS WebSocket server startup timed out")
+            "The PhantomJS WebSocket server startup timed out")
       }
 
       val serverPort = mgr.localPort
-      assert(serverPort > 0,
-          s"Manager running with a non-positive port number: $serverPort")
+      assert(
+        serverPort > 0,
+        s"Manager running with a non-positive port number: $serverPort")
 
       val code = s"""
         |(function() {
@@ -239,53 +253,57 @@ class PhantomJSEnv(
       future
     }
 
-    def send(msg: String): Unit = synchronized {
-      if (awaitConnection()) {
-        val fragParts = msg.length / MaxCharPayloadSize
+    def send(msg: String): Unit =
+      synchronized {
+        if (awaitConnection()) {
+          val fragParts = msg.length / MaxCharPayloadSize
 
-        for (i <- 0 until fragParts) {
-          val payload = msg.substring(
-              i * MaxCharPayloadSize, (i + 1) * MaxCharPayloadSize)
-          mgr.sendMessage("1" + payload)
+          for (i <- 0 until fragParts) {
+            val payload = msg.substring(
+              i * MaxCharPayloadSize,
+              (i + 1) * MaxCharPayloadSize)
+            mgr.sendMessage("1" + payload)
+          }
+
+          mgr.sendMessage("0" + msg.substring(fragParts * MaxCharPayloadSize))
+        }
+      }
+
+    def receive(timeout: Duration): String =
+      synchronized {
+        if (recvBuf.isEmpty && !awaitConnection())
+          throw new ComJSEnv.ComClosedException("Phantom.js isn't connected")
+
+        val deadline = OptDeadline(timeout)
+
+        @tailrec
+        def loop(): String = {
+          /* The fragments are accumulated in an instance-wide buffer in case
+           * receiving a non-first fragment times out.
+           */
+          val frag = receiveFrag(deadline)
+          fragmentsBuf ++= frag.substring(1)
+
+          if (frag(0) == '0') {
+            val result = fragmentsBuf.result()
+            fragmentsBuf.clear()
+            result
+          } else if (frag(0) == '1') {
+            loop()
+          } else {
+            throw new AssertionError("Bad fragmentation flag in " + frag)
+          }
         }
 
-        mgr.sendMessage("0" + msg.substring(fragParts * MaxCharPayloadSize))
-      }
-    }
-
-    def receive(timeout: Duration): String = synchronized {
-      if (recvBuf.isEmpty && !awaitConnection())
-        throw new ComJSEnv.ComClosedException("Phantom.js isn't connected")
-
-      val deadline = OptDeadline(timeout)
-
-      @tailrec
-      def loop(): String = {
-        /* The fragments are accumulated in an instance-wide buffer in case
-         * receiving a non-first fragment times out.
-         */
-        val frag = receiveFrag(deadline)
-        fragmentsBuf ++= frag.substring(1)
-
-        if (frag(0) == '0') {
-          val result = fragmentsBuf.result()
-          fragmentsBuf.clear()
-          result
-        } else if (frag(0) == '1') {
+        try {
           loop()
-        } else {
-          throw new AssertionError("Bad fragmentation flag in " + frag)
+        } catch {
+          case e: Throwable if !e.isInstanceOf[TimeoutException] =>
+            fragmentsBuf
+              .clear() // the protocol is broken, so discard the buffer
+            throw e
         }
       }
-
-      try {
-        loop()
-      } catch {
-        case e: Throwable if !e.isInstanceOf[TimeoutException] =>
-          fragmentsBuf.clear() // the protocol is broken, so discard the buffer
-          throw e
-      }
-    }
 
     private def receiveFrag(deadline: OptDeadline): String = {
       while (recvBuf.isEmpty && !mgr.isClosed && !deadline.isOverdue)
@@ -304,14 +322,14 @@ class PhantomJSEnv(
     def close(): Unit = mgr.stop()
 
     /** Waits until the JS VM has established a connection, or the VM
-     *  terminated. Returns true if a connection was established.
-     */
+      *  terminated. Returns true if a connection was established.
+      */
     private def awaitConnection(): Boolean = {
       while (!mgr.isConnected && !mgr.isClosed && isRunning)
         wait(10000)
       if (!mgr.isConnected && !mgr.isClosed && isRunning)
         throw new TimeoutException(
-            "The PhantomJS WebSocket client took too long to connect")
+          "The PhantomJS WebSocket client took too long to connect")
 
       mgr.isConnected
     }
@@ -332,7 +350,7 @@ class PhantomJSEnv(
         case file: FileVirtualJSFile =>
           val fname = htmlEscape(fixFileURI(file.file.toURI).toASCIIString)
           writer.write(
-              s"""<script type="text/javascript" src="$fname"></script>""" + "\n")
+            s"""<script type="text/javascript" src="$fname"></script>""" + "\n")
         case _ =>
           writer.write("""<script type="text/javascript">""" + "\n")
           writer.write(s"// Virtual File: ${file.path}\n")
@@ -342,13 +360,14 @@ class PhantomJSEnv(
     }
 
     /**
-     * PhantomJS doesn't support Function.prototype.bind. We polyfill it.
-     * https://github.com/ariya/phantomjs/issues/10522
-     */
-    override protected def initFiles(): Seq[VirtualJSFile] = Seq(
+      * PhantomJS doesn't support Function.prototype.bind. We polyfill it.
+      * https://github.com/ariya/phantomjs/issues/10522
+      */
+    override protected def initFiles(): Seq[VirtualJSFile] =
+      Seq(
         // scalastyle:off line.size.limit
         new MemVirtualJSFile("bindPolyfill.js").withContent(
-            """
+          """
             |// Polyfill for Function.bind from Facebook react:
             |// https://github.com/facebook/react/blob/3dc10749080a460e48bee46d769763ec7191ac76/src/test/phantomjs-shims.js
             |// Originally licensed under Apache 2.0
@@ -390,7 +409,7 @@ class PhantomJSEnv(
             |""".stripMargin
         ),
         new MemVirtualJSFile("scalaJSEnvInfo.js").withContent(
-            """
+          """
             |__ScalaJSEnv = {
             |  exitFunction: function(status) {
             |    window.callPhantom({
@@ -402,7 +421,7 @@ class PhantomJSEnv(
             """.stripMargin
         )
         // scalastyle:on line.size.limit
-    )
+      )
 
     protected def writeWebpageLauncher(out: Writer): Unit = {
       out.write(s"""<html><head>
@@ -422,8 +441,7 @@ class PhantomJSEnv(
       val out = new FileWriter(launcherTmpF)
 
       try {
-        out.write(
-            s"""// Scala.js Phantom.js launcher
+        out.write(s"""// Scala.js Phantom.js launcher
                |var page = require('webpage').create();
                |var url = "${escapeJS(fixFileURI(webF.toURI).toASCIIString)}";
                |var autoExit = $autoExit;
@@ -468,7 +486,7 @@ class PhantomJSEnv(
       }
 
       logger.debug(
-          "PhantomJS using launcher at: " + launcherTmpF.getAbsolutePath())
+        "PhantomJS using launcher at: " + launcherTmpF.getAbsolutePath())
 
       launcherTmpF
     }
@@ -478,7 +496,7 @@ class PhantomJSEnv(
       webTmpF.deleteOnExit()
 
       val out = new BufferedWriter(
-          new OutputStreamWriter(new FileOutputStream(webTmpF), "UTF-8"))
+        new OutputStreamWriter(new FileOutputStream(webTmpF), "UTF-8"))
 
       try {
         writeWebpageLauncher(out)
@@ -487,7 +505,7 @@ class PhantomJSEnv(
       }
 
       logger.debug(
-          "PhantomJS using webpage launcher at: " + webTmpF.getAbsolutePath())
+        "PhantomJS using webpage launcher at: " + webTmpF.getAbsolutePath())
 
       webTmpF
     }
@@ -503,13 +521,14 @@ class PhantomJSEnv(
     }
   }
 
-  protected def htmlEscape(str: String): String = str.flatMap {
-    case '<' => "&lt;"
-    case '>' => "&gt;"
-    case '"' => "&quot;"
-    case '&' => "&amp;"
-    case c   => c :: Nil
-  }
+  protected def htmlEscape(str: String): String =
+    str.flatMap {
+      case '<' => "&lt;"
+      case '>' => "&gt;"
+      case '"' => "&quot;"
+      case '&' => "&amp;"
+      case c   => c :: Nil
+    }
 
 }
 

@@ -9,18 +9,18 @@ import scala.collection.mutable
 
 /** Precalculated task infos for internal calculations. */
 private[appinfo] class TaskForStatistics(
-  val version: Timestamp,
-  val running: Boolean,
-  val staging: Boolean,
-  val healthy: Boolean,
-  val unhealthy: Boolean,
-  val maybeLifeTime: Option[Double])
+    val version: Timestamp,
+    val running: Boolean,
+    val staging: Boolean,
+    val healthy: Boolean,
+    val unhealthy: Boolean,
+    val maybeLifeTime: Option[Double])
 
 private[appinfo] object TaskForStatistics {
   def forTasks(
-    now: Timestamp,
-    tasks: Iterable[Task],
-    statuses: Map[Task.Id, Seq[Health]]): Iterable[TaskForStatistics] = {
+      now: Timestamp,
+      tasks: Iterable[Task],
+      statuses: Map[Task.Id, Seq[Health]]): Iterable[TaskForStatistics] = {
 
     val nowTs: Long = now.toDateTime.getMillis
 
@@ -36,7 +36,8 @@ private[appinfo] object TaskForStatistics {
           running = maybeTaskState.contains(TaskState.TASK_RUNNING),
           // Tasks that are staged do not have the taskState set at all, currently.
           // To make this a bit more robust, we also allow it to be set explicitly.
-          staging = maybeTaskState.isEmpty || maybeTaskState.contains(TaskState.TASK_STAGING),
+          staging = maybeTaskState.isEmpty || maybeTaskState.contains(
+            TaskState.TASK_STAGING),
           healthy = healths.nonEmpty && healths.forall(_.alive),
           unhealthy = healths.exists(!_.alive),
           maybeLifeTime = maybeTaskLifeTime

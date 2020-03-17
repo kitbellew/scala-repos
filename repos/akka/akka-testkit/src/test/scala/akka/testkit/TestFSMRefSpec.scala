@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.testkit
 
 import language.postfixOps
@@ -15,16 +14,19 @@ class TestFSMRefSpec extends AkkaSpec {
   "A TestFSMRef" must {
 
     "allow access to state data" in {
-      val fsm = TestFSMRef(new Actor with FSM[Int, String] {
-        startWith(1, "")
-        when(1) {
-          case Event("go", _)         ⇒ goto(2) using "go"
-          case Event(StateTimeout, _) ⇒ goto(2) using "timeout"
-        }
-        when(2) {
-          case Event("back", _) ⇒ goto(1) using "back"
-        }
-      }, "test-fsm-ref-1")
+      val fsm = TestFSMRef(
+        new Actor with FSM[Int, String] {
+          startWith(1, "")
+          when(1) {
+            case Event("go", _) ⇒ goto(2) using "go"
+            case Event(StateTimeout, _) ⇒ goto(2) using "timeout"
+          }
+          when(2) {
+            case Event("back", _) ⇒ goto(1) using "back"
+          }
+        },
+        "test-fsm-ref-1"
+      )
       fsm.stateName should ===(1)
       fsm.stateData should ===("")
       fsm ! "go"
@@ -43,12 +45,14 @@ class TestFSMRefSpec extends AkkaSpec {
     }
 
     "allow access to timers" in {
-      val fsm = TestFSMRef(new Actor with FSM[Int, Null] {
-        startWith(1, null)
-        when(1) {
-          case x ⇒ stay
-        }
-      }, "test-fsm-ref-2")
+      val fsm = TestFSMRef(
+        new Actor with FSM[Int, Null] {
+          startWith(1, null)
+          when(1) {
+            case x ⇒ stay
+          }
+        },
+        "test-fsm-ref-2")
       fsm.isTimerActive("test") should ===(false)
       fsm.setTimer("test", 12, 10 millis, true)
       fsm.isTimerActive("test") should ===(true)

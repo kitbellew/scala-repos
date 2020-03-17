@@ -4,16 +4,19 @@ import com.intellij.codeInsight.completion.CompletionType
 import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
 import org.jetbrains.plugins.scala.lang.completion.lookups.ScalaLookupItem
 import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettings
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScClass, ScObject}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScClass,
+  ScObject
+}
 
 /**
   * User: Alefas
   * Date: 27.03.12
   */
-
 class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
   def withRelativeImports(body: => Unit): Unit = {
-    val settings: ScalaCodeStyleSettings = ScalaCodeStyleSettings.getInstance(getProjectAdapter)
+    val settings: ScalaCodeStyleSettings =
+      ScalaCodeStyleSettings.getInstance(getProjectAdapter)
     val oldValue = settings.isAddFullQualifiedImports
     settings.setAddFullQualifiedImports(false)
     try {
@@ -42,7 +45,9 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
         |}
       """.stripMargin.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find(le => le.getLookupString == "BLLLL").get, '\t')
+    completeLookupItem(
+      activeLookup.find(le => le.getLookupString == "BLLLL").get,
+      '\t')
     checkResultByText(resultText)
   }
 
@@ -70,14 +75,19 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
         |}
       """.stripMargin.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find {
-      case le: ScalaLookupItem =>
-        le.element match {
-          case c: ScObject if c.qualifiedName == "scala.collection.mutable.HashSet" => true
-          case _ => false
-        }
-      case _ => false
-    }.get, '\t')
+    completeLookupItem(
+      activeLookup.find {
+        case le: ScalaLookupItem =>
+          le.element match {
+            case c: ScObject
+                if c.qualifiedName == "scala.collection.mutable.HashSet" =>
+              true
+            case _ => false
+          }
+        case _ => false
+      }.get,
+      '\t'
+    )
     checkResultByText(resultText)
   }
 
@@ -105,14 +115,19 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
         |}
       """.stripMargin.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find {
-      case le: ScalaLookupItem =>
-        le.element match {
-          case c: ScClass if c.qualifiedName == "scala.collection.mutable.HashSet" => true
-          case _ => false
-        }
-      case _ => false
-    }.get, '\t')
+    completeLookupItem(
+      activeLookup.find {
+        case le: ScalaLookupItem =>
+          le.element match {
+            case c: ScClass
+                if c.qualifiedName == "scala.collection.mutable.HashSet" =>
+              true
+            case _ => false
+          }
+        case _ => false
+      }.get,
+      '\t'
+    )
     checkResultByText(resultText)
   }
 
@@ -144,17 +159,21 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
           |}
         """.stripMargin.replaceAll("\r", "").trim()
 
-      completeLookupItem(activeLookup.find {
-        case le: ScalaLookupItem =>
-          le.element match {
-            case c: ScClass if c.qualifiedName == "scala.collection.mutable.ListMap" => true
-            case _ => false
-          }
-        case _ => false
-      }.get, '\t')
+      completeLookupItem(
+        activeLookup.find {
+          case le: ScalaLookupItem =>
+            le.element match {
+              case c: ScClass
+                  if c.qualifiedName == "scala.collection.mutable.ListMap" =>
+                true
+              case _ => false
+            }
+          case _ => false
+        }.get,
+        '\t'
+      )
       checkResultByText(resultText)
-    }
-    catch {
+    } catch {
       case t: Exception => settings.setImportsWithPrefix(oldValue)
     }
   }
@@ -184,14 +203,19 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
         |}
       """.stripMargin.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find {
-      case le: ScalaLookupItem =>
-        le.element match {
-          case c: ScClass if c.qualifiedName == "scala.collection.immutable.ListSet" => true
-          case _ => false
-        }
-      case _ => false
-    }.get, '\t')
+    completeLookupItem(
+      activeLookup.find {
+        case le: ScalaLookupItem =>
+          le.element match {
+            case c: ScClass
+                if c.qualifiedName == "scala.collection.immutable.ListSet" =>
+              true
+            case _ => false
+          }
+        case _ => false
+      }.get,
+      '\t'
+    )
     checkResultByText(resultText)
   }
 
@@ -273,7 +297,9 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
           |}
         """.stripMargin.replaceAll("\r", "").trim()
 
-      completeLookupItem(activeLookup.find(_.getLookupString == "XXXX").get, '\t')
+      completeLookupItem(
+        activeLookup.find(_.getLookupString == "XXXX").get,
+        '\t')
       checkResultByText(resultText)
     }
   }
@@ -313,7 +339,9 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
           |}
         """.stripMargin.replaceAll("\r", "").trim()
 
-      completeLookupItem(activeLookup.find(_.getLookupString == "XXXX").get, '\t')
+      completeLookupItem(
+        activeLookup.find(_.getLookupString == "XXXX").get,
+        '\t')
       checkResultByText(resultText)
     }
   }

@@ -33,7 +33,6 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.{TreeItem, TreeView}
 import scalafx.scene.layout.StackPane
 
-
 class EnsembleTreeView extends EnsembleExample {
 
   def getContent = {

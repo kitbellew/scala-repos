@@ -25,8 +25,8 @@ import org.apache.spark.util.{IntParam, MemoryParam, Utils}
 import org.apache.spark.SparkConf
 
 /**
- * Command-line parser for the worker.
- */
+  * Command-line parser for the worker.
+  */
 private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
   var host = Utils.localHostName()
   var port = 0
@@ -66,67 +66,69 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
   checkWorkerMemory()
 
   @tailrec
-  private def parse(args: List[String]): Unit = args match {
-    case ("--ip" | "-i") :: value :: tail =>
-      Utils.checkHost(value, "ip no longer supported, please use hostname " + value)
-      host = value
-      parse(tail)
+  private def parse(args: List[String]): Unit =
+    args match {
+      case ("--ip" | "-i") :: value :: tail =>
+        Utils.checkHost(
+          value,
+          "ip no longer supported, please use hostname " + value)
+        host = value
+        parse(tail)
 
-    case ("--host" | "-h") :: value :: tail =>
-      Utils.checkHost(value, "Please use hostname " + value)
-      host = value
-      parse(tail)
+      case ("--host" | "-h") :: value :: tail =>
+        Utils.checkHost(value, "Please use hostname " + value)
+        host = value
+        parse(tail)
 
-    case ("--port" | "-p") :: IntParam(value) :: tail =>
-      port = value
-      parse(tail)
+      case ("--port" | "-p") :: IntParam(value) :: tail =>
+        port = value
+        parse(tail)
 
-    case ("--cores" | "-c") :: IntParam(value) :: tail =>
-      cores = value
-      parse(tail)
+      case ("--cores" | "-c") :: IntParam(value) :: tail =>
+        cores = value
+        parse(tail)
 
-    case ("--memory" | "-m") :: MemoryParam(value) :: tail =>
-      memory = value
-      parse(tail)
+      case ("--memory" | "-m") :: MemoryParam(value) :: tail =>
+        memory = value
+        parse(tail)
 
-    case ("--work-dir" | "-d") :: value :: tail =>
-      workDir = value
-      parse(tail)
+      case ("--work-dir" | "-d") :: value :: tail =>
+        workDir = value
+        parse(tail)
 
-    case "--webui-port" :: IntParam(value) :: tail =>
-      webUiPort = value
-      parse(tail)
+      case "--webui-port" :: IntParam(value) :: tail =>
+        webUiPort = value
+        parse(tail)
 
-    case ("--properties-file") :: value :: tail =>
-      propertiesFile = value
-      parse(tail)
+      case ("--properties-file") :: value :: tail =>
+        propertiesFile = value
+        parse(tail)
 
-    case ("--help") :: tail =>
-      printUsageAndExit(0)
+      case ("--help") :: tail =>
+        printUsageAndExit(0)
 
-    case value :: tail =>
-      if (masters != null) {  // Two positional arguments were given
+      case value :: tail =>
+        if (masters != null) { // Two positional arguments were given
+          printUsageAndExit(1)
+        }
+        masters = Utils.parseStandaloneMasterUrls(value)
+        parse(tail)
+
+      case Nil =>
+        if (masters == null) { // No positional argument was given
+          printUsageAndExit(1)
+        }
+
+      case _ =>
         printUsageAndExit(1)
-      }
-      masters = Utils.parseStandaloneMasterUrls(value)
-      parse(tail)
-
-    case Nil =>
-      if (masters == null) {  // No positional argument was given
-        printUsageAndExit(1)
-      }
-
-    case _ =>
-      printUsageAndExit(1)
-  }
+    }
 
   /**
-   * Print usage and exit JVM with the given exit code.
-   */
+    * Print usage and exit JVM with the given exit code.
+    */
   def printUsageAndExit(exitCode: Int) {
     // scalastyle:off println
-    System.err.println(
-      "Usage: Worker [options] <master>\n" +
+    System.err.println("Usage: Worker [options] <master>\n" +
       "\n" +
       "Master must be a URL of the form spark://hostname:port\n" +
       "\n" +
@@ -155,20 +157,23 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
       // scalastyle:off classforname
       val bean = ManagementFactory.getOperatingSystemMXBean()
       if (ibmVendor) {
-        val beanClass = Class.forName("com.ibm.lang.management.OperatingSystemMXBean")
+        val beanClass =
+          Class.forName("com.ibm.lang.management.OperatingSystemMXBean")
         val method = beanClass.getDeclaredMethod("getTotalPhysicalMemory")
         totalMb = (method.invoke(bean).asInstanceOf[Long] / 1024 / 1024).toInt
       } else {
-        val beanClass = Class.forName("com.sun.management.OperatingSystemMXBean")
+        val beanClass =
+          Class.forName("com.sun.management.OperatingSystemMXBean")
         val method = beanClass.getDeclaredMethod("getTotalPhysicalMemorySize")
         totalMb = (method.invoke(bean).asInstanceOf[Long] / 1024 / 1024).toInt
       }
       // scalastyle:on classforname
     } catch {
       case e: Exception => {
-        totalMb = 2*1024
+        totalMb = 2 * 1024
         // scalastyle:off println
-        System.out.println("Failed to get total physical memory. Using " + totalMb + " MB")
+        System.out.println(
+          "Failed to get total physical memory. Using " + totalMb + " MB")
         // scalastyle:on println
       }
     }
@@ -178,7 +183,8 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
 
   def checkWorkerMemory(): Unit = {
     if (memory <= 0) {
-      val message = "Memory is below 1MB, or missing a M/G at the end of the memory specification?"
+      val message =
+        "Memory is below 1MB, or missing a M/G at the end of the memory specification?"
       throw new IllegalStateException(message)
     }
   }

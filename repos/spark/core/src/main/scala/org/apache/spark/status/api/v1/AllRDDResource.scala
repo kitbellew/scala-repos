@@ -30,8 +30,11 @@ private[v1] class AllRDDResource(ui: SparkUI) {
   def rddList(): Seq[RDDStorageInfo] = {
     val storageStatusList = ui.storageListener.activeStorageStatusList
     val rddInfos = ui.storageListener.rddInfoList
-    rddInfos.map{rddInfo =>
-      AllRDDResource.getRDDStorageInfo(rddInfo.id, rddInfo, storageStatusList,
+    rddInfos.map { rddInfo =>
+      AllRDDResource.getRDDStorageInfo(
+        rddInfo.id,
+        rddInfo,
+        storageStatusList,
         includeDetails = false)
     }
   }
@@ -56,12 +59,17 @@ private[spark] object AllRDDResource {
       storageStatusList: Seq[StorageStatus],
       includeDetails: Boolean): RDDStorageInfo = {
     val workers = storageStatusList.map { (rddId, _) }
-    val blockLocations = StorageUtils.getRddBlockLocations(rddId, storageStatusList)
+    val blockLocations =
+      StorageUtils.getRddBlockLocations(rddId, storageStatusList)
     val blocks = storageStatusList
       .flatMap { _.rddBlocksById(rddId) }
       .sortWith { _._1.name < _._1.name }
-      .map { case (blockId, status) =>
-        (blockId, status, blockLocations.getOrElse(blockId, Seq[String]("Unknown")))
+      .map {
+        case (blockId, status) =>
+          (
+            blockId,
+            status,
+            blockLocations.getOrElse(blockId, Seq[String]("Unknown")))
       }
 
     val dataDistribution = if (includeDetails) {
@@ -71,20 +79,22 @@ private[spark] object AllRDDResource {
           memoryUsed = status.memUsedByRdd(rddId),
           memoryRemaining = status.memRemaining,
           diskUsed = status.diskUsedByRdd(rddId)
-        ) } )
+        )
+      })
     } else {
       None
     }
     val partitions = if (includeDetails) {
-      Some(blocks.map { case (id, block, locations) =>
-        new RDDPartitionInfo(
-          blockName = id.name,
-          storageLevel = block.storageLevel.description,
-          memoryUsed = block.memSize,
-          diskUsed = block.diskSize,
-          executors = locations
-        )
-      } )
+      Some(blocks.map {
+        case (id, block, locations) =>
+          new RDDPartitionInfo(
+            blockName = id.name,
+            storageLevel = block.storageLevel.description,
+            memoryUsed = block.memSize,
+            diskUsed = block.diskSize,
+            executors = locations
+          )
+      })
     } else {
       None
     }

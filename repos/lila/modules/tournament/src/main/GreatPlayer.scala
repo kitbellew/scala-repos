@@ -596,14 +596,14 @@ object GreatPlayer {
     "Zuckerman" -> "Bernard_Zuckerman",
     "Zukertort" -> "Johannes_Zukertort",
     "Zvorykina" -> "Kira_Zvorykina",
-    "Żytogórski" -> "Adolf_Zytogorski")
+    "Żytogórski" -> "Adolf_Zytogorski"
+  )
 
   private val size = all.size
   private val names = all.keys.toVector
 
   def randomName: String = names(scala.util.Random nextInt size)
 
-  def wikiUrl(name: String) = all get name map { s =>
-    s"https://wikipedia.org/wiki/$s"
-  }
+  def wikiUrl(name: String) =
+    all get name map { s => s"https://wikipedia.org/wiki/$s" }
 }

@@ -4,12 +4,13 @@ package org.ensime.sexp
 
 object SexpCompactPrinter extends SexpPrinter {
 
-  def print(sexp: Sexp, sb: StringBuilder): Unit = sexp match {
-    case atom: SexpAtom => printAtom(atom, sb)
-    case SexpData(data) => printData(data, sb)
-    case SexpList(els) => printList(els, sb)
-    case SexpCons(x, y) => printCons(x, y, sb)
-  }
+  def print(sexp: Sexp, sb: StringBuilder): Unit =
+    sexp match {
+      case atom: SexpAtom => printAtom(atom, sb)
+      case SexpData(data) => printData(data, sb)
+      case SexpList(els)  => printList(els, sb)
+      case SexpCons(x, y) => printCons(x, y, sb)
+    }
 
   protected def printCons(x: Sexp, y: Sexp, sb: StringBuilder): Unit = {
     // recursive, could blow up for big trees
@@ -20,7 +21,9 @@ object SexpCompactPrinter extends SexpPrinter {
     sb.append(')')
   }
 
-  protected def printData(data: Map[SexpSymbol, Sexp], sb: StringBuilder): Unit =
+  protected def printData(
+      data: Map[SexpSymbol, Sexp],
+      sb: StringBuilder): Unit =
     if (data.isEmpty) print(SexpNil, sb)
     else {
       sb.append('(')

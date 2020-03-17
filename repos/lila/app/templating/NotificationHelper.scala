@@ -2,7 +2,7 @@ package lila.app
 package templating
 
 import lila.user.User
-import lila.notification.Env.{ current => notificationEnv }
+import lila.notification.Env.{current => notificationEnv}
 
 import play.twirl.api.Html
 import play.api.mvc.Call

@@ -26,16 +26,20 @@ import org.scalatest.mock.MockitoSugar
 
 import org.apache.spark.{SparkConf, SparkContext, SparkFunSuite}
 
-class MesosSchedulerUtilsSuite extends SparkFunSuite with Matchers with MockitoSugar {
+class MesosSchedulerUtilsSuite
+    extends SparkFunSuite
+    with Matchers
+    with MockitoSugar {
 
   // scalastyle:off structural.type
   // this is the documented way of generating fixtures in scalatest
-  def fixture: Object {val sc: SparkContext; val sparkConf: SparkConf} = new {
-    val sparkConf = new SparkConf
-    val sc = mock[SparkContext]
-    when(sc.conf).thenReturn(sparkConf)
-  }
-  val utils = new MesosSchedulerUtils { }
+  def fixture: Object { val sc: SparkContext; val sparkConf: SparkConf } =
+    new {
+      val sparkConf = new SparkConf
+      val sc = mock[SparkContext]
+      when(sc.conf).thenReturn(sparkConf)
+    }
+  val utils = new MesosSchedulerUtils {}
   // scalastyle:on structural.type
 
   test("use at-least minimum overhead") {
@@ -62,7 +66,8 @@ class MesosSchedulerUtilsSuite extends SparkFunSuite with Matchers with MockitoS
       "tachyon" -> Set("true"),
       "zone" -> Set("us-east-1a", "us-east-1b")
     )
-    utils.parseConstraintString("tachyon:true;zone:us-east-1a,us-east-1b") should be (expectedMap)
+    utils.parseConstraintString(
+      "tachyon:true;zone:us-east-1a,us-east-1b") should be(expectedMap)
   }
 
   test("parse an empty constraint string correctly") {
@@ -80,33 +85,47 @@ class MesosSchedulerUtilsSuite extends SparkFunSuite with Matchers with MockitoS
 
     parsedConstraints shouldBe Map("tachyon" -> Set())
 
-    val zoneSet = Value.Set.newBuilder().addItem("us-east-1a").addItem("us-east-1b").build()
+    val zoneSet =
+      Value.Set.newBuilder().addItem("us-east-1a").addItem("us-east-1b").build()
     val noTachyonOffer = Map("zone" -> zoneSet)
-    val tachyonTrueOffer = Map("tachyon" -> Value.Text.newBuilder().setValue("true").build())
-    val tachyonFalseOffer = Map("tachyon" -> Value.Text.newBuilder().setValue("false").build())
+    val tachyonTrueOffer =
+      Map("tachyon" -> Value.Text.newBuilder().setValue("true").build())
+    val tachyonFalseOffer =
+      Map("tachyon" -> Value.Text.newBuilder().setValue("false").build())
 
-    utils.matchesAttributeRequirements(parsedConstraints, noTachyonOffer) shouldBe false
-    utils.matchesAttributeRequirements(parsedConstraints, tachyonTrueOffer) shouldBe true
-    utils.matchesAttributeRequirements(parsedConstraints, tachyonFalseOffer) shouldBe true
+    utils.matchesAttributeRequirements(
+      parsedConstraints,
+      noTachyonOffer) shouldBe false
+    utils.matchesAttributeRequirements(
+      parsedConstraints,
+      tachyonTrueOffer) shouldBe true
+    utils.matchesAttributeRequirements(
+      parsedConstraints,
+      tachyonFalseOffer) shouldBe true
   }
 
   test("subset match is performed for set attributes") {
     val supersetConstraint = Map(
       "tachyon" -> Value.Text.newBuilder().setValue("true").build(),
-      "zone" -> Value.Set.newBuilder()
+      "zone" -> Value.Set
+        .newBuilder()
         .addItem("us-east-1a")
         .addItem("us-east-1b")
         .addItem("us-east-1c")
-        .build())
+        .build()
+    )
 
     val zoneConstraintStr = "tachyon:;zone:us-east-1a,us-east-1c"
     val parsedConstraints = utils.parseConstraintString(zoneConstraintStr)
 
-    utils.matchesAttributeRequirements(parsedConstraints, supersetConstraint) shouldBe true
+    utils.matchesAttributeRequirements(
+      parsedConstraints,
+      supersetConstraint) shouldBe true
   }
 
   test("less than equal match is performed on scalar attributes") {
-    val offerAttribs = Map("gpus" -> Value.Scalar.newBuilder().setValue(3).build())
+    val offerAttribs =
+      Map("gpus" -> Value.Scalar.newBuilder().setValue(3).build())
 
     val ltConstraint = utils.parseConstraintString("gpus:2")
     val eqConstraint = utils.parseConstraintString("gpus:3")
@@ -114,30 +133,44 @@ class MesosSchedulerUtilsSuite extends SparkFunSuite with Matchers with MockitoS
 
     utils.matchesAttributeRequirements(ltConstraint, offerAttribs) shouldBe true
     utils.matchesAttributeRequirements(eqConstraint, offerAttribs) shouldBe true
-    utils.matchesAttributeRequirements(gtConstraint, offerAttribs) shouldBe false
+    utils.matchesAttributeRequirements(
+      gtConstraint,
+      offerAttribs) shouldBe false
   }
 
   test("contains match is performed for range attributes") {
-    val offerAttribs = Map("ports" -> Value.Range.newBuilder().setBegin(7000).setEnd(8000).build())
+    val offerAttribs = Map(
+      "ports" -> Value.Range.newBuilder().setBegin(7000).setEnd(8000).build())
     val ltConstraint = utils.parseConstraintString("ports:6000")
     val eqConstraint = utils.parseConstraintString("ports:7500")
     val gtConstraint = utils.parseConstraintString("ports:8002")
     val multiConstraint = utils.parseConstraintString("ports:5000,7500,8300")
 
-    utils.matchesAttributeRequirements(ltConstraint, offerAttribs) shouldBe false
+    utils.matchesAttributeRequirements(
+      ltConstraint,
+      offerAttribs) shouldBe false
     utils.matchesAttributeRequirements(eqConstraint, offerAttribs) shouldBe true
-    utils.matchesAttributeRequirements(gtConstraint, offerAttribs) shouldBe false
-    utils.matchesAttributeRequirements(multiConstraint, offerAttribs) shouldBe true
+    utils.matchesAttributeRequirements(
+      gtConstraint,
+      offerAttribs) shouldBe false
+    utils.matchesAttributeRequirements(
+      multiConstraint,
+      offerAttribs) shouldBe true
   }
 
   test("equality match is performed for text attributes") {
-    val offerAttribs = Map("tachyon" -> Value.Text.newBuilder().setValue("true").build())
+    val offerAttribs =
+      Map("tachyon" -> Value.Text.newBuilder().setValue("true").build())
 
     val trueConstraint = utils.parseConstraintString("tachyon:true")
     val falseConstraint = utils.parseConstraintString("tachyon:false")
 
-    utils.matchesAttributeRequirements(trueConstraint, offerAttribs) shouldBe true
-    utils.matchesAttributeRequirements(falseConstraint, offerAttribs) shouldBe false
+    utils.matchesAttributeRequirements(
+      trueConstraint,
+      offerAttribs) shouldBe true
+    utils.matchesAttributeRequirements(
+      falseConstraint,
+      offerAttribs) shouldBe false
   }
 
 }

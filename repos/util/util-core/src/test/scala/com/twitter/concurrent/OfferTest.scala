@@ -1,6 +1,5 @@
 package com.twitter.concurrent
 
-
 import scala.util.Random
 
 import org.junit.runner.RunWith
@@ -50,7 +49,7 @@ class OfferTest extends WordSpec with MockitoSugar {
     class OfferSpecHelper {
       val pendingTxs = 0 until 3 map { _ => new Promise[Tx[Int]] }
       val offers = pendingTxs map { tx => spy(new SimpleOffer(tx)) }
-      val offer = Offer.choose(offers:_*)
+      val offer = Offer.choose(offers: _*)
     }
 
     "when a tx is already ready" should {
@@ -135,7 +134,8 @@ class OfferTest extends WordSpec with MockitoSugar {
         val h = new AllTxsReadyHelper
         import h._
 
-        val shuffledOffer = Offer.choose(Some(new Random(Time.now.inNanoseconds)), offers)
+        val shuffledOffer =
+          Offer.choose(Some(new Random(Time.now.inNanoseconds)), offers)
         val histo = new Array[Int](3)
         for (_ <- 0 until 1000) {
           for (tx <- shuffledOffer.prepare())
@@ -187,7 +187,8 @@ class OfferTest extends WordSpec with MockitoSugar {
       }
 
       "retry when it aborts" in {
-        val txps = new Promise[Tx[Int]] #:: new Promise[Tx[Int]] #:: Stream.empty
+        val txps =
+          new Promise[Tx[Int]] #:: new Promise[Tx[Int]] #:: Stream.empty
         val offer = spy(new SimpleOffer(txps))
         val badTx = mock[Tx[Int]]
         val result = Future.value(Abort)
@@ -294,7 +295,8 @@ class OfferTest extends WordSpec with MockitoSugar {
     "sync integration: when first transaction aborts" should {
       class SyncIntegrationHelper {
         val tx2 = new Promise[Tx[Int]]
-        val e0 = spy(new SimpleOffer(Future.value(Tx.aborted: Tx[Int]) #:: (tx2: Future[Tx[Int]]) #:: Stream.empty))
+        val e0 = spy(new SimpleOffer(Future.value(
+          Tx.aborted: Tx[Int]) #:: (tx2: Future[Tx[Int]]) #:: Stream.empty))
         val offer = e0 orElse Offer.const(123)
       }
 
@@ -343,16 +345,17 @@ class OfferTest extends WordSpec with MockitoSugar {
   }
 
   "Offer.timeout" should {
-    "be available after timeout (prepare)" in Time.withTimeAt(Time.epoch) { tc =>
-      implicit val timer = new MockTimer
-      val e = Offer.timeout(10.seconds)
-      assert(e.prepare().isDefined == false)
-      tc.advance(9.seconds)
-      timer.tick()
-      assert(e.prepare().isDefined == false)
-      tc.advance(1.second)
-      timer.tick()
-      assert(e.prepare().isDefined == true)
+    "be available after timeout (prepare)" in Time.withTimeAt(Time.epoch) {
+      tc =>
+        implicit val timer = new MockTimer
+        val e = Offer.timeout(10.seconds)
+        assert(e.prepare().isDefined == false)
+        tc.advance(9.seconds)
+        timer.tick()
+        assert(e.prepare().isDefined == false)
+        tc.advance(1.second)
+        timer.tick()
+        assert(e.prepare().isDefined == true)
     }
 
     "cancel timer tasks when losing" in Time.withTimeAt(Time.epoch) { tc =>
@@ -382,7 +385,7 @@ class OfferTest extends WordSpec with MockitoSugar {
         when(tx.ack()).thenReturn(result)
         new SimpleOffer(Future.value(tx))
       }
-      val chosenOffer = Offer.prioritize(offers:_*)
+      val chosenOffer = Offer.prioritize(offers: _*)
       val of = chosenOffer.sync()
       assert(of.isDefined == true)
       assert(Await.result(of) == 0)

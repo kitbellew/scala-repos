@@ -29,20 +29,26 @@ sealed trait FileEdit extends Ordered[FileEdit] {
   import scala.math.Ordered.orderingToOrdered
 
   def compare(that: FileEdit): Int =
-    (this.file, this.from, this.to, this.text).compare((that.file, that.from, that.to, that.text))
+    (this.file, this.from, this.to, this.text)
+      .compare((that.file, that.from, that.to, that.text))
 }
 
-case class TextEdit(file: File, from: Int, to: Int, text: String) extends FileEdit
+case class TextEdit(file: File, from: Int, to: Int, text: String)
+    extends FileEdit
 
 // the next case classes have weird fields because we need the values in the protocol
-case class NewFile(file: File, from: Int, to: Int, text: String) extends FileEdit
+case class NewFile(file: File, from: Int, to: Int, text: String)
+    extends FileEdit
 object NewFile {
-  def apply(file: File, text: String): NewFile = new NewFile(file, 0, text.length - 1, text)
+  def apply(file: File, text: String): NewFile =
+    new NewFile(file, 0, text.length - 1, text)
 }
 
-case class DeleteFile(file: File, from: Int, to: Int, text: String) extends FileEdit
+case class DeleteFile(file: File, from: Int, to: Int, text: String)
+    extends FileEdit
 object DeleteFile {
-  def apply(file: File, text: String): DeleteFile = new DeleteFile(file, 0, text.length - 1, text)
+  def apply(file: File, text: String): DeleteFile =
+    new DeleteFile(file, 0, text.length - 1, text)
 }
 
 sealed trait NoteSeverity
@@ -50,11 +56,12 @@ case object NoteError extends NoteSeverity
 case object NoteWarn extends NoteSeverity
 case object NoteInfo extends NoteSeverity
 object NoteSeverity {
-  def apply(severity: Int) = severity match {
-    case 2 => NoteError
-    case 1 => NoteWarn
-    case 0 => NoteInfo
-  }
+  def apply(severity: Int) =
+    severity match {
+      case 2 => NoteError
+      case 1 => NoteWarn
+      case 0 => NoteInfo
+    }
 }
 
 sealed abstract class RefactorLocation(val symbol: Symbol)
@@ -79,7 +86,14 @@ object RefactorType {
   case object OrganizeImports extends RefactorType('organizeImports)
   case object AddImport extends RefactorType('addImport)
 
-  def allTypes = Seq(Rename, ExtractMethod, ExtractLocal, InlineLocal, OrganizeImports, AddImport)
+  def allTypes =
+    Seq(
+      Rename,
+      ExtractMethod,
+      ExtractLocal,
+      InlineLocal,
+      OrganizeImports,
+      AddImport)
 }
 
 case class SourceFileInfo(
@@ -88,5 +102,6 @@ case class SourceFileInfo(
     contentsIn: Option[File] = None
 ) {
   // keep the log file sane for unsaved files
-  override def toString = s"SourceFileInfo($file,${contents.map(_ => "...")},$contentsIn)"
+  override def toString =
+    s"SourceFileInfo($file,${contents.map(_ => "...")},$contentsIn)"
 }

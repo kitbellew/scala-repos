@@ -25,12 +25,14 @@ trait SummingbirdConfig { self =>
   def keys: Iterable[String]
   def updates: Map[String, AnyRef]
   def removes: Set[String]
-  def toMap: Map[String, AnyRef] = new Map[String, AnyRef] {
-    def get(k: String) = self.get(k)
-    def +[B1 >: AnyRef](kv: (String, B1)) = self.put(kv._1, kv._2.asInstanceOf[AnyRef]).toMap
-    def -(k: String) = self.-(k).toMap
-    def iterator = self.keys.iterator.map(k => (k, self.get(k).get))
-  }
+  def toMap: Map[String, AnyRef] =
+    new Map[String, AnyRef] {
+      def get(k: String) = self.get(k)
+      def +[B1 >: AnyRef](kv: (String, B1)) =
+        self.put(kv._1, kv._2.asInstanceOf[AnyRef]).toMap
+      def -(k: String) = self.-(k).toMap
+      def iterator = self.keys.iterator.map(k => (k, self.get(k).get))
+    }
   def updated(newMap: Map[String, AnyRef]): SummingbirdConfig = {
     val removedKeys: Set[String] = keys.toSet -- newMap.keys
     val changedOrAddedKeys = newMap.flatMap {
@@ -52,7 +54,7 @@ trait MutableStringConfig {
     assert(config != null)
     config.get(key) match {
       case Some(s) => s.toString
-      case None => null
+      case None    => null
     }
   }
 
@@ -73,15 +75,15 @@ trait ReadableMap {
 }
 
 object WrappingConfig {
-  def apply(backingConfig: ReadableMap) = new WrappingConfig(
-    backingConfig,
-    Map[String, AnyRef](),
-    Set[String]())
+  def apply(backingConfig: ReadableMap) =
+    new WrappingConfig(backingConfig, Map[String, AnyRef](), Set[String]())
 }
 
-case class WrappingConfig(private val backingConfig: ReadableMap,
+case class WrappingConfig(
+    private val backingConfig: ReadableMap,
     updates: Map[String, AnyRef],
-    removes: Set[String]) extends SummingbirdConfig {
+    removes: Set[String])
+    extends SummingbirdConfig {
 
   def get(key: String) = {
     updates.get(key) match {

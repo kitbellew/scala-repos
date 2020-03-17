@@ -39,11 +39,17 @@ final class Env(
   lazy val streamerList = new StreamerList(new {
     import reactivemongo.bson._
     private val coll = db("flag")
-    def get = coll.find(BSONDocument("_id" -> "streamer")).one[BSONDocument].map {
-      ~_.flatMap(_.getAs[String]("text"))
-    }
+    def get =
+      coll.find(BSONDocument("_id" -> "streamer")).one[BSONDocument].map {
+        ~_.flatMap(_.getAs[String]("text"))
+      }
     def set(text: String) =
-      coll.update(BSONDocument("_id" -> "streamer"), BSONDocument("text" -> text), upsert = true).void
+      coll
+        .update(
+          BSONDocument("_id" -> "streamer"),
+          BSONDocument("text" -> text),
+          upsert = true)
+        .void
   })
 
   object isStreamer {
@@ -56,9 +62,8 @@ final class Env(
   }
 
   object streamsOnAir {
-    private val cache = lila.memo.AsyncCache.single[List[StreamOnAir]](
-      f = streaming.onAir,
-      timeToLive = 2 seconds)
+    private val cache = lila.memo.AsyncCache
+      .single[List[StreamOnAir]](f = streaming.onAir, timeToLive = 2 seconds)
     def all = cache(true)
   }
 
@@ -89,4 +94,3 @@ object Env {
     scheduler = lila.common.PlayApp.scheduler,
     isProd = lila.common.PlayApp.isProd)
 }
-

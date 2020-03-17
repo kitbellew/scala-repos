@@ -5,12 +5,12 @@ import android.graphics.drawable.ColorDrawable
 import org.scaloid.common.SStateListDrawable
 
 /**
- * Provides minimalistic button styles.
- * {{{
- *   Button("Simple").backgroundDrawable(Sytles.yellow)
- *   Button("Styles").backgroundDrawable(Sytles.btn(0xff68B8FC))
- * }}}
- */
+  * Provides minimalistic button styles.
+  * {{{
+  *   Button("Simple").backgroundDrawable(Sytles.yellow)
+  *   Button("Styles").backgroundDrawable(Sytles.btn(0xff68B8FC))
+  * }}}
+  */
 trait Styles {
   import Color._
 
@@ -33,37 +33,40 @@ trait Styles {
 
   @inline def invert(color: Int): Int = transform(color, 255 - _)
 
-  @inline def clamp(c: Int) = if(c > 255) 255 else if(c < 0) 0 else c
+  @inline def clamp(c: Int) = if (c > 255) 255 else if (c < 0) 0 else c
 
   def pressedColor(color: Int): Int = {
     val avg = average(color)
-    if(avg < 80) return invert(pressedColor(invert(color)))
-    def f(c: Int) = clamp((c * 0.7 * (c/(avg+0.01))).asInstanceOf[Int])
+    if (avg < 80) return invert(pressedColor(invert(color)))
+    def f(c: Int) = clamp((c * 0.7 * (c / (avg + 0.01))).asInstanceOf[Int])
     transform(color, f)
   }
 
-  def btn(normal:Int, pressed:Int) = new SStateListDrawable {
-    +=(c(pressed), PRESSED)
-    +=(c(LTGRAY), -ENABLED)
-    +=(c(normal))
-  }
+  def btn(normal: Int, pressed: Int) =
+    new SStateListDrawable {
+      +=(c(pressed), PRESSED)
+      +=(c(LTGRAY), -ENABLED)
+      +=(c(normal))
+    }
 
-  def btn(normal:Int): SStateListDrawable = btn(normal, pressedColor(normal))
+  def btn(normal: Int): SStateListDrawable = btn(normal, pressedColor(normal))
 
   def white = btn(WHITE)
 
   def black = btn(BLACK)
 
-  def selectable = new SStateListDrawable {
-    +=(c(DKGRAY), SELECTED)
-    +=(c(BLACK))
-  }
+  def selectable =
+    new SStateListDrawable {
+      +=(c(DKGRAY), SELECTED)
+      +=(c(BLACK))
+    }
 
-  def clickable = new SStateListDrawable {
-    +=(c(DKGRAY), SELECTED)
-    +=(c(DKGRAY), PRESSED)
-    +=(c(TRANSPARENT))
-  }
+  def clickable =
+    new SStateListDrawable {
+      +=(c(DKGRAY), SELECTED)
+      +=(c(DKGRAY), PRESSED)
+      +=(c(TRANSPARENT))
+    }
 
   def gray = btn(LTGRAY)
 

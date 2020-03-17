@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.util
 
 import org.scalatest.Matchers
@@ -56,7 +56,7 @@ class IndexSpec extends AkkaSpec with Matchers with DefaultTimeout {
       //Remove key
       index.remove("s2") match {
         case Some(iter) ⇒ iter.toSet should ===(Set(1, 2))
-        case None       ⇒ fail()
+        case None ⇒ fail()
       }
       index.remove("s2") should ===(None)
       index.valueIterator("s2").toSet should ===(Set.empty[Int])
@@ -100,29 +100,34 @@ class IndexSpec extends AkkaSpec with Matchers with DefaultTimeout {
       for (key ← 0 until nrOfKeys; value ← 0 until nrOfValues)
         index.put(key, value)
       //Tasks to be executed in parallel
-      def putTask() = Future {
-        index.put(Random.nextInt(nrOfKeys), Random.nextInt(nrOfValues))
-      }
-      def removeTask1() = Future {
-        index.remove(Random.nextInt(nrOfKeys / 2), Random.nextInt(nrOfValues))
-      }
-      def removeTask2() = Future {
-        index.remove(Random.nextInt(nrOfKeys / 2))
-      }
-      def readTask() = Future {
-        val key = Random.nextInt(nrOfKeys)
-        val values = index.valueIterator(key)
-        if (key >= nrOfKeys / 2) {
-          values.isEmpty should ===(false)
+      def putTask() =
+        Future {
+          index.put(Random.nextInt(nrOfKeys), Random.nextInt(nrOfValues))
         }
-      }
+      def removeTask1() =
+        Future {
+          index.remove(Random.nextInt(nrOfKeys / 2), Random.nextInt(nrOfValues))
+        }
+      def removeTask2() =
+        Future {
+          index.remove(Random.nextInt(nrOfKeys / 2))
+        }
+      def readTask() =
+        Future {
+          val key = Random.nextInt(nrOfKeys)
+          val values = index.valueIterator(key)
+          if (key >= nrOfKeys / 2) {
+            values.isEmpty should ===(false)
+          }
+        }
 
-      def executeRandomTask() = Random.nextInt(4) match {
-        case 0 ⇒ putTask()
-        case 1 ⇒ removeTask1()
-        case 2 ⇒ removeTask2()
-        case 3 ⇒ readTask()
-      }
+      def executeRandomTask() =
+        Random.nextInt(4) match {
+          case 0 ⇒ putTask()
+          case 1 ⇒ removeTask1()
+          case 2 ⇒ removeTask2()
+          case 3 ⇒ readTask()
+        }
 
       val tasks = List.fill(nrOfTasks)(executeRandomTask)
 

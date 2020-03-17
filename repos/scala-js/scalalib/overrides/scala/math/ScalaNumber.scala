@@ -6,15 +6,13 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala.math
 
 /** A marker class for Number types introduced by Scala
- *  @author  Martin Odersky, Paul Phillips
- *  @version 2.8
- *  @since 2.8
- */
+  *  @author  Martin Odersky, Paul Phillips
+  *  @version 2.8
+  *  @since 2.8
+  */
 abstract class ScalaNumber extends java.lang.Number {
   protected def isWhole(): Boolean
   def underlying(): Object

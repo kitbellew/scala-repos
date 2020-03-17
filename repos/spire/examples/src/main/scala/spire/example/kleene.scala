@@ -7,21 +7,20 @@ import spire.algebra._
 import spire.std.BooleanIsRig
 import spire.implicits._
 
-
 /**
- * These examples are taken from http://r6.ca/blog/20110808T035622Z.html.
- *
- * The goal is to try to do as direct a translation as possible from the
- * Haskell, to see how well we can do with Spire.
- *
- * The original example is in literate Haskell with good comments, so consult
- * the link for more information.
- */
+  * These examples are taken from http://r6.ca/blog/20110808T035622Z.html.
+  *
+  * The goal is to try to do as direct a translation as possible from the
+  * Haskell, to see how well we can do with Spire.
+  *
+  * The original example is in literate Haskell with good comments, so consult
+  * the link for more information.
+  */
 object KleeneDemo {
 
   /**
-   * Show is a type class we'll use to control how types should display.
-   */
+    * Show is a type class we'll use to control how types should display.
+    */
   trait Show[A] {
     def show(a: A): String
   }
@@ -42,23 +41,26 @@ object KleeneDemo {
   implicit object BooleanHasShow extends Show[Boolean] {
     def show(a: Boolean) = if (a) "x" else "."
   }
-  implicit def optionHasShow[A](implicit ev: Show[A]) = new Show[Option[A]] {
-    def show(a: Option[A]) = a.map(ev.show).getOrElse("-")
-  }
-  implicit def listHasShow[A](implicit ev: Show[A]) = new Show[List[A]] {
-    def show(a: List[A]) = a.map(ev.show).mkString("[", ",", "]")
-  }
-  implicit def streamHasShow[A](implicit ev: Show[A]) = new Show[Stream[A]] {
-    def show(s: Stream[A]) =
-      if (s.isEmpty) "[]" else "[%s,...]" format ev.show(s.head)
-  }
+  implicit def optionHasShow[A](implicit ev: Show[A]) =
+    new Show[Option[A]] {
+      def show(a: Option[A]) = a.map(ev.show).getOrElse("-")
+    }
+  implicit def listHasShow[A](implicit ev: Show[A]) =
+    new Show[List[A]] {
+      def show(a: List[A]) = a.map(ev.show).mkString("[", ",", "]")
+    }
+  implicit def streamHasShow[A](implicit ev: Show[A]) =
+    new Show[Stream[A]] {
+      def show(s: Stream[A]) =
+        if (s.isEmpty) "[]" else "[%s,...]" format ev.show(s.head)
+    }
 
   /**
-   * StarRig[A] is a Rig[A] that also has an asteration operator: kstar.
-   *
-   * Laws:
-   * 1. a.star = 1 + a * a.star = 1 + a.star * a
-   */
+    * StarRig[A] is a Rig[A] that also has an asteration operator: kstar.
+    *
+    * Laws:
+    * 1. a.star = 1 + a * a.star = 1 + a.star * a
+    */
   trait StarRig[A] extends Rig[A] {
     // one of these must be overridden in any type class instance
     def kstar(a: A): A = plus(one, kplus(a))
@@ -74,7 +76,10 @@ object KleeneDemo {
     def kplus: A = StarRig[A].kplus(a)
   }
 
-  implicit def matrixHasStarRig[A](implicit dim: Dim, sr: StarRig[A], ct: ClassTag[A]) =
+  implicit def matrixHasStarRig[A](implicit
+      dim: Dim,
+      sr: StarRig[A],
+      ct: ClassTag[A]) =
     new StarRig[Matrix[A]] {
       def zero: Matrix[A] = Matrix.zero
       def one: Matrix[A] = Matrix.one
@@ -82,9 +87,8 @@ object KleeneDemo {
       def times(x: Matrix[A], y: Matrix[A]) = x * y
 
       override def kplus(m: Matrix[A]) = {
-        def f(k: Int, m: Matrix[A]) = Matrix[A] { (x, y) =>
-          m(x, y) + m(k, y) * m(k, k).kstar * m(x, k)
-        }
+        def f(k: Int, m: Matrix[A]) =
+          Matrix[A] { (x, y) => m(x, y) + m(k, y) * m(k, k).kstar * m(x, k) }
         @tailrec def loop(m: Matrix[A], i: Int): Matrix[A] =
           if (i >= 0) loop(f(i, m), i - 1) else m
         loop(m, dim.n - 1)
@@ -92,13 +96,13 @@ object KleeneDemo {
     }
 
   /**
-   * A Kleene is a StarRig which obeys some additional laws.
-   *
-   * Laws:
-   * 1. a + a = a
-   * 2. a * x + x = x  ==> a.kstar * x + x = x
-   * 3. x * a + x = x  ==>  x * a.kstar + x = x
-   */
+    * A Kleene is a StarRig which obeys some additional laws.
+    *
+    * Laws:
+    * 1. a + a = a
+    * 2. a * x + x = x  ==> a.kstar * x + x = x
+    * 3. x * a + x = x  ==>  x * a.kstar + x = x
+    */
   trait Kleene[A] extends StarRig[A]
   object Kleene {
     def apply[A](implicit ev: Kleene[A]) = ev
@@ -111,19 +115,18 @@ object KleeneDemo {
   }
 
   /**
-   * Dim is a cute little class that let's us have implicit size information.
-   *
-   * This is to work around the fact that we don't currently have
-   * implementations of Bounded[A] or Ix[A] like Haskell does.
-   *
-   * Dim is probably not robust enough for real world use.
-   */
+    * Dim is a cute little class that let's us have implicit size information.
+    *
+    * This is to work around the fact that we don't currently have
+    * implementations of Bounded[A] or Ix[A] like Haskell does.
+    *
+    * Dim is probably not robust enough for real world use.
+    */
   case class Dim(n: Int)
 
-
   /**
-   * Naive matrix trait.
-   */
+    * Naive matrix trait.
+    */
   trait Matrix[A] { lhs =>
     def dim: Dim
     def apply(x: Int, y: Int): A
@@ -133,44 +136,46 @@ object KleeneDemo {
   }
 
   object Matrix {
+
     /**
-     * Builds a Matrix[A] given a function (Int, Int) => A and an implicit Dim
-     * to provide the dimensions over which to run the function.
-     */
+      * Builds a Matrix[A] given a function (Int, Int) => A and an implicit Dim
+      * to provide the dimensions over which to run the function.
+      */
     def apply[A: ClassTag](f: (Int, Int) => A)(implicit dim: Dim): Matrix[A] = {
       val n = dim.n
       val arr = new Array[A](n * n)
       cfor(0)(_ < n, _ + 1) { y =>
-        cfor(0)(_ < n, _ + 1) { x =>
-          arr(y * n + x) = f(x, y)
-        }
+        cfor(0)(_ < n, _ + 1) { x => arr(y * n + x) = f(x, y) }
       }
       new ArrayMatrix(arr)
     }
 
     /**
-     * Given an implicit Dim, builds the zero matrix (all zeros).
-     */
+      * Given an implicit Dim, builds the zero matrix (all zeros).
+      */
     def zero[A: Rig: ClassTag](implicit dim: Dim): Matrix[A] =
       apply((x, y) => Rig[A].zero)
 
     /**
-     * Given an implicit Dim, builds the identity matrix (diagonal ones).
-     */
+      * Given an implicit Dim, builds the identity matrix (diagonal ones).
+      */
     def one[A: Rig: ClassTag](implicit dim: Dim): Matrix[A] =
       apply((x, y) => if (x == y) Rig[A].one else Rig[A].zero)
   }
 
   /**
-   * Mutable ArrayMatrix implementation.
-   *
-   * The mutability should only be used to initialize a matrix. Once it's built
-   * it will be typed as Matrix[A] with no interface for further mutation.
-   *
-   * The matrix also has naive implementations of addition and multiplication.
-   * These are not optimized--do not use this class in the wild!
-   */
-  case class ArrayMatrix[A](arr: Array[A])(implicit val dim: Dim, ct: ClassTag[A]) extends Matrix[A] { lhs =>
+    * Mutable ArrayMatrix implementation.
+    *
+    * The mutability should only be used to initialize a matrix. Once it's built
+    * it will be typed as Matrix[A] with no interface for further mutation.
+    *
+    * The matrix also has naive implementations of addition and multiplication.
+    * These are not optimized--do not use this class in the wild!
+    */
+  case class ArrayMatrix[A](arr: Array[A])(implicit
+      val dim: Dim,
+      ct: ClassTag[A])
+      extends Matrix[A] { lhs =>
     def apply(x: Int, y: Int): A = arr(y * dim.n + x)
 
     def update(x: Int, y: Int, a: A): Unit = arr(y * dim.n + x) = a
@@ -190,22 +195,26 @@ object KleeneDemo {
   }
 
   // type class instance for Show[Matrix[A]]
-  implicit def matrixHasShow[A](implicit ev: Show[A]) = new Show[Matrix[A]] {
-    def show(m: Matrix[A]): String = {
-      val s = Show[A]
-      val n = m.dim.n
-      val lines = Array.fill(n)("")
-      cfor(0)(_ < n, _ + 1) { x =>
-        cfor(0)(_ < n, _ + 1)(y => lines(y) += s.show(m(x, y)) + " ")
-        val len = lines.foldLeft(0)(_ max _.length)
-        cfor(0)(_ < n, _ + 1)(y => lines(y) += " " * (len - lines(y).length))
+  implicit def matrixHasShow[A](implicit ev: Show[A]) =
+    new Show[Matrix[A]] {
+      def show(m: Matrix[A]): String = {
+        val s = Show[A]
+        val n = m.dim.n
+        val lines = Array.fill(n)("")
+        cfor(0)(_ < n, _ + 1) { x =>
+          cfor(0)(_ < n, _ + 1)(y => lines(y) += s.show(m(x, y)) + " ")
+          val len = lines.foldLeft(0)(_ max _.length)
+          cfor(0)(_ < n, _ + 1)(y => lines(y) += " " * (len - lines(y).length))
+        }
+        lines.mkString("\n") + "\n"
       }
-      lines.mkString("\n") + "\n"
     }
-  }
 
   // type class instance for Kleene[Matrix[A]]
-  implicit def matrixHasKleene[A](implicit dim: Dim, ka: Kleene[A], ct: ClassTag[A]) =
+  implicit def matrixHasKleene[A](implicit
+      dim: Dim,
+      ka: Kleene[A],
+      ct: ClassTag[A]) =
     new Kleene[Matrix[A]] {
       def zero: Matrix[A] = Matrix.zero
       def one: Matrix[A] = Matrix.one
@@ -213,9 +222,8 @@ object KleeneDemo {
       def times(x: Matrix[A], y: Matrix[A]) = x * y
 
       override def kplus(m: Matrix[A]) = {
-        def f(k: Int, m: Matrix[A]) = Matrix[A] { (x, y) =>
-          m(x, y) + m(k, y) * m(k, k).kstar * m(x, k)
-        }
+        def f(k: Int, m: Matrix[A]) =
+          Matrix[A] { (x, y) => m(x, y) + m(k, y) * m(k, k).kstar * m(x, k) }
         @tailrec def loop(m: Matrix[A], i: Int): Matrix[A] =
           if (i >= 0) loop(f(i, m), i - 1) else m
         loop(m, dim.n - 1)
@@ -223,12 +231,12 @@ object KleeneDemo {
     }
 
   /**
-   * Edge is a simple class used to construct adjacency matrices.
-   *
-   * It's important to remember that edges go: y -> x.
-   *
-   * Thus from is the y-coordinate and to is the x-coordinate.
-   */
+    * Edge is a simple class used to construct adjacency matrices.
+    *
+    * It's important to remember that edges go: y -> x.
+    *
+    * Thus from is the y-coordinate and to is the x-coordinate.
+    */
   case class Edge(from: Int, to: Int)
 
   // type class instance for Show[Edge]
@@ -236,10 +244,9 @@ object KleeneDemo {
     def show(e: Edge) = "(%c%c)" format ('A' + e.from, 'A' + e.to)
   }
 
-
   /**
-   * Graph provides functions for constructing an adjacency matrices.
-   */
+    * Graph provides functions for constructing an adjacency matrices.
+    */
   object Graph {
     def apply(edges: Edge*)(implicit dim: Dim): Matrix[Boolean] = {
       val m = ArrayMatrix(Array.fill[Boolean](dim.n * dim.n)(false))
@@ -248,25 +255,23 @@ object KleeneDemo {
     }
   }
   object LabeledGraph {
-    def apply(m: Matrix[Boolean])(implicit dim: Dim) = Matrix[Option[Edge]] { (x, y) =>
-      if (m(x, y)) Some(Edge(y, x)) else None
-    }
+    def apply(m: Matrix[Boolean])(implicit dim: Dim) =
+      Matrix[Option[Edge]] { (x, y) => if (m(x, y)) Some(Edge(y, x)) else None }
   }
 
-
   /**
-   * Expr[A] implements an AST for regular expressions.
-   *
-   * Basic regular consist of the following:
-   *  1. the empty set (Nul)        -- a set with no strings
-   *  2. the empty string (Empty)   -- set containing the empty string
-   *  3. literal strings (Var(a))   -- set containing a
-   *  4. concatenation (Then(a, b)) -- set of all xy, for x in a, y in b
-   *  5. alternation (Or(a, b))     -- union set of a and b
-   *  6. kleene star (Star(a))      -- set produced by 0+ concatenations from a
-   *
-   * For example, (a|bc)* includes "", "a", "bc", "abcaaaabc" but not "bc".
-   */
+    * Expr[A] implements an AST for regular expressions.
+    *
+    * Basic regular consist of the following:
+    *  1. the empty set (Nul)        -- a set with no strings
+    *  2. the empty string (Empty)   -- set containing the empty string
+    *  3. literal strings (Var(a))   -- set containing a
+    *  4. concatenation (Then(a, b)) -- set of all xy, for x in a, y in b
+    *  5. alternation (Or(a, b))     -- union set of a and b
+    *  6. kleene star (Star(a))      -- set produced by 0+ concatenations from a
+    *
+    * For example, (a|bc)* includes "", "a", "bc", "abcaaaabc" but not "bc".
+    */
   sealed trait Expr[+A]
   case class Var[A](a: A) extends Expr[A]
   case class Or[A](lhs: Expr[A], rhs: Expr[A]) extends Expr[A]
@@ -279,48 +284,53 @@ object KleeneDemo {
   }
 
   // type class instance for Show[Expr[A]]
-  implicit def exprHasShow[A](implicit ev: Show[A]) = new Show[Expr[A]] {
-    def show(e: Expr[A]) = e match {
-      case Var(a) => ev.show(a)
-      case Empty => "ε"
-      case Nul => "∅"
-      case Star(x) => "(" + show(x) + ")*"
-      case Or(x, y) => "(" + show(x) + "|" + show(y) + ")"
-      case Then(x, y) => show(x) + show(y)
+  implicit def exprHasShow[A](implicit ev: Show[A]) =
+    new Show[Expr[A]] {
+      def show(e: Expr[A]) =
+        e match {
+          case Var(a)     => ev.show(a)
+          case Empty      => "ε"
+          case Nul        => "∅"
+          case Star(x)    => "(" + show(x) + ")*"
+          case Or(x, y)   => "(" + show(x) + "|" + show(y) + ")"
+          case Then(x, y) => show(x) + show(y)
+        }
     }
-  }
 
   // type class instance for Kleene[Expr[A]]
-  implicit def exprHasKleene[A] = new Kleene[Expr[A]] {
-    def zero: Expr[A] = Nul
-    def one: Expr[A] = Empty
-    def plus(x: Expr[A], y: Expr[A]): Expr[A] = (x, y) match {
-      case (Nul, e) => e
-      case (e, Nul) => e
-      case (Empty, Empty) => Empty
-      case (Empty, Star(e)) => Star(e)
-      case (Star(e), Empty) => Star(e)
-      case (e1, e2) => Or(e1, e2)
+  implicit def exprHasKleene[A] =
+    new Kleene[Expr[A]] {
+      def zero: Expr[A] = Nul
+      def one: Expr[A] = Empty
+      def plus(x: Expr[A], y: Expr[A]): Expr[A] =
+        (x, y) match {
+          case (Nul, e)         => e
+          case (e, Nul)         => e
+          case (Empty, Empty)   => Empty
+          case (Empty, Star(e)) => Star(e)
+          case (Star(e), Empty) => Star(e)
+          case (e1, e2)         => Or(e1, e2)
+        }
+      def times(x: Expr[A], y: Expr[A]): Expr[A] =
+        (x, y) match {
+          case (Nul, _)   => Nul
+          case (_, Nul)   => Nul
+          case (Empty, e) => e
+          case (e, Empty) => e
+          case (e1, e2)   => Then(e1, e2)
+        }
+      override def kstar(x: Expr[A]): Expr[A] =
+        x match {
+          case Nul     => Empty
+          case Empty   => Empty
+          case Star(e) => kstar(e)
+          case _       => Star(x)
+        }
     }
-    def times(x: Expr[A], y: Expr[A]): Expr[A] = (x, y) match {
-      case (Nul, _) => Nul
-      case (_, Nul) => Nul
-      case (Empty, e) => e
-      case (e, Empty) => e
-      case (e1, e2) => Then(e1, e2)
-    }
-    override def kstar(x: Expr[A]): Expr[A] = x match {
-      case Nul => Empty
-      case Empty => Empty
-      case Star(e) => kstar(e)
-      case _ => Star(x)
-    }
-  }
-
 
   /**
-   * Tropical represents a finite quantity between zero and infinity.
-   */
+    * Tropical represents a finite quantity between zero and infinity.
+    */
   sealed trait Tropical[+A]
   case class Finite[A](a: A) extends Tropical[A]
   case object Infinity extends Tropical[Nothing]
@@ -330,66 +340,77 @@ object KleeneDemo {
     def inf[A]: Tropical[A] = Infinity
   }
 
-  implicit def tropicalHasShow[A: Show] = new Show[Tropical[A]] {
-    def show(t: Tropical[A]) = t match {
-      case Finite(a) => Show[A].show(a)
-      case Infinity => "∞"
+  implicit def tropicalHasShow[A: Show] =
+    new Show[Tropical[A]] {
+      def show(t: Tropical[A]) =
+        t match {
+          case Finite(a) => Show[A].show(a)
+          case Infinity  => "∞"
+        }
     }
-  }
 
-  implicit def tropicalHasOrder[A](implicit ord: Order[A]) = new Order[Tropical[A]] {
-    def compare(x: Tropical[A], y: Tropical[A]) = (x, y) match {
-      case (Infinity, Infinity) => 0
-      case (Infinity, _) => 1
-      case (_, Infinity) => -1
-      case (Finite(a1), Finite(a2)) => ord.compare(a1, a2)
+  implicit def tropicalHasOrder[A](implicit ord: Order[A]) =
+    new Order[Tropical[A]] {
+      def compare(x: Tropical[A], y: Tropical[A]) =
+        (x, y) match {
+          case (Infinity, Infinity)     => 0
+          case (Infinity, _)            => 1
+          case (_, Infinity)            => -1
+          case (Finite(a1), Finite(a2)) => ord.compare(a1, a2)
+        }
     }
-  }
 
-  implicit def TropicalHasKleene[A: Order: Rig] = new Kleene[Tropical[A]] {
-    def zero: Tropical[A] = Infinity
-    def one: Tropical[A] = Tropical(Rig[A].zero)
-    def plus(x: Tropical[A], y: Tropical[A]): Tropical[A] = (x, y) match {
-      case (Infinity, t) => t
-      case (t, Infinity) => t
-      case (Finite(a1), Finite(a2)) => Tropical(a1 min a2)
+  implicit def TropicalHasKleene[A: Order: Rig] =
+    new Kleene[Tropical[A]] {
+      def zero: Tropical[A] = Infinity
+      def one: Tropical[A] = Tropical(Rig[A].zero)
+      def plus(x: Tropical[A], y: Tropical[A]): Tropical[A] =
+        (x, y) match {
+          case (Infinity, t)            => t
+          case (t, Infinity)            => t
+          case (Finite(a1), Finite(a2)) => Tropical(a1 min a2)
+        }
+      def times(x: Tropical[A], y: Tropical[A]): Tropical[A] =
+        (x, y) match {
+          case (Infinity, _)            => Infinity
+          case (_, Infinity)            => Infinity
+          case (Finite(a1), Finite(a2)) => Tropical(a1 + a2)
+        }
+      override def kstar(x: Tropical[A]): Tropical[A] = one
     }
-    def times(x: Tropical[A], y: Tropical[A]): Tropical[A] = (x, y) match {
-      case (Infinity, _) => Infinity
-      case (_, Infinity) => Infinity
-      case (Finite(a1), Finite(a2)) => Tropical(a1 + a2)
-    }
-    override def kstar(x: Tropical[A]): Tropical[A] = one
-  }
-
 
   /**
-   * ShortestPath is a data structure which will track two things:
-   *  1. the path's cost, as Tropical[A]
-   *  2. the path itself, as B
-   * Any impossible path will have Infinity as its cost.
-   */
+    * ShortestPath is a data structure which will track two things:
+    *  1. the path's cost, as Tropical[A]
+    *  2. the path itself, as B
+    * Any impossible path will have Infinity as its cost.
+    */
   case class ShortestPath[A, B](a: Tropical[A], b: B) {
     def map[C](f: B => C) = ShortestPath[A, C](a, f(b))
   }
 
   // type class instance for Show[ShortestPath[A, B]]
-  implicit def spHasShow[A: Show, B: Show] = new Show[ShortestPath[A, B]] {
-    def show(p: ShortestPath[A, B]) = "%s[%s]" format (p.b.show, p.a.show)
-  }
+  implicit def spHasShow[A: Show, B: Show] =
+    new Show[ShortestPath[A, B]] {
+      def show(p: ShortestPath[A, B]) = "%s[%s]" format (p.b.show, p.a.show)
+    }
 
   // type class instance for Kleene[ShortestPath[A, B]]
-  implicit def shortestPathHasKleene[A, B](implicit rig: Rig[Tropical[A]], ord: Order[Tropical[A]], kb: Kleene[B]) =
+  implicit def shortestPathHasKleene[A, B](implicit
+      rig: Rig[Tropical[A]],
+      ord: Order[Tropical[A]],
+      kb: Kleene[B]) =
     new Kleene[ShortestPath[A, B]] {
       def zero = ShortestPath(rig.zero, kb.zero)
 
       def one = ShortestPath(rig.one, kb.one)
 
-      def plus(x: ShortestPath[A, B], y: ShortestPath[A, B]) = (x.a compare y.a) match {
-        case -1 => x
-        case 0 => ShortestPath(x.a + y.a, x.b + y.b)
-        case 1 => y
-      }
+      def plus(x: ShortestPath[A, B], y: ShortestPath[A, B]) =
+        (x.a compare y.a) match {
+          case -1 => x
+          case 0  => ShortestPath(x.a + y.a, x.b + y.b)
+          case 1  => y
+        }
 
       def times(x: ShortestPath[A, B], y: ShortestPath[A, B]) =
         ShortestPath(x.a * y.a, x.b * y.b)
@@ -398,13 +419,12 @@ object KleeneDemo {
         ShortestPath(rig.one, if (x.a === rig.one) x.b.kstar else kb.one)
     }
 
-
   /**
-   * Language represents the set of every valid string in a regular
-   * language. Each W is a valid character, each Stream[W] is a (lazy)
-   * string, and SS[W] (e.g. Stream[Stream[W]]) is the complete set of
-   * all strings.
-   */
+    * Language represents the set of every valid string in a regular
+    * language. Each W is a valid character, each Stream[W] is a (lazy)
+    * string, and SS[W] (e.g. Stream[Stream[W]]) is the complete set of
+    * all strings.
+    */
   case class Language[W](wss: SS[W]) {
     def someWord: Option[List[W]] = wss.headOption.map(_.toList)
   }
@@ -416,36 +436,40 @@ object KleeneDemo {
   type SS[W] = Stream[Stream[W]]
 
   // type class instance for Show[Language[W]]
-  implicit def languageHasShow[W: Show] = new Show[Language[W]] {
-    def show(l: Language[W]) = Show[SS[W]].show(l.wss)
-  }
+  implicit def languageHasShow[W: Show] =
+    new Show[Language[W]] {
+      def show(l: Language[W]) = Show[SS[W]].show(l.wss)
+    }
 
   // type class instance for Kleene[Language[W]]
-  implicit def languageHasKleene[W] = new Kleene[Language[W]] {
-    def zero: Language[W] = Language(Stream.empty[Stream[W]])
-    def one: Language[W] = Language(Stream(Stream.empty[W]))
+  implicit def languageHasKleene[W] =
+    new Kleene[Language[W]] {
+      def zero: Language[W] = Language(Stream.empty[Stream[W]])
+      def one: Language[W] = Language(Stream(Stream.empty[W]))
 
-    def plus(x: Language[W], y: Language[W]): Language[W] = {
-      def interleave(ws1: SS[W], ws2: SS[W]): SS[W] =
-        if (ws1.isEmpty) ws2 else ws1.head #:: interleave(ws2, ws1.tail)
-      Language(interleave(x.wss, y.wss))
+      def plus(x: Language[W], y: Language[W]): Language[W] = {
+        def interleave(ws1: SS[W], ws2: SS[W]): SS[W] =
+          if (ws1.isEmpty) ws2 else ws1.head #:: interleave(ws2, ws1.tail)
+        Language(interleave(x.wss, y.wss))
+      }
+
+      def times(x: Language[W], y: Language[W]): Language[W] =
+        Language(x.wss.flatMap(ws1 => y.wss.map(ws2 => ws1 #::: ws2)))
+
+      override def kstar(x: Language[W]): Language[W] =
+        Language(
+          Stream.empty #:: x.wss.flatMap(s => kstar(x).wss.map(s #::: _)))
     }
-
-    def times(x: Language[W], y: Language[W]): Language[W] =
-      Language(x.wss.flatMap(ws1 => y.wss.map(ws2 => ws1 #::: ws2)))
-
-    override def kstar(x: Language[W]): Language[W] =
-      Language(Stream.empty #:: x.wss.flatMap(s => kstar(x).wss.map(s #::: _)))
-  }
 
   /**
-   *
-   */
+    *
+    */
   trait Compact[+A] {
-    def map[B: Field](f: A => B): Compact[B] = this match {
-      case CompactReal(a) => CompactReal(f(a))
-      case _ => CompactInf
-    }
+    def map[B: Field](f: A => B): Compact[B] =
+      this match {
+        case CompactReal(a) => CompactReal(f(a))
+        case _              => CompactInf
+      }
   }
   case object CompactInf extends Compact[Nothing]
   case class CompactReal[A: Field](a: A) extends Compact[A]
@@ -453,38 +477,44 @@ object KleeneDemo {
     def apply[A: Field](a: A): Compact[A] = CompactReal(a)
   }
 
-  implicit def compactHasShow[A: Show] = new Show[Compact[A]] {
-    def show(c: Compact[A]) = c match {
-      case CompactReal(a) => a.show
-      case _ => "∞"
+  implicit def compactHasShow[A: Show] =
+    new Show[Compact[A]] {
+      def show(c: Compact[A]) =
+        c match {
+          case CompactReal(a) => a.show
+          case _              => "∞"
+        }
     }
-  }
 
-  implicit def compactIsStarRig[A: Field] = new StarRig[Compact[A]] {
-    val zero: Compact[A] = Compact(Field[A].zero)
-    val one: Compact[A] = Compact(Field[A].one)
-    def plus(x: Compact[A], y: Compact[A]): Compact[A] = (x, y) match {
-      case (CompactInf, _) => CompactInf
-      case (_, CompactInf) => CompactInf
-      case (CompactReal(a), CompactReal(b)) => Compact(a + b)
+  implicit def compactIsStarRig[A: Field] =
+    new StarRig[Compact[A]] {
+      val zero: Compact[A] = Compact(Field[A].zero)
+      val one: Compact[A] = Compact(Field[A].one)
+      def plus(x: Compact[A], y: Compact[A]): Compact[A] =
+        (x, y) match {
+          case (CompactInf, _)                  => CompactInf
+          case (_, CompactInf)                  => CompactInf
+          case (CompactReal(a), CompactReal(b)) => Compact(a + b)
+        }
+      def times(x: Compact[A], y: Compact[A]): Compact[A] =
+        (x, y) match {
+          case (`zero`, _)                      => zero
+          case (_, `zero`)                      => zero
+          case (CompactInf, _)                  => CompactInf
+          case (_, CompactInf)                  => CompactInf
+          case (CompactReal(a), CompactReal(b)) => Compact(a * b)
+        }
+      override def kstar(x: Compact[A]): Compact[A] =
+        x match {
+          case `one`          => CompactInf
+          case CompactInf     => CompactInf
+          case CompactReal(a) => CompactReal((Field[A].one - a).reciprocal)
+        }
     }
-    def times(x: Compact[A], y: Compact[A]): Compact[A] = (x, y) match {
-      case (`zero`, _) => zero
-      case (_, `zero`) => zero
-      case (CompactInf, _) => CompactInf
-      case (_, CompactInf) => CompactInf
-      case (CompactReal(a), CompactReal(b)) => Compact(a * b)
-    }
-    override def kstar(x: Compact[A]): Compact[A] = x match {
-      case `one` => CompactInf
-      case CompactInf => CompactInf
-      case CompactReal(a) => CompactReal((Field[A].one - a).reciprocal)
-    }
-  }
 
   /**
-   *
-   */
+    *
+    */
   def graphExample(): Unit = {
     // our example graph will be 5x5
     implicit val dim = Dim(5)
@@ -493,13 +523,14 @@ object KleeneDemo {
     val edges = List(
       Edge(0, 1),
       Edge(1, 2),
-      Edge(2, 3), Edge(2, 4),
+      Edge(2, 3),
+      Edge(2, 4),
       Edge(3, 1),
       Edge(4, 3)
     )
 
     // build the example graph
-    val example: Matrix[Boolean] = Graph(edges:_*)
+    val example: Matrix[Boolean] = Graph(edges: _*)
 
     // examine the graph
     println("adjacency matrix:\n%s" format example.show)
@@ -519,18 +550,23 @@ object KleeneDemo {
     implicit val dim = Dim(6)
 
     val edges = List(
-      (Edge(0, 1), 7), (Edge(0, 2), 9), (Edge(0, 5), 14),
-      (Edge(1, 2), 10), (Edge(1, 3), 15),
-      (Edge(2, 3), 11), (Edge(2, 5), 2),
+      (Edge(0, 1), 7),
+      (Edge(0, 2), 9),
+      (Edge(0, 5), 14),
+      (Edge(1, 2), 10),
+      (Edge(1, 3), 15),
+      (Edge(2, 3), 11),
+      (Edge(2, 5), 2),
       (Edge(3, 4), 6),
       (Edge(4, 5), 9)
     )
 
     val weighted: Matrix[Tropical[Int]] = {
       val m = ArrayMatrix(Array.fill(dim.n * dim.n)(Tropical.inf[Int]))
-      edges.foreach { case (Edge(y, x), n) =>
-        m(x, y) = Tropical(n)
-        m(y, x) = Tropical(n)
+      edges.foreach {
+        case (Edge(y, x), n) =>
+          m(x, y) = Tropical(n)
+          m(y, x) = Tropical(n)
       }
       m
     }
@@ -540,7 +576,7 @@ object KleeneDemo {
 
     val annotated = Matrix[ShortestPath[Int, Expr[Edge]]] { (x, y) =>
       weighted(x, y) match {
-        case Infinity => ShortestPath(Infinity, Kleene[Expr[Edge]].zero)
+        case Infinity  => ShortestPath(Infinity, Kleene[Expr[Edge]].zero)
         case Finite(n) => ShortestPath(Finite(n), Var(Edge(y, x)))
       }
     }
@@ -550,7 +586,7 @@ object KleeneDemo {
 
     val langed = Matrix[ShortestPath[Int, Language[Edge]]] { (x, y) =>
       weighted(x, y) match {
-        case Infinity => ShortestPath(Infinity, Kleene[Language[Edge]].zero)
+        case Infinity  => ShortestPath(Infinity, Kleene[Language[Edge]].zero)
         case Finite(n) => ShortestPath(Finite(n), Language.letter(Edge(y, x)))
       }
     }
@@ -558,17 +594,18 @@ object KleeneDemo {
     println("l-annotated:\n" + langed.show)
     println("l-shortest-path:\n" + langed.kstar.map(_.b.someWord).show)
 
-    def evalExpr[A, B: Kleene](expr: Expr[A])(f: A => B): B = expr match {
-      case Nul => Kleene[B].zero
-      case Empty => Kleene[B].one
-      case Var(a) => f(a)
-      case Star(x) => evalExpr(x)(f).kstar
-      case Or(x, y) => evalExpr(x)(f) + evalExpr(y)(f)
-      case Then(x, y) => evalExpr(x)(f) * evalExpr(y)(f)
-    }
+    def evalExpr[A, B: Kleene](expr: Expr[A])(f: A => B): B =
+      expr match {
+        case Nul        => Kleene[B].zero
+        case Empty      => Kleene[B].one
+        case Var(a)     => f(a)
+        case Star(x)    => evalExpr(x)(f).kstar
+        case Or(x, y)   => evalExpr(x)(f) + evalExpr(y)(f)
+        case Then(x, y) => evalExpr(x)(f) * evalExpr(y)(f)
+      }
 
     val costExprs: Matrix[Expr[Int]] = annotated.map {
-      case ShortestPath(Infinity, _) => Nul
+      case ShortestPath(Infinity, _)  => Nul
       case ShortestPath(Finite(n), _) => Expr(n)
     }
     val leastCostExprs: Matrix[Tropical[Int]] =
@@ -581,7 +618,8 @@ object KleeneDemo {
     // our example matrix is 2x2
     implicit val dim = Dim(2)
 
-    val m: Matrix[Compact[Double]] = ArrayMatrix(Array(2.0, 1.0, 0.0, 2.0)).map(n => Compact(n))
+    val m: Matrix[Compact[Double]] =
+      ArrayMatrix(Array(2.0, 1.0, 0.0, 2.0)).map(n => Compact(n))
     println("2x2 matrix:\n" + m.show)
     println("2x2 asteration:\n" + m.kstar.show)
 

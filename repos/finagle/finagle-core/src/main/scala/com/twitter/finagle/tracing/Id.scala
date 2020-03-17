@@ -6,11 +6,10 @@ import com.twitter.util.{Try, Return, Throw}
 import com.twitter.util.NonFatal
 
 /**
- * Defines trace identifiers.  Span IDs name a particular (unique)
- * span, while TraceIds contain a span ID as well as context (parentId
- * and traceId).
- */
-
+  * Defines trace identifiers.  Span IDs name a particular (unique)
+  * span, while TraceIds contain a span ID as well as context (parentId
+  * and traceId).
+  */
 final class SpanId(val self: Long) extends Proxy {
   def toLong = self
 
@@ -28,18 +27,18 @@ object SpanId {
     }
   ).toArray
 
-  private def byteToChars(b: Byte): Array[Char] = lut(b+128)
+  private def byteToChars(b: Byte): Array[Char] = lut(b + 128)
 
   // This is invoked a lot, so they need to be fast.
   def toString(l: Long): String = {
     val b = new StringBuilder(16)
-    b.appendAll(byteToChars((l>>56 & 0xff).toByte))
-    b.appendAll(byteToChars((l>>48 & 0xff).toByte))
-    b.appendAll(byteToChars((l>>40 & 0xff).toByte))
-    b.appendAll(byteToChars((l>>32 & 0xff).toByte))
-    b.appendAll(byteToChars((l>>24 & 0xff).toByte))
-    b.appendAll(byteToChars((l>>16 & 0xff).toByte))
-    b.appendAll(byteToChars((l>>8 & 0xff).toByte))
+    b.appendAll(byteToChars((l >> 56 & 0xff).toByte))
+    b.appendAll(byteToChars((l >> 48 & 0xff).toByte))
+    b.appendAll(byteToChars((l >> 40 & 0xff).toByte))
+    b.appendAll(byteToChars((l >> 32 & 0xff).toByte))
+    b.appendAll(byteToChars((l >> 24 & 0xff).toByte))
+    b.appendAll(byteToChars((l >> 16 & 0xff).toByte))
+    b.appendAll(byteToChars((l >> 8 & 0xff).toByte))
     b.appendAll(byteToChars((l & 0xff).toByte))
     b.toString
   }
@@ -55,20 +54,21 @@ object SpanId {
 }
 
 object TraceId {
+
   /**
-   * Creates a TraceId with no flags set. See case class for more info.
-   */
+    * Creates a TraceId with no flags set. See case class for more info.
+    */
   def apply(
-    traceId: Option[SpanId],
-    parentId: Option[SpanId],
-    spanId: SpanId,
-    sampled: Option[Boolean]
+      traceId: Option[SpanId],
+      parentId: Option[SpanId],
+      spanId: SpanId,
+      sampled: Option[Boolean]
   ): TraceId =
     TraceId(traceId, parentId, spanId, sampled, Flags())
 
   /**
-   * Serialize a TraceId into an array of bytes.
-   */
+    * Serialize a TraceId into an array of bytes.
+    */
   def serialize(traceId: TraceId): Array[Byte] = {
     val flags = traceId._sampled match {
       case None =>
@@ -88,8 +88,8 @@ object TraceId {
   }
 
   /**
-   * Deserialize a TraceId from an array of bytes.
-   */
+    * Deserialize a TraceId from an array of bytes.
+    */
   def deserialize(bytes: Array[Byte]): Try[TraceId] = {
     if (bytes.length != 32) {
       Throw(new IllegalArgumentException("Expected 32 bytes"))
@@ -116,41 +116,43 @@ object TraceId {
 }
 
 /**
- * A trace id represents one particular trace for one request.
- * @param _traceId The id for this request.
- * @param _parentId The id for the request one step up the service stack.
- * @param spanId The id for this particular request
- * @param _sampled Should we sample this request or not? True means sample, false means don't, none means we defer
- *                decision to someone further down in the stack.
- * @param flags Flags relevant to this request. Could be things like debug mode on/off. The sampled flag could eventually
- *              be moved in here.
- */
+  * A trace id represents one particular trace for one request.
+  * @param _traceId The id for this request.
+  * @param _parentId The id for the request one step up the service stack.
+  * @param spanId The id for this particular request
+  * @param _sampled Should we sample this request or not? True means sample, false means don't, none means we defer
+  *                decision to someone further down in the stack.
+  * @param flags Flags relevant to this request. Could be things like debug mode on/off. The sampled flag could eventually
+  *              be moved in here.
+  */
 final case class TraceId(
-  _traceId: Option[SpanId],
-  _parentId: Option[SpanId],
-  spanId: SpanId,
-  _sampled: Option[Boolean],
-  flags: Flags)
-{
-  def traceId: SpanId = _traceId match {
-    case None => parentId
-    case Some(id) => id
-  }
+    _traceId: Option[SpanId],
+    _parentId: Option[SpanId],
+    spanId: SpanId,
+    _sampled: Option[Boolean],
+    flags: Flags) {
+  def traceId: SpanId =
+    _traceId match {
+      case None     => parentId
+      case Some(id) => id
+    }
 
-  def parentId: SpanId = _parentId match {
-    case None => spanId
-    case Some(id) => id
-  }
+  def parentId: SpanId =
+    _parentId match {
+      case None     => spanId
+      case Some(id) => id
+    }
 
   // debug flag overrides sampled to be true
   lazy val sampled = if (flags.isDebug) Some(true) else _sampled
 
   private[TraceId] def ids = (traceId, parentId, spanId)
 
-  override def equals(other: Any) = other match {
-    case other: TraceId => this.ids equals other.ids
-    case _ => false
-  }
+  override def equals(other: Any) =
+    other match {
+      case other: TraceId => this.ids equals other.ids
+      case _              => false
+    }
 
   override def hashCode(): Int =
     ids.hashCode()

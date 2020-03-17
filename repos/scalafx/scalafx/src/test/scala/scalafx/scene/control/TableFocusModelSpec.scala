@@ -35,23 +35,29 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
- * TableViewFocusModel tests.
- */
+  * TableViewFocusModel tests.
+  */
 @RunWith(classOf[JUnitRunner])
 class TableFocusModelSpec[T, TC <: jfxsc.TableColumnBase[T, _]]
-  extends SimpleSFXDelegateSpec[jfxsc.TableFocusModel[T, TC], TableFocusModel[T, TC]](classOf[jfxsc.TableFocusModel[T, TC]], classOf[TableFocusModel[T, TC]]) {
+    extends SimpleSFXDelegateSpec[
+      jfxsc.TableFocusModel[T, TC],
+      TableFocusModel[T, TC]](
+      classOf[jfxsc.TableFocusModel[T, TC]],
+      classOf[TableFocusModel[T, TC]]) {
 
-  override def getScalaClassInstance = new TableFocusModel[T, TC](this.getJavaClassInstance) {}
+  override def getScalaClassInstance =
+    new TableFocusModel[T, TC](this.getJavaClassInstance) {}
 
-  override def getJavaClassInstance = new jfxsc.TableFocusModel[T, TC] {
-    def getItemCount(): Int = 0
-    def getModelItem(index: Int): T = null.asInstanceOf[T]
-    def focus(row: Int, column: TC) {}
-    def focusAboveCell() {}
-    def focusBelowCell() {}
-    def focusLeftCell() {}
-    def focusRightCell() {}
-    def isFocused(row: Int, column: TC): Boolean = false
-  }
+  override def getJavaClassInstance =
+    new jfxsc.TableFocusModel[T, TC] {
+      def getItemCount(): Int = 0
+      def getModelItem(index: Int): T = null.asInstanceOf[T]
+      def focus(row: Int, column: TC) {}
+      def focusAboveCell() {}
+      def focusBelowCell() {}
+      def focusLeftCell() {}
+      def focusRightCell() {}
+      def isFocused(row: Int, column: TC): Boolean = false
+    }
 
 }

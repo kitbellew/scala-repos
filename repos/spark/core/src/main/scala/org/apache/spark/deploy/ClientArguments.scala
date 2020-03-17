@@ -27,8 +27,8 @@ import org.apache.log4j.Level
 import org.apache.spark.util.{IntParam, MemoryParam, Utils}
 
 /**
- * Command-line parser for the driver client.
- */
+  * Command-line parser for the driver client.
+  */
 private[deploy] class ClientArguments(args: Array[String]) {
   import ClientArguments._
 
@@ -51,60 +51,62 @@ private[deploy] class ClientArguments(args: Array[String]) {
   parse(args.toList)
 
   @tailrec
-  private def parse(args: List[String]): Unit = args match {
-    case ("--cores" | "-c") :: IntParam(value) :: tail =>
-      cores = value
-      parse(tail)
+  private def parse(args: List[String]): Unit =
+    args match {
+      case ("--cores" | "-c") :: IntParam(value) :: tail =>
+        cores = value
+        parse(tail)
 
-    case ("--memory" | "-m") :: MemoryParam(value) :: tail =>
-      memory = value
-      parse(tail)
+      case ("--memory" | "-m") :: MemoryParam(value) :: tail =>
+        memory = value
+        parse(tail)
 
-    case ("--supervise" | "-s") :: tail =>
-      supervise = true
-      parse(tail)
+      case ("--supervise" | "-s") :: tail =>
+        supervise = true
+        parse(tail)
 
-    case ("--help" | "-h") :: tail =>
-      printUsageAndExit(0)
+      case ("--help" | "-h") :: tail =>
+        printUsageAndExit(0)
 
-    case ("--verbose" | "-v") :: tail =>
-      logLevel = Level.INFO
-      parse(tail)
+      case ("--verbose" | "-v") :: tail =>
+        logLevel = Level.INFO
+        parse(tail)
 
-    case "launch" :: _master :: _jarUrl :: _mainClass :: tail =>
-      cmd = "launch"
+      case "launch" :: _master :: _jarUrl :: _mainClass :: tail =>
+        cmd = "launch"
 
-      if (!ClientArguments.isValidJarUrl(_jarUrl)) {
-        // scalastyle:off println
-        println(s"Jar url '${_jarUrl}' is not in valid format.")
-        println(s"Must be a jar file path in URL format " +
-          "(e.g. hdfs://host:port/XX.jar, file:///XX.jar)")
-        // scalastyle:on println
-        printUsageAndExit(-1)
-      }
+        if (!ClientArguments.isValidJarUrl(_jarUrl)) {
+          // scalastyle:off println
+          println(s"Jar url '${_jarUrl}' is not in valid format.")
+          println(
+            s"Must be a jar file path in URL format " +
+              "(e.g. hdfs://host:port/XX.jar, file:///XX.jar)")
+          // scalastyle:on println
+          printUsageAndExit(-1)
+        }
 
-      jarUrl = _jarUrl
-      masters = Utils.parseStandaloneMasterUrls(_master)
-      mainClass = _mainClass
-      _driverOptions ++= tail
+        jarUrl = _jarUrl
+        masters = Utils.parseStandaloneMasterUrls(_master)
+        mainClass = _mainClass
+        _driverOptions ++= tail
 
-    case "kill" :: _master :: _driverId :: tail =>
-      cmd = "kill"
-      masters = Utils.parseStandaloneMasterUrls(_master)
-      driverId = _driverId
+      case "kill" :: _master :: _driverId :: tail =>
+        cmd = "kill"
+        masters = Utils.parseStandaloneMasterUrls(_master)
+        driverId = _driverId
 
-    case _ =>
-      printUsageAndExit(1)
-  }
+      case _ =>
+        printUsageAndExit(1)
+    }
 
   /**
-   * Print usage and exit JVM with the given exit code.
-   */
+    * Print usage and exit JVM with the given exit code.
+    */
   private def printUsageAndExit(exitCode: Int) {
     // TODO: It wouldn't be too hard to allow users to submit their app and dependency jars
     //       separately similar to in the YARN client.
     val usage =
-     s"""
+      s"""
       |Usage: DriverClient [options] launch <active-master> <jar-url> <main-class> [driver options]
       |Usage: DriverClient kill <active-master> <driver-id>
       |
@@ -130,7 +132,8 @@ private[deploy] object ClientArguments {
   def isValidJarUrl(s: String): Boolean = {
     try {
       val uri = new URI(s)
-      uri.getScheme != null && uri.getPath != null && uri.getPath.endsWith(".jar")
+      uri.getScheme != null && uri.getPath != null && uri.getPath.endsWith(
+        ".jar")
     } catch {
       case _: URISyntaxException => false
     }

@@ -10,76 +10,85 @@ object scalac extends Command {
 
   protected def cn = new Error().getStackTrace()(0).getClassName()
 
-  val name = Section("NAME",
-
+  val name = Section(
+    "NAME",
     MBold(command) & " " & NDash & " Compiler for the " &
-    Link("Scala 2", "http://scala-lang.org/") & " language")
+      Link("Scala 2", "http://scala-lang.org/") & " language")
 
-  val synopsis = Section("SYNOPSIS",
+  val synopsis = Section(
+    "SYNOPSIS",
+    CmdLine(
+      " [ " & Argument("options") & " ] " &
+        Argument("source files")))
 
-    CmdLine(" [ " & Argument("options") & " ] " &
-            Argument("source files")))
-
-  val parameters = Section("PARAMETERS",
-
+  val parameters = Section(
+    "PARAMETERS",
     DefinitionList(
       Definition(
         Mono(Argument("options")),
         "Command line options. See " & Link(Bold("OPTIONS"), "#options") &
-        " below."),
+          " below."),
       Definition(
         Mono(Argument("source files")),
         "One or more source files to be compiled (such as " &
-        Mono("MyClass.scala") & ").")))
+          Mono("MyClass.scala") & ").")
+    )
+  )
 
-  val description = Section("DESCRIPTION",
-
+  val description = Section(
+    "DESCRIPTION",
     "The " & MBold(command) & " tool reads class and object definitions, " &
-    "written in the Scala programming language, and compiles them into " &
-    "bytecode class files.",
-
+      "written in the Scala programming language, and compiles them into " &
+      "bytecode class files.",
     "By default, the compiler puts each class file in the same directory " &
-    "as its source file. You can specify a separate destination directory " &
-    "with -d (see " & Link(Bold("OPTIONS"), "#options") & ", below).")
+      "as its source file. You can specify a separate destination directory " &
+      "with -d (see " & Link(Bold("OPTIONS"), "#options") & ", below)."
+  )
 
-  val options = Section("OPTIONS",
-
+  val options = Section(
+    "OPTIONS",
     "The compiler has a set of standard options that are supported on the " &
-    "current development environment and will be supported in future " &
-    "releases. An additional set of non-standard options are specific to " &
-    "the current virtual machine implementation and are subject to change " &
-    "in the future.  Non-standard options begin with " & MBold("-X") & ".",
-
-    Section("Standard Options",
+      "current development environment and will be supported in future " &
+      "releases. An additional set of non-standard options are specific to " &
+      "the current virtual machine implementation and are subject to change " &
+      "in the future.  Non-standard options begin with " & MBold("-X") & ".",
+    Section(
+      "Standard Options",
       DefinitionList(
         Definition(
           CmdOptionBound("D", "property=value"),
-          "Pass " & CmdOptionBound("D", "property=value") & " directly to the runtime system."),
+          "Pass " & CmdOptionBound(
+            "D",
+            "property=value") & " directly to the runtime system."),
         Definition(
           CmdOptionBound("J", Argument("flag")),
-          "Pass " & Mono(Argument("flag")) & " directly to the runtime system."),
+          "Pass " & Mono(
+            Argument("flag")) & " directly to the runtime system."),
         Definition(
           CmdOptionBound("P:", Argument("plugin:opt")),
           "Pass an option to a plugin"),
-        Definition(
-          CmdOption("X"),
-          "Print a synopsis of advanced options."),
+        Definition(CmdOption("X"), "Print a synopsis of advanced options."),
         Definition(
           CmdOption("bootclasspath", Argument("path")),
           "Override location of bootstrap class files (where to find the " &
-          "standard built-in classes, such as \"" & Mono("scala.List") & "\")."),
+            "standard built-in classes, such as \"" & Mono(
+            "scala.List") & "\")."
+        ),
         Definition(
           CmdOption("classpath", Argument("path")),
           SeqPara(
             "Specify where to find user class files (on Unix-based systems " &
-            "a colon-separated list of paths, on Windows-based systems, a " &
-            "semicolon-separated list of paths). This does not override the " &
-            "built-in (" & Mono("\"boot\"") & ") search path.",
+              "a colon-separated list of paths, on Windows-based systems, a " &
+              "semicolon-separated list of paths). This does not override the " &
+              "built-in (" & Mono("\"boot\"") & ") search path.",
             "The default class path is the current directory. Setting the " &
-            Mono("CLASSPATH") & " variable or using the " & Mono("-classpath") & " " &
-            "command-line option overrides that default, so if you want to " &
-            "include the current directory in the search path, you must " &
-            "include " & Mono("\".\"") & " in the new settings.")),
+              Mono("CLASSPATH") & " variable or using the " & Mono(
+              "-classpath") & " " &
+              "command-line option overrides that default, so if you want to " &
+              "include the current directory in the search path, you must " &
+              "include " & Mono("\".\"") & " in the new settings."
+          )
+        ),
         Definition(
           CmdOption("d", Argument("directory|jar")),
           "Specify where to place generated class files."),
@@ -92,12 +101,16 @@ object scalac extends Command {
           CmdOption("encoding", Argument("encoding")),
           SeqPara(
             "Specify character encoding used by source files.",
-            "The default value is platform-specific (Linux: " & Mono("\"UTF8\"") &
-            ", Windows: " & Mono("\"Cp1252\"") & "). Executing the following " &
-            "code in the Scala interpreter will return the default value " &
-            "on your system:",
+            "The default value is platform-specific (Linux: " & Mono(
+              "\"UTF8\"") &
+              ", Windows: " & Mono(
+              "\"Cp1252\"") & "). Executing the following " &
+              "code in the Scala interpreter will return the default value " &
+              "on your system:",
             MBold("    scala> ") &
-            Mono("new java.io.InputStreamReader(System.in).getEncoding"))),
+              Mono("new java.io.InputStreamReader(System.in).getEncoding")
+          )
+        ),
         Definition(
           CmdOption("explaintypes"),
           "Explain type errors in more detail."),
@@ -114,12 +127,12 @@ object scalac extends Command {
             Mono("\"source\"") & " generates only the source file attribute,",
             Mono("\"line\"") & " generates source and line number information,",
             Mono("\"vars\"") & " generates source, line number and local " &
-            "variable information,",
+              "variable information,",
             Mono("\"notailcalls\"") & " generates all of the above and " &
-            Italic("will not") & " perform tail call optimization.")),
-        Definition(
-          CmdOption("help"),
-          "Print a synopsis of standard options."),
+              Italic("will not") & " perform tail call optimization."
+          )
+        ),
+        Definition(CmdOption("help"), "Print a synopsis of standard options."),
         Definition(
           CmdOption("javabootclasspath", Argument("path")),
           "Override Java boot classpath."),
@@ -135,9 +148,7 @@ object scalac extends Command {
         Definition(
           CmdOption("nobootcp"),
           "Do not use the boot classpath for the Scala jar files."),
-        Definition(
-          CmdOption("nowarn"),
-          "Generate no warnings"),
+        Definition(CmdOption("nowarn"), "Generate no warnings"),
         Definition(
           CmdOption("optimise"),
           "Generates faster bytecode by applying optimisations to the program."),
@@ -149,8 +160,7 @@ object scalac extends Command {
           "Specify location(s) of source files."),
         Definition(
           CmdOptionBound("target:", "{jvm-1.8}"),
-          SeqPara(
-            Mono("\"jvm-1.8\"") & " target JVM 1.8 (default)")),
+          SeqPara(Mono("\"jvm-1.8\"") & " target JVM 1.8 (default)")),
         Definition(
           CmdOption("toolcp", Argument("path")),
           "Add to the runner classpath."),
@@ -159,8 +169,10 @@ object scalac extends Command {
           SeqPara(
             "Enable detailed unchecked (erasure) warnings",
             "Non variable type-arguments in type patterns are unchecked " &
-            "since they are eliminated by erasure",
-            "Available since Scala version 2.3.0")),
+              "since they are eliminated by erasure",
+            "Available since Scala version 2.3.0"
+          )
+        ),
         Definition(
           CmdOption("uniqid"),
           "Uniquely tag all identifiers in debugging output."),
@@ -173,9 +185,7 @@ object scalac extends Command {
         Definition(
           CmdOption("verbose"),
           "Output messages about what the compiler is doing"),
-        Definition(
-          CmdOption("version"),
-          "Print product version and exit."),
+        Definition(CmdOption("version"), "Print product version and exit."),
         Definition(
           Mono(Bold("@") & Argument("file")),
           "A text file containing compiler arguments (options and source files)")
@@ -183,8 +193,8 @@ object scalac extends Command {
         // TODO - Add macros an dsuch here.
       )
     ),
-
-    Section("Advanced Options",
+    Section(
+      "Advanced Options",
       DefinitionList(
         Definition(
           CmdOption("Xcheckinit"),
@@ -198,7 +208,7 @@ object scalac extends Command {
         Definition(
           CmdOption("Xelide-below", Argument("n")),
           "Calls to " & MItalic("@elidable") &
-          " methods are omitted if method priority is lower than argument."),
+            " methods are omitted if method priority is lower than argument."),
         Definition(
           CmdOption("Xexperimental"),
           "Enable experimental extensions"),
@@ -208,9 +218,7 @@ object scalac extends Command {
         Definition(
           CmdOption("Xfull-lubs"),
           "Retain pre 2.10 behavior of less aggressive truncation of least upper bounds."),
-        Definition(
-          CmdOption("Xfuture"),
-          "Turn on future language features."),
+        Definition(CmdOption("Xfuture"), "Turn on future language features."),
         Definition(
           CmdOption("Xgenerate-phase-graph", Argument("file")),
           "Generate the phase graphs (outputs .dot files) to fileX.dot."),
@@ -243,19 +251,19 @@ object scalac extends Command {
           "Maximum filename length for generated classes."),
         Definition(
           CmdOptionBound("Xmigration:", Argument("version")),
-          "Warn about constructs whose behavior may have changed since" & Argument("version") & "."),
+          "Warn about constructs whose behavior may have changed since" & Argument(
+            "version") & "."),
         Definition(
           CmdOption("Xno-forwarders"),
           "Do not generate static forwarders in mirror classes."),
         Definition(
           CmdOption("Xno-patmat-analysis"),
-          "Don't perform exhaustivity/unreachability analysis. Also, ignore " & MItalic("@switch") & " annotation."),
+          "Don't perform exhaustivity/unreachability analysis. Also, ignore " & MItalic(
+            "@switch") & " annotation."),
         Definition(
           CmdOption("Xno-uescape"),
           "Disable handling of " & BSlash & "u unicode escapes"),
-        Definition(
-          CmdOption("Xnojline"),
-          "Do not use JLine for editing."),
+        Definition(CmdOption("Xnojline"), "Do not use JLine for editing."),
         Definition(
           CmdOptionBound("Xplugin:", Argument("paths")),
           "Load a plugin from each classpath."),
@@ -276,7 +284,8 @@ object scalac extends Command {
           "Print out program after " & Argument("phases") & " (see below)."),
         Definition(
           CmdOptionBound("Xprint-icode", "[:" & Argument("phases") & "]"),
-          "Log internal icode to *.icode files after" & Argument("phases") & " (default: icode)."),
+          "Log internal icode to *.icode files after" & Argument(
+            "phases") & " (default: icode)."),
         Definition(
           CmdOption("Xprint-pos"),
           "Print tree positions, as offsets."),
@@ -289,7 +298,7 @@ object scalac extends Command {
         Definition(
           CmdOption("Xresident"),
           "Compiler stays resident, files to compile are read from standard " &
-          "input."),
+            "input."),
         Definition(
           CmdOption("Xscript", Argument("object")),
           "Treat the source file as a script and wrap it in a main method."),
@@ -318,14 +327,13 @@ object scalac extends Command {
           CmdOptionBound("Xxml:", "{coalescing}"),
           SeqPara(
             "Configure XML parsing.",
-            Mono("\"coalescing\"") & " convert PCData to Text and coalesce sibling nodes (default in 2.11).")),
-        Definition(
-          CmdOption("Y"),
-          "Print a synopsis of private options.")
+            Mono("\"coalescing\"") & " convert PCData to Text and coalesce sibling nodes (default in 2.11).")
+        ),
+        Definition(CmdOption("Y"), "Print a synopsis of private options.")
       )
     ),
-
-    Section("Compilation Phases",
+    Section(
+      "Compilation Phases",
       DefinitionList(
         Definition(
           MItalic("parser"),
@@ -333,24 +341,16 @@ object scalac extends Command {
         Definition(
           MItalic("namer"),
           "resolve names, attach symbols to named trees"),
-        Definition(
-          MItalic("packageobjects"),
-          "load package objects"),
-        Definition(
-          MItalic("typer"),
-          "the meat and potatoes: type the trees"),
-        Definition(
-          MItalic("patmat"),
-          "translate match expressions"),
+        Definition(MItalic("packageobjects"), "load package objects"),
+        Definition(MItalic("typer"), "the meat and potatoes: type the trees"),
+        Definition(MItalic("patmat"), "translate match expressions"),
         Definition(
           MItalic("superaccessors"),
           "add super accessors in traits and nested classes"),
         Definition(
           MItalic("extmethods"),
           "add extension methods for inline classes"),
-        Definition(
-          MItalic("pickler"),
-          "serialize symbol tables"),
+        Definition(MItalic("pickler"), "serialize symbol tables"),
         Definition(
           MItalic("refchecks"),
           "reference/override checking, translate nested objects"),
@@ -359,13 +359,12 @@ object scalac extends Command {
           "ANF pre-transform for " & MItalic("@cps") & " (CPS plugin)"),
         Definition(
           MItalic("selectivecps"),
-          MItalic("@cps") & "-driven transform of selectiveanf assignments (CPS plugin)"),
+          MItalic(
+            "@cps") & "-driven transform of selectiveanf assignments (CPS plugin)"),
         Definition(
           MItalic("uncurry"),
           "uncurry, translate function values to anonymous classes"),
-        Definition(
-          MItalic("tailcalls"),
-          "replace tail calls by jumps"),
+        Definition(MItalic("tailcalls"), "replace tail calls by jumps"),
         Definition(
           MItalic("specialize"),
           MItalic("@specialized") & "-driven class and method specialization"),
@@ -375,36 +374,22 @@ object scalac extends Command {
         Definition(
           MItalic("erasure"),
           "erase types, add interfaces for traits"),
-        Definition(
-          MItalic("posterasure"),
-          "clean up erased inline classes"),
+        Definition(MItalic("posterasure"), "clean up erased inline classes"),
         Definition(
           MItalic("lazyvals"),
           "allocate bitmaps, translate lazy vals into lazified defs"),
-        Definition(
-          MItalic("lambdalift"),
-          "move nested functions to top level"),
+        Definition(MItalic("lambdalift"), "move nested functions to top level"),
         Definition(
           MItalic("constructors"),
           "move field definitions into constructors"),
-        Definition(
-          MItalic("flatten"),
-          "eliminate inner classes"),
-        Definition(
-          MItalic("mixin"),
-          "mixin composition"),
+        Definition(MItalic("flatten"), "eliminate inner classes"),
+        Definition(MItalic("mixin"), "mixin composition"),
         Definition(
           MItalic("cleanup"),
           "platform-specific cleanups, generate reflective calls"),
-        Definition(
-          MItalic("delambdafy"),
-          "remove lambdas"),
-        Definition(
-          MItalic("icode"),
-          "generate portable intermediate code"),
-        Definition(
-          MItalic("inliner"),
-          "optimization: do inlining"),
+        Definition(MItalic("delambdafy"), "remove lambdas"),
+        Definition(MItalic("icode"), "generate portable intermediate code"),
+        Definition(MItalic("inliner"), "optimization: do inlining"),
         Definition(
           MItalic("inlineHandlers"),
           "optimization: inline exception handlers"),
@@ -414,94 +399,101 @@ object scalac extends Command {
         Definition(
           MItalic("constopt"),
           "optimization: optimize null and other constants"),
-        Definition(
-          MItalic("dce"),
-          "optimization: eliminate dead code"),
-        Definition(
-          MItalic("jvm"),
-          "generate JVM bytecode"),
-        Definition(
-          MItalic("terminal"),
-          "the last phase in the compiler chain"),
-        Definition(
-          MItalic("all"),
-          "matches all phases"))))
+        Definition(MItalic("dce"), "optimization: eliminate dead code"),
+        Definition(MItalic("jvm"), "generate JVM bytecode"),
+        Definition(MItalic("terminal"), "the last phase in the compiler chain"),
+        Definition(MItalic("all"), "matches all phases")
+      )
+    )
+  )
 
-  val environment = Section("ENVIRONMENT",
-
+  val environment = Section(
+    "ENVIRONMENT",
     DefinitionList(
       Definition(
         MBold("JAVACMD"),
         "Specify the " & MBold("java") & " command to be used " &
-        "for running the Scala code.  Arguments may be specified " &
-        "as part of the environment variable; spaces, quotation marks, " &
-        "etc., will be passed directly to the shell for expansion."),
+          "for running the Scala code.  Arguments may be specified " &
+          "as part of the environment variable; spaces, quotation marks, " &
+          "etc., will be passed directly to the shell for expansion."
+      ),
       Definition(
         MBold("JAVA_HOME"),
         "Specify JDK/JRE home directory. This directory is used to locate " &
-        "the " & MBold("java") & " command unless " & MBold("JAVACMD") & " variable set."),
+          "the " & MBold("java") & " command unless " & MBold(
+          "JAVACMD") & " variable set."
+      ),
       Definition(
         MBold("JAVA_OPTS"),
         SeqPara(
           "Specify the options to be passed to the " & MBold("java") &
-          " command defined by " & MBold("JAVACMD") & ".",
-
+            " command defined by " & MBold("JAVACMD") & ".",
           "With Java 1.5 (or newer) one may for example configure the " &
-          "memory usage of the JVM as follows: " &
-          Mono("JAVA_OPTS=\"-Xmx512M -Xms16M -Xss16M\"")
-        ))))
+            "memory usage of the JVM as follows: " &
+            Mono("JAVA_OPTS=\"-Xmx512M -Xms16M -Xss16M\"")
+        )
+      )
+    )
+  )
 
-  val examples = Section("EXAMPLES",
-
+  val examples = Section(
+    "EXAMPLES",
     DefinitionList(
       Definition(
         "Compile a Scala program to the current directory",
         CmdLine("HelloWorld")),
       Definition(
         "Compile a Scala program to the destination directory " &
-        MBold("classes"),
-        CmdLine(CmdOption("d", "classes") & "HelloWorld.scala")),
-     Definition(
-        "Compile a Scala program using a user-defined " & MBold("java") & " " &
-        "command",
-        MBold("env JAVACMD") & Mono("=/usr/local/bin/cacao ") &
+          MBold("classes"),
         CmdLine(CmdOption("d", "classes") & "HelloWorld.scala")),
       Definition(
+        "Compile a Scala program using a user-defined " & MBold("java") & " " &
+          "command",
+        MBold("env JAVACMD") & Mono("=/usr/local/bin/cacao ") &
+          CmdLine(CmdOption("d", "classes") & "HelloWorld.scala")
+      ),
+      Definition(
         "Compile all Scala files found in the source directory " &
-        MBold("src") & " to the destination directory " &
-        MBold("classes"),
-        CmdLine(CmdOption("d", "classes") & "src/*.scala"))))
+          MBold("src") & " to the destination directory " &
+          MBold("classes"),
+        CmdLine(CmdOption("d", "classes") & "src/*.scala")
+      )
+    )
+  )
 
-  val exitStatus = Section("EXIT STATUS",
-
+  val exitStatus = Section(
+    "EXIT STATUS",
     MBold(command) & " returns a zero exist status if it succeeds to " &
-    "compile the specified input files. Non zero is returned in case " &
-    "of failure.")
+      "compile the specified input files. Non zero is returned in case " &
+      "of failure."
+  )
 
-  val seeAlso = Section("SEE ALSO",
-
+  val seeAlso = Section(
+    "SEE ALSO",
     Link(Bold("fsc") & "(1)", "fsc.html") & ", " &
-    Link(Bold("scala") & "(1)", "scala.html") & ", " &
-    Link(Bold("scaladoc") & "(1)", "scaladoc.html") & ", " &
-    Link(Bold("scalap") & "(1)", "scalap.html"))
+      Link(Bold("scala") & "(1)", "scala.html") & ", " &
+      Link(Bold("scaladoc") & "(1)", "scaladoc.html") & ", " &
+      Link(Bold("scalap") & "(1)", "scalap.html")
+  )
 
-  def manpage = new Document {
-    title = command
-    date = "March 2012"
-    author = "Stephane Micheloud"
-    version = "1.0"
-    sections = List(
-      name,
-      synopsis,
-      parameters,
-      description,
-      options,
-      environment,
-      examples,
-      exitStatus,
-      authors,
-      bugs,
-      copyright,
-      seeAlso)
-  }
+  def manpage =
+    new Document {
+      title = command
+      date = "March 2012"
+      author = "Stephane Micheloud"
+      version = "1.0"
+      sections = List(
+        name,
+        synopsis,
+        parameters,
+        description,
+        options,
+        environment,
+        examples,
+        exitStatus,
+        authors,
+        bugs,
+        copyright,
+        seeAlso)
+    }
 }

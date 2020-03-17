@@ -3,13 +3,13 @@ package scala.concurrent.impl
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CountDownLatch
 import org.junit.Assert._
-import org.junit.{ After, Before, Test }
+import org.junit.{After, Before, Test}
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.concurrent.impl.Promise.DefaultPromise
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 import scala.util.control.NonFatal
 
 /** Tests for the private class DefaultPromise */
@@ -27,19 +27,19 @@ class DefaultPromiseTest {
 
   /** The state of a set of set of linked promises. */
   case class Chain(
-    promises: Set[PromiseId],
-    state: Either[Set[HandlerId],Try[Result]]
+      promises: Set[PromiseId],
+      state: Either[Set[HandlerId], Try[Result]]
   )
 
   /** A helper class that provides methods for creating, linking, completing and
-   *  adding handlers to promises. With each operation it verifies that handlers
-   *  are called, any expected exceptions are thrown, and that all promises have
-   *  the expected value.
-   *
-   *  The links between promises are not tracked precisely. Instead, linked promises
-   *  are placed in the same Chain object. Each link in the same chain will share
-   *  the same value.
-   */
+    *  adding handlers to promises. With each operation it verifies that handlers
+    *  are called, any expected exceptions are thrown, and that all promises have
+    *  the expected value.
+    *
+    *  The links between promises are not tracked precisely. Instead, linked promises
+    *  are placed in the same Chain object. Each link in the same chain will share
+    *  the same value.
+    */
   class Tester {
     var promises = Map.empty[PromiseId, DefaultPromise[Result]]
     var chains = Map.empty[ChainId, Chain]
@@ -52,22 +52,28 @@ class DefaultPromiseTest {
     }
 
     /** Handlers report their activity on this queue */
-    private val handlerQueue = new ConcurrentLinkedQueue[(Try[Result], HandlerId)]()
+    private val handlerQueue =
+      new ConcurrentLinkedQueue[(Try[Result], HandlerId)]()
 
     /** Get the chain for a given promise */
     private def promiseChain(p: PromiseId): Option[(ChainId, Chain)] = {
-      val found: Iterable[(ChainId, Chain)] = for ((cid, c) <- chains; p0 <- c.promises; if (p0 == p)) yield ((cid, c))
+      val found: Iterable[(ChainId, Chain)] =
+        for ((cid, c) <- chains; p0 <- c.promises; if (p0 == p))
+          yield ((cid, c))
       found.toList match {
-        case Nil => None
-        case x::Nil => Some(x)
-        case _ => throw new IllegalStateException(s"Promise $p found in more than one chain")
+        case Nil      => None
+        case x :: Nil => Some(x)
+        case _ =>
+          throw new IllegalStateException(
+            s"Promise $p found in more than one chain")
       }
     }
 
     /** Passed to `checkEffect` to indicate the expected effect of an operation */
     sealed trait Effect
     case object NoEffect extends Effect
-    case class HandlersFired(result: Try[Result], handlers: Set[HandlerId]) extends Effect
+    case class HandlersFired(result: Try[Result], handlers: Set[HandlerId])
+        extends Effect
     case object MaybeIllegalThrown extends Effect
     case object IllegalThrown extends Effect
 
@@ -83,10 +89,11 @@ class DefaultPromiseTest {
         fireCounts = fireCounts.updated(key, newCount)
       }
 
-      def assertIllegalResult = result match {
-        case Failure(e: IllegalStateException) => ()
-        case _ => fail(s"Expected IllegalStateException: $result")
-      }
+      def assertIllegalResult =
+        result match {
+          case Failure(e: IllegalStateException) => ()
+          case _                                 => fail(s"Expected IllegalStateException: $result")
+        }
 
       expected match {
         case NoEffect =>
@@ -94,9 +101,10 @@ class DefaultPromiseTest {
           assertEquals(Map.empty[(Try[Result], HandlerId), Int], fireCounts)
         case HandlersFired(firingResult, handlers) =>
           assert(result.isSuccess)
-          val expectedCounts = handlers.foldLeft(Map.empty[(Try[Result], HandlerId), Int]) {
-            case (map, hid) => map.updated((firingResult, hid), 1)
-          }
+          val expectedCounts =
+            handlers.foldLeft(Map.empty[(Try[Result], HandlerId), Int]) {
+              case (map, hid) => map.updated((firingResult, hid), 1)
+            }
           assertEquals(expectedCounts, fireCounts)
         case MaybeIllegalThrown =>
           if (result.isFailure) assertIllegalResult
@@ -112,7 +120,7 @@ class DefaultPromiseTest {
       for ((cid, chain) <- chains; p <- chain.promises) {
         chain.state match {
           case Right(result) => assertEquals(Some(result), promises(p).value)
-          case Left(_) => ()
+          case Left(_)       => ()
         }
       }
     }
@@ -132,7 +140,7 @@ class DefaultPromiseTest {
       val r = Success(freshId())
       val (cid, chain) = promiseChain(p).get
       val (completionEffect, newState) = chain.state match {
-        case Left(handlers) => (HandlersFired(r, handlers), Right(r))
+        case Left(handlers)    => (HandlersFired(r, handlers), Right(r))
         case Right(completion) => (IllegalThrown, chain.state)
       }
       checkEffect(completionEffect) { promises(p).complete(r) }
@@ -153,7 +161,8 @@ class DefaultPromiseTest {
 
       sealed trait MergeOp
       case object NoMerge extends MergeOp
-      case class Merge(state: Either[Set[HandlerId],Try[Result]]) extends MergeOp
+      case class Merge(state: Either[Set[HandlerId], Try[Result]])
+          extends MergeOp
 
       val (linkEffect, mergeOp) = (chainA.state, chainB.state) match {
         case (Left(handlers1), Left(handlers2)) =>
@@ -163,7 +172,10 @@ class DefaultPromiseTest {
         case (Right(result), Left(handlers)) =>
           (HandlersFired(result, handlers), Merge(Right(result)))
         case (Right(_), Right(_)) if (cidA == cidB) =>
-          (MaybeIllegalThrown, NoMerge) // Won't be thrown if happen to link a promise to itself
+          (
+            MaybeIllegalThrown,
+            NoMerge
+          ) // Won't be thrown if happen to link a promise to itself
         case (Right(_), Right(_)) =>
           (IllegalThrown, NoMerge)
       }
@@ -178,7 +190,9 @@ class DefaultPromiseTest {
           chains = chains - cidA
           chains = chains - cidB
           val newCid = freshId()
-          chains = chains.updated(newCid, Chain(chainA.promises ++ chainB.promises, newState))
+          chains = chains.updated(
+            newCid,
+            Chain(chainA.promises ++ chainB.promises, newState))
           (newCid, newCid)
         }
       }
@@ -187,9 +201,9 @@ class DefaultPromiseTest {
     }
 
     /** Attach an onComplete handler. When called, the handler will
-     *  place an entry into `handlerQueue` with the handler's identity.
-     *  This allows verification of handler calling semantics.
-     */
+      *  place an entry into `handlerQueue` with the handler's identity.
+      *  This allows verification of handler calling semantics.
+      */
     def attachHandler(p: PromiseId): HandlerId = {
       val hid = freshId()
       val promise = promises(p)
@@ -205,7 +219,9 @@ class DefaultPromiseTest {
         def reportFailure(t: Throwable) { t.printStackTrace() }
       }
 
-      checkEffect(attachEffect) { promise.onComplete(result => handlerQueue.add((result, hid))) }
+      checkEffect(attachEffect) {
+        promise.onComplete(result => handlerQueue.add((result, hid)))
+      }
       chains = chains.updated(cid, chain.copy(state = newState))
       assertPromiseValues()
       hid
@@ -235,8 +251,8 @@ class DefaultPromiseTest {
 
     actions foreach { action =>
       action match {
-        case Complete(p) => t.complete(byKey(p))
-        case Link(a, b) => t.link(byKey(a), byKey(b))
+        case Complete(p)      => t.complete(byKey(p))
+        case Link(a, b)       => t.link(byKey(a), byKey(b))
         case AttachHandler(p) => t.attachHandler(byKey(p))
       }
     }
@@ -247,7 +263,9 @@ class DefaultPromiseTest {
     val ps = (0 until count).toList
     val pPairs = for (a <- ps; b <- ps) yield (a, b)
 
-    var allActions = ps.map(Complete(_)) ++ pPairs.map { case (a, b) => Link(a, b) } ++ ps.map(AttachHandler(_))
+    var allActions = ps.map(Complete(_)) ++ pPairs.map {
+      case (a, b) => Link(a, b)
+    } ++ ps.map(AttachHandler(_))
     for ((permutation, i) <- allActions.permutations.zipWithIndex) {
       testActions(permutation)
     }
@@ -266,7 +284,7 @@ class DefaultPromiseTest {
   }
 
   /** Link promises in different orders, using the same link structure as is
-   *  used in Future.flatMap */
+    *  used in Future.flatMap */
   @Test
   def simulateFlatMapLinking {
     val random = new scala.util.Random(1)
@@ -279,12 +297,15 @@ class DefaultPromiseTest {
       case class Complete(p: PromiseId) extends FlatMapEvent
 
       @tailrec
-      def flatMapEvents(count: Int, p1: PromiseId, acc: List[FlatMapEvent]): List[FlatMapEvent] = {
+      def flatMapEvents(
+          count: Int,
+          p1: PromiseId,
+          acc: List[FlatMapEvent]): List[FlatMapEvent] = {
         if (count == 0) {
-          Complete(p1)::acc
+          Complete(p1) :: acc
         } else {
           val p2 = t.newPromise()
-          flatMapEvents(count - 1, p2, Link(p2, p1)::acc)
+          flatMapEvents(count - 1, p2, Link(p2, p1) :: acc)
         }
       }
 
@@ -292,7 +313,7 @@ class DefaultPromiseTest {
       assertEquals(flatMapCount + 1, t.chains.size) // All promises are unlinked
       val shuffled = random.shuffle(events)
       shuffled foreach {
-        case Link(a, b) => t.link(a, b)
+        case Link(a, b)  => t.link(a, b)
         case Complete(p) => t.complete(p)
       }
       // All promises should be linked together, no matter the order of their linking
@@ -301,7 +322,7 @@ class DefaultPromiseTest {
   }
 
   /** Link promises together on more than one thread, using the same link
-   *  structure as is used in Future.flatMap */
+    *  structure as is used in Future.flatMap */
   @Test
   def testFlatMapLinking {
     for (_ <- 0 until 100) {

@@ -5,7 +5,9 @@ object Test extends StoreReporterDirectTest {
   def code = ???
 
   def compileCode(code: String) = {
-    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString sys.props("path.separator")
+    val classpath =
+      List(sys.props("partest.lib"), testOutput.path) mkString sys.props(
+        "path.separator")
     compileString(newCompiler("-cp", classpath, "-d", testOutput.path))(code)
   }
 
@@ -28,6 +30,8 @@ object Test extends StoreReporterDirectTest {
 
     // bad symbolic reference error expected (but no stack trace!)
     compileCode(C)
-    println(storeReporter.infos.mkString("\n")) // Included a NullPointerException before.
+    println(
+      storeReporter.infos.mkString("\n")
+    ) // Included a NullPointerException before.
   }
 }

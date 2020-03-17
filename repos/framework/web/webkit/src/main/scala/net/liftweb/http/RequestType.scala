@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.liftweb 
-package http 
+package net.liftweb
+package http
 
 import provider._
 
-abstract class RequestType extends Serializable{
+abstract class RequestType extends Serializable {
   def post_? : Boolean = false
 
   def get_? : Boolean = false
@@ -64,14 +64,13 @@ case class UnknownRequest(method: String) extends RequestType
 object RequestType {
   def apply(req: HTTPRequest): RequestType = {
     req.method.toUpperCase match {
-      case "GET" => GetRequest
-      case "POST" => PostRequest
-      case "HEAD" => HeadRequest
-      case "PUT" => PutRequest
-      case "DELETE" => DeleteRequest
+      case "GET"     => GetRequest
+      case "POST"    => PostRequest
+      case "HEAD"    => HeadRequest
+      case "PUT"     => PutRequest
+      case "DELETE"  => DeleteRequest
       case "OPTIONS" => OptionsRequest
-      case meth => UnknownRequest(meth)
+      case meth      => UnknownRequest(meth)
     }
   }
 }
-

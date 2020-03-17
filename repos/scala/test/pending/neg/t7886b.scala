@@ -7,12 +7,16 @@ case class Unravel[A](m: Contra[A], msg: A) extends T
 
 object Test extends Covariant[Any] {
   def g(m: Contra[Any]): Unit = m accept 5
-  def f(x: T): Unit = x match {
-    case Unravel(m, msg) => g(m)
-    case _               =>
-  }
+  def f(x: T): Unit =
+    x match {
+      case Unravel(m, msg) => g(m)
+      case _               =>
+    }
   def main(args: Array[String]) {
-    f(Unravel[String](new Contra[String] { def accept(x: String) = x.length }, ""))
+    f(
+      Unravel[String](
+        new Contra[String] { def accept(x: String) = x.length },
+        ""))
   }
 }
 // java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.String

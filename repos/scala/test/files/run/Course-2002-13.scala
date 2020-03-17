@@ -23,10 +23,10 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
       var ch = s.charAt(i); i = i + 1;
       if (isDelimiter(ch)) ch.toString()
       else {
-	while (i < s.length() &&
-	       s.charAt(i) > ' ' &&
-	       !isDelimiter(s.charAt(i))){ i = i + 1 }
-	s.substring(start, i)
+        while (i < s.length() &&
+               s.charAt(i) > ' ' &&
+               !isDelimiter(s.charAt(i))) { i = i + 1 }
+        s.substring(start, i)
       }
     } else "";
 
@@ -42,23 +42,28 @@ object Terms {
   }
 
   case class Binding(name: String, term: Term) {
-    term match { case Var(n) if (name == n) => sys.error("bad binding") case _ => () }
+    term match {
+      case Var(n) if (name == n) => sys.error("bad binding")
+      case _                     => ()
+    }
     override def toString() = name + " = " + term;
   }
 
   type Subst = List[Binding];
 
-  def lookup(s: Subst, name: String): Option[Term] = s match {
-    case List() => None
-    case b :: s1 => if (name == b.name) Some(b.term) else lookup(s1, name)
-  }
+  def lookup(s: Subst, name: String): Option[Term] =
+    s match {
+      case List()  => None
+      case b :: s1 => if (name == b.name) Some(b.term) else lookup(s1, name)
+    }
 
   case class Var(a: String) extends Term {
     override def toString() = a;
-    def map(s: Subst): Term = lookup(s, a) match {
-      case Some(b) => b map s
-      case None => this;
-    }
+    def map(s: Subst): Term =
+      lookup(s, a) match {
+        case Some(b) => b map s
+        case None    => this;
+      }
     def tyvars = List(a);
   }
 
@@ -74,21 +79,26 @@ object Terms {
 
   val NoTerm = Con("<none>", List());
 
-  def unify1(x: Term, y: Term, s: Subst): Option[Subst] = (x, y) match {
-    case (Var(a), Var(b)) if (a == b) =>
-      Some(s)
-    case (Var(a), _) => lookup(s, a) match {
-      case Some(x1) => unify(x1, y, s)
-      case None => if (y.tyvars contains a) None else Some(Binding(a, y) :: s)
+  def unify1(x: Term, y: Term, s: Subst): Option[Subst] =
+    (x, y) match {
+      case (Var(a), Var(b)) if (a == b) =>
+        Some(s)
+      case (Var(a), _) =>
+        lookup(s, a) match {
+          case Some(x1) => unify(x1, y, s)
+          case None =>
+            if (y.tyvars contains a) None else Some(Binding(a, y) :: s)
+        }
+      case (_, Var(b)) =>
+        lookup(s, b) match {
+          case Some(y1) => unify(x, y1, s)
+          case None =>
+            if (x.tyvars contains b) None else Some(Binding(b, x) :: s)
+        }
+      case (Con(a, xs), Con(b, ys)) if (a == b) =>
+        unify(xs, ys, s)
+      case _ => None
     }
-    case (_, Var(b)) => lookup(s, b) match {
-      case Some(y1) => unify(x, y1, s)
-      case None => if (x.tyvars contains b) None else Some(Binding(b, x) :: s)
-    }
-    case (Con(a, xs), Con(b, ys)) if (a == b) =>
-      unify(xs, ys, s)
-    case _ => None
-  }
 
   def unify(x: Term, y: Term, s: Subst): Option[Subst] = {
     val ss = unify1(x, y, s);
@@ -96,15 +106,16 @@ object Terms {
     ss
   }
 
-  def unify(xs: List[Term], ys: List[Term], s: Subst): Option[Subst] = (xs, ys) match {
-    case (List(), List()) => Some(s)
-    case (x :: xs1, y :: ys1) =>
-      unify(x, y, s) match {
-	case Some(s1) => unify(xs1, ys1, s1)
-	case None => None
-      }
-    case _ => None
-  }
+  def unify(xs: List[Term], ys: List[Term], s: Subst): Option[Subst] =
+    (xs, ys) match {
+      case (List(), List()) => Some(s)
+      case (x :: xs1, y :: ys1) =>
+        unify(x, y, s) match {
+          case Some(s1) => unify(xs1, ys1, s1)
+          case None     => None
+        }
+      case _ => None
+    }
 }
 
 import Terms._;
@@ -123,28 +134,31 @@ object Programs {
       lhs.toString() + " :- " + rhs.mkString("", ",", "") + ".";
   }
 
-  def list2stream[a](xs: List[a]): Stream[a] = xs match {
-    case List() => Stream.empty
-    case x :: xs1 => Stream.cons(x, list2stream(xs1))
-  }
-  def option2stream[a](xo: Option[a]): Stream[a] = xo match {
-    case None => Stream.empty
-    case Some(x) => Stream.cons(x, Stream.empty)
-  }
+  def list2stream[a](xs: List[a]): Stream[a] =
+    xs match {
+      case List()   => Stream.empty
+      case x :: xs1 => Stream.cons(x, list2stream(xs1))
+    }
+  def option2stream[a](xo: Option[a]): Stream[a] =
+    xo match {
+      case None    => Stream.empty
+      case Some(x) => Stream.cons(x, Stream.empty)
+    }
 
   def solve(query: List[Term], clauses: List[Clause]): Stream[Subst] = {
 
-    def solve2(query: List[Term], s: Subst): Stream[Subst] = query match {
-      case List() =>
-	Stream.cons(s, Stream.empty)
-      case Con("not", qs) :: query1 =>
-	if (solve1(qs, s).isEmpty) Stream.cons(s, Stream.empty)
-	else Stream.empty
-      case q :: query1 =>
-	for (clause <- list2stream(clauses);
-	     s1 <- tryClause(clause.newInstance, q, s);
-	     s2 <- solve1(query1, s1)) yield s2
-    }
+    def solve2(query: List[Term], s: Subst): Stream[Subst] =
+      query match {
+        case List() =>
+          Stream.cons(s, Stream.empty)
+        case Con("not", qs) :: query1 =>
+          if (solve1(qs, s).isEmpty) Stream.cons(s, Stream.empty)
+          else Stream.empty
+        case q :: query1 =>
+          for (clause <- list2stream(clauses);
+               s1 <- tryClause(clause.newInstance, q, s);
+               s2 <- solve1(query1, s1)) yield s2
+      }
 
     def solve1(query: List[Term], s: Subst): Stream[Subst] = {
       val ss = solve2(query, s);
@@ -154,7 +168,8 @@ object Programs {
 
     def tryClause(c: Clause, q: Term, s: Subst): Stream[Subst] = {
       if (debug) Console.println("trying " + c);
-      for (s1 <- option2stream(unify(q, c.lhs, s)); s2 <- solve1(c.rhs, s1)) yield s2;
+      for (s1 <- option2stream(unify(q, c.lhs, s)); s2 <- solve1(c.rhs, s1))
+        yield s2;
     }
 
     solve1(query, List())
@@ -168,23 +183,27 @@ class Parser(s: String) {
 
   var token: String = it.next;
 
-  def syntaxError(msg: String): Unit = sys.error(msg + ", but " + token + " found");
+  def syntaxError(msg: String): Unit =
+    sys.error(msg + ", but " + token + " found");
 
   def rep[a](p: => a): List[a] = {
     val t = p;
-    if (token == ",") { token = it.next; t :: rep(p) } else List(t)
+    if (token == ",") { token = it.next; t :: rep(p) }
+    else List(t)
   }
 
   def constructor: Term = {
     val a = token;
     token = it.next;
-    Con(a,
-	if (token equals "(") {
-	  token = it.next;
-	  val ts: List[Term] = if (token equals ")") List() else rep(term);
-	  if (token equals ")") token = it.next else syntaxError("`)' expected");
-	  ts
-	} else List())
+    Con(
+      a,
+      if (token equals "(") {
+        token = it.next;
+        val ts: List[Term] = if (token equals ")") List() else rep(term);
+        if (token equals ")") token = it.next else syntaxError("`)' expected");
+        ts
+      } else List()
+    )
   }
 
   def term: Term = {
@@ -200,9 +219,10 @@ class Parser(s: String) {
         token = it.next;
         Clause(NoTerm, rep(constructor));
       } else {
-	Clause(
+        Clause(
           constructor,
-          if (token equals ":-") { token = it.next; rep(constructor) } else List())
+          if (token equals ":-") { token = it.next; rep(constructor) }
+          else List())
       }
     if (token equals ".") token = it.next else syntaxError("`.' expected");
     result
@@ -219,27 +239,27 @@ object Prolog {
     var tvs: List[String] = List();
     { input =>
       new Parser(input).all foreach { c =>
-	if (c.lhs == NoTerm) {
-	  c.rhs match {
-	    case List(Con("more", List())) =>
+        if (c.lhs == NoTerm) {
+          c.rhs match {
+            case List(Con("more", List())) =>
               solutions = solutions.tail;
-	    case _ =>
+            case _ =>
               solutions = solve(c.rhs, program);
-	      tvs = c.tyvars;
+              tvs = c.tyvars;
           }
-	  if (solutions.isEmpty) {
+          if (solutions.isEmpty) {
             Console.println("no")
-	  } else {
-	    val s: Subst = solutions.head
-	      .filter(b => tvs contains b.name)
-	      .map(b => Binding(b.name, b.term map solutions.head))
+          } else {
+            val s: Subst = solutions.head
+              .filter(b => tvs contains b.name)
+              .map(b => Binding(b.name, b.term map solutions.head))
               .reverse;
-	    if (s.isEmpty) Console.println("yes")
-	    else Console.println(s);
+            if (s.isEmpty) Console.println("yes")
+            else Console.println(s);
           }
-	} else {
-	  program = program ::: List(c);
-	}
+        } else {
+          program = program ::: List(c);
+        }
       }
     }
   }
@@ -253,65 +273,65 @@ object Test {
   def main(args: Array[String]): Unit = {
     Prolog.process(
       "sujet(jean).\n" +
-      "sujet(marie).\n" +
-      "verbe(mange).\n" +
-      "verbe(dort).\n" +
-      "article(le).\n" +
-      "article(la).\n" +
-      "adjectif(grand).\n" +
-      "adjectif(belle).\n" +
-      "nom(table).\n" +
-      "nom(cheval).\n" +
+        "sujet(marie).\n" +
+        "verbe(mange).\n" +
+        "verbe(dort).\n" +
+        "article(le).\n" +
+        "article(la).\n" +
+        "adjectif(grand).\n" +
+        "adjectif(belle).\n" +
+        "nom(table).\n" +
+        "nom(cheval).\n" +
 
-      "complement(A,D,N) :- article(A), adjectif(D), nom(N).\n" +
-      "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
+        "complement(A,D,N) :- article(A), adjectif(D), nom(N).\n" +
+        "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
 
-      "?phrase(S,V,A,D,N).\n" + "?more.\n"
+        "?phrase(S,V,A,D,N).\n" + "?more.\n"
     );
     Console.println;
 
     Prolog.process(
       "sujet(jean).\n" +
-      "sujet(marie).\n" +
-      "verbe(mange).\n" +
-      "verbe(dort).\n" +
-      "article(le,m).\n" +
-      "article(la,f).\n" +
-      "adjectif(grand,m).\n" +
-      "adjectif(belle,f).\n" +
-      "nom(table,f).\n" +
-      "nom(cheval,m).\n" +
+        "sujet(marie).\n" +
+        "verbe(mange).\n" +
+        "verbe(dort).\n" +
+        "article(le,m).\n" +
+        "article(la,f).\n" +
+        "adjectif(grand,m).\n" +
+        "adjectif(belle,f).\n" +
+        "nom(table,f).\n" +
+        "nom(cheval,m).\n" +
 
-      "complement(A,D,N) :- article(A,G), adjectif(D,G), nom(N,G).\n" +
-      "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
+        "complement(A,D,N) :- article(A,G), adjectif(D,G), nom(N,G).\n" +
+        "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
 
-      "?phrase(S,V,A,D,N).\n" + "?more.\n"
+        "?phrase(S,V,A,D,N).\n" + "?more.\n"
     );
     Console.println;
 
     Prolog.process(
       "sujet(jean).\n" +
-      "sujet(marie).\n" +
-      "verbe(mange).\n" +
-      "verbe(dort).\n" +
-      "article(le,m).\n" +
-      "article(la,f).\n" +
-      "adjectif(grand,m).\n" +
-      "adjectif(belle,f).\n" +
-      "nom(table,f).\n" +
-      "nom(cheval,m).\n" +
+        "sujet(marie).\n" +
+        "verbe(mange).\n" +
+        "verbe(dort).\n" +
+        "article(le,m).\n" +
+        "article(la,f).\n" +
+        "adjectif(grand,m).\n" +
+        "adjectif(belle,f).\n" +
+        "nom(table,f).\n" +
+        "nom(cheval,m).\n" +
 
-      "adjectifs(nil,G).\n" +
-      "adjectifs(cons(A1,nil),G) :- adjectif(A1,G).\n" +
-      "adjectifs(cons(A1,cons(A2,nil)),G) :- adjectif(A1,G),adjectif(A2,G).\n"+
-      "complement(A,D,N) :- article(A,G), adjectifs(D,G), nom(N,G).\n" +
-      "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
+        "adjectifs(nil,G).\n" +
+        "adjectifs(cons(A1,nil),G) :- adjectif(A1,G).\n" +
+        "adjectifs(cons(A1,cons(A2,nil)),G) :- adjectif(A1,G),adjectif(A2,G).\n" +
+        "complement(A,D,N) :- article(A,G), adjectifs(D,G), nom(N,G).\n" +
+        "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
 
-      "?phrase(S,V,A,D,N).\n" + "?more.\n" + "?more.\n" + "?more.\n" +
+        "?phrase(S,V,A,D,N).\n" + "?more.\n" + "?more.\n" + "?more.\n" +
 
-      "?phrase(jean,mange,le,nil,cheval).\n" +
-      "?phrase(jean,mange,le,cons(grand,nil),cheval).\n" +
-      "?phrase(jean,mange,le,cons(grand,nil),table).\n"
+        "?phrase(jean,mange,le,nil,cheval).\n" +
+        "?phrase(jean,mange,le,cons(grand,nil),cheval).\n" +
+        "?phrase(jean,mange,le,cons(grand,nil),table).\n"
     );
     Console.println;
 

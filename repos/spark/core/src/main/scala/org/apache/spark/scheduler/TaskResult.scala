@@ -31,52 +31,56 @@ private[spark] sealed trait TaskResult[T]
 
 /** A reference to a DirectTaskResult that has been stored in the worker's BlockManager. */
 private[spark] case class IndirectTaskResult[T](blockId: BlockId, size: Int)
-  extends TaskResult[T] with Serializable
+    extends TaskResult[T]
+    with Serializable
 
 /** A TaskResult that contains the task's return value and accumulator updates. */
 private[spark] class DirectTaskResult[T](
     var valueBytes: ByteBuffer,
     var accumUpdates: Seq[AccumulableInfo])
-  extends TaskResult[T] with Externalizable {
+    extends TaskResult[T]
+    with Externalizable {
 
   private var valueObjectDeserialized = false
   private var valueObject: T = _
 
   def this() = this(null.asInstanceOf[ByteBuffer], null)
 
-  override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
-    out.writeInt(valueBytes.remaining)
-    Utils.writeByteBuffer(valueBytes, out)
-    out.writeInt(accumUpdates.size)
-    accumUpdates.foreach(out.writeObject)
-  }
-
-  override def readExternal(in: ObjectInput): Unit = Utils.tryOrIOException {
-    val blen = in.readInt()
-    val byteVal = new Array[Byte](blen)
-    in.readFully(byteVal)
-    valueBytes = ByteBuffer.wrap(byteVal)
-
-    val numUpdates = in.readInt
-    if (numUpdates == 0) {
-      accumUpdates = null
-    } else {
-      val _accumUpdates = new ArrayBuffer[AccumulableInfo]
-      for (i <- 0 until numUpdates) {
-        _accumUpdates += in.readObject.asInstanceOf[AccumulableInfo]
-      }
-      accumUpdates = _accumUpdates
+  override def writeExternal(out: ObjectOutput): Unit =
+    Utils.tryOrIOException {
+      out.writeInt(valueBytes.remaining)
+      Utils.writeByteBuffer(valueBytes, out)
+      out.writeInt(accumUpdates.size)
+      accumUpdates.foreach(out.writeObject)
     }
-    valueObjectDeserialized = false
-  }
+
+  override def readExternal(in: ObjectInput): Unit =
+    Utils.tryOrIOException {
+      val blen = in.readInt()
+      val byteVal = new Array[Byte](blen)
+      in.readFully(byteVal)
+      valueBytes = ByteBuffer.wrap(byteVal)
+
+      val numUpdates = in.readInt
+      if (numUpdates == 0) {
+        accumUpdates = null
+      } else {
+        val _accumUpdates = new ArrayBuffer[AccumulableInfo]
+        for (i <- 0 until numUpdates) {
+          _accumUpdates += in.readObject.asInstanceOf[AccumulableInfo]
+        }
+        accumUpdates = _accumUpdates
+      }
+      valueObjectDeserialized = false
+    }
 
   /**
-   * When `value()` is called at the first time, it needs to deserialize `valueObject` from
-   * `valueBytes`. It may cost dozens of seconds for a large instance. So when calling `value` at
-   * the first time, the caller should avoid to block other threads.
-   *
-   * After the first time, `value()` is trivial and just returns the deserialized `valueObject`.
-   */
+    * When `value()` is called at the first time, it needs to deserialize `valueObject` from
+    * `valueBytes`. It may cost dozens of seconds for a large instance. So when calling `value` at
+    * the first time, the caller should avoid to block other threads.
+    *
+    * After the first time, `value()` is trivial and just returns the deserialized `valueObject`.
+    */
   def value(): T = {
     if (valueObjectDeserialized) {
       valueObject

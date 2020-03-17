@@ -20,10 +20,12 @@ package org.apache.spark.util.collection
 import scala.reflect.ClassTag
 
 /**
- * An append-only, non-threadsafe, array-backed vector that is optimized for primitive types.
- */
-private[spark]
-class PrimitiveVector[@specialized(Long, Int, Double) V: ClassTag](initialSize: Int = 64) {
+  * An append-only, non-threadsafe, array-backed vector that is optimized for primitive types.
+  */
+private[spark] class PrimitiveVector[@specialized(
+  Long,
+  Int,
+  Double) V: ClassTag](initialSize: Int = 64) {
   private var _numElements = 0
   private var _array: Array[V] = _
 
@@ -50,18 +52,19 @@ class PrimitiveVector[@specialized(Long, Int, Double) V: ClassTag](initialSize: 
 
   def size: Int = _numElements
 
-  def iterator: Iterator[V] = new Iterator[V] {
-    var index = 0
-    override def hasNext: Boolean = index < _numElements
-    override def next(): V = {
-      if (!hasNext) {
-        throw new NoSuchElementException
+  def iterator: Iterator[V] =
+    new Iterator[V] {
+      var index = 0
+      override def hasNext: Boolean = index < _numElements
+      override def next(): V = {
+        if (!hasNext) {
+          throw new NoSuchElementException
+        }
+        val value = _array(index)
+        index += 1
+        value
       }
-      val value = _array(index)
-      index += 1
-      value
     }
-  }
 
   /** Gets the underlying array backing this vector. */
   def array: Array[V] = _array

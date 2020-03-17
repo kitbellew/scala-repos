@@ -12,33 +12,37 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.batch
 
-import java.util.{ Calendar, Date, TimeZone }
+import java.util.{Calendar, Date, TimeZone}
 
 object CalendarBatcher {
+
   /** Type wrapper for the Int's defined in java.util.Calendar */
   trait CalField {
+
     /**
-     * This is the java.util.Calendar statir int for this field.
-     * Such statics are dangerous to use as they are easy to mistake for counts,
-     * thus we use this trait
-     */
+      * This is the java.util.Calendar statir int for this field.
+      * Such statics are dangerous to use as they are easy to mistake for counts,
+      * thus we use this trait
+      */
     def javaIntValue: Int
+
     /**
-     * What is the standard size in milliseconds for this unit of time.
-     * Does not need to be precise, but it will improve the speed of
-     * unitsSinceEpoch of it is as accurate as possible
-     */
+      * What is the standard size in milliseconds for this unit of time.
+      * Does not need to be precise, but it will improve the speed of
+      * unitsSinceEpoch of it is as accurate as possible
+      */
     def defaultSize: Long
 
     def timeZone: TimeZone
 
-    private[this] val cachedCal: ThreadLocal[Calendar] = new ThreadLocal[Calendar] {
-      override def initialValue = Calendar.getInstance(timeZone)
-    }
+    private[this] val cachedCal: ThreadLocal[Calendar] =
+      new ThreadLocal[Calendar] {
+        override def initialValue = Calendar.getInstance(timeZone)
+      }
 
     /** the date of exactly cnt units since the epoch */
     def toDate(cnt: Long): Date = {
@@ -99,17 +103,19 @@ object CalendarBatcher {
     }
   }
 
-  def hoursField(tz: TimeZone): CalField = new CalField {
-    def javaIntValue = Calendar.HOUR
-    def defaultSize = 1000L * 60L * 60L
-    def timeZone = tz
-  }
+  def hoursField(tz: TimeZone): CalField =
+    new CalField {
+      def javaIntValue = Calendar.HOUR
+      def defaultSize = 1000L * 60L * 60L
+      def timeZone = tz
+    }
 
-  def daysField(tz: TimeZone): CalField = new CalField {
-    def javaIntValue = Calendar.DAY_OF_YEAR
-    def defaultSize = 1000L * 60L * 60L * 24L
-    def timeZone = tz
-  }
+  def daysField(tz: TimeZone): CalField =
+    new CalField {
+      def javaIntValue = Calendar.DAY_OF_YEAR
+      def defaultSize = 1000L * 60L * 60L * 24L
+      def timeZone = tz
+    }
 
   def ofDays(days: Int)(implicit tz: TimeZone): CalendarBatcher =
     CalendarBatcher(days, daysField(tz))
@@ -125,11 +131,16 @@ object CalendarBatcher {
 }
 
 /**
- * This batcher numbers batches based on a Calendar, not just milliseconds.
- * Many offline HDFS sources at Twitter are batched in this way based on hour
- * or day in the UTC calendar
- */
-final case class CalendarBatcher(unitCount: Int, calField: CalendarBatcher.CalField) extends Batcher {
-  final def batchOf(t: Timestamp) = BatchID(calField.unitsSinceEpoch(t.toDate) / unitCount)
-  final def earliestTimeOf(batch: BatchID) = calField.toDate(batch.id.toInt * unitCount)
+  * This batcher numbers batches based on a Calendar, not just milliseconds.
+  * Many offline HDFS sources at Twitter are batched in this way based on hour
+  * or day in the UTC calendar
+  */
+final case class CalendarBatcher(
+    unitCount: Int,
+    calField: CalendarBatcher.CalField)
+    extends Batcher {
+  final def batchOf(t: Timestamp) =
+    BatchID(calField.unitsSinceEpoch(t.toDate) / unitCount)
+  final def earliestTimeOf(batch: BatchID) =
+    calField.toDate(batch.id.toInt * unitCount)
 }

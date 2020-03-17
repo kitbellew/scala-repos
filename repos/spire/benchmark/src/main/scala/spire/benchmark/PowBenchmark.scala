@@ -1,7 +1,6 @@
 package spire
 package benchmark
 
-
 import scala.util.Random
 import Random._
 
@@ -27,59 +26,52 @@ class PowBenchmarks extends MyBenchmark {
     longs = init(200000)(nextLong)
   }
 
-  def timeLongPowForInt(reps:Int) = run(reps) {
-    var t = 0
-    ints.foreach { n =>
-      t += spire.math.pow(n.toLong, 2.toLong).toInt
+  def timeLongPowForInt(reps: Int) =
+    run(reps) {
+      var t = 0
+      ints.foreach { n => t += spire.math.pow(n.toLong, 2.toLong).toInt }
+      t
     }
-    t
-  }
 
-  def timeDoublePowForInt(reps:Int) = run(reps) {
-    var t = 0
-    ints.foreach { n =>
-      t += spire.math.pow(n.toDouble, 2.0).toInt
+  def timeDoublePowForInt(reps: Int) =
+    run(reps) {
+      var t = 0
+      ints.foreach { n => t += spire.math.pow(n.toDouble, 2.0).toInt }
+      t
     }
-    t
-  }
 
-  def timeBigIntPowForInt(reps:Int) = run(reps) {
-    var t = 0
-    ints.foreach { n =>
-      t += (BigInt(n) pow 2).toInt
+  def timeBigIntPowForInt(reps: Int) =
+    run(reps) {
+      var t = 0
+      ints.foreach { n => t += (BigInt(n) pow 2).toInt }
+      t
     }
-    t
-  }
 
-  def timeLongPowForLong(reps:Int) = run(reps) {
-    var t = 0L
-    longs.foreach { n =>
-      t += spire.math.pow(n, 2L)
+  def timeLongPowForLong(reps: Int) =
+    run(reps) {
+      var t = 0L
+      longs.foreach { n => t += spire.math.pow(n, 2L) }
+      t
     }
-    t
-  }
 
-  def timeDoublePowForLong(reps:Int) = run(reps) {
-    var t = 0L
-    longs.foreach { n =>
-      t += spire.math.pow(n.toDouble, 2.0).toLong
+  def timeDoublePowForLong(reps: Int) =
+    run(reps) {
+      var t = 0L
+      longs.foreach { n => t += spire.math.pow(n.toDouble, 2.0).toLong }
+      t
     }
-    t
-  }
 
-  def timeBigIntPowForLong(reps:Int) = run(reps) {
-    var t = 0L
-    longs.foreach { n =>
-      t += (BigInt(n) pow 2).toLong
+  def timeBigIntPowForLong(reps: Int) =
+    run(reps) {
+      var t = 0L
+      longs.foreach { n => t += (BigInt(n) pow 2).toLong }
+      t
     }
-    t
-  }
 
-  def timeDoublePowForDouble(reps:Int) = run(reps) {
-    var t = 0.0
-    longs.foreach { n =>
-      t += spire.math.pow(n, 2.0)
+  def timeDoublePowForDouble(reps: Int) =
+    run(reps) {
+      var t = 0.0
+      longs.foreach { n => t += spire.math.pow(n, 2.0) }
+      t
     }
-    t
-  }
 }

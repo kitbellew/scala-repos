@@ -10,39 +10,39 @@ import spire.syntax.cfor._
 import SieveUtil._
 
 /**
- * This respresents a single sieve segment.
- *
- * The 'start' field says what this segment's first number
- * is. 'primes' is a bitset of possible primes in this
- * segment. 'cutoff' specifies the largest prime factor we're
- * interested in. This means that cutoff**2-1 is the largest number we
- * could reliably identify as prime.
- *
- * We are using a mod30 wheel, which means that we don't need to
- * manually factor using 2, 3, or 5 (30 is the lcm of 2, 3, and
- * 5). Since each wheel turn is 30-bits, and our bitset groups
- * elements into 32-bit groups (integers), we have a 480-bit (15
- * integer) period between the wheel and the bitset. This requires our
- * segment length to be divisible by 480.
- *
- * When building a sieve, we will first initialize using the mod30
- * wheel. Then, if we are on the first segment, we'll do a traditional
- * sieve. We'll save any primes greater than 5 we find as factors,
- * either fast factors (if they will show up frequently in each
- * segment) or slow factors otherwise. If a factor is larger than
- * cutoff we don't save it. After that we'll be done with the first
- * segment.
- *
- * For later segments, we will use our fast and slow factors to block
- * out composites as we find them. Like in the first segment, we'll
- * save factors we find (although any new factors we find now will
- * always be slow). And of course we won't save any factors above our
- * cutoff.
- *
- * Once the sieve is initialized it doesn't do anything else
- * interesting, besides report prime numbers. Currently its internals
- * are made available to the Siever.
- */
+  * This respresents a single sieve segment.
+  *
+  * The 'start' field says what this segment's first number
+  * is. 'primes' is a bitset of possible primes in this
+  * segment. 'cutoff' specifies the largest prime factor we're
+  * interested in. This means that cutoff**2-1 is the largest number we
+  * could reliably identify as prime.
+  *
+  * We are using a mod30 wheel, which means that we don't need to
+  * manually factor using 2, 3, or 5 (30 is the lcm of 2, 3, and
+  * 5). Since each wheel turn is 30-bits, and our bitset groups
+  * elements into 32-bit groups (integers), we have a 480-bit (15
+  * integer) period between the wheel and the bitset. This requires our
+  * segment length to be divisible by 480.
+  *
+  * When building a sieve, we will first initialize using the mod30
+  * wheel. Then, if we are on the first segment, we'll do a traditional
+  * sieve. We'll save any primes greater than 5 we find as factors,
+  * either fast factors (if they will show up frequently in each
+  * segment) or slow factors otherwise. If a factor is larger than
+  * cutoff we don't save it. After that we'll be done with the first
+  * segment.
+  *
+  * For later segments, we will use our fast and slow factors to block
+  * out composites as we find them. Like in the first segment, we'll
+  * save factors we find (although any new factors we find now will
+  * always be slow). And of course we won't save any factors above our
+  * cutoff.
+  *
+  * Once the sieve is initialized it doesn't do anything else
+  * interesting, besides report prime numbers. Currently its internals
+  * are made available to the Siever.
+  */
 object SieveSegment {
   val wheel30: Array[Int] = {
     var b: Long = 0L
@@ -57,7 +57,7 @@ object SieveSegment {
     val n: Long = b | (b << 30L)
     val arr = new Array[Int](15)
     cfor(0)(_ < 15, _ + 1) { i =>
-      arr(i) = ((n >>> (i * 2)) & 0xffffffffL).toInt
+      arr(i) = ((n >>> (i * 2)) & 0xFFFFFFFFL).toInt
     }
     arr
   }
@@ -110,10 +110,11 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
     val arr = fastq.arr
     var i = 0
 
-    val len: Long = if (start + primes.length < cutoff)
-      (cutoff - start).toLong
-    else
-      primes.length
+    val len: Long =
+      if (start + primes.length < cutoff)
+        (cutoff - start).toLong
+      else
+        primes.length
 
     while (i < arr.length) {
       val factor = arr(i)
@@ -172,8 +173,7 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
           while (k < lim) { k += pp; primes -= k }
           m = k.toLong + pp
         }
-        if (p < 7) {
-        } else if (m - primes.length < primes.length) {
+        if (p < 7) {} else if (m - primes.length < primes.length) {
           buf += FastFactor(p, SafeLong(m))
         } else if (cutoff > p) {
           slowq += Factor(SafeLong(p), SafeLong(m))
@@ -187,10 +187,11 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
   def initRest(slowq: FactorHeap): Unit = {
     if (start >= cutoff) return ()
 
-    val len: Long = if (start + primes.length >= cutoff)
-      (cutoff - start).toLong
-    else
-      primes.length
+    val len: Long =
+      if (start + primes.length >= cutoff)
+        (cutoff - start).toLong
+      else
+        primes.length
 
     var i = 1
     while (i < len) {

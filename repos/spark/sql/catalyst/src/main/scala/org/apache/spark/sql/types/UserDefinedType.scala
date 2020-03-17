@@ -23,21 +23,23 @@ import org.json4s.JsonDSL._
 import org.apache.spark.annotation.DeveloperApi
 
 /**
- * ::DeveloperApi::
- * The data type for User Defined Types (UDTs).
- *
- * This interface allows a user to make their own classes more interoperable with SparkSQL;
- * e.g., by creating a [[UserDefinedType]] for a class X, it becomes possible to create
- * a `DataFrame` which has class X in the schema.
- *
- * For SparkSQL to recognize UDTs, the UDT must be annotated with
- * [[SQLUserDefinedType]].
- *
- * The conversion via `serialize` occurs when instantiating a `DataFrame` from another RDD.
- * The conversion via `deserialize` occurs when reading from a `DataFrame`.
- */
+  * ::DeveloperApi::
+  * The data type for User Defined Types (UDTs).
+  *
+  * This interface allows a user to make their own classes more interoperable with SparkSQL;
+  * e.g., by creating a [[UserDefinedType]] for a class X, it becomes possible to create
+  * a `DataFrame` which has class X in the schema.
+  *
+  * For SparkSQL to recognize UDTs, the UDT must be annotated with
+  * [[SQLUserDefinedType]].
+  *
+  * The conversion via `serialize` occurs when instantiating a `DataFrame` from another RDD.
+  * The conversion via `deserialize` occurs when reading from a `DataFrame`.
+  */
 @DeveloperApi
-abstract class UserDefinedType[UserType >: Null] extends DataType with Serializable {
+abstract class UserDefinedType[UserType >: Null]
+    extends DataType
+    with Serializable {
 
   /** Underlying storage type for this UDT */
   def sqlType: DataType
@@ -49,8 +51,8 @@ abstract class UserDefinedType[UserType >: Null] extends DataType with Serializa
   def serializedPyClass: String = null
 
   /**
-   * Convert the user type to a SQL datum
-   */
+    * Convert the user type to a SQL datum
+    */
   def serialize(obj: UserType): Any
 
   /** Convert a SQL datum to the user type */
@@ -64,16 +66,16 @@ abstract class UserDefinedType[UserType >: Null] extends DataType with Serializa
   }
 
   /**
-   * Class object for the UserType
-   */
+    * Class object for the UserType
+    */
   def userClass: java.lang.Class[UserType]
 
   override def defaultSize: Int = sqlType.defaultSize
 
   /**
-   * For UDT, asNullable will not change the nullability of its internal sqlType and just returns
-   * itself.
-   */
+    * For UDT, asNullable will not change the nullability of its internal sqlType and just returns
+    * itself.
+    */
   override private[spark] def asNullable: UserDefinedType[UserType] = this
 
   override private[sql] def acceptsType(dataType: DataType) =
@@ -81,22 +83,24 @@ abstract class UserDefinedType[UserType >: Null] extends DataType with Serializa
 
   override def sql: String = sqlType.sql
 
-  override def equals(other: Any): Boolean = other match {
-    case that: UserDefinedType[_] => this.acceptsType(that)
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: UserDefinedType[_] => this.acceptsType(that)
+      case _                        => false
+    }
 }
 
 /**
- * ::DeveloperApi::
- * The user defined type in Python.
- *
- * Note: This can only be accessed via Python UDF, or accessed as serialized object.
- */
+  * ::DeveloperApi::
+  * The user defined type in Python.
+  *
+  * Note: This can only be accessed via Python UDF, or accessed as serialized object.
+  */
 private[sql] class PythonUserDefinedType(
     val sqlType: DataType,
     override val pyUDT: String,
-    override val serializedPyClass: String) extends UserDefinedType[Any] {
+    override val serializedPyClass: String)
+    extends UserDefinedType[Any] {
 
   /* The serialization is handled by UDT class in Python */
   override def serialize(obj: Any): Any = obj
@@ -112,8 +116,9 @@ private[sql] class PythonUserDefinedType(
       ("sqlType" -> sqlType.jsonValue)
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case that: PythonUserDefinedType => this.pyUDT.equals(that.pyUDT)
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: PythonUserDefinedType => this.pyUDT.equals(that.pyUDT)
+      case _                           => false
+    }
 }

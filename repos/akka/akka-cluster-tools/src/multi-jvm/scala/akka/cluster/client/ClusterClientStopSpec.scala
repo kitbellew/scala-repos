@@ -1,14 +1,14 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.client
 
-import akka.actor.{ Actor, Props, Terminated }
+import akka.actor.{Actor, Props, Terminated}
 import akka.cluster.Cluster
-import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
+import akka.cluster.pubsub.{DistributedPubSub, DistributedPubSubMediator}
 import akka.remote.testconductor.RoleName
-import akka.remote.testkit.{ STMultiNodeSpec, MultiNodeSpec, MultiNodeConfig }
-import akka.testkit.{ EventFilter, ImplicitSender }
+import akka.remote.testkit.{STMultiNodeSpec, MultiNodeSpec, MultiNodeConfig}
+import akka.testkit.{EventFilter, ImplicitSender}
 import com.typesafe.config.ConfigFactory
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -17,7 +17,9 @@ object ClusterClientStopSpec extends MultiNodeConfig {
   val client = role("client")
   val first = role("first")
   val second = role("second")
-  commonConfig(ConfigFactory.parseString("""
+  commonConfig(
+    ConfigFactory.parseString(
+      """
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.remote.log-remote-lifecycle-events = off
@@ -42,7 +44,10 @@ class ClusterClientStopMultiJvmNode1 extends ClusterClientStopSpec
 class ClusterClientStopMultiJvmNode2 extends ClusterClientStopSpec
 class ClusterClientStopMultiJvmNode3 extends ClusterClientStopSpec
 
-class ClusterClientStopSpec extends MultiNodeSpec(ClusterClientStopSpec) with STMultiNodeSpec with ImplicitSender {
+class ClusterClientStopSpec
+    extends MultiNodeSpec(ClusterClientStopSpec)
+    with STMultiNodeSpec
+    with ImplicitSender {
 
   import ClusterClientStopSpec._
 
@@ -63,9 +68,8 @@ class ClusterClientStopSpec extends MultiNodeSpec(ClusterClientStopSpec) with ST
     }
   }
 
-  def initialContacts = Set(first, second).map { r ⇒
-    node(r) / "system" / "receptionist"
-  }
+  def initialContacts =
+    Set(first, second).map { r ⇒ node(r) / "system" / "receptionist" }
 
   "A Cluster Client" should {
 
@@ -85,16 +89,23 @@ class ClusterClientStopSpec extends MultiNodeSpec(ClusterClientStopSpec) with ST
 
     "stop if re-establish fails for too long time" in within(20.seconds) {
       runOn(client) {
-        val c = system.actorOf(ClusterClient.props(
-          ClusterClientSettings(system).withInitialContacts(initialContacts)), "client1")
-        c ! ClusterClient.Send("/user/testService", "hello", localAffinity = true)
+        val c = system.actorOf(
+          ClusterClient.props(
+            ClusterClientSettings(system).withInitialContacts(initialContacts)),
+          "client1")
+        c ! ClusterClient.Send(
+          "/user/testService",
+          "hello",
+          localAffinity = true)
         expectMsgType[String](3.seconds) should be("hello")
         enterBarrier("was-in-contact")
 
         watch(c)
 
         expectTerminated(c, 10.seconds)
-        EventFilter.warning(start = "Receptionist reconnect not successful within", occurrences = 1)
+        EventFilter.warning(
+          start = "Receptionist reconnect not successful within",
+          occurrences = 1)
 
       }
 

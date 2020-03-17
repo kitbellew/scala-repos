@@ -1,4 +1,3 @@
-
 class Test {
   val cm: reflect.runtime.universe.Mirror = reflect.runtime.currentMirror
   def error {

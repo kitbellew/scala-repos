@@ -236,22 +236,26 @@ object mon {
       def move(platform: String) = inc(s"push.send.$platform.move")()
       def finish(platform: String) = inc(s"push.send.$platform.finish")()
       object challenge {
-        def create(platform: String) = inc(s"push.send.$platform.challenge_create")()
-        def accept(platform: String) = inc(s"push.send.$platform.challenge_accept")()
+        def create(platform: String) =
+          inc(s"push.send.$platform.challenge_create")()
+        def accept(platform: String) =
+          inc(s"push.send.$platform.challenge_accept")()
       }
     }
   }
   object fishnet {
     object client {
-      def result(client: String, skill: String) = new {
-        def success = apply("success")
-        def failure = apply("failure")
-        def timeout = apply("timeout")
-        def notFound = apply("not_found")
-        def notAcquired = apply("not_acquired")
-        def abort = apply("abort")
-        private def apply(r: String) = inc(s"fishnet.client.result.$skill.$client.$r")
-      }
+      def result(client: String, skill: String) =
+        new {
+          def success = apply("success")
+          def failure = apply("failure")
+          def timeout = apply("timeout")
+          def notFound = apply("not_found")
+          def notAcquired = apply("not_acquired")
+          def abort = apply("abort")
+          private def apply(r: String) =
+            inc(s"fishnet.client.result.$skill.$client.$r")
+        }
       object status {
         val enabled = rec("fishnet.client.status.enabled")
         val disabled = rec("fishnet.client.status.disabled")
@@ -277,18 +281,19 @@ object mon {
       def post = rec(s"fishnet.move.post")
     }
     object analysis {
-      def by(client: String) = new {
-        def hash = rec(s"fishnet.analysis.hash.$client")
-        def threads = rec(s"fishnet.analysis.threads.$client")
-        def movetime = rec(s"fishnet.analysis.movetime.$client")
-        def node = rec(s"fishnet.analysis.node.$client")
-        def nps = rec(s"fishnet.analysis.nps.$client")
-        def depth = rec(s"fishnet.analysis.depth.$client")
-        def pvSize = rec(s"fishnet.analysis.pv_size.$client")
-        def totalMeganode = incX(s"fishnet.analysis.total.meganode.$client")
-        def totalSecond = incX(s"fishnet.analysis.total.second.$client")
-        def totalPosition = incX(s"fishnet.analysis.total.position.$client")
-      }
+      def by(client: String) =
+        new {
+          def hash = rec(s"fishnet.analysis.hash.$client")
+          def threads = rec(s"fishnet.analysis.threads.$client")
+          def movetime = rec(s"fishnet.analysis.movetime.$client")
+          def node = rec(s"fishnet.analysis.node.$client")
+          def nps = rec(s"fishnet.analysis.nps.$client")
+          def depth = rec(s"fishnet.analysis.depth.$client")
+          def pvSize = rec(s"fishnet.analysis.pv_size.$client")
+          def totalMeganode = incX(s"fishnet.analysis.total.meganode.$client")
+          def totalSecond = incX(s"fishnet.analysis.total.second.$client")
+          def totalPosition = incX(s"fishnet.analysis.total.position.$client")
+        }
       def post = rec(s"fishnet.analysis.post")
     }
   }
@@ -300,7 +305,8 @@ object mon {
     res
   }
 
-  def since[A](path: RecPath)(start: Long) = path(this)(System.nanoTime() - start)
+  def since[A](path: RecPath)(start: Long) =
+    path(this)(System.nanoTime() - start)
 
   type Rec = Long => Unit
   type Inc = () => Unit

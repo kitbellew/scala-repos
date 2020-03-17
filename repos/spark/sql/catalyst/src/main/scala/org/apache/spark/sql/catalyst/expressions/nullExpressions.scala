@@ -19,21 +19,23 @@ package org.apache.spark.sql.catalyst.expressions
 
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import org.apache.spark.sql.catalyst.expressions.codegen.{
+  CodegenContext,
+  ExprCode
+}
 import org.apache.spark.sql.catalyst.util.TypeUtils
 import org.apache.spark.sql.types._
 
-
 /**
- * An expression that is evaluated to the first non-null input.
- *
- * {{{
- *   coalesce(1, 2) => 1
- *   coalesce(null, 1, 2) => 1
- *   coalesce(null, null, 2) => 2
- *   coalesce(null, null, null) => null
- * }}}
- */
+  * An expression that is evaluated to the first non-null input.
+  *
+  * {{{
+  *   coalesce(1, 2) => 1
+  *   coalesce(null, 1, 2) => 1
+  *   coalesce(null, null, 2) => 2
+  *   coalesce(null, null, null) => null
+  * }}}
+  */
 case class Coalesce(children: Seq[Expression]) extends Expression {
 
   /** Coalesce is nullable if all of its children are nullable, or if it has no children. */
@@ -44,9 +46,12 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children == Nil) {
-      TypeCheckResult.TypeCheckFailure("input to function coalesce cannot be empty")
+      TypeCheckResult.TypeCheckFailure(
+        "input to function coalesce cannot be empty")
     } else {
-      TypeUtils.checkForSameTypeInputExpr(children.map(_.dataType), "function coalesce")
+      TypeUtils.checkForSameTypeInputExpr(
+        children.map(_.dataType),
+        "function coalesce")
     }
   }
 
@@ -70,9 +75,10 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
       boolean ${ev.isNull} = ${firstEval.isNull};
       ${ctx.javaType(dataType)} ${ev.value} = ${firstEval.value};
     """ +
-      rest.map { e =>
-      val eval = e.gen(ctx)
-      s"""
+      rest
+        .map { e =>
+          val eval = e.gen(ctx)
+          s"""
         if (${ev.isNull}) {
           ${eval.code}
           if (!${eval.isNull}) {
@@ -81,18 +87,21 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
           }
         }
       """
-    }.mkString("\n")
+        }
+        .mkString("\n")
   }
 }
 
-
 /**
- * Evaluates to `true` iff it's NaN.
- */
-case class IsNaN(child: Expression) extends UnaryExpression
-  with Predicate with ImplicitCastInputTypes {
+  * Evaluates to `true` iff it's NaN.
+  */
+case class IsNaN(child: Expression)
+    extends UnaryExpression
+    with Predicate
+    with ImplicitCastInputTypes {
 
-  override def inputTypes: Seq[AbstractDataType] = Seq(TypeCollection(DoubleType, FloatType))
+  override def inputTypes: Seq[AbstractDataType] =
+    Seq(TypeCollection(DoubleType, FloatType))
 
   override def nullable: Boolean = false
 
@@ -103,7 +112,7 @@ case class IsNaN(child: Expression) extends UnaryExpression
     } else {
       child.dataType match {
         case DoubleType => value.asInstanceOf[Double].isNaN
-        case FloatType => value.asInstanceOf[Float].isNaN
+        case FloatType  => value.asInstanceOf[Float].isNaN
       }
     }
   }
@@ -123,16 +132,19 @@ case class IsNaN(child: Expression) extends UnaryExpression
 }
 
 /**
- * An Expression evaluates to `left` iff it's not NaN, or evaluates to `right` otherwise.
- * This Expression is useful for mapping NaN values to null.
- */
+  * An Expression evaluates to `left` iff it's not NaN, or evaluates to `right` otherwise.
+  * This Expression is useful for mapping NaN values to null.
+  */
 case class NaNvl(left: Expression, right: Expression)
-    extends BinaryExpression with ImplicitCastInputTypes {
+    extends BinaryExpression
+    with ImplicitCastInputTypes {
 
   override def dataType: DataType = left.dataType
 
   override def inputTypes: Seq[AbstractDataType] =
-    Seq(TypeCollection(DoubleType, FloatType), TypeCollection(DoubleType, FloatType))
+    Seq(
+      TypeCollection(DoubleType, FloatType),
+      TypeCollection(DoubleType, FloatType))
 
   override def eval(input: InternalRow): Any = {
     val value = left.eval(input)
@@ -176,10 +188,9 @@ case class NaNvl(left: Expression, right: Expression)
   }
 }
 
-
 /**
- * An expression that is evaluated to true if the input is null.
- */
+  * An expression that is evaluated to true if the input is null.
+  */
 case class IsNull(child: Expression) extends UnaryExpression with Predicate {
   override def nullable: Boolean = false
 
@@ -197,10 +208,9 @@ case class IsNull(child: Expression) extends UnaryExpression with Predicate {
   override def sql: String = s"(${child.sql} IS NULL)"
 }
 
-
 /**
- * An expression that is evaluated to true if the input is not null.
- */
+  * An expression that is evaluated to true if the input is not null.
+  */
 case class IsNotNull(child: Expression) extends UnaryExpression with Predicate {
   override def nullable: Boolean = false
 
@@ -218,11 +228,11 @@ case class IsNotNull(child: Expression) extends UnaryExpression with Predicate {
   override def sql: String = s"(${child.sql} IS NOT NULL)"
 }
 
-
 /**
- * A predicate that is evaluated to be true if there are at least `n` non-null and non-NaN values.
- */
-case class AtLeastNNonNulls(n: Int, children: Seq[Expression]) extends Predicate {
+  * A predicate that is evaluated to be true if there are at least `n` non-null and non-NaN values.
+  */
+case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
+    extends Predicate {
   override def nullable: Boolean = false
   override def foldable: Boolean = children.forall(_.foldable)
   override def toString: String = s"AtLeastNNulls(n, ${children.mkString(",")})"
@@ -250,11 +260,12 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression]) extends Predicate
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val nonnull = ctx.freshName("nonnull")
-    val code = children.map { e =>
-      val eval = e.gen(ctx)
-      e.dataType match {
-        case DoubleType | FloatType =>
-          s"""
+    val code = children
+      .map { e =>
+        val eval = e.gen(ctx)
+        e.dataType match {
+          case DoubleType | FloatType =>
+            s"""
             if ($nonnull < $n) {
               ${eval.code}
               if (!${eval.isNull} && !Double.isNaN(${eval.value})) {
@@ -262,8 +273,8 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression]) extends Predicate
               }
             }
           """
-        case _ =>
-          s"""
+          case _ =>
+            s"""
             if ($nonnull < $n) {
               ${eval.code}
               if (!${eval.isNull}) {
@@ -271,8 +282,9 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression]) extends Predicate
               }
             }
           """
+        }
       }
-    }.mkString("\n")
+      .mkString("\n")
     s"""
       int $nonnull = 0;
       $code

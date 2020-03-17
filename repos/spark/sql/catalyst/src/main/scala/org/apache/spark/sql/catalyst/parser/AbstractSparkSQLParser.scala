@@ -26,16 +26,19 @@ import scala.util.parsing.input.CharArrayReader.EofCh
 import org.apache.spark.sql.catalyst.plans.logical._
 
 private[sql] abstract class AbstractSparkSQLParser
-  extends StandardTokenParsers with PackratParsers with ParserInterface {
+    extends StandardTokenParsers
+    with PackratParsers
+    with ParserInterface {
 
-  def parsePlan(input: String): LogicalPlan = synchronized {
-    // Initialize the Keywords.
-    initLexical
-    phrase(start)(new lexical.Scanner(input)) match {
-      case Success(plan, _) => plan
-      case failureOrError => sys.error(failureOrError.toString)
+  def parsePlan(input: String): LogicalPlan =
+    synchronized {
+      // Initialize the Keywords.
+      initLexical
+      phrase(start)(new lexical.Scanner(input)) match {
+        case Success(plan, _) => plan
+        case failureOrError   => sys.error(failureOrError.toString)
+      }
     }
-  }
   /* One time initialization of lexical.This avoid reinitialization of  lexical in parse method */
   protected lazy val initLexical: Unit = lexical.initialize(reservedWords)
 
@@ -51,9 +54,7 @@ private[sql] abstract class AbstractSparkSQLParser
   // method during the parent class instantiation, because the sub class instance
   // isn't created yet.
   protected lazy val reservedWords: Seq[String] =
-    this
-      .getClass
-      .getMethods
+    this.getClass.getMethods
       .filter(_.getReturnType == classOf[Keyword])
       .map(_.invoke(this).asInstanceOf[Keyword].normalize)
 
@@ -102,29 +103,37 @@ class SqlLexical extends StdLexical {
   }
 
   override lazy val token: Parser[Token] =
-    ( rep1(digit) ~ scientificNotation ^^ { case i ~ s => DecimalLit(i.mkString + s) }
-    | '.' ~> (rep1(digit) ~ scientificNotation) ^^
-      { case i ~ s => DecimalLit("0." + i.mkString + s) }
-    | rep1(digit) ~ ('.' ~> digit.*) ~ scientificNotation ^^
-      { case i1 ~ i2 ~ s => DecimalLit(i1.mkString + "." + i2.mkString + s) }
-    | digit.* ~ identChar ~ (identChar | digit).* ^^
-      { case first ~ middle ~ rest => processIdent((first ++ (middle :: rest)).mkString) }
-    | rep1(digit) ~ ('.' ~> digit.*).? ^^ {
-        case i ~ None => NumericLit(i.mkString)
+    (rep1(digit) ~ scientificNotation ^^ {
+      case i ~ s => DecimalLit(i.mkString + s)
+    }
+      | '.' ~> (rep1(digit) ~ scientificNotation) ^^ {
+        case i ~ s => DecimalLit("0." + i.mkString + s)
+      }
+      | rep1(digit) ~ ('.' ~> digit.*) ~ scientificNotation ^^ {
+        case i1 ~ i2 ~ s => DecimalLit(i1.mkString + "." + i2.mkString + s)
+      }
+      | digit.* ~ identChar ~ (identChar | digit).* ^^ {
+        case first ~ middle ~ rest =>
+          processIdent((first ++ (middle :: rest)).mkString)
+      }
+      | rep1(digit) ~ ('.' ~> digit.*).? ^^ {
+        case i ~ None    => NumericLit(i.mkString)
         case i ~ Some(d) => DecimalLit(i.mkString + "." + d.mkString)
       }
-    | '\'' ~> chrExcept('\'', '\n', EofCh).* <~ '\'' ^^
-      { case chars => StringLit(chars mkString "") }
-    | '"' ~> chrExcept('"', '\n', EofCh).* <~ '"' ^^
-      { case chars => StringLit(chars mkString "") }
-    | '`' ~> chrExcept('`', '\n', EofCh).* <~ '`' ^^
-      { case chars => Identifier(chars mkString "") }
-    | EofCh ^^^ EOF
-    | '\'' ~> failure("unclosed string literal")
-    | '"' ~> failure("unclosed string literal")
-    | delim
-    | failure("illegal character")
-    )
+      | '\'' ~> chrExcept('\'', '\n', EofCh).* <~ '\'' ^^ {
+        case chars => StringLit(chars mkString "")
+      }
+      | '"' ~> chrExcept('"', '\n', EofCh).* <~ '"' ^^ {
+        case chars => StringLit(chars mkString "")
+      }
+      | '`' ~> chrExcept('`', '\n', EofCh).* <~ '`' ^^ {
+        case chars => Identifier(chars mkString "")
+      }
+      | EofCh ^^^ EOF
+      | '\'' ~> failure("unclosed string literal")
+      | '"' ~> failure("unclosed string literal")
+      | delim
+      | failure("illegal character"))
 
   override def identChar: Parser[Elem] = letter | elem('_')
 
@@ -134,12 +143,10 @@ class SqlLexical extends StdLexical {
     }
 
   override def whitespace: Parser[Any] =
-    ( whitespaceChar
-    | '/' ~ '*' ~ comment
-    | '/' ~ '/' ~ chrExcept(EofCh, '\n').*
-    | '#' ~ chrExcept(EofCh, '\n').*
-    | '-' ~ '-' ~ chrExcept(EofCh, '\n').*
-    | '/' ~ '*' ~ failure("unclosed comment")
-    ).*
+    (whitespaceChar
+      | '/' ~ '*' ~ comment
+      | '/' ~ '/' ~ chrExcept(EofCh, '\n').*
+      | '#' ~ chrExcept(EofCh, '\n').*
+      | '-' ~ '-' ~ chrExcept(EofCh, '\n').*
+      | '/' ~ '*' ~ failure("unclosed comment")).*
 }
-

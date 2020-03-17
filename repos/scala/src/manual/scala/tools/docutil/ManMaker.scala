@@ -21,7 +21,6 @@ class ManMaker extends Task {
   /** The directory to put man pages in */
   private var manout: Option[File] = None
 
-
   def setCommand(input: String) {
     command = input.split(",").toList.flatMap { s =>
       val st = s.trim()
@@ -43,15 +42,15 @@ class ManMaker extends Task {
     if (manout.isEmpty) sys.error("Attribute 'manout' is not set.")
 
     command foreach (cmd => {
-      val classname = "scala.man1."+ cmd
+      val classname = "scala.man1." + cmd
 
       val htmlFileName = htmlout.get.getPath + File.separator +
-                         cmd + ".html"
+        cmd + ".html"
       val htmlFile = new java.io.FileOutputStream(htmlFileName)
       EmitHtml.emitHtml(classname, htmlFile)
 
       val manFileName = manout.get.getPath + File.separator +
-                        "man1" + File.separator + cmd + ".1"
+        "man1" + File.separator + cmd + ".1"
       val manFile = new FileOutputStream(manFileName)
       EmitManPage.emitManPage(classname, manFile)
     })

@@ -10,8 +10,11 @@ private[nio] object GenDataViewBuffer {
   trait NewDataViewBuffer[BufferType <: Buffer] {
     def bytesPerElem: Int
 
-    def apply(dataView: DataView,
-        initialPosition: Int, initialLimit: Int, readOnly: Boolean,
+    def apply(
+        dataView: DataView,
+        initialPosition: Int,
+        initialLimit: Int,
+        readOnly: Boolean,
         isBigEndian: Boolean): BufferType
   }
 
@@ -26,9 +29,15 @@ private[nio] object GenDataViewBuffer {
       (byteBufferLimit - byteBufferPos) / newDataViewBuffer.bytesPerElem
     val byteLength = viewCapacity * newDataViewBuffer.bytesPerElem
     val dataView = newDataView(
-        byteArray.buffer, byteArray.byteOffset + byteBufferPos, byteLength)
-    newDataViewBuffer(dataView,
-        0, viewCapacity, byteBuffer.isReadOnly, byteBuffer.isBigEndian)
+      byteArray.buffer,
+      byteArray.byteOffset + byteBufferPos,
+      byteLength)
+    newDataViewBuffer(
+      dataView,
+      0,
+      viewCapacity,
+      byteBuffer.isReadOnly,
+      byteBuffer.isBigEndian)
   }
 
   /* Work around for https://github.com/joyent/node/issues/6051
@@ -36,15 +45,20 @@ private[nio] object GenDataViewBuffer {
    * the buffer's length, even if byteLength == 0.
    */
   @inline
-  private def newDataView(buffer: ArrayBuffer, byteOffset: Int, byteLength: Int): DataView = {
+  private def newDataView(
+      buffer: ArrayBuffer,
+      byteOffset: Int,
+      byteLength: Int): DataView = {
     if (byteLength == 0)
-      lit(buffer = buffer, byteOffset = byteOffset, byteLength = byteLength).asInstanceOf[DataView]
+      lit(buffer = buffer, byteOffset = byteOffset, byteLength = byteLength)
+        .asInstanceOf[DataView]
     else
       new DataView(buffer, byteOffset, byteLength)
   }
 }
 
-private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B) extends AnyVal {
+private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
+    extends AnyVal {
   import self._
 
   import GenDataViewBuffer.newDataView
@@ -58,17 +72,18 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B) extends Any
     val dataView = _dataView
     val pos = position
     val newCapacity = limit - pos
-    val slicedDataView = newDataView(dataView.buffer,
-        dataView.byteOffset + bytesPerElem*pos, bytesPerElem*newCapacity)
-    newDataViewBuffer(slicedDataView,
-        0, newCapacity, isReadOnly, isBigEndian)
+    val slicedDataView = newDataView(
+      dataView.buffer,
+      dataView.byteOffset + bytesPerElem * pos,
+      bytesPerElem * newCapacity)
+    newDataViewBuffer(slicedDataView, 0, newCapacity, isReadOnly, isBigEndian)
   }
 
   @inline
   def generic_duplicate()(
       implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
-    val result = newDataViewBuffer(_dataView,
-        position, limit, isReadOnly, isBigEndian)
+    val result =
+      newDataViewBuffer(_dataView, position, limit, isReadOnly, isBigEndian)
     result._mark = _mark
     result
   }
@@ -76,8 +91,8 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B) extends Any
   @inline
   def generic_asReadOnlyBuffer()(
       implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
-    val result = newDataViewBuffer(_dataView,
-        position, limit, true, isBigEndian)
+    val result =
+      newDataViewBuffer(_dataView, position, limit, true, isBigEndian)
     result._mark = _mark
     result
   }
@@ -90,8 +105,8 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B) extends Any
 
     val dataView = _dataView
     val bytesPerElem = newDataViewBuffer.bytesPerElem
-    val byteArray = new Int8Array(dataView.buffer,
-        dataView.byteOffset, dataView.byteLength)
+    val byteArray =
+      new Int8Array(dataView.buffer, dataView.byteOffset, dataView.byteLength)
     val pos = position
     val lim = limit
     byteArray.set(byteArray.subarray(bytesPerElem * pos, bytesPerElem * lim))
@@ -104,7 +119,7 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B) extends Any
   @inline
   def generic_order(): ByteOrder =
     if (isBigEndian) ByteOrder.BIG_ENDIAN
-    else             ByteOrder.LITTLE_ENDIAN
+    else ByteOrder.LITTLE_ENDIAN
 
   @inline
   def generic_arrayBuffer: ArrayBuffer =
