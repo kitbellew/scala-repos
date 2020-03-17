@@ -98,13 +98,13 @@ trait ContextErrors {
       extends AbsTypeError
 
   object ErrorUtils {
-    def issueNormalTypeError(tree: Tree, msg: String)(
-        implicit context: Context) {
+    def issueNormalTypeError(tree: Tree, msg: String)(implicit
+        context: Context) {
       issueTypeError(NormalTypeError(tree, msg))
     }
 
-    def issueSymbolTypeError(sym: Symbol, msg: String)(
-        implicit context: Context) {
+    def issueSymbolTypeError(sym: Symbol, msg: String)(implicit
+        context: Context) {
       issueTypeError(SymbolTypeError(sym, msg))
     }
 
@@ -165,8 +165,8 @@ trait ContextErrors {
       "macro cannot be expanded, because it was compiled by an incompatible macro engine",
       internalMessage)
 
-  def NoImplicitFoundError(tree: Tree, param: Symbol)(
-      implicit context: Context): Unit = {
+  def NoImplicitFoundError(tree: Tree, param: Symbol)(implicit
+      context: Context): Unit = {
     def errMsg = {
       val paramName = param.name
       val paramTp = param.tpe
@@ -1612,8 +1612,8 @@ trait ContextErrors {
         tree2: Tree,
         pre1: String,
         pre2: String,
-        trailer: String)(isView: Boolean, pt: Type, tree: Tree)(
-        implicit context0: Context) = {
+        trailer: String)(isView: Boolean, pt: Type, tree: Tree)(implicit
+        context0: Context) = {
       if (!info1.tpe.isErroneous && !info2.tpe.isErroneous) {
         def coreMsg =
           sm"""| $pre1 ${info1.sym.fullLocationString} of type ${info1.tpe}
@@ -1694,8 +1694,8 @@ trait ContextErrors {
       issueSymbolTypeError(sym, errMsg)
     }
 
-    def AmbiguousReferenceInNamesDefaultError(arg: Tree, name: Name)(
-        implicit context: Context) = {
+    def AmbiguousReferenceInNamesDefaultError(arg: Tree, name: Name)(implicit
+        context: Context) = {
       if (!arg.isErroneous) { // check if name clash wasn't reported already
         issueNormalTypeError(
           arg,
@@ -1705,16 +1705,16 @@ trait ContextErrors {
       } else arg
     }
 
-    def WarnAfterNonSilentRecursiveInference(param: Symbol, arg: Tree)(
-        implicit context: Context) = {
+    def WarnAfterNonSilentRecursiveInference(param: Symbol, arg: Tree)(implicit
+        context: Context) = {
       val note =
         "failed to determine if '" + param.name + " = ...' is a named argument or an assignment expression.\n" +
           "an explicit type is required for the definition mentioned in the error message above."
       context.warning(arg.pos, note)
     }
 
-    def UnknownParameterNameNamesDefaultError(arg: Tree, name: Name)(
-        implicit context: Context) = {
+    def UnknownParameterNameNamesDefaultError(arg: Tree, name: Name)(implicit
+        context: Context) = {
       issueNormalTypeError(arg, "unknown parameter name: " + name)
       setError(arg)
     }
@@ -1735,8 +1735,8 @@ trait ContextErrors {
       setError(arg)
     }
 
-    def PositionalAfterNamedNamesDefaultError(arg: Tree)(
-        implicit context: Context) = {
+    def PositionalAfterNamedNamesDefaultError(arg: Tree)(implicit
+        context: Context) = {
       issueNormalTypeError(arg, "positional after named argument.")
       setError(arg)
     }

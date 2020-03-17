@@ -121,8 +121,8 @@ class EnumField[OwnerType <: Record[OwnerType], EnumType <: Enumeration](
     extends Field[EnumType#Value, OwnerType]
     with MandatoryTypedField[EnumType#Value]
     with EnumTypedField[EnumType] {
-  def this(rec: OwnerType, enum: EnumType, value: EnumType#Value)(
-      implicit m: Manifest[EnumType#Value]) = {
+  def this(rec: OwnerType, enum: EnumType, value: EnumType#Value)(implicit
+      m: Manifest[EnumType#Value]) = {
     this(rec, enum)
     set(value)
   }
@@ -138,8 +138,8 @@ class OptionalEnumField[
     extends Field[EnumType#Value, OwnerType]
     with OptionalTypedField[EnumType#Value]
     with EnumTypedField[EnumType] {
-  def this(rec: OwnerType, enum: EnumType, value: Box[EnumType#Value])(
-      implicit m: Manifest[EnumType#Value]) = {
+  def this(rec: OwnerType, enum: EnumType, value: Box[EnumType#Value])(implicit
+      m: Manifest[EnumType#Value]) = {
     this(rec, enum)
     setBox(value)
   }

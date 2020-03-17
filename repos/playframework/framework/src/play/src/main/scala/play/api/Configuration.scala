@@ -1201,8 +1201,8 @@ private[play] object ConfigLoader {
   /**
     * Loads a value, interpreting a null value as None and any other value as Some(value).
     */
-  implicit def optionLoader[A](
-      implicit valueLoader: ConfigLoader[A]): ConfigLoader[Option[A]] =
+  implicit def optionLoader[A](implicit
+      valueLoader: ConfigLoader[A]): ConfigLoader[Option[A]] =
     new ConfigLoader[Option[A]] {
       def load(config: Config, path: String): Option[A] = {
         if (config.getIsNull(path)) None
@@ -1213,8 +1213,8 @@ private[play] object ConfigLoader {
       }
     }
 
-  implicit def mapLoader[A](
-      implicit valueLoader: ConfigLoader[A]): ConfigLoader[Map[String, A]] =
+  implicit def mapLoader[A](implicit
+      valueLoader: ConfigLoader[A]): ConfigLoader[Map[String, A]] =
     new ConfigLoader[Map[String, A]] {
       def load(config: Config, path: String): Map[String, A] = {
         val obj = config.getObject(path)

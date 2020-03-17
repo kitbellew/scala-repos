@@ -141,22 +141,22 @@ final class Vector[+A] private[immutable] (
 
   // SeqLike api
 
-  override def updated[B >: A, That](index: Int, elem: B)(
-      implicit bf: CanBuildFrom[Vector[A], B, That]): That =
+  override def updated[B >: A, That](index: Int, elem: B)(implicit
+      bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF[A, B, That](bf))
       updateAt(index, elem)
         .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
     else super.updated(index, elem)(bf)
 
-  override def +:[B >: A, That](elem: B)(
-      implicit bf: CanBuildFrom[Vector[A], B, That]): That =
+  override def +:[B >: A, That](elem: B)(implicit
+      bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF[A, B, That](bf))
       appendFront(elem)
         .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
     else super.+:(elem)(bf)
 
-  override def :+[B >: A, That](elem: B)(
-      implicit bf: CanBuildFrom[Vector[A], B, That]): That =
+  override def :+[B >: A, That](elem: B)(implicit
+      bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF(bf))
       appendBack(elem)
         .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
@@ -225,8 +225,8 @@ final class Vector[+A] private[immutable] (
     (take(n), drop(n))
 
   // concat (suboptimal but avoids worst performance gotchas)
-  override def ++[B >: A, That](that: GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[Vector[A], B, That]): That = {
+  override def ++[B >: A, That](that: GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[Vector[A], B, That]): That = {
     if (isDefaultCBF(bf)) {
       // We are sure we will create a Vector, so let's do it efficiently
       import Vector.{Log2ConcatFaster, TinyAppendFaster}

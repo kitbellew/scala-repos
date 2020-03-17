@@ -161,8 +161,8 @@ object ColumnarTableModule extends Logging {
     *
     * "the fox said: ""hello, my name is fred."""
     */
-  def renderCsv[M[+_]](slices: StreamT[M, Slice])(
-      implicit M: Monad[M]): StreamT[M, CharBuffer] = {
+  def renderCsv[M[+_]](slices: StreamT[M, Slice])(implicit
+      M: Monad[M]): StreamT[M, CharBuffer] = {
     import scala.collection.{Map => GenMap}
     import scala.util.Sorting
 
@@ -377,8 +377,8 @@ object ColumnarTableModule extends Logging {
 
   def byteStream[M[+_]](
       blockStream: StreamT[M, Slice],
-      mimeType: Option[MimeType])(
-      implicit M: Monad[M]): Option[StreamT[M, Array[Byte]]] = {
+      mimeType: Option[MimeType])(implicit
+      M: Monad[M]): Option[StreamT[M, Array[Byte]]] = {
     import vfs.VFSModule.bufferOutput
     import FileContent._
 
@@ -575,8 +575,8 @@ trait ColumnarTableModule[M[+_]]
       * Merge controls the iteration over the table of group key values.
       */
     def merge[N[+_]](grouping: GroupingSpec)(
-        body: (RValue, GroupId => M[Table]) => N[Table])(
-        implicit nt: N ~> M): M[Table] = {
+        body: (RValue, GroupId => M[Table]) => N[Table])(implicit
+        nt: N ~> M): M[Table] = {
       import GroupKeySpec.{dnf, toVector}
 
       type Key = Seq[RValue]

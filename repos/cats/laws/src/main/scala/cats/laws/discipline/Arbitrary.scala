@@ -17,8 +17,8 @@ object arbitrary extends ArbitraryInstances0 {
   implicit def function1Arbitrary: Arbitrary[(Int) => Boolean] =
     Arbitrary(getArbitrary[Int].map(x => (input) => input < x))
 
-  implicit def constArbitrary[A, B](
-      implicit A: Arbitrary[A]): Arbitrary[Const[A, B]] =
+  implicit def constArbitrary[A, B](implicit
+      A: Arbitrary[A]): Arbitrary[Const[A, B]] =
     Arbitrary(A.arbitrary.map(Const[A, B]))
 
   implicit def oneAndArbitrary[F[_], A](implicit
@@ -31,8 +31,8 @@ object arbitrary extends ArbitraryInstances0 {
       B: Arbitrary[B]): Arbitrary[A Xor B] =
     Arbitrary(Gen.oneOf(A.arbitrary.map(Xor.left), B.arbitrary.map(Xor.right)))
 
-  implicit def xorTArbitrary[F[_], A, B](
-      implicit F: Arbitrary[F[A Xor B]]): Arbitrary[XorT[F, A, B]] =
+  implicit def xorTArbitrary[F[_], A, B](implicit
+      F: Arbitrary[F[A Xor B]]): Arbitrary[XorT[F, A, B]] =
     Arbitrary(F.arbitrary.map(XorT(_)))
 
   implicit def validatedArbitrary[A, B](implicit
@@ -52,16 +52,16 @@ object arbitrary extends ArbitraryInstances0 {
         B.arbitrary.map(Ior.right),
         for { a <- A.arbitrary; b <- B.arbitrary } yield Ior.both(a, b)))
 
-  implicit def kleisliArbitrary[F[_], A, B](
-      implicit F: Arbitrary[F[B]]): Arbitrary[Kleisli[F, A, B]] =
+  implicit def kleisliArbitrary[F[_], A, B](implicit
+      F: Arbitrary[F[B]]): Arbitrary[Kleisli[F, A, B]] =
     Arbitrary(F.arbitrary.map(fb => Kleisli[F, A, B](_ => fb)))
 
-  implicit def cokleisliArbitrary[F[_], A, B](
-      implicit B: Arbitrary[B]): Arbitrary[Cokleisli[F, A, B]] =
+  implicit def cokleisliArbitrary[F[_], A, B](implicit
+      B: Arbitrary[B]): Arbitrary[Cokleisli[F, A, B]] =
     Arbitrary(B.arbitrary.map(b => Cokleisli[F, A, B](_ => b)))
 
-  implicit def optionTArbitrary[F[_], A](
-      implicit F: Arbitrary[F[Option[A]]]): Arbitrary[OptionT[F, A]] =
+  implicit def optionTArbitrary[F[_], A](implicit
+      F: Arbitrary[F[Option[A]]]): Arbitrary[OptionT[F, A]] =
     Arbitrary(F.arbitrary.map(OptionT.apply))
 
   implicit def evalArbitrary[A: Arbitrary]: Arbitrary[Eval[A]] =
@@ -77,8 +77,8 @@ object arbitrary extends ArbitraryInstances0 {
     Arbitrary(
       F.arbitrary.flatMap(fa => G.arbitrary.map(ga => Prod[F, G, A](fa, ga))))
 
-  implicit def funcArbitrary[F[_], A, B](
-      implicit F: Arbitrary[F[B]]): Arbitrary[Func[F, A, B]] =
+  implicit def funcArbitrary[F[_], A, B](implicit
+      F: Arbitrary[F[B]]): Arbitrary[Func[F, A, B]] =
     Arbitrary(F.arbitrary.map(fb => Func.func[F, A, B](_ => fb)))
 
   implicit def appFuncArbitrary[F[_], A, B](implicit
@@ -91,8 +91,8 @@ object arbitrary extends ArbitraryInstances0 {
     writerTArbitrary[Id, L, V]
 
   // until this is provided by scalacheck
-  implicit def partialFunctionArbitrary[A, B](
-      implicit F: Arbitrary[A => Option[B]]): Arbitrary[PartialFunction[A, B]] =
+  implicit def partialFunctionArbitrary[A, B](implicit
+      F: Arbitrary[A => Option[B]]): Arbitrary[PartialFunction[A, B]] =
     Arbitrary(F.arbitrary.map(Function.unlift))
 
   implicit def coproductArbitrary[F[_], G[_], A](implicit
@@ -111,7 +111,7 @@ object arbitrary extends ArbitraryInstances0 {
 }
 
 private[discipline] sealed trait ArbitraryInstances0 {
-  implicit def writerTArbitrary[F[_], L, V](
-      implicit F: Arbitrary[F[(L, V)]]): Arbitrary[WriterT[F, L, V]] =
+  implicit def writerTArbitrary[F[_], L, V](implicit
+      F: Arbitrary[F[(L, V)]]): Arbitrary[WriterT[F, L, V]] =
     Arbitrary(F.arbitrary.map(WriterT(_)))
 }

@@ -65,8 +65,8 @@ object ExceptionHandler {
     * Creates a sealed ExceptionHandler from the given one. Returns the default handler if the given one
     * is `null`.
     */
-  def seal(handler: ExceptionHandler)(
-      implicit settings: RoutingSettings): ExceptionHandler =
+  def seal(handler: ExceptionHandler)(implicit
+      settings: RoutingSettings): ExceptionHandler =
     if (handler ne null) handler.seal(settings)
     else ExceptionHandler.default(settings)
 }

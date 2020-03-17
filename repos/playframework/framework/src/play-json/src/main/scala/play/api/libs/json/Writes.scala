@@ -325,8 +325,8 @@ trait DefaultWrites {
     *     DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     * }}}
     */
-  def temporalWrites[A <: Temporal, B](formatting: B)(
-      implicit f: B => TemporalFormatter[A]): Writes[A] =
+  def temporalWrites[A <: Temporal, B](formatting: B)(implicit
+      f: B => TemporalFormatter[A]): Writes[A] =
     new Writes[A] {
       def writes(temporal: A): JsValue = JsString(f(formatting) format temporal)
     }

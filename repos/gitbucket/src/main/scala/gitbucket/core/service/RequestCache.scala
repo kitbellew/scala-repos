@@ -26,15 +26,15 @@ trait RequestCache
     }
   }
 
-  def getAccountByUserName(userName: String)(
-      implicit context: Context): Option[Account] = {
+  def getAccountByUserName(userName: String)(implicit
+      context: Context): Option[Account] = {
     context.cache(s"account.${userName}") {
       super.getAccountByUserName(userName)
     }
   }
 
-  def getAccountByMailAddress(mailAddress: String)(
-      implicit context: Context): Option[Account] = {
+  def getAccountByMailAddress(mailAddress: String)(implicit
+      context: Context): Option[Account] = {
     context.cache(s"account.${mailAddress}") {
       super.getAccountByMailAddress(mailAddress)
     }

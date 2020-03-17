@@ -6,19 +6,19 @@ import profile.simple._
 
 trait LabelsService {
 
-  def getLabels(owner: String, repository: String)(
-      implicit s: Session): List[Label] =
+  def getLabels(owner: String, repository: String)(implicit
+      s: Session): List[Label] =
     Labels
       .filter(_.byRepository(owner, repository))
       .sortBy(_.labelName asc)
       .list
 
-  def getLabel(owner: String, repository: String, labelId: Int)(
-      implicit s: Session): Option[Label] =
+  def getLabel(owner: String, repository: String, labelId: Int)(implicit
+      s: Session): Option[Label] =
     Labels.filter(_.byPrimaryKey(owner, repository, labelId)).firstOption
 
-  def getLabel(owner: String, repository: String, labelName: String)(
-      implicit s: Session): Option[Label] =
+  def getLabel(owner: String, repository: String, labelName: String)(implicit
+      s: Session): Option[Label] =
     Labels.filter(_.byLabel(owner, repository, labelName)).firstOption
 
   def createLabel(
@@ -44,8 +44,8 @@ trait LabelsService {
       .map(t => t.labelName -> t.color)
       .update(labelName, color)
 
-  def deleteLabel(owner: String, repository: String, labelId: Int)(
-      implicit s: Session): Unit = {
+  def deleteLabel(owner: String, repository: String, labelId: Int)(implicit
+      s: Session): Unit = {
     IssueLabels.filter(_.byLabel(owner, repository, labelId)).delete
     Labels.filter(_.byPrimaryKey(owner, repository, labelId)).delete
   }

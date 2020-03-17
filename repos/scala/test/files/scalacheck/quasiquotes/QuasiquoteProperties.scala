@@ -75,8 +75,8 @@ trait Helpers {
       (mods.flags == other.flags) && (mods.privateWithin ≈ other.privateWithin) && (mods.annotations ≈ other.annotations)
   }
 
-  def assertThrows[T <: AnyRef](f: => Any)(
-      implicit manifest: Manifest[T]): Unit = {
+  def assertThrows[T <: AnyRef](f: => Any)(implicit
+      manifest: Manifest[T]): Unit = {
     val clazz = manifest.runtimeClass.asInstanceOf[Class[T]]
     val thrown =
       try {

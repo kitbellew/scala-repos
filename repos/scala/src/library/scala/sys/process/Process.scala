@@ -160,8 +160,8 @@ trait ProcessCreation {
   /** Creates a sequence of [[scala.sys.process.ProcessBuilder.Source]] from a sequence of
     * something else for which there's an implicit conversion to `Source`.
     */
-  def applySeq[T](builders: Seq[T])(
-      implicit convert: T => Source): Seq[Source] = builders.map(convert)
+  def applySeq[T](builders: Seq[T])(implicit
+      convert: T => Source): Seq[Source] = builders.map(convert)
 
   /** Creates a [[scala.sys.process.ProcessBuilder]] from one or more
     * [[scala.sys.process.ProcessBuilder.Source]], which can then be
@@ -206,8 +206,8 @@ trait ProcessImplicits {
   /** Return a sequence of [[scala.sys.process.ProcessBuilder.Source]] from a sequence
     * of values for which an implicit conversion to `Source` is available.
     */
-  implicit def buildersToProcess[T](builders: Seq[T])(
-      implicit convert: T => Source): Seq[Source] = applySeq(builders)
+  implicit def buildersToProcess[T](builders: Seq[T])(implicit
+      convert: T => Source): Seq[Source] = applySeq(builders)
 
   /** Implicitly convert a `java.lang.ProcessBuilder` into a Scala one. */
   implicit def builderToProcess(builder: JProcessBuilder): ProcessBuilder =

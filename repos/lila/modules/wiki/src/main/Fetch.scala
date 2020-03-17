@@ -13,8 +13,8 @@ import lila.db.api._
 import lila.db.Types.Coll
 import tube._
 
-private[wiki] final class Fetch(gitUrl: String, markdownPath: String)(
-    implicit coll: Coll) {
+private[wiki] final class Fetch(gitUrl: String, markdownPath: String)(implicit
+    coll: Coll) {
 
   def apply: Funit =
     getFiles flatMap { files =>

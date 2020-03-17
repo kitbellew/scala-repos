@@ -1534,8 +1534,8 @@ abstract class Future[+A] extends Awaitable[A] {
     *
     * ''Note'': On timeout, the underlying future is interrupted.
     */
-  def raiseWithin(timeout: Duration, exc: Throwable)(
-      implicit timer: Timer): Future[A] =
+  def raiseWithin(timeout: Duration, exc: Throwable)(implicit
+      timer: Timer): Future[A] =
     raiseWithin(timer, timeout, exc)
 
   /**
@@ -1647,8 +1647,8 @@ abstract class Future[+A] extends Awaitable[A] {
     * discards the result of `this`. Note that this applies only
     * `Unit`-valued  Futures — i.e. side-effects.
     */
-  def before[B](f: => Future[B])(
-      implicit ev: this.type <:< Future[Unit]): Future[B] =
+  def before[B](f: => Future[B])(implicit
+      ev: this.type <:< Future[Unit]): Future[B] =
     transform {
       case Return(_)   => f
       case t: Throw[_] => Future.const[B](t.cast[B])
@@ -2921,14 +2921,14 @@ class NoFuture extends Future[Nothing] {
 
   @throws(classOf[TimeoutException])
   @throws(classOf[InterruptedException])
-  def ready(timeout: Duration)(
-      implicit permit: Awaitable.CanAwait): this.type = {
+  def ready(timeout: Duration)(implicit
+      permit: Awaitable.CanAwait): this.type = {
     throw sleepThenTimeout(timeout)
   }
 
   @throws(classOf[Exception])
-  def result(timeout: Duration)(
-      implicit permit: Awaitable.CanAwait): Nothing = {
+  def result(timeout: Duration)(implicit
+      permit: Awaitable.CanAwait): Nothing = {
     throw sleepThenTimeout(timeout)
   }
 

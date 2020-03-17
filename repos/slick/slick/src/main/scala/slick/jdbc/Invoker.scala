@@ -12,8 +12,8 @@ trait Invoker[+R] { self =>
   /** Execute the statement and return a CloseableIterator of the converted
     * results. The iterator must either be fully read or closed explicitly.
     * @param maxRows Maximum number of rows to read from the result (0 for unlimited). */
-  def iteratorTo(maxRows: Int)(
-      implicit session: JdbcBackend#Session): CloseableIterator[R]
+  def iteratorTo(maxRows: Int)(implicit
+      session: JdbcBackend#Session): CloseableIterator[R]
 
   /** Execute the statement and ignore the results. */
   final def execute(implicit session: JdbcBackend#Session): Unit =
@@ -48,8 +48,8 @@ trait Invoker[+R] { self =>
 
   /** Execute the statement and call f for each converted row of the result set.
     * @param maxRows Maximum number of rows to read from the result (0 for unlimited). */
-  final def foreach(f: R => Unit, maxRows: Int = 0)(
-      implicit session: JdbcBackend#Session) {
+  final def foreach(f: R => Unit, maxRows: Int = 0)(implicit
+      session: JdbcBackend#Session) {
     val it = iteratorTo(maxRows)
     try { it.foreach(f) }
     finally { it.close() }

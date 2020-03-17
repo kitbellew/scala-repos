@@ -62,31 +62,31 @@ case object NamedNoPrefix extends NamingScheme
   * a separate compilation unit, which makes it easier to provide helper methods interfacing with macros.
   */
 object FieldsProviderImpl {
-  def toFieldsImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
+  def toFieldsImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
     toFieldsCommonImpl(c, NamedWithPrefix, false)(T)
 
-  def toFieldsWithUnknownImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
+  def toFieldsWithUnknownImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
     toFieldsCommonImpl(c, NamedWithPrefix, true)(T)
 
-  def toFieldsWithUnknownNoPrefixImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
+  def toFieldsWithUnknownNoPrefixImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
     toFieldsCommonImpl(c, NamedNoPrefix, true)(T)
 
-  def toIndexedFieldsImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
+  def toIndexedFieldsImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
     toFieldsCommonImpl(c, Indexed, false)(T)
 
-  def toIndexedFieldsWithUnknownImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
+  def toIndexedFieldsWithUnknownImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] =
     toFieldsCommonImpl(c, Indexed, true)(T)
 
   def toFieldsCommonImpl[T](
       c: Context,
       namingScheme: NamingScheme,
-      allowUnknownTypes: Boolean)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] = {
+      allowUnknownTypes: Boolean)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[cascading.tuple.Fields] = {
     import c.universe._
 
     import TypeDescriptorProviderImpl.{optionInner, evidentColumn}

@@ -124,8 +124,8 @@ trait Scheduler {
     *
     * Scala API
     */
-  final def scheduleOnce(delay: FiniteDuration)(f: ⇒ Unit)(
-      implicit executor: ExecutionContext): Cancellable =
+  final def scheduleOnce(delay: FiniteDuration)(f: ⇒ Unit)(implicit
+      executor: ExecutionContext): Cancellable =
     scheduleOnce(delay, new Runnable { override def run = f })
 
   /**
@@ -134,8 +134,8 @@ trait Scheduler {
     *
     * Java & Scala API
     */
-  def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable
+  def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(implicit
+      executor: ExecutionContext): Cancellable
 
   /**
     * The maximum supported task frequency of this scheduler, i.e. the inverse

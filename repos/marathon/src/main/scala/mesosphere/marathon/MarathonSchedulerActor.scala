@@ -424,8 +424,8 @@ object MarathonSchedulerActor {
   case object CancellationTimeoutExceeded
 
   implicit class AnswerOps[A](val f: Future[A]) extends AnyVal {
-    def sendAnswer(receiver: ActorRef, cmd: Command)(
-        implicit ec: ExecutionContext): Future[A] = {
+    def sendAnswer(receiver: ActorRef, cmd: Command)(implicit
+        ec: ExecutionContext): Future[A] = {
       f onComplete {
         case Success(_) =>
           receiver ! cmd.answer

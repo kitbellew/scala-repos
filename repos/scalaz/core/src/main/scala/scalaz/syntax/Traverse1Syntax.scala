@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Traverse1` */
-final class Traverse1Ops[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: Traverse1[F])
+final class Traverse1Ops[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: Traverse1[F])
     extends Ops[F[A]] {
   ////
 
@@ -13,8 +13,8 @@ final class Traverse1Ops[F[_], A] private[syntax] (val self: F[A])(
     G.traverse1(self)(f)
 
   /** A version of `traverse1` that infers the type constructor `G` */
-  final def traverse1U[GB](f: A => GB)(
-      implicit G: Unapply[Apply, GB]): G.M[F[G.A]] =
+  final def traverse1U[GB](f: A => GB)(implicit
+      G: Unapply[Apply, GB]): G.M[F[G.A]] =
     F.traverse1U[A, GB](self)(f)(G)
 
   /** Traverse with the identity function */
@@ -33,8 +33,8 @@ final class Traverse1Ops[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToTraverse1Ops0 {
-  implicit def ToTraverse1OpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[Traverse1, FA]) =
+  implicit def ToTraverse1OpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[Traverse1, FA]) =
     new Traverse1Ops[F0.M, F0.A](F0(v))(F0.TC)
 
 }

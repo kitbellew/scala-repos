@@ -56,8 +56,8 @@ object IsTraversableOnce {
       val conversion = implicitly[String => GenTraversableOnce[Char]]
     }
 
-  implicit def genTraversableLikeRepr[C[_], A0](
-      implicit conv: C[A0] => GenTraversableOnce[A0])
+  implicit def genTraversableLikeRepr[C[_], A0](implicit
+      conv: C[A0] => GenTraversableOnce[A0])
       : IsTraversableOnce[C[A0]] { type A = A0 } =
     new IsTraversableOnce[C[A0]] {
       type A = A0

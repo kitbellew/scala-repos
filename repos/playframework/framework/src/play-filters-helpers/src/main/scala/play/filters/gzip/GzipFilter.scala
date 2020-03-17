@@ -40,8 +40,8 @@ import scala.compat.java8.FunctionConverters._
   * responses.
   */
 @Singleton
-class GzipFilter @Inject() (config: GzipFilterConfig)(
-    implicit mat: Materializer)
+class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
+    mat: Materializer)
     extends EssentialFilter {
 
   import play.api.http.HeaderNames._
@@ -49,8 +49,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
   def this(
       bufferSize: Int = 8192,
       chunkedThreshold: Int = 102400,
-      shouldGzip: (RequestHeader, Result) => Boolean = (_, _) => true)(
-      implicit mat: Materializer) =
+      shouldGzip: (RequestHeader, Result) => Boolean = (_, _) => true)(implicit
+      mat: Materializer) =
     this(GzipFilterConfig(bufferSize, chunkedThreshold, shouldGzip))
 
   def apply(next: EssentialAction) =

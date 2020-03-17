@@ -28,7 +28,7 @@ class HourlySuffixParquetScrooge[T <: ThriftStruct](
     extends HourlySuffixSource(path, dateRange)
     with ParquetScrooge[T]
 
-class FixedPathParquetScrooge[T <: ThriftStruct](paths: String*)(
-    implicit override val mf: Manifest[T])
+class FixedPathParquetScrooge[T <: ThriftStruct](paths: String*)(implicit
+    override val mf: Manifest[T])
     extends FixedPathSource(paths: _*)
     with ParquetScrooge[T]

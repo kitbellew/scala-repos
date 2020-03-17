@@ -744,8 +744,8 @@ abstract class TreeGen {
     *  @param sugarBody    The body of the for expression
     *  @param fresh        A source of new names
     */
-  def mkFor(enums: List[Tree], sugarBody: Tree)(
-      implicit fresh: FreshNameCreator): Tree = {
+  def mkFor(enums: List[Tree], sugarBody: Tree)(implicit
+      fresh: FreshNameCreator): Tree = {
     val (mapName, flatMapName, body) = sugarBody match {
       case Yield(tree) => (nme.map, nme.flatMap, tree)
       case _           => (nme.foreach, nme.foreach, sugarBody)
@@ -869,13 +869,13 @@ abstract class TreeGen {
   }
 
   /** Create tree for pattern definition <val pat0 = rhs> */
-  def mkPatDef(pat: Tree, rhs: Tree)(
-      implicit fresh: FreshNameCreator): List[ValDef] =
+  def mkPatDef(pat: Tree, rhs: Tree)(implicit
+      fresh: FreshNameCreator): List[ValDef] =
     mkPatDef(Modifiers(0), pat, rhs)
 
   /** Create tree for pattern definition <mods val pat0 = rhs> */
-  def mkPatDef(mods: Modifiers, pat: Tree, rhs: Tree)(
-      implicit fresh: FreshNameCreator): List[ValDef] =
+  def mkPatDef(mods: Modifiers, pat: Tree, rhs: Tree)(implicit
+      fresh: FreshNameCreator): List[ValDef] =
     matchVarPattern(pat) match {
       case Some((name, tpt)) =>
         List(atPos(pat.pos union rhs.pos) {
@@ -953,15 +953,15 @@ abstract class TreeGen {
     }
 
   /** Create tree for for-comprehension generator <val pat0 <- rhs0> */
-  def mkGenerator(pos: Position, pat: Tree, valeq: Boolean, rhs: Tree)(
-      implicit fresh: FreshNameCreator): Tree = {
+  def mkGenerator(pos: Position, pat: Tree, valeq: Boolean, rhs: Tree)(implicit
+      fresh: FreshNameCreator): Tree = {
     val pat1 = patvarTransformer.transform(pat)
     if (valeq) ValEq(pat1, rhs).setPos(pos)
     else ValFrom(pat1, mkCheckIfRefutable(pat1, rhs)).setPos(pos)
   }
 
-  def mkCheckIfRefutable(pat: Tree, rhs: Tree)(
-      implicit fresh: FreshNameCreator) =
+  def mkCheckIfRefutable(pat: Tree, rhs: Tree)(implicit
+      fresh: FreshNameCreator) =
     if (treeInfo.isVarPatternDeep(pat)) rhs
     else {
       val cases = List(

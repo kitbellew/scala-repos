@@ -13,8 +13,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
   @expand.valify
   implicit def canOpInto_V_S[
       @expand.args(OpMulScalar, OpDiv) Op,
-      @expand.args(Double, Long, Float, Int) T](
-      implicit @expand.sequence[Op]((_ * _), (_ / _)) op: Q)
+      @expand.args(Double, Long, Float, Int) T](implicit
+      @expand.sequence[Op]((_ * _), (_ / _)) op: Q)
       : Op.InPlaceImpl2[VectorBuilder[T], T] = {
     new Op.InPlaceImpl2[VectorBuilder[T], T] {
       def apply(a: VectorBuilder[T], b: T) {
@@ -60,8 +60,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
   @expand.valify
   implicit def canOpInto_V_V[
       @expand.args(OpAdd, OpSub) Op,
-      @expand.args(Double, Long, Float, Int) T](
-      implicit @expand.sequence[Op]((x => x), (-_)) op: Q)
+      @expand.args(Double, Long, Float, Int) T](implicit
+      @expand.sequence[Op]((x => x), (-_)) op: Q)
       : Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
     new Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {

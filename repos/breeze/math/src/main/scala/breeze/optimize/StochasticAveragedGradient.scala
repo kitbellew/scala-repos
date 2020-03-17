@@ -13,8 +13,8 @@ class StochasticAveragedGradient[T](
     maxIter: Int = -1,
     initialStepSize: Double = 0.25,
     tuneStepFrequency: Int = 10,
-    l2Regularization: Double = 0.0)(
-    implicit vs: MutableInnerProductModule[T, Double])
+    l2Regularization: Double = 0.0)(implicit
+    vs: MutableInnerProductModule[T, Double])
     extends FirstOrderMinimizer[T, BatchDiffFunction[T]](maxIter) {
   import vs._
 

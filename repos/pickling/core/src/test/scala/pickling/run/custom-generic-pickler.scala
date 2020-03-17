@@ -44,8 +44,8 @@ class MyClassPickler[A](implicit
 
 class CustomGenericPicklerTest extends FunSuite {
 
-  implicit def myClassPickler[A: Pickler: Unpickler: FastTypeTag](
-      implicit pf: PickleFormat) =
+  implicit def myClassPickler[A: Pickler: Unpickler: FastTypeTag](implicit
+      pf: PickleFormat) =
     new MyClassPickler
 
   test("main") {

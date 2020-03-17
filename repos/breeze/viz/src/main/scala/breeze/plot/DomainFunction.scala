@@ -21,16 +21,16 @@ object DomainFunction {
     }
   }
 
-  implicit def quasitensorIsDomainFunction[T, K, V](
-      implicit ev: T <:< QuasiTensor[K, V]): DomainFunction[T, K, V] =
+  implicit def quasitensorIsDomainFunction[T, K, V](implicit
+      ev: T <:< QuasiTensor[K, V]): DomainFunction[T, K, V] =
     new DomainFunction[T, K, V] {
       def domain(t: T): IndexedSeq[K] = t.keySet.toIndexedSeq
 
       def apply(t: T, k: K): V = t(k)
     }
 
-  implicit def seqIsDomainFunction[T, V](
-      implicit ev: T <:< collection.Seq[V]): DomainFunction[T, Int, V] = {
+  implicit def seqIsDomainFunction[T, V](implicit
+      ev: T <:< collection.Seq[V]): DomainFunction[T, Int, V] = {
     new DomainFunction[T, Int, V] {
       def domain(t: T): IndexedSeq[Int] = (0 until t.length)
 
@@ -41,8 +41,8 @@ object DomainFunction {
 
   }
 
-  implicit def mapIsDomainFunction[T, K, V](
-      implicit ev: T <:< collection.Map[K, V]): DomainFunction[T, K, V] = {
+  implicit def mapIsDomainFunction[T, K, V](implicit
+      ev: T <:< collection.Map[K, V]): DomainFunction[T, K, V] = {
     new DomainFunction[T, K, V] {
       def domain(t: T): IndexedSeq[K] = t.keySet.toIndexedSeq
 

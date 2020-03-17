@@ -111,8 +111,8 @@ object FormFieldDirectives extends FormFieldDirectives {
     def apply(): Out
   }
   object FieldMagnet {
-    implicit def apply[T](value: T)(
-        implicit fdef: FieldDef[T]): FieldMagnet { type Out = fdef.Out } =
+    implicit def apply[T](value: T)(implicit
+        fdef: FieldDef[T]): FieldMagnet { type Out = fdef.Out } =
       new FieldMagnet {
         type Out = fdef.Out
         def apply() = fdef(value)
@@ -164,13 +164,13 @@ object FormFieldDirectives extends FormFieldDirectives {
 
     private def fieldOfForm[T](
         fieldName: String,
-        fu: Unmarshaller[Option[StrictForm.Field], T])(
-        implicit sfu: SFU): RequestContext ⇒ Future[T] = { ctx ⇒
+        fu: Unmarshaller[Option[StrictForm.Field], T])(implicit
+        sfu: SFU): RequestContext ⇒ Future[T] = { ctx ⇒
       import ctx.{executionContext, materializer}
       sfu(ctx.request.entity).fast.flatMap(form ⇒ fu(form field fieldName))
     }
-    private def filter[T](fieldName: String, fu: FSFFOU[T])(
-        implicit sfu: SFU): Directive1[T] =
+    private def filter[T](fieldName: String, fu: FSFFOU[T])(implicit
+        sfu: SFU): Directive1[T] =
       extract(fieldOfForm(fieldName, fu)).flatMap(r ⇒
         handleFieldResult(fieldName, r))
     implicit def forString(implicit
@@ -247,8 +247,8 @@ object FormFieldDirectives extends FormFieldDirectives {
 
     //////////////////// repeated formField support ////////////////////
 
-    private def repeatedFilter[T](fieldName: String, fu: FSFFU[T])(
-        implicit sfu: SFU): Directive1[Iterable[T]] =
+    private def repeatedFilter[T](fieldName: String, fu: FSFFU[T])(implicit
+        sfu: SFU): Directive1[Iterable[T]] =
       extract { ctx ⇒
         import ctx.{executionContext, materializer}
         sfu(ctx.request.entity).fast.flatMap(form ⇒

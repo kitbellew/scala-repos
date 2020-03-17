@@ -12,8 +12,8 @@ class BinaryListIntCustomTest extends FunSuite {
 
     // Note: Previously list picklers were generated from scratch as `::`.  Now we actually provide list picklers, so this test
     //       is less useful.
-    implicit def genListPickler(
-        implicit format: PickleFormat): HandwrittenListIntPicklerUnpickler =
+    implicit def genListPickler(implicit
+        format: PickleFormat): HandwrittenListIntPicklerUnpickler =
       new HandwrittenListIntPicklerUnpickler
     class HandwrittenListIntPicklerUnpickler(implicit val format: PickleFormat)
         extends Pickler[::[Int]]

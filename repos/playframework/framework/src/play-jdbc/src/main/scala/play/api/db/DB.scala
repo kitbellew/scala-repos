@@ -41,8 +41,8 @@ object DB {
     * @return a JDBC connection
     */
   @deprecated("Inject DBApi into your component", "2.5.0")
-  def getDataSource(name: String = "default")(
-      implicit app: Application): DataSource =
+  def getDataSource(name: String = "default")(implicit
+      app: Application): DataSource =
     db.database(name).dataSource
 
   /**

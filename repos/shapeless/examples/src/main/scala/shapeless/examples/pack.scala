@@ -46,8 +46,8 @@ object PackExamples extends App {
     }
 
     object Unpack extends {
-      implicit def unpack1[F[_], H, T <: HList](
-          implicit pc: IsPCons.Aux[F, H :: T, H, T]): Unpack[F, H :: T, H] =
+      implicit def unpack1[F[_], H, T <: HList](implicit
+          pc: IsPCons.Aux[F, H :: T, H, T]): Unpack[F, H :: T, H] =
         new Unpack[F, H :: T, H] {
           def apply(pack: Pack[F, H :: T]): F[H] = pc.split(pack)._1
         }
@@ -105,8 +105,8 @@ object PackExamples extends App {
   implicit val sb = new Show[B] { def show = "B" }
   implicit val sc = new Show[C] { def show = "C" }
 
-  def use3[T, U, V](t: T, u: U, v: V)(
-      implicit pack: Pack[Show, T :: U :: V :: HNil]) = {
+  def use3[T, U, V](t: T, u: U, v: V)(implicit
+      pack: Pack[Show, T :: U :: V :: HNil]) = {
     // Instances automatically unpacked here
     (show(t), show(u), show(v))
   }

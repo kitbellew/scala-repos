@@ -166,8 +166,8 @@ class GetJobHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
     DescriptionMetadata("Retrieve jobs by job ID."))
 }
 
-class GetJobStatusHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class GetJobStatusHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
@@ -194,8 +194,8 @@ class GetJobStatusHandler(jobs: JobManager[Future])(
     DescriptionMetadata("Get the latest status of a job."))
 }
 
-class UpdateJobStatusHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class UpdateJobStatusHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
@@ -258,8 +258,8 @@ class UpdateJobStatusHandler(jobs: JobManager[Future])(
   )
 }
 
-class ListChannelsHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class ListChannelsHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
@@ -283,8 +283,8 @@ class ListChannelsHandler(jobs: JobManager[Future])(
   )
 }
 
-class AddMessageHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class AddMessageHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
@@ -317,8 +317,8 @@ class AddMessageHandler(jobs: JobManager[Future])(
   )
 }
 
-class ListMessagesHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class ListMessagesHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
@@ -359,8 +359,8 @@ class ListMessagesHandler(jobs: JobManager[Future])(
   )
 }
 
-class GetJobStateHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class GetJobStateHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
@@ -389,8 +389,8 @@ class GetJobStateHandler(jobs: JobManager[Future])(
   )
 }
 
-class PutJobStateHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class PutJobStateHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
 
@@ -512,8 +512,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(
   )
 }
 
-class CreateResultHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class CreateResultHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[ByteChunk, Future[HttpResponse[ByteChunk]]] {
   private implicit val M = new FutureMonad(ctx)
 

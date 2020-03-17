@@ -13,8 +13,8 @@ class DivergenceTest {
   implicit final def columnBaseShape[
       Level >: Flat <: ShapeLevel,
       T,
-      C <: ColumnBase[_]](
-      implicit ev: C <:< ColumnBase[T]): Shape2[Level, C, T] = ???
+      C <: ColumnBase[_]](implicit
+      ev: C <:< ColumnBase[T]): Shape2[Level, C, T] = ???
 
   implicit final def intShape[Level <: ShapeLevel, T]: Shape2[Level, Int, Int] =
     ???

@@ -31,20 +31,20 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
     }
   }
 
-  def orElse[AA, BB >: B](default: => XorT[F, AA, BB])(
-      implicit F: Monad[F]): XorT[F, AA, BB] = {
+  def orElse[AA, BB >: B](default: => XorT[F, AA, BB])(implicit
+      F: Monad[F]): XorT[F, AA, BB] = {
     XorT(F.flatMap(value) {
       case Xor.Left(_)      => default.value
       case r @ Xor.Right(_) => F.pure(r)
     })
   }
 
-  def recover(pf: PartialFunction[A, B])(
-      implicit F: Functor[F]): XorT[F, A, B] =
+  def recover(pf: PartialFunction[A, B])(implicit
+      F: Functor[F]): XorT[F, A, B] =
     XorT(F.map(value)(_.recover(pf)))
 
-  def recoverWith(pf: PartialFunction[A, XorT[F, A, B]])(
-      implicit F: Monad[F]): XorT[F, A, B] =
+  def recoverWith(pf: PartialFunction[A, XorT[F, A, B]])(implicit
+      F: Monad[F]): XorT[F, A, B] =
     XorT(F.flatMap(value) {
       case Xor.Left(a) if pf.isDefinedAt(a) => pf(a).value
       case other                            => F.pure(other)
@@ -59,8 +59,8 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def exists(f: B => Boolean)(implicit F: Functor[F]): F[Boolean] =
     F.map(value)(_.exists(f))
 
-  def ensure[AA >: A](onFailure: => AA)(f: B => Boolean)(
-      implicit F: Functor[F]): XorT[F, AA, B] =
+  def ensure[AA >: A](onFailure: => AA)(f: B => Boolean)(implicit
+      F: Functor[F]): XorT[F, AA, B] =
     XorT(F.map(value)(_.ensure(onFailure)(f)))
 
   def toEither(implicit F: Functor[F]): F[Either[A, B]] =
@@ -78,31 +78,30 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def collectRight(implicit F: MonadCombine[F]): F[B] =
     F.flatMap(value)(_.to[F, B])
 
-  def bimap[C, D](fa: A => C, fb: B => D)(
-      implicit F: Functor[F]): XorT[F, C, D] =
-    XorT(F.map(value)(_.bimap(fa, fb)))
+  def bimap[C, D](fa: A => C, fb: B => D)(implicit
+      F: Functor[F]): XorT[F, C, D] = XorT(F.map(value)(_.bimap(fa, fb)))
 
   def applyAlt[D](ff: XorT[F, A, B => D])(implicit F: Apply[F]): XorT[F, A, D] =
     XorT[F, A, D](
       F.map2(this.value, ff.value)((xb, xbd) => Apply[A Xor ?].ap(xbd)(xb)))
 
-  def flatMap[AA >: A, D](f: B => XorT[F, AA, D])(
-      implicit F: Monad[F]): XorT[F, AA, D] =
+  def flatMap[AA >: A, D](f: B => XorT[F, AA, D])(implicit
+      F: Monad[F]): XorT[F, AA, D] =
     XorT(F.flatMap(value) {
       case l @ Xor.Left(_) => F.pure(l)
       case Xor.Right(b)    => f(b).value
     })
 
-  def flatMapF[AA >: A, D](f: B => F[AA Xor D])(
-      implicit F: Monad[F]): XorT[F, AA, D] =
+  def flatMapF[AA >: A, D](f: B => F[AA Xor D])(implicit
+      F: Monad[F]): XorT[F, AA, D] =
     flatMap(f andThen XorT.apply)
 
-  def transform[C, D](f: Xor[A, B] => Xor[C, D])(
-      implicit F: Functor[F]): XorT[F, C, D] =
+  def transform[C, D](f: Xor[A, B] => Xor[C, D])(implicit
+      F: Functor[F]): XorT[F, C, D] =
     XorT(F.map(value)(f))
 
-  def subflatMap[AA >: A, D](f: B => AA Xor D)(
-      implicit F: Functor[F]): XorT[F, AA, D] =
+  def subflatMap[AA >: A, D](f: B => AA Xor D)(implicit
+      F: Functor[F]): XorT[F, AA, D] =
     transform(_.flatMap(f))
 
   def map[D](f: B => D)(implicit F: Functor[F]): XorT[F, A, D] =
@@ -114,8 +113,8 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def compare(that: XorT[F, A, B])(implicit o: Order[F[A Xor B]]): Int =
     o.compare(value, that.value)
 
-  def partialCompare(that: XorT[F, A, B])(
-      implicit p: PartialOrder[F[A Xor B]]): Double =
+  def partialCompare(that: XorT[F, A, B])(implicit
+      p: PartialOrder[F[A Xor B]]): Double =
     p.partialCompare(value, that.value)
 
   def ===(that: XorT[F, A, B])(implicit eq: Eq[F[A Xor B]]): Boolean =
@@ -131,8 +130,8 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def foldLeft[C](c: C)(f: (C, B) => C)(implicit F: Foldable[F]): C =
     F.foldLeft(value, c)((c, axb) => axb.foldLeft(c)(f))
 
-  def foldRight[C](lc: Eval[C])(f: (B, Eval[C]) => Eval[C])(
-      implicit F: Foldable[F]): Eval[C] =
+  def foldRight[C](lc: Eval[C])(f: (B, Eval[C]) => Eval[C])(implicit
+      F: Foldable[F]): Eval[C] =
     F.foldRight(value, lc)((axb, lc) => axb.foldRight(lc)(f))
 
   def merge[AA >: A](implicit ev: B <:< AA, F: Functor[F]): F[AA] =
@@ -165,8 +164,8 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
     * res0: XorT[Option, NonEmptyList[Error], Int] = XorT(Some(Left(OneAnd(error 1,List(error 2, error 3)))))
     * }}}
     */
-  def withValidated[AA, BB](f: Validated[A, B] => Validated[AA, BB])(
-      implicit F: Functor[F]): XorT[F, AA, BB] =
+  def withValidated[AA, BB](f: Validated[A, B] => Validated[AA, BB])(implicit
+      F: Functor[F]): XorT[F, AA, BB] =
     XorT(F.map(value)(xor => f(xor.toValidated).toXor))
 
   def show(implicit show: Show[F[A Xor B]]): String = show.show(value)
@@ -216,18 +215,18 @@ private[data] abstract class XorTInstances extends XorTInstances1 {
   }
    */
 
-  implicit def xorTOrder[F[_], L, R](
-      implicit F: Order[F[L Xor R]]): Order[XorT[F, L, R]] =
+  implicit def xorTOrder[F[_], L, R](implicit
+      F: Order[F[L Xor R]]): Order[XorT[F, L, R]] =
     new XorTOrder[F, L, R] {
       val F0: Order[F[L Xor R]] = F
     }
 
-  implicit def xorTShow[F[_], L, R](
-      implicit sh: Show[F[L Xor R]]): Show[XorT[F, L, R]] =
+  implicit def xorTShow[F[_], L, R](implicit
+      sh: Show[F[L Xor R]]): Show[XorT[F, L, R]] =
     functor.Contravariant[Show].contramap(sh)(_.value)
 
-  implicit def xorTBifunctor[F[_]](
-      implicit F: Functor[F]): Bifunctor[XorT[F, ?, ?]] = {
+  implicit def xorTBifunctor[F[_]](implicit
+      F: Functor[F]): Bifunctor[XorT[F, ?, ?]] = {
     new Bifunctor[XorT[F, ?, ?]] {
       override def bimap[A, B, C, D](
           fab: XorT[F, A, B])(f: A => C, g: B => D): XorT[F, C, D] =
@@ -235,8 +234,8 @@ private[data] abstract class XorTInstances extends XorTInstances1 {
     }
   }
 
-  implicit def xorTTraverse[F[_], L](
-      implicit F: Traverse[F]): Traverse[XorT[F, L, ?]] =
+  implicit def xorTTraverse[F[_], L](implicit
+      F: Traverse[F]): Traverse[XorT[F, L, ?]] =
     new XorTTraverse[F, L] {
       val F0: Traverse[F] = F
     }
@@ -271,22 +270,22 @@ private[data] abstract class XorTInstances1 extends XorTInstances2 {
     }
   }
 
-  implicit def xorTFoldable[F[_], L](
-      implicit F: Foldable[F]): Foldable[XorT[F, L, ?]] =
+  implicit def xorTFoldable[F[_], L](implicit
+      F: Foldable[F]): Foldable[XorT[F, L, ?]] =
     new XorTFoldable[F, L] {
       val F0: Foldable[F] = F
     }
 
-  implicit def xorTPartialOrder[F[_], L, R](
-      implicit F: PartialOrder[F[L Xor R]]): PartialOrder[XorT[F, L, R]] =
+  implicit def xorTPartialOrder[F[_], L, R](implicit
+      F: PartialOrder[F[L Xor R]]): PartialOrder[XorT[F, L, R]] =
     new XorTPartialOrder[F, L, R] {
       val F0: PartialOrder[F[L Xor R]] = F
     }
 }
 
 private[data] abstract class XorTInstances2 extends XorTInstances3 {
-  implicit def xorTMonadError[F[_], L](
-      implicit F: Monad[F]): MonadError[XorT[F, L, ?], L] = {
+  implicit def xorTMonadError[F[_], L](implicit
+      F: Monad[F]): MonadError[XorT[F, L, ?], L] = {
     implicit val F0 = F
     new XorTMonadError[F, L] { implicit val F = F0 }
   }
@@ -299,16 +298,16 @@ private[data] abstract class XorTInstances2 extends XorTInstances3 {
     new XorTSemigroupK[F, L] { implicit val F = F0; implicit val L = L0 }
   }
 
-  implicit def xorTEq[F[_], L, R](
-      implicit F: Eq[F[L Xor R]]): Eq[XorT[F, L, R]] =
+  implicit def xorTEq[F[_], L, R](implicit
+      F: Eq[F[L Xor R]]): Eq[XorT[F, L, R]] =
     new XorTEq[F, L, R] {
       val F0: Eq[F[L Xor R]] = F
     }
 }
 
 private[data] abstract class XorTInstances3 {
-  implicit def xorTFunctor[F[_], L](
-      implicit F: Functor[F]): Functor[XorT[F, L, ?]] = {
+  implicit def xorTFunctor[F[_], L](implicit
+      F: Functor[F]): Functor[XorT[F, L, ?]] = {
     implicit val F0 = F
     new XorTFunctor[F, L] { implicit val F = F0 }
   }

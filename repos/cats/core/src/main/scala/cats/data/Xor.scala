@@ -131,8 +131,8 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
       b => that.fold(_ => false, BB.eqv(b, _))
     )
 
-  def traverse[F[_], AA >: A, D](f: B => F[D])(
-      implicit F: Applicative[F]): F[AA Xor D] =
+  def traverse[F[_], AA >: A, D](f: B => F[D])(implicit
+      F: Applicative[F]): F[AA Xor D] =
     this match {
       case l @ Xor.Left(_) => F.pure(l)
       case Xor.Right(b)    => F.map(f(b))(Xor.right _)
@@ -198,8 +198,8 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
   implicit def xorBifunctor: Bitraverse[Xor] =
     new Bitraverse[Xor] {
       def bitraverse[G[_], A, B, C, D](
-          fab: Xor[A, B])(f: A => G[C], g: B => G[D])(
-          implicit G: Applicative[G]): G[Xor[C, D]] =
+          fab: Xor[A, B])(f: A => G[C], g: B => G[D])(implicit
+          G: Applicative[G]): G[Xor[C, D]] =
         fab match {
           case Xor.Left(a)  => G.map(f(a))(Xor.left)
           case Xor.Right(b) => G.map(g(b))(Xor.right)

@@ -335,8 +335,8 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftOp[Op <: OpType](
-            implicit op: UImpl2[Op, V, S, V]): UImpl2[Op, Wrapper, S, Wrapper] =
+        def liftOp[Op <: OpType](implicit
+            op: UImpl2[Op, V, S, V]): UImpl2[Op, Wrapper, S, Wrapper] =
           new UImpl2[Op, Wrapper, S, Wrapper] {
             def apply(a: Wrapper, b: S) = {
               a.map(op(_, b))
@@ -494,8 +494,8 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftOp[Op <: OpType](
-            implicit op: UImpl2[Op, V, S, V]): UImpl2[Op, Wrapper, S, Wrapper] =
+        def liftOp[Op <: OpType](implicit
+            op: UImpl2[Op, V, S, V]): UImpl2[Op, Wrapper, S, Wrapper] =
           new UImpl2[Op, Wrapper, S, Wrapper] {
             def apply(a: Wrapper, b: S) = {
               a.map(op(_, b))
@@ -675,8 +675,8 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftOp[Op <: OpType](
-            implicit op: UImpl2[Op, V, S, V]): UImpl2[Op, Wrapper, S, Wrapper] =
+        def liftOp[Op <: OpType](implicit
+            op: UImpl2[Op, V, S, V]): UImpl2[Op, Wrapper, S, Wrapper] =
           new UImpl2[Op, Wrapper, S, Wrapper] {
             def apply(a: Wrapper, b: S) = {
               a.map(op(_, b))

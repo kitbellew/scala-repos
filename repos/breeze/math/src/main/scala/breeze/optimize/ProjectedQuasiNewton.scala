@@ -98,8 +98,8 @@ class ProjectedQuasiNewton(
     val testOpt: Boolean,
     val maxSrchIt: Int,
     val gamma: Double,
-    val projection: DenseVector[Double] => DenseVector[Double])(
-    implicit space: MutableInnerProductModule[DenseVector[Double], Double])
+    val projection: DenseVector[Double] => DenseVector[Double])(implicit
+    space: MutableInnerProductModule[DenseVector[Double], Double])
     extends FirstOrderMinimizer[
       DenseVector[Double],
       DiffFunction[DenseVector[Double]]](convergenceCheck)
@@ -115,8 +115,8 @@ class ProjectedQuasiNewton(
       maxSrchIt: Int = 50,
       gamma: Double = 1e-4,
       projection: DenseVector[Double] => DenseVector[Double] = identity,
-      relativeTolerance: Boolean = true)(
-      implicit space: MutableInnerProductModule[DenseVector[Double], Double]) =
+      relativeTolerance: Boolean = true)(implicit
+      space: MutableInnerProductModule[DenseVector[Double], Double]) =
     this(
       convergenceCheck =
         FirstOrderMinimizer.defaultConvergenceCheck[DenseVector[Double]](

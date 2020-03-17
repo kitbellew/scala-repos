@@ -34,8 +34,8 @@ trait MapUtils {
 }
 
 class MapPimp[A, B, CC[B] <: GenTraversable[B]](left: GenMap[A, CC[B]]) {
-  def cogroup[C, CC2[C] <: GenTraversable[C], Result](right: GenMap[A, CC2[C]])(
-      implicit
+  def cogroup[C, CC2[C] <: GenTraversable[C], Result](
+      right: GenMap[A, CC2[C]])(implicit
       cbf: CanBuildFrom[Nothing, (A, Either3[B, (CC[B], CC2[C]), C]), Result],
       cbfLeft: CanBuildFrom[CC[B], B, CC[B]],
       cbfRight: CanBuildFrom[CC2[C], C, CC2[C]]): Result = {

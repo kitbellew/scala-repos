@@ -130,8 +130,8 @@ trait QueryTHoist[Q[+_]]
       def apply[A](ma: QueryT[Q, M, A]): QueryT[Q, N, A] = QueryT(f(ma.run))
     }
 
-  implicit def apply[M[+_]](
-      implicit M0: Monad[M]): Monad[({ type λ[+α] = QueryT[Q, M, α] })#λ] =
+  implicit def apply[M[+_]](implicit
+      M0: Monad[M]): Monad[({ type λ[+α] = QueryT[Q, M, α] })#λ] =
     new QueryTMonad[Q, M] {
       def Q = self.Q
       def M = M0

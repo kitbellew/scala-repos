@@ -423,8 +423,8 @@ private[akka] class LocalActorRef private[akka] (
   override def sendSystemMessage(message: SystemMessage): Unit =
     actorCell.sendSystemMessage(message)
 
-  override def !(message: Any)(
-      implicit sender: ActorRef = Actor.noSender): Unit =
+  override def !(message: Any)(implicit
+      sender: ActorRef = Actor.noSender): Unit =
     actorCell.sendMessage(message, sender)
 
   override def restart(cause: Throwable): Unit = actorCell.restart(cause)
@@ -484,8 +484,8 @@ private[akka] trait MinimalActorRef extends InternalActorRef with LocalRef {
   @deprecated("Use context.watch(actor) and receive Terminated(actor)", "2.2")
   override private[akka] def isTerminated = false
 
-  override def !(message: Any)(
-      implicit sender: ActorRef = Actor.noSender): Unit = ()
+  override def !(message: Any)(implicit
+      sender: ActorRef = Actor.noSender): Unit = ()
 
   override def sendSystemMessage(message: SystemMessage): Unit = ()
   override def restart(cause: Throwable): Unit = ()
@@ -565,8 +565,8 @@ private[akka] class EmptyLocalActorRef(
     specialHandle(message, provider.deadLetters)
   }
 
-  override def !(message: Any)(
-      implicit sender: ActorRef = Actor.noSender): Unit =
+  override def !(message: Any)(implicit
+      sender: ActorRef = Actor.noSender): Unit =
     message match {
       case null ⇒ throw new InvalidMessageException("Message is null")
       case d: DeadLetter ⇒
@@ -683,8 +683,8 @@ private[akka] class VirtualPathContainer(
     * In [[ActorSelectionMessage]]s only [[SelectChildName]] elements
     * are supported, otherwise messages are sent to [[EmptyLocalActorRef]].
     */
-  override def !(message: Any)(
-      implicit sender: ActorRef = Actor.noSender): Unit =
+  override def !(message: Any)(implicit
+      sender: ActorRef = Actor.noSender): Unit =
     message match {
       case sel @ ActorSelectionMessage(msg, elements, wildcardFanOut) ⇒ {
         require(elements.nonEmpty)
@@ -790,8 +790,8 @@ private[akka] final class FunctionRef(
     f: (ActorRef, Any) ⇒ Unit)
     extends MinimalActorRef {
 
-  override def !(message: Any)(
-      implicit sender: ActorRef = Actor.noSender): Unit = {
+  override def !(message: Any)(implicit
+      sender: ActorRef = Actor.noSender): Unit = {
     f(sender, message)
   }
 

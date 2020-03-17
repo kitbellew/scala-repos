@@ -17,8 +17,8 @@ trait UrlGeneratorSupport {
     * @throws IllegalStateException if the route's base path cannot be
     * determined.  This may occur outside of an HTTP request's lifecycle.
     */
-  def url(route: Route, params: Tuple2[String, String]*)(
-      implicit req: HttpServletRequest): String =
+  def url(route: Route, params: Tuple2[String, String]*)(implicit
+      req: HttpServletRequest): String =
     url(route, params.toMap, Seq.empty)
 
   /**
@@ -32,8 +32,8 @@ trait UrlGeneratorSupport {
     * @throws IllegalStateException if the route's base path cannot be
     * determined.  This may occur outside of an HTTP request's lifecycle.
     */
-  def url(route: Route, splat: String, moreSplats: String*)(
-      implicit req: HttpServletRequest): String =
+  def url(route: Route, splat: String, moreSplats: String*)(implicit
+      req: HttpServletRequest): String =
     url(route, Map[String, String](), splat +: moreSplats)
 
   /**

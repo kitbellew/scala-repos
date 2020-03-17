@@ -24,8 +24,8 @@ object Numeric {
       *  def plus[T: Numeric](x: T, y: T) = x + y
       *  }}}
       */
-    implicit def infixNumericOps[T](x: T)(
-        implicit num: Numeric[T]): Numeric[T]#Ops = new num.Ops(x)
+    implicit def infixNumericOps[T](x: T)(implicit
+        num: Numeric[T]): Numeric[T]#Ops = new num.Ops(x)
   }
   object Implicits extends ExtraImplicits {}
 

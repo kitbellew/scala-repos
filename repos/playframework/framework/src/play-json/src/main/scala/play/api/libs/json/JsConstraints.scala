@@ -66,8 +66,8 @@ trait PathReads {
   def jsPick[A <: JsValue](path: JsPath)(implicit reads: Reads[A]): Reads[A] =
     at(path)(reads)
 
-  def jsPickBranch[A <: JsValue](path: JsPath)(
-      implicit reads: Reads[A]): Reads[JsObject] =
+  def jsPickBranch[A <: JsValue](path: JsPath)(implicit
+      reads: Reads[A]): Reads[JsObject] =
     Reads[JsObject](js =>
       path
         .asSingleJsResult(js)
@@ -124,8 +124,8 @@ trait ConstraintReads {
     Reads.traversableReads[Set, A]
   def seq[A](implicit reads: Reads[A]): Reads[Seq[A]] =
     Reads.traversableReads[Seq, A]
-  def map[A](
-      implicit reads: Reads[A]): Reads[collection.immutable.Map[String, A]] =
+  def map[A](implicit
+      reads: Reads[A]): Reads[collection.immutable.Map[String, A]] =
     Reads.mapReads[A]
 
   /**
@@ -142,12 +142,12 @@ trait ConstraintReads {
   def max[N](m: N)(implicit reads: Reads[N], num: Numeric[N]) =
     filterNot[N](ValidationError("error.max", m))(num.gt(_, m))(reads)
 
-  def filterNot[A](error: ValidationError)(p: A => Boolean)(
-      implicit reads: Reads[A]) =
+  def filterNot[A](error: ValidationError)(p: A => Boolean)(implicit
+      reads: Reads[A]) =
     Reads[A](js => reads.reads(js).filterNot(JsError(error))(p))
 
-  def filter[A](otherwise: ValidationError)(p: A => Boolean)(
-      implicit reads: Reads[A]) =
+  def filter[A](otherwise: ValidationError)(p: A => Boolean)(implicit
+      reads: Reads[A]) =
     Reads[A](js => reads.reads(js).filter(JsError(otherwise))(p))
 
   def minLength[M](m: Int)(implicit
@@ -180,8 +180,8 @@ trait ConstraintReads {
   def verifying[A](cond: A => Boolean)(implicit rds: Reads[A]) =
     filter[A](ValidationError("error.invalid"))(cond)(rds)
 
-  def verifyingIf[A](cond: A => Boolean)(subreads: Reads[_])(
-      implicit rds: Reads[A]) =
+  def verifyingIf[A](cond: A => Boolean)(subreads: Reads[_])(implicit
+      rds: Reads[A]) =
     Reads[A] { js =>
       rds.reads(js).flatMap { t =>
         (scala.util.control.Exception.catching(classOf[MatchError]) opt cond(t))
@@ -234,8 +234,8 @@ trait PathWrites {
       )
     }
 
-  def pure[A](path: JsPath, fixed: => A)(
-      implicit wrs: Writes[A]): OWrites[JsValue] =
+  def pure[A](path: JsPath, fixed: => A)(implicit
+      wrs: Writes[A]): OWrites[JsValue] =
     OWrites[JsValue] { js => JsPath.createObj(path -> wrs.writes(fixed)) }
 
 }

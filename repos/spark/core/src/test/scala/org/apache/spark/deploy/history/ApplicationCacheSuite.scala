@@ -372,8 +372,8 @@ class ApplicationCacheSuite
     * @param expected expected value.
     * @param cache cache
     */
-  def assertMetric(name: String, counter: Counter, expected: Long)(
-      implicit cache: ApplicationCache): Unit = {
+  def assertMetric(name: String, counter: Counter, expected: Long)(implicit
+      cache: ApplicationCache): Unit = {
     val actual = counter.getCount
     if (actual != expected) {
       // this is here because Scalatest loses stack depth
@@ -413,8 +413,8 @@ class ApplicationCacheSuite
     * @param attemptId attempt ID
     * @param cache app cache
     */
-  def assertNotFound(appId: String, attemptId: Option[String])(
-      implicit cache: ApplicationCache): Unit = {
+  def assertNotFound(appId: String, attemptId: Option[String])(implicit
+      cache: ApplicationCache): Unit = {
     val ex = intercept[UncheckedExecutionException] {
       cache.get(appId, attemptId)
     }

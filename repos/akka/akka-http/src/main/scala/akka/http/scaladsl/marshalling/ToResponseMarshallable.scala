@@ -13,14 +13,14 @@ trait ToResponseMarshallable {
   def value: T
   implicit def marshaller: ToResponseMarshaller[T]
 
-  def apply(request: HttpRequest)(
-      implicit ec: ExecutionContext): Future[HttpResponse] =
+  def apply(request: HttpRequest)(implicit
+      ec: ExecutionContext): Future[HttpResponse] =
     Marshal(value).toResponseFor(request)
 }
 
 object ToResponseMarshallable {
-  implicit def apply[A](_value: A)(
-      implicit _marshaller: ToResponseMarshaller[A]): ToResponseMarshallable =
+  implicit def apply[A](_value: A)(implicit
+      _marshaller: ToResponseMarshaller[A]): ToResponseMarshallable =
     new ToResponseMarshallable {
       type T = A
       def value: T = _value

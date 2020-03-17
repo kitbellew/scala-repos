@@ -98,8 +98,8 @@ object ContravariantCoyonedaUsage extends App {
       .sortBy(_._2)(B.toScalaOrdering)
       .map(_._1)
 
-  def nonschwartzian[A, B](xs: List[A])(f: A => B)(
-      implicit B: Order[B]): List[A] =
+  def nonschwartzian[A, B](xs: List[A])(f: A => B)(implicit
+      B: Order[B]): List[A] =
     xs.sorted(Order.orderBy(f).toScalaOrdering)
 
   // The above two functions are guaranteed to return the same result for

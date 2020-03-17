@@ -13,6 +13,6 @@ import akka.http.scaladsl.unmarshalling.FromMessageUnmarshaller
   *
   */
 private[http] case class UnmarshallerImpl[T](
-    scalaUnmarshaller: FromMessageUnmarshaller[T])(
-    implicit val classTag: ClassTag[T])
+    scalaUnmarshaller: FromMessageUnmarshaller[T])(implicit
+    val classTag: ClassTag[T])
     extends Unmarshaller[T]

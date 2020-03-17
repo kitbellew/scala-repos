@@ -41,13 +41,12 @@ object Cozip {
   ////
   def cofzip[F[_], A, B](x: F[A \/ B])(implicit F: Cozip[F]): (F[A] \/ F[B]) =
     F.cozip(x)
-  def cofzip3[F[_], A, B, C](x: F[A \/ (B \/ C)])(
-      implicit F: Cozip[F]): (F[A] \/ (F[B] \/ F[C])) = F.cozip3(x)
-  def cofzip4[F[_], A, B, C, D](x: F[A \/ (B \/ (C \/ D))])(
-      implicit F: Cozip[F]): (F[A] \/ (F[B] \/ (F[C] \/ F[D]))) = F.cozip4(x)
-  def cofzip5[F[_], A, B, C, D, E](x: F[(A \/ (B \/ (C \/ (D \/ E))))])(
-      implicit F: Cozip[F]): (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ F[E])))) =
-    F.cozip5(x)
+  def cofzip3[F[_], A, B, C](x: F[A \/ (B \/ C)])(implicit
+      F: Cozip[F]): (F[A] \/ (F[B] \/ F[C])) = F.cozip3(x)
+  def cofzip4[F[_], A, B, C, D](x: F[A \/ (B \/ (C \/ D))])(implicit
+      F: Cozip[F]): (F[A] \/ (F[B] \/ (F[C] \/ F[D]))) = F.cozip4(x)
+  def cofzip5[F[_], A, B, C, D, E](x: F[(A \/ (B \/ (C \/ (D \/ E))))])(implicit
+      F: Cozip[F]): (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ F[E])))) = F.cozip5(x)
   def cofzip6[F[_], A, B, C, D, E, G](
       x: F[(A \/ (B \/ (C \/ (D \/ (E \/ G)))))])(implicit
       F: Cozip[F]): (F[A] \/ (F[B] \/ (F[C] \/ (F[D] \/ (F[E] \/ F[G]))))) =

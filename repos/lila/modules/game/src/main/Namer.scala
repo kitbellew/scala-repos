@@ -7,8 +7,8 @@ import play.twirl.api.Html
 
 object Namer {
 
-  def players(game: Game, withRatings: Boolean = true)(
-      implicit lightUser: String => Option[LightUser]): (Html, Html) =
+  def players(game: Game, withRatings: Boolean = true)(implicit
+      lightUser: String => Option[LightUser]): (Html, Html) =
     player(game.firstPlayer, withRatings) -> player(
       game.secondPlayer,
       withRatings)
@@ -33,7 +33,7 @@ object Namer {
   def playerString(
       p: Player,
       withRating: Boolean = true,
-      withTitle: Boolean = true)(
-      implicit lightUser: String => Option[LightUser]) =
+      withTitle: Boolean = true)(implicit
+      lightUser: String => Option[LightUser]) =
     player(p, withRating, withTitle)(lightUser).body.replace("&nbsp;", " ")
 }

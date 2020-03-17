@@ -69,8 +69,8 @@ object rot90 extends UFunc {
       }
     }
 
-  implicit def impl1fromImpl2[T, R](
-      implicit impl2: Impl2[T, Int, R]): Impl[T, R] =
+  implicit def impl1fromImpl2[T, R](implicit
+      impl2: Impl2[T, Int, R]): Impl[T, R] =
     new Impl[T, R] {
       def apply(v: T): R = impl2(v, 1)
     }

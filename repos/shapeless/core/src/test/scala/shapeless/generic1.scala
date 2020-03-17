@@ -89,8 +89,8 @@ package Generic1TestsAux {
       }
 
     // Induction step for products
-    implicit def hcons[F[_]](
-        implicit ihc: IsHCons1[F, Functor, Functor]): Functor[F] =
+    implicit def hcons[F[_]](implicit
+        ihc: IsHCons1[F, Functor, Functor]): Functor[F] =
       new Functor[F] {
         def map[A, B](fa: F[A])(f: A => B): F[B] = {
           val (hd, tl) = ihc.unpack(fa)
@@ -99,8 +99,8 @@ package Generic1TestsAux {
       }
 
     // Induction step for coproducts
-    implicit def ccons[F[_]](
-        implicit icc: IsCCons1[F, Functor, Functor]): Functor[F] =
+    implicit def ccons[F[_]](implicit
+        icc: IsCCons1[F, Functor, Functor]): Functor[F] =
       new Functor[F] {
         def map[A, B](fa: F[A])(f: A => B): F[B] =
           icc.pack(
@@ -147,8 +147,8 @@ package Generic1TestsAux {
       }
 
     // Pointed can be built for Singleton types
-    implicit def constSingletonPointed[T](
-        implicit w: Witness.Aux[T]): Pointed[Const[T]#λ] =
+    implicit def constSingletonPointed[T](implicit
+        w: Witness.Aux[T]): Pointed[Const[T]#λ] =
       new Pointed[Const[T]#λ] {
         def point[A](a: A): T = w.value
       }
@@ -173,16 +173,16 @@ package Generic1TestsAux {
 
   trait Pointed0 extends Pointed1 {
 
-    implicit def hcons[F[_]](
-        implicit ihc: IsHCons1[F, Pointed, Pointed]): Pointed[F] =
+    implicit def hcons[F[_]](implicit
+        ihc: IsHCons1[F, Pointed, Pointed]): Pointed[F] =
       new Pointed[F] {
         def point[A](a: A): F[A] = {
           ihc.pack(ihc.fh.point(a), ihc.ft.point(a))
         }
       }
 
-    implicit def ccons[F[_]](
-        implicit ihc: IsCCons1[F, Pointed, Pointed]): Pointed[F] =
+    implicit def ccons[F[_]](implicit
+        ihc: IsCCons1[F, Pointed, Pointed]): Pointed[F] =
       new Pointed[F] {
         def point[A](a: A): F[A] = {
           ihc.pack(Left(ihc.fh.point(a)))
@@ -569,17 +569,17 @@ class Generic1Tests {
     materialize2[List]
 
     def materialize3[F[_]](implicit
-    ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
-      ()
+        ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ])
+        : Unit = ()
     def materialize4[F[_]](implicit
-    ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
-      ()
+        ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ])
+        : Unit = ()
     def materialize5[F[_]](implicit
-    ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
-      ()
+        ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1])
+        : Unit = ()
     def materialize6[F[_]](implicit
-    ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
-      ()
+        ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1])
+        : Unit = ()
 
     type H[t] = t :: scala.collection.immutable.List[t] :: HNil
 
@@ -589,17 +589,17 @@ class Generic1Tests {
     materialize6[H]
 
     def materialize7[F[_]](implicit
-    ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
-      ()
+        ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ])
+        : Unit = ()
     def materialize8[F[_]](implicit
-    ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
-      ()
+        ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ])
+        : Unit = ()
     def materialize9[F[_]](implicit
-    ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
-      ()
+        ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1])
+        : Unit = ()
     def materialize10[F[_]](implicit
-    ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
-      ()
+        ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1])
+        : Unit = ()
 
     type C[t] = scala.collection.immutable.::[t] :+: Nil.type :+: CNil
 

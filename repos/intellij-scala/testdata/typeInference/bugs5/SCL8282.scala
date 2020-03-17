@@ -17,8 +17,8 @@ trait FirstElement {
     def firstElement(c: C): E
   }
 
-  final class FirstElementWrapper[E, CTC[_]](collection: CTC[E])(
-      implicit collector: FirstElementCollector[E, CTC[E]]) {
+  final class FirstElementWrapper[E, CTC[_]](collection: CTC[E])(implicit
+      collector: FirstElementCollector[E, CTC[E]]) {
     def firstElement = collector.firstElement(collection)
   }
 

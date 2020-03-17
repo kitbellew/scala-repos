@@ -3276,8 +3276,8 @@ trait BuildCommon {
       implicit format: sbinary.Format[T]): Initialize[State => Parser[P]] =
     loadForParserI(task)(Def value f)(format)
   def loadForParserI[P, T](task: TaskKey[T])(
-      init: Initialize[(State, Option[T]) => Parser[P]])(
-      implicit format: sbinary.Format[T]): Initialize[State => Parser[P]] =
+      init: Initialize[(State, Option[T]) => Parser[P]])(implicit
+      format: sbinary.Format[T]): Initialize[State => Parser[P]] =
     (resolvedScoped, init)((ctx, f) =>
       (s: State) => f(s, loadFromContext(task, ctx, s)(format)))
 
@@ -3291,8 +3291,8 @@ trait BuildCommon {
       (s: State) => f(s, getFromContext(task, ctx, s)))
 
   // these are for use for constructing Tasks
-  def loadPrevious[T](task: TaskKey[T])(
-      implicit f: sbinary.Format[T]): Initialize[Task[Option[T]]] =
+  def loadPrevious[T](task: TaskKey[T])(implicit
+      f: sbinary.Format[T]): Initialize[Task[Option[T]]] =
     (state, resolvedScoped) map { (s, ctx) => loadFromContext(task, ctx, s)(f) }
 
   def getPrevious[T](task: TaskKey[T]): Initialize[Task[Option[T]]] =

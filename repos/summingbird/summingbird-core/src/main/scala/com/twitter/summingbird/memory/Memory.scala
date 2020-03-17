@@ -23,8 +23,8 @@ import com.twitter.summingbird.planner.DagOptimizer
 import collection.mutable.{Map => MutableMap}
 
 object Memory {
-  implicit def toSource[T](traversable: TraversableOnce[T])(
-      implicit mf: Manifest[T]): Producer[Memory, T] =
+  implicit def toSource[T](traversable: TraversableOnce[T])(implicit
+      mf: Manifest[T]): Producer[Memory, T] =
     Producer.source[Memory, T](traversable)
 }
 

@@ -21,8 +21,8 @@ object XmlBodyParserSpec extends PlaySpecification {
         contentType: Option[String],
         encoding: String,
         bodyParser: BodyParser[NodeSeq] =
-          BodyParsers.parse.tolerantXml(1048576))(
-        implicit mat: Materializer) = {
+          BodyParsers.parse.tolerantXml(1048576))(implicit
+        mat: Materializer) = {
       await(
         bodyParser(
           FakeRequest().withHeaders(

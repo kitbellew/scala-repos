@@ -44,8 +44,8 @@ object ScalarTagTime extends ScalarTagAny[DateTime] {
   override def makeVec(arr: Array[DateTime]): Vec[DateTime] =
     new VecTime(Vec(time2LongArray(arr)))
 
-  override def makeIndex(vec: Vec[DateTime])(
-      implicit ord: ORD[DateTime]): Index[DateTime] =
+  override def makeIndex(vec: Vec[DateTime])(implicit
+      ord: ORD[DateTime]): Index[DateTime] =
     new IndexTime(Index(time2LongArray(vec.toArray)))
 
   override def makeSorter(implicit ord: ORD[DateTime]): Sorter[DateTime] =

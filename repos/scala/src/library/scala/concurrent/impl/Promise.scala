@@ -32,8 +32,8 @@ private[concurrent] trait Promise[T]
   import scala.concurrent.Future
   import scala.concurrent.impl.Promise.DefaultPromise
 
-  override def transform[S](f: Try[T] => Try[S])(
-      implicit executor: ExecutionContext): Future[S] = {
+  override def transform[S](f: Try[T] => Try[S])(implicit
+      executor: ExecutionContext): Future[S] = {
     val p = new DefaultPromise[S]()
     onComplete { result =>
       p.complete(
@@ -44,8 +44,8 @@ private[concurrent] trait Promise[T]
   }
 
   // If possible, link DefaultPromises to avoid space leaks
-  override def transformWith[S](f: Try[T] => Future[S])(
-      implicit executor: ExecutionContext): Future[S] = {
+  override def transformWith[S](f: Try[T] => Future[S])(implicit
+      executor: ExecutionContext): Future[S] = {
     val p = new DefaultPromise[S]()
     onComplete { v =>
       try f(v) match {
@@ -339,8 +339,8 @@ private[concurrent] object Promise {
       }
     }
 
-    final def onComplete[U](func: Try[T] => U)(
-        implicit executor: ExecutionContext): Unit =
+    final def onComplete[U](func: Try[T] => U)(implicit
+        executor: ExecutionContext): Unit =
       dispatchOrAddCallback(new CallbackRunnable[T](executor.prepare(), func))
 
     /** Tries to add the callback, if already completed, it dispatches the callback to be executed.
@@ -412,13 +412,13 @@ private[concurrent] object Promise {
 
       override def tryComplete(value: Try[T]): Boolean = false
 
-      override def onComplete[U](func: Try[T] => U)(
-          implicit executor: ExecutionContext): Unit =
+      override def onComplete[U](func: Try[T] => U)(implicit
+          executor: ExecutionContext): Unit =
         (new CallbackRunnable(executor.prepare(), func))
           .executeWithValue(result)
 
-      override def ready(atMost: Duration)(
-          implicit permit: CanAwait): this.type = this
+      override def ready(atMost: Duration)(implicit
+          permit: CanAwait): this.type = this
 
       override def result(atMost: Duration)(implicit permit: CanAwait): T =
         result.get
@@ -426,18 +426,18 @@ private[concurrent] object Promise {
 
     private[this] final class Successful[T](val result: Success[T])
         extends Kept[T] {
-      override def onFailure[U](pf: PartialFunction[Throwable, U])(
-          implicit executor: ExecutionContext): Unit = ()
+      override def onFailure[U](pf: PartialFunction[Throwable, U])(implicit
+          executor: ExecutionContext): Unit = ()
       override def failed: Future[Throwable] =
         KeptPromise(
           Failure(
             new NoSuchElementException(
               "Future.failed not completed with a throwable."))).future
-      override def recover[U >: T](pf: PartialFunction[Throwable, U])(
-          implicit executor: ExecutionContext): Future[U] = this
+      override def recover[U >: T](pf: PartialFunction[Throwable, U])(implicit
+          executor: ExecutionContext): Future[U] = this
       override def recoverWith[U >: T](
-          pf: PartialFunction[Throwable, Future[U]])(
-          implicit executor: ExecutionContext): Future[U] = this
+          pf: PartialFunction[Throwable, Future[U]])(implicit
+          executor: ExecutionContext): Future[U] = this
       override def fallbackTo[U >: T](that: Future[U]): Future[U] = this
     }
 
@@ -446,24 +446,24 @@ private[concurrent] object Promise {
       private[this] final def thisAs[S]: Future[S] =
         future.asInstanceOf[Future[S]]
 
-      override def onSuccess[U](pf: PartialFunction[T, U])(
-          implicit executor: ExecutionContext): Unit = ()
+      override def onSuccess[U](pf: PartialFunction[T, U])(implicit
+          executor: ExecutionContext): Unit = ()
       override def failed: Future[Throwable] = thisAs[Throwable]
-      override def foreach[U](f: T => U)(
-          implicit executor: ExecutionContext): Unit = ()
-      override def map[S](f: T => S)(
-          implicit executor: ExecutionContext): Future[S] = thisAs[S]
-      override def flatMap[S](f: T => Future[S])(
-          implicit executor: ExecutionContext): Future[S] = thisAs[S]
+      override def foreach[U](f: T => U)(implicit
+          executor: ExecutionContext): Unit = ()
+      override def map[S](f: T => S)(implicit
+          executor: ExecutionContext): Future[S] = thisAs[S]
+      override def flatMap[S](f: T => Future[S])(implicit
+          executor: ExecutionContext): Future[S] = thisAs[S]
       override def flatten[S](implicit ev: T <:< Future[S]): Future[S] =
         thisAs[S]
-      override def filter(p: T => Boolean)(
-          implicit executor: ExecutionContext): Future[T] = this
-      override def collect[S](pf: PartialFunction[T, S])(
-          implicit executor: ExecutionContext): Future[S] = thisAs[S]
+      override def filter(p: T => Boolean)(implicit
+          executor: ExecutionContext): Future[T] = this
+      override def collect[S](pf: PartialFunction[T, S])(implicit
+          executor: ExecutionContext): Future[S] = thisAs[S]
       override def zip[U](that: Future[U]): Future[(T, U)] = thisAs[(T, U)]
-      override def zipWith[U, R](that: Future[U])(f: (T, U) => R)(
-          implicit executor: ExecutionContext): Future[R] = thisAs[R]
+      override def zipWith[U, R](that: Future[U])(f: (T, U) => R)(implicit
+          executor: ExecutionContext): Future[R] = thisAs[R]
       override def fallbackTo[U >: T](that: Future[U]): Future[U] =
         if (this eq that) this
         else that.recoverWith({ case _ => this })(InternalCallbackExecutor)

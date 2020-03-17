@@ -259,8 +259,8 @@ object Bounds {
 
   def weakLub(t1: ScType, t2: ScType): ScType = lub(t1, t2, checkWeak = true)
 
-  private def lub(seq: Seq[ScType], checkWeak: Boolean)(
-      implicit stopAddingUpperBound: Boolean): ScType = {
+  private def lub(seq: Seq[ScType], checkWeak: Boolean)(implicit
+      stopAddingUpperBound: Boolean): ScType = {
     seq.reduce((l: ScType, r: ScType) =>
       lub(l, r, lubDepth(Seq(l, r)), checkWeak))
   }

@@ -14,8 +14,8 @@ import breeze.stats.distributions.Rand
   */
 object shuffle extends UFunc {
 
-  implicit def implShuffle_Arr_eq_Arr[T](
-      implicit ct: ClassTag[T]): Impl[Array[T], Array[T]] = {
+  implicit def implShuffle_Arr_eq_Arr[T](implicit
+      ct: ClassTag[T]): Impl[Array[T], Array[T]] = {
     new Impl[Array[T], Array[T]] {
 
       def apply(arr: Array[T]): Array[T] = {

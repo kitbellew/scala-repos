@@ -99,8 +99,8 @@ object Coproduct extends CoproductInstances {
 
 private[data] sealed abstract class CoproductInstances3 {
 
-  implicit def coproductEq[F[_], G[_], A](
-      implicit E: Eq[F[A] Xor G[A]]): Eq[Coproduct[F, G, A]] =
+  implicit def coproductEq[F[_], G[_], A](implicit
+      E: Eq[F[A] Xor G[A]]): Eq[Coproduct[F, G, A]] =
     Eq.by(_.run)
 
   implicit def coproductFunctor[F[_], G[_]](implicit
@@ -204,8 +204,8 @@ private[data] trait CoproductFoldable[F[_], G[_]]
   def foldLeft[A, B](fa: Coproduct[F, G, A], z: B)(f: (B, A) => B): B =
     fa.foldLeft(z)(f)
 
-  override def foldMap[A, B](fa: Coproduct[F, G, A])(f: A => B)(
-      implicit M: Monoid[B]): B =
+  override def foldMap[A, B](fa: Coproduct[F, G, A])(f: A => B)(implicit
+      M: Monoid[B]): B =
     fa foldMap f
 }
 

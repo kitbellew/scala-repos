@@ -98,12 +98,12 @@ trait RandomCompanion[G <: Generator] { self =>
       .map(_.toString)
 
   implicit class RandomOps[A](lhs: R[A]) {
-    def collection[CC[_]](size: Size)(
-        implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
+    def collection[CC[_]](size: Size)(implicit
+        cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
       size.random(self).flatMap(collectionOfSize(_))
 
-    def collectionOfSize[CC[_]](n: Int)(
-        implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
+    def collectionOfSize[CC[_]](n: Int)(implicit
+        cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
       foldLeftOfSize(n)(cbf()) { (b, a) => b += a; b }.map(_.result)
 
     def foldLeftOfSize[B](n: Int)(init: => B)(f: (B, A) => B): Random[B, G] = {

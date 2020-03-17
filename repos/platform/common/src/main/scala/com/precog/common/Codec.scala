@@ -677,8 +677,8 @@ object Codec {
     }
   }
 
-  def wrappedWriteInit[AA](a: AA, sink: ByteBuffer)(
-      implicit _codec: Codec[AA]): Option[StatefulCodec#State] =
+  def wrappedWriteInit[AA](a: AA, sink: ByteBuffer)(implicit
+      _codec: Codec[AA]): Option[StatefulCodec#State] =
     (new StatefulCodec {
       type A = AA
       val codec = _codec

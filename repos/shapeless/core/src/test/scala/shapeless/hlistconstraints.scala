@@ -153,8 +153,8 @@ class HListConstraintsTests {
 
     import NotContainsConstraint._
 
-    def notContains[L <: HList: NotContains[String]#λ, U](l: L, u: U)(
-        implicit ev: NotContainsConstraint[L, U]) = true
+    def notContains[L <: HList: NotContains[String]#λ, U](l: L, u: U)(implicit
+        ev: NotContainsConstraint[L, U]) = true
 
     notContains(HNil: HNil, 2)
     notContains(2 :: HNil, "str")

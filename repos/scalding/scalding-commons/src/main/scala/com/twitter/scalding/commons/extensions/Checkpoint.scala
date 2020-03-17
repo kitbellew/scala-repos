@@ -78,8 +78,8 @@ object Checkpoint {
     *   conv:    provided by com.twitter.scalding.TupleConversions
     *   setter:  provided by com.twitter.scalding.TupleConversions
     */
-  def apply[A](checkpointName: String, resultFields: Fields)(flow: => Pipe)(
-      implicit
+  def apply[A](checkpointName: String, resultFields: Fields)(
+      flow: => Pipe)(implicit
       args: Args,
       mode: Mode,
       flowDef: FlowDef,
@@ -181,8 +181,8 @@ object Checkpoint {
   }
 
   // Returns a source for the checkpoint in the given format.
-  private def getSource(format: String, filename: String)(
-      implicit mode: Mode): Source = {
+  private def getSource(format: String, filename: String)(implicit
+      mode: Mode): Source = {
     format match {
       case "sequencefile" => SequenceFile(filename)
       case "tsv"          => Tsv(filename)

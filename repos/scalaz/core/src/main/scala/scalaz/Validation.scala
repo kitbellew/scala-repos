@@ -140,8 +140,8 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
     }
 
   /** Apply a function in the environment of the success of this validation, accumulating errors. */
-  def ap[EE >: E, B](x: => Validation[EE, A => B])(
-      implicit E: Semigroup[EE]): Validation[EE, B] =
+  def ap[EE >: E, B](x: => Validation[EE, A => B])(implicit
+      E: Semigroup[EE]): Validation[EE, B] =
     (this, x) match {
       case (Success(a), Success(f))     => Success(f(a))
       case (e @ Failure(_), Success(_)) => e
@@ -157,8 +157,8 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
     }
 
   /** Filter on the success of this validation. */
-  def filter[EE >: E](p: A => Boolean)(
-      implicit M: Monoid[EE]): Validation[EE, A] =
+  def filter[EE >: E](p: A => Boolean)(implicit
+      M: Monoid[EE]): Validation[EE, A] =
     this match {
       case Failure(_) => this
       case Success(e) => if (p(e)) this else Failure(M.zero)
@@ -327,8 +327,8 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
       as: Semigroup[AA]): Validation[EE, AA] = append(x)
 
   /** If `this` is a success, return it; otherwise, if `that` is a success, return it; otherwise, combine the failures with the specified semigroup. */
-  def findSuccess[EE >: E, AA >: A](that: => Validation[EE, AA])(
-      implicit es: Semigroup[EE]): Validation[EE, AA] =
+  def findSuccess[EE >: E, AA >: A](that: => Validation[EE, AA])(implicit
+      es: Semigroup[EE]): Validation[EE, AA] =
     this match {
       case Failure(e) =>
         that match {

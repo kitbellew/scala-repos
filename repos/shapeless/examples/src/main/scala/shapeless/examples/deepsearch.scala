@@ -46,8 +46,8 @@ object DeepSearchExamples extends App {
         def find(p: A => Boolean)(a: A) = if (p(a)) Some(a) else None
       }
 
-    implicit def listSearchable[A, Q](
-        implicit s: Searchable[A, Q]): Searchable[List[A], Q] =
+    implicit def listSearchable[A, Q](implicit
+        s: Searchable[A, Q]): Searchable[List[A], Q] =
       new Searchable[List[A], Q] {
         def find(p: Q => Boolean)(a: List[A]) = a.flatMap(s.find(p)).headOption
       }

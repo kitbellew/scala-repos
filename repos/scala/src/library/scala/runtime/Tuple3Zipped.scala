@@ -40,8 +40,8 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     extends AnyVal
     with ZippedTraversable3[El1, El2, El3] {
 
-  def map[B, To](f: (El1, El2, El3) => B)(
-      implicit cbf: CBF[Repr1, B, To]): To = {
+  def map[B, To](f: (El1, El2, El3) => B)(implicit
+      cbf: CBF[Repr1, B, To]): To = {
     val b = cbf(colls._1.repr)
     val elems2 = colls._2.iterator
     val elems3 = colls._3.iterator
@@ -55,8 +55,8 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     b.result()
   }
 
-  def flatMap[B, To](f: (El1, El2, El3) => TraversableOnce[B])(
-      implicit cbf: CBF[Repr1, B, To]): To = {
+  def flatMap[B, To](f: (El1, El2, El3) => TraversableOnce[B])(implicit
+      cbf: CBF[Repr1, B, To]): To = {
     val b = cbf(colls._1.repr)
     val elems2 = colls._2.iterator
     val elems3 = colls._3.iterator

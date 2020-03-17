@@ -217,8 +217,8 @@ sealed trait TailProducer[P <: Platform[P], +T] extends Producer[P, T] {
     * This can be used to combine two independent Producers in a way that ensures
     * that the Platform will plan both into a single Plan.
     */
-  def also[R](that: TailProducer[P, R])(
-      implicit ev: DummyImplicit): TailProducer[P, R] =
+  def also[R](that: TailProducer[P, R])(implicit
+      ev: DummyImplicit): TailProducer[P, R] =
     new AlsoTailProducer(this, that)
 
   def also[R](that: Producer[P, R]): Producer[P, R] = AlsoProducer(this, that)
@@ -376,8 +376,8 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
     * (v0, vdelta1), (v0 + vdelta1, vdelta2), (v0 + vdelta1 + vdelta2, vdelta3), ...
     *
     */
-  def sumByKey(store: P#Store[K, V])(
-      implicit semigroup: Semigroup[V]): Summer[P, K, V] =
+  def sumByKey(store: P#Store[K, V])(implicit
+      semigroup: Semigroup[V]): Summer[P, K, V] =
     Summer(this, store, semigroup)
 
   /** Exchange values for keys */

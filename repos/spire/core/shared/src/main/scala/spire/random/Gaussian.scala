@@ -15,8 +15,8 @@ trait Gaussian[@sp(Float, Double) A] extends Any {
 }
 
 object Gaussian extends GaussianInstances {
-  @inline final def apply[@sp(Float, Double) A](
-      implicit g: Gaussian[A]): Gaussian[A] = g
+  @inline final def apply[@sp(Float, Double) A](implicit
+      g: Gaussian[A]): Gaussian[A] = g
 
   def apply[@sp A](mean: A, stdDev: A)(implicit g: Gaussian[A]): Dist[A] =
     g(mean, stdDev)
@@ -38,8 +38,8 @@ trait GaussianInstances {
         new DistFromGen(g => Ziggurat.rnor(g) * stdDev + mean)
     }
 
-  implicit def bigDecimal(
-      implicit mc: MathContext = defaultMathContext): Gaussian[BigDecimal] =
+  implicit def bigDecimal(implicit
+      mc: MathContext = defaultMathContext): Gaussian[BigDecimal] =
     new MarsagliaGaussian[BigDecimal]
 }
 

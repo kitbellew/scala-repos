@@ -76,8 +76,8 @@ class HttpEventActor(
     with PlayJsonSupport {
 
   implicit val timeout = HttpEventModule.timeout
-  def pipeline(
-      implicit ec: ExecutionContext): HttpRequest => Future[HttpResponse] = {
+  def pipeline(implicit
+      ec: ExecutionContext): HttpRequest => Future[HttpResponse] = {
     addHeader("Accept", "application/json") ~> sendReceive
   }
   var limiter =

@@ -40,14 +40,14 @@ object Ran {
   def fromRan[G[_], H[_], K[_], B](k: K[G[B]])(s: K ~> Ran[G, H, ?]): H[B] =
     s(k)(x => x)
 
-  def adjointToRan[F[_], G[_], A](f: F[A])(
-      implicit A: Adjunction[F, G]): Ran[G, Id, A] =
+  def adjointToRan[F[_], G[_], A](f: F[A])(implicit
+      A: Adjunction[F, G]): Ran[G, Id, A] =
     new Ran[G, Id, A] {
       def apply[B](a: A => G[B]) = A.rightAdjunct(f)(a)
     }
 
-  def ranToAdjoint[F[_], G[_], A](r: Ran[G, Id, A])(
-      implicit A: Adjunction[F, G]): F[A] =
+  def ranToAdjoint[F[_], G[_], A](r: Ran[G, Id, A])(implicit
+      A: Adjunction[F, G]): F[A] =
     r(a => A.unit(a))
 
   def composedAdjointToRan[F[_], G[_], H[_], A](
@@ -123,20 +123,20 @@ object Lan extends LanInstances {
       def f(gi: G[I]) = gi
     }
 
-  def adjointToLan[F[_], G[_], A](ga: G[A])(
-      implicit A: Adjunction[F, G]): Lan[F, Id, A] =
+  def adjointToLan[F[_], G[_], A](ga: G[A])(implicit
+      A: Adjunction[F, G]): Lan[F, Id, A] =
     new Lan[F, Id, A] {
       type I = G[A]
       lazy val v = ga
       def f(gi: F[I]) = A.counit(gi)
     }
 
-  def lanToAdjoint[F[_], G[_], A](lan: Lan[F, Id, A])(
-      implicit A: Adjunction[F, G]): G[A] =
+  def lanToAdjoint[F[_], G[_], A](lan: Lan[F, Id, A])(implicit
+      A: Adjunction[F, G]): G[A] =
     A.leftAdjunct(lan.v)(lan.f)
 
-  def composedAdjointToLan[F[_], G[_], H[_], A](h: H[G[A]])(
-      implicit A: Adjunction[F, G]): Lan[F, H, A] =
+  def composedAdjointToLan[F[_], G[_], H[_], A](h: H[G[A]])(implicit
+      A: Adjunction[F, G]): Lan[F, H, A] =
     new Lan[F, H, A] {
       type I = G[A]
       val v = h

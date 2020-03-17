@@ -128,8 +128,8 @@ trait SortedMap[A, +B]
 object SortedMap extends ImmutableSortedMapFactory[SortedMap] {
 
   /** $sortedMapCanBuildFromInfo */
-  implicit def canBuildFrom[A, B](
-      implicit ord: Ordering[A]): CanBuildFrom[Coll, (A, B), SortedMap[A, B]] =
+  implicit def canBuildFrom[A, B](implicit
+      ord: Ordering[A]): CanBuildFrom[Coll, (A, B), SortedMap[A, B]] =
     new SortedMapCanBuildFrom[A, B]
   def empty[A, B](implicit ord: Ordering[A]): SortedMap[A, B] =
     TreeMap.empty[A, B]

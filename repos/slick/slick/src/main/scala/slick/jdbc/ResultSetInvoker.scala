@@ -15,8 +15,8 @@ abstract class ResultSetInvoker[+R] extends Invoker[R] { self =>
 
   protected def createResultSet(session: JdbcBackend#Session): ResultSet
 
-  def iteratorTo(maxRows: Int)(
-      implicit session: JdbcBackend#Session): CloseableIterator[R] = {
+  def iteratorTo(maxRows: Int)(implicit
+      session: JdbcBackend#Session): CloseableIterator[R] = {
     val rs = createResultSet(session)
     if (rs eq null) CloseableIterator.empty
     else {
@@ -33,8 +33,8 @@ abstract class ResultSetInvoker[+R] extends Invoker[R] { self =>
 }
 
 object ResultSetInvoker {
-  def apply[R](f: JdbcBackend#Session => ResultSet)(
-      implicit conv: PositionedResult => R): Invoker[R] =
+  def apply[R](f: JdbcBackend#Session => ResultSet)(implicit
+      conv: PositionedResult => R): Invoker[R] =
     new ResultSetInvoker[R] {
       def createResultSet(session: JdbcBackend#Session) = f(session)
       def extractValue(pr: PositionedResult) = conv(pr)
@@ -42,8 +42,8 @@ object ResultSetInvoker {
 }
 
 object ResultSetAction {
-  def apply[R](f: JdbcBackend#Session => ResultSet)(
-      implicit conv: PositionedResult => R)
+  def apply[R](f: JdbcBackend#Session => ResultSet)(implicit
+      conv: PositionedResult => R)
       : BasicStreamingAction[Vector[R], R, Effect.Read] =
     new StreamingInvokerAction[Vector[R], R, Effect.Read] {
       protected[this] def createInvoker(sql: Iterable[String]) =

@@ -37,8 +37,8 @@ object SortedMap extends SortedMapFactory[SortedMap] {
   def empty[A, B](implicit ord: Ordering[A]): SortedMap[A, B] =
     immutable.SortedMap.empty[A, B](ord)
 
-  implicit def canBuildFrom[A, B](
-      implicit ord: Ordering[A]): CanBuildFrom[Coll, (A, B), SortedMap[A, B]] =
+  implicit def canBuildFrom[A, B](implicit
+      ord: Ordering[A]): CanBuildFrom[Coll, (A, B), SortedMap[A, B]] =
     new SortedMapCanBuildFrom[A, B]
 
   private[collection] trait Default[A, +B] extends SortedMap[A, B] {

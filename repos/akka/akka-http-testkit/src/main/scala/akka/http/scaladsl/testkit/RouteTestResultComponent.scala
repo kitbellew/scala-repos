@@ -68,8 +68,8 @@ trait RouteTestResultComponent {
         }
       }
 
-    private[testkit] def handleResult(rr: RouteResult)(
-        implicit ec: ExecutionContext): Unit =
+    private[testkit] def handleResult(rr: RouteResult)(implicit
+        ec: ExecutionContext): Unit =
       synchronized {
         if (result.isEmpty) {
           result = rr match {

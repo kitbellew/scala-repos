@@ -23,16 +23,16 @@ final class BifoldableOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
 }
 
 sealed trait ToBifoldableOps0 {
-  implicit def ToBifoldableOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply2[Bifoldable, FA]) =
+  implicit def ToBifoldableOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply2[Bifoldable, FA]) =
     new BifoldableOps[F0.M, F0.A, F0.B](F0(v))(F0.TC)
 
 }
 
 trait ToBifoldableOps extends ToBifoldableOps0 {
 
-  implicit def ToBifoldableOps[F[_, _], A, B](v: F[A, B])(
-      implicit F0: Bifoldable[F]) =
+  implicit def ToBifoldableOps[F[_, _], A, B](v: F[A, B])(implicit
+      F0: Bifoldable[F]) =
     new BifoldableOps[F, A, B](v)
 
   implicit def ToBifoldableVFromKleisliLike[G[_], F[G[_], _, _], A, B](

@@ -236,8 +236,8 @@ final class LiteralDoubleAdditiveGroupOps(val lhs: Double) extends AnyVal {
   def -[A](rhs: A)(implicit ev: Field[A]): A = ev.minus(ev.fromDouble(lhs), rhs)
 }
 
-final class MultiplicativeSemigroupOps[A](lhs: A)(
-    implicit ev: MultiplicativeSemigroup[A]) {
+final class MultiplicativeSemigroupOps[A](lhs: A)(implicit
+    ev: MultiplicativeSemigroup[A]) {
   def *(rhs: A): A = macro Ops.binop[A, A]
   def *(rhs: Int)(implicit ev1: Ring[A]): A =
     macro Ops.binopWithLift[Int, Ring[A], A]
@@ -262,14 +262,14 @@ final class LiteralDoubleMultiplicativeSemigroupOps(val lhs: Double)
   def *[A](rhs: A)(implicit ev: Field[A]): A = ev.times(ev.fromDouble(lhs), rhs)
 }
 
-final class MultiplicativeMonoidOps[A](lhs: A)(
-    implicit ev: MultiplicativeMonoid[A]) {
+final class MultiplicativeMonoidOps[A](lhs: A)(implicit
+    ev: MultiplicativeMonoid[A]) {
   def isOne(implicit ev1: Eq[A]): Boolean =
     macro Ops.unopWithEv2[Eq[A], Boolean]
 }
 
-final class MultiplicativeGroupOps[A](lhs: A)(
-    implicit ev: MultiplicativeGroup[A]) {
+final class MultiplicativeGroupOps[A](lhs: A)(implicit
+    ev: MultiplicativeGroup[A]) {
   def reciprocal(): A = macro Ops.unop[A]
   def /(rhs: A): A = macro Ops.binop[A, A]
   def /(rhs: Int)(implicit ev1: Ring[A]): A =
@@ -593,15 +593,15 @@ final class ActionUnboundOps[G](lhs: G)(implicit ev: Action[_, G]) {
   def inverse(): G = macro Ops.unopWithScalar[G]
 }
 
-final class AdditiveActionUnboundOps[G](lhs: G)(
-    implicit ev: AdditiveAction[_, G]) {
+final class AdditiveActionUnboundOps[G](lhs: G)(implicit
+    ev: AdditiveAction[_, G]) {
   def +(rhs: G): G = macro Ops.binopWithScalar[G, G]
   def -(rhs: G): G = macro Ops.binopWithScalar[G, G]
   def unary_-(): G = macro Ops.unopWithScalar[G]
 }
 
-final class MultiplicativeActionUnboundOps[G](lhs: G)(
-    implicit ev: MultiplicativeAction[_, G]) {
+final class MultiplicativeActionUnboundOps[G](lhs: G)(implicit
+    ev: MultiplicativeAction[_, G]) {
   def *(rhs: G): G = macro Ops.binopWithScalar[G, G]
   def /(rhs: G): G = macro Ops.binopWithScalar[G, G]
   def reciprocal(): G = macro Ops.unopWithScalar[G]

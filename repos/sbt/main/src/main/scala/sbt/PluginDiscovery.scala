@@ -146,8 +146,8 @@ object PluginDiscovery {
   private[sbt] def binarySourceModules[T](
       data: PluginData,
       loader: ClassLoader,
-      resourceName: String)(
-      implicit classTag: reflect.ClassTag[T]): DetectedModules[T] = {
+      resourceName: String)(implicit
+      classTag: reflect.ClassTag[T]): DetectedModules[T] = {
     val classpath = data.classpath
     val namesAndValues =
       if (classpath.isEmpty) Nil

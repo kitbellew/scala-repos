@@ -50,13 +50,12 @@ trait Lens[S, A] extends LPLens[S, A] { outer =>
       def set(t: T)(a: A): T = g.modify(t)(outer.set(_)(a))
     }
 
-  def >>(n: Nat)(
-      implicit mkLens: MkNthFieldLens[A, n.N]): Lens[S, mkLens.Elem] =
+  def >>(n: Nat)(implicit
+      mkLens: MkNthFieldLens[A, n.N]): Lens[S, mkLens.Elem] =
     mkLens() compose this
 
-  def >>(k: Witness)(
-      implicit mkLens: MkFieldLens[A, k.T]): Lens[S, mkLens.Elem] =
-    mkLens() compose this
+  def >>(k: Witness)(implicit
+      mkLens: MkFieldLens[A, k.T]): Lens[S, mkLens.Elem] = mkLens() compose this
 
   def selectDynamic(k: String)(implicit
       mkLens: MkSelectDynamicOptic[Lens[S, A], A, Symbol @@ k.type, Nothing])
@@ -191,8 +190,8 @@ object OpticDefns {
   }
 
   class RootLens[C] extends Lens[C, C] {
-    def apply[P <: HList](path: Path[P])(
-        implicit mkPath: MkPathOptic[C, P]): mkPath.Out = mkPath()
+    def apply[P <: HList](path: Path[P])(implicit
+        mkPath: MkPathOptic[C, P]): mkPath.Out = mkPath()
 
     def get(c: C): C = c
     def set(c: C)(f: C): C = f
@@ -225,14 +224,14 @@ object OpticDefns {
   def hlistSelectLens[L <: HList, U](implicit mkLens: MkHListSelectLens[L, U]) =
     mkLens()
 
-  def coproductSelectPrism[C <: Coproduct, T](
-      implicit mkPrism: MkCoproductSelectPrism[C, T]) = mkPrism()
+  def coproductSelectPrism[C <: Coproduct, T](implicit
+      mkPrism: MkCoproductSelectPrism[C, T]) = mkPrism()
 
-  def hlistNthLens[L <: HList, N <: Nat](
-      implicit mkLens: MkHListNthLens[L, N]) = mkLens()
+  def hlistNthLens[L <: HList, N <: Nat](implicit
+      mkLens: MkHListNthLens[L, N]) = mkLens()
 
-  def recordLens[R <: HList](k: Witness)(
-      implicit mkLens: MkRecordSelectLens[R, k.T]) = mkLens()
+  def recordLens[R <: HList](k: Witness)(implicit
+      mkLens: MkRecordSelectLens[R, k.T]) = mkLens()
 }
 
 trait OpticComposer[L, R] {
@@ -329,8 +328,8 @@ object InferProduct {
       type Prod = P
     }
 
-  implicit def inferProduct2[H, T <: Coproduct, K, P](
-      implicit it: Aux[T, K, P]): Aux[H :+: T, K, P] =
+  implicit def inferProduct2[H, T <: Coproduct, K, P](implicit
+      it: Aux[T, K, P]): Aux[H :+: T, K, P] =
     new InferProduct[H :+: T, K] {
       type Prod = P
     }
@@ -416,8 +415,8 @@ trait MkLabelledGenericLens[T] extends Serializable {
 object MkLabelledGenericLens {
   type Aux[T, Repr0] = MkLabelledGenericLens[T] { type Repr = Repr0 }
 
-  implicit def mkLabelledGenericLens[T](
-      implicit gen: LabelledGeneric[T]): Aux[T, gen.Repr] =
+  implicit def mkLabelledGenericLens[T](implicit
+      gen: LabelledGeneric[T]): Aux[T, gen.Repr] =
     new MkLabelledGenericLens[T] {
       type Repr = gen.Repr
       def apply(): Lens[T, Repr] =
@@ -611,8 +610,8 @@ trait Path[T <: HList] extends LPPath[T] {
 
   def apply[H]: Path[Coselect[H] :: T] = new Path[Coselect[H] :: T] {}
 
-  def selectDynamic(h: String)(
-      implicit segment: Segment[h.type, Nothing, T]): Path[segment.Out] =
+  def selectDynamic(h: String)(implicit
+      segment: Segment[h.type, Nothing, T]): Path[segment.Out] =
     new Path[segment.Out] {}
 }
 

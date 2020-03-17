@@ -10,8 +10,8 @@ import breeze.numerics._
   *
   * @author dlwh
  **/
-case class StudentsT(degreesOfFreedom: Double)(
-    implicit randBasis: RandBasis = Rand)
+case class StudentsT(degreesOfFreedom: Double)(implicit
+    randBasis: RandBasis = Rand)
     extends ContinuousDistr[Double]
     with Moments[Double, Double]
     with HasCdf {

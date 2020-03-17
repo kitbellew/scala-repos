@@ -57,8 +57,8 @@ case class IterableSource[+T](
   private lazy val hdfsTap: Tap[_, _, _] =
     new MemorySourceTap(asBuffer.asJava, fields)
 
-  override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+  override def createTap(readOrWrite: AccessMode)(implicit
+      mode: Mode): Tap[_, _, _] = {
     if (readOrWrite == Write) {
       sys.error("IterableSource is a Read-only Source")
     }

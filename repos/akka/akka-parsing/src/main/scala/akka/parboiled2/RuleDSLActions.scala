@@ -28,8 +28,8 @@ trait RuleDSLActions {
     * after its inner rule has been run successfully (and only then).
     */
   @compileTimeOnly("Calls to `capture` must be inside `rule` macro")
-  def capture[I <: HList, O <: HList](r: Rule[I, O])(
-      implicit p: Prepend[O, String :: HNil]): Rule[I, p.Out] = `n/a`
+  def capture[I <: HList, O <: HList](r: Rule[I, O])(implicit
+      p: Prepend[O, String :: HNil]): Rule[I, p.Out] = `n/a`
 
   /**
     * Implements a semantic predicate. If the argument expression evaluates to `true` the created

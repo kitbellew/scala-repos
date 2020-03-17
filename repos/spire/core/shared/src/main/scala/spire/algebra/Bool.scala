@@ -38,6 +38,6 @@ class DualBool[@sp(Boolean, Byte, Short, Int, Long) A](orig: Bool[A])
 }
 
 object Bool {
-  @inline final def apply[@sp(Boolean, Byte, Short, Int, Long) A](
-      implicit ev: Bool[A]): Bool[A] = ev
+  @inline final def apply[@sp(Boolean, Byte, Short, Int, Long) A](implicit
+      ev: Bool[A]): Bool[A] = ev
 }

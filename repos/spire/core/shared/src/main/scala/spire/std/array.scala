@@ -108,8 +108,8 @@ object ArraySupport {
     y
   }
 
-  def dot[@sp(Int, Long, Float, Double) A](x: Array[A], y: Array[A])(
-      implicit sc: Rig[A]): A = {
+  def dot[@sp(Int, Long, Float, Double) A](x: Array[A], y: Array[A])(implicit
+      sc: Rig[A]): A = {
     var z = sc.zero
     var i = 0
     while (i < x.length && i < y.length) { z += x(i) * y(i); i += 1 }
@@ -172,8 +172,8 @@ trait ArrayInstances extends ArrayInstances3 {
 
 @SerialVersionUID(0L)
 private final class ArrayModule[
-    @sp(Int, Long, Float, Double) A: ClassTag: Ring](
-    implicit nvs: NoImplicit[VectorSpace[Array[A], A]])
+    @sp(Int, Long, Float, Double) A: ClassTag: Ring](implicit
+    nvs: NoImplicit[VectorSpace[Array[A], A]])
     extends Module[Array[A], A]
     with Serializable {
   def scalar: Ring[A] = Ring[A]
@@ -190,8 +190,8 @@ private final class ArrayVectorSpace[@sp(
   Int,
   Float,
   Long,
-  Double) A: ClassTag: Field](
-    implicit nnvs: NoImplicit[NormedVectorSpace[Array[A], A]])
+  Double) A: ClassTag: Field](implicit
+    nnvs: NoImplicit[NormedVectorSpace[Array[A], A]])
     extends VectorSpace[Array[A], A]
     with Serializable {
   def scalar: Field[A] = Field[A]

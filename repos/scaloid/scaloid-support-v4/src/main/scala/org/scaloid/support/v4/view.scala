@@ -98,8 +98,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis.setOffscreenPageLimit(p); basis
   }
 
-  @inline def onPageChangeListener(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def onPageChangeListener(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'onPageChangeListener'")
 
@@ -133,8 +133,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     */
   @inline def pageMargin_=(p: Int) = { basis.setPageMargin(p); basis }
 
-  @inline def pageMarginDrawable(
-      implicit no: NoGetterForThisProperty): Nothing =
+  @inline def pageMarginDrawable(implicit
+      no: NoGetterForThisProperty): Nothing =
     throw new Error(
       "Android does not support the getter for 'pageMarginDrawable'")
 

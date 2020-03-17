@@ -8,8 +8,8 @@ import scalaz.scalacheck.ScalaCheckBinding._
 
 object CoyonedaTest extends SpecLite {
 
-  implicit def coyonedaArb[F[_], A](
-      implicit A: Arbitrary[F[A]]): Arbitrary[Coyoneda[F, A]] =
+  implicit def coyonedaArb[F[_], A](implicit
+      A: Arbitrary[F[A]]): Arbitrary[Coyoneda[F, A]] =
     Functor[Arbitrary].map(A)(Coyoneda.lift)
 
   type CoyonedaOption[A] = Coyoneda[Option, A]

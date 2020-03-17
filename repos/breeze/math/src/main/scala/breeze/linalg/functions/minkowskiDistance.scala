@@ -22,8 +22,8 @@ object minkowskiDistance extends UFunc with minkowskiDistanceLowPrio {
 
 sealed trait minkowskiDistanceLowPrio { this: minkowskiDistance.type =>
 
-  implicit def minkowskiDistanceFromZippedValues[T, U](
-      implicit zipImpl: zipValues.Impl2[T, U, ZippedValues[Double, Double]])
+  implicit def minkowskiDistanceFromZippedValues[T, U](implicit
+      zipImpl: zipValues.Impl2[T, U, ZippedValues[Double, Double]])
       : Impl3[T, U, Double, Double] = {
 
     new Impl3[T, U, Double, Double] {

@@ -23,8 +23,8 @@ class FieldImpsTest extends WordSpec with Matchers with FieldConversions {
   def setAndCheck[T <: Comparable[_]](v: T)(implicit conv: (T) => Fields) {
     conv(v) shouldBe (new Fields(v))
   }
-  def setAndCheckS[T <: Comparable[_]](v: Seq[T])(
-      implicit conv: (Seq[T]) => Fields) {
+  def setAndCheckS[T <: Comparable[_]](v: Seq[T])(implicit
+      conv: (Seq[T]) => Fields) {
     conv(v) shouldBe (new Fields(v: _*))
   }
   def setAndCheckSym(v: Symbol) {

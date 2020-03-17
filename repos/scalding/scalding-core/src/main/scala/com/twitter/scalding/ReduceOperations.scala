@@ -69,8 +69,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   /////////////////////////////////////////
 
   /** Pretty much a synonym for mapReduceMap with the methods collected into a trait. */
-  def aggregate[A, B, C](fieldDef: (Fields, Fields))(ag: Aggregator[A, B, C])(
-      implicit
+  def aggregate[A, B, C](fieldDef: (Fields, Fields))(
+      ag: Aggregator[A, B, C])(implicit
       startConv: TupleConverter[A],
       middleSetter: TupleSetter[B],
       middleConv: TupleConverter[B],
@@ -401,8 +401,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   /**
     * Convert a subset of fields into a list of Tuples. Need to provide the types of the tuple fields.
     */
-  def toList[T](fieldDef: (Fields, Fields))(
-      implicit conv: TupleConverter[T]): Self = {
+  def toList[T](fieldDef: (Fields, Fields))(implicit
+      conv: TupleConverter[T]): Self = {
     // TODO(POB) this is jank in my opinion. Nulls should be filter by the user if they want
     mapList[T, List[T]](fieldDef) { _.filter { t => t != null } }
   }

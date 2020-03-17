@@ -1028,8 +1028,8 @@ object DenseMatrix
     * @tparam R
     * @return
     */
-  implicit def canMapRows[V, R: ClassTag: Zero](
-      implicit implSet: OpSet.InPlaceImpl2[DenseVector[R], DenseVector[R]])
+  implicit def canMapRows[V, R: ClassTag: Zero](implicit
+      implSet: OpSet.InPlaceImpl2[DenseVector[R], DenseVector[R]])
       : CanCollapseAxis[
         DenseMatrix[V],
         Axis._0.type,
@@ -1101,8 +1101,8 @@ object DenseMatrix
     * @tparam V value type
     * @return
     */
-  implicit def canMapCols[V, Res: ClassTag: Zero](
-      implicit implSet: OpSet.InPlaceImpl2[DenseVector[Res], DenseVector[Res]])
+  implicit def canMapCols[V, Res: ClassTag: Zero](implicit
+      implSet: OpSet.InPlaceImpl2[DenseVector[Res], DenseVector[Res]])
       : CanCollapseAxis[
         DenseMatrix[V],
         _1.type,

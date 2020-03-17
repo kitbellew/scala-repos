@@ -90,8 +90,8 @@ import simulacrum.typeclass
     * difference is that we only need `Apply[G]` here, since we don't
     * need to call `Applicative#pure` for a starting value.
     */
-  def traverse1_[G[_], A, B](fa: F[A])(f: A => G[B])(
-      implicit G: Apply[G]): G[Unit] =
+  def traverse1_[G[_], A, B](fa: F[A])(f: A => G[B])(implicit
+      G: Apply[G]): G[Unit] =
     G.map(reduceLeftTo(fa)(f)((x, y) => G.map2(x, f(y))((_, b) => b)))(_ => ())
 
   /**

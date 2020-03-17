@@ -239,40 +239,40 @@ trait TraversableViewLike[
     final override protected[this] def viewIdentifier = "D"
   }
 
-  override def ++[B >: A, That](xs: GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def ++[B >: A, That](xs: GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     newAppended(xs.seq.toTraversable).asInstanceOf[That]
 
-  override def ++:[B >: A, That](xs: TraversableOnce[B])(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def ++:[B >: A, That](xs: TraversableOnce[B])(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     newPrepended(xs.seq.toTraversable).asInstanceOf[That]
 
   // Need second one because of optimization in TraversableLike
-  override def ++:[B >: A, That](xs: Traversable[B])(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def ++:[B >: A, That](xs: Traversable[B])(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     newPrepended(xs).asInstanceOf[That]
 
-  override def map[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[This, B, That]): That = {
+  override def map[B, That](f: A => B)(implicit
+      bf: CanBuildFrom[This, B, That]): That = {
     newMapped(f).asInstanceOf[That]
 //    val b = bf(repr)
 //          if (b.isInstanceOf[NoBuilder[_]]) newMapped(f).asInstanceOf[That]
 //    else super.map[B, That](f)(bf)
   }
 
-  override def collect[B, That](pf: PartialFunction[A, B])(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def collect[B, That](pf: PartialFunction[A, B])(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     filter(pf.isDefinedAt).map(pf)(bf)
 
-  override def flatMap[B, That](f: A => GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[This, B, That]): That = {
+  override def flatMap[B, That](f: A => GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[This, B, That]): That = {
     newFlatMapped(f).asInstanceOf[That]
 // was:    val b = bf(repr)
 //     if (b.isInstanceOf[NoBuilder[_]]) newFlatMapped(f).asInstanceOf[That]
 //    else super.flatMap[B, That](f)(bf)
   }
-  override def flatten[B](
-      implicit asTraversable: A => /*<:<!!!*/ GenTraversableOnce[B]) =
+  override def flatten[B](implicit
+      asTraversable: A => /*<:<!!!*/ GenTraversableOnce[B]) =
     newFlatMapped(asTraversable)
   private[this] implicit def asThis(xs: Transformed[A]): This =
     xs.asInstanceOf[This]
@@ -321,15 +321,15 @@ trait TraversableViewLike[
     (newTakenWhile(p), newDroppedWhile(p))
   override def splitAt(n: Int): (This, This) = (newTaken(n), newDropped(n))
 
-  override def scanLeft[B, That](z: B)(op: (B, A) => B)(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def scanLeft[B, That](z: B)(op: (B, A) => B)(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     newForced(thisSeq.scanLeft(z)(op)).asInstanceOf[That]
 
   @migration(
     "The behavior of `scanRight` has changed. The previous behavior can be reproduced with scanRight.reverse.",
     "2.9.0")
-  override def scanRight[B, That](z: B)(op: (A, B) => B)(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def scanRight[B, That](z: B)(op: (A, B) => B)(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     newForced(thisSeq.scanRight(z)(op)).asInstanceOf[That]
 
   override def groupBy[K](f: A => K): immutable.Map[K, This] =

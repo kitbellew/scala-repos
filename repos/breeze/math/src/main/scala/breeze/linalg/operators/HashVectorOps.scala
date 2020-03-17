@@ -39,8 +39,8 @@ trait DenseVector_HashVector_Ops { this: HashVector.type =>
     }
 
   @expand
-  implicit def canDot_DV_HV[@expand.args(Int, Double, Float, Long) T](
-      implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
+  implicit def canDot_DV_HV[@expand.args(Int, Double, Float, Long) T](implicit
+      @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
       : breeze.linalg.operators.OpMulInner.Impl2[
         DenseVector[T],
         HashVector[T],
@@ -367,8 +367,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
     }
 
   @expand
-  implicit def canDot_HV_HV[@expand.args(Int, Long, Double, Float) T](
-      implicit @expand.sequence[T](0, 0L, 0.0, 0f) zero: T)
+  implicit def canDot_HV_HV[@expand.args(Int, Long, Double, Float) T](implicit
+      @expand.sequence[T](0, 0L, 0.0, 0f) zero: T)
       : breeze.linalg.operators.OpMulInner.Impl2[
         HashVector[T],
         HashVector[T],
@@ -531,8 +531,8 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
     }
 
   @expand
-  implicit def canDot_HV_SV[@expand.args(Int, Long, Float, Double) T](
-      implicit @expand.sequence[T](0, 0L, 0f, 0.0) zero: T)
+  implicit def canDot_HV_SV[@expand.args(Int, Long, Float, Double) T](implicit
+      @expand.sequence[T](0, 0L, 0f, 0.0) zero: T)
       : breeze.linalg.operators.OpMulInner.Impl2[
         HashVector[T],
         SparseVector[T],
@@ -654,8 +654,8 @@ trait SparseVector_HashVector_Ops
       }
     }
 
-  implicit def canDot_SV_HV[T](
-      implicit op: OpMulInner.Impl2[HashVector[T], SparseVector[T], T])
+  implicit def canDot_SV_HV[T](implicit
+      op: OpMulInner.Impl2[HashVector[T], SparseVector[T], T])
       : breeze.linalg.operators.OpMulInner.Impl2[
         SparseVector[T],
         HashVector[T],
@@ -702,8 +702,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
   implicit def pureFromUpdate[
       @expand.args(Int, Double, Float, Long) T,
       Other,
-      Op <: OpType](op: UFunc.InPlaceImpl2[Op, HashVector[T], Other])(
-      implicit copy: CanCopy[HashVector[T]])
+      Op <: OpType](op: UFunc.InPlaceImpl2[Op, HashVector[T], Other])(implicit
+      copy: CanCopy[HashVector[T]])
       : UFunc.UImpl2[Op, HashVector[T], Other, HashVector[T]] = {
     new UImpl2[Op, HashVector[T], Other, HashVector[T]] {
       override def apply(a: HashVector[T], b: Other) = {
@@ -715,8 +715,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
   }
 
   implicit def pureFromUpdate[T, Other, Op <: OpType](
-      op: UFunc.InPlaceImpl2[Op, HashVector[T], Other])(
-      implicit copy: CanCopy[HashVector[T]])
+      op: UFunc.InPlaceImpl2[Op, HashVector[T], Other])(implicit
+      copy: CanCopy[HashVector[T]])
       : UFunc.UImpl2[Op, HashVector[T], Other, HashVector[T]] = {
     new UFunc.UImpl2[Op, HashVector[T], Other, HashVector[T]] {
       override def apply(a: HashVector[T], b: Other) = {

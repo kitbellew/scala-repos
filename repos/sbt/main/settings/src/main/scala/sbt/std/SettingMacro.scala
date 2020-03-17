@@ -14,8 +14,8 @@ import sbt.internal.util.appmacro.{
 
 object InitializeInstance extends MonadInstance {
   type M[x] = Initialize[x]
-  def app[K[L[x]], Z](in: K[Initialize], f: K[Id] => Z)(
-      implicit a: AList[K]): Initialize[Z] = Def.app[K, Z](in)(f)(a)
+  def app[K[L[x]], Z](in: K[Initialize], f: K[Id] => Z)(implicit
+      a: AList[K]): Initialize[Z] = Def.app[K, Z](in)(f)(a)
   def map[S, T](in: Initialize[S], f: S => T): Initialize[T] = Def.map(in)(f)
   def flatten[T](in: Initialize[Initialize[T]]): Initialize[T] =
     Def.bind(in)(idFun[Initialize[T]])

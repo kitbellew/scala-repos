@@ -14,8 +14,8 @@ trait Foldable[F[_]] { self =>
   def foldMap[A, B](fa: F[A])(f: A => B)(implicit F: Monoid[B]): B
 
   /** As `foldMap` but returning `None` if the foldable is empty and `Some` otherwise */
-  def foldMap1Opt[A, B](fa: F[A])(f: A => B)(
-      implicit F: Semigroup[B]): Option[B] = {
+  def foldMap1Opt[A, B](fa: F[A])(f: A => B)(implicit
+      F: Semigroup[B]): Option[B] = {
     import std.option._
     foldMap(fa)(x => some(f(x)))
   }
@@ -45,8 +45,8 @@ trait Foldable[F[_]] { self =>
     }
 
   /**The product of Foldable `F` and Foldable1 `G`, `[x](F[x], G[x]])`, is a Foldable1 */
-  def product0[G[_]](
-      implicit G0: Foldable1[G]): Foldable1[λ[α => (F[α], G[α])]] =
+  def product0[G[_]](implicit
+      G0: Foldable1[G]): Foldable1[λ[α => (F[α], G[α])]] =
     new ProductFoldable1R[F, G] {
       def F = self
       def G = G0
@@ -61,13 +61,13 @@ trait Foldable[F[_]] { self =>
   }
 
   /**Right-associative, monadic fold of a structure. */
-  def foldRightM[G[_], A, B](fa: F[A], z: => B)(f: (A, => B) => G[B])(
-      implicit M: Monad[G]): G[B] =
+  def foldRightM[G[_], A, B](fa: F[A], z: => B)(f: (A, => B) => G[B])(implicit
+      M: Monad[G]): G[B] =
     foldLeft[A, B => G[B]](fa, M.point(_))((b, a) => w => M.bind(f(a, w))(b))(z)
 
   /**Left-associative, monadic fold of a structure. */
-  def foldLeftM[G[_], A, B](fa: F[A], z: B)(f: (B, A) => G[B])(
-      implicit M: Monad[G]): G[B] =
+  def foldLeftM[G[_], A, B](fa: F[A], z: B)(f: (B, A) => G[B])(implicit
+      M: Monad[G]): G[B] =
     foldRight[A, B => G[B]](fa, M.point(_))((a, b) => w => M.bind(f(w, a))(b))(
       z)
 
@@ -81,13 +81,13 @@ trait Foldable[F[_]] { self =>
   def fold[M: Monoid](t: F[M]): M = foldMap[M, M](t)(x => x)
 
   /** Strict traversal in an applicative functor `M` that ignores the result of `f`. */
-  def traverse_[M[_], A, B](fa: F[A])(f: A => M[B])(
-      implicit a: Applicative[M]): M[Unit] =
+  def traverse_[M[_], A, B](fa: F[A])(f: A => M[B])(implicit
+      a: Applicative[M]): M[Unit] =
     foldLeft(fa, a.pure(()))((x, y) => a.ap(f(y))(a.map(x)(_ => _ => ())))
 
   /** A version of `traverse_` that infers the type constructor `M`. */
-  final def traverseU_[A, GB](fa: F[A])(f: A => GB)(
-      implicit G: Unapply[Applicative, GB]): G.M[Unit] =
+  final def traverseU_[A, GB](fa: F[A])(f: A => GB)(implicit
+      G: Unapply[Applicative, GB]): G.M[Unit] =
     traverse_[G.M, A, G.A](fa)(G.leibniz.onF(f))(G.TC)
 
   /** `traverse_` specialized to `State` **/
@@ -138,8 +138,8 @@ trait Foldable[F[_]] { self =>
     foldRightM(fa, z)((a, b) => f(a)(b))
 
   /**Curried version of `foldLeftM` */
-  final def foldlM[G[_], A, B](fa: F[A], z: => B)(f: B => A => G[B])(
-      implicit M: Monad[G]): G[B] =
+  final def foldlM[G[_], A, B](fa: F[A], z: => B)(f: B => A => G[B])(implicit
+      M: Monad[G]): G[B] =
     foldLeftM(fa, z)((b, a) => f(b)(a))
 
   /** map elements in a Foldable with a monadic function and return the first element that is mapped successfully */
@@ -197,8 +197,8 @@ trait Foldable[F[_]] { self =>
     foldRight(fa, true)(p(_) && _)
 
   /** `all` with monadic traversal. */
-  def allM[G[_], A](fa: F[A])(p: A => G[Boolean])(
-      implicit G: Monad[G]): G[Boolean] =
+  def allM[G[_], A](fa: F[A])(p: A => G[Boolean])(implicit
+      G: Monad[G]): G[Boolean] =
     foldRight(fa, G.point(true))((a, b) =>
       G.bind(p(a))(q => if (q) b else G.point(false)))
 
@@ -207,8 +207,8 @@ trait Foldable[F[_]] { self =>
     foldRight(fa, false)(p(_) || _)
 
   /** `any` with monadic traversal. */
-  def anyM[G[_], A](fa: F[A])(p: A => G[Boolean])(
-      implicit G: Monad[G]): G[Boolean] =
+  def anyM[G[_], A](fa: F[A])(p: A => G[Boolean])(implicit
+      G: Monad[G]): G[Boolean] =
     foldRight(fa, G.point(false))((a, b) =>
       G.bind(p(a))(q => if (q) G.point(true) else b))
 

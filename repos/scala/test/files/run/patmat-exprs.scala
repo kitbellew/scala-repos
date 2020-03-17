@@ -194,8 +194,8 @@ trait Pattern {
     }
 
     /** Eliminates common negated components of a sum */
-    private def reduceComponents(components: List[Expr[T]])(
-        implicit num: NumericOps[T]): List[Expr[T]] = {
+    private def reduceComponents(components: List[Expr[T]])(implicit
+        num: NumericOps[T]): List[Expr[T]] = {
       val pairs =
         for (a <- components; b <- components if Neg(a) == b || a == Neg(b))
           yield (a, b)
@@ -392,8 +392,8 @@ trait Pattern {
     override lazy val hashCode = ScalaRunTime._hashCode(this);
   }
 
-  case class Add3[T](a1: Expr[T], a2: Expr[T], a3: Expr[T])(
-      implicit num: NumericOps[T])
+  case class Add3[T](a1: Expr[T], a2: Expr[T], a3: Expr[T])(implicit
+      num: NumericOps[T])
       extends ManyArg[T] {
     val args = List(a1, a2, a3)
     def eval(f: Any => Any) = num.add(a1.eval(f), a2.eval(f), a3.eval(f))
@@ -587,19 +587,19 @@ trait Pattern {
       if (num.zero == value) Zero[T]
       else Const(value)
 
-    implicit def double2Constant[T](d: Double)(
-        implicit num: NumericOps[T]): Leaf[T] =
+    implicit def double2Constant[T](d: Double)(implicit
+        num: NumericOps[T]): Leaf[T] =
       const(num.fromDouble(d))
 
-    implicit def float2Constant[T](f: Float)(
-        implicit num: NumericOps[T]): Leaf[T] =
+    implicit def float2Constant[T](f: Float)(implicit
+        num: NumericOps[T]): Leaf[T] =
       const(num.fromDouble(f.toDouble))
 
     implicit def int2Constant[T](i: Int)(implicit num: NumericOps[T]): Leaf[T] =
       const(num.fromDouble(i.toDouble))
 
-    implicit def long2Constant[T](l: Long)(
-        implicit num: NumericOps[T]): Leaf[T] =
+    implicit def long2Constant[T](l: Long)(implicit
+        num: NumericOps[T]): Leaf[T] =
       const(num.fromDouble(l.toDouble))
   }
 }

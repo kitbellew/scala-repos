@@ -158,8 +158,8 @@ abstract class NumericRange[T](
   //
   //   (0.1 to 0.3 by 0.1 contains 0.3) == true
   //
-  private[immutable] def mapRange[A](fm: T => A)(
-      implicit unum: Integral[A]): NumericRange[A] = {
+  private[immutable] def mapRange[A](fm: T => A)(implicit
+      unum: Integral[A]): NumericRange[A] = {
     val self = this
 
     // XXX This may be incomplete.
@@ -242,8 +242,8 @@ object NumericRange {
     *  whether or not it is inclusive.  Throws an exception if step == 0 or
     *  the number of elements exceeds the maximum Int.
     */
-  def count[T](start: T, end: T, step: T, isInclusive: Boolean)(
-      implicit num: Integral[T]): Int = {
+  def count[T](start: T, end: T, step: T, isInclusive: Boolean)(implicit
+      num: Integral[T]): Int = {
     val zero = num.zero
     val upward = num.lt(start, end)
     val posStep = num.gt(step, zero)
@@ -353,11 +353,11 @@ object NumericRange {
     def inclusive: Inclusive[T] = NumericRange.inclusive(start, end, step)
   }
 
-  def apply[T](start: T, end: T, step: T)(
-      implicit num: Integral[T]): Exclusive[T] =
+  def apply[T](start: T, end: T, step: T)(implicit
+      num: Integral[T]): Exclusive[T] =
     new Exclusive(start, end, step)
-  def inclusive[T](start: T, end: T, step: T)(
-      implicit num: Integral[T]): Inclusive[T] =
+  def inclusive[T](start: T, end: T, step: T)(implicit
+      num: Integral[T]): Inclusive[T] =
     new Inclusive(start, end, step)
 
   private[collection] val defaultOrdering = Map[Numeric[_], Ordering[_]](

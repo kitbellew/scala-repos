@@ -716,8 +716,8 @@ private[scalajs] final class ScalaJSClassEmitter(
     js.Block(createIsArrayOfStat, createAsArrayOfStat)
   }
 
-  private def genIsScalaJSObject(obj: js.Tree)(
-      implicit pos: Position): js.Tree = {
+  private def genIsScalaJSObject(obj: js.Tree)(implicit
+      pos: Position): js.Tree = {
     import TreeDSL._
     obj && (obj DOT "$classData")
   }
@@ -1027,8 +1027,8 @@ private[scalajs] final class ScalaJSClassEmitter(
     *
     *  Returns (statements, ScalaJS.e["foo"]["bar"]["Something"])
     */
-  private def genCreateNamespaceInExports(qualName: String)(
-      implicit pos: Position): (js.Tree, js.Tree) = {
+  private def genCreateNamespaceInExports(qualName: String)(implicit
+      pos: Position): (js.Tree, js.Tree) = {
     val parts = qualName.split("\\.")
     val statements = List.newBuilder[js.Tree]
     var namespace = envField("e")

@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `IsEmpty` */
-final class IsEmptyOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: IsEmpty[F])
+final class IsEmptyOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: IsEmpty[F])
     extends Ops[F[A]] {
   ////
 
@@ -13,8 +13,8 @@ final class IsEmptyOps[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToIsEmptyOps0 {
-  implicit def ToIsEmptyOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[IsEmpty, FA]) =
+  implicit def ToIsEmptyOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[IsEmpty, FA]) =
     new IsEmptyOps[F0.M, F0.A](F0(v))(F0.TC)
 
 }

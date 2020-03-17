@@ -61,8 +61,8 @@ package javaguide.testhelpers {
 
     def call(
         action: Action[Http.RequestBody],
-        requestBuilder: play.mvc.Http.RequestBuilder)(
-        implicit mat: Materializer): Result = {
+        requestBuilder: play.mvc.Http.RequestBuilder)(implicit
+        mat: Materializer): Result = {
       Helpers
         .await(requestBuilder.body() match {
           case null =>
