@@ -63,8 +63,8 @@ object LinearAlgebraExamples extends App {
 
   def Vector(p: Double) =
     newtype[Tuple1[Double], VectorOps[_1, Tuple1[Double]]](Tuple1(p))
-  def Vector[P <: Product, N <: Nat](p: P)(
-      implicit ar: ProductLength.Aux[P, N]) = newtype[P, VectorOps[N, P]](p)
+  def Vector[P <: Product, N <: Nat](p: P)(implicit
+      ar: ProductLength.Aux[P, N]) = newtype[P, VectorOps[N, P]](p)
 
   type V1 = Newtype[Tuple1[Double], VectorOps[_1, Tuple1[Double]]]
   type V2 = Newtype[(Double, Double), VectorOps[_2, (Double, Double)]]

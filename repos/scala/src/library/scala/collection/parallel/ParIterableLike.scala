@@ -538,8 +538,8 @@ trait ParIterableLike[
     tasksupport.executeAndWaitResult(new Map[S, That](f, pbf, splitter) mapResult { _.result })
   } otherwise seq.map(f)(bf2seq(bf))*/
 
-  def collect[S, That](pf: PartialFunction[T, S])(
-      implicit bf: CanBuildFrom[Repr, S, That]): That =
+  def collect[S, That](pf: PartialFunction[T, S])(implicit
+      bf: CanBuildFrom[Repr, S, That]): That =
     if (bf(repr).isCombiner) {
       tasksupport.executeAndWaitResult(
         new Collect[S, That](
@@ -551,8 +551,8 @@ trait ParIterableLike[
     tasksupport.executeAndWaitResult(new Collect[S, That](pf, pbf, splitter) mapResult { _.result })
   } otherwise seq.collect(pf)(bf2seq(bf))*/
 
-  def flatMap[S, That](f: T => GenTraversableOnce[S])(
-      implicit bf: CanBuildFrom[Repr, S, That]): That =
+  def flatMap[S, That](f: T => GenTraversableOnce[S])(implicit
+      bf: CanBuildFrom[Repr, S, That]): That =
     if (bf(repr).isCombiner) {
       tasksupport.executeAndWaitResult(
         new FlatMap[S, That](
@@ -661,8 +661,8 @@ trait ParIterableLike[
       })
   }
 
-  def ++[U >: T, That](that: GenTraversableOnce[U])(
-      implicit bf: CanBuildFrom[Repr, U, That]): That = {
+  def ++[U >: T, That](that: GenTraversableOnce[U])(implicit
+      bf: CanBuildFrom[Repr, U, That]): That = {
     if (that.isParallel && bf.isParallel) {
       // println("case both are parallel")
       val other = that.asParIterable
@@ -804,8 +804,8 @@ trait ParIterableLike[
     *
     *    @return           a new $coll containing the prefix scan of the elements in this $coll
     */
-  def scan[U >: T, That](z: U)(op: (U, U) => U)(
-      implicit bf: CanBuildFrom[Repr, U, That]): That =
+  def scan[U >: T, That](z: U)(op: (U, U) => U)(implicit
+      bf: CanBuildFrom[Repr, U, That]): That =
     if (bf(repr).isCombiner) {
       if (tasksupport.parallelismLevel > 1) {
         if (size > 0)
@@ -825,12 +825,12 @@ trait ParIterableLike[
       } else setTaskSupport(seq.scan(z)(op)(bf2seq(bf)), tasksupport)
     } else setTaskSupport(seq.scan(z)(op)(bf2seq(bf)), tasksupport)
 
-  def scanLeft[S, That](z: S)(op: (S, T) => S)(
-      implicit bf: CanBuildFrom[Repr, S, That]) =
+  def scanLeft[S, That](z: S)(op: (S, T) => S)(implicit
+      bf: CanBuildFrom[Repr, S, That]) =
     setTaskSupport(seq.scanLeft(z)(op)(bf2seq(bf)), tasksupport)
 
-  def scanRight[S, That](z: S)(op: (T, S) => S)(
-      implicit bf: CanBuildFrom[Repr, S, That]) =
+  def scanRight[S, That](z: S)(op: (T, S) => S)(implicit
+      bf: CanBuildFrom[Repr, S, That]) =
     setTaskSupport(seq.scanRight(z)(op)(bf2seq(bf)), tasksupport)
 
   /** Takes the longest prefix of elements that satisfy the predicate.
@@ -939,8 +939,8 @@ trait ParIterableLike[
 
   def sameElements[U >: T](that: GenIterable[U]) = seq.sameElements(that)
 
-  def zip[U >: T, S, That](that: GenIterable[S])(
-      implicit bf: CanBuildFrom[Repr, (U, S), That]): That =
+  def zip[U >: T, S, That](that: GenIterable[S])(implicit
+      bf: CanBuildFrom[Repr, (U, S), That]): That =
     if (bf(repr).isCombiner && that.isParSeq) {
       val thatseq = that.asParSeq
       tasksupport.executeAndWaitResult(
@@ -950,8 +950,8 @@ trait ParIterableLike[
           thatseq.splitter) mapResult { _.resultWithTaskSupport })
     } else setTaskSupport(seq.zip(that)(bf2seq(bf)), tasksupport)
 
-  def zipWithIndex[U >: T, That](
-      implicit bf: CanBuildFrom[Repr, (U, Int), That]): That =
+  def zipWithIndex[U >: T, That](implicit
+      bf: CanBuildFrom[Repr, (U, Int), That]): That =
     this zip immutable.ParRange(0, size, 1, inclusive = false)
 
   def zipAll[S, U >: T, That](that: GenIterable[S], thisElem: U, thatElem: S)(
@@ -982,8 +982,8 @@ trait ParIterableLike[
       })
   }
 
-  protected def toParMap[K, V, That](cbf: () => Combiner[(K, V), That])(
-      implicit ev: T <:< (K, V)): That = {
+  protected def toParMap[K, V, That](cbf: () => Combiner[(K, V), That])(implicit
+      ev: T <:< (K, V)): That = {
     tasksupport.executeAndWaitResult(
       new ToParMap(combinerFactory(cbf), splitter)(ev) mapResult {
         _.resultWithTaskSupport
@@ -1031,8 +1031,8 @@ trait ParIterableLike[
 
   override def toVector: Vector[T] = to[Vector]
 
-  override def to[Col[_]](
-      implicit cbf: CanBuildFrom[Nothing, T, Col[T @uncheckedVariance]])
+  override def to[Col[_]](implicit
+      cbf: CanBuildFrom[Nothing, T, Col[T @uncheckedVariance]])
       : Col[T @uncheckedVariance] =
     if (cbf().isCombiner) {
       toParCollection[T, Col[T]](() => cbf().asCombiner)

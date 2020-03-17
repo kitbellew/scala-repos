@@ -42,7 +42,7 @@ object Form {
     (__ \ "global").json copyFrom (__ \ "").json.pick
   ) andThen (__ \ "").json.prune
 
-  def errorsAsJson(form: play.api.data.Form[_])(
-      implicit lang: play.api.i18n.Messages) =
+  def errorsAsJson(form: play.api.data.Form[_])(implicit
+      lang: play.api.i18n.Messages) =
     form.errorsAsJson validate jsonGlobalErrorRenamer getOrElse form.errorsAsJson
 }

@@ -97,8 +97,8 @@ trait EnumeratorPFunctions {
 
   def enumPStream[E, F[_]: Monad](xs: Stream[E]): EnumeratorP[E, F] =
     new EnumeratorP[E, F] {
-      def apply[G[_]](
-          implicit MO: MonadPartialOrder[G, F]): EnumeratorT[E, G] = {
+      def apply[G[_]](implicit
+          MO: MonadPartialOrder[G, F]): EnumeratorT[E, G] = {
         import MO._
         enumStream[E, G](xs)
       }
@@ -108,8 +108,8 @@ trait EnumeratorPFunctions {
       : (EnumeratorP[J, F], EnumeratorP[K, F]) => EnumeratorP[I, F] = {
     (e1: EnumeratorP[J, F], e2: EnumeratorP[K, F]) =>
       new EnumeratorP[I, F] {
-        def apply[G[_]](
-            implicit MO: MonadPartialOrder[G, F]): EnumeratorT[I, G] =
+        def apply[G[_]](implicit
+            MO: MonadPartialOrder[G, F]): EnumeratorT[I, G] =
           new EnumeratorT[I, G] {
             import MO._
             implicit val IOrd = MO.transform[λ[(β[_], α) => IterateeT[K, β, α]]]

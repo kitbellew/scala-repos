@@ -55,8 +55,8 @@ object DynamicRuleDispatch {
 
   ///////////////////// INTERNAL ////////////////////////
 
-  def __create[P <: Parser, L <: HList](c: Context)(ruleNames: c.Expr[String]*)(
-      implicit
+  def __create[P <: Parser, L <: HList](c: Context)(
+      ruleNames: c.Expr[String]*)(implicit
       P: c.WeakTypeTag[P],
       L: c.WeakTypeTag[L])
       : c.Expr[(DynamicRuleDispatch[P, L], immutable.Seq[String])] = {

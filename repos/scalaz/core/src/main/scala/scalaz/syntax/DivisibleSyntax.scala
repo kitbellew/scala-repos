@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Divisible` */
-final class DivisibleOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: Divisible[F])
+final class DivisibleOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: Divisible[F])
     extends Ops[F[A]] {
   ////
 
@@ -11,8 +11,8 @@ final class DivisibleOps[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToDivisibleOps0 {
-  implicit def ToDivisibleOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[Divisible, FA]) =
+  implicit def ToDivisibleOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[Divisible, FA]) =
     new DivisibleOps[F0.M, F0.A](F0(v))(F0.TC)
 
 }

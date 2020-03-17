@@ -62,8 +62,8 @@ class DatabaseService(dir: File) extends SLF4JLogging {
   // file with last modified time
   def knownFiles(): Future[Seq[FileCheck]] = db.run(fileChecks.result)
 
-  def removeFiles(files: List[FileObject])(
-      implicit ec: ExecutionContext): Future[Int] =
+  def removeFiles(files: List[FileObject])(implicit
+      ec: ExecutionContext): Future[Int] =
     db.run {
       val restrict = files.map(_.getName.getURI)
       // Deletion from fqnSymbols relies on fk cascade delete action
@@ -87,8 +87,8 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     )
   }
 
-  def persist(check: FileCheck, symbols: Seq[FqnSymbol])(
-      implicit ec: ExecutionContext): Future[Option[Int]] =
+  def persist(check: FileCheck, symbols: Seq[FqnSymbol])(implicit
+      ec: ExecutionContext): Future[Option[Int]] =
     db.run(
       (fileChecksCompiled += check) andThen (fqnSymbolsCompiled ++= symbols)
     )
@@ -103,8 +103,8 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     )
 
   import org.ensime.indexer.IndexService._
-  def find(fqns: List[FqnIndex])(
-      implicit ec: ExecutionContext): Future[List[FqnSymbol]] = {
+  def find(fqns: List[FqnIndex])(implicit
+      ec: ExecutionContext): Future[List[FqnSymbol]] = {
     val restrict = fqns.map(_.fqn)
     db.run(
         fqnSymbols.filter(_.fqn inSet restrict).result

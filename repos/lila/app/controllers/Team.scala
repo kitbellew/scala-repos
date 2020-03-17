@@ -59,8 +59,8 @@ object Team extends LilaController {
       }
     }
 
-  private def renderTeam(team: TeamModel, page: Int = 1)(
-      implicit ctx: Context) =
+  private def renderTeam(team: TeamModel, page: Int = 1)(implicit
+      ctx: Context) =
     teamInfo(team, ctx.me) zip paginator.teamMembers(team, page) map {
       case (info, pag) => html.team.show(team, pag, info)
     }
@@ -230,16 +230,16 @@ object Team extends LilaController {
       OptionResult(api quit id) { team => Redirect(routes.Team.show(team.id)) }
     }
 
-  private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(
-      implicit ctx: Context): Fu[Result] =
+  private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(implicit
+      ctx: Context): Fu[Result] =
     api.hasCreatedRecently(me) flatMap { did =>
       (did && !Granter.superAdmin(me)) fold (
         Forbidden(views.html.team.createLimit()).fuccess,
         a)
     }
 
-  private def Owner(team: TeamModel)(a: => Fu[Result])(
-      implicit ctx: Context): Fu[Result] = {
+  private def Owner(team: TeamModel)(a: => Fu[Result])(implicit
+      ctx: Context): Fu[Result] = {
     ctx.me.??(me => team.isCreator(me.id) || Granter.superAdmin(me))
   }.fold(a, renderTeam(team) map { Forbidden(_) })
 }

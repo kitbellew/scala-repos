@@ -1,9 +1,9 @@
 object SCL6549 {
   class implicitsearchbug {
-    def doesntWork[Y, Z](y: Y)(
-        implicit x: implicitsearchbug.Foo[this.type, Y, Z]) = x(y)
-    def works[Y, Z](y: Y)(
-        implicit x: implicitsearchbug.Foo[implicitInstance.type, Y, Z]) = x(y)
+    def doesntWork[Y, Z](y: Y)(implicit
+        x: implicitsearchbug.Foo[this.type, Y, Z]) = x(y)
+    def works[Y, Z](y: Y)(implicit
+        x: implicitsearchbug.Foo[implicitInstance.type, Y, Z]) = x(y)
   }
 
   object implicitsearchbug {

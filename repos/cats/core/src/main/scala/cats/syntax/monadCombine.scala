@@ -8,8 +8,8 @@ trait MonadCombineSyntax {
     new NestedMonadCombineOps[F, G, A](fga)
 }
 
-final class NestedMonadCombineOps[F[_], G[_], A](fga: F[G[A]])(
-    implicit F: MonadCombine[F]) {
+final class NestedMonadCombineOps[F[_], G[_], A](fga: F[G[A]])(implicit
+    F: MonadCombine[F]) {
 
   /**
     * @see [[MonadCombine.unite]]

@@ -495,8 +495,8 @@ abstract class GenJSCode
         hashedDefs)(OptimizerHints.empty)
     }
 
-    private def genClassInterfaces(sym: Symbol)(
-        implicit pos: Position): List[js.Ident] = {
+    private def genClassInterfaces(sym: Symbol)(implicit
+        pos: Position): List[js.Ident] = {
       for {
         parent <- sym.info.parents
         typeSym = parent.typeSymbol
@@ -1791,8 +1791,8 @@ abstract class GenJSCode
         arguments)(toIRType(method.tpe.resultType))
     }
 
-    def genTraitImplApply(method: Symbol, arguments: List[js.Tree])(
-        implicit pos: Position): js.Tree = {
+    def genTraitImplApply(method: Symbol, arguments: List[js.Tree])(implicit
+        pos: Position): js.Tree = {
       val implName = encodeClassFullName(method.owner)
       val methodIdent = encodeMethodSym(method)
       genTraitImplApply(
@@ -1813,8 +1813,8 @@ abstract class GenJSCode
     }
 
     /** Gen JS code for a conversion between primitive value types */
-    def genConversion(from: TypeKind, to: TypeKind, value: js.Tree)(
-        implicit pos: Position): js.Tree = {
+    def genConversion(from: TypeKind, to: TypeKind, value: js.Tree)(implicit
+        pos: Position): js.Tree = {
       def int0 = js.IntLiteral(0)
       def int1 = js.IntLiteral(1)
       def long0 = js.LongLiteral(0L)
@@ -1836,8 +1836,8 @@ abstract class GenJSCode
     }
 
     /** Gen JS code for an isInstanceOf test (for reference types only) */
-    def genIsInstanceOf(value: js.Tree, to: Type)(
-        implicit pos: Position): js.Tree = {
+    def genIsInstanceOf(value: js.Tree, to: Type)(implicit
+        pos: Position): js.Tree = {
 
       val sym = to.typeSymbol
 
@@ -1865,8 +1865,8 @@ abstract class GenJSCode
     }
 
     /** Gen JS code for an asInstanceOf cast (for reference types only) */
-    def genAsInstanceOf(value: js.Tree, to: Type)(
-        implicit pos: Position): js.Tree = {
+    def genAsInstanceOf(value: js.Tree, to: Type)(implicit
+        pos: Position): js.Tree = {
 
       def default: js.Tree = {
         val refType = toReferenceType(to)
@@ -1929,8 +1929,8 @@ abstract class GenJSCode
       *  method, and that the given constructor is called, in the method info
       *  builder.
       */
-    def genNew(clazz: Symbol, ctor: Symbol, arguments: List[js.Tree])(
-        implicit pos: Position): js.Tree = {
+    def genNew(clazz: Symbol, ctor: Symbol, arguments: List[js.Tree])(implicit
+        pos: Position): js.Tree = {
       if (clazz.isAnonymousFunction)
         instantiatedAnonFunctions += clazz
       assert(
@@ -2158,8 +2158,8 @@ abstract class GenJSCode
       *  result of the match, we enclose all the cases in one big labeled block.
       *  Jumps are then compiled as `return`s out of the block.
       */
-    def genTranslatedMatch(cases: List[LabelDef], matchEnd: LabelDef)(
-        implicit pos: Position): js.Tree = {
+    def genTranslatedMatch(cases: List[LabelDef], matchEnd: LabelDef)(implicit
+        pos: Position): js.Tree = {
 
       val nextCaseSyms = (cases.tail map (_.symbol)) :+ NoSymbol
 
@@ -2879,8 +2879,8 @@ abstract class GenJSCode
       *  @param tpeEnteringPosterasure The type of `expr` as it was entering
       *    the posterasure phase.
       */
-    def ensureBoxed(expr: js.Tree, tpeEnteringPosterasure: Type)(
-        implicit pos: Position): js.Tree = {
+    def ensureBoxed(expr: js.Tree, tpeEnteringPosterasure: Type)(implicit
+        pos: Position): js.Tree = {
 
       tpeEnteringPosterasure match {
         case tpe if isPrimitiveValueType(tpe) =>
@@ -2901,8 +2901,8 @@ abstract class GenJSCode
       *  @param tpeEnteringPosterasure The type of `expr` as it was entering
       *    the posterasure phase.
       */
-    def fromAny(expr: js.Tree, tpeEnteringPosterasure: Type)(
-        implicit pos: Position): js.Tree = {
+    def fromAny(expr: js.Tree, tpeEnteringPosterasure: Type)(implicit
+        pos: Position): js.Tree = {
 
       tpeEnteringPosterasure match {
         case tpe if isPrimitiveValueType(tpe) =>
@@ -2924,8 +2924,8 @@ abstract class GenJSCode
     }
 
     /** Gen a boxing operation (tpe is the primitive type) */
-    def makePrimitiveBox(expr: js.Tree, tpe: Type)(
-        implicit pos: Position): js.Tree = {
+    def makePrimitiveBox(expr: js.Tree, tpe: Type)(implicit
+        pos: Position): js.Tree = {
       toTypeKind(tpe) match {
         case VOID => // must be handled at least for JS interop
           js.Block(expr, js.Undefined())
@@ -2945,8 +2945,8 @@ abstract class GenJSCode
     }
 
     /** Gen an unboxing operation (tpe is the primitive type) */
-    def makePrimitiveUnbox(expr: js.Tree, tpe: Type)(
-        implicit pos: Position): js.Tree = {
+    def makePrimitiveUnbox(expr: js.Tree, tpe: Type)(implicit
+        pos: Position): js.Tree = {
       toTypeKind(tpe) match {
         case VOID => // must be handled at least for JS interop
           expr
@@ -3420,21 +3420,21 @@ abstract class GenJSCode
     }
 
     /** Gen JS code representing a JS class (subclass of js.Any) */
-    private def genPrimitiveJSClass(sym: Symbol)(
-        implicit pos: Position): js.Tree = {
+    private def genPrimitiveJSClass(sym: Symbol)(implicit
+        pos: Position): js.Tree = {
       genGlobalJSObject(sym)
     }
 
     /** Gen JS code representing a JS module (var of the global scope) */
-    private def genPrimitiveJSModule(sym: Symbol)(
-        implicit pos: Position): js.Tree = {
+    private def genPrimitiveJSModule(sym: Symbol)(implicit
+        pos: Position): js.Tree = {
       genGlobalJSObject(sym)
     }
 
     /** Gen JS code representing a JS object (class or module) in global scope
       */
-    private def genGlobalJSObject(sym: Symbol)(
-        implicit pos: Position): js.Tree = {
+    private def genGlobalJSObject(sym: Symbol)(implicit
+        pos: Position): js.Tree = {
       jsNameOf(sym).split('.').foldLeft(genLoadGlobal()) { (memo, chunk) =>
         js.JSBracketSelect(memo, js.StringLiteral(chunk))
       }
@@ -3446,8 +3446,8 @@ abstract class GenJSCode
       *  This tries to optimize repeated arguments (varargs) by turning them
       *  into js.WrappedArray instead of Scala wrapped arrays.
       */
-    private def genActualArgs(sym: Symbol, args: List[Tree])(
-        implicit pos: Position): List[js.Tree] = {
+    private def genActualArgs(sym: Symbol, args: List[Tree])(implicit
+        pos: Position): List[js.Tree] = {
       val wereRepeated = exitingPhase(currentRun.typerPhase) {
         sym.tpe.params.map(p => isScalaRepeatedParamType(p.tpe))
       }
@@ -3488,8 +3488,8 @@ abstract class GenJSCode
       *  Seq is passed to a varargs parameter with the syntax `seq: _*`) will be
       *  wrapped in a [[js.JSSpread]] node to be expanded at runtime.
       */
-    private def genPrimitiveJSArgs(sym: Symbol, args: List[Tree])(
-        implicit pos: Position): List[js.Tree] = {
+    private def genPrimitiveJSArgs(sym: Symbol, args: List[Tree])(implicit
+        pos: Position): List[js.Tree] = {
       val wereRepeated = exitingPhase(currentRun.typerPhase) {
         for {
           params <- sym.tpe.paramss
@@ -3694,8 +3694,8 @@ abstract class GenJSCode
       private val AnonFunPrefJS =
         "sjsr_AnonFunction"
 
-      def apply(jsFunction: js.Tree, arity: Int)(
-          implicit pos: Position): js.Tree = {
+      def apply(jsFunction: js.Tree, arity: Int)(implicit
+          pos: Position): js.Tree = {
         val clsSym = getRequiredClass(AnonFunPrefScala + arity)
         val ctor = clsSym.tpe.member(nme.CONSTRUCTOR)
         genNew(clsSym, ctor, List(jsFunction))

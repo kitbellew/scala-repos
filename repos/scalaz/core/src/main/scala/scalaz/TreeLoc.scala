@@ -254,12 +254,12 @@ sealed abstract class TreeLocInstances {
         Foldable[Tree].any(fa.tree)(f) || ForestT.any(fa.lefts)(f) || ForestT
           .any(fa.rights)(f) || ParentsT.any(fa.parents)(f)
 
-      override def foldMap1[A, B](fa: TreeLoc[A])(f: A => B)(
-          implicit B: Semigroup[B]) =
+      override def foldMap1[A, B](fa: TreeLoc[A])(f: A => B)(implicit
+          B: Semigroup[B]) =
         foldMapLeft1(fa)(f)((b, a) => B.append(b, f(a)))
 
-      override def foldMap[A, B](fa: TreeLoc[A])(f: A => B)(
-          implicit B: Monoid[B]) =
+      override def foldMap[A, B](fa: TreeLoc[A])(f: A => B)(implicit
+          B: Monoid[B]) =
         B.append(
           B.append(
             Foldable[Tree].foldMap(fa.tree)(f),
@@ -430,8 +430,8 @@ sealed abstract class TreeLocInstances {
           override def foldLeft[A, B](fa: Parent[A], z: B)(f: (B, A) => B) =
             ForestT.foldLeft(fa._3, f(ForestT.foldLeft(fa._1, z)(f), fa._2))(f)
 
-          override def foldMap[A, B](fa: Parent[A])(f: A => B)(
-              implicit B: Monoid[B]) =
+          override def foldMap[A, B](fa: Parent[A])(f: A => B)(implicit
+              B: Monoid[B]) =
             B.append(
               B.append(ForestT.foldMap(fa._1)(f), f(fa._2)),
               ForestT.foldMap(fa._3)(f))

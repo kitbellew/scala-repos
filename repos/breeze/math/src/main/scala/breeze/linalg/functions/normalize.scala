@@ -56,16 +56,16 @@ object normalize extends UFunc {
     }
   }
 
-  implicit def normalizeImpl[T, U >: T](
-      implicit impl: Impl2[T, Double, U]): Impl[T, U] = {
+  implicit def normalizeImpl[T, U >: T](implicit
+      impl: Impl2[T, Double, U]): Impl[T, U] = {
     new Impl[T, U] {
       def apply(v: T): U = impl(v, 2.0)
     }
 
   }
 
-  implicit def normalizeIntImpl[T, U >: T](
-      implicit impl: Impl2[T, Double, U]): Impl2[T, Int, U] = {
+  implicit def normalizeIntImpl[T, U >: T](implicit
+      impl: Impl2[T, Double, U]): Impl2[T, Int, U] = {
     new Impl2[T, Int, U] {
       def apply(v: T, n: Int): U = impl(v, n)
     }

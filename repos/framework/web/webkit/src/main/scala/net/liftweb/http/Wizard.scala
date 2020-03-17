@@ -477,8 +477,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     }) openOr AjaxOnDone.is
   }
 
-  protected def vendForm[T](
-      implicit man: Manifest[T]): Box[(T, T => Any) => NodeSeq] = Empty
+  protected def vendForm[T](implicit
+      man: Manifest[T]): Box[(T, T => Any) => NodeSeq] = Empty
 
   /**
     * By default, are all the fields on all the screen in this wizard on the confirm screen?

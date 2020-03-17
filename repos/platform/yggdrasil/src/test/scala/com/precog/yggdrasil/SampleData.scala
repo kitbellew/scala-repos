@@ -93,8 +93,8 @@ object SampleData extends CValueGenerators {
       }
     )
 
-  def distinctBy[T, C[X] <: Seq[X], S](c: C[T])(key: T => S)(
-      implicit cbf: CanBuildFrom[C[T], T, C[T]]): C[T] = {
+  def distinctBy[T, C[X] <: Seq[X], S](c: C[T])(key: T => S)(implicit
+      cbf: CanBuildFrom[C[T], T, C[T]]): C[T] = {
     val builder = cbf()
     val seen = mutable.HashSet[S]()
 
@@ -108,8 +108,8 @@ object SampleData extends CValueGenerators {
     builder.result
   }
 
-  def randomSubset[T, C[X] <: Seq[X], S](c: C[T], freq: Double)(
-      implicit cbf: CanBuildFrom[C[T], T, C[T]]): C[T] = {
+  def randomSubset[T, C[X] <: Seq[X], S](c: C[T], freq: Double)(implicit
+      cbf: CanBuildFrom[C[T], T, C[T]]): C[T] = {
     val builder = cbf()
 
     for (t <- c)

@@ -227,8 +227,8 @@ abstract class FileSource
   // By default, we write to the LAST path returned by hdfsPaths
   def hdfsWritePath = hdfsPaths.last
 
-  override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+  override def createTap(readOrWrite: AccessMode)(implicit
+      mode: Mode): Tap[_, _, _] = {
     mode match {
       // TODO support strict in Local
       case Local(_) => {

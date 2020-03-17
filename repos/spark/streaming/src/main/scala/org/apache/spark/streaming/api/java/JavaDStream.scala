@@ -35,8 +35,8 @@ import org.apache.spark.streaming.dstream.DStream
   * `window`. For operations applicable to key-value pair DStreams, see
   * [[org.apache.spark.streaming.api.java.JavaPairDStream]].
   */
-class JavaDStream[T](val dstream: DStream[T])(
-    implicit val classTag: ClassTag[T])
+class JavaDStream[T](val dstream: DStream[T])(implicit
+    val classTag: ClassTag[T])
     extends AbstractJavaDStreamLike[T, JavaDStream[T], JavaRDD[T]] {
 
   override def wrapRDD(rdd: RDD[T]): JavaRDD[T] = JavaRDD.fromRDD(rdd)

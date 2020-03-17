@@ -41,8 +41,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
 
   /** Transform the result of a successful execution of this action. If this action fails, the
     * resulting action also fails. */
-  def map[R2](f: R => R2)(
-      implicit executor: ExecutionContext): DBIOAction[R2, NoStream, E] =
+  def map[R2](f: R => R2)(implicit
+      executor: ExecutionContext): DBIOAction[R2, NoStream, E] =
     flatMap[R2, NoStream, E](r => SuccessAction[R2](f(r)))
 
   /** Use the result produced by the successful execution of this action to compute and then
@@ -55,8 +55,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
   /** Creates a new DBIOAction with one level of nesting flattened, this method is equivalent
     * to `flatMap(identity)`.
     */
-  def flatten[R2, S2 <: NoStream, E2 <: Effect](
-      implicit ev: R <:< DBIOAction[R2, S2, E2]) =
+  def flatten[R2, S2 <: NoStream, E2 <: Effect](implicit
+      ev: R <:< DBIOAction[R2, S2, E2]) =
     flatMap(ev)(DBIO.sameThreadExecutionContext)
 
   /** Run another action after this action, if it completed successfully, and return the result
@@ -106,8 +106,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
     *                    action will override the error from this action. */
   def cleanUp[E2 <: Effect](
       f: Option[Throwable] => DBIOAction[_, NoStream, E2],
-      keepFailure: Boolean = true)(
-      implicit executor: ExecutionContext): DBIOAction[R, S, E with E2] =
+      keepFailure: Boolean = true)(implicit
+      executor: ExecutionContext): DBIOAction[R, S, E with E2] =
     CleanUpAction[R, S, E with E2](this, f, keepFailure, executor)
 
   /** A shortcut for `andThen`. */
@@ -118,12 +118,12 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
   /** Filter the result of this action with the given predicate. If the predicate matches, the
     * original result is returned, otherwise the resulting action fails with a
     * NoSuchElementException. */
-  final def filter(p: R => Boolean)(
-      implicit executor: ExecutionContext): DBIOAction[R, NoStream, E] =
+  final def filter(p: R => Boolean)(implicit
+      executor: ExecutionContext): DBIOAction[R, NoStream, E] =
     withFilter(p)
 
-  def withFilter(p: R => Boolean)(
-      implicit executor: ExecutionContext): DBIOAction[R, NoStream, E] =
+  def withFilter(p: R => Boolean)(implicit
+      executor: ExecutionContext): DBIOAction[R, NoStream, E] =
     flatMap(v =>
       if (p(v)) SuccessAction(v)
       else throw new NoSuchElementException("Action.withFilter failed"))
@@ -132,8 +132,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
     * otherwise, the result DBIOAction will fail with a `NoSuchElementException`.
     *
     * If this action fails, the resulting action also fails. */
-  def collect[R2](pf: PartialFunction[R, R2])(
-      implicit executor: ExecutionContext): DBIOAction[R2, NoStream, E] =
+  def collect[R2](pf: PartialFunction[R, R2])(implicit
+      executor: ExecutionContext): DBIOAction[R2, NoStream, E] =
     map(r1 =>
       pf.applyOrElse(
         r1,
@@ -206,8 +206,8 @@ object DBIOAction {
 
   /** Transform a `TraversableOnce[ DBIO[R] ]` into a `DBIO[ TraversableOnce[R] ]`. */
   def sequence[R, M[+_] <: TraversableOnce[_], E <: Effect](
-      in: M[DBIOAction[R, NoStream, E]])(
-      implicit cbf: CanBuildFrom[M[DBIOAction[R, NoStream, E]], R, M[R]])
+      in: M[DBIOAction[R, NoStream, E]])(implicit
+      cbf: CanBuildFrom[M[DBIOAction[R, NoStream, E]], R, M[R]])
       : DBIOAction[M[R], NoStream, E] = {
     implicit val ec = DBIO.sameThreadExecutionContext
     def sequenceGroupAsM(g: Vector[DBIOAction[R, NoStream, E]])
@@ -330,8 +330,8 @@ object DBIOAction {
   /** Create a DBIOAction that runs some other actions in sequence and combines their results
     * with the given function. */
   def fold[T, E <: Effect](actions: Seq[DBIOAction[T, NoStream, E]], zero: T)(
-      f: (T, T) => T)(
-      implicit ec: ExecutionContext): DBIOAction[T, NoStream, E] =
+      f: (T, T) => T)(implicit
+      ec: ExecutionContext): DBIOAction[T, NoStream, E] =
     actions.foldLeft[DBIOAction[T, NoStream, E]](DBIO.successful(zero)) {
       (za, va) => za.flatMap(z => va.map(v => f(z, v)))
     }
@@ -443,8 +443,8 @@ case class AndThenAction[R, +S <: NoStream, -E <: Effect](
 
 /** A DBIOAction that represents a `sequence` or operation for sequencing in the DBIOAction monad. */
 case class SequenceAction[R, +R2, -E <: Effect](
-    as: IndexedSeq[DBIOAction[R, NoStream, E]])(
-    implicit val cbf: CanBuild[R, R2])
+    as: IndexedSeq[DBIOAction[R, NoStream, E]])(implicit
+    val cbf: CanBuild[R, R2])
     extends DBIOAction[R2, NoStream, E] {
   def getDumpInfo =
     DumpInfo(

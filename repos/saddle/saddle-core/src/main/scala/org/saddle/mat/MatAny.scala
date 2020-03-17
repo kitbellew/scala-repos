@@ -69,8 +69,8 @@ class MatAny[T: ST](r: Int, c: Int, values: Array[T]) extends Mat[T] {
   private[saddle] def toDoubleArray(implicit ev: NUM[T]): Array[Double] =
     arrCopyToDblArr(values)
 
-  private[saddle] def arrCopyToDblArr(r: Array[T])(
-      implicit n: NUM[T]): Array[Double] = {
+  private[saddle] def arrCopyToDblArr(r: Array[T])(implicit
+      n: NUM[T]): Array[Double] = {
     val arr = Array.ofDim[Double](r.length)
     var i = 0
     while (i < r.length) {

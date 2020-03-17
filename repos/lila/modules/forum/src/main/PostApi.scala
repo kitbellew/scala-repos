@@ -24,8 +24,8 @@ final class PostApi(
     timeline: ActorSelection,
     detectLanguage: lila.common.DetectLanguage) {
 
-  def makePost(categ: Categ, topic: Topic, data: DataForm.PostData)(
-      implicit ctx: UserContext): Fu[Post] =
+  def makePost(categ: Categ, topic: Topic, data: DataForm.PostData)(implicit
+      ctx: UserContext): Fu[Post] =
     lastNumberOf(topic) zip detectLanguage(data.text) zip userIds(
       topic) flatMap {
       case ((number, lang), topicUserIds) =>

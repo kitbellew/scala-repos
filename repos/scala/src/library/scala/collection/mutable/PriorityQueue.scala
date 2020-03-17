@@ -155,8 +155,8 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
     } else
       throw new NoSuchElementException("no element to remove from heap")
 
-  def dequeueAll[A1 >: A, That](
-      implicit bf: CanBuildFrom[_, A1, That]): That = {
+  def dequeueAll[A1 >: A, That](implicit
+      bf: CanBuildFrom[_, A1, That]): That = {
     val b = bf.apply()
     while (nonEmpty) {
       b += dequeue()
@@ -274,7 +274,7 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
 
 object PriorityQueue extends OrderedTraversableFactory[PriorityQueue] {
   def newBuilder[A](implicit ord: Ordering[A]) = new PriorityQueue[A]
-  implicit def canBuildFrom[A](
-      implicit ord: Ordering[A]): CanBuildFrom[Coll, A, PriorityQueue[A]] =
+  implicit def canBuildFrom[A](implicit
+      ord: Ordering[A]): CanBuildFrom[Coll, A, PriorityQueue[A]] =
     new GenericCanBuildFrom[A]
 }

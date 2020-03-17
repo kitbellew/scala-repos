@@ -59,9 +59,8 @@ trait Delta0 {
 }
 
 object Delta extends Delta0 {
-  def apply[In](
-      implicit delta: Lazy[Delta[In]]): Delta.Aux[In, delta.value.Out] =
-    delta.value
+  def apply[In](implicit
+      delta: Lazy[Delta[In]]): Delta.Aux[In, delta.value.Out] = delta.value
 
   type Aux[In, Out0] = Delta[In] { type Out = Out0 }
 

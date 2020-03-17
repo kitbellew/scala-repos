@@ -29,8 +29,8 @@ final class Console(compiler: AnalyzingCompiler) {
       options: Seq[String],
       loader: ClassLoader,
       initialCommands: String,
-      cleanupCommands: String)(bindings: (String, Any)*)(
-      implicit log: Logger): Option[String] =
+      cleanupCommands: String)(bindings: (String, Any)*)(implicit
+      log: Logger): Option[String] =
     apply(classpath, options, initialCommands, cleanupCommands)(
       Some(loader),
       bindings)

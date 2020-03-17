@@ -22,11 +22,11 @@ object Quaternion extends QuaternionInstances {
   def one[@sp(Float, Double) A](implicit f: Rig[A]): Quaternion[A] =
     Quaternion(f.one, f.zero, f.zero, f.zero)
 
-  def apply[@sp(Float, Double) A](a: A)(
-      implicit f: Semiring[A]): Quaternion[A] =
+  def apply[@sp(Float, Double) A](a: A)(implicit
+      f: Semiring[A]): Quaternion[A] =
     Quaternion(a, f.zero, f.zero, f.zero)
-  def apply[@sp(Float, Double) A](c: Complex[A])(
-      implicit f: Semiring[A]): Quaternion[A] =
+  def apply[@sp(Float, Double) A](c: Complex[A])(implicit
+      f: Semiring[A]): Quaternion[A] =
     Quaternion(c.real, c.imag, f.zero, f.zero)
 }
 

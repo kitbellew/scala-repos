@@ -26,8 +26,8 @@ trait Fractional[T] extends Numeric[T] {
 
 object Fractional {
   trait ExtraImplicits {
-    implicit def infixFractionalOps[T](x: T)(
-        implicit num: Fractional[T]): Fractional[T]#FractionalOps =
+    implicit def infixFractionalOps[T](x: T)(implicit
+        num: Fractional[T]): Fractional[T]#FractionalOps =
       new num.FractionalOps(x)
   }
   object Implicits extends ExtraImplicits

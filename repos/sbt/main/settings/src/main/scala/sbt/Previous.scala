@@ -105,8 +105,8 @@ object Previous {
     catch { case e: Exception => () }
 
   /** Public as a macro implementation detail.  Do not call directly. */
-  def runtime[T](skey: TaskKey[T])(
-      implicit format: Format[T]): Initialize[Task[Option[T]]] = {
+  def runtime[T](skey: TaskKey[T])(implicit
+      format: Format[T]): Initialize[Task[Option[T]]] = {
     val inputs = (cache in Global) zip Def.validated(
       skey,
       selfRefOk = true) zip (references in Global)

@@ -26,8 +26,8 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
   // During constrcution, we can now register the default picklers against our cache of picklers.
   autoRegisterDefaults()
 
-  override def genUnpickler(mirror: Mirror, tagKey: String)(
-      implicit share: refs.Share): Unpickler[_] = {
+  override def genUnpickler(mirror: Mirror, tagKey: String)(implicit
+      share: refs.Share): Unpickler[_] = {
     lookupUnpickler(tagKey) match {
       case Some(p) => p
       case None    =>

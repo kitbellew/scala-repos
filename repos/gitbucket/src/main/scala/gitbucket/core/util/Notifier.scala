@@ -144,6 +144,6 @@ class MockMailer extends Notifier {
   def toNotify(
       r: RepositoryService.RepositoryInfo,
       issue: Issue,
-      content: String)(msg: String => String)(
-      implicit context: Context): Unit = {}
+      content: String)(msg: String => String)(implicit
+      context: Context): Unit = {}
 }

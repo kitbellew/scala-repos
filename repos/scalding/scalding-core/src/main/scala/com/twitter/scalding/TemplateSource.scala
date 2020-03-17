@@ -43,8 +43,8 @@ abstract class TemplateSource extends SchemedSource with HfsTapProvider {
     *
     * @returns A cascading TemplateTap.
     */
-  override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+  override def createTap(readOrWrite: AccessMode)(implicit
+      mode: Mode): Tap[_, _, _] = {
     readOrWrite match {
       case Read =>
         throw new InvalidSourceException("Cannot use TemplateSource for input")

@@ -3262,17 +3262,17 @@ sealed trait RoundTripInfo {
   * The companion objects. Has tasty implicits
   */
 object RoundTripInfo {
-  implicit def streamBuilder[T](in: (String, T => Stream[Any]))(
-      implicit m: Manifest[T]): RoundTripInfo =
+  implicit def streamBuilder[T](in: (String, T => Stream[Any]))(implicit
+      m: Manifest[T]): RoundTripInfo =
     StreamRoundTrip(in._1, in._2)(m)
 
-  implicit def simpleBuilder[T](in: (String, T => Any))(
-      implicit m: Manifest[T]): RoundTripInfo =
+  implicit def simpleBuilder[T](in: (String, T => Any))(implicit
+      m: Manifest[T]): RoundTripInfo =
     SimpleRoundTrip(in._1, in._2)(m)
 
   implicit def handledBuilder[T](
-      in: (String, (T, RoundTripHandlerFunc) => Unit))(
-      implicit m: Manifest[T]): RoundTripInfo =
+      in: (String, (T, RoundTripHandlerFunc) => Unit))(implicit
+      m: Manifest[T]): RoundTripInfo =
     HandledRoundTrip(in._1, in._2)(m)
 }
 
@@ -3316,8 +3316,8 @@ trait RoundTripHandlerFunc {
 final case class StreamRoundTrip[T](name: String, func: T => Stream[Any])(
     implicit val manifest: Manifest[T])
     extends RoundTripInfo
-final case class SimpleRoundTrip[T](name: String, func: T => Any)(
-    implicit val manifest: Manifest[T])
+final case class SimpleRoundTrip[T](name: String, func: T => Any)(implicit
+    val manifest: Manifest[T])
     extends RoundTripInfo
 final case class HandledRoundTrip[T](
     name: String,

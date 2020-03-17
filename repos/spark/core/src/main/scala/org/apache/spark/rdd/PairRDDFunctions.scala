@@ -1134,8 +1134,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * Output the RDD to any Hadoop-supported file system, using a Hadoop `OutputFormat` class
     * supporting the key and value types K and V in this RDD.
     */
-  def saveAsHadoopFile[F <: OutputFormat[K, V]](path: String)(
-      implicit fm: ClassTag[F]): Unit =
+  def saveAsHadoopFile[F <: OutputFormat[K, V]](path: String)(implicit
+      fm: ClassTag[F]): Unit =
     self.withScope {
       saveAsHadoopFile(
         path,
@@ -1166,8 +1166,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * Output the RDD to any Hadoop-supported file system, using a new Hadoop API `OutputFormat`
     * (mapreduce.OutputFormat) object supporting the key and value types K and V in this RDD.
     */
-  def saveAsNewAPIHadoopFile[F <: NewOutputFormat[K, V]](path: String)(
-      implicit fm: ClassTag[F]): Unit =
+  def saveAsNewAPIHadoopFile[F <: NewOutputFormat[K, V]](path: String)(implicit
+      fm: ClassTag[F]): Unit =
     self.withScope {
       saveAsNewAPIHadoopFile(
         path,

@@ -75,15 +75,15 @@ trait AppHelpers {
     context.startActivity(new Intent(Intent.ACTION_VIEW, uri))
   }
 
-  @inline def pendingService(intent: Intent, flags: Int = 0)(
-      implicit context: Context) =
+  @inline def pendingService(intent: Intent, flags: Int = 0)(implicit
+      context: Context) =
     PendingIntent.getService(context, 0, intent, flags)
 
   @inline def pendingService[T](implicit context: Context, ct: ClassTag[T]) =
     PendingIntent.getService(context, 0, SIntent[T], 0)
 
-  @inline def pendingActivity(intent: Intent, flags: Int = 0)(
-      implicit context: Context) =
+  @inline def pendingActivity(intent: Intent, flags: Int = 0)(implicit
+      context: Context) =
     PendingIntent.getActivity(context, 0, intent, flags)
 
   @inline def pendingActivity[T](implicit context: Context, ct: ClassTag[T]) =
@@ -209,17 +209,16 @@ trait PreferenceHelpers {
   /**
     * Returns DefaultSharedPreferences object for given implicit context.
     */
-  @inline implicit def defaultSharedPreferences(
-      implicit context: Context): SharedPreferences =
+  @inline implicit def defaultSharedPreferences(implicit
+      context: Context): SharedPreferences =
     PreferenceManager.getDefaultSharedPreferences(context)
 
   @inline def preferenceVar[T](key: String, defaultVal: T): PreferenceVar[T] =
     defaultVal match {
       case v: String =>
         new PreferenceVar[String](key, v) {
-          override def apply(value: String)(
-              implicit pref: SharedPreferences): String =
-            pref.getString(key, value)
+          override def apply(value: String)(implicit
+              pref: SharedPreferences): String = pref.getString(key, value)
 
           def put(value: String, editor: SharedPreferences.Editor): Unit =
             editor.putString(key, value)
@@ -228,8 +227,8 @@ trait PreferenceHelpers {
         new PreferenceVar[Set[String]](key, v) {
           import scala.collection.JavaConversions._
           import scala.collection.JavaConverters._
-          override def apply(value: Set[String])(
-              implicit pref: SharedPreferences): Set[String] =
+          override def apply(value: Set[String])(implicit
+              pref: SharedPreferences): Set[String] =
             pref.getStringSet(key, value).asScala.toSet
 
           def put(value: Set[String], editor: SharedPreferences.Editor): Unit =
@@ -237,34 +236,32 @@ trait PreferenceHelpers {
         }.asInstanceOf[PreferenceVar[T]]
       case v: Int =>
         new PreferenceVar[Int](key, v) {
-          override def apply(value: Int)(
-              implicit pref: SharedPreferences): Int = pref.getInt(key, value)
+          override def apply(value: Int)(implicit
+              pref: SharedPreferences): Int = pref.getInt(key, value)
 
           def put(value: Int, editor: SharedPreferences.Editor): Unit =
             editor.putInt(key, value)
         }.asInstanceOf[PreferenceVar[T]]
       case v: Long =>
         new PreferenceVar[Long](key, v) {
-          override def apply(value: Long)(
-              implicit pref: SharedPreferences): Long = pref.getLong(key, value)
+          override def apply(value: Long)(implicit
+              pref: SharedPreferences): Long = pref.getLong(key, value)
 
           def put(value: Long, editor: SharedPreferences.Editor): Unit =
             editor.putLong(key, value)
         }.asInstanceOf[PreferenceVar[T]]
       case v: Float =>
         new PreferenceVar[Float](key, v) {
-          override def apply(value: Float)(
-              implicit pref: SharedPreferences): Float =
-            pref.getFloat(key, value)
+          override def apply(value: Float)(implicit
+              pref: SharedPreferences): Float = pref.getFloat(key, value)
 
           def put(value: Float, editor: SharedPreferences.Editor): Unit =
             editor.putFloat(key, value)
         }.asInstanceOf[PreferenceVar[T]]
       case v: Boolean =>
         new PreferenceVar[Boolean](key, v) {
-          override def apply(value: Boolean)(
-              implicit pref: SharedPreferences): Boolean =
-            pref.getBoolean(key, value)
+          override def apply(value: Boolean)(implicit
+              pref: SharedPreferences): Boolean = pref.getBoolean(key, value)
 
           def put(value: Boolean, editor: SharedPreferences.Editor): Unit =
             editor.putBoolean(key, value)
@@ -343,8 +340,8 @@ trait WidgetHelpers {
     * Displays a dialog with spinner icon.
     * This method can be called from any threads.
     */
-  @inline def spinnerDialog(title: CharSequence, message: CharSequence)(
-      implicit context: Context): Future[ProgressDialog] =
+  @inline def spinnerDialog(title: CharSequence, message: CharSequence)(implicit
+      context: Context): Future[ProgressDialog] =
     evalOnUiThread(ProgressDialog.show(context, title, message, true))
 
 }

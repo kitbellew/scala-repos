@@ -50,16 +50,16 @@ sealed trait Multipart extends jm.Multipart {
     * The given `timeout` denotes the max time that an individual part must be read in.
     * The Future is failed with an TimeoutException if one part isn't read completely after the given timeout.
     */
-  def toStrict(timeout: FiniteDuration)(
-      implicit fm: Materializer): Future[Multipart.Strict]
+  def toStrict(timeout: FiniteDuration)(implicit
+      fm: Materializer): Future[Multipart.Strict]
 
   /**
     * Creates a [[akka.http.scaladsl.model.MessageEntity]] from this multipart object.
     */
   def toEntity(
       charset: HttpCharset = HttpCharsets.`UTF-8`,
-      boundary: String = BodyPartRenderer.randomBoundary())(
-      implicit log: LoggingAdapter = NoLogging): MessageEntity = {
+      boundary: String = BodyPartRenderer.randomBoundary())(implicit
+      log: LoggingAdapter = NoLogging): MessageEntity = {
     val chunks =
       parts
         .transform(() ⇒
@@ -108,8 +108,8 @@ object Multipart {
       */
     def strictParts: immutable.Seq[Multipart.BodyPart.Strict]
 
-    override def toEntity(charset: HttpCharset, boundary: String)(
-        implicit log: LoggingAdapter = NoLogging): HttpEntity.Strict = {
+    override def toEntity(charset: HttpCharset, boundary: String)(implicit
+        log: LoggingAdapter = NoLogging): HttpEntity.Strict = {
       val data = BodyPartRenderer.strict(
         strictParts,
         boundary,
@@ -173,8 +173,8 @@ object Multipart {
     def dispositionType: Option[ContentDispositionType] =
       contentDispositionHeader.map(_.dispositionType)
 
-    def toStrict(timeout: FiniteDuration)(
-        implicit fm: Materializer): Future[BodyPart.Strict]
+    def toStrict(timeout: FiniteDuration)(implicit
+        fm: Materializer): Future[BodyPart.Strict]
 
     /** Java API */
     def getEntity: jm.BodyPartEntity = entity
@@ -232,8 +232,8 @@ object Multipart {
   sealed abstract class General extends Multipart with jm.Multipart.General {
     def parts: Source[Multipart.General.BodyPart, Any]
 
-    def toStrict(timeout: FiniteDuration)(
-        implicit fm: Materializer): Future[Multipart.General.Strict] = {
+    def toStrict(timeout: FiniteDuration)(implicit
+        fm: Materializer): Future[Multipart.General.Strict] = {
       import fm.executionContext
       strictify(parts)(_.toStrict(timeout)).fast
         .map(General.Strict(mediaType, _))
@@ -280,8 +280,8 @@ object Multipart {
         with jm.Multipart.General.Strict {
       def parts: Source[Multipart.General.BodyPart.Strict, Any] =
         Source(strictParts)
-      override def toStrict(timeout: FiniteDuration)(
-          implicit fm: Materializer) = FastFuture.successful(this)
+      override def toStrict(timeout: FiniteDuration)(implicit
+          fm: Materializer) = FastFuture.successful(this)
       override def productPrefix = "General.Strict"
 
       /** Java API */
@@ -398,8 +398,8 @@ object Multipart {
 
     def parts: Source[Multipart.FormData.BodyPart, Any]
 
-    def toStrict(timeout: FiniteDuration)(
-        implicit fm: Materializer): Future[Multipart.FormData.Strict] = {
+    def toStrict(timeout: FiniteDuration)(implicit
+        fm: Materializer): Future[Multipart.FormData.Strict] = {
       import fm.executionContext
       strictify(parts)(_.toStrict(timeout)).fast
         .map(Multipart.FormData.Strict(_))
@@ -466,8 +466,8 @@ object Multipart {
         with jm.Multipart.FormData.Strict {
       def parts: Source[Multipart.FormData.BodyPart.Strict, Any] =
         Source(strictParts)
-      override def toStrict(timeout: FiniteDuration)(
-          implicit fm: Materializer) = FastFuture.successful(this)
+      override def toStrict(timeout: FiniteDuration)(implicit
+          fm: Materializer) = FastFuture.successful(this)
       override def productPrefix = "FormData.Strict"
 
       /** Java API */
@@ -618,8 +618,8 @@ object Multipart {
       with jm.Multipart.ByteRanges {
     def mediaType = MediaTypes.`multipart/byteranges`
     def parts: Source[Multipart.ByteRanges.BodyPart, Any]
-    def toStrict(timeout: FiniteDuration)(
-        implicit fm: Materializer): Future[Multipart.ByteRanges.Strict] = {
+    def toStrict(timeout: FiniteDuration)(implicit
+        fm: Materializer): Future[Multipart.ByteRanges.Strict] = {
       import fm.executionContext
       strictify(parts)(_.toStrict(timeout)).fast.map(ByteRanges.Strict(_))
     }
@@ -659,8 +659,8 @@ object Multipart {
         with jm.Multipart.ByteRanges.Strict {
       def parts: Source[Multipart.ByteRanges.BodyPart.Strict, Any] =
         Source(strictParts)
-      override def toStrict(timeout: FiniteDuration)(
-          implicit fm: Materializer) = FastFuture.successful(this)
+      override def toStrict(timeout: FiniteDuration)(implicit
+          fm: Materializer) = FastFuture.successful(this)
       override def productPrefix = "ByteRanges.Strict"
 
       /** Java API */

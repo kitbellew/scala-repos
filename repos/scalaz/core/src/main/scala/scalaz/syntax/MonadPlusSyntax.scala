@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `MonadPlus` */
-final class MonadPlusOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: MonadPlus[F])
+final class MonadPlusOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: MonadPlus[F])
     extends Ops[F[A]] {
   ////
   import Leibniz.===
@@ -31,8 +31,8 @@ final class MonadPlusOps[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToMonadPlusOps0 {
-  implicit def ToMonadPlusOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[MonadPlus, FA]) =
+  implicit def ToMonadPlusOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[MonadPlus, FA]) =
     new MonadPlusOps[F0.M, F0.A](F0(v))(F0.TC)
 
 }

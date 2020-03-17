@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Apply` */
-final class ApplyOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: Apply[F])
+final class ApplyOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: Apply[F])
     extends Ops[F[A]] {
   ////
 
@@ -56,8 +56,8 @@ trait ToApplyOps extends ToApplyOps0 with ToFunctorOps {
 
   ////
 
-  def ^[F[_], A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C)(
-      implicit F: Apply[F]): F[C] =
+  def ^[F[_], A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C)(implicit
+      F: Apply[F]): F[C] =
     F.apply2(fa, fb)(f)
 
   def ^^[F[_], A, B, C, D](fa: => F[A], fb: => F[B], fc: => F[C])(

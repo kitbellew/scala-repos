@@ -208,8 +208,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       }
     }
 
-    def updateLastProblem(message: String, revision: Int)(
-        implicit conn: Connection): Boolean = {
+    def updateLastProblem(message: String, revision: Int)(implicit
+        conn: Connection): Boolean = {
       val ps = prepare(
         "update ${schema}play_evolutions set last_problem = ? where id = ?")
       ps.setString(1, message)
@@ -368,8 +368,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
     c.createStatement.execute(applySchema(sql))
   }
 
-  private def prepare(sql: String)(
-      implicit c: Connection): PreparedStatement = {
+  private def prepare(sql: String)(implicit
+      c: Connection): PreparedStatement = {
     c.prepareStatement(applySchema(sql))
   }
 

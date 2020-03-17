@@ -233,8 +233,8 @@ object Extraction {
 
   private def extract0(json: JValue, clazz: Class[_], typeArgs: Seq[Class[_]])(
       implicit formats: Formats): Any = {
-    def mkMapping(clazz: Class[_], typeArgs: Seq[Class[_]])(
-        implicit formats: Formats): Meta.Mapping = {
+    def mkMapping(clazz: Class[_], typeArgs: Seq[Class[_]])(implicit
+        formats: Formats): Meta.Mapping = {
       if (clazz == classOf[Option[_]] || clazz == classOf[
             List[_]] || clazz == classOf[Set[_]] || clazz.isArray) {
         Col(TypeInfo(clazz, None), mkMapping(typeArgs.head, typeArgs.tail))
@@ -251,8 +251,8 @@ object Extraction {
   def extract(json: JValue, target: TypeInfo)(implicit formats: Formats): Any =
     extract0(json, mappingOf(target.clazz))
 
-  private def extract0(json: JValue, mapping: Mapping)(
-      implicit formats: Formats): Any = {
+  private def extract0(json: JValue, mapping: Mapping)(implicit
+      formats: Formats): Any = {
     def newInstance(constructor: Constructor, json: JValue) = {
       def findBestConstructor = {
         if (constructor.choices.size == 1)

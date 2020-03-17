@@ -859,8 +859,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
 }
 
 object SortingRowFormat {
-  def writeFlagFor[M[+_]](cType: CType)(
-      implicit M: ByteBufferMonad[M]): M[Unit] = {
+  def writeFlagFor[M[+_]](cType: CType)(implicit
+      M: ByteBufferMonad[M]): M[Unit] = {
     import scalaz.syntax.monad._
 
     val flag = flagForCType(cType)

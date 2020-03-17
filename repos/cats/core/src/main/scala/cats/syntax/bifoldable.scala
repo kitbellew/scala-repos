@@ -7,8 +7,8 @@ trait BifoldableSyntax {
     new BifoldableOps[F, A, B](fab)
 }
 
-final class BifoldableOps[F[_, _], A, B](fab: F[A, B])(
-    implicit F: Bifoldable[F]) {
+final class BifoldableOps[F[_, _], A, B](fab: F[A, B])(implicit
+    F: Bifoldable[F]) {
   def bifoldLeft[C](c: C)(f: (C, A) => C, g: (C, B) => C): C =
     F.bifoldLeft(fab, c)(f, g)
 

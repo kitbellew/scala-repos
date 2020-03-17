@@ -220,8 +220,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     new PredictedResult(itemScores)
   }
 
-  private def getTopN[T](s: Iterable[T], n: Int)(
-      implicit ord: Ordering[T]): Seq[T] = {
+  private def getTopN[T](s: Iterable[T], n: Int)(implicit
+      ord: Ordering[T]): Seq[T] = {
 
     val q = PriorityQueue()
 

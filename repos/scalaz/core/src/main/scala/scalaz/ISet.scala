@@ -331,8 +331,8 @@ sealed abstract class ISet[A] {
         }
     }
 
-  final def splitMember(x: A)(
-      implicit o: Order[A]): (ISet[A], Boolean, ISet[A]) =
+  final def splitMember(x: A)(implicit
+      o: Order[A]): (ISet[A], Boolean, ISet[A]) =
     this match {
       case Tip() =>
         (this, false, this)

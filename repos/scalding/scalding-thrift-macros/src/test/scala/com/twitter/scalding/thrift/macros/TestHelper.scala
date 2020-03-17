@@ -35,22 +35,22 @@ object TestHelper extends Matchers {
     r.head
   }
 
-  def oBufCompare[T](a: T, b: T)(
-      implicit obuf: OrderedSerialization[T]): Int = {
+  def oBufCompare[T](a: T, b: T)(implicit
+      obuf: OrderedSerialization[T]): Int = {
     obuf.compare(a, b)
   }
 
-  def deserializeSeq[T](items: Int, buf: InputStream)(
-      implicit orderedBuffer: OrderedSerialization[T]): Seq[T] = {
+  def deserializeSeq[T](items: Int, buf: InputStream)(implicit
+      orderedBuffer: OrderedSerialization[T]): Seq[T] = {
     (0 until items).map { _ => orderedBuffer.read(buf).get }.toList
   }
 
-  def serialize[T](t: T)(
-      implicit orderedBuffer: OrderedSerialization[T]): InputStream =
+  def serialize[T](t: T)(implicit
+      orderedBuffer: OrderedSerialization[T]): InputStream =
     serializeSeq(List(t))
 
-  def serializeSeq[T](t: Seq[T])(
-      implicit orderedBuffer: OrderedSerialization[T]): InputStream = {
+  def serializeSeq[T](t: Seq[T])(implicit
+      orderedBuffer: OrderedSerialization[T]): InputStream = {
     val baos = new ByteArrayOutputStream
     t.foreach({ e => orderedBuffer.write(baos, e) })
     baos.toInputStream
@@ -60,8 +60,8 @@ object TestHelper extends Matchers {
     obuf.compareBinary(serialize(a), serialize(b)).unsafeToInt
   }
 
-  def checkManyExplicit[T](i: List[T])(
-      implicit obuf: OrderedSerialization[T]) = {
+  def checkManyExplicit[T](i: List[T])(implicit
+      obuf: OrderedSerialization[T]) = {
     val serializedA = serializeSeq(i)
     val serializedB = serializeSeq(i)
     (0 until i.size).foreach { _ =>

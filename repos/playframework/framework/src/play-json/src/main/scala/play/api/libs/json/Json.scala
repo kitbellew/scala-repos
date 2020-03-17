@@ -149,9 +149,8 @@ object Json {
 
   import scala.language.implicitConversions
 
-  implicit def toJsFieldJsValueWrapper[T](field: T)(
-      implicit w: Writes[T]): JsValueWrapper =
-    JsValueWrapperImpl(w.writes(field))
+  implicit def toJsFieldJsValueWrapper[T](field: T)(implicit
+      w: Writes[T]): JsValueWrapper = JsValueWrapperImpl(w.writes(field))
 
   def obj(fields: (String, JsValueWrapper)*): JsObject =
     JsObject(

@@ -361,8 +361,8 @@ object LineSourcePositionHelper {
   import org.ensime.util.RichFileObject._
   import org.ensime.util.io._
 
-  private def possiblyExtractFile(fo: FileObject)(
-      implicit config: EnsimeConfig): File =
+  private def possiblyExtractFile(fo: FileObject)(implicit
+      config: EnsimeConfig): File =
     fo.pathWithinArchive match {
       case None       => fo.asLocalFile
       case Some(path) =>

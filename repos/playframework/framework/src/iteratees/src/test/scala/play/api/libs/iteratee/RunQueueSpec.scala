@@ -29,8 +29,8 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
       Future(body)
   }
 
-  def countOrderingErrors(runs: Int, queueTester: QueueTester)(
-      implicit ec: ExecutionContext): Future[Int] = {
+  def countOrderingErrors(runs: Int, queueTester: QueueTester)(implicit
+      ec: ExecutionContext): Future[Int] = {
     val result = Promise[Int]()
     val runCount = new AtomicInteger(0)
     val orderingErrors = new AtomicInteger(0)

@@ -43,8 +43,8 @@ trait VectorInstances extends VectorInstances0 {
     }
     def unzip[A, B](a: Vector[(A, B)]) = a.unzip
 
-    def traverseImpl[F[_], A, B](v: Vector[A])(f: A => F[B])(
-        implicit F: Applicative[F]) = {
+    def traverseImpl[F[_], A, B](v: Vector[A])(f: A => F[B])(implicit
+        F: Applicative[F]) = {
       DList.fromIList(IList.fromFoldable(v)).foldr(F.point(empty[B])) {
         (a, fbs) => F.apply2(f(a), fbs)(_ +: _)
       }
@@ -181,8 +181,8 @@ trait VectorFunctions {
       p: A => M[Boolean]): M[Vector[A]] =
     takeWhileM(as)((a: A) => Monad[M].map(p(a))((b) => !b))
 
-  final def filterM[A, M[_]](as: Vector[A])(p: A => M[Boolean])(
-      implicit F: Applicative[M]): M[Vector[A]] =
+  final def filterM[A, M[_]](as: Vector[A])(p: A => M[Boolean])(implicit
+      F: Applicative[M]): M[Vector[A]] =
     lazyFoldRight(as, F.point(empty[A]))((a, g) =>
       F.ap(g)(F.map(p(a))(b => t => if (b) a +: t else t)))
 
@@ -202,8 +202,8 @@ trait VectorFunctions {
   }
 
   /** A pair of passing and failing values of `as` against `p`. */
-  final def partitionM[A, M[_]](as: Vector[A])(p: A => M[Boolean])(
-      implicit F: Applicative[M]): M[(Vector[A], Vector[A])] =
+  final def partitionM[A, M[_]](as: Vector[A])(p: A => M[Boolean])(implicit
+      F: Applicative[M]): M[(Vector[A], Vector[A])] =
     lazyFoldRight(as, F.point(empty[A], empty[A]))((a, g) =>
       F.ap(g)(F.map(p(a))(b => {
         case (x, y) => if (b) (a +: x, y) else (x, a +: y)

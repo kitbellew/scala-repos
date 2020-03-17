@@ -87,9 +87,8 @@ object Default {
     }
 
     object Helper {
-      def apply[L <: HList, Labels <: HList](
-          implicit helper: Helper[L, Labels]): Aux[L, Labels, helper.Out] =
-        helper
+      def apply[L <: HList, Labels <: HList](implicit
+          helper: Helper[L, Labels]): Aux[L, Labels, helper.Out] = helper
 
       type Aux[L <: HList, Labels <: HList, Out0 <: HList] = Helper[L, Labels] {
         type Out = Out0
@@ -180,8 +179,8 @@ object Default {
     }
 
     object Helper {
-      def apply[L <: HList, Repr <: HList](
-          implicit helper: Helper[L, Repr]): Aux[L, Repr, helper.Out] = helper
+      def apply[L <: HList, Repr <: HList](implicit
+          helper: Helper[L, Repr]): Aux[L, Repr, helper.Out] = helper
 
       type Aux[L <: HList, Repr <: HList, Out0 <: HList] = Helper[L, Repr] {
         type Out = Out0

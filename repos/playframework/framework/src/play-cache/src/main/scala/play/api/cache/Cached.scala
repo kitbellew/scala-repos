@@ -370,14 +370,14 @@ class UnboundCachedBuilder(
   /**
     * Compose the cache with an action
     */
-  def apply(action: EssentialAction)(
-      implicit app: Application): EssentialAction = build(action)
+  def apply(action: EssentialAction)(implicit
+      app: Application): EssentialAction = build(action)
 
   /**
     * Compose the cache with an action
     */
-  def build(action: EssentialAction)(
-      implicit app: Application): EssentialAction = {
+  def build(action: EssentialAction)(implicit
+      app: Application): EssentialAction = {
     new CachedBuilder(Cache.cacheApi, key, caching).build(action)
   }
 

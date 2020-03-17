@@ -57,8 +57,8 @@ class DefaultRuntimePicklerGenerator(reflectionLock: ReentrantLock)
   }
 
   /** Create a new unpickler using the given tagKey. */
-  override def genUnpickler(mirror: Mirror, tagKey: String)(
-      implicit share: refs.Share): Unpickler[_] = {
+  override def genUnpickler(mirror: Mirror, tagKey: String)(implicit
+      share: refs.Share): Unpickler[_] = {
     reflectionLock.lock()
     try {
       val unpickler = if (tagKey.startsWith("scala.Array")) {

@@ -1383,8 +1383,8 @@ class SparkContext(config: SparkConf)
     * Create an [[org.apache.spark.Accumulator]] variable of a given type, which tasks can "add"
     * values to using the `+=` method. Only the driver can access the accumulator's `value`.
     */
-  def accumulator[T](initialValue: T)(
-      implicit param: AccumulatorParam[T]): Accumulator[T] = {
+  def accumulator[T](initialValue: T)(implicit
+      param: AccumulatorParam[T]): Accumulator[T] = {
     val acc = new Accumulator(initialValue, param)
     cleaner.foreach(_.registerAccumulatorForCleanup(acc))
     acc
@@ -1395,8 +1395,8 @@ class SparkContext(config: SparkConf)
     * in the Spark UI. Tasks can "add" values to the accumulator using the `+=` method. Only the
     * driver can access the accumulator's `value`.
     */
-  def accumulator[T](initialValue: T, name: String)(
-      implicit param: AccumulatorParam[T]): Accumulator[T] = {
+  def accumulator[T](initialValue: T, name: String)(implicit
+      param: AccumulatorParam[T]): Accumulator[T] = {
     val acc = new Accumulator(initialValue, param, Some(name))
     cleaner.foreach(_.registerAccumulatorForCleanup(acc))
     acc
@@ -1408,8 +1408,8 @@ class SparkContext(config: SparkConf)
     * @tparam R accumulator result type
     * @tparam T type that can be added to the accumulator
     */
-  def accumulable[R, T](initialValue: R)(
-      implicit param: AccumulableParam[R, T]): Accumulable[R, T] = {
+  def accumulable[R, T](initialValue: R)(implicit
+      param: AccumulableParam[R, T]): Accumulable[R, T] = {
     val acc = new Accumulable(initialValue, param)
     cleaner.foreach(_.registerAccumulatorForCleanup(acc))
     acc
@@ -1422,8 +1422,8 @@ class SparkContext(config: SparkConf)
     * @tparam R accumulator result type
     * @tparam T type that can be added to the accumulator
     */
-  def accumulable[R, T](initialValue: R, name: String)(
-      implicit param: AccumulableParam[R, T]): Accumulable[R, T] = {
+  def accumulable[R, T](initialValue: R, name: String)(implicit
+      param: AccumulableParam[R, T]): Accumulable[R, T] = {
     val acc = new Accumulable(initialValue, param, Some(name))
     cleaner.foreach(_.registerAccumulatorForCleanup(acc))
     acc

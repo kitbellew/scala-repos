@@ -115,8 +115,8 @@ private[akkahttp] class ModelConversion(
   /**
     * Convert an Akka `HttpRequest` to an `Enumerator` of the request body.
     */
-  private def convertRequestBody(request: HttpRequest)(
-      implicit fm: Materializer): Option[Source[ByteString, Any]] = {
+  private def convertRequestBody(request: HttpRequest)(implicit
+      fm: Materializer): Option[Source[ByteString, Any]] = {
     request.entity match {
       case HttpEntity.Strict(_, data) if data.isEmpty =>
         None

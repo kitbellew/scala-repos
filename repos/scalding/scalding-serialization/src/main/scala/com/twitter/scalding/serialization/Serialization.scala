@@ -86,8 +86,8 @@ object Serialization {
   def read[T](in: InputStream)(implicit ser: Serialization[T]): Try[T] =
     ser.read(in)
 
-  def write[T](out: OutputStream, t: T)(
-      implicit ser: Serialization[T]): Try[Unit] =
+  def write[T](out: OutputStream, t: T)(implicit
+      ser: Serialization[T]): Try[Unit] =
     ser.write(out, t)
 
   def toBytes[T](t: T)(implicit ser: Serialization[T]): Array[Byte] = {

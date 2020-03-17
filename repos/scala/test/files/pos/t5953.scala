@@ -4,8 +4,8 @@ package object foo {
   @inline implicit class TravOps[A, CC[A] <: GenTraversableOnce[A]](
       val coll: CC[A])
       extends AnyVal {
-    def build[CC2[X]](
-        implicit cbf: generic.CanBuildFrom[Nothing, A, CC2[A]]): CC2[A] = {
+    def build[CC2[X]](implicit
+        cbf: generic.CanBuildFrom[Nothing, A, CC2[A]]): CC2[A] = {
       cbf() ++= coll.toIterator result
     }
   }

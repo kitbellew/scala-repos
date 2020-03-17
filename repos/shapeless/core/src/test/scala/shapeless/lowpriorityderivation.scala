@@ -153,8 +153,8 @@ object LowPriorityDerivationTests {
     trait MkStdTC[T] extends MkTC[T]
 
     trait LowestPriorityMkTC {
-      implicit def mkDefaultTC[T](
-          implicit mkDefaultTC: MkDefaultTC[T]): MkTC[T] = mkDefaultTC
+      implicit def mkDefaultTC[T](implicit
+          mkDefaultTC: MkDefaultTC[T]): MkTC[T] = mkDefaultTC
     }
 
     trait LowPriorityMkTC extends LowestPriorityMkTC {

@@ -82,8 +82,8 @@ class PatternSerializer extends Serializer[Pattern] {
 class DateSerializer extends Serializer[Date] {
   private val DateClass = classOf[Date]
 
-  def deserialize(
-      implicit format: Formats): PartialFunction[(TypeInfo, JValue), Date] = {
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), Date] = {
     case (TypeInfo(DateClass, _), json) =>
       json match {
         case JsonDate(dt) => dt
@@ -128,8 +128,8 @@ class DateTimeSerializer extends Serializer[DateTime] {
 class UUIDSerializer extends Serializer[UUID] {
   private val UUIDClass = classOf[UUID]
 
-  def deserialize(
-      implicit format: Formats): PartialFunction[(TypeInfo, JValue), UUID] = {
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), UUID] = {
     case (TypeInfo(UUIDClass, _), json) =>
       json match {
         case JsonUUID(uuid) => uuid

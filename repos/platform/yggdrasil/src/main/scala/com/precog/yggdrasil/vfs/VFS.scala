@@ -109,20 +109,20 @@ trait VFSModule[M[+_], Block] extends Logging {
   sealed trait Resource {
     def mimeType: MimeType
     def authorities: Authorities
-    def byteStream(requestedMimeTypes: Seq[MimeType])(
-        implicit M: Monad[M]): OptionT[M, (MimeType, StreamT[M, Array[Byte]])]
+    def byteStream(requestedMimeTypes: Seq[MimeType])(implicit
+        M: Monad[M]): OptionT[M, (MimeType, StreamT[M, Array[Byte]])]
 
     def fold[A](
         blobResource: BlobResource => A,
         projectionResource: ProjectionResource => A): A
 
-    protected def asByteStream(mimeType: MimeType)(
-        implicit M: Monad[M]): OptionT[M, StreamT[M, Array[Byte]]]
+    protected def asByteStream(mimeType: MimeType)(implicit
+        M: Monad[M]): OptionT[M, StreamT[M, Array[Byte]]]
   }
 
   object Resource {
-    def asQuery(path: Path, version: Version)(
-        implicit M: Monad[M]): Resource => EitherT[M, ResourceError, String] = {
+    def asQuery(path: Path, version: Version)(implicit
+        M: Monad[M]): Resource => EitherT[M, ResourceError, String] = {
       resource =>
         def notAQuery =
           notFound(

@@ -57,8 +57,8 @@ object newtype {
     * The implicit conversion `Repr => Ops` would typically be provided by publishing the companion
     * object of the `Ops` type as an implicit value.
     */
-  implicit def newtypeOps[Repr, Ops](t: Newtype[Repr, Ops])(
-      implicit mkOps: Repr => Ops): Ops = t.asInstanceOf[Repr]
+  implicit def newtypeOps[Repr, Ops](t: Newtype[Repr, Ops])(implicit
+      mkOps: Repr => Ops): Ops = t.asInstanceOf[Repr]
 }
 
 /**

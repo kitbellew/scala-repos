@@ -57,8 +57,8 @@ object KafkaRelayAgent extends Logging {
       permissionsFinder: PermissionsFinder[Future],
       eventIdSeq: EventIdSequence,
       localConfig: Configuration,
-      centralConfig: Configuration)(
-      implicit executor: ExecutionContext): (KafkaRelayAgent, Stoppable) = {
+      centralConfig: Configuration)(implicit
+      executor: ExecutionContext): (KafkaRelayAgent, Stoppable) = {
 
     val localTopic = localConfig[String]("topic", "local_event_cache")
     val centralTopic = centralConfig[String]("topic", "central_event_store")

@@ -106,8 +106,8 @@ trait Constraints {
     * '''name'''[constraint.min(minValue)]
     * '''error'''[error.min(minValue)] or [error.min.strict(minValue)]
     */
-  def min[T](minValue: T, strict: Boolean = false)(
-      implicit ordering: scala.math.Ordering[T]): Constraint[T] =
+  def min[T](minValue: T, strict: Boolean = false)(implicit
+      ordering: scala.math.Ordering[T]): Constraint[T] =
     Constraint[T]("constraint.min", minValue) { o =>
       (ordering.compare(o, minValue).signum, strict) match {
         case (1, _) | (0, false) => Valid
@@ -122,8 +122,8 @@ trait Constraints {
     * '''name'''[constraint.max(maxValue)]
     * '''error'''[error.max(maxValue)] or [error.max.strict(maxValue)]
     */
-  def max[T](maxValue: T, strict: Boolean = false)(
-      implicit ordering: scala.math.Ordering[T]): Constraint[T] =
+  def max[T](maxValue: T, strict: Boolean = false)(implicit
+      ordering: scala.math.Ordering[T]): Constraint[T] =
     Constraint[T]("constraint.max", maxValue) { o =>
       (ordering.compare(o, maxValue).signum, strict) match {
         case (-1, _) | (0, false) => Valid

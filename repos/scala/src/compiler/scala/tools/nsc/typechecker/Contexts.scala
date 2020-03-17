@@ -1409,8 +1409,8 @@ trait Contexts { self: Analyzer =>
       *  - when true, use global.reporter regardless of whether we're buffering (TODO: can we change this?)
       *  - else, let this context reporter decide
       */
-    final def issueAmbiguousError(err: AbsAmbiguousTypeError)(
-        implicit context: Context): Unit =
+    final def issueAmbiguousError(err: AbsAmbiguousTypeError)(implicit
+        context: Context): Unit =
       if (context.ambiguousErrors)
         reporter.error(
           context.fixPosition(err.errPos),
@@ -1495,8 +1495,8 @@ trait Contexts { self: Analyzer =>
       // debuglog("propagateImplicitTypeErrorsTo: " + errors)
     }
 
-    protected def addDiagString(msg: String)(
-        implicit context: Context): String = {
+    protected def addDiagString(msg: String)(implicit
+        context: Context): String = {
       val diagUsedDefaultsMsg =
         "Error occurred in an application involving default arguments."
       if (context.diagUsedDefaults && !(msg endsWith diagUsedDefaultsMsg))

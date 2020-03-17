@@ -17,8 +17,8 @@ import scala.collection.{Iterator, AbstractIterator}
   *
   *  @author  Burak Emir, Paul Phillips
   */
-class BufferedSource(inputStream: InputStream, bufferSize: Int)(
-    implicit val codec: Codec)
+class BufferedSource(inputStream: InputStream, bufferSize: Int)(implicit
+    val codec: Codec)
     extends Source {
   def this(inputStream: InputStream)(implicit codec: Codec) =
     this(inputStream, DefaultBufSize)(codec)

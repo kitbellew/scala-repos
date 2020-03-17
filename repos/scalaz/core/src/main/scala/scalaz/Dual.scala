@@ -5,8 +5,8 @@ object Dual extends DualInstances {
 }
 
 sealed abstract class DualInstances0 {
-  implicit def dualSemigroup[F](
-      implicit F0: Semigroup[F]): Semigroup[F @@ Tags.Dual] =
+  implicit def dualSemigroup[F](implicit
+      F0: Semigroup[F]): Semigroup[F @@ Tags.Dual] =
     new DualSemigroup[F] {
       implicit def F = F0
     }

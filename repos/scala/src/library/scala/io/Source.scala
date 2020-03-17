@@ -94,8 +94,8 @@ object Source {
     *  its description to filename. Input is buffered in a buffer of size
     *  `bufferSize`.
     */
-  def fromFile(file: JFile, bufferSize: Int)(
-      implicit codec: Codec): BufferedSource = {
+  def fromFile(file: JFile, bufferSize: Int)(implicit
+      codec: Codec): BufferedSource = {
     val inputStream = new FileInputStream(file)
 
     createBufferedSource(
@@ -192,8 +192,8 @@ object Source {
   def fromResource(
       resource: String,
       classLoader: ClassLoader =
-        Thread.currentThread().getContextClassLoader())(
-      implicit codec: Codec): BufferedSource =
+        Thread.currentThread().getContextClassLoader())(implicit
+      codec: Codec): BufferedSource =
     fromInputStream(classLoader.getResourceAsStream(resource))
 
 }

@@ -131,11 +131,11 @@ object Conneg {
       token ^^ ContentEncoding.forName
   }
 
-  def preferredEncoding(
-      implicit req: HttpServletRequest): Option[ContentEncoding] =
+  def preferredEncoding(implicit
+      req: HttpServletRequest): Option[ContentEncoding] =
     preferredValue(AcceptEncoding)
-  def acceptedEncodings(
-      implicit req: HttpServletRequest): List[Conneg[ContentEncoding]] =
+  def acceptedEncodings(implicit
+      req: HttpServletRequest): List[Conneg[ContentEncoding]] =
     values(AcceptEncoding)
 
   // - Charset ---------------------------------------------------------------------------------------------------------
@@ -148,7 +148,6 @@ object Conneg {
 
   def preferredCharset(implicit req: HttpServletRequest): Option[Charset] =
     preferredValue[Charset](AcceptCharset)
-  def acceptedCharsets(
-      implicit req: HttpServletRequest): List[Conneg[Charset]] =
-    values(AcceptCharset)
+  def acceptedCharsets(implicit
+      req: HttpServletRequest): List[Conneg[Charset]] = values(AcceptCharset)
 }

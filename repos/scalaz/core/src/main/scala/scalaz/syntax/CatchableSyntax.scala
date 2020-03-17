@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Catchable` */
-final class CatchableOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: Catchable[F])
+final class CatchableOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: Catchable[F])
     extends Ops[F[A]] {
   ////
   def attempt: F[Throwable \/ A] = F.attempt(self)
@@ -11,8 +11,8 @@ final class CatchableOps[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToCatchableOps0 {
-  implicit def ToCatchableOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[Catchable, FA]) =
+  implicit def ToCatchableOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[Catchable, FA]) =
     new CatchableOps[F0.M, F0.A](F0(v))(F0.TC)
 
 }

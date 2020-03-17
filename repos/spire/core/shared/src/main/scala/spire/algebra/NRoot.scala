@@ -26,8 +26,8 @@ trait NRoot[@sp(Double, Float, Int, Long) A] extends Any {
 import spire.math.{ConvertableTo, ConvertableFrom, Number}
 
 object NRoot {
-  @inline final def apply[@sp(Int, Long, Float, Double) A](
-      implicit ev: NRoot[A]): NRoot[A] = ev
+  @inline final def apply[@sp(Int, Long, Float, Double) A](implicit
+      ev: NRoot[A]): NRoot[A] = ev
 
   /**
     * This will return the largest integer that meets some criteria. Specifically,

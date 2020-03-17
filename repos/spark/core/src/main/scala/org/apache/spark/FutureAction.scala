@@ -48,8 +48,8 @@ trait FutureAction[T] extends Future[T] {
     *               for unbounded waiting, or a finite positive duration
     * @return this FutureAction
     */
-  override def ready(atMost: Duration)(
-      implicit permit: CanAwait): FutureAction.this.type
+  override def ready(atMost: Duration)(implicit
+      permit: CanAwait): FutureAction.this.type
 
   /**
     * Awaits and returns the result (of type T) of this action.
@@ -119,8 +119,8 @@ class SimpleFutureAction[T] private[spark] (
     jobWaiter.cancel()
   }
 
-  override def ready(atMost: Duration)(
-      implicit permit: CanAwait): SimpleFutureAction.this.type = {
+  override def ready(atMost: Duration)(implicit
+      permit: CanAwait): SimpleFutureAction.this.type = {
     jobWaiter.completionFuture.ready(atMost)
     this
   }
@@ -132,8 +132,8 @@ class SimpleFutureAction[T] private[spark] (
     value.get.get
   }
 
-  override def onComplete[U](func: (Try[T]) => U)(
-      implicit executor: ExecutionContext) {
+  override def onComplete[U](func: (Try[T]) => U)(implicit
+      executor: ExecutionContext) {
     jobWaiter.completionFuture onComplete { _ => func(value.get) }
   }
 
@@ -230,8 +230,8 @@ class ComplexFutureAction[T](run: JobSubmitter => Future[T])
     p.future.result(atMost)(permit)
   }
 
-  override def onComplete[U](func: (Try[T]) => U)(
-      implicit executor: ExecutionContext): Unit = {
+  override def onComplete[U](func: (Try[T]) => U)(implicit
+      executor: ExecutionContext): Unit = {
     p.future.onComplete(func)(executor)
   }
 

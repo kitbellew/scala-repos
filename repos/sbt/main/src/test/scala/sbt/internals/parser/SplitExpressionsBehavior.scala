@@ -5,16 +5,16 @@ import java.io.File
 import org.specs2.mutable.SpecificationLike
 
 trait SplitExpression {
-  def split(s: String, file: File = new File("noFile"))(
-      implicit splitter: SplitExpressions.SplitExpression) =
+  def split(s: String, file: File = new File("noFile"))(implicit
+      splitter: SplitExpressions.SplitExpression) =
     splitter(file, s.split("\n").toSeq)
 }
 
 trait SplitExpressionsBehavior extends SplitExpression {
   this: SpecificationLike =>
 
-  def oldExpressionsSplitter(
-      implicit splitter: SplitExpressions.SplitExpression): Unit = {
+  def oldExpressionsSplitter(implicit
+      splitter: SplitExpressions.SplitExpression): Unit = {
 
     "parse a simple setting" in {
       val (imports, settingsAndDefs) = split("""version := "1.0"""")
@@ -63,8 +63,8 @@ trait SplitExpressionsBehavior extends SplitExpression {
 
   }
 
-  def newExpressionsSplitter(
-      implicit splitter: SplitExpressions.SplitExpression): Unit = {
+  def newExpressionsSplitter(implicit
+      splitter: SplitExpressions.SplitExpression): Unit = {
 
     "parse a two settings without intervening blank line" in {
       val (imports, settings) = split("""version := "1.0"

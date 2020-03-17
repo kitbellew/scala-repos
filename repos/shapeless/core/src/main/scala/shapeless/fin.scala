@@ -34,11 +34,11 @@ case class FinSucc[N <: Succ[_], P <: Fin[N]]() extends Fin[Succ[N]]
 object Fin {
   import ops.fin._
 
-  def apply[M <: Nat, N <: Succ[_]](
-      implicit fromNat: FromNat[M, N]): fromNat.Out = fromNat()
+  def apply[M <: Nat, N <: Succ[_]](implicit
+      fromNat: FromNat[M, N]): fromNat.Out = fromNat()
 
-  def apply[M <: Nat, N <: Succ[_]](m: M, n: N)(
-      implicit fromNat: FromNat[m.N, n.N]): fromNat.Out = fromNat()
+  def apply[M <: Nat, N <: Succ[_]](m: M, n: N)(implicit
+      fromNat: FromNat[m.N, n.N]): fromNat.Out = fromNat()
 
   def toNat[F <: Fin[_]](f: F)(implicit toNat: ToNat[F]): toNat.Out = toNat()
 }

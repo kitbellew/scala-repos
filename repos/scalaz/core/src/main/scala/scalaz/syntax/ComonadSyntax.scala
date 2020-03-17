@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Comonad` */
-final class ComonadOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: Comonad[F])
+final class ComonadOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: Comonad[F])
     extends Ops[F[A]] {
   ////
   def copoint: A = F.copoint(self)
@@ -12,8 +12,8 @@ final class ComonadOps[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToComonadOps0 {
-  implicit def ToComonadOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[Comonad, FA]) =
+  implicit def ToComonadOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[Comonad, FA]) =
     new ComonadOps[F0.M, F0.A](F0(v))(F0.TC)
 
 }

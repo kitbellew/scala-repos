@@ -46,8 +46,8 @@ package object parallel {
   }
 
   /** Adds toParArray method to collection classes. */
-  implicit class CollectionsHaveToParArray[C, T](c: C)(
-      implicit asGto: C => scala.collection.GenTraversableOnce[T]) {
+  implicit class CollectionsHaveToParArray[C, T](c: C)(implicit
+      asGto: C => scala.collection.GenTraversableOnce[T]) {
     def toParArray = {
       val t = asGto(c)
       if (t.isInstanceOf[ParArray[_]]) t.asInstanceOf[ParArray[T]]

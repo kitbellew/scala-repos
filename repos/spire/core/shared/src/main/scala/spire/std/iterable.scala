@@ -7,8 +7,8 @@ import scala.collection.generic.CanBuildFrom
 import spire.algebra.Monoid
 
 @SerialVersionUID(0L)
-final class IterableMonoid[A, SA <: TraversableLike[A, SA]](
-    implicit cbf: CanBuildFrom[SA, A, SA])
+final class IterableMonoid[A, SA <: TraversableLike[A, SA]](implicit
+    cbf: CanBuildFrom[SA, A, SA])
     extends Monoid[SA]
     with Serializable {
   def id: SA = cbf().result()
@@ -16,7 +16,7 @@ final class IterableMonoid[A, SA <: TraversableLike[A, SA]](
 }
 
 trait IterableInstances {
-  implicit def IterableMonoid[A, CC[A] <: TraversableLike[A, CC[A]]](
-      implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Monoid[CC[A]] =
+  implicit def IterableMonoid[A, CC[A] <: TraversableLike[A, CC[A]]](implicit
+      cbf: CanBuildFrom[CC[A], A, CC[A]]): Monoid[CC[A]] =
     new IterableMonoid[A, CC[A]]
 }

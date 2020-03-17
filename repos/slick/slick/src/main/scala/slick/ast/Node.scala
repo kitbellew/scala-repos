@@ -981,8 +981,8 @@ object QueryParameter {
   /** Create a LiteralNode or QueryParameter that performs a client-side computation
     * on two primitive values. The given Nodes must also be of type `LiteralNode` or
     * `QueryParameter`. */
-  def constOp[T](name: String)(op: (T, T) => T)(l: Node, r: Node)(
-      implicit tpe: ScalaBaseType[T]): Node =
+  def constOp[T](name: String)(op: (T, T) => T)(l: Node, r: Node)(implicit
+      tpe: ScalaBaseType[T]): Node =
     (l, r) match {
       case (
             LiteralNode(lv) :@ (lt: TypedType[_]),

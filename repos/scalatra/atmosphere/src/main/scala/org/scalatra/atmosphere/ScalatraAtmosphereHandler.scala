@@ -70,8 +70,8 @@ object ScalatraAtmosphereHandler {
 
 class ScalatraAtmosphereException(message: String)
     extends ScalatraException(message)
-class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
-    implicit wireFormat: WireFormat)
+class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(implicit
+    wireFormat: WireFormat)
     extends AbstractReflectorAtmosphereHandler {
   import org.scalatra.atmosphere.ScalatraAtmosphereHandler._
 

@@ -71,8 +71,8 @@ object qr extends UFunc {
       }
     }
 
-    implicit def canJustQIfWeCanQR[T, M](
-        implicit qrImpl: qr.Impl[T, QR[M]]): Impl[T, M] = {
+    implicit def canJustQIfWeCanQR[T, M](implicit
+        qrImpl: qr.Impl[T, QR[M]]): Impl[T, M] = {
       new Impl[T, M] {
         def apply(v: T): M = qrImpl(v).r
       }
@@ -85,8 +85,8 @@ object qr extends UFunc {
     */
   object justQ extends UFunc {
 
-    implicit def canJustQIfWeCanQR[T, M](
-        implicit qrImpl: qr.Impl[T, QR[M]]): Impl[T, M] = {
+    implicit def canJustQIfWeCanQR[T, M](implicit
+        qrImpl: qr.Impl[T, QR[M]]): Impl[T, M] = {
       new Impl[T, M] {
         def apply(v: T): M = qrImpl(v).q
       }
@@ -134,8 +134,8 @@ object qr extends UFunc {
         }
       }
 
-      implicit def canJustQIfWeCanQR[T, M](
-          implicit qrImpl: qr.reduced.Impl[T, QR[M]]): Impl[T, M] = {
+      implicit def canJustQIfWeCanQR[T, M](implicit
+          qrImpl: qr.reduced.Impl[T, QR[M]]): Impl[T, M] = {
         new Impl[T, M] {
           def apply(v: T): M = qrImpl(v).r
         }
@@ -146,8 +146,8 @@ object qr extends UFunc {
       * QR that just returns Q with reduced size.
       */
     object justQ extends UFunc {
-      implicit def canJustQIfWeCanQR[T, M](
-          implicit qrImpl: qr.reduced.Impl[T, QR[M]]): Impl[T, M] = {
+      implicit def canJustQIfWeCanQR[T, M](implicit
+          qrImpl: qr.reduced.Impl[T, QR[M]]): Impl[T, M] = {
         new Impl[T, M] {
           def apply(v: T): M = qrImpl(v).q
         }

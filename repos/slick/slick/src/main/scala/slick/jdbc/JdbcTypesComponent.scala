@@ -111,8 +111,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
             "No SQL type name found in java.sql.Types for code " + t))
     }
 
-  abstract class DriverJdbcType[@specialized T](
-      implicit val classTag: ClassTag[T])
+  abstract class DriverJdbcType[@specialized T](implicit
+      val classTag: ClassTag[T])
       extends JdbcType[T] {
     def scalaType = ScalaBaseType[T]
     def sqlTypeName(sym: Option[FieldSymbol]): String =

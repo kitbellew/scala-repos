@@ -267,30 +267,30 @@ trait SeqViewLike[
 //    else super.patch[B, That](from, patch, replaced)(bf)
   }
 
-  override def padTo[B >: A, That](len: Int, elem: B)(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def padTo[B >: A, That](len: Int, elem: B)(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     patch(length, fill(len - length)(elem), 0)
 
-  override def reverseMap[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def reverseMap[B, That](f: A => B)(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     reverse map f
 
-  override def updated[B >: A, That](index: Int, elem: B)(
-      implicit bf: CanBuildFrom[This, B, That]): That = {
+  override def updated[B >: A, That](index: Int, elem: B)(implicit
+      bf: CanBuildFrom[This, B, That]): That = {
     require(0 <= index && index < length) // !!! can't call length like this.
     patch(index, List(elem), 1)(bf)
   }
 
-  override def +:[B >: A, That](elem: B)(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def +:[B >: A, That](elem: B)(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     newPrepended(elem :: Nil).asInstanceOf[That]
 
-  override def :+[B >: A, That](elem: B)(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def :+[B >: A, That](elem: B)(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     ++(Iterator.single(elem))(bf)
 
-  override def union[B >: A, That](that: GenSeq[B])(
-      implicit bf: CanBuildFrom[This, B, That]): That =
+  override def union[B >: A, That](that: GenSeq[B])(implicit
+      bf: CanBuildFrom[This, B, That]): That =
     newForced(thisSeq union that).asInstanceOf[That]
 
   override def diff[B >: A](that: GenSeq[B]): This =

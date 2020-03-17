@@ -12,8 +12,8 @@ abstract class test3 {
 
   case class BarType[T3 <: Foo](tpeT: RefType[T3])
       extends ClassType[Bar[T3], Foo](FooType);
-  implicit def typeOfBar[T4 <: Foo](
-      implicit elem: RefType[T4]): RefType[Bar[T4]] =
+  implicit def typeOfBar[T4 <: Foo](implicit
+      elem: RefType[T4]): RefType[Bar[T4]] =
     BarType(elem);
 
   class Foo[A <: AnyRef];

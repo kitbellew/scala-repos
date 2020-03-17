@@ -22,6 +22,6 @@ private[http] trait ExtractionImplBase[T] extends RequestVal[T] {
       .getOrElse(throw new RuntimeException(s"Value wasn't extracted! $this"))
 }
 
-private[http] abstract class ExtractionImpl[T](
-    implicit val classTag: ClassTag[T])
+private[http] abstract class ExtractionImpl[T](implicit
+    val classTag: ClassTag[T])
     extends ExtractionImplBase[T]

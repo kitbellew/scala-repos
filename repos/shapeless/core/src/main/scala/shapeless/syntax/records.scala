@@ -51,22 +51,22 @@ final class RecordOps[L <: HList](val l: L) extends AnyVal with Serializable {
     * Returns the value associated with the singleton typed key k. Only available if this record has a field with
     * with keyType equal to the singleton type k.T.
     */
-  def fieldAt(k: Witness)(
-      implicit selector: Selector[L, k.T]): FieldType[k.T, selector.Out] =
+  def fieldAt(k: Witness)(implicit
+      selector: Selector[L, k.T]): FieldType[k.T, selector.Out] =
     field[k.T](selector(l))
 
   /**
     * Updates or adds to this record a field with key type F and value type F#valueType.
     */
-  def updated[V](k: Witness, v: V)(
-      implicit updater: Updater[L, FieldType[k.T, V]]): updater.Out =
+  def updated[V](k: Witness, v: V)(implicit
+      updater: Updater[L, FieldType[k.T, V]]): updater.Out =
     updater(l, field[k.T](v))
 
   /**
     * Updates a field having a value with type A by given function.
     */
-  def updateWith[W](k: WitnessWith[FSL])(f: k.instance.Out => W)(
-      implicit modifier: Modifier[L, k.T, k.instance.Out, W]): modifier.Out =
+  def updateWith[W](k: WitnessWith[FSL])(f: k.instance.Out => W)(implicit
+      modifier: Modifier[L, k.T, k.instance.Out, W]): modifier.Out =
     modifier(l, f)
   type FSL[K] = Selector[L, K]
 
@@ -86,8 +86,8 @@ final class RecordOps[L <: HList](val l: L) extends AnyVal with Serializable {
     * Remove the field associated with the singleton typed key k, returning the updated record. Only available if this
     * record has a field with keyType equal to the singleton type k.T.
     */
-  def -[V, Out <: HList](k: Witness)(
-      implicit remover: Remover.Aux[L, k.T, (V, Out)]): Out = remover(l)._2
+  def -[V, Out <: HList](k: Witness)(implicit
+      remover: Remover.Aux[L, k.T, (V, Out)]): Out = remover(l)._2
 
   /**
     * Returns the union of this record and another record.
@@ -99,9 +99,8 @@ final class RecordOps[L <: HList](val l: L) extends AnyVal with Serializable {
     * Rename the field associated with the singleton typed key oldKey. Only available if this
     * record has a field with keyType equal to the singleton type oldKey.T.
     */
-  def renameField(oldKey: Witness, newKey: Witness)(
-      implicit renamer: Renamer[L, oldKey.T, newKey.T]): renamer.Out =
-    renamer(l)
+  def renameField(oldKey: Witness, newKey: Witness)(implicit
+      renamer: Renamer[L, oldKey.T, newKey.T]): renamer.Out = renamer(l)
 
   /**
     * Returns the keys of this record as an `HList` of singleton typed values.
@@ -127,8 +126,8 @@ final class RecordOps[L <: HList](val l: L) extends AnyVal with Serializable {
   /**
     * Maps a higher rank function across the values of this record.
     */
-  def mapValues(f: Poly)(
-      implicit mapValues: MapValues[f.type, L]): mapValues.Out = mapValues(l)
+  def mapValues(f: Poly)(implicit
+      mapValues: MapValues[f.type, L]): mapValues.Out = mapValues(l)
 
   /**
     * Returns a wrapped version of this record that provides `selectDynamic` access to fields.
@@ -147,7 +146,6 @@ final case class DynamicRecordOps[L <: HList](l: L) extends Dynamic {
   /**
     * Allows dynamic-style access to fields of the record whose keys are Symbols.
     */
-  def selectDynamic(key: String)(
-      implicit selector: Selector[L, Symbol @@ key.type]): selector.Out =
-    selector(l)
+  def selectDynamic(key: String)(implicit
+      selector: Selector[L, Symbol @@ key.type]): selector.Out = selector(l)
 }

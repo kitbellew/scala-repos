@@ -120,8 +120,8 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
   def createQueryJob(
       apiKey: APIKey,
       data: Option[JValue],
-      timeout: Option[Duration])(
-      implicit asyncContext: ExecutionContext): Future[JobQueryTFMonad] = {
+      timeout: Option[Duration])(implicit
+      asyncContext: ExecutionContext): Future[JobQueryTFMonad] = {
     val start = System.currentTimeMillis
     val futureJob = jobManager
       .createJob(

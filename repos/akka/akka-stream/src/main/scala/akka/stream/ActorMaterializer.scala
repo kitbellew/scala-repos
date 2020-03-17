@@ -42,8 +42,8 @@ object ActorMaterializer {
     */
   def apply(
       materializerSettings: Option[ActorMaterializerSettings] = None,
-      namePrefix: Option[String] = None)(
-      implicit context: ActorRefFactory): ActorMaterializer = {
+      namePrefix: Option[String] = None)(implicit
+      context: ActorRefFactory): ActorMaterializer = {
     val system = actorSystemOf(context)
 
     val settings =
@@ -64,8 +64,8 @@ object ActorMaterializer {
     */
   def apply(
       materializerSettings: ActorMaterializerSettings,
-      namePrefix: String)(
-      implicit context: ActorRefFactory): ActorMaterializer = {
+      namePrefix: String)(implicit
+      context: ActorRefFactory): ActorMaterializer = {
     val haveShutDown = new AtomicBoolean(false)
     val system = actorSystemOf(context)
 
@@ -93,8 +93,8 @@ object ActorMaterializer {
     * the processing steps. The default `namePrefix` is `"flow"`. The actor names are built up of
     * `namePrefix-flowNumber-flowStepNumber-stepName`.
     */
-  def apply(materializerSettings: ActorMaterializerSettings)(
-      implicit context: ActorRefFactory): ActorMaterializer =
+  def apply(materializerSettings: ActorMaterializerSettings)(implicit
+      context: ActorRefFactory): ActorMaterializer =
     apply(Some(materializerSettings), None)
 
   /**

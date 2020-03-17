@@ -173,8 +173,8 @@ trait UnpicklerRuntime {
 
 // TODO: currently this works with an assumption that sharing settings for unpickling are the same as for pickling
 // of course this might not be the case, so we should be able to read `share` from the pickle itself
-class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
-    implicit share: refs.Share)
+class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
+    share: refs.Share)
     extends UnpicklerRuntime {
   import scala.reflect.runtime.universe._
   import definitions._

@@ -45,8 +45,8 @@ trait DiffFunction[T] extends StochasticDiffFunction[T] { outer =>
 }
 
 object DiffFunction {
-  def withL2Regularization[T, I](d: DiffFunction[T], weight: Double)(
-      implicit space: InnerProductModule[T, Double]) =
+  def withL2Regularization[T, I](d: DiffFunction[T], weight: Double)(implicit
+      space: InnerProductModule[T, Double]) =
     new DiffFunction[T] {
       import space._
       override def gradientAt(x: T): T = {

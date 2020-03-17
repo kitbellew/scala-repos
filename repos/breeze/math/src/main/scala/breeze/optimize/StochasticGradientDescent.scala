@@ -28,8 +28,8 @@ abstract class StochasticGradientDescent[T](
     val defaultStepSize: Double,
     val maxIter: Int,
     tolerance: Double = 1e-5,
-    fvalMemory: Int = 100)(
-    implicit protected val vspace: NormedModule[T, Double])
+    fvalMemory: Int = 100)(implicit
+    protected val vspace: NormedModule[T, Double])
     extends FirstOrderMinimizer[T, StochasticDiffFunction[T]](
       maxIter,
       tolerance,
@@ -64,13 +64,13 @@ abstract class StochasticGradientDescent[T](
 }
 
 object StochasticGradientDescent {
-  def apply[T](initialStepSize: Double = 4, maxIter: Int = 100)(
-      implicit vs: NormedModule[T, Double]): StochasticGradientDescent[T] = {
+  def apply[T](initialStepSize: Double = 4, maxIter: Int = 100)(implicit
+      vs: NormedModule[T, Double]): StochasticGradientDescent[T] = {
     new SimpleSGD(initialStepSize, maxIter)
   }
 
-  class SimpleSGD[T](eta: Double = 4, maxIter: Int = 100)(
-      implicit vs: NormedModule[T, Double])
+  class SimpleSGD[T](eta: Double = 4, maxIter: Int = 100)(implicit
+      vs: NormedModule[T, Double])
       extends StochasticGradientDescent[T](eta, maxIter) {
     type History = Unit
     def initialHistory(f: StochasticDiffFunction[T], init: T) = ()

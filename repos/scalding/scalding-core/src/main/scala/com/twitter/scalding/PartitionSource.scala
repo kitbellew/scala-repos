@@ -45,8 +45,8 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
     *
     * @returns A cascading PartitionTap.
     */
-  override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+  override def createTap(readOrWrite: AccessMode)(implicit
+      mode: Mode): Tap[_, _, _] = {
     readOrWrite match {
       case Read =>
         throw new InvalidSourceException(

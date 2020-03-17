@@ -27,8 +27,8 @@ object NonBlockingMutexSpec extends Specification {
     def run(body: => Unit) = body
   }
 
-  def countOrderingErrors(runs: Int, tester: Tester)(
-      implicit ec: ExecutionContext): Future[Int] = {
+  def countOrderingErrors(runs: Int, tester: Tester)(implicit
+      ec: ExecutionContext): Future[Int] = {
     val result = Promise[Int]()
     val runCount = new AtomicInteger(0)
     val orderingErrors = new AtomicInteger(0)

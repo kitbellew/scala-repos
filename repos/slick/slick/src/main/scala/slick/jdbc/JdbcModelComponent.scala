@@ -16,8 +16,8 @@ trait JdbcModelComponent { self: JdbcProfile =>
     * @param ignoreInvalidDefaults logs unrecognized default values instead of throwing an exception */
   def createModel(
       tables: Option[DBIO[Seq[MTable]]] = None,
-      ignoreInvalidDefaults: Boolean = true)(
-      implicit ec: ExecutionContext): DBIO[Model] = {
+      ignoreInvalidDefaults: Boolean = true)(implicit
+      ec: ExecutionContext): DBIO[Model] = {
     val tablesA = tables.getOrElse(defaultTables)
     tablesA.flatMap(t =>
       createModelBuilder(t, ignoreInvalidDefaults).buildModel)

@@ -147,8 +147,8 @@ package object signal {
       data: Input,
       kernel: Kernel,
       overhang: OptOverhang = OptOverhang.PreserveLength,
-      padding: OptPadding = OptPadding.Zero)(
-      implicit canFilter: CanFilter[Input, Kernel, Output]): Output =
+      padding: OptPadding = OptPadding.Zero)(implicit
+      canFilter: CanFilter[Input, Kernel, Output]): Output =
     canFilter(data, kernel, overhang, padding)
 
   // </editor-fold>
@@ -175,8 +175,8 @@ package object signal {
       taps: Int = 512,
       kernelDesign: OptDesignMethod = OptDesignMethod.Firwin,
       overhang: OptOverhang = OptOverhang.None,
-      padding: OptPadding = OptPadding.Boundary)(
-      implicit canFilterBPBS: CanFilterBPBS[Input, Output]): Output =
+      padding: OptPadding = OptPadding.Boundary)(implicit
+      canFilterBPBS: CanFilterBPBS[Input, Output]): Output =
     canFilterBPBS(
       data,
       omegas,
@@ -207,8 +207,8 @@ package object signal {
       taps: Int = 512,
       kernelDesign: OptDesignMethod = OptDesignMethod.Firwin,
       overhang: OptOverhang = OptOverhang.None,
-      padding: OptPadding = OptPadding.Boundary)(
-      implicit canFilterBPBS: CanFilterBPBS[Input, Output]): Output =
+      padding: OptPadding = OptPadding.Boundary)(implicit
+      canFilterBPBS: CanFilterBPBS[Input, Output]): Output =
     canFilterBPBS(
       data,
       omegas,
@@ -243,8 +243,8 @@ package object signal {
       taps: Int = 512,
       kernelDesign: OptDesignMethod = OptDesignMethod.Firwin,
       overhang: OptOverhang = OptOverhang.None,
-      padding: OptPadding = OptPadding.Boundary)(
-      implicit canFilterLPHP: CanFilterLPHP[Input, Output]): Output =
+      padding: OptPadding = OptPadding.Boundary)(implicit
+      canFilterLPHP: CanFilterLPHP[Input, Output]): Output =
     canFilterLPHP(
       data,
       omega,
@@ -275,8 +275,8 @@ package object signal {
       taps: Int = 512,
       kernelDesign: OptDesignMethod = OptDesignMethod.Firwin,
       overhang: OptOverhang = OptOverhang.None,
-      padding: OptPadding = OptPadding.Boundary)(
-      implicit canFilterLPHP: CanFilterLPHP[Input, Output]): Output =
+      padding: OptPadding = OptPadding.Boundary)(implicit
+      canFilterLPHP: CanFilterLPHP[Input, Output]): Output =
     canFilterLPHP(
       data,
       omega,
@@ -323,8 +323,8 @@ package object signal {
       zeroPass: Boolean = true,
       scale: Boolean = true,
       multiplier: Double = 1d,
-      optWindow: OptWindowFunction = OptWindowFunction.Hamming())(
-      implicit canFirwin: CanFirwin[Output]): FIRKernel1D[Output] =
+      optWindow: OptWindowFunction = OptWindowFunction.Hamming())(implicit
+      canFirwin: CanFirwin[Output]): FIRKernel1D[Output] =
     canFirwin(taps, omegas, nyquist, zeroPass, scale, multiplier, optWindow)
 
   def designFilterDecimation[Output](
@@ -355,11 +355,11 @@ package object signal {
   def filterMedian[Input](
       data: DenseVector[Input],
       windowLength: Int,
-      overhang: OptOverhang = OptOverhang.PreserveLength)(
-      implicit canFilterMedian: CanFilterMedian[Input]): DenseVector[Input] =
+      overhang: OptOverhang = OptOverhang.PreserveLength)(implicit
+      canFilterMedian: CanFilterMedian[Input]): DenseVector[Input] =
     canFilterMedian(data, windowLength, overhang)
-  def filterMedian[Input](data: DenseVector[Input], windowLength: Int)(
-      implicit canFilterMedian: CanFilterMedian[Input]): DenseVector[Input] =
+  def filterMedian[Input](data: DenseVector[Input], windowLength: Int)(implicit
+      canFilterMedian: CanFilterMedian[Input]): DenseVector[Input] =
     canFilterMedian(data, windowLength, OptOverhang.PreserveLength)
 
   // </editor-fold>
@@ -376,25 +376,25 @@ package object signal {
     * @param canHaarTransform implicit delegate which is used for implementation. End-users should not use this argument.
     * @return DenseVector or DenseMatrix
     */
-  def haarTr[Input, Output](v: Input)(
-      implicit canHaarTransform: CanHaarTr[Input, Output]): Output =
+  def haarTr[Input, Output](v: Input)(implicit
+      canHaarTransform: CanHaarTr[Input, Output]): Output =
     canHaarTransform(v)
 
   @deprecated("use haarTr", "v.0.6")
-  def haarTransform[Input, Output](v: Input)(
-      implicit canHaarTransform: CanHaarTr[Input, Output]): Output =
+  def haarTransform[Input, Output](v: Input)(implicit
+      canHaarTransform: CanHaarTr[Input, Output]): Output =
     canHaarTransform(v)
 
   /**Returns the inverse fast haar transform for a DenseVector or DenseMatrix.
     *
     */
-  def iHaarTr[Input, Output](v: Input)(
-      implicit canInverseHaarTransform: CanIHaarTr[Input, Output]): Output =
+  def iHaarTr[Input, Output](v: Input)(implicit
+      canInverseHaarTransform: CanIHaarTr[Input, Output]): Output =
     canInverseHaarTransform(v)
 
   @deprecated("use iHaarTr", "v.0.6")
-  def inverseHaarTransform[Input, Output](v: Input)(
-      implicit canInverseHaarTransform: CanIHaarTr[Input, Output]): Output =
+  def inverseHaarTransform[Input, Output](v: Input)(implicit
+      canInverseHaarTransform: CanIHaarTr[Input, Output]): Output =
     canInverseHaarTransform(v)
 
 }

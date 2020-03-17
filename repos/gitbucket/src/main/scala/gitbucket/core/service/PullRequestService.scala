@@ -15,8 +15,8 @@ import profile.simple._
 trait PullRequestService { self: IssuesService =>
   import PullRequestService._
 
-  def getPullRequest(owner: String, repository: String, issueId: Int)(
-      implicit s: Session): Option[(Issue, PullRequest)] =
+  def getPullRequest(owner: String, repository: String, issueId: Int)(implicit
+      s: Session): Option[(Issue, PullRequest)] =
     getIssue(owner, repository, issueId.toString).flatMap { issue =>
       PullRequests
         .filter(_.byPrimaryKey(owner, repository, issueId))
@@ -128,8 +128,8 @@ trait PullRequestService { self: IssuesService =>
       userName: String,
       repositoryName: String,
       branch: String,
-      defaultBranch: String)(
-      implicit s: Session): Option[(PullRequest, Issue)] =
+      defaultBranch: String)(implicit
+      s: Session): Option[(PullRequest, Issue)] =
     PullRequests
       .innerJoin(Issues)
       .on { (t1, t2) =>

@@ -84,12 +84,12 @@ object OrderedSerialization {
   def compare[T](a: T, b: T)(implicit ord: OrderedSerialization[T]): Int =
     ord.compare(a, b)
 
-  def compareBinary[T](a: InputStream, b: InputStream)(
-      implicit ord: OrderedSerialization[T]): Result =
+  def compareBinary[T](a: InputStream, b: InputStream)(implicit
+      ord: OrderedSerialization[T]): Result =
     ord.compareBinary(a, b)
 
-  def writeThenCompare[T](a: T, b: T)(
-      implicit ordb: OrderedSerialization[T]): Result = {
+  def writeThenCompare[T](a: T, b: T)(implicit
+      ordb: OrderedSerialization[T]): Result = {
     val abytes = Serialization.toBytes(a)
     val bbytes = Serialization.toBytes(b)
     val ain = new ByteArrayInputStream(abytes)
@@ -152,19 +152,19 @@ object OrderedSerialization {
     }
   }
 
-  def viaTransform[T, U](packFn: T => U, unpackFn: U => T)(
-      implicit otherOrdSer: OrderedSerialization[U]): OrderedSerialization[T] =
+  def viaTransform[T, U](packFn: T => U, unpackFn: U => T)(implicit
+      otherOrdSer: OrderedSerialization[U]): OrderedSerialization[T] =
     internalTransformer[T, U, T](packFn, unpackFn, identity)
 
-  def viaTryTransform[T, U](packFn: T => U, unpackFn: U => Try[T])(
-      implicit otherOrdSer: OrderedSerialization[U]): OrderedSerialization[T] =
+  def viaTryTransform[T, U](packFn: T => U, unpackFn: U => Try[T])(implicit
+      otherOrdSer: OrderedSerialization[U]): OrderedSerialization[T] =
     internalTransformer[T, U, Try[T]](packFn, unpackFn, _.flatMap(identity))
 
   /**
     * The the serialized comparison matches the unserialized comparison
     */
-  def compareBinaryMatchesCompare[T](
-      implicit ordb: OrderedSerialization[T]): Law2[T] =
+  def compareBinaryMatchesCompare[T](implicit
+      ordb: OrderedSerialization[T]): Law2[T] =
     Law2(
       "compare(a, b) == compareBinary(aBin, bBin)",
       { (a: T, b: T) =>

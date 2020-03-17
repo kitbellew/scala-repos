@@ -515,8 +515,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     }
   }
 
-  private def typecheckExpect(tree: Tree, env: Env, expectedType: Type)(
-      implicit ctx: ErrorContext): Unit = {
+  private def typecheckExpect(tree: Tree, env: Env, expectedType: Type)(implicit
+      ctx: ErrorContext): Unit = {
     val tpe = typecheckExpr(tree, env)
     if (!isSubtype(tpe, expectedType))
       reportError(
@@ -913,8 +913,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     tree.tpe
   }
 
-  private def inferMethodType(encodedName: String, isStatic: Boolean)(
-      implicit ctx: ErrorContext): (List[Type], Type) = {
+  private def inferMethodType(encodedName: String, isStatic: Boolean)(implicit
+      ctx: ErrorContext): (List[Type], Type) = {
 
     val (_, paramRefTypes, resultRefType) = decodeMethodName(encodedName)
     val paramTypes = paramRefTypes.map(refTypeToType)
@@ -927,16 +927,16 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     (paramTypes, resultType)
   }
 
-  private def refTypeToType(refType: ReferenceType)(
-      implicit ctx: ErrorContext): Type = {
+  private def refTypeToType(refType: ReferenceType)(implicit
+      ctx: ErrorContext): Type = {
     refType match {
       case arrayType: ArrayType   => arrayType
       case ClassType(encodedName) => classNameToType(encodedName)
     }
   }
 
-  private def classNameToType(encodedName: String)(
-      implicit ctx: ErrorContext): Type = {
+  private def classNameToType(encodedName: String)(implicit
+      ctx: ErrorContext): Type = {
     if (encodedName.length == 1) {
       (encodedName.charAt(0): @switch) match {
         case 'V'                   => NoType
@@ -959,8 +959,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     }
   }
 
-  private def arrayElemType(arrayType: ArrayType)(
-      implicit ctx: ErrorContext): Type = {
+  private def arrayElemType(arrayType: ArrayType)(implicit
+      ctx: ErrorContext): Type = {
     if (arrayType.dimensions == 1) classNameToType(arrayType.baseClassName)
     else ArrayType(arrayType.baseClassName, arrayType.dimensions - 1)
   }
@@ -970,8 +970,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     errorCount += 1
   }
 
-  private def lookupInfo(className: String)(
-      implicit ctx: ErrorContext): Infos.ClassInfo = {
+  private def lookupInfo(className: String)(implicit
+      ctx: ErrorContext): Infos.ClassInfo = {
     unit.infos.getOrElse(
       className, {
         reportError(s"Cannot find info for class $className")
@@ -979,16 +979,16 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       })
   }
 
-  private def tryLookupClass(className: String)(
-      implicit ctx: ErrorContext): Either[Infos.ClassInfo, CheckedClass] = {
+  private def tryLookupClass(className: String)(implicit
+      ctx: ErrorContext): Either[Infos.ClassInfo, CheckedClass] = {
     classes
       .get(className)
       .fold[Either[Infos.ClassInfo, CheckedClass]](Left(lookupInfo(className)))(
         Right(_))
   }
 
-  private def lookupClass(className: String)(
-      implicit ctx: ErrorContext): CheckedClass = {
+  private def lookupClass(className: String)(implicit
+      ctx: ErrorContext): CheckedClass = {
     classes.getOrElseUpdate(
       className, {
         reportError(s"Cannot find class $className")
@@ -1002,13 +1002,13 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       })
   }
 
-  private def lookupClass(classType: ClassType)(
-      implicit ctx: ErrorContext): CheckedClass = {
+  private def lookupClass(classType: ClassType)(implicit
+      ctx: ErrorContext): CheckedClass = {
     lookupClass(classType.className)
   }
 
-  private def isSubclass(lhs: String, rhs: String)(
-      implicit ctx: ErrorContext): Boolean = {
+  private def isSubclass(lhs: String, rhs: String)(implicit
+      ctx: ErrorContext): Boolean = {
     tryLookupClass(lhs).fold(
       { info =>
         val parents = info.superClass ++: info.interfaces
@@ -1018,8 +1018,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     )
   }
 
-  private def isSubtype(lhs: Type, rhs: Type)(
-      implicit ctx: ErrorContext): Boolean = {
+  private def isSubtype(lhs: Type, rhs: Type)(implicit
+      ctx: ErrorContext): Boolean = {
     Types.isSubtype(lhs, rhs)(isSubclass)
   }
 

@@ -15,8 +15,8 @@ case class AgeRange(from: Int, to: Int) {}
 object AgeRange {
 
   //#bind
-  implicit def queryStringBindable(
-      implicit intBinder: QueryStringBindable[Int]) =
+  implicit def queryStringBindable(implicit
+      intBinder: QueryStringBindable[Int]) =
     new QueryStringBindable[AgeRange] {
       override def bind(key: String, params: Map[String, Seq[String]])
           : Option[Either[String, AgeRange]] = {

@@ -44,8 +44,8 @@ object Trees {
     def pos: Position
   }
 
-  case class Ident(name: String, originalName: Option[String])(
-      implicit val pos: Position)
+  case class Ident(name: String, originalName: Option[String])(implicit
+      val pos: Position)
       extends PropertyName {
     requireValidIdent(name)
   }
@@ -70,8 +70,8 @@ object Trees {
   }
 
   /** ES6 let or const (depending on the mutable flag). */
-  case class Let(name: Ident, mutable: Boolean, rhs: Tree)(
-      implicit val pos: Position)
+  case class Let(name: Ident, mutable: Boolean, rhs: Tree)(implicit
+      val pos: Position)
       extends LocalDef
 
   case class ParamDef(name: Ident, rest: Boolean)(implicit val pos: Position)
@@ -124,12 +124,12 @@ object Trees {
 
   case class Return(expr: Tree)(implicit val pos: Position) extends Tree
 
-  case class If(cond: Tree, thenp: Tree, elsep: Tree)(
-      implicit val pos: Position)
+  case class If(cond: Tree, thenp: Tree, elsep: Tree)(implicit
+      val pos: Position)
       extends Tree
 
-  case class While(cond: Tree, body: Tree, label: Option[Ident] = None)(
-      implicit val pos: Position)
+  case class While(cond: Tree, body: Tree, label: Option[Ident] = None)(implicit
+      val pos: Position)
       extends Tree
 
   case class DoWhile(body: Tree, cond: Tree, label: Option[Ident] = None)(
@@ -162,8 +162,8 @@ object Trees {
   case class DotSelect(qualifier: Tree, item: Ident)(implicit val pos: Position)
       extends Tree
 
-  case class BracketSelect(qualifier: Tree, item: Tree)(
-      implicit val pos: Position)
+  case class BracketSelect(qualifier: Tree, item: Tree)(implicit
+      val pos: Position)
       extends Tree
 
   /** Syntactic apply.
@@ -210,8 +210,8 @@ object Trees {
     *  Operations which do not preserve pureness are not allowed in this tree.
     *  These are notably +=, -=, *=, /= and %=
     */
-  case class BinaryOp(op: BinaryOp.Code, lhs: Tree, rhs: Tree)(
-      implicit val pos: Position)
+  case class BinaryOp(op: BinaryOp.Code, lhs: Tree, rhs: Tree)(implicit
+      val pos: Position)
       extends Tree
 
   object BinaryOp {
@@ -223,8 +223,8 @@ object Trees {
   case class ArrayConstr(items: List[Tree])(implicit val pos: Position)
       extends Tree
 
-  case class ObjectConstr(fields: List[(PropertyName, Tree)])(
-      implicit val pos: Position)
+  case class ObjectConstr(fields: List[(PropertyName, Tree)])(implicit
+      val pos: Position)
       extends Tree
 
   // Literals
@@ -256,14 +256,14 @@ object Trees {
 
   case class This()(implicit val pos: Position) extends Tree
 
-  case class Function(args: List[ParamDef], body: Tree)(
-      implicit val pos: Position)
+  case class Function(args: List[ParamDef], body: Tree)(implicit
+      val pos: Position)
       extends Tree
 
   // Named function definition
 
-  case class FunctionDef(name: Ident, args: List[ParamDef], body: Tree)(
-      implicit val pos: Position)
+  case class FunctionDef(name: Ident, args: List[ParamDef], body: Tree)(implicit
+      val pos: Position)
       extends Tree
 
   // ECMAScript 6 classes
@@ -281,8 +281,8 @@ object Trees {
       body: Tree)(implicit val pos: Position)
       extends Tree
 
-  case class GetterDef(static: Boolean, name: PropertyName, body: Tree)(
-      implicit val pos: Position)
+  case class GetterDef(static: Boolean, name: PropertyName, body: Tree)(implicit
+      val pos: Position)
       extends Tree
 
   case class SetterDef(

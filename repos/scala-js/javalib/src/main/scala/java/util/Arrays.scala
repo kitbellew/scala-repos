@@ -104,8 +104,8 @@ object Arrays {
     quickSort[T](a, 0, a.length)
 
   @inline
-  private def sortAnyRefImpl(a: Array[AnyRef])(
-      implicit ord: Ordering[AnyRef]): Unit =
+  private def sortAnyRefImpl(a: Array[AnyRef])(implicit
+      ord: Ordering[AnyRef]): Unit =
     quickSortAnyRef(a, 0, a.length)
 
   // Implementation of sorting based on Scala 2.11.7 scala.util.Sorting
@@ -116,8 +116,8 @@ object Arrays {
     * what might be required to box individual elements during comparison.
     */
   @noinline
-  private def quickSort[@specialized K](a: Array[K], i0: Int, iN: Int)(
-      implicit ord: Ordering[K]): Unit = {
+  private def quickSort[@specialized K](a: Array[K], i0: Int, iN: Int)(implicit
+      ord: Ordering[K]): Unit = {
     if (iN - i0 < qSortThreshold) {
       insertionSort(a, i0, iN)
     } else {
@@ -251,8 +251,8 @@ object Arrays {
   }
 
   @noinline
-  private def quickSortAnyRef(a: Array[AnyRef], i0: Int, iN: Int)(
-      implicit ord: Ordering[AnyRef]): Unit = {
+  private def quickSortAnyRef(a: Array[AnyRef], i0: Int, iN: Int)(implicit
+      ord: Ordering[AnyRef]): Unit = {
     if (iN - i0 < qSortThreshold) {
       insertionSortAnyRef(a, i0, iN)
     } else {

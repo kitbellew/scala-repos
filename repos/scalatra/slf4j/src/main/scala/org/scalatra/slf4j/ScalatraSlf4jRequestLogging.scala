@@ -50,8 +50,8 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
   }
 
   override protected[scalatra] def withRouteMultiParams[S](
-      matchedRoute: Option[MatchedRoute])(thunk: ⇒ S)(
-      implicit request: HttpServletRequest): S = {
+      matchedRoute: Option[MatchedRoute])(thunk: ⇒ S)(implicit
+      request: HttpServletRequest): S = {
     val originalParams = multiParams
     request(MultiParamsKey) =
       originalParams ++ matchedRoute.map(_.multiParams).getOrElse(Map.empty)

@@ -73,8 +73,8 @@ final case class ListT[M[_], A](run: M[List[A]]) {
 
   def toList: M[List[A]] = run
 
-  def foldRight[B](z: => B)(f: (=> A, => B) => B)(
-      implicit M: Functor[M]): M[B] =
+  def foldRight[B](z: => B)(f: (=> A, => B) => B)(implicit
+      M: Functor[M]): M[B] =
     M.map(run)(_.foldRight(z) { (right, left) => f(right, left) })
 
   def length(implicit M: Functor[M]): M[Int] = M.map(run)(_.length)
@@ -85,40 +85,40 @@ final case class ListT[M[_], A](run: M[List[A]]) {
 //
 
 sealed abstract class ListTInstances2 {
-  implicit def listTFunctor[F[_]](
-      implicit F0: Functor[F]): Functor[ListT[F, ?]] =
+  implicit def listTFunctor[F[_]](implicit
+      F0: Functor[F]): Functor[ListT[F, ?]] =
     new ListTFunctor[F] {
       implicit def F: Functor[F] = F0
     }
 
-  implicit def listTSemigroup[F[_], A](
-      implicit F0: Bind[F]): Semigroup[ListT[F, A]] =
+  implicit def listTSemigroup[F[_], A](implicit
+      F0: Bind[F]): Semigroup[ListT[F, A]] =
     new ListTSemigroup[F, A] {
       implicit def F: Bind[F] = F0
     }
 }
 
 sealed abstract class ListTInstances1 extends ListTInstances2 {
-  implicit def listTMonoid[F[_], A](
-      implicit F0: Monad[F]): Monoid[ListT[F, A]] =
+  implicit def listTMonoid[F[_], A](implicit
+      F0: Monad[F]): Monoid[ListT[F, A]] =
     new ListTMonoid[F, A] {
       implicit def F: Monad[F] = F0
     }
 }
 
 sealed abstract class ListTInstances extends ListTInstances1 {
-  implicit def listTMonadPlus[F[_]](
-      implicit F0: Monad[F]): MonadPlus[ListT[F, ?]] =
+  implicit def listTMonadPlus[F[_]](implicit
+      F0: Monad[F]): MonadPlus[ListT[F, ?]] =
     new ListTMonadPlus[F] {
       implicit def F: Monad[F] = F0
     }
 
-  implicit def listTEqual[F[_], A](
-      implicit E: Equal[F[List[A]]]): Equal[ListT[F, A]] =
+  implicit def listTEqual[F[_], A](implicit
+      E: Equal[F[List[A]]]): Equal[ListT[F, A]] =
     E.contramap((_: ListT[F, A]).toList)
 
-  implicit def listTShow[F[_], A](
-      implicit E: Show[F[List[A]]]): Show[ListT[F, A]] =
+  implicit def listTShow[F[_], A](implicit
+      E: Show[F[List[A]]]): Show[ListT[F, A]] =
     Contravariant[Show].contramap(E)((_: ListT[F, A]).toList)
 
   implicit val listTHoist: Hoist[ListT] =
@@ -184,8 +184,8 @@ private trait ListTHoist extends Hoist[ListT] {
   def liftM[G[_], A](a: G[A])(implicit G: Monad[G]): ListT[G, A] =
     fromList(G.map(a)(entry => entry :: Nil))
 
-  def hoist[M[_], N[_]](f: M ~> N)(
-      implicit M: Monad[M]): ListT[M, ?] ~> ListT[N, ?] =
+  def hoist[M[_], N[_]](f: M ~> N)(implicit
+      M: Monad[M]): ListT[M, ?] ~> ListT[N, ?] =
     new (ListT[M, ?] ~> ListT[N, ?]) {
       def apply[A](a: ListT[M, A]): ListT[N, A] = fromList(f(a.run))
     }

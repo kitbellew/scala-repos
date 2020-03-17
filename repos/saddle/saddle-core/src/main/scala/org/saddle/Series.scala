@@ -850,8 +850,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     *
     * @param proxy The series containing the values to use
     */
-  def proxyWith(proxy: Series[X, T])(
-      implicit fn: org.saddle.scalar.NA.type => T): Series[X, T] = {
+  def proxyWith(proxy: Series[X, T])(implicit
+      fn: org.saddle.scalar.NA.type => T): Series[X, T] = {
     require(proxy.index.isUnique, "Proxy index must be unique")
 
     this.fillNA { key =>

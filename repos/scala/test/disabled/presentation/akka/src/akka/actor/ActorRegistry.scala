@@ -74,8 +74,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
   /**
     * Finds all actors that are subtypes of the class passed in as the ClassTag argument and supporting passed message.
     */
-  def actorsFor[T <: Actor](message: Any)(
-      implicit classTag: ClassTag[T]): Array[ActorRef] =
+  def actorsFor[T <: Actor](message: Any)(implicit
+      classTag: ClassTag[T]): Array[ActorRef] =
     filter(a =>
       classTag.erasure.isAssignableFrom(a.actor.getClass) && a.isDefinedAt(
         message))
@@ -172,8 +172,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
   /**
     * Finds all typed actors that are subtypes of the class passed in as the ClassTag argument.
     */
-  def typedActorsFor[T <: AnyRef](
-      implicit classTag: ClassTag[T]): Array[AnyRef] = {
+  def typedActorsFor[T <: AnyRef](implicit
+      classTag: ClassTag[T]): Array[AnyRef] = {
     TypedActorModule.ensureEnabled
     typedActorsFor[T](classTag.erasure.asInstanceOf[Class[T]])
   }
@@ -181,8 +181,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
   /**
     * Finds any typed actor that matches T.
     */
-  def typedActorFor[T <: AnyRef](
-      implicit classTag: ClassTag[T]): Option[AnyRef] = {
+  def typedActorFor[T <: AnyRef](implicit
+      classTag: ClassTag[T]): Option[AnyRef] = {
     TypedActorModule.ensureEnabled
     def predicate(proxy: AnyRef): Boolean = {
       val actorRef =

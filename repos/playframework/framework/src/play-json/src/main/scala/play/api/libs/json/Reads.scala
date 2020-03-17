@@ -97,8 +97,8 @@ object Reads extends ConstraintReads with PathReads with DefaultReads {
 
   import play.api.libs.functional._
 
-  implicit def applicative(
-      implicit applicativeJsResult: Applicative[JsResult]): Applicative[Reads] =
+  implicit def applicative(implicit
+      applicativeJsResult: Applicative[JsResult]): Applicative[Reads] =
     new Applicative[Reads] {
 
       def pure[A](a: A): Reads[A] = Reads[A] { _ => JsSuccess(a) }
@@ -550,8 +550,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     */
   def offsetDateTimeReads[T](
       parsing: T,
-      corrector: String => String = identity)(
-      implicit p: T => TemporalParser[OffsetDateTime]): Reads[OffsetDateTime] =
+      corrector: String => String = identity)(implicit
+      p: T => TemporalParser[OffsetDateTime]): Reads[OffsetDateTime] =
     new Reads[OffsetDateTime] {
       def reads(json: JsValue): JsResult[OffsetDateTime] =
         json match {
@@ -1055,8 +1055,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
   /**
     * Deserializer for Map[String,V] types.
     */
-  implicit def mapReads[V](
-      implicit fmtv: Reads[V]): Reads[collection.immutable.Map[String, V]] =
+  implicit def mapReads[V](implicit
+      fmtv: Reads[V]): Reads[collection.immutable.Map[String, V]] =
     new Reads[collection.immutable.Map[String, V]] {
       def reads(json: JsValue) =
         json match {
