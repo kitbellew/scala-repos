@@ -1,4 +1,5 @@
-class SelfQualifier { self =>
+class SelfQualifier {
+  self =>
   private[this] val aPrivateVal: Int = 0
   protected[this] val aProtectedVal: Int = 0
   private[this] var aPrivateVar: Int = 0

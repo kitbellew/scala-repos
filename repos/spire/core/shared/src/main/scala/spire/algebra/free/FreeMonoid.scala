@@ -2,7 +2,8 @@ package spire
 package algebra
 package free
 
-final class FreeMonoid[A] private (val terms: List[A]) extends AnyVal { lhs =>
+final class FreeMonoid[A] private (val terms: List[A]) extends AnyVal {
+  lhs =>
 
   /**
     * Map each term to type `B` and sum them using `B`'s [[Semigroup]],
@@ -28,7 +29,8 @@ final class FreeMonoid[A] private (val terms: List[A]) extends AnyVal { lhs =>
   override def toString: String = terms.mkString(" |+| ")
 }
 
-object FreeMonoid { companion =>
+object FreeMonoid {
+  companion =>
   final def id[A]: FreeMonoid[A] = new FreeMonoid(Nil)
 
   final def apply[A](a: A): FreeMonoid[A] = lift(a)

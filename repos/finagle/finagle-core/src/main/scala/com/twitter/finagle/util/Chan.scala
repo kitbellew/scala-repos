@@ -19,7 +19,8 @@ trait Chan[-T] {
 trait Proc[-T] extends Chan[T] {
   private[this] val q = new ConcurrentLinkedQueue[T]
   private[this] val nq = new AtomicInteger(0)
-  @volatile private[this] var closed = false
+  @volatile
+  private[this] var closed = false
 
   def close() { closed = true }
 

@@ -19,75 +19,87 @@ import org.scalajs.testsuite.utils.Platform.executingInJVM
 
 class StringTest {
 
-  @Test def length_test(): Unit = {
+  @Test
+  def length_test(): Unit = {
     assertEquals(8, "Scala.js".length)
     assertEquals(0, "".length)
   }
 
-  @Test def intern(): Unit = {
+  @Test
+  def intern(): Unit = {
     val s = "Scala.js"
     assertEquals(s, s.intern)
   }
 
-  @Test def equalsTest(): Unit = {
+  @Test
+  def equalsTest(): Unit = {
     assertTrue("Scala.js".equals("Scala.js"))
     assertFalse("Scala.js".equals("Java"))
   }
 
-  @Test def equalsIgnoreCase(): Unit = {
+  @Test
+  def equalsIgnoreCase(): Unit = {
     assertTrue("Scala.JS".equalsIgnoreCase("Scala.js"))
     assertTrue("åløb".equalsIgnoreCase("ÅLØb"))
     assertFalse("Scala.js".equalsIgnoreCase("Java"))
     assertFalse("Scala.js".equalsIgnoreCase(null))
   }
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
     assertTrue("Scala.js".compareTo("Scala") > 0)
     assertEquals(0, "Scala.js".compareTo("Scala.js"))
     assertTrue("Scala.js".compareTo("banana") < 0)
   }
 
-  @Test def compareToIgnoreCase(): Unit = {
+  @Test
+  def compareToIgnoreCase(): Unit = {
     assertEquals(0, "Scala.JS".compareToIgnoreCase("Scala.js"))
     assertTrue("Scala.JS".compareToIgnoreCase("scala") > 0)
     assertEquals(0, "åløb".compareToIgnoreCase("ÅLØB"))
     assertTrue("Java".compareToIgnoreCase("Scala") < 0)
   }
 
-  @Test def isEmpty(): Unit = {
+  @Test
+  def isEmpty(): Unit = {
     assertFalse("Scala.js".isEmpty)
     assertTrue("".isEmpty)
   }
 
-  @Test def contains(): Unit = {
+  @Test
+  def contains(): Unit = {
     assertTrue("Scala.js".contains("Scala"))
     assertTrue("Scala.js".contains("Scala.js"))
     assertTrue("ananas".contains("na"))
     assertFalse("Scala.js".contains("scala"))
   }
 
-  @Test def startWith(): Unit = {
+  @Test
+  def startWith(): Unit = {
     assertTrue("Scala.js".startsWith("Scala"))
     assertTrue("Scala.js".startsWith("Scala.js"))
     assertFalse("Scala.js".startsWith("scala"))
     assertTrue("ananas".startsWith("an"))
   }
 
-  @Test def endsWith(): Unit = {
+  @Test
+  def endsWith(): Unit = {
     assertTrue("Scala.js".endsWith("js"))
     assertTrue("Scala.js".endsWith("Scala.js"))
     assertFalse("Scala.js".endsWith("JS"))
     assertTrue("banana".endsWith("na"))
   }
 
-  @Test def indexOf_String(): Unit = {
+  @Test
+  def indexOf_String(): Unit = {
     assertEquals(6, "Scala.js".indexOf("js"))
     assertEquals(0, "Scala.js".indexOf("Scala.js"))
     assertEquals(1, "ananas".indexOf("na"))
     assertEquals(-1, "Scala.js".indexOf("Java"))
   }
 
-  @Test def indexOf_int(): Unit = {
+  @Test
+  def indexOf_int(): Unit = {
     assertEquals(0, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0x61))
     assertEquals(3, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0x1D306))
     assertEquals(3, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0xD834))
@@ -95,14 +107,16 @@ class StringTest {
     assertEquals(5, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0x64))
   }
 
-  @Test def lastIndexOf_String(): Unit = {
+  @Test
+  def lastIndexOf_String(): Unit = {
     assertEquals(0, "Scala.js".lastIndexOf("Scala.js"))
     assertEquals(3, "ananas".lastIndexOf("na"))
     assertEquals(-1, "Scala.js".lastIndexOf("Java"))
     assertEquals(-1, "Negative index".lastIndexOf("N", -5))
   }
 
-  @Test def lastIndexOf_int(): Unit = {
+  @Test
+  def lastIndexOf_int(): Unit = {
     assertEquals(0, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0x61))
     assertEquals(8, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0x1D306))
     assertEquals(8, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0xD834))
@@ -111,20 +125,24 @@ class StringTest {
     assertEquals(-1, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0x64, -1))
   }
 
-  @Test def toUpperCase(): Unit = {
+  @Test
+  def toUpperCase(): Unit = {
     assertEquals("SCALA.JS", "Scala.js".toUpperCase())
   }
 
-  @Test def toLowerCase(): Unit = {
+  @Test
+  def toLowerCase(): Unit = {
     assertEquals("scala.js", "Scala.js".toLowerCase())
   }
 
-  @Test def charAt(): Unit = {
+  @Test
+  def charAt(): Unit = {
     assertEquals('.', "Scala.js".charAt(5))
     assertNotEquals("Scala.js".charAt(6), '.')
   }
 
-  @Test def codePointAt(): Unit = {
+  @Test
+  def codePointAt(): Unit = {
     // String that starts with a BMP symbol
     assertEquals(0x61, "abc\uD834\uDF06def".codePointAt(0))
     assertEquals(0x1D306, "abc\uD834\uDF06def".codePointAt(3))
@@ -142,7 +160,8 @@ class StringTest {
     assertEquals(0xDF06, "\uDF06abc".codePointAt(0))
   }
 
-  @Test def codePointCount(): Unit = {
+  @Test
+  def codePointCount(): Unit = {
     val s = "abc\uD834\uDF06de\uD834\uDF06fgh\uD834ij\uDF06\uD834kl\uDF06"
     assertEquals(18, s.codePointCount(0, s.length))
     assertEquals(1, s.codePointCount(3, 5))
@@ -163,25 +182,29 @@ class StringTest {
     expectThrows(classOf[IndexOutOfBoundsException], s.codePointCount(10, 30))
   }
 
-  @Test def subSequence(): Unit = {
+  @Test
+  def subSequence(): Unit = {
     assertEquals("Scala", "Scala.js".subSequence(0, 5))
     assertEquals("js", "Scala.js".subSequence(6, 8))
     assertEquals("la", "Scala.js".subSequence(3, 5))
     assertEquals("", "Scala.js".subSequence(3, 3))
   }
 
-  @Test def replace(): Unit = {
+  @Test
+  def replace(): Unit = {
     assertEquals("Scala", "Scala.js".replace(".js", ""))
     assertEquals("Scala.js", "Scala.js".replace("JS", ""))
     assertEquals("bb", "aa".replace('a', 'b')) // #25
   }
 
-  @Test def matches(): Unit = {
+  @Test
+  def matches(): Unit = {
     assertTrue("Scala.js".matches(".*js"))
     assertFalse("Scala.js".matches(".*JS"))
   }
 
-  @Test def split(): Unit = {
+  @Test
+  def split(): Unit = {
     assertArrayEquals(
       Array[AnyRef]("Sc", "l", ".js"),
       erased("Scala.js".split("a")))
@@ -195,7 +218,8 @@ class StringTest {
     }
   }
 
-  @Test def split_with_char_as_argument(): Unit = {
+  @Test
+  def split_with_char_as_argument(): Unit = {
     assertArrayEquals(
       Array[AnyRef]("Scala", "js"),
       erased("Scala.js".split('.')))
@@ -207,7 +231,8 @@ class StringTest {
     }
   }
 
-  @Test def `startsWith(prefix, toffset) - #1603`(): Unit = {
+  @Test
+  def `startsWith(prefix, toffset) - #1603`(): Unit = {
     assertTrue("Scala.js".startsWith("ala", 2))
     assertTrue("Scala.js".startsWith("Scal", 0))
 
@@ -224,17 +249,18 @@ class StringTest {
     assertFalse("Scala.js".startsWith("", 9))
   }
 
-  @Test def toCharArray(): Unit = {
-    assertEquals('.', "Scala.js".toCharArray()(5))
-  }
+  @Test
+  def toCharArray(): Unit = { assertEquals('.', "Scala.js".toCharArray()(5)) }
 
-  @Test def hashCodeTest(): Unit = {
+  @Test
+  def hashCodeTest(): Unit = {
     assertEquals(-1395193631, "a`jkxzcbfaslkjfbkj,289oinkasdf".hashCode())
     assertEquals(44878, "-34".hashCode())
     assertEquals(0, "".hashCode())
   }
 
-  @Test def getChars(): Unit = {
+  @Test
+  def getChars(): Unit = {
     val trg = new Array[Char](10)
     "asdf_foo".getChars(2, 6, trg, 3)
     val exp = Array(0, 0, 0, 'd', 'f', '_', 'f', 0, 0, 0)
@@ -242,9 +268,11 @@ class StringTest {
     for ((i, e) <- trg zip exp) { assertEquals(e, i.toInt) }
   }
 
-  @Test def concat(): Unit = { assertEquals("asdffdsa", "asdf".concat("fdsa")) }
+  @Test
+  def concat(): Unit = { assertEquals("asdffdsa", "asdf".concat("fdsa")) }
 
-  @Test def constructors(): Unit = {
+  @Test
+  def constructors(): Unit = {
     val charArray = Array(
       'a', 'b', 'c', 'd', '\uD834', '\uDF06', 'e', 'f', 'g', 'h', 'i')
     val codePointArray = Array(65, 0x1D306, 67, 68, 0xD834, 69, 72, 0xDF06)
@@ -260,7 +288,8 @@ class StringTest {
       "builder-foo")
   }
 
-  @Test def format(): Unit = {
+  @Test
+  def format(): Unit = {
     assertEquals("5", String.format("%d", new Integer(5)))
     assertEquals("00005", String.format("%05d", new Integer(5)))
     assertEquals("0x005", String.format("%0#5x", new Integer(5)))
@@ -275,7 +304,8 @@ class StringTest {
         String.format("%x", new java.lang.Byte(-4.toByte)))
   }
 
-  @Test def getBytes(): Unit = {
+  @Test
+  def getBytes(): Unit = {
 
     assertArrayEquals(
       "hello-world".getBytes(Charset.forName("UTF-8")),
@@ -290,7 +320,8 @@ class StringTest {
     )
   }
 
-  @Test def regionMatches(): Unit = {
+  @Test
+  def regionMatches(): Unit = {
     /* Ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/StringTest.java
      */
@@ -344,7 +375,8 @@ class StringTest {
     assertTrue(testU.regionMatches(true, 1, "bCdx", 1, -3))
   }
 
-  @Test def String_CASE_INSENSITIVE_ORDERING(): Unit = {
+  @Test
+  def String_CASE_INSENSITIVE_ORDERING(): Unit = {
     def compare(s1: String, s2: String): Int =
       String.CASE_INSENSITIVE_ORDER.compare(s1, s2)
 
@@ -357,7 +389,8 @@ class StringTest {
     assertTrue(compare("Java", "Scala") < 0)
   }
 
-  @inline private def erased(array: Array[String]): Array[AnyRef] = {
+  @inline
+  private def erased(array: Array[String]): Array[AnyRef] = {
     array.asInstanceOf[Array[AnyRef]]
   }
 }

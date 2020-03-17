@@ -5,7 +5,8 @@ import Id._
 /**
   * Represents a function `A => M[B]`.
   */
-final case class Kleisli[M[_], A, B](run: A => M[B]) { self =>
+final case class Kleisli[M[_], A, B](run: A => M[B]) {
+  self =>
   import Kleisli._
 
   def dimap[C, D](f: C => A, g: B => D)(implicit

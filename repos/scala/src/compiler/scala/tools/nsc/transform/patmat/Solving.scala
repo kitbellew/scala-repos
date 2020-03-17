@@ -471,7 +471,8 @@ trait Solving extends Logic {
     }
 
     def findTseitinModelFor(clauses: Array[Clause]): TseitinModel = {
-      @inline def orElse(a: TseitinModel, b: => TseitinModel) =
+      @inline
+      def orElse(a: TseitinModel, b: => TseitinModel) =
         if (a ne NoTseitinModel) a else b
 
       debug.patmat(s"DPLL\n${cnfString(clauses)}")

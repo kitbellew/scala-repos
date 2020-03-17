@@ -73,7 +73,8 @@ object Literal {
     }
 }
 
-sealed trait ExpressionDag[N[_]] { self =>
+sealed trait ExpressionDag[N[_]] {
+  self =>
   // Once we fix N above, we can make E[T] = Expr[T, N]
   type E[t] = Expr[t, N]
   type Lit[t] = Literal[t, N]
@@ -363,7 +364,8 @@ object ExpressionDag {
 /**
   * This implements a simplification rule on ExpressionDags
   */
-trait Rule[N[_]] { self =>
+trait Rule[N[_]] {
+  self =>
 
   /**
     * If the given Id can be replaced with a simpler expression,

@@ -43,9 +43,12 @@ private[hive] case class InsertIntoHiveTable(
     ifNotExists: Boolean)
     extends UnaryNode {
 
-  @transient val sc: HiveContext = sqlContext.asInstanceOf[HiveContext]
-  @transient private lazy val hiveContext = new Context(sc.hiveconf)
-  @transient private lazy val catalog = sc.sessionState.catalog
+  @transient
+  val sc: HiveContext = sqlContext.asInstanceOf[HiveContext]
+  @transient
+  private lazy val hiveContext = new Context(sc.hiveconf)
+  @transient
+  private lazy val catalog = sc.sessionState.catalog
 
   def output: Seq[Attribute] = Seq.empty
 
@@ -169,7 +172,8 @@ private[hive] case class InsertIntoHiveTable(
         new SparkHiveWriterContainer(jobConf, fileSinkConf, child.output, table)
       }
 
-    @transient val outputClass =
+    @transient
+    val outputClass =
       writerContainer.newSerializer(table.tableDesc).getSerializedClass
     saveAsHiveFile(
       child.execute(),

@@ -87,7 +87,8 @@ trait WithFuture extends scalalib.Validation {
     new spray.util.pimps.PimpedFuture[T](fut)
 }
 
-trait WithPlay { self: PackageObject =>
+trait WithPlay {
+  self: PackageObject =>
 
   import play.api.libs.json._
   import scalalib.Zero

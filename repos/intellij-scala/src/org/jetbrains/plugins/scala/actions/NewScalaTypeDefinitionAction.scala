@@ -154,9 +154,10 @@ class NewScalaTypeDefinitionAction
 }
 
 object NewScalaTypeDefinitionAction {
-  @NonNls private[actions] val NAME_TEMPLATE_PROPERTY: String = "NAME"
-  @NonNls private[actions] val LOW_CASE_NAME_TEMPLATE_PROPERTY: String =
-    "lowCaseName"
+  @NonNls
+  private[actions] val NAME_TEMPLATE_PROPERTY: String = "NAME"
+  @NonNls
+  private[actions] val LOW_CASE_NAME_TEMPLATE_PROPERTY: String = "lowCaseName"
 
   def createFromTemplate(
       directory: PsiDirectory,

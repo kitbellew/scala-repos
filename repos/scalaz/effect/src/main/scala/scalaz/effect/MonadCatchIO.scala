@@ -8,7 +8,8 @@ trait MonadCatchIO[M[_]] extends MonadIO[M] {
 }
 
 object MonadCatchIO extends MonadCatchIOFunctions {
-  @inline def apply[M[_]](implicit M: MonadCatchIO[M]): MonadCatchIO[M] = M
+  @inline
+  def apply[M[_]](implicit M: MonadCatchIO[M]): MonadCatchIO[M] = M
 }
 
 sealed abstract class MonadCatchIOFunctions {

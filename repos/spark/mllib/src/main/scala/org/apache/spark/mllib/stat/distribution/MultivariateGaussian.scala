@@ -40,8 +40,7 @@ import org.apache.spark.mllib.util.MLUtils
   * @param mu The mean vector of the distribution
   * @param sigma The covariance matrix of the distribution
   */
-@Since("1.3.0")
-@DeveloperApi
+@Since("1.3.0") @DeveloperApi
 class MultivariateGaussian @Since("1.3.0") (
     @Since("1.3.0") val mu: Vector,
     @Since("1.3.0") val sigma: Matrix)

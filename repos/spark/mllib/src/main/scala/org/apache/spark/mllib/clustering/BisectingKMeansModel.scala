@@ -30,8 +30,7 @@ import org.apache.spark.rdd.RDD
   *
   * @param root the root node of the clustering tree
   */
-@Since("1.6.0")
-@Experimental
+@Since("1.6.0") @Experimental
 class BisectingKMeansModel private[clustering] (
     private[clustering] val root: ClusteringTreeNode)
     extends Serializable

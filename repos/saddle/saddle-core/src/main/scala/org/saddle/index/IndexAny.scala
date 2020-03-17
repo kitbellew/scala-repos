@@ -103,7 +103,8 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
 
   // adapted from java source
   private def binarySearch(a: Array[T], key: T): Int = {
-    @tailrec def bSearch(lo: Int = 0, hi: Int = a.length - 1): Int = {
+    @tailrec
+    def bSearch(lo: Int = 0, hi: Int = a.length - 1): Int = {
       if (lo > hi) -(lo + 1)
       else {
         val mid: Int = (lo + hi) >>> 1

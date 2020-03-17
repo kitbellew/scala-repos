@@ -25,7 +25,8 @@ trait LeftPartialAction[P, G] extends Any {
 }
 
 object LeftPartialAction {
-  @inline final def apply[P, G](implicit
+  @inline
+  final def apply[P, G](implicit
       G: LeftPartialAction[P, G]): LeftPartialAction[P, G] = G
 
   implicit def fromLeftAction[P, G](implicit
@@ -57,7 +58,8 @@ trait RightPartialAction[P, G] extends Any {
 }
 
 object RightPartialAction {
-  @inline final def apply[P, G](implicit
+  @inline
+  final def apply[P, G](implicit
       G: RightPartialAction[P, G]): RightPartialAction[P, G] = G
 
   implicit def fromRightAction[P, G](implicit
@@ -106,8 +108,9 @@ trait PartialAction[P, G]
     with RightPartialAction[P, G]
 
 object PartialAction {
-  @inline final def apply[P, G](implicit
-      G: PartialAction[P, G]): PartialAction[P, G] = G
+  @inline
+  final def apply[P, G](implicit G: PartialAction[P, G]): PartialAction[P, G] =
+    G
 
   implicit def fromAction[P, G](implicit G: Action[P, G]): PartialAction[P, G] =
     new PartialAction[P, G] {

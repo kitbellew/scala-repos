@@ -18,8 +18,7 @@ class C {
   val f1 = 2
 }
 
-@RunWith(classOf[PaxExam])
-@ExamReactorStrategy(Array(classOf[PerMethod]))
+@RunWith(classOf[PaxExam]) @ExamReactorStrategy(Array(classOf[PerMethod]))
 class ReflectionToolBoxTest extends ScalaOsgiHelper {
 
   @Configuration

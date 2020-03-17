@@ -12,8 +12,7 @@ import org.apache.commons.io.FileUtils
 import org.openjdk.jmh.annotations.Scope
 import scala.concurrent.Await
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.Throughput))
 class PersistentActorThroughputBenchmark {
 
   val config = PersistenceSpec.config("leveldb", "benchmark")
@@ -68,40 +67,35 @@ class PersistentActorThroughputBenchmark {
     storageLocations.foreach(FileUtils.deleteDirectory)
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def actor_normalActor_reply_baseline(): Unit = {
     for (i <- data10k) actor.tell(i, probe.ref)
 
     probe.expectMsg(data10k.last)
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def persistentActor_persist_reply(): Unit = {
     for (i <- data10k) persistPersistentActor.tell(i, probe.ref)
 
     probe.expectMsg(Evt(data10k.last))
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def persistentActor_persistAsync_reply(): Unit = {
     for (i <- data10k) persistAsync1PersistentActor.tell(i, probe.ref)
 
     probe.expectMsg(Evt(data10k.last))
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def persistentActor_noPersist_reply(): Unit = {
     for (i <- data10k) noPersistPersistentActor.tell(i, probe.ref)
 
     probe.expectMsg(Evt(data10k.last))
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def persistentActor_persistAsync_replyRightOnCommandReceive(): Unit = {
     for (i <- data10k) persistAsyncQuickReplyPersistentActor.tell(i, probe.ref)
 

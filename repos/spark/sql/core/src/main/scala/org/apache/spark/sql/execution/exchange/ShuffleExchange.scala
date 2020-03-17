@@ -38,7 +38,8 @@ import org.apache.spark.util.MutablePair
 case class ShuffleExchange(
     var newPartitioning: Partitioning,
     child: SparkPlan,
-    @transient coordinator: Option[ExchangeCoordinator])
+    @transient
+    coordinator: Option[ExchangeCoordinator])
     extends Exchange {
 
   override def nodeName: String = {

@@ -37,8 +37,7 @@ import org.apache.spark.sql.types.DoubleType
   * The rawPrediction column can be of type double (binary 0/1 prediction, or probability of label 1)
   * or of type vector (length-2 vector of raw predictions, scores, or label probabilities).
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 class BinaryClassificationEvaluator @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends Evaluator
@@ -81,8 +80,7 @@ class BinaryClassificationEvaluator @Since("1.4.0") (
     * @group setParam
     * @deprecated use [[setRawPredictionCol()]] instead
     */
-  @deprecated("use setRawPredictionCol instead", "1.5.0")
-  @Since("1.2.0")
+  @deprecated("use setRawPredictionCol instead", "1.5.0") @Since("1.2.0")
   def setScoreCol(value: String): this.type = set(rawPredictionCol, value)
 
   /** @group setParam */

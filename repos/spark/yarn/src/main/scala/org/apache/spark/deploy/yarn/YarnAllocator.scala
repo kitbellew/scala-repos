@@ -83,12 +83,15 @@ private[yarn] class YarnAllocator(
   private val releasedContainers = Collections.newSetFromMap[ContainerId](
     new ConcurrentHashMap[ContainerId, java.lang.Boolean])
 
-  @volatile private var numExecutorsRunning = 0
+  @volatile
+  private var numExecutorsRunning = 0
   // Used to generate a unique ID per executor
   private var executorIdCounter = 0
-  @volatile private var numExecutorsFailed = 0
+  @volatile
+  private var numExecutorsFailed = 0
 
-  @volatile private var targetNumExecutors = YarnSparkHadoopUtil
+  @volatile
+  private var targetNumExecutors = YarnSparkHadoopUtil
     .getInitialTargetExecutorNumber(sparkConf)
 
   // Executor loss reason requests that are pending - maps from executor ID for inquiry to a

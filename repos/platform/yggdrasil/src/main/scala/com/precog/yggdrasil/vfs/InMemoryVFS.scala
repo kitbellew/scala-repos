@@ -59,11 +59,13 @@ import scalaz.syntax.std.list._
 import scalaz.syntax.std.option._
 import scalaz.effect.IO
 
-trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
+trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
+  moduleSelf =>
   class Projection(slices0: Vector[Slice]) extends ProjectionLike[M, Slice] {
     type Key = Int
 
-    @volatile private var slices = slices0
+    @volatile
+    private var slices = slices0
     private[InMemoryVFSModule] def append(slice: Slice) =
       synchronized { slices = slices :+ slice }
 

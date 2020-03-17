@@ -30,10 +30,14 @@ class StandardScalerSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  @transient var data: Array[Vector] = _
-  @transient var resWithStd: Array[Vector] = _
-  @transient var resWithMean: Array[Vector] = _
-  @transient var resWithBoth: Array[Vector] = _
+  @transient
+  var data: Array[Vector] = _
+  @transient
+  var resWithStd: Array[Vector] = _
+  @transient
+  var resWithMean: Array[Vector] = _
+  @transient
+  var resWithBoth: Array[Vector] = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

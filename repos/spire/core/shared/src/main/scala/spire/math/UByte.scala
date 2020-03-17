@@ -4,11 +4,15 @@ package math
 import spire.algebra.{IsIntegral, Order, Rig, Signed}
 
 object UByte extends UByteInstances {
-  @inline final def apply(n: Byte): UByte = new UByte(n)
-  @inline final def apply(n: Int): UByte = new UByte(n.toByte)
+  @inline
+  final def apply(n: Byte): UByte = new UByte(n)
+  @inline
+  final def apply(n: Int): UByte = new UByte(n.toByte)
 
-  @inline final def MinValue: UByte = UByte(0)
-  @inline final def MaxValue: UByte = UByte(-1)
+  @inline
+  final def MinValue: UByte = UByte(0)
+  @inline
+  final def MaxValue: UByte = UByte(-1)
 }
 
 class UByte(val signed: Byte)

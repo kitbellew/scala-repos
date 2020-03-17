@@ -8,7 +8,8 @@ package ast
 
 import java.io.{OutputStream, PrintWriter}
 
-trait Printers extends scala.reflect.internal.Printers { this: Global =>
+trait Printers extends scala.reflect.internal.Printers {
+  this: Global =>
 
   import treeInfo.{IsTrue, IsFalse}
 

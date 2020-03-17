@@ -4,18 +4,21 @@ import org.junit.Assert._
 import org.junit.Test
 
 class JUnitSubClassTest {
-  @Test def test1(): Unit = ()
+  @Test
+  def test1(): Unit = ()
 }
 
 class JUnitSubClassExtended1Test extends JUnitSubClassTest
 
 class JUnitSubClassExtended2Test extends JUnitSubClassTest {
-  @Test def test2(): Unit = ()
+  @Test
+  def test2(): Unit = ()
 }
 
 class JUnitSubClassTestCheck {
 
-  @Test def testSubClass0(): Unit = {
+  @Test
+  def testSubClass0(): Unit = {
     val boot = JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.JUnitSubClassTest")
     try { boot.invoke(boot.newInstance(), "test1") }
@@ -25,7 +28,8 @@ class JUnitSubClassTestCheck {
     }
   }
 
-  @Test def testSubClass1(): Unit = {
+  @Test
+  def testSubClass1(): Unit = {
     val boot = JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.JUnitSubClassExtended1Test")
     try { boot.invoke(boot.newInstance(), "test1") }
@@ -35,7 +39,8 @@ class JUnitSubClassTestCheck {
     }
   }
 
-  @Test def testSubClass2(): Unit = {
+  @Test
+  def testSubClass2(): Unit = {
     val boot = JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.JUnitSubClassExtended2Test")
     try {

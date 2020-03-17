@@ -295,7 +295,8 @@ private[html] object SyntaxHigh {
       out.toString
     }
 
-    @tailrec def parse(pre: String, i: Int): Unit = {
+    @tailrec
+    def parse(pre: String, i: Int): Unit = {
       out append pre
       if (i == buf.length) return
       buf(i) match {

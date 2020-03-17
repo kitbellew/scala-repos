@@ -21,7 +21,8 @@ import org.junit.Assert._
 class IntTest {
   import IntTest._
 
-  @Test def `should_support_unary_minus`(): Unit = {
+  @Test
+  def `should_support_unary_minus`(): Unit = {
     def test(a: Int, expected: Int): Unit = assertEquals(expected, -a)
 
     test(56, -56)
@@ -35,7 +36,8 @@ class IntTest {
     test(AlmostMaxVal, -AlmostMaxVal)
   }
 
-  @Test def `should_support_plus`(): Unit = {
+  @Test
+  def `should_support_plus`(): Unit = {
     def test(a: Int, b: Int, expected: Int): Unit =
       assertEquals(expected, a + b)
 
@@ -50,7 +52,8 @@ class IntTest {
     test(AlmostMaxVal, 123, AlmostMaxVal + 123)
   }
 
-  @Test def `should_support_minus`(): Unit = {
+  @Test
+  def `should_support_minus`(): Unit = {
     def test(a: Int, b: Int, expected: Int): Unit =
       assertEquals(expected, a - b)
 
@@ -65,7 +68,8 @@ class IntTest {
     test(AlmostMaxVal, -123, AlmostMaxVal + 123)
   }
 
-  @Test def `should_support_times`(): Unit = {
+  @Test
+  def `should_support_times`(): Unit = {
     def test(a: Int, b: Int, expected: Int): Unit =
       assertEquals(expected, a * b)
 
@@ -92,7 +96,8 @@ class IntTest {
     test(AlmostMaxVal, -123, AlmostMaxVal * -123)
   }
 
-  @Test def `should_support_division`(): Unit = {
+  @Test
+  def `should_support_division`(): Unit = {
     def test(a: Int, b: Int, expected: Int): Unit =
       assertEquals(expected, a / b)
 
@@ -119,12 +124,15 @@ class IntTest {
     test(AlmostMaxVal, -123, AlmostMaxVal / -123)
   }
 
-  @Test def `percent_should_never_produce_a_negative_0_#1984`(): Unit = {
-    @noinline def value: Int = -8
+  @Test
+  def `percent_should_never_produce_a_negative_0_#1984`(): Unit = {
+    @noinline
+    def value: Int = -8
     assertTrue((value % 8).asInstanceOf[java.lang.Integer].equals(0))
   }
 
-  @Test def `should_support_shift_left`(): Unit = {
+  @Test
+  def `should_support_shift_left`(): Unit = {
     def test(a: Int, b: Int, expected: Int): Unit =
       assertEquals(expected, a << b)
 
@@ -140,7 +148,8 @@ class IntTest {
     test(MaxVal, 1, MaxVal << 1)
   }
 
-  @Test def `should_support_shift_right`(): Unit = {
+  @Test
+  def `should_support_shift_right`(): Unit = {
     def test(a: Int, b: Int, expected: Int): Unit =
       assertEquals(expected, a >> b)
 
@@ -156,7 +165,8 @@ class IntTest {
     test(MaxVal, 1, MaxVal >> 1)
   }
 
-  @Test def `should_support_shift_right_sign_extend`(): Unit = {
+  @Test
+  def `should_support_shift_right_sign_extend`(): Unit = {
     def test(a: Int, b: Int, expected: Int): Unit =
       assertEquals(expected, a >>> b)
 

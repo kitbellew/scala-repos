@@ -63,13 +63,16 @@ private[niocharset] object UTF_8
       val low: Char)
 
   private object DecodedMultiByte {
-    @inline def apply(failure: CoderResult): DecodedMultiByte =
+    @inline
+    def apply(failure: CoderResult): DecodedMultiByte =
       new DecodedMultiByte(failure, 0, 0)
 
-    @inline def apply(single: Char): DecodedMultiByte =
+    @inline
+    def apply(single: Char): DecodedMultiByte =
       new DecodedMultiByte(null, single, 0)
 
-    @inline def apply(high: Char, low: Char): DecodedMultiByte =
+    @inline
+    def apply(high: Char, low: Char): DecodedMultiByte =
       new DecodedMultiByte(null, high, low)
   }
 
@@ -92,8 +95,7 @@ private[niocharset] object UTF_8
       val outStart = out.position + outOffset
       val outEnd = out.limit + outOffset
 
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(inPos: Int, outPos: Int): CoderResult = {
         @inline
         def finalize(result: CoderResult): CoderResult = {
@@ -157,8 +159,7 @@ private[niocharset] object UTF_8
     private def decodeLoopNoArray(
         in: ByteBuffer,
         out: CharBuffer): CoderResult = {
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(): CoderResult = {
         @inline
         def finalize(read: Int, result: CoderResult): CoderResult = {
@@ -220,9 +221,11 @@ private[niocharset] object UTF_8
       loop()
     }
 
-    @inline private def isInvalidNextByte(b: Int): Boolean = (b & 0xc0) != 0x80
+    @inline
+    private def isInvalidNextByte(b: Int): Boolean = (b & 0xc0) != 0x80
 
-    @inline private def decode2(b1: Int, b2: Int): DecodedMultiByte = {
+    @inline
+    private def decode2(b1: Int, b2: Int): DecodedMultiByte = {
       if (isInvalidNextByte(b2))
         DecodedMultiByte(CoderResult.malformedForLength(1))
       else {
@@ -235,7 +238,8 @@ private[niocharset] object UTF_8
       }
     }
 
-    @inline private def decode3(b1: Int, b2: Int, b3: Int): DecodedMultiByte = {
+    @inline
+    private def decode3(b1: Int, b2: Int, b3: Int): DecodedMultiByte = {
       if (isInvalidNextByte(b2))
         DecodedMultiByte(CoderResult.malformedForLength(1))
       else if (isInvalidNextByte(b3))
@@ -252,7 +256,8 @@ private[niocharset] object UTF_8
       }
     }
 
-    @inline private def decode4(
+    @inline
+    private def decode4(
         b1: Int,
         b2: Int,
         b3: Int,
@@ -302,8 +307,7 @@ private[niocharset] object UTF_8
       val outStart = out.position + outOffset
       val outEnd = out.limit + outOffset
 
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(inPos: Int, outPos: Int): CoderResult = {
         @inline
         def finalize(result: CoderResult): CoderResult = {
@@ -370,8 +374,7 @@ private[niocharset] object UTF_8
     private def encodeLoopNoArray(
         in: CharBuffer,
         out: ByteBuffer): CoderResult = {
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(): CoderResult = {
         @inline
         def finalize(read: Int, result: CoderResult): CoderResult = {
@@ -438,6 +441,6 @@ private[niocharset] object UTF_8
   private final val SurrogateMask = 0xf800 // 11111 0 00  00000000
   private final val SurrogateID = 0xd800 // 11011 0 00  00000000
 
-  @inline private def isSurrogate(c: Char): Boolean =
-    (c & SurrogateMask) == SurrogateID
+  @inline
+  private def isSurrogate(c: Char): Boolean = (c & SurrogateMask) == SurrogateID
 }

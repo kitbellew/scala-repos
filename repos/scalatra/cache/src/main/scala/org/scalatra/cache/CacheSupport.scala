@@ -6,7 +6,8 @@ import org.scalatra.ScalatraBase
 
 import scala.concurrent.duration.Duration
 
-trait CacheSupport { self: ScalatraBase =>
+trait CacheSupport {
+  self: ScalatraBase =>
   implicit val cacheBackend: Cache
   implicit val keyStrategy: KeyStrategy = DefaultKeyStrategy
   implicit val headerStrategy: HeaderStrategy = DefaultHeaderStrategy

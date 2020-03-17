@@ -57,8 +57,10 @@ case class WriteRelation(
     bucketSpec: Option[BucketSpec])
 
 private[sql] abstract class BaseWriterContainer(
-    @transient val relation: WriteRelation,
-    @transient private val job: Job,
+    @transient
+    val relation: WriteRelation,
+    @transient
+    private val job: Job,
     isAppend: Boolean)
     extends Logging
     with Serializable {
@@ -76,18 +78,24 @@ private[sql] abstract class BaseWriterContainer(
   private val uniqueWriteJobId = UUID.randomUUID()
 
   // This is only used on driver side.
-  @transient private val jobContext: JobContext = job
+  @transient
+  private val jobContext: JobContext = job
 
   private val speculationEnabled: Boolean =
     relation.sqlContext.sparkContext.conf
       .getBoolean("spark.speculation", defaultValue = false)
 
   // The following fields are initialized and used on both driver and executor side.
-  @transient protected var outputCommitter: OutputCommitter = _
-  @transient private var jobId: JobID = _
-  @transient private var taskId: TaskID = _
-  @transient private var taskAttemptId: TaskAttemptID = _
-  @transient protected var taskAttemptContext: TaskAttemptContext = _
+  @transient
+  protected var outputCommitter: OutputCommitter = _
+  @transient
+  private var jobId: JobID = _
+  @transient
+  private var taskId: TaskID = _
+  @transient
+  private var taskAttemptId: TaskAttemptID = _
+  @transient
+  protected var taskAttemptContext: TaskAttemptContext = _
 
   protected val outputPath: String = relation.path
 

@@ -129,10 +129,12 @@ class VersionedBatchStore[K, V, K2, V2](
     versionsToKeep: Int,
     override val batcher: Batcher)(pack: (BatchID, (K, V)) => (K2, V2))(
     unpack: ((K2, V2)) => (K, V))(implicit
-    @transient injection: Injection[(K2, V2), (Array[Byte], Array[Byte])],
+    @transient
+    injection: Injection[(K2, V2), (Array[Byte], Array[Byte])],
     override val ordering: Ordering[K])
     extends VersionedBatchStoreBase[K, V](rootPath) {
-  @transient private val logger = LoggerFactory.getLogger(
+  @transient
+  private val logger = LoggerFactory.getLogger(
     classOf[VersionedBatchStore[_, _, _, _]])
 
   override def toString: String =

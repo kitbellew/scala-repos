@@ -141,7 +141,8 @@ object SupervisorHierarchySpec {
       kids: Map[ActorPath, Int],
       failConstr: Failure)
   val stateCache = new ConcurrentHashMap[ActorPath, HierarchyState]()
-  @volatile var ignoreFailConstr = false
+  @volatile
+  var ignoreFailConstr = false
 
   class Hierarchy(
       size: Int,

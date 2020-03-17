@@ -38,7 +38,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
     if (prevval eq null) m else GCAS_Complete(m, ct)
   }
 
-  @tailrec private def GCAS_Complete(
+  @tailrec
+  private def GCAS_Complete(
       m: MainNode[K, V],
       ct: TrieMap[K, V]): MainNode[K, V] =
     if (m eq null) null
@@ -104,7 +105,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
     *
     *  @return        true if successful, false otherwise
     */
-  @tailrec def rec_insert(
+  @tailrec
+  def rec_insert(
       k: K,
       v: V,
       hc: Int,
@@ -169,7 +171,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
     *  @param cond        null - don't care if the key was there; KEY_ABSENT - key wasn't there; KEY_PRESENT - key was there; other value `v` - key must be bound to `v`
     *  @return            null if unsuccessful, Option[V] otherwise (indicating previous value bound to the key)
     */
-  @tailrec def rec_insertif(
+  @tailrec
+  def rec_insertif(
       k: K,
       v: V,
       hc: Int,
@@ -300,7 +303,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
     *
     *  @return          null if no value has been found, RESTART if the operation wasn't successful, or any other value otherwise
     */
-  @tailrec def rec_lookup(
+  @tailrec
+  def rec_lookup(
       k: K,
       hc: Int,
       lev: Int,
@@ -391,7 +395,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
 
           if (res == None || (res eq null)) res
           else {
-            @tailrec def cleanParent(nonlive: AnyRef) {
+            @tailrec
+            def cleanParent(nonlive: AnyRef) {
               val pm = parent.GCAS_READ(ct)
               pm match {
                 case cn: CNode[K, V] =>
@@ -733,7 +738,8 @@ private[concurrent] case class RDCSS_Descriptor[K, V](
     old: INode[K, V],
     expectedmain: MainNode[K, V],
     nv: INode[K, V]) {
-  @volatile var committed = false
+  @volatile
+  var committed = false
 }
 
 /** A concurrent hash-trie or TrieMap is a concurrent thread-safe lock-free
@@ -766,8 +772,7 @@ final class TrieMap[K, V] private (
   private var rootupdater = rtupd
   def hashing = hashingobj
   def equality = equalityobj
-  @deprecated("This field will be made private", "2.12.0")
-  @volatile /*private*/
+  @deprecated("This field will be made private", "2.12.0") @volatile /*private*/
   var root = r
 
   def this(hashf: Hashing[K], ef: Equiv[K]) =
@@ -834,7 +839,8 @@ final class TrieMap[K, V] private (
     }
   }
 
-  @tailrec private def RDCSS_Complete(abort: Boolean): INode[K, V] = {
+  @tailrec
+  private def RDCSS_Complete(abort: Boolean): INode[K, V] = {
     val v = /*READ*/ root
     v match {
       case in: INode[K, V] => in
@@ -865,23 +871,22 @@ final class TrieMap[K, V] private (
     } else false
   }
 
-  @tailrec private def inserthc(k: K, hc: Int, v: V) {
+  @tailrec
+  private def inserthc(k: K, hc: Int, v: V) {
     val r = RDCSS_READ_ROOT()
     if (!r.rec_insert(k, v, hc, 0, null, r.gen, this)) inserthc(k, hc, v)
   }
 
-  @tailrec private def insertifhc(
-      k: K,
-      hc: Int,
-      v: V,
-      cond: AnyRef): Option[V] = {
+  @tailrec
+  private def insertifhc(k: K, hc: Int, v: V, cond: AnyRef): Option[V] = {
     val r = RDCSS_READ_ROOT()
 
     val ret = r.rec_insertif(k, v, hc, cond, 0, null, r.gen, this)
     if (ret eq null) insertifhc(k, hc, v, cond) else ret
   }
 
-  @tailrec private def lookuphc(k: K, hc: Int): AnyRef = {
+  @tailrec
+  private def lookuphc(k: K, hc: Int): AnyRef = {
     val r = RDCSS_READ_ROOT()
     val res = r.rec_lookup(k, hc, 0, null, r.gen, this)
     if (res eq INodeBase.RESTART) lookuphc(k, hc) else res
@@ -900,7 +905,8 @@ final class TrieMap[K, V] private (
   }
    */
 
-  @tailrec private def removehc(k: K, v: V, hc: Int): Option[V] = {
+  @tailrec
+  private def removehc(k: K, v: V, hc: Int): Option[V] = {
     val r = RDCSS_READ_ROOT()
     val res = r.rec_remove(k, v, hc, 0, null, r.gen, this)
     if (res ne null) res else removehc(k, v, hc)
@@ -929,7 +935,8 @@ final class TrieMap[K, V] private (
     *  TrieMap is distributed across all the threads doing updates or accesses
     *  subsequent to the snapshot creation.
     */
-  @tailrec def snapshot(): TrieMap[K, V] = {
+  @tailrec
+  def snapshot(): TrieMap[K, V] = {
     val r = RDCSS_READ_ROOT()
     val expmain = r.gcasRead(this)
     if (RDCSS_ROOT(r, expmain, r.copyToGen(new Gen, this)))
@@ -949,7 +956,8 @@ final class TrieMap[K, V] private (
     *
     *  This method is used by other methods such as `size` and `iterator`.
     */
-  @tailrec def readOnlySnapshot(): scala.collection.Map[K, V] = {
+  @tailrec
+  def readOnlySnapshot(): scala.collection.Map[K, V] = {
     val r = RDCSS_READ_ROOT()
     val expmain = r.gcasRead(this)
     if (RDCSS_ROOT(r, expmain, r.copyToGen(new Gen, this)))
@@ -957,7 +965,8 @@ final class TrieMap[K, V] private (
     else readOnlySnapshot()
   }
 
-  @tailrec override def clear() {
+  @tailrec
+  override def clear() {
     val r = RDCSS_READ_ROOT()
     if (!RDCSS_ROOT(r, r.gcasRead(this), INode.newRootNode[K, V])) clear()
   }

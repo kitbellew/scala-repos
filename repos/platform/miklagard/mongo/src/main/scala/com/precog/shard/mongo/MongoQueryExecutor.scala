@@ -101,7 +101,8 @@ class MongoQueryExecutor(
     val M: Monad[Future])
     extends StandaloneQueryExecutor
     with MongoColumnarTableModule
-    with Logging { platform =>
+    with Logging {
+  platform =>
   type YggConfig = MongoQueryExecutorConfig
 
   val includeIdField = yggConfig.includeIdField

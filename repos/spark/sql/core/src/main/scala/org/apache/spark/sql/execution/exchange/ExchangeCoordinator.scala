@@ -99,7 +99,8 @@ private[sql] class ExchangeCoordinator(
   // A boolean that indicates if this coordinator has made decision on how to shuffle data.
   // This variable will only be updated by doEstimationIfNecessary, which is protected by
   // synchronized.
-  @volatile private[this] var estimated: Boolean = false
+  @volatile
+  private[this] var estimated: Boolean = false
 
   /**
     * Registers an [[ShuffleExchange]] operator to this coordinator. This method is only allowed to

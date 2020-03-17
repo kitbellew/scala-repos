@@ -6,7 +6,8 @@ import slick.jdbc.{H2Profile, SQLiteProfile}
 
 class ProfileNameTest {
 
-  @Test def testProfileNames: Unit = {
+  @Test
+  def testProfileNames: Unit = {
     assertEquals("slick.jdbc.H2Profile$", H2Profile.toString)
     assertEquals("slick.jdbc.SQLiteProfile$", SQLiteProfile.toString)
   }

@@ -72,7 +72,8 @@ final class Well1024a protected[random] (state: Array[Int], i0: Int)
 
   def nextInt(): Int = {
 
-    @inline def map(r: Int): Int = (i + r) & R_1
+    @inline
+    def map(r: Int): Int = (i + r) & R_1
 
     val z0: Int = state(map(R_1))
     val z1: Int = state(i) ^ mat0pos(8, state(map(M1)))
@@ -97,28 +98,37 @@ final class Well1024a protected[random] (state: Array[Int], i0: Int)
 object Well1024a extends GeneratorCompanion[Well1024a, (Array[Int], Int)] {
 
   // Number of bits in the pool.
-  @inline private final val K: Int = 1024
+  @inline
+  private final val K: Int = 1024
 
   // Length of the pool in ints.
-  @inline private final val R: Int = K / 32
+  @inline
+  private final val R: Int = K / 32
 
   // Length of the pool in ints -1.
-  @inline private final val R_1: Int = R - 1
+  @inline
+  private final val R_1: Int = R - 1
 
   // Length of the pool and index in bytes.
-  @inline private final val BYTES: Int = R * 4 + 4
+  @inline
+  private final val BYTES: Int = R * 4 + 4
 
   // First parameter of the algorithm.
-  @inline private final val M1: Int = 3
+  @inline
+  private final val M1: Int = 3
 
   // Second parameter of the algorithm.
-  @inline private final val M2: Int = 24
+  @inline
+  private final val M2: Int = 24
 
   // Third parameter of the algorithm.
-  @inline private final val M3: Int = 10
+  @inline
+  private final val M3: Int = 10
 
-  @inline private final def mat0pos(t: Int, v: Int): Int = v ^ (v >>> t)
-  @inline private final def mat0neg(t: Int, v: Int): Int = v ^ (v << -t)
+  @inline
+  private final def mat0pos(t: Int, v: Int): Int = v ^ (v >>> t)
+  @inline
+  private final def mat0neg(t: Int, v: Int): Int = v ^ (v << -t)
 
   def randomSeed(): (Array[Int], Int) =
     (Utils.seedFromInt(R, Utils.intFromTime()), 0)

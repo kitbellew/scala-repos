@@ -35,19 +35,22 @@ import org.apache.spark.storage.StorageLevel
   * `replicatedVertexView`, which contains edges and the vertex attributes mentioned by each edge.
   */
 class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
-    @transient val vertices: VertexRDD[VD],
-    @transient val replicatedVertexView: ReplicatedVertexView[VD, ED])
+    @transient
+    val vertices: VertexRDD[VD],
+    @transient
+    val replicatedVertexView: ReplicatedVertexView[VD, ED])
     extends Graph[VD, ED]
     with Serializable {
 
   /** Default constructor is provided to support serialization */
   protected def this() = this(null, null)
 
-  @transient override val edges: EdgeRDDImpl[ED, VD] =
-    replicatedVertexView.edges
+  @transient
+  override val edges: EdgeRDDImpl[ED, VD] = replicatedVertexView.edges
 
   /** Return a RDD that brings edges together with their source and destination vertices. */
-  @transient override lazy val triplets: RDD[EdgeTriplet[VD, ED]] = {
+  @transient
+  override lazy val triplets: RDD[EdgeTriplet[VD, ED]] = {
     replicatedVertexView.upgrade(vertices, true, true)
     replicatedVertexView.edges.partitionsRDD.mapPartitions(_.flatMap {
       case (pid, part) => part.tripletIterator()

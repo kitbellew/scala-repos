@@ -70,7 +70,8 @@ trait Scheduler {
   * A global scheduler.
   */
 object Scheduler extends Scheduler {
-  @volatile private var self: Scheduler = new LocalScheduler
+  @volatile
+  private var self: Scheduler = new LocalScheduler
 
   def apply(): Scheduler = self
 
@@ -119,7 +120,8 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
     private[this] var running = false
 
     // This is safe: there's only one updater.
-    @volatile var numDispatches = 0L
+    @volatile
+    var numDispatches = 0L
 
     def submit(r: Runnable): Unit = {
       assert(r != null)
@@ -150,9 +152,11 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
 
     def flush(): Unit = { if (running) run() }
 
-    @inline def hasNext: Boolean = running && r0 != null
+    @inline
+    def hasNext: Boolean = running && r0 != null
 
-    @inline def next(): Runnable = {
+    @inline
+    def next(): Runnable = {
       // via moderately silly benchmarking, the
       // queue unrolling gives us a ~50% speedup
       // over pure Queue usage for common
@@ -188,10 +192,12 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
   }
 
   /** An implementaiton of Iterator over runnable tasks */
-  @inline def hasNext: Boolean = get().hasNext
+  @inline
+  def hasNext: Boolean = get().hasNext
 
   /** An implementaiton of Iterator over runnable tasks */
-  @inline def next(): Runnable = get().next()
+  @inline
+  def next(): Runnable = get().next()
 
   // Scheduler implementation:
   def submit(r: Runnable): Unit = get().submit(r)
@@ -210,12 +216,14 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
   * an [[java.util.concurrent.ExecutorService]] created by an abstract factory
   * function.
   */
-trait ExecutorScheduler { self: Scheduler =>
+trait ExecutorScheduler {
+  self: Scheduler =>
   val name: String
   val executorFactory: ThreadFactory => ExecutorService
 
   protected val threadGroup: ThreadGroup = new ThreadGroup(name)
-  @volatile private[this] var threads = Set[Thread]()
+  @volatile
+  private[this] var threads = Set[Thread]()
 
   protected val threadFactory = new ThreadFactory {
     private val n = new AtomicInteger(1)

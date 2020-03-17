@@ -1,6 +1,7 @@
 package gitbucket.core.model
 
-trait PluginComponent extends TemplateComponent { self: Profile =>
+trait PluginComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
   import self._
 

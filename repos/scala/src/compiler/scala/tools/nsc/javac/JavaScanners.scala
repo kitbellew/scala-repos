@@ -569,12 +569,14 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     }
 
     protected def skipComment(): Boolean = {
-      @tailrec def skipLineComment(): Unit =
+      @tailrec
+      def skipLineComment(): Unit =
         in.ch match {
           case CR | LF | SU =>
           case _            => in.next; skipLineComment()
         }
-      @tailrec def skipJavaComment(): Unit =
+      @tailrec
+      def skipJavaComment(): Unit =
         in.ch match {
           case SU  => incompleteInputError("unclosed comment")
           case '*' => in.next; if (in.ch == '/') in.next else skipJavaComment()

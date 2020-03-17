@@ -205,7 +205,8 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
 trait TestManagedPlatform
     extends ManagedExecution
     with ManagedQueryModule
-    with SchedulableFuturesModule { self =>
+    with SchedulableFuturesModule {
+  self =>
   def actorSystem: ActorSystem
   implicit def executionContext: ExecutionContext
   implicit def M: Monad[Future]

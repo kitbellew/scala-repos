@@ -18,7 +18,8 @@ import ir.Infos
   *
   *  @author Sébastien Doeraene
   */
-trait GenJSFiles extends SubComponent { self: GenJSCode =>
+trait GenJSFiles extends SubComponent {
+  self: GenJSCode =>
   import global._
   import jsAddons._
 

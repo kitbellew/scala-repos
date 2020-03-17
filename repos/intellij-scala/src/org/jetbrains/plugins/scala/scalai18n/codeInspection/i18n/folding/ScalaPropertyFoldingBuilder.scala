@@ -29,9 +29,12 @@ import org.jetbrains.plugins.scala.scalai18n.codeInspection.i18n.ScalaI18nUtil
   */
 class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
 
-  @NotNull def buildFoldRegions(
-      @NotNull element: PsiElement,
-      @NotNull document: Document,
+  @NotNull
+  def buildFoldRegions(
+      @NotNull
+      element: PsiElement,
+      @NotNull
+      document: Document,
       quick: Boolean): Array[FoldingDescriptor] = {
     if (!element
           .isInstanceOf[ScalaFile] || quick || !ScalaI18nUtil.isFoldingsOn) {
@@ -48,7 +51,9 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
     result.toArray(new Array[FoldingDescriptor](result.size))
   }
 
-  def getPlaceholderText(@NotNull node: ASTNode): String = {
+  def getPlaceholderText(
+      @NotNull
+      node: ASTNode): String = {
     val element: PsiElement = SourceTreeToPsiMap.treeElementToPsi(node)
     element match {
       case literal: ScLiteral =>
@@ -62,9 +67,9 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
     element.getText
   }
 
-  def isCollapsedByDefault(@NotNull node: ASTNode): Boolean = {
-    ScalaI18nUtil.isFoldingsOn
-  }
+  def isCollapsedByDefault(
+      @NotNull
+      node: ASTNode): Boolean = { ScalaI18nUtil.isFoldingsOn }
 
   private def checkLiteral(
       project: Project,

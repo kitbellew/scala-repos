@@ -226,8 +226,7 @@ object Statistics {
     * @return [[org.apache.spark.mllib.stat.test.KolmogorovSmirnovTestResult]] object containing test
     *        statistic, p-value, and null hypothesis.
     */
-  @Since("1.5.0")
-  @varargs
+  @Since("1.5.0") @varargs
   def kolmogorovSmirnovTest(
       data: RDD[Double],
       distName: String,
@@ -236,8 +235,7 @@ object Statistics {
   }
 
   /** Java-friendly version of [[kolmogorovSmirnovTest()]] */
-  @Since("1.5.0")
-  @varargs
+  @Since("1.5.0") @varargs
   def kolmogorovSmirnovTest(
       data: JavaDoubleRDD,
       distName: String,

@@ -50,8 +50,7 @@ import org.apache.spark.storage.StorageLevel
   * @see [[https://en.wikipedia.org/wiki/Sequential_Pattern_Mining Sequential Pattern Mining
   *       (Wikipedia)]]
   */
-@Experimental
-@Since("1.5.0")
+@Experimental @Since("1.5.0")
 class PrefixSpan private (
     private var minSupport: Double,
     private var maxPatternLength: Int,
@@ -235,8 +234,7 @@ class PrefixSpan private (
 
 }
 
-@Experimental
-@Since("1.5.0")
+@Experimental @Since("1.5.0")
 object PrefixSpan extends Logging {
 
   /**

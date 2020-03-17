@@ -56,7 +56,8 @@ import slick.util.ConfigExtensionMethods.configExtensionMethods
   * old path are *not* used anymore. This deprecation warning will be removed in a
   * future version.
   */
-trait MySQLProfile extends JdbcProfile { profile =>
+trait MySQLProfile extends JdbcProfile {
+  profile =>
   import MySQLProfile.{RowNum, RowNumGen}
 
   override protected def computeCapabilities: Set[Capability] =

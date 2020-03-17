@@ -13,7 +13,8 @@ import spire.macros.compat.Context
   */
 object Pack {
 
-  @inline private[this] def ism(n: Int, shift: Int): Byte =
+  @inline
+  private[this] def ism(n: Int, shift: Int): Byte =
     ((n >>> shift) & 0xff).toByte
 
   def intToBytes(n: Int): Array[Byte] = {
@@ -72,7 +73,8 @@ object Pack {
     out
   }
 
-  @inline private[this] def lsm(n: Long, shift: Int): Byte =
+  @inline
+  private[this] def lsm(n: Long, shift: Int): Byte =
     ((n >>> shift) & 0xFFL).toByte
 
   def longToBytes(n: Long): Array[Byte] = {

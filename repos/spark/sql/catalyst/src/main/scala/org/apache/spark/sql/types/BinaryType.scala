@@ -37,7 +37,8 @@ class BinaryType private () extends AtomicType {
 
   private[sql] type InternalType = Array[Byte]
 
-  @transient private[sql] lazy val tag = ScalaReflectionLock.synchronized {
+  @transient
+  private[sql] lazy val tag = ScalaReflectionLock.synchronized {
     typeTag[InternalType]
   }
 

@@ -47,7 +47,8 @@ trait AssignClusterModule[M[+_]]
   import trans._
 
   trait AssignClusterSupport extends ColumnarTableLib with ModelSupport {
-    trait AssignClusterBase extends ModelBase { self: Morphism2 =>
+    trait AssignClusterBase extends ModelBase {
+      self: Morphism2 =>
       case class ModelCluster(
           name: ClusterId,
           featureValues: Map[CPath, Double])

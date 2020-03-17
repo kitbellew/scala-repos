@@ -71,7 +71,8 @@ final class Matcher private[regex] (
   def appendReplacement(sb: StringBuffer, replacement: String): Matcher = {
     sb.append(inputstr.substring(appendPos, start))
 
-    @inline def isDigit(c: Char) = c >= '0' && c <= '9'
+    @inline
+    def isDigit(c: Char) = c >= '0' && c <= '9'
 
     val len = replacement.length
     var i = 0

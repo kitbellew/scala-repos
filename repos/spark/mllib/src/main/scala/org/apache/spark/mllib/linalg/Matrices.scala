@@ -37,8 +37,7 @@ import org.apache.spark.sql.types._
 /**
   * Trait for a local matrix.
   */
-@SQLUserDefinedType(udt = classOf[MatrixUDT])
-@Since("1.0.0")
+@SQLUserDefinedType(udt = classOf[MatrixUDT]) @Since("1.0.0")
 sealed trait Matrix extends Serializable {
 
   /** Number of rows. */
@@ -279,8 +278,7 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
   * @param isTransposed whether the matrix is transposed. If true, `values` stores the matrix in
   *                     row major.
   */
-@Since("1.0.0")
-@SQLUserDefinedType(udt = classOf[MatrixUDT])
+@Since("1.0.0") @SQLUserDefinedType(udt = classOf[MatrixUDT])
 class DenseMatrix @Since("1.3.0") (
     @Since("1.0.0") val numRows: Int,
     @Since("1.0.0") val numCols: Int,
@@ -580,8 +578,7 @@ object DenseMatrix {
   *                     Compressed Sparse Row (CSR) format, where `colPtrs` behaves as rowPtrs,
   *                     and `rowIndices` behave as colIndices, and `values` are stored in row major.
   */
-@Since("1.2.0")
-@SQLUserDefinedType(udt = classOf[MatrixUDT])
+@Since("1.2.0") @SQLUserDefinedType(udt = classOf[MatrixUDT])
 class SparseMatrix @Since("1.3.0") (
     @Since("1.2.0") val numRows: Int,
     @Since("1.2.0") val numCols: Int,

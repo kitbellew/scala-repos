@@ -11,7 +11,8 @@ import scala.util.hashing.MurmurHash3
   * the same as for Scala collections but for performance reasons it does not implement any
   * standard collection traits. */
 final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
-    extends Product { self =>
+    extends Product {
+  self =>
   private def this(a: Array[Any]) = this(a, a.length)
 
   def apply(i: Int): T =
@@ -493,7 +494,8 @@ final class RangeConstArrayOp(val r: Range) extends ConstArrayOp[Int] {
 /** A mutable builder for ConstArrays. */
 final class ConstArrayBuilder[T](
     initialCapacity: Int = 16,
-    growFactor: Double = 2.0) { self =>
+    growFactor: Double = 2.0) {
+  self =>
   private[this] var a: Array[Any] = new Array[Any](initialCapacity)
   private[this] var len: Int = 0
 

@@ -163,7 +163,8 @@ class JobCancellationSuite
     })
 
     sc.setJobGroup("jobA", "this is a job to be cancelled")
-    @volatile var exception: Exception = null
+    @volatile
+    var exception: Exception = null
     val jobA = new Thread() {
       // The job group should be inherited by this thread
       override def run(): Unit = {

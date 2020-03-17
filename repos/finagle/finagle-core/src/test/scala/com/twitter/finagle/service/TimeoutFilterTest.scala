@@ -15,7 +15,8 @@ private object TimeoutFilterTest {
   class TimeoutFilterHelper {
     val timer = new MockTimer
     val promise = new Promise[String] {
-      @volatile var interrupted: Option[Throwable] = None
+      @volatile
+      var interrupted: Option[Throwable] = None
       setInterruptHandler { case exc => interrupted = Some(exc) }
     }
     val service = new Service[String, String] {

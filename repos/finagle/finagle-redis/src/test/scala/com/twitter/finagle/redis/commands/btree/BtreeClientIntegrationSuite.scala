@@ -11,8 +11,7 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import org.scalatest.junit.JUnitRunner
 import scala.collection.mutable
 
-@Ignore
-@RunWith(classOf[JUnitRunner])
+@Ignore @RunWith(classOf[JUnitRunner])
 final class BtreeClientIntegrationSuite
     extends FunSuite
     with BeforeAndAfterAll {

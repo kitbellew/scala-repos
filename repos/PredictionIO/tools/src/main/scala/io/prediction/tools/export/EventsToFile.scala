@@ -65,7 +65,8 @@ object EventsToFile extends Logging {
       val channelStr = args.channel.map(n => " Channel " + n).getOrElse("")
 
       WorkflowUtils.modifyLogging(verbose = args.verbose)
-      @transient lazy implicit val formats = Utils.json4sDefaultFormats +
+      @transient
+      lazy implicit val formats = Utils.json4sDefaultFormats +
         new EventJson4sSupport.APISerializer
       val sc = WorkflowContext(
         mode = "Export",

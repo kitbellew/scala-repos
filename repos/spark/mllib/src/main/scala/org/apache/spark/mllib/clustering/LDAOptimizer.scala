@@ -47,8 +47,7 @@ import org.apache.spark.rdd.RDD
   * An LDAOptimizer specifies which optimization/learning/inference algorithm to use, and it can
   * hold optimizer-specific parameters for users to set.
   */
-@Since("1.4.0")
-@DeveloperApi
+@Since("1.4.0") @DeveloperApi
 sealed trait LDAOptimizer {
 
   /*
@@ -88,8 +87,7 @@ sealed trait LDAOptimizer {
   *    Asuncion, Welling, Smyth, and Teh.
   *    "On Smoothing and Inference for Topic Models."  UAI, 2009.
   */
-@Since("1.4.0")
-@DeveloperApi
+@Since("1.4.0") @DeveloperApi
 final class EMLDAOptimizer extends LDAOptimizer {
 
   import LDA._
@@ -271,8 +269,7 @@ final class EMLDAOptimizer extends LDAOptimizer {
   * Original Online LDA paper:
   *   Hoffman, Blei and Bach, "Online Learning for Latent Dirichlet Allocation." NIPS, 2010.
   */
-@Since("1.4.0")
-@DeveloperApi
+@Since("1.4.0") @DeveloperApi
 final class OnlineLDAOptimizer extends LDAOptimizer {
 
   // LDA common parameters

@@ -529,7 +529,8 @@ trait StreamingActionContext extends ActionContext {
   * to the next invocation of the same or a different SynchronousDatabaseAction. */
 trait SynchronousDatabaseAction[
     +R, +S <: NoStream, -B <: BasicBackend, -E <: Effect]
-    extends DatabaseAction[R, S, E] { self =>
+    extends DatabaseAction[R, S, E] {
+  self =>
 
   /** The type used by this action for the state of a suspended stream. A call to `emitStream`
     * produces such a state which is then fed back into the next call. */

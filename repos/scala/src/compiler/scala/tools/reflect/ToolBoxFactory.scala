@@ -16,7 +16,8 @@ import scala.reflect.api.JavaUniverse
 import scala.reflect.io.NoAbstractFile
 import scala.reflect.internal.FatalError
 
-abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
+abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
+  factorySelf =>
 
   val mirror: u.Mirror
 
@@ -25,7 +26,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
       options: String = ""): ToolBox[U] = new ToolBoxImpl(frontEnd, options)
 
   private class ToolBoxImpl(val frontEnd: FrontEnd, val options: String)
-      extends ToolBox[U] { toolBoxSelf =>
+      extends ToolBox[U] {
+    toolBoxSelf =>
 
     val u: factorySelf.u.type = factorySelf.u
 

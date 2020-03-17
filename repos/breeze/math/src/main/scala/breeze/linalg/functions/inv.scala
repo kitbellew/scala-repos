@@ -88,8 +88,7 @@ object inv extends UFunc {
   */
 object pinv extends UFunc with pinvLowPrio {
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def pinvFromSVD[@expand.args(Float, Double) T]
       : Impl[DenseMatrix[T], DenseMatrix[T]] = {
     new Impl[DenseMatrix[T], DenseMatrix[T]] {
@@ -109,7 +108,8 @@ object pinv extends UFunc with pinvLowPrio {
 
 }
 
-trait pinvLowPrio { this: pinv.type =>
+trait pinvLowPrio {
+  this: pinv.type =>
 
   /**
     * pinv for anything that can be transposed, multiplied with that transposed, and then solved.

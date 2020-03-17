@@ -88,8 +88,10 @@ case class LogAppendInfo(
 @threadsafe
 class Log(
     val dir: File,
-    @volatile var config: LogConfig,
-    @volatile var recoveryPoint: Long = 0L,
+    @volatile
+    var config: LogConfig,
+    @volatile
+    var recoveryPoint: Long = 0L,
     scheduler: Scheduler,
     time: Time = SystemTime)
     extends Logging
@@ -113,7 +115,8 @@ class Log(
   loadSegments()
 
   /* Calculate the offset of the next message */
-  @volatile var nextOffsetMetadata = new LogOffsetMetadata(
+  @volatile
+  var nextOffsetMetadata = new LogOffsetMetadata(
     activeSegment.nextOffset(),
     activeSegment.baseOffset,
     activeSegment.size.toInt)

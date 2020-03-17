@@ -10,7 +10,8 @@ import java.nio.charset.Charset
   *
   * Note: There is a Java-friendly API for this trait: [[com.twitter.io.AbstractBuf]].
   */
-trait Buf { outer =>
+trait Buf {
+  outer =>
 
   /**
     * Write the entire contents of the buffer into the given array at

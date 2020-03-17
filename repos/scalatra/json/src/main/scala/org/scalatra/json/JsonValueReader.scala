@@ -42,7 +42,8 @@ class JsonValueReader(val data: JValue)(implicit formats: Formats)
     }
   }
 }
-trait JsonValueReaderProperty[T] { self: JsonMethods[T] =>
+trait JsonValueReaderProperty[T] {
+  self: JsonMethods[T] =>
 
   implicit protected def jsonFormats: Formats
   protected implicit def jsonValueReader(d: JValue): JsonValueReader =

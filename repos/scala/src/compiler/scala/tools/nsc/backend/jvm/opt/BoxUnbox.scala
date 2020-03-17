@@ -609,7 +609,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
 
     private val boxConsumingOps = finalCons.map(_.consumer)
 
-    @tailrec private def advanceToNextCopyOp(): Unit = {
+    @tailrec
+    private def advanceToNextCopyOp(): Unit = {
       if (queue.nonEmpty) {
         val h = queue.front
         if (visited(h) || boxConsumingOps(h)) {

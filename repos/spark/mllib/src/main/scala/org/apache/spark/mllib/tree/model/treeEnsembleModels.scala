@@ -221,8 +221,7 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
     * @return a RDD with each element being a zip of the prediction and error
     *         corresponding to every sample.
     */
-  @Since("1.4.0")
-  @DeveloperApi
+  @Since("1.4.0") @DeveloperApi
   def computeInitialPredictionAndError(
       data: RDD[LabeledPoint],
       initTreeWeight: Double,
@@ -247,8 +246,7 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
     * @return a RDD with each element being a zip of the prediction and error
     *         corresponding to each sample.
     */
-  @Since("1.4.0")
-  @DeveloperApi
+  @Since("1.4.0") @DeveloperApi
   def updatePredictionError(
       data: RDD[LabeledPoint],
       predictionAndError: RDD[(Double, Double)],

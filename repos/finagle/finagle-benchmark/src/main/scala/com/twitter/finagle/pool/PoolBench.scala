@@ -13,8 +13,7 @@ object PoolBench {
   })
 }
 
-@Threads(Threads.MAX)
-@State(Scope.Benchmark)
+@Threads(Threads.MAX) @State(Scope.Benchmark)
 class PoolBench extends StdBenchAnnotations {
   import PoolBench._
 
@@ -66,8 +65,7 @@ class PoolBench extends StdBenchAnnotations {
   def composedGetAndPut(): Unit = Await.result(composed().flatMap(_.close()))
 }
 
-@Threads(Threads.MAX)
-@State(Scope.Benchmark)
+@Threads(Threads.MAX) @State(Scope.Benchmark)
 class SingletonPoolBench extends StdBenchAnnotations {
   import PoolBench._
 

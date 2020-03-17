@@ -73,9 +73,11 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     this
   }
 
-  @inline final def remaining(): Int = limit - position
+  @inline
+  final def remaining(): Int = limit - position
 
-  @inline final def hasRemaining(): Boolean = position != limit
+  @inline
+  final def hasRemaining(): Boolean = position != limit
 
   def isReadOnly(): Boolean
 
@@ -171,11 +173,13 @@ abstract class Buffer private[nio] (val _capacity: Int) {
 
   // Helpers
 
-  @inline private[nio] def ensureNotReadOnly(): Unit = {
+  @inline
+  private[nio] def ensureNotReadOnly(): Unit = {
     if (isReadOnly) throw new ReadOnlyBufferException
   }
 
-  @inline private[nio] def validateArrayIndexRange(
+  @inline
+  private[nio] def validateArrayIndexRange(
       array: Array[_],
       offset: Int,
       length: Int): Unit = {
@@ -183,14 +187,16 @@ abstract class Buffer private[nio] (val _capacity: Int) {
       throw new IndexOutOfBoundsException
   }
 
-  @inline private[nio] def getPosAndAdvanceRead(): Int = {
+  @inline
+  private[nio] def getPosAndAdvanceRead(): Int = {
     val p = _position
     if (p == limit) throw new BufferUnderflowException
     _position = p + 1
     p
   }
 
-  @inline private[nio] def getPosAndAdvanceRead(length: Int): Int = {
+  @inline
+  private[nio] def getPosAndAdvanceRead(length: Int): Int = {
     val p = _position
     val newPos = p + length
     if (newPos > limit) throw new BufferUnderflowException
@@ -198,14 +204,16 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     p
   }
 
-  @inline private[nio] def getPosAndAdvanceWrite(): Int = {
+  @inline
+  private[nio] def getPosAndAdvanceWrite(): Int = {
     val p = _position
     if (p == limit) throw new BufferOverflowException
     _position = p + 1
     p
   }
 
-  @inline private[nio] def getPosAndAdvanceWrite(length: Int): Int = {
+  @inline
+  private[nio] def getPosAndAdvanceWrite(length: Int): Int = {
     val p = _position
     val newPos = p + length
     if (newPos > limit) throw new BufferOverflowException
@@ -213,12 +221,14 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     p
   }
 
-  @inline private[nio] def validateIndex(index: Int): Int = {
+  @inline
+  private[nio] def validateIndex(index: Int): Int = {
     if (index < 0 || index >= limit) throw new IndexOutOfBoundsException
     index
   }
 
-  @inline private[nio] def validateIndex(index: Int, length: Int): Int = {
+  @inline
+  private[nio] def validateIndex(index: Int, length: Int): Int = {
     if (index < 0 || index + length > limit) throw new IndexOutOfBoundsException
     index
   }

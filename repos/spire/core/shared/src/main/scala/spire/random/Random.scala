@@ -55,7 +55,8 @@ object Random extends RandomCompanion[rng.Cmwc5] {
   def spawn[B](op: Op[B]): RandomCmwc5[B] = new RandomCmwc5(op)
 }
 
-trait RandomCompanion[G <: Generator] { self =>
+trait RandomCompanion[G <: Generator] {
+  self =>
   type R[X] = Random[X, G]
 
   def initGenerator(): G //IO
@@ -134,7 +135,8 @@ trait RandomCompanion[G <: Generator] { self =>
     for { a <- r1; b <- r2; c <- r3; d <- r4 } yield (a, b, c, d)
 }
 
-abstract class Random[+A, G <: Generator](val op: Op[A]) { self =>
+abstract class Random[+A, G <: Generator](val op: Op[A]) {
+  self =>
 
   def companion: RandomCompanion[G]
 

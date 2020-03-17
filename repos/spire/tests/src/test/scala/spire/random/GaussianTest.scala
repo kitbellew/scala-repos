@@ -49,7 +49,8 @@ object AndersonDarlingTest {
       xs: Array[A],
       mean: A,
       stdDev: A): Boolean = {
-    @tailrec def loop(sum: A, i: Int, a: A, b: A): A =
+    @tailrec
+    def loop(sum: A, i: Int, a: A, b: A): A =
       if (i < xs.length) {
         // val y = cdf((xs(i) - mean) / stdDev, mean, stdDev)
         val y = cdf(xs(i), mean, stdDev)

@@ -21,7 +21,8 @@ import org.saddle.util
 import org.saddle.util.Concat.Promoter
 import org.saddle.scalar._
 
-class VecDouble(values: Array[Double]) extends Vec[Double] { self =>
+class VecDouble(values: Array[Double]) extends Vec[Double] {
+  self =>
   def length = values.length
 
   def scalarTag = ScalarTagDouble

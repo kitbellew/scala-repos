@@ -104,7 +104,8 @@ private[mesos] class MesosExternalShuffleBlockHandler(
 
   private class AppState(
       val heartbeatTimeout: Long,
-      @volatile var lastHeartbeat: Long)
+      @volatile
+      var lastHeartbeat: Long)
 
   private class CleanerThread extends Runnable {
     override def run(): Unit = {

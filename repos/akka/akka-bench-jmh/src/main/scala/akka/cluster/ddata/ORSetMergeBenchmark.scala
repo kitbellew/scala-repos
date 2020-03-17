@@ -19,11 +19,8 @@ import org.openjdk.jmh.annotations.Param
 import org.openjdk.jmh.annotations.Setup
 import org.openjdk.jmh.annotations.Level
 
-@Fork(2)
-@State(JmhScope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
-@Warmup(iterations = 4)
-@Measurement(iterations = 5)
+@Fork(2) @State(JmhScope.Benchmark) @BenchmarkMode(Array(Mode.Throughput))
+@Warmup(iterations = 4) @Measurement(iterations = 5)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 class ORSetMergeBenchmark {
 

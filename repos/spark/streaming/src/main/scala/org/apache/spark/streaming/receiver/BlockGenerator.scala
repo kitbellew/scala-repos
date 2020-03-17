@@ -121,8 +121,10 @@ private[streaming] class BlockGenerator(
     override def run() { keepPushingBlocks() }
   }
 
-  @volatile private var currentBuffer = new ArrayBuffer[Any]
-  @volatile private var state = Initialized
+  @volatile
+  private var currentBuffer = new ArrayBuffer[Any]
+  @volatile
+  private var state = Initialized
 
   /** Start block generating and pushing threads. */
   def start(): Unit =

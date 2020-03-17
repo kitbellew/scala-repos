@@ -200,13 +200,14 @@ class PrintStream private (
     this
   }
 
-  @inline private[this] def trapIOExceptions(body: => Unit): Unit = {
+  @inline
+  private[this] def trapIOExceptions(body: => Unit): Unit = {
     try { body }
     catch { case _: IOException => setError() }
   }
 
-  @inline private[this] def ensureOpenAndTrapIOExceptions(
-      body: => Unit): Unit = {
+  @inline
+  private[this] def ensureOpenAndTrapIOExceptions(body: => Unit): Unit = {
     if (closed) setError() else trapIOExceptions(body)
   }
 

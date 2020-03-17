@@ -28,26 +28,33 @@ import scala.collection.mutable
   * @since 7/17/12
   */
 class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
-  @NotNull override def getGroupDisplayName: String = {
+  @NotNull
+  override def getGroupDisplayName: String = {
     GroupNames.INTERNATIONALIZATION_GROUP_NAME
   }
 
-  @NotNull override def getDisplayName: String = {
+  @NotNull
+  override def getDisplayName: String = {
     CodeInsightBundle.message(
       "inspection.unresolved.property.key.reference.name")
   }
 
-  @NotNull override def getShortName: String = { "ScalaUnresolvedPropertyKey" }
+  @NotNull
+  override def getShortName: String = { "ScalaUnresolvedPropertyKey" }
 
-  @NotNull override def getDefaultLevel: HighlightDisplayLevel = {
+  @NotNull
+  override def getDefaultLevel: HighlightDisplayLevel = {
     HighlightDisplayLevel.ERROR
   }
 
   override def isEnabledByDefault: Boolean = { true }
 
-  @Nullable override def checkFile(
-      @NotNull file: PsiFile,
-      @NotNull manager: InspectionManager,
+  @Nullable
+  override def checkFile(
+      @NotNull
+      file: PsiFile,
+      @NotNull
+      manager: InspectionManager,
       isOnTheFly: Boolean): Array[ProblemDescriptor] = {
     val visitor: UnresolvedPropertyVisitor =
       new UnresolvedPropertyVisitor(manager, isOnTheFly)
@@ -60,10 +67,14 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
   private object UnresolvedPropertyVisitor {
     def appendPropertyKeyNotFoundProblem(
         bundleName: String,
-        @NotNull key: String,
-        @NotNull expression: ScLiteral,
-        @NotNull manager: InspectionManager,
-        @NotNull problems: util.List[ProblemDescriptor],
+        @NotNull
+        key: String,
+        @NotNull
+        expression: ScLiteral,
+        @NotNull
+        manager: InspectionManager,
+        @NotNull
+        problems: util.List[ProblemDescriptor],
         onTheFly: Boolean) {
       val description: String = CodeInsightBundle.message(
         "inspection.unresolved.property.key.reference.message",
@@ -76,9 +87,12 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
         onTheFly))
     }
 
-    @NotNull def filterNotInLibrary(
-        @NotNull project: Project,
-        @NotNull propertiesFiles: util.List[PropertiesFile])
+    @NotNull
+    def filterNotInLibrary(
+        @NotNull
+        project: Project,
+        @NotNull
+        propertiesFiles: util.List[PropertiesFile])
         : util.List[PropertiesFile] = {
       val fileIndex: ProjectFileIndex =
         ProjectRootManager.getInstance(project).getFileIndex

@@ -4,11 +4,15 @@ package math
 import spire.algebra.{IsIntegral, Order, Rig, Signed}
 
 object UInt extends UIntInstances {
-  @inline final def apply(n: Int): UInt = new UInt(n)
-  @inline final def apply(n: Long): UInt = new UInt(n.toInt)
+  @inline
+  final def apply(n: Int): UInt = new UInt(n)
+  @inline
+  final def apply(n: Long): UInt = new UInt(n.toInt)
 
-  @inline final val MinValue: UInt = UInt(0)
-  @inline final val MaxValue: UInt = UInt(-1)
+  @inline
+  final val MinValue: UInt = UInt(0)
+  @inline
+  final val MaxValue: UInt = UInt(-1)
 }
 
 class UInt(val signed: Int) extends AnyVal {

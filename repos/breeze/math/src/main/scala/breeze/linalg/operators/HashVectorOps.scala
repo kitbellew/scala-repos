@@ -11,15 +11,16 @@ import breeze.storage.Zero
 import scala.{specialized => spec}
 import scala.reflect.ClassTag
 
-trait DenseVector_HashVector_Ops { this: HashVector.type =>
+trait DenseVector_HashVector_Ops {
+  this: HashVector.type =>
   import breeze.math.PowImplicits._
 
   @expand
   implicit def dv_hv_Update_Zero_Idempotent[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ + _ }, { _ - _ })
-      op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], HashVector[T]] =
+      @expand.sequence[Op]({ _ + _ }, { _ - _ }) op: Op.Impl2[T, T, T])
+      : Op.InPlaceImpl2[DenseVector[T], HashVector[T]] =
     new Op.InPlaceImpl2[DenseVector[T], HashVector[T]] {
       def apply(a: DenseVector[T], b: HashVector[T]): Unit = {
         require(a.length == b.length, "Vectors must have the same length")
@@ -89,8 +90,8 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
         { _ / _ },
         { (a, b) => b },
         { _ % _ },
-        { _ pow _ })
-      op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[HashVector[T], DenseVector[T]] =
+        { _ pow _ }) op: Op.Impl2[T, T, T])
+      : Op.InPlaceImpl2[HashVector[T], DenseVector[T]] =
     new Op.InPlaceImpl2[HashVector[T], DenseVector[T]] {
       def apply(a: HashVector[T], b: DenseVector[T]): Unit = {
         require(a.length == b.length, "Vectors must have the same length")
@@ -121,8 +122,7 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
         { _ / _ },
         { (a, b) => b },
         { _ % _ },
-        { _ pow _ })
-      op: Op.Impl2[T, T, T])
+        { _ pow _ }) op: Op.Impl2[T, T, T])
       : Op.Impl2[HashVector[T], DenseVector[T], DenseVector[T]] = {
     new Op.Impl2[HashVector[T], DenseVector[T], DenseVector[T]] {
       def apply(a: HashVector[T], b: DenseVector[T]) = {
@@ -156,15 +156,15 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
 
 }
 
-trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
+trait HashVectorOps extends HashVector_GenericOps {
+  this: HashVector.type =>
   import breeze.math.PowImplicits._
 
   @expand
   implicit def hv_hv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ + _ }, { _ - _ })
-      op: Op.Impl2[T, T, T])
+      @expand.sequence[Op]({ _ + _ }, { _ - _ }) op: Op.Impl2[T, T, T])
       : Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): HashVector[T] = {
@@ -195,8 +195,11 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   implicit def hv_hv_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ / _ }, { (a, b) => b }, { _ % _ }, { _ pow _ })
-      op: Op.Impl2[T, T, T])
+      @expand.sequence[Op](
+        { _ / _ },
+        { (a, b) => b },
+        { _ % _ },
+        { _ pow _ }) op: Op.Impl2[T, T, T])
       : Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): HashVector[T] = {
@@ -229,8 +232,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         { _ / _ },
         { (a, b) => b },
         { _ % _ },
-        { _ pow _ })
-      op: Op.Impl2[T, T, T])
+        { _ pow _ }) op: Op.Impl2[T, T, T])
       : Op.Impl2[HashVector[T], Vector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], Vector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: Vector[T]): HashVector[T] = {
@@ -267,10 +269,9 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         { _ / _ },
         { (a, b) => b },
         { _ % _ },
-        { _ pow _ })
-      op: Op.Impl2[T, T, T],
-      @expand.sequence[T](0, 0.0, 0.0f, 0L)
-      zero: T): Op.Impl2[HashVector[T], T, HashVector[T]] =
+        { _ pow _ }) op: Op.Impl2[T, T, T],
+      @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+      : Op.Impl2[HashVector[T], T, HashVector[T]] =
     new Op.Impl2[HashVector[T], T, HashVector[T]] {
       def apply(a: HashVector[T], b: T): HashVector[T] = {
         val result = HashVector.zeros[T](a.length)
@@ -297,8 +298,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
           _ % _
         }, {
           _ pow _
-        })
-      op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[HashVector[T], HashVector[T]] =
+        }) op: Op.Impl2[T, T, T])
+      : Op.InPlaceImpl2[HashVector[T], HashVector[T]] =
     new Op.InPlaceImpl2[HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -314,8 +315,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   implicit def hv_hv_Idempotent_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ + _ }, { _ - _ })
-      op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[HashVector[T], HashVector[T]] =
+      @expand.sequence[Op]({ _ + _ }, { _ - _ }) op: Op.Impl2[T, T, T])
+      : Op.InPlaceImpl2[HashVector[T], HashVector[T]] =
     new Op.InPlaceImpl2[HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -339,8 +340,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         { _ * _ },
         { _ / _ },
         { (a, b) => b },
-        { _ % _ })
-      op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[HashVector[T], T] =
+        { _ % _ }) op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[HashVector[T], T] =
     new Op.InPlaceImpl2[HashVector[T], T] {
       def apply(a: HashVector[T], b: T): Unit = {
         var i = 0
@@ -372,8 +372,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canNorm[@expand.args(Int, Double, Float, Long) T]
       : norm.Impl2[HashVector[T], Double, Double] = {
 
@@ -451,8 +450,11 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
   implicit def hv_sv_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ / _ }, { (a, b) => b }, { _ % _ }, { _ pow _ })
-      op: Op.Impl2[T, T, T],
+      @expand.sequence[Op](
+        { _ / _ },
+        { (a, b) => b },
+        { _ % _ },
+        { _ pow _ }) op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : Op.Impl2[HashVector[T], SparseVector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], SparseVector[T], HashVector[T]] {
@@ -487,8 +489,7 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
   implicit def hv_sv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ + _ }, { _ - _ })
-      op: Op.Impl2[T, T, T])
+      @expand.sequence[Op]({ _ + _ }, { _ - _ }) op: Op.Impl2[T, T, T])
       : Op.Impl2[HashVector[T], SparseVector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], SparseVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: SparseVector[T]): HashVector[T] = {
@@ -558,15 +559,19 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
 
 trait SparseVector_HashVector_Ops
     extends HashVectorOps
-    with HashVector_SparseVector_Ops { this: HashVector.type =>
+    with HashVector_SparseVector_Ops {
+  this: HashVector.type =>
   import breeze.math.PowImplicits._
 
   @expand
   implicit def sv_hv_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ / _ }, { (a, b) => b }, { _ % _ }, { _ pow _ })
-      op: Op.Impl2[T, T, T],
+      @expand.sequence[Op](
+        { _ / _ },
+        { (a, b) => b },
+        { _ % _ },
+        { _ pow _ }) op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : Op.Impl2[SparseVector[T], HashVector[T], SparseVector[T]] =
     new Op.Impl2[SparseVector[T], HashVector[T], SparseVector[T]] {
@@ -601,8 +606,7 @@ trait SparseVector_HashVector_Ops
   implicit def sv_hv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ + _ }, { _ - _ })
-      op: Op.Impl2[T, T, T])
+      @expand.sequence[Op]({ _ + _ }, { _ - _ }) op: Op.Impl2[T, T, T])
       : Op.Impl2[SparseVector[T], HashVector[T], SparseVector[T]] =
     new Op.Impl2[SparseVector[T], HashVector[T], SparseVector[T]] {
       def apply(a: SparseVector[T], b: HashVector[T]): SparseVector[T] = {
@@ -658,7 +662,8 @@ trait SparseVector_HashVector_Ops
     updateFromPureS
 }
 
-trait HashVector_GenericOps { this: HashVector.type =>
+trait HashVector_GenericOps {
+  this: HashVector.type =>
   import breeze.math.PowImplicits._
   @expand
   implicit def pureFromUpdate[

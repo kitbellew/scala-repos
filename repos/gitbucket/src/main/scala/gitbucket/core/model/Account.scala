@@ -1,6 +1,7 @@
 package gitbucket.core.model
 
-trait AccountComponent { self: Profile =>
+trait AccountComponent {
+  self: Profile =>
   import profile.simple._
   import self._
 

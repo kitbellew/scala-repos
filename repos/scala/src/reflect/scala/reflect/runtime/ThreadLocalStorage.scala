@@ -30,6 +30,7 @@ private[reflect] trait ThreadLocalStorage {
     }
     def set(newValue: T): Unit = { values.put(currentThread, newValue) }
   }
-  @inline final def mkThreadLocalStorage[T](x: => T): ThreadLocalStorage[T] =
+  @inline
+  final def mkThreadLocalStorage[T](x: => T): ThreadLocalStorage[T] =
     new MyThreadLocalStorage(x)
 }

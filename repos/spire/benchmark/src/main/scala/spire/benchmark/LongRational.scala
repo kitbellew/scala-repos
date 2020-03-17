@@ -13,7 +13,8 @@ object LongRational {
     else { new LongRational(n / div, d / div) }
   }
 
-  @inline final def gcd(a: Long, b: Long) = spire.math.gcd(a, b)
+  @inline
+  final def gcd(a: Long, b: Long) = spire.math.gcd(a, b)
 }
 
 final class LongRational private (val n: Long, val d: Long) {

@@ -113,8 +113,7 @@ object Marshal {
     ba.toByteArray()
   }
 
-  @throws(classOf[IOException])
-  @throws(classOf[ClassCastException])
+  @throws(classOf[IOException]) @throws(classOf[ClassCastException])
   @throws(classOf[ClassNotFoundException])
   def load[A](buffer: Array[Byte])(implicit expected: ClassTag[A]): A = {
     val in = new ObjectInputStream(new ByteArrayInputStream(buffer))

@@ -12,11 +12,8 @@ import org.openjdk.jmh.annotations._
 import scala.concurrent.duration._
 import scala.concurrent.Await
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.SingleShotTime))
-@Fork(5)
-@Threads(1)
-@Warmup(iterations = 10, batchSize = TellOnlyBenchmark.numMessages)
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.SingleShotTime)) @Fork(5)
+@Threads(1) @Warmup(iterations = 10, batchSize = TellOnlyBenchmark.numMessages)
 @Measurement(iterations = 10, batchSize = TellOnlyBenchmark.numMessages)
 class TellOnlyBenchmark {
   import TellOnlyBenchmark._
@@ -82,8 +79,7 @@ class TellOnlyBenchmark {
     probe = null
   }
 
-  @Benchmark
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  @Benchmark @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def tell(): Unit = { probe.send(actor, message) }
 }
 
@@ -103,7 +99,8 @@ object TellOnlyBenchmark {
   }
 
   class DroppingMessageQueue extends UnboundedMailbox.MessageQueue {
-    @volatile var dropping = false
+    @volatile
+    var dropping = false
 
     override def enqueue(receiver: ActorRef, handle: Envelope): Unit = {
       if (handle.message == flipDrop) dropping = !dropping

@@ -109,7 +109,8 @@ class SeqCoordinateSpace[A: Field, SA <: SeqLike[A, SA]](val dimensions: Int)(
   def axis(i: Int): SA = {
     val b = cbf()
 
-    @tailrec def loop(j: Int): SA =
+    @tailrec
+    def loop(j: Int): SA =
       if (i < dimensions) {
         b += (if (i == j) scalar.one else scalar.zero)
         loop(j + 1)
@@ -181,7 +182,8 @@ private object SeqSupport {
 
   private val falsef: Any => Boolean = _ => false
 
-  @inline final def forall[A, SA <: SeqLike[A, SA]](x: SA, y: SA)(
+  @inline
+  final def forall[A, SA <: SeqLike[A, SA]](x: SA, y: SA)(
       f: (A, A) => Boolean,
       g: A => Boolean = falsef): Boolean = {
     forall(x.toIterator, y.toIterator)(f, g)

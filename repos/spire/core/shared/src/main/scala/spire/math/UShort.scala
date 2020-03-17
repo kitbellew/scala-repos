@@ -4,12 +4,17 @@ package math
 import spire.algebra.{IsIntegral, Order, Rig, Signed}
 
 object UShort extends UShortInstances {
-  @inline final def apply(n: Char): UShort = new UShort(n)
-  @inline final def apply(n: Short): UShort = new UShort(n.toChar)
-  @inline final def apply(n: Int): UShort = new UShort(n.toChar)
+  @inline
+  final def apply(n: Char): UShort = new UShort(n)
+  @inline
+  final def apply(n: Short): UShort = new UShort(n.toChar)
+  @inline
+  final def apply(n: Int): UShort = new UShort(n.toChar)
 
-  @inline final def MinValue: UShort = UShort(0)
-  @inline final def MaxValue: UShort = UShort(Char.MaxValue)
+  @inline
+  final def MinValue: UShort = UShort(0)
+  @inline
+  final def MaxValue: UShort = UShort(Char.MaxValue)
 }
 
 class UShort(val signed: Char) extends AnyVal {

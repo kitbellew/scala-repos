@@ -5,7 +5,8 @@ import lila.api.Context
 import play.api.data._
 import play.twirl.api.Html
 
-trait FormHelper { self: I18nHelper =>
+trait FormHelper {
+  self: I18nHelper =>
 
   private val errNames = Map(
     "error.minLength" -> trans.textIsTooShort,

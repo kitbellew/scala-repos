@@ -75,21 +75,25 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
   }
 }
 
-class FunctionFlatMapOperation[T, U](@transient fm: T => TraversableOnce[U])
+class FunctionFlatMapOperation[T, U](
+    @transient
+    fm: T => TraversableOnce[U])
     extends FlatMapOperation[T, U] {
   val boxed = Externalizer(fm)
   def apply(t: T) = Future.value(boxed.get(t))
 }
 
 class GenericFlatMapOperation[T, U](
-    @transient fm: T => Future[TraversableOnce[U]])
+    @transient
+    fm: T => Future[TraversableOnce[U]])
     extends FlatMapOperation[T, U] {
   val boxed = Externalizer(fm)
   def apply(t: T) = boxed.get(t)
 }
 
 class FunctionKeyFlatMapOperation[K1, K2, V](
-    @transient fm: K1 => TraversableOnce[K2])
+    @transient
+    fm: K1 => TraversableOnce[K2])
     extends FlatMapOperation[(K1, V), (K2, V)] {
   val boxed = Externalizer(fm)
   def apply(t: (K1, V)) = {

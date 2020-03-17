@@ -16,7 +16,8 @@
 
 package com.twitter.summingbird
 
-trait SummingbirdConfig { self =>
+trait SummingbirdConfig {
+  self =>
   def get(key: String): Option[AnyRef]
   def put(key: String, v: AnyRef): SummingbirdConfig
   final def +(kv: (String, AnyRef)) = put(kv._1, kv._2)

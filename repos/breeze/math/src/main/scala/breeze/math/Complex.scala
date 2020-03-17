@@ -142,7 +142,8 @@ case class Complex(real: Double, imag: Double) {
   override def hashCode() = real.## ^ imag.##
 }
 
-object Complex { outer =>
+object Complex {
+  outer =>
 
   /** Constant Complex(0,0). */
   val zero = new Complex(0, 0)

@@ -72,7 +72,8 @@ private class OpqueueZkReader(
 
   def this() = this(0, Buf.Empty, Duration.Zero)
 
-  @volatile var opq: immutable.Queue[ZkOp] = immutable.Queue.empty
+  @volatile
+  var opq: immutable.Queue[ZkOp] = immutable.Queue.empty
 
   private def enqueue(op: ZkOp): Future[op.Res] =
     synchronized {

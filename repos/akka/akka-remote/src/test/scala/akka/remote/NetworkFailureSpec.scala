@@ -9,7 +9,8 @@ import akka.testkit.DefaultTimeout
 import java.util.concurrent.atomic.AtomicBoolean
 import scala.concurrent.{Future}
 
-trait NetworkFailureSpec extends DefaultTimeout { self: AkkaSpec ⇒
+trait NetworkFailureSpec extends DefaultTimeout {
+  self: AkkaSpec ⇒
   import scala.concurrent.duration.Duration
 
   import system.dispatcher

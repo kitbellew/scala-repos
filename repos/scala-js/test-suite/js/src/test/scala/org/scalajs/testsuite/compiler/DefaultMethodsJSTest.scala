@@ -16,7 +16,8 @@ class DefaultMethodsJSTest {
 
   import DefaultMethodsJSTest._
 
-  @Test def inheritSimpleDefaultMethod(): Unit = {
+  @Test
+  def inheritSimpleDefaultMethod(): Unit = {
     class InheritSimpleDefaultMethod extends SimpleInterfaceWithDefault {
       def value: Int = 5
     }

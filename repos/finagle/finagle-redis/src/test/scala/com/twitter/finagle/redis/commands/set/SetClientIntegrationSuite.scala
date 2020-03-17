@@ -10,8 +10,7 @@ import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-@Ignore
-@RunWith(classOf[JUnitRunner])
+@Ignore @RunWith(classOf[JUnitRunner])
 final class SetClientIntegrationSuite extends RedisClientTest {
 
   private[this] val oneElemAdded = 1

@@ -57,16 +57,13 @@ trait Partial
 
 class SomeForm {
 
-  @BeanProperty
-  @Required
+  @BeanProperty @Required
   var prop1: String = _
 
-  @BeanProperty
-  @Required(groups = Array(classOf[Partial]))
+  @BeanProperty @Required(groups = Array(classOf[Partial]))
   var prop2: String = _
 
-  @BeanProperty
-  @Required(groups = Array(classOf[Partial]))
+  @BeanProperty @Required(groups = Array(classOf[Partial]))
   @MaxLength(value = 3, groups = Array(classOf[Partial]))
   var prop3: String = _
 }

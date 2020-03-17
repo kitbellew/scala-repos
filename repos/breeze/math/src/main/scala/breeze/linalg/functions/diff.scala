@@ -10,8 +10,7 @@ import scala.reflect.ClassTag
   * Differences between adjacent elements and discrete derivatives.
   */
 object diff extends UFunc with diffLowPrio {
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def implDV_Double_DV[@expand.args(Int, Long, Float, Double) T]
       : Impl2[DenseVector[T], Int, DenseVector[T]] = {
     new Impl2[DenseVector[T], Int, DenseVector[T]] {
@@ -22,8 +21,7 @@ object diff extends UFunc with diffLowPrio {
 
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def implDV_DV[@expand.args(Int, Long, Float, Double) T]
       : Impl[DenseVector[T], DenseVector[T]] = {
     new Impl[DenseVector[T], DenseVector[T]] {
@@ -38,7 +36,8 @@ object diff extends UFunc with diffLowPrio {
 
 }
 
-sealed trait diffLowPrio { this: diff.type =>
+sealed trait diffLowPrio {
+  this: diff.type =>
   implicit def implVec[T, Vec](implicit
       vec: Vec <:< Vector[T],
       ct: ClassTag[T],

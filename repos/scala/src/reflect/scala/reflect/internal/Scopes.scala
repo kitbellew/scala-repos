@@ -9,7 +9,8 @@ package internal
 
 import scala.annotation.tailrec
 
-trait Scopes extends api.Scopes { self: SymbolTable =>
+trait Scopes extends api.Scopes {
+  self: SymbolTable =>
 
   /** An ADT to represent the results of symbol name lookups.
     */
@@ -340,7 +341,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
 
     def isSubScope(other: Scope) = {
       def scopeContainsSym(sym: Symbol): Boolean = {
-        @tailrec def entryContainsSym(e: ScopeEntry): Boolean =
+        @tailrec
+        def entryContainsSym(e: ScopeEntry): Boolean =
           e match {
             case null => false
             case _ =>

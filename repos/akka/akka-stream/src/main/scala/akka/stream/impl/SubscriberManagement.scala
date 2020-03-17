@@ -127,7 +127,8 @@ private[akka] trait SubscriberManagement[T]
             val demand = if (d < 1) Long.MaxValue else d
             subscription.totalDemand = demand
             // returns Long.MinValue if the subscription is to be terminated
-            @tailrec def dispatchFromBufferAndReturnRemainingRequested(
+            @tailrec
+            def dispatchFromBufferAndReturnRemainingRequested(
                 requested: Long,
                 eos: EndOfStream): Long =
               if (requested == 0) {
@@ -167,9 +168,8 @@ private[akka] trait SubscriberManagement[T]
     }
 
   private[this] final def requestFromUpstreamIfRequired(): Unit = {
-    @tailrec def maxRequested(
-        remaining: Subscriptions,
-        result: Long = 0): Long =
+    @tailrec
+    def maxRequested(remaining: Subscriptions, result: Long = 0): Long =
       remaining match {
         case head :: tail ⇒
           maxRequested(tail, math.max(head.totalDemand, result))
@@ -192,9 +192,8 @@ private[akka] trait SubscriberManagement[T]
     * this method must be called by the implementing class whenever a new value is available to be pushed downstream
     */
   protected def pushToDownstream(value: T): Unit = {
-    @tailrec def dispatch(
-        remaining: Subscriptions,
-        sent: Boolean = false): Boolean =
+    @tailrec
+    def dispatch(remaining: Subscriptions, sent: Boolean = false): Boolean =
       remaining match {
         case head :: tail ⇒
           if (head.totalDemand > 0) {
@@ -224,7 +223,8 @@ private[akka] trait SubscriberManagement[T]
     */
   protected def completeDownstream(): Unit = {
     if (endOfStream eq NotReached) {
-      @tailrec def completeDoneSubscriptions(
+      @tailrec
+      def completeDoneSubscriptions(
           remaining: Subscriptions,
           result: Subscriptions = Nil): Subscriptions =
         remaining match {
@@ -283,7 +283,8 @@ private[akka] trait SubscriberManagement[T]
 
   // must be idempotent
   private def unregisterSubscriptionInternal(subscription: S): Unit = {
-    @tailrec def removeFrom(
+    @tailrec
+    def removeFrom(
         remaining: Subscriptions,
         result: Subscriptions = Nil): Subscriptions =
       remaining match {

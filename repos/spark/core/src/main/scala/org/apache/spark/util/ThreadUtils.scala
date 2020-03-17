@@ -134,8 +134,10 @@ private[spark] object ThreadUtils {
     */
   def runInNewThread[T](threadName: String, isDaemon: Boolean = true)(
       body: => T): T = {
-    @volatile var exception: Option[Throwable] = None
-    @volatile var result: T = null.asInstanceOf[T]
+    @volatile
+    var exception: Option[Throwable] = None
+    @volatile
+    var result: T = null.asInstanceOf[T]
 
     val thread = new Thread(threadName) {
       override def run(): Unit = {

@@ -40,7 +40,8 @@ trait TypeAdaptingTransformer {
 
     def isPrimitiveValueMember(sym: Symbol) = isPrimitiveValueClass(sym.owner)
 
-    @inline def box(tree: Tree, target: => String): Tree = {
+    @inline
+    def box(tree: Tree, target: => String): Tree = {
       val result = box1(tree)
       if (tree.tpe =:= UnitTpe) ()
       else

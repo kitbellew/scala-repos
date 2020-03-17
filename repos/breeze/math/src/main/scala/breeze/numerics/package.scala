@@ -568,8 +568,7 @@ package object numerics {
     * and therefore does not necessarily equal !isEven for fractional input.
     */
   object isOdd extends UFunc with MappingUFunc {
-    @expand
-    @expand.valify
+    @expand @expand.valify
     implicit def isOddImpl[@expand.args(Int, Double, Float, Long) T]
         : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
@@ -582,8 +581,7 @@ package object numerics {
     * and therefore does not necessarily equal !isOdd for fractional input.
     */
   object isEven extends UFunc with MappingUFunc {
-    @expand
-    @expand.valify
+    @expand @expand.valify
     implicit def isEvenImpl[@expand.args(Int, Double, Float, Long) T]
         : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
@@ -596,8 +594,7 @@ package object numerics {
   val nan, NaN = Double.NaN
 
   object isNonfinite extends UFunc with MappingUFunc {
-    @expand
-    @expand.valify
+    @expand @expand.valify
     implicit def isNonfiniteImpl[@expand.args(Double, Float) T]
         : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
@@ -611,8 +608,7 @@ package object numerics {
   }
 
   object isFinite extends UFunc with MappingUFunc {
-    @expand
-    @expand.valify
+    @expand @expand.valify
     implicit def isFiniteImpl[@expand.args(Double, Float) T]
         : Impl[T, Boolean] = {
       new Impl[T, Boolean] {

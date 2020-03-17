@@ -8,47 +8,54 @@ object Statistics {
   type TimerSnapshot = (Long, Long)
 
   /** If enabled, increment counter by one */
-  @inline final def incCounter(c: Counter) {
-    if (_enabled && c != null) c.value += 1
-  }
+  @inline
+  final def incCounter(c: Counter) { if (_enabled && c != null) c.value += 1 }
 
   /** If enabled, increment counter by given delta */
-  @inline final def incCounter(c: Counter, delta: Int) {
+  @inline
+  final def incCounter(c: Counter, delta: Int) {
     if (_enabled && c != null) c.value += delta
   }
 
   /** If enabled, increment counter in map `ctrs` at index `key` by one */
-  @inline final def incCounter[K](ctrs: QuantMap[K, Counter], key: K) =
+  @inline
+  final def incCounter[K](ctrs: QuantMap[K, Counter], key: K) =
     if (_enabled && ctrs != null) ctrs(key).value += 1
 
   /** If enabled, start subcounter. While active it will track all increments of
     *  its base counter.
     */
-  @inline final def startCounter(sc: SubCounter): (Int, Int) =
+  @inline
+  final def startCounter(sc: SubCounter): (Int, Int) =
     if (_enabled && sc != null) sc.start() else null
 
   /** If enabled, stop subcounter from tracking its base counter. */
-  @inline final def stopCounter(sc: SubCounter, start: (Int, Int)) {
+  @inline
+  final def stopCounter(sc: SubCounter, start: (Int, Int)) {
     if (_enabled && sc != null) sc.stop(start)
   }
 
   /** If enabled, start timer */
-  @inline final def startTimer(tm: Timer): TimerSnapshot =
+  @inline
+  final def startTimer(tm: Timer): TimerSnapshot =
     if (_enabled && tm != null) tm.start() else null
 
   /** If enabled, stop timer */
-  @inline final def stopTimer(tm: Timer, start: TimerSnapshot) {
+  @inline
+  final def stopTimer(tm: Timer, start: TimerSnapshot) {
     if (_enabled && tm != null) tm.stop(start)
   }
 
   /** If enabled, push and start a new timer in timer stack */
-  @inline final def pushTimer(
+  @inline
+  final def pushTimer(
       timers: TimerStack,
       timer: => StackableTimer): TimerSnapshot =
     if (_enabled && timers != null) timers.push(timer) else null
 
   /** If enabled, stop and pop timer from timer stack */
-  @inline final def popTimer(timers: TimerStack, prev: TimerSnapshot) {
+  @inline
+  final def popTimer(timers: TimerStack, prev: TimerSnapshot) {
     if (_enabled && timers != null) timers.pop(prev)
   }
 

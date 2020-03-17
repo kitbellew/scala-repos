@@ -56,7 +56,8 @@ object MaybeOrdering {
   def fromInt(n: Int): MaybeOrdering = if (n < 0) Lt else if (n == 0) Eq else Gt
 }
 
-trait CPathComparator { self =>
+trait CPathComparator {
+  self =>
   def compare(row1: Int, row2: Int, indices: Array[Int]): MaybeOrdering
 
   def swap: CPathComparator =

@@ -198,7 +198,8 @@ private[util] trait Props extends Logger {
     }
   }
 
-  @volatile private[util] var runModeInitialised: Boolean = false
+  @volatile
+  private[util] var runModeInitialised: Boolean = false
 
   /**
     * Exposes a property affecting run-mode determination, for customisation. If the property is modified
@@ -207,7 +208,8 @@ private[util] trait Props extends Logger {
     * @param name The property name (used to make logging messages clearer, no functional impact).
     */
   class RunModeProperty[T](name: String, initialValue: T) extends Logger {
-    @volatile private[this] var value = initialValue
+    @volatile
+    private[this] var value = initialValue
 
     def get = value
 
@@ -357,8 +359,8 @@ private[util] trait Props extends Logger {
     * some such, you can set the whereToLook function in your Boot.scala file
     * '''before''' you call anything else in `Props`.
     */
-  @volatile var whereToLook: () => List[(String, () => Box[InputStream])] =
-    () => Nil
+  @volatile
+  var whereToLook: () => List[(String, () => Box[InputStream])] = () => Nil
 
   /**
     * The map of key/value pairs retrieved from the property file.

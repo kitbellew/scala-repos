@@ -3,7 +3,8 @@ package com.typesafe.slick.testkit.tests
 import scala.language.higherKinds
 import com.typesafe.slick.testkit.util.{JdbcTestDB, AsyncTest}
 
-class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
+class MainTest extends AsyncTest[JdbcTestDB] {
+  mainTest =>
   import tdb.profile.api._
 
   case class User(id: Int, first: String, last: String)

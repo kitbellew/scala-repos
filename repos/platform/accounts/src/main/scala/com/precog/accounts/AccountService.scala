@@ -112,7 +112,8 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
 trait AccountService
     extends BlueEyesServiceBuilder
     with AuthenticationCombinators
-    with Logging { self =>
+    with Logging {
+  self =>
   case class State(handlers: AccountServiceHandlers, stop: Stoppable)
 
   implicit val timeout = akka.util.Timeout(120000) //for now

@@ -49,7 +49,8 @@ object Utils {
    }
    */
 
-  @volatile private var seedUniquifier = 8682522807148012L
+  @volatile
+  private var seedUniquifier = 8682522807148012L
 
   def intFromTime(time: Long = System.nanoTime): Int = {
     longFromTime(time).toInt

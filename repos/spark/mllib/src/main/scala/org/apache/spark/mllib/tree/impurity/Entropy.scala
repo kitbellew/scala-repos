@@ -24,8 +24,7 @@ import org.apache.spark.annotation.{DeveloperApi, Experimental, Since}
   * Class for calculating [[http://en.wikipedia.org/wiki/Binary_entropy_function entropy]] during
   * binary classification.
   */
-@Since("1.0.0")
-@Experimental
+@Since("1.0.0") @Experimental
 object Entropy extends Impurity {
 
   private[tree] def log2(x: Double) = scala.math.log(x) / scala.math.log(2)
@@ -37,8 +36,7 @@ object Entropy extends Impurity {
     * @param totalCount sum of counts for all labels
     * @return information value, or 0 if totalCount = 0
     */
-  @Since("1.1.0")
-  @DeveloperApi
+  @Since("1.1.0") @DeveloperApi
   override def calculate(counts: Array[Double], totalCount: Double): Double = {
     if (totalCount == 0) { return 0 }
     val numClasses = counts.length
@@ -63,8 +61,7 @@ object Entropy extends Impurity {
     * @param sumSquares summation of squares of the labels
     * @return information value, or 0 if count = 0
     */
-  @Since("1.0.0")
-  @DeveloperApi
+  @Since("1.0.0") @DeveloperApi
   override def calculate(
       count: Double,
       sum: Double,

@@ -106,7 +106,8 @@ class YarnShuffleServiceSuite
       be(Some(shuffleInfo2))
 
     if (!execStateFile.exists()) {
-      @tailrec def findExistingParent(file: File): File = {
+      @tailrec
+      def findExistingParent(file: File): File = {
         if (file == null) file
         else if (file.exists()) file
         else findExistingParent(file.getParentFile())

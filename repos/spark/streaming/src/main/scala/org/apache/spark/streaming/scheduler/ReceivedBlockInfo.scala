@@ -35,7 +35,8 @@ private[streaming] case class ReceivedBlockInfo(
     numRecords.isEmpty || numRecords.get >= 0,
     "numRecords must not be negative")
 
-  @volatile private var _isBlockIdValid = true
+  @volatile
+  private var _isBlockIdValid = true
 
   def blockId: StreamBlockId = blockStoreResult.blockId
 

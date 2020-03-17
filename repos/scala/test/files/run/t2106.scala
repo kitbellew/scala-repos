@@ -1,5 +1,6 @@
 class A extends Cloneable {
-  @inline final def foo = clone()
+  @inline
+  final def foo = clone()
 }
 
 object Test {

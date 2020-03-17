@@ -26,7 +26,8 @@ trait IterableTemplate {
   def foreach(f: Elem => Unit) = iterator.foreach(f)
 }
 
-trait Iterable[A] extends IterableTemplate { self =>
+trait Iterable[A] extends IterableTemplate {
+  self =>
   type Elem
   type Constr <: Iterable[A] { type Constr <: Iterable.this.Constr }
 }

@@ -179,8 +179,10 @@ class MetricEvaluator[EI, Q, P, A, R](
     val otherMetrics: Seq[Metric[EI, Q, P, A, _]],
     val outputPath: Option[String])
     extends BaseEvaluator[EI, Q, P, A, MetricEvaluatorResult[R]] {
-  @transient lazy val logger = Logger[this.type]
-  @transient val engineInstances = Storage.getMetaDataEngineInstances()
+  @transient
+  lazy val logger = Logger[this.type]
+  @transient
+  val engineInstances = Storage.getMetaDataEngineInstances()
 
   def saveEngineJson(
       evaluation: Evaluation,

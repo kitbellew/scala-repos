@@ -15,7 +15,8 @@ private[akka] object ReceiveTimeout {
     (Duration.Undefined, ActorCell.emptyCancellable)
 }
 
-private[akka] trait ReceiveTimeout { this: ActorCell ⇒
+private[akka] trait ReceiveTimeout {
+  this: ActorCell ⇒
 
   import ReceiveTimeout._
   import ActorCell._

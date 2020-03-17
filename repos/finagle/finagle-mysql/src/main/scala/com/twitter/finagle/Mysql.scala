@@ -21,7 +21,8 @@ import com.twitter.util.{Duration, Monitor}
   * Supplements a [[com.twitter.finagle.Client]] with convenient
   * builder methods for constructing a mysql client.
   */
-trait MysqlRichClient { self: com.twitter.finagle.Client[Request, Result] =>
+trait MysqlRichClient {
+  self: com.twitter.finagle.Client[Request, Result] =>
 
   /**
     * Creates a new `RichClient` connected to the logical

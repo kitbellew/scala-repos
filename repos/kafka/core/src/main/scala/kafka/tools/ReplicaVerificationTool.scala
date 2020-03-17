@@ -256,7 +256,8 @@ private class ReplicaBuffer(
   private val fetcherBarrier = new AtomicReference(new CountDownLatch(
     expectedNumFetchers))
   private val verificationBarrier = new AtomicReference(new CountDownLatch(1))
-  @volatile private var lastReportTime = SystemTime.milliseconds
+  @volatile
+  private var lastReportTime = SystemTime.milliseconds
   private var maxLag: Long = -1L
   private var offsetWithMaxLag: Long = -1L
   private var maxLagTopicAndPartition: TopicAndPartition = null

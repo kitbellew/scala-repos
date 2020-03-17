@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait Cozip[F[_]] { self =>
+trait Cozip[F[_]] {
+  self =>
   ////
   def cozip[A, B](x: F[A \/ B]): (F[A] \/ F[B])
 
@@ -38,7 +39,8 @@ trait Cozip[F[_]] { self =>
 }
 
 object Cozip {
-  @inline def apply[F[_]](implicit F: Cozip[F]): Cozip[F] = F
+  @inline
+  def apply[F[_]](implicit F: Cozip[F]): Cozip[F] = F
 
   ////
   def cofzip[F[_], A, B](x: F[A \/ B])(implicit F: Cozip[F]): (F[A] \/ F[B]) =

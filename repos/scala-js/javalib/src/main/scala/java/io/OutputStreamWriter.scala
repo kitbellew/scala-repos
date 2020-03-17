@@ -57,8 +57,7 @@ class OutputStreamWriter(
         fullInput
       } else cbuf
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loopEncode(): Unit = {
       val result = enc.encode(cbuf1, outBuf, false)
       if (result.isUnderflow) ()
@@ -84,8 +83,7 @@ class OutputStreamWriter(
   override def close(): Unit =
     if (!closed) {
       // Finish up the input
-      @inline
-      @tailrec
+      @inline @tailrec
       def loopEncode(): Unit = {
         val cbuf = CharBuffer.wrap(inBuf)
         val result = enc.encode(cbuf, outBuf, true)
@@ -105,8 +103,7 @@ class OutputStreamWriter(
         }
       }
 
-      @inline
-      @tailrec
+      @inline @tailrec
       def loopFlush(): Unit = {
         if (enc.flush(outBuf).isOverflow) {
           makeRoomInOutBuf()

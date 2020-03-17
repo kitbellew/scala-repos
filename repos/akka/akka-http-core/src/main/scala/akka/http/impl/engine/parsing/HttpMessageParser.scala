@@ -25,7 +25,8 @@ import ParserOutput._
 private[http] abstract class HttpMessageParser[
     Output >: MessageOutput <: ParserOutput](
     val settings: ParserSettings,
-    val headerParser: HttpHeaderParser) { self ⇒
+    val headerParser: HttpHeaderParser) {
+  self ⇒
   import HttpMessageParser._
   import settings._
 
@@ -71,7 +72,8 @@ private[http] abstract class HttpMessageParser[
     parseBytes(input.bytes)
   }
   final def parseBytes(input: ByteString): Output = {
-    @tailrec def run(next: ByteString ⇒ StateResult): StateResult =
+    @tailrec
+    def run(next: ByteString ⇒ StateResult): StateResult =
       (try next(input)
       catch {
         case e: ParsingException ⇒ failMessageStart(e.status, e.info)
@@ -135,7 +137,8 @@ private[http] abstract class HttpMessageParser[
 
   def badProtocol: Nothing
 
-  @tailrec final def parseHeaderLines(
+  @tailrec
+  final def parseHeaderLines(
       input: ByteString,
       lineStart: Int,
       headers: ListBuffer[HttpHeader] = initialHeaderBuffer,
@@ -402,7 +405,8 @@ private[http] abstract class HttpMessageParser[
       offset: Int,
       isLastMessage: Boolean,
       totalBytesRead: Long): StateResult = {
-    @tailrec def parseTrailer(
+    @tailrec
+    def parseTrailer(
         extension: String,
         lineStart: Int,
         headers: List[HttpHeader] = Nil,
@@ -454,7 +458,8 @@ private[http] abstract class HttpMessageParser[
         }
       } else parseTrailer(extension, cursor)
 
-    @tailrec def parseChunkExtensions(chunkSize: Int, cursor: Int)(
+    @tailrec
+    def parseChunkExtensions(chunkSize: Int, cursor: Int)(
         startIx: Int = cursor): StateResult =
       if (cursor - startIx <= maxChunkExtLength) {
         def extension = asciiString(input, startIx, cursor)
@@ -468,7 +473,8 @@ private[http] abstract class HttpMessageParser[
         failEntityStream(
           s"HTTP chunk extension length exceeds configured limit of $maxChunkExtLength characters")
 
-    @tailrec def parseSize(cursor: Int, size: Long): StateResult =
+    @tailrec
+    def parseSize(cursor: Int, size: Long): StateResult =
       if (size <= maxChunkSize) {
         byteChar(input, cursor) match {
           case c if CharacterClasses.HEXDIG(c) ⇒

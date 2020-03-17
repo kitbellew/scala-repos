@@ -55,8 +55,7 @@ private[ml] trait TrainValidationSplitParams extends ValidatorParams {
   * and uses evaluation metric on the validation set to select the best model.
   * Similar to [[CrossValidator]], but only splits the set once.
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class TrainValidationSplit @Since("1.5.0") (
     @Since("1.5.0") override val uid: String)
     extends Estimator[TrainValidationSplitModel]
@@ -149,8 +148,7 @@ class TrainValidationSplit @Since("1.5.0") (
   * @param bestModel Estimator determined best model.
   * @param validationMetrics Evaluated validation metrics.
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class TrainValidationSplitModel private[ml] (
     @Since("1.5.0") override val uid: String,
     @Since("1.5.0") val bestModel: Model[_],

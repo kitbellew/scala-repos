@@ -112,7 +112,8 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
     } else next0(arrayD, posD)
   }
 
-  @tailrec private[this] def next0(elems: Array[Iterable[T]], i: Int): T = {
+  @tailrec
+  private[this] def next0(elems: Array[Iterable[T]], i: Int): T = {
     if (i == elems.length - 1) { // reached end of level, pop stack
       depth -= 1
       if (depth >= 0) {

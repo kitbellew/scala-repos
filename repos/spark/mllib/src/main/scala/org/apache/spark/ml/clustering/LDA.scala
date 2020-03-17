@@ -360,12 +360,12 @@ private[clustering] trait LDAParams
   * @param vocabSize  Vocabulary size (number of terms or terms in the vocabulary)
   * @param sqlContext  Used to construct local DataFrames for returning query results
   */
-@Since("1.6.0")
-@Experimental
+@Since("1.6.0") @Experimental
 sealed abstract class LDAModel private[ml] (
     @Since("1.6.0") override val uid: String,
     @Since("1.6.0") val vocabSize: Int,
-    @Since("1.6.0") @transient protected val sqlContext: SQLContext)
+    @Since("1.6.0") @transient
+    protected val sqlContext: SQLContext)
     extends Model[LDAModel]
     with LDAParams
     with Logging
@@ -517,8 +517,7 @@ sealed abstract class LDAModel private[ml] (
   *
   * This model stores the inferred topics only; it does not store info about the training dataset.
   */
-@Since("1.6.0")
-@Experimental
+@Since("1.6.0") @Experimental
 class LocalLDAModel private[ml] (
     uid: String,
     vocabSize: Int,
@@ -624,8 +623,7 @@ object LocalLDAModel extends MLReadable[LocalLDAModel] {
   * @param oldLocalModelOption  Used to implement [[oldLocalModel]] as a lazy val, but keeping
   *                             [[copy()]] cheap.
   */
-@Since("1.6.0")
-@Experimental
+@Since("1.6.0") @Experimental
 class DistributedLDAModel private[ml] (
     uid: String,
     vocabSize: Int,
@@ -762,8 +760,7 @@ object DistributedLDAModel extends MLReadable[DistributedLDAModel] {
   * @see [[http://en.wikipedia.org/wiki/Latent_Dirichlet_allocation Latent Dirichlet allocation
   *       (Wikipedia)]]
   */
-@Since("1.6.0")
-@Experimental
+@Since("1.6.0") @Experimental
 class LDA @Since("1.6.0") (@Since("1.6.0") override val uid: String)
     extends Estimator[LDAModel]
     with LDAParams

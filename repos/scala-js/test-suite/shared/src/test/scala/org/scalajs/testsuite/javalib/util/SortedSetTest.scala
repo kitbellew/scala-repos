@@ -27,7 +27,8 @@ trait SortedSetTest extends SetTest {
     shouldReturnAProperSubSet()
   }
 
-  @Test def shouldRetrieveTheFirstElement(): Unit = {
+  @Test
+  def shouldRetrieveTheFirstElement(): Unit = {
     val ssInt = factory.empty[Int]
 
     assertTrue(ssInt.add(1000))
@@ -47,7 +48,8 @@ trait SortedSetTest extends SetTest {
     assertEquals(-0.987, ssDouble.first, 0.0)
   }
 
-  @Test def shouldRetrieveTheLastElement(): Unit = {
+  @Test
+  def shouldRetrieveTheLastElement(): Unit = {
     val ssInt = factory.empty[Int]
 
     assertTrue(ssInt.add(1000))
@@ -69,7 +71,8 @@ trait SortedSetTest extends SetTest {
 
   val l = asJavaCollection(Set(1, 5, 2, 3, 4))
 
-  @Test def shouldReturnAProperHeadSet(): Unit = {
+  @Test
+  def shouldReturnAProperHeadSet(): Unit = {
     val ss = factory.empty[Int]
 
     ss.addAll(l)
@@ -93,7 +96,8 @@ trait SortedSetTest extends SetTest {
     assertTrue(ss.containsAll(asJavaCollection(Set(4, 5))))
   }
 
-  @Test def shouldReturnAProperTailSet(): Unit = {
+  @Test
+  def shouldReturnAProperTailSet(): Unit = {
     val ss = factory.empty[Int]
 
     ss.addAll(l)
@@ -117,7 +121,8 @@ trait SortedSetTest extends SetTest {
     assertTrue(ss.containsAll(asJavaCollection(Set(1, 2, 3))))
   }
 
-  @Test def shouldReturnAProperSubSet(): Unit = {
+  @Test
+  def shouldReturnAProperSubSet(): Unit = {
     val ss = factory.empty[Int]
 
     ss.addAll(l)

@@ -10,7 +10,8 @@ package org.scalajs.testsuite.javalib.io
 import org.junit.Test
 
 class ThrowablesTest {
-  @Test def should_define_all_java_io_Errors_and_Exceptions(): Unit = {
+  @Test
+  def should_define_all_java_io_Errors_and_Exceptions(): Unit = {
     import java.io._
     new IOException("", new Exception())
     new EOFException("")

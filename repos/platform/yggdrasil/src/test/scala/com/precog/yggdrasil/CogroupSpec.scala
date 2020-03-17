@@ -74,7 +74,8 @@ trait CogroupSpec[M[+_]]
 
   type CogroupResult[A] = Stream[Either3[A, (A, A), A]]
 
-  @tailrec protected final def computeCogroup[A](
+  @tailrec
+  protected final def computeCogroup[A](
       l: Stream[A],
       r: Stream[A],
       acc: CogroupResult[A])(implicit ord: Order[A]): CogroupResult[A] = {

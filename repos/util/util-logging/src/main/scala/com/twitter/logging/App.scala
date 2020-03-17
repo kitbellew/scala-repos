@@ -19,7 +19,8 @@ object Logging {
   * to configure the (default) logger setup.  When adding logging to a
   * twitter-server, mix in a trait that extends Logging but overrides factories.
   */
-trait Logging { self: App =>
+trait Logging {
+  self: App =>
   import Logging._
 
   lazy val log = Logger(name)

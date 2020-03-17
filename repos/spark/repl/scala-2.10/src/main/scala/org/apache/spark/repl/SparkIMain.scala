@@ -97,7 +97,8 @@ class SparkIMain(
     val out: JPrintWriter,
     propagateExceptions: Boolean = false)
     extends SparkImports
-    with Logging { imain =>
+    with Logging {
+  imain =>
 
   private val conf = new SparkConf()
 

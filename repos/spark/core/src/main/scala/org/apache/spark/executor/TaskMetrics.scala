@@ -266,8 +266,8 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
     * issues from readers in different threads, in-progress tasks use a [[ShuffleReadMetrics]] for
     * each dependency and merge these metrics before reporting them to the driver.
     */
-  @transient private lazy val tempShuffleReadMetrics =
-    new ArrayBuffer[ShuffleReadMetrics]
+  @transient
+  private lazy val tempShuffleReadMetrics = new ArrayBuffer[ShuffleReadMetrics]
 
   /**
     * Create a temporary [[ShuffleReadMetrics]] for a particular shuffle dependency.

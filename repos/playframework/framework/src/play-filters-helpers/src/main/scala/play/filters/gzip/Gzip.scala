@@ -40,8 +40,10 @@ object Gzip {
     class State {
       val deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true)
       val crc = new CRC32
-      @volatile var buffer = new Bytes(bufferSize)
-      @volatile var pos = 0
+      @volatile
+      var buffer = new Bytes(bufferSize)
+      @volatile
+      var pos = 0
 
       def reset() {
         pos = 0
@@ -206,8 +208,10 @@ object Gzip {
     class State {
       val inflater = new Inflater(true)
       val crc = new CRC32
-      @volatile var buffer = new Bytes(bufferSize)
-      @volatile var pos = 0
+      @volatile
+      var buffer = new Bytes(bufferSize)
+      @volatile
+      var pos = 0
 
       def reset() {
         pos = 0

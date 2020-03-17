@@ -246,7 +246,8 @@ abstract class Receiver[T](val storageLevel: StorageLevel)
   private var id: Int = -1
 
   /** Handler object that runs the receiver. This is instantiated lazily in the worker. */
-  @transient private var _supervisor: ReceiverSupervisor = null
+  @transient
+  private var _supervisor: ReceiverSupervisor = null
 
   /** Set the ID of the DStream that this receiver is associated with. */
   private[streaming] def setReceiverId(_id: Int) { id = _id }

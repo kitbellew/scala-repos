@@ -29,7 +29,8 @@ trait ListInstances extends ListInstances1 {
           f: (A, B) => Z): List[Z] = fa.flatMap(a => fb.map(b => f(a, b)))
 
       def coflatMap[A, B](fa: List[A])(f: List[A] => B): List[B] = {
-        @tailrec def loop(buf: ListBuffer[B], as: List[A]): List[B] =
+        @tailrec
+        def loop(buf: ListBuffer[B], as: List[A]): List[B] =
           as match {
             case Nil       => buf.toList
             case _ :: rest => loop(buf += f(as), rest)

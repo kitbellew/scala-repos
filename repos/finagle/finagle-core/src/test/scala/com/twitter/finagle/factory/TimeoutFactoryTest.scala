@@ -19,7 +19,8 @@ class TimeoutFactoryTest extends FunSuite with MockitoSugar {
     val underlying = mock[ServiceFactory[String, String]]
     when(underlying.close(any[Time])).thenReturn(Future.Done)
     val promise = new Promise[Service[String, String]] {
-      @volatile var interrupted: Option[Throwable] = None
+      @volatile
+      var interrupted: Option[Throwable] = None
       setInterruptHandler { case exc => interrupted = Some(exc) }
     }
     when(underlying(any[ClientConnection])).thenReturn(promise)

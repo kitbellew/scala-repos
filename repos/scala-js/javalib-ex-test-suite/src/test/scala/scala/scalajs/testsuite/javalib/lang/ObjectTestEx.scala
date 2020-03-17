@@ -33,7 +33,8 @@ object ObjectTestEx extends JasmineTest {
         override def clone(): SomeCloneable =
           super.clone().asInstanceOf[SomeCloneable]
 
-        @noinline def y(): Int = x + 3
+        @noinline
+        def y(): Int = x + 3
       }
 
       val o = new SomeCloneable(5)

@@ -34,9 +34,7 @@ import scala.concurrent.{Await, Promise}
 [info] a.a.ScheduleBenchmark.oneSchedule                0.9   16  thrpt        40   820986.574    22058.708    ops/s
 [info] a.a.ScheduleBenchmark.oneSchedule                0.9   64  thrpt        40   210115.907    14176.402    ops/s
  */
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
-@Fork(2)
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.Throughput)) @Fork(2)
 @Warmup(iterations = 10, time = 1700, timeUnit = TimeUnit.MILLISECONDS)
 @Measurement(iterations = 20, time = 1700, timeUnit = TimeUnit.MILLISECONDS)
 class ScheduleBenchmark {

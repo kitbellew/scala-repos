@@ -19,7 +19,8 @@ import scala.io.Source
 // Instead of doing things the 'right' way, which would be hard, we use heuristics
 // to determine if the link is likely to be a @usecase, and then go digging
 // through the html content to find the anchor.
-trait DocUsecaseHandling { self: DocResolver =>
+trait DocUsecaseHandling {
+  self: DocResolver =>
 
   val PrefixRegexp = """^([A-Za-z:_\+-]+).*""".r
   protected def maybeReplaceWithUsecase(jar: File, sig: DocSig): DocSig = {

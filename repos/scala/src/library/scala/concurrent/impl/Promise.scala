@@ -282,8 +282,7 @@ private[concurrent] object Promise {
         isCompleted
       } else true // Already completed
 
-    @throws(classOf[TimeoutException])
-    @throws(classOf[InterruptedException])
+    @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
     final def ready(atMost: Duration)(implicit permit: CanAwait): this.type =
       if (tryAwait(atMost)) this
       else

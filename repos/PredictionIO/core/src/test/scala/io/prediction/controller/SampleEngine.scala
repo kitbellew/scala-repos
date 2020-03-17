@@ -10,7 +10,8 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 
 object Engine0 {
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   case class TrainingData(id: Int, error: Boolean = false) extends SanityCheck {
     def sanityCheck(): Unit = { Predef.assert(!error, "Not Error") }

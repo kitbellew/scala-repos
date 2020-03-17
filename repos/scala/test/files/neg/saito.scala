@@ -1,5 +1,6 @@
 class B {}
-class A { self: B =>
+class A {
+  self: B =>
   def m(): B = { this }
 }
 

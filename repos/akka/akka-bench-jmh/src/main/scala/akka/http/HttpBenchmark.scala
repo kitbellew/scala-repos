@@ -18,8 +18,7 @@ import scala.concurrent.duration._
 import scala.util.Try
 import com.typesafe.config.ConfigFactory
 
-@State(Scope.Benchmark)
-@OutputTimeUnit(TimeUnit.SECONDS)
+@State(Scope.Benchmark) @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
 class HttpBenchmark {
 

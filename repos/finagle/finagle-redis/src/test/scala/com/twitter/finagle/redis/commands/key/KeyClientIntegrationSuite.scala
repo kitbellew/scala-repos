@@ -8,8 +8,7 @@ import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-@Ignore
-@RunWith(classOf[JUnitRunner])
+@Ignore @RunWith(classOf[JUnitRunner])
 final class KeyClientIntegrationSuite extends RedisClientTest {
 
   test("Correctly perform the DEL command", RedisTest, ClientTest) {

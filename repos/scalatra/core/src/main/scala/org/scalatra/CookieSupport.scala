@@ -21,7 +21,8 @@ case class CookieOptions(
 
 object Cookie {
 
-  @volatile private[this] var _currentTimeMillis: Option[Long] = None
+  @volatile
+  private[this] var _currentTimeMillis: Option[Long] = None
 
   def currentTimeMillis: Long =
     _currentTimeMillis getOrElse System.currentTimeMillis
@@ -157,7 +158,8 @@ object CookieSupport {
 
 }
 
-trait CookieContext { self: ScalatraContext =>
+trait CookieContext {
+  self: ScalatraContext =>
 
   import org.scalatra.CookieSupport._
 
@@ -173,5 +175,6 @@ trait CookieContext { self: ScalatraContext =>
 @deprecated(
   "You can remove this mixin, it's included in core by default",
   "2.2")
-trait CookieSupport { self: ScalatraBase =>
+trait CookieSupport {
+  self: ScalatraBase =>
 }

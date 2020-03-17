@@ -12,8 +12,7 @@ class DurationBenchmark extends StdBenchAnnotations {
   private[this] val d4 = Duration.fromNanoseconds(9876543210L)
   private[this] val d5 = Duration.fromNanoseconds(Long.MaxValue - 10)
 
-  @OperationsPerInvocation(7)
-  @Benchmark
+  @OperationsPerInvocation(7) @Benchmark
   def durationEquals: Boolean = {
     d1 == Duration.Top &
       d1 == Duration.Bottom &

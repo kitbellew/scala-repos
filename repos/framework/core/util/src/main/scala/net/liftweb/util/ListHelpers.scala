@@ -70,7 +70,8 @@ trait ListHelpers {
     val ret: ListBuffer[Res] = new ListBuffer()
     var insertAfter: Box[T] = Empty
 
-    @tailrec def loop(o: List[T], n: List[T]) {
+    @tailrec
+    def loop(o: List[T], n: List[T]) {
       (o, n) match {
         case (o, Nil) => o.foreach(t => ret += f(RemoveDelta(t)))
         case (Nil, n) => {

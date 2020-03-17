@@ -17,11 +17,8 @@ hand checking:
 
 
  */
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.SingleShotTime))
-@Fork(5)
-@Warmup(iterations = 1000)
-@Measurement(iterations = 4000)
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.SingleShotTime)) @Fork(5)
+@Warmup(iterations = 1000) @Measurement(iterations = 4000)
 class ActorCreationBenchmark {
   implicit val system: ActorSystem = ActorSystem()
 
@@ -39,8 +36,7 @@ class ActorCreationBenchmark {
     Await.ready(system.whenTerminated, 15.seconds)
   }
 
-  @Benchmark
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  @Benchmark @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def synchronousStarting = system.actorOf(props, name)
 }
 

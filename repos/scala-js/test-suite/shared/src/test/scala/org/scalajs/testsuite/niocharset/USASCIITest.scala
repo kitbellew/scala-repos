@@ -15,7 +15,8 @@ import org.junit.Assert._
 import BaseCharsetTest._
 
 class USASCIITest extends BaseCharsetTest(Charset.forName("US-ASCII")) {
-  @Test def decode(): Unit = {
+  @Test
+  def decode(): Unit = {
     // Simple tests
 
     testDecode(bb"48 65 6c 6c 6f")(cb"Hello")
@@ -34,7 +35,8 @@ class USASCIITest extends BaseCharsetTest(Charset.forName("US-ASCII")) {
     testDecode(bb"80 ff")(Malformed(1), Malformed(1))
   }
 
-  @Test def encode(): Unit = {
+  @Test
+  def encode(): Unit = {
     // Simple tests
 
     testEncode(cb"Hello")(bb"48 65 6c 6c 6f")
@@ -81,7 +83,8 @@ class USASCIITest extends BaseCharsetTest(Charset.forName("US-ASCII")) {
     testEncode(cb"\udbff\ud835\udcd7")(Malformed(1), Unmappable(2))
   }
 
-  @Test def isLegalReplacement(): Unit = {
+  @Test
+  def isLegalReplacement(): Unit = {
     val encoder = charset.newEncoder
     assertTrue(encoder.isLegalReplacement(Array(0x00.toByte)))
     assertTrue(encoder.isLegalReplacement(Array(0x41.toByte)))

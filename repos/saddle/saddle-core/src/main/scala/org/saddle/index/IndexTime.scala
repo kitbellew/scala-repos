@@ -39,11 +39,14 @@ class IndexTime(
     val tzone: DateTimeZone = ISO_CHRONO.getZone)
     extends Index[DateTime] {
 
-  @transient lazy val scalarTag = ScalarTagTime
+  @transient
+  lazy val scalarTag = ScalarTagTime
 
-  @transient lazy val chrono = ISO_CHRONO.withZone(tzone)
+  @transient
+  lazy val chrono = ISO_CHRONO.withZone(tzone)
 
-  @transient lazy private val lmf = ScalarTagLong
+  @transient
+  lazy private val lmf = ScalarTagLong
 
   private def l2t(l: Long) =
     if (lmf.isMissing(l)) scalarTag.missing else new DateTime(l, chrono)
@@ -51,7 +54,8 @@ class IndexTime(
     if (scalarTag.isMissing(t)) lmf.missing else t.getMillis
   private def il2it(l: Index[Long]) = new IndexTime(l, tzone)
 
-  @transient lazy private val _locator = new Locator[DateTime] {
+  @transient
+  lazy private val _locator = new Locator[DateTime] {
     lazy val _keys = times.uniques.map(l2t)
 
     def contains(key: DateTime) = times.contains(t2l(key))
@@ -167,8 +171,10 @@ class IndexTime(
 }
 
 object IndexTime {
-  @transient lazy private val st = ScalarTagTime
-  @transient lazy private val sl = ScalarTagLong
+  @transient
+  lazy private val st = ScalarTagTime
+  @transient
+  lazy private val sl = ScalarTagLong
 
   /**
     * Create a new IndexTime from a sequence of times

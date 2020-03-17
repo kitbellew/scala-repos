@@ -291,7 +291,8 @@ object EnumeratorsSpec
     "close the stream" in {
       class CloseableByteArrayInputStream(bytes: Array[Byte])
           extends ByteArrayInputStream(bytes) {
-        @volatile var closed = false
+        @volatile
+        var closed = false
 
         override def close() = { closed = true }
       }

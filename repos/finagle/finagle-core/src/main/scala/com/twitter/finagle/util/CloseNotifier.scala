@@ -17,7 +17,8 @@ object CloseNotifier {
     */
   def makeLifo(closing: Future[Unit]): CloseNotifier =
     new CloseNotifier {
-      @volatile private[this] var closeHandlers: List[() => Unit] = Nil
+      @volatile
+      private[this] var closeHandlers: List[() => Unit] = Nil
 
       /**
         * Adds new close handler. If close event already happened,

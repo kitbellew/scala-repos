@@ -126,7 +126,8 @@ package object typedarray {
   def doubleArray2Float64Array(array: scala.Array[Double]): Float64Array =
     array2typedArrayImpl(array, new Float64Array(array.length))
 
-  @inline private def array2typedArrayImpl[ // scalastyle:ignore
+  @inline
+  private def array2typedArrayImpl[ // scalastyle:ignore
       @specialized(Byte, Short, Int, Float, Double) T,
       Repr <: TypedArray[T, Repr]](array: scala.Array[T], dest: Repr): Repr = {
     val len = array.length
@@ -167,7 +168,8 @@ package object typedarray {
   def float64Array2DoubleArray(array: Float64Array): scala.Array[Double] =
     typedArray2arrayImpl(array, new scala.Array(array.length))
 
-  @inline private def typedArray2arrayImpl[ // scalastyle:ignore
+  @inline
+  private def typedArray2arrayImpl[ // scalastyle:ignore
       @specialized(Byte, Short, Int, Float, Double) T,
       Repr <: TypedArray[T, Repr]](
       array: Repr,

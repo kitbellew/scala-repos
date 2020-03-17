@@ -11,8 +11,7 @@ class MetricsReporterModule(metricsReporterConf: MetricsReporterConf)
     bind(classOf[MetricsReporterService]).in(Scopes.SINGLETON)
   }
 
-  @Provides
-  @Singleton
+  @Provides @Singleton
   def provideMetricsRegistry(): MetricsRegistry = { new MetricsRegistry() }
 
 }

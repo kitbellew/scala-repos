@@ -121,14 +121,17 @@ private[spark] abstract class Task[T](
   var metrics: Option[TaskMetrics] = None
 
   // Task context, to be initialized in run().
-  @transient protected var context: TaskContextImpl = _
+  @transient
+  protected var context: TaskContextImpl = _
 
   // The actual Thread on which the task is running, if any. Initialized in run().
-  @volatile @transient private var taskThread: Thread = _
+  @volatile @transient
+  private var taskThread: Thread = _
 
   // A flag to indicate whether the task is killed. This is used in case context is not yet
   // initialized when kill() is invoked.
-  @volatile @transient private var _killed = false
+  @volatile @transient
+  private var _killed = false
 
   protected var _executorDeserializeTime: Long = 0
 

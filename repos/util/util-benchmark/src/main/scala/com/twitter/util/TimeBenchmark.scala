@@ -13,8 +13,7 @@ class TimeBenchmark extends StdBenchAnnotations {
   private[this] val t4 = Time.fromNanoseconds(9876543210L)
   private[this] val t5 = Time.fromNanoseconds(Long.MinValue + 10)
 
-  @OperationsPerInvocation(7)
-  @Benchmark
+  @OperationsPerInvocation(7) @Benchmark
   def timeEquals: Boolean = {
     t1 == Time.Top &
       t1 == Time.Bottom &

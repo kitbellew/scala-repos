@@ -32,7 +32,8 @@ object SchedulerSpec {
 trait SchedulerSpec
     extends BeforeAndAfterEach
     with DefaultTimeout
-    with ImplicitSender { this: AkkaSpec ⇒
+    with ImplicitSender {
+  this: AkkaSpec ⇒
   import system.dispatcher
 
   def collectCancellable(c: Cancellable): Cancellable
@@ -585,7 +586,8 @@ class LightArrayRevolverSchedulerSpec
     val prb = TestProbe()
     val tf = system.asInstanceOf[ActorSystemImpl].threadFactory
     val sched = new {
-      @volatile var time = start
+      @volatile
+      var time = start
     } with LARS(config.withFallback(system.settings.config), log, tf) {
       override protected def clock(): Long = {
         // println(s"clock=$time")

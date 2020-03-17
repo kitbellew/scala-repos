@@ -116,7 +116,8 @@ final class KafkaRelayAgent(
 
   val centralCodec = new KafkaEventMessageCodec
 
-  @volatile private var runnable = true;
+  @volatile
+  private var runnable = true;
   private val stopPromise = Promise[PrecogUnit]()
   private implicit val M: Monad[Future] = new FutureMonad(executor)
 

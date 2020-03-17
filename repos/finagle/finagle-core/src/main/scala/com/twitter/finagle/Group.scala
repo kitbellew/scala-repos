@@ -27,7 +27,8 @@ import java.util.concurrent.atomic.AtomicReference
 @deprecated(
   "Use `com.twitter.finagle.Name` to represent clusters instead",
   "6.7.x")
-trait Group[T] { outer =>
+trait Group[T] {
+  outer =>
   // Group is needlessly complex due to it transitioning to
   // deprecation. In order to provide reasonable compatibility with
   // forthcoming structrures, we base the group implementation on Var

@@ -134,7 +134,8 @@ trait TimeLikeOps[This <: TimeLike[This]] {
   *
   * Overflows are also handled like doubles.
   */
-trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
+trait TimeLike[This <: TimeLike[This]] extends Ordered[This] {
+  self: This =>
   protected val ops: TimeLikeOps[This]
   import ops._
 
@@ -418,7 +419,8 @@ object Time extends TimeLikeOps[Time] {
     * with nested calls if you have an outstanding Future executing in a worker pool.
     */
   def withTimeFunction[A](timeFunction: => Time)(body: TimeControl => A): A = {
-    @volatile var tf = () => timeFunction
+    @volatile
+    var tf = () => timeFunction
     val tmr = new MockTimer
 
     Time.localGetTime.let(() => tf()) {

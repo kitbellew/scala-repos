@@ -3,8 +3,7 @@ package com.twitter.finagle.util
 import com.twitter.finagle.benchmark.StdBenchAnnotations
 import org.openjdk.jmh.annotations._
 
-@State(Scope.Benchmark)
-@Threads(Threads.MAX)
+@State(Scope.Benchmark) @Threads(Threads.MAX)
 class ConcurrentRingBufferBench extends StdBenchAnnotations {
 
   @Param(Array("1000"))

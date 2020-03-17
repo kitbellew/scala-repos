@@ -73,7 +73,9 @@ class RateControllerSuite extends TestSuiteBase {
   }
 }
 
-private[streaming] class ConstantEstimator(@volatile private var rate: Long)
+private[streaming] class ConstantEstimator(
+    @volatile
+    private var rate: Long)
     extends RateEstimator {
 
   def updateRate(newRate: Long): Unit = { rate = newRate }

@@ -5,8 +5,7 @@ import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 import scala.util.Random
 
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
-@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.MICROSECONDS) @BenchmarkMode(Array(Mode.AverageTime))
 class SpanIdBenchmark {
   import SpanIdBenchmark._
 

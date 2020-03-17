@@ -243,8 +243,7 @@ trait AtmosphereSupport
     * @throws java.io.IOException
     * @throws javax.servlet.ServletException
     */
-  @throws(classOf[IOException])
-  @throws(classOf[ServletException])
+  @throws(classOf[IOException]) @throws(classOf[ServletException])
   def event(cometEvent: org.apache.catalina.CometEvent) {
     val req = cometEvent.getHttpServletRequest
     val res = cometEvent.getHttpServletResponse
@@ -262,8 +261,7 @@ trait AtmosphereSupport
   /**
     * Hack to support Tomcat 7 AIO
     */
-  @throws(classOf[IOException])
-  @throws(classOf[ServletException])
+  @throws(classOf[IOException]) @throws(classOf[ServletException])
   def event(cometEvent: org.apache.catalina.comet.CometEvent) {
     val req = cometEvent.getHttpServletRequest
     val res = cometEvent.getHttpServletResponse
@@ -287,8 +285,7 @@ trait AtmosphereSupport
     * @throws java.io.IOException
     * @throws javax.servlet.ServletException
     */
-  @throws(classOf[IOException])
-  @throws(classOf[ServletException])
+  @throws(classOf[IOException]) @throws(classOf[ServletException])
   def event(httpEvent: HttpEvent) {
     val req = httpEvent.getHttpServletRequest
     val res = httpEvent.getHttpServletResponse

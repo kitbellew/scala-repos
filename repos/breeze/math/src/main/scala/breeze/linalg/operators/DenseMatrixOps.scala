@@ -22,7 +22,8 @@ import scalaxy.debug._
 trait DenseMatrixMultiplyStuff
     extends DenseMatrixOps
     with DenseMatrixMultOps
-    with LowPriorityDenseMatrix { this: DenseMatrix.type =>
+    with LowPriorityDenseMatrix {
+  this: DenseMatrix.type =>
 
   // <editor-fold defaultstate="collapsed" desc=" OpMulMatrix implementations ">
 
@@ -335,7 +336,8 @@ trait DenseMatrixMultiplyStuff
 // TODO: fix expand to allow us to remove this code duplication
 trait DenseMatrixFloatMultiplyStuff
     extends DenseMatrixOps
-    with DenseMatrixMultOps { this: DenseMatrix.type =>
+    with DenseMatrixMultOps {
+  this: DenseMatrix.type =>
 
   // <editor-fold defaultstate="collapsed" desc=" OpMulMatrix implementations ">
 
@@ -612,14 +614,14 @@ trait DenseMatrixFloatMultiplyStuff
 
 }
 
-trait DenseMatrixOps { this: DenseMatrix.type =>
+trait DenseMatrixOps {
+  this: DenseMatrix.type =>
 
   // <editor-fold defaultstate="collapsed" desc=" implicit implementations for OpXXX.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]] ">
   // don't remove
   import breeze.math.PowImplicits._
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def dm_dm_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(
@@ -737,8 +739,7 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
 
   // <editor-fold defaultstate="collapsed" desc=" implicit implementations for OpXXX.InPlaceImpl2[DenseMatrix[T], T] ">
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def dm_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(
@@ -833,8 +834,7 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
 
   // <editor-fold defaultstate="collapsed" desc=" implicit implementations for OpXXX.Impl2[DenseMatrix[T], T, DenseMatrix[T]] ">
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def op_DM_S[
       @expand.args(Int, Long, Float, Double) T,
       @expand.args(
@@ -886,8 +886,7 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
 
   // <editor-fold defaultstate="collapsed" desc=" implicit implementations for OpXXX.Impl2[T, DenseMatrix[T], DenseMatrix[T]] ">
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def s_dm_op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(
@@ -936,8 +935,7 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
 
   // <editor-fold defaultstate="collapsed" desc=" implicit implementations for OpXXX.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]] ">
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def op_DM_DM[
       @expand.args(Int, Long, Float, Double) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMod, OpDiv, OpPow) Op]
@@ -961,7 +959,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
 
 }
 
-trait DenseMatrixOpsLowPrio { this: DenseMatrixOps =>
+trait DenseMatrixOpsLowPrio {
+  this: DenseMatrixOps =>
   // LOL, if we explicitly annotate the type, then the implicit resolution thing will load this recursively.
   // If we don't, then everything works ok.
 
@@ -987,8 +986,7 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
 
   // <editor-fold defaultstate="collapsed" desc=" implicit implementations for BinaryRegistry ">
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def op_DM_V[@expand.args(Int, Long, Float, Double) T]
       : BinaryRegistry[DenseMatrix[T], Vector[T], OpMulMatrix.type, DenseVector[
         T]] =
@@ -1020,8 +1018,7 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
         .register(this)
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def op_DM_M[@expand.args(Int, Long, Float, Double) T]
       : BinaryRegistry[DenseMatrix[T], Matrix[T], OpMulMatrix.type, DenseMatrix[
         T]] =
@@ -1105,8 +1102,7 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
 
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def op_DM_DM[@expand.args(Int, Long, Float, Double) T]
       : OpMulMatrix.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]] =
     new OpMulMatrix.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]] {
@@ -1433,7 +1429,8 @@ trait LowPriorityDenseMatrix1 {
   *
   * @author dlwh
  **/
-trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
+trait DenseMatrix_OrderingOps extends DenseMatrixOps {
+  this: DenseMatrix.type =>
 
   @expand
   implicit def dm_dm_Op[
@@ -1445,8 +1442,7 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
         { _ <= _ },
         { _ < _ },
         { _ == _ },
-        { _ != _ })
-      op: Op.Impl2[T, T, T])
+        { _ != _ }) op: Op.Impl2[T, T, T])
       : Op.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[Boolean]] =
     new Op.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[Boolean]] {
       def apply(a: DenseMatrix[T], b: DenseMatrix[T]): DenseMatrix[Boolean] = {
@@ -1479,8 +1475,7 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
         { _ <= _ },
         { _ < _ },
         { _ == _ },
-        { _ != _ })
-      op: Op.Impl2[T, T, Boolean])
+        { _ != _ }) op: Op.Impl2[T, T, Boolean])
       : Op.Impl2[DenseMatrix[T], Matrix[T], DenseMatrix[Boolean]] =
     new Op.Impl2[DenseMatrix[T], Matrix[T], DenseMatrix[Boolean]] {
       def apply(a: DenseMatrix[T], b: Matrix[T]): DenseMatrix[Boolean] = {
@@ -1510,8 +1505,7 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
         { _ <= _ },
         { _ < _ },
         { _ == _ },
-        { _ != _ })
-      op: Op.Impl2[T, T, Boolean])
+        { _ != _ }) op: Op.Impl2[T, T, Boolean])
       : Op.Impl2[DenseMatrix[T], T, DenseMatrix[Boolean]] =
     new Op.Impl2[DenseMatrix[T], T, DenseMatrix[Boolean]] {
       def apply(a: DenseMatrix[T], b: T): DenseMatrix[Boolean] = {

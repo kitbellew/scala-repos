@@ -258,7 +258,8 @@ abstract class SymbolPairs {
       }
     }
 
-    @tailrec private def advanceNextEntry() {
+    @tailrec
+    private def advanceNextEntry() {
       if (nextEntry ne null) {
         nextEntry = decls lookupNextEntry nextEntry
         if (nextEntry ne null) {
@@ -275,7 +276,8 @@ abstract class SymbolPairs {
         }
       }
     }
-    @tailrec private def advanceCurEntry() {
+    @tailrec
+    private def advanceCurEntry() {
       if (curEntry ne null) {
         curEntry = curEntry.next
         if (curEntry ne null) {

@@ -17,7 +17,8 @@ package scalaz
   *
   */
 ////
-trait Monoid[F] extends Semigroup[F] { self =>
+trait Monoid[F] extends Semigroup[F] {
+  self =>
   ////
   /** The identity element for `append`. */
   def zero: F
@@ -85,7 +86,8 @@ trait Monoid[F] extends Semigroup[F] { self =>
 }
 
 object Monoid {
-  @inline def apply[F](implicit F: Monoid[F]): Monoid[F] = F
+  @inline
+  def apply[F](implicit F: Monoid[F]): Monoid[F] = F
 
   ////
 

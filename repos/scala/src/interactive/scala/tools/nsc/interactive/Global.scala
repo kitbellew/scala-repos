@@ -100,7 +100,8 @@ trait InteractiveAnalyzer extends Analyzer {
     }
     override def enterIfNotThere(sym: Symbol) {
       val scope = context.scope
-      @tailrec def search(e: ScopeEntry) {
+      @tailrec
+      def search(e: ScopeEntry) {
         if ((e eq null) || (e.owner ne scope)) scope enter sym
         else if (e.sym ne sym) // otherwise, aborts since we found sym
           search(e.tail)
@@ -154,11 +155,13 @@ with ContextTrees with RichCompilationUnits with Picklers {
   }
 
   /** Print msg only when debugIDE is true. */
-  @inline final def debugLog(msg: => String) =
+  @inline
+  final def debugLog(msg: => String) =
     if (debugIDE) println("[%s] %s".format(projectName, msg))
 
   /** Inform with msg only when verboseIDE is true. */
-  @inline final def informIDE(msg: => String) =
+  @inline
+  final def informIDE(msg: => String) =
     if (verboseIDE) println("[%s][%s]".format(projectName, msg))
 
   // don't keep the original owner in presentation compiler runs
@@ -529,7 +532,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   private var threadId = 0
 
   /** The current presentation compiler runner */
-  @volatile private[interactive] var compileRunner: Thread = newRunnerThread()
+  @volatile
+  private[interactive] var compileRunner: Thread = newRunnerThread()
 
   /** Check that the currently executing thread is the presentation compiler thread.
     *

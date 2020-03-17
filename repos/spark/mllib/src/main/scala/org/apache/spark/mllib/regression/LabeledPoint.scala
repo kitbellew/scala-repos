@@ -30,8 +30,7 @@ import org.apache.spark.SparkException
   * @param label Label for this data point.
   * @param features List of features for this data point.
   */
-@Since("0.8.0")
-@BeanInfo
+@Since("0.8.0") @BeanInfo
 case class LabeledPoint @Since("1.0.0") (
     @Since("0.8.0") label: Double,
     @Since("1.0.0") features: Vector) {

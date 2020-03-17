@@ -4,7 +4,10 @@ import org.scalatest.FunSuite
 import scala.reflect.ClassTag
 import scala.pickling._, scala.pickling.Defaults._, json._
 
-case class Person(val name: String, @transient val ssNumber: Int) {
+case class Person(
+    val name: String,
+    @transient
+    val ssNumber: Int) {
   override def toString = s"Person($name)"
 }
 
@@ -14,12 +17,16 @@ class SparkConf(loadDefaults: Boolean)
 class SparkContext(config: SparkConf)
 
 class RDD[T: ClassTag](
-    @transient private var sc: SparkContext,
-    @transient private var deps: Seq[Dependency[_]])
+    @transient
+    private var sc: SparkContext,
+    @transient
+    private var deps: Seq[Dependency[_]])
 
 class RangePartitioner[K: ClassTag, V](
-    @transient val partitions: Int,
-    @transient val rdd: RDD[_ <: Product2[K, V]],
+    @transient
+    val partitions: Int,
+    @transient
+    val rdd: RDD[_ <: Product2[K, V]],
     private var ascending: Boolean = true) {
   override def toString = s"RangePartitioner(ascending = $ascending)"
 }

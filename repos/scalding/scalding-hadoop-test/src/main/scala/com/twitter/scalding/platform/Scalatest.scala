@@ -21,7 +21,8 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
   * This is a mixin fixture for scalatest which makes it easy to use a LocalCluster and will manage
   * the lifecycle of one appropriately.
   */
-trait HadoopPlatformTest extends BeforeAndAfterEach { this: Suite =>
+trait HadoopPlatformTest extends BeforeAndAfterEach {
+  this: Suite =>
   org.apache.log4j.Logger
     .getLogger("org.apache.hadoop")
     .setLevel(org.apache.log4j.Level.ERROR)

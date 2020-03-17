@@ -121,8 +121,7 @@ private object LabelConverter {
   * Number of inputs has to be equal to the size of feature vectors.
   * Number of outputs has to be equal to the total number of labels.
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class MultilayerPerceptronClassifier @Since("1.5.0") (
     @Since("1.5.0") override val uid: String)
     extends Predictor[
@@ -208,8 +207,7 @@ class MultilayerPerceptronClassifier @Since("1.5.0") (
   * @param weights vector of initial weights for the model that consists of the weights of layers
   * @return prediction model
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class MultilayerPerceptronClassificationModel private[ml] (
     @Since("1.5.0") override val uid: String,
     @Since("1.5.0") val layers: Array[Int],

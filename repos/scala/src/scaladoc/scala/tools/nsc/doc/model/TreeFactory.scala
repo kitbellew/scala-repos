@@ -13,7 +13,8 @@ import scala.reflect.internal.util.{RangePosition, SourceFile}
   * It is applied in ModelFactory => makeTree
   *
   */
-trait TreeFactory { thisTreeFactory: ModelFactory with TreeFactory =>
+trait TreeFactory {
+  thisTreeFactory: ModelFactory with TreeFactory =>
 
   val global: Global
   import global._

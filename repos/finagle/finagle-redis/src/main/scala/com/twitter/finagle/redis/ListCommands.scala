@@ -6,7 +6,8 @@ import org.jboss.netty.buffer.ChannelBuffer
 import _root_.java.lang.{Long => JLong}
 import com.twitter.finagle.redis.util.ReplyFormat
 
-trait Lists { self: BaseClient =>
+trait Lists {
+  self: BaseClient =>
 
   /**
     * Gets the length of the list.

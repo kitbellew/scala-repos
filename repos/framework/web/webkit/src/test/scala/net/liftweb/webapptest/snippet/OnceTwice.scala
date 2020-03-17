@@ -23,7 +23,8 @@ import net.liftweb.util.Helpers._
 import scala.xml._
 
 object Counter {
-  @volatile var x = 0
+  @volatile
+  var x = 0
 }
 
 class Oneshot {

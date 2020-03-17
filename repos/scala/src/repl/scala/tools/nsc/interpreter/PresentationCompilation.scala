@@ -76,7 +76,8 @@ trait PresentationCompilation {
     }
     val storeReporter: StoreReporter = new StoreReporter
     val interactiveGlobal =
-      new interactive.Global(copySettings, storeReporter) { self =>
+      new interactive.Global(copySettings, storeReporter) {
+        self =>
         override lazy val platform: ThisPlatform = new JavaPlatform {
           val global: self.type = self
 

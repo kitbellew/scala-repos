@@ -8,7 +8,8 @@ import slick.dbio.DBIO
 import scala.util.{Failure, Success}
 
 /** A Reactive Streams `Publisher` for database Actions. */
-abstract class DatabasePublisher[T] extends Publisher[T] { self =>
+abstract class DatabasePublisher[T] extends Publisher[T] {
+  self =>
 
   /** Create a Publisher that runs a synchronous mapping function on this Publisher. This
     * can be used to materialize LOB values in a convenient way. */
@@ -28,8 +29,10 @@ abstract class DatabasePublisher[T] extends Publisher[T] { self =>
     * signaled. */
   def foreach[U](f: T => U)(implicit ec: ExecutionContext): Future[Unit] = {
     val p = Promise[Unit]()
-    @volatile var lastMsg: Future[Any] = null
-    @volatile var subscr: Subscription = null
+    @volatile
+    var lastMsg: Future[Any] = null
+    @volatile
+    var subscr: Subscription = null
     subscribe(new Subscriber[T] {
       def onSubscribe(s: Subscription): Unit = {
         subscr = s

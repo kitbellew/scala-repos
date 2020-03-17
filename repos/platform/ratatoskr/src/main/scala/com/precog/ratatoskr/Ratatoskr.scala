@@ -1025,7 +1025,8 @@ object ImportTools extends Command with Logging {
     val apiKeyFinder = new DirectAPIKeyFinder(apiKeyManager)
 
     // This uses an empty checkpoint because there is no support for insertion/metadata
-    object vfsModule extends ActorVFSModule { self =>
+    object vfsModule extends ActorVFSModule {
+      self =>
       logger.info("Starting ResourceBuilder")
       val jobManager = new InMemoryJobManager[Future]
       val permissionsFinder =

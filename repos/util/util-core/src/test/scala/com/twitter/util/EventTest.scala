@@ -132,7 +132,8 @@ class EventTest extends FunSuite {
   }
 
   test("Event.mergeMap closes constituent witnesses") {
-    @volatile var n = 0
+    @volatile
+    var n = 0
 
     val e1, e2 = new Event[Int] {
       def register(w: Witness[Int]) = {

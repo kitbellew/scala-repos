@@ -42,13 +42,15 @@ private[akka] final class AddressTerminatedTopic extends Extension {
   private val subscribers =
     new AtomicReference[Set[ActorRef]](Set.empty[ActorRef])
 
-  @tailrec def subscribe(subscriber: ActorRef): Unit = {
+  @tailrec
+  def subscribe(subscriber: ActorRef): Unit = {
     val current = subscribers.get
     if (!subscribers.compareAndSet(current, current + subscriber))
       subscribe(subscriber) // retry
   }
 
-  @tailrec def unsubscribe(subscriber: ActorRef): Unit = {
+  @tailrec
+  def unsubscribe(subscriber: ActorRef): Unit = {
     val current = subscribers.get
     if (!subscribers.compareAndSet(current, current - subscriber))
       unsubscribe(subscriber) // retry

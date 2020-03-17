@@ -22,14 +22,16 @@ class RegexPatternTest {
   implicit def toAnyRefArray(arr: Array[String]): Array[AnyRef] =
     arr.map(_.asInstanceOf[AnyRef])
 
-  @Test def matches(): Unit = {
+  @Test
+  def matches(): Unit = {
     assertTrue(Pattern.matches("[Scal]*\\.js", "Scala.js"))
     assertTrue(Pattern.matches(".[cal]*\\.j.", "Scala.js"))
     assertTrue(Pattern.matches(".*\\.js", "Scala.js"))
     assertFalse(Pattern.matches("S[a-z]*", "Scala.js"))
   }
 
-  @Test def matches_with_flags(): Unit = {
+  @Test
+  def matches_with_flags(): Unit = {
     matches("scala.js", "Scala.js")
     matches("SCALA.JS", "Scala.js")
     matches("waz*up", "WAZZZZZZZZZZZUP")
@@ -42,7 +44,8 @@ class RegexPatternTest {
     }
   }
 
-  @Test def split(): Unit = {
+  @Test
+  def split(): Unit = {
     val result = Pattern.compile("[aj]").split("Scala.js")
     val expected = Array("Sc", "l", ".", "s")
     assertEquals(4, result.length)
@@ -86,7 +89,8 @@ class RegexPatternTest {
     }
   }
 
-  @Test def split_with_limit(): Unit = {
+  @Test
+  def split_with_limit(): Unit = {
     // Tests from JavaDoc
     splitWithLimit("boo:and:foo", ":", 2, Array("boo", "and:foo"))
     splitWithLimit("boo:and:foo", ":", 5, Array("boo", "and", "foo"))
@@ -116,7 +120,8 @@ class RegexPatternTest {
     }
   }
 
-  @Test def flags(): Unit = {
+  @Test
+  def flags(): Unit = {
     val pattern0 = Pattern.compile("a")
     val pattern1 = Pattern.compile("a", 0)
     val flags2 = Pattern.CASE_INSENSITIVE | Pattern.DOTALL
@@ -127,7 +132,8 @@ class RegexPatternTest {
     assertEquals(flags2, pattern2.flags)
   }
 
-  @Test def pattern_and_toString(): Unit = {
+  @Test
+  def pattern_and_toString(): Unit = {
     def checkPatternAndToString(regex: String): Unit = {
       val pattern0 = Pattern.compile(regex)
       assertEquals(regex, pattern0.pattern)
@@ -142,7 +148,8 @@ class RegexPatternTest {
     checkPatternAndToString("\\S[(a1]a.js")
   }
 
-  @Test def quote(): Unit = {
+  @Test
+  def quote(): Unit = {
     val splitWithQuote = Pattern
       .compile(Pattern.quote("$1&$2"))
       .split("Scala$1&$2.js")
@@ -151,7 +158,8 @@ class RegexPatternTest {
     assertEquals("Scala$1&$2.js", splitNoQuote.mkString)
   }
 
-  @Test def compile_should_throw_for_invalid_patterns_issue_1718(): Unit = {
+  @Test
+  def compile_should_throw_for_invalid_patterns_issue_1718(): Unit = {
     assertThrows(classOf[Throwable], Pattern.compile("*"))
   }
 

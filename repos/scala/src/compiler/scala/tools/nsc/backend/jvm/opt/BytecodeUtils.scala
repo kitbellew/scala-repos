@@ -131,7 +131,8 @@ object BytecodeUtils {
 
   def isReference(t: Type) = t.getSort == Type.OBJECT || t.getSort == Type.ARRAY
 
-  @tailrec def nextExecutableInstruction(
+  @tailrec
+  def nextExecutableInstruction(
       insn: AbstractInsnNode,
       alsoKeep: AbstractInsnNode => Boolean = Set())
       : Option[AbstractInsnNode] = {
@@ -140,7 +141,8 @@ object BytecodeUtils {
     else nextExecutableInstruction(next, alsoKeep)
   }
 
-  @tailrec def nextExecutableInstructionOrLabel(
+  @tailrec
+  def nextExecutableInstructionOrLabel(
       insn: AbstractInsnNode): Option[AbstractInsnNode] = {
     val next = insn.getNext
     if (next == null || isExecutable(next) || next.isInstanceOf[LabelNode])
@@ -176,9 +178,8 @@ object BytecodeUtils {
   }
 
   def finalJumpTarget(source: JumpInsnNode): LabelNode = {
-    @tailrec def followGoto(
-        label: LabelNode,
-        seenLabels: Set[LabelNode]): LabelNode =
+    @tailrec
+    def followGoto(label: LabelNode, seenLabels: Set[LabelNode]): LabelNode =
       nextExecutableInstruction(label) match {
         case Some(Goto(dest)) =>
           if (seenLabels(dest.label)) dest.label

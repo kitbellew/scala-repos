@@ -10,7 +10,8 @@ import scala.collection.mutable
   *  This trait stores knowledge of how to represent the holes as something understandable by the parser
   *  and how to recover holes from the results of parsing the produced representation.
   */
-trait Placeholders { self: Quasiquotes =>
+trait Placeholders {
+  self: Quasiquotes =>
   import global._
   import Rank._
   import universeTypes._

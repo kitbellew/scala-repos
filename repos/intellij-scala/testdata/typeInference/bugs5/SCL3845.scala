@@ -3,7 +3,8 @@ class A {
   val value: B = new B
 }
 
-trait T { this: A =>
+trait T {
+  this: A =>
   def getList(): B = {
     /*start*/
     value /*end*/

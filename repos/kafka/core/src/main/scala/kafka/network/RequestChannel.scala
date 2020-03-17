@@ -64,11 +64,16 @@ object RequestChannel extends Logging {
       securityProtocol: SecurityProtocol) {
     // These need to be volatile because the readers are in the network thread and the writers are in the request
     // handler threads or the purgatory threads
-    @volatile var requestDequeueTimeMs = -1L
-    @volatile var apiLocalCompleteTimeMs = -1L
-    @volatile var responseCompleteTimeMs = -1L
-    @volatile var responseDequeueTimeMs = -1L
-    @volatile var apiRemoteCompleteTimeMs = -1L
+    @volatile
+    var requestDequeueTimeMs = -1L
+    @volatile
+    var apiLocalCompleteTimeMs = -1L
+    @volatile
+    var responseCompleteTimeMs = -1L
+    @volatile
+    var responseDequeueTimeMs = -1L
+    @volatile
+    var apiRemoteCompleteTimeMs = -1L
 
     val requestId = buffer.getShort()
 

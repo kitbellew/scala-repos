@@ -58,7 +58,8 @@ private[serverset2] class ZkSession(
   // a particular zookeeper child watch. All servers should be updated within the same approximate
   // time. If a server has a different serverset size than its peers, this gauge will show
   // us it is because it is not receiving updates.
-  @volatile var watchUpdateGauges = List.empty[Gauge]
+  @volatile
+  var watchUpdateGauges = List.empty[Gauge]
   private val lastGoodUpdate = new concurrent.TrieMap[String, Long]
   private def noteGoodChildWatch(path: String): Unit = {
     lastGoodUpdate.put(path, Time.now.inLongSeconds) match {
@@ -103,7 +104,8 @@ private[serverset2] class ZkSession(
   private[serverset2] def watchedOperation[T](
       go: => Future[Watched[T]]): Activity[T] =
     Activity(Var.async[Activity.State[T]](Activity.Pending) { u =>
-      @volatile var closed = false
+      @volatile
+      var closed = false
 
       def loop(): Future[Unit] = {
         if (!closed) safeRetry(go) respond {
@@ -318,8 +320,10 @@ private[serverset2] object ZkSession {
       timer: Timer): Var[ZkSession] = {
     val v = Var(ZkSession.nil)
 
-    @volatile var closing = false
-    @volatile var zkSession: ZkSession = ZkSession.nil
+    @volatile
+    var closing = false
+    @volatile
+    var zkSession: ZkSession = ZkSession.nil
 
     def reconnect() {
       if (closing) return

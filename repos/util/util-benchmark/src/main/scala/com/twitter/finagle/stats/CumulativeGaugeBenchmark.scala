@@ -36,9 +36,7 @@ class CumulativeGaugeBenchmark extends StdBenchAnnotations {
   @Benchmark
   def getValue: Float = theGauge()
 
-  @Benchmark
-  @Warmup(batchSize = 100)
-  @Measurement(batchSize = 100)
+  @Benchmark @Warmup(batchSize = 100) @Measurement(batchSize = 100)
   @BenchmarkMode(Array(Mode.SingleShotTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def addGauge(): Gauge = {

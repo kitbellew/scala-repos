@@ -61,7 +61,8 @@ import org.apache.spark.storage.{BlockId, BlockStatus}
   */
 class Accumulator[T] private[spark] (
     // SI-8813: This must explicitly be a private val, or else scala 2.11 doesn't compile
-    @transient private val initialValue: T,
+    @transient
+    private val initialValue: T,
     param: AccumulatorParam[T],
     name: Option[String],
     internal: Boolean,

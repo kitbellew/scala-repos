@@ -27,7 +27,8 @@ import org.apache.spark.rdd.RDD
 @Experimental
 private[prediction] class FakeEngine
     extends BaseEngine[EmptyParams, EmptyParams, EmptyParams, EmptyParams] {
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(
       sc: SparkContext,
@@ -51,7 +52,8 @@ private[prediction] class FakeRunner(f: (SparkContext => Unit))
       EmptyParams,
       EmptyParams,
       FakeEvalResult] {
-  @transient private lazy val logger = Logger[this.type]
+  @transient
+  private lazy val logger = Logger[this.type]
   def evaluateBase(
       sc: SparkContext,
       evaluation: Evaluation,

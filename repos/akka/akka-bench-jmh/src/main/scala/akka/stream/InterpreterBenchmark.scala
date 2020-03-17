@@ -12,8 +12,7 @@ import org.openjdk.jmh.annotations._
 
 import java.util.concurrent.TimeUnit
 
-@State(Scope.Benchmark)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark) @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
 class InterpreterBenchmark {
   import InterpreterBenchmark._
@@ -24,8 +23,7 @@ class InterpreterBenchmark {
   @Param(Array("1", "5", "10"))
   var numberOfIds: Int = 0
 
-  @Benchmark
-  @OperationsPerInvocation(100000)
+  @Benchmark @OperationsPerInvocation(100000)
   def graph_interpreter_100k_elements(): Unit = {
     new GraphInterpreterSpecKit {
       new TestSetup {

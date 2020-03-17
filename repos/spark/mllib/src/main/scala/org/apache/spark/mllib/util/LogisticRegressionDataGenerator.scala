@@ -30,8 +30,7 @@ import org.apache.spark.rdd.RDD
   * Generate test data for LogisticRegression. This class chooses positive labels
   * with probability `probOne` and scales features for positive examples by `eps`.
   */
-@DeveloperApi
-@Since("0.8.0")
+@DeveloperApi @Since("0.8.0")
 object LogisticRegressionDataGenerator {
 
   /**

@@ -23,8 +23,7 @@ class ArtifactsResource @Inject() (
   /**
     * Upload to root artifact store.
     */
-  @POST
-  @Consumes(Array(MediaType.MULTIPART_FORM_DATA))
+  @POST @Consumes(Array(MediaType.MULTIPART_FORM_DATA))
   def uploadFile(
       @FormParam("file") upload: InputStream,
       @FormParam("file") info: FormInfo): Response =
@@ -33,17 +32,13 @@ class ArtifactsResource @Inject() (
   /**
     * Upload to a specific path inside artifact store.
     */
-  @PUT
-  @Path("{path:.+}")
-  @Consumes(Array(MediaType.MULTIPART_FORM_DATA))
+  @PUT @Path("{path:.+}") @Consumes(Array(MediaType.MULTIPART_FORM_DATA))
   def uploadFilePut(
       @PathParam("path") path: String,
       @FormParam("file") upload: InputStream): Response =
     storeFile(path, upload)
 
-  @POST
-  @Path("{path:.+}")
-  @Consumes(Array(MediaType.MULTIPART_FORM_DATA))
+  @POST @Path("{path:.+}") @Consumes(Array(MediaType.MULTIPART_FORM_DATA))
   def uploadFilePost(
       @PathParam("path") path: String,
       @FormParam("file") upload: InputStream): Response =
@@ -62,8 +57,7 @@ class ArtifactsResource @Inject() (
   /**
     * Get a specific artifact.
     */
-  @GET
-  @Path("{path:.+}")
+  @GET @Path("{path:.+}")
   @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
   def get(@PathParam("path") path: String): Response = {
     val item = storage.item(path)
@@ -80,8 +74,7 @@ class ArtifactsResource @Inject() (
   /**
     * Delete an artifact from store.
     */
-  @DELETE
-  @Path("{path:.+}")
+  @DELETE @Path("{path:.+}")
   @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
   def delete(@PathParam("path") path: String): Response = {
     val item = storage.item(path)

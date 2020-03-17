@@ -26,7 +26,8 @@ class ALSModel(
     val items: Map[Int, Item])
     extends Serializable {
 
-  @transient lazy val itemIntStringMap = itemStringIntMap.inverse
+  @transient
+  lazy val itemIntStringMap = itemStringIntMap.inverse
 
   override def toString = {
     s" productFeatures: [${productFeatures.size}]" +
@@ -44,7 +45,8 @@ class ALSModel(
 class ALSAlgorithm(val ap: ALSAlgorithmParams)
     extends P2LAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(data: PreparedData): ALSModel = {
     require(

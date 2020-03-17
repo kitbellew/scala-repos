@@ -43,9 +43,11 @@ import org.apache.spark.util.Utils
   */
 private[spark] class UnionPartition[T: ClassTag](
     idx: Int,
-    @transient private val rdd: RDD[T],
+    @transient
+    private val rdd: RDD[T],
     val parentRddIndex: Int,
-    @transient private val parentRddPartitionIndex: Int)
+    @transient
+    private val parentRddPartitionIndex: Int)
     extends Partition {
 
   var parentPartition: Partition = rdd.partitions(parentRddPartitionIndex)

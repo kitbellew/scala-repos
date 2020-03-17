@@ -62,9 +62,12 @@ private[hive] sealed trait TableReader {
   * data warehouse directory.
   */
 private[hive] class HadoopTableReader(
-    @transient private val attributes: Seq[Attribute],
-    @transient private val relation: MetastoreRelation,
-    @transient private val sc: HiveContext,
+    @transient
+    private val attributes: Seq[Attribute],
+    @transient
+    private val relation: MetastoreRelation,
+    @transient
+    private val sc: HiveContext,
     hiveExtraConf: HiveConf)
     extends TableReader
     with Logging {

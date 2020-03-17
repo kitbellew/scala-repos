@@ -72,7 +72,8 @@ case class ParallelSGDAlgorithm(val ap: AlgorithmParams)
     model.predict(feature)
   }
 
-  @transient override lazy val querySerializer =
+  @transient
+  override lazy val querySerializer =
     Utils.json4sDefaultFormats + new VectorSerializer
 }
 

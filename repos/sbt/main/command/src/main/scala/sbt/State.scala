@@ -75,8 +75,8 @@ trait StateOps {
   /** Sets the next command processing action to do.*/
   def setNext(n: State.Next): State
 
-  @deprecated("Use setNext", "0.11.0") def setResult(
-      ro: Option[xsbti.MainResult]): State
+  @deprecated("Use setNext", "0.11.0")
+  def setResult(ro: Option[xsbti.MainResult]): State
 
   /**
     * Restarts sbt without dropping loaded Scala classes.  It is a shallower restart than `reboot`.

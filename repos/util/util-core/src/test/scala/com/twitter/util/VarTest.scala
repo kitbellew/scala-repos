@@ -394,7 +394,8 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val a, b = Var(0)
     val c = a.flatMap(_ => b)
 
-    @volatile var j = -1
+    @volatile
+    var j = -1
     c.changes.register(Witness({ i =>
       assert(i == j + 1)
       j = i

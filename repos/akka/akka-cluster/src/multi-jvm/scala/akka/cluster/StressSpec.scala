@@ -1134,7 +1134,8 @@ abstract class StressSpec
     val usedRoles = roles.take(nbrUsedRoles)
     val usedAddresses = usedRoles.map(address(_)).toSet
 
-    @tailrec def loop(
+    @tailrec
+    def loop(
         counter: Int,
         previousAS: Option[ActorSystem],
         allPreviousAddresses: Set[Address]): Option[ActorSystem] = {

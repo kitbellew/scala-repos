@@ -19,7 +19,8 @@ import java.lang.reflect.InvocationTargetException
 sealed trait LifeCycleMessage extends Serializable
 
 /* Marker trait to show which Messages are automatically handled by Akka */
-sealed trait AutoReceivedMessage { self: LifeCycleMessage =>
+sealed trait AutoReceivedMessage {
+  self: LifeCycleMessage =>
 }
 
 case class HotSwap(code: ActorRef => Actor.Receive, discardOld: Boolean = true)
@@ -74,10 +75,14 @@ case object Kill extends AutoReceivedMessage with LifeCycleMessage
 case object ReceiveTimeout extends LifeCycleMessage
 
 case class MaximumNumberOfRestartsWithinTimeRangeReached(
-    @BeanProperty val victim: ActorRef,
-    @BeanProperty val maxNrOfRetries: Option[Int],
-    @BeanProperty val withinTimeRange: Option[Int],
-    @BeanProperty val lastExceptionCausingRestart: Throwable)
+    @BeanProperty
+    val victim: ActorRef,
+    @BeanProperty
+    val maxNrOfRetries: Option[Int],
+    @BeanProperty
+    val withinTimeRange: Option[Int],
+    @BeanProperty
+    val lastExceptionCausingRestart: Throwable)
     extends LifeCycleMessage
 
 // Exceptions for Actors

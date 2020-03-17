@@ -649,7 +649,8 @@ class ClientServerSpec
           socket.getInputStream))): (String, BufferedReader) = {
       val sb = new java.lang.StringBuilder
       val cbuf = new Array[Char](256)
-      @tailrec def drain(): (String, BufferedReader) =
+      @tailrec
+      def drain(): (String, BufferedReader) =
         reader.read(cbuf) match {
           case -1 ⇒ sb.toString -> reader
           case n ⇒ sb.append(cbuf, 0, n); drain()

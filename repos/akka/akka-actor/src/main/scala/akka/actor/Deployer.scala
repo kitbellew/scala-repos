@@ -165,7 +165,8 @@ private[akka] class Deployer(
     deployments.get().find(path).data
 
   def deploy(d: Deploy): Unit = {
-    @tailrec def add(
+    @tailrec
+    def add(
         path: Array[String],
         d: Deploy,
         w: WildcardTree[Deploy] = deployments.get): Unit = {

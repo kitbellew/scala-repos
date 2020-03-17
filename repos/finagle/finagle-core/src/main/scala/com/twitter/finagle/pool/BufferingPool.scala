@@ -14,7 +14,8 @@ import scala.annotation.tailrec
   */
 class BufferingPool[Req, Rep](underlying: ServiceFactory[Req, Rep], size: Int)
     extends ServiceFactoryProxy[Req, Rep](underlying) {
-  @volatile private[this] var draining = false
+  @volatile
+  private[this] var draining = false
 
   private[this] class Wrapped(self: Service[Req, Rep])
       extends ServiceProxy[Req, Rep](self) {

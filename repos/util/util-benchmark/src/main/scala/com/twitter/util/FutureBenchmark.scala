@@ -5,8 +5,7 @@ import org.openjdk.jmh.annotations._
 class FutureBenchmark extends StdBenchAnnotations {
   import FutureBenchmark._
 
-  @Benchmark
-  @OperationsPerInvocation(N)
+  @Benchmark @OperationsPerInvocation(N)
   def timeCallback(state: CallbackState) {
     import state._
 

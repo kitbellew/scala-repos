@@ -181,9 +181,8 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
       first ~> c.in(0)
       second ~> c.in(1)
 
-      @tailrec def combineRest(
-          idx: Int,
-          i: Iterator[Source[T, _]]): SourceShape[U] =
+      @tailrec
+      def combineRest(idx: Int, i: Iterator[Source[T, _]]): SourceShape[U] =
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)
@@ -451,9 +450,8 @@ object Source {
       first ~> c.in(0)
       second ~> c.in(1)
 
-      @tailrec def combineRest(
-          idx: Int,
-          i: Iterator[Source[T, _]]): SourceShape[U] =
+      @tailrec
+      def combineRest(idx: Int, i: Iterator[Source[T, _]]): SourceShape[U] =
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)

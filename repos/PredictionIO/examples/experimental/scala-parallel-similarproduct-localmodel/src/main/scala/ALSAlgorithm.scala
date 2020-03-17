@@ -31,7 +31,8 @@ class ALSLocalModel( // MODIFIED
 
   // MODIFIED
 
-  @transient lazy val itemIntStringMap = itemStringIntMap.inverse
+  @transient
+  lazy val itemIntStringMap = itemStringIntMap.inverse
 
   override def toString = {
     s" productFeatures: [${productFeatures.size}]" + // MODIFIED
@@ -50,7 +51,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 // MODIFIED
     extends P2LAlgorithm[PreparedData, ALSLocalModel, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(data: PreparedData): ALSLocalModel = { // MODIFIED
     require(

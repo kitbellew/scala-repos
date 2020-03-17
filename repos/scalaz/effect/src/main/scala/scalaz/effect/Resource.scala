@@ -8,7 +8,8 @@ import java.io.Closeable
   *
   */
 ////
-trait Resource[F] { self =>
+trait Resource[F] {
+  self =>
   ////
 
   def close(f: F): IO[Unit]
@@ -26,7 +27,8 @@ trait Resource[F] { self =>
 }
 
 object Resource {
-  @inline def apply[F](implicit F: Resource[F]): Resource[F] = F
+  @inline
+  def apply[F](implicit F: Resource[F]): Resource[F] = F
 
   ////
 

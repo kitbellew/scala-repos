@@ -163,7 +163,8 @@ private[spark] object ShutdownHookManager extends Logging {
 private[util] class SparkShutdownHookManager {
 
   private val hooks = new PriorityQueue[SparkShutdownHook]()
-  @volatile private var shuttingDown = false
+  @volatile
+  private var shuttingDown = false
 
   /**
     * Install a hook to run at shutdown and run all registered hooks in order. Hadoop 1.x does not

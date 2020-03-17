@@ -114,7 +114,8 @@ class RouteRegistry {
     */
   def appendAfterFilter(route: Route): Unit = _afterFilters :+= route
 
-  @tailrec private def modifyRoutes(
+  @tailrec
+  private def modifyRoutes(
       method: HttpMethod,
       f: (Seq[Route] => Seq[Route])): Unit = {
     if (_methodRoutes.putIfAbsent(method, f(Vector.empty)).isDefined) {

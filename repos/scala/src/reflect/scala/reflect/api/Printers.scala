@@ -135,7 +135,8 @@ import java.io.{PrintWriter, StringWriter}
   *
   *  @group ReflectionAPI
   */
-trait Printers { self: Universe =>
+trait Printers {
+  self: Universe =>
 
   /** @group Printers */
   protected trait TreePrinter {

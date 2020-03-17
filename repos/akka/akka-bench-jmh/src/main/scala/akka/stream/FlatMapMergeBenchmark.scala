@@ -11,8 +11,7 @@ import org.openjdk.jmh.annotations._
 import scala.concurrent._
 import scala.concurrent.duration._
 
-@State(Scope.Benchmark)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark) @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
 class FlatMapMergeBenchmark {
   implicit val system = ActorSystem("FlatMapMergeBenchmark")

@@ -166,7 +166,8 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
         it("propagate interrupts") {
           new TriesFixture(retryExceptionsOnly) {
             val replyPromise = new Promise[Int] {
-              @volatile var interrupted: Option[Throwable] = None
+              @volatile
+              var interrupted: Option[Throwable] = None
               setInterruptHandler { case exc => interrupted = Some(exc) }
             }
             when(service(123)) thenReturn replyPromise
@@ -339,7 +340,8 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
       it("propagate cancellation") {
         new PolicyFixture(policy, retryExceptionsOnly, timer) {
           val replyPromise = new Promise[Int] {
-            @volatile var interrupted: Option[Throwable] = None
+            @volatile
+            var interrupted: Option[Throwable] = None
             setInterruptHandler { case exc => interrupted = Some(exc) }
           }
           when(service(123)) thenReturn replyPromise

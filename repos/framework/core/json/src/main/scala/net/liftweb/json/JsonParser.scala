@@ -158,7 +158,8 @@ object JsonParser {
       }
 
     def closeBlock(v: Any) {
-      @inline def toJValue(x: Any) =
+      @inline
+      def toJValue(x: Any) =
         x match {
           case json: JValue => json
           case _            => p.fail("unexpected field " + x)

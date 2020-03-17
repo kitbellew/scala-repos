@@ -13,7 +13,8 @@ import scala.collection.JavaConversions._
 
 class PropertiesTest {
 
-  @Test def setProperty(): Unit = {
+  @Test
+  def setProperty(): Unit = {
     val prop = new Properties()
     prop.setProperty("a", "A")
     assertEquals("A", prop.get("a"))
@@ -27,7 +28,8 @@ class PropertiesTest {
     assertEquals("AAA", prop2.get("a"))
   }
 
-  @Test def getProperty(): Unit = {
+  @Test
+  def getProperty(): Unit = {
     val prop = new Properties()
 
     assertNull(prop.getProperty("a"))
@@ -49,7 +51,8 @@ class PropertiesTest {
     assertEquals("C", prop2.getProperty("c"))
   }
 
-  @Test def propertyNames(): Unit = {
+  @Test
+  def propertyNames(): Unit = {
     val prop = new Properties()
     assertEquals(0, prop.propertyNames().size)
     prop.setProperty("a", "A")
@@ -65,7 +68,8 @@ class PropertiesTest {
     assertEquals(Set("a", "b", "c", "d"), prop2.propertyNames().toSet)
   }
 
-  @Test def propertyNamesWithBadContents(): Unit = {
+  @Test
+  def propertyNamesWithBadContents(): Unit = {
     assumeTrue(hasCompliantAsInstanceOfs)
 
     val prop = new Properties()
@@ -93,7 +97,8 @@ class PropertiesTest {
     assertEquals(Set("a", "b", "c", "d", "1"), prop2.propertyNames().toSet)
   }
 
-  @Test def stringPropertyNames(): Unit = {
+  @Test
+  def stringPropertyNames(): Unit = {
     val prop = new Properties()
     assertEquals(0, prop.stringPropertyNames().size)
     prop.setProperty("a", "A")
@@ -109,7 +114,8 @@ class PropertiesTest {
     assertEquals(Set("a", "b", "c", "d"), prop2.stringPropertyNames().toSet)
   }
 
-  @Test def stringPropertyNamesWithBadContents(): Unit = {
+  @Test
+  def stringPropertyNamesWithBadContents(): Unit = {
     assumeTrue(hasCompliantAsInstanceOfs)
 
     val prop = new Properties()

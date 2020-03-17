@@ -14,7 +14,8 @@ private class MonitorOutput(val inStream: InputStream, broadcaster: ActorRef)
   val log = LoggerFactory.getLogger("MonitorOutput")
   val in = new InputStreamReader(inStream)
 
-  @volatile var finished = false
+  @volatile
+  var finished = false
 
   // TODO This should have a stop method
 

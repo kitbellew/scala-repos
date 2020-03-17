@@ -142,7 +142,8 @@ class TimeStampedHashMapSuite extends SparkFunSuite {
     def newMap() = hashMapConstructor
     val name = newMap().getClass.getSimpleName
     val testMap = newMap()
-    @volatile var error = false
+    @volatile
+    var error = false
 
     def getRandomKey(m: mutable.Map[String, String]): Option[String] = {
       val keys = testMap.keysIterator.toSeq

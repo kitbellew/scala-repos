@@ -89,7 +89,8 @@ object KleeneDemo {
       override def kplus(m: Matrix[A]) = {
         def f(k: Int, m: Matrix[A]) =
           Matrix[A] { (x, y) => m(x, y) + m(k, y) * m(k, k).kstar * m(x, k) }
-        @tailrec def loop(m: Matrix[A], i: Int): Matrix[A] =
+        @tailrec
+        def loop(m: Matrix[A], i: Int): Matrix[A] =
           if (i >= 0) loop(f(i, m), i - 1) else m
         loop(m, dim.n - 1)
       }
@@ -127,7 +128,8 @@ object KleeneDemo {
   /**
     * Naive matrix trait.
     */
-  trait Matrix[A] { lhs =>
+  trait Matrix[A] {
+    lhs =>
     def dim: Dim
     def apply(x: Int, y: Int): A
     def map[B: ClassTag](f: A => B): Matrix[B]
@@ -175,7 +177,8 @@ object KleeneDemo {
   case class ArrayMatrix[A](arr: Array[A])(implicit
       val dim: Dim,
       ct: ClassTag[A])
-      extends Matrix[A] { lhs =>
+      extends Matrix[A] {
+    lhs =>
     def apply(x: Int, y: Int): A = arr(y * dim.n + x)
 
     def update(x: Int, y: Int, a: A): Unit = arr(y * dim.n + x) = a
@@ -223,7 +226,8 @@ object KleeneDemo {
       override def kplus(m: Matrix[A]) = {
         def f(k: Int, m: Matrix[A]) =
           Matrix[A] { (x, y) => m(x, y) + m(k, y) * m(k, k).kstar * m(x, k) }
-        @tailrec def loop(m: Matrix[A], i: Int): Matrix[A] =
+        @tailrec
+        def loop(m: Matrix[A], i: Int): Matrix[A] =
           if (i >= 0) loop(f(i, m), i - 1) else m
         loop(m, dim.n - 1)
       }

@@ -14,7 +14,8 @@ private[jdbc] object StatementInvoker {
 }
 
 /** An invoker which executes an SQL statement through JDBC. */
-abstract class StatementInvoker[+R] extends Invoker[R] { self =>
+abstract class StatementInvoker[+R] extends Invoker[R] {
+  self =>
 
   protected def getStatement: String
   protected def setParam(st: PreparedStatement): Unit

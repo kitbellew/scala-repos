@@ -27,5 +27,6 @@ trait Semiring[@sp(Byte, Short, Int, Long, Float, Double) A]
 }
 
 object Semiring {
-  @inline final def apply[A](implicit r: Semiring[A]): Semiring[A] = r
+  @inline
+  final def apply[A](implicit r: Semiring[A]): Semiring[A] = r
 }

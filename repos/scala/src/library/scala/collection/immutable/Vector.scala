@@ -69,7 +69,8 @@ final class Vector[+A] private[immutable] (
     with IndexedSeqLike[A, Vector[A]]
     with VectorPointer[A @uncheckedVariance]
     with Serializable
-    with CustomParallelizable[A, ParVector[A]] { self =>
+    with CustomParallelizable[A, ParVector[A]] {
+  self =>
 
   override def companion: GenericCompanion[Vector] = Vector
 
@@ -133,7 +134,8 @@ final class Vector[+A] private[immutable] (
   }
 
   // If we have a default builder, there are faster ways to perform some operations
-  @inline private[this] def isDefaultCBF[A, B, That](
+  @inline
+  private[this] def isDefaultCBF[A, B, That](
       bf: CanBuildFrom[Vector[A], B, That]): Boolean =
     (bf eq IndexedSeq.ReusableCBF) || (
       bf eq collection.immutable.Seq.ReusableCBF

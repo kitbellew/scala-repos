@@ -27,7 +27,8 @@ trait Instructions {
 
   import library._
 
-  sealed trait Instruction { self =>
+  sealed trait Instruction {
+    self =>
     import instructions._
 
     def operandStackDelta: (Int, Int) =

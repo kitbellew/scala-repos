@@ -19,11 +19,13 @@ class IntegerTest {
   val MaxValue: Int = Int.MaxValue
   val MinValue: Int = Int.MinValue
 
-  @Test def `reverseBytes`(): Unit = {
+  @Test
+  def `reverseBytes`(): Unit = {
     assertEquals(0xefbeadde, Integer.reverseBytes(0xdeadbeef))
   }
 
-  @Test def rotateLeft(): Unit = {
+  @Test
+  def rotateLeft(): Unit = {
     assertEquals(0x689cd401, Integer.rotateLeft(0x689cd401, 0))
     assertEquals(0xd139a802, Integer.rotateLeft(0x689cd401, 1))
     assertEquals(0x9cd40168, Integer.rotateLeft(0x689cd401, 8))
@@ -36,7 +38,8 @@ class IntegerTest {
     assertEquals(0x2d139a8, Integer.rotateLeft(0x689cd401, -39))
   }
 
-  @Test def rotateRight(): Unit = {
+  @Test
+  def rotateRight(): Unit = {
     assertEquals(0x689cd401, Integer.rotateRight(0x689cd401, 0))
     assertEquals(0xb44e6a00, Integer.rotateRight(0x689cd401, 1))
     assertEquals(0x1689cd4, Integer.rotateRight(0x689cd401, 8))
@@ -49,7 +52,8 @@ class IntegerTest {
     assertEquals(0x4e6a00b4, Integer.rotateRight(0x689cd401, -39))
   }
 
-  @Test def bitCount(): Unit = {
+  @Test
+  def bitCount(): Unit = {
     assertEquals(0, Integer.bitCount(0))
     assertEquals(1, Integer.bitCount(1))
     assertEquals(1, Integer.bitCount(2))
@@ -162,7 +166,8 @@ class IntegerTest {
     assertEquals(18, Integer.bitCount(-1535508973))
   }
 
-  @Test def numberOfLeadingZeros(): Unit = {
+  @Test
+  def numberOfLeadingZeros(): Unit = {
     /* The optimizer can *constant-fold* Integer.numberOfLeadingZeros,
      * so if we want to actually test anything happening at runtime, we have
      * to prevent the optimizer to see the connection between the actual
@@ -170,13 +175,15 @@ class IntegerTest {
      * logic with testInline.
      */
 
-    @inline def testInline(i: Int, expected: Int): Unit =
+    @inline
+    def testInline(i: Int, expected: Int): Unit =
       assertEquals(expected, Integer.numberOfLeadingZeros(i))
 
-    @noinline def testNoInline(i: Int, expected: Int): Unit =
-      testInline(i, expected)
+    @noinline
+    def testNoInline(i: Int, expected: Int): Unit = testInline(i, expected)
 
-    @inline def test(i: Int, expected: Int): Unit = {
+    @inline
+    def test(i: Int, expected: Int): Unit = {
       testInline(i, expected)
       testNoInline(i, expected)
     }
@@ -288,7 +295,8 @@ class IntegerTest {
     test(213241, 14)
   }
 
-  @Test def numberOfTrailingZeros(): Unit = {
+  @Test
+  def numberOfTrailingZeros(): Unit = {
     assertEquals(32, Integer.numberOfTrailingZeros(0))
     assertEquals(0, Integer.numberOfTrailingZeros(1))
     assertEquals(2, Integer.numberOfTrailingZeros(12))
@@ -399,7 +407,8 @@ class IntegerTest {
     assertEquals(19, Integer.numberOfTrailingZeros(303562752))
   }
 
-  @Test def toBinaryString(): Unit = {
+  @Test
+  def toBinaryString(): Unit = {
     assertEquals("11111111111111111111111111111111", Integer.toBinaryString(-1))
     assertEquals(
       "11111111111111111101100011101111",
@@ -412,7 +421,8 @@ class IntegerTest {
       Integer.toBinaryString(MaxValue))
   }
 
-  @Test def toHexString(): Unit = {
+  @Test
+  def toHexString(): Unit = {
     assertEquals("ffffffff", Integer.toHexString(-1))
     assertEquals("ffffd8ef", Integer.toHexString(-10001))
     assertEquals("80000000", Integer.toHexString(MinValue))
@@ -420,14 +430,16 @@ class IntegerTest {
     assertEquals("7fffffff", Integer.toHexString(MaxValue))
   }
 
-  @Test def toOctalString(): Unit = {
+  @Test
+  def toOctalString(): Unit = {
     assertEquals("37777777777", Integer.toOctalString(-1))
     assertEquals("37777754357", Integer.toOctalString(-10001))
     assertEquals("20000000000", Integer.toOctalString(MinValue))
     assertEquals("17777777777", Integer.toOctalString(MaxValue))
   }
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
     def compare(x: Int, y: Int): Int = new Integer(x).compareTo(new Integer(y))
 
     assertTrue(compare(0, 5) < 0)
@@ -436,7 +448,8 @@ class IntegerTest {
     assertEquals(0, compare(3, 3))
   }
 
-  @Test def should_be_a_Comparable(): Unit = {
+  @Test
+  def should_be_a_Comparable(): Unit = {
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
@@ -446,7 +459,8 @@ class IntegerTest {
     assertEquals(0, compare(3, 3))
   }
 
-  @Test def should_parse_strings(): Unit = {
+  @Test
+  def should_parse_strings(): Unit = {
     def test(s: String, v: Int, radix: Int = 10): Unit = {
       assertEquals(v, Integer.parseInt(s, radix))
       assertEquals(v, Integer.valueOf(s, radix).intValue())
@@ -465,7 +479,8 @@ class IntegerTest {
     test("-FF", -255, 16)
   }
 
-  @Test def should_reject_invalid_strings_when_parsing(): Unit = {
+  @Test
+  def should_reject_invalid_strings_when_parsing(): Unit = {
     def test(s: String, radix: Int = 10): Unit =
       expectThrows(classOf[NumberFormatException], Integer.parseInt(s, radix))
 
@@ -477,7 +492,8 @@ class IntegerTest {
     test("")
   }
 
-  @Test def should_parse_strings_in_base_16(): Unit = {
+  @Test
+  def should_parse_strings_in_base_16(): Unit = {
     def test(s: String, v: Int): Unit = {
       assertEquals(v, Integer.parseInt(s, 16))
       assertEquals(v, Integer.valueOf(s, 16).intValue())
@@ -491,7 +507,8 @@ class IntegerTest {
     test("-90000", -0x90000)
   }
 
-  @Test def highestOneBit(): Unit = {
+  @Test
+  def highestOneBit(): Unit = {
     /* Spec ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/IntegerTest.java
      */
@@ -504,7 +521,8 @@ class IntegerTest {
     assertEquals(Int.MinValue, Integer.highestOneBit(Int.MinValue))
   }
 
-  @Test def lowestOneBit(): Unit = {
+  @Test
+  def lowestOneBit(): Unit = {
     assertEquals(0, Integer.lowestOneBit(0))
     assertEquals(1, Integer.lowestOneBit(-1))
     assertEquals(256, Integer.lowestOneBit(-256))
@@ -514,7 +532,8 @@ class IntegerTest {
     assertEquals(Int.MinValue, Integer.lowestOneBit(Int.MinValue))
   }
 
-  @Test def toString_without_radix(): Unit = {
+  @Test
+  def toString_without_radix(): Unit = {
     /* Spec ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/IntegerTest.java
      */
@@ -527,7 +546,8 @@ class IntegerTest {
     assertEquals("0", Integer.toString(0))
   }
 
-  @Test def toString_with_radix(): Unit = {
+  @Test
+  def toString_with_radix(): Unit = {
     /* Spec ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/IntegerTest.java
      */

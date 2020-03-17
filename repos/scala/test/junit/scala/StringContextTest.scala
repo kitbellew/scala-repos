@@ -40,51 +40,60 @@ class StringContextTest {
   import StringContext._
   import StringContextTestUtils.StringContextOps
 
-  @Test def noEscape() = {
+  @Test
+  def noEscape() = {
     val s = "string"
     val res = processEscapes(s)
     assertEquals(s, res)
   }
-  @Test def tabbed() = {
+  @Test
+  def tabbed() = {
     val s = """a\tb"""
     val res = processEscapes(s)
     assertEquals("a\tb", res)
   }
-  @Test def quoted() = {
+  @Test
+  def quoted() = {
     val s = """hello, \"world\""""
     val res = processEscapes(s)
     assertEquals("""hello, "world"""", res)
   }
-  @Test def octal() = {
+  @Test
+  def octal() = {
     val s = """\123cala"""
     val res = treatEscapes(s)
     assertEquals("Scala", res)
   }
-  @Test def doubled() = {
+  @Test
+  def doubled() = {
     val s = """\123cala\123yntax"""
     val res = treatEscapes(s)
     assertEquals("ScalaSyntax", res)
   }
-  @Test def badly() =
+  @Test
+  def badly() =
     assertThrows[InvalidEscapeException] {
       val s = """Scala\"""
       val res = treatEscapes(s)
       assertEquals("Scala", res)
     }
-  @Test def noOctal() =
+  @Test
+  def noOctal() =
     assertThrows[InvalidEscapeException] {
       val s = """\123cala"""
       val res = processEscapes(s)
       assertEquals("Scala", res)
     }
 
-  @Test def t6631_baseline() = assertEquals("\f\r\n\t", s"""\f\r\n\t""")
+  @Test
+  def t6631_baseline() = assertEquals("\f\r\n\t", s"""\f\r\n\t""")
 
-  @Test def t6631_badEscape() =
-    assertThrows[InvalidEscapeException] { s"""\x""" }
+  @Test
+  def t6631_badEscape() = assertThrows[InvalidEscapeException] { s"""\x""" }
 
   // verifying that the standard interpolators can be supplanted
-  @Test def antiHijack_?() = {
+  @Test
+  def antiHijack_?() = {
     object AllYourStringsAreBelongToMe {
       case class StringContext(args: Any*) {
         def s(args: Any) = "!!!!"
@@ -95,25 +104,29 @@ class StringContextTest {
     assertEquals("!!!!", s"????") // OK to hijack core interpolator ids
   }
 
-  @Test def fIf() = {
+  @Test
+  def fIf() = {
     val res = f"${if (true) 2.5 else 2.5}%.2f"
     val expected = locally"2.50"
     assertEquals(expected, res)
   }
 
-  @Test def fIfNot() = {
+  @Test
+  def fIfNot() = {
     val res = f"${if (false) 2.5 else 3.5}%.2f"
     val expected = locally"3.50"
     assertEquals(expected, res)
   }
 
-  @Test def fHeteroArgs() = {
+  @Test
+  def fHeteroArgs() = {
     val res = f"${3.14}%.2f rounds to ${3}%d"
     val expected = locally"${"3.14"} rounds to 3"
     assertEquals(expected, res)
   }
 
-  @Test def `f interpolator baseline`(): Unit = {
+  @Test
+  def `f interpolator baseline`(): Unit = {
 
     implicit def stringToBoolean(s: String): Boolean =
       java.lang.Boolean.parseBoolean(s)

@@ -148,7 +148,8 @@ import java.io.ObjectStreamException
   * @see [[scala.reflect.ClassTag]], [[scala.reflect.api.TypeTags#TypeTag]], [[scala.reflect.api.TypeTags#WeakTypeTag]]
   * @group ReflectionAPI
   */
-trait TypeTags { self: Universe =>
+trait TypeTags {
+  self: Universe =>
 
   import definitions._
 

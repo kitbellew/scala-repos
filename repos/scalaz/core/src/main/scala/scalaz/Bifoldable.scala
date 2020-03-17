@@ -5,7 +5,8 @@ package scalaz
   * A type giving rise to two unrelated [[scalaz.Foldable]]s.
   */
 ////
-trait Bifoldable[F[_, _]] { self =>
+trait Bifoldable[F[_, _]] {
+  self =>
   ////
 
   /** Accumulate `A`s and `B`s */
@@ -122,7 +123,8 @@ trait Bifoldable[F[_, _]] { self =>
 }
 
 object Bifoldable {
-  @inline def apply[F[_, _]](implicit F: Bifoldable[F]): Bifoldable[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Bifoldable[F]): Bifoldable[F] = F
 
   ////
   /**

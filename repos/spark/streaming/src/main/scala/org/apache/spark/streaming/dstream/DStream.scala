@@ -57,7 +57,8 @@ import org.apache.spark.util.{CallSite, Utils}
   *  - A function that is used to generate an RDD after each time interval
   */
 abstract class DStream[T: ClassTag](
-    @transient private[streaming] var ssc: StreamingContext)
+    @transient
+    private[streaming] var ssc: StreamingContext)
     extends Serializable
     with Logging {
 

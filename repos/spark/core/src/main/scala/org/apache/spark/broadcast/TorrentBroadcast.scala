@@ -64,13 +64,16 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     *
     * On the driver, if the value is required, it is read lazily from the block manager.
     */
-  @transient private lazy val _value: T = readBroadcastBlock()
+  @transient
+  private lazy val _value: T = readBroadcastBlock()
 
   /** The compression codec to use, or None if compression is disabled */
-  @transient private var compressionCodec: Option[CompressionCodec] = _
+  @transient
+  private var compressionCodec: Option[CompressionCodec] = _
 
   /** Size of each block. Default value is 4MB.  This value is only read by the broadcaster. */
-  @transient private var blockSize: Int = _
+  @transient
+  private var blockSize: Int = _
 
   private def setConf(conf: SparkConf) {
     compressionCodec =

@@ -26,9 +26,12 @@ final class ArrayOps[A](private[this] val array: Array[A])
 
   // Implementation of ArrayLike
 
-  @inline def apply(index: Int): A = array(index)
-  @inline def length: Int = array.length
-  @inline def update(index: Int, element: A): Unit = array(index) = element
+  @inline
+  def apply(index: Int): A = array(index)
+  @inline
+  def length: Int = array.length
+  @inline
+  def update(index: Int, element: A): Unit = array(index) = element
 
   def seq: IndexedSeq[A] = new WrappedArray(array)
 
@@ -43,18 +46,22 @@ final class ArrayOps[A](private[this] val array: Array[A])
 
   // Implementation of Builder
 
-  @inline def +=(elem: A): this.type = {
+  @inline
+  def +=(elem: A): this.type = {
     array.push(elem)
     this
   }
 
-  @inline def clear(): Unit = array.length = 0
+  @inline
+  def clear(): Unit = array.length = 0
 
-  @inline def result(): Array[A] = array
+  @inline
+  def result(): Array[A] = array
 
   // Scala notation for a fast concat()
 
-  @inline def ++[B >: A](that: Array[_ <: B]): Array[B] = concat(array, that)
+  @inline
+  def ++[B >: A](that: Array[_ <: B]): Array[B] = concat(array, that)
 
   // Methods whose inherited implementations do not play nice with the optimizer
 
@@ -62,8 +69,7 @@ final class ArrayOps[A](private[this] val array: Array[A])
     val length = this.length
     if (length <= 0) throwUnsupported("empty.reduceLeft")
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(start: Int, z: B): B =
       if (start == length) z else loop(start + 1, op(z, this(start)))
 
@@ -74,8 +80,7 @@ final class ArrayOps[A](private[this] val array: Array[A])
     val length = this.length
     if (length <= 0) throwUnsupported("empty.reduceRight")
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(end: Int, z: B): B =
       if (end == 0) z else loop(end - 1, op(this(end - 1), z))
 
@@ -96,8 +101,7 @@ object ArrayOps {
     val rightLength = right.length
     val result = new Array[A](leftLength + rightLength)
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(src: Array[_ <: A], i: Int, len: Int, offset: Int): Unit =
       if (i != len) {
         result(i + offset) = src(i)

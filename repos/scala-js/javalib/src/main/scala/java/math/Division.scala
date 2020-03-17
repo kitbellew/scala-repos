@@ -126,8 +126,7 @@ private[math] object Division {
           // var rOverflowed = false
           guessDigit += 1 // to have the proper value in the loop below
 
-          @inline
-          @tailrec
+          @inline @tailrec
           def loop(): Unit = {
             guessDigit -= 1
             // leftHand always fits in an unsigned long
@@ -416,8 +415,7 @@ private[math] object Division {
       op2 = swap
     }
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(): Unit = {
       // INV: op2 >= op1 && both are odd unless op1 = 0
 
@@ -630,8 +628,7 @@ private[math] object Division {
         k += toShift
       }
 
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(): Unit = {
         if (u.compareTo(v) <= BigInteger.EQUALS) {
           Elementary.inplaceSubtract(v, u)

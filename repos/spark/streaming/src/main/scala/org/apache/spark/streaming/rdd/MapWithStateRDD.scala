@@ -92,8 +92,10 @@ private[streaming] object MapWithStateRDDRecord {
   */
 private[streaming] class MapWithStateRDDPartition(
     idx: Int,
-    @transient private var prevStateRDD: RDD[_],
-    @transient private var partitionedDataRDD: RDD[_])
+    @transient
+    private var prevStateRDD: RDD[_],
+    @transient
+    private var partitionedDataRDD: RDD[_])
     extends Partition {
 
   private[rdd] var previousSessionRDDPartition: Partition = null
@@ -141,7 +143,8 @@ private[streaming] class MapWithStateRDD[
         new OneToOneDependency[MapWithStateRDDRecord[K, S, E]](prevStateRDD),
         new OneToOneDependency(partitionedDataRDD))) {
 
-  @volatile private var doFullScan = false
+  @volatile
+  private var doFullScan = false
 
   require(prevStateRDD.partitioner.nonEmpty)
   require(partitionedDataRDD.partitioner == prevStateRDD.partitioner)

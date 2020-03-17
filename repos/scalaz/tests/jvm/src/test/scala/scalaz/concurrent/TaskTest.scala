@@ -300,7 +300,8 @@ object TaskTest extends SpecLite {
     "correctly cancels scheduling of all tasks once first task hit timeout" in {
       val es = Executors.newFixedThreadPool(1)
 
-      @volatile var bool = false
+      @volatile
+      var bool = false
 
       val t = fork { Thread.sleep(1000); now(1) }(es).map(_ => bool = true)
 

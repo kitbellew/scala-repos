@@ -35,7 +35,9 @@ class SimpleScanSource extends RelationProvider {
   }
 }
 
-case class SimpleScan(from: Int, to: Int)(@transient val sqlContext: SQLContext)
+case class SimpleScan(from: Int, to: Int)(
+    @transient
+    val sqlContext: SQLContext)
     extends BaseRelation
     with TableScan {
 
@@ -63,7 +65,9 @@ class AllDataTypesScanSource extends SchemaRelationProvider {
 case class AllDataTypesScan(
     from: Int,
     to: Int,
-    userSpecifiedSchema: StructType)(@transient val sqlContext: SQLContext)
+    userSpecifiedSchema: StructType)(
+    @transient
+    val sqlContext: SQLContext)
     extends BaseRelation
     with TableScan {
 

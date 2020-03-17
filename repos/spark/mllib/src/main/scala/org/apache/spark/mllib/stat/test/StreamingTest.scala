@@ -31,8 +31,7 @@ import org.apache.spark.util.StatCounter
   * @param isExperiment if the sample is of the experiment group.
   * @param value numeric value of the observation.
   */
-@Since("1.6.0")
-@BeanInfo
+@Since("1.6.0") @BeanInfo
 case class BinarySample @Since("1.6.0") (
     @Since("1.6.0") isExperiment: Boolean,
     @Since("1.6.0") value: Double) {
@@ -65,8 +64,7 @@ case class BinarySample @Since("1.6.0") (
   *     .registerStream(DStream)
   * }}}
   */
-@Experimental
-@Since("1.6.0")
+@Experimental @Since("1.6.0")
 class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
   private var peacePeriod: Int = 0
   private var windowSize: Int = 0

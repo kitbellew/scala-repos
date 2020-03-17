@@ -291,7 +291,8 @@ object Character {
   def isSpaceChar(codePoint: Int): scala.Boolean =
     isSpaceCharImpl(getType(codePoint))
 
-  @inline private[this] def isSpaceCharImpl(tpe: Int): scala.Boolean =
+  @inline
+  private[this] def isSpaceCharImpl(tpe: Int): scala.Boolean =
     tpe == SPACE_SEPARATOR || tpe == LINE_SEPARATOR || tpe == PARAGRAPH_SEPARATOR
 
   // --- UTF-16 surrogate pairs handling ---
@@ -303,16 +304,18 @@ object Character {
   private final val LowSurrogateID = 0xdc00 // 110111 00  00000000
   private final val SurrogateUsefulPartMask = 0x03ff // 000000 11  11111111
 
-  @inline def isHighSurrogate(c: scala.Char): scala.Boolean =
+  @inline
+  def isHighSurrogate(c: scala.Char): scala.Boolean =
     (c & HighSurrogateMask) == HighSurrogateID
-  @inline def isLowSurrogate(c: scala.Char): scala.Boolean =
+  @inline
+  def isLowSurrogate(c: scala.Char): scala.Boolean =
     (c & LowSurrogateMask) == LowSurrogateID
-  @inline def isSurrogatePair(
-      high: scala.Char,
-      low: scala.Char): scala.Boolean =
+  @inline
+  def isSurrogatePair(high: scala.Char, low: scala.Char): scala.Boolean =
     isHighSurrogate(high) && isLowSurrogate(low)
 
-  @inline def toCodePoint(high: scala.Char, low: scala.Char): Int =
+  @inline
+  def toCodePoint(high: scala.Char, low: scala.Char): Int =
     ((high & SurrogateUsefulPartMask) << 10) + (
       low & SurrogateUsefulPartMask
     ) + 0x10000
@@ -345,13 +348,16 @@ object Character {
     getType(c) == UPPERCASE_LETTER
   }
 
-  @inline def isValidCodePoint(codePoint: Int): scala.Boolean =
+  @inline
+  def isValidCodePoint(codePoint: Int): scala.Boolean =
     codePoint >= MIN_CODE_POINT && codePoint <= MAX_CODE_POINT
 
-  @inline def isBmpCodePoint(codePoint: Int): scala.Boolean =
+  @inline
+  def isBmpCodePoint(codePoint: Int): scala.Boolean =
     codePoint >= MIN_VALUE && codePoint <= MAX_VALUE
 
-  @inline def isSupplementaryCodePoint(codePoint: Int): scala.Boolean =
+  @inline
+  def isSupplementaryCodePoint(codePoint: Int): scala.Boolean =
     codePoint >= MIN_SUPPLEMENTARY_CODE_POINT && codePoint <= MAX_CODE_POINT
 
   def isTitleCase(c: scala.Char): scala.Boolean = isTitleCase(c.toInt)
@@ -359,7 +365,8 @@ object Character {
   def isTitleCase(cp: Int): scala.Boolean =
     if (cp < 256) false else isTitleCaseImpl(getTypeGE256(cp))
 
-  @inline private[this] def isTitleCaseImpl(tpe: Int): scala.Boolean =
+  @inline
+  private[this] def isTitleCaseImpl(tpe: Int): scala.Boolean =
     tpe == TITLECASE_LETTER
 
   def isDigit(c: scala.Char): scala.Boolean = isDigit(c.toInt)
@@ -367,7 +374,8 @@ object Character {
   def isDigit(cp: Int): scala.Boolean =
     if (cp < 256) '0' <= cp && cp <= '9' else isDigitImpl(getTypeGE256(cp))
 
-  @inline private[this] def isDigitImpl(tpe: Int): scala.Boolean =
+  @inline
+  private[this] def isDigitImpl(tpe: Int): scala.Boolean =
     tpe == DECIMAL_DIGIT_NUMBER
 
   def isDefined(c: scala.Char): scala.Boolean = isDefined(c.toInt)
@@ -380,7 +388,8 @@ object Character {
 
   def isLetter(cp: Int): scala.Boolean = isLetterImpl(getType(cp))
 
-  @inline private[this] def isLetterImpl(tpe: Int): scala.Boolean = {
+  @inline
+  private[this] def isLetterImpl(tpe: Int): scala.Boolean = {
     tpe == UPPERCASE_LETTER || tpe == LOWERCASE_LETTER ||
     tpe == TITLECASE_LETTER || tpe == MODIFIER_LETTER || tpe == OTHER_LETTER
   }
@@ -389,13 +398,15 @@ object Character {
 
   def isLetterOrDigit(cp: Int): scala.Boolean = isLetterOrDigitImpl(getType(cp))
 
-  @inline private[this] def isLetterOrDigitImpl(tpe: Int): scala.Boolean =
+  @inline
+  private[this] def isLetterOrDigitImpl(tpe: Int): scala.Boolean =
     isDigitImpl(tpe) || isLetterImpl(tpe)
 
   def isJavaLetter(ch: scala.Char): scala.Boolean =
     isJavaLetterImpl(getType(ch))
 
-  @inline private[this] def isJavaLetterImpl(tpe: Int): scala.Boolean = {
+  @inline
+  private[this] def isJavaLetterImpl(tpe: Int): scala.Boolean = {
     isLetterImpl(tpe) || tpe == LETTER_NUMBER || tpe == CURRENCY_SYMBOL ||
     tpe == CONNECTOR_PUNCTUATION
   }
@@ -403,7 +414,8 @@ object Character {
   def isJavaLetterOrDigit(ch: scala.Char): scala.Boolean =
     isJavaLetterOrDigitImpl(ch, getType(ch))
 
-  @inline private[this] def isJavaLetterOrDigitImpl(
+  @inline
+  private[this] def isJavaLetterOrDigitImpl(
       codePoint: Int,
       tpe: Int): scala.Boolean = {
     isJavaLetterImpl(tpe) || tpe == COMBINING_SPACING_MARK ||
@@ -444,7 +456,8 @@ object Character {
   def isJavaIdentifierPart(codePoint: Int): scala.Boolean =
     isJavaIdentifierPartImpl(codePoint, getType(codePoint))
 
-  @inline private[this] def isJavaIdentifierPartImpl(
+  @inline
+  private[this] def isJavaIdentifierPartImpl(
       codePoint: Int,
       tpe: Int): scala.Boolean = {
     isLetterImpl(tpe) || tpe == CURRENCY_SYMBOL ||
@@ -482,7 +495,8 @@ object Character {
   def isIdentifierIgnorable(codePoint: Int): scala.Boolean =
     isIdentifierIgnorableImpl(codePoint, getType(codePoint))
 
-  @inline private[this] def isIdentifierIgnorableImpl(
+  @inline
+  private[this] def isIdentifierIgnorableImpl(
       codePoint: Int,
       tpe: Int): scala.Boolean = {
     ('\u0000' <= codePoint && codePoint <= '\u0008') ||
@@ -520,10 +534,12 @@ object Character {
     } else { Array(codePoint.toChar) }
   }
 
-  @inline def toString(c: scala.Char): String =
+  @inline
+  def toString(c: scala.Char): String =
     js.Dynamic.global.String.fromCharCode(c.toInt).asInstanceOf[String]
 
-  @inline def compare(x: scala.Char, y: scala.Char): Int = x - y
+  @inline
+  def compare(x: scala.Char, y: scala.Char): Int = x - y
 
   // Based on Unicode 7.0.0
 

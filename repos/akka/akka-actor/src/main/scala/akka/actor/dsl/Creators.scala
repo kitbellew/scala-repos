@@ -6,7 +6,8 @@ package akka.actor.dsl
 import akka.actor._
 import scala.reflect.ClassTag
 
-trait Creators { this: ActorDSL.type ⇒
+trait Creators {
+  this: ActorDSL.type ⇒
 
   /**
     * This trait provides a DSL for writing the inner workings of an actor, e.g.

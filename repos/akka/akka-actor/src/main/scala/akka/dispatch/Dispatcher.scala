@@ -42,7 +42,8 @@ class Dispatcher(
       new LazyExecutorServiceDelegate(factory)
   }
 
-  @volatile private var executorServiceDelegate: LazyExecutorServiceDelegate =
+  @volatile
+  private var executorServiceDelegate: LazyExecutorServiceDelegate =
     new LazyExecutorServiceDelegate(
       executorServiceFactoryProvider.createExecutorServiceFactory(
         id,

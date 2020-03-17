@@ -3,7 +3,8 @@ abstract class Module {
 }
 
 object Test {
-  new Module { owner: Module =>
+  new Module {
+    owner: Module =>
     def moduleDemands() = Nil
 
     val a = new Module {
@@ -19,7 +20,8 @@ object Test {
 }
 
 object Test2 {
-  new Module { owner =>
+  new Module {
+    owner =>
     def moduleDemands() = Nil
 
     val a = new Module {

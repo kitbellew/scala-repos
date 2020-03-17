@@ -15,7 +15,8 @@ import scala.annotation.tailrec
   * example, we can specify and mix in a load metric (via a Node) and
   * a balancer (a Distributor) separately.
   */
-private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
+private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] {
+  self =>
 
   /**
     * The maximum number of balancing tries (yielding unavailable
@@ -70,7 +71,8 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
 
   private[this] val nodeStatus: Node => Status = _.factory.status
 
-  @volatile protected var dist: Distributor = initDistributor()
+  @volatile
+  protected var dist: Distributor = initDistributor()
 
   protected def rebuild(): Unit = { updater(Rebuild(dist)) }
 

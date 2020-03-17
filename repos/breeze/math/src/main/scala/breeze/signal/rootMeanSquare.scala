@@ -15,8 +15,7 @@ object rootMeanSquare extends UFunc {
 
   //ToDo: Expand to Int and Long once mean() is generified
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def rms1D[@expand.args(Float, Double) T]
       : rootMeanSquare.Impl[DenseVector[T], T] = {
     new rootMeanSquare.Impl[DenseVector[T], T] {

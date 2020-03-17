@@ -82,7 +82,8 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
       .thenReturn(10.megabytes)
     when(nfo.generation()).thenReturn(0)
 
-    @volatile var x = 0
+    @volatile
+    var x = 0
 
     val conductor = new Conductor
     import conductor._
@@ -138,7 +139,8 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
       when(nfo.remaining())
         .thenReturn(10.megabytes)
 
-      @volatile var incr = 0
+      @volatile
+      var incr = 0
 
       val conductor = new Conductor
       import conductor._
@@ -172,7 +174,8 @@ class CoordinatorTest extends FunSuite with LocalConductors with MockitoSugar {
     when(nfo.generation()).thenReturn(0)
 
     val maxWait = Duration.Top
-    @volatile var npending = 1
+    @volatile
+    var npending = 1
     val log = Logger.getAnonymousLogger()
 
     val conductor = new Conductor

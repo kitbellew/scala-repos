@@ -23,11 +23,8 @@ import org.openjdk.jmh.annotations.Warmup
 [info] a.a.ActorPathValidationBenchmark.handLoopActor_1    thrpt        20       38.825        3.378   ops/us
 [info] a.a.ActorPathValidationBenchmark.oldActor_1         thrpt        20        1.585        0.090   ops/us
  */
-@Fork(2)
-@State(JmhScope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
-@Warmup(iterations = 5)
-@Measurement(iterations = 10)
+@Fork(2) @State(JmhScope.Benchmark) @BenchmarkMode(Array(Mode.Throughput))
+@Warmup(iterations = 5) @Measurement(iterations = 10)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 class ActorPathValidationBenchmark {
 

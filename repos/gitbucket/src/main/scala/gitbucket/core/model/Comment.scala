@@ -5,7 +5,8 @@ trait Comment {
   val registeredDate: java.util.Date
 }
 
-trait IssueCommentComponent extends TemplateComponent { self: Profile =>
+trait IssueCommentComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
   import self._
 
@@ -50,7 +51,8 @@ case class IssueComment(
     updatedDate: java.util.Date)
     extends Comment
 
-trait CommitCommentComponent extends TemplateComponent { self: Profile =>
+trait CommitCommentComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
   import self._
 

@@ -21,8 +21,7 @@ object BalancerBench {
   }
 }
 
-@State(Scope.Benchmark)
-@Threads(Threads.MAX)
+@State(Scope.Benchmark) @Threads(Threads.MAX)
 class HeapBalancerBench extends StdBenchAnnotations {
   import BalancerBench._
 
@@ -42,8 +41,7 @@ class HeapBalancerBench extends StdBenchAnnotations {
   def getAndPut(): Unit = Await.result(heap().flatMap(_.close()))
 }
 
-@State(Scope.Benchmark)
-@Threads(Threads.MAX)
+@State(Scope.Benchmark) @Threads(Threads.MAX)
 class P2CBalancerBench extends StdBenchAnnotations {
   import BalancerBench._
 
@@ -70,8 +68,7 @@ class P2CBalancerBench extends StdBenchAnnotations {
   def ewmaGetAndPut(): Unit = Await.result(p2cEwma().flatMap(_.close()))
 }
 
-@State(Scope.Benchmark)
-@Threads(Threads.MAX)
+@State(Scope.Benchmark) @Threads(Threads.MAX)
 class ApertureBalancerBench extends StdBenchAnnotations {
   import BalancerBench._
 

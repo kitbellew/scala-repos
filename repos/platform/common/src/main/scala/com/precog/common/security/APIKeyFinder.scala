@@ -37,7 +37,8 @@ import scalaz.syntax.traverse._
 import scalaz.syntax.bitraverse._
 import scalaz.syntax.std.option._
 
-trait APIKeyFinder[M[+_]] extends AccessControl[M] with Logging { self =>
+trait APIKeyFinder[M[+_]] extends AccessControl[M] with Logging {
+  self =>
   def findAPIKey(
       apiKey: APIKey,
       rootKey: Option[APIKey]): M[Option[v1.APIKeyDetails]]

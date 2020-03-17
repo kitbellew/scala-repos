@@ -81,8 +81,10 @@ object ScalaI18nUtil {
   }
 
   def isI18nProperty(
-      @NotNull project: Project,
-      @NotNull expr: ScLiteral): Boolean = {
+      @NotNull
+      project: Project,
+      @NotNull
+      expr: ScLiteral): Boolean = {
     if (!isStringLiteral(expr)) return false
     val property: IProperty = expr.getUserData(CACHE)
     if (property == NULL) return false
@@ -103,10 +105,12 @@ object ScalaI18nUtil {
   }
 
   def mustBePropertyKey(
-      @NotNull project: Project,
-      @NotNull expression: ScLiteral,
-      @NotNull annotationAttributeValues: mutable.HashMap[String, AnyRef])
-      : Boolean = {
+      @NotNull
+      project: Project,
+      @NotNull
+      expression: ScLiteral,
+      @NotNull
+      annotationAttributeValues: mutable.HashMap[String, AnyRef]): Boolean = {
     isPassedToAnnotatedParam(
       project,
       expression,
@@ -116,12 +120,15 @@ object ScalaI18nUtil {
   }
 
   def isPassedToAnnotatedParam(
-      @NotNull project: Project,
-      @NotNull myExpression: ScLiteral,
+      @NotNull
+      project: Project,
+      @NotNull
+      myExpression: ScLiteral,
       annFqn: String,
-      @Nullable annotationAttributeValues: mutable.HashMap[String, AnyRef],
-      @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner])
-      : Boolean = {
+      @Nullable
+      annotationAttributeValues: mutable.HashMap[String, AnyRef],
+      @Nullable
+      nonNlsTargets: mutable.HashSet[PsiModifierListOwner]): Boolean = {
     val expression = getToplevelExpression(project, myExpression)
     val parent: PsiElement = expression.getParent
     if (!parent.isInstanceOf[ScArgumentExprList]) return false
@@ -164,9 +171,12 @@ object ScalaI18nUtil {
     false
   }
 
-  @NotNull def getToplevelExpression(
-      @NotNull project: Project,
-      @NotNull expression: ScExpression): ScExpression = {
+  @NotNull
+  def getToplevelExpression(
+      @NotNull
+      project: Project,
+      @NotNull
+      expression: ScExpression): ScExpression = {
     if (expression.isInstanceOf[PsiBinaryExpression] || expression.getParent
           .isInstanceOf[PsiBinaryExpression]) {
       return CachedValuesManager
@@ -181,9 +191,11 @@ object ScalaI18nUtil {
     getTopLevel(project, expression)
   }
 
-  @NotNull private def getTopLevel(
+  @NotNull
+  private def getTopLevel(
       project: Project,
-      @NotNull myExpression: ScExpression): ScExpression = {
+      @NotNull
+      myExpression: ScExpression): ScExpression = {
     var expression = myExpression
     var i: Int = 0
     var flag = true
@@ -213,11 +225,13 @@ object ScalaI18nUtil {
   def isMethodParameterAnnotatedWith(
       method: PsiMethod,
       idx: Int,
-      @Nullable myProcessed: mutable.HashSet[PsiMethod],
+      @Nullable
+      myProcessed: mutable.HashSet[PsiMethod],
       annFqn: String,
-      @Nullable annotationAttributeValues: mutable.HashMap[String, AnyRef],
-      @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner])
-      : Boolean = {
+      @Nullable
+      annotationAttributeValues: mutable.HashMap[String, AnyRef],
+      @Nullable
+      nonNlsTargets: mutable.HashSet[PsiModifierListOwner]): Boolean = {
     var processed = myProcessed
     if (processed != null) { if (processed.contains(method)) return false }
     else { processed = new mutable.HashSet[PsiMethod] }
@@ -281,7 +295,8 @@ object ScalaI18nUtil {
     }
   }
 
-  @NotNull def propertiesFilesByBundleName(
+  @NotNull
+  def propertiesFilesByBundleName(
       resourceBundleName: String,
       context: PsiElement): java.util.List[PropertiesFile] = {
     var containingFile: PsiFile = context.getContainingFile
@@ -307,15 +322,17 @@ object ScalaI18nUtil {
     java.util.Collections.emptyList()
   }
 
-  def getI18nMessage(@NotNull project: Project, literal: ScLiteral): String = {
+  def getI18nMessage(
+      @NotNull
+      project: Project,
+      literal: ScLiteral): String = {
     val property: IProperty = getI18nProperty(project, literal)
     if (property == null) literal.getText
     else formatI18nProperty(literal, property)
   }
 
-  @Nullable def getI18nProperty(
-      project: Project,
-      literal: ScLiteral): IProperty = {
+  @Nullable
+  def getI18nProperty(project: Project, literal: ScLiteral): IProperty = {
     val property: Property = literal.getUserData(CACHE).asInstanceOf[Property]
     if (property eq NULL) return null
     if (property != null && isValid(property, literal)) return property
@@ -438,10 +455,14 @@ object ScalaI18nUtil {
   }
 
   def isValidPropertyReference(
-      @NotNull project: Project,
-      @NotNull expression: ScLiteral,
-      @NotNull key: String,
-      @NotNull outResourceBundle: Ref[String]): Boolean = {
+      @NotNull
+      project: Project,
+      @NotNull
+      expression: ScLiteral,
+      @NotNull
+      key: String,
+      @NotNull
+      outResourceBundle: Ref[String]): Boolean = {
     val annotationAttributeValues = new mutable.HashMap[String, AnyRef]
     annotationAttributeValues.put(
       AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
@@ -480,9 +501,8 @@ object ScalaI18nUtil {
     }
   }
 
-  @Nullable def getSelectedRange(
-      editor: Editor,
-      psiFile: PsiFile): TextRange = {
+  @Nullable
+  def getSelectedRange(editor: Editor, psiFile: PsiFile): TextRange = {
     if (editor == null) return null
     val selectedText: String = editor.getSelectionModel.getSelectedText
     if (selectedText != null) {

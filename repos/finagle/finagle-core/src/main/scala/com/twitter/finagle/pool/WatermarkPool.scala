@@ -38,7 +38,8 @@ class WatermarkPool[Req, Rep](
   private[this] val queue = new ArrayDeque[ServiceWrapper]()
   private[this] val waiters = new ArrayDeque[Promise[Service[Req, Rep]]]()
   private[this] var numServices = 0
-  @volatile private[this] var isOpen = true
+  @volatile
+  private[this] var isOpen = true
 
   private[this] val numWaiters = statsReceiver.counter("pool_num_waited")
   private[this] val tooManyWaiters = statsReceiver.counter(
@@ -93,7 +94,8 @@ class WatermarkPool[Req, Rep](
     }
   }
 
-  @tailrec private[this] def dequeue(): Option[Service[Req, Rep]] = {
+  @tailrec
+  private[this] def dequeue(): Option[Service[Req, Rep]] = {
     if (queue.isEmpty) { None }
     else {
       val service = queue.removeFirst()

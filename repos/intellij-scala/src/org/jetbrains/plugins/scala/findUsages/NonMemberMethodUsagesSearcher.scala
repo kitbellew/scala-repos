@@ -20,8 +20,10 @@ class NonMemberMethodUsagesSearcher
       PsiReference,
       MethodReferencesSearch.SearchParameters] {
   def processQuery(
-      @NotNull p: MethodReferencesSearch.SearchParameters,
-      @NotNull consumer: Processor[PsiReference]) {
+      @NotNull
+      p: MethodReferencesSearch.SearchParameters,
+      @NotNull
+      consumer: Processor[PsiReference]) {
     extensions.inReadAction {
       val method: PsiMethod = p.getMethod
       val collector: SearchRequestCollector = p.getOptimizer

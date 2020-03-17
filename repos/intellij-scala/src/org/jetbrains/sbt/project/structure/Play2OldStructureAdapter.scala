@@ -53,6 +53,7 @@ object Play2OldStructureAdapter {
     keyValues.map({ case (k, v) => (id, k.name, v) })
   }
 
-  @inline private def avoidSL7005Bug[K, V](m: Map[K, V]): Map[K, V] =
+  @inline
+  private def avoidSL7005Bug[K, V](m: Map[K, V]): Map[K, V] =
     HashMap(m.toSeq: _*)
 }

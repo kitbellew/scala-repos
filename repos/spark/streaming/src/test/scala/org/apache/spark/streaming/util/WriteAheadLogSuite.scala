@@ -279,7 +279,8 @@ class FileBasedWriteAheadLogSuite
 
     class GetMaxCounter {
       private val value = new AtomicInteger()
-      @volatile private var max: Int = 0
+      @volatile
+      private var max: Int = 0
       def increment(): Unit =
         synchronized {
           val atInstant = value.incrementAndGet()
@@ -303,7 +304,8 @@ class FileBasedWriteAheadLogSuite
           override def completion() { counter.decrement() }
         }
       }
-      @volatile var collected: Seq[Int] = Nil
+      @volatile
+      var collected: Seq[Int] = Nil
       val t = new Thread() {
         override def run() {
           // run the calculation on a separate thread so that we can release the latch
@@ -850,8 +852,10 @@ object WriteAheadLogSuite {
       wal: WriteAheadLog,
       handle: WriteAheadLogRecordHandle)
       extends WriteAheadLog {
-    @volatile private var isWriteCalled: Boolean = false
-    @volatile private var blockWrite: Boolean = true
+    @volatile
+    private var isWriteCalled: Boolean = false
+    @volatile
+    private var blockWrite: Boolean = true
 
     override def write(
         record: ByteBuffer,

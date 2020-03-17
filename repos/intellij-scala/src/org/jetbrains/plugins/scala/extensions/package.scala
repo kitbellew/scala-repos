@@ -450,9 +450,9 @@ package object extensions {
       override def compute(): T = body
     }
     new WriteCommandAction[T](project, commandName) {
-      protected def run(@NotNull result: Result[T]) {
-        result.setResult(computable.compute())
-      }
+      protected def run(
+          @NotNull
+          result: Result[T]) { result.setResult(computable.compute()) }
     }.execute.getResultObject
   }
 

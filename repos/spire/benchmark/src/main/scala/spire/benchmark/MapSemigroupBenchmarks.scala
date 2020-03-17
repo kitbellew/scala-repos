@@ -42,10 +42,9 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
     }
   }
 
-  @inline private final def add[K, V](
-      x: Map[K, V],
-      y: Map[K, V],
-      flip: Boolean)(implicit semigroup: Semigroup[V]): Map[K, V] = {
+  @inline
+  private final def add[K, V](x: Map[K, V], y: Map[K, V], flip: Boolean)(
+      implicit semigroup: Semigroup[V]): Map[K, V] = {
     y.foldLeft(x) {
       case (z, kv) =>
         z + (

@@ -21,7 +21,8 @@ package breeze.stats.distributions
   *
   * @author dlwh
   */
-trait Process[T] extends Rand[T] { process =>
+trait Process[T] extends Rand[T] {
+  process =>
 
   /** Force the "next" draw to be x, and return a new process. */
   def observe(x: T): Process[T];

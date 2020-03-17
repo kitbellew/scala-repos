@@ -6,8 +6,7 @@ package akka.stream
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 
-@State(Scope.Benchmark)
-@OutputTimeUnit(TimeUnit.SECONDS)
+@State(Scope.Benchmark) @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
 class GraphBuilderBenchmark {
 

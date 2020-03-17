@@ -57,9 +57,10 @@ class DeadlineFailureDetector(
 
   private val deadlineMillis =
     acceptableHeartbeatPause.toMillis + heartbeatInterval.toMillis
-  @volatile private var heartbeatTimestamp =
-    0L //not used until active (first heartbeat)
-  @volatile private var active = false
+  @volatile
+  private var heartbeatTimestamp = 0L //not used until active (first heartbeat)
+  @volatile
+  private var active = false
 
   override def isAvailable: Boolean = isAvailable(clock())
 

@@ -72,9 +72,12 @@ private[streaming] class WriteAheadLogBackedBlockRDDPartition(
   */
 private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
     sc: SparkContext,
-    @transient private val _blockIds: Array[BlockId],
-    @transient val walRecordHandles: Array[WriteAheadLogRecordHandle],
-    @transient private val isBlockIdValid: Array[Boolean] = Array.empty,
+    @transient
+    private val _blockIds: Array[BlockId],
+    @transient
+    val walRecordHandles: Array[WriteAheadLogRecordHandle],
+    @transient
+    private val isBlockIdValid: Array[Boolean] = Array.empty,
     storeInBlockManager: Boolean = false,
     storageLevel: StorageLevel = StorageLevel.MEMORY_ONLY_SER)
     extends BlockRDD[T](sc, _blockIds) {
@@ -92,7 +95,8 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
   )
 
   // Hadoop configuration is not serializable, so broadcast it as a serializable.
-  @transient private val hadoopConfig = sc.hadoopConfiguration
+  @transient
+  private val hadoopConfig = sc.hadoopConfiguration
   private val broadcastedHadoopConf = new SerializableConfiguration(
     hadoopConfig)
 

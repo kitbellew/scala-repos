@@ -20,15 +20,18 @@ private[lease] class BeanMemoryPool(pool: MemoryPoolMXBean) extends MemoryPool {
 
 private[lease] class FakeMemoryPool(original: MemoryPoolInfo)
     extends MemoryPool {
-  @volatile private[this] var _snapshot: MemoryPoolInfo = original
+  @volatile
+  private[this] var _snapshot: MemoryPoolInfo = original
   def setSnapshot(snap: MemoryPoolInfo) { _snapshot = snap }
 
   def snapshot() = _snapshot
 }
 
 private[lease] class FakeGarbageCollectorMXBean(
-    @volatile var getCollectionCount: Long,
-    @volatile var getCollectionTime: Long)
+    @volatile
+    var getCollectionCount: Long,
+    @volatile
+    var getCollectionTime: Long)
     extends GarbageCollectorMXBean {
   private[this] def ??? =
     throw new UnsupportedOperationException("not supported")

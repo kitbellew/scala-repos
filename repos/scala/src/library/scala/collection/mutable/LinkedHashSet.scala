@@ -49,8 +49,10 @@ class LinkedHashSet[A]
 
   type Entry = LinkedHashSet.Entry[A]
 
-  @transient protected var firstEntry: Entry = null
-  @transient protected var lastEntry: Entry = null
+  @transient
+  protected var firstEntry: Entry = null
+  @transient
+  protected var lastEntry: Entry = null
 
   override def size: Int = tableSize
 

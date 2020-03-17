@@ -64,7 +64,8 @@ object RRunner {
     // Launch a SparkR backend server for the R process to connect to; this will let it see our
     // Java system properties etc.
     val sparkRBackend = new RBackend()
-    @volatile var sparkRBackendPort = 0
+    @volatile
+    var sparkRBackendPort = 0
     val initialized = new Semaphore(0)
     val sparkRBackendThread = new Thread("SparkR backend") {
       override def run() {

@@ -192,7 +192,8 @@ trait ScriptedTest extends Matchers {
 
     def run(): Unit = {
 
-      @tailrec def doRun(idleRounds: Int): Unit = {
+      @tailrec
+      def doRun(idleRounds: Int): Unit = {
         if (idleRounds > 250) fail("too many idle rounds")
         if (!currentScript.completed) {
           val nextIdle = if (shakeIt()) 0 else idleRounds + 1

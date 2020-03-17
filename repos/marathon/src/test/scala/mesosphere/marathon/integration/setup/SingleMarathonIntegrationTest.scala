@@ -46,7 +46,8 @@ object SingleMarathonIntegrationTest {
 trait SingleMarathonIntegrationTest
     extends ExternalMarathonIntegrationTest
     with BeforeAndAfterAllConfigMap
-    with MarathonCallbackTestSupport { self: Suite =>
+    with MarathonCallbackTestSupport {
+  self: Suite =>
 
   import SingleMarathonIntegrationTest.log
 

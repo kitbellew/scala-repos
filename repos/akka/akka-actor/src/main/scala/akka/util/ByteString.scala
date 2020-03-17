@@ -367,7 +367,9 @@ object ByteString {
   }
 
   @SerialVersionUID(1L)
-  private class SerializationProxy(@transient private var orig: ByteString)
+  private class SerializationProxy(
+      @transient
+      private var orig: ByteString)
       extends Serializable {
     private def writeObject(out: ObjectOutputStream) {
       out.writeByte(orig.byteStringCompanion.SerializationIdentity)
@@ -667,7 +669,8 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     this
   }
 
-  @inline protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(
+  @inline
+  protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(
       fill: ByteBuffer ⇒ Unit): this.type = {
     fillArray(len) {
       case (array, start) ⇒
@@ -699,7 +702,8 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     _tempCapacity = _temp.length
   }
 
-  @inline private def shouldResizeTempFor(size: Int): Boolean =
+  @inline
+  private def shouldResizeTempFor(size: Int): Boolean =
     _tempCapacity < size || _tempCapacity == 0
 
   private def ensureTempSize(size: Int): Unit = {

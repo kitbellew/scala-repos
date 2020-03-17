@@ -470,7 +470,8 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
     * pool of size one. SerializerInstances are not thread-safe, hence accesses to this field are
     * not synchronized.
     */
-  @Nullable private[this] var cachedKryo: Kryo = borrowKryo()
+  @Nullable
+  private[this] var cachedKryo: Kryo = borrowKryo()
 
   /**
     * Borrows a [[Kryo]] instance. If possible, this tries to re-use a cached Kryo instance;

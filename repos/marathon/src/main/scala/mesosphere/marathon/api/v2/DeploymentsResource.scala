@@ -16,8 +16,7 @@ import mesosphere.marathon.{MarathonConf, MarathonSchedulerService}
 import mesosphere.util.Logging
 import play.api.libs.json.{JsObject, Json}
 
-@Path("v2/deployments")
-@Consumes(Array(MediaType.APPLICATION_JSON))
+@Path("v2/deployments") @Consumes(Array(MediaType.APPLICATION_JSON))
 @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
 class DeploymentsResource @Inject() (
     service: MarathonSchedulerService,
@@ -29,7 +28,9 @@ class DeploymentsResource @Inject() (
     with Logging {
 
   @GET
-  def running(@Context req: HttpServletRequest): Response =
+  def running(
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val infos = result(service.listRunningDeployments())
         .filter(_.plan.affectedApplications.exists(isAuthorized(ViewApp, _)))
@@ -37,12 +38,12 @@ class DeploymentsResource @Inject() (
       ok(jsonString(infos))
     }
 
-  @DELETE
-  @Path("{id}")
+  @DELETE @Path("{id}")
   def cancel(
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val plan = result(service.listRunningDeployments())
         .find(_.plan.id == id)

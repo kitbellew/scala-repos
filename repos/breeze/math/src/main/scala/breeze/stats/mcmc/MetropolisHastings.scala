@@ -46,7 +46,8 @@ trait SymmetricMetropolisHastings[T] extends MetropolisHastings[T] {
     math.exp(logLikelihood(end) - logLikelihood(start))
 }
 
-trait TracksStatistics { self: MetropolisHastings[_] =>
+trait TracksStatistics {
+  self: MetropolisHastings[_] =>
   /* This obviously can't track stats for you, so you need to build it in.
    * Tracking stats appears to have minimal performance implication, probably
    * because incrementing a few longs is far cheaper than generating random
@@ -163,7 +164,8 @@ case class ThreadedBufferedRand[T](
   usedArrayQueue.put(new Array[T](bufferSize))
   usedArrayQueue.put(new Array[T](bufferSize))
 
-  @volatile private var stopWorker = false
+  @volatile
+  private var stopWorker = false
 
   private val worker = new Thread {
     override def run() {

@@ -157,9 +157,11 @@ class PBatchView(
     val sc: SparkContext) {
 
   // NOTE: parallel Events DB interface
-  @transient lazy val eventsDb = Storage.getPEvents()
+  @transient
+  lazy val eventsDb = Storage.getPEvents()
 
-  @transient lazy val _events: RDD[Event] = eventsDb.getByAppIdAndTimeAndEntity(
+  @transient
+  lazy val _events: RDD[Event] = eventsDb.getByAppIdAndTimeAndEntity(
     appId = appId,
     startTime = startTime,
     untilTime = untilTime,
@@ -167,7 +169,8 @@ class PBatchView(
     entityId = None)(sc)
 
   // TODO: change to use EventSeq?
-  @transient lazy val events: RDD[Event] = _events
+  @transient
+  lazy val events: RDD[Event] = _events
 
   def aggregateProperties(
       entityType: String,

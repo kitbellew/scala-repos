@@ -17,7 +17,8 @@ import scala.reflect.ClassTag
 
 class CollectionsTestOnJDK7 {
 
-  @Test def should_implement_emptyIterator(): Unit = {
+  @Test
+  def should_implement_emptyIterator(): Unit = {
     def freshIter: ju.Iterator[Int] = ju.Collections.emptyIterator[Int]
 
     assertFalse(freshIter.hasNext)
@@ -25,7 +26,8 @@ class CollectionsTestOnJDK7 {
     expectThrows(classOf[IllegalStateException], freshIter.remove())
   }
 
-  @Test def should_implement_emptyListIterator(): Unit = {
+  @Test
+  def should_implement_emptyListIterator(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       def freshIter: ju.ListIterator[E] = ju.Collections.emptyListIterator[E]
 
@@ -45,7 +47,8 @@ class CollectionsTestOnJDK7 {
     test[Double](_.toDouble)
   }
 
-  @Test def should_implement_emptyEnumeration(): Unit = {
+  @Test
+  def should_implement_emptyEnumeration(): Unit = {
     def freshEnum: ju.Enumeration[Int] = ju.Collections.emptyEnumeration[Int]
 
     assertFalse(freshEnum.hasMoreElements)

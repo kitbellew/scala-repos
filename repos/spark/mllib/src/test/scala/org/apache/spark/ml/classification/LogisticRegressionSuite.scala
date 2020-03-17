@@ -37,8 +37,10 @@ class LogisticRegressionSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  @transient var dataset: DataFrame = _
-  @transient var binaryDataset: DataFrame = _
+  @transient
+  var dataset: DataFrame = _
+  @transient
+  var binaryDataset: DataFrame = _
   private val eps: Double = 1e-5
 
   override def beforeAll(): Unit = {

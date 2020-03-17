@@ -36,9 +36,11 @@ class ParRange(val range: Range) extends ParSeq[Int] with Serializable {
 
   override def seq = range
 
-  @inline final def length = range.length
+  @inline
+  final def length = range.length
 
-  @inline final def apply(idx: Int) = range.apply(idx)
+  @inline
+  final def apply(idx: Int) = range.apply(idx)
 
   def splitter = new ParRangeIterator
 

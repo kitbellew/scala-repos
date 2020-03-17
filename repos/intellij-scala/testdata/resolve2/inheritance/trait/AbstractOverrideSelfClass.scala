@@ -2,7 +2,8 @@ trait I {
   def f = {}
 }
 
-trait T { self: I =>
+trait T {
+  self: I =>
   abstract override def f = {}
 }
 

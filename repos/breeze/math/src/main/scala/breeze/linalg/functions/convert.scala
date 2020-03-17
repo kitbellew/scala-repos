@@ -14,8 +14,7 @@ import breeze.math.Complex
   * @author dlwh
   */
 object convert extends UFunc with MappingUFunc {
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def impl2[
       @expand.args(Int, Double, Float, Long, Char, Short) From,
       @expand.args(Int, Double, Float, Long, Char, Short, Complex) To](implicit

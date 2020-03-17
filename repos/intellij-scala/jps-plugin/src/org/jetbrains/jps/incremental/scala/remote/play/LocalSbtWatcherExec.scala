@@ -53,7 +53,8 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
     private val streamReader = new BufferedReader(new InputStreamReader(
       p.getInputStream))
 
-    @volatile private var stop = false
+    @volatile
+    private var stop = false
 
     def startMain() = {
       try Executors.newSingleThreadExecutor().submit {

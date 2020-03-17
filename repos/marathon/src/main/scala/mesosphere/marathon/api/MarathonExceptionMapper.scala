@@ -16,8 +16,7 @@ import play.api.libs.json.{JsResultException, JsValue, Json}
 
 import scala.concurrent.TimeoutException
 
-@Provider
-@Singleton
+@Provider @Singleton
 class MarathonExceptionMapper extends ExceptionMapper[Exception] {
 
   private[this] val log = LoggerFactory.getLogger(getClass.getName)

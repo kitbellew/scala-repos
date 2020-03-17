@@ -24,7 +24,8 @@ import scala.beans.BeanProperty
 case class ScalaChangeInfo(
     newVisibility: String,
     function: ScMethodLike,
-    @BeanProperty newName: String,
+    @BeanProperty
+    newName: String,
     newType: ScType,
     newParams: Seq[Seq[ScalaParameterInfo]],
     isAddDefaultArgs: Boolean)

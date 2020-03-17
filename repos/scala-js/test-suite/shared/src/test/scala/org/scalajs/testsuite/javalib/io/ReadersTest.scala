@@ -21,7 +21,8 @@ class StringReaderTest {
   val str = "asdf"
   def newReader: StringReader = new StringReader(str)
 
-  @Test def should_provide_read()(): Unit = {
+  @Test
+  def should_provide_read()(): Unit = {
     val r = newReader
 
     for (c <- str) { assertEquals(c, r.read().toChar) }
@@ -29,7 +30,8 @@ class StringReaderTest {
     assertEquals(-1, r.read())
   }
 
-  @Test def should_provide_read_from_buffer_with_offset_and_length(): Unit = {
+  @Test
+  def should_provide_read_from_buffer_with_offset_and_length(): Unit = {
     val r = newReader
     val buf = new Array[Char](10)
 
@@ -40,7 +42,8 @@ class StringReaderTest {
     assertEquals(-1, r.read(buf, 2, 8)) // #1560
   }
 
-  @Test def should_provide_read_from_CharBuffer(): Unit = {
+  @Test
+  def should_provide_read_from_CharBuffer(): Unit = {
     val r = newReader
     val buf0 = java.nio.CharBuffer.allocate(25)
     buf0.position(3)
@@ -56,7 +59,8 @@ class StringReaderTest {
       Array[Int](0, 0, 0, 0, 'a', 's', 'd', 'f'))
   }
 
-  @Test def should_provide_ready(): Unit = {
+  @Test
+  def should_provide_ready(): Unit = {
     val r = newReader
 
     for (c <- str) {
@@ -71,7 +75,8 @@ class StringReaderTest {
     expectThrows(classOf[IOException], r.ready())
   }
 
-  @Test def should_provide_mark_reset(): Unit = {
+  @Test
+  def should_provide_mark_reset(): Unit = {
     val r = newReader
     r.mark(str.length)
 
@@ -84,7 +89,8 @@ class StringReaderTest {
     assertEquals(-1, r.read())
   }
 
-  @Test def should_provide_skip(): Unit = {
+  @Test
+  def should_provide_skip(): Unit = {
     val r = newReader
 
     assertEquals('a': Int, r.read())
@@ -94,16 +100,16 @@ class StringReaderTest {
     assertEquals(-1, r.read())
   }
 
-  @Test def should_provide_close(): Unit = {
+  @Test
+  def should_provide_close(): Unit = {
     val r = newReader
 
     r.close()
     expectThrows(classOf[IOException], r.read())
   }
 
-  @Test def should_support_marking(): Unit = {
-    assertTrue(newReader.markSupported)
-  }
+  @Test
+  def should_support_marking(): Unit = { assertTrue(newReader.markSupported) }
 }
 
 class BufferedReaderTest {
@@ -111,14 +117,16 @@ class BufferedReaderTest {
   val str = "line1\nline2\r\n\nline4\rline5"
   def newReader: BufferedReader = new BufferedReader(new StringReader(str), 3)
 
-  @Test def should_provide_read()(): Unit = {
+  @Test
+  def should_provide_read()(): Unit = {
     val r = newReader
 
     for (c <- str) { assertEquals(c, r.read().toChar) }
     assertEquals(-1, r.read())
   }
 
-  @Test def should_provide_read_from_buffer(): Unit = {
+  @Test
+  def should_provide_read_from_buffer(): Unit = {
     var read = 0
     val r = newReader
     val buf = new Array[Char](15)
@@ -134,7 +142,8 @@ class BufferedReaderTest {
     }
   }
 
-  @Test def should_provide_read_frombuffer_with_offset(): Unit = {
+  @Test
+  def should_provide_read_frombuffer_with_offset(): Unit = {
     var read = 0
     val r = newReader
     val buf = new Array[Char](15)
@@ -151,7 +160,8 @@ class BufferedReaderTest {
     }
   }
 
-  @Test def should_provide_mark_and_reset(): Unit = {
+  @Test
+  def should_provide_mark_and_reset(): Unit = {
     val r = newReader
     assertEquals('l': Int, r.read())
 
@@ -165,7 +175,8 @@ class BufferedReaderTest {
     for (i <- 1 until str.length) { assertEquals(str.charAt(i): Int, r.read()) }
   }
 
-  @Test def should_provide_readLine(): Unit = {
+  @Test
+  def should_provide_readLine(): Unit = {
     val r = newReader
 
     assertEquals("line1", r.readLine())
@@ -176,13 +187,15 @@ class BufferedReaderTest {
     assertEquals(null, r.readLine())
   }
 
-  @Test def should_readLine_on_an_empty_stream(): Unit = {
+  @Test
+  def should_readLine_on_an_empty_stream(): Unit = {
     val r = new BufferedReader(new StringReader(""))
 
     assertEquals(null, r.readLine())
   }
 
-  @Test def should_readline_with_empty_lines_only(): Unit = {
+  @Test
+  def should_readline_with_empty_lines_only(): Unit = {
     val r = new BufferedReader(new StringReader("\n\r\n\r\r\n"), 1)
 
     for (_ <- 1 to 4) assertEquals("", r.readLine())
@@ -190,14 +203,14 @@ class BufferedReaderTest {
     assertEquals(null, r.readLine())
   }
 
-  @Test def should_support_marking(): Unit = {
-    assertTrue(newReader.markSupported)
-  }
+  @Test
+  def should_support_marking(): Unit = { assertTrue(newReader.markSupported) }
 }
 
 class InputStreamReaderTest {
 
-  @Test def should_read_UTF8(): Unit = {
+  @Test
+  def should_read_UTF8(): Unit = {
 
     val buf = Array[Byte](
       72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 46, -29, -127, -109,
@@ -228,7 +241,8 @@ class InputStreamReaderTest {
     assertEquals(-1, r.read())
   }
 
-  @Test def should_comply_with_read_after_eof_behaviour(): Unit = {
+  @Test
+  def should_comply_with_read_after_eof_behaviour(): Unit = {
     val data = "Lorem ipsum".getBytes()
     val streamReader = new InputStreamReader(new ByteArrayInputStream(data))
     val bytes = new Array[Char](11)

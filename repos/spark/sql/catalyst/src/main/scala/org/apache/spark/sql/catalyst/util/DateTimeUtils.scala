@@ -59,7 +59,8 @@ object DateTimeUtils {
   final val toYearZero = to2001 + 7304850
   final val TimeZoneGMT = TimeZone.getTimeZone("GMT")
 
-  @transient lazy val defaultTimeZone = TimeZone.getDefault
+  @transient
+  lazy val defaultTimeZone = TimeZone.getDefault
 
   // Reuse the Calendar object in each thread as it is expensive to create in each method call.
   private val threadLocalGmtCalendar = new ThreadLocal[Calendar] {

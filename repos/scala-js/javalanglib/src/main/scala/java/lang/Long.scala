@@ -11,26 +11,36 @@ final class Long private () extends Number with Comparable[Long] {
   def this(value: scala.Long) = this()
   def this(s: String) = this()
 
-  @inline def longValue(): scala.Long = this.asInstanceOf[scala.Long]
+  @inline
+  def longValue(): scala.Long = this.asInstanceOf[scala.Long]
 
-  @inline override def byteValue(): scala.Byte = longValue.toByte
-  @inline override def shortValue(): scala.Short = longValue.toShort
-  @inline def intValue(): scala.Int = longValue.toInt
-  @inline def floatValue(): scala.Float = longValue.toFloat
-  @inline def doubleValue(): scala.Double = longValue.toDouble
+  @inline
+  override def byteValue(): scala.Byte = longValue.toByte
+  @inline
+  override def shortValue(): scala.Short = longValue.toShort
+  @inline
+  def intValue(): scala.Int = longValue.toInt
+  @inline
+  def floatValue(): scala.Float = longValue.toFloat
+  @inline
+  def doubleValue(): scala.Double = longValue.toDouble
 
-  @inline override def equals(that: Any): scala.Boolean =
+  @inline
+  override def equals(that: Any): scala.Boolean =
     that match {
       case that: Long => longValue == that.longValue
       case _          => false
     }
 
-  @inline override def hashCode(): Int = Long.hashCode(longValue)
+  @inline
+  override def hashCode(): Int = Long.hashCode(longValue)
 
-  @inline override def compareTo(that: Long): Int =
+  @inline
+  override def compareTo(that: Long): Int =
     Long.compare(longValue, that.longValue)
 
-  @inline override def toString(): String = Long.toString(longValue)
+  @inline
+  override def toString(): String = Long.toString(longValue)
 
 }
 
@@ -112,10 +122,11 @@ object Long {
   }
 
   // Intrinsic
-  @inline def toString(i: scala.Long): String = toStringImpl(i, 10)
+  @inline
+  def toString(i: scala.Long): String = toStringImpl(i, 10)
 
-  @inline def toUnsignedString(i: scala.Long): String =
-    toUnsignedStringImpl(i, 10)
+  @inline
+  def toUnsignedString(i: scala.Long): String = toUnsignedStringImpl(i, 10)
 
   // Must be called only with valid radix
   private def toStringImpl(i: scala.Long, radix: Int): String = {
@@ -191,7 +202,8 @@ object Long {
     }
   }
 
-  @inline def parseLong(s: String): scala.Long = parseLong(s, 10)
+  @inline
+  def parseLong(s: String): scala.Long = parseLong(s, 10)
 
   def parseUnsignedLong(s: String, radix: Int): scala.Long = {
     if (s == "") parseLongError(s)
@@ -201,8 +213,8 @@ object Long {
     parseUnsignedLongInternal(s, radix, start)
   }
 
-  @inline def parseUnsignedLong(s: String): scala.Long =
-    parseUnsignedLong(s, 10)
+  @inline
+  def parseUnsignedLong(s: String): scala.Long = parseUnsignedLong(s, 10)
 
   def parseUnsignedLongInternal(
       s: String,
@@ -237,7 +249,8 @@ object Long {
         i += 1
       }
 
-      @inline def parseChunk(chunkStart: Int, chunkEnd: Int): scala.Long = {
+      @inline
+      def parseChunk(chunkStart: Int, chunkEnd: Int): scala.Long = {
         val chunk = s.jsSubstring(chunkStart, chunkEnd)
         val chunkValueDouble = js.Dynamic.global
           .parseInt(chunk, radix)
@@ -285,22 +298,26 @@ object Long {
   private def parseLongError(s: String): Nothing =
     throw new NumberFormatException(s"""For input string: "$s"""")
 
-  @inline def valueOf(longValue: scala.Long): Long = new Long(longValue)
-  @inline def valueOf(s: String): Long = valueOf(parseLong(s))
+  @inline
+  def valueOf(longValue: scala.Long): Long = new Long(longValue)
+  @inline
+  def valueOf(s: String): Long = valueOf(parseLong(s))
 
-  @inline def valueOf(s: String, radix: Int): Long =
-    valueOf(parseLong(s, radix))
+  @inline
+  def valueOf(s: String, radix: Int): Long = valueOf(parseLong(s, radix))
 
-  @inline def hashCode(value: scala.Long): Int =
-    value.toInt ^ (value >>> 32).toInt
+  @inline
+  def hashCode(value: scala.Long): Int = value.toInt ^ (value >>> 32).toInt
 
   // Intrinsic
-  @inline def compare(x: scala.Long, y: scala.Long): scala.Int = {
+  @inline
+  def compare(x: scala.Long, y: scala.Long): scala.Int = {
     if (x == y) 0 else if (x < y) -1 else 1
   }
 
   // TODO Intrinsic?
-  @inline def compareUnsigned(x: scala.Long, y: scala.Long): scala.Int =
+  @inline
+  def compareUnsigned(x: scala.Long, y: scala.Long): scala.Int =
     compare(x ^ SignBit, y ^ SignBit)
 
   // Intrinsic
@@ -394,7 +411,8 @@ object Long {
 
   def toBinaryString(l: scala.Long): String = {
     val zeros = "00000000000000000000000000000000" // 32 zeros
-    @inline def padBinary32(i: Int) = {
+    @inline
+    def padBinary32(i: Int) = {
       val s = Integer.toBinaryString(i)
       zeros.substring(s.length) + s
     }
@@ -408,7 +426,8 @@ object Long {
 
   def toHexString(l: scala.Long): String = {
     val zeros = "00000000" // 8 zeros
-    @inline def padBinary8(i: Int) = {
+    @inline
+    def padBinary8(i: Int) = {
       val s = Integer.toHexString(i)
       zeros.substring(s.length) + s
     }
@@ -422,7 +441,8 @@ object Long {
 
   def toOctalString(l: scala.Long): String = {
     val zeros = "0000000000" // 10 zeros
-    @inline def padOctal10(i: Int) = {
+    @inline
+    def padOctal10(i: Int) = {
       val s = Integer.toOctalString(i)
       zeros.substring(s.length) + s
     }
@@ -439,9 +459,12 @@ object Long {
     else Integer.toOctalString(lp)
   }
 
-  @inline def sum(a: scala.Long, b: scala.Long): scala.Long = a + b
+  @inline
+  def sum(a: scala.Long, b: scala.Long): scala.Long = a + b
 
-  @inline def max(a: scala.Long, b: scala.Long): scala.Long = Math.max(a, b)
+  @inline
+  def max(a: scala.Long, b: scala.Long): scala.Long = Math.max(a, b)
 
-  @inline def min(a: scala.Long, b: scala.Long): scala.Long = Math.min(a, b)
+  @inline
+  def min(a: scala.Long, b: scala.Long): scala.Long = Math.min(a, b)
 }

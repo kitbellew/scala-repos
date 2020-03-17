@@ -24,14 +24,17 @@ class SourceTest {
 
   private def in = new ByteArrayInputStream(sampler.getBytes)
 
-  @Test def canIterateLines() = {
+  @Test
+  def canIterateLines() = {
     assertEquals(sampler.lines.size, (Source fromString sampler).getLines.size)
   }
-  @Test def loadFromResource() = {
+  @Test
+  def loadFromResource() = {
     val res = Source.fromResource("rootdoc.txt")
     assertTrue("No classpath resource found", res.getLines().size > 5)
   }
-  @Test def canCustomizeReporting() = {
+  @Test
+  def canCustomizeReporting() = {
     class CapitalReporting(is: InputStream) extends BufferedSource(is) {
       override def report(pos: Int, msg: String, out: PrintStream): Unit = {
         out print f"$pos%04x: ${msg.toUpperCase}"
@@ -54,7 +57,8 @@ class SourceTest {
     s.reportError(s.pos, "That doesn't sound right.", ps)
     assertEquals("0030: THAT DOESN'T SOUND RIGHT.", out.toString(charSet))
   }
-  @Test def canAltCustomizeReporting() = {
+  @Test
+  def canAltCustomizeReporting() = {
     class CapitalReporting(is: InputStream)(implicit codec: Codec)
         extends Source {
       override val iter = {

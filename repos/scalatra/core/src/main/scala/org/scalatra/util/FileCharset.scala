@@ -10,7 +10,8 @@ import scala.io.Codec
 
 object FileCharset {
 
-  @transient private[this] val logger: Logger = Logger(getClass)
+  @transient
+  private[this] val logger: Logger = Logger(getClass)
 
   private val CheckByteLength = 8192
 

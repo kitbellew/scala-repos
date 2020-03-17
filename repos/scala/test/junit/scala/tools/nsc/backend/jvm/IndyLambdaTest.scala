@@ -20,7 +20,8 @@ class IndyLambdaTest extends ClearAfterClass {
   ClearAfterClass.stateToClear = IndyLambdaTest
   val compiler = IndyLambdaTest.compiler
 
-  @Test def boxingBridgeMethodUsedSelectively(): Unit = {
+  @Test
+  def boxingBridgeMethodUsedSelectively(): Unit = {
     def implMethodDescriptorFor(code: String): String = {
       val method =
         compileMethods(compiler)(s"""def f = $code """).find(_.name == "f").get

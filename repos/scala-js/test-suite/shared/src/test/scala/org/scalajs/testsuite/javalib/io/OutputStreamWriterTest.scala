@@ -22,7 +22,8 @@ class OutputStreamWriterTest {
     (osw, bos)
   }
 
-  @Test def flush(): Unit = {
+  @Test
+  def flush(): Unit = {
     val (osw, bos) = newOSWriter()
     bos.write(1)
     osw.write("ABC")
@@ -31,7 +32,8 @@ class OutputStreamWriterTest {
     assertTrue(bos.flushed)
   }
 
-  @Test def close(): Unit = {
+  @Test
+  def close(): Unit = {
     val (osw, bos) = newOSWriter()
     bos.write(1)
     osw.write("ABC")
@@ -69,7 +71,8 @@ class OutputStreamWriterTest {
     assertArrayEquals(expected.map(_.toByte), bos.toByteArray)
   }
 
-  @Test def write_ASCII_repertoire(): Unit = {
+  @Test
+  def write_ASCII_repertoire(): Unit = {
     // Pure ASCII
     testW(_.write('\n'), Array('\n'))
     testW(_.write("hello\n"), Array('h', 'e', 'l', 'l', 'o', '\n'))
@@ -78,7 +81,8 @@ class OutputStreamWriterTest {
     testW(_.write(Array('A', 'B', '\n', 'C'), 1, 2), Array('B', '\n'))
   }
 
-  @Test def write_Unicode_repertoire_without_surrogates(): Unit = {
+  @Test
+  def write_Unicode_repertoire_without_surrogates(): Unit = {
     testW(_.write('é'), Array(0xc3, 0xa9))
     testW(
       _.write("こんにちは"),
@@ -90,12 +94,14 @@ class OutputStreamWriterTest {
       Array(0xce, 0xb7, 0xce, 0xbc, 0xce, 0xad, 0xcf, 0x81))
   }
 
-  @Test def write_surrogate_pairs(): Unit = {
+  @Test
+  def write_surrogate_pairs(): Unit = {
     testW(_.write("\ud83d\udca9"), Array(0xf0, 0x9f, 0x92, 0xa9))
     testW(_.write("ab\ud83d\udca9cd", 1, 3), Array('b', 0xf0, 0x9f, 0x92, 0xa9))
   }
 
-  @Test def write_surrogate_pairs_spread_across_multiple_writes(): Unit = {
+  @Test
+  def write_surrogate_pairs_spread_across_multiple_writes(): Unit = {
     testW(
       { osw => osw.write('\ud83d'); osw.write('\udca9') },
       Array(0xf0, 0x9f, 0x92, 0xa9))
@@ -117,12 +123,14 @@ class OutputStreamWriterTest {
       Array('b', 0xf0, 0x9f, 0x92, 0xa9, 'c'))
   }
 
-  @Test def write_malformed_surrogates(): Unit = {
+  @Test
+  def write_malformed_surrogates(): Unit = {
     testW(_.write("\ud83da"), Array('?', 'a'))
     testW(_.write("\udca9"), Array('?'))
   }
 
-  @Test def write_malformed_surrogates_spread_across_multiple_writes(): Unit = {
+  @Test
+  def write_malformed_surrogates_spread_across_multiple_writes(): Unit = {
     testW({ osw => osw.write('\ud83d'); osw.write('a') }, Array('?', 'a'))
 
     testW(
@@ -134,7 +142,8 @@ class OutputStreamWriterTest {
       Array('a', 'b', '?', '?', 'c'))
   }
 
-  @Test def write_malformed_surrogates_at_end_of_input(): Unit = {
+  @Test
+  def write_malformed_surrogates_at_end_of_input(): Unit = {
     testW(
       { osw => osw.write('\ud83d'); osw.close() },
       Array('?'),

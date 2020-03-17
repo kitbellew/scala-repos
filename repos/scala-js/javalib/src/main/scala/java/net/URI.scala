@@ -28,9 +28,11 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   private val _isAbsolute = fld(AbsScheme).isDefined
   private val _isOpaque = fld(AbsOpaquePart).isDefined
 
-  @inline private def fld(idx: Int): js.UndefOr[String] = _fld(idx)
+  @inline
+  private def fld(idx: Int): js.UndefOr[String] = _fld(idx)
 
-  @inline private def fld(absIdx: Int, relIdx: Int): js.UndefOr[String] =
+  @inline
+  private def fld(absIdx: Int, relIdx: Int): js.UndefOr[String] =
     if (_isAbsolute) _fld(absIdx) else _fld(relIdx)
 
   private val _scheme = fld(AbsScheme)
@@ -98,7 +100,8 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
     */
   @inline
   private def internalCompare(that: URI)(cmp: (String, String) => Int): Int = {
-    @inline def cmpOpt(x: js.UndefOr[String], y: js.UndefOr[String]): Int = {
+    @inline
+    def cmpOpt(x: js.UndefOr[String], y: js.UndefOr[String]): Int = {
       if (x == y) 0
       // Undefined components are considered less than defined components
       else x.fold(-1)(s1 => y.fold(1)(s2 => cmp(s1, s2)))

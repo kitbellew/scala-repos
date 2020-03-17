@@ -33,7 +33,8 @@ import com.twitter.util.{Await, Duration, Future, Promise, Time, Timer}
   *
   * Note: There is a Java-friendly API for this trait: [[com.twitter.concurrent.AbstractOffer]].
   */
-trait Offer[+T] { self =>
+trait Offer[+T] {
+  self =>
   import Offer.LostSynchronization
 
   /**

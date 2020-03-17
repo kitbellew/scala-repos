@@ -17,8 +17,7 @@ class SbtProjectSettings extends ExternalProjectSettings {
 
   def jdkName_=(name: Option[String]) = jdk = name.orNull
 
-  @Nullable
-  @BeanProperty
+  @Nullable @BeanProperty
   var jdk: String = null
 
   @BeanProperty
@@ -30,8 +29,7 @@ class SbtProjectSettings extends ExternalProjectSettings {
   @BeanProperty
   var resolveJavadocs: Boolean = false
 
-  @Nullable
-  @BeanProperty
+  @Nullable @BeanProperty
   var sbtVersion: String = null
 
   @BeanProperty

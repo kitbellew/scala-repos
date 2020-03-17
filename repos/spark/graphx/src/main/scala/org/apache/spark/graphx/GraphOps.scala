@@ -35,30 +35,35 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     extends Serializable {
 
   /** The number of edges in the graph. */
-  @transient lazy val numEdges: Long = graph.edges.count()
+  @transient
+  lazy val numEdges: Long = graph.edges.count()
 
   /** The number of vertices in the graph. */
-  @transient lazy val numVertices: Long = graph.vertices.count()
+  @transient
+  lazy val numVertices: Long = graph.vertices.count()
 
   /**
     * The in-degree of each vertex in the graph.
     * @note Vertices with no in-edges are not returned in the resulting RDD.
     */
-  @transient lazy val inDegrees: VertexRDD[Int] = degreesRDD(EdgeDirection.In)
+  @transient
+  lazy val inDegrees: VertexRDD[Int] = degreesRDD(EdgeDirection.In)
     .setName("GraphOps.inDegrees")
 
   /**
     * The out-degree of each vertex in the graph.
     * @note Vertices with no out-edges are not returned in the resulting RDD.
     */
-  @transient lazy val outDegrees: VertexRDD[Int] = degreesRDD(EdgeDirection.Out)
+  @transient
+  lazy val outDegrees: VertexRDD[Int] = degreesRDD(EdgeDirection.Out)
     .setName("GraphOps.outDegrees")
 
   /**
     * The degree of each vertex in the graph.
     * @note Vertices with no edges are not returned in the resulting RDD.
     */
-  @transient lazy val degrees: VertexRDD[Int] = degreesRDD(EdgeDirection.Either)
+  @transient
+  lazy val degrees: VertexRDD[Int] = degreesRDD(EdgeDirection.Either)
     .setName("GraphOps.degrees")
 
   /**

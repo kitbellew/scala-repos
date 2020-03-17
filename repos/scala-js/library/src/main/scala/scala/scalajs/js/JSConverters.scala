@@ -17,7 +17,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import scala.scalajs.runtime.genTraversableOnce2jsArray
 
-sealed abstract class JSConvertersLowPrioImplicits { this: JSConverters.type =>
+sealed abstract class JSConvertersLowPrioImplicits {
+  this: JSConverters.type =>
 
   @inline
   implicit def JSRichFutureNonThenable[A](f: Future[A]): JSRichFuture[A] =
@@ -31,17 +32,19 @@ sealed abstract class JSConvertersLowPrioImplicits { this: JSConverters.type =>
 object JSConverters extends JSConvertersLowPrioImplicits {
 
   implicit class JSRichOption[T](val opt: Option[T]) extends AnyVal {
-    @inline final def orUndefined: UndefOr[T] =
-      opt.fold[UndefOr[T]](undefined)(v => v)
+    @inline
+    final def orUndefined: UndefOr[T] = opt.fold[UndefOr[T]](undefined)(v => v)
   }
 
   implicit class JSRichGenTraversableOnce[T](val col: GenTraversableOnce[T])
       extends AnyVal {
-    @inline final def toJSArray: Array[T] = genTraversableOnce2jsArray(col)
+    @inline
+    final def toJSArray: Array[T] = genTraversableOnce2jsArray(col)
   }
 
   implicit class JSRichGenMap[T](val map: GenMap[String, T]) extends AnyVal {
-    @inline final def toJSDictionary: Dictionary[T] = {
+    @inline
+    final def toJSDictionary: Dictionary[T] = {
       val result = Dictionary.empty[T]
       map.foreach { case (key, value) => result(key) = value }
       result

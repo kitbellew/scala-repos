@@ -8,8 +8,7 @@ import com.twitter.util.Time
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
 
-@OperationsPerInvocation(50)
-@State(Scope.Benchmark)
+@OperationsPerInvocation(50) @State(Scope.Benchmark)
 class TraceBenchmark extends StdBenchAnnotations {
 
   private[this] val traceId = TraceId(

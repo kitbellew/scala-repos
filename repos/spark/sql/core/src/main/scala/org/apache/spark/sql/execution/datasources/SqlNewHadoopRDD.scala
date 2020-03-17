@@ -66,7 +66,8 @@ private[spark] class SqlNewHadoopPartition(
 private[spark] class SqlNewHadoopRDD[V: ClassTag](
     sqlContext: SQLContext,
     broadcastedConf: Broadcast[SerializableConfiguration],
-    @transient private val initDriverSideJobFuncOpt: Option[Job => Unit],
+    @transient
+    private val initDriverSideJobFuncOpt: Option[Job => Unit],
     initLocalJobFuncOpt: Option[Job => Unit],
     inputFormatClass: Class[_ <: InputFormat[Void, V]],
     valueClass: Class[V])
@@ -94,7 +95,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
     formatter.format(new Date())
   }
 
-  @transient protected val jobId = new JobID(jobTrackerId, id)
+  @transient
+  protected val jobId = new JobID(jobTrackerId, id)
 
   // If true, enable using the custom RecordReader for parquet. This only works for
   // a subset of the types (no complex types).

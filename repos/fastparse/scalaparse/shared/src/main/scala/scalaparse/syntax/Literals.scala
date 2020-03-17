@@ -6,7 +6,8 @@ import fastparse.parsers.Intrinsics
 import Basic._
 import Identifiers._
 
-trait Literals { l =>
+trait Literals {
+  l =>
   def Block: P0
 
   /**

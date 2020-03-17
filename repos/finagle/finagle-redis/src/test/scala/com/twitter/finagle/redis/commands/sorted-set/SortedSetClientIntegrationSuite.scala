@@ -9,8 +9,7 @@ import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-@Ignore
-@RunWith(classOf[JUnitRunner])
+@Ignore @RunWith(classOf[JUnitRunner])
 final class SortedSetClientIntegrationSuite extends RedisClientTest {
 
   test("Correctly add members and get scores", RedisTest, ClientTest) {

@@ -9,7 +9,8 @@ import scala.reflect.internal.util.{SourceFile, NoSourceFile, FreshNameCreator}
 import scala.collection.mutable
 import scala.collection.mutable.{LinkedHashSet, ListBuffer}
 
-trait CompilationUnits { global: Global =>
+trait CompilationUnits {
+  global: Global =>
 
   /** An object representing a missing compilation unit.
     */
@@ -23,7 +24,8 @@ trait CompilationUnits { global: Global =>
     * It typically corresponds to a single file of source code.  It includes
     * error-reporting hooks.  */
   class CompilationUnit(val source: SourceFile)
-      extends CompilationUnitContextApi { self =>
+      extends CompilationUnitContextApi {
+    self =>
 
     /** the fresh name creator */
     implicit val fresh: FreshNameCreator = new FreshNameCreator

@@ -11,7 +11,8 @@ import play.twirl.api.Html
 
 import lila.api.Context
 
-trait DateHelper { self: I18nHelper =>
+trait DateHelper {
+  self: I18nHelper =>
 
   private val dateTimeStyle = "MS"
   private val dateStyle = "M-"

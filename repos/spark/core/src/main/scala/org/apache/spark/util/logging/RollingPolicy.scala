@@ -60,7 +60,8 @@ private[spark] class TimeBasedRollingPolicy(
     rolloverIntervalMillis = MINIMUM_INTERVAL_SECONDS * 1000L
   }
 
-  @volatile private var nextRolloverTime = calculateNextRolloverTime()
+  @volatile
+  private var nextRolloverTime = calculateNextRolloverTime()
   private val formatter = new SimpleDateFormat(rollingFileSuffixPattern)
 
   /** Should rollover if current time has exceeded next rollover time */
@@ -112,7 +113,8 @@ private[spark] class SizeBasedRollingPolicy(
     rolloverSizeBytes = MINIMUM_SIZE_BYTES
   }
 
-  @volatile private var bytesWrittenSinceRollover = 0L
+  @volatile
+  private var bytesWrittenSinceRollover = 0L
   val formatter = new SimpleDateFormat("--yyyy-MM-dd--HH-mm-ss--SSSS")
 
   /** Should rollover if the next set of bytes is going to exceed the size limit */

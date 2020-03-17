@@ -19,7 +19,8 @@ object ConcurrentTaskTest extends SpecLite {
   "Task" should {
 
     "correctly use threads when forked and flatmapped" in {
-      @volatile var q = Queue[(Int, String)]()
+      @volatile
+      var q = Queue[(Int, String)]()
 
       val forked = "forked-thread"
       val current = Thread.currentThread().getName

@@ -14,7 +14,8 @@ import scala.collection.mutable
 import scala.reflect.internal.util.{NoPosition, Position, RangePosition}
 import scala.tools.nsc.io.AbstractFile
 
-trait ModelBuilders { self: RichPresentationCompiler =>
+trait ModelBuilders {
+  self: RichPresentationCompiler =>
 
   import rootMirror.RootPackage
 

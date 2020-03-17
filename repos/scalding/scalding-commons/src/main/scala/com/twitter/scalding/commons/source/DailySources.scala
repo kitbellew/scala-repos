@@ -30,7 +30,9 @@ import org.apache.thrift.TBase
 import Dsl._
 
 abstract class DailySuffixLzoCodec[T](prefix: String, dateRange: DateRange)(
-    implicit @transient suppliedInjection: Injection[T, Array[Byte]])
+    implicit
+    @transient
+    suppliedInjection: Injection[T, Array[Byte]])
     extends DailySuffixSource(prefix, dateRange)
     with LzoCodec[T] {
   val boxed = Externalizer(suppliedInjection)

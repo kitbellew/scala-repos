@@ -8,7 +8,8 @@ package interactive
 import scala.collection.mutable.ArrayBuffer
 import scala.annotation.tailrec
 
-trait ContextTrees { self: Global =>
+trait ContextTrees {
+  self: Global =>
 
   type Context = analyzer.Context
   lazy val NoContext = analyzer.NoContext

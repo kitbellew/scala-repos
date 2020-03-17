@@ -57,7 +57,8 @@ private[concurrent] trait BatchingExecutor extends Executor {
         try {
           parentBlockContext = prevBlockContext
 
-          @tailrec def processBatch(batch: List[Runnable]): Unit =
+          @tailrec
+          def processBatch(batch: List[Runnable]): Unit =
             batch match {
               case Nil => ()
               case head :: tail =>

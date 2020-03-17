@@ -104,9 +104,11 @@ private[camel] trait ActorEndpointConfig {
   def path: ActorEndpointPath
   def camel: Camel
 
-  @BeanProperty var replyTimeout: FiniteDuration = camel.settings.ReplyTimeout
+  @BeanProperty
+  var replyTimeout: FiniteDuration = camel.settings.ReplyTimeout
 
-  @BeanProperty var autoAck: Boolean = camel.settings.AutoAck
+  @BeanProperty
+  var autoAck: Boolean = camel.settings.AutoAck
 }
 
 /**

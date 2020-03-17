@@ -101,8 +101,7 @@ class StandardScalerModel @Since("1.3.0") (
   @Since("1.3.0")
   def this(std: Vector) = this(std, null)
 
-  @Since("1.3.0")
-  @DeveloperApi
+  @Since("1.3.0") @DeveloperApi
   def setWithMean(withMean: Boolean): this.type = {
     require(
       !(withMean && this.mean == null),
@@ -111,8 +110,7 @@ class StandardScalerModel @Since("1.3.0") (
     this
   }
 
-  @Since("1.3.0")
-  @DeveloperApi
+  @Since("1.3.0") @DeveloperApi
   def setWithStd(withStd: Boolean): this.type = {
     require(
       !(withStd && this.std == null),

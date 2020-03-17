@@ -14,7 +14,8 @@ import Pickler._
 import scala.collection.mutable
 import mutable.ListBuffer
 
-trait Picklers { self: Global =>
+trait Picklers {
+  self: Global =>
 
   lazy val freshRunReq = unitPickler
     .wrapped { _ => new FreshRunReq } { x => () }

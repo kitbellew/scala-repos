@@ -6,7 +6,8 @@ import slick.ast.{CompiledStatement, ResultSetMapping, Node, ParameterSwitch}
 import slick.util.SQLBuilder
 import slick.relational.{ResultConverter, CompiledMapping}
 
-trait JdbcInvokerComponent { self: JdbcProfile =>
+trait JdbcInvokerComponent {
+  self: JdbcProfile =>
 
   def createQueryInvoker[R](
       tree: Node,

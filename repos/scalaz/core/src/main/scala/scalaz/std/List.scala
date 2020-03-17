@@ -28,7 +28,8 @@ trait ListInstances extends ListInstances0 {
     with Cobind[List] {
     override def findLeft[A](fa: List[A])(f: A => Boolean) = fa.find(f)
     override def findRight[A](fa: List[A])(f: A => Boolean) = {
-      @tailrec def loop(a: List[A], x: Option[A]): Option[A] =
+      @tailrec
+      def loop(a: List[A], x: Option[A]): Option[A] =
         a match {
           case h :: t =>
             loop(t, if (f(h)) Some(h) else x)

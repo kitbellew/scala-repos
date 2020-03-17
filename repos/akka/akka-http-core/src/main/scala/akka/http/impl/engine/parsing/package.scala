@@ -36,7 +36,8 @@ package object parsing {
       input: ByteString,
       start: Int,
       end: Int): String = {
-    @tailrec def build(
+    @tailrec
+    def build(
         ix: Int = start,
         sb: JStringBuilder = new JStringBuilder(end - start)): String =
       if (ix == end) sb.toString else build(ix + 1, sb.append(input(ix).toChar))

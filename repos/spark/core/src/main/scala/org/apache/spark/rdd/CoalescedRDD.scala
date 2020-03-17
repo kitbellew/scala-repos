@@ -36,9 +36,11 @@ import org.apache.spark.util.Utils
   */
 private[spark] case class CoalescedRDDPartition(
     index: Int,
-    @transient rdd: RDD[_],
+    @transient
+    rdd: RDD[_],
     parentsIndices: Array[Int],
-    @transient preferredLocation: Option[String] = None)
+    @transient
+    preferredLocation: Option[String] = None)
     extends Partition {
   var parents: Seq[Partition] = parentsIndices.map(rdd.partitions(_))
 
@@ -77,7 +79,8 @@ private[spark] case class CoalescedRDDPartition(
   * @param balanceSlack used to trade-off balance and locality. 1.0 is all locality, 0 is all balance
   */
 private[spark] class CoalescedRDD[T: ClassTag](
-    @transient var prev: RDD[T],
+    @transient
+    var prev: RDD[T],
     maxPartitions: Int,
     balanceSlack: Double = 0.10)
     extends RDD[T](

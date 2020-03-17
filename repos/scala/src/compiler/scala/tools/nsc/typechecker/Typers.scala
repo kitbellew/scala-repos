@@ -61,23 +61,27 @@ trait Typers
     def isEmpty: Boolean
     def nonEmpty = !isEmpty
 
-    @inline final def fold[U](none: => U)(f: T => U): U =
+    @inline
+    final def fold[U](none: => U)(f: T => U): U =
       this match {
         case SilentResultValue(value) => f(value)
         case _                        => none
       }
-    @inline final def map[U](f: T => U): SilentResult[U] =
+    @inline
+    final def map[U](f: T => U): SilentResult[U] =
       this match {
         case SilentResultValue(value) => SilentResultValue(f(value))
         case x: SilentTypeError       => x
       }
-    @inline final def filter(p: T => Boolean): SilentResult[T] =
+    @inline
+    final def filter(p: T => Boolean): SilentResult[T] =
       this match {
         case SilentResultValue(value) if !p(value) =>
           SilentTypeError(TypeErrorWrapper(new TypeError(NoPosition, "!p")))
         case _ => this
       }
-    @inline final def orElse[T1 >: T](f: Seq[AbsTypeError] => T1): T1 =
+    @inline
+    final def orElse[T1 >: T](f: Seq[AbsTypeError] => T1): T1 =
       this match {
         case SilentResultValue(value) => value
         case s: SilentTypeError       => f(s.reportableErrors)
@@ -769,7 +773,8 @@ trait Typers
         if (Statistics.canEnable)
           Statistics.stopTimer(failedSilentNanos, failedSilentStart)
       }
-      @inline def wrapResult(reporter: ContextReporter, result: T) =
+      @inline
+      def wrapResult(reporter: ContextReporter, result: T) =
         if (reporter.hasErrors) {
           stopStats()
           SilentTypeError(reporter.errors.toList, reporter.warnings.toList)

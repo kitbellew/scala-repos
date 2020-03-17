@@ -32,7 +32,8 @@ class LinearProgram {
   }
   private val variables = new ArrayBuffer[Variable]()
 
-  sealed trait Problem { outer =>
+  sealed trait Problem {
+    outer =>
     def objective: Expression
     def constraints: IndexedSeq[Constraint]
 
@@ -56,7 +57,8 @@ class LinearProgram {
   /**
     * Anything that can be built up from adding/subtracting/dividing and multiplying by constants
     */
-  sealed trait Expression extends Problem { outer =>
+  sealed trait Expression extends Problem {
+    outer =>
     def coefficients: Vector[Double]
     def scalarComponent: Double = 0
     def objective = this
@@ -191,7 +193,8 @@ class LinearProgram {
   case object GTE extends Relation(">=")
   case object EQ extends Relation("=:=")
 
-  sealed trait Constraint { outer =>
+  sealed trait Constraint {
+    outer =>
     def lhs: Expression
     def rhs: Expression
     def relation: Relation
@@ -225,7 +228,8 @@ class LinearProgram {
     override def toString = name
   }
 
-  case class Real(name: String = "x_" + nextId) extends Variable { variable =>
+  case class Real(name: String = "x_" + nextId) extends Variable {
+    variable =>
     val id = variables.length
     variables += this
 
@@ -248,7 +252,8 @@ class LinearProgram {
     }
   }
 
-  case class Binary(name: String = "x_" + nextId) extends Variable { variable =>
+  case class Binary(name: String = "x_" + nextId) extends Variable {
+    variable =>
     val id = variables.length
     variables += this
 

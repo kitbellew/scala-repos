@@ -259,7 +259,8 @@ class ContinuousQueryManagerSuite
     failAfter(streamingTimeout) {
       val queries = withClue("Error starting queries") {
         datasets.map { ds =>
-          @volatile var query: StreamExecution = null
+          @volatile
+          var query: StreamExecution = null
           try {
             val df = ds.toDF
             query = sqlContext.streams

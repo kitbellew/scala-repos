@@ -66,7 +66,8 @@ class ReceiverTrackerSuite extends TestSuiteBase {
 
   test("should restart receiver after stopping it") {
     withStreamingContext(new StreamingContext(conf, Milliseconds(100))) { ssc =>
-      @volatile var startTimes = 0
+      @volatile
+      var startTimes = 0
       ssc.addStreamingListener(new StreamingListener {
         override def onReceiverStarted(
             receiverStarted: StreamingListenerReceiverStarted): Unit = {
@@ -93,7 +94,8 @@ class ReceiverTrackerSuite extends TestSuiteBase {
       .set("spark.streaming.clock", "org.apache.spark.util.ManualClock")
     withStreamingContext(new StreamingContext(_conf, Milliseconds(100))) {
       ssc =>
-        @volatile var receiverTaskLocality: TaskLocality = null
+        @volatile
+        var receiverTaskLocality: TaskLocality = null
         ssc.sparkContext.addSparkListener(new SparkListener {
           override def onTaskStart(taskStart: SparkListenerTaskStart): Unit = {
             receiverTaskLocality = taskStart.taskInfo.taskLocality
@@ -168,7 +170,8 @@ private[streaming] class RateTestReceiver(
   * instance.
   */
 private[streaming] object RateTestReceiver {
-  @volatile private var activeReceiver: RateTestReceiver = null
+  @volatile
+  private var activeReceiver: RateTestReceiver = null
 
   def registerReceiver(receiver: RateTestReceiver): Unit = {
     activeReceiver = receiver
@@ -205,5 +208,6 @@ class StoppableReceiver extends Receiver[Int](StorageLevel.MEMORY_ONLY) {
 }
 
 object StoppableReceiver {
-  @volatile var shouldStop = false
+  @volatile
+  var shouldStop = false
 }

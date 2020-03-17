@@ -56,7 +56,8 @@ import scalaz.std.iterable._
 
 import java.nio.CharBuffer
 
-trait Slice { source =>
+trait Slice {
+  source =>
   import Slice._
   import TableModule._
 
@@ -1334,8 +1335,7 @@ trait Slice { source =>
           inFlags.popBack()
         }
 
-        @inline
-        @tailrec
+        @inline @tailrec
         def flushIn() {
           if (!in.isEmpty) {
             val str = in.popFront()
@@ -1354,8 +1354,7 @@ trait Slice { source =>
 
         // emitters
 
-        @inline
-        @tailrec
+        @inline @tailrec
         def renderString(str: String, idx: Int = 0) {
           if (idx == 0) { push('"') }
 
@@ -1388,8 +1387,7 @@ trait Slice { source =>
         @inline
         def renderLong(ln: Long) {
 
-          @inline
-          @tailrec
+          @inline @tailrec
           def power10(ln: Long, seed: Long = 1): Long = {
             // note: we could be doing binary search here
 
@@ -1399,8 +1397,7 @@ trait Slice { source =>
             else power10(ln, seed * 10)
           }
 
-          @inline
-          @tailrec
+          @inline @tailrec
           def renderPositive(ln: Long, power: Long) {
             if (power > 0) {
               val c = Character.forDigit((ln / power % 10).toInt, 10)
@@ -1470,8 +1467,7 @@ trait Slice { source =>
               val keys = obj.keys
               val values = obj.values
 
-              @inline
-              @tailrec
+              @inline @tailrec
               def loop(idx: Int, done: Boolean): Boolean = {
                 if (idx < keys.length) {
                   val key = keys(idx)
@@ -1507,8 +1503,7 @@ trait Slice { source =>
             case arr: SchemaNode.Arr => {
               val values = arr.nodes
 
-              @inline
-              @tailrec
+              @inline @tailrec
               def loop(idx: Int, done: Boolean): Boolean = {
                 if (idx < values.length) {
                   val value = values(idx)
@@ -1537,8 +1532,7 @@ trait Slice { source =>
             case union: SchemaNode.Union => {
               val pos = union.possibilities
 
-              @inline
-              @tailrec
+              @inline @tailrec
               def loop(idx: Int): Boolean = {
                 if (idx < pos.length) {
                   traverseSchema(row, pos(idx)) || loop(idx + 1)
@@ -1719,7 +1713,8 @@ trait Slice { source =>
   }
 
   def toJsonElements: Vector[JValue] = {
-    @tailrec def rec(i: Int, acc: Vector[JValue]): Vector[JValue] = {
+    @tailrec
+    def rec(i: Int, acc: Vector[JValue]): Vector[JValue] = {
       if (i < source.size) {
         toJValue(i) match {
           case JUndefined => rec(i + 1, acc)
@@ -1850,7 +1845,8 @@ object Slice {
   def fromRValues(values: Stream[RValue]): Slice = {
     val sliceSize = values.size
 
-    @tailrec def buildColArrays(
+    @tailrec
+    def buildColArrays(
         from: Stream[RValue],
         into: Map[ColumnRef, ArrayColumn[_]],
         sliceIndex: Int): (Map[ColumnRef, ArrayColumn[_]], Int) = {

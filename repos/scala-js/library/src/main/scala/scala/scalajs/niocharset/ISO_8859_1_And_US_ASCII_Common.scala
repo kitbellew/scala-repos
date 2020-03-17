@@ -121,8 +121,7 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
           val outOffset = out.arrayOffset
           val outStart = out.position + outOffset
 
-          @inline
-          @tailrec
+          @inline @tailrec
           def loop(inPos: Int, outPos: Int): CoderResult = {
             @inline
             def finalize(result: CoderResult): CoderResult = {
@@ -160,8 +159,7 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
           loop(inStart, outStart)
         } else {
           // Not both have arrays
-          @inline
-          @tailrec
+          @inline @tailrec
           def loop(): CoderResult = {
             if (!in.hasRemaining) { CoderResult.UNDERFLOW }
             else if (!out.hasRemaining) { CoderResult.OVERFLOW }

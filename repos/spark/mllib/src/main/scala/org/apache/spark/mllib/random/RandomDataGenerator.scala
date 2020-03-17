@@ -26,8 +26,7 @@ import org.apache.spark.util.random.{Pseudorandom, XORShiftRandom}
   * :: DeveloperApi ::
   * Trait for random data generators that generate i.i.d. data.
   */
-@DeveloperApi
-@Since("1.1.0")
+@DeveloperApi @Since("1.1.0")
 trait RandomDataGenerator[T] extends Pseudorandom with Serializable {
 
   /**
@@ -48,8 +47,7 @@ trait RandomDataGenerator[T] extends Pseudorandom with Serializable {
   * :: DeveloperApi ::
   * Generates i.i.d. samples from U[0.0, 1.0]
   */
-@DeveloperApi
-@Since("1.1.0")
+@DeveloperApi @Since("1.1.0")
 class UniformGenerator extends RandomDataGenerator[Double] {
 
   // XORShiftRandom for better performance. Thread safety isn't necessary here.
@@ -69,8 +67,7 @@ class UniformGenerator extends RandomDataGenerator[Double] {
   * :: DeveloperApi ::
   * Generates i.i.d. samples from the standard normal distribution.
   */
-@DeveloperApi
-@Since("1.1.0")
+@DeveloperApi @Since("1.1.0")
 class StandardNormalGenerator extends RandomDataGenerator[Double] {
 
   // XORShiftRandom for better performance. Thread safety isn't necessary here.
@@ -92,8 +89,7 @@ class StandardNormalGenerator extends RandomDataGenerator[Double] {
   *
   * @param mean mean for the Poisson distribution.
   */
-@DeveloperApi
-@Since("1.1.0")
+@DeveloperApi @Since("1.1.0")
 class PoissonGenerator @Since("1.1.0") (@Since("1.1.0") val mean: Double)
     extends RandomDataGenerator[Double] {
 
@@ -115,8 +111,7 @@ class PoissonGenerator @Since("1.1.0") (@Since("1.1.0") val mean: Double)
   *
   * @param mean mean for the exponential distribution.
   */
-@DeveloperApi
-@Since("1.3.0")
+@DeveloperApi @Since("1.3.0")
 class ExponentialGenerator @Since("1.3.0") (@Since("1.3.0") val mean: Double)
     extends RandomDataGenerator[Double] {
 
@@ -139,8 +134,7 @@ class ExponentialGenerator @Since("1.3.0") (@Since("1.3.0") val mean: Double)
   * @param shape shape for the gamma distribution.
   * @param scale scale for the gamma distribution
   */
-@DeveloperApi
-@Since("1.3.0")
+@DeveloperApi @Since("1.3.0")
 class GammaGenerator @Since("1.3.0") (
     @Since("1.3.0") val shape: Double,
     @Since("1.3.0") val scale: Double)
@@ -166,8 +160,7 @@ class GammaGenerator @Since("1.3.0") (
   * @param mean mean for the log normal distribution.
   * @param std standard deviation for the log normal distribution
   */
-@DeveloperApi
-@Since("1.3.0")
+@DeveloperApi @Since("1.3.0")
 class LogNormalGenerator @Since("1.3.0") (
     @Since("1.3.0") val mean: Double,
     @Since("1.3.0") val std: Double)

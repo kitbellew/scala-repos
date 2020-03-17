@@ -6,7 +6,8 @@ package scalaz
   * The homomorphism from `F[A]` to `Coyoneda[F,A]` exists even when
   * `F` is not a functor.
   */
-sealed abstract class Coyoneda[F[_], A] { coyo =>
+sealed abstract class Coyoneda[F[_], A] {
+  coyo =>
 
   /** The pivot between `fi` and `k`, usually existential. */
   type I
@@ -23,7 +24,8 @@ sealed abstract class Coyoneda[F[_], A] { coyo =>
   final def run(implicit F: Functor[F]): F[A] = F.map(fi)(k)
 
   /** Alias for `run`. */
-  @inline final def unlift(implicit F: Functor[F]): F[A] = run
+  @inline
+  final def unlift(implicit F: Functor[F]): F[A] = run
 
   /** Converts to `Yoneda[F,A]` given that `F` is a functor */
   final def toYoneda(implicit F: Functor[F]): Yoneda[F, A] =
@@ -68,15 +70,16 @@ object Coyoneda extends CoyonedaInstances {
 
   /** See `by` method. */
   final class By[F[_]] {
-    @inline def apply[A, B](k: A => B)(implicit F: F[A]): Aux[F, B, A] =
-      Coyoneda(F)(k)
+    @inline
+    def apply[A, B](k: A => B)(implicit F: F[A]): Aux[F, B, A] = Coyoneda(F)(k)
   }
 
   /** Partial application of type parameters to `apply`.  It is often
     * more convenient to invoke `Coyoneda.by[F]{x: X => ...}` then
     * `Coyoneda[...](...){x => ...}`.
     */
-  @inline def by[F[_]]: By[F] = new By[F]
+  @inline
+  def by[F[_]]: By[F] = new By[F]
 
   /** Like `lift(fa).map(_k)`. */
   def apply[F[_], A, B](fa: F[A])(_k: A => B): Aux[F, B, A] =

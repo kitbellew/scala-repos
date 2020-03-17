@@ -49,7 +49,8 @@ trait MVCHelper extends LiftRules.DispatchPF {
     */
   protected def serve(pf: MVCMatch) { _dispatch ::= pf }
 
-  @volatile private var _dispatch: List[MVCMatch] = Nil
+  @volatile
+  private var _dispatch: List[MVCMatch] = Nil
 
   private lazy val nonDevDispatch = _dispatch.reverse
 

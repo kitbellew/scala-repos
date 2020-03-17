@@ -29,7 +29,8 @@ import scalaz._
 trait TypeLibSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
-    with LongIdMemoryDatasetConsumer[M] { self =>
+    with LongIdMemoryDatasetConsumer[M] {
+  self =>
 
   import dag._
   import instructions._

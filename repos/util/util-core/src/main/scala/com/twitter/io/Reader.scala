@@ -275,8 +275,7 @@ object Reader {
     *
     * @see Readers.fromFile for a Java API
     */
-  @throws(classOf[FileNotFoundException])
-  @throws(classOf[SecurityException])
+  @throws(classOf[FileNotFoundException]) @throws(classOf[SecurityException])
   def fromFile(f: File): Reader = fromStream(new FileInputStream(f))
 
   /**

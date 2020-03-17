@@ -143,8 +143,10 @@ class Zk2Resolver(
         sr.scope(s"endpoint=${endpointOption.getOrElse("default")}")
       }
 
-      @volatile var nlimbo = 0
-      @volatile var size = 0
+      @volatile
+      var nlimbo = 0
+      @volatile
+      var size = 0
 
       // The lifetimes of these gauges need to be managed if we
       // ever de-memoize addrOf.

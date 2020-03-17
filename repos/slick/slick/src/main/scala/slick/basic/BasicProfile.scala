@@ -12,7 +12,8 @@ import slick.util.GlobalConfig
 import com.typesafe.config.{ConfigFactory, Config}
 
 /** The basic functionality that has to be implemented by all profiles. */
-trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
+trait BasicProfile extends BasicActionComponent {
+  self: BasicProfile =>
 
   /** The external interface of this profile which defines the API. */
   @deprecated(
@@ -155,7 +156,8 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
   }
 }
 
-trait BasicActionComponent { self: BasicProfile =>
+trait BasicActionComponent {
+  self: BasicProfile =>
 
   type ProfileAction[+R, +S <: NoStream, -E <: Effect] <: BasicAction[R, S, E]
   type StreamingProfileAction[+R, +T, -E <: Effect] <: BasicStreamingAction[

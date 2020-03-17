@@ -8,7 +8,8 @@ import com.twitter.finagle.redis.util.ReplyFormat
 import com.twitter.util.Future
 import org.jboss.netty.buffer.ChannelBuffer
 
-trait SortedSets { self: BaseClient =>
+trait SortedSets {
+  self: BaseClient =>
   private[this] def parseMBulkReply(
       withScores: JBoolean): PartialFunction[Reply, Future[
     Either[ZRangeResults, Seq[ChannelBuffer]]]] = {

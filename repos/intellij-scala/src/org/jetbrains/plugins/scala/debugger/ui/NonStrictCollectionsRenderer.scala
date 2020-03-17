@@ -87,7 +87,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
   private def tryToGetSize(
       objectRef: ObjectReference,
       context: EvaluationContext): SimpleMethodInvocationResult[_] = {
-    @inline def invoke(name: String) =
+    @inline
+    def invoke(name: String) =
       invokeLengthMethodByName(objectRef, name, 'I', context)
 
     try {
@@ -128,11 +129,14 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       }
     }
 
-    @inline def getTail(objRef: ObjectReference, actualRefType: ReferenceType) =
+    @inline
+    def getTail(objRef: ObjectReference, actualRefType: ReferenceType) =
       invokeEmptyArgsMethod(objRef, actualRefType, "tail")
-    @inline def getHead(objRef: ObjectReference, actualRefType: ReferenceType) =
+    @inline
+    def getHead(objRef: ObjectReference, actualRefType: ReferenceType) =
       invokeEmptyArgsMethod(objRef, actualRefType, "head")
-    @inline def getAll(objRef: ObjectReference, actualType: ReferenceType) =
+    @inline
+    def getAll(objRef: ObjectReference, actualType: ReferenceType) =
       (getHead(objRef, actualType), getTail(objRef, actualType))
 
     val myChildren = new util.ArrayList[DebuggerTreeNode]()

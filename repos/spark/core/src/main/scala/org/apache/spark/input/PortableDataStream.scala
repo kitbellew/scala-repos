@@ -164,14 +164,16 @@ class PortableDataStream(
     baos.toByteArray
   }
 
-  @transient private lazy val split = {
+  @transient
+  private lazy val split = {
     val bais = new ByteArrayInputStream(splitBytes)
     val nsplit = new CombineFileSplit()
     nsplit.readFields(new DataInputStream(bais))
     nsplit
   }
 
-  @transient private lazy val conf = {
+  @transient
+  private lazy val conf = {
     val bais = new ByteArrayInputStream(confBytes)
     val nconf = new Configuration()
     nconf.readFields(new DataInputStream(bais))
@@ -181,7 +183,8 @@ class PortableDataStream(
   /**
     * Calculate the path name independently of opening the file
     */
-  @transient private lazy val path = {
+  @transient
+  private lazy val path = {
     val pathp = split.getPath(index)
     pathp.toString
   }

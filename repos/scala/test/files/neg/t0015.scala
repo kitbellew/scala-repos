@@ -4,7 +4,8 @@ abstract class Test {
   Nil.map(f _)
 }
 
-abstract class M { self =>
+abstract class M {
+  self =>
 
   type T
   final type selfType = M { type T = self.T }

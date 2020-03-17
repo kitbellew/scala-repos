@@ -27,7 +27,8 @@ import scalaz.Ordering._
 
 import scala.annotation.tailrec
 
-trait RowComparator { self =>
+trait RowComparator {
+  self =>
   def compare(i1: Int, i2: Int): Ordering
 
   def swap: RowComparator =

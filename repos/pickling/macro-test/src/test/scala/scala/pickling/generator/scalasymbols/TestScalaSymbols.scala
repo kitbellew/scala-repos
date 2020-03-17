@@ -11,9 +11,13 @@ class Baz(x: Int) {
 }
 
 class TransientFoo {
-  @transient var y: Int = 0
+  @transient
+  var y: Int = 0
 }
-case class TransientFooCase(x: Int, @transient y: Int)
+case class TransientFooCase(
+    x: Int,
+    @transient
+    y: Int)
 
 object ParentTag {
   trait Foo[X, Y] {

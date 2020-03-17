@@ -22,7 +22,8 @@ import com.twitter.finagle.tracing.Tracer
 import com.twitter.finagle.transport.Transport
 import com.twitter.util.{Duration, Monitor}
 
-trait RedisRichClient { self: Client[Command, Reply] =>
+trait RedisRichClient {
+  self: Client[Command, Reply] =>
 
   def newRichClient(dest: String): redis.Client = redis.Client(newService(dest))
 

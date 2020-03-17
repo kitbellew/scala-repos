@@ -87,11 +87,14 @@ abstract class CharBuffer private[nio] (
 
   final def put(src: String): CharBuffer = put(src, 0, src.length)
 
-  @inline final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
+  @inline
+  final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
 
-  @inline final def array(): Array[Char] = GenBuffer(this).generic_array()
+  @inline
+  final def array(): Array[Char] = GenBuffer(this).generic_array()
 
-  @inline final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
+  @inline
+  final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
 
   def compact(): CharBuffer
 

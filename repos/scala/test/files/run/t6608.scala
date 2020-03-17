@@ -2,7 +2,8 @@ import reflect.runtime.universe
 
 class C {
   private val yyy: Any = 1
-  @inline def foo = yyy
+  @inline
+  def foo = yyy
 }
 
 object Test extends App {

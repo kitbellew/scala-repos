@@ -16,7 +16,8 @@ import org.scalajs.testsuite.utils.AssertThrows._
 
 class MathContextTest {
 
-  @Test def testMathContextSingleArgConstructor(): Unit = {
+  @Test
+  def testMathContextSingleArgConstructor(): Unit = {
     val mc1 = new MathContext("precision=16 roundingMode=CEILING")
     assertTrue(mc1.getPrecision == 16)
     assertTrue(mc1.getRoundingMode == RoundingMode.CEILING)
@@ -64,7 +65,8 @@ class MathContextTest {
     expectThrows(classOf[NullPointerException], new MathContext(null))
   }
 
-  @Test def testMathContextConstructorEquality(): Unit = {
+  @Test
+  def testMathContextConstructorEquality(): Unit = {
     val mc1 = new MathContext(16, RoundingMode.CEILING)
     val mc1a = new MathContext("precision=16 roundingMode=CEILING")
     assertTrue(mc1 == mc1a)

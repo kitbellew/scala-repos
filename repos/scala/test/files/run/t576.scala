@@ -16,14 +16,16 @@ object Test {
   val x1 = new A
   val x2 = new A
 
-  val x3 = new { self =>
+  val x3 = new {
+    self =>
     override def equals(other: Any) =
       other match {
         case that: self.type => true
         case _               => false
       }
   }
-  val x4 = new { self =>
+  val x4 = new {
+    self =>
     def f(x: Any): Int =
       x match {
         case _: x1.type     => 1

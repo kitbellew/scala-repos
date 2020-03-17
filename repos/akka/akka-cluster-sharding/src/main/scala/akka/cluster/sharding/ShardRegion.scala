@@ -162,16 +162,16 @@ object ShardRegion {
     *
     * [[akka.actor.PoisonPill]] is a perfectly fine `stopMessage`.
     */
-  @SerialVersionUID(1L) final case class Passivate(stopMessage: Any)
-      extends ShardRegionCommand
+  @SerialVersionUID(1L)
+  final case class Passivate(stopMessage: Any) extends ShardRegionCommand
 
   /*
    * Send this message to the `ShardRegion` actor to handoff all shards that are hosted by
    * the `ShardRegion` and then the `ShardRegion` actor will be stopped. You can `watch`
    * it to know when it is completed.
    */
-  @SerialVersionUID(1L) final case object GracefulShutdown
-      extends ShardRegionCommand
+  @SerialVersionUID(1L)
+  final case object GracefulShutdown extends ShardRegionCommand
 
   /**
     * We must be sure that a shard is initialized before to start send messages to it.
@@ -194,8 +194,8 @@ object ShardRegion {
     * Intended for testing purpose to see when cluster sharding is "ready" or to monitor
     * the state of the shard regions.
     */
-  @SerialVersionUID(1L) final case object GetCurrentRegions
-      extends ShardRegionQuery
+  @SerialVersionUID(1L)
+  final case object GetCurrentRegions extends ShardRegionQuery
 
   /**
     * Java API:
@@ -205,7 +205,8 @@ object ShardRegion {
   /**
     * Reply to `GetCurrentRegions`
     */
-  @SerialVersionUID(1L) final case class CurrentRegions(regions: Set[Address]) {
+  @SerialVersionUID(1L)
+  final case class CurrentRegions(regions: Set[Address]) {
 
     /**
       * Java API
@@ -226,15 +227,16 @@ object ShardRegion {
     * Intended for testing purpose to see when cluster sharding is "ready" or to monitor
     * the state of the shard regions.
     */
-  @SerialVersionUID(1L) case class GetClusterShardingStats(
-      timeout: FiniteDuration)
+  @SerialVersionUID(1L)
+  case class GetClusterShardingStats(timeout: FiniteDuration)
       extends ShardRegionQuery
 
   /**
     * Reply to [[GetClusterShardingStats]], contains statistics about all the sharding regions
     * in the cluster.
     */
-  @SerialVersionUID(1L) final case class ClusterShardingStats(
+  @SerialVersionUID(1L)
+  final case class ClusterShardingStats(
       regions: Map[Address, ShardRegionStats]) {
 
     /**
@@ -255,15 +257,16 @@ object ShardRegion {
     *
     * For the statistics for the entire cluster, see [[GetClusterShardingStats$]].
     */
-  @SerialVersionUID(1L) case object GetShardRegionStats extends ShardRegionQuery
+  @SerialVersionUID(1L)
+  case object GetShardRegionStats extends ShardRegionQuery
 
   /**
     * Java API:
     */
   def getRegionStatsInstance = GetShardRegionStats
 
-  @SerialVersionUID(1L) final case class ShardRegionStats(
-      stats: Map[ShardId, Int]) {
+  @SerialVersionUID(1L)
+  final case class ShardRegionStats(stats: Map[ShardId, Int]) {
 
     /**
       * Java API
@@ -281,7 +284,8 @@ object ShardRegion {
     * The state contains information about what shards are running in this region
     * and what entities are running on each of those shards.
     */
-  @SerialVersionUID(1L) case object GetShardRegionState extends ShardRegionQuery
+  @SerialVersionUID(1L)
+  case object GetShardRegionState extends ShardRegionQuery
 
   /**
     * Java API:
@@ -293,8 +297,8 @@ object ShardRegion {
     *
     * If gathering the shard information times out the set of shards will be empty.
     */
-  @SerialVersionUID(1L) final case class CurrentShardRegionState(
-      shards: Set[ShardState]) {
+  @SerialVersionUID(1L)
+  final case class CurrentShardRegionState(shards: Set[ShardState]) {
 
     /**
       * Java API:
@@ -307,9 +311,8 @@ object ShardRegion {
     }
   }
 
-  @SerialVersionUID(1L) final case class ShardState(
-      shardId: ShardId,
-      entityIds: Set[EntityId]) {
+  @SerialVersionUID(1L)
+  final case class ShardState(shardId: ShardId, entityIds: Set[EntityId]) {
 
     /**
       * Java API:

@@ -80,7 +80,8 @@ class CollectionsTest extends CollectionsTestBase {
     else map.clear() // Should not throw
   }
 
-  @Test def emptySet(): Unit = {
+  @Test
+  def emptySet(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val emptySet = ju.Collections.emptySet[E]
       assertTrue(emptySet.isEmpty)
@@ -94,7 +95,8 @@ class CollectionsTest extends CollectionsTestBase {
     test[Double](_.toDouble)
   }
 
-  @Test def emptyList(): Unit = {
+  @Test
+  def emptyList(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val emptyList = ju.Collections.emptyList[E]
       assertTrue(emptyList.isEmpty)
@@ -108,7 +110,8 @@ class CollectionsTest extends CollectionsTestBase {
     test[Double](_.toDouble)
   }
 
-  @Test def emptyMap(): Unit = {
+  @Test
+  def emptyMap(): Unit = {
     def test[K, V](toKey: Int => K, toValue: Int => V): Unit = {
       val emptyMap = ju.Collections.emptyMap[K, V]
       assertTrue(emptyMap.isEmpty)
@@ -124,7 +127,8 @@ class CollectionsTest extends CollectionsTestBase {
     test[Double, Double](_.toDouble, _.toDouble)
   }
 
-  @Test def singleton(): Unit = {
+  @Test
+  def singleton(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val singletonSet = ju.Collections.singleton[E](toElem(0))
       assertTrue(singletonSet.contains(toElem(0)))
@@ -139,7 +143,8 @@ class CollectionsTest extends CollectionsTestBase {
     test[Double](_.toDouble)
   }
 
-  @Test def singletonList(): Unit = {
+  @Test
+  def singletonList(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val singletonList = ju.Collections.singletonList[E](toElem(0))
       assertTrue(singletonList.contains(toElem(0)))
@@ -154,7 +159,8 @@ class CollectionsTest extends CollectionsTestBase {
     test[Double](_.toDouble)
   }
 
-  @Test def singletonMap(): Unit = {
+  @Test
+  def singletonMap(): Unit = {
     def test[K, V](toKey: Int => K, toValue: Int => V): Unit = {
       val singletonMap = ju.Collections.singletonMap[K, V](toKey(0), toValue(1))
       assertEquals(toValue(1), singletonMap.get(toKey(0)))
@@ -169,7 +175,8 @@ class CollectionsTest extends CollectionsTestBase {
     test[Double, Double](_.toDouble, _.toDouble)
   }
 
-  @Test def nCopies(): Unit = {
+  @Test
+  def nCopies(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       for (n <- Seq(1, 4, 543)) {
         val nCopies = ju.Collections.nCopies(n, toElem(0))
@@ -199,7 +206,8 @@ class CollectionsTest extends CollectionsTestBase {
     test[Double](_.toDouble)
   }
 
-  @Test def reverseOrder_on_comparables(): Unit = {
+  @Test
+  def reverseOrder_on_comparables(): Unit = {
     def testNumerical[E](toElem: Int => E): Unit = {
       val rCmp = ju.Collections.reverseOrder[E]
       for (i <- range) {
@@ -231,7 +239,8 @@ class CollectionsTest extends CollectionsTestBase {
     assertTrue(rCmp.compare("aaa", "aa") < 0)
   }
 
-  @Test def reverseOrder_with_comparator(): Unit = {
+  @Test
+  def reverseOrder_with_comparator(): Unit = {
     val rCmp1 = new ju.Comparator[Int] {
       override def compare(o1: Int, o2: Int): Int = o2 - o1
     }
@@ -263,7 +272,8 @@ class CollectionsTest extends CollectionsTestBase {
     }
   }
 
-  @Test def enumeration(): Unit = {
+  @Test
+  def enumeration(): Unit = {
     val coll = asJavaCollection(range)
     val enum = ju.Collections.enumeration(coll)
     for (elem <- coll) {
@@ -273,14 +283,16 @@ class CollectionsTest extends CollectionsTestBase {
     assertFalse(enum.hasMoreElements)
   }
 
-  @Test def list(): Unit = {
+  @Test
+  def list(): Unit = {
     val enum = asJavaEnumeration(range.iterator)
     val list = ju.Collections.list(enum)
     assertEquals(range.size, list.size)
     for (i <- range) assertEquals(i, list.get(i))
   }
 
-  @Test def disjoint(): Unit = {
+  @Test
+  def disjoint(): Unit = {
     assertFalse(ju.Collections.disjoint(0 to 3, 0 to 3))
     assertFalse(ju.Collections.disjoint(0 to 3, 3 to 5))
     assertTrue(ju.Collections.disjoint(0 to 3, 6 to 9))

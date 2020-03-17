@@ -13,7 +13,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class DataSourceTest {
-  @Test def testDataSourceJdbcDataSource: Unit = {
+  @Test
+  def testDataSourceJdbcDataSource: Unit = {
     val dc = DatabaseConfig.forConfig[JdbcProfile]("ds1")
     import dc.profile.api._
     try {
@@ -25,7 +26,8 @@ class DataSourceTest {
     } finally dc.db.close
   }
 
-  @Test def testDirectDataSource: Unit = {
+  @Test
+  def testDirectDataSource: Unit = {
     val dc = DatabaseConfig.forConfig[JdbcProfile]("ds2")
     import dc.profile.api._
     try {
@@ -37,7 +39,8 @@ class DataSourceTest {
     } finally dc.db.close
   }
 
-  @Test def testDatabaseUrlDataSource: Unit = {
+  @Test
+  def testDatabaseUrlDataSource: Unit = {
     import slick.jdbc.H2Profile.api.actionBasedSQLInterpolation
     MockDriver.reset
     val db = JdbcBackend.Database.forConfig("databaseUrl")
@@ -55,7 +58,8 @@ class DataSourceTest {
 }
 
 object MockDriver {
-  @volatile private var last: Option[(String, Properties)] = None
+  @volatile
+  private var last: Option[(String, Properties)] = None
   def getLast = last
   def reset: Unit = last = None
 }

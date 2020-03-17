@@ -249,9 +249,11 @@ class TaskContextSuite
 }
 
 private object TaskContextSuite {
-  @volatile var completed = false
+  @volatile
+  var completed = false
 
-  @volatile var lastError: Throwable = _
+  @volatile
+  var lastError: Throwable = _
 }
 
 private case class StubPartition(index: Int) extends Partition

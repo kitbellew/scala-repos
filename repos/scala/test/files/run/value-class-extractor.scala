@@ -3,7 +3,8 @@ final class NonNullChar(val get: Char) extends AnyVal {
   override def toString = if (isEmpty) "NoChar" else s"'$get'"
 }
 object NonNullChar {
-  @inline final val None = new NonNullChar(0.toChar)
+  @inline
+  final val None = new NonNullChar(0.toChar)
 }
 
 final class SomeProduct extends Product3[String, Int, List[String]] {

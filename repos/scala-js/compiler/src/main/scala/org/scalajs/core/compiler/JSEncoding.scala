@@ -24,7 +24,8 @@ import ScopedVar.withScopedVars
   *
   *  @author Sébastien Doeraene
   */
-trait JSEncoding extends SubComponent { self: GenJSCode =>
+trait JSEncoding extends SubComponent {
+  self: GenJSCode =>
   import global._
   import jsAddons._
 

@@ -124,21 +124,26 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
 
   // Map of batch-time to selected file info for the remembered batches
   // This is a concurrent map because it's also accessed in unit tests
-  @transient private[streaming] var batchTimeToSelectedFiles =
+  @transient
+  private[streaming] var batchTimeToSelectedFiles =
     new mutable.HashMap[Time, Array[String]]
 
   // Set of files that were selected in the remembered batches
-  @transient private var recentlySelectedFiles = new mutable.HashSet[String]()
+  @transient
+  private var recentlySelectedFiles = new mutable.HashSet[String]()
 
   // Read-through cache of file mod times, used to speed up mod time lookups
-  @transient private var fileToModTime =
-    new TimeStampedHashMap[String, Long](true)
+  @transient
+  private var fileToModTime = new TimeStampedHashMap[String, Long](true)
 
   // Timestamp of the last round of finding files
-  @transient private var lastNewFileFindingTime = 0L
+  @transient
+  private var lastNewFileFindingTime = 0L
 
-  @transient private var _path: Path = null
-  @transient private var _fs: FileSystem = null
+  @transient
+  private var _path: Path = null
+  @transient
+  private var _fs: FileSystem = null
 
   override def start() {}
 

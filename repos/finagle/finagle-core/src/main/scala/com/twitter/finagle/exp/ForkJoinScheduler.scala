@@ -110,7 +110,8 @@ private class ForkJoinScheduler(
 
         var res: T = null.asInstanceOf[T]
         ForkJoinPool.managedBlock(new ForkJoinPool.ManagedBlocker {
-          @volatile private[this] var ok = false
+          @volatile
+          private[this] var ok = false
           override def block() = {
             numBlocks.incr()
             activeBlocks.incrementAndGet()

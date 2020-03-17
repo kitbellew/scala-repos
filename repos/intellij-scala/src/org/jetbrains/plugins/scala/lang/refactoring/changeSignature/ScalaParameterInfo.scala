@@ -22,13 +22,16 @@ import scala.beans.{BeanProperty, BooleanBeanProperty}
   * 2014-08-10
   */
 class ScalaParameterInfo(
-    @BeanProperty var name: String,
-    @BeanProperty val oldIndex: Int,
+    @BeanProperty
+    var name: String,
+    @BeanProperty
+    val oldIndex: Int,
     var scType: ScType,
     val project: Project,
     var isRepeatedParameter: Boolean,
     var isByName: Boolean,
-    @BeanProperty var defaultValue: String = "",
+    @BeanProperty
+    var defaultValue: String = "",
     var keywordsAndAnnotations: String = "",
     val isIntroducedParameter: Boolean = false)
     extends JavaParameterInfo {

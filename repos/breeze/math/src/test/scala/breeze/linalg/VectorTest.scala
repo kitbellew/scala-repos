@@ -10,7 +10,6 @@ import org.scalatest.junit._
   *
   * @author dlwh
   */
-
 @RunWith(classOf[JUnitRunner])
 class VectorTest extends FunSuite {
 

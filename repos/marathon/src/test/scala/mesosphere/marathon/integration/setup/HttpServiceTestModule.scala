@@ -76,12 +76,10 @@ class CallbackEventHandler @Inject() () {
 
   private[this] val log = LoggerFactory.getLogger(getClass.getName)
 
-  @GET
-  @Produces(Array(MediaType.APPLICATION_JSON))
+  @GET @Produces(Array(MediaType.APPLICATION_JSON))
   def index = List(1, 2, 3, 4, 5)
 
-  @POST
-  @Consumes(Array(MediaType.APPLICATION_JSON))
+  @POST @Consumes(Array(MediaType.APPLICATION_JSON))
   @Produces(Array(MediaType.APPLICATION_JSON))
   def handleEvent(map: Map[String, Any]): Unit = {
     val kind = map.get("eventType").map(_.toString).getOrElse("unknown")
@@ -94,8 +92,7 @@ class CallbackEventHandler @Inject() () {
 @Path("health")
 class ApplicationHealthCheck @Inject() () {
 
-  @GET
-  @Path("{appId:.+}/{versionId}/{port}")
+  @GET @Path("{appId:.+}/{versionId}/{port}")
   def isApplicationHealthy(
       @PathParam("appId") path: String,
       @PathParam("versionId") versionId: String,

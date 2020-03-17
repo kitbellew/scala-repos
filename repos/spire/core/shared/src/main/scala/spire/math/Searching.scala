@@ -73,7 +73,8 @@ object Searching {
       // if we prove that a is not minimal, it should not be added to candidates
       var aIsNotMinimal = false
       // compare a against each candidate, starting from the last
-      @tailrec def inspect(i: Int): Unit = {
+      @tailrec
+      def inspect(i: Int): Unit = {
         if (i >= 0) {
           val c = a.partialCompare(candidates(i))
           // if a <= candidates(i), this candidate can be removed

@@ -16,24 +16,28 @@ import org.scalajs.testsuite.utils.AssertThrows._
 
 class BigIntegerOperateBitsTest {
 
-  @Test def testBitCountNeg(): Unit = {
+  @Test
+  def testBitCountNeg(): Unit = {
     val aNumber = new BigInteger(
       "-12378634756382937873487638746283767238657872368748726875")
     assertEquals(87, aNumber.bitCount())
   }
 
-  @Test def testBitCountPos(): Unit = {
+  @Test
+  def testBitCountPos(): Unit = {
     val aNumber = new BigInteger(
       "12378634756343564757582937873487638746283767238657872368748726875")
     assertEquals(107, aNumber.bitCount())
   }
 
-  @Test def testBitCountZero(): Unit = {
+  @Test
+  def testBitCountZero(): Unit = {
     val aNumber = new BigInteger("0")
     assertEquals(0, aNumber.bitCount())
   }
 
-  @Test def testBitLengthNegative1(): Unit = {
+  @Test
+  def testBitLengthNegative1(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = -1
@@ -41,21 +45,24 @@ class BigIntegerOperateBitsTest {
     assertEquals(108, aNumber.bitLength())
   }
 
-  @Test def testBitLengthNegative2(): Unit = {
+  @Test
+  def testBitLengthNegative2(): Unit = {
     val aBytes = Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
     val aNumber = new BigInteger(aSign, aBytes)
     assertEquals(96, aNumber.bitLength())
   }
 
-  @Test def testBitLengthNegative3(): Unit = {
+  @Test
+  def testBitLengthNegative3(): Unit = {
     val aBytes = Array[Byte](1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     val aSign = -1
     val aNumber = new BigInteger(aSign, aBytes)
     assertEquals(80, aNumber.bitLength())
   }
 
-  @Test def testBitLengthPositive1(): Unit = {
+  @Test
+  def testBitLengthPositive1(): Unit = {
     val aBytes = Array[Byte](
       12, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, 3, 91)
     val aSign = 1
@@ -63,26 +70,30 @@ class BigIntegerOperateBitsTest {
     assertEquals(108, aNumber.bitLength())
   }
 
-  @Test def testBitLengthPositive2(): Unit = {
+  @Test
+  def testBitLengthPositive2(): Unit = {
     val aBytes = Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
     val aNumber = new BigInteger(aSign, aBytes)
     assertEquals(96, aNumber.bitLength())
   }
 
-  @Test def testBitLengthPositive3(): Unit = {
+  @Test
+  def testBitLengthPositive3(): Unit = {
     val aBytes = Array[Byte](1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     val aSign = 1
     val aNumber = new BigInteger(aSign, aBytes)
     assertEquals(81, aNumber.bitLength())
   }
 
-  @Test def testBitLengthZero(): Unit = {
+  @Test
+  def testBitLengthZero(): Unit = {
     val aNumber = new BigInteger("0")
     assertEquals(0, aNumber.bitLength())
   }
 
-  @Test def testClearBitException(): Unit = {
+  @Test
+  def testClearBitException(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -91,7 +102,8 @@ class BigIntegerOperateBitsTest {
     expectThrows(classOf[ArithmeticException], aNumber.clearBit(number))
   }
 
-  @Test def testClearBitNegativeInside1(): Unit = {
+  @Test
+  def testClearBitNegativeInside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -106,7 +118,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testClearBitNegativeInside2(): Unit = {
+  @Test
+  def testClearBitNegativeInside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -121,7 +134,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testClearBitNegativeInside3(): Unit = {
+  @Test
+  def testClearBitNegativeInside3(): Unit = {
     val as = "-18446744073709551615"
     val number = 2
     val aNumber = new BigInteger(as)
@@ -129,7 +143,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(result.toString, as)
   }
 
-  @Test def testClearBitNegativeInside4(): Unit = {
+  @Test
+  def testClearBitNegativeInside4(): Unit = {
     val as = "-4294967295"
     val res = "-4294967296"
     val number = 0
@@ -138,7 +153,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(result.toString, res)
   }
 
-  @Test def testClearBitNegativeInside5(): Unit = {
+  @Test
+  def testClearBitNegativeInside5(): Unit = {
     val as = "-18446744073709551615"
     val res = "-18446744073709551616"
     val number = 0
@@ -147,7 +163,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(result.toString, res)
   }
 
-  @Test def testClearBitNegativeOutside1(): Unit = {
+  @Test
+  def testClearBitNegativeOutside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -163,7 +180,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testClearBitNegativeOutside2(): Unit = {
+  @Test
+  def testClearBitNegativeOutside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -179,7 +197,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testClearBitPositiveInside1(): Unit = {
+  @Test
+  def testClearBitPositiveInside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -194,7 +213,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testClearBitPositiveInside2(): Unit = {
+  @Test
+  def testClearBitPositiveInside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -209,7 +229,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testClearBitPositiveInside3(): Unit = {
+  @Test
+  def testClearBitPositiveInside3(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -224,7 +245,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testClearBitPositiveInside4(): Unit = {
+  @Test
+  def testClearBitPositiveInside4(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -239,7 +261,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testClearBitPositiveInside5(): Unit = {
+  @Test
+  def testClearBitPositiveInside5(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -254,7 +277,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testClearBitPositiveOutside1(): Unit = {
+  @Test
+  def testClearBitPositiveOutside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -269,7 +293,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testClearBitPositiveOutside2(): Unit = {
+  @Test
+  def testClearBitPositiveOutside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -284,7 +309,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testClearBitTopNegative(): Unit = {
+  @Test
+  def testClearBitTopNegative(): Unit = {
     val aBytes = Array[Byte](1, -128, 56, 100, -15, 35, 26)
     val aSign = -1
     val number = 63
@@ -297,7 +323,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testClearBitZero(): Unit = {
+  @Test
+  def testClearBitZero(): Unit = {
     val aBytes = Array[Byte](0)
     val aSign = 0
     val number = 0
@@ -310,7 +337,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testClearBitZeroOutside1(): Unit = {
+  @Test
+  def testClearBitZeroOutside1(): Unit = {
     val aBytes = Array[Byte](0)
     val aSign = 0
     val number = 95
@@ -323,7 +351,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testFlipBitException(): Unit = {
+  @Test
+  def testFlipBitException(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -332,7 +361,8 @@ class BigIntegerOperateBitsTest {
     expectThrows(classOf[ArithmeticException], aNumber.flipBit(number))
   }
 
-  @Test def testFlipBitLeftmostNegative(): Unit = {
+  @Test
+  def testFlipBitLeftmostNegative(): Unit = {
     val aBytes = Array[Byte](1, -128, 56, 100, -15, 35, 26)
     val aSign = -1
     val number = 48
@@ -345,7 +375,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testFlipBitLeftmostPositive(): Unit = {
+  @Test
+  def testFlipBitLeftmostPositive(): Unit = {
     val aBytes = Array[Byte](1, -128, 56, 100, -15, 35, 26)
     val aSign = 1
     val number = 48
@@ -358,7 +389,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testFlipBitNegativeInside1(): Unit = {
+  @Test
+  def testFlipBitNegativeInside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -373,7 +405,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testFlipBitNegativeInside2(): Unit = {
+  @Test
+  def testFlipBitNegativeInside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -388,7 +421,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testFlipBitNegativeInside3(): Unit = {
+  @Test
+  def testFlipBitNegativeInside3(): Unit = {
     val as = "-18446744073709551615"
     val res = "-18446744073709551611"
     val number = 2
@@ -397,7 +431,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(result.toString, res)
   }
 
-  @Test def testFlipBitNegativeInside4(): Unit = {
+  @Test
+  def testFlipBitNegativeInside4(): Unit = {
     val as = "-4294967295"
     val res = "-4294967296"
     val number = 0
@@ -406,7 +441,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(result.toString, res)
   }
 
-  @Test def testFlipBitNegativeInside5(): Unit = {
+  @Test
+  def testFlipBitNegativeInside5(): Unit = {
     val as = "-18446744073709551615"
     val res = "-18446744073709551616"
     val number = 0
@@ -415,7 +451,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(result.toString, res)
   }
 
-  @Test def testFlipBitNegativeOutside1(): Unit = {
+  @Test
+  def testFlipBitNegativeOutside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -431,7 +468,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testFlipBitNegativeOutside2(): Unit = {
+  @Test
+  def testFlipBitNegativeOutside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -447,7 +485,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testFlipBitPositiveInside1(): Unit = {
+  @Test
+  def testFlipBitPositiveInside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -462,7 +501,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testFlipBitPositiveInside2(): Unit = {
+  @Test
+  def testFlipBitPositiveInside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -477,7 +517,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testFlipBitPositiveOutside1(): Unit = {
+  @Test
+  def testFlipBitPositiveOutside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -492,7 +533,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testFlipBitPositiveOutside2(): Unit = {
+  @Test
+  def testFlipBitPositiveOutside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -508,7 +550,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testFlipBitZero(): Unit = {
+  @Test
+  def testFlipBitZero(): Unit = {
     val aBytes = Array[Byte](0)
     val aSign = 0
     val number = 0
@@ -521,7 +564,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testFlipBitZeroOutside1(): Unit = {
+  @Test
+  def testFlipBitZeroOutside1(): Unit = {
     val aBytes = Array[Byte](0)
     val aSign = 0
     val number = 62
@@ -534,7 +578,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testFlipBitZeroOutside2(): Unit = {
+  @Test
+  def testFlipBitZeroOutside2(): Unit = {
     val aBytes = Array[Byte](0)
     val aSign = 0
     val number = 63
@@ -547,7 +592,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitBug1331(): Unit = {
+  @Test
+  def testSetBitBug1331(): Unit = {
     val result = BigInteger.valueOf(0L).setBit(191)
     assertEquals(
       "3138550867693340381917894711603833208051177722232017256448",
@@ -555,7 +601,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitException(): Unit = {
+  @Test
+  def testSetBitException(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -564,7 +611,8 @@ class BigIntegerOperateBitsTest {
     expectThrows(classOf[ArithmeticException], aNumber.setBit(number))
   }
 
-  @Test def testSetBitLeftmostNegative(): Unit = {
+  @Test
+  def testSetBitLeftmostNegative(): Unit = {
     val aBytes = Array[Byte](1, -128, 56, 100, -15, 35, 26)
     val aSign = -1
     val number = 48
@@ -577,7 +625,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testSetBitNegativeInside1(): Unit = {
+  @Test
+  def testSetBitNegativeInside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -592,7 +641,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testSetBitNegativeInside2(): Unit = {
+  @Test
+  def testSetBitNegativeInside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -607,7 +657,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testSetBitNegativeInside3(): Unit = {
+  @Test
+  def testSetBitNegativeInside3(): Unit = {
     val as = "-18446744073709551615"
     val res = "-18446744073709551611"
     val number = 2
@@ -616,7 +667,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(result.toString, res)
   }
 
-  @Test def testSetBitNegativeInside4(): Unit = {
+  @Test
+  def testSetBitNegativeInside4(): Unit = {
     val as = "-4294967295"
     val number = 0
     val aNumber = new BigInteger(as)
@@ -624,7 +676,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(as, result.toString)
   }
 
-  @Test def testSetBitNegativeInside5(): Unit = {
+  @Test
+  def testSetBitNegativeInside5(): Unit = {
     val as = "-18446744073709551615"
     val number = 0
     val aNumber = new BigInteger(as)
@@ -632,7 +685,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(as, result.toString)
   }
 
-  @Test def testSetBitNegativeOutside1(): Unit = {
+  @Test
+  def testSetBitNegativeOutside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -647,7 +701,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testSetBitNegativeOutside2(): Unit = {
+  @Test
+  def testSetBitNegativeOutside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -662,7 +717,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testSetBitPositiveInside1(): Unit = {
+  @Test
+  def testSetBitPositiveInside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -677,7 +733,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitPositiveInside2(): Unit = {
+  @Test
+  def testSetBitPositiveInside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -692,7 +749,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitPositiveInside3(): Unit = {
+  @Test
+  def testSetBitPositiveInside3(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -707,7 +765,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitPositiveInside4(): Unit = {
+  @Test
+  def testSetBitPositiveInside4(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -722,7 +781,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitPositiveOutside1(): Unit = {
+  @Test
+  def testSetBitPositiveOutside1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -737,7 +797,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitPositiveOutside2(): Unit = {
+  @Test
+  def testSetBitPositiveOutside2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -753,7 +814,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitTopPositive(): Unit = {
+  @Test
+  def testSetBitTopPositive(): Unit = {
     val aBytes = Array[Byte](1, -128, 56, 100, -15, 35, 26)
     val aSign = 1
     val number = 63
@@ -766,7 +828,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitZero(): Unit = {
+  @Test
+  def testSetBitZero(): Unit = {
     val aBytes = Array[Byte](0)
     val aSign = 0
     val number = 0
@@ -779,7 +842,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testSetBitZeroOutside1(): Unit = {
+  @Test
+  def testSetBitZeroOutside1(): Unit = {
     val aBytes = Array[Byte](0)
     val aSign = 0
     val number = 95
@@ -792,7 +856,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftLeft1(): Unit = {
+  @Test
+  def testShiftLeft1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -807,7 +872,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftLeft2(): Unit = {
+  @Test
+  def testShiftLeft2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -821,7 +887,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftLeft3(): Unit = {
+  @Test
+  def testShiftLeft3(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -836,7 +903,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftLeft4(): Unit = {
+  @Test
+  def testShiftLeft4(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -851,7 +919,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftLeft5(): Unit = {
+  @Test
+  def testShiftLeft5(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -867,7 +936,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testShiftRight1(): Unit = {
+  @Test
+  def testShiftRight1(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -882,7 +952,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftRight2(): Unit = {
+  @Test
+  def testShiftRight2(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -897,7 +968,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftRight3(): Unit = {
+  @Test
+  def testShiftRight3(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -911,7 +983,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftRight4(): Unit = {
+  @Test
+  def testShiftRight4(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -925,7 +998,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testShiftRight5(): Unit = {
+  @Test
+  def testShiftRight5(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -939,7 +1013,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testShiftRightNegNonZeroes(): Unit = {
+  @Test
+  def testShiftRightNegNonZeroes(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 0, 0, 0, 0, 0, 0, 0, 0)
     val aSign = -1
@@ -953,7 +1028,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testShiftRightNegNonZeroesMul32(): Unit = {
+  @Test
+  def testShiftRightNegNonZeroesMul32(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 1, 0, 0, 0, 0, 0, 0, 0)
     val aSign = -1
@@ -967,7 +1043,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testShiftRightNegZeroes(): Unit = {
+  @Test
+  def testShiftRightNegZeroes(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     val aSign = -1
@@ -981,7 +1058,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testShiftRightNegZeroesMul32(): Unit = {
+  @Test
+  def testShiftRightNegZeroesMul32(): Unit = {
     val aBytes = Array[Byte](
       1, -128, 56, 100, -2, -76, 89, 45, 91, 0, 0, 0, 0, 0, 0, 0, 0)
     val aSign = -1
@@ -995,7 +1073,8 @@ class BigIntegerOperateBitsTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testTestBitException(): Unit = {
+  @Test
+  def testTestBitException(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -1004,7 +1083,8 @@ class BigIntegerOperateBitsTest {
     expectThrows(classOf[ArithmeticException], aNumber.testBit(number))
   }
 
-  @Test def testTestBitNegative1(): Unit = {
+  @Test
+  def testTestBitNegative1(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -1013,7 +1093,8 @@ class BigIntegerOperateBitsTest {
     assertTrue(aNumber.testBit(number))
   }
 
-  @Test def testTestBitNegative2(): Unit = {
+  @Test
+  def testTestBitNegative2(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -1022,7 +1103,8 @@ class BigIntegerOperateBitsTest {
     assertTrue(!aNumber.testBit(number))
   }
 
-  @Test def testTestBitNegative3(): Unit = {
+  @Test
+  def testTestBitNegative3(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = -1
@@ -1031,7 +1113,8 @@ class BigIntegerOperateBitsTest {
     assertTrue(aNumber.testBit(number))
   }
 
-  @Test def testTestBitPositive1(): Unit = {
+  @Test
+  def testTestBitPositive1(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -1040,7 +1123,8 @@ class BigIntegerOperateBitsTest {
     assertTrue(!aNumber.testBit(number))
   }
 
-  @Test def testTestBitPositive2(): Unit = {
+  @Test
+  def testTestBitPositive2(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1
@@ -1049,7 +1133,8 @@ class BigIntegerOperateBitsTest {
     assertTrue(aNumber.testBit(number))
   }
 
-  @Test def testTestBitPositive3(): Unit = {
+  @Test
+  def testTestBitPositive3(): Unit = {
     val aBytes = Array[Byte](
       -1, -128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26)
     val aSign = 1

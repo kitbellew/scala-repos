@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait Choice[=>:[_, _]] extends Category[=>:] { self =>
+trait Choice[=>:[_, _]] extends Category[=>:] {
+  self =>
   ////
   def choice[A, B, C](f: => A =>: C, g: => B =>: C): (A \/ B) =>: C
 
@@ -20,7 +21,8 @@ trait Choice[=>:[_, _]] extends Category[=>:] { self =>
 }
 
 object Choice {
-  @inline def apply[F[_, _]](implicit F: Choice[F]): Choice[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Choice[F]): Choice[F] = F
 
   ////
   ////

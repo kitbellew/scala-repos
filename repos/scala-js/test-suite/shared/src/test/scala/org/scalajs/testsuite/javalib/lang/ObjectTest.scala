@@ -16,17 +16,20 @@ import org.scalajs.testsuite.utils.AssertThrows._
 
 class ObjectTest {
 
-  @Test def testGetClass(): Unit = {
+  @Test
+  def testGetClass(): Unit = {
     class Foo
     val foo = new Foo
 
-    @noinline def fooAny: Any = foo
+    @noinline
+    def fooAny: Any = foo
 
     assertSame(classOf[Foo], foo.getClass)
     assertSame(classOf[Foo], fooAny.getClass)
   }
 
-  @Test def equals(): Unit = {
+  @Test
+  def equals(): Unit = {
     case class XY(x: Int, y: Int)
 
     val l = List(XY(1, 2), XY(2, 1))
@@ -36,7 +39,8 @@ class ObjectTest {
     assertTrue(l.exists(_ == xy12)) // the workaround
   }
 
-  @Test def everything_but_null_should_be_an_Object(): Unit = {
+  @Test
+  def everything_but_null_should_be_an_Object(): Unit = {
     assertTrue(((): Any).isInstanceOf[Object])
     assertTrue((true: Any).isInstanceOf[Object])
     assertTrue(('a': Any).isInstanceOf[Object])
@@ -53,12 +57,13 @@ class ObjectTest {
     assertTrue((Array(Nil): Any).isInstanceOf[Object])
   }
 
-  @Test def null_should_not_be_an_Object(): Unit = {
+  @Test
+  def null_should_not_be_an_Object(): Unit = {
     assertFalse((null: Any).isInstanceOf[Object])
   }
 
-  @Test def everything_should_cast_to_Object_successfully_including_null()
-      : Unit = {
+  @Test
+  def everything_should_cast_to_Object_successfully_including_null(): Unit = {
     ((): Any).asInstanceOf[Object]
     (true: Any).asInstanceOf[Object]
     ('a': Any).asInstanceOf[Object]

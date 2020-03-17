@@ -3,7 +3,8 @@ package arrow
 
 import cats.data.{Xor, Coproduct}
 
-trait NaturalTransformation[F[_], G[_]] extends Serializable { self =>
+trait NaturalTransformation[F[_], G[_]] extends Serializable {
+  self =>
   def apply[A](fa: F[A]): G[A]
 
   def compose[E[_]](

@@ -15,7 +15,8 @@ import PartialFunction.{cond => when}
   *  @author Lukas Rytz
   *  @version 1.0
   */
-trait NamesDefaults { self: Analyzer =>
+trait NamesDefaults {
+  self: Analyzer =>
 
   import global._
   import definitions._

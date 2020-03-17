@@ -134,7 +134,8 @@ object Test {
 
   ///
 
-  trait Treez { self: Shmeez =>
+  trait Treez {
+    self: Shmeez =>
     abstract class Tree
     case class Beez(i: Int) extends Tree
     case object HagbardCeline extends Tree

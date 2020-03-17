@@ -93,7 +93,8 @@ private[io] class UdpListener(
   }
 
   def doReceive(registration: ChannelRegistration, handler: ActorRef): Unit = {
-    @tailrec def innerReceive(readsLeft: Int, buffer: ByteBuffer) {
+    @tailrec
+    def innerReceive(readsLeft: Int, buffer: ByteBuffer) {
       buffer.clear()
       buffer.limit(DirectBufferSize)
 

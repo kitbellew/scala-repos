@@ -31,7 +31,8 @@ import scala.reflect.ClassTag
   *
   * Note: There is a Java-friendly API for this trait: [[com.twitter.util.AbstractVar]].
   */
-trait Var[+T] { self =>
+trait Var[+T] {
+  self =>
   import Var.Observer
 
   /**
@@ -343,7 +344,8 @@ private object UpdatableVar {
   import Var.Observer
 
   case class Party[T](obs: Observer[T], depth: Int, n: Long) {
-    @volatile var active = true
+    @volatile
+    var active = true
   }
 
   case class State[T](

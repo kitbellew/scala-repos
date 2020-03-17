@@ -75,7 +75,8 @@ case class LTuple2[T, U](_1: T, _2: U) {
 
 }
 
-trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
+trait BatchedStore[K, V] extends scalding.Store[K, V] {
+  self =>
 
   /** The batcher for this store */
   def batcher: Batcher
@@ -118,8 +119,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       flowDef: FlowDef,
       mode: Mode): Unit
 
-  @transient private val logger = LoggerFactory.getLogger(
-    classOf[BatchedStore[_, _]])
+  @transient
+  private val logger = LoggerFactory.getLogger(classOf[BatchedStore[_, _]])
 
   /** The writeLast method as a FlowProducer */
   private def writeFlow(

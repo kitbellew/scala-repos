@@ -7,7 +7,8 @@ import com.twitter.finagle.Stack
   *
   * @see [[SessionParams]]
   */
-trait WithSession[A <: Stack.Parameterized[A]] { self: Stack.Parameterized[A] =>
+trait WithSession[A <: Stack.Parameterized[A]] {
+  self: Stack.Parameterized[A] =>
 
   /**
     * An entry point for configuring the client's sessions.

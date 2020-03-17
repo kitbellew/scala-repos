@@ -235,7 +235,8 @@ private[http] object StreamUtils {
     override def create(
         context: MaterializationContext): (Publisher[Out], Subscriber[Out]) = {
       val processor = new Processor[Out, Out] {
-        @volatile private var subscriber: Subscriber[_ >: Out] = null
+        @volatile
+        private var subscriber: Subscriber[_ >: Out] = null
 
         override def subscribe(s: Subscriber[_ >: Out]): Unit = subscriber = s
 

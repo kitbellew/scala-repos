@@ -17,15 +17,19 @@ class RawData(
     private[stock] val _active: Array[(String, Array[Boolean])])
     extends Serializable {
 
-  @transient lazy val _priceFrame: Frame[DateTime, String, Double] =
-    SaddleWrapper.ToFrame(timeIndex, _price)
+  @transient
+  lazy val _priceFrame: Frame[DateTime, String, Double] = SaddleWrapper.ToFrame(
+    timeIndex,
+    _price)
 
   // FIXME. Fill NA of result.
-  @transient lazy val _retFrame: Frame[DateTime, String, Double] =
+  @transient
+  lazy val _retFrame: Frame[DateTime, String, Double] =
     _priceFrame.shift(1) / _priceFrame
 
-  @transient lazy val _activeFrame: Frame[DateTime, String, Boolean] =
-    SaddleWrapper.ToFrame(timeIndex, _active)
+  @transient
+  lazy val _activeFrame: Frame[DateTime, String, Boolean] = SaddleWrapper
+    .ToFrame(timeIndex, _active)
 
   def view(idx: Int, maxWindowSize: Int): DataView =
     DataView(this, idx, maxWindowSize)

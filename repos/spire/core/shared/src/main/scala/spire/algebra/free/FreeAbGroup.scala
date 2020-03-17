@@ -28,7 +28,8 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
   def runMonoid[B](f: A => B)(implicit B: CMonoid[B]): Option[B] = {
     val it = terms.iterator
 
-    @tailrec def loop(total: B): Option[B] =
+    @tailrec
+    def loop(total: B): Option[B] =
       if (it.hasNext) {
         val (a, n) = it.next()
         if (n < 0) None else loop(B.op(total, B.combinen(f(a), n)))
@@ -46,7 +47,8 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
   def runSemigroup[B](f: A => B)(implicit B: CSemigroup[B]): Option[B] = {
     val it = terms.iterator
 
-    @tailrec def loop1(total: B): Option[B] =
+    @tailrec
+    def loop1(total: B): Option[B] =
       if (it.hasNext) {
         val (a, n) = it.next()
         if (n == 0) loop1(total)
@@ -54,7 +56,8 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
         else loop1(B.op(total, B.combinen(f(a), n)))
       } else Some(total)
 
-    @tailrec def loop0: Option[B] =
+    @tailrec
+    def loop0: Option[B] =
       if (it.hasNext) {
         val (a, n) = it.next()
         if (n == 0) loop0 else if (n < 0) None else loop1(B.combinen(f(a), n))
@@ -108,7 +111,8 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
         .mkString(" |+| ")
 }
 
-object FreeAbGroup { companion =>
+object FreeAbGroup {
+  companion =>
   final def id[A]: FreeAbGroup[A] = new FreeAbGroup(Map.empty)
 
   final def apply[A](a: A): FreeAbGroup[A] = lift(a)

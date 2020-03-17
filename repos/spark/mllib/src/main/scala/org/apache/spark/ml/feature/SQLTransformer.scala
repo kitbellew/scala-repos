@@ -38,8 +38,7 @@ import org.apache.spark.sql.types.StructType
   *  - SELECT a, SQRT(b) AS b_sqrt FROM __THIS__ where a > 5
   *  - SELECT a, b, SUM(c) AS c_sum FROM __THIS__ GROUP BY a, b
   */
-@Experimental
-@Since("1.6.0")
+@Experimental @Since("1.6.0")
 class SQLTransformer @Since("1.6.0") (override val uid: String)
     extends Transformer
     with DefaultParamsWritable {

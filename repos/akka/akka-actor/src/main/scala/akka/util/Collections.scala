@@ -29,7 +29,8 @@ private[akka] object Collections {
         private[this] var _next: To = _
         private[this] var _hasNext = false
 
-        @tailrec override final def hasNext: Boolean =
+        @tailrec
+        override final def hasNext: Boolean =
           if (!_hasNext && superIterator.hasNext) { // If we need and are able to look for the next value
             val potentiallyNext = superIterator.next()
             if (isDefinedAt(potentiallyNext)) {

@@ -33,8 +33,10 @@ class AFTSurvivalRegressionSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  @transient var datasetUnivariate: DataFrame = _
-  @transient var datasetMultivariate: DataFrame = _
+  @transient
+  var datasetUnivariate: DataFrame = _
+  @transient
+  var datasetMultivariate: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

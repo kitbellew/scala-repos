@@ -99,6 +99,7 @@ class ConfigExtensionMethods(val c: Config) extends AnyVal {
 }
 
 object ConfigExtensionMethods {
-  @inline implicit def configExtensionMethods(
-      c: Config): ConfigExtensionMethods = new ConfigExtensionMethods(c)
+  @inline
+  implicit def configExtensionMethods(c: Config): ConfigExtensionMethods =
+    new ConfigExtensionMethods(c)
 }

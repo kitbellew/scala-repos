@@ -12,7 +12,8 @@ class QTest {
 
   import reflect.runtime._
   import universe._
-  @Test def qConstantsNotHomogenized() = {
+  @Test
+  def qConstantsNotHomogenized() = {
     //Apply(Select(Literal(Constant(1.0)), TermName("$plus")), List(Literal(Constant(1.0))))
     val t = q"${1} + ${1.0}"
     val Apply(

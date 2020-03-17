@@ -26,8 +26,7 @@ import org.apache.spark.rdd.RDD
   * :: DeveloperApi ::
   * A collection of methods used to validate data before applying ML algorithms.
   */
-@DeveloperApi
-@Since("0.8.0")
+@DeveloperApi @Since("0.8.0")
 object DataValidators extends Logging {
 
   /**

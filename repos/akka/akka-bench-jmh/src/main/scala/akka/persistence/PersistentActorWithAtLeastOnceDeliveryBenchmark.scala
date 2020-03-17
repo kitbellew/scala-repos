@@ -13,8 +13,7 @@ import org.openjdk.jmh.annotations.Scope
 import scala.concurrent.duration._
 import scala.concurrent.Await
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.Throughput))
 class PersistentActorWithAtLeastOnceDeliveryBenchmark {
 
   val config = PersistenceSpec.config("leveldb", "benchmark")
@@ -79,24 +78,21 @@ class PersistentActorWithAtLeastOnceDeliveryBenchmark {
     storageLocations.foreach(FileUtils.deleteDirectory)
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def persistentActor_persistAsync_with_AtLeastOnceDelivery(): Unit = {
     for (i <- 1 to dataCount)
       persistAsyncPersistentActorWithAtLeastOnceDelivery.tell(i, probe.ref)
     probe.expectMsg(20.seconds, Evt(dataCount))
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def persistentActor_persist_with_AtLeastOnceDelivery(): Unit = {
     for (i <- 1 to dataCount)
       persistPersistentActorWithAtLeastOnceDelivery.tell(i, probe.ref)
     probe.expectMsg(2.minutes, Evt(dataCount))
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def persistentActor_noPersist_with_AtLeastOnceDelivery(): Unit = {
     for (i <- 1 to dataCount)
       noPersistPersistentActorWithAtLeastOnceDelivery.tell(i, probe.ref)

@@ -72,8 +72,7 @@ final class RingDeque[
     (if (back > front) back - front else (back + bound) - front) - 1
 
   def toList: List[A] = {
-    @inline
-    @tailrec
+    @inline @tailrec
     def buildList(i: Int, accum: List[A]): List[A] =
       if (i < front) accum else buildList(i - 1, ring(i % bound) :: accum)
 

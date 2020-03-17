@@ -23,7 +23,8 @@ private[http] class EnhancedByteArray(val underlying: Array[Byte])
     * @see [[http://emerose.com/timing-attacks-explained]]
     */
   def secure_==(other: Array[Byte]): Boolean = {
-    @tailrec def xor(ix: Int = 0, result: Int = 0): Int =
+    @tailrec
+    def xor(ix: Int = 0, result: Int = 0): Int =
       if (ix < underlying.length)
         xor(ix + 1, result | (underlying(ix) ^ other(ix)))
       else result

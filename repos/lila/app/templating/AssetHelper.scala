@@ -4,7 +4,8 @@ package templating
 import controllers.routes
 import play.twirl.api.Html
 
-trait AssetHelper { self: I18nHelper =>
+trait AssetHelper {
+  self: I18nHelper =>
 
   def assetVersion = lila.api.Env.current.assetVersion.get
 

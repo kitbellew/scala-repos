@@ -24,7 +24,8 @@ class CopyOnWriteArrayListTest extends ListTest {
 
   def factory: CopyOnWriteArrayListFactory = new CopyOnWriteArrayListFactory
 
-  @Test def should_implement_addIfAbsent(): Unit = {
+  @Test
+  def should_implement_addIfAbsent(): Unit = {
     val list = factory.empty[Int]
 
     assertTrue(list.addIfAbsent(0))
@@ -41,7 +42,8 @@ class CopyOnWriteArrayListTest extends ListTest {
     assertEquals(1, list.get(1))
   }
 
-  @Test def should_implement_addAllAbsent(): Unit = {
+  @Test
+  def should_implement_addAllAbsent(): Unit = {
     val list = factory.empty[Int]
 
     assertEquals(3, list.addAllAbsent(0 until 3))
@@ -66,7 +68,8 @@ class CopyOnWriteArrayListTest extends ListTest {
     assertEquals(42, list.get(10))
   }
 
-  @Test def should_implement_a_snapshot_iterator(): Unit = {
+  @Test
+  def should_implement_a_snapshot_iterator(): Unit = {
     val list = factory.empty[Int]
     list.addAll(0 to 10)
 
@@ -82,7 +85,8 @@ class CopyOnWriteArrayListTest extends ListTest {
     assertFalse(iter2.hasNext)
   }
 
-  @Test def `should_have_accessible_array_constructor_-_#2023`(): Unit = {
+  @Test
+  def `should_have_accessible_array_constructor_-_#2023`(): Unit = {
     def test[T <: AnyRef](arr: Array[T]): Unit = {
       val cowal1 = factory.newFrom(arr)
       assertEquals(arr.length, cowal1.length)

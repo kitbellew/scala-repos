@@ -34,7 +34,8 @@ trait CharArrayReaderData {
   }
 }
 
-abstract class CharArrayReader extends CharArrayReaderData { self =>
+abstract class CharArrayReader extends CharArrayReaderData {
+  self =>
 
   val buf: Array[Char]
 

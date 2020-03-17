@@ -5,7 +5,8 @@ import cats.functor.Bifunctor
 /**
   *  A type class abstracting over types that give rise to two independent [[cats.Traverse]]s.
   */
-trait Bitraverse[F[_, _]] extends Bifoldable[F] with Bifunctor[F] { self =>
+trait Bitraverse[F[_, _]] extends Bifoldable[F] with Bifunctor[F] {
+  self =>
 
   /** Traverse each side of the structure with the given functions */
   def bitraverse[G[_]: Applicative, A, B, C, D](

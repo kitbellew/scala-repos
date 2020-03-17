@@ -230,7 +230,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * A snapshot of [[akka.cluster.ClusterEvent.CurrentClusterState]]
     * will be sent to the subscriber as the first message.
     */
-  @varargs def subscribe(subscriber: ActorRef, to: Class[_]*): Unit =
+  @varargs
+  def subscribe(subscriber: ActorRef, to: Class[_]*): Unit =
     subscribe(subscriber, initialStateMode = InitialStateAsSnapshot, to: _*)
 
   /**
@@ -248,7 +249,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     *
     * Note that for large clusters it is more efficient to use `InitialStateAsSnapshot`.
     */
-  @varargs def subscribe(
+  @varargs
+  def subscribe(
       subscriber: ActorRef,
       initialStateMode: SubscriptionInitialStateMode,
       to: Class[_]*): Unit = {

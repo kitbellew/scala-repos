@@ -117,7 +117,8 @@ private[spark] class PythonRunner(
       pythonExec,
       envVars.asScala.toMap)
     // Whether is the worker released into idle pool
-    @volatile var released = false
+    @volatile
+    var released = false
 
     // Start a thread to feed the process input from our parent's iterator
     val writerThread =
@@ -251,7 +252,8 @@ private[spark] class PythonRunner(
       context: TaskContext)
       extends Thread(s"stdout writer for $pythonExec") {
 
-    @volatile private var _exception: Exception = null
+    @volatile
+    private var _exception: Exception = null
 
     private val pythonVer = func.pythonVer
     private val pythonIncludes = func.pythonIncludes
@@ -929,7 +931,8 @@ private class BytesToString
   * collects a list of pickled strings that we pass to Python through a socket.
   */
 private class PythonAccumulatorParam(
-    @transient private val serverHost: String,
+    @transient
+    private val serverHost: String,
     serverPort: Int)
     extends AccumulatorParam[JList[Array[Byte]]] {
 
@@ -941,7 +944,8 @@ private class PythonAccumulatorParam(
     * We try to reuse a single Socket to transfer accumulator updates, as they are all added
     * by the DAGScheduler's single-threaded RpcEndpoint anyway.
     */
-  @transient var socket: Socket = _
+  @transient
+  var socket: Socket = _
 
   def openSocket(): Socket =
     synchronized {
@@ -990,7 +994,9 @@ private class PythonAccumulatorParam(
   * write the data into disk after deserialization, then Python can read it from disks.
   */
 // scalastyle:off no.finalize
-private[spark] class PythonBroadcast(@transient var path: String)
+private[spark] class PythonBroadcast(
+    @transient
+    var path: String)
     extends Serializable
     with Logging {
 

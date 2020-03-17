@@ -50,7 +50,8 @@ class ReflectArrayTest {
     testBase(clazz, length = 0, expectedClazz, sampleElem)
   }
 
-  @Test def newInstance(): Unit = {
+  @Test
+  def newInstance(): Unit = {
     testNewInstance(classOf[Int], classOf[Array[Int]], 0)
     testNewInstance(classOf[Char], classOf[Array[Char]], '\0')
     testNewInstance(classOf[Long], classOf[Array[Long]], 0L)

@@ -5,7 +5,8 @@ import java.util.{Date, Locale, TimeZone}
 
 object DateUtil {
 
-  @volatile private[this] var _currentTimeMillis: Option[Long] = None
+  @volatile
+  private[this] var _currentTimeMillis: Option[Long] = None
 
   def currentTimeMillis: Long =
     _currentTimeMillis getOrElse System.currentTimeMillis

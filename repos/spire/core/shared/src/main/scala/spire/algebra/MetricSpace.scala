@@ -10,7 +10,8 @@ trait MetricSpace[V, @sp(Int, Long, Float, Double) R] extends Any {
 }
 
 object MetricSpace extends MetricSpace0 {
-  @inline final def apply[V, @sp(Int, Long, Float, Double) R](implicit
+  @inline
+  final def apply[V, @sp(Int, Long, Float, Double) R](implicit
       V: MetricSpace[V, R]): MetricSpace[V, R] = V
 
   def distance[V, @sp(Int, Long, Float, Double) R](v: V, w: V)(implicit

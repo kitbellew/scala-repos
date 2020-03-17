@@ -51,7 +51,8 @@ package scala
   *  @author  Martin Odersky, Pavel Pavlov, Adriaan Moors
   *  @version 1.0, 16/07/2003
   */
-trait PartialFunction[-A, +B] extends (A => B) { self =>
+trait PartialFunction[-A, +B] extends (A => B) {
+  self =>
   import PartialFunction._
 
   /** Checks if a value is contained in the function's domain.

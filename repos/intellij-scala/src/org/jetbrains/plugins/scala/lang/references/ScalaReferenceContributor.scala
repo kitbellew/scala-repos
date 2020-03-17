@@ -100,7 +100,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
   private val LOG: Logger = Logger.getInstance(
     "#org.jetbrains.plugins.scala.lang.references.FilePathReferenceProvider")
 
-  @NotNull def getRoots(
+  @NotNull
+  def getRoots(
       thisModule: Module,
       includingClasses: Boolean): java.util.Collection[PsiFileSystemItem] = {
     if (thisModule == null) return Collections.emptyList[PsiFileSystemItem]
@@ -144,7 +145,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
     result
   }
 
-  @NotNull def getReferencesByElement(
+  @NotNull
+  def getReferencesByElement(
       element: PsiElement,
       text: String,
       offset: Int,
@@ -167,7 +169,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
         s != null && s.length > 0 && s.charAt(0) == '/'
       }
 
-      @NotNull override def computeDefaultContexts
+      @NotNull
+      override def computeDefaultContexts
           : java.util.Collection[PsiFileSystemItem] = {
         val module: Module = ModuleUtilCore.findModuleForPsiElement(getElement)
         getRoots(module, includingClasses = true)
@@ -195,9 +198,9 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
     }.getAllReferences.map(identity)
   }
 
-  override def acceptsTarget(@NotNull target: PsiElement): Boolean = {
-    target.isInstanceOf[PsiFileSystemItem]
-  }
+  override def acceptsTarget(
+      @NotNull
+      target: PsiElement): Boolean = { target.isInstanceOf[PsiFileSystemItem] }
 
   protected def isPsiElementAccepted(element: PsiElement): Boolean = {
     !(element.isInstanceOf[PsiJavaFile] && element

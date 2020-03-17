@@ -197,7 +197,8 @@ class AppClientSuite
   /** Application Listener to collect events */
   private class AppClientCollector extends AppClientListener with Logging {
     val connectedIdList = new ConcurrentLinkedQueue[String]()
-    @volatile var disconnectedCount: Int = 0
+    @volatile
+    var disconnectedCount: Int = 0
     val deadReasonList = new ConcurrentLinkedQueue[String]()
     val execAddedList = new ConcurrentLinkedQueue[String]()
     val execRemovedList = new ConcurrentLinkedQueue[String]()

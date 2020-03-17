@@ -244,9 +244,12 @@ private[streaming] case class StateSpecImpl[K, V, S, T](
 
   require(function != null)
 
-  @volatile private var partitioner: Partitioner = null
-  @volatile private var initialStateRDD: RDD[(K, S)] = null
-  @volatile private var timeoutInterval: Duration = null
+  @volatile
+  private var partitioner: Partitioner = null
+  @volatile
+  private var initialStateRDD: RDD[(K, S)] = null
+  @volatile
+  private var timeoutInterval: Duration = null
 
   override def initialState(rdd: RDD[(K, S)]): this.type = {
     this.initialStateRDD = rdd

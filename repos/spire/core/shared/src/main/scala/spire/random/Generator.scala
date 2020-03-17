@@ -56,7 +56,8 @@ abstract class Generator {
     * Generates a random int between 0 (inclusive) and n (exclusive).
     */
   def nextInt(n: Int): Int = {
-    @tailrec def loop(b: Int): Int = {
+    @tailrec
+    def loop(b: Int): Int = {
       val v = b % n
       if (b - v + (n - 1) < 0) loop(nextInt() >>> 1) else v
     }
@@ -88,7 +89,8 @@ abstract class Generator {
         val x = UInt(nextInt())
         from + (x % width).signed
       } else {
-        @tailrec def loop(): Int = {
+        @tailrec
+        def loop(): Int = {
           val x = UInt(nextInt())
           if (x <= cap) (x % width).signed + from else loop()
         }
@@ -101,7 +103,8 @@ abstract class Generator {
     * Generates a random int between 0 (inclusive) and n (exclusive).
     */
   def nextLong(n: Long): Long = {
-    @tailrec def loop(b: Long): Long = {
+    @tailrec
+    def loop(b: Long): Long = {
       val v = b % n
       if (b - v + (n - 1) < 0) loop(nextLong() >>> 1) else v
     }
@@ -133,7 +136,8 @@ abstract class Generator {
         val x = ULong(nextLong())
         from + (x % width).signed
       } else {
-        @tailrec def loop(): Long = {
+        @tailrec
+        def loop(): Long = {
           val x = ULong(nextLong())
           if (x <= cap) (x % width).signed + from else loop()
         }
@@ -375,7 +379,8 @@ abstract class Generator {
       extra = false
       value
     } else {
-      @tailrec def loop(x: Double, y: Double): Double = {
+      @tailrec
+      def loop(x: Double, y: Double): Double = {
         val s = x * x + y * y
         if (s >= 1.0 || s == 0.0) {
           loop(nextDouble() * 2 - 1, nextDouble() * 2 - 1)
@@ -398,7 +403,8 @@ abstract class Generator {
     var i = 0
     val len = arr.length & 0xfffffffe
 
-    @tailrec def loop(i: Int, x: Double, y: Double): Unit = {
+    @tailrec
+    def loop(i: Int, x: Double, y: Double): Unit = {
       val s = x * x + y * y
       if (s >= 1.0 || s == 0.0) {
         loop(i, nextDouble() * 2 - 1, nextDouble() * 2 - 1)
@@ -430,12 +436,14 @@ abstract class Generator {
   }
 }
 
-abstract class IntBasedGenerator extends Generator { self =>
+abstract class IntBasedGenerator extends Generator {
+  self =>
   def nextLong(): Long =
     ((nextInt() & 0xFFFFFFFFL) << 32) | (nextInt() & 0xFFFFFFFFL)
 }
 
-abstract class LongBasedGenerator extends Generator { self =>
+abstract class LongBasedGenerator extends Generator {
+  self =>
   def nextInt(): Int = (nextLong() >>> 32).toInt
 
   override def fillInts(arr: Array[Int]): Unit = {

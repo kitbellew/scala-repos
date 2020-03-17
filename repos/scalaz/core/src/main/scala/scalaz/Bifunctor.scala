@@ -5,7 +5,8 @@ package scalaz
   * A type giving rise to two unrelated [[scalaz.Functor]]s.
   */
 ////
-trait Bifunctor[F[_, _]] { self =>
+trait Bifunctor[F[_, _]] {
+  self =>
   ////
 
   /** `map` over both type parameters. */
@@ -81,7 +82,8 @@ trait Bifunctor[F[_, _]] { self =>
 }
 
 object Bifunctor {
-  @inline def apply[F[_, _]](implicit F: Bifunctor[F]): Bifunctor[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Bifunctor[F]): Bifunctor[F] = F
 
   ////
 

@@ -19,7 +19,8 @@ import java.util.Comparator
 
 class PriorityQueueTest {
 
-  @Test def should_store_and_remove_ordered_integers(): Unit = {
+  @Test
+  def should_store_and_remove_ordered_integers(): Unit = {
     val pq = new PriorityQueue[Int]()
 
     assertEquals(0, pq.size())
@@ -37,7 +38,8 @@ class PriorityQueueTest {
     assertFalse(pq.remove(222))
   }
 
-  @Test def should_store_and_remove_ordered_strings(): Unit = {
+  @Test
+  def should_store_and_remove_ordered_strings(): Unit = {
     val pq = new PriorityQueue[String]()
 
     assertEquals(0, pq.size())
@@ -56,7 +58,8 @@ class PriorityQueueTest {
     assertNull(pq.poll())
   }
 
-  @Test def should_store_objects_with_custom_comparables(): Unit = {
+  @Test
+  def should_store_objects_with_custom_comparables(): Unit = {
     case class Rect(x: Int, y: Int)
 
     val areaComp = new Comparator[Rect] {
@@ -95,7 +98,8 @@ class PriorityQueueTest {
     assertTrue(pq.poll() eq null)
   }
 
-  @Test def should_store_ordered_Double_even_in_corner_cases(): Unit = {
+  @Test
+  def should_store_ordered_Double_even_in_corner_cases(): Unit = {
     val pq = new PriorityQueue[Double]()
 
     assertTrue(pq.add(1.0))
@@ -116,7 +120,8 @@ class PriorityQueueTest {
     assertTrue(pq.isEmpty)
   }
 
-  @Test def could_be_instantiated_with_a_prepopulated_Collection(): Unit = {
+  @Test
+  def could_be_instantiated_with_a_prepopulated_Collection(): Unit = {
     val l = asJavaCollection(Set(1, 5, 2, 3, 4))
     val pq = new PriorityQueue[Int](l)
 
@@ -125,7 +130,8 @@ class PriorityQueueTest {
     assertTrue(pq.isEmpty)
   }
 
-  @Test def could_be_instantiated_with_a_prepopulated_PriorityQueue(): Unit = {
+  @Test
+  def could_be_instantiated_with_a_prepopulated_PriorityQueue(): Unit = {
     val l = asJavaCollection(Set(1, 5, 2, 3, 4))
     val pq1 = new PriorityQueue[Int](l)
     val pq2 = new PriorityQueue[Int](pq1)
@@ -137,7 +143,8 @@ class PriorityQueueTest {
     assertTrue(pq2.isEmpty)
   }
 
-  @Test def could_be_instantiated_with_a_prepopulated_SortedSet(): Unit = {
+  @Test
+  def could_be_instantiated_with_a_prepopulated_SortedSet(): Unit = {
     val l = asJavaCollection(Set(1, 5, 2, 3, 4))
     val ss = new java.util.concurrent.ConcurrentSkipListSet[Int](l)
     val pq1 = new PriorityQueue[Int](l)
@@ -150,7 +157,8 @@ class PriorityQueueTest {
     assertTrue(pq2.isEmpty)
   }
 
-  @Test def should_be_cleared_in_a_single_operation(): Unit = {
+  @Test
+  def should_be_cleared_in_a_single_operation(): Unit = {
     val l = asJavaCollection(Set(1, 5, 2, 3, 4))
     val pq = new PriorityQueue[Int](l)
 
@@ -159,7 +167,8 @@ class PriorityQueueTest {
     assertEquals(0, pq.size())
   }
 
-  @Test def should_add_multiple_elemnt_in_one_operation(): Unit = {
+  @Test
+  def should_add_multiple_elemnt_in_one_operation(): Unit = {
     val l = asJavaCollection(Set(1, 5, 2, 3, 4))
     val pq = new PriorityQueue[Int]()
 
@@ -170,8 +179,8 @@ class PriorityQueueTest {
     assertEquals(6, pq.size())
   }
 
-  @Test def should_check_contained_values_even_in_double_corner_cases()
-      : Unit = {
+  @Test
+  def should_check_contained_values_even_in_double_corner_cases(): Unit = {
     val pq = new PriorityQueue[Double]()
 
     assertTrue(pq.add(11111.0))
@@ -206,7 +215,8 @@ class PriorityQueueTest {
     assertTrue(pq.contains(-0.0))
   }
 
-  @Test def should_retrieve_the_first_element(): Unit = {
+  @Test
+  def should_retrieve_the_first_element(): Unit = {
     val pqInt = new PriorityQueue[Int]()
 
     assertTrue(pqInt.add(1000))

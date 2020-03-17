@@ -26,7 +26,8 @@ import slick.util._
 /** Backend for the basic database and session handling features.
   * Concrete backends like `JdbcBackend` extend this type and provide concrete
   * types for `Database`, `DatabaseFactory` and `Session`. */
-trait BasicBackend { self =>
+trait BasicBackend {
+  self =>
   protected lazy val actionLogger = new SlickLogger(
     LoggerFactory.getLogger(classOf[BasicBackend].getName + ".action"))
   protected lazy val streamLogger = new SlickLogger(
@@ -61,7 +62,8 @@ trait BasicBackend { self =>
   def createDatabase(config: Config, path: String): Database
 
   /** A database instance to which connections can be created. */
-  trait DatabaseDef extends Closeable { this: Database =>
+  trait DatabaseDef extends Closeable {
+    this: Database =>
 
     /** Create a new session. The session needs to be closed explicitly by calling its close() method. */
     def createSession(): Session
@@ -490,7 +492,8 @@ trait BasicBackend { self =>
       * a synchronous action context. It is read when entering the context and written when leaving
       * so that all writes to non-volatile variables within the context are visible to the next
       * synchronous execution. */
-    @volatile private[BasicBackend] var sync = 0
+    @volatile
+    private[BasicBackend] var sync = 0
 
     private[BasicBackend] def readSync =
       sync // workaround for SI-9053 to avoid warnings
@@ -499,7 +502,8 @@ trait BasicBackend { self =>
 
     /** Used for the sequence counter in Action debug output. This variable is volatile because it
       * is only updated sequentially but not protected by a synchronous action context. */
-    @volatile private[BasicBackend] var sequenceCounter = 0
+    @volatile
+    private[BasicBackend] var sequenceCounter = 0
 
     def session: Session = currentSession
   }
@@ -536,7 +540,8 @@ trait BasicBackend { self =>
     private[BasicBackend] var streamingAction
         : SynchronousDatabaseAction[_, _ <: NoStream, This, _ <: Effect] = null
 
-    @volatile private[this] var cancelRequested = false
+    @volatile
+    private[this] var cancelRequested = false
 
     /** The Promise to complete when streaming has finished. */
     val streamingResultPromise = Promise[Null]()

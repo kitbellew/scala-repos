@@ -347,7 +347,8 @@ class ActorProducerTest
 private[camel] trait ActorProducerFixture
     extends MockitoSugar
     with BeforeAndAfterAll
-    with BeforeAndAfterEach { self: TestKit with Matchers with Suite ⇒
+    with BeforeAndAfterEach {
+  self: TestKit with Matchers with Suite ⇒
   var camel: Camel = _
   var exchange: CamelExchangeAdapter = _
   var callback: AsyncCallback = _

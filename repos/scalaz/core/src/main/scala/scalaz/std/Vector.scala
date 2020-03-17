@@ -131,7 +131,8 @@ trait VectorInstances extends VectorInstances0 {
 trait VectorFunctions {
   protected def empty[A]: Vector[A] = Vector.empty
 
-  @inline private[this] final def lazyFoldRight[A, B](as: Vector[A], b: => B)(
+  @inline
+  private[this] final def lazyFoldRight[A, B](as: Vector[A], b: => B)(
       f: (A, => B) => B) = {
     def rec(ix: Int): B =
       if (ix >= as.length - 1) b else f(as(ix + 1), rec(ix + 1))
@@ -273,7 +274,8 @@ trait VectorFunctions {
 
   /** `[`empty Vector`, as take 1, as take 2, ..., as]` */
   final def initz[A](as: Vector[A]): Vector[Vector[A]] = {
-    @tailrec def rec(acc: Vector[Vector[A]], as: Vector[A]): Vector[Vector[A]] =
+    @tailrec
+    def rec(acc: Vector[Vector[A]], as: Vector[A]): Vector[Vector[A]] =
       if (as.isEmpty) as +: acc else rec(as +: acc, as.init)
     rec(empty, as)
   }
@@ -304,7 +306,8 @@ private trait VectorOrder[A] extends Order[Vector[A]] with VectorEqual[A] {
 
   def order(a1: Vector[A], a2: Vector[A]): Ordering = {
     val a1s = a1.length
-    @tailrec def receqs(ix: Int): Ordering =
+    @tailrec
+    def receqs(ix: Int): Ordering =
       if (ix >= a1s) EQ
       else
         A.order(a1(ix), a2(ix)) match {

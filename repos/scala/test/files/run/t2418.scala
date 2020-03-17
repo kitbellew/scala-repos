@@ -1,5 +1,6 @@
 class Foo {
-  @volatile final var x = 10
+  @volatile
+  final var x = 10
   override def toString = "" + x
 }
 

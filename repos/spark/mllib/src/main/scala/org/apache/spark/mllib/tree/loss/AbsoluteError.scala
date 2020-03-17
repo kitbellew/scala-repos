@@ -27,8 +27,7 @@ import org.apache.spark.annotation.{DeveloperApi, Since}
   *  |y - F(x)|
   * where y is the label and F(x) is the model prediction for features x.
   */
-@Since("1.2.0")
-@DeveloperApi
+@Since("1.2.0") @DeveloperApi
 object AbsoluteError extends Loss {
 
   /**

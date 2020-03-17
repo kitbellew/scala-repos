@@ -20,7 +20,8 @@ import org.joda.time.{Period, Duration}
 /**
   * Enumeration of frequency base for utilizing with an RRule
   */
-sealed trait Frequency { this: Frequency =>
+sealed trait Frequency {
+  this: Frequency =>
   protected[time] def toICal: com.google.ical.values.Frequency =
     this match {
       case SECONDLY => com.google.ical.values.Frequency.SECONDLY

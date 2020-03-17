@@ -64,7 +64,8 @@ class HDFSCheckpointStore(val config: HDFSState.Config)(implicit
     val batcher: Batcher)
     extends CheckpointStore[Iterable[BatchID]] {
 
-  @transient private val logger = LoggerFactory.getLogger(classOf[HDFSState])
+  @transient
+  private val logger = LoggerFactory.getLogger(classOf[HDFSState])
 
   protected lazy val versionedStore = new FileVersionTracking(
     config.rootPath,

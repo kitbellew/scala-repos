@@ -17,7 +17,8 @@ import org.junit.Test
   */
 class DateTest {
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
     def compare(x: Date, y: Date): Int = { x.compareTo(y) }
 
     assertTrue(
@@ -30,7 +31,8 @@ class DateTest {
     assertEquals(0, compare(new Date(97, 11, 5), new Date(97, 11, 5, 0, 0)))
   }
 
-  @Test def comparable(): Unit = {
+  @Test
+  def comparable(): Unit = {
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
@@ -44,7 +46,8 @@ class DateTest {
     assertEquals(0, compare(new Date(97, 11, 5), new Date(97, 11, 5, 0, 0)))
   }
 
-  @Test def parseStrings(): Unit = {
+  @Test
+  def parseStrings(): Unit = {
     def test(s: String, v: Date): Unit =
       assertEquals(0, new Date(s).compareTo(v))
 
@@ -53,19 +56,22 @@ class DateTest {
     test("Jan 1 1970 18:11:01 GMT", new Date(Date.UTC(70, 0, 1, 18, 11, 1)))
   }
 
-  @Test def after(): Unit = {
+  @Test
+  def after(): Unit = {
     assertFalse(new Date(97, 11, 5, 0, 0).after(new Date(98, 11, 5, 0, 0)))
     assertTrue(new Date(99, 11, 5, 0, 0).after(new Date(98, 11, 5, 0, 0)))
     assertFalse(new Date(99, 11, 5, 0, 0).after(new Date(99, 11, 5, 0, 0)))
   }
 
-  @Test def before(): Unit = {
+  @Test
+  def before(): Unit = {
     assertTrue(new Date(97, 11, 5, 0, 0).before(new Date(98, 11, 5, 0, 0)))
     assertFalse(new Date(99, 11, 5, 0, 0).before(new Date(98, 11, 5, 0, 0)))
     assertFalse(new Date(99, 11, 5, 0, 0).before(new Date(99, 11, 5, 0, 0)))
   }
 
-  @Test def cloneTest(): Unit = {
+  @Test
+  def cloneTest(): Unit = {
     def testClone(date: Date): Boolean = {
       val cloned = date.clone()
       date == cloned
@@ -76,7 +82,8 @@ class DateTest {
     assertTrue(testClone(new Date(4, 1, 2, 3, 0, 0)))
   }
 
-  @Test def getYear(): Unit = {
+  @Test
+  def getYear(): Unit = {
     def testYear(year: Int): Unit = {
       val date = new Date()
       date.setYear(year)

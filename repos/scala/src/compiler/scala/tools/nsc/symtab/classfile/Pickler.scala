@@ -403,7 +403,8 @@ abstract class Pickler extends SubComponent {
 
     private object writeTreeBodyTraverser extends Traverser {
       private var refs = false
-      @inline private def asRefs[T](body: => T): T = {
+      @inline
+      private def asRefs[T](body: => T): T = {
         val saved = refs
         refs = true
         try body

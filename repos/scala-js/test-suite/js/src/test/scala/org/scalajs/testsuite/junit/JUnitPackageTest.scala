@@ -5,23 +5,27 @@ import org.junit.Assert._
 
 package Outer {
   class JUnitPackageTestOuter {
-    @Test def fun(): Unit = ()
+    @Test
+    def fun(): Unit = ()
   }
 
   package Inner {
     class JUnitPackageTestInner {
-      @Test def fun(): Unit = ()
+      @Test
+      def fun(): Unit = ()
     }
   }
 }
 
 class JUnitPackageTest {
-  @Test def testOuterTransformation(): Unit = {
+  @Test
+  def testOuterTransformation(): Unit = {
     JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.Outer.JUnitPackageTestOuter")
   }
 
-  @Test def testInnerTransformation(): Unit = {
+  @Test
+  def testInnerTransformation(): Unit = {
     JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.Outer.Inner.JUnitPackageTestInner")
   }

@@ -30,11 +30,13 @@ private[util] class BatchExecutor[In, Out](
     timeThreshold: Duration = Duration.Top,
     sizePercentile: => Float = 1.0f,
     f: Seq[In] => Future[Seq[Out]])(implicit timer: Timer)
-    extends Function1[In, Future[Out]] { batcher =>
+    extends Function1[In, Future[Out]] {
+  batcher =>
   import java.util.logging.Level.WARNING
 
   class ScheduledFlush(after: Duration, timer: Timer) {
-    @volatile var cancelled = false
+    @volatile
+    var cancelled = false
     val task = timer.schedule(after.fromNow) { flush() }
 
     def cancel() {

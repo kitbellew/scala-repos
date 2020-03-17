@@ -44,21 +44,25 @@ private[akka] class RepointableActorRef(
    * processing the very first message (i.e. before Cell.start()). Hence there
    * are two refs here, one for each function, and they are switched just so.
    */
-  @volatile private var _cellDoNotCallMeDirectly: Cell = _
-  @volatile private var _lookupDoNotCallMeDirectly: Cell = _
+  @volatile
+  private var _cellDoNotCallMeDirectly: Cell = _
+  @volatile
+  private var _lookupDoNotCallMeDirectly: Cell = _
 
   def underlying: Cell =
     Unsafe.instance.getObjectVolatile(this, cellOffset).asInstanceOf[Cell]
   def lookup =
     Unsafe.instance.getObjectVolatile(this, lookupOffset).asInstanceOf[Cell]
 
-  @tailrec final def swapCell(next: Cell): Cell = {
+  @tailrec
+  final def swapCell(next: Cell): Cell = {
     val old = underlying
     if (Unsafe.instance.compareAndSwapObject(this, cellOffset, old, next)) old
     else swapCell(next)
   }
 
-  @tailrec final def swapLookup(next: Cell): Cell = {
+  @tailrec
+  final def swapLookup(next: Cell): Cell = {
     val old = lookup
     if (Unsafe.instance.compareAndSwapObject(this, lookupOffset, old, next)) old
     else swapLookup(next)
@@ -145,9 +149,8 @@ private[akka] class RepointableActorRef(
       case _ ⇒ true
     }
 
-  @deprecated(
-    "Use context.watch(actor) and receive Terminated(actor)",
-    "2.2") def isTerminated: Boolean = underlying.isTerminated
+  @deprecated("Use context.watch(actor) and receive Terminated(actor)", "2.2")
+  def isTerminated: Boolean = underlying.isTerminated
 
   def provider: ActorRefProvider = system.provider
 

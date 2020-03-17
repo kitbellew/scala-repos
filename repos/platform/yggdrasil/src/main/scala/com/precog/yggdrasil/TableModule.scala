@@ -197,7 +197,8 @@ trait TableModule[M[+_]] extends TransSpecModule {
         spec: TransSpec2): M[(CrossOrder, Table)]
   }
 
-  trait TableLike { this: Table =>
+  trait TableLike {
+    this: Table =>
     import trans._
     import TransSpecModule._
 

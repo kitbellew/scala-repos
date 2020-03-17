@@ -9,7 +9,8 @@ import org.scalajs.testsuite.utils.Platform._
 
 class MathTestOnJDK8 {
 
-  @Test def addExact(): Unit = {
+  @Test
+  def addExact(): Unit = {
     assertEquals(0, Math.addExact(0, 0))
     assertEquals(1, Math.addExact(0, 1))
     assertEquals(1, Math.addExact(1, 0))
@@ -83,7 +84,8 @@ class MathTestOnJDK8 {
       Math.addExact(4611686018427387904L, 4611686018427387904L))
   }
 
-  @Test def subtractExact(): Unit = {
+  @Test
+  def subtractExact(): Unit = {
     assertEquals(0, Math.subtractExact(0, 0))
     assertEquals(1, Math.subtractExact(1, 0))
     assertEquals(-1, Math.subtractExact(0, 1))
@@ -167,7 +169,8 @@ class MathTestOnJDK8 {
       Math.subtractExact(4611686018427387904L, -4611686018427387904L))
   }
 
-  @Test def multiplyExact(): Unit = {
+  @Test
+  def multiplyExact(): Unit = {
     for (n <- Seq(Int.MinValue, -1, 0, 1, Int.MaxValue)) {
       assertEquals(0, Math.multiplyExact(n, 0))
       assertEquals(0, Math.multiplyExact(0, n))
@@ -263,7 +266,8 @@ class MathTestOnJDK8 {
       Math.multiplyExact(-2, 4611686018427387905L))
   }
 
-  @Test def incrementExact(): Unit = {
+  @Test
+  def incrementExact(): Unit = {
     assertEquals(Int.MaxValue, Math.incrementExact(Int.MaxValue - 1))
     assertEquals(Long.MaxValue, Math.incrementExact(Long.MaxValue - 1))
 
@@ -275,7 +279,8 @@ class MathTestOnJDK8 {
       Math.incrementExact(Long.MaxValue))
   }
 
-  @Test def decrementExact(): Unit = {
+  @Test
+  def decrementExact(): Unit = {
     assertEquals(Int.MinValue, Math.decrementExact(Int.MinValue + 1))
     assertEquals(Long.MinValue, Math.decrementExact(Long.MinValue + 1))
 
@@ -287,7 +292,8 @@ class MathTestOnJDK8 {
       Math.decrementExact(Long.MinValue))
   }
 
-  @Test def negateExact(): Unit = {
+  @Test
+  def negateExact(): Unit = {
     assertEquals(Int.MaxValue, Math.negateExact(Int.MinValue + 1))
     assertEquals(Int.MinValue + 1, Math.negateExact(Int.MaxValue))
     assertEquals(Long.MaxValue, Math.negateExact(Long.MinValue + 1))
@@ -297,7 +303,8 @@ class MathTestOnJDK8 {
     expectThrows(classOf[ArithmeticException], Math.negateExact(Long.MinValue))
   }
 
-  @Test def toIntExact(): Unit = {
+  @Test
+  def toIntExact(): Unit = {
     assertEquals(Int.MinValue, Math.toIntExact(-2147483648L))
     assertEquals(Int.MaxValue, Math.toIntExact(2147483647L))
 
@@ -305,7 +312,8 @@ class MathTestOnJDK8 {
     expectThrows(classOf[ArithmeticException], Math.toIntExact(2147483648L))
   }
 
-  @Test def floorDiv(): Unit = {
+  @Test
+  def floorDiv(): Unit = {
     assertEquals(0, Math.floorDiv(0, 1))
     assertEquals(0, Math.floorDiv(0, -1))
     assertEquals(1, Math.floorDiv(1, 1))
@@ -343,7 +351,8 @@ class MathTestOnJDK8 {
       expectThrows(classOf[ArithmeticException], Math.floorDiv(n, 0))
   }
 
-  @Test def floorMod() = {
+  @Test
+  def floorMod() = {
     assumeFalse(
       "Executing in PhantomJS",
       executingInPhantomJS

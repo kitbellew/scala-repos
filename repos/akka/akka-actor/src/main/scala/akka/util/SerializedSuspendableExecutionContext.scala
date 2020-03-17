@@ -42,11 +42,13 @@ private[akka] final class SerializedSuspendableExecutionContext(
     s"SerializedSuspendableExecutionContext.throughput must be greater than 0 but was $throughput")
 
   private final val state = new AtomicInteger(Off)
-  @tailrec private final def addState(newState: Int): Boolean = {
+  @tailrec
+  private final def addState(newState: Int): Boolean = {
     val c = state.get
     state.compareAndSet(c, c | newState) || addState(newState)
   }
-  @tailrec private final def remState(oldState: Int) {
+  @tailrec
+  private final def remState(oldState: Int) {
     val c = state.get
     if (state.compareAndSet(c, c & ~oldState)) attach() else remState(oldState)
   }
@@ -65,7 +67,8 @@ private[akka] final class SerializedSuspendableExecutionContext(
   final def suspend(): Unit = addState(Suspended)
 
   final def run(): Unit = {
-    @tailrec def run(done: Int): Unit =
+    @tailrec
+    def run(done: Int): Unit =
       if (done < throughput && state.get == On) {
         poll() match {
           case null ⇒ ()

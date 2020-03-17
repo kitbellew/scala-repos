@@ -40,7 +40,8 @@ import scalaz.Success
 trait JoinOptimizerSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
-    with LongIdMemoryDatasetConsumer[M] { self =>
+    with LongIdMemoryDatasetConsumer[M] {
+  self =>
 
   import TableModule.CrossOrder._ // TODO: Move CrossOrder out somewhere else.
   import dag._

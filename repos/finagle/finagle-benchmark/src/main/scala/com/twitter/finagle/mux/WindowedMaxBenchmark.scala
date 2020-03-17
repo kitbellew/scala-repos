@@ -7,8 +7,7 @@ import org.openjdk.jmh.annotations._
 import scala.util.Random
 
 // ./sbt 'project finagle-benchmark' 'run .*WindowedMaxBenchmark.*'
-@State(Scope.Benchmark)
-@Threads(16)
+@State(Scope.Benchmark) @Threads(16)
 @Warmup(iterations = 10, time = 3, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 10, time = 3, timeUnit = TimeUnit.SECONDS)
 class WindowedMaxBenchmark extends StdBenchAnnotations {

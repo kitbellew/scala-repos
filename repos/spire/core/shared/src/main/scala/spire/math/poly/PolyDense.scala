@@ -12,7 +12,8 @@ import spire.syntax.field._
 // Dense polynomials - Little Endian Coeffs e.g. x^0, x^1, ... x^n
 class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(implicit
     val ct: ClassTag[C])
-    extends Polynomial[C] { lhs =>
+    extends Polynomial[C] {
+  lhs =>
 
   def degree: Int = if (isZero) 0 else coeffs.length - 1
 
@@ -154,7 +155,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(implicit
       Polynomial.dense(ncs.reverse)
     }
 
-    @tailrec def eval(
+    @tailrec
+    def eval(
         q: Array[C],
         u: Array[C],
         n: Int): (Polynomial[C], Polynomial[C]) = {

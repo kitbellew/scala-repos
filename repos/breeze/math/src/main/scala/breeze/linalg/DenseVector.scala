@@ -742,8 +742,7 @@ object DenseVector
   TODO: scaladoc crashes on this. I don't know why. It makes me want to die a little.
   Returns the k-norm of this Vector.
    */
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canNorm[@expand.args(Int, Float, Long, BigInt, Complex) T]
       : norm.Impl2[DenseVector[T], Double, Double] = {
 

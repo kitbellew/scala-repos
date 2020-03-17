@@ -30,9 +30,12 @@ import S._
 import JE._
 
 object PasswordField {
-  @volatile var blankPw = "*******"
-  @volatile var minPasswordLength = 5
-  @volatile var logRounds = 10
+  @volatile
+  var blankPw = "*******"
+  @volatile
+  var minPasswordLength = 5
+  @volatile
+  var logRounds = 10
   def hashpw(in: String): Box[String] =
     tryo(BCrypt.hashpw(in, BCrypt.gensalt(logRounds)))
 }

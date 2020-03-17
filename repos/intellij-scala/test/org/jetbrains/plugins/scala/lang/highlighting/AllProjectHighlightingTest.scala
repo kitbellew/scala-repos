@@ -38,7 +38,6 @@ import org.junit.experimental.categories.Category
   * @author Alefas
   * @since 12/11/14.
   */
-
 @Category(Array(classOf[SlowTests]))
 class AllProjectHighlightingTest
     extends ExternalSystemImportingTestCase

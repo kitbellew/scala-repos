@@ -8,9 +8,9 @@ import spire.syntax.cfor._
 import scala.reflect.ClassTag
 import breeze.linalg._
 
-trait VectorBuilderOps { this: VectorBuilder.type =>
-  @expand
-  @expand.valify
+trait VectorBuilderOps {
+  this: VectorBuilder.type =>
+  @expand @expand.valify
   implicit def canOpInto_V_S[
       @expand.args(OpMulScalar, OpDiv) Op,
       @expand.args(Double, Long, Float, Int) T](implicit
@@ -56,8 +56,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canOpInto_V_V[
       @expand.args(OpAdd, OpSub) Op,
       @expand.args(Double, Long, Float, Int) T](implicit
@@ -119,8 +118,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canSet[@expand.args(Double, Long, Float, Int) T]
       : OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
     new OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
@@ -164,8 +162,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
       canCopyBuilder[V])
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canAxpy[@expand.args(Double, Long, Float, Int) T]
       : scaleAdd.InPlaceImpl3[VectorBuilder[T], T, VectorBuilder[T]] = {
     new scaleAdd.InPlaceImpl3[VectorBuilder[T], T, VectorBuilder[T]] {
@@ -363,8 +360,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canMulDMVB[@expand.args(Double, Int, Float, Long) T]
       : OpMulMatrix.Impl2[DenseMatrix[T], VectorBuilder[T], DenseVector[T]] = {
     new OpMulMatrix.Impl2[DenseMatrix[T], VectorBuilder[T], DenseVector[T]] {

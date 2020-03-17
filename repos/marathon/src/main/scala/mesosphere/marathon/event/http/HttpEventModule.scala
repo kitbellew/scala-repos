@@ -57,8 +57,7 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
     bind(classOf[HttpEventConfiguration]).toInstance(httpEventConfiguration)
   }
 
-  @Provides
-  @Named(HttpEventModule.StatusUpdateActor)
+  @Provides @Named(HttpEventModule.StatusUpdateActor)
   def provideStatusUpdateActor(
       system: ActorSystem,
       @Named(
@@ -72,8 +71,7 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
       clock)))
   }
 
-  @Provides
-  @Named(HttpEventModule.SubscribersKeeperActor)
+  @Provides @Named(HttpEventModule.SubscribersKeeperActor)
   def provideSubscribersKeeperActor(
       conf: HttpEventConfiguration,
       system: ActorSystem,

@@ -13,7 +13,8 @@ import scala.reflect.ClassTag
 /**
   * A test mixin to test all combinations of servers, clients and protocols.
   */
-trait ThriftTest { self: FunSuite =>
+trait ThriftTest {
+  self: FunSuite =>
   type Iface <: AnyRef
   def ifaceManifest: ClassTag[Iface]
   val processor: Iface

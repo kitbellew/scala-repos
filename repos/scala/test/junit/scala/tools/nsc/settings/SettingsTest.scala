@@ -9,7 +9,8 @@ import scala.tools.testing.AssertUtil.assertThrows
 
 @RunWith(classOf[JUnit4])
 class SettingsTest {
-  @Test def booleanSettingColon() {
+  @Test
+  def booleanSettingColon() {
     def check(args: String*): MutableSettings#BooleanSetting = {
       val s = new MutableSettings(msg =>
         throw new IllegalArgumentException(msg))
@@ -27,7 +28,8 @@ class SettingsTest {
     assertThrows[IllegalArgumentException](check("-Ytest-setting:rubbish"))
   }
 
-  @Test def userSettingsHavePrecedenceOverExperimental() {
+  @Test
+  def userSettingsHavePrecedenceOverExperimental() {
     def check(args: String*): MutableSettings#BooleanSetting = {
       val s = new MutableSettings(msg =>
         throw new IllegalArgumentException(msg))
@@ -47,13 +49,15 @@ class SettingsTest {
     assert(residual.isEmpty)
     b(s)
   }
-  @Test def userSettingsHavePrecedenceOverLint() {
+  @Test
+  def userSettingsHavePrecedenceOverLint() {
     assertTrue(check("-Xlint")(_.warnAdaptedArgs))
     assertFalse(check("-Xlint", "-Ywarn-adapted-args:false")(_.warnAdaptedArgs))
     assertFalse(check("-Ywarn-adapted-args:false", "-Xlint")(_.warnAdaptedArgs))
   }
 
-  @Test def anonymousLintersCanBeNamed() {
+  @Test
+  def anonymousLintersCanBeNamed() {
     assertTrue(check("-Xlint")(_.warnMissingInterpolator)) // among Xlint
     assertFalse(
       check("-Xlint:-missing-interpolator")(_.warnMissingInterpolator))
@@ -100,7 +104,8 @@ class SettingsTest {
       _.warnMissingInterpolator))
   }
 
-  @Test def xLintInvalidChoices(): Unit = {
+  @Test
+  def xLintInvalidChoices(): Unit = {
     assertThrows[IllegalArgumentException](
       check("-Xlint:-_")(_.warnAdaptedArgs))
     assertThrows[IllegalArgumentException](
@@ -108,7 +113,8 @@ class SettingsTest {
     ) // "warn-" should not be there
   }
 
-  @Test def xLintNonColonated(): Unit = {
+  @Test
+  def xLintNonColonated(): Unit = {
     assertTrue(
       check("-Xlint", "adapted-args", "-deprecation")(_.warnAdaptedArgs))
     assertFalse(check("-Xlint", "adapted-args", "-deprecation")(
@@ -123,7 +129,8 @@ class SettingsTest {
     ) // non-colonated: cannot provide negative args
   }
 
-  @Test def xLintContainsValues(): Unit = {
+  @Test
+  def xLintContainsValues(): Unit = {
     // make sure that lint.contains and lint.value.contains are consistent
     def t(s: MutableSettings, v: String) = {
       val r = s.lint.contains(v)
@@ -142,7 +149,8 @@ class SettingsTest {
       check("-Xlint:-adapted-args,_,adapted-args")(t(_, "adapted-args")))
   }
 
-  @Test def xLintDeprecatedAlias(): Unit = {
+  @Test
+  def xLintDeprecatedAlias(): Unit = {
     assertTrue(check("-Ywarn-adapted-args")(_.warnAdaptedArgs))
     assertTrue(
       check("-Xlint:_,-adapted-args", "-Ywarn-adapted-args")(_.warnAdaptedArgs))
@@ -160,7 +168,8 @@ class SettingsTest {
       _.warnAdaptedArgs))
   }
 
-  @Test def expandingMultichoice(): Unit = {
+  @Test
+  def expandingMultichoice(): Unit = {
     val s = new MutableSettings(msg => throw new IllegalArgumentException(msg))
     object mChoices extends s.MultiChoiceEnumeration {
       val a = Choice("a")
@@ -220,7 +229,8 @@ class SettingsTest {
       _ contains "'uber' cannot be negated")
   }
 
-  @Test def xSourceTest(): Unit = {
+  @Test
+  def xSourceTest(): Unit = {
     def check(expected: String, args: String*): Unit = {
       val s = new MutableSettings(msg =>
         throw new IllegalArgumentException(msg))

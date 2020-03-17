@@ -51,8 +51,7 @@ import org.apache.spark.rdd.RDD
   *   test           (Boolean) Whether to create testing RDD.
   *   testSampFact   (Double) Percentage of training data to use as test data.
   */
-@DeveloperApi
-@Since("0.8.0")
+@DeveloperApi @Since("0.8.0")
 object MFDataGenerator {
   @Since("0.8.0")
   def main(args: Array[String]) {

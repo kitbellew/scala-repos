@@ -19,7 +19,8 @@ package akka.cluster.ddata
   * i.e. if used outside the Replicator infrastructure, but the worst thing that can happen is that
   * a full merge is performed instead of the fast forward merge.
   */
-private[akka] trait FastMerge { self: ReplicatedData ⇒
+private[akka] trait FastMerge {
+  self: ReplicatedData ⇒
 
   private var ancestor: FastMerge = null
 

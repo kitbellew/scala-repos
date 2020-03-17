@@ -257,7 +257,8 @@ final class BackoffSupervisor(
   def receive = onTerminated orElse handleBackoff
 }
 
-private[akka] trait HandleBackoff { this: Actor ⇒
+private[akka] trait HandleBackoff {
+  this: Actor ⇒
   def childProps: Props
   def childName: String
   def reset: BackoffReset

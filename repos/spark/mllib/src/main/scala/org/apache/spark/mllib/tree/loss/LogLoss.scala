@@ -29,8 +29,7 @@ import org.apache.spark.mllib.util.MLUtils
   *   2 log(1 + exp(-2 y F(x)))
   * where y is a label in {-1, 1} and F(x) is the model prediction for features x.
   */
-@Since("1.2.0")
-@DeveloperApi
+@Since("1.2.0") @DeveloperApi
 object LogLoss extends Loss {
 
   /**

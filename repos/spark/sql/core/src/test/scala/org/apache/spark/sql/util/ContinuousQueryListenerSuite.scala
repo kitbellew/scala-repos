@@ -155,7 +155,8 @@ class ContinuousQueryListenerSuite
 
   private def withListenerAdded(listener: ContinuousQueryListener)(
       body: => Unit): Unit = {
-    @volatile var query: StreamExecution = null
+    @volatile
+    var query: StreamExecution = null
     try {
       failAfter(1 minute) {
         sqlContext.streams.addListener(listener)
@@ -176,8 +177,10 @@ class ContinuousQueryListenerSuite
     private val asyncTestWaiter =
       new Waiter // to catch errors in the async listener events
 
-    @volatile var startStatus: QueryStatus = null
-    @volatile var terminationStatus: QueryStatus = null
+    @volatile
+    var startStatus: QueryStatus = null
+    @volatile
+    var terminationStatus: QueryStatus = null
     val progressStatuses = new ConcurrentLinkedQueue[QueryStatus]
 
     def reset(): Unit = {

@@ -11,7 +11,8 @@ import org.junit.Test
 
 class ThrowablesTest {
 
-  @Test def shouldDefineAllJavaUtilErrorsAndExceptions(): Unit = {
+  @Test
+  def shouldDefineAllJavaUtilErrorsAndExceptions(): Unit = {
     import java.util._
     new ServiceConfigurationError("")
     new ConcurrentModificationException()

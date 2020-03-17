@@ -133,7 +133,8 @@ class FileHandler(
 
   // Thread-safety is guarded by synchronized on this
   private var stream: OutputStream = null
-  @volatile private var openTime: Long = 0
+  @volatile
+  private var openTime: Long = 0
   // Thread-safety is guarded by synchronized on this
   private var nextRollTime: Option[Long] = None
   // Thread-safety is guarded by synchronized on this

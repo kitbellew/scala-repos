@@ -16,6 +16,7 @@ object Test extends O {
 // For some reason the one actually mixed in does not.
 object Pip
 
-trait P { self: Pip.type =>
+trait P {
+  self: Pip.type =>
   Nil foreach identity
 }

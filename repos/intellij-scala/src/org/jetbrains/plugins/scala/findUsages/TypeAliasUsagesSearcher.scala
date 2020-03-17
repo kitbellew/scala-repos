@@ -36,8 +36,10 @@ class TypeAliasUsagesSearcher
       true) {
 
   def processQuery(
-      @NotNull parameters: ReferencesSearch.SearchParameters,
-      @NotNull consumer: Processor[PsiReference]) {
+      @NotNull
+      parameters: ReferencesSearch.SearchParameters,
+      @NotNull
+      consumer: Processor[PsiReference]) {
     val target: PsiElement = parameters.getElementToSearch
     val ta = target match {
       case named: PsiNamedElement =>
@@ -64,7 +66,8 @@ class TypeAliasUsagesSearcher
 
   private class MyProcessor(
       myTarget: PsiElement,
-      @Nullable prefix: String,
+      @Nullable
+      prefix: String,
       mySession: SearchSession)
       extends RequestResultProcessor(myTarget, prefix) {
     def processTextOccurrence(

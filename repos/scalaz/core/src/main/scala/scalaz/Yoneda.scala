@@ -7,7 +7,8 @@ package scalaz
   * we have forgotten that `F` is a functor.
   * Can be seen as a partially applied `map` for the functor `F`.
   */
-abstract class Yoneda[F[_], A] { yo =>
+abstract class Yoneda[F[_], A] {
+  yo =>
   def apply[B](f: A => B): F[B]
 
   /** Converts to `F[A]` even without a `Functor` instance for `F` */

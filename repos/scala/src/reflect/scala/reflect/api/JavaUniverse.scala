@@ -19,7 +19,8 @@ package api
   *
   *  @contentDiagram hideNodes "*Api"
   */
-trait JavaUniverse extends Universe { self =>
+trait JavaUniverse extends Universe {
+  self =>
 
   /** In runtime reflection universes, runtime representation of a class is `java.lang.Class`.
     *  @group JavaMirrors

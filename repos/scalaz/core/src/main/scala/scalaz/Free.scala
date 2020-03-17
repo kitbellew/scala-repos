@@ -105,7 +105,8 @@ sealed abstract class Free[S[_], A] {
       S: Functor[S]): B = resume.fold(s, r)
 
   /** Evaluates a single layer of the free monad **/
-  @tailrec final def resume(implicit S: Functor[S]): (S[Free[S, A]] \/ A) =
+  @tailrec
+  final def resume(implicit S: Functor[S]): (S[Free[S, A]] \/ A) =
     this match {
       case Return(a)  => \/-(a)
       case Suspend(t) => -\/(S.map(t)(Return(_)))
@@ -162,7 +163,8 @@ sealed abstract class Free[S[_], A] {
 
   /** Runs to completion, using a function that extracts the resumption from its suspension functor. */
   final def go(f: S[Free[S, A]] => Free[S, A])(implicit S: Functor[S]): A = {
-    @tailrec def go2(t: Free[S, A]): A =
+    @tailrec
+    def go2(t: Free[S, A]): A =
       t.resume match {
         case -\/(s) => go2(f(s))
         case \/-(r) => r
@@ -261,7 +263,8 @@ sealed abstract class Free[S[_], A] {
   /** Runs to completion, allowing the resumption function to thread an arbitrary state of type `B`. */
   final def foldRun[B](b: B)(f: (B, S[Free[S, A]]) => (B, Free[S, A]))(implicit
       S: Functor[S]): (B, A) = {
-    @tailrec def foldRun2(t: Free[S, A], z: B): (B, A) =
+    @tailrec
+    def foldRun2(t: Free[S, A], z: B): (B, A) =
       t.resume match {
         case -\/(s) =>
           val (b1, s1) = f(z, s)
@@ -294,7 +297,8 @@ sealed abstract class Free[S[_], A] {
 
   /** Runs a `Source` all the way to the end, tail-recursively, collecting the produced values. */
   def collect[B](implicit ev: Free[S, A] =:= Source[B, A]): (Vector[B], A) = {
-    @tailrec def go(c: Source[B, A], v: Vector[B] = Vector()): (Vector[B], A) =
+    @tailrec
+    def go(c: Source[B, A], v: Vector[B] = Vector()): (Vector[B], A) =
       c.resume match {
         case -\/((b, cont)) => go(cont, v :+ b)
         case \/-(r)         => (v, r)
@@ -305,7 +309,8 @@ sealed abstract class Free[S[_], A] {
   /** Drive this `Source` with the given Sink. */
   def drive[E, B](sink: Sink[Option[E], B])(implicit
       ev: Free[S, A] =:= Source[E, A]): (A, B) = {
-    @tailrec def go(src: Source[E, A], snk: Sink[Option[E], B]): (A, B) =
+    @tailrec
+    def go(src: Source[E, A], snk: Sink[Option[E], B]): (A, B) =
       (src.resume, snk.resume) match {
         case (-\/((e, c)), -\/(f)) => go(c, f(Some(e)))
         case (-\/((e, c)), \/-(y)) => go(c, Sink.sinkMonad[Option[E]].pure(y))
@@ -317,7 +322,8 @@ sealed abstract class Free[S[_], A] {
 
   /** Feed the given stream to this `Source`. */
   def feed[E](ss: Stream[E])(implicit ev: Free[S, A] =:= Sink[E, A]): A = {
-    @tailrec def go(snk: Sink[E, A], rest: Stream[E]): A =
+    @tailrec
+    def go(snk: Sink[E, A], rest: Stream[E]): A =
       (rest, snk.resume) match {
         case (x #:: xs, -\/(f)) => go(f(x), xs)
         case (Stream(), -\/(f)) => go(f(sys.error("No more values.")), Stream())
@@ -329,7 +335,8 @@ sealed abstract class Free[S[_], A] {
   /** Feed the given source to this `Sink`. */
   def drain[E, B](source: Source[E, B])(implicit
       ev: Free[S, A] =:= Sink[E, A]): (A, B) = {
-    @tailrec def go(src: Source[E, B], snk: Sink[E, A]): (A, B) =
+    @tailrec
+    def go(src: Source[E, B], snk: Sink[E, A]): (A, B) =
       (src.resume, snk.resume) match {
         case (-\/((e, c)), -\/(f)) => go(c, f(e))
         case (-\/((e, c)), \/-(y)) => go(c, Sink.sinkMonad[E].pure(y))

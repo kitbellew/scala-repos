@@ -21,7 +21,8 @@ package generic
   *  @define   coll collection
   *  @define   Coll Subtractable
   */
-trait Subtractable[A, +Repr <: Subtractable[A, Repr]] { self =>
+trait Subtractable[A, +Repr <: Subtractable[A, Repr]] {
+  self =>
 
   /** The representation object of type `Repr` which contains the collection's elements
     */

@@ -22,7 +22,9 @@ class AnnotNotFound {
     ()
   }
 
-  def func(@param x: Int): Int = 0
+  def func(
+      @param
+      x: Int): Int = 0
 
   abstract class A {
     @typealias
@@ -37,5 +39,7 @@ class AnnotNotFound {
 
   class D[@typeparam T]
 
-  class E(@valueparam x: Any)
+  class E(
+      @valueparam
+      x: Any)
 }

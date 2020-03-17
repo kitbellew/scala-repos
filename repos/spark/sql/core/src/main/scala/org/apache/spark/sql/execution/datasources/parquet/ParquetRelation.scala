@@ -331,7 +331,8 @@ private[sql] class DefaultSource
 
         val cacheMetadata = useMetadataCache
 
-        @transient val cachedStatuses = inputFiles.map { f =>
+        @transient
+        val cachedStatuses = inputFiles.map { f =>
           // In order to encode the authority of a Path containing special characters such as '/'
           // (which does happen in some S3N credentials), we need to use the string returned by the
           // URI of the path to create a new Path.

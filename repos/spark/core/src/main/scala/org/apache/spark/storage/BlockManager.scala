@@ -159,7 +159,8 @@ private[spark] class BlockManager(
   private val asyncReregisterLock = new Object
 
   // Field related to peer block managers that are necessary for block replication
-  @volatile private var cachedPeers: Seq[BlockManagerId] = _
+  @volatile
+  private var cachedPeers: Seq[BlockManagerId] = _
   private val peerFetchLock = new Object
   private var lastPeerFetchTime = 0L
 

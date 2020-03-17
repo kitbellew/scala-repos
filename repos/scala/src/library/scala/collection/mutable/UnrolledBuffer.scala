@@ -55,9 +55,12 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
     with Serializable {
   import UnrolledBuffer.Unrolled
 
-  @transient private var headptr = newUnrolled
-  @transient private var lastptr = headptr
-  @transient private var sz = 0
+  @transient
+  private var headptr = newUnrolled
+  @transient
+  private var lastptr = headptr
+  @transient
+  private var sz = 0
 
   private[collection] def headPtr = headptr
   private[collection] def headPtr_=(head: Unrolled[T]) = headptr = head
@@ -233,7 +236,8 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       if (buff eq null) unrolledlength else buff.calcNextLength(array.length)
 
     // adds and returns itself or the new unrolled if full
-    @tailrec final def append(elem: T): Unrolled[T] =
+    @tailrec
+    final def append(elem: T): Unrolled[T] =
       if (size < array.length) {
         array(size) = elem
         size += 1
@@ -257,11 +261,14 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
         unrolled = unrolled.next
       }
     }
-    @tailrec final def apply(idx: Int): T =
+    @tailrec
+    final def apply(idx: Int): T =
       if (idx < size) array(idx) else next.apply(idx - size)
-    @tailrec final def update(idx: Int, newelem: T): Unit =
+    @tailrec
+    final def update(idx: Int, newelem: T): Unit =
       if (idx < size) array(idx) = newelem else next.update(idx - size, newelem)
-    @tailrec final def locate(idx: Int): Unrolled[T] =
+    @tailrec
+    final def locate(idx: Int): Unrolled[T] =
       if (idx < size) this else next.locate(idx - size)
     def prepend(elem: T) =
       if (size < array.length) {
@@ -288,7 +295,8 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       }
     }
     // returns pointer to new last if changed
-    @tailrec final def remove(idx: Int, buffer: UnrolledBuffer[T]): T =
+    @tailrec
+    final def remove(idx: Int, buffer: UnrolledBuffer[T]): T =
       if (idx < size) {
         // remove the element
         // then try to merge with the next bucket
@@ -318,7 +326,8 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
         if (next eq null) true else false // checks if last node was thrown out
       } else false
 
-    @tailrec final def insertAll(
+    @tailrec
+    final def insertAll(
         idx: Int,
         t: scala.collection.Traversable[T],
         buffer: UnrolledBuffer[T]): Unit = {

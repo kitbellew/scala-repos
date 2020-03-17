@@ -49,7 +49,9 @@ object Consts {
 }
 case class BadUser7(@size(Consts.cInt) age: Int)
 case class BadUser8(age: Option[Option[Int]])
-case class BadUser9(@size(15) @text age: Option[Option[Int]])
+case class BadUser9(
+    @size(15) @text
+    age: Option[Option[Int]])
 case class BadUser10(@size(2) @size(4) age: Option[Option[Int]])
 
 case class ExhaustiveJdbcCaseClass(
@@ -63,18 +65,21 @@ case class ExhaustiveJdbcCaseClass(
     @size(20) smallString: String, // Should goto varchar
     @size(200) smallishString: String, // Should goto varchar
     @size(2048) largeString: String, // Should goto TEXT
-    @text forceTextString: String, // Force smaller to text, stored out of the table. So row query speed possibly faster
-    @size(
-      2051) @varchar forcedVarChar: String, // Forced inline to table -- only some sql version support > 255 for varchar
+    @text
+    forceTextString: String, // Force smaller to text, stored out of the table. So row query speed possibly faster
+    @size(2051) @varchar
+    forcedVarChar: String, // Forced inline to table -- only some sql version support > 255 for varchar
     myDateWithTime: Date, // Default goes to MySQL DateTime/Timestamp so its not lossy
-    @date myDateWithoutTime: Date,
+    @date
+    myDateWithoutTime: Date,
     optiLong: Option[Long] // Nullable long
 )
 
 case class CaseClassWithDate(
     id: Long,
     myDateWithTime: Date,
-    @date myDateWithoutTime: Date)
+    @date
+    myDateWithoutTime: Date)
 
 case class CaseClassWithOptions(
     id: Option[Int],
@@ -85,7 +90,8 @@ case class InnerWithBadNesting(age: Int, id: Long)
 
 case class OuterWithBadNesting(
     id: Int, // duplicate in nested case class
-    @text name: String,
+    @text
+    name: String,
     details: InnerWithBadNesting)
 
 class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {

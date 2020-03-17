@@ -86,7 +86,8 @@ private class ApachePollingFileWatcher(
     with SLF4JLogging {
   private val base = vfs.vfile(watched).getName.getURI
 
-  @volatile private var fm: DefaultFileMonitor = create()
+  @volatile
+  private var fm: DefaultFileMonitor = create()
   private def create(): DefaultFileMonitor =
     new DefaultFileMonitor(new FileListener {
       def watched(event: FileChangeEvent) = selector.includeFile(event.getFile)

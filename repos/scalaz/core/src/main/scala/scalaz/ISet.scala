@@ -697,7 +697,8 @@ sealed abstract class ISetInstances {
 
     override def index[A](fa: ISet[A], i: Int): Option[A] = {
       import std.anyVal._
-      @tailrec def loop(a: ISet[A], b: Int): Option[A] =
+      @tailrec
+      def loop(a: ISet[A], b: Int): Option[A] =
         a match {
           case Bin(x, l, r) =>
             Order[Int].order(b, l.size) match {

@@ -35,7 +35,8 @@ object TimeHelpers extends TimeHelpers with ControlHelpers with ClassHelpers
   * The TimeHelpers trait provide functions to create TimeSpans (an object representing duration in milliseconds),
   * to manage date formats or general utility functions (get the date for today, get year/month/day number,...)
   */
-trait TimeHelpers { self: ControlHelpers =>
+trait TimeHelpers {
+  self: ControlHelpers =>
   // Logger must be lazy, since we cannot instantiate until after boot is complete
   private lazy val logger = Logger(classOf[TimeHelpers])
 

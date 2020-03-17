@@ -45,7 +45,8 @@ class RandomBenchmarks extends MyBenchmark with BenchmarkData {
   val well44497aRng = spire.random.rng.Well44497a.fromArray(ints16)
   val well44497bRng = spire.random.rng.Well44497b.fromArray(ints16)
 
-  @inline final def nextLen = 1000000
+  @inline
+  final def nextLen = 1000000
 
   // nextInt()
   def timeNextIntJava(reps: Int) =
@@ -508,7 +509,8 @@ class RandomBenchmarks extends MyBenchmark with BenchmarkData {
     }
 
   // fillBytes(128)
-  @inline final def fillLen = 100000
+  @inline
+  final def fillLen = 100000
 
   def timeFillBytesJava(reps: Int) =
     run(reps) {

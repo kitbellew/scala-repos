@@ -4,13 +4,15 @@ import org.junit.Assert._
 import org.junit.Test
 
 trait JUnitMixinTestTrait {
-  @Test def mixinTest(): Unit = ()
+  @Test
+  def mixinTest(): Unit = ()
 }
 
 class JUnitMixinTest extends JUnitMixinTestTrait
 
 class JUnitMixinTestCheck {
-  @Test def jUnitMixinTest(): Unit = {
+  @Test
+  def jUnitMixinTest(): Unit = {
     val boot = JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.JUnitMixinTest")
     try { boot.invoke(boot.newInstance(), "mixinTest") }

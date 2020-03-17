@@ -4,7 +4,8 @@
 
 class A {}
 
-trait B[T <: B[T]] { self: T =>
+trait B[T <: B[T]] {
+  self: T =>
 }
 
 abstract class C extends A with B[C] {

@@ -35,7 +35,8 @@ class FloatType private () extends FractionalType {
   // this type. Otherwise, the companion object would be of type "FloatType$" in byte code.
   // Defined with a private constructor so the companion object is the only possible instantiation.
   private[sql] type InternalType = Float
-  @transient private[sql] lazy val tag = ScalaReflectionLock.synchronized {
+  @transient
+  private[sql] lazy val tag = ScalaReflectionLock.synchronized {
     typeTag[InternalType]
   }
   private[sql] val numeric = implicitly[Numeric[Float]]

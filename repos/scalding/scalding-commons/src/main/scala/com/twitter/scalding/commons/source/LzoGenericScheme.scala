@@ -134,7 +134,10 @@ object LzoGenericScheme {
   * Generic scheme for data stored as lzo-compressed protobuf messages.
   * Serialization is performed using the supplied BinaryConverter.
   */
-class LzoGenericScheme[M](@transient conv: BinaryConverter[M], clazz: Class[M])
+class LzoGenericScheme[M](
+    @transient
+    conv: BinaryConverter[M],
+    clazz: Class[M])
     extends LzoBinaryScheme[M, GenericWritable[M]] {
 
   override protected def prepareBinaryWritable(): GenericWritable[M] =

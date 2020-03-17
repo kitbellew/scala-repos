@@ -1,5 +1,6 @@
 object O {
-  class C; @deprecated("", "") type D = C; def foo: Seq[D] = Nil
+  class C; @deprecated("", "")
+  type D = C; def foo: Seq[D] = Nil
 }
 
 object NoWarn {

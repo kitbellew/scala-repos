@@ -24,9 +24,8 @@ private object SpecializedHeaderValueParsers {
         input: ByteString,
         valueStart: Int,
         onIllegalHeader: ErrorInfo ⇒ Unit): (HttpHeader, Int) = {
-      @tailrec def recurse(
-          ix: Int = valueStart,
-          result: Long = 0): (HttpHeader, Int) = {
+      @tailrec
+      def recurse(ix: Int = valueStart, result: Long = 0): (HttpHeader, Int) = {
         val c = byteChar(input, ix)
         if (result < 0)
           fail(

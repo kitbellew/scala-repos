@@ -1,7 +1,8 @@
 package scala.reflect
 package api
 
-trait StandardLiftables { self: Universe =>
+trait StandardLiftables {
+  self: Universe =>
   import internal._
   import reificationSupport.{SyntacticTuple, ScalaDot}
 

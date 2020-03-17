@@ -48,7 +48,8 @@ private[setup] trait Config {
     (timeMode == TimeMode.Correspondence) option days
 }
 
-trait Positional { self: Config =>
+trait Positional {
+  self: Config =>
 
   import chess.format.Forsyth, Forsyth.SituationPlus
 

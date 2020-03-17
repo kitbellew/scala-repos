@@ -43,8 +43,10 @@ private[spark] class SparkDeploySchedulerBackend(
       stop(SparkAppHandle.State.KILLED)
   }
 
-  @volatile var shutdownCallback: SparkDeploySchedulerBackend => Unit = _
-  @volatile private var appId: String = _
+  @volatile
+  var shutdownCallback: SparkDeploySchedulerBackend => Unit = _
+  @volatile
+  private var appId: String = _
 
   private val registrationBarrier = new Semaphore(0)
 

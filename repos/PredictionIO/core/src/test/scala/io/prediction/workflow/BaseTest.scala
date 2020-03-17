@@ -16,7 +16,8 @@ import org.apache.spark.SparkConf
 trait LocalSparkContext extends BeforeAndAfterEach with BeforeAndAfterAll {
   self: Suite =>
 
-  @transient var sc: SparkContext = _
+  @transient
+  var sc: SparkContext = _
 
   override def beforeAll() {
     InternalLoggerFactory.setDefaultFactory(new Slf4JLoggerFactory())
@@ -51,9 +52,11 @@ object LocalSparkContext {
 }
 
 /** Shares a local `SparkContext` between all tests in a suite and closes it at the end */
-trait SharedSparkContext extends BeforeAndAfterAll { self: Suite =>
+trait SharedSparkContext extends BeforeAndAfterAll {
+  self: Suite =>
 
-  @transient private var _sc: SparkContext = _
+  @transient
+  private var _sc: SparkContext = _
 
   def sc: SparkContext = _sc
 

@@ -11,11 +11,8 @@ import akka.testkit.TestProbe
 import org.openjdk.jmh.annotations._
 import java.util.concurrent.TimeUnit
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.SingleShotTime))
-@Fork(3)
-@Warmup(iterations = 20)
-@Measurement(iterations = 100)
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.SingleShotTime)) @Fork(3)
+@Warmup(iterations = 20) @Measurement(iterations = 100)
 class RouterPoolCreationBenchmark {
   implicit val system: ActorSystem = ActorSystem()
   val probe = TestProbe()
@@ -31,8 +28,7 @@ class RouterPoolCreationBenchmark {
     Await.ready(system.whenTerminated, 15.seconds)
   }
 
-  @Benchmark
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  @Benchmark @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def testCreation: Boolean = {
     val pool = system.actorOf(
       RoundRobinPool(size).props(TestActors.echoActorProps))

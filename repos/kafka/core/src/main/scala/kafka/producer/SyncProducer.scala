@@ -46,7 +46,8 @@ object SyncProducer {
 class SyncProducer(val config: SyncProducerConfig) extends Logging {
 
   private val lock = new Object()
-  @volatile private var shutdown: Boolean = false
+  @volatile
+  private var shutdown: Boolean = false
   private val blockingChannel = new BlockingChannel(
     config.host,
     config.port,

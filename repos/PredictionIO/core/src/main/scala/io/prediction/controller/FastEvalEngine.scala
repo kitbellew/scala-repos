@@ -40,7 +40,8 @@ import scala.collection.mutable.{HashMap => MutableHashMap}
   */
 @Experimental
 object FastEvalEngineWorkflow {
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   type EX = Int
   type AX = Int
@@ -332,7 +333,8 @@ class FastEvalEngine[TD, EI, PD, Q, P, A](
       preparatorClassMap,
       algorithmClassMap,
       servingClassMap) {
-  @transient override lazy val logger = Logger[this.type]
+  @transient
+  override lazy val logger = Logger[this.type]
 
   override def eval(
       sc: SparkContext,

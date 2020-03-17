@@ -7,8 +7,7 @@ import org.openjdk.jmh.annotations._
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
-@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.NANOSECONDS) @BenchmarkMode(Array(Mode.AverageTime))
 class OfferBenchmark {
   import OfferBenchmark._
 

@@ -23,7 +23,8 @@ class DataSource
       Query,
       ActualResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   override def readTraining(sc: SparkContext): TrainingData = {
     new TrainingData(events = sc.parallelize(0 until 100))

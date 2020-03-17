@@ -284,8 +284,7 @@ class LDA private (
     *
     * LDAOptimizer used to perform the actual calculation
     */
-  @Since("1.4.0")
-  @DeveloperApi
+  @Since("1.4.0") @DeveloperApi
   def getOptimizer: LDAOptimizer = ldaOptimizer
 
   /**
@@ -293,8 +292,7 @@ class LDA private (
     *
     * LDAOptimizer used to perform the actual calculation (default = EMLDAOptimizer)
     */
-  @Since("1.4.0")
-  @DeveloperApi
+  @Since("1.4.0") @DeveloperApi
   def setOptimizer(optimizer: LDAOptimizer): this.type = {
     this.ldaOptimizer = optimizer
     this

@@ -25,8 +25,7 @@ object serialize {
     out.close()
     ba.toByteArray()
   }
-  @throws(classOf[IOException])
-  @throws(classOf[ClassNotFoundException])
+  @throws(classOf[IOException]) @throws(classOf[ClassNotFoundException])
   def read[A](buffer: Array[Byte]): A = {
     val in = new ObjectInputStream(new ByteArrayInputStream(buffer))
     in.readObject().asInstanceOf[A]

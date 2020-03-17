@@ -5,7 +5,8 @@ package runtime
 import scala.collection.mutable
 import scala.reflect.internal.Flags._
 
-private[reflect] trait SymbolLoaders { self: SymbolTable =>
+private[reflect] trait SymbolLoaders {
+  self: SymbolTable =>
 
   /** The standard completer for top-level classes
     *  @param clazz   The top-level class

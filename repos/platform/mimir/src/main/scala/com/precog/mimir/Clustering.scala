@@ -292,7 +292,8 @@ trait KMediansCoreSetClustering {
         val alpha = i
         //System.err.println("thresholdCount=%s alpha=%s" format (thresholdCount, alpha))
 
-        @inline def isBad(idx: Int) = assignments(idx) > alpha && !isCenter(idx)
+        @inline
+        def isBad(idx: Int) = assignments(idx) > alpha && !isCenter(idx)
 
         // Remove all points whose klass <= i || cluster
         var keepLength = 0

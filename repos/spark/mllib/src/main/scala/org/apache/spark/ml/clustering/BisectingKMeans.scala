@@ -82,8 +82,7 @@ private[clustering] trait BisectingKMeansParams
   *
   * @param parentModel a model trained by spark.mllib.clustering.BisectingKMeans.
   */
-@Since("2.0.0")
-@Experimental
+@Since("2.0.0") @Experimental
 class BisectingKMeansModel private[ml] (
     @Since("2.0.0") override val uid: String,
     private val parentModel: MLlibBisectingKMeansModel)
@@ -143,8 +142,7 @@ class BisectingKMeansModel private[ml] (
   *     Steinbach, Karypis, and Kumar, A comparison of document clustering techniques,
   *     KDD Workshop on Text Mining, 2000.]]
   */
-@Since("2.0.0")
-@Experimental
+@Since("2.0.0") @Experimental
 class BisectingKMeans @Since("2.0.0") (@Since("2.0.0") override val uid: String)
     extends Estimator[BisectingKMeansModel]
     with BisectingKMeansParams {

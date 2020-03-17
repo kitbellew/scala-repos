@@ -276,7 +276,8 @@ private[optimizer] abstract class OptimizerCore(
   private def transform(tree: Tree, isStat: Boolean)(implicit
       scope: Scope): Tree = {
 
-    @inline implicit def pos = tree.pos
+    @inline
+    implicit def pos = tree.pos
     val result = tree match {
       // Definitions
 
@@ -743,7 +744,8 @@ private[optimizer] abstract class OptimizerCore(
   private def pretransformExpr(tree: Tree)(cont: PreTransCont)(implicit
       scope: Scope): TailRec[Tree] =
     tailcall {
-      @inline implicit def pos = tree.pos
+      @inline
+      implicit def pos = tree.pos
 
       tree match {
         case tree: Block =>
@@ -1734,9 +1736,11 @@ private[optimizer] abstract class OptimizerCore(
     lazy val newReceiver = finishTransformExpr(optTReceiver.get)
     lazy val newArgs = targs.map(finishTransformExpr)
 
-    @inline def contTree(result: Tree) = cont(PreTransTree(result))
+    @inline
+    def contTree(result: Tree) = cont(PreTransTree(result))
 
-    @inline def StringClassType = ClassType(Definitions.StringClass)
+    @inline
+    def StringClassType = ClassType(Definitions.StringClass)
 
     def defaultApply(methodName: String, resultType: Type): TailRec[Tree] =
       contTree(Apply(newReceiver, Ident(methodName), newArgs)(resultType))
@@ -2228,13 +2232,15 @@ private[optimizer] abstract class OptimizerCore(
       pos: Position): Tree = {
     import BinaryOp._
 
-    @inline def default = If(cond, thenp, elsep)(tpe)
+    @inline
+    def default = If(cond, thenp, elsep)(tpe)
     cond match {
       case BooleanLiteral(v) =>
         if (v) thenp else elsep
 
       case _ =>
-        @inline def negCond = foldUnaryOp(UnaryOp.Boolean_!, cond)
+        @inline
+        def negCond = foldUnaryOp(UnaryOp.Boolean_!, cond)
         if (thenp.tpe == BooleanType && elsep.tpe == BooleanType) {
           (cond, thenp, elsep) match {
             case (_, BooleanLiteral(t), BooleanLiteral(e)) =>
@@ -2424,7 +2430,8 @@ private[optimizer] abstract class OptimizerCore(
   private def foldUnaryOp(op: UnaryOp.Code, arg: Tree)(implicit
       pos: Position): Tree = {
     import UnaryOp._
-    @inline def default = UnaryOp(op, arg)
+    @inline
+    def default = UnaryOp(op, arg)
     (op: @switch) match {
       case Boolean_! =>
         arg match {
@@ -2616,7 +2623,8 @@ private[optimizer] abstract class OptimizerCore(
   private def foldBinaryOp(op: BinaryOp.Code, lhs: Tree, rhs: Tree)(implicit
       pos: Position): Tree = {
     import BinaryOp._
-    @inline def default = BinaryOp(op, lhs, rhs)
+    @inline
+    def default = BinaryOp(op, lhs, rhs)
     (op: @switch) match {
       case === | !== =>
         val positive = (op == ===)
@@ -2631,7 +2639,8 @@ private[optimizer] abstract class OptimizerCore(
       case String_+ =>
         val lhs1 = foldToStringForString_+(lhs)
         val rhs1 = foldToStringForString_+(rhs)
-        @inline def stringDefault = BinaryOp(String_+, lhs1, rhs1)
+        @inline
+        def stringDefault = BinaryOp(String_+, lhs1, rhs1)
         (lhs1, rhs1) match {
           case (StringLiteral(s1), StringLiteral(s2)) =>
             StringLiteral(s1 + s2)
@@ -3314,7 +3323,8 @@ private[optimizer] abstract class OptimizerCore(
       pos: Position): Tree = {
     // !!! Must be in sync with scala.scalajs.runtime.LinkingInfo
 
-    @inline def default = JSBracketSelect(qualifier, item)
+    @inline
+    def default = JSBracketSelect(qualifier, item)
 
     (qualifier, item) match {
       case (

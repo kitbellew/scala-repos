@@ -109,7 +109,8 @@ private[kinesis] class KinesisReceiver[T](
     messageHandler: Record => T,
     awsCredentialsOption: Option[SerializableAWSCredentials])
     extends Receiver[T](storageLevel)
-    with Logging { receiver =>
+    with Logging {
+  receiver =>
 
   /*
    * =================================================================================
@@ -122,7 +123,8 @@ private[kinesis] class KinesisReceiver[T](
     * workerId is used by the KCL should be based on the ip address of the actual Spark Worker
     * where this code runs (not the driver's IP address.)
     */
-  @volatile private var workerId: String = null
+  @volatile
+  private var workerId: String = null
 
   /**
     * Worker is the core client abstraction from the Kinesis Client Library (KCL).
@@ -130,11 +132,14 @@ private[kinesis] class KinesisReceiver[T](
     * Each shard is assigned its own IRecordProcessor and the worker run multiple such
     * processors.
     */
-  @volatile private var worker: Worker = null
-  @volatile private var workerThread: Thread = null
+  @volatile
+  private var worker: Worker = null
+  @volatile
+  private var workerThread: Thread = null
 
   /** BlockGenerator used to generates blocks out of Kinesis data */
-  @volatile private var blockGenerator: BlockGenerator = null
+  @volatile
+  private var blockGenerator: BlockGenerator = null
 
   /**
     * Sequence number ranges added to the current block being generated.
@@ -150,7 +155,8 @@ private[kinesis] class KinesisReceiver[T](
   /**
     * The centralized kinesisCheckpointer that checkpoints based on the given checkpointInterval.
     */
-  @volatile private var kinesisCheckpointer: KinesisCheckpointer = null
+  @volatile
+  private var kinesisCheckpointer: KinesisCheckpointer = null
 
   /**
     * Latest sequence number ranges that have been stored successfully.

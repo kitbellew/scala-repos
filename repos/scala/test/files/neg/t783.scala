@@ -6,7 +6,8 @@ object Main extends App {
       Console.println("outer: " + Global.this);
     }
   }
-  trait Contexts { self: Analyzer =>
+  trait Contexts {
+    self: Analyzer =>
     val xxx: global.Template = {
       assert(globalInit0 != null);
       globalInit0.Template(10, 20);

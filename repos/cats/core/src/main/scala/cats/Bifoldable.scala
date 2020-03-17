@@ -3,7 +3,8 @@ package cats
 /**
   * A type class abstracting over types that give rise to two independent [[cats.Foldable]]s.
   */
-trait Bifoldable[F[_, _]] extends Any with Serializable { self =>
+trait Bifoldable[F[_, _]] extends Any with Serializable {
+  self =>
 
   /** Collapse the structure with a left-associative function */
   def bifoldLeft[A, B, C](fab: F[A, B], c: C)(f: (C, A) => C, g: (C, B) => C): C

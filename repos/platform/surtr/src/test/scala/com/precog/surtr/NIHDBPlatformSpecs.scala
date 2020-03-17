@@ -147,7 +147,8 @@ trait NIHDBTestStack
     with SecureVFSModule[Future, Slice]
     with LongIdMemoryDatasetConsumer[Future]
     with NIHDBTestActors
-    with VFSColumnarTableModule { self =>
+    with VFSColumnarTableModule {
+  self =>
 
   abstract class YggConfig
       extends ParseEvalStackSpecConfig

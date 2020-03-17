@@ -12,7 +12,8 @@ object ApplicationBuild extends Build {
   val appVersion = "1.0-SNAPSHOT"
 
   val bufferLogger = new AbstractLogger {
-    @volatile var messages = List.empty[String]
+    @volatile
+    var messages = List.empty[String]
     def getLevel = Level.Error
     def setLevel(newLevel: Level.Value) = ()
     def setTrace(flag: Int) = ()

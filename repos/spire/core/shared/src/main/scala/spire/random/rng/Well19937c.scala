@@ -96,17 +96,23 @@ final class Well19937c protected[random] (state: Array[Int], i0: Int)
 
 object Well19937c extends GeneratorCompanion[Well19937c, (Array[Int], Int)] {
 
-  @inline private val UpperMask = 0x7FFFFFFF // = 0xFFFFFFFF ^ Int.MinValue
-  @inline private val LowerMask = 0x80000000 // = Int.MinValue
+  @inline
+  private val UpperMask = 0x7FFFFFFF // = 0xFFFFFFFF ^ Int.MinValue
+  @inline
+  private val LowerMask = 0x80000000 // = Int.MinValue
 
-  @inline private val TemperB = 0xe46e1700
-  @inline private val TemperC = 0x9b868000
+  @inline
+  private val TemperB = 0xe46e1700
+  @inline
+  private val TemperC = 0x9b868000
 
   // Number of bits in the pool.
-  @inline private final val K: Int = 19937
+  @inline
+  private final val K: Int = 19937
 
   // Length of the pool in ints.
-  @inline private final val R: Int = (K + 31) / 32
+  @inline
+  private final val R: Int = (K + 31) / 32
 
   // Length of the pool in ints -1.
   // @inline private final val R_1 : Int = R - 1
@@ -115,7 +121,8 @@ object Well19937c extends GeneratorCompanion[Well19937c, (Array[Int], Int)] {
   // @inline private final val R_2 : Int = R - 2
 
   // Length of the pool and index in bytes
-  @inline private final val BYTES = R * 4 + 4
+  @inline
+  private final val BYTES = R * 4 + 4
 
   // First parameter of the algorithm.
   // @inline private final val M1 : Int = 70
@@ -126,10 +133,14 @@ object Well19937c extends GeneratorCompanion[Well19937c, (Array[Int], Int)] {
   // Third parameter of the algorithm.
   // @inline private final val M3 : Int = 449
 
-  @inline private final def mat0pos(t: Int, v: Int) = v ^ (v >>> t)
-  @inline private final def mat0neg(t: Int, v: Int) = v ^ (v << -t)
-  @inline private final def mat1(v: Int) = v
-  @inline private final def mat3pos(t: Int, v: Int) = v >>> t
+  @inline
+  private final def mat0pos(t: Int, v: Int) = v ^ (v >>> t)
+  @inline
+  private final def mat0neg(t: Int, v: Int) = v ^ (v << -t)
+  @inline
+  private final def mat1(v: Int) = v
+  @inline
+  private final def mat3pos(t: Int, v: Int) = v >>> t
 
   def randomSeed(): (Array[Int], Int) =
     (Utils.seedFromInt(R, Utils.intFromTime()), 0)

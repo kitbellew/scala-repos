@@ -87,7 +87,8 @@ abstract class UnCurry
       newMembers.getOrElseUpdate(currentOwner, mutable.Buffer()) += t
 
     /** Process synthetic members for `owner`. They are removed form the `newMembers` as a side-effect. */
-    @inline private def useNewMembers[T](owner: Symbol)(f: List[Tree] => T): T =
+    @inline
+    private def useNewMembers[T](owner: Symbol)(f: List[Tree] => T): T =
       f(newMembers.remove(owner).getOrElse(Nil).toList)
 
     private def newFunction0(body: Tree): Tree = {
@@ -452,7 +453,8 @@ abstract class UnCurry
 // ------ The tree transformers --------------------------------------------------------
 
     def mainTransform(tree: Tree): Tree = {
-      @inline def withNeedLift(needLift: Boolean)(f: => Tree): Tree = {
+      @inline
+      def withNeedLift(needLift: Boolean)(f: => Tree): Tree = {
         val saved = needTryLift
         needTryLift = needLift
         try f

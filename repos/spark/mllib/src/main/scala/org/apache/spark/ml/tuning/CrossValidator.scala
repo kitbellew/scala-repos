@@ -63,8 +63,7 @@ private[ml] trait CrossValidatorParams extends ValidatorParams with HasSeed {
   * :: Experimental ::
   * K-fold cross validation.
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 class CrossValidator @Since("1.2.0") (@Since("1.4.0") override val uid: String)
     extends Estimator[CrossValidatorModel]
     with CrossValidatorParams
@@ -355,8 +354,7 @@ object CrossValidator extends MLReadable[CrossValidator] {
   * @param avgMetrics Average cross-validation metrics for each paramMap in
   *                   [[CrossValidator.estimatorParamMaps]], in the corresponding order.
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 class CrossValidatorModel private[ml] (
     @Since("1.4.0") override val uid: String,
     @Since("1.2.0") val bestModel: Model[_],

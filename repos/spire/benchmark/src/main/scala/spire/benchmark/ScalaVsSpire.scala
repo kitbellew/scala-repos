@@ -164,7 +164,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   /**
     * Find GCD.
     */
-  @tailrec final def gcdDirect(a: Int, b: Int): Int =
+  @tailrec
+  final def gcdDirect(a: Int, b: Int): Int =
     if (a % b == 0) b else gcdDirect(b, a % b)
 
   def doGcdDirect(as: Array[Int], bs: Array[Int], cs: Array[Int]) = {
@@ -174,7 +175,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   }
 
   import scala.math.{Integral => ScalaI}
-  @tailrec final def gcdGeneric[A](a: A, b: A)(implicit ev: ScalaI[A]): A = {
+  @tailrec
+  final def gcdGeneric[A](a: A, b: A)(implicit ev: ScalaI[A]): A = {
     import ScalaI.Implicits._
     if (a % b == ev.zero) b else gcdGeneric(b, a % b)
   }
@@ -185,7 +187,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     while (i < len) { cs(i) = gcdGeneric(as(i), bs(i)); i += 1 }
   }
 
-  @tailrec final def gcdSpire[@sp(Int) A](a: A, b: A)(implicit
+  @tailrec
+  final def gcdSpire[@sp(Int) A](a: A, b: A)(implicit
       ev1: EuclideanRing[A],
       ev2: Eq[A]): A = {
     import spire.implicits._

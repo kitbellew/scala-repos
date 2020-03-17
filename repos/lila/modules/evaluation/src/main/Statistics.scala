@@ -16,7 +16,8 @@ object Statistics {
     sqrt(variance(a))
 
   def average[T](a: NonEmptyList[T])(implicit n: Numeric[T]): Double = {
-    @tailrec def average(a: List[T], sum: T, depth: Int): Double = {
+    @tailrec
+    def average(a: List[T], sum: T, depth: Int): Double = {
       a match {
         case Nil     => n.toDouble(sum) / depth
         case x :: xs => average(xs, n.plus(sum, x), depth + 1)

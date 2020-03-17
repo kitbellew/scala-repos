@@ -70,9 +70,12 @@ import org.apache.spark.util.Utils
   * @since 1.0.0
   */
 class SQLContext private[sql] (
-    @transient val sparkContext: SparkContext,
-    @transient protected[sql] val cacheManager: CacheManager,
-    @transient private[sql] val listener: SQLListener,
+    @transient
+    val sparkContext: SparkContext,
+    @transient
+    protected[sql] val cacheManager: CacheManager,
+    @transient
+    private[sql] val listener: SQLListener,
     val isRootContext: Boolean)
     extends Logging
     with Serializable {
@@ -246,8 +249,7 @@ class SQLContext private[sql] (
     * @group basic
     * @since 1.3.0
     */
-  @Experimental
-  @transient
+  @Experimental @transient
   def experimental: ExperimentalMethods = sessionState.experimentalMethods
 
   /**
@@ -257,8 +259,7 @@ class SQLContext private[sql] (
     * @group basic
     * @since 1.3.0
     */
-  @Experimental
-  @transient
+  @Experimental @transient
   lazy val emptyDataFrame: DataFrame = createDataFrame(
     sparkContext.emptyRDD[Row],
     StructType(Nil))
@@ -966,9 +967,11 @@ object SQLContext {
   /**
     * Reference to the created SQLContext.
     */
-  @transient private val instantiatedContext = new AtomicReference[SQLContext]()
+  @transient
+  private val instantiatedContext = new AtomicReference[SQLContext]()
 
-  @transient private val sqlListener = new AtomicReference[SQLListener]()
+  @transient
+  private val sqlListener = new AtomicReference[SQLListener]()
 
   /**
     * Get the singleton SQLContext if it exists or create a new one using the given SparkContext.

@@ -122,7 +122,8 @@ object TcpHelper {
 
 }
 
-trait TcpHelper { this: TestKitBase ⇒
+trait TcpHelper {
+  this: TestKitBase ⇒
   import akka.stream.io.TcpHelper._
 
   val settings = ActorMaterializerSettings(system)

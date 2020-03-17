@@ -29,7 +29,8 @@ import scala.collection.immutable
   */
 private class IdlingFactory[Req, Rep](self: ServiceFactory[Req, Rep])
     extends ServiceFactoryProxy[Req, Rep](self) {
-  @volatile private[this] var watch = Stopwatch.start()
+  @volatile
+  private[this] var watch = Stopwatch.start()
   private[this] val n = new AtomicInteger(0)
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
@@ -50,7 +51,8 @@ private class IdlingFactory[Req, Rep](self: ServiceFactory[Req, Rep])
     }
   }
 
-  @inline private[this] def decr() {
+  @inline
+  private[this] def decr() {
     if (n.decrementAndGet() == 0) watch = Stopwatch.start()
   }
 
@@ -79,7 +81,8 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     extends Closable {
   assert(maxCacheSize > 0)
 
-  @volatile private[this] var cache =
+  @volatile
+  private[this] var cache =
     immutable.Map.empty: immutable.Map[Key, IdlingFactory[Req, Rep]]
 
   private[this] val (readLock, writeLock) = {

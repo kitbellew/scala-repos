@@ -92,7 +92,8 @@ class SortingTest {
       (sxs zip sys.map(i => xs(i))).forall { case (a, b) => a == b })
   }
 
-  @Test def testSortConsistency: Unit = {
+  @Test
+  def testSortConsistency: Unit = {
     for {
       size <- sizes
       v <- variety

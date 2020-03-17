@@ -3,7 +3,8 @@ package slick.util
 import java.sql.PreparedStatement
 import scala.collection.mutable.ArrayBuffer
 
-final class SQLBuilder { self =>
+final class SQLBuilder {
+  self =>
   import SQLBuilder._
 
   private val sb = new StringBuilder(128)

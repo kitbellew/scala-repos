@@ -23,8 +23,7 @@ import scala.concurrent.Await
   [info] a.p.PersistentActorDeferBenchmark.tell_processor_Persistent_reply                   thrpt        10        6.531        0.114   ops/ms
   [info] a.p.PersistentActorDeferBenchmark.tell_processor_Persistent_replyASAP               thrpt        10       26.000        0.694   ops/ms
  */
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.Throughput))
 class PersistentActorDeferBenchmark {
 
   val config = PersistenceSpec.config("leveldb", "benchmark")
@@ -66,16 +65,14 @@ class PersistentActorDeferBenchmark {
     storageLocations.foreach(FileUtils.deleteDirectory)
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def tell_persistAsync_defer_persistAsync_reply(): Unit = {
     for (i <- data10k) persistAsync_defer.tell(i, probe.ref)
 
     probe.expectMsg(data10k.last)
   }
 
-  @Benchmark
-  @OperationsPerInvocation(10000)
+  @Benchmark @OperationsPerInvocation(10000)
   def tell_persistAsync_defer_persistAsync_replyASAP(): Unit = {
     for (i <- data10k) persistAsync_defer_replyASAP.tell(i, probe.ref)
 

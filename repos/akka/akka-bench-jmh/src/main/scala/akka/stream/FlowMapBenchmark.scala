@@ -16,8 +16,7 @@ import org.reactivestreams._
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-@State(Scope.Benchmark)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark) @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
 class FlowMapBenchmark {
 
@@ -112,8 +111,7 @@ class FlowMapBenchmark {
   @TearDown
   def shutdown(): Unit = { Await.result(system.terminate(), 5.seconds) }
 
-  @Benchmark
-  @OperationsPerInvocation(100000)
+  @Benchmark @OperationsPerInvocation(100000)
   def flow_map_100k_elements(): Unit = {
     val lock =
       new Lock() // todo rethink what is the most lightweight way to await for a streams completion

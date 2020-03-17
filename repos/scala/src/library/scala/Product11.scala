@@ -35,7 +35,6 @@ trait Product11[+T1, +T2, +T3, +T4, +T5, +T6, +T7, +T8, +T9, +T10, +T11]
     *  @return  same as `._(n+1)`, for example `productElement(0)` is the same as `._1`.
     *  @throws  IndexOutOfBoundsException
     */
-
   @throws(classOf[IndexOutOfBoundsException])
   override def productElement(n: Int) =
     n match {

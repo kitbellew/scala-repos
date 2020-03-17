@@ -69,7 +69,8 @@ object HetOrder extends HetOrderLow {
       NumericComparisons.compare(a, b)
   }
 
-  @inline final def apply[
+  @inline
+  final def apply[
       @spec(Boolean, Long, Double, AnyRef) A,
       @spec(Boolean, Long, Double, AnyRef) B](implicit ho: HetOrder[A, B]) = ho
 }

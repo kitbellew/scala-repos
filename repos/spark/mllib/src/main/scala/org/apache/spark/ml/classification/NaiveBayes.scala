@@ -80,8 +80,7 @@ private[ml] trait NaiveBayesParams extends PredictorParams {
   * ([[http://nlp.stanford.edu/IR-book/html/htmledition/the-bernoulli-model-1.html]]).
   * The input feature values must be nonnegative.
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class NaiveBayes @Since("1.5.0") (@Since("1.5.0") override val uid: String)
     extends ProbabilisticClassifier[Vector, NaiveBayes, NaiveBayesModel]
     with NaiveBayesParams
@@ -133,8 +132,7 @@ object NaiveBayes extends DefaultParamsReadable[NaiveBayes] {
   * @param theta log of class conditional probabilities, whose dimension is C (number of classes)
   *              by D (number of features)
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class NaiveBayesModel private[ml] (
     @Since("1.5.0") override val uid: String,
     @Since("1.5.0") val pi: Vector,

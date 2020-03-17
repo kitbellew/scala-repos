@@ -17,7 +17,8 @@ import scala.tools.util.PathResolver.Defaults
   *  @version 1.1, 2009/1/2
   *  Updated 2009/1/2 by Anders Bach Nielsen: Added features to implement SIP 00002
   */
-trait Plugins { global: Global =>
+trait Plugins {
+  global: Global =>
 
   /** Load a rough list of the plugins.  For speed, it
     *  does not instantiate a compiler run.  Therefore it cannot

@@ -23,8 +23,7 @@ import org.apache.spark.annotation.{DeveloperApi, Experimental, Since}
   * :: Experimental ::
   * Class for calculating variance during regression
   */
-@Since("1.0.0")
-@Experimental
+@Since("1.0.0") @Experimental
 object Variance extends Impurity {
 
   /**
@@ -34,8 +33,7 @@ object Variance extends Impurity {
     * @param totalCount sum of counts for all labels
     * @return information value, or 0 if totalCount = 0
     */
-  @Since("1.1.0")
-  @DeveloperApi
+  @Since("1.1.0") @DeveloperApi
   override def calculate(counts: Array[Double], totalCount: Double): Double =
     throw new UnsupportedOperationException("Variance.calculate")
 
@@ -47,8 +45,7 @@ object Variance extends Impurity {
     * @param sumSquares summation of squares of the labels
     * @return information value, or 0 if count = 0
     */
-  @Since("1.0.0")
-  @DeveloperApi
+  @Since("1.0.0") @DeveloperApi
   override def calculate(
       count: Double,
       sum: Double,

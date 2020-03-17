@@ -28,7 +28,8 @@ import org.apache.spark.rdd.RDD
   */
 object PEventStore {
 
-  @transient lazy private val eventsDb = Storage.getPEvents()
+  @transient
+  lazy private val eventsDb = Storage.getPEvents()
 
   /** Read events from Event Store
     *

@@ -764,8 +764,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
       // To simplify all "2" factors of q, dividing by 2^k
       val k = q1.getLowestSetBit // number of factors "2" in 'q'
 
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(i: Int, q: BigInteger, l: Int): (BigInteger, Int) = {
         val qr = q.divideAndRemainderImpl(BigFivePows(i))
         if (qr.rem.signum() == 0)
@@ -830,8 +829,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
         // To strip trailing zeros until the preferred scale is reached
         val lastPow = BigTenPows.length - 1
 
-        @inline
-        @tailrec
+        @inline @tailrec
         def loop(i: Int, iq: BigInteger, scale: Long): (BigInteger, Long) = {
           if (!iq.testBit(0)) {
             val qr = iq.divideAndRemainderImpl(BigTenPows(i))
@@ -875,8 +873,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           .divide(divisor.getUnscaledValue)
 
         // To strip trailing zeros approximating to the preferred scale
-        @inline
-        @tailrec
+        @inline @tailrec
         def loop(i: Int, iv: BigInteger, vs: Long): (BigInteger, Long) = {
           if (!iv.testBit(0)) {
             val qr = iv.divideAndRemainderImpl(BigTenPows(i))
@@ -955,8 +952,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
     val integralValue = new BigDecimal(quot)
 
     // To strip trailing zeros until the specified precision is reached
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(
         i: Int,
         ns: Long,
@@ -1160,8 +1156,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
       val lastPow = BigTenPows.length - 1
 
       // while the number is even...
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(
           i: Int,
           strippedBI: BigInteger,

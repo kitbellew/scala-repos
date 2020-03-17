@@ -45,7 +45,8 @@ private[http] class HttpRequestParser(
   }
 
   def parseMethod(input: ByteString, cursor: Int): Int = {
-    @tailrec def parseCustomMethod(
+    @tailrec
+    def parseCustomMethod(
         ix: Int = 0,
         sb: JStringBuilder = new JStringBuilder(16)): Int =
       if (ix < maxMethodLength) {
@@ -71,7 +72,8 @@ private[http] class HttpRequestParser(
               "Increase `akka.http.server.parsing.max-method-length` to support HTTP methods with more characters."
           ))
 
-    @tailrec def parseMethod(meth: HttpMethod, ix: Int = 1): Int =
+    @tailrec
+    def parseMethod(meth: HttpMethod, ix: Int = 1): Int =
       if (ix == meth.value.length) if (byteChar(input, cursor + ix) == ' ') {
         method = meth
         cursor + ix + 1
@@ -103,7 +105,8 @@ private[http] class HttpRequestParser(
     val uriStart = cursor
     val uriEndLimit = cursor + maxUriLength
 
-    @tailrec def findUriEnd(ix: Int = cursor): Int =
+    @tailrec
+    def findUriEnd(ix: Int = cursor): Int =
       if (ix == input.length) throw NotEnoughDataException
       else if (CharacterClasses.WSPCRLF(input(ix).toChar)) ix
       else if (ix < uriEndLimit) findUriEnd(ix + 1)

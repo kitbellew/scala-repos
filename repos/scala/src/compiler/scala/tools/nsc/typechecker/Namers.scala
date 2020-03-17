@@ -56,7 +56,8 @@ trait Namers extends MethodSynthesis {
 
   abstract class Namer(val context: Context)
       extends MethodSynth
-      with NamerContextErrors { thisNamer =>
+      with NamerContextErrors {
+    thisNamer =>
     // overridden by the presentation compiler
     def saveDefaultGetter(meth: Symbol, default: Symbol) {}
 
@@ -1642,7 +1643,8 @@ trait Namers extends MethodSynthesis {
 
     class LogTransitions[S](onEnter: S => String, onExit: S => String) {
       val enabled = settings.debug.value
-      @inline final def apply[T](entity: S)(body: => T): T = {
+      @inline
+      final def apply[T](entity: S)(body: => T): T = {
         if (enabled) log(onEnter(entity))
         try body
         finally if (enabled) log(onExit(entity))

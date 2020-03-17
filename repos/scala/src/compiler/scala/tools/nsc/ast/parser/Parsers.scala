@@ -29,7 +29,8 @@ import Tokens._
   *  the beginnings of a campaign against this latest incursion by Cutty
   *  McPastington and his army of very similar soldiers.
   */
-trait ParsersCommon extends ScannersCommon { self =>
+trait ParsersCommon extends ScannersCommon {
+  self =>
   val global: Global
   // the use of currentUnit in the parser should be avoided as it might
   // cause unexpected behaviour when you work with two units at the
@@ -53,37 +54,47 @@ trait ParsersCommon extends ScannersCommon { self =>
       *  will be called, so a parse error will still result.  If the grouping is
       *  optional, in.token should be tested before calling these methods.
       */
-    @inline final def inParens[T](body: => T): T = {
+    @inline
+    final def inParens[T](body: => T): T = {
       accept(LPAREN)
       val ret = body
       accept(RPAREN)
       ret
     }
-    @inline final def inParensOrError[T](body: => T, alt: T): T =
+    @inline
+    final def inParensOrError[T](body: => T, alt: T): T =
       if (in.token == LPAREN) inParens(body) else { accept(LPAREN); alt }
 
-    @inline final def inParensOrUnit[T](body: => Tree): Tree =
+    @inline
+    final def inParensOrUnit[T](body: => Tree): Tree =
       inParensOrError(body, literalUnit)
-    @inline final def inParensOrNil[T](body: => List[T]): List[T] =
+    @inline
+    final def inParensOrNil[T](body: => List[T]): List[T] =
       inParensOrError(body, Nil)
 
-    @inline final def inBraces[T](body: => T): T = {
+    @inline
+    final def inBraces[T](body: => T): T = {
       accept(LBRACE)
       val ret = body
       accept(RBRACE)
       ret
     }
-    @inline final def inBracesOrError[T](body: => T, alt: T): T =
+    @inline
+    final def inBracesOrError[T](body: => T, alt: T): T =
       if (in.token == LBRACE) inBraces(body) else { accept(LBRACE); alt }
 
-    @inline final def inBracesOrNil[T](body: => List[T]): List[T] =
+    @inline
+    final def inBracesOrNil[T](body: => List[T]): List[T] =
       inBracesOrError(body, Nil)
-    @inline final def inBracesOrUnit[T](body: => Tree): Tree =
+    @inline
+    final def inBracesOrUnit[T](body: => Tree): Tree =
       inBracesOrError(body, literalUnit)
-    @inline final def dropAnyBraces[T](body: => T): T =
+    @inline
+    final def dropAnyBraces[T](body: => T): T =
       if (in.token == LBRACE) inBraces(body) else body
 
-    @inline final def inBrackets[T](body: => T): T = {
+    @inline
+    final def inBrackets[T](body: => T): T = {
       accept(LBRACKET)
       val ret = body
       accept(RBRACKET)
@@ -92,7 +103,8 @@ trait ParsersCommon extends ScannersCommon { self =>
 
     /** Creates an actual Parens node (only used during parsing.)
       */
-    @inline final def makeParens(body: => List[Tree]): Parens =
+    @inline
+    final def makeParens(body: => List[Tree]): Parens =
       Parens(inParens(if (in.token == RPAREN) Nil else body))
   }
 }
@@ -214,7 +226,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
   class UnitParser(
       override val unit: global.CompilationUnit,
       patches: List[BracePatch])
-      extends SourceFileParser(unit.source) { uself =>
+      extends SourceFileParser(unit.source) {
+    uself =>
     def this(unit: global.CompilationUnit) = this(unit, Nil)
 
     override def newScanner() = new UnitScanner(unit, patches)
@@ -226,7 +239,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       currentRun.reporting.deprecationWarning(o2p(offset), msg)
 
     private var smartParsing = false
-    @inline private def withSmartParsing[T](body: => T): T = {
+    @inline
+    private def withSmartParsing[T](body: => T): T = {
       val saved = smartParsing
       smartParsing = true
       try body
@@ -286,7 +300,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
   import nme.raw
 
-  abstract class Parser extends ParserCommon { parser =>
+  abstract class Parser extends ParserCommon {
+    parser =>
     val in: Scanner
     def unit: CompilationUnit
     def source: SourceFile
@@ -294,7 +309,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     /** Scoping operator used to temporarily look into the future.
       *  Backs up scanner data before evaluating a block and restores it after.
       */
-    @inline final def lookingAhead[T](body: => T): T = {
+    @inline
+    final def lookingAhead[T](body: => T): T = {
       val saved = new ScannerData {} copyFrom in
       in.nextToken()
       try body
@@ -304,12 +320,15 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     /** Perform an operation while peeking ahead.
       *  Pushback if the operation yields an empty tree or blows to pieces.
       */
-    @inline def peekingAhead(tree: => Tree): Tree = {
-      @inline def peekahead() = {
+    @inline
+    def peekingAhead(tree: => Tree): Tree = {
+      @inline
+      def peekahead() = {
         in.prev copyFrom in
         in.nextToken()
       }
-      @inline def pushback() = {
+      @inline
+      def pushback() = {
         in.next copyFrom in
         in copyFrom in.prev
       }
@@ -345,7 +364,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     /** The types of the context bounds of type parameters of the surrounding class
       */
     private var classContextBounds: List[Tree] = Nil
-    @inline private def savingClassContextBounds[T](op: => T): T = {
+    @inline
+    private def savingClassContextBounds[T](op: => T): T = {
       val saved = classContextBounds
       try op
       finally classContextBounds = saved
@@ -547,7 +567,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       RBRACE -> 0)
 
     private var inFunReturnType = false
-    @inline private def fromWithinReturnType[T](body: => T): T = {
+    @inline
+    private def fromWithinReturnType[T](body: => T): T = {
       val saved = inFunReturnType
       inFunReturnType = true
       try body
@@ -837,9 +858,11 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       }
       ts.toList
     }
-    @inline final def commaSeparated[T](part: => T): List[T] =
+    @inline
+    final def commaSeparated[T](part: => T): List[T] =
       tokenSeparated(COMMA, sepFirst = false, part)
-    @inline final def caseSeparated[T](part: => T): List[T] =
+    @inline
+    final def caseSeparated[T](part: => T): List[T] =
       tokenSeparated(CASE, sepFirst = true, part)
     def readAnnots(part: => Tree): List[Tree] =
       tokenSeparated(AT, sepFirst = true, part)

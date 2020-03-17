@@ -11,7 +11,8 @@ package client {
   import scala.concurrent.Future
 
   class GitHubClient(ws: WSClient, baseUrl: String) {
-    @Inject def this(ws: WSClient) = this(ws, "https://api.github.com")
+    @Inject
+    def this(ws: WSClient) = this(ws, "https://api.github.com")
 
     def repositories(): Future[Seq[String]] = {
       ws.url(baseUrl + "/repositories").get().map { response =>

@@ -556,8 +556,7 @@ object Future {
     */
   final object never extends Future[Nothing] {
 
-    @throws(classOf[TimeoutException])
-    @throws(classOf[InterruptedException])
+    @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
     override def ready(atMost: Duration)(implicit
         permit: CanAwait): this.type = {
       atMost match {

@@ -428,7 +428,8 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
     with WithClientAdmissionControl[This]
     with WithClientTransport[This]
     with WithSession[This]
-    with WithSessionQualifier[This] { self =>
+    with WithSessionQualifier[This] {
+  self =>
 
   /**
     * The type we write into the transport.

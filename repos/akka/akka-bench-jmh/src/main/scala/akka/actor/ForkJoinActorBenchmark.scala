@@ -10,9 +10,7 @@ import scala.concurrent.duration._
 import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
-@Fork(1)
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.Throughput)) @Fork(1)
 @Threads(1)
 @Warmup(iterations = 10, time = 5, timeUnit = TimeUnit.SECONDS, batchSize = 1)
 @Measurement(iterations = 20)
@@ -55,8 +53,7 @@ class ForkJoinActorBenchmark {
     Await.ready(system.whenTerminated, 15.seconds)
   }
 
-  @Benchmark
-  @Measurement(timeUnit = TimeUnit.MILLISECONDS)
+  @Benchmark @Measurement(timeUnit = TimeUnit.MILLISECONDS)
   @OperationsPerInvocation(messages)
   def pingPong(): Unit = {
     val ping = system.actorOf(Props[ForkJoinActorBenchmark.PingPong])
@@ -71,8 +68,7 @@ class ForkJoinActorBenchmark {
     p.expectTerminated(pong, timeout)
   }
 
-  @Benchmark
-  @Measurement(timeUnit = TimeUnit.MILLISECONDS)
+  @Benchmark @Measurement(timeUnit = TimeUnit.MILLISECONDS)
   @OperationsPerInvocation(messages)
   def floodPipe(): Unit = {
 

@@ -335,8 +335,7 @@ private[math] object Multiplication {
   }
 
   def pow(base: BigInteger, exponent: Int): BigInteger = {
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(exp: Int, res: BigInteger, acc: BigInteger): BigInteger = {
       if (exp > 1) {
         val res2 = if ((exp & 1) != 0) res.multiply(acc) else res

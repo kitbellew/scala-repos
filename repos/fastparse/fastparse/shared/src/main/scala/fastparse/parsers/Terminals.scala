@@ -65,7 +65,8 @@ object Terminals {
     */
   def startsWith(src: String, prefix: String, offset: Int) = {
     val max = prefix.length
-    @tailrec def rec(i: Int): Boolean = {
+    @tailrec
+    def rec(i: Int): Boolean = {
       if (i >= prefix.length) true
       else if (i + offset >= src.length) false
       else if (src.charAt(i + offset) != prefix.charAt(i)) false
@@ -76,7 +77,8 @@ object Terminals {
 
   def startsWithIgnoreCase(src: String, prefix: String, offset: Int) = {
     val max = prefix.length
-    @tailrec def rec(i: Int): Boolean = {
+    @tailrec
+    def rec(i: Int): Boolean = {
       if (i >= prefix.length) true
       else if (i + offset >= src.length) false
       else {

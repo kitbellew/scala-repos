@@ -10,7 +10,9 @@ import functor.Contravariant
   *
   * Must obey the laws defined in cats.laws.FunctorLaws.
   */
-@typeclass trait Functor[F[_]] extends functor.Invariant[F] { self =>
+@typeclass
+trait Functor[F[_]] extends functor.Invariant[F] {
+  self =>
   def map[A, B](fa: F[A])(f: A => B): F[B]
 
   def imap[A, B](fa: F[A])(f: A => B)(fi: B => A): F[B] = map(fa)(f)

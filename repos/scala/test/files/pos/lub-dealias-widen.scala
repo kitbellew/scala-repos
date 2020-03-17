@@ -15,7 +15,8 @@ case class PLit[Next <: Path]() extends Path {
   type EncodeFunc = Next#EncodeFunc
 }
 
-trait Sitelet[EncodeFunc] { self =>
+trait Sitelet[EncodeFunc] {
+  self =>
   def &[G <: H, H >: EncodeFunc](that: Sitelet[G]): Sitelet[H] = ???
 }
 

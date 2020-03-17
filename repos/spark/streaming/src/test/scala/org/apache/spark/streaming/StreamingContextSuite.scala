@@ -196,10 +196,14 @@ class StreamingContextSuite
     ssc.sc.setJobGroup("non-streaming", "non-streaming", true)
     val sc = ssc.sc
 
-    @volatile var jobGroupFound: String = ""
-    @volatile var jobDescFound: String = ""
-    @volatile var jobInterruptFound: String = ""
-    @volatile var allFound: Boolean = false
+    @volatile
+    var jobGroupFound: String = ""
+    @volatile
+    var jobDescFound: String = ""
+    @volatile
+    var jobInterruptFound: String = ""
+    @volatile
+    var allFound: Boolean = false
 
     addInputStream(ssc).foreachRDD { rdd =>
       jobGroupFound = sc.getLocalProperty(SparkContext.SPARK_JOB_GROUP_ID)
@@ -308,7 +312,8 @@ class StreamingContextSuite
     for (i <- 1 to 4) {
       logInfo("==================================\n\n\n")
       ssc = new StreamingContext(sc, Milliseconds(100))
-      @volatile var runningCount = 0
+      @volatile
+      var runningCount = 0
       TestReceiver.counter.set(1)
       val input = ssc.receiverStream(new TestReceiver)
       input.count().foreachRDD { rdd =>

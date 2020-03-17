@@ -61,8 +61,7 @@ object FeatureVector {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def FVScaleAddIntoV[@expand.args(Int, Float, Double) T]
       : TernaryUpdateRegistry[Vector[T], T, FeatureVector, scaleAdd.type] = {
     new TernaryUpdateRegistry[Vector[T], T, FeatureVector, scaleAdd.type] {
@@ -78,8 +77,7 @@ object FeatureVector {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def FVScaleAddIntoDV[@expand.args(Int, Float, Double) T]
       : scaleAdd.InPlaceImpl3[DenseVector[T], T, FeatureVector] = {
     new scaleAdd.InPlaceImpl3[DenseVector[T], T, FeatureVector] {
@@ -98,8 +96,7 @@ object FeatureVector {
   }
 
   // specialzied doesn't work here, so we're expanding
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def FVCanDaxpyIntoVB[@expand.args(Float, Double) T]
       : InPlaceImpl3[scaleAdd.type, VectorBuilder[T], T, FeatureVector] = {
     new scaleAdd.InPlaceImpl3[VectorBuilder[T], T, FeatureVector] {
@@ -130,8 +127,7 @@ object FeatureVector {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def FVScaleAddIntoSV[@expand.args(Int, Float, Double) T]
       : scaleAdd.InPlaceImpl3[SparseVector[T], T, FeatureVector] = {
     new scaleAdd.InPlaceImpl3[SparseVector[T], T, FeatureVector] {
@@ -150,8 +146,7 @@ object FeatureVector {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def DotProductFVV[@expand.args(Int, Float, Double) T]
       : BinaryRegistry[FeatureVector, Vector[T], OpMulInner.type, T] = {
     new BinaryRegistry[FeatureVector, Vector[T], OpMulInner.type, T] {
@@ -168,8 +163,7 @@ object FeatureVector {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def DotProductFVDV[@expand.args(Int, Float, Double) T]
       : OpMulInner.Impl2[FeatureVector, DenseVector[T], T] = {
     new OpMulInner.Impl2[FeatureVector, DenseVector[T], T] {
@@ -204,8 +198,7 @@ object FeatureVector {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def CanMulDMFV[@expand.args(Int, Double, Float) T]
       : OpMulMatrix.Impl2[DenseMatrix[T], FeatureVector, DenseVector[T]] = {
     new OpMulMatrix.Impl2[DenseMatrix[T], FeatureVector, DenseVector[T]] {
@@ -217,8 +210,7 @@ object FeatureVector {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def CanMulCSCFV[@expand.args(Int, Double, Float) T]
       : OpMulMatrix.Impl2[CSCMatrix[T], FeatureVector, SparseVector[T]] = {
     new OpMulMatrix.Impl2[CSCMatrix[T], FeatureVector, SparseVector[T]] {

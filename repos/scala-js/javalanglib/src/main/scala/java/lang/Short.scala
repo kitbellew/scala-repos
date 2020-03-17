@@ -8,24 +8,33 @@ final class Short private () extends Number with Comparable[Short] {
   def this(value: scala.Short) = this()
   def this(s: String) = this()
 
-  @inline override def shortValue(): scala.Short =
-    this.asInstanceOf[scala.Short]
+  @inline
+  override def shortValue(): scala.Short = this.asInstanceOf[scala.Short]
 
-  @inline override def byteValue(): scala.Byte = shortValue.toByte
-  @inline def intValue(): scala.Int = shortValue.toInt
-  @inline def longValue(): scala.Long = shortValue.toLong
-  @inline def floatValue(): scala.Float = shortValue.toFloat
-  @inline def doubleValue(): scala.Double = shortValue.toDouble
+  @inline
+  override def byteValue(): scala.Byte = shortValue.toByte
+  @inline
+  def intValue(): scala.Int = shortValue.toInt
+  @inline
+  def longValue(): scala.Long = shortValue.toLong
+  @inline
+  def floatValue(): scala.Float = shortValue.toFloat
+  @inline
+  def doubleValue(): scala.Double = shortValue.toDouble
 
-  @inline override def equals(that: Any): scala.Boolean =
+  @inline
+  override def equals(that: Any): scala.Boolean =
     this eq that.asInstanceOf[AnyRef]
 
-  @inline override def hashCode(): Int = shortValue
+  @inline
+  override def hashCode(): Int = shortValue
 
-  @inline override def compareTo(that: Short): Int =
+  @inline
+  override def compareTo(that: Short): Int =
     Short.compare(shortValue, that.shortValue)
 
-  @inline override def toString(): String = Short.toString(shortValue)
+  @inline
+  override def toString(): String = Short.toString(shortValue)
 
 }
 
@@ -44,13 +53,16 @@ object Short {
   def MIN_VALUE: scala.Short = -32768
   def MAX_VALUE: scala.Short = 32767
 
-  @inline def valueOf(shortValue: scala.Short): Short = new Short(shortValue)
-  @inline def valueOf(s: String): Short = valueOf(parseShort(s))
+  @inline
+  def valueOf(shortValue: scala.Short): Short = new Short(shortValue)
+  @inline
+  def valueOf(s: String): Short = valueOf(parseShort(s))
 
-  @inline def valueOf(s: String, radix: Int): Short =
-    valueOf(parseShort(s, radix))
+  @inline
+  def valueOf(s: String, radix: Int): Short = valueOf(parseShort(s, radix))
 
-  @inline def parseShort(s: String): scala.Short = parseShort(s, 10)
+  @inline
+  def parseShort(s: String): scala.Short = parseShort(s, 10)
 
   def parseShort(s: String, radix: Int): scala.Short = {
     val r = Integer.parseInt(s, radix)
@@ -59,9 +71,11 @@ object Short {
     else r.toShort
   }
 
-  @inline def toString(s: scala.Short): String = "" + s
+  @inline
+  def toString(s: scala.Short): String = "" + s
 
-  @inline def compare(x: scala.Short, y: scala.Short): scala.Int = x - y
+  @inline
+  def compare(x: scala.Short, y: scala.Short): scala.Int = x - y
 
   def reverseBytes(i: scala.Short): scala.Short =
     (((i >>> 8) & 0xff) + ((i & 0xff) << 8)).toShort

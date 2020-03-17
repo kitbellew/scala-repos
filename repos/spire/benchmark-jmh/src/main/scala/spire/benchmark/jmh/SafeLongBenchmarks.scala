@@ -37,8 +37,7 @@ object SafeLongUtil {
   }
 }
 
-@BenchmarkMode(Array(Mode.AverageTime))
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Array(Mode.AverageTime)) @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Thread)
 class SafeLongMultiplyBenchmark {
 
@@ -74,8 +73,7 @@ class SafeLongMultiplyBenchmark {
   def multiply(x: Blackhole): Unit = { x.consume(a * b) }
 }
 
-@BenchmarkMode(Array(Mode.AverageTime))
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Array(Mode.AverageTime)) @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Thread)
 class SafeLongAddSubtractBenchmark {
 
@@ -121,8 +119,7 @@ class SafeLongAddSubtractBenchmark {
   def subtract(x: Blackhole): Unit = { x.consume(a - c) }
 }
 
-@BenchmarkMode(Array(Mode.AverageTime))
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Array(Mode.AverageTime)) @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Thread)
 class SafeLongCompareBenchmark {
 

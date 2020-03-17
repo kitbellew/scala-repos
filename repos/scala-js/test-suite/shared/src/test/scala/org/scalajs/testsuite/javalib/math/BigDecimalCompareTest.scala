@@ -14,7 +14,8 @@ import org.junit.Assert._
 
 class BigDecimalCompareTest {
 
-  @Test def testAbsMathContextNeg(): Unit = {
+  @Test
+  def testAbsMathContextNeg(): Unit = {
     val a =
       "-123809648392384754573567356745735.63567890295784902768787678287E+21"
     val aNumber = new BigDecimal(a)
@@ -28,7 +29,8 @@ class BigDecimalCompareTest {
     assertEquals(res.scale(), resScale)
   }
 
-  @Test def testAbsMathContextPos(): Unit = {
+  @Test
+  def testAbsMathContextPos(): Unit = {
     val a =
       "123809648392384754573567356745735.63567890295784902768787678287E+21"
     val aNumber = new BigDecimal(a)
@@ -42,7 +44,8 @@ class BigDecimalCompareTest {
     assertEquals(res.scale(), resScale)
   }
 
-  @Test def testAbsNeg(): Unit = {
+  @Test
+  def testAbsNeg(): Unit = {
     val a =
       "-123809648392384754573567356745735.63567890295784902768787678287E+21"
     val aNumber = new BigDecimal(a)
@@ -51,7 +54,8 @@ class BigDecimalCompareTest {
     assertEquals(result, aNumber.abs().toString)
   }
 
-  @Test def testAbsPos(): Unit = {
+  @Test
+  def testAbsPos(): Unit = {
     val a =
       "123809648392384754573567356745735.63567890295784902768787678287E+21"
     val aNumber = new BigDecimal(a)
@@ -60,7 +64,8 @@ class BigDecimalCompareTest {
     assertEquals(result, aNumber.abs().toString)
   }
 
-  @Test def testCompareEqualScale1(): Unit = {
+  @Test
+  def testCompareEqualScale1(): Unit = {
     val a = "12380964839238475457356735674573563567890295784902768787678287"
     val aScale = 18
     val b = "4573563567890295784902768787678287"
@@ -71,7 +76,8 @@ class BigDecimalCompareTest {
     assertEquals(result, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareEqualScale2(): Unit = {
+  @Test
+  def testCompareEqualScale2(): Unit = {
     val a = "12380964839238475457356735674573563567890295784902768787678287"
     val aScale = 18
     val b =
@@ -83,7 +89,8 @@ class BigDecimalCompareTest {
     assertEquals(result, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareGreaterScale1(): Unit = {
+  @Test
+  def testCompareGreaterScale1(): Unit = {
     val a = "12380964839238475457356735674573563567890295784902768787678287"
     val aScale = 28
     val b = "4573563567890295784902768787678287"
@@ -94,7 +101,8 @@ class BigDecimalCompareTest {
     assertEquals(result, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareGreaterScale2(): Unit = {
+  @Test
+  def testCompareGreaterScale2(): Unit = {
     val a = "12380964839238475457356735674573563567890295784902768787678287"
     val aScale = 48
     val b = "4573563567890295784902768787678287"
@@ -105,7 +113,8 @@ class BigDecimalCompareTest {
     assertEquals(result, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareLessScale1(): Unit = {
+  @Test
+  def testCompareLessScale1(): Unit = {
     val a = "12380964839238475457356735674573563567890295784902768787678287"
     val aScale = 18
     val b = "4573563567890295784902768787678287"
@@ -116,7 +125,8 @@ class BigDecimalCompareTest {
     assertEquals(result, aNumber.compareTo(bNumber))
   }
 
-  @Test def testCompareLessScale2(): Unit = {
+  @Test
+  def testCompareLessScale2(): Unit = {
     val a = "12380964839238475457356735674573"
     val aScale = 36
     val b = "45735635948573894578349572001798379183767890295784902768787678287"
@@ -127,7 +137,8 @@ class BigDecimalCompareTest {
     assertEquals(result, aNumber.compareTo(bNumber))
   }
 
-  @Test def testEqualsEqual(): Unit = {
+  @Test
+  def testEqualsEqual(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = -24
@@ -139,7 +150,8 @@ class BigDecimalCompareTest {
     assertTrue(aNumber == bNumber)
   }
 
-  @Test def testEqualsNull(): Unit = {
+  @Test
+  def testEqualsNull(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = -24
@@ -147,7 +159,8 @@ class BigDecimalCompareTest {
     assertFalse(aNumber == null)
   }
 
-  @Test def testEqualsUnequal1(): Unit = {
+  @Test
+  def testEqualsUnequal1(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = -24
@@ -158,7 +171,8 @@ class BigDecimalCompareTest {
     assertFalse(aNumber == bNumber)
   }
 
-  @Test def testEqualsUnequal2(): Unit = {
+  @Test
+  def testEqualsUnequal2(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = -24
@@ -170,7 +184,8 @@ class BigDecimalCompareTest {
     assertFalse(aNumber == bNumber)
   }
 
-  @Test def testEqualsUnequal3(): Unit = {
+  @Test
+  def testEqualsUnequal3(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = -24
@@ -181,7 +196,8 @@ class BigDecimalCompareTest {
     assertFalse(aNumber.equals(b))
   }
 
-  @Test def testFractionScale(): Unit = {
+  @Test
+  def testFractionScale(): Unit = {
     var a = new BigDecimal("0.02")
     var b = new BigDecimal("0.02000")
     assertEquals(a.compareTo(b), 0)
@@ -192,7 +208,8 @@ class BigDecimalCompareTest {
     assertEquals(a.compareTo(b), -1)
   }
 
-  @Test def testHashCodeEqual(): Unit = {
+  @Test
+  def testHashCodeEqual(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = -24
@@ -204,7 +221,8 @@ class BigDecimalCompareTest {
     assertEquals(bNumber.hashCode, aNumber.hashCode)
   }
 
-  @Test def testHashCodeUnequal(): Unit = {
+  @Test
+  def testHashCodeUnequal(): Unit = {
     val a = "8478231212478987482988429808779810457634781384756794987"
     val aScale = 41
     val b =
@@ -215,7 +233,8 @@ class BigDecimalCompareTest {
     assertTrue(aNumber.hashCode != bNumber.hashCode)
   }
 
-  @Test def testMaxEqual(): Unit = {
+  @Test
+  def testMaxEqual(): Unit = {
     val a = "8478231212478987482988429808779810457634781384756794987"
     val aScale = 41
     val b = "8478231212478987482988429808779810457634781384756794987"
@@ -228,7 +247,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.max(bNumber))
   }
 
-  @Test def testMaxUnequal1(): Unit = {
+  @Test
+  def testMaxUnequal1(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 24
@@ -244,7 +264,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.max(bNumber))
   }
 
-  @Test def testMaxUnequal2(): Unit = {
+  @Test
+  def testMaxUnequal2(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -259,7 +280,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.max(bNumber))
   }
 
-  @Test def testMinEqual(): Unit = {
+  @Test
+  def testMinEqual(): Unit = {
     val a = "8478231212478987482988429808779810457634781384756794987"
     val aScale = 41
     val b = "8478231212478987482988429808779810457634781384756794987"
@@ -272,7 +294,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.min(bNumber))
   }
 
-  @Test def testMinUnequal1(): Unit = {
+  @Test
+  def testMinUnequal1(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 24
@@ -288,7 +311,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.min(bNumber))
   }
 
-  @Test def testMinUnequal2(): Unit = {
+  @Test
+  def testMinUnequal2(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -302,7 +326,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.min(bNumber))
   }
 
-  @Test def testNegateMathContextNegative(): Unit = {
+  @Test
+  def testNegateMathContextNegative(): Unit = {
     val a =
       "-92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 49
@@ -317,7 +342,8 @@ class BigDecimalCompareTest {
     assertEquals(res.scale(), cScale)
   }
 
-  @Test def testNegateMathContextPositive(): Unit = {
+  @Test
+  def testNegateMathContextPositive(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -332,7 +358,8 @@ class BigDecimalCompareTest {
     assertEquals(res.scale(), cScale)
   }
 
-  @Test def testNegateNegative(): Unit = {
+  @Test
+  def testNegateNegative(): Unit = {
     val a =
       "-92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -344,7 +371,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.negate())
   }
 
-  @Test def testNegatePositive(): Unit = {
+  @Test
+  def testNegatePositive(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -356,7 +384,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.negate())
   }
 
-  @Test def testPlusMathContextNegative(): Unit = {
+  @Test
+  def testPlusMathContextNegative(): Unit = {
     val a =
       "-92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 49
@@ -371,7 +400,8 @@ class BigDecimalCompareTest {
     assertEquals(res.scale(), cScale)
   }
 
-  @Test def testPlusMathContextPositive(): Unit = {
+  @Test
+  def testPlusMathContextPositive(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -386,7 +416,8 @@ class BigDecimalCompareTest {
     assertEquals(res.scale(), cScale)
   }
 
-  @Test def testPlusNegative(): Unit = {
+  @Test
+  def testPlusNegative(): Unit = {
     val a =
       "-92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -398,7 +429,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.plus())
   }
 
-  @Test def testPlusPositive(): Unit = {
+  @Test
+  def testPlusPositive(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -410,7 +442,8 @@ class BigDecimalCompareTest {
     assertTrue(cNumber == aNumber.plus())
   }
 
-  @Test def testSignumNegative(): Unit = {
+  @Test
+  def testSignumNegative(): Unit = {
     val a =
       "-92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -418,7 +451,8 @@ class BigDecimalCompareTest {
     assertEquals(-1, aNumber.signum())
   }
 
-  @Test def testSignumPositive(): Unit = {
+  @Test
+  def testSignumPositive(): Unit = {
     val a =
       "92948782094488478231212478987482988429808779810457634781384756794987"
     val aScale = 41
@@ -426,7 +460,8 @@ class BigDecimalCompareTest {
     assertEquals(1, aNumber.signum())
   }
 
-  @Test def testSignumZero(): Unit = {
+  @Test
+  def testSignumZero(): Unit = {
     val a = "0"
     val aScale = 41
     val aNumber = new BigDecimal(new BigInteger(a), aScale)

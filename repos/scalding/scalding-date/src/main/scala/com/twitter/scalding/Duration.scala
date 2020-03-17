@@ -67,7 +67,8 @@ case class Weeks(cnt: Int)(implicit tz: TimeZone)
   // The library we are using can't handle week truncation...
   override def floorOf(that: RichDate) = {
     val step = Days(1)
-    @tailrec def recentMonday(rd: RichDate): RichDate = {
+    @tailrec
+    def recentMonday(rd: RichDate): RichDate = {
       rd.toCalendar(tz).get(Calendar.DAY_OF_WEEK) match {
         case Calendar.MONDAY => rd
         case _               => recentMonday(step.subtractFrom(rd))

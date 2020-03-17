@@ -87,7 +87,8 @@ class Engine[TD, EI, PD, Q, P, A](
   private[prediction] implicit lazy val formats = Utils.json4sDefaultFormats +
     new NameParamsSerializer
 
-  @transient lazy protected val logger = Logger[this.type]
+  @transient
+  lazy protected val logger = Logger[this.type]
 
   /** This auxiliary constructor is provided for backward compatibility.
     *
@@ -514,7 +515,8 @@ object Engine {
   private type AX = Int
   private type QX = Long
 
-  @transient lazy private val logger = Logger[this.type]
+  @transient
+  lazy private val logger = Logger[this.type]
 
   /** Helper class to accept either a single data source, or a map of data
     * sources, with a companion object providing implicit conversions, so

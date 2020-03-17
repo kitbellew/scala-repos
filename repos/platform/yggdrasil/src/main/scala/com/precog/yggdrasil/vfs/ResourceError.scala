@@ -58,13 +58,15 @@ object ResourceError {
     error => Corrupt("%s:\n%s" format (msg, error.message))
   }
 
-  sealed trait FatalError { self: ResourceError =>
+  sealed trait FatalError {
+    self: ResourceError =>
     def fold[A](fatalError: FatalError => A, userError: UserError => A) =
       fatalError(self)
     def messages: NonEmptyList[String]
   }
 
-  sealed trait UserError { self: ResourceError =>
+  sealed trait UserError {
+    self: ResourceError =>
     def fold[A](fatalError: FatalError => A, userError: UserError => A) =
       userError(self)
     def messages: NonEmptyList[String]
@@ -99,7 +101,8 @@ object ResourceError {
       errors: NonEmptyList[ResourceError])
       extends ResourceError
       with FatalError
-      with UserError { self =>
+      with UserError {
+    self =>
     override def fold[A](
         fatalError: FatalError => A,
         userError: UserError => A) = {

@@ -118,7 +118,8 @@ trait Infer extends Checkable {
       }
   }
 
-  @inline final def falseIfNoInstance(body: => Boolean): Boolean =
+  @inline
+  final def falseIfNoInstance(body: => Boolean): Boolean =
     try body
     catch { case _: NoInstance => false }
 

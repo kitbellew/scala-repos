@@ -77,7 +77,8 @@ object Future {
 
   // Exception used to raise on Futures.
   private[this] val RaiseException = new Exception with NoStacktrace
-  @inline private final def raiseException = RaiseException
+  @inline
+  private final def raiseException = RaiseException
 
   /**
     * Creates a satisfied `Future` from a [[Try]].
@@ -2031,8 +2032,7 @@ class ConstFuture[A](result: Try[A]) extends Future[A] {
   override def toString: String = s"ConstFuture($result)"
 
   // Awaitable
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   def ready(timeout: Duration)(implicit permit: Awaitable.CanAwait): this.type =
     this
 
@@ -2894,8 +2894,7 @@ class NoFuture extends Future[Nothing] {
     new TimeoutException(timeout.toString)
   }
 
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   def ready(timeout: Duration)(implicit
       permit: Awaitable.CanAwait): this.type = {
     throw sleepThenTimeout(timeout)

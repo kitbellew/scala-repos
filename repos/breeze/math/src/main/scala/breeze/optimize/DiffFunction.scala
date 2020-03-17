@@ -25,7 +25,8 @@ import breeze.util.Isomorphism
   *
   * @author dlwh
   */
-trait DiffFunction[T] extends StochasticDiffFunction[T] { outer =>
+trait DiffFunction[T] extends StochasticDiffFunction[T] {
+  outer =>
   def cached(implicit copy: CanCopy[T]) = {
     if (this.isInstanceOf[CachedDiffFunction[_]]) { this }
     else { new CachedDiffFunction(this) }

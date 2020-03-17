@@ -167,10 +167,10 @@ trait Warnings {
     "This option is obsolete and does nothing.")
 
   // Backward compatibility.
-  @deprecated("Use fatalWarnings", "2.11.0") def Xwarnfatal =
-    fatalWarnings // used by sbt
-  @deprecated("This option is being removed", "2.11.0") def Xchecknull =
-    warnSelectNullable // used by ide
-  @deprecated("Use warnDeadCode", "2.11.0") def Ywarndeadcode =
-    warnDeadCode // used by ide
+  @deprecated("Use fatalWarnings", "2.11.0")
+  def Xwarnfatal = fatalWarnings // used by sbt
+  @deprecated("This option is being removed", "2.11.0")
+  def Xchecknull = warnSelectNullable // used by ide
+  @deprecated("Use warnDeadCode", "2.11.0")
+  def Ywarndeadcode = warnDeadCode // used by ide
 }

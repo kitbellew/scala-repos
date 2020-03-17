@@ -29,8 +29,7 @@ import org.apache.spark.rdd.RDD
   * from a d-dimensional Gaussian distribution scaled by factor r and then creates a Gaussian
   * cluster with scale 1 around each center.
   */
-@DeveloperApi
-@Since("0.8.0")
+@DeveloperApi @Since("0.8.0")
 object KMeansDataGenerator {
 
   /**

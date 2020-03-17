@@ -191,16 +191,19 @@ private[spark] class Executor(
       extends Runnable {
 
     /** Whether this task has been killed. */
-    @volatile private var killed = false
+    @volatile
+    private var killed = false
 
     /** How much the JVM process has spent in GC when the task starts to run. */
-    @volatile var startGCTime: Long = _
+    @volatile
+    var startGCTime: Long = _
 
     /**
       * The task to run. This will be set in run() by deserializing the task binary coming
       * from the driver. Once it is set, it will never be changed.
       */
-    @volatile var task: Task[Any] = _
+    @volatile
+    var task: Task[Any] = _
 
     def kill(interruptThread: Boolean): Unit = {
       logInfo(s"Executor is trying to kill $taskName (TID $taskId)")

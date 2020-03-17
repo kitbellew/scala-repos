@@ -130,8 +130,10 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       *  that normal symbol initialization routines don't trigger auto-init in Symbol.flags-related routines (e.g. Symbol.getFlag).
       *  Due to the same reasoning as above, a single volatile var is enough for to store the mask.
       */
-    @volatile private[this] var _initialized = false
-    @volatile private[this] var _initializationMask = TopLevelPickledFlags
+    @volatile
+    private[this] var _initialized = false
+    @volatile
+    private[this] var _initializationMask = TopLevelPickledFlags
     override def markFlagsCompleted(mask: Long): this.type = {
       _initializationMask = _initializationMask & ~mask; this
     }

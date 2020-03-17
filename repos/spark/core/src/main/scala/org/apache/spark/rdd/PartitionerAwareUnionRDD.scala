@@ -34,7 +34,8 @@ import org.apache.spark.util.Utils
   * corresponding partitions of parent RDDs.
   */
 private[spark] class PartitionerAwareUnionRDDPartition(
-    @transient val rdds: Seq[RDD[_]],
+    @transient
+    val rdds: Seq[RDD[_]],
     val idx: Int)
     extends Partition {
   var parents = rdds.map(_.partitions(idx)).toArray

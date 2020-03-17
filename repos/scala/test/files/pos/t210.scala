@@ -3,13 +3,15 @@ trait Lang1 {
   trait Visitor {
     def f(left: Exp): Unit
   }
-  class Eval1 extends Visitor { self: Visitor =>
+  class Eval1 extends Visitor {
+    self: Visitor =>
     def f(left: Exp) = ()
   }
 }
 
 trait Lang2 extends Lang1 {
-  class Eval2 extends Eval1 { self: Visitor =>
+  class Eval2 extends Eval1 {
+    self: Visitor =>
   }
 }
 /*

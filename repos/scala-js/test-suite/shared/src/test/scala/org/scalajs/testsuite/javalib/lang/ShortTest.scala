@@ -18,7 +18,8 @@ import org.scalajs.testsuite.utils.AssertThrows._
   */
 class ShortTest {
 
-  @Test def compareTo(): Unit = {
+  @Test
+  def compareTo(): Unit = {
     def compare(x: Short, y: Short): Int =
       new JShort(x).compareTo(new JShort(y))
 
@@ -28,7 +29,8 @@ class ShortTest {
     assertEquals(0, compare(3.toShort, 3.toShort))
   }
 
-  @Test def should_be_a_Comparable(): Unit = {
+  @Test
+  def should_be_a_Comparable(): Unit = {
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
@@ -38,7 +40,8 @@ class ShortTest {
     assertEquals(0, compare(3.toShort, 3.toShort))
   }
 
-  @Test def should_parse_strings(): Unit = {
+  @Test
+  def should_parse_strings(): Unit = {
     def test(s: String, v: Short): Unit = {
       assertEquals(v, JShort.parseShort(s))
       assertEquals(v, JShort.valueOf(s).shortValue())
@@ -52,7 +55,8 @@ class ShortTest {
     test("30000", 30000)
   }
 
-  @Test def should_reject_invalid_strings_when_parsing(): Unit = {
+  @Test
+  def should_reject_invalid_strings_when_parsing(): Unit = {
     def test(s: String): Unit =
       expectThrows(classOf[NumberFormatException], JShort.parseShort(s))
 

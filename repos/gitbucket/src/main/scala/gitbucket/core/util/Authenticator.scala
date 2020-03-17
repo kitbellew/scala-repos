@@ -9,7 +9,8 @@ import ControlUtil._
 /**
   * Allows only oneself and administrators.
   */
-trait OneselfAuthenticator { self: ControllerBase =>
+trait OneselfAuthenticator {
+  self: ControllerBase =>
   protected def oneselfOnly(action: => Any) = { authenticate(action) }
   protected def oneselfOnly[T](action: T => Any) =
     (form: T) => { authenticate(action(form)) }
@@ -62,7 +63,8 @@ trait OwnerAuthenticator {
 /**
   * Allows only signed in users.
   */
-trait UsersAuthenticator { self: ControllerBase =>
+trait UsersAuthenticator {
+  self: ControllerBase =>
   protected def usersOnly(action: => Any) = { authenticate(action) }
   protected def usersOnly[T](action: T => Any) =
     (form: T) => { authenticate(action(form)) }
@@ -80,7 +82,8 @@ trait UsersAuthenticator { self: ControllerBase =>
 /**
   * Allows only administrators.
   */
-trait AdminAuthenticator { self: ControllerBase =>
+trait AdminAuthenticator {
+  self: ControllerBase =>
   protected def adminOnly(action: => Any) = { authenticate(action) }
   protected def adminOnly[T](action: T => Any) =
     (form: T) => { authenticate(action(form)) }
@@ -128,7 +131,8 @@ trait CollaboratorsAuthenticator {
 /**
   * Allows only the repository owner (or manager for group repository) and administrators.
   */
-trait ReferrerAuthenticator { self: ControllerBase with RepositoryService =>
+trait ReferrerAuthenticator {
+  self: ControllerBase with RepositoryService =>
   protected def referrersOnly(action: (RepositoryInfo) => Any) = {
     authenticate(action)
   }
@@ -192,7 +196,8 @@ trait ReadableUsersAuthenticator {
 /**
   * Allows only the group managers.
   */
-trait GroupManagerAuthenticator { self: ControllerBase with AccountService =>
+trait GroupManagerAuthenticator {
+  self: ControllerBase with AccountService =>
   protected def managersOnly(action: => Any) = { authenticate(action) }
   protected def managersOnly[T](action: T => Any) =
     (form: T) => { authenticate(action(form)) }

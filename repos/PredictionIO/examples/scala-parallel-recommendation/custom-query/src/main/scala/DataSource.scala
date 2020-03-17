@@ -27,7 +27,8 @@ class DataSource(val dsp: DataSourceParams)
       Query,
       EmptyActualResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
   private lazy val EntityType = "movie"
 
   override def readTraining(sc: SparkContext): TrainingData = {

@@ -208,8 +208,10 @@ private[twitter] class ServerDispatcher(
   private[this] val state: AtomicReference[State.Value] = new AtomicReference(
     State.Open)
 
-  @volatile private[this] var lease = Message.Tlease.MaxLease
-  @volatile private[this] var curElapsed = NilStopwatch.start()
+  @volatile
+  private[this] var lease = Message.Tlease.MaxLease
+  @volatile
+  private[this] var curElapsed = NilStopwatch.start()
   lessor.register(this)
 
   private[this] def write(m: Message): Future[Unit] = trans.write(m)

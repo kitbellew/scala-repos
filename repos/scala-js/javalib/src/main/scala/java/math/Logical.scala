@@ -169,8 +169,7 @@ private[math] object Logical {
       if (digit == 0) {
         i += 1
 
-        @inline
-        @tailrec
+        @inline @tailrec
         def loop(bi1: BigInteger, bi2: BigInteger): Unit = {
           if (i < bi1.numberLength) {
             digit = ~(bi2.digits(i) | bi1.digits(i))
@@ -312,8 +311,7 @@ private[math] object Logical {
           limit = Math.min(positive.numberLength, negative.numberLength)
           i += 1
 
-          @inline
-          @tailrec
+          @inline @tailrec
           def loop(): Unit = {
             if (i < limit) {
               digit = ~(negative.digits(i) | positive.digits(i))
@@ -326,8 +324,7 @@ private[math] object Logical {
           loop()
 
           if (digit == 0) {
-            @inline
-            @tailrec
+            @inline @tailrec
             def loop2(bi: BigInteger): Unit = {
               if (i < bi.numberLength) digit = ~bi.digits(i)
               if (digit == 0) {

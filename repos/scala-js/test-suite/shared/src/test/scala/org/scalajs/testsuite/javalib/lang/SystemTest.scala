@@ -16,7 +16,8 @@ import org.scalajs.testsuite.utils.Platform.executingInJVM
 
 class SystemTest {
 
-  @Test def setIn(): Unit = {
+  @Test
+  def setIn(): Unit = {
     val savedIn = System.in
     try {
       val testIn = new java.io.ByteArrayInputStream(Array[Byte]())
@@ -25,7 +26,8 @@ class SystemTest {
     } finally { System.setIn(savedIn) }
   }
 
-  @Test def setOut(): Unit = {
+  @Test
+  def setOut(): Unit = {
     val savedOut = System.out
     try {
       val testOut = new java.io.PrintStream(new java.io.ByteArrayOutputStream)
@@ -34,7 +36,8 @@ class SystemTest {
     } finally { System.setOut(savedOut) }
   }
 
-  @Test def setErr(): Unit = {
+  @Test
+  def setErr(): Unit = {
     val savedErr = System.err
     try {
       val testErr = new java.io.PrintStream(new java.io.ByteArrayOutputStream)
@@ -43,7 +46,8 @@ class SystemTest {
     } finally { System.setErr(savedErr) }
   }
 
-  @Test def arraycopy(): Unit = {
+  @Test
+  def arraycopy(): Unit = {
     val object0 = Array[Any]("[", "b", "c", "d", "e", "f", "]")
     val object1 = Array[Any](() => true, 1, "2", '3', 4.0, true, object0)
 
@@ -70,7 +74,8 @@ class SystemTest {
       chars.filter(_ != null).map(_.mkString).mkString)
   }
 
-  @Test def arraycopy_with_range_overlaps_for_the_same_array(): Unit = {
+  @Test
+  def arraycopy_with_range_overlaps_for_the_same_array(): Unit = {
     val array = new Array[Int](10)
 
     for (i <- 1 to 6) { array(i) = i }
@@ -96,7 +101,8 @@ class SystemTest {
     assertArrayEquals(Array(0, 1, 2, 0, 1, 1, 0, 2, 1, 0), array)
   }
 
-  @Test def identityHashCode(): Unit = {
+  @Test
+  def identityHashCode(): Unit = {
     class HasIDHashCode
 
     val x1 = new HasIDHashCode
@@ -110,7 +116,8 @@ class SystemTest {
     assertEquals(x2.hashCode(), System.identityHashCode(x2))
   }
 
-  @Test def identityHashCode_should_by_pass_hashCode(): Unit = {
+  @Test
+  def identityHashCode_should_by_pass_hashCode(): Unit = {
     val list1 = List(1, 3, 5)
     val list2 = List(1, 3, 5)
     assertEquals(list2, list1)
@@ -120,11 +127,13 @@ class SystemTest {
       System.identityHashCode(list2))
   }
 
-  @Test def identityHashCode_of_null(): Unit = {
+  @Test
+  def identityHashCode_of_null(): Unit = {
     assertEquals(0, System.identityHashCode(null))
   }
 
-  @Test def identityHashCode_of_values_implemented_as_JS_primitives(): Unit = {
+  @Test
+  def identityHashCode_of_values_implemented_as_JS_primitives(): Unit = {
     if (!executingInJVM) {
       assertEquals("foo".hashCode(), System.identityHashCode("foo"))
       assertEquals("".hashCode(), System.identityHashCode(""))

@@ -10,7 +10,8 @@ import lila.user.{User, UserContext}
 import play.api.libs.json.Json
 import play.twirl.api.Html
 
-trait TournamentHelper { self: I18nHelper with DateHelper with UserHelper =>
+trait TournamentHelper {
+  self: I18nHelper with DateHelper with UserHelper =>
 
   def netBaseUrl: String
 

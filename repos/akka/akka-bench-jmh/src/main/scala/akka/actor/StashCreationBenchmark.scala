@@ -18,11 +18,8 @@ object StashCreationBenchmark {
   val props = Props[StashingActor]
 }
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.SampleTime))
-@Fork(3)
-@Warmup(iterations = 5)
-@Measurement(iterations = 10)
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.SampleTime)) @Fork(3)
+@Warmup(iterations = 5) @Measurement(iterations = 10)
 class StashCreationBenchmark {
   val conf = ConfigFactory.parseString("""
     my-dispatcher = {
@@ -38,8 +35,7 @@ class StashCreationBenchmark {
     Await.ready(system.whenTerminated, 15.seconds)
   }
 
-  @Benchmark
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  @Benchmark @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def testDefault: Boolean = {
     val stash = system.actorOf(StashCreationBenchmark.props)
     stash.tell("hello", probe.ref)
@@ -47,8 +43,7 @@ class StashCreationBenchmark {
     true
   }
 
-  @Benchmark
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  @Benchmark @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def testCustom: Boolean = {
     val stash = system.actorOf(
       StashCreationBenchmark.props.withDispatcher("my-dispatcher"))

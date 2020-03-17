@@ -61,7 +61,8 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
       readJournalPluginId: String): T =
     readJournalPluginFor(readJournalPluginId).javadslPlugin.asInstanceOf[T]
 
-  @tailrec private def readJournalPluginFor(
+  @tailrec
+  private def readJournalPluginFor(
       readJournalPluginId: String): PluginHolder = {
     val configPath = readJournalPluginId
     val extensionIdMap = readJournalPluginExtensionIds.get

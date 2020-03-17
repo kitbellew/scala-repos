@@ -49,8 +49,7 @@ import org.apache.spark.sql.functions._
   * It supports both binary and multiclass labels, as well as both continuous and categorical
   * features.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class RandomForestClassifier @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends ProbabilisticClassifier[
@@ -146,8 +145,7 @@ final class RandomForestClassifier @Since("1.4.0") (
     defaultCopy(extra)
 }
 
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 object RandomForestClassifier {
 
   /** Accessor for supported impurity settings: entropy, gini */
@@ -169,8 +167,7 @@ object RandomForestClassifier {
   * @param _trees  Decision trees in the ensemble.
   *               Warning: These have null parents.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class RandomForestClassificationModel private[ml] (
     @Since("1.5.0") override val uid: String,
     private val _trees: Array[DecisionTreeClassificationModel],

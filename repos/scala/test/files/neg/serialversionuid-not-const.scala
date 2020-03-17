@@ -1,7 +1,11 @@
-@SerialVersionUID(13L.toLong) class C1 extends Serializable
-@SerialVersionUID(13L) class C2 extends Serializable
-@SerialVersionUID(13.asInstanceOf[Long]) class C3 extends Serializable
-@SerialVersionUID(Test.bippy) class C4 extends Serializable
+@SerialVersionUID(13L.toLong)
+class C1 extends Serializable
+@SerialVersionUID(13L)
+class C2 extends Serializable
+@SerialVersionUID(13.asInstanceOf[Long])
+class C3 extends Serializable
+@SerialVersionUID(Test.bippy)
+class C4 extends Serializable
 
 object Test {
   val bippy = 13L

@@ -230,7 +230,8 @@ class CacheManagerProvider @Inject() (
 
 private[play] class NamedEhCacheProvider(name: String)
     extends Provider[Ehcache] {
-  @Inject private var manager: CacheManager = _
+  @Inject
+  private var manager: CacheManager = _
   lazy val get: Ehcache = NamedEhCacheProvider.getNamedCache(name, manager)
 }
 
@@ -252,13 +253,15 @@ private[play] object NamedEhCacheProvider {
 
 private[play] class NamedCacheApiProvider(key: BindingKey[Ehcache])
     extends Provider[CacheApi] {
-  @Inject private var injector: Injector = _
+  @Inject
+  private var injector: Injector = _
   lazy val get: CacheApi = { new EhCacheApi(injector.instanceOf(key)) }
 }
 
 private[play] class NamedJavaCacheApiProvider(key: BindingKey[CacheApi])
     extends Provider[JavaCacheApi] {
-  @Inject private var injector: Injector = _
+  @Inject
+  private var injector: Injector = _
   lazy val get: JavaCacheApi = {
     new DefaultJavaCacheApi(injector.instanceOf(key))
   }
@@ -266,7 +269,8 @@ private[play] class NamedJavaCacheApiProvider(key: BindingKey[CacheApi])
 
 private[play] class NamedCachedProvider(key: BindingKey[CacheApi])
     extends Provider[Cached] {
-  @Inject private var injector: Injector = _
+  @Inject
+  private var injector: Injector = _
   lazy val get: Cached = { new Cached(injector.instanceOf(key)) }
 }
 

@@ -25,8 +25,8 @@ class InputStreamTest extends CommonStreamsTests {
       else -1
   }
 
-  @Test def should_provide_a_default_implementation_of_read_to_an_array()
-      : Unit = {
+  @Test
+  def should_provide_a_default_implementation_of_read_to_an_array(): Unit = {
     val stream = new DummyInputStream(200)
 
     val buf = new Array[Byte](50)
@@ -80,7 +80,8 @@ class InputStreamTest extends CommonStreamsTests {
       buf)
   }
 
-  @Test def should_provide_a_default_implementation_of_skip(): Unit = {
+  @Test
+  def should_provide_a_default_implementation_of_skip(): Unit = {
     val stream = new DummyInputStream(10)
 
     assertEquals(5L, stream.skip(5))

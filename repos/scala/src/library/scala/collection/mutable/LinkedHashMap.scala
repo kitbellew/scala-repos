@@ -58,8 +58,10 @@ class LinkedHashMap[A, B]
 
   type Entry = LinkedEntry[A, B]
 
-  @transient protected var firstEntry: Entry = null
-  @transient protected var lastEntry: Entry = null
+  @transient
+  protected var firstEntry: Entry = null
+  @transient
+  protected var lastEntry: Entry = null
 
   def get(key: A): Option[B] = {
     val e = findEntry(key)

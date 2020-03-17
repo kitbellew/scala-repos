@@ -22,8 +22,7 @@ import play.api.libs.json.Json
 
 import scala.concurrent.duration._
 
-@Path("v2/queue")
-@Consumes(Array(MediaType.APPLICATION_JSON))
+@Path("v2/queue") @Consumes(Array(MediaType.APPLICATION_JSON))
 class QueueResource @Inject() (
     clock: Clock,
     launchQueue: LaunchQueue,
@@ -32,10 +31,10 @@ class QueueResource @Inject() (
     val config: MarathonConf)
     extends AuthResource {
 
-  @GET
-  @Timed
-  @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
-  def index(@Context req: HttpServletRequest): Response =
+  @GET @Timed @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
+  def index(
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       import Formats._
 
@@ -56,11 +55,11 @@ class QueueResource @Inject() (
       ok(Json.obj("queue" -> queuedWithDelay).toString())
     }
 
-  @DELETE
-  @Path("""{appId:.+}/delay""")
+  @DELETE @Path("""{appId:.+}/delay""")
   def resetDelay(
       @PathParam("appId") id: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val appId = id.toRootPath
       val maybeApp = launchQueue.list.find(_.app.id == appId).map(_.app)

@@ -21,8 +21,10 @@ import org.scalatest.{BeforeAndAfterAll, Suite}
 
 import org.apache.spark.{SparkConf, SparkContext}
 
-trait LocalClusterSparkContext extends BeforeAndAfterAll { self: Suite =>
-  @transient var sc: SparkContext = _
+trait LocalClusterSparkContext extends BeforeAndAfterAll {
+  self: Suite =>
+  @transient
+  var sc: SparkContext = _
 
   override def beforeAll() {
     super.beforeAll()

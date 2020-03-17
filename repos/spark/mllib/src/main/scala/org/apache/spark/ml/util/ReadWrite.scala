@@ -64,8 +64,7 @@ private[util] sealed trait BaseReadWrite {
 /**
   * Abstract class for utility classes that can save ML instances.
   */
-@Experimental
-@Since("1.6.0")
+@Experimental @Since("1.6.0")
 abstract class MLWriter extends BaseReadWrite with Logging {
 
   protected var shouldOverwrite: Boolean = false
@@ -138,7 +137,8 @@ trait MLWritable {
   def save(path: String): Unit = write.save(path)
 }
 
-private[ml] trait DefaultParamsWritable extends MLWritable { self: Params =>
+private[ml] trait DefaultParamsWritable extends MLWritable {
+  self: Params =>
 
   override def write: MLWriter = new DefaultParamsWriter(this)
 }
@@ -147,8 +147,7 @@ private[ml] trait DefaultParamsWritable extends MLWritable { self: Params =>
   * Abstract class for utility classes that can load ML instances.
   * @tparam T ML instance type
   */
-@Experimental
-@Since("1.6.0")
+@Experimental @Since("1.6.0")
 abstract class MLReader[T] extends BaseReadWrite {
 
   /**
@@ -166,8 +165,7 @@ abstract class MLReader[T] extends BaseReadWrite {
   * Trait for objects that provide [[MLReader]].
   * @tparam T ML instance type
   */
-@Experimental
-@Since("1.6.0")
+@Experimental @Since("1.6.0")
 trait MLReadable[T] {
 
   /**

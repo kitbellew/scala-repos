@@ -32,7 +32,8 @@ class KMeansSuite
     with DefaultReadWriteTest {
 
   final val k = 5
-  @transient var dataset: DataFrame = _
+  @transient
+  var dataset: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

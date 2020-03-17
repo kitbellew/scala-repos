@@ -71,13 +71,20 @@ object TerminateJson {
       stack.take(next).mkString("ArrayStack(", ", ", ")")
   }
 
-  @inline private final val ExpectValue = 0
-  @inline private final val ExpectField = 1
-  @inline private final val SkipChar = 2
-  @inline private final val FieldDelim = 3
-  @inline private final val CloseString = 4
-  @inline private final val CloseArray = 5
-  @inline private final val CloseObject = 6
+  @inline
+  private final val ExpectValue = 0
+  @inline
+  private final val ExpectField = 1
+  @inline
+  private final val SkipChar = 2
+  @inline
+  private final val FieldDelim = 3
+  @inline
+  private final val CloseString = 4
+  @inline
+  private final val CloseArray = 5
+  @inline
+  private final val CloseObject = 6
 
   /**
     * Ensures the successful termination of a stream of JSON. This assumes quite

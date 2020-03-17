@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait Zip[F[_]] { self =>
+trait Zip[F[_]] {
+  self =>
   ////
   def zip[A, B](a: => F[A], b: => F[B]): F[(A, B)]
 
@@ -67,7 +68,8 @@ trait Zip[F[_]] { self =>
 }
 
 object Zip {
-  @inline def apply[F[_]](implicit F: Zip[F]): Zip[F] = F
+  @inline
+  def apply[F[_]](implicit F: Zip[F]): Zip[F] = F
 
   ////
 

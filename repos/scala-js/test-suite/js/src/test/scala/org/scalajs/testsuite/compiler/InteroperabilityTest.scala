@@ -38,7 +38,8 @@ class InteroperabilityTest {
       jsArray2Array(actual.asInstanceOf[js.Array[Any]]))
   }
 
-  @Test def should_support_backquotes_to_escape_Scala_fields(): Unit = {
+  @Test
+  def should_support_backquotes_to_escape_Scala_fields(): Unit = {
     val obj = js.eval("""
       var interoperabilityTestFieldEscape = {
         def: 0,
@@ -53,7 +54,8 @@ class InteroperabilityTest {
     assertEquals(42, obj.`val`(42))
   }
 
-  @Test def should_support_atJSName_to_specify_the_JavaScript_name_for_fields()
+  @Test
+  def should_support_atJSName_to_specify_the_JavaScript_name_for_fields()
       : Unit = {
     val obj = js.eval("""
       var interoperabilityTestJSName = {
@@ -67,7 +69,8 @@ class InteroperabilityTest {
     assertEquals(7357, obj.value(7357))
   }
 
-  @Test def should_translate_explicit_getter_and_setter_names_to_field_access()
+  @Test
+  def should_translate_explicit_getter_and_setter_names_to_field_access()
       : Unit = {
     val obj = js.eval("""
       var interoperabilityTestProperty = { a: 1 };
@@ -79,7 +82,8 @@ class InteroperabilityTest {
     assertEquals(100, obj.a)
   }
 
-  @Test def should_support_atJSName_together_with_field_access(): Unit = {
+  @Test
+  def should_support_atJSName_together_with_field_access(): Unit = {
     val obj = js.eval("""
       var interoperabilityTestProperty = { b: 1 };
       interoperabilityTestProperty;
@@ -91,7 +95,8 @@ class InteroperabilityTest {
     assertEquals(100, obj.b)
   }
 
-  @Test def should_support_atJSBracketAccess_to_specify_access_using_square_bracket_subscription()
+  @Test
+  def should_support_atJSBracketAccess_to_specify_access_using_square_bracket_subscription()
       : Unit = {
     val obj = js.eval("""
       var interoperabilityTestJSBracketAccess = [ 0, 1, 7357 ];
@@ -103,7 +108,8 @@ class InteroperabilityTest {
     assertEquals(42, obj(2))
   }
 
-  @Test def should_allow_instanciation_of_JS_classes_inheriting_from_js_Object()
+  @Test
+  def should_allow_instanciation_of_JS_classes_inheriting_from_js_Object()
       : Unit = {
     js.eval("""
       var InteroperabilityTestInherit = {
@@ -125,7 +131,8 @@ class InteroperabilityTest {
     assertEquals("Scala.js", obj.getConstructorParam)
   }
 
-  @Test def should_acces_top_level_JS_objects_via_Scala_objects_inheriting_from_js_Object()
+  @Test
+  def should_acces_top_level_JS_objects_via_Scala_objects_inheriting_from_js_Object()
       : Unit = {
     js.eval("""
       var InteroperabilityTestTopLevelObject = function(value) {
@@ -146,7 +153,8 @@ class InteroperabilityTest {
     assertEquals(7357, obj.valueAsInt)
   }
 
-  @Test def should_access_native_JS_classes_and_objects_nested_in_JS_objects()
+  @Test
+  def should_access_native_JS_classes_and_objects_nested_in_JS_objects()
       : Unit = {
     js.eval("""
       var InteroperabilityTestContainerObject = {
@@ -190,7 +198,8 @@ class InteroperabilityTest {
     assertEquals(10, obj6.x)
   }
 
-  @Test def should_access_native_JS_classes_and_objects_nested_in_atJSNamed_JS_objects()
+  @Test
+  def should_access_native_JS_classes_and_objects_nested_in_atJSNamed_JS_objects()
       : Unit = {
     js.eval("""
       var InteroperabilityTestContainerObjectRenamed = {
@@ -225,7 +234,8 @@ class InteroperabilityTest {
     assertEquals(4242, obj4.x)
   }
 
-  @Test def should_allow_to_call_JS_methods_with_variadic_parameters(): Unit = {
+  @Test
+  def should_allow_to_call_JS_methods_with_variadic_parameters(): Unit = {
     val obj = js.eval("""
       var obj = {
         foo: function() {
@@ -255,8 +265,8 @@ class InteroperabilityTest {
     assertArrayEquals(Array("plop", 42, 51), stat.foo(elems: _*))
   }
 
-  @Test def should_allow_to_call_JS_constructors_with_variadic_parameters()
-      : Unit = {
+  @Test
+  def should_allow_to_call_JS_constructors_with_variadic_parameters(): Unit = {
     import js.Dynamic.{newInstance => jsnew}
 
     js.eval("""
@@ -290,7 +300,8 @@ class InteroperabilityTest {
     assertArrayEquals(Array("plop", 42, 51), new C(elems: _*).args)
   }
 
-  @Test def should_acces_top_level_JS_objects_via_Scala_object_inheriting_from_js_GlobalScope()
+  @Test
+  def should_acces_top_level_JS_objects_via_Scala_object_inheriting_from_js_GlobalScope()
       : Unit = {
     js.eval("""
       var interoperabilityTestGlobalScopeValue = "7357";
@@ -309,7 +320,8 @@ class InteroperabilityTest {
     assertEquals(42, Global.interoperabilityTestGlobalScopeValueAsInt)
   }
 
-  @Test def should_protect_receiver_of_raw_JS_apply_if_its_a_select_issue_804()
+  @Test
+  def should_protect_receiver_of_raw_JS_apply_if_its_a_select_issue_804()
       : Unit = {
     val rawReceiver = js
       .eval("""
@@ -334,7 +346,8 @@ class InteroperabilityTest {
     new InScalaSelect(check).test()
   }
 
-  @Test def should_properly_handle_default_parameters(): Unit = {
+  @Test
+  def should_properly_handle_default_parameters(): Unit = {
     val obj = js.eval("""
       var interoperabilityTestDefaultParam = {
         fun: function() { return arguments; }
@@ -373,7 +386,8 @@ class InteroperabilityTest {
     assertEquals(5, obj.multi(2)()(5)("1"))
   }
 
-  @Test def should_properly_handle_default_parameters_for_constructors_issue_791()
+  @Test
+  def should_properly_handle_default_parameters_for_constructors_issue_791()
       : Unit = {
     js.eval("""
       var InteroperabilityTestCtor = function(x,y) {
@@ -387,7 +401,8 @@ class InteroperabilityTest {
     assertArrayEquals(Array(10, 2), new InteroperabilityTestCtor(10, 2).values)
   }
 
-  @Test def should_generate_exports_for_methods_inherited_from_traits_issue_178()
+  @Test
+  def should_generate_exports_for_methods_inherited_from_traits_issue_178()
       : Unit = {
     import js.annotation.JSExport
 
@@ -404,7 +419,8 @@ class InteroperabilityTest {
     assertEquals(1, theValue)
   }
 
-  @Test def should_allow_constructor_params_that_are_vals_vars_in_facades_issue_1277()
+  @Test
+  def should_allow_constructor_params_that_are_vals_vars_in_facades_issue_1277()
       : Unit = {
     js.eval("""
         var InteroparabilityCtorInlineValue = function(x,y) {
@@ -424,8 +440,8 @@ class InteroperabilityTest {
     assertEquals(100, obj.y)
   }
 
-  @Test def should_unbox_Chars_received_from_calling_a_JS_interop_method()
-      : Unit = {
+  @Test
+  def should_unbox_Chars_received_from_calling_a_JS_interop_method(): Unit = {
     val obj = js.eval("""
       var obj = {
         get: function() { return JSUtils().stringToChar('e'); }
@@ -436,7 +452,8 @@ class InteroperabilityTest {
     assertEquals('e'.toInt, obj.get().toInt)
   }
 
-  @Test def should_box_Chars_given_to_a_JS_interop_method(): Unit = {
+  @Test
+  def should_box_Chars_given_to_a_JS_interop_method(): Unit = {
     val obj = js
       .eval("""
       var obj = {
@@ -449,7 +466,8 @@ class InteroperabilityTest {
     assertEquals("xx", obj.twice('x'))
   }
 
-  @Test def should_unbox_value_classes_received_from_calling_a_JS_interop_method()
+  @Test
+  def should_unbox_value_classes_received_from_calling_a_JS_interop_method()
       : Unit = {
     val obj = js.eval("""
       var obj = {
@@ -462,7 +480,8 @@ class InteroperabilityTest {
     assertEquals(5, r.i)
   }
 
-  @Test def should_box_value_classes_given_to_a_JS_interop_method(): Unit = {
+  @Test
+  def should_box_value_classes_given_to_a_JS_interop_method(): Unit = {
     val obj = js.eval("""
       var obj = {
         stringOf: function(vc) { return vc.toString(); }
@@ -474,7 +493,8 @@ class InteroperabilityTest {
     assertEquals("SomeValueClass(7)", obj.stringOf(vc))
   }
 
-  @Test def should_not_unbox_values_received_from_JS_method_in_statement_position()
+  @Test
+  def should_not_unbox_values_received_from_JS_method_in_statement_position()
       : Unit = {
     /* To test this, we verify that a purposefully ill-typed facade does not
      * throw a ClassCastException when called in statement position.
@@ -495,7 +515,8 @@ class InteroperabilityTest {
       ) // in expression position, should throw
   }
 
-  @Test def should_asInstanceOf_values_received_from_calling_a_JS_interop_method()
+  @Test
+  def should_asInstanceOf_values_received_from_calling_a_JS_interop_method()
       : Unit = {
     assumeTrue("Requires compliant asInstanceOf", hasCompliantAsInstanceOfs)
     val obj = js
@@ -629,8 +650,7 @@ object InteroperabilityTest {
  * their tests.
  */
 
-@JSName("InteroperabilityTestInherit.Pattern")
-@js.native
+@JSName("InteroperabilityTestInherit.Pattern") @js.native
 class InteroperabilityTestPattern protected () extends js.Object {
   def this(pattern: String) = this()
   val field: Int = js.native
@@ -644,8 +664,7 @@ trait InteroperabilityTestTopLevel extends js.Object {
   def valueAsInt(): Int = js.native
 }
 
-@JSName("InteroperabilityTestTopLevelObject")
-@js.native
+@JSName("InteroperabilityTestTopLevelObject") @js.native
 object InteroperabilityTestTopLevel extends js.Object {
   def apply(value: String): InteroperabilityTestTopLevel = js.native
 }
@@ -662,14 +681,12 @@ object InteroperabilityTestContainerObject extends js.Object {
     val x: Int = js.native
   }
 
-  @JSName("ContainedClassRenamed")
-  @js.native
+  @JSName("ContainedClassRenamed") @js.native
   class ContainedClassWithJSName(_x: Int) extends js.Object {
     val x: Int = js.native
   }
 
-  @JSName("ContainedObjectRenamed")
-  @js.native
+  @JSName("ContainedObjectRenamed") @js.native
   object ContainedObjectWithJSName extends js.Object {
     val x: Int = js.native
   }
@@ -680,8 +697,7 @@ object InteroperabilityTestContainerObject extends js.Object {
   }
 }
 
-@JSName("InteroperabilityTestContainerObjectRenamed")
-@js.native
+@JSName("InteroperabilityTestContainerObjectRenamed") @js.native
 object InteroperabilityTestContainerObjectWithJSName extends js.Object {
   @js.native
   class ContainedClass(_x: Int) extends js.Object {
@@ -693,14 +709,12 @@ object InteroperabilityTestContainerObjectWithJSName extends js.Object {
     val x: Int = js.native
   }
 
-  @JSName("ContainedClassRenamed")
-  @js.native
+  @JSName("ContainedClassRenamed") @js.native
   class ContainedClassWithJSName(_x: Int) extends js.Object {
     val x: Int = js.native
   }
 
-  @JSName("ContainedObjectRenamed")
-  @js.native
+  @JSName("ContainedObjectRenamed") @js.native
   object ContainedObjectWithJSName extends js.Object {
     val x: Int = js.native
   }

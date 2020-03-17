@@ -6,7 +6,8 @@ package effect
   *
   */
 ////
-trait LiftControlIO[F[_]] { self =>
+trait LiftControlIO[F[_]] {
+  self =>
   ////
   import IO._
 
@@ -21,7 +22,8 @@ trait LiftControlIO[F[_]] { self =>
 }
 
 object LiftControlIO {
-  @inline def apply[F[_]](implicit F: LiftControlIO[F]): LiftControlIO[F] = F
+  @inline
+  def apply[F[_]](implicit F: LiftControlIO[F]): LiftControlIO[F] = F
 
   ////
 

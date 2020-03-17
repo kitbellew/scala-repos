@@ -7,7 +7,8 @@ import com.twitter.finagle.redis.util.ReplyFormat
 import com.twitter.util.Future
 import org.jboss.netty.buffer.ChannelBuffer
 
-trait Sets { self: BaseClient =>
+trait Sets {
+  self: BaseClient =>
 
   /**
     * Adds elements to the set, according to the set property.

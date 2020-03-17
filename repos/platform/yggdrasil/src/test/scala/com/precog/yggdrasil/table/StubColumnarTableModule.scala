@@ -67,7 +67,8 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
   }
 
   class Table(slices: StreamT[M, Slice], size: TableSize)
-      extends ColumnarTable(slices, size) { self: Table =>
+      extends ColumnarTable(slices, size) {
+    self: Table =>
     def sort(
         sortKey: TransSpec1,
         sortOrder: DesiredSortOrder,

@@ -103,7 +103,8 @@ class HoconObjectEntryMover extends LineMover {
       canInsertBefore(entry) && canInsertAfter(entry)
 
     // Finds ancestor object entry that can be "grabbed and moved" by current offset
-    @tailrec def enclosingAnchoredEntry(el: PsiElement): Option[HObjectEntry] =
+    @tailrec
+    def enclosingAnchoredEntry(el: PsiElement): Option[HObjectEntry] =
       el match {
         case _: PsiFile                                  => None
         case _ if firstNonCommentLine(el) != currentLine => None

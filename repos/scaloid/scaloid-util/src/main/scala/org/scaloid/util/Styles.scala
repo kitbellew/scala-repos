@@ -14,9 +14,11 @@ import org.scaloid.common.SStateListDrawable
 trait Styles {
   import Color._
 
-  @inline def c(color: Int) = new ColorDrawable(color)
+  @inline
+  def c(color: Int) = new ColorDrawable(color)
 
-  @inline def transform(color: Int, f: Int => Int): Int = {
+  @inline
+  def transform(color: Int, f: Int => Int): Int = {
     val a = color & 0xff000000
     val r = (color >> 16) & 0xff
     val g = (color >> 8) & 0xff
@@ -24,16 +26,19 @@ trait Styles {
     a + (f(r) << 16) + (f(g) << 8) + f(b)
   }
 
-  @inline def average(color: Int): Double = {
+  @inline
+  def average(color: Int): Double = {
     val r = (color >> 16) & 0xff
     val g = (color >> 8) & 0xff
     val b = (color >> 0) & 0xff
     (r + g + b) / 3
   }
 
-  @inline def invert(color: Int): Int = transform(color, 255 - _)
+  @inline
+  def invert(color: Int): Int = transform(color, 255 - _)
 
-  @inline def clamp(c: Int) = if (c > 255) 255 else if (c < 0) 0 else c
+  @inline
+  def clamp(c: Int) = if (c > 255) 255 else if (c < 0) 0 else c
 
   def pressedColor(color: Int): Int = {
     val avg = average(color)

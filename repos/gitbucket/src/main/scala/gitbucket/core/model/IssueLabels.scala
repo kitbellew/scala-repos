@@ -1,6 +1,7 @@
 package gitbucket.core.model
 
-trait IssueLabelComponent extends TemplateComponent { self: Profile =>
+trait IssueLabelComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
 
   lazy val IssueLabels = TableQuery[IssueLabels]

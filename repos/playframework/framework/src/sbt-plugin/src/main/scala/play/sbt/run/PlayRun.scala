@@ -169,7 +169,8 @@ object PlayRun {
       "Internal: tracks state for continuous execution.")
     def isEOF(c: Int): Boolean = c == 4
 
-    @tailrec def shouldTerminate: Boolean =
+    @tailrec
+    def shouldTerminate: Boolean =
       (System.in.available > 0) && (isEOF(System.in.read()) || shouldTerminate)
 
     val sourcesFinder = PathFinder { watched watchPaths state }

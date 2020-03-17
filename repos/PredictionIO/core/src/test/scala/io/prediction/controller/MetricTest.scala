@@ -57,7 +57,8 @@ object MetricDevSuite {
 }
 
 class MetricDevSuite extends FunSuite with Inside with SharedSparkContext {
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   test("Average Metric") {
     val qpaSeq0 = Seq((1, 0, 0), (2, 0, 0), (3, 0, 0))

@@ -69,7 +69,8 @@ trait PingedService {
   val service = new Service
 
   class Service extends LiftActor {
-    @volatile var pinged = false
+    @volatile
+    var pinged = false
     /*
     def act() {
       while (true) {

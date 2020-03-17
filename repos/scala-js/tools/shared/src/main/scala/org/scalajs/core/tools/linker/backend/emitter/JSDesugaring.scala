@@ -1004,8 +1004,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       implicit val pos = rhs.pos
 
       /** Push the current lhs further into a deeper rhs. */
-      @inline def redo(newRhs: Tree)(implicit env: Env) =
-        pushLhsInto(lhs, newRhs)
+      @inline
+      def redo(newRhs: Tree)(implicit env: Env) = pushLhsInto(lhs, newRhs)
 
       /** Extract a definition of the lhs if it is a VarDef, to avoid changing
         *  its scope.

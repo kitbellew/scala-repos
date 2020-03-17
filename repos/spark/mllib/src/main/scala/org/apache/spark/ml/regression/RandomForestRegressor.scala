@@ -43,8 +43,7 @@ import org.apache.spark.sql.functions._
   * [[http://en.wikipedia.org/wiki/Random_forest  Random Forest]] learning algorithm for regression.
   * It supports both continuous and categorical features.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class RandomForestRegressor @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends Predictor[
@@ -126,8 +125,7 @@ final class RandomForestRegressor @Since("1.4.0") (
   override def copy(extra: ParamMap): RandomForestRegressor = defaultCopy(extra)
 }
 
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 object RandomForestRegressor {
 
   /** Accessor for supported impurity settings: variance */
@@ -148,8 +146,7 @@ object RandomForestRegressor {
   * @param _trees  Decision trees in the ensemble.
   * @param numFeatures  Number of features used by this model
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class RandomForestRegressionModel private[ml] (
     override val uid: String,
     private val _trees: Array[DecisionTreeRegressionModel],

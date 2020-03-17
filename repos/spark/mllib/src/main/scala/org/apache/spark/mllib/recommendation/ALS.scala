@@ -182,8 +182,7 @@ class ALS private (
     * `MEMORY_AND_DISK`. Users can change it to a serialized storage, e.g., `MEMORY_AND_DISK_SER` and
     * set `spark.rdd.compress` to `true` to reduce the space requirement, at the cost of speed.
     */
-  @DeveloperApi
-  @Since("1.1.0")
+  @DeveloperApi @Since("1.1.0")
   def setIntermediateRDDStorageLevel(storageLevel: StorageLevel): this.type = {
     require(
       storageLevel != StorageLevel.NONE,
@@ -199,8 +198,7 @@ class ALS private (
     * `MEMORY_AND_DISK_SER` and set `spark.rdd.compress` to `true` to reduce the space requirement,
     * at the cost of speed.
     */
-  @DeveloperApi
-  @Since("1.3.0")
+  @DeveloperApi @Since("1.3.0")
   def setFinalRDDStorageLevel(storageLevel: StorageLevel): this.type = {
     this.finalRDDStorageLevel = storageLevel
     this
@@ -213,8 +211,7 @@ class ALS private (
     * ALS iterations. If the checkpoint directory is not set in [[org.apache.spark.SparkContext]],
     * this setting is ignored.
     */
-  @DeveloperApi
-  @Since("1.4.0")
+  @DeveloperApi @Since("1.4.0")
   def setCheckpointInterval(checkpointInterval: Int): this.type = {
     this.checkpointInterval = checkpointInterval
     this

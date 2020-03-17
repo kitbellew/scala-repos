@@ -17,7 +17,8 @@ class OnceTest extends FunSuite {
   }
 
   test("Once.apply should be visible from the other thread") {
-    @volatile var x = 0
+    @volatile
+    var x = 0
     val once = Once { x += 1 }
     val p = Promise[Unit]()
     val t = new Thread(new Runnable {

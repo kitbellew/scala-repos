@@ -101,7 +101,8 @@ object Output {
   def tailLines(file: File, tailDelim: String): Seq[String] =
     headLines(IO.readLines(file).reverse, tailDelim).reverse
 
-  @tailrec def headLines(lines: Seq[String], tailDelim: String): Seq[String] =
+  @tailrec
+  def headLines(lines: Seq[String], tailDelim: String): Seq[String] =
     if (lines.isEmpty) lines
     else {
       val (first, tail) = lines.span { line => !(line startsWith tailDelim) }

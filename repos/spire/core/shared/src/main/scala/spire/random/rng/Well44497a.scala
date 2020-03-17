@@ -94,14 +94,18 @@ final class Well44497a protected[random] (state: Array[Int], i0: Int)
 
 object Well44497a extends GeneratorCompanion[Well44497a, (Array[Int], Int)] {
 
-  @inline private val UpperMask = 0xFFFFFFFF >>> 17
-  @inline private val LowerMask = ~UpperMask
+  @inline
+  private val UpperMask = 0xFFFFFFFF >>> 17
+  @inline
+  private val LowerMask = ~UpperMask
 
   // Number of bits in the pool.
-  @inline private final val K: Int = 44497
+  @inline
+  private final val K: Int = 44497
 
   // Length of the pool in ints.
-  @inline private final val R: Int = (K + 31) / 32
+  @inline
+  private final val R: Int = (K + 31) / 32
 
   // Length of the pool in ints -1.
   // @inline private final val R_1 : Int = R - 1
@@ -110,7 +114,8 @@ object Well44497a extends GeneratorCompanion[Well44497a, (Array[Int], Int)] {
   // @inline private final val R_2 : Int = R - 2
 
   // Length of the pool and index in bytes
-  @inline private final val BYTES = R * 4 + 4
+  @inline
+  private final val BYTES = R * 4 + 4
 
   // First parameter of the algorithm.
   // @inline private final val M1 : Int = 23
@@ -121,15 +126,20 @@ object Well44497a extends GeneratorCompanion[Well44497a, (Array[Int], Int)] {
   // Third parameter of the algorithm.
   // @inline private final val M3 : Int = 229
 
-  @inline private final def mat0pos(t: Int, v: Int) = v ^ (v >>> t)
-  @inline private final def mat0neg(t: Int, v: Int) = v ^ (v << -t)
-  @inline private final def mat1(v: Int) = v
+  @inline
+  private final def mat0pos(t: Int, v: Int) = v ^ (v >>> t)
+  @inline
+  private final def mat0neg(t: Int, v: Int) = v ^ (v << -t)
+  @inline
+  private final def mat1(v: Int) = v
   // @inline private final def mat2(a: Int, v: Int)            = if ((v & 1) != 0) (v >>> 1) ^ a else v >>> 1
   // @inline private final def mat3pos(t: Int, v: Int)         = v >>> t
-  @inline private final def mat3neg(t: Int, v: Int) = v << -t
+  @inline
+  private final def mat3neg(t: Int, v: Int) = v << -t
   // @inline private final def mat4pos(t: Int, b: Int, v: Int) = v ^ ((v >>> t) & b)
   // @inline private final def mat4neg(t: Int, b: Int, v: Int) = v ^ ((v << -t) & b)
-  @inline private final def mat5(r: Int, a: Int, ds: Int, dt: Int, v: Int) = {
+  @inline
+  private final def mat5(r: Int, a: Int, ds: Int, dt: Int, v: Int) = {
     if ((v & dt) != 0) { (((v << r) ^ (v >>> (32 - r))) & ds) ^ a }
     else { ((v << r) ^ (v >>> (32 - r))) & ds }
   }

@@ -335,7 +335,8 @@ class Flag[T: Flaggable] private[app] (
     else localFlagValues.set(Some(updatedMap))
   }
 
-  @volatile private[this] var value: Option[T] = None
+  @volatile
+  private[this] var value: Option[T] = None
   private[this] val registered = new AtomicBoolean(false)
 
   private[this] def register(): Unit = {
@@ -351,7 +352,8 @@ class Flag[T: Flaggable] private[app] (
     }
   }
 
-  @volatile private[this] var _parsingDone = false
+  @volatile
+  private[this] var _parsingDone = false
   protected[this] def parsingDone = _parsingDone
 
   private lazy val default: Option[T] = defaultOrUsage match {
@@ -557,7 +559,8 @@ class Flags(
   // thread-safety is provided by synchronization on `this`
   private[this] val flags = new mutable.HashMap[String, Flag[_]]
 
-  @volatile private[this] var cmdUsage = ""
+  @volatile
+  private[this] var cmdUsage = ""
 
   // Add a help flag by default
   private[this] val helpFlag = this("help", false, "Show this help")

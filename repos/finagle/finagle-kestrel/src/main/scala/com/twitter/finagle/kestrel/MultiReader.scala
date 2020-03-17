@@ -41,7 +41,8 @@ private[finagle] object MultiReaderHelper {
     val clusterUpdate = new Broker[Set[ReadHandle]]
 
     // number of read handles
-    @volatile var numReadHandles = 0
+    @volatile
+    var numReadHandles = 0
     val numReadHandlesGauge = statsReceiver.addGauge("num_read_handles") {
       numReadHandles
     }

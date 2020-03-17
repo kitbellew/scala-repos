@@ -6,7 +6,8 @@ import org.junit.Assert._
 /** Test case for the listing of constraints in table definitions */
 class TableConstraintsTest {
 
-  @Test def testConstraintsOrdering {
+  @Test
+  def testConstraintsOrdering {
     import slick.jdbc.H2Profile.api._
 
     class Foo(tag: Tag) extends Table[Long](tag, "foo_table") {

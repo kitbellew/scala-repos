@@ -44,7 +44,8 @@ import scalaz.syntax.comonad._
 trait FSLibSpecs[M[+_]]
     extends Specification
     with FSLibModule[M]
-    with TestColumnarTableModule[M] { self =>
+    with TestColumnarTableModule[M] {
+  self =>
   import trans._
   import constants._
 

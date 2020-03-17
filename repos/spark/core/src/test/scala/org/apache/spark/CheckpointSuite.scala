@@ -27,7 +27,8 @@ import org.apache.spark.rdd._
 import org.apache.spark.storage.{BlockId, StorageLevel, TestBlockId}
 import org.apache.spark.util.Utils
 
-trait RDDCheckpointTester { self: SparkFunSuite =>
+trait RDDCheckpointTester {
+  self: SparkFunSuite =>
 
   protected val partitioner = new HashPartitioner(2)
 
@@ -616,7 +617,8 @@ class FatPairRDD(parent: RDD[Int], _partitioner: Partitioner)
     parent.partitions.map(p => new FatPartition(p))
   }
 
-  @transient override val partitioner = Some(_partitioner)
+  @transient
+  override val partitioner = Some(_partitioner)
 
   def compute(split: Partition, context: TaskContext): Iterator[(Int, Int)] = {
     parent

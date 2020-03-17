@@ -39,9 +39,10 @@ private[akka] object RemoteWatcher {
       watchee: InternalActorRef,
       watcher: InternalActorRef)
 
-  @SerialVersionUID(1L) case object Heartbeat extends PriorityMessage
-  @SerialVersionUID(1L) final case class HeartbeatRsp(addressUid: Int)
-      extends PriorityMessage
+  @SerialVersionUID(1L)
+  case object Heartbeat extends PriorityMessage
+  @SerialVersionUID(1L)
+  final case class HeartbeatRsp(addressUid: Int) extends PriorityMessage
 
   // sent to self only
   case object HeartbeatTick

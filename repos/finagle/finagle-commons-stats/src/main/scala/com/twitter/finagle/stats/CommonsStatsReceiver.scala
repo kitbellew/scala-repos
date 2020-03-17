@@ -10,8 +10,10 @@ class CommonsStatsReceiver extends StatsReceiverWithCumulativeGauges {
 
   val repr = Stats.STATS_PROVIDER
 
-  @volatile private[this] var stats = Map.empty[Seq[String], Stat]
-  @volatile private[this] var counters = Map.empty[Seq[String], Counter]
+  @volatile
+  private[this] var stats = Map.empty[Seq[String], Stat]
+  @volatile
+  private[this] var counters = Map.empty[Seq[String], Counter]
 
   override def toString: String = "CommonsStatsReceiver"
 

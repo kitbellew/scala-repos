@@ -204,7 +204,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
 
   private def getSiblings(
       element: PsiElement,
-      @Nullable stopAtScope: PsiElement): Array[PsiElement] = {
+      @Nullable
+      stopAtScope: PsiElement): Array[PsiElement] = {
     def isParentOk(parent: PsiElement): Boolean = {
       if (parent == null) return false
       assert(

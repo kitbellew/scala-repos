@@ -31,7 +31,8 @@ package object runtime {
     result
   }
 
-  @inline final def genTraversableOnce2jsArray[A](
+  @inline
+  final def genTraversableOnce2jsArray[A](
       col: GenTraversableOnce[A]): js.Array[A] = {
     col match {
       case col: js.ArrayOps[A]     => col.result()
@@ -58,8 +59,7 @@ package object runtime {
     *  It is kept for backward binary compatibility with 0.6.{0,1,2}, but will
     *  be removed in the next major version.
     */
-  @deprecated("Use js.Dynamic.newInstance instead.", "0.6.3")
-  @inline
+  @deprecated("Use js.Dynamic.newInstance instead.", "0.6.3") @inline
   def newJSObjectWithVarargs(ctor: js.Dynamic, args: js.Array[_]): js.Any =
     js.Dynamic.newInstance(ctor)(args.asInstanceOf[js.Array[js.Any]]: _*)
 
@@ -131,7 +131,8 @@ package object runtime {
     *
     *  See [[EnvironmentInfo]] for details.
     */
-  @inline def environmentInfo: EnvironmentInfo = linkingInfo.envInfo
+  @inline
+  def environmentInfo: EnvironmentInfo = linkingInfo.envInfo
 
   /** Information known at link-time, given the output configuration.
     *

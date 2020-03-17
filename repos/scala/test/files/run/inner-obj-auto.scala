@@ -1032,7 +1032,8 @@ trait Trait52_1 {
 class Class54_1 {
 
   class Class53_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1067,7 +1068,8 @@ class Class54_1 {
 object Object55_1 {
 
   class Class53_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1102,7 +1104,8 @@ object Object55_1 {
 trait Trait56_1 {
 
   class Class53_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1137,7 +1140,8 @@ trait Trait56_1 {
 class Class58_1 {
 
   object Object57_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1172,7 +1176,8 @@ class Class58_1 {
 object Object59_1 {
 
   object Object57_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1207,7 +1212,8 @@ object Object59_1 {
 trait Trait60_1 {
 
   object Object57_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1242,7 +1248,8 @@ trait Trait60_1 {
 class Class62_1 {
 
   trait Trait61_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1277,7 +1284,8 @@ class Class62_1 {
 object Object63_1 {
 
   trait Trait61_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1312,7 +1320,8 @@ object Object63_1 {
 trait Trait64_1 {
 
   trait Trait61_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1347,7 +1356,8 @@ trait Trait64_1 {
 class Class66_1 {
 
   def method65_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1382,7 +1392,8 @@ class Class66_1 {
 object Object67_1 {
 
   def method65_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1417,7 +1428,8 @@ object Object67_1 {
 trait Trait68_1 {
 
   def method65_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1452,7 +1464,8 @@ trait Trait68_1 {
 class Class70_1 {
 
   private def method69_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1487,7 +1500,8 @@ class Class70_1 {
 object Object71_1 {
 
   private def method69_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1522,7 +1536,8 @@ object Object71_1 {
 trait Trait72_1 {
 
   private def method69_2 {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1557,7 +1572,8 @@ trait Trait72_1 {
 class Class74_1 {
 
   val fun73_2 = () => {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1592,7 +1608,8 @@ class Class74_1 {
 object Object75_1 {
 
   val fun73_2 = () => {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1627,7 +1644,8 @@ object Object75_1 {
 trait Trait76_1 {
 
   val fun73_2 = () => {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1663,7 +1681,8 @@ class Class78_1 {
 
   class Class77_2 {
     { // in primary constructor
-      @volatile var ObjCounter = 0
+      @volatile
+      var ObjCounter = 0
 
       object Obj {
         ObjCounter += 1
@@ -1700,7 +1719,8 @@ object Object79_1 {
 
   class Class77_2 {
     { // in primary constructor
-      @volatile var ObjCounter = 0
+      @volatile
+      var ObjCounter = 0
 
       object Obj {
         ObjCounter += 1
@@ -1737,7 +1757,8 @@ trait Trait80_1 {
 
   class Class77_2 {
     { // in primary constructor
-      @volatile var ObjCounter = 0
+      @volatile
+      var ObjCounter = 0
 
       object Obj {
         ObjCounter += 1
@@ -1774,7 +1795,8 @@ class Class82_1 {
 
   trait Trait81_2 {
     { // in primary constructor
-      @volatile var ObjCounter = 0
+      @volatile
+      var ObjCounter = 0
 
       object Obj {
         ObjCounter += 1
@@ -1811,7 +1833,8 @@ object Object83_1 {
 
   trait Trait81_2 {
     { // in primary constructor
-      @volatile var ObjCounter = 0
+      @volatile
+      var ObjCounter = 0
 
       object Obj {
         ObjCounter += 1
@@ -1848,7 +1871,8 @@ trait Trait84_1 {
 
   trait Trait81_2 {
     { // in primary constructor
-      @volatile var ObjCounter = 0
+      @volatile
+      var ObjCounter = 0
 
       object Obj {
         ObjCounter += 1
@@ -1884,7 +1908,8 @@ trait Trait84_1 {
 class Class90_1 {
 
   val value89_2 = {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1
@@ -1919,7 +1944,8 @@ class Class90_1 {
 trait Trait92_1 {
 
   val value89_2 = {
-    @volatile var ObjCounter = 0
+    @volatile
+    var ObjCounter = 0
 
     object Obj {
       ObjCounter += 1

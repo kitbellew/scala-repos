@@ -279,7 +279,8 @@ object HiveTypeCoercion {
     }
 
     /** Get the widest type for each attribute in all the children */
-    @tailrec private def getWidestTypes(
+    @tailrec
+    private def getWidestTypes(
         children: Seq[LogicalPlan],
         attrIndex: Int,
         castedTypes: mutable.Queue[DataType]): Seq[DataType] = {
@@ -728,7 +729,8 @@ object HiveTypeCoercion {
 
       // Note that ret is nullable to avoid typing a lot of Some(...) in this local scope.
       // We wrap immediately an Option after this.
-      @Nullable val ret: Expression = (inType, expectedType) match {
+      @Nullable
+      val ret: Expression = (inType, expectedType) match {
 
         // If the expected type is already a parent of the input type, no need to cast.
         case _ if expectedType.acceptsType(inType) => e

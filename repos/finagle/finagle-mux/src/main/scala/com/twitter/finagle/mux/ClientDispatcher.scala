@@ -140,8 +140,8 @@ private class ReqRepFilter
   // We currently attempt a Tdispatch and if it fails set canDispatch to No.
   // When Tinits/Rinits arrive, we should use them to signal this capability
   // instead.
-  @volatile private[this] var canDispatch: CanDispatch.State =
-    CanDispatch.Unknown
+  @volatile
+  private[this] var canDispatch: CanDispatch.State = CanDispatch.Unknown
 
   private[this] def reply(msg: Try[Message]): Future[Response] =
     msg match {

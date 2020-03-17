@@ -2,7 +2,8 @@ class Top[A] {
   type AType = A
 }
 
-trait Node { outer =>
+trait Node {
+  outer =>
   type T <: Node
   def prepend =
     new Node {

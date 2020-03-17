@@ -41,11 +41,11 @@ class AppTasksResource @Inject() (
   val log = LoggerFactory.getLogger(getClass.getName)
   val GroupTasks = """^((?:.+/)|)\*$""".r
 
-  @GET
-  @Timed
+  @GET @Timed
   def indexJson(
       @PathParam("appId") id: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val taskMap = taskTracker.tasksByAppSync
 
@@ -75,12 +75,11 @@ class AppTasksResource @Inject() (
       }
     }
 
-  @GET
-  @Produces(Array(MediaType.TEXT_PLAIN))
-  @Timed
+  @GET @Produces(Array(MediaType.TEXT_PLAIN)) @Timed
   def indexTxt(
       @PathParam("appId") appId: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val id = appId.toRootPath
       withAuthorization(ViewApp, result(groupManager.app(id)), unknownApp(id)) {
@@ -89,14 +88,14 @@ class AppTasksResource @Inject() (
       }
     }
 
-  @DELETE
-  @Timed
+  @DELETE @Timed
   def deleteMany(
       @PathParam("appId") appId: String,
       @QueryParam("host") host: String,
       @QueryParam("scale") @DefaultValue("false") scale: Boolean = false,
       @QueryParam("force") @DefaultValue("false") force: Boolean = false,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val pathId = appId.toRootPath
 
@@ -116,15 +115,14 @@ class AppTasksResource @Inject() (
       }
     }
 
-  @DELETE
-  @Path("{taskId}")
-  @Timed
+  @DELETE @Path("{taskId}") @Timed
   def deleteOne(
       @PathParam("appId") appId: String,
       @PathParam("taskId") id: String,
       @QueryParam("scale") @DefaultValue("false") scale: Boolean = false,
       @QueryParam("force") @DefaultValue("false") force: Boolean = false,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val pathId = appId.toRootPath
       def findToKill(appTasks: Iterable[Task]): Iterable[Task] =

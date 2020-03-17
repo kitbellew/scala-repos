@@ -90,7 +90,8 @@ object RowFormat {
       extends ValueRowFormat
       with RowFormatCodecs {
     // This is really stupid, but required to work w/ JDBM.
-    @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
+    @transient
+    lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
     }
 
@@ -101,7 +102,8 @@ object RowFormat {
   case class SortingKeyRowFormatV1(_columnRefs: Seq[ColumnRef])
       extends RowFormatCodecs
       with SortingRowFormat {
-    @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
+    @transient
+    lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
     }
 
@@ -110,13 +112,15 @@ object RowFormat {
 
   case class IdentitiesRowFormatV1(_columnRefs: Seq[ColumnRef])
       extends IdentitiesRowFormat {
-    @transient lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
+    @transient
+    lazy val columnRefs: Seq[ColumnRef] = _columnRefs map { ref =>
       ref.copy(ctype = ref.ctype.readResolve())
     }
   }
 }
 
-trait RowFormatSupport { self: StdCodecs =>
+trait RowFormatSupport {
+  self: StdCodecs =>
   import ByteBufferPool._
 
   protected trait ColumnValueEncoder {
@@ -409,7 +413,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
       def encodeFromRow(row: Int) = {
         val undefined = RawBitSet.create(colsArray.length)
 
-        @inline @tailrec def definedCols(i: Int): Unit =
+        @inline @tailrec
+        def definedCols(i: Int): Unit =
           if (i >= 0) {
             if (!colsArray(i).isDefinedAt(row)) RawBitSet.set(undefined, i)
             definedCols(i - 1)
@@ -436,7 +441,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
       def decodeToRow(row: Int, src: Array[Byte], offset: Int = 0) {
         val buf = ByteBuffer.wrap(src, offset, src.length - offset)
         val undefined = Codec[RawBitSet].read(buf)
-        @tailrec def helper(i: Int, decs: List[ColumnValueDecoder]) {
+        @tailrec
+        def helper(i: Int, decs: List[ColumnValueDecoder]) {
           decs match {
             case h :: t =>
               if (!RawBitSet.get(undefined, i)) h.decode(row, buf)
@@ -453,14 +459,15 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     import Codec.{StatefulCodec, wrappedWriteInit}
 
     // @transient lazy val bitSetCodec = Codec[BitSet]
-    @transient lazy val rawBitSetCodec = Codec[RawBitSet]
+    @transient
+    lazy val rawBitSetCodec = Codec[RawBitSet]
 
-    @transient private lazy val codecs: List[Codec[_ <: CValue]] =
-      columnRefs.toList map {
-        case ColumnRef(_, cType: CValueType[_]) =>
-          Codec.CValueCodec(cType)(codecForCValueType(cType))
-        case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
-      }
+    @transient
+    private lazy val codecs: List[Codec[_ <: CValue]] = columnRefs.toList map {
+      case ColumnRef(_, cType: CValueType[_]) =>
+        Codec.CValueCodec(cType)(codecForCValueType(cType))
+      case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
+    }
 
     type S = (Either[rawBitSetCodec.S, StatefulCodec#State], List[CValue])
 
@@ -574,7 +581,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       bd => (bd.toDouble, bd),
       (_, bd) => bd)
 
-  @transient lazy val selectors: List[(CPath, List[CType])] = {
+  @transient
+  lazy val selectors: List[(CPath, List[CType])] = {
     val refs: Map[CPath, Seq[ColumnRef]] = columnRefs.groupBy(_.selector)
     (columnRefs map (_.selector)).distinct.map(selector =>
       (selector, refs(selector).map(_.ctype).toList))(collection.breakOut)
@@ -946,10 +954,12 @@ trait IdentitiesRowFormat extends RowFormat {
     loop(offset, n)
   }
 
-  @inline private final def shiftIn(b: Byte, shift: Int, n: Long): Long =
+  @inline
+  private final def shiftIn(b: Byte, shift: Int, n: Long): Long =
     n | ((b.toLong & 0x7FL) << shift)
 
-  @inline private final def more(b: Byte): Boolean = (b & 0x80) != 0
+  @inline
+  private final def more(b: Byte): Boolean = (b & 0x80) != 0
 
   def encodeIdentities(xs: Array[Long]) = {
 

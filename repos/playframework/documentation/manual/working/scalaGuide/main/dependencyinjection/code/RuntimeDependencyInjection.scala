@@ -49,7 +49,8 @@ package singleton {
 
   @Singleton
   class CurrentSharePrice {
-    @volatile private var price = 0
+    @volatile
+    private var price = 0
 
     def set(p: Int) = price = p
     def get = price
@@ -59,7 +60,8 @@ package singleton {
 
 package cleanup {
   object MessageQueue {
-    @volatile var stopped = false
+    @volatile
+    var stopped = false
     def connectToMessageQueue() = MessageQueue
     def stop() = stopped = true
   }

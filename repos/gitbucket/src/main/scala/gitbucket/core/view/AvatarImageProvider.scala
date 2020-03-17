@@ -5,7 +5,8 @@ import gitbucket.core.service.RequestCache
 import gitbucket.core.util.StringUtil
 import play.twirl.api.Html
 
-trait AvatarImageProvider { self: RequestCache =>
+trait AvatarImageProvider {
+  self: RequestCache =>
 
   /**
     * Returns &lt;img&gt; which displays the avatar icon.

@@ -26,7 +26,8 @@ import org.apache.spark.sql.execution.datasources.{
 }
 
 private[sql] class CSVOptions(
-    @transient private val parameters: Map[String, String])
+    @transient
+    private val parameters: Map[String, String])
     extends Logging
     with Serializable {
 

@@ -7,7 +7,8 @@ import scalaz.Id.Id
   * A type giving rise to two unrelated [[scalaz.Traverse]]s.
   */
 ////
-trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] { self =>
+trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] {
+  self =>
   ////
 
   /** Collect `G`s while applying `f` and `g` in some order. */
@@ -157,7 +158,8 @@ trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] { self =>
 }
 
 object Bitraverse {
-  @inline def apply[F[_, _]](implicit F: Bitraverse[F]): Bitraverse[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Bitraverse[F]): Bitraverse[F] = F
 
   ////
 

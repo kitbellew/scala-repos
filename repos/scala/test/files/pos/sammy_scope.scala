@@ -1,5 +1,6 @@
 // test synthesizeSAMFunction: scope hygiene
-abstract class SamFun[T1, R] { self =>
+abstract class SamFun[T1, R] {
+  self =>
   def apply(v1: T1): R
 
   // this should type check, as the apply ref is equivalent to self.apply

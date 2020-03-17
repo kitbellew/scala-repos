@@ -1,7 +1,8 @@
 package scalaz
 
 /** A universally quantified value */
-trait Forall[P[_]] { self =>
+trait Forall[P[_]] {
+  self =>
   def apply[A]: P[A]
 
   /** `Forall` is an endofunctor in an endofunctor category */

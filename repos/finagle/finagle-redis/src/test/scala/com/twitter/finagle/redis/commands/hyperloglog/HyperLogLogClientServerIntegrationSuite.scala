@@ -12,8 +12,7 @@ import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-@Ignore
-@RunWith(classOf[JUnitRunner])
+@Ignore @RunWith(classOf[JUnitRunner])
 final class HyperLogLogClientServerIntegrationSuite
     extends RedisClientServerIntegrationTest {
   implicit def convertToChannelBuffer(s: String): ChannelBuffer =

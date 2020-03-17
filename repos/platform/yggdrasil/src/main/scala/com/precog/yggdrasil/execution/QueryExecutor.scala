@@ -107,7 +107,8 @@ object CacheControl {
   }
 }
 
-trait QueryExecutor[M[+_], +A] { self =>
+trait QueryExecutor[M[+_], +A] {
+  self =>
   def execute(
       query: String,
       context: EvaluationContext,

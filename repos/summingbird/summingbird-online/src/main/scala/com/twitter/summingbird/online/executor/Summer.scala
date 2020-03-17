@@ -58,12 +58,14 @@ import scala.util.control.NonFatal
   * @author Ashu Singhal
   */
 class Summer[Key, Value: Semigroup, Event, S, D, RC](
-    @transient storeSupplier: MergeableStoreFactory[Key, Value],
-    @transient flatMapOp: FlatMapOperation[
-      (Key, (Option[Value], Value)),
-      Event],
-    @transient successHandler: OnlineSuccessHandler,
-    @transient exceptionHandler: OnlineExceptionHandler,
+    @transient
+    storeSupplier: MergeableStoreFactory[Key, Value],
+    @transient
+    flatMapOp: FlatMapOperation[(Key, (Option[Value], Value)), Event],
+    @transient
+    successHandler: OnlineSuccessHandler,
+    @transient
+    exceptionHandler: OnlineExceptionHandler,
     summerBuilder: SummerBuilder,
     maxWaitingFutures: MaxWaitingFutures,
     maxWaitingTime: MaxFutureWaitTime,

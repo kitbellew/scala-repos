@@ -17,7 +17,8 @@ import java.util.logging.Logger
 @deprecated(
   "Use `com.twitter.finagle.Name` to represent clusters instead",
   "2014-11-21")
-trait Cluster[T] { self =>
+trait Cluster[T] {
+  self =>
 
   /**
     * A Future object that is defined when the cluster is initialized.

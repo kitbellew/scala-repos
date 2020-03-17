@@ -8,7 +8,8 @@ package interactive
 import scala.reflect.internal.util.SourceFile
 import scala.collection.mutable.ArrayBuffer
 
-trait RichCompilationUnits { self: Global =>
+trait RichCompilationUnits {
+  self: Global =>
 
   /** The status value of a unit that has not yet been loaded */
   final val NotLoaded = -2

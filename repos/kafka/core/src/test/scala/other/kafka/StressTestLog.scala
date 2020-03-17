@@ -91,7 +91,8 @@ object StressTestLog {
   }
 
   class WriterThread(val log: Log) extends WorkerThread {
-    @volatile var offset = 0
+    @volatile
+    var offset = 0
     override def work() {
       val logAppendInfo = log.append(
         TestUtils.singleMessageSet(offset.toString.getBytes))
@@ -103,7 +104,8 @@ object StressTestLog {
   }
 
   class ReaderThread(val log: Log) extends WorkerThread {
-    @volatile var offset = 0
+    @volatile
+    var offset = 0
     override def work() {
       try {
         log.read(offset, 1024, Some(offset + 1)).messageSet match {

@@ -31,7 +31,8 @@ import scala.annotation.tailrec
   *
   */
 trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
-    extends LinearSeqLike[A, Repr] { self: Repr =>
+    extends LinearSeqLike[A, Repr] {
+  self: Repr =>
 
   def isEmpty: Boolean
 
@@ -262,7 +263,8 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
 
   override /*SeqLike*/
   def lengthCompare(len: Int): Int = {
-    @tailrec def loop(i: Int, xs: Repr): Int = {
+    @tailrec
+    def loop(i: Int, xs: Repr): Int = {
       if (i == len) if (xs.isEmpty) 0 else 1
       else if (xs.isEmpty) -1
       else loop(i + 1, xs.tail)

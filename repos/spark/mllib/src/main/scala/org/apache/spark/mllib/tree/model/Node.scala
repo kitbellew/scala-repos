@@ -39,8 +39,7 @@ import org.apache.spark.mllib.tree.configuration.FeatureType._
   * @param rightNode right child
   * @param stats information gain stats
   */
-@Since("1.0.0")
-@DeveloperApi
+@Since("1.0.0") @DeveloperApi
 class Node @Since("1.2.0") (
     @Since("1.0.0") val id: Int,
     @Since("1.0.0") var predict: Predict,

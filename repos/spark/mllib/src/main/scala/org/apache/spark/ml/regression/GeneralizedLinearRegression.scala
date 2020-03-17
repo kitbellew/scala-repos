@@ -123,8 +123,7 @@ private[regression] trait GeneralizedLinearRegressionBase
   *  - "poisson"  -> "log", "identity", "sqrt"
   *  - "gamma"    -> "inverse", "identity", "log"
   */
-@Experimental
-@Since("2.0.0")
+@Experimental @Since("2.0.0")
 class GeneralizedLinearRegression @Since("2.0.0") (
     @Since("2.0.0") override val uid: String)
     extends Regressor[
@@ -720,8 +719,7 @@ object GeneralizedLinearRegression
   * :: Experimental ::
   * Model produced by [[GeneralizedLinearRegression]].
   */
-@Experimental
-@Since("2.0.0")
+@Experimental @Since("2.0.0")
 class GeneralizedLinearRegressionModel private[ml] (
     @Since("2.0.0") override val uid: String,
     @Since("2.0.0") val coefficients: Vector,
@@ -866,10 +864,10 @@ object GeneralizedLinearRegressionModel
   * @param diagInvAtWA diagonal of matrix (A^T * W * A)^-1 in the last iteration
   * @param numIterations number of iterations
   */
-@Since("2.0.0")
-@Experimental
+@Since("2.0.0") @Experimental
 class GeneralizedLinearRegressionSummary private[regression] (
-    @Since("2.0.0") @transient val predictions: DataFrame,
+    @Since("2.0.0") @transient
+    val predictions: DataFrame,
     @Since("2.0.0") val predictionCol: String,
     @Since("2.0.0") val model: GeneralizedLinearRegressionModel,
     private val diagInvAtWA: Array[Double],

@@ -116,7 +116,8 @@ trait Scanners extends ScannersCommon {
     private var openComments = 0
     protected def putCommentChar(): Unit = nextChar()
 
-    @tailrec private def skipLineComment(): Unit =
+    @tailrec
+    private def skipLineComment(): Unit =
       ch match {
         case SU | CR | LF =>
         case _            => nextChar(); skipLineComment()
@@ -136,7 +137,8 @@ trait Scanners extends ScannersCommon {
         openComments == 0
       }
     }
-    @tailrec final def skipNestedComments(): Unit =
+    @tailrec
+    final def skipNestedComments(): Unit =
       ch match {
         case '/' => maybeOpen(); skipNestedComments()
         case '*' => if (!maybeClose()) skipNestedComments()
@@ -671,7 +673,8 @@ trait Scanners extends ScannersCommon {
     private def unclosedStringLit(): Unit =
       syntaxError("unclosed string literal")
 
-    @tailrec private def getRawStringLit(): Unit = {
+    @tailrec
+    private def getRawStringLit(): Unit = {
       if (ch == '\"') {
         nextRawChar()
         if (isTripleQuote()) {
@@ -687,7 +690,8 @@ trait Scanners extends ScannersCommon {
       }
     }
 
-    @tailrec private def getStringPart(multiLine: Boolean): Unit = {
+    @tailrec
+    private def getStringPart(multiLine: Boolean): Unit = {
       def finishStringPart() = {
         setStrVal()
         token = STRINGPART
@@ -902,7 +906,8 @@ trait Scanners extends ScannersCommon {
           val divider = if (base == 10) 1 else 2
           val limit: Long =
             if (token == LONGLIT) Long.MaxValue else Int.MaxValue
-          @tailrec def convert(value: Long, i: Int): Long =
+          @tailrec
+          def convert(value: Long, i: Int): Long =
             if (i >= len) value
             else {
               val d = digit2int(strVal charAt i, base)

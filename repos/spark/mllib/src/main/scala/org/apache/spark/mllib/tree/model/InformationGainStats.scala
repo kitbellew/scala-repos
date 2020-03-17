@@ -30,8 +30,7 @@ import org.apache.spark.mllib.tree.impurity.ImpurityCalculator
   * @param leftPredict left node predict
   * @param rightPredict right node predict
   */
-@Since("1.0.0")
-@DeveloperApi
+@Since("1.0.0") @DeveloperApi
 class InformationGainStats(
     val gain: Double,
     val impurity: Double,

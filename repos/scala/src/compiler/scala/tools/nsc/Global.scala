@@ -59,7 +59,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     with DocComments
     with Positions
     with Reporting
-    with Parsing { self =>
+    with Parsing {
+  self =>
 
   // the mirror --------------------------------------------------
 
@@ -264,22 +265,27 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   // This has the happy side effect of masking the one argument forms
   // of assert and require (but for now I've reproduced them here,
   // because there are a million to fix.)
-  @inline final def assert(assertion: Boolean, message: => Any) {
+  @inline
+  final def assert(assertion: Boolean, message: => Any) {
     // calling Predef.assert would send a freshly allocated closure wrapping the one received as argument.
     if (!assertion)
       throw new java.lang.AssertionError(
         "assertion failed: " + supplementErrorMessage("" + message))
   }
-  @inline final def assert(assertion: Boolean) { assert(assertion, "") }
-  @inline final def require(requirement: Boolean, message: => Any) {
+  @inline
+  final def assert(assertion: Boolean) { assert(assertion, "") }
+  @inline
+  final def require(requirement: Boolean, message: => Any) {
     // calling Predef.require would send a freshly allocated closure wrapping the one received as argument.
     if (!requirement)
       throw new IllegalArgumentException(
         "requirement failed: " + supplementErrorMessage("" + message))
   }
-  @inline final def require(requirement: Boolean) { require(requirement, "") }
+  @inline
+  final def require(requirement: Boolean) { require(requirement, "") }
 
-  @inline final def ifDebug(body: => Unit) { if (settings.debug) body }
+  @inline
+  final def ifDebug(body: => Unit) { if (settings.debug) body }
 
   override protected def isDeveloper = settings.developer || super.isDeveloper
 
@@ -289,9 +295,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     *  logging mechanism. !!! is prefixed to all messages issued via this route
     *  to make them visually distinct.
     */
-  @inline final override def devWarning(msg: => String): Unit =
+  @inline
+  final override def devWarning(msg: => String): Unit =
     devWarning(NoPosition, msg)
-  @inline final def devWarning(pos: Position, msg: => String) {
+  @inline
+  final def devWarning(pos: Position, msg: => String) {
     def pos_s = if (pos eq NoPosition) "" else s" [@ $pos]"
     if (isDeveloper) warning(pos, "!!! " + msg)
     else log(s"!!!$pos_s $msg") // such warnings always at least logged
@@ -304,14 +312,14 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       settings.log containsPhase phase
     ))
   // Over 200 closure objects are eliminated by inlining this.
-  @inline final def log(msg: => AnyRef) {
+  @inline
+  final def log(msg: => AnyRef) {
     if (shouldLogAtThisPhase)
       inform("[log %s%s] %s".format(globalPhase, atPhaseStackMessage, msg))
   }
 
-  @inline final override def debuglog(msg: => String) {
-    if (settings.debug) log(msg)
-  }
+  @inline
+  final override def debuglog(msg: => String) { if (settings.debug) log(msg) }
 
   @deprecated("Renamed to reportThrowable", "2.10.1")
   def logThrowable(t: Throwable): Unit = reportThrowable(t)
@@ -1036,47 +1044,67 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       && (globalPhase.id > currentRun.typerPhase.id))
 
   // TODO - trim these to the absolute minimum.
-  @inline final def exitingErasure[T](op: => T): T =
+  @inline
+  final def exitingErasure[T](op: => T): T =
     exitingPhase(currentRun.erasurePhase)(op)
-  @inline final def exitingPostErasure[T](op: => T): T =
+  @inline
+  final def exitingPostErasure[T](op: => T): T =
     exitingPhase(currentRun.posterasurePhase)(op)
-  @inline final def exitingExplicitOuter[T](op: => T): T =
+  @inline
+  final def exitingExplicitOuter[T](op: => T): T =
     exitingPhase(currentRun.explicitouterPhase)(op)
-  @inline final def exitingFlatten[T](op: => T): T =
+  @inline
+  final def exitingFlatten[T](op: => T): T =
     exitingPhase(currentRun.flattenPhase)(op)
-  @inline final def exitingMixin[T](op: => T): T =
+  @inline
+  final def exitingMixin[T](op: => T): T =
     exitingPhase(currentRun.mixinPhase)(op)
-  @inline final def exitingDelambdafy[T](op: => T): T =
+  @inline
+  final def exitingDelambdafy[T](op: => T): T =
     exitingPhase(currentRun.delambdafyPhase)(op)
-  @inline final def exitingPickler[T](op: => T): T =
+  @inline
+  final def exitingPickler[T](op: => T): T =
     exitingPhase(currentRun.picklerPhase)(op)
-  @inline final def exitingRefchecks[T](op: => T): T =
+  @inline
+  final def exitingRefchecks[T](op: => T): T =
     exitingPhase(currentRun.refchecksPhase)(op)
-  @inline final def exitingSpecialize[T](op: => T): T =
+  @inline
+  final def exitingSpecialize[T](op: => T): T =
     exitingPhase(currentRun.specializePhase)(op)
-  @inline final def exitingTyper[T](op: => T): T =
+  @inline
+  final def exitingTyper[T](op: => T): T =
     exitingPhase(currentRun.typerPhase)(op)
-  @inline final def exitingUncurry[T](op: => T): T =
+  @inline
+  final def exitingUncurry[T](op: => T): T =
     exitingPhase(currentRun.uncurryPhase)(op)
-  @inline final def enteringErasure[T](op: => T): T =
+  @inline
+  final def enteringErasure[T](op: => T): T =
     enteringPhase(currentRun.erasurePhase)(op)
-  @inline final def enteringExplicitOuter[T](op: => T): T =
+  @inline
+  final def enteringExplicitOuter[T](op: => T): T =
     enteringPhase(currentRun.explicitouterPhase)(op)
-  @inline final def enteringFlatten[T](op: => T): T =
+  @inline
+  final def enteringFlatten[T](op: => T): T =
     enteringPhase(currentRun.flattenPhase)(op)
-  @inline final def enteringMixin[T](op: => T): T =
+  @inline
+  final def enteringMixin[T](op: => T): T =
     enteringPhase(currentRun.mixinPhase)(op)
-  @inline final def enteringDelambdafy[T](op: => T): T =
+  @inline
+  final def enteringDelambdafy[T](op: => T): T =
     enteringPhase(currentRun.delambdafyPhase)(op)
-  @inline final def enteringJVM[T](op: => T): T =
-    enteringPhase(currentRun.jvmPhase)(op)
-  @inline final def enteringPickler[T](op: => T): T =
+  @inline
+  final def enteringJVM[T](op: => T): T = enteringPhase(currentRun.jvmPhase)(op)
+  @inline
+  final def enteringPickler[T](op: => T): T =
     enteringPhase(currentRun.picklerPhase)(op)
-  @inline final def enteringSpecialize[T](op: => T): T =
+  @inline
+  final def enteringSpecialize[T](op: => T): T =
     enteringPhase(currentRun.specializePhase)(op)
-  @inline final def enteringTyper[T](op: => T): T =
+  @inline
+  final def enteringTyper[T](op: => T): T =
     enteringPhase(currentRun.typerPhase)(op)
-  @inline final def enteringUncurry[T](op: => T): T =
+  @inline
+  final def enteringUncurry[T](op: => T): T =
     enteringPhase(currentRun.uncurryPhase)(op)
 
   // Owners which aren't package classes.
@@ -1192,7 +1220,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     def deprecationWarnings: List[(Position, String)] =
       reporting.deprecationWarnings
 
-    private class SyncedCompilationBuffer { self =>
+    private class SyncedCompilationBuffer {
+      self =>
       private val underlying = new mutable.ArrayBuffer[CompilationUnit]
       def size = synchronized { underlying.size }
       def +=(cu: CompilationUnit): this.type = {

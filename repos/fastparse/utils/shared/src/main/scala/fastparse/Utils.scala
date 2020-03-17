@@ -151,10 +151,8 @@ object Utils {
       * Returns the length of the matching string, or -1 if not found
       */
     def query(input: String, index: Int): Int = {
-      @tailrec def rec(
-          offset: Int,
-          currentNode: TrieNode,
-          currentRes: Int): Int = {
+      @tailrec
+      def rec(offset: Int, currentNode: TrieNode, currentRes: Int): Int = {
         if (index + offset >= input.length) currentRes
         else {
           val char = input(index + offset)

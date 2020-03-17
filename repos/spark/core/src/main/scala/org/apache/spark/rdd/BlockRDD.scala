@@ -29,13 +29,14 @@ private[spark] class BlockRDDPartition(val blockId: BlockId, idx: Int)
 
 private[spark] class BlockRDD[T: ClassTag](
     sc: SparkContext,
-    @transient val blockIds: Array[BlockId])
+    @transient
+    val blockIds: Array[BlockId])
     extends RDD[T](sc, Nil) {
 
-  @transient lazy val _locations = BlockManager.blockIdsToHosts(
-    blockIds,
-    SparkEnv.get)
-  @volatile private var _isValid = true
+  @transient
+  lazy val _locations = BlockManager.blockIdsToHosts(blockIds, SparkEnv.get)
+  @volatile
+  private var _isValid = true
 
   override def getPartitions: Array[Partition] = {
     assertValid()

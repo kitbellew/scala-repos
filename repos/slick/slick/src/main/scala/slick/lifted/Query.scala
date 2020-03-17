@@ -20,7 +20,8 @@ sealed trait QueryBase[T] extends Rep[T]
   * Additional extension methods for queries containing a single column are
   * defined in [[slick.lifted.SingleColumnQueryExtensionMethods]].
   */
-sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
+sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] {
+  self =>
   def shaped: ShapedValue[_ <: E, U]
   final lazy val packed = shaped.toNode
 
@@ -343,7 +344,8 @@ object Query {
       def shaped = ShapedValue((), Shape.unitShape[FlatShapeLevel])
     }
 
-  @inline implicit def queryShape[
+  @inline
+  implicit def queryShape[
       Level >: NestedShapeLevel <: ShapeLevel,
       T,
       Q <: QueryBase[_]](implicit ev: Q <:< Rep[T]) = RepShape[Level, Q, T]
@@ -406,7 +408,8 @@ final class BaseJoinQuery[+E1, +E2, U1, U2, C[_], +B1, +B2](
 class TableQuery[E <: AbstractTable[_]](cons: Tag => E)
     extends Query[E, E#TableElementType, Seq] {
   lazy val shaped = {
-    val baseTable = cons(new BaseTag { base =>
+    val baseTable = cons(new BaseTag {
+      base =>
       def taggedAs(path: Node): AbstractTable[_] =
         cons(new RefTag(path) {
           def taggedAs(path: Node) = base.taggedAs(path)

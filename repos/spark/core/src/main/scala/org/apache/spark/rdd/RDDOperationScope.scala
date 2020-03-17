@@ -45,8 +45,7 @@ import org.apache.spark.internal.Logging
   * There is no particular relationship between an operation scope and a stage or a job.
   * A scope may live inside one stage (e.g. map) or span across multiple jobs (e.g. take).
   */
-@JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder(Array("id", "name", "parent"))
+@JsonInclude(Include.NON_NULL) @JsonPropertyOrder(Array("id", "name", "parent"))
 private[spark] class RDDOperationScope(
     val name: String,
     val parent: Option[RDDOperationScope] = None,

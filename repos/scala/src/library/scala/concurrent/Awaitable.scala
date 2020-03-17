@@ -34,8 +34,7 @@ trait Awaitable[+T] {
     * @throws TimeoutException         if after waiting for the specified time this `Awaitable` is still not ready
     * @throws IllegalArgumentException if `atMost` is [[scala.concurrent.duration.Duration.Undefined Duration.Undefined]]
     */
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   def ready(atMost: Duration)(implicit permit: CanAwait): this.type
 
   /**

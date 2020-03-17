@@ -5,7 +5,8 @@ package internal
 import Flags._
 import util._
 
-trait ReificationSupport { self: SymbolTable =>
+trait ReificationSupport {
+  self: SymbolTable =>
   import definitions._
 
   class ReificationSupportImpl extends ReificationSupportApi {

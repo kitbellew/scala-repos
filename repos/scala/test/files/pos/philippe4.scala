@@ -1,3 +1,4 @@
-trait Foo[t <: Foo[t]] { self: t =>
+trait Foo[t <: Foo[t]] {
+  self: t =>
   def foo(that: t): Boolean;
 }

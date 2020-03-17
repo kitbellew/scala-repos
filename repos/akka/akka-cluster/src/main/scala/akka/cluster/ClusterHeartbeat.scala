@@ -323,7 +323,8 @@ private[cluster] final case class HeartbeatNodeRing(
       // be able to continue its duties (e.g. removal of downed nodes) when many nodes are shutdown
       // at the same time and nobody in the remaining cluster is monitoring some of the shutdown nodes.
       // This was reported in issue #16624.
-      @tailrec def take(
+      @tailrec
+      def take(
           n: Int,
           iter: Iterator[UniqueAddress],
           acc: Set[UniqueAddress]): (Int, Set[UniqueAddress]) =

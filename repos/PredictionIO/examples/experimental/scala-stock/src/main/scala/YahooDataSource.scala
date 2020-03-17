@@ -69,16 +69,20 @@ object HistoricalData {
 
 class YahooDataSource(val params: YahooDataSource.Params)
     extends PDataSource[RDD[TrainingData], DataParams, QueryDate, AnyRef] {
-  @transient lazy val batchView =
+  @transient
+  lazy val batchView =
     new LBatchView(params.appId, params.startTime, params.untilTime)
 
   val timezone = DateTimeZone.forID("US/Eastern")
   val windowParams = params.windowParams
   val marketTicker = windowParams.marketTicker
 
-  @transient lazy val market: HistoricalData = getTimeIndex()
-  @transient lazy val timeIndex: Array[DateTime] = market.timeIndex
-  @transient lazy val timeIndexSet: Set[DateTime] = timeIndex.toSet
+  @transient
+  lazy val market: HistoricalData = getTimeIndex()
+  @transient
+  lazy val timeIndex: Array[DateTime] = market.timeIndex
+  @transient
+  lazy val timeIndexSet: Set[DateTime] = timeIndex.toSet
 
   def merge(
       intermediate: YahooDataSource.Intermediate,

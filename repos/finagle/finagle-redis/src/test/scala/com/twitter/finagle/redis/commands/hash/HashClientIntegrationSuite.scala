@@ -8,8 +8,7 @@ import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-@Ignore
-@RunWith(classOf[JUnitRunner])
+@Ignore @RunWith(classOf[JUnitRunner])
 final class HashClientIntegrationSuite extends RedisClientTest {
 
   test("Correctly perform hash set and get commands", RedisTest, ClientTest) {

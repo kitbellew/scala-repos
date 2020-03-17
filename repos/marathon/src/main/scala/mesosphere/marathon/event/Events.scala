@@ -34,10 +34,7 @@ class EventModule(conf: EventConfiguration) extends AbstractModule {
   val log = LoggerFactory.getLogger(getClass.getName)
   def configure() {}
 
-  @Named(EventModule.busName)
-  @Provides
-  @Singleton
-  @Inject
+  @Named(EventModule.busName) @Provides @Singleton @Inject
   def provideEventBus(system: ActorSystem): EventStream = system.eventStream
 }
 

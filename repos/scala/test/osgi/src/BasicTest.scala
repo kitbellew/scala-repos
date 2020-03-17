@@ -12,8 +12,7 @@ import org.ops4j.pax.exam.spi.reactors.{ExamReactorStrategy, PerMethod}
 import org.ops4j.pax.swissbox.tracker.ServiceLookup
 import org.osgi.framework.BundleContext
 
-@RunWith(classOf[PaxExam])
-@ExamReactorStrategy(Array(classOf[PerMethod]))
+@RunWith(classOf[PaxExam]) @ExamReactorStrategy(Array(classOf[PerMethod]))
 class BasicTest extends ScalaOsgiHelper {
   @Configuration
   def config(): Array[exam.Option] = {

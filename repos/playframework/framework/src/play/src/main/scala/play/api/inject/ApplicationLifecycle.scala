@@ -74,7 +74,8 @@ trait ApplicationLifecycle {
 @Singleton
 class DefaultApplicationLifecycle extends ApplicationLifecycle {
   private val mutex = new Object()
-  @volatile private var hooks = List.empty[() => Future[_]]
+  @volatile
+  private var hooks = List.empty[() => Future[_]]
 
   def addStopHook(hook: () => Future[_]) =
     mutex.synchronized { hooks = hook :: hooks }

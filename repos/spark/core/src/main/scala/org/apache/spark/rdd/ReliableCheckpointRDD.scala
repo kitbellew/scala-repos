@@ -38,9 +38,12 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
     _partitioner: Option[Partitioner] = None)
     extends CheckpointRDD[T](sc) {
 
-  @transient private val hadoopConf = sc.hadoopConfiguration
-  @transient private val cpath = new Path(checkpointPath)
-  @transient private val fs = cpath.getFileSystem(hadoopConf)
+  @transient
+  private val hadoopConf = sc.hadoopConfiguration
+  @transient
+  private val cpath = new Path(checkpointPath)
+  @transient
+  private val fs = cpath.getFileSystem(hadoopConf)
   private val broadcastedConf = sc.broadcast(new SerializableConfiguration(
     hadoopConf))
 

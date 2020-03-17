@@ -73,11 +73,12 @@ private[remote] class FailureInjectorTransportAdapter(
   private val shouldDebugLog: Boolean = extendedSystem.settings.config
     .getBoolean("akka.remote.gremlin.debug")
 
-  @volatile private var upstreamListener: Option[AssociationEventListener] =
-    None
+  @volatile
+  private var upstreamListener: Option[AssociationEventListener] = None
   private[transport] val addressChaosTable =
     new ConcurrentHashMap[Address, GremlinMode]()
-  @volatile private var allMode: GremlinMode = PassThru
+  @volatile
+  private var allMode: GremlinMode = PassThru
 
   override val addedSchemeIdentifier = FailureInjectorSchemeIdentifier
   protected def maximumOverhead = 0
@@ -206,7 +207,8 @@ private[remote] final case class FailureInjectorHandle(
     with HandleEventListener {
   import gremlinAdapter.extendedSystem.dispatcher
 
-  @volatile private var upstreamListener: HandleEventListener = null
+  @volatile
+  private var upstreamListener: HandleEventListener = null
 
   override val readHandlerPromise: Promise[HandleEventListener] = Promise()
   readHandlerPromise.future.onSuccess {

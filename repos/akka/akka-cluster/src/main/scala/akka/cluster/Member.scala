@@ -187,18 +187,25 @@ object Member {
 sealed abstract class MemberStatus
 
 object MemberStatus {
-  @SerialVersionUID(1L) case object Joining extends MemberStatus
+  @SerialVersionUID(1L)
+  case object Joining extends MemberStatus
 
   /**
     * WeaklyUp is an EXPERIMENTAL feature and is subject to change until
     * it has received more real world testing.
     */
-  @SerialVersionUID(1L) case object WeaklyUp extends MemberStatus
-  @SerialVersionUID(1L) case object Up extends MemberStatus
-  @SerialVersionUID(1L) case object Leaving extends MemberStatus
-  @SerialVersionUID(1L) case object Exiting extends MemberStatus
-  @SerialVersionUID(1L) case object Down extends MemberStatus
-  @SerialVersionUID(1L) case object Removed extends MemberStatus
+  @SerialVersionUID(1L)
+  case object WeaklyUp extends MemberStatus
+  @SerialVersionUID(1L)
+  case object Up extends MemberStatus
+  @SerialVersionUID(1L)
+  case object Leaving extends MemberStatus
+  @SerialVersionUID(1L)
+  case object Exiting extends MemberStatus
+  @SerialVersionUID(1L)
+  case object Down extends MemberStatus
+  @SerialVersionUID(1L)
+  case object Removed extends MemberStatus
 
   /**
     * Java API: retrieve the “joining” status singleton

@@ -45,8 +45,10 @@ class ReliableProxySpec
     enterBarrier("after-each")
   }
 
-  @volatile var target: ActorRef = system.deadLetters
-  @volatile var proxy: ActorRef = system.deadLetters
+  @volatile
+  var target: ActorRef = system.deadLetters
+  @volatile
+  var proxy: ActorRef = system.deadLetters
 
   def idTarget(): Unit = {
     system.actorSelection(node(remote) / "user" / "echo") ! Identify("echo")

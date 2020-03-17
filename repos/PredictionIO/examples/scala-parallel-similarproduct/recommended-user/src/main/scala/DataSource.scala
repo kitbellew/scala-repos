@@ -20,7 +20,8 @@ class DataSource(val dsp: DataSourceParams)
       Query,
       EmptyActualResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   override def readTraining(sc: SparkContext): TrainingData = {
     val eventsDb = Storage.getPEvents()

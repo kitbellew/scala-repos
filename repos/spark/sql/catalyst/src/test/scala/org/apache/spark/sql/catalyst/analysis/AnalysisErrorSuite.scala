@@ -38,7 +38,9 @@ import org.apache.spark.sql.catalyst.util.{
 import org.apache.spark.sql.types._
 
 @BeanInfo
-private[sql] case class GroupableData(@BeanProperty data: Int)
+private[sql] case class GroupableData(
+    @BeanProperty
+    data: Int)
 
 private[sql] class GroupableUDT extends UserDefinedType[GroupableData] {
 
@@ -56,7 +58,9 @@ private[sql] class GroupableUDT extends UserDefinedType[GroupableData] {
 }
 
 @BeanInfo
-private[sql] case class UngroupableData(@BeanProperty data: Map[Int, Int])
+private[sql] case class UngroupableData(
+    @BeanProperty
+    data: Map[Int, Int])
 
 private[sql] class UngroupableUDT extends UserDefinedType[UngroupableData] {
 

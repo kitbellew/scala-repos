@@ -25,8 +25,7 @@ import org.apache.spark.annotation.{DeveloperApi, Experimental, Since}
   * [[http://en.wikipedia.org/wiki/Decision_tree_learning#Gini_impurity Gini impurity]]
   * during binary classification.
   */
-@Since("1.0.0")
-@Experimental
+@Since("1.0.0") @Experimental
 object Gini extends Impurity {
 
   /**
@@ -36,8 +35,7 @@ object Gini extends Impurity {
     * @param totalCount sum of counts for all labels
     * @return information value, or 0 if totalCount = 0
     */
-  @Since("1.1.0")
-  @DeveloperApi
+  @Since("1.1.0") @DeveloperApi
   override def calculate(counts: Array[Double], totalCount: Double): Double = {
     if (totalCount == 0) { return 0 }
     val numClasses = counts.length
@@ -59,8 +57,7 @@ object Gini extends Impurity {
     * @param sumSquares summation of squares of the labels
     * @return information value, or 0 if count = 0
     */
-  @Since("1.0.0")
-  @DeveloperApi
+  @Since("1.0.0") @DeveloperApi
   override def calculate(
       count: Double,
       sum: Double,

@@ -227,13 +227,14 @@ private[recommendation] trait ALSParams
   * @param userFactors a DataFrame that stores user factors in two columns: `id` and `features`
   * @param itemFactors a DataFrame that stores item factors in two columns: `id` and `features`
   */
-@Experimental
-@Since("1.3.0")
+@Experimental @Since("1.3.0")
 class ALSModel private[ml] (
     @Since("1.4.0") override val uid: String,
     @Since("1.4.0") val rank: Int,
-    @transient val userFactors: DataFrame,
-    @transient val itemFactors: DataFrame)
+    @transient
+    val userFactors: DataFrame,
+    @transient
+    val itemFactors: DataFrame)
     extends Model[ALSModel]
     with ALSModelParams
     with MLWritable {
@@ -358,8 +359,7 @@ object ALSModel extends MLReadable[ALSModel] {
   * indicated user
   * preferences rather than explicit ratings given to items.
   */
-@Experimental
-@Since("1.3.0")
+@Experimental @Since("1.3.0")
 class ALS(@Since("1.4.0") override val uid: String)
     extends Estimator[ALSModel]
     with ALSParams

@@ -219,7 +219,8 @@ class ExecutorBasedEventDrivenDispatcher(
 /**
   * This is the behavior of an ExecutorBasedEventDrivenDispatchers mailbox.
   */
-trait ExecutableMailbox extends Runnable { self: MessageQueue =>
+trait ExecutableMailbox extends Runnable {
+  self: MessageQueue =>
 
   def dispatcher: ExecutorBasedEventDrivenDispatcher
 
@@ -386,7 +387,8 @@ class PriorityExecutorBasedEventDrivenDispatcher(
   *   val comparator = ...comparator that determines mailbox priority ordering...
   * }
   */
-trait PriorityMailbox { self: ExecutorBasedEventDrivenDispatcher =>
+trait PriorityMailbox {
+  self: ExecutorBasedEventDrivenDispatcher =>
   def comparator: java.util.Comparator[MessageInvocation]
 
   override def createMailbox(actorRef: ActorRef): AnyRef =

@@ -42,7 +42,8 @@ import scala.annotation.tailrec
 import _root_.java.io.{Externalizable, ObjectInput, ObjectOutput}
 import _root_.java.math.MathContext
 
-sealed trait RValue { self =>
+sealed trait RValue {
+  self =>
   def toJValue: JValue
 
   def \(fieldName: String): RValue
@@ -188,7 +189,8 @@ sealed trait CValue extends RValue {
   def \(fieldName: String): RValue = CUndefined
 }
 
-sealed trait CNullValue extends CValue { self: CNullType =>
+sealed trait CNullValue extends CValue {
+  self: CNullType =>
   def cType: CNullType = self
 }
 
@@ -269,7 +271,8 @@ sealed trait CType extends Serializable {
 
 sealed trait CNullType extends CType with CNullValue
 
-sealed trait CValueType[@spec(Boolean, Long, Double) A] extends CType { self =>
+sealed trait CValueType[@spec(Boolean, Long, Double) A] extends CType {
+  self =>
   def manifest: Manifest[A]
 
   def readResolve(): CValueType[A]

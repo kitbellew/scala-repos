@@ -2,41 +2,63 @@ import annotation._
 import elidable._
 
 trait T {
-  @elidable(FINEST) def f1()
-  @elidable(SEVERE) def f2()
-  @elidable(FINEST) def f3() = assert(false, "Should have been elided.")
+  @elidable(FINEST)
+  def f1()
+  @elidable(SEVERE)
+  def f2()
+  @elidable(FINEST)
+  def f3() = assert(false, "Should have been elided.")
   def f4()
 }
 
 class C extends T {
   def f1() = println("Good for me, I was not elided. C.f1")
   def f2() = println("Good for me, I was not elided. C.f2")
-  @elidable(FINEST) def f4() = assert(false, "Should have been elided.")
+  @elidable(FINEST)
+  def f4() = assert(false, "Should have been elided.")
 }
 
 object O {
-  @elidable(FINEST) def f1() = assert(false, "Should have been elided.")
-  @elidable(INFO) def f2() = assert(false, "Should have been elided.")
-  @elidable(SEVERE) def f3() = println("Good for me, I was not elided. O.f3")
-  @elidable(INFO) def f4 = assert(false, "Should have been elided (no parens).")
+  @elidable(FINEST)
+  def f1() = assert(false, "Should have been elided.")
+  @elidable(INFO)
+  def f2() = assert(false, "Should have been elided.")
+  @elidable(SEVERE)
+  def f3() = println("Good for me, I was not elided. O.f3")
+  @elidable(INFO)
+  def f4 = assert(false, "Should have been elided (no parens).")
 }
 
 object Test {
-  @elidable(FINEST) def f1() = assert(false, "Should have been elided.")
-  @elidable(INFO) def f2() = assert(false, "Should have been elided.")
-  @elidable(SEVERE) def f3() = println("Good for me, I was not elided. Test.f3")
-  @elidable(INFO) def f4 = assert(false, "Should have been elided (no parens).")
+  @elidable(FINEST)
+  def f1() = assert(false, "Should have been elided.")
+  @elidable(INFO)
+  def f2() = assert(false, "Should have been elided.")
+  @elidable(SEVERE)
+  def f3() = println("Good for me, I was not elided. Test.f3")
+  @elidable(INFO)
+  def f4 = assert(false, "Should have been elided (no parens).")
 
-  @elidable(FINEST) def f5() = {}
-  @elidable(FINEST) def f6() = true
-  @elidable(FINEST) def f7() = 1: Byte
-  @elidable(FINEST) def f8() = 1: Short
-  @elidable(FINEST) def f9() = 1: Char
-  @elidable(FINEST) def fa() = 1
-  @elidable(FINEST) def fb() = 1L
-  @elidable(FINEST) def fc() = 1.0f
-  @elidable(FINEST) def fd() = 1.0
-  @elidable(FINEST) def fe() = "s"
+  @elidable(FINEST)
+  def f5() = {}
+  @elidable(FINEST)
+  def f6() = true
+  @elidable(FINEST)
+  def f7() = 1: Byte
+  @elidable(FINEST)
+  def f8() = 1: Short
+  @elidable(FINEST)
+  def f9() = 1: Char
+  @elidable(FINEST)
+  def fa() = 1
+  @elidable(FINEST)
+  def fb() = 1L
+  @elidable(FINEST)
+  def fc() = 1.0f
+  @elidable(FINEST)
+  def fd() = 1.0
+  @elidable(FINEST)
+  def fe() = "s"
 
   def main(args: Array[String]): Unit = {
     f1()

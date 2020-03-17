@@ -38,8 +38,7 @@ object RationalUtil {
   }
 }
 
-@BenchmarkMode(Array(Mode.AverageTime))
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Array(Mode.AverageTime)) @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Thread)
 class RationalMultiplyDivideBenchmark {
 
@@ -86,8 +85,7 @@ class RationalMultiplyDivideBenchmark {
   def quotient(x: Blackhole): Unit = { x.consume(a / b) }
 }
 
-@BenchmarkMode(Array(Mode.AverageTime))
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Array(Mode.AverageTime)) @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Thread)
 class RationalAddSubtractBenchmark {
 
@@ -131,8 +129,7 @@ class RationalAddSubtractBenchmark {
   def difference(x: Blackhole): Unit = { x.consume(a - b) }
 }
 
-@BenchmarkMode(Array(Mode.AverageTime))
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Array(Mode.AverageTime)) @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Thread)
 class RationalCompareBenchmark {
   val pairs = Map(

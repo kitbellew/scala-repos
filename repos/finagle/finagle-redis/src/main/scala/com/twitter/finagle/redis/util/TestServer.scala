@@ -9,7 +9,8 @@ import collection.JavaConversions._
 import scala.util.Random
 
 // Helper classes for spinning up a little redis cluster
-object RedisCluster { self =>
+object RedisCluster {
+  self =>
   import collection.mutable.{Stack => MutableStack}
   val instanceStack = MutableStack[ExternalRedis]()
 

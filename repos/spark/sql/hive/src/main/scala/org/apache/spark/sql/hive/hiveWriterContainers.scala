@@ -53,7 +53,8 @@ import org.apache.spark.util.SerializableJobConf
   * It is based on [[SparkHadoopWriter]].
   */
 private[hive] class SparkHiveWriterContainer(
-    @transient private val jobConf: JobConf,
+    @transient
+    private val jobConf: JobConf,
     fileSinkConf: FileSinkDesc,
     inputSchema: Seq[Attribute],
     table: MetastoreRelation)
@@ -80,13 +81,17 @@ private[hive] class SparkHiveWriterContainer(
   private var jID: SerializableWritable[JobID] = null
   private var taID: SerializableWritable[TaskAttemptID] = null
 
-  @transient private var writer: FileSinkOperator.RecordWriter = null
-  @transient protected lazy val committer = conf.value.getOutputCommitter
-  @transient protected lazy val jobContext =
-    new JobContextImpl(conf.value, jID.value)
-  @transient private lazy val taskContext =
+  @transient
+  private var writer: FileSinkOperator.RecordWriter = null
+  @transient
+  protected lazy val committer = conf.value.getOutputCommitter
+  @transient
+  protected lazy val jobContext = new JobContextImpl(conf.value, jID.value)
+  @transient
+  private lazy val taskContext =
     new TaskAttemptContextImpl(conf.value, taID.value)
-  @transient private lazy val outputFormat = conf.value.getOutputFormat
+  @transient
+  private lazy val outputFormat = conf.value.getOutputFormat
     .asInstanceOf[HiveOutputFormat[AnyRef, Writable]]
 
   def driverSideSetup() {

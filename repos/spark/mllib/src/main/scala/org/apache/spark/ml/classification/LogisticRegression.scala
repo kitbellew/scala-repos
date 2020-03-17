@@ -171,8 +171,7 @@ private[classification] trait LogisticRegressionParams
   * Currently, this class only supports binary classification.  It will support multiclass
   * in the future.
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 class LogisticRegression @Since("1.2.0") (
     @Since("1.4.0") override val uid: String)
     extends ProbabilisticClassifier[
@@ -532,8 +531,7 @@ object LogisticRegression extends DefaultParamsReadable[LogisticRegression] {
   * :: Experimental ::
   * Model produced by [[LogisticRegression]].
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 class LogisticRegressionModel private[spark] (
     @Since("1.4.0") override val uid: String,
     @Since("1.6.0") val coefficients: Vector,
@@ -893,8 +891,7 @@ sealed trait LogisticRegressionSummary extends Serializable {
   * @param featuresCol field in "predictions" which gives the features of each instance as a vector.
   * @param objectiveHistory objective function (scaled loss + regularization) at each iteration.
   */
-@Experimental
-@Since("1.5.0")
+@Experimental @Since("1.5.0")
 class BinaryLogisticRegressionTrainingSummary private[classification] (
     @Since("1.5.0") predictions: DataFrame,
     @Since("1.5.0") probabilityCol: String,
@@ -918,10 +915,10 @@ class BinaryLogisticRegressionTrainingSummary private[classification] (
   * @param labelCol field in "predictions" which gives the true label of each instance.
   * @param featuresCol field in "predictions" which gives the features of each instance as a vector.
   */
-@Experimental
-@Since("1.5.0")
+@Experimental @Since("1.5.0")
 class BinaryLogisticRegressionSummary private[classification] (
-    @Since("1.5.0") @transient override val predictions: DataFrame,
+    @Since("1.5.0") @transient
+    override val predictions: DataFrame,
     @Since("1.5.0") override val probabilityCol: String,
     @Since("1.5.0") override val labelCol: String,
     @Since("1.6.0") override val featuresCol: String)
@@ -935,7 +932,8 @@ class BinaryLogisticRegressionSummary private[classification] (
     */
   // TODO: Allow the user to vary the number of bins using a setBins method in
   // BinaryClassificationMetrics. For now the default is set to 100.
-  @transient private val binaryMetrics = new BinaryClassificationMetrics(
+  @transient
+  private val binaryMetrics = new BinaryClassificationMetrics(
     predictions.select(probabilityCol, labelCol).rdd.map {
       case Row(score: Vector, label: Double) => (score(1), label)
     },
@@ -950,8 +948,8 @@ class BinaryLogisticRegressionSummary private[classification] (
     *       This will change in later Spark versions.
     * @see http://en.wikipedia.org/wiki/Receiver_operating_characteristic
     */
-  @Since("1.5.0")
-  @transient lazy val roc: DataFrame = binaryMetrics.roc().toDF("FPR", "TPR")
+  @Since("1.5.0") @transient
+  lazy val roc: DataFrame = binaryMetrics.roc().toDF("FPR", "TPR")
 
   /**
     * Computes the area under the receiver operating characteristic (ROC) curve.
@@ -969,10 +967,8 @@ class BinaryLogisticRegressionSummary private[classification] (
     * Note: This ignores instance weights (setting all to 1.0) from [[LogisticRegression.weightCol]].
     *       This will change in later Spark versions.
     */
-  @Since("1.5.0")
-  @transient lazy val pr: DataFrame = binaryMetrics
-    .pr()
-    .toDF("recall", "precision")
+  @Since("1.5.0") @transient
+  lazy val pr: DataFrame = binaryMetrics.pr().toDF("recall", "precision")
 
   /**
     * Returns a dataframe with two fields (threshold, F-Measure) curve with beta = 1.0.
@@ -980,8 +976,8 @@ class BinaryLogisticRegressionSummary private[classification] (
     * Note: This ignores instance weights (setting all to 1.0) from [[LogisticRegression.weightCol]].
     *       This will change in later Spark versions.
     */
-  @Since("1.5.0")
-  @transient lazy val fMeasureByThreshold: DataFrame = {
+  @Since("1.5.0") @transient
+  lazy val fMeasureByThreshold: DataFrame = {
     binaryMetrics.fMeasureByThreshold().toDF("threshold", "F-Measure")
   }
 
@@ -993,8 +989,8 @@ class BinaryLogisticRegressionSummary private[classification] (
     * Note: This ignores instance weights (setting all to 1.0) from [[LogisticRegression.weightCol]].
     *       This will change in later Spark versions.
     */
-  @Since("1.5.0")
-  @transient lazy val precisionByThreshold: DataFrame = {
+  @Since("1.5.0") @transient
+  lazy val precisionByThreshold: DataFrame = {
     binaryMetrics.precisionByThreshold().toDF("threshold", "precision")
   }
 
@@ -1006,8 +1002,8 @@ class BinaryLogisticRegressionSummary private[classification] (
     * Note: This ignores instance weights (setting all to 1.0) from [[LogisticRegression.weightCol]].
     *       This will change in later Spark versions.
     */
-  @Since("1.5.0")
-  @transient lazy val recallByThreshold: DataFrame = {
+  @Since("1.5.0") @transient
+  lazy val recallByThreshold: DataFrame = {
     binaryMetrics.recallByThreshold().toDF("threshold", "recall")
   }
 }

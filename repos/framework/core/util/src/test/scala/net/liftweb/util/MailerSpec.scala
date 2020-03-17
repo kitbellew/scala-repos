@@ -50,7 +50,8 @@ object MailerSpec extends Specification {
   Props.mode // touch the lazy val so it's detected correctly
 
   val myMailer = new Mailer with MailerForTesting {
-    @volatile var lastMessage: Box[MimeMessage] = Empty
+    @volatile
+    var lastMessage: Box[MimeMessage] = Empty
 
     testModeSend.default.set((msg: MimeMessage) => { lastMessage = Full(msg) })
   }

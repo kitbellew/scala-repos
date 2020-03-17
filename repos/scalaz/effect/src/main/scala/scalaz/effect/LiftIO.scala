@@ -6,7 +6,8 @@ package effect
   *
   */
 ////
-trait LiftIO[F[_]] { self =>
+trait LiftIO[F[_]] {
+  self =>
   ////
 
   def liftIO[A](ioa: IO[A]): F[A]
@@ -20,7 +21,8 @@ trait LiftIO[F[_]] { self =>
 }
 
 object LiftIO {
-  @inline def apply[F[_]](implicit F: LiftIO[F]): LiftIO[F] = F
+  @inline
+  def apply[F[_]](implicit F: LiftIO[F]): LiftIO[F] = F
 
   ////
   implicit def idTLiftIO[F[_]: LiftIO] =

@@ -5,7 +5,8 @@ package transform
 
 import scala.language.existentials
 
-trait Transforms { self: SymbolTable =>
+trait Transforms {
+  self: SymbolTable =>
 
   /** We need to encode laziness by hand here because the three components refChecks, uncurry and erasure
     *  are overwritten by objects in Global.

@@ -17,7 +17,8 @@ abstract class ForwardingWarmUpFilter[Req, Rep](
     statsReceiver: StatsReceiver = DefaultStatsReceiver)
     extends SimpleFilter[Req, Rep] {
 
-  @volatile private[this] var warmupComplete = false
+  @volatile
+  private[this] var warmupComplete = false
 
   private[this] lazy val startTime = Time.now
 

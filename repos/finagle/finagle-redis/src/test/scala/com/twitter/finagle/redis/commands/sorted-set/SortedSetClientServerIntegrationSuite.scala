@@ -13,8 +13,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import scala.language.implicitConversions
 
-@Ignore
-@RunWith(classOf[JUnitRunner])
+@Ignore @RunWith(classOf[JUnitRunner])
 final class SortedSetClientServerIntegrationSuite
     extends RedisClientServerIntegrationTest {
   implicit def convertToChannelBuffer(s: String): ChannelBuffer =

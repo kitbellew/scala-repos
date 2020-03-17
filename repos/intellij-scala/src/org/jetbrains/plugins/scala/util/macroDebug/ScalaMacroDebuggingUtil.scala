@@ -88,7 +88,8 @@ object ScalaMacroDebuggingUtil {
       //linesRed ++= line
       //unpack debug info
       val offsets = ListBuffer.empty[(Int, Int, Int)]
-      @inline def parse(s: String) = Integer parseInt s
+      @inline
+      def parse(s: String) = Integer parseInt s
       line split '|' foreach {
         case s =>
           val nums = s split ","

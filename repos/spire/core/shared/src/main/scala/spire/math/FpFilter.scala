@@ -149,13 +149,16 @@ object FpFilterExact {
 object FpFilter {
   final val Eps = java.lang.Double.longBitsToDouble((1023L - 52) << 52)
 
-  @inline final def exact[A](value: Double): FpFilterExact[A] =
+  @inline
+  final def exact[A](value: Double): FpFilterExact[A] =
     new FpFilterExact[A](value)
 
-  @inline final def approx[A](exact: A): FpFilterApprox[A] =
+  @inline
+  final def approx[A](exact: A): FpFilterApprox[A] =
     new FpFilterApprox[A](exact)
 
-  @inline final def apply[A](
+  @inline
+  final def apply[A](
       apx: Double,
       mes: Double,
       ind: Int,

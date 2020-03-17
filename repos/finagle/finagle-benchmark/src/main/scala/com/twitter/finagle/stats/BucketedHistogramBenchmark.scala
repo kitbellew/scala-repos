@@ -9,8 +9,7 @@ import org.openjdk.jmh.infra.Blackhole
 class BucketedHistogramBenchmark extends StdBenchAnnotations {
   import BucketedHistogramBenchmark._
 
-  @Benchmark
-  @OperationsPerInvocation(N)
+  @Benchmark @OperationsPerInvocation(N)
   def add(data: DataState, add: AddState, bh: Blackhole): Int = {
     var i = 0
     while (i < data.datas.length) {

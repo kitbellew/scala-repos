@@ -96,7 +96,8 @@ object EventSeq {
   final def single(event: Any): EventSeq = new SingleEventSeq(event)
 
   /** Java API */
-  @varargs final def create(events: Any*): EventSeq = EventsSeq(events.toList)
+  @varargs
+  final def create(events: Any*): EventSeq = EventsSeq(events.toList)
   final def apply(events: Any*): EventSeq = EventsSeq(events.toList)
 }
 final case class SingleEventSeq(event: Any)

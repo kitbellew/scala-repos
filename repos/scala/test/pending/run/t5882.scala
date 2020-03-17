@@ -1,7 +1,8 @@
 // SIP-15 was revised to allow nested classes in value classes.
 // This test checks that their basic functionality.
 
-class NodeOps(val n: Any) extends AnyVal { self =>
+class NodeOps(val n: Any) extends AnyVal {
+  self =>
   class Foo() {
     def show = self.show(n)
   }

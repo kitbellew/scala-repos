@@ -381,7 +381,8 @@ trait Logic extends Debugging {
       val pure = props map (p => rewriteEqualsToProp(p))
 
       val eqAxioms = mutable.ArrayBuffer[Prop]()
-      @inline def addAxiom(p: Prop) = eqAxioms += p
+      @inline
+      def addAxiom(p: Prop) = eqAxioms += p
 
       debug.patmat("removeVarEq vars: " + vars)
       vars.foreach { v =>

@@ -44,9 +44,11 @@ case class FilePartition(val index: Int, files: Seq[PartitionedFile])
     extends Partition
 
 class FileScanRDD(
-    @transient val sqlContext: SQLContext,
+    @transient
+    val sqlContext: SQLContext,
     readFunction: (PartitionedFile) => Iterator[InternalRow],
-    @transient val filePartitions: Seq[FilePartition])
+    @transient
+    val filePartitions: Seq[FilePartition])
     extends RDD[InternalRow](sqlContext.sparkContext, Nil) {
 
   override def compute(

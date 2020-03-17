@@ -23,8 +23,7 @@ import org.apache.spark.annotation.{Experimental, Since}
   * :: Experimental ::
   * Enum to select the algorithm for the decision tree
   */
-@Since("1.0.0")
-@Experimental
+@Since("1.0.0") @Experimental
 object Algo extends Enumeration {
   @Since("1.0.0")
   type Algo = Value

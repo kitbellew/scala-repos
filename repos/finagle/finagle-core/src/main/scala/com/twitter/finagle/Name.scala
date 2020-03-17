@@ -129,7 +129,8 @@ object Name {
           {
             // Group doesn't support the abstraction of "not yet bound" so
             // this is a bit of a hack
-            @volatile var first = true
+            @volatile
+            var first = true
 
             group.set map {
               case newSet if first && newSet.isEmpty => Addr.Pending

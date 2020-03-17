@@ -9,7 +9,8 @@ import slick.util.{ReadAheadIterator, CloseableIterator}
 /**
   * A database result positioned at a row and column.
   */
-abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
+abstract class PositionedResult(val rs: ResultSet) extends Closeable {
+  outer =>
   protected[this] var pos = Int.MaxValue
   protected[this] val startPos = 0
 

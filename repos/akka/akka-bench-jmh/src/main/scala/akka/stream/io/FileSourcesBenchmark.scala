@@ -19,8 +19,7 @@ import akka.stream.IOResult
   * Benchmark                         (bufSize)  Mode  Cnt    Score    Error  Units
   * FileSourcesBenchmark.fileChannel       2048  avgt  100  1140.192 ± 55.184  ms/op
   */
-@State(Scope.Benchmark)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark) @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.AverageTime))
 class FileSourcesBenchmark {
 

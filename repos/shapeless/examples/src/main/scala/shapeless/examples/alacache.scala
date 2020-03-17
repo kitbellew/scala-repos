@@ -45,7 +45,8 @@ trait LogFacet extends ProductISOFacet {
 
   val ops: LogOps
 
-  trait LogMethods { self: C =>
+  trait LogMethods {
+    self: C =>
     protected def log: Logger = ops.logger
   }
 }
@@ -114,15 +115,20 @@ trait CachedFacet extends ProductISOFacet {
 
   val ops: CachedOps
 
-  trait CachedMethods { self: C =>
+  trait CachedMethods {
+    self: C =>
     // def intern: C = ops.intern(self)
   }
 
   trait CachedCompanion {
-    @nonGeneric def apply(elems: ops.P): C = ops.apply(elems)
-    @nonGeneric def unapply(s: C): Option[ops.P] = ops.unapply(s)
-    @nonGeneric def alive(): Long = ops.alive()
-    @nonGeneric def aliveExtracted(): Long = ops.aliveExtracted()
+    @nonGeneric
+    def apply(elems: ops.P): C = ops.apply(elems)
+    @nonGeneric
+    def unapply(s: C): Option[ops.P] = ops.unapply(s)
+    @nonGeneric
+    def alive(): Long = ops.alive()
+    @nonGeneric
+    def aliveExtracted(): Long = ops.aliveExtracted()
   }
 }
 
@@ -150,7 +156,8 @@ trait CachedCaseClassDefns
       with ProductMethods
       with PolymorphicEqualityMethods
       with CopyMethods
-      with ToStringMethods { self: C =>
+      with ToStringMethods {
+    self: C =>
   }
 
   val ops: CaseClassOps

@@ -52,8 +52,7 @@ import org.apache.spark.sql.functions._
   * learning algorithm for regression.
   * It supports both continuous and categorical features.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class GBTRegressor @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends Predictor[Vector, GBTRegressor, GBTRegressionModel]
@@ -179,8 +178,7 @@ final class GBTRegressor @Since("1.4.0") (
   override def copy(extra: ParamMap): GBTRegressor = defaultCopy(extra)
 }
 
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 object GBTRegressor {
   // The losses below should be lowercase.
   /** Accessor for supported loss settings: squared (L2), absolute (L1) */
@@ -198,8 +196,7 @@ object GBTRegressor {
   * @param _trees  Decision trees in the ensemble.
   * @param _treeWeights  Weights for the decision trees in the ensemble.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class GBTRegressionModel private[ml] (
     override val uid: String,
     private val _trees: Array[DecisionTreeRegressionModel],

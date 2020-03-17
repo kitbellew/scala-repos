@@ -11,8 +11,7 @@ import org.openjdk.jmh.annotations._
   * Benchmark used to verify move to name-based extraction does not hurt preformance.
   * It does not allocate an Option thus it should be more optimal actually.
   */
-@State(Scope.Benchmark)
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@State(Scope.Benchmark) @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
 class HttpMessageMatchingBenchmark {
 

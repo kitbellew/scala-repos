@@ -23,12 +23,14 @@ import org.joda.time.DateTime
 
 object NumericComparisons {
 
-  @inline def compare(a: Long, b: Long): Int =
-    if (a < b) -1 else if (a == b) 0 else 1
+  @inline
+  def compare(a: Long, b: Long): Int = if (a < b) -1 else if (a == b) 0 else 1
 
-  @inline def compare(a: Long, b: Double): Int = -compare(b, a)
+  @inline
+  def compare(a: Long, b: Double): Int = -compare(b, a)
 
-  @inline def compare(a: Long, b: BigDecimal): Int = BigDecimal(a) compare b
+  @inline
+  def compare(a: Long, b: BigDecimal): Int = BigDecimal(a) compare b
 
   def compare(a: Double, bl: Long): Int = {
     val b = bl.toDouble
@@ -39,23 +41,30 @@ object NumericComparisons {
     }
   }
 
-  @inline def compare(a: Double, b: Double): Int =
+  @inline
+  def compare(a: Double, b: Double): Int =
     if (a < b) -1 else if (a == b) 0 else 1
 
-  @inline def compare(a: Double, b: BigDecimal): Int = BigDecimal(a) compare b
+  @inline
+  def compare(a: Double, b: BigDecimal): Int = BigDecimal(a) compare b
 
-  @inline def compare(a: BigDecimal, b: Long): Int = a compare BigDecimal(b)
+  @inline
+  def compare(a: BigDecimal, b: Long): Int = a compare BigDecimal(b)
 
-  @inline def compare(a: BigDecimal, b: Double): Int = a compare BigDecimal(b)
+  @inline
+  def compare(a: BigDecimal, b: Double): Int = a compare BigDecimal(b)
 
-  @inline def compare(a: BigDecimal, b: BigDecimal): Int = a compare b
+  @inline
+  def compare(a: BigDecimal, b: BigDecimal): Int = a compare b
 
-  @inline def compare(a: DateTime, b: DateTime): Int = {
+  @inline
+  def compare(a: DateTime, b: DateTime): Int = {
     val res: Int = a compareTo b
     if (res < 0) -1 else if (res > 0) 1 else 0
   }
 
-  @inline def eps(b: Double): Double = math.abs(b * 2.220446049250313e-16)
+  @inline
+  def eps(b: Double): Double = math.abs(b * 2.220446049250313e-16)
 
   def approxCompare(a: Double, b: Double): Int = {
     val aError = eps(a)
@@ -65,33 +74,43 @@ object NumericComparisons {
 
   import scalaz.Ordering.{LT, GT, EQ}
 
-  @inline def order(a: Long, b: Long): scalaz.Ordering =
+  @inline
+  def order(a: Long, b: Long): scalaz.Ordering =
     if (a < b) LT else if (a == b) EQ else GT
 
-  @inline def order(a: Double, b: Double): scalaz.Ordering =
+  @inline
+  def order(a: Double, b: Double): scalaz.Ordering =
     if (a < b) LT else if (a == b) EQ else GT
 
-  @inline def order(a: Long, b: Double): scalaz.Ordering =
+  @inline
+  def order(a: Long, b: Double): scalaz.Ordering =
     scalaz.Ordering.fromInt(compare(a, b))
 
-  @inline def order(a: Double, b: Long): scalaz.Ordering =
+  @inline
+  def order(a: Double, b: Long): scalaz.Ordering =
     scalaz.Ordering.fromInt(compare(a, b))
 
-  @inline def order(a: Long, b: BigDecimal): scalaz.Ordering =
+  @inline
+  def order(a: Long, b: BigDecimal): scalaz.Ordering =
     scalaz.Ordering.fromInt(compare(a, b))
 
-  @inline def order(a: Double, b: BigDecimal): scalaz.Ordering =
+  @inline
+  def order(a: Double, b: BigDecimal): scalaz.Ordering =
     scalaz.Ordering.fromInt(compare(a, b))
 
-  @inline def order(a: BigDecimal, b: Long): scalaz.Ordering =
+  @inline
+  def order(a: BigDecimal, b: Long): scalaz.Ordering =
     scalaz.Ordering.fromInt(compare(a, b))
 
-  @inline def order(a: BigDecimal, b: Double): scalaz.Ordering =
+  @inline
+  def order(a: BigDecimal, b: Double): scalaz.Ordering =
     scalaz.Ordering.fromInt(compare(a, b))
 
-  @inline def order(a: BigDecimal, b: BigDecimal): scalaz.Ordering =
+  @inline
+  def order(a: BigDecimal, b: BigDecimal): scalaz.Ordering =
     scalaz.Ordering.fromInt(compare(a, b))
 
-  @inline def order(a: DateTime, b: DateTime): scalaz.Ordering =
+  @inline
+  def order(a: DateTime, b: DateTime): scalaz.Ordering =
     scalaz.Ordering.fromInt(compare(a, b))
 }

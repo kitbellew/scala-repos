@@ -16,8 +16,7 @@ import breeze.math.Complex
   */
 object iFourierShift extends UFunc {
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def implIFourierShift[
       @expand.args(Int, Long, Float, Double, Complex) T]
       : Impl[DenseVector[T], DenseVector[T]] = {

@@ -359,7 +359,8 @@ object GraphDSL extends GraphCreate {
   def builder[M](): Builder[M] = new Builder()(new scaladsl.GraphDSL.Builder[M])
 
   final class Builder[+Mat]()(
-      private implicit val delegate: scaladsl.GraphDSL.Builder[Mat]) { self ⇒
+      private implicit val delegate: scaladsl.GraphDSL.Builder[Mat]) {
+    self ⇒
     import akka.stream.scaladsl.GraphDSL.Implicits._
 
     /**

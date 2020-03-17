@@ -15,13 +15,17 @@ object ContravariantCoyonedaGens {
   final class Schwartzian[F[_], A, FA <: ContravariantCoyoneda[F, A]](
       val self: FA) /*extends AnyVal*/ {
     import self._
-    @inline def schwartzianPre: A => (I, A) = a => (k(a), a)
-    @inline def schwartzianPost: ((I, A)) => A = _._2
-    @inline def schwartzianOrder(implicit F: Contravariant[F]): F[(I, A)] =
+    @inline
+    def schwartzianPre: A => (I, A) = a => (k(a), a)
+    @inline
+    def schwartzianPost: ((I, A)) => A = _._2
+    @inline
+    def schwartzianOrder(implicit F: Contravariant[F]): F[(I, A)] =
       F.contramap(fi)(_._1)
   }
 
-  @inline implicit def Schwartzian[F[_], A](
+  @inline
+  implicit def Schwartzian[F[_], A](
       co: ContravariantCoyoneda[F, A]): Schwartzian[F, A, co.type] =
     new Schwartzian[F, A, co.type](co)
 

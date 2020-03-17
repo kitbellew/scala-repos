@@ -50,7 +50,8 @@ trait ColumnarTableModuleTestSupport[M[+_]]
   private def makeSlice(
       sampleData: Stream[JValue],
       sliceSize: Int): (Slice, Stream[JValue]) = {
-    @tailrec def buildColArrays(
+    @tailrec
+    def buildColArrays(
         from: Stream[JValue],
         into: Map[ColumnRef, ArrayColumn[_]],
         sliceIndex: Int): (Map[ColumnRef, ArrayColumn[_]], Int) = {

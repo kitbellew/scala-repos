@@ -1,7 +1,9 @@
-abstract class Bug360A { self: Bug360C =>
+abstract class Bug360A {
+  self: Bug360C =>
   def f: String = "hello";
 }
-trait Bug360B { self: Bug360C =>
+trait Bug360B {
+  self: Bug360C =>
   object d {
     Console.println(f);
   }

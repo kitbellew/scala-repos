@@ -1,31 +1,37 @@
 trait T
 
-class V1(val l: Long) extends AnyVal { self: T =>
+class V1(val l: Long) extends AnyVal {
+  self: T =>
   def foo: V1 = self
   def bar: T = self
 }
 
-class V2(val l: Long) extends AnyVal { self =>
+class V2(val l: Long) extends AnyVal {
+  self =>
   def foo: V2 = self
 }
 
-class V3(val l: Long) extends AnyVal { self: Long =>
+class V3(val l: Long) extends AnyVal {
+  self: Long =>
   def foo: V3 = self
   def bar: Long = self
 }
 
 // non-value classes
 
-class C1(val l: Long) { self: T =>
+class C1(val l: Long) {
+  self: T =>
   def foo: C1 = self
   def bar: T = self
 }
 
-class C2(val l: Long) { self =>
+class C2(val l: Long) {
+  self =>
   def foo: C2 = self
 }
 
-class C3(val l: Long) { self: Long =>
+class C3(val l: Long) {
+  self: Long =>
   def foo: C3 = self
   def bar: Long = self
 }

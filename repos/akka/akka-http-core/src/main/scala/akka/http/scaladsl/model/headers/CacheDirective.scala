@@ -39,7 +39,8 @@ object CacheDirective {
     final def render[R <: Rendering](r: R): r.type =
       if (fieldNames.nonEmpty) {
         r ~~ productPrefix ~~ '=' ~~ '"'
-        @tailrec def rec(i: Int = 0): r.type =
+        @tailrec
+        def rec(i: Int = 0): r.type =
           if (i < fieldNames.length) {
             if (i > 0) r ~~ ','
             r.putEscaped(fieldNames(i))
@@ -136,7 +137,8 @@ object CacheDirectives {
   }
 
   /** Java API */
-  @varargs def createPrivate(fieldNames: String*): ResponseDirective =
+  @varargs
+  def createPrivate(fieldNames: String*): ResponseDirective =
     new `private`(immutable.Seq(fieldNames: _*))
 
   // http://tools.ietf.org/html/rfc7234#section-5.2.2.7

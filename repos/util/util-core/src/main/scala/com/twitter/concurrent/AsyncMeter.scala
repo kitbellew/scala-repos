@@ -135,7 +135,8 @@ class AsyncMeter private[concurrent] (
 
   // these are synchronized on this
   private[this] var remainder: Double = 0
-  @volatile private[this] var running = false
+  @volatile
+  private[this] var running = false
   private[this] var task: Closable = Closable.nop
   private[this] var elapsed = Stopwatch.start()
 

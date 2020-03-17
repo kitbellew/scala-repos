@@ -17,7 +17,8 @@ class SourceFileTest {
     assertFalse(file.isEndOfLine(Int.MaxValue))
   }
 
-  @Test def si8630_lineToString(): Unit = {
+  @Test
+  def si8630_lineToString(): Unit = {
     val code = "abc "
     assertEquals(code, new BatchSourceFile("", code).lineToString(0))
   }

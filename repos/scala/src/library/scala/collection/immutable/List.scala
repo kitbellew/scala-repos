@@ -159,7 +159,8 @@ sealed abstract class List[+A]
     *  @usecase def mapConserve(f: A => A): List[A]
     *    @inheritdoc
     */
-  @inline final def mapConserve[B >: A <: AnyRef](f: A => B): List[B] = {
+  @inline
+  final def mapConserve[B >: A <: AnyRef](f: A => B): List[B] = {
     // Note to developers: there exists a duplication between this function and `reflect.internal.util.Collections#map2Conserve`.
     // If any successful optimization attempts or other changes are made, please rehash them there too.
     @tailrec
@@ -350,7 +351,8 @@ sealed abstract class List[+A]
     } else super.flatMap(f)
   }
 
-  @inline final override def takeWhile(p: A => Boolean): List[A] = {
+  @inline
+  final override def takeWhile(p: A => Boolean): List[A] = {
     val b = new ListBuffer[A]
     var these = this
     while (!these.isEmpty && p(these.head)) {
@@ -360,7 +362,8 @@ sealed abstract class List[+A]
     b.toList
   }
 
-  @inline final override def dropWhile(p: A => Boolean): List[A] = {
+  @inline
+  final override def dropWhile(p: A => Boolean): List[A] = {
     @tailrec
     def loop(xs: List[A]): List[A] =
       if (xs.isEmpty || !p(xs.head)) xs else loop(xs.tail)
@@ -368,7 +371,8 @@ sealed abstract class List[+A]
     loop(this)
   }
 
-  @inline final override def span(p: A => Boolean): (List[A], List[A]) = {
+  @inline
+  final override def span(p: A => Boolean): (List[A], List[A]) = {
     val b = new ListBuffer[A]
     var these = this
     while (!these.isEmpty && p(these.head)) {
@@ -380,7 +384,8 @@ sealed abstract class List[+A]
 
   // Overridden with an implementation identical to the inherited one (at this time)
   // solely so it can be finalized and thus inlinable.
-  @inline final override def foreach[U](f: A => U) {
+  @inline
+  final override def foreach[U](f: A => U) {
     var these = this
     while (!these.isEmpty) {
       f(these.head)
@@ -470,7 +475,9 @@ object List extends SeqFactory[List] {
   }
 
   @SerialVersionUID(1L)
-  private class SerializationProxy[A](@transient private var orig: List[A])
+  private class SerializationProxy[A](
+      @transient
+      private var orig: List[A])
       extends Serializable {
 
     private def writeObject(out: ObjectOutputStream) {

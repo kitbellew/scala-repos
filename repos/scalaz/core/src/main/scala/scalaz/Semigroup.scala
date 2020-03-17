@@ -11,7 +11,8 @@ package scalaz
   * @see [[http://mathworld.wolfram.com/Semigroup.html]]
   */
 ////
-trait Semigroup[F] { self =>
+trait Semigroup[F] {
+  self =>
   ////
   /**
     * The binary operation to combine `f1` and `f2`.
@@ -85,7 +86,8 @@ trait Semigroup[F] { self =>
 }
 
 object Semigroup {
-  @inline def apply[F](implicit F: Semigroup[F]): Semigroup[F] = F
+  @inline
+  def apply[F](implicit F: Semigroup[F]): Semigroup[F] = F
 
   ////
   /** Make an associative binary function into an instance. */
@@ -100,8 +102,8 @@ object Semigroup {
       def append(f1: A, f2: => A): A = f1
     }
 
-  @inline implicit def firstTaggedSemigroup[A] =
-    firstSemigroup[A @@ Tags.FirstVal]
+  @inline
+  implicit def firstTaggedSemigroup[A] = firstSemigroup[A @@ Tags.FirstVal]
 
   /** A purely right-biased semigroup. */
   def lastSemigroup[A] =
@@ -109,7 +111,8 @@ object Semigroup {
       def append(f1: A, f2: => A): A = f2
     }
 
-  @inline implicit def lastTaggedSemigroup[A] = lastSemigroup[A @@ Tags.LastVal]
+  @inline
+  implicit def lastTaggedSemigroup[A] = lastSemigroup[A @@ Tags.LastVal]
 
   def minSemigroup[A](implicit o: Order[A]): Semigroup[A @@ Tags.MinVal] =
     new Semigroup[A @@ Tags.MinVal] {
@@ -117,7 +120,8 @@ object Semigroup {
         Tags.MinVal(o.min(Tag.unwrap(f1), Tag.unwrap(f2)))
     }
 
-  @inline implicit def minTaggedSemigroup[A: Order] = minSemigroup[A]
+  @inline
+  implicit def minTaggedSemigroup[A: Order] = minSemigroup[A]
 
   def maxSemigroup[A](implicit o: Order[A]): Semigroup[A @@ Tags.MaxVal] =
     new Semigroup[A @@ Tags.MaxVal] {
@@ -125,7 +129,8 @@ object Semigroup {
         Tags.MaxVal(o.max(Tag.unwrap(f1), Tag.unwrap(f2)))
     }
 
-  @inline implicit def maxTaggedSemigroup[A: Order] = maxSemigroup[A]
+  @inline
+  implicit def maxTaggedSemigroup[A: Order] = maxSemigroup[A]
 
   private[scalaz] trait ApplySemigroup[F[_], M] extends Semigroup[F[M]] {
     implicit def F: Apply[F]

@@ -26,7 +26,8 @@ object Rank {
 
 /** Defines abstractions that provide support for splicing into Scala syntax.
   */
-trait Holes { self: Quasiquotes =>
+trait Holes {
+  self: Quasiquotes =>
   import global._
   import Rank._
   import definitions._

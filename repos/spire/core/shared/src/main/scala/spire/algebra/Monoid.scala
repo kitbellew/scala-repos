@@ -39,21 +39,23 @@ trait Monoid[@sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
 }
 
 object Monoid {
-  @inline final def apply[A](implicit m: Monoid[A]): Monoid[A] = m
+  @inline
+  final def apply[A](implicit m: Monoid[A]): Monoid[A] = m
 
   /**
     * If an implicit `AdditiveMonoid[A]` exists, then it is converted to a plain
     * `Monoid[A]`.
     */
-  @inline final def additive[A](implicit A: AdditiveMonoid[A]): Monoid[A] =
-    A.additive
+  @inline
+  final def additive[A](implicit A: AdditiveMonoid[A]): Monoid[A] = A.additive
 
   /**
     * If an implicit `MultiplicativeMonoid[A]` exists, then it is converted to a
     * plain `Monoid[A]`.
     */
-  @inline final def multiplicative[A](implicit
-      A: MultiplicativeMonoid[A]): Monoid[A] = A.multiplicative
+  @inline
+  final def multiplicative[A](implicit A: MultiplicativeMonoid[A]): Monoid[A] =
+    A.multiplicative
 
 }
 
@@ -68,9 +70,11 @@ trait CMonoid[@sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
     with CSemigroup[A]
 
 object CMonoid {
-  @inline final def apply[A](implicit ev: CMonoid[A]): CMonoid[A] = ev
-  @inline final def additive[A](implicit A: AdditiveCMonoid[A]): CMonoid[A] =
-    A.additive
-  @inline final def multiplicative[A](implicit
+  @inline
+  final def apply[A](implicit ev: CMonoid[A]): CMonoid[A] = ev
+  @inline
+  final def additive[A](implicit A: AdditiveCMonoid[A]): CMonoid[A] = A.additive
+  @inline
+  final def multiplicative[A](implicit
       A: MultiplicativeCMonoid[A]): CMonoid[A] = A.multiplicative
 }

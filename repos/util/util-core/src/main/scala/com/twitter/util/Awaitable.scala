@@ -16,8 +16,7 @@ trait Awaitable[+T] {
     * access control mechanism: only `Await.ready` may call this
     * method.
     */
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   def ready(timeout: Duration)(implicit permit: CanAwait): this.type
 
   /**
@@ -82,8 +81,7 @@ object Await {
   private implicit object AwaitPermit extends CanAwait
 
   /** $ready */
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   def ready[T <: Awaitable[_]](awaitable: T): T = ready(awaitable, Duration.Top)
 
   /**
@@ -92,8 +90,7 @@ object Await {
     * If the `Awaitable` is not ready within `timeout`, a
     * [[com.twitter.util.TimeoutException]] will be thrown.
     */
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   def ready[T <: Awaitable[_]](awaitable: T, timeout: Duration): T = {
     if (awaitable.isReady) awaitable.ready(timeout)
     else Scheduler.blocking { awaitable.ready(timeout) }
@@ -115,8 +112,7 @@ object Await {
     else Scheduler.blocking { awaitable.result(timeout) }
 
   /** $all */
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   @scala.annotation.varargs
   def all(awaitables: Awaitable[_]*): Unit = all(awaitables, Duration.Top)
 
@@ -126,8 +122,7 @@ object Await {
     * If any of the `Awaitable`s are not ready within `timeout`, a
     * [[com.twitter.util.TimeoutException]] will be thrown.
     */
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   def all(awaitables: Seq[Awaitable[_]], timeout: Duration): Unit =
     awaitables foreach { _.ready(timeout) }
 
@@ -136,8 +131,7 @@ object Await {
     *
     * @see Await.all(Seq, Duration)
     */
-  @throws(classOf[TimeoutException])
-  @throws(classOf[InterruptedException])
+  @throws(classOf[TimeoutException]) @throws(classOf[InterruptedException])
   def all(
       awaitables: java.util.Collection[Awaitable[_]],
       timeout: Duration): Unit = all(awaitables.asScala.toSeq, timeout)

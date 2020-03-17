@@ -35,7 +35,6 @@ import mutable.{Builder, ListBuffer}
   *  @define mayNotTerminateInf
   *  @define willNotTerminateInf
   */
-
 @SerialVersionUID(-7622936493364270175L)
 @deprecatedInheritance(
   "The implementation details of immutable queues make inheriting from them unwise.",

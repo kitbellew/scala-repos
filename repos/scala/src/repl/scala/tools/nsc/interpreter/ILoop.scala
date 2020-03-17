@@ -44,9 +44,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   def this(in0: BufferedReader, out: JPrintWriter) = this(Some(in0), out)
   def this() = this(None, new JPrintWriter(Console.out, true))
 
-  @deprecated("Use `intp` instead.", "2.9.0") def interpreter = intp
-  @deprecated("Use `intp` instead.", "2.9.0") def interpreter_=(
-      i: Interpreter): Unit = intp = i
+  @deprecated("Use `intp` instead.", "2.9.0")
+  def interpreter = intp
+  @deprecated("Use `intp` instead.", "2.9.0")
+  def interpreter_=(i: Interpreter): Unit = intp = i
 
   var in: InteractiveReader = _ // the input stream from which commands come
   var settings: Settings = _
@@ -484,7 +485,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     *  command() for each line of input, and stops when
     *  command() returns false.
     */
-  @tailrec final def loop(): LineResult = {
+  @tailrec
+  final def loop(): LineResult = {
     import LineResults._
     readOneLine() match {
       case null => EOF

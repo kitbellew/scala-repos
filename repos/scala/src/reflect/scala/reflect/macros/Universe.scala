@@ -24,7 +24,8 @@ abstract class Universe extends scala.reflect.api.Universe {
   override type Internal <: MacroInternalApi
 
   /** @inheritdoc */
-  trait MacroInternalApi extends InternalApi { internal =>
+  trait MacroInternalApi extends InternalApi {
+    internal =>
 
     /** Adds a given symbol to the given scope.
       */

@@ -31,8 +31,7 @@ import scala.collection.generic.Sizing
   */
 trait Combiner[-Elem, +To] extends Builder[Elem, To] with Sizing with Parallel {
 
-  @transient
-  @volatile
+  @transient @volatile
   var _combinerTaskSupport = defaultTaskSupport
 
   def combinerTaskSupport = {

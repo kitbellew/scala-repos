@@ -27,8 +27,7 @@ class LeaderProxyFilterModule extends ServletModule {
     * Configure ssl using the key store so that our own certificate is accepted
     * in any case, even if it is not signed by a public certification entity.
     */
-  @Provides
-  @Singleton
+  @Provides @Singleton
   @Named(JavaUrlConnectionRequestForwarder.NAMED_LEADER_PROXY_SSL_CONTEXT)
   def provideSSLContext(httpConf: HttpConf): SSLContext = {
     SSLContextUtil.createSSLContext(
@@ -79,8 +78,7 @@ class MarathonRestModule extends BaseRestModule {
     super.configureServlets()
   }
 
-  @Provides
-  @Singleton
+  @Provides @Singleton
   def provideRequestsLimiter(
       conf: MarathonConf): LimitConcurrentRequestsFilter = {
     new LimitConcurrentRequestsFilter(conf.maxConcurrentHttpConnections.get)

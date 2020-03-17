@@ -57,7 +57,8 @@ class ScalaCompilerConfiguration(project: Project)
           .map(_.getName)
           .filter(_.startsWith(source))
           .toSet
-        @tailrec def firstFreeName(i: Int): String = {
+        @tailrec
+        def firstFreeName(i: Int): String = {
           val name = source + " " + i
           if (profileNames.contains(name)) firstFreeName(i + 1) else name
         }

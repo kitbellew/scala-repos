@@ -189,7 +189,8 @@ private[streaming] class CheckpointWriter(
   private var stopped = false
   private var _fs: FileSystem = _
 
-  @volatile private var latestCheckpointTime: Time = null
+  @volatile
+  private var latestCheckpointTime: Time = null
 
   class CheckpointWriteHandler(
       checkpointTime: Time,

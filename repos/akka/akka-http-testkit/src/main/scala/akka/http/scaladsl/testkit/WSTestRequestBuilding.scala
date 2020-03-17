@@ -16,7 +16,8 @@ import scala.collection.immutable
 import akka.stream.{Graph, FlowShape}
 import akka.stream.scaladsl.Flow
 
-trait WSTestRequestBuilding { self: RouteTest ⇒
+trait WSTestRequestBuilding {
+  self: RouteTest ⇒
   def WS(
       uri: Uri,
       clientSideHandler: Flow[Message, Message, Any],

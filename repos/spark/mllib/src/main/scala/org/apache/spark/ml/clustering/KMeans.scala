@@ -107,8 +107,7 @@ private[clustering] trait KMeansParams
   *
   * @param parentModel a model trained by spark.mllib.clustering.KMeans.
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class KMeansModel private[ml] (
     @Since("1.5.0") override val uid: String,
     private val parentModel: MLlibKMeansModel)
@@ -233,8 +232,7 @@ object KMeansModel extends MLReadable[KMeansModel] {
   *
   * @see [[http://dx.doi.org/10.14778/2180912.2180915 Bahmani et al., Scalable k-means++.]]
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class KMeans @Since("1.5.0") (@Since("1.5.0") override val uid: String)
     extends Estimator[KMeansModel]
     with KMeansParams
@@ -321,7 +319,8 @@ object KMeans extends DefaultParamsReadable[KMeans] {
 }
 
 class KMeansSummary private[clustering] (
-    @Since("2.0.0") @transient val predictions: DataFrame,
+    @Since("2.0.0") @transient
+    val predictions: DataFrame,
     @Since("2.0.0") val predictionCol: String,
     @Since("2.0.0") val featuresCol: String)
     extends Serializable {
@@ -329,8 +328,8 @@ class KMeansSummary private[clustering] (
   /**
     * Cluster centers of the transformed data.
     */
-  @Since("2.0.0")
-  @transient lazy val cluster: DataFrame = predictions.select(predictionCol)
+  @Since("2.0.0") @transient
+  lazy val cluster: DataFrame = predictions.select(predictionCol)
 
   /**
     * Size of each cluster.

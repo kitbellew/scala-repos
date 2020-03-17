@@ -44,7 +44,8 @@ object ActorPublisherDocSpec {
         context.stop(self)
     }
 
-    @tailrec final def deliverBuf(): Unit =
+    @tailrec
+    final def deliverBuf(): Unit =
       if (totalDemand > 0) {
         /*
          * totalDemand is a Long and could be larger than

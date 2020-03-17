@@ -34,8 +34,7 @@ import org.apache.spark.rdd.RDD
   * uniformly random values for every feature and adds Gaussian noise with mean `eps` to the
   * response variable `Y`.
   */
-@DeveloperApi
-@Since("0.8.0")
+@DeveloperApi @Since("0.8.0")
 object LinearDataGenerator {
 
   /**

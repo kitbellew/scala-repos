@@ -27,7 +27,10 @@ import java.util.concurrent._
   * It also comes with an associated scheduler instance for managing background tasks in
   * a deterministic way.
   */
-class MockTime(@volatile private var currentMs: Long) extends Time {
+class MockTime(
+    @volatile
+    private var currentMs: Long)
+    extends Time {
 
   val scheduler = new MockScheduler(this)
 

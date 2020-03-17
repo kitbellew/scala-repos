@@ -19,7 +19,8 @@ object ReflectionsCache {
   // A soft reference is used so that we don't force the classloader or reflections to be live after a test run,
   // but we don't use weak reference as this is the only reference to the tuple, and it will just always get collected
   // on each eden space collection if it was weak.
-  @volatile private var reflectionsMapRef
+  @volatile
+  private var reflectionsMapRef
       : Option[SoftReference[(ClassLoader, Map[String, Reflections])]] = None
 
   def getReflections(classLoader: ClassLoader, pkg: String) = {

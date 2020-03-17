@@ -88,7 +88,8 @@ class Netty4ListenerTest
       Params.empty + Label("test") + Stats(sr) + PipelineInit(StringServerInit)
     val listener = Netty4Listener[String, String](p)
 
-    @volatile var observedRequest: Option[String] = None
+    @volatile
+    var observedRequest: Option[String] = None
 
     val service = new Service[String, String] {
       def apply(request: String) = {

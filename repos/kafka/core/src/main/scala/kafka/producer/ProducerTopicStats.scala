@@ -23,8 +23,7 @@ import java.util.concurrent.TimeUnit
 
 @deprecated(
   "This class has been deprecated and will be removed in a future release.",
-  "0.10.0.0")
-@threadsafe
+  "0.10.0.0") @threadsafe
 class ProducerTopicMetrics(metricId: ClientIdTopic) extends KafkaMetricsGroup {
   val tags = metricId match {
     case ClientIdAndTopic(clientId, topic) =>

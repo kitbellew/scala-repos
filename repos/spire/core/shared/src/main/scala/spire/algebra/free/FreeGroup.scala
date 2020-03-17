@@ -3,7 +3,8 @@ package algebra
 package free
 
 final class FreeGroup[A] private (val terms: Vector[Either[A, A]])
-    extends AnyVal { lhs =>
+    extends AnyVal {
+  lhs =>
 
   /**
     * Map each term to type `B` and sum them using `B`'s [[Group]].
@@ -59,7 +60,8 @@ final class FreeGroup[A] private (val terms: Vector[Either[A, A]])
     }
 }
 
-object FreeGroup { companion =>
+object FreeGroup {
+  companion =>
   final def id[A]: FreeGroup[A] = new FreeGroup(Vector.empty)
 
   final def apply[A](a: A): FreeGroup[A] = lift(a)

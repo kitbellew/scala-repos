@@ -13,7 +13,8 @@ class JvmTest extends WordSpec with TestLogging {
   "Jvm" should {
     class JvmHelper {
       object jvm extends Jvm {
-        @volatile private[this] var currentSnap: Snapshot = Snapshot(
+        @volatile
+        private[this] var currentSnap: Snapshot = Snapshot(
           Time.epoch,
           Heap(0, 0, Seq()),
           Seq())

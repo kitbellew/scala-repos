@@ -668,7 +668,8 @@ class RemotingSpec
 
       try {
         class HackyRef extends MinimalActorRef {
-          @volatile var lastMsg: AnyRef = null
+          @volatile
+          var lastMsg: AnyRef = null
 
           override def provider: ActorRefProvider = RARP(thisSystem).provider
 

@@ -47,8 +47,7 @@ import org.apache.spark.sql.functions._
   * for regression.
   * It supports both continuous and categorical features.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class DecisionTreeRegressor @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends Predictor[
@@ -141,8 +140,7 @@ final class DecisionTreeRegressor @Since("1.4.0") (
   override def copy(extra: ParamMap): DecisionTreeRegressor = defaultCopy(extra)
 }
 
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 object DecisionTreeRegressor
     extends DefaultParamsReadable[DecisionTreeRegressor] {
 
@@ -160,8 +158,7 @@ object DecisionTreeRegressor
   * It supports both continuous and categorical features.
   * @param rootNode  Root of the decision tree
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class DecisionTreeRegressionModel private[ml] (
     override val uid: String,
     override val rootNode: Node,

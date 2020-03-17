@@ -45,8 +45,7 @@ import org.apache.spark.sql.types._
   *
   * Note: Users should not implement this interface.
   */
-@SQLUserDefinedType(udt = classOf[VectorUDT])
-@Since("1.0.0")
+@SQLUserDefinedType(udt = classOf[VectorUDT]) @Since("1.0.0")
 sealed trait Vector extends Serializable {
 
   /**
@@ -279,8 +278,7 @@ object Vectors {
   /**
     * Creates a dense vector from its values.
     */
-  @Since("1.0.0")
-  @varargs
+  @Since("1.0.0") @varargs
   def dense(firstValue: Double, otherValues: Double*): Vector =
     new DenseVector((firstValue +: otherValues).toArray)
 
@@ -604,8 +602,7 @@ object Vectors {
 /**
   * A dense vector represented by a value array.
   */
-@Since("1.0.0")
-@SQLUserDefinedType(udt = classOf[VectorUDT])
+@Since("1.0.0") @SQLUserDefinedType(udt = classOf[VectorUDT])
 class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
     extends Vector {
 
@@ -722,8 +719,7 @@ object DenseVector {
   * @param indices index array, assume to be strictly increasing.
   * @param values value array, must have the same length as the index array.
   */
-@Since("1.0.0")
-@SQLUserDefinedType(udt = classOf[VectorUDT])
+@Since("1.0.0") @SQLUserDefinedType(udt = classOf[VectorUDT])
 class SparseVector @Since("1.0.0") (
     @Since("1.0.0") override val size: Int,
     @Since("1.0.0") val indices: Array[Int],

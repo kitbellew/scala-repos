@@ -25,8 +25,7 @@ import org.apache.spark.sql.DataFrame
   * :: DeveloperApi ::
   * Abstract class for evaluators that compute metrics from predictions.
   */
-@Since("1.5.0")
-@DeveloperApi
+@Since("1.5.0") @DeveloperApi
 abstract class Evaluator extends Params {
 
   /**

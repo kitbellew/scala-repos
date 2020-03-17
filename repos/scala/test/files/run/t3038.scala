@@ -3,14 +3,19 @@ class A {
   object B
   private lazy val a2 = "a2"
 
-  @transient lazy val a3 = "a3"
-  @transient private lazy val a4 = "a4"
-  @transient lazy val a5 = "a5"
-  @transient private lazy val a6 = "a6"
+  @transient
+  lazy val a3 = "a3"
+  @transient
+  private lazy val a4 = "a4"
+  @transient
+  lazy val a5 = "a5"
+  @transient
+  private lazy val a6 = "a6"
 
   final val a7 = "a7"
   private final val a8 = "a8"
-  @transient final val a9 = "a9"
+  @transient
+  final val a9 = "a9"
 
   def run = {
     println(a1)
@@ -32,10 +37,14 @@ class C extends A {
 
   private lazy val c3 = "c3"
 
-  @transient lazy val c4 = "c4"
-  @transient private lazy val c5 = "c5"
-  @transient lazy val c6 = "c6"
-  @transient private lazy val c7 = "c7"
+  @transient
+  lazy val c4 = "c4"
+  @transient
+  private lazy val c5 = "c5"
+  @transient
+  lazy val c6 = "c6"
+  @transient
+  private lazy val c7 = "c7"
   lazy val c8 = "c8"
 
   final val c9 = "c9"

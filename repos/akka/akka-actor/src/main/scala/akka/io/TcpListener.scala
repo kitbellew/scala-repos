@@ -116,7 +116,8 @@ private[io] class TcpListener(
       context.stop(self)
   }
 
-  @tailrec final def acceptAllPending(
+  @tailrec
+  final def acceptAllPending(
       registration: ChannelRegistration,
       limit: Int): Int = {
     val socketChannel =

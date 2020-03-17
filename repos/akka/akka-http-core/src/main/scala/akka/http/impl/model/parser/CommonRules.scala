@@ -9,7 +9,8 @@ import akka.http.scaladsl.model.headers._
 import akka.parboiled2._
 import akka.shapeless._
 
-private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
+private[parser] trait CommonRules {
+  this: Parser with StringBuilding ⇒
   import CharacterClasses._
 
   // ******************************************************************************************

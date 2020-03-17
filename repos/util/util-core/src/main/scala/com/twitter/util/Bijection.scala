@@ -27,7 +27,8 @@ object Bijection {
   * is an example of a bijection.
   */
 @deprecated("Prefer using com.twitter.bijection.Bijection", "2014-06-05")
-trait Bijection[A, B] extends (A => B) { self =>
+trait Bijection[A, B] extends (A => B) {
+  self =>
   def apply(a: A): B
   def invert(b: B): A
   def unapply(b: B) = Try(Some(invert(b))).getOrElse(None)

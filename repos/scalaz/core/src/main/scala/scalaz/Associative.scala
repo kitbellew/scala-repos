@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait Associative[=>:[_, _]] { self =>
+trait Associative[=>:[_, _]] {
+  self =>
   ////
   import Isomorphism.<=>
 
@@ -40,7 +41,8 @@ trait Associative[=>:[_, _]] { self =>
 }
 
 object Associative {
-  @inline def apply[F[_, _]](implicit F: Associative[F]): Associative[F] = F
+  @inline
+  def apply[F[_, _]](implicit F: Associative[F]): Associative[F] = F
 
   ////
 

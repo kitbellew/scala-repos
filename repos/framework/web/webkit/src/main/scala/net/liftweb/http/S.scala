@@ -231,7 +231,8 @@ object S extends S {
     def duplicate(newOwner: String): AFuncHolder =
       new ProxyFuncHolder(this, Full(newOwner))
 
-    @volatile private[this] var _lastSeen: Long = millis
+    @volatile
+    private[this] var _lastSeen: Long = millis
 
     private[http] def lastSeen = _lastSeen
 

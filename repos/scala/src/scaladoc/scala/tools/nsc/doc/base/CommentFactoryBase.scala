@@ -19,7 +19,8 @@ import scala.language.postfixOps
   *
   * @author Manohar Jonnalagedda
   * @author Gilles Dubochet */
-trait CommentFactoryBase { this: MemberLookupBase =>
+trait CommentFactoryBase {
+  this: MemberLookupBase =>
 
   val global: Global
   import global.{reporter, Symbol, NoSymbol}
@@ -531,7 +532,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       val buffer: String,
       pos: Position,
       site: Symbol)
-      extends CharReader(buffer) { wiki =>
+      extends CharReader(buffer) {
+    wiki =>
     var summaryParsed = false
 
     def document(): Body = {
@@ -896,7 +898,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     }
   }
 
-  protected sealed class CharReader(buffer: String) { reader =>
+  protected sealed class CharReader(buffer: String) {
+    reader =>
 
     var offset: Int = 0
     def char: Char =

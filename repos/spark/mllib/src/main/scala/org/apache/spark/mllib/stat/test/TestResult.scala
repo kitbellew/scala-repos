@@ -98,8 +98,7 @@ class ChiSqTestResult private[stat] (
   * :: Experimental ::
   * Object containing the test results for the Kolmogorov-Smirnov test.
   */
-@Experimental
-@Since("1.5.0")
+@Experimental @Since("1.5.0")
 class KolmogorovSmirnovTestResult private[stat] (
     @Since("1.5.0") override val pValue: Double,
     @Since("1.5.0") override val statistic: Double,
@@ -118,8 +117,7 @@ class KolmogorovSmirnovTestResult private[stat] (
   * :: Experimental ::
   * Object containing the test results for streaming testing.
   */
-@Experimental
-@Since("1.6.0")
+@Experimental @Since("1.6.0")
 private[stat] class StreamingTestResult @Since("1.6.0") (
     @Since("1.6.0") override val pValue: Double,
     @Since("1.6.0") override val degreesOfFreedom: Double,

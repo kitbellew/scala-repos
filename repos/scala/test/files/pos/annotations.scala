@@ -5,14 +5,16 @@ class cfann(x: String) extends annotation.ClassfileAnnotation
 abstract class C1[@annotation.elidable(0) +T, U, V[_]]
 abstract class C2[@deprecated @ann(1) T <: Number, V]
 abstract class C3 {
-  @ann(2) type X <: Number
+  @ann(2)
+  type X <: Number
 }
 
 object Test {
 
   // bug #1028
   val x = 1
-  @ann(x) val a = ()
+  @ann(x)
+  val a = ()
   @ann({ val yy = 2; yy }) val b = ()
   val bb: Int @ann({ val yy = 2; yy }) = 10
 
@@ -30,12 +32,14 @@ object Test {
     def getField(): Int
   }
   class O extends S {
-    @BeanProperty val field = 0
+    @BeanProperty
+    val field = 0
   }
 
   // bug #1070
   trait T {
-    @BeanProperty var field = 1
+    @BeanProperty
+    var field = 1
   }
 
   // annotation on annotation constructor
@@ -44,7 +48,8 @@ object Test {
 
   // #2984
   private final val NAMESPACE = "/info"
-  @cfann(x = NAMESPACE + "/index") def index = "success"
+  @cfann(x = NAMESPACE + "/index")
+  def index = "success"
 }
 
 // test forward references to getters / setters
@@ -111,10 +116,7 @@ object Test3 {
 }
 
 class Test4 {
-  @Ann3(arr = Array("dlkfj", "DSF"))
-  @Ann4(i = 2908)
-  @Ann4(i = Test3.i)
-  @Ann5(value = classOf[Int])
-  @Ann5(Test3.cls)
+  @Ann3(arr = Array("dlkfj", "DSF")) @Ann4(i = 2908) @Ann4(i = Test3.i)
+  @Ann5(value = classOf[Int]) @Ann5(Test3.cls)
   def foo {}
 }

@@ -26,7 +26,8 @@ import cascading.tuple.{Tuple => CTuple}
   * from the scalding DSL's point of view. The latter will flatten the (Int, Int), but the former
   * won't.
   */
-trait TupleSetter[T] extends java.io.Serializable with TupleArity { self =>
+trait TupleSetter[T] extends java.io.Serializable with TupleArity {
+  self =>
   def apply(arg: T): CTuple
 
   def contraMap[U](fn: U => T): TupleSetter[U] =

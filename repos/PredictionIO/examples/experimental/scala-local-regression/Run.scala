@@ -89,7 +89,8 @@ case class LocalAlgorithm()
     model.zip(query).map(e => e._1 * e._2).sum
   }
 
-  @transient override lazy val querySerializer =
+  @transient
+  override lazy val querySerializer =
     Utils.json4sDefaultFormats + new VectorSerializer
 }
 

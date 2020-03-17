@@ -7,8 +7,7 @@ import breeze.macros.expand
   * Computes the norm of an object. Many tensor objects have a norm implementation implicit, which is what this calls.
   */
 object norm extends UFunc {
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def scalarNorm[@expand.args(Int, Long, Float, Double) T]
       : Impl[T, Double] =
     new Impl[T, Double] {

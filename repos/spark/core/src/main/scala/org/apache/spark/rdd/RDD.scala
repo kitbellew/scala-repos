@@ -77,8 +77,10 @@ import org.apache.spark.util.random.{
   * on RDD internals.
   */
 abstract class RDD[T: ClassTag](
-    @transient private var _sc: SparkContext,
-    @transient private var deps: Seq[Dependency[_]])
+    @transient
+    private var _sc: SparkContext,
+    @transient
+    private var deps: Seq[Dependency[_]])
     extends Serializable
     with Logging {
 
@@ -104,7 +106,9 @@ abstract class RDD[T: ClassTag](
   }
 
   /** Construct an RDD with just a one-to-one dependency on one parent */
-  def this(@transient oneParent: RDD[_]) =
+  def this(
+      @transient
+      oneParent: RDD[_]) =
     this(oneParent.context, List(new OneToOneDependency(oneParent)))
 
   private[spark] def conf = sc.conf
@@ -140,7 +144,8 @@ abstract class RDD[T: ClassTag](
   protected def getPreferredLocations(split: Partition): Seq[String] = Nil
 
   /** Optionally overridden by subclasses to specify how they are partitioned. */
-  @transient val partitioner: Option[Partitioner] = None
+  @transient
+  val partitioner: Option[Partitioner] = None
 
   // =======================================================================
   // Methods and fields available on all RDDs
@@ -153,7 +158,8 @@ abstract class RDD[T: ClassTag](
   val id: Int = sc.newRddId()
 
   /** A friendly name for this RDD */
-  @transient var name: String = null
+  @transient
+  var name: String = null
 
   /** Assign a name to this RDD */
   def setName(_name: String): this.type = {
@@ -226,7 +232,8 @@ abstract class RDD[T: ClassTag](
   // Our dependencies and partitions will be gotten by calling subclass's methods below, and will
   // be overwritten when we're checkpointed
   private var dependencies_ : Seq[Dependency[_]] = null
-  @transient private var partitions_ : Array[Partition] = null
+  @transient
+  private var partitions_ : Array[Partition] = null
 
   /** An Option holding our checkpoint RDD, if we are checkpointed */
   private def checkpointRDD: Option[CheckpointRDD[T]] =
@@ -1713,7 +1720,8 @@ abstract class RDD[T: ClassTag](
   private var storageLevel: StorageLevel = StorageLevel.NONE
 
   /** User code that created this RDD (e.g. `textFile`, `parallelize`). */
-  @transient private[spark] val creationSite = sc.getCallSite()
+  @transient
+  private[spark] val creationSite = sc.getCallSite()
 
   /**
     * The scope associated with the operation that created this RDD.
@@ -1722,7 +1730,8 @@ abstract class RDD[T: ClassTag](
     * detail, see the documentation of {{RDDOperationScope}}. This scope is not defined if the
     * user instantiates this RDD himself without using any Spark operations.
     */
-  @transient private[spark] val scope: Option[RDDOperationScope] = {
+  @transient
+  private[spark] val scope: Option[RDDOperationScope] = {
     Option(sc.getLocalProperty(SparkContext.RDD_SCOPE_KEY))
       .map(RDDOperationScope.fromJson)
   }
@@ -1775,7 +1784,8 @@ abstract class RDD[T: ClassTag](
   }
 
   // Avoid handling doCheckpoint multiple times to prevent excessive recursion
-  @transient private var doCheckpointCalled = false
+  @transient
+  private var doCheckpointCalled = false
 
   /**
     * Performs the checkpointing of this RDD by saving this. It is called after a job using this RDD

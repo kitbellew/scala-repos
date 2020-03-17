@@ -1,6 +1,7 @@
 package neg1 {
   sealed abstract class Foo {
-    @inline def bar(x: Int) = x + 1
+    @inline
+    def bar(x: Int) = x + 1
   }
   object Foo {
     def mkFoo(): Foo = new Baz2
@@ -20,7 +21,8 @@ package neg1 {
 
 package neg2 {
   sealed abstract class Foo {
-    @inline def bar(x: Int) = x + 1
+    @inline
+    def bar(x: Int) = x + 1
   }
   object Foo {
     def mkFoo(): Foo = new Baz2

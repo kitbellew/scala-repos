@@ -27,7 +27,8 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     val CustomReads1 = Reads.localDateTimeReads("dd/MM/yyyy, HH:mm:ss")
 
-    @inline def dateTime(input: String) =
+    @inline
+    def dateTime(input: String) =
       LocalDateTime.parse(input, DateTimeFormatter.ISO_DATE_TIME)
 
     lazy val correctedReads = Reads.localDateTimeReads(
@@ -130,7 +131,8 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     val CustomReads1 = Reads.offsetDateTimeReads("dd/MM/yyyy, HH:mm:ssXXX")
 
-    @inline def dateTime(input: String) = OffsetDateTime.parse(input)
+    @inline
+    def dateTime(input: String) = OffsetDateTime.parse(input)
 
     lazy val correctedReads = Reads.offsetDateTimeReads(
       DateTimeFormatter.ISO_OFFSET_DATE_TIME,
@@ -228,7 +230,8 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     val CustomReads1 = Reads.zonedDateTimeReads("dd/MM/yyyy, HH:mm:ssXXX")
 
-    @inline def dateTime(input: String) = ZonedDateTime.parse(input)
+    @inline
+    def dateTime(input: String) = ZonedDateTime.parse(input)
 
     lazy val correctedReads = Reads.zonedDateTimeReads(
       DateTimeFormatter.ISO_DATE_TIME,
@@ -326,7 +329,8 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     val CustomReads1 = Reads.localDateReads("dd/MM/yyyy")
 
-    @inline def date(input: String) = LocalDate.parse(input)
+    @inline
+    def date(input: String) = LocalDate.parse(input)
 
     lazy val correctedReads = Reads.localDateReads(
       DateTimeFormatter.ISO_DATE,

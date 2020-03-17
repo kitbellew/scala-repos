@@ -47,7 +47,8 @@ import js.JSStringOps._
 final class RuntimeLong(val lo: Int, val hi: Int)
     extends java.lang.Number
     with java.io.Serializable
-    with java.lang.Comparable[java.lang.Long] { a =>
+    with java.lang.Comparable[java.lang.Long] {
+  a =>
 
   import RuntimeLong._
   import Utils._
@@ -566,7 +567,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   @deprecated("Use java.lang.Long.toBinaryString instead.", "0.6.6")
   def toBinaryString: String = {
     val zeros = "00000000000000000000000000000000" // 32 zeros
-    @inline def padBinary32(i: Int) = {
+    @inline
+    def padBinary32(i: Int) = {
       val s = Integer.toBinaryString(i)
       zeros.substring(s.length) + s
     }
@@ -581,7 +583,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   @deprecated("Use java.lang.Long.toHexString instead.", "0.6.6")
   def toHexString: String = {
     val zeros = "00000000" // 8 zeros
-    @inline def padHex8(i: Int) = {
+    @inline
+    def padHex8(i: Int) = {
       val s = Integer.toHexString(i)
       zeros.substring(s.length) + s
     }
@@ -596,7 +599,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   @deprecated("Use java.lang.Long.toOctalString instead.", "0.6.6")
   def toOctalString: String = {
     val zeros = "0000000000" // 10 zeros
-    @inline def padOctal10(i: Int) = {
+    @inline
+    def padOctal10(i: Int) = {
       val s = Integer.toOctalString(i)
       zeros.substring(s.length) + s
     }
@@ -686,13 +690,16 @@ object RuntimeLong {
   private object Utils {
 
     /** Tests whether the long (lo, hi) is 0. */
-    @inline def isZero(lo: Int, hi: Int): Boolean = (lo | hi) == 0
+    @inline
+    def isZero(lo: Int, hi: Int): Boolean = (lo | hi) == 0
 
     /** Tests whether the long (lo, hi)'s mathematic value fits in a signed Int. */
-    @inline def isInt32(lo: Int, hi: Int): Boolean = hi == (lo >> 31)
+    @inline
+    def isInt32(lo: Int, hi: Int): Boolean = hi == (lo >> 31)
 
     /** Tests whether the long (_, hi)'s mathematic value fits in an unsigned Int. */
-    @inline def isUInt32(hi: Int): Boolean = hi == 0
+    @inline
+    def isUInt32(hi: Int): Boolean = hi == 0
 
     /** Tests whether an unsigned long (lo, hi) is a safe Double.
       *  This test is in fact slightly stricter than necessary, as it tests
@@ -703,37 +710,45 @@ object RuntimeLong {
       *  Double, compared to all numbers smaller than it, we don't bother, and
       *  stay on the fast side.
       */
-    @inline def isUnsignedSafeDouble(hi: Int): Boolean =
+    @inline
+    def isUnsignedSafeDouble(hi: Int): Boolean =
       (hi & UnsignedSafeDoubleHiMask) == 0
 
     /** Converts an unsigned safe double into its Double representation. */
-    @inline def asUnsignedSafeDouble(lo: Int, hi: Int): Double =
+    @inline
+    def asUnsignedSafeDouble(lo: Int, hi: Int): Double =
       hi * TwoPow32 + lo.toUint
 
     /** Converts an unsigned safe double into its RuntimeLong representation. */
-    @inline def fromUnsignedSafeDouble(x: Double): RuntimeLong =
+    @inline
+    def fromUnsignedSafeDouble(x: Double): RuntimeLong =
       new RuntimeLong(unsignedSafeDoubleLo(x), unsignedSafeDoubleHi(x))
 
     /** Computes the lo part of a long from an unsigned safe double. */
-    @inline def unsignedSafeDoubleLo(x: Double): Int = rawToInt(x)
+    @inline
+    def unsignedSafeDoubleLo(x: Double): Int = rawToInt(x)
 
     /** Computes the hi part of a long from an unsigned safe double. */
-    @inline def unsignedSafeDoubleHi(x: Double): Int = rawToInt(x / TwoPow32)
+    @inline
+    def unsignedSafeDoubleHi(x: Double): Int = rawToInt(x / TwoPow32)
 
     /** Performs the JavaScript operation `(x | 0)`. */
-    @inline def rawToInt(x: Double): Int =
+    @inline
+    def rawToInt(x: Double): Int =
       (x.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic])
         .asInstanceOf[Int]
 
     /** Tests whether the given non-zero unsigned Int is an exact power of 2. */
-    @inline def isPowerOfTwo_IKnowItsNot0(i: Int): Boolean = (i & (i - 1)) == 0
+    @inline
+    def isPowerOfTwo_IKnowItsNot0(i: Int): Boolean = (i & (i - 1)) == 0
 
     /** Returns the log2 of the given unsigned Int assuming it is an exact power of 2. */
-    @inline def log2OfPowerOfTwo(i: Int): Int =
-      31 - Integer.numberOfLeadingZeros(i)
+    @inline
+    def log2OfPowerOfTwo(i: Int): Int = 31 - Integer.numberOfLeadingZeros(i)
 
     /** Returns the number of leading zeros in the given long (lo, hi). */
-    @inline def inlineNumberOfLeadingZeros(lo: Int, hi: Int): Int =
+    @inline
+    def inlineNumberOfLeadingZeros(lo: Int, hi: Int): Int =
       if (hi != 0) Integer.numberOfLeadingZeros(hi)
       else Integer.numberOfLeadingZeros(lo) + 32
 

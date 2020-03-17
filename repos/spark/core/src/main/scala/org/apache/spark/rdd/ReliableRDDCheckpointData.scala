@@ -29,7 +29,8 @@ import org.apache.spark.internal.Logging
   * This allows drivers to be restarted on failure with previously computed state.
   */
 private[spark] class ReliableRDDCheckpointData[T: ClassTag](
-    @transient private val rdd: RDD[T])
+    @transient
+    private val rdd: RDD[T])
     extends RDDCheckpointData[T](rdd)
     with Logging {
 

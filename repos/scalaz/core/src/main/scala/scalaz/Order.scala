@@ -7,7 +7,8 @@ import scala.math.{Ordering => SOrdering}
   * Safer version of [[scala.math.Ordering]].
   */
 ////
-trait Order[F] extends Equal[F] { self =>
+trait Order[F] extends Equal[F] {
+  self =>
   ////
   def apply(x: F, y: F): Ordering = order(x, y)
 
@@ -78,7 +79,8 @@ trait Order[F] extends Equal[F] { self =>
 }
 
 object Order {
-  @inline def apply[F](implicit F: Order[F]): Order[F] = F
+  @inline
+  def apply[F](implicit F: Order[F]): Order[F] = F
 
   ////
 

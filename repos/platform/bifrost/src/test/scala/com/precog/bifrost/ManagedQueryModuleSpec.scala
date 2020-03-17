@@ -277,7 +277,8 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
 trait TestManagedQueryModule
     extends Execution[TestFuture, StreamT[TestFuture, CharBuffer]]
     with ManagedQueryModule
-    with SchedulableFuturesModule { self =>
+    with SchedulableFuturesModule {
+  self =>
 
   def actorSystem: ActorSystem
   implicit def executionContext: ExecutionContext

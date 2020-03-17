@@ -1,19 +1,22 @@
 object Traits {
   trait OuterClass[V <: OuterClass[V]#InnerClass] {
-    trait InnerClass { self: V =>
+    trait InnerClass {
+      self: V =>
       def method = ()
     }
   }
 
   trait SubOuterClass[T <: SubOuterClass[T]#SubInnerClass]
       extends OuterClass[T] {
-    trait SubInnerClass extends super.InnerClass { self: T =>
+    trait SubInnerClass extends super.InnerClass {
+      self: T =>
     }
   }
 
   trait SubOuterClass2[T <: SubOuterClass2[T]#SubInnerClass2]
       extends OuterClass[T] {
-    trait SubInnerClass2 extends super.InnerClass { self: InnerClass with T =>
+    trait SubInnerClass2 extends super.InnerClass {
+      self: InnerClass with T =>
     }
   }
 

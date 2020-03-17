@@ -6,7 +6,8 @@ import org.junit.Assert.assertTrue
 import org.scalajs.jasminetest.JasmineTest
 
 class JUnitBootstrapTest {
-  @Test def testClassBootstrap(): Unit = {
+  @Test
+  def testClassBootstrap(): Unit = {
     // This tests that the Scala.js JUnit runtime is working
     assertTrue(true)
   }

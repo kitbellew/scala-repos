@@ -1,7 +1,8 @@
 package scalaz
 package concurrent
 
-trait Run[F] { self =>
+trait Run[F] {
+  self =>
 
   def run(a: F): Unit
 

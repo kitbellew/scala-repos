@@ -126,7 +126,8 @@ class StressTest {
       val ch = new FileInputStream(f).getChannel
       val bb = ByteBuffer.allocate(bufSize)
 
-      @tailrec def loop(p: AsyncParser) {
+      @tailrec
+      def loop(p: AsyncParser) {
         val n = ch.read(bb)
         bb.flip()
 

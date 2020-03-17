@@ -90,7 +90,9 @@ object CatalystTypeConverters {
       * Converts a Scala type to its Catalyst equivalent while automatically handling nulls
       * and Options.
       */
-    final def toCatalyst(@Nullable maybeScalaValue: Any): CatalystType = {
+    final def toCatalyst(
+        @Nullable
+        maybeScalaValue: Any): CatalystType = {
       if (maybeScalaValue == null) { null.asInstanceOf[CatalystType] }
       else if (maybeScalaValue.isInstanceOf[Option[ScalaInputType]]) {
         val opt = maybeScalaValue.asInstanceOf[Option[ScalaInputType]]
@@ -110,7 +112,9 @@ object CatalystTypeConverters {
     /**
       * Convert a Catalyst value to its Scala equivalent.
       */
-    def toScala(@Nullable catalystValue: CatalystType): ScalaOutputType
+    def toScala(
+        @Nullable
+        catalystValue: CatalystType): ScalaOutputType
 
     /**
       * Converts a Scala value to its Catalyst equivalent.

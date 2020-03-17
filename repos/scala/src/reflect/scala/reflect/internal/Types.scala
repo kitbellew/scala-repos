@@ -83,7 +83,8 @@ trait Types
     with tpe.TypeMaps
     with tpe.TypeConstraints
     with tpe.FindMembers
-    with util.Collections { self: SymbolTable =>
+    with util.Collections {
+  self: SymbolTable =>
 
   import definitions._
   import TypesStats._
@@ -229,7 +230,8 @@ trait Types
       }
   }
 
-  abstract class TypeApiImpl extends TypeApi { this: Type =>
+  abstract class TypeApiImpl extends TypeApi {
+    this: Type =>
     def declaration(name: Name): Symbol = decl(name)
     def declarations = decls
     def typeArguments = typeArgs
@@ -790,8 +792,8 @@ trait Types
       def map[T](f: Type => T): List[T] = collect(Type.this) map f
     }
 
-    @inline final def orElse(alt: => Type): Type =
-      if (this ne NoType) this else alt
+    @inline
+    final def orElse(alt: => Type): Type = if (this ne NoType) this else alt
 
     /** Returns optionally first type (in a preorder traversal) which satisfies predicate `p`,
       *  or None if none exists.
@@ -1633,7 +1635,8 @@ trait Types
 
   object baseClassesCycleMonitor {
     private var open: List[Symbol] = Nil
-    @inline private def cycleLog(msg: => String) {
+    @inline
+    private def cycleLog(msg: => String) {
       if (settings.debug) Console.err.println(msg)
     }
     def size = open.size
@@ -3070,7 +3073,8 @@ trait Types
   // but pattern-matching returned the original constr0 (a bug)
   // now, pattern-matching returns the most recent constr
   object TypeVar {
-    @inline final def trace[T](action: String, msg: => String)(value: T): T = {
+    @inline
+    final def trace[T](action: String, msg: => String)(value: T): T = {
       if (traceTypeVars) {
         val s = msg match {
           case ""  => ""
@@ -4364,7 +4368,8 @@ trait Types
     */
   final def sameLength(xs1: List[_], xs2: List[_]) =
     compareLengths(xs1, xs2) == 0
-  @tailrec final def compareLengths(xs1: List[_], xs2: List[_]): Int =
+  @tailrec
+  final def compareLengths(xs1: List[_], xs2: List[_]): Int =
     if (xs1.isEmpty) { if (xs2.isEmpty) 0 else -1 }
     else if (xs2.isEmpty) 1
     else compareLengths(xs1.tail, xs2.tail)
@@ -4443,7 +4448,8 @@ trait Types
       case TypeRef(_, sym, Nil) => tp.isHigherKinded
       case _                    => false
     }
-  @tailrec final def isUseableAsTypeArgs(tps: List[Type]): Boolean =
+  @tailrec
+  final def isUseableAsTypeArgs(tps: List[Type]): Boolean =
     tps match {
       case Nil     => true
       case x :: xs => isUseableAsTypeArg(x) && isUseableAsTypeArgs(xs)
@@ -4827,7 +4833,8 @@ trait Types
   // Without this, the matchesType call would lead to type variables on both
   // sides of a subtyping/equality judgement, which can lead to recursive types
   // being constructed. See pos/t0851 for a situation where this happens.
-  @inline final def suspendingTypeVars[T](tvs: List[TypeVar])(op: => T): T = {
+  @inline
+  final def suspendingTypeVars[T](tvs: List[TypeVar])(op: => T): T = {
     val saved = tvs map (_.suspended)
     tvs foreach (_.suspended = true)
 
@@ -5131,7 +5138,8 @@ trait Types
   //    for (tp <- tps) d = d max by(tp) //!!!OPT!!!
   //    d
   private[scala] def maxDepth(tps: List[Type]): Depth = {
-    @tailrec def loop(tps: List[Type], acc: Depth): Depth =
+    @tailrec
+    def loop(tps: List[Type], acc: Depth): Depth =
       tps match {
         case tp :: rest => loop(rest, acc max typeDepth(tp))
         case _          => acc
@@ -5139,7 +5147,8 @@ trait Types
     loop(tps, Depth.Zero)
   }
   private[scala] def maxbaseTypeSeqDepth(tps: List[Type]): Depth = {
-    @tailrec def loop(tps: List[Type], acc: Depth): Depth =
+    @tailrec
+    def loop(tps: List[Type], acc: Depth): Depth =
       tps match {
         case tp :: rest => loop(rest, acc max tp.baseTypeSeqDepth)
         case _          => acc
@@ -5147,13 +5156,15 @@ trait Types
     loop(tps, Depth.Zero)
   }
 
-  @tailrec private def typesContain(tps: List[Type], sym: Symbol): Boolean =
+  @tailrec
+  private def typesContain(tps: List[Type], sym: Symbol): Boolean =
     tps match {
       case tp :: rest => (tp contains sym) || typesContain(rest, sym)
       case _          => false
     }
 
-  @tailrec private def areTrivialTypes(tps: List[Type]): Boolean =
+  @tailrec
+  private def areTrivialTypes(tps: List[Type]): Boolean =
     tps match {
       case tp :: rest => tp.isTrivial && areTrivialTypes(rest)
       case _          => true

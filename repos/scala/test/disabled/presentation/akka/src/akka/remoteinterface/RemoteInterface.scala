@@ -74,62 +74,93 @@ trait RemoteModule {
   */
 sealed trait RemoteClientLifeCycleEvent
 case class RemoteClientError(
-    @BeanProperty cause: Throwable,
-    @BeanProperty client: RemoteClientModule,
-    @BeanProperty remoteAddress: InetSocketAddress)
+    @BeanProperty
+    cause: Throwable,
+    @BeanProperty
+    client: RemoteClientModule,
+    @BeanProperty
+    remoteAddress: InetSocketAddress)
     extends RemoteClientLifeCycleEvent
 case class RemoteClientDisconnected(
-    @BeanProperty client: RemoteClientModule,
-    @BeanProperty remoteAddress: InetSocketAddress)
+    @BeanProperty
+    client: RemoteClientModule,
+    @BeanProperty
+    remoteAddress: InetSocketAddress)
     extends RemoteClientLifeCycleEvent
 case class RemoteClientConnected(
-    @BeanProperty client: RemoteClientModule,
-    @BeanProperty remoteAddress: InetSocketAddress)
+    @BeanProperty
+    client: RemoteClientModule,
+    @BeanProperty
+    remoteAddress: InetSocketAddress)
     extends RemoteClientLifeCycleEvent
 case class RemoteClientStarted(
-    @BeanProperty client: RemoteClientModule,
-    @BeanProperty remoteAddress: InetSocketAddress)
+    @BeanProperty
+    client: RemoteClientModule,
+    @BeanProperty
+    remoteAddress: InetSocketAddress)
     extends RemoteClientLifeCycleEvent
 case class RemoteClientShutdown(
-    @BeanProperty client: RemoteClientModule,
-    @BeanProperty remoteAddress: InetSocketAddress)
+    @BeanProperty
+    client: RemoteClientModule,
+    @BeanProperty
+    remoteAddress: InetSocketAddress)
     extends RemoteClientLifeCycleEvent
 case class RemoteClientWriteFailed(
-    @BeanProperty request: AnyRef,
-    @BeanProperty cause: Throwable,
-    @BeanProperty client: RemoteClientModule,
-    @BeanProperty remoteAddress: InetSocketAddress)
+    @BeanProperty
+    request: AnyRef,
+    @BeanProperty
+    cause: Throwable,
+    @BeanProperty
+    client: RemoteClientModule,
+    @BeanProperty
+    remoteAddress: InetSocketAddress)
     extends RemoteClientLifeCycleEvent
 
 /**
   *  Life-cycle events for RemoteServer.
   */
 sealed trait RemoteServerLifeCycleEvent
-case class RemoteServerStarted(@BeanProperty val server: RemoteServerModule)
+case class RemoteServerStarted(
+    @BeanProperty
+    val server: RemoteServerModule)
     extends RemoteServerLifeCycleEvent
-case class RemoteServerShutdown(@BeanProperty val server: RemoteServerModule)
+case class RemoteServerShutdown(
+    @BeanProperty
+    val server: RemoteServerModule)
     extends RemoteServerLifeCycleEvent
 case class RemoteServerError(
-    @BeanProperty val cause: Throwable,
-    @BeanProperty val server: RemoteServerModule)
+    @BeanProperty
+    val cause: Throwable,
+    @BeanProperty
+    val server: RemoteServerModule)
     extends RemoteServerLifeCycleEvent
 case class RemoteServerClientConnected(
-    @BeanProperty val server: RemoteServerModule,
-    @BeanProperty val clientAddress: Option[InetSocketAddress])
+    @BeanProperty
+    val server: RemoteServerModule,
+    @BeanProperty
+    val clientAddress: Option[InetSocketAddress])
     extends RemoteServerLifeCycleEvent
 case class RemoteServerClientDisconnected(
-    @BeanProperty val server: RemoteServerModule,
-    @BeanProperty val clientAddress: Option[InetSocketAddress])
+    @BeanProperty
+    val server: RemoteServerModule,
+    @BeanProperty
+    val clientAddress: Option[InetSocketAddress])
     extends RemoteServerLifeCycleEvent
 case class RemoteServerClientClosed(
-    @BeanProperty val server: RemoteServerModule,
-    @BeanProperty val clientAddress: Option[InetSocketAddress])
+    @BeanProperty
+    val server: RemoteServerModule,
+    @BeanProperty
+    val clientAddress: Option[InetSocketAddress])
     extends RemoteServerLifeCycleEvent
 case class RemoteServerWriteFailed(
-    @BeanProperty request: AnyRef,
-    @BeanProperty cause: Throwable,
-    @BeanProperty server: RemoteServerModule,
-    @BeanProperty clientAddress: Option[InetSocketAddress])
+    @BeanProperty
+    request: AnyRef,
+    @BeanProperty
+    cause: Throwable,
+    @BeanProperty
+    server: RemoteServerModule,
+    @BeanProperty
+    clientAddress: Option[InetSocketAddress])
     extends RemoteServerLifeCycleEvent
 
 /**
@@ -137,7 +168,8 @@ case class RemoteServerWriteFailed(
   */
 class RemoteClientException private[akka] (
     message: String,
-    @BeanProperty val client: RemoteClientModule,
+    @BeanProperty
+    val client: RemoteClientModule,
     val remoteAddress: InetSocketAddress,
     cause: Throwable = null)
     extends AkkaException(message, cause)
@@ -464,7 +496,8 @@ trait RemoteServerModule extends RemoteModule {
   def unregisterTypedPerSessionActor(id: String): Unit
 }
 
-trait RemoteClientModule extends RemoteModule { self: RemoteModule =>
+trait RemoteClientModule extends RemoteModule {
+  self: RemoteModule =>
 
   def actorFor(
       classNameOrServiceId: String,

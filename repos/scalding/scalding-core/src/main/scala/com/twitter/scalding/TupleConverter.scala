@@ -37,7 +37,8 @@ import scala.collection.breakOut
   */
 trait TupleConverter[@specialized(Int, Long, Float, Double) T]
     extends java.io.Serializable
-    with TupleArity { self =>
+    with TupleArity {
+  self =>
   def apply(te: TupleEntry): T
   def andThen[U](fn: T => U): TupleConverter[U] =
     new TupleConverter[U] {

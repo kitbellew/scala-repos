@@ -121,7 +121,8 @@ object Router {
 /**
   * A simple router that implements the withPrefix and documentation methods for you.
   */
-trait SimpleRouter extends Router { self =>
+trait SimpleRouter extends Router {
+  self =>
   def documentation: Seq[(String, String, String)] = Seq.empty
   def withPrefix(prefix: String): Router = {
     if (prefix == "/") { self }

@@ -94,7 +94,8 @@ trait LogisticRegressionSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
     with LogisticRegressionTestSupport[M]
-    with LongIdMemoryDatasetConsumer[M] { self =>
+    with LongIdMemoryDatasetConsumer[M] {
+  self =>
 
   import dag._
   import instructions._

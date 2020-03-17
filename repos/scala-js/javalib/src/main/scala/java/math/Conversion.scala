@@ -87,14 +87,12 @@ private[math] object Conversion {
         val charsPerInt = DigitFitInInt(radix)
         val bigRadix = BigRadices(radix - 2)
 
-        @inline
-        @tailrec
+        @inline @tailrec
         def loop(): Unit = {
           resDigit = Division.divideArrayByInt(temp, temp, tempLen, bigRadix)
           val previous = currentChar
 
-          @inline
-          @tailrec
+          @inline @tailrec
           def innerLoop(): Unit = {
             currentChar -= 1
             result = Character.forDigit(resDigit % radix, radix) + result
@@ -184,8 +182,7 @@ private[math] object Conversion {
         var tempLen = numberLength
         System.arraycopy(digits, 0, temp, 0, tempLen)
 
-        @inline
-        @tailrec
+        @inline @tailrec
         def loop(): Unit = {
           // divide the array of digits by bigRadix and convert
           // remainders
@@ -201,8 +198,7 @@ private[math] object Conversion {
           }
           var resDigit = result11.toInt
           val previous = currentChar
-          @inline
-          @tailrec
+          @inline @tailrec
           def innerLoop(): Unit = {
             currentChar -= 1
             result = (48 + (resDigit % 10)).toChar + result

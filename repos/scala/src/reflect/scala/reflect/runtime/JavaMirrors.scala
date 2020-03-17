@@ -34,7 +34,8 @@ import scala.runtime.{ScalaRunTime, BoxesRunTime}
 private[scala] trait JavaMirrors
     extends internal.SymbolTable
     with api.JavaUniverse
-    with TwoWayCaches { thisUniverse: SymbolTable =>
+    with TwoWayCaches {
+  thisUniverse: SymbolTable =>
 
   private lazy val mirrors =
     new WeakHashMap[ClassLoader, WeakReference[JavaMirror]]()
@@ -71,7 +72,8 @@ private[scala] trait JavaMirrors
       /* Class loader that is a mastermind behind the reflexive mirror */
       val classLoader: ClassLoader)
       extends Roots(owner)
-      with super.JavaMirror { thisMirror =>
+      with super.JavaMirror {
+    thisMirror =>
 
     val universe: thisUniverse.type = thisUniverse
 

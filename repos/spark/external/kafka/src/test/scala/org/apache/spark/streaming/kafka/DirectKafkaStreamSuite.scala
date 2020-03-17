@@ -559,7 +559,8 @@ class DirectKafkaStreamSuite
 
 object DirectKafkaStreamSuite {
   val collectedData = new ConcurrentLinkedQueue[String]()
-  @volatile var total = -1L
+  @volatile
+  var total = -1L
 
   class InputInfoCollector extends StreamingListener {
     val numRecordsSubmitted = new AtomicLong(0L)
@@ -583,7 +584,9 @@ object DirectKafkaStreamSuite {
   }
 }
 
-private[streaming] class ConstantEstimator(@volatile private var rate: Long)
+private[streaming] class ConstantEstimator(
+    @volatile
+    private var rate: Long)
     extends RateEstimator {
 
   def updateRate(newRate: Long): Unit = { rate = newRate }

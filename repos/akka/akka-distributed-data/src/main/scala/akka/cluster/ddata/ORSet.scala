@@ -49,7 +49,8 @@ object ORSet {
     */
   private[akka] def subtractDots(dot: Dot, vvector: VersionVector): Dot = {
 
-    @tailrec def dropDots(
+    @tailrec
+    def dropDots(
         remaining: List[(UniqueAddress, Long)],
         acc: List[(UniqueAddress, Long)]): List[(UniqueAddress, Long)] =
       remaining match {

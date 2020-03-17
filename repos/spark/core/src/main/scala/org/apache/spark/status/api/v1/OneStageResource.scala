@@ -30,8 +30,7 @@ import org.apache.spark.ui.jobs.UIData.StageUIData
 @Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class OneStageResource(ui: SparkUI) {
 
-  @GET
-  @Path("")
+  @GET @Path("")
   def stageData(@PathParam("stageId") stageId: Int): Seq[StageData] = {
     withStage(stageId) { stageAttempts =>
       stageAttempts.map { stage =>
@@ -44,8 +43,7 @@ private[v1] class OneStageResource(ui: SparkUI) {
     }
   }
 
-  @GET
-  @Path("/{stageAttemptId: \\d+}")
+  @GET @Path("/{stageAttemptId: \\d+}")
   def oneAttemptData(
       @PathParam("stageId") stageId: Int,
       @PathParam("stageAttemptId") stageAttemptId: Int): StageData = {
@@ -58,8 +56,7 @@ private[v1] class OneStageResource(ui: SparkUI) {
     }
   }
 
-  @GET
-  @Path("/{stageAttemptId: \\d+}/taskSummary")
+  @GET @Path("/{stageAttemptId: \\d+}/taskSummary")
   def taskSummary(
       @PathParam("stageId") stageId: Int,
       @PathParam("stageAttemptId") stageAttemptId: Int,
@@ -79,15 +76,14 @@ private[v1] class OneStageResource(ui: SparkUI) {
     }
   }
 
-  @GET
-  @Path("/{stageAttemptId: \\d+}/taskList")
+  @GET @Path("/{stageAttemptId: \\d+}/taskList")
   def taskList(
       @PathParam("stageId") stageId: Int,
       @PathParam("stageAttemptId") stageAttemptId: Int,
       @DefaultValue("0") @QueryParam("offset") offset: Int,
       @DefaultValue("20") @QueryParam("length") length: Int,
-      @DefaultValue("ID") @QueryParam("sortBy") sortBy: TaskSorting)
-      : Seq[TaskData] = {
+      @DefaultValue("ID")
+      @QueryParam("sortBy") sortBy: TaskSorting): Seq[TaskData] = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
       val tasks = stage.ui.taskData.values
         .map { AllStagesResource.convertTaskData }

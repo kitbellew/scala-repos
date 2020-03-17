@@ -3,8 +3,7 @@ package com.twitter.concurrent
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
-@BenchmarkMode(Array(Mode.SampleTime))
+@OutputTimeUnit(TimeUnit.NANOSECONDS) @BenchmarkMode(Array(Mode.SampleTime))
 class OnceBenchmark {
   import OnceBenchmark._
 

@@ -35,8 +35,10 @@ import org.apache.spark.sql.types.Metadata
 
 class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
-  @transient var dataset: DataFrame = _
-  @transient var rdd: RDD[LabeledPoint] = _
+  @transient
+  var dataset: DataFrame = _
+  @transient
+  var rdd: RDD[LabeledPoint] = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

@@ -12,5 +12,6 @@ trait Rng[@sp(Byte, Short, Int, Long, Float, Double) A]
     with AdditiveAbGroup[A]
 
 object Rng {
-  @inline final def apply[A](implicit r: Rng[A]): Rng[A] = r
+  @inline
+  final def apply[A](implicit r: Rng[A]): Rng[A] = r
 }

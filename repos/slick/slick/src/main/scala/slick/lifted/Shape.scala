@@ -74,7 +74,8 @@ object Shape
       def toNode(value: Mixed): Node = pack(value).toNode
     }
 
-  @inline implicit final def unitShape[Level <: ShapeLevel]
+  @inline
+  implicit final def unitShape[Level <: ShapeLevel]
       : Shape[Level, Unit, Unit, Unit] =
     unitShapePrototype.asInstanceOf[Shape[Level, Unit, Unit, Unit]]
 
@@ -89,7 +90,8 @@ object Shape
 }
 
 trait AbstractTableShapeImplicits extends RepShapeImplicits {
-  @inline implicit final def tableShape[
+  @inline
+  implicit final def tableShape[
       Level >: FlatShapeLevel <: ShapeLevel,
       T,
       C <: AbstractTable[_]](implicit ev: C <:< AbstractTable[T]) =
@@ -102,18 +104,21 @@ trait ConstColumnShapeImplicits extends RepShapeImplicits {
     * ensures that a `ConstColumn[T]` packs to itself, not just to
     * `Rep[T]`. This allows ConstColumns to be used as fully packed
     * types when compiling query functions. */
-  @inline implicit def constColumnShape[T, Level <: ShapeLevel] =
+  @inline
+  implicit def constColumnShape[T, Level <: ShapeLevel] =
     RepShape[Level, ConstColumn[T], T]
 }
 
 trait RepShapeImplicits extends OptionShapeImplicits {
 
   /** A Shape for single-column Reps. */
-  @inline implicit def repColumnShape[T: BaseTypedType, Level <: ShapeLevel] =
+  @inline
+  implicit def repColumnShape[T: BaseTypedType, Level <: ShapeLevel] =
     RepShape[Level, Rep[T], T]
 
   /** A Shape for Option-valued Reps. */
-  @inline implicit def optionShape[M, U, P, Level <: ShapeLevel](implicit
+  @inline
+  implicit def optionShape[M, U, P, Level <: ShapeLevel](implicit
       sh: Shape[_ <: Level, Rep[M], U, Rep[P]])
       : Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]] =
     RepShape
@@ -123,7 +128,8 @@ trait RepShapeImplicits extends OptionShapeImplicits {
 trait OptionShapeImplicits {
 
   /** A Shape for Option-valued non-Reps. */
-  @inline implicit def anyOptionShape[M, U, P, Level <: ShapeLevel](implicit
+  @inline
+  implicit def anyOptionShape[M, U, P, Level <: ShapeLevel](implicit
       sh: Shape[_ <: Level, M, U, P])
       : Shape[Level, Rep[Option[M]], Option[U], Rep[Option[P]]] =
     RepShape
@@ -370,7 +376,8 @@ case class ShapedValue[T, U](
         f.asInstanceOf[Any => Any],
         None),
       implicitly[ClassTag[R]])
-  @inline def shaped: ShapedValue[T, U] = this
+  @inline
+  def shaped: ShapedValue[T, U] = this
 
   def mapTo[R <: Product with Serializable](implicit
       rCT: ClassTag[R]): MappedProjection[R, U] =
@@ -378,7 +385,8 @@ case class ShapedValue[T, U](
 }
 
 object ShapedValue {
-  @inline implicit def shapedValueShape[T, U, Level <: ShapeLevel] =
+  @inline
+  implicit def shapedValueShape[T, U, Level <: ShapeLevel] =
     RepShape[Level, ShapedValue[T, U], U]
 
   def mapToImpl[R <: Product with Serializable, U](c: Context {
@@ -534,7 +542,8 @@ class MappedProjection[T, P](
 object MappedProjection {
 
   /** The Shape for a MappedProjection */
-  @inline implicit final def mappedProjectionShape[
+  @inline
+  implicit final def mappedProjectionShape[
       Level >: FlatShapeLevel <: ShapeLevel,
       T,
       P] = RepShape[Level, MappedProjection[T, P], T]

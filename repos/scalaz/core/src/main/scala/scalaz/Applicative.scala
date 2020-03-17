@@ -17,7 +17,8 @@ package scalaz
   *  @see [[scalaz.Applicative.ApplicativeLaw]]
   */
 ////
-trait Applicative[F[_]] extends Apply[F] { self =>
+trait Applicative[F[_]] extends Apply[F] {
+  self =>
   ////
   def point[A](a: => A): F[A]
 
@@ -121,7 +122,8 @@ trait Applicative[F[_]] extends Apply[F] { self =>
 }
 
 object Applicative {
-  @inline def apply[F[_]](implicit F: Applicative[F]): Applicative[F] = F
+  @inline
+  def apply[F[_]](implicit F: Applicative[F]): Applicative[F] = F
 
   ////
 

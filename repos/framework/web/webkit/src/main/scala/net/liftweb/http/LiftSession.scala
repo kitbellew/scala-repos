@@ -106,7 +106,8 @@ object LiftSession {
     */
   var onEndServicing: List[(LiftSession, Req, Box[LiftResponse]) => Unit] = Nil
 
-  @volatile private var constructorCache
+  @volatile
+  private var constructorCache
       : Map[(Class[_], Box[Class[_]]), Box[ConstructorType]] = Map()
 
   private[http] def constructFrom[T](
@@ -381,7 +382,8 @@ class LiftSession(
     * Was this session marked for shutdown... if so,
     * don't remark
     */
-  @volatile private[http] var markedForShutDown_? = false
+  @volatile
+  private[http] var markedForShutDown_? = false
 
   private val fullPageLoad = new BooleanThreadGlobal
 
@@ -390,8 +392,8 @@ class LiftSession(
   private val functionOwnerRemovalListeners =
     LiftSession.onFunctionOwnersRemoved
 
-  @volatile private[http] var notices
-      : Seq[(NoticeType.Value, NodeSeq, Box[String])] = Nil
+  @volatile
+  private[http] var notices: Seq[(NoticeType.Value, NodeSeq, Box[String])] = Nil
 
   private case class CometId(cometType: String, cometName: Box[String])
 
@@ -403,7 +405,8 @@ class LiftSession(
 
   private val nmyVariables = new ConcurrentHashMap[String, Any]
 
-  @volatile private var onSessionEnd: List[LiftSession => Unit] = Nil
+  @volatile
+  private var onSessionEnd: List[LiftSession => Unit] = Nil
 
   /**
     * Cache the value of allowing snippet attribute processing
@@ -415,8 +418,8 @@ class LiftSession(
     * A mapping between pages denoted by RenderVersion and
     * functions to execute at the end of the page rendering
     */
-  @volatile private var postPageFunctions: Map[String, PostPageFunctions] =
-    Map()
+  @volatile
+  private var postPageFunctions: Map[String, PostPageFunctions] = Map()
 
   /**
     * A list of AJAX requests that may or may not be pending for this
@@ -2937,7 +2940,8 @@ class LiftSession(
                   func.asInstanceOf[Function2[Any, RoundTripHandlerFunc, Unit]](
                     reified,
                     new RoundTripHandlerFunc {
-                      @volatile private var done_? = false
+                      @volatile
+                      private var done_? = false
                       def done() {
                         if (!done_?) {
                           done_? = true

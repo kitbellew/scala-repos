@@ -19,10 +19,9 @@ trait Collections {
   /** True if all three arguments have the same number of elements and
     *  the function is true for all the triples.
     */
-  @tailrec final def corresponds3[A, B, C](
-      xs1: List[A],
-      xs2: List[B],
-      xs3: List[C])(f: (A, B, C) => Boolean): Boolean =
+  @tailrec
+  final def corresponds3[A, B, C](xs1: List[A], xs2: List[B], xs3: List[C])(
+      f: (A, B, C) => Boolean): Boolean =
     (if (xs1.isEmpty) xs2.isEmpty && xs3.isEmpty
      else
        !xs2.isEmpty && !xs3.isEmpty && f(
@@ -178,7 +177,8 @@ trait Collections {
     buf.toList
   }
 
-  @tailrec final def flattensToEmpty(xss: Seq[Seq[_]]): Boolean = {
+  @tailrec
+  final def flattensToEmpty(xss: Seq[Seq[_]]): Boolean = {
     xss.isEmpty || xss.head.isEmpty && flattensToEmpty(xss.tail)
   }
 

@@ -550,7 +550,8 @@ class FsHistoryProviderSuite
   private class SafeModeTestProvider(conf: SparkConf, clock: Clock)
       extends FsHistoryProvider(conf, clock) {
 
-    @volatile var inSafeMode = true
+    @volatile
+    var inSafeMode = true
 
     // Skip initialization so that we can manually start the safe mode check thread.
     private[history] override def initialize(): Thread = null

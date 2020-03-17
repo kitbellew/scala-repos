@@ -42,7 +42,8 @@ trait Mimes {
 
   import org.scalatra.util.Mimes._
 
-  @transient private[this] val internalLogger = Logger(getClass)
+  @transient
+  private[this] val internalLogger = Logger(getClass)
 
   protected[this] def mimeUtil: MimeUtil2 = new MimeUtil2()
   quiet {

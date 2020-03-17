@@ -16,8 +16,10 @@ abstract class FormatInterpolator {
   import definitions._
   import treeInfo.Applied
 
-  @inline private def truly(body: => Unit): Boolean = { body; true }
-  @inline private def falsely(body: => Unit): Boolean = { body; false }
+  @inline
+  private def truly(body: => Unit): Boolean = { body; true }
+  @inline
+  private def falsely(body: => Unit): Boolean = { body; false }
 
   private def fail(msg: String) = c.abort(c.enclosingPosition, msg)
   private def bail(msg: String) = global.abort(msg)

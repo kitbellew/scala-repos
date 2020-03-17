@@ -17,7 +17,8 @@ import akka.actor.{
 }
 import akka.event.AddressTerminatedTopic
 
-private[akka] trait DeathWatch { this: ActorCell ⇒
+private[akka] trait DeathWatch {
+  this: ActorCell ⇒
 
   private var watching: Set[ActorRef] = ActorCell.emptyActorRefSet
   private var watchedBy: Set[ActorRef] = ActorCell.emptyActorRefSet

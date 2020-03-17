@@ -4,24 +4,31 @@ private[interval] object Tree {
 
   import java.lang.Long.numberOfLeadingZeros
 
-  @inline final def toPrefix(key: Long): Long = key - Long.MinValue
+  @inline
+  final def toPrefix(key: Long): Long = key - Long.MinValue
 
-  @inline final def fromPrefix(key: Long): Long = key + Long.MinValue
+  @inline
+  final def fromPrefix(key: Long): Long = key + Long.MinValue
 
-  @inline final def unsigned_<(i: Long, j: Long) = (i < j) ^ (i < 0L) ^ (j < 0L)
+  @inline
+  final def unsigned_<(i: Long, j: Long) = (i < j) ^ (i < 0L) ^ (j < 0L)
 
-  @inline final def levelAbove(a: Long, b: Long): Byte =
+  @inline
+  final def levelAbove(a: Long, b: Long): Byte =
     (63 - numberOfLeadingZeros(a ^ b)).toByte
 
-  @inline final def maskAbove(prefix: Long, bit: Byte) = {
+  @inline
+  final def maskAbove(prefix: Long, bit: Byte) = {
     // this is not the same as (-1L << (bit + 1)) due to the somewhat strange behavior of the java shift operator
     // -1L << 64 gives -1L, whereas (-1L << 63) << 1 gives 0L like we need
     prefix & ((-1L << bit) << 1)
   }
 
-  @inline final def zeroAt(value: Long, bit: Byte) = (value & (1L << bit)) == 0L
+  @inline
+  final def zeroAt(value: Long, bit: Byte) = (value & (1L << bit)) == 0L
 
-  @inline final def hasMatchAt(key: Long, prefix: Long, level: Byte) =
+  @inline
+  final def hasMatchAt(key: Long, prefix: Long, level: Byte) =
     maskAbove(key, level) == prefix
 
   def concat(t1: Leaf, t2: Leaf): Tree = {
@@ -52,11 +59,8 @@ private[interval] object Tree {
     * @param r the right child
     * @return the result, can be null
     */
-  @inline private final def branch(
-      p: Long,
-      level: Byte,
-      l: Tree,
-      r: Tree): Tree =
+  @inline
+  private final def branch(p: Long, level: Byte, l: Tree, r: Tree): Tree =
     if (l eq null) r else if (r eq null) l else Branch(p, level, l, r)
 
   // $COVERAGE-OFF$
@@ -66,7 +70,8 @@ private[interval] object Tree {
 
   sealed abstract class BooleanBinaryOperator {
 
-    @inline private final def disjoint(
+    @inline
+    private final def disjoint(
         a0: Boolean,
         a: Tree,
         b0: Boolean,
@@ -529,7 +534,8 @@ private[interval] object Tree {
       */
     def level = -1.toByte
 
-    @inline def above = sign
+    @inline
+    def above = sign
   }
 
   /**

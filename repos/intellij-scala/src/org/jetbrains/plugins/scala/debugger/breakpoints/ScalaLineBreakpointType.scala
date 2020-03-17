@@ -55,9 +55,11 @@ class ScalaLineBreakpointType
     ScalaBundle.message("line.breakpoints.tab.title")
 
   override def canPutAt(
-      @NotNull file: VirtualFile,
+      @NotNull
+      file: VirtualFile,
       line: Int,
-      @NotNull project: Project): Boolean = {
+      @NotNull
+      project: Project): Boolean = {
     val psiFile: PsiFile = PsiManager.getInstance(project).findFile(file)
     if (psiFile == null || !psiFile.getLanguage.is(ScalaLanguage.Instance)) {
       return false
@@ -94,8 +96,10 @@ class ScalaLineBreakpointType
 
   @NotNull
   override def computeVariants(
-      @NotNull project: Project,
-      @NotNull position: XSourcePosition)
+      @NotNull
+      project: Project,
+      @NotNull
+      position: XSourcePosition)
       : JList[JavaLineBreakpointType#JavaBreakpointVariant] = {
     val emptyList = Collections
       .emptyList[JavaLineBreakpointType#JavaBreakpointVariant]
@@ -141,8 +145,10 @@ class ScalaLineBreakpointType
   }
 
   override def matchesPosition(
-      @NotNull breakpoint: LineBreakpoint[_],
-      @NotNull position: SourcePosition): Boolean = {
+      @NotNull
+      breakpoint: LineBreakpoint[_],
+      @NotNull
+      position: SourcePosition): Boolean = {
     val method = getContainingMethod(breakpoint)
     if (method == null) return false
 
@@ -154,7 +160,8 @@ class ScalaLineBreakpointType
 
   @Nullable
   override def getContainingMethod(
-      @NotNull breakpoint: LineBreakpoint[_]): PsiElement = {
+      @NotNull
+      breakpoint: LineBreakpoint[_]): PsiElement = {
     val position: SourcePosition = breakpoint.getSourcePosition
     if (position == null || position.getElementAt == null) return null
 

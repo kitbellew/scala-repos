@@ -36,7 +36,8 @@ import scala.collection.JavaConverters._
   * mechanisms to address the data (a FileSource).
   */
 case class IterableSource[+T](
-    @transient iter: Iterable[T],
+    @transient
+    iter: Iterable[T],
     inFields: Fields = Fields.NONE)(implicit
     set: TupleSetter[T],
     conv: TupleConverter[T])

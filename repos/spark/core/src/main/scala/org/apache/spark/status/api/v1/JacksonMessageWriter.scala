@@ -38,8 +38,7 @@ import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
   *
   * Note that jersey automatically discovers this class based on its package and its annotations.
   */
-@Provider
-@Produces(Array(MediaType.APPLICATION_JSON))
+@Provider @Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
 
   val mapper = new ObjectMapper() {

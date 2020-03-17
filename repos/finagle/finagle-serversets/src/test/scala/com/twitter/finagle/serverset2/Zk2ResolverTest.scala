@@ -32,7 +32,8 @@ class Zk2ResolverTest
   // The Zk2 resolver has a hardcoded session timeout of 10 seconds and a stabilization epoch of
   // 40 seconds. We give these tests double that to observe nodes leaving a serverset.
   // Because this is so high, we don't check more than once every 5 seconds.
-  @volatile var inst: ZkInstance = _
+  @volatile
+  var inst: ZkInstance = _
   val stabilizationEpoch = 40.seconds
   val stabilizationTimeout = PatienceConfiguration.Timeout(
     stabilizationEpoch * 2)

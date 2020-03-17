@@ -9,8 +9,7 @@ import spire.algebra._
 import spire.implicits._
 import spire.math._
 
-@BenchmarkMode(Array(Mode.AverageTime))
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@BenchmarkMode(Array(Mode.AverageTime)) @OutputTimeUnit(TimeUnit.MICROSECONDS)
 class AddBenchmarks {
 
   def addGeneric[@sp(Int, Long, Float, Double) A: Ring](data: Array[A]): A = {

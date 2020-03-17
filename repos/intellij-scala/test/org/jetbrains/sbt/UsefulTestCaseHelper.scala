@@ -7,7 +7,8 @@ import com.intellij.testFramework.exceptionCases.AbstractExceptionCase
   * @author Nikolay Obedin
   * @since 6/9/15.
   */
-trait UsefulTestCaseHelper { self: UsefulTestCase =>
+trait UsefulTestCaseHelper {
+  self: UsefulTestCase =>
   def assertException[T <: Throwable](expectedMessage: Option[String])(
       closure: => Unit)(implicit m: Manifest[T]): Unit =
     assertException(

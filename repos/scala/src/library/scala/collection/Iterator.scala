@@ -175,7 +175,8 @@ object Iterator {
       private[this] var current: Iterator[A],
       initial: Vector[() => Iterator[A]])
       extends Iterator[A] {
-    @deprecated def this(initial: Vector[() => Iterator[A]]) =
+    @deprecated
+    def this(initial: Vector[() => Iterator[A]]) =
       this(Iterator.empty, initial) // for binary compatibility
     private[this] var queue: Vector[() => Iterator[A]] = initial
     private[this] var currentHasNextChecked = false
@@ -261,7 +262,8 @@ object Iterator {
       extends AbstractIterator[A] {
     private var remaining = limit
     private var dropping = start
-    @inline private def unbounded = remaining < 0
+    @inline
+    private def unbounded = remaining < 0
     private def skip(): Unit =
       while (dropping > 0) {
         if (underlying.hasNext) {

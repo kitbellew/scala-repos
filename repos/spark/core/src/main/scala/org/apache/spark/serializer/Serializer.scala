@@ -50,7 +50,8 @@ abstract class Serializer {
     * Default ClassLoader to use in deserialization. Implementations of [[Serializer]] should
     * make sure it is using this when set.
     */
-  @volatile protected var defaultClassLoader: Option[ClassLoader] = None
+  @volatile
+  protected var defaultClassLoader: Option[ClassLoader] = None
 
   /**
     * Sets a class loader for the serializer to use in deserialization.
@@ -106,8 +107,7 @@ abstract class Serializer {
   * It is legal to create multiple serialization / deserialization streams from the same
   * SerializerInstance as long as those streams are all used within the same thread.
   */
-@DeveloperApi
-@NotThreadSafe
+@DeveloperApi @NotThreadSafe
 abstract class SerializerInstance {
   def serialize[T: ClassTag](t: T): ByteBuffer
 

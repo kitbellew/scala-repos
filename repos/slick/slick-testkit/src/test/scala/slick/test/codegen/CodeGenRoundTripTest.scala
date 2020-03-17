@@ -14,7 +14,8 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
   import tdb.profile.api._
   import tdb.profile.quoteIdentifier
 
-  @Test def test: Unit =
+  @Test
+  def test: Unit =
     runBlocking {
       object Tables extends roundtrip.Tables {
         val profile = tdb.profile

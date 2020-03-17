@@ -567,7 +567,8 @@ object Load {
     Project.transform(resolve, unit.definitions.builds.flatMap(_.settings))
   }
 
-  @tailrec def loadAll(
+  @tailrec
+  def loadAll(
       bases: List[URI],
       references: Map[URI, List[ProjectReference]],
       loaders: BuildLoader,

@@ -241,7 +241,8 @@ object Combinators {
           * rD = evD(rC, pD)
           * return rD
           */
-        @tailrec def rec(
+        @tailrec
+        def rec(
             r1: R,
             rIndex: Int,
             rCut: Boolean,
@@ -389,7 +390,8 @@ object Combinators {
       extends Parser[R] {
 
     def parseRec(cfg: ParseCtx, index: Int) = {
-      @tailrec def rec(
+      @tailrec
+      def rec(
           index: Int,
           del: Parser[_],
           lastFailure: Mutable.Failure,
@@ -475,9 +477,8 @@ object Combinators {
     private[this] val ps0 = ps.toArray
     private[this] val n = ps0.length
     def parseRec(cfg: ParseCtx, index: Int) = {
-      @tailrec def rec(
-          parserIndex: Int,
-          traceParsers: Set[Parser[_]]): Mutable[T] = {
+      @tailrec
+      def rec(parserIndex: Int, traceParsers: Set[Parser[_]]): Mutable[T] = {
         if (parserIndex >= n) fail(cfg.failure, index)
         else
           ps0(parserIndex).parseRec(cfg, index) match {

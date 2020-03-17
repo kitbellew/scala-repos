@@ -29,7 +29,8 @@ import com.twitter.summingbird.scalding.batch.BatchedStore
   * @author Ashu Singhal
   */
 class CompoundStore[K, V] private (
-    @transient offline: Option[BatchedStore[K, V]],
+    @transient
+    offline: Option[BatchedStore[K, V]],
     online: Option[() => Mergeable[(K, BatchID), V]])
     extends Serializable {
   private val offlineBox = Externalizer(offline)

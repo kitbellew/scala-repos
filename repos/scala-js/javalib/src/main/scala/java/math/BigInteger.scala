@@ -677,8 +677,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
       }
     }
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loopBytes(tempDigit: Int => Unit): Unit = {
       if (bytesLen > firstByteNumber) {
         tempDigit(digitIndex)
@@ -720,8 +719,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
   }
 
   private[math] def cutOffLeadingZeroes(): Unit = {
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(): Unit = {
       if (numberLength > 0) {
         numberLength -= 1
@@ -772,8 +770,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
     digits(numberLength - 1) = -1
     // Put bytes to the int array starting from the end of the byte array
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(): Unit =
       if (bytesLen > highBytes) {
         digits(i) =

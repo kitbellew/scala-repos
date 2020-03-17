@@ -89,7 +89,8 @@ trait SBTConsolePlatform
     with VFSColumnarTableModule
     with StandaloneActorProjectionSystem
     with XLightWebHttpClientModule[Future]
-    with LongIdMemoryDatasetConsumer[Future] { self =>
+    with LongIdMemoryDatasetConsumer[Future] {
+  self =>
 
   type YggConfig = PlatformConfig
 
@@ -101,7 +102,8 @@ trait SBTConsolePlatform
 object SBTConsole {
   val controlTimeout = Duration(30, "seconds")
 
-  val platform = new SBTConsolePlatform { console =>
+  val platform = new SBTConsolePlatform {
+    console =>
     implicit val actorSystem = ActorSystem("sbtConsoleActorSystem")
     implicit val asyncContext = ExecutionContext.defaultExecutionContext(
       actorSystem)

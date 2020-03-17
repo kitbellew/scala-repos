@@ -632,13 +632,15 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     * @param size the maximum size of the collection to be generated
     * @return the maximum buffer size
     */
-  @inline private def bufferSize(size: Int): Int = (size + 6) min (32 * 7)
+  @inline
+  private def bufferSize(size: Int): Int = (size + 6) min (32 * 7)
 
   /**
     * In many internal operations the empty map is represented as null for performance reasons. This method converts
     * null to the empty map for use in public methods
     */
-  @inline private def nullToEmpty[A, B](m: HashMap[A, B]): HashMap[A, B] =
+  @inline
+  private def nullToEmpty[A, B](m: HashMap[A, B]): HashMap[A, B] =
     if (m eq null) empty[A, B] else m
 
   /**
@@ -674,7 +676,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
 
   @SerialVersionUID(2L)
   private class SerializationProxy[A, B](
-      @transient private var orig: HashMap[A, B])
+      @transient
+      private var orig: HashMap[A, B])
       extends Serializable {
     private def writeObject(out: java.io.ObjectOutputStream) {
       val s = orig.size

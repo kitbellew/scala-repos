@@ -1,16 +1,23 @@
 object Test extends App {
-  @deprecated("", "") def f = 42
-  @deprecated("", "") def z = f
-  def g = { @deprecated("", "") def _f = f; _f } // warns in 2.11.0-M8
+  @deprecated("", "")
+  def f = 42
+  @deprecated("", "")
+  def z = f
+  def g = {
+    @deprecated("", "")
+    def _f = f; _f
+  } // warns in 2.11.0-M8
   def x = {
-    @deprecated("", "") class X {
+    @deprecated("", "")
+    class X {
       def x = f
     }; new X().x
   } // warns in 2.11.0-M8
   Console println g
   Console println f // warns
 
-  @deprecated("", "") trait T
+  @deprecated("", "")
+  trait T
   object T extends T {
     def t = f
   }

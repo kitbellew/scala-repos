@@ -21,7 +21,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     val DefaultWrites = implicitly[Writes[LocalDateTime]]
     import DefaultWrites.writes
 
-    @inline def dateTime(input: String) = LocalDateTime.parse(input)
+    @inline
+    def dateTime(input: String) = LocalDateTime.parse(input)
 
     val CustomWrites1 = Writes.temporalWrites[LocalDateTime, String](
       "dd/MM/yyyy, HH:mm:ss")
@@ -72,7 +73,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     val DefaultWrites = implicitly[Writes[ZonedDateTime]]
     import DefaultWrites.writes
 
-    @inline def dateTime(input: String) = ZonedDateTime.parse(input)
+    @inline
+    def dateTime(input: String) = ZonedDateTime.parse(input)
 
     val CustomWrites1 = Writes.temporalWrites[ZonedDateTime, String](
       "dd/MM/yyyy, HH:mm:ss")
@@ -110,7 +112,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     val DefaultWrites = implicitly[Writes[LocalDate]]
     import DefaultWrites.writes
 
-    @inline def date(input: String) = LocalDate.parse(input)
+    @inline
+    def date(input: String) = LocalDate.parse(input)
 
     val CustomWrites1 = Writes.temporalWrites[LocalDate, String]("dd/MM/yyyy")
 

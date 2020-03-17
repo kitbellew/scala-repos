@@ -51,8 +51,7 @@ import org.apache.spark.sql.DataFrame
   * It supports both binary and multiclass labels, as well as both continuous and categorical
   * features.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class DecisionTreeClassifier @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends ProbabilisticClassifier[
@@ -156,8 +155,7 @@ final class DecisionTreeClassifier @Since("1.4.0") (
     defaultCopy(extra)
 }
 
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 object DecisionTreeClassifier
     extends DefaultParamsReadable[DecisionTreeClassifier] {
 
@@ -176,8 +174,7 @@ object DecisionTreeClassifier
   * It supports both binary and multiclass labels, as well as both continuous and categorical
   * features.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class DecisionTreeClassificationModel private[ml] (
     @Since("1.4.0") override val uid: String,
     @Since("1.4.0") override val rootNode: Node,

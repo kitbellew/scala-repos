@@ -34,7 +34,8 @@ import org.apache.spark.util.IntParam
   */
 object WordBlacklist {
 
-  @volatile private var instance: Broadcast[Seq[String]] = null
+  @volatile
+  private var instance: Broadcast[Seq[String]] = null
 
   def getInstance(sc: SparkContext): Broadcast[Seq[String]] = {
     if (instance == null) {
@@ -54,7 +55,8 @@ object WordBlacklist {
   */
 object DroppedWordsCounter {
 
-  @volatile private var instance: Accumulator[Long] = null
+  @volatile
+  private var instance: Accumulator[Long] = null
 
   def getInstance(sc: SparkContext): Accumulator[Long] = {
     if (instance == null) {

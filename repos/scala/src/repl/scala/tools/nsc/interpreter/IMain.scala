@@ -66,7 +66,8 @@ import java.net.URL
   *  @author Lex Spoon
   */
 class IMain(
-    @BeanProperty val factory: ScriptEngineFactory,
+    @BeanProperty
+    val factory: ScriptEngineFactory,
     initialSettings: Settings,
     protected val out: JPrintWriter)
     extends AbstractScriptEngine

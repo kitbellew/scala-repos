@@ -44,16 +44,19 @@ object LAScheduler extends LAScheduler with Loggable {
   /**
     * Set this variable to the number of threads to allocate in the thread pool
     */
-  @volatile var threadPoolSize = 16 // issue 194
+  @volatile
+  var threadPoolSize = 16 // issue 194
 
-  @volatile var maxThreadPoolSize = threadPoolSize * 25
+  @volatile
+  var maxThreadPoolSize = threadPoolSize * 25
 
   /**
     * If it's Full, then create an ArrayBlockingQueue,
     * otherwise create a LinkedBlockingQueue.  Default
     * to Full(200000).
     */
-  @volatile var blockingQueueSize: Box[Int] = Full(200000)
+  @volatile
+  var blockingQueueSize: Box[Int] = Full(200000)
 
   @volatile
   var createExecutor: () => ILAExecute = () => {
@@ -111,11 +114,15 @@ object LAScheduler extends LAScheduler with Loggable {
 }
 
 trait SpecializedLiftActor[T] extends SimpleActor[T] {
-  @volatile private[this] var processing = false
+  @volatile
+  private[this] var processing = false
   private[this] val baseMailbox: MailboxItem = new SpecialMailbox
-  @volatile private[this] var msgList: List[T] = Nil
-  @volatile private[this] var priorityMsgList: List[T] = Nil
-  @volatile private[this] var startCnt = 0
+  @volatile
+  private[this] var msgList: List[T] = Nil
+  @volatile
+  private[this] var priorityMsgList: List[T] = Nil
+  @volatile
+  private[this] var startCnt = 0
 
   private class MailboxItem(val item: T) {
     var next: MailboxItem = _

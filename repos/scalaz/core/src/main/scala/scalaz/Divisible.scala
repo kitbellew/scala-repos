@@ -7,7 +7,8 @@ package scalaz
   * @see [[https://youtu.be/cB8DapKQz-I?t=20m35s ZuriHac 2015 - Discrimination is Wrong: Improving Productivity]]
   */
 ////
-trait Divisible[F[_]] extends Divide[F] { self =>
+trait Divisible[F[_]] extends Divide[F] {
+  self =>
   ////
 
   def conquer[A]: F[A]
@@ -29,7 +30,8 @@ trait Divisible[F[_]] extends Divide[F] { self =>
 }
 
 object Divisible {
-  @inline def apply[F[_]](implicit F: Divisible[F]): Divisible[F] = F
+  @inline
+  def apply[F[_]](implicit F: Divisible[F]): Divisible[F] = F
 
   ////
 

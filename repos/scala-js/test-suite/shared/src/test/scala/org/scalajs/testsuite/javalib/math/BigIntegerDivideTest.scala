@@ -14,7 +14,8 @@ import org.junit.Assert._
 
 class BigIntegerDivideTest {
 
-  @Test def testCase1(): Unit = {
+  @Test
+  def testCase1(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](0)
     val aSign = 1
@@ -29,7 +30,8 @@ class BigIntegerDivideTest {
     }
   }
 
-  @Test def testCase10(): Unit = {
+  @Test
+  def testCase10(): Unit = {
     val aBytes = Array[Byte](
       1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
@@ -45,7 +47,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase11(): Unit = {
+  @Test
+  def testCase11(): Unit = {
     val aBytes = Array[Byte](0)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
     val aSign = 0
@@ -60,7 +63,8 @@ class BigIntegerDivideTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase12(): Unit = {
+  @Test
+  def testCase12(): Unit = {
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
     val bSign = -1
     val rBytes = Array[Byte](0)
@@ -73,7 +77,8 @@ class BigIntegerDivideTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase13(): Unit = {
+  @Test
+  def testCase13(): Unit = {
     val aBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
     val aSign = 1
     val rBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
@@ -86,7 +91,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase14(): Unit = {
+  @Test
+  def testCase14(): Unit = {
     val rBytes = Array[Byte](1)
     val aNumber = BigInteger.ONE
     val bNumber = BigInteger.ONE
@@ -97,7 +103,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase15(): Unit = {
+  @Test
+  def testCase15(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](0)
     val aSign = 1
@@ -112,7 +119,8 @@ class BigIntegerDivideTest {
     }
   }
 
-  @Test def testCase16(): Unit = {
+  @Test
+  def testCase16(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127)
     val bBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127)
     val aSign = 1
@@ -127,7 +135,8 @@ class BigIntegerDivideTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase17(): Unit = {
+  @Test
+  def testCase17(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 75)
     val bBytes = Array[Byte](27, -15, 65, 39, 100)
     val aSign = 1
@@ -142,7 +151,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase18(): Unit = {
+  @Test
+  def testCase18(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 75)
     val bBytes = Array[Byte](27, -15, 65, 39, 100)
     val aSign = -1
@@ -157,7 +167,8 @@ class BigIntegerDivideTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase19(): Unit = {
+  @Test
+  def testCase19(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 75)
     val bBytes = Array[Byte](27, -15, 65, 39, 100)
     val aSign = 1
@@ -172,7 +183,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase2(): Unit = {
+  @Test
+  def testCase2(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7)
     val aSign = 1
     val aNumber = new BigInteger(aSign, aBytes)
@@ -185,7 +197,8 @@ class BigIntegerDivideTest {
     }
   }
 
-  @Test def testCase20(): Unit = {
+  @Test
+  def testCase20(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 75)
     val bBytes = Array[Byte](27, -15, 65, 39, 100)
     val aSign = -1
@@ -200,7 +213,8 @@ class BigIntegerDivideTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase21(): Unit = {
+  @Test
+  def testCase21(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 75)
     val bBytes = Array[Byte](27, -15, 65, 39, 100)
     val aSign = -1
@@ -224,7 +238,8 @@ class BigIntegerDivideTest {
     }
   }
 
-  @Test def testCase22(): Unit = {
+  @Test
+  def testCase22(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](1, 30, 40, 56, -1, 45)
     val aSign = 1
@@ -239,7 +254,8 @@ class BigIntegerDivideTest {
     }
   }
 
-  @Test def testCase23(): Unit = {
+  @Test
+  def testCase23(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 75)
     val bBytes = Array[Byte](27, -15, 65, 39, 100)
     val aSign = 1
@@ -254,7 +270,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase24(): Unit = {
+  @Test
+  def testCase24(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 75)
     val bBytes = Array[Byte](27, -15, 65, 39, 100)
     val aSign = -1
@@ -269,7 +286,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase3(): Unit = {
+  @Test
+  def testCase3(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127)
     val bBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127)
     val aSign = 1
@@ -284,7 +302,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase4(): Unit = {
+  @Test
+  def testCase4(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127)
     val bBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127)
     val aSign = -1
@@ -299,7 +318,8 @@ class BigIntegerDivideTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase5(): Unit = {
+  @Test
+  def testCase5(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127)
     val bBytes = Array[Byte](
       -127, 100, 56, 7, 98, -1, 39, -128, 127, 1, 2, 3, 4, 5)
@@ -315,7 +335,8 @@ class BigIntegerDivideTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase6(): Unit = {
+  @Test
+  def testCase6(): Unit = {
     val aBytes = Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127)
     val bBytes = Array[Byte](15, 100, 56, 7, 98, -1, 39, -128, 127)
     val aSign = 1
@@ -330,7 +351,8 @@ class BigIntegerDivideTest {
     assertEquals(0, result.signum())
   }
 
-  @Test def testCase7(): Unit = {
+  @Test
+  def testCase7(): Unit = {
     val aBytes = Array[Byte](
       1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
@@ -346,7 +368,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testCase8(): Unit = {
+  @Test
+  def testCase8(): Unit = {
     val aBytes = Array[Byte](
       1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
@@ -362,7 +385,8 @@ class BigIntegerDivideTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testCase9(): Unit = {
+  @Test
+  def testCase9(): Unit = {
     val aBytes = Array[Byte](
       1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
@@ -378,7 +402,8 @@ class BigIntegerDivideTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testDivisionKnuth1(): Unit = {
+  @Test
+  def testDivisionKnuth1(): Unit = {
     val aBytes = Array[Byte](-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7)
     val bBytes = Array[Byte](-3, -3, -3, -3)
     val aSign = 1
@@ -394,7 +419,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testDivisionKnuthFirstDigitsEqual(): Unit = {
+  @Test
+  def testDivisionKnuthFirstDigitsEqual(): Unit = {
     val aBytes = Array[Byte](
       2, -3, -4, -5, -1, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5)
     val bBytes = Array[Byte](2, -3, -4, -5, -1, -1, -1, -1)
@@ -410,7 +436,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testDivisionKnuthIsNormalized(): Unit = {
+  @Test
+  def testDivisionKnuthIsNormalized(): Unit = {
     val aBytes = Array[Byte](
       -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5)
     val bBytes = Array[Byte](-1, -1, -1, -1, -1, -1, -1, -1)
@@ -426,7 +453,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testDivisionKnuthMultiDigitsByOneDigit(): Unit = {
+  @Test
+  def testDivisionKnuthMultiDigitsByOneDigit(): Unit = {
     val aBytes = Array[Byte](113, -83, 123, -5, 18, -34, 67, 39, -29)
     val bBytes = Array[Byte](2, -3, -4, -5)
     val aSign = 1
@@ -441,7 +469,8 @@ class BigIntegerDivideTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testDivisionKnuthOneDigitByOneDigit(): Unit = {
+  @Test
+  def testDivisionKnuthOneDigitByOneDigit(): Unit = {
     val aBytes = Array[Byte](113, -83, 123, -5)
     val bBytes = Array[Byte](2, -3, -4, -5)
     val aSign = 1
@@ -456,7 +485,8 @@ class BigIntegerDivideTest {
     assertEquals(-1, result.signum())
   }
 
-  @Test def testRemainderKnuth1(): Unit = {
+  @Test
+  def testRemainderKnuth1(): Unit = {
     val aBytes = Array[Byte](-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1)
     val bBytes = Array[Byte](0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     val aSign = 1
@@ -471,7 +501,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testRemainderKnuthMultiDigitsByOneDigit(): Unit = {
+  @Test
+  def testRemainderKnuthMultiDigitsByOneDigit(): Unit = {
     val aBytes = Array[Byte](113, -83, 123, -5, 18, -34, 67, 39, -29)
     val bBytes = Array[Byte](2, -3, -4, -50)
     val aSign = 1
@@ -486,7 +517,8 @@ class BigIntegerDivideTest {
     assertEquals(1, result.signum())
   }
 
-  @Test def testRemainderKnuthOneDigitByOneDigit(): Unit = {
+  @Test
+  def testRemainderKnuthOneDigitByOneDigit(): Unit = {
     val aBytes = Array[Byte](113, -83, 123, -5)
     val bBytes = Array[Byte](2, -3, -4, -50)
     val aSign = 1

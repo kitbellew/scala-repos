@@ -3,7 +3,8 @@ object Test {
   trait T {
     case class Box[T](value: T)
   }
-  trait U { self: C =>
+  trait U {
+    self: C =>
     val box: Box[String] = null
     class Inner {
       box.value.isEmpty // okay

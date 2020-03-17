@@ -42,7 +42,8 @@ package com.twitter.scalding {
   }
 
   class FlatMapFunction[S, T](
-      @transient fn: S => TraversableOnce[T],
+      @transient
+      fn: S => TraversableOnce[T],
       fields: Fields,
       conv: TupleConverter[S],
       set: TupleSetter[T])
@@ -65,7 +66,8 @@ package com.twitter.scalding {
   }
 
   class MapFunction[S, T](
-      @transient fn: S => T,
+      @transient
+      fn: S => T,
       fields: Fields,
       conv: TupleConverter[S],
       set: TupleSetter[T])
@@ -92,7 +94,9 @@ package com.twitter.scalding {
     }
   }
 
-  class CleanupIdentityFunction(@transient fn: () => Unit)
+  class CleanupIdentityFunction(
+      @transient
+      fn: () => Unit)
       extends BaseOperation[Any](Fields.ALL)
       with Function[Any]
       with ScaldingPrepare[Any] {
@@ -110,7 +114,8 @@ package com.twitter.scalding {
   }
 
   class CollectFunction[S, T](
-      @transient fn: PartialFunction[S, T],
+      @transient
+      fn: PartialFunction[S, T],
       fields: Fields,
       conv: TupleConverter[S],
       set: TupleSetter[T])
@@ -162,7 +167,8 @@ package com.twitter.scalding {
   }
 
   class MapsideReduce[V](
-      @transient commutativeSemigroup: Semigroup[V],
+      @transient
+      commutativeSemigroup: Semigroup[V],
       keyFields: Fields,
       valueFields: Fields,
       cacheSize: Option[Int])(implicit
@@ -237,8 +243,10 @@ package com.twitter.scalding {
   }
 
   class TypedMapsideReduce[K, V](
-      @transient fn: TupleEntry => TraversableOnce[(K, V)],
-      @transient commutativeSemigroup: Semigroup[V],
+      @transient
+      fn: TupleEntry => TraversableOnce[(K, V)],
+      @transient
+      commutativeSemigroup: Semigroup[V],
       sourceFields: Fields,
       keyFields: Fields,
       valueFields: Fields,
@@ -465,8 +473,10 @@ package com.twitter.scalding {
    * BaseOperation with support for context
    */
   abstract class SideEffectBaseOperation[C](
-      @transient bf: => C, // begin function returns a context
-      @transient ef: C => Unit, // end function to clean up context object
+      @transient
+      bf: => C, // begin function returns a context
+      @transient
+      ef: C => Unit, // end function to clean up context object
       fields: Fields)
       extends BaseOperation[C](fields)
       with ScaldingPrepare[C] {
@@ -490,9 +500,8 @@ package com.twitter.scalding {
    */
   class SideEffectMapFunction[S, C, T](
       bf: => C, // begin function returns a context
-      @transient fn: (
-          C,
-          S) => T, // function that takes a context and a tuple and generate a new tuple
+      @transient
+      fn: (C, S) => T, // function that takes a context and a tuple and generate a new tuple
       ef: C => Unit, // end function to clean up context object
       fields: Fields,
       conv: TupleConverter[S],
@@ -516,7 +525,8 @@ package com.twitter.scalding {
    */
   class SideEffectFlatMapFunction[S, C, T](
       bf: => C, // begin function returns a context
-      @transient fn: (
+      @transient
+      fn: (
           C,
           S) => TraversableOnce[
         T
@@ -540,7 +550,10 @@ package com.twitter.scalding {
     }
   }
 
-  class FilterFunction[T](@transient fn: T => Boolean, conv: TupleConverter[T])
+  class FilterFunction[T](
+      @transient
+      fn: T => Boolean,
+      conv: TupleConverter[T])
       extends BaseOperation[Any]
       with Filter[Any]
       with ScaldingPrepare[Any] {
@@ -554,8 +567,10 @@ package com.twitter.scalding {
   // All the following are operations for use in GroupBuilder
 
   class FoldAggregator[T, X](
-      @transient fn: (X, T) => X,
-      @transient init: X,
+      @transient
+      fn: (X, T) => X,
+      @transient
+      init: X,
       fields: Fields,
       conv: TupleConverter[T],
       set: TupleSetter[X])
@@ -589,9 +604,12 @@ package com.twitter.scalding {
    * fields are the declared fields of this aggregator
    */
   class MRMAggregator[T, X, U](
-      @transient inputFsmf: T => X,
-      @transient inputRfn: (X, X) => X,
-      @transient inputMrfn: X => U,
+      @transient
+      inputFsmf: T => X,
+      @transient
+      inputRfn: (X, X) => X,
+      @transient
+      inputMrfn: X => U,
       fields: Fields,
       conv: TupleConverter[T],
       set: TupleSetter[U])
@@ -696,8 +714,10 @@ package com.twitter.scalding {
     * style purity.
     */
   class MRMFunctor[T, X](
-      @transient inputMrfn: T => X,
-      @transient inputRfn: (X, X) => X,
+      @transient
+      inputMrfn: T => X,
+      @transient
+      inputRfn: (X, X) => X,
       fields: Fields,
       conv: TupleConverter[T],
       set: TupleSetter[X])
@@ -740,8 +760,10 @@ package com.twitter.scalding {
           endSet))
 
   class BufferOp[I, T, X](
-      @transient init: I,
-      @transient inputIterfn: (I, Iterator[T]) => TraversableOnce[X],
+      @transient
+      init: I,
+      @transient
+      inputIterfn: (I, Iterator[T]) => TraversableOnce[X],
       fields: Fields,
       conv: TupleConverter[T],
       set: TupleSetter[X])
@@ -763,9 +785,11 @@ package com.twitter.scalding {
    * A buffer that allows state object to be set up and tear down.
    */
   class SideEffectBufferOp[I, T, C, X](
-      @transient init: I,
+      @transient
+      init: I,
       bf: => C, // begin function returns a context
-      @transient inputIterfn: (I, C, Iterator[T]) => TraversableOnce[X],
+      @transient
+      inputIterfn: (I, C, Iterator[T]) => TraversableOnce[X],
       ef: C => Unit, // end function to clean up context object
       fields: Fields,
       conv: TupleConverter[T],
@@ -810,7 +834,8 @@ package com.twitter.scalding {
   class TypedBufferOp[K, V, U](
       conv: TupleConverter[K],
       convV: TupleConverter[V],
-      @transient reduceFn: (K, Iterator[V]) => Iterator[U],
+      @transient
+      reduceFn: (K, Iterator[V]) => Iterator[U],
       valueField: Fields)
       extends BaseOperation[Any](valueField)
       with Buffer[Any]

@@ -475,7 +475,8 @@ trait BaseCometActor
   private val logger = Logger(classOf[CometActor])
   val uniqueId = Helpers.nextFuncName
   private var spanId = uniqueId
-  @volatile private var _lastRenderTime =
+  @volatile
+  private var _lastRenderTime =
     if (partialUpdateStream_?) 0 else Helpers.nextNum
 
   /**
@@ -555,7 +556,8 @@ trait BaseCometActor
 
   def theSession = _theSession
 
-  @volatile private var _defaultHtml: NodeSeq = _
+  @volatile
+  private var _defaultHtml: NodeSeq = _
 
   /**
     * The template that was passed to this component during comet

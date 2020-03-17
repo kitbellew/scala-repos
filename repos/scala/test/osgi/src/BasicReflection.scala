@@ -33,8 +33,7 @@ class C {
 }
 object M
 
-@RunWith(classOf[PaxExam])
-@ExamReactorStrategy(Array(classOf[PerMethod]))
+@RunWith(classOf[PaxExam]) @ExamReactorStrategy(Array(classOf[PerMethod]))
 class BasicReflectionTest extends ScalaOsgiHelper {
 
   @Configuration

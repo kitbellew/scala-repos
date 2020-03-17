@@ -16,8 +16,7 @@ import org.openjdk.jmh.infra.Blackhole
   * to changing SampleScale from 50 to 1000, there was sometimes contention for
   * the global threads lock in getCurrentThreadCpuTime().
   */
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
-@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.NANOSECONDS) @BenchmarkMode(Array(Mode.AverageTime))
 class SchedulerBenchmark {
   import SchedulerBenchmark._
 

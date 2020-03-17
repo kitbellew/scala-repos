@@ -67,7 +67,8 @@ class CachingAPIKeyManager[M[+_]](
 
   protected def add(r: APIKeyRecord) =
     IO {
-      @inline def addChildren(k: APIKey, c: Set[APIKeyRecord]) =
+      @inline
+      def addChildren(k: APIKey, c: Set[APIKeyRecord]) =
         childCache.put(k, childCache.get(k).getOrElse(Set()) union c)
 
       apiKeyCache.put(r.apiKey, r)
@@ -78,7 +79,8 @@ class CachingAPIKeyManager[M[+_]](
 
   protected def remove(r: APIKeyRecord) =
     IO {
-      @inline def removeChildren(k: APIKey, c: Set[APIKeyRecord]) =
+      @inline
+      def removeChildren(k: APIKey, c: Set[APIKeyRecord]) =
         childCache.put(k, childCache.get(k).getOrElse(Set()) diff c)
 
       apiKeyCache.remove(r.apiKey)

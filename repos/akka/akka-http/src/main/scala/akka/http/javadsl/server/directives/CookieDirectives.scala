@@ -15,7 +15,8 @@ abstract class CookieDirectives extends CodingDirectives {
   /**
     * Adds a Set-Cookie header with the given cookies to all responses of its inner route.
     */
-  @varargs def setCookie(
+  @varargs
+  def setCookie(
       cookie: HttpCookie,
       innerRoute: Route,
       moreInnerRoutes: Route*): Route =

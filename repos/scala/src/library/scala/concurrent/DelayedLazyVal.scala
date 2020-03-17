@@ -24,7 +24,8 @@ package scala.concurrent
   */
 class DelayedLazyVal[T](f: () => T, body: => Unit)(implicit
     exec: ExecutionContext) {
-  @volatile private[this] var _isDone = false
+  @volatile
+  private[this] var _isDone = false
   private[this] lazy val complete = f()
 
   /** Whether the computation is complete.

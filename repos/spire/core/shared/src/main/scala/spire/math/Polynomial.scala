@@ -95,7 +95,8 @@ object Polynomial extends PolynomialInstances {
     case class T(c: Rational, v: String, e: Int)
 
     // parse all the terms and operators out of the string
-    @tailrec def parse(s: String, ts: List[T]): List[T] =
+    @tailrec
+    def parse(s: String, ts: List[T]): List[T] =
       if (s.isEmpty) { ts }
       else {
         val (op, s2) = operRe.findPrefixMatchOf(s) match {
@@ -169,7 +170,8 @@ object Polynomial extends PolynomialInstances {
   }
 }
 
-trait Polynomial[@sp(Double) C] { lhs =>
+trait Polynomial[@sp(Double) C] {
+  lhs =>
   implicit def ct: ClassTag[C]
 
   /** Returns a polynmial that has a dense representation. */
@@ -422,7 +424,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
 
   override def hashCode: Int = {
     val it = lhs.termsIterator
-    @tailrec def loop(n: Int): Int =
+    @tailrec
+    def loop(n: Int): Int =
       if (it.hasNext) {
         val term = it.next
         loop(n ^ (0xfeed1257 * term.exp ^ term.coeff.##))
@@ -435,7 +438,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
       case rhs: Polynomial[_] if lhs.degree == rhs.degree =>
         val it1 = lhs.termsIterator
         val it2 = rhs.termsIterator
-        @tailrec def loop(): Boolean = {
+        @tailrec
+        def loop(): Boolean = {
           val has1 = it1.hasNext
           val has2 = it2.hasNext
           if (has1 && has2) { if (it1.next == it2.next) loop() else false }

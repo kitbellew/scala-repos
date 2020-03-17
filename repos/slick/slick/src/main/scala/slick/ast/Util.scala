@@ -22,7 +22,8 @@ object Util {
     }
   }
 
-  @inline implicit def nodeToNodeOps(n: Node): NodeOps = new NodeOps(n)
+  @inline
+  implicit def nodeToNodeOps(n: Node): NodeOps = new NodeOps(n)
 }
 
 /** Extra methods for Nodes. */

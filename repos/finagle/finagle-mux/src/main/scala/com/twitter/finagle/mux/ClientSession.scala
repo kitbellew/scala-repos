@@ -59,7 +59,8 @@ private[twitter] class ClientSession(
 
   // Maintain the sessions's state, whose access is mediated
   // by the readLk and writeLk.
-  @volatile private[this] var state: State = Dispatching
+  @volatile
+  private[this] var state: State = Dispatching
   private[this] val (readLk, writeLk) = {
     val lk = new ReentrantReadWriteLock
     (lk.readLock, lk.writeLock)

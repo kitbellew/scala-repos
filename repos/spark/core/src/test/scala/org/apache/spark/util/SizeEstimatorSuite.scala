@@ -57,7 +57,8 @@ object DummyString {
 class DummyString(val arr: Array[Char]) {
   override val hashCode: Int = 0
   // JDK-7 has an extra hash32 field http://hg.openjdk.java.net/jdk7u/jdk7u6/jdk/rev/11987e85555f
-  @transient val hash32: Int = 0
+  @transient
+  val hash32: Int = 0
 }
 
 class DummyClass8 extends KnownSizeEstimation {

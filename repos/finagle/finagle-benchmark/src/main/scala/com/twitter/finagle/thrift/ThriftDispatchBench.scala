@@ -54,8 +54,7 @@ object ThriftDispatchBench {
     new Hello.FinagledClient(service, prot)
 }
 
-@Threads(1)
-@State(Scope.Benchmark)
+@Threads(1) @State(Scope.Benchmark)
 class ThriftDispatchBench extends StdBenchAnnotations {
   import ThriftDispatchBench._
 

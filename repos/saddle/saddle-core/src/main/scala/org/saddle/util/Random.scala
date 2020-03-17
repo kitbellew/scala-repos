@@ -49,7 +49,8 @@ class Random private (rng64: () => Long) {
   /**
     * Generate a new non-negative integer
     */
-  @tailrec final def nextNonNegInt: Int = {
+  @tailrec
+  final def nextNonNegInt: Int = {
     val tmp = nextInt
     if (tmp >= 0) tmp else nextNonNegInt
   }
@@ -57,7 +58,8 @@ class Random private (rng64: () => Long) {
   /**
     * Generate a new non-negative long
     */
-  @tailrec final def nextNonNegLong: Long = {
+  @tailrec
+  final def nextNonNegLong: Long = {
     val tmp = nextLong
     if (tmp >= 0) tmp else nextNonNegLong
   }
@@ -65,7 +67,8 @@ class Random private (rng64: () => Long) {
   /**
     * Generate a new non-negative float
     */
-  @tailrec final def nextNonNegFloat: Float = {
+  @tailrec
+  final def nextNonNegFloat: Float = {
     val tmp = nextFloat
     if (tmp >= 0) tmp else nextNonNegFloat
   }
@@ -73,7 +76,8 @@ class Random private (rng64: () => Long) {
   /**
     * Generate a new non-negative double
     */
-  @tailrec final def nextNonNegDouble: Double = {
+  @tailrec
+  final def nextNonNegDouble: Double = {
     val tmp = nextDouble
     if (tmp >= 0) tmp else nextNonNegDouble
   }
@@ -86,7 +90,8 @@ class Random private (rng64: () => Long) {
     * This is based on Apache Commons Math's nextGaussian, which in turn is based
     * on the Polar Method of Box, Muller, & Marsiglia as described in Knuth 3.4.1C
     */
-  @tailrec final def nextGaussian: Double = {
+  @tailrec
+  final def nextGaussian: Double = {
     if (next == next) {
       val tmp = next
       next = Double.NaN

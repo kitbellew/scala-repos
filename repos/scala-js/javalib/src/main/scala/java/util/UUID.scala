@@ -87,12 +87,14 @@ final class UUID private (
   }
 
   override def toString(): String = {
-    @inline def paddedHex8(i: Int): String = {
+    @inline
+    def paddedHex8(i: Int): String = {
       val s = Integer.toHexString(i)
       "00000000".substring(s.length) + s
     }
 
-    @inline def paddedHex4(i: Int): String = {
+    @inline
+    def paddedHex4(i: Int): String = {
       val s = Integer.toHexString(i)
       "0000".substring(s.length) + s
     }
@@ -146,7 +148,8 @@ object UUID {
     def fail(): Nothing =
       throw new IllegalArgumentException("Invalid UUID string: " + name)
 
-    @inline def parseHex8(his: String, los: String): Int =
+    @inline
+    def parseHex8(his: String, los: String): Int =
       (parseInt(his, 16) << 16) | parseInt(los, 16)
 
     if (name.length != 36 || name.charAt(8) != '-' ||

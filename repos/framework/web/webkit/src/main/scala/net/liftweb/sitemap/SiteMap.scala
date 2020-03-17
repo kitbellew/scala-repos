@@ -127,7 +127,8 @@ sealed class SiteMapSingleton {
     * By default, Lift enforced unique links in a SiteMap.  However, you
     * can disable this feature by setting enforceUniqueLinks to false
     */
-  @volatile var enforceUniqueLinks = true
+  @volatile
+  var enforceUniqueLinks = true
 
   def findLoc(name: String): Box[Loc[_]] =
     for (sm <- LiftRules.siteMap; loc <- sm.findLoc(name)) yield loc
@@ -261,7 +262,8 @@ sealed class SiteMapSingleton {
     * You may set it to true, but this may confuse some application servers when the application
     * is not running in the root context.
     */
-  @volatile var rawIndex_? = false
+  @volatile
+  var rawIndex_? = false
 }
 
 trait HasKids {

@@ -25,7 +25,8 @@ class PrintWriterTest {
     (pw, sw)
   }
 
-  @Test def flush(): Unit = {
+  @Test
+  def flush(): Unit = {
     val (pw, sw) = newPrintWriter()
     pw.print("hello")
     assertFalse(sw.flushed)
@@ -33,7 +34,8 @@ class PrintWriterTest {
     assertTrue(sw.flushed)
   }
 
-  @Test def close(): Unit = {
+  @Test
+  def close(): Unit = {
     val (pw, sw) = newPrintWriter()
     pw.write("begin")
     assertFalse(sw.flushed)
@@ -63,7 +65,8 @@ class PrintWriterTest {
     assertEquals("begin", sw.toString())
   }
 
-  @Test def write_does_not_flush_even_with_new_line(): Unit = {
+  @Test
+  def write_does_not_flush_even_with_new_line(): Unit = {
     def test(body: PrintWriter => Unit, expected: String): Unit = {
       val (pw, sw) = newPrintWriter(autoFlush = true)
       body(pw)
@@ -79,7 +82,8 @@ class PrintWriterTest {
     test(_.write(Array('A', 'B', '\n', 'C'), 1, 2), "B\n")
   }
 
-  @Test def print_does_not_flush_even_with_new_line(): Unit = {
+  @Test
+  def print_does_not_flush_even_with_new_line(): Unit = {
     def test(body: PrintWriter => Unit, expected: String): Unit = {
       val (pw, sw) = newPrintWriter(autoFlush = true)
       body(pw)
@@ -102,7 +106,8 @@ class PrintWriterTest {
     test(_.print(null: AnyRef), "null")
   }
 
-  @Test def println_forwards_and_flushes_when_autoFlush_is_true(): Unit = {
+  @Test
+  def println_forwards_and_flushes_when_autoFlush_is_true(): Unit = {
     testPrintlnForward(_.println(), "\n", autoFlush = true)
     testPrintlnForward(_.println(true), "true\n", autoFlush = true)
     testPrintlnForward(_.println('Z'), "Z\n", autoFlush = true)
@@ -124,8 +129,8 @@ class PrintWriterTest {
     testPrintlnForward(_.println(null: AnyRef), "null\n", autoFlush = true)
   }
 
-  @Test def println_and_forwards_do_not_flush_when_autoFlush_is_false()
-      : Unit = {
+  @Test
+  def println_and_forwards_do_not_flush_when_autoFlush_is_false(): Unit = {
     testPrintlnForward(_.println(), "\n", autoFlush = false)
     testPrintlnForward(_.println(true), "true\n", autoFlush = false)
     testPrintlnForward(_.println('Z'), "Z\n", autoFlush = false)
@@ -158,7 +163,8 @@ class PrintWriterTest {
     assertEquals(expected, sw.toString())
   }
 
-  @Test def printf_and_format_which_flushes_when_autoFlush_is_true(): Unit = {
+  @Test
+  def printf_and_format_which_flushes_when_autoFlush_is_true(): Unit = {
     testPrintfFormat(_.printf("%04d", Int.box(5)), "0005", autoFlush = true)
     testPrintfFormat(
       _.format("%.5f", Double.box(Math.PI)),
@@ -166,7 +172,8 @@ class PrintWriterTest {
       autoFlush = true)
   }
 
-  @Test def printf_and_format_do_not_flush_when_autoFlush_is_false(): Unit = {
+  @Test
+  def printf_and_format_do_not_flush_when_autoFlush_is_false(): Unit = {
     testPrintfFormat(_.printf("%04d", Int.box(5)), "0005", autoFlush = false)
     testPrintfFormat(
       _.format("%.5f", Double.box(Math.PI)),
@@ -185,7 +192,8 @@ class PrintWriterTest {
     assertEquals(expected, sw.toString())
   }
 
-  @Test def append_does_not_flush_even_with_new_line(): Unit = {
+  @Test
+  def append_does_not_flush_even_with_new_line(): Unit = {
     def test(body: PrintWriter => Unit, expected: String): Unit = {
       val (pw, sw) = newPrintWriter(autoFlush = true)
       body(pw)
@@ -202,7 +210,8 @@ class PrintWriterTest {
     test(_.append('\n'), "\n")
   }
 
-  @Test def traps_all_IOException_and_updates_checkError(): Unit = {
+  @Test
+  def traps_all_IOException_and_updates_checkError(): Unit = {
     def test(body: PrintWriter => Unit): Unit = {
       val (pw, sw) = newPrintWriter()
       sw.throwing = true

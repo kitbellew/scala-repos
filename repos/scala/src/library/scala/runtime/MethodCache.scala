@@ -63,7 +63,8 @@ private[scala] final class PolyMethodCache(
   /** To achieve tail recursion this must be a separate method
     *  from `find`, because the type of next is not `PolyMethodCache`.
     */
-  @tailrec private def findInternal(forReceiver: JClass[_]): JMethod =
+  @tailrec
+  private def findInternal(forReceiver: JClass[_]): JMethod =
     if (forReceiver eq receiver) method
     else
       next match {

@@ -71,8 +71,7 @@ private[ml] trait OneVsRestParams extends PredictorParams {
   *               The i-th model is produced by testing the i-th class (taking label 1) vs the rest
   *               (taking label 0).
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class OneVsRestModel private[ml] (
     @Since("1.4.0") override val uid: String,
     @Since("1.4.0") labelMetadata: Metadata,
@@ -163,8 +162,7 @@ final class OneVsRestModel private[ml] (
   * Each example is scored against all k models and the model with highest score
   * is picked to label the example.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     extends Estimator[OneVsRestModel]
     with OneVsRestParams {

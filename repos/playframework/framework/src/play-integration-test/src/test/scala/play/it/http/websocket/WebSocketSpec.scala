@@ -489,7 +489,8 @@ trait WebSocketSpec
 
       "allow consuming messages" in allowConsumingMessages { _ => consumed =>
         new LegacyWebSocket[String] {
-          @volatile var messages = List.empty[String]
+          @volatile
+          var messages = List.empty[String]
           def onReady(in: In[String], out: Out[String]) = {
             in.onMessage(new Consumer[String] {
               def accept(msg: String) = messages = msg :: messages

@@ -67,7 +67,8 @@ class NewHadoopRDD[K, V](
     inputFormatClass: Class[_ <: InputFormat[K, V]],
     keyClass: Class[K],
     valueClass: Class[V],
-    @transient private val _conf: Configuration)
+    @transient
+    private val _conf: Configuration)
     extends RDD[(K, V)](sc, Nil)
     with Logging {
 
@@ -80,7 +81,8 @@ class NewHadoopRDD[K, V](
     formatter.format(new Date())
   }
 
-  @transient protected val jobId = new JobID(jobTrackerId, id)
+  @transient
+  protected val jobId = new JobID(jobTrackerId, id)
 
   private val shouldCloneJobConf = sparkContext.conf
     .getBoolean("spark.hadoop.cloneConf", false)

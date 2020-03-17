@@ -63,7 +63,8 @@ import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 object Scalding {
-  @transient private val logger = LoggerFactory.getLogger(classOf[Scalding])
+  @transient
+  private val logger = LoggerFactory.getLogger(classOf[Scalding])
 
   def apply(jobName: String, options: Map[String, Options] = Map.empty) = {
     new Scalding(jobName, options, identity, List())
@@ -735,7 +736,8 @@ object Scalding {
 
 // Jank to get around serialization issues
 class Memo[T] extends java.io.Serializable {
-  @transient private val mmap = scala.collection.mutable
+  @transient
+  private val mmap = scala.collection.mutable
     .Map[(FlowDef, Mode), TimedPipe[T]]()
   def getOrElseUpdate(
       in: (FlowDef, Mode),
@@ -759,9 +761,12 @@ case class WriteStepsDot(filename: String)
 
 class Scalding(
     val jobName: String,
-    @transient val options: Map[String, Options],
-    @transient transformConfig: Config => Config,
-    @transient passedRegistrars: List[IKryoRegistrar])
+    @transient
+    val options: Map[String, Options],
+    @transient
+    transformConfig: Config => Config,
+    @transient
+    passedRegistrars: List[IKryoRegistrar])
     extends Platform[Scalding]
     with java.io.Serializable {
 

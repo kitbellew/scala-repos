@@ -15,7 +15,8 @@ trait Enumeratee2T[J, K, I, F[_]] {
 trait Enumeratee2TFunctions {
   import scalaz.syntax.order._
 
-  @inline private def lift[J, K, F[_]: Monad, A](
+  @inline
+  private def lift[J, K, F[_]: Monad, A](
       iter: IterateeT[K, F, A]): IterateeT[J, IterateeT[K, F, ?], A] =
     IterateeT.IterateeTMonadTrans[J].liftM[IterateeT[K, F, ?], A](iter)
 

@@ -147,7 +147,8 @@ private[thrift] class RawZipkinTracer(
           }
         }
       }
-      @volatile private[this] var outStream = encoder.encodingStream(writer)
+      @volatile
+      private[this] var outStream = encoder.encodingStream(writer)
 
       override def reset(): Unit = {
         writer.reset()

@@ -83,8 +83,7 @@ abstract class CharsetDecoder protected (
 
     status = if (endOfInput) END else ONGOING
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(): CoderResult = {
       val result1 =
         try { decodeLoop(in, out) }
@@ -165,8 +164,7 @@ abstract class CharsetDecoder protected (
       }
     }
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loopDecode(out: CharBuffer): CharBuffer = {
       val result = decode(in, out, endOfInput = true)
       if (result.isUnderflow) {
@@ -179,8 +177,7 @@ abstract class CharsetDecoder protected (
       }
     }
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loopFlush(out: CharBuffer): CharBuffer = {
       val result = flush(out)
       if (result.isUnderflow) { out }

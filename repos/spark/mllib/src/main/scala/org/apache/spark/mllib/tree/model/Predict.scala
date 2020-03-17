@@ -24,8 +24,7 @@ import org.apache.spark.annotation.{DeveloperApi, Since}
   * @param predict predicted value
   * @param prob probability of the label (classification only)
   */
-@Since("1.2.0")
-@DeveloperApi
+@Since("1.2.0") @DeveloperApi
 class Predict @Since("1.2.0") (
     @Since("1.2.0") val predict: Double,
     @Since("1.2.0") val prob: Double = 0.0)

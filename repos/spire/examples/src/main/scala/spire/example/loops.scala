@@ -21,7 +21,8 @@ class Loops {
   }
 
   def simplet(): Unit = {
-    @tailrec def loop(i: Int): Unit = {
+    @tailrec
+    def loop(i: Int): Unit = {
       if (i < 10) {
         println(i)
         loop(i + 1)

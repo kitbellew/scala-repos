@@ -55,7 +55,8 @@ trait AppHelpers {
     *
     * @param clickCallback This callback is run when the button is clicked. Does nothing by default.
     */
-  @inline def alert(
+  @inline
+  def alert(
       title: CharSequence,
       text: CharSequence,
       clickCallback: => Unit = {})(implicit context: Context) {
@@ -71,20 +72,25 @@ trait AppHelpers {
     *   openUri("http://scaloid.org")
     * }}}
     */
-  @inline def openUri(uri: Uri)(implicit context: Context) {
+  @inline
+  def openUri(uri: Uri)(implicit context: Context) {
     context.startActivity(new Intent(Intent.ACTION_VIEW, uri))
   }
 
-  @inline def pendingService(intent: Intent, flags: Int = 0)(implicit
+  @inline
+  def pendingService(intent: Intent, flags: Int = 0)(implicit
       context: Context) = PendingIntent.getService(context, 0, intent, flags)
 
-  @inline def pendingService[T](implicit context: Context, ct: ClassTag[T]) =
+  @inline
+  def pendingService[T](implicit context: Context, ct: ClassTag[T]) =
     PendingIntent.getService(context, 0, SIntent[T], 0)
 
-  @inline def pendingActivity(intent: Intent, flags: Int = 0)(implicit
+  @inline
+  def pendingActivity(intent: Intent, flags: Int = 0)(implicit
       context: Context) = PendingIntent.getActivity(context, 0, intent, flags)
 
-  @inline def pendingActivity[T](implicit context: Context, ct: ClassTag[T]) =
+  @inline
+  def pendingActivity[T](implicit context: Context, ct: ClassTag[T]) =
     PendingIntent.getActivity(context, 0, SIntent[T], 0)
 
   private[scaloid] val createBundle =
@@ -165,13 +171,16 @@ trait MediaHelpers {
     if (r != null) { r.play() }
   }
 
-  @inline def alarmSound: Uri =
+  @inline
+  def alarmSound: Uri =
     RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
 
-  @inline def notificationSound: Uri =
+  @inline
+  def notificationSound: Uri =
     RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-  @inline def ringtoneSound: Uri =
+  @inline
+  def ringtoneSound: Uri =
     RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
 
 }
@@ -203,11 +212,13 @@ trait PreferenceHelpers {
   /**
     * Returns DefaultSharedPreferences object for given implicit context.
     */
-  @inline implicit def defaultSharedPreferences(implicit
+  @inline
+  implicit def defaultSharedPreferences(implicit
       context: Context): SharedPreferences =
     PreferenceManager.getDefaultSharedPreferences(context)
 
-  @inline def preferenceVar[T](key: String, defaultVal: T): PreferenceVar[T] =
+  @inline
+  def preferenceVar[T](key: String, defaultVal: T): PreferenceVar[T] =
     defaultVal match {
       case v: String =>
         new PreferenceVar[String](key, v) {
@@ -293,7 +304,8 @@ object PreferenceHelpers extends PreferenceHelpers {
   * Contains helper methods that displaying some UI elements.
   */
 trait WidgetHelpers {
-  @inline private[this] def _toast(
+  @inline
+  private[this] def _toast(
       message: CharSequence,
       duration: Int,
       gravity: Int,
@@ -310,7 +322,8 @@ trait WidgetHelpers {
     * Displays a toast message.
     * This method can be called from any threads.
     */
-  @inline def toast(
+  @inline
+  def toast(
       message: CharSequence,
       gravity: Int = Gravity.BOTTOM,
       view: View = null)(implicit context: Context) {
@@ -321,7 +334,8 @@ trait WidgetHelpers {
     * Displays a toast message for a longer time.
     * This method can be called from any threads.
     */
-  @inline def longToast(
+  @inline
+  def longToast(
       message: CharSequence,
       gravity: Int = Gravity.BOTTOM,
       view: View = null)(implicit context: Context) {
@@ -332,7 +346,8 @@ trait WidgetHelpers {
     * Displays a dialog with spinner icon.
     * This method can be called from any threads.
     */
-  @inline def spinnerDialog(title: CharSequence, message: CharSequence)(implicit
+  @inline
+  def spinnerDialog(title: CharSequence, message: CharSequence)(implicit
       context: Context): Future[ProgressDialog] =
     evalOnUiThread(ProgressDialog.show(context, title, message, true))
 

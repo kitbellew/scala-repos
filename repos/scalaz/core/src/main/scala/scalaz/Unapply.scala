@@ -64,7 +64,8 @@ trait Unapply[TC[_[_]], MA] {
   def leibniz: MA === M[A]
 
   /** Compatibility. */
-  @inline final def apply(ma: MA): M[A] = leibniz(ma)
+  @inline
+  final def apply(ma: MA): M[A] = leibniz(ma)
 }
 
 sealed abstract class Unapply_5 {
@@ -347,7 +348,8 @@ trait Unapply2[TC[_[_, _]], MAB] {
   def leibniz: MAB === M[A, B]
 
   /** Compatibility. */
-  @inline final def apply(ma: MAB): M[A, B] = leibniz(ma)
+  @inline
+  final def apply(ma: MAB): M[A, B] = leibniz(ma)
 }
 
 sealed abstract class Unapply2_0 {
@@ -400,7 +402,8 @@ trait Unapply21[TC[_[_, _], _], MAB] {
   def TC: TC[M, A]
 
   def leibniz: MAB === M[A, B]
-  @inline final def apply(mabc: MAB): M[A, B] = leibniz(mabc)
+  @inline
+  final def apply(mabc: MAB): M[A, B] = leibniz(mabc)
 }
 
 object Unapply21 {

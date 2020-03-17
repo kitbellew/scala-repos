@@ -34,8 +34,7 @@ import org.apache.spark.sql.types.{DataType, StructField, StructType}
   * Trait for models and transformers which may be saved as files.
   * This should be inherited by the class which implements model instances.
   */
-@DeveloperApi
-@Since("1.3.0")
+@DeveloperApi @Since("1.3.0")
 trait Saveable {
 
   /**
@@ -65,8 +64,7 @@ trait Saveable {
   * Trait for classes which can load models and transformers from files.
   * This should be inherited by an object paired with the model class.
   */
-@DeveloperApi
-@Since("1.3.0")
+@DeveloperApi @Since("1.3.0")
 trait Loader[M <: Saveable] {
 
   /**

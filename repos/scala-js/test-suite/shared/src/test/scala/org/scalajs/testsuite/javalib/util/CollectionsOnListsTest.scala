@@ -125,13 +125,16 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
 
   def factory: ListFactory
 
-  @Test def sort_on_comparables(): Unit =
+  @Test
+  def sort_on_comparables(): Unit =
     CollectionsOnListTest.sort_on_comparables(factory)
 
-  @Test def sort_with_comparator(): Unit =
+  @Test
+  def sort_with_comparator(): Unit =
     CollectionsOnListTest.sort_with_comparator(factory)
 
-  @Test def binarySearch_on_comparables(): Unit = {
+  @Test
+  def binarySearch_on_comparables(): Unit = {
     // Test: binarySearch[T](list: List[Comparable[T]], T)
     def test[T <: AnyRef with Comparable[T]: ClassTag](
         toElem: Int => T): Unit = {
@@ -168,7 +171,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[jl.Double](_.toDouble)
   }
 
-  @Test def binarySearch_with_comparator(): Unit = {
+  @Test
+  def binarySearch_with_comparator(): Unit = {
     // Test: binarySearch[T](List[T], key: T, Comparator[T]))
     def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit = {
       val list = factory.empty[T]
@@ -207,7 +211,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[jl.Double](_.toDouble, (x, y) => x.compareTo(y))
   }
 
-  @Test def reverse(): Unit = {
+  @Test
+  def reverse(): Unit = {
     // Test: reverse(list: List[_])
     def test[T: ClassTag](toElem: Int => T): Unit = {
       val list = factory.empty[T]
@@ -233,7 +238,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[String](_.toString)
   }
 
-  @Test def shuffle(): Unit = {
+  @Test
+  def shuffle(): Unit = {
     def testShuffle(shuffle: ju.List[_] => Unit): Unit = {
       def test[E: ClassTag](toElem: Int => E): Unit = {
         val list = factory.empty[E]
@@ -261,7 +267,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     testShuffle(ju.Collections.shuffle(_, new ju.Random(94325)))
   }
 
-  @Test def swap(): Unit = {
+  @Test
+  def swap(): Unit = {
     // Test: swap(List[_], Int, Int)
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val list = factory.empty[E]
@@ -290,7 +297,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[String](_.toString)
   }
 
-  @Test def fill(): Unit = {
+  @Test
+  def fill(): Unit = {
     // Test: fill[E](List[E], E)
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val list = factory.empty[E]
@@ -309,7 +317,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[String](_.toString)
   }
 
-  @Test def copy(): Unit = {
+  @Test
+  def copy(): Unit = {
     // Test: copy[E](List[E], List[E])
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val source = factory.empty[E]
@@ -346,7 +355,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[String](_.toString)
   }
 
-  @Test def rotate(): Unit = {
+  @Test
+  def rotate(): Unit = {
     def modulo(a: Int, b: Int): Int = ((a % b) + b) % b
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val list = factory.empty[E]
@@ -379,7 +389,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[String](_.toString)
   }
 
-  @Test def replaceAll(): Unit = {
+  @Test
+  def replaceAll(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val list = factory.empty[E]
       list.addAll(range.map(toElem))
@@ -406,7 +417,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[String](_.toString)
   }
 
-  @Test def indexOfSubList(): Unit = {
+  @Test
+  def indexOfSubList(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val source = factory.empty[E]
       val target = factory.empty[E]
@@ -440,7 +452,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[String](_.toString)
   }
 
-  @Test def lastIndexOfSubList(): Unit = {
+  @Test
+  def lastIndexOfSubList(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val source = factory.empty[E]
       val target = factory.empty[E]
@@ -480,7 +493,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     test[String](_.toString)
   }
 
-  @Test def unmodifiableList(): Unit = {
+  @Test
+  def unmodifiableList(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val immuList = ju.Collections.unmodifiableList(factory.empty[E])
       testListUnmodifiability(immuList, toElem(0))

@@ -376,7 +376,8 @@ case class DistributedSampleSet[T](
     val queriableSampleSize: Int,
     sampler: Gen[T],
     private val recordedSamples: Vector[T] = Vector())
-    extends SampleSet[T] { self =>
+    extends SampleSet[T] {
+  self =>
   def queriableSamples =
     (recordedSamples.size >= queriableSampleSize).option(recordedSamples)
 

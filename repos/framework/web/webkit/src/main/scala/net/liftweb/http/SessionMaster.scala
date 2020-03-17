@@ -56,15 +56,16 @@ object SessionMaster extends LiftActor with Loggable {
     * If you have a rule other than <pre>Box !! req.request.remoteAddress</pre>
     * for calculating the remote address, change this function
     */
-  @volatile var getIpFromReq: Req => Box[String] = req =>
-    Box !! req.request.remoteAddress
+  @volatile
+  var getIpFromReq: Req => Box[String] = req => Box !! req.request.remoteAddress
 
   /**
     * A list of functions that are run every 10 seconds.  The first param is
     * map containing the session ID and the sessions.  The second param is a function
     * to call to destroy the session.
     */
-  @volatile var sessionCheckFuncs
+  @volatile
+  var sessionCheckFuncs
       : List[(Map[String, SessionInfo], SessionInfo => Unit) => Unit] =
     (
         (
@@ -132,7 +133,8 @@ object SessionMaster extends LiftActor with Loggable {
     * every 10 seconds with the current list of sessions:
     * SessionWatcherInfo
     */
-  @volatile var sessionWatchers: List[LiftActor] = Nil
+  @volatile
+  var sessionWatchers: List[LiftActor] = Nil
 
   /**
     * Returns a LiftSession or Empty if not found

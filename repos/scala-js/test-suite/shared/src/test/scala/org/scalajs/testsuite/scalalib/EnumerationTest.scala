@@ -15,8 +15,8 @@ import org.scalajs.testsuite.utils.Platform._
 
 class EnumerationTest {
 
-  @Test def should_use_explicit_naming_for_enumerated_values_issue_38()
-      : Unit = {
+  @Test
+  def should_use_explicit_naming_for_enumerated_values_issue_38(): Unit = {
     object HelpLevel extends Enumeration {
       type HelpLevel = Value
       val None = Value("None")
@@ -30,7 +30,8 @@ class EnumerationTest {
     assertEquals("None", h.toString)
   }
 
-  @Test def should_allow_implicit_naming_for_values(): Unit = {
+  @Test
+  def should_allow_implicit_naming_for_values(): Unit = {
     object HelpLevel extends Enumeration {
       type HelpLevel = Value
       val None, Basic, Medium, Full = Value
@@ -44,7 +45,8 @@ class EnumerationTest {
     assertEquals("$div", HelpLevel./.toString)
   }
 
-  @Test def should_give_a_pseudo_toString_to_unnamed_values(): Unit = {
+  @Test
+  def should_give_a_pseudo_toString_to_unnamed_values(): Unit = {
     if (!executingInJVM) {
       object Test extends Enumeration {
         private val nullStr: String = null
@@ -56,7 +58,8 @@ class EnumerationTest {
     }
   }
 
-  @Test def should_give_a_graceful_error_message_upon_name_based_query_when_unnamed_fields_are_present()
+  @Test
+  def should_give_a_graceful_error_message_upon_name_based_query_when_unnamed_fields_are_present()
       : Unit = {
     object Test extends Enumeration {
       private val nullStr: String = null
@@ -72,17 +75,20 @@ class EnumerationTest {
     }
   }
 
-  @Test def should_respond_to_toString(): Unit = {
+  @Test
+  def should_respond_to_toString(): Unit = {
     assertEquals("FooBarEnum", FooBarEnum.toString)
   }
 
-  @Test def should_respond_to_values(): Unit = {
+  @Test
+  def should_respond_to_values(): Unit = {
     assertEquals(
       "FooBarEnum.ValueSet(A, B, C, D, E, F)",
       FooBarEnum.values.toString)
   }
 
-  @Test def should_allow_setting_nextName(): Unit = {
+  @Test
+  def should_allow_setting_nextName(): Unit = {
     object Test extends Enumeration {
       nextName = Iterator("x", "y", "z")
       val a, b, c = Value

@@ -64,8 +64,8 @@ case class BaseBolt[I, O](
       AnyRef], TopologyContext])
     extends IRichBolt {
 
-  @transient protected lazy val logger: Logger = LoggerFactory.getLogger(
-    getClass)
+  @transient
+  protected lazy val logger: Logger = LoggerFactory.getLogger(getClass)
 
   private[this] val lockedCounters = Externalizer(
     JobCounters.getCountersForJob(jobID).getOrElse(Nil))

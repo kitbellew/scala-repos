@@ -14,7 +14,8 @@ import org.junit.Test
 
 class ThisFunctionTest {
 
-  @Test def should_provide_an_implicit_conversion_from_Scala_function_to_js_ThisFunction()
+  @Test
+  def should_provide_an_implicit_conversion_from_Scala_function_to_js_ThisFunction()
       : Unit = {
     val g = js
       .eval("""
@@ -39,8 +40,8 @@ class ThisFunctionTest {
     assertEquals("foo42", g(f, obj))
   }
 
-  @Test def should_accept_a_lambda_where_a_js_ThisFunction_is_expected()
-      : Unit = {
+  @Test
+  def should_accept_a_lambda_where_a_js_ThisFunction_is_expected(): Unit = {
     val g = js
       .eval("""
         var g = function(f, x) { return f.call(x, 42, x.foo); }; g;
@@ -67,7 +68,8 @@ class ThisFunctionTest {
     assertEquals("foo42", res)
   }
 
-  @Test def should_bind_the_first_argument_to_this_when_applying_js_ThisFunctionN()
+  @Test
+  def should_bind_the_first_argument_to_this_when_applying_js_ThisFunctionN()
       : Unit = {
     val g = js.eval("""
         var g = function(x) { return this.foo + ":" + x; }; g;
@@ -77,7 +79,8 @@ class ThisFunctionTest {
     assertEquals("foo:42", g(obj, 42))
   }
 
-  @Test def should_provide_an_implicit_conversion_from_js_ThisFunction_to_Scala_function()
+  @Test
+  def should_provide_an_implicit_conversion_from_js_ThisFunction_to_Scala_function()
       : Unit = {
     val g = js.eval("""
         var g = function(x) { return this.foo + ":" + x; }; g;

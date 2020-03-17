@@ -233,10 +233,12 @@ private[orc] class OrcOutputWriter(
 }
 
 private[orc] case class OrcTableScan(
-    @transient sqlContext: SQLContext,
+    @transient
+    sqlContext: SQLContext,
     attributes: Seq[Attribute],
     filters: Array[Filter],
-    @transient inputPaths: Seq[FileStatus])
+    @transient
+    inputPaths: Seq[FileStatus])
     extends Logging
     with HiveInspectors {
 

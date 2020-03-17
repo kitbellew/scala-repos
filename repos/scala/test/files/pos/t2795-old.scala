@@ -9,6 +9,7 @@ trait Config {
   // type T <: Element[_]
 }
 
-trait Transform { self: Config =>
+trait Transform {
+  self: Config =>
   def processBlock(block: Array[T]): Unit = { var X = new Array[T](1) }
 }

@@ -6,7 +6,8 @@ import scala.tools.nsc.interactive.Global
 
 import org.ensime.api._
 
-trait Helpers { self: Global =>
+trait Helpers {
+  self: Global =>
 
   import rootMirror.{EmptyPackage, RootPackage}
 

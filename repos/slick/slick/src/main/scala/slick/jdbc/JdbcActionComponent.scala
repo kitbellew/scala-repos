@@ -20,7 +20,8 @@ import slick.lifted.{CompiledStreamingExecutable, Query, FlatShapeLevel, Shape}
 import slick.relational.{ResultConverter, CompiledMapping}
 import slick.util.{CloseableIterator, DumpInfo, SQLBuilder, ignoreFollowOnError}
 
-trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
+trait JdbcActionComponent extends SqlActionComponent {
+  self: JdbcProfile =>
 
   type ProfileAction[+R, +S <: NoStream, -E <: Effect] = FixedSqlAction[R, S, E]
   type StreamingProfileAction[+R, +T, -E <: Effect] = FixedSqlStreamingAction[
@@ -32,7 +33,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       _name: String,
       val statements: Vector[String])
       extends SynchronousDatabaseAction[R, NoStream, Backend, Effect]
-      with ProfileAction[R, NoStream, Effect] { self =>
+      with ProfileAction[R, NoStream, Effect] {
+    self =>
     def run(ctx: Backend#Context, sql: Vector[String]): R
     final override def getDumpInfo = super.getDumpInfo.copy(name = _name)
     final def run(ctx: Backend#Context): R = run(ctx, statements)
@@ -304,7 +306,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
               compiled,
               CompiledMapping(_, elemType))) :@ (ct: CollectionType) =>
           val sql = findSql(compiled)
-          new StreamingInvokerAction[R, Any, Effect] { streamingAction =>
+          new StreamingInvokerAction[R, Any, Effect] {
+            streamingAction =>
             protected[this] def createInvoker(sql: Iterable[String]) =
               createQueryInvoker(rsm, param, sql.head)
             protected[this] def createBuilder =
@@ -572,7 +575,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
   /** An InsertActionComposer that returns generated keys or other columns. */
   trait ReturningInsertActionComposer[U, RU]
       extends InsertActionComposer[U]
-      with IntoInsertActionComposer[U, RU] { self =>
+      with IntoInsertActionComposer[U, RU] {
+    self =>
 
     /** Specifies a mapping from inserted values and generated keys to a desired value.
       * @param f Function that maps inserted values and generated keys to a desired value.

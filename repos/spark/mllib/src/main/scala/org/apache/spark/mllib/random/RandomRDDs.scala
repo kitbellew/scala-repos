@@ -416,8 +416,7 @@ object RandomRDDs {
     * @param seed Random seed (default: a random long integer).
     * @return RDD[T] comprised of `i.i.d.` samples produced by generator.
     */
-  @DeveloperApi
-  @Since("1.1.0")
+  @DeveloperApi @Since("1.1.0")
   def randomRDD[T: ClassTag](
       sc: SparkContext,
       generator: RandomDataGenerator[T],
@@ -443,8 +442,7 @@ object RandomRDDs {
     * @param seed Random seed (default: a random long integer).
     * @return RDD[T] comprised of `i.i.d.` samples produced by generator.
     */
-  @DeveloperApi
-  @Since("1.6.0")
+  @DeveloperApi @Since("1.6.0")
   def randomJavaRDD[T](
       jsc: JavaSparkContext,
       generator: RandomDataGenerator[T],
@@ -459,8 +457,7 @@ object RandomRDDs {
   /**
     * [[RandomRDDs#randomJavaRDD]] with the default seed.
     */
-  @DeveloperApi
-  @Since("1.6.0")
+  @DeveloperApi @Since("1.6.0")
   def randomJavaRDD[T](
       jsc: JavaSparkContext,
       generator: RandomDataGenerator[T],
@@ -472,8 +469,7 @@ object RandomRDDs {
   /**
     * [[RandomRDDs#randomJavaRDD]] with the default seed & numPartitions
     */
-  @DeveloperApi
-  @Since("1.6.0")
+  @DeveloperApi @Since("1.6.0")
   def randomJavaRDD[T](
       jsc: JavaSparkContext,
       generator: RandomDataGenerator[T],
@@ -917,8 +913,7 @@ object RandomRDDs {
     * @param seed Random seed (default: a random long integer).
     * @return RDD[Vector] with vectors containing `i.i.d.` samples produced by generator.
     */
-  @DeveloperApi
-  @Since("1.1.0")
+  @DeveloperApi @Since("1.1.0")
   def randomVectorRDD(
       sc: SparkContext,
       generator: RandomDataGenerator[Double],
@@ -938,8 +933,7 @@ object RandomRDDs {
   /**
     * Java-friendly version of [[RandomRDDs#randomVectorRDD]].
     */
-  @DeveloperApi
-  @Since("1.6.0")
+  @DeveloperApi @Since("1.6.0")
   def randomJavaVectorRDD(
       jsc: JavaSparkContext,
       generator: RandomDataGenerator[Double],
@@ -954,8 +948,7 @@ object RandomRDDs {
   /**
     * [[RandomRDDs#randomJavaVectorRDD]] with the default seed.
     */
-  @DeveloperApi
-  @Since("1.6.0")
+  @DeveloperApi @Since("1.6.0")
   def randomJavaVectorRDD(
       jsc: JavaSparkContext,
       generator: RandomDataGenerator[Double],
@@ -969,8 +962,7 @@ object RandomRDDs {
   /**
     * [[RandomRDDs#randomJavaVectorRDD]] with the default number of partitions and the default seed.
     */
-  @DeveloperApi
-  @Since("1.6.0")
+  @DeveloperApi @Since("1.6.0")
   def randomJavaVectorRDD(
       jsc: JavaSparkContext,
       generator: RandomDataGenerator[Double],

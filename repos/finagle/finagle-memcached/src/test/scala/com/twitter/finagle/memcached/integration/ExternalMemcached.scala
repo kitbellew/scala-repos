@@ -37,7 +37,8 @@ private[memcached] object InternalMemcached {
   }
 }
 
-private[memcached] object ExternalMemcached { self =>
+private[memcached] object ExternalMemcached {
+  self =>
   class MemcachedBinaryNotFound extends Exception
   private[this] var processes: List[Process] = List()
   private[this] val forbiddenPorts = 11000.until(11900)

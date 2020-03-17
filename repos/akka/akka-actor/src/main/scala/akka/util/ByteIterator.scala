@@ -33,11 +33,14 @@ object ByteIterator {
       extends ByteIterator {
     iterator ⇒
 
-    @inline final def len: Int = until - from
+    @inline
+    final def len: Int = until - from
 
-    @inline final def hasNext: Boolean = from < until
+    @inline
+    final def hasNext: Boolean = from < until
 
-    @inline final def head: Byte = array(from)
+    @inline
+    final def head: Byte = array(from)
 
     final def next(): Byte = {
       if (!hasNext) Iterator.empty.next
@@ -211,7 +214,8 @@ object ByteIterator {
     // * iterators.isEmpty == false
     // * (!iterator.head.isEmpty || iterators.tail.isEmpty) == true
     private def normalize(): this.type = {
-      @tailrec def norm(
+      @tailrec
+      def norm(
           xs: LinearSeq[ByteArrayIterator]): LinearSeq[ByteArrayIterator] = {
         if (xs.isEmpty) MultiByteArrayIterator.clearedList
         else if (xs.head.isEmpty) norm(xs.tail)
@@ -222,15 +226,18 @@ object ByteIterator {
     }
     normalize()
 
-    @inline private def current: ByteArrayIterator = iterators.head
-    @inline private def dropCurrent(): Unit = { iterators = iterators.tail }
-    @inline def clear(): Unit = {
-      iterators = MultiByteArrayIterator.empty.iterators
-    }
+    @inline
+    private def current: ByteArrayIterator = iterators.head
+    @inline
+    private def dropCurrent(): Unit = { iterators = iterators.tail }
+    @inline
+    def clear(): Unit = { iterators = MultiByteArrayIterator.empty.iterators }
 
-    @inline final def hasNext: Boolean = current.hasNext
+    @inline
+    final def hasNext: Boolean = current.hasNext
 
-    @inline final def head: Byte = current.head
+    @inline
+    final def head: Byte = current.head
 
     final def next(): Byte = {
       val result = current.next()
@@ -292,7 +299,8 @@ object ByteIterator {
       normalize()
     }
 
-    @tailrec final override def drop(n: Int): this.type =
+    @tailrec
+    final override def drop(n: Int): this.type =
       if ((n > 0) && !isEmpty) {
         val nCurrent = math.min(n, current.len)
         current.drop(n)
@@ -316,7 +324,8 @@ object ByteIterator {
       normalize()
     }
 
-    @tailrec final override def dropWhile(p: Byte ⇒ Boolean): this.type =
+    @tailrec
+    final override def dropWhile(p: Byte ⇒ Boolean): this.type =
       if (!isEmpty) {
         current.dropWhile(p)
         val dropMore = current.isEmpty
@@ -356,7 +365,8 @@ object ByteIterator {
       }
     }
 
-    @tailrec protected final def getToArray[A](
+    @tailrec
+    protected final def getToArray[A](
         xs: Array[A],
         offset: Int,
         n: Int,
@@ -430,7 +440,8 @@ object ByteIterator {
         }
 
         override def skip(n: Long): Long = {
-          @tailrec def skipImpl(n: Long, skipped: Long): Long =
+          @tailrec
+          def skipImpl(n: Long, skipped: Long): Long =
             if (n > 0) {
               if (!isEmpty) {
                 val m = current.asInputStream.skip(n)

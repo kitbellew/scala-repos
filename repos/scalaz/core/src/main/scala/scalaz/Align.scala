@@ -5,7 +5,8 @@ package scalaz
   *
   */
 ////
-trait Align[F[_]] extends Functor[F] { self =>
+trait Align[F[_]] extends Functor[F] {
+  self =>
   ////
 
   import \&/._
@@ -66,7 +67,8 @@ trait Align[F[_]] extends Functor[F] { self =>
 }
 
 object Align {
-  @inline def apply[F[_]](implicit F: Align[F]): Align[F] = F
+  @inline
+  def apply[F[_]](implicit F: Align[F]): Align[F] = F
 
   ////
 

@@ -26,8 +26,7 @@ import org.apache.spark.rdd.RDD
   * :: DeveloperApi ::
   * Trait for adding "pluggable" loss functions for the gradient boosting algorithm.
   */
-@Since("1.2.0")
-@DeveloperApi
+@Since("1.2.0") @DeveloperApi
 trait Loss extends Serializable {
 
   /**

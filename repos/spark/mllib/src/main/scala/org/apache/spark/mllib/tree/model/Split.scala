@@ -29,8 +29,7 @@ import org.apache.spark.mllib.tree.configuration.FeatureType.FeatureType
   * @param featureType type of feature -- categorical or continuous
   * @param categories Split left if categorical feature value is in this set, else right.
   */
-@Since("1.0.0")
-@DeveloperApi
+@Since("1.0.0") @DeveloperApi
 case class Split(
     @Since("1.0.0") feature: Int,
     @Since("1.0.0") threshold: Double,

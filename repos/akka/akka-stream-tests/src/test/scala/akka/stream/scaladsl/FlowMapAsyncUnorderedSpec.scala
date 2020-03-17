@@ -239,7 +239,8 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
       val timer = new Thread {
         val delay = 50000 // nanoseconds
         var count = 0
-        @tailrec final override def run(): Unit = {
+        @tailrec
+        final override def run(): Unit = {
           val cont =
             try {
               val (promise, enqueued) = queue.take()

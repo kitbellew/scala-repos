@@ -80,7 +80,8 @@ object CharUtils {
     */
   def appendUpperHexString(sb: JStringBuilder, long: Long): JStringBuilder =
     if (long != 0) {
-      @tailrec def putChar(shift: Int): JStringBuilder = {
+      @tailrec
+      def putChar(shift: Int): JStringBuilder = {
         sb.append(upperHexDigit(long >>> shift))
         if (shift > 0) putChar(shift - 4) else sb
       }
@@ -100,7 +101,8 @@ object CharUtils {
     */
   def appendLowerHexString(sb: JStringBuilder, long: Long): JStringBuilder =
     if (long != 0) {
-      @tailrec def putChar(shift: Int): JStringBuilder = {
+      @tailrec
+      def putChar(shift: Int): JStringBuilder = {
         sb.append(lowerHexDigit(long >>> shift))
         if (shift > 0) putChar(shift - 4) else sb
       }
@@ -121,7 +123,8 @@ object CharUtils {
 
   private def _numberOfDecimalDigits(long: Long): Int = {
     def mul10(l: Long) = (l << 3) + (l << 1)
-    @tailrec def len(test: Long, l: Long, result: Int): Int =
+    @tailrec
+    def len(test: Long, l: Long, result: Int): Int =
       if (test > l || test < 0) result else len(mul10(test), l, result + 1)
     if (long < 0) len(10, -long, 2) else len(10, long, 1)
   }
@@ -160,7 +163,8 @@ object CharUtils {
     phase1(math.abs(long), endIndex)
 
     // for large numbers we bite the bullet of performing one division every two digits
-    @tailrec def phase1(l: Long, ix: Int): Unit =
+    @tailrec
+    def phase1(l: Long, ix: Int): Unit =
       if (l > 65535L) {
         val q = l / 100
         val r = (l - mul100(q)).toInt
@@ -171,7 +175,8 @@ object CharUtils {
       } else phase2(l.toInt, ix)
 
     // for small numbers we can use the "fast-path"
-    @tailrec def phase2(i: Int, ix: Int): Unit = {
+    @tailrec
+    def phase2(i: Int, ix: Int): Unit = {
       val q = div10(i)
       val r = i - mul10(q)
       buf(ix - 1) = ('0' + r).toChar

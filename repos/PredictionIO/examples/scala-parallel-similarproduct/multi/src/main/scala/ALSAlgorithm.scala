@@ -30,7 +30,8 @@ class ALSModel(
     extends IPersistentModel[ALSAlgorithmParams]
     with Serializable {
 
-  @transient lazy val itemIntStringMap = itemStringIntMap.inverse
+  @transient
+  lazy val itemIntStringMap = itemStringIntMap.inverse
 
   def save(
       id: String,
@@ -77,7 +78,8 @@ object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
 class ALSAlgorithm(val ap: ALSAlgorithmParams)
     extends PAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
 
   def train(sc: SparkContext, data: PreparedData): ALSModel = {
     require(

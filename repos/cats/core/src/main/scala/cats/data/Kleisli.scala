@@ -7,7 +7,8 @@ import cats.functor.{Contravariant, Strong}
 /**
   * Represents a function `A => F[B]`.
   */
-final case class Kleisli[F[_], A, B](run: A => F[B]) { self =>
+final case class Kleisli[F[_], A, B](run: A => F[B]) {
+  self =>
 
   def apply[C](f: Kleisli[F, A, B => C])(implicit
       F: Apply[F]): Kleisli[F, A, C] = Kleisli(a => F.ap(f.run(a))(run(a)))

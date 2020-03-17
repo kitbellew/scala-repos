@@ -131,8 +131,7 @@ private[regression] trait AFTSurvivalRegressionParams
   * ([[https://en.wikipedia.org/wiki/Accelerated_failure_time_model]])
   * based on the Weibull distribution of the survival time.
   */
-@Experimental
-@Since("1.6.0")
+@Experimental @Since("1.6.0")
 class AFTSurvivalRegression @Since("1.6.0") (
     @Since("1.6.0") override val uid: String)
     extends Estimator[AFTSurvivalRegressionModel]
@@ -277,8 +276,7 @@ object AFTSurvivalRegression
   * :: Experimental ::
   * Model produced by [[AFTSurvivalRegression]].
   */
-@Experimental
-@Since("1.6.0")
+@Experimental @Since("1.6.0")
 class AFTSurvivalRegressionModel private[ml] (
     @Since("1.6.0") override val uid: String,
     @Since("1.6.0") val coefficients: Vector,

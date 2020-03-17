@@ -49,7 +49,8 @@ trait MapLike[A, B, +This <: MapLike[A, B, This] with Map[A, B]]
     with Growable[(A, B)]
     with Shrinkable[A]
     with Cloneable[This]
-    with Parallelizable[(A, B), ParMap[A, B]] { self =>
+    with Parallelizable[(A, B), ParMap[A, B]] {
+  self =>
 
   /** A common implementation of `newBuilder` for all mutable maps
     *    in terms of `empty`.

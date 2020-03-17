@@ -3,7 +3,8 @@ package slick.jdbc
 import java.sql.ResultSet
 
 /** Represents a result set type. */
-sealed abstract class ResultSetType(val intValue: Int) { self =>
+sealed abstract class ResultSetType(val intValue: Int) {
+  self =>
 
   /** Return this `ResultSetType`, unless it is `Auto` in which case
     * the specified result set type is returned instead. */

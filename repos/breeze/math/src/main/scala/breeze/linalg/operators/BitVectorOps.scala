@@ -21,17 +21,16 @@ trait BitVectorOps {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def bv_bv_UpdateOp[
       @expand.args(OpAnd, OpOr, OpXor, OpSet) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ and _ },
         { _ or _ },
         { _ xor _ },
-        { (a, b) => a.clear(); a.or(b) })
-      op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
-      : Op.InPlaceImpl2[BitVector, BitVector] =
+        { (a, b) => a.clear(); a.or(b) }) op: Op.InPlaceImpl2[
+        java.util.BitSet,
+        java.util.BitSet]): Op.InPlaceImpl2[BitVector, BitVector] =
     new Op.InPlaceImpl2[BitVector, BitVector] {
       def apply(a: BitVector, b: BitVector) {
         if (!a.lengthsMatch(b))
@@ -41,11 +40,12 @@ trait BitVectorOps {
       }
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def bv_bv_Op[@expand.args(OpAnd, OpOr, OpXor) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ and _ }, { _ or _ }, { _ xor _ })
-      op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
+      @expand.sequence[Op](
+        { _ and _ },
+        { _ or _ },
+        { _ xor _ }) op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
       : Op.Impl2[BitVector, BitVector, BitVector] =
     new Op.Impl2[BitVector, BitVector, BitVector] {
       def apply(a: BitVector, b: BitVector) = {
@@ -129,8 +129,7 @@ trait BitVectorOps {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canDot_BV_DenseVector[@expand.args(Double, Float, Int, Long) T](
       implicit @expand.sequence[T](0.0, 0.0f, 0, 0L) zero: T)
       : breeze.linalg.operators.OpMulInner.Impl2[
@@ -157,8 +156,7 @@ trait BitVectorOps {
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canDot_BV_SV[@expand.args(Int, Long, BigInt, Complex) T](implicit
       @expand.sequence[T](0, 0L, BigInt(0), Complex.zero) zero: T)
       : breeze.linalg.operators.OpMulInner.Impl2[BitVector, SparseVector[

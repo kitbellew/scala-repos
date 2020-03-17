@@ -210,7 +210,8 @@ private[io] object SelectionHandler {
         new Task {
           def tryRun(): Unit = {
             // thorough 'close' of the Selector
-            @tailrec def closeNextChannel(it: JIterator[SelectionKey]): Unit =
+            @tailrec
+            def closeNextChannel(it: JIterator[SelectionKey]): Unit =
               if (it.hasNext) {
                 try it.next().channel.close()
                 catch {

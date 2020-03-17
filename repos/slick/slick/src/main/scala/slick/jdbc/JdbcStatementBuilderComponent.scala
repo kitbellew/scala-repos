@@ -25,7 +25,8 @@ import slick.util._
 import slick.util.MacroSupport.macroSupportInterpolation
 import slick.util.SQLBuilder.Result
 
-trait JdbcStatementBuilderComponent { self: JdbcProfile =>
+trait JdbcStatementBuilderComponent {
+  self: JdbcProfile =>
 
   // Create the different builders -- these methods should be overridden by profiles as needed
   def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
@@ -130,7 +131,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
   val scalarFrom: Option[String] = None
 
   /** Builder for SELECT and UPDATE statements. */
-  class QueryBuilder(val tree: Node, val state: CompilerState) { queryBuilder =>
+  class QueryBuilder(val tree: Node, val state: CompilerState) {
+    queryBuilder =>
 
     // Immutable config options (to be overridden by subclasses)
     protected val supportsTuples = true
@@ -159,7 +161,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       b.build
     }
 
-    @inline protected final def building(p: StatementPart)(f: => Unit): Unit = {
+    @inline
+    protected final def building(p: StatementPart)(f: => Unit): Unit = {
       val oldPart = currentPart
       currentPart = p
       f
@@ -751,7 +754,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
   }
 
   /** Builder for various DDL statements. */
-  class TableDDLBuilder(val table: Table[_]) { self =>
+  class TableDDLBuilder(val table: Table[_]) {
+    self =>
     protected val tableNode = table.toNode
       .asInstanceOf[TableExpansion]
       .table

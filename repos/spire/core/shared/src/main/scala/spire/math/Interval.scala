@@ -51,34 +51,43 @@ import java.lang.Double.isNaN
   * not an easy platform to perform robust arithmetic, as the
   * IEEE 754 rounding modes cannot be set.
   */
-sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
+sealed abstract class Interval[A](implicit order: Order[A]) {
+  lhs =>
 
-  @inline protected[this] final def isClosed(flags: Int): Boolean = flags == 0
-  @inline protected[this] final def isClosedLower(flags: Int): Boolean =
+  @inline
+  protected[this] final def isClosed(flags: Int): Boolean = flags == 0
+  @inline
+  protected[this] final def isClosedLower(flags: Int): Boolean =
     (flags & 1) == 0
-  @inline protected[this] final def isClosedUpper(flags: Int): Boolean =
+  @inline
+  protected[this] final def isClosedUpper(flags: Int): Boolean =
     (flags & 2) == 0
 
-  @inline protected[this] final def isOpen(flags: Int): Boolean = flags == 3
-  @inline protected[this] final def isOpenLower(flags: Int): Boolean =
-    (flags & 1) == 1
-  @inline protected[this] final def isOpenUpper(flags: Int): Boolean =
-    (flags & 2) == 2
+  @inline
+  protected[this] final def isOpen(flags: Int): Boolean = flags == 3
+  @inline
+  protected[this] final def isOpenLower(flags: Int): Boolean = (flags & 1) == 1
+  @inline
+  protected[this] final def isOpenUpper(flags: Int): Boolean = (flags & 2) == 2
 
-  @inline protected[this] final def lowerFlag(flags: Int): Int = flags & 1
-  @inline protected[this] final def upperFlag(flags: Int): Int = flags & 2
+  @inline
+  protected[this] final def lowerFlag(flags: Int): Int = flags & 1
+  @inline
+  protected[this] final def upperFlag(flags: Int): Int = flags & 2
 
-  @inline protected[this] final def reverseLowerFlag(flags: Int): Int =
-    flags ^ 1
-  @inline protected[this] final def reverseUpperFlag(flags: Int): Int =
-    flags ^ 2
-  @inline protected[this] final def reverseFlags(flags: Int): Int = flags ^ 3
+  @inline
+  protected[this] final def reverseLowerFlag(flags: Int): Int = flags ^ 1
+  @inline
+  protected[this] final def reverseUpperFlag(flags: Int): Int = flags ^ 2
+  @inline
+  protected[this] final def reverseFlags(flags: Int): Int = flags ^ 3
 
   protected[this] final def lowerFlagToUpper(flags: Int): Int = (flags & 1) << 1
   protected[this] final def upperFlagToLower(flags: Int): Int =
     (flags & 2) >>> 1
 
-  @inline protected[this] final def swapFlags(flags: Int): Int =
+  @inline
+  protected[this] final def swapFlags(flags: Int): Int =
     ((flags & 1) << 1) | ((flags & 2) >>> 1)
 
   protected[this] def lowerPairBelow(
@@ -908,10 +917,14 @@ object Interval {
       Interval((n1 - n0) / 2 + n0, (n2 - n1) / 2 + n1)
     }
 
-  @inline private[spire] final def closedLowerFlags = 0
-  @inline private[spire] final def openLowerFlags = 1
-  @inline private[spire] final def closedUpperFlags = 0
-  @inline private[spire] final def openUpperFlags = 2
+  @inline
+  private[spire] final def closedLowerFlags = 0
+  @inline
+  private[spire] final def openLowerFlags = 1
+  @inline
+  private[spire] final def closedUpperFlags = 0
+  @inline
+  private[spire] final def openUpperFlags = 2
 
   /**
     * Constructs an interval from bounds.

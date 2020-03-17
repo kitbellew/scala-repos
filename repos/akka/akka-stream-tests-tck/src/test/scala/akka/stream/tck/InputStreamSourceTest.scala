@@ -16,7 +16,8 @@ class InputStreamSourceTest extends AkkaPublisherVerification[ByteString] {
     StreamConverters
       .fromInputStream(() ⇒
         new InputStream {
-          @volatile var num = 0
+          @volatile
+          var num = 0
           override def read(): Int = {
             num += 1
             num

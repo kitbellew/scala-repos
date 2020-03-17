@@ -36,7 +36,8 @@ case class FixedScale(denom: Int) {
   * val b = FixedPoint(Rational(2469, 200)) // fraction repr
   * val c = new FixedPoint(12345L)          // "raw" repr
   */
-class FixedPoint(val long: Long) extends AnyVal { lhs =>
+class FixedPoint(val long: Long) extends AnyVal {
+  lhs =>
   def unary_-(): FixedPoint =
     if (long != Long.MinValue) new FixedPoint(-long)
     else throw new FixedPointOverflow(long)

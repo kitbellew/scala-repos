@@ -4,7 +4,8 @@ package internal
 
 import Flags._
 
-trait CapturedVariables { self: SymbolTable =>
+trait CapturedVariables {
+  self: SymbolTable =>
 
   import definitions._
 

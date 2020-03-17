@@ -50,7 +50,8 @@ class CustomRecoveryModeFactory(conf: SparkConf, serializer: Serializer)
 }
 
 object CustomRecoveryModeFactory {
-  @volatile var instantiationAttempts = 0
+  @volatile
+  var instantiationAttempts = 0
 }
 
 class CustomPersistenceEngine(serializer: Serializer)
@@ -93,11 +94,15 @@ class CustomPersistenceEngine(serializer: Serializer)
 }
 
 object CustomPersistenceEngine {
-  @volatile var persistAttempts = 0
-  @volatile var unpersistAttempts = 0
-  @volatile var readAttempts = 0
+  @volatile
+  var persistAttempts = 0
+  @volatile
+  var unpersistAttempts = 0
+  @volatile
+  var readAttempts = 0
 
-  @volatile var lastInstance: Option[CustomPersistenceEngine] = None
+  @volatile
+  var lastInstance: Option[CustomPersistenceEngine] = None
 }
 
 class CustomLeaderElectionAgent(val masterInstance: LeaderElectable)

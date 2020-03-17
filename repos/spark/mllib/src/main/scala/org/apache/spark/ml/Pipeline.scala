@@ -82,8 +82,7 @@ abstract class PipelineStage extends Params with Logging {
   * transformers, corresponding to the pipeline stages. If there are no stages, the pipeline acts as
   * an identity transformer.
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 class Pipeline @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     extends Estimator[PipelineModel]
     with MLWritable {
@@ -304,8 +303,7 @@ object Pipeline extends MLReadable[Pipeline] {
   * :: Experimental ::
   * Represents a fitted pipeline.
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 class PipelineModel private[ml] (
     @Since("1.4.0") override val uid: String,
     @Since("1.4.0") val stages: Array[Transformer])

@@ -5,7 +5,8 @@ object Test {
       var cu: CU = null // okay if this is a `val`.
     }
   }
-  trait B { self: C =>
+  trait B {
+    self: C =>
     class Namer1(val x: X) {
       val m: Sym = null
       x.cu.obj. /* line: 15 */ foo(

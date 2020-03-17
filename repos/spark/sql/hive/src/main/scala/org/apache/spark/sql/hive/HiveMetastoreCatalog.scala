@@ -937,8 +937,10 @@ private[hive] case class MetastoreRelation(
     tableName: String,
     alias: Option[String])(
     val table: CatalogTable,
-    @transient private val client: HiveClient,
-    @transient private val sqlContext: SQLContext)
+    @transient
+    private val client: HiveClient,
+    @transient
+    private val sqlContext: SQLContext)
     extends LeafNode
     with MultiInstanceRelation
     with FileRelation {
@@ -964,7 +966,8 @@ private[hive] case class MetastoreRelation(
   }
 
   // TODO: merge this with HiveClientImpl#toHiveTable
-  @transient val hiveQlTable: HiveTable = {
+  @transient
+  val hiveQlTable: HiveTable = {
     // We start by constructing an API table as Hive performs several important transformations
     // internally when converting an API table to a QL table.
     val tTable = new org.apache.hadoop.hive.metastore.api.Table()
@@ -1006,8 +1009,8 @@ private[hive] case class MetastoreRelation(
     new HiveTable(tTable)
   }
 
-  @transient override lazy val statistics
-      : Statistics = Statistics(sizeInBytes = {
+  @transient
+  override lazy val statistics: Statistics = Statistics(sizeInBytes = {
     val totalSize = hiveQlTable.getParameters.get(StatsSetupConst.TOTAL_SIZE)
     val rawDataSize = hiveQlTable.getParameters.get(
       StatsSetupConst.RAW_DATA_SIZE)

@@ -142,9 +142,12 @@ object DistributedPubSubMediator {
   def props(settings: DistributedPubSubSettings): Props =
     Props(new DistributedPubSubMediator(settings)).withDeploy(Deploy.local)
 
-  @SerialVersionUID(1L) final case class Put(ref: ActorRef)
-  @SerialVersionUID(1L) final case class Remove(path: String)
-  @SerialVersionUID(1L) final case class Subscribe(
+  @SerialVersionUID(1L)
+  final case class Put(ref: ActorRef)
+  @SerialVersionUID(1L)
+  final case class Remove(path: String)
+  @SerialVersionUID(1L)
+  final case class Subscribe(
       topic: String,
       group: Option[String],
       ref: ActorRef) {
@@ -164,7 +167,8 @@ object DistributedPubSubMediator {
   object Subscribe {
     def apply(topic: String, ref: ActorRef) = new Subscribe(topic, ref)
   }
-  @SerialVersionUID(1L) final case class Unsubscribe(
+  @SerialVersionUID(1L)
+  final case class Unsubscribe(
       topic: String,
       group: Option[String],
       ref: ActorRef) {
@@ -176,11 +180,13 @@ object DistributedPubSubMediator {
   object Unsubscribe {
     def apply(topic: String, ref: ActorRef) = new Unsubscribe(topic, ref)
   }
-  @SerialVersionUID(1L) final case class SubscribeAck(subscribe: Subscribe)
+  @SerialVersionUID(1L)
+  final case class SubscribeAck(subscribe: Subscribe)
       extends DeadLetterSuppression
-  @SerialVersionUID(1L) final case class UnsubscribeAck(
-      unsubscribe: Unsubscribe)
-  @SerialVersionUID(1L) final case class Publish(
+  @SerialVersionUID(1L)
+  final case class UnsubscribeAck(unsubscribe: Unsubscribe)
+  @SerialVersionUID(1L)
+  final case class Publish(
       topic: String,
       msg: Any,
       sendOneMessageToEachGroup: Boolean)
@@ -191,10 +197,8 @@ object DistributedPubSubMediator {
   object Publish {
     def apply(topic: String, msg: Any) = new Publish(topic, msg)
   }
-  @SerialVersionUID(1L) final case class Send(
-      path: String,
-      msg: Any,
-      localAffinity: Boolean)
+  @SerialVersionUID(1L)
+  final case class Send(path: String, msg: Any, localAffinity: Boolean)
       extends DistributedPubSubMessage {
 
     /**
@@ -202,7 +206,8 @@ object DistributedPubSubMediator {
       */
     def this(path: String, msg: Any) = this(path, msg, localAffinity = false)
   }
-  @SerialVersionUID(1L) final case class SendToAll(
+  @SerialVersionUID(1L)
+  final case class SendToAll(
       path: String,
       msg: Any,
       allButSelf: Boolean = false)
@@ -259,7 +264,8 @@ object DistributedPubSubMediator {
 
     @SerialVersionUID(1L)
     final case class ValueHolder(version: Long, ref: Option[ActorRef]) {
-      @transient lazy val routee: Option[Routee] = ref map ActorRefRoutee
+      @transient
+      lazy val routee: Option[Routee] = ref map ActorRefRoutee
     }
 
     @SerialVersionUID(1L)

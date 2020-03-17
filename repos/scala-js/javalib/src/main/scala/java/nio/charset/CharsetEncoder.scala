@@ -51,8 +51,7 @@ abstract class CharsetEncoder protected (
     val decoder = charset.newDecoder
     val replBuf = ByteBuffer.wrap(repl)
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(outBufSize: Int): Boolean = {
       val result = decoder.decode(
         replBuf,
@@ -105,8 +104,7 @@ abstract class CharsetEncoder protected (
 
     status = if (endOfInput) END else ONGOING
 
-    @inline
-    @tailrec
+    @inline @tailrec
     def loop(): CoderResult = {
       val result1 =
         try { encodeLoop(in, out) }
@@ -189,8 +187,7 @@ abstract class CharsetEncoder protected (
 
     if (in.remaining == 0) { ByteBuffer.allocate(0) }
     else {
-      @inline
-      @tailrec
+      @inline @tailrec
       def loopEncode(out: ByteBuffer): ByteBuffer = {
         val result = encode(in, out, endOfInput = true)
         if (result.isUnderflow) {
@@ -203,8 +200,7 @@ abstract class CharsetEncoder protected (
         }
       }
 
-      @inline
-      @tailrec
+      @inline @tailrec
       def loopFlush(out: ByteBuffer): ByteBuffer = {
         val result = flush(out)
         if (result.isUnderflow) { out }

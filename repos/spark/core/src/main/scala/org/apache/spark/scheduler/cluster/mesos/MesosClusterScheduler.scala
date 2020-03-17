@@ -162,7 +162,8 @@ private[spark] class MesosClusterScheduler(
   private val pendingRetryDriversState = engineFactory.createEngine("retryList")
   // Flag to mark if the scheduler is ready to be called, which is until the scheduler
   // is registered with Mesos master.
-  @volatile protected var ready = false
+  @volatile
+  protected var ready = false
   private var masterInfo: Option[MasterInfo] = None
 
   def submitDriver(desc: MesosDriverDescription): CreateSubmissionResponse = {

@@ -54,7 +54,8 @@ import scala.language.implicitConversions
   * @group ReflectionAPI
   *
   */
-trait FlagSets { self: Universe =>
+trait FlagSets {
+  self: Universe =>
 
   /** An abstract type representing sets of flags (like private, final, etc.) that apply to definition trees and symbols
     *  @template

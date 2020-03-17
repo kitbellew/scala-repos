@@ -16,9 +16,9 @@ class LoggingStatement(st: Statement) extends Statement {
   private[this] val doStatement = JdbcBackend.statementLogger.isDebugEnabled
   private[this] val doBenchmark = JdbcBackend.benchmarkLogger.isDebugEnabled
 
-  @inline protected[this] def logged[T](
-      sql: String,
-      what: String = "statement")(f: => T) = {
+  @inline
+  protected[this] def logged[T](sql: String, what: String = "statement")(
+      f: => T) = {
     if (doStatement && (sql ne null))
       JdbcBackend.statementLogger.debug("Executing " + what + ": " + sql)
     val t0 = if (doBenchmark) System.nanoTime() else 0L

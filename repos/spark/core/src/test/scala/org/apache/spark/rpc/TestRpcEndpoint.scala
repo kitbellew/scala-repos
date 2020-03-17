@@ -25,21 +25,26 @@ class TestRpcEndpoint extends ThreadSafeRpcEndpoint with TripleEquals {
 
   override val rpcEnv: RpcEnv = null
 
-  @volatile private var receiveMessages = ArrayBuffer[Any]()
+  @volatile
+  private var receiveMessages = ArrayBuffer[Any]()
 
-  @volatile private var receiveAndReplyMessages = ArrayBuffer[Any]()
+  @volatile
+  private var receiveAndReplyMessages = ArrayBuffer[Any]()
 
-  @volatile private var onConnectedMessages = ArrayBuffer[RpcAddress]()
+  @volatile
+  private var onConnectedMessages = ArrayBuffer[RpcAddress]()
 
-  @volatile private var onDisconnectedMessages = ArrayBuffer[RpcAddress]()
+  @volatile
+  private var onDisconnectedMessages = ArrayBuffer[RpcAddress]()
 
-  @volatile private var onNetworkErrorMessages = ArrayBuffer[(
-      Throwable,
-      RpcAddress)]()
+  @volatile
+  private var onNetworkErrorMessages = ArrayBuffer[(Throwable, RpcAddress)]()
 
-  @volatile private var started = false
+  @volatile
+  private var started = false
 
-  @volatile private var stopped = false
+  @volatile
+  private var stopped = false
 
   override def receive: PartialFunction[Any, Unit] = {
     case message: Any => receiveMessages += message

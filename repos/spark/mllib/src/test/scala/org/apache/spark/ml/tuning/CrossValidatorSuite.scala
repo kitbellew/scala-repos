@@ -44,7 +44,8 @@ class CrossValidatorSuite
     with MLlibTestSparkContext
     with DefaultReadWriteTest {
 
-  @transient var dataset: DataFrame = _
+  @transient
+  var dataset: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()

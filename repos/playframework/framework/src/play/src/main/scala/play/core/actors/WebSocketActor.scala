@@ -47,7 +47,8 @@ private[play] object WebSocketActor {
      * actor decides to close, and then two PoisonPills might still be sent - we can't avoid that.  But this just
      * prevents the double PoisonPill from being a normal thing that happens every time a child initiates shutdown.
      */
-    @volatile var shutdown = false
+    @volatile
+    var shutdown = false
 
     // The actor to handle the WebSocket
     val webSocketActor = context.watch(

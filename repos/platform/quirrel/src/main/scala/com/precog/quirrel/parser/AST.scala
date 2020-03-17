@@ -401,7 +401,8 @@ trait AST extends Phases {
     }
   }
 
-  sealed trait Expr extends Node with Product { self =>
+  sealed trait Expr extends Node with Product {
+    self =>
     val nodeId = System.identityHashCode(this)
 
     private val _root = atom[Expr]

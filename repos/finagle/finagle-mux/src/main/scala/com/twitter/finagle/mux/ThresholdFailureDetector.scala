@@ -60,7 +60,8 @@ private class ThresholdFailureDetector(
 
   private[this] val maxPingNs: WindowedMax = new WindowedMax(windowSize)
   // The timestamp of the last ping, in nanoseconds.
-  @volatile private[this] var timestampNs: Long = 0L
+  @volatile
+  private[this] var timestampNs: Long = 0L
 
   // start as busy, and become open after receiving the first ping response
   private[this] val state: AtomicReference[Status] = new AtomicReference(
@@ -125,7 +126,8 @@ private class ThresholdFailureDetector(
   * @param windowSize the size of the window to keep track of
   */
 private[mux] class WindowedMax(windowSize: Int) {
-  @volatile private[this] var currentMax: Long = Long.MinValue
+  @volatile
+  private[this] var currentMax: Long = Long.MinValue
   private[this] val buf: Array[Long] = Array.fill(windowSize)(Long.MinValue)
   private[this] var index: Int = 0
 

@@ -24,7 +24,8 @@ private[akka] final case class WildcardTree[T](
         .updated(e, children.get(e).getOrElse(WildcardTree()).insert(elems, d)))
     }
 
-  @tailrec final def find(elems: Iterator[String]): WildcardTree[T] =
+  @tailrec
+  final def find(elems: Iterator[String]): WildcardTree[T] =
     if (!elems.hasNext) this
     else {
       (children.get(elems.next()) orElse children.get("*")) match {

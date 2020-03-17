@@ -41,14 +41,16 @@ import scala.tools.nsc.util.InterruptReq
   *  action is aborted. If there's an outstanding response, it will be set to
   *  a Right value with a FreshRunReq exception.
   */
-trait CompilerControl { self: Global =>
+trait CompilerControl {
+  self: Global =>
 
   type Response[T] = scala.tools.nsc.interactive.Response[T]
 
   /** The scheduler by which client and compiler communicate
     *  Must be initialized before starting compilerRunner
     */
-  @volatile protected[interactive] var scheduler = new WorkScheduler
+  @volatile
+  protected[interactive] var scheduler = new WorkScheduler
 
   /** Return the compilation unit attached to a source file, or None
     *  if source is not loaded.

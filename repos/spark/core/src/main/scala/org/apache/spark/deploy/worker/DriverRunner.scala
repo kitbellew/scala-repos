@@ -49,8 +49,10 @@ private[deploy] class DriverRunner(
     val securityManager: SecurityManager)
     extends Logging {
 
-  @volatile private var process: Option[Process] = None
-  @volatile private var killed = false
+  @volatile
+  private var process: Option[Process] = None
+  @volatile
+  private var killed = false
 
   // Populated once finished
   private[worker] var finalState: Option[DriverState] = None

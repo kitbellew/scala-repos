@@ -51,8 +51,10 @@ trait ApplyUnapplyFacet extends ProductISOFacet {
   val ops: ApplyUnapplyOps
 
   trait ApplyUnapplyCompanion {
-    @nonGeneric def apply(elems: ops.P): C = ops.apply(elems)
-    @nonGeneric def unapply(s: C): Option[ops.P] = ops.unapply(s)
+    @nonGeneric
+    def apply(elems: ops.P): C = ops.apply(elems)
+    @nonGeneric
+    def unapply(s: C): Option[ops.P] = ops.unapply(s)
   }
 }
 
@@ -69,7 +71,8 @@ trait ProductFacet extends ProductISOFacet {
 
   val ops: ProductOps
 
-  trait ProductMethods { self: C =>
+  trait ProductMethods {
+    self: C =>
     def productElement(n: Int): Any = ops.productElement(this, n)
 
     def productIterator: Iterator[Any] = ops.productIterator(this)
@@ -100,7 +103,8 @@ trait PolymorphicEqualityFacet extends ProductISOFacet {
 
   val ops: PolymorphicEqualityOps
 
-  trait PolymorphicEqualityMethods { self: C =>
+  trait PolymorphicEqualityMethods {
+    self: C =>
     override def equals(other: Any): Boolean = ops.equals(this, other)
 
     override def hashCode: Int = ops.hashCode(this)
@@ -120,7 +124,8 @@ trait CopyFacet extends CaseClassFacet {
 
   val ops: CopyOps
 
-  trait CopyMethods extends RecordArgs { self: C =>
+  trait CopyMethods extends RecordArgs {
+    self: C =>
     def copyRecord[R <: HList](rec: R)(implicit merger: ops.CopyMerger[R]): C =
       ops.copy(this, rec)
   }
@@ -133,7 +138,8 @@ trait ToStringFacet extends ProductFacet {
 
   val ops: ToStringOps
 
-  trait ToStringMethods { self: C =>
+  trait ToStringMethods {
+    self: C =>
     override def toString: String = ops.toString(this)
   }
 }
@@ -158,7 +164,8 @@ trait DefaultCaseClassDefns
       extends ProductMethods
       with PolymorphicEqualityMethods
       with CopyMethods
-      with ToStringMethods { self: C =>
+      with ToStringMethods {
+    self: C =>
   }
 
   val ops: CaseClassOps

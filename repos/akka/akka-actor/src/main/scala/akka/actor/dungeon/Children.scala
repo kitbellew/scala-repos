@@ -15,7 +15,8 @@ private[akka] object Children {
   val GetNobody = () ⇒ Nobody
 }
 
-private[akka] trait Children { this: ActorCell ⇒
+private[akka] trait Children {
+  this: ActorCell ⇒
 
   import ChildrenContainer._
 
@@ -68,8 +69,8 @@ private[akka] trait Children { this: ActorCell ⇒
       async = true,
       systemService = systemService)
 
-  @volatile private var _functionRefsDoNotCallMeDirectly = Map
-    .empty[String, FunctionRef]
+  @volatile
+  private var _functionRefsDoNotCallMeDirectly = Map.empty[String, FunctionRef]
   private def functionRefs: Map[String, FunctionRef] =
     Unsafe.instance
       .getObjectVolatile(this, AbstractActorCell.functionRefsOffset)
@@ -92,7 +93,8 @@ private[akka] trait Children { this: ActorCell ⇒
       ActorCell.newUid())
     val ref = new FunctionRef(childPath, provider, system.eventStream, f)
 
-    @tailrec def rec(): Unit = {
+    @tailrec
+    def rec(): Unit = {
       val old = functionRefs
       val added = old.updated(childPath.name, ref)
       if (!Unsafe.instance.compareAndSwapObject(
@@ -111,7 +113,8 @@ private[akka] trait Children { this: ActorCell ⇒
       ref.path.parent eq self.path,
       "trying to remove FunctionRef from wrong ActorCell")
     val name = ref.path.name
-    @tailrec def rec(): Boolean = {
+    @tailrec
+    def rec(): Boolean = {
       val old = functionRefs
       if (!old.contains(name)) false
       else {
@@ -137,7 +140,8 @@ private[akka] trait Children { this: ActorCell ⇒
     refs.valuesIterator.foreach(_.stop())
   }
 
-  @volatile private var _nextNameDoNotCallMeDirectly = 0L
+  @volatile
+  private var _nextNameDoNotCallMeDirectly = 0L
   final protected def randomName(sb: java.lang.StringBuilder): String = {
     val num = Unsafe.instance.getAndAddLong(
       this,
@@ -155,7 +159,8 @@ private[akka] trait Children { this: ActorCell ⇒
 
   final def stop(actor: ActorRef): Unit = {
     if (childrenRefs.getByRef(actor).isDefined) {
-      @tailrec def shallDie(ref: ActorRef): Boolean = {
+      @tailrec
+      def shallDie(ref: ActorRef): Boolean = {
         val c = childrenRefs
         swapChildrenRefs(c, c.shallDie(ref)) || shallDie(ref)
       }
@@ -171,7 +176,8 @@ private[akka] trait Children { this: ActorCell ⇒
   /*
    * low level CAS helpers
    */
-  @inline private final def swapChildrenRefs(
+  @inline
+  private final def swapChildrenRefs(
       oldChildren: ChildrenContainer,
       newChildren: ChildrenContainer): Boolean =
     Unsafe.instance.compareAndSwapObject(
@@ -180,17 +186,20 @@ private[akka] trait Children { this: ActorCell ⇒
       oldChildren,
       newChildren)
 
-  @tailrec final def reserveChild(name: String): Boolean = {
+  @tailrec
+  final def reserveChild(name: String): Boolean = {
     val c = childrenRefs
     swapChildrenRefs(c, c.reserve(name)) || reserveChild(name)
   }
 
-  @tailrec final protected def unreserveChild(name: String): Boolean = {
+  @tailrec
+  final protected def unreserveChild(name: String): Boolean = {
     val c = childrenRefs
     swapChildrenRefs(c, c.unreserve(name)) || unreserveChild(name)
   }
 
-  @tailrec final def initChild(ref: ActorRef): Option[ChildRestartStats] = {
+  @tailrec
+  final def initChild(ref: ActorRef): Option[ChildRestartStats] = {
     val cc = childrenRefs
     cc.getByName(ref.path.name) match {
       case old @ Some(_: ChildRestartStats) ⇒
@@ -204,7 +213,8 @@ private[akka] trait Children { this: ActorCell ⇒
     }
   }
 
-  @tailrec final protected def setChildrenTerminationReason(
+  @tailrec
+  final protected def setChildrenTerminationReason(
       reason: ChildrenContainer.SuspendReason): Boolean = {
     childrenRefs match {
       case c: ChildrenContainer.TerminatingChildrenContainer ⇒
@@ -279,7 +289,8 @@ private[akka] trait Children { this: ActorCell ⇒
 
   protected def removeChildAndGetStateChange(
       child: ActorRef): Option[SuspendReason] = {
-    @tailrec def removeChild(ref: ActorRef): ChildrenContainer = {
+    @tailrec
+    def removeChild(ref: ActorRef): ChildrenContainer = {
       val c = childrenRefs
       val n = c.remove(ref)
       if (swapChildrenRefs(c, n)) n else removeChild(ref)

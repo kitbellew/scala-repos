@@ -61,7 +61,8 @@ object BasicTypesHelpers
 /**
   * This trait adds functionality to Scala standard types
   */
-trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
+trait BasicTypesHelpers {
+  self: StringHelpers with ControlHelpers =>
 
   /**
     * This decorator class adds a ternary operator to a Boolean value

@@ -687,7 +687,8 @@ class SQLConf
   import SQLConf._
 
   /** Only low degree of contention is expected for conf, thus NOT using ConcurrentHashMap. */
-  @transient protected[spark] val settings = java.util.Collections
+  @transient
+  protected[spark] val settings = java.util.Collections
     .synchronizedMap(new java.util.HashMap[String, String]())
 
   /** ************************ Spark SQL Params/Hints ******************* */

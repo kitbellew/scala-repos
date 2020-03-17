@@ -162,7 +162,8 @@ class ScribeHandler(
 
   private var lastConnectAttempt = Time.epoch
 
-  @volatile private var _lastTransmission = Time.epoch
+  @volatile
+  private var _lastTransmission = Time.epoch
   // visible for testing
   private[logging] def updateLastTransmission(): Unit =
     _lastTransmission = Time.now

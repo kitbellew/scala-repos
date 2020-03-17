@@ -94,7 +94,8 @@ final class StoppingSupervisorStrategy extends SupervisorStrategyConfigurator {
     SupervisorStrategy.stoppingStrategy
 }
 
-trait SupervisorStrategyLowPriorityImplicits { this: SupervisorStrategy.type ⇒
+trait SupervisorStrategyLowPriorityImplicits {
+  this: SupervisorStrategy.type ⇒
 
   /**
     * Implicit conversion from `Seq` of Cause-Directive pairs to a `Decider`. See makeDecider(causeDirective).

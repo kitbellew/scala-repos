@@ -53,10 +53,10 @@ class GroupsResource @Inject() (
   /**
     * Get root group.
     */
-  @GET
-  @Timed
+  @GET @Timed
   def root(
-      @Context req: HttpServletRequest,
+      @Context
+      req: HttpServletRequest,
       @QueryParam("embed") embed: java.util.Set[String]): Response =
     group("/", embed, req)
 
@@ -66,13 +66,12 @@ class GroupsResource @Inject() (
     * @param id the identifier of the group encoded as path
     * @return the group or the group versions.
     */
-  @GET
-  @Path("""{id:.+}""")
-  @Timed
+  @GET @Path("""{id:.+}""") @Timed
   def group(
       @PathParam("id") id: String,
       @QueryParam("embed") embed: java.util.Set[String],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -127,13 +126,12 @@ class GroupsResource @Inject() (
     * @param force if the change has to be forced. A running upgrade process will be halted and the new one is started.
     * @param body the request body as array byte buffer
     */
-  @POST
-  @Timed
+  @POST @Timed
   def create(
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response =
-    createWithPath("", force, body, req)
+      @Context
+      req: HttpServletRequest): Response = createWithPath("", force, body, req)
 
   /**
     * Create a group.
@@ -142,14 +140,13 @@ class GroupsResource @Inject() (
     * @param force if the change has to be forced. A running upgrade process will be halted and the new one is started.
     * @param body the request body as array byte buffer
     */
-  @POST
-  @Path("""{id:.+}""")
-  @Timed
+  @POST @Path("""{id:.+}""") @Timed
   def createWithPath(
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[GroupUpdate]) { groupUpdate =>
         val effectivePath = groupUpdate.id
@@ -176,13 +173,13 @@ class GroupsResource @Inject() (
       }
     }
 
-  @PUT
-  @Timed
+  @PUT @Timed
   def updateRoot(
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       @DefaultValue("false") @QueryParam("dryRun") dryRun: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response = {
+      @Context
+      req: HttpServletRequest): Response = {
     update("", force, dryRun, body, req)
   }
 
@@ -193,15 +190,14 @@ class GroupsResource @Inject() (
     * @param force if the change has to be forced. A running upgrade process will be halted and the new one is started.
     * @param dryRun only create the deployment without executing it.
     */
-  @PUT
-  @Path("""{id:.+}""")
-  @Timed
+  @PUT @Path("""{id:.+}""") @Timed
   def update(
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       @DefaultValue("false") @QueryParam("dryRun") dryRun: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[GroupUpdate]) { groupUpdate =>
         val newVersion = Timestamp.now()
@@ -228,11 +224,11 @@ class GroupsResource @Inject() (
       }
     }
 
-  @DELETE
-  @Timed
+  @DELETE @Timed
   def delete(
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       def clearRootGroup(rootGroup: Group): Group = {
         checkAuthorization(DeleteGroup, rootGroup)
@@ -253,13 +249,12 @@ class GroupsResource @Inject() (
     * @param force if the change has to be forced. A running upgrade process will be halted and the new one is started.
     * @return A version response, which defines the resulting change.
     */
-  @DELETE
-  @Path("""{id:.+}""")
-  @Timed
+  @DELETE @Path("""{id:.+}""") @Timed
   def delete(
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val groupId = id.toRootPath
       val version = Timestamp.now()

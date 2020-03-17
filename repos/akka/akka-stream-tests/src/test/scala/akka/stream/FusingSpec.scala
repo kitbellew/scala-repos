@@ -42,7 +42,8 @@ class FusingSpec extends AkkaSpec {
     val ups = fg.module.info.upstreams
     val owner = fg.module.info.outOwners
 
-    @tailrec def rec(curr: Module): Unit = {
+    @tailrec
+    def rec(curr: Module): Unit = {
       if (Debug) println(extractName(curr, "unknown"))
       curr match {
         case CopiedModule(_, attributes, copyOf)

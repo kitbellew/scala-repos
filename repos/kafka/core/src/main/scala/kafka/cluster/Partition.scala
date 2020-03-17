@@ -57,9 +57,12 @@ class Partition(
   // The read lock is only required when multiple reads are executed and needs to be in a consistent manner
   private val leaderIsrUpdateLock = new ReentrantReadWriteLock()
   private var zkVersion: Int = LeaderAndIsr.initialZKVersion
-  @volatile private var leaderEpoch: Int = LeaderAndIsr.initialLeaderEpoch - 1
-  @volatile var leaderReplicaIdOpt: Option[Int] = None
-  @volatile var inSyncReplicas: Set[Replica] = Set.empty[Replica]
+  @volatile
+  private var leaderEpoch: Int = LeaderAndIsr.initialLeaderEpoch - 1
+  @volatile
+  var leaderReplicaIdOpt: Option[Int] = None
+  @volatile
+  var inSyncReplicas: Set[Replica] = Set.empty[Replica]
 
   /* Epoch of the controller that last changed the leader. This needs to be initialized correctly upon broker startup.
    * One way of doing that is through the controller's start replica state change command. When a new broker starts up

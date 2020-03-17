@@ -3,7 +3,8 @@ package gitbucket.core.model
 import scala.slick.lifted.MappedTo
 import scala.slick.jdbc._
 
-trait ProtectedBranchComponent extends TemplateComponent { self: Profile =>
+trait ProtectedBranchComponent extends TemplateComponent {
+  self: Profile =>
   import profile.simple._
   import self._
 

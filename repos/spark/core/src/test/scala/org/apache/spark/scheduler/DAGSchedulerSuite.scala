@@ -66,7 +66,8 @@ class MyRDD(
     numPartitions: Int,
     dependencies: List[Dependency[_]],
     locations: Seq[Seq[String]] = Nil,
-    @(transient @param) tracker: MapOutputTrackerMaster = null)
+    @(transient @param)
+    tracker: MapOutputTrackerMaster = null)
     extends RDD[(Int, Int)](sc, dependencies)
     with Serializable {
 

@@ -29,7 +29,8 @@ import scala.{specialized => spec}
   * shared interface with scala collections.
   */
 object Loop {
-  @tailrec def range(i: Int, limit: Int)(f: Int => Unit) {
+  @tailrec
+  def range(i: Int, limit: Int)(f: Int => Unit) {
     if (i < limit) {
       f(i)
       range(i + 1, limit)(f)
@@ -37,7 +38,8 @@ object Loop {
   }
 
   final def forall[@spec A](as: Array[A])(f: A => Boolean): Boolean = {
-    @tailrec def loop(i: Int): Boolean = {
+    @tailrec
+    def loop(i: Int): Boolean = {
       if (i == as.length) true else if (f(as(i))) loop(i + 1) else false
     }
 

@@ -64,7 +64,8 @@ trait EvaluatorTestSupport[M[+_]]
     extends StdLibEvaluatorStack[M]
     with EchoHttpClientModule[M]
     with BaseBlockStoreTestModule[M]
-    with IdSourceScannerModule { outer =>
+    with IdSourceScannerModule {
+  outer =>
 
   def Evaluator[N[+_]](N0: Monad[N])(implicit mn: M ~> N, nm: N ~> M) =
     new Evaluator[N](N0)(mn, nm) {
@@ -200,7 +201,8 @@ trait EvaluatorTestSupport[M[+_]]
 trait EvaluatorSpecs[M[+_]]
     extends Specification
     with EvaluatorTestSupport[M]
-    with LongIdMemoryDatasetConsumer[M] { self =>
+    with LongIdMemoryDatasetConsumer[M] {
+  self =>
 
   import dag._
   import instructions._

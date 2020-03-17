@@ -29,11 +29,11 @@ class AppVersionsResource(
 
   val log = LoggerFactory.getLogger(getClass.getName)
 
-  @GET
-  @Timed
+  @GET @Timed
   def index(
       @PathParam("appId") appId: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val id = appId.toRootPath
       withAuthorization(ViewApp, result(groupManager.app(id)), unknownApp(id)) {
@@ -41,13 +41,12 @@ class AppVersionsResource(
       }
     }
 
-  @GET
-  @Timed
-  @Path("{version}")
+  @GET @Timed @Path("{version}")
   def show(
       @PathParam("appId") appId: String,
       @PathParam("version") version: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val id = appId.toRootPath
       val timestamp = Timestamp(version)

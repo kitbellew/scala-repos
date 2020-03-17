@@ -15,7 +15,8 @@ import org.apache.mesos.SchedulerDriver
 
 import scala.concurrent.duration._
 
-trait StartingBehavior { this: Actor with ActorLogging =>
+trait StartingBehavior {
+  this: Actor with ActorLogging =>
   import context.dispatcher
   import mesosphere.marathon.upgrade.StartingBehavior._
 

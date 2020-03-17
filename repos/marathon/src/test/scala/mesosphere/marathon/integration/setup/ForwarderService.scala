@@ -26,8 +26,7 @@ object ForwarderService {
     @GET
     def index(): Response = { Response.ok().entity("Hi").build() }
 
-    @GET
-    @Path("/crash")
+    @GET @Path("/crash")
     def crash(): Response = { Response.serverError().entity("Error").build() }
   }
 
@@ -55,9 +54,7 @@ object ForwarderService {
       httpConf: HttpConf,
       leaderProxyConf: LeaderProxyConf)
       extends BaseRestModule {
-    @Named(ModuleNames.HOST_PORT)
-    @Provides
-    @Singleton
+    @Named(ModuleNames.HOST_PORT) @Provides @Singleton
     def provideHostPort(httpConf: HttpConf): String = myHostPort
 
     override def configureServlets(): Unit = {

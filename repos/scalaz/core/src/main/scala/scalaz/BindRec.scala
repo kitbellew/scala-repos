@@ -13,7 +13,8 @@ package scalaz
   * Free]].
   */
 ////
-trait BindRec[F[_]] extends Bind[F] { self =>
+trait BindRec[F[_]] extends Bind[F] {
+  self =>
   ////
 
   def tailrecM[A, B](f: A => F[A \/ B])(a: A): F[B]
@@ -49,7 +50,8 @@ trait BindRec[F[_]] extends Bind[F] { self =>
 }
 
 object BindRec {
-  @inline def apply[F[_]](implicit F: BindRec[F]): BindRec[F] = F
+  @inline
+  def apply[F[_]](implicit F: BindRec[F]): BindRec[F] = F
 
   ////
 

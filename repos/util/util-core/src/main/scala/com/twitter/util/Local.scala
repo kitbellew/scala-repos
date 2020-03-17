@@ -12,7 +12,8 @@ object Local {
   type Context = Array[Option[_]]
 
   private[this] val localCtx = new ThreadLocal[Context]
-  @volatile private[this] var size: Int = 0
+  @volatile
+  private[this] var size: Int = 0
 
   /**
     * Return a snapshot of the current Local state.

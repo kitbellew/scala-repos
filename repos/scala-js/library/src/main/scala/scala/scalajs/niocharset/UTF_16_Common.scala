@@ -37,8 +37,7 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
     }
 
     def decodeLoop(in: ByteBuffer, out: CharBuffer): CoderResult = {
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(): CoderResult = {
         if (in.remaining < 2) CoderResult.UNDERFLOW
         else {
@@ -65,7 +64,8 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
           else {
             val bigEndian = endianness == BigEndian
 
-            @inline def bytes2char(hi: Int, lo: Int): Char =
+            @inline
+            def bytes2char(hi: Int, lo: Int): Char =
               (if (bigEndian) (hi << 8) | lo else (lo << 8) | hi).toChar
 
             val c1 = bytes2char(b1, b2)
@@ -153,8 +153,7 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
         }
       }
 
-      @inline
-      @tailrec
+      @inline @tailrec
       def loop(): CoderResult = {
         if (in.remaining == 0) CoderResult.UNDERFLOW
         else {

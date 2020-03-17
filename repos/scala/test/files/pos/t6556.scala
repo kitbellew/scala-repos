@@ -1,6 +1,7 @@
 package nl.ndervorst.commons.scalapimps
 
-trait Adapter[X] { self =>
+trait Adapter[X] {
+  self =>
   type This = self.type
   val adaptee: X
   val adapt: This = self

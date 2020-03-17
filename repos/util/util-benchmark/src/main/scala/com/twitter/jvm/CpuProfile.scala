@@ -7,8 +7,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.{Options, OptionsBuilder}
 import scala.util.Random
 
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
-@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.NANOSECONDS) @BenchmarkMode(Array(Mode.AverageTime))
 class CpuProfileBenchmark {
   import CpuProfileBenchmark._
 

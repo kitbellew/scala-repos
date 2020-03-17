@@ -342,7 +342,8 @@ object EvaluateConfigurations {
       delimiter: String => Boolean,
       skipInitial: String => Boolean): Seq[(String, LineRange)] = {
     val fdelim = fstS(delimiter)
-    @tailrec def group0(
+    @tailrec
+    def group0(
         lines: Seq[(String, Int)],
         accum: Seq[(String, LineRange)]): Seq[(String, LineRange)] =
       if (lines.isEmpty) accum.reverse

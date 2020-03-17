@@ -2,7 +2,8 @@ package scalaz
 
 import Id._
 
-final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
+final case class WriterT[F[_], W, A](run: F[(W, A)]) {
+  self =>
   import WriterT._
 
   def off: UnwriterT[F, W, A] = UnwriterT(run)

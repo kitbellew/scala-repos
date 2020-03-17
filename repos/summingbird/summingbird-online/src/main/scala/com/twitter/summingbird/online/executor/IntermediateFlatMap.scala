@@ -28,7 +28,8 @@ import com.twitter.summingbird.online.option.{
 }
 
 class IntermediateFlatMap[T, U, S, D, RC](
-    @transient flatMapOp: FlatMapOperation[T, U],
+    @transient
+    flatMapOp: FlatMapOperation[T, U],
     maxWaitingFutures: MaxWaitingFutures,
     maxWaitingTime: MaxFutureWaitTime,
     maxEmitPerExec: MaxEmitPerExecute,

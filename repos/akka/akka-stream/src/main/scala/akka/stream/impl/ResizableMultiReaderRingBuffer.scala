@@ -89,7 +89,8 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
       val newArray = new Array[Any](array.length << 1)
       System.arraycopy(array, r, newArray, 0, array.length - r)
       System.arraycopy(array, 0, newArray, array.length - r, r)
-      @tailrec def rebaseCursors(remaining: List[Cursor]): Unit =
+      @tailrec
+      def rebaseCursors(remaining: List[Cursor]): Unit =
         remaining match {
           case head :: tail ⇒
             head.cursor -= readIx
@@ -125,7 +126,8 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
       updateReadIx()
 
   private def updateReadIx(): Unit = {
-    @tailrec def minCursor(remaining: List[Cursor], result: Int): Int =
+    @tailrec
+    def minCursor(remaining: List[Cursor], result: Int): Int =
       remaining match {
         case head :: tail ⇒
           minCursor(tail, math.min(head.cursor - writeIx, result))

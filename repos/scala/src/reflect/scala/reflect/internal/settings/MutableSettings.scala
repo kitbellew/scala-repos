@@ -64,6 +64,7 @@ object MutableSettings {
   import scala.language.implicitConversions
 
   /** Support the common use case, `if (settings.debug) println("Hello, martin.")` */
-  @inline implicit def reflectSettingToBoolean(
+  @inline
+  implicit def reflectSettingToBoolean(
       s: MutableSettings#BooleanSetting): Boolean = s.value
 }

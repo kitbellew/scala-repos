@@ -47,7 +47,8 @@ import akka.actor.DeadLetterSuppression
   * All of this is bundled inside the [[akka.remote.testconductor.TestConductorExt]]
   * extension.
   */
-trait Conductor { this: TestConductorExt ⇒
+trait Conductor {
+  this: TestConductorExt ⇒
 
   import Controller._
 
@@ -587,7 +588,8 @@ private[akka] object BarrierCoordinator {
       arrived: List[ActorRef],
       deadline: Deadline)
 
-  trait Printer { this: Product with Throwable with NoStackTrace ⇒
+  trait Printer {
+    this: Product with Throwable with NoStackTrace ⇒
     override def toString =
       productPrefix + productIterator.mkString("(", ", ", ")")
   }

@@ -52,7 +52,8 @@ class CommonsStatsReceiverTest
   }
 
   test("addGauge should work") {
-    @volatile var inner = 9.0f
+    @volatile
+    var inner = 9.0f
     // val needed here to add a strong ref to the gauge otherwise it will get collected
     val myGauge = (new CommonsStatsReceiver).addGauge("bam") { inner }
     inner = 1.0f

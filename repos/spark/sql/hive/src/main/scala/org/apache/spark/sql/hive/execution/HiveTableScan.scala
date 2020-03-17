@@ -45,7 +45,9 @@ import org.apache.spark.util.Utils
 private[hive] case class HiveTableScan(
     requestedAttributes: Seq[Attribute],
     relation: MetastoreRelation,
-    partitionPruningPred: Seq[Expression])(@transient val context: HiveContext)
+    partitionPruningPred: Seq[Expression])(
+    @transient
+    val context: HiveContext)
     extends LeafNode {
 
   require(

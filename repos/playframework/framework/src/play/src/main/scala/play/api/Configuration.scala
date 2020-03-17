@@ -1126,7 +1126,8 @@ private[play] object PlayConfig {
 /**
   * A config loader
   */
-private[play] trait ConfigLoader[A] { self =>
+private[play] trait ConfigLoader[A] {
+  self =>
   def load(config: Config, path: String): A
   def map[B](f: A => B): ConfigLoader[B] =
     new ConfigLoader[B] {

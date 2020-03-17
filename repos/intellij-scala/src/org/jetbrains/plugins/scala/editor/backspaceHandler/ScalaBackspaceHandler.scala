@@ -97,7 +97,8 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
       correctMultilineString(element.getParent.getLastChild.getTextOffset)
     }
 
-    @inline def isMultilineInterpolatedStringPrefix(tpe: IElementType) =
+    @inline
+    def isMultilineInterpolatedStringPrefix(tpe: IElementType) =
       Set(
         ScalaElementTypes.INTERPOLATED_PREFIX_LITERAL_REFERENCE,
         ScalaElementTypes.INTERPOLATED_PREFIX_PATTERN_REFERENCE,
@@ -171,7 +172,8 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
       if (stack.isEmpty) Some(true) else None
     }
 
-    @inline def fixBrace(): Unit =
+    @inline
+    def fixBrace(): Unit =
       if (hasLeft.exists(!_)) extensions.inWriteAction {
         document.deleteString(offset, offset + 1)
       }

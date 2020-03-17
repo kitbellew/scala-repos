@@ -62,29 +62,52 @@ object FatContainer {
 }
 
 class FatContainer {
-  @BeanProperty var f1 = 0
-  @BeanProperty var f2 = 0
-  @BeanProperty var f3 = 0
-  @BeanProperty var f4 = 0
-  @BeanProperty var f5 = 0
-  @BeanProperty var f6 = 0
-  @BeanProperty var f7 = 0
-  @BeanProperty var f8 = 0
-  @BeanProperty var f9 = 0
-  @BeanProperty var f10 = 0
-  @BeanProperty var f11 = 0
-  @BeanProperty var f12 = 0
-  @BeanProperty var f13 = 0
-  @BeanProperty var f14 = 0
-  @BeanProperty var f15 = 0
-  @BeanProperty var f16 = 0
-  @BeanProperty var f17 = 0
-  @BeanProperty var f18 = 0
-  @BeanProperty var f19 = 0
-  @BeanProperty var f20 = 0
-  @BeanProperty var f21 = 0
-  @BeanProperty var f22 = 0
-  @BeanProperty var f23 = 0
+  @BeanProperty
+  var f1 = 0
+  @BeanProperty
+  var f2 = 0
+  @BeanProperty
+  var f3 = 0
+  @BeanProperty
+  var f4 = 0
+  @BeanProperty
+  var f5 = 0
+  @BeanProperty
+  var f6 = 0
+  @BeanProperty
+  var f7 = 0
+  @BeanProperty
+  var f8 = 0
+  @BeanProperty
+  var f9 = 0
+  @BeanProperty
+  var f10 = 0
+  @BeanProperty
+  var f11 = 0
+  @BeanProperty
+  var f12 = 0
+  @BeanProperty
+  var f13 = 0
+  @BeanProperty
+  var f14 = 0
+  @BeanProperty
+  var f15 = 0
+  @BeanProperty
+  var f16 = 0
+  @BeanProperty
+  var f17 = 0
+  @BeanProperty
+  var f18 = 0
+  @BeanProperty
+  var f19 = 0
+  @BeanProperty
+  var f20 = 0
+  @BeanProperty
+  var f21 = 0
+  @BeanProperty
+  var f22 = 0
+  @BeanProperty
+  var f23 = 0
 }
 
 case class IntCaseClass(firstValue: Int, secondValue: Int)

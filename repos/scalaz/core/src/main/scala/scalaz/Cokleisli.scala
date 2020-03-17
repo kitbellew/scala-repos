@@ -1,6 +1,7 @@
 package scalaz
 
-final case class Cokleisli[F[_], A, B](run: F[A] => B) { self =>
+final case class Cokleisli[F[_], A, B](run: F[A] => B) {
+  self =>
   def apply(fa: F[A]): B = run(fa)
 
   def dimap[C, D](f: C => A, g: B => D)(implicit

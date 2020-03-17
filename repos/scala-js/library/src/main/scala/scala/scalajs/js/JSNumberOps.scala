@@ -82,8 +82,8 @@ object JSNumberOps {
     new ExtOps(x.asInstanceOf[Dynamic])
 
   final class ExtOps(val self: Dynamic) extends AnyVal {
-    @inline def toUint: Double =
-      (self >>> 0.asInstanceOf[Dynamic]).asInstanceOf[Double]
+    @inline
+    def toUint: Double = (self >>> 0.asInstanceOf[Dynamic]).asInstanceOf[Double]
   }
 
   /* The following overloads make sure that the developer does not use JS

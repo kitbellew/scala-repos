@@ -122,9 +122,8 @@ case class DateRange(val start: RichDate, val end: RichDate) {
   def each(span: Duration): Iterable[DateRange] = {
     //tail recursive method which produces output (as a stack, so it is
     //reversed). acc is the accumulated list so far:
-    @tailrec def eachRec(
-        acc: List[DateRange],
-        nextDr: DateRange): List[DateRange] = {
+    @tailrec
+    def eachRec(acc: List[DateRange], nextDr: DateRange): List[DateRange] = {
       val next_start = span.floorOf(nextDr.start) + span
       //the smallest grain of time we count is 1 millisecond
       val this_end = next_start - Millisecs(1)

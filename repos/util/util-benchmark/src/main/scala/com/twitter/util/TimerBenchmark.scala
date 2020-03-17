@@ -10,20 +10,19 @@ import org.openjdk.jmh.annotations._
   * does not wait for the tasks to be executed).
   */
 // ./sbt 'project util-benchmark' 'run .*TimerBenchmark.*'
-@State(Scope.Benchmark)
-@Warmup(batchSize = 250)
-@Measurement(batchSize = 1000)
+@State(Scope.Benchmark) @Warmup(batchSize = 250) @Measurement(batchSize = 1000)
 @BenchmarkMode(Array(Mode.SingleShotTime))
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
-@Threads(4)
+@OutputTimeUnit(TimeUnit.MICROSECONDS) @Threads(4)
 class TimerBenchmark extends StdBenchAnnotations {
 
   private[this] val period = 5.minutes
   private[this] val wayLater = Time.now + 20.minutes
 
   private[this] val baseline = Timer.Nil
-  @volatile private[this] var javaUtil: JavaTimer = _
-  @volatile private[this] var executor: ScheduledThreadPoolTimer = _
+  @volatile
+  private[this] var javaUtil: JavaTimer = _
+  @volatile
+  private[this] var executor: ScheduledThreadPoolTimer = _
 
   @Setup(Level.Iteration)
   def setup(): Unit = {

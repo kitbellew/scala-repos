@@ -37,8 +37,7 @@ import org.apache.spark.storage.StorageLevel
   * @param intercept Intercept computed for this model.
   *
   */
-@Since("0.8.0")
-@DeveloperApi
+@Since("0.8.0") @DeveloperApi
 abstract class GeneralizedLinearModel @Since("1.0.0") (
     @Since("1.0.0") val weights: Vector,
     @Since("0.8.0") val intercept: Double)
@@ -102,8 +101,7 @@ abstract class GeneralizedLinearModel @Since("1.0.0") (
   * This class should be extended with an Optimizer to create a new GLM.
   *
   */
-@Since("0.8.0")
-@DeveloperApi
+@Since("0.8.0") @DeveloperApi
 abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     extends Logging
     with Serializable {

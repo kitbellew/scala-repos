@@ -10,7 +10,8 @@ import java.util.logging.{Level, Logger}
   *
   * Note: There is a Java-friendly API for this trait: [[com.twitter.util.AbstractClosable]].
   */
-trait Closable { self =>
+trait Closable {
+  self =>
 
   /**
     * Close the resource. The returned Future is completed when

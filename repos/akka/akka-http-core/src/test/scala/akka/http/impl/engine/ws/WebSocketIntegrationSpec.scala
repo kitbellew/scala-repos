@@ -193,7 +193,8 @@ class WebSocketIntegrationSpec
         val binding = Await.result(bindingFuture, 3.seconds)
         val myPort = binding.localAddress.getPort
 
-        @volatile var messages = 0
+        @volatile
+        var messages = 0
         val (breaker, completion) = Source.maybe
           .viaMat {
             Http()

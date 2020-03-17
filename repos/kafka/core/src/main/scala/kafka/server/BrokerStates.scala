@@ -81,7 +81,8 @@ case object BrokerShuttingDown extends BrokerStates {
 }
 
 case class BrokerState() {
-  @volatile var currentState: Byte = NotRunning.state
+  @volatile
+  var currentState: Byte = NotRunning.state
 
   def newState(newState: BrokerStates) { this.newState(newState.state) }
 

@@ -892,7 +892,8 @@ object Algebraic extends AlgebraicInstances {
         // An adaptive algorithm to find the sign. Rather than just compute
         // this number to `maxDigits` precision, we start with a smaller
         // precision and keep adding digits until we get one that isn't 0.
-        @tailrec def loop(digits0: Long): Int = {
+        @tailrec
+        def loop(digits0: Long): Int = {
           val digits = min(digits0, min(maxDigits, Int.MaxValue)).toInt
           val approx = toBigDecimal(digits + 1)
             .setScale(digits, RoundingMode.DOWN)
@@ -1120,7 +1121,8 @@ object Algebraic extends AlgebraicInstances {
     if (signedValue.compareTo(JBigDecimal.ZERO) == 0) return JBigDecimal.ZERO
     val value = signedValue.abs
     val n = new JBigDecimal(k)
-    @tailrec def loop(
+    @tailrec
+    def loop(
         prev: JBigDecimal,
         prevDigits: Int,
         prevEps: JBigDecimal): JBigDecimal = {
@@ -1513,7 +1515,8 @@ object Algebraic extends AlgebraicInstances {
       }
 
     private def pow(sub: Bound, k: Int): Bound = {
-      @tailrec def sum(acc: Long, k: Int, extra: Long): Long =
+      @tailrec
+      def sum(acc: Long, k: Int, extra: Long): Long =
         if (k == 1) { checked(acc + extra) }
         else {
           val x = if ((k & 1) == 1) checked(acc + extra) else extra

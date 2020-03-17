@@ -45,7 +45,8 @@ class FlowAppendSpec extends AkkaSpec with River {
 
 }
 
-trait River { self: Matchers ⇒
+trait River {
+  self: Matchers ⇒
 
   val elements = 1 to 10
   val otherFlow = Flow[Int].map(_.toString)

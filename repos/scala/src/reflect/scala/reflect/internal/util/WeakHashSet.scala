@@ -274,7 +274,8 @@ final class WeakHashSet[A <: AnyRef](
     count = 0
 
     // drain the queue - doesn't do anything because we're throwing away all the values anyway
-    @tailrec def queueLoop(): Unit = if (queue.poll() != null) queueLoop()
+    @tailrec
+    def queueLoop(): Unit = if (queue.poll() != null) queueLoop()
     queueLoop()
   }
 

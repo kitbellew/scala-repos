@@ -199,7 +199,8 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
     val in = new ZipInputStream(new ByteArrayInputStream(
       Streamable.bytes(input)))
 
-    @tailrec def loop(): Unit = {
+    @tailrec
+    def loop(): Unit = {
       val zipEntry = in.getNextEntry()
       class EmptyFileEntry() extends Entry(zipEntry.getName) {
         override def toByteArray: Array[Byte] = null

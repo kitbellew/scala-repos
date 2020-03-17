@@ -23,7 +23,8 @@ class ClosableTest extends FunSuite with Eventually with IntegrationPatience {
   }
 
   test("Closable.closeOnCollect") {
-    @volatile var closed = false
+    @volatile
+    var closed = false
     Closable.closeOnCollect(
       Closable.make { t =>
         closed = true

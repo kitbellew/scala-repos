@@ -13,7 +13,8 @@ import akka.util.ByteString.UTF_8
   *
   * LevelDB backed persistent mapping of `String`-based persistent actor ids to numeric ids.
   */
-private[persistence] trait LeveldbIdMapping extends Actor { this: LeveldbStore ⇒
+private[persistence] trait LeveldbIdMapping extends Actor {
+  this: LeveldbStore ⇒
   import Key._
 
   private val idOffset = 10

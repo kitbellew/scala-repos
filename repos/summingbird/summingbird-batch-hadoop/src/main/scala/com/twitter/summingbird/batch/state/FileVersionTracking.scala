@@ -25,8 +25,8 @@ import scala.util.{Try, Success, Failure}
 import org.slf4j.LoggerFactory
 
 private[summingbird] object FileVersionTracking {
-  @transient private val logger = LoggerFactory.getLogger(
-    classOf[FileVersionTracking])
+  @transient
+  private val logger = LoggerFactory.getLogger(classOf[FileVersionTracking])
   val FINISHED_VERSION_SUFFIX = ".version"
   implicit def path(strPath: String): Path = new Path(strPath)
   def path(basePath: String, fileName: String): Path =

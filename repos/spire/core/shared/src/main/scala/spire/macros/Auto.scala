@@ -107,7 +107,8 @@ abstract class AutoOps {
       "Couldn't find matching method for op %s (%s)." format (name, op))
 }
 
-abstract class AutoAlgebra extends AutoOps { ops =>
+abstract class AutoAlgebra extends AutoOps {
+  ops =>
 
   def plus[A: c.WeakTypeTag]: c.Expr[A]
   def minus[A: c.WeakTypeTag]: c.Expr[A]

@@ -60,7 +60,8 @@ object TagUsage extends App {
   // typecasting the value to a tagged type, all this is actually lost
   // at runtime, so when we do a non-typesafe equal comparision, it
   // actually works.
-  @unchecked def equalsTrue(x: Any): Boolean = x == true
+  @unchecked
+  def equalsTrue(x: Any): Boolean = x == true
   assert(equalsTrue(Disjunction(true)))
 
   // however at compile time, they appear to be different types, so a

@@ -34,8 +34,7 @@ import org.apache.spark.sql.types.{DoubleType, FloatType}
   * :: Experimental ::
   * Evaluator for regression, which expects two input columns: prediction and label.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class RegressionEvaluator @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends Evaluator

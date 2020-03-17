@@ -35,7 +35,8 @@ object RecoverJson {
   case object Quote extends Balanced
   case object EscapeChar extends Balanced
 
-  @tailrec private def findEndString(
+  @tailrec
+  private def findEndString(
       buffers: Vector[CharBuffer],
       bufferIndex: Int,
       offset: Int): Option[(Int, Int)] = {
@@ -65,8 +66,8 @@ object RecoverJson {
   }
 
   private def balancedStack(buffers: Vector[CharBuffer]) = {
-    @tailrec @inline def buildState(
-        accum: BalancedStackState): BalancedStackState =
+    @tailrec @inline
+    def buildState(accum: BalancedStackState): BalancedStackState =
       if (accum.bufferIndex >= buffers.length) accum
       else if (accum.offset >= buffers(accum.bufferIndex).limit)
         buildState(BalancedStackState(
@@ -151,7 +152,8 @@ object RecoverJson {
     val closerBuffer = CharBuffer.allocate(
       stringStack.map(_.length).sum + 4 + (if (needsComma) 1 else 0))
 
-    @tailrec def addToCloserBuffer(s: Stack[String]) {
+    @tailrec
+    def addToCloserBuffer(s: Stack[String]) {
       if (s.length == 1) {
         // Last element should always be a Bracket (']')
         // Put the blank element before end of array

@@ -24,27 +24,31 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
 
   private final def tableDebug = false
 
-  @transient private[collection] var _loadFactor = defaultLoadFactor
+  @transient
+  private[collection] var _loadFactor = defaultLoadFactor
 
   /** The actual hash table.
     */
-  @transient protected var table: Array[AnyRef] = new Array(initialCapacity)
+  @transient
+  protected var table: Array[AnyRef] = new Array(initialCapacity)
 
   /** The number of mappings contained in this hash table.
     */
-  @transient protected var tableSize = 0
+  @transient
+  protected var tableSize = 0
 
   /** The next size value at which to resize (capacity * load factor).
     */
-  @transient protected var threshold: Int = newThreshold(
-    _loadFactor,
-    initialCapacity)
+  @transient
+  protected var threshold: Int = newThreshold(_loadFactor, initialCapacity)
 
   /** The array keeping track of number of elements in 32 element blocks.
     */
-  @transient protected var sizemap: Array[Int] = null
+  @transient
+  protected var sizemap: Array[Int] = null
 
-  @transient protected var seedvalue: Int = tableSizeSeed
+  @transient
+  protected var seedvalue: Int = tableSizeSeed
 
   import HashTable.powerOfTwo
 

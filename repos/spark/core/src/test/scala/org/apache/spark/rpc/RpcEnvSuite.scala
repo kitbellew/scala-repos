@@ -74,7 +74,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       clientMode: Boolean = false): RpcEnv
 
   test("send a message locally") {
-    @volatile var message: String = null
+    @volatile
+    var message: String = null
     val rpcEndpointRef = env.setupEndpoint(
       "send-locally",
       new RpcEndpoint {
@@ -89,7 +90,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("send a message remotely") {
-    @volatile var message: String = null
+    @volatile
+    var message: String = null
     // Set up a RpcEndpoint using env
     env.setupEndpoint(
       "send-remotely",
@@ -247,7 +249,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("onError: error in onStart") {
-    @volatile var e: Throwable = null
+    @volatile
+    var e: Throwable = null
     env.setupEndpoint(
       "onError-onStart",
       new RpcEndpoint {
@@ -269,7 +272,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("onError: error in onStop") {
-    @volatile var e: Throwable = null
+    @volatile
+    var e: Throwable = null
     val endpointRef = env.setupEndpoint(
       "onError-onStop",
       new RpcEndpoint {
@@ -293,7 +297,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("onError: error in receive") {
-    @volatile var e: Throwable = null
+    @volatile
+    var e: Throwable = null
     val endpointRef = env.setupEndpoint(
       "onError-receive",
       new RpcEndpoint {
@@ -315,7 +320,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("self: call in onStart") {
-    @volatile var callSelfSuccessfully = false
+    @volatile
+    var callSelfSuccessfully = false
 
     env.setupEndpoint(
       "self-onStart",
@@ -340,7 +346,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("self: call in receive") {
-    @volatile var callSelfSuccessfully = false
+    @volatile
+    var callSelfSuccessfully = false
 
     val endpointRef = env.setupEndpoint(
       "self-receive",
@@ -364,7 +371,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("self: call in onStop") {
-    @volatile var selfOption: Option[RpcEndpointRef] = null
+    @volatile
+    var selfOption: Option[RpcEndpointRef] = null
 
     val endpointRef = env.setupEndpoint(
       "self-onStop",
@@ -390,7 +398,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   test("call receive in sequence") {
     // If a RpcEnv implementation breaks the `receive` contract, hope this test can expose it
     for (i <- 0 until 100) {
-      @volatile var result = 0
+      @volatile
+      var result = 0
       val endpointRef = env.setupEndpoint(
         s"receive-in-sequence-$i",
         new ThreadSafeRpcEndpoint {
@@ -419,7 +428,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("stop(RpcEndpointRef) reentrant") {
-    @volatile var onStopCount = 0
+    @volatile
+    var onStopCount = 0
     val endpointRef = env.setupEndpoint(
       "stop-reentrant",
       new RpcEndpoint {
@@ -751,7 +761,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       clientMode = true)
 
     try {
-      @volatile var message: String = null
+      @volatile
+      var message: String = null
       localEnv.setupEndpoint(
         "send-authentication",
         new RpcEndpoint {

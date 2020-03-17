@@ -86,7 +86,8 @@ private[http] class PoolGateway(
     }
 
   // triggers a shutdown of the current pool, even if it is already a later incarnation
-  @tailrec final def shutdown(): Future[Done] =
+  @tailrec
+  final def shutdown(): Future[Done] =
     state.get match {
       case x @ Running(ref, shutdownStartedPromise, shutdownCompletedPromise) ⇒
         if (state.compareAndSet(

@@ -317,7 +317,8 @@ private[twitter] object ThriftUtil {
   * envelope carrying trace metadata. The envelope itself is also a
   * Thrift struct described [[https://github.com/twitter/finagle/blob/master/finagle-thrift/src/main/thrift/tracing.thrift here]].
   */
-trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
+trait ThriftRichClient {
+  self: Client[ThriftClientRequest, Array[Byte]] =>
   import ThriftUtil._
 
   protected val protocolFactory: TProtocolFactory
@@ -498,7 +499,8 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
   *
   * @define serverExampleObject ThriftMuxRichServer
   */
-trait ThriftRichServer { self: Server[Array[Byte], Array[Byte]] =>
+trait ThriftRichServer {
+  self: Server[Array[Byte], Array[Byte]] =>
   import ThriftUtil._
 
   protected val protocolFactory: TProtocolFactory

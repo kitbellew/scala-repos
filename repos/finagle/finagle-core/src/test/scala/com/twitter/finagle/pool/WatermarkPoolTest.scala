@@ -349,7 +349,8 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
     it("should cache the connection when it comes back") {
       new WatermarkPoolLowOneHighFive {
         val slowService = new Promise[Service[Int, Int]] {
-          @volatile var interrupted: Option[Throwable] = None
+          @volatile
+          var interrupted: Option[Throwable] = None
           setInterruptHandler { case exc => interrupted = Some(exc) }
         }
         when(factory()).thenReturn(slowService)

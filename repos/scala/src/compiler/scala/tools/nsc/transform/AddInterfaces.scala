@@ -10,7 +10,8 @@ import symtab._
 import Flags._
 import scala.tools.nsc.util.ClassPath
 
-abstract class AddInterfaces extends InfoTransform { self: Erasure =>
+abstract class AddInterfaces extends InfoTransform {
+  self: Erasure =>
   import global._ // the global environment
   import definitions._ // standard classes and methods
 

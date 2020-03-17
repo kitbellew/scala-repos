@@ -39,8 +39,7 @@ import scala.collection.parallel.immutable.ParRange
   *    '''Note:''' this method does not use builders to construct a new range,
   *         and its complexity is O(1).
   */
-@SerialVersionUID(7618862778670199309L)
-@inline
+@SerialVersionUID(7618862778670199309L) @inline
 class Range(val start: Int, val end: Int, val step: Int)
     extends scala.collection.AbstractSeq[Int]
     with IndexedSeq[Int]
@@ -122,7 +121,8 @@ class Range(val start: Int, val end: Int, val step: Int)
     else start + (step * idx)
   }
 
-  @inline final override def foreach[@specialized(Unit) U](f: Int => U) {
+  @inline
+  final override def foreach[@specialized(Unit) U](f: Int => U) {
     validateMaxLength()
     val isCommonCase = (start != Int.MinValue || end != Int.MinValue)
     var i = start

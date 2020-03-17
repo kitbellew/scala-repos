@@ -461,8 +461,7 @@ class LocalLDAModel private[spark] (
 
 }
 
-@Experimental
-@Since("1.5.0")
+@Experimental @Since("1.5.0")
 object LocalLDAModel extends Loader[LocalLDAModel] {
 
   private object SaveLoadV1_0 {
@@ -917,8 +916,7 @@ class DistributedLDAModel private[clustering] (
   }
 }
 
-@Experimental
-@Since("1.5.0")
+@Experimental @Since("1.5.0")
 object DistributedLDAModel extends Loader[DistributedLDAModel] {
 
   private object SaveLoadV1_0 {

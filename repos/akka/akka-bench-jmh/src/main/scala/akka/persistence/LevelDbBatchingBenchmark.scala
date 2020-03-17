@@ -32,9 +32,7 @@ import org.openjdk.jmh.annotations._
 [info] a.p.LevelDbBatchingBenchmark.writeBatch_100     avgt        20        0.050        0.000    ms/op
 [info] a.p.LevelDbBatchingBenchmark.writeBatch_200     avgt        20        0.041        0.001    ms/op
  */
-@Fork(1)
-@Threads(10)
-@State(Scope.Benchmark)
+@Fork(1) @Threads(10) @State(Scope.Benchmark)
 @BenchmarkMode(Array(Mode.AverageTime))
 class LevelDbBatchingBenchmark {
 
@@ -70,32 +68,28 @@ class LevelDbBatchingBenchmark {
     Await.ready(sys.whenTerminated, 10.seconds)
   }
 
-  @Benchmark
-  @Measurement(timeUnit = TimeUnit.MICROSECONDS)
+  @Benchmark @Measurement(timeUnit = TimeUnit.MICROSECONDS)
   @OperationsPerInvocation(1)
   def write_1(): Unit = {
     probe.send(store, WriteMessages(batch_1))
     probe.expectMsgType[Any]
   }
 
-  @Benchmark
-  @Measurement(timeUnit = TimeUnit.MICROSECONDS)
+  @Benchmark @Measurement(timeUnit = TimeUnit.MICROSECONDS)
   @OperationsPerInvocation(10)
   def writeBatch_10(): Unit = {
     probe.send(store, WriteMessages(batch_10))
     probe.expectMsgType[Any]
   }
 
-  @Benchmark
-  @Measurement(timeUnit = TimeUnit.MICROSECONDS)
+  @Benchmark @Measurement(timeUnit = TimeUnit.MICROSECONDS)
   @OperationsPerInvocation(100)
   def writeBatch_100(): Unit = {
     probe.send(store, WriteMessages(batch_100))
     probe.expectMsgType[Any]
   }
 
-  @Benchmark
-  @Measurement(timeUnit = TimeUnit.MICROSECONDS)
+  @Benchmark @Measurement(timeUnit = TimeUnit.MICROSECONDS)
   @OperationsPerInvocation(200)
   def writeBatch_200(): Unit = {
     probe.send(store, WriteMessages(batch_200))

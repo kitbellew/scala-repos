@@ -249,7 +249,8 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
     logger: Logger = DefaultLogger,
     endpoint: Address = Address.failing,
     responseClassifier: ResponseClassifier = ResponseClassifier.Default)
-    extends ServiceFactory[Req, Rep] { svcFacSelf =>
+    extends ServiceFactory[Req, Rep] {
+  svcFacSelf =>
   import FailureAccrualFactory._
 
   def this(
@@ -293,7 +294,8 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
       endpoint)
 
   // writes to `state` and `reviveTimerTask` are synchronized on `svcFacSelf`
-  @volatile private[this] var state: State = Alive
+  @volatile
+  private[this] var state: State = Alive
   private[this] var reviveTimerTask: Option[TimerTask] = None
 
   private[this] val removalCounter = statsReceiver.counter("removals")

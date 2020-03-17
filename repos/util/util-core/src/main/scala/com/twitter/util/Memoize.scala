@@ -63,7 +63,8 @@ object Memoize {
         * What to do if we do not find the value already in the memo
         * table.
         */
-      @tailrec private[this] def missing(a: A): B =
+      @tailrec
+      private[this] def missing(a: A): B =
         synchronized {
           // With the lock, check to see what state the value is in.
           memo.get(a) match {

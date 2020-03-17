@@ -1,4 +1,5 @@
-trait Ops { self: MyCodes =>
+trait Ops {
+  self: MyCodes =>
   abstract class Instru
   object opcodes {
     case class SWITCH(i: Int) extends Instru
@@ -6,7 +7,8 @@ trait Ops { self: MyCodes =>
   }
 }
 
-trait Blox { self: MyCodes =>
+trait Blox {
+  self: MyCodes =>
   import opcodes._
   class Basick {
     var foo: Instru = null

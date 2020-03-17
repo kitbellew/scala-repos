@@ -575,8 +575,7 @@ class IntArrayParam(
   * :: Experimental ::
   * A param and its value.
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 case class ParamPair[T] @Since("1.2.0") (
     @Since("1.2.0") param: Param[T],
     @Since("1.2.0") value: T) {
@@ -871,8 +870,7 @@ abstract class JavaParams extends Params
   * :: Experimental ::
   * A param to value map.
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
     extends Serializable {
 
@@ -897,8 +895,7 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
   /**
     * Puts a list of param pairs (overwrites if the input params exists).
     */
-  @varargs
-  @Since("1.2.0")
+  @varargs @Since("1.2.0")
   def put(paramPairs: ParamPair[_]*): this.type = {
     paramPairs.foreach { p => map(p.param.asInstanceOf[Param[Any]]) = p.value }
     this
@@ -1015,8 +1012,7 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
   def size: Int = map.size
 }
 
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 object ParamMap {
 
   /**
@@ -1028,8 +1024,7 @@ object ParamMap {
   /**
     * Constructs a param map by specifying its entries.
     */
-  @varargs
-  @Since("1.2.0")
+  @varargs @Since("1.2.0")
   def apply(paramPairs: ParamPair[_]*): ParamMap = {
     new ParamMap().put(paramPairs: _*)
   }

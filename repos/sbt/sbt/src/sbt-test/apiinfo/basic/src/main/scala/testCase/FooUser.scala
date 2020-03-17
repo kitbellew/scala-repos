@@ -1,3 +1,5 @@
 package testCase
 
-case class FooUser(@Foo a: Int)
+case class FooUser(
+    @Foo
+    a: Int)

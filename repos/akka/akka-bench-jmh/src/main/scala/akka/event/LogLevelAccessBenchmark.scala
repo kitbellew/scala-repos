@@ -8,9 +8,7 @@ import java.util.concurrent.TimeUnit
 import akka.event.Logging.LogLevel
 import org.openjdk.jmh.annotations._
 
-@Fork(3)
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
+@Fork(3) @State(Scope.Benchmark) @BenchmarkMode(Array(Mode.Throughput))
 @Warmup(iterations = 10)
 @Measurement(iterations = 20, timeUnit = TimeUnit.MILLISECONDS)
 class LogLevelAccessBenchmark {
@@ -36,17 +34,13 @@ class LogLevelAccessBenchmark {
 
   var log: BusLogging = akka.event.Logging(NoopBus, "").asInstanceOf[BusLogging]
 
-  @Benchmark
-  @GroupThreads(20)
-  @Group("g")
+  @Benchmark @GroupThreads(20) @Group("g")
   def readLogLevel(): LogLevel = log.bus.logLevel
 
-  @Benchmark
-  @Group("g")
+  @Benchmark @Group("g")
   def setLogLevel_1(): Unit = log.bus.setLogLevel(Logging.ErrorLevel)
 
-  @Benchmark
-  @Group("g")
+  @Benchmark @Group("g")
   def setLogLevel_2(): Unit = log.bus.setLogLevel(Logging.DebugLevel)
 
 }

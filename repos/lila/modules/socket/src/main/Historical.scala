@@ -2,7 +2,8 @@ package lila.socket
 
 import play.api.libs.json._
 
-trait Historical[M <: SocketMember, Metadata] { self: SocketActor[M] =>
+trait Historical[M <: SocketMember, Metadata] {
+  self: SocketActor[M] =>
 
   val history: History[Metadata]
 

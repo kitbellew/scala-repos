@@ -45,7 +45,8 @@ private[spark] class OpenHashMap[
   private var _values: Array[V] = _
   _values = new Array[V](_keySet.capacity)
 
-  @transient private var _oldValues: Array[V] = null
+  @transient
+  private var _oldValues: Array[V] = null
 
   // Treat the null key differently so we can use nulls in "data" to represent empty items.
   private var haveNullValue = false

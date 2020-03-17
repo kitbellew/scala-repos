@@ -75,8 +75,7 @@ private[regression] trait LinearRegressionParams
   *  - L1 (Lasso)
   *  - L2 + L1 (elastic net)
   */
-@Since("1.3.0")
-@Experimental
+@Since("1.3.0") @Experimental
 class LinearRegression @Since("1.3.0") (
     @Since("1.3.0") override val uid: String)
     extends Regressor[Vector, LinearRegression, LinearRegressionModel]
@@ -436,8 +435,7 @@ object LinearRegression extends DefaultParamsReadable[LinearRegression] {
   * :: Experimental ::
   * Model produced by [[LinearRegression]].
   */
-@Since("1.3.0")
-@Experimental
+@Since("1.3.0") @Experimental
 class LinearRegressionModel private[ml] (
     override val uid: String,
     val coefficients: Vector,
@@ -601,8 +599,7 @@ object LinearRegressionModel extends MLReadable[LinearRegressionModel] {
   * @param predictions predictions outputted by the model's `transform` method.
   * @param objectiveHistory objective function (scaled loss + regularization) at each iteration.
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class LinearRegressionTrainingSummary private[regression] (
     predictions: DataFrame,
     predictionCol: String,
@@ -630,17 +627,18 @@ class LinearRegressionTrainingSummary private[regression] (
   *
   * @param predictions predictions outputted by the model's `transform` method.
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class LinearRegressionSummary private[regression] (
-    @transient val predictions: DataFrame,
+    @transient
+    val predictions: DataFrame,
     val predictionCol: String,
     val labelCol: String,
     val model: LinearRegressionModel,
     private val diagInvAtWA: Array[Double])
     extends Serializable {
 
-  @transient private val metrics = new RegressionMetrics(
+  @transient
+  private val metrics = new RegressionMetrics(
     predictions
       .select(predictionCol, labelCol)
       .rdd
@@ -699,8 +697,8 @@ class LinearRegressionSummary private[regression] (
   val r2: Double = metrics.r2
 
   /** Residuals (label - predicted value) */
-  @Since("1.5.0")
-  @transient lazy val residuals: DataFrame = {
+  @Since("1.5.0") @transient
+  lazy val residuals: DataFrame = {
     val t = udf { (pred: Double, label: Double) => label - pred }
     predictions.select(t(col(predictionCol), col(labelCol)).as("residuals"))
   }

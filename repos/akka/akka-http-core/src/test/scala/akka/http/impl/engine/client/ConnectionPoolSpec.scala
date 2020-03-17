@@ -45,7 +45,8 @@ class ConnectionPoolSpec
     try {
       val clientSocket = SocketChannel.open(
         new InetSocketAddress("127.0.0.1", serverSocket.socket().getLocalPort))
-      @volatile var serverSideChannel: SocketChannel = null
+      @volatile
+      var serverSideChannel: SocketChannel = null
       awaitCond {
         serverSideChannel = serverSocket.accept()
         serverSideChannel != null

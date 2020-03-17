@@ -17,7 +17,8 @@ import simulacrum.typeclass
   *
   * Must obey the laws defined in cats.laws.FlatMapLaws.
   */
-@typeclass trait FlatMap[F[_]] extends Apply[F] {
+@typeclass
+trait FlatMap[F[_]] extends Apply[F] {
   def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
 
   /**

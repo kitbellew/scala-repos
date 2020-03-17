@@ -37,9 +37,12 @@ class ScalaPropertiesReferenceContributor extends PsiReferenceContributor {
     registrar.registerReferenceProvider(
       PsiJavaPatterns.psiElement(classOf[PropertyValueImpl]),
       new PsiReferenceProvider {
-        @NotNull def getReferencesByElement(
-            @NotNull element: PsiElement,
-            @NotNull context: ProcessingContext): Array[PsiReference] = {
+        @NotNull
+        def getReferencesByElement(
+            @NotNull
+            element: PsiElement,
+            @NotNull
+            context: ProcessingContext): Array[PsiReference] = {
           val text: String = element.getText
           val words: Array[String] = text.split("\\s")
           if (words.length != 1) return PsiReference.EMPTY_ARRAY

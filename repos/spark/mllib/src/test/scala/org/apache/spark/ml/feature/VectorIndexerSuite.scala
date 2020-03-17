@@ -38,16 +38,22 @@ class VectorIndexerSuite
   import VectorIndexerSuite.FeatureData
 
   // identical, of length 3
-  @transient var densePoints1: DataFrame = _
-  @transient var sparsePoints1: DataFrame = _
-  @transient var point1maxes: Array[Double] = _
+  @transient
+  var densePoints1: DataFrame = _
+  @transient
+  var sparsePoints1: DataFrame = _
+  @transient
+  var point1maxes: Array[Double] = _
 
   // identical, of length 2
-  @transient var densePoints2: DataFrame = _
-  @transient var sparsePoints2: DataFrame = _
+  @transient
+  var densePoints2: DataFrame = _
+  @transient
+  var sparsePoints2: DataFrame = _
 
   // different lengths
-  @transient var badPoints: DataFrame = _
+  @transient
+  var badPoints: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -325,5 +331,7 @@ class VectorIndexerSuite
 
 private[feature] object VectorIndexerSuite {
   @BeanInfo
-  case class FeatureData(@BeanProperty features: Vector)
+  case class FeatureData(
+      @BeanProperty
+      features: Vector)
 }

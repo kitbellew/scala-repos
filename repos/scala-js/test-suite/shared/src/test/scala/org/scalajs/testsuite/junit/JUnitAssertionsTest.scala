@@ -479,7 +479,8 @@ class JUnitAssertionsTest {
       ShallNotPass)
   }
 
-  @Test def testIfAssertsTest_issue_2252(): Unit = {
+  @Test
+  def testIfAssertsTest_issue_2252(): Unit = {
     Try(testIfAsserts(())) match {
       case Success(_) => // As expected
 

@@ -341,7 +341,8 @@ object Multipart {
 
     def parsePreamble(input: ByteString, offset: Int): StateResult =
       try {
-        @tailrec def rec(index: Int): StateResult = {
+        @tailrec
+        def rec(index: Int): StateResult = {
           val needleEnd = boyerMoore.nextIndex(input, index) + needle.length
           if (crlf(input, needleEnd)) parseHeader(input, needleEnd + 2, 0)
           else if (doubleDash(input, needleEnd)) terminate()
@@ -560,10 +561,8 @@ object Multipart {
     // the length of the needle without the preceding CRLF
     def boundaryLength = needle.length - 2
 
-    @tailrec def boundary(
-        input: ByteString,
-        offset: Int,
-        ix: Int = 2): Boolean =
+    @tailrec
+    def boundary(input: ByteString, offset: Int, ix: Int = 2): Boolean =
       (ix == needle.length) || (byteAt(input, offset + ix - 2) == needle(
         ix)) && boundary(input, offset, ix + 1)
 
@@ -587,7 +586,8 @@ object Multipart {
 
     private[this] val charTable: Array[Int] = {
       val table = Array.fill(256)(needle.length)
-      @tailrec def rec(i: Int): Unit =
+      @tailrec
+      def rec(i: Int): Unit =
         if (i < nl1) {
           table(needle(i) & 0xff) = nl1 - i
           rec(i + 1)
@@ -599,9 +599,11 @@ object Multipart {
     private[this] val offsetTable: Array[Int] = {
       val table = new Array[Int](needle.length)
 
-      @tailrec def isPrefix(i: Int, j: Int): Boolean =
+      @tailrec
+      def isPrefix(i: Int, j: Int): Boolean =
         i == needle.length || needle(i) == needle(j) && isPrefix(i + 1, j + 1)
-      @tailrec def loop1(i: Int, lastPrefixPosition: Int): Unit =
+      @tailrec
+      def loop1(i: Int, lastPrefixPosition: Int): Unit =
         if (i >= 0) {
           val nextLastPrefixPosition =
             if (isPrefix(i + 1, 0)) i + 1 else lastPrefixPosition
@@ -610,11 +612,13 @@ object Multipart {
         }
       loop1(nl1, needle.length)
 
-      @tailrec def suffixLength(i: Int, j: Int, result: Int): Int =
+      @tailrec
+      def suffixLength(i: Int, j: Int, result: Int): Int =
         if (i >= 0 && needle(i) == needle(j))
           suffixLength(i - 1, j - 1, result + 1)
         else result
-      @tailrec def loop2(i: Int): Unit =
+      @tailrec
+      def loop2(i: Int): Unit =
         if (i < nl1) {
           val sl = suffixLength(i, nl1, 0)
           table(sl) = nl1 - i + sl
@@ -629,7 +633,8 @@ object Multipart {
       * If none is found a `NotEnoughDataException` is thrown.
       */
     def nextIndex(haystack: ByteString, offset: Int): Int = {
-      @tailrec def rec(i: Int, j: Int): Int = {
+      @tailrec
+      def rec(i: Int, j: Int): Int = {
         val byte = byteAt(haystack, i)
         if (needle(j) == byte) {
           if (j == 0) i // found

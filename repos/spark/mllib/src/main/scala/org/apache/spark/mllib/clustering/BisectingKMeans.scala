@@ -51,8 +51,7 @@ import org.apache.spark.storage.StorageLevel
   *     Steinbach, Karypis, and Kumar, A comparison of document clustering techniques,
   *     KDD Workshop on Text Mining, 2000.]]
   */
-@Since("1.6.0")
-@Experimental
+@Since("1.6.0") @Experimental
 class BisectingKMeans private (
     private var k: Int,
     private var maxIterations: Int,
@@ -447,8 +446,7 @@ private object BisectingKMeans extends Serializable {
   *               from the center to the centers of the children's, but subject to change.
   * @param children children nodes
   */
-@Since("1.6.0")
-@Experimental
+@Since("1.6.0") @Experimental
 private[clustering] class ClusteringTreeNode private[clustering] (
     val index: Int,
     val size: Long,

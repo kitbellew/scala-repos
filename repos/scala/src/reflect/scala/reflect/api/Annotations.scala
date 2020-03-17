@@ -35,7 +35,8 @@ import scala.collection.immutable.ListMap
   *  @contentDiagram hideNodes "*Api"
   *  @group ReflectionAPI
   */
-trait Annotations { self: Universe =>
+trait Annotations {
+  self: Universe =>
 
   /** Information about an annotation.
     *  @template

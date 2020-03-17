@@ -14,7 +14,8 @@ class VMEventManager(val eventQueue: EventQueue, debugManager: ActorRef)
 
   // TODO needs proper stop method with interrupt
 
-  @volatile var finished = false
+  @volatile
+  var finished = false
   override def run(): Unit = {
     while (!finished) {
       try {

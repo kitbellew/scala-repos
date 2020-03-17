@@ -3,8 +3,7 @@ package com.twitter.util
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations._
 
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
-@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.NANOSECONDS) @BenchmarkMode(Array(Mode.AverageTime))
 class StopwatchBenchmark {
   import StopwatchBenchmark._
 

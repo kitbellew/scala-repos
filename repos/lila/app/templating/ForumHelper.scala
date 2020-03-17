@@ -6,7 +6,8 @@ import play.twirl.api.Html
 import lila.forum.Post
 import lila.api.Context
 
-trait ForumHelper { self: UserHelper with StringHelper =>
+trait ForumHelper {
+  self: UserHelper with StringHelper =>
 
   private object Granter extends lila.forum.Granter {
 

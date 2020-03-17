@@ -37,8 +37,7 @@ import org.apache.spark.mllib.linalg.{Vector, Vectors}
   * For weighted instances, the unbiased estimation of variance is defined by the reliability
   * weights: [[https://en.wikipedia.org/wiki/Weighted_arithmetic_mean#Reliability_weights]].
   */
-@Since("1.1.0")
-@DeveloperApi
+@Since("1.1.0") @DeveloperApi
 class MultivariateOnlineSummarizer
     extends MultivariateStatisticalSummary
     with Serializable {

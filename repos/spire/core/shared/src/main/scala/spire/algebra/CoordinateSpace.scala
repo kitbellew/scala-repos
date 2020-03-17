@@ -22,7 +22,8 @@ trait CoordinateSpace[V, @sp(Float, Double) F]
   def basis: Vector[V] = Vector.tabulate(dimensions)(axis)
 
   def dot(v: V, w: V): F = {
-    @tailrec def loop(sum: F, i: Int): F =
+    @tailrec
+    def loop(sum: F, i: Int): F =
       if (i < dimensions) {
         loop(scalar.plus(sum, scalar.times(coord(v, i), coord(w, i))), i + 1)
       } else { sum }
@@ -32,7 +33,8 @@ trait CoordinateSpace[V, @sp(Float, Double) F]
 }
 
 object CoordinateSpace {
-  @inline final def apply[V, @sp(Float, Double) F](implicit
+  @inline
+  final def apply[V, @sp(Float, Double) F](implicit
       V: CoordinateSpace[V, F]): CoordinateSpace[V, F] = V
 
   def seq[A: Field, CC[A] <: SeqLike[A, CC[A]]](dimensions: Int)(implicit

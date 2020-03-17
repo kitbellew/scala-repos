@@ -55,8 +55,7 @@ import org.apache.spark.streaming.dstream.DStream
   *
   *
   */
-@Since("1.1.0")
-@DeveloperApi
+@Since("1.1.0") @DeveloperApi
 abstract class StreamingLinearAlgorithm[
     M <: GeneralizedLinearModel, A <: GeneralizedLinearAlgorithm[M]]
     extends Logging {

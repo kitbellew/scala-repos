@@ -6,8 +6,7 @@ import com.twitter.util.Stopwatch
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
 
-@State(Scope.Benchmark)
-@Threads(Threads.MAX)
+@State(Scope.Benchmark) @Threads(Threads.MAX)
 class LatencyHistogramBench extends StdBenchAnnotations {
 
   @Param(Array("1000"))

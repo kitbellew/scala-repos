@@ -38,7 +38,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
   private val blockIntervalMs = 10
   private val conf = new SparkConf()
     .set("spark.streaming.blockInterval", s"${blockIntervalMs}ms")
-  @volatile private var blockGenerator: BlockGenerator = null
+  @volatile
+  private var blockGenerator: BlockGenerator = null
 
   after { if (blockGenerator != null) { blockGenerator.stop() } }
 
@@ -221,7 +222,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
 
   test("block push errors are reported") {
     val listener = new TestBlockGeneratorListener {
-      @volatile var errorReported = false
+      @volatile
+      var errorReported = false
       override def onPushBlock(
           blockId: StreamBlockId,
           arrayBuffer: mutable.ArrayBuffer[_]): Unit = {
@@ -258,9 +260,12 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     val pushedData = new ConcurrentLinkedQueue[Any]
     val addedData = new ConcurrentLinkedQueue[Any]
     val addedMetadata = new ConcurrentLinkedQueue[Any]
-    @volatile var onGenerateBlockCalled = false
-    @volatile var onAddDataCalled = false
-    @volatile var onPushBlockCalled = false
+    @volatile
+    var onGenerateBlockCalled = false
+    @volatile
+    var onAddDataCalled = false
+    @volatile
+    var onPushBlockCalled = false
 
     override def onPushBlock(
         blockId: StreamBlockId,

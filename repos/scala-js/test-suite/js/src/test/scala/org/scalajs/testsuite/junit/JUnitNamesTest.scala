@@ -4,13 +4,17 @@ import org.junit.Test
 import org.junit.Assert._
 
 class JUnitNamesTest {
-  @Test def +(): Unit = ()
-  @Test def `*`(): Unit = ()
-  @Test def `∆ƒ`(): Unit = ()
+  @Test
+  def +(): Unit = ()
+  @Test
+  def `*`(): Unit = ()
+  @Test
+  def `∆ƒ`(): Unit = ()
 }
 
 class JUnitNamesTestCheck {
-  @Test def jUnitNamesTest(): Unit = {
+  @Test
+  def jUnitNamesTest(): Unit = {
     val boot = JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.JUnitNamesTest")
     try {

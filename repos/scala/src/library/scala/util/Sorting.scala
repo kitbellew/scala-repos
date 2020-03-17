@@ -247,7 +247,8 @@ object Sorting {
 
   // TODO: add upper bound: T <: AnyRef, propagate to callers below (not binary compatible)
   // Maybe also rename all these methods to `sort`.
-  @inline private def sort[T](a: Array[T], ord: Ordering[T]): Unit =
+  @inline
+  private def sort[T](a: Array[T], ord: Ordering[T]): Unit =
     a match {
       case _: Array[AnyRef] =>
         // Note that runtime matches are covariant, so could actually be any Array[T] s.t. T is not primitive (even boxed value classes)

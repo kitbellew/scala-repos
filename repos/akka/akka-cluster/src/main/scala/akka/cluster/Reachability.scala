@@ -33,9 +33,12 @@ private[cluster] object Reachability {
       version: Long)
 
   sealed trait ReachabilityStatus
-  @SerialVersionUID(1L) case object Reachable extends ReachabilityStatus
-  @SerialVersionUID(1L) case object Unreachable extends ReachabilityStatus
-  @SerialVersionUID(1L) case object Terminated extends ReachabilityStatus
+  @SerialVersionUID(1L)
+  case object Reachable extends ReachabilityStatus
+  @SerialVersionUID(1L)
+  case object Unreachable extends ReachabilityStatus
+  @SerialVersionUID(1L)
+  case object Terminated extends ReachabilityStatus
 
 }
 
@@ -107,7 +110,8 @@ private[cluster] class Reachability private (
 
   }
 
-  @transient private lazy val cache = new Cache
+  @transient
+  private lazy val cache = new Cache
 
   private def observerRows(observer: UniqueAddress)
       : Option[Map[UniqueAddress, Reachability.Record]] =

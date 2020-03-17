@@ -20,7 +20,8 @@ class WrappedDictionaryTest {
 
   // Methods we actually implement
 
-  @Test def get(): Unit = {
+  @Test
+  def get(): Unit = {
     val map: mutable.Map[String, Any] = js.Dictionary(
       "a" -> "a",
       "b" -> 6,
@@ -31,7 +32,8 @@ class WrappedDictionaryTest {
     assertTrue(map.get("f") == None)
   }
 
-  @Test def `+=_and_-=`(): Unit = {
+  @Test
+  def `+=_and_-=`(): Unit = {
     val dict = js.Dictionary[String]()
     val map: mutable.Map[String, String] = dict
 
@@ -50,7 +52,8 @@ class WrappedDictionaryTest {
       js.Object.properties(dict).toArray[AnyRef])
   }
 
-  @Test def iterator(): Unit = {
+  @Test
+  def iterator(): Unit = {
     val elems = ('a' to 'e').map(_.toString).zip(1 to 5)
     val dict = js.Dictionary[Int]()
     val map: mutable.Map[String, Int] = dict
@@ -62,7 +65,8 @@ class WrappedDictionaryTest {
 
   // Some arbitrary methods to test the builders
 
-  @Test def map(): Unit = {
+  @Test
+  def map(): Unit = {
     def ct[A: ClassTag](x: A): ClassTag[A] = implicitly[ClassTag[A]]
     val dict = js.Dictionary[Int]()
     dict ++= Seq("one" -> 1, "two" -> 2, "three" -> 3)
@@ -77,7 +81,8 @@ class WrappedDictionaryTest {
     assertEquals(2, mapStr.size)
   }
 
-  @Test def withFilter(): Unit = {
+  @Test
+  def withFilter(): Unit = {
     val dict = js.Dictionary[Int]()
     val flt = dict.withFilter { case (k, v) => v > 5 || k == "a" }
     def size: Int = flt.map(x => x).size
@@ -95,13 +100,15 @@ class WrappedDictionaryTest {
     assertEquals(2, size)
   }
 
-  @Test def toList(): Unit = {
+  @Test
+  def toList(): Unit = {
     val dict = js.Dictionary("a" -> "a", "b" -> 6, "e" -> js.undefined)
     val list = dict.toList
     assertEquals(3, list.size)
   }
 
-  @Test def to_T(): Unit = {
+  @Test
+  def to_T(): Unit = {
     val dict = js.Dictionary("a" -> "a", "b" -> 6, "e" -> js.undefined)
     val list = dict.to[List]
     assertEquals(3, list.size)

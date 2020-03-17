@@ -549,7 +549,8 @@ object Uri {
     def startsWithSegment: Boolean
     def endsWithSlash: Boolean = {
       import Path.{Empty ⇒ PEmpty, _}
-      @tailrec def check(path: Path): Boolean =
+      @tailrec
+      def check(path: Path): Boolean =
         path match {
           case PEmpty ⇒ false
           case Slash(PEmpty) ⇒ true
@@ -580,7 +581,8 @@ object Uri {
     def /(path: Path): Path = Slash(path)
     def /(segment: String): Path = Slash(segment :: Empty)
     def apply(string: String, charset: Charset = UTF8): Path = {
-      @tailrec def build(
+      @tailrec
+      def build(
           path: Path = Empty,
           ix: Int = string.length - 1,
           segmentEnd: Int = 0): Path =
@@ -677,30 +679,33 @@ object Uri {
     def value: String
     def +:(kvp: (String, String)) = Query.Cons(kvp._1, kvp._2, this)
     def get(key: String): Option[String] = {
-      @tailrec def g(q: Query): Option[String] =
+      @tailrec
+      def g(q: Query): Option[String] =
         if (q.isEmpty) None else if (q.key == key) Some(q.value) else g(q.tail)
       g(this)
     }
     def getOrElse(key: String, default: ⇒ String): String = {
-      @tailrec def g(q: Query): String =
+      @tailrec
+      def g(q: Query): String =
         if (q.isEmpty) default else if (q.key == key) q.value else g(q.tail)
       g(this)
     }
     def getAll(key: String): List[String] = {
-      @tailrec def fetch(q: Query, result: List[String] = Nil): List[String] =
+      @tailrec
+      def fetch(q: Query, result: List[String] = Nil): List[String] =
         if (q.isEmpty) result
         else fetch(q.tail, if (q.key == key) q.value :: result else result)
       fetch(this)
     }
     def toMap: Map[String, String] = {
-      @tailrec def append(
-          map: Map[String, String],
-          q: Query): Map[String, String] =
+      @tailrec
+      def append(map: Map[String, String], q: Query): Map[String, String] =
         if (q.isEmpty) map else append(map.updated(q.key, q.value), q.tail)
       append(Map.empty, this)
     }
     def toMultiMap: Map[String, List[String]] = {
-      @tailrec def append(
+      @tailrec
+      def append(
           map: Map[String, List[String]],
           q: Query): Map[String, List[String]] =
         if (q.isEmpty) map
@@ -885,7 +890,8 @@ object Uri {
         val bytesCount = (lastPercentSignIndexPlus3 - ix) / 3
         val bytes = new Array[Byte](bytesCount)
 
-        @tailrec def decodeBytes(i: Int = 0, oredBytes: Int = 0): Int =
+        @tailrec
+        def decodeBytes(i: Int = 0, oredBytes: Int = 0): Int =
           if (i < bytesCount) {
             val byte = intValueOfHexWord(ix + 3 * i + 1)
             bytes(i) = byte.toByte
@@ -895,7 +901,8 @@ object Uri {
         // if we have only ASCII chars and the charset is ASCII compatible we don't need to involve it in decoding
         if (((decodeBytes() >> 7) == 0) && UriRendering.isAsciiCompatible(
               charset)) {
-          @tailrec def appendBytes(i: Int = 0): Unit =
+          @tailrec
+          def appendBytes(i: Int = 0): Unit =
             if (i < bytesCount) {
               sb.append(bytes(i).toChar); appendBytes(i + 1)
             }
@@ -908,7 +915,8 @@ object Uri {
     else sb.toString
 
   private[http] def normalizeScheme(scheme: String): String = {
-    @tailrec def verify(
+    @tailrec
+    def verify(
         ix: Int = scheme.length - 1,
         allowed: CharPredicate = ALPHA,
         allLower: Boolean = true): Int =
@@ -945,14 +953,16 @@ object Uri {
   }
 
   private[http] def collapseDotSegments(path: Path): Path = {
-    @tailrec def hasDotOrDotDotSegment(p: Path): Boolean =
+    @tailrec
+    def hasDotOrDotDotSegment(p: Path): Boolean =
       p match {
         case Path.Empty ⇒ false
         case Path.Segment(".", _) | Path.Segment("..", _) ⇒ true
         case _ ⇒ hasDotOrDotDotSegment(p.tail)
       }
     // http://tools.ietf.org/html/rfc3986#section-5.2.4
-    @tailrec def process(input: Path, output: Path = Path.Empty): Path = {
+    @tailrec
+    def process(input: Path, output: Path = Path.Empty): Path = {
       import Path._
       input match {
         case Path.Empty ⇒ output.reverse
@@ -1112,7 +1122,8 @@ object UriRendering {
       charset: Charset,
       keep: CharPredicate = `strict-query-char-np`): r.type = {
     def enc(s: String): Unit = encode(r, s, charset, keep, replaceSpaces = true)
-    @tailrec def append(q: Query): r.type =
+    @tailrec
+    def append(q: Query): r.type =
       q match {
         case Query.Empty ⇒ r
         case Query.Cons(key, value, tail) ⇒
@@ -1132,7 +1143,8 @@ object UriRendering {
       keep: CharPredicate,
       replaceSpaces: Boolean = false): r.type = {
     val asciiCompatible = isAsciiCompatible(charset)
-    @tailrec def rec(ix: Int): r.type = {
+    @tailrec
+    def rec(ix: Int): r.type = {
       def appendEncoded(byte: Byte): Unit =
         r ~~ '%' ~~ CharUtils.upperHexDigit(byte >>> 4) ~~ CharUtils
           .upperHexDigit(byte)

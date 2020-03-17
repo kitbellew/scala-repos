@@ -11,11 +11,11 @@ import org.junit.Assert._
 
 class CharsetJSTest {
 
-  @Test def defaultCharset(): Unit = {
-    assertSame(UTF_8, Charset.defaultCharset())
-  }
+  @Test
+  def defaultCharset(): Unit = { assertSame(UTF_8, Charset.defaultCharset()) }
 
-  @Test def forName(): Unit = {
+  @Test
+  def forName(): Unit = {
     assertSame(ISO_8859_1, Charset.forName("ISO-8859-1"))
     assertSame(ISO_8859_1, Charset.forName("Iso8859-1"))
     assertSame(ISO_8859_1, Charset.forName("iso_8859_1"))

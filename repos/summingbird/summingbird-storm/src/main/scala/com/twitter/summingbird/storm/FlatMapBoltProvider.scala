@@ -49,8 +49,8 @@ import scala.collection.{Map => CMap}
   * The primary difference between those two being the the presents of map side aggreagtion in a final flatmap.
   */
 object FlatMapBoltProvider {
-  @transient private val logger = LoggerFactory.getLogger(
-    FlatMapBoltProvider.getClass)
+  @transient
+  private val logger = LoggerFactory.getLogger(FlatMapBoltProvider.getClass)
   private def wrapTimeBatchIDKV[T, K, V](
       existingOp: FlatMapOperation[T, (K, V)])(batcher: Batcher)
       : FlatMapOperation[(Timestamp, T), ((K, BatchID), (Timestamp, V))] =

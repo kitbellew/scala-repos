@@ -123,7 +123,8 @@ class CSVIngestProcessing(
       }
     }
 
-    @tailrec final def readBatch(
+    @tailrec
+    final def readBatch(
         reader: CSVReader,
         batch: Vector[Array[String]]): (Boolean, Vector[Array[String]]) = {
       if (batch.size >= batchSize) { (false, batch) }

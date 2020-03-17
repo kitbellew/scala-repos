@@ -271,7 +271,8 @@ trait StatsLibModule[M[+_]]
         type A = Option[BigDecimal]
         def init = None
 
-        @tailrec def findFirst(
+        @tailrec
+        def findFirst(
             col: NumColumn,
             row: Int,
             end: Int): Option[BigDecimal] = {
@@ -352,7 +353,8 @@ trait StatsLibModule[M[+_]]
         type A = ScannerState
         def init = FindFirst
 
-        @tailrec def findFirst(
+        @tailrec
+        def findFirst(
             col: NumColumn,
             row: Int,
             end: Int): Option[(Int, BigDecimal)] = {
@@ -384,7 +386,8 @@ trait StatsLibModule[M[+_]]
           // in the next slice, but make sure we don't output the first value
           // in any subsequent slices.
 
-          @tailrec def loop(
+          @tailrec
+          def loop(
               state: ScannerState,
               rowM: Option[Int]): (ScannerState, Map[ColumnRef, Column]) =
             state match {

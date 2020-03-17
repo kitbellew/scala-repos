@@ -36,49 +36,43 @@ class PluginsResource @Inject() (
     }
     .toMap
 
-  @GET
-  @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
+  @GET @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
   def plugins(): Response = ok(jsonString(definitions))
 
-  @GET
-  @Path("""{pluginId}/{path:.+}""")
+  @GET @Path("""{pluginId}/{path:.+}""")
   def get(
       @PathParam("pluginId") pluginId: String,
       @PathParam("path") path: String,
-      @Context req: HttpServletRequest): Response =
-    handleRequest(pluginId, path, req)
+      @Context
+      req: HttpServletRequest): Response = handleRequest(pluginId, path, req)
 
-  @HEAD
-  @Path("""{pluginId}/{path:.+}""")
+  @HEAD @Path("""{pluginId}/{path:.+}""")
   def head(
       @PathParam("pluginId") pluginId: String,
       @PathParam("path") path: String,
-      @Context req: HttpServletRequest): Response =
-    handleRequest(pluginId, path, req)
+      @Context
+      req: HttpServletRequest): Response = handleRequest(pluginId, path, req)
 
-  @PUT
-  @Path("""{pluginId}/{path:.+}""")
+  @PUT @Path("""{pluginId}/{path:.+}""")
   def put(
       @PathParam("pluginId") pluginId: String,
       @PathParam("path") path: String,
-      @Context req: HttpServletRequest): Response =
-    handleRequest(pluginId, path, req)
+      @Context
+      req: HttpServletRequest): Response = handleRequest(pluginId, path, req)
 
-  @POST
-  @Path("""{pluginId}/{path:.+}""")
+  @POST @Path("""{pluginId}/{path:.+}""")
   def post(
       @PathParam("pluginId") pluginId: String,
       @PathParam("path") path: String,
-      @Context req: HttpServletRequest): Response =
-    handleRequest(pluginId, path, req)
+      @Context
+      req: HttpServletRequest): Response = handleRequest(pluginId, path, req)
 
-  @DELETE
-  @Path("""{pluginId}/{path:.+}""")
+  @DELETE @Path("""{pluginId}/{path:.+}""")
   def delete(
       @PathParam("pluginId") pluginId: String,
       @PathParam("path") path: String,
-      @Context req: HttpServletRequest): Response =
-    handleRequest(pluginId, path, req)
+      @Context
+      req: HttpServletRequest): Response = handleRequest(pluginId, path, req)
 
   private[this] def handleRequest(
       pluginId: String,

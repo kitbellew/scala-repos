@@ -16,7 +16,8 @@ object RetryStream {
 }
 
 class RetryStream(underlying: Stream[Duration]) {
-  @volatile private var currentStream = underlying
+  @volatile
+  private var currentStream = underlying
 
   def next(): Duration =
     synchronized {

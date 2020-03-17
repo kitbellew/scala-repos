@@ -67,10 +67,13 @@ private[sql] case class InMemoryRelation(
     useCompression: Boolean,
     batchSize: Int,
     storageLevel: StorageLevel,
-    @transient child: SparkPlan,
+    @transient
+    child: SparkPlan,
     tableName: Option[String])(
-    @transient private[sql] var _cachedColumnBuffers: RDD[CachedBatch] = null,
-    @transient private[sql] var _statistics: Statistics = null,
+    @transient
+    private[sql] var _cachedColumnBuffers: RDD[CachedBatch] = null,
+    @transient
+    private[sql] var _statistics: Statistics = null,
     private[sql] var _batchStats: Accumulable[ArrayBuffer[
       InternalRow], InternalRow] = null)
     extends logical.LeafNode
@@ -84,7 +87,8 @@ private[sql] case class InMemoryRelation(
         .accumulableCollection(ArrayBuffer.empty[InternalRow])
     } else { _batchStats }
 
-  @transient val partitionStatistics = new PartitionStatistics(output)
+  @transient
+  val partitionStatistics = new PartitionStatistics(output)
 
   private def computeSizeInBytes = {
     val sizeOfRow: Expression = BindReferences.bindReference(
@@ -236,7 +240,8 @@ private[sql] case class InMemoryRelation(
 private[sql] case class InMemoryColumnarTableScan(
     attributes: Seq[Attribute],
     predicates: Seq[Expression],
-    @transient relation: InMemoryRelation)
+    @transient
+    relation: InMemoryRelation)
     extends LeafNode {
 
   private[sql] override lazy val metrics = Map(
@@ -257,7 +262,8 @@ private[sql] case class InMemoryColumnarTableScan(
 
   // Returned filter predicate should return false iff it is impossible for the input expression
   // to evaluate to `true' based on statistics collected about this partition batch.
-  @transient val buildFilter: PartialFunction[Expression, Expression] = {
+  @transient
+  val buildFilter: PartialFunction[Expression, Expression] = {
     case And(lhs: Expression, rhs: Expression)
         if buildFilter.isDefinedAt(lhs) || buildFilter.isDefinedAt(rhs) =>
       (buildFilter.lift(lhs) ++ buildFilter.lift(rhs)).reduce(_ && _)

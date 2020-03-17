@@ -7,7 +7,8 @@ import akka.testkit.AkkaSpec
 import java.io.File
 import org.apache.commons.io.FileUtils
 
-trait Cleanup { this: AkkaSpec ⇒
+trait Cleanup {
+  this: AkkaSpec ⇒
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",

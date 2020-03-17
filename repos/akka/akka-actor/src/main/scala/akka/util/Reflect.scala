@@ -131,7 +131,8 @@ private[akka] object Reflect {
     () ⇒ instantiate(clazz)
 
   def findMarker(root: Class[_], marker: Class[_]): Type = {
-    @tailrec def rec(curr: Class[_]): Type = {
+    @tailrec
+    def rec(curr: Class[_]): Type = {
       if (curr.getSuperclass != null && marker.isAssignableFrom(
             curr.getSuperclass)) rec(curr.getSuperclass)
       else
@@ -158,14 +159,14 @@ private[akka] object Reflect {
     * INTERNAL API
     * Set a val inside a class.
     */
-  @tailrec protected[akka] final def lookupAndSetField(
+  @tailrec
+  protected[akka] final def lookupAndSetField(
       clazz: Class[_],
       instance: AnyRef,
       name: String,
       value: Any): Boolean = {
-    @tailrec def clearFirst(
-        fields: Array[java.lang.reflect.Field],
-        idx: Int): Boolean =
+    @tailrec
+    def clearFirst(fields: Array[java.lang.reflect.Field], idx: Int): Boolean =
       if (idx < fields.length) {
         val field = fields(idx)
         if (field.getName == name) {

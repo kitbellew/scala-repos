@@ -50,7 +50,8 @@ class ReflectArrayJSTest {
     testBase(clazz, length = 0, expectedClazz, sampleElem)
   }
 
-  @Test def newInstance(): Unit = {
+  @Test
+  def newInstance(): Unit = {
     testNewInstance(classOf[js.Date], classOf[Array[js.Date]], null)
     testNewInstance(
       classOf[js.Dictionary[_]],

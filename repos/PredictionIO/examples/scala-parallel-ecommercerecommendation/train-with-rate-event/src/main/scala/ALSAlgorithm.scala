@@ -35,7 +35,8 @@ class ALSModel(
     val itemStringIntMap: BiMap[String, Int])
     extends Serializable {
 
-  @transient lazy val itemIntStringMap = itemStringIntMap.inverse
+  @transient
+  lazy val itemIntStringMap = itemStringIntMap.inverse
 
   override def toString = {
     s" rank: ${rank}" +
@@ -56,9 +57,11 @@ class ALSModel(
 class ALSAlgorithm(val ap: ALSAlgorithmParams)
     extends P2LAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
 
-  @transient lazy val logger = Logger[this.type]
+  @transient
+  lazy val logger = Logger[this.type]
   // NOTE: use getLEvents() for local access
-  @transient lazy val lEventsDb = Storage.getLEvents()
+  @transient
+  lazy val lEventsDb = Storage.getLEvents()
 
   def train(sc: SparkContext, data: PreparedData): ALSModel = {
     require(

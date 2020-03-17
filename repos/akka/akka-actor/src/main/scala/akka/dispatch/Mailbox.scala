@@ -293,7 +293,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   /**
     * Process the messages in the mailbox
     */
-  @tailrec private final def processMailbox(
+  @tailrec
+  private final def processMailbox(
       left: Int = java.lang.Math.max(dispatcher.throughput, 1),
       deadlineNs: Long =
         if (dispatcher.isThroughputDeadlineTimeDefined == true)
@@ -447,9 +448,8 @@ class NodeMessageQueue
 
   final def hasMessages: Boolean = !isEmpty()
 
-  @tailrec final def cleanUp(
-      owner: ActorRef,
-      deadLetters: MessageQueue): Unit = {
+  @tailrec
+  final def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = {
     val envelope = dequeue()
     if (envelope ne null) {
       deadLetters.enqueue(owner, envelope)
@@ -485,9 +485,8 @@ class BoundedNodeMessageQueue(capacity: Int)
 
   final def hasMessages: Boolean = !isEmpty()
 
-  @tailrec final def cleanUp(
-      owner: ActorRef,
-      deadLetters: MessageQueue): Unit = {
+  @tailrec
+  final def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = {
     val envelope = dequeue()
     if (envelope ne null) {
       deadLetters.enqueue(owner, envelope)
@@ -518,7 +517,8 @@ private[akka] trait SystemMessageQueue {
 /**
   * INTERNAL API
   */
-private[akka] trait DefaultSystemMessageQueue { self: Mailbox ⇒
+private[akka] trait DefaultSystemMessageQueue {
+  self: Mailbox ⇒
 
   @tailrec
   final def systemEnqueue(receiver: ActorRef, message: SystemMessage): Unit = {

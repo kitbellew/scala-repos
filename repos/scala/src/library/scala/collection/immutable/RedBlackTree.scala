@@ -628,10 +628,14 @@ private[collection] object RedBlackTree {
    * An alternative is to implement the these classes using plain old Java code...
    */
   sealed abstract class Tree[A, +B](
-      @(inline @getter) final val key: A,
-      @(inline @getter) final val value: B,
-      @(inline @getter) final val left: Tree[A, B],
-      @(inline @getter) final val right: Tree[A, B])
+      @(inline @getter)
+      final val key: A,
+      @(inline @getter)
+      final val value: B,
+      @(inline @getter)
+      final val left: Tree[A, B],
+      @(inline @getter)
+      final val right: Tree[A, B])
       extends Serializable {
     @(inline @getter)
     final val count: Int =
@@ -663,20 +667,16 @@ private[collection] object RedBlackTree {
   }
 
   object RedTree {
-    @inline def apply[A, B](
-        key: A,
-        value: B,
-        left: Tree[A, B],
-        right: Tree[A, B]) = new RedTree(key, value, left, right)
+    @inline
+    def apply[A, B](key: A, value: B, left: Tree[A, B], right: Tree[A, B]) =
+      new RedTree(key, value, left, right)
     def unapply[A, B](t: RedTree[A, B]) =
       Some((t.key, t.value, t.left, t.right))
   }
   object BlackTree {
-    @inline def apply[A, B](
-        key: A,
-        value: B,
-        left: Tree[A, B],
-        right: Tree[A, B]) = new BlackTree(key, value, left, right)
+    @inline
+    def apply[A, B](key: A, value: B, left: Tree[A, B], right: Tree[A, B]) =
+      new BlackTree(key, value, left, right)
     def unapply[A, B](t: BlackTree[A, B]) =
       Some((t.key, t.value, t.left, t.right))
   }
@@ -758,7 +758,8 @@ private[collection] object RedBlackTree {
     private[this] def startFrom(key: A): Tree[A, B] =
       if (root eq null) null
       else {
-        @tailrec def find(tree: Tree[A, B]): Tree[A, B] =
+        @tailrec
+        def find(tree: Tree[A, B]): Tree[A, B] =
           if (tree eq null) popNext()
           else
             find(

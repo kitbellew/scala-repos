@@ -67,7 +67,8 @@ object LiftRulesMocker {
     * will be used, otherwise the global instance in LiftRules.prodInstance
     * will be used.
     */
-  @volatile var calcLiftRulesInstance: () => LiftRules = () =>
+  @volatile
+  var calcLiftRulesInstance: () => LiftRules = () =>
     devTestLiftRulesInstance.box.openOr(LiftRules.prodInstance)
 }
 
@@ -318,7 +319,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Once the application has started using these, they are locked in, so make
     * sure to set them early in the boot process.
     */
-  @volatile var securityRules: () => SecurityRules = () => defaultSecurityRules
+  @volatile
+  var securityRules: () => SecurityRules = () => defaultSecurityRules
   private[http] lazy val lockedSecurityRules = securityRules()
 
   /**
@@ -335,14 +337,16 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The HTTP authentication mechanism that Lift will perform. See <i>LiftRules.protectedResource</i>
     */
-  @volatile var authentication: HttpAuthentication = NoAuthentication
+  @volatile
+  var authentication: HttpAuthentication = NoAuthentication
 
   /**
     * A function that takes the HTTPSession and the contextPath as parameters
     * and returns a LiftSession reference. This can be used in cases subclassing
     * LiftSession is necessary.
     */
-  @volatile var sessionCreator: (HTTPSession, String) => LiftSession = {
+  @volatile
+  var sessionCreator: (HTTPSession, String) => LiftSession = {
     case (httpSession, contextPath) =>
       new LiftSession(contextPath, httpSession.sessionId, Full(httpSession))
   }
@@ -358,10 +362,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         with MigratorySession
   }
 
-  @volatile var enableContainerSessions = true
+  @volatile
+  var enableContainerSessions = true
 
-  @volatile var getLiftSession: (Req) => LiftSession = (req) =>
-    _getLiftSession(req)
+  @volatile
+  var getLiftSession: (Req) => LiftSession = (req) => _getLiftSession(req)
 
   // Unique identifier for this particular instance of Lift, used for
   // tagging resources below in attachResourceId.
@@ -379,7 +384,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * from inside the &lt;lift:with-resource-id&gt; snippet
     *
     */
-  @volatile var attachResourceId: (String) => String = (name) => {
+  @volatile
+  var attachResourceId: (String) => String = (name) => {
     name + (if (name contains ("?")) "&" else "?") + instanceResourceId + "=_"
   }
 
@@ -421,8 +427,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * A function that takes appropriate action in breaking out of any
     * existing comet requests based on the request, browser type, etc.
     */
-  @volatile var makeCometBreakoutDecision: (LiftSession, Req) => Unit =
-    (session, req) => {
+  @volatile
+  var makeCometBreakoutDecision: (LiftSession, Req) => Unit = (session, req) =>
+    {
       // get the open sessions to the host (this means that any DNS wildcarded
       // Comet requests will not be counted), as well as all invalid/expired
       // sessions
@@ -440,12 +447,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The path to handle served resources
     */
-  @volatile var resourceServerPath = "classpath"
+  @volatile
+  var resourceServerPath = "classpath"
 
   /**
     * Holds the JS library specific UI artifacts. By default it uses JQuery's artifacts
     */
-  @volatile var jsArtifacts: JSArtifacts = JQueryArtifacts
+  @volatile
+  var jsArtifacts: JSArtifacts = JQueryArtifacts
 
   /**
     * Use this PartialFunction to to automatically add static URL parameters
@@ -457,7 +466,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Should the JSESSIONID be encoded in the URL if cookies are
     * not supported
     */
-  @volatile var encodeJSessionIdInUrl_? = false
+  @volatile
+  var encodeJSessionIdInUrl_? = false
 
   /**
     * Partial function to allow you to build a CometActor from code rather than via reflection
@@ -504,7 +514,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * the request was made on, but can do the multi-server thing
     * as well)
     */
-  @volatile var cometServer: () => Option[String] = () => None
+  @volatile
+  var cometServer: () => Option[String] = () => None
 
   /**
     * The maximum concurrent requests.  If this number of
@@ -525,8 +536,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * A partial function that determines content type based on an incoming
     * Req and Accept header
     */
-  @volatile var determineContentType
-      : PartialFunction[(Box[Req], Box[String]), String] = {
+  @volatile
+  var determineContentType: PartialFunction[(Box[Req], Box[String]), String] = {
     case (_, Full(accept))
         if this.useXhtmlMimeType && accept.toLowerCase.contains(
           "application/xhtml+xml") =>
@@ -580,25 +591,28 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The maximum allowed size of a complete mime multi-part POST.  Default 8MB
     */
-  @volatile var maxMimeSize: Long = 8 * 1024 * 1024
+  @volatile
+  var maxMimeSize: Long = 8 * 1024 * 1024
 
   /**
     * Should pages that are not found be passed along the request processing chain to the
     * next handler outside Lift?
     */
-  @volatile var passNotFoundToChain = false
+  @volatile
+  var passNotFoundToChain = false
 
   /**
     * The maximum allowed size of a single file in a mime multi-part POST.
     * Default 7MB
     */
-  @volatile var maxMimeFileSize: Long = 7 * 1024 * 1024
+  @volatile
+  var maxMimeFileSize: Long = 7 * 1024 * 1024
 
   /**
     * The function referenced here is called if there's a localization lookup failure
     */
-  @volatile var localizationLookupFailureNotice: Box[(String, Locale) => Unit] =
-    Empty
+  @volatile
+  var localizationLookupFailureNotice: Box[(String, Locale) => Unit] = Empty
 
   /**
     * When a parameter is received either via POST or GET and does not have a
@@ -620,7 +634,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Set to false if you want to have 404's handled the same way in dev and production mode
     */
-  @volatile var displayHelpfulSiteMapMessages_? = true
+  @volatile
+  var displayHelpfulSiteMapMessages_? = true
 
   /**
     * The attribute used to expose the names of event attributes that
@@ -679,13 +694,15 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * }
     * }}}
     */
-  @volatile var attributeForRemovedEventAttributes: Option[String] = None
+  @volatile
+  var attributeForRemovedEventAttributes: Option[String] = None
 
   /**
     * The default location to send people if SiteMap access control fails. The path is
     * expressed a a List[String]
     */
-  @volatile var siteMapFailRedirectLocation: List[String] = List()
+  @volatile
+  var siteMapFailRedirectLocation: List[String] = List()
 
   private[http] def notFoundOrIgnore(
       requestState: Req,
@@ -716,7 +733,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * If you don't want lift to send the application/xhtml+xml mime type to those browsers
     * that understand it, then set this to  { @code false }
     */
-  @volatile var useXhtmlMimeType: Boolean = true
+  @volatile
+  var useXhtmlMimeType: Boolean = true
 
   private def _stringToXml(s: String): NodeSeq = Text(s)
 
@@ -726,12 +744,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * but you can change this to attempt to parse the XML in the String and
     * return the NodeSeq.
     */
-  @volatile var localizeStringToXml: String => NodeSeq = _stringToXml _
+  @volatile
+  var localizeStringToXml: String => NodeSeq = _stringToXml _
 
   /**
     * The base name of the resource bundle
     */
-  @volatile var resourceNames: List[String] = List("lift")
+  @volatile
+  var resourceNames: List[String] = List("lift")
 
   /**
     * This function is called to convert the current set of Notices into
@@ -739,7 +759,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     * @see net.liftweb.builtin.snippet.Msgs
     */
-  @volatile var noticesToJsCmd: () => JsCmd = () => {
+  @volatile
+  var noticesToJsCmd: () => JsCmd = () => {
     import builtin.snippet.{
       Msg,
       Msgs,
@@ -789,7 +810,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The base name of the resource bundle of the lift core code
     */
-  @volatile var liftCoreResourceName = "i18n.lift-core"
+  @volatile
+  var liftCoreResourceName = "i18n.lift-core"
 
   /**
     * The JsCmd to execute when the comet session is lost. The comet
@@ -832,33 +854,39 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Put a function that will calculate the request timeout based on the
     * incoming request.
     */
-  @volatile var calcRequestTimeout: Box[Req => Int] = Empty
+  @volatile
+  var calcRequestTimeout: Box[Req => Int] = Empty
 
   /**
     * If you want the standard (non-AJAX) request timeout to be something other than
     * 10 seconds, put the value here
     */
-  @volatile var stdRequestTimeout: Box[Int] = Empty
+  @volatile
+  var stdRequestTimeout: Box[Int] = Empty
 
   /**
     * If you want the AJAX request timeout to be something other than 120 seconds, put the value here
     */
-  @volatile var cometRequestTimeout: Box[Int] = Empty
+  @volatile
+  var cometRequestTimeout: Box[Int] = Empty
 
   /**
     * If a Comet request fails timeout for this period of time. Default value is 10 seconds
     */
-  @volatile var cometFailureRetryTimeout: Long = 10.seconds
+  @volatile
+  var cometFailureRetryTimeout: Long = 10.seconds
 
   /**
     * The timeout in milliseconds of a comet ajax-request. Defaults to 5000 ms.
     */
-  @volatile var cometProcessingTimeout: Long = 5.seconds
+  @volatile
+  var cometProcessingTimeout: Long = 5.seconds
 
   /**
     * The timeout in milliseconds of a comet render-request. Defaults to 30000 ms.
     */
-  @volatile var cometRenderTimeout: Long = 30.seconds
+  @volatile
+  var cometRenderTimeout: Long = 30.seconds
 
   /**
     * The dispatcher that takes a Snippet and converts it to a
@@ -872,7 +900,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * The names are searched in order.
     * See also searchSnippetsWithRequestPath for an implementation.
     */
-  @volatile var snippetNamesToSearch: FactoryMaker[String => List[String]] =
+  @volatile
+  var snippetNamesToSearch: FactoryMaker[String => List[String]] =
     new FactoryMaker(() => (name: String) => name :: Nil) {}
 
   /**
@@ -907,12 +936,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * If the request times out (or returns a non-Response) you can
     * intercept the response here and create your own response
     */
-  @volatile var requestTimedOut: Box[(Req, Any) => Box[LiftResponse]] = Empty
+  @volatile
+  var requestTimedOut: Box[(Req, Any) => Box[LiftResponse]] = Empty
 
   /**
     * A function that takes the current HTTP request and returns the current
     */
-  @volatile var timeZoneCalculator: Box[HTTPRequest] => TimeZone =
+  @volatile
+  var timeZoneCalculator: Box[HTTPRequest] => TimeZone =
     defaultTimeZoneCalculator _
 
   def defaultTimeZoneCalculator(request: Box[HTTPRequest]): TimeZone =
@@ -921,13 +952,15 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * How many times do we retry an Ajax command before calling it a failure?
     */
-  @volatile var ajaxRetryCount: Box[Int] = Empty
+  @volatile
+  var ajaxRetryCount: Box[Int] = Empty
 
   /**
     * The JavaScript to execute at the beginning of an
     * Ajax request (for example, showing the spinning working thingy)
     */
-  @volatile var ajaxStart: Box[() => JsCmd] = Empty
+  @volatile
+  var ajaxStart: Box[() => JsCmd] = Empty
 
   import FuncJBridge._
 
@@ -941,7 +974,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * The function that calculates if the response should be rendered in
     * IE6/7/8 compatibility mode
     */
-  @volatile var calcIEMode: () => Boolean = () =>
+  @volatile
+  var calcIEMode: () => Boolean = () =>
     (for (r <- S.request)
       yield r.isIE6 || r.isIE7 ||
         r.isIE8) openOr true
@@ -958,14 +992,16 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     *   LiftRules.jsLogFunc = Full(v => JE.Call("alert",v).cmd)
     */
-  @volatile var jsLogFunc: Box[JsVar => JsCmd] =
+  @volatile
+  var jsLogFunc: Box[JsVar => JsCmd] =
     if (Props.devMode) Full(v => JE.Call("lift.defaultLogError", v)) else Empty
 
   /**
     * The JavaScript to execute at the end of an
     * Ajax request (for example, removing the spinning working thingy)
     */
-  @volatile var ajaxEnd: Box[() => JsCmd] = Empty
+  @volatile
+  var ajaxEnd: Box[() => JsCmd] = Empty
 
   /**
     * Set the Ajax end JavaScript function.  The
@@ -980,8 +1016,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * XML to a stream of bytes), the Node (root node of the XML), and
     * a Box containing the content type.
     */
-  @volatile var calculateXmlHeader
-      : (NodeResponse, Node, Box[String]) => String = {
+  @volatile
+  var calculateXmlHeader: (NodeResponse, Node, Box[String]) => String = {
     case _ if S.skipXmlHeader => ""
     case (_, up: Unparsed, _) => ""
 
@@ -1004,14 +1040,15 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The default action to take when the JavaScript action fails
     */
-  @volatile var ajaxDefaultFailure: Box[() => JsCmd] = Full(() =>
+  @volatile
+  var ajaxDefaultFailure: Box[() => JsCmd] = Full(() =>
     JsCmds.Alert(S.?("ajax.error")))
 
   /**
     * A function that takes the current HTTP request and returns the current
     */
-  @volatile var localeCalculator: Box[HTTPRequest] => Locale =
-    defaultLocaleCalculator _
+  @volatile
+  var localeCalculator: Box[HTTPRequest] => Locale = defaultLocaleCalculator _
 
   def defaultLocaleCalculator(request: Box[HTTPRequest]) =
     request.flatMap(_.locale).openOr(Locale.getDefault())
@@ -1283,7 +1320,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
   private[http] val reqCnt = new AtomicInteger(0)
 
-  @volatile private[http] var ending = false
+  @volatile
+  private[http] var ending = false
 
   private[http] def bootFinished() { _doneBoot = true }
 
@@ -1328,7 +1366,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * scoped. It does not include the context path and should not begin with a
     * /.
     */
-  @volatile var liftContextRelativePath = "lift"
+  @volatile
+  var liftContextRelativePath = "lift"
 
   /**
     * Returns a complete URI, including the context path, under which all
@@ -1343,15 +1382,18 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * If this function returns an Empty, the contextPath provided by the container will be used.
     *
     */
-  @volatile var calculateContextPath: () => Box[String] = () => Empty
+  @volatile
+  var calculateContextPath: () => Box[String] = () => Empty
 
-  @volatile private var _context: HTTPContext = _
+  @volatile
+  private var _context: HTTPContext = _
 
   /**
     * Should an exception be thrown on out of scope Session and RequestVar
     * access.  By default, no.
     */
-  @volatile var throwOnOutOfScopeVarAccess: Boolean = false
+  @volatile
+  var throwOnOutOfScopeVarAccess: Boolean = false
 
   /**
     * In Dev mode and Test mode, return a non-200 response code
@@ -1359,7 +1401,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * the red box with the error message being displayed).  This
     * helps in testing automation.
     */
-  @volatile var devModeFailureResponseCodeOverride: Box[Int] = Empty
+  @volatile
+  var devModeFailureResponseCodeOverride: Box[Int] = Empty
 
   /**
     * Returns the HTTPContext
@@ -1403,7 +1446,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Obtain the resource URL by name
     */
-  @volatile var getResource: String => Box[java.net.URL] = defaultGetResource _
+  @volatile
+  var getResource: String => Box[java.net.URL] = defaultGetResource _
 
   /**
     * Obtain the resource URL by name
@@ -1498,7 +1542,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * template suffix, the first matching parser is used.  This intended to be set in in `Boot` as it is read only
     * once during the processing of the first template.
     */
-  @volatile var contentParsers: List[ContentParser] = List(
+  @volatile
+  var contentParsers: List[ContentParser] = List(
     ContentParser(
       Seq("html", "xhtml", "htm"),
       (content: InputStream) => S.htmlProperties.htmlParser(content),
@@ -1558,7 +1603,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * needs to have the string cleaned up to remove stuff like passwords. That's
     * done by this function.
     */
-  @volatile var cometLoggerStringSecurer: String => String = s => s
+  @volatile
+  var cometLoggerStringSecurer: String => String = s => s
 
   /**
     * Takes a Node, headers, cookies, and a session and turns it into an XhtmlResponse.
@@ -1586,7 +1632,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       req
     )
 
-  @volatile var defaultHeaders
+  @volatile
+  var defaultHeaders
       : PartialFunction[(NodeSeq, Req), List[(String, String)]] = {
     case _ =>
       val d = Helpers.nowAsInternetDate
@@ -1655,7 +1702,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * loss handlers (set via LiftRules.noAjaxSessionCmd and
     * LiftRules.noCometSessionCmd).
     */
-  @volatile var redirectAsyncOnSessionLoss = true
+  @volatile
+  var redirectAsyncOnSessionLoss = true
 
   /**
     * The sequence of partial functions (pattern matching) for handling converting an exception to something to
@@ -1809,7 +1857,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Tells Lift if the Comet JavaScript should be included. By default it is set to true.
     */
-  @volatile var autoIncludeComet: LiftSession => Boolean = session => true
+  @volatile
+  var autoIncludeComet: LiftSession => Boolean = session => true
 
   val autoIncludeAjaxCalc: FactoryMaker[() => LiftSession => Boolean] =
     new FactoryMaker(() =>
@@ -1828,12 +1877,15 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Define the XHTML validator
     */
-  @volatile var xhtmlValidator: Box[XHtmlValidator] =
+  @volatile
+  var xhtmlValidator: Box[XHtmlValidator] =
     Empty // Full(TransitionalXHTML1_0Validator)
 
-  @volatile var ajaxPostTimeout = 5000
+  @volatile
+  var ajaxPostTimeout = 5000
 
-  @volatile var cometGetTimeout = 140000
+  @volatile
+  var cometGetTimeout = 140000
 
   /**
     * Compute the headers to be sent to the browser in addition to anything else
@@ -1858,7 +1910,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * be returned. The default implementation simply logs the violation at WARN
     * level.
     */
-  @volatile var contentSecurityPolicyViolationReport
+  @volatile
+  var contentSecurityPolicyViolationReport
       : (ContentSecurityPolicyViolation) => Box[LiftResponse] = { violation =>
     logger.warn(s"""Content security policy violation reported on page
        | '${violation.documentUri}' from referrer '${violation.referrer}':
@@ -1869,40 +1922,47 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     Empty
   }
 
-  @volatile var calcIE6ForResponse: () => Boolean = () =>
+  @volatile
+  var calcIE6ForResponse: () => Boolean = () =>
     S.request.map(_.isIE6) openOr false
 
-  @volatile var flipDocTypeForIE6 = true
+  @volatile
+  var flipDocTypeForIE6 = true
 
   /**
     * By default lift uses a garbage-collection mechanism of removing unused bound functions from LiftSesssion.
     * Setting this to false will disable this mechanisms and there will be no Ajax polling requests attempted.
     */
-  @volatile var enableLiftGC = true;
+  @volatile
+  var enableLiftGC = true;
 
   /**
     * If Lift garbage collection is enabled, functions that are not seen in the page for this period of time
     * (given in milliseconds) will be discarded, hence eligible for garbage collection.
     * The default value is 10 minutes.
     */
-  @volatile var unusedFunctionsLifeTime: Long = 10.minutes
+  @volatile
+  var unusedFunctionsLifeTime: Long = 10.minutes
 
   /**
     * The polling interval for background Ajax requests to prevent functions of being garbage collected.
     * Default value is set to 75 seconds.
     */
-  @volatile var liftGCPollingInterval: Long = 75.seconds
+  @volatile
+  var liftGCPollingInterval: Long = 75.seconds
 
   /**
     * Put a test for being logged in into this function
     */
-  @volatile var loggedInTest: Box[() => Boolean] = Empty
+  @volatile
+  var loggedInTest: Box[() => Boolean] = Empty
 
   /**
     * The polling interval for background Ajax requests to keep functions to not be garbage collected.
     * This will be applied if the Ajax request will fail. Default value is set to 15 seconds.
     */
-  @volatile var liftGCFailureRetryTimeout: Long = 15.seconds
+  @volatile
+  var liftGCFailureRetryTimeout: Long = 15.seconds
 
   /**
     * If this is Full, comet updates (partialUpdates or reRenders) are
@@ -1933,7 +1993,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Holds the last update time of the Ajax request. Based on this server may return HTTP 304 status
     * indicating the client to used the cached information.
     */
-  @volatile var ajaxScriptUpdateTime: LiftSession => Long = session => {
+  @volatile
+  var ajaxScriptUpdateTime: LiftSession => Long = session => {
     object when extends SessionVar[Long](millis)
     when.is
   }
@@ -1975,7 +2036,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * the last part of the request URI.  If the suffix is contained in this list, it is explicitly split.
     * The default list is: "html", "htm", "jpg", "png", "gif", "xml", "rss", "json" ...
     */
-  @volatile var explicitlyParsedSuffixes: Set[String] = knownSuffixes
+  @volatile
+  var explicitlyParsedSuffixes: Set[String] = knownSuffixes
 
   /**
     * The global multipart progress listener:
@@ -1983,15 +2045,16 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *    pContentLength - The total number of bytes, which are being read. May be -1, if this number is unknown.
     *    pItems - The number of the field, which is currently being read. (0 = no item so far, 1 = first item is being read, ...)
     */
-  @volatile var progressListener: (Long, Long, Int) => Unit = (_, _, _) => ()
+  @volatile
+  var progressListener: (Long, Long, Int) => Unit = (_, _, _) => ()
 
   /**
     * The function that converts a fieldName, contentType, fileName and an InputStream into
     * a FileParamHolder.  By default, create an in-memory instance.  Use OnDiskFileParamHolder
     * to create an on-disk version
     */
-  @volatile var handleMimeFile
-      : (String, String, String, InputStream) => FileParamHolder =
+  @volatile
+  var handleMimeFile: (String, String, String, InputStream) => FileParamHolder =
     (fieldName, contentType, fileName, inputStream) =>
       new InMemFileParamHolder(
         fieldName,
@@ -2010,8 +2073,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   private[http] def withMimeHeaders[T](map: Map[String, List[String]])(
       f: => T): T = _mimeHeaders.doWith(Full(map))(f)
 
-  @volatile var templateCache
-      : Box[TemplateCache[(Locale, List[String]), NodeSeq]] = Empty
+  @volatile
+  var templateCache: Box[TemplateCache[(Locale, List[String]), NodeSeq]] = Empty
 
   val dateTimeConverter: FactoryMaker[DateTimeConverter] =
     new FactoryMaker[DateTimeConverter](() => DefaultDateTimeConverter) {}
@@ -2023,14 +2086,16 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     * @see RequestVar#logUnreadVal
     */
-  @volatile var logUnreadRequestVars = true
+  @volatile
+  var logUnreadRequestVars = true
 
   /** Controls whether or not the service handling timing messages (Service request (GET) ... took ... Milliseconds) are logged. Defaults to true. */
-  @volatile var logServiceRequestTiming = true
+  @volatile
+  var logServiceRequestTiming = true
 
   /** Provides a function that returns random names for form variables, page ids, callbacks, etc. */
-  @volatile var funcNameGenerator: () => String = defaultFuncNameGenerator(
-    Props.mode)
+  @volatile
+  var funcNameGenerator: () => String = defaultFuncNameGenerator(Props.mode)
 
   import provider.servlet._
   import containers._
@@ -2132,7 +2197,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     */
   class RulesSeq[T] {
-    @volatile private var rules: List[T] = Nil
+    @volatile
+    private var rules: List[T] = Nil
     private val pre = new ThreadGlobal[List[T]]
     private val app = new ThreadGlobal[List[T]]
     private val cur = new ThreadGlobal[List[T]]

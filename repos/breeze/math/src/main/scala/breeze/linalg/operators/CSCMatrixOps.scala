@@ -18,7 +18,8 @@ import scalaxy.debug._
   *
   * @author dlwh
  **/
-trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
+trait CSCMatrixOps extends CSCMatrixOps_Ring {
+  this: CSCMatrix.type =>
   // don't remove
   import breeze.math.PowImplicits._
 
@@ -68,8 +69,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       }
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_OpNeg[@expand.args(Int, Double, Float, Long) T]
       : OpNeg.Impl[CSCMatrix[T], CSCMatrix[T]] = {
     new OpNeg.Impl[CSCMatrix[T], CSCMatrix[T]] {
@@ -91,8 +91,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def cscScaleAdd[@expand.args(Int, Double, Float, Long) T]
       : scaleAdd.InPlaceImpl3[CSCMatrix[T], T, CSCMatrix[T]] = {
     new scaleAdd.InPlaceImpl3[CSCMatrix[T], T, CSCMatrix[T]] {
@@ -143,8 +142,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_csc_BadOps[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpPow, OpDiv, OpMod) Op <: OpType](implicit
@@ -218,8 +216,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_csc_OpAdd[@expand.args(Int, Double, Float, Long) T](implicit
       @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : OpAdd.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
@@ -280,8 +277,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def dm_csc_InPlace_OpSet[@expand.args(Int, Double, Float, Long) T]
       : OpSet.InPlaceImpl2[DenseMatrix[T], CSCMatrix[T]] = {
     new OpSet.InPlaceImpl2[DenseMatrix[T], CSCMatrix[T]] {
@@ -313,8 +309,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def dm_csc_InPlace_OpAdd[@expand.args(Int, Double, Float, Long) T]
       : OpAdd.InPlaceImpl2[DenseMatrix[T], CSCMatrix[T]] = {
     new OpAdd.InPlaceImpl2[DenseMatrix[T], CSCMatrix[T]] {
@@ -344,8 +339,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def dm_csc_InPlace_OpSub[@expand.args(Int, Double, Float, Long) T]
       : OpSub.InPlaceImpl2[DenseMatrix[T], CSCMatrix[T]] = {
     new OpSub.InPlaceImpl2[DenseMatrix[T], CSCMatrix[T]] {
@@ -375,8 +369,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_dm_OpAdd[@expand.args(Int, Double, Float, Long) T]
       : OpAdd.Impl2[CSCMatrix[T], DenseMatrix[T], DenseMatrix[T]] = {
     new OpAdd.Impl2[CSCMatrix[T], DenseMatrix[T], DenseMatrix[T]] {
@@ -388,8 +381,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def dm_csc_OpAdd[@expand.args(Int, Double, Float, Long) T]
       : OpAdd.Impl2[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] = {
     new OpAdd.Impl2[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] {
@@ -397,8 +389,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def dm_csc_OpSub[@expand.args(Int, Double, Float, Long) T]
       : OpSub.Impl2[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] = {
     new OpSub.Impl2[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] {
@@ -408,8 +399,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_dm_OpSub[@expand.args(Int, Double, Float, Long) T]
       : OpSub.Impl2[CSCMatrix[T], DenseMatrix[T], DenseMatrix[T]] = {
     new OpSub.Impl2[CSCMatrix[T], DenseMatrix[T], DenseMatrix[T]] {
@@ -461,8 +451,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
   // code based on that provided by sciss:
   // https://github.com/Sciss/breeze/blob/bb5cf8a1969545e1a7b0cd7ddde5f974be8301cd/math/src/main/scala/breeze/linalg/CSCMatrixExtraOps.scala
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_csc_OpMulScalar[@expand.args(Int, Double, Float, Long) T](
       implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : OpMulScalar.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
@@ -518,8 +507,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_csc_OpSub[@expand.args(Int, Double, Float, Long) T](implicit
       @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : OpSub.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
@@ -578,8 +566,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def implOps_CSCT_T_eq_CSCT[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpMulMatrix) Op <: OpType](implicit
@@ -604,8 +591,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canMulM_V[@expand.args(Int, Float, Double, Long) T]
       : BinaryRegistry[CSCMatrix[T], Vector[T], OpMulMatrix.type, Vector[T]] =
     new BinaryRegistry[CSCMatrix[T], Vector[T], OpMulMatrix.type, Vector[T]] {
@@ -632,8 +618,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         .register(this)
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canMulM_DV[@expand.args(Int, Float, Double, Long) T]
       : BinaryRegistry[CSCMatrix[T], DenseVector[
         T], OpMulMatrix.type, DenseVector[T]] =
@@ -662,8 +647,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         .register(this)
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canMulM_SV[@expand.args(Int, Float, Double, Long) T]
       : BinaryRegistry[CSCMatrix[T], SparseVector[
         T], OpMulMatrix.type, SparseVector[T]] =
@@ -703,8 +687,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         .register(this)
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canMulM_DM[@expand.args(Int, Float, Double, Long) T]
       : breeze.linalg.operators.OpMulMatrix.Impl2[CSCMatrix[T], DenseMatrix[
         T], DenseMatrix[T]] =
@@ -737,8 +720,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         .register(this)
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canMulDM_M[@expand.args(Int, Float, Double, Long) T]
       : breeze.linalg.operators.OpMulMatrix.Impl2[DenseMatrix[T], CSCMatrix[
         T], DenseMatrix[T]] =
@@ -774,8 +756,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         .register(this)
     }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def canMulM_M[@expand.args(Int, Float, Double, Long) T]
       : breeze.linalg.operators.OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[
         T], CSCMatrix[T]] =
@@ -830,8 +811,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     }
   }
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_T_InPlace[
       @expand.args(Int, Float, Double, Long) T,
       @expand.args(
@@ -844,8 +824,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         OpMulMatrix) Op <: OpType]: Op.InPlaceImpl2[CSCMatrix[T], T] =
     updateFromPure(implicitly[Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]]])
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def csc_csc_InPlace[
       @expand.args(Int, Float, Double, Long) T,
       @expand.args(OpAdd, OpSub, OpDiv, OpPow, OpMod, OpMulScalar) Op <: OpType]
@@ -853,8 +832,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     updateFromPure(
       implicitly[Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]]])
 
-  @expand
-  @expand.valify
+  @expand @expand.valify
   implicit def axpyCSC_DM_DM[@expand.args(Int, Float, Double, Long) T]
       : scaleAdd.InPlaceImpl3[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] = {
     new scaleAdd.InPlaceImpl3[DenseMatrix[T], CSCMatrix[T], DenseMatrix[T]] {

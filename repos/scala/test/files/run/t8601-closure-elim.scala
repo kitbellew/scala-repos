@@ -23,7 +23,8 @@ object Test extends BytecodeTest {
 }
 
 class Foo {
-  @inline final def a(x: Int => Int) = x(1)
+  @inline
+  final def a(x: Int => Int) = x(1)
   final def b {
     val delta = 0
     a(x => delta + 1)

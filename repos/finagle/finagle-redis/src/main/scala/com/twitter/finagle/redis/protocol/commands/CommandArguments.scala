@@ -18,7 +18,8 @@ case object WithScores extends CommandArgument {
     }
   override def toString = command
   def toChannelBuffer = commandBytes
-  @deprecated("Prefer option") val asArg = Some(WithScores)
+  @deprecated("Prefer option")
+  val asArg = Some(WithScores)
   def option(opt: Boolean): Option[this.type] = if (opt) asArg else None
 }
 

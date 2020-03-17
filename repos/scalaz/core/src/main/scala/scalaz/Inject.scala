@@ -42,5 +42,6 @@ object Inject extends InjectInstances {
       I: Inject[G, F]): Option[G[Free[F, A]]] =
     fa.resume.fold(I.prj(_), _ => none)
 
-  @inline def apply[F[_], G[_]](implicit I: Inject[F, G]): Inject[F, G] = I
+  @inline
+  def apply[F[_], G[_]](implicit I: Inject[F, G]): Inject[F, G] = I
 }

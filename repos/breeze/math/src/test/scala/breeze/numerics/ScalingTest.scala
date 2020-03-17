@@ -8,7 +8,6 @@ import org.scalatest.junit.JUnitRunner
   *
   * @author dlwh
   */
-
 @RunWith(classOf[JUnitRunner])
 class ScalingTest extends FunSuite {
   test("Simple Test, big") {

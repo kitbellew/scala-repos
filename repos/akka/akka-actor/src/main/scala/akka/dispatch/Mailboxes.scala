@@ -301,7 +301,8 @@ private[akka] class Mailboxes(
       dispatcher: String,
       mailbox: String): Int = {
 
-    @tailrec def updateCache(
+    @tailrec
+    def updateCache(
         cache: Map[String, Int],
         key: String,
         value: Int): Boolean = {

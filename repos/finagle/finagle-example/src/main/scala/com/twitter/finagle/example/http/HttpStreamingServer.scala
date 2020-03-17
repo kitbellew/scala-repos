@@ -23,7 +23,8 @@ object HttpStreamingServer {
   def main(args: Array[String]): Unit = {
     val service = new Service[Request, Response] {
       // Only one stream exists.
-      @volatile private[this] var messages: AsyncStream[Buf] = ints().map(n =>
+      @volatile
+      private[this] var messages: AsyncStream[Buf] = ints().map(n =>
         Buf.Utf8(n.toString))
 
       // Allow the head of the stream to be collected.

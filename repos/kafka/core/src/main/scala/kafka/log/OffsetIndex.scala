@@ -54,7 +54,8 @@ import kafka.common.InvalidOffsetException
   * storage format.
   */
 class OffsetIndex(
-    @volatile var file: File,
+    @volatile
+    var file: File,
     val baseOffset: Long,
     val maxIndexSize: Int = -1)
     extends Logging {

@@ -44,11 +44,11 @@ trait CollectionsOnCheckedMapTest extends CollectionsOnMapsTest {
     }
   }
 
-  @Test def testCheckedMap(): Unit = {
-    assertNull(superMap().put(new C, new C))
-  }
+  @Test
+  def testCheckedMap(): Unit = { assertNull(superMap().put(new C, new C)) }
 
-  @Test def testCheckedMapBadInputs(): Unit = {
+  @Test
+  def testCheckedMapBadInputs(): Unit = {
     assumeTrue("Needs compliant asInstanceOf", hasCompliantAsInstanceOfs)
 
     expectThrows(classOf[ClassCastException], superMap().put(new A, new C))
@@ -93,11 +93,11 @@ trait CollectionsOnCheckedSortedMapTest extends CollectionsOnSortedMapsTest {
     }
   }
 
-  @Test def testCheckedMap(): Unit = {
-    assertNull(superMap().put(new C, new C))
-  }
+  @Test
+  def testCheckedMap(): Unit = { assertNull(superMap().put(new C, new C)) }
 
-  @Test def testCheckedMapBadInputs(): Unit = {
+  @Test
+  def testCheckedMapBadInputs(): Unit = {
     assumeTrue("Needs compliant asInstanceOf", hasCompliantAsInstanceOfs)
 
     expectThrows(classOf[ClassCastException], superMap().put(new A, new C))

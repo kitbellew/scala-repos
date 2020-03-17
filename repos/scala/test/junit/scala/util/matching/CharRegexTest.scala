@@ -20,7 +20,8 @@ class CharRegexTest {
   val c: Char = 'c' // "cat"(0)
   val d: Char = 'D' // "Dog"(0)
 
-  @Test def comparesGroupCorrectly(): Unit = {
+  @Test
+  def comparesGroupCorrectly(): Unit = {
     val r = """(\p{Lower})""".r
     cond(c) { case r(x)  => true }.yes
     cond(c) { case r(_)  => true }.yes
@@ -33,7 +34,8 @@ class CharRegexTest {
     cond(d) { case r()   => true }.no
   }
 
-  @Test def comparesNoGroupCorrectly(): Unit = {
+  @Test
+  def comparesNoGroupCorrectly(): Unit = {
     val rnc = """\p{Lower}""".r
     cond(c) { case rnc(x)  => true }.no
     cond(c) { case rnc(_)  => true }.no

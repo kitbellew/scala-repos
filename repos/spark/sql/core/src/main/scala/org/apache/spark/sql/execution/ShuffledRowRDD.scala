@@ -60,7 +60,8 @@ class CoalescedPartitioner(
     val partitionStartIndices: Array[Int])
     extends Partitioner {
 
-  @transient private lazy val parentPartitionMapping: Array[Int] = {
+  @transient
+  private lazy val parentPartitionMapping: Array[Int] = {
     val n = parent.numPartitions
     val result = new Array[Int](n)
     for (i <- 0 until partitionStartIndices.length) {

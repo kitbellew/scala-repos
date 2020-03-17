@@ -15,8 +15,7 @@ class LeaderResource @Inject() (
     val config: MarathonConf with HttpConf)
     extends RestResource {
 
-  @GET
-  @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
+  @GET @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
   def index(): Response = {
     leaderInfo.currentLeaderHostPort() match {
       case None => notFound("There is no leader")
@@ -25,8 +24,7 @@ class LeaderResource @Inject() (
     }
   }
 
-  @DELETE
-  @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
+  @DELETE @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
   def delete(): Response = {
     leaderInfo.elected match {
       case false => notFound("There is no leader")

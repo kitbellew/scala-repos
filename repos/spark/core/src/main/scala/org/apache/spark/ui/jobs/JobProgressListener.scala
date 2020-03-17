@@ -53,8 +53,10 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
   type ExecutorId = String
 
   // Application:
-  @volatile var startTime = -1L
-  @volatile var endTime = -1L
+  @volatile
+  var startTime = -1L
+  @volatile
+  var endTime = -1L
 
   // Jobs:
   val activeJobs = new HashMap[JobId, JobUIData]

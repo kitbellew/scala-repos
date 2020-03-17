@@ -48,7 +48,8 @@ private[http] class HttpRequestRendererFactory(
 
     def render(h: HttpHeader) = r ~~ h ~~ CrLf
 
-    @tailrec def renderHeaders(
+    @tailrec
+    def renderHeaders(
         remaining: List[HttpHeader],
         hostHeaderSeen: Boolean = false,
         userAgentSeen: Boolean = false,

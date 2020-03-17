@@ -271,7 +271,8 @@ object ActorModelSpec {
     }
   }
 
-  @tailrec def await(until: Long)(condition: ⇒ Boolean): Unit =
+  @tailrec
+  def await(until: Long)(condition: ⇒ Boolean): Unit =
     if (System.currentTimeMillis() <= until) {
       var done = false
       try {

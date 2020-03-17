@@ -401,7 +401,8 @@ private[runtime] object RuntimeString {
     }
   }
 
-  @inline private def fromCharCode(charCodes: Int*): String = {
+  @inline
+  private def fromCharCode(charCodes: Int*): String = {
     js.Dynamic.global.String
       .applyDynamic("fromCharCode")(charCodes.asInstanceOf[Seq[js.Any]]: _*)
       .asInstanceOf[String]

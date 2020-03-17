@@ -70,7 +70,8 @@ sealed abstract class HList extends Product {
   final def isEmpty = !nonEmpty
 
   /** Get the length of this list as a `Nat`. */
-  @inline final def length: Length = Nat._unsafe[Length](productArity)
+  @inline
+  final def length: Length = Nat._unsafe[Length](productArity)
 
   /** Get the length of this list as an `Int`. */
   final def productArity: Int = {
@@ -84,7 +85,8 @@ sealed abstract class HList extends Product {
   }
 
   /** Prepend an element to this HList, returning a new HList. */
-  @inline final def ::[@specialized E](elem: E): ::[E] =
+  @inline
+  final def ::[@specialized E](elem: E): ::[E] =
     new HCons[E, Self](elem, this.asInstanceOf[Self])
 
   /** Concatenate another HList to this HList, returning a new HList. */
@@ -96,8 +98,8 @@ sealed abstract class HList extends Product {
       self)
 
   /** Drop the first `n` elements from this HList. */
-  @inline final def drop[N <: Nat](n: N): Drop[N] =
-    drop(n.value).asInstanceOf[Drop[N]]
+  @inline
+  final def drop[N <: Nat](n: N): Drop[N] = drop(n.value).asInstanceOf[Drop[N]]
 
   /** Drop the first `n` elements from this HList. */
   final def drop(i: Int): HList = {
@@ -112,11 +114,13 @@ sealed abstract class HList extends Product {
 
   final def productElement(i: Int): Any = drop(i).head
 
-  @inline final def _unsafeApply[N <: Nat](i: Int): Apply[N] =
+  @inline
+  final def _unsafeApply[N <: Nat](i: Int): Apply[N] =
     productElement(i).asInstanceOf[Apply[N]]
 
   /** Return the nth element from this HList, using the correct return type. */
-  @inline final def apply[N <: Nat](n: N): Apply[N] = _unsafeApply[N](n.value)
+  @inline
+  final def apply[N <: Nat](n: N): Apply[N] = _unsafeApply[N](n.value)
 
   /** Return the nth element from this HList, using the correct return type if n is a literal, otherwise Any. */
   final def apply(n: Int): Any = macro HListMacros.applyImpl

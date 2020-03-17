@@ -29,8 +29,10 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
     var i2 = fileText indexOf FOLD_END_MARKER
 
     var overallFixOffset = 0
-    @inline def increaseOverall(): Unit = overallFixOffset += FOLD_MARKER_LENGTH
-    @inline def appendPair(errorPlaceMsg: String) {
+    @inline
+    def increaseOverall(): Unit = overallFixOffset += FOLD_MARKER_LENGTH
+    @inline
+    def appendPair(errorPlaceMsg: String) {
       assert(myOpenMarkers.nonEmpty, "Unbalanced fold markers " + errorPlaceMsg)
       val st = myOpenMarkers.pop()
       myRegions += new TextRange(st, i2 - overallFixOffset)

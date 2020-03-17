@@ -48,7 +48,8 @@ trait CF {
   override def toString() = identity.toString
 }
 
-trait CF1 extends CF { self =>
+trait CF1 extends CF {
+  self =>
   def apply(c: Column): Option[Column]
   def apply(cv: CValue): Option[Column] = apply(Column.const(cv))
 
@@ -104,7 +105,8 @@ object CF1Array {
     }
 }
 
-trait CF2 extends CF { self =>
+trait CF2 extends CF {
+  self =>
   def apply(c1: Column, c2: Column): Option[Column]
 
   @inline

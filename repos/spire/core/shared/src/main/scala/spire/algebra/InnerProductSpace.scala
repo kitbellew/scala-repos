@@ -3,7 +3,8 @@ package algebra
 
 trait InnerProductSpace[V, @sp(Int, Long, Float, Double) F]
     extends Any
-    with VectorSpace[V, F] { self =>
+    with VectorSpace[V, F] {
+  self =>
   def dot(v: V, w: V): F
 
   def normed(implicit ev: NRoot[F]): NormedVectorSpace[V, F] =
@@ -14,7 +15,8 @@ trait InnerProductSpace[V, @sp(Int, Long, Float, Double) F]
 }
 
 object InnerProductSpace {
-  @inline final def apply[V, @sp(Int, Long, Float, Double) R](implicit
+  @inline
+  final def apply[V, @sp(Int, Long, Float, Double) R](implicit
       V: InnerProductSpace[V, R]): InnerProductSpace[V, R] = V
 }
 

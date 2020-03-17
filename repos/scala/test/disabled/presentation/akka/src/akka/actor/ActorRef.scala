@@ -100,8 +100,7 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
     * that you can use a custom name to be able to retrieve the "correct" persisted state
     * upon restart, remote restart etc.
     */
-  @BeanProperty
-  @volatile
+  @BeanProperty @volatile
   var id: String = _uuid.toString
 
   /**
@@ -112,9 +111,7 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
     */
   @deprecated(
     "Will be replaced by implicit-scoped timeout on all methods that needs it, will default to timeout specified in config",
-    "1.1")
-  @BeanProperty
-  @volatile
+    "1.1") @BeanProperty @volatile
   var timeout: Long = Actor.TIMEOUT
 
   /**
@@ -1433,7 +1430,8 @@ trait ActorRefShared {
   * There are implicit conversions in ../actor/Implicits.scala
   * from ActorRef -> ScalaActorRef and back
   */
-trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
+trait ScalaActorRef extends ActorRefShared {
+  ref: ActorRef =>
 
   /**
     * Identifier for actor, does not have to be a unique one. Default is the 'uuid'.
@@ -1452,8 +1450,7 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     * <p/>
     * Defines the life-cycle for a supervised actor.
     */
-  @volatile
-  @BeanProperty
+  @volatile @BeanProperty
   var lifeCycle: LifeCycle = UndefinedLifeCycle
 
   /**
@@ -1470,8 +1467,7 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     *  faultHandler = OneForOneStrategy(trapExit = List(classOf[Exception]), maxNrOfRetries, withinTimeRange)
     * </pre>
     */
-  @volatile
-  @BeanProperty
+  @volatile @BeanProperty
   var faultHandler: FaultHandlingStrategy = NoFaultHandlingStrategy
 
   /**

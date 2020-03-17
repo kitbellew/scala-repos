@@ -68,7 +68,8 @@ private[log] class LogCleanerManager(
   private val pausedCleaningCond = lock.newCondition()
 
   /* a gauge for tracking the cleanable ratio of the dirtiest log */
-  @volatile private var dirtiestLogCleanableRatio = 0.0
+  @volatile
+  private var dirtiestLogCleanableRatio = 0.0
   newGauge(
     "max-dirty-percent",
     new Gauge[Int] {

@@ -6,7 +6,8 @@ package scalaz
   * [[scalaz.Cord]] for efficiency.
   */
 ////
-trait Show[F] { self =>
+trait Show[F] {
+  self =>
   ////
   def show(f: F): Cord = Cord(shows(f))
   def shows(f: F): String = show(f).toString
@@ -19,7 +20,8 @@ trait Show[F] { self =>
 }
 
 object Show {
-  @inline def apply[F](implicit F: Show[F]): Show[F] = F
+  @inline
+  def apply[F](implicit F: Show[F]): Show[F] = F
 
   ////
 

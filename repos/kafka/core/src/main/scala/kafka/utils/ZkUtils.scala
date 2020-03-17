@@ -1068,7 +1068,8 @@ class ZKConfig(props: VerifiableProperties) {
 }
 
 object ZkPath {
-  @volatile private var isNamespacePresent: Boolean = false
+  @volatile
+  private var isNamespacePresent: Boolean = false
 
   def checkNamespace(client: ZkClient) {
     if (isNamespacePresent) return

@@ -5,7 +5,8 @@ import play.twirl.api.Html
 
 import lila.user.UserContext
 
-trait AiHelper { self: I18nHelper =>
+trait AiHelper {
+  self: I18nHelper =>
 
   val aiName: String = "Stockfish AI"
 

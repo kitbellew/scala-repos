@@ -27,8 +27,7 @@ import org.apache.spark.ml.param._
   * :: Experimental ::
   * Builder for a param grid used in grid search-based model selection.
   */
-@Since("1.2.0")
-@Experimental
+@Since("1.2.0") @Experimental
 class ParamGridBuilder @Since("1.2.0") {
 
   private val paramGrid = mutable.Map.empty[Param[_], Iterable[_]]
@@ -45,8 +44,7 @@ class ParamGridBuilder @Since("1.2.0") {
   /**
     * Sets the given parameters in this grid to fixed values.
     */
-  @Since("1.2.0")
-  @varargs
+  @Since("1.2.0") @varargs
   def baseOn(paramPairs: ParamPair[_]*): this.type = {
     paramPairs.foreach { p =>
       addGrid(p.param.asInstanceOf[Param[Any]], Seq(p.value))

@@ -54,7 +54,8 @@ class HoconHighlightKeyUsagesHandler(
       .flatMap(_.allKeysFromToplevel)
       .flatMap {
         case keys @ (firstKey :: _) =>
-          @tailrec def fromFields(
+          @tailrec
+          def fromFields(
               scopes: Iterator[HScope],
               keys: List[HKey]): Iterator[HKey] =
             keys match {
@@ -69,9 +70,8 @@ class HoconHighlightKeyUsagesHandler(
                   scopes.flatMap(_.directSubScopes(nextKey.stringValue)),
                   restOfKeys)
             }
-          @tailrec def fromPath(
-              keys: List[HKey],
-              pathKeys: List[HKey]): Option[HKey] =
+          @tailrec
+          def fromPath(keys: List[HKey], pathKeys: List[HKey]): Option[HKey] =
             (keys, pathKeys) match {
               case (key :: Nil, pathKey :: _)
                   if key.stringValue == pathKey.stringValue =>

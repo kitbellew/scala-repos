@@ -91,7 +91,8 @@ final class JSONIngestProcessing(
         "Cannot ingest values with more than %d primitive fields. This limitiation may be lifted in a future release. Thank you for your patience."
           .format(maxFields)
 
-      @inline def expandArraysAtRoot(values: Seq[JValue]) =
+      @inline
+      def expandArraysAtRoot(values: Seq[JValue]) =
         recordStyle match {
           case JSONValueStyle =>
             values flatMap {

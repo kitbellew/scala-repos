@@ -50,8 +50,7 @@ import org.apache.spark.sql.functions._
   * It supports binary labels, as well as both continuous and categorical features.
   * Note: Multiclass labels are not currently supported.
   */
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 final class GBTClassifier @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
     extends Predictor[Vector, GBTClassifier, GBTClassificationModel]
@@ -192,8 +191,7 @@ final class GBTClassifier @Since("1.4.0") (
   override def copy(extra: ParamMap): GBTClassifier = defaultCopy(extra)
 }
 
-@Since("1.4.0")
-@Experimental
+@Since("1.4.0") @Experimental
 object GBTClassifier {
   // The losses below should be lowercase.
   /** Accessor for supported loss settings: logistic */
@@ -211,8 +209,7 @@ object GBTClassifier {
   * @param _trees  Decision trees in the ensemble.
   * @param _treeWeights  Weights for the decision trees in the ensemble.
   */
-@Since("1.6.0")
-@Experimental
+@Since("1.6.0") @Experimental
 final class GBTClassificationModel private[ml] (
     @Since("1.6.0") override val uid: String,
     private val _trees: Array[DecisionTreeRegressionModel],

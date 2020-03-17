@@ -22,7 +22,8 @@ abstract class DirectedGraph extends Graph {
     override def toString = "" + origin + " --> " + dest
   }
 
-  class NodeImpl extends NodeIntf { self: Node =>
+  class NodeImpl extends NodeIntf {
+    self: Node =>
     val id = ids
     ids = ids + 1
     def connectWith(node: Node): Edge = {

@@ -11,8 +11,7 @@ object Serialize {
     out.close()
     ba.toByteArray()
   }
-  @throws(classOf[java.io.IOException])
-  @throws(classOf[ClassNotFoundException])
+  @throws(classOf[java.io.IOException]) @throws(classOf[ClassNotFoundException])
   def read[A](buffer: Array[Byte]): A = {
     val in =
       new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(buffer))
@@ -555,10 +554,14 @@ object Test7 {
 
 // Verify that transient lazy vals don't get serialized
 class WithTransient extends Serializable {
-  @transient lazy val a1 = 1
-  @transient private lazy val a2 = 2
-  @transient object B extends Serializable
-  @transient private object C extends Serializable
+  @transient
+  lazy val a1 = 1
+  @transient
+  private lazy val a2 = 2
+  @transient
+  object B extends Serializable
+  @transient
+  private object C extends Serializable
 
   def test = {
     println(a1)

@@ -24,7 +24,8 @@ trait Internals extends scala.tools.nsc.transform.TypingTransformers {
       new HofTransformer(transformer).transform(tree)
 
     class HofTypingTransformer(hof: (Tree, TypingTransformApi) => Tree)
-        extends TypingTransformer(callsiteTyper.context.unit) { self =>
+        extends TypingTransformer(callsiteTyper.context.unit) {
+      self =>
       currentOwner = callsiteTyper.context.owner
       curTree = EmptyTree
       localTyper = global.analyzer.newTyper(

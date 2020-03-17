@@ -8,7 +8,8 @@ import Id._
   * It implements flatMap+map and drops the write value. There is no `Monoid` or `Semigroup` required. There is no `point` operation.
   * You can switch between `WriterT` and `UnwriterT` with `unary_+` and `unary_-`.
   */
-final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
+final case class UnwriterT[F[_], U, A](run: F[(U, A)]) {
+  self =>
   import UnwriterT._
 
   def on: WriterT[F, U, A] = WriterT(run)

@@ -29,7 +29,8 @@ class DynamicTest {
 
   // scala.scalajs.js.Dynamic
 
-  @Test def should_workaround_Scala_2_10_issue_with_implicit_conversion_for_dynamic_fields_named_x_issue_8()
+  @Test
+  def should_workaround_Scala_2_10_issue_with_implicit_conversion_for_dynamic_fields_named_x_issue_8()
       : Unit = {
     class Point(val x: Int, val y: Int)
 
@@ -45,7 +46,8 @@ class DynamicTest {
     assertEquals(2, point.y)
   }
 
-  @Test def should_allow_to_call_functions_with_arguments_named_x(): Unit = {
+  @Test
+  def should_allow_to_call_functions_with_arguments_named_x(): Unit = {
     class A {
       def a: Int = 1
     }
@@ -61,8 +63,8 @@ class DynamicTest {
     assertEquals(11, b.x(10))
   }
 
-  @Test def should_allow_instanciating_JS_classes_dynamically_issue_10()
-      : Unit = {
+  @Test
+  def should_allow_instanciating_JS_classes_dynamically_issue_10(): Unit = {
     val DynamicTestClass = js.eval("""
         var DynamicTestClass = function(x) {
           this.x = x;
@@ -73,7 +75,8 @@ class DynamicTest {
     assertEquals("Scala.js", obj.x)
   }
 
-  @Test def should_allow_instantiating_JS_classes_dynamically_with_varargs_issue_708()
+  @Test
+  def should_allow_instantiating_JS_classes_dynamically_with_varargs_issue_708()
       : Unit = {
     val DynamicTestClassVarArgs = js
       .eval("""
@@ -128,7 +131,8 @@ class DynamicTest {
     assertTrue(obj4_elem2)
   }
 
-  @Test def should_provide_an_object_literal_construction(): Unit = {
+  @Test
+  def should_provide_an_object_literal_construction(): Unit = {
     import js.Dynamic.{literal => obj}
     val x = obj(foo = 3, bar = "foobar")
     val x_foo = x.foo
@@ -146,15 +150,16 @@ class DynamicTest {
     assertJSUndefined(obj_anything)
   }
 
-  @Test def object_literal_in_statement_position_issue_1627(): Unit = {
+  @Test
+  def object_literal_in_statement_position_issue_1627(): Unit = {
     // Just make sure it does not cause a SyntaxError
     js.Dynamic.literal(foo = "bar")
     // and also test the case without param (different code path in Printers)
     js.Dynamic.literal()
   }
 
-  @Test def should_provide_object_literal_construction_with_dynamic_naming()
-      : Unit = {
+  @Test
+  def should_provide_object_literal_construction_with_dynamic_naming(): Unit = {
     import js.Dynamic.{literal => obj}
     val x = obj("foo" -> 3, "bar" -> "foobar")
     val x_foo = x.foo
@@ -180,14 +185,15 @@ class DynamicTest {
     assertEquals(1, count)
   }
 
-  @Test def should_allow_to_create_an_empty_object_with_the_literal_syntax()
-      : Unit = {
+  @Test
+  def should_allow_to_create_an_empty_object_with_the_literal_syntax(): Unit = {
     import js.Dynamic.{literal => obj}
     val x = obj()
     assertTrue(x.isInstanceOf[js.Object])
   }
 
-  @Test def should_properly_encode_object_literal_property_names(): Unit = {
+  @Test
+  def should_properly_encode_object_literal_property_names(): Unit = {
     import js.Dynamic.{literal => obj}
 
     val obj0 = obj("3-" -> 42)
@@ -234,7 +240,8 @@ class DynamicTest {
     }
   }
 
-  @Test def `should_accept_:__*_arguments_for_literal_construction_issue_1743`()
+  @Test
+  def `should_accept_:__*_arguments_for_literal_construction_issue_1743`()
       : Unit = {
     import js.Dynamic.literal
 
@@ -259,8 +266,8 @@ class DynamicTest {
     assertEquals("foobar", y_bar)
   }
 
-  @Test def should_allow_object_literals_to_have_duplicate_keys_issue_1595()
-      : Unit = {
+  @Test
+  def should_allow_object_literals_to_have_duplicate_keys_issue_1595(): Unit = {
     import js.Dynamic.{literal => obj}
 
     // Basic functionality
@@ -288,7 +295,8 @@ class DynamicTest {
     test(obj(foo = 4, bar = 5, foo = 6))
   }
 
-  @Test def should_return_subclasses_of_js_Object_in_literal_construction_issue_783()
+  @Test
+  def should_return_subclasses_of_js_Object_in_literal_construction_issue_783()
       : Unit = {
     import js.Dynamic.{literal => obj}
 

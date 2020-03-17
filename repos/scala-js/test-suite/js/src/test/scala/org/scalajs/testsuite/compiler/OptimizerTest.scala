@@ -20,7 +20,8 @@ class OptimizerTest {
 
   // Inlineable classes
 
-  @Test def must_update_fields_of_this_in_the_computation_of_other_fields_issue_1153()
+  @Test
+  def must_update_fields_of_this_in_the_computation_of_other_fields_issue_1153()
       : Unit = {
     val foo = new InlineClassDependentFields(5)
     assertEquals(5, foo.x)
@@ -28,14 +29,16 @@ class OptimizerTest {
     assertEquals(11, foo.y)
   }
 
-  @Test def must_not_break_code_that_assigns_this_to_a_field(): Unit = {
+  @Test
+  def must_not_break_code_that_assigns_this_to_a_field(): Unit = {
     val foo = new InlineClassThisAlias(5)
     assertEquals(5, foo.z)
   }
 
   // Optimizer regression tests
 
-  @Test def `must_not_break_*_(-1)_for_Int_issue_1453`(): Unit = {
+  @Test
+  def `must_not_break_*_(-1)_for_Int_issue_1453`(): Unit = {
     @noinline
     def start0: Int = (() => 10)()
 
@@ -46,7 +49,8 @@ class OptimizerTest {
     assertEquals(2, lastElement)
   }
 
-  @Test def `must_not_break_*_(-1)_for_Float_and_Double_issue_1478`(): Unit = {
+  @Test
+  def `must_not_break_*_(-1)_for_Float_and_Double_issue_1478`(): Unit = {
     @noinline
     def a: Float = (() => 5.0f)()
     assertEquals(-5.0f, a * -1.0f)
@@ -56,7 +60,8 @@ class OptimizerTest {
     assertEquals(-7.0, b * -1.0)
   }
 
-  @Test def must_not_break_foreach_on_downward_Range_issue_1453(): Unit = {
+  @Test
+  def must_not_break_foreach_on_downward_Range_issue_1453(): Unit = {
     @noinline
     def start0: Int = (() => 10)()
 
@@ -68,7 +73,8 @@ class OptimizerTest {
     assertArrayEquals(Array(10, 9, 8, 7, 6, 5, 4, 3, 2), elements.toArray)
   }
 
-  @Test def must_not_break_classOf_T_eqeq_classOf_U_issue_1658(): Unit = {
+  @Test
+  def must_not_break_classOf_T_eqeq_classOf_U_issue_1658(): Unit = {
     assertEquals(classOf[String], classOf[String])
     assertEquals(classOf[Int], classOf[Int])
     assertEquals(classOf[Array[Int]], classOf[Array[Int]])
@@ -84,80 +90,97 @@ class OptimizerTest {
 
   // +[string] constant folding
 
-  @Test def must_not_break_when_folding_two_constant_strings(): Unit = {
-    @inline def str: String = "I am "
+  @Test
+  def must_not_break_when_folding_two_constant_strings(): Unit = {
+    @inline
+    def str: String = "I am "
     assertEquals("I am constant", str + "constant")
   }
 
-  @Test def must_not_break_when_folding_the_empty_string_when_associated_with_a_string()
+  @Test
+  def must_not_break_when_folding_the_empty_string_when_associated_with_a_string()
       : Unit = {
-    @noinline def str: String = "hello"
+    @noinline
+    def str: String = "hello"
     assertEquals("hello", str + "")
     assertEquals("hello", "" + str)
   }
 
-  @Test def `must_not_break_when_folding_1.4f_and_a_stringLit`(): Unit = {
+  @Test
+  def `must_not_break_when_folding_1.4f_and_a_stringLit`(): Unit = {
     assertEquals("1.399999976158142hello", 1.4f + "hello")
     assertEquals("hello1.399999976158142", "hello" + 1.4f)
   }
 
-  @Test def must_not_break_when_folding_cascading_+[string](): Unit = {
-    @noinline def str: String = "awesome! 10/10"
+  @Test
+  def must_not_break_when_folding_cascading_+[string](): Unit = {
+    @noinline
+    def str: String = "awesome! 10/10"
     assertEquals("Scala.js is awesome! 10/10", "Scala.js" + (" is " + str))
     assertEquals("awesome! 10/10 is Scala.js", (str + " is ") + "Scala.js")
   }
 
-  @Test def must_not_break_when_folding_a_chain_of_+[string](): Unit = {
-    @inline def b: String = "b"
-    @inline def d: String = "d"
-    @inline def f: String = "f"
+  @Test
+  def must_not_break_when_folding_a_chain_of_+[string](): Unit = {
+    @inline
+    def b: String = "b"
+    @inline
+    def d: String = "d"
+    @inline
+    def f: String = "f"
     assertEquals("abcdefg", "a" + b + "c" + d + "e" + f + "g")
   }
 
-  @Test def must_not_break_when_folding_integer_in_double_and_stringLit()
-      : Unit = {
+  @Test
+  def must_not_break_when_folding_integer_in_double_and_stringLit(): Unit = {
     assertEquals("1hello", 1.0 + "hello")
     assertEquals("hello1", "hello" + 1.0)
   }
 
-  @Test def must_not_break_when_folding_zero_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_zero_and_stringLit(): Unit = {
     assertEquals("0hello", 0.0 + "hello")
     assertEquals("hello0", "hello" + 0.0)
     assertEquals("0hello", -0.0 + "hello")
     assertEquals("hello0", "hello" + (-0.0))
   }
 
-  @Test def must_not_break_when_folding_Infinities_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_Infinities_and_stringLit(): Unit = {
     assertEquals("Infinityhello", Double.PositiveInfinity + "hello")
     assertEquals("helloInfinity", "hello" + Double.PositiveInfinity)
     assertEquals("-Infinityhello", Double.NegativeInfinity + "hello")
     assertEquals("hello-Infinity", "hello" + Double.NegativeInfinity)
   }
 
-  @Test def must_not_break_when_folding_NaN_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_NaN_and_stringLit(): Unit = {
     assertEquals("NaNhello", Double.NaN + "hello")
     assertEquals("helloNaN", "hello" + Double.NaN)
   }
 
-  @Test def must_not_break_when_folding_double_with_decimal_and_stringLit()
-      : Unit = {
+  @Test
+  def must_not_break_when_folding_double_with_decimal_and_stringLit(): Unit = {
     assumeFalse(isInFullOpt)
     assertEquals("1.2323919403474454e+21hello", 1.2323919403474454e21 + "hello")
     assertEquals("hello1.2323919403474454e+21", "hello" + 1.2323919403474454e21)
   }
 
-  @Test def must_not_break_when_folding_double_that_JVM_would_print_in_scientific_notation_and_stringLit()
+  @Test
+  def must_not_break_when_folding_double_that_JVM_would_print_in_scientific_notation_and_stringLit()
       : Unit = {
     assumeFalse(isInFullOpt)
     assertEquals("123456789012345hello", 123456789012345d + "hello")
     assertEquals("hello123456789012345", "hello" + 123456789012345d)
   }
 
-  @Test def must_not_break_when_folding_doubles_to_String(): Unit = {
+  @Test
+  def must_not_break_when_folding_doubles_to_String(): Unit = {
     assumeFalse(isInFullOpt)
-    @noinline def toStringNoInline(v: Double): String = v.toString
-    @inline def test(v: Double): Unit =
-      assertEquals(toStringNoInline(v), v.toString)
+    @noinline
+    def toStringNoInline(v: Double): String = v.toString
+    @inline
+    def test(v: Double): Unit = assertEquals(toStringNoInline(v), v.toString)
 
     // Special cases
     test(0.0)
@@ -263,31 +286,37 @@ class OptimizerTest {
     test(607681513323520000000.0)
   }
 
-  @Test def must_not_break_when_folding_long_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_long_and_stringLit(): Unit = {
     assertEquals("1hello", 1L + "hello")
     assertEquals("hello1", "hello" + 1L)
   }
 
-  @Test def must_not_break_when_folding_integer_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_integer_and_stringLit(): Unit = {
     assertEquals("42hello", 42 + "hello")
     assertEquals("hello42", "hello" + 42)
   }
 
-  @Test def must_not_break_when_folding_boolean_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_boolean_and_stringLit(): Unit = {
     assertEquals("false is not true", false + " is not true")
     assertEquals("false is not true", "false is not " + true)
   }
 
-  @Test def must_not_break_when_folding_unit_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_unit_and_stringLit(): Unit = {
     assertEquals("undefined is undefined?", () + " is undefined?")
     assertEquals("undefined is undefined", "undefined is " + ())
   }
 
-  @Test def must_not_break_when_folding_null_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_null_and_stringLit(): Unit = {
     assertEquals("Damien is not null", "Damien is not " + null)
   }
 
-  @Test def must_not_break_when_folding_char_and_stringLit(): Unit = {
+  @Test
+  def must_not_break_when_folding_char_and_stringLit(): Unit = {
     assertEquals("Scala.js", 'S' + "cala.js")
     assertEquals("Scala.js", "Scala.j" + 's')
   }

@@ -54,7 +54,8 @@ case class DecimalType(precision: Int, scale: Int) extends FractionalType {
   def this() = this(10)
 
   private[sql] type InternalType = Decimal
-  @transient private[sql] lazy val tag = ScalaReflectionLock.synchronized {
+  @transient
+  private[sql] lazy val tag = ScalaReflectionLock.synchronized {
     typeTag[InternalType]
   }
   private[sql] val numeric = Decimal.DecimalIsFractional

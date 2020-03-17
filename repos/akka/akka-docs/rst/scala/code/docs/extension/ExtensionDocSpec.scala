@@ -69,7 +69,8 @@ object ExtensionDocSpec {
 
   //#extension-usage-actor-trait
 
-  trait Counting { self: Actor =>
+  trait Counting {
+    self: Actor =>
     def increment() = CountExtension(context.system).increment()
   }
   class MyCounterActor extends Actor with Counting {

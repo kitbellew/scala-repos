@@ -34,8 +34,7 @@ import scala.collection.JavaConverters._
 
 import scala.collection.immutable.Seq
 
-@Path("v2/apps")
-@Consumes(Array(MediaType.APPLICATION_JSON))
+@Path("v2/apps") @Consumes(Array(MediaType.APPLICATION_JSON))
 @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
 class AppsResource @Inject() (
     clock: Clock,
@@ -52,14 +51,14 @@ class AppsResource @Inject() (
 
   private[this] val ListApps = """^((?:.+/)|)\*$""".r
 
-  @GET
-  @Timed
+  @GET @Timed
   def index(
       @QueryParam("cmd") cmd: String,
       @QueryParam("id") id: String,
       @QueryParam("label") label: String,
       @QueryParam("embed") embed: java.util.Set[String],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val selector = selectAuthorized(
         search(Option(cmd), Option(id), Option(label)))
@@ -70,12 +69,12 @@ class AppsResource @Inject() (
       Response.ok(jsonObjString("apps" -> mapped)).build()
     }
 
-  @POST
-  @Timed
+  @POST @Timed
   def create(
       body: Array[Byte],
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[AppDefinition].withCanonizedIds()) {
         appDef =>
@@ -109,13 +108,12 @@ class AppsResource @Inject() (
       }
     }
 
-  @GET
-  @Path("""{id:.+}""")
-  @Timed
+  @GET @Path("""{id:.+}""") @Timed
   def show(
       @PathParam("id") id: String,
       @QueryParam("embed") embed: java.util.Set[String],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val resolvedEmbed =
         InfoEmbedResolver.resolveApp(embed.asScala.toSet) ++ Set(
@@ -155,14 +153,13 @@ class AppsResource @Inject() (
       }
     }
 
-  @PUT
-  @Path("""{id:.+}""")
-  @Timed
+  @PUT @Path("""{id:.+}""") @Timed
   def replace(
       @PathParam("id") id: String,
       body: Array[Byte],
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val appId = id.toRootPath
       val now = clock.now()
@@ -184,12 +181,12 @@ class AppsResource @Inject() (
       }
     }
 
-  @PUT
-  @Timed
+  @PUT @Timed
   def replaceMultiple(
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[Seq[AppUpdate]].map(_.withCanonizedIds())) {
         updates =>
@@ -212,13 +209,12 @@ class AppsResource @Inject() (
       }
     }
 
-  @DELETE
-  @Path("""{id:.+}""")
-  @Timed
+  @DELETE @Path("""{id:.+}""") @Timed
   def delete(
       @DefaultValue("true") @QueryParam("force") force: Boolean,
       @PathParam("id") id: String,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val appId = id.toRootPath
 
@@ -246,12 +242,12 @@ class AppsResource @Inject() (
       authorizer,
       config)
 
-  @POST
-  @Path("{id:.+}/restart")
+  @POST @Path("{id:.+}/restart")
   def restart(
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response =
+      @Context
+      req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val appId = id.toRootPath
 

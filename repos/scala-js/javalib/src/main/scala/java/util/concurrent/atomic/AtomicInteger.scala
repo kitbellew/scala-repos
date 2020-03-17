@@ -33,7 +33,8 @@ class AtomicInteger(private[this] var value: Int)
 
   final def getAndDecrement(): Int = getAndAdd(-1)
 
-  @inline final def getAndAdd(delta: Int): Int = {
+  @inline
+  final def getAndAdd(delta: Int): Int = {
     val old = value
     value = old + delta
     old
@@ -43,7 +44,8 @@ class AtomicInteger(private[this] var value: Int)
 
   final def decrementAndGet(): Int = addAndGet(-1)
 
-  @inline final def addAndGet(delta: Int): Int = {
+  @inline
+  final def addAndGet(delta: Int): Int = {
     val newValue = value + delta
     value = newValue
     newValue

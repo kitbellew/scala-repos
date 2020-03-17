@@ -39,12 +39,14 @@ trait CollectionsCheckedCollectionTest extends CollectionsOnCollectionsTest {
     }
   }
 
-  @Test def testCheckedCollection(): Unit = {
+  @Test
+  def testCheckedCollection(): Unit = {
     assertTrue(superColl().add(new C))
     assertTrue(superColl().addAll(Seq(new C)))
   }
 
-  @Test def testCheckedCollectionBadInputs(): Unit = {
+  @Test
+  def testCheckedCollectionBadInputs(): Unit = {
     assumeTrue("Needs compliant asInstanceOf", hasCompliantAsInstanceOfs)
 
     expectThrows(classOf[ClassCastException], superColl().add(new A))

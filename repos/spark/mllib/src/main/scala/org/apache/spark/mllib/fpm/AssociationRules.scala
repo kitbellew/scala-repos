@@ -34,8 +34,7 @@ import org.apache.spark.rdd.RDD
   * association rules which have a single item as the consequent.
   *
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class AssociationRules private[fpm] (private var minConfidence: Double)
     extends Logging
     with Serializable {
@@ -114,8 +113,7 @@ object AssociationRules {
     * @tparam Item item type
     *
     */
-  @Since("1.5.0")
-  @Experimental
+  @Since("1.5.0") @Experimental
   class Rule[Item] private[fpm] (
       @Since("1.5.0") val antecedent: Array[Item],
       @Since("1.5.0") val consequent: Array[Item],

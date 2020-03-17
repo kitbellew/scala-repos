@@ -23,7 +23,8 @@ trait Rig[@sp(Byte, Short, Int, Long, Float, Double) A]
 }
 
 object Rig {
-  @inline final def apply[A](implicit r: Rig[A]): Rig[A] = r
+  @inline
+  final def apply[A](implicit r: Rig[A]): Rig[A] = r
 }
 
 /**
@@ -35,5 +36,6 @@ trait CRig[@sp(Byte, Short, Int, Long, Float, Double) A]
     with MultiplicativeCMonoid[A]
 
 object CRig {
-  @inline final def apply[A](implicit r: CRig[A]): CRig[A] = r
+  @inline
+  final def apply[A](implicit r: CRig[A]): CRig[A] = r
 }

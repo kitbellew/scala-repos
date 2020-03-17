@@ -21,25 +21,26 @@ import java.util.concurrent.TimeUnit
   * > project finagle-benchmark
   * > run ServerSetResolver -prof gc
   */
-@State(Scope.Benchmark)
-@Fork(1)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 1)
-@BenchmarkMode(Array(Mode.SingleShotTime))
+@State(Scope.Benchmark) @Fork(1) @OutputTimeUnit(TimeUnit.MILLISECONDS)
+@Warmup(iterations = 1) @BenchmarkMode(Array(Mode.SingleShotTime))
 class ServerSetResolver {
 
   // These params should be kept in sync with the corresponding flags in
   // LocalServerSetService.
-  @Param(Array("2181")) var zkListenPort = 2181
-  @Param(Array("25")) var serverSetsToResolve = 25
+  @Param(Array("2181"))
+  var zkListenPort = 2181
+  @Param(Array("25"))
+  var serverSetsToResolve = 25
 
-  @Param(Array("1")) var stabilizationSec = 1
+  @Param(Array("1"))
+  var stabilizationSec = 1
 
   /**
     * Specifies how long the test runs (as serverset monitoring
     * will continue for the lifetime of the test).
     */
-  @Param(Array("120")) var testRuntimeSec = 120
+  @Param(Array("120"))
+  var testRuntimeSec = 120
 
   val logger = Logger(getClass)
 

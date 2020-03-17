@@ -19,7 +19,8 @@ import collection.mutable.ArrayBuffer
   */
 class AsyncLatch(initialCount: Int = 0) {
   require(initialCount >= 0)
-  @volatile private[this] var count = initialCount
+  @volatile
+  private[this] var count = initialCount
   private[this] var waiters = new ArrayBuffer[() => Unit]
 
   /**

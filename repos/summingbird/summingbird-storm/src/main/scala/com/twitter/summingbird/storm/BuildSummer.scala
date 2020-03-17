@@ -37,7 +37,8 @@ import Constants._
  * Reading all the options internally.
  */
 object BuildSummer {
-  @transient private val logger = LoggerFactory.getLogger(BuildSummer.getClass)
+  @transient
+  private val logger = LoggerFactory.getLogger(BuildSummer.getClass)
 
   def apply(storm: Storm, dag: Dag[Storm], node: StormNode, jobID: JobId) = {
     val opSummerConstructor = storm.get[SummerConstructor](dag, node).map(_._2)

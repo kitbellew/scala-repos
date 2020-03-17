@@ -16,11 +16,8 @@ object NodeQueueBenchmark {
   case object Stop
 }
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Array(Mode.Throughput))
-@Fork(2)
-@Warmup(iterations = 5)
-@Measurement(iterations = 10)
+@State(Scope.Benchmark) @BenchmarkMode(Array(Mode.Throughput)) @Fork(2)
+@Warmup(iterations = 5) @Measurement(iterations = 10)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 class NodeQueueBenchmark {
   import NodeQueueBenchmark._
@@ -64,8 +61,7 @@ mailbox {
     System.gc()
   }
 
-  @Benchmark
-  @OperationsPerInvocation(burst)
+  @Benchmark @OperationsPerInvocation(burst)
   def send(): Unit = {
     var todo = burst
     while (todo > 0) {

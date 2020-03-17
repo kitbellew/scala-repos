@@ -22,7 +22,9 @@ import simulacrum.typeclass
   *
   * See: [[http://www.cs.nott.ac.uk/~pszgmh/fold.pdf A tutorial on the universality and expressiveness of fold]]
   */
-@typeclass trait Foldable[F[_]] { self =>
+@typeclass
+trait Foldable[F[_]] {
+  self =>
 
   /**
     * Left associative fold on 'F' using the function 'f'.

@@ -207,7 +207,8 @@ object StringContext {
     def replace(first: Int): String = {
       val b = new JLSBuilder
       // append replacement starting at index `i`, with `next` backslash
-      @tailrec def loop(i: Int, next: Int): String = {
+      @tailrec
+      def loop(i: Int, next: Int): String = {
         if (next >= 0) {
           //require(str(next) == '\\')
           if (next > i) b.append(str, i, next)

@@ -29,7 +29,8 @@ import com.precog.util.BitSetUtil.Implicits._
 import scala.annotation.tailrec
 import org.apache.commons.collections.primitives.ArrayIntList
 
-class BitsetColumn(definedAt: BitSet) { this: Column =>
+class BitsetColumn(definedAt: BitSet) {
+  this: Column =>
   def isDefinedAt(row: Int): Boolean = definedAt(row)
 
   override def toString = {
@@ -53,19 +54,23 @@ object BitsetColumn {
   }
 }
 
-class Map1Column(c: Column) { this: Column =>
+class Map1Column(c: Column) {
+  this: Column =>
   def isDefinedAt(row: Int) = c.isDefinedAt(row)
 }
 
-class Map2Column(c1: Column, c2: Column) { this: Column =>
+class Map2Column(c1: Column, c2: Column) {
+  this: Column =>
   def isDefinedAt(row: Int) = c1.isDefinedAt(row) && c2.isDefinedAt(row)
 }
 
-class UnionColumn[T <: Column](c1: T, c2: T) { this: T =>
+class UnionColumn[T <: Column](c1: T, c2: T) {
+  this: T =>
   def isDefinedAt(row: Int) = c1.isDefinedAt(row) || c2.isDefinedAt(row)
 }
 
-class UnionLotsColumn[T <: Column](cols: Array[T]) { this: T =>
+class UnionLotsColumn[T <: Column](cols: Array[T]) {
+  this: T =>
   def isDefinedAt(row: Int) = {
     var i = 0
     var exists = false
@@ -77,11 +82,13 @@ class UnionLotsColumn[T <: Column](cols: Array[T]) { this: T =>
   }
 }
 
-class IntersectColumn[T <: Column](c1: T, c2: T) { this: T =>
+class IntersectColumn[T <: Column](c1: T, c2: T) {
+  this: T =>
   def isDefinedAt(row: Int) = c1.isDefinedAt(row) && c2.isDefinedAt(row)
 }
 
-class IntersectLotsColumn[T <: Column](cols: Array[T]) { this: T =>
+class IntersectLotsColumn[T <: Column](cols: Array[T]) {
+  this: T =>
   def isDefinedAt(row: Int) = {
     var i = 0
     var forall = true
@@ -121,7 +128,8 @@ class OrLotsColumn(cols: Array[BoolColumn])
   }
 }
 
-class ConcatColumn[T <: Column](at: Int, c1: T, c2: T) { this: T =>
+class ConcatColumn[T <: Column](at: Int, c1: T, c2: T) {
+  this: T =>
   def isDefinedAt(row: Int) =
     row >= 0 && ((row < at && c1.isDefinedAt(row)) || (row >= at && c2
       .isDefinedAt(row - at)))
@@ -130,9 +138,11 @@ class ConcatColumn[T <: Column](at: Int, c1: T, c2: T) { this: T =>
 class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
   this: T =>
 
-  @volatile private var lastIndex = 0
+  @volatile
+  private var lastIndex = 0
 
-  @inline private final def inBound(row: Int, idx: Int): Boolean = {
+  @inline
+  private final def inBound(row: Int, idx: Int): Boolean = {
     val lb = if (idx < 0) 0 else offsets(idx)
     val ub = if ((idx + 1) < offsets.length) offsets(idx + 1) else (row + 1)
     row >= lb && row < ub
@@ -161,7 +171,8 @@ class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
   }
 }
 
-class ShiftColumn[T <: Column](by: Int, c1: T) { this: T =>
+class ShiftColumn[T <: Column](by: Int, c1: T) {
+  this: T =>
   def isDefinedAt(row: Int) = c1.isDefinedAt(row - by)
 }
 
@@ -188,7 +199,8 @@ class RemapIndicesColumn[T <: Column](delegate: T, indices: ArrayIntList) {
 
 class SparsenColumn[T <: Column](delegate: T, idx: Array[Int], toSize: Int) {
   this: T =>
-  @inline @tailrec private def fill(a: Array[Int], i: Int): Array[Int] = {
+  @inline @tailrec
+  private def fill(a: Array[Int], i: Int): Array[Int] = {
     if (i < toSize && i < idx.length) {
       if (a(idx(i)) == -1) {
         // We can only update indices that aren't already mapped
@@ -205,22 +217,26 @@ class SparsenColumn[T <: Column](delegate: T, idx: Array[Int], toSize: Int) {
       row))
 }
 
-class InfiniteColumn { this: Column =>
+class InfiniteColumn {
+  this: Column =>
   def isDefinedAt(row: Int) = true
 }
 
-class RangeColumn(range: Range) { this: Column =>
+class RangeColumn(range: Range) {
+  this: Column =>
   def isDefinedAt(row: Int) = range.contains(row)
 }
 
-class EmptyColumn[T <: Column] { this: T =>
+class EmptyColumn[T <: Column] {
+  this: T =>
   def isDefinedAt(row: Int) = false
   def apply(row: Int): Nothing = sys.error("Undefined.")
 }
 
 abstract class ArraySetColumn[T <: Column](
     val tpe: CType,
-    protected val backing: Array[T]) { this: T =>
+    protected val backing: Array[T]) {
+  this: T =>
   protected def firstDefinedIndexAt(row: Int): Int = {
     var i = 0
     while (i < backing.length && !backing(i).isDefinedAt(row)) { i += 1 }

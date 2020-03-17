@@ -248,7 +248,8 @@ private[parallel] abstract class HashMapCombiner[K, V]
       offset: Int,
       howmany: Int)
       extends Task[Unit, CreateTrie] {
-    @volatile var result = ()
+    @volatile
+    var result = ()
     def leaf(prev: Option[Unit]) = {
       var i = offset
       val until = offset + howmany
@@ -296,7 +297,8 @@ private[parallel] abstract class HashMapCombiner[K, V]
       offset: Int,
       howmany: Int)
       extends Task[Unit, CreateGroupedTrie[Repr]] {
-    @volatile var result = ()
+    @volatile
+    var result = ()
     def leaf(prev: Option[Unit]) = {
       var i = offset
       val until = offset + howmany

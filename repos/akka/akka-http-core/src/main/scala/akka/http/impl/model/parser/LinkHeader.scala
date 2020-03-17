@@ -78,7 +78,8 @@ private[parser] trait LinkHeader {
     }
 
   // filter out subsequent `rel`, `media`, `title`, `type` and `type*` params
-  @tailrec private def sanitize(
+  @tailrec
+  private def sanitize(
       params: Seq[LinkParam],
       result: Seq[LinkParam] = Nil,
       seenRel: Boolean = false,

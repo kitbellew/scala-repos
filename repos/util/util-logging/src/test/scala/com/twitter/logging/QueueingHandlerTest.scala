@@ -61,7 +61,8 @@ class QueueingHandlerTest
       val blockingHandler = new MockHandler {
         override def publish(record: javalog.LogRecord) { Thread.sleep(100000) }
       }
-      @volatile var droppedCount = 0
+      @volatile
+      var droppedCount = 0
 
       val queueHandler = new QueueingHandler(blockingHandler, 1) {
         override protected def onOverflow(record: javalog.LogRecord) {
@@ -114,8 +115,10 @@ class QueueingHandlerTest
 
     "handle exceptions in the underlying handler" in {
       val logger = freshLogger()
-      @volatile var mustError = true
-      @volatile var didLog = false
+      @volatile
+      var mustError = true
+      @volatile
+      var didLog = false
       val handler = new MockHandler {
         override def publish(record: javalog.LogRecord) {
           if (mustError) {

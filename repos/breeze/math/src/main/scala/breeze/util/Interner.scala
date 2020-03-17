@@ -53,13 +53,13 @@ class Interner[T] extends (T => T) with Serializable {
     Map[K, T]() ++ c.map { case (k, v) => (k, intern(v)) }
   }
 
-  @transient private var inner = new WeakHashMap[T, WeakReference[T]];
+  @transient
+  private var inner = new WeakHashMap[T, WeakReference[T]];
 
   @throws(classOf[java.io.IOException])
   private def writeObject(oos: ObjectOutputStream) { oos.defaultWriteObject(); }
 
-  @throws(classOf[java.io.IOException])
-  @throws(classOf[ClassNotFoundException])
+  @throws(classOf[java.io.IOException]) @throws(classOf[ClassNotFoundException])
   private def readObject(ois: ObjectInputStream) {
     ois.defaultReadObject();
     inner = new WeakHashMap[T, WeakReference[T]]

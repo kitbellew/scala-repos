@@ -197,7 +197,8 @@ abstract class NodePrinters {
       println(")")
     }
 
-    @inline private def indent[T](body: => T): T = {
+    @inline
+    private def indent[T](body: => T): T = {
       level += 1
       try body
       finally level -= 1

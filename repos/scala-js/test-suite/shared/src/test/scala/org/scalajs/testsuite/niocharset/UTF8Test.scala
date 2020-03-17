@@ -18,7 +18,8 @@ import BaseCharsetTest._
 import org.scalajs.testsuite.utils.Platform.executingInJVM
 
 class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
-  @Test def decode(): Unit = {
+  @Test
+  def decode(): Unit = {
     def OutSeq(elems: OutPart[CharBuffer]*): Seq[OutPart[CharBuffer]] =
       Seq[OutPart[CharBuffer]](elems: _*)
 
@@ -178,7 +179,8 @@ class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
     }
   }
 
-  @Test def encode(): Unit = {
+  @Test
+  def encode(): Unit = {
     def OutSeq(elems: OutPart[ByteBuffer]*): Seq[OutPart[ByteBuffer]] =
       Seq[OutPart[ByteBuffer]](elems: _*)
 
@@ -242,7 +244,8 @@ class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
     testEncode(cb"\udbff\ud835\udcd7")(Malformed(1), bb"f0 9d 93 97")
   }
 
-  @Test def isLegalReplacement(): Unit = {
+  @Test
+  def isLegalReplacement(): Unit = {
     val encoder = charset.newEncoder
 
     // The good ones

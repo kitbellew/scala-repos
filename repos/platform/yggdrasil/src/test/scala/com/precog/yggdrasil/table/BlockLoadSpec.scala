@@ -54,7 +54,8 @@ import CValueGenerators._
 trait BlockLoadSpec[M[+_]]
     extends BlockStoreTestSupport[M]
     with Specification
-    with ScalaCheck { self =>
+    with ScalaCheck {
+  self =>
   class BlockStoreLoadTestModule(sampleData: SampleData)
       extends BlockStoreTestModule[M] {
 

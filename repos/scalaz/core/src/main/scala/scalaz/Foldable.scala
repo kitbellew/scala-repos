@@ -6,7 +6,8 @@ package scalaz
   * values of that type.
   */
 ////
-trait Foldable[F[_]] { self =>
+trait Foldable[F[_]] {
+  self =>
   ////
   import collection.generic.CanBuildFrom
 
@@ -359,7 +360,8 @@ trait Foldable[F[_]] { self =>
 }
 
 object Foldable {
-  @inline def apply[F[_]](implicit F: Foldable[F]): Foldable[F] = F
+  @inline
+  def apply[F[_]](implicit F: Foldable[F]): Foldable[F] = F
 
   ////
   /**

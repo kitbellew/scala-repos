@@ -15,7 +15,8 @@ import spire.syntax.std.array._
 case class PolySparse[@sp(Double) C] private[spire] (
     val exp: Array[Int],
     val coeff: Array[C])(implicit val ct: ClassTag[C])
-    extends Polynomial[C] { lhs =>
+    extends Polynomial[C] {
+  lhs =>
 
   def toDense(implicit ring: Semiring[C], eq: Eq[C]): PolyDense[C] =
     Polynomial.dense(coeffsArray)
@@ -219,7 +220,8 @@ object PolySparse {
     else {
       val es = new Array[Int](len)
       val cs = new Array[C](len)
-      @tailrec def loop(i: Int, j: Int): PolySparse[C] =
+      @tailrec
+      def loop(i: Int, j: Int): PolySparse[C] =
         if (i < coeff.length) {
           val c = coeff(i)
           if (c =!= Semiring[C].zero) {

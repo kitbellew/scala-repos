@@ -22,7 +22,8 @@ import java.io.Writer
 /** An html page that is part of a Scaladoc site.
   * @author David Bernard
   * @author Gilles Dubochet */
-abstract class HtmlPage extends Page { thisPage =>
+abstract class HtmlPage extends Page {
+  thisPage =>
 
   /** The title of this page. */
   protected def title: String

@@ -34,8 +34,7 @@ import org.apache.spark.sql.types.DoubleType
   * :: Experimental ::
   * Evaluator for multiclass classification, which expects two input columns: score and label.
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class MulticlassClassificationEvaluator @Since("1.5.0") (
     @Since("1.5.0") override val uid: String)
     extends Evaluator

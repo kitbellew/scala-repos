@@ -66,10 +66,12 @@ private[streaming] abstract class ReceiverSupervisor(
   private[streaming] def getCurrentRateLimit: Long = Long.MaxValue
 
   /** Exception associated with the stopping of the receiver */
-  @volatile protected var stoppingError: Throwable = null
+  @volatile
+  protected var stoppingError: Throwable = null
 
   /** State of the receiver */
-  @volatile private[streaming] var receiverState = Initialized
+  @volatile
+  private[streaming] var receiverState = Initialized
 
   /** Push a single data item to backend data store. */
   def pushSingle(data: Any)

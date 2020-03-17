@@ -30,7 +30,8 @@ import scala.collection._
 case class ProducePartitionStatus(
     requiredOffset: Long,
     responseStatus: PartitionResponse) {
-  @volatile var acksPending = false
+  @volatile
+  var acksPending = false
 
   override def toString =
     "[acksPending: %b, error: %d, startOffset: %d, requiredOffset: %d]"

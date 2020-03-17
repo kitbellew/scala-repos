@@ -15,7 +15,8 @@ package scalaz
   * @see [[scalaz.Contravariant.ContravariantLaw]]
   */
 ////
-trait Contravariant[F[_]] extends InvariantFunctor[F] { self =>
+trait Contravariant[F[_]] extends InvariantFunctor[F] {
+  self =>
   ////
 
   /** Transform `A`.
@@ -79,7 +80,8 @@ trait Contravariant[F[_]] extends InvariantFunctor[F] { self =>
 }
 
 object Contravariant {
-  @inline def apply[F[_]](implicit F: Contravariant[F]): Contravariant[F] = F
+  @inline
+  def apply[F[_]](implicit F: Contravariant[F]): Contravariant[F] = F
 
   ////
 

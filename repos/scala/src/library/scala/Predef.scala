@@ -132,11 +132,13 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
   def optManifest[T](implicit m: OptManifest[T]) = m
 
   // Minor variations on identity functions
-  @inline def identity[A](x: A): A =
-    x // @see `conforms` for the implicit version
-  @inline def implicitly[T](implicit e: T) =
+  @inline
+  def identity[A](x: A): A = x // @see `conforms` for the implicit version
+  @inline
+  def implicitly[T](implicit e: T) =
     e // for summoning implicit values from the nether world -- TODO: when dependent method types are on by default, give this result type `e.type`, so that inliner has better chance of knowing which method to inline in calls like `implicitly[MatchingStrategy[Option]].zero`
-  @inline def locally[T](x: T): T =
+  @inline
+  def locally[T](x: T): T =
     x // to communicate intent and avoid unmoored statements
 
   // errors and asserts -------------------------------------------------
@@ -220,7 +222,8 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
     *  @param requirement   the expression to test
     *  @param message       a String to include in the failure message
     */
-  @inline final def require(requirement: Boolean, message: => Any) {
+  @inline
+  final def require(requirement: Boolean, message: => Any) {
     if (!requirement)
       throw new IllegalArgumentException("requirement failed: " + message)
   }
@@ -251,7 +254,8 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
   // implicit classes -----------------------------------------------------
 
   implicit final class ArrowAssoc[A](private val self: A) extends AnyVal {
-    @inline def ->[B](y: B): Tuple2[A, B] = Tuple2(self, y)
+    @inline
+    def ->[B](y: B): Tuple2[A, B] = Tuple2(self, y)
     def →[B](y: B): Tuple2[A, B] = ->(y)
   }
 
@@ -270,7 +274,8 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
       *  Format strings are as for `String.format`
       *  (@see java.lang.String.format).
       */
-    @inline def formatted(fmtstr: String): String = fmtstr format self
+    @inline
+    def formatted(fmtstr: String): String = fmtstr format self
   }
 
   // SI-8229 retaining the pre 2.11 name for source compatibility in shadowing this implicit
@@ -281,10 +286,8 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
   implicit final class RichException(private val self: Throwable)
       extends AnyVal {
     import scala.compat.Platform.EOL
-    @deprecated(
-      "Use Throwable#getStackTrace",
-      "2.11.0") def getStackTraceString =
-      self.getStackTrace().mkString("", EOL, EOL)
+    @deprecated("Use Throwable#getStackTrace", "2.11.0")
+    def getStackTraceString = self.getStackTrace().mkString("", EOL, EOL)
   }
 
   implicit final class SeqCharSequence(
@@ -312,8 +315,10 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
       def apply() = mutable.StringBuilder.newBuilder
     }
 
-  @inline implicit def augmentString(x: String): StringOps = new StringOps(x)
-  @inline implicit def unaugmentString(x: StringOps): String = x.repr
+  @inline
+  implicit def augmentString(x: String): StringOps = new StringOps(x)
+  @inline
+  implicit def unaugmentString(x: StringOps): String = x.repr
 
   // printing -----------------------------------------------------------
 
@@ -375,44 +380,49 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
   // TODO: when we remove, these should we drop the underscores from the new generation below? (For source compatibility in case someone was shadowing these.)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def booleanArrayOps(xs: Array[Boolean]): ArrayOps[Boolean] =
+    "2.12.0-M2")
+  def booleanArrayOps(xs: Array[Boolean]): ArrayOps[Boolean] =
     new ArrayOps.ofBoolean(xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def byteArrayOps(xs: Array[Byte]): ArrayOps[Byte] =
-    new ArrayOps.ofByte(xs)
+    "2.12.0-M2")
+  def byteArrayOps(xs: Array[Byte]): ArrayOps[Byte] = new ArrayOps.ofByte(xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def charArrayOps(xs: Array[Char]): ArrayOps[Char] =
-    new ArrayOps.ofChar(xs)
+    "2.12.0-M2")
+  def charArrayOps(xs: Array[Char]): ArrayOps[Char] = new ArrayOps.ofChar(xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def doubleArrayOps(xs: Array[Double]): ArrayOps[Double] =
+    "2.12.0-M2")
+  def doubleArrayOps(xs: Array[Double]): ArrayOps[Double] =
     new ArrayOps.ofDouble(xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def floatArrayOps(xs: Array[Float]): ArrayOps[Float] =
+    "2.12.0-M2")
+  def floatArrayOps(xs: Array[Float]): ArrayOps[Float] =
     new ArrayOps.ofFloat(xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def intArrayOps(xs: Array[Int]): ArrayOps[Int] =
-    new ArrayOps.ofInt(xs)
+    "2.12.0-M2")
+  def intArrayOps(xs: Array[Int]): ArrayOps[Int] = new ArrayOps.ofInt(xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def longArrayOps(xs: Array[Long]): ArrayOps[Long] =
-    new ArrayOps.ofLong(xs)
+    "2.12.0-M2")
+  def longArrayOps(xs: Array[Long]): ArrayOps[Long] = new ArrayOps.ofLong(xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def refArrayOps[T <: AnyRef](xs: Array[T]): ArrayOps[T] =
+    "2.12.0-M2")
+  def refArrayOps[T <: AnyRef](xs: Array[T]): ArrayOps[T] =
     new ArrayOps.ofRef[T](xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def shortArrayOps(xs: Array[Short]): ArrayOps[Short] =
+    "2.12.0-M2")
+  def shortArrayOps(xs: Array[Short]): ArrayOps[Short] =
     new ArrayOps.ofShort(xs)
   @deprecated(
     "For binary compatibility only. Release new partest and remove in M3.",
-    "2.12.0-M2") def unitArrayOps(xs: Array[Unit]): ArrayOps[Unit] =
-    new ArrayOps.ofUnit(xs)
+    "2.12.0-M2")
+  def unitArrayOps(xs: Array[Unit]): ArrayOps[Unit] = new ArrayOps.ofUnit(xs)
 
   implicit def _booleanArrayOps(xs: Array[Boolean]): ArrayOps.ofBoolean =
     new ArrayOps.ofBoolean(xs)
@@ -529,50 +539,49 @@ private[scala] trait DeprecatedPredef {
   self: Predef.type =>
 
   // Deprecated stubs for any who may have been calling these methods directly.
-  @deprecated("Use `ArrowAssoc`", "2.11.0") def any2ArrowAssoc[A](
-      x: A): ArrowAssoc[A] = new ArrowAssoc(x)
-  @deprecated("Use `Ensuring`", "2.11.0") def any2Ensuring[A](
-      x: A): Ensuring[A] = new Ensuring(x)
-  @deprecated("Use `StringFormat`", "2.11.0") def any2stringfmt(
-      x: Any): StringFormat[Any] = new StringFormat(x)
-  @deprecated("Use `Throwable` directly", "2.11.0") def exceptionWrapper(
-      exc: Throwable) = new RichException(exc)
-  @deprecated("Use `SeqCharSequence`", "2.11.0") def seqToCharSequence(
-      xs: scala.collection.IndexedSeq[Char]): CharSequence =
+  @deprecated("Use `ArrowAssoc`", "2.11.0")
+  def any2ArrowAssoc[A](x: A): ArrowAssoc[A] = new ArrowAssoc(x)
+  @deprecated("Use `Ensuring`", "2.11.0")
+  def any2Ensuring[A](x: A): Ensuring[A] = new Ensuring(x)
+  @deprecated("Use `StringFormat`", "2.11.0")
+  def any2stringfmt(x: Any): StringFormat[Any] = new StringFormat(x)
+  @deprecated("Use `Throwable` directly", "2.11.0")
+  def exceptionWrapper(exc: Throwable) = new RichException(exc)
+  @deprecated("Use `SeqCharSequence`", "2.11.0")
+  def seqToCharSequence(xs: scala.collection.IndexedSeq[Char]): CharSequence =
     new SeqCharSequence(xs)
-  @deprecated("Use `ArrayCharSequence`", "2.11.0") def arrayToCharSequence(
-      xs: Array[Char]): CharSequence = new ArrayCharSequence(xs)
+  @deprecated("Use `ArrayCharSequence`", "2.11.0")
+  def arrayToCharSequence(xs: Array[Char]): CharSequence =
+    new ArrayCharSequence(xs)
 
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readLine()
-      : String = StdIn.readLine()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readLine(
-      text: String,
-      args: Any*) = StdIn.readLine(text, args: _*)
-  @deprecated(
-    "Use the method in `scala.io.StdIn`",
-    "2.11.0") def readBoolean() = StdIn.readBoolean()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readByte() =
-    StdIn.readByte()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readShort() =
-    StdIn.readShort()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readChar() =
-    StdIn.readChar()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readInt() =
-    StdIn.readInt()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readLong() =
-    StdIn.readLong()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readFloat() =
-    StdIn.readFloat()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readDouble() =
-    StdIn.readDouble()
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readf(
-      format: String) = StdIn.readf(format)
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readf1(
-      format: String) = StdIn.readf1(format)
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readf2(
-      format: String) = StdIn.readf2(format)
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readf3(
-      format: String) = StdIn.readf3(format)
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readLine(): String = StdIn.readLine()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readLine(text: String, args: Any*) = StdIn.readLine(text, args: _*)
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readBoolean() = StdIn.readBoolean()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readByte() = StdIn.readByte()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readShort() = StdIn.readShort()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readChar() = StdIn.readChar()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readInt() = StdIn.readInt()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readLong() = StdIn.readLong()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readFloat() = StdIn.readFloat()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readDouble() = StdIn.readDouble()
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readf(format: String) = StdIn.readf(format)
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readf1(format: String) = StdIn.readf1(format)
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readf2(format: String) = StdIn.readf2(format)
+  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0")
+  def readf3(format: String) = StdIn.readf3(format)
 }
 
 /** The `LowPriorityImplicits` class provides implicit values that
@@ -600,14 +609,22 @@ private[scala] abstract class LowPriorityImplicits {
     *  Even inlined, every call site does a no-op retrieval of Predef's MODULE$
     *  because maybe loading Predef has side effects!
     */
-  @inline implicit def byteWrapper(x: Byte) = new runtime.RichByte(x)
-  @inline implicit def shortWrapper(x: Short) = new runtime.RichShort(x)
-  @inline implicit def intWrapper(x: Int) = new runtime.RichInt(x)
-  @inline implicit def charWrapper(c: Char) = new runtime.RichChar(c)
-  @inline implicit def longWrapper(x: Long) = new runtime.RichLong(x)
-  @inline implicit def floatWrapper(x: Float) = new runtime.RichFloat(x)
-  @inline implicit def doubleWrapper(x: Double) = new runtime.RichDouble(x)
-  @inline implicit def booleanWrapper(x: Boolean) = new runtime.RichBoolean(x)
+  @inline
+  implicit def byteWrapper(x: Byte) = new runtime.RichByte(x)
+  @inline
+  implicit def shortWrapper(x: Short) = new runtime.RichShort(x)
+  @inline
+  implicit def intWrapper(x: Int) = new runtime.RichInt(x)
+  @inline
+  implicit def charWrapper(c: Char) = new runtime.RichChar(c)
+  @inline
+  implicit def longWrapper(x: Long) = new runtime.RichLong(x)
+  @inline
+  implicit def floatWrapper(x: Float) = new runtime.RichFloat(x)
+  @inline
+  implicit def doubleWrapper(x: Double) = new runtime.RichDouble(x)
+  @inline
+  implicit def booleanWrapper(x: Boolean) = new runtime.RichBoolean(x)
 
   implicit def genericWrapArray[T](xs: Array[T]): WrappedArray[T] =
     if (xs eq null) null else WrappedArray.make(xs)

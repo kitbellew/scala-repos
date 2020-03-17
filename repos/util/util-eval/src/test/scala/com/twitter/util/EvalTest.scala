@@ -176,7 +176,8 @@ class EvalTest extends WordSpec {
     "allow custom error reporting" when {
       class Ctx {
         val eval = new Eval {
-          @volatile var errors: Seq[(String, String)] = Nil
+          @volatile
+          var errors: Seq[(String, String)] = Nil
 
           override lazy val compilerMessageHandler: Option[Reporter] = Some(
             new AbstractReporter {

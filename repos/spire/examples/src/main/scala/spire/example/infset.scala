@@ -51,7 +51,8 @@ object PureSet {
     }
 }
 
-case class PureSet[A](f: A => Boolean) extends Function1[A, Boolean] { lhs =>
+case class PureSet[A](f: A => Boolean) extends Function1[A, Boolean] {
+  lhs =>
   def apply(a: A): Boolean = f(a)
   def toSet(universe: Set[A]): Set[A] = universe.filter(f)
   def toMathSet(universe: Set[A]): MathSet[A] = MathSet(universe.filter(f))
@@ -77,7 +78,8 @@ object MathSet {
   def infinite[A]: MathSet[A] = Inf(Set.empty)
   def apply[A](as: Set[A]): MathSet[A] = Fin(as)
 
-  case class Fin[A](members: Set[A]) extends MathSet[A] { lhs =>
+  case class Fin[A](members: Set[A]) extends MathSet[A] {
+    lhs =>
     def apply(a: A): Boolean = members(a)
     def toSet(universe: Set[A]): Set[A] = universe & members
     def toPureSet: PureSet[A] = PureSet(members)
@@ -125,7 +127,8 @@ object MathSet {
     }
 }
 
-sealed trait MathSet[A] extends Function1[A, Boolean] { lhs =>
+sealed trait MathSet[A] extends Function1[A, Boolean] {
+  lhs =>
   import MathSet._
 
   def toSet(universe: Set[A]): Set[A]

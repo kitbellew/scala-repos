@@ -103,7 +103,8 @@ class BalancingDispatcher(
 
   protected def teamWork(): Unit =
     if (attemptTeamWork) {
-      @tailrec def scheduleOne(i: Iterator[ActorCell] = team.iterator): Unit =
+      @tailrec
+      def scheduleOne(i: Iterator[ActorCell] = team.iterator): Unit =
         if (messageQueue.hasMessages
             && i.hasNext
             && (executorService.executor match {

@@ -29,14 +29,16 @@ import scala.annotation.tailrec
 
 sealed trait IntList
     extends LinearSeq[Int]
-    with LinearSeqOptimized[Int, IntList] { self =>
+    with LinearSeqOptimized[Int, IntList] {
+  self =>
   def head: Int
   def tail: IntList
 
   def ::(head: Int): IntList = IntCons(head, this)
 
   override def foreach[@specialized B](f: Int => B): Unit = {
-    @tailrec def loop(xs: IntList): Unit =
+    @tailrec
+    def loop(xs: IntList): Unit =
       xs match {
         case IntCons(h, t) => f(h); loop(t)
         case _             =>
@@ -45,7 +47,8 @@ sealed trait IntList
   }
 
   override def apply(idx: Int): Int = {
-    @tailrec def loop(xs: IntList, row: Int): Int =
+    @tailrec
+    def loop(xs: IntList, row: Int): Int =
       xs match {
         case IntCons(x, xs0) =>
           if (row == idx) x else loop(xs0, row + 1)
@@ -56,7 +59,8 @@ sealed trait IntList
   }
 
   override def length: Int = {
-    @tailrec def loop(xs: IntList, len: Int): Int =
+    @tailrec
+    def loop(xs: IntList, len: Int): Int =
       xs match {
         case IntCons(x, xs0) => loop(xs0, len + 1)
         case IntNil          => len
@@ -76,7 +80,8 @@ sealed trait IntList
     }
 
   override def reverse: IntList = {
-    @tailrec def loop(xs: IntList, ys: IntList): IntList =
+    @tailrec
+    def loop(xs: IntList, ys: IntList): IntList =
       xs match {
         case IntCons(x, xs0) => loop(xs0, x :: ys)
         case IntNil          => ys

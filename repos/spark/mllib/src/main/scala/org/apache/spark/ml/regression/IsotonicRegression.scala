@@ -138,8 +138,7 @@ private[regression] trait IsotonicRegressionBase
   *
   * Uses [[org.apache.spark.mllib.regression.IsotonicRegression]].
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class IsotonicRegression @Since("1.5.0") (
     @Since("1.5.0") override val uid: String)
     extends Estimator[IsotonicRegressionModel]
@@ -214,8 +213,7 @@ object IsotonicRegression extends DefaultParamsReadable[IsotonicRegression] {
   * @param oldModel A [[org.apache.spark.mllib.regression.IsotonicRegressionModel]]
   *                 model trained by [[org.apache.spark.mllib.regression.IsotonicRegression]].
   */
-@Since("1.5.0")
-@Experimental
+@Since("1.5.0") @Experimental
 class IsotonicRegressionModel private[ml] (
     override val uid: String,
     private val oldModel: MLlibIsotonicRegressionModel)

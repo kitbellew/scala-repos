@@ -256,7 +256,8 @@ object BasicIO {
 
   private[this] def transferFullyImpl(in: InputStream, out: OutputStream) {
     val buffer = new Array[Byte](BufferSize)
-    @tailrec def loop() {
+    @tailrec
+    def loop() {
       val byteCount = in.read(buffer)
       if (byteCount > 0) {
         out.write(buffer, 0, byteCount)

@@ -10,7 +10,8 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
     extends AbstractSet[E]
     with NavigableSet[E]
     with Cloneable
-    with Serializable { self =>
+    with Serializable {
+  self =>
 
   def this() = this(null.asInstanceOf[Comparator[_ >: E]])
 
