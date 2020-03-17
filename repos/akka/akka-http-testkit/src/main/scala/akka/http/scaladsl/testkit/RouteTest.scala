@@ -75,8 +75,8 @@ trait RouteTest
   def response: HttpResponse = result.response
   def responseEntity: HttpEntity = result.entity
   def chunks: immutable.Seq[HttpEntity.ChunkStreamPart] = result.chunks
-  def entityAs[T: FromEntityUnmarshaller: ClassTag](
-      implicit timeout: Duration = 1.second): T = {
+  def entityAs[T: FromEntityUnmarshaller: ClassTag](implicit
+      timeout: Duration = 1.second): T = {
     def msg(e: Throwable) =
       s"Could not unmarshal entity to type '${implicitly[ClassTag[T]]}' for `entityAs` assertion: $e\n\nResponse was: $responseSafe"
     Await.result(
@@ -85,8 +85,8 @@ trait RouteTest
       },
       timeout)
   }
-  def responseAs[T: FromResponseUnmarshaller: ClassTag](
-      implicit timeout: Duration = 1.second): T = {
+  def responseAs[T: FromResponseUnmarshaller: ClassTag](implicit
+      timeout: Duration = 1.second): T = {
     def msg(e: Throwable) =
       s"Could not unmarshal response to type '${implicitly[ClassTag[T]]}' for `responseAs` assertion: $e\n\nResponse was: $responseSafe"
     Await.result(

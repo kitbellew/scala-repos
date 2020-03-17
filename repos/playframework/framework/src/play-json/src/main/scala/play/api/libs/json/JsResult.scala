@@ -202,8 +202,8 @@ object JsResult {
 
   import play.api.libs.functional._
 
-  implicit def alternativeJsResult(
-      implicit a: Applicative[JsResult]): Alternative[JsResult] =
+  implicit def alternativeJsResult(implicit
+      a: Applicative[JsResult]): Alternative[JsResult] =
     new Alternative[JsResult] {
       val app = a
       def |[A, B >: A](alt1: JsResult[A], alt2: JsResult[B]): JsResult[B] =

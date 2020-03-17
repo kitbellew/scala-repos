@@ -40,8 +40,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
     }
 
   /**The product of Traverse `F` and Traverse1 `G`, `[x](F[x], G[x]])`, is a Traverse1 */
-  def product0[G[_]](
-      implicit G0: Traverse1[G]): Traverse1[λ[α => (F[α], G[α])]] =
+  def product0[G[_]](implicit
+      G0: Traverse1[G]): Traverse1[λ[α => (F[α], G[α])]] =
     new ProductTraverse1R[F, G] {
       def F = self
       def G = G0
@@ -63,8 +63,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
     traversal[G].run(fa)(f)
 
   /** A version of `traverse` that infers the type constructor `G`. */
-  final def traverseU[A, GB](fa: F[A])(f: A => GB)(
-      implicit G: Unapply[Applicative, GB]): G.M[F[G.A]] /*G[F[B]]*/ =
+  final def traverseU[A, GB](fa: F[A])(f: A => GB)(implicit
+      G: Unapply[Applicative, GB]): G.M[F[G.A]] /*G[F[B]]*/ =
     G.TC.traverse(fa)(G.leibniz.onF(f))(this)
 
   /** A version of `traverse` where a subsequent monadic join is applied to the inner result. */
@@ -116,8 +116,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
     traverseS(fga)(x => x)
 
   /** A version of `sequence` that infers the nested type constructor. */
-  final def sequenceU[A](self: F[A])(
-      implicit G: Unapply[Applicative, A]): G.M[F[G.A]] /*G[F[A]] */ =
+  final def sequenceU[A](self: F[A])(implicit
+      G: Unapply[Applicative, A]): G.M[F[G.A]] /*G[F[A]] */ =
     G.TC.traverse(self)(x => G.apply(x))(this)
 
   override def map[A, B](fa: F[A])(f: A => B): F[B] =
@@ -179,10 +179,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
   trait TraverseLaw extends FunctorLaw {
 
     /** Traversal through the [[scalaz.Id]] effect is equivalent to `Functor#map` */
-    def identityTraverse[A, B](fa: F[A], f: A => B)(
-        implicit FB: Equal[F[B]]) = {
-      FB.equal(traverse[Id, A, B](fa)(f), map(fa)(f))
-    }
+    def identityTraverse[A, B](fa: F[A], f: A => B)(implicit
+        FB: Equal[F[B]]) = { FB.equal(traverse[Id, A, B](fa)(f), map(fa)(f)) }
 
     /** Two sequentially dependent effects can be fused into one, their composition */
     def sequentialFusion[N[_], M[_], A, B, C](

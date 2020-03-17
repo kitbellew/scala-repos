@@ -23,8 +23,8 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
 
   def / : PathMatcher[L] = this ~ PathMatchers.Slash
 
-  def /[R](other: PathMatcher[R])(
-      implicit join: Join[L, R]): PathMatcher[join.Out] =
+  def /[R](other: PathMatcher[R])(implicit
+      join: Join[L, R]): PathMatcher[join.Out] =
     this ~ PathMatchers.Slash ~ other
 
   def |[R >: L: Tuple](other: PathMatcher[_ <: R]): PathMatcher[R] =
@@ -32,8 +32,8 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
       def apply(path: Path) = self(path) orElse other(path)
     }
 
-  def ~[R](other: PathMatcher[R])(
-      implicit join: Join[L, R]): PathMatcher[join.Out] = {
+  def ~[R](other: PathMatcher[R])(implicit
+      join: Join[L, R]): PathMatcher[join.Out] = {
     implicit val joinProducesTuple = Tuple.yes[join.Out]
     transform(_.andThen((restL, valuesL) ⇒ other(restL).map(join(valuesL, _))))
   }
@@ -57,15 +57,15 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
   /**
     * Same as `repeat(min = count, max = count)`.
     */
-  def repeat(count: Int)(
-      implicit lift: PathMatcher.Lift[L, List]): PathMatcher[lift.Out] =
+  def repeat(count: Int)(implicit
+      lift: PathMatcher.Lift[L, List]): PathMatcher[lift.Out] =
     repeat(min = count, max = count)
 
   /**
     * Same as `repeat(min = count, max = count, separator = separator)`.
     */
-  def repeat(count: Int, separator: PathMatcher0)(
-      implicit lift: PathMatcher.Lift[L, List]): PathMatcher[lift.Out] =
+  def repeat(count: Int, separator: PathMatcher0)(implicit
+      lift: PathMatcher.Lift[L, List]): PathMatcher[lift.Out] =
     repeat(min = count, max = count, separator = separator)
 
   /**
@@ -88,8 +88,8 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
   def repeat(
       min: Int,
       max: Int,
-      separator: PathMatcher0 = PathMatchers.Neutral)(
-      implicit lift: PathMatcher.Lift[L, List]): PathMatcher[lift.Out] =
+      separator: PathMatcher0 = PathMatchers.Neutral)(implicit
+      lift: PathMatcher.Lift[L, List]): PathMatcher[lift.Out] =
     new PathMatcher[lift.Out]()(lift.OutIsTuple) {
       require(min >= 0, "`min` must be >= 0")
       require(max >= min, "`max` must be >= `min`")
@@ -237,8 +237,8 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
 
   trait LowLevelLiftImplicits {
     import Lift._
-    implicit def default[T, M[+_]](
-        implicit mops: MOps[M]): Lift[T, M] { type Out = Tuple1[M[T]] } =
+    implicit def default[T, M[+_]](implicit
+        mops: MOps[M]): Lift[T, M] { type Out = Tuple1[M[T]] } =
       new Lift[T, M] {
         type Out = Tuple1[M[T]]
         def OutIsTuple = implicitly[Tuple[Out]]

@@ -904,8 +904,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       cometName: Box[String],
       cometHtml: NodeSeq,
       cometAttributes: Map[String, String],
-      receiveUpdatesOnPage: Boolean)(
-      implicit cometManifest: Manifest[T]): Box[T] = {
+      receiveUpdatesOnPage: Boolean)(implicit
+      cometManifest: Manifest[T]): Box[T] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
       cometActor <- session
@@ -2991,8 +2991,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * return a JsCmd to be sent back to the browser. Note that if the
     * passed JSON does not parse, the function will not be invoked.
     */
-  def jsonFmapFunc[T](in: JValue => JsCmd)(f: String => T)(
-      implicit dummy: AvoidTypeErasureIssues1): T = {
+  def jsonFmapFunc[T](in: JValue => JsCmd)(f: String => T)(implicit
+      dummy: AvoidTypeErasureIssues1): T = {
     import json._
 
     val name = formFuncName

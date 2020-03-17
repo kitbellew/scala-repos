@@ -17,8 +17,8 @@ trait ColumnsShapeLevel extends FlatShapeLevel
 trait ProvenShape[U]
 
 object ProvenShape {
-  implicit def proveShapeOf[T, U](v: T)(
-      implicit sh: Shape[_ <: FlatShapeLevel, T, U, _]): ProvenShape[U] = ???
+  implicit def proveShapeOf[T, U](v: T)(implicit
+      sh: Shape[_ <: FlatShapeLevel, T, U, _]): ProvenShape[U] = ???
 }
 
 sealed abstract class HList {
@@ -47,8 +47,8 @@ class HListBench {
 
   implicit def columnShape[T, Level <: ShapeLevel]
       : Shape[Level, Column[T], T, Column[T]] = ???
-  implicit def provenShape[T, P](
-      implicit shape: Shape[_ <: FlatShapeLevel, T, _, P])
+  implicit def provenShape[T, P](implicit
+      shape: Shape[_ <: FlatShapeLevel, T, _, P])
       : Shape[FlatShapeLevel, ProvenShape[T], T, P] = ???
   final class HListShape[
       Level <: ShapeLevel, M <: HList, U <: HList, P <: HList](

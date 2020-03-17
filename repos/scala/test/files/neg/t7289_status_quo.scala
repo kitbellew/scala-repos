@@ -3,8 +3,8 @@
 // is different from putting that upper bound in a covariant position
 object Test1 {
   trait Ext[T]
-  implicit def f[A, Coll <: CC[A], CC[X] <: Traversable[X]](
-      implicit xi: Ext[A]): Ext[Coll] = ???
+  implicit def f[A, Coll <: CC[A], CC[X] <: Traversable[X]](implicit
+      xi: Ext[A]): Ext[Coll] = ???
   implicit val m: Ext[List[List[Int]]] = new Ext[List[List[Int]]] {}
 
   implicitly[Ext[List[Int]]] // fails - not found

@@ -9,12 +9,11 @@ object Test extends App {
   def testTraversableLike = {
     class FilterMapImpl[A, Repr](
         val r: GenTraversableLike[A, Repr]) /* extends AnyVal */ {
-      final def filterMap[B, That](f: A => Option[B])(
-          implicit cbf: CanBuildFrom[Repr, B, That]): That =
-        r.flatMap(f(_).toSeq)
+      final def filterMap[B, That](f: A => Option[B])(implicit
+          cbf: CanBuildFrom[Repr, B, That]): That = r.flatMap(f(_).toSeq)
     }
-    implicit def filterMap[Repr, A](r: Repr)(
-        implicit fr: IsTraversableLike[Repr]): FilterMapImpl[fr.A, Repr] =
+    implicit def filterMap[Repr, A](r: Repr)(implicit
+        fr: IsTraversableLike[Repr]): FilterMapImpl[fr.A, Repr] =
       new FilterMapImpl[fr.A, Repr](fr.conversion(r))
 
     val l = List(1, 2, 3, 4, 5)
@@ -39,16 +38,16 @@ object Test extends App {
   def testTraversableOnce = {
     class FilterMapImpl[A, Repr](
         val r: GenTraversableOnce[A]) /* extends AnyVal */ {
-      final def filterMap[B, That](f: A => Option[B])(
-          implicit cbf: CanBuildFrom[Repr, B, That]): That = {
+      final def filterMap[B, That](f: A => Option[B])(implicit
+          cbf: CanBuildFrom[Repr, B, That]): That = {
         val b = cbf()
         for (e <- r.seq) f(e) foreach (b +=)
 
         b.result
       }
     }
-    implicit def filterMap[Repr, A](r: Repr)(
-        implicit fr: IsTraversableOnce[Repr]): FilterMapImpl[fr.A, Repr] =
+    implicit def filterMap[Repr, A](r: Repr)(implicit
+        fr: IsTraversableOnce[Repr]): FilterMapImpl[fr.A, Repr] =
       new FilterMapImpl[fr.A, Repr](fr.conversion(r))
 
     val l = List(1, 2, 3, 4, 5)

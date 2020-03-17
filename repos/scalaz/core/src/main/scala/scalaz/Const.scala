@@ -21,8 +21,8 @@ private sealed trait ConstTraverse[C] extends Traverse[Const[C, ?]] {
   override def map[A, B](fa: Const[C, A])(f: A => B): Const[C, B] =
     Const(fa.getConst)
 
-  override def traverseImpl[G[_], A, B](fa: Const[C, A])(f: A => G[B])(
-      implicit G: Applicative[G]) = G.point(Const(fa.getConst))
+  override def traverseImpl[G[_], A, B](fa: Const[C, A])(f: A => G[B])(implicit
+      G: Applicative[G]) = G.point(Const(fa.getConst))
 }
 
 private sealed trait ConstApply[C]

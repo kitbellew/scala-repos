@@ -26,8 +26,8 @@ sealed trait PaintScale[T] extends (T => Paint)
 case class GradientPaintScale[T](
     lower: T,
     upper: T,
-    gradient: Array[Color] = PaintScale.WhiteToBlack)(
-    implicit view: T => Double)
+    gradient: Array[Color] = PaintScale.WhiteToBlack)(implicit
+    view: T => Double)
     extends PaintScale[T] {
   def apply(value: T): Paint = {
     if (view(value).isNaN) { PaintScale.nanPaint }
@@ -91,8 +91,8 @@ object PaintScale {
   }
 
   /** Creates a GradientPaintScale automatically for the given range. */
-  implicit def gradientTuple[T](vLowerUpper: (T, T))(
-      implicit view: T => Double): GradientPaintScale[T] =
+  implicit def gradientTuple[T](vLowerUpper: (T, T))(implicit
+      view: T => Double): GradientPaintScale[T] =
     GradientPaintScale[T](vLowerUpper._1, vLowerUpper._2)
 
   /** Creates a CategoricalPaintScale from the provided partial function. */

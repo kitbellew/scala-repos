@@ -89,8 +89,8 @@ object Storm {
       store: => MergeableStore[K, V]): MergeableStoreFactory[(K, BatchID), V] =
     MergeableStoreFactory.fromOnlineOnly(store)
 
-  def store[K, V](store: => Mergeable[(K, BatchID), V])(
-      implicit batcher: Batcher): MergeableStoreFactory[(K, BatchID), V] =
+  def store[K, V](store: => Mergeable[(K, BatchID), V])(implicit
+      batcher: Batcher): MergeableStoreFactory[(K, BatchID), V] =
     MergeableStoreFactory.from(store)
 
   def service[K, V](
@@ -104,8 +104,8 @@ object Storm {
     */
   def storeServiceOnlineOnly[K, V](
       store: => MergeableStore[(K, BatchID), V],
-      batchesToKeep: Int)(
-      implicit batcher: Batcher): CombinedServiceStoreFactory[K, V] =
+      batchesToKeep: Int)(implicit
+      batcher: Batcher): CombinedServiceStoreFactory[K, V] =
     CombinedServiceStoreFactory(store, batchesToKeep)(batcher)
 
   /**
@@ -116,8 +116,8 @@ object Storm {
   def storeService[K, V](
       offlineStore: => ReadableStore[K, (BatchID, V)],
       onlineStore: => MergeableStore[(K, BatchID), V],
-      batchesToKeep: Int)(
-      implicit batcher: Batcher): CombinedServiceStoreFactory[K, V] =
+      batchesToKeep: Int)(implicit
+      batcher: Batcher): CombinedServiceStoreFactory[K, V] =
     CombinedServiceStoreFactory(offlineStore, onlineStore, batchesToKeep)(
       batcher)
 
@@ -127,16 +127,16 @@ object Storm {
       spout.map(t => (Timestamp(timeOf(t)), t)),
       defaultSourcePar.map(SourceParallelism(_)))
 
-  implicit def spoutAsStormSource[T](spout: Spout[T])(
-      implicit timeOf: TimeExtractor[T]): StormSource[T] =
+  implicit def spoutAsStormSource[T](spout: Spout[T])(implicit
+      timeOf: TimeExtractor[T]): StormSource[T] =
     toStormSource(spout, None)(timeOf)
 
-  def source[T](spout: Spout[T], defaultSourcePar: Option[Int] = None)(
-      implicit timeOf: TimeExtractor[T]): Producer[Storm, T] =
+  def source[T](spout: Spout[T], defaultSourcePar: Option[Int] = None)(implicit
+      timeOf: TimeExtractor[T]): Producer[Storm, T] =
     Producer.source[Storm, T](toStormSource(spout, defaultSourcePar))
 
-  implicit def spoutAsSource[T](spout: Spout[T])(
-      implicit timeOf: TimeExtractor[T]): Producer[Storm, T] =
+  implicit def spoutAsSource[T](spout: Spout[T])(implicit
+      timeOf: TimeExtractor[T]): Producer[Storm, T] =
     source(spout, None)(timeOf)
 }
 

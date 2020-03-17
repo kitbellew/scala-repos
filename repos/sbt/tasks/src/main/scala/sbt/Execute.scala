@@ -141,8 +141,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     }
   }
 
-  def retire[T](node: A[T], result: Result[T])(
-      implicit strategy: Strategy): Unit = {
+  def retire[T](node: A[T], result: Result[T])(implicit
+      strategy: Strategy): Unit = {
     pre {
       assert(running(node) | calling(node))
       readyInv(node)
@@ -172,8 +172,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       case Inc(i)      => Inc(Incomplete(Some(node), tpe = i.tpe, causes = i :: Nil))
     }
 
-  def notifyDone(node: A[_], dependent: A[_])(
-      implicit strategy: Strategy): Unit = {
+  def notifyDone(node: A[_], dependent: A[_])(implicit
+      strategy: Strategy): Unit = {
     val f = forward(dependent)
     f -= node
     if (f.isEmpty) {
@@ -264,8 +264,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     * Evaluates the computation 'f' for 'node'.
     * This returns a Completed instance, which contains the post-processing to perform after the result is retrieved from the Strategy.
     */
-  def work[T](node: A[T], f: => Either[A[T], T])(
-      implicit strategy: Strategy): Completed = {
+  def work[T](node: A[T], f: => Either[A[T], T])(implicit
+      strategy: Strategy): Completed = {
     progress.workStarting(node)
     val rawResult = wideConvert(f).left.map {
       case i: Incomplete =>

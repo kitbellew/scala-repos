@@ -26,9 +26,8 @@ object Free {
   def liftF[F[_], A](value: F[A]): Free[F, A] = Suspend(value)
 
   /** Suspend the Free with the Applicative */
-  def suspend[F[_], A](value: => Free[F, A])(
-      implicit F: Applicative[F]): Free[F, A] =
-    liftF(F.pure(())).flatMap(_ => value)
+  def suspend[F[_], A](value: => Free[F, A])(implicit
+      F: Applicative[F]): Free[F, A] = liftF(F.pure(())).flatMap(_ => value)
 
   /** Lift a pure value into Free */
   def pure[S[_], A](a: A): Free[S, A] = Pure(a)
@@ -74,8 +73,8 @@ sealed abstract class Free[S[_], A] extends Product with Serializable {
     * Catamorphism. Run the first given function if Pure, otherwise,
     * the second given function.
     */
-  final def fold[B](r: A => B, s: S[Free[S, A]] => B)(
-      implicit S: Functor[S]): B = resume.fold(s, r)
+  final def fold[B](r: A => B, s: S[Free[S, A]] => B)(implicit
+      S: Functor[S]): B = resume.fold(s, r)
 
   /** Takes one evaluation step in the Free monad, re-associating left-nested binds in the process. */
   @tailrec

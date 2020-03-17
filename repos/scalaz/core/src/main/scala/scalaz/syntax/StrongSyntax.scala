@@ -14,9 +14,8 @@ final class StrongOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
 }
 
 sealed trait ToStrongOps0 {
-  implicit def ToStrongOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply2[Strong, FA]) =
-    new StrongOps[F0.M, F0.A, F0.B](F0(v))(F0.TC)
+  implicit def ToStrongOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply2[Strong, FA]) = new StrongOps[F0.M, F0.A, F0.B](F0(v))(F0.TC)
 
 }
 

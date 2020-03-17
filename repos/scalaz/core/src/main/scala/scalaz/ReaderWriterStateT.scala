@@ -34,8 +34,8 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
   def execZero[S <: S1](r: R)(implicit F: Monad[F], S: Monoid[S]): F[(W, S2)] =
     exec(r, S.zero)
 
-  def map[B](f: A => B)(
-      implicit F: Functor[F]): IndexedReaderWriterStateT[F, R, W, S1, S2, B] =
+  def map[B](f: A => B)(implicit
+      F: Functor[F]): IndexedReaderWriterStateT[F, R, W, S1, S2, B] =
     IndexedReaderWriterStateT.create[F, R, W, S1, S2, B]((G: Monad[F]) =>
       (r: R, s: S1) => F.map(self.run(r, s)(G))(t => (t._1, f(t._2), t._3)))
 
@@ -271,8 +271,8 @@ private trait ReaderWriterStateTHoist[R, W, S]
         ReaderWriterStateT { case (r, s) => f.apply(ma.run(r, s)) }
     }
 
-  def liftM[M[_], A](ma: M[A])(
-      implicit M: Monad[M]): ReaderWriterStateT[M, R, W, S, A] =
+  def liftM[M[_], A](ma: M[A])(implicit
+      M: Monad[M]): ReaderWriterStateT[M, R, W, S, A] =
     ReaderWriterStateT((r, s) => M.map(ma)((W.zero, _, s)))
 
   implicit def apply[M[_]: Monad]: Monad[ReaderWriterStateT[M, R, W, S, ?]] =

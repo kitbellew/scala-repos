@@ -103,8 +103,8 @@ object Act {
         extra),
       key)
 
-  def select(allKeys: Seq[Parser[ParsedKey]], data: Settings[Scope])(
-      implicit show: Show[ScopedKey[_]]): Parser[ParsedKey] =
+  def select(allKeys: Seq[Parser[ParsedKey]], data: Settings[Scope])(implicit
+      show: Show[ScopedKey[_]]): Parser[ParsedKey] =
     seq(allKeys) flatMap { ss =>
       val default = ss.headOption match {
         case None    => noValidKeys
@@ -112,8 +112,8 @@ object Act {
       }
       selectFromValid(ss filter isValid(data), default)
     }
-  def selectFromValid(ss: Seq[ParsedKey], default: Parser[ParsedKey])(
-      implicit show: Show[ScopedKey[_]]): Parser[ParsedKey] =
+  def selectFromValid(ss: Seq[ParsedKey], default: Parser[ParsedKey])(implicit
+      show: Show[ScopedKey[_]]): Parser[ParsedKey] =
     selectByTask(selectByConfig(ss)) match {
       case Seq()       => default
       case Seq(single) => success(single)
@@ -139,8 +139,8 @@ object Act {
 
   def noValidKeys = failure("No such key.")
 
-  def showAmbiguous(keys: Seq[ScopedKey[_]])(
-      implicit show: Show[ScopedKey[_]]): String =
+  def showAmbiguous(keys: Seq[ScopedKey[_]])(implicit
+      show: Show[ScopedKey[_]]): String =
     keys
       .take(3)
       .map(x => show(x))

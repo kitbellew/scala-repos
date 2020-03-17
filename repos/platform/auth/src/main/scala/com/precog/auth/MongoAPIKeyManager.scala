@@ -103,8 +103,8 @@ object MongoAPIKeyManager extends Logging {
   def createRootAPIKey(
       db: Database,
       keyCollection: String,
-      grantCollection: String)(
-      implicit timeout: Timeout): Future[APIKeyRecord] = {
+      grantCollection: String)(implicit
+      timeout: Timeout): Future[APIKeyRecord] = {
     import Permission._
     logger.info("Creating new root key")
     // Set up a new root API Key
@@ -225,8 +225,8 @@ class MongoAPIKeyManager(
   private def findOneMatching[A](
       keyName: String,
       keyValue: MongoPrimitive,
-      collection: String)(
-      implicit extractor: Extractor[A]): Future[Option[A]] = {
+      collection: String)(implicit
+      extractor: Extractor[A]): Future[Option[A]] = {
     database { selectOne().from(collection).where(keyName === keyValue) } map {
       _.map(_.deserialize[A])
     }
@@ -252,8 +252,8 @@ class MongoAPIKeyManager(
     } map { _.map(_.deserialize[A]).toSet }
   }
 
-  private def findAll[A](collection: String)(
-      implicit extract: Extractor[A]): Future[Seq[A]] =
+  private def findAll[A](collection: String)(implicit
+      extract: Extractor[A]): Future[Seq[A]] =
     database { selectAll.from(collection) } map {
       _.map(_.deserialize[A]).toSeq
     }

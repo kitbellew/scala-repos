@@ -113,8 +113,8 @@ trait AbstractScreen extends Factory with Loggable {
 
   def screenValidate: List[FieldError] = validations.flatMap(_())
 
-  protected def vendForm[T](
-      implicit man: Manifest[T]): Box[(T, T => Any) => NodeSeq] = Empty
+  protected def vendForm[T](implicit
+      man: Manifest[T]): Box[(T, T => Any) => NodeSeq] = Empty
 
   protected def vendAVar[T](dflt: => T): NonCleanAnyVar[T]
 
@@ -378,8 +378,8 @@ trait AbstractScreen extends Factory with Loggable {
   protected def builder[T](
       name: => String,
       default: => T,
-      stuff: FilterOrValidate[T]*)(
-      implicit man: Manifest[T]): FieldBuilder[T] = {
+      stuff: FilterOrValidate[T]*)(implicit
+      man: Manifest[T]): FieldBuilder[T] = {
     new FieldBuilder[T](
       name,
       default,
@@ -448,8 +448,8 @@ trait AbstractScreen extends Factory with Loggable {
 
   protected def field[T](
       underlying: => BaseField { type ValueType = T },
-      stuff: FilterOrValidate[T]*)(
-      implicit man: Manifest[T]): Field { type ValueType = T } = {
+      stuff: FilterOrValidate[T]*)(implicit
+      man: Manifest[T]): Field { type ValueType = T } = {
     val paramFieldId: Box[String] =
       (stuff.collect { case FormFieldId(id) => id }).headOption
 
@@ -662,8 +662,8 @@ trait AbstractScreen extends Factory with Loggable {
   protected def field[T](
       name: => String,
       default: => T,
-      stuff: FilterOrValidate[T]*)(
-      implicit man: Manifest[T]): Field { type ValueType = T } =
+      stuff: FilterOrValidate[T]*)(implicit
+      man: Manifest[T]): Field { type ValueType = T } =
     new FieldBuilder[T](
       name,
       default,
@@ -762,12 +762,12 @@ trait AbstractScreen extends Factory with Loggable {
             Text(msg)))
       }
 
-  protected def minVal[T](len: => T, msg: => String)(
-      implicit f: T => Number): T => List[FieldError] =
+  protected def minVal[T](len: => T, msg: => String)(implicit
+      f: T => Number): T => List[FieldError] =
     s => if (f(s).doubleValue < f(len).doubleValue) msg else Nil
 
-  protected def maxVal[T](len: => T, msg: => String)(
-      implicit f: T => Number): T => List[FieldError] =
+  protected def maxVal[T](len: => T, msg: => String)(implicit
+      f: T => Number): T => List[FieldError] =
     s => if (f(s).doubleValue > f(len).doubleValue) msg else Nil
 
   def noticeTypeToAttr(

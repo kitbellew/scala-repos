@@ -43,8 +43,8 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
     * instance of type `A` (which is usually a case class).
     */
   def as[A](constructor: ConstructFromTuple[L, A]): Directive1[A] = {
-    def validatedMap[R](f: L ⇒ R)(
-        implicit tupler: Tupler[R]): Directive[tupler.Out] =
+    def validatedMap[R](f: L ⇒ R)(implicit
+        tupler: Tupler[R]): Directive[tupler.Out] =
       Directive[tupler.Out] { inner ⇒
         tapply { values ⇒ ctx ⇒
           try inner(tupler(f(values)))(ctx)
@@ -144,9 +144,8 @@ object Directive {
     * Adds `apply` to all Directives with 1 or more extractions,
     * which allows specifying an n-ary function to receive the extractions instead of a Function1[TupleX, Route].
     */
-  implicit def addDirectiveApply[L](directive: Directive[L])(
-      implicit hac: ApplyConverter[L]): hac.In ⇒ Route =
-    f ⇒ directive.tapply(hac(f))
+  implicit def addDirectiveApply[L](directive: Directive[L])(implicit
+      hac: ApplyConverter[L]): hac.In ⇒ Route = f ⇒ directive.tapply(hac(f))
 
   /**
     * Adds `apply` to Directive0. Note: The `apply` parameter is call-by-name to ensure consistent execution behavior
@@ -179,8 +178,8 @@ trait ConjunctionMagnet[L] {
 }
 
 object ConjunctionMagnet {
-  implicit def fromDirective[L, R](other: Directive[R])(
-      implicit join: TupleOps.Join[L, R])
+  implicit def fromDirective[L, R](other: Directive[R])(implicit
+      join: TupleOps.Join[L, R])
       : ConjunctionMagnet[L] { type Out = Directive[join.Out] } =
     new ConjunctionMagnet[L] {
       type Out = Directive[join.Out]

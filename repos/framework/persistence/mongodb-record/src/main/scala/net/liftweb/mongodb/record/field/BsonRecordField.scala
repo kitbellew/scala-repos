@@ -34,8 +34,8 @@ import scala.xml._
 class BsonRecordField[OwnerType <: BsonRecord[
   OwnerType], SubRecordType <: BsonRecord[SubRecordType]](
     rec: OwnerType,
-    valueMeta: BsonMetaRecord[SubRecordType])(
-    implicit subRecordType: Manifest[SubRecordType])
+    valueMeta: BsonMetaRecord[SubRecordType])(implicit
+    subRecordType: Manifest[SubRecordType])
     extends Field[SubRecordType, OwnerType]
     with MandatoryTypedField[SubRecordType] {
   def this(
@@ -49,8 +49,8 @@ class BsonRecordField[OwnerType <: BsonRecord[
   def this(
       rec: OwnerType,
       valueMeta: BsonMetaRecord[SubRecordType],
-      value: Box[SubRecordType])(
-      implicit subRecordType: Manifest[SubRecordType]) = {
+      value: Box[SubRecordType])(implicit
+      subRecordType: Manifest[SubRecordType]) = {
     this(rec, valueMeta)
     setBox(value)
   }
@@ -89,8 +89,8 @@ class BsonRecordField[OwnerType <: BsonRecord[
 class BsonRecordListField[OwnerType <: BsonRecord[
   OwnerType], SubRecordType <: BsonRecord[SubRecordType]](
     rec: OwnerType,
-    valueMeta: BsonMetaRecord[SubRecordType])(
-    implicit mf: Manifest[SubRecordType])
+    valueMeta: BsonMetaRecord[SubRecordType])(implicit
+    mf: Manifest[SubRecordType])
     extends MongoListField[OwnerType, SubRecordType](rec: OwnerType) {
 
   import scala.collection.JavaConversions._

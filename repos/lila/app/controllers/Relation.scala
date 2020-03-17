@@ -15,8 +15,8 @@ object Relation extends LilaController {
 
   private def env = Env.relation
 
-  private def renderActions(userId: String, mini: Boolean)(
-      implicit ctx: Context) =
+  private def renderActions(userId: String, mini: Boolean)(implicit
+      ctx: Context) =
     (ctx.userId ?? { env.api.fetchRelation(_, userId) }) zip
       (ctx.isAuth ?? { Env.pref.api followable userId }) zip
       (ctx.userId ?? { env.api.fetchBlocks(userId, _) }) flatMap {
@@ -128,15 +128,15 @@ object Relation extends LilaController {
       }
     }
 
-  private def RelatedPager(adapter: AdapterLike[String], page: Int)(
-      implicit ctx: Context) =
+  private def RelatedPager(adapter: AdapterLike[String], page: Int)(implicit
+      ctx: Context) =
     Paginator(
       adapter = adapter mapFutureList followship,
       currentPage = page,
       maxPerPage = 30)
 
-  private def followship(userIds: Seq[String])(
-      implicit ctx: Context): Fu[List[Related]] =
+  private def followship(userIds: Seq[String])(implicit
+      ctx: Context): Fu[List[Related]] =
     UserRepo byIds userIds flatMap { users =>
       (ctx.isAuth ?? { Env.pref.api.followableIds(users map (_.id)) }) flatMap {
         followables =>

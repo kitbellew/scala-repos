@@ -33,8 +33,8 @@ trait Roots[A] extends Iterable[A] { self =>
 }
 
 object Roots {
-  final def isolateRoots[A](poly: Polynomial[A])(
-      implicit isolator: RootIsolator[A]): Vector[Interval[Rational]] =
+  final def isolateRoots[A](poly: Polynomial[A])(implicit
+      isolator: RootIsolator[A]): Vector[Interval[Rational]] =
     isolator.isolateRoots(poly)
 
   /**

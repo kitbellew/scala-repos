@@ -154,8 +154,8 @@ sealed abstract class LazyTuple2Instances extends LazyTuple2Instances0 {
       implicit def _2 = A2
     }
 
-  implicit def lazyTuple2Monad[A1](
-      implicit A1: Monoid[A1]): Monad[LazyTuple2[A1, ?]] =
+  implicit def lazyTuple2Monad[A1](implicit
+      A1: Monoid[A1]): Monad[LazyTuple2[A1, ?]] =
     new LazyTuple2Monad[A1] {
       implicit def _1 = A1
     }

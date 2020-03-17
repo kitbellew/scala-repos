@@ -21,8 +21,8 @@ object ScatterGatherFirstCompletedSpec {
 
   final case class Stop(id: Option[Int] = None)
 
-  def newActor(id: Int, shudownLatch: Option[TestLatch] = None)(
-      implicit system: ActorSystem) =
+  def newActor(id: Int, shudownLatch: Option[TestLatch] = None)(implicit
+      system: ActorSystem) =
     system.actorOf(
       Props(new Actor {
         def receive = {

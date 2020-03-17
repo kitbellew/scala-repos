@@ -155,8 +155,8 @@ final class ORMultiMap[A] private[akka] (
   /**
     * Scala API: Add an element to a set associated with a key. If there is no existing set then one will be initialised.
     */
-  def addBinding(key: String, element: A)(
-      implicit node: Cluster): ORMultiMap[A] =
+  def addBinding(key: String, element: A)(implicit
+      node: Cluster): ORMultiMap[A] =
     addBinding(node.selfUniqueAddress, key, element)
 
   /**
@@ -181,8 +181,8 @@ final class ORMultiMap[A] private[akka] (
     * Scala API: Remove an element of a set associated with a key. If there are no more elements in the set then the
     * entire set will be removed.
     */
-  def removeBinding(key: String, element: A)(
-      implicit node: Cluster): ORMultiMap[A] =
+  def removeBinding(key: String, element: A)(implicit
+      node: Cluster): ORMultiMap[A] =
     removeBinding(node.selfUniqueAddress, key, element)
 
   /**
@@ -215,8 +215,8 @@ final class ORMultiMap[A] private[akka] (
     * and another one is added within the same Update. The order of addition and removal is important in order
     * to retain history for replicated data.
     */
-  def replaceBinding(key: String, oldElement: A, newElement: A)(
-      implicit node: Cluster): ORMultiMap[A] =
+  def replaceBinding(key: String, oldElement: A, newElement: A)(implicit
+      node: Cluster): ORMultiMap[A] =
     replaceBinding(node.selfUniqueAddress, key, oldElement, newElement)
 
   /**

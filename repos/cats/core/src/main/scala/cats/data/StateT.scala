@@ -10,8 +10,8 @@ package data
 final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
     extends Serializable {
 
-  def flatMap[B](fas: A => StateT[F, S, B])(
-      implicit F: Monad[F]): StateT[F, S, B] =
+  def flatMap[B](fas: A => StateT[F, S, B])(implicit
+      F: Monad[F]): StateT[F, S, B] =
     StateT(s =>
       F.flatMap(runF) { fsf =>
         F.flatMap(fsf(s)) {
@@ -89,8 +89,8 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
     * res1: Option[(GlobalEnv, Double)] = Some(((6,hello),5.0))
     * }}}
     */
-  def transformS[R](f: R => S, g: (R, S) => R)(
-      implicit F: Monad[F]): StateT[F, R, A] =
+  def transformS[R](f: R => S, g: (R, S) => R)(implicit
+      F: Monad[F]): StateT[F, R, A] =
     StateT { r =>
       F.flatMap(runF) { ff =>
         val s = f(r)
@@ -118,8 +118,8 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
 }
 
 object StateT extends StateTInstances {
-  def apply[F[_], S, A](f: S => F[(S, A)])(
-      implicit F: Applicative[F]): StateT[F, S, A] = new StateT(F.pure(f))
+  def apply[F[_], S, A](f: S => F[(S, A)])(implicit
+      F: Applicative[F]): StateT[F, S, A] = new StateT(F.pure(f))
 
   def applyF[F[_], S, A](runF: F[S => F[(S, A)]]): StateT[F, S, A] =
     new StateT(runF)
@@ -129,8 +129,8 @@ object StateT extends StateTInstances {
 }
 
 private[data] sealed abstract class StateTInstances {
-  implicit def stateTMonadState[F[_], S](
-      implicit F: Monad[F]): MonadState[StateT[F, S, ?], S] =
+  implicit def stateTMonadState[F[_], S](implicit
+      F: Monad[F]): MonadState[StateT[F, S, ?], S] =
     new MonadState[StateT[F, S, ?], S] {
       def pure[A](a: A): StateT[F, S, A] = StateT.pure(a)
 

@@ -200,8 +200,8 @@ trait WithPlay { self: PackageObject =>
       scala.concurrent.Await.result(fua, seconds.seconds)
     }
 
-    def withTimeout(duration: FiniteDuration, error: => Throwable)(
-        implicit system: akka.actor.ActorSystem): Fu[A] = {
+    def withTimeout(duration: FiniteDuration, error: => Throwable)(implicit
+        system: akka.actor.ActorSystem): Fu[A] = {
       Future firstCompletedOf Seq(
         fua,
         akka.pattern.after(duration, system.scheduler)(fufail(error)))

@@ -21,8 +21,8 @@ trait AccessTokenService {
   /**
     * @retuen (TokenId, Token)
     */
-  def generateAccessToken(userName: String, note: String)(
-      implicit s: Session): (Int, String) = {
+  def generateAccessToken(userName: String, note: String)(implicit
+      s: Session): (Int, String) = {
     var token: String = null
     var hash: String = null
     do {
@@ -38,8 +38,8 @@ trait AccessTokenService {
     (tokenId, token)
   }
 
-  def getAccountByAccessToken(token: String)(
-      implicit s: Session): Option[Account] =
+  def getAccountByAccessToken(token: String)(implicit
+      s: Session): Option[Account] =
     Accounts
       .innerJoin(AccessTokens)
       .filter {
@@ -50,15 +50,15 @@ trait AccessTokenService {
       .map { case (ac, t) => ac }
       .firstOption
 
-  def getAccessTokens(userName: String)(
-      implicit s: Session): List[AccessToken] =
+  def getAccessTokens(userName: String)(implicit
+      s: Session): List[AccessToken] =
     AccessTokens
       .filter(_.userName === userName.bind)
       .sortBy(_.accessTokenId.desc)
       .list
 
-  def deleteAccessToken(userName: String, accessTokenId: Int)(
-      implicit s: Session): Unit =
+  def deleteAccessToken(userName: String, accessTokenId: Int)(implicit
+      s: Session): Unit =
     AccessTokens filter (t =>
       t.userName === userName.bind && t.accessTokenId === accessTokenId) delete
 

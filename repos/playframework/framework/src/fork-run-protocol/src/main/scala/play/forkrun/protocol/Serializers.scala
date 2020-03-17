@@ -263,8 +263,8 @@ object Serializers {
   object LocalRegisteredSerializer {
     def fromSbtSerializer[U](
         _serializer: Pickler[U],
-        _unserializer: Unpickler[U])(
-        implicit mf: Manifest[U]): LocalRegisteredSerializer =
+        _unserializer: Unpickler[U])(implicit
+        mf: Manifest[U]): LocalRegisteredSerializer =
       new LocalRegisteredSerializer {
         type T = U
         val manifest = mf

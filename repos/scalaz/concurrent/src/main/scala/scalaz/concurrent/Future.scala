@@ -255,8 +255,8 @@ sealed abstract class Future[+A] {
     * and attempts to cancel the running computation.
     * This implementation will not block the future's execution thread
     */
-  def unsafePerformTimed(timeoutInMillis: Long)(
-      implicit scheduler: ScheduledExecutorService): Future[Throwable \/ A] =
+  def unsafePerformTimed(timeoutInMillis: Long)(implicit
+      scheduler: ScheduledExecutorService): Future[Throwable \/ A] =
     //instead of run this though chooseAny, it is run through simple primitive,
     //as we are never interested in results of timeout callback, and this is more resource savvy
     async[Throwable \/ A] { cb =>
@@ -286,8 +286,8 @@ sealed abstract class Future[+A] {
       : Future[Throwable \/ A] = unsafePerformTimed(timeout.toMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")
-  def timed(timeoutInMillis: Long)(
-      implicit scheduler: ScheduledExecutorService): Future[Throwable \/ A] =
+  def timed(timeoutInMillis: Long)(implicit
+      scheduler: ScheduledExecutorService): Future[Throwable \/ A] =
     unsafePerformTimed(timeoutInMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")
@@ -386,8 +386,8 @@ object Future {
 
       // implementation runs all threads, dumping to a shared queue
       // last thread to finish invokes the callback with the results
-      override def reduceUnordered[A, M](fs: Seq[Future[A]])(
-          implicit R: Reducer[A, M]): Future[M] =
+      override def reduceUnordered[A, M](fs: Seq[Future[A]])(implicit
+          R: Reducer[A, M]): Future[M] =
         fs match {
           case Seq()  => Future.now(R.zero)
           case Seq(f) => f.map(R.unit)
@@ -493,6 +493,6 @@ object Future {
   def gatherUnordered[A](fs: Seq[Future[A]]): Future[List[A]] =
     futureInstance.gatherUnordered(fs)
 
-  def reduceUnordered[A, M](fs: Seq[Future[A]])(
-      implicit R: Reducer[A, M]): Future[M] = futureInstance.reduceUnordered(fs)
+  def reduceUnordered[A, M](fs: Seq[Future[A]])(implicit
+      R: Reducer[A, M]): Future[M] = futureInstance.reduceUnordered(fs)
 }

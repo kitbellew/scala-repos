@@ -14,32 +14,32 @@ sealed trait EitherInstances0 {
       implicit def B = B0
     }
 
-  implicit def eitherLeftEqual[A, X](
-      implicit A0: Equal[A]): Equal[LeftProjection[A, X]] =
+  implicit def eitherLeftEqual[A, X](implicit
+      A0: Equal[A]): Equal[LeftProjection[A, X]] =
     new EitherLeftEqual[A, X] {
       implicit def A = A0
     }
 
-  implicit def eitherRightEqual[X, A](
-      implicit A0: Equal[A]): Equal[RightProjection[X, A]] =
+  implicit def eitherRightEqual[X, A](implicit
+      A0: Equal[A]): Equal[RightProjection[X, A]] =
     new EitherRightEqual[X, A] {
       implicit def A = A0
     }
 
-  implicit def eitherFirstRightEqual[X, A](
-      implicit A0: Equal[A]): Equal[RightProjection[X, A] @@ First] =
+  implicit def eitherFirstRightEqual[X, A](implicit
+      A0: Equal[A]): Equal[RightProjection[X, A] @@ First] =
     First.subst(Equal[RightProjection[X, A]])
 
-  implicit def eitherLastRightEqual[X, A](
-      implicit A0: Equal[A]): Equal[RightProjection[X, A] @@ Last] =
+  implicit def eitherLastRightEqual[X, A](implicit
+      A0: Equal[A]): Equal[RightProjection[X, A] @@ Last] =
     Last.subst(Equal[RightProjection[X, A]])
 
-  implicit def eitherFirstLeftEqual[A, X](
-      implicit A0: Equal[A]): Equal[LeftProjection[A, X] @@ First] =
+  implicit def eitherFirstLeftEqual[A, X](implicit
+      A0: Equal[A]): Equal[LeftProjection[A, X] @@ First] =
     First.subst(Equal[LeftProjection[A, X]])
 
-  implicit def eitherLastLeftEqual[A, X](
-      implicit A0: Equal[A]): Equal[LeftProjection[A, X] @@ Last] =
+  implicit def eitherLastLeftEqual[A, X](implicit
+      A0: Equal[A]): Equal[LeftProjection[A, X] @@ Last] =
     Last.subst(Equal[LeftProjection[A, X]])
 
   implicit def eitherFirstLeftSemigroup[A: Semigroup, X]
@@ -292,54 +292,54 @@ trait EitherInstances extends EitherInstances0 {
       implicit def B = OrderB
     }
 
-  implicit def eitherLeftOrder[A, X](
-      implicit OrderA: Order[A]): Order[LeftProjection[A, X]] =
+  implicit def eitherLeftOrder[A, X](implicit
+      OrderA: Order[A]): Order[LeftProjection[A, X]] =
     new EitherLeftOrder[A, X] {
       implicit def A = OrderA
     }
 
-  implicit def eitherRightOrder[X, A](
-      implicit OrderA: Order[A]): Order[RightProjection[X, A]] =
+  implicit def eitherRightOrder[X, A](implicit
+      OrderA: Order[A]): Order[RightProjection[X, A]] =
     new EitherRightOrder[X, A] {
       implicit def A = OrderA
     }
 
-  implicit def eitherFirstLeftOrder[A, X](
-      implicit OrderA: Order[A]): Order[LeftProjection[A, X] @@ First] =
+  implicit def eitherFirstLeftOrder[A, X](implicit
+      OrderA: Order[A]): Order[LeftProjection[A, X] @@ First] =
     First.subst(Order[LeftProjection[A, X]])
 
-  implicit def eitherFirstRightOrder[X, A](
-      implicit OrderA: Order[A]): Order[RightProjection[X, A] @@ First] =
+  implicit def eitherFirstRightOrder[X, A](implicit
+      OrderA: Order[A]): Order[RightProjection[X, A] @@ First] =
     First.subst(Order[RightProjection[X, A]])
 
-  implicit def eitherLastLeftOrder[A, X](
-      implicit OrderA: Order[A]): Order[LeftProjection[A, X] @@ Last] =
+  implicit def eitherLastLeftOrder[A, X](implicit
+      OrderA: Order[A]): Order[LeftProjection[A, X] @@ Last] =
     Last.subst(Order[LeftProjection[A, X]])
 
-  implicit def eitherLastRightOrder[X, A](
-      implicit OrderA: Order[A]): Order[RightProjection[X, A] @@ Last] =
+  implicit def eitherLastRightOrder[X, A](implicit
+      OrderA: Order[A]): Order[RightProjection[X, A] @@ Last] =
     Last.subst(Order[RightProjection[X, A]])
 
-  implicit def eitherFirstLeftMonoid[A, X](
-      implicit MonoidX: Monoid[X]): Monoid[LeftProjection[A, X] @@ First] =
+  implicit def eitherFirstLeftMonoid[A, X](implicit
+      MonoidX: Monoid[X]): Monoid[LeftProjection[A, X] @@ First] =
     new EitherFirstLeftMonoid[A, X] {
       implicit def X = MonoidX
     }
 
-  implicit def eitherFirstRightMonoid[X, A](
-      implicit MonoidX: Monoid[X]): Monoid[RightProjection[X, A] @@ First] =
+  implicit def eitherFirstRightMonoid[X, A](implicit
+      MonoidX: Monoid[X]): Monoid[RightProjection[X, A] @@ First] =
     new EitherFirstRightMonoid[X, A] {
       implicit def X = MonoidX
     }
 
-  implicit def eitherLastLeftMonoid[A, X](
-      implicit MonoidX: Monoid[X]): Monoid[LeftProjection[A, X] @@ Last] =
+  implicit def eitherLastLeftMonoid[A, X](implicit
+      MonoidX: Monoid[X]): Monoid[LeftProjection[A, X] @@ Last] =
     new EitherLastLeftMonoid[A, X] {
       implicit def X = MonoidX
     }
 
-  implicit def eitherLastRightMonoid[X, A](
-      implicit MonoidX: Monoid[X]): Monoid[RightProjection[X, A] @@ Last] =
+  implicit def eitherLastRightMonoid[X, A](implicit
+      MonoidX: Monoid[X]): Monoid[RightProjection[X, A] @@ Last] =
     new EitherLastRightMonoid[X, A] {
       implicit def X = MonoidX
     }

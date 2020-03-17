@@ -32,8 +32,8 @@ trait CoordinateSpace[V, @sp(Float, Double) F]
 }
 
 object CoordinateSpace {
-  @inline final def apply[V, @sp(Float, Double) F](
-      implicit V: CoordinateSpace[V, F]): CoordinateSpace[V, F] = V
+  @inline final def apply[V, @sp(Float, Double) F](implicit
+      V: CoordinateSpace[V, F]): CoordinateSpace[V, F] = V
 
   def seq[A: Field, CC[A] <: SeqLike[A, CC[A]]](dimensions: Int)(implicit
       cbf0: CanBuildFrom[CC[A], A, CC[A]]): SeqCoordinateSpace[A, CC[A]] =

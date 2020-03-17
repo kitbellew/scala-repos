@@ -379,8 +379,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     * converters use Lift JSON's Extraction.decompose to convert the object
     * into JSON and then Xml.toXml() to convert to XML.
     */
-  protected def serveJx[T](pf: PartialFunction[Req, BoxOrRaw[T]])(
-      implicit cvt: JxCvtPF[T]): Unit = serveType(jxSel)(pf)(cvt)
+  protected def serveJx[T](pf: PartialFunction[Req, BoxOrRaw[T]])(implicit
+      cvt: JxCvtPF[T]): Unit = serveType(jxSel)(pf)(cvt)
 
   protected type JxCvtPF[T] = PartialFunction[
     (JsonXmlSelect, T, Req),
@@ -538,9 +538,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     * Turn T into the return type expected by DispatchPF as long
     * as we can convert T to a LiftResponse.
     */
-  protected implicit def thingToResp[T](in: T)(
-      implicit c: T => LiftResponse): () => Box[LiftResponse] =
-    () => Full(c(in))
+  protected implicit def thingToResp[T](in: T)(implicit
+      c: T => LiftResponse): () => Box[LiftResponse] = () => Full(c(in))
 
   /**
     * If we're returning a future, then automatically turn the request into an Async request
@@ -588,8 +587,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     * messages from Failure() and return codes and messages
     * from ParamFailure[Int[(msg, _, _, code)
     */
-  protected implicit def boxToResp[T](in: Box[T])(
-      implicit c: T => LiftResponse): () => Box[LiftResponse] =
+  protected implicit def boxToResp[T](in: Box[T])(implicit
+      c: T => LiftResponse): () => Box[LiftResponse] =
     in match {
       case Full(v)     => () => Full(c(v))
       case e: EmptyBox => () => emptyToResp(e)
@@ -616,8 +615,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     * Turn an Option[T] into the return type expected by
     * DispatchPF.
     */
-  protected implicit def optionToResp[T](in: Option[T])(
-      implicit c: T => LiftResponse): () => Box[LiftResponse] =
+  protected implicit def optionToResp[T](in: Option[T])(implicit
+      c: T => LiftResponse): () => Box[LiftResponse] =
     in match {
       case Some(v) => () => Full(c(v))
       case _       => () => Empty
@@ -629,8 +628,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     * messages from Failure() and return codes and messages
     * from ParamFailure[Int[(msg, _, _, code)
     */
-  protected implicit def boxFuncToResp[T](in: () => Box[T])(
-      implicit c: T => LiftResponse): () => Box[LiftResponse] =
+  protected implicit def boxFuncToResp[T](in: () => Box[T])(implicit
+      c: T => LiftResponse): () => Box[LiftResponse] =
     () => {
       in() match {
         case ParamFailure(msg, _, _, code: Int) =>
@@ -654,8 +653,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     * Turn an Option[T] into the return type expected by
     * DispatchPF.
     */
-  protected implicit def optionFuncToResp[T](in: () => Option[T])(
-      implicit c: T => LiftResponse): () => Box[LiftResponse] =
+  protected implicit def optionFuncToResp[T](in: () => Option[T])(implicit
+      c: T => LiftResponse): () => Box[LiftResponse] =
     () =>
       in() match {
         case Some(v) => Full(c(v))

@@ -76,8 +76,8 @@ trait Formats { self: Formats =>
   /**
     * Adds a field serializer for a given type to this formats.
     */
-  def +[A](newSerializer: FieldSerializer[A])(
-      implicit mf: Manifest[A]): Formats =
+  def +[A](newSerializer: FieldSerializer[A])(implicit
+      mf: Manifest[A]): Formats =
     new Formats {
       val dateFormat = Formats.this.dateFormat
       override val typeHintFieldName = self.typeHintFieldName
@@ -123,8 +123,8 @@ trait DateFormat {
 }
 
 trait Serializer[A] {
-  def deserialize(
-      implicit format: Formats): PartialFunction[(TypeInfo, JValue), A]
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), A]
   def serialize(implicit format: Formats): PartialFunction[Any, JValue]
 }
 

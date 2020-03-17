@@ -98,8 +98,8 @@ case class Zipper[C, L <: HList, R <: HList, P](
 }
 
 object Zipper {
-  def apply[C, CL <: HList](c: C)(
-      implicit gen: Generic.Aux[C, CL]): Zipper[C, HNil, CL, None.type] =
+  def apply[C, CL <: HList](c: C)(implicit
+      gen: Generic.Aux[C, CL]): Zipper[C, HNil, CL, None.type] =
     Zipper[C, HNil, CL, None.type](HNil, gen.to(c), None)
 
   def apply[L <: HList](l: L): Zipper[L, HNil, L, None.type] =
@@ -111,8 +111,7 @@ object Zipper {
     import ops.zipper._
 
     /** Modifies the element at the cursor by the use of function f. Available only if the underlying `HList` is non-empty. */
-    def modify[E](f: RH => E)(
-        implicit modify: Modify[zipper.Self, RH, E]): modify.Out =
-      modify(zipper, f)
+    def modify[E](f: RH => E)(implicit
+        modify: Modify[zipper.Self, RH, E]): modify.Out = modify(zipper, f)
   }
 }

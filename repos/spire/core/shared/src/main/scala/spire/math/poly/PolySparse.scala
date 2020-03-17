@@ -95,8 +95,8 @@ case class PolySparse[@sp(Double) C] private[spire] (
   }
 
   @tailrec
-  private final def fastExp(bits: Array[C], e: Int, i: Int, acc: C)(
-      implicit ring: Semiring[C]): C = {
+  private final def fastExp(bits: Array[C], e: Int, i: Int, acc: C)(implicit
+      ring: Semiring[C]): C = {
     if (e == 0) acc
     else {
       val lb = numberOfTrailingZeros(e) + 1
@@ -105,8 +105,8 @@ case class PolySparse[@sp(Double) C] private[spire] (
     }
   }
 
-  private final def fastExp(bits: Array[C], e: Int)(
-      implicit ring: Semiring[C]): C = {
+  private final def fastExp(bits: Array[C], e: Int)(implicit
+      ring: Semiring[C]): C = {
     val lb = numberOfTrailingZeros(e) + 1
     fastExp(bits, e >>> lb, lb, bits(lb - 1))
   }

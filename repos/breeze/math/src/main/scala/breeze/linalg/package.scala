@@ -42,8 +42,8 @@ package object linalg {
   /**
     * Computes y += x * a, possibly doing less work than actually doing that operation
     */
-  def axpy[A, X, Y](a: A, x: X, y: Y)(
-      implicit axpy: scaleAdd.InPlaceImpl3[Y, A, X]): Unit = { axpy(y, a, x) }
+  def axpy[A, X, Y](a: A, x: X, y: Y)(implicit
+      axpy: scaleAdd.InPlaceImpl3[Y, A, X]): Unit = { axpy(y, a, x) }
 
   /**
     * Generates a vector of linearly spaced values between a and b (inclusive).
@@ -299,26 +299,26 @@ package object linalg {
   // <editor-fold defaultstate="collapsed" desc=" functions declared using the CanXXX idiom (this allows calling parameters by name, etc.) ">
 
   import breeze.linalg.Options.{Zero => OZero, _}
-  def padRight[T](v: DenseVector[T], dimensions: Dimensions1)(
-      implicit canPad: CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]])
+  def padRight[T](v: DenseVector[T], dimensions: Dimensions1)(implicit
+      canPad: CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]])
       : DenseVector[T] = canPad(v, dimensions, OZero)
   def padRight[T](v: DenseVector[T], dimensions: Dimensions1, mode: OptPadMode)(
       implicit canPad: CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]])
       : DenseVector[T] = canPad(v, dimensions, mode)
-  def padRight[T](v: DenseMatrix[T], dimensions: Dimensions1)(
-      implicit canPad: CanPadRight[DenseMatrix[T], Dimensions1, DenseMatrix[T]])
+  def padRight[T](v: DenseMatrix[T], dimensions: Dimensions1)(implicit
+      canPad: CanPadRight[DenseMatrix[T], Dimensions1, DenseMatrix[T]])
       : DenseMatrix[T] = canPad(v, dimensions, OZero)
   def padRight[T](v: DenseMatrix[T], dimensions: Dimensions2, mode: OptPadMode)(
       implicit canPad: CanPadRight[DenseMatrix[T], Dimensions2, DenseMatrix[T]])
       : DenseMatrix[T] = canPad(v, dimensions, mode)
-  def padLeft[T](v: DenseVector[T], dimensions: Dimensions1)(
-      implicit canPad: CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]])
+  def padLeft[T](v: DenseVector[T], dimensions: Dimensions1)(implicit
+      canPad: CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]])
       : DenseVector[T] = canPad(v, dimensions, OZero)
   def padLeft[T](v: DenseVector[T], dimensions: Dimensions1, mode: OptPadMode)(
       implicit canPad: CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]])
       : DenseVector[T] = canPad(v, dimensions, mode)
-  def padLeft[T](v: DenseMatrix[T], dimensions: Dimensions1)(
-      implicit canPad: CanPadLeft[DenseMatrix[T], Dimensions1, DenseMatrix[T]])
+  def padLeft[T](v: DenseMatrix[T], dimensions: Dimensions1)(implicit
+      canPad: CanPadLeft[DenseMatrix[T], Dimensions1, DenseMatrix[T]])
       : DenseMatrix[T] = canPad(v, dimensions, OZero)
   def padLeft[T](v: DenseMatrix[T], dimensions: Dimensions2, mode: OptPadMode)(
       implicit canPad: CanPadLeft[DenseMatrix[T], Dimensions2, DenseMatrix[T]])

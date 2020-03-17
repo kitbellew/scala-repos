@@ -162,8 +162,8 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
   def /~(rhs: FixedPoint)(implicit scale: FixedScale): FixedPoint =
     (lhs - lhs % rhs) / rhs
 
-  def /%(rhs: FixedPoint)(
-      implicit scale: FixedScale): (FixedPoint, FixedPoint) = {
+  def /%(rhs: FixedPoint)(implicit
+      scale: FixedScale): (FixedPoint, FixedPoint) = {
     val rem = lhs % rhs
     ((lhs - rem) / rhs, rem)
   }

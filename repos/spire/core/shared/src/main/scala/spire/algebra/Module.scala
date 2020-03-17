@@ -15,11 +15,11 @@ trait Module[V, @sp(Int, Long, Float, Double) R]
 }
 
 object Module {
-  @inline final def apply[V, @sp(Int, Long, Float, Double) R](
-      implicit V: Module[V, R]): Module[V, R] = V
+  @inline final def apply[V, @sp(Int, Long, Float, Double) R](implicit
+      V: Module[V, R]): Module[V, R] = V
 
-  implicit def IdentityModule[@sp(Int, Long, Float, Double) V](
-      implicit ring: Ring[V]): IdentityModule[V] = {
+  implicit def IdentityModule[@sp(Int, Long, Float, Double) V](implicit
+      ring: Ring[V]): IdentityModule[V] = {
     new IdentityModule[V] {
       val scalar = ring
     }

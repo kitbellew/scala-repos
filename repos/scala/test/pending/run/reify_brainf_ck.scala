@@ -21,8 +21,8 @@ object Test extends App {
       override def out(t: Byte) { print(t.toChar) }
     }
 
-    case class Tape[T](left: List[T], cell: T, right: List[T])(
-        implicit func: Func[T]) {
+    case class Tape[T](left: List[T], cell: T, right: List[T])(implicit
+        func: Func[T]) {
       private def headOf(list: List[T]) =
         if (list.isEmpty) func.zero else list.head
       private def tailOf(list: List[T]) = if (list.isEmpty) Nil else list.tail

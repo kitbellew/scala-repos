@@ -30,8 +30,8 @@ object CofreeTest extends SpecLite {
     Tag.subst(cofreeEqual[F, A])
 
   //needed to prevent SOE for testing with equality
-  implicit def cofreeOptEquals[A](
-      implicit e: Equal[A]): Equal[CofreeOption[A]] =
+  implicit def cofreeOptEquals[A](implicit
+      e: Equal[A]): Equal[CofreeOption[A]] =
     new Equal[CofreeOption[A]] {
       override def equal(a: CofreeOption[A], b: CofreeOption[A]): Boolean = {
         def tr(a: CofreeOption[A], b: CofreeOption[A]): Boolean =

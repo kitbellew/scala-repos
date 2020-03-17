@@ -2,8 +2,8 @@ package scalaz
 package syntax
 
 /** Wraps a value `self` and provides methods related to `Optional` */
-final class OptionalOps[F[_], A] private[syntax] (val self: F[A])(
-    implicit val F: Optional[F])
+final class OptionalOps[F[_], A] private[syntax] (val self: F[A])(implicit
+    val F: Optional[F])
     extends Ops[F[A]] {
   ////
 
@@ -44,9 +44,8 @@ final class OptionalOps[F[_], A] private[syntax] (val self: F[A])(
 }
 
 sealed trait ToOptionalOps0 {
-  implicit def ToOptionalOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[Optional, FA]) =
-    new OptionalOps[F0.M, F0.A](F0(v))(F0.TC)
+  implicit def ToOptionalOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[Optional, FA]) = new OptionalOps[F0.M, F0.A](F0(v))(F0.TC)
 
 }
 

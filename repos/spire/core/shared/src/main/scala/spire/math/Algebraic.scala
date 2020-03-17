@@ -433,8 +433,8 @@ final class Algebraic private (val expr: Algebraic.Expr)
     *
     * TODO: Eq/ClassTag come from poly.map - would love to get rid of them.
     */
-  def evaluateWith[A: Field: NRoot: RootFinder: Eq: ClassTag](
-      implicit conv: ConvertableTo[A]): A = {
+  def evaluateWith[A: Field: NRoot: RootFinder: Eq: ClassTag](implicit
+      conv: ConvertableTo[A]): A = {
     import spire.syntax.field._
     import spire.syntax.nroot._
     import Expr._

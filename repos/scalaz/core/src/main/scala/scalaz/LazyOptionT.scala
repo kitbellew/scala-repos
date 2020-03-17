@@ -55,12 +55,12 @@ final case class LazyOptionT[F[_], A](run: F[LazyOption[A]]) {
   def filter(f: (=> A) => Boolean)(implicit F: Functor[F]): LazyOptionT[F, A] =
     lazyOptionT(F.map(run)(_.filter(f)))
 
-  def flatMap[B](f: (=> A) => LazyOptionT[F, B])(
-      implicit M: Monad[F]): LazyOptionT[F, B] =
+  def flatMap[B](f: (=> A) => LazyOptionT[F, B])(implicit
+      M: Monad[F]): LazyOptionT[F, B] =
     lazyOptionT(M.bind(run)(_.fold(a => f(a).run, M.point(lazyNone[B]))))
 
-  def mapLazyOption[B](f: LazyOption[A] => LazyOption[B])(
-      implicit F: Functor[F]): LazyOptionT[F, B] = lazyOptionT(F.map(run)(f))
+  def mapLazyOption[B](f: LazyOption[A] => LazyOption[B])(implicit
+      F: Functor[F]): LazyOptionT[F, B] = lazyOptionT(F.map(run)(f))
 
 }
 
@@ -69,20 +69,20 @@ final case class LazyOptionT[F[_], A](run: F[LazyOption[A]]) {
 //
 
 sealed abstract class LazyOptionTInstances1 {
-  implicit def lazyOptionTFunctor[F[_]](
-      implicit F0: Functor[F]): Functor[LazyOptionT[F, ?]] =
+  implicit def lazyOptionTFunctor[F[_]](implicit
+      F0: Functor[F]): Functor[LazyOptionT[F, ?]] =
     new LazyOptionTFunctor[F] {
       implicit def F: Functor[F] = F0
     }
 }
 
 sealed abstract class LazyOptionTInstances0 extends LazyOptionTInstances1 {
-  implicit def lazyOptionEqual[F[_], A](
-      implicit FA: Equal[F[LazyOption[A]]]): Equal[LazyOptionT[F, A]] =
+  implicit def lazyOptionEqual[F[_], A](implicit
+      FA: Equal[F[LazyOption[A]]]): Equal[LazyOptionT[F, A]] =
     Equal.equalBy((_: LazyOptionT[F, A]).run)
 
-  implicit def lazyOptionTMonadPlus[F[_]](
-      implicit F0: Monad[F]): MonadPlus[LazyOptionT[F, ?]] =
+  implicit def lazyOptionTMonadPlus[F[_]](implicit
+      F0: Monad[F]): MonadPlus[LazyOptionT[F, ?]] =
     new LazyOptionTMonad[F] {
       implicit def F: Monad[F] = F0
     }
@@ -100,8 +100,8 @@ sealed abstract class LazyOptionTInstances extends LazyOptionTInstances0 {
       implicit def B: BindRec[F] = B0
     }
 
-  implicit def lazyOptionOrder[F[_], A](
-      implicit FA: Order[F[LazyOption[A]]]): Order[LazyOptionT[F, A]] =
+  implicit def lazyOptionOrder[F[_], A](implicit
+      FA: Order[F[LazyOption[A]]]): Order[LazyOptionT[F, A]] =
     Order.orderBy((_: LazyOptionT[F, A]).run)
 }
 
@@ -111,9 +111,8 @@ object LazyOptionT extends LazyOptionTInstances {
 
   import LazyOption._
 
-  def lazySomeT[F[_], A](a: => A)(
-      implicit F: Applicative[F]): LazyOptionT[F, A] =
-    lazyOptionT(F.point(lazySome(a)))
+  def lazySomeT[F[_], A](a: => A)(implicit
+      F: Applicative[F]): LazyOptionT[F, A] = lazyOptionT(F.point(lazySome(a)))
 
   def lazyNoneT[F[_], A](implicit F: Applicative[F]): LazyOptionT[F, A] =
     lazyOptionT(F.point(lazyNone[A]))

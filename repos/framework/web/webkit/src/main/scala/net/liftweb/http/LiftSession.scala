@@ -2574,8 +2574,8 @@ class LiftSession(
   private[http] def findOrCreateComet[T <: LiftCometActor](
       cometName: Box[String],
       cometHtml: NodeSeq,
-      cometAttributes: Map[String, String])(
-      implicit cometManifest: Manifest[T]): Box[T] = {
+      cometAttributes: Map[String, String])(implicit
+      cometManifest: Manifest[T]): Box[T] = {
     val castClass = cometManifest.runtimeClass.asInstanceOf[Class[T]]
     val typeName = castClass.getSimpleName
 
@@ -2618,8 +2618,8 @@ class LiftSession(
   // `findOrBuildComet` overloads.
   private def findOrBuildComet[T <: LiftCometActor](
       creationInfo: CometCreationInfo,
-      newCometFn: (CometCreationInfo) => Box[T])(
-      implicit cometManifest: Manifest[T]): Box[T] = {
+      newCometFn: (CometCreationInfo) => Box[T])(implicit
+      cometManifest: Manifest[T]): Box[T] = {
     val cometInfo = CometId(creationInfo.cometType, creationInfo.cometName)
 
     testStatefulFeature {
@@ -3164,16 +3164,15 @@ sealed trait RoundTripInfo {
   * The companion objects. Has tasty implicits
   */
 object RoundTripInfo {
-  implicit def streamBuilder[T](in: (String, T => Stream[Any]))(
-      implicit m: Manifest[T]): RoundTripInfo = StreamRoundTrip(in._1, in._2)(m)
+  implicit def streamBuilder[T](in: (String, T => Stream[Any]))(implicit
+      m: Manifest[T]): RoundTripInfo = StreamRoundTrip(in._1, in._2)(m)
 
-  implicit def simpleBuilder[T](in: (String, T => Any))(
-      implicit m: Manifest[T]): RoundTripInfo = SimpleRoundTrip(in._1, in._2)(m)
+  implicit def simpleBuilder[T](in: (String, T => Any))(implicit
+      m: Manifest[T]): RoundTripInfo = SimpleRoundTrip(in._1, in._2)(m)
 
   implicit def handledBuilder[T](
-      in: (String, (T, RoundTripHandlerFunc) => Unit))(
-      implicit m: Manifest[T]): RoundTripInfo =
-    HandledRoundTrip(in._1, in._2)(m)
+      in: (String, (T, RoundTripHandlerFunc) => Unit))(implicit
+      m: Manifest[T]): RoundTripInfo = HandledRoundTrip(in._1, in._2)(m)
 }
 
 /**
@@ -3216,8 +3215,8 @@ trait RoundTripHandlerFunc {
 final case class StreamRoundTrip[T](name: String, func: T => Stream[Any])(
     implicit val manifest: Manifest[T])
     extends RoundTripInfo
-final case class SimpleRoundTrip[T](name: String, func: T => Any)(
-    implicit val manifest: Manifest[T])
+final case class SimpleRoundTrip[T](name: String, func: T => Any)(implicit
+    val manifest: Manifest[T])
     extends RoundTripInfo
 final case class HandledRoundTrip[T](
     name: String,

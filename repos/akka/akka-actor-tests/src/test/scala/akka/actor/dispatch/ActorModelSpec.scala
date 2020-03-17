@@ -238,8 +238,8 @@ object ActorModelSpec {
       unregisters: Long = statsFor(actorRef, dispatcher).unregisters.get(),
       msgsReceived: Long = statsFor(actorRef, dispatcher).msgsReceived.get(),
       msgsProcessed: Long = statsFor(actorRef, dispatcher).msgsProcessed.get(),
-      restarts: Long = statsFor(actorRef, dispatcher).restarts.get())(
-      implicit system: ActorSystem) {
+      restarts: Long = statsFor(actorRef, dispatcher).restarts.get())(implicit
+      system: ActorSystem) {
     val stats = statsFor(
       actorRef,
       Option(dispatcher).getOrElse(

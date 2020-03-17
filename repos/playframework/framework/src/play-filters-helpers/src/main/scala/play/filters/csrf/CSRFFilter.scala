@@ -25,8 +25,8 @@ class CSRFFilter(
     config: => CSRFConfig,
     tokenSigner: => CSRFTokenSigner,
     val tokenProvider: TokenProvider = new SignedTokenProvider(Crypto.crypto),
-    val errorHandler: ErrorHandler = CSRF.DefaultErrorHandler)(
-    implicit mat: Materializer)
+    val errorHandler: ErrorHandler = CSRF.DefaultErrorHandler)(implicit
+    mat: Materializer)
     extends EssentialFilter {
 
   @Inject
@@ -75,8 +75,8 @@ object CSRFFilter {
       tokenSigner: => CSRFTokenSigner = Crypto.crypto,
       tokenProvider: TokenProvider =
         new ConfigTokenProvider(CSRFConfig.global, Crypto.crypto),
-      errorHandler: ErrorHandler = DefaultErrorHandler)(
-      implicit mat: Materializer): CSRFFilter = {
+      errorHandler: ErrorHandler = DefaultErrorHandler)(implicit
+      mat: Materializer): CSRFFilter = {
     new CSRFFilter(config, tokenSigner, tokenProvider, errorHandler)
   }
 }

@@ -179,8 +179,8 @@ sealed abstract class TreeInstances {
       fa.flatten.foldLeft(z)(f)
     override def foldMapLeft1[A, B](fa: Tree[A])(z: A => B)(f: (B, A) => B): B =
       fa.flatten match { case h #:: t => t.foldLeft(z(h))(f) }
-    override def foldMap[A, B](fa: Tree[A])(f: A => B)(
-        implicit F: Monoid[B]): B = fa foldMap f
+    override def foldMap[A, B](fa: Tree[A])(f: A => B)(implicit
+        F: Monoid[B]): B = fa foldMap f
     def alignWith[A, B, C](f: (\&/[A, B]) ⇒ C) = {
       def align(ta: Tree[A], tb: Tree[B]): Tree[C] =
         Tree.Node(

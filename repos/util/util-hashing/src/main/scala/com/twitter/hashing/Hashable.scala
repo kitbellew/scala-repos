@@ -21,8 +21,8 @@ trait LowPriorityHashable {
     h.andThen { long => (long >> 32).toInt ^ long.toInt }
 
   // Get the UTF-8 bytes of a string to hash it
-  implicit def fromString[T](
-      implicit h: Hashable[Array[Byte], T]): Hashable[String, T] =
+  implicit def fromString[T](implicit
+      h: Hashable[Array[Byte], T]): Hashable[String, T] =
     h.compose { s: String => s.getBytes }
 }
 

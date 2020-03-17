@@ -15,12 +15,12 @@ import profile.simple._
 trait RepositorySearchService { self: IssuesService =>
   import RepositorySearchService._
 
-  def countIssues(owner: String, repository: String, query: String)(
-      implicit session: Session): Int =
+  def countIssues(owner: String, repository: String, query: String)(implicit
+      session: Session): Int =
     searchIssuesByKeyword(owner, repository, query).length
 
-  def searchIssues(owner: String, repository: String, query: String)(
-      implicit session: Session): List[IssueSearchResult] =
+  def searchIssues(owner: String, repository: String, query: String)(implicit
+      session: Session): List[IssueSearchResult] =
     searchIssuesByKeyword(owner, repository, query).map {
       case (issue, commentCount, content) =>
         IssueSearchResult(

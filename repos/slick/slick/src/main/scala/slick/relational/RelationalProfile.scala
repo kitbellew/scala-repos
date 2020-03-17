@@ -111,8 +111,8 @@ trait RelationalProfile
 
   /** Run a query synchronously on the provided session. This is used by DistributedProfile until we
     * can make it fully asynchronous. */
-  def runSynchronousQuery[R](tree: Node, param: Any)(
-      implicit session: Backend#Session): R
+  def runSynchronousQuery[R](tree: Node, param: Any)(implicit
+      session: Backend#Session): R
 
   class FastPathExtensionMethods[M <: ResultConverterDomain, T, P](
       val mp: MappedProjection[T, P]) {
@@ -188,8 +188,8 @@ trait RelationalTableComponent { self: RelationalProfile =>
       * Note that Slick uses VARCHAR or VARCHAR(254) in DDL for String
       * columns if neither ColumnOption DBType nor Length are given.
       */
-    def column[C](n: String, options: ColumnOption[C]*)(
-        implicit tt: TypedType[C]): Rep[C] = {
+    def column[C](n: String, options: ColumnOption[C]*)(implicit
+        tt: TypedType[C]): Rep[C] = {
       if (tt == null)
         throw new NullPointerException(
           "implicit TypedType[C] for column[C] is null. " +

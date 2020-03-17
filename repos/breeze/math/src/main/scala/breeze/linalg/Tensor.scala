@@ -120,10 +120,8 @@ trait TensorLike[
     * method for slicing a tensor. For instance, DenseVectors support efficient slicing by a Range object.
     * @return
     */
-  def apply[Slice, Result](slice: Slice)(
-      implicit canSlice: CanSlice[This, Slice, Result]) = {
-    canSlice(repr, slice)
-  }
+  def apply[Slice, Result](slice: Slice)(implicit
+      canSlice: CanSlice[This, Slice, Result]) = { canSlice(repr, slice) }
 
   /**
     * Slice a sequence of elements. Must be at least 2.
@@ -133,41 +131,35 @@ trait TensorLike[
     * @tparam Result
     * @return
     */
-  def apply[Result](a: K, slice: K*)(
-      implicit canSlice: CanSlice[This, Seq[K], Result]) = {
-    canSlice(repr, a +: slice)
-  }
+  def apply[Result](a: K, slice: K*)(implicit
+      canSlice: CanSlice[This, Seq[K], Result]) = { canSlice(repr, a +: slice) }
 
   /**
     * Method for slicing that is tuned for Matrices.
     * @return
     */
-  def apply[Slice1, Slice2, Result](slice1: Slice1, slice2: Slice2)(
-      implicit canSlice: CanSlice2[This, Slice1, Slice2, Result]) = {
+  def apply[Slice1, Slice2, Result](slice1: Slice1, slice2: Slice2)(implicit
+      canSlice: CanSlice2[This, Slice1, Slice2, Result]) = {
     canSlice(repr, slice1, slice2)
   }
 
   /** Creates a new map containing a transformed copy of this map. */
-  def mapPairs[TT >: This, O, That](f: (K, V) => O)(
-      implicit bf: CanMapKeyValuePairs[TT, K, V, O, That]): That = {
-    bf.map(repr, f)
-  }
+  def mapPairs[TT >: This, O, That](f: (K, V) => O)(implicit
+      bf: CanMapKeyValuePairs[TT, K, V, O, That]): That = { bf.map(repr, f) }
 
   /** Maps all active key-value pairs values. */
-  def mapActivePairs[TT >: This, O, That](f: (K, V) => O)(
-      implicit bf: CanMapKeyValuePairs[TT, K, V, O, That]): That = {
+  def mapActivePairs[TT >: This, O, That](f: (K, V) => O)(implicit
+      bf: CanMapKeyValuePairs[TT, K, V, O, That]): That = {
     bf.mapActive(repr.asInstanceOf[TT], f)
   }
 
   /** Creates a new map containing a transformed copy of this map. */
-  def mapValues[TT >: This, O, That](f: V => O)(
-      implicit bf: CanMapValues[TT, V, O, That]): That = {
-    bf(repr.asInstanceOf[TT], f)
-  }
+  def mapValues[TT >: This, O, That](f: V => O)(implicit
+      bf: CanMapValues[TT, V, O, That]): That = { bf(repr.asInstanceOf[TT], f) }
 
   /** Maps all non-zero values. */
-  def mapActiveValues[TT >: This, O, That](f: V => O)(
-      implicit bf: CanMapActiveValues[TT, V, O, That]): That = {
+  def mapActiveValues[TT >: This, O, That](f: V => O)(implicit
+      bf: CanMapActiveValues[TT, V, O, That]): That = {
     bf(repr.asInstanceOf[TT], f)
   }
 
@@ -237,8 +229,8 @@ object Tensor {
 
   }
 
-  implicit def transposeTensor[K, V, T](
-      implicit ev: T <:< Tensor[K, V]): CanTranspose[T, Transpose[T]] = {
+  implicit def transposeTensor[K, V, T](implicit
+      ev: T <:< Tensor[K, V]): CanTranspose[T, Transpose[T]] = {
     new CanTranspose[T, Transpose[T]] {
       def apply(from: T): Transpose[T] = new Transpose(from)
     }

@@ -288,8 +288,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
   trait Implicits1 {
     // fallback
-    implicit def replPrinting[T](x: T)(
-        implicit pretty: Prettifier[T] = Prettifier.default[T]) =
+    implicit def replPrinting[T](x: T)(implicit
+        pretty: Prettifier[T] = Prettifier.default[T]) =
       new SinglePrettifierClass[T](x)
   }
   trait Implicits2 extends Implicits1 {
@@ -319,8 +319,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
     implicit def replInputStream(in: InputStream)(implicit codec: Codec) =
       new RichInputStream(in)
-    implicit def replEnhancedURLs(url: URL)(
-        implicit codec: Codec): RichReplURL = new RichReplURL(url)(codec)
+    implicit def replEnhancedURLs(url: URL)(implicit
+        codec: Codec): RichReplURL = new RichReplURL(url)(codec)
   }
 
   trait ReplUtilities {

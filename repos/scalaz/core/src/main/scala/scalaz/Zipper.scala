@@ -380,9 +380,8 @@ sealed abstract class ZipperInstances {
           f: (A, => B) => B): B = fa.foldRight(z)(f)
       override def foldLeft[A, B](fa: Zipper[A], z: B)(f: (B, A) => B): B =
         fa.foldLeft(z)(f)
-      override def foldMap[A, B](fa: Zipper[A])(f: A => B)(
-          implicit F: Monoid[B]) =
-        fa.foldLeft(F.zero)((b, a) => F.append(b, f(a)))
+      override def foldMap[A, B](fa: Zipper[A])(f: A => B)(implicit
+          F: Monoid[B]) = fa.foldLeft(F.zero)((b, a) => F.append(b, f(a)))
       def point[A](a: => A): Zipper[A] =
         zipper(Stream.continually(a), a, Stream.continually(a))
       def ap[A, B](fa: => Zipper[A])(f: => Zipper[A => B]): Zipper[B] = fa ap f
@@ -391,8 +390,8 @@ sealed abstract class ZipperInstances {
         fa.lefts.forall(f) && f(fa.focus) && fa.rights.forall(f)
       override def any[A](fa: Zipper[A])(f: A => Boolean) =
         fa.lefts.exists(f) || f(fa.focus) || fa.rights.exists(f)
-      override def foldMap1[A, B](fa: Zipper[A])(f: A => B)(
-          implicit F: Semigroup[B]) =
+      override def foldMap1[A, B](fa: Zipper[A])(f: A => B)(implicit
+          F: Semigroup[B]) =
         fa.rights.foldLeft(
           Foldable[Stream].foldMapRight1Opt(fa.lefts)(f)((a, b) =>
             F.append(b, f(a))) match {

@@ -52,8 +52,8 @@ object tile extends UFunc {
       }
     }
 
-  implicit def tile_DM_Impl2[T: ClassTag: Zero](
-      implicit set: OpSet.InPlaceImpl2[DenseVector[T], DenseVector[T]])
+  implicit def tile_DM_Impl2[T: ClassTag: Zero](implicit
+      set: OpSet.InPlaceImpl2[DenseVector[T], DenseVector[T]])
       : Impl2[DenseMatrix[T], Int, DenseMatrix[T]] =
     new Impl2[DenseMatrix[T], Int, DenseMatrix[T]] {
       def apply(x: DenseMatrix[T], m: Int): DenseMatrix[T] = {

@@ -40,8 +40,8 @@ trait HOSeq {
     // which are then added to the result one by one
     // the compiler should be able to find the right accumulator (implicit buf) to build the result
     // to get concat, resColl = SingletonIterable, f = unit for SingletonIterable
-    def flatMap[resColl[+x] <: Iterable[x], s](f: t => resColl[s])(
-        implicit buf: Accumulator[resColl, s]): resColl[s] = {
+    def flatMap[resColl[+x] <: Iterable[x], s](f: t => resColl[s])(implicit
+        buf: Accumulator[resColl, s]): resColl[s] = {
       // TODO:  would a viewbound for resColl[x] be better?
       // -- 2nd-order type params are not yet in scope in view bound
       val elems = iterator

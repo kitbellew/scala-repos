@@ -11,8 +11,8 @@ object C {
   implicit def convert1[G, TRAVONCE[+e] <: Covariant[e]](
       xs: TRAVONCE[G]): Combinable[G] = ???
 
-  implicit def convert2[G, SET[e] <: Invariant[e]](xs: SET[_ <: G])(
-      implicit cbf: CanBuildFrom[SET[G]]): Combinable[G] = ???
+  implicit def convert2[G, SET[e] <: Invariant[e]](xs: SET[_ <: G])(implicit
+      cbf: CanBuildFrom[SET[G]]): Combinable[G] = ???
 
   implicit def cbf[A]: CanBuildFrom[Invariant[A]] = ???
 }

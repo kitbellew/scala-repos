@@ -159,8 +159,8 @@ class GroupBuilder(val groupFields: Fields)
     * Init needs to be serializable with Kryo (because we copy it for each
     * grouping to avoid possible errors using a mutable init object).
     */
-  def foldLeft[X, T](fieldDef: (Fields, Fields))(init: X)(fn: (X, T) => X)(
-      implicit
+  def foldLeft[X, T](fieldDef: (Fields, Fields))(init: X)(
+      fn: (X, T) => X)(implicit
       setter: TupleSetter[X],
       conv: TupleConverter[T]): GroupBuilder = {
     val (inFields, outFields) = fieldDef

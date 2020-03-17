@@ -43,8 +43,8 @@ sealed abstract class Diev[A] {
 }
 
 object DievInterval {
-  def subtractInterval[A](minuend: (A, A), subtraend: (A, A))(
-      implicit E: Enum[A]): Vector[(A, A)] = {
+  def subtractInterval[A](minuend: (A, A), subtraend: (A, A))(implicit
+      E: Enum[A]): Vector[(A, A)] = {
     val startOverlap =
       if (subtraend._1 > minuend._1) Vector((minuend._1, subtraend._1.pred))
       else Vector()
@@ -299,8 +299,8 @@ object Diev extends DievInstances {
   def fromValuesSeq[A](values: Seq[A])(implicit E: Enum[A]): Diev[A] =
     values.foldLeft(empty[A])(_ + _)
 
-  def fromIntervalsSeq[A](intervals: Seq[(A, A)])(
-      implicit E: Enum[A]): Diev[A] = intervals.foldLeft(empty[A])(_ + _)
+  def fromIntervalsSeq[A](intervals: Seq[(A, A)])(implicit
+      E: Enum[A]): Diev[A] = intervals.foldLeft(empty[A])(_ + _)
 }
 
 sealed abstract class DievInstances extends DievImplementation {

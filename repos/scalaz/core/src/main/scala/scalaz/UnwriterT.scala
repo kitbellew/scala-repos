@@ -16,8 +16,8 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
   /** alias for `on` */
   def unary_+ : WriterT[F, U, A] = WriterT(run)
 
-  def mapValue[X, B](f: ((U, A)) => (X, B))(
-      implicit F: Functor[F]): UnwriterT[F, X, B] = unwriterT(F.map(run)(f))
+  def mapValue[X, B](f: ((U, A)) => (X, B))(implicit
+      F: Functor[F]): UnwriterT[F, X, B] = unwriterT(F.map(run)(f))
 
   def mapUnwritten[X](f: U => X)(implicit F: Functor[F]): UnwriterT[F, X, A] =
     mapValue(wa => (f(wa._1), wa._2))
@@ -32,14 +32,14 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
   def map[B](f: A => B)(implicit F: Functor[F]): UnwriterT[F, U, B] =
     unwriterT(F.map(run)(wa => (wa._1, f(wa._2))))
 
-  def ap[B](f: => UnwriterT[F, U, A => B])(
-      implicit F: Apply[F]): UnwriterT[F, U, B] =
+  def ap[B](f: => UnwriterT[F, U, A => B])(implicit
+      F: Apply[F]): UnwriterT[F, U, B] =
     unwriterT {
       F.apply2(f.run, run) { case ((w1, fab), (_, a)) => (w1, fab(a)) }
     }
 
-  def flatMap[B](f: A => UnwriterT[F, U, B])(
-      implicit F: Bind[F]): UnwriterT[F, U, B] =
+  def flatMap[B](f: A => UnwriterT[F, U, B])(implicit
+      F: Bind[F]): UnwriterT[F, U, B] =
     unwriterT(F.bind(run) { wa =>
       val z = f(wa._2).run
       F.map(z)(wb => (wa._1, wb._2))
@@ -80,45 +80,45 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
 object UnwriterT extends UnwriterTInstances with UnwriterTFunctions
 
 sealed abstract class UnwriterTInstances2 {
-  implicit def unwriterTFunctor[F[_], W](
-      implicit F0: Functor[F]): Functor[UnwriterT[F, W, ?]] =
+  implicit def unwriterTFunctor[F[_], W](implicit
+      F0: Functor[F]): Functor[UnwriterT[F, W, ?]] =
     new UnwriterTFunctor[F, W] {
       implicit def F = F0
     }
 }
 
 sealed abstract class UnwriterTInstances1 extends UnwriterTInstances2 {
-  implicit def unwriterTApply[F[_], W](
-      implicit F0: Apply[F]): Apply[UnwriterT[F, W, ?]] =
+  implicit def unwriterTApply[F[_], W](implicit
+      F0: Apply[F]): Apply[UnwriterT[F, W, ?]] =
     new UnwriterTApply[F, W] {
       implicit def F = F0
     }
 }
 
 sealed abstract class UnwriterTInstances0 extends UnwriterTInstances1 {
-  implicit def unwriterTBifunctor[F[_]](
-      implicit F0: Functor[F]): Bifunctor[UnwriterT[F, ?, ?]] =
+  implicit def unwriterTBifunctor[F[_]](implicit
+      F0: Functor[F]): Bifunctor[UnwriterT[F, ?, ?]] =
     new UnwriterTBifunctor[F] {
       implicit def F = F0
     }
-  implicit def unwriterTBind[F[_], W](
-      implicit F0: Bind[F]): Bind[UnwriterT[F, W, ?]] =
+  implicit def unwriterTBind[F[_], W](implicit
+      F0: Bind[F]): Bind[UnwriterT[F, W, ?]] =
     new UnwriterTBind[F, W] {
       implicit def F = F0
     }
-  implicit def unwriterTFoldable[F[_], W](
-      implicit F0: Foldable[F]): Foldable[UnwriterT[F, W, ?]] =
+  implicit def unwriterTFoldable[F[_], W](implicit
+      F0: Foldable[F]): Foldable[UnwriterT[F, W, ?]] =
     new UnwriterTFoldable[F, W] {
       implicit def F = F0
     }
-  implicit def unwriterTEqual[F[_], W, A](
-      implicit E: Equal[F[(W, A)]]): Equal[UnwriterT[F, W, A]] =
+  implicit def unwriterTEqual[F[_], W, A](implicit
+      E: Equal[F[(W, A)]]): Equal[UnwriterT[F, W, A]] =
     E.contramap((_: UnwriterT[F, W, A]).run)
 }
 
 sealed abstract class UnwriterTInstances extends UnwriterTInstances0 {
-  implicit def unwriterTBitraverse[F[_]](
-      implicit F0: Traverse[F]): Bitraverse[UnwriterT[F, ?, ?]] =
+  implicit def unwriterTBitraverse[F[_]](implicit
+      F0: Traverse[F]): Bitraverse[UnwriterT[F, ?, ?]] =
     new UnwriterTBitraverse[F] {
       implicit def F = F0
     }
@@ -126,8 +126,8 @@ sealed abstract class UnwriterTInstances extends UnwriterTInstances0 {
     new UnwriterComonad[W] {
       implicit def F = implicitly
     }
-  implicit def unwriterTTraverse[F[_], W](
-      implicit F0: Traverse[F]): Traverse[UnwriterT[F, W, ?]] =
+  implicit def unwriterTTraverse[F[_], W](implicit
+      F0: Traverse[F]): Traverse[UnwriterT[F, W, ?]] =
     new UnwriterTTraverse[F, W] {
       implicit def F = F0
     }
@@ -146,13 +146,12 @@ trait UnwriterTFunctions {
 
   def tell[W](w: W): Unwriter[W, Unit] = unwriter((w, ()))
 
-  def unput[F[_], W, A](value: F[A])(w: W)(
-      implicit F: Functor[F]): UnwriterT[F, W, A] =
-    UnwriterT(F.map(value)(a => (w, a)))
+  def unput[F[_], W, A](value: F[A])(w: W)(implicit
+      F: Functor[F]): UnwriterT[F, W, A] = UnwriterT(F.map(value)(a => (w, a)))
 
   /** Puts the written value that is produced by applying the given function into a unwriter transformer and associates with `value` */
-  def unputWith[F[_], W, A](value: F[A])(w: A => W)(
-      implicit F: Functor[F]): UnwriterT[F, W, A] =
+  def unputWith[F[_], W, A](value: F[A])(w: A => W)(implicit
+      F: Functor[F]): UnwriterT[F, W, A] =
     UnwriterT(F.map(value)(a => (w(a), a)))
 
 }

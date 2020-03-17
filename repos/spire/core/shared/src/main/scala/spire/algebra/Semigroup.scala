@@ -43,15 +43,15 @@ object Semigroup {
     * If there exists an implicit `AdditiveSemigroup[A]`, this returns a
     * `Semigroup[A]` using `plus` for `op`.
     */
-  @inline final def additive[A](
-      implicit A: AdditiveSemigroup[A]): Semigroup[A] = A.additive
+  @inline final def additive[A](implicit
+      A: AdditiveSemigroup[A]): Semigroup[A] = A.additive
 
   /**
     * If there exists an implicit `MultiplicativeSemigroup[A]`, this returns a
     * `Semigroup[A]` using `times` for `op`.
     */
-  @inline final def multiplicative[A](
-      implicit A: MultiplicativeSemigroup[A]): Semigroup[A] = A.multiplicative
+  @inline final def multiplicative[A](implicit
+      A: MultiplicativeSemigroup[A]): Semigroup[A] = A.multiplicative
 }
 
 /**
@@ -65,8 +65,8 @@ trait CSemigroup[@sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
 
 object CSemigroup {
   @inline final def apply[A](implicit ev: CSemigroup[A]): CSemigroup[A] = ev
-  @inline final def additive[A](
-      implicit A: AdditiveCSemigroup[A]): CSemigroup[A] = A.additive
-  @inline final def multiplicative[A](
-      implicit A: MultiplicativeCSemigroup[A]): CSemigroup[A] = A.multiplicative
+  @inline final def additive[A](implicit
+      A: AdditiveCSemigroup[A]): CSemigroup[A] = A.additive
+  @inline final def multiplicative[A](implicit
+      A: MultiplicativeCSemigroup[A]): CSemigroup[A] = A.multiplicative
 }

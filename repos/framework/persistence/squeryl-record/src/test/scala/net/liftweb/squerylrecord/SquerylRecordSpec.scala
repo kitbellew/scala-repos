@@ -430,8 +430,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
       extends FunctionNode[String]("FORMATDATETIME", Some(m), Seq(d, e))
       with StringExpression[String]
 
-  def toChar(d: DateExpression[Timestamp], e: StringExpression[String])(
-      implicit m: OutMapper[String]) = new ToChar(d, e, m)
+  def toChar(d: DateExpression[Timestamp], e: StringExpression[String])(implicit
+      m: OutMapper[String]) = new ToChar(d, e, m)
 
   class TransactionRollbackException extends RuntimeException
 

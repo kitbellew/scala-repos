@@ -71,8 +71,8 @@ object ParameterDirectives extends ParameterDirectives {
     def apply(): Out
   }
   object ParamMagnet {
-    implicit def apply[T](value: T)(
-        implicit pdef: ParamDef[T]): ParamMagnet { type Out = pdef.Out } =
+    implicit def apply[T](value: T)(implicit
+        pdef: ParamDef[T]): ParamMagnet { type Out = pdef.Out } =
       new ParamMagnet {
         type Out = pdef.Out
         def apply() = pdef(value)
@@ -122,14 +122,14 @@ object ParameterDirectives extends ParameterDirectives {
           paramName,
           fsou(ctx.request.uri.query().get(paramName)))
       }
-    implicit def forString(
-        implicit fsu: FSU[String]): ParamDefAux[String, Directive1[String]] =
+    implicit def forString(implicit
+        fsu: FSU[String]): ParamDefAux[String, Directive1[String]] =
       extractParameter[String, String] { string ⇒ filter(string, fsu) }
-    implicit def forSymbol(
-        implicit fsu: FSU[String]): ParamDefAux[Symbol, Directive1[String]] =
+    implicit def forSymbol(implicit
+        fsu: FSU[String]): ParamDefAux[Symbol, Directive1[String]] =
       extractParameter[Symbol, String] { symbol ⇒ filter(symbol.name, fsu) }
-    implicit def forNR[T](
-        implicit fsu: FSU[T]): ParamDefAux[NameReceptacle[T], Directive1[T]] =
+    implicit def forNR[T](implicit
+        fsu: FSU[T]): ParamDefAux[NameReceptacle[T], Directive1[T]] =
       extractParameter[NameReceptacle[T], T] { nr ⇒ filter(nr.name, fsu) }
     implicit def forNUR[T]
         : ParamDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =

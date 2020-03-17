@@ -31,15 +31,15 @@ import com.precog.yggdrasil.metadata._
 
 import com.weiglewilczek.slf4s.Logging
 
-class JDBCStorageMetadataSource(dbMap: Map[String, String])(
-    implicit asyncContext: ExecutionContext)
+class JDBCStorageMetadataSource(dbMap: Map[String, String])(implicit
+    asyncContext: ExecutionContext)
     extends StorageMetadataSource[Future] {
   def userMetadataView(apiKey: APIKey): StorageMetadata[Future] =
     new JDBCStorageMetadata(dbMap)
 }
 
-class JDBCStorageMetadata(dbMap: Map[String, String])(
-    implicit asyncContext: ExecutionContext)
+class JDBCStorageMetadata(dbMap: Map[String, String])(implicit
+    asyncContext: ExecutionContext)
     extends StorageMetadata[Future]
     with Logging {
   implicit val M = new FutureMonad(asyncContext)

@@ -67,8 +67,8 @@ object HList extends Dynamic {
 
   def apply[T](t: T) = t :: HNil
 
-  def apply[P <: Product, L <: HList](p: P)(
-      implicit gen: Generic.Aux[P, L]): L = gen.to(p)
+  def apply[P <: Product, L <: HList](p: P)(implicit
+      gen: Generic.Aux[P, L]): L = gen.to(p)
 
   /**
     * Produces a HList of length `N` filled with `elem`.
@@ -79,8 +79,8 @@ object HList extends Dynamic {
   /**
     * Produces a `N1`-length HList made of `N2`-length HLists filled with `elem`.
     */
-  def fill[A](n1: Nat, n2: Nat)(elem: A)(
-      implicit fill: Fill[(n1.N, n2.N), A]): fill.Out = fill(elem)
+  def fill[A](n1: Nat, n2: Nat)(elem: A)(implicit
+      fill: Fill[(n1.N, n2.N), A]): fill.Out = fill(elem)
 
   implicit def hlistOps[L <: HList](l: L): HListOps[L] = new HListOps(l)
 

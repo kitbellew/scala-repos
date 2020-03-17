@@ -32,8 +32,8 @@ trait Applicative[F[_]] extends Apply[F] { self =>
 
   // impls of sequence, traverse, etc
 
-  def traverse[A, G[_], B](value: G[A])(f: A => F[B])(
-      implicit G: Traverse[G]): F[G[B]] = G.traverse(value)(f)(this)
+  def traverse[A, G[_], B](value: G[A])(f: A => F[B])(implicit
+      G: Traverse[G]): F[G[B]] = G.traverse(value)(f)(this)
 
   def sequence[A, G[_]: Traverse](as: G[F[A]]): F[G[A]] = traverse(as)(a => a)
 
@@ -75,8 +75,8 @@ trait Applicative[F[_]] extends Apply[F] { self =>
     }
 
   /**The product of Applicatives `F` and `G`, `[x](F[x], G[x]])`, is an Applicative */
-  def product[G[_]](
-      implicit G0: Applicative[G]): Applicative[λ[α => (F[α], G[α])]] =
+  def product[G[_]](implicit
+      G0: Applicative[G]): Applicative[λ[α => (F[α], G[α])]] =
     new ProductApplicative[F, G] {
       implicit def F = self
       implicit def G = G0
@@ -99,19 +99,18 @@ trait Applicative[F[_]] extends Apply[F] { self =>
       FA.equal(ap(fa)(point((a: A) => a)), fa)
 
     /** `point` distributes over function applications. */
-    def homomorphism[A, B](ab: A => B, a: A)(
-        implicit FB: Equal[F[B]]): Boolean =
+    def homomorphism[A, B](ab: A => B, a: A)(implicit
+        FB: Equal[F[B]]): Boolean =
       FB.equal(ap(point(a))(point(ab)), point(ab(a)))
 
     /** `point` is a left and right identity, F-wise. */
-    def interchange[A, B](f: F[A => B], a: A)(
-        implicit FB: Equal[F[B]]): Boolean =
+    def interchange[A, B](f: F[A => B], a: A)(implicit
+        FB: Equal[F[B]]): Boolean =
       FB.equal(ap(point(a))(f), ap(f)(point((f: A => B) => f(a))))
 
     /** `map` is like the one derived from `point` and `ap`. */
-    def mapLikeDerived[A, B](f: A => B, fa: F[A])(
-        implicit FB: Equal[F[B]]): Boolean =
-      FB.equal(map(fa)(f), ap(fa)(point(f)))
+    def mapLikeDerived[A, B](f: A => B, fa: F[A])(implicit
+        FB: Equal[F[B]]): Boolean = FB.equal(map(fa)(f), ap(fa)(point(f)))
   }
   def applicativeLaw = new ApplicativeLaw {}
 

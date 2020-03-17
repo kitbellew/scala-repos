@@ -127,8 +127,8 @@ class AccountServiceHandlers(
   }
 
   def withAccountAdmin[A](request: HttpRequest[_], auth: Account)(
-      f: Account => Future[HttpResponse[JValue]])(
-      implicit executor: ExecutionContext): Future[HttpResponse[JValue]] = {
+      f: Account => Future[HttpResponse[JValue]])(implicit
+      executor: ExecutionContext): Future[HttpResponse[JValue]] = {
     request.parameters.get('accountId).map { accountId =>
       withAccountAdmin(accountId, auth, request) { f }
     } getOrElse {

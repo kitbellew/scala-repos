@@ -21,38 +21,38 @@ object Func extends FuncInstances {
     }
 
   /** applicative function. */
-  def appFunc[F[_], A, B](run0: A => F[B])(
-      implicit FF: Applicative[F]): AppFunc[F, A, B] =
+  def appFunc[F[_], A, B](run0: A => F[B])(implicit
+      FF: Applicative[F]): AppFunc[F, A, B] =
     new AppFunc[F, A, B] {
       def F: Applicative[F] = FF
       def run: A => F[B] = run0
     }
 
   /** applicative function using [[Unapply]]. */
-  def appFuncU[A, R](f: A => R)(
-      implicit RR: Unapply[Applicative, R]): AppFunc[RR.M, A, RR.A] =
+  def appFuncU[A, R](f: A => R)(implicit
+      RR: Unapply[Applicative, R]): AppFunc[RR.M, A, RR.A] =
     appFunc({ a: A => RR.subst(f(a)) })(RR.TC)
 }
 
 private[data] abstract class FuncInstances extends FuncInstances0 {
-  implicit def funcApplicative[F[_], C](
-      implicit FF: Applicative[F]): Applicative[Lambda[X => Func[F, C, X]]] =
+  implicit def funcApplicative[F[_], C](implicit
+      FF: Applicative[F]): Applicative[Lambda[X => Func[F, C, X]]] =
     new FuncApplicative[F, C] {
       def F: Applicative[F] = FF
     }
 }
 
 private[data] abstract class FuncInstances0 extends FuncInstances1 {
-  implicit def funcApply[F[_], C](
-      implicit FF: Apply[F]): Apply[Lambda[X => Func[F, C, X]]] =
+  implicit def funcApply[F[_], C](implicit
+      FF: Apply[F]): Apply[Lambda[X => Func[F, C, X]]] =
     new FuncApply[F, C] {
       def F: Apply[F] = FF
     }
 }
 
 private[data] abstract class FuncInstances1 {
-  implicit def funcFunctor[F[_], C](
-      implicit FF: Functor[F]): Functor[Lambda[X => Func[F, C, X]]] =
+  implicit def funcFunctor[F[_], C](implicit
+      FF: Functor[F]): Functor[Lambda[X => Func[F, C, X]]] =
     new FuncFunctor[F, C] {
       def F: Functor[F] = FF
     }
@@ -121,8 +121,8 @@ sealed abstract class AppFunc[F[_], A, B] extends Func[F, A, B] { self =>
 object AppFunc extends AppFuncInstances
 
 private[data] abstract class AppFuncInstances {
-  implicit def appFuncApplicative[F[_], C](
-      implicit FF: Applicative[F]): Applicative[Lambda[X => AppFunc[F, C, X]]] =
+  implicit def appFuncApplicative[F[_], C](implicit
+      FF: Applicative[F]): Applicative[Lambda[X => AppFunc[F, C, X]]] =
     new AppFuncApplicative[F, C] {
       def F: Applicative[F] = FF
     }

@@ -193,8 +193,8 @@ trait BigDecimalInstances {
   import BigDecimal.defaultMathContext
 
   implicit final val BigDecimalAlgebra = new BigDecimalAlgebra
-  implicit def BigDecimalIsTrig(
-      implicit mc: MathContext = defaultMathContext): BigDecimalIsTrig =
+  implicit def BigDecimalIsTrig(implicit
+      mc: MathContext = defaultMathContext): BigDecimalIsTrig =
     new BigDecimalIsTrig(mc)
 
   import spire.math.NumberTag._

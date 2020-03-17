@@ -9,8 +9,8 @@ trait Bifoldable[F[_, _]] { self =>
   ////
 
   /** Accumulate `A`s and `B`s */
-  def bifoldMap[A, B, M](fa: F[A, B])(f: A => M)(g: B => M)(
-      implicit F: Monoid[M]): M
+  def bifoldMap[A, B, M](fa: F[A, B])(f: A => M)(g: B => M)(implicit
+      F: Monoid[M]): M
 
   /** Accumulate to `C` starting at the "right".  `f` and `g` may be
     * interleaved.
@@ -38,16 +38,16 @@ trait Bifoldable[F[_, _]] { self =>
     }
 
   /**The product of Bifoldables `F` and `G`, `[x,y](F[x,y], G[x,y])`, is a Bifoldable */
-  def product[G[_, _]](
-      implicit G0: Bifoldable[G]): Bifoldable[λ[(α, β) => (F[α, β], G[α, β])]] =
+  def product[G[_, _]](implicit
+      G0: Bifoldable[G]): Bifoldable[λ[(α, β) => (F[α, β], G[α, β])]] =
     new ProductBifoldable[F, G] {
       implicit def F = self
       implicit def G = G0
     }
 
   // derived functions
-  def bifoldMap1[A, B, M](fa: F[A, B])(f: A => M)(g: B => M)(
-      implicit F: Semigroup[M]): Option[M] = {
+  def bifoldMap1[A, B, M](fa: F[A, B])(f: A => M)(g: B => M)(implicit
+      F: Semigroup[M]): Option[M] = {
     import std.option._
     bifoldMap(fa)(a => some(f(a)))(b => some(g(b)))
   }
@@ -91,14 +91,12 @@ trait Bifoldable[F[_, _]] { self =>
     }
 
   /** Embed one Foldable to the left of this Bifoldable .*/
-  def embedLeft[G[_]](
-      implicit G0: Foldable[G]): Bifoldable[λ[(α, β) => F[G[α], β]]] =
-    embed[G, Id.Id]
+  def embedLeft[G[_]](implicit
+      G0: Foldable[G]): Bifoldable[λ[(α, β) => F[G[α], β]]] = embed[G, Id.Id]
 
   /** Embed one Foldable to the right of this Bifoldable .*/
-  def embedRight[H[_]](
-      implicit H0: Foldable[H]): Bifoldable[λ[(α, β) => F[α, H[β]]]] =
-    embed[Id.Id, H]
+  def embedRight[H[_]](implicit
+      H0: Foldable[H]): Bifoldable[λ[(α, β) => F[α, H[β]]]] = embed[Id.Id, H]
 
   trait BifoldableLaw {
     import std.vector._
@@ -141,8 +139,8 @@ object Bifoldable {
     * Template trait to define `Bifoldable` in terms of `bifoldR`
     */
   trait FromBifoldr[F[_, _]] extends Bifoldable[F] {
-    override def bifoldMap[A, B, M](fa: F[A, B])(f: A => M)(g: B => M)(
-        implicit F: Monoid[M]) =
+    override def bifoldMap[A, B, M](fa: F[A, B])(f: A => M)(g: B => M)(implicit
+        F: Monoid[M]) =
       bifoldR(fa, F.zero)(x => y => F.append(f(x), y))(x =>
         y => F.append(g(x), y))
   }

@@ -11,8 +11,8 @@ case class FreeList[A](f: Free[List, A])
 sealed abstract class FreeListInstances {
   implicit def freeListTraverse =
     new Traverse[FreeList] {
-      def traverseImpl[G[_], A, B](fa: FreeList[A])(f: A => G[B])(
-          implicit G: Applicative[G]) =
+      def traverseImpl[G[_], A, B](fa: FreeList[A])(f: A => G[B])(implicit
+          G: Applicative[G]) =
         G.map(Traverse[Free[List, ?]].traverseImpl(fa.f)(f))(FreeList.apply)
     }
 }
@@ -37,8 +37,8 @@ object FreeList extends FreeListInstances {
         FreeList(BindRec[Free[List, ?]].tailrecM((x: A) => f(x).f)(a))
     }
 
-  implicit def freeListArb[A](
-      implicit A: Arbitrary[A]): Arbitrary[FreeList[A]] =
+  implicit def freeListArb[A](implicit
+      A: Arbitrary[A]): Arbitrary[FreeList[A]] =
     Arbitrary(
       FreeTest
         .freeGen[List, A](
@@ -83,8 +83,8 @@ object FreeOption {
         FreeOption(Bind[Free[Option, ?]].bind(fa.f) { a => f(a).f })
     }
 
-  implicit def freeOptionArb[A](
-      implicit A: Arbitrary[A]): Arbitrary[FreeOption[A]] =
+  implicit def freeOptionArb[A](implicit
+      A: Arbitrary[A]): Arbitrary[FreeOption[A]] =
     Arbitrary(
       FreeTest
         .freeGen[Option, A](
@@ -104,8 +104,8 @@ object FreeOption {
 }
 
 object FreeTest extends SpecLite {
-  def freeGen[F[_], A](g: Gen[F[Free[F, A]]])(
-      implicit A: Arbitrary[A]): Gen[Free[F, A]] =
+  def freeGen[F[_], A](g: Gen[F[Free[F, A]]])(implicit
+      A: Arbitrary[A]): Gen[Free[F, A]] =
     Gen.frequency(
       (1, Functor[Arbitrary].map(A)(Free.pure[F, A](_)).arbitrary),
       (1, Functor[Arbitrary].map(Arbitrary(g))(Free[F, A](_)).arbitrary))

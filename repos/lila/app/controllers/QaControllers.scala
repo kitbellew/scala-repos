@@ -62,8 +62,8 @@ trait QaController extends LilaController {
     }
 
   protected def WithOwnAnswer(questionId: QuestionId, answerId: AnswerId)(
-      block: Question => Answer => Fu[Result])(
-      implicit ctx: Context): Fu[Result] =
+      block: Question => Answer => Fu[Result])(implicit
+      ctx: Context): Fu[Result] =
     api.question findById questionId zip (
       api.answer findById answerId
     ) flatMap {

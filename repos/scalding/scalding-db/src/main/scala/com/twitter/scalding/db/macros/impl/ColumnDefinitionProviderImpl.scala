@@ -57,8 +57,8 @@ object ColumnDefinitionProviderImpl {
       .toMap
   }
 
-  private[scalding] def getColumnFormats[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): List[ColumnFormat[c.type]] = {
+  private[scalding] def getColumnFormats[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): List[ColumnFormat[c.type]] = {
     import c.universe._
 
     if (!IsCaseClassImpl.isCaseClassType(c)(T.tpe))
@@ -253,8 +253,8 @@ object ColumnDefinitionProviderImpl {
     } else { formats }
   }
 
-  def getColumnDefn[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): List[c.Expr[ColumnDefinition]] = {
+  def getColumnDefn[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): List[c.Expr[ColumnDefinition]] = {
     import c.universe._
 
     val columnFormats = getColumnFormats[T](c)
@@ -278,8 +278,8 @@ object ColumnDefinitionProviderImpl {
     }
   }
 
-  def getExtractor[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[ResultSetExtractor[T]] = {
+  def getExtractor[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[ResultSetExtractor[T]] = {
     import c.universe._
 
     val columnFormats = getColumnFormats[T](c)
@@ -365,8 +365,8 @@ object ColumnDefinitionProviderImpl {
     c.Expr[ResultSetExtractor[T]](res)
   }
 
-  def apply[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[ColumnDefinitionProvider[T]] = {
+  def apply[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[ColumnDefinitionProvider[T]] = {
     import c.universe._
 
     val columns = getColumnDefn[T](c)

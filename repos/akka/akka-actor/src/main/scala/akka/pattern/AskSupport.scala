@@ -74,11 +74,11 @@ trait AskSupport {
     * }}}
     *
     */
-  def ask(actorRef: ActorRef, message: Any)(
-      implicit timeout: Timeout): Future[Any] =
+  def ask(actorRef: ActorRef, message: Any)(implicit
+      timeout: Timeout): Future[Any] =
     actorRef.internalAsk(message, timeout, ActorRef.noSender)
-  def ask(actorRef: ActorRef, message: Any, sender: ActorRef)(
-      implicit timeout: Timeout): Future[Any] =
+  def ask(actorRef: ActorRef, message: Any, sender: ActorRef)(implicit
+      timeout: Timeout): Future[Any] =
     actorRef.internalAsk(message, timeout, sender)
 
   /**
@@ -126,8 +126,8 @@ trait AskSupport {
     * }}}
     *
     */
-  def ask(actorSelection: ActorSelection, message: Any)(
-      implicit timeout: Timeout): Future[Any] =
+  def ask(actorSelection: ActorSelection, message: Any)(implicit
+      timeout: Timeout): Future[Any] =
     actorSelection.internalAsk(message, timeout, ActorRef.noSender)
   def ask(actorSelection: ActorSelection, message: Any, sender: ActorRef)(
       implicit timeout: Timeout): Future[Any] =
@@ -190,8 +190,8 @@ trait ExplicitAskSupport {
     * } pipeTo nextActor
     * }}}
     */
-  def ask(actorRef: ActorRef, messageFactory: ActorRef ⇒ Any)(
-      implicit timeout: Timeout): Future[Any] =
+  def ask(actorRef: ActorRef, messageFactory: ActorRef ⇒ Any)(implicit
+      timeout: Timeout): Future[Any] =
     actorRef.internalAsk(messageFactory, timeout, ActorRef.noSender)
   def ask(actorRef: ActorRef, messageFactory: ActorRef ⇒ Any, sender: ActorRef)(
       implicit timeout: Timeout): Future[Any] =
@@ -646,8 +646,8 @@ private[akka] final class PromiseActorRef private (
       case Registering ⇒ path // spin until registration is completed
     }
 
-  override def !(message: Any)(
-      implicit sender: ActorRef = Actor.noSender): Unit =
+  override def !(message: Any)(implicit
+      sender: ActorRef = Actor.noSender): Unit =
     state match {
       case Stopped | _: StoppedWithPath ⇒ provider.deadLetters ! message
       case _ ⇒

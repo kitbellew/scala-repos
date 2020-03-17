@@ -26,8 +26,8 @@ trait MonadTransformer { self: PsiElement =>
       }
   }
 
-  class SemiMonadLike[+T](opt: Option[T], default: ScType)(
-      implicit msg: String) {
+  class SemiMonadLike[+T](opt: Option[T], default: ScType)(implicit
+      msg: String) {
     def flatMap(f: T => TypeResult[ScType]): TypeResult[ScType] =
       opt match {
         case Some(elem) => f(elem)
@@ -40,8 +40,8 @@ trait MonadTransformer { self: PsiElement =>
   def wrap[T](opt: Option[T])(implicit msg: String): MonadLike[T] =
     new MonadLike[T](opt)(msg)
 
-  def wrapWith[T](opt: Option[T], default: ScType)(
-      implicit msg: String): SemiMonadLike[T] = {
+  def wrapWith[T](opt: Option[T], default: ScType)(implicit
+      msg: String): SemiMonadLike[T] = {
     new SemiMonadLike[T](opt, default)(msg)
   }
 

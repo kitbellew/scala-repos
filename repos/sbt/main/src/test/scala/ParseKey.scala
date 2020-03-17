@@ -141,14 +141,14 @@ object ParseKey extends Properties("Key parser test") {
   // Here we're shadowing the in-scope implicit called `mkEnv` for this method
   // so that it will use the passed-in `Gen` rather than the one imported
   // from TestBuild.
-  def structureGenF(f: (Seq[Scope], Env, ProjectRef) => Structure)(
-      implicit mkEnv: Gen[Env]): Gen[Structure] =
+  def structureGenF(f: (Seq[Scope], Env, ProjectRef) => Structure)(implicit
+      mkEnv: Gen[Env]): Gen[Structure] =
     structureGen((s, e, p) => Gen.const(f(s, e, p)))
   // Here we're shadowing the in-scope implicit called `mkEnv` for this method
   // so that it will use the passed-in `Gen` rather than the one imported
   // from TestBuild.
-  def structureGen(f: (Seq[Scope], Env, ProjectRef) => Gen[Structure])(
-      implicit mkEnv: Gen[Env]): Gen[Structure] =
+  def structureGen(f: (Seq[Scope], Env, ProjectRef) => Gen[Structure])(implicit
+      mkEnv: Gen[Env]): Gen[Structure] =
     for {
       env <- mkEnv
       loadFactor <- choose(0.0, 1.0)

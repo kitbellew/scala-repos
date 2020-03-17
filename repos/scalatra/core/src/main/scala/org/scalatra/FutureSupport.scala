@@ -10,8 +10,8 @@ import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-abstract class AsyncResult(
-    implicit override val scalatraContext: ScalatraContext)
+abstract class AsyncResult(implicit
+    override val scalatraContext: ScalatraContext)
     extends ScalatraContext {
 
   implicit val request: HttpServletRequest = scalatraContext.request

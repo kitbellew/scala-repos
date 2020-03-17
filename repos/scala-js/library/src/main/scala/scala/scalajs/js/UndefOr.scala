@@ -29,8 +29,8 @@ sealed abstract class UndefOrLowPrioImplicits {
     *
     *  This needs evidence that `A <: B1 | B2`.
     */
-  implicit def any2undefOrUnion[A, B1, B2](a: A)(
-      implicit ev: Evidence[A, B1 | B2]): UndefOr[B1 | B2] = {
+  implicit def any2undefOrUnion[A, B1, B2](a: A)(implicit
+      ev: Evidence[A, B1 | B2]): UndefOr[B1 | B2] = {
     a.asInstanceOf[UndefOr[B1 | B2]]
   }
 }

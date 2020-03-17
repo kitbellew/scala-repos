@@ -126,8 +126,8 @@ object Streams {
     */
   private def iterateeFoldToPublisher[T, U, V](
       iter: Iteratee[T, U],
-      f: Step[T, U] => Future[V])(
-      implicit ec: ExecutionContext): Publisher[V] = {
+      f: Step[T, U] => Future[V])(implicit
+      ec: ExecutionContext): Publisher[V] = {
     val fut: Future[V] = iter.fold(f)(ec.prepare)
     val pubr: Publisher[V] = futureToPublisher(fut)
     pubr
@@ -233,11 +233,11 @@ object Streams {
     * the subscriber, however it does not materialize the subscriber until the
     * iteratees fold method has been invoked.
     */
-  def accumulatorToIteratee[T, U](accumulator: Accumulator[T, U])(
-      implicit mat: Materializer): Iteratee[T, U] = {
+  def accumulatorToIteratee[T, U](accumulator: Accumulator[T, U])(implicit
+      mat: Materializer): Iteratee[T, U] = {
     new Iteratee[T, U] {
-      def fold[B](folder: (Step[T, U]) => Future[B])(
-          implicit ec: ExecutionContext) = {
+      def fold[B](folder: (Step[T, U]) => Future[B])(implicit
+          ec: ExecutionContext) = {
         Source.asSubscriber
           .toMat(accumulator.toSink) { (subscriber, result) =>
             import play.api.libs.iteratee.Execution.Implicits.trampoline

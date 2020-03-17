@@ -158,8 +158,8 @@ trait Creators { this: ActorDSL.type ⇒
     *        either be an [[akka.actor.ActorSystem]] or an [[akka.actor.ActorContext]],
     *        where the latter is always implicitly available within an [[akka.actor.Actor]].
     */
-  def actor[T <: Actor: ClassTag](ctor: ⇒ T)(
-      implicit factory: ActorRefFactory): ActorRef = {
+  def actor[T <: Actor: ClassTag](ctor: ⇒ T)(implicit
+      factory: ActorRefFactory): ActorRef = {
     // configure dispatcher/mailbox based on runtime class
     val classOfActor = implicitly[ClassTag[T]].runtimeClass
     val props = mkProps(classOfActor, () ⇒ ctor)
@@ -178,8 +178,8 @@ trait Creators { this: ActorDSL.type ⇒
     *        either be an [[akka.actor.ActorSystem]] or an [[akka.actor.ActorContext]],
     *        where the latter is always implicitly available within an [[akka.actor.Actor]].
     */
-  def actor[T <: Actor: ClassTag](name: String)(ctor: ⇒ T)(
-      implicit factory: ActorRefFactory): ActorRef = {
+  def actor[T <: Actor: ClassTag](name: String)(ctor: ⇒ T)(implicit
+      factory: ActorRefFactory): ActorRef = {
     // configure dispatcher/mailbox based on runtime class
     val classOfActor = implicitly[ClassTag[T]].runtimeClass
     val props = mkProps(classOfActor, () ⇒ ctor)

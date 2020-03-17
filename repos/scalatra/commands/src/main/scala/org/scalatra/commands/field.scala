@@ -95,8 +95,8 @@ class BasicFieldDescriptor[T](
     val allowableValues: List[T] = Nil,
     val displayName: Option[String] = None,
     val position: Int = 0,
-    val requiredError: String = "%s is required.")(
-    implicit val valueManifest: Manifest[T])
+    val requiredError: String = "%s is required.")(implicit
+    val valueManifest: Manifest[T])
     extends FieldDescriptor[T] {
 
   private[this] def requiredValidationFailure: FieldValidation[T] =

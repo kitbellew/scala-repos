@@ -50,8 +50,8 @@ trait ListInstances extends ListInstances1 {
         Eval.defer(loop(fa))
       }
 
-      def traverse[G[_], A, B](fa: List[A])(f: A => G[B])(
-          implicit G: Applicative[G]): G[List[B]] = {
+      def traverse[G[_], A, B](fa: List[A])(f: A => G[B])(implicit
+          G: Applicative[G]): G[List[B]] = {
         val gba = G.pure(Vector.empty[B])
         val gbb = fa.foldLeft(gba)((buf, a) => G.map2(buf, f(a))(_ :+ _))
         G.map(gbb)(_.toList)

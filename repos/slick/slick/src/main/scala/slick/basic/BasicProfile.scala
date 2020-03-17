@@ -87,8 +87,8 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
       createStreamingQueryActionExtensionMethods[RU, EU](
         c.compiledQuery,
         c.param)
-    implicit def recordQueryActionExtensionMethods[M, R](q: M)(
-        implicit shape: Shape[_ <: FlatShapeLevel, M, R, _])
+    implicit def recordQueryActionExtensionMethods[M, R](q: M)(implicit
+        shape: Shape[_ <: FlatShapeLevel, M, R, _])
         : QueryActionExtensionMethods[R, NoStream] =
       createQueryActionExtensionMethods[R, NoStream](
         queryCompiler.run(shape.toNode(q)).tree,

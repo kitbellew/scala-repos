@@ -29,8 +29,8 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
   private val BoxClass = classOf[Box[_]]
   import scala.collection.JavaConversions._
 
-  def deserialize(
-      implicit format: Formats): PartialFunction[(TypeInfo, JValue), Box[_]] = {
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), Box[_]] = {
     case (TypeInfo(BoxClass, ptype), json) =>
       json match {
         case JNull | JNothing => Empty

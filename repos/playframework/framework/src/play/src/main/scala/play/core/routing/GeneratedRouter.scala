@@ -59,8 +59,8 @@ case class RouteParams(
     path: Map[String, Either[Throwable, String]],
     queryString: Map[String, Seq[String]]) {
 
-  def fromPath[T](key: String, default: Option[T] = None)(
-      implicit binder: PathBindable[T]): Param[T] = {
+  def fromPath[T](key: String, default: Option[T] = None)(implicit
+      binder: PathBindable[T]): Param[T] = {
     Param(
       key,
       path
@@ -74,8 +74,8 @@ case class RouteParams(
     )
   }
 
-  def fromQuery[T](key: String, default: Option[T] = None)(
-      implicit binder: QueryStringBindable[T]): Param[T] = {
+  def fromQuery[T](key: String, default: Option[T] = None)(implicit
+      binder: QueryStringBindable[T]): Param[T] = {
     Param(
       key,
       binder.bind(key, queryString).getOrElse {
@@ -1334,8 +1334,8 @@ abstract class GeneratedRouter extends Router {
     * controller method. This method is called by the code-generated routes
     * files.
     */
-  def createInvoker[T](fakeCall: => T, handlerDef: HandlerDef)(
-      implicit hif: HandlerInvokerFactory[T]): HandlerInvoker[T] = {
+  def createInvoker[T](fakeCall: => T, handlerDef: HandlerDef)(implicit
+      hif: HandlerInvokerFactory[T]): HandlerInvoker[T] = {
     val underlyingInvoker = hif.createInvoker(fakeCall, handlerDef)
     new TaggingInvoker(underlyingInvoker, handlerDef)
   }

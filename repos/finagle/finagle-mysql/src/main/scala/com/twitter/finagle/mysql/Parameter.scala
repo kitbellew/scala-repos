@@ -26,8 +26,8 @@ sealed trait Parameter {
   */
 object Parameter {
 
-  implicit def wrap[_A](_value: _A)(
-      implicit _evidence: CanBeParameter[_A]): Parameter = {
+  implicit def wrap[_A](_value: _A)(implicit
+      _evidence: CanBeParameter[_A]): Parameter = {
     if (_value == null) { NullParameter }
     else {
       new Parameter {

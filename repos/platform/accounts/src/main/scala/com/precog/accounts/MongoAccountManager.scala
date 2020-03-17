@@ -142,8 +142,8 @@ abstract class MongoAccountManager(
   private def findOneMatching[A](
       keyName: String,
       keyValue: String,
-      collection: String)(
-      implicit extractor: Extractor[A]): Future[Option[A]] = {
+      collection: String)(implicit
+      extractor: Extractor[A]): Future[Option[A]] = {
     database(selectOne().from(collection).where(keyName === keyValue)) map {
       _.map(_.deserialize(extractor))
     }
@@ -158,8 +158,8 @@ abstract class MongoAccountManager(
     }
   }
 
-  private def findAll[A](collection: String)(
-      implicit extract: Extractor[A]): Future[Seq[A]] =
+  private def findAll[A](collection: String)(implicit
+      extract: Extractor[A]): Future[Seq[A]] =
     database(selectAll.from(collection)) map {
       _.map(_.deserialize(extract)).toSeq
     }

@@ -22,8 +22,8 @@ trait CommandExecutors {
     new BlockingModelExecutor[T, S](handler)
 
   implicit def asyncExecutor[T <: Command, S](
-      handler: T => Future[ModelValidation[S]])(
-      implicit executionContext: ExecutionContext)
+      handler: T => Future[ModelValidation[S]])(implicit
+      executionContext: ExecutionContext)
       : CommandExecutor[T, Future[ModelValidation[S]]] =
     new AsyncCommandExecutor(handler)
 
@@ -116,8 +116,8 @@ class BlockingModelExecutor[T <: Command <% S, S](
     extends BlockingExecutor[T, S](handle(_))
 
 abstract class AsyncExecutor[T <: Command, S](
-    handle: T => Future[ModelValidation[S]])(
-    implicit executionContext: ExecutionContext)
+    handle: T => Future[ModelValidation[S]])(implicit
+    executionContext: ExecutionContext)
     extends CommandExecutor[T, Future[ModelValidation[S]]](handle) {
   @transient private[this] val logger = Logger(getClass)
   def execute(cmd: T): Future[ModelValidation[S]] = {
@@ -163,8 +163,8 @@ abstract class AsyncExecutor[T <: Command, S](
   * @tparam S The success result type
   */
 class AsyncCommandExecutor[T <: Command, S](
-    handle: T => Future[ModelValidation[S]])(
-    implicit executionContext: ExecutionContext)
+    handle: T => Future[ModelValidation[S]])(implicit
+    executionContext: ExecutionContext)
     extends AsyncExecutor[T, S](handle)(executionContext)
 
 /**

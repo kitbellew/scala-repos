@@ -65,8 +65,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       example2: A,
       mandatory: MandatoryTypedField[A],
       legacyOptionalBox: Box[MandatoryTypedField[A]],
-      canCheckDefaultValues: Boolean = true)(
-      implicit m: scala.reflect.Manifest[A]): Unit = {
+      canCheckDefaultValues: Boolean = true)(implicit
+      m: scala.reflect.Manifest[A]): Unit = {
 
     def commonBehaviorsForAllFlavors(field: MandatoryTypedField[A]) = {
 

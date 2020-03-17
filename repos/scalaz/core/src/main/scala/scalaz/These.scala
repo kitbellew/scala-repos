@@ -143,8 +143,8 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
 
   def foreach(g: B => Unit): Unit = bimap(_ => (), g)
 
-  def flatMap[AA >: A, D](g: B => (AA \&/ D))(
-      implicit M: Semigroup[AA]): (AA \&/ D) =
+  def flatMap[AA >: A, D](g: B => (AA \&/ D))(implicit
+      M: Semigroup[AA]): (AA \&/ D) =
     this match {
       case a @ This(_) =>
         a
@@ -297,8 +297,8 @@ object \&/ extends TheseInstances {
       x: EphemeralStream[A \&/ B]): (EphemeralStream[A], EphemeralStream[B]) =
     unalign[EphemeralStream, A, B](x)
 
-  def unalign[F[_], A, B](x: F[A \&/ B])(
-      implicit M: MonadPlus[F]): (F[A], F[B]) = (concatThis(x), concatThat(x))
+  def unalign[F[_], A, B](x: F[A \&/ B])(implicit
+      M: MonadPlus[F]): (F[A], F[B]) = (concatThis(x), concatThat(x))
 
   def merge[A](t: A \&/ A)(implicit S: Semigroup[A]): A =
     t match {
@@ -311,8 +311,8 @@ object \&/ extends TheseInstances {
     }
 
   @annotation.tailrec
-  def tailrecM[L, A, B](f: A => L \&/ (A \/ B))(a: A)(
-      implicit L: Semigroup[L]): L \&/ B = {
+  def tailrecM[L, A, B](f: A => L \&/ (A \/ B))(a: A)(implicit
+      L: Semigroup[L]): L \&/ B = {
     def go(l0: L)(a0: A): L \&/ (A \/ B) =
       f(a0) match {
         case This(l1)    => \&/.This(L.append(l0, l1))
@@ -353,8 +353,8 @@ sealed abstract class TheseInstances0 extends TheseInstances1 {
     override def bimap[A, B, C, D](fab: A \&/ B)(f: A => C, g: B => D) =
       fab.bimap(f, g)
 
-    override def bifoldMap[A, B, M](fa: A \&/ B)(f: A => M)(g: B => M)(
-        implicit F: Monoid[M]) = fa.bifoldMap(f)(g)
+    override def bifoldMap[A, B, M](fa: A \&/ B)(f: A => M)(g: B => M)(implicit
+        F: Monoid[M]) = fa.bifoldMap(f)(g)
 
     override def bifoldRight[A, B, C](fa: A \&/ B, z: => C)(f: (A, => C) => C)(
         g: (B, => C) => C) = fa.bifoldRight(z)(f)(g)
@@ -407,8 +407,8 @@ sealed abstract class TheseInstances1 {
       def traverseImpl[G[_]: Applicative, A, B](fa: L \&/ A)(f: A => G[B]) =
         fa traverse f
 
-      override def foldMap[A, B](fa: L \&/ A)(f: A => B)(
-          implicit F: Monoid[B]) = fa foldMap f
+      override def foldMap[A, B](fa: L \&/ A)(f: A => B)(implicit
+          F: Monoid[B]) = fa foldMap f
 
       override def foldRight[A, B](fa: L \&/ A, z: => B)(f: (A, => B) => B) =
         fa.foldRight(z)(f)

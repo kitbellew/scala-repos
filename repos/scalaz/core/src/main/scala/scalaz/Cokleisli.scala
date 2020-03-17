@@ -3,8 +3,8 @@ package scalaz
 final case class Cokleisli[F[_], A, B](run: F[A] => B) { self =>
   def apply(fa: F[A]): B = run(fa)
 
-  def dimap[C, D](f: C => A, g: B => D)(
-      implicit b: Functor[F]): Cokleisli[F, C, D] =
+  def dimap[C, D](f: C => A, g: B => D)(implicit
+      b: Functor[F]): Cokleisli[F, C, D] =
     Cokleisli(c => g(run(b.map(c)(f)))) // b.map(run(f(c)))(g))
 
   def contramapValue[C](f: F[C] => F[A]): Cokleisli[F, C, B] =
@@ -20,8 +20,8 @@ final case class Cokleisli[F[_], A, B](run: F[A] => B) { self =>
   def =>=[C](c: Cokleisli[F, B, C])(implicit F: Cobind[F]): Cokleisli[F, A, C] =
     Cokleisli(fa => c run (<<=(fa)))
 
-  def compose[C](c: Cokleisli[F, C, A])(
-      implicit F: Cobind[F]): Cokleisli[F, C, B] = c =>= this
+  def compose[C](c: Cokleisli[F, C, A])(implicit
+      F: Cobind[F]): Cokleisli[F, C, B] = c =>= this
 
   def =<=[C](c: Cokleisli[F, C, A])(implicit F: Cobind[F]): Cokleisli[F, C, B] =
     compose(c)
@@ -34,8 +34,8 @@ final case class Cokleisli[F[_], A, B](run: F[A] => B) { self =>
 object Cokleisli extends CokleisliInstances {}
 
 sealed abstract class CokleisliInstances0 {
-  implicit def cokleisliCompose[F[_]](
-      implicit F0: Cobind[F]): Compose[Cokleisli[F, ?, ?]] =
+  implicit def cokleisliCompose[F[_]](implicit
+      F0: Cobind[F]): Compose[Cokleisli[F, ?, ?]] =
     new CokleisliCompose[F] {
       override implicit def F = F0
     }

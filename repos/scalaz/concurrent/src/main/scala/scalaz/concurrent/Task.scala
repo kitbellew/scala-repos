@@ -225,8 +225,8 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     * A `Task` which returns a `TimeoutException` after `timeoutInMillis`,
     * and attempts to cancel the running computation.
     */
-  def unsafePerformTimed(timeoutInMillis: Long)(
-      implicit scheduler: ScheduledExecutorService): Task[A] =
+  def unsafePerformTimed(timeoutInMillis: Long)(implicit
+      scheduler: ScheduledExecutorService): Task[A] =
     new Task(get.unsafePerformTimed(timeoutInMillis).map(_.join))
 
   def unsafePerformTimed(timeout: Duration)(implicit
@@ -234,8 +234,8 @@ class Task[+A](val get: Future[Throwable \/ A]) {
       : Task[A] = unsafePerformTimed(timeout.toMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")
-  def timed(timeoutInMillis: Long)(
-      implicit scheduler: ScheduledExecutorService): Task[A] =
+  def timed(timeoutInMillis: Long)(implicit
+      scheduler: ScheduledExecutorService): Task[A] =
     unsafePerformTimed(timeoutInMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")

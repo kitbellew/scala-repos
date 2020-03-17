@@ -108,26 +108,26 @@ trait ApiFormats extends ScalatraBase {
   def acceptHeader(implicit request: HttpServletRequest): List[String] =
     parseAcceptHeader
 
-  private[this] def getFromParams(
-      implicit request: HttpServletRequest): Option[String] = {
+  private[this] def getFromParams(implicit
+      request: HttpServletRequest): Option[String] = {
     params.get("format").find(p ⇒ formats.contains(p.toLowerCase(ENGLISH)))
   }
 
-  private[this] def getFromAcceptHeader(
-      implicit request: HttpServletRequest): Option[String] = {
+  private[this] def getFromAcceptHeader(implicit
+      request: HttpServletRequest): Option[String] = {
     val hdrs = request.contentType.fold(acceptHeader)(contentType =>
       (acceptHeader ::: List(contentType)).distinct)
     formatForMimeTypes(hdrs: _*)
   }
 
-  private[this] def getFromResponseHeader(
-      implicit response: HttpServletResponse): Option[String] = {
+  private[this] def getFromResponseHeader(implicit
+      response: HttpServletResponse): Option[String] = {
     response.contentType flatMap (ctt =>
       ctt.split(";").headOption flatMap mimeTypes.get)
   }
 
-  private def parseAcceptHeader(
-      implicit request: HttpServletRequest): List[String] = {
+  private def parseAcceptHeader(implicit
+      request: HttpServletRequest): List[String] = {
     def isValidQPair(a: Array[String]) = {
       val validRange = Range.Double.inclusive(0, 1, 0.1)
       a.length == 2 && a(0) == "q" && validRange.contains(a(1).toDouble)
@@ -200,8 +200,8 @@ trait ApiFormats extends ScalatraBase {
   }
 
   protected[scalatra] override def withRouteMultiParams[S](
-      matchedRoute: Option[MatchedRoute])(thunk: => S)(
-      implicit request: HttpServletRequest): S = {
+      matchedRoute: Option[MatchedRoute])(thunk: => S)(implicit
+      request: HttpServletRequest): S = {
     val originalParams: MultiParams = multiParams
     val routeParams: Map[String, Seq[String]] = {
       matchedRoute.map(_.multiParams).getOrElse(Map.empty).map {

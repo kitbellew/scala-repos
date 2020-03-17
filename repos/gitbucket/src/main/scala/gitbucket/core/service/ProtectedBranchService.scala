@@ -39,8 +39,8 @@ trait ProtectedBranchService {
     getProtectedBranchInfoOpt(owner, repository, branch).getOrElse(
       ProtectedBranchInfo.disabled(owner, repository))
 
-  def getProtectedBranchList(owner: String, repository: String)(
-      implicit session: Session): List[String] =
+  def getProtectedBranchList(owner: String, repository: String)(implicit
+      session: Session): List[String] =
     ProtectedBranches
       .filter(_.byRepository(owner, repository))
       .map(_.branch)
@@ -149,8 +149,8 @@ object ProtectedBranchService {
         }
       } else { None }
     }
-    def unSuccessedContexts(sha1: String)(
-        implicit session: Session): Set[String] =
+    def unSuccessedContexts(sha1: String)(implicit
+        session: Session): Set[String] =
       if (contexts.isEmpty) { Set.empty }
       else {
         contexts.toSet -- getCommitStatues(owner, repository, sha1)

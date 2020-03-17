@@ -31,9 +31,8 @@ trait FileAndResourceDirectives {
     * Completes GET requests with the content of the given file.
     * If the file cannot be found or read the request is rejected.
     */
-  def getFromFile(fileName: String)(
-      implicit resolver: ContentTypeResolver): Route =
-    getFromFile(new File(fileName))
+  def getFromFile(fileName: String)(implicit
+      resolver: ContentTypeResolver): Route = getFromFile(new File(fileName))
 
   /**
     * Completes GET requests with the content of the given file.
@@ -82,8 +81,8 @@ trait FileAndResourceDirectives {
     * Completes GET requests with the content of the given class-path resource.
     * If the resource cannot be found or read the Route rejects the request.
     */
-  def getFromResource(resourceName: String)(
-      implicit resolver: ContentTypeResolver): Route =
+  def getFromResource(resourceName: String)(implicit
+      resolver: ContentTypeResolver): Route =
     getFromResource(resourceName, resolver(resourceName))
 
   /**
@@ -126,8 +125,8 @@ trait FileAndResourceDirectives {
     * Completes GET requests with the content of a file underneath the given directory.
     * If the file cannot be read the Route rejects the request.
     */
-  def getFromDirectory(directoryName: String)(
-      implicit resolver: ContentTypeResolver): Route = {
+  def getFromDirectory(directoryName: String)(implicit
+      resolver: ContentTypeResolver): Route = {
     val base = withTrailingSlash(directoryName)
     extractUnmatchedPath { path ⇒
       extractLog { log ⇒
@@ -143,8 +142,8 @@ trait FileAndResourceDirectives {
     * Completes GET requests with a unified listing of the contents of all given directories.
     * The actual rendering of the directory contents is performed by the in-scope `Marshaller[DirectoryListing]`.
     */
-  def listDirectoryContents(directories: String*)(
-      implicit renderer: DirectoryRenderer): Route =
+  def listDirectoryContents(directories: String*)(implicit
+      renderer: DirectoryRenderer): Route =
     get {
       extractRequestContext { ctx ⇒
         val path = ctx.unmatchedPath
@@ -200,8 +199,8 @@ trait FileAndResourceDirectives {
     */
   def getFromResourceDirectory(
       directoryName: String,
-      classLoader: ClassLoader = defaultClassLoader)(
-      implicit resolver: ContentTypeResolver): Route = {
+      classLoader: ClassLoader = defaultClassLoader)(implicit
+      resolver: ContentTypeResolver): Route = {
     val base =
       if (directoryName.isEmpty) "" else withTrailingSlash(directoryName)
 

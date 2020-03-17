@@ -93,8 +93,8 @@ sealed abstract class InputInstances {
         fa flatMap (a => f(a))
     }
 
-  implicit def inputSemigroup[A](
-      implicit A: Semigroup[A]): Semigroup[Input[A]] =
+  implicit def inputSemigroup[A](implicit
+      A: Semigroup[A]): Semigroup[Input[A]] =
     new Semigroup[Input[A]] {
       def append(a1: Input[A], a2: => Input[A]): Input[A] =
         a1.fold(

@@ -16,8 +16,8 @@ trait IssuesService {
   self: AccountService =>
   import IssuesService._
 
-  def getIssue(owner: String, repository: String, issueId: String)(
-      implicit s: Session) =
+  def getIssue(owner: String, repository: String, issueId: String)(implicit
+      s: Session) =
     if (issueId forall (_.isDigit))
       Issues filter (_.byPrimaryKey(
         owner,
@@ -25,8 +25,8 @@ trait IssuesService {
         issueId.toInt)) firstOption
     else None
 
-  def getComments(owner: String, repository: String, issueId: Int)(
-      implicit s: Session) =
+  def getComments(owner: String, repository: String, issueId: Int)(implicit
+      s: Session) =
     IssueComments filter (_.byIssue(owner, repository, issueId)) list
 
   /** @return IssueComment and commentedUser and Issue */
@@ -46,15 +46,15 @@ trait IssuesService {
       .map { case ((t1, t2), t3) => (t1, t2, t3) }
       .list
 
-  def getComment(owner: String, repository: String, commentId: String)(
-      implicit s: Session) =
+  def getComment(owner: String, repository: String, commentId: String)(implicit
+      s: Session) =
     if (commentId forall (_.isDigit)) IssueComments filter { t =>
       t.byPrimaryKey(commentId.toInt) && t.byRepository(owner, repository)
     } firstOption
     else None
 
-  def getIssueLabels(owner: String, repository: String, issueId: Int)(
-      implicit s: Session) =
+  def getIssueLabels(owner: String, repository: String, issueId: Int)(implicit
+      s: Session) =
     IssueLabels
       .innerJoin(Labels)
       .on { (t1, t2) => t1.byLabel(t2.userName, t2.repositoryName, t2.labelId) }
@@ -97,8 +97,8 @@ trait IssuesService {
       owner: String,
       repository: String,
       condition: IssueSearchCondition,
-      filterUser: Map[String, String])(
-      implicit s: Session): Map[String, Int] = {
+      filterUser: Map[String, String])(implicit
+      s: Session): Map[String, Int] = {
 
     searchIssueQuery(
       Seq(owner -> repository),
@@ -122,8 +122,8 @@ trait IssuesService {
       .toMap
   }
 
-  def getCommitStatues(issueList: Seq[(String, String, Int)])(
-      implicit s: Session): Map[(String, String, Int), CommitStatusInfo] = {
+  def getCommitStatues(issueList: Seq[(String, String, Int)])(implicit
+      s: Session): Map[(String, String, Int), CommitStatusInfo] = {
     if (issueList.isEmpty) { Map.empty }
     else {
       import scala.slick.jdbc._

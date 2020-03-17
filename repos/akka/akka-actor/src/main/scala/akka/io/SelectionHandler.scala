@@ -55,8 +55,8 @@ private[io] trait ChannelRegistry {
     * Registers the given channel with the selector, creates a ChannelRegistration instance for it
     * and dispatches it back to the channelActor calling this `register`
     */
-  def register(channel: SelectableChannel, initialOps: Int)(
-      implicit channelActor: ActorRef)
+  def register(channel: SelectableChannel, initialOps: Int)(implicit
+      channelActor: ActorRef)
 }
 
 /**
@@ -191,8 +191,8 @@ private[io] object SelectionHandler {
 
     executionContext.execute(select) // start selection "loop"
 
-    def register(channel: SelectableChannel, initialOps: Int)(
-        implicit channelActor: ActorRef): Unit =
+    def register(channel: SelectableChannel, initialOps: Int)(implicit
+        channelActor: ActorRef): Unit =
       execute {
         new Task {
           def tryRun(): Unit = {

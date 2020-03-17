@@ -50,8 +50,8 @@ final class InMemoryJobManager[M[+_]](implicit val M: Monad[M])
       with mutable.SynchronizedMap[JobId, JobData]
 }
 
-final class ExpiringJobManager[M[+_]](timeout: Duration)(
-    implicit val M: Monad[M])
+final class ExpiringJobManager[M[+_]](timeout: Duration)(implicit
+    val M: Monad[M])
     extends BaseInMemoryJobManager[M] {
   private[jobs] val jobs: mutable.Map[JobId, JobData] = Cache.simple(
     Cache.ExpireAfterAccess(timeout))

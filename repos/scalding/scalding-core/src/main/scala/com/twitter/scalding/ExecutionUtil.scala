@@ -13,9 +13,8 @@ object ExecutionUtil {
     * @return Sequence of Executions per Day
     */
   def executionsFromDates[T](duration: Duration, parallelism: Int = 1)(
-      fn: DateRange => Execution[T])(
-      implicit dr: DateRange): Seq[Execution[T]] =
-    dr.each(duration).map(fn).toSeq
+      fn: DateRange => Execution[T])(implicit
+      dr: DateRange): Seq[Execution[T]] = dr.each(duration).map(fn).toSeq
 
   /**
     * Split a DateRange and allow for max parallel running of executions
@@ -26,8 +25,8 @@ object ExecutionUtil {
     * @return Seq of Dates split by Duration with corresponding execution result
     */
   def runDatesWithParallelism[T](duration: Duration, parallelism: Int = 1)(
-      fn: DateRange => Execution[T])(
-      implicit dr: DateRange): Execution[Seq[(DateRange, T)]] = {
+      fn: DateRange => Execution[T])(implicit
+      dr: DateRange): Execution[Seq[(DateRange, T)]] = {
 
     val dates = dr.each(duration).toSeq
     Execution.withParallelism(dates.map(fn), parallelism).map(e => dates.zip(e))
@@ -42,8 +41,8 @@ object ExecutionUtil {
     * @return Execution of Sequences
     */
   def runDateRangeWithParallelism[T](duration: Duration, parallelism: Int = 1)(
-      fn: DateRange => Execution[T])(
-      implicit dr: DateRange): Execution[Seq[T]] =
+      fn: DateRange => Execution[T])(implicit
+      dr: DateRange): Execution[Seq[T]] =
     runDatesWithParallelism(duration, parallelism)(fn).map(_.map {
       case (_, t) => t
     })

@@ -64,8 +64,8 @@ trait WsTestClient {
     * @param port The port
     * @return The result of the block of code
     */
-  def withClient[T](block: WSClient => T)(
-      implicit port: play.api.http.Port = new play.api.http.Port(-1)) = {
+  def withClient[T](block: WSClient => T)(implicit
+      port: play.api.http.Port = new play.api.http.Port(-1)) = {
     val name = "ws-test-client-" + WsTestClient.instanceNumber.getAndIncrement
     val system = ActorSystem(name)
     val materializer = ActorMaterializer(namePrefix = Some(name))(system)

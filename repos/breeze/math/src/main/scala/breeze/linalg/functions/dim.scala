@@ -15,8 +15,8 @@ object dim extends UFunc {
       override def apply(v: V): Int = v.length
     }
 
-  implicit def implMDim[T, M](
-      implicit view: M <:< Matrix[T]): Impl[M, (Int, Int)] =
+  implicit def implMDim[T, M](implicit
+      view: M <:< Matrix[T]): Impl[M, (Int, Int)] =
     new Impl[M, (Int, Int)] {
       override def apply(v: M): (Int, Int) = (v.rows, v.cols)
     }

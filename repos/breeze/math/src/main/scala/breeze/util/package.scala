@@ -162,8 +162,8 @@ package object util {
         ._2
     }
 
-    def unfold[U, To](init: U)(f: (U, T) => U)(
-        implicit cbf: CanBuildFrom[Seq[T], U, To]) = {
+    def unfold[U, To](init: U)(f: (U, T) => U)(implicit
+        cbf: CanBuildFrom[Seq[T], U, To]) = {
       val builder = cbf.apply(s)
       builder.sizeHint(s.size + 1)
       var u = init
@@ -185,8 +185,8 @@ package object util {
 
     def iterator: Iterator[Int] = new BSIterator(bs)
 
-    def map[U, C](f: Int => U)(
-        implicit cbf: CanBuildFrom[java.util.BitSet, U, C]) = {
+    def map[U, C](f: Int => U)(implicit
+        cbf: CanBuildFrom[java.util.BitSet, U, C]) = {
       val r: mutable.Builder[U, C] = cbf(bs)
       r.sizeHint(bs.size)
       iterator foreach { i => r += f(i) }

@@ -159,8 +159,8 @@ trait BitVectorOps {
 
   @expand
   @expand.valify
-  implicit def canDot_BV_SV[@expand.args(Int, Long, BigInt, Complex) T](
-      implicit @expand.sequence[T](0, 0L, BigInt(0), Complex.zero) zero: T)
+  implicit def canDot_BV_SV[@expand.args(Int, Long, BigInt, Complex) T](implicit
+      @expand.sequence[T](0, 0L, BigInt(0), Complex.zero) zero: T)
       : breeze.linalg.operators.OpMulInner.Impl2[BitVector, SparseVector[
         T], T] = {
     new breeze.linalg.operators.OpMulInner.Impl2[
@@ -185,8 +185,8 @@ trait BitVectorOps {
     }
   }
 
-  implicit def canDot_Other_BV[T, Other](
-      implicit op: OpMulInner.Impl2[BitVector, Other, T])
+  implicit def canDot_Other_BV[T, Other](implicit
+      op: OpMulInner.Impl2[BitVector, Other, T])
       : OpMulInner.Impl2[Other, BitVector, T] = {
     new OpMulInner.Impl2[Other, BitVector, T] {
       def apply(a: Other, b: BitVector): T = { op(b, a) }

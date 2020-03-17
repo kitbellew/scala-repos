@@ -25,8 +25,8 @@ trait AccountService {
   /**
     * Authenticate by internal database.
     */
-  private def defaultAuthentication(userName: String, password: String)(
-      implicit s: Session) = {
+  private def defaultAuthentication(userName: String, password: String)(implicit
+      s: Session) = {
     getAccountByUserName(userName).collect {
       case account
           if (!account.isGroupAccount && account.password == sha1(password)) =>
@@ -101,8 +101,8 @@ trait AccountService {
   def getAccountsByUserNames(
       userNames: Set[String],
       knowns: Set[Account],
-      includeRemoved: Boolean = false)(
-      implicit s: Session): Map[String, Account] = {
+      includeRemoved: Boolean = false)(implicit
+      s: Session): Map[String, Account] = {
     val map = knowns.map(a => a.userName -> a).toMap
     val needs = userNames -- map.keySet
     if (needs.isEmpty) { map }
@@ -126,8 +126,8 @@ trait AccountService {
         t.removed === false.bind, !includeRemoved
       )) firstOption
 
-  def getAllUsers(includeRemoved: Boolean = true)(
-      implicit s: Session): List[Account] =
+  def getAllUsers(includeRemoved: Boolean = true)(implicit
+      s: Session): List[Account] =
     if (includeRemoved) { Accounts sortBy (_.userName) list }
     else { Accounts filter (_.removed === false.bind) sortBy (_.userName) list }
 
@@ -180,8 +180,8 @@ trait AccountService {
         account.isRemoved
       )
 
-  def updateAvatarImage(userName: String, image: Option[String])(
-      implicit s: Session): Unit =
+  def updateAvatarImage(userName: String, image: Option[String])(implicit
+      s: Session): Unit =
     Accounts.filter(_.userName === userName.bind).map(_.image.?).update(image)
 
   def updateLastLoginDate(userName: String)(implicit s: Session): Unit =
@@ -190,8 +190,8 @@ trait AccountService {
       .map(_.lastLoginDate)
       .update(currentDate)
 
-  def createGroup(groupName: String, url: Option[String])(
-      implicit s: Session): Unit =
+  def createGroup(groupName: String, url: Option[String])(implicit
+      s: Session): Unit =
     Accounts insert Account(
       userName = groupName,
       password = "",
@@ -223,8 +223,8 @@ trait AccountService {
     }
   }
 
-  def getGroupMembers(groupName: String)(
-      implicit s: Session): List[GroupMember] =
+  def getGroupMembers(groupName: String)(implicit
+      s: Session): List[GroupMember] =
     GroupMembers
       .filter(_.groupName === groupName.bind)
       .sortBy(_.userName)

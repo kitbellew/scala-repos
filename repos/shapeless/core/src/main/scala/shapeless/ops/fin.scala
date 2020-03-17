@@ -27,8 +27,8 @@ object fin {
   }
 
   object FromNat {
-    def apply[M <: Nat, N <: Succ[_]](
-        implicit fromNat: FromNat[M, N]): Aux[M, N, fromNat.Out] = fromNat
+    def apply[M <: Nat, N <: Succ[_]](implicit
+        fromNat: FromNat[M, N]): Aux[M, N, fromNat.Out] = fromNat
 
     type Aux[M <: Nat, N <: Succ[_], Out0 <: Fin[N]] = FromNat[M, N] {
       type Out = Out0
@@ -41,8 +41,8 @@ object fin {
         def apply(): Out = FinZero[N]()
       }
 
-    implicit def finSuccFromNat[M <: Nat, N <: Succ[_]](
-        implicit fromNat: FromNat[M, N])
+    implicit def finSuccFromNat[M <: Nat, N <: Succ[_]](implicit
+        fromNat: FromNat[M, N])
         : Aux[Succ[M], Succ[N], FinSucc[N, fromNat.Out]] =
       new FromNat[Succ[M], Succ[N]] {
         type Out = FinSucc[N, fromNat.Out]
@@ -70,8 +70,8 @@ object fin {
         def apply() = Nat._0
       }
 
-    implicit def finSuccToNat[N <: Succ[_], F <: Fin[N], M <: Nat](
-        implicit nat: Aux[F, M]): Aux[FinSucc[N, F], Succ[M]] =
+    implicit def finSuccToNat[N <: Succ[_], F <: Fin[N], M <: Nat](implicit
+        nat: Aux[F, M]): Aux[FinSucc[N, F], Succ[M]] =
       new ToNat[FinSucc[N, F]] {
         type Out = Succ[M]
 

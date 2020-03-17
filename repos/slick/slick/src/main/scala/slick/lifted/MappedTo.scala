@@ -17,8 +17,8 @@ object MappedToBase {
     E,
     E#Underlying] = macro mappedToIsomorphismMacroImpl[E]
 
-  def mappedToIsomorphismMacroImpl[E <: MappedToBase](c: Context)(
-      implicit e: c.WeakTypeTag[E]): c.Expr[Isomorphism[E, E#Underlying]] = {
+  def mappedToIsomorphismMacroImpl[E <: MappedToBase](c: Context)(implicit
+      e: c.WeakTypeTag[E]): c.Expr[Isomorphism[E, E#Underlying]] = {
     import c.universe._
     // Check that E <: MappedToBase. Due to SI-8351 the macro can be expanded before scalac has
     // checked this. The error message here will never be seen because scalac's subsequent bounds

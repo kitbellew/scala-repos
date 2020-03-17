@@ -334,8 +334,8 @@ class AppsResource @Inject() (
         isAuthorized(ViewApp, app)
     }
 
-  def selectAuthorized(fn: => AppSelector)(
-      implicit identity: Identity): AppSelector = {
+  def selectAuthorized(fn: => AppSelector)(implicit
+      identity: Identity): AppSelector = {
     val authSelector = new AppSelector {
       override def matches(app: AppDefinition): Boolean =
         isAuthorized(ViewApp, app)

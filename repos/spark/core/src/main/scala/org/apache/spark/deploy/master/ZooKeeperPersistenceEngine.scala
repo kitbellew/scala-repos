@@ -67,8 +67,8 @@ private[master] class ZooKeeperPersistenceEngine(
     zk.create().withMode(CreateMode.PERSISTENT).forPath(path, bytes)
   }
 
-  private def deserializeFromFile[T](filename: String)(
-      implicit m: ClassTag[T]): Option[T] = {
+  private def deserializeFromFile[T](filename: String)(implicit
+      m: ClassTag[T]): Option[T] = {
     val fileData = zk.getData().forPath(WORKING_DIR + "/" + filename)
     try {
       Some(serializer.newInstance().deserialize[T](ByteBuffer.wrap(fileData)))

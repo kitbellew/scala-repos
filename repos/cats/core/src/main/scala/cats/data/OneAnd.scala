@@ -62,9 +62,8 @@ final case class OneAnd[F[_], A](head: A, tail: F[A]) {
   /**
     * Right-associative fold on the structure using f.
     */
-  def foldRight[B](lb: Eval[B])(f: (A, Eval[B]) => Eval[B])(
-      implicit F: Foldable[F]): Eval[B] =
-    Eval.defer(f(head, F.foldRight(tail, lb)(f)))
+  def foldRight[B](lb: Eval[B])(f: (A, Eval[B]) => Eval[B])(implicit
+      F: Foldable[F]): Eval[B] = Eval.defer(f(head, F.foldRight(tail, lb)(f)))
 
   /**
     * Applies f to all the elements of the structure
@@ -116,14 +115,14 @@ private[data] sealed trait OneAndInstances extends OneAndLowPriority2 {
   implicit def oneAndSemigroup[F[_]: MonadCombine, A]: Semigroup[OneAnd[F, A]] =
     oneAndSemigroupK[F].algebra
 
-  implicit def oneAndReducible[F[_]](
-      implicit F: Foldable[F]): Reducible[OneAnd[F, ?]] =
+  implicit def oneAndReducible[F[_]](implicit
+      F: Foldable[F]): Reducible[OneAnd[F, ?]] =
     new NonEmptyReducible[OneAnd[F, ?], F] {
       override def split[A](fa: OneAnd[F, A]): (A, F[A]) = (fa.head, fa.tail)
     }
 
-  implicit def oneAndMonad[F[_]](
-      implicit monad: MonadCombine[F]): Monad[OneAnd[F, ?]] =
+  implicit def oneAndMonad[F[_]](implicit
+      monad: MonadCombine[F]): Monad[OneAnd[F, ?]] =
     new Monad[OneAnd[F, ?]] {
       override def map[A, B](fa: OneAnd[F, A])(f: A => B): OneAnd[F, B] =
         fa map f
@@ -162,8 +161,8 @@ trait OneAndLowPriority0 {
 }
 
 trait OneAndLowPriority1 extends OneAndLowPriority0 {
-  implicit def oneAndFunctor[F[_]](
-      implicit F: Functor[F]): Functor[OneAnd[F, ?]] =
+  implicit def oneAndFunctor[F[_]](implicit
+      F: Functor[F]): Functor[OneAnd[F, ?]] =
     new Functor[OneAnd[F, ?]] {
       def map[A, B](fa: OneAnd[F, A])(f: A => B): OneAnd[F, B] = fa map f
     }
@@ -171,11 +170,11 @@ trait OneAndLowPriority1 extends OneAndLowPriority0 {
 }
 
 trait OneAndLowPriority2 extends OneAndLowPriority1 {
-  implicit def oneAndTraverse[F[_]](
-      implicit F: Traverse[F]): Traverse[OneAnd[F, ?]] =
+  implicit def oneAndTraverse[F[_]](implicit
+      F: Traverse[F]): Traverse[OneAnd[F, ?]] =
     new Traverse[OneAnd[F, ?]] {
-      def traverse[G[_], A, B](fa: OneAnd[F, A])(f: (A) => G[B])(
-          implicit G: Applicative[G]): G[OneAnd[F, B]] = {
+      def traverse[G[_], A, B](fa: OneAnd[F, A])(f: (A) => G[B])(implicit
+          G: Applicative[G]): G[OneAnd[F, B]] = {
         val tail = F.traverse(fa.tail)(f)
         val head = f(fa.head)
         G.ap2[B, F[B], OneAnd[F, B]](G.pure(OneAnd(_, _)))(head, tail)

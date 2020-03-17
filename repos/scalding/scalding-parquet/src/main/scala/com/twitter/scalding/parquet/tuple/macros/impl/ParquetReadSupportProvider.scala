@@ -13,8 +13,8 @@ object ParquetReadSupportProvider {
   private[this] case object SET extends CollectionType
   private[this] case object MAP extends CollectionType
 
-  def toParquetReadSupportImpl[T](ctx: Context)(
-      implicit T: ctx.WeakTypeTag[T]): ctx.Expr[ParquetReadSupport[T]] = {
+  def toParquetReadSupportImpl[T](ctx: Context)(implicit
+      T: ctx.WeakTypeTag[T]): ctx.Expr[ParquetReadSupport[T]] = {
     import ctx.universe._
 
     if (!IsCaseClassImpl.isCaseClassType(ctx)(T.tpe))

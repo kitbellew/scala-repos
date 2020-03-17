@@ -55,8 +55,8 @@ trait TraverseLaws[F[_]] extends FunctorLaws[F] with FoldableLaws[F] {
     lhs <-> rhs
   }
 
-  def foldMapDerived[A, B](fa: F[A], f: A => B)(
-      implicit B: Monoid[B]): IsEq[B] = {
+  def foldMapDerived[A, B](fa: F[A], f: A => B)(implicit
+      B: Monoid[B]): IsEq[B] = {
     val lhs: B = fa.traverse[Const[B, ?], B](a => Const(f(a))).getConst
     val rhs: B = fa.foldMap(f)
     lhs <-> rhs

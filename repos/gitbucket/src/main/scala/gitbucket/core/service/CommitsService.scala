@@ -54,8 +54,8 @@ trait CommitsService {
       issueId = issueId
     )
 
-  def updateCommitComment(commentId: Int, content: String)(
-      implicit s: Session) =
+  def updateCommitComment(commentId: Int, content: String)(implicit
+      s: Session) =
     CommitComments
       .filter(_.byPrimaryKey(commentId))
       .map { t => t.content -> t.updatedDate }

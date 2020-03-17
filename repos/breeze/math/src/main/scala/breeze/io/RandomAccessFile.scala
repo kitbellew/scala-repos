@@ -47,8 +47,8 @@ import spire.math.ULong
   * passes through to java.io.RandomAccessFile. This is mainly because the java.io.RandomAccessFile.readXXX functions are
   * declared final, and cannot be overridden.
   */
-class RandomAccessFile(file: File, arg0: String = "r")(
-    implicit converter: ByteConverter = ByteConverterBigEndian)
+class RandomAccessFile(file: File, arg0: String = "r")(implicit
+    converter: ByteConverter = ByteConverterBigEndian)
     extends DataInput
     with DataOutput
     with Closeable /*extends java.io.RandomAccessFile(file, arg0)*/ {

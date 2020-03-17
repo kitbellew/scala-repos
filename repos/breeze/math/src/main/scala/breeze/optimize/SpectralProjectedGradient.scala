@@ -134,8 +134,8 @@ class SpectralProjectedGradient[T](
       f: DiffFunction[T],
       x: T,
       direction: T,
-      project: T => T)(
-      implicit prod: InnerProductModule[T, Double]): DiffFunction[Double] =
+      project: T => T)(implicit
+      prod: InnerProductModule[T, Double]): DiffFunction[Double] =
     new DiffFunction[Double] {
       import prod._
 

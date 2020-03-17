@@ -40,8 +40,8 @@ object CachedMacroUtil {
     q"$cachesUtilFQN.getRecursionGuard"
   }
 
-  def psiModificationTrackerFQN(
-      implicit c: whitebox.Context): c.universe.Tree = {
+  def psiModificationTrackerFQN(implicit
+      c: whitebox.Context): c.universe.Tree = {
     import c.universe.Quasiquote
     q"_root_.com.intellij.psi.util.PsiModificationTracker"
   }
@@ -61,19 +61,19 @@ object CachedMacroUtil {
     q"_root_.org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiManager"
   }
 
-  def thisFunctionFQN(name: String)(
-      implicit c: whitebox.Context): c.universe.Tree = {
+  def thisFunctionFQN(name: String)(implicit
+      c: whitebox.Context): c.universe.Tree = {
     import c.universe.Quasiquote
     q"""getClass.getName ++ "." ++ $name"""
   }
 
-  def generateTermName(name: String = "")(
-      implicit c: whitebox.Context): c.universe.TermName = {
+  def generateTermName(name: String = "")(implicit
+      c: whitebox.Context): c.universe.TermName = {
     c.universe.TermName(c.freshName(name))
   }
 
-  def generateTypeName(name: String = "")(
-      implicit c: whitebox.Context): c.universe.TypeName = {
+  def generateTypeName(name: String = "")(implicit
+      c: whitebox.Context): c.universe.TypeName = {
     c.universe.TypeName(c.freshName(name))
   }
 

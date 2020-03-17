@@ -122,8 +122,8 @@ trait Enumerator[E] {
     * @param callback The callback to call
     * $paramEcSingle
     */
-  def onDoneEnumerating(callback: => Unit)(
-      implicit ec: ExecutionContext): Enumerator[E] =
+  def onDoneEnumerating(callback: => Unit)(implicit
+      ec: ExecutionContext): Enumerator[E] =
     new Enumerator[E] {
       private val pec = ec.prepare()
 
@@ -164,8 +164,8 @@ trait Enumerator[E] {
     * @param f Used to transform the input.
     * $paramEcSingle
     */
-  def mapInput[U](f: Input[E] => Input[U])(
-      implicit ec: ExecutionContext): Enumerator[U] =
+  def mapInput[U](f: Input[E] => Input[U])(implicit
+      ec: ExecutionContext): Enumerator[U] =
     parent &> Enumeratee.mapInput[E](f)(ec)
 
   /**
@@ -174,8 +174,8 @@ trait Enumerator[E] {
     * $paramEcSingle
     * @return enumerator
     */
-  def flatMap[U](f: E => Enumerator[U])(
-      implicit ec: ExecutionContext): Enumerator[U] = {
+  def flatMap[U](f: E => Enumerator[U])(implicit
+      ec: ExecutionContext): Enumerator[U] = {
     val pec = ec.prepare()
     import Execution.Implicits.{
       defaultExecutionContext => ec
@@ -399,8 +399,8 @@ object Enumerator {
     *          to unfold and the next input, or none if the value is completely unfolded.
     * $paramEcSingle
     */
-  def unfoldM[S, E](s: S)(f: S => Future[Option[(S, E)]])(
-      implicit ec: ExecutionContext): Enumerator[E] =
+  def unfoldM[S, E](s: S)(f: S => Future[Option[(S, E)]])(implicit
+      ec: ExecutionContext): Enumerator[E] =
     checkContinue1(s)(new TreatCont1[E, S] {
       private val pec = ec.prepare()
 
@@ -432,8 +432,8 @@ object Enumerator {
     *          the next input, or none if the value is completely unfolded.
     * $paramEcSingle
     */
-  def unfold[S, E](s: S)(f: S => Option[(S, E)])(
-      implicit ec: ExecutionContext): Enumerator[E] =
+  def unfold[S, E](s: S)(f: S => Option[(S, E)])(implicit
+      ec: ExecutionContext): Enumerator[E] =
     checkContinue1(s)(new TreatCont1[E, S] {
       private val pec = ec.prepare()
 
@@ -470,8 +470,8 @@ object Enumerator {
     * @param e The input function
     * $paramEcSingle
     */
-  def repeatM[E](e: => Future[E])(
-      implicit ec: ExecutionContext): Enumerator[E] =
+  def repeatM[E](e: => Future[E])(implicit
+      ec: ExecutionContext): Enumerator[E] =
     checkContinue0(new TreatCont0[E] {
       private val pec = ec.prepare()
 
@@ -489,8 +489,8 @@ object Enumerator {
     * @param e The input function.  Returns a future eventually redeemed with Some value if there is input to pass, or a
     *          future eventually redeemed with None if the end of the stream has been reached.
     */
-  def generateM[E](e: => Future[Option[E]])(
-      implicit ec: ExecutionContext): Enumerator[E] =
+  def generateM[E](e: => Future[Option[E]])(implicit
+      ec: ExecutionContext): Enumerator[E] =
     checkContinue0(new TreatCont0[E] {
       private val pec = ec.prepare()
 
@@ -627,8 +627,8 @@ object Enumerator {
     * @param chunkSize The size of chunks to read from the stream.
     * @param ec The ExecutionContext to execute blocking code.
     */
-  def fromStream(input: java.io.InputStream, chunkSize: Int = 1024 * 8)(
-      implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
+  def fromStream(input: java.io.InputStream, chunkSize: Int = 1024 * 8)(implicit
+      ec: ExecutionContext): Enumerator[Array[Byte]] = {
     implicit val pec = ec.prepare()
     generateM({
       val buffer = new Array[Byte](chunkSize)
@@ -653,8 +653,8 @@ object Enumerator {
     * @param file The file to create the enumerator from.
     * @param chunkSize The size of chunks to read from the file.
     */
-  def fromFile(file: java.io.File, chunkSize: Int = 1024 * 8)(
-      implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
+  def fromFile(file: java.io.File, chunkSize: Int = 1024 * 8)(implicit
+      ec: ExecutionContext): Enumerator[Array[Byte]] = {
     fromStream(new java.io.FileInputStream(file), chunkSize)(ec)
   }
 
@@ -666,8 +666,8 @@ object Enumerator {
     * @param path The file path to create the enumerator from.
     * @param chunkSize The size of chunks to read from the file.
     */
-  def fromPath(path: java.nio.file.Path, chunkSize: Int = 1024 * 8)(
-      implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
+  def fromPath(path: java.nio.file.Path, chunkSize: Int = 1024 * 8)(implicit
+      ec: ExecutionContext): Enumerator[Array[Byte]] = {
     fromStream(Files.newInputStream(path), chunkSize)(ec)
   }
 
@@ -681,8 +681,8 @@ object Enumerator {
     * @param a A callback that provides the output stream when this enumerator is written to an iteratee.
     * $paramEcSingle
     */
-  def outputStream(a: java.io.OutputStream => Unit)(
-      implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
+  def outputStream(a: java.io.OutputStream => Unit)(implicit
+      ec: ExecutionContext): Enumerator[Array[Byte]] = {
     Concurrent.unicast[Array[Byte]] { channel =>
       val outputStream = new java.io.OutputStream() {
         override def close() { channel.end() }
@@ -738,8 +738,8 @@ object Enumerator {
     *  val enumerator: Enumerator[String] = Enumerator( scala.io.Source.fromFile("myfile.txt").getLines )
     * }}}
     */
-  def enumerate[E](traversable: TraversableOnce[E])(
-      implicit ctx: scala.concurrent.ExecutionContext): Enumerator[E] = {
+  def enumerate[E](traversable: TraversableOnce[E])(implicit
+      ctx: scala.concurrent.ExecutionContext): Enumerator[E] = {
     val it = traversable.toIterator
     Enumerator.unfoldM[scala.collection.Iterator[E], E](
       it: scala.collection.Iterator[E])({ currentIt =>

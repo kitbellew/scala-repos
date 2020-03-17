@@ -195,8 +195,8 @@ private[http] trait HasLogUnreadVal {
   * about only storing things that can be actually serialized.  Lift
   * provides a subset of these.
   */
-abstract class ContainerVar[T](dflt: => T)(
-    implicit containerSerializer: ContainerSerializer[T])
+abstract class ContainerVar[T](dflt: => T)(implicit
+    containerSerializer: ContainerSerializer[T])
     extends AnyVar[T, ContainerVar[T]](dflt)
     with LazyLoggable {
 
@@ -344,12 +344,12 @@ object ContainerSerializer {
   implicit val jodaDateSerializer: ContainerSerializer[DateTime] =
     buildSerializer
 
-  implicit def arraySerializer[T](
-      implicit tc: ContainerSerializer[T]): ContainerSerializer[Array[T]] =
+  implicit def arraySerializer[T](implicit
+      tc: ContainerSerializer[T]): ContainerSerializer[Array[T]] =
     buildSerializer
 
-  implicit def listSerializer[T](
-      implicit tc: ContainerSerializer[T]): ContainerSerializer[List[T]] =
+  implicit def listSerializer[T](implicit
+      tc: ContainerSerializer[T]): ContainerSerializer[List[T]] =
     buildSerializer
 
 }

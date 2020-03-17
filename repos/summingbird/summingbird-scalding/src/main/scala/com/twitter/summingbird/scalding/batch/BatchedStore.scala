@@ -192,8 +192,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       deltas: FlowToPipe[(K, V)],
       readTimespan: Interval[Timestamp],
       commutativity: Commutativity,
-      reducers: Int)(
-      implicit sg: Semigroup[V]): FlowToPipe[(K, (Option[V], V))] = {
+      reducers: Int)(implicit
+      sg: Semigroup[V]): FlowToPipe[(K, (Option[V], V))] = {
 
     // get the batches read from the readTimespan
     val batchIntr = batcher.batchesCoveredBy(readTimespan)

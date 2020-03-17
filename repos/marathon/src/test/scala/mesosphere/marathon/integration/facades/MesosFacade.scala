@@ -62,8 +62,8 @@ object MesosFacade {
   }
 }
 
-class MesosFacade(url: String, waitTime: Duration = 30.seconds)(
-    implicit val system: ActorSystem)
+class MesosFacade(url: String, waitTime: Duration = 30.seconds)(implicit
+    val system: ActorSystem)
     extends PlayJsonSupport {
 
   import system.dispatcher

@@ -63,8 +63,8 @@ abstract class Adjunction[F[_], G[_]](implicit
     * Adjunctions compose in a natural fashion. If `F -| G` is an adjunction, and `P -| Q` is an
     * adjunction, then PF -| GQ is an adjunction. In fact, adjunctions in Scala form a monoid.
     */
-  def compose[P[_], Q[_]](
-      implicit A: P -| Q): λ[α => P[F[α]]] -| λ[α => G[Q[α]]] = {
+  def compose[P[_], Q[_]](implicit
+      A: P -| Q): λ[α => P[F[α]]] -| λ[α => G[Q[α]]] = {
     implicit val P = A.F
     implicit val Q = A.G
     implicit val PF = P compose F

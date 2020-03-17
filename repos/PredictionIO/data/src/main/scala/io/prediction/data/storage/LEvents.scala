@@ -73,9 +73,8 @@ trait LEvents {
     * @param appId App ID for the [[Event]] to be inserted to
     */
   @DeveloperApi
-  def futureInsert(event: Event, appId: Int)(
-      implicit ec: ExecutionContext): Future[String] =
-    futureInsert(event, appId, None)
+  def futureInsert(event: Event, appId: Int)(implicit
+      ec: ExecutionContext): Future[String] = futureInsert(event, appId, None)
 
   /** :: DeveloperApi ::
     * Insert an [[Event]] in a non-blocking fashion.
@@ -85,8 +84,8 @@ trait LEvents {
     * @param channelId Optional channel ID for the [[Event]] to be inserted to
     */
   @DeveloperApi
-  def futureInsert(event: Event, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[String]
+  def futureInsert(event: Event, appId: Int, channelId: Option[Int])(implicit
+      ec: ExecutionContext): Future[String]
 
   /** :: DeveloperApi ::
     * Get an [[Event]] in a non-blocking fashion.
@@ -95,8 +94,8 @@ trait LEvents {
     * @param appId ID of the app that contains the [[Event]]
     */
   @DeveloperApi
-  def futureGet(eventId: String, appId: Int)(
-      implicit ec: ExecutionContext): Future[Option[Event]] =
+  def futureGet(eventId: String, appId: Int)(implicit
+      ec: ExecutionContext): Future[Option[Event]] =
     futureGet(eventId, appId, None)
 
   /** :: DeveloperApi ::
@@ -107,8 +106,8 @@ trait LEvents {
     * @param channelId Optional channel ID that contains the [[Event]]
     */
   @DeveloperApi
-  def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Option[Event]]
+  def futureGet(eventId: String, appId: Int, channelId: Option[Int])(implicit
+      ec: ExecutionContext): Future[Option[Event]]
 
   /** :: DeveloperApi ::
     * Delete an [[Event]] in a non-blocking fashion.
@@ -117,8 +116,8 @@ trait LEvents {
     * @param appId ID of the app that contains the [[Event]]
     */
   @DeveloperApi
-  def futureDelete(eventId: String, appId: Int)(
-      implicit ec: ExecutionContext): Future[Boolean] =
+  def futureDelete(eventId: String, appId: Int)(implicit
+      ec: ExecutionContext): Future[Boolean] =
     futureDelete(eventId, appId, None)
 
   /** :: DeveloperApi ::
@@ -129,8 +128,8 @@ trait LEvents {
     * @param channelId Optional channel ID that contains the [[Event]]
     */
   @DeveloperApi
-  def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Boolean]
+  def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(implicit
+      ec: ExecutionContext): Future[Boolean]
 
   /** :: DeveloperApi ::
     * Reads from database and returns a Future of Iterator of [[Event]]s.
@@ -169,8 +168,8 @@ trait LEvents {
       targetEntityType: Option[Option[String]] = None,
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
-      reversed: Option[Boolean] = None)(
-      implicit ec: ExecutionContext): Future[Iterator[Event]]
+      reversed: Option[Boolean] = None)(implicit
+      ec: ExecutionContext): Future[Iterator[Event]]
 
   /** Aggregate properties of entities based on these special events:
     * \$set, \$unset, \$delete events.
@@ -191,8 +190,8 @@ trait LEvents {
       entityType: String,
       startTime: Option[DateTime] = None,
       untilTime: Option[DateTime] = None,
-      required: Option[Seq[String]] = None)(
-      implicit ec: ExecutionContext): Future[Map[String, PropertyMap]] = {
+      required: Option[Seq[String]] = None)(implicit
+      ec: ExecutionContext): Future[Map[String, PropertyMap]] = {
     futureFind(
       appId = appId,
       channelId = channelId,
@@ -234,8 +233,8 @@ trait LEvents {
       entityType: String,
       entityId: String,
       startTime: Option[DateTime] = None,
-      untilTime: Option[DateTime] = None)(
-      implicit ec: ExecutionContext): Future[Option[PropertyMap]] = {
+      untilTime: Option[DateTime] = None)(implicit
+      ec: ExecutionContext): Future[Option[PropertyMap]] = {
     futureFind(
       appId = appId,
       channelId = channelId,
@@ -252,8 +251,8 @@ trait LEvents {
       event: Event,
       appId: Int,
       channelId: Option[Int] = None,
-      timeout: Duration = defaultTimeout)(
-      implicit ec: ExecutionContext): String = {
+      timeout: Duration = defaultTimeout)(implicit
+      ec: ExecutionContext): String = {
     Await.result(futureInsert(event, appId, channelId), timeout)
   }
 
@@ -261,8 +260,8 @@ trait LEvents {
       eventId: String,
       appId: Int,
       channelId: Option[Int] = None,
-      timeout: Duration = defaultTimeout)(
-      implicit ec: ExecutionContext): Option[Event] = {
+      timeout: Duration = defaultTimeout)(implicit
+      ec: ExecutionContext): Option[Event] = {
     Await.result(futureGet(eventId, appId, channelId), timeout)
   }
 
@@ -270,8 +269,8 @@ trait LEvents {
       eventId: String,
       appId: Int,
       channelId: Option[Int] = None,
-      timeout: Duration = defaultTimeout)(
-      implicit ec: ExecutionContext): Boolean = {
+      timeout: Duration = defaultTimeout)(implicit
+      ec: ExecutionContext): Boolean = {
     Await.result(futureDelete(eventId, appId, channelId), timeout)
   }
 
@@ -312,8 +311,8 @@ trait LEvents {
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
       reversed: Option[Boolean] = None,
-      timeout: Duration = defaultTimeout)(
-      implicit ec: ExecutionContext): Iterator[Event] = {
+      timeout: Duration = defaultTimeout)(implicit
+      ec: ExecutionContext): Iterator[Event] = {
     Await.result(
       futureFind(
         appId = appId,
@@ -346,8 +345,8 @@ trait LEvents {
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
       reversed: Option[Boolean] = None,
-      timeout: Duration = defaultTimeout)(
-      implicit ec: ExecutionContext): Either[StorageError, Iterator[Event]] = {
+      timeout: Duration = defaultTimeout)(implicit
+      ec: ExecutionContext): Either[StorageError, Iterator[Event]] = {
     try {
       // return Either for legacy usage
       Right(Await.result(
@@ -408,8 +407,8 @@ trait LEvents {
       untilTime: Option[DateTime] = None,
       limit: Option[Int] = None,
       latest: Boolean = true,
-      timeout: Duration = defaultTimeout)(
-      implicit ec: ExecutionContext): Either[StorageError, Iterator[Event]] = {
+      timeout: Duration = defaultTimeout)(implicit
+      ec: ExecutionContext): Either[StorageError, Iterator[Event]] = {
 
     findLegacy(
       appId = appId,
@@ -448,8 +447,8 @@ trait LEvents {
       startTime: Option[DateTime] = None,
       untilTime: Option[DateTime] = None,
       required: Option[Seq[String]] = None,
-      timeout: Duration = defaultTimeout)(
-      implicit ec: ExecutionContext): Map[String, PropertyMap] = {
+      timeout: Duration = defaultTimeout)(implicit
+      ec: ExecutionContext): Map[String, PropertyMap] = {
     Await.result(
       futureAggregateProperties(
         appId = appId,
@@ -486,8 +485,8 @@ trait LEvents {
       entityId: String,
       startTime: Option[DateTime] = None,
       untilTime: Option[DateTime] = None,
-      timeout: Duration = defaultTimeout)(
-      implicit ec: ExecutionContext): Option[PropertyMap] = {
+      timeout: Duration = defaultTimeout)(implicit
+      ec: ExecutionContext): Option[PropertyMap] = {
 
     Await.result(
       futureAggregatePropertiesOfEntity(

@@ -298,8 +298,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     */
   def runWith[Mat1, Mat2](
       source: Graph[SourceShape[In], Mat1],
-      sink: Graph[SinkShape[Out], Mat2])(
-      implicit materializer: Materializer): (Mat1, Mat2) =
+      sink: Graph[SinkShape[Out], Mat2])(implicit
+      materializer: Materializer): (Mat1, Mat2) =
     Source.fromGraph(source).via(this).toMat(sink)(Keep.both).run()
 
   /**
@@ -1781,8 +1781,8 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def mergeSorted[U >: Out, M](that: Graph[SourceShape[U], M])(
-      implicit ord: Ordering[U]): Repr[U] = via(mergeSortedGraph(that))
+  def mergeSorted[U >: Out, M](that: Graph[SourceShape[U], M])(implicit
+      ord: Ordering[U]): Repr[U] = via(mergeSortedGraph(that))
 
   protected def mergeSortedGraph[U >: Out, M](
       that: Graph[SourceShape[U], M])(implicit

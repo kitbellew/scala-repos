@@ -42,8 +42,8 @@ object AssertUtil {
     */
   def assertThrows[T <: Throwable](
       body: => Any,
-      checkMessage: String => Boolean = s => true)(
-      implicit manifest: Manifest[T]): Unit = {
+      checkMessage: String => Boolean = s => true)(implicit
+      manifest: Manifest[T]): Unit = {
     try {
       body
       fail("Expression did not throw!")

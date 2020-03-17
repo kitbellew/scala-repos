@@ -18,8 +18,8 @@ import FirstOrderMinimizer.ConvergenceCheck
   * @author dlwh
   */
 abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
-    val convergenceCheck: ConvergenceCheck[T])(
-    implicit space: NormedModule[T, Double])
+    val convergenceCheck: ConvergenceCheck[T])(implicit
+    space: NormedModule[T, Double])
     extends Minimizer[T, DF]
     with SerializableLogging {
 
@@ -27,8 +27,8 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
       maxIter: Int = -1,
       tolerance: Double = 1e-6,
       fvalMemory: Int = 100,
-      relativeTolerance: Boolean = true)(
-      implicit space: NormedModule[T, Double]) =
+      relativeTolerance: Boolean = true)(implicit
+      space: NormedModule[T, Double]) =
     this(FirstOrderMinimizer.defaultConvergenceCheck[T](
       maxIter,
       tolerance,
@@ -321,8 +321,8 @@ object FirstOrderMinimizer {
     override def initialInfo: Info = IndexedSeq(Double.PositiveInfinity)
   }
 
-  def gradientConverged[T](tolerance: Double, relative: Boolean = true)(
-      implicit space: NormedModule[T, Double]): ConvergenceCheck[T] = {
+  def gradientConverged[T](tolerance: Double, relative: Boolean = true)(implicit
+      space: NormedModule[T, Double]): ConvergenceCheck[T] = {
     import space.normImpl
     ConvergenceCheck.fromPartialFunction[T] {
       case s: State[T, _, _]
@@ -401,8 +401,8 @@ object FirstOrderMinimizer {
       maxIter: Int,
       tolerance: Double,
       relative: Boolean = true,
-      fvalMemory: Int = 20)(
-      implicit space: NormedModule[T, Double]): ConvergenceCheck[T] =
+      fvalMemory: Int = 20)(implicit
+      space: NormedModule[T, Double]): ConvergenceCheck[T] =
     (maxIterationsReached[T](maxIter) ||
       functionValuesConverged(tolerance, relative, fvalMemory) ||
       gradientConverged[T](tolerance, relative) ||
@@ -442,24 +442,24 @@ object FirstOrderMinimizer {
     @deprecated(
       "Use breeze.optimize.minimize(f, init, params) instead.",
       "0.10")
-    def minimize[T](f: BatchDiffFunction[T], init: T)(
-        implicit space: MutableFiniteCoordinateField[T, _, Double]): T = {
+    def minimize[T](f: BatchDiffFunction[T], init: T)(implicit
+        space: MutableFiniteCoordinateField[T, _, Double]): T = {
       this.iterations(f, init).last.x
     }
 
     @deprecated(
       "Use breeze.optimize.minimize(f, init, params) instead.",
       "0.10")
-    def minimize[T](f: DiffFunction[T], init: T)(
-        implicit space: MutableEnumeratedCoordinateField[T, _, Double]): T = {
+    def minimize[T](f: DiffFunction[T], init: T)(implicit
+        space: MutableEnumeratedCoordinateField[T, _, Double]): T = {
       this.iterations(f, init).last.x
     }
 
     @deprecated(
       "Use breeze.optimize.iterations(f, init, params) instead.",
       "0.10")
-    def iterations[T](f: BatchDiffFunction[T], init: T)(
-        implicit space: MutableFiniteCoordinateField[T, _, Double])
+    def iterations[T](f: BatchDiffFunction[T], init: T)(implicit
+        space: MutableFiniteCoordinateField[T, _, Double])
         : Iterator[FirstOrderMinimizer[T, BatchDiffFunction[T]]#State] = {
       val it =
         if (useStochastic) {
@@ -473,8 +473,8 @@ object FirstOrderMinimizer {
     @deprecated(
       "Use breeze.optimize.iterations(f, init, params) instead.",
       "0.10")
-    def iterations[T](f: StochasticDiffFunction[T], init: T)(
-        implicit space: MutableFiniteCoordinateField[T, _, Double])
+    def iterations[T](f: StochasticDiffFunction[T], init: T)(implicit
+        space: MutableFiniteCoordinateField[T, _, Double])
         : Iterator[FirstOrderMinimizer[T, StochasticDiffFunction[T]]#State] = {
       val r =
         if (useL1) {
@@ -494,8 +494,8 @@ object FirstOrderMinimizer {
     @deprecated(
       "Use breeze.optimize.iterations(f, init, params) instead.",
       "0.10")
-    def iterations[T, K](f: DiffFunction[T], init: T)(
-        implicit space: MutableEnumeratedCoordinateField[T, K, Double])
+    def iterations[T, K](f: DiffFunction[T], init: T)(implicit
+        space: MutableEnumeratedCoordinateField[T, K, Double])
         : Iterator[LBFGS[T]#State] = {
       if (useL1)
         new OWLQN[K, T](maxIterations, 5, regularization, tolerance)(space)

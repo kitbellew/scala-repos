@@ -693,8 +693,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
   private def buildsArray[S, That](c: Builder[S, That]) =
     c.isInstanceOf[ParArrayCombiner[_]]
 
-  override def map[S, That](f: T => S)(
-      implicit bf: CanBuildFrom[ParArray[T], S, That]) =
+  override def map[S, That](f: T => S)(implicit
+      bf: CanBuildFrom[ParArray[T], S, That]) =
     if (buildsArray(bf(repr))) {
       // reserve an array
       val targarrseq = new ArraySeq[S](length)
@@ -707,8 +707,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       (new ParArray[S](targarrseq)).asInstanceOf[That]
     } else super.map(f)(bf)
 
-  override def scan[U >: T, That](z: U)(op: (U, U) => U)(
-      implicit cbf: CanBuildFrom[ParArray[T], U, That]): That =
+  override def scan[U >: T, That](z: U)(op: (U, U) => U)(implicit
+      cbf: CanBuildFrom[ParArray[T], U, That]): That =
     if (tasksupport.parallelismLevel > 1 && buildsArray(cbf(repr))) {
       // reserve an array
       val targarrseq = new ArraySeq[U](length + 1)

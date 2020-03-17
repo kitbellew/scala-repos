@@ -420,8 +420,8 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
     */
   def quickCompact() { reserve(used) }
 
-  def concatenate(that: SparseArray[V])(
-      implicit man: ClassTag[V]): SparseArray[V] = {
+  def concatenate(that: SparseArray[V])(implicit
+      man: ClassTag[V]): SparseArray[V] = {
     if (this.default != that.default)
       throw new IllegalArgumentException("default values should be equal")
     new SparseArray(

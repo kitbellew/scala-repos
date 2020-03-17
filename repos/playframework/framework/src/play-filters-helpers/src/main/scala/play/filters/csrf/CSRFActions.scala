@@ -35,8 +35,8 @@ class CSRFAction(
     config: CSRFConfig = CSRFConfig(),
     tokenSigner: CSRFTokenSigner = Crypto.crypto,
     tokenProvider: TokenProvider = new SignedTokenProvider(Crypto.crypto),
-    errorHandler: => ErrorHandler = CSRF.DefaultErrorHandler)(
-    implicit mat: Materializer)
+    errorHandler: => ErrorHandler = CSRF.DefaultErrorHandler)(implicit
+    mat: Materializer)
     extends EssentialAction {
 
   import CSRFAction._

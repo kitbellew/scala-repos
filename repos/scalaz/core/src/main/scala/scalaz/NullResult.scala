@@ -120,8 +120,8 @@ object NullResult extends NullResultInstances {
 
 sealed abstract class NullResultInstances0 {
 
-  implicit def nullResultSemigroup[A, B](
-      implicit M0: Semigroup[B]): Semigroup[NullResult[A, B]] =
+  implicit def nullResultSemigroup[A, B](implicit
+      M0: Semigroup[B]): Semigroup[NullResult[A, B]] =
     new NullResultSemigroup[A, B] {
       implicit val M = M0
     }
@@ -138,8 +138,8 @@ sealed abstract class NullResultInstances0 {
 
 sealed abstract class NullResultInstances extends NullResultInstances0 {
 
-  implicit def nullResultMonoid[A, B](
-      implicit M0: Monoid[B]): Monoid[NullResult[A, B]] =
+  implicit def nullResultMonoid[A, B](implicit
+      M0: Monoid[B]): Monoid[NullResult[A, B]] =
     new NullResultMonoid[A, B] {
       implicit val M = M0
     }

@@ -34,8 +34,8 @@ import scalaz.syntax.comonad._
 
 import org.specs2.mutable._
 
-abstract class BrowseServiceSpecs[M[+_]](
-    implicit val M: Monad[M] with Comonad[M])
+abstract class BrowseServiceSpecs[M[+_]](implicit
+    val M: Monad[M] with Comonad[M])
     extends Specification {
   def colSizeMetadata(descriptor: ColumnRef, size: Long): ColumnMetadata =
     Map(descriptor -> Map(StringValueStats -> StringValueStats(size, "a", "z")))

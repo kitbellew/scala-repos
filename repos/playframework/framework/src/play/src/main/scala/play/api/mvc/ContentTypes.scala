@@ -730,8 +730,8 @@ trait BodyParsers {
       * @param maxLength The max length allowed
       * @param parser The BodyParser to wrap
       */
-    def maxLength[A](maxLength: Long, parser: BodyParser[A])(
-        implicit mat: Materializer): BodyParser[Either[MaxSizeExceeded, A]] =
+    def maxLength[A](maxLength: Long, parser: BodyParser[A])(implicit
+        mat: Materializer): BodyParser[Either[MaxSizeExceeded, A]] =
       BodyParser("maxLength=" + maxLength + ", wrapping=" + parser.toString) {
         request =>
           import play.api.libs.iteratee.Execution.Implicits.trampoline

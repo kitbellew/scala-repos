@@ -65,8 +65,8 @@ sealed trait HttpEntity extends jm.HttpEntity {
     * Collects all possible parts and returns a potentially future Strict entity for easier processing.
     * The Future is failed with an TimeoutException if the stream isn't completed after the given timeout.
     */
-  def toStrict(timeout: FiniteDuration)(
-      implicit fm: Materializer): Future[HttpEntity.Strict] =
+  def toStrict(timeout: FiniteDuration)(implicit
+      fm: Materializer): Future[HttpEntity.Strict] =
     dataBytes
       .via(new akka.http.impl.util.ToStrict(timeout, contentType))
       .runWith(Sink.head)

@@ -47,8 +47,8 @@ object Name {
     def cozip[A, B](x: Name[A \/ B]) = x.value.bimap(Name(_), Name(_))
     def foldMapRight1[A, B](fa: Name[A])(z: A => B)(f: (A, => B) => B) =
       z(fa.value)
-    def traverse1Impl[G[_], A, B](fa: Name[A])(f: A => G[B])(
-        implicit G: Apply[G]) = G.map(f(fa.value))(Name(_))
+    def traverse1Impl[G[_], A, B](fa: Name[A])(f: A => G[B])(implicit
+        G: Apply[G]) = G.map(f(fa.value))(Name(_))
     def unzip[A, B](a: Name[(A, B)]) = (Name(a.value._1), Name(a.value._2))
     def zip[A, B](a: => Name[A], b: => Name[B]) = Name((a.value, b.value))
     def point[A](a: => A) = Name(a)
@@ -60,8 +60,8 @@ object Name {
     def cobind[A, B](fa: Name[A])(f: Name[A] => B): Name[B] = Name(f(fa))
     override def cojoin[A](a: Name[A]): Name[Name[A]] = Name(a)
     def copoint[A](p: Name[A]): A = p.value
-    def distributeImpl[G[_], A, B](fa: G[A])(f: A => Name[B])(
-        implicit G: Functor[G]) = Name(G.map(fa)(a => f(a).value))
+    def distributeImpl[G[_], A, B](fa: G[A])(f: A => Name[B])(implicit
+        G: Functor[G]) = Name(G.map(fa)(a => f(a).value))
     @tailrec
     def tailrecM[A, B](f: A => Name[A \/ B])(a: A): Name[B] =
       f(a).value match {
@@ -112,8 +112,8 @@ object Need {
     def cozip[A, B](x: Need[A \/ B]) = x.value.bimap(Need(_), Need(_))
     def foldMapRight1[A, B](fa: Need[A])(z: A => B)(f: (A, => B) => B) =
       z(fa.value)
-    def traverse1Impl[G[_], A, B](fa: Need[A])(f: A => G[B])(
-        implicit G: Apply[G]) = G.map(f(fa.value))(Need(_))
+    def traverse1Impl[G[_], A, B](fa: Need[A])(f: A => G[B])(implicit
+        G: Apply[G]) = G.map(f(fa.value))(Need(_))
     def unzip[A, B](a: Need[(A, B)]) = (Need(a.value._1), Need(a.value._2))
     def zip[A, B](a: => Need[A], b: => Need[B]) = Need((a.value, b.value))
     def point[A](a: => A) = Need(a)
@@ -125,8 +125,8 @@ object Need {
     def cobind[A, B](fa: Need[A])(f: Need[A] => B): Need[B] = Need(f(fa))
     override def cojoin[A](a: Need[A]): Need[Need[A]] = Need(a)
     def copoint[A](p: Need[A]): A = p.value
-    def distributeImpl[G[_], A, B](fa: G[A])(f: A => Need[B])(
-        implicit G: Functor[G]) = Need(G.map(fa)(a => f(a).value))
+    def distributeImpl[G[_], A, B](fa: G[A])(f: A => Need[B])(implicit
+        G: Functor[G]) = Need(G.map(fa)(a => f(a).value))
     @tailrec
     def tailrecM[A, B](f: A => Need[A \/ B])(a: A): Need[B] =
       f(a).value match {
@@ -170,8 +170,8 @@ object Value {
     def cozip[A, B](x: Value[A \/ B]) = x.value.bimap(Value(_), Value(_))
     def foldMapRight1[A, B](fa: Value[A])(z: A => B)(f: (A, => B) => B) =
       z(fa.value)
-    def traverse1Impl[G[_], A, B](fa: Value[A])(f: A => G[B])(
-        implicit G: Apply[G]) = G.map(f(fa.value))(Value(_))
+    def traverse1Impl[G[_], A, B](fa: Value[A])(f: A => G[B])(implicit
+        G: Apply[G]) = G.map(f(fa.value))(Value(_))
     def unzip[A, B](a: Value[(A, B)]) = (Value(a.value._1), Value(a.value._2))
     def zip[A, B](a: => Value[A], b: => Value[B]) = Value((a.value, b.value))
     def point[A](a: => A) = Value(a)
@@ -179,8 +179,8 @@ object Value {
     def cobind[A, B](fa: Value[A])(f: Value[A] => B): Value[B] = Value(f(fa))
     override def cojoin[A](a: Value[A]): Value[Value[A]] = Value(a)
     def copoint[A](p: Value[A]): A = p.value
-    def distributeImpl[G[_], A, B](fa: G[A])(f: A => Value[B])(
-        implicit G: Functor[G]) = Value(G.map(fa)(a => f(a).value))
+    def distributeImpl[G[_], A, B](fa: G[A])(f: A => Value[B])(implicit
+        G: Functor[G]) = Value(G.map(fa)(a => f(a).value))
     @tailrec
     def tailrecM[A, B](f: A => Value[A \/ B])(a: A): Value[B] =
       f(a).value match {

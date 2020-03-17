@@ -296,8 +296,8 @@ package object math {
   final def gcd[A](x: A, y: A)(implicit ev: EuclideanRing[A]): A = ev.gcd(x, y)
   final def gcd[A](xs: Seq[A])(implicit ev: EuclideanRing[A]): A =
     xs.foldLeft(ev.zero) { (x, y) => gcd(y, x) }
-  final def gcd[A](x: A, y: A, z: A, rest: A*)(
-      implicit ev: EuclideanRing[A]): A = gcd(gcd(gcd(x, y), z), gcd(rest))
+  final def gcd[A](x: A, y: A, z: A, rest: A*)(implicit
+      ev: EuclideanRing[A]): A = gcd(gcd(gcd(x, y), z), gcd(rest))
 
   /**
     * lcm
@@ -398,9 +398,10 @@ package object math {
   final def ulp(x: Double): Double = Math.ulp(x)
   final def ulp(x: Float): Double = Math.ulp(x)
 
-  final def hypot[@sp(Float, Double) A](
-      x: A,
-      y: A)(implicit f: Field[A], n: NRoot[A], o: Order[A]): A = {
+  final def hypot[@sp(Float, Double) A](x: A, y: A)(implicit
+      f: Field[A],
+      n: NRoot[A],
+      o: Order[A]): A = {
     import spire.implicits._
     if (x > y) x.abs * (1 + (y / x) ** 2).sqrt
     else y.abs * (1 + (x / y) ** 2).sqrt

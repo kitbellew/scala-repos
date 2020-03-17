@@ -207,8 +207,8 @@ object Promise {
     // Awaitable
     @throws(classOf[TimeoutException])
     @throws(classOf[InterruptedException])
-    def ready(timeout: Duration)(
-        implicit permit: Awaitable.CanAwait): this.type = {
+    def ready(timeout: Duration)(implicit
+        permit: Awaitable.CanAwait): this.type = {
       parent.ready(timeout)
       this
     }

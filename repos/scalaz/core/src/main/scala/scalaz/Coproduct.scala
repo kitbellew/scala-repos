@@ -118,9 +118,8 @@ object Coproduct extends CoproductInstances {
 sealed abstract class CoproductInstances3 {
   type TupleCoglorified[F[_], G[_], A] = Coproduct[F, G, A]
 
-  implicit def coproductEqual[F[_], G[_], A](
-      implicit E: Equal[F[A] \/ G[A]]): Equal[Coproduct[F, G, A]] =
-    Equal.equalBy(_.run)
+  implicit def coproductEqual[F[_], G[_], A](implicit
+      E: Equal[F[A] \/ G[A]]): Equal[Coproduct[F, G, A]] = Equal.equalBy(_.run)
 
   implicit def coproductFunctor[F[_], G[_]](implicit
       F0: Functor[F],
@@ -210,8 +209,8 @@ private trait CoproductFoldable[F[_], G[_]]
   override def foldRight[A, B](fa: Coproduct[F, G, A], z: => B)(
       f: (A, => B) => B): B = fa.foldRight(z)(f)
 
-  override def foldMap[A, B](fa: Coproduct[F, G, A])(f: A => B)(
-      implicit M: Monoid[B]) = fa foldMap f
+  override def foldMap[A, B](fa: Coproduct[F, G, A])(f: A => B)(implicit
+      M: Monoid[B]) = fa foldMap f
 }
 
 private trait CoproductFoldable1[F[_], G[_]]

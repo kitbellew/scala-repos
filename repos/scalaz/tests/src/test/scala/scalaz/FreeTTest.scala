@@ -46,8 +46,8 @@ object FreeTListOption {
         Foldable[FreeT[List, Option, ?]].foldMap(fa.f)(f)
     }
 
-  implicit def freeTListOptionArb[A](
-      implicit A: Arbitrary[A]): Arbitrary[FreeTListOption[A]] =
+  implicit def freeTListOptionArb[A](implicit
+      A: Arbitrary[A]): Arbitrary[FreeTListOption[A]] =
     Arbitrary(
       FreeTTest
         .freeTGen[List, Option, A](
@@ -56,8 +56,8 @@ object FreeTListOption {
             .flatMap(Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f))))
         .map(FreeTListOption.apply))
 
-  implicit def freeTListOptionEq[A](
-      implicit A: Equal[A]): Equal[FreeTListOption[A]] =
+  implicit def freeTListOptionEq[A](implicit
+      A: Equal[A]): Equal[FreeTListOption[A]] =
     new Equal[FreeTListOption[A]] {
       def equal(a: FreeTListOption[A], b: FreeTListOption[A]) =
         Equal[Option[A]].equal(a.f.runM(_.headOption), b.f.runM(_.headOption))
@@ -137,8 +137,8 @@ object FreeTTest extends SpecLite {
     def traverse[S[_]: Traverse, F[_]: Traverse: Applicative: BindRec] =
       Traverse[FreeT[S, F, ?]]
     def monad[S[_]: Functor, F[_]: Applicative] = Monad[FreeT[S, F, ?]]
-    def monadError[S[_]: Functor, F[_]: BindRec, E](
-        implicit F: MonadError[F, E]) = MonadError[FreeT[S, F, ?], E]
+    def monadError[S[_]: Functor, F[_]: BindRec, E](implicit
+        F: MonadError[F, E]) = MonadError[FreeT[S, F, ?], E]
     def monadState[S[_]: Functor, F[_], E](implicit F: MonadState[F, E]) =
       MonadState[FreeT[S, F, ?], E]
     def monadReader[S[_]: Functor, F[_], E](implicit F: MonadReader[F, E]) =

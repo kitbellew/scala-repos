@@ -28,8 +28,8 @@ final class RedisScalatraBroadcaster()(implicit
 
   override def broadcast[T <: OutboundMessage](
       msg: T,
-      clientFilter: ClientFilter)(
-      implicit executionContext: ExecutionContext): Future[T] = {
+      clientFilter: ClientFilter)(implicit
+      executionContext: ExecutionContext): Future[T] = {
     logger.info(
       "Resource [%s] sending message to [%s] with contents:  [%s]".format(
         clientFilter.uuid,

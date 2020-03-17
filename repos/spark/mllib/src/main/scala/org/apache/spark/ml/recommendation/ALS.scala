@@ -1025,8 +1025,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     * @param encoder encoder for dst indices
     */
   private[recommendation] class UncompressedInBlockBuilder[
-      @specialized(Int, Long) ID: ClassTag](encoder: LocalIndexEncoder)(
-      implicit ord: Ordering[ID]) {
+      @specialized(Int, Long) ID: ClassTag](encoder: LocalIndexEncoder)(implicit
+      ord: Ordering[ID]) {
 
     private val srcIds = mutable.ArrayBuilder.make[ID]
     private val dstEncodedIndices = mutable.ArrayBuilder.make[Int]
@@ -1141,8 +1141,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     *
     * @see [[UncompressedInBlockSort]]
     */
-  private class KeyWrapper[@specialized(Int, Long) ID: ClassTag](
-      implicit ord: Ordering[ID])
+  private class KeyWrapper[@specialized(Int, Long) ID: ClassTag](implicit
+      ord: Ordering[ID])
       extends Ordered[KeyWrapper[ID]] {
 
     var key: ID = _

@@ -68,8 +68,8 @@ object WhitespaceApi {
   }
   def Wrapper(WL: P0) = new Wrapper(WL)
   class Wrapper(WL: P0) {
-    implicit def parserApi[T, V](p0: T)(
-        implicit c: T => P[V]): WhitespaceApi[V] = new WhitespaceApi[V](p0, WL)
+    implicit def parserApi[T, V](p0: T)(implicit
+        c: T => P[V]): WhitespaceApi[V] = new WhitespaceApi[V](p0, WL)
   }
 }
 
@@ -87,8 +87,8 @@ class WhitespaceApi[+T](p0: P[T], WL: P0) extends ParserApiImpl(p0) {
   override def rep[R](implicit ev: Repeater[T, R]): P[R] =
     Repeat(p0, 0, Int.MaxValue, NoCut(WL))
 
-  def repX[R](min: Int = 0, sep: P[_] = Pass, max: Int = Int.MaxValue)(
-      implicit ev: Repeater[T, R]): P[R] = Repeat(p0, min, max, sep)
+  def repX[R](min: Int = 0, sep: P[_] = Pass, max: Int = Int.MaxValue)(implicit
+      ev: Repeater[T, R]): P[R] = Repeat(p0, min, max, sep)
 
   override def rep[R](min: Int = 0, sep: P[_] = Pass, max: Int = Int.MaxValue)(
       implicit ev: Repeater[T, R]): P[R] = {

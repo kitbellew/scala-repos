@@ -81,8 +81,8 @@ trait GenIterableLike[+A, +Repr] extends Any with GenTraversableLike[A, Repr] {
     *                   corresponding elements of this $coll and `that`. The length
     *                   of the returned collection is the minimum of the lengths of this $coll and `that`.
     */
-  def zip[A1 >: A, B, That](that: GenIterable[B])(
-      implicit bf: CBF[Repr, (A1, B), That]): That
+  def zip[A1 >: A, B, That](that: GenIterable[B])(implicit
+      bf: CBF[Repr, (A1, B), That]): That
 
   /** Zips this $coll with its indices.
     *

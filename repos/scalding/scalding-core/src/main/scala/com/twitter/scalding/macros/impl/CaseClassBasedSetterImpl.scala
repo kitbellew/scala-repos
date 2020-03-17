@@ -31,8 +31,8 @@ object CaseClassBasedSetterImpl {
   def apply[T](c: Context)(
       container: c.TermName,
       allowUnknownTypes: Boolean,
-      fsetter: CaseClassFieldSetter)(
-      implicit T: c.WeakTypeTag[T]): (Int, c.Tree) = {
+      fsetter: CaseClassFieldSetter)(implicit
+      T: c.WeakTypeTag[T]): (Int, c.Tree) = {
     import c.universe._
 
     sealed trait SetterBuilder {

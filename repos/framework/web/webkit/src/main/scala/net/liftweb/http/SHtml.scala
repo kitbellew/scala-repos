@@ -1120,8 +1120,8 @@ trait SHtml extends Loggable {
       options: Seq[T],
       default: Box[T],
       jsFunc: Call,
-      attrs: ElemAttr*)(onSubmit: T => JsCmd)(
-      implicit f: PairStringPromoter[T]): Elem = {
+      attrs: ElemAttr*)(onSubmit: T => JsCmd)(implicit
+      f: PairStringPromoter[T]): Elem = {
     ajaxSelectObj[T](options.map(v => (v, f(v))), default, jsFunc, onSubmit)
   }
 

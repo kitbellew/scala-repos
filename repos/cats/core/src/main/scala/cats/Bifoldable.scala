@@ -14,8 +14,8 @@ trait Bifoldable[F[_, _]] extends Any with Serializable { self =>
       g: (B, Eval[C]) => Eval[C]): Eval[C]
 
   /** Collapse the structure by mapping each element to an element of a type that has a [[cats.Monoid]] */
-  def bifoldMap[A, B, C](fab: F[A, B])(f: A => C, g: B => C)(
-      implicit C: Monoid[C]): C =
+  def bifoldMap[A, B, C](fab: F[A, B])(f: A => C, g: B => C)(implicit
+      C: Monoid[C]): C =
     bifoldLeft(fab, C.empty)(
       (c: C, a: A) => C.combine(c, f(a)),
       (c: C, b: B) => C.combine(c, g(b)))

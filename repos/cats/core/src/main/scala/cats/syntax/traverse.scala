@@ -2,8 +2,8 @@ package cats
 package syntax
 
 trait TraverseSyntax1 {
-  implicit def traverseSyntaxU[FA](fa: FA)(
-      implicit U: Unapply[Traverse, FA]): TraverseOps[U.M, U.A] =
+  implicit def traverseSyntaxU[FA](fa: FA)(implicit
+      U: Unapply[Traverse, FA]): TraverseOps[U.M, U.A] =
     new TraverseOps(U.subst(fa))(U.TC)
 }
 
@@ -20,9 +20,8 @@ trait TraverseSyntax extends TraverseSyntax1 {
 final class TraverseOps[F[_], A](fa: F[A])(implicit F: Traverse[F]) {
   def traverse[G[_]: Applicative, B](f: A => G[B]): G[F[B]] = F.traverse(fa)(f)
 
-  def traverseU[GB](f: A => GB)(
-      implicit U: Unapply[Applicative, GB]): U.M[F[U.A]] =
-    F.traverseU[A, GB](fa)(f)(U)
+  def traverseU[GB](f: A => GB)(implicit
+      U: Unapply[Applicative, GB]): U.M[F[U.A]] = F.traverseU[A, GB](fa)(f)(U)
 
   def sequence[G[_], B](implicit G: Applicative[G], ev: A =:= G[B]): G[F[B]] =
     F.sequence(fa.asInstanceOf[F[G[B]]])
@@ -32,7 +31,7 @@ final class TraverseOps[F[_], A](fa: F[A])(implicit F: Traverse[F]) {
 
 }
 
-final class NestedTraverseOps[F[_], G[_], A](fga: F[G[A]])(
-    implicit F: Traverse[F]) {
+final class NestedTraverseOps[F[_], G[_], A](fga: F[G[A]])(implicit
+    F: Traverse[F]) {
   def sequence(implicit G: Applicative[G]): G[F[A]] = F.sequence(fga)
 }

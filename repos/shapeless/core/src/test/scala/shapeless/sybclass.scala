@@ -34,8 +34,8 @@ class SybClassTests {
     implicit def default[T] = at[T](_ => 1)
   }
 
-  def gsizeAll2[T](t: T)(
-      implicit everything: Everything[gsize.type, plus.type, T]) = everything(t)
+  def gsizeAll2[T](t: T)(implicit
+      everything: Everything[gsize.type, plus.type, T]) = everything(t)
 
   object incAll extends Poly1 {
     implicit def caseInt = at[Int](_ + 1)

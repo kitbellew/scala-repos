@@ -271,8 +271,8 @@ object Storage extends Logging {
     getDataObject[T](repoDOSourceName, repoDOMeta.namespace, test = test)
   }
 
-  private[prediction] def getPDataObject[T](repo: String)(
-      implicit tag: TypeTag[T]): T = {
+  private[prediction] def getPDataObject[T](repo: String)(implicit
+      tag: TypeTag[T]): T = {
     val repoDOMeta = repositoriesToDataObjectMeta(repo)
     val repoDOSourceName = repoDOMeta.sourceName
     getPDataObject[T](repoDOSourceName, repoDOMeta.namespace)

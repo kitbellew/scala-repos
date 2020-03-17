@@ -27,8 +27,8 @@ class FallbackArrayBuilding {
     *  implicit search by `Array.canBuildFrom`). We make sure that
     *  implicit search is always successful.
     */
-  implicit def fallbackCanBuildFrom[T](
-      implicit m: DummyImplicit): CanBuildFrom[Array[_], T, ArraySeq[T]] =
+  implicit def fallbackCanBuildFrom[T](implicit
+      m: DummyImplicit): CanBuildFrom[Array[_], T, ArraySeq[T]] =
     new CanBuildFrom[Array[_], T, ArraySeq[T]] {
       def apply(from: Array[_]) = ArraySeq.newBuilder[T]
       def apply() = ArraySeq.newBuilder[T]
@@ -59,8 +59,8 @@ object Array extends FallbackArrayBuilding {
   val emptyShortArray = new Array[Short](0)
   val emptyObjectArray = new Array[Object](0)
 
-  implicit def canBuildFrom[T](
-      implicit t: ClassTag[T]): CanBuildFrom[Array[_], T, Array[T]] =
+  implicit def canBuildFrom[T](implicit
+      t: ClassTag[T]): CanBuildFrom[Array[_], T, Array[T]] =
     new CanBuildFrom[Array[_], T, Array[T]] {
       def apply(from: Array[_]) = ArrayBuilder.make[T]()(t)
       def apply() = ArrayBuilder.make[T]()(t)

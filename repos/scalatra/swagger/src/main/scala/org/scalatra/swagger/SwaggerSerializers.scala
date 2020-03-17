@@ -210,8 +210,8 @@ object SwaggerSerializers {
           { case JString(method)    => HttpMethod(method) },
           { case method: HttpMethod => JString(method.toString) }))
 
-  def writeDataType(dataType: DataType, key: String = "type")(
-      implicit formats: Formats): JValue =
+  def writeDataType(dataType: DataType, key: String = "type")(implicit
+      formats: Formats): JValue =
     dataType match {
       case DataType.ValueDataType(name, Some(format), _) =>
         ("type" -> name) ~ ("format" -> format)

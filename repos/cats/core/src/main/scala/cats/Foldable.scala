@@ -79,8 +79,8 @@ import simulacrum.typeclass
   /**
     * Left associative monadic folding on `F`.
     */
-  def foldM[G[_], A, B](fa: F[A], z: B)(f: (B, A) => G[B])(
-      implicit G: Monad[G]): G[B] =
+  def foldM[G[_], A, B](fa: F[A], z: B)(f: (B, A) => G[B])(implicit
+      G: Monad[G]): G[B] =
     foldLeft(fa, G.pure(z))((gb, a) => G.flatMap(gb)(f(_, a)))
 
   /**
@@ -107,8 +107,8 @@ import simulacrum.typeclass
     * or effect, and the specific `A` aspect of `G[A]` is not otherwise
     * needed.
     */
-  def traverse_[G[_], A, B](fa: F[A])(f: A => G[B])(
-      implicit G: Applicative[G]): G[Unit] =
+  def traverse_[G[_], A, B](fa: F[A])(f: A => G[B])(implicit
+      G: Applicative[G]): G[Unit] =
     foldLeft(fa, G.pure(())) { (acc, a) => G.map2(acc, f(a)) { (_, _) => () } }
 
   /**
@@ -133,8 +133,8 @@ import simulacrum.typeclass
     * explicitly passing in the type parameters - the type checker has trouble
     * inferring the appropriate instance.
     */
-  def traverseU_[A, GB](fa: F[A])(f: A => GB)(
-      implicit U: Unapply[Applicative, GB]): U.M[Unit] =
+  def traverseU_[A, GB](fa: F[A])(f: A => GB)(implicit
+      U: Unapply[Applicative, GB]): U.M[Unit] =
     traverse_(fa)(f.andThen(U.subst))(U.TC)
 
   /**
@@ -177,9 +177,8 @@ import simulacrum.typeclass
     * explicitly passing in the type parameters - the type checker has trouble
     * inferring the appropriate instance.
     */
-  def sequenceU_[GA](fa: F[GA])(
-      implicit U: Unapply[Applicative, GA]): U.M[Unit] =
-    traverseU_(fa)(identity)
+  def sequenceU_[GA](fa: F[GA])(implicit
+      U: Unapply[Applicative, GA]): U.M[Unit] = traverseU_(fa)(identity)
 
   /**
     * Fold implemented using the given `MonoidK[G]` instance.

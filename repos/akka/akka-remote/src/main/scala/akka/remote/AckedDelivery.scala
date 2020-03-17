@@ -151,8 +151,8 @@ final case class AckedSendBuffer[T <: HasSequenceNumber](
 final case class AckedReceiveBuffer[T <: HasSequenceNumber](
     lastDelivered: SeqNo = SeqNo(-1),
     cumulativeAck: SeqNo = SeqNo(-1),
-    buf: SortedSet[T] = TreeSet.empty[T])(
-    implicit val seqOrdering: Ordering[T]) {
+    buf: SortedSet[T] = TreeSet.empty[T])(implicit
+    val seqOrdering: Ordering[T]) {
 
   import SeqNo.ord.max
 

@@ -211,8 +211,8 @@ class LazyMacros(val c: whitebox.Context)
           actualType) => q"_root_.shapeless.Strict.apply[$actualType]($tree)",
       q"null.asInstanceOf[_root_.shapeless.Strict[_root_.scala.Nothing]]")
 
-  def mkImpl[I](mkInst: (Tree, Type) => Tree, nullInst: => Tree)(
-      implicit iTag: WeakTypeTag[I]): Tree = {
+  def mkImpl[I](mkInst: (Tree, Type) => Tree, nullInst: => Tree)(implicit
+      iTag: WeakTypeTag[I]): Tree = {
     openImplicitTpeParam match {
       case Some(tpe) => LazyMacros.deriveInstance(this)(tpe, mkInst)
       case None =>

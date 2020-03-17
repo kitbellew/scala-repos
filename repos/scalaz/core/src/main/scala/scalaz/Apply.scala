@@ -22,8 +22,8 @@ trait Apply[F[_]] extends Functor[F] { self =>
 
   // derived functions
 
-  def traverse1[A, G[_], B](value: G[A])(f: A => F[B])(
-      implicit G: Traverse1[G]): F[G[B]] = G.traverse1(value)(f)(this)
+  def traverse1[A, G[_], B](value: G[A])(f: A => F[B])(implicit
+      G: Traverse1[G]): F[G[B]] = G.traverse1(value)(f)(this)
 
   def sequence1[A, G[_]: Traverse1](as: G[F[A]]): F[G[A]] =
     traverse1(as)(a => a)
@@ -333,8 +333,8 @@ trait Apply[F[_]] extends Functor[F] { self =>
   trait ApplyLaw extends FunctorLaw {
 
     /** Lifted functions can be fused. */
-    def composition[A, B, C](fbc: F[B => C], fab: F[A => B], fa: F[A])(
-        implicit FC: Equal[F[C]]) =
+    def composition[A, B, C](fbc: F[B => C], fab: F[A => B], fa: F[A])(implicit
+        FC: Equal[F[C]]) =
       FC.equal(
         ap(ap(fa)(fab))(fbc),
         ap(fa)(

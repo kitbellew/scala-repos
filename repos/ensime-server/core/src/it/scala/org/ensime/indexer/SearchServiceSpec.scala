@@ -168,8 +168,8 @@ trait SearchServiceTestUtils {
   def refresh()(implicit service: SearchService): (Int, Int) =
     Await.result(service.refresh(), Duration.Inf)
 
-  def searchClasses(expect: String, query: String)(
-      implicit service: SearchService) = {
+  def searchClasses(expect: String, query: String)(implicit
+      service: SearchService) = {
     val max = 10
     val info = s"'$query' expected '$expect')"
     val results = service.searchClasses(query, max)
@@ -183,12 +183,12 @@ trait SearchServiceTestUtils {
     results
   }
 
-  def searchesClasses(expect: String, queries: String*)(
-      implicit service: SearchService) =
+  def searchesClasses(expect: String, queries: String*)(implicit
+      service: SearchService) =
     (expect :: queries.toList).foreach(searchClasses(expect, _))
 
-  def searchClassesAndMethods(expect: String, query: String)(
-      implicit service: SearchService) = {
+  def searchClassesAndMethods(expect: String, query: String)(implicit
+      service: SearchService) = {
     val max = 10
     val info = s"'$query' expected '$expect')"
     val results = service.searchClassesMethods(List(query), max)
@@ -212,8 +212,8 @@ trait SearchServiceTestUtils {
   def searchesEmpty(queries: String*)(implicit service: SearchService) =
     queries.toList.foreach(searchExpectEmpty)
 
-  def searchesClassesAndMethods(expect: String, queries: String*)(
-      implicit service: SearchService) =
+  def searchesClassesAndMethods(expect: String, queries: String*)(implicit
+      service: SearchService) =
     (expect :: queries.toList).foreach(searchClassesAndMethods(expect, _))
 
 }

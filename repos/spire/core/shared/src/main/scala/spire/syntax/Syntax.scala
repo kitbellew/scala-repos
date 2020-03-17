@@ -79,9 +79,8 @@ trait AdditiveSemigroupSyntax {
 }
 
 trait AdditiveMonoidSyntax extends AdditiveSemigroupSyntax {
-  implicit def additiveMonoidOps[A](a: A)(
-      implicit ev: AdditiveMonoid[A]): AdditiveMonoidOps[A] =
-    new AdditiveMonoidOps(a)
+  implicit def additiveMonoidOps[A](a: A)(implicit
+      ev: AdditiveMonoid[A]): AdditiveMonoidOps[A] = new AdditiveMonoidOps(a)
 }
 
 trait AdditiveGroupSyntax extends AdditiveMonoidSyntax {
@@ -113,8 +112,8 @@ trait MultiplicativeSemigroupSyntax {
 }
 
 trait MultiplicativeMonoidSyntax extends MultiplicativeSemigroupSyntax {
-  implicit def multiplicativeMonoidOps[A](a: A)(
-      implicit ev: MultiplicativeMonoid[A]): MultiplicativeMonoidOps[A] =
+  implicit def multiplicativeMonoidOps[A](a: A)(implicit
+      ev: MultiplicativeMonoid[A]): MultiplicativeMonoidOps[A] =
     new MultiplicativeMonoidOps(a)
 }
 
@@ -235,17 +234,17 @@ trait IntervalSyntax {
 }
 
 trait UnboundSyntax {
-  implicit def moduleUnboundOps[F](f: F)(
-      implicit ev: Module[_, F]): ModuleUnboundOps[F] = new ModuleUnboundOps(f)
+  implicit def moduleUnboundOps[F](f: F)(implicit
+      ev: Module[_, F]): ModuleUnboundOps[F] = new ModuleUnboundOps(f)
 
-  implicit def vectorSpaceUnboundOps[F](f: F)(
-      implicit ev: VectorSpace[_, F]): VectorSpaceUnboundOps[F] =
+  implicit def vectorSpaceUnboundOps[F](f: F)(implicit
+      ev: VectorSpace[_, F]): VectorSpaceUnboundOps[F] =
     new VectorSpaceUnboundOps(f)
 
-  implicit def groupActionUnboundOps[G](g: G)(
-      implicit ev: Action[_, G]): ActionUnboundOps[G] = new ActionUnboundOps(g)
-  implicit def additiveActionUnboundOps[G](g: G)(
-      implicit ev: AdditiveAction[_, G]): AdditiveActionUnboundOps[G] =
+  implicit def groupActionUnboundOps[G](g: G)(implicit
+      ev: Action[_, G]): ActionUnboundOps[G] = new ActionUnboundOps(g)
+  implicit def additiveActionUnboundOps[G](g: G)(implicit
+      ev: AdditiveAction[_, G]): AdditiveActionUnboundOps[G] =
     new AdditiveActionUnboundOps(g)
   implicit def multiplicativeActionUnboundOps[G](g: G)(implicit
       ev: MultiplicativeAction[_, G]): MultiplicativeActionUnboundOps[G] =

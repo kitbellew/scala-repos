@@ -192,13 +192,13 @@ sealed abstract class List[+A]
 
   // Overridden methods from IterableLike and SeqLike or overloaded variants of such methods
 
-  override def ++[B >: A, That](that: GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[List[A], B, That]): That =
+  override def ++[B >: A, That](that: GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[List[A], B, That]): That =
     if (bf eq List.ReusableCBF) (this ::: that.seq.toList).asInstanceOf[That]
     else super.++(that)
 
-  override def +:[B >: A, That](elem: B)(
-      implicit bf: CanBuildFrom[List[A], B, That]): That =
+  override def +:[B >: A, That](elem: B)(implicit
+      bf: CanBuildFrom[List[A], B, That]): That =
     bf match {
       case _: List.GenericCanBuildFrom[_] => (elem :: this).asInstanceOf[That]
       case _                              => super.+:(elem)(bf)
@@ -272,8 +272,8 @@ sealed abstract class List[+A]
     (b.toList, these)
   }
 
-  final override def map[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[List[A], B, That]): That = {
+  final override def map[B, That](f: A => B)(implicit
+      bf: CanBuildFrom[List[A], B, That]): That = {
     if (bf eq List.ReusableCBF) {
       if (this eq Nil) Nil.asInstanceOf[That]
       else {
@@ -291,8 +291,8 @@ sealed abstract class List[+A]
     } else super.map(f)
   }
 
-  final override def collect[B, That](pf: PartialFunction[A, B])(
-      implicit bf: CanBuildFrom[List[A], B, That]): That = {
+  final override def collect[B, That](pf: PartialFunction[A, B])(implicit
+      bf: CanBuildFrom[List[A], B, That]): That = {
     if (bf eq List.ReusableCBF) {
       if (this eq Nil) Nil.asInstanceOf[That]
       else {
@@ -322,8 +322,8 @@ sealed abstract class List[+A]
     } else super.collect(pf)
   }
 
-  final override def flatMap[B, That](f: A => GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[List[A], B, That]): That = {
+  final override def flatMap[B, That](f: A => GenTraversableOnce[B])(implicit
+      bf: CanBuildFrom[List[A], B, That]): That = {
     if (bf eq List.ReusableCBF) {
       if (this eq Nil) Nil.asInstanceOf[That]
       else {

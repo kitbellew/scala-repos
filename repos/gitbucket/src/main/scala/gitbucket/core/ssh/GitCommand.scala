@@ -85,8 +85,8 @@ abstract class DefaultGitCommand(val owner: String, val repoName: String)
 
   protected def isWritableUser(
       username: String,
-      repositoryInfo: RepositoryService.RepositoryInfo)(
-      implicit session: Session): Boolean =
+      repositoryInfo: RepositoryService.RepositoryInfo)(implicit
+      session: Session): Boolean =
     getAccountByUserName(username) match {
       case Some(account) =>
         hasWritePermission(
@@ -103,8 +103,8 @@ class DefaultGitUploadPack(owner: String, repoName: String)
     with RepositoryService
     with AccountService {
 
-  override protected def runTask(user: String)(
-      implicit session: Session): Unit = {
+  override protected def runTask(user: String)(implicit
+      session: Session): Unit = {
     getRepository(owner, repoName.replaceFirst("\\.wiki\\Z", "")).foreach {
       repositoryInfo =>
         if (!repositoryInfo.repository.isPrivate || isWritableUser(
@@ -125,8 +125,8 @@ class DefaultGitReceivePack(owner: String, repoName: String, baseUrl: String)
     with RepositoryService
     with AccountService {
 
-  override protected def runTask(user: String)(
-      implicit session: Session): Unit = {
+  override protected def runTask(user: String)(implicit
+      session: Session): Unit = {
     getRepository(owner, repoName.replaceFirst("\\.wiki\\Z", "")).foreach {
       repositoryInfo =>
         if (isWritableUser(user, repositoryInfo)) {
@@ -149,8 +149,8 @@ class PluginGitUploadPack(repoName: String, routing: GitRepositoryRouting)
     extends GitCommand
     with SystemSettingsService {
 
-  override protected def runTask(user: String)(
-      implicit session: Session): Unit = {
+  override protected def runTask(user: String)(implicit
+      session: Session): Unit = {
     if (routing.filter.filter(
           "/" + repoName,
           Some(user),
@@ -171,8 +171,8 @@ class PluginGitReceivePack(repoName: String, routing: GitRepositoryRouting)
     extends GitCommand
     with SystemSettingsService {
 
-  override protected def runTask(user: String)(
-      implicit session: Session): Unit = {
+  override protected def runTask(user: String)(implicit
+      session: Session): Unit = {
     if (routing.filter.filter(
           "/" + repoName,
           Some(user),

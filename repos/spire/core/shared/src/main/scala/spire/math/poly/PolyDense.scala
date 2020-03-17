@@ -10,8 +10,8 @@ import spire.syntax.eq._
 import spire.syntax.field._
 
 // Dense polynomials - Little Endian Coeffs e.g. x^0, x^1, ... x^n
-class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
-    implicit val ct: ClassTag[C])
+class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(implicit
+    val ct: ClassTag[C])
     extends Polynomial[C] { lhs =>
 
   def degree: Int = if (isZero) 0 else coeffs.length - 1

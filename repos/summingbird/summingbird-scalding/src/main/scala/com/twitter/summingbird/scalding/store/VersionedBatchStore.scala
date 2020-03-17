@@ -44,8 +44,8 @@ import scala.util.{Try => ScalaTry}
   */
 object VersionedBatchStore {
   def apply[K, V, K2, V2](rootPath: String, versionsToKeep: Int)(
-      pack: (BatchID, (K, V)) => (K2, V2))(unpack: ((K2, V2)) => (K, V))(
-      implicit
+      pack: (BatchID, (K, V)) => (K2, V2))(
+      unpack: ((K2, V2)) => (K, V))(implicit
       batcher: Batcher,
       injection: Injection[(K2, V2), (Array[Byte], Array[Byte])],
       ordering: Ordering[K]): VersionedBatchStore[K, V, K2, V2] =

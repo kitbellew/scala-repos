@@ -29,12 +29,12 @@ import com.twitter.bijection.macros.impl.IsCaseClassImpl
   */
 object TypeDescriptorProviderImpl {
 
-  def caseClassTypeDescriptorImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[TypeDescriptor[T]] =
+  def caseClassTypeDescriptorImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[TypeDescriptor[T]] =
     caseClassTypeDescriptorCommonImpl(c, false)(T)
 
-  def caseClassTypeDescriptorWithUnknownImpl[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[TypeDescriptor[T]] =
+  def caseClassTypeDescriptorWithUnknownImpl[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[TypeDescriptor[T]] =
     caseClassTypeDescriptorCommonImpl(c, true)(T)
 
   /**
@@ -309,8 +309,8 @@ object TypeDescriptorProviderImpl {
 
   def caseClassTypeDescriptorCommonImpl[T](
       c: Context,
-      allowUnknownTypes: Boolean)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[TypeDescriptor[T]] = {
+      allowUnknownTypes: Boolean)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[TypeDescriptor[T]] = {
     import c.universe._
 
     val converter = TupleConverterImpl

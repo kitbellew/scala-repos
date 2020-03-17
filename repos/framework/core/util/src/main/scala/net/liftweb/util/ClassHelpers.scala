@@ -84,8 +84,8 @@ trait ClassHelpers { self: ControlHelpers =>
   def findType[C <: AnyRef](
       name: String,
       where: List[String],
-      modifiers: List[String => String])(
-      implicit m: Manifest[C]): Box[Class[C]] =
+      modifiers: List[String => String])(implicit
+      m: Manifest[C]): Box[Class[C]] =
     findClass(name, where, modifiers, m.runtimeClass.asInstanceOf[Class[C]])
 
   /**
@@ -131,9 +131,8 @@ trait ClassHelpers { self: ControlHelpers =>
     *
     * @return a Box, either containing the found class or an Empty can.
     */
-  def findType[C <: AnyRef](name: String, where: List[String])(
-      implicit m: Manifest[C]): Box[Class[C]] =
-    findType[C](name, where, nameModifiers)
+  def findType[C <: AnyRef](name: String, where: List[String])(implicit
+      m: Manifest[C]): Box[Class[C]] = findType[C](name, where, nameModifiers)
 
   /**
     * Find a class given its name and a list of packages, turning underscored names to CamelCase if
@@ -156,8 +155,8 @@ trait ClassHelpers { self: ControlHelpers =>
     *
     * @return a Box, either containing the found class or an Empty can.
     */
-  def findType[C <: AnyRef](where: List[(String, List[String])])(
-      implicit m: Manifest[C]): Box[Class[C]] =
+  def findType[C <: AnyRef](where: List[(String, List[String])])(implicit
+      m: Manifest[C]): Box[Class[C]] =
     (for ((name, packages) <- where;
           klass <- findType[C](name, packages)) yield klass).headOption
 

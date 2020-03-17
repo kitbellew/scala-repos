@@ -40,10 +40,8 @@ class FilterMap[Repr](a: Repr) {
 }
 
 class FilterMapFixed[A, Repr <% TraversableLike[A, Repr]](a: Repr) {
-  def filterMap2[B, That](f: A => Option[B])(
-      implicit cbf: CanBuildFrom[Repr, B, That]): That = {
-    a.flatMap(e => f(e).toSeq)
-  }
+  def filterMap2[B, That](f: A => Option[B])(implicit
+      cbf: CanBuildFrom[Repr, B, That]): That = { a.flatMap(e => f(e).toSeq) }
 }
 
 object MyEnhancements {

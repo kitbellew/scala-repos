@@ -351,12 +351,10 @@ object GenTypeClass {
       }
     val extendsLikeList = extendsListText("")
 
-    val syntaxPackString = tc.syntaxPack
-      .map("package " + _)
-      .mkString("\n") + (if (tc.pack == Seq("scalaz")) ""
-                         else
-                           "\n\n" + "import " + (tc.pack :+ tc.name)
-                             .mkString("."))
+    val syntaxPackString = tc.syntaxPack.map("package " + _).mkString("\n") + (
+      if (tc.pack == Seq("scalaz")) ""
+      else "\n\n" + "import " + (tc.pack :+ tc.name).mkString(".")
+    )
     val syntaxPackString1 = tc.syntaxPack.mkString(".")
     val syntaxMember =
       if (tc.createSyntax) {

@@ -25,12 +25,11 @@ object Challenge extends LilaController {
 
   def show(id: String) = Open { implicit ctx => showId(id) }
 
-  protected[controllers] def showId(id: String)(
-      implicit ctx: Context): Fu[Result] =
-    OptionFuResult(env.api byId id)(showChallenge)
+  protected[controllers] def showId(id: String)(implicit
+      ctx: Context): Fu[Result] = OptionFuResult(env.api byId id)(showChallenge)
 
-  protected[controllers] def showChallenge(c: ChallengeModel)(
-      implicit ctx: Context): Fu[Result] =
+  protected[controllers] def showChallenge(c: ChallengeModel)(implicit
+      ctx: Context): Fu[Result] =
     env version c.id flatMap { version =>
       val mine = isMine(c)
       import lila.challenge.Direction
@@ -136,8 +135,8 @@ object Challenge extends LilaController {
       }
     }
 
-  def restriction(user: lila.user.User)(
-      implicit ctx: Context): Fu[Option[String]] =
+  def restriction(user: lila.user.User)(implicit
+      ctx: Context): Fu[Option[String]] =
     ctx.me match {
       case None => fuccess("Only registered players can send challenges.".some)
       case Some(me) =>

@@ -40,19 +40,18 @@ trait FutureInstances extends FutureInstances1 {
       override def map[A, B](fa: Future[A])(f: A => B): Future[B] = fa.map(f)
     }
 
-  implicit def futureGroup[A: Group](
-      implicit ec: ExecutionContext): Group[Future[A]] = new FutureGroup[A]
+  implicit def futureGroup[A: Group](implicit
+      ec: ExecutionContext): Group[Future[A]] = new FutureGroup[A]
 }
 
 private[std] sealed trait FutureInstances1 extends FutureInstances2 {
-  implicit def futureMonoid[A: Monoid](
-      implicit ec: ExecutionContext): Monoid[Future[A]] = new FutureMonoid[A]
+  implicit def futureMonoid[A: Monoid](implicit
+      ec: ExecutionContext): Monoid[Future[A]] = new FutureMonoid[A]
 }
 
 private[std] sealed trait FutureInstances2 {
-  implicit def futureSemigroup[A: Semigroup](
-      implicit ec: ExecutionContext): Semigroup[Future[A]] =
-    new FutureSemigroup[A]
+  implicit def futureSemigroup[A: Semigroup](implicit
+      ec: ExecutionContext): Semigroup[Future[A]] = new FutureSemigroup[A]
 }
 
 private[cats] abstract class FutureCoflatMap(implicit ec: ExecutionContext)

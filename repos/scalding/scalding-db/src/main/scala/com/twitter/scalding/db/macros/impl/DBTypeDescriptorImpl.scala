@@ -15,8 +15,8 @@ import com.twitter.scalding.db.macros._
 
 object DBTypeDescriptorImpl {
 
-  def apply[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[DBTypeDescriptor[T]] = {
+  def apply[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[DBTypeDescriptor[T]] = {
     import c.universe._
 
     if (!IsCaseClassImpl.isCaseClassType(c)(T.tpe))

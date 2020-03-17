@@ -91,16 +91,16 @@ object Enumeratee2TTest extends SpecLite {
 
   "join the first element with all of the second iteratee's elements, which compare equal" in {
     val enum1p = new EnumeratorP[Int, Id] {
-      def apply[F[_]](
-          implicit ord: MonadPartialOrder[F, Id]): EnumeratorT[Int, F] = {
+      def apply[F[_]](implicit
+          ord: MonadPartialOrder[F, Id]): EnumeratorT[Int, F] = {
         import ord._
         enumStream[Int, F](Stream(1))
       }
     }
 
     val enum2p = new EnumeratorP[Int, Id] {
-      def apply[F[_]](
-          implicit ord: MonadPartialOrder[F, Id]): EnumeratorT[Int, F] = {
+      def apply[F[_]](implicit
+          ord: MonadPartialOrder[F, Id]): EnumeratorT[Int, F] = {
         import ord._
         enumStream[Int, F](Stream(1, 1, 1))
       }

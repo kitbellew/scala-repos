@@ -112,8 +112,8 @@ object TypedPipeDiff {
 
     implicit class Diff[T](val left: TypedPipe[T]) extends AnyVal {
 
-      def diff(right: TypedPipe[T], reducers: Option[Int] = None)(
-          implicit ev: Ordering[T]): UnsortedGrouped[T, (Long, Long)] =
+      def diff(right: TypedPipe[T], reducers: Option[Int] = None)(implicit
+          ev: Ordering[T]): UnsortedGrouped[T, (Long, Long)] =
         TypedPipeDiff.diff(left, right, reducers)
 
       def diffByGroup[K: Ordering](
@@ -132,8 +132,8 @@ object TypedPipeDiff {
 
       def diffArrayPipes(
           right: TypedPipe[Array[T]],
-          reducers: Option[Int] = None)(
-          implicit ev: ClassTag[T]): TypedPipe[(Array[T], (Long, Long))] =
+          reducers: Option[Int] = None)(implicit
+          ev: ClassTag[T]): TypedPipe[(Array[T], (Long, Long))] =
         TypedPipeDiff.diffArrayPipes(left, right, reducers)
     }
 

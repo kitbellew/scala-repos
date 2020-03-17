@@ -80,8 +80,8 @@ object ScroogeInternalOrderedSerializationImpl {
       .orElse(innerDisp)
   }
 
-  def apply[T](c: Context)(
-      implicit T: c.WeakTypeTag[T]): c.Expr[OrderedSerialization[T]] = {
+  def apply[T](c: Context)(implicit
+      T: c.WeakTypeTag[T]): c.Expr[OrderedSerialization[T]] = {
     val b: TreeOrderedBuf[c.type] = outerDispatcher(c)(T.tpe)
     TreeOrderedBuf.toOrderedSerialization[T](c)(b)
   }

@@ -40,8 +40,8 @@ package object cats {
       def foldLeft[A, B](a: A, b: B)(f: (B, A) => B) = f(b, a)
       def foldRight[A, B](a: A, lb: Eval[B])(
           f: (A, Eval[B]) => Eval[B]): Eval[B] = f(a, lb)
-      def traverse[G[_], A, B](a: A)(f: A => G[B])(
-          implicit G: Applicative[G]): G[B] = f(a)
+      def traverse[G[_], A, B](a: A)(f: A => G[B])(implicit
+          G: Applicative[G]): G[B] = f(a)
     }
 
   type Eq[A] = algebra.Eq[A]

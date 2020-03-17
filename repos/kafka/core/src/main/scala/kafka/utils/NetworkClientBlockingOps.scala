@@ -54,8 +54,8 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     * This method is useful for implementing blocking behaviour on top of the non-blocking `NetworkClient`, use it with
     * care.
     */
-  def blockingReady(node: Node, timeout: Long)(
-      implicit time: JTime): Boolean = {
+  def blockingReady(node: Node, timeout: Long)(implicit
+      time: JTime): Boolean = {
     client.ready(node, time.milliseconds()) || pollUntil(timeout) { (_, now) =>
       if (client.isReady(node, now)) true
       else if (client.connectionFailed(node))
@@ -74,8 +74,8 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     * This method is useful for implementing blocking behaviour on top of the non-blocking `NetworkClient`, use it with
     * care.
     */
-  def blockingSendAndReceive(request: ClientRequest, timeout: Long)(
-      implicit time: JTime): Option[ClientResponse] = {
+  def blockingSendAndReceive(request: ClientRequest, timeout: Long)(implicit
+      time: JTime): Option[ClientResponse] = {
     client.send(request, time.milliseconds())
 
     pollUntilFound(timeout) {
@@ -105,8 +105,8 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     * care.
     */
   private def pollUntil(timeout: Long)(
-      predicate: (Seq[ClientResponse], Long) => Boolean)(
-      implicit time: JTime): Boolean = {
+      predicate: (Seq[ClientResponse], Long) => Boolean)(implicit
+      time: JTime): Boolean = {
     pollUntilFound(timeout) { (responses, now) =>
       if (predicate(responses, now)) Some(true) else None
     }.fold(false)(_ => true)
@@ -122,8 +122,8 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     * care.
     */
   private def pollUntilFound[T](timeout: Long)(
-      collect: (Seq[ClientResponse], Long) => Option[T])(
-      implicit time: JTime): Option[T] = {
+      collect: (Seq[ClientResponse], Long) => Option[T])(implicit
+      time: JTime): Option[T] = {
 
     val methodStartTime = time.milliseconds()
     val timeoutExpiryTime = methodStartTime + timeout

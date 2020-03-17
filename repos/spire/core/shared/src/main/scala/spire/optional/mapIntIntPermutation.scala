@@ -31,8 +31,8 @@ final class MapIntIntGroup extends Group[Map[Int, Int]] {
   def inverse(a: Map[Int, Int]): Map[Int, Int] = a.map(_.swap).toMap
 }
 
-final class MapIntIntSeqPartialAction[A, SA <: SeqLike[A, SA]](
-    implicit cbf: CanBuildFrom[SA, A, SA])
+final class MapIntIntSeqPartialAction[A, SA <: SeqLike[A, SA]](implicit
+    cbf: CanBuildFrom[SA, A, SA])
     extends PartialAction[SA, Map[Int, Int]] {
   import mapIntIntPermutation._
   def partialActl(perm: Map[Int, Int], sa: SA): Opt[SA] = {

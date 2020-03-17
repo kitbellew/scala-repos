@@ -99,8 +99,8 @@ class CometSpec extends Specification {
   /**
     * Extracts the content as bytes.
     */
-  def contentAsBytes(of: Future[Result])(
-      implicit mat: Materializer): ByteString = {
+  def contentAsBytes(of: Future[Result])(implicit
+      mat: Materializer): ByteString = {
     val result = Await.result(of, timeout.duration)
     Await.result(result.body.consumeData, timeout.duration)
   }

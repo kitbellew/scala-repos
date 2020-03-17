@@ -64,8 +64,8 @@ trait Rand[@specialized(Int, Double) +T] { outer =>
   /**
     * Return a vector of samples.
     */
-  def samplesVector[U >: T](size: Int)(
-      implicit m: ClassTag[U]): DenseVector[U] = {
+  def samplesVector[U >: T](size: Int)(implicit
+      m: ClassTag[U]): DenseVector[U] = {
     val result = new DenseVector[U](new Array[U](size))
     cfor(0)(i => i < size, i => i + 1)(i => { result(i) = draw() })
     result
@@ -231,8 +231,8 @@ class RandBasis(val generator: RandomGenerator) {
     * Convert a Collection of Rand[T] into a Rand[Collection[T]]
     */
   def promote[T, CC[X] <: Traversable[X] with TraversableLike[X, CC[X]]](
-      col: CC[Rand[T]])(
-      implicit cbf: CanBuildFrom[CC[Rand[T]], T, CC[T]]): Rand[CC[T]] =
+      col: CC[Rand[T]])(implicit
+      cbf: CanBuildFrom[CC[Rand[T]], T, CC[T]]): Rand[CC[T]] =
     fromBody(col.map(_.get))
 
   /**

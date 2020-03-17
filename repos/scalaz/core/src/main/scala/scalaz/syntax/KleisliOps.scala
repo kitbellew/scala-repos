@@ -22,8 +22,8 @@ final class KleisliFAOps[F[_], A](val self: F[A]) extends AnyVal {
 }
 
 sealed trait ToKleisliOps0 {
-  implicit def ToKleisliOpsUnapply[FA](v: FA)(
-      implicit F0: Unapply[Monad, FA]): KleisliFAOps[F0.M, F0.A] =
+  implicit def ToKleisliOpsUnapply[FA](v: FA)(implicit
+      F0: Unapply[Monad, FA]): KleisliFAOps[F0.M, F0.A] =
     new KleisliFAOps(F0(v))
 }
 

@@ -17,8 +17,8 @@ trait Encoder {
 
   def messageFilter: HttpMessage ⇒ Boolean
 
-  def encode[T <: HttpMessage](message: T)(
-      implicit mapper: DataMapper[T]): T#Self =
+  def encode[T <: HttpMessage](message: T)(implicit
+      mapper: DataMapper[T]): T#Self =
     if (messageFilter(message) && !message.headers.exists(
           Encoder.isContentEncodingHeader))
       encodeData(message).withHeaders(

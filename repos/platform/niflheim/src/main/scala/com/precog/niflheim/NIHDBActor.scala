@@ -84,8 +84,8 @@ object NIHDB {
       baseDir: File,
       cookThreshold: Int,
       timeout: Timeout,
-      txLogScheduler: ScheduledExecutorService)(
-      implicit actorSystem: ActorSystem): IO[Validation[Error, NIHDB]] = {
+      txLogScheduler: ScheduledExecutorService)(implicit
+      actorSystem: ActorSystem): IO[Validation[Error, NIHDB]] = {
     NIHDBActor.create(
       chef,
       authorities,
@@ -102,8 +102,8 @@ object NIHDB {
       baseDir: File,
       cookThreshold: Int,
       timeout: Timeout,
-      txLogScheduler: ScheduledExecutorService)(
-      implicit actorSystem: ActorSystem) = {
+      txLogScheduler: ScheduledExecutorService)(implicit
+      actorSystem: ActorSystem) = {
     NIHDBActor.open(chef, baseDir, cookThreshold, timeout, txLogScheduler) map {
       _ map {
         _ map {
@@ -221,8 +221,8 @@ private[niflheim] object NIHDBActor extends Logging {
       baseDir: File,
       cookThreshold: Int,
       timeout: Timeout,
-      txLogScheduler: ScheduledExecutorService)(
-      implicit actorSystem: ActorSystem): IO[Validation[Error, ActorRef]] = {
+      txLogScheduler: ScheduledExecutorService)(implicit
+      actorSystem: ActorSystem): IO[Validation[Error, ActorRef]] = {
     val descriptorFile = new File(baseDir, descriptorFilename)
     val currentState: IO[Validation[Error, ProjectionState]] =
       if (descriptorFile.exists) { ProjectionState.fromFile(descriptorFile) }
@@ -261,8 +261,8 @@ private[niflheim] object NIHDBActor extends Logging {
       baseDir: File,
       cookThreshold: Int,
       timeout: Timeout,
-      txLogScheduler: ScheduledExecutorService)(
-      implicit actorSystem: ActorSystem)
+      txLogScheduler: ScheduledExecutorService)(implicit
+      actorSystem: ActorSystem)
       : IO[Option[Validation[Error, (Authorities, ActorRef)]]] = {
     val currentState: IO[Option[Validation[Error, ProjectionState]]] =
       readDescriptor(baseDir)

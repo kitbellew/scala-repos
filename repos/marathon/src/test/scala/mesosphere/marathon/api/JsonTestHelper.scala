@@ -15,8 +15,8 @@ import play.api.libs.json.{
 import scala.collection.Map
 
 object JsonTestHelper extends Assertions with Matchers {
-  def assertSerializationRoundtripWorks[T](value: T)(
-      implicit format: Format[T]): Unit = {
+  def assertSerializationRoundtripWorks[T](value: T)(implicit
+      format: Format[T]): Unit = {
     val json = Json.toJson(value)
     val reread = Json.fromJson(json)
     withClue(s"for json:\n${Json.prettyPrint(json)}\n") {
@@ -25,8 +25,8 @@ object JsonTestHelper extends Assertions with Matchers {
     }
   }
 
-  def assertThatJsonOf[T](value: T)(
-      implicit writes: Writes[T]): AssertThatJsonString = {
+  def assertThatJsonOf[T](value: T)(implicit
+      writes: Writes[T]): AssertThatJsonString = {
     AssertThatJsonString(Json.prettyPrint(Json.toJson(value)))
   }
 
@@ -66,8 +66,8 @@ object JsonTestHelper extends Assertions with Matchers {
           .filter(!isAddition(_))}")
     }
 
-    def containsEverythingInJsonOf[T](expected: T)(
-        implicit writes: Writes[T]): Unit = {
+    def containsEverythingInJsonOf[T](expected: T)(implicit
+        writes: Writes[T]): Unit = {
       correspondsToJsonString(Json.prettyPrint(Json.toJson(expected)))
     }
 
@@ -78,8 +78,8 @@ object JsonTestHelper extends Assertions with Matchers {
         s"unexpected differences in actual json:\n$actual\nexpected:\n$expected\n$diff")
     }
 
-    def correspondsToJsonOf[T](expected: T)(
-        implicit writes: Writes[T]): Unit = {
+    def correspondsToJsonOf[T](expected: T)(implicit
+        writes: Writes[T]): Unit = {
       correspondsToJsonString(Json.prettyPrint(Json.toJson(expected)))
     }
   }

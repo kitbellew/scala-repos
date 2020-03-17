@@ -101,8 +101,8 @@ sealed abstract class EphemeralStream[A] {
     if (isEmpty || b.isEmpty) emptyEphemeralStream
     else cons((head(), b.head()), tail() zip b.tail())
 
-  def unzip[X, Y](
-      implicit ev: A <:< (X, Y)): (EphemeralStream[X], EphemeralStream[Y]) =
+  def unzip[X, Y](implicit
+      ev: A <:< (X, Y)): (EphemeralStream[X], EphemeralStream[Y]) =
     foldRight((emptyEphemeralStream[X], emptyEphemeralStream[Y]))(q =>
       r => (cons(q._1, r._1), cons(q._2, r._2)))
 
@@ -173,9 +173,8 @@ sealed abstract class EphemeralStreamInstances {
     override def foldRight[A, B](fa: EphemeralStream[A], z: => B)(
         f: (A, => B) => B): B =
       if (fa.isEmpty) z else f(fa.head(), foldRight(fa.tail(), z)(f))
-    override def foldMap[A, B](fa: EphemeralStream[A])(f: A => B)(
-        implicit M: Monoid[B]) =
-      this.foldRight(fa, M.zero)((a, b) => M.append(f(a), b))
+    override def foldMap[A, B](fa: EphemeralStream[A])(f: A => B)(implicit
+        M: Monoid[B]) = this.foldRight(fa, M.zero)((a, b) => M.append(f(a), b))
     override def foldLeft[A, B](fa: EphemeralStream[A], z: B)(f: (B, A) => B) =
       fa.foldLeft(z)(b => a => f(b, a))
     override def zipWithL[A, B, C](
@@ -193,8 +192,8 @@ sealed abstract class EphemeralStreamInstances {
         fa: EphemeralStream[A],
         fb: EphemeralStream[B])(f: (Option[A], B) => C) =
       zipWithL(fb, fa)((b, a) => f(a, b))
-    def traverseImpl[G[_], A, B](fa: EphemeralStream[A])(f: A => G[B])(
-        implicit G: Applicative[G]): G[EphemeralStream[B]] = {
+    def traverseImpl[G[_], A, B](fa: EphemeralStream[A])(f: A => G[B])(implicit
+        G: Applicative[G]): G[EphemeralStream[B]] = {
       val seed: G[EphemeralStream[B]] = G.point(EphemeralStream[B]())
 
       fa.foldRight(seed) { x => ys =>

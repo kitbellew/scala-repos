@@ -539,8 +539,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   /**
     * Overloaded method to create hierarchical index from two cols.
     */
-  def withRowIndex(col1: Int, col2: Int)(
-      implicit ordT: ORD[T]): Frame[(T, T), CX, T] = {
+  def withRowIndex(col1: Int, col2: Int)(implicit
+      ordT: ORD[T]): Frame[(T, T), CX, T] = {
     val newIx: Index[(T, T)] = Index.make(
       this.colAt(col1).toVec,
       this.colAt(col2).toVec)
@@ -576,8 +576,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   /**
     * Overloaded method to create hierarchical index from two rows.
     */
-  def withColIndex(row1: Int, row2: Int)(
-      implicit ordT: ORD[T]): Frame[RX, (T, T), T] = {
+  def withColIndex(row1: Int, row2: Int)(implicit
+      ordT: ORD[T]): Frame[RX, (T, T), T] = {
     val newIx: Index[(T, T)] = Index.make(
       this.rowAt(row1).toVec,
       this.rowAt(row2).toVec)

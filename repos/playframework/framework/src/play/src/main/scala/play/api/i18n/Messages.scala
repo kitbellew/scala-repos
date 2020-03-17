@@ -211,9 +211,8 @@ object Messages {
     */
   object Implicits {
     import scala.language.implicitConversions
-    implicit def applicationMessagesApi(
-        implicit application: Application): MessagesApi =
-      messagesApiCache(application)
+    implicit def applicationMessagesApi(implicit
+        application: Application): MessagesApi = messagesApiCache(application)
     implicit def applicationMessages(implicit
         lang: Lang,
         application: Application): Messages =
@@ -242,8 +241,8 @@ object Messages {
     * @param args the message arguments
     * @return the formatted message or a default rendering if the key wasn’t defined
     */
-  def apply(keys: Seq[String], args: Any*)(
-      implicit messages: Messages): String = { messages(keys, args: _*) }
+  def apply(keys: Seq[String], args: Any*)(implicit
+      messages: Messages): String = { messages(keys, args: _*) }
 
   /**
     * Check if a message key is defined.
@@ -482,8 +481,8 @@ trait MessagesApi {
     * @param args the message arguments
     * @return the formatted message, if this key was defined
     */
-  def translate(key: String, args: Seq[Any])(
-      implicit lang: Lang): Option[String]
+  def translate(key: String, args: Seq[Any])(implicit
+      lang: Lang): Option[String]
 
   /**
     * Check if a message key is defined.
@@ -564,8 +563,8 @@ class DefaultMessagesApi @Inject() (
 
   protected def noMatch(key: String, args: Seq[Any])(implicit lang: Lang) = key
 
-  def translate(key: String, args: Seq[Any])(
-      implicit lang: Lang): Option[String] = {
+  def translate(key: String, args: Seq[Any])(implicit
+      lang: Lang): Option[String] = {
     val codesToTry = Seq(lang.code, lang.language, "default", "default.play")
     val pattern: Option[String] = codesToTry.foldLeft[Option[String]](None)(
       (res, lang) => res.orElse(messages.get(lang).flatMap(_.get(key))))

@@ -35,7 +35,7 @@ object Unmarshallers {
         Util.scalaUnmarshallerFromFunction[HttpEntity, T](convert)))(ClassTag(
       clazz))
 
-  private def implicitInstance[T: ClassTag](
-      implicit um: FromMessageUnmarshaller[T]): Unmarshaller[T] =
+  private def implicitInstance[T: ClassTag](implicit
+      um: FromMessageUnmarshaller[T]): Unmarshaller[T] =
     new UnmarshallerImpl[T](um)
 }

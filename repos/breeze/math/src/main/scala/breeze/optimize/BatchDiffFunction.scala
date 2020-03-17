@@ -87,8 +87,8 @@ trait BatchDiffFunction[T]
       def fullRange: IndexedSeq[Int] = (0 until groups.length)
     }
 
-  override def throughLens[U](
-      implicit l: Isomorphism[T, U]): BatchDiffFunction[U] =
+  override def throughLens[U](implicit
+      l: Isomorphism[T, U]): BatchDiffFunction[U] =
     new BatchDiffFunction[U] {
 
       /**

@@ -669,8 +669,8 @@ class HListTests {
     assertFalse(ununified2.isDefined)
     typed[Option[APBP]](ununified2)
 
-    def getUnifier[L <: HList, Out <: HList](l: L)(
-        implicit u: Unifier.Aux[L, Out]) = u
+    def getUnifier[L <: HList, Out <: HList](l: L)(implicit
+        u: Unifier.Aux[L, Out]) = u
 
     val u2 = getUnifier(a :: HNil)
     typed[Unifier.Aux[Apple :: HNil, Apple :: HNil]](u2)
@@ -2717,9 +2717,8 @@ class HListTests {
   @Test
   def testInterleave {
     type C = Char; type S = String; type I = Int; type D = Double
-    def interleave[I, L <: HList](i: I, l: L)(
-        implicit interleave: Interleave[I, L]): interleave.Out =
-      interleave(i, l)
+    def interleave[I, L <: HList](i: I, l: L)(implicit
+        interleave: Interleave[I, L]): interleave.Out = interleave(i, l)
 
     val r1 = interleave('i', HNil)
     assertTypedEquals[(Char :: HNil) :: HNil](('i' :: HNil) :: HNil, r1)
@@ -2755,9 +2754,8 @@ class HListTests {
   def testFlatMapInterleave {
     type C = Char; type I = Int
 
-    def flatMapInterleave[I, L <: HList](i: I, l: L)(
-        implicit flatMapInterleave: FlatMapInterleave[I, L]) =
-      flatMapInterleave(i, l)
+    def flatMapInterleave[I, L <: HList](i: I, l: L)(implicit
+        flatMapInterleave: FlatMapInterleave[I, L]) = flatMapInterleave(i, l)
 
     val r1 = flatMapInterleave('i', HNil)
     assertTypedEquals[HNil](HNil, r1)
@@ -3407,8 +3405,8 @@ class HListTests {
 
   trait NonSingletonHNilTC[T]
   object NonSingletonHNilTC {
-    def apply[T](t: T)(
-        implicit i: NonSingletonHNilTC[T]): NonSingletonHNilTC[T] = i
+    def apply[T](t: T)(implicit
+        i: NonSingletonHNilTC[T]): NonSingletonHNilTC[T] = i
 
     implicit val nsHNilTC: NonSingletonHNilTC[HNil] =
       new NonSingletonHNilTC[HNil] {}
@@ -3465,8 +3463,8 @@ class HListTests {
       type _type = T
     }
 
-    def getFieldsByTypesOfSuper[Sub <: HList, Super <: HList](l: Sub)(
-        implicit sa: SelectAll[Sub, Super]) = sa(l)
+    def getFieldsByTypesOfSuper[Sub <: HList, Super <: HList](l: Sub)(implicit
+        sa: SelectAll[Sub, Super]) = sa(l)
 
     val hsuper = new TypeCaptured("2" :: true :: HNil)
     val hsub = new TypeCaptured(1 :: "2" :: true :: HNil)

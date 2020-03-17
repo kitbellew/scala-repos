@@ -104,8 +104,8 @@ object StringFunc {
     * returns any other type that has an implicit conversion to `String` in
     * scope.
     */
-  implicit def funcToStringFunc[T](func: () => T)(
-      implicit f: T => String): StringFunc = RealStringFunc(() => f(func()))
+  implicit def funcToStringFunc[T](func: () => T)(implicit
+      f: T => String): StringFunc = RealStringFunc(() => f(func()))
 }
 
 /**
@@ -146,15 +146,15 @@ object NodeSeqFunc {
     * If you've got something that can be converted into a `NodeSeq` (a constant)
     * but want a `NodeSeqFunc`, this implicit will do the conversion.
     */
-  implicit def nsToNodeSeqFunc[T](ns: T)(
-      implicit f: T => NodeSeq): NodeSeqFunc = ConstNodeSeqFunc(f(ns))
+  implicit def nsToNodeSeqFunc[T](ns: T)(implicit
+      f: T => NodeSeq): NodeSeqFunc = ConstNodeSeqFunc(f(ns))
 
   /**
     * If you've got something that can be converted into a `NodeSeq` function but
     * want a `NodeSeqFunc`, this implicit will do the conversion.
     */
-  implicit def funcToNodeSeqFunc[T](func: () => T)(
-      implicit f: T => NodeSeq): NodeSeqFunc = RealNodeSeqFunc(() => f(func()))
+  implicit def funcToNodeSeqFunc[T](func: () => T)(implicit
+      f: T => NodeSeq): NodeSeqFunc = RealNodeSeqFunc(() => f(func()))
 }
 
 /**

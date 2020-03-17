@@ -191,8 +191,8 @@ class TcpListenerSpec extends AkkaSpec("""
       def receive: Receive = { case msg ⇒ parent.ref forward msg }
       override def supervisorStrategy = SupervisorStrategy.stoppingStrategy
 
-      def register(channel: SelectableChannel, initialOps: Int)(
-          implicit channelActor: ActorRef): Unit =
+      def register(channel: SelectableChannel, initialOps: Int)(implicit
+          channelActor: ActorRef): Unit =
         registerCallReceiver.ref.tell(initialOps, channelActor)
     }
   }

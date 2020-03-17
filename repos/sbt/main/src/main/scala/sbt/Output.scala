@@ -41,8 +41,8 @@ object Output {
       keys: Values[_],
       streams: Streams,
       patternString: String,
-      printLines: Seq[String] => Unit)(
-      implicit display: Show[ScopedKey[_]]): Unit = {
+      printLines: Seq[String] => Unit)(implicit
+      display: Show[ScopedKey[_]]): Unit = {
     val pattern = Pattern compile patternString
     val lines = flatLines(lastLines(keys, streams))(
       _ flatMap showMatches(pattern))

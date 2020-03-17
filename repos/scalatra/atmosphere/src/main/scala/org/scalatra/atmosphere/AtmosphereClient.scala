@@ -32,15 +32,15 @@ object AtmosphereClient {
   def broadcast(
       path: String,
       message: OutboundMessage,
-      filter: ClientFilter = new Everyone)(
-      implicit executionContext: ExecutionContext) = {
+      filter: ClientFilter = new Everyone)(implicit
+      executionContext: ExecutionContext) = {
     lookup(path) foreach { _.broadcast(message, filter) }
   }
 
   def broadcastAll(
       message: OutboundMessage,
-      filter: ClientFilter = new Everyone)(
-      implicit executionContext: ExecutionContext) = {
+      filter: ClientFilter = new Everyone)(implicit
+      executionContext: ExecutionContext) = {
     lookupAll() foreach { _ broadcast (message, filter) }
   }
 }
@@ -95,24 +95,24 @@ trait AtmosphereClient extends AtmosphereClientFilters {
     * A convenience method which sends a message only to the current client,
     * using a broadcast filter.  This is the same as calling `broadcast(message, to = Me)`
     */
-  final def send(msg: OutboundMessage)(
-      implicit executionContext: ExecutionContext) =
+  final def send(msg: OutboundMessage)(implicit
+      executionContext: ExecutionContext) =
     broadcast(msg, to = Me)(executionContext)
 
   /**
     * A convenience method which sends a message only to the current client,
     * using a broadcast filter.
     */
-  final def !(msg: OutboundMessage)(
-      implicit executionContext: ExecutionContext) = send(msg)(executionContext)
+  final def !(msg: OutboundMessage)(implicit
+      executionContext: ExecutionContext) = send(msg)(executionContext)
 
   /**
     * Broadcast a message to all clients, skipping the current client by default
     * (i.e. normal chat server behaviour). Optionally filter the clients to
     * deliver the message to by applying a filter.
     */
-  final def broadcast(msg: OutboundMessage, to: ClientFilter = Others)(
-      implicit executionContext: ExecutionContext) = {
+  final def broadcast(msg: OutboundMessage, to: ClientFilter = Others)(implicit
+      executionContext: ExecutionContext) = {
     if (resource == null)
       internalLogger.warn("The resource is null, can't publish")
 
@@ -127,8 +127,7 @@ trait AtmosphereClient extends AtmosphereClientFilters {
     * (i.e. normal chat server behaviour). Optionally filter the clients to
     * deliver the message to by applying a filter.
     */
-  final def ><(msg: OutboundMessage, to: ClientFilter = Others)(
-      implicit executionContext: ExecutionContext) =
-    broadcast(msg, to)(executionContext)
+  final def ><(msg: OutboundMessage, to: ClientFilter = Others)(implicit
+      executionContext: ExecutionContext) = broadcast(msg, to)(executionContext)
 
 }

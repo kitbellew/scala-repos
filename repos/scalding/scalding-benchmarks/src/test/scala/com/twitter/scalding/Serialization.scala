@@ -46,8 +46,8 @@ object SerializationBenchmark
       cbf: CanBuildFrom[Nothing, T, C[T]]): Gen[C[T]] =
     collection[T, C](size, arbT.arbitrary)(cbf)
 
-  def collection[T, C[_]](size: Gen[Int], item: scGen[T])(
-      implicit cbf: CanBuildFrom[Nothing, T, C[T]]): Gen[C[T]] =
+  def collection[T, C[_]](size: Gen[Int], item: scGen[T])(implicit
+      cbf: CanBuildFrom[Nothing, T, C[T]]): Gen[C[T]] =
     size.map { s =>
       val builder = cbf()
       builder.sizeHint(s)

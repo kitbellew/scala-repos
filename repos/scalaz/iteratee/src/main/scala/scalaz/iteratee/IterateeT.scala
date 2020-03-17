@@ -35,8 +35,8 @@ sealed abstract class IterateeT[E, F[_], A] {
         done = (a, _) => F.point(a)))
   }
 
-  def flatMap[B](f: A => IterateeT[E, F, B])(
-      implicit F: Monad[F]): IterateeT[E, F, B] = {
+  def flatMap[B](f: A => IterateeT[E, F, B])(implicit
+      F: Monad[F]): IterateeT[E, F, B] = {
     def through(x: IterateeT[E, F, A]): IterateeT[E, F, B] =
       iterateeT(F.bind(x.value)((s: StepT[E, F, A]) =>
         s.fold[F[StepT[E, F, B]]](
@@ -69,13 +69,13 @@ sealed abstract class IterateeT[E, F[_], A] {
     * The monad for G must perform all the effects of F as part of its evaluation; in the trivial case, of course
     * F and G will have the same monad.
     */
-  def advance[EE, AA, G[_]](f: StepT[E, F, A] => IterateeT[EE, G, AA])(
-      implicit MO: G |>=| F): IterateeT[EE, G, AA] = {
+  def advance[EE, AA, G[_]](f: StepT[E, F, A] => IterateeT[EE, G, AA])(implicit
+      MO: G |>=| F): IterateeT[EE, G, AA] = {
     iterateeT(MO.MG.bind(MO.promote(value))(s => f(s).value))
   }
 
-  def advanceT[EE, AA, G[_]](f: StepT[E, F, A] => G[StepT[EE, F, AA]])(
-      implicit MO: G |>=| F): G[StepT[EE, F, AA]] = {
+  def advanceT[EE, AA, G[_]](f: StepT[E, F, A] => G[StepT[EE, F, AA]])(implicit
+      MO: G |>=| F): G[StepT[EE, F, AA]] = {
     MO.MG.bind(MO.promote(value))(s => f(s))
   }
 
@@ -91,8 +91,8 @@ sealed abstract class IterateeT[E, F[_], A] {
     * @param f An Enumerator-like function. If the type parameters `EE` and `BB` are chosen to be
     *          `E` and `B` respectively, the type of `f` is equivalent to `EnumeratorT[E, F, A]`.
     */
-  def >>==[EE, AA](f: StepT[E, F, A] => IterateeT[EE, F, AA])(
-      implicit F: Bind[F]): IterateeT[EE, F, AA] =
+  def >>==[EE, AA](f: StepT[E, F, A] => IterateeT[EE, F, AA])(implicit
+      F: Bind[F]): IterateeT[EE, F, AA] =
     iterateeT(F.bind(value)(s => f(s).value))
 
   def %=[O](e: EnumerateeT[O, E, F])(implicit m: Monad[F]): IterateeT[O, F, A] =
@@ -155,8 +155,8 @@ sealed abstract class IterateeT[E, F[_], A] {
       }
     }
 
-  def zip[B](other: IterateeT[E, F, B])(
-      implicit F: Monad[F]): IterateeT[E, F, (A, B)] = {
+  def zip[B](other: IterateeT[E, F, B])(implicit
+      F: Monad[F]): IterateeT[E, F, (A, B)] = {
     def step[Z](i: IterateeT[E, F, Z], in: Input[E]) =
       IterateeT
         .IterateeTMonadTrans[E]
@@ -191,8 +191,8 @@ object IterateeT extends IterateeTInstances with IterateeTFunctions {
 }
 
 sealed abstract class IterateeTInstances0 {
-  implicit def IterateeTMonad[E, F[_]](
-      implicit F0: Monad[F]): Monad[IterateeT[E, F, ?]] =
+  implicit def IterateeTMonad[E, F[_]](implicit
+      F0: Monad[F]): Monad[IterateeT[E, F, ?]] =
     new IterateeTMonad[E, F] {
       implicit def F = F0
     }
@@ -210,14 +210,14 @@ sealed abstract class IterateeTInstances extends IterateeTInstances0 {
   implicit def IterateeTMonadTrans[E]
       : Hoist[λ[(α[_], β) => IterateeT[E, α, β]]] = new IterateeTHoist[E] {}
 
-  implicit def IterateeTHoistT[E, H[_[_], _]](
-      implicit T0: Hoist[H]): Hoist[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
+  implicit def IterateeTHoistT[E, H[_[_], _]](implicit
+      T0: Hoist[H]): Hoist[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
     new IterateeTHoistT[E, H] {
       implicit def T = T0
     }
 
-  implicit def IterateeTMonadIO[E, F[_]](
-      implicit M0: MonadIO[F]): MonadIO[IterateeT[E, F, ?]] =
+  implicit def IterateeTMonadIO[E, F[_]](implicit
+      M0: MonadIO[F]): MonadIO[IterateeT[E, F, ?]] =
     new IterateeTMonadIO[E, F] {
       implicit def F = M0
     }
@@ -246,8 +246,8 @@ trait IterateeTFunctions {
   /**
     * An iteratee that writes input to the output stream as it comes in.  Useful for debugging.
     */
-  def putStrTo[E](os: java.io.OutputStream)(
-      implicit s: Show[E]): IterateeT[E, IO, Unit] = {
+  def putStrTo[E](os: java.io.OutputStream)(implicit
+      s: Show[E]): IterateeT[E, IO, Unit] = {
     def write(e: E) = IO(os.write(s.shows(e).getBytes))
     foldM(())((_: Unit, e: E) => write(e))
   }
@@ -356,8 +356,8 @@ trait IterateeTFunctions {
     cont(step(init))
   }
 
-  def foldM[E, F[_], A](init: A)(f: (A, E) => F[A])(
-      implicit m: Monad[F]): IterateeT[E, F, A] = {
+  def foldM[E, F[_], A](init: A)(f: (A, E) => F[A])(implicit
+      m: Monad[F]): IterateeT[E, F, A] = {
     def step(acc: A): Input[E] => IterateeT[E, F, A] =
       s =>
         s(

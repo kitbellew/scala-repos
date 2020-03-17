@@ -71,8 +71,8 @@ object CSVConverter {
       def to(i: Int): String = i.toString
     }
 
-  def listCsvLinesConverter[A](l: List[String])(
-      implicit ec: CSVConverter[A]): Try[List[A]] =
+  def listCsvLinesConverter[A](l: List[String])(implicit
+      ec: CSVConverter[A]): Try[List[A]] =
     l match {
       case Nil => Success(Nil)
       case Cons(s, ss) =>
@@ -82,8 +82,8 @@ object CSVConverter {
         } yield Cons(x, xs)
     }
 
-  implicit def listCsvConverter[A](
-      implicit ec: CSVConverter[A]): CSVConverter[List[A]] =
+  implicit def listCsvConverter[A](implicit
+      ec: CSVConverter[A]): CSVConverter[List[A]] =
     new CSVConverter[List[A]] {
       def from(s: String): Try[List[A]] =
         listCsvLinesConverter(s.split("\n").toList)(ec)

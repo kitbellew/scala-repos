@@ -50,8 +50,8 @@ object ProjectTests extends TestSuite {
           .mkString
         TestUtil.check(testSource)
       }
-      def checkRepo(filter: String => Boolean = _ => true)(
-          implicit testPath: utest.framework.TestPath) = {
+      def checkRepo(filter: String => Boolean = _ => true)(implicit
+          testPath: utest.framework.TestPath) = {
         val url = "https://github.com/" + testPath.value.last
         import sys.process._
         val name = url.split("/").last

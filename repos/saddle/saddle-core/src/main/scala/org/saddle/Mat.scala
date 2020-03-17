@@ -505,8 +505,8 @@ object Mat extends BinOpMat {
     * @param arr A 1D array of backing data in row-major order
     * @tparam T Type of data in array
     */
-  def apply[T](rows: Int, cols: Int, arr: Array[T])(
-      implicit st: ST[T]): Mat[T] = {
+  def apply[T](rows: Int, cols: Int, arr: Array[T])(implicit
+      st: ST[T]): Mat[T] = {
     val (r, c, a) =
       if (rows == 0 || cols == 0) (0, 0, Array.empty[T]) else (rows, cols, arr)
     st.makeMat(r, c, a)

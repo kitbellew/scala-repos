@@ -64,8 +64,8 @@ trait ListInstances extends ListInstances0 {
         }
       (a, b) => loop(a, b, Nil)
     }
-    def traverseImpl[F[_], A, B](l: List[A])(f: A => F[B])(
-        implicit F: Applicative[F]) = {
+    def traverseImpl[F[_], A, B](l: List[A])(f: A => F[B])(implicit
+        F: Applicative[F]) = {
       // implementation with `foldRight` leads to SOE in:
       //
       //  def wc(c: Char) = State[Boolean, Int]{(inWord) =>
@@ -261,8 +261,8 @@ trait ListFunctions {
   }
 
   /** A pair of passing and failing values of `as` against `p`. */
-  final def partitionM[A, M[_]](as: List[A])(p: A => M[Boolean])(
-      implicit F: Applicative[M]): M[(List[A], List[A])] =
+  final def partitionM[A, M[_]](as: List[A])(p: A => M[Boolean])(implicit
+      F: Applicative[M]): M[(List[A], List[A])] =
     as match {
       case Nil => F.point(Nil: List[A], Nil: List[A])
       case h :: t =>

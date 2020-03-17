@@ -128,8 +128,8 @@ sealed abstract class IO[A] {
       r <- during(a) onException after(a)
     } yield r
 
-  def bracketIO[M[_], B](after: A => IO[Unit])(during: A => M[B])(
-      implicit m: MonadControlIO[M]): M[B] =
+  def bracketIO[M[_], B](after: A => IO[Unit])(during: A => M[B])(implicit
+      m: MonadControlIO[M]): M[B] =
     controlIO((runInIO: RunInBase[M, IO]) =>
       bracket(after)(runInIO.apply compose during))
 
@@ -244,14 +244,14 @@ object IO extends IOInstances {
   /**Throw the given error in the IO monad. */
   def throwIO[A](e: Throwable): IO[A] = IO(throw e)
 
-  def idLiftControl[M[_], A](f: RunInBase[M, M] => M[A])(
-      implicit m: Monad[M]): M[A] =
+  def idLiftControl[M[_], A](f: RunInBase[M, M] => M[A])(implicit
+      m: Monad[M]): M[A] =
     f(new RunInBase[M, M] {
       def apply[B] = (x: M[B]) => m.point(x)
     })
 
-  def controlIO[M[_], A](f: RunInBase[M, IO] => IO[M[A]])(
-      implicit M: MonadControlIO[M]): M[A] = M.join(M.liftControlIO(f))
+  def controlIO[M[_], A](f: RunInBase[M, IO] => IO[M[A]])(implicit
+      M: MonadControlIO[M]): M[A] = M.join(M.liftControlIO(f))
 
   /**
     * Register a finalizer in the current region. When the region terminates,

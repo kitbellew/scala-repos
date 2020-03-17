@@ -160,8 +160,8 @@ class GetJobHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
     DescriptionMetadata("Retrieve jobs by job ID."))
 }
 
-class GetJobStatusHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class GetJobStatusHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
@@ -187,8 +187,8 @@ class GetJobStatusHandler(jobs: JobManager[Future])(
     DescriptionMetadata("Get the latest status of a job."))
 }
 
-class UpdateJobStatusHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class UpdateJobStatusHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
@@ -247,8 +247,8 @@ class UpdateJobStatusHandler(jobs: JobManager[Future])(
     DescriptionMetadata("Post status updates to a job."))
 }
 
-class ListChannelsHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class ListChannelsHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
@@ -269,8 +269,8 @@ class ListChannelsHandler(jobs: JobManager[Future])(
     DescriptionMetadata("Return channels that have messages posted to them."))
 }
 
-class AddMessageHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class AddMessageHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
@@ -299,8 +299,8 @@ class AddMessageHandler(jobs: JobManager[Future])(
     DescriptionMetadata("Post a message to a channel."))
 }
 
-class ListMessagesHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class ListMessagesHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
@@ -338,8 +338,8 @@ class ListMessagesHandler(jobs: JobManager[Future])(
     DescriptionMetadata("Retrieve a list of messages posted to a channel."))
 }
 
-class GetJobStateHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class GetJobStateHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
@@ -365,8 +365,8 @@ class GetJobStateHandler(jobs: JobManager[Future])(
     DescriptionMetadata("Retreive the current state of a job."))
 }
 
-class PutJobStateHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class PutJobStateHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]]
     with Logging {
 
@@ -481,8 +481,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(
     DescriptionMetadata("Update the state of a job if it is permissable."))
 }
 
-class CreateResultHandler(jobs: JobManager[Future])(
-    implicit ctx: ExecutionContext)
+class CreateResultHandler(jobs: JobManager[Future])(implicit
+    ctx: ExecutionContext)
     extends CustomHttpService[ByteChunk, Future[HttpResponse[ByteChunk]]] {
   private implicit val M = new FutureMonad(ctx)
 

@@ -11,8 +11,8 @@ object Adapter {
 }
 
 object IterableW {
-  def zipMerge[E](it1: Iterable[E], it2: Iterable[E])(
-      implicit o: Ordering[E]): Iterable[(Option[E], Option[E])] = null
+  def zipMerge[E](it1: Iterable[E], it2: Iterable[E])(implicit
+      o: Ordering[E]): Iterable[(Option[E], Option[E])] = null
 }
 
 class Series[X: Ordering, Y](val adaptee: Iterable[(X, Y)])

@@ -83,8 +83,8 @@ class JobTest(cons: (Args) => Job) {
   }
 
   /** Add a function to produce a mock when a certain source is requested */
-  def source[T](fn: Source => Option[Iterable[T]])(
-      implicit setter: TupleSetter[T]): JobTest = {
+  def source[T](fn: Source => Option[Iterable[T]])(implicit
+      setter: TupleSetter[T]): JobTest = {
     val oldSm = sourceMap
     val bufferTupFn = fn.andThen { optItT =>
       optItT.map { _.map(t => setter(t)).toBuffer }
@@ -102,19 +102,19 @@ class JobTest(cons: (Args) => Job) {
     * .ifSource { case Tsv("in") => List(1, 2, 3) }
     * We need a different function name from source to help the compiler
     */
-  def ifSource[T](fn: PartialFunction[Source, Iterable[T]])(
-      implicit setter: TupleSetter[T]): JobTest = source(fn.lift)
+  def ifSource[T](fn: PartialFunction[Source, Iterable[T]])(implicit
+      setter: TupleSetter[T]): JobTest = source(fn.lift)
 
   def source(s: Source, iTuple: Iterable[Product]): JobTest =
     source[Product](s, iTuple)(TupleSetter.ProductSetter)
 
-  def source[T](s: Source, iTuple: Iterable[T])(
-      implicit setter: TupleSetter[T]): JobTest = sourceBuffer(s, iTuple)
+  def source[T](s: Source, iTuple: Iterable[T])(implicit
+      setter: TupleSetter[T]): JobTest = sourceBuffer(s, iTuple)
 
   // This use of `_.get` is probably safe, but difficult to prove correct
   @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
-  def sink[A](s: Source)(op: Buffer[A] => Unit)(
-      implicit conv: TupleConverter[A]) = {
+  def sink[A](s: Source)(op: Buffer[A] => Unit)(implicit
+      conv: TupleConverter[A]) = {
     if (sourceMap(s).isEmpty) {
       // if s is also used as a source, we shouldn't reset its buffer
       source(s, new ListBuffer[Tuple])
@@ -129,8 +129,8 @@ class JobTest(cons: (Args) => Job) {
     this
   }
 
-  def typedSink[A](s: Source with TypedSink[A])(op: Buffer[A] => Unit)(
-      implicit conv: TupleConverter[A]) = sink[A](s)(op)
+  def typedSink[A](s: Source with TypedSink[A])(op: Buffer[A] => Unit)(implicit
+      conv: TupleConverter[A]) = sink[A](s)(op)
 
   // Used to pass an assertion about a counter defined by the given group and name.
   // If this test is checking for multiple jobs chained by next, this only checks

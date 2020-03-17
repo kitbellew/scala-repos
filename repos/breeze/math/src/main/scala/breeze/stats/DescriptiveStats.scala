@@ -121,8 +121,8 @@ trait DescriptiveStats {
     */
   object meanAndVariance extends UFunc {
     @expand
-    implicit def reduce[@expand.args(Float, Double) S, T](
-        implicit iter: CanTraverseValues[T, S]): Impl[T, MeanAndVariance] =
+    implicit def reduce[@expand.args(Float, Double) S, T](implicit
+        iter: CanTraverseValues[T, S]): Impl[T, MeanAndVariance] =
       new Impl[T, MeanAndVariance] {
         def apply(v: T): MeanAndVariance = {
           val visit = new ValuesVisitor[S] {
@@ -165,8 +165,8 @@ trait DescriptiveStats {
     * Computes the standard deviation by calling variance and then sqrt'ing
     */
   object stddev extends UFunc {
-    implicit def reduceDouble[T](
-        implicit vari: variance.Impl[T, Double]): Impl[T, Double] =
+    implicit def reduceDouble[T](implicit
+        vari: variance.Impl[T, Double]): Impl[T, Double] =
       new Impl[T, Double] {
         def apply(v: T): Double = scala.math.sqrt(vari(v))
       }
@@ -264,8 +264,8 @@ trait DescriptiveStats {
   }
 
   object corrcoeff extends UFunc {
-    implicit def matrixCorrelation[T](
-        implicit covarianceCalculator: covmat.Impl[T, DenseMatrix[Double]])
+    implicit def matrixCorrelation[T](implicit
+        covarianceCalculator: covmat.Impl[T, DenseMatrix[Double]])
         : Impl[T, DenseMatrix[Double]] =
       new Impl[T, DenseMatrix[Double]] {
         def apply(data: T) = {
@@ -413,8 +413,8 @@ trait DescriptiveStats {
         }
       }
 
-    implicit def reduce[T](
-        implicit iter: CanTraverseValues[T, Int]): Impl[T, DenseVector[Int]] =
+    implicit def reduce[T](implicit
+        iter: CanTraverseValues[T, Int]): Impl[T, DenseVector[Int]] =
       new Impl[T, DenseVector[Int]] {
         def apply(x: T): DenseVector[Int] = {
           require(min(x) >= 0)
@@ -512,8 +512,8 @@ object DescriptiveStats {
     * by truncating the longer vector.
     * </p>
     */
-  def meanAndCov[T](it1: TraversableOnce[T], it2: TraversableOnce[T])(
-      implicit frac: Fractional[T]) = {
+  def meanAndCov[T](it1: TraversableOnce[T], it2: TraversableOnce[T])(implicit
+      frac: Fractional[T]) = {
     implicit def t(it: TraversableOnce[T]) =
       it.toIterable //convert to an iterable for zip operation
     import frac.mkNumericOps

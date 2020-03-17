@@ -815,8 +815,8 @@ class SEditTextPreference()(implicit context: android.content.Context)
 }
 
 object SEditTextPreference {
-  def apply()(
-      implicit context: android.content.Context): SEditTextPreference = {
+  def apply()(implicit
+      context: android.content.Context): SEditTextPreference = {
     val v = new SEditTextPreference
 
     v

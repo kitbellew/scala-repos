@@ -1111,8 +1111,8 @@ trait Slice { source =>
     }
   }
 
-  def renderJson[M[+_]](delimiter: String)(
-      implicit M: Monad[M]): (StreamT[M, CharBuffer], Boolean) = {
+  def renderJson[M[+_]](delimiter: String)(implicit
+      M: Monad[M]): (StreamT[M, CharBuffer], Boolean) = {
     if (columns.isEmpty) { (StreamT.empty, false) }
     else {
       val BufferSize = 1024 * 10 // 10 KB

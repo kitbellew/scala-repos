@@ -124,8 +124,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     new PredictedResult(itemScores)
   }
 
-  private def getTopN[T](s: Seq[T], n: Int)(
-      implicit ord: Ordering[T]): Iterable[T] = {
+  private def getTopN[T](s: Seq[T], n: Int)(implicit
+      ord: Ordering[T]): Iterable[T] = {
 
     var result = List.empty[T]
 

@@ -168,8 +168,8 @@ class CamelMessage(
     * The CamelContext is accessible in a [[akka.camel.javaapi.UntypedConsumerActor]] and [[akka.camel.javaapi.UntypedProducerActor]]
     * using the `getCamelContext` method, and is available on the [[akka.camel.CamelExtension]].
     */
-  def withBodyAs[T](clazz: Class[T])(
-      implicit camelContext: CamelContext): CamelMessage =
+  def withBodyAs[T](clazz: Class[T])(implicit
+      camelContext: CamelContext): CamelMessage =
     copy(body = getBodyAs(clazz, camelContext))
 
   /**

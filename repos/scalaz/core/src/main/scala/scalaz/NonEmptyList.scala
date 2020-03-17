@@ -35,8 +35,8 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
   def distinct(implicit A: Order[A]): NonEmptyList[A] =
     (list.distinct: @unchecked) match { case ICons(x, xs) => nel(x, xs) }
 
-  def traverse1[F[_], B](f: A => F[B])(
-      implicit F: Apply[F]): F[NonEmptyList[B]] = {
+  def traverse1[F[_], B](f: A => F[B])(implicit
+      F: Apply[F]): F[NonEmptyList[B]] = {
     tail match {
       case INil() => F.map(f(head))(nel(_, INil()))
       case ICons(b, bs) =>
@@ -106,8 +106,8 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
     nel((head, _b.head), tail zip _b.tail)
   }
 
-  def unzip[X, Y](
-      implicit ev: A <~< (X, Y)): (NonEmptyList[X], NonEmptyList[Y]) = {
+  def unzip[X, Y](implicit
+      ev: A <~< (X, Y)): (NonEmptyList[X], NonEmptyList[Y]) = {
     val (a, b) = ev(head)
     val (aa, bb) = tail.unzip: (IList[X], IList[Y])
     (nel(a, aa), nel(b, bb))
@@ -186,8 +186,8 @@ sealed abstract class NonEmptyListInstances extends NonEmptyListInstances0 {
     override def foldMapLeft1[A, B](fa: NonEmptyList[A])(z: A => B)(
         f: (B, A) => B): B = fa.tail.foldLeft(z(fa.head))(f)
 
-    override def foldMap1[A, B](fa: NonEmptyList[A])(f: A => B)(
-        implicit F: Semigroup[B]): B = {
+    override def foldMap1[A, B](fa: NonEmptyList[A])(f: A => B)(implicit
+        F: Semigroup[B]): B = {
       fa.tail.foldLeft(f(fa.head))((x, y) => F.append(x, f(y)))
     }
 

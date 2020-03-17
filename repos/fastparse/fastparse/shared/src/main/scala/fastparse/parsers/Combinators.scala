@@ -191,8 +191,8 @@ object Combinators {
     * Wraps a parser and succeeds with `Some` if [[p]] succeeds,
     * and succeeds with `None` if [[p]] fails.
     */
-  case class Optional[+T, R](p: Parser[T])(
-      implicit ev: Implicits.Optioner[T, R])
+  case class Optional[+T, R](p: Parser[T])(implicit
+      ev: Implicits.Optioner[T, R])
       extends Parser[R] {
 
     def parseRec(cfg: ParseCtx, index: Int) = {

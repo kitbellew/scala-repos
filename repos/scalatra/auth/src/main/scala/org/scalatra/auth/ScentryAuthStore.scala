@@ -19,8 +19,8 @@ object ScentryAuthStore {
         response: HttpServletResponse)
   }
 
-  class CookieAuthStore(app: ScalatraContext)(
-      implicit cookieOptions: CookieOptions = CookieOptions(path = "/"))
+  class CookieAuthStore(app: ScalatraContext)(implicit
+      cookieOptions: CookieOptions = CookieOptions(path = "/"))
       extends ScentryAuthStore {
 
     def get(implicit

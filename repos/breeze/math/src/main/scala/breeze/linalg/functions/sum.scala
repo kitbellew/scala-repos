@@ -17,8 +17,8 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
   override type Op = OpAdd.type
 
   @expand
-  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanTraverseValues[T, S]): Impl[T, S] =
+  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanTraverseValues[T, S]): Impl[T, S] =
     new Impl[T, S] {
       def apply(v: T): S = {
         class SumVisitor extends ValuesVisitor[S] {
@@ -92,8 +92,8 @@ trait VectorizedReduceUFunc extends UFunc {
 
   @expand
   implicit def vectorizeCols[
-      @expand.args(Double, Float, Int, Long) T: ClassTag: Zero](
-      implicit helper: VectorizeHelper[T])
+      @expand.args(Double, Float, Int, Long) T: ClassTag: Zero](implicit
+      helper: VectorizeHelper[T])
       : Impl[BroadcastedColumns[DenseMatrix[T], DenseVector[T]], Transpose[
         DenseVector[T]]] = {
     new Impl[BroadcastedColumns[DenseMatrix[T], DenseVector[T]], Transpose[

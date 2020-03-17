@@ -31,8 +31,8 @@ case class BroadcastedColumns[T, ColType](underlying: T)
     extends BroadcastedLike[T, ColType, BroadcastedColumns[T, ColType]] {
   def repr = this
 
-  def iterator(
-      implicit canIterateAxis: CanIterateAxis[T, Axis._0.type, ColType]) =
+  def iterator(implicit
+      canIterateAxis: CanIterateAxis[T, Axis._0.type, ColType]) =
     canIterateAxis(underlying, Axis._0)
 
   def foldLeft[B](z: B)(f: (B, ColType) => B)(implicit
@@ -121,8 +121,8 @@ object BroadcastedColumns {
     }
   }
 
-  implicit def canForeachColumns[T, ColumnType, ResultColumn, Result](
-      implicit iter: CanTraverseAxis[T, Axis._0.type, ColumnType])
+  implicit def canForeachColumns[T, ColumnType, ResultColumn, Result](implicit
+      iter: CanTraverseAxis[T, Axis._0.type, ColumnType])
       : CanForeachValues[BroadcastedColumns[T, ColumnType], ColumnType] = {
     new CanForeachValues[BroadcastedColumns[T, ColumnType], ColumnType] {
 

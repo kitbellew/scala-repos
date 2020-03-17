@@ -174,8 +174,8 @@ class RichPipe(val pipe: Pipe)
       /**
         * flatMap with state
         */
-      def flatMap[A, T](fs: (Fields, Fields))(fn: (C, A) => TraversableOnce[T])(
-          implicit
+      def flatMap[A, T](fs: (Fields, Fields))(
+          fn: (C, A) => TraversableOnce[T])(implicit
           conv: TupleConverter[A],
           set: TupleSetter[T]) = {
         conv.assertArityMatches(fs._1)
@@ -390,8 +390,8 @@ class RichPipe(val pipe: Pipe)
   /**
     * Keep only items that satisfy this predicate.
     */
-  def filter[A](f: Fields)(fn: (A) => Boolean)(
-      implicit conv: TupleConverter[A]): Pipe = {
+  def filter[A](f: Fields)(fn: (A) => Boolean)(implicit
+      conv: TupleConverter[A]): Pipe = {
     conv.assertArityMatches(f)
     new Each(pipe, f, new FilterFunction(fn, conv))
   }
@@ -406,8 +406,8 @@ class RichPipe(val pipe: Pipe)
     *
     * {{{ filter('name) { name: String => !(name contains "a") } }}}
     */
-  def filterNot[A](f: Fields)(fn: (A) => Boolean)(
-      implicit conv: TupleConverter[A]): Pipe = filter[A](f)(!fn(_))
+  def filterNot[A](f: Fields)(fn: (A) => Boolean)(implicit
+      conv: TupleConverter[A]): Pipe = filter[A](f)(!fn(_))
 
   /**
     * Text files can have corrupted data. If you use this function and a
@@ -499,8 +499,8 @@ class RichPipe(val pipe: Pipe)
     setter.assertArityMatches(fs._2)
     each(fs)(new FlatMapFunction[A, T](fn, _, conv, setter))
   }
-  def flatMapTo[A, T](fs: (Fields, Fields))(fn: A => TraversableOnce[T])(
-      implicit
+  def flatMapTo[A, T](fs: (Fields, Fields))(
+      fn: A => TraversableOnce[T])(implicit
       conv: TupleConverter[A],
       setter: TupleSetter[T]): Pipe = {
     conv.assertArityMatches(fs._1)
